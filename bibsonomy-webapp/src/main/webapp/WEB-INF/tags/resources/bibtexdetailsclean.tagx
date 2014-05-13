@@ -219,7 +219,7 @@
 								<tr>
 									<td><fmt:message key="resources.searchExternal.dropDownLabel" />:</td>
 									<td><select name="dropDownExternal"
-										id="dropDownExternal" style="font-size: 8pt" >
+										id="dropDownExternal" style="font-size: 8pt">
 											<option selected="selected">---<fmt:message key="resources.searchExternal.dropDownTitle" />---</option>
 											<option value="${googleScholarPostUrl}">Google
 												Scholar</option>
