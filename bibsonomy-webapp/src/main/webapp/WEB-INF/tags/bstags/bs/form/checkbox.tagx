@@ -22,7 +22,7 @@
 	<jsp:directive.attribute name="name" type="java.lang.String" required="false" description="name attribute for input field"/>
 	<jsp:directive.attribute name="checked" type="java.lang.Boolean" required="false" description="value attribute for input field"/>
 
-	<c:if test="${empty inputColSpan or 6 lt inputColSpan}">
+	<c:if test="${inputColSpan lt 2}">
 		<c:set var="inputColSpan" value="10" />
 	</c:if>
 	

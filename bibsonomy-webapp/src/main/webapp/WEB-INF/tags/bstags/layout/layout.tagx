@@ -116,12 +116,12 @@
 						 	|
 					 		| inbox, basket, edit tags links
 						 	|
-						 	+-->
+						 	+
 						<div id="poststats">
 							<c:if test="${not command.context.userLoggedIn and empty noLoginBox}">
 								<parts:login requPath="${requPath}"/>
 							</c:if>
-						</div><!-- #poststats -->
+						</div>--><!-- #poststats -->
 	
 	
 	

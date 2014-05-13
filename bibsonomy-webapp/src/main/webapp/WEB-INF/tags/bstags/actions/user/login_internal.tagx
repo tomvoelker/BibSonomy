@@ -4,48 +4,37 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:form="http://www.springframework.org/tags/form">
 
 	<jsp:directive.tag language="java" pageEncoding="UTF-8" display-name="Internal Login Form" description="Renders the login form for internal login. This includes links to the registration page and the password reminder page." />
+	<br /><br />
+	<fieldset>
+		
+		<legend><fmt:message key="navi.login" /></legend>
+		
+		<fmt:message key="navi.username" var="username"/>
+		<bsform:input required="true" path="username" labelText="${username}" helpText="username" inputColSpan="9" labelColSpan="3"/>
 
-	<fieldset class="fsInner">
+		<fmt:message key="navi.password" var="password"/>
+		<bsform:password required="true" path="password" labelText="${password}" inputColSpan="9" labelColSpan="3" noHelp="true" />
 
-		<div class="fsRow">
-       		<form:label cssClass="fsLabel" path="username" ><fmt:message key="navi.username"/>* </form:label>
-       		<form:input cssClass="fsInput reqinput" path="username"/>
-      		<div class="dissError"><form:errors path="username" /></div>
-   		</div>
-	
-		<div class="fsRow">
-       		<form:label cssClass="fsLabel" path="password" ><fmt:message key="navi.password"/>* </form:label>
-       		<form:password cssClass="fsInput reqinput" path="password"/>
-      		<div class="dissError"><form:errors path="password" /></div>
-   		</div>   		
-	   	<div class="fsRow">
-       		<form:label cssClass="fsLabel" path="rememberMe" ><fmt:message key="login.rememberMe"/></form:label>
-       		<form:checkbox path="rememberMe"/>
-      		<div class="dissError"><form:errors path="rememberMe" /></div>
-   		</div>
-   		<div>
-			<form:hidden path="referer" /> 
-			<fmt:message key="navi.login" var="submit" />
-			<input type="submit" value="${submit}" />
-   		</div>
+		<fmt:message key="login.rememberMe" var="rememberMe" />
+		
+		<div class="pull-right">
+			<p style="margin-right: 20px;"><a href="/reminder"><small><fmt:message key="login.lostPassword_1" /></small></a></p>
+		</div>
+		<div class="clearfix"><!-- KEEP ME --></div>
+		<fmt:message key="navi.login" var="submit" />
+		
+		<div class="form-group">
+			<div class="col-sm-offset-3 col-sm-1 col-md-1 col-lg-1">
+				<bsform:button type="submit" style="success" value="submit" size="defaultSize" />
+			</div>
+			<div class="col-sm-8 col-md-8 col-lg-8">
+				<bsform:checkbox inputColSpan="9" path="rememberMe" labelText="${rememberMe}" />
+			</div>
+		</div>
    	</fieldset>
-	
-	<fmt:message key="login.register" var="loginRegister"/>
-	<c:if test="${not empty loginRegister}">
-		<h2 style="margin-top: 1em;"><fmt:message key="login.register" /></h2>
-		<p>
-			<fmt:message key="login.notRegistered_1" />
-			<a href="/register"><fmt:message key="login.notRegistered_2" /></a>
-			<fmt:message key="login.notRegistered_3" />
-		</p>
-	</c:if>
-
-	<h2 style="margin-top: 1em;"><fmt:message key="login.lostPassword" /></h2>
-	<p>
-		<fmt:message key="login.lostPassword_1" /> <c:out value=" " />
-		<a href="/reminder"><fmt:message key="login.lostPassword_2" /></a>
-	</p>
+	<hr />
 </jsp:root>
