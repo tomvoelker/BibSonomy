@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.ListCommand;
@@ -43,6 +45,7 @@ import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeEx
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
+import org.bibsonomy.webapp.util.GroupingCommandUtils;
 
 
 /**
@@ -81,7 +84,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	private static final int NORMALIZE_ACTION = 2;
 	private static final int DELETE_ACTION = 3;
 	private static final int IGNORE_ACTION = 4;
-	
+	private static final int UPDATE_VIEWABLE_ACTION = 5;
 	/**
 	 * 
 	 * @param resourceClass
@@ -110,6 +113,11 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 		command.getBibtex().setList(new LinkedList<Post<BibTex>>());
 		command.getBookmark().setList(new LinkedList<Post<Bookmark>>());
+
+		//GroupingCommandUtils.initGroupingCommand(command);
+		command.setGroups(new ArrayList<String>());
+		command.setAbstractGrouping(GroupUtils.getPublicGroup().getName());
+
 		return command;
 	}
 
@@ -314,6 +322,21 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 						} catch (final RecognitionException ex) {
 							log.debug("can't parse tags of resource " + intraHash + " for user " + loginUserName, ex);
 						}
+					} else if (UPDATE_VIEWABLE_ACTION == action){
+						
+						Post<?> post;
+						post = this.logic.getPostDetails(intraHash, loginUserName);
+						if(present(post)) {
+							/** set visibility of this post for the groups, the user specified
+							*/
+							GroupingCommandUtils.initGroups(command, post.getGroups());
+
+
+							post.setDate(now);
+							postsToNormalize.add(post);						
+						}
+
+						
 					}
 				}
 			}
