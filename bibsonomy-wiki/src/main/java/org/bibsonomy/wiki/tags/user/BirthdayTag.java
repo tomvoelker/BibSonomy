@@ -40,9 +40,5 @@ public class BirthdayTag extends UserTag {
 		}
 		return "";
 	}
-	
-	public static void main(String[] args) {
-		
-	}
 
 }

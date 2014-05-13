@@ -812,14 +812,4 @@ public class Functions {
 		return filename.replaceAll("[^A-Za-z0-9]", "-");
 	}
 	
-	public static void main(String[] args) throws ParseException {
-		String cleanYear = "2011";
-		String monthAsNumber = "10";
-		String cleanDay = "13";
-		Locale locale = Locale.GERMAN;
-		
-		System.out.println(Functions.getDate(cleanDay, monthAsNumber, cleanYear, locale));
-		//System.out.println(dmyDateFormatter.print(dmyDateFormat.parse(cleanYear + "-" + monthAsNumber + "-" + cleanDay), locale));
-		
-	}
 }
