@@ -79,6 +79,7 @@ public class URLGenerator {
 
     private static final String USER_PREFIX = "user";
     private static final String AUTHOR_PREFIX = "author";
+    private static final String PICTURE_PREFIX = "picture";
     private static final String PUBLICATION_PREFIX = "bibtex";
     private static final String BOOKMARK_PREFIX = "url";
     private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
@@ -276,6 +277,16 @@ public class URLGenerator {
     public String getAuthorUrlByString(final String authorName, boolean useAbsolutePath) {
     	final String prefix = useAbsolutePath ? this.projectHome : "";
         return this.getUrl(prefix + AUTHOR_PREFIX + "/" + UrlUtils.safeURIEncode(authorName));
+    }
+    
+    /**
+     * Constructs the URL for the picture of a user.
+     * 
+     * @param userName
+     * @return The URL to the picture of the user.
+     */
+    public String getUserPictureUrlByString(final String userName) {
+    	return this.getUrl(this.projectHome + PICTURE_PREFIX + "/" + USER_PREFIX + "/" + UrlUtils.safeURIEncode(userName));
     }
     
 
