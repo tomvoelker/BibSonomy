@@ -259,7 +259,7 @@ public class URLGenerator {
      * @param userName
      * @return The URL for the user's page.
      */
-    public String getUserUrl(final String userName) {
+    public String getUserUrlByString(final String userName) {
         return this.getUrl(this.projectHome + USER_PREFIX + "/" + UrlUtils.safeURIEncode(userName));
     }
 
