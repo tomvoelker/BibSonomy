@@ -249,6 +249,7 @@
 			<list>
 				<value>authConfig</value>
 				<value>properties</value>
+				<value>urlGenerator</value>
 			</list>
 		</property>
 	</bean>
