@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.util.tags;
 
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -9,8 +10,7 @@ import org.bibsonomy.model.util.BibTexUtils;
 import tags.Functions;
 
 /**
- * TODO: add documentation to this class
- *
+ * Class that implements a jsp el function to render TitleHovers for BibTex.
  */
 public class BibTexListTitleHoverFormatter {
 	
@@ -21,18 +21,25 @@ public class BibTexListTitleHoverFormatter {
 	private Locale locale;
 	
 	private StringBuilder output;
+	private ResourceBundle rb;
 	
 	private BibTexListTitleHoverFormatter(final BibTex publication, final Locale locale) {
 		this.publication = publication;
 		this.locale = locale;
 		this.output = new StringBuilder();
+		  
+		if (locale.equals(Locale.ENGLISH)) {
+			this.rb = ResourceBundle.getBundle("messages", Locale.ROOT);
+		} else {
+			this.rb = ResourceBundle.getBundle("messages", locale);
+		}
 	}
 	
 	/**
 	 * Used to render the Hover of a BibTex
+	 * @param post 
 	 * @param resource
 	 * @param locale
-	 * @param authors
 	 * @return String
 	 */
 	public static String renderHover(final Post post, final Locale locale) {
@@ -106,11 +113,6 @@ public class BibTexListTitleHoverFormatter {
 	}
 	
 	private BibTexListTitleHoverFormatter year(boolean braces) {
-		
-		if(this.locale == null) {
-			this.locale = Locale.ENGLISH;
-		}
-		
 		String date = Functions.getDate(publication.getDay(), publication.getMonth(), publication.getYear(), this.locale);
 		if (braces) {
 			output.append("(" + date + ")");
@@ -159,9 +161,8 @@ public class BibTexListTitleHoverFormatter {
 	private BibTexListTitleHoverFormatter volumeOfSeries() {
 		if (present(publication.getVolume())) {
 			if (present(publication.getSeries())) {
-				//FIXME - use BundleResource-PropertieMessages "bibtex.volume" "bibtex.volumeOf"
-				output.append("volume " + BibTexUtils.cleanBibTex(publication.getVolume()) +
-						" of " + BibTexUtils.cleanBibTex(publication.getSeries()) + LS);
+				output.append(rb.getString("bibtex.volume") + LS + BibTexUtils.cleanBibTex(publication.getVolume()) +
+						LS + rb.getString("bibtex.volumeOf") + LS + BibTexUtils.cleanBibTex(publication.getSeries()) + LS);
 			} else {
 				output.append(LS + BibTexUtils.cleanBibTex(publication.getVolume()) + LS);
 			}
@@ -174,16 +175,14 @@ public class BibTexListTitleHoverFormatter {
 	
 	private BibTexListTitleHoverFormatter chapter() {
 		if (present(publication.getChapter())) {
-			//FIXME - use BundleResource-PropertieMessages "bibtex.chapter"
-			output.append("chapter " + BibTexUtils.cleanBibTex(publication.getChapter()) + LS);
+			output.append(rb.getString("bibtex.chapter") + LS + BibTexUtils.cleanBibTex(publication.getChapter()) + LS);
 		}
 		return this;
 	}
 	
 	private BibTexListTitleHoverFormatter page() {
 		if (present(publication.getPages())) {
-			//FIXME - use BundleResource-PropertieMessages "bibtex.pages"
-			output.append("page " + BibTexUtils.cleanBibTex(publication.getPages()) + LS);
+			output.append(rb.getString("bibtex.pages") + LS + BibTexUtils.cleanBibTex(publication.getPages()) + LS);
 		}
 		return this;
 	}
@@ -232,8 +231,7 @@ public class BibTexListTitleHoverFormatter {
 	
 	private BibTexListTitleHoverFormatter volume() {
 		if (present(publication.getVolume())) {
-			//FIXME - use BundleResource-PropertieMessages "bibtex.volume"
-			output.append("volume " + BibTexUtils.cleanBibTex(publication.getVolume()) + LS);
+			output.append(rb.getString("bibtex.volume") + LS + BibTexUtils.cleanBibTex(publication.getVolume()) + LS);
 		}
 		else if (present(publication.getNumber())) {
 			output.append(BibTexUtils.cleanBibTex(publication.getNumber()) + ". ");
