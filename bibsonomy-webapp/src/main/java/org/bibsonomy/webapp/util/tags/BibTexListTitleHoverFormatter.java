@@ -12,18 +12,21 @@ import tags.Functions;
  * TODO: add documentation to this class
  *
  */
-public class BibTexListHoverRendererTag {
+public class BibTexListTitleHoverFormatter {
 	
-	private BibTexListHoverRendererTag(final BibTex publication, final Locale locale) {
-		this.publication = publication;
-		this.locale = locale;
-		this.output = "";
-	}
+	private static final String LS = " ";
+	private static final String LB = "\n";
 	
 	private final BibTex publication;
 	private Locale locale;
 	
-	private String output;
+	private StringBuilder output;
+	
+	private BibTexListTitleHoverFormatter(final BibTex publication, final Locale locale) {
+		this.publication = publication;
+		this.locale = locale;
+		this.output = new StringBuilder();
+	}
 	
 	/**
 	 * Used to render the Hover of a BibTex
@@ -36,9 +39,9 @@ public class BibTexListHoverRendererTag {
 		
 		final BibTex publication = (BibTex)post.getResource();
 		
-		BibTexListHoverRendererTag renderer = new BibTexListHoverRendererTag(publication,locale);
+		BibTexListTitleHoverFormatter renderer = new BibTexListTitleHoverFormatter(publication,locale);
 		
-		renderer.title().add("\n");
+		renderer.title().add(LB);
 		
 		if (renderer.publication.getEntrytype().equals("article")) {
 			renderer.journal().volumeNumberPages().year(true).note();
@@ -81,28 +84,28 @@ public class BibTexListHoverRendererTag {
 		
 	}
 	
-	private BibTexListHoverRendererTag add(String s) {
-		this.output+=s;
+	private BibTexListTitleHoverFormatter add(String s) {
+		output.append(s);
 		return this;
 	}
 	
-	private BibTexListHoverRendererTag journal() {
+	private BibTexListTitleHoverFormatter journal() {
 		if (present(publication.getJournal())) {
-			output+=BibTexUtils.cleanBibTex(publication.getJournal()) + " ";
+			output.append(BibTexUtils.cleanBibTex(publication.getJournal()) + LS);
 		}
 		return this;
 	}
 	
-	private BibTexListHoverRendererTag volumeNumberPages() {
+	private BibTexListTitleHoverFormatter volumeNumberPages() {
 		if (present(publication.getVolume()) && present(publication.getNumber()) && present(publication.getPages())) {
-			output+=BibTexUtils.cleanBibTex(publication.getVolume()) + "(" +
+			output.append(BibTexUtils.cleanBibTex(publication.getVolume()) + "(" +
 					BibTexUtils.cleanBibTex(publication.getNumber()) + "):" +
-					BibTexUtils.cleanBibTex(publication.getPages()) + " ";
+					BibTexUtils.cleanBibTex(publication.getPages()) + LS);
 		}
 		return this;
 	}
 	
-	private BibTexListHoverRendererTag year(boolean braces) {
+	private BibTexListTitleHoverFormatter year(boolean braces) {
 		
 		if(this.locale == null) {
 			this.locale = Locale.ENGLISH;
@@ -110,137 +113,137 @@ public class BibTexListHoverRendererTag {
 		
 		String date = Functions.getDate(publication.getDay(), publication.getMonth(), publication.getYear(), this.locale);
 		if (braces) {
-			output+="(" + date + ")";
+			output.append("(" + date + ")");
 		} else {
-			output+=date;
+			output.append(date);
 		}
-		output+= " ";
+		output.append(LS);
 		return this;
 	}
 	
-	private BibTexListHoverRendererTag note() {
+	private BibTexListTitleHoverFormatter note() {
 		if (present(publication.getNote())) {
-			output+=BibTexUtils.cleanBibTex(publication.getNote());
+			output.append(BibTexUtils.cleanBibTex(publication.getNote()));
 		}
 		return this;
 	}
 	
-	private BibTexListHoverRendererTag series() {
+	private BibTexListTitleHoverFormatter series() {
 		if (present(publication.getSeries())) {
-			output+=BibTexUtils.cleanBibTex(publication.getSeries()) + " ";
+			output.append(BibTexUtils.cleanBibTex(publication.getSeries()) + LS);
 		}
 		return this;
 	}
 	
-	private BibTexListHoverRendererTag publisher() {
+	private BibTexListTitleHoverFormatter publisher() {
 		if (present(publication.getPublisher())) {
-			output+=BibTexUtils.cleanBibTex(publication.getPublisher()) + ", ";
+			output.append(BibTexUtils.cleanBibTex(publication.getPublisher()) + ", ");
 		}
 		return this;
 	}
 	
-	private BibTexListHoverRendererTag address() {
+	private BibTexListTitleHoverFormatter address() {
 		if (present(publication.getAddress())) {
-			output+=BibTexUtils.cleanBibTex(publication.getAddress()) + " ";
+			output.append(BibTexUtils.cleanBibTex(publication.getAddress()) + LS);
 		}
 		return this;
 	}
 	
-	private BibTexListHoverRendererTag edition() {
+	private BibTexListTitleHoverFormatter edition() {
 		if (present(publication.getEdition())) {
-			output+=BibTexUtils.cleanBibTex(publication.getEdition()) + " ";
+			output.append(BibTexUtils.cleanBibTex(publication.getEdition()) + LS);
 		}
 		return this;
 	}
 	
-	private BibTexListHoverRendererTag volumeOfSeries() {
+	private BibTexListTitleHoverFormatter volumeOfSeries() {
 		if (present(publication.getVolume())) {
 			if (present(publication.getSeries())) {
 				//FIXME - use BundleResource-PropertieMessages "bibtex.volume" "bibtex.volumeOf"
-				output+="volume " + BibTexUtils.cleanBibTex(publication.getVolume()) +
-						" of " + BibTexUtils.cleanBibTex(publication.getSeries()) + " ";
+				output.append("volume " + BibTexUtils.cleanBibTex(publication.getVolume()) +
+						" of " + BibTexUtils.cleanBibTex(publication.getSeries()) + LS);
 			} else {
-				output+= " " + BibTexUtils.cleanBibTex(publication.getVolume()) + " ";
+				output.append(LS + BibTexUtils.cleanBibTex(publication.getVolume()) + LS);
 			}
 		}
 		else if (present(publication.getNumber())) {
-			output+= " " + BibTexUtils.cleanBibTex(publication.getNumber()) + " ";
+			output.append(LS + BibTexUtils.cleanBibTex(publication.getNumber()) + LS);
 		}
 		return this;
 	}
 	
-	private BibTexListHoverRendererTag chapter() {
+	private BibTexListTitleHoverFormatter chapter() {
 		if (present(publication.getChapter())) {
 			//FIXME - use BundleResource-PropertieMessages "bibtex.chapter"
-			output+="chapter " + BibTexUtils.cleanBibTex(publication.getChapter()) + " ";
+			output.append("chapter " + BibTexUtils.cleanBibTex(publication.getChapter()) + LS);
 		}
 		return this;
 	}
 	
-	private BibTexListHoverRendererTag page() {
+	private BibTexListTitleHoverFormatter page() {
 		if (present(publication.getPages())) {
 			//FIXME - use BundleResource-PropertieMessages "bibtex.pages"
-			output+="page " + BibTexUtils.cleanBibTex(publication.getPages()) + " ";
+			output.append("page " + BibTexUtils.cleanBibTex(publication.getPages()) + LS);
 		}
 		return this;
 	}
 	
-	private BibTexListHoverRendererTag howpublished() {
+	private BibTexListTitleHoverFormatter howpublished() {
 		if (present(publication.getHowpublished())) {
-			output+=BibTexUtils.cleanBibTex(publication.getHowpublished()) + " ";
+			output.append(BibTexUtils.cleanBibTex(publication.getHowpublished()) + LS);
 		}
 		return this;
 	}
 	
-	private BibTexListHoverRendererTag booktitle() {
+	private BibTexListTitleHoverFormatter booktitle() {
 		if (present(publication.getBooktitle())) {
-			output+=BibTexUtils.cleanBibTex(publication.getBooktitle()) + " ";
+			output.append(BibTexUtils.cleanBibTex(publication.getBooktitle()) + LS);
 		}
 		return this;
 	}
 	
-	private BibTexListHoverRendererTag organization() {
+	private BibTexListTitleHoverFormatter organization() {
 		if (present(publication.getOrganization())) {
-			output+=BibTexUtils.cleanBibTex(publication.getOrganization()) + " ";
+			output.append(BibTexUtils.cleanBibTex(publication.getOrganization()) + LS);
 		}
 		return this;
 	}
 	
-	private BibTexListHoverRendererTag school() {
+	private BibTexListTitleHoverFormatter school() {
 		if (present(publication.getSchool())) {
-			output+=BibTexUtils.cleanBibTex(publication.getSchool()) + " ";
+			output.append(BibTexUtils.cleanBibTex(publication.getSchool()) + LS);
 		}
 		return this;
 	}
 	
-	private BibTexListHoverRendererTag type() {
+	private BibTexListTitleHoverFormatter type() {
 		if (present(publication.getType())) {
-			output+=BibTexUtils.cleanBibTex(publication.getType()) + " ";
+			output.append(BibTexUtils.cleanBibTex(publication.getType()) + LS);
 		}
 		return this;
 	}
 	
-	private BibTexListHoverRendererTag institution() {
+	private BibTexListTitleHoverFormatter institution() {
 		if (present(publication.getInstitution())) {
-			output+=BibTexUtils.cleanBibTex(publication.getInstitution()) + " ";
+			output.append(BibTexUtils.cleanBibTex(publication.getInstitution()) + LS);
 		}
 		return this;
 	}
 	
-	private BibTexListHoverRendererTag volume() {
+	private BibTexListTitleHoverFormatter volume() {
 		if (present(publication.getVolume())) {
 			//FIXME - use BundleResource-PropertieMessages "bibtex.volume"
-			output+="volume " + BibTexUtils.cleanBibTex(publication.getVolume()) + " ";
+			output.append("volume " + BibTexUtils.cleanBibTex(publication.getVolume()) + LS);
 		}
 		else if (present(publication.getNumber())) {
-			output+=BibTexUtils.cleanBibTex(publication.getNumber()) + ". ";
+			output.append(BibTexUtils.cleanBibTex(publication.getNumber()) + ". ");
 		}
 		return this;
 	}
 	
-	private BibTexListHoverRendererTag title() {
+	private BibTexListTitleHoverFormatter title() {
 		if (present(publication.getTitle())) {
-			output+=BibTexUtils.cleanBibTex(publication.getTitle()) + " ";
+			output.append(BibTexUtils.cleanBibTex(publication.getTitle()) + LS);
 		}
 		return this;
 	}
@@ -253,7 +256,7 @@ public class BibTexListHoverRendererTag {
 	}
 	
 	private String getOutput() {
-		return this.output;
+		return output.toString();
 	}
 	
 }
