@@ -78,6 +78,7 @@ public class URLGenerator {
     }
 
     private static final String USER_PREFIX = "user";
+    private static final String AUTHOR_PREFIX = "author";
     private static final String PUBLICATION_PREFIX = "bibtex";
     private static final String BOOKMARK_PREFIX = "url";
     private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
@@ -262,6 +263,21 @@ public class URLGenerator {
     public String getUserUrlByString(final String userName) {
         return this.getUrl(this.projectHome + USER_PREFIX + "/" + UrlUtils.safeURIEncode(userName));
     }
+    
+    
+    /**
+     * Constructs the URL for the author's page.
+     * Returns an absolute URL if useAbsolutePath is true.
+     * 
+     * @param authorLastName
+     * @param useAbsolutePath
+     * @return The URL for the author's page.
+     */
+    public String getAuthorUrlByString(final String authorName, boolean useAbsolutePath) {
+    	final String prefix = useAbsolutePath ? this.projectHome : "";
+        return this.getUrl(prefix + AUTHOR_PREFIX + "/" + UrlUtils.safeURIEncode(authorName));
+    }
+    
 
     /**
      * If {@link #checkUrls} is <code>true</code>, each given string is converted
