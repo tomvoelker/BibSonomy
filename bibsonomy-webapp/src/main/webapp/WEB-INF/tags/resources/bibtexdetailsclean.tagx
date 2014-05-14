@@ -53,10 +53,10 @@
 							| abstract 
 							+-->
 				
-						<c:if test="${not empty post.resource.abstract}"> 
+						<c:if test="${not empty post.resource['abstract']}"> 
 							<h4 style="clear:both;"><fmt:message key="publications.abstract.headline"/></h4>
 							<div id="abstract" class="more">
-								<c:out value="${post.resource.abstract}" />
+								<c:out value="${post.resource['abstract']}" />
 							</div>
 						</c:if>
 						
