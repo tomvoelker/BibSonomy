@@ -701,16 +701,15 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		this.createOrUpdateSuccess(command, loginUser, post);		
 		
-		String submitName = context.getSubmitValue();
-		if(submitName == null)
-			return this.finalRedirect(loginUserName, post, command.getReferer());		
-		if(post.getResource() instanceof BibTex){
-			String publicationRatingUrl = urlGenerator.getPublicationRatingUrl(post.getResource().getInterHash(),loginUserName, post.getResource().getIntraHash());		
-			return new ExtendedRedirectView(publicationRatingUrl);						
-		}
-		if(post.getResource() instanceof Bookmark){
-			String bookmarkRatingUrl = urlGenerator.getBookmarkRatingUrl(post.getResource().getInterHash(),loginUserName, post.getResource().getIntraHash());		
-			return new ExtendedRedirectView(bookmarkRatingUrl);
+		if (present(command.getSaveAndRate())) {
+			if (post.getResource() instanceof BibTex) {
+				String publicationRatingUrl = urlGenerator.getPublicationRatingUrl(post.getResource().getInterHash(),loginUserName, post.getResource().getIntraHash());		
+				return new ExtendedRedirectView(publicationRatingUrl);						
+			}
+			if(post.getResource() instanceof Bookmark){
+				String bookmarkRatingUrl = urlGenerator.getBookmarkRatingUrl(post.getResource().getInterHash(),loginUserName, post.getResource().getIntraHash());		
+				return new ExtendedRedirectView(bookmarkRatingUrl);
+			}
 		}
 		return this.finalRedirect(loginUserName, post, command.getReferer());
 	}

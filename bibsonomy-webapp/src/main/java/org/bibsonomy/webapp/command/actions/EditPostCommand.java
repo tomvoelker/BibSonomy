@@ -102,6 +102,25 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 * The file names of the documents uploaded during editing a post.
 	 */
 	private List<String> fileName;
+	
+	/**
+	 * whether to redirect to the rating page after editing a post
+	 */
+	private String saveAndRate;
+
+	/**
+	 * @return saveAndRate
+	 */
+	public String getSaveAndRate() {
+		return saveAndRate;
+	}
+
+	/**
+	 * @param saveAndRate
+	 */
+	public void setSaveAndRate(String saveAndRate) {
+		this.saveAndRate = saveAndRate;
+	}
 
 	/**
 	 * @return the post
