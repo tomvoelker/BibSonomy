@@ -26,6 +26,7 @@ public class LuceneDateFormatter extends AbstractTypeHandler<Date> {
 		try {
 			return dateFormatter.parseDateTime(str).toDate();
 		} catch (Exception e) {
+			log.error("Error parsing date " + str, e);
 			return new Date(0);
 		}
 	}
