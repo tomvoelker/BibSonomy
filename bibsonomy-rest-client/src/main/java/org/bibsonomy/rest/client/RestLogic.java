@@ -420,10 +420,10 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public Tag getConceptDetails(final String conceptName, final GroupingEntity grouping, final String groupingName) {
-		GetConceptDetailsQuery query = new GetConceptDetailsQuery(conceptName);
+		final GetConceptDetailsQuery query = new GetConceptDetailsQuery(conceptName);
 		
-		if (grouping == null || GroupingEntity.ALL.equals(grouping)	|| present(groupingName)
-				&& (GroupingEntity.GROUP.equals(grouping) || GroupingEntity.USER.equals(grouping))) {
+		if ((grouping == null) || (GroupingEntity.ALL.equals(grouping))	|| (present(groupingName)
+				&& (GroupingEntity.GROUP.equals(grouping) || GroupingEntity.USER.equals(grouping)))) {
 			query.setGrouping(grouping, groupingName);
 			return execute(query);
 		}
