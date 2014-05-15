@@ -23,6 +23,7 @@
 
 package org.bibsonomy.testutil;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,18 +56,16 @@ import org.bibsonomy.model.User;
  * @author Christian Schenk
  */
 public final class ModelUtils {
+	
+	private static final String DATE_FORMAT_STRING = "yyyy-MM-dd HH:mm";
+	
 	private static final Log log = LogFactory.getLog(ModelUtils.class);
 	
 	/**
 	 * Don't create instances of this class - use the static methods instead.
 	 */
 	private ModelUtils() {
-	}
-
-	/**
-	 * To add meaningful dates to example posts.
-	 */
-	private final static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	}	
 
 	private static void setResourceDefaults(final Resource resource) {
 		resource.setCount(0);
@@ -98,6 +97,8 @@ public final class ModelUtils {
 	}
 
 	private static Date parseDate(final String date) {
+		//To add meaningful dates to example posts.
+		DateFormat df = new SimpleDateFormat(DATE_FORMAT_STRING);
 		try {
 			return df.parse(date);
 		} catch (final ParseException ex) {

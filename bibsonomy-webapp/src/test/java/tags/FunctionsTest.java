@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,12 +13,16 @@ import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.EnumUtils;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.Test;
 
 /**
  * @author dbenz
  */
 public class FunctionsTest {
+	
+	private static final DateTimeFormatter ISO8601_DATE_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ");
 
 	@Test
 	public void toggleUserSimilarity() {
@@ -72,9 +75,8 @@ public class FunctionsTest {
 	
 	@Test
 	public void testFormatDateISO8601() throws ParseException {
-		final SimpleDateFormat ISO8601_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 		final String date = "2012-01-30T13:13:16+0100";
-		assertEquals(date, Functions.formatDateISO8601(ISO8601_DATE_FORMAT.parse(date)));
+		assertEquals(date, Functions.formatDateISO8601(ISO8601_DATE_FORMAT.parseDateTime(date).toDate()));
 		
 		assertEquals("1970-01-01T01:00:00+0100", Functions.formatDateISO8601(new Date(0)));
 	}
@@ -82,9 +84,8 @@ public class FunctionsTest {
 	
 	@Test
 	public void testFormatDateW3CDTF() throws Exception {
-		final SimpleDateFormat ISO8601_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-		assertEquals("2012-11-07T14:43:16+01:00", Functions.formatDateW3CDTF(ISO8601_DATE_FORMAT.parse("2012-11-07T14:43:16+0100")));
-		assertEquals("2012-11-07T16:43:16+01:00", Functions.formatDateW3CDTF(ISO8601_DATE_FORMAT.parse("2012-11-07T14:43:16-0100"))); // FIXME: time changes through parsing? 
+		assertEquals("2012-11-07T14:43:16+01:00", Functions.formatDateW3CDTF(ISO8601_DATE_FORMAT.parseDateTime("2012-11-07T14:43:16+0100").toDate()));
+		assertEquals("2012-11-07T16:43:16+01:00", Functions.formatDateW3CDTF(ISO8601_DATE_FORMAT.parseDateTime("2012-11-07T14:43:16-0100").toDate())); // FIXME: time changes through parsing? 
 	}
 	
 	@Test

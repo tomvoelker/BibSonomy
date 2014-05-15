@@ -481,6 +481,8 @@
 								<value>download</value>
 								<value>urlGenerator</value>
 								<value>skipDummyValues</value>
+								
+								<value>saveAndRate</value>
 							</list>
 						</property>
 					</bean>
@@ -717,6 +719,8 @@
 		<value>recaptcha_response_field</value>
 		<value>recaptcha_challenge_field</value>
 		<value>editBeforeSaving</value>
+		
+		<value>saveAndRate</value>
 	</util:list>
 
 	<!-- publication request parameters -->
@@ -788,6 +792,8 @@
 		<value>download</value>
 		<value>urlGenerator</value>
 		<value>skipDummyValues</value>
+		
+		<value>saveAndRate</value>
 	</util:list>
 
 	<!--  #################### controller #################### -->
