@@ -39,7 +39,6 @@ import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.bibsonomy.services.Pingback;
 import org.bibsonomy.services.URLGenerator;
-import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.ContextCommand;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
@@ -444,7 +443,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		/*
 		 * send final redirect
 		 */
-		return this.finalRedirect(loginUserName, post, command.getReferer());
+		return this.finalRedirect(command, post, loginUserName);
 	}
 
 	/**
@@ -699,15 +698,19 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		/*
 		 * do everything that must be done after a successful create or update
 		 */
-		this.createOrUpdateSuccess(command, loginUser, post);		
-		
+		this.createOrUpdateSuccess(command, loginUser, post);
+
+		return this.finalRedirect(command, post, loginUserName);
+	}
+
+	private View finalRedirect(final COMMAND command, final Post<RESOURCE> post, final String loginUserName) {
 		if (present(command.getSaveAndRate())) {
 			if (post.getResource() instanceof BibTex) {
-				String publicationRatingUrl = urlGenerator.getPublicationRatingUrl(post.getResource().getInterHash(),loginUserName, post.getResource().getIntraHash());		
-				return new ExtendedRedirectView(publicationRatingUrl);						
+				final String publicationRatingUrl = this.urlGenerator.getPublicationRatingUrl(post.getResource().getInterHash(), loginUserName, post.getResource().getIntraHash());
+				return new ExtendedRedirectView(publicationRatingUrl);
 			}
-			if(post.getResource() instanceof Bookmark){
-				String bookmarkRatingUrl = urlGenerator.getBookmarkRatingUrl(post.getResource().getInterHash(),loginUserName, post.getResource().getIntraHash());		
+			if (post.getResource() instanceof Bookmark) {
+				final String bookmarkRatingUrl = this.urlGenerator.getBookmarkRatingUrl(post.getResource().getInterHash(), loginUserName, post.getResource().getIntraHash());
 				return new ExtendedRedirectView(bookmarkRatingUrl);
 			}
 		}
@@ -741,8 +744,8 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		if (present(this.pingback) && !loginUser.isSpammer() && GroupUtils.isPublicGroup(post.getGroups())) {
 			this.pingback.sendPingback(post);
 		}
-		
-		System.out.println("****pingback: " + pingback.sendPingback(post) + " ****");
+
+		System.out.println("****pingback: " + this.pingback.sendPingback(post) + " ****");
 	}
 
 	/**
