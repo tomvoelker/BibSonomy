@@ -422,16 +422,13 @@ public class RestLogic implements LogicInterface {
 	public Tag getConceptDetails(final String conceptName, final GroupingEntity grouping, final String groupingName) {
 		GetConceptDetailsQuery query = new GetConceptDetailsQuery(conceptName);
 		
-		if (GroupingEntity.GROUP.equals(grouping)) {
-			query.setGroupName(groupingName);
+		if (grouping == null || GroupingEntity.ALL.equals(grouping)	|| present(groupingName)
+				&& (GroupingEntity.GROUP.equals(grouping) || GroupingEntity.USER.equals(grouping))) {
+			query.setGrouping(grouping, groupingName);
 			return execute(query);
-		} else if (GroupingEntity.FRIEND.equals(grouping)) {
-			query.setUserName(groupingName);
-			return execute(query);
-		} else {
-			log.error("grouping entity " + grouping.name() + " not yet supported in RestLogic implementation.");
 		}
 
+		log.error("grouping entity " + grouping.name() + " not yet supported in RestLogic implementation.");
 		return null;
 	}
 
