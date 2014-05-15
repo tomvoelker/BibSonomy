@@ -27,7 +27,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -71,35 +70,20 @@ public class ScienceDirectScraperTest {
 		assertTrue(UnitTestRunner.runSingleTest("url_162"));
 	}
 	
+	/**
+	 * starts URL test with id url_179
+	 */
 	@Test
 	public void url5TestRun(){
 		assertTrue(UnitTestRunner.runSingleTest("url_179"));
 	}
 	
+	/**
+	 * starts URL test with id url_185
+	 */
 	@Test
 	public void url6TestRun(){
 		assertTrue(UnitTestRunner.runSingleTest("url_185"));
-	}
-	
-	@Test
-	public void testCleanBibtex() {
-		final ScienceDirectScraper s = new ScienceDirectScraper();
-
-		final String in = "@article{jaeschke2008tag,\n" + 
-		"title = {Tag Recos},\n" +
-		"pages = \"56 - 70\",\n" + 
-		"year  = 2008\n" +
-		"}";
-
-		final String expected = "@article{jaeschke2008tag,\n" + 
-		"title = {Tag Recos},\n" +
-		"pages = \"56--70\",\n" +
-		"year  = 2008\n" +
-		"}";
-
-		final String out = s.cleanBibTeX(in);
-
-		Assert.assertEquals(expected, out);
 	}
 
 }

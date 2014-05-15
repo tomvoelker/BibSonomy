@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
-		<version>2.0.43</version>
+		<version>2.0.44-SNAPSHOT</version>
 	</parent>
 	
 	<properties>
@@ -110,6 +110,11 @@
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-database-common</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.3</version>
+		</dependency>           
 	</dependencies>
 	<build>
 		<testResources>

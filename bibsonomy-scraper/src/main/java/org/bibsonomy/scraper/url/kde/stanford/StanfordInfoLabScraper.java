@@ -23,9 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.stanford;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,14 +31,12 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
 
 /**
  * @author hagen
  */
-public class StanfordInfoLabScraper extends AbstractUrlScraper {
+public class StanfordInfoLabScraper extends SimpleGenericURLScraper {
 
 	private static final String SITE_NAME = "Stanford InfoLab Publication Server";
 	private static final String SITE_URL  = "http://ilpubs.stanford.edu";
@@ -79,7 +74,7 @@ public class StanfordInfoLabScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
-	@Override
+	/*@Override
 	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
 		Matcher idMatcher = ID_PATTERN.matcher(scrapingContext.getUrl().toString());
@@ -94,6 +89,15 @@ public class StanfordInfoLabScraper extends AbstractUrlScraper {
 			throw new ScrapingException(ex);
 		}
 		return false;
+	}*/
+
+	@Override
+	public String getBibTeXURL(URL url) {
+		Matcher idMatcher = ID_PATTERN.matcher(url.toString());
+		if (idMatcher.find()){
+			return"http://ilpubs.stanford.edu:8090/cgi/export/" + idMatcher.group(1) + "/BibTeX/ilprints-eprint-1015.bib";
+		}
+		return  null;
 	}
 
 }

@@ -24,7 +24,6 @@
 package org.bibsonomy.util.file;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -67,8 +66,6 @@ public class FileUtil {
 	 * The pattern extracts the extension of a file.
 	 */
 	private static final Pattern fileExtensionPattern = Pattern.compile("(.+)\\.(.+)");
-	
-	private static final SimpleDateFormat RANDOM_FILE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	/**
 	 * Constructs the file path of a document

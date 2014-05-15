@@ -23,24 +23,18 @@
 
 package org.bibsonomy.scraper.url.kde.editlib;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
 
 /**
  * @author wbi
  */
-public class EditLibScraper extends AbstractUrlScraper {
+public class EditLibScraper extends SimpleGenericURLScraper {
 
 	private static final String SITE_NAME = "Ed/ITLib";
 	private static final String EDITLIB_HOST_NAME  = "http://www.editlib.org";
@@ -60,39 +54,6 @@ public class EditLibScraper extends AbstractUrlScraper {
 	public String getInfo() {
 		return info;
 	}
-
-	@Override
-	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
-		final String url = sc.getUrl().toString();
-
-		sc.setScraper(this);
-
-		String id = null;
-
-		if(url.startsWith(EDITLIB_HOST_NAME + EDITLIB_ABSTRACT_PATH)) {
-			id = url.substring(url.indexOf(EDITLIB_ABSTRACT_PATH) + EDITLIB_ABSTRACT_PATH.length());
-		}
-
-		if(url.startsWith(EDITLIB_HOST_NAME + EDITLIB_BIBTEX_PATH)) {
-			id = url.substring(url.indexOf(EDITLIB_BIBTEX_PATH) + EDITLIB_BIBTEX_PATH.length());
-		}
-
-		final String bibResult;
-
-		try {
-			bibResult = WebUtils.getContentAsString(new URL(EDITLIB_HOST_NAME + EDITLIB_BIBTEX_DOWNLOAD_PATH.replace("{id}", id) + id));
-		} catch (IOException ex) {
-			throw new InternalFailureException(ex);
-		}
-
-		if(bibResult != null) {
-			sc.setBibtexResult(bibResult);
-			return true;
-		}else
-			throw new ScrapingFailureException("getting bibtex failed");
-
-	}
-
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
@@ -108,4 +69,18 @@ public class EditLibScraper extends AbstractUrlScraper {
 		return SITE_URL;
 	}
 
+	@Override
+	public String getBibTeXURL(URL url) {
+		String id = null;
+		String sturl = url.toString();
+		if(sturl.startsWith(EDITLIB_HOST_NAME + EDITLIB_ABSTRACT_PATH)) {
+			id = sturl.substring(sturl.indexOf(EDITLIB_ABSTRACT_PATH) + EDITLIB_ABSTRACT_PATH.length());
+			return EDITLIB_HOST_NAME + EDITLIB_BIBTEX_DOWNLOAD_PATH.replace("{id}", id) + id;
+		}
+		if(sturl.toString().startsWith(EDITLIB_HOST_NAME + EDITLIB_BIBTEX_PATH)) {
+			id = sturl.substring(sturl.indexOf(EDITLIB_BIBTEX_PATH) + EDITLIB_BIBTEX_PATH.length());
+			return EDITLIB_HOST_NAME + EDITLIB_BIBTEX_DOWNLOAD_PATH.replace("{id}", id) + id;
+		}
+		return null;
+	}
 }

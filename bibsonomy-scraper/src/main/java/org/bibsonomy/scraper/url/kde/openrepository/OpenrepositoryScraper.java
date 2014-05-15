@@ -23,41 +23,21 @@
 
 package org.bibsonomy.scraper.url.kde.openrepository;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Pattern;
-
-import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.util.BibTexUtils;
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
-import org.bibsonomy.util.id.ISBNUtils;
-import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.RisToBibtexConverter;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.RISGenericURLScraper;
 
 /**
  * Scraper for openrepository pages
  * @author tst
  */
-public class OpenrepositoryScraper extends AbstractUrlScraper {
+public class OpenrepositoryScraper extends RISGenericURLScraper {
 
 	private static final String SITE_URL = "http://openrepository.com/";
 	private static final String SITE_NAME = "Open Repository";
@@ -70,11 +50,8 @@ public class OpenrepositoryScraper extends AbstractUrlScraper {
 	private static final String SUPPORTED_HOST_GTCNI_PATH = "/gtcni";
 	private static final String SUPPORTED_HOST_EXETER = "eric.exeter.ac.uk";
 	private static final String SUPPORTED_HOST_EXETER_PATH = "/exeter";
-
 	private static final String PATTERN_HANDLE = "handle/(.*)";
-
 	private static final String INFO = "Supports the following repository: " + href(SITE_URL, SITE_NAME) + ".";
-
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>(); 
 	
 	static {
@@ -84,49 +61,10 @@ public class OpenrepositoryScraper extends AbstractUrlScraper {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SUPPORTED_HOST_GTCNI), Pattern.compile(SUPPORTED_HOST_GTCNI_PATH + ".*")));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SUPPORTED_HOST_HIRSLA), Pattern.compile(SUPPORTED_HOST_HIRSLA_PATH + ".*")));
 	}
-	
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
-
-	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
-		String downloadURL = null;
-
-		final String url = sc.getUrl().toString();
-		if(url.contains(SUPPORTED_HOST_OPENREPOSITORY)){
-			downloadURL = "http://www." + SUPPORTED_HOST_OPENREPOSITORY + "/references?format=refman&handle=" + getHandle(url);
-		}else if(url.contains(SUPPORTED_HOST_E_SPACE + SUPPORTED_HOST_E_SPACE_PATH)){
-			downloadURL = "http://www." + SUPPORTED_HOST_E_SPACE + SUPPORTED_HOST_E_SPACE_PATH + "/references?format=refman&handle=" + getHandle(url);
-		}else if(url.contains(SUPPORTED_HOST_EXETER + SUPPORTED_HOST_EXETER_PATH)){
-			downloadURL = "http://www." + SUPPORTED_HOST_EXETER + SUPPORTED_HOST_EXETER_PATH + "/references?format=refman&handle=" + getHandle(url);
-		}else if(url.contains(SUPPORTED_HOST_HIRSLA + SUPPORTED_HOST_HIRSLA_PATH)){
-			downloadURL = "http://www." + SUPPORTED_HOST_HIRSLA + SUPPORTED_HOST_HIRSLA_PATH + "/references?format=refman&handle=" + getHandle(url);
-		}else if(url.contains(SUPPORTED_HOST_GTCNI + SUPPORTED_HOST_GTCNI_PATH)){
-			downloadURL = "http://" + SUPPORTED_HOST_GTCNI + SUPPORTED_HOST_GTCNI_PATH + "/references?format=refman&handle=" + getHandle(url);
-		}
-
-		if(downloadURL != null){
-			sc.setScraper(this);
-
-			try {
-				String ris = WebUtils.getContentAsString(new URL(downloadURL));
-
-				RisToBibtexConverter converter = new RisToBibtexConverter();
-				String bibtex = converter.risToBibtex(ris);
-
-				if(present(bibtex)){
-					sc.setBibtexResult(bibtex);
-					return true;
-				}else
-					throw new ScrapingFailureException("getting bibtex failed");
-
-			} catch (IOException ex) {
-				throw new InternalFailureException(ex);
-			}
-		}// else page is not supported. may be other scraper hits
-		return false;
-	}
-
 	/**
 	 * get handle id from url
 	 * @param url
@@ -142,17 +80,32 @@ public class OpenrepositoryScraper extends AbstractUrlScraper {
 
 		return handle;
 	}
-
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
-
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
-
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
-
+	@Override
+	public String getRISURL(URL url) {
+		final String sturl = url.toString();
+		if(sturl.contains(SUPPORTED_HOST_OPENREPOSITORY)){
+			return "http://www." + SUPPORTED_HOST_OPENREPOSITORY + "/references?format=refman&handle=" + getHandle(sturl);
+		}else if(sturl.contains(SUPPORTED_HOST_E_SPACE + SUPPORTED_HOST_E_SPACE_PATH)){
+			return  "http://www." + SUPPORTED_HOST_E_SPACE + SUPPORTED_HOST_E_SPACE_PATH + "/references?format=refman&handle=" + getHandle(sturl);
+		}else if(sturl.contains(SUPPORTED_HOST_EXETER + SUPPORTED_HOST_EXETER_PATH)){
+			return "http://www." + SUPPORTED_HOST_EXETER + SUPPORTED_HOST_EXETER_PATH + "/references?format=refman&handle=" + getHandle(sturl);
+		}else if(sturl.contains(SUPPORTED_HOST_HIRSLA + SUPPORTED_HOST_HIRSLA_PATH)){
+			return "http://www." + SUPPORTED_HOST_HIRSLA + SUPPORTED_HOST_HIRSLA_PATH + "/references?format=refman&handle=" + getHandle(sturl);
+		}else if(sturl.contains(SUPPORTED_HOST_GTCNI + SUPPORTED_HOST_GTCNI_PATH)){
+			return "http://" + SUPPORTED_HOST_GTCNI + SUPPORTED_HOST_GTCNI_PATH + "/references?format=refman&handle=" + getHandle(sturl);
+		}
+		return null;
+	}
 }

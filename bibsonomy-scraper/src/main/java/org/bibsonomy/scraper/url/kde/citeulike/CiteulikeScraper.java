@@ -23,7 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.citeulike;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -32,17 +31,15 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for citeulike.org
  * @author tst
  */
-public class CiteulikeScraper extends AbstractUrlScraper {
+public class CiteulikeScraper extends SimpleGenericURLScraper {
 
 	private static final String SITE_NAME = "CiteUlike";
 
@@ -55,59 +52,50 @@ public class CiteulikeScraper extends AbstractUrlScraper {
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
 	private static final String ARTICLE_POSTS = "article-posts";
-	
+
 	private static final String ARTICLE = "article";
 
 	private static final String BIBTEX = "/bibtex";
 
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
 
-	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
-		sc.setScraper(this);
+	@Override
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
+		return patterns;
+	}
 
-		String downloadUrl = sc.getUrl().toString();
-		
+	@Override
+	public String getSupportedSiteName() {
+		return SITE_NAME;
+	}
+
+	@Override
+	public String getSupportedSiteURL() {
+		return SITE_URL;
+	}
+
+	@Override
+	public String getBibTeXURL(URL url) {
+		String downloadUrl = url.toString();
+
 		// build bibtex download URL
 		if (downloadUrl.contains(ARTICLE_POSTS)) {
 			downloadUrl = downloadUrl.replace(ARTICLE_POSTS, ARTICLE);
 			try {
 				downloadUrl = WebUtils.getRedirectUrl(new URL(downloadUrl)).toString();
 			} catch (MalformedURLException ex) {
-				throw new InternalFailureException(ex);
+				try {
+					throw new InternalFailureException(ex);
+				} catch (InternalFailureException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 
-		downloadUrl = downloadUrl.replace(HOST, HOST + BIBTEX);
-		
-		// download
-		String bibtex = null;
-		try {
-			bibtex = WebUtils.getContentAsString(new URL(downloadUrl));
-		} catch (IOException ex) {
-			throw new InternalFailureException(ex);
-		}
-
-		// set result
-		if(bibtex != null){
-			sc.setBibtexResult(bibtex);
-			return true;
-		}else
-			throw new ScrapingFailureException("getting bibtex failed");
-
-	}
-
-	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
-		return patterns;
-	}
-
-	public String getSupportedSiteName() {
-		return SITE_NAME;
-	}
-
-	public String getSupportedSiteURL() {
-		return SITE_URL;
+		return  downloadUrl.replace(HOST, HOST + BIBTEX);
 	}
 
 }

@@ -34,7 +34,7 @@ public class ApachePingbackClient implements PingbackClient {
 
             XmlRpcClient client = configureXmlRcpClient(link);
             Object[] params = new Object[]{articleUrl, link.getUrl()};
-            return (String) client.execute("pingback.ping", params);
+            return String.valueOf(client.execute("pingback.ping", params));
 
         } catch (MalformedURLException e) {
 

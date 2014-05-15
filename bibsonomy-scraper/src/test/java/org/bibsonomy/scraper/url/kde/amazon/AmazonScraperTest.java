@@ -116,4 +116,11 @@ public class AmazonScraperTest {
 	public void url10TestRun(){
 		assertTrue(UnitTestRunner.runSingleTest("url_161"));
 	}
+	/**
+	 * starts URL test with id url_272
+	 */
+	@Test
+	public void url11TestRun(){
+		assertTrue(UnitTestRunner.runSingleTest("url_272"));
+	}
 }
