@@ -1,4 +1,4 @@
-B1;2403;0c# BibSonomy REST-Client
+# BibSonomy REST-Client
 
 ## What is it?
 
