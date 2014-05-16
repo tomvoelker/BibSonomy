@@ -11,11 +11,11 @@
 	<jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
 	
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>	
-	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="false"/>
 	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>	
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>	
-	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
+	<jsp:directive.attribute name="heading" fragment="true" required="false"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>
 	<jsp:directive.attribute name="contentIntro" fragment="true" required="false"/>	
 	<jsp:directive.attribute name="headerExt" fragment="true" />
@@ -23,6 +23,7 @@
 	<jsp:directive.attribute name="beforeMainContainer" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerContainer" fragment="true" required="false"/>
 	<jsp:directive.attribute name="pageOptions" fragment="true" required="false"/>
+	<jsp:directive.attribute name="headerMessageKey" type="java.lang.String" required="false" description="The key of the message to be shown in the heading."/>
 	
 	<!-- FIXME: footerContainer not used -->
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
@@ -60,7 +61,10 @@
 				
 				<div id="logo" class="${boxStyle}" style="margin-top: 50px; margin-bottom: 50px;">									
 					<h1><a href="/"><img src="/resources/image/bibsonomy-logo.png" title="BibSonomy" /></a></h1>
-					<small class="slogan"><fmt:message key="system.desc"/></small>				
+					<small class="slogan"><fmt:message key="system.desc"/></small>
+					<c:if test="${not empty headerMessageKey}">
+						<h2><fmt:message key="${headerMessageKey}" /></h2>
+					</c:if>		
 				</div>
 					
 				<div class="main container single-container ${boxStyle}">
@@ -70,11 +74,6 @@
 						<jsp:invoke fragment="content"/>
 						<jsp:invoke fragment="pageOptions"/>
 					</div>
-				
-			
-				
-	
-	
 				
 					<div id="legalnotices">
 						<fmt:message key="system.offeredBy">
