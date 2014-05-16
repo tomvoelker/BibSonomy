@@ -265,13 +265,13 @@
 						| documents
 						+-->
 					<c:choose>
-						<c:when test="${not empty post.resource.documents or isOwnEntry}">
+						<c:when test="${not empty post.resource.documents}">
 							<div class="documents">
 								<pub:doc post="${post}" />
 							</div>
 						</c:when>
 						<c:otherwise>
-							<c:if test="${empty command.context.loginUser}">
+							<c:if test="${not command.context.userLoggedIn}">
 								<div class="register">
 									<fmt:message key="system.about" />
 								</div>
