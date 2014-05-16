@@ -17,156 +17,155 @@
 	<!--+
 		| private documents (pdf, ps) 
 		+-->
-  	<c:if test="${not empty publication.documents or isOwnEntry}">
   		
-  			<h4>&amp;nbsp;</h4>
-	  		<c:choose>
-		  		<c:when test="${empty publication.documents}">
-			  		<c:if test="${isOwnEntry}">
-			  			<div class="publication preview bibtexpreviewimage">
-							<a class="addDocument addDocumentImg" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
-								<img class="pre_pic" style="width: 220px;" src="${resdir}/image/addDocument-LARGE.jpg" alt=""/>							
-							</a>
-						</div>
-						<div id="inputDiv">
-						<!-- keep me! - temporary content -->
-						</div>
-					</c:if>
-		  		</c:when>
-		  		<c:otherwise>
-		  			<c:set var="count" value="0" scope="page" />
-		  			<c:forEach var="document" items="${publication.documents}">
-		  			 
+	<h4>&amp;nbsp;</h4>
+	<c:choose>
+  		<c:when test="${empty publication.documents}">
+	  		<c:if test="${isOwnEntry}">
+	  			<div class="publication preview bibtexpreviewimage">
+					<a class="addDocument addDocumentImg" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
+						<img class="pre_pic" style="width: 220px;" src="${resdir}/image/addDocument-LARGE.jpg" alt=""/>							
+					</a>
+				</div>
+				<div id="inputDiv">
+				<!-- keep me! - temporary content -->
+				</div>
+			</c:if>
+  		</c:when>
+  		<c:otherwise>
+  			<c:set var="count" value="0" scope="page" />
+  			<c:forEach var="document" items="${publication.documents}">
+  			 
+				<c:choose>
+					<c:when test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
+						<!-- <a class="documentFileName preview" href="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=true" title="${fn:escapeXml(document.fileName)}">  -->
+							<!-- <img src="${resdir}/image/document-txt-blue.png" style="float:left;"/> -->
 						<c:choose>
-							<c:when test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
-								<!-- <a class="documentFileName preview" href="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=true" title="${fn:escapeXml(document.fileName)}">  -->
-									<!-- <img src="${resdir}/image/document-txt-blue.png" style="float:left;"/> -->
-								<c:choose>
-									<c:when test="${count eq 0}">
-										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage">
-											<a class="publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="${fn:escapeXml(document.fileName)}">
-												<img class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
-											</a>
-										</div>
-									</c:when>
-									<c:otherwise>
-										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage" style="display:none;">
-											<!-- preview picture of first document -->
-											<a class="publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="${fn:escapeXml(document.fileName)}">
-												<img class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
-											</a>
-										</div>
-									</c:otherwise>
-								</c:choose>
-									
-								
+							<c:when test="${count eq 0}">
+								<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage">
+									<a class="publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="${fn:escapeXml(document.fileName)}">
+										<img class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
+									</a>
+								</div>
 							</c:when>
 							<c:otherwise>
-								<c:choose>
-									<c:when test="${count eq 0}">
-										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage">
-											<a class="documentFileName preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false" title="${fn:escapeXml(document.fileName)}">
-												<!-- <img src="${resdir}/image/document-txt-blue.png" style="float:left;"/> -->
-												<img class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
-											</a>
-										</div>
-									</c:when>
-									<c:otherwise>
-										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage" style="display:none;">
-											<!-- preview picture of first document -->
-											<a class="publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false" title="${fn:escapeXml(document.fileName)}">
-												<img class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
-											</a>
-										</div>
-									</c:otherwise>
-								</c:choose>
+								<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage" style="display:none;">
+									<!-- preview picture of first document -->
+									<a class="publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="${fn:escapeXml(document.fileName)}">
+										<img class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
+									</a>
+								</div>
 							</c:otherwise>
 						</c:choose>
-						<c:set var="count" value="${count + 1}" scope="page"/>
-		  			</c:forEach>
-		  			<c:if test="${fn:length(publication.documents) gt 1}">
-		  				
-		  				<div id="previewSelectBullets">
-								<c:set var="count" value="0" scope="page" />
-								<c:forEach var="document" items="${publication.documents}">
-									<c:choose>
-										<c:when test="${count eq 0}">
-											<a rel="${mtl:downloadFileId(document.fileName)}" class="bullet active" href="#" title="${fn:escapeXml(document.fileName)}"><span>&amp;nbsp;&amp;nbsp;&amp;nbsp;</span></a>
-										</c:when>
-										<c:otherwise>
-											<a rel="${mtl:downloadFileId(document.fileName)}" class="bullet" href="#" title="${fn:escapeXml(document.fileName)}"><span>&amp;nbsp;&amp;nbsp;&amp;nbsp;</span></a>
-										</c:otherwise>
-									</c:choose>
-									
-									<c:set var="count" value="${count + 1}" scope="page"/>
-								</c:forEach>
-						</div>
+							
 						
-						
-  					</c:if>
-  					<ul>
-  					<c:forEach var="document" items="${publication.documents}">
-						<li class="document  ${mtl:downloadFileId(document.fileName)} active">
-							<div class="preview_meta">
-								<!--+ 
-								 	| delete and rename options
-								 	+-->
-								<c:if test="${isOwnEntry}">
-									<!-- delete -->
-									<fmt:message key="bibtex.actions.private_document.delete" var="deleteTitle"/>
-									<fmt:message key="bibtex.actions.private_document.rename" var="renameTitle"/>
-									<c:url var="deleteUrl" value="/ajax/documents">
-										<c:param name="intraHash" value="${post.resource.intraHash}" />
-										<c:param name="fileName" value="${document.fileName}" />
-										<c:param name="ckey" value="${ckey}" />
-										<c:param name="temp" value="false" />
-										<c:param name="action" value="delete" />
-									</c:url>
-									<c:set var="filename" value="${document.fileName}" />
-									<c:set var="renameDocTitle"><fmt:message key="bibtex.actions.private_document.rename"/></c:set>
-									<c:set var="deleteDocTitle"><fmt:message key="bibtex.actions.private_document.delete"/>&amp;nbsp;${filename}</c:set>
-									<c:set var="downloadTitle"><fmt:message key="qrcode.actions.download"/></c:set>
-									<c:set var="downloadQrTitle"><fmt:message key="qrcode.actions.qrDownload"/></c:set>
-									<c:set var="delete_doc"><fmt:message key="bibtex.actions.private_document.delete"/></c:set>
-									<form class="renameDocForm" action="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=${mtl:encodeURI(document.fileName)}&amp;action=rename" method='POST' enctype='multipart/form-data' autocomplete='off'>
-										<span class="showName" style="display:none;"><c:out value="${filename}" /></span>
-										<input class="renameDocInput" name='newFileName' type="text" value="${filename}" />
-										<a class="btn renameBtn" title="${renameDocTitle}"><span>rename</span></a>
-										<a class="btn okBtn" style="display:none;" title="OK"><span>OK</span></a>
-										<a class="btn removeDocBtn" title="${deleteDocTitle}" href="${deleteUrl}" data-filename="${fn:escapeXml(document.fileName)}"><span>delete</span></a>
-										<a class="btn downloadBtn" title="${downloadTitle}" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false"><span>download</span></a>
-										<c:if test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
-											<a class="btn downloadQRBtn" title="${downloadQrTitle}" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=true"><span>download QR</span></a>
-										</c:if>	
-									</form>
-									<!-- delete/rename -->
-									
-								</c:if>
-							</div>
-						</li>
-					</c:forEach>
-						<li>
-							<div class="preview_meta">
-								<c:if test="${isOwnEntry}">
-									<a class="addDocument" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
-										<span><fmt:message key="bibtex.actions.additionalFiles"/></span>
+					</c:when>
+					<c:otherwise>
+						<c:choose>
+							<c:when test="${count eq 0}">
+								<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage">
+									<a class="documentFileName preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false" title="${fn:escapeXml(document.fileName)}">
+										<!-- <img src="${resdir}/image/document-txt-blue.png" style="float:left;"/> -->
+										<img class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
 									</a>
-									<div id="inputDiv">
-											<!-- keep me! - temporary content -->										
-									</div> 
-								</c:if>
-							</div>
-						</li>
-					</ul>
-					<br /><br />
-					<!--+
-						|
-						| add another document
-						|
-						+-->
-					
+								</div>
+							</c:when>
+							<c:otherwise>
+								<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage" style="display:none;">
+									<!-- preview picture of first document -->
+									<a class="publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false" title="${fn:escapeXml(document.fileName)}">
+										<img class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
+									</a>
+								</div>
+							</c:otherwise>
+						</c:choose>
 					</c:otherwise>
 				</c:choose>
-	</c:if>
+				<c:set var="count" value="${count + 1}" scope="page"/>
+  			</c:forEach>
+  			<c:if test="${fn:length(publication.documents) gt 1}">
+  				
+  				<div id="previewSelectBullets">
+						<c:set var="count" value="0" scope="page" />
+						<c:forEach var="document" items="${publication.documents}">
+							<c:choose>
+								<c:when test="${count eq 0}">
+									<a rel="${mtl:downloadFileId(document.fileName)}" class="bullet active" href="#" title="${fn:escapeXml(document.fileName)}"><span>&amp;nbsp;&amp;nbsp;&amp;nbsp;</span></a>
+								</c:when>
+								<c:otherwise>
+									<a rel="${mtl:downloadFileId(document.fileName)}" class="bullet" href="#" title="${fn:escapeXml(document.fileName)}"><span>&amp;nbsp;&amp;nbsp;&amp;nbsp;</span></a>
+								</c:otherwise>
+							</c:choose>
+							
+							<c:set var="count" value="${count + 1}" scope="page"/>
+						</c:forEach>
+				</div>
+				
+				
+					</c:if>
+					<ul>
+					<c:forEach var="document" items="${publication.documents}">
+				<li class="document  ${mtl:downloadFileId(document.fileName)} active">
+					<div class="preview_meta">
+						<!--+ 
+						 	| delete and rename options
+						 	+-->
+						<c:if test="${isOwnEntry}">
+							<!-- delete -->
+							<fmt:message key="bibtex.actions.private_document.delete" var="deleteTitle"/>
+							<fmt:message key="bibtex.actions.private_document.rename" var="renameTitle"/>
+							<c:url var="deleteUrl" value="/ajax/documents">
+								<c:param name="intraHash" value="${post.resource.intraHash}" />
+								<c:param name="fileName" value="${document.fileName}" />
+								<c:param name="ckey" value="${ckey}" />
+								<c:param name="temp" value="false" />
+								<c:param name="action" value="delete" />
+							</c:url>
+							<c:set var="filename" value="${document.fileName}" />
+							<c:set var="renameDocTitle"><fmt:message key="bibtex.actions.private_document.rename"/></c:set>
+							<c:set var="deleteDocTitle"><fmt:message key="bibtex.actions.private_document.delete"/>&amp;nbsp;${filename}</c:set>
+							<c:set var="downloadTitle"><fmt:message key="qrcode.actions.download"/></c:set>
+							<c:set var="downloadQrTitle"><fmt:message key="qrcode.actions.qrDownload"/></c:set>
+							<c:set var="delete_doc"><fmt:message key="bibtex.actions.private_document.delete"/></c:set>
+							<form class="renameDocForm" action="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=${mtl:encodeURI(document.fileName)}&amp;action=rename" method='POST' enctype='multipart/form-data' autocomplete='off'>
+								<span class="showName" style="display:none;"><c:out value="${filename}" /></span>
+								<input class="renameDocInput" name='newFileName' type="text" value="${filename}" />
+								<a class="btn renameBtn" title="${renameDocTitle}"><span>rename</span></a>
+								<a class="btn okBtn" style="display:none;" title="OK"><span>OK</span></a>
+								<a class="btn removeDocBtn" title="${deleteDocTitle}" href="${deleteUrl}" data-filename="${fn:escapeXml(document.fileName)}"><span>delete</span></a>
+								<a class="btn downloadBtn" title="${downloadTitle}" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false"><span>download</span></a>
+								<c:if test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
+									<a class="btn downloadQRBtn" title="${downloadQrTitle}" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=true"><span>download QR</span></a>
+								</c:if>	
+							</form>
+							<!-- delete/rename -->
+							
+						</c:if>
+					</div>
+				</li>
+			</c:forEach>
+				<li>
+					<div class="preview_meta">
+						<c:if test="${isOwnEntry}">
+							<a class="addDocument" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
+								<span><fmt:message key="bibtex.actions.additionalFiles"/></span>
+							</a>
+							<div id="inputDiv">
+									<!-- keep me! - temporary content -->										
+							</div> 
+						</c:if>
+					</div>
+				</li>
+			</ul>
+			<br /><br />
+			<!--+
+				|
+				| add another document
+				|
+				+-->
+			
+		</c:otherwise>
+	</c:choose>
+
 
 </jsp:root>

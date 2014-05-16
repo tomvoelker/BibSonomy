@@ -679,7 +679,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	/**
 	 * tests getContentIdForBibTex
 	 */
-	@Test
+	// @Test now triggered by storePostDuplicate
 	public void getContentIdForBibTex() {
 		this.printMethod("getContentIdForBibTex");
 		for (final String hash : new String[] { "", " ", null }) {
@@ -904,6 +904,8 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Test
 	public void storePostDuplicate() {
+		getContentIdForBibTex(); // only here to ensure this test runs before 
+		
 		this.printMethod("storePostDuplicate");
 		for (final String intraHash : new String[] {"b77ddd8087ad8856d77c740c8dc2864a"}) {
 
