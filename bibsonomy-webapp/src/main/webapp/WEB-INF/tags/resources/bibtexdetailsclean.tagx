@@ -265,7 +265,7 @@
 						| documents
 						+-->
 					<c:choose>
-						<c:when test="${isOwnEntry}">
+						<c:when test="${not empty post.resource.documents or isOwnEntry}">
 							<div class="documents">
 								<pub:doc post="${post}" />
 							</div>
