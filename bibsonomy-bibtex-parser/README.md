@@ -1,8 +1,17 @@
-# BibSonomy Webapp
+# BibSonomy BibTeX Parser
 
 ## What is it?
 
-This is the BibSonomy webapp.
+The parser is a slightly modified version of Johannes Henkel's BibTeX parser which is GPL and can be obtained from 
+  
+http://www-plan.cs.colorado.edu/henkel/stuff/javabib/
+  
+Thanks to Johannes for his efforts!
+  
+The parser itself is used to parse BibTeX files which users upload to 
+BibSonomy to extract the metadata and put it in our Java model. We also
+use it at various input stages to ensure consistency of our data, e.g., 
+all screen scrapers produce BibTeX which is then feed to the parser. 
 
 The module is part of the [BibSonomy](http://www.bibsonomy.org) social
 bookmarking system and is maintained by the
@@ -19,6 +28,7 @@ the form of JavaDoc annotations in the source code.
 
 Please see the [release log](https://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/releases/Release%20Log).
 
+
 ## System Requirements
 
 * JDK: 1.7 or above.
@@ -28,7 +38,7 @@ Please see the [release log](https://bitbucket.org/bibsonomy/bibsonomy/wiki/docu
 
 ## Licensing
 
-* Please see the file [LICENSE.txt](https://bitbucket.org/bibsonomy/bibsonomy/src/tip/bibsonomy-webapp/LICENSE.txt?at=stable)
+* Please see the file [LICENSE.txt](https://bitbucket.org/bibsonomy/bibsonomy/src/tip/bibsonomy-bibtex-parser/LICENSE.txt?at=stable)
 
 
 ## Maven URLS

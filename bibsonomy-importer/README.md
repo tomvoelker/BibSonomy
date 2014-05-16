@@ -1,8 +1,9 @@
-# BibSonomy Webapp
+# BibSonomy Importer
 
 ## What is it?
 
-This is the BibSonomy webapp.
+The BibSonomy Importer's allow to import posts from files or 
+external services into BibSonomy.
 
 The module is part of the [BibSonomy](http://www.bibsonomy.org) social
 bookmarking system and is maintained by the
@@ -13,7 +14,6 @@ at the University of Kassel, Germany.
 
 The documentation available as of the date of this release is included in
 the form of JavaDoc annotations in the source code.
-
 
 ## Release Notes
 
@@ -28,7 +28,7 @@ Please see the [release log](https://bitbucket.org/bibsonomy/bibsonomy/wiki/docu
 
 ## Licensing
 
-* Please see the file [LICENSE.txt](https://bitbucket.org/bibsonomy/bibsonomy/src/tip/bibsonomy-webapp/LICENSE.txt?at=stable)
+* Please see the file [LICENSE.txt](https://bitbucket.org/bibsonomy/bibsonomy/src/tip/bibsonomy-importer/LICENSE.txt?at=stable)
 
 
 ## Maven URLS

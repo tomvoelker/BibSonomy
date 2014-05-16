@@ -1,8 +1,9 @@
-# BibSonomy Webapp
+# BibSonomy Common
 
 ## What is it?
 
-This is the BibSonomy webapp.
+BibSonomy Common contains helper classes which are used through
+all sub-modules of BibSonomy, e.g., exceptions, enums, utils, etc.
 
 The module is part of the [BibSonomy](http://www.bibsonomy.org) social
 bookmarking system and is maintained by the
@@ -28,7 +29,7 @@ Please see the [release log](https://bitbucket.org/bibsonomy/bibsonomy/wiki/docu
 
 ## Licensing
 
-* Please see the file [LICENSE.txt](https://bitbucket.org/bibsonomy/bibsonomy/src/tip/bibsonomy-webapp/LICENSE.txt?at=stable)
+* Please see the file [LICENSE.txt](https://bitbucket.org/bibsonomy/bibsonomy/src/tip/bibsonomy-common/LICENSE.txt?at=stable)
 
 
 ## Maven URLS
