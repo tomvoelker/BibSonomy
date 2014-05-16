@@ -32,7 +32,6 @@ import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -56,6 +55,8 @@ import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.services.URLGenerator;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  * Converts between BibSonomy's and JabRef's BibTeX model.
@@ -87,7 +88,7 @@ public class JabRefModelConverter {
 	/**
 	 * date's in JabRef are stored as strings, in BibSonomy as Date objects
 	 */
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	private static final DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss");
 
 	/**
 	 * separates tags 
@@ -254,11 +255,11 @@ public class JabRefModelConverter {
 			}
 
 			if (present(post.getDate())) {
-				entry.setField("added-at", sdf.format(post.getDate()));
+				entry.setField("added-at", fmt.print(post.getDate().getTime()));
 			}
 
 			if (present(post.getChangeDate())) {
-				entry.setField("timestamp", sdf.format(post.getChangeDate()));
+				entry.setField("timestamp", fmt.print(post.getChangeDate().getTime()));
 			}
 
 			if (present(post.getUser()))
@@ -320,7 +321,7 @@ public class JabRefModelConverter {
 			// set the date of the post
 			final String timestamp = entry.getField("timestamp");
 			if (present(timestamp))
-				post.setDate(sdf.parse(timestamp));
+				post.setDate(fmt.parseDateTime(timestamp).toDate());
 
 			final String abstractt = entry.getField("abstract");
 			if (present(abstractt))

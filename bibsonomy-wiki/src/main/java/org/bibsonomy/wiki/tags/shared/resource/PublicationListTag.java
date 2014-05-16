@@ -6,10 +6,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,6 +21,7 @@ import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Layout;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.SortUtils;
@@ -182,12 +187,11 @@ public class PublicationListTag extends SharedTag {
 			BibTexUtils.removeDuplicates(allPosts);
 			
 			// Get all the years for the user posts.
-			for(Post< BibTex> aPost : allPosts){
+			for(Post<BibTex> aPost : allPosts){
 				if(!yearList.contains(aPost.getResource().getYear())){
 					yearList.add(aPost.getResource().getYear());
 				}
-			}
-			
+			}			
 			
 			// Convert years from string into integer.
 			int[] intYearArray = new int[yearList.size()];
@@ -200,20 +204,32 @@ public class PublicationListTag extends SharedTag {
 			// Sort the years in descending order.
 			Arrays.sort(intYearArray);
 			
-			// Convert sorted array back into strings.
+			// Convert array back into strings.
 			for (int j = 0, i = yearList.size() - 1; i >= 0 ; i--, j++){
 				yearList.set(j, String.valueOf(intYearArray[i]));
 			}
 			
-			// Get the posts for each year and append it under year headings.
-			for (String yearString : yearList){
-				String updatedTags = tags + " sys:year:" + yearString;
-				/*
-				 * FIXME: don't query the database again you already have the posts, why do not insert allPosts into a SortedMap?
-				 * Than we can loop through the map and group then into html
-				 */
-				List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, this.getGroupingEntity(), requestedName, Arrays.asList(updatedTags.split(" ")), null, null, null, null, startYear, endYear, 0, Integer.MAX_VALUE);
-				BibTexUtils.removeDuplicates(posts);
+			// Store the posts in a sortedmap in descending order, key is:year, value is: list of posts in that year.
+			SortedMap<String, List<Post<BibTex>>>postsMap = new TreeMap<>(Collections.reverseOrder());
+			for(Post<BibTex> aPost : allPosts){
+				String year = aPost.getResource().getYear();
+				Object obj = postsMap.get(year);
+				List list;
+			    if (obj == null){  
+			        list = new ArrayList<Object>();  
+			    } else {
+			        list = ((ArrayList) obj);
+			    }
+			    list.add(aPost);
+			    postsMap.put(year, list);				
+			}
+			
+			Iterator i = postsMap.keySet().iterator();
+			  
+		
+			while (i.hasNext()){
+				String key = (String)i.next();
+				List<Post<BibTex>> posts = (List<Post<BibTex>> )postsMap.get(key);		
 				
 				/*
 				 * and finally use the chosen layout (plain by def.)
@@ -229,15 +245,14 @@ public class PublicationListTag extends SharedTag {
 					} else {
 						layout = this.layoutRenderer.getLayout(DEFAULT_LAYOUT, requestedName);
 					}
-					renderedHTML.append("<h3 class=\"mw-headline level3\" level3>" + yearString + "</h3>");
+					renderedHTML.append("<h3 class=\"mw-headline level3\" level3>" + key + "</h3>");
 					renderedHTML.append("<div id='publications'>" + this.layoutRenderer.renderLayout(layout, posts, true) + "</div>"); // class='entry bibtex'
 				} catch (final LayoutRenderingException e) {
 					log.error(e.getMessage());
 				} catch (final IOException e) {
 					log.error(e.getMessage());
 				}
-			}
-			
+			}			
 			return renderedHTML.toString();
 		}
 		
