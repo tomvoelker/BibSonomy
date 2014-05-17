@@ -8,7 +8,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -23,6 +22,8 @@ import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
 import org.bibsonomy.testutil.TestUtils;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -141,7 +142,8 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		 * get last successful sync date
 		 */
 		final Class<? extends Resource> resourceType = BibTex.class;
-		final Date expected = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS").parse("2011-02-02 23:00:00");
+		final DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:SS");
+		final Date expected = fmt.parseDateTime("2011-02-02 23:00:00").toDate();
 		assertEquals(expected, syncDBManager.getLastSyncData(syncUser1, bibsonomyURI, resourceType, null, dbSession).getLastSyncDate());
 
 		/*

@@ -26,7 +26,6 @@ package org.bibsonomy.util.file;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.commons.logging.Log;
@@ -35,6 +34,8 @@ import org.bibsonomy.common.exceptions.UnsupportedFileTypeException;
 import org.bibsonomy.model.util.file.UploadedFile;
 import org.bibsonomy.services.filesystem.extension.ExtensionChecker;
 import org.bibsonomy.util.StringUtils;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  * @author dzo
@@ -45,7 +46,7 @@ public abstract class AbstractServerFileLogic {
 	/**
 	 * Used to compute the file hash.
 	 */
-	private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static final DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 	
 	/** the base path of the files */
 	protected final String path;
@@ -111,7 +112,7 @@ public abstract class AbstractServerFileLogic {
 	 * @return the filehash based on the filename
 	 */
 	protected String getFileHash(String filename) {
-		return StringUtils.getMD5Hash(filename + Math.random() + df.format(new Date()));
+		return StringUtils.getMD5Hash(filename + Math.random() + fmt.print(new Date().getTime()));
 	}
 	
 	/**
