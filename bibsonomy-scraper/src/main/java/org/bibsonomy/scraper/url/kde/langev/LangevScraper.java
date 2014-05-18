@@ -23,16 +23,19 @@
 
 package org.bibsonomy.scraper.url.kde.langev;
 
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
@@ -48,29 +51,45 @@ public class LangevScraper extends AbstractUrlScraper {
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + ISRL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
+	private static final Pattern PATTERN_ABSTRACT = Pattern.compile("(?s)(Abstract|Description).*\\s+<blockquote>\\s+(.*)\\s+</blockquote>");
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
 		final Matcher m = ISRL_PATTERN.matcher(sc.getPageContent());	
 		if (m.matches()) {
-			sc.setBibtexResult(m.group(1));
+			sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(m.group(1),"abstract",abstractParser(sc.getUrl())));
 			return true;
 		}else
 			throw new PageNotSupportedException("no bibtex snippet found");
 	}
 
+	private static String abstractParser(URL url){
+		try{
+		Matcher m = PATTERN_ABSTRACT.matcher(WebUtils.getContentAsString(url));
+		if(m.find())
+			return m.group(2);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
 	public String getInfo() {
 		return info;
 	}
 
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
