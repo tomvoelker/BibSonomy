@@ -1,8 +1,9 @@
-# BibSonomy Webapp
+# BibSonomy REST-Common
 
 ## What is it?
 
-This is the BibSonomy webapp.
+BibSonomy REST-Common contains common code needed by both the
+REST-Client and the REST-server, like exceptions, enums, renderers.
 
 The module is part of the [BibSonomy](http://www.bibsonomy.org) social
 bookmarking system and is maintained by the
@@ -19,6 +20,7 @@ the form of JavaDoc annotations in the source code.
 
 Please see the [release log](https://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/releases/Release%20Log).
 
+
 ## System Requirements
 
 * JDK: 1.7 or above.
@@ -28,7 +30,7 @@ Please see the [release log](https://bitbucket.org/bibsonomy/bibsonomy/wiki/docu
 
 ## Licensing
 
-* Please see the file [LICENSE.txt](https://bitbucket.org/bibsonomy/bibsonomy/src/tip/bibsonomy-webapp/LICENSE.txt?at=stable)
+* Please see the file [LICENSE.txt](https://bitbucket.org/bibsonomy/bibsonomy/src/tip/bibsonomy-rest-common/LICENSE.txt?at=stable)
 
 
 ## Maven URLS
