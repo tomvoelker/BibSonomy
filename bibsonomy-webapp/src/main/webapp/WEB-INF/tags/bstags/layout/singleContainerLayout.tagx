@@ -17,10 +17,7 @@
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>	
 	<jsp:directive.attribute name="heading" fragment="true" required="false"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>
-	<jsp:directive.attribute name="contentIntro" fragment="true" required="false"/>	
 	<jsp:directive.attribute name="headerExt" fragment="true" />
-	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
-	<jsp:directive.attribute name="beforeMainContainer" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerContainer" fragment="true" required="false"/>
 	<jsp:directive.attribute name="pageOptions" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerMessageKey" type="java.lang.String" required="false" description="The key of the message to be shown in the heading."/>
