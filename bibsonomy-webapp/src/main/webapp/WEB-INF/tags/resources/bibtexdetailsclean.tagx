@@ -53,7 +53,7 @@
 							| abstract 
 							+-->
 				
-						<c:if test="${not empty post.resource.abstract}"> 
+						<c:if test="${not empty publication.abstract}"> 
 							<h4 style="clear:both;"><fmt:message key="publications.abstract.headline"/></h4>
 							<div id="abstract" class="more">
 								<c:out value="${post.resource.abstract}" />
@@ -265,8 +265,9 @@
 						| documents
 						+-->
 					<c:choose>
-						<c:when test="${not empty post.resource.documents or isOwnEntry}">
+						<c:when test="${not empty publication.documents or isOwnEntry}">
 							<div class="documents">
+							    <!-- FIXME: add isOwnEntry as tag attribute; do we need to pass the hole post to this tag? -->
 								<pub:doc post="${post}" />
 							</div>
 						</c:when>
