@@ -22,43 +22,58 @@
 	<!--  TODO: remove www-tab which was only necessary when the citations box served as heading of the publication-details page  -->
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
-
-	<div id="citation" class="tabs">
-		<!-- tab header -->
-		<ul class="tab">
-			<li class="citationHint">
-				<a href=""><fmt:message key="bibtex.citation_format_in"/>:</a>
-			</li>
-			<li>
-				<a href="#citation_plain"><fmt:message key="bibtex.citation_format.plain" /></a>
-			</li>
-			<c:forEach var="citationStyle" items="${fn:split('harvardhtml,chicago,apa_html,din1505',',')}">
-				<li><a href="/layout/${citationStyle}/bibtex/2${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}?formatEmbedded=true"><fmt:message key="bibtex.citation_format.${citationStyle}" /></a></li>
-			</c:forEach>
-			<li><a href="#citation_bibtex">BibTeX</a></li>
-			<li><a href="#citation_endnote">EndNote</a></li>
-			<li>
-				<a href="/export/bibtex/2${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}?formatEmbedded=true"><fmt:message key="bibtex.all_exports" /></a>
-			</li>
-		</ul>
-		<div class="tab_content">
-			<!-- tab content -->
-			<div id="citation_plain">
-				<!--+
-					| title of the publication 
-					+-->
-				<h3 style="margin-top: 0;">
-					<a href="/bibtex/${post.resource.interHash}"><c:out value="${mtl:cleanBibtex(post.resource.title)}" /></a>
-				</h3>
-				<bib:desc publication="${post.resource}"/>
+<ul class="nav nav-tabs">
+		  						<li class="active"><a href="#harvard" data-toggle="tab">Harvard</a></li>
+		  						<li><a href="#chicago" data-toggle="tab">Chicago</a></li>
+		  						<li><a href="#apa" data-toggle="tab">APA</a></li>
+		  						<li><a href="#din1505" data-toggle="tab">DIN 1505</a></li>
+							</ul>
+							<br />
+							<div id="citation-styles" class="tab-content">
+								<div class="tab-pane active" id="harvard">
+						        	<p>Benz, D.; Hotho, A.;</p>
+								</div>
+								<div class="tab-pane" id="chicago">
+									<p>Benz, Dominik, Hotho, Andreas,</p>
+								</div>
+								<div class="tab-pane" id="apa">
+									<p>Benz, D., Hotho, </p>
+								</div>
+								<div class="tab-pane" id="din1505">
+									<p>Benz, Dominik ; Hotho, Andreas</p>
+								</div>
+						    </div>
+	
+			<ul class="nav nav-tabs">
+				<li class="citationHint" data-toggle="tab">
+					<a href=""><fmt:message key="bibtex.citation_format_in"/>:</a>
+				</li>
+				<li data-toggle="tab">
+					<a href="#citation_plain"><fmt:message key="bibtex.citation_format.plain" /></a>
+				</li>
+				<c:forEach var="citationStyle" items="${fn:split('harvardhtml,chicago,apa_html,din1505',',')}">
+					<li data-toggle="tab"><a href="/layout/${citationStyle}/bibtex/2${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}?formatEmbedded=true"><fmt:message key="bibtex.citation_format.${citationStyle}" /></a></li>
+				</c:forEach>
+				<li data-toggle="tab"><a href="#citation_bibtex">BibTeX</a></li>
+				<li data-toggle="tab"><a href="#citation_endnote">EndNote</a></li>
+				<li data-toggle="tab">
+					<a href="/export/bibtex/2${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}?formatEmbedded=true"><fmt:message key="bibtex.all_exports" /></a>
+				</li>
+			</ul>
+			<br />
+			<div id="citation-styles" class="tab-content">
+				<div class="tab-pane active" id="citation_plain">
+					<h3 style="margin-top: 0;">
+						<a href="/bibtex/${post.resource.interHash}"><c:out value="${mtl:cleanBibtex(post.resource.title)}" /></a>
+					</h3>
+					<bib:desc publication="${post.resource}"/>
+				</div>
+				<div class="tab-pane" id="citation_bibtex">
+					<textarea style="width:100%;font-size:80%;border:none;" rows="15"><export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/></textarea>
+				</div>
+				<div class="tab-pane" id="citation_endnote">
+					<textarea style="width:100%;font-size:80%;border:none;" rows="15"><export:endnote post="${post}" escapeXml="${true}" /></textarea>
+				</div>
 			</div>
-			<div id="citation_bibtex">
-				<textarea style="width:100%;font-size:80%;border:none;" rows="15"><export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/></textarea>
-			</div>
-			<div id="citation_endnote">
-				<textarea style="width:100%;font-size:80%;border:none;" rows="15"><export:endnote post="${post}" escapeXml="${true}" /></textarea>
-			</div>
-		</div>
-	</div>
-
+	
 </jsp:root>

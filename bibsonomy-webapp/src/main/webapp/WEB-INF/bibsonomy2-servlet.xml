@@ -591,6 +591,11 @@
 						<property name="controllerBeanName" value="scraperInfoController"/>
 					</bean>
 				</entry>
+				<entry key="/exportLayouts">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="exportFormatController"/>
+					</bean>
+				</entry>
 				<entry key="/bootstrapDemo">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="bootstrapDemoController"/>
@@ -850,9 +855,12 @@
 	</bean>
 	
 	<bean id="scraperInfoController" class="org.bibsonomy.webapp.controller.ScraperInfoController" scope="request" />
+
+	<bean id="exportFormatController" class="org.bibsonomy.webapp.controller.ExportFormatController" scope="request" >
+		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
+	</bean>
 	
 	<!--  #################### static views #################### -->
-	
 	<bean id="bootstrapDemoController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="BOOTSTRAP_DEMO"/>
 	</bean>
