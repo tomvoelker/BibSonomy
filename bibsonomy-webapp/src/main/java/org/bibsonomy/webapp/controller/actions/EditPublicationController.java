@@ -46,7 +46,7 @@ public class EditPublicationController extends AbstractEditPublicationController
 		
 		if (present(swordService) && SystemTagsUtil.containsSystemTag(post.getTags(), MyOwnSystemTag.NAME)) {
 			String ref = UrlUtils.safeURIEncode(referer);
-			String publicationUrl = urlGenerator.getPublicationUrl(post.getResource().getIntraHash(), userName);
+			String publicationUrl = urlGenerator.getPublicationUrlByString(post.getResource().getIntraHash(), userName);
 			return new ExtendedRedirectView(publicationUrl + "?referer=" + ref);
 		}
 		return super.finalRedirect(userName, post, referer);

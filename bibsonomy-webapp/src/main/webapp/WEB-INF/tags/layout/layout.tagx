@@ -122,7 +122,7 @@
 					<div id="navigation2">
 						<c:choose>
 							<c:when test="${command.context.userLoggedIn}">
-								<fmt:message key="navi.loggedInAs"/><c:out value=" "/><a class="profile" href="/user/${mtl:encodeURI(loginUser.name)}"><c:out value="${loginUser.name}" /></a>
+								<fmt:message key="navi.loggedInAs"/><c:out value=" "/><a class="profile" href="${urlGenerator.getUserUrlByString(loginUser.name)}"><c:out value="${loginUser.name}" /></a>
 								<a href="/logout" class="signoff"><fmt:message key="navi.logout"/></a>
 							</c:when>
 							<c:otherwise>

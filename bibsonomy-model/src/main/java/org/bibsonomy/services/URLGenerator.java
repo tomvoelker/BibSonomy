@@ -157,7 +157,7 @@ public class URLGenerator {
         if (resourceType == Bookmark.class) {
             return this.getBookmarkUrl(intraHash, userName);
         } else if (resourceType == BibTex.class) {
-            return this.getPublicationUrl(intraHash, userName);
+            return this.getPublicationUrlByString(intraHash, userName);
         } else {
             throw new UnsupportedResourceTypeException();
         }
@@ -196,7 +196,7 @@ public class URLGenerator {
      * @param userName
      * @return The URL pointing to the post of that user for the publication represented by the given intra hash.
      */
-    public String getPublicationUrl(final String intraHash, final String userName) {
+    public String getPublicationUrlByString(final String intraHash, final String userName) {
         final String url = this.projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTRA_HASH_ID + intraHash;
         if (present(userName)) {
             return this.getUrl(url + "/" + UrlUtils.safeURIEncode(userName));

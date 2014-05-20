@@ -15,7 +15,7 @@
 	<c:set var="ownDiscussionItem" value="${loginUser.name eq discussionItemUserName}" />
 	<c:set var="anonymous" value="${discussionItem.anonymous}" />
 	
-	<c:set var="class" value="${fn:toLowerCase(discussionItem.class.simpleName)}" />
+	<c:set var="class" value="${fn:toLowerCase(discussionItem['class'].simpleName)}" />
 	
 	<c:choose>
 		<c:when test="${anonymous}">

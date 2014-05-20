@@ -104,7 +104,7 @@
 				<div class="taglist" style="clear:both; margin-top: 1em;">
 					<ul>
 						<c:forEach var="tag" items="${command.tagcloud.tags}">
-							<li style="display:list-item;"><span class="tagitem_rightborder"><a class="tagitem" href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}" rel="nofollow" title=""><nobr><c:out value="${tag.name}"/></nobr></a></span></li>
+							<li style="display:list-item;"><span class="tagitem_rightborder"><a class="tagitem" href="${urlGenerator.getUserUrlByString(post.user.name)}/${mtl:encodeURI(tag.name)}" rel="nofollow" title=""><nobr><c:out value="${tag.name}"/></nobr></a></span></li>
 						</c:forEach>
 					</ul>
 					<br style="clear:left" />

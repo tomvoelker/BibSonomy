@@ -36,7 +36,7 @@
 			</li>			
 			<c:if test="${command.context.userLoggedIn}">
 				<li>
-					<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+					<a href="${urlGenerator.getUserUrlByString(fn:escapeXml(command.context.loginUser.name))}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 					<c:out value=" "/>
 					<fmt:message key="tag.asTagFrom"/>
 					<c:out value=" "/>
