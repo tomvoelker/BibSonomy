@@ -93,7 +93,7 @@
 			<c:if test="${not empty command.requestedGroup}">
 				<li>				
 					<span class="sidebar_h">
-						<a href="/group/${fn:escapeXml(command.requestedGroup)}">
+						<a href="${urlGenerator.getGroupUrlByString(fn:escapeXml(command.requestedGroup))}">
 							<fmt:message key="discussion.showGroup">
 								<fmt:param value="${fn:escapeXml(command.requestedGroup)}"/>
 							</fmt:message>

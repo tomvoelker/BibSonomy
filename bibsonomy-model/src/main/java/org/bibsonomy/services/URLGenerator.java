@@ -78,6 +78,7 @@ public class URLGenerator {
     }
 
     private static final String USER_PREFIX = "user";
+    private static final String GROUP_PREFIX = "group";
     private static final String AUTHOR_PREFIX = "author";
     private static final String PICTURE_PREFIX = "picture";
     private static final String PUBLICATION_PREFIX = "bibtex";
@@ -275,9 +276,19 @@ public class URLGenerator {
      * @return The URL for the author's page.
      */
     public String getAuthorUrlByString(final String authorName, boolean useAbsolutePath) {
-    	final String prefix = useAbsolutePath ? this.projectHome : "";
+    	final String prefix = useAbsolutePath ? this.projectHome : "/";
         return this.getUrl(prefix + AUTHOR_PREFIX + "/" + UrlUtils.safeURIEncode(authorName));
     }
+    
+    /**
+     * Constructs the URL for the group's page.
+     * 
+     * @param groupName
+     * @return The URL for the group's page.
+     */
+    public String getGroupUrlByString(final String groupName) {
+        return this.getUrl(this.projectHome + GROUP_PREFIX + "/" + UrlUtils.safeURIEncode(groupName));
+    }    
     
     /**
      * Constructs the URL for the picture of a user.

@@ -79,12 +79,12 @@
 						</tr>
 						<c:forEach var="grp" items="${loginUser.groups}">
 							<tr>
-								<td><a href="/group/${mtl:encodeURI(grp.name)}"><c:out value='${grp.name}'/></a></td>
+								<td><a href="${urlGenerator.getGroupUrlByString(grp.name)}"><c:out value='${grp.name}'/></a></td>
 								<td><a href="/relevantfor/group/${mtl:encodeURI(grp.name)}"><fmt:message key="navi.relevantFor"/></a></td>
 								<td><a href="/viewable/${mtl:encodeURI(grp.name)}"><fmt:message key="navi.viewable"/></a></td>
 								<td>
 									<c:if test="${grp.sharedDocuments}">
-										<a href="/group/${mtl:encodeURI(grp.name)}?filter=JUST_PDF">
+										<a href="${urlGenerator.getGroupUrlByString(grp.name)}?filter=JUST_PDF">
 											<fmt:message key="navi.groups" /><fmt:message key="navi.pdfs" />
 										</a>
 									</c:if>
