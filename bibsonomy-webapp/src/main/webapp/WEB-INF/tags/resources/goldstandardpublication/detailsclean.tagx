@@ -121,7 +121,7 @@
 							<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
 								<div class="ownerAvatar" >
 									<span>@${fn:escapeXml(user.name)}</span>
-									<a class="profilepic" href="/bibtex/1${publication.interHash}/${fn:escapeXml(user.name)}" title="@${fn:escapeXml(user.name)}">
+									<a class="profilepic" href="${urlGenerator.getPublicationUrlByHash(publication.interHash, fn:escapeXml(user.name), false)}" title="@${fn:escapeXml(user.name)}">
 										<img alt="@${fn:escapeXml(user.name)}" src="${urlGenerator.getUserPictureUrlByString(fn:escapeXml(user.name))}" />
 									</a>
 								</div>
@@ -136,7 +136,7 @@
 									<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}" begin="0" end="6" varStatus="count">
 										<div class="ownerAvatar">
 											<span>@${fn:escapeXml(user.name)}</span>
-											<a class="profilepic" href="/bibtex/1${publication.interHash}/${fn:escapeXml(user.name)}" title="@${fn:escapeXml(user.name)}">
+											<a class="profilepic" href="${urlGenerator.getPublicationUrlByHash(publication.interHash, fn:escapeXml(user.name), false)}" title="@${fn:escapeXml(user.name)}">
 												<img alt="@${fn:escapeXml(user.name)}" src="${urlGenerator.getUserPictureUrlByString(fn:escapeXml(user.name))}" />
 											</a>
 										</div>
@@ -148,7 +148,7 @@
 									<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}" begin="7" varStatus="count">
 										<div class="ownerAvatar">
 											<span>@${fn:escapeXml(user.name)}</span>
-											<a class="profilepic" href="/bibtex/1${publication.interHash}/${fn:escapeXml(user.name)}" title="@${fn:escapeXml(user.name)}">
+											<a class="profilepic" href="${urlGenerator.getPublicationUrlByHash(publication.interHash, fn:escapeXml(user.name), false)}" title="@${fn:escapeXml(user.name)}">
 												<img alt="@${fn:escapeXml(user.name)}" src="${urlGenerator.getUserPictureUrlByString(fn:escapeXml(user.name))}" />
 											</a>
 										</div>
