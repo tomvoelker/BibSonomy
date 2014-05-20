@@ -142,6 +142,79 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		this.update("updateTagDec", tagname, session);
 	}
 
+	/**
+	 * In order to update privacy, we should delete the current group entries
+	 */
+	public void deleteGroupsOfTags(final Post<?> post, final DBSession session){
+		// TODO: log all tas related to this post -> this.insertLogTas(...)
+				this.plugins.onTagDelete(post.getContentId(), session);
+				// delete all tas related to this post
+				this.deleteTas(post.getContentId(), session);
+				this.deleteGroupTas(post.getContentId(), session);
+	}
+	
+	/**
+	 * update privacy setting for a post. Similar to update/insert Tag Except that
+	 * we don't need to insert tags again because they already exist.
+	 */
+	public void updateGroupsOfTags(final Post<?> post, final DBSession session) {
+		this.checkTags(post, session);
+		final TagParam tagParam = new TagParam();
+		tagParam.setTags(post.getTags());
+		/*
+		 * FIXME: The content id is not always new, in particular on updates. 
+		 * Thus the naming of this attribute is a bit unfortunate.
+		 */
+		tagParam.setNewContentId(post.getContentId());
+		tagParam.setContentTypeByClass(post.getResource().getClass());
+		tagParam.setUserName(post.getUser().getName());
+		tagParam.setDate(post.getDate());
+	
+		
+		/*
+		 * get changeDate from Post
+		 */
+		Date changeDate = post.getChangeDate();
+		if(!present(changeDate)) {
+			changeDate = new Date();
+		}
+		tagParam.setChangeDate(changeDate);
+		
+		final List<Integer> groups = new ArrayList<Integer>();
+		/*
+		 * copy the groups' ids into the param
+		 */
+		for (final Group group : post.getGroups()) {
+			groups.add(group.getGroupId());
+		}
+		tagParam.setGroups(groups);
+		//this.insertTags(tagParam, session);
+		
+		session.beginTransaction();
+		try {
+			this.insertTas(tagParam, session);
+
+			/* 
+			 * if post is visible for a non exclusive group, store for each group
+			 * and each tag one entry in the grouptas table 
+			 */
+			final int firstGroup = tagParam.getGroups().iterator().next();
+			if (!GroupUtils.isExclusiveGroup(firstGroup)) {
+				/*
+				 * first group found is neither public nor private ... so we
+				 * have to fill the group tas table!
+				 */
+				this.insertGroupTas(tagParam, session);
+			}
+
+		session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+
+	} 
+
+	
 	/** 
 	 * Inserts the TAS into the tas table. If the post is viewable
 	 * for more than one group, the first group is inserted into the

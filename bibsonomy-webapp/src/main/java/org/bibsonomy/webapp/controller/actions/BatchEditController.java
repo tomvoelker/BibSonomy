@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.ListCommand;
@@ -43,6 +45,7 @@ import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeEx
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
+import org.bibsonomy.webapp.util.GroupingCommandUtils;
 
 
 /**
@@ -81,7 +84,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	private static final int NORMALIZE_ACTION = 2;
 	private static final int DELETE_ACTION = 3;
 	private static final int IGNORE_ACTION = 4;
-	
+	private static final int UPDATE_VIEWABLE_ACTION = 5;
 	/**
 	 * 
 	 * @param resourceClass
@@ -110,6 +113,11 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 		command.getBibtex().setList(new LinkedList<Post<BibTex>>());
 		command.getBookmark().setList(new LinkedList<Post<Bookmark>>());
+		
+		//GroupingCommandUtils.initGroupingCommand(command);
+		command.setGroups(new ArrayList<String>());
+		command.setAbstractGrouping(GroupUtils.getPublicGroup().getName());
+		
 		return command;
 	}
 
@@ -210,6 +218,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		final List<String> postsToDelete = new LinkedList<String>();   // delete
 		final List<Post<?>> postsToUpdate = new LinkedList<Post<?>>(); // update/store
 		final List<Post<?>> postsToNormalize = new LinkedList<Post<?>>();
+		final List<Post<?>> postsToUpdateViewable = new LinkedList<Post<?>>();
 		/*
 		 * All posts will get the same date.
 		 */
@@ -315,6 +324,46 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 							log.debug("can't parse tags of resource " + intraHash + " for user " + loginUserName, ex);
 						}
 					}
+					else if (UPDATE_VIEWABLE_ACTION == action){
+						/*
+						 * For the create/update methods we need a post -> 
+						 * create/get one.
+						 */
+						Post<?> post;
+						/*
+						 * we need only a "mock" posts containing the hash, the date
+						 * and the groups, since only the post's groups (privacy) are updated 
+						 */
+						final Post<Resource> postR = new Post<Resource>();
+						postR.setResource(RESOURCE_FACTORY.createResource(resourceClass));
+						postR.getResource().setIntraHash(intraHash);
+						post = postR;
+						if (!present(post)) {
+							log.warn("post with hash " + intraHash + " not found for user " + loginUserName + " while updating tags");
+						} else {
+							post.setDate(now);
+							/** set visibility of this post for the groups, the user specified
+							*/
+							GroupingCommandUtils.initGroups(command, post.getGroups());
+
+							postsToUpdateViewable.add(post);
+						}
+						
+						
+					/*	
+						Post<?> post;
+						post = this.logic.getPostDetails(intraHash, loginUserName);
+						if(present(post)) {
+							// set visibility of this post for the groups, the user specified
+							
+							GroupingCommandUtils.initGroups(command, post.getGroups());
+
+
+							post.setDate(now);
+							postsToNormalize.add(post);
+							*/
+						}
+
 				}
 			}
 		}
@@ -350,6 +399,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			log.debug("updating " + postsToUpdate.size() + " posts for user " + loginUserName);
 			updatePosts(postsToUpdate, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_TAGS, loginUserName);
 			updatePosts(postsToNormalize, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_ALL, loginUserName);
+			updatePosts(postsToUpdateViewable, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_VIEWABLE, loginUserName);
 		} else {
 			log.debug("storing "  + postsToUpdate.size() + " posts for user " + loginUserName);
 			storePosts(postsToUpdate, resourceClass, postMap, postsWithErrors, command.isOverwrite(), loginUserName);

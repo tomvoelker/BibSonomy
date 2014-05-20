@@ -1391,6 +1391,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		case UPDATE_TAGS:
 			this.performUpdateOnlyTags(post, oldPost, session);
 			break;
+		case UPDATE_VIEWABLE:
+			this.performUpdateOnlyPrivacy(post, oldPost, session);
+			break;
+		case UPDATE_NORMALIZE:
+			break;
 		default:
 			/*
 			 * as default update all parts of a post
@@ -1482,6 +1487,39 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 */
 			this.tagDb.insertTags(post, session);
 
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+	
+	private void performUpdateOnlyPrivacy(final Post<R> post, final Post<R> oldPost, final DBSession session) {		
+		session.beginTransaction();
+		try {
+			
+			/*
+			 * delete old tags
+			 */
+			//this.tagDb.deleteTags(oldPost, session);
+			this.tagDb.deleteGroupsOfTags(oldPost, session);
+			
+			
+			/*
+			 * fill the new posts with data from the old post that
+			 * should not change (e.g., date, user name, groups)
+			 */
+			post.setUser(oldPost.getUser());
+			//post.setGroups(oldPost.getGroups());
+			post.setContentId(oldPost.getContentId());
+			post.setDate(oldPost.getDate());
+			post.setResource(oldPost.getResource());
+			post.setTags(oldPost.getTags());
+			/*
+			 * insert new tags
+			 */
+			//this.tagDb.insertTags(post, session);
+			this.tagDb.updateGroupsOfTags(post, session);
+			
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
