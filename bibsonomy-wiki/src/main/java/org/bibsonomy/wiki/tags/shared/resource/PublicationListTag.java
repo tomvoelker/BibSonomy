@@ -1,12 +1,8 @@
 package org.bibsonomy.wiki.tags.shared.resource;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,25 +24,24 @@ import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.wiki.tags.SharedTag;
 
 /**
- * TODO: abstract resource tag 
+ * TODO: abstract resource tag
  * 
  */
 /*
  * TODO: add order by content type as a valid sort order
- *
  */
 /*
- * TODO: add the parameter "sort" that does the same as "keys" 
- * (keys is just not comprehendable and should be deprecated. 
- * Remove it from the documentation (help) and from all templates
- * Do not remove the functionality since users might already use it
+ * TODO: add the parameter "sort" that does the same as "keys" (keys is just not
+ * comprehendable and should be deprecated. Remove it from the documentation
+ * (help) and from all templates Do not remove the functionality since users
+ * might already use it
  */
 /*
  * FIXME: escape ALL data coming from the database
- *
  */
 /*
  * @author philipp
+ * 
  * @author Bernd Terbrack
  */
 public class PublicationListTag extends SharedTag {
@@ -269,23 +264,4 @@ public class PublicationListTag extends SharedTag {
 		renderedHTML.append("</select><input id='reqUser' type='hidden' value='").append(requestedName).append("' /><input id='reqTags' type='hidden' value='").append(tags).append("' /></form></span></div>");
 	}
 
-	protected static Date extractYear(final String yearString) {
-		if (!present(yearString)) {
-			return null;
-		}
-		try {
-			final Calendar calendar = Calendar.getInstance();
-			calendar.set(Calendar.YEAR, Integer.parseInt(yearString));
-			calendar.set(Calendar.HOUR_OF_DAY, 0);
-			calendar.set(Calendar.DATE, 1);
-			calendar.set(Calendar.MONTH, 0);
-			calendar.set(Calendar.MINUTE, 0);
-			calendar.set(Calendar.SECOND, 0);
-			return calendar.getTime();
-		} catch (final NumberFormatException e) {
-			// Do nothing.
-		}
-
-		return null;
-	}
 }
