@@ -83,7 +83,7 @@ public class PublicationListTag extends SharedTag {
 												// it):
 	private static final String ORDER = "order";
 	private static final String LIMIT = "limit";
-	private static final String GROUP = "group";
+	private static final String GROUP_BY = "groupby";
 	private static final String TRUE = "true";
 
 	private static final Set<String> ALLOWED_SORTPAGE_JABREF_LAYOUTS = Sets.asSet(ORDER_YEAR, ORDER_AUTHOR, ORDER_TITLE);
@@ -93,7 +93,7 @@ public class PublicationListTag extends SharedTag {
 
 	private static final Map<String, String> defaultOrder = new HashMap<String, String>();
 
-	private final static Set<String> ALLOWED_ATTRIBUTES_SET = Sets.asSet(TAGS, LAYOUT, KEYS, ORDER, LIMIT, GROUP);
+	private final static Set<String> ALLOWED_ATTRIBUTES_SET = Sets.asSet(TAGS, LAYOUT, KEYS, ORDER, LIMIT, GROUP_BY);
 
 	static {
 		defaultOrder.put(ORDER_YEAR, ORDER_DESC);
@@ -118,9 +118,8 @@ public class PublicationListTag extends SharedTag {
 	protected String renderSharedTag() {
 		final StringBuilder renderedHTML = new StringBuilder();
 		final Map<String, String> tagAttributes = this.getAttributes();
-		final Set<String> tagAttributeKeys = tagAttributes.keySet();
 		String tags;
-		if (!tagAttributeKeys.contains(TAGS)) {
+		if (!tagAttributes.containsKey(TAGS)) {
 			tags = "myown"; // TODO: should be MyOwnSystemTag.NAME but adding
 							// dependency to database module only for accessing
 							// the constant?!
@@ -185,7 +184,7 @@ public class PublicationListTag extends SharedTag {
 			}
 		}
 
-		final String group = tagAttributes.get(GROUP);
+		final String group = tagAttributes.get(GROUP_BY);
 		// grouping publications is only supported for sorted lists, ordered by
 		// year
 		if (sortPosts && ORDER_YEAR.equals(tagAttributes.get(KEYS)) && (TRUE.equals(group))) {
