@@ -50,5 +50,11 @@ public enum GroupUpdateOperation {
 	/** Activate the pending group */
 	ACTIVATE,
 	/** deletes the pending group **/
-	DELETE;
+	DELETE,
+	
+	/** Adds a join request */
+	ADD_REQUESTED,
+	
+	/** Add an invited user */
+	ADD_INVITED;
 }
