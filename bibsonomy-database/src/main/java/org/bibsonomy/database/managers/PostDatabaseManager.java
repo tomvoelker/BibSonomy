@@ -1395,6 +1395,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			this.performUpdateOnlyPrivacy(post, oldPost, session);
 			break;
 		case UPDATE_NORMALIZE:
+			this.performUpdateOnlyNormalize(post, oldPost, session);
 			break;
 		default:
 			/*
@@ -1514,6 +1515,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			post.setDate(oldPost.getDate());
 			post.setResource(oldPost.getResource());
 			post.setTags(oldPost.getTags());
+			
+			final P param = this.getInsertParam(post, session);
+			// insert
+			this.updatePostGroups(param, session);
+			
 			/*
 			 * insert new tags
 			 */
@@ -1525,7 +1531,30 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			session.endTransaction();
 		}
 	}
-
+	private void performUpdateOnlyNormalize(final Post<R> post, final Post<R> oldPost, final DBSession session) {		
+		session.beginTransaction();
+		try {
+			
+			/*
+			 * fill the new posts with data from the old post that
+			 * should not change (e.g., date, user name, groups)
+			 */
+			post.setUser(oldPost.getUser());
+			post.setGroups(oldPost.getGroups());
+			post.setContentId(oldPost.getContentId());
+			post.setDate(oldPost.getDate());
+			//post.setResource(oldPost.getResource());
+			post.setTags(oldPost.getTags());
+			
+			final P param = this.getInsertParam(post, session);
+			// insert
+			this.updatePostGroups(param, session);
+						
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
 	/**
 	 * called when a post was updated
 	 * 
@@ -1579,6 +1608,32 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			// Insert/Update SimHashes
 			this.insertOrUpdatePostHash(param, false, session);
 
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+	
+	protected void updatePostGroups(final P param, final DBSession session) {
+		session.beginTransaction();
+		try {
+			// Insert resource
+			this.update("update" + this.resourceClassName +"Group", param, session);
+			// Insert/Update SimHashes
+			this.insertOrUpdatePostHash(param, false, session);
+
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+	
+	protected void updatePostBibTexKey(final P param, final DBSession session) {
+		session.beginTransaction();
+		try {
+			// Insert resource
+			this.update("updatebibtexKey", param, session);
+			
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();

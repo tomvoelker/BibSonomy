@@ -845,6 +845,17 @@
 		UPDATE bibhash SET ctr = ctr - 1 WHERE hash = #hash# AND type = #simHash# AND ctr > 0
 	</update>
 	
+	<!-- update group ids of a post nasim -->
+	<update id="updateBibTexGroup" parameterClass="bibtexParam">
+		UPDATE bibtex SET `group` = #group#  WHERE content_id = #content_id#
+	</update>
+	
+	<!-- update bibtexkey nasim -->
+	<update id="updatebibtexKey" parameterClass="bibtexParam">
+		UPDATE bibtex SET bibtexKey = #resource.bibtexKey#  WHERE content_id = #content_id#
+	</update>
+	
+	
 	<delete id="deleteBibTex">
 		DELETE FROM bibtex WHERE content_id = #requestedContentId#
 	</delete>
