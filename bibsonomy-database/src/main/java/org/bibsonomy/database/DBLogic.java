@@ -1161,6 +1161,16 @@ public class DBLogic implements LogicInterface {
 					this.groupDBManager.deletePendingGroup(groupName, session);
 				}
 				break;
+			case ADD_INVITED: 
+				for (final User user: group.getUsers()) {
+					this.groupDBManager.addUserToGroup(groupName, user.getName(), GroupRole.INVITED, session);
+				}
+				break;
+			case ADD_REQUESTED:
+				for (final User user: group.getUsers()) {
+					this.groupDBManager.addUserToGroup(groupName, user.getName(), GroupRole.REQUESTED, session);
+				}
+				break;
 			default:
 				throw new UnsupportedOperationException("The given method is not yet implemented.");
 			}
