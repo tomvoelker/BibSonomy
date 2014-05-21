@@ -12,8 +12,12 @@ public enum GroupRole {
 	USER(7),
 	/** moderator */
 	MODERATOR(1),
-	/** dummy **/
-	DUMMY(2);
+	/** dummy */
+	DUMMY(2),
+	/** user invited by an admin or moderator */
+	INVITED(3),
+	/** request to join the group */
+	REQUESTED(4);
 
 	private final int role;
 
