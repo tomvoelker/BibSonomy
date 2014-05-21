@@ -125,7 +125,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			this.errors.reject("error.settings.tab");
 			break;
 		}
-
+		
 		return Views.SETTINGSPAGE;
 	}
 

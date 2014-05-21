@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.bibsonomy.common.enums.GroupUpdateOperation;
 
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
@@ -41,6 +42,9 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	private String action;
 	
+	/** An operation to update a specific group. */
+	private GroupUpdateOperation operation;
+
 	/**
 	 * the AccessToken you want to delete
 	 */
@@ -788,4 +792,19 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		this.groupName = groupName;
 	}
 
+	/**
+	 * @return the groupUpdateOperation
+	 */
+	public GroupUpdateOperation getOperation() {
+		return operation;
+	}
+
+	/**
+	 * Sets a group update operation.
+	 * @param operation a group update operation
+	 */
+	public void setOperation(GroupUpdateOperation operation) {
+		this.operation = operation;
+	}
+	
 }

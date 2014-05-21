@@ -656,7 +656,7 @@
 								<value>groupName</value>
 								<value>sharedDocuments</value>
 								<value>username</value>
-								<value>action</value>
+								<value>operation</value>
 								<value>group.name</value>
 								<value>group.description</value>
 								<value>group.groupRequest.reason</value>

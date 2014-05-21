@@ -1,40 +1,41 @@
- <jsp:root version="2.0"
-  xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:jsp="http://java.sun.com/JSP/Page"
-  xmlns:c="http://java.sun.com/jsp/jstl/core"
-  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-  xmlns:form="http://www.springframework.org/tags/form"
-  xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
-  xmlns:spring="http://www.springframework.org/tags"
-  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
-  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
-  
+<jsp:root version="2.0"
+		  xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+		  xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:form="http://www.springframework.org/tags/form"
+		  xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
+		  xmlns:spring="http://www.springframework.org/tags"
+		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
 	<jsp:directive.attribute name="command"  type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
-	
+
 	<h2><fmt:message key="settings.group.reqGroup"/></h2>
 	<fieldset class="fsOuter">
 		<form:form method="post" action="/updateGroup">
 			<div>
-			 	<div class="fsRow">
-			    	<label for="group.name" class="fsLabel">name</label>
-				    <input id="group.name" name="group.name" class="fsInput" type="text" />
-			   	</div>
-			  	<div class="fsRow">
-			  		<label for="group.description" class="fsLabel">description</label>
-			  		<form:textarea id="group.description" rows="3" cssClass="fsInput" path="group.description" />
-			  	</div>
-			  	<div class="fsRow">
-			  		<label for="group.reason" class="fsLabel">reason</label>
-			  		<form:textarea id="group.reason" rows="3" cssClass="fsInput" path="group.groupRequest.reason" />
+				<div class="fsRow">
+					<label for="group.name" class="fsLabel">name</label>
+					<input id="group.name" name="group.name" class="fsInput" type="text" />
 				</div>
-			  	<div class="fsRow">
+				<div class="fsRow">
+					<label for="group.description" class="fsLabel">description</label>
+					<form:textarea id="group.description" rows="3" cssClass="fsInput" path="group.description" />
+				</div>
+				<div class="fsRow">
+					<label for="group.reason" class="fsLabel">reason</label>
+					<form:textarea id="group.reason" rows="3" cssClass="fsInput" path="group.groupRequest.reason" />
+				</div>
+				<div class="fsRow">
 					<input type="hidden" name="ckey" value="${ckey}"/>
 					<input type="hidden" name="action" value="requestGroup" />
 					<fmt:message var="requestGroup" key="settings.group.reqGroup.button"/>
 					<input type="submit" value="${requestGroup}" />
-			  	</div>
+				</div>
 			</div>
 		</form:form>
 	</fieldset>
@@ -43,168 +44,190 @@
 	<fieldset class="fsOuter">
 		<c:forEach items="${command.user.groups}" var="group" varStatus="status">
 			<c:if test="${group.groupRole == 'ADMINISTRATOR'}">
-			<bform:fieldset maximized="${true}" legendString="${group.name}" legendKey="">
-			<jsp:attribute name="content">
-				<!-- GRANT OR DENY JOIN REQUESTS, ADD USERS -->
-				<c:set var="showDeny" value="${not empty param.user and not empty param.requGroup and param.requGroup eq user.name}"/>
+				<bform:fieldset maximized="${true}" legendString="${group.name}" legendKey="">
+					<jsp:attribute name="content">
+						<!-- GRANT OR DENY JOIN REQUESTS, ADD USERS -->
+						<c:set var="showDeny" value="${not empty param.user and not empty param.requGroup and param.requGroup eq user.name}"/>
 
-			<div id="groups" class="${showDeny?'highlightBox':''}">
+						<div id="groups" class="${showDeny?'highlightBox':''}">
+
+							<h2><fmt:message key="settings.group.addUser"/></h2>
+							<form:form name="groupusers" method="post" action="/updateGroup?ckey=${ckey}">
+								<div id="fsform">
+									<div class="fsRow">
+										<label for="laddgu" class="fsLabel"><fmt:message key="user.name"/></label>
+										<buttons:help message="settings.group.addUser.help"/>
+										<c:set var="userEmpty" value="${empty param.user}"/>
+										<input type="text" class="fsInput fsSmall" name="username" value="${userEmpty?'':fn:escapeXml(param.user)}"/>
+										<div class="dissError"><form:errors path="username" /></div>
+									</div>
+
+									<div class="fsRow">
+										<input type="hidden" name="groupName" value="${group.name}"/>
+<!--										<input type="hidden" name="ckey" value="${ckey}"/>-->
+										<input type="hidden" name="operation" value="ADD_NEW_USER" />
+										<fmt:message var="adduser" key="settings.group.addUser.button"/>
+										<input type="submit" value="${adduser}" />
+									</div>
+
+								</div>
+							</form:form>
+							<br />
+							<h2><fmt:message key="settings.group.joinRequests"/></h2>
+							<div id="fsform">
+								<!-- TODO: when there are no members, show a coresponding message-->
+								<fmt:message var="decuser" key="settings.group.decUser.button"/>
+								<fmt:message var="decuserTitle" key="settings.group.decUser.button.title"/>
+								<fmt:message var="accuser" key="settings.group.accUser.button"/>
+								<fmt:message var="accuserTitle" key="settings.group.accUser.button.title"/>
+
+								<!-- show group member list -->
+								<c:forEach items="${group.users}" var="member" varStatus="status">
+									<c:if test="${member.groupRole eq 'REQUESTED'}">
+										<div style="float: left; width: 130px; padding-bottom: 10px;">
+											<a href="/user/${mtl:encodeURI(member.name)}"><img src="/picture/user/${mtl:encodeURI(user.name)}" /><c:out value="${member.name}"/></a><br />
+											<i><c:out value="${member.groupRole}" /></i><br />
+											<span class="smalltext">(<a href="/updateGroup?operation=declineJoinRequest&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${decuserTitle}">${decuser}</a>) (<a href="/updateGroup?operation=acceptJoinRequest&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${accuserTitle}">${accuser}</a>)</span>
+										</div>
+									</c:if>
+								</c:forEach>
+								<div style="clear:both;"></div>
+							</div>
+							<br />
+							<h2><fmt:message key="settings.group.memberList"/></h2>
+							<div id="fsform">
+								<!-- TODO: when there are no members, show a coresponding message-->
+								<fmt:message var="deluser" key="settings.group.delUser.button"/>
+								<fmt:message var="deluserTitle" key="settings.group.delUser.button.title"/>
+
+								<!-- show group member list -->
+								<c:forEach items="${group.users}" var="member" varStatus="status">
+									<c:if test="${member.groupRole ne 'DUMMY' and member.groupRole ne 'REQUESTED' and member.groupRole ne 'INVITED'}">
+										<div style="float: left; width: 130px; padding-bottom: 10px;">
+											<a href="/user/${mtl:encodeURI(member.name)}"><img src="/picture/user/${mtl:encodeURI(user.name)}" /><c:out value="${member.name}"/></a><br />
+											<i><c:out value="${member.groupRole}" /></i><br />
+											<span class="smalltext">(<a href="/updateGroup?operation=removeUserFromGroup&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>)</span>
+										</div>
+									</c:if>
+								</c:forEach>
+								<div style="clear:both;"></div>
+							</div>
+
+							<!--				<c:if test="${showDeny}">
+												 TODO move to controller 
+												 User clicked link in email and wants to add (or cancel) user 
+												 cancel request only if right params existing 
+												<h2>
+								<fmt:message key="settings.group.deny">
+									<fmt:param><a href="/user/${mtl:encodeURI(param.user)}"><c:out value="${param.user}"/></a></fmt:param>
+								</fmt:message>
+							</h2>
+								<form:form id="groupAddDenyUser" method="post" action="/join_group">
+									<div id="fsform">
+										<div class="fsRow">
+											<input type="hidden" neme="ckey" value="${command.context.ckey }"/>
+											<input type="hidden" name="sdeniedUser" value="${fn:escapeXml(param.user)}" />
+											<input type="hidden" name="group" value="${group.name}" />
+											<label for="inputreason" class="fsLabel"><fmt:message key="settings.group.denyReason"/></label>
+									<buttons:help message="settings.group.denyReason.help"/>
+									<input type="text" class="fsInput fsSmall" name="reason" id="inputreason"/>
+								</div>
+							
+								<div class="fsRow">
+									<fmt:message var="denyButton" key="settings.group.deny.button"/>
+									<input type="submit" value="${denyButton}" />
+								</div>
 	
-				<h2><fmt:message key="settings.group.addUser"/></h2>
-				<form:form name="groupusers" method="post" action="/updateGroup">
-					<div id="fsform">
-							<div class="fsRow">
-							<label for="laddgu" class="fsLabel"><fmt:message key="user.name"/></label>
-								<buttons:help message="settings.group.addUser.help"/>
-								<c:set var="userEmpty" value="${empty param.user}"/>
-								<input type="text" class="fsInput fsSmall" name="username" value="${userEmpty?'':fn:escapeXml(param.user)}"/>
 							</div>
-						
-							<div class="fsRow">
-								<input type="hidden" name="groupName" value="${group.name}"/>
-								<input type="hidden" name="ckey" value="${ckey}"/>
-								<input type="hidden" name="action" value="addUserToGroup" />
-								<fmt:message var="adduser" key="settings.group.addUser.button"/>
-								<input type="submit" value="${adduser}" />
-							</div>
-		
-					</div>
-				</form:form>
-				<br />
-				<h2><fmt:message key="settings.group.memberList"/></h2>
-				<div id="fsform">
-				<!-- TODO: when there are no members, show a coresponding message-->
-					<fmt:message var="deluser" key="settings.group.delUser.button"/>
-					<fmt:message var="deluserTitle" key="settings.group.delUser.button.title"/>
-						
-					<!-- show group member list -->
-					<c:forEach items="${group.users}" var="member" varStatus="status">
-						<c:if test="${member.groupRole ne 'DUMMY'}">
-							<div style="float: left; width: 130px; padding-bottom: 10px;">
-									<a href="/user/${mtl:encodeURI(member.name)}"><img src="/picture/user/${mtl:encodeURI(user.name)}" /><c:out value="${member.name}"/></a><br />
-								<i><c:out value="${member.groupRole}" /></i><br />
-								<span class="smalltext">(<a href="/updateGroup?action=removeUserFromGroup&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>)</span>
-							</div>
-						</c:if>
-					</c:forEach>
-					<div style="clear:both;"></div>
-				</div>
-				
-				<c:if test="${showDeny}">
-					<!-- TODO move to controller -->
-					<!-- User clicked link in email and wants to add (or cancel) user -->
-					<!-- cancel request only if right params existing -->
-					<h2>
-						<fmt:message key="settings.group.deny">
-							<fmt:param><a href="/user/${mtl:encodeURI(param.user)}"><c:out value="${param.user}"/></a></fmt:param>
-						</fmt:message>
-					</h2>
-					<form:form id="groupAddDenyUser" method="post" action="/join_group">
-						<div id="fsform">
-							<div class="fsRow">
-								<input type="hidden" neme="ckey" value="${command.context.ckey }"/>
-								<input type="hidden" name="deniedUser" value="${fn:escapeXml(param.user)}" />
-								<input type="hidden" name="group" value="${group.name}" />
-								<label for="inputreason" class="fsLabel"><fmt:message key="settings.group.denyReason"/></label>
-								<buttons:help message="settings.group.denyReason.help"/>
-								<input type="text" class="fsInput fsSmall" name="reason" id="inputreason"/>
-							</div>
-						
-							<div class="fsRow">
- 								<fmt:message var="denyButton" key="settings.group.deny.button"/>
- 								<input type="submit" value="${denyButton}" />
-							</div>
-
+								</form:form>
+							</c:if>-->
 						</div>
-					</form:form>
-				</c:if>
-			</div>
 
-			<br />
-			<!-- GROUP SETTINGS -->
-			<h2><fmt:message key="settings.group.settings"/></h2>
-			<form:form id="groupSettings" method="post" action="/updateGroup">
-				<div id="fsform">
-					<div class="fsRow">
-						<form:label cssClass="fsLabel" path="privlevel">
-							<fmt:message key="settings.group.memberList"/>
-						</form:label>
-						<buttons:help message="settings.group.memberList.help"/>
-						<select class="fsInput fsSmall" name="privlevel">
-							<c:choose>
-								<c:when test="${group.privlevel == 'PUBLIC' }">
-									<option value="0" selected="selected"><fmt:message key="settings.public"/></option>
-									<option value="1"><fmt:message key="settings.private"/></option>
-									<option value="2"><fmt:message key="settings.publicForMembers"/></option>
-								</c:when>
-								<c:when test="${group.privlevel == 'HIDDEN' }">
-									<option value="0"><fmt:message key="settings.public"/></option>
-									<option value="1" selected="selected"><fmt:message key="settings.private"/></option>
-									<option value="2"><fmt:message key="settings.publicForMembers"/></option>
-								</c:when>
-								<c:when test="${group.privlevel == 'MEMBERS' }">
-									<option value="0"><fmt:message key="settings.public"/></option>
-									<option value="1"><fmt:message key="settings.private"/></option>
-									<option value="2" selected="selected"><fmt:message key="settings.publicForMembers"/></option>
-								</c:when>
-							</c:choose>
-						</select>
-					</div>
+						<br />
+						<!-- GROUP SETTINGS -->
+						<h2><fmt:message key="settings.group.settings"/></h2>
+						<form:form id="groupSettings" method="post" action="/updateGroup">
+							<div id="fsform">
+								<div class="fsRow">
+									<form:label cssClass="fsLabel" path="privlevel">
+										<fmt:message key="settings.group.memberList"/>
+									</form:label>
+									<buttons:help message="settings.group.memberList.help"/>
+									<select class="fsInput fsSmall" name="privlevel">
+										<c:choose>
+											<c:when test="${group.privlevel == 'PUBLIC' }">
+												<option value="0" selected="selected"><fmt:message key="settings.public"/></option>
+												<option value="1"><fmt:message key="settings.private"/></option>
+												<option value="2"><fmt:message key="settings.publicForMembers"/></option>
+											</c:when>
+											<c:when test="${group.privlevel == 'HIDDEN' }">
+												<option value="0"><fmt:message key="settings.public"/></option>
+												<option value="1" selected="selected"><fmt:message key="settings.private"/></option>
+												<option value="2"><fmt:message key="settings.publicForMembers"/></option>
+											</c:when>
+											<c:when test="${group.privlevel == 'MEMBERS' }">
+												<option value="0"><fmt:message key="settings.public"/></option>
+												<option value="1"><fmt:message key="settings.private"/></option>
+												<option value="2" selected="selected"><fmt:message key="settings.publicForMembers"/></option>
+											</c:when>
+										</c:choose>
+									</select>
+								</div>
 
-					<div class="fsRow">
-						<form:label cssClass="fsLabel" path="sharedDocuments">
-							<fmt:message key="settings.group.sharedDocuments"/>
-						</form:label>
-						<buttons:help message="settings.group.sharedDocuments.help"/>
-						<select class="fsInput fsSmall" name="sharedDocuments">
-							<c:choose>
-								<c:when test="${group.sharedDocuments}">
-									<option value="0"><fmt:message key="settings.disabled"/></option>
-									<option value="1" selected="selected"><fmt:message key="settings.enabled"/></option>
-								</c:when>
-								<c:otherwise>
-									<option value="0" selected="selected"><fmt:message key="settings.disabled"/></option>
-									<option value="1"><fmt:message key="settings.enabled"/></option>
-								</c:otherwise>
-							</c:choose>
-						</select>
-					</div>
-					
-					<div class="fsRow">
-						<input type="hidden" name="ckey" value="${ckey}"/>
-						<fmt:message var="updatesettings" key="settings.updatesettings"/>
-						<input type="hidden" name="groupName" value="${group.name}"/>
-						<input type="hidden" name="action" value="updateGroupSettings" />
-						<input type="submit" value="${updatesettings}"/>
-					</div>
-				</div>
-			</form:form>
-			<br />
-			<!-- group reporting settings -->
-			<c:if test="${properties['publication.reporting.mode'] eq 'GROUP'}">
-				<h2><fmt:message key="settings.group.reporting"/></h2>
-				<form:form id="groupSettings" method="post" action="/updateGroup">
-					<bform:fieldset maximized="${true}" legendKey="settings.group.reporting.mail">
-						<jsp:attribute name="content">
-							<bform:input path="group.publicationReportingSettings.reportingMailAddress" noHelp="${true}" />
-							<bform:textarea path="group.publicationReportingSettings.reportingMailTemplate" noHelp="${true}" rows="10" />
-						</jsp:attribute>
-					</bform:fieldset>
-						
-					<bform:fieldset maximized="${true}" legendKey="settings.group.reporting.address">
-						<jsp:attribute name="content">
-							<bform:input path="group.publicationReportingSettings.externalReportingUrl" noHelp="${true}" />
-						</jsp:attribute>
-					</bform:fieldset>
-					<bform:submit messageKey="settings.group.reporting.update" />
-					<input type="hidden" name="groupName" value="${group.name}"/>
-					<input type="hidden" name="action" value="updateGroupReportingSettings" />
-				</form:form>
+								<div class="fsRow">
+									<form:label cssClass="fsLabel" path="sharedDocuments">
+										<fmt:message key="settings.group.sharedDocuments"/>
+									</form:label>
+									<buttons:help message="settings.group.sharedDocuments.help"/>
+									<select class="fsInput fsSmall" name="sharedDocuments">
+										<c:choose>
+											<c:when test="${group.sharedDocuments}">
+												<option value="0"><fmt:message key="settings.disabled"/></option>
+												<option value="1" selected="selected"><fmt:message key="settings.enabled"/></option>
+											</c:when>
+											<c:otherwise>
+												<option value="0" selected="selected"><fmt:message key="settings.disabled"/></option>
+												<option value="1"><fmt:message key="settings.enabled"/></option>
+											</c:otherwise>
+										</c:choose>
+									</select>
+								</div>
+
+								<div class="fsRow">
+									<input type="hidden" name="ckey" value="${ckey}"/>
+									<fmt:message var="updatesettings" key="settings.updatesettings"/>
+									<input type="hidden" name="groupName" value="${group.name}"/>
+									<input type="hidden" name="action" value="updateGroupSettings" />
+									<input type="submit" value="${updatesettings}"/>
+								</div>
+							</div>
+						</form:form>
+						<br />
+						<!-- group reporting settings -->
+						<c:if test="${properties['publication.reporting.mode'] eq 'GROUP'}">
+							<h2><fmt:message key="settings.group.reporting"/></h2>
+							<form:form id="groupSettings" method="post" action="/updateGroup">
+								<bform:fieldset maximized="${true}" legendKey="settings.group.reporting.mail">
+									<jsp:attribute name="content">
+										<bform:input path="group.publicationReportingSettings.reportingMailAddress" noHelp="${true}" />
+										<bform:textarea path="group.publicationReportingSettings.reportingMailTemplate" noHelp="${true}" rows="10" />
+									</jsp:attribute>
+								</bform:fieldset>
+
+								<bform:fieldset maximized="${true}" legendKey="settings.group.reporting.address">
+									<jsp:attribute name="content">
+										<bform:input path="group.publicationReportingSettings.externalReportingUrl" noHelp="${true}" />
+									</jsp:attribute>
+								</bform:fieldset>
+								<bform:submit messageKey="settings.group.reporting.update" />
+								<input type="hidden" name="groupName" value="${group.name}"/>
+								<input type="hidden" name="action" value="updateGroupReportingSettings" />
+							</form:form>
+						</c:if>
+					</jsp:attribute>
+				</bform:fieldset>
 			</c:if>
-			</jsp:attribute>
-			</bform:fieldset>
-		</c:if>
-	</c:forEach>
+		</c:forEach>
 	</fieldset>
 	<c:choose>
 		<!-- check if user is logged in with wrong account -->
@@ -217,7 +240,7 @@
 					<fmt:param value="${fn:escapeXml(param.requGroup)}"/>
 				</fmt:message>
 			</div>
-		 </c:otherwise>
- 	</c:choose>
- 
- </jsp:root>
+		</c:otherwise>
+	</c:choose>
+
+</jsp:root>

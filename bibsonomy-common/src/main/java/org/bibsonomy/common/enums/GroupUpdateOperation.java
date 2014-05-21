@@ -56,5 +56,8 @@ public enum GroupUpdateOperation {
 	ADD_REQUESTED,
 	
 	/** Add an invited user */
-	ADD_INVITED;
+	ADD_INVITED,
+	
+	/** Request a new group. */
+	REQUEST;
 }
