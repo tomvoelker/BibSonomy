@@ -31,12 +31,6 @@ import org.bibsonomy.wiki.tags.SharedTag;
  * TODO: add order by content type as a valid sort order
  */
 /*
- * TODO: add the parameter "sort" that does the same as "keys" (keys is just not
- * comprehendable and should be deprecated. Remove it from the documentation
- * (help) and from all templates Do not remove the functionality since users
- * might already use it
- */
-/*
  * FIXME: escape ALL data coming from the database
  */
 /*
@@ -81,6 +75,7 @@ public class PublicationListTag extends SharedTag {
 												// Please rename it! (Take care
 												// since users might already use
 												// it):
+	private static final String SORT = "sort";
 	private static final String ORDER = "order";
 	private static final String LIMIT = "limit";
 	private static final String GROUP_BY = "groupby";
@@ -93,7 +88,7 @@ public class PublicationListTag extends SharedTag {
 
 	private static final Map<String, String> defaultOrder = new HashMap<String, String>();
 
-	private final static Set<String> ALLOWED_ATTRIBUTES_SET = Sets.asSet(TAGS, LAYOUT, KEYS, ORDER, LIMIT, GROUP_BY);
+	private final static Set<String> ALLOWED_ATTRIBUTES_SET = Sets.asSet(TAGS, LAYOUT, KEYS, ORDER, LIMIT, GROUP_BY, SORT);
 
 	static {
 		defaultOrder.put(ORDER_YEAR, ORDER_DESC);
@@ -128,6 +123,13 @@ public class PublicationListTag extends SharedTag {
 			// FIXME: Check if the attribute value is valid (i.e. a
 			// space separated list of tags
 		}
+		/*
+		 * We earlier used the tag KEYS for sorting. To still support old CVs we
+		 * map it to the new SORT tag. If both occur, KEYS is ignored
+		 */
+		if (tagAttributes.containsKey(KEYS) && !tagAttributes.containsKey(SORT)) {
+			tagAttributes.put(SORT, tagAttributes.get(KEYS));
+		}
 
 		// Check if there is no order by year and no tag to filter years.
 
@@ -157,16 +159,16 @@ public class PublicationListTag extends SharedTag {
 		 * if the user wants to sort them, do so
 		 */
 		boolean sortPosts = false;
-		final String keysValue = tagAttributes.get(KEYS);
-		if (ALLOWED_SORTPAGE_JABREF_LAYOUTS.contains(keysValue)) {
+		final String sortValue = tagAttributes.get(SORT);
+		if (ALLOWED_SORTPAGE_JABREF_LAYOUTS.contains(sortValue)) {
 			String orderValue = tagAttributes.get(ORDER);
 			if (null == orderValue) {
-				orderValue = defaultOrder.get(keysValue);
+				orderValue = defaultOrder.get(sortValue);
 				tagAttributes.put(ORDER, orderValue);
 			}
 			if (ALLOWED_SORTPAGEORDER_JABREF_LAYOUTS.contains(orderValue)) {
 				sortPosts = true;
-				BibTexUtils.sortBibTexList(posts, SortUtils.parseSortKeys(keysValue), SortUtils.parseSortOrders(orderValue));
+				BibTexUtils.sortBibTexList(posts, SortUtils.parseSortKeys(sortValue), SortUtils.parseSortOrders(orderValue));
 			}
 		}
 
@@ -187,7 +189,7 @@ public class PublicationListTag extends SharedTag {
 		final String group = tagAttributes.get(GROUP_BY);
 		// grouping publications is only supported for sorted lists, ordered by
 		// year
-		if (sortPosts && ORDER_YEAR.equals(tagAttributes.get(KEYS)) && (TRUE.equals(group))) {
+		if (sortPosts && ORDER_YEAR.equals(tagAttributes.get(SORT)) && (TRUE.equals(group))) {
 
 			final SortedMap<String, List<Post<BibTex>>> groupedPostsMap;
 			if (ORDER_ASC.equals(tagAttributes.get(ORDER))) {
