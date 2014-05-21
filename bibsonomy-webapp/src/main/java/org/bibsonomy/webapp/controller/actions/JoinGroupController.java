@@ -2,11 +2,15 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Collections;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.GroupRole;
+import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
@@ -129,11 +133,17 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		 * From here we assume, that the user has sent a join group request from the join group form
 		 */
 		
-		// check if user is already in this group
-		if (loginUser.getGroups().contains(group)) {
-			// user wants to join a group that he's already a member of => error since he cannot use the join_group page
-			errors.reject("joinGroup.already.member.error");
-			return Views.ERROR;
+		// check if user is already in this group or has an open request
+		for (Group g : loginUser.getGroups()) {
+			if(g.getName().equals(groupName)) {
+				if (g.getGroupRole().equals(GroupRole.REQUESTED)) {
+					errors.reject("joinGroup.already.request.error");
+					return Views.ERROR;
+				}
+				// user wants to join a group that he's already a member of => error since he cannot use the join_group page
+				errors.reject("joinGroup.already.member.error");
+				return Views.ERROR;		
+			}
 		}
 		
 		// check user is spammer
@@ -158,6 +168,12 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		// we need the user details (eMail) of the user that is the group
 		final User groupUser = adminLogic.getUserDetails(groupName);
 		mailUtils.sendJoinGroupRequest(group.getName(), groupUser.getEmail(), loginUser, command.getReason(), requestLogic.getLocale());
+		
+		// we use the group.users property for the following operation
+		group.setUsers(Collections.singletonList(loginUser));
+		// insert the request
+		this.logic.updateGroup(group, GroupUpdateOperation.ADD_REQUESTED);
+		
 		final List<String> params = new LinkedList<String>();
 		params.add(groupName);
 		command.setMessage("success.joinGroupRequest.sent", params);
