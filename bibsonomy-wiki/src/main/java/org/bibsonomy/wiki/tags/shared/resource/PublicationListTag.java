@@ -28,11 +28,24 @@ import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.wiki.tags.SharedTag;
 
 /**
- * TODO: abstract resource tag TODO: Does the sys year tag still work with this?
- * Do we need it to?
+ * TODO: abstract resource tag 
  * 
+ */
+/*
+ * TODO: add order by content type as a valid sort order
+ *
+ */
+/*
+ * TODO: add the parameter "sort" that does the same as "keys" 
+ * (keys is just not comprehendable and should be deprecated. 
+ * Remove it from the documentation (help) and from all templates
+ * Do not remove the functionality since users might already use it
+ */
+/*
  * FIXME: escape ALL data coming from the database
- * 
+ *
+ */
+/*
  * @author philipp
  * @author Bernd Terbrack
  */
