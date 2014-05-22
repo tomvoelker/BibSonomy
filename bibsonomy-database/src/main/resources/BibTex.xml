@@ -847,12 +847,12 @@
 	
 	<!-- update group ids of a post nasim -->
 	<update id="updateBibTexGroup" parameterClass="bibtexParam">
-		UPDATE bibtex SET `group` = #group#  WHERE content_id = #content_id#
+		UPDATE bibtex SET `group` = #groupId#  WHERE content_id = #requestedContentId#
 	</update>
 	
 	<!-- update bibtexkey nasim -->
 	<update id="updatebibtexKey" parameterClass="bibtexParam">
-		UPDATE bibtex SET bibtexKey = #resource.bibtexKey#  WHERE content_id = #content_id#
+		UPDATE bibtex SET bibtexKey = #resource.bibtexKey#  WHERE content_id = #requestedContentId#
 	</update>
 	
 	
