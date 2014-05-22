@@ -26,11 +26,15 @@ package org.bibsonomy.scraper.url.kde.aip;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper;
+import org.bibsonomy.util.WebUtils;
 
 
 /**
@@ -42,7 +46,7 @@ import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
  * @author tst
  *
  */
-public class AipScitationScraper extends SimpleGenericURLScraper {
+public class AipScitationScraper extends PostprocessingGenericURLScraper {
 
 	private static final String SITE_NAME = "AIP Scitation";
 	private static final String SITE_URL = "http://scitation.aip.org/";
@@ -52,7 +56,7 @@ public class AipScitationScraper extends SimpleGenericURLScraper {
 	private static final Pattern pathPattern = AbstractUrlScraper.EMPTY_PATTERN;
 	private static final String BIBTEX_PATH = "/cite/bibtex";
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(hostPattern, pathPattern));
-
+	private static final Pattern abstractPattern = Pattern.compile("<meta name=\"citation_abstract\" content=\"(.*)\"\\s*/>");
 	@Override
 	public String getInfo() {
 		return INFO;
@@ -69,9 +73,26 @@ public class AipScitationScraper extends SimpleGenericURLScraper {
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
+	private static String abstractParser(URL url){
+		try{
+		Matcher m = abstractPattern.matcher(WebUtils.getContentAsString(url));
+		if(m.find())
+			return m.group(1);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
 	@Override
 	public String getBibTeXURL(URL url) {
-		return "http://" + url.getHost().toString() + url.getPath().toString().replaceAll(";.*", "") + BIBTEX_PATH;
+		return "http://" + url.getHost().toString() + url.getPath().toString() + BIBTEX_PATH;
+	}
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
+	 */
+	@Override
+	protected String postProcessScrapingResult(ScrapingContext sc, String result) {
+		return BibTexUtils.addFieldIfNotContained(result, "abstract", abstractParser(sc.getUrl()));
 	}
 	
 	
