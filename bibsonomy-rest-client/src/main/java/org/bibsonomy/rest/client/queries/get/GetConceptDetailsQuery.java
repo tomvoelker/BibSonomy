@@ -59,20 +59,36 @@ public class GetConceptDetailsQuery extends AbstractQuery<Tag> {
 	}
 	
 	/**
+	 * sets an optional grouping. if grouping is null, the GroupingEntity is
+	 * defaulted to GroupingEntity.ALL.
+	 * @param groupingName 
+	 * @param grouping 
+	 */
+	public void setGrouping(final GroupingEntity grouping, final String groupingName) {
+		this.groupingName = groupingName;
+		
+		if (grouping != null)
+			this.grouping = grouping;
+		else
+			this.grouping = GroupingEntity.ALL;
+	}
+
+	/**
 	 * sets the userName and the corresponding groupings
 	 * @param userName
 	 */
+	@Deprecated
 	public void setUserName(final String userName) {
-		this.groupingName = userName;
-		this.grouping = GroupingEntity.USER;
+		this.setGrouping(GroupingEntity.USER, userName);
 	}
 	
 	/**
 	 * sets the groupName and the corresponding grouping
 	 * @param groupName
 	 */
+	@Deprecated
 	public void setGroupName(final String groupName) {
-		this.groupingName = groupName;
-		this.grouping = GroupingEntity.GROUP;
+		this.setGrouping(GroupingEntity.GROUP, groupName);
 	}
+	
 }

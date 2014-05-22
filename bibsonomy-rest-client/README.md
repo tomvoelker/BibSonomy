@@ -1,4 +1,4 @@
-B1;2403;0c# BibSonomy REST-Client
+# BibSonomy REST-Client
 
 ## What is it?
 
@@ -20,16 +20,18 @@ and
   
 ## Release Notes
 
+Please see the [release log](https://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/releases/Release%20Log).
+
 ## System Requirements
 
-* JDK: 1.6 or above.
+* JDK: 1.7 or above.
 * Memory: No minimum requirement.
 * Disk: No minimum requirement.
 * Operating System: No minimum requirement.
 
 ## Licensing
 
-* Please see the file [LICENSE.txt](https://bitbucket.org/bibsonomy/bibsonomy/src/tip/bibsonomy-rest-client/LICENSE.txt?at=default)
+* Please see the file [LICENSE.txt](https://bitbucket.org/bibsonomy/bibsonomy/src/tip/bibsonomy-rest-client/LICENSE.txt?at=stable)
 
 ## URLS
 
