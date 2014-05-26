@@ -22,7 +22,7 @@
 		requPath="${requPath}"
 		command="${command}" 
 		pageTitle="${pageTitle}" 
-		
+		loginUser="${command.context.loginUser}"
 		smallBox="true">
 		
 		
