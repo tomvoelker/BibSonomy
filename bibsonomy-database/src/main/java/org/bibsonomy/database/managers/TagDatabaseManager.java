@@ -145,7 +145,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * In order to update privacy, we should delete the current group entries
 	 */
-	public void deleteGroupsOfTags(final Post<?> post, final DBSession session){
+	public void deleteGroupsforTags(final Post<?> post, final DBSession session){
 		// TODO: log all tas related to this post -> this.insertLogTas(...)
 				this.plugins.onTagDelete(post.getContentId(), session);
 				// delete all tas related to this post
@@ -157,7 +157,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * update privacy setting for a post. Similar to update/insert Tag Except that
 	 * we don't need to insert tags again because they already exist.
 	 */
-	public void updateGroupsOfTags(final Post<?> post, final DBSession session) {
+	public void insertGroupsforTags(final Post<?> post, final DBSession session) {
 		this.checkTags(post, session);
 		final TagParam tagParam = new TagParam();
 		tagParam.setTags(post.getTags());
@@ -169,11 +169,8 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		tagParam.setContentTypeByClass(post.getResource().getClass());
 		tagParam.setUserName(post.getUser().getName());
 		tagParam.setDate(post.getDate());
-	
-		
-		/*
-		 * get changeDate from Post
-		 */
+
+		// get changeDate from Post		
 		Date changeDate = post.getChangeDate();
 		if(!present(changeDate)) {
 			changeDate = new Date();
@@ -181,14 +178,12 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		tagParam.setChangeDate(changeDate);
 		
 		final List<Integer> groups = new ArrayList<Integer>();
-		/*
-		 * copy the groups' ids into the param
-		 */
+		
+		//copy the groups' ids into the param
 		for (final Group group : post.getGroups()) {
 			groups.add(group.getGroupId());
 		}
 		tagParam.setGroups(groups);
-		//this.insertTags(tagParam, session);
 		
 		session.beginTransaction();
 		try {
@@ -237,7 +232,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		 * only insert an entry for the first group in the tas table.
 		 */
 		param.setGroupId(firstGroup);
-
+		//#tasId#, #tagName#, #newContentId#, #contentType#, #userName#, #date#, #changeDate#, #groupId#, #tagNameLower#)
 		/*
 		 * for each tag, insert a new TAS
 		 */

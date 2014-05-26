@@ -246,9 +246,12 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 					} else if (IGNORE_ACTION == action) {
 						continue;
 					} else if (NORMALIZE_ACTION == action) {
+
 						Post<?> post;
 						post = this.logic.getPostDetails(intraHash, loginUserName);
 						if(present(post)) {
+							// now, we change what should be changed from the post details
+							
 							BibTex bibtex = (BibTex) post.getResource();
 							
 							if(present(bibtex)) {
@@ -325,22 +328,13 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 						}
 					}
 					else if (UPDATE_VIEWABLE_ACTION == action){
-						/*
-						 * For the create/update methods we need a post -> 
-						 * create/get one.
-						 */
 						Post<?> post;
-						/*
-						 * we need only a "mock" posts containing the hash, the date
-						 * and the groups, since only the post's groups (privacy) are updated 
-						 */
-						final Post<Resource> postR = new Post<Resource>();
-						postR.setResource(RESOURCE_FACTORY.createResource(resourceClass));
-						postR.getResource().setIntraHash(intraHash);
-						post = postR;
+						post = this.logic.getPostDetails(intraHash, loginUserName);
 						if (!present(post)) {
 							log.warn("post with hash " + intraHash + " not found for user " + loginUserName + " while updating tags");
 						} else {
+							// now, we change what should be changed from the post details
+							
 							post.setDate(now);
 							/** set visibility of this post for the groups, the user specified
 							*/
@@ -348,21 +342,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 							postsToUpdateViewable.add(post);
 						}
-						
-						
-					/*	
-						Post<?> post;
-						post = this.logic.getPostDetails(intraHash, loginUserName);
-						if(present(post)) {
-							// set visibility of this post for the groups, the user specified
-							
-							GroupingCommandUtils.initGroups(command, post.getGroups());
-
-
-							post.setDate(now);
-							postsToNormalize.add(post);
-							*/
-						}
+					}
 
 				}
 			}
@@ -398,7 +378,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		if (updatePosts) {
 			log.debug("updating " + postsToUpdate.size() + " posts for user " + loginUserName);
 			updatePosts(postsToUpdate, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_TAGS, loginUserName);
-			updatePosts(postsToNormalize, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_ALL, loginUserName);
+			updatePosts(postsToNormalize, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_NORMALIZE, loginUserName);
 			updatePosts(postsToUpdateViewable, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_VIEWABLE, loginUserName);
 		} else {
 			log.debug("storing "  + postsToUpdate.size() + " posts for user " + loginUserName);

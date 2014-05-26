@@ -1305,6 +1305,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 * hash might have changed and otherwise we could not check if a post with the new
 			 * hash already exists. 
 			 */
+			//nasim this may cause a problem
 			if (PostUpdateOperation.UPDATE_ALL.equals(operation)) {
 				post.getResource().recalculateHashes();
 			}
@@ -1396,7 +1397,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			break;
 		case UPDATE_NORMALIZE:
 			this.performUpdateOnlyNormalize(post, oldPost, session);
-			break;
+			break;	
 		default:
 			/*
 			 * as default update all parts of a post
@@ -1494,61 +1495,52 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		}
 	}
 	
+	/**
+	 * Updates privacy of a post. 
+	 * This includes updating groupID in three tables:1. bibtex or bookmark, 2. tas, 3. groupTas
+	 * which is done in the following methods:
+	 *  updatePostGroups(param, session) : updates 1
+	 *  tagDb.deleteGroupsOfTags(oldPost, session), tagDb.insertGroupsOfTags(post, session): updates 2 & 3
+	 **/
 	private void performUpdateOnlyPrivacy(final Post<R> post, final Post<R> oldPost, final DBSession session) {		
 		session.beginTransaction();
 		try {
 			
 			/*
-			 * delete old tags
+			 *deletes GroupTas and Tas which are related to the tags of the given post
 			 */
-			//this.tagDb.deleteTags(oldPost, session);
-			this.tagDb.deleteGroupsOfTags(oldPost, session);
-			
+			this.tagDb.deleteGroupsforTags(oldPost, session);
 			
 			/*
-			 * fill the new posts with data from the old post that
-			 * should not change (e.g., date, user name, groups)
-			 */
-			post.setUser(oldPost.getUser());
-			//post.setGroups(oldPost.getGroups());
-			post.setContentId(oldPost.getContentId());
-			post.setDate(oldPost.getDate());
-			post.setResource(oldPost.getResource());
-			post.setTags(oldPost.getTags());
-			
+			 * Updates GroupID of the post*/
 			final P param = this.getInsertParam(post, session);
-			// insert
-			this.updatePostGroups(param, session);
+			this.updateGroupsOfPost(param, session);
 			
 			/*
-			 * insert new tags
-			 */
-			//this.tagDb.insertTags(post, session);
-			this.tagDb.updateGroupsOfTags(post, session);
+			 * Inserts tas and groupTas related to the tags of the given post
+			 **/
+			this.tagDb.insertGroupsforTags(post, session);
 			
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
 		}
 	}
+	
+	/**
+	 * Normalize a post's bibtex. 
+	 * This includes updating bibtexKey in bibtex table
+	 * which is done in the following methods:
+	 * updatePostBibTexKey(param, session)
+	 **/
 	private void performUpdateOnlyNormalize(final Post<R> post, final Post<R> oldPost, final DBSession session) {		
 		session.beginTransaction();
 		try {
 			
-			/*
-			 * fill the new posts with data from the old post that
-			 * should not change (e.g., date, user name, groups)
-			 */
-			post.setUser(oldPost.getUser());
-			post.setGroups(oldPost.getGroups());
-			post.setContentId(oldPost.getContentId());
-			post.setDate(oldPost.getDate());
-			//post.setResource(oldPost.getResource());
-			post.setTags(oldPost.getTags());
-			
+			//Updates bibtex key
+
 			final P param = this.getInsertParam(post, session);
-			// insert
-			this.updatePostGroups(param, session);
+			this.updatePostBibTexKey(param, session);
 						
 			session.commitTransaction();
 		} finally {
@@ -1613,11 +1605,14 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			session.endTransaction();
 		}
 	}
-	
-	protected void updatePostGroups(final P param, final DBSession session) {
+	/**
+	 * Updates groupId for the post
+	 * also updates Simhashes
+	 **/
+	protected void updateGroupsOfPost(final P param, final DBSession session) {
 		session.beginTransaction();
 		try {
-			// Insert resource
+			// update bibtex's (or bookmark's) groupID
 			this.update("update" + this.resourceClassName +"Group", param, session);
 			// Insert/Update SimHashes
 			this.insertOrUpdatePostHash(param, false, session);
@@ -1628,10 +1623,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		}
 	}
 	
+	/**
+	 * Updates bibtex key for a post. update table: bibtex*/
 	protected void updatePostBibTexKey(final P param, final DBSession session) {
 		session.beginTransaction();
 		try {
-			// Insert resource
+			// updates bibtexkey
 			this.update("updatebibtexKey", param, session);
 			
 			session.commitTransaction();
