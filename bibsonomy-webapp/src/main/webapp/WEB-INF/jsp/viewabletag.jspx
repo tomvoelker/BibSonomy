@@ -30,7 +30,7 @@
 		
 			<!-- links to user's  or global concept / tag pages -->
 			<li>
-				<a href="/tag/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+				<a href="${urlGenerator.getTagUrlByString(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 				<c:out value=" "/>
 				<fmt:message key="tag.asTagFromAll"/>						
 			</li>			

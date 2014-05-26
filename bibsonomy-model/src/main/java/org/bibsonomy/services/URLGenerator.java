@@ -80,6 +80,7 @@ public class URLGenerator {
     private static final String USER_PREFIX = "user";
     private static final String GROUP_PREFIX = "group";
     private static final String AUTHOR_PREFIX = "author";
+    private static final String TAG_PREFIX = "tag";
     private static final String PICTURE_PREFIX = "picture";
     private static final String PUBLICATION_PREFIX = "bibtex";
     private static final String BOOKMARK_PREFIX = "url";
@@ -306,6 +307,16 @@ public class URLGenerator {
     public String getUserPictureUrlByString(final String userName) {
     	return this.getUrl(this.projectHome + PICTURE_PREFIX + "/" + USER_PREFIX + "/" + UrlUtils.safeURIEncode(userName));
     }
+    
+    /**
+     * Constructs the URL for the tag's page.
+     * 
+     * @param tagName
+     * @return The URL for the tag's page.
+     */
+    public String getTagUrlByString(final String tagName) {
+        return this.getUrl(this.projectHome + TAG_PREFIX + "/" + UrlUtils.safeURIEncode(tagName));
+    }  
     
 
     /**
