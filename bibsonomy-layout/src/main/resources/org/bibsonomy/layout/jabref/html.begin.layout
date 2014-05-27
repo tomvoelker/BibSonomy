@@ -2,7 +2,7 @@
 <!-- 2006-01-17 wegner added PMID linkout -->
 <html>
 <header>
-	<title>BibSonomy Output</title>
+	<title>\format[InsertPropertyFormatter]{project.name,BibSonomy} Output</title>
 	<style type="text/css">
 body {
     font-family:Georgia, Garamond, Serif;

@@ -37,6 +37,7 @@ import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.BatchEditCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
+import org.bibsonomy.webapp.util.GroupingCommandUtils;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -45,13 +46,12 @@ import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeEx
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
-import org.bibsonomy.webapp.util.GroupingCommandUtils;
-
 
 /**
  * Controller to batch edit (update tags and delete) resources.
  * 
- * The controller handles two cases if multiple posts are edited (on batch edit site or post publication site):
+ * The controller handles two cases if multiple posts are edited (on batch edit 
+ * site or post publication site):
  * <ol>
  * <li>the given posts should be updated (and eventually some posts deleted or normalized - if the user flagged them)</li>
  * <li>the given posts should be stored (and eventually some posts ignored - if the user flagged them)</li>
@@ -85,6 +85,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	private static final int DELETE_ACTION = 3;
 	private static final int IGNORE_ACTION = 4;
 	private static final int UPDATE_VIEWABLE_ACTION = 5;
+	
 	/**
 	 * 
 	 * @param resourceClass
@@ -97,7 +98,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		}
 		return ResourceFactory.getResourceName(resourceClass);
 	}
-	
 	
 	private RequestLogic requestLogic;
 	private LogicInterface logic;
@@ -123,6 +123,11 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 	@Override
 	public View workOn(final BatchEditCommand command) {
+		/*
+		 * FIXME: rename the variables in this method. Most names are no longer
+		 * suitable and refer to the older version where this controler only
+		 * could handle tag updates. E.g. postsToNormalize, the tagMaps etc.
+		 */
 		final RequestWrapperContext context = command.getContext();
 
 		/*
@@ -130,7 +135,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * page he's coming from at the end of the posting process. 
 		 */
 		if (!present(command.getReferer())) {
-			command.setReferer(requestLogic.getReferer());
+			command.setReferer(this.requestLogic.getReferer());
 		}
 
 		/*
@@ -144,7 +149,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * check if ckey is valid
 		 */
 		if (!context.isValidCkey()) {
-			errors.reject("error.field.valid.ckey");
+			this.errors.reject("error.field.valid.ckey");
 			return Views.ERROR;
 		}
 
@@ -157,7 +162,8 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 		/* *******************************************************
 		 * FIRST: determine some flags which control the operation
-		 * *******************************************************/
+		 * ******************************************************
+		 */
 		/*
 		 * the type of resource we're dealing with 
 		 */
@@ -168,14 +174,14 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			postsArePublications = resourceTypes.contains(BibTex.class);
 			resourceClass = resourceTypes.iterator().next();
 		} else {
-			// TODO: exception 
+			// TODO: exception
 			throw new IllegalArgumentException("please provide a resource type");
 		}
 		
 		/*
 		 * FIXME: rename/check setting of that flag in the command
 		 */
-		final boolean flagMeansDelete = command.getDeleteCheckedPosts();  
+		final boolean flagMeansDelete = command.getDeleteCheckedPosts();
 		/*
 		 * When the user can flag posts to be deleted, this means those
 		 * posts already exist. Thus, all other posts must be updated.
@@ -189,16 +195,17 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 		/* *******************************************************
 		 * SECOND: get the data we're working on
-		 * *******************************************************/
+		 * ******************************************************
+		 */
 		/*
 		 * put the posts from the session into a hash map (for faster access)
 		 */
-		final Map<String, Post<? extends Resource>> postMap = getPostMap(updatePosts);
-		Map<String, Boolean> markedPostsMap = command.getPosts();
+		final Map<String, Post<? extends Resource>> postMap = this.getPostMap(updatePosts);
+		final Map<String, Boolean> markedPostsMap = command.getPosts();
 		/*
 		 * the tags that should be added to all posts
 		 */
-		final Set<Tag> addTags = getAddTags(command.getTags());
+		final Set<Tag> addTags = this.getAddTags(command.getTags());
 		/*
 		 * for each post we have its old tags and its new tags
 		 */
@@ -211,9 +218,10 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 		/* *******************************************************
 		 * THIRD: initialize temporary variables (lists)
-		 * *******************************************************/
+		 * ******************************************************
+		 */
 		/*
-		 * create lists for the different types of actions 
+		 * create lists for the different types of actions
 		 */
 		final List<String> postsToDelete = new LinkedList<String>();   // delete
 		final List<Post<?>> postsToUpdate = new LinkedList<Post<?>>(); // update/store
@@ -370,19 +378,19 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * We need to add the list command already here, otherwise we get an 
 		 * org.springframework.beans.InvalidPropertyException
 		 */
-		addPostListToCommand(command, postsArePublications, postsWithErrors);
+		this.addPostListToCommand(command, postsArePublications, postsWithErrors);
 
 		/*
 		 * update/store posts
 		 */
 		if (updatePosts) {
 			log.debug("updating " + postsToUpdate.size() + " posts for user " + loginUserName);
-			updatePosts(postsToUpdate, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_TAGS, loginUserName);
-			updatePosts(postsToNormalize, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_NORMALIZE, loginUserName);
-			updatePosts(postsToUpdateViewable, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_VIEWABLE, loginUserName);
+			this.updatePosts(postsToUpdate, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_TAGS, loginUserName);
+			this.updatePosts(postsToNormalize, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_NORMALIZE, loginUserName);
+			this.updatePosts(postsToUpdateViewable, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_VIEWABLE, loginUserName);
 		} else {
 			log.debug("storing "  + postsToUpdate.size() + " posts for user " + loginUserName);
-			storePosts(postsToUpdate, resourceClass, postMap, postsWithErrors, command.isOverwrite(), loginUserName);
+			this.storePosts(postsToUpdate, resourceClass, postMap, postsWithErrors, command.isOverwrite(), loginUserName);
 		}
 
 		log.debug("finished batch edit for user " + loginUserName);
@@ -400,7 +408,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		/*
 		 * return to batch edit view on errors
 		 */
-		if (errors.hasErrors()) {
+		if (this.errors.hasErrors()) {
 			if (postsArePublications) {
 				return Views.BATCHEDITBIB;
 			} 
@@ -510,7 +518,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 							postsWithErrors.add(post);
 						}
 						hasErrors = true;
-						errors.rejectValue(getOldResourceName(resourceType) + ".list[" + postId + "].resource", errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
+						this.errors.rejectValue(getOldResourceName(resourceType) + ".list[" + postId + "].resource", errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
 					}
 					if (!hasErrors && hasDuplicate) {
 						/*
@@ -613,7 +621,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 						postsWithErrors.add(post);
 					}
 					hasErrors = true;
-					errors.rejectValue(getOldResourceName(resourceType) + ".list[" + postId + "].resource", errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
+					this.errors.rejectValue(getOldResourceName(resourceType) + ".list[" + postId + "].resource", errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
 				}
 			}
 		}

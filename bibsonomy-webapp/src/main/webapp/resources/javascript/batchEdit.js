@@ -1,7 +1,6 @@
 var ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR='input[name="abstractGrouping"]';
 var OTHER_GROUPING_CLASS_SELECTOR=".otherGroupsBox";
 
-
 $(document).ready(function () {
 	
 	$(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);

@@ -86,6 +86,8 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
     public void setAbstractGrouping(final String abstractGrouping) {
         this.abstractGrouping = abstractGrouping;
     }
+    
+    
 	/**
 	 * @return the flag that determines, weather the dialogue called was configured to 
 	 * edit(delete) or edit(create) existing posts.
