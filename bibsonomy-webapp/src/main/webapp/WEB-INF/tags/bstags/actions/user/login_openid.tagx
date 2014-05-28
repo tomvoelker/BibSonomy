@@ -26,7 +26,7 @@
 			<li><a class="provider" href="http://yahoo.com/">Yahoo!</a></li>
 			<li><a class="provider" href="http://myopenid.com/">myOpenID</a></li> 
 		</ul>
-		<br class="clearfix" />
+		<p class="clearfix"><!--  --></p>
 		<fmt:message key="login.method.openid" var="openID" />
 		<bsform:input placeholder="openID" path="openID" noHelp="${true}" labelText="${openID}" required="true" />
 
