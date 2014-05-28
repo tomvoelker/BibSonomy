@@ -21,78 +21,55 @@
 	 	|
 	 	+-->
 
+
+	<!-- 
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="isFriendOfUser" type="java.lang.Boolean" required="true" description="Has the requestedUser the loginUser in his friend list?"/>
 	<jsp:directive.attribute name="isOfFriendUser" type="java.lang.Boolean" required="true" description="Has the loginUser the requestedUser in his friend list?"/>
 	<jsp:directive.attribute name="isFollowerOfUser" type="java.lang.Boolean" required="true" description="Does the loginUser follow the requestedUser?"/>
 	<jsp:directive.attribute name="commonGroups" type="java.util.List" required="false"/>
+	-->
+
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.UserResourceViewCommand" required="true"/>
 
 	<div class="socializer">
 		<div class="media">
-			<a class="pull-left img-thumbnail img-responsive" href="/user/${mtl:encodeURI(requestedUser)}" title="@${mtl:encodeURI(requestedUser)}">
-				<img alt="@${fn:escapeXml(requestedUser)}" src="/picture/user/${fn:escapeXml(requestedUser)}" class="user-avatar"/>
-				<span>@${fn:escapeXml(requestedUser)}</span>
+			<a class="pull-left img-thumbnail img-responsive" href="/user/${mtl:encodeURI(command.requestedUser)}" title="@${mtl:encodeURI(command.requestedUser)}">
+				<img alt="@${fn:escapeXml(requestedUser)}" src="/picture/user/${fn:escapeXml(command.requestedUser)}" class="user-avatar"/>
+				<span>@${fn:escapeXml(command.requestedUser)}</span>
 			</a>
 	
 			<div class="media-body" id="titletext">
-				<h4 class="media-heading" id="username"><user:name user="${command.user}"/></h4>
-				<p><user:cv user="${command.user}"/></p>
+				<h4 class="media-heading" id="username">
+				<c:choose>
+					<c:when test="${command.context.userLoggedIn}">
+						<user:name user="${command.user}"/>
+					</c:when>
+					<c:otherwise>
+						<span>@<c:out value="${command.requestedUser}" /></span>
+					</c:otherwise>
+				</c:choose>
+				</h4>
+				<!--+
+					| only for logged in users: followers, friends, groups, etc.
+			 		+-->
+			 	<c:choose>
+					<c:when test="${command.context.userLoggedIn and command.context.loginUser.name ne command.requestedUser}">
+						<p><user:userSocializerButtons user="${command.user}"/></p>
+					</c:when>
+					
+					<c:when test="${not command.context.userLoggedIn}">
+						<p class="small-font"><fmt:message key="friends.addfriend.login" /></p>
+						<a class="btn btn-success bnt-xs" href="/login"><fmt:message key="navi.login" /></a>
+					</c:when>
+					<c:when test="${command.context.userLoggedIn and command.context.loginUser.name eq command.requestedUser}">
+						<p class="small-font"><fmt:message key="friends.addfriend.you" /></p>
+					</c:when>
+				</c:choose>
 			</div>
 		</div>
-					
-					
-				
-		
-	
-		<!--+ 
-		 	|
-		 	| friendship with icons ...
-		 	|
-		 	+-->
-		<script type="text/javascript" src="${resdir}/javascript/userRelation.js"><!-- keep me --></script>
-		
-		<!-- remove user from login user's friend list -->
-		<span id="sys:network:bibsonomy-friend_removeLink" style="${isOfFriendUser ? '' : 'display:none'}">
-			<fmt:message key="friends.actions.delete.title" var="removeFriend">
-				<fmt:param value="${command.user.name}"/>
-			</fmt:message>
-			<button:linkButton name="linkButton" onclick="javascript:updateUserRelation('remove','${fn:escapeXml(requestedUser)}', 'sys:network:bibsonomy-friend', '${ckey}');return false;"
-			   title="${removeFriend}"
-			   href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=removeFriend&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}"
-			   image="${resdir}/image/starblue_selected.png"
-			   >
-				<jsp:attribute name="text">
-					<fmt:message key="navi.friend"/>
-				</jsp:attribute>
-			</button:linkButton>
-		</span>
-		<!-- add user from login user's friend list -->
-		<span id="sys:network:bibsonomy-friend_followLink" style="${isOfFriendUser ? 'display:none' : ''}">
-			<fmt:message key="friends.actions.add.title" var="addFriend">
-				<fmt:param value="${command.user.name}"/>
-			</fmt:message>
-			<button:linkButton name="linkButton" onclick="javascript:updateUserRelation('add','${fn:escapeXml(requestedUser)}', 'sys:network:bibsonomy-friend', '${ckey}');return false;"
-			   title="${addFriend}"
-			   href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=addFriend&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}"
-			   image="${resdir}/image/starblue_unselected.png"
-			   >
-				<jsp:attribute name="text">
-					<fmt:message key="navi.friend"/>
-				</jsp:attribute>
-			</button:linkButton>
-		</span>
-				
-		<!--+
-			|
-			| Show "socialize" link with yellow border.
-			|
-			+-->
-			<fmt:message key="personalized.info" var="personalized"/>
-			<button:linkButton href="/personalized/user/${fn:escapeXml(command.requestedUser)}" title="${personalized}">
-				<jsp:attribute name="text">
-					<fmt:message key="personalize"/>
-				</jsp:attribute>
-			</button:linkButton>	
+		<p class="clearfix"><!--  --> <!--  --></p>
 	</div>
+	<hr />		
 </jsp:root>

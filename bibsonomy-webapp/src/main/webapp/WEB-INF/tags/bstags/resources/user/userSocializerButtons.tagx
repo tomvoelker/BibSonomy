@@ -14,6 +14,9 @@
 
 	
 	<jsp:directive.attribute name="user" type="org.bibsonomy.model.User" required="true" />
+	
+	<script type="text/javascript" src="${resdir}/javascript/userRelation.js"><!-- keep me --></script>
+	
 	<div class="btn-group btn-group-xs">
 
     	<fmt:message key="cv.title" var="cvtitle">

@@ -13,7 +13,6 @@
 
 	
 	<jsp:directive.attribute name="user" type="org.bibsonomy.model.User" required="true" />
-    <jsp:directive.attribute name="prefix" type="java.lang.String" required="false" />
 
     <c:if test="${not empty user.realname}">
     	<span class="realname">
