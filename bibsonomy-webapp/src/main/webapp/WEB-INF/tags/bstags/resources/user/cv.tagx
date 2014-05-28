@@ -14,17 +14,59 @@
 
 	
 	<jsp:directive.attribute name="user" type="org.bibsonomy.model.User" required="true" />
-
-    <c:if test="${not empty user.realname}">
+	<div class="btn-group btn-group-xs">
+	  <c:if test="${not empty user.realname}">
     	<fmt:message key="cv.title" var="cvtitle">
     		<fmt:param value="${user.name}"/>
     	</fmt:message>
-		<button:linkButton title="${cvtitle}" href="/cv/user/${fn:escapeXml(user.name)}" image="${resdir}/image/cv.png">
-			<jsp:attribute name="text">
-				<fmt:message key="navi.cv.abbrev"/>
-			</jsp:attribute>
-		</button:linkButton>		
+    	
+    	
+    	
+		<a class="btn btn-default btn-sm" href="/cv/user/${fn:escapeXml(user.name)}" title="${cvtitle}"> 
+			<c:choose>
+				<c:when test='${image != null}'>
+					<span class="glyphicon ${image}"><!-- --></span>&amp;nbsp;<fmt:message key="navi.cv.abbrev"/>
+				</c:when> 
+				<c:otherwise>
+					<span><fmt:message key="navi.cv.abbrev"/></span>
+				</c:otherwise>
+			</c:choose>
+		</a>
     </c:if>
-      
+   
+	    <a  class="btn btn-xs btn-primary" 
+	    	style="${command.ofFriendUser ? '' : 'display:none'}" 
+	    	onclick="javascript:updateUserRelation('remove','${fn:escapeXml(user.name)}', 'sys:network:bibsonomy-friend', '${ckey}');return false;"
+		  	title="${removeFriend}"
+		   	href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=removeFriend&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}"
+		   	><span class="glyphicon glyphicon-plus"><!--  --></span>&amp;nbsp;
+			
+				<fmt:message key="navi.friend"/>
+	
+		</a>			
+	</div>				<!-- remove user from login user's friend list -->
+		
+		<!-- add user from login user's friend list -->
+		<span id="sys:network:bibsonomy-friend_followLink" style="${isOfFriendUser ? 'display:none' : ''}">
+			<fmt:message key="friends.actions.add.title" var="addFriend">
+				<fmt:param value="${command.user.name}"/>
+			</fmt:message>
+			<button:linkButton name="linkButton" onclick="javascript:updateUserRelation('add','${fn:escapeXml(requestedUser)}', 'sys:network:bibsonomy-friend', '${ckey}');return false;"
+			   title="${addFriend}"
+			   href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=addFriend&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}"
+			   image="${resdir}/image/starblue_unselected.png"
+			   >
+				<jsp:attribute name="text">
+					<fmt:message key="navi.friend"/>
+				</jsp:attribute>
+			</button:linkButton>
+		</span>
+    
+    <c:if test="${not empty user.profession}">
+    	<p class="small-font"><em><fmt:message key="user.profession" />:</em>&amp;nbsp;<c:out value="${user.profession}" /></p>
+    </c:if>
+    <c:if test="${not empty user.interests}">
+    	<p class="small-font"><em><fmt:message key="user.interests" />:</em>&amp;nbsp;<c:out value="${user.interests}" /></p>
+    </c:if>
 	
 </jsp:root>

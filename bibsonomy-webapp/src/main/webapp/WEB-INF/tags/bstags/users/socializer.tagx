@@ -29,6 +29,22 @@
 	<jsp:directive.attribute name="commonGroups" type="java.util.List" required="false"/>
 
 	<div class="socializer">
+		<div class="media">
+			<a class="pull-left img-thumbnail img-responsive" href="/user/${mtl:encodeURI(requestedUser)}" title="@${mtl:encodeURI(requestedUser)}">
+				<img alt="@${fn:escapeXml(requestedUser)}" src="/picture/user/${fn:escapeXml(requestedUser)}" class="user-avatar"/>
+				<span>@${fn:escapeXml(requestedUser)}</span>
+			</a>
+	
+			<div class="media-body" id="titletext">
+				<h4 class="media-heading" id="username"><user:name user="${command.user}"/></h4>
+				<p><user:cv user="${command.user}"/></p>
+			</div>
+		</div>
+					
+					
+				
+		
+	
 		<!--+ 
 		 	|
 		 	| friendship with icons ...
