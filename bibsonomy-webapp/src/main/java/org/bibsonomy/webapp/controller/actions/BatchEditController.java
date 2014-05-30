@@ -31,6 +31,7 @@ import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.TagUtils;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.BatchEditCommand;
@@ -81,6 +82,8 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	private static final int NORMALIZE_ACTION = 2;
 	private static final int DELETE_ACTION = 3;
 	private static final int IGNORE_ACTION = 4;
+	
+	private URLGenerator urlGenerator;
 	
 	/**
 	 * 
@@ -657,7 +660,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * if no URL is given, we redirect to the user's page
 		 */
 		if (!present(redirectUrl)) {
-			redirectUrl = UrlUtils.safeURIEncode("/user" + loginUserName); // TODO: should be done by the URLGenerator
+			redirectUrl = urlGenerator.getUserUrlByString(loginUserName);
 		}
 		return new ExtendedRedirectView(redirectUrl);
 	}
