@@ -9,7 +9,7 @@
 		<c:when test="${not empty user.name}">
 			<li>
 				<c:url var="userHome" value="${urlGenerator.getUserUrlByString(user.name)}" />
-				<c:url var="userRelations" value="/concepts/${user.name}" />
+				<c:url var="userRelations" value="${urlgenerator.getConceptsUrlByString(user.name)}" />
 				<c:url var="userPDF" value="${urlGenerator.getUserUrlByString(user.name) }">
 					<c:param name="filter" value="JUST_PDF" />
 				</c:url>

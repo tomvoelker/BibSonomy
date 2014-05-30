@@ -84,6 +84,7 @@ public class URLGenerator {
     private static final String PICTURE_PREFIX = "picture";
     private static final String PUBLICATION_PREFIX = "bibtex";
     private static final String BOOKMARK_PREFIX = "url";
+    private static final String CONCEPTS_PREFIX = "concepts";
     private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
     private static final String PUBLICATION_INTER_HASH_ID = String.valueOf(HashID.INTER_HASH.getId());
 
@@ -315,8 +316,27 @@ public class URLGenerator {
      * @return The URL for the tag's page.
      */
     public String getTagUrlByString(final String tagName) {
-        return this.getUrl(this.projectHome + TAG_PREFIX + "/" + UrlUtils.safeURIEncode(tagName));
+    	String url = this.projectHome + TAG_PREFIX;
+    	if (present(tagName)) {
+    		url += "/" + UrlUtils.safeURIEncode(tagName);
+    	}
+        return this.getUrl(url);
     }  
+    
+    
+    /**
+     * Constructs a concepts URL for the given name.
+     * 
+     * @param name
+     * @return The URL pointing to the concepts of the user.
+     */
+    public String getConceptsUrlByString(final String name) {
+        String url = this.projectHome + CONCEPTS_PREFIX;
+        if (present(name)) {
+            url += "/" + UrlUtils.safeURIEncode(name);
+        }
+        return this.getUrl(url);
+    }
     
 
     /**
