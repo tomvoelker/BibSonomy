@@ -58,7 +58,7 @@
   	  	<c:if test="${not empty user.groups}">
 	    	<c:forEach var="grp" items="${user.groups}">
 	    		<c:set var="groupName" value="${grp.name}" />
-	    		<c:url value="/group/${groupName}" var="groupUrl" />
+	    		<c:url value="${urlGenerator.getGroupUrlByString(groupName)}" var="groupUrl" />
 		  		<a href="${groupUrl}"><c:out value="${groupName}" /></a>
 			</c:forEach>
 		</c:if>  	
