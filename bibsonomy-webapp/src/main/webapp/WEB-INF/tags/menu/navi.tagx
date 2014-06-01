@@ -45,7 +45,7 @@
 						<li class="separator">${mtl:ch('nbsp')}</li>
 					</c:if>
 					
-					<li><a href="/concepts/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.relations"/></a></li>
+					<li><a href="${urlGenerator.getConceptsUrlByString(loginUserName)}"><fmt:message key="navi.relations"/></a></li>
 					<c:if test="${not command.context.loginUser.settings.simpleInterface}">
 						<li><a href="/cv/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.cv"/></a></li>
 						<li><a href="/mySearch"><fmt:message key="navi.browse"/></a></li>

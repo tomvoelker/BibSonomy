@@ -36,7 +36,7 @@
 						<c:forEach var="group" items="${command.context.loginUser.groups}">
 							<c:set var="reportingUrl" value="${group.publicationReportingSettings.externalReportingUrl}" />
 							<c:if test="${not empty reportingUrl and group.name eq command.context.loginUser.name}">
-								<a class="item editqa" href="${reportingUrl}/edit?intraHash=${post.resource.intraHash}&amp;referer=${properties['project.home']}${fn:escapeXml(requPath)}"><!-- keep me --></a>
+								<a class="item editqa" href="${reportingUrl}/edit?intraHash=${post.resource.intraHash}&amp;referer=${urlGenerator.getProjectHome()}${fn:escapeXml(requPath)}"><!-- keep me --></a>
 							</c:if>
 						</c:forEach>
 					</c:if>
@@ -47,7 +47,7 @@
 								<fmt:message key="group.reporting" var="reportDesc">
 									<fmt:param value="${group.name}" />
 								</fmt:message>
-								<a class="item report" href="${reportingUrl}/report?intraHash=${post.resource.intraHash}&amp;user=${post.user.name}&amp;referer=${properties['project.home']}${fn:escapeXml(requPath)}" title="${reportDesc}"><!-- keep me --></a>
+								<a class="item report" href="${reportingUrl}/report?intraHash=${post.resource.intraHash}&amp;user=${post.user.name}&amp;referer=${urlGenerator.getProjectHome()}${fn:escapeXml(requPath)}" title="${reportDesc}"><!-- keep me --></a>
 							</c:if>
 						</c:forEach>
 					</c:if>

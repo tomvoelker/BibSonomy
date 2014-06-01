@@ -116,7 +116,7 @@
 			<parts:infobox>
 				<jsp:attribute name="infoTextBody">
 					<fmt:message key="followersPage.about">
-						<fmt:param>${properties['project.home']}help_${locale.language}/Followers</fmt:param>
+						<fmt:param>${urlGenerator.getProjectHome()}help_${locale.language}/Followers</fmt:param>
 					</fmt:message>
 					<c:out value=" "/>
 					<c:set var="ofUsers">

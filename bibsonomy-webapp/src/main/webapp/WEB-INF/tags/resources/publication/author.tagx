@@ -12,7 +12,7 @@
 	<c:set var="baseUrl" value="/" />
 	
 	<c:if test="${useAbsoluteURL}">
-		<c:set var="baseUrl" value="${properties['project.home']}" />
+		<c:set var="baseUrl" value="${urlGenerator.getProjectHome()}" />
 	</c:if>
 	
 	<!-- initialize with empty list -->
