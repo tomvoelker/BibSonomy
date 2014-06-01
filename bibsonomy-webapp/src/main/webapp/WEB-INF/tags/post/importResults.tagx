@@ -36,7 +36,7 @@
 		
 			  		<ul>
 			  			<c:forEach items="${command.newBookmarks}" var="mapEntry">
-		   					<li class="bm"><a href="/url/${mapEntry.key}"><c:out value="${mapEntry.value}"/></a></li>
+		   					<li class="bm"><a href="${urlGenerator.getBookmarkUrlByString(mapEntry.key)}"><c:out value="${mapEntry.value}"/></a></li>
 						</c:forEach>
 					</ul>
 				</fieldset>
@@ -54,7 +54,7 @@
           
 					<ul>
 						<c:forEach items="${command.updatedBookmarks}" var="mapEntry">
-		    				<li class="bm"><a href="/url/${mapEntry.key}"><c:out value="${mapEntry.value}"/></a></li>
+		    				<li class="bm"><a href="${urlGenerator.getBookmarkUrlByString(mapEntry.key)}"><c:out value="${mapEntry.value}"/></a></li>
 						</c:forEach>
 					</ul>
 				</fieldset>
@@ -72,7 +72,7 @@
 					
 					<ul>
 						<c:forEach items="${command.nonCreatedBookmarks}" var="mapEntry">
-		    				<li class="bm"><a href="/url/${mapEntry.key}"><c:out value="${mapEntry.value}"/></a></li>
+		    				<li class="bm"><a href="${urlGenerator.getBookmarkUrlByString(mapEntry.key)}"><c:out value="${mapEntry.value}"/></a></li>
 						</c:forEach>
 					</ul>
             

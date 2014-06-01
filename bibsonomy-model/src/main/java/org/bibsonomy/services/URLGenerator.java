@@ -85,6 +85,8 @@ public class URLGenerator {
     private static final String PUBLICATION_PREFIX = "bibtex";
     private static final String BOOKMARK_PREFIX = "url";
     private static final String CONCEPTS_PREFIX = "concepts";
+    private static final String ADMIN_PREFIX = "admin";
+    
     private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
     private static final String PUBLICATION_INTER_HASH_ID = String.valueOf(HashID.INTER_HASH.getId());
 
@@ -158,7 +160,7 @@ public class URLGenerator {
      */
     public String getPostUrl(final Class<?> resourceType, final String intraHash, final String userName) {
         if (resourceType == Bookmark.class) {
-            return this.getBookmarkUrl(intraHash, userName);
+            return this.getBookmarkUrlByString(intraHash, userName);
         } else if (resourceType == BibTex.class) {
             return this.getPublicationUrlByHash(intraHash, userName, true);
         } else {
@@ -235,7 +237,7 @@ public class URLGenerator {
         if (!present(user) || !present(user.getName())) {
             return this.getUrl(this.projectHome + BOOKMARK_PREFIX + "/" + bookmark.getInterHash());
         }
-        return this.getBookmarkUrl(bookmark.getIntraHash(), user.getName());
+        return this.getBookmarkUrlByString(bookmark.getIntraHash(), user.getName());
     }
 
     /**
@@ -246,7 +248,7 @@ public class URLGenerator {
      * @param userName
      * @return The URL pointing to the post of that user for the bookmark represented by the given intrahash.
      */
-    public String getBookmarkUrl(final String intraHash, final String userName) {
+    public String getBookmarkUrlByString(final String intraHash, final String userName) {
         String url = this.projectHome + BOOKMARK_PREFIX + "/" + intraHash;
         if (present(userName)) {
             url += "/" + UrlUtils.safeURIEncode(userName);
@@ -332,6 +334,22 @@ public class URLGenerator {
      */
     public String getConceptsUrlByString(final String name) {
         String url = this.projectHome + CONCEPTS_PREFIX;
+        if (present(name)) {
+            url += "/" + UrlUtils.safeURIEncode(name);
+        }
+        return this.getUrl(url);
+    }
+    
+    
+    /**
+     * Constructs a url to the admin page if no name is given
+     * or a url to a subpage otherwise
+     * 
+     * @param name
+     * @return The URL pointing to the page.
+     */
+    public String getAdminUrlByString(final String name) {
+        String url = this.projectHome + ADMIN_PREFIX;
         if (present(name)) {
             url += "/" + UrlUtils.safeURIEncode(name);
         }
@@ -432,5 +450,10 @@ public class URLGenerator {
     public void setBibtexMiscUrls(final Post<BibTex> post) {
         post.getResource().addMiscField(BibTexUtils.ADDITIONAL_MISC_FIELD_BIBURL, this.getPublicationUrl(post.getResource(), post.getUser()).toString());
     }
+    
+    public static void main(String[] args) {
+		URLGenerator g = new URLGenerator();
+		System.out.println(g.getConceptsUrlByString("abc") + "/asldf");
+	}
 
 }

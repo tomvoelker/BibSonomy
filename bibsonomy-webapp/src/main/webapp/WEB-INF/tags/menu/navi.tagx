@@ -115,14 +115,14 @@
 		
 		<c:if test="${loginUser.role eq 'ADMIN' }">
 			<li class="pulldown ${activeTab eq 'admin' ? 'active' : ''}" id="systemAdmin" data-touch="false">
-				<a href="/admin">admin</a>
+				<a href="${urlGenerator.getAdminUrlByString(null)}">admin</a>
 				<ul>
-					<li><a href="/admin/spam">spam</a></li>
-					<li><a href="/admin/group">groups</a></li>
-					<li><a href="/admin/lucene">full text search</a></li>
-					<li><a href="/admin/recommender">recommenders</a></li>
-					<li><a href="/admin/oauth">OAuth consumers</a></li>
-					<li><a href="/admin/sync">synchronization</a></li>
+					<li><a href="${urlGenerator.getAdminUrlByString('spam')}">spam</a></li>
+					<li><a href="${urlGenerator.getAdminUrlByString('group')}">groups</a></li>
+					<li><a href="${urlGenerator.getAdminUrlByString('lucene')}">full text search</a></li>
+					<li><a href="${urlGenerator.getAdminUrlByString('recommender')}">recommenders</a></li>
+					<li><a href="${urlGenerator.getAdminUrlByString('oauth')}">OAuth consumers</a></li>
+					<li><a href="${urlGenerator.getAdminUrlByString('sync')}">synchronization</a></li>
 				</ul>
 			</li>
 		</c:if>
