@@ -25,7 +25,7 @@
 				  <div id="my_menu" class="nicedropmenudiv">
 				    <a href="/friends">myFriends</a>
 					<a href="${userRelations}">myConcepts</a>
-					<a href="/mySearch">mySearch</a>
+					<a href="${urlGenerator.getMySearchUrl()}">mySearch</a>
 			        <a href="${userPDF}">myPDF</a>
 			        <a href="${userDuplicates}">myDuplicates</a>
 			        <a href="${userBibTeX}">myBibTeX</a>

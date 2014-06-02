@@ -87,6 +87,7 @@ public class URLGenerator {
     private static final String CONCEPTS_PREFIX = "concepts";
     private static final String CONCEPT_PREFIX = "concept";
     private static final String ADMIN_PREFIX = "admin";
+    private static final String MYSEARCH_PREFIX = "mySearch";
     private static final String SEARCH_PREFIX = "search";
     private static final String FOLLOWERS_PREFIX = "followers";
     private static final String FRIEND_PREFIX = "friend";
@@ -102,7 +103,7 @@ public class URLGenerator {
 
     public static void main(String[] args) {
 		URLGenerator g = new URLGenerator("asdf/");
-		System.out.println(g.getFollowersUrl());
+		System.out.println(g.getMySearchUrl());
     }
 
     /**
@@ -325,6 +326,16 @@ public class URLGenerator {
     	String url = this.getGroupUrlByGroupName(groupName);
     	url += "/" + UrlUtils.safeURIEncode(tagName);
     	
+    	return this.getUrl(url);
+    }
+    
+    /**
+     * Constructs a URL pointing to the fast user search,
+     * i.e. /mySearch
+     * @return URL pointing to the user search
+     */
+    public String getMySearchUrl() {
+    	String url = this.projectHome + MYSEARCH_PREFIX;
     	return this.getUrl(url);
     }
 
