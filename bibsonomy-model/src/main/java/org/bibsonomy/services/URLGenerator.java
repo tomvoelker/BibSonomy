@@ -363,7 +363,7 @@ public class URLGenerator {
      * @param userName
      * @return The URL to the picture of the user.
      */
-    public String getUserPictureUrlByString(final String userName) {
+    public String getUserPictureUrlByUsername(final String userName) {
     	return this.getUrl(this.projectHome + PICTURE_PREFIX + "/" + USER_PREFIX + "/" + UrlUtils.safeURIEncode(userName));
     }
     
@@ -373,7 +373,7 @@ public class URLGenerator {
      * @param tagName
      * @return The URL for the tag's page.
      */
-    public String getTagUrlByString(final String tagName) {
+    public String getTagUrlByTagName(final String tagName) {
     	String url = this.projectHome + TAG_PREFIX;
     	if (present(tagName)) {
     		url += "/" + UrlUtils.safeURIEncode(tagName);

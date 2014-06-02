@@ -92,7 +92,7 @@
 	<!-- link to global tag-page (if a user has ALL of the requestedTags as tags) -->
   	<c:if test="${command.postCountForTagsForAll > 0}"> 
 		<li> 
-			<a href="${urlGenerator.getTagUrlByString(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+			<a href="${urlGenerator.getTagUrlByTagName(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 			<c:out value=" "/>
 			<fmt:message key="tag.asTagFromAll"/>
 			<!-- if user is logged in, he benefits of seeing the postCount -->

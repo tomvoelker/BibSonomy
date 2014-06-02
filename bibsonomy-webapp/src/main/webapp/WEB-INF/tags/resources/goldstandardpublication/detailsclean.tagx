@@ -122,7 +122,7 @@
 								<div class="ownerAvatar" >
 									<span>@${fn:escapeXml(user.name)}</span>
 									<a class="profilepic" href="${urlGenerator.getPublicationUrlByInterHashAndUsername(publication.interHash, fn:escapeXml(user.name))}" title="@${fn:escapeXml(user.name)}">
-										<img alt="@${fn:escapeXml(user.name)}" src="${urlGenerator.getUserPictureUrlByString(fn:escapeXml(user.name))}" />
+										<img alt="@${fn:escapeXml(user.name)}" src="${urlGenerator.getUserPictureUrlByUsername(fn:escapeXml(user.name))}" />
 									</a>
 								</div>
 								<c:out value=" "/>
@@ -137,7 +137,7 @@
 										<div class="ownerAvatar">
 											<span>@${fn:escapeXml(user.name)}</span>
 											<a class="profilepic" href="${urlGenerator.getPublicationUrlByInterHashAndUsername(publication.interHash, fn:escapeXml(user.name))}" title="@${fn:escapeXml(user.name)}">
-												<img alt="@${fn:escapeXml(user.name)}" src="${urlGenerator.getUserPictureUrlByString(fn:escapeXml(user.name))}" />
+												<img alt="@${fn:escapeXml(user.name)}" src="${urlGenerator.getUserPictureUrlByUsername(fn:escapeXml(user.name))}" />
 											</a>
 										</div>
 									</c:forEach>
@@ -149,7 +149,7 @@
 										<div class="ownerAvatar">
 											<span>@${fn:escapeXml(user.name)}</span>
 											<a class="profilepic" href="${urlGenerator.getPublicationUrlByInterHashAndUsername(publication.interHash, fn:escapeXml(user.name))}" title="@${fn:escapeXml(user.name)}">
-												<img alt="@${fn:escapeXml(user.name)}" src="${urlGenerator.getUserPictureUrlByString(fn:escapeXml(user.name))}" />
+												<img alt="@${fn:escapeXml(user.name)}" src="${urlGenerator.getUserPictureUrlByUsername(fn:escapeXml(user.name))}" />
 											</a>
 										</div>
 									</c:forEach>

@@ -63,7 +63,7 @@
     <taxo:topics>
       <rdf:Bag>
         <c:forEach var="tag" items="${post.tags}">
-          <rdf:li rdf:resource="${urlGenerator.getTagUrlByString(fn:escapeXml(mtl:removeInvalidXmlChars(tag.name)))}"/>
+          <rdf:li rdf:resource="${urlGenerator.getTagUrlByTagName(fn:escapeXml(mtl:removeInvalidXmlChars(tag.name)))}"/>
         </c:forEach>  
       </rdf:Bag>
     </taxo:topics>

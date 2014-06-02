@@ -10,7 +10,7 @@
 	
 	<jsp:directive.attribute name="cmd" type="org.bibsonomy.webapp.command.RelatedUserCommand" required="true"/>
 	<jsp:directive.attribute name="tags" type="java.lang.String" required="true"/>			
-	<foaf:Group rdf:about="${urlGenerator.getTagUrlByString(fn:escapeXml(tags))}">
+	<foaf:Group rdf:about="${urlGenerator.getTagUrlByTagName(fn:escapeXml(tags))}">
 		<foaf:name><c:out value="${tags}"/></foaf:name>
 		<description>Community for tag(s) <c:out value="${tags}"/></description>
 	    <c:forEach var="user" items="${cmd.relatedUsers}">
@@ -23,7 +23,7 @@
 			<foaf:name><c:out value="${user.name}"/></foaf:name>
 			<community:hasMembership>
                 <community:Membership>
-				  <community:relatedTo rdf:resource="${urlGenerator.getTagUrlByString(fn:escapeXml(tags))}"/>
+				  <community:relatedTo rdf:resource="${urlGenerator.getTagUrlByTagName(fn:escapeXml(tags))}"/>
 				  <community:weight><c:out value="${user.prediction}"/></community:weight>
                 </community:Membership>
 			</community:hasMembership>

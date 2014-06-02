@@ -76,11 +76,11 @@
 			        	 	<buttons:help iconText="${example}">
 			        	 		<jsp:attribute name="helpText">
 				        			<fmt:message key="edittags.example.partOne">
-				        			 	<fmt:param><a href="${urlGenerator.getTagUrlByString('folksonomy')}"> folksonomy </a></fmt:param>
-				        				<fmt:param><a href="${urlGenerator.getTagUrlByString('project')}"> project </a></fmt:param>
-				        				<fmt:param><a href="${urlGenerator.getTagUrlByString('social')}"> social </a></fmt:param>
-				        				<fmt:param><a href="${urlGenerator.getTagUrlByString('system')}"> system </a></fmt:param> 
-				        				<fmt:param><a href="${urlGenerator.getTagUrlByString('bookmarking')}"> bookmarking </a></fmt:param> 
+				        			 	<fmt:param><a href="${urlGenerator.getTagUrlByTagName('folksonomy')}"> folksonomy </a></fmt:param>
+				        				<fmt:param><a href="${urlGenerator.getTagUrlByTagName('project')}"> project </a></fmt:param>
+				        				<fmt:param><a href="${urlGenerator.getTagUrlByTagName('social')}"> social </a></fmt:param>
+				        				<fmt:param><a href="${urlGenerator.getTagUrlByTagName('system')}"> system </a></fmt:param> 
+				        				<fmt:param><a href="${urlGenerator.getTagUrlByTagName('bookmarking')}"> bookmarking </a></fmt:param> 
 				        			</fmt:message>
 
 						    		<hr />
