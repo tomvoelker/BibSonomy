@@ -90,6 +90,7 @@ public class URLGenerator {
     private static final String SEARCH_PREFIX = "search";
     private static final String FRIEND_PREFIX = "friend";
     private static final String BIBTEXKEY_PREFIX = "bibtexkey";
+    private static final String RELEVANTFOR_PREFIX = "relevantfor";
     private static final String VIEWABLE_PREFIX = "viewable";
     private static final String VIEWABLE_PUBLIC_SUFFIX = "public";
     private static final String VIEWABLE_PRIVATE_SUFFIX = "private";
@@ -100,8 +101,7 @@ public class URLGenerator {
 
     public static void main(String[] args) {
 		URLGenerator g = new URLGenerator("asdf/");
-		System.out.println(g.getPublicationUrlByBibTexKey("Willie82"));
-		System.out.println(g.getPublicationUrlByBibTexKeyAndUserName("Willie82", "testUser"));
+		System.out.println(g.getRelevantForUrlByGroupName("kde"));
     }
 
     /**
@@ -474,6 +474,17 @@ public class URLGenerator {
 		return this.getUrl(url);
     }  
     
+    /**
+     * Constructs a URL for the relevant posts for a group.
+     * 
+     * @param groupName
+     * @return URL pointing to the page with posts relevant for the group with name groupName.
+     */
+    public String getRelevantForUrlByGroupName(final String groupName) {
+    	String url = this.projectHome + RELEVANTFOR_PREFIX + "/" + GROUP_PREFIX;
+    	url += "/" + UrlUtils.safeURIEncode(groupName);
+    	return this.getUrl(url);
+    }
     
     /**
      * Constructs a search URL for the requested search string.

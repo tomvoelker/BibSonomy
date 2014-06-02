@@ -79,8 +79,8 @@
 						</tr>
 						<c:forEach var="grp" items="${loginUser.groups}">
 							<tr>
-								<td><a href="${urlGenerator.getGroupUrlByGroupName(grp.name)}"><c:out value='${grp.name}'/></a></td>
-								<td><a href="/relevantfor/group/${mtl:encodeURI(grp.name)}"><fmt:message key="navi.relevantFor"/></a></td>
+								<td><a href="${urlGenerator.getGroupUrlByGroupName(grp.name)}"><c:out value='${grp.name}'/></a></td>								
+								<td><a href="${urlGenerator.getRelevantForUrlByGroupName(grp.name)}"><fmt:message key="navi.relevantFor"/></a></td>
 								<td><a href="${urlGenerator.getViewableUrlByGroupName(grp.name)}"><fmt:message key="navi.viewable"/></a></td>
 								<td>
 									<c:if test="${grp.sharedDocuments}">
