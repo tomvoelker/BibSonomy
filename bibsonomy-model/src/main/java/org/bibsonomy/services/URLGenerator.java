@@ -77,27 +77,27 @@ public class URLGenerator {
         }
     }
 
-    private static final String BASKET_PREFIX = "basket";
-    private static final String USER_PREFIX = "user";
-    private static final String GROUP_PREFIX = "group";
+    private static final String ADMIN_PREFIX = "admin";
     private static final String AUTHOR_PREFIX = "author";
-    private static final String TAG_PREFIX = "tag";
-    private static final String PICTURE_PREFIX = "picture";
-    private static final String PUBLICATION_PREFIX = "bibtex";
+    private static final String BASKET_PREFIX = "basket";
+    private static final String BIBTEXKEY_PREFIX = "bibtexkey";
     private static final String BOOKMARK_PREFIX = "url";
     private static final String CONCEPTS_PREFIX = "concepts";
     private static final String CONCEPT_PREFIX = "concept";
-    private static final String ADMIN_PREFIX = "admin";
-    private static final String MYSEARCH_PREFIX = "mySearch";
-    private static final String SEARCH_PREFIX = "search";
     private static final String FOLLOWERS_PREFIX = "followers";
     private static final String FRIEND_PREFIX = "friend";
-    private static final String BIBTEXKEY_PREFIX = "bibtexkey";
+    private static final String GROUP_PREFIX = "group";
+    private static final String MYSEARCH_PREFIX = "mySearch";
+    private static final String PICTURE_PREFIX = "picture";
+    private static final String PUBLICATION_PREFIX = "bibtex";
     private static final String RELEVANTFOR_PREFIX = "relevantfor";
-    private static final String VIEWABLE_PREFIX = "viewable";
-    private static final String VIEWABLE_PUBLIC_SUFFIX = "public";
-    private static final String VIEWABLE_PRIVATE_SUFFIX = "private";
+    private static final String SEARCH_PREFIX = "search";
+    private static final String TAG_PREFIX = "tag";
+    private static final String USER_PREFIX = "user";
     private static final String VIEWABLE_FRIENDS_SUFFIX = "friends";
+    private static final String VIEWABLE_PREFIX = "viewable";
+    private static final String VIEWABLE_PRIVATE_SUFFIX = "private";
+    private static final String VIEWABLE_PUBLIC_SUFFIX = "public";
     
     private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
     private static final String PUBLICATION_INTER_HASH_ID = String.valueOf(HashID.INTER_HASH.getId());
