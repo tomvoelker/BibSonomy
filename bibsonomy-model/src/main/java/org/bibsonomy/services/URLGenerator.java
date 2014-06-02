@@ -87,6 +87,7 @@ public class URLGenerator {
     private static final String CONCEPTS_PREFIX = "concepts";
     private static final String CONCEPT_PREFIX = "concept";
     private static final String ADMIN_PREFIX = "admin";
+    private static final String SEARCH_PREFIX = "search";
     
     private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
     private static final String PUBLICATION_INTER_HASH_ID = String.valueOf(HashID.INTER_HASH.getId());
@@ -327,7 +328,7 @@ public class URLGenerator {
     public String getUserUrlByUserNameAndTagName(final String userName, final String tagName) {
     	String url = this.getUserUrlByUserName(userName);
     	url += "/" + UrlUtils.safeURIEncode(tagName);
-    	return url;
+    	return this.getUrl(url);
     }
     
     
@@ -418,6 +419,17 @@ public class URLGenerator {
     	
     	return this.getUrl(url);
     			 
+    }
+    
+    /**
+     * Constructs a search URL for the requested search string.
+     * 
+     * @param toSearch
+     * @return URL pointing to the results of the search.
+     */
+    public String getSearchUrl(final String toSearch) {
+    	String url = this.projectHome + SEARCH_PREFIX + "/" + UrlUtils.safeURIEncode(toSearch);
+    	return this.getUrl(url);
     }
     
     
@@ -533,7 +545,7 @@ public class URLGenerator {
     
     public static void main(String[] args) {
 		URLGenerator g = new URLGenerator("asdf/");
-		System.out.println(g.getUserUrlByUserNameAndTagName("maximiliank", "bibtex"));
+		System.out.println(g.getSearchUrl("web api"));
     }
 
 }
