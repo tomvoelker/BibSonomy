@@ -70,7 +70,7 @@
 				</c:if>
 				
 				<!--<c:out value="${requTag}" />-->
-				<a href="${urlGenerator.getConceptsUrlByString(tagPath)}/${fn:escapeXml(concept.name)}" 
+				<a href="/concept/${tagPath}/${fn:escapeXml(concept.name)}" 
 				   title="${showPostsForConceptTitle}" 
 				   class="${selectedConceptClass}">${fn:escapeXml(concept.name)}</a>
 				<c:out value=" "/>${mtl:ch('tagrelations.superConceptOf')}<c:out value=" "/>
