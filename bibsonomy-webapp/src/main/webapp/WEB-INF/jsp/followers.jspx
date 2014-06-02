@@ -126,7 +126,7 @@
 							</c:when>
 						<c:otherwise>
 							<fmt:message key="followersPage.entries.ofUser">
-								<fmt:param><a href="${urlGenerator.getUserUrlByUsername(fn:escapeXml(command.requestedUser))}"><c:out value='${command.requestedUser}'/></a></fmt:param>
+								<fmt:param><a href="${urlGenerator.getUserUrlByUserName(fn:escapeXml(command.requestedUser))}"><c:out value='${command.requestedUser}'/></a></fmt:param>
 							</fmt:message>
 						</c:otherwise>
 						</c:choose>

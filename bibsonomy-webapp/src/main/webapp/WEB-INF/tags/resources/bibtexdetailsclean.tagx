@@ -252,7 +252,7 @@
 							<ul>
 							<c:forEach var="tag" items="${tags}" varStatus="status">
 								<!-- TODO: remove nobr and replace with CSS, it is deprecated! -->
-								<li style="display:list-item;"><span class="tagitem_rightborder"><a class="tagitem" href="${urlGenerator.getUserUrlByUsername(post.user.name) }/${mtl:encodeURI(tag.name)}" rel="nofollow" title=""><nobr><c:out value="${tag.name}"/></nobr></a></span></li>
+								<li style="display:list-item;"><span class="tagitem_rightborder"><a class="tagitem" href="${urlGenerator.getUserUrlByUserName(post.user.name) }/${mtl:encodeURI(tag.name)}" rel="nofollow" title=""><nobr><c:out value="${tag.name}"/></nobr></a></span></li>
 							</c:forEach>
 							</ul>
 						</div>

@@ -85,6 +85,7 @@ public class URLGenerator {
     private static final String PUBLICATION_PREFIX = "bibtex";
     private static final String BOOKMARK_PREFIX = "url";
     private static final String CONCEPTS_PREFIX = "concepts";
+    private static final String CONCEPT_PREFIX = "concept";
     private static final String ADMIN_PREFIX = "admin";
     
     private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
@@ -310,7 +311,7 @@ public class URLGenerator {
      * @return The URL for the user's page.
      */
     public String getUserUrl(final User user) {
-        return this.getUrl(this.projectHome + USER_PREFIX + "/" + UrlUtils.safeURIEncode(user.getName()));
+        return this.getUserUrlByUserName(user.getName());
     }
 
     /**
@@ -319,7 +320,7 @@ public class URLGenerator {
      * @param userName
      * @return The URL for the user's page.
      */
-    public String getUserUrlByUsername(final String userName) {
+    public String getUserUrlByUserName(final String userName) {
         return this.getUrl(this.projectHome + USER_PREFIX + "/" + UrlUtils.safeURIEncode(userName));
     }
     
@@ -394,6 +395,23 @@ public class URLGenerator {
             url += "/" + UrlUtils.safeURIEncode(name);
         }
         return this.getUrl(url);
+    }
+    
+    /**
+     * Constructs a concept URL for the given username and tagname,
+     * i.e. a URL of the form /concept/user/USERNAME/TAGNAME.
+     * 
+     * @param username
+     * @param tagName
+     * @return The URL pointing to the concepts of the user with the specified tags.
+     */
+    public String getConceptUrlByUserNameAndTagName(final String userName, final String tagName) {
+    	String url = this.projectHome + CONCEPT_PREFIX + "/" + USER_PREFIX;
+    	url += "/" + UrlUtils.safeURIEncode(userName);
+    	url += "/" + UrlUtils.safeURIEncode(tagName);
+    	
+    	return this.getUrl(url);
+    			 
     }
     
     
@@ -509,8 +527,7 @@ public class URLGenerator {
     
     public static void main(String[] args) {
 		URLGenerator g = new URLGenerator("asdf/");
-		System.out.println(g.getAuthorUrlByString("testAuthor", true));
-		System.out.println(g.getAuthorUrlByName("testAuthor"));
+		System.out.println(g.getConceptUrlByUserNameAndTagName("schmitz", "event bla bla"));
     }
 
 }

@@ -180,7 +180,7 @@ public class RedirectController implements MinimalisticController<RedirectComman
 			return "/relations/" + encodedLoggedinUserName;
 		}
 		
-		final String userPage = urlGenerator.getUserUrlByUsername(loginUserName);
+		final String userPage = urlGenerator.getUserUrlByUserName(loginUserName);
 		/*
 		 * XXX: it would be nice that myPUMA and myBibSonomy redirects are only
 		 * available in the corresponding themes, but e.g. old and new help pages

@@ -18,7 +18,7 @@
 			<!-- find out correct form action -->
 			<c:choose>
 				<c:when test="${not empty command.requestedUser}">
-					<c:set var="formAction" value="${urlGenerator.getUserUrlByUsername(command.requestedUser)}"/>
+					<c:set var="formAction" value="${urlGenerator.getUserUrlByUserName(command.requestedUser)}"/>
 				</c:when> 
 				<c:when test="${not empty command.requestedGroup}">
 					<c:set var="formAction" value="${urlGenerator.getGroupUrlByGroupName(command.requestedGroup)}"/> 

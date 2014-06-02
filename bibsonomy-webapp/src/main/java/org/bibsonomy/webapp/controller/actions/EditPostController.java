@@ -612,7 +612,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * has changed, we should redirect to the corresponding new page
 		 */
 		if (!present(referer) || referer.matches(".*/postPublication$") || referer.matches(".*/postBookmark$")) {
-			return new ExtendedRedirectView(this.urlGenerator.getUserUrlByUsername(userName));
+			return new ExtendedRedirectView(this.urlGenerator.getUserUrlByUserName(userName));
 		}
 		/*
 		 * redirect to referer URL

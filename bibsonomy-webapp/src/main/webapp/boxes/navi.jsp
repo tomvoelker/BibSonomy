@@ -8,12 +8,12 @@
 	<c:choose>
 		<c:when test="${not empty user.name}">
 			<li>
-				<c:url var="userHome" value="${urlGenerator.getUserUrlByUsername(user.name)}" />
+				<c:url var="userHome" value="${urlGenerator.getUserUrlByUserName(user.name)}" />
 				<c:url var="userRelations" value="${urlgenerator.getConceptsUrlByString(user.name)}" />
-				<c:url var="userPDF" value="${urlGenerator.getUserUrlByUsername(user.name) }">
+				<c:url var="userPDF" value="${urlGenerator.getUserUrlByUserName(user.name) }">
 					<c:param name="filter" value="JUST_PDF" />
 				</c:url>
-				<c:url var="userDuplicates" value="${urlGenerator.getUserUrlByUsername(user.name) }">
+				<c:url var="userDuplicates" value="${urlGenerator.getUserUrlByUserName(user.name) }">
 					<c:param name="filter" value="DUPLICATES" />
 				</c:url>
 				<c:url var="userBibTeX" value="/bib/user/${user.name}">

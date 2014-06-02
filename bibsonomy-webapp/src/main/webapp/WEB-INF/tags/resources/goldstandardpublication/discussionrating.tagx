@@ -47,7 +47,7 @@
 		<c:if test="${fn:length(discussionUsers) eq 1}">
 			<fmt:message key="post.resource.discussion.discussionUser.one">
 				<c:forEach var="discussionItem" items="${post.resource.discussionItems}">
-					<fmt:param value="${urlGenerator.getUserUrlByUsername(discussionItem.user.name)}/"/>
+					<fmt:param value="${urlGenerator.getUserUrlByUserName(discussionItem.user.name)}/"/>
 					<fmt:param value="${discussionItem.user.name}"/>
 				</c:forEach>
 			</fmt:message>
@@ -55,7 +55,7 @@
 		<c:if test="${fn:length(discussionUsers) eq 2}">
 			<fmt:message key="post.resource.discussion.discussionUser.two">
 			<c:forEach var="discussionItem" items="${post.resource.discussionItems}">
-				<fmt:param value="${urlGenerator.getUserUrlByUsername(discussionItem.user.name)}/"/>
+				<fmt:param value="${urlGenerator.getUserUrlByUserName(discussionItem.user.name)}/"/>
 				<fmt:param value="${discussionItem.user.name}"/>
 			</c:forEach>
 			</fmt:message>
@@ -63,7 +63,7 @@
 		<c:if test="${fn:length(discussionUsers) eq 3}">
 			<fmt:message key="post.resource.discussion.discussionUser.three">
 			<c:forEach var="discussionItem" items="${post.resource.discussionItems}">
-				<fmt:param value="${urlGenerator.getUserUrlByUsername(discussionItem.user.name)}/"/>
+				<fmt:param value="${urlGenerator.getUserUrlByUserName(discussionItem.user.name)}/"/>
 				<fmt:param value="${discussionItem.user.name}"/>
 			</c:forEach>
 			</fmt:message>
@@ -75,7 +75,7 @@
 				<c:forEach var="discussionUser" items="${dicussionUsers}">
 					<c:choose> 
 						<c:when test="${count lt 3}">
-							<fmt:param value="${urlGenerator.getUserUrlByUsername(discussionUser.name)}/"/>
+							<fmt:param value="${urlGenerator.getUserUrlByUserName(discussionUser.name)}/"/>
 							<fmt:param value="${discussionUser.name}"/>
 						</c:when>
 					</c:choose>

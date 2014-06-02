@@ -22,7 +22,7 @@
 						<!-- sites for logged in users -->
 						<li><a href="#" id="nav_more"><fmt:message key="more"/> &amp;raquo;</a></li>
 						<li><a href="#" id="nav_search">&amp;nbsp;</a></li>
-						<li><a href="${urlGenerator.getUserUrlByUsername(username)}" id="nav_my"><fmt:message key="navi.my"/></a></li>
+						<li><a href="${urlGenerator.getUserUrlByUserName(username)}" id="nav_my"><fmt:message key="navi.my"/></a></li>
 					</c:when>
 					<c:otherwise>
 						<li><a href="/tags" id="nav_tags"><fmt:message key="navi.tags"/></a></li>
