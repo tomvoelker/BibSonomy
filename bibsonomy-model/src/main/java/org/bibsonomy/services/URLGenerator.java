@@ -87,6 +87,11 @@ public class URLGenerator {
     private static final String FOLLOWERS_PREFIX = "followers";
     private static final String FRIEND_PREFIX = "friend";
     private static final String GROUP_PREFIX = "group";
+    private static final String MYBIBTEX_PREFIX = "myBibTex";
+    private static final String MYDOCUMENTS_PREFIX = "myDocuments";
+    private static final String MYDUPLICATES_PREFIX = "myDuplicates";
+    private static final String MYHOME_PREFIX = "myHome";
+    private static final String MYRELATIONS_PREFIX = "myRelations";
     private static final String MYSEARCH_PREFIX = "mySearch";
     private static final String PICTURE_PREFIX = "picture";
     private static final String PUBLICATION_PREFIX = "bibtex";
@@ -104,7 +109,12 @@ public class URLGenerator {
 
     public static void main(String[] args) {
 		URLGenerator g = new URLGenerator("asdf/");
-		System.out.println(g.getBasketUrl());
+		System.out.println(g.getMyBibTexUrl());
+		System.out.println(g.getMyDocumentsUrl());
+		System.out.println(g.getMyDuplicatesUrl());
+		System.out.println(g.getMyHomeUrl());
+		System.out.println(g.getMyRelationsUrl());
+		System.out.println(g.getMySearchUrl());
     }
 
     /**
@@ -332,6 +342,56 @@ public class URLGenerator {
     	String url = this.getGroupUrlByGroupName(groupName);
     	url += "/" + UrlUtils.safeURIEncode(tagName);
     	
+    	return this.getUrl(url);
+    }
+    
+    /**
+     * Constructs a URL pointing to the bibtex-bookmarks and publications of the user,
+     * i.e. /myBibTex
+     * @return URL pointing to the bookmarks and publications of the user
+     */
+    public String getMyBibTexUrl() {
+    	String url = this.projectHome + MYBIBTEX_PREFIX;
+    	return this.getUrl(url);
+    }
+    
+    /**
+     * Constructs a URL pointing to the documents of the user
+     * i.e. /myDocuments
+     * @return URL pointing to the documents of the user
+     */
+    public String getMyDocumentsUrl() {
+    	String url = this.projectHome + MYDOCUMENTS_PREFIX;
+    	return this.getUrl(url);
+    }
+    
+    /**
+     * Constructs a URL pointing to the duplicates of the user
+     * i.e. /myDuplicates
+     * @return URL pointing to the duplicates of the user
+     */
+    public String getMyDuplicatesUrl() {
+    	String url = this.projectHome + MYDUPLICATES_PREFIX;
+    	return this.getUrl(url);
+    }
+    
+    /**
+     * Constructs a URL pointing to the bookmarks and publications of the user,
+     * i.e. /myHome
+     * @return URL pointing to the bookmarks and publications of the user
+     */
+    public String getMyHomeUrl() {
+    	String url = this.projectHome + MYHOME_PREFIX;
+    	return this.getUrl(url);
+    }
+    
+    /**
+     * Constructs a URL pointing to the relations of the user
+     * i.e. /myRelations
+     * @return URL pointing to the relations of the user
+     */
+    public String getMyRelationsUrl() {
+    	String url = this.projectHome + MYRELATIONS_PREFIX;
     	return this.getUrl(url);
     }
     
