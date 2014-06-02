@@ -90,13 +90,21 @@ public class URLGenerator {
     private static final String SEARCH_PREFIX = "search";
     private static final String FRIEND_PREFIX = "friend";
     private static final String VIEWABLE_PREFIX = "viewable";
+    private static final String VIEWABLE_PUBLIC_SUFFIX = "public";
+    private static final String VIEWABLE_PRIVATE_SUFFIX = "private";
+    private static final String VIEWABLE_FRIENDS_SUFFIX = "friends";
     
     private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
     private static final String PUBLICATION_INTER_HASH_ID = String.valueOf(HashID.INTER_HASH.getId());
 
     public static void main(String[] args) {
 		URLGenerator g = new URLGenerator("asdf/");
-		System.out.println(g.getViewableUrlByGroupNameAndTagName("kde", "web api"));
+		System.out.println(g.getViewablePublicUrl());
+		System.out.println(g.getViewablePrivateUrl());
+		System.out.println(g.getViewablePublicUrlByTagName("web api"));
+		System.out.println(g.getViewablePrivateUrlByTagName("web api"));
+		System.out.println(g.getViewableFriendsUrl());
+		System.out.println(g.getViewableFriendsUrlByTagName("web api"));
     }
 
     /**
@@ -528,6 +536,77 @@ public class URLGenerator {
     public String getUserUrlByUserNameAndTagName(final String userName, final String tagName) {
     	String url = this.getUserUrlByUserName(userName);
     	url += "/" + UrlUtils.safeURIEncode(tagName);
+    	return this.getUrl(url);
+    }
+    
+    /**
+     * Constructs the URL for the posts viewable for friends,
+     * i.e. /viewable/friends
+     * 
+     * @return URL pointing to the viewable posts for friends
+     */
+    public String getViewableFriendsUrl() {
+    	String url = this.getProjectHome() + VIEWABLE_PREFIX + "/" + VIEWABLE_FRIENDS_SUFFIX;
+    	return this.getUrl(url);
+    }
+    
+    /**
+     * Constructs the URL for the posts viewable for friends tagged with tagName,
+     * i.e. /viewable/friends/TAGNAME
+     * 
+     * @return URL pointing to the viewable posts for friends tagged with tagName
+     */
+    public String getViewableFriendsUrlByTagName(final String tagName) {
+    	String url = this.getViewableFriendsUrl();
+    	url += "/" + UrlUtils.safeURIEncode(tagName);
+    	
+    	return this.getUrl(url);
+    }
+    
+    /**
+     * Constructs the URL for the posts viewable for public
+     * i.e. /viewable/public
+     * 
+     * @return URL pointing to the public viewable posts
+     */
+    public String getViewablePublicUrl() {
+    	String url = this.getProjectHome() + VIEWABLE_PREFIX + "/" + VIEWABLE_PUBLIC_SUFFIX;
+    	return this.getUrl(url);
+    }
+    
+    /**
+     * Constructs the URL for the posts viewable for public tagged with tagName
+     * i.e. /viewable/public/TAGNAME
+     * 
+     * @return URL pointing to the public viewable posts tagged with tagName
+     */
+    public String getViewablePublicUrlByTagName(final String tagName) {
+    	String url = this.getViewablePublicUrl();
+    	url += "/" + UrlUtils.safeURIEncode(tagName);
+    	
+    	return this.getUrl(url);
+    }
+    
+    /**
+     * Constructs the URL for the posts viewable for private
+     * 
+     * @return URL pointing to the private viewable posts
+     */
+    public String getViewablePrivateUrl() {
+    	String url = this.getProjectHome() + VIEWABLE_PREFIX + "/" + VIEWABLE_PRIVATE_SUFFIX;
+    	return this.getUrl(url);
+    }
+    
+    /**
+     * Constructs the URL for the posts viewable for private tagged with tagName
+     * i.e. /viewable/private/TAGNAME
+     * 
+     * @return URL pointing to the private viewable posts tagged with tagName
+     */
+    public String getViewablePrivateUrlByTagName(final String tagName) {
+    	String url = this.getViewablePrivateUrl();
+    	url += "/" + UrlUtils.safeURIEncode(tagName);
+    	
     	return this.getUrl(url);
     }
     

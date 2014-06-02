@@ -26,8 +26,8 @@
 					<li><a href="${urlGenerator.getUserUrlByUserName(loginUserName)}"><fmt:message key="navi.posts"/></a></li>
 <!-- 					<li><a href="/recommended"><fmt:message key="navi.recommendedPosts"/></a></li> -->
 					<c:if test="${not command.context.loginUser.settings.simpleInterface}">
-						<li><a href="/viewable/private"><fmt:message key="navi.privatePosts"/></a></li>
-						<li><a href="/viewable/friends"><fmt:message key="navi.friendsPosts"/></a></li>
+						<li><a href="${urlGenerator.getViewablePrivateUrl()}"><fmt:message key="navi.privatePosts"/></a></li>
+						<li><a href="${urlGenerator.getViewableFriendsUrl()}"><fmt:message key="navi.friendsPosts"/></a></li>
 						<li><a href="${urlGenerator.getUserUrlByUserName(loginUserName)}?filter=JUST_PDF"><fmt:message key="navi.pdfs"/></a></li>
 +						<li><a href="${urlGenerator.getUserUrlByUserName(loginUserName)}?filter=DUPLICATES"><fmt:message key="navi.duplicates"/></a></li>
 					</c:if>
