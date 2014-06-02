@@ -1,0 +1,19 @@
+<!-- XXX: for a javascript solution have a look at version 1.20 -->
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+	
+	<jsp:directive.attribute name="buttonImage" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="buttonId" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="onClick" type="java.lang.String" required="false"/>
+    <jsp:directive.attribute name="message" type="java.lang.String" required="false" description="The key for the message that should be shown."/>
+   
+   	<input onclick="${onClick}" type="button" value="Hide Column 2" id="${buttonId}"/>
+<!-- 	<button id="${buttonId}" onclick="${onClick}"> <img src="${buttonImage}"/></button>-->
+	<div> 
+		<c:if test="${not empty message}">
+			<fmt:message key="${message}"/>
+		</c:if> 
+	</div>	
+</jsp:root>
