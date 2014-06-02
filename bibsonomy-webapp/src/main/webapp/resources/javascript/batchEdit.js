@@ -2,6 +2,8 @@ var ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR='input[name="abstractGrouping"]';
 var OTHER_GROUPING_CLASS_SELECTOR=".otherGroupsBox";
 
 $(document).ready(function () {
+	hideAllFeatures();
+	hideAllButtons();
 	
 	$(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
 	$.each($(".abstractGroupingGroup"),function(b,c){toggleGroupBox(c);});
@@ -29,13 +31,12 @@ $(document).ready(function () {
 	 */
 	$('input[name^=posts]:checkbox').change(function() {
 		if ($(this).is(':checked')) {
-			if ($('#selector').val() == 1) {
-				changeTagInputs(this, false);
-		    } else {
-		    	changeTagInputs(this, true);
-		    }
-		} else {
-			changeTagInputs(this, true);
+			showAllButtons();
+		}
+		//$('#selector').change();
+		//$('#selector').change();
+		if ($('#selector').val()==2){
+			$('#selector').change();
 		}
 		var oneNotChecked = false;
 		/*
@@ -47,57 +48,149 @@ $(document).ready(function () {
 			return;
 		});
 		$('#selectAll').prop('checked', !oneNotChecked);
+		
+		var allNotChecked = true;
+		$('input[name^=posts]:checkbox:checked').each(function() {
+			allNotChecked = false;
+			return;
+		});
+		if(allNotChecked){
+			hideAllButtons();
+			hideAllFeatures();
+		}
+		
 	});
 
 	$('#selector').change(function() {
 		if($(this).val() == 0) {
-			changeTagInputs('input[name^=posts]:checkbox:checked', true);
-			$('input[name=tags]').prop('disabled', true);
-			$('.batchUpdateButton').prop('disabled', true);
-			$('.batchUpdateButtonViewable').prop('disabled',true);
+			hideAllFeatures();
+			$('div[name=updateButton]').hide();
+			//changeTagInputs('input[name^=posts]:checkbox:checked', true);
+		//$('.batchUpdateButton').prop('disabled', false); needed?
+			
 		} else if($(this).val() == 1) {
-			changeTagInputs('input[name^=posts]:checkbox:checked', false);
-			$('input[name=tags]').prop('disabled', false);
-			$('.batchUpdateButton').prop('disabled', false);
-			$('.batchUpdateButtonViewable').prop('disabled',true);
-		} else if($(this).val() == 5) {
-			changeTagInputs('input[name^=posts]:checkbox:checked', true);
-			$('input[name=tags]').prop('disabled', true);
-			$('.batchUpdateButtonViewable').prop('disabled',false);
-			$('.batchUpdateButton').prop('disabled', true);
-		} else {
-			var value = true;
+			hideAllFeatures();
+			$('div[name=AllpostTagsHeader]').show();
+			$('div[name=allTagBox]').show();
+			//if ($('#selectAll').is(':not(:checked)')){
+				$('#selectAll').prop('checked', true);
+				$('#selectAll').change();
+			//}
+			//disableAllCheckboxes();
 			
-			if($(this).val() == 3) {
-				value = confirm(getString("batchedit.deleteSelected.confirm"));
-			} else if($(this).val() == 4) {
-				value = confirm(getString("batchedit.ignoreSelected.confirm"));
-			}
+			$('div[name=updateButton]').show();
+			//$('.batchUpdateButton').show();
+			//changeTagInputs('input[name^=posts]:checkbox:checked', false);
 			
-			if(!value) {
-				$(this).find('option:eq(0)').prop("selected", true);
-				changeTagInputs('input[name^=posts]:checkbox:checked', true);
-				$('input[name=tags]').prop('disabled', true);
-				$('.batchUpdateButton').prop('disabled', true);
-			} else {
-				changeTagInputs('input[name^=posts]:checkbox:checked', true);
-				$('input[name=tags]').prop('disabled', true);
-				$('.batchUpdateButton').prop('disabled', false);
-				$('.batchUpdateButtonViewable').prop('disabled',true);
-			}
-		}
+		} else if($(this).val() == 2) {
+			hideAllFeatures();
+			
+			$('th[name=postTagsHeader]').show();
+				
+			var a = [];
+			$('input[name^=posts]:checkbox').each(function() {
+				if ($(this).is(':checked')) {
+					a.push(true);
+				}else{
+					a.push(false);
+				}
+			});
+			a=a.reverse();
+			$('td[name=eachPostTag]').each(function() {
+				if (a.pop()==true) {
+					$(this).show();
+				}
+			});
+			
+			$('div[name=updateButton]').show();
+			//$('.batchUpdateButton').show();
+			//changeTagInputs('input[name^=posts]:checkbox:checked', false);
+		} 
 	});
-});
 	
+	
+	$('#delButton').click(function() {
+		hideAllFeatures();
+		enableAllCheckboxes()
+	//	$('div[name=updateButton]').hide();
+	//	action =3;
+		$('div[name=updateButton]').show();
+		var value = true;
+		value = confirm(getString("batchedit.deleteSelected.confirm"));
+		
+		
+	//	$('.batchUpdateButton').show(); auto submit
+	
+	});
+	
+	$('#normalizeButton').click(function() {
+		hideAllFeatures();
+		$('div[name=updateButton]').hide();
+		//show(getString("a test")); show a message and auto submit
+		
+		
+	//	$('.batchUpdateButton').show(); auto submit
+	
+	});
+	
+	$('#privacyButton').click(function() {
+		hideAllFeatures();
+		$('div[name=privacyBox]').show();
+		$('div[name=updateButton]').show();
+	});
+	
+	
+});
+
+
 function changeTagInputs(selector, disabled) {
 	$(selector).each(function() {
 		/*
 		 * remove possible special characters from selector string
 		 */
-		var attr = $(this).prop('name').replace('posts','newTags').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1');
-		$('input[name=' + attr + ']:text').prop('disabled', disabled);
+	//	var attr = $(this).prop('name').replace('posts','newTags').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1');
+		//$('input[name=' + attr + ']:text').prop('disabled', disabled);
 	});
 }
+/*
+function disableAllCheckboxes(){
+	$('#selectAll').prop('disabled', true);
+	$('input[name^=posts]:checkbox').each(function() {
+		$(this).prop('disabled', true);
+	});
+}
+
+function enableAllCheckboxes(){
+	$('#selectAll').prop('disabled', false);
+	$('input[name^=posts]:checkbox').each(function() {
+		$(this).prop('disabled', false);
+	});
+}*/
+function hideAllFeatures(){
+	$('td[name=eachPostTag]').hide();
+	$('th[name=postTagsHeader]').hide();
+	$('div[name=AllpostTagsHeader]').hide();
+	
+	$('div[name=privacyBox]').hide();
+	$('div[name=allTagBox]').hide();
+}
+
+function hideAllButtons(){
+	$('div[name=updateButton]').hide();
+	
+	$('td[name=updateSelector]').hide();
+	$('td[name=delButton]').hide();
+	$('td[name=normalizeButton]').hide();
+	$('td[name=privacyButton]').hide();
+}
+
+function showAllButtons(){
+	$('td[name=updateSelector]').show();
+	$('td[name=delButton]').show();
+	$('td[name=normalizeButton]').show();
+	$('td[name=privacyButton]').show();
+}
+
 function onAbstractGroupingClick(){toggleGroupBox($(this).parent());
 }
 function toggleGroupBox(c){var a=$(c).children("input:checked");
