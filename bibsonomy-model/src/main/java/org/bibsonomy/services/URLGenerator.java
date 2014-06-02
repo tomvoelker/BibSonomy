@@ -517,11 +517,19 @@ public class URLGenerator {
         return this.getUrl(this.projectHome + USER_PREFIX + "/" + UrlUtils.safeURIEncode(userName));
     }
 
+    /**
+     * Constructs the URL for the user's page with all posts tagged with tagName
+     * 
+     * @param userName
+     * @param tagName
+     * @return The URL for the user's page with all posts tagged with tagName
+     */
     public String getUserUrlByUserNameAndTagName(final String userName, final String tagName) {
     	String url = this.getUserUrlByUserName(userName);
     	url += "/" + UrlUtils.safeURIEncode(tagName);
     	return this.getUrl(url);
     }
+    
 
     /**
      * @see URLGenerator#setCheckUrls(boolean)
