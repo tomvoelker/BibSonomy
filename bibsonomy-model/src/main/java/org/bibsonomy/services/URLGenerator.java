@@ -89,13 +89,14 @@ public class URLGenerator {
     private static final String ADMIN_PREFIX = "admin";
     private static final String SEARCH_PREFIX = "search";
     private static final String FRIEND_PREFIX = "friend";
+    private static final String VIEWABLE_PREFIX = "viewable";
     
     private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
     private static final String PUBLICATION_INTER_HASH_ID = String.valueOf(HashID.INTER_HASH.getId());
 
     public static void main(String[] args) {
 		URLGenerator g = new URLGenerator("asdf/");
-		System.out.println(g.getGroupUrlByGroupNameAndTagName("kde", "web api"));
+		System.out.println(g.getViewableUrlByGroupNameAndTagName("kde", "web api"));
     }
 
     /**
@@ -530,6 +531,33 @@ public class URLGenerator {
     	return this.getUrl(url);
     }
     
+    /**
+     * Constructs the URL for all viewable posts of a group,
+     * i.e. /viewable/GROUPNAME
+     * 
+     * @param groupName
+     * @return the URL for all viewable posts of a group.
+     */
+    public String getViewableUrlByGroupName(final String groupName) {
+    	String url = this.projectHome + VIEWABLE_PREFIX;
+    	url += "/" + UrlUtils.safeURIEncode(groupName);
+    	
+    	return this.getUrl(url);
+    }  
+    
+    
+    /**
+     * Constructs the URL for all viewable posts of a group tagged with tagName
+     * @param groupName
+     * @param tagname
+     * @return the URL for all viewable posts of a group tagged with tagName
+     */
+    public String getViewableUrlByGroupNameAndTagName(final String groupName, final String tagname) {
+    	String url = this.getViewableUrlByGroupName(groupName);
+    	url += "/" + UrlUtils.safeURIEncode(tagname);
+    	
+    	return this.getUrl(url);
+    }  
 
     /**
      * @see URLGenerator#setCheckUrls(boolean)

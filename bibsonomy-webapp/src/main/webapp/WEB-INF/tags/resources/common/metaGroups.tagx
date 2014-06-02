@@ -23,13 +23,13 @@
 				<c:when test="${group.name eq 'private'}">
 					<fmt:message key="post.meta.asPrivate"/> 
 					<c:out value=" "/>
-					<a class="private" href="/viewable/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
+					<a class="private" href="${urlGenerator.getViewableUrlByGroupName(fn:escapeXml(group.name))}"><c:out value="${group.name}" /></a>
 				</c:when>
 				<c:otherwise>
 					<!-- Some regular (other) group -->
 					<fmt:message key="post.meta.asGroup"/> 
 					<c:out value=" "/>
-					<a class="other" href="/viewable/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
+					<a class="other" href="${urlGenerator.getViewableUrlByGroupName(fn:escapeXml(group.name))}"><c:out value="${group.name}" /></a>
 				</c:otherwise>
 			</c:choose>
 		</c:if>	
