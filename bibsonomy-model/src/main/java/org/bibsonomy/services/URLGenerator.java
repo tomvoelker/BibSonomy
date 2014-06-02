@@ -324,6 +324,12 @@ public class URLGenerator {
         return this.getUrl(this.projectHome + USER_PREFIX + "/" + UrlUtils.safeURIEncode(userName));
     }
     
+    public String getUserUrlByUserNameAndTagName(final String userName, final String tagName) {
+    	String url = this.getUserUrlByUserName(userName);
+    	url += "/" + UrlUtils.safeURIEncode(tagName);
+    	return url;
+    }
+    
     
     /**
      * Constructs the URL for the author's page.
@@ -527,7 +533,7 @@ public class URLGenerator {
     
     public static void main(String[] args) {
 		URLGenerator g = new URLGenerator("asdf/");
-		System.out.println(g.getConceptUrlByUserNameAndTagName("schmitz", "event bla bla"));
+		System.out.println(g.getUserUrlByUserNameAndTagName("maximiliank", "bibtex"));
     }
 
 }
