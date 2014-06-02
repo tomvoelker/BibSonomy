@@ -161,7 +161,7 @@
 									+-->
 								<tr>
 									<td><fmt:message key="post.resource.bibtexKey"/>:</td>
-									<td><a href="/bibtexkey/${mtl:encodeURI(publication.bibtexKey)}/${mtl:encodeURI(post.user.name)}"><c:out value="${publication.bibtexKey}"/></a></td>
+									<td><a href="${urlGenerator.getPublicationUrlByBibTexKeyAndUserName(publication.bibtexKey, post.user.name)}"><c:out value="${publication.bibtexKey}"/></a></td>
 								</tr>
 								
 								<!--+ 

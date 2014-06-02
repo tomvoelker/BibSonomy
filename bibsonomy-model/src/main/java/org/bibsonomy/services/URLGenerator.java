@@ -89,6 +89,7 @@ public class URLGenerator {
     private static final String ADMIN_PREFIX = "admin";
     private static final String SEARCH_PREFIX = "search";
     private static final String FRIEND_PREFIX = "friend";
+    private static final String BIBTEXKEY_PREFIX = "bibtexkey";
     private static final String VIEWABLE_PREFIX = "viewable";
     private static final String VIEWABLE_PUBLIC_SUFFIX = "public";
     private static final String VIEWABLE_PRIVATE_SUFFIX = "private";
@@ -99,12 +100,8 @@ public class URLGenerator {
 
     public static void main(String[] args) {
 		URLGenerator g = new URLGenerator("asdf/");
-		System.out.println(g.getViewablePublicUrl());
-		System.out.println(g.getViewablePrivateUrl());
-		System.out.println(g.getViewablePublicUrlByTagName("web api"));
-		System.out.println(g.getViewablePrivateUrlByTagName("web api"));
-		System.out.println(g.getViewableFriendsUrl());
-		System.out.println(g.getViewableFriendsUrlByTagName("web api"));
+		System.out.println(g.getPublicationUrlByBibTexKey("Willie82"));
+		System.out.println(g.getPublicationUrlByBibTexKeyAndUserName("Willie82", "testUser"));
     }
 
     /**
@@ -390,6 +387,35 @@ public class URLGenerator {
             return this.getUrl(this.projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTER_HASH_ID + publication.getInterHash());
         }
         return this.getUrl(this.projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTRA_HASH_ID + publication.getIntraHash() + "/" + UrlUtils.safeURIEncode(user.getName()));
+    }
+    
+    /**
+     * Constructs a URL for all the publications with the specified BibTeX key,
+     * i.e. /bibtexkey/BIBTEXKEY
+     * 
+     * @param bibtexKey
+     * @return URL pointing to all publications with BibTeX key bibtexKey
+     */
+    public String getPublicationUrlByBibTexKey(final String bibtexKey) {
+    	String url = this.projectHome + BIBTEXKEY_PREFIX;
+    	url += "/" + UrlUtils.safeURIEncode(bibtexKey);
+    	
+    	return this.getUrl(url);
+    }
+    
+    /**
+     * Constructs a URL for all the publications with the specified BibTeX key and username,
+     * i.e. /bibtexkey/BIBTEXKEY/USERNAME
+     * 
+     * @param bibtexKey
+     * @param userName
+     * @return URL pointing to all publications with BibTeX key bibtexKey and user name userName
+     */
+    public String getPublicationUrlByBibTexKeyAndUserName(final String bibtexKey, final String userName) {
+    	String url = this.getPublicationUrlByBibTexKey(bibtexKey);
+    	url += "/" + UrlUtils.safeURIEncode(userName);
+    	
+    	return this.getUrl(url);
     }
     
     /**
