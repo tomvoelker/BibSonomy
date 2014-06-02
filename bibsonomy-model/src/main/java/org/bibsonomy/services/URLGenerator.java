@@ -95,7 +95,7 @@ public class URLGenerator {
 
     public static void main(String[] args) {
 		URLGenerator g = new URLGenerator("asdf/");
-		System.out.println(g.getFriendUrlByUserName("test"));
+		System.out.println(g.getFriendUrlByUserNameAndTagName("test", "web"));
     }
 
     /**
@@ -227,8 +227,6 @@ public class URLGenerator {
         return this.getUrl(url);
     }
     
-    
-
     /**
      * Constructs a concepts URL for the given name.
      * 
@@ -261,7 +259,7 @@ public class URLGenerator {
     
     /**
      * Constructs a friend URL for the given username,
-     * i.e. a /friend/USERNAME
+     * i.e. /friend/USERNAME
      * 
      * @param userName
      * @return URL pointing to the posts viewable for friends of User with name username.
@@ -269,6 +267,21 @@ public class URLGenerator {
     public String getFriendUrlByUserName(final String userName) {
     	String url = this.projectHome + FRIEND_PREFIX + "/";
     	url += UrlUtils.safeURIEncode(userName);
+    	
+    	return this.getUrl(url);
+    }
+    
+    /**
+     * Constructs a friend URL for the given username and tagname,
+     * i.e. /friend/USERNAME/TAGNAME
+     * 
+     * @param userName
+     * @param tagName
+     * @return URL pointing to the posts viewable for friends of User with name username and tag tagName.
+     */
+    public String getFriendUrlByUserNameAndTagName(final String userName, final String tagName) {
+    	String url = this.getFriendUrlByUserName(userName);
+    	url += "/" + UrlUtils.safeURIEncode(tagName);
     	
     	return this.getUrl(url);
     }
