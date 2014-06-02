@@ -88,6 +88,7 @@ public class URLGenerator {
     private static final String CONCEPT_PREFIX = "concept";
     private static final String ADMIN_PREFIX = "admin";
     private static final String SEARCH_PREFIX = "search";
+    private static final String FOLLOWERS_PREFIX = "followers";
     private static final String FRIEND_PREFIX = "friend";
     private static final String BIBTEXKEY_PREFIX = "bibtexkey";
     private static final String RELEVANTFOR_PREFIX = "relevantfor";
@@ -101,7 +102,7 @@ public class URLGenerator {
 
     public static void main(String[] args) {
 		URLGenerator g = new URLGenerator("asdf/");
-		System.out.println(g.getRelevantForUrlByGroupName("kde"));
+		System.out.println(g.getFollowersUrl());
     }
 
     /**
@@ -261,6 +262,16 @@ public class URLGenerator {
     	url += "/" + UrlUtils.safeURIEncode(tagName);
     	
     	return this.getUrl(url);    			 
+    }
+    
+    /**
+     * Constructs a URL with the posts of all users you are following,
+     * i.e. /followers
+     * @return URL pointing to the posts of the users you are following.
+     */
+    public String getFollowersUrl() {
+    	String url = this.projectHome + FOLLOWERS_PREFIX;
+    	return this.getUrl(url);
     }
     
     /**

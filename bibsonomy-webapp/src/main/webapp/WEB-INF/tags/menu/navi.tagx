@@ -41,7 +41,7 @@
 					<li><a href="/spheres"><fmt:message key="navi.spheres"/></a></li>
 					<c:if test="${not command.context.loginUser.settings.simpleInterface}">
 						<li><a href="/friends"><fmt:message key="navi.friends"/></a></li>
-						<li><a href="/followers"><fmt:message key="navi.followees"/></a></li>
+						<li><a href="${urlGenerator.getFollowersUrl()}"><fmt:message key="navi.followees"/></a></li>
 						<li class="separator">${mtl:ch('nbsp')}</li>
 					</c:if>
 					
