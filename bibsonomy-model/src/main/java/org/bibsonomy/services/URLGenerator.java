@@ -77,6 +77,7 @@ public class URLGenerator {
         }
     }
 
+    private static final String BASKET_PREFIX = "basket";
     private static final String USER_PREFIX = "user";
     private static final String GROUP_PREFIX = "group";
     private static final String AUTHOR_PREFIX = "author";
@@ -103,7 +104,7 @@ public class URLGenerator {
 
     public static void main(String[] args) {
 		URLGenerator g = new URLGenerator("asdf/");
-		System.out.println(g.getMySearchUrl());
+		System.out.println(g.getBasketUrl());
     }
 
     /**
@@ -181,6 +182,11 @@ public class URLGenerator {
     public String getAuthorUrlByString(final String authorName, boolean useAbsolutePath) {
     	final String prefix = useAbsolutePath ? this.projectHome : "/";
         return this.getUrl(prefix + AUTHOR_PREFIX + "/" + UrlUtils.safeURIEncode(authorName));
+    }
+    
+    public String getBasketUrl() {
+    	String url = this.projectHome + BASKET_PREFIX;
+    	return this.getUrl(url);
     }
     
     /**
