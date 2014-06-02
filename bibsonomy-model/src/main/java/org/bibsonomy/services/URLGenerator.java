@@ -95,7 +95,7 @@ public class URLGenerator {
 
     public static void main(String[] args) {
 		URLGenerator g = new URLGenerator("asdf/");
-		System.out.println(g.getFriendUrlByUserNameAndTagName("test", "web"));
+		System.out.println(g.getGroupUrlByGroupNameAndTagName("kde", "web api"));
     }
 
     /**
@@ -294,6 +294,21 @@ public class URLGenerator {
      */
     public String getGroupUrlByGroupName(final String groupName) {
         return this.getUrl(this.projectHome + GROUP_PREFIX + "/" + UrlUtils.safeURIEncode(groupName));
+    }
+    
+    
+    /**
+     * Constructs the URL for the group's page for all posts tagged with tagName
+     * 
+     * @param groupName
+     * @param tagName
+     * @return URL pointing to the site of the group with all posts tagged with tagName
+     */
+    public String getGroupUrlByGroupNameAndTagName(final String groupName, final String tagName) {
+    	String url = this.getGroupUrlByGroupName(groupName);
+    	url += "/" + UrlUtils.safeURIEncode(tagName);
+    	
+    	return this.getUrl(url);
     }
 
     /**

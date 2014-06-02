@@ -45,7 +45,7 @@
     <ul class="tagcloud">
     <c:forEach var="row" items="${rst.rows}">
       <li>
-      	<c:url var="tagUrl" value="${urlGenerator.getGroupUrlByGroupName(requGroup)}/${row.tag_name}" />
+      	<c:url var="tagUrl" value="${urlGenerator.getGroupUrlByGroupNameAndTagName(requGroup, row.tag_name)}" />
         <a style="font-size: ${row.tag_size}%;" title="${row.tag_anzahl} posts" href="${tagUrl}"><c:out value="${row.tag_name}" /></a>
       </li>
     </c:forEach>

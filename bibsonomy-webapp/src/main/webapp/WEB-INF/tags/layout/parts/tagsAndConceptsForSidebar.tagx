@@ -68,7 +68,7 @@
 	<!--  link to requested group's tag-page (if the group has ALL of the requestedTags as tags) -->
 	<c:if test="${command.postCountForTagsForGroup > 0}"> 
 		<li>
-			<a href="${urlGenerator.getGroupUrlByGroupName(fn:escapeXml(command.requestedGroup))}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+			<a href="${urlGenerator.getGroupUrlByGroupNameAndTagName(fn:escapeXml(command.requestedGroup), command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 			<c:out value=" "/>
 			<fmt:message key="tag.asTagFromGroup"/>
 			<c:out value=" "/>
