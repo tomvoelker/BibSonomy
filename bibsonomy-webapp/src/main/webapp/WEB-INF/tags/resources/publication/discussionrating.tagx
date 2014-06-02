@@ -67,7 +67,7 @@
 										<fmt:param><fmt:message key="post.resource.discussionItem.anonymous"/></fmt:param>					
 									</c:when>
 									<c:otherwise>
-										<fmt:param><a href="${urlGenerator.getUserUrlByString(discussionUser)}">@${mtl:encodeURI(discussionUser)}</a></fmt:param>
+										<fmt:param><a href="${urlGenerator.getUserUrlByUsername(discussionUser)}">@${mtl:encodeURI(discussionUser)}</a></fmt:param>
 									</c:otherwise>
 								</c:choose>
 							</c:forEach>
@@ -83,7 +83,7 @@
 											<fmt:param><fmt:message key="post.resource.discussionItem.anonymous"/></fmt:param>					
 										</c:when>
 										<c:otherwise>
-											<fmt:param><a href="${urlGenerator.getUserUrlByString(discussionUser)}">@${mtl:encodeURI(discussionUser)}</a></fmt:param>
+											<fmt:param><a href="${urlGenerator.getUserUrlByUsername(discussionUser)}">@${mtl:encodeURI(discussionUser)}</a></fmt:param>
 										</c:otherwise>
 									</c:choose>
 								</c:if>

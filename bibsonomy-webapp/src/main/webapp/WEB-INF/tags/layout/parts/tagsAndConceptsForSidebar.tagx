@@ -19,7 +19,7 @@
 	<!--  link to loginuser's tag-page (if the user has ALL of the requestedTags as tags) -->
 	<c:if test="${command.postCountForTagsForLoginUser > 0}">
 		<li>
-			<a href="${urlGenerator.getUserUrlByString(fn:escapeXml(command.context.loginUser.name))}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+			<a href="${urlGenerator.getUserUrlByUsername(fn:escapeXml(command.context.loginUser.name))}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 			<c:out value=" "/>
 			<fmt:message key="tag.asTagFrom"/>
 			<c:out value=" "/>
@@ -44,7 +44,7 @@
 	<!--  link to requested user's tag-page (if the user has ALL of the requestedTags as tags) -->
 	<c:if test="${command.postCountForTagsForRequestedUser > 0}">
 		<li>
-			<a href="${urlGenerator.getUserUrlByString(fn:escapeXml(command.requestedUser))}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+			<a href="${urlGenerator.getUserUrlByUsername(fn:escapeXml(command.requestedUser))}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 			<c:out value=" "/>
 			<fmt:message key="tag.asTagFrom"/>
 			<c:out value=" "/>
@@ -68,7 +68,7 @@
 	<!--  link to requested group's tag-page (if the group has ALL of the requestedTags as tags) -->
 	<c:if test="${command.postCountForTagsForGroup > 0}"> 
 		<li>
-			<a href="${urlGenerator.getGroupUrlByString(fn:escapeXml(command.requestedGroup))}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+			<a href="${urlGenerator.getGroupUrlByGroupName(fn:escapeXml(command.requestedGroup))}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 			<c:out value=" "/>
 			<fmt:message key="tag.asTagFromGroup"/>
 			<c:out value=" "/>

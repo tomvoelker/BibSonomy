@@ -15,7 +15,7 @@
 		
 	
 	<div id="ownerAvatar" >
-		<a class="profilepic" href="${urlGenerator.getUserUrlByString(post.user.name)}" title="@${mtl:encodeURI(post.user.name)}">
+		<a class="profilepic" href="${urlGenerator.getUserUrlByUsername(post.user.name)}" title="@${mtl:encodeURI(post.user.name)}">
 			<span>@${fn:escapeXml(post.user.name)}</span>
 			<img alt="@${fn:escapeXml(post.user.name)}" src="${urlGenerator.getUserPictureUrlByString(fn:escapeXml(post.user.name))}" class="commentPicture"/>
 		</a>

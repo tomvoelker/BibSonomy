@@ -26,7 +26,7 @@
 			<parts:search pathMessageKey="navi.user" >
 				<jsp:attribute name="pathPart">
 					<li>
-						:: <a href="${urlGenerator.getUserUrlByString(command.requestedUser) }"><c:out value='${command.requestedUser}'/></a> <span style="font-size:65%"><c:out value=" "/>(<fmt:message key="personalized"/>)</span>
+						:: <a href="${urlGenerator.getUserUrlByUsername(command.requestedUser) }"><c:out value='${command.requestedUser}'/></a> <span style="font-size:65%"><c:out value=" "/>(<fmt:message key="personalized"/>)</span>
 					</li>
 				</jsp:attribute>
 			</parts:search>
@@ -108,7 +108,7 @@
 					<jsp:attribute name="infoTextBody">
 				
 						<c:set var="userPageLink">
-							<a href="${urlGenerator.getUserUrlByString(fn:escapeXml(command.requestedUser))}"><c:out value='${command.requestedUser}'/></a>
+							<a href="${urlGenerator.getUserUrlByUsername(fn:escapeXml(command.requestedUser))}"><c:out value='${command.requestedUser}'/></a>
 						</c:set>
 					
 						<fmt:message key="followersPage.contentHeading">

@@ -19,7 +19,7 @@
 	<bib:year publication="${post.resource}" braces="true"/>
 	
 	<!-- title -->
-	<a href="${urlGenerator.getPublicationUrlByHash(post.resource.intraHash, fn:escapeXml(post.user.name), true)}"><i><c:out value="${mtl:cleanBibtex(post.resource.title)}"/>.</i></a>
+	<a href="${urlGenerator.getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, fn:escapeXml(post.user.name))}"><i><c:out value="${mtl:cleanBibtex(post.resource.title)}"/>.</i></a>
 
 	<!-- inbook / incollection data -->
 	<c:choose>

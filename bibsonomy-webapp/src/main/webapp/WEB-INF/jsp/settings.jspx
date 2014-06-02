@@ -88,7 +88,7 @@
 					<ul class="sidebar_collapse_content">
 					<c:forEach var="group" items="${command.context.loginUser.groups}">
 						<li>
-						<a href="${urlGenerator.getGroupUrlByString(group.name)}"><c:out value='${group.name}'/>&amp;nbsp;</a> 
+						<a href="${urlGenerator.getGroupUrlByGroupName(group.name)}"><c:out value='${group.name}'/>&amp;nbsp;</a> 
 							<c:if test="${group.sharedDocuments}">
 								<c:choose>
 									<c:when test="${! group.userSharedDocuments}">
@@ -128,7 +128,7 @@
 		            <ul class="sidebar_collapse_content">
 		              <c:forEach var="user" items="${command.friendsOfUser}">
 		                <li>
-		                  <a href="${urlGenerator.getUserUrlByString(user.name)}"><c:out value='${user.name}'/>&amp;nbsp;</a> 
+		                  <a href="${urlGenerator.getUserUrlByUsername(user.name)}"><c:out value='${user.name}'/>&amp;nbsp;</a> 
 			                <fmt:message var="deleteFriendTitle" key="friends.actions.delete.title"><fmt:param value="${fn:escapeXml(user.name)}"/></fmt:message>
 		                  <a
 		    	             class="action" 

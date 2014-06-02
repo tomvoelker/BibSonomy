@@ -660,7 +660,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * if no URL is given, we redirect to the user's page
 		 */
 		if (!present(redirectUrl)) {
-			redirectUrl = urlGenerator.getUserUrlByString(loginUserName);
+			redirectUrl = urlGenerator.getUserUrlByUsername(loginUserName);
 		}
 		return new ExtendedRedirectView(redirectUrl);
 	}

@@ -160,9 +160,9 @@ public class URLGenerator {
      */
     public String getPostUrl(final Class<?> resourceType, final String intraHash, final String userName) {
         if (resourceType == Bookmark.class) {
-            return this.getBookmarkUrlByString(intraHash, userName);
+            return this.getBookmarkUrlByIntraHashAndUsername(intraHash, userName);
         } else if (resourceType == BibTex.class) {
-            return this.getPublicationUrlByHash(intraHash, userName, true);
+            return this.getPublicationUrlByIntraHashAndUsername(intraHash, userName);
         } else {
             throw new UnsupportedResourceTypeException();
         }
@@ -192,29 +192,64 @@ public class URLGenerator {
         }
         return this.getUrl(this.projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTRA_HASH_ID + publication.getIntraHash() + "/" + UrlUtils.safeURIEncode(user.getName()));
     }
-
+    
     /**
-     * Constructs a new publication URL for the given publication and user name.
-     * If you have the resource as object, please use {@link #getPublicationUrl(BibTex, User)}.
+     * Constructs a URL for a publication specified by its intra hash and the username.
+     * If no username is present, it will not occur in the URL and the trailing '/' will be
+     * omitted.
      * 
      * @param intraHash
      * @param userName
-     * @param isInterHash
-     * @return The URL pointing to the post of that user for the publication represented by the given hash.
+     * @return URL pointing to the publication represented by the intraHash and the userName
      */
-    public String getPublicationUrlByHash(final String hash, final String userName, boolean isIntraHash) {
-        String url = this.projectHome + PUBLICATION_PREFIX + "/";
-        
-        if (isIntraHash)
-        	url += PUBLICATION_INTRA_HASH_ID + hash;
-        else
-        	url += PUBLICATION_INTER_HASH_ID + hash;
-        
-        if (present(userName)) {
-            return this.getUrl(url + "/" + UrlUtils.safeURIEncode(userName));
-        }
-        return this.getUrl(url);
+    public String getPublicationUrlByIntraHashAndUsername(final String intraHash, final String userName) {
+    	String url = this.projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTRA_HASH_ID + intraHash;
+    	
+    	if (present(userName))
+			return this.getUrl(url + "/" + UrlUtils.safeURIEncode(userName));
+			
+		return this.getUrl(url);
     }
+    
+    /**
+     * Constructs a URL for a publication specified by its inter hash and the username.
+     * If no username is present, it will not occur in the URL and the trailing '/' will be
+     * omitted.
+     * 
+     * @param interHash
+     * @param userName
+     * @return URL pointing to the publication represented by the interHash and the userName
+     */
+    public String getPublicationUrlByInterHashAndUsername(final String interHash, final String userName) {
+    	String url = this.projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTER_HASH_ID + interHash;
+    	
+    	if (present(userName))
+			return this.getUrl(url + "/" + UrlUtils.safeURIEncode(userName));
+			
+		return this.getUrl(url);
+    }
+    
+    /**
+     * Constructs a URL for a publication specified by its intra hash.
+     * 
+     * @param intraHash
+     * @return URL pointing to the publication represented by the intra hash
+     */
+    public String getPublicationUrlByIntraHash(final String intraHash) {
+    	return this.getPublicationUrlByIntraHashAndUsername(intraHash, null);
+    }
+    
+    /**
+     * Constructs a URL for a publication specified by its inter hash.
+     * 
+     * @param interHash
+     * @return URL pointing to the publication represented by the inter hash
+     */
+    public String getPublicationUrlByInterHash(final String interHash) {
+    	return this.getPublicationUrlByInterHashAndUsername(interHash, null);
+    }
+    
+    
 
     /**
      * Constructs a URL for the given resource and user. If no user
@@ -237,7 +272,7 @@ public class URLGenerator {
         if (!present(user) || !present(user.getName())) {
             return this.getUrl(this.projectHome + BOOKMARK_PREFIX + "/" + bookmark.getInterHash());
         }
-        return this.getBookmarkUrlByString(bookmark.getIntraHash(), user.getName());
+        return this.getBookmarkUrlByIntraHashAndUsername(bookmark.getIntraHash(), user.getName());
     }
 
     /**
@@ -248,13 +283,24 @@ public class URLGenerator {
      * @param userName
      * @return The URL pointing to the post of that user for the bookmark represented by the given intrahash.
      */
-    public String getBookmarkUrlByString(final String intraHash, final String userName) {
+    public String getBookmarkUrlByIntraHashAndUsername(final String intraHash, final String userName) {
         String url = this.projectHome + BOOKMARK_PREFIX + "/" + intraHash;
         if (present(userName)) {
             url += "/" + UrlUtils.safeURIEncode(userName);
 
         }
         return this.getUrl(url);
+    }
+    
+    /**
+     * Constructs a bookmark URL for the given intraHash.
+     * If you have the resource as object, please use {@link #getBookmarkUrl(Bookmark, User)}
+     * 
+     * @param intraHash
+     * @return The URL pointing to the post of that user for the bookmark represented by the given intrahash.
+     */
+    public String getBookmarkUrlByIntraHash(final String intraHash) {
+    	return this.getBookmarkUrlByIntraHashAndUsername(intraHash, null);
     }
 
     /**
@@ -273,7 +319,7 @@ public class URLGenerator {
      * @param userName
      * @return The URL for the user's page.
      */
-    public String getUserUrlByString(final String userName) {
+    public String getUserUrlByUsername(final String userName) {
         return this.getUrl(this.projectHome + USER_PREFIX + "/" + UrlUtils.safeURIEncode(userName));
     }
     
@@ -292,12 +338,22 @@ public class URLGenerator {
     }
     
     /**
+     * Constructs the URL for the author's page.
+     * 
+     * @param authorLastName
+     * @return The URL for the author's page.
+     */
+    public String getAuthorUrlByName(final String authorName) {
+        return this.getUrl(this.projectHome + AUTHOR_PREFIX + "/" + UrlUtils.safeURIEncode(authorName));
+    }
+    
+    /**
      * Constructs the URL for the group's page.
      * 
      * @param groupName
      * @return The URL for the group's page.
      */
-    public String getGroupUrlByString(final String groupName) {
+    public String getGroupUrlByGroupName(final String groupName) {
         return this.getUrl(this.projectHome + GROUP_PREFIX + "/" + UrlUtils.safeURIEncode(groupName));
     }    
     
@@ -452,8 +508,9 @@ public class URLGenerator {
     }
     
     public static void main(String[] args) {
-		URLGenerator g = new URLGenerator();
-		System.out.println(g.getConceptsUrlByString("abc") + "/asldf");
-	}
+		URLGenerator g = new URLGenerator("asdf/");
+		System.out.println(g.getAuthorUrlByString("testAuthor", true));
+		System.out.println(g.getAuthorUrlByName("testAuthor"));
+    }
 
 }

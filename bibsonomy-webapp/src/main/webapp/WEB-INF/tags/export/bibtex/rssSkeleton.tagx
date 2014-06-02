@@ -71,7 +71,7 @@
 	      <rdf:Seq>
 	        <c:forEach var="post" items="${command.bibtex.list}">
               <!-- one item ... is described in detail below and referenced by the URI defined here  -->
-	  	 	  <rdf:li rdf:resource="${urlGenerator.getPublicationUrlByHash(post.resource.intraHash, fn:escapeXml(post.user.name), true)}"/>
+	  	 	  <rdf:li rdf:resource="${urlGenerator.getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, fn:escapeXml(post.user.name))}"/>
 	 	    </c:forEach>
 	      </rdf:Seq>
 	    </items>
@@ -79,11 +79,11 @@
 
       <c:forEach var="post" items="${command.bibtex.list}">
         <!-- one item ... use the URI referenced above to further describe it -->
-	    <item rdf:about="${urlGenerator.getPublicationUrlByHash(post.resource.intraHash, post.user.name, true)}">
+	    <item rdf:about="${urlGenerator.getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, post.user.name)}">
           
           <!-- title, description, link, creator, date, subject -->
     	  <title><c:out value="${mtl:cleanBibtex(post.resource.title)}" /></title>
-  		  <link>${urlGenerator.getPublicationUrlByHash(post.resource.intraHash, post.user.name, true)}</link>
+  		  <link>${urlGenerator.getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, post.user.name)}</link>
   		  <dc:creator><c:out value="${post.user.name}"/></dc:creator>
   		  <dc:date>${mtl:formatDateW3CDTF(post.date)}</dc:date>
   		  <dc:subject><c:forEach var="tag" items="${post.tags}"><c:out value="${fn:escapeXml(mtl:removeInvalidXmlChars(tag.name))}"/><c:out value=" "/></c:forEach></dc:subject>

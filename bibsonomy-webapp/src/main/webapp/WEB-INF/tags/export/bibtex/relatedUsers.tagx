@@ -14,12 +14,12 @@
 		<foaf:name><c:out value="${tags}"/></foaf:name>
 		<description>Community for tag(s) <c:out value="${tags}"/></description>
 	    <c:forEach var="user" items="${cmd.relatedUsers}">
-            <foaf:member rdf:resource="${urlGenerator.getUserUrlByString(fn:escapeXml(user.name))}"/>
+            <foaf:member rdf:resource="${urlGenerator.getUserUrlByUsername(fn:escapeXml(user.name))}"/>
         </c:forEach>
 	</foaf:Group>
 
 	<c:forEach var="user" items="${cmd.relatedUsers}">	
-		<foaf:Person rdf:about="${urlGenerator.getUserUrlByString(fn:escapeXml(user.name))}">
+		<foaf:Person rdf:about="${urlGenerator.getUserUrlByUsername(fn:escapeXml(user.name))}">
 			<foaf:name><c:out value="${user.name}"/></foaf:name>
 			<community:hasMembership>
                 <community:Membership>

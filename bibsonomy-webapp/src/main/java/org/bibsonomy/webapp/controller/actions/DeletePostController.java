@@ -76,7 +76,7 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 		 */
 		final String referer = requestLogic.getReferer();
 		if (urlGenerator.matchesResourcePage(referer, loginUserName, resourceHash)) {
-			return new ExtendedRedirectView(urlGenerator.getUserUrlByString(loginUserName));
+			return new ExtendedRedirectView(urlGenerator.getUserUrlByUsername(loginUserName));
 		}
 		
 		/*

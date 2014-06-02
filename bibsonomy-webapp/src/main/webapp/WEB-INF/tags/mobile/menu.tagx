@@ -22,7 +22,7 @@
 						<!-- sites for logged in users -->
 						<li><a href="#" id="nav_more"><fmt:message key="more"/> &amp;raquo;</a></li>
 						<li><a href="#" id="nav_search">&amp;nbsp;</a></li>
-						<li><a href="${urlGenerator.getUserUrlByString(username)}" id="nav_my"><fmt:message key="navi.my"/></a></li>
+						<li><a href="${urlGenerator.getUserUrlByUsername(username)}" id="nav_my"><fmt:message key="navi.my"/></a></li>
 					</c:when>
 					<c:otherwise>
 						<li><a href="/tags" id="nav_tags"><fmt:message key="navi.tags"/></a></li>
@@ -76,7 +76,7 @@
 							<li><fmt:message key="navi.groups"/>
 								<ul id="groups-submenu">
 									<c:forEach var="group" items="${loginUser.groups}">
-										<li><a href="${urlGenerator.getGroupUrlByString(fn:escapeXml(group.name))"><c:out value='${group.name}'/></a></li>
+										<li><a href="${urlGenerator.getGroupUrlByGroupName(fn:escapeXml(group.name))"><c:out value='${group.name}'/></a></li>
 									</c:forEach>
 								</ul>
 							</li>

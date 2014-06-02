@@ -15,7 +15,7 @@
 	     [<a href="${urlGenerator.getProjectHome()}">${properties['project.name']}</a>:
             <!--  tags  -->
             <c:forEach var="tag" items="${post.tags}">
-               <c:out value=" "/><a href="${urlGenerator.getUserUrlByString(fn:escapeXml(post.user.name))}/${mtl:encodeURI(tag.name)}">${fn:escapeXml(tag.name)}</a>
+               <c:out value=" "/><a href="${urlGenerator.getUserUrlByUsername(fn:escapeXml(post.user.name))}/${mtl:encodeURI(tag.name)}">${fn:escapeXml(tag.name)}</a>
             </c:forEach>]
 	</c:if>
   

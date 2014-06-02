@@ -14,7 +14,7 @@
 	
 	<c:set var="swrc" value="http://swrc.ontoware.org/ontology#"/>
 
-    <rdf:Description rdf:about="${urlGenerator.getPublicationUrlByHash(post.resource.intraHash, post.user.name, true)}">
+    <rdf:Description rdf:about="${urlGenerator.getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, post.user.name)}">
       <owl:sameAs rdf:resource="${urlGenerator.getProjectHome()}uri/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"/>
       <rdf:type rdf:resource="${swrc}${mtl:getSWRCEntryType(post.resource.entrytype)}"/>
       <swrctags:swrcAttributes post="${post}"/>

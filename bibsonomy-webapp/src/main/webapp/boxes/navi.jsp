@@ -8,12 +8,12 @@
 	<c:choose>
 		<c:when test="${not empty user.name}">
 			<li>
-				<c:url var="userHome" value="${urlGenerator.getUserUrlByString(user.name)}" />
+				<c:url var="userHome" value="${urlGenerator.getUserUrlByUsername(user.name)}" />
 				<c:url var="userRelations" value="${urlgenerator.getConceptsUrlByString(user.name)}" />
-				<c:url var="userPDF" value="${urlGenerator.getUserUrlByString(user.name) }">
+				<c:url var="userPDF" value="${urlGenerator.getUserUrlByUsername(user.name) }">
 					<c:param name="filter" value="JUST_PDF" />
 				</c:url>
-				<c:url var="userDuplicates" value="${urlGenerator.getUserUrlByString(user.name) }">
+				<c:url var="userDuplicates" value="${urlGenerator.getUserUrlByUsername(user.name) }">
 					<c:param name="filter" value="DUPLICATES" />
 				</c:url>
 				<c:url var="userBibTeX" value="/bib/user/${user.name}">
@@ -58,7 +58,7 @@
   	  	<c:if test="${not empty user.groups}">
 	    	<c:forEach var="grp" items="${user.groups}">
 	    		<c:set var="groupName" value="${grp.name}" />
-	    		<c:url value="${urlGenerator.getGroupUrlByString(groupName)}" var="groupUrl" />
+	    		<c:url value="${urlGenerator.getGroupUrlByGroupName(groupName)}" var="groupUrl" />
 		  		<a href="${groupUrl}"><c:out value="${groupName}" /></a>
 			</c:forEach>
 		</c:if>  	

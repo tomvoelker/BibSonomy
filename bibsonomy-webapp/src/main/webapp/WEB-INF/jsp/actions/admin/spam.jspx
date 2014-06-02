@@ -217,7 +217,7 @@
 				<tr>
 					<td>
 					    <!-- show info boxes of users -->
-						<c:url value="${urlGenerator.getUserUrlByString(user.name)}" var="userUrl">
+						<c:url value="${urlGenerator.getUserUrlByUsername(user.name)}" var="userUrl">
 							<c:param name="filter" value="ADMIN_SPAM_POSTS"></c:param>
 						</c:url>
 						<a href="${userUrl}"><c:out value="${user.name}" /></a>

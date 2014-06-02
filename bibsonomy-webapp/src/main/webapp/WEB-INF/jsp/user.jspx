@@ -35,10 +35,10 @@
 		</jsp:attribute>
 	
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.user" formAction="${urlGenerator.getUserUrlByString(command.requestedUser)}" formInputName="tag" requestedUser="${command.requestedUser}">
+			<parts:search pathMessageKey="navi.user" formAction="${urlGenerator.getUserUrlByUsername(command.requestedUser)}" formInputName="tag" requestedUser="${command.requestedUser}">
 				<jsp:attribute name="pathPart">
 					<li>
-						:: <a href="${urlGenerator.getUserUrlByString(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> 
+						:: <a href="${urlGenerator.getUserUrlByUsername(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> 
 					</li>
 				</jsp:attribute>
 				<jsp:attribute name="afterInput">
