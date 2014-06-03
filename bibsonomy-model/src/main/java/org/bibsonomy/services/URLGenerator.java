@@ -80,6 +80,7 @@ public class URLGenerator {
     private static final String ADMIN_PREFIX = "admin";
     private static final String AUTHOR_PREFIX = "author";
     private static final String BASKET_PREFIX = "basket";
+    private static final String BIBTEXEXPORT_PREFIX = "bib";
     private static final String BIBTEXKEY_PREFIX = "bibtexkey";
     private static final String BOOKMARK_PREFIX = "url";
     private static final String CONCEPTS_PREFIX = "concepts";
@@ -109,12 +110,8 @@ public class URLGenerator {
 
     public static void main(String[] args) {
 		URLGenerator g = new URLGenerator("asdf/");
-		System.out.println(g.getMyBibTexUrl());
-		System.out.println(g.getMyDocumentsUrl());
-		System.out.println(g.getMyDuplicatesUrl());
-		System.out.println(g.getMyHomeUrl());
-		System.out.println(g.getMyRelationsUrl());
-		System.out.println(g.getMySearchUrl());
+		System.out.println(g.getPublicationsAsBibtexUrl());
+		System.out.println(g.getPublicationsAsBibtexUrlByUserName("testUser"));
     }
 
     /**
@@ -451,6 +448,27 @@ public class URLGenerator {
         return this.projectHome;
     }
     
+    /**
+     * @return URL to all publications of the main page in bibtex formats.
+     */
+    public String getPublicationsAsBibtexUrl() {
+    	String url = this.projectHome + BIBTEXEXPORT_PREFIX;
+    	return this.getUrl(url);
+    }
+    
+    /**
+     * Constructs a URL to all publications of the publication page of the user with 
+     * name userName, i.e. /bib/user/USERNAME
+     * @param userName
+     * @return URL pointing to publications in bibtex format of user with name userName
+     */
+    public String getPublicationsAsBibtexUrlByUserName(final String userName) {
+    	String url = getPublicationsAsBibtexUrl();
+    	url += "/" + USER_PREFIX;
+    	url += "/" + UrlUtils.safeURIEncode(userName);
+    	
+    	return this.getUrl(url);
+    }
     
     /**
      * Constructs a URL for the given resource and user. If no user

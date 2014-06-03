@@ -16,7 +16,7 @@
 				<c:url var="userDuplicates" value="${urlGenerator.getUserUrlByUserName(user.name) }">
 					<c:param name="filter" value="DUPLICATES" />
 				</c:url>
-				<c:url var="userBibTeX" value="/bib/user/${user.name}">
+				<c:url var="userBibTeX" value="${urlGenerator.getPublicationsAsBibtexUrlByUserName(user.name)}">
 					<c:param name="items" value="1000" />
 				</c:url>
 				

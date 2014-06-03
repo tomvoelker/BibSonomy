@@ -49,7 +49,7 @@
 					<c:if test="${not command.context.loginUser.settings.simpleInterface}">
 						<li><a href="/cv/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.cv"/></a></li>
 						<li><a href="${urlGenerator.getMySearchUrl()}"><fmt:message key="navi.browse"/></a></li>
-						<li><a href="/bib/user/${mtl:encodeURI(loginUserName)}?items=1000"><fmt:message key="navi.bibtex"/></a></li>
+						<li><a href="${urlGenerator.getPublicationsAsBibtexUrlByUserName(loginUserName)}?items=1000"><fmt:message key="navi.bibtex"/></a></li>
 						<li class="separator">${mtl:ch('nbsp')}</li>
 					</c:if>
 					<li><a href="/settings"><fmt:message key="navi.settings"/></a></li>
