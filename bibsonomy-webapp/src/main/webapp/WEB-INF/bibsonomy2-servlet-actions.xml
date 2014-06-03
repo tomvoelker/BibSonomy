@@ -479,7 +479,8 @@
 								<value>firstLastNames</value>
 								<value>generatedBibtexKeys</value>
 								<value>download</value>
-								<value>urlGenerator</value>
+								<value>absoluteUrlGenerator</value>
+								<value>relativeUrlGenerator</value>
 								<value>skipDummyValues</value>
 							</list>
 						</property>
@@ -784,7 +785,8 @@
 		<value>firstLastNames</value>
 		<value>generatedBibtexKeys</value>
 		<value>download</value>
-		<value>urlGenerator</value>
+		<value>absoluteUrlGenerator</value>
+		<value>relativeUrlGenerator</value>
 		<value>skipDummyValues</value>
 	</util:list>
 
@@ -793,7 +795,7 @@
 	<bean id="editPostController" class="org.bibsonomy.webapp.controller.actions.EditPostController" scope="request" abstract="true" parent="resourceController">
 		<property name="recommender" ref="multiplexingTagRecommender"/>
 		<property name="captcha" ref="captcha"/>
-		<property name="urlGenerator" ref="urlGenerator"/>
+		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="pingback" ref="pingback"/>
 	</bean>
@@ -824,7 +826,7 @@
 		<property name="captcha" ref="captcha"/>
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="scraper" ref="kdeScraperChain"/>
-		<property name="urlGenerator" ref="urlGenerator"/>
+		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
 		<property name="publicationImporter" ref="publicationImporter"/>
 	</bean>
 	
@@ -850,7 +852,7 @@
 	<bean id="deletePostController" class="org.bibsonomy.webapp.controller.actions.DeletePostController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="requestLogic" ref="requestLogic"/>
-		<property name="urlGenerator" ref="urlGenerator"/>
+		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
 	</bean>
 	
 	<!-- Handles remove message process -->
@@ -1058,7 +1060,7 @@
 	<bean id="linkLoader" class="org.bibsonomy.pingback.HttpClientLinkLoader" />
 
 	<bean id="realPingback" class="org.bibsonomy.pingback.ThreadedPingbackImpl">
-		<property name="urlGenerator" ref="urlGenerator" />
+		<property name="urlGenerator" ref="absoluteUrlGenerator" />
 		<property name="pingbackClient" ref="pingbackClient" />
 		<property name="trackbackClient" ref="trackbackClient" />
 		<property name="linkLoader" ref="linkLoader" />

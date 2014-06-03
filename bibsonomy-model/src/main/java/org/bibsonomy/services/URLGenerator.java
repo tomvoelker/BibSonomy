@@ -108,12 +108,6 @@ public class URLGenerator {
     private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
     private static final String PUBLICATION_INTER_HASH_ID = String.valueOf(HashID.INTER_HASH.getId());
 
-    public static void main(String[] args) {
-		URLGenerator g = new URLGenerator("asdf/");
-		System.out.println(g.getPublicationsAsBibtexUrl());
-		System.out.println(g.getPublicationsAsBibtexUrlByUserName("testUser"));
-    }
-
     /**
      * The default gives relative URLs.
      */
@@ -179,18 +173,10 @@ public class URLGenerator {
     }
     
     /**
-     * Constructs the URL for the author's page.
-     * Returns an absolute URL if useAbsolutePath is true.
-     * 
-     * @param authorLastName
-     * @param useAbsolutePath
-     * @return The URL for the author's page.
+     * Constructs a URL for the basket page,
+     * i.e. /basket
+     * @return URL pointing to the basket page.
      */
-    public String getAuthorUrlByString(final String authorName, boolean useAbsolutePath) {
-    	final String prefix = useAbsolutePath ? this.projectHome : "/";
-        return this.getUrl(prefix + AUTHOR_PREFIX + "/" + UrlUtils.safeURIEncode(authorName));
-    }
-    
     public String getBasketUrl() {
     	String url = this.projectHome + BASKET_PREFIX;
     	return this.getUrl(url);

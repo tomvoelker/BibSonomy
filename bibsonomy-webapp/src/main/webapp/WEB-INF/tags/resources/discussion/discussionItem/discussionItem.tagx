@@ -22,7 +22,7 @@
 			<img src="${resdir}/image/anonymous.png" alt="anonymous" class="commentPicture" />
 		</c:when>
 		<c:otherwise>
-			<img src="${urlGenerator.getUserPictureUrlByUsername(fn:escapeXml(discussionItemUserName))}" alt="userPicture" class="commentPicture"/>
+			<img src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(discussionItemUserName))}" alt="userPicture" class="commentPicture"/>
 		</c:otherwise>
 	</c:choose>
 	

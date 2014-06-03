@@ -55,7 +55,7 @@
 						<!-- show group member list -->
 						<c:forEach items="${command.group.users}" var="member">
 							<c:if test="${member.name ne command.context.loginUser.name}">
-								<a href="${urlGenerator.getUserUrlByUserName(member.name)}"><c:out value="${member.name}"/></a> 
+								<a href="${relativeUrlGenerator.getUserUrlByUserName(member.name)}"><c:out value="${member.name}"/></a> 
 								<span class="smalltext">(<a href="/SettingsHandler?del_group_user=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>)</span>
 								<c:out value=" "/>
 							</c:if>
@@ -69,7 +69,7 @@
 					<!-- cancel request only if right params existing -->
 					<h2>
 						<fmt:message key="settings.group.deny">
-							<fmt:param><a href="${urlGenerator.getUserUrlByUserName(param.user)}"><c:out value="${param.user}"/></a></fmt:param>
+							<fmt:param><a href="${relativeUrlGenerator.getUserUrlByUserName(param.user)}"><c:out value="${param.user}"/></a></fmt:param>
 						</fmt:message>
 					</h2>
 					<form:form id="groupAddDenyUser" method="post" action="/join_group">

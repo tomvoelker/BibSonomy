@@ -79,7 +79,7 @@
 	<bean id="controllerBase" class="org.bibsonomy.webapp.util.spring.controller.MinimalisticControllerSpringWrapper" abstract="true">
 		<property name="allowedFields" ref="allowedFields"/>
 		<property name="disallowedFields" ref="disallowedFields"/>
-		<property name="urlGenerator" ref="urlGenerator"/>
+		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
 		<property name="supportedMethods" value="HEAD,GET,POST,DELETE,PUT" />
 		<property name="conversionService" ref="conversionService" />
 	</bean>
@@ -89,7 +89,7 @@
 	<!-- Renders JabRef Layouts -->
 	<bean id="jabrefLayoutRenderer" class="org.bibsonomy.layout.jabref.JabrefLayoutRenderer">
 		<property name="userLayoutFilePath" value="${project.document.path}"/>
-		<property name="urlGenerator" ref="urlGenerator"/>
+		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
 	</bean>
 
 	<!-- provides access to the request for all controllers, which need it -->
@@ -199,7 +199,9 @@
 		<property name="basenamePrefix" value="theme_"/>
 	</bean>
 	
-	<bean id="urlGenerator" class="org.bibsonomy.services.URLGenerator">
+	<bean id="relativeUrlGenerator" class="org.bibsonomy.services.URLGenerator" />
+	
+	<bean id="absoluteUrlGenerator" class="org.bibsonomy.services.URLGenerator">
 		<property name="projectHome" value="${project.home}" />
 	</bean>
 	
@@ -210,7 +212,7 @@
 			</bean>
 		</property>
 		<lookup-method name="produceSucessBean" bean="realVuFindUrlGenerator"/>
-		<lookup-method name="produceFailureBean" bean="urlGenerator"/>
+		<lookup-method name="produceFailureBean" bean="absoluteUrlGenerator"/>
 	</bean>
 	
 	<bean id="realVuFindUrlGenerator" class="org.bibsonomy.webapp.view.urlbuilder.VuFindURLGenerator" lazy-init="true">
@@ -249,7 +251,8 @@
 			<list>
 				<value>authConfig</value>
 				<value>properties</value>
-				<value>urlGenerator</value>
+				<value>relativeUrlGenerator</value>
+				<value>absoluteUrlGenerator</value>
 			</list>
 		</property>
 	</bean>

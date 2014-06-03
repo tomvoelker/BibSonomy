@@ -8,15 +8,15 @@
 	<c:choose>
 		<c:when test="${not empty user.name}">
 			<li>
-				<c:url var="userHome" value="${urlGenerator.getUserUrlByUserName(user.name)}" />
-				<c:url var="userRelations" value="${urlgenerator.getConceptsUrlByString(user.name)}" />
-				<c:url var="userPDF" value="${urlGenerator.getUserUrlByUserName(user.name) }">
+				<c:url var="userHome" value="${relativeUrlGenerator.getUserUrlByUserName(user.name)}" />
+				<c:url var="userRelations" value="${relativeUrlGenerator.getConceptsUrlByString(user.name)}" />
+				<c:url var="userPDF" value="${relativeUrlGenerator.getUserUrlByUserName(user.name) }">
 					<c:param name="filter" value="JUST_PDF" />
 				</c:url>
-				<c:url var="userDuplicates" value="${urlGenerator.getUserUrlByUserName(user.name) }">
+				<c:url var="userDuplicates" value="${relativeUrlGenerator.getUserUrlByUserName(user.name) }">
 					<c:param name="filter" value="DUPLICATES" />
 				</c:url>
-				<c:url var="userBibTeX" value="${urlGenerator.getPublicationsAsBibtexUrlByUserName(user.name)}">
+				<c:url var="userBibTeX" value="${relativeUrlGenerator.getPublicationsAsBibtexUrlByUserName(user.name)}">
 					<c:param name="items" value="1000" />
 				</c:url>
 				
@@ -25,7 +25,7 @@
 				  <div id="my_menu" class="nicedropmenudiv">
 				    <a href="/friends">myFriends</a>
 					<a href="${userRelations}">myConcepts</a>
-					<a href="${urlGenerator.getMySearchUrl()}">mySearch</a>
+					<a href="${relativeUrlGenerator.getMySearchUrl()}">mySearch</a>
 			        <a href="${userPDF}">myPDF</a>
 			        <a href="${userDuplicates}">myDuplicates</a>
 			        <a href="${userBibTeX}">myBibTeX</a>
@@ -58,7 +58,7 @@
   	  	<c:if test="${not empty user.groups}">
 	    	<c:forEach var="grp" items="${user.groups}">
 	    		<c:set var="groupName" value="${grp.name}" />
-	    		<c:url value="${urlGenerator.getGroupUrlByGroupName(groupName)}" var="groupUrl" />
+	    		<c:url value="${relativeUrlGenerator.getGroupUrlByGroupName(groupName)}" var="groupUrl" />
 		  		<a href="${groupUrl}"><c:out value="${groupName}" /></a>
 			</c:forEach>
 		</c:if>  	

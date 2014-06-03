@@ -100,7 +100,7 @@
 
 					<ul>
 						<c:forEach items="${command.storedConcepts}" var="concept">							
-							<li><a href="${urlGenerator.getConceptUrlByUserNameAndTagName(fn:escapeXml(command.context.loginUser.name), fn:escapeXml(concept))}"><c:out value="${concept}"/></a></li>
+							<li><a href="${relativeUrlGenerator.getConceptUrlByUserNameAndTagName(fn:escapeXml(command.context.loginUser.name), fn:escapeXml(concept))}"><c:out value="${concept}"/></a></li>
 						</c:forEach>
 					</ul>
 			</fieldset>

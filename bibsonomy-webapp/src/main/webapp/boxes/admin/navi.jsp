@@ -10,6 +10,6 @@
 
 <a href="/admin_spammertags.jsp">spammertags</a> &middot;
 
-<a href="${urlGenerator.getAdminUrlByString(null)}">admin</a> &middot;
+<a href="${relativeUrlGenerator.getAdminUrlByString(null)}">admin</a> &middot;
 
 </p>
