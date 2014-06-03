@@ -64,7 +64,6 @@ $(document).ready(function () {
 	$('#selector').change(function() {
 		if($(this).val() == 0) {
 			hideAllFeatures();
-			$('div[name=updateButton]').hide();
 			//changeTagInputs('input[name^=posts]:checkbox:checked', true);
 		//$('.batchUpdateButton').prop('disabled', false); needed?
 			
@@ -108,24 +107,19 @@ $(document).ready(function () {
 		} 
 	});
 	
-	
 	$('#delButton').click(function() {
+		confirm("hallo");
 		hideAllFeatures();
-		enableAllCheckboxes()
-	//	$('div[name=updateButton]').hide();
-	//	action =3;
-		$('div[name=updateButton]').show();
+		
+		
 		var value = true;
 		value = confirm(getString("batchedit.deleteSelected.confirm"));
-		
-		
-	//	$('.batchUpdateButton').show(); auto submit
 	
 	});
 	
-	$('#normalizeButton').click(function() {
+	$('#normaliizeButton').click(function() {
 		hideAllFeatures();
-		$('div[name=updateButton]').hide();
+		
 		//show(getString("a test")); show a message and auto submit
 		
 		
@@ -133,11 +127,12 @@ $(document).ready(function () {
 	
 	});
 	
-	$('#privacyButton').click(function() {
+	$('#privaccyButton').click(function() {
 		hideAllFeatures();
 		$('div[name=privacyBox]').show();
 		$('div[name=updateButton]').show();
 	});
+	
 	
 	
 });
@@ -166,6 +161,8 @@ function enableAllCheckboxes(){
 		$(this).prop('disabled', false);
 	});
 }*/
+
+
 function hideAllFeatures(){
 	$('td[name=eachPostTag]').hide();
 	$('th[name=postTagsHeader]').hide();
@@ -173,6 +170,8 @@ function hideAllFeatures(){
 	
 	$('div[name=privacyBox]').hide();
 	$('div[name=allTagBox]').hide();
+	
+	$('div[name=updateButton]').hide();
 }
 
 function hideAllButtons(){

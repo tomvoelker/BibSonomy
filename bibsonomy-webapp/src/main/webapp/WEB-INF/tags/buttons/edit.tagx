@@ -6,15 +6,13 @@
 	
 	<jsp:directive.attribute name="buttonImage" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="buttonId" type="java.lang.String" required="false"/>
-	<jsp:directive.attribute name="onClick" type="java.lang.String" required="false"/>
     <jsp:directive.attribute name="message" type="java.lang.String" required="false" description="The key for the message that should be shown."/>
    
-   	<input onclick="${onClick}" type="button" id="${buttonId}" 
-   		style="background: transparent url(/resources/image/button_del.png) no-repeat; height:25px;width:25px;"/>
-<!-- 	<button id="${buttonId}" onclick="${onClick}"> <img src="${buttonImage}"/></button>-->
-	<div> 
-		<c:if test="${not empty message}">
-			<fmt:message key="${message}"/>
-		</c:if> 
-	</div>	
+   
+     <button id="${buttonId}" title="${message}" type="button">
+     	<img src="${buttonImage}" style="background-size: 100%; /* To fill the dimensions of container (button), or */
+     	background-size: 25px auto; /* to specify dimensions explicitly */
+     	height:30px;width:30px;"/>
+     </button> 
+	
 </jsp:root>

@@ -46,6 +46,16 @@
 	</c:if>
 	<!-- SUBMITBUTTON -->
 	<fmt:message key="batchedit.button.update" var="buttonUpdate" />
+	<fmt:message key="image.button.delete" var="delBtnImg" />
+	<fmt:message key="image.button.normalize" var="normBtnImg" />
+	<fmt:message key="image.button.privacy" var="privacyBtnImg" />
+	
+	<!-- SUBMITBUTTON -->
+	<fmt:message key="batchedit.delBtn.message" var="delBtnMsg" />
+	<fmt:message key="batchedit.normBtn.message" var="normBtnMsg" />
+	<fmt:message key="batchedit.privacyBtn.message" var="privacyBtnMsg" />
+	<fmt:message key="batchedit.updateSelector.message" var="updateSelectorMsg" />
+	
 		
 	
 	<!--=======================-->
@@ -64,33 +74,33 @@
 			<input type="hidden" name="resourcetype" value="${resourceType}" />
 			<table style="border: 1px solid black">
 				<tr align="left">
+										
+					<td name="normalizeButton">
+						<c:if test="${resourceType eq 'bibtex'}">
+							<buttons:edit buttonImage="${normBtnImg}" buttonId ="normalizeButton" message="${normBtnMsg}"/>
+						</c:if>
+					</td>
+						
+					<td name="privacyButton">
+						<buttons:edit buttonImage="${privacyBtnImg}" buttonId = "privacyButton" message="${privacyBtnMsg}"/>
+					</td>
+
+					<td name="updateSelector">
+						<select id="selector" name="action" title="${updateSelectorMsg}">
+							<option value="0"><fmt:message key="batchedit.updateSelected"/></option>
+							<option value="1"><fmt:message key="batchedit.Selection.addToAll"/></option>
+							<option value="2"><fmt:message key="batchedit.Selection.addToEach"/></option>
+						</select>
+					</td>
 					<td name="delButton">
 						<c:choose>
 							<c:when test="${deleteCheckedPosts}">
-								<buttons:edit buttonImage="image.button.delete" buttonId = "delButton" />
+								<buttons:edit buttonImage="${delBtnImg}" buttonId = "delButton" message="${delBtnMsg}"/>
 							</c:when>
 							<c:otherwise>
 								<buttons:edit buttonImage="image.button.ignore" />
 							</c:otherwise>
 						</c:choose>
-					</td>
-					
-					<td name="normalizeButton">
-						<c:if test="${resourceType eq 'bibtex'}">
-							<buttons:edit buttonImage="image.button.normalize" buttonId ="normalizeButton"/>
-						</c:if>
-					</td>
-						
-					<td name="privacyButton">
-						<buttons:edit buttonImage="image.button.privacy" buttonId = "privacyButton"/>
-					</td>
-
-					<td name="updateSelector">
-						<select id="selector" name="action">
-							<option value="0"><fmt:message key="batchedit.updateSelected"/></option>
-							<option value="1"><fmt:message key="batchedit.Selection.addToAll"/></option>
-							<option value="2"><fmt:message key="batchedit.Selection.addToEach"/></option>
-						</select>
 					</td>
 					
 				</tr>
@@ -230,9 +240,9 @@
 		<table style="border: 1px solid black">
 				
 				<tr style="background-color: #eee; float:center">
-				<div name="AllpostTagsHeader">
-						<fmt:message key="batchedit.AllpostTagsHeader" />
-						</div>	
+				<div name="AllpostTagsHeader" style="background-color: #eee;">
+						<strong><fmt:message key="batchedit.AllpostTagsHeader" /></strong>
+				</div>	
 				</tr>
 				
 				<tr>
