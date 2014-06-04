@@ -83,8 +83,8 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	private static final int UPDATE_TAG_ACTION = 1;
 	private static final int NORMALIZE_ACTION = 2;
 	private static final int DELETE_ACTION = 3;
-	private static final int IGNORE_ACTION = 4;
-	private static final int UPDATE_VIEWABLE_ACTION = 5;
+	//private static final int IGNORE_ACTION = 4;
+	private static final int UPDATE_VIEWABLE_ACTION = 4;
 	
 	/**
 	 * 
@@ -251,8 +251,8 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 					if (DELETE_ACTION == action) {
 						postsToDelete.add(intraHash);
 						continue;
-					} else if (IGNORE_ACTION == action) {
-						continue;
+					//}else if (IGNORE_ACTION == action) {
+						//continue;
 					} else if (NORMALIZE_ACTION == action) {
 
 						Post<?> post;
@@ -416,9 +416,10 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		}
 
 		/*
-		 * return to the page the user was initially coming from
+		 * return to either the user page or current page(batchedit)
 		 */
-		return this.getFinalRedirect(command.getReferer(), loginUserName);
+		return this.getFinalRedirect(postsArePublications,command.getReferer(), loginUserName);
+		
 	}
 
 	/**
@@ -679,23 +680,21 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * @param loginUserName
 	 * @return
 	 */
-	private View getFinalRedirect(final String referer, final String loginUserName) {
-		String redirectUrl = referer;
-		if (present(referer)) {
-			/*
-			 * if we come from bedit{bib, burl}/{group, user}/{groupname, username},
-			 * we remove this prefix to get back to the simple resource view in the group or user section
-			 */
-			final Matcher prefixMatcher = BATCH_EDIT_URL_PATTERN.matcher(referer);
-			if (prefixMatcher.find()) {
-				redirectUrl = prefixMatcher.replaceFirst("");
+
+	private View getFinalRedirect(final boolean isPub, final String referer, final String loginUserName) {
+		String redirectUrl;
+		
+		if (referer.equals("justUpdate")){	
+			if (isPub) {
+				redirectUrl = UrlUtils.safeURIEncode("beditbib/" + "user/" + loginUserName); // TODO: should be done by the URLGenerator
+			} 
+			else{
+				redirectUrl = UrlUtils.safeURIEncode("bediturl/" + "user/" + loginUserName); // TODO: should be done by the URLGenerator
 			}
 		}
-		/*
-		 * if no URL is given, we redirect to the user's page
-		 */
-		if (!present(redirectUrl)) {
-			redirectUrl = UrlUtils.safeURIEncode("/user" + loginUserName); // TODO: should be done by the URLGenerator
+		else {
+			
+			redirectUrl = UrlUtils.safeURIEncode("user/" + loginUserName); // TODO: should be done by the URLGenerator
 		}
 		return new ExtendedRedirectView(redirectUrl);
 	}

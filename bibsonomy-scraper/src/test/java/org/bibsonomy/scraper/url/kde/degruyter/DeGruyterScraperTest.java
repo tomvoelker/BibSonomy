@@ -1,7 +1,5 @@
 package org.bibsonomy.scraper.url.kde.degruyter;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -18,6 +16,6 @@ public class DeGruyterScraperTest {
 	 */
 	@Test
 	public void urlTest1Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_268"));
+		UnitTestRunner.runSingleTest("url_268");
 	}
 }

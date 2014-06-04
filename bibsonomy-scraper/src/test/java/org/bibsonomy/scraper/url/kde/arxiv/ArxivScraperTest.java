@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.arxiv;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -43,7 +41,7 @@ public class ArxivScraperTest {
 	 */
 	@Test
 	public void urlTestRun1(){
-		assertTrue(UnitTestRunner.runSingleTest("url_10"));
+		UnitTestRunner.runSingleTest("url_10");
 	}
 	
 	/**
@@ -51,7 +49,7 @@ public class ArxivScraperTest {
 	 */
 	@Test
 	public void urlTestRun2(){
-		assertTrue(UnitTestRunner.runSingleTest("url_126"));
+		UnitTestRunner.runSingleTest("url_126");
 	}
 	
 	/**
@@ -59,7 +57,7 @@ public class ArxivScraperTest {
 	 */
 	@Test
 	public void urlTestRun3(){
-		assertTrue(UnitTestRunner.runSingleTest("url_129"));
+		UnitTestRunner.runSingleTest("url_129");
 	}
 	
 	/**
@@ -67,7 +65,7 @@ public class ArxivScraperTest {
 	 */
 	@Test
 	public void urlTestRun4(){
-		assertTrue(UnitTestRunner.runSingleTest("url_133"));
+		UnitTestRunner.runSingleTest("url_133");
 	}
 	
 }

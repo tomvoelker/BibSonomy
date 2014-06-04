@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.ieee;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -43,7 +41,7 @@ public class IEEEXploreJournalProceedingsScraperTest {
 	 */
 	@Test
 	public void urlTestRun1(){
-		assertTrue(UnitTestRunner.runSingleTest("url_13"));
+		UnitTestRunner.runSingleTest("url_13");
 	}
 
 	/**
@@ -51,6 +49,6 @@ public class IEEEXploreJournalProceedingsScraperTest {
 	 */
 	@Test
 	public void urlTestRun2(){
-		assertTrue(UnitTestRunner.runSingleTest("url_127"));
+		UnitTestRunner.runSingleTest("url_127");
 	}
 }

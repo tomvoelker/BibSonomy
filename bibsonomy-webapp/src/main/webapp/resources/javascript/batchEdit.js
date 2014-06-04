@@ -2,6 +2,7 @@ var ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR='input[name="abstractGrouping"]';
 var OTHER_GROUPING_CLASS_SELECTOR=".otherGroupsBox";
 
 $(document).ready(function () {
+	
 	hideAllFeatures();
 	hideAllButtons();
 	
@@ -25,19 +26,21 @@ $(document).ready(function () {
 
 	/*
 	 * handler for changing of sub checkboxes
-	 * changes state of tag inputs depending on selected action 
-	 * in selection box. tag areas only get activated on update tag
-	 * action
 	 */
 	$('input[name^=posts]:checkbox').change(function() {
 		if ($(this).is(':checked')) {
 			showAllButtons();
 		}
-		//$('#selector').change();
-		//$('#selector').change();
+		// 	we have to call change() in this case, because a new tag input should be shown.
 		if ($('#selector').val()==2){
 			$('#selector').change();
 		}
+		// if user wants to add a tag to all posts, he shouldn't be allowed to deselect any post
+		if ($('#selector').val()==1 && $(this).is(':not(:checked)')){
+			$(this).prop('checked', true);
+			alert(getString("batchedit.deselect.alert"));
+		}
+		
 		var oneNotChecked = false;
 		/*
 		 * mega haxxor jquery selector to select input checkboxes with name beginning
@@ -54,38 +57,36 @@ $(document).ready(function () {
 			allNotChecked = false;
 			return;
 		});
+		// if no post is checked, every thing should be hided.
 		if(allNotChecked){
 			hideAllButtons();
 			hideAllFeatures();
-		}
+		};
 		
 	});
 
 	$('#selector').change(function() {
 		if($(this).val() == 0) {
 			hideAllFeatures();
-			//changeTagInputs('input[name^=posts]:checkbox:checked', true);
-		//$('.batchUpdateButton').prop('disabled', false); needed?
 			
 		} else if($(this).val() == 1) {
 			hideAllFeatures();
 			$('div[name=AllpostTagsHeader]').show();
 			$('div[name=allTagBox]').show();
-			//if ($('#selectAll').is(':not(:checked)')){
-				$('#selectAll').prop('checked', true);
-				$('#selectAll').change();
-			//}
-			//disableAllCheckboxes();
+			
+			$('#selectAll').prop('checked', true);
+			$('#selectAll').change();
 			
 			$('div[name=updateButton]').show();
-			//$('.batchUpdateButton').show();
-			//changeTagInputs('input[name^=posts]:checkbox:checked', false);
+			$('div[name=UpdateRedirectButton]').show();
+			// action is set here
+			$('input[name=action]').val("1");
 			
 		} else if($(this).val() == 2) {
 			hideAllFeatures();
 			
 			$('th[name=postTagsHeader]').show();
-				
+			// the following lines are to show tag edit box, only for the selected posts
 			var a = [];
 			$('input[name^=posts]:checkbox').each(function() {
 				if ($(this).is(':checked')) {
@@ -102,52 +103,81 @@ $(document).ready(function () {
 			});
 			
 			$('div[name=updateButton]').show();
-			//$('.batchUpdateButton').show();
-			//changeTagInputs('input[name^=posts]:checkbox:checked', false);
-		} 
+			$('div[name=UpdateRedirectButton]').show();
+			
+			$('input[name=action]').val("1");
+		};
 	});
 	
-	$('#delButton').click(function() {
-		confirm("hallo");
+	$('#delButtonId').click(function() {
 		hideAllFeatures();
-		
+		resetSelector();
 		
 		var value = true;
 		value = confirm(getString("batchedit.deleteSelected.confirm"));
-	
+		
+		if(value){
+			$('input[name=action]').val("3");
+			//return to the edit page. 
+			$('input[name=referer]').val("justUpdate");
+			//submit the form, since we have no submit button in this case
+			submitForm();
+			
+		}
 	});
 	
-	$('#normaliizeButton').click(function() {
+	$('#normalizeButtonId').click(function() {
 		hideAllFeatures();
+		resetSelector();
 		
-		//show(getString("a test")); show a message and auto submit
-		
-		
-	//	$('.batchUpdateButton').show(); auto submit
-	
+		$('input[name=action]').val("2");
+		alert(getString("batchedit.normalizeBtn.alert"));
+		//return to the edit page.
+		$('input[name=referer]').val("justUpdate");
+		//submit the form, since we have no submit button in this case
+		submitForm();
 	});
 	
-	$('#privaccyButton').click(function() {
+	$('#privacyButtonId').click(function() {
 		hideAllFeatures();
+		resetSelector();
+		
 		$('div[name=privacyBox]').show();
 		$('div[name=updateButton]').show();
+		$('div[name=UpdateRedirectButton]').show();
+		//action is set here
+		$('input[name=action]').val("4");
+
 	});
 	
+	$('#updateBtnId').click(function() {
+		//referer is set here
+		$('input[name=referer]').val("justUpdate");
+	});
 	
+	$('#UpRidBtnId').click(function() {
+		//referer is set here
+		$('input[name=referer]').val("updateANDredirect");
+	});
 	
 });
 
+function submitForm(){
+	document.getElementById("batchedit").submit();
+}
 
+/*
+ * maybe will be used later
 function changeTagInputs(selector, disabled) {
 	$(selector).each(function() {
-		/*
-		 * remove possible special characters from selector string
-		 */
+		
+		// * remove possible special characters from selector string
+		 
 	//	var attr = $(this).prop('name').replace('posts','newTags').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1');
 		//$('input[name=' + attr + ']:text').prop('disabled', disabled);
 	});
 }
-/*
+
 function disableAllCheckboxes(){
 	$('#selectAll').prop('disabled', true);
 	$('input[name^=posts]:checkbox').each(function() {
@@ -160,8 +190,12 @@ function enableAllCheckboxes(){
 	$('input[name^=posts]:checkbox').each(function() {
 		$(this).prop('disabled', false);
 	});
-}*/
+}
+*/
 
+function resetSelector(){
+	$('#selector').val("0");
+}
 
 function hideAllFeatures(){
 	$('td[name=eachPostTag]').hide();
@@ -172,10 +206,12 @@ function hideAllFeatures(){
 	$('div[name=allTagBox]').hide();
 	
 	$('div[name=updateButton]').hide();
+	$('div[name=UpdateRedirectButton]').hide();
 }
 
 function hideAllButtons(){
 	$('div[name=updateButton]').hide();
+	$('div[name=UpdateRedirectButton]').hide();
 	
 	$('td[name=updateSelector]').hide();
 	$('td[name=delButton]').hide();
@@ -192,9 +228,14 @@ function showAllButtons(){
 
 function onAbstractGroupingClick(){toggleGroupBox($(this).parent());
 }
-function toggleGroupBox(c){var a=$(c).children("input:checked");
-var b=$(c).siblings(OTHER_GROUPING_CLASS_SELECTOR);
-if(!a.hasClass("otherGroups")){b.attr("disabled","disabled");
-}else{b.removeAttr("disabled");
+
+function toggleGroupBox(c){
+	var a=$(c).children("input:checked");
+	var b=$(c).siblings(OTHER_GROUPING_CLASS_SELECTOR);
+	if(!a.hasClass("otherGroups")){
+		b.attr("disabled","disabled");
+	}
+	else{
+		b.removeAttr("disabled");
 }}		           
 maximizeById("general");

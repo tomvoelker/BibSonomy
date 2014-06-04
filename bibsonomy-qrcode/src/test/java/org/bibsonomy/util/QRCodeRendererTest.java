@@ -23,14 +23,14 @@
 
 package org.bibsonomy.util;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-
-import junit.framework.Assert;
 
 import org.junit.Test;
 
@@ -80,10 +80,10 @@ public class QRCodeRendererTest {
 			
 			new File(template.getPath().concat(".qr")).delete();
 			
-			Assert.assertEquals(template.getPath().concat(".qr"), manipulatedFilePath);
-			Assert.assertEquals(495.0f, embedder.getX());
-			Assert.assertEquals(570.0f, embedder.getY());
-			Assert.assertEquals(117, embedder.getSize());
+			assertEquals(template.getPath().concat(".qr"), manipulatedFilePath);
+			assertEquals(495.0f, embedder.getX(), 0.0);
+			assertEquals(570.0f, embedder.getY(), 0.0);
+			assertEquals(117, embedder.getSize());
 		}
 	}
 	

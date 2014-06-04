@@ -1,11 +1,10 @@
 package org.bibsonomy.recommender.connector.tags.simple;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.LinkedList;
-
-import junit.framework.Assert;
 
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -76,7 +75,7 @@ public class SimpleContentBasedTagRecommenderTest {
 		/*
 		 * check size
 		 */
-		Assert.assertEquals(5, recommendedTags.size());
+		assertEquals(5, recommendedTags.size());
 		
 		final String[] testTags = new String[]{"tolle", "wörter", "recommendations", "main", "nepomuk"};
 

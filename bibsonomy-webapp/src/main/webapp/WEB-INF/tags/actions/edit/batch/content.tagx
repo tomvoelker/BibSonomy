@@ -30,7 +30,8 @@
 	<jsp:directive.attribute name="actions" fragment="true" required="true" />
 	<jsp:directive.attribute name="documents" fragment="true" required="true" />
 
-	<script type="text/javascript" src="/resources/javascript/batchEdit.js"><!-- keep me --></script>
+	   <script type="text/javascript" src="/resources/javascript/batchEdit.js"><!-- keep me --></script>
+	
 
 	<!--=======================-->
 	<!-- VARIABLEN DEKLARATION -->
@@ -44,26 +45,35 @@
 	<c:if test="${empty overwrite}">
 		<c:set var="overwrite" value="false" />
 	</c:if>
-	<!-- SUBMITBUTTON -->
+	
+	<!-- BUTTONS -->
 	<fmt:message key="batchedit.button.update" var="buttonUpdate" />
+	<fmt:message key="batchedit.button.UpdateRedirect" var="buttonUpdateRedirect" />
 	<fmt:message key="image.button.delete" var="delBtnImg" />
 	<fmt:message key="image.button.normalize" var="normBtnImg" />
 	<fmt:message key="image.button.privacy" var="privacyBtnImg" />
 	
-	<!-- SUBMITBUTTON -->
+	<!-- tooltip messages-->
 	<fmt:message key="batchedit.delBtn.message" var="delBtnMsg" />
 	<fmt:message key="batchedit.normBtn.message" var="normBtnMsg" />
 	<fmt:message key="batchedit.privacyBtn.message" var="privacyBtnMsg" />
 	<fmt:message key="batchedit.updateSelector.message" var="updateSelectorMsg" />
+	<fmt:message key="batchedit.updateBtn.message" var="updateBtnMsg" />
+	<fmt:message key="batchedit.updateRedirectBtn.message" var="UptRedBtnMsg" />
+	<fmt:message key="batchedit.selectAll" var="selectAll" />
+	
+	
 	
 		
-	
-	<!--=======================-->
-	<!-- VARIABLEN DEKLARATION -->
-	<!--=======================-->
-
 	<jsp:directive.variable name-given="post" scope="NESTED" />
-
+	<!-- If there is no post to edit -->
+	<c:if test="${empty listView.list}">
+		<div style="font-weight: bolder; float:center">
+			<fmt:message key="batchedit.noPost.message" />
+		</div>
+		
+	</c:if>
+	<!--  else.. -->
 	<c:if test="${not empty listView.list}">
 
 		<form id="batchedit" action="/batchEdit" method="POST">
@@ -72,115 +82,118 @@
 			<input type="hidden" name="deleteCheckedPosts" value="${deleteCheckedPosts}" /> 
 			<input type="hidden" name="overwrite" value="${overwrite}" /> 
 			<input type="hidden" name="resourcetype" value="${resourceType}" />
-			<table style="border: 1px solid black">
+			<input type="hidden" name="action"/>
+			<table>
+			<!-- first row: edit options, which is invisible at first -->
 				<tr align="left">
 										
 					<td name="normalizeButton">
 						<c:if test="${resourceType eq 'bibtex'}">
-							<buttons:edit buttonImage="${normBtnImg}" buttonId ="normalizeButton" message="${normBtnMsg}"/>
+							<buttons:edit buttonImage="${normBtnImg}" buttonId ="normalizeButtonId" message="${normBtnMsg}"/>
 						</c:if>
 					</td>
 						
 					<td name="privacyButton">
-						<buttons:edit buttonImage="${privacyBtnImg}" buttonId = "privacyButton" message="${privacyBtnMsg}"/>
+						<buttons:edit buttonImage="${privacyBtnImg}" buttonId = "privacyButtonId" message="${privacyBtnMsg}" />
 					</td>
 
 					<td name="updateSelector">
-						<select id="selector" name="action" title="${updateSelectorMsg}">
+						<select id="selector" title="${updateSelectorMsg}">
 							<option value="0"><fmt:message key="batchedit.updateSelected"/></option>
 							<option value="1"><fmt:message key="batchedit.Selection.addToAll"/></option>
 							<option value="2"><fmt:message key="batchedit.Selection.addToEach"/></option>
 						</select>
 					</td>
+				
 					<td name="delButton">
 						<c:choose>
 							<c:when test="${deleteCheckedPosts}">
-								<buttons:edit buttonImage="${delBtnImg}" buttonId = "delButton" message="${delBtnMsg}"/>
+								<buttons:edit buttonImage="${delBtnImg}" buttonId = "delButtonId" message="${delBtnMsg}"/>
 							</c:when>
 							<c:otherwise>
 								<buttons:edit buttonImage="image.button.ignore" />
 							</c:otherwise>
 						</c:choose>
-					</td>
-					
+					</td>	
 				</tr>
 			</table>
 			
-			<table style="border: 1px solid black">
+			<table>
 			<td>
-				<table style="border: 1px solid black">
+				<table>
+				<!-- second row -->
 					<tr>
-					<td style="background-color: #eee; text-align: center">
-						<input type="checkbox" id="selectAll" value="true" />
-					</td>
-					<th style="background-color: #eee; float:center">
-						<fmt:message key="batchedit.yourPosts" />
-					</th>
-					<th style="background-color: #eee; float:center" name="postTagsHeader">
-						<fmt:message key="batchedit.yourPostsTags" />
-					</th>
-					
-				</tr>
-				<c:forEach var="post" items="${listView.list}" varStatus="postCount">
-					<spring:bind
-						path="command.${resourceType}.list[${postCount.count - 1}].resource.*">
-						<c:set var="postHasError" value="${status.error}" />
-					</spring:bind>
-					<c:if test="${not postHasError}">
-						<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].resource">
+						<td style="background-color: #eee; text-align: center">
+							<input type="checkbox" id="selectAll" value="true" title="${selectAll}" />
+						</td>
+						<th style="background-color: #eee; float:center">
+							<fmt:message key="batchedit.yourPosts" />
+						</th>
+						<th style="background-color: #eee; float:center" name="postTagsHeader">
+							<fmt:message key="batchedit.yourPostsTags" />
+						</th>
+					</tr>
+					<!--  next n rows are filled with posts -->
+					<c:forEach var="post" items="${listView.list}" varStatus="postCount">
+						<spring:bind
+							path="command.${resourceType}.list[${postCount.count - 1}].resource.*">
 							<c:set var="postHasError" value="${status.error}" />
 						</spring:bind>
-					</c:if>
+						<c:if test="${not postHasError}">
+							<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].resource">
+								<c:set var="postHasError" value="${status.error}" />
+							</spring:bind>
+						</c:if>
 
-					<c:choose>
-						<c:when test="${postHasError}">
-							<c:choose>
-								<c:when	test="${post.user.name eq command.context.loginUser.name}">
-									<tr>
-										<td>
-											<buttons:help iconText="X" cssStyle="width:100%;" iconTextStyle="display:block; color:red; font-size:120%; text-align:center;">
-												<jsp:attribute name="helpText">
-													<ul>
-														<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].resource.*">
-											            	<c:forEach var="errorMessage" items="${status.errorMessages}">
-											   			   		<li class="info_bold">${errorMessage}</li>
-											               	</c:forEach>
-									    	           	</spring:bind>
-										        	       
-									            	   	<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].resource">
-										            		<c:forEach var="errorMessage" items="${status.errorMessages}">
-										                		<li class="info_bold">${errorMessage}</li>
-											               	</c:forEach>
-										               	</spring:bind>
-										            </ul>
-												</jsp:attribute>
-											</buttons:help>
-										</td>
-										<td class="chunkybib">
-											<jsp:invoke fragment="shortPostDescription" />
-										</td>
-										<td style="text-align:center">
-				                       		<!-- NO TAGS HERE BECAUSE POST HAS ERRORS -->
-				                       		<b class="smalltext"><fmt:message key="error" /></b> 
-					                   	</td>
-									</tr>
-								</c:when>
+						<c:choose>
+							<c:when test="${postHasError}">
+								<c:choose>
+									<c:when	test="${post.user.name eq command.context.loginUser.name}">
+										<tr>
+											<td>
+												<buttons:help iconText="X" cssStyle="width:100%;" iconTextStyle="display:block; color:red; font-size:120%; text-align:center;">
+													<jsp:attribute name="helpText">
+														<ul>
+															<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].resource.*">
+												            	<c:forEach var="errorMessage" items="${status.errorMessages}">
+												   			   		<li class="info_bold">${errorMessage}</li>
+												               	</c:forEach>
+										    	           	</spring:bind>
+											        	       
+										            	   	<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].resource">
+											            		<c:forEach var="errorMessage" items="${status.errorMessages}">
+											                		<li class="info_bold">${errorMessage}</li>
+												               	</c:forEach>
+											               	</spring:bind>
+											            </ul>
+													</jsp:attribute>
+												</buttons:help>
+											</td>
+											<td class="chunkybib">
+												<jsp:invoke fragment="shortPostDescription" />
+											</td>
+											<td style="text-align:center">
+					                       		<!-- NO TAGS HERE BECAUSE POST HAS ERRORS -->
+					                       		<b class="smalltext"><fmt:message key="error" /></b> 
+						                   	</td>
+										</tr>
+									</c:when>
 								<c:otherwise>
 									<!-- remember, that we have found posts not owned by the user to show them at end of page -->
 									<c:set var="otherPosts" value="true" />
 								</c:otherwise>
 							</c:choose>
 
-						</c:when>
+							</c:when>
 	
-						<c:otherwise>
-							<c:choose>
+							<c:otherwise>
+								<c:choose>
 									<!--  a post owned by the logged in user - show a tag edit form -->
-								<c:when test="${post.user.name eq command.context.loginUser.name}">
-									<tr>
-										<td style="text-align: center;">
-											<input type="checkbox" name="posts['${post.resource.intraHash}']" value="true" />
-										</td>
+									<c:when test="${post.user.name eq command.context.loginUser.name}">
+										<tr>
+											<td style="text-align: center;">
+												<input type="checkbox" name="posts['${post.resource.intraHash}']" value="true" />
+											</td>
 										<!--  a short description of the post -->
 										<td class="chunkybib">
 											<jsp:invoke	fragment="shortPostDescription" />
@@ -230,24 +243,26 @@
 						<rc:nextprev listView="${listView}"	listViewStartParamName="${listViewStartParamName}" />
 							${mtl:ch('nbsp')}
 					</div>
-					<input type="hidden" name="ckey" value="${ckey}" /> 
-					<input type="hidden" name="referer"	value="${fn:escapeXml(command.referer)}" />
+					<input type="hidden" name="ckey" value="${ckey}" />
+					<!-- referer will be set in .js file based on the user's choice--> 
+					<input type="hidden" name="referer"	value="" />
 				</td>
 			</tr>
 		</table>
 	</td>
 	<td>
-		<table style="border: 1px solid black">
+		<table>
 				
-				<tr style="background-color: #eee; float:center">
+			<tr style="background-color: #eee; float:center">
+				
 				<div name="AllpostTagsHeader" style="background-color: #eee;">
 						<strong><fmt:message key="batchedit.AllpostTagsHeader" /></strong>
 				</div>	
-				</tr>
+			</tr>
 				
-				<tr>
+			<tr>
 				<div name="allTagBox">
-					<input type="text" size="40"/>
+					<input type="text" name="tags" size="40"/>
 				</div>
 				<div name="privacyBox" >
 					<bform:fieldset maximized="true" legendKey="post.resource.viewablefor">
@@ -257,9 +272,12 @@
 					</bform:fieldset>
 				</div>										
 			</tr>
-			<tr style="border: 1px solid black">
+			<tr>
 				<div name="updateButton">
-					<input type="submit" value="${buttonUpdate}" style="float: right;"  />
+					<input type="submit" value="${buttonUpdate}" id="updateBtnId" style="float:right;" title="updateBtnMsg" />
+				</div>
+				<div name="UpdateRedirectButton">
+					<input type="submit" value="${buttonUpdateRedirect}" id="UpRidBtnId" style="float:center;" title="UptRedBtnMsg" />
 				</div>
 			</tr>
 		</table>				
