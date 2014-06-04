@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.springer;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -43,7 +41,7 @@ public class SpringerLinkScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_30"));
+		UnitTestRunner.runSingleTest("url_30");
 	}
 	
 	/**
@@ -51,7 +49,7 @@ public class SpringerLinkScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_41"));
+		UnitTestRunner.runSingleTest("url_41");
 	}
 
 	/**
@@ -59,7 +57,7 @@ public class SpringerLinkScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_142"));
+		UnitTestRunner.runSingleTest("url_142");
 	}
 
 	/**
@@ -67,7 +65,7 @@ public class SpringerLinkScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_143"));
+		UnitTestRunner.runSingleTest("url_143");
 	}
 	
 	/**
@@ -75,7 +73,7 @@ public class SpringerLinkScraperTest {
 	 */
 	@Test
 	public void url5TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_183"));
+		UnitTestRunner.runSingleTest("url_183");
 	}
 	
 	/**
@@ -83,7 +81,7 @@ public class SpringerLinkScraperTest {
 	 */
 	@Test
 	public void url6TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_187"));
+		UnitTestRunner.runSingleTest("url_187");
 	}
 	
 	/**
@@ -91,7 +89,7 @@ public class SpringerLinkScraperTest {
 	 */
 	@Test
 	public void url7TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_235"));
+		UnitTestRunner.runSingleTest("url_235");
 	}
 	
 	/**
@@ -99,7 +97,7 @@ public class SpringerLinkScraperTest {
 	 */
 	@Test
 	public void url8TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_238"));
+		UnitTestRunner.runSingleTest("url_238");
 	}
 	
 	/**
@@ -107,6 +105,6 @@ public class SpringerLinkScraperTest {
 	 */
 	@Test
 	public void url9TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_239"));
+		UnitTestRunner.runSingleTest("url_239");
 	}
 }

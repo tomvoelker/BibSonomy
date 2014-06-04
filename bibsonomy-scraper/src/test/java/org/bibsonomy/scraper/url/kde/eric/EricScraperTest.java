@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.eric;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -46,7 +44,7 @@ public class EricScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_99"));
+		UnitTestRunner.runSingleTest("url_99");
 	}
 	
 	/**
@@ -54,7 +52,7 @@ public class EricScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_136"));
+		UnitTestRunner.runSingleTest("url_136");
 	}
 
 }

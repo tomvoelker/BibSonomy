@@ -17,9 +17,10 @@
 
 package com.malethan.pingback;
 
-import org.junit.Test;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import static junit.framework.Assert.*;
+import org.junit.Test;
 
 /**
  * <p>Copyright &copy; 2009 Elwyn Malethan</p>

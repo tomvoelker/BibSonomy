@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.nature;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -43,7 +41,7 @@ public class NatureScraperTest {
 	 */
 	@Test
 	public void urlTest1Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_45"));
+		UnitTestRunner.runSingleTest("url_45");
 	}
 
 	/**
@@ -51,7 +49,7 @@ public class NatureScraperTest {
 	 */
 	@Test
 	public void urlTest2Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_231"));
+		UnitTestRunner.runSingleTest("url_231");
 	}
 		
 }
