@@ -286,8 +286,8 @@
 				
 			<div class="clearfix"><!-- keep me --></div>
 			<ul class="pubmetainfo">
-				<li><fmt:message key="post.change_date" /> <rc:metaChangeDate post="${post}"/></li>
-				<li><fmt:message key="post.date" /> <rc:metaDate post="${post}"/></li>
+				<li><fmt:message key="post.change_date" /> <rc:metaChangeDate post="${post}"/>.</li>
+				<li><fmt:message key="post.date" /> <rc:metaDate post="${post}"/>.</li>
 			</ul>
 		</div> <!-- /.subcolumns -->
 
