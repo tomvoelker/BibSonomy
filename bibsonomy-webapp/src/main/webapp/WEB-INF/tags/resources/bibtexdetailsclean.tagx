@@ -274,7 +274,9 @@
 						<c:otherwise>
 							<c:if test="${not command.context.userLoggedIn}">
 								<div class="register">
-									<fmt:message key="system.about" />
+									<fmt:message key="system.about">
+										<fmt:param value="${properties['project.name']}" />
+									</fmt:message>
 								</div>
 							</c:if>
 
