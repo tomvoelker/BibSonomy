@@ -153,9 +153,9 @@ INSERT INTO `gold_standard` (`content_id`, `title`, `url`, `description`, `date`
 -- 
 -- Data for table `gold_standard_publication_references`
 -- 
-INSERT INTO `gold_standard_publication_references` (`publication`, `reference`, `user_name`, `date`) VALUES
-('097248439469d8f5a1e7fad6b02cbfcd', 'ac6aa3ccb181e61801cefbc1401d409a', 'testuser1', '2008-03-20 16:24:55'),
-('ac6aa3ccb181e61801cefbc1401d409a', '097248439469d8f5a1e7fad6b02cbfcd', 'testuser1', '2008-03-20 16:24:55');
+INSERT INTO `gold_standard_publication_references` (`publication`, `reference`, `user_name`, `date`, `part_of`) VALUES
+('097248439469d8f5a1e7fad6b02cbfcd', 'ac6aa3ccb181e61801cefbc1401d409a', 'testuser1', '2008-03-20 16:24:55', '0'),
+('ac6aa3ccb181e61801cefbc1401d409a', '097248439469d8f5a1e7fad6b02cbfcd', 'testuser1', '2008-03-20 16:24:55','0');
 
 
 -- 

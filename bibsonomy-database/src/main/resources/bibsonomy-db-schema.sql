@@ -311,6 +311,7 @@ CREATE TABLE `gold_standard_publication_references` (
   `reference` char(32) NOT NULL default '',
   `user_name` varchar(255) default NULL,
   `date` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `part_of` char(1) NOT NULL default '',
   PRIMARY KEY  (`publication`, `reference`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
