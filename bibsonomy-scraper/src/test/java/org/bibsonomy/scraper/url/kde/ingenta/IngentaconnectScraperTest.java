@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.ingenta;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -43,7 +41,7 @@ public class IngentaconnectScraperTest {
 	 */
 	@Test
 	public void urlTestRun1(){
-		assertTrue(UnitTestRunner.runSingleTest("url_15"));
+		UnitTestRunner.runSingleTest("url_15");
 	}
 	
 	/**
@@ -51,7 +49,7 @@ public class IngentaconnectScraperTest {
 	 */
 	@Test
 	public void urlTestRun2(){
-		assertTrue(UnitTestRunner.runSingleTest("url_169"));
+		UnitTestRunner.runSingleTest("url_169");
 	}
 	
 }

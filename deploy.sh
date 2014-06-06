@@ -153,6 +153,11 @@ deploy() {
     fi    
     cd $BIBSONOMY_PATH/$webapp
     clean
+
+    if [ $webapp != 'bibsonomy-webapp' ]; then
+	echo -e "\nInstalling overlay $webapp ...";
+	${MAVEN} clean install
+    fi
     echo -e "\nDeploying webapp $webapp to target $target ...";
     ${MAVEN} -Dtomcat-server=${target} -Dmaven.test.skip tomcat${tomcatVersion}:redeploy | ${TEE} -a ${TMPLOG}
     echo "Done."

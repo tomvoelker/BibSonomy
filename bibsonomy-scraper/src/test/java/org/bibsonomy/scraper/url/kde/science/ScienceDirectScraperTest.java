@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.science;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -43,7 +41,7 @@ public class ScienceDirectScraperTest {
 	 */
 	@Test
 	public void urlTestRun1(){
-		assertTrue(UnitTestRunner.runSingleTest("url_28"));
+		UnitTestRunner.runSingleTest("url_28");
 	}
 
 	/**
@@ -51,7 +49,7 @@ public class ScienceDirectScraperTest {
 	 */
 	@Test
 	public void urlTestRun2(){
-		assertTrue(UnitTestRunner.runSingleTest("url_141"));
+		UnitTestRunner.runSingleTest("url_141");
 	}
 
 	/**
@@ -59,7 +57,7 @@ public class ScienceDirectScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_159"));
+		UnitTestRunner.runSingleTest("url_159");
 	}
 	
 	/**
@@ -67,7 +65,7 @@ public class ScienceDirectScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_162"));
+		UnitTestRunner.runSingleTest("url_162");
 	}
 	
 	/**
@@ -75,7 +73,7 @@ public class ScienceDirectScraperTest {
 	 */
 	@Test
 	public void url5TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_179"));
+		UnitTestRunner.runSingleTest("url_179");
 	}
 	
 	/**
@@ -83,7 +81,7 @@ public class ScienceDirectScraperTest {
 	 */
 	@Test
 	public void url6TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_185"));
+		UnitTestRunner.runSingleTest("url_185");
 	}
 
 }

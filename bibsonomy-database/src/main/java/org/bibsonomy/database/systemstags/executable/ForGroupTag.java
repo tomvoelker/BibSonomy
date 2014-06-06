@@ -3,7 +3,6 @@ package org.bibsonomy.database.systemstags.executable;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -32,6 +31,9 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.file.FileSystemFile;
 import org.bibsonomy.services.filesystem.FileLogic;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  * System tag 'sys:for:&lt;groupname&gt;'
@@ -137,9 +139,9 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 						try {
 							final Document groupDocument = this.fileLogic.saveDocumentFile(groupName, new FileSystemFile(file, fileName));
 							String oldFileName = fileName;
-							final SimpleDateFormat sdf = new SimpleDateFormat("yyyy_mm_dd_hh_mm_ss");
+							final DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy_mm_dd_hh_mm_ss");
 							
-							final String newFileName = oldFileName.replace(".", "_" + sdf.format(new Date()) + ".");
+							final String newFileName = oldFileName.replace(".", "_" + fmt.print(new DateTime()) + ".");
 							groupDocument.setFileName(newFileName);
 							groupDBLogic.createDocument(groupDocument, intraHash);
 						} catch (final Exception e) {

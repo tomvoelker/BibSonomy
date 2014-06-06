@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.iucr;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -44,7 +42,7 @@ public class IucrScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_92"));
+		UnitTestRunner.runSingleTest("url_92");
 	}
 
 }

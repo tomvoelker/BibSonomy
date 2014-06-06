@@ -23,14 +23,12 @@
 
 package org.bibsonomy.scraper.id.kde.isbn;
 
-import static org.junit.Assert.assertTrue;
-import org.junit.experimental.categories.Category;
-import org.bibsonomy.scraper.junit.RemoteTest;
-
 import org.bibsonomy.scraper.ReachabilityTestRunner;
 import org.bibsonomy.scraper.UnitTestRunner;
+import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * Tests for ISBNScraper class and #166 #167
@@ -44,7 +42,7 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_166"));
+		UnitTestRunner.runSingleTest("url_166");
 	}
 	
 	/**
@@ -52,7 +50,7 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_167"));
+		UnitTestRunner.runSingleTest("url_167");
 	}
 	
 	/**
@@ -60,7 +58,7 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_170"));
+		UnitTestRunner.runSingleTest("url_170");
 	}
 	
 	/**
@@ -68,7 +66,7 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_171"));
+		UnitTestRunner.runSingleTest("url_171");
 	}
 
 	/**
