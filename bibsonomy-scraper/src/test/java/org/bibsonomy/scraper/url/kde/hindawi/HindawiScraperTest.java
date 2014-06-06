@@ -21,8 +21,6 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 package org.bibsonomy.scraper.url.kde.hindawi;
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -37,6 +35,6 @@ public class HindawiScraperTest {
 	 */
 	@Test
 	public void urlTestRun() {
-		assertTrue(UnitTestRunner.runSingleTest("url_256"));
+		UnitTestRunner.runSingleTest("url_256");
 	}
 }

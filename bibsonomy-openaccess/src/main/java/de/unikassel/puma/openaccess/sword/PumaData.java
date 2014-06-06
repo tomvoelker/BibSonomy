@@ -2,7 +2,6 @@ package de.unikassel.puma.openaccess.sword;
 
 import java.io.Serializable;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -21,6 +20,8 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  * 
@@ -33,7 +34,7 @@ public class PumaData<T extends Resource> implements Serializable {
 	
 	private static final Log log = LogFactory.getLog(PumaData.class);
 	
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
+	private static final DateTimeFormatter fmt = DateTimeFormat.forPattern("dd.MM.yyyy");
 
 	
 	private Post<T> post = new Post<T>();
@@ -168,19 +169,15 @@ public class PumaData<T extends Resource> implements Serializable {
 		// convert string to date
 		Date phdoralexamDate = null;
 		XMLGregorianCalendar phdoralexamXMLDate=null;
-		
+				
+		phdoralexamDate = fmt.parseDateTime(phdoralexamString).toDate();
+		final GregorianCalendar c = new GregorianCalendar();
+		c.setTime(phdoralexamDate);
 		try {
-			phdoralexamDate = DATE_FORMAT.parse(phdoralexamString);
-			final GregorianCalendar c = new GregorianCalendar();
-			c.setTime(phdoralexamDate);
-			try {
-				phdoralexamXMLDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-			} catch (final DatatypeConfigurationException e) {
-				log.warn("DatatypeConfigurationException");
-			}
-		} catch (final ParseException e) {
-			// Quellzeit hat ein falsches Format
-		}
+			phdoralexamXMLDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+		} catch (final DatatypeConfigurationException e) {
+			log.warn("DatatypeConfigurationException");
+		}		 
 		
 		this.phdoralexam = phdoralexamXMLDate;
 	}

@@ -23,10 +23,10 @@
 
 package org.bibsonomy.model.util;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.util.ArrayList;
-
-import junit.framework.Assert;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
@@ -62,7 +62,7 @@ public class EndnoteUtilsTest {
 	public void testIt() throws IOException {
 		Post<BibTex> post = createPost();
 		String rendered = EndnoteUtils.toEndnoteString(post, false);
-		Assert.assertEquals(expected, rendered);
+		assertEquals(expected, rendered);
 	}
 	
 	@Test
@@ -71,8 +71,8 @@ public class EndnoteUtilsTest {
 		post.getResource().setAuthor(BibtexUtilsTest.createPersonList("noauthor", "HEB12334"));
 		post.getResource().setEditor(BibtexUtilsTest.createPersonList("noeditor", "HEB12334"));
 		post.getResource().setYear("noyear");
-		Assert.assertEquals(expectedWithDummies, EndnoteUtils.toEndnoteString(post, false));
-		Assert.assertEquals(expectedWithSkippedDummies, EndnoteUtils.toEndnoteString(post, true));
+		assertEquals(expectedWithDummies, EndnoteUtils.toEndnoteString(post, false));
+		assertEquals(expectedWithSkippedDummies, EndnoteUtils.toEndnoteString(post, true));
 	}
 
 	public static Post<BibTex> createPost() {

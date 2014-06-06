@@ -36,6 +36,7 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -59,7 +60,8 @@ public class InspireScraper extends AbstractUrlScraper {
 	static {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "inspirehep.net"), AbstractUrlScraper.EMPTY_PATTERN));
 	}
-
+	private static final Pattern pattern_abstract = Pattern.compile("(?i).*Abstract(.*)<span>(.*)</span>");
+	
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 			sc.setScraper(this);
@@ -87,6 +89,7 @@ public class InspireScraper extends AbstractUrlScraper {
 					 * add URL
 					 */
 					bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", url);
+					bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "abstract", abstractParser(sc.getUrl()));
 					
 					//-- bibtex string may not be empty
 					if (bibtex != null && ! "".equals(bibtex)) {
@@ -100,7 +103,17 @@ public class InspireScraper extends AbstractUrlScraper {
 				throw new InternalFailureException(e);
 			}
 	}
-
+	private static String abstractParser(URL url){
+		try{
+			Matcher m = pattern_abstract.matcher(WebUtils.getContentAsString(url));
+			if(m.find())
+				return m.group(2);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
 	public String getInfo() {
 		return info;
 	}
@@ -110,10 +123,12 @@ public class InspireScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}

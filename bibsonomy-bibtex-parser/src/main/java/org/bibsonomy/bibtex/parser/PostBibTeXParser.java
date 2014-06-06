@@ -27,8 +27,6 @@ package org.bibsonomy.bibtex.parser;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,6 +37,8 @@ import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.util.TagStringUtils;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import bibtex.dom.BibtexEntry;
 import bibtex.dom.BibtexString;
@@ -69,7 +69,7 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 	 * date attribute of posts, we support the following date format.
 	 * (needed for DBLP import) 
 	 */
-	private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private final DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
 
 	private Class<? extends BibTex> pubInstanceToCreate = BibTex.class;
 	private final ResourceFactory resourceFactory;
@@ -197,8 +197,8 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		final String dateField = bibtex.removeMiscField(BibTexUtils.ADDITIONAL_MISC_FIELD_DATE);
 		if (present(dateField)) {
 			try {
-				post.setDate(dateFormat.parse(dateField));
-			} catch (java.text.ParseException ex) {
+				post.setDate(fmt.parseDateTime(dateField).toDate());
+			} catch (Exception ex) {
 				// ignore parse errors
 			}
 		}

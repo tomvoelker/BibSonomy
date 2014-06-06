@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.citeulike;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -42,7 +40,7 @@ public class CiteulikeScraperTest {
 	 */
 	@Test
 	public void urlTestRun1(){
-		assertTrue(UnitTestRunner.runSingleTest("url_131"));
+		UnitTestRunner.runSingleTest("url_131");
 	}
 	
 	/**
@@ -50,7 +48,7 @@ public class CiteulikeScraperTest {
 	 */
 	@Test
 	public void urlTestRun2(){
-		assertTrue(UnitTestRunner.runSingleTest("url_132"));
+		UnitTestRunner.runSingleTest("url_132");
 	}
 	
 	/**
@@ -58,7 +56,7 @@ public class CiteulikeScraperTest {
 	 */
 	@Test
 	public void urlTestRun3(){
-		assertTrue(UnitTestRunner.runSingleTest("url_156"));
+		UnitTestRunner.runSingleTest("url_156");
 	}
 	
 }

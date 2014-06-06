@@ -32,15 +32,18 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.generic.RISGenericURLScraper;
-import org.bibsonomy.util.ValidationUtils;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.converter.RisToBibtexConverter;
+import org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * @author clemens
  */
 
-public class ATSScraper extends RISGenericURLScraper {
+public class ATSScraper extends PostprocessingGenericURLScraper {
 	private final Log log = LogFactory.getLog(ATSScraper.class);
 	
 	private static final String SITE_NAME = "American Thoracic Society Journals";
@@ -50,9 +53,10 @@ public class ATSScraper extends RISGenericURLScraper {
 	private static final String BIBTEX_URL = "http://www.atsjournals.org/action/downloadCitation?doi=";
 	private static final Pattern ID_PATTERN = Pattern.compile("\\d+.*");
 	private static final int ID_GROUP = 0;
-
 	
-	private String extractId(final String url) {
+	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<div class=\"abstractSection\">(.*)</div>");
+	
+	private static String extractId(final String url) {
 		final Matcher matcher = ID_PATTERN.matcher(url);
 		if (matcher.find()) {
 			return matcher.group(ID_GROUP);
@@ -78,16 +82,34 @@ public class ATSScraper extends RISGenericURLScraper {
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return URL_PATTERNS;
 	}
-	@Override
-	public String getRISURL(URL url) {
-		
-		final String id = extractId(url.toString());
 
-		if (!ValidationUtils.present(id)) {
-			log.error("can't parse publication id");
-			return null;
+	private static String abstractParser(URL url){
+		try{
+		String cookie = WebUtils.getCookies(url);
+		Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(url.toString(),cookie));
+		if(m.find())
+			return m.group(1);
+		}catch(Exception e){
+			e.printStackTrace();
 		}
-
+		return null;
+	}
+	@Override
+	protected String postProcessScrapingResult(ScrapingContext sc, String result) {
+		try{
+			RisToBibtexConverter ris = new RisToBibtexConverter();
+			return BibTexUtils.addFieldIfNotContained(ris.risToBibtex(result),"abstract",abstractParser(sc.getUrl()));
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.SimpleGenericURLScraper#getBibTeXURL(java.net.URL)
+	 */
+	@Override
+	public String getBibTeXURL(URL url) {
+		final String id = extractId(url.toString());
 		try {
 			return BIBTEX_URL + id;
 

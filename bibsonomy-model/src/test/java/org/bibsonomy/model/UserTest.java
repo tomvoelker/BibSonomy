@@ -31,8 +31,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.Ignore;
@@ -140,8 +138,8 @@ public class UserTest {
 	@Test
 	public void testRemoteIds() {
 		final User srcUser = ModelUtils.getUser();
-		Assert.assertEquals("preCondition1", "test-ldapId", srcUser.getLdapId());
-		Assert.assertEquals("preCondition2", "http://test-openid", srcUser.getOpenID());
+		assertEquals("preCondition1", "test-ldapId", srcUser.getLdapId());
+		assertEquals("preCondition2", "http://test-openid", srcUser.getOpenID());
 //		int openIdRIdFound = 0;
 //		int ldapRIdFound = 0;
 //		for (RemoteUserId rId : srcUser.getRemoteUserIds()) {
@@ -153,8 +151,8 @@ public class UserTest {
 //				openIdRIdFound++;
 //			}
 //		}
-//		Assert.assertEquals(ldapRIdFound, 1);
-//		Assert.assertEquals(openIdRIdFound, 1);
+//		assertEquals(ldapRIdFound, 1);
+//		assertEquals(openIdRIdFound, 1);
 		
 		srcUser.setLdapId(null);
 		
@@ -167,9 +165,9 @@ public class UserTest {
 //				openIdRIdFound++;
 //			}
 //		}
-//		Assert.assertEquals(ldapRIdFound, 0);
-//		Assert.assertEquals(openIdRIdFound, 1);
-		Assert.assertNull(srcUser.getLdapId());
+//		assertEquals(ldapRIdFound, 0);
+//		assertEquals(openIdRIdFound, 1);
+		assertNull(srcUser.getLdapId());
 		
 		srcUser.setOpenID("http://huhu");
 		
@@ -179,7 +177,7 @@ public class UserTest {
 //			if (rId instanceof LdapRemoteUserId) {
 //				ldapRIdFound++;
 //			} else if (rId instanceof OpenIdRemoteUserId) {
-//				Assert.assertEquals("http://huhu", ((OpenIdRemoteUserId) rId).getRemoteUserId());
+//				AassertEquals("http://huhu", ((OpenIdRemoteUserId) rId).getRemoteUserId());
 //				openIdRIdFound++;
 //			}
 //		}
@@ -187,7 +185,7 @@ public class UserTest {
 //		Assert.assertEquals(ldapRIdFound, 0);
 //		Assert.assertEquals(openIdRIdFound, 1);
 		
-		Assert.assertEquals("http://huhu", srcUser.getOpenID());
+		assertEquals("http://huhu", srcUser.getOpenID());
 	}
 	
 	/**

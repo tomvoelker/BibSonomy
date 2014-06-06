@@ -1,7 +1,9 @@
 package org.bibsonomy.webapp.command.actions;
 
+import java.util.List;
 import java.util.Map;
 
+import org.bibsonomy.webapp.command.GroupingCommand;
 import org.bibsonomy.webapp.command.TagResourceViewCommand;
 
 
@@ -9,7 +11,7 @@ import org.bibsonomy.webapp.command.TagResourceViewCommand;
  * @author pbu
  * @author dzo
  */
-public class BatchEditCommand extends TagResourceViewCommand {
+public class BatchEditCommand extends TagResourceViewCommand implements GroupingCommand {
 
 	/**
 	 * should publications be edited before they're stored? 
@@ -45,6 +47,47 @@ public class BatchEditCommand extends TagResourceViewCommand {
 	 * actions to apply to post
 	 */
 	private int action;
+	
+	private String abstractGrouping;
+
+    private List<String> groups;
+
+        
+    /**
+     * @return the groups
+     */
+    @Override
+    public List<String> getGroups() {
+        return this.groups;
+    }
+
+    /**
+     * @param groups
+     *            the groups to set
+     */
+    @Override
+    public void setGroups(final List<String> groups) {
+        this.groups = groups;
+    }
+    
+    /**
+     * @return the abstractGrouping
+     */
+    @Override
+    public String getAbstractGrouping() {
+        return this.abstractGrouping;
+    }
+
+    /**
+     * @param abstractGrouping
+     *            the abstractGrouping to set
+     */
+    @Override
+    public void setAbstractGrouping(final String abstractGrouping) {
+        this.abstractGrouping = abstractGrouping;
+    }
+	
+	
 	/**
 	 * @return the flag that determines, weather the dialogue called was configured to 
 	 * edit(delete) or edit(create) existing posts.
