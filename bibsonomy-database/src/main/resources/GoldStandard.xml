@@ -34,7 +34,7 @@
 	</delete>
 	
 	<insert id="insertGoldStandardPublicationReference">
-		INSERT INTO gold_standard_publication_references (publication, reference, user_name) VALUES (#hash#, #refHash#, #username#)
+		INSERT INTO gold_standard_publication_references (publication, reference, user_name, part_of) VALUES (#hash#, #refHash#, #username#, #relation#)
 	</insert>
 	
 	<!-- be careful hash or refHash must be not null!!! or you delete everything -->

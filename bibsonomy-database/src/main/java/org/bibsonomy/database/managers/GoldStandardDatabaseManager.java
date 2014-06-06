@@ -310,9 +310,10 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	 * @param userName TODO: currently unused
 	 * @param interHash
 	 * @param references
+	 * @param relation 
 	 * @param session
 	 */
-	public void addReferencesToPost(final String userName, final String interHash, final Set<String> references, final DBSession session) {
+	public void addReferencesToPost(final String userName, final String interHash, final Set<String> references, final String relation, final DBSession session) {
 		session.beginTransaction();
 		try {
 			final Post<R> post = this.getGoldStandardPostByHash(interHash, session);
@@ -328,6 +329,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 					final Post<R> refPost = this.getGoldStandardPostByHash(referenceHash, session);
 					if (present(refPost)) {
 						param.setRefHash(referenceHash);
+						param.setRelation(relation);
 						this.insert("insert" + this.resourceClassName + "Reference", param, session);
 					} else {
 						log.info("Can't add reference. Gold standard " + this.resourceClassName +  " reference with resourceHash " + referenceHash + " not found.");

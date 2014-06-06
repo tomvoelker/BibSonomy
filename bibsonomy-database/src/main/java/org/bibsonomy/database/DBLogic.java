@@ -2521,12 +2521,12 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.GoldStandardPostLogicInterface#createReferences(java.lang.String, java.util.Set)
 	 */
 	@Override
-	public void createReferences(final String postHash, final Set<String> references) {
+	public void createReferences(final String postHash, final Set<String> references, final String relation) {
 		this.permissionDBManager.ensureAdminAccess(loginUser); // only admins can create references
 
 		final DBSession session = this.openSession();
 		try {
-			this.goldStandardPublicationDBManager.addReferencesToPost(this.loginUser.getName(), postHash, references, session);
+			this.goldStandardPublicationDBManager.addReferencesToPost(this.loginUser.getName(), postHash, references, relation, session);
 		} finally {
 			session.close();
 		}	

@@ -14,21 +14,23 @@ import org.bibsonomy.rest.strategy.Context;
 public class PostReferencesStrategy extends AbstractCreateStrategy {
 
 	private final String hash;
+	private final String relation;
 	
 	/**
 	 * @param context
 	 * @param hash 
 	 */
-	public PostReferencesStrategy(final Context context, final String hash) {
+	public PostReferencesStrategy(final Context context, final String hash, final String relation) {
 		super(context);
 		
 		this.hash = hash;
+		this.relation = relation;
 	}
 
 	@Override
 	protected String create() {
 		final Set<String> references = this.getRenderer().parseReferences(this.doc);
-		this.getLogic().createReferences(this.hash, references);
+		this.getLogic().createReferences(this.hash, references, relation);
 		
 		return this.hash;
 	}

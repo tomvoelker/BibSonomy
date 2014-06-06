@@ -938,7 +938,7 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public void createReferences(final String postHash, final Set<String> references) {
+	public void createReferences(final String postHash, final Set<String> references, final String relation) {
 		// TODO Auto-generated method stub	
 	}
 

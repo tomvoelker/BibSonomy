@@ -81,13 +81,14 @@ public class PostsHandler implements ContextHandler {
 				// /posts/community/[hash]/references/
 				final String hash = urlTokens.nextToken();
 				final String references = urlTokens.nextToken();
+				final String relation = urlTokens.nextToken();
 				if (!RESTConfig.COMMUNITY_SUB_PATH.equalsIgnoreCase(path) || !RESTConfig.REFERENCES_SUB_PATH.equalsIgnoreCase(references)) {
 					break;
 				}			
 			
 				switch (httpMethod) {
 					case POST:
-						return new PostReferencesStrategy(context, hash);
+						return new PostReferencesStrategy(context, hash, relation);
 					case DELETE:
 						return new DeleteReferencesStrategy(context, hash);
 					default:

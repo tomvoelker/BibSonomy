@@ -48,6 +48,7 @@ public class EditGoldstandardReferencesController extends AjaxController impleme
 		
 		final String hash = command.getHash();
 		final Set<String> references = command.getReferences();
+		final String relation = "0";
 		
 		if (!present(hash) || !present(references)) {
 			this.responseLogic.setHttpStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -58,7 +59,7 @@ public class EditGoldstandardReferencesController extends AjaxController impleme
 		
 		switch (httpMethod) {
 		case POST: 
-			this.logic.createReferences(hash, references);
+			this.logic.createReferences(hash, references, relation);
 			break;
 		case DELETE: 
 			this.logic.deleteReferences(hash, references);

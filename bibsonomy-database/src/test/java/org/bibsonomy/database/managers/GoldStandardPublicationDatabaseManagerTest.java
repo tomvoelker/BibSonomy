@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
@@ -206,7 +207,8 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
     @Test
     public void testAddRemoveReferences() {
         final String interHash = this.createGoldStandardPublication();
-        goldPubManager.addReferencesToPost("", INTERHASH_GOLD_1, Collections.singleton(interHash), this.dbSession);
+        final String relation = String .valueOf(new Random().nextInt(2));
+        goldPubManager.addReferencesToPost("", INTERHASH_GOLD_1, Collections.singleton(interHash), relation, this.dbSession);
 
         final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", null, this.dbSession);
         assertEquals(1 + 1, post.getResource().getReferences().size());
