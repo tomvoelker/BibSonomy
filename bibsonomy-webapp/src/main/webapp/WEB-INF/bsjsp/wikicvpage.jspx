@@ -43,12 +43,17 @@
 			 		-->
 				<c:if test="${command.context.userLoggedIn and not ownCVPage}">
 					<li>
+						<users:socializer command="${command}" />
+					<!-- 
+						TODO: REPAIR
 						<users:socializer 
 							loginUser="${command.context.loginUser}" 
 							requestedUser="${command.requestedUser}" 
 							isOfFriendUser="${command.ofFriendUser}" 
 							isFriendOfUser="${command.friendOfUser}" 
 							isFollowerOfUser="${command.followerOfUser}" />
+							
+					-->
 					</li>
 				</c:if>
 			
