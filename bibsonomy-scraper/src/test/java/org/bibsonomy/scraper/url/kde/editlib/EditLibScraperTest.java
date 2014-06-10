@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.editlib;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -42,7 +40,7 @@ public class EditLibScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_70"));
+		UnitTestRunner.runSingleTest("url_70");
 	}
 	
 	/**
@@ -50,6 +48,6 @@ public class EditLibScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_71"));
+		UnitTestRunner.runSingleTest("url_71");
 	}
 }

@@ -29,11 +29,6 @@ public class BibTexRenderer extends AbstractPostExportRenderer {
 	protected RenderingFormat getFormat() {
 		return RenderingFormat.BIBTEX;
 	}
-	
-	@Override
-	public void serializeError(final Writer writer, final String errorMessage) {
-		// TODO Auto-generated method stub
-	}
 
 	@Override
 	public void serializePost(final Writer writer, final Post<? extends Resource> post, final ViewModel model) {

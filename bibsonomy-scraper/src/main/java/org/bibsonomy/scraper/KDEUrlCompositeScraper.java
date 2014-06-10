@@ -43,7 +43,6 @@ import org.bibsonomy.scraper.url.kde.bibsonomy.BibSonomyScraper;
 import org.bibsonomy.scraper.url.kde.biologists.BiologistsScraper;
 import org.bibsonomy.scraper.url.kde.biomed.BioMedCentralScraper;
 import org.bibsonomy.scraper.url.kde.blackwell.BlackwellSynergyScraper;
-import org.bibsonomy.scraper.url.kde.bloodjournal.BloodJournalScraper;
 import org.bibsonomy.scraper.url.kde.bmj.BMJOpenScraper;
 import org.bibsonomy.scraper.url.kde.bmj.BMJScraper;
 import org.bibsonomy.scraper.url.kde.cambridge.CambridgeScraper;
@@ -61,6 +60,7 @@ import org.bibsonomy.scraper.url.kde.faseb.FASEBJournalScraper;
 import org.bibsonomy.scraper.url.kde.firstmonday.FirstMondayScraper;
 import org.bibsonomy.scraper.url.kde.googlebooks.GoogleBooksScraper;
 import org.bibsonomy.scraper.url.kde.googlescholar.GoogleScholarScraper;
+import org.bibsonomy.scraper.url.kde.hematologylibrary.HematologyLibraryScraper;
 import org.bibsonomy.scraper.url.kde.hindawi.HindawiScraper;
 import org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper;
 import org.bibsonomy.scraper.url.kde.ieee.IEEEXploreScraper;
@@ -88,6 +88,7 @@ import org.bibsonomy.scraper.url.kde.liebert.LiebertScraper;
 import org.bibsonomy.scraper.url.kde.mathscinet.MathSciNetScraper;
 import org.bibsonomy.scraper.url.kde.mendeley.MendeleyScraper;
 import org.bibsonomy.scraper.url.kde.metapress.MetapressScraper;
+import org.bibsonomy.scraper.url.kde.morganclaypool.MorganClaypoolScraper;
 import org.bibsonomy.scraper.url.kde.muse.ProjectmuseScraper;
 import org.bibsonomy.scraper.url.kde.nasaads.NasaAdsScraper;
 import org.bibsonomy.scraper.url.kde.nature.NatureScraper;
@@ -155,6 +156,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new LibrarythingScraper());
 		addScraper(new NasaAdsScraper());
 		addScraper(new AipScitationScraper());
+		addScraper(new HematologyLibraryScraper());
 		addScraper(new MathSciNetScraper());
 		addScraper(new WileyIntersienceScraper());
 		addScraper(new IOPScraper());
@@ -242,9 +244,9 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new HindawiScraper());
 		addScraper(new AsmScraper());
 		addScraper(new FirstMondayScraper());
-		addScraper(new BloodJournalScraper());
 		addScraper(new IGIGlobalScraper());
 		addScraper(new DeGruyterScraper());
+		addScraper(new MorganClaypoolScraper());
 	}
 
 }

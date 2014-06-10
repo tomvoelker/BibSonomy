@@ -79,6 +79,13 @@ public class UrlBuilderTest {
 		assertEquals("/http%3A%2F%2Fheise.de", urlBuilder.asString());
 	}
 	
+	@Test
+	public void testEncodePlus() throws URISyntaxException {
+		final UrlBuilder spaceBuilder = new UrlBuilder("");
+		spaceBuilder.addPathElement("test + test");
+		assertEquals("/test%20%2B%20test", spaceBuilder.asString());
+	}
+	
 	private static Map<String, String> getQueryMap(String query) {
 		if (!present(query)) {
 			return Collections.emptyMap();

@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
-		<version>2.0.43-SNAPSHOT</version>
+		<version>2.0.45-SNAPSHOT</version>
 	</parent>
 	
 	<properties>
@@ -83,7 +83,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<scope>provided</scope>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
@@ -110,6 +110,11 @@
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-database-common</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.3</version>
+		</dependency>           
 	</dependencies>
 	<build>
 		<testResources>

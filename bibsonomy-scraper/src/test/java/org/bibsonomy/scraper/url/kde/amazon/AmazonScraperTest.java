@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.amazon;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -42,7 +40,7 @@ public class AmazonScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_42"));
+		UnitTestRunner.runSingleTest("url_42");
 	}
 	
 	/**
@@ -50,7 +48,7 @@ public class AmazonScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_46"));
+		UnitTestRunner.runSingleTest("url_46");
 	}
 
 	/**
@@ -58,7 +56,7 @@ public class AmazonScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_47"));
+		UnitTestRunner.runSingleTest("url_47");
 	}
 
 	/**
@@ -66,7 +64,7 @@ public class AmazonScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_48"));
+		UnitTestRunner.runSingleTest("url_48");
 	}
 
 	/**
@@ -74,7 +72,7 @@ public class AmazonScraperTest {
 	 */
 	@Test
 	public void url5TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_49"));
+		UnitTestRunner.runSingleTest("url_49");
 	}
 
 	/**
@@ -82,7 +80,7 @@ public class AmazonScraperTest {
 	 */
 	@Test
 	public void url6TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_50"));
+		UnitTestRunner.runSingleTest("url_50");
 	}
 	
 	/**
@@ -90,7 +88,7 @@ public class AmazonScraperTest {
 	 */
 	@Test
 	public void url7TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_57"));
+		UnitTestRunner.runSingleTest("url_57");
 	}
 
 	/**
@@ -98,7 +96,7 @@ public class AmazonScraperTest {
 	 */
 	@Test
 	public void url8TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_105"));
+		UnitTestRunner.runSingleTest("url_105");
 	}
 	
 	/**
@@ -106,7 +104,7 @@ public class AmazonScraperTest {
 	 */
 	@Test
 	public void url9TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_160"));
+		UnitTestRunner.runSingleTest("url_160");
 	}
 	
 	/**
@@ -114,6 +112,13 @@ public class AmazonScraperTest {
 	 */
 	@Test
 	public void url10TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_161"));
+		UnitTestRunner.runSingleTest("url_161");
+	}
+	/**
+	 * starts URL test with id url_272
+	 */
+	@Test
+	public void url11TestRun(){
+		UnitTestRunner.runSingleTest("url_272");
 	}
 }

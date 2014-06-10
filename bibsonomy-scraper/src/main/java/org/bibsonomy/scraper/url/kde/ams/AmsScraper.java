@@ -23,97 +23,82 @@
 
 package org.bibsonomy.scraper.url.kde.ams;
 
-import java.io.IOException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for ams.allenpress.com
  * @author tst
  */
-public class AmsScraper extends AbstractUrlScraper {
+public class AmsScraper extends PostprocessingGenericURLScraper {
 	
 	private static final String SITE_NAME = "American Meteorological Society";
 	private static final String SITE_URL = "http://ams.allenpress.com/";
 	private static final String INFO = "For references from the "+href(SITE_URL, SITE_NAME)+".";
 	
-	//private static final String FORMAT_ENDNOTE = "&format=endnote";
 	private static final String FORMAT_BIBTEX = "&format=bibtex";
 
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*ams.allenpress.com"), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	private static final Pattern pattern = Pattern.compile("doi=([^&]*)[&]?");
+	private static final Pattern abstractPattern = Pattern.compile("Abstract.*<p class=\"last\">(.*)</p>");
 	
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
 
-	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
-			sc.setScraper(this);
-			
-			final Matcher matcher = pattern.matcher(sc.getUrl().toString());
-			if (matcher.find()) {
-				final String doi = matcher.group(1).replace("%2F", "/");
-				
-				//final String downloadUrl = "http://ams.allenpress.com/perlserv/?request=download-citation&t=endnote&f=1520-0485_38_1669&doi=" + doi + "&site=amsonline";
-				final String downloadUrl = "http://journals.ametsoc.org/action/downloadCitation?doi=" + doi + "&include=cit";
-				
-				
-				try {
-					final String bibtexContent = WebUtils.getContentAsString(downloadUrl + FORMAT_BIBTEX);
-					
-					if(bibtexContent != null){
-						sc.setBibtexResult(bibtexContent);
-						return true;
-					}else
-						throw new ScrapingFailureException("failure during download");
-					
-					/*final String endnoteContent = WebUtils.getContentAsString(downloadUrl + FORMAT_ENDNOTE);
-					
-					if(endnoteContent != null){
-						
-						final EndnoteToBibtexConverter converter = new EndnoteToBibtexConverter();
-						final String bibtex = converter.processEntry(endnoteContent);
-						
-						if(bibtex != null){
-							sc.setBibtexResult(bibtex);
-							return true;
-						}else
-							throw new ScrapingFailureException("failure during converting to bibtex");
-					}else
-						throw new ScrapingFailureException("failure during download");*/
-					
-				} catch (IOException e) {
-					throw new InternalFailureException(e);
-				}
-
-				
-			}else
-				throw new PageNotSupportedException("not found DOI in URL");
-	}
-
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
+	private static String abstactParser(URL url){
+		try{
+			Matcher m = abstractPattern.matcher(WebUtils.getContentAsString("http://journals.ametsoc.org/doi/abs/" + doiExtracter(url)));
+			if(m.find())
+				return m.group(1);
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			return null;
+	}
+	private static String doiExtracter(URL url){
+		final Matcher matcher = pattern.matcher(url.toString());
+		if (matcher.find()) 
+			return matcher.group(1).replace("%2F", "/");
+		return null;
+	}
+	@Override
+	public String getBibTeXURL(URL url) {
+		return "http://journals.ametsoc.org/action/downloadCitation?doi=" + doiExtracter(url) + "&include=cit" + FORMAT_BIBTEX;
+	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
+	 */
+	@Override
+	protected String postProcessScrapingResult(ScrapingContext sc, String result) {
+		return BibTexUtils.addFieldIfNotContained(result, "abstract", abstactParser(sc.getUrl()));
+	}
 }

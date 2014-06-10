@@ -34,6 +34,7 @@ import java.util.Collections;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -41,6 +42,8 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.id.DOIUtils;
+
+import bibtex.parser.ParseException;
 
 /**
  * if the original URL of the {@link ScrapingContext} did point to a dx.doi.org or was a DOI before redirected by
@@ -57,7 +60,6 @@ public class ContentNegotiationDOIScraper implements Scraper {
 	private static final String SITE_URL = "http://www.doi.org/";
 	private static final String INFO = "The ContentNegotiationDOIScraper resolves bibtex directly from a given " + AbstractUrlScraper.href("http://www.doi.org/", "DOI") +
 			", if no URL scraper matched the previously redirected page.";
-	
 	
 	/**
 	 * takes the original DOI URL and resolves the BibTex by using content negotiation via dx.doi.org
@@ -122,11 +124,22 @@ public class ContentNegotiationDOIScraper implements Scraper {
 			
 		// send request to dx.doi.org and receive resulting bibtex
 		try {
-			return WebUtils.getContentAsString(getBibTexMethod);
+			final String content = WebUtils.getContentAsString(getBibTexMethod);
+			/*
+			 * Unfortunately, content negotiation does not always work (TODO: why?). 
+			 * Hence, we here check, if we really got BibTeX.
+			 */
+			final SimpleBibTeXParser parser = new SimpleBibTeXParser(); // not thread-safe!
+			
+			parser.parseBibTeX(content);
+			
+			return content;
 		} catch (final HttpException ex) {
 			throw new InternalFailureException(ex);
 		} catch (final IOException ex) {
 			throw new InternalFailureException(ex);
+		} catch (ParseException e) {
+			throw new InternalFailureException("Server did not return BibTeX during content negotiation. Scraping not supported.");
 		}
 	}
 

@@ -679,7 +679,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	/**
 	 * tests getContentIdForBibTex
 	 */
-	@Test
+	// @Test now triggered by storePostDuplicate
 	public void getContentIdForBibTex() {
 		this.printMethod("getContentIdForBibTex");
 		for (final String hash : new String[] { "", " ", null }) {
@@ -904,6 +904,8 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 */
 	@Test
 	public void storePostDuplicate() {
+		getContentIdForBibTex(); // only here to ensure this test runs before 
+		
 		this.printMethod("storePostDuplicate");
 		for (final String intraHash : new String[] {"b77ddd8087ad8856d77c740c8dc2864a"}) {
 
@@ -994,7 +996,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		final String bibtexKey = "test %";
 		final String requestedUserName = "testuser1";
 		
-		final List<Post<BibTex>> posts = publicationDb.getPostsByBibTeXKey(bibtexKey, requestedUserName, PUBLIC_GROUP_ID, 20, 0, null, this.dbSession);
+		final List<Post<BibTex>> posts = publicationDb.getPostsByBibTeXKey(null, bibtexKey, requestedUserName, PUBLIC_GROUP_ID, 20, 0, null, this.dbSession);
 		assertEquals(1,posts.size());
 		assertEquals(posts.get(0).getResource().getBibtexKey(), "test bibtexKey");
 	}

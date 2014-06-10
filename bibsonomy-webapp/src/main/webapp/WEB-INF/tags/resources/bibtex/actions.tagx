@@ -19,7 +19,18 @@
 				<!-- COPY -->
 				<c:when test="${loginUserName ne post.user.name}"><!-- user is not post's owner -->
 					<c:url var="copyLink" value="/editPublication">
-						<c:param name="hash" value="${post.resource.intraHash}" />
+						<c:param name="hash">
+							<c:choose>
+								<c:when test="${not empty post.user.name}">
+									<!-- non-community post: use intra-hash -->
+									<c:out value="${post.resource.intraHash}" />
+								</c:when>
+								<c:otherwise>
+									<!-- community post: use inter-hash -->
+									<c:out value="${post.resource.interHash}" />
+								</c:otherwise>
+							</c:choose>
+						</c:param>
 						<c:param name="user" value="${post.user.name}" />
 						<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
 					</c:url>
@@ -103,7 +114,7 @@
 		| COMMUNITY POST 
 		| 
 		+-->
-	<fmt:message key="bibtex.actions.communityPost" var="communityPost" />
+	<fmt:message key="bibtex.actions.community_post" var="communityPost" />
 	
 	<a href="/bibtex/${post.resource.interHash}" class="item communitypost" title="${fn:escapeXml(communityPost)}">
 		<!-- Keep Me -->
@@ -203,6 +214,7 @@
 		<c:choose>
 			<c:when test="${not empty post.resource.miscFields['doi']}">
 				<fmt:message key="bibtex.actions.doi" var="urlTitle"/>
+
 				<a class="litem" href="http://dx.doi.org/${mtl:encodeURI(mtl:extractDOI(post.resource.miscFields['doi']))}" title="${urlTitle}"><fmt:message key="bibtex.actions.doi"/></a>
 			</c:when>
 			<c:otherwise>

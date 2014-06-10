@@ -96,7 +96,7 @@ EMAILWEBMASTER=webmaster@bibsonomy.org
 RECIPIENT=${EMAILWEBMASTER}
 # comma separated: further recipients
 #CCRECIPIENTS=stefani@cs.uni-kassel.de
-CCRECIPIENTS=doerfel@cs.uni-kassel.de
+CCRECIPIENTS=sbo@cs.uni-kassel.de,stefani@cs.uni-kassel.de
 
 # today's date (used to timestamp WAR file)
 TODAY=`date +"%Y-%m-%dT%H:%M:%S"`
@@ -153,6 +153,11 @@ deploy() {
     fi    
     cd $BIBSONOMY_PATH/$webapp
     clean
+
+    if [ $webapp != 'bibsonomy-webapp' ]; then
+	echo -e "\nInstalling overlay $webapp ...";
+	${MAVEN} clean install
+    fi
     echo -e "\nDeploying webapp $webapp to target $target ...";
     ${MAVEN} -Dtomcat-server=${target} -Dmaven.test.skip tomcat${tomcatVersion}:redeploy | ${TEE} -a ${TMPLOG}
     echo "Done."

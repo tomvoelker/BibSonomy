@@ -1,6 +1,7 @@
 package org.bibsonomy.rest.remotecall;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,8 +20,6 @@ import java.util.regex.Pattern;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServletRequest;
-
-import junit.framework.Assert;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
@@ -66,6 +65,8 @@ import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.user.remote.RemoteUserId;
+import org.bibsonomy.rest.AuthenticationHandler;
+import org.bibsonomy.rest.BasicAuthenticationHandler;
 import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.client.RestLogicFactory;
 import org.bibsonomy.rest.renderer.RendererFactory;
@@ -177,10 +178,12 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			restServlet.setFileLogic(createFileLogic());
 			
 			try {
-				restServlet.setLogicInterfaceFactory(new MockLogicFactory());
+				final BasicAuthenticationHandler handler = new BasicAuthenticationHandler();
+				handler.setLogicFactory(new MockLogicFactory());
+				restServlet.setAuthenticationHandlers(Arrays.<AuthenticationHandler<?>>asList(handler));
 			} catch (final Exception e) {
 				throw new RuntimeException("problem while instantiating " + MockLogicFactory.class.getName(), e);
-			}			
+			}
 			
 			servletContext.addServlet(RestServlet.class, "/*").setServlet(restServlet);
 			
@@ -877,8 +880,8 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.expect(serverLogic.createDocument(CheckerDelegatingMatcher.check(new Checker<Document>() {
 			@Override
 			public boolean check(Document obj) {
-				Assert.assertEquals(doc.getFileName(), obj.getFileName());
-				Assert.assertEquals(doc.getMd5hash(), obj.getMd5hash());
+				assertEquals(doc.getFileName(), obj.getFileName());
+				assertEquals(doc.getMd5hash(), obj.getMd5hash());
 				byte[] sent;
 				byte[] received;
 				try {
@@ -887,7 +890,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 				} catch (IOException ex) {
 					throw new RuntimeException(ex);
 				}
-				Assert.assertEquals(Arrays.toString(sent), Arrays.toString(received));
+				assertEquals(Arrays.toString(sent), Arrays.toString(received));
 				return true;
 			}
 			
@@ -948,29 +951,29 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.expect(serverLogic.createConcept(CheckerDelegatingMatcher.check(new Checker<Tag>() {
 			@Override
 			public boolean check(Tag obj) {
-				Assert.assertEquals(concept.getName(), obj.getName());
-				Assert.assertNotNull(obj.getSubTags());
-				Assert.assertEquals(concept.getSubTags().size(), obj.getSubTags().size());
+				assertEquals(concept.getName(), obj.getName());
+				assertNotNull(obj.getSubTags());
+				assertEquals(concept.getSubTags().size(), obj.getSubTags().size());
 				for (int i = 0; i < concept.getSubTags().size(); ++i) {
 					final Tag origSubTag = concept.getSubTags().get(i);
 					final Tag foundSubTag = obj.getSubTags().get(i);
-					Assert.assertEquals(origSubTag.getName(), foundSubTag.getName());
-					Assert.assertNotNull(foundSubTag.getSuperTags());
-					Assert.assertEquals(origSubTag.getSuperTags().size(), foundSubTag.getSuperTags().size());
+					assertEquals(origSubTag.getName(), foundSubTag.getName());
+					assertNotNull(foundSubTag.getSuperTags());
+					assertEquals(origSubTag.getSuperTags().size(), foundSubTag.getSuperTags().size());
 					for (int x = 0; x < origSubTag.getSuperTags().size(); ++x) {
-						Assert.assertEquals(origSubTag.getSuperTags().get(x).getName(), foundSubTag.getSuperTags().get(x).getName());
+						assertEquals(origSubTag.getSuperTags().get(x).getName(), foundSubTag.getSuperTags().get(x).getName());
 					}
 				}
-				Assert.assertNotNull(obj.getSuperTags());
-				Assert.assertEquals(concept.getSuperTags().size(), obj.getSuperTags().size());
+				assertNotNull(obj.getSuperTags());
+				assertEquals(concept.getSuperTags().size(), obj.getSuperTags().size());
 				for (int i = 0; i < concept.getSuperTags().size(); ++i) {
 					final Tag origSuperTag = concept.getSuperTags().get(i);
 					final Tag foundSuperTag = obj.getSuperTags().get(i);
-					Assert.assertEquals(origSuperTag.getName(), foundSuperTag.getName());
-					Assert.assertNotNull(foundSuperTag.getSubTags());
-					Assert.assertEquals(origSuperTag.getSubTags().size(), foundSuperTag.getSubTags().size());
+					assertEquals(origSuperTag.getName(), foundSuperTag.getName());
+					assertNotNull(foundSuperTag.getSubTags());
+					assertEquals(origSuperTag.getSubTags().size(), foundSuperTag.getSubTags().size());
 					for (int x = 0; x < origSuperTag.getSubTags().size(); ++x) {
-						Assert.assertEquals(origSuperTag.getSubTags().get(x).getName(), foundSuperTag.getSubTags().get(x).getName());
+						assertEquals(origSuperTag.getSubTags().get(x).getName(), foundSuperTag.getSubTags().get(x).getName());
 					}
 				}
 				return true;

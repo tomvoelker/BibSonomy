@@ -33,6 +33,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
@@ -132,11 +133,15 @@ public class DLibScraper extends AbstractUrlScraper {
 	 * pattern for bibtexkey (used with url from scraping context)
 	 */
 	private static final String PATTERN_BIBTEX_KEY = "dlib/(.*)/(.*)/";
+	private static final Pattern PATTERN_ABSTRACT = Pattern.compile("<H3 class=\"blue\">Abstract</H3>\\s+<p class=\"blue\">\\s+(.*)\\s+</p>");
+
 	
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
 
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		if(sc.getUrl().getHost().endsWith(DLIB_HOST)){
 			try {
@@ -158,7 +163,7 @@ public class DLibScraper extends AbstractUrlScraper {
 					
 					// extract & build bibtex
 					bibtex = buildBibtex(metaData, sc.getUrl().toString());
-					
+					bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "abstract", abstractParser(sc.getUrl()));
 					if(bibtex != null){
 						// success 
 						sc.setBibtexResult(StringEscapeUtils.unescapeHtml(bibtex));
@@ -175,7 +180,17 @@ public class DLibScraper extends AbstractUrlScraper {
 		}
 		return false;
 	}
-
+	@SuppressWarnings("unused")
+	private static String abstractParser(URL url){
+		try{
+		Matcher m = PATTERN_ABSTRACT.matcher(WebUtils.getContentAsString(url));
+		if(m.find())
+			return m.group(1);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
 	private String buildBibtex(String metaData, String publUrl){
 		StringBuffer buffer = new StringBuffer();
 		
@@ -294,14 +309,17 @@ public class DLibScraper extends AbstractUrlScraper {
 		return elements;
 	}
 	
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}

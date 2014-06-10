@@ -5,9 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +31,8 @@ import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.rest.testutil.TestServerBuilder;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.testutil.TestUtils;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -50,7 +50,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 	protected static final String SERVER_USER_APIKEY = "15cb586b630cc343cd60684807bf4785";
 	protected static final String CLIENT_USER_NAME = "sync2";
 
-	protected static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	protected static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
 	@SuppressWarnings("rawtypes")
 	protected static final Class[] resourceTypes = new Class[] {Bookmark.class, BibTex.class};
@@ -236,14 +236,14 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 		final Post<T> post = ModelUtils.generatePost(resourceType);
 		post.setUser(user);
 		try {
-			post.setChangeDate(DATE_FORMAT.parse(changeDate));
-			post.setDate(DATE_FORMAT.parse(createDate));
+			post.setChangeDate(DATE_FORMAT.parseDateTime(changeDate).toDate());
+			post.setDate(DATE_FORMAT.parseDateTime(createDate).toDate());
 			if (resourceType == Bookmark.class) {
 				final Bookmark bookmark = (Bookmark)post.getResource();
 				title = title.replace(" ", "-");
 				bookmark.setUrl("http://www." + title + ".com");
 			}
-		} catch (final ParseException ex) {
+		} catch (final Exception ex) {
 			// ignore
 		}
 		post.getResource().setTitle(title);

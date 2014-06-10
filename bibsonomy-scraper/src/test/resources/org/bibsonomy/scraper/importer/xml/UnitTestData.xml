@@ -62,8 +62,6 @@
 		<URL>http://scitation.aip.org/content/aip/journal/jcp/139/12/10.1063/1.4820139</URL>
 		<BibFile>AipScitationScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aip.AipScitationScraper</Scraper>
-		<Enabled>false</Enabled>
-		<AdditionalInfo>The download link is broken by aip.org</AdditionalInfo>
 	</URLTest>
 	<URLTest id="url_10">
 		<TestDescription>URL scraping test with arxiv publications</TestDescription>
@@ -1071,7 +1069,7 @@
 	</URLTest>
 	<URLTest id="url_174">
 		<TestDescription>URL test for scraping a bibtex page from scitation.aip.org</TestDescription>
-		<URL>hhttp://scitation.aip.org/content/asa/journal/jasa/42/5/10.1121/1.2144160</URL>
+		<URL>http://scitation.aip.org/content/asa/journal/jasa/42/5/10.1121/1.2144160</URL>
 		<BibFile>AipScitationScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aip.AipScitationScraper</Scraper>
 	</URLTest>
@@ -1662,5 +1660,29 @@
 		<URL>http://www.scirp.org/journal/PaperInformation.aspx?PaperID=37807</URL>
 		<BibFile>DCScraperTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.DublinCoreScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_271">
+		<TestDescription>ProlaScraper</TestDescription>
+		<URL>http://journals.aps.org/pre/abstract/10.1103/PhysRevE.64.016131</URL>
+		<BibFile>ProlaScraperUnitURLTest5.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.prola.ProlaScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_272">
+		<TestDescription>AmazonScraper</TestDescription>
+		<URL>http://www.amazon.de/Computational-Intelligence-Cyber-Security-Models-ebook/dp/B00GXY5FFC/ref=sr_1_1</URL>
+		<BibFile>AmazonScraperUnitURLTest11.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.amazon.AmazonScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_273">
+		<TestDescription>Morgan Claypool Scraper</TestDescription>
+		<URL>http://www.morganclaypool.com/doi/abs/10.2200/S00334ED1V01Y201102WBE001</URL>
+		<BibFile>MorganClaypoolScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.morganclaypool.MorganClaypoolScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_274">
+		<TestDescription>Morgan Claypool Scraper</TestDescription>
+		<URL>http://www.morganclaypool.com/action/showCitFormats?doi=10.2200%2FS00334ED1V01Y201102WBE001</URL>
+		<BibFile>MorganClaypoolScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.morganclaypool.MorganClaypoolScraper</Scraper>
 	</URLTest>
 </test:Tests>

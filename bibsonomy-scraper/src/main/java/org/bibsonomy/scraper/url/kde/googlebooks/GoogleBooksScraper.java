@@ -23,7 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.googlebooks;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -31,17 +30,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
 
 /**
  * @author clemens
  */
-public class GoogleBooksScraper extends AbstractUrlScraper {
+public class GoogleBooksScraper extends SimpleGenericURLScraper {
 
 	private static final String SITE_URL  = "http://books.google.com/";
 	private static final String SITE_NAME = "Google Books";
@@ -54,30 +48,6 @@ public class GoogleBooksScraper extends AbstractUrlScraper {
 	
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST + ".*"), Pattern.compile(PATH + ".*")));
 	
-	@Override
-	protected boolean scrapeInternal(final ScrapingContext sc)throws ScrapingException {
-		sc.setScraper(this);
-		try {
-			// extract id from url
-			final Matcher idMatcher = ID_PATTERN.matcher(sc.getUrl().toString());
-			
-			if (!idMatcher.find()) {
-				throw new ScrapingFailureException("id is not available");
-			}
-			
-			final String downloadLink = "http://" + sc.getUrl().getHost() + PATH + "/download/?id=" + idMatcher.group(1) + "&output=bibtex";
-			// download bibtex
-			final String bibtex = WebUtils.getContentAsString(new URL(downloadLink));
-			if (bibtex != null) {
-				sc.setBibtexResult(bibtex);
-				return true;
-			}
-			return false;
-		} catch (final IOException ex) {
-			throw new InternalFailureException(ex);
-		}		
-	}
-
 	@Override
 	public String getInfo() {
 		return INFO;
@@ -96,5 +66,16 @@ public class GoogleBooksScraper extends AbstractUrlScraper {
 	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
+	}
+
+	@Override
+	public String getBibTeXURL(URL url) {
+		// extract id from url
+		final Matcher idMatcher = ID_PATTERN.matcher(url.toString());
+		
+		if (idMatcher.find()) {
+			return "http://" + url.getHost() + PATH + "/download/?id=" + idMatcher.group(1) + "&output=bibtex";
+		}
+		return null;	
 	}
 }

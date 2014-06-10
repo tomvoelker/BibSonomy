@@ -23,18 +23,11 @@
 
 package org.bibsonomy.util.file.profilepicture;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.awt.image.RenderedImage;
 import java.io.File;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import org.bibsonomy.common.enums.ProfilePrivlevel;
-import org.bibsonomy.common.enums.UserRelation;
-import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.file.UploadedFile;
 import org.bibsonomy.services.filesystem.ProfilePictureLogic;
@@ -55,7 +48,7 @@ public class ServerProfilePictureLogic implements ProfilePictureLogic {
 	private final ExtensionChecker extensionChecker = new ListExtensionChecker(PICTURE_EXTENSIONS);
 	
 	private PictureScaler pictureScaler;
-	private LogicInterface adminLogic;
+	private LogicInterface adminLogic; // TODO: remove?
 	
 	/**
 	 * default constructor
@@ -87,7 +80,7 @@ public class ServerProfilePictureLogic implements ProfilePictureLogic {
 	public File getProfilePictureForUser(String username) {
 		File file = getProfilePicture(username);
 		
-		if ( file == null || !file.exists() )
+		if (file == null || !file.exists())
 			return this.getDefaultFile();
 		
 		//else:
@@ -139,7 +132,9 @@ public class ServerProfilePictureLogic implements ProfilePictureLogic {
 	}
 	
 	private File getDefaultFile() {
-		return new File(this.path, this.defaultFileName);
+		final File defaultFile = new File(this.path, this.defaultFileName);
+		defaultFile.setReadOnly();
+		return defaultFile;
 	}
 	
 

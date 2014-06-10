@@ -23,7 +23,8 @@
 
 package org.bibsonomy.scraper.ie;
 
-import junit.framework.Assert;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
@@ -35,10 +36,10 @@ public class CRFSingletonTest {
 	@Test
 	public void testGetCrf() {
 		try {
-			Assert.assertNotNull(new CRFSingleton().getCrf());
+			assertNotNull(new CRFSingleton().getCrf());
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			Assert.fail(ex.getMessage());
+			fail(ex.getMessage());
 		}
 	}
 

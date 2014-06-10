@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.prola;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -42,7 +40,7 @@ public class ProlaScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_24"));
+		UnitTestRunner.runSingleTest("url_24");
 	}
 
 	/**
@@ -50,7 +48,7 @@ public class ProlaScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_25"));
+		UnitTestRunner.runSingleTest("url_25");
 	}
 	
 	/**
@@ -58,7 +56,7 @@ public class ProlaScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_175"));
+		UnitTestRunner.runSingleTest("url_175");
 	}
 	
 	/**
@@ -66,8 +64,14 @@ public class ProlaScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_177"));
+		UnitTestRunner.runSingleTest("url_177");
 	}
-
+	/**
+	 * starts URL test with id url_271
+	 */
+	@Test
+	public void url5TestRun(){
+		UnitTestRunner.runSingleTest("url_271");
+	}
 
 }

@@ -465,7 +465,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		/*
 		 * send final redirect
 		 */
-		return this.finalRedirect(loginUserName, post, command.getReferer());
+		return this.finalRedirect(command, post, loginUserName);
 	}
 
 	/**
@@ -722,6 +722,20 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		this.createOrUpdateSuccess(command, loginUser, post);
 
+		return this.finalRedirect(command, post, loginUserName);
+	}
+
+	private View finalRedirect(final COMMAND command, final Post<RESOURCE> post, final String loginUserName) {
+		if (present(command.getSaveAndRate())) {
+			if (post.getResource() instanceof BibTex) {
+				final String publicationRatingUrl = this.urlGenerator.getPublicationRatingUrl(post.getResource().getInterHash(), loginUserName, post.getResource().getIntraHash());
+				return new ExtendedRedirectView(publicationRatingUrl);
+			}
+			if (post.getResource() instanceof Bookmark) {
+				final String bookmarkRatingUrl = this.urlGenerator.getBookmarkRatingUrl(post.getResource().getInterHash(), loginUserName, post.getResource().getIntraHash());
+				return new ExtendedRedirectView(bookmarkRatingUrl);
+			}
+		}
 		return this.finalRedirect(loginUserName, post, command.getReferer());
 	}
 

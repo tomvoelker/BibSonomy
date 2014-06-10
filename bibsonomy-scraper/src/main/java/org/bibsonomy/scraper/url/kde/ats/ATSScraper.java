@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.ats;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -34,19 +32,18 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * @author clemens
  */
 
-public class ATSScraper extends AbstractUrlScraper {
+public class ATSScraper extends PostprocessingGenericURLScraper {
 	private final Log log = LogFactory.getLog(ATSScraper.class);
 	
 	private static final String SITE_NAME = "American Thoracic Society Journals";
@@ -57,39 +54,9 @@ public class ATSScraper extends AbstractUrlScraper {
 	private static final Pattern ID_PATTERN = Pattern.compile("\\d+.*");
 	private static final int ID_GROUP = 0;
 	
+	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<div class=\"abstractSection\">(.*)</div>");
 	
-	
-	@Override
-	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
-		scrapingContext.setScraper(this);
-
-		final URL url = scrapingContext.getUrl();
-		final String id = extractId(url.toString());
-
-		if (!present(id)) {
-			log.error("can't parse publication id");
-			return false;
-		}
-
-		try {
-			final String ris = WebUtils.getContentAsString(BIBTEX_URL + id);
-			RisToBibtexConverter converter = new RisToBibtexConverter();
-			
-			final String bibTex = converter.risToBibtex(ris);
-			
-			if (present(bibTex)) {
-				scrapingContext.setBibtexResult(bibTex);
-				return true;
-			} else {
-				throw new ScrapingFailureException("getting bibtex failed");
-			}
-
-		} catch (final Exception e) {
-			throw new InternalFailureException(e);
-		}
-	}
-	
-	private String extractId(final String url) {
+	private static String extractId(final String url) {
 		final Matcher matcher = ID_PATTERN.matcher(url);
 		if (matcher.find()) {
 			return matcher.group(ID_GROUP);
@@ -115,6 +82,41 @@ public class ATSScraper extends AbstractUrlScraper {
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return URL_PATTERNS;
 	}
-	
+
+	private static String abstractParser(URL url){
+		try{
+		String cookie = WebUtils.getCookies(url);
+		Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(url.toString(),cookie));
+		if(m.find())
+			return m.group(1);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	protected String postProcessScrapingResult(ScrapingContext sc, String result) {
+		try{
+			RisToBibtexConverter ris = new RisToBibtexConverter();
+			return BibTexUtils.addFieldIfNotContained(ris.risToBibtex(result),"abstract",abstractParser(sc.getUrl()));
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.SimpleGenericURLScraper#getBibTeXURL(java.net.URL)
+	 */
+	@Override
+	public String getBibTeXURL(URL url) {
+		final String id = extractId(url.toString());
+		try {
+			return BIBTEX_URL + id;
+
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}	
 }
 

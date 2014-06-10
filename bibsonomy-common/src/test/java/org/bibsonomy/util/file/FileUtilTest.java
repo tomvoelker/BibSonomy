@@ -23,9 +23,9 @@
 
 package org.bibsonomy.util.file;
 
-import java.io.File;
+import static org.junit.Assert.assertEquals;
 
-import junit.framework.Assert;
+import java.io.File;
 
 import org.junit.Test;
 
@@ -33,17 +33,26 @@ import org.junit.Test;
  * @author Jens Illig
  */
 public class FileUtilTest {
-	
+
 	/**
 	 * tests getFilePath
 	 */
 	@Test
 	public void getFilePath() {
-		if (new File("/tmp/").getAbsolutePath().equals("C:\\tmp")) {
-			System.err.println("test skipped");
-			return;
+		String tmpPath = System.getProperty("java.io.tmpdir");
+		
+		if (tmpPath.endsWith(File.separator) == false) {
+			tmpPath += File.separator;
 		}
-		Assert.assertEquals("/tmp/ab/abcde" , FileUtil.getFilePath("/tmp", "abcde"));
-		Assert.assertEquals("/tmp/ab/abcde" , FileUtil.getFilePath("/tmp/", "abcde"));
+		
+		
+		/*
+		 * Windows and Linux exhibit different behaviour when it comes to
+		 * java.io.tmpdir: Windows attaches a File.seperator at the end, whereas
+		 * Linux plainly ignores that. We just check it manually.
+		 */
+		final String exp = new File(tmpPath, "ab" + File.separator + "abcde").getAbsolutePath();
+		assertEquals(exp, FileUtil.getFilePath(tmpPath, "abcde"));
+		assertEquals(exp, FileUtil.getFilePath(tmpPath.substring(0, tmpPath.length() - 1), "abcde"));
 	}
 }

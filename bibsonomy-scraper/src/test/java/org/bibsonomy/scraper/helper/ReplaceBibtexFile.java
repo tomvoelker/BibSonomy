@@ -28,10 +28,10 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.scraper.ScraperTestData;
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.bibsonomy.scraper.URLTest.URLScraperUnitTest;
+import org.bibsonomy.scraper.importer.IUnitTestImporter;
+import org.bibsonomy.scraper.importer.xml.XMLUnitTestImporter;
 
 /**
  * Replace bibtex file with a scraped bibtex entry.
@@ -40,16 +40,14 @@ import org.bibsonomy.scraper.URLTest.URLScraperUnitTest;
  * @author tst
  */
 public class ReplaceBibtexFile {
-	
+	private static IUnitTestImporter IMPORTER = new XMLUnitTestImporter();
 	private static final String PATH_TO_BIBS = "src/test/resources/org/bibsonomy/scraper/data/";
-	
-	private static Log log = LogFactory.getLog(ReplaceBibtexFile.class);
 	
 	/**
 	 * @param args
-	 * @throws IOException 
+	 * @throws Exception 
 	 */
-	public static void main(final String[] args) throws IOException {
+	public static void main(final String[] args) throws Exception {
 		// update bibtex file for every given test
 		for (final String testID: args) {
 			replaceBibtex(testID);
@@ -61,17 +59,16 @@ public class ReplaceBibtexFile {
 	 * @param id
 	 * @throws IOException
 	 */
-	public static void replaceBibtex(final String id) throws IOException {
+	private static void replaceBibtex(final String id) throws Exception {
 		System.out.println("Test: " + id);
 		System.out.println("running test");
-		final URLScraperUnitTest test = UnitTestRunner.getUrlUnitTest(id);
+		ScraperTestData test = IMPORTER.getUnitTests().get(id);
 		if (test != null){
 			System.out.println("test finished");
-			final String bibFile = test.getBibFile();
-			final String scrapedBibtex = test.getScrapedReference();
+			final String bibFile = test.getBibTeXFileName();
+			final String scrapedBibtex = UnitTestRunner.callScraper(test);
 			System.out.println("scraped bibtex:");
 			System.out.println(scrapedBibtex);
-			 
 			if ((bibFile != null) && (scrapedBibtex != null)) {
 				// override bibtex file
 				final OutputStreamWriter os = new OutputStreamWriter(new FileOutputStream(PATH_TO_BIBS + bibFile), "UTF-8");
@@ -91,10 +88,10 @@ public class ReplaceBibtexFile {
 				System.out.println("old bibtex replaced");
 				System.out.println("**********************************************");
 			} else {
-				log.error("bibfile(" + bibFile + ") and scraped bibtex(" + scrapedBibtex + ") is not available");
+				System.err.println("bibfile(" + bibFile + ") and scraped bibtex(" + scrapedBibtex + ") is not available");
 			}
 		} else {
-			log.error("Scraping failed");
+			System.err.println("Scraping failed");
 		}
 	}
 

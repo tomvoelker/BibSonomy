@@ -27,6 +27,7 @@ import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.testutil.TestUtils;
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 /**
@@ -157,12 +158,12 @@ public class TwoStepSynchronizationClientTest extends AbstractSynchronizationCli
 
 
 	private void changeLeftSyncAndCheck(final TwoStepSynchronizationClient sync, final SyncService syncServer, final String leftHost, final User leftUser, final LogicInterface leftLogic, final String rightHost, final User rightUser, final LogicInterface rightLogic, final String deleteHash) {
-		final Date now = new Date();
+		final DateTime now = new DateTime();
 		final List<Post<?>> posts = new ArrayList<Post<?>>();
 		/*
 		 * add a post
 		 */
-		posts.add(createPost("added after sync on " + leftHost, DATE_FORMAT.format(now), DATE_FORMAT.format(now), leftUser, Bookmark.class));
+		posts.add(createPost("added after sync on " + leftHost, DATE_FORMAT.print(now), DATE_FORMAT.print(now), leftUser, Bookmark.class));
 		leftLogic.createPosts(posts);
 		/*
 		 * delete a post

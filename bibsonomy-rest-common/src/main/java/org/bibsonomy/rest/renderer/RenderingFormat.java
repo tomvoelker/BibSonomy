@@ -69,15 +69,17 @@ public class RenderingFormat {
 	 */
 	public static final RenderingFormat PDF = new RenderingFormat("application", "pdf");
 	
+	private static final RenderingFormat PLAIN_TEXT = new RenderingFormat("text", "plain");
+	
 	/**
 	 * bibtex format
 	 */
-	public static final RenderingFormat BIBTEX = new RenderingFormat("text", "bibtex");
+	public static final RenderingFormat BIBTEX = new RenderingFormat("text", "bibtex", PLAIN_TEXT);
 	
 	/**
 	 * endnote format
 	 */
-	public static final RenderingFormat ENDNOTE = new RenderingFormat("text", "endnote");
+	public static final RenderingFormat ENDNOTE = new RenderingFormat("text", "endnote", PLAIN_TEXT);
 	
 	/**
 	 * @param string
@@ -147,6 +149,7 @@ public class RenderingFormat {
 
 	private final String type;
 	private final String subtype;
+	private RenderingFormat errorFormat;
 
 	/**
 	 * 
@@ -156,6 +159,19 @@ public class RenderingFormat {
 	public RenderingFormat(final String type, final String subtype) {
 		this.type = type;
 		this.subtype = subtype;
+		// by default the error format matches the rendering format
+		this.errorFormat = this;
+	}
+	
+	/**
+	 * 
+	 * @param type
+	 * @param subtype
+	 * @param errorFormat 
+	 */
+	public RenderingFormat(final String type, final String subtype, final RenderingFormat errorFormat) {
+		this(type, subtype);
+		this.errorFormat = errorFormat;
 	}
 
 	/**
@@ -177,6 +193,13 @@ public class RenderingFormat {
 	 */
 	public String getSubtype() {
 		return this.subtype;
+	}
+
+	/**
+	 * @return the errorFormat
+	 */
+	public RenderingFormat getErrorFormat() {
+		return this.errorFormat;
 	}
 
 	/**

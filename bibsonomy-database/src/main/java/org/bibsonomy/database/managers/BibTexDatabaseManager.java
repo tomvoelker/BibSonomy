@@ -33,8 +33,8 @@ import org.bibsonomy.services.filesystem.FileLogic;
 /**
  * Used to create, read, update and delete BibTexs from the database.
  * 
- * FIXME: why do some methods use loginUserName and some methods not? Shouldn't all methods
- * need loginUserName?
+ * FIXME: why do some methods use loginUserName and some methods not? Shouldn't
+ * all methods need loginUserName?
  * 
  * @author Miranda Grahl
  * @author Jens Illig
@@ -44,22 +44,22 @@ import org.bibsonomy.services.filesystem.FileLogic;
  */
 public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexParam> {
 	private static final Log log = LogFactory.getLog(BibTexDatabaseManager.class);
-	
+
 	private static final BibTexDatabaseManager singleton = new BibTexDatabaseManager();
-	
+
 	private static final HashID[] hashRange = HashID.getAllHashIDs();
-	
+
 	/**
 	 * @return BibTexDatabaseManager
 	 */
 	public static BibTexDatabaseManager getInstance() {
 		return singleton;
 	}
-	
+
 	/** database manager */
 	private final BibTexExtraDatabaseManager extraDb;
 	private final DocumentDatabaseManager docDb;
-	
+
 	private FileLogic fileLogic;
 	
 	private BibTexDatabaseManager() {
@@ -109,7 +109,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 	
 	/**
-	 * adds document retrieval to {@link PostDatabaseManager#getPostsForUser(ResourceParam, DBSession)}
+	 * adds document retrieval to
+	 * {@link PostDatabaseManager#getPostsForUser(ResourceParam, DBSession)}
 	 */
 	@Override
 	protected List<Post<BibTex>> getPostsForUser(final BibTexParam param, final DBSession session) {		
@@ -142,12 +143,15 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 	
 	/**
-	 * adds document retrieval to {@link PostDatabaseManager#getPostsForGroup(ResourceParam, DBSession)}
+	 * adds document retrieval to
+	 * {@link PostDatabaseManager#getPostsForGroup(ResourceParam, DBSession)}
 	 */
 	@Override
 	protected List<Post<BibTex>> getPostsByTagNamesForUser(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
-		HashID.getSimHash(param.getSimHash()); // ensures correct simHash is set (exception would be thrown otherwise)
+		HashID.getSimHash(param.getSimHash()); // ensures correct simHash is set
+												// (exception would be thrown
+												// otherwise)
 		
 		/*
 		 * check if user can't access documents
@@ -172,7 +176,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 	
 	/**
-	 * adds document retrieval to {@link PostDatabaseManager#getPostsForGroupByTag(ResourceParam, DBSession)}
+	 * adds document retrieval to
+	 * {@link PostDatabaseManager#getPostsForGroupByTag(ResourceParam, DBSession)}
 	 */
 	@Override
 	protected List<Post<BibTex>> getPostsForGroupByTag(final BibTexParam param, final DBSession session) {
@@ -205,7 +210,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 	
 	/**
-	 * adds document retrieval to {@link PostDatabaseManager#getPostsForGroup(ResourceParam, DBSession)}
+	 * adds document retrieval to
+	 * {@link PostDatabaseManager#getPostsForGroup(ResourceParam, DBSession)}
 	 */
 	@Override
 	protected List<Post<BibTex>> getPostsForGroup(final BibTexParam param, final DBSession session) {
@@ -245,17 +251,21 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * <em>/bibtexkey/KEY</em> Returns a list of bibtex posts for a given
 	 * bibtexKey
 	 * 
+	 * @param loginUser
+	 *            TODO
 	 * @param bibtexKey 
 	 * @param requestedUserName 
 	 * @param groupId 
 	 * @param limit 
 	 * @param offset 
 	 * @param systemTags
-	 * @param session	a database session
+	 * @param session
+	 *            a database session
+	 * 
 	 * @return list of publication posts
 	 */
-	public List<Post<BibTex>> getPostsByBibTeXKey(final String bibtexKey, final String requestedUserName, final int groupId, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
-		final BibTexParam param = this.createParam(requestedUserName, requestedUserName, limit, offset);
+	public List<Post<BibTex>> getPostsByBibTeXKey(final String loginUser, final String bibtexKey, final String requestedUserName, final int groupId, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+		final BibTexParam param = this.createParam(loginUser, requestedUserName, limit, offset);
 		param.setBibtexKey(bibtexKey);
 		param.setGroupId(groupId);
 		param.addAllToSystemTags(systemTags);
@@ -264,11 +274,13 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 	
 	/** 
-	 * FIXME: don't use param as parameter (we want to see which attributes are used by the query)
-	 * Returns a list of Posts which where send to an repository and match the given interhash
+	 * FIXME: don't use param as parameter (we want to see which attributes are
+	 * used by the query) Returns a list of Posts which where send to an
+	 * repository and match the given interhash
 	 * 
 	 * @param param
-	 * @param session	a database session
+	 * @param session
+	 *            a database session
 	 * @return list of bibtex posts
 	 */
 	public List<Post<BibTex>> getPostsWithRepository(final BibTexParam param, final DBSession session) {
@@ -276,20 +288,22 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 		
 	/**
-	 * Gets the details of a post, including all extra data like documents, extra urls and private notes
-	 * given the INTRA-HASH of the post and the user name.
+	 * Gets the details of a post, including all extra data like documents,
+	 * extra urls and private notes given the INTRA-HASH of the post and the
+	 * user name.
 	 * 
 	 * <ul>
 	 * <li>extra URLs</li>
 	 * <li>private notes (if userName = loginUserName)</li>
-	 * <li>private PDFs (if requirements are met)<li>
+	 * <li>private PDFs (if requirements are met)
+	 * <li>
 	 * </ul>
 	 * 
 	 */
 	@Override
 	public Post<BibTex> getPostDetails(final String authUser, final String resourceHash, final String userName, final List<Integer> visibleGroupIDs, final DBSession session) throws ResourceMovedException, ObjectNotFoundException {
 		final boolean failIfDocumentsNotAccessible = false;
-		return getPostDetails(authUser, resourceHash, userName, visibleGroupIDs, failIfDocumentsNotAccessible, session);
+		return this.getPostDetails(authUser, resourceHash, userName, visibleGroupIDs, failIfDocumentsNotAccessible, session);
 	}
 	
 	public Post<BibTex> getPostDetails(final String authUser, final String resourceHash, final String userName, final List<Integer> visibleGroupIDs, final boolean failIfDocumentsNotAccessible, final DBSession session) throws ResourceMovedException, ObjectNotFoundException {
@@ -320,14 +334,16 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 				log.warn("multiple logged BibTeX-posts from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' found ->returning first");
 			}
 			/*
-			 * Resource has been changed and thus could be found in logging table. We send back the new resource hash. 
+			 * Resource has been changed and thus could be found in logging
+			 * table. We send back the new resource hash.
 			 */
 			final Post<BibTex> loggedPost = loggedList.get(0);
 			final String newIntraHash = loggedPost.getResource().getIntraHash();
 			/*
-			 * If the hash did not change, this is the "last" post and we should not 
-			 * throw the exception - otherwise, clients would enter an infinite loop. 
-			 */
+			 *			 * If the hash did not change, this is the "last" post and we should
+			 * not throw the exception - otherwise, clients would enter an
+			 * infinite loop.
+/
 			if (!resourceHash.equals(newIntraHash)) {
 				throw new ResourceMovedException(resourceHash, BibTex.class, newIntraHash, userName, loggedPost.getDate());
 			}
@@ -338,9 +354,11 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	
 	/* 
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.database.managers.PostDatabaseManager#insertPost(org.bibsonomy.database.params.ResourcesParam, org.bibsonomy.database.util.DBSession)
-	 */
-	@Override
+	 * @see 	 * 
+	 * @see
+	 * org.bibsonomy.database.managers.PostDatabaseManager#insertPost(org.bibsonomy
+	 * .database.params.ResourcesParam, org.bibsonomy.database.util.DBSession)
+erride
 	protected void insertPost(final BibTexParam param, final DBSession session) {
 		/*
 		 * store scraper meta data
@@ -374,18 +392,19 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		/*
 		 * store the post
 		 */
-		super.insertPost(param, session); // insert post and update/insert hashes
-	}
-	
-	@Override
-	protected void createdPost(final Post<BibTex> post, final DBSession session) {
-		super.createdPost(post, session);
+		super.insertPost(param, session); // insert post and update/insert
+		// hashes
+}
+
+@Override
+protected void createdPost(final Post<BibTex> post, final DBSession session) {
+super.createdPost(post, session);
 		
 		this.handleDocuments(post, session);
 	}
 	
 	@Override
-	protected void updatedPost(Post<BibTex> post, DBSession session) {
+	protected void updatedPost(final Post<BibTex> post, final DBSession session) {
 		super.updatedPost(post, session);
 		
 		this.handleDocuments(post, session);
@@ -408,8 +427,9 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 						this.docDb.addDocument(username, post.getContentId(), savedFileHash, savedDocument.getFileName(), savedMD5Hash, session);
 						document.setFileHash(savedFileHash);
 						document.setMd5hash(savedMD5Hash);
-						// TODO: delete file? this.fileLogic.deleteTempFile(fileName);
-					} catch (Exception e) {
+						// TODO: delete file?
+						// this.fileLogic.deleteTempFile(fileName);
+					} catch (final Exception e) {
 						throw new RuntimeException(e);
 					}
 				}
@@ -423,7 +443,10 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.database.managers.PostDatabaseManager#onPostUpdate(java.lang.Integer, java.lang.Integer, org.bibsonomy.database.util.DBSession)
+	 * 
+	 * @see
+	 * org.bibsonomy.database.managers.PostDatabaseManager#onPostUpdate(java
+	 * .lang.Integer, java.lang.Integer, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
 	protected void onPostUpdate(final Integer oldContentId, final Integer newContentId, final DBSession session) {
