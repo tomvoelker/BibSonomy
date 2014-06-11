@@ -74,6 +74,8 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 */
 	private String abstractGrouping;
 
+	private List<String> groups;
+
     /**
      * compare Post required for Diff Post View
      */

@@ -340,10 +340,10 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 			final Post<BibTex> loggedPost = loggedList.get(0);
 			final String newIntraHash = loggedPost.getResource().getIntraHash();
 			/*
-			 *			 * If the hash did not change, this is the "last" post and we should
+			 * If the hash did not change, this is the "last" post and we should
 			 * not throw the exception - otherwise, clients would enter an
 			 * infinite loop.
-/
+			 */
 			if (!resourceHash.equals(newIntraHash)) {
 				throw new ResourceMovedException(resourceHash, BibTex.class, newIntraHash, userName, loggedPost.getDate());
 			}
@@ -352,13 +352,14 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		return null;
 	}
 	
-	/* 
+	/*
 	 * (non-Javadoc)
-	 * @see 	 * 
+	 * 
 	 * @see
 	 * org.bibsonomy.database.managers.PostDatabaseManager#insertPost(org.bibsonomy
 	 * .database.params.ResourcesParam, org.bibsonomy.database.util.DBSession)
-erride
+	 */
+	@Override
 	protected void insertPost(final BibTexParam param, final DBSession session) {
 		/*
 		 * store scraper meta data
