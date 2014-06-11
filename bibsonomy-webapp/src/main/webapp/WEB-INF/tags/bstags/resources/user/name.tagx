@@ -13,18 +13,13 @@
 
 	
 	<jsp:directive.attribute name="user" type="org.bibsonomy.model.User" required="true" />
-    <jsp:directive.attribute name="prefix" type="java.lang.String" required="false" />
 
     <c:if test="${not empty user.realname}">
     	<span class="realname">
-	        (<c:choose>
-	          <c:when test="${not empty user.homepage}">
-	             <a href="${fn:escapeXml(user.homepage)}"><c:out value="${user.realname}"/></a>
-	          </c:when>
-	          <c:otherwise>
-	             <c:out value="${user.realname}"/>          
-	          </c:otherwise>
-	        </c:choose>)
+	        <c:out value="${user.realname}"/>
+	        <c:if test="${not empty user.homepage}">
+	             <br /><small style="font-size: 10px;"><a href="${fn:escapeXml(user.homepage)}"><c:out value="${user.homepage}"/></a></small>
+          	</c:if>
         </span>
     </c:if>
       

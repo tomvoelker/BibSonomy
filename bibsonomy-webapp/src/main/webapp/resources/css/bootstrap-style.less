@@ -1,10 +1,17 @@
 @import "bootstrap-color.less";
+@import "bootstrap-size.less";
 
 body {
 	background-color: @background-color; 
     background-image: url("/resources/bootstrap/img/bg.png");
 }
 
+/*
+ * Fonts
+ */
+.small-font {
+    font-size: @small-font-size;   
+}
 
 /**
  *	CONTAINER
@@ -435,7 +442,7 @@ div.sidebar {
 	margin-left: 15px;
 	border-left: 1px #ccc solid;
 } 
-
+/*
 .sidebar-headline {
 	text-shadow: 1px 0px #333;
 
@@ -476,7 +483,7 @@ div.sidebar {
 	height: 100%;
 	background: transparent url("/resources/image/bg-sidebar-headline.png") 0 0 no-repeat;
 }
-
+*/
 .sidebar h4 {
 
 }
@@ -547,6 +554,39 @@ ul.news {
 	overflow: hidden;
 	padding-left: 0 ;
 }
+
+#relations{
+	margin-bottom:5px;
+}
+
+#relations > li {
+	line-height:1.5em;
+	/*text-indent:-2em;*/
+	margin-left: 0;
+	font-size: 90%;
+}
+
+#relations>li a {
+	color:#2F3321 !important;
+	
+}
+
+#relations li ul li a,
+#relations td a {
+	color: @link-color !important;
+	display:inline;
+}
+
+#relations li ul li {
+	display: inline;
+	font-size: 80%;
+	line-height: 1.1em;
+}
+
+#relations li ul {
+	display:inline;
+}
+
 
 span.bmmeta {
 	display: block;

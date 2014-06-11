@@ -29,6 +29,7 @@
 	<c:if test="${not empty jsOpenAccess}"> 
 		<script type="text/javascript" src="${jsOpenAccess}"><!--  --></script>
 	</c:if>
+	<script type="text/javascript" src="${resdir}/bootstrap/js/publicationdetails.js"><!-- keep me --></script>
 	
 	
 	<div class="title">

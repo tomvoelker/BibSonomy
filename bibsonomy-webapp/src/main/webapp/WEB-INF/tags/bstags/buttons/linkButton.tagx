@@ -9,11 +9,14 @@
 	<jsp:directive.attribute name="name" fragment="false" required="false" />
 	<jsp:directive.attribute name="text" fragment="true" required="true" />
 
-	<a class="linkButton" name="${name}" href="${href}" title="${title}" onclick="${onclick}"> 
-		<c:if test='${image != null}'>
-			<img style="margin-right: -3px" src="${image}">&amp;nbsp;</img>
-		</c:if> 
-		
-		<span><jsp:invoke fragment="text" /></span>
+	<a class="btn btn-primary btn-sm" href="${href}" title="${title}"> 
+		<c:choose>
+			<c:when test='${image != null}'>
+				<span class="glyphicon ${image}"><!-- --></span>&amp;nbsp;<jsp:invoke fragment="text" />
+			</c:when> 
+			<c:otherwise>
+				<span><jsp:invoke fragment="text" /></span>
+			</c:otherwise>
+		</c:choose>
 	</a>
 </jsp:root>
