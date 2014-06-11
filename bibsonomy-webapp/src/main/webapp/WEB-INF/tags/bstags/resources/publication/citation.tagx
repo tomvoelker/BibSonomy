@@ -19,7 +19,6 @@
 		| 
 		+-->
 	
-	<!--  TODO: remove www-tab which was only necessary when the citations box served as heading of the publication-details page  -->
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 
@@ -30,10 +29,6 @@
 	</div>
 	<div class="panel-body">
 			<ul class="nav nav-tabs">
-				
-				<li class="active tab">
-					<a data-toggle="tab" href="#citation_plain"><fmt:message key="bibtex.citation_format.plain" /></a>
-				</li>
 				<c:forEach var="citationStyle" items="${fn:split('harvardhtml,chicago,apa_html,din1505',',')}">
 					<li><a data-toggle="tab" href="#citation_${citationStyle}" data-formatUrl="/layout/${citationStyle}/bibtex/2${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}?formatEmbedded=true"><fmt:message key="bibtex.citation_format.${citationStyle}" /></a></li>
 				</c:forEach>
@@ -45,12 +40,6 @@
 			</ul>
 			<br />
 			<div id="citation-styles" class="tab-content">
-				<div class="tab-pane active" id="citation_plain">
-					<h3 style="margin-top: 0;">
-						<a href="/bibtex/${post.resource.interHash}"><c:out value="${mtl:cleanBibtex(post.resource.title)}" /></a>
-					</h3>
-					<bib:desc publication="${post.resource}"/>
-				</div>
 				<c:forEach var="citationStyle" items="${fn:split('harvardhtml,chicago,apa_html,din1505',',')}">
 					<div class="tab-pane" id="citation_${citationStyle}">
 						<!-- keep -->
