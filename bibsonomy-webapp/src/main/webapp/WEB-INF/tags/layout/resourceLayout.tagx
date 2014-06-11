@@ -100,8 +100,6 @@
 					| add js
 					+ -->
 				<script type="text/javascript" src="${resdir}/javascript/publicationdetails.js"><!-- keep me --></script>
-
-				<script type="text/javascript" src="${resdir}/javascript/publicationdetails.js"><!-- keep me --></script>
 			</c:if>
 			
 			<jsp:invoke fragment="headerExt"/>

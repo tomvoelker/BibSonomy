@@ -93,10 +93,6 @@
 			<script type="text/javascript" >
 			</script>
 			-->
-			<script type="text/javascript" src="${resdir}/bootstrap/js/bootstrap-dialog.js"></script>
-
-			<script type="text/javascript" src="${resdir}/bootstrap/js/publicationdetails.js"></script>
-			
 			<jsp:invoke fragment="headerExt"/>
 		</jsp:attribute>
 
