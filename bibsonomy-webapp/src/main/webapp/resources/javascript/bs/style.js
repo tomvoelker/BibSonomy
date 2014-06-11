@@ -358,11 +358,11 @@ $(function() {
 	window.setTimeout("initBookmarksPublicationsListsLast()", 500);
 });
 function initBookmarksPublicationsListsLast() {
-
+	
 	numberOfBookmarkLists = $(".bookmarksContainer").size(); // every id bookmarks_* must have a class bookmarksContainer
 	numberOfPublicationLists = $(".publicationsContainer").size(); // every id publications_* must have a class publicationsContainer
 	if ( ($("#sidebar").length != 0) ) { 
-
+		maxheight = 0;
 		// set heigth of fullscreen area above post lists, if available
 		fullscreenHeight = 0;
 		//if ($("#fullscreen").length != 0) fullscreenHeight = $("#fullscreen").height(); 

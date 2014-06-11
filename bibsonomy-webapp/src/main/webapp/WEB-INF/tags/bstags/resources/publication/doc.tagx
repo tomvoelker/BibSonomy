@@ -13,12 +13,18 @@
 	<c:set var="publication" value="${post.resource}"/>
 	<c:set var="isOwnEntry" value="${post.user.name eq command.context.loginUser.name}"/>
 	
+	<link rel="resource" type="application/l10n" href="${resdir}/javascript/pdf.js/web/locale/locale.properties"/>
+	<script src="${resdir}/javascript/pdf.js/web/l10n.js"></script>
+	<script src="${resdir}/javascript/pdf.js/build/pdf.js"></script>
+	<script type="text/javascript" src="${resdir}/javascript/pdf.js/web/viewer.js"><!-- --></script>
+	<script type="text/javascript" src="${resdir}/bootstrap/js/bootstrap-dialog.js"><!-- --></script>
+	<script type="text/javascript" src="${resdir}/bootstrap/js/publicationdetails.js"><!-- --></script>
 	
 	<!--+
 		| private documents (pdf, ps) 
 		+-->
   	<c:if test="${not empty publication.documents or isOwnEntry}">
-  		
+  			<iframe class="initiallyHidden" id="pdfViewer"><!--  keep  --></iframe>
   			<h4>&amp;nbsp;</h4>
 	  		<c:choose>
 		  		<c:when test="${empty publication.documents}">
@@ -44,7 +50,7 @@
 								<c:choose>
 									<c:when test="${count eq 0}">
 										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage">
-											<a class="img-thumbnail publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="${fn:escapeXml(document.fileName)}">
+											<a class="img-thumbnail publication preview pdfFile" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="${fn:escapeXml(document.fileName)}">
 												<img class="img-responsive pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
 											</a>
 										</div>
@@ -53,7 +59,7 @@
 										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage" style="display:none;">
 											<!-- preview picture of first document -->
 											<!--  <a class="publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="${fn:escapeXml(document.fileName)}"> -->
-											<a class="img-thumbnail" data-toggle="lightbox" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false">
+											<a class="img-thumbnail pdfFile" data-toggle="lightbox" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false">
 												<img class="img-resposive" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" alt="${fn:escapeXml(document.fileName)}"/>
 											</a>
 										</div>

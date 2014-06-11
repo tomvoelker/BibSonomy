@@ -102,14 +102,14 @@ function init(tagbox_style, tagbox_sort, tagbox_minfreq) {
 	 * in-place tag edit for posts
 	 */
 	$(".editTags").click(editTags);
-	
-	$('.extend').hoverIntent(function(event) {
-		var infoBox = $('div', this);
-		infoBox.show("fade", {}, 500);
-	}, function(event){
-		var infoBox = $('div', this);
-		infoBox.hide("fade", {}, 500);
-	});
+	if($('.extend').hoverIntent!== undefined)
+		$('.extend').hoverIntent(function(event) {
+			var infoBox = $('div', this);
+			infoBox.show("fade", {}, 500);
+		}, function(event){
+			var infoBox = $('div', this);
+			infoBox.hide("fade", {}, 500);
+		});
 }
 
 /**
@@ -791,7 +791,8 @@ function addBibtexExportOptions() {
 	/*
 	 * add and show export options when hovering over the link
 	 */
-	var elm = $("#bibtexListExport"); 
+	var elm = $("#bibtexListExport");
+	if(elm!=null && elm !== undefined && elm.hoverIntent !== undefined)
 	elm.hoverIntent(function() {
 		/*
 		 * anchor element where to put the options

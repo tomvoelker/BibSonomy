@@ -1,7 +1,6 @@
 package org.bibsonomy.webapp.controller;
 
 import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
-import org.bibsonomy.webapp.command.ExportFormatCommand;
 import org.bibsonomy.webapp.command.ExportPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
