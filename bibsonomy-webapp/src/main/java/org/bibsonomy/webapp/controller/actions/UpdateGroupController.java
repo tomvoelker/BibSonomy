@@ -149,6 +149,38 @@ public class UpdateGroupController extends SettingsPageController {
 					}
 					break;
 				}
+				case ACCEPT_JOIN_REQUEST: {
+					final String username = command.getUsername();
+					if (present(username)) {
+						// the group to update
+						final Group groupToUpdate = this.logic.getGroupDetails(groupName);
+						try {
+							groupToUpdate.setUsers(Collections.singletonList(new User(username)));
+							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ACCEPT_JOIN_REQUEST);
+						} catch (final Exception ex) {
+							log.error("error while accepting the join request of user '" + username + "' from group '" + groupName + "'", ex);
+							this.errors.rejectValue("username", "settings.group.error.acceptJoinRequestFailed", new Object[]{username, groupName},
+									"The User {0} couldn't be added to the Group {1}.");
+						}
+					}
+					break;
+				}
+				case DECLINE_JOIN_REQUEST: {
+					final String username = command.getUsername();
+					if (present(username)) {
+						// the group to update
+						final Group groupToUpdate = this.logic.getGroupDetails(groupName);
+						try {
+							groupToUpdate.setUsers(Collections.singletonList(new User(username)));
+							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.DECLINE_JOIN_REQUEST);
+						} catch (final Exception ex) {
+							log.error("error while accepting the join request of user '" + username + "' from group '" + groupName + "'", ex);
+							this.errors.rejectValue("username", "settings.group.error.declineJoinRequestFailed", new Object[]{username},
+									"The request of User {0} couldn't be removed.");
+						}
+					}
+					break;
+				}
 				default:
 					errors.reject("error.invalid_parameter");
 					break;

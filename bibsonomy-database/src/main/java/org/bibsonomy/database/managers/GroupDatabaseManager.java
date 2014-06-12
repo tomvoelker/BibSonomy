@@ -677,6 +677,53 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		this.plugins.onRemoveUserFromGroup(username, group.getGroupId(), session);
 		this.delete("removeUserFromGroup", group, session);
 	}
+	
+	/**
+	 * Updates the users role.
+	 * 
+	 * @param groupname
+	 * @param username
+	 * @param role 
+	 * @param session
+	 */
+	public void updateGroupRole(final String groupname, final String username, GroupRole role, final DBSession session) {
+		// make sure that the group exists
+		final Group group = this.getGroupByName(groupname, session);
+		if (group == null) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't update the grouprole");
+			throw new RuntimeException();
+		}
+		if (!this.isUserInGroup(username, groupname, session)) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') isn't a member of this group ('" + groupname + "')");
+		}
+		// XXX: the next line is semantically incorrect
+		group.setName(username);
+		group.setGroupRole(role);
+		this.update("updateGroupRole", group, session);		
+	}
+	
+	/**
+	 * Removes the join request or invite from the group.
+	 * 
+	 * @param groupname
+	 * @param username
+	 * @param session
+	 */
+	public void removeRequestOrInviteFromGroup(final String groupname, final String username, final DBSession session) {
+		// make sure that the group exists
+		final Group group = this.getGroupByName(groupname, session);
+		if (group == null) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't remove join request from nonexistent group");
+			throw new RuntimeException();
+		}
+		if (!this.isUserInGroup(username, groupname, session)) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') isn't a member of this group ('" + groupname + "')");
+		}
+		// XXX: the next line is semantically incorrect
+		group.setName(username);
+		// we can use the removeUserFromGroup statement
+		this.delete("removeUserFromGroup", group, session);		
+	}
 
 	/**
 	 * Updates a group's privacy level and documents settings. 

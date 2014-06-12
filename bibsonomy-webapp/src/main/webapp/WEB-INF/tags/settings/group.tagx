@@ -87,7 +87,7 @@
 										<div style="float: left; width: 130px; padding-bottom: 10px;">
 											<a href="/user/${mtl:encodeURI(member.name)}"><img src="/picture/user/${mtl:encodeURI(user.name)}" /><c:out value="${member.name}"/></a><br />
 											<i><c:out value="${member.groupRole}" /></i><br />
-											<span class="smalltext">(<a href="/updateGroup?operation=declineJoinRequest&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${decuserTitle}">${decuser}</a>) (<a href="/updateGroup?operation=acceptJoinRequest&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${accuserTitle}">${accuser}</a>)</span>
+											<span class="smalltext">(<a href="/updateGroup?operation=decline_join_request&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${decuserTitle}">${decuser}</a>) (<a href="/updateGroup?operation=accept_join_request&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${accuserTitle}">${accuser}</a>)</span>
 										</div>
 									</c:if>
 								</c:forEach>
@@ -106,7 +106,7 @@
 										<div style="float: left; width: 130px; padding-bottom: 10px;">
 											<a href="/user/${mtl:encodeURI(member.name)}"><img src="/picture/user/${mtl:encodeURI(user.name)}" /><c:out value="${member.name}"/></a><br />
 											<i><c:out value="${member.groupRole}" /></i><br />
-											<span class="smalltext">(<a href="/updateGroup?operation=removeUserFromGroup&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>)</span>
+											<span class="smalltext">(<a href="/updateGroup?operation=remove_user&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>)</span>
 										</div>
 									</c:if>
 								</c:forEach>

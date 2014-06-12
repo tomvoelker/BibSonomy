@@ -159,4 +159,11 @@
 			publ_reporting_external_url = #publicationReportingSettings.externalReportingUrl#
 		WHERE group_name = #name#
 	</update>
+
+	<update id="updateGroupRole" parameterClass="group">
+		UPDATE groups 
+		SET user_status=#groupRole#
+		WHERE `group` = #groupId# AND `user_name` = #name#
+	</update>
+	
 </sqlMap>

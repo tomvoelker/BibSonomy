@@ -59,5 +59,11 @@ public enum GroupUpdateOperation {
 	ADD_INVITED,
 	
 	/** Request a new group. */
-	REQUEST;
+	REQUEST,
+	
+	/** Accept a join request */
+	ACCEPT_JOIN_REQUEST,
+	
+	/** Decline a join request */
+	DECLINE_JOIN_REQUEST;
 }

@@ -1171,6 +1171,16 @@ public class DBLogic implements LogicInterface {
 					this.groupDBManager.addUserToGroup(groupName, user.getName(), GroupRole.REQUESTED, session);
 				}
 				break;
+			case ACCEPT_JOIN_REQUEST:
+				for (final User user: group.getUsers()) {
+					this.groupDBManager.updateGroupRole(groupName, user.getName(), GroupRole.USER, session);
+				}
+				break;
+			case DECLINE_JOIN_REQUEST:
+				for (final User user: group.getUsers()) {
+					this.groupDBManager.removeRequestOrInviteFromGroup(groupName, user.getName(), session);
+				}
+				break;
 			default:
 				throw new UnsupportedOperationException("The given method is not yet implemented.");
 			}
