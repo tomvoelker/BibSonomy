@@ -4,17 +4,21 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-    xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
+    xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:sql="http://java.sun.com/jsp/jstl/sql"
     xmlns:settings="urn:jsptagdir:/WEB-INF/tags/settings"
-    xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
-    xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-    xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"	
-	xmlns:spring="http://www.springframework.org/tags">
+    xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
+    xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+    xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/bstags/spheres"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+	xmlns:bsbibcomp="urn:jsptagdir:/WEB-INF/tags/bstags/bs/bibcomponents"
+	xmlns:bsnav="urn:jsptagdir:/WEB-INF/tags/bstags/bs/nav">
     
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
@@ -28,7 +32,7 @@
 		</jsp:attribute>
 		<!--+
 			| page content
-			+-->	
+			+-->
 		<jsp:attribute name="tabcontent">
 			<!-- display potential errors -->
 		    <errors:global errors="${errors}"/>	

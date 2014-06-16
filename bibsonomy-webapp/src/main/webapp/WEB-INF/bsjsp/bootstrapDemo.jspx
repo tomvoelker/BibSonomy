@@ -164,18 +164,23 @@
 					<h3>Panel group with collapsing</h3>
 					<bs:panelgroup id="accordion">
 						<jsp:attribute name="panels">
+						
+							<!-- erstes panel -->
 							<bs:panel messagesPropertiesKey="post.resource.fields.general" collapsed="${true}" groupId="accordion" collapseId="panel1">
 								<jsp:attribute name="panelBody">
 									<h5>In Latein</h5>
 									<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
 								</jsp:attribute>
 							</bs:panel>
+							
+							<!-- zweites panel -->
 							<bs:panel messagesPropertiesKey="groups_visibility" collapsed="${false}" groupId="accordion" collapseId="panel2">
 								<jsp:attribute name="panelBody">
 									<h5>In deutscher Sprache</h5>
 									<p>Auch gibt es niemanden, der den Schmerz an sich liebt, sucht oder wünscht, nur, weil er Schmerz ist, es sei denn, es kommt zu zufälligen Umständen, in denen Mühen und Schmerz ihm große Freude bereiten können. Um ein triviales Beispiel zu nehmen, wer von uns unterzieht sich je anstrengender körperlicher Betätigung, außer um Vorteile daraus zu ziehen?</p>
 								</jsp:attribute>
-							</bs:panel>				
+							</bs:panel>		
+									
 						</jsp:attribute>
 					</bs:panelgroup>
 					
