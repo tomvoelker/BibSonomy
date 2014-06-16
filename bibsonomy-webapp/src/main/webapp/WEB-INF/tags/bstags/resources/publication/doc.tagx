@@ -13,10 +13,6 @@
 	<c:set var="publication" value="${post.resource}"/>
 	<c:set var="isOwnEntry" value="${post.user.name eq command.context.loginUser.name}"/>
 	
-	<link rel="resource" type="application/l10n" href="${resdir}/javascript/pdf.js/web/locale/locale.properties"/>
-	<script src="${resdir}/javascript/pdf.js/web/l10n.js"></script>
-	<script src="${resdir}/javascript/pdf.js/build/pdf.js"></script>
-	<script type="text/javascript" src="${resdir}/javascript/pdf.js/web/viewer.js"><!-- --></script>
 	<script type="text/javascript" src="${resdir}/bootstrap/js/bootstrap-dialog.js"><!-- --></script>
 	<script type="text/javascript" src="${resdir}/bootstrap/js/publicationdetails.js"><!-- --></script>
 	
@@ -24,7 +20,7 @@
 		| private documents (pdf, ps) 
 		+-->
   	<c:if test="${not empty publication.documents or isOwnEntry}">
-  			<iframe class="initiallyHidden" id="pdfViewer"><!--  keep  --></iframe>
+  			<div class="modal fade bs-example-modal-lg" style="text-align:center" tabindex="-1" role="dialog" aria-hidden="true"><iframe id="pdfViewer" style="margin: auto; width: 80%; height: 100%; border-top: none; border-bottom: none"><!--  keep  --></iframe></div>
   			<h4>&amp;nbsp;</h4>
 	  		<c:choose>
 		  		<c:when test="${empty publication.documents}">

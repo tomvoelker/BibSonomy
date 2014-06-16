@@ -247,7 +247,10 @@
 		<servlet-name>default</servlet-name>
 		<url-pattern>/brokenurl.html</url-pattern>
 	</servlet-mapping>
-
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/resources/javascript/pdf.js/web/viewer.html</url-pattern>
+	</servlet-mapping>
 	<!-- events -->
 	<servlet-mapping>
 		<servlet-name>events_statphys23</servlet-name>
