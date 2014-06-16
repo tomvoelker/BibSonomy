@@ -59,7 +59,7 @@
 			<!--+
                 | INPUT FIELD FOR TAGS
                 +-->
-    	  	<bsform:input id="inpf_tags" autocomplete="off" path="tags" tabindex="1"
+    	  	<bsform:input id="inpf_tags" autocomplete="off" path="tags" tabindex="1" tagsinput="true"
 		  		onclick="setActiveInputField(this.id); enableHandler();" 
 		  		onfocus="setActiveInputField(this.id); enableHandler()" 
 		  		onblur="disableHandler()">

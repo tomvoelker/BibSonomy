@@ -22,6 +22,7 @@
 			<input type="hidden" name="selTab" value="1" />
 			<input type="hidden" name="ckey" value="${ckey}" />
 			
+			
 			<bsform:textarea path="selection" id="selection">
 				<jsp:attribute name="appendix">	
 					<div class="fsLabel"><!--  --></div>

@@ -89,8 +89,14 @@
 								<include>${project.build.webapp.resourcedir}/javascript/bs/collapse.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/tooltip.js</include>
  								<include>${project.build.webapp.resourcedir}/javascript/bs/popover.js</include>
+ 								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-dialog.js</include>
+ 								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-tagsinput-angular.js</include>
+ 								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-tagsinput.js</include>
+ 								
 								<!-- for custom javascripts -->
 								<include>${project.build.webapp.resourcedir}/javascript/bs/custom.js</include>
+
+
 
 								<include>${project.build.webapp.resourcedir}/javascript/bs/functions.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/actions/clipboard.js</include>
