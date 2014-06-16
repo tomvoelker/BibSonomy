@@ -29,18 +29,26 @@
 	</div>
 	<div class="panel-body">
 			<ul class="nav nav-tabs">
-				<c:forEach var="citationStyle" items="${fn:split('harvardhtml,chicago,apa_html,din1505',',')}">
+				<li>
+					<a class="firstTab" data-toggle="tab" href="#citation_harvardhtml" data-formatUrl="/layout/harvardhtml/bibtex/2${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}?formatEmbedded=true">
+						<fmt:message key="bibtex.citation_format.harvardhtml" />
+					</a>
+				</li>
+				<c:forEach var="citationStyle" items="${fn:split('chicago,apa_html,din1505',',')}">
 					<li><a data-toggle="tab" href="#citation_${citationStyle}" data-formatUrl="/layout/${citationStyle}/bibtex/2${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}?formatEmbedded=true"><fmt:message key="bibtex.citation_format.${citationStyle}" /></a></li>
 				</c:forEach>
 				<li><a data-toggle="tab" href="#citation_bibtex">BibTeX</a></li>
 				<li><a data-toggle="tab" href="#citation_endnote">EndNote</a></li>
 				<li>
-					<a data-toggle="tab" href="#citation_all"><fmt:message key="bibtex.all_exports" /></a>
+					<a data-toggle="tab" href="#citation_all" data-formatUrl="/export/bibtex/2${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}?formatEmbedded=true"><fmt:message key="bibtex.all_exports" /></a>
 				</li>
 			</ul>
 			<br />
 			<div id="citation-styles" class="tab-content">
-				<c:forEach var="citationStyle" items="${fn:split('harvardhtml,chicago,apa_html,din1505',',')}">
+				<div class="tab-pane" id="citation_harvardhtml">
+					<!-- keep -->
+				</div>
+				<c:forEach var="citationStyle" items="${fn:split('chicago,apa_html,din1505',',')}">
 					<div class="tab-pane" id="citation_${citationStyle}">
 						<!-- keep -->
 					</div>
@@ -52,7 +60,7 @@
 					<textarea style="width:100%;font-size:80%;border:none;" rows="15"><export:endnote post="${post}" escapeXml="${true}" /></textarea>
 				</div>
 				<div class="tab-pane" id="citation_all">
-					<!-- /export/bibtex/2${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}?formatEmbedded=true  -->
+					<!-- keep -->
 				</div>
 			</div>
 	</div>
