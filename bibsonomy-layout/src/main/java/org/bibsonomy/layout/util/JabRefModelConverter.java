@@ -31,6 +31,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,10 +39,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.sf.jabref.BibtexDatabase;
 import net.sf.jabref.BibtexEntry;
 import net.sf.jabref.BibtexEntryType;
 import net.sf.jabref.GlobalsSuper;
 import net.sf.jabref.JabRefPreferences;
+import net.sf.jabref.KeyCollisionException;
 import net.sf.jabref.export.layout.format.AndSymbolIfBothPresent;
 
 import org.apache.commons.logging.Log;
@@ -95,7 +98,25 @@ public class JabRefModelConverter {
 	 */
 	private static final String jabRefKeywordSeparator = JabRefPreferences.getInstance().get("groupKeywordSeparator", ", ");
 
-
+	
+	/**
+	 * This method converts BibSonomy BibTeX entries to JabRef entries and stores
+	 * them into a JabRef specific BibtexDatabase! 
+	 * @param bibtexList List of BibSonomy BibTeX objects
+	 * @return BibtexDatabase
+	 * @throws IOException
+	 * @throws KeyCollisionException If two entries have exactly the same BibTeX key
+	 */
+	public static BibtexDatabase bibtex2JabrefDB(final List<? extends Post<? extends Resource>> bibtexList, URLGenerator urlGenerator) {
+		final BibtexDatabase db = new BibtexDatabase();
+		for (final Post<? extends Resource> post : bibtexList) {
+			final BibtexEntry convertedPost = JabRefModelConverter.convertPost(post, urlGenerator);
+			if (present(convertedPost)) {
+				db.insertEntry(convertedPost);
+			}
+		}
+		return db;
+	}
 
 	/**
 	 * Converts a list of posts in BibSonomy's format into JabRef's format.

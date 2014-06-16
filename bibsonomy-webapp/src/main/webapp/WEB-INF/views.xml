@@ -15,6 +15,11 @@
 	<!-- renderer for CSL-conform JSON output -->
 	<bean id="csl" class="org.bibsonomy.webapp.view.CSLView"/>
 	
+	<!-- renderer for MSOfficeXML -->
+	<bean id="msofficexml" class="org.bibsonomy.webapp.view.MSOfficeXMLView">
+		<property name="urlGenerator" ref="urlGenerator"/>
+	</bean>
+	
 	<!-- renders documents of publications -->
 	<bean id="downloadFile" class="org.bibsonomy.webapp.view.DownloadView"/>
 

@@ -131,7 +131,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		 * new code: duplicate removal in controller, no sorting by year - must be enforced 
 		 * by another parameter
 		 */
-		final BibtexDatabase database = bibtex2JabrefDB(posts);
+		final BibtexDatabase database = JabRefModelConverter.bibtex2JabrefDB(posts,urlGenerator);
 		/*
 		 * render the database
 		 */
@@ -239,25 +239,6 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		}
 
 		return output;
-	}
-
-	/**
-	 * This method converts BibSonomy BibTeX entries to JabRef entries and stores
-	 * them into a JabRef specific BibtexDatabase! 
-	 * @param bibtexList List of BibSonomy BibTeX objects
-	 * @return BibtexDatabase
-	 * @throws IOException
-	 * @throws KeyCollisionException If two entries have exactly the same BibTeX key
-	 */
-	private BibtexDatabase bibtex2JabrefDB(final List<? extends Post<? extends Resource>> bibtexList) {
-		final BibtexDatabase db = new BibtexDatabase();
-		for (final Post<? extends Resource> post : bibtexList) {
-			final BibtexEntry convertedPost = JabRefModelConverter.convertPost(post, this.urlGenerator);
-			if (present(convertedPost)) {
-				db.insertEntry(convertedPost);
-			}
-		}
-		return db;
 	}
 
 	/**
