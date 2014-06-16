@@ -23,11 +23,8 @@
     		<fmt:param value="${user.name}"/>
     	</fmt:message>
     	
-    	<!-- disabled success button for user icon -->
-    	<button class="btn btn-success disabled"><span class="glyphicon glyphicon-user"><!-- --></span></button>
-    	
     	<!-- button for CV link -->
-		<a class="btn btn-success btn-sm" href="/cv/user/${fn:escapeXml(user.name)}" title="${cvtitle}"><fmt:message key="navi.cv.abbrev"/></a>
+		<a class="btn btn-success btn-sm" href="/cv/user/${fn:escapeXml(user.name)}" title="${cvtitle}"><span class="glyphicon glyphicon-user"><!-- --></span><fmt:message key="navi.cv.abbrev"/></a>
  
  		<!-- if logged in user has added the requested user to his friend list, show remove friend button  -->
  		<fmt:message key="friends.actions.delete.title" var="removeFriend">
@@ -38,8 +35,7 @@
  			onclick="javascript:$(this).hide(); $(this).next().show();updateUserRelation('remove','${fn:escapeXml(user.name)}', 'sys:network:bibsonomy-friend', '${ckey}');return false;"
  			title="${removeFriend}"
  			href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=removeFriend&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}">
-				<span class="glyphicon glyphicon-minus"><!--  --></span>&amp;nbsp;
-				<fmt:message key="navi.friend"/>
+				<span class="glyphicon glyphicon-user"><!-- --></span><span style="margin-left: -2px; font-size: 70%; top: -2px;" class="glyphicon glyphicon-minus"><!--  --></span>
 		</a>
  		
  		<!-- if logged in user has NOT in his friend list, show add friend button  -->
@@ -51,8 +47,7 @@
 	    	onclick="javascript:$(this).hide(); $(this).prev().show();updateUserRelation('add','${fn:escapeXml(user.name)}', 'sys:network:bibsonomy-friend', '${ckey}');return false;"
 		  	title="${addFriend}"
 		   	href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=addFriend&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(user.name)}">
-		   		<span class="glyphicon glyphicon-plus"><!--  --></span>&amp;nbsp;
-				<fmt:message key="navi.friend"/>
+		   		<span class="glyphicon glyphicon-user"><!-- --></span><span style="margin-left: -2px; font-size: 70%; top: -2px;" class="glyphicon glyphicon-plus"><!--  --></span>
 		</a>
 		
 		<!-- dropdown toggle button -->

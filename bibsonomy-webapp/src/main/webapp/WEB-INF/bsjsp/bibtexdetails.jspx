@@ -47,6 +47,7 @@
 			+-->
 		<jsp:attribute name="sidebar">
 			<ul>
+				
 				<li><h4 class="sidebar"><fmt:message key="bibtex.details.meta"/></h4>
 					<ul>
 						<li><fmt:message key="post.change_date" /> <rc:metaChangeDate post="${post}"/><br /></li>

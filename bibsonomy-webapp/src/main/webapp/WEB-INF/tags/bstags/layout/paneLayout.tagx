@@ -85,7 +85,6 @@
 			<jsp:invoke fragment="content"/>
 		</jsp:attribute>	
 	
-	
 	</layout:layout>
 		
 		

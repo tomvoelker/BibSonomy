@@ -8,6 +8,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
+	<jsp:directive.attribute name="bibActionButtons" fragment="true" required="false"/>
 
 	<!--<c:set var="publication" value="${mtl:cleanBibtex(post.resource)}" />-->
 	<c:set var="bibTitle" value="${mtl:cleanBibtex(post.resource.title)}" />
@@ -21,7 +22,12 @@
 		</a>
 
 		<div class="media-body" id="titletext">
-			<h1 class="media-heading" id="pubtitle"><c:out value="${bibTitle}" /></h1>
+			<h1 class="media-heading" id="pubtitle">
+			
+				<jsp:invoke fragment="bibActionButtons" />
+				<c:out value="${bibTitle}" />
+			
+			</h1>
 			<p><bib:desc publication="${post.resource}"/></p>
 		</div>
 	</div>

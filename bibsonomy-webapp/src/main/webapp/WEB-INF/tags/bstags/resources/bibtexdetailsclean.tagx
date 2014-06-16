@@ -32,7 +32,13 @@
 	
 	
 	<div class="title">
-		<pub:title post="${post}" />
+		<pub:title post="${post}">
+			<jsp:attribute name="bibActionButtons">
+				<div class="pull-right">
+					<bib:actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/>
+				</div>
+			</jsp:attribute>
+		</pub:title>
 	</div>
 	<div style="border-top: 1px #cbcbcb solid; clear:left">
 		<span> </span>

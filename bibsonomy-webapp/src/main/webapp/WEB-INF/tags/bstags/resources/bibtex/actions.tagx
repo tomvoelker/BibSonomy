@@ -11,6 +11,9 @@
 	<jsp:directive.attribute name="enableHistory" type="java.lang.Boolean" required="false" />	
 		
 
+
+	
+
 	<div class="edit-media-buttons btn-group btn-group-xs dropdown">
 	
 		<!--+
@@ -34,8 +37,9 @@
 					<!-- EDIT other actions -->
 					<c:otherwise><!-- user is post's owner -->
 						<fmt:message key="bibtex.actions.edit.title" var="editTitle"/>
+						
 						<a class="btn btn-default btn-xsmall item edit" href="/editPublication?intraHashToUpdate=${post.resource.intraHash}" 
-							title="${editTitle}"><span class="glyphicon glyphicon-edit"><!--  --></span></a>
+							title="${editTitle}"><span class="glyphicon glyphicon-edit ${post.user.name ne loginUserName ? 'btn-disabled' : ''}"><!--  --></span></a>
 
 					</c:otherwise>
 				</c:choose>
@@ -43,7 +47,7 @@
 			<c:otherwise>
 				<!-- For signed out users we always show the inactive copy button -->
 				<fmt:message key="bibtex.actions.copy.inactive" var="copyTitle"/>
-				<a class="item icopy" title="${copyTitle}"><!-- Keep Me --></a>
+				<a class="item icopy btn-disabled" title="${copyTitle}"><!-- Keep Me --></a>
 			</c:otherwise>
 		</c:choose>
 		
@@ -79,7 +83,7 @@
 					</c:when>
 					<c:otherwise>
 						<fmt:message key="bibtex.actions.delete.inactive" var="deleteTitle"/>
-						<span class="btn btn-default btn-xsmall item idelete" title="${deleteTitle}"><span class="glyphicon glyphicon-edit"><!--  --></span></span>
+						<a class="btn btn-default btn-xsmall item btn-disabled" title="${deleteTitle}"><span class="glyphicon glyphicon-remove"><!--  --></span></a>
 					</c:otherwise>
 				</c:choose>
 			</c:otherwise>
@@ -92,7 +96,7 @@
 		<fmt:message key="bibtex.actions.communityPost" var="communityPost" />
 		
 		<a href="/bibtex/${post.resource.interHash}" class="btn btn-default btn-xsmall item communitypost" title="${fn:escapeXml(communityPost)}">
-			cp
+			<span style="font-size:90%;" class="glyphicon glyphicon-user"><!--  --></span><span class="glyphicon glyphicon-user" style="margin-left:-4px; font-size: 70%;"><!--  --></span>
 		</a>
 		<!--+
 			| COPY/HISTORY
