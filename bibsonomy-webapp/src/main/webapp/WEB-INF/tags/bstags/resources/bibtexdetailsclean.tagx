@@ -95,10 +95,10 @@
 			<!--+ 
 			 	| selection of citation format 
 			 	+-->
+			<hr />
 		 	<h4 class="pub-details"><fmt:message key="publications.citations.headline" /></h4>
-			<div style="/*float:left;clear:right;*/width:100%">
-				<pub:citation post="${post}"/>
-			</div>
+			<pub:citation post="${post}"/>
+			
 			
 			<!--+
 				| private note
