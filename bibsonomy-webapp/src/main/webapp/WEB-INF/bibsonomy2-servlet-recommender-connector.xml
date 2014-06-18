@@ -11,8 +11,25 @@
 	                    http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
 
     <!-- import recommenderLogic -->
-	<jee:jndi-lookup id="itemRecommenderDataSource" jndi-name="jdbc/bibsonomy_item_recommender"/>
-	<jee:jndi-lookup id="tagRecommenderDataSource" jndi-name="jdbc/bibsonomy_recommender"/>
+	<bean id="itemRecommenderDataSource"
+		class="org.apache.tomcat.dbcp.dbcp.BasicDataSource">
+		<property name="url" value="${database.recommender.url}" />
+		<property name="username" value="${database.recommender.username}" />
+		<property name="password" value="${database.recommender.password}" />
+		<property name="driverClassName" value="${database.recommender.driverClassName}" />
+		<property name="maxIdle" value="${database.recommender.maxIdle}" />
+		<property name="maxActive" value="${database.recommender.maxActive}" />
+		<property name="maxWait" value="${database.recommender.maxWait}" />
+		<property name="removeAbandoned" value="${database.recommender.removeAbandoned}" />
+		<property name="removeAbandonedTimeout" value="${database.recommender.removeAbandonedTimeout}" />
+	</bean>
+	<bean parent="itemRecommenderDataSource" id="tagRecommenderDataSource"
+		class="org.apache.tomcat.dbcp.dbcp.BasicDataSource">
+		<property name="url" value="${database.recommender.url}" />
+		<property name="username" value="${database.recommender.username}" />
+		<property name="password" value="${database.recommender.password}" />
+	</bean>
+	
 	<import resource="classpath:org/bibsonomy/bibsonomy-recommender-log-context.xml" />
 	<import resource="classpath:org/bibsonomy/bibsonomy-recommender-main-context.xml" />
 	
