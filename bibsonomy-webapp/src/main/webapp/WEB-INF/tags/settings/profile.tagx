@@ -19,244 +19,267 @@
 
 	<!-- ############################################# profile tab ############################################# -->	
 	<c:set var="user" value="${command.user}" />
-	
-	<!-- Der Text der oben steht -->
-	<p>
-		<fmt:message key="settings.profileInfo">
-			<fmt:param><a href="/foaf/user/${mtl:encodeURI(user.name)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param>
-			<fmt:param><fmt:message key="settings.profileViewableFor"/></fmt:param>
-			<fmt:param value="/cv/user/${mtl:encodeURI(user.name)}"/>
-		</fmt:message>
-	</p>
+
+	<!-- Aeussere Umrandung -->
+	<bs:panel messagesPropertiesKey="navi.myprofile">
+		<jsp:attribute name="panelBody">
 
 	<!--+
 		|
 		| profile, contact, about 
 		| 
 	 	+-->
-	<!-- Aeussere Umrandung -->
-	<bs:panel messagesPropertiesKey="navi.myprofile">
-	<jsp:attribute name="panelBody">
-	
-		<!-- 
-			<bs:panelgroup id="accordion">
-				<jsp:attribute name="panels"> -->
-	
-		<fieldset class="fsOuter">	
-			<form:form name="account" method="post" action="/updateUserProfile?ckey=${ckey}" enctype="multipart/form-data">
 		
-			<!--+
-				| username, realname, gender, birthday, place, profile privacy level
-				+-->
-			<!-- GENERAL INFORMATION -->
-			<!-- 	
-			<bs:panel messagesPropertiesKey="post.resource.fields.general" collapsed="${false}" groupId="accordion" collapseId="panel1">
-				<jsp:attribute name="panelBody"> -->
-			<fieldset>
-				<legend><fmt:message key="post.resource.fields.general" /></legend>	
-					<!-- USER NAME -->
-					<!-- neu -->
-					  
-					<bsform:input path="user.name" labelColSpan="2" inputColSpan="10" noHelp="true" disabled="true"/>
-					
-					<!-- REAL NAME -->
-					<!-- neu -->
-					
-					<bsform:input path="user.realname" labelColSpan="2" inputColSpan="10" />
-					
-					<div class="input-group">
-					  <span class="input-group-addon">user.realname</span>
-					  <input type="text" class="form-control" placeholder="user.realname"></input>
-					</div>
-					
-					<!-- alt -->
-					<bform:input path="user.realname" noHelp="${true}" small="${true}"/>
-					
-					<!-- GENDER -->
-					<!-- neu -->
-					<div class="btn-group">
-						<bsform:button dropdown="${true}" value="user.gender" size="defaultSize" style="defaultStyle" dataToggle="dropdown" />
-						<ul class="dropdown-menu">
-							<li><a href="#">settings.male</a></li>
-							<li><a href="#">settings.female</a></li>
-				  		</ul>
-					</div>
-					
-					<!-- alt -->
-					<div class="fsRow">
-						<form:label cssClass="fsLabel" path="user.gender"><fmt:message key="user.gender"/></form:label>
-						<fmt:message var="male" key="settings.male"/>
-						<fmt:message var="female" key="settings.female"/>
-						<form:select cssClass="fsInput fsSmall" path="user.gender">
-							<form:option label="${male}" value="m"/>
-							<form:option label="${female}" value="f"/>
-						</form:select>
-						<div class="dissError"><form:errors path="user.gender" /></div>
-					</div>
-					
-					<!-- BIRTHDAY -->
-					<div class="fsRow">
-						<form:label cssClass="fsLabel" path="user.birthday"><fmt:message key="user.birthday"/></form:label>
-						<fmt:formatDate value="${command.user.birthday}" pattern="yyyy-MM-dd" var="userBirthday" />
-						<input class="fsInput fsSmall" name="user.birthday" id="user.birthday" value="${userBirthday}" type="text"/>
-						<div class="dissError"><form:errors path="user.birthday" /></div>		      
-						<form:label cssClass="fsHelp" path="user.birthday">format: YYYY-MM-DD</form:label>
-					</div>
-					
-					<!-- PLACE -->
-					<bform:input path="user.place" noHelp="${true}" small="${true}"/>
-					
-					<!-- PROFILE VIEWABLE FOR -->
-					<div class="fsRow">
-						<form:label cssClass="fsLabel" path="user.settings.profilePrivlevel"><fmt:message key="settings.profileViewableFor"/></form:label>
-						<form:select cssClass="fsInput fsSmall" path="user.settings.profilePrivlevel">
-							<form:option label="public" value="PUBLIC"/>
-							<form:option label="private" value="PRIVATE"/>
-							<form:option label="friends" value="FRIENDS"/>
-						</form:select>
-						<div class="dissError"><form:errors path="user.settings.profilePrivlevel" /></div>
-				    </div>
-			<!-- 	    
-				</jsp:attribute>
-			</bs:panel> -->
-			</fieldset>
-			<!--+ 
-			 	| Contact (email, homepage, OpenURL)
-			 	+-->
-			<bs:panel messagesPropertiesKey="settings.contact" collapsed="${false}" groupId="accordion" collapseId="panel2">
-				<jsp:attribute name="panelBody">
-				
-					<bform:input path="user.email" required="${true}" />
-					<bform:input path="user.homepage"/>
-					<bform:input path="user.openURL" helpPage="/OpenURL"/>
-					
-				</jsp:attribute>
-			</bs:panel>
+			<!-- Der Text der oben steht -->
+			<p>
+				<fmt:message key="settings.profileInfo">
+					<fmt:param><a href="/foaf/user/${mtl:encodeURI(user.name)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param>
+					<fmt:param><fmt:message key="settings.profileViewableFor"/></fmt:param>
+					<fmt:param value="/cv/user/${mtl:encodeURI(user.name)}"/>
+				</fmt:message>
+			</p>
 	
-			<!--+ 
-			 	| hobbies, profession, institution, interests
-			 	+-->
-			<bs:panel messagesPropertiesKey="settings.aboutMe" collapsed="${false}" groupId="accordion" collapseId="panel3">
-				<jsp:attribute name="panelBody">
-				
-					<bform:input path="user.profession" noHelp="${true}"/>
-					<bform:input path="user.institution" noHelp="${true}"/>
-					<bform:textarea path="user.interests" noHelp="${true}"/>
-					<bform:textarea path="user.hobbies" noHelp="${true}"/>
-					
-				</jsp:attribute>
-			</bs:panel>
-	
-			<input type="hidden" name="action" value="update"/>
-			<input type="hidden" name="selTab" value="0"/>
-	<!-- 		<bform:submit messageKey="settings.saveChanges"/> -->
+			<fieldset class="fsOuter">	
+				<form:form cssClass="form-horizontal" name="account" method="post" action="/updateUserProfile?ckey=${ckey}" enctype="multipart/form-data">
 			
-	<!--	</form:form>
-		</fieldset> 
-		
-		<fieldset class="fsOuter" style="margin-top: 2em">-->
-			<!--+
-				| photo 
-				+-->
-	<!-- 	<form:form id="settingImportForm" action="/picture/user/${mtl:encodeURI(user.name)}?ckey=${ckey}" method="post" enctype="multipart/form-data">-->
+				<!--+
+					| username, realname, gender, birthday, place, profile privacy level
+					+-->
+				<!-- GENERAL INFORMATION -->
+					
+				<!-- Ueberschrift -->
+				<fieldset>
+					<legend><fmt:message key="post.resource.fields.general" /></legend>
+					
+						<!-- USER NAME -->
+						<bsform:input path="user.name" labelColSpan="2" inputColSpan="10" noHelp="true" disabled="true" />
+						
+						<!-- REAL NAME -->
+						<bsform:input path="user.realname" labelColSpan="2" inputColSpan="10" />
+						
+						<!-- GENDER -->	
+						<div class="form-group clearfix">
+							<form:label cssClass="col-sm-2 control-label" path="user.gender"><fmt:message key="user.gender"/></form:label>
+							
+							<fmt:message var="male" key="settings.male"/>
+							<fmt:message var="female" key="settings.female"/>
+							<div class="col-sm-10">
+								<form:select cssClass="form-control" path="user.gender">
+									<form:option label="${male}" value="m"/>
+									<form:option label="${female}" value="f"/>
+								</form:select>
+							</div>
+							
+							<div class="dissError"><form:errors path="user.gender" /></div>
+						</div>
+						
+						<!-- BIRTHDAY -->
+						
+						<div class="form-group clearfix">
+						 <label class="col-sm-2 control-label"><fmt:message key="user.birthday"/></label>
+						  <div class="col-sm-10">
+						   
+						    <div class="input-group date" id="dp3" data-date="12-02-2012" data-date-format="mm-dd-yyyy">
+						      <input class="form-control" type="text" value="12-02-2012"/>
+						      <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"><!--  --></i></span>
+						    </div>
+						  </div>
+						</div>
+						
+						<!-- alt
+						<div class="fsRow">
+							<form:label cssClass="fsLabel" path="user.birthday"><fmt:message key="user.birthday"/></form:label>
+							<fmt:formatDate value="${command.user.birthday}" pattern="yyyy-MM-dd" var="userBirthday" />
+							<input data-date="12-02-2012" data-date-format="dd-mm-yyyy" class="fsInput fsSmall" name="user.birthday" id="user.birthday" value="${userBirthday}" type="text"/>
+							<div class="dissError"><form:errors path="user.birthday" /></div>		      
+							<form:label cssClass="fsHelp" path="user.birthday">format: YYYY-MM-DD</form:label>
+						</div> -->
+						
+						<!-- PLACE -->
+						<bsform:input path="user.place" labelColSpan="2" inputColSpan="10"  noHelp="true"/>
+						
+						<!-- PROFILE VIEWABLE FOR -->
+						<div class="form-group clearfix">
+							<form:label cssClass="col-sm-2 control-label" path="user.settings.profilePrivlevel"><fmt:message key="settings.profileViewableFor"/></form:label>
+							
+							<div class="col-sm-10">
+								<form:select cssClass="form-control" path="user.settings.profilePrivlevel">
+									<form:option label="public" value="PUBLIC"/>
+									<form:option label="private" value="PRIVATE"/>
+									<form:option label="friends" value="FRIENDS"/>
+								</form:select>
+							</div>
+							
+							<div class="dissError"><form:errors path="user.settings.profilePrivlevel" /></div>
+						</div>
+						
+				</fieldset>
 
-			<bs:panel messagesPropertiesKey="settings.picture.header" collapsed="${false}" groupId="accordion" collapseId="panel4">
-				<jsp:attribute name="panelBody">
-				
-					<div class ="fsRow">
-						<form:label cssClass="fsLabel" path="file"><fmt:message key="settings.picture.current"/></form:label>
-						<img style="clear:both;" src="/picture/user/${mtl:encodeURI(user.name)}"/>
-					</div>
+				<!--+ 
+				 	| Contact (email, homepage, OpenURL)
+				 	+-->
+				<fieldset>
+					<legend><fmt:message key="settings.contact" /></legend>
 					
-					<div class="fsRow">
-						<fmt:message var="useExtService" key="user.useExternalPicture.service" />
-						<fmt:message var="useExtTrue" key="user.useExternalPicture.true">
-							<fmt:param>${useExtService}</fmt:param>
-						</fmt:message>
-						<fmt:message var="useExtFalse" key="user.useExternalPicture.false" />
-					
-						<form:label cssClass="fsLabel" path="user.useExternalPicture">
-							<fmt:message key="user.useExternalPicture"/>
-						</form:label>
+						<bsform:input path="user.email" required="true" />
+						<bsform:input path="user.homepage"/>
+						<bsform:input path="user.openURL" />
 						
-						<buttons:help message="user.useExternalPicture.help">
-							<jsp:attribute name="helpText">
-								<ol>
-									<li>
-										<fmt:message key="user.useExternalPicture.help.true">
-											<fmt:param>${useExtTrue}</fmt:param>
-											<fmt:param>${useExtService}</fmt:param>
-										</fmt:message>
-									</li>
-									<li>
-										<fmt:message key="user.useExternalPicture.help.false">
-											<fmt:param>${useExtFalse}</fmt:param>
-										</fmt:message>
-									</li>
-								</ol>
-							</jsp:attribute>
-						</buttons:help>
-	
-						<form:select id="useExtPicSelect" cssClass="fsInput fsSmall" path="user.useExternalPicture">
-							<form:option label="${useExtTrue}" value="${true}" id="useExt" />
-							<form:option label="${useExtFalse}" value="${false}" id="useInt" />
-						</form:select>
-					</div>
-					
-					<c:choose>
-						<c:when test="${not user.useExternalPicture}">
-							<c:set var="displayUseInt">block</c:set>
-							<c:set var="displayUseExt">none</c:set>
-						</c:when>
-						<c:otherwise>
-							<c:set var="displayUseInt">none</c:set>
-							<c:set var="displayUseExt">block</c:set>
-						</c:otherwise>
-					</c:choose>
-						
-					<div class="fsRow" id="pictUseExt" style="display:${displayUseExt}">
-						<form:label cssClass="fsLabel" path="user.useExternalPicture">
-							<fmt:message key="user.useExternalPicture.service.label">
-								<fmt:param><fmt:message key="user.useExternalPicture.service" /></fmt:param>
-							</fmt:message>
-						</form:label>
-					
-						<fmt:message var="useExtServiceLink" key="user.useExternalPicture.service.link" />
-						<form:label path="user.useExternalPicture" cssClass="fsHelp">
-							<a target="_blank" href="${useExtServiceLink}">${useExtServiceLink}</a>
-						</form:label>
-					</div>
-					
-					<div id="pictUseInt" style="display:${displayUseInt}">
-						<div class="fsRow">
-							<form:label cssClass="fsLabel" path="picturefile"><fmt:message key="settings.picture.file"/></form:label>
-							<buttons:help message="settings.picture.help"/>
-							<input type="file" name="picturefile" class="fsInput fsSmall" id="useIntPath"/>
-						</div>
-						
-						<div class="fsRow">
-							<form:label cssClass="fsLabel" path="deletePicture"><fmt:message key="settings.picture.delete"/></form:label>
-							<buttons:help message="settings.picture.delete.help"/>
-							<input type="checkbox" name="deletePicture" value="${true}" class="fsInput fsSmall" id="useIntDelete" />
-						</div>
-					</div>
-				</jsp:attribute>
-			</bs:panel>
-	
-	<!-- 	<div class="fsRow">
-				<fmt:message var="upload" key = "settings.picture.upload" />
-				<input type="submit" class="fsSubmit" value="${upload}" />
-			</div>-->
-			<bsform:button type="submit" style="defaultStyle" size="defaultSize" value="settings.saveChanges" />
-			<bform:submit messageKey="settings.saveChanges"/>
-			
-			</form:form>
-		</fieldset>
+				</fieldset>
 		
-		<!-- 
-			</jsp:attribute>
-		</bs:panelgroup> -->
+				<!--+ 
+				 	| hobbies, profession, institution, interests
+				 	+-->
+				<fieldset>
+					<legend><fmt:message key="settings.aboutMe" /></legend>
+					
+						<bsform:input path="user.profession" noHelp="true"/>
+						<bsform:input path="user.institution" noHelp="true"/>
+						<bsform:textarea id="user.interests" path="user.interests" noHelp="true"/>
+						<bsform:textarea id="user.hobbies" path="user.hobbies" noHelp="true"/>
+						
+				</fieldset>
+		
+				<input type="hidden" name="action" value="update"/>
+				<input type="hidden" name="selTab" value="0"/>
+		<!-- 		<bform:submit messageKey="settings.saveChanges"/> -->
+				
+		<!--	</form:form>
+			</fieldset> 
+			
+			<fieldset class="fsOuter" style="margin-top: 2em">-->
+			
+				<!--+
+					| photo 
+					+-->
+					
+		<!-- 	<form:form id="settingImportForm" action="/picture/user/${mtl:encodeURI(user.name)}?ckey=${ckey}" method="post" enctype="multipart/form-data">-->
+
+				<fieldset>
+					<legend><fmt:message key="settings.picture.header" /></legend>
+					
+						<!-- current picture und bildanzeige-->
+						<div class ="fsRow">
+							<form:label cssClass="fsLabel" path="file"><fmt:message key="settings.picture.current"/></form:label>
+							<img style="clear:both;" src="/picture/user/${mtl:encodeURI(user.name)}"/>
+						</div>
+						
+						<!-- Picture Source --> <!-- 
+						<div class="form-group clearfix">
+						
+							<form:label cssClass="col-sm-2 control-label" path="user.useExternalPicture">
+								<fmt:message key="user.useExternalPicture"/>
+							</form:label>
+							
+							<fmt:message var="useExtService" key="user.useExternalPicture.service" />
+							<fmt:message var="ext" key="user.useExternalPicture.true">
+								<fmt:param>${useExtService}</fmt:param>
+							</fmt:message>
+							<fmt:message var="loc" key="user.useExternalPicture.false"/>
+							
+							<div class="col-sm-10">
+								<form:select cssClass="form-control" path="user.gender" >
+									<form:option label="${loc}" value="l"/>
+									<form:option label="${ext}" value="e"/>
+								</form:select>
+							</div>
+							
+							<div class="dissError"><form:errors path="user.gender" /></div>
+						</div> -->
+						
+			   			<c:set var="labels">' ' (<fmt:message key="delimiters.whitespace"/>)|, (<fmt:message key="delimiters.comma"/>)|; (<fmt:message key="delimiters.semicolon"/>)</c:set>
+				    	<bsform:select path="delimiter" onchange="updateWS(this);" items="${fn:split(' |,|;','|')}" itemLabels="${fn:split(labels, '|')}" />
+						
+						<!-- 
+						<div class="fsRow">
+							<fmt:message var="useExtService" key="user.useExternalPicture.service" />
+							<fmt:message var="useExtTrue" key="user.useExternalPicture.true">
+								<fmt:param>${useExtService}</fmt:param>
+							</fmt:message>
+							<fmt:message var="useExtFalse" key="user.useExternalPicture.false" />
+						
+							<form:label cssClass="fsLabel" path="user.useExternalPicture">
+								<fmt:message key="user.useExternalPicture"/>
+							</form:label>
+							
+							<buttons:help message="user.useExternalPicture.help">
+								<jsp:attribute name="helpText">
+									<ol>
+										<li>
+											<fmt:message key="user.useExternalPicture.help.true">
+												<fmt:param>${useExtTrue}</fmt:param>
+												<fmt:param>${useExtService}</fmt:param>
+											</fmt:message>
+										</li>
+										<li>
+											<fmt:message key="user.useExternalPicture.help.false">
+												<fmt:param>${useExtFalse}</fmt:param>
+											</fmt:message>
+										</li>
+									</ol>
+								</jsp:attribute>
+							</buttons:help>
+		
+							<form:select id="useExtPicSelect" cssClass="fsInput fsSmall" path="user.useExternalPicture">
+								<form:option label="${useExtTrue}" value="${true}" id="useExt" />
+								<form:option label="${useExtFalse}" value="${false}" id="useInt" />
+							</form:select>
+						</div>
+						
+						<c:choose>
+							<c:when test="${not user.useExternalPicture}">
+								<c:set var="displayUseInt">block</c:set>
+								<c:set var="displayUseExt">none</c:set>
+							</c:when>
+							<c:otherwise>
+								<c:set var="displayUseInt">none</c:set>
+								<c:set var="displayUseExt">block</c:set>
+							</c:otherwise>
+						</c:choose>
+							
+						<div class="fsRow" id="pictUseExt" style="display:${displayUseExt}">
+							<form:label cssClass="fsLabel" path="user.useExternalPicture">
+								<fmt:message key="user.useExternalPicture.service.label">
+									<fmt:param><fmt:message key="user.useExternalPicture.service" /></fmt:param>
+								</fmt:message>
+							</form:label>
+						
+							<fmt:message var="useExtServiceLink" key="user.useExternalPicture.service.link" />
+							<form:label path="user.useExternalPicture" cssClass="fsHelp">
+								<a target="_blank" href="${useExtServiceLink}">${useExtServiceLink}</a>
+							</form:label>
+						</div>
+						
+						<div id="pictUseInt" style="display:${displayUseInt}">
+							<div class="fsRow">
+								<form:label cssClass="fsLabel" path="picturefile"><fmt:message key="settings.picture.file"/></form:label>
+								<buttons:help message="settings.picture.help"/>
+								<input type="file" name="picturefile" class="fsInput fsSmall" id="useIntPath"/>
+							</div>
+							
+							<div class="fsRow">
+								<form:label cssClass="fsLabel" path="deletePicture"><fmt:message key="settings.picture.delete"/></form:label>
+								<buttons:help message="settings.picture.delete.help"/>
+								<input type="checkbox" name="deletePicture" value="${true}" class="fsInput fsSmall" id="useIntDelete" />
+							</div>
+						</div>
+						-->
+				</fieldset>
+		
+		<!-- 	<div class="fsRow">
+					<fmt:message var="upload" key = "settings.picture.upload" />
+					<input type="submit" class="fsSubmit" value="${upload}" />
+				</div>-->
+				
+				<!-- Neuer save changes Button -->
+				<bsform:button type="submit" style="defaultStyle" size="defaultSize" value="settings.saveChanges" />
+				
+				<!-- Alter Button -->
+				<!--<bform:submit messageKey="settings.saveChanges"/>-->
+				
+				</form:form>
+			</fieldset>
 	
-	</jsp:attribute>
+		</jsp:attribute>
 	</bs:panel>
 </jsp:root>

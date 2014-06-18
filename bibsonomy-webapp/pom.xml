@@ -99,6 +99,7 @@
  								
 								<!-- for custom javascripts -->
 								<include>${project.build.webapp.resourcedir}/javascript/bs/custom.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-datepicker.js</include>
 
 
 
