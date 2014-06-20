@@ -1,5 +1,7 @@
 $(function() {
 	
+	$('.input-group.date').datepicker({autoclose: true});
+	
 	$('.collapse').collapse();
 
 	$('.toggleAdvanced').click(function(event){
