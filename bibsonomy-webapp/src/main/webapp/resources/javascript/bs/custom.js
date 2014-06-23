@@ -62,36 +62,65 @@ $(function() {
     dots = "&hellip;";
     moretext = "";
     lesstext = "";
+    
     $('.more').each(function() {
-        var content = $(this).html();
+    	
+        var moreLink = $(document.createElement("a"));
+        var contentContainer = $(this).children(".contentContainer")[0];
+        moreLink.data("text", contentContainer.innerHTML).html(getString("more")).addClass("moreLink").click(function(event){
+        	event.preventDefault();
+        	var contentContainer = $(this.parentNode).children(".contentContainer")[0];
+            if($(this).hasClass('less')) {
+            	$(this).html("("+getString("more")+")").removeClass("less").addClass("more");
+            } else {
+            	$(this).html("("+getString("less")+")").removeClass("more").addClass("less");
+            }
+            shortenContent(contentContainer, moreLink.data("text"));
+            return false;
+        });
         
-        if(content.length > maxChar) {
- 
-            lesstext = content.substr(0, maxChar);
-            lesstext += dots + ' <a href="#" class="morelink">(more)</a>';
-            moretext = content + ' <a href="#" class="morelink less">(less)</a>';
-            $(this).html(lesstext);
+        
+        this.appendChild(moreLink[0]);
+        if(!shortenContent(contentContainer, moreLink.data("text"))) {
+        	moreLink.hide();
         }
-    });
- 
-    $(".morelink").click(function(event){
-    	event.preventDefault();
-        if($(this).hasClass('less')) {
-        	$(this).removeClass('less');
-            $(this).parent().html(lesstext);
-            
-        } else {
-            $(this).addClass("less");
-            $(this).parent().html(moretext);
-        }
-        return false;
     });
     
     $('.rename-tags-btn').click(function(){
-    	$(this).parent().prev().focus();
-    	$(this).next().show();
-    	$(this).hide();
+    	$(this).parent().prev().focus().next().show().hide();
     });
-
+    
+    $('.remove-btn').click(function(e){
+    	e.preventDefault();
+    	var url = this.getAttribute("href");
+    	var parent = this.parentNode.parentNode;
+    	$.ajax({
+    		url: url,
+    		dataType: "xml",
+    		success: function(data) {
+    			handleDeleteResponse({parent:parent, data: data});
+    		},
+    		error: function(data) {
+    			handleDeleteResponse({parent:parent, data: data});
+    		}
+    	});
     	
+    	return false;
+    });
+    
+    function handleDeleteResponse(o) {
+    	
+    	//alert($(data).first("status").html());
+		o.parent.parentNode.removeChild(o.parent);
+    }
+    
+    function shortenContent (el, text) {
+    	var shortened = false;
+    	if(el.innerHTML.length > maxChar + dots.length) {
+            text = text.substr(0, maxChar) + dots;
+            shortened = true;
+        }
+        $(el).html(text);
+        return shortened;
+    }
 });
