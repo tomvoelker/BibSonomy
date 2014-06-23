@@ -41,10 +41,10 @@ public class EditGoldstandardReferencesController extends AjaxController impleme
 		}
 
 		//check if ckey is valid
-		if (!context.isValidCkey()) {
-			errors.reject("error.field.valid.ckey");
-			return Views.ERROR;
-		}
+//		if (!context.isValidCkey()) {
+//			errors.reject("error.field.valid.ckey");
+//			return Views.ERROR;
+//		}
 		
 		final String hash = command.getHash();
 		final Set<String> references = command.getReferences();

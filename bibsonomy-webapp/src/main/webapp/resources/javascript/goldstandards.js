@@ -3,7 +3,8 @@
  */
 
 var FADE_DURATION = 1000;
-var GOLD_REFERENCE_URL = '/ajax/goldstandards/references';
+var GOLD_REFERENCE_URL = '/ajax/goldstandards/relation';
+var RELATION=0;
 
 $(function() {
 	$("#gold_exports").tabs();
@@ -36,11 +37,36 @@ function addReferenceMenu() {
 		deleteLink.click(deleteReference);
 	});
 	
+	//add reference From: lka
+	var Form = $('<form class="new_reference_menu"></form>');
+	var refHashInput = $('<input type="text"/>');
+	var relationType = {
+		    '0': 'Rerefence',
+		    '1': 'Part of'
+		};
+	var relationInput = $('<select id="relation" />');
+	for(var val in relationType) {
+		    $('<option />', {value: val, text: relationType[val]}).appendTo(relationInput);
+		}
+	
+	var addRefButton =   $('<button id = "addButon" onClick = "addAlert()">\nADD</button>');
+	Form.append($('<label>' + getString('post.actions.edit.gold.references.add') + ': </label>'));
+	Form.append(refHashInput);
+	Form.append($('<label>\n'+getString('post.actions.edit.gold.references.relation')+': </label>'));
+	Form.append(relationInput);
+	Form.append(addRefButton);
+	function addAlert(){alert("YO!!");};
+	$("#relation").change(function (){
+		RELATION = document.gegetElementById('relation').value;
+		$.ajax(alert(RELATION));
+	});
+	$("#gold_references").append(Form);
 	// display function for searching gold standards
 	var addForm = $('<form class="reference_menu"></form>');
 	var input = $('<input type="text" />');
 	addForm.append($('<label>' + getString('post.actions.edit.gold.references.add') + ': </label>'));
 	addForm.append(input);
+
 	input.autocomplete({
 		source: function(request, response) {
 			$.ajax({
@@ -57,7 +83,7 @@ function addReferenceMenu() {
 							editors: item.editor,
 							year: item.year,
 							title: item.label
-						}
+						};
 					}));
 				}
 			});
