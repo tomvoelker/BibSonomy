@@ -13,8 +13,6 @@
 	<c:set var="publication" value="${post.resource}"/>
 	<c:set var="isOwnEntry" value="${post.user.name eq command.context.loginUser.name}"/>
 	
-	<script type="text/javascript" src="${resdir}/bootstrap/js/bootstrap-dialog.js"><!-- --></script>
-	<script type="text/javascript" src="${resdir}/bootstrap/js/publicationdetails.js"><!-- --></script>
 	
 	<!--+
 		| private documents (pdf, ps) 
