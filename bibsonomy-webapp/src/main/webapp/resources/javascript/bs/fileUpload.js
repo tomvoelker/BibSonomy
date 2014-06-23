@@ -413,7 +413,7 @@ function uploadRequestSuccessful(data) {
 			upA.attr("class", "preview");
 			upA.attr("title", documentHelp);
 			upA.unbind('click');
-			upA.children().first().replaceWith($(documentImg));
+			if(documentImg!==undefined) upA.children().first().replaceWith($(documentImg));
 		}
 		
 		return;
