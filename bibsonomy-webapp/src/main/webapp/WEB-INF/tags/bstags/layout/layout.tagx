@@ -31,7 +31,6 @@
 	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>	
 	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
 	
-	
 	<!--+
 		| 
 		| document starts here
@@ -182,6 +181,15 @@
 <!--							</c:otherwise>-->
 <!--						</c:choose>-->
 <!--					</div>   #footercontainer -->
+
+				</div> <!--  /.container -->
+
+			  	<div class="container footer">
+			    	<parts:footer />
+				</div>
+
+					<!-- 
+
 					<div id="legalnotices">
 						<fmt:message key="system.offeredBy">
 							<fmt:param value="${properties['project.name']}"/>
@@ -191,14 +199,8 @@
 						<c:out value=" - "/>
 						<fmt:message key="navi.helpUrl" var="helpLangUrl" />
 						<a href="${helpLangUrl}/contact"><fmt:message key="navi.about"/></a>
-						
-						<c:if test="${cookie.mobile.value == 'false' or param.mobile == 'false'}">
-							<c:out value=" "/><a href="?mobile=true"><fmt:message key="mobile.switchMobile" /></a>
-						</c:if>
 					</div>
-				</div> <!--  /.container -->
-				
-
+					-->
 			</body>
 		</jsp:body>
 	</jsp:element>

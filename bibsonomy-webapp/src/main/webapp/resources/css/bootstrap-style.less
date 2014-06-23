@@ -2,7 +2,7 @@
 @import "bootstrap-size.less";
 @import "bootstrap-tagsinput.less";
 @import "bootstrap-datepicker.less";
-
+@import "socicon.less";
 body {
 	background-color: @background-color; 
     background-image: url("/resources/bootstrap/img/bg.png");
@@ -23,6 +23,7 @@ body {
 	border-color: @border-color;
     border-width: 1px;
     border-style: solid;
+    border-bottom: none;
 	background-color: #FFFFFF;
 }
 
@@ -39,7 +40,7 @@ body {
 /* 	padding-top: 20px; */
 	padding: 20px 30px;
 	border-top: none;
-	margin-bottom: 30px;
+/*	margin-bottom: 30px; */
 	-webkit-box-shadow: 2px 2px 30px 6px @border-color;
 	box-shadow: 2px 2px 30px 6px @border-color;
 }
@@ -94,14 +95,14 @@ a {
 }
 
 .navbar-bibsonomy a {
-	color: #efefef;
+	color: @menu-link-color;
 }
 
 .navbar-bibsonomy ul.navbar-nav li a:hover,
 .navbar-bibsonomy ul.navbar-nav li a:focus,
 .navbar-bibsonomy ul.navbar-nav li a:active,
 .navbar-bibsonomy ul.navbar-nav>li.active>a {
-	background: #428bca !important;
+	background: @main-color-light;
 	color: #fff;
 }
 
@@ -820,4 +821,72 @@ ul.edit-document-forms li {
 fieldset {
 	margin: 0 20px;
 	padding: 0;
+}
+
+/**
+ *  FOOTER
+ */
+
+.container.footer {
+	padding: 30px 30px;
+	border-top: none;
+	border: none;
+	background: transparent;
+
+	margin-bottom: 10px;
+	font-family: Arial, Tahoma, sans-serif;	
+	font-size: 90%;
+	
+}
+
+.container.footer a:not(.btn) {
+	color: #333;
+}
+
+
+.container.footer a:not(.btn):focus,
+.container.footer a:not(.btn):hover,
+.container.footer a:not(.btn):active {
+	text-decoration: underline;
+}
+
+.container.footer dl {
+	/* line-height: 150%; */
+}
+
+.container.footer dt {
+	
+	border-bottom: 1px #ddd solid !important;
+	border-shadow: #FFF 0px 1px 1px 0px; 
+	
+	box-shadow: 0 1px 1px white; /* text shadow */
+	
+	margin-bottom: 5px;
+	line-height: 1.5;
+	padding: 0;
+	padding-top: 10px;
+	padding-bottom: 4px;
+	font-weight: bold;
+	border-bottom: 1px solid #ddd;
+}
+
+.container.footer dd {
+	padding: 2px 0;
+	margin: 0;
+	color: #333;
+	font-weight: normal;
+	line-height: 120%;
+}
+
+.container.footer hr {
+	
+	box-sizing: border-box;
+	box-shadow: #FFF 0px 1px 1px 0px;
+	-webkit-box-shadow: rgb(255, 255, 255) 0px 1px 1px 0px;
+	border-bottom: 1px #ddd solid;
+	margin: 8px 0;
+}
+
+.container.footer .legal-notices a {
+	text-decoration: underline;
 }
