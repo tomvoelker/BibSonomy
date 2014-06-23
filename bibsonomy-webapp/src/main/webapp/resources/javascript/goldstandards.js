@@ -38,7 +38,7 @@ function addReferenceMenu() {
 	});
 	
 	//add reference From: lka
-	var Form = $('<form class="new_reference_menu"></form>');
+	var Form = $('<form class="new_reference_menu"><h3>'+getString('post.actions.edit.gold.references.addcitation')+'</h3></form>');
 	var refHashInput = $('<input type="text"/>');
 	var relationType = {
 		    '0': 'Rerefence',
@@ -49,18 +49,18 @@ function addReferenceMenu() {
 		    $('<option />', {value: val, text: relationType[val]}).appendTo(relationInput);
 		}
 	
-	var addRefButton =   $('<button id = "addButon" onClick = "addAlert()">\nADD</button>');
-	Form.append($('<label>' + getString('post.actions.edit.gold.references.add') + ': </label>'));
-	Form.append(refHashInput);
-	Form.append($('<label>\n'+getString('post.actions.edit.gold.references.relation')+': </label>'));
+	var addRefButton =   $('<button id = "addButon">\nADD</button>');
+	Form.append($('<label>'+getString('post.actions.edit.gold.references.relation')+': </label>'));
 	Form.append(relationInput);
+	Form.append($('<label>\n' + getString('post.actions.edit.gold.references.publication') + ': </label>'));
+	Form.append(refHashInput);
 	Form.append(addRefButton);
-	function addAlert(){alert("YO!!");};
-	$("#relation").change(function (){
-		RELATION = document.gegetElementById('relation').value;
-		$.ajax(alert(RELATION));
-	});
 	$("#gold_references").append(Form);
+	$("#addButon").click(function(){
+		RELATION = document.getElementById("relation").value;
+		alert("YO!!"+RELATION);
+	});
+	
 	// display function for searching gold standards
 	var addForm = $('<form class="reference_menu"></form>');
 	var input = $('<input type="text" />');
