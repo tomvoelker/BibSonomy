@@ -69,6 +69,7 @@
         <c:url var="swrc"    value="/swrc/${pathAndQueryString}" />
         <c:url var="json"    value="/json/${pathAndQueryString}" />
         <c:url var="csl"     value="/csl/${pathAndQueryString}" />
+        <c:url var="msofficexml"     value="/msofficexml/${pathAndQueryString}" />
         <c:url var="custom"  value="/layout/custom/${pathAndQueryString}" />
       	<dl>
 		  <dt><a href="${fn:escapeXml(bibtex)}">BibTeX</a></dt>
@@ -94,6 +95,9 @@
           
           <dt><a href="${fn:escapeXml(csl)}"><fmt:message key="export.csl.caption" /></a></dt>
           <dd><fmt:message key="export.csl.faq"/></dd>
+          
+          <dt><a href="${fn:escapeXml(msofficexml)}">MS Office XML</a></dt>
+          <dd><fmt:message key="export.msofficexml.faq"/></dd>
           
     	  <dt><a href="${fn:escapeXml(custom)}">Custom</a></dt>	
     	  <dd><fmt:message key="export.custom.faq"/></dd>

@@ -82,6 +82,11 @@ public class RenderingFormat {
 	public static final RenderingFormat ENDNOTE = new RenderingFormat("text", "endnote", PLAIN_TEXT);
 	
 	/**
+	 * MSOfficeXML format
+	 */
+	public static final RenderingFormat MSOFFICEXML = new RenderingFormat("text", "msofficexml", XML);
+	
+	/**
 	 * @param string
 	 *            like <CODE>application/json</CODE> or
 	 *            <CODE>application/xml; charset=UTF8</CODE>
@@ -142,6 +147,10 @@ public class RenderingFormat {
 		
 		if ("endnote".equals(format)) {
 			return ENDNOTE;
+		}
+		
+		if ("msofficexml".equals(format)) {
+			return MSOFFICEXML;
 		}
 
 		return null;
