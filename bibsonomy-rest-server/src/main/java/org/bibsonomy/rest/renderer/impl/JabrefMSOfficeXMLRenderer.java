@@ -52,7 +52,7 @@ public class JabrefMSOfficeXMLRenderer extends AbstractPostExportRenderer{
 			}
 		}
 		
-		BibtexDatabase bibtexDB = JabRefModelConverter.bibtex2JabrefDB(posts, urlGenerator);
+		BibtexDatabase bibtexDB = JabRefModelConverter.bibtex2JabrefDB(posts, urlGenerator,true);
 		MSBibDatabase msbibDB = new MSBibDatabase(bibtexDB);
 		Document doc = msbibDB.getDOMrepresentation();
 		
@@ -70,7 +70,7 @@ public class JabrefMSOfficeXMLRenderer extends AbstractPostExportRenderer{
 	}
 	
 	public void append(Writer writer, List<Post<BibTex>> bibtexPosts) {
-		BibtexDatabase bibtexDB = JabRefModelConverter.bibtex2JabrefDB(bibtexPosts, urlGenerator);
+		BibtexDatabase bibtexDB = JabRefModelConverter.bibtex2JabrefDB(bibtexPosts, urlGenerator,true);
 		MSBibDatabase msbibDB = new MSBibDatabase(bibtexDB);
 		Document doc = msbibDB.getDOMrepresentation();
 		
