@@ -172,9 +172,9 @@
 								<fmt:message var="useExtFalse" key="user.useExternalPicture.false" />
 								
 								<div class="col-sm-9">
-									<form:select cssClass="form-control help-popover" path="user.gender" >
-										<form:option label="${useExtTrue}" value="l"/>
-										<form:option label="${useExtFalse}" value="e"/>
+									<form:select cssClass="form-control help-popover" path="user.useExternalPicture" >
+										<form:option label="${useExtTrue}" value="${true}"/>
+										<form:option label="${useExtFalse}" value="${false}"/>
 									</form:select >
 									<div class="help help-header hide"><fmt:message key="user.useExternalPicture"/></div>
 									<div class="help help-content hide">
@@ -265,7 +265,7 @@
 								<!-- New Picture -->
 								<label for="useIntPath" class="col-sm-3 control-label"><fmt:message key="settings.picture.file"/></label>
 								<div class="col-sm-9">
-									<input type="file" id="useIntPath"/>
+									<input type="file" name="picturefile" id="useIntPath"/>
 									<p class="help-block"><fmt:message key="settings.picture.help"/></p>
 								</div>
 								
@@ -273,10 +273,10 @@
 								<div class="col-sm-offset-3 col-sm-9">
 									<div class="checkbox">
 										<label>
-											<input type="checkbox"/> <fmt:message key="settings.picture.delete"/>
-											<p class="help-block"> <fmt:message key="settings.picture.delete.help"/> </p>
+											<input name="deletePicture" type="checkbox"/> <fmt:message key="settings.picture.delete"/>
 										</label>
 									</div>
+									<p class="help-block"> <fmt:message key="settings.picture.delete.help"/> </p>
 								</div>
 								
 							</div>
@@ -292,14 +292,13 @@
 								<div class="fsRow">
 									<form:label cssClass="fsLabel" path="deletePicture"><fmt:message key="settings.picture.delete"/></form:label>
 									<buttons:help message="settings.picture.delete.help"/>
-									<input type="checkbox" name="deletePicture" value="${true}" class="fsInput fsSmall" id="useIntDelete" />
+									<input type="checkbox"  value="${true}" class="fsInput fsSmall" id="useIntDelete" />
 								</div>
 							</div>
 							 -->
 							
 							<!-- save changes button -->
 							<p class="clearfix"><!--  --></p>
-							<br /><br />
 							<div class="col-sm-offset-3">
 								<fmt:message var="submitButton" key="settings.saveChanges" />
 								<bsform:button type="submit" style="primary" size="defaultSize" value="${submitButton}" />
