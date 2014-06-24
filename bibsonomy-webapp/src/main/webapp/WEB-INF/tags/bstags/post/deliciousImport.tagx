@@ -14,7 +14,7 @@
 		
 		<!-- import your Delicious data-->
 		<!-- new -->
-		<legend><fmt:message key="settings.delicious.header" /></legend>
+		
 		
 		<!-- old
 		<h2><fmt:message key="settings.delicious.header" /></h2>
@@ -22,7 +22,7 @@
 
 		<form:form cssClass="form-horizontal" action="/import/delicious?ckey=${ckey}" method="post">
  			<fieldset class="fsInner" >
-	
+				<legend><fmt:message key="settings.delicious.header" /></legend>
 				<!-- username -->
 				<!-- new -->
 				<div class="form-group clearfix">
@@ -83,17 +83,12 @@
 				<!-- overwrite -->
 				<!-- new -->
 				<div class="form-group clearfix">
-				
-					<fmt:message var="labelText" key="settings.overwrite" />
-					<label class="col-sm-3 control-label" for="overwrite">
-						<c:out value="${labelText}" />
-					</label>
-					
-					<div class="col-sm-9">
-						<form:checkbox cssClass="fsInput" path="overwrite" />
-						<p class="help-block">
-							<fmt:message key="settings.overwrite.help.delicious"/>
-						</p>
+					<div class="col-sm-offset-3">
+						<label>
+							<form:checkbox path="overwrite" id="overwriteBox" />&amp;nbsp;
+							<fmt:message key="settings.overwrite"/>
+						</label>
+						<p class="help-block"> <fmt:message key="settings.overwrite.help.delicious"/> </p>
 					</div>
 				</div>
 		
@@ -114,13 +109,17 @@
 					</label>
 					
 					<div class="col-sm-4">
-						<form:radiobutton path="importData" value="posts"/>
-						<fmt:message key="bookmarks"/>
+						<label>
+							<form:radiobutton path="importData" value="posts"/>&amp;nbsp;
+							<fmt:message key="bookmarks"/>
+						</label>
 					</div>
 					
 					<div class="col-sm-5">
-						<form:radiobutton path="importData" value="bundles"/>
-						<fmt:message key="import.bundles"/>
+						<label>
+							<form:radiobutton path="importData" value="bundles"/>&amp;nbsp;
+							<fmt:message key="import.bundles"/>
+						</label>
 					</div>
 					<div class="dissError"><form:errors path="importData" /></div>
 				</div>
@@ -153,7 +152,6 @@
 				<!-- import button -->
 				<!-- new -->
 				<p class="clearfix"><!--  --></p>
-				<br /><br />
 				<div class="col-sm-offset-3">
 					<bsform:button type="submit" style="primary" size="defaultSize" value="${valueButton}" />
 				</div>

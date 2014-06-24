@@ -16,7 +16,7 @@
 	
 	<!-- import your bookmarks from your browser -->
 	<!-- new -->
-	<legend><fmt:message key="settings.browser.header" /></legend>
+	
 	
 	<!-- old
 	<h2><fmt:message key="settings.browser.header"/></h2>
@@ -24,11 +24,11 @@
 	
 	<form:form id="settingImportForm" action="/import/browser?ckey=${ckey}" method="post" enctype="multipart/form-data">
 		<fieldset class="fsInner">
-			
-			<!-- new -->
-			<div class="form-group clearfix">
+		
+			<legend><fmt:message key="settings.browser.header" /></legend>
 				
-				<!-- select your file -->
+			<!-- select your file -->
+			<div class="form-group clearfix">
 				<form:label cssClass="col-sm-3 control-label" path="file">
 					<fmt:message key="settings.browser.fileselect"/>
 				</form:label>
@@ -36,8 +36,10 @@
 					<input type="file" name="file" class="fsInput fsSmall"/>
 					<p class="help-block"><fmt:message key="settings.browser.fileselect.help"/></p>
 				</div>
+			</div>
 				
-				<!-- viewable for -->				
+				<!-- viewable for -->		
+			<div class="form-group clearfix">		
 				<form:label cssClass="col-sm-3 control-label" path="group">
 					<fmt:message key="settings.browser.viewable"/>
 				</form:label>
@@ -56,23 +58,21 @@
 						<p><fmt:message key="settings.browser.viewable.help"/></p>
 					</div>
 				</div>
+			</div>
 				
-				<!-- overwrite -->
-				<form:label cssClass="col-sm-3 control-label" path="overwrite">
-					<fmt:message key="settings.overwrite"/>
-				</form:label>
-				
-				<div class="col-sm-9">
-					<form:checkbox path="overwrite" id="overwriteBox" />
-					<c:out value="  "></c:out>
-					<fmt:message key="settings.overwrite.help.browser"/>
+			<!-- overwrite -->	
+			<div class="form-group clearfix">			
+				<div class="col-sm-offset-3">
+					<label>
+						<form:checkbox path="overwrite" id="overwriteBox" />&amp;nbsp;
+						<fmt:message key="settings.overwrite"/>
+					</label>
+					<p class="help-block"> <fmt:message key="settings.overwrite.help.browser"/> </p>
 				</div>
-				
 			</div>
 			
 			<!-- import button -->
 			<p class="clearfix"><!--  --></p>
-			<br /><br />
 			<div class="col-sm-offset-3">
 				<bsform:button type="submit" style="primary" size="defaultSize" value="${valueButton}" />
 			</div>

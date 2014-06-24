@@ -300,13 +300,15 @@
 								
 								<div class="col-sm-4">
 									<label>
-									<form:checkbox path="user.settings.showBookmark" />&amp;nbsp;
-									<fmt:message key="settings.bookmark"/>
+										<form:checkbox path="user.settings.showBookmark" />&amp;nbsp;
+										<fmt:message key="settings.bookmark"/>
 									</label>
 								</div>
 								<div class="col-sm-5">
-									<form:checkbox path="user.settings.showBibtex" />
-									<fmt:message key="settings.publication"/>
+									<label>
+										<form:checkbox path="user.settings.showBibtex" />&amp;nbsp;
+										<fmt:message key="settings.publication"/>
+									</label>
 								</div>
 								<div class="dissError"><form:errors path="user.settings.showBookmark" /></div>
 							</div>
@@ -428,7 +430,6 @@
 							<!-- set layout button -->
 							<!-- new -->
 							<p class="clearfix"><!--  --></p>
-							<br /><br />
 							<div class="col-sm-offset-3">
 								<bsform:button type="submit" style="primary" size="defaultSize" value="${setlayout}" />
 							</div>
@@ -491,7 +492,7 @@
 							<!-- (re)generate API key button -->
 							<!-- new -->
 							<p class="clearfix"><!--  --></p>
-							<br /><br />
+							
 							<div class="col-sm-offset-3">
 								<bsform:button type="submit" style="primary" size="defaultSize" value="${generateapikey}" />
 							</div>
@@ -599,7 +600,7 @@
 							<!-- update settings button -->
 							<!-- new -->
 							<p class="clearfix"><!--  --></p>
-							<br /><br />
+							
 							<div class="col-sm-offset-3">
 								<bsform:button type="submit" style="primary" size="defaultSize" value="${updatesettings}" />
 							</div>
@@ -635,14 +636,8 @@
 								
 								<fmt:message var="labelText" key="settings.really" />
 								<bsform:input path="delete" placeholder="no" labelColSpan="3" inputColSpan="9" noHelp="true" labelText="${labelText }" />
-							
-							</div>
-							
-							<div class="form-group clearfix">
-								<div class="col-sm-3">
-									<c:out value=" "/>
-								</div>
-								<div class="col-sm-9">
+								
+								<div class="col-sm-offset-3 col-sm-9">
 									<p class="help-block">
 										<fmt:message key="settings.yestodeleteaccount">
 											<fmt:param>
@@ -678,7 +673,7 @@
 							<!-- delete account button -->
 							<!-- new -->
 							<p class="clearfix"><!--  --></p>
-							<br /><br />
+							
 							<div class="col-sm-offset-3">
 								<bsform:button type="submit" style="primary" size="defaultSize" value="${deleteaccount}" />
 							</div>
