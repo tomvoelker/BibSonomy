@@ -61,11 +61,9 @@
          	<errors:global errors="${errors}" />
          
 	    	<c:if test="${not empty command.message}">
-	    		<div class="errorcontainer">
+	    		<div class="bg-danger">
                   	<h3><fmt:message key="error"/></h3>
-	    			<div class="error">
-	    				<fmt:message key="error.login.${command.message}"/>
-	    			</div>
+	    			<p><fmt:message key="error.login.${command.message}"/></p>
 	    		</div>
 	    	</c:if>
 		    
