@@ -97,7 +97,7 @@
           <dd><fmt:message key="export.csl.faq"/></dd>
           
           <dt><a href="${fn:escapeXml(msofficexml)}">MS Office XML</a></dt>
-          <dd>MS Office Message BlaBla</dd>
+          <dd><fmt:message key="export.msofficexml.faq"/></dd>
           
     	  <dt><a href="${fn:escapeXml(custom)}">Custom</a></dt>	
     	  <dd><fmt:message key="export.custom.faq"/></dd>

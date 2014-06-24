@@ -16,7 +16,7 @@
 	<bean id="csl" class="org.bibsonomy.webapp.view.CSLView"/>
 	
 	<!-- renderer for MSOfficeXML -->
-	<bean id="msofficexml" class="org.bibsonomy.webapp.view.MSOfficeXMLView">
+	<bean id="msofficexml" class="org.bibsonomy.webapp.view.MSOfficeXMLExportView">
 		<property name="urlGenerator" ref="urlGenerator"/>
 	</bean>
 	
