@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.plos;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -49,7 +47,7 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest1Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_43"));
+		UnitTestRunner.runSingleTest("url_43");
 	}
 	
 	/**
@@ -57,7 +55,7 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest2Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_44"));
+		UnitTestRunner.runSingleTest("url_44");
 	}
 	
 	/**
@@ -65,7 +63,7 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest3Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_172"));
+		UnitTestRunner.runSingleTest("url_172");
 	}
 	
 	/**
@@ -73,7 +71,7 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest4Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_173"));
+		UnitTestRunner.runSingleTest("url_173");
 	}
 	
 	/**
@@ -81,7 +79,7 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest5Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_200"));
+		UnitTestRunner.runSingleTest("url_200");
 	}
 	
 	/**
@@ -89,7 +87,7 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest6Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_201"));
+		UnitTestRunner.runSingleTest("url_201");
 	}
 	
 	/**
@@ -97,7 +95,7 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest7Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_202"));
+		UnitTestRunner.runSingleTest("url_202");
 	}
 	
 	/**
@@ -105,7 +103,7 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest8Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_203"));
+		UnitTestRunner.runSingleTest("url_203");
 	}
 	
 	/**
@@ -113,7 +111,7 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest9Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_204"));
+		UnitTestRunner.runSingleTest("url_204");
 	}
 	
 	/**
@@ -121,7 +119,7 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest10Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_205"));
+		UnitTestRunner.runSingleTest("url_205");
 	}
 	
 	/**
@@ -129,7 +127,7 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest11Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_206"));
+		UnitTestRunner.runSingleTest("url_206");
 	}
 
 }

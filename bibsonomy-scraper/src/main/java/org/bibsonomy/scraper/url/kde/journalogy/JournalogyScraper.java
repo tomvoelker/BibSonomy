@@ -23,6 +23,7 @@
 
 package org.bibsonomy.scraper.url.kde.journalogy;
 
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -31,9 +32,7 @@ import java.util.regex.Pattern;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper;
 
 /**
  * Scraper for Journalogy (Microsoft Academic Search)
@@ -41,7 +40,7 @@ import org.bibsonomy.util.WebUtils;
  * 
  * @author clemens
  */
-public class JournalogyScraper extends AbstractUrlScraper {
+public class JournalogyScraper extends PostprocessingGenericURLScraper {
 	private static final String SITE_NAME = "Journalogy (Microsoft Academic Search)";
 	private static final String SITE_URL = "http://www.journalogy.org/";
 	private static final String info = "This scraper parses a publication page of citations from "
@@ -59,14 +58,17 @@ public class JournalogyScraper extends AbstractUrlScraper {
 	private static final Pattern pattern_download = Pattern.compile(".bib?type=2&format=0&download=1");
 	private static final Pattern pattern_id = Pattern.compile("/(Paper|Publication)/([0-9]+)");
 	
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
 
+	@Override
 	public String getInfo() {
 		return info;
 	}
@@ -75,32 +77,29 @@ public class JournalogyScraper extends AbstractUrlScraper {
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
-
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
+	 */
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		sc.setScraper(this);
+	protected String postProcessScrapingResult(ScrapingContext sc, String result) {
+		return result.replace("{{", "{").replace("}}", "}");
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.SimpleGenericURLScraper#getBibTeXURL(java.net.URL)
+	 */
+	@Override
+	public String getBibTeXURL(URL url) {
 		try {
 			// extract id
-			final Matcher idMatcher = pattern_id.matcher(sc.getUrl().toString());
-			
+			final Matcher idMatcher = pattern_id.matcher(url.toString());
+
 			if(idMatcher.find()) {
-				String downloadLink = "http://" + HOST2 + "/" + idMatcher.group(2) + pattern_download;
-				String bibtex = WebUtils.getContentAsString(downloadLink);
-				if (bibtex != null) {
-					
-					//remove doubled braces
-					bibtex = bibtex.replace("{{", "{").replace("}}", "}");
-					
-					sc.setBibtexResult(bibtex);
-					return true;
-				}
-			} else {
-				throw new ScrapingFailureException("No bibtex available.");
-			}
+				return "http://" + HOST2 + "/" + idMatcher.group(2) + pattern_download;
+			} 
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-
-		return false;
+		return null;
 	}
 }

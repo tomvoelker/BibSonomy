@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.aanda;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -40,7 +38,7 @@ public class AandAScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_181"));
+		UnitTestRunner.runSingleTest("url_181");
 	}
 
 	/**
@@ -48,6 +46,6 @@ public class AandAScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_182"));
+		UnitTestRunner.runSingleTest("url_182");
 	}
 }

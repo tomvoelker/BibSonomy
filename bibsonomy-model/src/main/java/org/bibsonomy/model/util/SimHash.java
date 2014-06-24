@@ -90,11 +90,13 @@ public class SimHash {
 	 */
 	public static String getSimHash(final Bookmark bookmark, final HashID simHash) {
 		if (simHash.getId() == HashID.SIM_HASH0.getId()) {
-			// XXX: do we want to return simHash1 for SIM_HASH0?
+			return getSimHash0(bookmark);
+		} else if (simHash.getId() == HashID.SIM_HASH1.getId()) {
 			return getSimHash1(bookmark);
-		} else if ((simHash.getId() == HashID.SIM_HASH1.getId()) || (simHash.getId() == HashID.SIM_HASH2.getId())) {
-			// XXX: do we want to return simHash2 for SIM_HASH1?
+		} else if (simHash.getId() == HashID.SIM_HASH2.getId()) {
 			return getSimHash2(bookmark);
+		} else if (simHash.getId() == HashID.SIM_HASH3.getId()) {
+			return getSimHash3();
 		} else {
 			throw new RuntimeException("SimHash " + simHash.getId() + " doesn't exist.");
 		}

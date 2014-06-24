@@ -31,9 +31,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.scraper.Scraper;
-import org.bibsonomy.scraper.ScraperUnitTest;
-import org.bibsonomy.scraper.URLTest.URLScraperUnitTest;
+import org.bibsonomy.scraper.ScraperTestData;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -43,7 +41,6 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author tst
  */
 public class XMLUnitTestHandler extends DefaultHandler {
-	
 	private Log log = LogFactory.getLog(XMLUnitTestHandler.class);
 	
 	private static final String ELEMENT_URL_TEST = "URLTest";
@@ -57,9 +54,9 @@ public class XMLUnitTestHandler extends DefaultHandler {
 	
 	private static final String PATH_TO_BIBS = "org/bibsonomy/scraper/data/";
 
-	private Map<String, ScraperUnitTest> tests = null;
+	private Map<String, ScraperTestData> testData = null;
 	
-	private URLScraperUnitTest currentTest = null;
+	private ScraperTestData currentTestData = null;
 	
 	private StringBuffer charBuffer = null;
 	
@@ -68,67 +65,53 @@ public class XMLUnitTestHandler extends DefaultHandler {
 	 */
 	public XMLUnitTestHandler() {
 		super();
-		this.tests = new HashMap<String, ScraperUnitTest>();
+		this.testData = new HashMap<String, ScraperTestData>();
 	}
 
 	@Override
 	public void characters(char ch[], int start, int length) throws SAXException {
-		if(charBuffer != null)
+		if (charBuffer != null)
 			charBuffer.append(ch, start, length);
 	}
 	
 	/**
 	 * @return a map containing all tests
 	 */
-	public Map<String, ScraperUnitTest> getTests() {
-		return this.tests;
+	public Map<String, ScraperTestData> getTestData() {
+		return this.testData;
 	}
 	
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		super.endElement(uri, localName, qName);
 		
-		if(localName.equals(ELEMENT_URL_TEST)){
-			tests.put(currentTest.getScraperTestId(), currentTest);
-			currentTest = null;
-		}else if(localName.equals(ELEMENT_Test_DESCRIPTION)){
-			currentTest.setDescription(charBuffer.toString());
+		if (localName.equals(ELEMENT_URL_TEST)) {
+			testData.put(currentTestData.getTestId(), currentTestData);
+			currentTestData = null;
+		} else if(localName.equals(ELEMENT_Test_DESCRIPTION)){
+			currentTestData.setDescription(charBuffer.toString());
 			charBuffer = null;
-		}else if(localName.equals(ELEMENT_URL)){
-			currentTest.setUrl(charBuffer.toString());
+		} else if(localName.equals(ELEMENT_URL)){
+			currentTestData.setUrl(charBuffer.toString());
 			charBuffer = null;
-		}else if(localName.equals(ELEMENT_BIB_FILE)){
-			currentTest.setBibFile(charBuffer.toString());
+		} else if (localName.equals(ELEMENT_BIB_FILE)){
 			try {
-				currentTest.setExpectedRefrence(getExpectedReference(charBuffer.toString()));
+				currentTestData.setExpectedBibTeX(getExpectedReference(charBuffer.toString()));
 			} catch (IOException ex) {
 				log.error("Bibtex file " + charBuffer.toString() + " not exist", ex);
-				currentTest.setExpectedRefrence(null);
+				currentTestData.setExpectedBibTeX(null);
 			}
 			charBuffer = null;
 		} else if (localName.equals(ELEMENT_ENABLED)) {
 			if (charBuffer.toString().equals("false")) {
-				currentTest.setEnabled(false);
+				currentTestData.setEnabled(false);
 			}
 			charBuffer = null;
 		} else if (localName.equals(ELEMENT_SELECTION)) {
-			currentTest.setSelection(charBuffer.toString());
+			currentTestData.setSelection(charBuffer.toString());
 			charBuffer = null;
 		} else if (localName.equals(ELEMENT_SCRAPER)) {
-			Scraper scraper;
-			try {
-				scraper = (Scraper) Class.forName(charBuffer.toString()).newInstance();
-				currentTest.setScraper(scraper);
-			} catch (InstantiationException ex) {
-				log.error("Scraper " + charBuffer.toString() + " in UnitTestData.xml not exist", ex);
-				currentTest.setScraper(null);
-			} catch (IllegalAccessException ex) {
-				log.error("Scraper " + charBuffer.toString() + " in UnitTestData.xml not exist", ex);
-				currentTest.setScraper(null);
-			} catch (ClassNotFoundException ex) {
-				log.error("Scraper " + charBuffer.toString() + " in UnitTestData.xml not exist", ex);
-				currentTest.setScraper(null);
-			}
+			currentTestData.setScraperClassName(charBuffer.toString());
 			charBuffer = null;
 		}
 	}
@@ -138,8 +121,8 @@ public class XMLUnitTestHandler extends DefaultHandler {
 		super.startElement(uri, localName, qName, attributes);
 		
 		if (localName.equals(ELEMENT_URL_TEST)) {
-			currentTest = new URLScraperUnitTest();
-			currentTest.setId(attributes.getValue(ATTRIBUTE_ID));
+			currentTestData = new ScraperTestData();
+			currentTestData.setTestId(attributes.getValue(ATTRIBUTE_ID));
 		} else if (localName.equals(ELEMENT_Test_DESCRIPTION)) {
 			charBuffer = new StringBuffer();
 		} else if (localName.equals(ELEMENT_URL)) {

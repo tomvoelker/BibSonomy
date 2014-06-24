@@ -49,7 +49,7 @@ public class WorldCatScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_59"));
+		UnitTestRunner.runSingleTest("url_59");
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class WorldCatScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_60"));
+		UnitTestRunner.runSingleTest("url_60");
 	}
 	
 	/**
@@ -65,7 +65,7 @@ public class WorldCatScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_163"));
+		UnitTestRunner.runSingleTest("url_163");
 	}
 	
 	/**

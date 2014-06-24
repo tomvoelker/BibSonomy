@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.nber;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -42,6 +40,6 @@ public class NberScraperTest {
 	 */
 	@Test
 	public void urlTestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_90"));
+		UnitTestRunner.runSingleTest("url_90");
 	}
 }
