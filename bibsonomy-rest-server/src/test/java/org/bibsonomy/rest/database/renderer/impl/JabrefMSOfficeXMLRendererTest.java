@@ -44,7 +44,7 @@ public class JabrefMSOfficeXMLRendererTest {
 		byte[] encoded = Files.readAllBytes(Paths.get(JabrefMSOfficeXMLRendererTest.class.getClassLoader().getResource(TESTRESULTFILEPATH).toURI()));
 		final String testResult = new String(encoded, StandardCharsets.UTF_8);
 		
-		assertEquals(result,testResult);
+		assertEquals(testResult, result);
 		System.out.println(result);
 	}
 	

@@ -250,7 +250,7 @@ public class JabRefModelConverter {
 			final Set<Tag> tags = post.getTags();
 			final StringBuffer tagsBuffer = new StringBuffer();
 			for (final Tag tag : tags) {
-				tagsBuffer.append(tag.getName()	+ jabRefKeywordSeparator);
+				tagsBuffer.append(clean(tag.getName(),cleanBibTex)	+ jabRefKeywordSeparator);
 			}
 			/*
 			 * remove last separator
@@ -260,7 +260,7 @@ public class JabRefModelConverter {
 			}
 			final String tagsBufferString = tagsBuffer.toString();
 			if (present(tagsBufferString)) 
-				entry.setField(BibTexUtils.ADDITIONAL_MISC_FIELD_KEYWORDS, clean(tagsBufferString,cleanBibTex));
+				entry.setField(BibTexUtils.ADDITIONAL_MISC_FIELD_KEYWORDS,tagsBufferString);
 
 
 			// set groups - will be used in jabref when exporting to bibsonomy
@@ -268,11 +268,11 @@ public class JabRefModelConverter {
 				final Set<Group> groups = post.getGroups();
 				final StringBuffer groupsBuffer = new StringBuffer();
 				for (final Group group : groups)
-					groupsBuffer.append(group.getName() + " ");
+					groupsBuffer.append(clean(group.getName(),cleanBibTex) + " ");
 
 				final String groupsBufferString = groupsBuffer.toString().trim();
 				if (present(groupsBufferString))
-					entry.setField("groups", clean(groupsBufferString,cleanBibTex));
+					entry.setField("groups", groupsBufferString);
 			}
 
 			// set comment + description
