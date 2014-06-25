@@ -86,7 +86,6 @@ public class JabrefMSOfficeXMLRenderer extends AbstractPostExportRenderer{
 		}
 	}
 	
-	
 	@Override
 	public void serializePost(Writer writer, Post<? extends Resource> post,
 			ViewModel model) {
@@ -108,7 +107,7 @@ public class JabrefMSOfficeXMLRenderer extends AbstractPostExportRenderer{
 		Transformer transformer = tf.newTransformer();
 		transformer.transform(domSource, result);
 		return writer.toString();
-	} 
+	}
 
 	@Override
 	protected RenderingFormat getFormat() {
