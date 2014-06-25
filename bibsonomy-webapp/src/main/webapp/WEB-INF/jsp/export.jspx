@@ -96,7 +96,7 @@
           <dt><a href="${fn:escapeXml(csl)}"><fmt:message key="export.csl.caption" /></a></dt>
           <dd><fmt:message key="export.csl.faq"/></dd>
           
-          <dt><a href="${fn:escapeXml(msofficexml)}">MS Office XML</a></dt>
+          <dt><a href="${fn:escapeXml(msofficexml)}">MS Office XML</a>&#160;<a href="#jabref">*</a></dt>
           <dd><fmt:message key="export.msofficexml.faq"/></dd>
           
     	  <dt><a href="${fn:escapeXml(custom)}">Custom</a></dt>	
