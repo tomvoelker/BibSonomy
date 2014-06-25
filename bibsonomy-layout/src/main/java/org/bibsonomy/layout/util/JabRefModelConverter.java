@@ -224,8 +224,12 @@ public class JabRefModelConverter {
 			/*
 			 * handle author and editor
 			 */
-			entry.setField("author", clean(PersonNameUtils.serializePersonNames(bibtex.getAuthor()),cleanBibTex));
-			entry.setField("editor", clean(PersonNameUtils.serializePersonNames(bibtex.getEditor()),cleanBibTex));
+			if (present(bibtex.getAuthor())) {
+				entry.setField("author", clean(PersonNameUtils.serializePersonNames(bibtex.getAuthor()),cleanBibTex));
+			}
+			if (present(bibtex.getEditor())) {
+				entry.setField("editor", clean(PersonNameUtils.serializePersonNames(bibtex.getEditor()),cleanBibTex));
+			}
 
 			final String month = bibtex.getMonth();
 			if (present(month)) {
