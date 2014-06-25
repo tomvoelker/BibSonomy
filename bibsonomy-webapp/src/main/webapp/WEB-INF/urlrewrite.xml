@@ -151,6 +151,13 @@
 		<set type="parameter" name="format">csl</set>
 		<to>/$1</to>
 	</rule>
+	<!-- MS Office XML export format -->
+	<rule>
+		<name>/msofficexml/</name>
+		<from>^/+msofficexml/+(.*)$</from>
+		<set type="parameter" name="format">msofficexml</set>
+		<to>/$1</to>
+	</rule>
 	<!-- only the completely rendered posts -->
 	<rule>
 		<name>/posts/</name>

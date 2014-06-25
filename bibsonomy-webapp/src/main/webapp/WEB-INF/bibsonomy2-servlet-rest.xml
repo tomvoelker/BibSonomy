@@ -92,6 +92,16 @@
 					</key>
 					<bean class="org.bibsonomy.rest.renderer.impl.EndnoteRenderer" />
 				</entry>
+				<entry>
+					<key>
+						<util:constant static-field="org.bibsonomy.rest.renderer.RenderingFormat.MSOFFICEXML" />
+					</key>
+					<bean class="org.bibsonomy.rest.renderer.impl.JabrefMSOfficeXMLRenderer">
+						<constructor-arg>
+							<ref bean="urlGenerator"/>
+						</constructor-arg>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
