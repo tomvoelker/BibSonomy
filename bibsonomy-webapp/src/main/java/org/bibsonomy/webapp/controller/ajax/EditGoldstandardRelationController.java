@@ -50,18 +50,21 @@ public class EditGoldstandardRelationController extends AjaxController implement
 		final Set<String> references = command.getReferences();
 		final String relation = command.getRelation();
 		
-		if (!present(hash) || !present(references) || !present(relation)) {
-			this.responseLogic.setHttpStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return Views.AJAX_TEXT;
-		}
-		
 		final HttpMethod httpMethod = this.requestLogic.getHttpMethod();
 		
 		switch (httpMethod) {
 		case POST: 
+			if (!present(hash) || !present(references) || !present(relation)) {
+				this.responseLogic.setHttpStatus(HttpServletResponse.SC_BAD_REQUEST);
+				return Views.AJAX_TEXT;
+			}
 			this.logic.createReferences(hash, references, relation);
 			break;
 		case DELETE: 
+			if (!present(hash) || !present(references)) {
+				this.responseLogic.setHttpStatus(HttpServletResponse.SC_BAD_REQUEST);
+				return Views.AJAX_TEXT;
+			}
 			this.logic.deleteReferences(hash, references);
 			break;
 		default: 
