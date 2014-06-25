@@ -326,6 +326,18 @@
 			<artifactId>quartz</artifactId>
 			<version>1.6.3</version>
 		</dependency>
+		<!-- logging dependencies should be provided by servlet container -->
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!-- the api version is only a commons-logging jar with some extras-->
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>

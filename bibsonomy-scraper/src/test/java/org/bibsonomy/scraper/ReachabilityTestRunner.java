@@ -30,7 +30,6 @@ import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.PropertyConfigurator;
 import org.bibsonomy.scraper.InformationExtraction.IEScraper;
 import org.bibsonomy.scraper.generic.BibtexScraper;
 import org.bibsonomy.scraper.generic.CoinsScraper;
@@ -82,8 +81,6 @@ public class ReachabilityTestRunner {
 	 */
 	@Test
 	public void run(){
-		final URL log4j = UnitTestRunner.class.getClassLoader().getResource("log4j.properties");
-		PropertyConfigurator.configure(log4j);
 		try {
 			if(this.importer == null) {
 				throw new Exception("no UnitTestImporter available");
