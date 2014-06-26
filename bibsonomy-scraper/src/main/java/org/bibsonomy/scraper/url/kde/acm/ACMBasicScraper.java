@@ -39,12 +39,12 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.CitedbyScraper;
+import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.StringUtils;
-import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.util.id.DOIUtils;
@@ -57,7 +57,7 @@ import org.w3c.dom.NodeList;
  * @author rja
  *
  */
-public class ACMBasicScraper extends AbstractUrlScraper {
+public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScraper, CitedbyScraper {
 
 	private final Log log = LogFactory.getLog(ACMBasicScraper.class);
 
@@ -77,7 +77,9 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 				EMPTY_PATTERN
 		));
 	}
-
+	
+	
+	
 	private static final String BROKEN_END = new String("},\n}");
 	//get the publication's id, take the part behind the dot if present
 	private static final Pattern URL_PARAM_ID_PATTERN = Pattern.compile("id=(\\d+(?:\\.(\\d+))?)");
@@ -110,6 +112,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			 */
 			if (matcher.find()) {
 				id = ((matcher.group(2) != null) ? matcher.group(2) : matcher.group(1));
+				sc.getTmpMetadata().setId(id);
 			} else {
 				return false;
 			}
@@ -162,7 +165,10 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			//final String result = bibtexEntries.toString().trim();
 
 			if (present(result)) {
+				
 				sc.setBibtexResult(result);
+				scrapeCitedby(sc);
+				scrapeReferences(sc);
 				return true;
 			} else
 				throw new ScrapingFailureException("getting bibtex failed");
@@ -212,6 +218,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 		return bibtexEntries;
 	}
 
+	@Override
 	public String getInfo() {
 		return info;
 	}
@@ -222,11 +229,13 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 	}
 
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
@@ -255,6 +264,51 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 		}
 
 	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.CitedbyScraper#scrapeCitedby(org.bibsonomy.scraper.ScrapingContext)
+	 */
+	@Override
+	public boolean scrapeCitedby(ScrapingContext scrapingContext) throws ScrapingException {
+		HttpClient client = WebUtils.getHttpClient();
+		// TODO Auto-generated method stub
+		final String id = scrapingContext.getTmpMetadata().getId();
+		final String url = "http://dl.acm.org/tab_citings.cfm?id=" + id;
+		String citedby = "";
+		try{
+			citedby = WebUtils.getContentAsString(client, url);
+			if(present(citedby)){
+				scrapingContext.setCitedBy(citedby);
+				return true;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
+	 */
+	@Override
+	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
+		HttpClient client = WebUtils.getHttpClient();
+		final String id = scrapingContext.getTmpMetadata().getId();
+		final String url = "http://dl.acm.org/tab_references.cfm?id=" + id;
+		
+		String reference = "";
+		try{
+			reference = WebUtils.getContentAsString(client, url);
+			if(present(reference)){
+				scrapingContext.setReferences(reference);
+				return true;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 
 }
 

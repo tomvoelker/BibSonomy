@@ -32,19 +32,24 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.CitedbyScraper;
+import org.bibsonomy.scraper.ReferencesScraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
  */
-public class LiebertScraper extends AbstractUrlScraper {
+public class LiebertScraper extends AbstractUrlScraper implements CitedbyScraper, ReferencesScraper {
 
 	private static final String SITE_NAME = "Liebert Online";
 	private static final String LIEBERT_HOST_NAME  = "http://www.liebertonline.com";	
@@ -58,9 +63,10 @@ public class LiebertScraper extends AbstractUrlScraper {
 	private static final String LIEBERT_BIBTEX_PATH_AND_QUERY = "/action/showCitFormats?doi=";
 	private static final String LIEBERT_BIBTEX_DOWNLOAD_PATH = "/action/downloadCitation";
 	private static final String LIEBERT_BIBTEX_PARAMS = "?downloadFileName=bibsonomy&include=cit&format=bibtex&direct=on&doi=";
-
+	private static final Pattern abstract_pattern = Pattern.compile("<div class=\"abstractSection\">(.*)\\s+</div>");
+	private static final Pattern citedby_pattern = Pattern.compile("(?m)<div class=\"citedByEntry\">.*");
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
-
+	
 	static {
 		final Pattern hostPattern = Pattern.compile(".*" + LIEBERT_HOST);
 		Pattern abstractPathPattern = Pattern.compile(LIEBERT_ABSTRACT_PATH + ".*");
@@ -72,10 +78,12 @@ public class LiebertScraper extends AbstractUrlScraper {
 		patterns.add(new Pair<Pattern, Pattern>(hostPatternNew, bibtexPathPattern));
 	}
 	
+	@Override
 	public String getInfo() {
 		return info;
 	}
 
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
@@ -126,7 +134,12 @@ public class LiebertScraper extends AbstractUrlScraper {
 		}
 
 		if(bibResult != null) {
-			sc.setBibtexResult(bibResult);
+			try {
+				sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(bibResult,"abstract",abstractParser(sc.getUrl())));
+				scrapeCitedby(sc);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			return true;
 		}else
 			throw new ScrapingFailureException("getting bibtex failed");
@@ -209,16 +222,49 @@ public class LiebertScraper extends AbstractUrlScraper {
 
 		return cookieString.toString();
 	}
-
+	private static String abstractParser(URL url) throws IOException{
+		Matcher m = abstract_pattern.matcher(WebUtils.getContentAsString(url, WebUtils.getCookies(url)));
+		if(m.find())
+			return m.group(1);
+		return null;
+	}
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
+	 */
+	@Override
+	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.CitedbyScraper#scrapeCitedby(org.bibsonomy.scraper.ScrapingContext)
+	 */
+	@Override
+	public boolean scrapeCitedby(ScrapingContext scrapingContext) throws ScrapingException {
+		try{
+			Matcher m = citedby_pattern.matcher(WebUtils.getContentAsString(scrapingContext.getUrl(), WebUtils.getCookies(scrapingContext.getUrl())));
+			if(m.find())
+					scrapingContext.setCitedBy(m.group());
+			return true;
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+		return false;
 	}
 }
