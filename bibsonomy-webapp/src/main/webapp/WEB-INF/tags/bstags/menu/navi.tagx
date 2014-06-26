@@ -181,7 +181,7 @@
 								<li class="sidebarnavi_entry sidebarnavi_entry_active sidebarnavi_entry_06">
 								<fmt:message var="titleBlog" key="navi.blog" />
 									<a href="${properties['project.blog']}" title="${titleBlog}">
-										<span class="glyphicon glyphicon glyphicon-book"><!-- KEEP ME --></span>&amp;nbsp;
+										<span class="socicon socicon-blogger"><!-- KEEP ME --></span>&amp;nbsp;
 										<fmt:message key="navi.blog" />
 									</a>
 								</li>
@@ -189,7 +189,7 @@
 									<fmt:message var="titleHelp" key="navi.help"/>
 									<fmt:message key="navi.helpUrl" var="helpLangUrl" />
 									<a href="${helpLangUrl}" title="${titleHelp}">
-										<span class="glyphicon glyphicon glyphicon-question-sign"><!-- KEEP ME --></span>&amp;nbsp;
+										<span class="glyphicon glyphicon-question-sign"><!-- KEEP ME --></span>&amp;nbsp;
 										<fmt:message key="navi.help" />
 									</a>
 								</li>
@@ -200,7 +200,7 @@
 							<c:otherwise>
 								<li class="sidebarnavi_entry sidebarnavi_entry_active sidebarnavi_entry_06">
 									<a href="${properties['project.blog']}" title="${titleBlog}">
-										<span class="glyphicon glyphicon glyphicon-book"><!-- KEEP ME --></span>&amp;nbsp;
+										<span class="socicon socicon-Blogger"><!-- KEEP ME --></span>&amp;nbsp;
 										<fmt:message key="navi.blog" />
 									</a>
 								</li>
