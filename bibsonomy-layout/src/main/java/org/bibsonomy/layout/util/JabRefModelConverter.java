@@ -134,7 +134,7 @@ public class JabRefModelConverter {
 	}
 	
 	public static String clean(String value, boolean cleanBibTex) {
-		if (cleanBibTex) {
+		if (cleanBibTex && present(value)) {
 			return BibTexUtils.cleanBibTex(value);
 		}
 		return value;
