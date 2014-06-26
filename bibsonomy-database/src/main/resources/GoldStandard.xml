@@ -11,12 +11,22 @@
 	
 	<select id="getGoldStandardRefercences" resultMap="GoldStandardPublicationCommon.abstractResource" parameterClass="resourceParam">
 		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, scraperid, 1 AS count, -1 AS rating, -1 AS number_of_ratings FROM (gold_standard b, gold_standard_publication_references r)
-		WHERE r.publication = #hash# AND b.simhash1 = r.reference ORDER BY b.title DESC
+		WHERE r.publication = #hash# AND b.simhash1 = r.reference AND r.part_of = '0' ORDER BY b.title DESC
+	</select>
+	
+	<select id="getGoldStandardReferenceThisPublicationIsPublishedIn" resultMap="GoldStandardPublicationCommon.abstractResource" parameterClass="resourceParam">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, scraperid, 1 AS count, -1 AS rating, -1 AS number_of_ratings FROM (gold_standard b, gold_standard_publication_references r)
+		WHERE r.publication = #hash# AND b.simhash1 = r.reference AND r.part_of = '1' ORDER BY b.title DESC
 	</select>
 	
 	<select id="getGoldStandardRefercencedBy" resultMap="GoldStandardPublicationCommon.abstractResource" parameterClass="resourceParam">
 		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, scraperid, 1 AS count, -1 AS rating, -1 AS number_of_ratings FROM (gold_standard b, gold_standard_publication_references r)
-		WHERE r.reference = #hash# AND b.simhash1 = r.publication ORDER BY b.title DESC
+		WHERE r.reference = #hash# AND b.simhash1 = r.publication AND r.part_of = '0' ORDER BY b.title DESC
+	</select>
+	
+	<select id="getGoldStandardReferencePartOfThisPublication" resultMap="GoldStandardPublicationCommon.abstractResource" parameterClass="resourceParam">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, scraperid, 1 AS count, -1 AS rating, -1 AS number_of_ratings FROM (gold_standard b, gold_standard_publication_references r)
+		WHERE r.reference = #hash# AND b.simhash1 = r.publication AND r.part_of = '1' ORDER BY b.title DESC
 	</select>
 	
 	<insert id="insertGoldStandardPublication" parameterClass="bibtexParam">

@@ -162,4 +162,69 @@ public class GoldStandardBookmark extends Bookmark implements GoldStandard<Bookm
 		this.setInterHash(simHash);
 	}
 
+	@Override
+	public Set<Bookmark> getReferencePartOfThisPublication() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean addToReferencePartOfThisPublication(Bookmark resource) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean addAllToReferencePartOfThisPublication(
+			Set<? extends Bookmark> resources) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean removeFromReferencePartOfThisPublication(Bookmark resource) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean removeAllFromReferencePartOfThisPublication(
+			Set<? extends Bookmark> resources) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Set<Bookmark> getReferenceThisPublicationIsPublishedIn() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean addToReferenceThisPublicationIsPublishedIn(Bookmark resource) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean addAllToReferenceThisPublicationIsPublishedIn(
+			Set<? extends Bookmark> resources) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean removeFromReferenceThisPublicationIsPublishedIn(
+			Bookmark resource) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean removeAllFromReferenceThisPublicationIsPublishedIn(
+			Set<? extends Bookmark> resources) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

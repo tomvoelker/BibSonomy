@@ -143,6 +143,7 @@
 						</li>
 					</ul>
 				</c:if>	
+				<c:if test="${fn:length(goldstandard.references) != 0}">
 				<div id="gold_references">
 					<h3><fmt:message key="goldStandard.resource.info.references" /></h3>
 					<ol>
@@ -154,12 +155,34 @@
 						<li class="reference initiallyHidden" id="referenceTemplate"><ref:pubReference publication="${mockReference}" /></li>
 					</ol>
 				</div>
+				</c:if>
+				<c:if test="${fn:length(goldstandard.referenceThisPublicationIsPublishedIn) != 0}">
+					<div id="gold_referenceThisPublicationIsPublishedIn">
+						<h3><fmt:message key="goldStandard.resource.info.referenceThisPublicationIsPublishedIn" /></h3>
+						<ol>
+							<c:forEach var="reference" items="${goldstandard.referenceThisPublicationIsPublishedIn}">
+								<li data-interhash="${reference.interHash}" class="referenceThisPublicationIsPublishedIn"><ref:pubReference publication="${reference}" /></li>
+							</c:forEach>
+						</ol>
+					</div>
+				</c:if>	
 				<c:if test="${fn:length(goldstandard.referencedBy) != 0}">
 					<div id="gold_referencedBy">
 						<h3><fmt:message key="goldStandard.resource.info.referencedBy" /></h3>
 						<ol>
 							<c:forEach var="reference" items="${goldstandard.referencedBy}">
 								<li data-interhash="${reference.interHash}" class="referencedBy"><ref:pubReference publication="${reference}" /></li>
+							</c:forEach>
+						</ol>
+					</div>
+				</c:if>	
+				<!-- for references that are a part of this publication -->
+				<c:if test="${fn:length(goldstandard.referencePartOfThisPublication) != 0}">
+					<div id="gold_referencePartOfThisPublication">
+						<h3><fmt:message key="goldStandard.resource.info.referencePartOfThisPublication" /></h3>
+						<ol>
+							<c:forEach var="reference" items="${goldstandard.referencePartOfThisPublication}">
+								<li data-interhash="${reference.interHash}" class="referencePartOfThisPublication"><ref:pubReference publication="${reference}" /></li>
 							</c:forEach>
 						</ol>
 					</div>

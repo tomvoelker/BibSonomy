@@ -97,4 +97,24 @@ public interface GoldStandard<R extends Resource> {
 	 */
 	public boolean removeAllFromReferencedBy(final Set<? extends R> resources);
 
+	public Set<R> getReferencePartOfThisPublication();
+
+	public boolean addToReferencePartOfThisPublication(final R resource);
+
+	public boolean addAllToReferencePartOfThisPublication(final Set<? extends R> resources);
+
+	public boolean removeFromReferencePartOfThisPublication(final R resource);
+	
+	public boolean removeAllFromReferencePartOfThisPublication(final Set<? extends R> resources);
+	
+	public Set<R> getReferenceThisPublicationIsPublishedIn();
+
+	public boolean addToReferenceThisPublicationIsPublishedIn(final R resource);
+
+	public boolean addAllToReferenceThisPublicationIsPublishedIn(final Set<? extends R> resources);
+
+	public boolean removeFromReferenceThisPublicationIsPublishedIn(final R resource);
+	
+	public boolean removeAllFromReferenceThisPublicationIsPublishedIn(final Set<? extends R> resources);
+
 }

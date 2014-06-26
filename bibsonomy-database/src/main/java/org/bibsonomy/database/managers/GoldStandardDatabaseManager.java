@@ -94,7 +94,9 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			 * set citation graph
 			 */
 			goldStandard.addAllToReferences(this.getReferencesForPost(resourceHash, session));
+			goldStandard.addAllToReferenceThisPublicationIsPublishedIn(this.getReferenceThisPublicationIsPublishedIn(resourceHash, session));
 			goldStandard.addAllToReferencedBy(this.getRefencedByForPost(resourceHash, session));
+			goldStandard.addAllToReferencePartOfThisPublication(this.getReferencePartOfThisPublication(resourceHash, session));
 		} else {
 			log.debug("gold standard post with interhash '" + resourceHash + "' not found.");
 		}
@@ -102,6 +104,8 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		return post;
 	}
 	
+	
+
 	
 
 	@SuppressWarnings("unchecked")
@@ -123,10 +127,23 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	}
 	
 	@SuppressWarnings("unchecked")
+	protected Set<RR> getReferencePartOfThisPublication(final String resourceHash, final DBSession session) {
+		final P param = createResourceParam(resourceHash);
+		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardReferencePartOfThisPublication", param, session));
+	}
+
+	@SuppressWarnings("unchecked")
+	private Set<RR> getReferenceThisPublicationIsPublishedIn(String resourceHash, DBSession session) {
+		final P param = createResourceParam(resourceHash);
+		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardReferenceThisPublicationIsPublishedIn", param, session));
+	}
+	
+	@SuppressWarnings("unchecked")
 	protected Set<RR> getReferencesForPost(final String interHash, final DBSession session) {
 		final P param = createResourceParam(interHash);
 		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRefercences", param, session));
 	}
+	
 	
 	@Override
 	public List<Post<R>> getPosts(final P param, final DBSession session) {
