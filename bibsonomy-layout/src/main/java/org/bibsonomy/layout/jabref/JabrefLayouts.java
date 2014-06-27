@@ -34,6 +34,7 @@ import java.io.InputStreamReader;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.sf.jabref.export.layout.Layout;
 import net.sf.jabref.export.layout.LayoutHelper;
@@ -41,6 +42,9 @@ import net.sf.jabref.export.layout.LayoutHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.LayoutPart;
+import org.bibsonomy.layout.jabref.self.MSOfficeXMLJabrefLayout;
+import org.bibsonomy.layout.jabref.self.SelfRenderingJabrefLayout;
+import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.file.FileUtil;
 import org.springframework.beans.factory.annotation.Required;
 
@@ -56,7 +60,12 @@ public class JabrefLayouts {
 	 * copied from JabRefs Globals
 	 */
 	private static final String GLOBALS_FORMATTER_PACKAGE = "net.sf.jabref.export.layout.format.";
-
+	
+	/*
+	 * SelfRenderingJabrefLayouts
+	 */
+	private static final Set<SelfRenderingJabrefLayout> selfRenderingLayouts = Sets.asSet(new SelfRenderingJabrefLayout[]{new MSOfficeXMLJabrefLayout()});
+			
 	private static final Log log = LogFactory.getLog(JabrefLayouts.class);
 
 	/**
@@ -113,6 +122,7 @@ public class JabrefLayouts {
 	 */
 	protected void init() throws IOException {
 		loadDefaultLayouts();
+		loadSelfRenderingLayouts();
 	}
 
 	/**
@@ -151,6 +161,12 @@ public class JabrefLayouts {
 			layouts.put(jabrefLayout.getName(), jabrefLayout);
 		}
 		log.info("loaded " + layouts.size() + " layouts");
+	}
+	
+	private void loadSelfRenderingLayouts() {
+		for (SelfRenderingJabrefLayout layout : selfRenderingLayouts) {
+			layouts.put(layout.getName(), layout);
+		}
 	}
 
 	/** Loads a layout from the given location. 
@@ -202,6 +218,7 @@ public class JabrefLayouts {
 	 */
 	protected void resetFilters() throws IOException {
 		loadDefaultLayouts();
+		loadSelfRenderingLayouts();
 	}
 
 	/**

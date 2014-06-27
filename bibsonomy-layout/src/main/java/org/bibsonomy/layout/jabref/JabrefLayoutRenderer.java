@@ -23,8 +23,6 @@
 
 package org.bibsonomy.layout.jabref;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -33,13 +31,13 @@ import net.sf.jabref.BibtexDatabase;
 import net.sf.jabref.BibtexEntry;
 import net.sf.jabref.GlobalsSuper;
 import net.sf.jabref.JabRefPreferences;
-import net.sf.jabref.KeyCollisionException;
 import net.sf.jabref.export.layout.Layout;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.LayoutPart;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
+import org.bibsonomy.layout.jabref.self.SelfRenderingJabrefLayout;
 import org.bibsonomy.layout.util.JabRefModelConverter;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -149,6 +147,14 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	 * @throws LayoutRenderingException - if a layout could not be found
 	 */
 	private StringBuffer renderDatabase(final BibtexDatabase database, final List<BibtexEntry> sorted, final JabrefLayout layout, final boolean embeddedLayout) throws LayoutRenderingException {
+		/*
+		 * Check for SelfRenderingLayout first
+		 */
+		if (layout instanceof SelfRenderingJabrefLayout) {
+			return ((SelfRenderingJabrefLayout) layout).render(database, sorted, layout, embeddedLayout);
+		}
+
+		
 		final StringBuffer output = new StringBuffer();
 
 		/* 
