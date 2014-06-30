@@ -20,8 +20,8 @@ includeJavaScript("/resources/javascript/bs/collapse.js");
 includeJavaScript("/resources/javascript/bs/tooltip.js");
 includeJavaScript("/resources/javascript/bs/popover.js");
 includeJavaScript("/resources/javascript/bs/bootstrap-dialog.js");
-includeJavaScript("/resources/javascript/bs/bootstrap-tagsinput-angular.js");
-includeJavaScript("/resources/javascript/bs/bootstrap-tagsinput.js");
+//includeJavaScript("/resources/javascript/bs/bootstrap-tagsinput-angular.js");
+//includeJavaScript("/resources/javascript/bs/bootstrap-tagsinput.js");
 includeJavaScript("/resources/javascript/bs/custom.js");
 includeJavaScript("/resources/javascript/bs/bootstrap-datepicker.js");
 
