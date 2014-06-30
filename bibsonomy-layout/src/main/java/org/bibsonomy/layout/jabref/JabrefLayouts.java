@@ -163,22 +163,23 @@ public class JabrefLayouts {
 				SelfRenderingJabrefLayout srjl = selfRenderingLayouts.get(jabrefLayout.getName());
 				srjl.init(jabrefLayout);
 				layouts.put(srjl.getName(), srjl);
-			} else {
-				final String filePath = defaultLayoutFilePath + "/" + getDirectory(jabrefLayout.getDirectory());
-				/*
-				 * iterate over all subLayouts
-				 */
-				for (final String subLayout: subLayouts) {
-					final String fileName = filePath + jabrefLayout.getBaseFileName() + subLayout + "." + JabrefLayoutUtils.layoutFileExtension;
-					log.debug("trying to load sublayout " + fileName + "...");
-					final Layout layout = loadLayout(fileName);
-					if (layout != null) {
-						log.debug("... success!");
-						jabrefLayout.addSubLayout(subLayout, layout);
-					}
-				}
-				layouts.put(jabrefLayout.getName(), jabrefLayout);
+				continue;
 			}
+			
+			final String filePath = defaultLayoutFilePath + "/" + getDirectory(jabrefLayout.getDirectory());
+			/*
+			 * iterate over all subLayouts
+			 */
+			for (final String subLayout: subLayouts) {
+				final String fileName = filePath + jabrefLayout.getBaseFileName() + subLayout + "." + JabrefLayoutUtils.layoutFileExtension;
+				log.debug("trying to load sublayout " + fileName + "...");
+				final Layout layout = loadLayout(fileName);
+				if (layout != null) {
+					log.debug("... success!");
+					jabrefLayout.addSubLayout(subLayout, layout);
+				}
+			}
+			layouts.put(jabrefLayout.getName(), jabrefLayout);
 		}
 		log.info("loaded " + layouts.size() + " layouts");
 	}
