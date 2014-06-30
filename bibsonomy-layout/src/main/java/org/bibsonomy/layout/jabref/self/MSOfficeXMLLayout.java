@@ -22,14 +22,14 @@ import org.w3c.dom.Document;
  *
  * @author MarcelM
  */
-public class MSOfficeXMLJabrefLayout extends SelfRenderingJabrefLayout{
+public class MSOfficeXMLLayout extends SelfRenderingJabrefLayout{
 	
-	private static final String LAYOUTNAME = "msofficexml";
+	public static final String LAYOUTNAME = "msofficexml";
 	
 	/**
 	 * @param name
 	 */
-	public MSOfficeXMLJabrefLayout() {
+	public MSOfficeXMLLayout() {
 		super(LAYOUTNAME);
 	}
 

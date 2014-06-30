@@ -754,4 +754,17 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
+	<layout name="msofficexml" >
+		<displayName>MSOfficeXML</displayName>
+		<description xml:lang="en">
+			A format to import into Microsoft Bibliography.
+		</description>
+		<description xml:lang="de">
+			Format zum Import in Microsoft Bibliography.
+		</description>
+		<directory></directory>
+		<baseFileName></baseFileName>
+		<mimeType>text/xml</mimeType>
+		<extension>.xml</extension>
+	</layout>
 </layouts>

@@ -31,6 +31,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,7 @@ import net.sf.jabref.export.layout.LayoutHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.LayoutPart;
-import org.bibsonomy.layout.jabref.self.MSOfficeXMLJabrefLayout;
+import org.bibsonomy.layout.jabref.self.MSOfficeXMLLayout;
 import org.bibsonomy.layout.jabref.self.SelfRenderingJabrefLayout;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.file.FileUtil;
@@ -60,11 +61,6 @@ public class JabrefLayouts {
 	 * copied from JabRefs Globals
 	 */
 	private static final String GLOBALS_FORMATTER_PACKAGE = "net.sf.jabref.export.layout.format.";
-	
-	/*
-	 * SelfRenderingJabrefLayouts
-	 */
-	private static final Set<SelfRenderingJabrefLayout> selfRenderingLayouts = Sets.asSet(new SelfRenderingJabrefLayout[]{new MSOfficeXMLJabrefLayout()});
 			
 	private static final Log log = LogFactory.getLog(JabrefLayouts.class);
 
@@ -115,6 +111,10 @@ public class JabrefLayouts {
 	 * saves all loaded layouts (html, bibtexml, tablerefs, hash(user.username), ...)
 	 */
 	private Map<String,JabrefLayout> layouts;
+	/**
+	 * SelfRenderingJabrefLayouts
+	 */
+	private Map<String,SelfRenderingJabrefLayout> selfRenderingLayouts;
 
 	/** Initialize the layouts by loading them into a map.
 	 * 
@@ -122,15 +122,25 @@ public class JabrefLayouts {
 	 */
 	protected void init() throws IOException {
 		loadDefaultLayouts();
-		loadSelfRenderingLayouts();
 	}
-
+	
+	/**
+	 * Initialize selfRenderingLayouts
+	 */
+	private void initSelfRenderingLayoutsMap() {
+		if (selfRenderingLayouts == null) {
+			selfRenderingLayouts = new HashMap<String,SelfRenderingJabrefLayout>();
+			selfRenderingLayouts.put(MSOfficeXMLLayout.LAYOUTNAME, new MSOfficeXMLLayout());
+		}
+	}
+	
 	/**
 	 * Loads default filters (xxx.xxx.layout and xxx.layout) from the default layout directory into a map.
 	 * 
 	 * @throws IOException 
 	 */
 	private void loadDefaultLayouts() throws IOException {
+		initSelfRenderingLayoutsMap();
 		/*
 		 * create a new hashmap to store the layouts
 		 */
@@ -145,28 +155,32 @@ public class JabrefLayouts {
 		 */
 		for (final JabrefLayout jabrefLayout : jabrefLayouts) {
 			log.debug("loading layout " + jabrefLayout.getName());
-			final String filePath = defaultLayoutFilePath + "/" + getDirectory(jabrefLayout.getDirectory());
+			
 			/*
-			 * iterate over all subLayouts
+			 * Check if jabrefLayout is extended Info for SelfRenderingLayout
 			 */
-			for (final String subLayout: subLayouts) {
-				final String fileName = filePath + jabrefLayout.getBaseFileName() + subLayout + "." + JabrefLayoutUtils.layoutFileExtension;
-				log.debug("trying to load sublayout " + fileName + "...");
-				final Layout layout = loadLayout(fileName);
-				if (layout != null) {
-					log.debug("... success!");
-					jabrefLayout.addSubLayout(subLayout, layout);
+			if (selfRenderingLayouts.containsKey(jabrefLayout.getName())) {
+				SelfRenderingJabrefLayout srjl = selfRenderingLayouts.get(jabrefLayout.getName());
+				srjl.init(jabrefLayout);
+				layouts.put(srjl.getName(), srjl);
+			} else {
+				final String filePath = defaultLayoutFilePath + "/" + getDirectory(jabrefLayout.getDirectory());
+				/*
+				 * iterate over all subLayouts
+				 */
+				for (final String subLayout: subLayouts) {
+					final String fileName = filePath + jabrefLayout.getBaseFileName() + subLayout + "." + JabrefLayoutUtils.layoutFileExtension;
+					log.debug("trying to load sublayout " + fileName + "...");
+					final Layout layout = loadLayout(fileName);
+					if (layout != null) {
+						log.debug("... success!");
+						jabrefLayout.addSubLayout(subLayout, layout);
+					}
 				}
+				layouts.put(jabrefLayout.getName(), jabrefLayout);
 			}
-			layouts.put(jabrefLayout.getName(), jabrefLayout);
 		}
 		log.info("loaded " + layouts.size() + " layouts");
-	}
-	
-	private void loadSelfRenderingLayouts() {
-		for (SelfRenderingJabrefLayout layout : selfRenderingLayouts) {
-			layouts.put(layout.getName(), layout);
-		}
 	}
 
 	/** Loads a layout from the given location. 
@@ -218,7 +232,6 @@ public class JabrefLayouts {
 	 */
 	protected void resetFilters() throws IOException {
 		loadDefaultLayouts();
-		loadSelfRenderingLayouts();
 	}
 
 	/**
