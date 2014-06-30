@@ -237,11 +237,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 *            the copytags to set
 	 */
 	public void setCopytags(final List<Tag> copytags) {
-		for (int index=0; index < copytags.size(); index++) {
-			for (final String tagname : copytags.get(index).toString().split(",") ) {
-				this.copytags.add(new Tag(tagname));
-			}
-		}
+		this.copytags = copytags;
 	}
 
 	/**
