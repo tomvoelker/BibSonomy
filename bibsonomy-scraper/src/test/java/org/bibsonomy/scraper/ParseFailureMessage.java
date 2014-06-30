@@ -65,6 +65,4 @@ public class ParseFailureMessage {
 		 */
 		log.fatal(swriter.toString());
 	}
-	
-
 }

@@ -541,6 +541,8 @@
 								<value>overwrite</value>
 								<value>resourcetype</value>
 								<value>format</value>
+								<value>abstractGrouping</value>
+	  							<value>groups</value>
 							</list>
 						</property>
 					</bean>

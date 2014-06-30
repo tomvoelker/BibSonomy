@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.elsevierhealth;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -43,7 +41,7 @@ public class ElsevierhealthScraperTest {
 	 */
 	@Test
 	public void urlTestRun1(){
-		assertTrue(UnitTestRunner.runSingleTest("url_168"));
+		UnitTestRunner.runSingleTest("url_168");
 	}
 	
 }

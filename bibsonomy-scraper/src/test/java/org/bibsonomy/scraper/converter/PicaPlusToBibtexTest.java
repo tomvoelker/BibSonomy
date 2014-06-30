@@ -29,7 +29,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Collection;
 
-import org.bibsonomy.scraper.converter.picatobibtex.PicaParser;
 import org.bibsonomy.scraper.converter.picatobibtex.PicaRecord;
 import org.junit.Test;
 
@@ -49,8 +48,5 @@ public class PicaPlusToBibtexTest {
 		final Collection<PicaRecord> picas = reader.parseRawPicaPlus(br);
 		br.close();
 		assertEquals(133, picas.size());
-		for (final PicaRecord p : picas) {
-			System.out.println(PicaParser.getBibRes(p, "bla"));
-		}
 	}
 }

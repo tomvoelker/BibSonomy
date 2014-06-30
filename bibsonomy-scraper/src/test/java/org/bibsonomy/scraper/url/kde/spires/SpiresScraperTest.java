@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.spires;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -43,7 +41,7 @@ public class SpiresScraperTest {
 	 */
 	@Test
 	public void urlTestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_29"));
+		UnitTestRunner.runSingleTest("url_29");
 	}
 	
 }

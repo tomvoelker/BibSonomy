@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.cambridge;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -42,7 +40,7 @@ public class CambridgeScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_73"));
+		UnitTestRunner.runSingleTest("url_73");
 	}
 	
 	/**
@@ -50,7 +48,7 @@ public class CambridgeScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_110"));
+		UnitTestRunner.runSingleTest("url_110");
 	}
 }
 

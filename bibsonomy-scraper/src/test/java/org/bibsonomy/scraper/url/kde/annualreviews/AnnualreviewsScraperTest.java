@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.annualreviews;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -42,7 +40,7 @@ public class AnnualreviewsScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_106"));
+		UnitTestRunner.runSingleTest("url_106");
 	}
 
 	/**
@@ -50,7 +48,7 @@ public class AnnualreviewsScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_107"));
+		UnitTestRunner.runSingleTest("url_107");
 	}
 	
 	/**
@@ -58,7 +56,7 @@ public class AnnualreviewsScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_228"));
+		UnitTestRunner.runSingleTest("url_228");
 	}
 	
 }

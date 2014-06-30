@@ -26,6 +26,7 @@ package org.bibsonomy.layout.jabref;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import net.sf.jabref.BibtexDatabase;
 import net.sf.jabref.BibtexEntry;
@@ -54,7 +55,9 @@ import org.springframework.beans.factory.annotation.Required;
  */
 public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	private static final Log log = LogFactory.getLog(JabrefLayoutRenderer.class);
-
+	
+	private static Properties properties;
+	
 	private URLGenerator urlGenerator;
 
 	/**
@@ -311,6 +314,22 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	@Override
 	public Map<String, JabrefLayout> getLayouts(){
 		return this.layouts.getLayoutMap();
+	}
+	
+	/**
+	 * Spring-Managed
+	 * @param properties
+	 */
+	public void setProperties(Properties properties) {
+		JabrefLayoutRenderer.properties = properties;
+	}
+	
+	/**
+	 * Returns Spring-Managed Properties
+	 * @return java.util.Properties
+	 */
+	public static Properties getProperties() {
+		return properties;
 	}
 
 }
