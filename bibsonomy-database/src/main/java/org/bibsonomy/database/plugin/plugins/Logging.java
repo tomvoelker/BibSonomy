@@ -1,6 +1,7 @@
 package org.bibsonomy.database.plugin.plugins;
 
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.enums.RelationsEnum;
 import org.bibsonomy.database.params.BasketParam;
 import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.BibTexParam;
@@ -95,11 +96,21 @@ public class Logging extends AbstractDatabasePlugin {
     }
 
     @Override
-    public void onGoldStandardPublicationReferenceDelete(final String userName, final String interHashPublication, final String interHashReference, final DBSession session) {
+    public void onGoldStandardPublicationReferenceDelete(final String userName, final String interHashPublication, final String interHashReference,final String interHashRelation, final DBSession session) {
         final GoldStandardReferenceParam param = new GoldStandardReferenceParam();
+        String tRelation =  interHashRelation.toUpperCase();
+		tRelation = tRelation.replaceAll("_MENU", "");
+		int relationValue = 0;
+		for(RelationsEnum r : RelationsEnum.values()){
+			if(r.name().equals(tRelation)){
+				relationValue = r.getValue();
+				break;
+				}
+		}
         param.setHash(interHashPublication);
         param.setRefHash(interHashReference);
         param.setUsername(userName);
+        param.setRelation(relationValue);
 
         this.insert("logGoldStandardPublicationReferenceDelete", param, session);
     }

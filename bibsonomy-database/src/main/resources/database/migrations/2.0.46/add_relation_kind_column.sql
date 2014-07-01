@@ -1,0 +1,2 @@
+ALTER TABLE log_gold_standard_publication_references ADD relation_kind TINYINT(1) NOT NULL default '0';
+ALTER TABLE gold_standard_publication_references ADD relation_kind TINYINT(1) NOT NULL default '0';

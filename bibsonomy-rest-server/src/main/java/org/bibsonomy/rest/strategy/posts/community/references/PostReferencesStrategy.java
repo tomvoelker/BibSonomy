@@ -30,7 +30,7 @@ public class PostReferencesStrategy extends AbstractCreateStrategy {
 	@Override
 	protected String create() {
 		final Set<String> references = this.getRenderer().parseReferences(this.doc);
-		this.getLogic().createReferences(this.hash, references, relation);
+		this.getLogic().createRelation(this.hash, references, relation);
 		
 		return this.hash;
 	}

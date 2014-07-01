@@ -59,10 +59,10 @@ public class EditGoldstandardReferencesController extends AjaxController impleme
 		
 		switch (httpMethod) {
 		case POST: 
-			this.logic.createReferences(hash, references, relation);
+			this.logic.createRelation(hash, references, relation);
 			break;
 		case DELETE: 
-			this.logic.deleteReferences(hash, references);
+			this.logic.deleteReferences(hash, references, relation);
 			break;
 		default: 
 			this.responseLogic.setHttpStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);

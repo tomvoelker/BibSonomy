@@ -26,7 +26,7 @@ public class GoldStandardBookmarkDatabaseManager extends GoldStandardDatabaseMan
 	}
 
 	@Override
-	protected void onGoldStandardReferenceDelete(final String userName, final String interHash, final String interHashRef, final DBSession session) {
+	protected void onGoldStandardReferenceDelete(final String userName, final String interHash, final String interHashRef,final String interHashRelation, final DBSession session) {
 		// TODO: implement reference model for bookmarks
 	}
 

@@ -133,16 +133,16 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	}
 	
 	@Override
-	public void onGoldStandardPublicationReferenceCreate(final String userName, final String interHashPublication, final String interHashReference) {
+	public void onGoldStandardPublicationReferenceCreate(final String userName, final String interHashPublication, final String interHashReference, final String interHashRelation) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
-			plugin.onGoldStandardPublicationReferenceCreate(userName, interHashPublication, interHashReference);
+			plugin.onGoldStandardPublicationReferenceCreate(userName, interHashPublication, interHashReference, interHashRelation);
 		}	
 	}
 
 	@Override
-	public void onGoldStandardPublicationReferenceDelete(final String userName, final String interHashPublication, final String interHashReference, final DBSession session) {
+	public void onGoldStandardPublicationReferenceDelete(final String userName, final String interHashPublication, final String interHashReference,final String interHashRelation, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
-			plugin.onGoldStandardPublicationReferenceDelete(userName, interHashPublication, interHashReference, session);
+			plugin.onGoldStandardPublicationReferenceDelete(userName, interHashPublication, interHashReference, interHashRelation,session);
 		}
 	}
 

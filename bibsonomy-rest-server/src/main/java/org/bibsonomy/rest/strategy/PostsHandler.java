@@ -90,7 +90,7 @@ public class PostsHandler implements ContextHandler {
 					case POST:
 						return new PostReferencesStrategy(context, hash, relation);
 					case DELETE:
-						return new DeleteReferencesStrategy(context, hash);
+						return new DeleteReferencesStrategy(context, hash, relation);
 					default:
 						break;
 				}

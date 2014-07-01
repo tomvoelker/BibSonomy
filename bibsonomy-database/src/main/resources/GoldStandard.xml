@@ -11,22 +11,22 @@
 	
 	<select id="getGoldStandardRefercences" resultMap="GoldStandardPublicationCommon.abstractResource" parameterClass="resourceParam">
 		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, scraperid, 1 AS count, -1 AS rating, -1 AS number_of_ratings FROM (gold_standard b, gold_standard_publication_references r)
-		WHERE r.publication = #hash# AND b.simhash1 = r.reference AND r.part_of = '0' ORDER BY b.title DESC
+		WHERE r.publication = #hash# AND b.simhash1 = r.reference AND r.relation_kind = '0' ORDER BY b.title DESC
 	</select>
 	
 	<select id="getGoldStandardReferenceThisPublicationIsPublishedIn" resultMap="GoldStandardPublicationCommon.abstractResource" parameterClass="resourceParam">
 		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, scraperid, 1 AS count, -1 AS rating, -1 AS number_of_ratings FROM (gold_standard b, gold_standard_publication_references r)
-		WHERE r.publication = #hash# AND b.simhash1 = r.reference AND r.part_of = '1' ORDER BY b.title DESC
+		WHERE r.publication = #hash# AND b.simhash1 = r.reference AND r.relation_kind = '1' ORDER BY b.title DESC
 	</select>
 	
 	<select id="getGoldStandardRefercencedBy" resultMap="GoldStandardPublicationCommon.abstractResource" parameterClass="resourceParam">
 		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, scraperid, 1 AS count, -1 AS rating, -1 AS number_of_ratings FROM (gold_standard b, gold_standard_publication_references r)
-		WHERE r.reference = #hash# AND b.simhash1 = r.publication AND r.part_of = '0' ORDER BY b.title DESC
+		WHERE r.reference = #hash# AND b.simhash1 = r.publication AND r.relation_kind = '0' ORDER BY b.title DESC
 	</select>
 	
 	<select id="getGoldStandardReferencePartOfThisPublication" resultMap="GoldStandardPublicationCommon.abstractResource" parameterClass="resourceParam">
 		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, scraperid, 1 AS count, -1 AS rating, -1 AS number_of_ratings FROM (gold_standard b, gold_standard_publication_references r)
-		WHERE r.reference = #hash# AND b.simhash1 = r.publication AND r.part_of = '1' ORDER BY b.title DESC
+		WHERE r.reference = #hash# AND b.simhash1 = r.publication AND r.relation_kind = '1' ORDER BY b.title DESC
 	</select>
 	
 	<insert id="insertGoldStandardPublication" parameterClass="bibtexParam">
@@ -44,12 +44,12 @@
 	</delete>
 	
 	<insert id="insertGoldStandardPublicationReference">
-		INSERT INTO gold_standard_publication_references (publication, reference, user_name, part_of) VALUES (#hash#, #refHash#, #username#, #relation#)
+		INSERT INTO gold_standard_publication_references (publication, reference, user_name, relation_kind) VALUES (#hash#, #refHash#, #username#, #relation#)
 	</insert>
 	
 	<!-- be careful hash or refHash must be not null!!! or you delete everything -->
 	<delete id="deleteGoldStandardPublicationReference">
-		DELETE FROM gold_standard_publication_references WHERE publication = #hash# AND reference = #refHash#
+		DELETE FROM gold_standard_publication_references WHERE publication = #hash# AND reference = #refHash# AND relation_kind = #relation#
 	</delete>
 	
 </sqlMap>

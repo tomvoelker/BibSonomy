@@ -43,13 +43,14 @@ public interface GoldStandardPostLogicInterface extends PostLogicInterface {
 	 * @param references the references to add (interhashes)
 	 * @param relation  the relation between a post and its reference
 	 */
-	public void createReferences(final String postHash, final Set<String> references, final String relation);
+	public void createRelation(final String postHash, final Set<String> references, final String relation);
 
 	/**
 	 * deletes references from a gold stanard resource
 	 * 
 	 * @param postHash	 the hash of the gold standard post
 	 * @param references the references to delete (interhashes)
+	 * @param relation  the relation between a post and its reference
 	 */
-	public void deleteReferences(final String postHash, final Set<String> references);
+	public void deleteReferences(final String postHash, final Set<String> references, final String relation);
 }

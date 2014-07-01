@@ -42,8 +42,8 @@ public final class GoldStandardPublicationDatabaseManager extends GoldStandardDa
 	}
 	
 	@Override
-	protected void onGoldStandardReferenceDelete(final String userName, final String interHash, final String interHashRef, final DBSession session) {
-		this.plugins.onGoldStandardPublicationReferenceDelete(userName, interHash, interHashRef, session);		
+	protected void onGoldStandardReferenceDelete(final String userName, final String interHash, final String interHashRef,final String interHashRelation, final DBSession session) {
+		this.plugins.onGoldStandardPublicationReferenceDelete(userName, interHash, interHashRef, interHashRelation, session);		
 	}
 
 	@Override

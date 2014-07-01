@@ -18,6 +18,7 @@ import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
+import org.bibsonomy.database.enums.RelationsEnum;
 import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.params.GoldStandardReferenceParam;
 import org.bibsonomy.database.params.ResourceParam;
@@ -332,6 +333,15 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	 */
 	public void addReferencesToPost(final String userName, final String interHash, final Set<String> references, final String relation, final DBSession session) {
 		session.beginTransaction();
+		String tRelation =  relation.toUpperCase();
+		if(tRelation.contains(" ")){
+			for(int i=0;i<tRelation.length();i++){
+				if(tRelation.charAt(i)==' '){
+					tRelation=tRelation.substring(0, i)+"_"+tRelation.substring(i+1);
+				}
+			}
+		}
+		int relationValue = 0;
 		try {
 			final Post<R> post = this.getGoldStandardPostByHash(interHash, session);
 			if (!present(post)) {
@@ -344,9 +354,15 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 				// TODO: A <-> A references and duplicate references
 				for (final String referenceHash : references) {
 					final Post<R> refPost = this.getGoldStandardPostByHash(referenceHash, session);
+					for(RelationsEnum r : RelationsEnum.values()){
+						if(r.name().equals(tRelation)){
+							relationValue = r.getValue();
+							break;
+							}
+					}
 					if (present(refPost)) {
 						param.setRefHash(referenceHash);
-						param.setRelation(relation);
+						param.setRelation(relationValue);
 						this.insert("insert" + this.resourceClassName + "Reference", param, session);
 					} else {
 						log.info("Can't add reference. Gold standard " + this.resourceClassName +  " reference with resourceHash " + referenceHash + " not found.");
@@ -366,10 +382,14 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	 * @param userName
 	 * @param interHash
 	 * @param references
+	 * @param relation 
 	 * @param session
 	 */
-	public void removeReferencesFromPost(final String userName, final String interHash, final Set<String> references, final DBSession session) {
+	public void removeReferencesFromPost(final String userName, final String interHash, final Set<String> references, final String relation, final DBSession session) {
 		session.beginTransaction();
+		String tRelation =  relation.toUpperCase();
+		tRelation = tRelation.replaceAll("_MENU", "");
+		int relationValue = 0;
 		try {
 			final Post<R> post = this.getGoldStandardPostByHash(interHash, session);
 			if (!present(post)) {
@@ -381,8 +401,15 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			if (present(references)) {
 				for (final String referenceHash : references) {
 					final Post<R> refPost = this.getGoldStandardPostByHash(referenceHash, session);
+					for(RelationsEnum r : RelationsEnum.values()){
+						if(r.name().equals(tRelation)){
+							relationValue = r.getValue();
+							break;
+							}
+					}
 					if (present(refPost)) {
 						param.setRefHash(referenceHash);
+						param.setRelation(relationValue);
 						this.delete("delete" + this.resourceClassName + "Reference", param, session);
 					} else {
 						log.info("Can't remove reference. Gold standard " + this.resourceClassName +  " reference with resourceHash " + referenceHash + " not found.");
@@ -408,5 +435,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		this.plugins.onGoldStandardDelete(resourceHash, session);
 	}
 	
-	protected abstract void onGoldStandardReferenceDelete(final String userName, final String interHash, final String interHashRef, final DBSession session);
+	protected abstract void onGoldStandardReferenceDelete(final String userName, final String interHash, final String interHashRef,final String interHashRelation, final DBSession session);
+
+
 }

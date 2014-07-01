@@ -49,12 +49,12 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	}
 
 	@Override
-	public void onGoldStandardPublicationReferenceCreate(final String userName, final String interHash_publication, final String interHash_reference) {
+	public void onGoldStandardPublicationReferenceCreate(final String userName, final String interHash_publication, final String interHash_reference, final String interHash_relation) {
 		// noop
 	}
 
 	@Override
-	public void onGoldStandardPublicationReferenceDelete(final String userName, final String interHash_publication, final String interHash_reference, final DBSession session) {
+	public void onGoldStandardPublicationReferenceDelete(final String userName, final String interHash_publication, final String interHash_reference,final String interHash_rlation, final DBSession session) {
 		// noop
 	}
 

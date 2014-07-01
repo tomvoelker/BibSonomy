@@ -73,8 +73,9 @@ public interface DatabasePlugin {
 	 * @param userName
 	 * @param interHash_publication
 	 * @param interHash_reference
+	 * @param interHash_relation
 	 */
-	public void onGoldStandardPublicationReferenceCreate(String userName, String interHash_publication, String interHash_reference);
+	public void onGoldStandardPublicationReferenceCreate(String userName, String interHash_publication, String interHash_reference, String interHash_relation);
 	
 	/**
 	 * Called when a reference of a gold standard publication will be deleted
@@ -82,9 +83,10 @@ public interface DatabasePlugin {
 	 * @param userName
 	 * @param interHash_publication
 	 * @param interHash_reference
+	 * @param interHash_relation,
 	 * @param session
 	 */
-	public void onGoldStandardPublicationReferenceDelete(String userName, String interHash_publication, String interHash_reference, DBSession session);
+	public void onGoldStandardPublicationReferenceDelete(String userName, String interHash_publication, String interHash_reference,String interHash_relation, DBSession session);
 	
 	/**
 	 * Called when a gold standard publication is deleted.
@@ -262,5 +264,7 @@ public interface DatabasePlugin {
 	 * @param session
 	 * @author MarcelM
 	 */
-	public void onBibTexExtraDelete(final BibTexExtraParam deletedBibTexExtraParam, final DBSession session); 
+	public void onBibTexExtraDelete(final BibTexExtraParam deletedBibTexExtraParam, final DBSession session);
+
+
 }

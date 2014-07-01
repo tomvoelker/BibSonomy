@@ -2518,10 +2518,10 @@ public class DBLogic implements LogicInterface {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.GoldStandardPostLogicInterface#createReferences(java.lang.String, java.util.Set)
+	 * @see org.bibsonomy.model.logic.GoldStandardPostLogicInterface#createRelation(java.lang.String, java.util.Set)
 	 */
 	@Override
-	public void createReferences(final String postHash, final Set<String> references, final String relation) {
+	public void createRelation(final String postHash, final Set<String> references, final String relation) {
 		this.permissionDBManager.ensureAdminAccess(loginUser); // only admins can create references
 
 		final DBSession session = this.openSession();
@@ -2537,12 +2537,12 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.GoldStandardPostLogicInterface#deleteReferences(java.lang.String, java.util.Set)
 	 */
 	@Override
-	public void deleteReferences(final String postHash, final Set<String> references) {
+	public void deleteReferences(final String postHash, final Set<String> references, final String relation) {
 		this.permissionDBManager.ensureAdminAccess(loginUser); // only admins can delete references
 
 		final DBSession session = this.openSession();
 		try {
-			this.goldStandardPublicationDBManager.removeReferencesFromPost(this.loginUser.getName(), postHash, references, session);
+			this.goldStandardPublicationDBManager.removeReferencesFromPost(this.loginUser.getName(), postHash, references, relation, session);
 		} finally {
 			session.close();
 		}	

@@ -7,7 +7,7 @@ public class GoldStandardReferenceParam {
 	private String hash;
 	private String refHash;
 	private String username;
-	private String relation;
+	private int relation;
 	
 	/**
 	 * @return the hash
@@ -54,14 +54,14 @@ public class GoldStandardReferenceParam {
 	/**
 	 * @return the relation
 	 */
-	public String getRelation() {
+	public int getRelation() {
 		return this.relation;
 	}
 	
 	/**
 	 * @param relation the relation to set
 	 */
-	public void setRelation(String relation) {
+	public void setRelation(int relation) {
 		this.relation = relation;
 	}
 }

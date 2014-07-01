@@ -213,7 +213,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
         final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", null, this.dbSession);
         assertEquals(1 + 1, post.getResource().getReferences().size());
 
-        goldPubManager.removeReferencesFromPost("", INTERHASH_GOLD_1, Collections.singleton(interHash), this.dbSession);
+        goldPubManager.removeReferencesFromPost("", INTERHASH_GOLD_1, Collections.singleton(interHash), relation, this.dbSession);
 
         final Post<GoldStandardPublication> postAfterRemove = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", null, this.dbSession);
         assertEquals(1, postAfterRemove.getResource().getReferences().size());
