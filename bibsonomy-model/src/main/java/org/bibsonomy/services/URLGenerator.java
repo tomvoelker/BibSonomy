@@ -88,6 +88,7 @@ public class URLGenerator {
     private static final String FOLLOWERS_PREFIX = "followers";
     private static final String FRIEND_PREFIX = "friend";
     private static final String GROUP_PREFIX = "group";
+    private static final String LOGIN_PREFIX = "login";
     private static final String MYBIBTEX_PREFIX = "myBibTex";
     private static final String MYDOCUMENTS_PREFIX = "myDocuments";
     private static final String MYDUPLICATES_PREFIX = "myDuplicates";
@@ -326,6 +327,16 @@ public class URLGenerator {
     	url += "/" + UrlUtils.safeURIEncode(tagName);
     	
     	return this.getUrl(url);
+    }
+    
+    
+    /**
+     * Constructs the URL for the login page
+     * 
+     * @return URL pointing to the login page
+     */
+    public String getLoginUrl() {
+    	return this.getUrl(this.projectHome + LOGIN_PREFIX);
     }
     
     /**
@@ -833,5 +844,4 @@ public class URLGenerator {
     public void setProjectHome(final String projectHome) {
         this.projectHome = projectHome;
     }
-
 }
