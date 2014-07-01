@@ -3,10 +3,56 @@
 @import "bootstrap-tagsinput.less";
 @import "bootstrap-datepicker.less";
 @import "socicon.less";
+
+.ellipsis {
+	font-size: 12px;
+	height: 26px;
+	line-height: 13.199999809265137px;
+	margin-bottom: 3px;
+	margin-top: 11px;
+	text-align: left;
+}
+
+.ellipsis:after {
+	content: "\02026";  
+
+	box-sizing: content-box;
+	-webkit-box-sizing: content-box;
+	-moz-box-sizing: content-box;
+
+	float: right; 
+	position: relative;
+	left: -7px;
+	top: -38px;
+	width: 3.5em; 
+	margin-left: -3.5em;
+	text-align: right;
+	background: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), to(white), color-stop(50%, white));
+	background: -moz-linear-gradient(to right, rgba(255, 255, 255, 0), white 50%, white);			
+	background: -o-linear-gradient(to right, rgba(255, 255, 255, 0), white 50%, white);
+	background: -ms-linear-gradient(to right, rgba(255, 255, 255, 0), white 50%, white);
+	background: linear-gradient(to right, rgba(255, 255, 255, 0), white 50%, white); 
+}
+
+
 body {
 	background-color: @background-color; 
     background-image: url("/resources/bootstrap/img/bg.png");
 }
+
+/** FIXING PADDING OF COL-OFFSETS **/
+
+.col-xs-offset-1, .col-sm-offset-1, .col-md-offset-1, .col-lg-offset-1,
+.col-xs-offset-2, .col-sm-offset-2, .col-md-offset-2, .col-lg-offset-2,
+.col-xs-offset-3, .col-sm-offset-3, .col-md-offset-3, .col-lg-offset-3,
+.col-xs-offset-4, .col-sm-offset-4, .col-md-offset-4, .col-lg-offset-4,
+.col-xs-offset-5, .col-sm-offset-5, .col-md-offset-5, .col-lg-offset-5 {
+	padding: 0 15px;
+}
+
+
+
+
 
 /*
  * Fonts
@@ -61,7 +107,13 @@ body {
 }
 
 #logo {
-	font-family:Arial 'sans-serif';
+	font-family: Arial, 'sans-serif';
+	margin-top: 30px;
+}
+
+#logo h1 {
+	margin: 0;
+	padding: 0;
 }
 
 .slogan {
@@ -105,6 +157,54 @@ a {
 	background: @main-color-light;
 	color: #fff;
 }
+.nav .open>a, 
+.nav .open>a:hover, 
+.nav .open>a:focus {
+	background-color: inherit;
+}
+
+
+@media (max-width: 767px) {
+	.navbar-nav .open .dropdown-menu {
+		background: @main-color-light;
+	}
+	
+	.navbar-nav .open .dropdown-menu a {
+		color: @menu-link-color;
+	}
+	
+	.navbar-nav .open .dropdown-menu li.active a,
+	.navbar-nav .open .dropdown-menu a:hover,
+	.navbar-nav .open .dropdown-menu a:focus,
+	.navbar-nav .open .dropdown-menu a:active {
+		text-decoration: underline;
+		color: #fff;
+	}
+	
+	.navbar-header button {
+		color: @menu-link-color;
+		border-color: @menu-link-color;
+	}
+	.navbar-header button:hover,
+	.navbar-header button:focus,
+	.navbar-header button:active {
+		background-color:  @main-color-light;
+		color: #fff;
+		border-color: #fff;
+	}
+	
+	.navbar-toggle .icon-bar {
+		background-color: @menu-link-color;
+	}
+	
+	.navbar-header button:hover .icon-bar,
+	.navbar-header button:focus .icon-bar,
+	.navbar-header button:active .icon-bar {
+		background-color: #fff;
+	}
+	 
+}
+
 
 .noborder {
 	border: none;

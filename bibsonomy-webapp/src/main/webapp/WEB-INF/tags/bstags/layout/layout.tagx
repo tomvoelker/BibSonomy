@@ -80,10 +80,9 @@
 								</c:if>
 								-->
 								<div id="logo">
-									
-										<h1><a href="/">${properties['project.name']}</a></h1>
-										<small class="slogan"><fmt:message key="system.desc"/></small>
-									
+										<fmt:message var="homelink" key="navi.home"/> 
+										<h1><a href="/" title="${homelink}"><img src="/resources/image/logo4.png" alt="${properties['project.name']} Logo" /><span class="sr-only"> ${properties['project.name']}</span></a></h1>
+										<small class="sr-only"><fmt:message key="system.desc"/></small>
 								</div>
 								
 								

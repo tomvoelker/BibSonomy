@@ -28,7 +28,7 @@
 				<a href=""><fmt:message key="bibtex.citation_format_in"/>:</a>
 			</li>
 			<li>
-				<a href="#citation_plain"><fmt:message key="bibtex.citation_format.plain" /></a>
+				<a class="firstTab" href="#citation_plain"><fmt:message key="bibtex.citation_format.plain" /></a>
 			</li>
 			<c:forEach var="citationStyle" items="${fn:split('harvardhtml,chicago,apa_html,din1505',',')}">
 				<li><a data-formatUrl="/layout/${citationStyle}/bibtex/2${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}?formatEmbedded=true" href="#citation_${citationStyle}"><fmt:message key="bibtex.citation_format.${citationStyle}" /></a></li>
