@@ -17,6 +17,7 @@
 	<jsp:directive.attribute name="labelText" type="java.lang.String" required="false" description="Alternativly to path, you can define directly a description for the label."/>
 	<jsp:directive.attribute name="helpText" type="java.lang.String" required="false" description="Alternativly to path.help, you can define the content for popover help"/>
 	<jsp:directive.attribute name="small" type="java.lang.Boolean" required="false" description="Reduces the element width to 33 percent" />
+	<jsp:directive.attribute name="value" type="java.lang.String" required="false" description="Value for input field."/>
 	
 	<!-- HTML attributes -->
 	<jsp:directive.attribute name="id" 				type="java.lang.String" 	required="false"  description="Id for input field"/>
@@ -48,16 +49,8 @@
 			<c:set var="inputColSpan" value="${ 12 - labelColSpan }" />
 		</c:otherwise>
 	</c:choose>
-	
-	<c:if test="${empty labelText}">
-		<fmt:message var="labelText" key="${path}" />
-	</c:if>
-	
-	<c:if test="${empty helpText}">
-		<fmt:message var="helpText" key="${path}.help" />
-	</c:if>
 
-			
+	
 	<c:set var="helpPopover" value="" />
 	<c:if test="${empty noHelp or not noHelp}">
 		<c:set var="helpPopover" value="help-popover" />
@@ -71,43 +64,25 @@
 	<c:if test="${(empty id)}">
 		<c:set var="id" value="${path}" />
 	</c:if>
+	<input class="readonly-form ${small ? smallField : ''} ${fn:escapeXml(cssClass)} form-control ${helpPopover}" 
+		placeholder="${placeholder}" 
+		autocomplete="${autocomplete}" 
+		onclick="${onclick}"
+		onkeypress="dummyHandler"
+		onkeydown="dummyHandler"
+		onkeyup="dummyHandler"
+		onfocus="${onfocus}"
+		onblur="${onblur}"
+		tabindex="${tabindex}"
+		id="${fn:escapeXml(id)}"
+		disabled="${ not empty disabled ? disabled : 'false' }"
+		value="${value}" />
+				
+	<!-- help -->
+	<c:if test="${empty noHelp or not noHelp}">
+		<div class="help help-header hide"><c:out value="${labelText}" /></div>
+		<div class="help help-content hide">${helpText}</div>
+	</c:if>
+	<jsp:invoke fragment="appendix" />
 
-	<!--+
-		| bootstrap 3 form-group 
-		+-->
-	<div class="form-group clearfix">
-	
-	<!--+
-		| followed by output label 
-		+-->
-	<label class="col-sm-${labelColSpan} control-label" for="${fn:escapeXml(id)}">
-		<c:out value="${labelText}" />
-	</label>
-		
-
-		<!--+
-			| followed by input field surrounded by div column container with width inputColSpan
-			+-->
-
-		<div class="col-sm-${inputColSpan}">
-			<form:input cssClass="readonlyForm fsInput${small ? smallField : ''} ${fn:escapeXml(cssClass)} form-control ${helpPopover}" 
-						path="${path}" 
-						placeholder="${placeholder}" 
-						autocomplete="${autocomplete}" 
-						onclick="${onclick}"
-						onkeypress="dummyHandler"
-						onkeydown="dummyHandler"
-						onkeyup="dummyHandler"
-						onfocus="${onfocus}"
-						onblur="${onblur}"
-						tabindex="${tabindex}"
-						id="${fn:escapeXml(id)}"
-						disabled="${ not empty disabled ? disabled : 'false' }"/>
-							<!-- help -->
-			<c:if test="${empty noHelp or not noHelp}">
-				<div class="help help-header hide"><c:out value="${labelText}" /></div>
-				<div class="help help-content hide">${helpText}</div>
-			</c:if>
-			<jsp:invoke fragment="appendix" />
-		</div>
 </jsp:root>
