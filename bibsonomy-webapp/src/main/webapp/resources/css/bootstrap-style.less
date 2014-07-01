@@ -124,6 +124,54 @@ a {
 	background: @main-color-light;
 	color: #fff;
 }
+.nav .open>a, 
+.nav .open>a:hover, 
+.nav .open>a:focus {
+	background-color: inherit;
+}
+
+
+@media (max-width: 767px) {
+	.navbar-nav .open .dropdown-menu {
+		background: @main-color-light;
+	}
+	
+	.navbar-nav .open .dropdown-menu a {
+		color: @menu-link-color;
+	}
+	
+	.navbar-nav .open .dropdown-menu li.active a,
+	.navbar-nav .open .dropdown-menu a:hover,
+	.navbar-nav .open .dropdown-menu a:focus,
+	.navbar-nav .open .dropdown-menu a:active {
+		text-decoration: underline;
+		color: #fff;
+	}
+	
+	.navbar-header button {
+		color: @menu-link-color;
+		border-color: @menu-link-color;
+	}
+	.navbar-header button:hover,
+	.navbar-header button:focus,
+	.navbar-header button:active {
+		background-color:  @main-color-light;
+		color: #fff;
+		border-color: #fff;
+	}
+	
+	.navbar-toggle .icon-bar {
+		background-color: @menu-link-color;
+	}
+	
+	.navbar-header button:hover .icon-bar,
+	.navbar-header button:focus .icon-bar,
+	.navbar-header button:active .icon-bar {
+		background-color: #fff;
+	}
+	 
+}
+
 
 .noborder {
 	border: none;
