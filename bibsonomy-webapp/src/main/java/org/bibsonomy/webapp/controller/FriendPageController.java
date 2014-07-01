@@ -15,8 +15,8 @@ import org.bibsonomy.webapp.config.Parameters;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.security.access.AccessDeniedException;
 
 /**
  * @author Steffen Kress
@@ -31,7 +31,7 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 		
 		if (!command.getContext().isUserLoggedIn()){
 			log.info("Trying to access a friendpage without being logged in");
-			return new ExtendedRedirectView(urlGenerator.getLoginUrl());
+			throw new AccessDeniedException("please log in");
 		}
 		
 		final String format = command.getFormat();
