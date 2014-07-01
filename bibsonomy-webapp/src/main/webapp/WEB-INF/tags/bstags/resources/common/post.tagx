@@ -44,7 +44,7 @@
 			<br class="clearfix" />
 		</div>
 	   	<div class="media-body">
-			<div class="pdesc"><jsp:invoke fragment="desc"/></div>
+			<div class="pdesc ellipsis"><jsp:invoke fragment="desc"/></div>
 			<div class="pmeta"><rc:metaDate post="${post}"/>&amp;nbsp;<rc:metaUsername post="${post}" />&amp;nbsp;<rc:metaGroups post="${post}" /></div>
 			<div class="ptags"><rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/></div>
 			<discussion:rating post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>

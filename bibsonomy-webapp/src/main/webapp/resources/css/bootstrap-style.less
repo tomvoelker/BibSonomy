@@ -4,6 +4,37 @@
 @import "bootstrap-datepicker.less";
 @import "socicon.less";
 
+.ellipsis {
+	font-size: 12px;
+	height: 26px;
+	line-height: 13.199999809265137px;
+	margin-bottom: 3px;
+	margin-top: 11px;
+	text-align: left;
+}
+
+.ellipsis:after {
+	content: "\02026";  
+
+	box-sizing: content-box;
+	-webkit-box-sizing: content-box;
+	-moz-box-sizing: content-box;
+
+	float: right; 
+	position: relative;
+	left: -7px;
+	top: -38px;
+	width: 3.5em; 
+	margin-left: -3.5em;
+	text-align: right;
+	background: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), to(white), color-stop(50%, white));
+	background: -moz-linear-gradient(to right, rgba(255, 255, 255, 0), white 50%, white);			
+	background: -o-linear-gradient(to right, rgba(255, 255, 255, 0), white 50%, white);
+	background: -ms-linear-gradient(to right, rgba(255, 255, 255, 0), white 50%, white);
+	background: linear-gradient(to right, rgba(255, 255, 255, 0), white 50%, white); 
+}
+
+
 body {
 	background-color: @background-color; 
     background-image: url("/resources/bootstrap/img/bg.png");
@@ -18,6 +49,8 @@ body {
 .col-xs-offset-5, .col-sm-offset-5, .col-md-offset-5, .col-lg-offset-5 {
 	padding: 0 15px;
 }
+
+
 
 
 
