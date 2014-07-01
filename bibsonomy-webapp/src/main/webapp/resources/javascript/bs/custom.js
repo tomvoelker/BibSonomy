@@ -90,28 +90,48 @@ $(function() {
     	$(this).parent().prev().focus().next().show().hide();
     });
     
+    $("#linkBox").click(function(e){
+    	$(this).focus().select();
+    });
+    
     $('.remove-btn').click(function(e){
     	e.preventDefault();
     	var url = this.getAttribute("href");
     	var parent = this.parentNode.parentNode;
+    	var el = this;
     	$.ajax({
     		url: url,
     		dataType: "xml",
     		success: function(data) {
-    			handleDeleteResponse({parent:parent, data: data});
+    			handleDeleteResponse({parent:parent, data: data, el: el});
+    			$(el).addClass("inputActionSuccess");
     		},
     		error: function(data) {
-    			handleDeleteResponse({parent:parent, data: data});
+    			handleDeleteResponse({parent:parent, data: data, el: el});
+    			$(el).addClass("inputActionError");
     		}
     	});
     	
     	return false;
     });
     
+    function dummyHandler(e) {
+    	e.preventDefault();
+    	return false;
+    }
+    
     function handleDeleteResponse(o) {
     	
-    	//alert($(data).first("status").html());
 		o.parent.parentNode.removeChild(o.parent);
+		if($("status", data).text()=="ok")
+			$(el).addClass("inputActionSuccess");
+		else
+			$(el).addClass("inputActionError");
+		setTimeout(borderTimeout(o.el), 2000);
+    }
+    
+    function borderTimeout(el) {
+    	$(el).removeClass("inputActionError").removeClass("inputActionSuccess");
     }
     
     function shortenContent (el, text) {
