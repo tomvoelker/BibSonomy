@@ -210,8 +210,9 @@
 			+-->
 		<jsp:attribute name="content">
 			<!--<jsp:invoke fragment="discussion" />-->
-			<c:if test="${not empty discussion}">
-				<parts:postHeader headerHideable="${true}"
+			<c:if test="${ empty discussion}">
+
+				<parts:postHeader headerHideable="${false}"
 					showPageOptions="${empty showPageOptions or showPageOptions == true}"
 					publicationsWidthClass="${publicationsWidthClass}"
 					bookmarksWidthClass="${bookmarksWidthClass}"
@@ -226,9 +227,7 @@
 					command="${command}">
 					<!-- keep me -->
 				</parts:postHeader>
-			</c:if>
-			
-				
+			</c:if>	
 			<c:if test="${not command.context.userLoggedIn and (empty errors or errors.errorCount == 0)}">
 				<c:choose>
 					<c:when test="${properties['project.theme'] eq 'puma'}">
@@ -269,13 +268,12 @@
 										<rc:nextprev listView="${command.bookmark}"
 											listViewStartParamName="bookmark.start" />
 									</div>
-									
 								</div>
 							</c:if>
 						</jsp:attribute>
 					</resources:bookmarks>
 					
-				</div>
+				</div> <!-- ./col-md-6.bookmark-list -->
 				<div class="col-md-6 publication-list">
 			        
 					<resources:bibtexs listView="${command.bibtex}"

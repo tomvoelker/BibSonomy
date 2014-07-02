@@ -19,7 +19,6 @@
 	<c:if test="${empty listIndex}">
 		<c:set var="listIndex" value="0"/>
 	</c:if>
- 	<h3 class="list-headline">Bookmarks</h3>
 	<rc:list
 		titleKey="bookmarks" 
 		loginUserName="${loginUserName}"
