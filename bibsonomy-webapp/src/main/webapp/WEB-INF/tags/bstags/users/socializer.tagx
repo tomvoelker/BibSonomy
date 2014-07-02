@@ -73,17 +73,4 @@
 
 		
 	</div>
-	<hr />
-	<c:if test="${command.context.userLoggedIn and command.context.loginUser.name eq command.requestedUser}">
-		<div class="alert alert-warning">
-			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&amp;times;</button>
-			<h4>Did you know?</h4>
-			<p><strong>Browser buttons or Add-ons for your Browser</strong> helps you to collect bookmarks and publications. <a href="/buttons">Show me more</a></p>
-		</div>
-		<div class="alert alert-info">
-			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&amp;times;</button>
-			<h4>Did you know?</h4>
-			<p>Edit your profile: <a href="/settings/?selTab=0">Fill out your research profile</a> for your <a href="/cv/user/${command.context.loginUser.name}">CV</a> to increase your impact in ${properties['project.name']} and to enable your colleagues to find you.</p>
-		</div>
-	</c:if>
 </jsp:root>
