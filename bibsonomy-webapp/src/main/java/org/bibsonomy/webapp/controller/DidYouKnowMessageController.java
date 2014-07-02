@@ -25,7 +25,7 @@ public abstract class DidYouKnowMessageController {
 	
 	public DidYouKnowMessage getRandomDidYouKnowMessage() {
 		
-		int max = didYouKnowMessages.size() - 1;
+		int max = didYouKnowMessages.size();
 		int random = (int)(Math.random() * max);
 		
 		return this.didYouKnowMessages.get(random);
