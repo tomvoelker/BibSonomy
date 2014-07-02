@@ -75,7 +75,7 @@ public class PostsHandler implements ContextHandler {
 				}
 				break;
 			}
-		case 3: {
+		case 4: {
 				final String path = urlTokens.nextToken();
 		
 				// /posts/community/[hash]/references/

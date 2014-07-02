@@ -69,7 +69,7 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.GoldStandard#getReferencePartOfThisPublication()
+	 * @see org.bibsonomy.model.GoldStandard#getReferenceThisPublicationIsPublishedIn()
 	 */
 	@Override
 	public Set<BibTex> getReferenceThisPublicationIsPublishedIn() {
@@ -78,7 +78,7 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.GoldStandard#addToReferencePartOfThisPublication(org.bibsonomy.model.GoldStandardPublication)
+	 * @see org.bibsonomy.model.GoldStandard#addToReferenceThisPublicationIsPublishedIn(org.bibsonomy.model.GoldStandardPublication)
 	 */
 	@Override
 	public boolean addToReferenceThisPublicationIsPublishedIn(final BibTex publication) {
@@ -87,7 +87,7 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.GoldStandard#addAllToReferencePartOfThisPublication(java.util.Set)
+	 * @see org.bibsonomy.model.GoldStandard#addAllToReferenceThisPublicationIsPublishedIn(java.util.Set)
 	 */
 	@Override
 	public boolean addAllToReferenceThisPublicationIsPublishedIn(final Set<? extends BibTex> publications) {
@@ -100,7 +100,7 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.GoldStandard#removeFromReferencePartOfThisPublication(org.bibsonomy.model.GoldStandard)
+	 * @see org.bibsonomy.model.GoldStandard#removeFromReferenceThisPublicationIsPublishedIn(org.bibsonomy.model.GoldStandard)
 	 */
 	@Override
 	public boolean removeFromReferenceThisPublicationIsPublishedIn(final BibTex publication) {
@@ -109,7 +109,7 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.model.GoldStandard#removeAllFromReferencePartOfThisPublication(java.util.Set)
+	 * @see org.bibsonomy.model.GoldStandard#removeAllFromReferenceThisPublicationIsPublishedIn(java.util.Set)
 	 */
 	@Override
 	public boolean removeAllFromReferenceThisPublicationIsPublishedIn(final Set<? extends BibTex> publications) {
