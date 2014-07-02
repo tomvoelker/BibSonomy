@@ -19,9 +19,9 @@ import org.springframework.validation.Errors;
 
 /**
  * Controller for editing references of a gold standard post
- *    - ajax/goldstandards/references
+ *    - ajax/goldstandards/relation
  * 
- * @author dzo
+ * @author lka
  */
 public class EditGoldstandardRelationController extends AjaxController implements MinimalisticController<EditGoldstandardRelationCommand>, ErrorAware {
 	
@@ -41,11 +41,11 @@ public class EditGoldstandardRelationController extends AjaxController implement
 		}
 
 		//check if ckey is valid
-//		if (!context.isValidCkey()) {
-//			errors.reject("error.field.valid.ckey");
-//			return Views.ERROR;
-//		}
-//		
+		if (!context.isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
+			return Views.ERROR;
+		}
+		
 		final String hash = command.getHash();
 		final Set<String> references = command.getReferences();
 		final String relation = command.getRelation();

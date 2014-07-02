@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @author dzo
+ * @author lka
  */
 public class EditGoldstandardRelationCommand extends AjaxCommand {
 	private String hash;

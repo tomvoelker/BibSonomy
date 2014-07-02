@@ -15,6 +15,7 @@ import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.exceptions.DatabaseException;
+import org.bibsonomy.database.enums.RelationsEnum;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
@@ -207,7 +208,12 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
     @Test
     public void testAddRemoveReferences() {
         final String interHash = this.createGoldStandardPublication();
-        final String relation = String .valueOf(new Random().nextInt(2));
+        int relationValue = new Random().nextInt(2);
+        String relation = "REFERENCE";
+        for(RelationsEnum r : RelationsEnum.values()){
+        	if(r.getValue()==relationValue)
+        		relation = r.name();
+        	}
         goldPubManager.addReferencesToPost("", INTERHASH_GOLD_1, Collections.singleton(interHash), relation, this.dbSession);
 
         final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", null, this.dbSession);
