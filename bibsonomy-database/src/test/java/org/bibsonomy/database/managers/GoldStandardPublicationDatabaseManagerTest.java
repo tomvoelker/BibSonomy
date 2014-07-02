@@ -217,12 +217,12 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
         goldPubManager.addReferencesToPost("", INTERHASH_GOLD_1, Collections.singleton(interHash), relation, this.dbSession);
 
         final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", null, this.dbSession);
-        assertEquals(1 + 1, post.getResource().getReferences().size());
+        assertEquals(1 + 1, post.getResource().getReferences().size()+post.getResource().getReferenceThisPublicationIsPublishedIn().size());
 
         goldPubManager.removeReferencesFromPost("", INTERHASH_GOLD_1, Collections.singleton(interHash), relation, this.dbSession);
 
         final Post<GoldStandardPublication> postAfterRemove = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", null, this.dbSession);
-        assertEquals(1, postAfterRemove.getResource().getReferences().size());
+        assertEquals(1, postAfterRemove.getResource().getReferences().size()+post.getResource().getReferenceThisPublicationIsPublishedIn().size());
 
         this.deletePost(interHash);
     }
