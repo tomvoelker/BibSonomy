@@ -134,11 +134,11 @@
 										<div class="input-group">
 											<input class="form-control input-sm renameDocInput" name='newFileName' type="text" value="${filename}" />
 											<span class="input-group-btn">
-        										<a class="btn btn-sm btn-default rename-btn" title="${renameDocTitle}"><span class="glyphicon glyphicon-pencil"><!-- KEEP ME --></span></a>
-        										<a class="btn btn-sm btn-default remove-btn" title="${deleteDocTitle}" href="${deleteUrl}" data-filename="${fn:escapeXml(document.fileName)}"><span class="glyphicon glyphicon-remove"><!-- KEEP ME --></span></a>
-        										<a class="btn btn-sm btn-default download-btn" title="Download ${downloadTitle}"><span class="glyphicon glyphicon-download"><!-- KEEP ME --></span></a>
+        										<a class="btn btn-sm btn-default btn-stripped rename-btn" title="${renameDocTitle}"><span class="glyphicon glyphicon-pencil"><!-- KEEP ME --></span></a>
+        										<a class="btn btn-sm btn-default btn-stripped remove-btn" title="${deleteDocTitle}" href="${deleteUrl}" data-filename="${fn:escapeXml(document.fileName)}"><span class="glyphicon glyphicon-remove"><!-- KEEP ME --></span></a>
+        										<a class="btn btn-sm btn-default btn-stripped download-btn" title="Download ${downloadTitle}"><span class="glyphicon glyphicon-download"><!-- KEEP ME --></span></a>
         										<c:if test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
-        											<a class="btn btn-sm btn-default download-btn" title="${downloadQrTitle}"><span class="glyphicon glyphicon-qrcode"><!-- KEEP ME --></span></a>
+        											<a class="btn btn-sm btn-default btn-stripped download-btn" title="${downloadQrTitle}"><span class="glyphicon glyphicon-qrcode"><!-- KEEP ME --></span></a>
        											</c:if>
        													
       										</span>
