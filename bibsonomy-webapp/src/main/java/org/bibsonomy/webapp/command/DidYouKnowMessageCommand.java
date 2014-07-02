@@ -10,4 +10,7 @@ public interface DidYouKnowMessageCommand {
 
 	
 	public DidYouKnowMessage getDidYouKnowMessage();
+	
+	public void setDidYouKnowMessage(DidYouKnowMessage didYouKnowMessage);
+	
 }

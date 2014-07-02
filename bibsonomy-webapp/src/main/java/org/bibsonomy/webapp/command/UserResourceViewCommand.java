@@ -134,4 +134,10 @@ public class UserResourceViewCommand extends TagResourceViewCommand implements D
 		return this.didYouKnowMessage;
 	}
 
+	@Override
+	public void setDidYouKnowMessage(DidYouKnowMessage didYouKnowMessage) {
+		
+		this.didYouKnowMessage = didYouKnowMessage;
+	}
+
 }
