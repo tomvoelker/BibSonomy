@@ -179,10 +179,8 @@
 								<jsp:attribute name="addAsLastItem">
 									<c:if test="${not disableListNavigation}">
 										<div id="bookmarksfooter" class="${bookmarksWidthClass}">
-											<div class="footer">
-												<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>
-											</div>
-											
+											<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>
+
 										</div>
 									</c:if>
 								</jsp:attribute>
@@ -202,9 +200,7 @@
 								<jsp:attribute name="addAsLastItem">
 									<c:if test="${not disableListNavigation}">
 										<div id="publicationsfooter" class="${publicationsWidthClass}">
-											<div class="footer">
-												<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
-											</div>
+											<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
 										</div>
 									</c:if>
 								</jsp:attribute>

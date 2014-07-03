@@ -42,7 +42,9 @@
 		
 		
 		<!-- iterate over a list of resources and create the list -->
+		<!-- ${widthClassName}  -->
 		<ul class="posts ${widthClassName} media-list">
+		
 			<c:if test="${not empty addAsFirstItem}">
 				<li class="first"><jsp:invoke fragment="addAsFirstItem"/></li>
 			</c:if>
