@@ -159,6 +159,7 @@
 		<jsp:attribute name="content">
 			<!--<jsp:invoke fragment="discussion" />-->
 			<c:if test="${not empty discussion}">
+				<!-- 
 				<parts:postHeader 
 					headerHideable="${true}"
 					showPageOptions="${empty showPageOptions or showPageOptions == true}"
@@ -174,8 +175,9 @@
 					customBookmarksHeaderText="${customBookmarksHeaderText}"
 					customPublicationsHeaderText="${customPublicationsHeaderText}"
 					command="${command}">
-					<!-- keep me -->
+					
 				</parts:postHeader>
+				-->
 			</c:if>
 			
 			<c:choose>
@@ -209,7 +211,10 @@
 								loginUserName="${command.context.loginUser.name}" 
 								disableListNavigation="${disableListNavigation}" 
 								requPath="${excapedRequestPath}" 
-								widthClassName="${bookmarksWidthClass}">
+								widthClassName="${bookmarksWidthClass}" 
+								isBasket="${isBasket}"
+								showBookmark="${showBookmark}"
+								showPublication="${showPublication}">
 							 
 								<jsp:attribute name="addAsLastItem">
 									<c:if test="${not disableListNavigation}">
@@ -230,7 +235,10 @@
 									loginUserName="${command.context.loginUser.name}" 
 									disableListNavigation="${disableListNavigation}" 
 									requPath="${excapedRequestPath}" 
-									widthClassName="${publicationsWidthClass}">
+									widthClassName="${publicationsWidthClass}"
+									isBasket="${isBasket}"
+									showBookmark="${showBookmark}"
+									showPublication="${showPublication}">
 								<jsp:attribute name="addAsLastItem">
 									<c:if test="${not disableListNavigation}">
 										<div id="publicationsfooter" class="${publicationsWidthClass}">
