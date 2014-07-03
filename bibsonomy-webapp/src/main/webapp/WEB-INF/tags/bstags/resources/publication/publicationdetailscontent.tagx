@@ -184,7 +184,7 @@
 			 		<!-- <input id="linkBox" type="text" onclick="javascript:$(this).focus().select()" value="${linkText}" size="${fn:length(linkText)}" style="font-size:90%; border:0px;"/> -->
  					<!-- <input id="linkBox" class="input-sm form-control help-popover" style="width: 100%;" value="${linkText}"/> -->
  					
- 					<bsform:copyInput value="${linkText}" helpText="${helpText}" noHelp="${false}" />
+ 					<bsform:copyInput value="${linkText}" onclick="$(this).focus().select();" helpText="${helpText}" noHelp="${false}" />
  					
 			 	</td>
 			</tr>

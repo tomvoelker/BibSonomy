@@ -64,19 +64,38 @@
 	<c:if test="${(empty id)}">
 		<c:set var="id" value="${path}" />
 	</c:if>
-	<input class="readonly-form ${small ? smallField : ''} ${fn:escapeXml(cssClass)} form-control ${helpPopover}" 
-		placeholder="${placeholder}" 
-		autocomplete="${autocomplete}" 
-		onclick="${onclick}"
-		onkeypress="dummyHandler"
-		onkeydown="dummyHandler"
-		onkeyup="dummyHandler"
-		onfocus="${onfocus}"
-		onblur="${onblur}"
-		tabindex="${tabindex}"
-		id="${fn:escapeXml(id)}"
-		disabled="${ not empty disabled ? disabled : 'false' }"
-		value="${value}" />
+	<c:choose>
+		<c:when test="${ not empty disabled}">
+			<input class="readonly-form ${small ? smallField : ''} form-control ${helpPopover} ${fn:escapeXml(cssClass)}" 
+			placeholder="${placeholder}" 
+			autocomplete="${autocomplete}" 
+			onclick="${onclick}"
+			onkeypress="dummyHandler(event)"
+			onkeydown="dummyHandler(event)"
+			onkeyup="dummyHandler(event)"
+			onfocus="${onfocus}"
+			onblur="${onblur}"
+			tabindex="${tabindex}"
+			id="${fn:escapeXml(id)}"
+			disabled="disabled"
+			value="${value}" />
+		</c:when>
+		<c:otherwise>
+			<input class="readonly-form ${small ? smallField : ''} form-control ${helpPopover} ${fn:escapeXml(cssClass)}" 
+			placeholder="${placeholder}" 
+			autocomplete="${autocomplete}" 
+			onclick="${onclick}"
+			onkeypress="dummyHandler(event)"
+			onkeydown="dummyDownHandler(event)"
+			onkeyup="dummyUpHandler(event)"
+			onfocus="${onfocus}"
+			onblur="${onblur}"
+			tabindex="${tabindex}"
+			id="${fn:escapeXml(id)}"
+			value="${value}" />
+		</c:otherwise>
+	</c:choose>
+	
 				
 	<!-- help -->
 	<c:if test="${empty noHelp or not noHelp}">

@@ -823,4 +823,5 @@ public class Functions {
 
 		return (command instanceof DidYouKnowMessageCommand);
 	}
+
 }
