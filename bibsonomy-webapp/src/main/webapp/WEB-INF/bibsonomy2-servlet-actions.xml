@@ -1117,7 +1117,7 @@
 	
 	<!-- handles import of facebook friends -->
 	<bean id="facebookFriendsImportController" class="org.bibsonomy.webapp.controller.actions.FacebookFriendsImportController" scope="request">
-		<property name="projectHome" value="${project.home}"/>
+		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
 		<property name="fbApiKey" value="${facebook.api.key}"/>
 		<property name="fbSecret" value="${facebook.api.secret}"/>
 		<!-- defined in bibsonomy-entityresolver-context.xml -->
