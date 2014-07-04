@@ -33,6 +33,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.enums.RelationsEnum;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationDirection;
@@ -509,11 +510,21 @@ public class UrlRenderer {
 
 	/**
 	 * @param hash
+	 * @param relation 
 	 * @return the path to the references of a community post
 	 */
-	public String createHrefForCommunityPostReferences(String hash) {
+	public String createHrefForCommunityPostReferences(String hash,String relation) {
 		final UrlBuilder builder = this.createHrefForCommunity(hash);
-		builder.addPathElement(RESTConfig.REFERENCES_SUB_PATH);
+		int relationValue = 0;
+		for(RelationsEnum r: RelationsEnum.values()){
+			if(r.name().equalsIgnoreCase(relation))
+				relationValue = r.getValue();
+		}
+		if(relationValue==0){
+			builder.addPathElement(RESTConfig.RELATION_REFERENCE);
+		}else if(relationValue==1){
+			builder.addPathElement(RESTConfig.RELATION_PARTOF);
+		}
 		return builder.asString();
 	}
 	
@@ -723,4 +734,6 @@ public class UrlRenderer {
 		
 		return urlBuilder.asString();
 	}
+
+
 }

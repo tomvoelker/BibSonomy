@@ -37,22 +37,25 @@ import org.bibsonomy.util.StringUtils;
 public class CreateReferenceQuery extends AbstractQuery<String> {
 	private final String hash;
 	private final String referenceHash;
+	private final String relation;
 	
 	/**
 	 * 
 	 * @param hash the hash of the community post
 	 * @param referenceHash the reference hash of the other community post
+	 * @param relation  the relation between the community post and the reference hash
 	 */
-	public CreateReferenceQuery(final String hash, final String referenceHash) {
+	public CreateReferenceQuery(final String hash, final String referenceHash,final String relation) {
 		this.hash = hash;
 		this.referenceHash = referenceHash;
+		this.relation = relation;
 	}
 
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		this.getRenderer().serializeReference(sw, this.referenceHash);
-		final String url = this.getUrlRenderer().createHrefForCommunityPostReferences(this.hash);
+		final String url = this.getUrlRenderer().createHrefForCommunityPostReferences(this.hash, this.relation);
 		this.downloadedDocument = performRequest(HttpMethod.POST, url, StringUtils.toDefaultCharset(sw.toString()));
 	}
 

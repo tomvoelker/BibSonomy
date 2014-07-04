@@ -15,12 +15,12 @@ import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.exceptions.DatabaseException;
-import org.bibsonomy.database.enums.RelationsEnum;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.RelationsEnum;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.BeforeClass;

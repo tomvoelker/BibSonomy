@@ -19,10 +19,10 @@ public class PostReferencesStrategy extends AbstractCreateStrategy {
 	/**
 	 * @param context
 	 * @param hash 
+	 * @param relation
 	 */
 	public PostReferencesStrategy(final Context context, final String hash, final String relation) {
 		super(context);
-		
 		this.hash = hash;
 		this.relation = relation;
 	}

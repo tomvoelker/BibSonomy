@@ -1,7 +1,6 @@
 package org.bibsonomy.database.plugin.plugins;
 
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.enums.RelationsEnum;
 import org.bibsonomy.database.params.BasketParam;
 import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.BibTexParam;
@@ -16,6 +15,7 @@ import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.enums.RelationsEnum;
 
 /**
  * This plugin implements logging: on several occasions it'll save the old state

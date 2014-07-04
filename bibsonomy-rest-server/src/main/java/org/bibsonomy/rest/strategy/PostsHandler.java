@@ -75,14 +75,14 @@ public class PostsHandler implements ContextHandler {
 				}
 				break;
 			}
-		case 4: {
+		case 3: {
 				final String path = urlTokens.nextToken();
 		
-				// /posts/community/[hash]/references/
+				// /posts/community/[hash]/relation/
 				final String hash = urlTokens.nextToken();
-				final String references = urlTokens.nextToken();
+				//final String references = urlTokens.nextToken();
 				final String relation = urlTokens.nextToken();
-				if (!RESTConfig.COMMUNITY_SUB_PATH.equalsIgnoreCase(path) || !RESTConfig.REFERENCES_SUB_PATH.equalsIgnoreCase(references)) {
+				if (!RESTConfig.COMMUNITY_SUB_PATH.equalsIgnoreCase(path) || !RESTConfig.RELATION_REFERENCE.equalsIgnoreCase(relation) || !RESTConfig.RELATION_PARTOF.equalsIgnoreCase(relation)) {
 					break;
 				}			
 			

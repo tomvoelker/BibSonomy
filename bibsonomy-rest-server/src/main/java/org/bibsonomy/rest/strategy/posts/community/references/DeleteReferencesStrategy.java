@@ -10,7 +10,7 @@ import org.bibsonomy.rest.strategy.Context;
  * @author dzo
  */
 public class DeleteReferencesStrategy extends AbstractDeleteStrategy {
-	
+
 	private final String hash;
 	private final Reader doc;
 	private final String relation;
@@ -18,20 +18,21 @@ public class DeleteReferencesStrategy extends AbstractDeleteStrategy {
 	/**
 	 * @param context
 	 * @param hash
+	 * @param relation
 	 */
 	public DeleteReferencesStrategy(final Context context, final String hash, final String relation) {
 		super(context);
-		
+
 		this.hash = hash;
 		this.doc = context.getDocument();
-		this.relation = relation;
+		this.relation =  relation;
 	}
 
 	@Override
 	protected boolean delete() {
 		final Set<String> references = this.getRenderer().parseReferences(this.doc);
 		this.getLogic().deleteReferences(this.hash, references, relation);
-		
+
 		// no exception => delete successful
 		return true;
 	}

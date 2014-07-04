@@ -18,7 +18,6 @@ import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
-import org.bibsonomy.database.enums.RelationsEnum;
 import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.params.GoldStandardReferenceParam;
 import org.bibsonomy.database.params.ResourceParam;
@@ -27,6 +26,7 @@ import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.RelationsEnum;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.util.ReflectionUtils;
 
@@ -333,7 +333,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	 */
 	public void addReferencesToPost(final String userName, final String interHash, final Set<String> references, final String relation, final DBSession session) {
 		session.beginTransaction();
-		String tRelation =  relation.toUpperCase();
+		String tRelation =  relation;
 		if(tRelation.contains(" ")){
 			for(int i=0;i<tRelation.length();i++){
 				if(tRelation.charAt(i)==' '){
@@ -355,7 +355,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 				for (final String referenceHash : references) {
 					final Post<R> refPost = this.getGoldStandardPostByHash(referenceHash, session);
 					for(RelationsEnum r : RelationsEnum.values()){
-						if(r.name().equals(tRelation)){
+						if(r.name().equalsIgnoreCase(tRelation)){
 							relationValue = r.getValue();
 							break;
 							}
@@ -388,7 +388,9 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	public void removeReferencesFromPost(final String userName, final String interHash, final Set<String> references, final String relation, final DBSession session) {
 		session.beginTransaction();
 		String tRelation =  relation.toUpperCase();
-		tRelation = tRelation.replaceAll("_MENU", "");
+		if(tRelation.contains("_MENU")){
+			tRelation = tRelation.replaceAll("_MENU", "");
+		}
 		int relationValue = 0;
 		try {
 			final Post<R> post = this.getGoldStandardPostByHash(interHash, session);

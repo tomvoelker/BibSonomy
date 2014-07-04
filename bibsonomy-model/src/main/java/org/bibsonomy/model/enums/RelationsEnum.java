@@ -1,4 +1,4 @@
-package org.bibsonomy.database.enums;
+package org.bibsonomy.model.enums;
 
 public enum RelationsEnum {
 	REFERENCE(0), PART_OF(1);

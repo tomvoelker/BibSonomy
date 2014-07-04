@@ -250,19 +250,31 @@ public class ContextTest extends AbstractContextTest {
 	}
 
 	@Test
-	public void testAddReferenecesStrategy() throws Exception {
-		final Context c = new Context(HttpMethod.POST, "/api/posts/community/hashhashhash/references", RenderingFormat.XML, new RendererFactory(this.urlRenderer), this.is, null, db,
+	public void testAddRelationRefereneceStrategy() throws Exception {
+		final Context c = new Context(HttpMethod.POST, "/api/posts/community/hashhashhash/reference", RenderingFormat.XML, new RendererFactory(this.urlRenderer), this.is, null, db,
 				null, new HashMap<Object, Object>(), null);
 		assertTrue("failure initializing PostReferencesStrategy", c.getStrategy() instanceof PostReferencesStrategy);
 	}
 
 	@Test
-	public void testDeleteReferenecesStrategy() throws Exception {
-		final Context c = new Context(HttpMethod.DELETE, "/api/posts/community/hashhashhash/references", RenderingFormat.XML, new RendererFactory(this.urlRenderer), this.is, null, db,
+	public void testDeleteRelationRefereneceStrategy() throws Exception {
+		final Context c = new Context(HttpMethod.DELETE, "/api/posts/community/hashhashhash/reference", RenderingFormat.XML, new RendererFactory(this.urlRenderer), this.is, null, db,
 				null, new HashMap<Object, Object>(), null);
 		assertTrue("failure initializing DeleteReferenceStrategy", c.getStrategy() instanceof DeleteReferencesStrategy);
 	}
+	@Test
+	public void testAddRelationPartOfStrategy() throws Exception {
+		final Context c = new Context(HttpMethod.POST, "/api/posts/community/hashhashhash/part_of", RenderingFormat.XML, new RendererFactory(this.urlRenderer), this.is, null, db,
+				null, new HashMap<Object, Object>(), null);
+		assertTrue("failure initializing PostReferencesStrategy", c.getStrategy() instanceof PostReferencesStrategy);
+	}
 
+	@Test
+	public void testDeleteRelationPartOfStrategy() throws Exception {
+		final Context c = new Context(HttpMethod.DELETE, "/api/posts/community/hashhashhash/part_of", RenderingFormat.XML, new RendererFactory(this.urlRenderer), this.is, null, db,
+				null, new HashMap<Object, Object>(), null);
+		assertTrue("failure initializing DeleteReferenceStrategy", c.getStrategy() instanceof DeleteReferencesStrategy);
+	}
 	@Test
 	public void testWrongUsage() {
 		try {
