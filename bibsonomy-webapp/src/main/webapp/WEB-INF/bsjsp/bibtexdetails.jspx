@@ -109,6 +109,34 @@
 					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagSizeMode="detail" tagboxMinfreqStyle="none" highlightTags="${tagsString}"/>
 				</li>
 				
+								
+				<!--+
+					| private note
+					+-->
+				<c:if test="${isOwnPost}">
+				
+					<li>
+						<hr />
+						<div id="privnote">
+							<form method="post" id="note">
+						  		<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
+						  		<input type="hidden" name="intraHash" value="${fn:escapeXml(publication.intraHash)}"/>
+						  		<input type="hidden" name="oldprivatenote" value="${fn:escapeXml(publication.privnote)}"/>
+						  		<input type="hidden" name="action" value="updatePrivateNote"/>
+						  		<div class="form-group">
+						  			<label for="private-note"><fmt:message key="post.resource.privnote"/></label>
+							  		<textarea class="form-control" id="private-note" name="privateNote" rows="5"><c:out value="${publication.privnote}"/></textarea>
+							  		<fmt:message key="save" var="save" />
+						  		</div>
+						  		<div class="pull-right">
+						  			<button type="submit" class="btn btn-success btn-xs" id="makeP" onclick="javascript: return updatePrivNote($(this))"><c:out value="${save}" /></button>
+					  			</div> 
+					  			<div class="clearfix">&amp;nbsp;</div>
+						  	</form>
+						</div>
+					</li>
+				</c:if>
+				
 			</ul>
 		</jsp:attribute>
 

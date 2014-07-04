@@ -576,6 +576,11 @@
 						<property name="controllerBeanName" value="buttonPageController"/>
 					</bean>
 				</entry>
+				<entry key="/gettingStarted">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="gettingStartedPageController"/>
+					</bean>
+				</entry>
 				<entry key="/allRelations">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="relationsController"/>
@@ -878,6 +883,9 @@
 	</bean>
 	<bean id="buttonPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="BUTTONS"/>
+	</bean>
+	<bean id="gettingStartedPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="GETTINGSTARTED"/>
 	</bean>
 	<bean id="error403PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="ERROR403"/>

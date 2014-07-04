@@ -99,25 +99,6 @@
 		 	<h4 class="pub-details"><fmt:message key="publications.citations.headline" /></h4>
 			<pub:citation post="${post}"/>
 			
-			
-			<!--+
-				| private note
-				+-->
-			<c:if test="${isOwnEntry}">
-				<h4 class="pub-details"><fmt:message key="post.resource.privnote"/></h4>
-				<div id="privnote">
-					<form method="post" id="note">
-				  		<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
-				  		<input type="hidden" name="intraHash" value="${fn:escapeXml(publication.intraHash)}"/>
-				  		<input type="hidden" name="oldprivatenote" value="${fn:escapeXml(publication.privnote)}"/>
-				  		<input type="hidden" name="action" value="updatePrivateNote"/>
-				  		<textarea style="width:82%;" name="privateNote" rows="5"><c:out value="${publication.privnote}"/></textarea>
-				  		<fmt:message key="save" var="save" />
-				  		<input style="float:right;" type="submit" value="${save}" id="makeP" onclick="javascript: return updatePrivNote($(this))"/>    
-				  	</form>
-				</div>
-			</c:if>		
-			
 			<!--+
 				| only shown on PUMA (transfer publication to OpenAccess repository) 
 				+-->

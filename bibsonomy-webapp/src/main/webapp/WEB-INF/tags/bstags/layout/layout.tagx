@@ -51,9 +51,7 @@
 			/>
 
 			<body>
-				
-			
-			
+
 				<c:if test="${not empty beforeMainContainer}">
 					<jsp:invoke fragment="beforeMainContainer"/>
 				</c:if>
@@ -71,14 +69,7 @@
 								 	| logo and project name
 								 	|
 								 	+-->
-							 	<!-- 
-								<spring:theme code="image.head.logo" var="headerLogo" text=""/>
-								<c:if test="${not empty headerLogo}">
-									<div id="logoimage">
-										<a href="/"><img id="headerlogoimage" src="${headerLogo}"/></a>
-									</div>	
-								</c:if>
-								-->
+
 								<div id="logo">
 										<fmt:message var="homelink" key="navi.home"/> 
 										<h1><a href="/" title="${homelink}"><img src="/resources/image/logo4.png" alt="${properties['project.name']} Logo" /><span class="sr-only"> ${properties['project.name']}</span></a></h1>
@@ -109,22 +100,6 @@
 							</div>
 						</div>
 							
-
-						<!--+
-						 	|
-					 		| inbox, basket, edit tags links
-						 	|
-						 	+
-						<div id="poststats">
-							<c:if test="${not command.context.userLoggedIn and empty noLoginBox}">
-								<parts:login requPath="${requPath}"/>
-							</c:if>
-						</div>--><!-- #poststats -->
-	
-	
-	
-	
-							
 					</div><!-- /#bib-header -->
 				</div>
 				<div id="navigation">
@@ -148,58 +123,12 @@
 					  
 					</div><!-- /.row -->
 
-					
-					<!--+
-						|
-						| home, myProjectName, insert, groups, popular
-						|
-						+-->
-
-					<!-- 
-					<div id="sidebarheader">
-						<parts:sidebarnavi/>
-					</div>
-					 -->
-					 <!--
-					<div id="headercontainer">
-						<c:if test="${not empty headerContainer}">
-							<jsp:invoke fragment="headerContainer"/>
-						</c:if>
-					</div> 
-					-->
-
-
-					<!-- TODO: remove?! -->
-<!--					<div id="footercontainer">-->
-<!--						<c:choose>-->
-<!--							<c:when test="${not empty footerContainer}">-->
-<!--								<jsp:invoke fragment="footerContainer"/>-->
-<!--							</c:when>-->
-<!--							<c:otherwise>-->
-<!--								<div id="fullscreenfooter"> keep me </div>-->
-<!--							</c:otherwise>-->
-<!--						</c:choose>-->
-<!--					</div>   #footercontainer -->
-
 				</div> <!--  /.container -->
 
 			  	<div class="container footer">
 			    	<parts:footer />
 				</div>
 
-					<!-- 
-
-					<div id="legalnotices">
-						<fmt:message key="system.offeredBy">
-							<fmt:param value="${properties['project.name']}"/>
-						</fmt:message>
-						<c:out value=" "/>
-						<fmt:message key="system.termsOfUse"/>
-						<c:out value=" - "/>
-						<fmt:message key="navi.helpUrl" var="helpLangUrl" />
-						<a href="${helpLangUrl}/contact"><fmt:message key="navi.about"/></a>
-					</div>
-					-->
 			</body>
 		</jsp:body>
 	</jsp:element>
