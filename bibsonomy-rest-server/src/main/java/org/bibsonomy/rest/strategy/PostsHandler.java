@@ -82,7 +82,7 @@ public class PostsHandler implements ContextHandler {
 				final String hash = urlTokens.nextToken();
 				//final String references = urlTokens.nextToken();
 				final String relation = urlTokens.nextToken();
-				if (!RESTConfig.COMMUNITY_SUB_PATH.equalsIgnoreCase(path) || !RESTConfig.RELATION_REFERENCE.equalsIgnoreCase(relation) || !RESTConfig.RELATION_PARTOF.equalsIgnoreCase(relation)) {
+				if (!RESTConfig.COMMUNITY_SUB_PATH.equalsIgnoreCase(path) || (!RESTConfig.RELATION_REFERENCE.equalsIgnoreCase(relation) && !RESTConfig.RELATION_PARTOF.equalsIgnoreCase(relation))) {
 					break;
 				}			
 			
