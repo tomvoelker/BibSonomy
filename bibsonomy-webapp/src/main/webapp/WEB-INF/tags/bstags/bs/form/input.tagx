@@ -6,7 +6,7 @@
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
-	<jsp:directive.tag description="Render a form input field in the way it should typically be done with bootstrap." body-content="tagdependent" />
+	<jsp:directive.tag description="Render a form input field in the way it should typically be done with bootstrap." />
 
 	<jsp:directive.attribute name="path" type="java.lang.String" required="true" description="Path to property for data binding (e.g., post.resource.journal), labels, and the help message (.help is appended)"/>
 	<jsp:directive.attribute name="labelColSpan" type="java.lang.Integer" required="false" description="Column span width of the label. labelColSpan and inputColSpan must add up to 12" />
