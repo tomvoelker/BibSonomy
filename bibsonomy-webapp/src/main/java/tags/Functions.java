@@ -45,6 +45,8 @@ import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.web.spring.converter.StringToEnumConverter;
+import org.bibsonomy.webapp.command.BaseCommand;
+import org.bibsonomy.webapp.command.DidYouKnowMessageCommand;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -812,4 +814,14 @@ public class Functions {
 		return filename.replaceAll("[^A-Za-z0-9]", "-");
 	}
 	
+	/**
+	 * returns true, if command implements DidYouKnowMessageCommand interface
+	 * @param command
+	 * @return true|false
+	 */
+	public static Boolean instanceOfDidYouKnowMessageCommand(BaseCommand command) {
+
+		return (command instanceof DidYouKnowMessageCommand);
+	}
+
 }

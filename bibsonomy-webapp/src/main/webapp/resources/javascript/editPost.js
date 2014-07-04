@@ -57,11 +57,11 @@ function enableHandler() {
 }
 
 function disableHandler() {
-	if ($.browser.msie || $.browser.opera) {
-		document.onkeydown = document.onkeypress = document.onkeyup;
-	} else {
+//	if ($.browser.msie || $.browser.opera) {
+//		document.onkeydown = document.onkeypress = document.onkeyup;
+//	} else {
 		document.onkeydown = document.onkeypress = document.onkeyup = disHandler;
-	}
+//	}
 }
 
 function Suggestion(tagname, wighting)	{

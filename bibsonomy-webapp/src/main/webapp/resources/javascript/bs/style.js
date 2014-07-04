@@ -388,22 +388,22 @@ function initBookmarksPublicationsListsLast() {
 		maxheight = (maxheight > sidebarHeight) ? maxheight : sidebarHeight;
 		// set heights to maximum_heights
 		// only every last list will adjusted in height 
-		if (numberOfBookmarkLists != 0) {
-			//$("#bookmarks_"+(numberOfBookmarkLists-1)).height(maxheight-bookmarksHeight+$("#bookmarks_"+(numberOfBookmarkLists-1)).height());
-			$("#bookmarks_"+(numberOfBookmarkLists-1)+">ul.posts").height(maxheight-bookmarksHeight+$("#bookmarks_"+(numberOfBookmarkLists-1)).height());
-		}
-		
-		if (numberOfBookmarkLists != 0) {
-			//$("#publications_"+(numberOfPublicationLists-1)).height(maxheight-publicationsHeight+$("#publications_"+(numberOfPublicationLists-1)).height());
-			$("#publications_"+(numberOfPublicationLists-1)+">ul.posts").height(maxheight-publicationsHeight+$("#publications_"+(numberOfPublicationLists-1)).height());
-		}
-		
-		
-		// if there are no post lists and the only content is within element with id fullscreen, adjust length of this element
-		// (if it is smaller than sidebar, otherwise new height is already maxheight)
-		if (numberOfBookmarkLists==0 && numberOfPublicationLists==0 && fullscreenHeight>0) {
-			fullscreenHeight = maxheight;
-		}
+//		if (numberOfBookmarkLists != 0) {
+//			//$("#bookmarks_"+(numberOfBookmarkLists-1)).height(maxheight-bookmarksHeight+$("#bookmarks_"+(numberOfBookmarkLists-1)).height());
+//			$("#bookmarks_"+(numberOfBookmarkLists-1)+">ul.posts").height(maxheight-bookmarksHeight+$("#bookmarks_"+(numberOfBookmarkLists-1)).height());
+//		}
+//		
+//		if (numberOfBookmarkLists != 0) {
+//			//$("#publications_"+(numberOfPublicationLists-1)).height(maxheight-publicationsHeight+$("#publications_"+(numberOfPublicationLists-1)).height());
+//			$("#publications_"+(numberOfPublicationLists-1)+">ul.posts").height(maxheight-publicationsHeight+$("#publications_"+(numberOfPublicationLists-1)).height());
+//		}
+//		
+//		
+//		// if there are no post lists and the only content is within element with id fullscreen, adjust length of this element
+//		// (if it is smaller than sidebar, otherwise new height is already maxheight)
+//		if (numberOfBookmarkLists==0 && numberOfPublicationLists==0 && fullscreenHeight>0) {
+//			fullscreenHeight = maxheight;
+//		}
 
 		$("#sidebar").css({"min-height": maxheight});
 	}

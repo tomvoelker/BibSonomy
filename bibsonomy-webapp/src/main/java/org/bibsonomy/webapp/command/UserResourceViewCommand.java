@@ -2,13 +2,14 @@ package org.bibsonomy.webapp.command;
 
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.User;
+import org.bibsonomy.webapp.util.DidYouKnowMessage;
 
 /**
  * Bean for User-Sites
  *
  * @author  Dominik Benz
  */
-public class UserResourceViewCommand extends TagResourceViewCommand {
+public class UserResourceViewCommand extends TagResourceViewCommand implements DidYouKnowMessageCommand {
 
 	/** the group whode resources are requested*/
 	private ConceptsCommand concepts = new ConceptsCommand();
@@ -34,6 +35,10 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	 */
 	// TODO: use UserRelation as type
 	private String userSimilarity = UserRelation.FOLKRANK.name();
+	
+	
+	private DidYouKnowMessage didYouKnowMessage;
+	
 	
 	/**
 	 * @return the concepts
@@ -121,6 +126,18 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	 */
 	public void setOfFriendUser(boolean ofFriendUser) {
 		this.ofFriendUser = ofFriendUser;
+	}
+
+	@Override
+	public DidYouKnowMessage getDidYouKnowMessage() {
+		
+		return this.didYouKnowMessage;
+	}
+
+	@Override
+	public void setDidYouKnowMessage(DidYouKnowMessage didYouKnowMessage) {
+		
+		this.didYouKnowMessage = didYouKnowMessage;
 	}
 
 }

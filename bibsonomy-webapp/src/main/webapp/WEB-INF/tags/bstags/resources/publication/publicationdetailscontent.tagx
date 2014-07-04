@@ -182,11 +182,10 @@
 			 		<fmt:message var="helpText" key="discussion.resourceLink.help"/>
 			 		<c:set var="linkText" value="[[publication/${hash.inter.id}${publication.interHash}/${mtl:encodeURI(post.user.name)}]]" />
 			 		<!-- <input id="linkBox" type="text" onclick="javascript:$(this).focus().select()" value="${linkText}" size="${fn:length(linkText)}" style="font-size:90%; border:0px;"/> -->
- 					<input class="input-sm form-control help-popover" style="width: 100%;" value="${linkText}"/>
-					<div class="help help-header hide"><c:out value="${labelText}" /></div>
-					<div class="help help-content hide"><c:out value="${helpText}" /></div>
-			 		
-			 		
+ 					<!-- <input id="linkBox" class="input-sm form-control help-popover" style="width: 100%;" value="${linkText}"/> -->
+ 					
+ 					<bsform:copyInput value="${linkText}" onclick="$(this).focus().select();" helpText="${helpText}" noHelp="${false}" />
+ 					
 			 	</td>
 			</tr>
 									

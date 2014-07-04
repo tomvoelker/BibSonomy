@@ -23,14 +23,17 @@
 	<jsp:directive.attribute name="documents" fragment="true" required="true"/>
 	<jsp:directive.attribute name="addAsFirstItem" fragment="true" required="false" />
 	<jsp:directive.attribute name="addAsLastItem" fragment="true" required="false" />
+	<jsp:directive.attribute name="listHeadline" fragment="true" required="false"/>
 
 	<jsp:directive.variable name-given="post" scope="NESTED"/>
 
 	
 	<c:if test="${empty disableListNavigation}">
 		<c:set var="disableListNavigation" value="${false}"/>
-	</c:if>	
-		
+	</c:if>					
+	
+	<jsp:invoke fragment="listHeadline" />
+	
 	<div id="${listID}" class="${className} ${widthClassName}">
 			
 		<c:if test="${not empty extTitle}">
@@ -39,7 +42,9 @@
 		
 		
 		<!-- iterate over a list of resources and create the list -->
+		<!-- ${widthClassName}  -->
 		<ul class="posts ${widthClassName} media-list">
+		
 			<c:if test="${not empty addAsFirstItem}">
 				<li class="first"><jsp:invoke fragment="addAsFirstItem"/></li>
 			</c:if>

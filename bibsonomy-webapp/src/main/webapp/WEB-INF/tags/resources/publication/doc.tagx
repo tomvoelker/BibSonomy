@@ -39,8 +39,6 @@
 		  			 
 						<c:choose>
 							<c:when test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
-								<!-- <a class="documentFileName preview" href="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=true" title="${fn:escapeXml(document.fileName)}">  -->
-									<!-- <img src="${resdir}/image/document-txt-blue.png" style="float:left;"/> -->
 								<c:choose>
 									<c:when test="${count eq 0}">
 										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage">

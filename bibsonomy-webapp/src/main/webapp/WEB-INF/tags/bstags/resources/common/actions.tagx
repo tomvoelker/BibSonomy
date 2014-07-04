@@ -21,11 +21,11 @@
 		+ heading, variables
 		+ -->
 	<c:if test="${resourceType eq 'bibtex'}">
-		<fmt:message key="bibtex.actions.heading"/>
+		<li><span style="white-space: nowrap;"><fmt:message key="bibtex.actions.heading"/></span></li>
 		<c:set var="isPublication" value="${true}"/>
 	</c:if>
 	<c:if test="${resourceType eq 'bookmark'}">
-		<fmt:message key="bookmark.actions.heading"/>
+		<li><span style="white-space: nowrap;"><fmt:message key="bookmark.actions.heading"/></span></li>
 		<c:set var="isBookmark" value="${true}"/>
 	</c:if>
 	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
@@ -33,91 +33,90 @@
 	<!--+ 
 		+ export (RSS, BibTeX, XML, more...) 
 		+-->
-	<div class="listOptionHeading"><fmt:message key="navi.export"/>:</div>
-	<ul>
-		<li>
+	<li>
+		<span>
+			<strong><fmt:message key="navi.export"/>:</strong><br />
 			<rc:export requPathAndQuery="${requPathAndQuery}" isPublication="${isPublication}" isBookmark="${isBookmark}"/>
-		</li>
-	</ul>
+		</span>
+	</li>
 	
 	<!--+ 
 		+ placeholder for extended bibtex export options 
 		+-->
 	<c:if test="${isPublication}">
-		<div id="bibtexListExportOptions">${mtl:ch('nbsp')}</div>
+		<span id="bibtexListExportOptions">${mtl:ch('nbsp')}</span>
 	</c:if>	
 	
 	<!--+ 
 		+ sort options
 		+-->
 	<c:if test="${not disableSort}">
-		<div class="listOptionHeading"><fmt:message key="post.meta.sort"/>:</div>
-		<ul>
-			<li>
-				<rc:sortCriterion requPathAndQuery="${requPathAndQuery}" sortPage="${sortPage}"/>
-			</li>
-			<li>
+		<li>
+			<span>
+				<strong><fmt:message key="post.meta.sort"/>:</strong><br />
+				<rc:sortCriterion requPathAndQuery="${requPathAndQuery}" sortPage="${sortPage}"/><br />
 				<rc:sortOrder requPathAndQuery="${requPathAndQuery}" sortPageOrder="${sortPageOrder}"/>	
-			</li>
-			<c:if test="${isPublication}">
-				<li>
+				<c:if test="${isPublication}">
 					<a href="/help_en/Sorting%2Bpublications"><fmt:message key="post.meta.advanced"/>...</a>
-				</li>
-			</c:if>
-		</ul>
+				</c:if>
+			</span>
+		</li>
 	</c:if>
 	
 	<!--+ 
 		+ basket actions (pick, unpick, clear basket) only for publications, and logged-in users
 		+-->
 	<c:if test="${command.context.userLoggedIn and isPublication}">
-		<div class="listOptionHeading"><fmt:message key="navi.basket"/>:</div>
-		<ul>	
-			<li>
+		<li>
+			<span>
+				<strong><fmt:message key="navi.basket"/>:</strong><br />
 				<rc:basket isBasket="${isBasket}" />
-			</li>
-		</ul>
+			</span>
+		</li>	
 	</c:if>
 	
 	<!--+
 		+ inbox actions 
 		+-->
 	<c:if test="${command.context.userLoggedIn and showInboxActions}">
-		<div class="listOptionHeading"><fmt:message key="navi.inbox"/>:</div>
-		<ul>
-			<li>
+		<li>
+			<span>
+				<strong><fmt:message key="navi.inbox"/>:</strong><br />
 				<rc:inbox />
-			</li>
-		</ul>
+			</span>
+		</li>
 	</c:if>
 	
 	<!--+ 
 		+ other options (batch edit, show/hide lists, entries per page)
 		+-->
-	<div class="listOptionHeading"><fmt:message key="post.meta.others"/>:</div>
-	<ul>
-		<!-- edit -->
-		<c:if test="${command.context.userLoggedIn}">
-			<li>
-				<rc:batchEdit isPublication="${isPublication}" isBookmark="${isBookmark}" requPathAndQuery="${requPathAndQuery}"/>
-			</li>
-		</c:if>
-		<!-- show / hide resource types -->
-		<c:if test="${not disableResourcetypeSelection}">
-			<li>
+	<li>
+		<span>
+			<strong><fmt:message key="post.meta.others"/>:</strong><br />
+	
+			<!-- edit -->
+			<c:if test="${command.context.userLoggedIn}">
+	
+				<rc:batchEdit isPublication="${isPublication}" isBookmark="${isBookmark}" requPathAndQuery="${requPathAndQuery}"/><br />
+	
+			</c:if>
+			<!-- show / hide resource types -->
+			<c:if test="${not disableResourcetypeSelection}">
+	
 				<rc:resourcetype requPathAndQuery="${requPathAndQuery}" showBookmark="${showBookmark}" showPublication="${showPublication}" isBookmark="${isBookmark}" isPublication="${isPublication}"/>
-			</li>
-		</c:if>	
-		<!--  entries per page -->
-		<c:if test="${not disableListNavigation}">
-			<li>		
+	
+			</c:if>	
+			<!--  entries per page -->
+			<c:if test="${not disableListNavigation}">
+	
 				<c:if test="${isBookmark}">
 					<rc:itemcount entriesPerPage="${command.bookmark.entriesPerPage}" entryType="${command.bookmark.resourcetype}" titleKey="bookmarks" requPathAndQuery="${requPathAndQuery}"/>
 				</c:if>
 				<c:if test="${isPublication}">
 					<rc:itemcount entriesPerPage="${command.bibtex.entriesPerPage}" entryType="${command.bibtex.resourcetype}" titleKey="publications" requPathAndQuery="${requPathAndQuery}"/>
 				</c:if>
-			</li>
-		</c:if>
-	</ul>
+	
+			</c:if>
+		</span>
+	</li>
 </jsp:root>

@@ -9,13 +9,6 @@ $(function() {
 		$(this).parents('li.media').find('.advanced').toggle();
 	});
 	
-	/*
-	 * 
-	 * $('.post-popover, .help-popover').popover({ html : true, trigger:
-	 * "focus", container: 'body', placement: function() { return 'right'; },
-	 * title: function() { return $(this).next().html(); }, content: function() {
-	 * return $(this).next().next().html(); } });
-	 */
 	$('.post-popover, .help-popover').popover({ 
 	    html : true,
 	    trigger: "focus",
@@ -70,10 +63,17 @@ $(function() {
         moreLink.data("text", contentContainer.innerHTML).html(getString("more")).addClass("moreLink").click(function(event){
         	event.preventDefault();
         	var contentContainer = $(this.parentNode).children(".contentContainer")[0];
+        	
             if($(this).hasClass('less')) {
-            	$(this).html("("+getString("more")+")").removeClass("less").addClass("more");
+            	$(this)
+            	.html("("+getString("more")+")")
+            	.removeClass("less")
+            	.addClass("more");
             } else {
-            	$(this).html("("+getString("less")+")").removeClass("more").addClass("less");
+            	$(this)
+            	.html("("+getString("less")+")")
+            	.removeClass("more")
+            	.addClass("less");
             }
             shortenContent(contentContainer, moreLink.data("text"));
             return false;
@@ -94,14 +94,15 @@ $(function() {
     	e.preventDefault();
     	var url = this.getAttribute("href");
     	var parent = this.parentNode.parentNode;
+    	var el = this;
     	$.ajax({
     		url: url,
     		dataType: "xml",
     		success: function(data) {
-    			handleDeleteResponse({parent:parent, data: data});
+    			handleDeleteResponse({parent:parent, data: data, el: el});
     		},
     		error: function(data) {
-    			handleDeleteResponse({parent:parent, data: data});
+    			handleDeleteResponse({parent:parent, data: data, el: el});
     		}
     	});
     	
@@ -109,9 +110,20 @@ $(function() {
     });
     
     function handleDeleteResponse(o) {
-    	
-    	//alert($(data).first("status").html());
-		o.parent.parentNode.removeChild(o.parent);
+		if($("status", data).text()=="ok") o.parent.parentNode.removeChild(o.parent);
+		else {
+			$(el).removeClass("btn-stripped").addClass("btn-danger").popover({
+					animation: false,
+					trigger: 'manual',
+					delay: 0,
+					title: function() {
+						return getString("post.resource.remove.error.title");
+					},
+					content: function() {
+						return getString("post.resource.remove.error");
+					}
+			}).popover("show");
+		}
     }
     
     function shortenContent (el, text) {
@@ -124,3 +136,34 @@ $(function() {
         return shortened;
     }
 });
+
+function dummyDownHandler(e) {
+	var event = e || window.event;
+
+	var character = String.fromCharCode((96 <= e.keyCode && e.keyCode <= 105)? e.keyCode-48 : e.keyCode);
+	if(!(character.toLowerCase()=='c'&& event.ctrlKey)) {
+    	e.preventDefault();
+    	e.stopPropagation();
+    	return false;
+    }
+}
+
+function dummyHandler(e) {
+	
+	e.preventDefault();
+	
+	
+	
+	e.stopPropagation();
+	return false;
+}
+
+function dummyUpHandler(e) {
+	
+	e.preventDefault();
+	
+	
+	
+	e.stopPropagation();
+	return false;
+}

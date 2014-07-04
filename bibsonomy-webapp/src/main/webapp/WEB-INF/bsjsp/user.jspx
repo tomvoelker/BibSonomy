@@ -11,7 +11,8 @@
 	xmlns:users="urn:jsptagdir:/WEB-INF/tags/bstags/users"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
-	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/bstags/spheres"	
+	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/bstags/spheres"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"	
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -54,7 +55,15 @@
 		<ul>
 
 			<li><users:socializer command="${command}" /></li>
-
+			
+			<!-- Did you know? -->
+			<c:if test="${	command.context.userLoggedIn and 
+							command.context.loginUser.name eq command.requestedUser and 
+							mtl:instanceOfDidYouKnowMessageCommand(command) and
+							command.context.loginUser.settings.simpleInterface}">
+				<li><bs:didYouKnow command="${command}"/></li>
+			</c:if>
+			
 			<!-- link to discussed user page -->
 			<c:if test="${not command.context.userLoggedIn or command.context.loginUser.name ne command.requestedUser}">
 			<li>
@@ -77,7 +86,7 @@
 				</ul>
 			</li>
 			</c:if>
-
+			
 			<!-- display user's tag relations -->
 			<li>
 				<fmt:message key="tagrelations.title" var="tagRelationsTitle" />

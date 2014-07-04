@@ -6,9 +6,8 @@
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
-	<jsp:directive.tag description="Render a form input field in the way it should typically be done with bootstrap." />
+	<jsp:directive.tag description="Render a form input field in the way it should typically be done with bootstrap." body-content="tagdependent" />
 
-	<jsp:directive.attribute name="path" type="java.lang.String" required="true" description="Path to property for data binding (e.g., post.resource.journal), labels, and the help message (.help is appended)"/>
 	<jsp:directive.attribute name="labelColSpan" type="java.lang.Integer" required="false" description="Column span width of the label. labelColSpan and inputColSpan must add up to 12" />
 	<jsp:directive.attribute name="inputColSpan" type="java.lang.Integer" required="false" description="Column span width of the input field. labelColSpan and inputColSpan must add up to 12" />
 	<jsp:directive.attribute name="required" type="java.lang.Boolean" required="false" description="Must the user fill out the form, i.e., is the content required (adds '*' before form and CSS class 'reqinput')?"/>
@@ -18,6 +17,7 @@
 	<jsp:directive.attribute name="labelText" type="java.lang.String" required="false" description="Alternativly to path, you can define directly a description for the label."/>
 	<jsp:directive.attribute name="helpText" type="java.lang.String" required="false" description="Alternativly to path.help, you can define the content for popover help"/>
 	<jsp:directive.attribute name="small" type="java.lang.Boolean" required="false" description="Reduces the element width to 33 percent" />
+	<jsp:directive.attribute name="value" type="java.lang.String" required="false" description="Value for input field."/>
 	
 	<!-- HTML attributes -->
 	<jsp:directive.attribute name="id" 				type="java.lang.String" 	required="false"  description="Id for input field"/>
@@ -49,16 +49,8 @@
 			<c:set var="inputColSpan" value="${ 12 - labelColSpan }" />
 		</c:otherwise>
 	</c:choose>
-	
-	<c:if test="${empty labelText}">
-		<fmt:message var="labelText" key="${path}" />
-	</c:if>
-	
-	<c:if test="${empty helpText}">
-		<fmt:message var="helpText" key="${path}.help" />
-	</c:if>
 
-			
+	
 	<c:set var="helpPopover" value="" />
 	<c:if test="${empty noHelp or not noHelp}">
 		<c:set var="helpPopover" value="help-popover" />
@@ -72,43 +64,44 @@
 	<c:if test="${(empty id)}">
 		<c:set var="id" value="${path}" />
 	</c:if>
-
-	<!--+
-		| bootstrap 3 form-group 
-		+-->
-	<div class="form-group clearfix">
+	<c:choose>
+		<c:when test="${ not empty disabled}">
+			<input class="readonly-form ${small ? smallField : ''} form-control ${helpPopover} ${fn:escapeXml(cssClass)}" 
+			placeholder="${placeholder}" 
+			autocomplete="${autocomplete}" 
+			onclick="${onclick}"
+			onkeypress="dummyHandler(event)"
+			onkeydown="dummyHandler(event)"
+			onkeyup="dummyHandler(event)"
+			onfocus="${onfocus}"
+			onblur="${onblur}"
+			tabindex="${tabindex}"
+			id="${fn:escapeXml(id)}"
+			disabled="disabled"
+			value="${value}" />
+		</c:when>
+		<c:otherwise>
+			<input class="readonly-form ${small ? smallField : ''} form-control ${helpPopover} ${fn:escapeXml(cssClass)}" 
+			placeholder="${placeholder}" 
+			autocomplete="${autocomplete}" 
+			onclick="${onclick}"
+			onkeypress="dummyHandler(event)"
+			onkeydown="dummyDownHandler(event)"
+			onkeyup="dummyUpHandler(event)"
+			onfocus="${onfocus}"
+			onblur="${onblur}"
+			tabindex="${tabindex}"
+			id="${fn:escapeXml(id)}"
+			value="${value}" />
+		</c:otherwise>
+	</c:choose>
 	
-	<!--+
-		| followed by output label 
-		+-->
-	<label class="col-sm-${labelColSpan} control-label" for="${fn:escapeXml(id)}">
-		<c:out value="${labelText}" />
-	</label>
-		
+				
+	<!-- help -->
+	<c:if test="${empty noHelp or not noHelp}">
+		<div class="help help-header hide"><c:out value="${labelText}" /></div>
+		<div class="help help-content hide">${helpText}</div>
+	</c:if>
+	<jsp:invoke fragment="appendix" />
 
-		<!--+
-			| followed by input field surrounded by div column container with width inputColSpan
-			+-->
-		<div class="col-sm-${inputColSpan}">
-			<form:input cssClass="fsInput${small ? smallField : ''}${required ? ' reqinput' : ''} ${fn:escapeXml(cssClass)} form-control ${helpPopover}" 
-						path="${path}" 
-						placeholder="${placeholder}" 
-						autocomplete="${autocomplete}" 
-						onclick="${onclick}"
-						onfocus="${onfocus}"
-						onblur="${onblur}"
-						tabindex="${tabindex}"
-						id="${fn:escapeXml(id)}"
-						disabled="${ not empty disabled ? disabled : 'false' }"
-						data-role="${ not empty tagsinput and tagsinput eq true ? 'tagsinput' : 'false'}"/>
-							<!-- help -->
-			<c:if test="${empty noHelp or not noHelp}">
-				<div class="help help-header hide"><c:out value="${labelText}" /></div>
-				<div class="help help-content hide">${helpText}</div>
-			</c:if>
-			<jsp:invoke fragment="appendix" />
-			<!-- errors -->
-			<form:errors cssClass="alert alert-danger hide" path="${path}" />
-		</div>
-	</div>
 </jsp:root>

@@ -4,6 +4,37 @@
 @import "bootstrap-datepicker.less";
 @import "socicon.less";
 
+.ellipsis {
+	font-size: 12px;
+	height: 26px;
+	line-height: 13.199999809265137px;
+	margin-bottom: 3px;
+	margin-top: 11px;
+	text-align: left;
+}
+
+.ellipsis:after {
+	content: "\02026";  
+
+	box-sizing: content-box;
+	-webkit-box-sizing: content-box;
+	-moz-box-sizing: content-box;
+
+	float: right; 
+	position: relative;
+	left: -7px;
+	top: -38px;
+	width: 3.5em; 
+	margin-left: -3.5em;
+	text-align: right;
+	background: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), to(white), color-stop(50%, white));
+	background: -moz-linear-gradient(to right, rgba(255, 255, 255, 0), white 50%, white);			
+	background: -o-linear-gradient(to right, rgba(255, 255, 255, 0), white 50%, white);
+	background: -ms-linear-gradient(to right, rgba(255, 255, 255, 0), white 50%, white);
+	background: linear-gradient(to right, rgba(255, 255, 255, 0), white 50%, white); 
+}
+
+
 body {
 	background-color: @background-color; 
     background-image: url("/resources/bootstrap/img/bg.png");
@@ -19,7 +50,17 @@ body {
 	padding: 0 15px;
 }
 
+ul.dropdown-menu.list-options {
+	font-size: 12px !important;
+	min-width: 200px;
+}
 
+ul.dropdown-menu.list-options > li > span {
+	display: block;
+	padding: 3px 20px;
+	color: @font-color;
+	font-size: inherit;
+}
 
 /*
  * Fonts
@@ -74,7 +115,13 @@ body {
 }
 
 #logo {
-	font-family:Arial 'sans-serif';
+	font-family: Arial, 'sans-serif';
+	margin-top: 30px;
+}
+
+#logo h1 {
+	margin: 0;
+	padding: 0;
 }
 
 .slogan {
@@ -118,6 +165,54 @@ a {
 	background: @main-color-light;
 	color: #fff;
 }
+.nav .open>a, 
+.nav .open>a:hover, 
+.nav .open>a:focus {
+	background-color: inherit;
+}
+
+
+@media (max-width: 767px) {
+	.navbar-nav .open .dropdown-menu {
+		background: @main-color-light;
+	}
+	
+	.navbar-nav .open .dropdown-menu a {
+		color: @menu-link-color;
+	}
+	
+	.navbar-nav .open .dropdown-menu li.active a,
+	.navbar-nav .open .dropdown-menu a:hover,
+	.navbar-nav .open .dropdown-menu a:focus,
+	.navbar-nav .open .dropdown-menu a:active {
+		text-decoration: underline;
+		color: #fff;
+	}
+	
+	.navbar-header button {
+		color: @menu-link-color;
+		border-color: @menu-link-color;
+	}
+	.navbar-header button:hover,
+	.navbar-header button:focus,
+	.navbar-header button:active {
+		background-color:  @main-color-light;
+		color: #fff;
+		border-color: #fff;
+	}
+	
+	.navbar-toggle .icon-bar {
+		background-color: @menu-link-color;
+	}
+	
+	.navbar-header button:hover .icon-bar,
+	.navbar-header button:focus .icon-bar,
+	.navbar-header button:active .icon-bar {
+		background-color: #fff;
+	}
+	 
+}
+
 
 .noborder {
 	border: none;
@@ -902,4 +997,9 @@ fieldset {
 
 .container.footer .legal-notices a {
 	text-decoration: underline;
+}
+
+.btn-stripped {
+	margin-left: 0!important;
+	border-left: none;
 }

@@ -9,7 +9,9 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:home="urn:jsptagdir:/WEB-INF/tags/bstags/home">
+	xmlns:home="urn:jsptagdir:/WEB-INF/tags/bstags/home"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
 
 	<jsp:directive.attribute name="command"
 		type="org.bibsonomy.webapp.command.SimpleResourceViewCommand"
@@ -82,11 +84,9 @@
 		value="${(mtl:containsResourceClass(command.resourcetype, 'publication') or mtl:containsResourceClass(command.resourcetype, 'all')) and empty command.goldStandardPublications.list }" />
 	<c:set var="showBookmark"
 		value="${mtl:containsResourceClass(command.resourcetype, 'bookmark') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
-	<c:set var="bookmarksWidthClass"
-		value="${showPublication and showBookmark ? 'standard' : (showBookmark ? 'wide' : 'narrow')}" />
-	<c:set var="publicationsWidthClass"
-		value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}" />
+
 	<c:set var="excapedRequestPath" value="${fn:escapeXml(requPath)}" />
+	
 	<!--+
 		+ main layout
 		+-->
@@ -135,40 +135,22 @@
 			</script>
 			<script type="text/javascript">
 				$(function() {
-					$('.post-popover')
-					.popover(
-							{
-								html : true,
-								trigger : "hover",
-								container : 'body',
-								placement : 'top',
-								title : function() {
-									console
-											.log("#popover-head-"
-													+ $(this)
-															.attr(
-																	'data-ident'));
-									return $(
-											"#popover-head-"
-													+ $(this)
-															.attr(
-																	'data-ident'))
-											.html();
-								},
-								content : function() {
-									console
-											.log("#popover-head-"
-													+ $(this)
-															.attr(
-																	'data-ident'));
-									return $(
-											"#popover-content-"
-													+ $(this)
-															.attr(
-																	'data-ident'))
-											.html();
-								}
-							});
+					$('.post-popover').popover(
+						{
+							html : true,
+							trigger : "hover",
+							container : 'body',
+							placement : 'top',
+							title : function() {
+								console.log("#popover-head-" + $(this).attr('data-ident'));
+								return $("#popover-head-" + $(this).attr('data-ident')).html();
+							},
+							content : function() {
+								console.log("#popover-head-" + $(this).attr('data-ident'));
+								return $("#popover-content-" + $(this).attr('data-ident')).html();
+							}
+						}
+					);
 				});
 			</script>
 			<jsp:invoke fragment="headerExt" />
@@ -209,26 +191,7 @@
 			+ main content (resource lists)
 			+-->
 		<jsp:attribute name="content">
-			<!--<jsp:invoke fragment="discussion" />-->
-			<c:if test="${not empty discussion}">
-				<parts:postHeader headerHideable="${true}"
-					showPageOptions="${empty showPageOptions or showPageOptions == true}"
-					publicationsWidthClass="${publicationsWidthClass}"
-					bookmarksWidthClass="${bookmarksWidthClass}"
-					customPageOptions="${customPageOptions}"
-					showBookmark="${showBookmark}" showPublication="${showPublication}"
-					isBasket="${isBasket}"
-					disableListNavigation="${disableListNavigation}"
-					disableResourcetypeSelection="${disableResourcetypeSelection}"
-					showInboxActions="${showInboxActions}"
-					customBookmarksHeaderText="${customBookmarksHeaderText}"
-					customPublicationsHeaderText="${customPublicationsHeaderText}"
-					command="${command}">
-					<!-- keep me -->
-				</parts:postHeader>
-			</c:if>
 			
-				
 			<c:if test="${not command.context.userLoggedIn and (empty errors or errors.errorCount == 0)}">
 				<c:choose>
 					<c:when test="${properties['project.theme'] eq 'puma'}">
@@ -255,13 +218,61 @@
 			<!-- bibtex/bookmark lists -->
 		    <div class="row">
 				<div class="col-md-6 bookmark-list">
+					<!-- 
+					<h3 class="list-headline">
+						<c:if test="${empty showPageOptions or showPageOptions == true }">
 					
+							<c:choose>
+								<c:when test="${not empty customPageOptions}">
+									<jsp:invoke fragment="customPageOptions"/>
+								</c:when>
+								
+								<c:otherwise>
+									<div class="pull-right">
+										<div class="btn-group" style="margin-bottom: 4px;">
+											<bsform:button gear="${true}" value="" dropdown="${true}" size="xsmall" style="defaultStyle" dataToggle="dropdown" />
+											<ul class="dropdown-menu list-options">
+						
+												<rc:actions resourceType="bookmark" 
+													sortPage="${command.sortPage}" 
+													sortPageOrder="${command.sortPageOrder}" 
+													showBookmark="${showBookmark}" 
+													showPublication="${showPublication}" 
+													showInboxActions="${showInboxActions}" 
+													isBasket="${isBasket}"
+													disableListNavigation="${disableListNavigation}"
+													disableResourcetypeSelection="${disableResourcetypeSelection}"/>
+						
+									  		</ul>
+										</div>
+										
+									</div>
+								</c:otherwise>
+							</c:choose>
+						</c:if>
+					
+						<fmt:message key="bookmarks" />	
+						<c:if test="${!empty command.bookmark.list}">
+							<c:if test="${command.bookmark.totalCount != 0}">
+								<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.bookmark.totalCount} "/> <fmt:message key="bookmarks" /></c:set>
+								${mtl:ch('nbsp')}<span title="${totalTitle}">(${command.bookmark.totalCount})</span>
+							</c:if>
+						</c:if>
+					</h3>
+					-->
 			        <resources:bookmarks listView="${command.bookmark}"
 						loginUserName="${command.context.loginUser.name}"
 						disableListNavigation="${disableListNavigation}"
 						requPath="${excapedRequestPath}"
-						widthClassName="${bookmarksWidthClass}">
+						widthClassName="${bookmarksWidthClass}"
+						showBookmark="${showBookmark}"
+						showPublication="${showPublications}"
+						showPageOptions="${empty showPageOptions or showPageOptions == true}"
+						isBasket="${isBasket}"
+						showInboxActions="${showInboxActions}"
+						>
 					 
+					 	
 						<jsp:attribute name="addAsLastItem">
 							<c:if test="${not disableListNavigation}">
 								<div id="bookmarksfooter" class="${bookmarksWidthClass}">
@@ -269,20 +280,26 @@
 										<rc:nextprev listView="${command.bookmark}"
 											listViewStartParamName="bookmark.start" />
 									</div>
-									
 								</div>
 							</c:if>
 						</jsp:attribute>
 					</resources:bookmarks>
 					
-				</div>
+				</div> <!-- ./col-md-6.bookmark-list -->
 				<div class="col-md-6 publication-list">
+			        
+
 			        
 					<resources:bibtexs listView="${command.bibtex}"
 						loginUserName="${command.context.loginUser.name}"
 						disableListNavigation="${disableListNavigation}"
 						requPath="${excapedRequestPath}"
-						widthClassName="${publicationsWidthClass}">
+						widthClassName="${publicationsWidthClass}"
+						showBookmark="${showBookmark}"
+						showPublication="${showPublications}"
+						showPageOptions="${empty showPageOptions or showPageOptions == true}"
+						isBasket="${isBasket}">
+						
 						<jsp:attribute name="addAsLastItem">
 							<c:if test="${not disableListNavigation}">
 								<div id="publicationsfooter" class="${publicationsWidthClass}">

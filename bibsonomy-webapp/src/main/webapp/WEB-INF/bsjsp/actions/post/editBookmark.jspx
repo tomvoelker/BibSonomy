@@ -26,10 +26,9 @@
 		minimizedContentWidth="${true}"
 		>
 
-				
-		
 		<jsp:attribute name="headerExtResource">
-			<script type="text/javascript" src="${resdir}/javascript/editBookmark.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/bs/editBookmark.js"><!-- keep me --></script>
 		</jsp:attribute>
 
 		<jsp:attribute name="generalInformation">
@@ -39,18 +38,18 @@
 				+-->
 			
 			<!-- URL -->
-			<bsform:input id="url" labelColSpan="2" inputColSpan="10" placeholder="http://" labelText="URL" path="post.resource.url" required="${true}" noHelp="${true }"/>
+			<bsform:input labelColSpan="2" inputColSpan="10" placeholder="http://" labelText="URL" path="post.resource.url" required="${true}" noHelp="${true }"/>
 			
 			<!-- TITLE -->
 			<fmt:message key="post.resource.title" var="title"/>
-			<bsform:input id="title" labelColSpan="2" inputColSpan="10" placeholder="${title}" path="post.resource.title" required="${true}" noHelp="${false}">
+			<bsform:input labelColSpan="2" inputColSpan="10" placeholder="${title}" path="post.resource.title" required="${true}" noHelp="${false}">
 				<jsp:attribute name="appendix">
 					<div class="fsSuggestion" id="suggestion.resource.title"><!-- KEEP ME --></div>
 				</jsp:attribute>
 			</bsform:input>
 			
 			<!-- DESC -->
-			<bsform:textarea id="description" labelColSpan="2" inputColSpan="10" path="" labelText="Description">
+			<bsform:textarea labelColSpan="2" inputColSpan="10" path="post.description" labelText="Description">
 				<jsp:attribute name="appendix">
 					<div class="fsSuggestion" id="suggestion.description"><!-- KEEP ME --></div>
 				</jsp:attribute>
@@ -59,7 +58,7 @@
 			<!--+
                 | INPUT FIELD FOR TAGS
                 +-->
-    	  	<bsform:input id="inpf_tags" autocomplete="off" path="tags" tabindex="1" tagsinput="true"
+    	  	<bsform:input id="inpf_tags" autocomplete="off" path="post.tags" tabindex="1" tagsinput="true"
 		  		onclick="setActiveInputField(this.id); enableHandler();" 
 		  		onfocus="setActiveInputField(this.id); enableHandler()" 
 		  		onblur="disableHandler()">
@@ -67,11 +66,11 @@
 		        <jsp:attribute name="appendix">
 		
 		        	<!-- allow user to confirm tags containing comma or semicolon -->
-		        	<c:if test="${containsComma}">
+<!-- 		        	<c:if test="${containsComma}">
 		          		<div>
 			        	    <form:checkbox path="acceptComma"/><form:label path="acceptComma"><fmt:message key="post.resource.tags.comma"/></form:label>
 		    	      	</div>
-		        	</c:if>
+		        	</c:if> -->
 			        <!--+
 		    	        | show recommendations
 		        	    +-->

@@ -4,7 +4,9 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:bm="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bookmark"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
 	
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
@@ -13,13 +15,22 @@
 	<jsp:directive.attribute name="listIndex" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="extTitle" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="widthClassName"  type="java.lang.String" required="true"/>
+
+	<!-- list headline options  -->	
+	<jsp:directive.attribute name="showPageOptions" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="showBookmark" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="showPublication" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="isBasket" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
+	
+	<!-- fragments -->
 	<jsp:directive.attribute name="addAsFirstItem" fragment="true" required="false" />
 	<jsp:directive.attribute name="addAsLastItem" fragment="true" required="false" />
-		
+	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
+	
 	<c:if test="${empty listIndex}">
 		<c:set var="listIndex" value="0"/>
 	</c:if>
- 	<h3 class="list-headline">Bookmarks</h3>
 	<rc:list
 		titleKey="bookmarks" 
 		loginUserName="${loginUserName}"
@@ -33,6 +44,50 @@
 		widthClassName="${widthClassName}"
 		addAsFirstItem="${addAsFirstItem}"
 		addAsLastItem="${addAsLastItem}">
+		
+		
+		<jsp:attribute name="listHeadline">
+			<h3 class="list-headline">
+			
+				<fmt:message key="bookmarks" />	
+				<!-- Display total number of entries in list --> 
+				<c:if test="${!empty command.bookmark.list}">
+					<c:if test="${command.bookmark.totalCount != 0}">
+						<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.bookmark.totalCount} "/> <fmt:message key="bookmarks" /></c:set>
+						<span class="badge" title="${totalTitle}" style="position:relative; top: -3px; left: 3px;">${command.bookmark.totalCount}</span>
+					</c:if>
+				</c:if>
+	
+								<!-- default: show page options -->
+				<c:if test="${empty showPageOptions or showPageOptions == true }">
+					<c:out value=" " />
+					<c:choose>
+						<c:when test="${not empty customPageOptions}">
+							<jsp:invoke fragment="customPageOptions"/>
+						</c:when>
+						<c:otherwise>
+							<div class="btn-group" style="margin-bottom: 2px;">
+								<bsform:button gear="${true}" value="" dropdown="${true}" size="xsmall" style="defaultStyle" dataToggle="dropdown" />
+								<ul class="dropdown-menu list-options">
+			
+									<rc:actions resourceType="bookmark" 
+										sortPage="${command.sortPage}" 
+										sortPageOrder="${command.sortPageOrder}" 
+										showBookmark="${showBookmark}" 
+										showPublication="${showPublication}" 
+										showInboxActions="${showInboxActions}" 
+										isBasket="${isBasket}"
+										disableListNavigation="${disableListNavigation}"
+										disableResourcetypeSelection="${disableResourcetypeSelection}"/>
+			
+						  		</ul>
+							</div>
+						</c:otherwise>
+					</c:choose>
+				</c:if>
+			</h3>
+		
+		</jsp:attribute>
 		
 		<jsp:attribute name="title">     <bm:title   post="${post}"/></jsp:attribute>
 		<jsp:attribute name="desc">	     <bm:desc    post="${post}"/></jsp:attribute>
