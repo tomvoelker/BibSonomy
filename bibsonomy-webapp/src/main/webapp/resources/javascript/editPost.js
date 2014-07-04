@@ -404,7 +404,7 @@ function completeTag(tag) {
 				break;
 			}
 			else if(sortedCollection) {
-				if(sortedCollection[getPos()] != "") {
+				if(sortedCollection[getPos()] != "" && sortedCollection[getPos()]!==undefined) {
 					// tag found in collection
 					reset = true;
 					var tag = sortedCollection[getPos()];
