@@ -1171,7 +1171,7 @@
 	<bean id="limitedAccountActivationController" class="org.bibsonomy.webapp.controller.actions.LimitedAccountActivationController" scope="request">
 		<property name="adminLogic" ref="adminLogic"/>
 		<property name="successRedirect" value="${limited_account.redirect_url}" />
-		<property name="projectHome" value="${project.home}" />
+		<property name="urlGenerator" ref="absoluteUrlGenerator" />
 	</bean>
 	
 	<!-- 
