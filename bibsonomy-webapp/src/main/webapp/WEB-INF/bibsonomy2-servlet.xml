@@ -199,9 +199,9 @@
 		<property name="basenamePrefix" value="theme_"/>
 	</bean>
 	
-	<bean id="relativeUrlGenerator" class="org.bibsonomy.services.URLGenerator" />
+	<bean id="relativeUrlGenerator" class="org.bibsonomy.services.URLGenerator" scope="prototype"/>
 	
-	<bean id="absoluteUrlGenerator" class="org.bibsonomy.services.URLGenerator">
+	<bean id="absoluteUrlGenerator" class="org.bibsonomy.services.URLGenerator" scope="prototype">
 		<property name="projectHome" value="${project.home}" />
 	</bean>
 	

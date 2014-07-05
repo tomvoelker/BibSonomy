@@ -25,6 +25,7 @@ package org.bibsonomy.services;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -118,7 +119,11 @@ public class URLGenerator {
      * Per default, generated URLs are not checked.
      */
     private boolean checkUrls = false;
-
+    
+    /**
+     * Prefix to be inserted after the project home.
+     */
+    private String prefix = "";
     /**
      * Sets up a new URLGenerator with the default projectHome ("/") and no
      * checking of URLs.
@@ -155,8 +160,8 @@ public class URLGenerator {
      * @param name
      * @return The URL pointing to the page.
      */
-    public String getAdminUrlByString(final String name) {
-        String url = this.projectHome + ADMIN_PREFIX;
+    public String getAdminUrlByName(final String name) {
+        String url = this.projectHome + prefix + ADMIN_PREFIX;
         if (present(name)) {
             url += "/" + UrlUtils.safeURIEncode(name);
         }
@@ -170,7 +175,8 @@ public class URLGenerator {
      * @return The URL for the author's page.
      */
     public String getAuthorUrlByName(final String authorName) {
-        return this.getUrl(this.projectHome + AUTHOR_PREFIX + "/" + UrlUtils.safeURIEncode(authorName));
+    	String url = this.projectHome + prefix + AUTHOR_PREFIX + "/" + UrlUtils.safeURIEncode(authorName);
+        return this.getUrl(url);
     }
     
     /**
@@ -179,7 +185,7 @@ public class URLGenerator {
      * @return URL pointing to the basket page.
      */
     public String getBasketUrl() {
-    	String url = this.projectHome + BASKET_PREFIX;
+    	String url = this.projectHome + prefix + BASKET_PREFIX;
     	return this.getUrl(url);
     }
     
@@ -202,7 +208,7 @@ public class URLGenerator {
          * no user given
          */
         if (!present(user) || !present(user.getName())) {
-            return this.getUrl(this.projectHome + BOOKMARK_PREFIX + "/" + bookmark.getInterHash());
+            return this.getUrl(this.projectHome + prefix + BOOKMARK_PREFIX + "/" + bookmark.getInterHash());
         }
         return this.getBookmarkUrlByIntraHashAndUsername(bookmark.getIntraHash(), user.getName());
     }
@@ -227,7 +233,7 @@ public class URLGenerator {
      * @return The URL pointing to the post of that user for the bookmark represented by the given intrahash.
      */
     public String getBookmarkUrlByIntraHashAndUsername(final String intraHash, final String userName) {
-        String url = this.projectHome + BOOKMARK_PREFIX + "/" + intraHash;
+        String url = this.projectHome + prefix + BOOKMARK_PREFIX + "/" + intraHash;
         if (present(userName)) {
             url += "/" + UrlUtils.safeURIEncode(userName);
 
@@ -242,7 +248,7 @@ public class URLGenerator {
      * @return The URL pointing to the concepts of the user.
      */
     public String getConceptsUrlByString(final String name) {
-        String url = this.projectHome + CONCEPTS_PREFIX;
+        String url = this.projectHome + prefix + CONCEPTS_PREFIX;
         if (present(name)) {
             url += "/" + UrlUtils.safeURIEncode(name);
         }
@@ -258,7 +264,7 @@ public class URLGenerator {
      * @return The URL pointing to the concepts of the user with the specified tags.
      */
     public String getConceptUrlByUserNameAndTagName(final String userName, final String tagName) {
-    	String url = this.projectHome + CONCEPT_PREFIX + "/" + USER_PREFIX;
+    	String url = this.projectHome + prefix + CONCEPT_PREFIX + "/" + USER_PREFIX;
     	url += "/" + UrlUtils.safeURIEncode(userName);
     	url += "/" + UrlUtils.safeURIEncode(tagName);
     	
@@ -271,7 +277,7 @@ public class URLGenerator {
      * @return URL pointing to the posts of the users you are following.
      */
     public String getFollowersUrl() {
-    	String url = this.projectHome + FOLLOWERS_PREFIX;
+    	String url = this.projectHome + prefix + FOLLOWERS_PREFIX;
     	return this.getUrl(url);
     }
     
@@ -283,7 +289,7 @@ public class URLGenerator {
      * @return URL pointing to the posts viewable for friends of User with name username.
      */
     public String getFriendUrlByUserName(final String userName) {
-    	String url = this.projectHome + FRIEND_PREFIX + "/";
+    	String url = this.projectHome + prefix + FRIEND_PREFIX + "/";
     	url += UrlUtils.safeURIEncode(userName);
     	
     	return this.getUrl(url);
@@ -311,7 +317,8 @@ public class URLGenerator {
      * @return The URL for the group's page.
      */
     public String getGroupUrlByGroupName(final String groupName) {
-        return this.getUrl(this.projectHome + GROUP_PREFIX + "/" + UrlUtils.safeURIEncode(groupName));
+    	String url = this.projectHome + prefix + GROUP_PREFIX + "/" + UrlUtils.safeURIEncode(groupName);
+        return this.getUrl(url);
     }
     
     
@@ -336,7 +343,8 @@ public class URLGenerator {
      * @return URL pointing to the login page
      */
     public String getLoginUrl() {
-    	return this.getUrl(this.projectHome + LOGIN_PREFIX);
+    	String url = this.projectHome + prefix + LOGIN_PREFIX;
+    	return this.getUrl(url);
     }
     
     /**
@@ -345,7 +353,7 @@ public class URLGenerator {
      * @return URL pointing to the bookmarks and publications of the user
      */
     public String getMyBibTexUrl() {
-    	String url = this.projectHome + MYBIBTEX_PREFIX;
+    	String url = this.projectHome + prefix + MYBIBTEX_PREFIX;
     	return this.getUrl(url);
     }
     
@@ -355,7 +363,7 @@ public class URLGenerator {
      * @return URL pointing to the documents of the user
      */
     public String getMyDocumentsUrl() {
-    	String url = this.projectHome + MYDOCUMENTS_PREFIX;
+    	String url = this.projectHome + prefix + MYDOCUMENTS_PREFIX;
     	return this.getUrl(url);
     }
     
@@ -365,7 +373,7 @@ public class URLGenerator {
      * @return URL pointing to the duplicates of the user
      */
     public String getMyDuplicatesUrl() {
-    	String url = this.projectHome + MYDUPLICATES_PREFIX;
+    	String url = this.projectHome + prefix + MYDUPLICATES_PREFIX;
     	return this.getUrl(url);
     }
     
@@ -375,7 +383,7 @@ public class URLGenerator {
      * @return URL pointing to the bookmarks and publications of the user
      */
     public String getMyHomeUrl() {
-    	String url = this.projectHome + MYHOME_PREFIX;
+    	String url = this.projectHome + prefix + MYHOME_PREFIX;
     	return this.getUrl(url);
     }
     
@@ -385,7 +393,7 @@ public class URLGenerator {
      * @return URL pointing to the relations of the user
      */
     public String getMyRelationsUrl() {
-    	String url = this.projectHome + MYRELATIONS_PREFIX;
+    	String url = this.projectHome + prefix + MYRELATIONS_PREFIX;
     	return this.getUrl(url);
     }
     
@@ -395,7 +403,7 @@ public class URLGenerator {
      * @return URL pointing to the user search
      */
     public String getMySearchUrl() {
-    	String url = this.projectHome + MYSEARCH_PREFIX;
+    	String url = this.projectHome + prefix + MYSEARCH_PREFIX;
     	return this.getUrl(url);
     }
 
@@ -449,7 +457,7 @@ public class URLGenerator {
      * @return URL to all publications of the main page in bibtex formats.
      */
     public String getPublicationsAsBibtexUrl() {
-    	String url = this.projectHome + BIBTEXEXPORT_PREFIX;
+    	String url = this.projectHome + prefix + BIBTEXEXPORT_PREFIX;
     	return this.getUrl(url);
     }
     
@@ -487,9 +495,14 @@ public class URLGenerator {
              * If a user name is given, return the url to that users post (intrahash + username)
              * otherwise return the URL to the resources page (interhash)
              */
-            return this.getUrl(this.projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTER_HASH_ID + publication.getInterHash());
+        	String url = this.projectHome + PUBLICATION_PREFIX + "/" + 
+        				 PUBLICATION_INTER_HASH_ID + publication.getInterHash();
+            return this.getUrl(url);
         }
-        return this.getUrl(this.projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTRA_HASH_ID + publication.getIntraHash() + "/" + UrlUtils.safeURIEncode(user.getName()));
+        String url = this.projectHome + prefix + PUBLICATION_PREFIX + "/" + 
+        			 PUBLICATION_INTRA_HASH_ID + publication.getIntraHash() + 
+        			 "/" + UrlUtils.safeURIEncode(user.getName());
+        return this.getUrl(url);
     }
     
     /**
@@ -541,7 +554,8 @@ public class URLGenerator {
      * @return URL pointing to the publication represented by the interHash and the userName
      */
     public String getPublicationUrlByInterHashAndUsername(final String interHash, final String userName) {
-    	String url = this.projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTER_HASH_ID + interHash;
+    	String url = this.projectHome + prefix +PUBLICATION_PREFIX + "/" +
+    				 PUBLICATION_INTER_HASH_ID + interHash;
     	
     	if (present(userName))
 			return this.getUrl(url + "/" + UrlUtils.safeURIEncode(userName));
@@ -569,7 +583,8 @@ public class URLGenerator {
      * @return URL pointing to the publication represented by the intraHash and the userName
      */
     public String getPublicationUrlByIntraHashAndUsername(final String intraHash, final String userName) {
-    	String url = this.projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTRA_HASH_ID + intraHash;
+    	String url = this.projectHome + prefix + PUBLICATION_PREFIX + "/" +
+    				 PUBLICATION_INTRA_HASH_ID + intraHash;
     	
     	if (present(userName))
 			return this.getUrl(url + "/" + UrlUtils.safeURIEncode(userName));
@@ -584,7 +599,8 @@ public class URLGenerator {
      * @return URL pointing to the page with posts relevant for the group with name groupName.
      */
     public String getRelevantForUrlByGroupName(final String groupName) {
-    	String url = this.projectHome + RELEVANTFOR_PREFIX + "/" + GROUP_PREFIX;
+    	String url = this.projectHome + prefix + RELEVANTFOR_PREFIX + "/" +
+    				 GROUP_PREFIX;
     	url += "/" + UrlUtils.safeURIEncode(groupName);
     	return this.getUrl(url);
     }
@@ -596,7 +612,8 @@ public class URLGenerator {
      * @return URL pointing to the results of the search.
      */
     public String getSearchUrl(final String toSearch) {
-    	String url = this.projectHome + SEARCH_PREFIX + "/" + UrlUtils.safeURIEncode(toSearch);
+    	String url = this.projectHome + prefix + SEARCH_PREFIX + "/" +
+    				 UrlUtils.safeURIEncode(toSearch);
     	return this.getUrl(url);
     }
     
@@ -607,7 +624,7 @@ public class URLGenerator {
      * @return The URL for the tag's page.
      */
     public String getTagUrlByTagName(final String tagName) {
-    	String url = this.projectHome + TAG_PREFIX;
+    	String url = this.projectHome + prefix + TAG_PREFIX;
     	if (present(tagName)) {
     		url += "/" + UrlUtils.safeURIEncode(tagName);
     	}
@@ -642,7 +659,9 @@ public class URLGenerator {
      * @return The URL to the picture of the user.
      */
     public String getUserPictureUrlByUsername(final String userName) {
-    	return this.getUrl(this.projectHome + PICTURE_PREFIX + "/" + USER_PREFIX + "/" + UrlUtils.safeURIEncode(userName));
+    	String url = this.projectHome + prefix + PICTURE_PREFIX + "/" +
+    				 USER_PREFIX + "/" + UrlUtils.safeURIEncode(userName);
+    	return this.getUrl(url);
     }
     
 
@@ -663,7 +682,9 @@ public class URLGenerator {
      * @return The URL for the user's page.
      */
     public String getUserUrlByUserName(final String userName) {
-        return this.getUrl(this.projectHome + USER_PREFIX + "/" + UrlUtils.safeURIEncode(userName));
+    	String url = this.projectHome + prefix + USER_PREFIX + "/" +
+    				 UrlUtils.safeURIEncode(userName);
+        return this.getUrl(url);
     }
 
     /**
@@ -686,7 +707,8 @@ public class URLGenerator {
      * @return URL pointing to the viewable posts for friends
      */
     public String getViewableFriendsUrl() {
-    	String url = this.getProjectHome() + VIEWABLE_PREFIX + "/" + VIEWABLE_FRIENDS_SUFFIX;
+    	String url = this.getProjectHome() + prefix + VIEWABLE_PREFIX + "/" +
+    				 VIEWABLE_FRIENDS_SUFFIX;
     	return this.getUrl(url);
     }
     
@@ -710,7 +732,8 @@ public class URLGenerator {
      * @return URL pointing to the public viewable posts
      */
     public String getViewablePublicUrl() {
-    	String url = this.getProjectHome() + VIEWABLE_PREFIX + "/" + VIEWABLE_PUBLIC_SUFFIX;
+    	String url = this.getProjectHome() + prefix + VIEWABLE_PREFIX + "/" +
+					 VIEWABLE_PUBLIC_SUFFIX;
     	return this.getUrl(url);
     }
     
@@ -733,7 +756,8 @@ public class URLGenerator {
      * @return URL pointing to the private viewable posts
      */
     public String getViewablePrivateUrl() {
-    	String url = this.getProjectHome() + VIEWABLE_PREFIX + "/" + VIEWABLE_PRIVATE_SUFFIX;
+    	String url = this.getProjectHome() + prefix + VIEWABLE_PREFIX + "/" +
+    				 VIEWABLE_PRIVATE_SUFFIX;
     	return this.getUrl(url);
     }
     
@@ -758,7 +782,7 @@ public class URLGenerator {
      * @return the URL for all viewable posts of a group.
      */
     public String getViewableUrlByGroupName(final String groupName) {
-    	String url = this.projectHome + VIEWABLE_PREFIX;
+    	String url = this.projectHome + prefix + VIEWABLE_PREFIX;
     	url += "/" + UrlUtils.safeURIEncode(groupName);
     	
     	return this.getUrl(url);
@@ -815,6 +839,11 @@ public class URLGenerator {
             return false;
         }
         return url.matches(".*/(" + PUBLICATION_PREFIX + "|" + BOOKMARK_PREFIX + ")/[0-3]?" + intraHash + "/" + userName + ".*");
+    }
+    
+    public URLGenerator prefix(String prefix){
+    	this.prefix = prefix;
+    	return this;
     }
 
     /**

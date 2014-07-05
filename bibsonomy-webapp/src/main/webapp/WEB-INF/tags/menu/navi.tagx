@@ -115,14 +115,14 @@
 		
 		<c:if test="${loginUser.role eq 'ADMIN' }">
 			<li class="pulldown ${activeTab eq 'admin' ? 'active' : ''}" id="systemAdmin" data-touch="false">
-				<a href="${relativeUrlGenerator.getAdminUrlByString(null)}">admin</a>
+				<a href="${relativeUrlGenerator.getAdminUrlByName(null)}">admin</a>
 				<ul>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByString('spam')}">spam</a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByString('group')}">groups</a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByString('lucene')}">full text search</a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByString('recommender')}">recommenders</a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByString('oauth')}">OAuth consumers</a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByString('sync')}">synchronization</a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('spam')}">spam</a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('group')}">groups</a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('lucene')}">full text search</a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('recommender')}">recommenders</a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('oauth')}">OAuth consumers</a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('sync')}">synchronization</a></li>
 				</ul>
 			</li>
 		</c:if>
