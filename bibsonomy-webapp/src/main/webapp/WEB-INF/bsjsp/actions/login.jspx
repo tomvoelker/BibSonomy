@@ -23,16 +23,6 @@
 		requPath="${requPath}"
 		smallBox="true">
 
-		<jsp:attribute name="headerExt">
-			<script type="text/javascript">
-				< ![CDATA[
-						$(function() {
-							$('#logins').tabs().tabs('select', ${command.selTab});
-						});
-				]] >
-			</script>	
-		</jsp:attribute>
-
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.login"/>
 		</jsp:attribute>
