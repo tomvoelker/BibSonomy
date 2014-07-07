@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.servlet.ServletException;
@@ -77,7 +78,12 @@ public class MementoController implements MinimalisticController<RedirectCommand
 			throw new MalformedURLSchemeException("parameter 'datetime' missing");
 		}
 		// query timegate
-		final URL redirectUrl = this.mementoService.getMementoUrl(url, datetime);
+		URL redirectUrl;
+		try {
+			redirectUrl = this.mementoService.getMementoUrl(url, datetime);
+		} catch (final MalformedURLException e) {
+			redirectUrl = null;
+		}
 		// check result
 		// TODO: handle case when timegate works well but there exists no archived version
 		if (!present(redirectUrl)) {
