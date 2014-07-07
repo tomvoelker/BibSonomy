@@ -58,7 +58,7 @@
 			<!--+
                 | INPUT FIELD FOR TAGS
                 +-->
-    	  	<bsform:input id="inpf_tags" autocomplete="off" path="post.tags" tabindex="1" tagsinput="true"
+    	  	<bsform:input id="inpf_tags" autocomplete="off" path="tags" tabindex="1" tagsinput="true"
 		  		onclick="setActiveInputField(this.id); enableHandler();" 
 		  		onfocus="setActiveInputField(this.id); enableHandler()" 
 		  		onblur="disableHandler()">
@@ -123,9 +123,9 @@
 						<fmt:message var="private" key="post.resource.private" />
 						<fmt:message var="other"   key="post.resource.other" />
 						
-		   				<bsform:radio path="abstractGrouping" value="public" 	tabindex="2" labelText="${public}"/>
+		   				<bsform:radio path="abstractGrouping" value="public" 	tabindex="1" labelText="${public}"/>
 		          		<bsform:radio path="abstractGrouping" value="private" 	tabindex="2" labelText="${private}"/>
-		          		<bsform:radio path="abstractGrouping" value="other" 	tabindex="2" labelText="${other}" id="post.groups.other" />
+		          		<bsform:radio path="abstractGrouping" value="other" 	tabindex="3" labelText="${other}" id="post.groups.other" />
           			</div>
           			<div class="col-md-6">
 		      			<form:select class="initiallyHidden form-control" multiple="false" path="groups" size="5" id="post.groups.other2" tabindex="2">
