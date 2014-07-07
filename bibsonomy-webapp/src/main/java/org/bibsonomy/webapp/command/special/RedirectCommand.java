@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.command.special;
 
 import org.bibsonomy.webapp.command.BaseCommand;
+import org.bibsonomy.webapp.controller.special.MementoController;
 
 /**
  * 
@@ -10,7 +11,9 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * <li>/redirect pages for search forms,</li>
  * <li>/uri/ content negotiation.</li>
  * </ul>
- *  
+ * 
+ * and for the {@link MementoController} (see there).
+ * 
  * @author rja
  */
 public class RedirectCommand extends BaseCommand {
@@ -34,14 +37,33 @@ public class RedirectCommand extends BaseCommand {
 	 */
 	private String requUser;
 
+	/**
+	 * The timestamp for which an archived web page (memento) is requested
+	 */
+	private String datetime;
+	
+	
+	/**
+	 * @return
+	 */
+	public String getDatetime() {
+		return datetime;
+	}
 
 	/**
-	 * The URL to be used for content negotation.
+	 * @param datetime
+	 */
+	public void setDatetime(String datetime) {
+		this.datetime = datetime;
+	}
+
+	/**
+	 * The URL to be used for content negotation and memento access
 	 */
 	private String url;
 	
 	
-	/** Requested URL for content negotiation.
+	/** Requested URL for content negotiation and memento access
 	 * 
 	 * @return The URL for content negotiation.
 	 */
