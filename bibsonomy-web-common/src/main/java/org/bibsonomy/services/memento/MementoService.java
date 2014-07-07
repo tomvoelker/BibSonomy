@@ -12,7 +12,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Interaction with Memento TimeGates, cf. http://www.mementoweb.org/
+ * Interaction with Memento TimeGates, cf. http://www.mementoweb.org/ 
+ * 
+ * Given a URL and a timestamp, Memento tries to find a copy of that
+ * URL in a web archive that is closest to the timestamp.
+ * 
+ * This service is taking a URL and a timestamp as input ({@link #getMementoUrl(String, String)}) and 
+ * queries the configured timegate for an appropriate archived version.
  * 
  * @author rja
  *

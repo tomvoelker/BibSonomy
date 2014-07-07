@@ -37,6 +37,16 @@ import org.springframework.validation.Errors;
  * Given a URL and a timestamp, Memento tries to find a copy of that
  * URL in a web archive that is closest to the timestamp.
  * 
+ * This controller is taking a URL and a timestamp as input and then 
+ * calls the MementoService which queries the timegate for an appropriate
+ * archived version.
+ * 
+ * The controller is available at /memento.
+ * 
+ * The links to /memento should be integrated with the rel="nofollow" 
+ * attribute and the /memento URL should be excluded by robots.txt such 
+ * that crawlers don't put too much load onto the time gate.
+ * 
  * @author rja
  */
 public class MementoController implements MinimalisticController<RedirectCommand> {
@@ -47,8 +57,8 @@ public class MementoController implements MinimalisticController<RedirectCommand
 	/**
 	 * We need two parameters:
 	 * <ul>
-	 * <li><pre>url</pre>: the URL for which we want to find a copy
-	 * <li><pre>datetime</pre>: the timestamp at which we want to find a copy
+	 * <li><pre>url</pre>: the URL for which we want to find an archived copy
+	 * <li><pre>datetime</pre>: the timestamp for which we want to find an archived copy
 	 * </ul>
 	 * 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(org.bibsonomy.webapp.command.ContextCommand)
@@ -66,7 +76,7 @@ public class MementoController implements MinimalisticController<RedirectCommand
 		if (!present(datetime)) { 
 			throw new MalformedURLSchemeException("parameter 'datetime' missing");
 		}
-		// query TimeGate
+		// query timegate
 		final URL redirectUrl = this.mementoService.getMementoUrl(url, datetime);
 		// check result
 		// TODO: handle case when timegate works well but there exists no archived version
@@ -83,10 +93,16 @@ public class MementoController implements MinimalisticController<RedirectCommand
 		return new RedirectCommand();
 	}
 	
+	/**
+	 * @return The Memento service
+	 */
 	public MementoService getMementoService() {
 		return mementoService;
 	}
 
+	/**
+	 * @param mementoService The Memento service that handles requests to the TimeGate.
+	 */
 	public void setMementoService(MementoService mementoService) {
 		this.mementoService = mementoService;
 	}
