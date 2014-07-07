@@ -152,8 +152,7 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 				 */
 				this.logic.createDocument(uploadedFile, null);
 			} catch (Exception ex) {
-				log.error("Could not add custom " + layoutPart + " layout." + ex.getMessage());
-				throw new RuntimeException("Could not add custom " + layoutPart + " layout: " + ex.getMessage());
+				errors.reject("settings.jabRef.error.import", new Object[]{layoutPart,ex.getMessage()}, null);
 			}
 		}
 	}
