@@ -112,7 +112,7 @@
 	<!--+
 		| link for the memento timegate
 		+-->
-	<c:url var="mementoLink" value="/service">
+	<c:url var="mementoLink" value="/memento">
 		<c:param name="url" value="${post.resource.url}"/>
 		<c:param name="datetime" value="${mtl:formatDateISO8601(post.date)}"/>
 	</c:url>
