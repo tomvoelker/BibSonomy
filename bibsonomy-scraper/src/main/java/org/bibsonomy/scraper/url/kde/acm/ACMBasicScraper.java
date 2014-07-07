@@ -295,10 +295,9 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 		HttpClient client = WebUtils.getHttpClient();
 		final String id = scrapingContext.getTmpMetadata().getId();
 		final String url = "http://dl.acm.org/tab_references.cfm?id=" + id;
-		
 		String reference = "";
 		try{
-			reference = WebUtils.getContentAsString(client, url);
+			WebUtils.getContentAsString(client, url);
 			if(present(reference)){
 				scrapingContext.setReferences(reference);
 				return true;
