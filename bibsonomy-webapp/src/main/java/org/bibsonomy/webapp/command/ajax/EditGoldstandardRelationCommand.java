@@ -3,14 +3,15 @@ package org.bibsonomy.webapp.command.ajax;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.bibsonomy.model.enums.RelationsEnum;
+
 /**
  * @author lka
  */
 public class EditGoldstandardRelationCommand extends AjaxCommand {
 	private String hash;
 	private Set<String> references;
-	private String relation;
-	
+	private RelationsEnum relation;
 	/**
 	 * inits the references set
 	 */
@@ -36,13 +37,28 @@ public class EditGoldstandardRelationCommand extends AjaxCommand {
 	 * @param relation the relation to set
 	 */
 	public void setRelation(String relation) {
-		this.relation = relation;
+		String tRelation =  relation.toUpperCase();
+		if(tRelation.contains("_MENU")){
+			tRelation = tRelation.replaceAll("_MENU", "");
+		}
+		if(tRelation.contains(" ")){
+			for(int i=0;i<tRelation.length();i++){
+				if(tRelation.charAt(i)==' '){
+					tRelation=tRelation.substring(0, i)+"_"+tRelation.substring(i+1);
+				}
+			}
+		}
+		for(RelationsEnum r: RelationsEnum.values()){
+			if(r.name().equalsIgnoreCase(tRelation)){
+				this.relation = r;
+				break;
+			}
+		}
 	}
-	
 	/**
 	 * @return the relation
 	 */
-	public String getRelation() {
+	public RelationsEnum getRelation() {
 		return relation;
 	}
 

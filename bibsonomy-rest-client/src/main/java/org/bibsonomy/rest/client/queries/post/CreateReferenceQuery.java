@@ -25,6 +25,7 @@ package org.bibsonomy.rest.client.queries.post;
 
 import java.io.StringWriter;
 
+import org.bibsonomy.model.enums.RelationsEnum;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -37,7 +38,7 @@ import org.bibsonomy.util.StringUtils;
 public class CreateReferenceQuery extends AbstractQuery<String> {
 	private final String hash;
 	private final String referenceHash;
-	private final String relation;
+	private final RelationsEnum relation;
 	
 	/**
 	 * 
@@ -45,7 +46,7 @@ public class CreateReferenceQuery extends AbstractQuery<String> {
 	 * @param referenceHash the reference hash of the other community post
 	 * @param relation  the relation between the community post and the reference hash
 	 */
-	public CreateReferenceQuery(final String hash, final String referenceHash,final String relation) {
+	public CreateReferenceQuery(final String hash, final String referenceHash,final RelationsEnum relation) {
 		this.hash = hash;
 		this.referenceHash = referenceHash;
 		this.relation = relation;

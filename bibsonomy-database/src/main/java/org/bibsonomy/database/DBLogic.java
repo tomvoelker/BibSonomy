@@ -97,6 +97,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.enums.RelationsEnum;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -2521,7 +2522,7 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.GoldStandardPostLogicInterface#createRelation(java.lang.String, java.util.Set)
 	 */
 	@Override
-	public void createRelation(final String postHash, final Set<String> references, final String relation) {
+	public void createRelation(final String postHash, final Set<String> references, final RelationsEnum relation) {
 		this.permissionDBManager.ensureAdminAccess(loginUser); // only admins can create references
 
 		final DBSession session = this.openSession();
@@ -2537,7 +2538,7 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.GoldStandardPostLogicInterface#deleteReferences(java.lang.String, java.util.Set)
 	 */
 	@Override
-	public void deleteReferences(final String postHash, final Set<String> references, final String relation) {
+	public void deleteReferences(final String postHash, final Set<String> references, final RelationsEnum relation) {
 		this.permissionDBManager.ensureAdminAccess(loginUser); // only admins can delete references
 
 		final DBSession session = this.openSession();

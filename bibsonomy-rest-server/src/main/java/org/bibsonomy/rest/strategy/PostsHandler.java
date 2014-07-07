@@ -2,6 +2,7 @@ package org.bibsonomy.rest.strategy;
 
 import java.util.StringTokenizer;
 
+import org.bibsonomy.model.enums.RelationsEnum;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
@@ -80,17 +81,23 @@ public class PostsHandler implements ContextHandler {
 		
 				// /posts/community/[hash]/relation/
 				final String hash = urlTokens.nextToken();
-				//final String references = urlTokens.nextToken();
+				// /posts/community/[hash]/reference/ or /posts/community/[hash]/part_of/
 				final String relation = urlTokens.nextToken();
 				if (!RESTConfig.COMMUNITY_SUB_PATH.equalsIgnoreCase(path) || (!RESTConfig.RELATION_REFERENCE.equalsIgnoreCase(relation) && !RESTConfig.RELATION_PARTOF.equalsIgnoreCase(relation))) {
 					break;
 				}			
-			
+				RelationsEnum relationEnum = RelationsEnum.REFERENCE;
+				for(RelationsEnum r: RelationsEnum.values()){
+					if(r.name().equalsIgnoreCase(relation)){
+						relationEnum = r;
+						break;
+					}
+				}
 				switch (httpMethod) {
 					case POST:
-						return new PostReferencesStrategy(context, hash, relation);
+						return new PostReferencesStrategy(context, hash, relationEnum);
 					case DELETE:
-						return new DeleteReferencesStrategy(context, hash, relation);
+						return new DeleteReferencesStrategy(context, hash, relationEnum);
 					default:
 						break;
 				}

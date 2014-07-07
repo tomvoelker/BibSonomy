@@ -3,6 +3,7 @@ package org.bibsonomy.rest.strategy.posts.community.references;
 import java.io.Writer;
 import java.util.Set;
 
+import org.bibsonomy.model.enums.RelationsEnum;
 import org.bibsonomy.rest.strategy.AbstractCreateStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
@@ -14,14 +15,14 @@ import org.bibsonomy.rest.strategy.Context;
 public class PostReferencesStrategy extends AbstractCreateStrategy {
 
 	private final String hash;
-	private final String relation;
+	private final RelationsEnum relation;
 	
 	/**
 	 * @param context
 	 * @param hash 
 	 * @param relation
 	 */
-	public PostReferencesStrategy(final Context context, final String hash, final String relation) {
+	public PostReferencesStrategy(final Context context, final String hash, final RelationsEnum relation) {
 		super(context);
 		this.hash = hash;
 		this.relation = relation;

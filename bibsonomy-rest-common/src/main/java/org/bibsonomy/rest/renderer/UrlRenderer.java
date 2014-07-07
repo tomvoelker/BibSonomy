@@ -513,13 +513,9 @@ public class UrlRenderer {
 	 * @param relation 
 	 * @return the path to the references of a community post
 	 */
-	public String createHrefForCommunityPostReferences(String hash,String relation) {
+	public String createHrefForCommunityPostReferences(String hash,RelationsEnum relation) {
 		final UrlBuilder builder = this.createHrefForCommunity(hash);
-		int relationValue = 0;
-		for(RelationsEnum r: RelationsEnum.values()){
-			if(r.name().equalsIgnoreCase(relation))
-				relationValue = r.getValue();
-		}
+		int relationValue = relation.getValue();
 		if(relationValue==0){
 			builder.addPathElement(RESTConfig.RELATION_REFERENCE);
 		}else if(relationValue==1){

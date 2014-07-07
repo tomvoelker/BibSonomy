@@ -331,17 +331,9 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	 * @param relation 
 	 * @param session
 	 */
-	public void addReferencesToPost(final String userName, final String interHash, final Set<String> references, final String relation, final DBSession session) {
+	public void addReferencesToPost(final String userName, final String interHash, final Set<String> references, final RelationsEnum relation, final DBSession session) {
 		session.beginTransaction();
-		String tRelation =  relation;
-		if(tRelation.contains(" ")){
-			for(int i=0;i<tRelation.length();i++){
-				if(tRelation.charAt(i)==' '){
-					tRelation=tRelation.substring(0, i)+"_"+tRelation.substring(i+1);
-				}
-			}
-		}
-		int relationValue = 0;
+		int relationValue = relation.getValue();
 		try {
 			final Post<R> post = this.getGoldStandardPostByHash(interHash, session);
 			if (!present(post)) {
@@ -354,12 +346,6 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 				// TODO: A <-> A references and duplicate references
 				for (final String referenceHash : references) {
 					final Post<R> refPost = this.getGoldStandardPostByHash(referenceHash, session);
-					for(RelationsEnum r : RelationsEnum.values()){
-						if(r.name().equalsIgnoreCase(tRelation)){
-							relationValue = r.getValue();
-							break;
-							}
-					}
 					if (present(refPost)) {
 						param.setRefHash(referenceHash);
 						param.setRelation(relationValue);
@@ -385,13 +371,9 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	 * @param relation 
 	 * @param session
 	 */
-	public void removeReferencesFromPost(final String userName, final String interHash, final Set<String> references, final String relation, final DBSession session) {
+	public void removeReferencesFromPost(final String userName, final String interHash, final Set<String> references, final RelationsEnum relation, final DBSession session) {
 		session.beginTransaction();
-		String tRelation =  relation.toUpperCase();
-		if(tRelation.contains("_MENU")){
-			tRelation = tRelation.replaceAll("_MENU", "");
-		}
-		int relationValue = 0;
+		int relationValue = relation.getValue();
 		try {
 			final Post<R> post = this.getGoldStandardPostByHash(interHash, session);
 			if (!present(post)) {
@@ -403,12 +385,6 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			if (present(references)) {
 				for (final String referenceHash : references) {
 					final Post<R> refPost = this.getGoldStandardPostByHash(referenceHash, session);
-					for(RelationsEnum r : RelationsEnum.values()){
-						if(r.name().equals(tRelation)){
-							relationValue = r.getValue();
-							break;
-							}
-					}
 					if (present(refPost)) {
 						param.setRefHash(referenceHash);
 						param.setRelation(relationValue);

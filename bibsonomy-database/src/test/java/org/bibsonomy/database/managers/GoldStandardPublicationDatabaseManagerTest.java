@@ -209,10 +209,10 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
     public void testAddRemoveReferences() {
         final String interHash = this.createGoldStandardPublication();
         int relationValue = new Random().nextInt(2);
-        String relation = "REFERENCE";
+        RelationsEnum relation = RelationsEnum.REFERENCE;
         for(RelationsEnum r : RelationsEnum.values()){
         	if(r.getValue()==relationValue)
-        		relation = r.name();
+        		relation = r;
         	}
         goldPubManager.addReferencesToPost("", INTERHASH_GOLD_1, Collections.singleton(interHash), relation, this.dbSession);
 
