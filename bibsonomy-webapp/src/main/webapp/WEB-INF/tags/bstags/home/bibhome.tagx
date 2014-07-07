@@ -14,7 +14,14 @@
 			  	<fmt:message key="system.about.bs">
 					<fmt:param value="${properties['project.name']}"/>
 				</fmt:message>
-			  	<p><a class="btn btn-primary btn-md" role="button"><fmt:message key="system.about.bs.learnmore"/></a>&amp;nbsp;&amp;nbsp;&amp;nbsp;<a class="btn btn-success btn-md" role="button"><fmt:message key="system.about.bs.register"/></a></p>
+			  	<p>
+			  		<a href="/gettingsStarted" class="btn btn-primary btn-md" role="button">
+			  			<fmt:message key="system.about.bs.learnmore"/>
+		  			</a>&amp;nbsp;&amp;nbsp;&amp;nbsp;
+		  			<a href="/register" class="btn btn-success btn-md" role="button">
+		  				<fmt:message key="system.about.bs.register"/>
+	  				</a>
+  				</p>
 			</div>
 		</div>
 	</div>
