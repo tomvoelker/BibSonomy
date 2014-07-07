@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.bibsonomy.util.UrlUtils;
 import org.junit.Test;
 
 public class MementoServiceTest {
@@ -29,10 +30,14 @@ public class MementoServiceTest {
 		try {
 			final MementoService m = new MementoService(new URL("http://mementoweb.org/timegate/"));
 
-			final URL mementoUrl = m.getMementoUrl("http://www.l3s.de/", "Thu, 27 July 2006 12:00:00 GMT");
+			final String url = "http://www.l3s.de/";
+			final URL mementoUrl = m.getMementoUrl(url, "Thu, 27 July 2006 12:00:00 GMT");
 		
 			assertNotNull(mementoUrl);
 			assertTrue(mementoUrl.toString().contains("www.l3s.de"));
+	
+			System.out.println(url + " -> " + mementoUrl);
+			
 			
 			// TODO: implement tests for URLs with query parameters
 			
