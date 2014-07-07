@@ -23,12 +23,10 @@
 
 package org.bibsonomy.scraper.generic;
 
-import static org.junit.Assert.assertTrue;
-import org.junit.experimental.categories.Category;
-import org.bibsonomy.scraper.junit.RemoteTest;
-
 import org.bibsonomy.scraper.UnitTestRunner;
+import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 
 /**
@@ -44,7 +42,7 @@ public class EprintScraperTest {
 	 */
 	@Test
 	public void url1TestRun1(){
-		assertTrue(UnitTestRunner.runSingleTest("url_147"));
+		UnitTestRunner.runSingleTest("url_147");
 	}
 
 	/**
@@ -52,7 +50,7 @@ public class EprintScraperTest {
 	 */
 	@Test
 	public void url1TestRun2(){
-		assertTrue(UnitTestRunner.runSingleTest("url_148"));
+		UnitTestRunner.runSingleTest("url_148");
 	}
 	
 	/**
@@ -60,7 +58,7 @@ public class EprintScraperTest {
 	 */
 	@Test
 	public void url1TestRun3(){
-		assertTrue(UnitTestRunner.runSingleTest("url_149"));
+		UnitTestRunner.runSingleTest("url_149");
 	}
 	
 	/**
@@ -68,6 +66,6 @@ public class EprintScraperTest {
 	 */
 	@Test
 	public void url1TestRun4(){
-		assertTrue(UnitTestRunner.runSingleTest("url_150"));
+		UnitTestRunner.runSingleTest("url_150");
 	}
 }

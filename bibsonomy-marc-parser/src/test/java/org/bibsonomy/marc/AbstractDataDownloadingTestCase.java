@@ -1,5 +1,7 @@
 package org.bibsonomy.marc;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,8 +11,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.NoSuchElementException;
-
-import junit.framework.Assert;
 
 import org.apache.commons.io.IOUtils;
 import org.bibsonomy.model.BibTex;
@@ -32,7 +32,7 @@ public abstract class AbstractDataDownloadingTestCase {
 
 	protected BibTex get(final String hebisId) {
 		final Collection<ImportResource> bibs = reader.read(new ImportResource(downloadMarcWithPica(hebisId)));
-		Assert.assertEquals(1, bibs.size());
+		assertEquals(1, bibs.size());
 		return bibs.iterator().next();
 	}
 	

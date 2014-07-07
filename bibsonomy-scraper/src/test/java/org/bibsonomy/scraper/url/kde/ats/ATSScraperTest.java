@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.ats;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -41,20 +39,20 @@ public class ATSScraperTest {
 	 */
 	@Test
 	public void urlTest1Run() {
-		assertTrue(UnitTestRunner.runSingleTest("url_212"));
+		UnitTestRunner.runSingleTest("url_212");
 	}
 	/**
 	 * starts URL test with id url_213
 	 */
 	@Test
 	public void urlTest2Run() {
-		assertTrue(UnitTestRunner.runSingleTest("url_213"));
+		UnitTestRunner.runSingleTest("url_213");
 	}
 	/**
 	 * starts URL test with id url_214
 	 */
 	@Test
 	public void urlTest3Run() {
-		assertTrue(UnitTestRunner.runSingleTest("url_214"));
+		UnitTestRunner.runSingleTest("url_214");
 	}
 }

@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.igiglobal;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -40,6 +38,6 @@ public class IGIGlobalScraperTest {
 	 */
 	@Test
 	public void urlTestRun() {
-		assertTrue(UnitTestRunner.runSingleTest("url_265"));
+		UnitTestRunner.runSingleTest("url_265");
 	}
 }

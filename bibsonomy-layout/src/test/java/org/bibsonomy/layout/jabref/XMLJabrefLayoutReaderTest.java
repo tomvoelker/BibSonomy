@@ -23,13 +23,15 @@
 
 package org.bibsonomy.layout.jabref;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
-
-import junit.framework.Assert;
 
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -37,20 +39,19 @@ import org.xml.sax.SAXException;
 /**
  * 
  * @author:  rja
- * 
  */
 public class XMLJabrefLayoutReaderTest {
 
 	@Test
 	public void testGetJabrefLayouts() throws IOException {
-		
 		final InputStream stream = XMLJabrefLayoutReader.class.getClassLoader().getResourceAsStream("org/bibsonomy/layout/jabref/JabrefLayouts.xml");
 		
 		final BufferedReader buf = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
 		
 		final XMLJabrefLayoutReader reader = new XMLJabrefLayoutReader(buf);
 		
-		Assert.assertTrue(reader.getJabrefLayoutsDefinitions().size() > 10);
+		assertTrue(reader.getJabrefLayoutsDefinitions().size() > 10);
+		buf.close();
 	}
 
 	/**
@@ -71,16 +72,13 @@ public class XMLJabrefLayoutReaderTest {
 	 */
 	@Test
 	public void testGetJabrefLayoutsSE() throws SAXException, IOException {
-		
 		final InputStream stream = XMLJabrefLayoutReader.class.getClassLoader().getResourceAsStream("org/bibsonomy/layout/jabref/JabrefLayouts.xml");
 		
 		final BufferedReader buf = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
-		
 		final XMLJabrefLayoutReader reader = new XMLJabrefLayoutReader(buf);
-		
 		final List<JabrefLayout> jabrefLayoutsDefinitions = reader.getJabrefLayoutsDefinitions();
 		
-		Assert.assertTrue(jabrefLayoutsDefinitions.size() > 10);
+		assertTrue(jabrefLayoutsDefinitions.size() > 10);
 		
 		/*
 		 * find SE layout
@@ -90,18 +88,16 @@ public class XMLJabrefLayoutReaderTest {
 			if (layout.getName().equals("se")) {
 				found = true;
 				
-				Assert.assertEquals("se", layout.getBaseFileName());
-				Assert.assertEquals("text/html", layout.getMimeType());
-				Assert.assertEquals(".html", layout.getExtension());
-				Assert.assertEquals("SE Kassel", layout.getDisplayName());
-				Assert.assertFalse(layout.isPublicLayout());
+				assertEquals("se", layout.getBaseFileName());
+				assertEquals("text/html", layout.getMimeType());
+				assertEquals(".html", layout.getExtension());
+				assertEquals("SE Kassel", layout.getDisplayName());
+				assertFalse(layout.isPublicLayout());
 			}
 		}
 		
-		Assert.assertTrue(found);
-		
-		
-		
+		assertTrue(found);
+		buf.close();
 	}
 }
 

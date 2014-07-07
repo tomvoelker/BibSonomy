@@ -23,7 +23,8 @@
 
 package org.bibsonomy.scraper.InformationExtraction;
 
-import junit.framework.Assert;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.bibsonomy.scraper.ReachabilityTestRunner;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -51,10 +52,10 @@ public class IEScraperTest {
 		
 		final IEScraper scraper = new IEScraper();
 		final boolean scrape = scraper.scrape(sc);
-		Assert.assertTrue(scrape);
+		assertTrue(scrape);
 
 		final String bibtex = sc.getBibtexResult();
-		Assert.assertEquals(expectedBibtex, bibtex);
+		assertEquals(expectedBibtex, bibtex);
 	}
 
 }

@@ -264,30 +264,20 @@
 					<!--+
 						| documents
 						+-->
-					<c:choose>
-						<c:when test="${not empty publication.documents or isOwnEntry}">
-							<div class="documents">
-							    <!-- FIXME: add isOwnEntry as tag attribute; do we need to pass the hole post to this tag? -->
-								<pub:doc post="${post}" />
-							</div>
-						</c:when>
-						<c:otherwise>
-							<c:if test="${not command.context.userLoggedIn}">
-								<div class="register">
-									<fmt:message key="system.about" />
-								</div>
-							</c:if>
-
-						</c:otherwise>
-					</c:choose>
+					<c:if test="${not empty publication.documents or isOwnEntry}">
+						<div class="documents">
+						    <!-- FIXME: add isOwnEntry as tag attribute; do we need to pass the hole post to this tag? -->
+							<pub:doc post="${post}" />
+						</div>
+					</c:if>
 				</div>
 			</div>
 				
 				
 			<div class="clearfix"><!-- keep me --></div>
 			<ul class="pubmetainfo">
-				<li><fmt:message key="post.change_date" /> <rc:metaChangeDate post="${post}"/></li>
-				<li><fmt:message key="post.date" /> <rc:metaDate post="${post}"/></li>
+				<li><fmt:message key="post.change_date" /> <rc:metaChangeDate post="${post}"/>.</li>
+				<li><fmt:message key="post.date" /> <rc:metaDate post="${post}"/>.</li>
 			</ul>
 		</div> <!-- /.subcolumns -->
 

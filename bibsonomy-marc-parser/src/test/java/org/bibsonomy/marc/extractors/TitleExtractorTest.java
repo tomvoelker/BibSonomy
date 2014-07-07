@@ -1,6 +1,6 @@
 package org.bibsonomy.marc.extractors;
 
-import junit.framework.Assert;
+import static org.junit.Assert.assertEquals;
 
 import org.bibsonomy.model.BibTex;
 import org.junit.Test;
@@ -9,23 +9,24 @@ import org.junit.Test;
  * @author jensi
  */
 public class TitleExtractorTest extends AbstractExtractorTest {
+	
 	@Test
 	public void testTrimming() {
 		BibTex b = new BibTex();
 		TitleExtractor e = new TitleExtractor();
 		e.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("245", 'a', " Title "));
-		Assert.assertEquals("Title", b.getTitle());
+		assertEquals("Title", b.getTitle());
 		b = new BibTex();
 		e.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("245", 'a', ""));
-		Assert.assertEquals("", b.getTitle());
+		assertEquals("", b.getTitle());
 		b = new BibTex();
 		e.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord());
-		Assert.assertEquals("", b.getTitle());
+		assertEquals("", b.getTitle());
 		b = new BibTex();
 		e.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("245", 'a', " Title").withMarcField("245", 'b', "bla ; blub  "));
-		Assert.assertEquals("Title : bla", b.getTitle());
+		assertEquals("Title : bla", b.getTitle());
 		b = new BibTex();
 		e.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("245", 'a', "Title").withMarcField("245", 'b', "bla ; blub  "));
-		Assert.assertEquals("Title : bla", b.getTitle());
+		assertEquals("Title : bla", b.getTitle());
 	}
 }

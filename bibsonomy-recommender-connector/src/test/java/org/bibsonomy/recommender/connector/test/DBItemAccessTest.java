@@ -2,14 +2,13 @@ package org.bibsonomy.recommender.connector.test;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import junit.framework.Assert;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -135,9 +134,9 @@ private static DBLogic<ItemRecommendationEntity, RecommendedItem> dbLogic;
 		sort.addAll(result);
 		final int i=0;
 		for( final RecommendedItem item : sort ) {
-			Assert.assertEquals(item.getTitle(), "testTitle" + (new Integer(i)).toString());
-			Assert.assertEquals((1.0*i)/count, item.getScore());
-			Assert.assertEquals(1.0/count, item.getConfidence());
+			assertEquals(item.getTitle(), "testTitle" + (new Integer(i)).toString());
+			assertEquals((1.0*i)/count, item.getScore(), 0.0);
+			assertEquals(1.0/count, item.getConfidence(), 0.0);
 		}
 	}
 	
@@ -156,8 +155,8 @@ private static DBLogic<ItemRecommendationEntity, RecommendedItem> dbLogic;
 		
 		final int count = dbLogic.addRecommendation(qid, sid, recommendations, latency);
 		
-		Assert.assertEquals(count, recommendations.size());
-	}	
+		assertEquals(count, recommendations.size());
+	}
 	
 	/**
 	 * Test registering an already known recommender
@@ -189,11 +188,11 @@ private static DBLogic<ItemRecommendationEntity, RecommendedItem> dbLogic;
 	public void testGetRecommenderSid() {
 		dbLogic.insertRecommenderSetting("recommender.impl.item.simple.DummyItemRecommender", 
 				"foo", null);
-		Assert.assertTrue(dbLogic.getSettingIdForLocalRecommender("recommender.impl.item.simple.DummyItemRecommender") > -1);
-		Assert.assertTrue(dbLogic.getSettingIdForLocalRecommender("bar") == -1L);
+		assertTrue(dbLogic.getSettingIdForLocalRecommender("recommender.impl.item.simple.DummyItemRecommender") > -1);
+		assertTrue(dbLogic.getSettingIdForLocalRecommender("bar") == -1L);
 		dbLogic.insertRecommenderSetting("http://example.com", "foo", "abc".getBytes());
-		Assert.assertTrue(dbLogic.getSettingIdForDistantRecommender("http://example.com") > -1);
-		Assert.assertTrue(dbLogic.getSettingIdForDistantRecommender("bar") == -1L);
+		assertTrue(dbLogic.getSettingIdForDistantRecommender("http://example.com") > -1);
+		assertTrue(dbLogic.getSettingIdForDistantRecommender("bar") == -1L);
 		dbLogic.removeRecommender("http://example.com");
 	}
 	
