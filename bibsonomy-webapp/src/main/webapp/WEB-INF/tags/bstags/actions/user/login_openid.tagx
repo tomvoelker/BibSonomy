@@ -29,6 +29,16 @@
 		<p class="clearfix"><!--  --></p>
 		<fmt:message key="login.method.openid" var="openID" />
 		<bsform:input placeholder="openID" path="openID" noHelp="${true}" labelText="${openID}" required="true" />
+  		<script type="text/javascript">
+			<![CDATA[
+					$(".provider").each(function() {
+						$(this).bind('click', function() {
+							$("#openID").focus().val($(this).attr('href'));
+							return false;
+						});
+					});
+		 		]]>
+		</script>	
 
 		<div class="form-group">
 			<div class="col-sm-offset-2 col-sm-1 col-md-1 col-lg-1">
