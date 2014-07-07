@@ -46,7 +46,7 @@ public class JCIScraperTest {
 	 */
 	@Test
 	public void urlTestRun() {
-		assertTrue(UnitTestRunner.runSingleTest("url_220"));
+		UnitTestRunner.runSingleTest("url_220");
 	}
 	@Test
 	public void testReferences() throws Exception{

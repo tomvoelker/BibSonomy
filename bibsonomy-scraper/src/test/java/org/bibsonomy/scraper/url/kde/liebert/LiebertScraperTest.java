@@ -47,7 +47,7 @@ public class LiebertScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_88"));
+		UnitTestRunner.runSingleTest("url_88");
 	}
 	
 	/**
@@ -55,7 +55,7 @@ public class LiebertScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_89"));
+		UnitTestRunner.runSingleTest("url_89");
 	}
 	
 	/**
@@ -63,7 +63,7 @@ public class LiebertScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_248"));
+		UnitTestRunner.runSingleTest("url_248");
 	}
 	@Test
 	public void testCitedby() throws Exception {

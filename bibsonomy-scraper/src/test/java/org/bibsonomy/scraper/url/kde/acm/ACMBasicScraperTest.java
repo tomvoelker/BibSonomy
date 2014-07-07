@@ -52,7 +52,7 @@ public class ACMBasicScraperTest {
 	 */
 	@Test
 	public void urlTestRun1(){
-		assertTrue(UnitTestRunner.runSingleTest("url_1"));
+		UnitTestRunner.runSingleTest("url_1");
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class ACMBasicScraperTest {
 	 */
 	@Test
 	public void urlTestRun2(){
-		assertTrue(UnitTestRunner.runSingleTest("url_134"));
+		UnitTestRunner.runSingleTest("url_134");
 	}
 	
 	/**
@@ -68,7 +68,7 @@ public class ACMBasicScraperTest {
 	 */
 	@Test
 	public void urlTestRun3(){
-		assertTrue(UnitTestRunner.runSingleTest("url_153"));
+		UnitTestRunner.runSingleTest("url_153");
 	}
 	
 	/**
@@ -76,7 +76,7 @@ public class ACMBasicScraperTest {
 	 */
 	@Test
 	public void urlTestRun4(){
-		assertTrue(UnitTestRunner.runSingleTest("url_155"));
+		UnitTestRunner.runSingleTest("url_155");
 	}
 	
 	/**
@@ -84,19 +84,19 @@ public class ACMBasicScraperTest {
 	 */
 	@Test
 	public void urlTestRun5(){
-		assertTrue(UnitTestRunner.runSingleTest("url_184"));
+		UnitTestRunner.runSingleTest("url_184");
 	}
 	
 	@Test
 	public void urlTestRun6(){
-		assertTrue(UnitTestRunner.runSingleTest("url_186"));
+		UnitTestRunner.runSingleTest("url_186");
 	}
 	/**
 	 * 
 	 */
 	@Test
 	public void urlTestRun7(){
-		assertTrue(UnitTestRunner.runSingleTest("url_199"));
+		UnitTestRunner.runSingleTest("url_199");
 	}
 	
 	@Test

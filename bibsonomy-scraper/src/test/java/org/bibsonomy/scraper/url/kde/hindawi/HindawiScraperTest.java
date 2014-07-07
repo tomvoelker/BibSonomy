@@ -42,7 +42,7 @@ public class HindawiScraperTest {
 	 */
 	@Test
 	public void urlTestRun() {
-		assertTrue(UnitTestRunner.runSingleTest("url_256"));
+		UnitTestRunner.runSingleTest("url_256");
 	}
 	/**
 	 * @throws Exception
