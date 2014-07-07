@@ -82,9 +82,11 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		// check whether the user is a group
 		if (UserUtils.userIsGroup(loginUser)) {
 			command.setHasOwnGroup(true);
-			command.showGroupTab(true);
+			
 		}
-
+		
+		// always show group tab
+		command.showGroupTab(true);
 		/*
 		 * get friends for sidebar
 		 */

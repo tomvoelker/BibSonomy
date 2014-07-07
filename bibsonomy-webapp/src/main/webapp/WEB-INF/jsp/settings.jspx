@@ -42,7 +42,7 @@
 				<c:when test="${command.selTab == 2}">
 					<settings:import command="${command}"/>
 				</c:when>
-				<c:when test="${command.selTab == 3 and (command.hasOwnGroup or not (empty param.user or empty param.requGroup or param.requGroup eq command.context.loginUser.name))}">
+				<c:when test="${command.selTab == 3}"> <!-- and (command.hasOwnGroup or not (empty param.user or empty param.requGroup or param.requGroup eq command.context.loginUser.name))} -->
 					<settings:group command="${command}"/>
 				</c:when>
 				<c:when test="${command.selTab == 4 and not command.user.spammer}">
@@ -83,36 +83,7 @@
 		<jsp:attribute name="sidebar">
 			<ul>
 				<!-- loginUser.groups -->
-				<li>
-					<span class="sidebar_h "><a href="/groups"><fmt:message key="groups"/></a></span>
-					<ul class="sidebar_collapse_content">
-					<c:forEach var="group" items="${command.context.loginUser.groups}">
-						<li>
-						<a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}'/>&amp;nbsp;</a> 
-							<c:if test="${group.sharedDocuments}">
-								<c:choose>
-									<c:when test="${! group.userSharedDocuments}">
-										<fmt:message var="shareDocumentsTitle" key="groups.actions.shareDocuments.title"></fmt:message>
-										<a class="action" 
-											href="/ajax/handleGroupShare?requestedGroup=${fn:escapeXml(group.name)}&amp;action=shareDocuments&amp;ckey=${ckey}&amp;forward=settings"
-											title="${shareDocumentsTitle}">
-											<fmt:message key="groups.actions.shareDocuments"/>
-										</a>
-									</c:when>
-									<c:otherwise>
-										<fmt:message var="unshareDocumentsTitle" key="groups.actions.unshareDocuments.title"></fmt:message>
-											<a class="action" 
-												href="/ajax/handleGroupShare?requestedGroup=${fn:escapeXml(group.name)}&amp;action=unshareDocuments&amp;ckey=${ckey}&amp;forward=settings"
-												title="${unshareDocumentsTitle}">
-												<fmt:message key="groups.actions.unshareDocuments"/>
-											</a>
-									</c:otherwise>
-								</c:choose>
-							</c:if>
-						</li>
-					</c:forEach>
-					</ul>
-				</li>
+
 
 				<!-- loginUser.friends -->
 				<li>
