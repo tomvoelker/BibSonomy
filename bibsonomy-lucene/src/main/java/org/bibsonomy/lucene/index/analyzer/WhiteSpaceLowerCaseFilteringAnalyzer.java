@@ -5,12 +5,12 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.LowerCaseFilter;
-import org.apache.lucene.analysis.StopFilter;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.WhitespaceTokenizer;
+import org.apache.lucene.analysis.TokenFilter;
+import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.core.LowerCaseFilter;
+import org.apache.lucene.analysis.core.StopFilter;
+import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.analysis.standard.StandardFilter;
-import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.util.Version;
 
 /**
@@ -32,17 +32,20 @@ public final class WhiteSpaceLowerCaseFilteringAnalyzer extends Analyzer {
 	public WhiteSpaceLowerCaseFilteringAnalyzer() {
 		stopSet = new TreeSet<String>();
 	}
-	
-	/** 
-	 * Constructs a {@link StandardTokenizer} 
+
+	/**
+	 * Constructs a {@link TokenStreamComponents} 
 	 * filtered by 
 	 * 		a {@link StandardFilter}, 
 	 * 		a {@link LowerCaseFilter} and 
 	 *      a {@link StopFilter}. 
 	 */
 	@Override
-	public TokenStream tokenStream(final String fieldName, final Reader reader) { 
-		return new LowerCaseFilter(Version.LUCENE_30, new WhitespaceTokenizer(Version.LUCENE_30, reader));
+	protected TokenStreamComponents createComponents(String fieldName,
+			Reader reader) {
+		Tokenizer tokenizer = new WhitespaceTokenizer(Version.LUCENE_30, reader);
+		TokenFilter filter = new LowerCaseFilter(Version.LUCENE_30, tokenizer);
+		return new TokenStreamComponents(tokenizer, filter);
 	}
 
 	/**
@@ -58,4 +61,5 @@ public final class WhiteSpaceLowerCaseFilteringAnalyzer extends Analyzer {
 	public void setStopSet(final Set<String> stopSet) {
 		this.stopSet = stopSet;
 	}
+
 }

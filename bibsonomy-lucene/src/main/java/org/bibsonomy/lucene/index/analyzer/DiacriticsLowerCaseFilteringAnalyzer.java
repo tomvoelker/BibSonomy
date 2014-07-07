@@ -4,13 +4,15 @@ import java.io.Reader;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.lucene.analysis.ASCIIFoldingFilter;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.LowerCaseFilter;
-import org.apache.lucene.analysis.StopFilter;
-import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.TokenFilter;
+import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.core.LowerCaseFilter;
+import org.apache.lucene.analysis.core.StopFilter;
+import org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilter;
 import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
+import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.util.Version;
 
 /**
@@ -31,31 +33,15 @@ public final class DiacriticsLowerCaseFilteringAnalyzer extends Analyzer {
 	public DiacriticsLowerCaseFilteringAnalyzer() {
 		stopSet = new TreeSet<String>();
 	}
-	
-	/** 
-	 * Constructs a {@link StandardTokenizer} 
-	 * filtered by 
-	 * 		a {@link StandardFilter}, 
-	 * 		a {@link LowerCaseFilter} and 
-	 *      a {@link StopFilter}. 
-	 */
-	@Override
-	public TokenStream tokenStream(String fieldName, Reader reader) { 
-		TokenStream result = new StandardTokenizer(Version.LUCENE_30, reader); 
-		result = new StandardFilter(Version.LUCENE_30, result); 
-		result = new LowerCaseFilter(Version.LUCENE_30, result); 
-		StopFilter sf = new StopFilter(Version.LUCENE_30, result, getStopSet());
-		sf.setEnablePositionIncrements(true);
-		result = sf;
-		result = new ASCIIFoldingFilter(result); 
-		return result; 
-	}
 
 	/**
 	 * @return the stopSet
 	 */
-	public Set<String> getStopSet() {
-		return stopSet;
+	public CharArraySet getStopSet() {
+		/*
+		 * FIXME
+		 */
+		return CharArraySet.copy(Version.LUCENE_30, stopSet);
 	}
 
 	/**
@@ -63,5 +49,24 @@ public final class DiacriticsLowerCaseFilteringAnalyzer extends Analyzer {
 	 */
 	public void setStopSet(Set<String> stopSet) {
 		this.stopSet = stopSet;
+	}
+
+	/**
+	 * Constructs a {@link TokenStreamComponents} 
+	 * filtered by 
+	 * 		a {@link StandardFilter}, 
+	 * 		a {@link LowerCaseFilter} and 
+	 *      a {@link StopFilter}.
+	 */
+	@Override
+	protected TokenStreamComponents createComponents(String fieldName,
+			Reader reader) {
+		Tokenizer tokenizer = new StandardTokenizer(Version.LUCENE_30, reader); 
+		TokenFilter filter = new StandardFilter(Version.LUCENE_30, tokenizer); 
+		filter = new LowerCaseFilter(Version.LUCENE_30, tokenizer); 
+		filter = new StopFilter(Version.LUCENE_30, tokenizer, getStopSet());
+		((StopFilter) filter).setEnablePositionIncrements(true);
+		filter = new ASCIIFoldingFilter(tokenizer); 
+		return new TokenStreamComponents(tokenizer, filter);
 	}
 }

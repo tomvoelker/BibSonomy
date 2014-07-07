@@ -2,13 +2,11 @@ package org.bibsonomy.lucene.index.analyzer;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
-import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.AnalyzerWrapper;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.util.LuceneBase;
 
@@ -18,7 +16,7 @@ import org.bibsonomy.lucene.util.LuceneBase;
  * 
  * @author fei
  */
-public final class SpringPerFieldAnalyzerWrapper extends Analyzer {	
+public final class SpringPerFieldAnalyzerWrapper extends AnalyzerWrapper {	
 	/** map configuring the index */
 	private Map<String,Map<String,Object>> propertyMap;
 
@@ -30,27 +28,21 @@ public final class SpringPerFieldAnalyzerWrapper extends Analyzer {
 	
 	/** full text search analyzer */
 	private Analyzer fullTextSearchAnalyzer;
-
-	/** we delegate to this analyzer */
-	private PerFieldAnalyzerWrapper analyzer;
 	
-	/**
-	 * initialize internal data structures
-	 */
-	private void init() {
-		// initialize tokenizer if all necessary properties are set
-		if ((this.defaultAnalyzer != null) && (this.fieldMap != null)) {
-			this.analyzer = new PerFieldAnalyzerWrapper(getDefaultAnalyzer());
-			
-			for (final String fieldName : fieldMap.keySet()) {
-				analyzer.addAnalyzer(fieldName, (Analyzer)fieldMap.get(fieldName));
-			}
-		}
+	private SpringPerFieldAnalyzerWrapper() {
+		super(Analyzer.PER_FIELD_REUSE_STRATEGY);
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see org.apache.lucene.analysis.AnalyzerWrapper#getWrappedAnalyzer(java.lang.String)
+	 */
 	@Override
-	public TokenStream tokenStream(final String fieldName, final Reader reader) {
-		return this.analyzer.tokenStream(fieldName, reader);
+	protected Analyzer getWrappedAnalyzer(String fieldName) {
+		Analyzer analyzer = (Analyzer) fieldMap.get(fieldName);
+		if (analyzer != null) {
+			return analyzer;
+		}
+		return defaultAnalyzer;
 	}
 	
 	/**
@@ -58,7 +50,6 @@ public final class SpringPerFieldAnalyzerWrapper extends Analyzer {
 	 */
 	public void setFieldMap(final Map<String, Object> fieldMap) {
 		this.fieldMap = fieldMap;
-		init();
 	}
 
 	/**
@@ -73,7 +64,6 @@ public final class SpringPerFieldAnalyzerWrapper extends Analyzer {
 	 */
 	public void setDefaultAnalyzer(final Analyzer defaultAnalyzer) {
 		this.defaultAnalyzer = defaultAnalyzer;
-		init();
 	}
 
 	/**
