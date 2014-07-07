@@ -825,7 +825,7 @@
 		<property name="timeGate" value="${memento.timegate}"/>
 	</bean>
 	<bean id="mementoController" class="org.bibsonomy.webapp.controller.special.MementoController" scope="request">
-		<property name="mementoService" ref="responseLogic"/>
+		<property name="mementoService" ref="mementoService"/>
 	</bean>
 	 
 	<!-- 
