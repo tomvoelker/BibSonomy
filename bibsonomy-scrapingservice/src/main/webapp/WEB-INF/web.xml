@@ -41,6 +41,17 @@
 		<servlet-name>AndroidLoggingServiceServlet</servlet-name>
 		<servlet-class>org.bibsonomy.android.loggingservice.AndroidLoggingServiceServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<description>get link to archived versions of a URL</description>
+		<display-name>MementoServlet</display-name>
+		<servlet-name>MementoServlet</servlet-name>
+		<servlet-class>org.bibsonomy.memento.MementoServlet</servlet-class>
+		<init-param>
+			<description>The service which resolves the URL and finds the archive with the appropriate version</description>
+			<param-name>timegate</param-name>
+			<param-value> http://mementoweb.org/timegate/</param-value>
+		</init-param>
+	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
@@ -57,6 +68,10 @@
 		<url-pattern>/android/logging</url-pattern>
 	</servlet-mapping>
 
+	<servlet-mapping>
+		<servlet-name>MementoServlet</servlet-name>
+		<url-pattern>/memento</url-pattern>
+	</servlet-mapping>
 
 	<!--+ 
 		|
