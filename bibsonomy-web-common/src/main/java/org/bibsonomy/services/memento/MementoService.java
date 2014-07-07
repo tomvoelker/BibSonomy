@@ -26,8 +26,12 @@ import org.apache.commons.logging.LogFactory;
 public class MementoService {
 	private static final Log log = LogFactory.getLog(MementoService.class);
 	
-	private final URL timeGate;
-	
+	private URL timeGate;
+
+	public MementoService() {
+		super();
+	}
+
 	public MementoService(final URL timeGate) {
 		this.timeGate = timeGate;
 	}
@@ -53,4 +57,13 @@ public class MementoService {
 		log.debug("result: " + redirectUrl);
 		return redirectUrl;
 	}
+
+	public URL getTimeGate() {
+		return timeGate;
+	}
+
+	public void setTimeGate(URL timeGate) {
+		this.timeGate = timeGate;
+	}
+
 }
