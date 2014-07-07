@@ -110,12 +110,13 @@
 	</c:if>
 	
 	<!--+
-		| link for the memento timegate
+		| link for the memento timegate to the archived version of the page
 		+-->
 	<c:url var="mementoLink" value="/memento">
 		<c:param name="url" value="${post.resource.url}"/>
 		<c:param name="datetime" value="${mtl:formatDateISO8601(post.date)}"/>
 	</c:url>
-	<a class="item memento" href="${mementoLink}" rel="nofollow"><!-- keep mee --></a>
+	<fmt:message key="bookmark.actions.memento" var="mementoTitle" />
+	<a class="item memento" href="${mementoLink}" rel="nofollow" title="${mementoTitle}"><!-- keep mee --></a>
 		
 </jsp:root>
