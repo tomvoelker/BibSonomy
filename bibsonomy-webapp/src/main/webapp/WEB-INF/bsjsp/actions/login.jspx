@@ -67,30 +67,30 @@
 	    		</div>
 	    	</c:if>
 		    
-		    <ul class="nav nav-tabs">
-	    		<!-- tab header -->
+<!--		    <ul class="nav nav-tabs">
+	    		 tab header 
         		
 				<c:forEach var="authMethod" items="${authConfig}" varStatus="count">
 	  				<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
 	  				<fmt:message var="tabTitle" key="login.method.${authMethodName}" />
-	  				<!-- we can disable showing certain login methods by storing an empty string for login.method.AUTHMETHODNAME -->
+	  				 we can disable showing certain login methods by storing an empty string for login.method.AUTHMETHODNAME 
 	  				<c:if test="${not empty tabTitle}">
 						<li class="${count.index eq 0 ? 'active' : ''}"><a href="#login_${authMethodName}" data-toggle="tab"><c:out value="${tabTitle}"/></a></li>
             		</c:if>
           		</c:forEach>
-       		</ul>
+       		</ul>-->
         	<div class="tab-content">
 				<c:forEach var="authMethod" items="${authConfig}" varStatus="authMethodLoopState">
 					<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
-					<div class="tab-pane ${(authMethodLoopState.index eq 0) ? 'active' : ''}" id="login_${authMethodName}">           
+<!--					<div class="tab-pane ${(authMethodLoopState.index eq 0) ? 'active' : ''}" id="login_${authMethodName}">           -->
 						<form:form action="/login_${authMethodName}" method="POST">
+							<c:if test="${authMethod == 'OPENID'}">  <user:login_openid/></c:if>
 							<c:if test="${authMethod == 'INTERNAL'}"><user:login_internal/></c:if>
 							<c:if test="${authMethod == 'LDAP'}">    <user:login_ldap/></c:if>
-							<c:if test="${authMethod == 'OPENID'}">  <user:login_openid/></c:if>
 							<c:if test="${authMethod == 'SAML'}">    <user:login_saml/></c:if>
 							<input class="form-control" type="hidden" name="selTab" value="${authMethodLoopState.index}"></input>
 						</form:form>
-					</div>
+<!--					</div>-->
 				</c:forEach>
 			</div>
 		</jsp:attribute>
