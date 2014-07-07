@@ -68,6 +68,9 @@ public class Functions {
 
 	private static final DateTimeFormatter ISO8601_FORMAT_HELPER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ");
 
+	// used to get RFC 1123 formatted date
+	private static final DateTimeFormatter RFC1123_DATE_TIME_FORMATTER = DateTimeFormat.forPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'").withZoneUTC();
+	
 	private static final DateTimeFormatter myDateFormatter = DateTimeFormat.forPattern("MMMM yyyy");
 
 	private static final DateTimeFormatter myDateFormat = DateTimeFormat.forPattern("yyyy-MM");
@@ -602,6 +605,27 @@ public class Functions {
 				return ISO8601_FORMAT_HELPER.print(new DateTime(date));
 			} catch (final Exception e) {
 				log.error("error while formating date to ISO8601", e);
+				return "";
+			}
+		}
+		return "";
+	}
+
+	/**
+	 * Formats the date to RFC 1123, e.g.,  Wed, 30 May 2007 18:47:52 GMT
+	 * 
+	 * Currently Java's formatter doesn't support this standard therefore we can
+	 * not use the fmt:formatDate tag with a pattern
+	 * 
+	 * @param date
+	 * @return the formatted date
+	 */
+	public static String formatDateRFC1123(final Date date) {
+		if (present(date)) {
+			try {
+				return RFC1123_DATE_TIME_FORMATTER.print(new DateTime(date));
+			} catch (final Exception e) {
+				log.error("error while formating date to RFC 1123", e);
 				return "";
 			}
 		}

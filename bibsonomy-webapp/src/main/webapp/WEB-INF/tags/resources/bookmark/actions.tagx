@@ -114,7 +114,7 @@
 		+-->
 	<c:url var="mementoLink" value="/memento">
 		<c:param name="url" value="${post.resource.url}"/>
-		<c:param name="datetime" value="${mtl:formatDateISO8601(post.date)}"/>
+		<c:param name="datetime" value="${mtl:formatDateRFC1123(post.date)}"/>
 	</c:url>
 	<fmt:message key="bookmark.actions.memento" var="mementoTitle" />
 	<a class="item memento" href="${mementoLink}" rel="nofollow" title="${mementoTitle}"><!-- keep mee --></a>
