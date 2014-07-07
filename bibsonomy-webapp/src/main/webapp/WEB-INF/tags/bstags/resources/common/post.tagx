@@ -26,7 +26,7 @@
 
 	<li class="media post ${additionalItemClasses}">
 	
-		<h4 class="ptitle media-heading" data-ident="${post.resource.intraHash}"><jsp:invoke fragment="title"/></h4>
+		<h4 class="media-heading" data-ident="${post.resource.intraHash}"><rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" /><span class="ptitle"><jsp:invoke fragment="title"/></span><div class="clearfix"/></h4>
 		
 		<div class="hidden-xs hidden-md pull-left">
 			<jsp:invoke fragment="documents"/>

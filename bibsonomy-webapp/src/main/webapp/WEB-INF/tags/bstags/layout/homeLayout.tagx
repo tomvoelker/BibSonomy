@@ -215,51 +215,16 @@
 			</c:if>
 			
 			
+	    	<c:set var="all" value="${mtl:containsResourceClass(command.resourcetype, 'all')}" />
+	    	<c:set var="bm" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark')}" />
+	    	<c:set var="pub" value="${mtl:containsResourceClass(command.resourcetype, 'publication')}" />
+		    	
 			<!-- bibtex/bookmark lists -->
 		    <div class="row">
-				<div class="col-md-6 bookmark-list">
-					<!-- 
-					<h3 class="list-headline">
-						<c:if test="${empty showPageOptions or showPageOptions == true }">
+		    
+		    	<!-- bookmarks -->
+				<div class="${ (bm and pub) ? 'col-md-6' : ( (bm and not pub) ? 'col-md-12' : ((not bm) ? 'hide' : ''))} bookmark-list">
 					
-							<c:choose>
-								<c:when test="${not empty customPageOptions}">
-									<jsp:invoke fragment="customPageOptions"/>
-								</c:when>
-								
-								<c:otherwise>
-									<div class="pull-right">
-										<div class="btn-group" style="margin-bottom: 4px;">
-											<bsform:button gear="${true}" value="" dropdown="${true}" size="xsmall" style="defaultStyle" dataToggle="dropdown" />
-											<ul class="dropdown-menu list-options">
-						
-												<rc:actions resourceType="bookmark" 
-													sortPage="${command.sortPage}" 
-													sortPageOrder="${command.sortPageOrder}" 
-													showBookmark="${showBookmark}" 
-													showPublication="${showPublication}" 
-													showInboxActions="${showInboxActions}" 
-													isBasket="${isBasket}"
-													disableListNavigation="${disableListNavigation}"
-													disableResourcetypeSelection="${disableResourcetypeSelection}"/>
-						
-									  		</ul>
-										</div>
-										
-									</div>
-								</c:otherwise>
-							</c:choose>
-						</c:if>
-					
-						<fmt:message key="bookmarks" />	
-						<c:if test="${!empty command.bookmark.list}">
-							<c:if test="${command.bookmark.totalCount != 0}">
-								<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.bookmark.totalCount} "/> <fmt:message key="bookmarks" /></c:set>
-								${mtl:ch('nbsp')}<span title="${totalTitle}">(${command.bookmark.totalCount})</span>
-							</c:if>
-						</c:if>
-					</h3>
-					-->
 			        <resources:bookmarks listView="${command.bookmark}"
 						loginUserName="${command.context.loginUser.name}"
 						disableListNavigation="${disableListNavigation}"
@@ -270,6 +235,7 @@
 						showPageOptions="${empty showPageOptions or showPageOptions == true}"
 						isBasket="${isBasket}"
 						showInboxActions="${showInboxActions}"
+						disableResourcetypeSelection="${disableResourceTypeSelection}"
 						>
 					 
 					 	
@@ -286,10 +252,9 @@
 					</resources:bookmarks>
 					
 				</div> <!-- ./col-md-6.bookmark-list -->
-				<div class="col-md-6 publication-list">
-			        
-
-			        
+				
+				<div class="${ (pub and bm) ? 'col-md-6' : ( (pub and not bm) ? 'col-md-12' : ((not pub) ? 'hide' : ''))} publication-list">
+				<!-- publications  -->
 					<resources:bibtexs listView="${command.bibtex}"
 						loginUserName="${command.context.loginUser.name}"
 						disableListNavigation="${disableListNavigation}"
@@ -298,7 +263,8 @@
 						showBookmark="${showBookmark}"
 						showPublication="${showPublications}"
 						showPageOptions="${empty showPageOptions or showPageOptions == true}"
-						isBasket="${isBasket}">
+						isBasket="${isBasket}"
+						disableResourcetypeSelection="${disableResourceTypeSelection}">
 						
 						<jsp:attribute name="addAsLastItem">
 							<c:if test="${not disableListNavigation}">
