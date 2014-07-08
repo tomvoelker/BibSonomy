@@ -166,13 +166,15 @@
 											<fmt:message key="navi.friends"/>
 										</a>
 									</li>
+									<!-- 
 									<li>
 										<fmt:message var="titleSperes" key="navi.spheres" />
 										<a href="/spheres" title="${titleSpheres}">
-											<span class="glyphicon glyphicon-eye-open"><!-- KEEP ME --></span>&amp;nbsp;
+											<span class="glyphicon glyphicon-eye-open"> asd </span>&amp;nbsp;
 											<fmt:message key="navi.spheres" />
 										</a>
 									</li>
+									-->
 									<li> 
 										<fmt:message var="editTags" key="navi.editTags" />
 										<a href="/editTags" title="${editTags}">
@@ -182,11 +184,13 @@
 									</li>
 									<li> 
 										<fmt:message var="concepts" key="navi.concepts" />
-										<a href="/spheres" title="${concepts}">
+										<a href="/concepts/${loginUserName}" title="${concepts}">
 											<span class="glyphicon glyphicon-tags"><!-- KEEP ME --></span>&amp;nbsp;
 											<fmt:message key="navi.concepts" />
 										</a>
 									</li>
+									
+									<!-- divider -->
 									<li class="divider"><!-- KEEP ME --></li>
 	
 									<li class="sidebarnavi_entry sidebarnavi_entry_active sidebarnavi_entry_06">
@@ -204,7 +208,10 @@
 											<fmt:message key="navi.help" />
 										</a>
 									</li>
+									
+									<!-- divider -->
 									<li class="divider"><!--  --></li>
+									
 									<li><a href="/settings"><span class="glyphicon glyphicon-cog"><!-- KEEP ME --></span>&amp;nbsp;<fmt:message key="navi.settings"/></a></li>
 									<li><a href="/logout"><span class="glyphicon glyphicon-off"><!-- KEEP ME --></span>&amp;nbsp;<fmt:message key="navi.logout"/></a></li>
 								</c:when>
@@ -224,7 +231,7 @@
 									</li>
 									<li class="divider"><!--  --></li>
 									<li>
-										<a href="/spheres" title="${titleSpheres}">
+										<a href="/login" title="${titleSpheres}">
 											<span class="glyphicon glyphicon glyphicon-log-in"><!-- KEEP ME --></span>&amp;nbsp;
 											<fmt:message key="navi.login" />
 										</a>
