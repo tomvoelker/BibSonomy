@@ -19,14 +19,19 @@
 	<c:set var="user" value="${command.user}" />
 	
 	<!-- Outer surrounding -->
-	<bs:panel messagesPropertiesKey="navi.myprofile">
-		<jsp:attribute name="panelBody">
-
-	<!--+
-		|
-		| profile, contact, about 
-		| 
-	 	+-->
+	
+	<div id="selTab0" class="tab-pane ${(command.selTab eq 0) ? 'active' : ''}">
+		<!-- <bs:panel messagesPropertiesKey="navi.myprofile">
+			<jsp:attribute name="panelBody">
+		-->
+		
+		<h2 class="content-header"><fmt:message key="navi.myprofile" /></h2>
+		
+		<!--+
+			|
+			| profile, contact, about 
+			| 
+		 	+-->
 		
 			<!-- Der Text der oben steht -->
 			<p>
@@ -131,18 +136,6 @@
 		
 				<input type="hidden" name="action" value="update"/>
 				<input type="hidden" name="selTab" value="0"/>
-		<!-- 		<bform:submit messageKey="settings.saveChanges"/> -->
-				
-		<!--	</form:form>
-			</fieldset> 
-			
-			<fieldset class="fsOuter" style="margin-top: 2em">-->
-			
-				<!--+
-					| photo 
-					+-->
-					
-		<!-- 	<form:form id="settingImportForm" action="/picture/user/${mtl:encodeURI(user.name)}?ckey=${ckey}" method="post" enctype="multipart/form-data">-->
 
 					<fieldset>
 						<legend><fmt:message key="settings.picture.header" /></legend>
@@ -198,67 +191,6 @@
 								<div class="dissError"><form:errors path="user.gender" /></div>
 							</div>
 							
-							<!-- picture source OLD CODE
-							<div class="fsRow">
-								<fmt:message var="useExtService" key="user.useExternalPicture.service" />
-								<fmt:message var="useExtTrue" key="user.useExternalPicture.true">
-									<fmt:param>${useExtService}</fmt:param>
-								</fmt:message>
-								<fmt:message var="useExtFalse" key="user.useExternalPicture.false" />
-							
-								<form:label cssClass="fsLabel" path="user.useExternalPicture">
-									<fmt:message key="user.useExternalPicture"/>
-								</form:label>
-								
-								<buttons:help message="user.useExternalPicture.help">
-									<jsp:attribute name="helpText">
-										<ol>
-											<li>
-												<fmt:message key="user.useExternalPicture.help.true">
-													<fmt:param>${useExtTrue}</fmt:param>
-													<fmt:param>${useExtService}</fmt:param>
-												</fmt:message>
-											</li>
-											<li>
-												<fmt:message key="user.useExternalPicture.help.false">
-													<fmt:param>${useExtFalse}</fmt:param>
-												</fmt:message>
-											</li>
-										</ol>
-									</jsp:attribute>
-								</buttons:help>
-			
-								<form:select id="useExtPicSelect" cssClass="fsInput fsSmall" path="user.useExternalPicture">
-									<form:option label="${useExtTrue}" value="${true}" id="useExt" />
-									<form:option label="${useExtFalse}" value="${false}" id="useInt" />
-								</form:select>
-							</div>
-							
-							<c:choose>
-								<c:when test="${not user.useExternalPicture}">
-									<c:set var="displayUseInt">block</c:set>
-									<c:set var="displayUseExt">none</c:set>
-								</c:when>
-								<c:otherwise>
-									<c:set var="displayUseInt">none</c:set>
-									<c:set var="displayUseExt">block</c:set>
-								</c:otherwise>
-							</c:choose>
-								
-							<div class="fsRow" id="pictUseExt" style="display:${displayUseExt}">
-								<form:label cssClass="fsLabel" path="user.useExternalPicture">
-									<fmt:message key="user.useExternalPicture.service.label">
-										<fmt:param><fmt:message key="user.useExternalPicture.service" /></fmt:param>
-									</fmt:message>
-								</form:label>
-							
-								<fmt:message var="useExtServiceLink" key="user.useExternalPicture.service.link" />
-								<form:label path="user.useExternalPicture" cssClass="fsHelp">
-									<a target="_blank" href="${useExtServiceLink}">${useExtServiceLink}</a>
-								</form:label>
-							</div>
-							-->
-							
 							<!-- New Picture + delete picture -->
 							<div class="form-group clearfix">
 								
@@ -281,21 +213,7 @@
 								
 							</div>
 							
-							<!-- new picture + delete picture OLD CODE
-							<div id="pictUseInt" style="display:${displayUseInt}">
-								<div class="fsRow">
-									<form:label cssClass="fsLabel" path="picturefile"><fmt:message key="settings.picture.file"/></form:label>
-									<buttons:help message="settings.picture.help"/>
-									<input type="file" name="picturefile" class="fsInput fsSmall" id="useIntPath"/>
-								</div>
-								
-								<div class="fsRow">
-									<form:label cssClass="fsLabel" path="deletePicture"><fmt:message key="settings.picture.delete"/></form:label>
-									<buttons:help message="settings.picture.delete.help"/>
-									<input type="checkbox"  value="${true}" class="fsInput fsSmall" id="useIntDelete" />
-								</div>
-							</div>
-							 -->
+
 							
 							<!-- save changes button -->
 							<p class="clearfix"><!--  --></p>
@@ -304,9 +222,12 @@
 								<bsform:button type="submit" style="primary" size="defaultSize" value="${submitButton}" />
 							</div>
 							
-					</fieldset>
-				</form:form>
-			</fieldset>
-		</jsp:attribute>
-	</bs:panel>
+						</fieldset>
+					</form:form>
+				</fieldset>
+		<!-- 
+			</jsp:attribute>
+		</bs:panel>
+		-->
+	</div>
 </jsp:root>
