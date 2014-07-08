@@ -35,9 +35,13 @@
 			<!-- display potential errors -->
 		    <errors:global errors="${errors}"/>	
 		    
+		    
 		    <settings:profile command="${command}"/>
+		    
 		    <settings:settings command="${command}"/>
+		    
 		    <settings:import command="${command}"/>
+		    
 			<c:if test="${(command.hasOwnGroup or not (empty param.user or empty param.requGroup or param.requGroup eq command.context.loginUser.name))}">
 				<settings:group command="${command}"/>
 			</c:if>

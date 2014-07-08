@@ -20,9 +20,9 @@
 	<jsp:directive.attribute name="id" type="java.lang.String" required="false" description="Id for input field"/>
 	<jsp:directive.attribute name="tabindex" type="java.lang.Integer" required="false" description="tabindex for input field"/>
 	<jsp:directive.attribute name="name" type="java.lang.String" required="false" description="name attribute for input field"/>
-	<jsp:directive.attribute name="checked" type="java.lang.Boolean" required="false" description="value attribute for input field"/>
 
-	<c:if test="${inputColSpan lt 2}">
+
+	<c:if test="${ empty inputColSpan or inputColSpan lt 2}">
 		<c:set var="inputColSpan" value="10" />
 	</c:if>
 	
@@ -41,10 +41,9 @@
 	          		<form:checkbox
 	          				path="${path}" 
 	          				class="${not empty noHelp or not noHelp ? 'help-popover' : ''}" 
-	          				id="${id}" 
-	          				checked="${ checked ? 'checked' : ''}" 
-	          				name="${name}" 
-	          				tabindex="${tabindex}" /> <c:out value="${labelText}"/>
+							tabindex="${tabindex}"
+							value="${false}"/>
+       				 <c:out value="${labelText}"/>
       				<c:if test="${not empty noHelp or not noHelp}">
 		          		<div class="help-content hide">${helpText}</div>
           			</c:if>

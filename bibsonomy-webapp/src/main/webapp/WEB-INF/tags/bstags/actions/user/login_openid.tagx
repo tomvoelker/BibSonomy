@@ -27,17 +27,20 @@
 				$(".provider").each(function() {
 					$(this).click(function(e) {
 						e.preventDefault();
-						$("#openID").focus().val($(this).attr('href'));
+						// $(this).attr('href')
+						alert($("#openID").val());
+						$("#openID").val("test");
+						alert($("#openID").val());
 						$("#form_openid").submit();
 					});
 				});
 				$(".otherProvider").click(function() {
-					$(".openIDmanual").toggleClass('hide');
+					$(".openIDmanual").toggle();
 				});
 			});
 			]]>
 		</script>	
-		<div class="openIDmanual hide">
+		<div class="openIDmanual" style="display: none">
 			<p class="clearfix"><!--  --></p>
 			<fmt:message key="login.method.openid" var="openID" />
 			<bsform:input placeholder="openID" path="openID" noHelp="${true}" labelText="${openID}" required="true" />

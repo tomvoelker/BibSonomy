@@ -1,14 +1,17 @@
 
 <jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:form="http://www.springframework.org/tags/form"
-	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+		  xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
+		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+		  xmlns:form="http://www.springframework.org/tags/form"
+		  xmlns:spring="http://www.springframework.org/tags"
+		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true" />
 
@@ -29,99 +32,106 @@
 	<fmt:message key="cv.admin.show" var="show" />
 
 	<div id="selTab5" class="tab-pane ${(command.selTab eq 5) ? 'active' : ''}">
-	
+
 		<h2 class="content-header"><c:out value="${heading}" /></h2>
-		<form:form>
-			<div id="defaultLayoutForm">
+		<div id="defaultLayoutForm" class="row">
+			<form:form>
 				<fmt:message key="cv.admin.topic" >
 					<fmt:param>/cv/user/${fn:escapeXml(command.context.loginUser.name)}</fmt:param>
 				</fmt:message>
-		    	
-			    <fieldset class="fsInner">
-			    	<div class="fsRow">
-			    		<div class="fsRow" style="float:left">
-							<c:choose>
-								<c:when test="${command.isGroup}">
-									<select class="changeLayout">
-									    <option data-layout='LAYOUT_CURRENT' value="${curr}">${curr}</option>
-										<option data-layout="LAYOUT_G_DEFAULT_I_EN" value="${def1en}">${def1en}</option>
-										<option data-layout="LAYOUT_G_DEFAULT_I_GER" value="${def1ger}">${def1ger}</option>
-									</select>
-								</c:when>
-								
-								<c:otherwise>
-									<select class="changeLayout">
-									    <option data-layout='LAYOUT_CURRENT' value="${curr}">${curr}</option>
-										<option data-layout='LAYOUT_DEFAULT_I_EN' value="${def1en}">${def1en}</option>
-										<option data-layout='LAYOUT_DEFAULT_I_GER' value="${def1ger}">${def1ger}</option>
-										<option data-layout='LAYOUT_DEFAULT_II_EN' value="${def2en}">${def2en}</option>
-										<option data-layout='LAYOUT_DEFAULT_II_GER' value="${def2ger}">${def2ger}</option>
-										
-									</select>
-								</c:otherwise>
-							</c:choose>
+
+				<bsform:fieldset legendKey="register.personal">
+					<jsp:attribute name="content">
+						<div class="row">
+							<div class="col-md-9">
+								<c:choose>
+									<c:when test="${command.isGroup}">
+										<form:select path="" class="changeLayout">
+											<form:option data-layout='LAYOUT_CURRENT' value="${curr}">${curr}</form:option>
+											<form:option data-layout="LAYOUT_G_DEFAULT_I_EN" value="${def1en}">${def1en}</form:option>
+											<form:option data-layout="LAYOUT_G_DEFAULT_I_GER" value="${def1ger}">${def1ger}</form:option>
+										</form:select>
+									</c:when>
+
+									<c:otherwise>
+										<form:select path="" class="changeLayout">
+											<form:option data-layout='LAYOUT_CURRENT' value="${curr}">${curr}</form:option>
+											<form:option data-layout='LAYOUT_DEFAULT_I_EN' value="${def1en}">${def1en}</form:option>
+											<form:option data-layout='LAYOUT_DEFAULT_I_GER' value="${def1ger}">${def1ger}</form:option>
+											<form:option data-layout='LAYOUT_DEFAULT_II_EN' value="${def2en}">${def2en}</form:option>
+											<form:option data-layout='LAYOUT_DEFAULT_II_GER' value="${def2ger}">${def2ger}</form:option>
+
+										</form:select>
+									</c:otherwise>
+								</c:choose>
+							</div>
+							<div class="col-md-3">
+								<div id="saveButtonField">
+									<button type="button" href='#' onclick="return submitWiki('save');" value="${save}" />
+								</div>
+								<div id="statusField">
+									<div id="statusText"><!-- keep me --></div>
+									<div style="float:right; display: inline-block"> 
+										<img src="${resdir}/image/ajax_loader.gif" alt="wait" id="loadingDiv" />
+									</div> 
+								</div>
+							</div>
 						</div>
-					    <div style="float: right; height: 30px; width: 80px; text-align: right">
-					    	<div id="saveButtonField">
-							    <input type="button" href='#' onclick="return submitWiki('save');" value="${save}" />
-					    	</div>
-							<div id="statusField">
-								<div id="statusText"><!-- keep me --></div>
-<!-- 									<div style="float:right; display: inline-block"> -->
-								<img src="${resdir}/image/ajax_loader.gif" alt="wait" id="loadingDiv" />
-<!-- 									</div> -->
-							</div>
-					    </div>
-				    </div>
-				    <div class="fsRow">
-				    	<c:out value="${topic}" escapeXml="false" />
-				    </div>
-				    
-					<div class="fsRow">
-						<input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}" />
-						<fieldset class="fsInner">
-							<legend>
-								<div id="showAdminField">
-									<input type="button" value="${show}" id="showAdmin" />
-								</div>
-								<div id="hideAdminField" style="display: none;">
-							    	<input type="button" value="${hide}" id="hideAdmin" />
-							    </div>
-						    </legend>
-							<div id="fsform" style="display: None">
-								<div class="fsRow" id="customdesign">
-									<form:textarea id="wikiTextArea" rows="10" cssClass="fsInput" path="wikiText" />
-								</div>
+						<div class="row">
+							<c:out value="${topic}" escapeXml="false" />
+						</div>
 
-								<div class="fsRow" style="clear: both;">
-									<span style="float: right;">
-									    <input type="button" href='#' onclick="return submitWiki('preview');" value="${preview}" />
-									    <input type="button" href='#' onclick="return submitWiki('publicPreview');" value="${pPrev}" />
-									</span>
-								</div>
-								<div>
-									<input type="button" onclick="return clearCVTextField();" value="${clear}" />
-								</div>
-							</div>
-							
-						</fieldset>
-					</div>
-			    </fieldset>
+<!--						<div class="row">
+							<input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}" />
+							<bsform:fieldset>
+								<jsp:attribute name="legendKey">
+									<div id="showAdminField">
+										<button type="button" value="${show}" id="showAdmin" class="btn btn-default" />
+									</div>
+									<div id="hideAdminField" style="display: none;">
+										<button type="button" value="${hide}" id="hideAdmin" class="btn btn-default" />
+									</div>
+								</jsp:attribute>
+								<jsp:attribute name="content">
+									<div id="fsform" style="display: None">
+										<div class="fsRow" id="customdesign">
+											<form:textarea id="wikiTextArea" rows="10" cssClass="fsInput" path="wikiText" />
+										</div>
+
+										<div class="fsRow" style="clear: both;">
+											<span style="float: right;">
+												<button type="button" href='#' onclick="return submitWiki('preview');" value="${preview}" class="btn btn-default" />
+												<button type="button" href='#' onclick="return submitWiki('publicPreview');" value="${pPrev}" class="btn btn-default" />
+											</span>
+										</div>
+										<div>
+											<button type="button" onclick="return clearCVTextField();" value="${clear}"  class="btn btn-danger" />
+										</div>
+									</div>
+								</jsp:attribute>
+							</bsform:fieldset>
+						</div>-->
+					</jsp:attribute>
+				</bsform:fieldset>
+			</form:form>
+		</div>
+
+
+		<div id="wikiArea" class="row">
+			<div class="col-md-1" style="background-color: black;">
+				Some text here.
 			</div>
-		</form:form>
-
-
-		<div id="wikiArea">
-		<!-- Diese Unterscheidung kann weg, sobald alle User ein Wiki angelegt bekommen haben. -->
-			<c:choose>
-				<c:when test="${not empty command.wikiText}">
-					<c:out value="${command.renderedWikiText}" escapeXml="false" />
-				</c:when>
-				<c:otherwise>
-					<fmt:message key="cv.my.nowikitext" var="nowikitext" />
-					<c:out value="${nowikitext}" escapeXml="false" />
-				</c:otherwise>
-			</c:choose>
+			<div class="col-md-11">
+				<c:choose>
+					<c:when test="${not empty command.wikiText}">
+						<c:out value="${command.renderedWikiText}" escapeXml="false" />
+					</c:when>
+					<c:otherwise>
+						<fmt:message key="cv.my.nowikitext" var="nowikitext" />
+						<c:out value="${nowikitext}" escapeXml="false" />
+					</c:otherwise>
+				</c:choose>
+			</div>
 		</div>
 	</div> <!-- /#selTab5 -->
 
