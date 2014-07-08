@@ -41,7 +41,7 @@
 				<!-- layout of your tag box and post lists -->
 
 				<fieldset>
-					<form:form method="POST" action="/updateUserSettings">
+					<form:form cssClass="form-horizontal" method="POST" action="/updateUserSettings">
 						<fieldset>
 							<legend><fmt:message key="settings.styleSettingsHeader" /></legend>
 							<!-- show tags as -->
@@ -283,7 +283,7 @@
 						</fieldset>
 					</form:form>
 					
-					<form:form id="postForm" method="post" action="/updateUserSettings">
+					<form:form cssClass="form-horizontal" id="postForm" method="post" action="/updateUserSettings">
 						<fieldset class="fsInner">
 							<legend>API</legend>
 							<!-- show API key -->
@@ -334,7 +334,7 @@
 						</fieldset>
 					</form:form>
 					
-					<form:form id="postForm" method="post" action="/updateUserSettings">
+					<form:form class="form-horizontal" id="postForm" method="post" action="/updateUserSettings">
 						<fieldset class="fsInner">
 							<legend><fmt:message key="settings.logging" /></legend>	
 							<!-- allow click logging -->
@@ -412,7 +412,7 @@
 						<settings:passwordChange loginUser="${command.context.loginUser}"/>
 					</c:if>
 					
-					<form:form id="postForm" method="post" action="/actions/goodBye">
+					<form:form cssClass="form-horizontal" id="postForm" method="post" action="/actions/goodBye">
 						<fieldset class="fsInner">
 							<legend><fmt:message key="settings.deletemyaccount" /></legend>
 							<!-- Are you sure? -->
