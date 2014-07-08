@@ -31,9 +31,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import net.sf.jabref.export.layout.Layout;
 import net.sf.jabref.export.layout.LayoutHelper;
@@ -124,7 +124,7 @@ public class JabrefLayouts {
 		/*
 		 * create a new hashmap to store the layouts
 		 */
-		layouts = new LinkedHashMap<String, JabrefLayout>();
+		layouts = new TreeMap<String, JabrefLayout>();
 		/*
 		 * load layout definition from XML file
 		 */
