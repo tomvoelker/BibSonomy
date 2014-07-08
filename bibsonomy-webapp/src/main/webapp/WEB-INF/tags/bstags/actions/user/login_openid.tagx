@@ -14,24 +14,22 @@
 
 
 	<fieldset>
-		<div><img class="pull-right" src="${resdir}/image/openid-logo-small.png" /><br class="clearfix" /></div>
-
-		<legend>Sign with an OpenID</legend>
-
+		<legend>Sign with another provider</legend>
 		<ul class="list-inline">
 			<li><span><fmt:message key="login.openid.provider"/></span></li>
 			<li><a class="provider" href="https://www.google.com/accounts/o8/id">Google</a></li> 
 			<li><a class="provider" href="http://yahoo.com/">Yahoo!</a></li>
-			<li><a class="provider" href="http://myopenid.com/">myOpenID</a></li> 
-			<li><a class="otherProvider">Other</a></li>
+			<li><a class="otherProvider">Other OpenID-Provider</a></li>
 		</ul>
 		<script type="text/javascript">
 			<![CDATA[
-					$(".provider").each(function() {
-				$(this).bind('click', function() {
-					$("#openID").focus().val($(this).attr('href'));
-					$("#form_openid").submit();
-					return false;
+			$(document).ready(function() {
+				$(".provider").each(function() {
+					$(this).click(function(e) {
+						e.preventDefault();
+						$("#openID").focus().val($(this).attr('href'));
+						$("#form_openid").submit();
+					});
 				});
 				$(".otherProvider").click(function() {
 					$(".openIDmanual").toggleClass('hide');
