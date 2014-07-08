@@ -15,7 +15,21 @@ public class ResourceParam<T extends Resource> extends GenericParam {
 	private RatingAverage ratingAverage = RatingAverage.ARITHMETIC_MEAN;
 
 	protected T resource;
+	protected int relation;
 
+	/**
+	 * @return the relation between the posts
+	 */
+	public int getRelation() {
+		return relation;
+	}
+	
+	/**
+	 * @param relation the relation between the posts
+	 */
+	public void setRelation(final int relation){
+		this.relation = relation;
+	}
 	/**
 	 * @param resource the resource to set
 	 */

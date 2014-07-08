@@ -124,24 +124,28 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	@SuppressWarnings("unchecked")
 	protected Set<RR> getRefencedByForPost(final String resourceHash, final DBSession session) {
 		final P param = createResourceParam(resourceHash);
+		param.setRelation(RelationsEnum.REFERENCE.getValue());
 		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRefercencedBy", param, session));
 	}
 	
 	@SuppressWarnings("unchecked")
 	protected Set<RR> getReferencePartOfThisPublication(final String resourceHash, final DBSession session) {
 		final P param = createResourceParam(resourceHash);
-		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardReferencePartOfThisPublication", param, session));
+		param.setRelation(RelationsEnum.PART_OF.getValue());
+		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRefercencedBy", param, session));
 	}
 
 	@SuppressWarnings("unchecked")
 	private Set<RR> getReferenceThisPublicationIsPublishedIn(String resourceHash, DBSession session) {
 		final P param = createResourceParam(resourceHash);
-		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardReferenceThisPublicationIsPublishedIn", param, session));
+		param.setRelation(RelationsEnum.PART_OF.getValue());
+		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRefercences", param, session));
 	}
 	
 	@SuppressWarnings("unchecked")
 	protected Set<RR> getReferencesForPost(final String interHash, final DBSession session) {
 		final P param = createResourceParam(interHash);
+		param.setRelation(RelationsEnum.REFERENCE.getValue());
 		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRefercences", param, session));
 	}
 	

@@ -52,71 +52,71 @@ function addReferenceMenu() {
 	});
 	
 	//*******Reference experiment: lka
-	var Form = $('<form class="new_reference_menu"><h3>'+getString('post.actions.edit.gold.references.addcitation')+'</h3></form>');
-	var exRefHashInput = $('<input id  = "refHash2" type="text"/>');
-	var exRelationType = ["Reference", "Part of"];
-	var exRelationInput = $('<select id="relation2" name= "relation2"/>');
-	for(var val in exRelationType) {
-		    $('<option />', {value: exRelationType[val], text: exRelationType[val]}).appendTo(exRelationInput);
-		}
-	var exAddRefButton =   $('<button id = "addButon2" type = "button">\n'+getString('post.actions.edit.gold.references.addbutton')+'</button>');
-	Form.append($('<label>'+getString('post.actions.edit.gold.references.relation')+': </label>'));
-	Form.append(exRelationInput);
-	Form.append($('<label>\n' + getString('post.actions.edit.gold.references.publication') + ': </label>'));
-	Form.append(exRefHashInput);
-	Form.append(exAddRefButton);
-	$("#gold_refs").append(Form);
-	$("#addButon2").click(function(){
-		RELATION = document.getElementById("relation2").value;
-		REFHASH = $("#refHash2").val();
-		addReferenceHASHnRelation(REFHASH, RELATION);
-	});
-	
-	function addReferenceHASHnRelation(reference, relation) {
-		var referenceHash = reference;
-		$.ajax({
-			url: GOLD_REFERENCE_URL,
-			data: {ckey: ckey, hash: getGoldInterHash(), references: referenceHash, relation: relation},
-			type: 'POST',
-			success: function(data) {
-				$("#refHash2").removeAttr('value');
-				$("#refHash2").prop('disabled', true);
-				$("#relation2").prop('disabled', true);
-				$("#addButon2").html('Added');
-				setTimeout(function(){
-					$("#refHash2").prop('disabled', false);
-					$("#relation2").prop('disabled', false);
-					$("#addButon2").html(getString('post.actions.edit.gold.references.addbutton'));
-				}, 5000);
-				$("#gold_refs").html();
-				
-				// clone the template
-				var template = $('#referenceTemplate').clone();
-				template.attr('id', ''); // remove id
-				template.attr('data-interhash', referenceHash); // set interHash in data attribute
-				
-				// authors and editors
-				var personList = template.find('.authorEditorList');
-				personList.append(getAuthorsEditors(reference.authors, reference.editors));
-				
-				// title
-				var titleLink = template.find('.publicationLink');
-				titleLink.attr('href', '/bibtex/' + referenceHash);
-				// TODO: bibtex not cleaned
-				titleLink.text(reference.title); // TODO: escape?!
-				
-				// year
-				template.find('.year').text(reference.year);
-				
-				// add template
-				$('#gold_references ol').append(template);
-				template.show();
-				
-				// delete link
-				$('span.reference_menu a').click(deleteReference);
-			}
-		});
-	}
+//	var Form = $('<form class="new_reference_menu"><h3>'+getString('post.actions.edit.gold.references.addcitation')+'</h3></form>');
+//	var exRefHashInput = $('<input id  = "refHash2" type="text"/>');
+//	var exRelationType = ["Reference", "Part of"];
+//	var exRelationInput = $('<select id="relation2" name= "relation2"/>');
+//	for(var val in exRelationType) {
+//		    $('<option />', {value: exRelationType[val], text: exRelationType[val]}).appendTo(exRelationInput);
+//		}
+//	var exAddRefButton =   $('<button id = "addButon2" type = "button">\n'+getString('post.actions.edit.gold.references.addbutton')+'</button>');
+//	Form.append($('<label>'+getString('post.actions.edit.gold.references.relation')+': </label>'));
+//	Form.append(exRelationInput);
+//	Form.append($('<label>\n' + getString('post.actions.edit.gold.references.publication') + ': </label>'));
+//	Form.append(exRefHashInput);
+//	Form.append(exAddRefButton);
+//	$("#gold_refs").append(Form);
+//	$("#addButon2").click(function(){
+//		RELATION = document.getElementById("relation2").value;
+//		REFHASH = $("#refHash2").val();
+//		addReferenceHASHnRelation(REFHASH, RELATION);
+//	});
+//	
+//	function addReferenceHASHnRelation(reference, relation) {
+//		var referenceHash = reference;
+//		$.ajax({
+//			url: GOLD_REFERENCE_URL,
+//			data: {ckey: ckey, hash: getGoldInterHash(), references: referenceHash, relation: relation},
+//			type: 'POST',
+//			success: function(data) {
+//				$("#refHash2").removeAttr('value');
+//				$("#refHash2").prop('disabled', true);
+//				$("#relation2").prop('disabled', true);
+//				$("#addButon2").html('Added');
+//				setTimeout(function(){
+//					$("#refHash2").prop('disabled', false);
+//					$("#relation2").prop('disabled', false);
+//					$("#addButon2").html(getString('post.actions.edit.gold.references.addbutton'));
+//				}, 5000);
+//				$("#gold_refs").html();
+//				
+//				// clone the template
+//				var template = $('#referenceTemplate').clone();
+//				template.attr('id', ''); // remove id
+//				template.attr('data-interhash', referenceHash); // set interHash in data attribute
+//				
+//				// authors and editors
+//				var personList = template.find('.authorEditorList');
+//				personList.append(getAuthorsEditors(reference.authors, reference.editors));
+//				
+//				// title
+//				var titleLink = template.find('.publicationLink');
+//				titleLink.attr('href', '/bibtex/' + referenceHash);
+//				// TODO: bibtex not cleaned
+//				titleLink.text(reference.title); // TODO: escape?!
+//				
+//				// year
+//				template.find('.year').text(reference.year);
+//				
+//				// add template
+//				$('#gold_references ol').append(template);
+//				template.show();
+//				
+//				// delete link
+//				$('span.reference_menu a').click(deleteReference);
+//			}
+//		});
+//	}
 	//***********
 	
 	// display function for searching gold standards
