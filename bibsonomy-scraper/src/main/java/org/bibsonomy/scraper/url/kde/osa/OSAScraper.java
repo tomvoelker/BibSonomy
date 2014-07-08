@@ -38,16 +38,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ReferencesScraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
  */
-public class OSAScraper extends AbstractUrlScraper {
+public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 
 	
 	private static final String SITE_NAME = "Optical Society of America";
@@ -70,10 +72,14 @@ public class OSAScraper extends AbstractUrlScraper {
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + OSA_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
+	final static Pattern references_pattern = Pattern.compile("(?s)<h3>References</h3>\\s+<div .*>\\s+<ol>(.*)</ol>");
+	
+	@Override
 	public String getInfo() {
 		return info;
 	}
 
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
@@ -112,6 +118,7 @@ public class OSAScraper extends AbstractUrlScraper {
 
 		if(bibResult != null) {
 			sc.setBibtexResult(bibResult);
+			scrapeReferences(sc);
 			return true;
 		}else
 			throw new ScrapingFailureException("getting bibtex failed");
@@ -209,16 +216,36 @@ public class OSAScraper extends AbstractUrlScraper {
 		return cookieString.toString();
 	}
 
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
+	 */
+	@Override
+	public boolean scrapeReferences(ScrapingContext scrapingContext)throws ScrapingException {
+		try{
+			Matcher m = references_pattern.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
+			if(m.find()){
+				scrapingContext.setReferences(m.group(1));
+				return true;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 
