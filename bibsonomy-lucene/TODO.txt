@@ -15,15 +15,19 @@
 9) Implements single application context for lucene
 
 Lucene 4.9 Migration:
+- src/main/resources/org/bibsonomy/bibsonomy-lucene-index-config.xml
+	- <util:constant id="lucene24Compat" static-field="org.apache.lucene.util.Version.LUCENE_24" />
+		--> Why was it Version.LUCENE_24 ???
+		
 - IndexReaders read only
 	-> LuceneResourceIndex: - Have a second look on Reader/Writer management
 	
 - LuceneResourceSearch		- Search Terms have to be UTF 8 - (BytesRef)
-							-  
-							
+							- parseSearchQuery(final String fieldName, String searchTerms)
+								--> Why was it Version.LUCENE_24 ???
 							- maybe switch to Search Manager
-							- parseSearchQuery(final String fieldName, String searchTerms) - Version.LUCENE_24 no longer supported - rework!
-							- makeTimeRangeQuery(final BooleanQuery mainQuery, final String year, String firstYear, String lastYear) rework!
+							
+- LuceneResourceSearchTest	- no asserts!							
 							
 - General:
 	- Make Indexing/Searching threaded!

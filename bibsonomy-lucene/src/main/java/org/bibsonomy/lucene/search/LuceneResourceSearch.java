@@ -719,7 +719,10 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			while (ts.incrementToken()) {
 				analyzedString.append(" ").append(termAtt.buffer());
 			}
-
+			
+			ts.end();
+			ts.close();
+			
 			return analyzedString.toString().trim();
 		}
 
