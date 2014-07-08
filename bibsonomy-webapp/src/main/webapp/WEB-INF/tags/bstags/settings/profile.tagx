@@ -17,33 +17,32 @@
 
 	<!-- ############################################# profile tab ############################################# -->	
 	<c:set var="user" value="${command.user}" />
-	
-	<!-- Outer surrounding -->
-	
+		
 	<div id="selTab0" class="tab-pane ${(command.selTab eq 0) ? 'active' : ''}">
-		<!-- <bs:panel messagesPropertiesKey="navi.myprofile">
-			<jsp:attribute name="panelBody">
-		-->
-		
-		<h2 class="content-header"><fmt:message key="navi.myprofile" /></h2>
-		
-		<!--+
-			|
-			| profile, contact, about 
-			| 
-		 	+-->
-		
-			<!-- Der Text der oben steht -->
-			<p>
-				<fmt:message key="settings.profileInfo">
-					<fmt:param><a href="/foaf/user/${mtl:encodeURI(user.name)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param>
-					<fmt:param><fmt:message key="settings.profileViewableFor"/></fmt:param>
-					<fmt:param value="/cv/user/${mtl:encodeURI(user.name)}"/>
-				</fmt:message>
-			</p>
 	
-			<fieldset class="fsOuter">	
-				<form:form cssClass="form-horizontal" name="account" method="post" action="/updateUserProfile?ckey=${ckey}" enctype="multipart/form-data">
+		<fieldset class="fsOuter">	
+			
+			<form:form cssClass="form-horizontal" name="account" method="post" action="/updateUserProfile?ckey=${ckey}" enctype="multipart/form-data">
+				<fieldset>
+					<legend><fmt:message key="navi.myprofile" /></legend>
+			
+				<!--+
+					|
+					| profile, contact, about 
+					| 
+				 	+-->
+				
+					<!-- Der Text der oben steht -->
+					<p>
+						<fmt:message key="settings.profileInfo">
+							<fmt:param><a href="/foaf/user/${mtl:encodeURI(user.name)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param>
+							<fmt:param><fmt:message key="settings.profileViewableFor"/></fmt:param>
+							<fmt:param value="/cv/user/${mtl:encodeURI(user.name)}"/>
+						</fmt:message>
+					</p>
+				</fieldset>
+
+			
 			
 				<!--+
 					| username, realname, gender, birthday, place, profile privacy level
@@ -225,9 +224,5 @@
 						</fieldset>
 					</form:form>
 				</fieldset>
-		<!-- 
-			</jsp:attribute>
-		</bs:panel>
-		-->
 	</div>
 </jsp:root>
