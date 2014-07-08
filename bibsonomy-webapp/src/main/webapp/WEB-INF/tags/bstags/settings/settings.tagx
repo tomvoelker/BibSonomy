@@ -35,20 +35,13 @@
 	<fmt:message var="advanced" key="settings.advanced"/>
 	<fmt:message var="simple" key="settings.simple"/>
 
-	
-		<!-- Outer surrounding -->
-		<bs:panel messagesPropertiesKey="navi.settings">
-			<jsp:attribute name="panelBody">
+	<div id="selTab1" class="tab-pane ${(command.selTab eq 1) ? 'active' : ''}">
+		
 	
 				<!-- layout of your tag box and post lists -->
-				<!-- new -->
-				
-				
-				<!-- old
-				<h2><fmt:message key="settings.styleSettingsHeader"/></h2>
-				-->
+
 				<fieldset>
-					<form:form method="POST" action="/updateUserSettings">
+					<form:form cssClass="form-horizontal" method="POST" action="/updateUserSettings">
 						<fieldset>
 							<legend><fmt:message key="settings.styleSettingsHeader" /></legend>
 							<!-- show tags as -->
@@ -74,18 +67,6 @@
 								
 							</div>
 							
-							<!-- old
-							<div class="fsRow">
-								<form:label cssClass="fsLabel" path="user.settings.tagboxStyle">
-									<fmt:message key="settings.tag.showAs"/>
-								</form:label>
-								<buttons:help message="settings.tag.showAs.help"/>
-								<form:select cssClass="fsInput fsSmall" path="user.settings.tagboxStyle">
-									<form:option label="${cloud}" value="0" />
-									<form:option label="${list}" value="1"/>
-								</form:select>
-							</div>
-							-->
 							
 							<!-- sort tags by -->
 							<!-- new -->
@@ -107,19 +88,7 @@
 								</div>
 								
 							</div>
-							
-							<!-- old
-							<div class="fsRow">
-								<form:label cssClass="fsLabel" path="user.settings.tagboxSort">
-									<fmt:message key="settings.tag.sortBy"/>
-								</form:label>
-								<buttons:help message="settings.tag.sortBy.help"/>
-								<form:select cssClass="fsInput fsSmall" path="user.settings.tagboxSort">
-									<form:option label="${alphabet}" value="0" />
-									<form:option label="${frequency}" value="1" />
-								</form:select>
-							</div>
-							-->
+
 							
 							<!-- tooltips for tags -->
 							<!-- new -->
@@ -143,17 +112,6 @@
 								</div>
 								
 							</div>
-							
-							<!-- old 
-							<div class="fsRow">
-								<form:label cssClass="fsLabel" path="user.settings.tagboxTooltip"><fmt:message key="settings.tag.showTooltipsForTags"/></form:label>
-								<buttons:help message="settings.tag.showTooltipsForTags.help"/>
-								<form:select cssClass="fsInput fsSmall" path="user.settings.tagboxTooltip">
-									<form:option label="${no}" value="0" />
-									<form:option label="${yes}" value="1" />
-								</form:select>
-							</div>
-							-->
 							
 							<!-- choice of tags -->
 							<!-- new -->
@@ -194,36 +152,6 @@
 								
 							</div>
 							
-							<!-- old
-							<fmt:message var="maxCount" key="settings.tag.options.maxCount" />
-							<fmt:message var="minFreq" key="settings.tag.options.minFreq" />
-					
-							<div class="fsRow">
-								<form:label cssClass="fsLabel" path="user.settings.isMaxCount"><fmt:message key="settings.tag.maxCountminFreq"/></form:label>
-								<buttons:help message="settings.tag.maxCountminFreq.help">
-								<jsp:attribute name="helpText">
-									<ol>
-										<li>
-											<fmt:message key="settings.tag.maxCountminFreq.help.maxCount">
-												<fmt:param>${maxCount}</fmt:param>
-											</fmt:message>
-										</li>
-										<li>
-											<fmt:message key="settings.tag.maxCountminFreq.help.minFreq">
-												<fmt:param>${minFreq}</fmt:param>
-											</fmt:message>
-										</li>
-									</ol>
-								<fmt:message key="settings.tag.maxCountminFreq.help.X" />
-								</jsp:attribute>
-								</buttons:help>
-								<form:select cssClass="fsInput fsSmall" path="user.settings.isMaxCount">
-									<form:option label="${maxCount}" value="true"/>
-									<form:option label="${minFreq}" value="false"/>
-								</form:select>
-							</div>
-							-->
-							
 							<!-- tag threshold -->
 							<!-- new -->
 							<fmt:message var="labelText" key="settings.tag.threshold" />
@@ -244,29 +172,6 @@
 							</c:set>
 							<bsform:input path="changeTo" labelColSpan="3" labelText="${labelText }" inputColSpan="9" helpText="${helpText }" />
 							
-							<!-- old
-							<div class="fsRow">
-								<form:label cssClass="fsLabel" path="changeTo"><fmt:message key="settings.tag.threshold"/></form:label>
-								<buttons:help message="settings.tag.threshold.help">
-									<jsp:attribute name="helpText">
-										<ol>
-											<li>
-												<fmt:message key="settings.tag.threshold.help.maxCount">
-													<fmt:param>${maxCount}</fmt:param>
-												</fmt:message>
-											</li>
-											<li>
-												<fmt:message key="settings.tag.threshold.help.minFreq">
-													<fmt:param>${minFreq}</fmt:param>
-												</fmt:message>
-											</li>
-									</ol>
-									</jsp:attribute>
-								</buttons:help>
-								<form:input cssClass="fsInput fsSmall" path="changeTo"/>
-							</div>
-							-->
-							
 							<!-- items per page -->
 							<!-- new -->
 							<fmt:message var="labelText" key="settings.tag.itemsPerPage" />
@@ -275,19 +180,7 @@
 							<div class="dissError">
 								<form:errors path="user.settings.listItemcount" />
 							</div>
-							
-							<!-- old
-							<div class="fsRow">
-								<form:label cssClass="fsLabel" path="user.settings.listItemcount">
-									<fmt:message key="settings.tag.itemsPerPage"/>
-								</form:label>
-								<buttons:help message="settings.tag.itemsPerPage.help"/>
-								<form:input cssClass="fsInput fsSmall" path="user.settings.listItemcount"/>
-								<div class="dissError">
-									<form:errors path="user.settings.listItemcount" />
-								</div>
-							</div>
-							-->
+
 							
 							<!-- displayed resources -->
 							<!-- new -->
@@ -311,18 +204,6 @@
 								</div>
 								<div class="dissError"><form:errors path="user.settings.showBookmark" /></div>
 							</div>
-							
-							<!-- old
-							<div class="fsRow">
-								<form:label cssClass="fsLabel" path="user.settings.showBookmark">
-									<fmt:message key="settings.resource.resourceToShow"/>
-								</form:label>
-								<buttons:help message="settings.resource.resourceToShow.help"/>
-								<form:checkbox path="user.settings.showBookmark" label="${bookmark}"/>
-								<form:checkbox path="user.settings.showBibtex" label="${publication}"/>
-								<div class="dissError"><form:errors path="user.settings.showBookmark" /></div>
-							</div>
-							-->
 							
 							<!-- appearance -->
 							<!-- new -->
@@ -360,32 +241,6 @@
 								
 							</div>
 							
-							<!-- old
-							<div class="fsRow">
-								<form:label cssClass="fsLabel" path="user.settings.simpleInterface">
-									<fmt:message key="settings.editPublication.interFace"/>
-								</form:label>
-								<buttons:help message="settings.editPublication.interFace.help">
-									<jsp:attribute name="helpText">
-										<ol>
-											<li> <fmt:message key="settings.editPublication.interFace.help.advanced">
-													<fmt:param>${advanced}</fmt:param>
-												</fmt:message>
-											</li>
-											<li> <fmt:message key="settings.editPublication.interFace.help.simple">
-													<fmt:param>${simple}</fmt:param>
-												</fmt:message>
-											</li>
-										</ol>
-									</jsp:attribute>
-								</buttons:help>
-								<form:select cssClass="fsInput fsSmall" path="user.settings.simpleInterface">
-								  <form:option label="${advanced}" value="false" />
-								  <form:option label="${simple}" value="true" />
-								</form:select>
-							</div>
-							-->
-							
 							<!-- language -->
 							<!-- new -->
 							<div class="form-group clearfix">
@@ -409,19 +264,6 @@
 								
 							</div>
 							
-							<!-- old
-							<div class="fsRow">
-								<form:label cssClass="fsLabel" path="user.settings.defaultLanguage">
-									<fmt:message key="settings.tag.defaultLanguage"/>
-								</form:label>
-								<buttons:help message="settings.tag.defaultLanguage.help"/>
-								<form:select cssClass="fsInput fsSmall" path="user.settings.defaultLanguage">
-								  <form:option label="${english}" value="en"/>
-								  <form:option label="${german}" value="de"/>
-								</form:select>
-							</div>
-							 -->
-							
 							<input type="hidden" name="ckey" value="${ckey}"/>
 							<input type="hidden" name="action" value="layoutTagPost"/>
 							<input type="hidden" name="selTab" value="1"/>
@@ -441,15 +283,7 @@
 						</fieldset>
 					</form:form>
 					
-					<!-- API -->
-					<!-- new -->
-					
-					
-					<!-- old
-					<h2>API</h2>
-					-->
-					
-					<form:form id="postForm" method="post" action="/updateUserSettings">
+					<form:form cssClass="form-horizontal" id="postForm" method="post" action="/updateUserSettings">
 						<fieldset class="fsInner">
 							<legend>API</legend>
 							<!-- show API key -->
@@ -497,22 +331,10 @@
 								<bsform:button type="submit" style="primary" size="defaultSize" value="${generateapikey}" />
 							</div>
 							
-							<!-- old
-							<input type="submit" value="${generateapikey}" />
-							-->
-							
 						</fieldset>
 					</form:form>
-				
-					<!-- log level (logging and deleting)-->
-					<!-- new -->
 					
-					
-					<!-- old
-					<h2><fmt:message key="settings.logging" /></h2>
-					-->
-					
-					<form:form id="postForm" method="post" action="/updateUserSettings">
+					<form:form class="form-horizontal" id="postForm" method="post" action="/updateUserSettings">
 						<fieldset class="fsInner">
 							<legend><fmt:message key="settings.logging" /></legend>	
 							<!-- allow click logging -->
@@ -540,19 +362,6 @@
 								</div>
 								
 							</div>
-						
-							<!-- old
-				  			<div class="fsRow">
-								<form:label cssClass="fsLabel" path="user.settings.logLevel">
-									<fmt:message key="settings.logclicks"/>
-								</form:label>
-								<buttons:help message="settings.logclicks.help"/>
-								<form:select path="user.settings.logLevel">
-									<form:option value="0"><fmt:message key="settings.yes"/></form:option>
-									<form:option value="1"><fmt:message key="settings.no"/></form:option>
-								</form:select>
-							</div>
-							-->
 							
 							<!-- confirmation before deleting -->
 							<!-- new -->
@@ -580,19 +389,6 @@
 								
 							</div>
 				
-							<!-- old
-							<div class="fsRow">
-								<form:label cssClass="fsLabel" path="user.settings.confirmDelete">
-									<fmt:message key="settings.confirm"/>
-								</form:label>
-								<buttons:help message="settings.confirm.help"/>
-								<form:select path="user.settings.confirmDelete">
-									<form:option value="true"><fmt:message key="settings.yes"/></form:option>
-									<form:option value="false"><fmt:message key="settings.no"/></form:option>
-								</form:select>
-							</div>
-							-->
-				
 							<input type="hidden" name="ckey" value="${ckey}"/>
 							<input type="hidden" name="selTab" value="1"/>
 							<input type="hidden" name="action" value="logging"/>
@@ -604,10 +400,7 @@
 							<div class="col-sm-offset-3">
 								<bsform:button type="submit" style="primary" size="defaultSize" value="${updatesettings}" />
 							</div>
-								
-							<!-- old
-							<input type="submit" value="${updatesettings}"/>
-							-->
+
 							
 						</fieldset>
 					</form:form>
@@ -619,16 +412,7 @@
 						<settings:passwordChange loginUser="${command.context.loginUser}"/>
 					</c:if>
 					
-					<!-- delete account -->
-					<!-- new -->
-					
-					
-					<!-- old
-					<h2><fmt:message key="settings.deletemyaccount"/></h2>
-					-->
-					
-					
-					<form:form id="postForm" method="post" action="/actions/goodBye">
+					<form:form cssClass="form-horizontal" id="postForm" method="post" action="/actions/goodBye">
 						<fieldset class="fsInner">
 							<legend><fmt:message key="settings.deletemyaccount" /></legend>
 							<!-- Are you sure? -->
@@ -648,24 +432,6 @@
 								</div>
 							</div>
 							
-							<!-- old
-							<div class="fsRow">
-							
-								<form:label cssClass="fsLabel" path="delete">
-									<fmt:message key="settings.really"/>
-								</form:label>
-								
-								<input cssClass="fsInput fsSmall" type="text" name="delete" value="no" size="30"/>
-								
-								<div class="dissError"><form:errors path="delete" /></div>		      
-								<c:out value=" "/>
-								<fmt:message key="settings.yestodeleteaccount">
-									<fmt:param>
-										<em>yes</em>
-									</fmt:param>
-								</fmt:message>
-							</div>
-							-->
 							
 							<input type="hidden" name="ckey" value="${ckey}"/>
 							<input type="hidden" name="selTab" value="1"/>
@@ -677,14 +443,9 @@
 							<div class="col-sm-offset-3">
 								<bsform:button type="submit" style="primary" size="defaultSize" value="${deleteaccount}" />
 							</div>
-							
-							<!-- old
-							<input type="submit" class="fsFormSubmit" style="clear:both; float:left" value="${deleteaccount}" />
-							-->
 								
 						</fieldset>
 					</form:form>
 				</fieldset>
-			</jsp:attribute>
-		</bs:panel>
+	</div>
 </jsp:root>

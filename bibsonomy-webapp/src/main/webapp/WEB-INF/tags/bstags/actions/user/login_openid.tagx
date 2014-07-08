@@ -1,47 +1,60 @@
 <?xml version="1.0" ?>
 <jsp:root version="2.0" 
-	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:form="http://www.springframework.org/tags/form"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
-	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
->
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:form="http://www.springframework.org/tags/form"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+		  xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
+		  >
 
-	<jsp:directive.tag language="java" pageEncoding="UTF-8" display-name="LDAP Login Form" description="Renders the login form for OpenID login." />
+	<jsp:directive.tag language="java" pageEncoding="UTF-8" display-name="OpenID Login Form" description="Renders the login form for OpenID login." />
 
-	
-	
-	<br /><br />
-	
+
+
 	<fieldset>
-		<div><img class="pull-right" src="${resdir}/image/openid-logo-small.png" /><br class="clearfix" /></div>
-		
-		<legend>Sign with an OpenID</legend>
-		
+		<legend>Sign with another provider</legend>
 		<ul class="list-inline">
 			<li><span><fmt:message key="login.openid.provider"/></span></li>
 			<li><a class="provider" href="https://www.google.com/accounts/o8/id">Google</a></li> 
 			<li><a class="provider" href="http://yahoo.com/">Yahoo!</a></li>
-			<li><a class="provider" href="http://myopenid.com/">myOpenID</a></li> 
+			<li><a class="otherProvider">Other OpenID-Provider</a></li>
 		</ul>
-		<p class="clearfix"><!--  --></p>
-		<fmt:message key="login.method.openid" var="openID" />
-		<bsform:input placeholder="openID" path="openID" noHelp="${true}" labelText="${openID}" required="true" />
+		<script type="text/javascript">
+			<![CDATA[
+			$(document).ready(function() {
+				$(".provider").each(function() {
+					$(this).click(function(e) {
+						e.preventDefault();
+						$("#openID").focus().val($(this).attr('href'));
+						$("#form_openid").submit();
+					});
+				});
+				$(".otherProvider").click(function() {
+					$(".openIDmanual").toggleClass('hide');
+				});
+			});
+			]]>
+		</script>	
+		<div class="openIDmanual hide">
+			<p class="clearfix"><!--  --></p>
+			<fmt:message key="login.method.openid" var="openID" />
+			<bsform:input placeholder="openID" path="openID" noHelp="${true}" labelText="${openID}" required="true" />
 
-		<div class="form-group">
-			<div class="col-sm-offset-2 col-sm-1 col-md-1 col-lg-1">
-				<bsform:button type="submit" style="success" value="submit" size="defaultSize" />
-			</div>
-			<div class="col-sm-9 col-md-9 col-lg-9">
-				<fmt:message key="login.rememberMe" var="rememberMe" />
-				<bsform:checkbox inputColSpan="9" path="rememberMe" labelText="${rememberMe}" />
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-3 col-md-3 col-lg-3">
+					<bsform:button type="submit" style="success" value="submit" size="defaultSize" />
+				</div>
+				<div class="col-sm-7 col-md-7 col-lg-7">
+					<fmt:message key="login.rememberMe" var="rememberMe" />
+					<bsform:checkbox inputColSpan="11" path="rememberMe" labelText="${rememberMe}" />
+				</div>
 			</div>
 		</div>
 
    	</fieldset>
-   	
+
    	<hr />
 
 </jsp:root>
