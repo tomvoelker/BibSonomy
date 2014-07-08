@@ -4,7 +4,6 @@ import static org.bibsonomy.lucene.util.LuceneBase.CFG_LUCENE_FIELD_SPECIFIER;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -706,7 +705,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		if (present(param)) {
 			// use lucene's new token stream api (see
 			// org.apache.lucene.analysis' javadoc at package level)
-			final TokenStream ts = this.analyzer.tokenStream(fieldName, new StringReader(param));
+			final TokenStream ts = this.analyzer.tokenStream(fieldName, param);
 			/* This CharTermAttribute was formally the deprecated TermAttribute interface 
 			 * The main difference in this case is that we now obtain a char[] buffer for 
 			 * every term instead of a String object */
@@ -717,7 +716,8 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			// tokens
 			final StringBuilder analyzedString = new StringBuilder();
 			while (ts.incrementToken()) {
-				analyzedString.append(" ").append(termAtt.buffer());
+				String term = new String(termAtt.buffer(),0,termAtt.length());
+				analyzedString.append(" ").append(term);
 			}
 			
 			ts.end();
