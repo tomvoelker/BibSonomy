@@ -143,9 +143,9 @@
 							<div class ="form-group clearfix">
 								<form:label cssClass="col-sm-3 control-label" path="file"><fmt:message key="settings.picture.current"/></form:label>
 								<div class="col-sm-9">
-									<a title="@seboettg" href="/user/seboettg" class="img-thumbnail img-responsive">
+									<a title="${mtl:encodeURI(user.name)}" href="/user/${mtl:encodeURI(user.name)}" class="img-thumbnail img-responsive">
 										<img class="user-avatar" src="/picture/user/${mtl:encodeURI(user.name)}" />
-										<span>@seboettg</span>
+										<span>@<c:out value="${mtl:encodeURI(user.name)}" /></span>
 									</a>
 								</div>
 							</div>
