@@ -427,33 +427,32 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * @return time range query
 	 */
 	protected Query makeTimeRangeQuery(final BooleanQuery mainQuery, final String year, String firstYear, String lastYear) {
-		/*
-		 * exact year query
-		 */
-		boolean includeLowerBound = false;
-		boolean includeUpperBound = false;
-
+		//exact year query
 		if (present(year)) {
 			mainQuery.add(new TermQuery(new Term(LuceneFieldNames.YEAR, year.replaceAll("\\D", ""))), Occur.MUST);
-		} else {
-			/*
-			 * range query
-			 */
-			// firstYear != null
-			if (present(firstYear)) {
+			return mainQuery;
+		}
+		
+		//range query
+		boolean includeLowerBound = false;
+		boolean includeUpperBound = false;
+		BytesRef firstYearBR = null;
+		BytesRef lastYearBR = null;
+		
+		if (present(firstYear)) {
 				firstYear = firstYear.replaceAll("\\D", "");
+				firstYearBR = new BytesRef(firstYear);
 				includeLowerBound = true;
-			}
-			// lastYear != null
-			if (present(lastYear)) {
+		}
+		if (present(lastYear)) {
 				lastYear = lastYear.replaceAll("\\D", "");
+				lastYearBR = new BytesRef(lastYear);
 				includeUpperBound = true;
-			}
 		}
 
 		if (includeLowerBound || includeUpperBound) {
 			// if upper or lower bound is given, then use filter
-			final Filter rangeFilter = new TermRangeFilter(LuceneFieldNames.YEAR, new BytesRef(firstYear), new BytesRef(lastYear), includeLowerBound, includeUpperBound);
+			final Filter rangeFilter = new TermRangeFilter(LuceneFieldNames.YEAR, firstYearBR, lastYearBR, includeLowerBound, includeUpperBound);
 			return new FilteredQuery(mainQuery, rangeFilter);
 		}
 
