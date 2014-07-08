@@ -19,7 +19,7 @@
 	<jsp:directive.attribute name="small" type="java.lang.Boolean" required="false" description="Reduces the element width to 33 percent" />
 
 	<!-- HTML attributes -->	
-	<jsp:directive.attribute name="id" type="java.lang.String" required="true" description="Id for input field"/>
+	<jsp:directive.attribute name="id" type="java.lang.String" required="false" description="Id for input field"/>
 	<jsp:directive.attribute name="placeholder" required="false" description="Placeholder for input field." />
 	
 	<jsp:directive.attribute name="appendix" fragment="true" required="false" description="Additional items for input field"/>

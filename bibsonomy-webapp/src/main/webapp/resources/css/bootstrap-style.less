@@ -263,11 +263,17 @@ ul.dropdown-menu li.divider {
  */
  
 h3.list-headline {
-	border-bottom: 1px #ccc solid;
+	border-bottom: 1px @light-element-color solid;
 	padding-top: 0;
 	margin-top: 10px;
 	margin-bottom: 20px;
-} 
+}
+
+h4.list-sub-headline {
+	margin-bottom: 1em;
+	margin-left: 0.5em;
+	margin-top: 1.5em;
+}  
  
 ul.posts,
 ul.posts li {
@@ -1002,4 +1008,20 @@ fieldset {
 .btn-stripped {
 	margin-left: 0!important;
 	border-left: none;
+}
+
+span.label.label-primary > a,
+span.label.label-info > a,
+span.label.label-warning > a,
+span.label.label-danger > a {
+	color: #ffffff !important;
+}
+
+.numpostsbadge .badge {
+	margin-top: -0.6em;
+	background-color: @light-element-color;
+}
+
+.numpostsbadge:hover .badge {
+	background-color: @light-element-hover-color;
 }

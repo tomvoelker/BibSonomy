@@ -634,6 +634,11 @@ public enum Views implements View {
 	 * show button-page view
 	 */
 	BUTTONS("buttons"),
+	
+	/**
+	 * show getting started page view
+	 */
+	GETTINGSTARTED("gettingStarted"),
 
 	/**
 	 * show popular concepts

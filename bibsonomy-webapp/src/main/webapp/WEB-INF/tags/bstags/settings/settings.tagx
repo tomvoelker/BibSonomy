@@ -35,7 +35,6 @@
 	<fmt:message var="advanced" key="settings.advanced"/>
 	<fmt:message var="simple" key="settings.simple"/>
 
-	<form:form cssClass="form-horizontal" >
 	
 		<!-- Outer surrounding -->
 		<bs:panel messagesPropertiesKey="navi.settings">
@@ -49,8 +48,8 @@
 				<h2><fmt:message key="settings.styleSettingsHeader"/></h2>
 				-->
 				<fieldset>
-					<form:form id="styleSettingsForm" method="POST" action="/updateUserSettings">
-						<fieldset class="fsInner">
+					<form:form method="POST" action="/updateUserSettings">
+						<fieldset>
 							<legend><fmt:message key="settings.styleSettingsHeader" /></legend>
 							<!-- show tags as -->
 							<!-- new -->
@@ -410,7 +409,7 @@
 								
 							</div>
 							
-							<!-- old 
+							<!-- old
 							<div class="fsRow">
 								<form:label cssClass="fsLabel" path="user.settings.defaultLanguage">
 									<fmt:message key="settings.tag.defaultLanguage"/>
@@ -421,7 +420,7 @@
 								  <form:option label="${german}" value="de"/>
 								</form:select>
 							</div>
-							-->
+							 -->
 							
 							<input type="hidden" name="ckey" value="${ckey}"/>
 							<input type="hidden" name="action" value="layoutTagPost"/>
@@ -429,14 +428,15 @@
 							
 							<!-- set layout button -->
 							<!-- new -->
-							<p class="clearfix"><!--  --></p>
+							<p class="clearfix"><!--  --></p> 
 							<div class="col-sm-offset-3">
-								<bsform:button type="submit" style="primary" size="defaultSize" value="${setlayout}" />
+								<bsform:button type="submit" style="primary" size="defaultSize"  value="${setlayout}" />
 							</div>
 							
 							<!-- old
 							<input type="submit" name="tagbox_style" value="${setlayout}"/>
-							-->
+							 -->
+							
 							
 						</fieldset>
 					</form:form>
@@ -687,5 +687,4 @@
 				</fieldset>
 			</jsp:attribute>
 		</bs:panel>
-	</form:form>
 </jsp:root>

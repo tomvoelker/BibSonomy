@@ -10,7 +10,7 @@
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="extTitle" fragment="true" required="false"/>
 	
-	<rc:simplelist listView="${listView}" titleKey="publications" otherPostsUrlPrefix="/bibtex/${hash.inter.id}" loginUserName="${loginUserName}">
+	<rc:simplelist listView="${listView}" otherPostsUrlPrefix="/bibtex/${hash.inter.id}" loginUserName="${loginUserName}">
 				
 		<!-- BibTex title -->
 		<jsp:attribute name="title">
