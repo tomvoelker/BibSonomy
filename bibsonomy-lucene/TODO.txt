@@ -18,9 +18,11 @@ Lucene 4.9 Migration:
 - IndexReaders read only
 	-> LuceneResourceIndex: - Have a second look on Reader/Writer management
 	
-- LuceneResourceSearch		- reload Index?!?!
+- LuceneResourceSearch		- Search Terms have to be UTF 8 - (BytesRef)
+							-  
+							
 							- maybe switch to Search Manager
-							- parseSearchQuery(final String fieldName, String searchTerms) rework!
+							- parseSearchQuery(final String fieldName, String searchTerms) - Version.LUCENE_24 no longer supported - rework!
 							- makeTimeRangeQuery(final BooleanQuery mainQuery, final String year, String firstYear, String lastYear) rework!
 							
 - General:

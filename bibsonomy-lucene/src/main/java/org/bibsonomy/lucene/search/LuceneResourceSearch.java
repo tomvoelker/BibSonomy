@@ -1,6 +1,5 @@
 package org.bibsonomy.lucene.search;
 
-import static org.apache.lucene.util.Version.LUCENE_24;
 import static org.bibsonomy.lucene.util.LuceneBase.CFG_LUCENE_FIELD_SPECIFIER;
 import static org.bibsonomy.util.ValidationUtils.present;
 
@@ -21,10 +20,12 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.DocsEnum;
+import org.apache.lucene.index.MultiFields;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.queryParser.QueryParser.Operator;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.queryparser.classic.QueryParser.Operator;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Filter;
@@ -36,6 +37,8 @@ import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermRangeFilter;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.util.BytesRef;
+import org.apache.lucene.util.Version;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.lucene.database.LuceneInfoLogic;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
@@ -226,29 +229,16 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		/*
 		 * switch searcher
 		 */
-		IndexSearcher oldSearcher = null;
 		this.w.lock();
 		try {
 			if (newSearcher == null) {
 				this.disableIndex();
 			} else {
-				oldSearcher = this.searcher;
 				this.searcher = newSearcher;
 				this.enableIndex();
 			}
 		} finally {
 			this.w.unlock();
-		}
-
-		/*
-		 * close old searcher
-		 */
-		try {
-			if (oldSearcher != null) {
-				oldSearcher.close();
-			}
-		} catch (final IOException e) {
-			log.debug("Error closing searcher.", e);
 		}
 	}
 
@@ -295,7 +285,12 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 				int postFreq = 1;
 				final String interHash = doc.get(LuceneFieldNames.INTERHASH);
 				if (interHash != null) {
-					postFreq = this.searcher.docFreq(new Term(LuceneFieldNames.INTERHASH, interHash));
+					//Count documents for interHash
+					DocsEnum de = MultiFields.getTermDocsEnum(searcher.getIndexReader(), MultiFields.getLiveDocs(searcher.getIndexReader()), LuceneFieldNames.INTERHASH, new BytesRef(interHash));
+					int docIter = de.nextDoc();
+					while(docIter != DocsEnum.NO_MORE_DOCS) {
+						postFreq = docIter;
+					}
 				}
 				log.debug("PostFreq query time: " + (System.currentTimeMillis() - starttimeQuery) + "ms");
 				post.getResource().setCount(postFreq);
@@ -465,7 +460,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 
 		if (includeLowerBound || includeUpperBound) {
 			// if upper or lower bound is given, then use filter
-			final Filter rangeFilter = new TermRangeFilter(LuceneFieldNames.YEAR, firstYear, lastYear, includeLowerBound, includeUpperBound);
+			final Filter rangeFilter = new TermRangeFilter(LuceneFieldNames.YEAR, new BytesRef(firstYear), new BytesRef(lastYear), includeLowerBound, includeUpperBound);
 			return new FilteredQuery(mainQuery, rangeFilter);
 		}
 
@@ -608,9 +603,9 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		// set ordering
 		final Sort sort;
 		if (Order.RANK.equals(order)) {
-			sort = new Sort(SortField.FIELD_SCORE, new SortField(LuceneFieldNames.DATE, SortField.LONG, true));
+			sort = new Sort(SortField.FIELD_SCORE, new SortField(LuceneFieldNames.DATE, SortField.Type.LONG, true));
 		} else {
-			sort = new Sort(new SortField(LuceneFieldNames.DATE, SortField.LONG, true));
+			sort = new Sort(new SortField(LuceneFieldNames.DATE, SortField.Type.LONG, true));
 		}
 		// all done
 		log.debug("[Full text] Search query: " + mainQuery.toString());
@@ -746,7 +741,11 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 */
 	protected Query parseSearchQuery(final String fieldName, String searchTerms) {
 		// parse search terms for handling phrase search
-		final QueryParser searchTermParser = new QueryParser(LUCENE_24, fieldName, this.analyzer);
+		/*
+		 * FIXME - !!!
+		 */
+		//final QueryParser searchTermParser = new QueryParser(Version.LUCENE_24, fieldName, this.analyzer);
+		final QueryParser searchTermParser = new QueryParser(Version.LUCENE_30, fieldName, this.analyzer);
 		searchTermParser.setDefaultOperator(this.defaultSearchTermJunctor);
 		try {
 			// disallow field specification in search query
