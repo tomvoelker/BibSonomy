@@ -15,8 +15,8 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<fmt:message var="pageTitle" key="friendoverview.pageTitle" />
-	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" requPath="${requPath}">
+	<fmt:message var="pageTitle" key="friendoverview.title" />
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" requPath="${requPath}" activeTab="myprofile">
 		<jsp:attribute name="heading">
 		
 		</jsp:attribute>
@@ -26,8 +26,6 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">
-			<!-- <h1 class="content-header"><c:out value="${pageTitle}" /></h1>  -->
-			
 			<ul class="nav nav-tabs" role="tablist" id="friendtabs">
 				<li class="active"><a href="#friendsoverview" data-toggle="tab"><fmt:message key="friendoverview.friends.title" /></a></li>
 				<li><a href="#offriendsoverview" data-toggle="tab"><fmt:message key="friendoverview.offriends.title" /></a></li>
@@ -53,6 +51,7 @@
 										<input type="hidden" name="requestedUserName" value="${fn:escapeXml(friendName)}" />
 										<input type="hidden" name="action" value="removeFriend" />
 										<input type="hidden" name="ckey" value="${command.context.ckey}" />
+										
 										<button class="btn btn-sm btn-success removeFriend" type="submit"><span class="glyphicon glyphicon-ok"><!--  --></span><c:out value=" "/> <span class="infotext"><fmt:message key="friendoverview.friend" /></span></button>
 									</form>
 								</div>
@@ -69,7 +68,19 @@
 						<p><fmt:message key="friendoverview.friends.post.description" /></p>
 					</div>
 					
-					
+					<div class="row">
+						<!-- bookmark lists -->
+						<div class="col-md-6 bookmark-list">
+							<h3 class="list-headline"><fmt:message key="bookmarks" />${mtl:ch('nbsp')}</h3>
+							
+							<resources:simplebookmarks listView="${command.listsBookmark[0]}" loginUserName="${command.context.loginUser.name}" paginationParameter="bookmark[0].start" disablePagination="${false}"/>
+						</div>
+						<!-- publication lists -->
+						<div class="col-md-6 publication-list">
+							<h3 class="list-headline"><fmt:message key="publications" />${mtl:ch('nbsp')}</h3>
+							<resources:simplebibtexs listView="${command.listsBibTeX[0]}" loginUserName="${command.context.loginUser.name}" paginationParameter="bibtex[0].start" disablePagination="${false}" />
+						</div>
+					</div>
 				</div>
 				
 				<div id="offriendsoverview" class="tab-pane">
@@ -93,6 +104,7 @@
 												<input type="hidden" name="requestedUserName" value="${fn:escapeXml(friendName)}" />
 												<input type="hidden" name="action" value="removeFriend" />
 												<input type="hidden" name="ckey" value="${command.context.ckey}" />
+												
 												<button class="btn btn-sm btn-success removeFriend" type="submit"><span class="glyphicon glyphicon-ok"><!--  --></span><c:out value=" "/> <span class="infotext"><fmt:message key="friendoverview.friend" /></span></button>
 											</form>
 										</c:when>
@@ -106,7 +118,7 @@
 											</form>
 										</c:otherwise>
 									</c:choose>
-									<small><a href="/friend/${mtl:encodeURI(friendName)}">Show only shared resources from this user</a></small>
+									<small><a href="/friend/${mtl:encodeURI(friendName)}"><fmt:message key="friendoverview.offriend.usershared" /></a></small>
 								</div>
 							</div>
 						</div>
@@ -122,7 +134,18 @@
 						<p><fmt:message key="friendoverview.offriends.post.description" /></p>
 					</div>
 					
-					
+					<div class="row">
+						<!-- bookmark lists -->
+						<div class="col-md-6 bookmark-list">
+							<h3 class="list-headline"><fmt:message key="bookmarks" /></h3>
+							<resources:simplebookmarks listView="${command.listsBookmark[1]}" loginUserName="${command.context.loginUser.name}" paginationParameter="bookmark[1].start" disablePagination="${false}"/>
+						</div>
+						<!-- publication lists -->
+						<div class="col-md-6 publication-list">
+							<h3 class="list-headline"><fmt:message key="publications" /></h3>
+							<resources:simplebibtexs listView="${command.listsBibTeX[1]}" loginUserName="${command.context.loginUser.name}" paginationParameter="bibtex[1].start" disablePagination="${false}"/>
+						</div>
+					</div>
 				</div>
 			</div>
 		</jsp:attribute>

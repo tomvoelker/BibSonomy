@@ -43,11 +43,11 @@ public class FriendsOverviewController extends MultiResourceListController imple
 		command.setOfFriends(this.logic.getUserRelationship(loggedinUser, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
 		
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command.getFormat(), command.getResourcetype())) {
-			this.addList(command, resourceType, GroupingEntity.FRIEND, null, null, null, null, null, null, command.getEntriesPerPage());
+			this.addList(command, resourceType, GroupingEntity.VIEWABLE, "friends", null, null, null, null, null, command.getEntriesPerPage());
 		}
 		
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command.getFormat(), command.getResourcetype())) {
-			this.addList(command, resourceType, GroupingEntity.VIEWABLE, GroupingEntity.FRIEND.toString().toLowerCase(), null, null, null, null, null, command.getEntriesPerPage());
+			this.addList(command, resourceType, GroupingEntity.FRIEND, null, null, null, null, null, null, command.getEntriesPerPage());
 		}
 		
 		return Views.FRIEND_OVERVIEW;

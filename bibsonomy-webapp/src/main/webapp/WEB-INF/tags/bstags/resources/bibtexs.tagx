@@ -39,7 +39,6 @@
 		loginUserName="${loginUserName}"
 		listViewStartParamName="bibtex.start"
 		otherPostsUrlPrefix="/bibtex/${hash.inter.id}"
-		disableListNavigation="${disableListNavigation}"
 		listID="publications_${listIndex}"
 		className="publicationsContainer"
 		listView="${listView}"

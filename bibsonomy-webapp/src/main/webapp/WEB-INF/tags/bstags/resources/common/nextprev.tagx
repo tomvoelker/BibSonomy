@@ -18,10 +18,9 @@
             <li><a class="listnav" href="${fn:escapeXml(firstUrl)}" title="${gotoFirst}" rel="First"><fmt:message key="first"/></a></li>
 		</c:if>
 		
-           
         <!-- ********** PREVIOUS ************** -->
         <c:if test="${!(listView.numCurrentItems == 0 and listView.curPage.start == 0)}">
-			<c:choose>				
+			<c:choose>
 				<c:when test="${listView.previousPage != null}">
 			       <c:url var="previousUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,listView.previousPage.start)}"/>
                    <fmt:message var="gotoPrevious" key="goto.previous"/>

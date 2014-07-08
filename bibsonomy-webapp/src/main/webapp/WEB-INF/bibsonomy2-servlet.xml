@@ -880,6 +880,7 @@
 	
 	<bean id="friendsOverviewController" class="org.bibsonomy.webapp.controller.FriendsOverviewController" scope="request" parent="multiResourceListController">
 		<property name="logic" ref="logic" />
+		<property name="supportedResources" ref="allResources" />
 	</bean>
 
 	<bean id="exportFormatController" class="org.bibsonomy.webapp.controller.ExportFormatController" scope="request" >
