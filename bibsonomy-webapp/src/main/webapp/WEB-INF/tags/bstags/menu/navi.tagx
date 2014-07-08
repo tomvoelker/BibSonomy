@@ -164,7 +164,7 @@
 									</li>
 									<li>
 										<fmt:message var="friends" key="navi.friends" />
-										<a href="/friends" title="friends">
+										<a href="/friendsoverview" title="friends">
 											<span class="glyphicon glyphicon-user"><!--  --></span>&amp;nbsp;
 											<fmt:message key="navi.friends"/>
 										</a>

@@ -52,7 +52,14 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
-
+	
+	<tag>
+		<name>newRow</name>
+		<info>Inserts a new row</info>
+		<tagclass>org.bibsonomy.webapp.util.tags.RowTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+	</tag>
+	
 	<tag>
 		<name>strShorten</name>
 		<info>Shortens a string</info>

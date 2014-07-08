@@ -704,7 +704,7 @@ public enum Views implements View {
 	/**
 	 * Recommended posts page. Showing recommendations for bibtexs and bookmarks.
 	 */
-	RECOMMENDEDPAGE("recommended");
+	RECOMMENDEDPAGE("recommended"), FRIEND_OVERVIEW("friendOverview");
 
 	/*
 	 * both bookmarks and publications

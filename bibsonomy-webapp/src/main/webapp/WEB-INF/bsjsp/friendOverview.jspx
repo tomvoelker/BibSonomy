@@ -1,0 +1,130 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:bootstrap="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
+	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+    xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<fmt:message var="pageTitle" key="friendoverview.pageTitle" />
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" requPath="${requPath}">
+		<jsp:attribute name="heading">
+		
+		</jsp:attribute>
+		
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="/resources/javascript/friendoverview.js"><!-- keep --></script>
+		</jsp:attribute>
+		
+		<jsp:attribute name="content">
+			<!-- <h1 class="content-header"><c:out value="${pageTitle}" /></h1>  -->
+			
+			<ul class="nav nav-tabs" role="tablist" id="friendtabs">
+				<li class="active"><a href="#friendsoverview" data-toggle="tab"><fmt:message key="friendoverview.friends.title" /></a></li>
+				<li><a href="#offriendsoverview" data-toggle="tab"><fmt:message key="friendoverview.offriends.title" /></a></li>
+			</ul>
+			
+			<div class="tab-content">
+				<div id="friendsoverview" class="tab-pane active">
+					<p><fmt:message key="friendoverview.friends.description" /></p>
+					
+					<div class="row">
+					<c:forEach var="friend" items="${command.ofFriends}" varStatus="friendStatus">
+						<c:set var="friendName" value="${friend.name}" />
+						
+						<div class="col-md-4">
+							<div class="row">
+								<div class="col-md-3">
+									<img alt="@${fn:escapeXml(friendName)}" src="/picture/user/${fn:escapeXml(friendName)}" class="user-avatar" />
+								</div>
+								<div class="col-md-9">
+									<a href="/user/${mtl:encodeURI(friendName)}"><c:out value="@${friendName}" /></a>
+									<br />
+									<form action="/ajax/handleUserRelation">
+										<input type="hidden" name="requestedUserName" value="${fn:escapeXml(friendName)}" />
+										<input type="hidden" name="action" value="removeFriend" />
+										<input type="hidden" name="ckey" value="${command.context.ckey}" />
+										<button class="btn btn-sm btn-success removeFriend" type="submit"><span class="glyphicon glyphicon-ok"><!--  --></span><c:out value=" "/> <span class="infotext"><fmt:message key="friendoverview.friend" /></span></button>
+									</form>
+								</div>
+							</div>
+						</div>
+						
+						<c:if test="${friendStatus.index != 0 and friendStatus.index % 2 == 0}">
+							<mtl:newRow />
+						</c:if>
+					</c:forEach>
+					</div>
+					<!-- You have shared the following posts with your friends: -->
+					<div>
+						<p><fmt:message key="friendoverview.friends.post.description" /></p>
+					</div>
+					
+					
+				</div>
+				
+				<div id="offriendsoverview" class="tab-pane">
+					<p><fmt:message key="friendoverview.offriends.description" /></p>
+					
+					<div class="row">
+					<c:forEach var="friend" items="${command.friends}" varStatus="friendStatus">
+						<c:set var="friendName" value="${friend.name}" />
+						
+						<div class="col-md-4">
+							<div class="row">
+								<div class="col-md-3">
+									<img alt="@${fn:escapeXml(friendName)}" src="/picture/user/${fn:escapeXml(friendName)}" class="user-avatar" />
+								</div>
+								<div class="col-md-9">
+									<a href="/user/${mtl:encodeURI(friendName)}"><c:out value="@${friendName}" /></a>
+									<br />
+									<c:choose>
+										<c:when test="${mtl:contains(command.ofFriends, friend)}">
+											<form action="/ajax/handleUserRelation">
+												<input type="hidden" name="requestedUserName" value="${fn:escapeXml(friendName)}" />
+												<input type="hidden" name="action" value="removeFriend" />
+												<input type="hidden" name="ckey" value="${command.context.ckey}" />
+												<button class="btn btn-sm btn-success removeFriend" type="submit"><span class="glyphicon glyphicon-ok"><!--  --></span><c:out value=" "/> <span class="infotext"><fmt:message key="friendoverview.friend" /></span></button>
+											</form>
+										</c:when>
+										<c:otherwise>
+											<form action="/ajax/handleUserRelation">
+												<input type="hidden" name="requestedUserName" value="${fn:escapeXml(friendName)}" />
+												<input type="hidden" name="action" value="addFriend" />
+												<input type="hidden" name="ckey" value="${command.context.ckey}" />
+												
+												<button type="submit" class="btn btn-sm btn-default addFriend"><fmt:message key="friend.add" /></button>
+											</form>
+										</c:otherwise>
+									</c:choose>
+									<small><a href="/friend/${mtl:encodeURI(friendName)}">Show only shared resources from this user</a></small>
+								</div>
+							</div>
+						</div>
+						
+						<c:if test="${friendStatus.index != 0 and friendStatus.index % 2 == 0}">
+							<mtl:newRow />
+						</c:if>
+					</c:forEach>
+					</div>
+					
+					<!-- They have shared the following resources with you: -->
+					<div>
+						<p><fmt:message key="friendoverview.offriends.post.description" /></p>
+					</div>
+					
+					
+				</div>
+			</div>
+		</jsp:attribute>
+	</layout:layout>
+</jsp:root>
