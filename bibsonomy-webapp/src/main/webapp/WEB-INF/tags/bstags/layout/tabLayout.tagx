@@ -43,33 +43,38 @@
 			| page content header
 			+-->
 		<jsp:attribute name="headerContainer">
+			<!-- 
 			<parts:panelheader headerLogoClass="${not empty headerLogoClass ? 'image' : ''} ${headerLogoClass}">
 				<jsp:attribute name="headerContent">
 					<fmt:message key="${headerMessageKey}" />				
 				</jsp:attribute>
 			</parts:panelheader>
+			-->
 		</jsp:attribute>
 	
 	
 	
 		<jsp:attribute name="content">
-			<div id="fullscreen">
-				<div id="fscontent">
-				
-					<!-- Top Content if available -->
-					<c:if test="${not empty topcontent}">
-						<jsp:invoke fragment="topcontent"/>				
-					</c:if>	
-											
-					<!-- Tabs -->			
-					<parts:tabheader tabView="${command}" tabURL="${command.tabURL}"/>				
-					<div class="tab_content">					
-						<c:if test="${not empty tabcontent}">
-							<jsp:invoke fragment="tabcontent"/>				
-						</c:if>	
-					</div>
-				</div>				
+			
+			<c:if test="${not empty pageTitle}">
+				<h1 class="content-header"><c:out value="${pageTitle}" /></h1>
+			</c:if>
+			
+			<!-- Top Content if available -->
+			<c:if test="${not empty topcontent}">
+				<jsp:invoke fragment="topcontent"/>				
+			</c:if>	
+									
+			<!-- Tabs -->			
+			<parts:tabheader tabView="${command}" tabURL="${command.tabURL}"/>
+			<br />
+			<div class="tab-content" id="citation-styles">				
+						
+				<c:if test="${not empty tabcontent}">
+					<jsp:invoke fragment="tabcontent"/>				
+				</c:if>	
 			</div>
+
 		</jsp:attribute>			
 	</layout:layout>
 	

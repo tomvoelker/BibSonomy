@@ -31,32 +31,22 @@
 			| page content
 			+-->
 		<jsp:attribute name="tabcontent">
+				
 			<!-- display potential errors -->
 		    <errors:global errors="${errors}"/>	
-			<c:choose>
-				<c:when test="${command.selTab == 0}">
-					<settings:profile command="${command}"/>
-				</c:when>
-				<c:when test="${command.selTab == 1}">
-					<settings:settings command="${command}"/>
-				</c:when>
-				<c:when test="${command.selTab == 2}">
-					<settings:import command="${command}"/>
-				</c:when>
-				<c:when test="${command.selTab == 3 and (command.hasOwnGroup or not (empty param.user or empty param.requGroup or param.requGroup eq command.context.loginUser.name))}">
-					<settings:group command="${command}"/>
-				</c:when>
-				<c:when test="${command.selTab == 4 and not command.user.spammer}">
-					<settings:sync command="${command}"/>
-				</c:when>
-				<c:when test="${command.selTab == 5}">
-					<settings:cv command="${command}"/>
-				</c:when>
-				<c:when test="${command.selTab == 6}">
-					<settings:oauth command="${command}"/>
-				</c:when>	
-			</c:choose>
-			
+		    
+		    <settings:profile command="${command}"/>
+		    <settings:settings command="${command}"/>
+		    <settings:import command="${command}"/>
+			<c:if test="${(command.hasOwnGroup or not (empty param.user or empty param.requGroup or param.requGroup eq command.context.loginUser.name))}">
+				<settings:group command="${command}"/>
+			</c:if>
+		   	<settings:cv command="${command}"/>
+		    
+		    <settings:oauth command="${command}"/>
+	     	
+	     	<settings:sync command="${command}"/>
+
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading">
