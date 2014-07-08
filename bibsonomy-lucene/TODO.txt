@@ -13,3 +13,15 @@
 8) deal with group-tas!
 
 9) Implements single application context for lucene
+
+Lucene 4.9 Migration:
+- IndexReaders read only
+	-> LuceneResourceIndex: - Have a second look on Reader/Writer management
+	
+- LuceneResourceSearch		- reload Index?!?!
+							- maybe switch to Search Manager
+							- parseSearchQuery(final String fieldName, String searchTerms) rework!
+							- makeTimeRangeQuery(final BooleanQuery mainQuery, final String year, String firstYear, String lastYear) rework!
+							
+- General:
+	- Make Indexing/Searching threaded!

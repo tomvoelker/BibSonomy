@@ -14,11 +14,10 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
-import org.apache.lucene.index.StaleReaderException;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
@@ -49,30 +48,9 @@ public class LuceneResourceIndex<R extends Resource> {
 	private static final String INDEX_PREFIX = "lucene_";
 	private static final String INDEX_ID_DELIMITER = "-";
 	
-	
-	/** coding whether index is opened for writing or reading */
-	public static enum AccessMode {
-		/**
-		 * none
-		 */
-		None,
-		
-		/**
-		 * read only
-		 */
-		ReadOnly,
-		
-		/**
-		 * write only
-		 */
-		WriteOnly;
-	}
-	
-	/** indicating whether index is opened for writing or reading */
-	private AccessMode accessMode;
 
 	/** gives read only access to the lucene index */
-	private IndexReader indexReader;
+	private DirectoryReader indexReader;
 
 	/** gives write access to the lucene index */
 	private IndexWriter indexWriter;
@@ -144,23 +122,24 @@ public class LuceneResourceIndex<R extends Resource> {
         	return statistics;
         }
         
-	    synchronized(this) {
-    	    	this.ensureReadAccess();
-    	    	
-    	    	// Get the ID of this index 
-    	    	statistics.setIndexId(this.indexId);
-                
-                statistics.setNumDocs(this.indexReader.numDocs());
-                statistics.setNumDeletedDocs(this.indexReader.numDeletedDocs());
-                statistics.setCurrentVersion(indexReader.getVersion());
-            try {
-    		    statistics.setCurrent(indexReader.isCurrent());
-                statistics.setLastModified(new Date(IndexReader.lastModified(indexReader.directory())));
-            } catch (final IOException e1) {
-            	log.error(e1);
-            }
-	    }
-	    
+        try {
+        	//If index has changed, open new Reader to get latest info
+        	this.openIndexReaderIfChanged();
+        	// Get the ID of this index 
+        	statistics.setIndexId(this.indexId);
+
+        	statistics.setNumDocs(indexReader.numDocs());
+        	statistics.setNumDeletedDocs(indexReader.numDeletedDocs());
+        	statistics.setCurrentVersion(indexReader.getVersion());
+        	statistics.setCurrent(indexReader.isCurrent());
+        	/*
+        	 * FIXME - For Lucene 4.9 we have to use IndexVersion Number here, instead of Date
+        	 */
+        	//statistics.setLastModified(new Date(IndexReader.lastModified(ir.directory())));
+        } catch (IOException e1) {
+        	log.error(e1);
+        }
+
 	    statistics.setNewestRecordDate(new Date(this.getLastLogDate()));
 	    
 	    return statistics;
@@ -172,14 +151,9 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * @throws IOException 
 	 */
 	public void close() throws CorruptIndexException, IOException{
-	    if (this.indexWriter != null) {
-	    	this.indexWriter.close();
-	    }
-	    if (this.indexReader != null) {
-	    	this.indexReader.close();
-	    }
-	    
-	    this.disableIndex();
+		this.closeIndexReader();
+		this.closeIndexWriter();
+		this.disableIndex();
 	}
 	
 	/**
@@ -203,7 +177,14 @@ public class LuceneResourceIndex<R extends Resource> {
 			}
 			
 			try {
-				this.openIndexReader();
+				this.openIndexWriter();
+			} catch (final IOException e) {
+				log.error("Error opening IndexWriter (" + e.getMessage() + ") - This is ok while creating a new index.");
+				throw e;
+			}
+			
+			try {
+				this.openIndexReader(false);
 			} catch (final IOException e) {
 				log.error("Error opening IndexReader (" + e.getMessage() + ") - This is ok while creating a new index.");
 				throw e;
@@ -236,7 +217,7 @@ public class LuceneResourceIndex<R extends Resource> {
 			// get all documents
 			final Query matchAll = new MatchAllDocsQuery();
 			// sort by last_log_date of type LONG in reversed order 
-			final Sort sort = new Sort(new SortField(LuceneFieldNames.LAST_LOG_DATE, SortField.LONG, true));
+			final Sort sort = new Sort(new SortField(LuceneFieldNames.LAST_LOG_DATE, SortField.Type.LONG, true));
 			
 			final Document doc = searchIndex(matchAll, 1, sort);
 			if (doc != null) {
@@ -279,7 +260,7 @@ public class LuceneResourceIndex<R extends Resource> {
 			// get all documents
 			final Query matchAll = new MatchAllDocsQuery();
 			// order by last_tas_id of type INT in reversed order
-			final Sort sort = new Sort(new SortField(LuceneFieldNames.LAST_TAS_ID, SortField.INT, true));
+			final Sort sort = new Sort(new SortField(LuceneFieldNames.LAST_TAS_ID, SortField.Type.INT, true));
 			
 			final Document doc = searchIndex(matchAll, 1, sort);
 			if (doc != null) {
@@ -300,15 +281,6 @@ public class LuceneResourceIndex<R extends Resource> {
 	 */
 	public void setLastTasId(final Integer lastTasId) {
 		this.lastTasId = lastTasId;
-	}
-	
-	/**
-	 * triggers index optimization during next update
-	 */
-	public void optimizeIndex() {
-		synchronized(this) {
-			this.optimizeIndex = true;
-		}
 	}
 
 	/**
@@ -387,15 +359,11 @@ public class LuceneResourceIndex<R extends Resource> {
 				return;
 			}
 			
-			boolean readUpdate  = false;
-			boolean writeUpdate = false;
 			//----------------------------------------------------------------
 			// remove cached posts from index
 			//----------------------------------------------------------------
 			log.debug("Performing " + contentIdsToDelete.size() + " delete operations");
 			if ((contentIdsToDelete.size() > 0) || (usersToFlag.size() > 0) ) {
-				this.ensureReadAccess();
-				
 				// remove each cached post from index
 				for (final Integer contentId : this.contentIdsToDelete) {
 					try {
@@ -406,17 +374,17 @@ public class LuceneResourceIndex<R extends Resource> {
 					}
 				}
 				
-				// remove spam posts form index
+				// remove spam posts from index
 				for (final String userName : this.usersToFlag) {
 					try {
-						final int cnt = purgeDocumentsForUser(userName);
-						log.debug("Purged " + cnt + " posts for user " + userName);
+						//final int cnt = purgeDocumentsForUser(userName);
+						//log.debug("Purged " + cnt + " posts for user " + userName);
+						purgeDocumentsForUser(userName);
+						log.debug("Purged posts for user " + userName);
 					} catch (final IOException e) {
 						log.error("Error deleting spam posts for user " + userName + " from index", e);
 					}
 				}
-				
-				readUpdate = true;
 			}
 
 			//----------------------------------------------------------------
@@ -424,13 +392,11 @@ public class LuceneResourceIndex<R extends Resource> {
 			//----------------------------------------------------------------
 			log.debug("Performing " + postsToInsert.size() + " insert operations");
 			if (this.postsToInsert.size() > 0) {
-				this.ensureWriteAccess();
 				try {
 					this.insertRecordsIntoIndex(postsToInsert);
 				} catch (final IOException e) {
 					log.error("Error adding posts to index.", e);
 				}
-				writeUpdate = true;
 			}
 			
 			//----------------------------------------------------------------
@@ -443,23 +409,17 @@ public class LuceneResourceIndex<R extends Resource> {
 			//----------------------------------------------------------------
 			// commit reader-changes 
 			//----------------------------------------------------------------
-			// FIXME: this is a bit ugly...
-			if (readUpdate && !writeUpdate) {
-				try {
-					closeIndexReader();
-					openIndexReader();
-				} catch (final IOException e) {
-					log.error("Error commiting index update.", e);
-				}
-			} else {
-				ensureReadAccess();
+			try {
+				this.openIndexReaderIfChanged();
+			} catch (final IOException e) {
+				log.error("Error commiting index update.", e);
 			}
 		}
 	}
 
 	
 	/**
-	 * closes all writer and reader and reopens the index reader
+	 * closes all writer and reader and reopens them
 	 */
 	public void reset() {
 		synchronized(this) {
@@ -470,42 +430,33 @@ public class LuceneResourceIndex<R extends Resource> {
 					return;
 				}
 			}
-			switch (this.accessMode) {
-			case ReadOnly:
-				accessMode = AccessMode.None;
-				try {
-					closeIndexReader();
-				} catch (final IOException e) {
-					log.error("IOException while closing index reader", e);
-				}
-				try {
-					openIndexReader();
-				} catch (final IOException e) {
-					log.error("Error opening index reader", e);
-				}
-				break;
-			case WriteOnly:
-				accessMode = AccessMode.None;
-				try {
-					closeIndexWriter();
-				} catch (final IOException e) {
-					log.error("IOException while closing index reader", e);
-				}
-				try {
-					openIndexWriter();
-				} catch (final IOException e) {
-					log.error("Error opening index reader", e);
-				}
-				break;
-			default:
-				// nothing to do
+
+			try {
+				closeIndexReader();
+			} catch (final IOException e) {
+				log.error("IOException while closing index reader", e);
+			}
+			try {
+				closeIndexWriter();
+			} catch (final IOException e) {
+				log.error("IOException while closing index writer", e);
+			}
+			try {
+				openIndexWriter();
+			} catch (final IOException e) {
+				log.error("Error opening index writer", e);
+			}
+			try {
+				openIndexReader(false);
+			} catch (final IOException e) {
+				log.error("Error opening index reader", e);
 			}
 
 			// delete the lists
 			this.postsToInsert.clear();
 			this.contentIdsToDelete.clear();
 			this.usersToFlag.clear();
-			
+
 			// reset the cached query parameters
 			this.lastLogDate = null;
 			this.lastTasId = null;
@@ -552,7 +503,6 @@ public class LuceneResourceIndex<R extends Resource> {
 	 */
 	private Document searchIndex(final Query searchQuery, final int hitsPerPage, final Sort ordering) {
 		// prepare the index searcher
-		this.ensureReadAccess();
 		final IndexSearcher searcher = new IndexSearcher(indexReader);
 
 		// query the index
@@ -563,12 +513,6 @@ public class LuceneResourceIndex<R extends Resource> {
 			}
 		} catch (final Exception e) {
 			log.error("Error performing index search in file " + this.indexPath, e);
-		} finally {
-			try {
-				searcher.close();
-			} catch (final IOException e) {
-				log.error("Error closing index "+this.indexPath+" for searching", e);
-			}
 		}
 		
 		return null;
@@ -585,9 +529,9 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * @throws LockObtainFailedException
 	 * @throws IOException
 	 */
-	private int purgeDocumentForContentId(final Integer contentId) throws StaleReaderException, CorruptIndexException, LockObtainFailedException, IOException {
+	private void purgeDocumentForContentId(final Integer contentId) throws CorruptIndexException, LockObtainFailedException, IOException {
 		final Term term = new Term(LuceneFieldNames.CONTENT_ID, contentId.toString());
-		return purgeDocuments(term);
+		purgeDocuments(term);
 	}
 	
 	/**
@@ -598,10 +542,10 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * @throws CorruptIndexException
 	 * @throws IOException
 	 */
-	private int purgeDocumentsForUser(final String username) throws CorruptIndexException, IOException {
+	private void purgeDocumentsForUser(final String username) throws CorruptIndexException, IOException {
 		// delete each post owned by given user
 		final Term term = new Term(LuceneFieldNames.USER_NAME, username);
-		return purgeDocuments(term);
+		purgeDocuments(term);
 	}
 
 	/**
@@ -612,98 +556,75 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * @throws CorruptIndexException
 	 * @throws IOException
 	 */
-	private int purgeDocuments(final Term searchTerm) throws CorruptIndexException, IOException {
-		return this.indexReader.deleteDocuments(searchTerm);
+	private void purgeDocuments(final Term searchTerm) throws CorruptIndexException, IOException {
+		this.indexWriter.deleteDocuments(searchTerm);
 	}
 	
 	/**
-	 * sets access mode to read-only
+	 * Opens a new indexWriter. This method does not close a possible old Writer.
+	 * @throws CorruptIndexException
+	 * @throws LockObtainFailedException
+	 * @throws IOException
 	 */
-	protected void ensureReadAccess() {
-		//--------------------------------------------------------------------
-		// open index for reading
-		//--------------------------------------------------------------------
-		// close IndexWriter
-		if (accessMode != AccessMode.ReadOnly) {
-			try {
-				closeIndexWriter();
-			} catch (final IOException e) {
-				log.error("IOException while closing indexwriter", e);
-			}
-			accessMode = AccessMode.None;
-			try {
-				openIndexReader();
-			} catch (final IOException e) {
-				log.error("Error opening index reader", e);
-			}
-		}
-	}
-
 	protected void openIndexWriter() throws CorruptIndexException, LockObtainFailedException, IOException {
-		log.debug("Opening index " + this.indexPath + " for writing");
-//		Old, deprecated constructor call
-//		indexWriter = new IndexWriter(indexDirectory, this.analyzer, false, IndexWriter.MaxFieldLength.UNLIMITED);
-		/* The old, deprecated IndexWriter constructor is replaced through the following 
-		 * three lines.
-		 * 1.) We now use a IndexWriterConfig object to set the version and
-		 *  the analyzer to use
-		 * 2.) Set the access mode. Append to the index an don't recreate it 
-		 * 3.) Create the IndexWriter with the IndexWriterConfig object*/
+		//open new indexWriter
+		log.debug("Opening indexWriter " + this.indexPath);
 		IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_30, this.analyzer);
 		iwc.setOpenMode(OpenMode.APPEND);		
 		indexWriter = new IndexWriter(indexDirectory, iwc);
-		accessMode = AccessMode.WriteOnly;
 	}
-
-	protected void closeIndexWriter() throws CorruptIndexException, IOException {
-		if (this.indexWriter == null) {
+	
+	/**
+	 * Opens a new indexReader. This method does not close a possible old Writer.
+	 * @param applyAllDeletes
+	 * @throws CorruptIndexException
+	 * @throws IOException
+	 */
+	protected void openIndexReader(boolean applyAllDeletes) throws CorruptIndexException, IOException {
+		//open new IndexReader
+		if (indexWriter != null) {
+			log.debug("Opening indexReader " + indexPath);
+			this.indexReader = DirectoryReader.open(indexWriter,applyAllDeletes);
 			return;
 		}
-		
-		log.debug("Closing index " + indexPath + " for writing");
-		indexWriter.commit();
-		// optimize index if requested
-		if (this.optimizeIndex) {
-			log.debug("optimizing index " + indexPath);
-			indexWriter.optimize();
-			log.debug("optimizing index " + indexPath + " DONE");
-			this.optimizeIndex = false;
-		}
-		// close index for writing
-		indexWriter.close();
+		log.debug("Cannot open index " + indexPath + " for reading: IndexWriter missing");
 	}
-
-	protected void openIndexReader() throws CorruptIndexException, IOException {
-		log.debug("Opening index " + indexPath + " for reading");
-		this.indexReader = IndexReader.open(indexDirectory, false);
-		this.accessMode = AccessMode.ReadOnly;
+	
+	/**
+	 * Opens a new indexReader, only if the index has changed. This method closes the old reader if the index has changed.
+	 * @throws CorruptIndexException
+	 * @throws IOException
+	 */
+	protected void openIndexReaderIfChanged() throws CorruptIndexException, IOException {
+		if (indexReader != null) {
+			log.debug("Re-Opening indexReader " + indexPath + " : Checking for changes");
+			DirectoryReader newIndexReader = DirectoryReader.openIfChanged(indexReader);
+			if (newIndexReader != null) {
+				log.debug("Re-Opening indexReader " + indexPath + " : found changes");
+				indexReader.close();
+				indexReader = newIndexReader;
+			} else {
+				log.debug("Re-Opening indexReader " + indexPath + " : no changes");
+			}
+		}
+	}
+	
+	protected void closeIndexWriter() throws CorruptIndexException, IOException {
+		if (this.indexWriter != null) {
+			log.debug("Closing indexWriter " + indexPath);
+			//close index for writing
+			IndexWriter iw = indexWriter;
+			indexWriter = null;
+			iw.close();
+		}
 	}
 
 	protected void closeIndexReader() throws IOException {
-		log.debug("Closing index " + indexPath + " for reading");
-		indexReader.close();
-	}
-
-	/**
-	 * sets access mode to write-only
-	 */
-	protected void ensureWriteAccess() {
-		//--------------------------------------------------------------------
-		// open index for reading
-		//--------------------------------------------------------------------
-		// close IndexWriter
-		if (this.accessMode != AccessMode.WriteOnly) {
-			try {
-				closeIndexReader();
-			} catch (final IOException e) {
-				log.error("IOException while closing index reader", e);
-			}
-			this.accessMode = AccessMode.None;
-			try {
-				openIndexWriter();
-			} catch (final IOException e) {
-				log.error("Error opening index writer", e);
-			}
+		if (this.indexReader != null) {
+			log.debug("Closing indexReader " + indexPath);
+			DirectoryReader id = indexReader;
+			indexReader = null;
+			id.close();
 		}
 	}
 
@@ -730,14 +651,17 @@ public class LuceneResourceIndex<R extends Resource> {
 	}
 	
 	
-	
 	/**
 	 * 
 	 * @return a new index searcher for this index
 	 * @throws IOException
 	 */
 	public IndexSearcher createIndexSearcher() throws IOException {
-		return new IndexSearcher(FSDirectory.open(new File(this.getIndexPath())));
+		//return new IndexSearcher(FSDirectory.open(new File(this.getIndexPath())));
+		/*
+		 * FIXME - potential error?
+		 */
+		return new IndexSearcher(this.indexReader);
 	}
 	
 	/**
@@ -831,22 +755,6 @@ public class LuceneResourceIndex<R extends Resource> {
 	public void setBaseIndexPath(final String baseIndexPath) {
 		this.baseIndexPath = baseIndexPath;
 	}
-	
-	/* This field is not supported anymore. This value is now controlled
-	 * via the analyzer */
-//	/**
-//	 * @return the maxFieldLength
-//	 */
-//	public IndexWriter.MaxFieldLength getMaxFieldLength() {
-//		return maxFieldLength;
-//	}
-//
-//	/**
-//	 * @param maxFieldLength the maxFieldLength to set
-//	 */
-//	public void setMaxFieldLength(final IndexWriter.MaxFieldLength maxFieldLength) {
-//		this.maxFieldLength = maxFieldLength;
-//	}
 
 	@Override
 	public String toString() {
