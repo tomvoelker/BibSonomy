@@ -247,10 +247,6 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 			executor.shutdown();
 			executor.awaitTermination(18, TimeUnit.HOURS);
 
-			// optimize index
-			log.info("optimizing index " + this.resourceIndex);
-			this.indexWriter.optimize();
-
 			// close resource indexWriter
 			log.info("closing index " + this.resourceIndex);
 			this.indexWriter.close();
@@ -337,10 +333,6 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 		try {
 			executor.shutdown();
 			executor.awaitTermination(18, TimeUnit.HOURS);
-
-			// optimize index
-			log.info("optimizing index " + this.resourceIndex);
-			this.indexWriter.optimize();
 
 			// close resource indexWriter
 			log.info("closing index " + this.resourceIndex);
