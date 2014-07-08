@@ -20,8 +20,6 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.DocsEnum;
-import org.apache.lucene.index.MultiFields;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -286,11 +284,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 				final String interHash = doc.get(LuceneFieldNames.INTERHASH);
 				if (interHash != null) {
 					//Count documents for interHash
-					DocsEnum de = MultiFields.getTermDocsEnum(searcher.getIndexReader(), MultiFields.getLiveDocs(searcher.getIndexReader()), LuceneFieldNames.INTERHASH, new BytesRef(interHash));
-					int docIter = de.nextDoc();
-					while(docIter != DocsEnum.NO_MORE_DOCS) {
-						postFreq = docIter;
-					}
+					postFreq = this.searcher.getIndexReader().docFreq(new Term(LuceneFieldNames.INTERHASH, interHash));
 				}
 				log.debug("PostFreq query time: " + (System.currentTimeMillis() - starttimeQuery) + "ms");
 				post.getResource().setCount(postFreq);
