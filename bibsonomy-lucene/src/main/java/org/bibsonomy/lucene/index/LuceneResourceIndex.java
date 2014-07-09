@@ -79,9 +79,6 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * to be inserted for given users) 
 	 */
 	private final Set<String> usersToFlag;
-
-	/** flag indicating whether the index should be optimized during next update */
-	private boolean optimizeIndex;
 	
 	/** flag indicating whether the index was cleanly initialized */
 	private boolean isReady = false;
@@ -109,7 +106,6 @@ public class LuceneResourceIndex<R extends Resource> {
 		this.contentIdsToDelete = new LinkedList<Integer>();
 		this.postsToInsert = new TreeSet<Document>(new DocumentCacheComparator());
 		this.usersToFlag = new TreeSet<String>();
-		this.optimizeIndex = false;
 	}
 	
 	/**
@@ -180,6 +176,7 @@ public class LuceneResourceIndex<R extends Resource> {
 				this.openIndexWriter();
 			} catch (final IOException e) {
 				log.error("Error opening IndexWriter (" + e.getMessage() + ") - This is ok while creating a new index.");
+				this.closeIndexWriter();
 				throw e;
 			}
 			
@@ -187,6 +184,7 @@ public class LuceneResourceIndex<R extends Resource> {
 				this.openIndexReader(false);
 			} catch (final IOException e) {
 				log.error("Error opening IndexReader (" + e.getMessage() + ") - This is ok while creating a new index.");
+				this.closeIndexReader();
 				throw e;
 			}
 			
