@@ -282,17 +282,19 @@ ul.posts li {
 	list-style: none;
 }
 
-li.post {
+ul.posts li.post {
 	font-size: 12px;
 	line-height: 16px;
-	height: 145px;
+	height: 146px;
 	border-bottom: 1px #ccc solid;
+	margin-bottom: 5px;
 }
 
-li.post span.in-my-collection {
+li.post div.in-my-collection {
 	position:relative; 
-	width: 18px; 
-	height: 18px; 
+	width: 0px;
+	overflow: visible; 
+	height: 0px; 
 	font-size: 18px; 
 	top: -108px; 
 	left: 5px; 
@@ -394,10 +396,10 @@ li.post span.in-my-collection {
 
 
 .pdesc {
-	height: 16px !important;
+	height: 1.3em !important;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	margin-top: 11px;
+	margin-top: 0px;
 	margin-bottom: 3px;
 }
 
@@ -422,21 +424,15 @@ p.url {
 	font-size: 11px;
 }
 
-.ptags {
-	height: 14px;
-}
-
 .ptitle {
 	display: block;
 	overflow: hidden;
-	height: 19px;
+	height: 1.3em;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	line-height: 19px;
 	font-size: 15px;
-	margin-top: 5px;
-	margin-bottom: 0px;
 }
 
 .ptitle a {
@@ -470,12 +466,10 @@ p.url {
 	background-color: inherit;
 }
 
-.post .rating {
-	position: relative;
-	top: 6px;
+.post .rating,
+.post .btn-group {
+	margin-top: 5px;
 }
-
-
 
 .reviewInfo {
 	padding-left: 0.5ex;
@@ -529,7 +523,7 @@ p.url {
 .stars-on-0\.75{background-position:0 -36px;position:absolute;}
 
 ul.tags {
-	height: 14px !important;
+	height: 1.3em !important;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
@@ -764,12 +758,12 @@ span.help-popover {cursor:help}
 
 .post a.thumbnail span.entrytype {
 	background-image: url("http://localhost:8080/resources/image/previews.png");
+	background-repeat: no-repeat;
 }
 
 .post a.thumbnail {
 	width: 64px;
 	height: 88px;
-	margin-top: 10px;
 }
 
 span.entrytype {
@@ -1017,14 +1011,41 @@ span.label.label-danger > a {
 	color: #ffffff !important;
 }
 
+.numpostsbadge {
+	position: relative;
+	top: -10px;
+}
+
 .numpostsbadge .badge {
-	margin-top: -0.6em;
 	background-color: @light-element-color;
 }
 
 .numpostsbadge:hover .badge {
 	background-color: @light-element-hover-color;
 }
+
+.post .media-heading {
+	margin-bottom: 10px;
+}
+
+.thumbnail-container .glyphicon {
+	display: block;
+}
+
+.thumbnail-container .thumbnail {
+	margin-bottom: 0px;
+}
+
+h4.media-heading {
+	margin-top: 8px;
+}
+
+
+div.clearfix {
+	height: 1px;
+	clear: both;
+}
+
 
 .fb {
 	display: inline-block;

@@ -25,32 +25,38 @@
        +-->
 
 	<li class="media post ${additionalItemClasses}">
-	
-		<h4 class="media-heading" data-ident="${post.resource.intraHash}"><rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" /><span class="ptitle"><jsp:invoke fragment="title"/></span><div class="clearfix"/></h4>
+		<div class="clearfix">&#160;</div>
+		<h4 class="media-heading" data-ident="${post.resource.intraHash}">
+			<div>
+			<div class="clearfix">&#160;</div>
+			<rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" />
+			<span class="ptitle"><jsp:invoke fragment="title"/></span>
+			<div class="clearfix">&#160;</div>
+			</div>
+		</h4>
 		
-		<div class="hidden-xs hidden-md pull-left">
+		<div class="hidden-xs hidden-md pull-left thumbnail-container">
 			<jsp:invoke fragment="documents"/>
 			<!-- IN MY COLLECTION: only display the in-my-collection-icon when the user is logged in -->
-	       
-        	<!-- FIXME: user name for community posts not given - copying currently not possible -->
-        	<c:choose>
-        		<c:when test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name)}">	
-					<span class="in-my-collection glyphicon glyphicon-bookmark"><!--  --></span>
+			<!-- FIXME: user name for community posts not given - copying currently not possible -->
+			<c:choose>
+				<c:when test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name)}">	
+					<div class="in-my-collection glyphicon glyphicon-bookmark"><!--  --></div>
 				</c:when>
 				<c:otherwise>
-					<span class="in-my-collection glyphicon"><!--  --></span>
+					<div class="in-my-collection glyphicon"><!--  --></div>
 				</c:otherwise>
 			</c:choose>
-			<br class="clearfix" />
 		</div>
-	   	<div class="media-body">
-			<div class="pdesc ellipsis"><jsp:invoke fragment="desc"/></div>
-			<div class="pmeta"><rc:metaDate post="${post}"/>&amp;nbsp;<rc:metaUsername post="${post}" />&amp;nbsp;<rc:metaGroups post="${post}" /></div>
-			<div class="ptags"><rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/></div>
+		<div class="media-body">
+		<div class="pdesc ellipsis"><jsp:invoke fragment="desc"/></div>
+		<div class="pmeta"><rc:metaDate post="${post}"/>&amp;nbsp;<rc:metaUsername post="${post}" />&amp;nbsp;<rc:metaGroups post="${post}" /></div>
+		<div class="ptags"><rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/></div>
+		<div class="pull-left">
 			<discussion:rating post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
-			<div class="pull-right"><jsp:invoke fragment="actions"/></div>
-			<br class="clearfix" />
-
 		</div>
+		<div class="pull-right"><jsp:invoke fragment="actions"/></div>
+		</div>
+		<div class="clearfix">&#160;</div>
 	</li>
 </jsp:root>
