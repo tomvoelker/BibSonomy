@@ -9,7 +9,7 @@ $(function(){
 	/*
      * Handler for the layout-links
      */
-    $('.changeLayout').change(function(e){
+    $('#changeLayout').change(function(e){
         e.preventDefault();
         $.ajax({
             type: "POST",
