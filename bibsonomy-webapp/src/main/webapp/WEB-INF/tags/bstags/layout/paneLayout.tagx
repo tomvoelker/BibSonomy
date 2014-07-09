@@ -56,27 +56,27 @@
 			| page content header
 			+-->
 		<jsp:attribute name="headerContainer">
-			<parts:panelheader headerLogoClass="${not empty headerLogoClass ? 'image' : ''} ${headerLogoClass}" 
-				showPageOptions="${showPageOptions}"
-				pageOptions="${pageOptions}"
-				customPageOptions="${customPageOptions}">
-				<jsp:attribute name="headerContent">
-					<c:choose>
-						<c:when test="${not empty headerMessage}">
-							<c:out value="${headerMessage}"/>
-						</c:when>
-						<c:when test="${not empty headerFragment}">
-							<jsp:invoke fragment="headerFragment"/>
-						</c:when>
-						<c:when test="${not empty headerMessageKey}">
-							<fmt:message key="${headerMessageKey}"/>
-						</c:when>
-						<c:otherwise>
-							<!-- What to do here? -->	
-						</c:otherwise>
-					</c:choose>
-				</jsp:attribute>
-			</parts:panelheader>
+<!-- 			<parts:panelheader headerLogoClass="${not empty headerLogoClass ? 'image' : ''} ${headerLogoClass}"  -->
+<!-- 				showPageOptions="${showPageOptions}" -->
+<!-- 				pageOptions="${pageOptions}" -->
+<!-- 				customPageOptions="${customPageOptions}"> -->
+<!-- 				<jsp:attribute name="headerContent"> -->
+<!-- 					<c:choose> -->
+<!-- 						<c:when test="${not empty headerMessage}"> -->
+<!-- 							<c:out value="${headerMessage}"/> -->
+<!-- 						</c:when> -->
+<!-- 						<c:when test="${not empty headerFragment}"> -->
+<!-- 							<jsp:invoke fragment="headerFragment"/> -->
+<!-- 						</c:when> -->
+<!-- 						<c:when test="${not empty headerMessageKey}"> -->
+<!-- 							<fmt:message key="${headerMessageKey}"/> -->
+<!-- 						</c:when> -->
+<!-- 						<c:otherwise> -->
+<!-- 							What to do here?	 -->
+<!-- 						</c:otherwise> -->
+<!-- 					</c:choose> -->
+<!-- 				</jsp:attribute> -->
+<!-- 			</parts:panelheader> -->
 		</jsp:attribute>
 	
 	
