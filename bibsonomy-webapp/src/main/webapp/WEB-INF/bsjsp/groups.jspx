@@ -38,7 +38,9 @@
 			<!--+
 				| show alphabet for direct links to groups
 				-->
-			<c:set var="alpha" value="#abcdefghijklmnopqrstuvwxyz" />
+			
+			<c:set var="letters" value="abcdefghijklmnopqrstuvwxyz" />
+			<c:set var="alpha" value="#${letters}" />
 			<div id="linkedAlphabet">
 			
 				<ul class="pagination pagination-sm">
@@ -52,6 +54,9 @@
 			<div id="groups">
 				<c:forEach var="group" items="${command.list}">
 					<c:set var="firstGroupNameLetter" value="${fn:toLowerCase(fn:substring(group.name, 0, 1))}" />
+					<c:if test="${not fn:contains(letters, firstGroupNameLetter)}">
+						<c:set var="firstGroupNameLetter" value="#" />
+					</c:if>
 					<c:if test="${lastChar ne firstGroupNameLetter}">
 						<c:set var="lastChar" value="${firstGroupNameLetter}" />
 						<div class="col-md-12">
@@ -65,7 +70,7 @@
 								<img class="user-avatar" src="/picture/user/${mtl:encodeURI(group.name)}"/>
 								</div>
 								
-								<div class="col-md-5">
+								<div class="col-md-6">
 									<c:set var="displayName" value="${group.name}" />
 									<c:if test="${not empty group.realname}">
 										<c:set var="displayName" value="${group.realname}" />
