@@ -13,20 +13,15 @@
 	<fmt:message var="valueButton" key="settings.import.button"/>
 		
 		<!-- import your Delicious data-->
-		<!-- new -->
-		
-		
-		<!-- old
-		<h2><fmt:message key="settings.delicious.header" /></h2>
-		-->
 
 		<form:form cssClass="form-horizontal" action="/import/delicious?ckey=${ckey}" method="post">
- 			<fieldset class="fsInner" >
+ 			<fieldset>
 				<legend><fmt:message key="settings.delicious.header" /></legend>
+				
 				<!-- username -->
-				<!-- new -->
-				<div class="form-group clearfix">
+				<div class="form-group">
 					<fmt:message var="labelText" key="navi.username" />
+					
 					<form:label class="col-sm-3 control-label" path="overwrite">
 						<c:out value="${labelText}" />
 					</form:label>
@@ -40,21 +35,9 @@
 						</div>
 					</div>
 				</div>
-					
-				<!-- old
-  				<div class="fsRow">
-						<form:label path="importUsername" cssClass="fsLabel">
-							<fmt:message key="navi.username"/>
-						</form:label>
-	    			    <buttons:help message="settings.username.help.delicious"/>
-						<form:input path="importUsername" cssClass="fsInput fsSmall" />
-                    <div class="dissError"><form:errors path="importUsername" /></div>
-				</div>
-				-->
-					
+
 				<!-- password -->
-				<!-- new -->
-				<div class="form-group clearfix">
+				<div class="form-group">
 				
 					<fmt:message var="labelText" key="navi.password" />
 					<form:label class="col-sm-3 control-label" path="importPassword">
@@ -70,20 +53,10 @@
 						</div>
 					</div>
 				</div>
-	
-				<!-- old
-  				<div class="fsRow">
-					<form:label path="importPassword" cssClass="fsLabel"><fmt:message key="navi.password"/></form:label>
-    			    <buttons:help message="settings.password.help.delicious"/>
-    				<form:password path="importPassword" cssClass="fsInput fsSmall"/>
-                    <div class="dissError"><form:errors path="importPassword" /></div>
-				</div>
-				-->
 					
 				<!-- overwrite -->
-				<!-- new -->
-				<div class="form-group clearfix">
-					<div class="col-sm-offset-3">
+				<div class="form-group">
+					<div class="col-sm-offset-3 col-sm-9">
 						<label>
 							<form:checkbox path="overwrite" id="overwriteBox" />&amp;nbsp;
 							<fmt:message key="settings.overwrite"/>
@@ -91,31 +64,21 @@
 						<p class="help-block"> <fmt:message key="settings.overwrite.help.delicious"/> </p>
 					</div>
 				</div>
-		
-				<!-- old
-  				<div class="fsRow">
-   					<form:label cssClass="fsLabel" path="overwrite"><fmt:message key="settings.overwrite"/></form:label>
-    			    <buttons:help message="settings.overwrite.help.delicious"/>
-    				<form:checkbox path="overwrite"/>
-    	    	</div>
-    	    	-->
     	    	
 				<!-- data to import -->
-				<!-- new -->
-				<div class="form-group clearfix">
+				<div class="form-group ">
 					<fmt:message var="labelText" key="import.kind" />
-					<label class="col-sm-3 control-label" for="importData">
-						<c:out value="${labelText}" />
-					</label>
 					
-					<div class="col-sm-4">
+					<label class="col-sm-3 control-label" for="importData"><c:out value="${labelText}" /></label>
+					
+					<div class="col-sm-3">
 						<label>
 							<form:radiobutton path="importData" value="posts"/>&amp;nbsp;
 							<fmt:message key="bookmarks"/>
 						</label>
 					</div>
 					
-					<div class="col-sm-5">
+					<div class="col-sm-6">
 						<label>
 							<form:radiobutton path="importData" value="bundles"/>&amp;nbsp;
 							<fmt:message key="import.bundles"/>
@@ -123,43 +86,17 @@
 					</div>
 					<div class="dissError"><form:errors path="importData" /></div>
 				</div>
-    	    	
-				<!-- old
-    	    	<div class="fsRow">
-					<form:label cssClass="fsLabel" path="importData"><fmt:message key="import.kind"/></form:label>
-					<buttons:help message="import.kind.help">
-			        	<jsp:attribute name="helpText">
-			        		<ol>
-			        			<li> <fmt:message key="import.kind.help.bookmarks"/></li>
-			        			<li> <fmt:message key="import.kind.help.bundles"/></li>
-			        		</ol>
-		    	    	</jsp:attribute>
-					</buttons:help>
-					<div>
-                        <form:radiobutton path="importData" value="posts"/>
-                        <fmt:message key="bookmarks"/>
-  
-                        <form:radiobutton path="importData" value="bundles"/>
-                        <fmt:message key="import.bundles"/>
-                       	<div class="dissError"><form:errors path="importData" /></div>
-                    </div>
-    	    	</div>
-    	    	-->
 	    	    
    				<input type="hidden" name="ckey" value="${ckey}"/>
    				<input type="hidden" name="importType" value="delicious"/>
    				
 				<!-- import button -->
-				<!-- new -->
-				<p class="clearfix"><!--  --></p>
-				<div class="col-sm-offset-3">
-					<bsform:button type="submit" style="primary" size="defaultSize" value="${valueButton}" />
+				<div class="form-group">
+					<div class="col-sm-offset-3 col-sm-9">
+						<bsform:button type="submit" style="primary" size="defaultSize" value="${valueButton}" />
+					</div>
 				</div>
-   				
-   				<!-- old
-    			<input type="submit" value="${valueButton}"/>
-    			-->
-	  				
+
 			</fieldset>
 		</form:form>
 	
