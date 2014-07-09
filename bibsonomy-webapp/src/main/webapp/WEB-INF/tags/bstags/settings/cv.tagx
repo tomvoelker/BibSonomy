@@ -32,104 +32,104 @@
 	<fmt:message key="cv.admin.show" var="show" />
 
 	<div id="selTab5" class="tab-pane ${(command.selTab eq 5) ? 'active' : ''}">
+		
+		<fieldset id="fsOuter">
 
-		<bsform:fieldset legendKey="cv.heading">
-			<jsp:attribute name="content">
-				<fmt:message key="cv.admin.topic" >
-					<fmt:param>/cv/user/${fn:escapeXml(command.context.loginUser.name)}</fmt:param>
-				</fmt:message>
-			</jsp:attribute>
-		</bsform:fieldset>
+			<bsform:fieldset legendKey="cv.heading">
+				<jsp:attribute name="content">
+					<fmt:message key="cv.admin.topic" >
+						<fmt:param>/cv/user/${fn:escapeXml(command.context.loginUser.name)}</fmt:param>
+					</fmt:message>
+				</jsp:attribute>
+			</bsform:fieldset>
+		
+			<bsform:fieldset legendKey="cv.admin.show">
+				<jsp:attribute name="content">
+					<form:form>
+						<div class="form-group clearfix">
+							<label class="col-sm-3 control-label">choose a layout</label>
+							<div class="col-sm-9">
+								<c:choose>
+									<c:when test="${command.isGroup}">
+										<form:select id="changeLayout" path="" cssClass="form-control">
+											<form:option data-layout='LAYOUT_CURRENT' value="${curr}">${curr}</form:option>
+											<form:option data-layout="LAYOUT_G_DEFAULT_I_EN" value="${def1en}">${def1en}</form:option>
+											<form:option data-layout="LAYOUT_G_DEFAULT_I_GER" value="${def1ger}">${def1ger}</form:option>
+										</form:select>
+									</c:when>
 
-		<bsform:fieldset legendKey="cv.admin.show">
-			<jsp:attribute name="content">
-				<form:form>
-					<div class="row">
-						<c:choose>
-							<c:when test="${command.isGroup}">
-								<form:select path="" cssClass="form-control changeLayout">
-									<form:option data-layout='LAYOUT_CURRENT' value="${curr}">${curr}</form:option>
-									<form:option data-layout="LAYOUT_G_DEFAULT_I_EN" value="${def1en}">${def1en}</form:option>
-									<form:option data-layout="LAYOUT_G_DEFAULT_I_GER" value="${def1ger}">${def1ger}</form:option>
-								</form:select>
-							</c:when>
-
-							<c:otherwise>
-								<form:select path="" cssClass="form-control changeLayout">
-									<form:option data-layout='LAYOUT_CURRENT' value="${curr}">${curr}</form:option>
-									<form:option data-layout='LAYOUT_DEFAULT_I_EN' value="${def1en}">${def1en}</form:option>
-									<form:option data-layout='LAYOUT_DEFAULT_I_GER' value="${def1ger}">${def1ger}</form:option>
-									<form:option data-layout='LAYOUT_DEFAULT_II_EN' value="${def2en}">${def2en}</form:option>
-									<form:option data-layout='LAYOUT_DEFAULT_II_GER' value="${def2ger}">${def2ger}</form:option>
-								</form:select>
-							</c:otherwise>
-						</c:choose>
-					</div>
-					<input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}" />
-					
-					<div class="row">
-						<div id="saveButtonField" class="col-md-2">
-							<button type="button" href='#' onclick="return submitWiki('save');" class="btn btn-primary"><c:out value="${save}" /></button>
-						</div>
-						<div class="col-md-8" id="statusField">
-							<div style="float:right; display: none" class="col-md-2"> 
-								<img src="${resdir}/image/ajax_loader.gif" alt="wait" id="loadingDiv" />
+									<c:otherwise>
+										<form:select id="changeLayout" path="" cssClass="form-control">
+											<form:option data-layout='LAYOUT_CURRENT' value="${curr}">${curr}</form:option>
+											<form:option data-layout='LAYOUT_DEFAULT_I_EN' value="${def1en}">${def1en}</form:option>
+											<form:option data-layout='LAYOUT_DEFAULT_I_GER' value="${def1ger}">${def1ger}</form:option>
+											<form:option data-layout='LAYOUT_DEFAULT_II_EN' value="${def2en}">${def2en}</form:option>
+											<form:option data-layout='LAYOUT_DEFAULT_II_GER' value="${def2ger}">${def2ger}</form:option>
+										</form:select>
+									</c:otherwise>
+								</c:choose>
 							</div>
-							<div id="statusText" class="col-md-10"><!-- keep me --></div>
 						</div>
-						<div id="showAdminField" class="col-md-2">
-							<button type="button" id="showAdmin" class="btn btn-default"><c:out value="${show}" /></button>
-						</div>
-						<div id="hideAdminField" class="col-md-2" style="display: none">
-							<button type="button" id="hideAdmin" class="btn btn-default"><c:out value="${hide}" /></button>
-						</div>
-					</div>
-						
-					<div style="display: none" id="fsform">
-						<div class="row">
-							<form:textarea id="wikiTextArea" rows="10" cssClass="fsInput" path="wikiText" />
-						</div>
+						<input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}" />
 
-						<div class="row">
-							<div class="col-md-2">
+						<!-- Text edit area -->
+						<div style="display: none" id="wikiEditArea">
+							<bsform:textarea labelColSpan="3" inputColSpan="9" id="wikiTextArea" path="wikiText" labelKey="cv.editCV" noHelp="true" />
+
+							<div id="editButtons" class="col-md-offset-3">
 								<button type="button" href='#' onclick="return submitWiki('preview');" class="btn btn-default">
 									<c:out value="${preview}" />
 								</button>
-							</div>
-							<div class="col-md-2">
 								<button type="button" href='#' onclick="return submitWiki('publicPreview');" class="btn btn-default">
 									<c:out value="${pPrev}" />
 								</button>
-							</div>
-							<div class="col-md-8">
 								<button type="button" onclick="return clearCVTextField();" class="btn btn-danger">
 									<c:out value="${clear}" />
 								</button>
 							</div>
 						</div>
-					</div>
-				</form:form>
-			</jsp:attribute>
-		</bsform:fieldset>
 
-		<!--+
-			| Preview Area
-			+-->
-		<bsform:fieldset legendKey="cv.preview">
-			<jsp:attribute name="content">
-				<div id="wikiArea">
-					<c:choose>
-						<c:when test="${not empty command.wikiText}">
-							<c:out value="${command.renderedWikiText}" escapeXml="false" />
-						</c:when>
-						<c:otherwise>
-							<fmt:message key="cv.my.nowikitext" var="nowikitext" />
-							<c:out value="${nowikitext}" escapeXml="false" />
-						</c:otherwise>
-					</c:choose>
-				</div>
-			</jsp:attribute>
-		</bsform:fieldset>
+						<!-- save buttons -->
+						<p class="clearfix"><!-- --></p>
+						<div id="saveBar">
+							<div class="col-md-offset-3 col-md-5" id="saveButtons">
+								<button type="button" id="saveButton" href='#' onclick="return submitWiki('save');" class="btn btn-primary"><c:out value="${save}" /></button>
+								<button type="button" id="showAdmin" class="btn btn-default"><c:out value="${show}" /></button>
+								<button type="button" id="hideAdmin" class="btn btn-default" style="display:none"><c:out value="${hide}" /></button>
+							</div>
+							<div class="col-md-4" id="statusField">
+								<div style="float:right; display: none" class="col-md-2"> 
+									<img src="${resdir}/image/ajax_loader.gif" alt="wait" id="loadingDiv" />
+								</div>
+								<div id="statusText" class="col-md-10"><!-- keep me --></div>
+							</div>
+						</div>
+
+					</form:form>
+				</jsp:attribute>
+			</bsform:fieldset>
+						
+			<p class="clearfix"><!--  --></p>
+
+			<!--+
+				| Preview Area
+				+-->
+			<bsform:fieldset legendKey="cv.preview">
+				<jsp:attribute name="content">
+					<div id="wikiArea">
+						<c:choose>
+							<c:when test="${not empty command.wikiText}">
+								<c:out value="${command.renderedWikiText}" escapeXml="false" />
+							</c:when>
+							<c:otherwise>
+								<fmt:message key="cv.my.nowikitext" var="nowikitext" />
+								<c:out value="${nowikitext}" escapeXml="false" />
+							</c:otherwise>
+						</c:choose>
+					</div>
+				</jsp:attribute>
+			</bsform:fieldset>
+		</fieldset> <!-- fsOuter -->
 	</div> <!-- /#selTab5 -->
 
 </jsp:root>
