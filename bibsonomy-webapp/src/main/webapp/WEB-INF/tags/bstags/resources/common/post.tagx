@@ -25,13 +25,13 @@
        +-->
 
 	<li class="media post ${additionalItemClasses}">
-		<div class="clearfix">&#160;</div>
+		<div class="clearline">&#160;</div>
 		<h4 class="media-heading" data-ident="${post.resource.intraHash}">
 			<div>
-			<div class="clearfix">&#160;</div>
+			<div class="clearline">&#160;</div>
 			<rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" />
 			<span class="ptitle"><jsp:invoke fragment="title"/></span>
-			<div class="clearfix">&#160;</div>
+			<div class="clearline">&#160;</div>
 			</div>
 		</h4>
 		
@@ -49,14 +49,15 @@
 			</c:choose>
 		</div>
 		<div class="media-body">
-		<div class="pdesc ellipsis"><jsp:invoke fragment="desc"/></div>
-		<div class="pmeta"><rc:metaDate post="${post}"/>&amp;nbsp;<rc:metaUsername post="${post}" />&amp;nbsp;<rc:metaGroups post="${post}" /></div>
-		<div class="ptags"><rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/></div>
-		<div class="pull-left">
-			<discussion:rating post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
+			<div class="pdesc ellipsis"><jsp:invoke fragment="desc"/></div>
+			<div class="pmeta"><rc:metaDate post="${post}"/>&amp;nbsp;<rc:metaUsername post="${post}" />&amp;nbsp;<rc:metaGroups post="${post}" /></div>
+			<div class="ptags"><rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/></div>
+			<div class="pull-left">
+				<discussion:rating post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
+			</div>
+			<div class="pull-right"><jsp:invoke fragment="actions"/></div>
+			<div class="clearline">&#160;</div>
 		</div>
-		<div class="pull-right"><jsp:invoke fragment="actions"/></div>
-		</div>
-		<div class="clearfix">&#160;</div>
+		<div class="clearline">&#160;</div>
 	</li>
 </jsp:root>
