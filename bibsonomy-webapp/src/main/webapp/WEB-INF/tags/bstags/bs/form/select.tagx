@@ -75,10 +75,9 @@
 	<c:if test="${empty noHelp or not noHelp}">
 		<c:set var="helpPopover" value="help-popover" />
 	</c:if>
-
-			
+	
 	<c:if test="${not empty small and small}">
-		<c:set var="classSmallField" value="smallField" />  
+		<c:set var="classSmallField" value="smallField" />
 	</c:if>
 
 	<c:if test="${empty id}">
@@ -88,7 +87,7 @@
 	<!--+
 		| bootstrap 3 form-group 
 		+-->
-	<div class="form-group">	
+	<div class="form-group">
 		<!--+
 			| followed by output label 
 			+-->
@@ -119,6 +118,6 @@
 			
 			<!-- errors -->
 			<form:errors path="${path}" />
-		</div>	
+		</div>
 	</div>
 </jsp:root>

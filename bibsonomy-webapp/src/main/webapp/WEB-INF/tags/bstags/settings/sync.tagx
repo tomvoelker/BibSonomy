@@ -77,66 +77,75 @@
 		
 		<!-- CREATE SERVER -->
 		<c:if test="${not empty command.availableSyncServers}">
-			<h2><fmt:message key="synchronization.server.add"/></h2>
-			<fieldset class="fsInner">
-				<p><fmt:message key="synchronization.server.add.intro"/></p>
-				<form:form method="POST" action="/updateSyncSettings" modelAttribute="command.newSyncServer"> 
-					<bsform:select path="service" itemsAsList="${command.availableSyncServers}" labelKey="synchronization.server" labelColSpan="4" helpKey="synchronization.help.server" />
-					
-					<settings:syncFormFields />
-					
-					<input type="hidden" name="ckey" value="${command.context.ckey}"/>
-					<input type="hidden" name="_method" value="POST"/>
-					<input type="hidden" name="selTab" value="${command.selTab}"/>
-					
+			<legend><fmt:message key="synchronization.server.add"/></legend>
+			<p><fmt:message key="synchronization.server.add.intro"/></p>
+			<form:form method="POST" action="/updateSyncSettings" modelAttribute="command.newSyncServer" cssClass="form-horizontal"> 
+				<bsform:select path="service" itemsAsList="${command.availableSyncServers}" labelKey="synchronization.server" labelColSpan="4" helpKey="synchronization.help.server" />
+				
+				<settings:syncFormFields />
+				
+				<input type="hidden" name="ckey" value="${command.context.ckey}"/>
+				<input type="hidden" name="_method" value="POST"/>
+				<input type="hidden" name="selTab" value="${command.selTab}"/>
+				<div class="col-sm-offset-4 col-sm-9">
 					<input type="submit" value="${save}" class="btn btn-primary" />
-				</form:form>
-			</fieldset>
+				</div>
+			</form:form>
 		</c:if>
 		
 		<!-- CREATE CLIENT -->
 		<c:if test="${not empty command.availableSyncClients}">
-			<h2><fmt:message key="synchronization.client.add"/></h2>
-			<fieldset class="fsInner">
-				<p><fmt:message key="synchronization.client.add.intro"/></p>
-				<form method="post" action="" onsubmit="changeClient(this)">			
-		        	<div class="fsRow">
-						<label class="fsLabel" for="newSyncClient"><fmt:message key="synchronization.client" /></label>
-						<buttons:help message="synchronization.help.client"/>
-						<select class="fsInput" name="newSyncClient">
+			<legend><fmt:message key="synchronization.client.add"/></legend>
+			<p><fmt:message key="synchronization.client.add.intro"/></p>
+			<form method="post" action="" onsubmit="changeClient(this)" class="form-horizontal">
+				<div class="form-group">
+					<label class="col-sm-4 control-label" for="newSyncClient"><fmt:message key="synchronization.client" /></label>
+					<div class="col-sm-8">
+						<select class="form-control help-popover" name="newSyncClient">
 							<c:forEach varStatus="status" var="syncService" items="${command.availableSyncClients}">
 								<option value="${fn:escapeXml(syncService)}"><c:out value="${syncService}"/></option>
 							</c:forEach>
 						</select>
+						<div class="help help-header hide"><fmt:message key="synchronization.client"/></div>
+						<div class="help help-content hide"><fmt:message key="synchronization.help.client" /></div>
 					</div>
-					<div class="fsRow">
-						<label class="fsLabel" for="newSyncServer.direction" ><fmt:message key="synchronization.direction"/></label>
-						<buttons:help message="synchronization.help.directions"/>
-						<select class="fsInput fsSmall" name="newSyncServer.direction">
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label" for="newSyncServer.direction" ><fmt:message key="synchronization.direction"/></label>
+					<div class="col-sm-8">
+						<select class="form-control help-popover" name="newSyncServer.direction">
 							<option value="BOTH"><fmt:message key="synchronization.direction.both"/></option>
 							<option value="CLIENT_TO_SERVER"><fmt:message key="synchronization.direction.client_to_server.on_server"/></option>
 							<option value="SERVER_TO_CLIENT"><fmt:message key="synchronization.direction.server_to_client.on_server"/></option>
 						</select>
+						<div class="help help-header hide"><fmt:message key="synchronization.direction"/></div>
+						<div class="help help-content hide"><fmt:message key="synchronization.help.directions" /></div>
 					</div>
-					<div class="fsRow">
-						<label class="fsLabel" for="newSyncServer.resourceType" ><fmt:message key="synchronization.resourceType"/></label>
-						<buttons:help message="synchronization.help.resourceTypes"/>
-						<select class="fsInput fsSmall" name="newSyncServer.resourceType">
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label" for="newSyncServer.resourceType" ><fmt:message key="synchronization.resourceType"/></label>
+					<div class="col-sm-8">
+						<select class="form-control help-popover" name="newSyncServer.resourceType">
 							<option value="org.bibsonomy.model.Resource"><fmt:message key="resourceType.Resource.plural"/></option>
 							<option value="org.bibsonomy.model.BibTex"><fmt:message key="resourceType.BibTex.plural"/></option>
 							<option value="org.bibsonomy.model.Bookmark"><fmt:message key="resourceType.Bookmark.plural"/></option>
 						</select>
+						<div class="help help-header hide"><fmt:message key="synchronization.resourceType"/></div>
+						<div class="help help-content hide"><fmt:message key="synchronization.help.resourceTypes" /></div>
 					</div>
-		        	<div class="fsRow">
-						<input type="submit" value="${save}" />
-						<input type="hidden" name="newSyncServer.service" value="${properties['project.home']}"/>
-						<input type="hidden" name="newSyncServer.serverUser['userName']" value="${command.context.loginUser.name}"/>
-						<input type="hidden" name="newSyncServer.serverUser['apiKey']" value="${command.context.loginUser.apiKey}"/>
-						<input type="hidden" name="_method" value="POST"/>
-						<input type="hidden" name="selTab" value="${command.selTab}"/>
-					</div>
-				</form>
-			</fieldset>
-		</c:if>	
- 	</div>
- </jsp:root>
+				</div>
+				
+				<input type="hidden" name="newSyncServer.service" value="${properties['project.home']}"/>
+				<input type="hidden" name="newSyncServer.serverUser['userName']" value="${command.context.loginUser.name}"/>
+				<input type="hidden" name="newSyncServer.serverUser['apiKey']" value="${command.context.loginUser.apiKey}"/>
+				<input type="hidden" name="_method" value="POST"/>
+				<input type="hidden" name="selTab" value="${command.selTab}"/>
+				
+				<div class="col-sm-offset-4 col-sm-9">
+					<input type="submit" value="${save}" class="btn btn-primary" />
+				</div>
+				
+			</form>
+		</c:if>
+	</div>
+</jsp:root>

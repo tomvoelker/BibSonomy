@@ -66,18 +66,18 @@
     $(
 		  function() {
 			  var select = $(".dirselect");
-			  if(select.val()=="BOTH") {
-			  	select.parent().parent().find(":checkbox").attr('disabled', true);
+			  if (select.val()=="BOTH") {
+			  	select.parent().parent().parent().find(":checkbox").attr('disabled', true);
 			  }
 		  }
 	 );
 	   
 	  $(".dirselect").change(function() {
 		  if($(this).val()=="BOTH") {
-			  $(this).parent().parent().find(":checkbox").attr('disabled', true);
-			  $(this).parent().parent().find(":checkbox").attr('checked', false);
+			  $(this).parent().parent().parent().find(":checkbox").attr('disabled', true);
+			  $(this).parent().parent().parent().find(":checkbox").attr('checked', false);
 		  } else {
-			  $(this).parent().parent().find(":checkbox").attr('disabled', false);
+			  $(this).parent().parent().parent().find(":checkbox").attr('disabled', false);
 		  }
 	  });
   </script>
