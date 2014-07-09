@@ -7,6 +7,7 @@
   xmlns:fn="http://java.sun.com/jsp/jstl/functions"
   xmlns:form="http://www.springframework.org/tags/form"
   xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
   xmlns:spring="http://www.springframework.org/tags"
   xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
   xmlns:settings="urn:jsptagdir:/WEB-INF/tags/bstags/settings"
@@ -39,8 +40,11 @@
 			}
 		</script>
 	
-	
-		<div class="alert alert-info"><fmt:message key="synchronization.intro"/></div>
+		<bs:alert style="info">
+			<jsp:attribute name="alertBody">
+				<fmt:message key="synchronization.intro"/>
+			</jsp:attribute>
+		</bs:alert>
 		
 		<c:if test="${empty command.syncServer and empty command.availableSyncServers and empty command.availableSyncClients}">
 			<p><fmt:message key="synchronization.notConfigured"/></p>

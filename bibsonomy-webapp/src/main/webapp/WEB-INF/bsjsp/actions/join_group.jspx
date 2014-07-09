@@ -7,6 +7,7 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
@@ -39,9 +40,11 @@
 					</fmt:message>
 				</h1>
 				
-				<div class="alert alert-info" role="alert">
-					<fmt:message key="joinGroup.info" />
-				</div>
+				<bs:alert style="info">
+					<jsp:attribute name="alertBody">
+						<fmt:message key="joinGroup.info" />
+					</jsp:attribute>
+				</bs:alert>
 				
 				<form:form action="/join_group" method="POST" cssClass="form-horizontal">
 					<errors:global errors="${errors}"/>

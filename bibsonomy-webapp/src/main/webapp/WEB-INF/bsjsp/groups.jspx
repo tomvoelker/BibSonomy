@@ -9,6 +9,7 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -30,11 +31,14 @@
 			<!--+ 
 				| explain what groups are good for
 				+-->
-			<div class="alert alert-info" role="alert">
-				<fmt:message key="system.groups">
-					<fmt:param value="${properties['project.email']}" />
-				</fmt:message>
-			</div> 
+			<bs:alert style="info">
+				<jsp:attribute name="alertBody">
+					<fmt:message key="system.groups">
+						<fmt:param value="${properties['project.email']}" />
+					</fmt:message>
+				</jsp:attribute>
+			</bs:alert>
+			
 			<!--+
 				| show alphabet for direct links to groups
 				-->
