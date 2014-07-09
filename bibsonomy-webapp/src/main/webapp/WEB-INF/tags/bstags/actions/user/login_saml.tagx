@@ -10,8 +10,8 @@
 	<img src="${resdir}/image/saml-logo-small.png" />
 
 	<fieldset class="fsInner">
-			<form:form action="/login_saml" method="POST">
-				<fmt:message key="navi.login" var="submit" />
+		<form:form action="/login_saml" method="POST">
+			<fmt:message key="navi.login" var="submit" />
 			<input type="submit" style="margin-left: 1em" value="${submit}"/>
 		</form:form>
 	</fieldset>

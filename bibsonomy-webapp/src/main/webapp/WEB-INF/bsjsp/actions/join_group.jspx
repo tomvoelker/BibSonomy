@@ -7,10 +7,9 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
-	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
-	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
@@ -41,18 +40,20 @@
 					</fmt:message>
 				</h1>
 				
-				<div class="alert alert-info" role="alert">
-					<fmt:message key="joinGroup.info" />
-				</div>
+				<bs:alert style="info">
+					<jsp:attribute name="alertBody">
+						<fmt:message key="joinGroup.info" />
+					</jsp:attribute>
+				</bs:alert>
 				
-				<form:form action="/join_group" method="POST">
+				<form:form action="/join_group" method="POST" cssClass="form-horizontal">
 					<errors:global errors="${errors}"/>
 					
 					<form:hidden path="group" />
 					<input type="hidden" name="ckey" value="${command.context.ckey}"/>
 					<form:hidden path="joinRequest" value="true" />
 					
-					<bsform:textarea path="reason" labelKey="joinGroup.reason" inputColSpan="6" labelColSpan="2" required="${true}">
+					<bsform:textarea path="reason" labelKey="joinGroup.reason" labelColSpan="3" required="${true}">
 						<jsp:attribute name="helpText">
 							<fmt:message key="joinGroup.reason.hint" />
 							<fmt:message key="joinGroup.reason.hint.appendix">
@@ -60,9 +61,11 @@
 							</fmt:message>
 						</jsp:attribute>
 					</bsform:textarea>
-					<!-- TODO: <bform:captcha />  -->
+					<bsform:captcha />
 					<fmt:message key="joinGroup.action" var="buttonValue" />
-					<input value="${buttonValue}" type="submit" class="btn btn-primary"/>
+					<div class="col-sm-offset-3 col-sm-9">
+						<input value="${buttonValue}" type="submit" class="btn btn-primary"/>
+					</div>
 				</form:form>
 		</jsp:attribute>
 		

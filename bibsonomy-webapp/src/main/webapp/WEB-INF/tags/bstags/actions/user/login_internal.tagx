@@ -14,10 +14,10 @@
 		<legend><fmt:message key="navi.login" /></legend>
 		
 		<fmt:message key="navi.username" var="username"/>
-		<bsform:input required="true" path="username" labelText="${username}" helpText="username" inputColSpan="10" labelColSpan="2"/>
+		<bsform:input required="true" path="username" labelText="${username}" helpText="username" inputColSpan="8" labelColSpan="4"/>
 
 		<fmt:message key="navi.password" var="password"/>
-		<bsform:password required="true" path="password" labelText="${password}" inputColSpan="10" labelColSpan="2" noHelp="true" />
+		<bsform:password required="true" path="password" labelText="${password}" inputColSpan="8" labelColSpan="4" noHelp="true" />
 
 		<fmt:message key="login.rememberMe" var="rememberMe" />
 		
@@ -27,13 +27,13 @@
 		<div class="clearfix"><!-- KEEP ME --></div>
 		<fmt:message key="navi.login" var="submit" />
 		
+		<bsform:checkbox inputColSpan="8" path="rememberMe" labelText="${rememberMe}" />
+		
 		<div class="form-group">
-			<div class="col-sm-offset-2 col-sm-3 col-md-3 col-lg-3">
-				<bsform:button type="submit" style="success" value="submit" size="defaultSize" />
+			<div class="col-sm-offset-4 col-sm-3 col-md-3 col-lg-3">
+				<bsform:button type="submit" style="success" value="${submit}" size="defaultSize" />
 			</div>
-			<div class="col-sm-7 col-md-7 col-lg-7">
-				<bsform:checkbox inputColSpan="11" path="rememberMe" labelText="${rememberMe}" />
-			</div>
+			
 		</div>
    	</fieldset>
 	<hr />
