@@ -7,10 +7,8 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
-	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
-	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 

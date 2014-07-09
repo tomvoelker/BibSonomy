@@ -6,6 +6,7 @@
   xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
   xmlns:fn="http://java.sun.com/jsp/jstl/functions"
   xmlns:form="http://www.springframework.org/tags/form"
+  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
   xmlns:spring="http://www.springframework.org/tags"
   xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
   xmlns:settings="urn:jsptagdir:/WEB-INF/tags/bstags/settings"
@@ -39,7 +40,7 @@
 		</script>
 	
 	
-		<p><fmt:message key="synchronization.intro"/></p>
+		<div class="alert alert-info"><fmt:message key="synchronization.intro"/></div>
 		
 		<c:if test="${empty command.syncServer and empty command.availableSyncServers and empty command.availableSyncClients}">
 			<p><fmt:message key="synchronization.notConfigured"/></p>
@@ -79,24 +80,16 @@
 			<h2><fmt:message key="synchronization.server.add"/></h2>
 			<fieldset class="fsInner">
 				<p><fmt:message key="synchronization.server.add.intro"/></p>
-				<form:form method="post" action="/updateSyncSettings" modelAttribute="command.newSyncServer"> 
-		        
-		        	<div class="fsRow">
-						<form:label cssClass="fsLabel" path="service"><fmt:message key="synchronization.server" /></form:label>
-						<buttons:help message="synchronization.help.server"/>
-						<form:select cssClass="fsInput" path="service" items="${command.availableSyncServers}"/>
-	      				<div class="dissError"><form:errors path="service" /></div>
-	      			</div>
-	      			
-	      			<settings:syncFormFields/>
-	        	
-		        	<div class="fsRow">
-						<input type="submit" value="${save}" />
-						<input type="hidden" name="ckey" value="${ckey}"/>
-						<input type="hidden" name="_method" value="POST"/>
-						<input type="hidden" name="selTab" value="${command.selTab}"/>
-					</div>
-		
+				<form:form method="POST" action="/updateSyncSettings" modelAttribute="command.newSyncServer"> 
+					<bsform:select path="service" itemsAsList="${command.availableSyncServers}" labelKey="synchronization.server" labelColSpan="4" helpKey="synchronization.help.server" />
+					
+					<settings:syncFormFields />
+					
+					<input type="hidden" name="ckey" value="${command.context.ckey}"/>
+					<input type="hidden" name="_method" value="POST"/>
+					<input type="hidden" name="selTab" value="${command.selTab}"/>
+					
+					<input type="submit" value="${save}" class="btn btn-primary" />
 				</form:form>
 			</fieldset>
 		</c:if>
