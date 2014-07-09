@@ -28,9 +28,7 @@
 					$(this).click(function(e) {
 						e.preventDefault();
 						// $(this).attr('href')
-						alert($("#openID").val());
-						$("#openID").val("test");
-						alert($("#openID").val());
+						$("#openID").val($(this).attr('href'));
 						$("#form_openid").submit();
 					});
 				});
