@@ -15,31 +15,22 @@
 	<fmt:message var="valueButton" key="settings.import.button"/>
 	
 	<!-- import your bookmarks from your browser -->
-	<!-- new -->
-	
-	
-	<!-- old
-	<h2><fmt:message key="settings.browser.header"/></h2>
-	-->
-	
-	<form:form id="settingImportForm" action="/import/browser?ckey=${ckey}" method="post" enctype="multipart/form-data">
-		<fieldset class="fsInner">
-		
+	<form:form class="form-horizontal" action="/import/browser?ckey=${ckey}" method="post" enctype="multipart/form-data">
+		<fieldset>
 			<legend><fmt:message key="settings.browser.header" /></legend>
-				
 			<!-- select your file -->
-			<div class="form-group clearfix">
+			<div class="form-group">
 				<form:label cssClass="col-sm-3 control-label" path="file">
 					<fmt:message key="settings.browser.fileselect"/>
 				</form:label>
 				<div class="col-sm-9">
-					<input type="file" name="file" class="fsInput fsSmall"/>
+					<input type="file" name="file" id="file" />
 					<p class="help-block"><fmt:message key="settings.browser.fileselect.help"/></p>
 				</div>
 			</div>
 				
-				<!-- viewable for -->		
-			<div class="form-group clearfix">		
+			<!-- viewable for -->		
+			<div class="form-group">		
 				<form:label cssClass="col-sm-3 control-label" path="group">
 					<fmt:message key="settings.browser.viewable"/>
 				</form:label>
@@ -48,7 +39,7 @@
 				<fmt:message var="no" key="settings.no" />
 				
 				<div class="col-sm-9">
-					<form:select cssClass="form-control help-popover" path="group" id="viewablebox" >
+					<form:select cssClass="form-control help-popover" path="group" id="group" >
 						<form:option label="${public}" value="public"/>
 						<form:option label="${private}" value="private"/>
 					</form:select >
@@ -58,11 +49,12 @@
 						<p><fmt:message key="settings.browser.viewable.help"/></p>
 					</div>
 				</div>
-			</div>
 				
+			</div>
+			
 			<!-- overwrite -->	
-			<div class="form-group clearfix">			
-				<div class="col-sm-offset-3">
+			<div class="form-group">
+				<div class="col-sm-offset-3 col-sm-9">
 					<label>
 						<form:checkbox path="overwrite" id="overwriteBox" />&amp;nbsp;
 						<fmt:message key="settings.overwrite"/>
@@ -72,50 +64,13 @@
 			</div>
 			
 			<!-- import button -->
-			<p class="clearfix"><!--  --></p>
-			<div class="col-sm-offset-3">
-				<bsform:button type="submit" style="primary" size="defaultSize" value="${valueButton}" />
+			<div class="form-group">
+				<div class="col-sm-offset-3 col-sm-9">
+					<bsform:button type="submit" style="primary" size="defaultSize" value="${valueButton}" />
+				</div>
 			</div>
-			
+
 			<input id="importType" name="importType" type="hidden" value="browser"/>
-			
-			<!-- old
-			##select your file##
-			<div class="fsRow">
-				<form:label cssClass="fsLabel" path="file">
-					<fmt:message key="settings.browser.fileselect"/>
-				</form:label>
-				<buttons:help message="settings.browser.fileselect.help"/>
-				<input type="file" name="file" class="fsInput fsSmall"/>
-			</div>
-
-			##viewable for##
-			<div class="fsRow">
-				<form:label cssClass="fsLabel" path="group">
-					<fmt:message key="settings.browser.viewable"/>
-				</form:label>
-				<buttons:help message="settings.browser.viewable.help"/>
-				<form:select path="group" id="viewablebox" cssClass="fsInput fsSmall">
-					<form:option label="${public}" value="public"/>
-					<form:option label="${private}" value="private"/>
-				</form:select>
-			</div>
-			
-			##overwrite##
-			<div class="fsRow">	
-				<form:label cssClass="fsLabel" path="overwrite">
-					<fmt:message key="settings.overwrite"/>
-				</form:label>
-				<buttons:help message="settings.overwrite.help.browser"/>
-				<form:checkbox path="overwrite" id="overwriteBox" cssClass="fsInput fsSmall"/>
-			</div>
-
-			##import button##
-			<div class="fsRow">	
-				<input type="submit" value="${valueButton}" />
-				<input id="importType" name="importType" type="hidden" value="browser"/>
-			</div>
-			-->
 			
 		</fieldset>
 	</form:form>

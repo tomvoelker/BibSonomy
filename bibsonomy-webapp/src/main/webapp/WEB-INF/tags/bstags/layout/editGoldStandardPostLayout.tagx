@@ -98,114 +98,108 @@
    			  |     existierende wird editiert, der gepostete ist in "diffPost") 
 		      -->
 		<jsp:attribute name="content">
-					
-			<div class="row">
-				<div class="col-md-1"><!-- KEEP ME --></div>
-				<div class="col-md-10">
-					
-					<h2 style="border-bottom: 1px solid #ccc;"><fmt:message key="bookmark.actions.edit.title" /></h2>
-			<br />
-			<!--+ 
-  	          	| show global errors
-    		  	+ -->
-			<errors:global errors="${errors}"/>
-            
-            <!--+
-                | form starts here
-                +-->
-            <form:form id="postForm" class="form-horizontal" role="form" action="/edit${resourceType}?ckey=${ckey}" method="post">
-				
 
-				<!--+ 
-				    | user is posting an existing resource ...
-				    +-->
-                 <c:if test="${not empty command.diffPost}">
-                 	
-                 			<fmt:message key="note"/>
-                 		
-                     <span style="float:left; font-weight: bold; margin-left: 1em;"><fmt:message key="post.edit.existent" /></span>
-		                <buttons:help message="post.edit.existent.help"/>
-                   	
-                 </c:if>
-                      <!--+
-                          | general information 
-                          +-->
-				 <div class="panel panel-default">
-					<div class="panel-heading"><strong><fmt:message key="post.resource.fields.general" /></strong></div>
-			 			
-		 			<div class="panel-body">
-		    			<jsp:invoke fragment="generalInformation"/>
-					</div>
-				</div>
+			<bs:panel messagesPropertiesKey="bookmark.actions.edit.title" >
 
-				<!--+
-					| groups
-					+-->
-				
-				<div class="panel panel-default">
-					<div class="panel-heading"><strong><fmt:message key="groups_visibility" /></strong></div>
-			 			
-		 			<div class="panel-body">
-		    			<jsp:invoke fragment="groups" />
-					</div>
-				</div>
-	
-				<!--+
-					| detailed information  
-					+-->
-				<c:if test="${not empty detailedInformation}">
-					<jsp:invoke fragment="detailedInformation"/>
-				</c:if>
+				<jsp:attribute name="panelBody">
+					<!--+ 
+		  	          	| show global errors
+		    		  	+ -->
+		
+					<errors:global errors="${errors}"/>
+		            
+		            <!--+
+		                | form starts here
+		                +-->
+		                
+		                
+		                
+		            <form:form cssClass="horizontal-form" id="postForm" class="form-horizontal" role="form" action="/edit${resourceType}?ckey=${ckey}" method="post">
 						
-						<!--+
-							| a Captcha for our spammers ...
-							+-->
-						<c:if test="${not empty command.captchaHTML}">
-							<bform:fieldset maximized="true" legendKey="captcha">
-								<jsp:attribute name="content">
+						<fieldset>			
+						
+						
+							<!--+ 
+							    | user is posting an existing resource ...
+							    +-->
+			                 <c:if test="${not empty command.diffPost}">
+								<fmt:message key="note"/>
+								<fmt:message key="post.edit.existent" />
+				                <buttons:help message="post.edit.existent.help"/>      	
+			                 </c:if>
+						</fieldset>
+						
+						<fieldset>
+							<legend><fmt:message key="post.resource.fields.general" /></legend>
+						 	<jsp:invoke fragment="generalInformation"/>
+						</fieldset>
+			
+							<!--+
+								| groups
+								+-->
 							
-									<c:if test="${resourceType eq 'Publication'}">
-										<p>
-											<fmt:message key="post.edit.spam_note">
-												<fmt:param value="user ${command.context.loginUser.name} was flagged as spammer"/>
-												<fmt:param value="${properties['project.noSpamEmail']}" />
-											</fmt:message>
-										</p>
+							<div class="panel panel-default">
+								<div class="panel-heading"><strong><fmt:message key="groups_visibility" /></strong></div>
+						 			
+					 			<div class="panel-body">
+					    			<jsp:invoke fragment="groups" />
+								</div>
+							</div>
+				
+							<!--+
+								| detailed information  
+								+-->
+							<c:if test="${not empty detailedInformation}">
+								<jsp:invoke fragment="detailedInformation"/>
+							</c:if>
+									
+									<!--+
+										| a Captcha for our spammers ...
+										+-->
+									<c:if test="${not empty command.captchaHTML}">
+										<bform:fieldset maximized="true" legendKey="captcha">
+											<jsp:attribute name="content">
+										
+												<c:if test="${resourceType eq 'Publication'}">
+													<p>
+														<fmt:message key="post.edit.spam_note">
+															<fmt:param value="user ${command.context.loginUser.name} was flagged as spammer"/>
+															<fmt:param value="${properties['project.noSpamEmail']}" />
+														</fmt:message>
+													</p>
+												</c:if>
+												<bform:captcha />
+											</jsp:attribute>
+										 </bform:fieldset>
 									</c:if>
-									<bform:captcha />
-								</jsp:attribute>
-							 </bform:fieldset>
-						</c:if>
-						
-								
-                <!--+
-               		| buttons 
-                    +-->
-				<div>
-					<form:hidden path="post.resource.interHash"/>
-					<input type="hidden" name="user" value="${command.user}"/>
-					<input type="hidden" name="postID" value="${command.postID}"/>
-					<input type="hidden" name="referer" value="${fn:escapeXml(command.referer)}"/>
-					<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
-					<fmt:message key="save" var="save" />
-					<form:hidden path="intraHashToUpdate" />
-					<input type="submit" value="${save}" onclick="clear_tags();" tabindex="2"/>
-				</div>				
-								
-			</form:form>
+									
+											
+			                <!--+
+			               		| buttons 
+			                    +-->
+							<div>
+								<form:hidden path="post.resource.interHash"/>
+								<input type="hidden" name="user" value="${command.user}"/>
+								<input type="hidden" name="postID" value="${command.postID}"/>
+								<input type="hidden" name="referer" value="${fn:escapeXml(command.referer)}"/>
+								<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
+								<fmt:message key="save" var="save" />
+								<form:hidden path="intraHashToUpdate" />
+								<input type="submit" value="${save}" onclick="clear_tags();" tabindex="2"/>
+							</div>				
+					</form:form>
+				</jsp:attribute> <!-- panelBody -->
+			</bs:panel>
 			
+			<c:if test="${not empty extraInformation}">
+			    <jsp:invoke fragment="extraInformation"/>
+			</c:if>
 			
-            <c:if test="${not empty extraInformation}">
-                <jsp:invoke fragment="extraInformation"/>
-            </c:if>
-
-           <div id="hiddenUpload" style="display:none;">
-           	<!-- temporary content -->
-           </div>
-           
-           	</div>
-				<div class="col-md-1"><!-- KEEP ME --></div>
+			<div id="hiddenUpload" style="display:none;">
+			<!-- temporary content -->
 			</div>
+           
+
 
 		</jsp:attribute>
 		
