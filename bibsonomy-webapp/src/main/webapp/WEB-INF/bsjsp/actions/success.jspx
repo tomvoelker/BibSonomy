@@ -19,21 +19,21 @@
 		requPath="${requPath}" 
 		headerMessageKey="success"
 		minimizedContentWidth="${true}">
-  
+	
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="success"/>
-    	</jsp:attribute>
-       
-        <jsp:attribute name="content">
-           	<fmt:message key="${command.messageKey}">
+		</jsp:attribute>
+		
+		<jsp:attribute name="content">
+			<div class="alert alert-success">
+			<fmt:message key="${command.messageKey}">
 				 <c:if test="${not empty command.messageParams}">
-	    			<c:forEach var="p" items="${command.messageParams}">
-   		       			<fmt:param value="${fn:escapeXml(p)}" />
-       		   		</c:forEach>
-  				</c:if>  	
-           	</fmt:message>
-      </jsp:attribute>
-      
+					<c:forEach var="p" items="${command.messageParams}">
+						<fmt:param value="${fn:escapeXml(p)}" />
+					</c:forEach>
+				</c:if>
+			</fmt:message>
+			</div>
+		</jsp:attribute>
 	</layout:paneLayout>
-
 </jsp:root>
