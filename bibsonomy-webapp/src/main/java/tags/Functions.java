@@ -7,7 +7,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.text.Normalizer;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -119,6 +118,7 @@ public class Functions {
 	 *            one of NFC, NFD, NFKC, NFKD @see Normalizer.Form
 	 * @return normalized String
 	 */
+	@Deprecated // TODO: remove with old layout
 	public static String normalize(final String str, final String decomp) {
 		Normalizer.Form form;
 		try {
