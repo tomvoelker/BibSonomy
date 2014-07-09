@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Map;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -17,6 +17,8 @@ import no.priv.garshol.duke.RecordIterator;
  */
 public class JDBCDataSource extends no.priv.garshol.duke.datasources.JDBCDataSource {
 	private DataSource dataSource;
+	
+	private Set<Column> columnsSet;
 
 	@Override
 	public RecordIterator getRecords() {
@@ -29,7 +31,17 @@ public class JDBCDataSource extends no.priv.garshol.duke.datasources.JDBCDataSou
 			throw new RuntimeException(e);
 		}
 	}
-
+	
+	/**
+	 * XXX - adds Column's of columnsSet to columns
+	 */
+	public void init() {
+		for(Column column : columnsSet) {
+			this.addColumn(column);
+			System.out.println(column.getName());
+		}
+	}
+	
 	/**
 	 * @param dataSource
 	 *            the dataSource to set
@@ -37,11 +49,20 @@ public class JDBCDataSource extends no.priv.garshol.duke.datasources.JDBCDataSou
 	public void setDataSource(final DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
-	
+
 	/**
+	 * @return columns
+	 */
+	public Set<Column> getColumnsSet() {
+		return this.columnsSet;
+	}
+
+	/**
+	 * @param columnsSet 
 	 * @param columns the columns to set
 	 */
-	public void setColumns(final Map<String, Column> columns) {
-		this.columns = columns;
+	public void setColumnsSet(Set<Column> columnsSet) {
+		this.columnsSet = columnsSet;
+		
 	}
 }
