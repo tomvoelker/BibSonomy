@@ -19,7 +19,7 @@
 					<c:forEach var="friend" items="${friends}" varStatus="friendStatus">
 						<c:set var="friendName" value="${friend.name}" />
 						
-						<div class="col-md-4 vspace">
+						<div class="col-md-4">
 							<div class="row">
 								<div class="col-md-3">
 									<img alt="@${fn:escapeXml(friendName)}" src="/picture/user/${fn:escapeXml(friendName)}" class="user-avatar" />
