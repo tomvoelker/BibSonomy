@@ -815,13 +815,12 @@ public class Functions {
 	}
 	
 	/**
-	 * returns true, if command implements DidYouKnowMessageCommand interface
+	 * returns true, if command implements DidYouKnowMessageCommand interface and has a didYouKnowMessage set
 	 * @param command
 	 * @return true|false
 	 */
-	public static Boolean instanceOfDidYouKnowMessageCommand(BaseCommand command) {
-
-		return (command instanceof DidYouKnowMessageCommand);
+	public static Boolean hasDidYouKnowMessage(BaseCommand command) {
+		return (command.getDidYouKnowMessage() != null);
 	}
 
 }
