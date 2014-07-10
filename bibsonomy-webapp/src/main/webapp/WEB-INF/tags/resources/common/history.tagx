@@ -29,29 +29,37 @@
 		<c:when test="${not empty listView.list}">
 			<!--<c:set var="post" scope="request" value="${listView.list[0]}"/>-->
 			<c:set var="fieldlength" value="${fn:length(listView.list)-1}" />
-			<c:set var="newestPost" value="${listView.list[fieldlength]}" />			
+			<c:set var="newestPost" value="${listView.list[fieldlength]}" />		
+			<!-- 	
 			<div id="innercontent" style="background: #fff; padding-left: 40px;">
 				<resource:bibtexdetailsclean post="${listView.list[0]}" referer="${command.referer}"/>
-			</div>
+			</div> 
+			-->
 			<div style="float:left; width:97%; margin-left:10px; margin-top:0px; padding-bottom:13px;">
 			<!--+
 				| complete Post
 				+-->
-			<h3 style="clear:both;"><a class="foldUnfold" href="#fullPost"><img id="discussionImg" src="${resdir}/image/icon_collapse.png" border="0"/><c:out value=" "/><fmt:message key="post.resource.postHistory.headline"/></a></h3>
+			<h3 style="clear:both;">
+				<a class="foldUnfold" href="#fullPost"><img id="discussionImg" 
+					src="${resdir}/image/icon_collapse.png" border="0"/>
+					<c:out value=" "/>
+					<fmt:message key="post.resource.postHistory.headline"/>
+				</a>
+			</h3>
 			<div id="fullPost">
 				<rc:diff post="${newestPost}" loginUserName="${loginUserName}"
-				additionalItemClasses="${'odd'}">
-				<jsp:attribute name="title">
-							<c:choose>
-								<c:when test="${empty newestPost.user.name}">
-									<bibgs:title post="${newestPost}" />
-								</c:when>
-								<c:otherwise>
-									<bib:title post="${newestPost}" />
-								</c:otherwise>
-							</c:choose>
-						</jsp:attribute>
-				<jsp:attribute name="desc">
+					additionalItemClasses="${'odd'}">
+					<jsp:attribute name="title">
+						<c:choose>
+							<c:when test="${empty newestPost.user.name}">
+								<bibgs:title post="${newestPost}" />
+							</c:when>
+							<c:otherwise>
+								<bib:title post="${newestPost}" />
+							</c:otherwise>
+						</c:choose>
+					</jsp:attribute>
+					<jsp:attribute name="desc">
 							<bib:fullDescription publication="${newestPost.resource}" />
 						</jsp:attribute>
 				</rc:diff>
@@ -76,12 +84,12 @@
 						<rc:changeDate postIndex="${(fieldlength-index+1)}"
 							post="${listView.list[(fieldlength-index)]}"
 							newestPub="${newestPost}" loginUserName="${loginUserName}" />
-							</jsp:attribute>
+					</jsp:attribute>
 					<jsp:attribute name="desc">
-									<rc:postDescDiff
+						<rc:postDescDiff
 							publication="${listView.list[(fieldlength-index)]}"
 							newestPub="${newestPost}" />
-								</jsp:attribute>
+					</jsp:attribute>
 				</rc:diff>
 
 			</c:forEach>
