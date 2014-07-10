@@ -435,11 +435,6 @@ public class LuceneResourceIndex<R extends Resource> {
 				log.error("IOException while closing index reader", e);
 			}
 			try {
-				closeIndexWriter();
-			} catch (final IOException e) {
-				log.error("IOException while closing index writer", e);
-			}
-			try {
 				openIndexWriter();
 			} catch (final IOException e) {
 				log.error("Error opening index writer", e);
@@ -559,12 +554,13 @@ public class LuceneResourceIndex<R extends Resource> {
 	}
 	
 	/**
-	 * Opens a new indexWriter. This method does not close a possible old Writer.
+	 * Opens a new indexWrite, closes the old one if exists.
 	 * @throws CorruptIndexException
 	 * @throws LockObtainFailedException
 	 * @throws IOException
 	 */
 	protected void openIndexWriter() throws CorruptIndexException, LockObtainFailedException, IOException {
+		closeIndexWriter();
 		//open new indexWriter
 		log.debug("Opening indexWriter " + this.indexPath);
 		IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_30, this.analyzer);
