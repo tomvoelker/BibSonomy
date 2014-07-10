@@ -17,7 +17,6 @@ import org.apache.lucene.util.Version;
  * analyzer for normalizing diacritics (e.g. &auml; to a)
  * 
  * TODO: implement stopwords
- * TODO: implement reusableTokenStream
  * 
  * @author fei
  *

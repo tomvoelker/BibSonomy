@@ -15,9 +15,7 @@
 9) Implements single application context for lucene
 
 Lucene 4.9 Migration:
-- src/main/resources/org/bibsonomy/bibsonomy-lucene-index-config.xml
-	- <util:constant id="lucene24Compat" static-field="org.apache.lucene.util.Version.LUCENE_24" />
-		--> Why was it Version.LUCENE_24 ???
+- LuceneGoldStandardManager(Test): - Problems may related to DiacriticsLowerCaseFilteringAnalyzer!
 		
 - IndexReaders read only
 	-> LuceneResourceIndex: - Have a second look on Reader/Writer management

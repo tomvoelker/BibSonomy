@@ -12,14 +12,12 @@ import org.apache.lucene.analysis.core.StopFilter;
 import org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilter;
 import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
-import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.util.Version;
 
 /**
  * analyzer for normalizing diacritics (e.g. &auml; to a)
  * 
  * TODO: implement stopwords
- * TODO: implement reusableTokenStream
  * 
  * @author fei
  */
@@ -40,11 +38,8 @@ public final class DiacriticsLowerCaseFilteringAnalyzer extends Analyzer {
 	/**
 	 * @return the stopSet
 	 */
-	public CharArraySet getStopSet() {
-		/*
-		 * FIXME
-		 */
-		return CharArraySet.copy(VERSION_LUCENE, stopSet);
+	public Set<String> getStopSet() {
+		return stopSet;
 	}
 
 	/**
@@ -66,9 +61,9 @@ public final class DiacriticsLowerCaseFilteringAnalyzer extends Analyzer {
 			Reader reader) {
 		Tokenizer tokenizer = new StandardTokenizer(VERSION_LUCENE, reader); 
 		TokenFilter filter = new StandardFilter(VERSION_LUCENE, tokenizer); 
-		filter = new LowerCaseFilter(VERSION_LUCENE, tokenizer); 
-		filter = new StopFilter(VERSION_LUCENE, tokenizer, getStopSet());
-		filter = new ASCIIFoldingFilter(tokenizer); 
-		return new TokenStreamComponents(tokenizer, filter);
+		filter = new LowerCaseFilter(VERSION_LUCENE, filter); 
+		filter = new StopFilter(VERSION_LUCENE, filter, StopFilter.makeStopSet(VERSION_LUCENE, stopSet.toArray(new String[0])));
+		filter = new ASCIIFoldingFilter(filter); 
+		return new TokenStreamComponents(tokenizer, filter); 
 	}
 }
