@@ -63,10 +63,13 @@
 					</bsform:textarea>
 					<bsform:captcha />
 					<fmt:message key="joinGroup.action" var="buttonValue" />
-					<div class="col-sm-offset-3 col-sm-9">
-						<input value="${buttonValue}" type="submit" class="btn btn-primary"/>
+					<div class="form-group">
+						<div class="col-sm-offset-3 col-sm-9">
+							<bsform:button value="${buttonValue}" type="submit" style="primary" size="defaultSize" />
+						</div>
 					</div>
 				</form:form>
+				<br />
 		</jsp:attribute>
 		
 		<!--+
