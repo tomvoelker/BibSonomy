@@ -24,6 +24,9 @@ import org.apache.lucene.util.Version;
  * @author fei
  */
 public final class DiacriticsLowerCaseFilteringAnalyzer extends Analyzer {
+	
+	private static final Version VERSION_LUCENE = Version.LUCENE_4_9;
+	
 	/** set of stop words to filter out of queries */
 	private Set<String> stopSet;
 	
@@ -41,7 +44,7 @@ public final class DiacriticsLowerCaseFilteringAnalyzer extends Analyzer {
 		/*
 		 * FIXME
 		 */
-		return CharArraySet.copy(Version.LUCENE_30, stopSet);
+		return CharArraySet.copy(VERSION_LUCENE, stopSet);
 	}
 
 	/**
@@ -61,11 +64,10 @@ public final class DiacriticsLowerCaseFilteringAnalyzer extends Analyzer {
 	@Override
 	protected TokenStreamComponents createComponents(String fieldName,
 			Reader reader) {
-		Tokenizer tokenizer = new StandardTokenizer(Version.LUCENE_30, reader); 
-		TokenFilter filter = new StandardFilter(Version.LUCENE_30, tokenizer); 
-		filter = new LowerCaseFilter(Version.LUCENE_30, tokenizer); 
-		filter = new StopFilter(Version.LUCENE_30, tokenizer, getStopSet());
-		((StopFilter) filter).setEnablePositionIncrements(true);
+		Tokenizer tokenizer = new StandardTokenizer(VERSION_LUCENE, reader); 
+		TokenFilter filter = new StandardFilter(VERSION_LUCENE, tokenizer); 
+		filter = new LowerCaseFilter(VERSION_LUCENE, tokenizer); 
+		filter = new StopFilter(VERSION_LUCENE, tokenizer, getStopSet());
 		filter = new ASCIIFoldingFilter(tokenizer); 
 		return new TokenStreamComponents(tokenizer, filter);
 	}

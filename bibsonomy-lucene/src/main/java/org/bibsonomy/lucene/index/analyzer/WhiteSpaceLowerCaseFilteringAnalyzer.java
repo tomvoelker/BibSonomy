@@ -23,6 +23,9 @@ import org.apache.lucene.util.Version;
  *
  */
 public final class WhiteSpaceLowerCaseFilteringAnalyzer extends Analyzer {
+	
+	private static final Version VERSION_LUCENE = Version.LUCENE_4_9;
+	
 	/** set of stop words to filter out of queries */
 	private Set<String> stopSet;
 	
@@ -43,8 +46,8 @@ public final class WhiteSpaceLowerCaseFilteringAnalyzer extends Analyzer {
 	@Override
 	protected TokenStreamComponents createComponents(String fieldName,
 			Reader reader) {
-		Tokenizer tokenizer = new WhitespaceTokenizer(Version.LUCENE_30, reader);
-		TokenFilter filter = new LowerCaseFilter(Version.LUCENE_30, tokenizer);
+		Tokenizer tokenizer = new WhitespaceTokenizer(VERSION_LUCENE, reader);
+		TokenFilter filter = new LowerCaseFilter(VERSION_LUCENE, tokenizer);
 		return new TokenStreamComponents(tokenizer, filter);
 	}
 

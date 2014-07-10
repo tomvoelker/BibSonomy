@@ -563,7 +563,7 @@ public class LuceneResourceIndex<R extends Resource> {
 		closeIndexWriter();
 		//open new indexWriter
 		log.debug("Opening indexWriter " + this.indexPath);
-		IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_30, this.analyzer);
+		IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_4_9, this.analyzer);
 		iwc.setOpenMode(OpenMode.APPEND);		
 		indexWriter = new IndexWriter(indexDirectory, iwc);
 	}
