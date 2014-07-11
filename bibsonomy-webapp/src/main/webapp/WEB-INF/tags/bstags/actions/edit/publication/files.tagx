@@ -5,19 +5,18 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:form="http://www.springframework.org/tags/form">
 
 <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	
-	<bform:fieldset maximized="${not command.context.loginUser.settings.simpleInterface or not empty command.fileName}" legendKey="post.bibtex.files">
+	<bsform:fieldset legendKey="post.bibtex.files">
 		
 		<jsp:attribute name="content">
 			<fmt:message var="delete" key="post.bibtex.delete"/>
 			<script type="text/javascript" src="${resdir}/javascript/jquery.documentuploader.js"><!-- keep me --></script>
-				
-	
+
 			<!--+ 
 			 	|
 			 	| the documents of the post
@@ -86,6 +85,6 @@
 			</div>
 						
 		</jsp:attribute>
-	</bform:fieldset>
+	</bsform:fieldset>
 	
 </jsp:root>

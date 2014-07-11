@@ -22,6 +22,7 @@ function scraping() {
 $(function() {
 	scraping();
 	checkUrlForTitle();
+	$("")
 });
 
 function checkUrlForTitle() {
@@ -65,3 +66,7 @@ var tagRecoOptions = {
 		handleRecommendedTags(responseText);
 	}
 };
+
+function toggleGroupBox() {
+	document.getElementById("post.groups.other2").disabled = !document.getElementById("post.groups.other").checked;
+}

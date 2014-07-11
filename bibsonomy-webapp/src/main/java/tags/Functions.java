@@ -45,7 +45,6 @@ import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.web.spring.converter.StringToEnumConverter;
 import org.bibsonomy.webapp.command.BaseCommand;
-import org.bibsonomy.webapp.command.DidYouKnowMessageCommand;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -819,10 +818,14 @@ public class Functions {
 	 * @param command
 	 * @return true|false
 	 */
-	@Deprecated // TODO: (bootstrap) use exists
-	public static Boolean instanceOfDidYouKnowMessageCommand(BaseCommand command) {
-
-		return (command instanceof DidYouKnowMessageCommand);
+	/**
+	 * returns true, if command implements DidYouKnowMessageCommand interface and has a didYouKnowMessage set
+	 * @param command
+	 * @return true|false
+	 */
+	@Deprecated // TODO: (bootstrap) remove and use not empty check
+	public static Boolean hasDidYouKnowMessage(BaseCommand command) {
+		return (command.getDidYouKnowMessage() != null);
 	}
 
 }
