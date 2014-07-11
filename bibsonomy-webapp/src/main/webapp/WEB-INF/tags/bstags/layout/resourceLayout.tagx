@@ -138,7 +138,7 @@
 		<jsp:attribute name="content">
 			<jsp:invoke fragment="discussion" />
 			
-			<jsp:invoke fragment="content" />	
+			<jsp:invoke fragment="content" />
 			
 			<c:choose>
 				<!-- if a community post is present show the community post, not the list of posts -->
@@ -148,7 +148,6 @@
 							<goldstandardpublication:detailsclean otherPosts="${command.bibtex.list}" post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
 						</c:when>
 						<c:otherwise>
-						
 							<goldstandardpublication:details otherPosts="${command.bibtex.list}" post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
 						</c:otherwise>
 					</c:choose>
@@ -171,7 +170,7 @@
 				    <div class="row">
 						<div class="${ (bm and pub) ? 'col-md-6' : ( (bm and not pub) ? 'col-md-12' : ((not bm) ? 'hide' : ''))} bookmark-list">
 							
-					        <resources:bookmarks listView="${command.bookmark}" 
+							<resources:bookmarks listView="${command.bookmark}" 
 								loginUserName="${command.context.loginUser.name}" 
 								disableListNavigation="${disableListNavigation}" 
 								requPath="${excapedRequestPath}" 
@@ -179,17 +178,15 @@
 								isBasket="${isBasket}"
 								showBookmark="${showBookmark}"
 								showPublication="${showPublication}">
-							 
+							
 								<jsp:attribute name="addAsLastItem">
 									<c:if test="${not disableListNavigation}">
 										<div id="bookmarksfooter" class="${bookmarksWidthClass}">
 											<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>
-
 										</div>
 									</c:if>
 								</jsp:attribute>
 							</resources:bookmarks>
-							
 						</div>
 						<div class="${ (pub and bm) ? 'col-md-6' : ( (pub and not bm) ? 'col-md-12' : ((not pub) ? 'hide' : ''))} publication-list">
 					        

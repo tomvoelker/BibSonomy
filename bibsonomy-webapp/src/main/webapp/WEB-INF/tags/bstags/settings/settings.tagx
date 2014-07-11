@@ -348,18 +348,18 @@
 							<div class="help help-content hide">
 								<fmt:message key="settings.logclicks.help"/>
 							</div>
-						</div>		
+						</div>
 					</div>
-							
+					
 					<!-- confirmation before deleting -->
 					<div class="form-group">
 						<form:label cssClass="col-sm-3 control-label" path="user.settings.confirmDelete">
 							<fmt:message key="settings.confirm"/>
 						</form:label>
-								
+						
 						<fmt:message var="yes" key="settings.yes" />
 						<fmt:message var="no" key="settings.no" />
-								
+						
 						<div class="col-sm-9">
 							<form:select cssClass="form-control help-popover" path="user.settings.confirmDelete" >
 								<form:option label="${yes}" value="true"/>
@@ -407,8 +407,8 @@
 									</fmt:param>
 								</fmt:message>
 							</p>
-										
-							<input type="hidden" name="ckey" value="${ckey}"/>
+							
+							<input type="hidden" name="ckey" value="${command.context.ckey}"/>
 							<input type="hidden" name="selTab" value="1"/>
 							<bsform:button type="submit" style="danger" size="defaultSize" value="${deleteaccount}" />
 						</div>

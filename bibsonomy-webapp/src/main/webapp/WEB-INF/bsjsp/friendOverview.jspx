@@ -8,7 +8,8 @@
 	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-    xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:genuser="urn:jsptagdir:/WEB-INF/tags/bstags/general/user"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
@@ -42,10 +43,11 @@
 						<div class="col-md-4">
 							<div class="row">
 								<div class="col-md-3">
-									<img alt="@${fn:escapeXml(friendName)}" src="/picture/user/${fn:escapeXml(friendName)}" class="user-avatar" />
+									<c:set var="altF"><genuser:username user="${friend}" noLink="${true}" /></c:set>
+									<img alt="${altF}" src="/picture/user/${fn:escapeXml(friendName)}" class="user-avatar" />
 								</div>
 								<div class="col-md-9">
-									<a href="/user/${mtl:encodeURI(friendName)}"><c:out value="@${friendName}" /></a>
+									<genuser:username user="${friend}" />
 									<br />
 									<form action="/ajax/handleUserRelation">
 										<input type="hidden" name="requestedUserName" value="${fn:escapeXml(friendName)}" />
@@ -93,10 +95,11 @@
 						<div class="col-md-4">
 							<div class="row">
 								<div class="col-md-3">
-									<img alt="@${fn:escapeXml(friendName)}" src="/picture/user/${fn:escapeXml(friendName)}" class="user-avatar" />
+									<c:set var="altF"><genuser:username user="${friend}" noLink="${true}" /></c:set>
+									<img alt="${altF}" src="/picture/user/${fn:escapeXml(friendName)}" class="user-avatar" />
 								</div>
 								<div class="col-md-9">
-									<a href="/user/${mtl:encodeURI(friendName)}"><c:out value="@${friendName}" /></a>
+									<genuser:username user="${friend}" />
 									<br />
 									<c:choose>
 										<c:when test="${mtl:contains(command.ofFriends, friend)}">

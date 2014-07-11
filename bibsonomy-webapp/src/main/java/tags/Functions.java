@@ -819,6 +819,7 @@ public class Functions {
 	 * @param command
 	 * @return true|false
 	 */
+	@Deprecated // TODO: (bootstrap) use exists
 	public static Boolean instanceOfDidYouKnowMessageCommand(BaseCommand command) {
 
 		return (command instanceof DidYouKnowMessageCommand);
