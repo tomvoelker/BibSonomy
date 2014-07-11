@@ -39,11 +39,15 @@
 
 			<fmt:message var="reset" key="reset"/>
 
-			<form:form action="/editTags" method="post">
-				<fieldset class="fsInner">
-
+			<form:form cssClass="form-horizontal" action="/editTags" method="post">
+				<fieldset>
 					<legend><fmt:message key="edittags.main.Header"/></legend>
-					<p style="float:left;"><fmt:message key="edittags.main.textOne" /></p>
+					<div class="form-group">
+						<div class="col-sm-offset-3 col-sm-9">
+							<p><fmt:message key="edittags.main.textOne" /></p>
+						</div>
+					</div>
+						
 					<bsform:input path="editTags.delTags" labelColSpan="3" inputColSpan="9"/>		
 					<bsform:input path="editTags.addTags" labelColSpan="3" inputColSpan="9"/>
 					<bsform:checkbox path="editTags.updateRelations" inputColSpan="9">
@@ -52,15 +56,17 @@
 						</jsp:attribute>
 					</bsform:checkbox>
 
-					<div class="col-sm-offset-3 col-sm-3">
-						<input type="hidden" name="ckey" value="${ckey}"/>
-						<input type="hidden" name="forcedAction" value="1"/>
-						<fmt:message var="replace" key="replace"/>
-						<bsform:button type="submit" style="primary" size="defaultSize" value="${replace}" />
-						<c:out value=" "/>
-						<bsform:button type="reset" style="warning" size="defaultSize" value="${reset}"/>
+					<div class="form-group">
+						<div class="col-sm-offset-3 col-sm-9">
+							<input type="hidden" name="ckey" value="${ckey}"/>
+							<input type="hidden" name="forcedAction" value="1"/>
+							<fmt:message var="replace" key="replace"/>
+							<bsform:button type="submit" style="primary" size="defaultSize" value="${replace}" />
+							<c:out value=" "/>
+							<bsform:button type="reset" style="defaultStyle" size="defaultSize" value="${reset}"/>
+						</div>
 					</div>
-
+					
 					<c:if test="${command.updatedTagsCount > 0}">
 						<div class="col-sm-5">	
 							<bs:feedback style="success" size="defaultSize" >
@@ -76,43 +82,54 @@
 				</fieldset>
 			</form:form>
 
-			<form:form action="/editTags" method="post">
-				<fieldset class="fsInner">
+			<form:form cssClass="form-horizontal" action="/editTags" method="post">
+				
+				<fieldset>
 					<legend><fmt:message key="edittags.main.insertRelationsOne" /></legend>
+					
 					<bsform:input path="relationsEdit.upper" labelColSpan="3" inputColSpan="9"/>
 					<bsform:input path="relationsEdit.lower" labelColSpan="3" inputColSpan="9"/>
-
-					<div class="col-sm-offset-3 col-sm-3">
-						<input type="hidden" name="ckey" value="${ckey}"/>
-						<input type="hidden" name="forcedAction" value="2"/>
-						<input type="hidden" name="relationsEdit.forcedAction" value="0"/>
-						<fmt:message var="insert" key="insert"/>
-						<bsform:button type="submit" style="primary" size="defaultSize" value="${insert}" /><c:out value=" "/>
-						<bsform:button type="reset" style="warning" size="defaultSize" value="${reset}"/>
+					
+					<div class="form-group">
+						<div class="col-sm-offset-3 col-sm-3">
+							<input type="hidden" name="ckey" value="${ckey}"/>
+							<input type="hidden" name="forcedAction" value="2"/>
+							<input type="hidden" name="relationsEdit.forcedAction" value="0"/>
+							<fmt:message var="insert" key="insert"/>
+							<bsform:button type="submit" style="primary" size="defaultSize" value="${insert}" /><c:out value=" "/>
+							<bsform:button type="reset" style="defaultStyle" size="defaultSize" value="${reset}"/>
+						</div>
 					</div>
-
 				</fieldset>
+				
 			</form:form>
 
-			<form:form action="/editTags" method="post">
-				<fieldset class="fsInner">
+			<form:form cssClass="form-horizontal" action="/editTags" method="post">
+				<fieldset>
+				
 					<legend><fmt:message key="edittags.main.deleteRelationsOne" /></legend>
+					
 					<bsform:input path="relationsEdit.upper" labelColSpan="3" inputColSpan="9" >
 						<jsp:attribute name="helpText">
 							<fmt:message key="relationsEdit.lower.help.delete"/>
 						</jsp:attribute>
 					</bsform:input>
+					
 					<bsform:input path="relationsEdit.lower" labelColSpan="3" inputColSpan="9"/>
-					<fmt:message var="deleteRelation" key="edittags.button.deleteRelations"/>
-					<div class="col-sm-offset-3 col-sm-3">
-						<input type="hidden" name="ckey" value="${ckey}"/>
-						<input type="hidden" name="forcedAction" value="2"/>
-						<input type="hidden" name="relationsEdit.forcedAction" value="1"/>
-						<fmt:message var="delete" key="delete"/>
-						<bsform:button type="submit" style="primary" size="defaultSize" value="${delete}" /><c:out value=" "/>
-						<bsform:button type="reset" style="warning" size="defaultSize" value="${reset}"/>
+					
+					<div class="form-group">
+						<fmt:message var="deleteRelation" key="edittags.button.deleteRelations"/>
+						
+						<div class="col-sm-offset-3 col-sm-3">
+							<input type="hidden" name="ckey" value="${ckey}"/>
+							<input type="hidden" name="forcedAction" value="2"/>
+							<input type="hidden" name="relationsEdit.forcedAction" value="1"/>
+							<fmt:message var="delete" key="delete"/>
+							<bsform:button type="submit" style="primary" size="defaultSize" value="${delete}" /><c:out value=" "/>
+							<bsform:button type="reset" style="defaultStyle" size="defaultSize" value="${reset}"/>
+						</div>
 					</div>
-
+					
 				</fieldset>
 			</form:form>
 
