@@ -68,10 +68,10 @@
 					<c:if test="${lastChar ne firstGroupNameLetter}">
 						<c:set var="lastChar" value="${firstGroupNameLetter}" />
 						<dt>
-							<h4><a style="text-transform: uppercase; color: inherit;" href="${raute}${firstGroupNameLetter}" name="${firstGroupNameLetter}">${firstGroupNameLetter}</a></h4>
+							<h4><a href="${raute}${firstGroupNameLetter}" name="${firstGroupNameLetter}">${firstGroupNameLetter}</a></h4>
 						</dt>
 						<dd>
-							<p style="line-height: 1.1; font-size: 18px; margin: 10px 0;"><small style="font-size: 60%;"><a href="#letter-pagination"><span class="glyphicon glyphicon-arrow-up"><!--  --></span>&amp;nbsp;<fmt:message key="totop" /></a></small></p>
+							<p><small><a href="#letter-pagination"><span class="glyphicon glyphicon-arrow-up"><!--  --></span>&amp;nbsp;<fmt:message key="totop" /></a></small></p>
 							
 						</dd>
 					</c:if>

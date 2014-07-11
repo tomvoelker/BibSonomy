@@ -37,7 +37,7 @@
 
 body {
 	background-color: @background-color; 
-    background-image: url("/resources/bootstrap/img/bg.png");
+    background-image: url("/resources/image/bg.png");
 }
 
 
@@ -1123,6 +1123,10 @@ button.removeFriend {
 	margin-top: 25px;
 }
 
+.underline {
+	border-bottom: 1px solid #333;
+}
+
 .tab-content h2.content-header {
 	font-size: 20px;
 }
@@ -1141,6 +1145,18 @@ dl.group-list dd {
 	margin-bottom: 1em;
 }
 
-.underline {
-	border-bottom: 1px solid #333;
+dl.group-list dt h4 a {
+	text-transform: uppercase; 
+	color: inherit;
 }
+
+dl.group-list dd p {
+	line-height: 1.1; 
+	font-size: 18px; 
+	margin: 10px 0;
+}
+
+dl.group-list dd p small {
+	font-size: 60%;
+}
+
