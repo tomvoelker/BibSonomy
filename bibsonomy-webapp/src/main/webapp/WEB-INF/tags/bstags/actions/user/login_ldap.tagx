@@ -13,19 +13,19 @@
 		<bform:input path="username" noHelp="${true}" labelMessageKey="navi.username" required="${true}" />
 		
 		<div class="fsRow">
-       		<form:label cssClass="fsLabel" path="password" ><fmt:message key="navi.password"/>* </form:label>
-       		<form:password cssClass="fsInput reqinput" path="password"/>
-      		<div class="dissError"><form:errors path="password" /></div>
-   		</div>
-	   	<div class="fsRow">
-       		<form:label cssClass="fsLabel" path="rememberMe" ><fmt:message key="login.rememberMe"/></form:label>
-       		<form:checkbox path="rememberMe"/>
-      		<div class="dissError"><form:errors path="rememberMe" /></div>
-   		</div>
-   		<div>
-			<form:hidden path="referer" /> 
+			<form:label cssClass="fsLabel" path="password" ><fmt:message key="navi.password"/>* </form:label>
+			<form:password cssClass="fsInput reqinput" path="password"/>
+			<div class="dissError"><form:errors path="password" /></div>
+		</div>
+		<div class="fsRow">
+			<form:label cssClass="fsLabel" path="rememberMe" ><fmt:message key="login.rememberMe"/></form:label>
+			<form:checkbox path="rememberMe"/>
+			<div class="dissError"><form:errors path="rememberMe" /></div>
+		</div>
+		<div>
+			<form:hidden path="referer" />
 			<fmt:message key="navi.login" var="submit" />
-			<input type="submit" value="${submit}" />
-   		</div>
+			<input type="submit" value="${submit}" class="btn btn-success" />
+		</div>
 	</fieldset>
 </jsp:root>

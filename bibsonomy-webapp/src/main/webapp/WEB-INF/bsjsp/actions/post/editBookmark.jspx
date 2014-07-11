@@ -38,7 +38,7 @@
 				+-->
 			
 			<!-- URL -->
-			<bsform:input labelColSpan="2" inputColSpan="10" placeholder="http://" labelText="URL" path="post.resource.url" required="${true}" noHelp="${true }"/>
+			<bsform:input labelColSpan="3" inputColSpan="9" placeholder="http://" labelText="URL" path="post.resource.url" required="${true}" noHelp="${true }"/>
 			
 			<!-- TITLE -->
 			<fmt:message key="post.resource.title" var="title"/>

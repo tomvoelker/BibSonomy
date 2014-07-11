@@ -11,9 +11,11 @@
 	<!-- user name of a resource -->
 	<c:if test="${not isUserPage}">
 		<c:out value=" "/>
-		<fmt:message key="post.meta.taggedBy" />
-		<c:out value=" "/>
-		<a href="/user/${mtl:encodeURI(post.user.name)}"><c:out value="${post.user.name}" /></a>
+		<c:choose>
+			<c:when test="${empty post.user.name}"><fmt:message key="post.meta.taggedBy.community" /></c:when>
+			<c:otherwise><fmt:message key="post.meta.taggedBy" /><c:out value=" "/><a href="/user/${mtl:encodeURI(post.user.name)}"><c:out value="${post.user.name}" /></a></c:otherwise>
+		</c:choose>
+		
 	</c:if>
 	
 	

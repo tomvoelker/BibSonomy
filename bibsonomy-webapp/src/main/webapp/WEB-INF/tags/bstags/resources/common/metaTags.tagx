@@ -43,22 +43,21 @@
 
 	<!-- ALL REGULAR TAGS -->
 	<!-- FIXME: Remove this, as soon as we have a "real" post preview instead of only full lines of tags and meta data -->
-	<c:if test="${not empty post.visibleTags}">
-		<c:if test="${showTagsLabel}">
-			<fmt:message key="tags"/><c:out value=": "/>
-		</c:if>
-		<div class="extend">
-			<ul class="tags list-inline">
-				<c:forEach var="tag" items="${post.visibleTags}">
-					<li><a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}"><c:out value="${tag.name}"/></a></li>
-				</c:forEach>
-			</ul>
-<!-- 				<div>
-					<c:forEach var="tag" items="${post.visibleTags}">
-						<a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}"><c:out value="${tag.name} "/></a><c:out value=" "/>
-					</c:forEach>
-				</div> -->
-		</div>
+
+	<c:if test="${showTagsLabel}">
+		<fmt:message key="tags"/><c:out value=": "/>
 	</c:if>
+	<div class="extend">
+		<ul class="tags list-inline">
+			<c:forEach var="tag" items="${post.visibleTags}">
+				<li><a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}"><c:out value="${tag.name}"/></a></li>
+			</c:forEach>
+		</ul>
+<!-- 			<div>
+				<c:forEach var="tag" items="${post.visibleTags}">
+					<a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}"><c:out value="${tag.name} "/></a><c:out value=" "/>
+				</c:forEach>
+			</div> -->
+	</div>
 	
 </jsp:root>

@@ -28,16 +28,7 @@
 	<fmt:message key="navi.publication" var="pageTitle" />	
 	
 	
-	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" 
-			headerLogoClass="publications" 
-			command="${command}" 
-			requestedUser="${command.requestedUser}" 
-			requPath="${requPath}"
-			showPageOptions="${true}"
-			minimizedContentWidth="${true}" >
-
-		<jsp:attribute name="headerExt">
-		</jsp:attribute>
+	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}" showPageOptions="${true}" minimizedContentWidth="${true}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
 		</jsp:attribute>
@@ -53,7 +44,6 @@
 						<li><fmt:message key="post.change_date" /> <rc:metaChangeDate post="${post}"/><br /></li>
 						<li><fmt:message key="post.date" /> <rc:metaDate post="${post}"/><br /></li>
 						
-
 						<c:if test="${fn:length(command.relatedUserCommand.relatedUsers) gt 1}">
 							<li>
 								<h5><fmt:message key="bibtex.details.related_users"/></h5>
@@ -109,7 +99,7 @@
 					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagSizeMode="detail" tagboxMinfreqStyle="none" highlightTags="${tagsString}"/>
 				</li>
 				
-								
+				
 				<!--+
 					| private note
 					+-->
@@ -119,31 +109,28 @@
 						<hr />
 						<div id="privnote">
 							<form method="post" id="note">
-						  		<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
-						  		<input type="hidden" name="intraHash" value="${fn:escapeXml(publication.intraHash)}"/>
-						  		<input type="hidden" name="oldprivatenote" value="${fn:escapeXml(publication.privnote)}"/>
-						  		<input type="hidden" name="action" value="updatePrivateNote"/>
-						  		<div class="form-group">
-						  			<label for="private-note"><fmt:message key="post.resource.privnote"/></label>
-							  		<textarea class="form-control" id="private-note" name="privateNote" rows="5"><c:out value="${publication.privnote}"/></textarea>
-							  		<fmt:message key="save" var="save" />
-						  		</div>
-						  		<div class="pull-right">
-						  			<button type="submit" class="btn btn-success btn-xs" id="makeP" onclick="javascript: return updatePrivNote($(this))"><c:out value="${save}" /></button>
-					  			</div> 
-					  			<div class="clearfix">&amp;nbsp;</div>
-						  	</form>
+								<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
+								<input type="hidden" name="intraHash" value="${fn:escapeXml(publication.intraHash)}"/>
+								<input type="hidden" name="oldprivatenote" value="${fn:escapeXml(publication.privnote)}"/>
+								<input type="hidden" name="action" value="updatePrivateNote"/>
+								<div class="form-group">
+									<label for="private-note"><fmt:message key="post.resource.privnote"/></label>
+									<textarea class="form-control" id="private-note" name="privateNote" rows="5"><c:out value="${publication.privnote}"/></textarea>
+									<fmt:message key="save" var="save" />
+								</div>
+								<div class="pull-right">
+									<button type="submit" class="btn btn-primary btn-xs" id="makeP" onclick="javascript: return updatePrivNote($(this))"><c:out value="${save}" /></button>
+								</div>
+								<div class="clearfix">&amp;nbsp;</div>
+							</form>
 						</div>
 					</li>
 				</c:if>
-				
 			</ul>
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
-			
 			<resource:bibtexdetailsclean post="${post}" referer="${command.referer}"/>
-			
 		</jsp:attribute>
 		
 		<jsp:attribute name="customPageOptions">

@@ -37,7 +37,7 @@
 		|
 		+-->
 	<jsp:output omit-xml-declaration="true" />
-	<jsp:output doctype-root-element="html"	doctype-system="about:legacy-compat" />
+	<jsp:output doctype-root-element="HTML" doctype-system="about:legacy-compat" />
 	
 	<jsp:element name="html">
 		<jsp:body>

@@ -13,25 +13,35 @@
 	
 	
 	<jsp:directive.attribute name="labelText" type="java.lang.String" required="false" description="Alternativly to path, you can define directly a description for the label."/>
+	<jsp:directive.attribute name="labelKey" type="java.lang.String" required="false" description="Alternativly to path, you can define directly the message key for the label."/>
 	<jsp:directive.attribute name="helpText" type="java.lang.String" required="false" description="Alternativly to path.help, you can define the content for popover help" />
+	<jsp:directive.attribute name="helpKey" type="java.lang.String" required="false" description="Alternativly to path.help, you can define the message key for popover help" />
 	<jsp:directive.attribute name="noHelp" type="java.lang.Boolean" required="false" description="Shall the fly-by help be shown?"/>
 	
 	<!-- HTML attributes -->
 	<jsp:directive.attribute name="id" type="java.lang.String" required="false" description="Id for input field"/>
 	<jsp:directive.attribute name="tabindex" type="java.lang.Integer" required="false" description="tabindex for input field"/>
 	<jsp:directive.attribute name="name" type="java.lang.String" required="false" description="name attribute for input field"/>
-	<jsp:directive.attribute name="checked" type="java.lang.Boolean" required="false" description="value attribute for input field"/>
 
-	<c:if test="${inputColSpan lt 2}">
+
+	<c:if test="${ empty inputColSpan or inputColSpan lt 2}">
 		<c:set var="inputColSpan" value="10" />
 	</c:if>
 	
-	<c:if test="${empty labelText}">
-		<fmt:message var="labelText" key="${path}" /> 
+	<c:if test="${empty labelText and empty labelKey}">
+		<fmt:message var="labelText" key="${path}" />
 	</c:if>
 	
-	<c:if test="${empty helpText}">
+	<c:if test="${not empty labelKey}">
+		<fmt:message var="labelText" key="${labelKey}" />
+	</c:if>
+	
+	<c:if test="${empty helpText and empty helpKey}">
 		<fmt:message var="helpText" key="${path}.help" />
+	</c:if>
+	
+	<c:if test="${not empty helpKey}">
+		<fmt:message var="helpText" key="${helpKey}" />
 	</c:if>
 	
 	<div class="form-group">
@@ -41,10 +51,9 @@
 	          		<form:checkbox
 	          				path="${path}" 
 	          				class="${not empty noHelp or not noHelp ? 'help-popover' : ''}" 
-	          				id="${id}" 
-	          				checked="${ checked ? 'checked' : ''}" 
-	          				name="${name}" 
-	          				tabindex="${tabindex}" /> <c:out value="${labelText}"/>
+							tabindex="${tabindex}"
+							value="${false}"/>
+       				 <c:out value="${labelText}"/>
       				<c:if test="${not empty noHelp or not noHelp}">
 		          		<div class="help-content hide">${helpText}</div>
           			</c:if>

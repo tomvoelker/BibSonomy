@@ -5,8 +5,8 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
-
-	<jsp:directive.tag description="Render a form textarea field in the way it should typically be done with bootstrap." body-content="tagdependent" />
+	
+	<!-- Render a form textarea field in the way it should typically be done with bootstrap. -->
 
 	<jsp:directive.attribute name="path" type="java.lang.String" required="true" description="Path to property for data binding (e.g., post.resource.journal), labels, and the help message (.help is appended)"/>
 	<jsp:directive.attribute name="labelColSpan" type="java.lang.Integer" required="false" description="Column span width of the label. labelColSpan and inputColSpan must add up to 12" />
@@ -14,7 +14,10 @@
 	<jsp:directive.attribute name="required" type="java.lang.Boolean" required="false" description="Must the user fill out the form, i.e., is the content required (adds '*' before form and CSS class 'reqinput')?"/>
 	<jsp:directive.attribute name="noHelp" type="java.lang.Boolean" required="false" description="Shall the fly-by help be shown?"/>
 	
-	<jsp:directive.attribute name="labelText" type="java.lang.String" required="false" description="Alternativly to path, you can define directly a description for the label."/>
+	<jsp:directive.attribute name="labelText" type="java.lang.String" required="false" description="Alternativly to path, you can define directly a description for the label." />
+	<jsp:directive.attribute name="labelKey" type="java.lang.String" required="false" description="Alternativly to path and labelText you can define a message key for the label" />
+	<jsp:directive.attribute name="helpText" fragment="true" required="false" description="Alternativly to path, you can define directly a help text."/>
+	
 	<jsp:directive.attribute name="helpPage" type="java.lang.String" required="false" description="A link to a help page."/>
 	<jsp:directive.attribute name="small" type="java.lang.Boolean" required="false" description="Reduces the element width to 33 percent" />
 
@@ -40,15 +43,22 @@
 		</c:otherwise>
 	</c:choose>
 	
-	<c:if test="${empty labelText}">
+	<c:if test="${empty labelText and empty labelKey}">
 		<fmt:message var="labelText" key="${path}" />
 	</c:if>
 	
-	<c:if test="${empty helpText}">
-		<fmt:message var="helpText" key="${path}.help" />
+	<c:if test="${not empty labelKey}">
+		<fmt:message var="labelText" key="${labelKey}" />
 	</c:if>
-
-			
+	<c:choose>
+		<c:when test="${empty helpText}">
+			<fmt:message var="helpText" key="${path}.help" />
+		</c:when>
+		<c:otherwise>
+			<c:set var="helpText"><jsp:invoke fragment="helpText" /></c:set>
+		</c:otherwise>
+	</c:choose>
+	
 	<c:set var="helpPopover" value="" />
 	<c:if test="${empty noHelp or not noHelp}">
 		<c:set var="helpPopover" value="help-popover" />
@@ -67,7 +77,6 @@
 		| bootstrap 3 form-group 
 		+-->
 	<div class="form-group">
-	
 		<!--+
 			| followed by output label 
 			+-->
@@ -87,7 +96,7 @@
 			<c:if test="${empty noHelp or not noHelp}">
 				<div class="help help-header hide"><c:out value="${labelText}" /></div>
 				<div class="help help-content hide">
-					<fmt:message key="${path}.help" />
+					<c:out value="${helpText}" />
 				</div>
 			</c:if>
 			

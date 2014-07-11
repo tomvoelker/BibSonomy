@@ -125,7 +125,12 @@ public enum Views implements View {
 	 * concept page shows all suptags of an requested tag
 	 */
 	CONCEPTPAGE("concept"),
-
+	
+	/**
+	 * friend overview page
+	 */
+	FRIEND_OVERVIEW("friendOverview"),
+	
 	/**
 	 * friends page show all tags whose are viewable for friends by a friend of
 	 * you

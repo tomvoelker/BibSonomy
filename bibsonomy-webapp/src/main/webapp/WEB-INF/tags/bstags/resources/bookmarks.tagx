@@ -37,15 +37,13 @@
 		loginUserName="${loginUserName}"
 		listViewStartParamName="bookmark.start"
 		otherPostsUrlPrefix="/url/"
-		disableListNavigation="${disableListNavigation}"
 		listID="bookmarks_${listIndex}"
 		className="bookmarksContainer"
 		listView="${listView}"
 		extTitle="${extTitle}"
 		widthClassName="${widthClassName}"
 		addAsFirstItem="${addAsFirstItem}"
-		addAsLastItem="${addAsLastItem}"
-		>
+		addAsLastItem="${addAsLastItem}">
 		
 		
 		<jsp:attribute name="listHeadline">

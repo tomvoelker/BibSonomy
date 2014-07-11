@@ -60,18 +60,18 @@ $(function() {
     	
         var moreLink = $(document.createElement("a"));
         var contentContainer = $(this).children(".contentContainer")[0];
-        moreLink.data("text", contentContainer.innerHTML).html(getString("more")).addClass("moreLink").click(function(event){
+        moreLink.data("text", contentContainer.innerHTML).html("(" + getString("more") + ")").addClass("moreLink").click(function(event){
         	event.preventDefault();
         	var contentContainer = $(this.parentNode).children(".contentContainer")[0];
         	
             if($(this).hasClass('less')) {
             	$(this)
-            	.html("("+getString("more")+")")
+            	.html("(" + getString("more") + ")")
             	.removeClass("less")
             	.addClass("more");
             } else {
             	$(this)
-            	.html("("+getString("less")+")")
+            	.html("(" + getString("less") + ")")
             	.removeClass("more")
             	.addClass("less");
             }
