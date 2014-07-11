@@ -5,47 +5,65 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:form="http://www.springframework.org/tags/form">
 
     <jsp:directive.attribute name="tags" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="recommendedTags" type="java.util.Set" required="true"/>
     <jsp:directive.attribute name="containsComma" type="java.lang.Boolean" required="true"/>
 
-	<bform:fieldset maximized="true" legendKey="post.resource.tags.describe">
+	<bsform:fieldset legendKey="post.resource.tags.describe">
 		<jsp:attribute name="content">
 			<div class="form-group">
-		        <span class="fsLabel"> (<fmt:message key="post.resource.spaceseparated"/>) *</span>
-	    	    <form:input cssClass="tagInput reqinput form-control" id="inpf_tags" autocomplete="off" path="tags" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()" tabindex="1" />
-	        
-	        	<!-- name="tags"  -->
-				<div class="dissError"><form:errors path="tags" /></div>
-	
-	        	<!-- allow user to confirm tags containing comma or semicolon -->
-	        	<c:if test="${containsComma}">
-	          		<div>
-		        	    <form:checkbox path="acceptComma"/><form:label path="acceptComma"><fmt:message key="post.resource.tags.comma"/></form:label>
-	    	      	</div>
-	        	</c:if>
-			</div>    
+				<label class="col-sm-2 control-label">
+					<fmt:message key="post.resource.tags"/>
+				</label>
+
+				<div class="col-sm-10">
+				<!--   -->
+		    	    <form:input cssClass="tagInput reqinput form-control help-popover" id="inpf_tags" autocomplete="off" path="tags" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()" tabindex="1" />
+		        	<!-- name="tags"  -->
+		        	<!-- allow user to confirm tags containing comma or semicolon -->
+	        	</div>
+	        	<div class="col-sm-offset-2 col-sm-4">
+					<p class="help-block">
+						<fmt:message key="post.resource.spaceseparated" />
+					</p>
+				</div>
+			</div>
+			<c:if test="${containsComma}">
+		    	<div>
+			  	    <form:checkbox path="acceptComma"/><form:label path="acceptComma"><fmt:message key="post.resource.tags.comma"/></form:label>
+		      	</div>
+		    </c:if>
+            
+            <div class="form-group">
+	            <label class="col-sm-2 control-label">
+            		<fmt:message key="post.resource.recommendation"/>
+           		</label>
+            	<div class="col-sm-10">
+           			<ul id="recommendedTags" style="display:inline" class="recommended ${command.postID} list-inline">
+			    		<div class="fsWaitingText" style="font-weight: normal; color: #666;"><fmt:message key="post.resource.waitingForTags"/></div>
+			      		<!-- This comment is needed, otherwise this will result in a self-closing element -->
+			  		</ul>
+			      
+	          		<a id="fsReloadLink" href="#">
+	            		<fmt:message var="reloadTags" key="post.resource.reloadRecommendation"/>
+	            		<img id="fsReloadButton" src="${resdir}/image/button_reload-inactive.png" alt="${reloadTags}" title="${reloadTags}"/>
+	          		</a>
+	            				
+            		<div class="help-content hide">
+            			<!--  -->
+					</div>
+				</div>
+			</div>
+            
+            
             
 	        <!--+
     	        | show recommendations
         	    +-->
-			<div class="fsRow">
-			  	<div class="fsLabel"><fmt:message key="post.resource.recommendation"/></div>
-          
-    	      	<!-- we assign post's id to div's class for accessing clicklog data -->
-			  	<ul id="recommendedTags" class="recommended ${command.postID} list-inline">
-		    		<div class="fsWaitingText" style="font-weight: normal; color: #666;"><fmt:message key="post.resource.waitingForTags"/></div>
-		      		<!-- This comment is needed, otherwise this will result in a self-closing element -->
-		  		</ul>
-      
-          		<a id="fsReloadLink" href="#">
-            		<fmt:message var="reloadTags" key="post.resource.reloadRecommendation"/>
-            		<img id="fsReloadButton" src="${resdir}/image/button_reload-inactive.png" alt="${reloadTags}" title="${reloadTags}"/>
-          		</a>
-			</div>
+
     
             <!--+
             	| show copied tags if available
@@ -64,5 +82,5 @@
     		</c:if>
 
 		</jsp:attribute>
-	</bform:fieldset>
+	</bsform:fieldset>
 </jsp:root>
