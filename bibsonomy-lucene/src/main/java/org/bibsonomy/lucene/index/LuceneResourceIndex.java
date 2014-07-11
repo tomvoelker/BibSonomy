@@ -590,12 +590,12 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * @throws IOException
 	 */
 	protected void openIndexReaderIfChanged(boolean applyAllDeletes) throws CorruptIndexException, IOException {
-		if (indexReader != null && indexWriter != null) {
+		if (indexReader != null && indexWriter != null && !indexReader.isCurrent()) {
 			log.debug("Re-Opening indexReader " + indexPath + " : Checking for changes");
 			DirectoryReader newIndexReader = DirectoryReader.openIfChanged(indexReader, indexWriter, applyAllDeletes);
 			if (newIndexReader != null) {
 				log.debug("Re-Opening indexReader " + indexPath + " : found changes");
-				indexReader.close();
+				//indexReader.close();
 				indexReader = newIndexReader;
 			} else {
 				log.debug("Re-Opening indexReader " + indexPath + " : no changes");
@@ -652,10 +652,14 @@ public class LuceneResourceIndex<R extends Resource> {
 	 */
 	public IndexSearcher createIndexSearcher() throws IOException {
 		//return new IndexSearcher(FSDirectory.open(new File(this.getIndexPath())));
-		/*
-		 * FIXME - potential error?
-		 */
-		return new IndexSearcher(this.indexReader);
+		DirectoryReader newSearcher;
+		if (!indexReader.isCurrent()) {
+			newSearcher = DirectoryReader.openIfChanged(indexReader, indexWriter, false);
+		} else {
+			newSearcher = DirectoryReader.open(indexWriter, false);
+		}
+		
+		return new IndexSearcher(newSearcher);
 	}
 	
 	/**
