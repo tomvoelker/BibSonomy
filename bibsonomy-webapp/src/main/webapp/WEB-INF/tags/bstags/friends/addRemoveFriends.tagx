@@ -4,6 +4,7 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
 	<jsp:directive.attribute name="friends" type="java.util.Collection" required="true"/>
@@ -16,49 +17,49 @@
 				<fmt:message key="friendoverview.friends.empty"/>
 			</div>
 		</c:if>
-					<c:forEach var="friend" items="${friends}" varStatus="friendStatus">
-						<c:set var="friendName" value="${friend.name}" />
-						
-						<div class="col-md-4">
-							<div class="row">
-								<div class="col-md-3">
-									<img alt="@${fn:escapeXml(friendName)}" src="/picture/user/${fn:escapeXml(friendName)}" class="user-avatar" />
-								</div>
-								<div class="col-md-9">
-									<a href="/user/${mtl:encodeURI(friendName)}"><c:out value="@${friendName}" /></a>
-									<br />
-									<c:choose>
-										<c:when test="${mtl:contains(ofFriends, friend)}">
-											<c:set var="removeStyle" value=""/>
-											<c:set var="addStyle" value="display: none;"/>
-										</c:when>
-										<c:otherwise>
-											<c:set var="removeStyle" value="display: none;"/>
-											<c:set var="addStyle" value=""/>
-										</c:otherwise>
-									</c:choose>
-									<form action="/ajax/handleUserRelation">
-										<input type="hidden" name="requestedUserName" value="${fn:escapeXml(friendName)}" />
-										<input type="hidden" name="action" value="none" />
-										<input type="hidden" name="ckey" value="${ckey}" />
-										
-										<button type="submit" class="btn btn-sm btn-success removeFriend" style="${removeStyle}">
-											<span class="glyphicon glyphicon-ok"><!--  --></span>
-											<c:out value=" "/>
-											<span class="infotext"><fmt:message key="friendoverview.friend" /></span>
-										</button>		
-										<button type="submit" class="btn btn-sm btn-default addFriend" style="${addStyle}">
-											<fmt:message key="friend.add" />
-										</button>
-									</form>
-									<small><a href="/friend/${mtl:encodeURI(friendName)}"><fmt:message key="friendoverview.offriend.usershared" /></a></small>
-								</div>
-							</div>
-						</div>
-						
-						<c:if test="${friendStatus.index != 0 and friendStatus.index % 2 == 0}">
-							<mtl:newRow />
-						</c:if>
-					</c:forEach>
+		<c:forEach var="friend" items="${friends}" varStatus="friendStatus">
+			<c:set var="friendName" value="${friend.name}" />
+			
+			<div class="col-md-4">
+				<div class="row">
+					<div class="col-md-3">
+						<img alt="@${fn:escapeXml(friendName)}" src="/picture/user/${fn:escapeXml(friendName)}" class="user-avatar" />
+					</div>
+					<div class="col-md-9">
+						<user:username user="${friend}" />
+						<br />
+						<c:choose>
+							<c:when test="${mtl:contains(ofFriends, friend)}">
+								<c:set var="removeStyle" value=""/>
+								<c:set var="addStyle" value="display: none;"/>
+							</c:when>
+							<c:otherwise>
+								<c:set var="removeStyle" value="display: none;"/>
+								<c:set var="addStyle" value=""/>
+							</c:otherwise>
+						</c:choose>
+						<form action="/ajax/handleUserRelation">
+							<input type="hidden" name="requestedUserName" value="${fn:escapeXml(friendName)}" />
+							<input type="hidden" name="action" value="none" />
+							<input type="hidden" name="ckey" value="${ckey}" />
+							
+							<button type="submit" class="btn btn-sm btn-success removeFriend" style="${removeStyle}">
+								<span class="glyphicon glyphicon-ok"><!--  --></span>
+								<c:out value=" "/>
+								<span class="infotext"><fmt:message key="friendoverview.friend" /></span>
+							</button>		
+							<button type="submit" class="btn btn-sm btn-default addFriend" style="${addStyle}">
+								<fmt:message key="friend.add" />
+							</button>
+						</form>
+						<small><a href="/friend/${mtl:encodeURI(friendName)}"><fmt:message key="friendoverview.offriend.usershared" /></a></small>
+					</div>
+				</div>
+			</div>
+			
+			<c:if test="${friendStatus.index != 0 and friendStatus.index % 2 == 0}">
+				<mtl:newRow />
+			</c:if>
+		</c:forEach>
 	</div>
 </jsp:root>
