@@ -120,7 +120,7 @@ public class LuceneResourceIndex<R extends Resource> {
         
         try {
         	//If index has changed, open new Reader to get latest info
-        	this.openIndexReaderIfChanged();
+        	this.openIndexReaderIfChanged(true);
         	// Get the ID of this index 
         	statistics.setIndexId(this.indexId);
 
@@ -408,7 +408,7 @@ public class LuceneResourceIndex<R extends Resource> {
 			// commit reader-changes 
 			//----------------------------------------------------------------
 			try {
-				this.openIndexReaderIfChanged();
+				this.openIndexReaderIfChanged(false);
 			} catch (final IOException e) {
 				log.error("Error commiting index update.", e);
 			}
@@ -589,10 +589,10 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * @throws CorruptIndexException
 	 * @throws IOException
 	 */
-	protected void openIndexReaderIfChanged() throws CorruptIndexException, IOException {
-		if (indexReader != null) {
+	protected void openIndexReaderIfChanged(boolean applyAllDeletes) throws CorruptIndexException, IOException {
+		if (indexReader != null && indexWriter != null) {
 			log.debug("Re-Opening indexReader " + indexPath + " : Checking for changes");
-			DirectoryReader newIndexReader = DirectoryReader.openIfChanged(indexReader);
+			DirectoryReader newIndexReader = DirectoryReader.openIfChanged(indexReader, indexWriter, applyAllDeletes);
 			if (newIndexReader != null) {
 				log.debug("Re-Opening indexReader " + indexPath + " : found changes");
 				indexReader.close();
