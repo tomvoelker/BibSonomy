@@ -9,9 +9,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -62,32 +59,13 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	private static final Log log = LogFactory.getLog(LuceneResourceSearch.class);
 
 	/**
-	 * read/write lock, allowing multiple searcher or exclusive an index update
-	 * TODO: we should use an implementation, which prefers writers for
-	 * obtaining the lock
-	 */
-	private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
-
-	/** write lock, used for blocking index searcher */
-	private final Lock w = this.lock.writeLock();
-
-	/** read lock, used for blocking the index update */
-	private final Lock r = this.lock.readLock();
-
-	/**
 	 * logic interface for retrieving data from bibsonomy (friends, groups
 	 * members)
 	 */
 	private LuceneInfoLogic dbLogic;
 
-	/** global reference to the lucene searcher */
-	private IndexSearcher searcher;
-
 	/** default field analyzer */
 	private Analyzer analyzer;
-
-	/** flag indicating whether the index was loaded successfully */
-	private boolean isReady = false;
 
 	/** default junction of search terms */
 	private Operator defaultSearchTermJunctor = null;
@@ -141,17 +119,20 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 */
 	@Override
 	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
-		if (!this.isEnabled() || !this.tagCloudEnabled) {
+		if (!this.tagCloudEnabled) {
 			return new LinkedList<Tag>();
 		}
 		
 		// build query
 		final QuerySortContainer qf = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, null);
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
-		this.r.lock();
+		
+		IndexSearcher searcher = null;
 		try {
+			//Aquire searcher
+			searcher = this.index.aquireIndexSearcher();
 			log.debug("Starting tag collection");
-			final TopDocs topDocs = this.searcher.search(qf.getQuery(), null, this.tagCloudLimit, qf.getSort());
+			final TopDocs topDocs = searcher.search(qf.getQuery(), null, this.tagCloudLimit, qf.getSort());
 			log.debug("Done collecting tags");
 			/*
 			 * extract tags from top n documents
@@ -164,7 +145,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 				 * get document from index and
 				 * convert document to bibsonomy post model	
 				 */
-				final Document doc = this.searcher.doc(topDocs.scoreDocs[i].doc);
+				final Document doc = searcher.doc(topDocs.scoreDocs[i].doc);
 				final Post<R> post = this.resourceConverter.writePost(doc);
 		
 				// set tag count
@@ -190,7 +171,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		} catch (final IOException e) {
 			log.error("Error building full text tag cloud for query " + qf.getQuery().toString());
 		} finally {
-			this.r.unlock();
+			this.index.releaseIndexSearcher(searcher);
 		}
 		
 		final List<Tag> tags = new LinkedList<Tag>();
@@ -208,49 +189,18 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	}
 
 	/**
-	 * reload the index -- has to be called after each index change
-	 */
-	public void reloadIndex() {
-		/*
-		 * open new index searcher
-		 */
-		IndexSearcher newSearcher = null;
-		try {
-			// load and hold index on physical hard disk
-			log.debug("Opening index " + this.index);
-			newSearcher = this.index.createIndexSearcher();
-		} catch (final Exception e) {
-			log.error("Error reloading index, disabling searcher (" + e.getMessage() + ") - this should be the case while building a new index");
-		}
-
-		/*
-		 * switch searcher
-		 */
-		this.w.lock();
-		try {
-			if (newSearcher == null) {
-				this.disableIndex();
-			} else {
-				this.searcher = newSearcher;
-				this.enableIndex();
-			}
-		} finally {
-			this.w.unlock();
-		}
-	}
-
-	/**
 	 * query index for documents and create result list of post models
 	 */
 	private ResultList<Post<R>> searchLucene(final QuerySortContainer qf, final int limit, final int offset) {
-		if (!this.isEnabled() || limit == 0) {
+		if (limit == 0) {
 			return new ResultList<Post<R>>();
 		}
-
-		this.r.lock();
-
+		
+		IndexSearcher searcher = null;
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
 		try {
+			//Aquire searcher
+			searcher = this.index.aquireIndexSearcher();
 			// initialize data
 			final Query query = qf.getQuery();
 			final Sort sort = qf.getSort();
@@ -259,7 +209,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			 * querying the index
 			 */
 			long starttimeQuery = System.currentTimeMillis();
-			final TopDocs topDocs = this.searcher.search(query, null, offset + limit, sort);
+			final TopDocs topDocs = searcher.search(query, null, offset + limit, sort);
 
 			// determine number of posts to display
 			final int hitslimit = (((offset + limit) < topDocs.totalHits) ? (offset + limit) : topDocs.totalHits);
@@ -273,7 +223,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			 */
 			for (int i = offset; i < hitslimit; i++) {
 				// get document from index
-				final Document doc = this.searcher.doc(topDocs.scoreDocs[i].doc);
+				final Document doc = searcher.doc(topDocs.scoreDocs[i].doc);
 				// convert document to bibsonomy model
 				final Post<R> post = this.resourceConverter.writePost(doc);
 
@@ -283,7 +233,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 				final String interHash = doc.get(LuceneFieldNames.INTERHASH);
 				if (interHash != null) {
 					//Count documents for interHash
-					postFreq = this.searcher.getIndexReader().docFreq(new Term(LuceneFieldNames.INTERHASH, interHash));
+					postFreq = searcher.getIndexReader().docFreq(new Term(LuceneFieldNames.INTERHASH, interHash));
 				}
 				log.debug("PostFreq query time: " + (System.currentTimeMillis() - starttimeQuery) + "ms");
 				post.getResource().setCount(postFreq);
@@ -294,31 +244,10 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		} catch (final IOException e) {
 			log.debug("LuceneResourceSearch: IOException: " + e.getMessage());
 		} finally {
-			this.r.unlock();
+			this.index.releaseIndexSearcher(searcher);
 		}
 
 		return postList;
-	}
-
-	/**
-	 * check whether index is ready for searching
-	 */
-	private boolean isEnabled() {
-		return this.isReady;
-	}
-
-	/**
-	 * disable search
-	 */
-	private void disableIndex() {
-		this.isReady = false;
-	}
-
-	/**
-	 * enable search
-	 */
-	private void enableIndex() {
-		this.isReady = true;
 	}
 
 	/**
@@ -766,7 +695,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 */
 	public void setIndex(final LuceneResourceIndex<R> index) {
 		this.index = index;
-		this.reloadIndex();
+		this.index.reset();
 	}
 
 	/**

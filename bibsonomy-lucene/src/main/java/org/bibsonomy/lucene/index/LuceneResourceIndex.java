@@ -22,6 +22,8 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.SearcherFactory;
+import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
@@ -50,7 +52,8 @@ public class LuceneResourceIndex<R extends Resource> {
 	
 
 	/** gives read only access to the lucene index */
-	private DirectoryReader indexReader;
+	//private DirectoryReader indexReader;
+	private SearcherManager searcherManager;
 
 	/** gives write access to the lucene index */
 	private IndexWriter indexWriter;
@@ -119,8 +122,9 @@ public class LuceneResourceIndex<R extends Resource> {
         }
         
         try {
-        	//If index has changed, open new Reader to get latest info
-        	this.openIndexReaderIfChanged(true);
+        	this.searcherManager.maybeRefreshBlocking();
+        	DirectoryReader indexReader = (DirectoryReader) this.aquireIndexSearcher().getIndexReader();
+        	
         	// Get the ID of this index 
         	statistics.setIndexId(this.indexId);
 
@@ -147,7 +151,7 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * @throws IOException 
 	 */
 	public void close() throws CorruptIndexException, IOException{
-		this.closeIndexReader();
+		this.closeSearcherManager();
 		this.closeIndexWriter();
 		this.disableIndex();
 	}
@@ -181,10 +185,10 @@ public class LuceneResourceIndex<R extends Resource> {
 			}
 			
 			try {
-				this.openIndexReader(false);
+				this.openSearcherManager();
 			} catch (final IOException e) {
-				log.error("Error opening IndexReader (" + e.getMessage() + ") - This is ok while creating a new index.");
-				this.closeIndexReader();
+				log.error("Error opening SearcherManager (" + e.getMessage() + ") - This is ok while creating a new index.");
+				this.closeSearcherManager();
 				throw e;
 			}
 			
@@ -405,10 +409,11 @@ public class LuceneResourceIndex<R extends Resource> {
 			this.usersToFlag.clear();
 			
 			//----------------------------------------------------------------
-			// commit reader-changes 
+			// commit writer- and reader-changes 
 			//----------------------------------------------------------------
 			try {
-				this.openIndexReaderIfChanged(false);
+				this.indexWriter.commit();
+				this.searcherManager.maybeRefresh();
 			} catch (final IOException e) {
 				log.error("Error commiting index update.", e);
 			}
@@ -417,7 +422,7 @@ public class LuceneResourceIndex<R extends Resource> {
 
 	
 	/**
-	 * closes all writer and reader and reopens them
+	 * closes IndexWriter and SearchManager and reopens them
 	 */
 	public void reset() {
 		synchronized(this) {
@@ -430,19 +435,14 @@ public class LuceneResourceIndex<R extends Resource> {
 			}
 
 			try {
-				closeIndexReader();
-			} catch (final IOException e) {
-				log.error("IOException while closing index reader", e);
-			}
-			try {
 				openIndexWriter();
 			} catch (final IOException e) {
 				log.error("Error opening index writer", e);
 			}
 			try {
-				openIndexReader(false);
+				openSearcherManager();
 			} catch (final IOException e) {
-				log.error("Error opening index reader", e);
+				log.error("Error opening SearcherManager", e);
 			}
 
 			// delete the lists
@@ -495,17 +495,18 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * @return
 	 */
 	private Document searchIndex(final Query searchQuery, final int hitsPerPage, final Sort ordering) {
-		// prepare the index searcher
-		final IndexSearcher searcher = new IndexSearcher(indexReader);
-
+		IndexSearcher searcher = null;
 		// query the index
 		try {
+			searcher = this.aquireIndexSearcher();
 			final TopDocs topDocs = searcher.search(searchQuery, null, hitsPerPage, ordering);
 			if (topDocs.totalHits > 0) {
 				return searcher.doc(topDocs.scoreDocs[0].doc);
 			}
 		} catch (final Exception e) {
 			log.error("Error performing index search in file " + this.indexPath, e);
+		} finally {
+			this.releaseIndexSearcher(searcher);
 		}
 		
 		return null;
@@ -559,7 +560,7 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * @throws LockObtainFailedException
 	 * @throws IOException
 	 */
-	protected void openIndexWriter() throws CorruptIndexException, LockObtainFailedException, IOException {
+	private void openIndexWriter() throws CorruptIndexException, LockObtainFailedException, IOException {
 		closeIndexWriter();
 		//open new indexWriter
 		log.debug("Opening indexWriter " + this.indexPath);
@@ -568,57 +569,31 @@ public class LuceneResourceIndex<R extends Resource> {
 		indexWriter = new IndexWriter(indexDirectory, iwc);
 	}
 	
-	/**
-	 * Opens a new indexReader. This method does not close a possible old Writer.
-	 * @param applyAllDeletes
-	 * @throws CorruptIndexException
-	 * @throws IOException
-	 */
-	protected void openIndexReader(boolean applyAllDeletes) throws CorruptIndexException, IOException {
-		//open new IndexReader
-		if (indexWriter != null) {
-			log.debug("Opening indexReader " + indexPath);
-			this.indexReader = DirectoryReader.open(indexWriter,applyAllDeletes);
-			return;
-		}
-		log.debug("Cannot open index " + indexPath + " for reading: IndexWriter missing");
-	}
-	
-	/**
-	 * Opens a new indexReader, only if the index has changed. This method closes the old reader if the index has changed.
-	 * @throws CorruptIndexException
-	 * @throws IOException
-	 */
-	protected void openIndexReaderIfChanged(boolean applyAllDeletes) throws CorruptIndexException, IOException {
-		if (indexReader != null && indexWriter != null && !indexReader.isCurrent()) {
-			log.debug("Re-Opening indexReader " + indexPath + " : Checking for changes");
-			DirectoryReader newIndexReader = DirectoryReader.openIfChanged(indexReader, indexWriter, applyAllDeletes);
-			if (newIndexReader != null) {
-				log.debug("Re-Opening indexReader " + indexPath + " : found changes");
-				//indexReader.close();
-				indexReader = newIndexReader;
-			} else {
-				log.debug("Re-Opening indexReader " + indexPath + " : no changes");
-			}
-		}
-	}
-	
-	protected void closeIndexWriter() throws CorruptIndexException, IOException {
+	private void closeIndexWriter() throws CorruptIndexException, IOException {
 		if (this.indexWriter != null) {
 			log.debug("Closing indexWriter " + indexPath);
 			//close index for writing
-			IndexWriter iw = indexWriter;
+			indexWriter.close();
 			indexWriter = null;
-			iw.close();
 		}
 	}
-
-	protected void closeIndexReader() throws IOException {
-		if (this.indexReader != null) {
-			log.debug("Closing indexReader " + indexPath);
-			DirectoryReader id = indexReader;
-			indexReader = null;
-			id.close();
+	
+	/**
+	 * Opens a new SearchManager, closes the old one if exists.
+	 * @throws IOException
+	 */
+	private void openSearcherManager() throws IOException {
+		closeSearcherManager();
+		//open new SearchManager
+		this.searcherManager = new SearcherManager(this.indexDirectory, new SearcherFactory());
+		log.debug("Opening searcherManager " + this.indexPath);
+	}
+	
+	private void closeSearcherManager() throws IOException {
+		if (this.searcherManager != null) {
+			log.debug("Closing searchManager " + indexPath);
+			this.searcherManager.close();
+			this.searcherManager = null;
 		}
 	}
 
@@ -646,20 +621,27 @@ public class LuceneResourceIndex<R extends Resource> {
 	
 	
 	/**
-	 * 
-	 * @return a new index searcher for this index
+	 * Get a new index searcher for this index. Make sure to release it after search,
+	 * by calling releaseIndexSearcher(searcher);
+	 * @return IndexSearcher
 	 * @throws IOException
 	 */
-	public IndexSearcher createIndexSearcher() throws IOException {
-		//return new IndexSearcher(FSDirectory.open(new File(this.getIndexPath())));
-		DirectoryReader newSearcher;
-		if (!indexReader.isCurrent()) {
-			newSearcher = DirectoryReader.openIfChanged(indexReader, indexWriter, false);
-		} else {
-			newSearcher = DirectoryReader.open(indexWriter, false);
+	public IndexSearcher aquireIndexSearcher() throws IOException {
+		return this.searcherManager.acquire();
+	}
+	
+	/**
+	 * Releases a previously acquired IndexSearcher.
+	 * @param searcher
+	 */
+	public void releaseIndexSearcher(IndexSearcher searcher) {
+		try {
+			if (searcher != null) {
+				this.searcherManager.release(searcher);
+			}
+		} catch (IOException e) {
+			log.error("Could not release IndexSearcher", e);
 		}
-		
-		return new IndexSearcher(newSearcher);
 	}
 	
 	/**
