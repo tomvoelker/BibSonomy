@@ -16,20 +16,11 @@
 
 Lucene 4.9 Migration:
 
-- NOTE: Once the writer is closed, any
-   outstanding readers may continue to be used.  However,
-   if you attempt to reopen any of those readers, you'll
-   hit an {@link org.apache.lucene.store.AlreadyClosedException}.</p>
-		
-- IndexReaders read only
-	-> LuceneResourceIndex: - Have a second look on Reader/Writer management
-	
-- LuceneResourceSearch		- Search Terms have to be UTF 8 - (BytesRef)
-							- parseSearchQuery(final String fieldName, String searchTerms)
-								--> Why was it Version.LUCENE_24 ???
-							- maybe switch to Search Manager
+- Tests: -Index deletion fails, cause of Lucene not releasing File-handles on .cfs-Files
+			-> on Windows those files can't!! be deleted as long as the JVM is still running...
+				-> Shouldn't be a problem under Linux
 							
-- LuceneResourceSearchTest	- no asserts!							
+- LuceneResourceSearchTest	- no asserts!				
 							
 - General:
 	- Make Indexing/Searching threaded!
