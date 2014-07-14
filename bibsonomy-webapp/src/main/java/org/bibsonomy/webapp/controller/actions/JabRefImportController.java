@@ -151,7 +151,7 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 				 * store document in database
 				 */
 				this.logic.createDocument(uploadedFile, null);
-			} catch (Exception ex) {
+			} catch (final Exception ex) {
 				errors.reject("settings.jabRef.error.import", new Object[]{layoutPart,ex.getMessage()}, null);
 			}
 		}
