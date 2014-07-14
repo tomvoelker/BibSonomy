@@ -152,6 +152,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	private StringBuffer renderDatabase(final BibtexDatabase database, final List<BibtexEntry> sorted, final JabrefLayout layout, final boolean embeddedLayout) throws LayoutRenderingException {
 		/*
 		 * Check for SelfRenderingLayout first
+		 * TODO: move rendering to JabRef class
 		 */
 		if (layout instanceof SelfRenderingJabrefLayout) {
 			return ((SelfRenderingJabrefLayout) layout).render(database, sorted, layout, embeddedLayout);

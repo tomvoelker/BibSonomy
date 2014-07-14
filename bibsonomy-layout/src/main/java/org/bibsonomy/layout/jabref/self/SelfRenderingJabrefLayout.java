@@ -9,11 +9,11 @@ import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.layout.jabref.JabrefLayout;
 
 /**
- * TODO: add documentation to this class
+ * abstract class for self rendering jabref layouts
  *
  * @author MarcelM
  */
-public abstract class SelfRenderingJabrefLayout extends JabrefLayout{
+public abstract class SelfRenderingJabrefLayout extends JabrefLayout {
 
 	/**
 	 * @param name
@@ -31,5 +31,4 @@ public abstract class SelfRenderingJabrefLayout extends JabrefLayout{
 	}
 	
 	public abstract StringBuffer render(final BibtexDatabase database, final List<BibtexEntry> sorted, final JabrefLayout layout, final boolean embeddedLayout) throws LayoutRenderingException;
-	
 }

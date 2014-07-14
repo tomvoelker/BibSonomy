@@ -18,7 +18,7 @@ import org.bibsonomy.layout.jabref.JabrefLayout;
 import org.w3c.dom.Document;
 
 /**
- * TODO: add documentation to this class
+ * a self 
  *
  * @author MarcelM
  */
@@ -37,18 +37,15 @@ public class MSOfficeXMLLayout extends SelfRenderingJabrefLayout{
 	 * @see org.bibsonomy.layout.jabref.self.SelfRenderingJabrefLayout#render(net.sf.jabref.BibtexDatabase, java.util.List, org.bibsonomy.layout.jabref.JabrefLayout, boolean)
 	 */
 	@Override
-	public StringBuffer render(BibtexDatabase database,
-			List<BibtexEntry> sorted, JabrefLayout layout,
-			boolean embeddedLayout) throws LayoutRenderingException {
-		
-		MSBibDatabase msbibDB = new MSBibDatabase(database);
-		Document doc = msbibDB.getDOMrepresentation();
+	public StringBuffer render(BibtexDatabase database, List<BibtexEntry> sorted, JabrefLayout layout, boolean embeddedLayout) throws LayoutRenderingException {
+		final MSBibDatabase msbibDB = new MSBibDatabase(database);
+		final Document doc = msbibDB.getDOMrepresentation();
 		
 		final StringBuffer output = new StringBuffer();
 		
 		try {
 			output.append(getStringFromDocument(doc));
-		} catch (TransformerException e) {
+		} catch (final TransformerException e) {
 			throw new LayoutRenderingException(LAYOUTNAME);
 		}
 		
@@ -56,11 +53,10 @@ public class MSOfficeXMLLayout extends SelfRenderingJabrefLayout{
 	}
 	
 	/**
-	 * @throws TransformerException 
 	 * This method converts a org.w3c.dom.Document to String
 	 * @param doc
 	 * @return
-	 * @throws  
+	 * @throws TransformerException
 	 */
 	private static String getStringFromDocument(Document doc) throws TransformerException {
 		DOMSource domSource = new DOMSource(doc);
