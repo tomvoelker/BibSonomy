@@ -44,7 +44,7 @@ public class GoogleBooksScraper extends SimpleGenericURLScraper {
 	private static final String HOST = "books.google.";
 	private static final String PATH = "/books";
 	
-	private static final Pattern ID_PATTERN = Pattern.compile("id=(.*)&");
+	private static final Pattern ID_PATTERN = Pattern.compile("id=(.*)&?");
 	
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST + ".*"), Pattern.compile(PATH + ".*")));
 	

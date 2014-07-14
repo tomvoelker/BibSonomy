@@ -1,44 +1,40 @@
 package org.bibsonomy.services.memento;
 
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.junit.Test;
 
+/**
+ * 
+ * tests for {@link MementoService}
+ *
+ * @author rja
+ */
 public class MementoServiceTest {
 
 	@Test
-	public void testGetQueryUrl() {
-		try {
-			final MementoService m = new MementoService(new URL("http://mementoweb.org/timegate/"));
+	public void testGetQueryUrl() throws MalformedURLException {
+		final MementoService m = new MementoService(new URL("http://mementoweb.org/timegate/"));
 		
-			assertEquals("http://mementoweb.org/timegate/http://www.l3s.de/", m.getQueryUrl("http://www.l3s.de/"));
-			assertEquals("http://mementoweb.org/timegate/http://www.l3s.de/?param=what_happens_to_params", m.getQueryUrl("http://www.l3s.de/?param=what_happens_to_params"));
-			assertEquals("http://mementoweb.org/timegate/http://www.l3s.de/?param=what_happens_to_params&param2=even_with_two", m.getQueryUrl("http://www.l3s.de/?param=what_happens_to_params&param2=even_with_two"));
-			
-		} catch (MalformedURLException e) {
-			fail("Could not format URL");
-		}
+		assertEquals("http://mementoweb.org/timegate/http://www.l3s.de/", m.getQueryUrl("http://www.l3s.de/"));
+		assertEquals("http://mementoweb.org/timegate/http://www.l3s.de/?param=what_happens_to_params", m.getQueryUrl("http://www.l3s.de/?param=what_happens_to_params"));
+		assertEquals("http://mementoweb.org/timegate/http://www.l3s.de/?param=what_happens_to_params&param2=even_with_two", m.getQueryUrl("http://www.l3s.de/?param=what_happens_to_params&param2=even_with_two"));
 	}
 
 	@Test
-	public void testGetMementoUrl() {
-		try {
-			final MementoService m = new MementoService(new URL("http://mementoweb.org/timegate/"));
+	public void testGetMementoUrl() throws MalformedURLException {
+		final MementoService m = new MementoService(new URL("http://mementoweb.org/timegate/"));
 
-			final URL mementoUrl = m.getMementoUrl("http://www.l3s.de/", "Thu, 27 July 2006 12:00:00 GMT");
+		final String url = "http://www.l3s.de/";
+		final URL mementoUrl = m.getMementoUrl(url, MementoService.RFC1123_DATE_TIME_FORMATTER.parseDateTime("Thu, 27 July 2006 12:00:00 GMT").toDate());
 		
-			assertNotNull(mementoUrl);
-			assertTrue(mementoUrl.toString().contains("www.l3s.de"));
-			
-			// TODO: implement tests for URLs with query parameters
-			
-		} catch (MalformedURLException e) {
-			fail("Could not format URL");
-		}
+		assertNotNull(mementoUrl);
+		assertEquals("http://web.archive.org/web/20060718084715/http://www.l3s.de/", mementoUrl.toString());
+		// TODO: implement tests for URLs with query parameters
 	}
 
 }

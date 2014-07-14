@@ -2,35 +2,19 @@ package org.bibsonomy.webapp.controller.special;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.model.User;
 import org.bibsonomy.services.memento.MementoService;
-import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.special.RedirectCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
-import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.HeaderUtils;
 import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.RequestAware;
-import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.validation.Errors;
 
 /**
  * Interaction with Memento TimeGates, cf. http://www.mementoweb.org/
@@ -67,9 +51,8 @@ public class MementoController implements MinimalisticController<RedirectCommand
 	@Override
 	public View workOn(final RedirectCommand command) {
 		log.debug("handling /memento URLs");
-
 		final String url = command.getUrl();
-		final String datetime = command.getDatetime();
+		final Date datetime = command.getDatetime();
 		// check for valid parameters
 		if (!present(url)) { 
 			throw new MalformedURLSchemeException("parameter 'url' missing");
@@ -78,11 +61,11 @@ public class MementoController implements MinimalisticController<RedirectCommand
 			throw new MalformedURLSchemeException("parameter 'datetime' missing");
 		}
 		// query timegate
-		URL redirectUrl;
+		URL redirectUrl = null;
 		try {
 			redirectUrl = this.mementoService.getMementoUrl(url, datetime);
 		} catch (final MalformedURLException e) {
-			redirectUrl = null;
+			// ignore
 		}
 		// check result
 		// TODO: handle case when timegate works well but there exists no archived version
@@ -99,13 +82,6 @@ public class MementoController implements MinimalisticController<RedirectCommand
 		return new RedirectCommand();
 	}
 	
-	/**
-	 * @return The Memento service
-	 */
-	public MementoService getMementoService() {
-		return mementoService;
-	}
-
 	/**
 	 * @param mementoService The Memento service that handles requests to the TimeGate.
 	 */

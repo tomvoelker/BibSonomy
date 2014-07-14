@@ -27,10 +27,12 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -40,7 +42,7 @@ import org.bibsonomy.util.WebUtils;
 /**
  * @author wla
  */
-public class JCIScraper extends AbstractUrlScraper {
+public class JCIScraper extends AbstractUrlScraper implements ReferencesScraper{
 
 	private static final String SITE_NAME = "The Journal of Clinical Investigation";
 
@@ -52,6 +54,8 @@ public class JCIScraper extends AbstractUrlScraper {
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(SITE_URL), AbstractUrlScraper.EMPTY_PATTERN));
 
+	private static final Pattern REFERENCES = Pattern.compile("(?s)<OL COMPACT>(.*)</OL>");
+	
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
 		
@@ -62,6 +66,7 @@ public class JCIScraper extends AbstractUrlScraper {
 			final String bibTex = WebUtils.getContentAsString(scrapingContext.getUrl() + BIBTEX_URL);
 			if (present(bibTex)) {
 				scrapingContext.setBibtexResult(bibTex);
+				scrapeReferences(scrapingContext);
 				return true;
 			} else {
 				throw new ScrapingFailureException("getting bibtex failed");
@@ -90,6 +95,23 @@ public class JCIScraper extends AbstractUrlScraper {
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
+	 */
+	@Override
+	public boolean scrapeReferences(ScrapingContext scrapingContext)throws ScrapingException {
+		try{
+			Matcher m = REFERENCES.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
+			if(m.find()){
+				scrapingContext.setReferences(m.group(1));
+				return true;
+			}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		return false;
 	}
 
 }
