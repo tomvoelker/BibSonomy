@@ -30,7 +30,6 @@
 	<jsp:directive.attribute name="size" type="java.lang.Integer" required="false" description="value attribute for input field"/>
 	<jsp:directive.attribute name="multiple" type="java.lang.Boolean" required="false" description="value attribute for input field"/>
 	
-	<jsp:directive.attribute name="itemsAsList" type="java.util.List" required="false" description="items for select field"/>
 	<jsp:directive.attribute name="items" type="java.lang.String[]" required="false" description="items for select field"/>
 	<jsp:directive.attribute name="itemLabels" type="java.lang.String[]" required="false" description="labels for items"/>
 	
@@ -96,21 +95,7 @@
 		</label>
 
 		<div class="col-sm-${inputColSpan}">
-			
-			<c:choose>
-				<c:when test="${not empty itemLabels}">
-					<form:select multiple="${multiple ? 'multiple' : 'false'}" path="${path}" cssClass="form-control ${helpPopover} ${ small ? classSmallField : ''}" onchange="${onchange}"> 
-						<c:forEach items="${itemLabels}" var="optionLabel" varStatus="cnt">
-							<form:option value="${item[cnt.index]}"><c:out value="${optionLabel}" /></form:option>
-						</c:forEach>
-					</form:select>
-				</c:when>
-				<c:otherwise>
-					<form:select multiple="${multiple ? 'multiple' : 'false'}" path="${path}" cssClass="form-control ${helpPopover} ${ small ? classSmallField : ''}" onchange="${onchange}" items="${itemsAsList}" /> 	
-				</c:otherwise>
-			</c:choose>
-			
-			
+			<form:select multiple="${multiple ? 'multiple' : 'false'}" path="${path}" cssClass="form-control ${helpPopover} ${ small ? classSmallField : ''}" onchange="${onchange}" items="${items}" />
 			<c:if test="${empty noHelp or not noHelp}">
 				<div class="help help-header hide"><c:out value="${labelText}" /></div>
 				<div class="help help-content hide">${helpText}</div>
