@@ -44,7 +44,7 @@
 			<!--
                | tags 
                       -->
-	    	<post:tagfield containsComma="${command.containsComma}" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
+	    	<post:tagfield containsComma="${command.containsComma}" labelColSpan="3" inputColSpan="9" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
             <!--
                | groups 
       			       -->
