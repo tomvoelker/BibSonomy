@@ -415,9 +415,9 @@
 	</function>
 	
 	<function>
-		<name>instanceOfDidYouKnowMessageCommand</name>
+		<name>hasDidYouKnowMessage</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>java.lang.Boolean instanceOfDidYouKnowMessageCommand(org.bibsonomy.webapp.command.BaseCommand)</function-signature>
+		<function-signature>java.lang.Boolean hasDidYouKnowMessage(org.bibsonomy.webapp.command.BaseCommand)</function-signature>
 	</function>
 	
 </taglib>

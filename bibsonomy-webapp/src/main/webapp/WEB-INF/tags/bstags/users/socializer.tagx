@@ -21,23 +21,13 @@
 	 	|
 	 	+-->
 
-
-	<!-- 
-	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
-	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="true" />
-	<jsp:directive.attribute name="isFriendOfUser" type="java.lang.Boolean" required="true" description="Has the requestedUser the loginUser in his friend list?"/>
-	<jsp:directive.attribute name="isOfFriendUser" type="java.lang.Boolean" required="true" description="Has the loginUser the requestedUser in his friend list?"/>
-	<jsp:directive.attribute name="isFollowerOfUser" type="java.lang.Boolean" required="true" description="Does the loginUser follow the requestedUser?"/>
-	<jsp:directive.attribute name="commonGroups" type="java.util.List" required="false"/>
-	-->
-
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.UserResourceViewCommand" required="true"/>
-
+	<c:set var="username"><user:username username="${command.requestedUser}" noLink="${true}"/></c:set>
 	<div class="socializer">
 		<div class="media">
-			<a class="pull-left img-thumbnail img-responsive" href="/user/${mtl:encodeURI(command.requestedUser)}" title="@${mtl:encodeURI(command.requestedUser)}">
-				<img alt="@${fn:escapeXml(requestedUser)}" src="/picture/user/${fn:escapeXml(command.requestedUser)}" class="user-avatar"/>
-				<span>@${fn:escapeXml(command.requestedUser)}</span>
+			<a class="pull-left img-thumbnail img-responsive" href="/user/${mtl:encodeURI(command.requestedUser)}" title="${mtl:encodeURI(username)}">
+				<img alt="${fn:escapeXml(username)}" src="/picture/user/${fn:escapeXml(command.requestedUser)}" class="user-avatar"/>
+				<span><c:out value="${username}" /></span>
 			</a>
 	
 			<div class="media-body" id="titletext">
@@ -47,7 +37,7 @@
 						<user:name user="${command.user}"/>
 					</c:when>
 					<c:otherwise>
-						<span>@<c:out value="${command.requestedUser}" /></span>
+						<span><c:out value="${username}" /></span>
 					</c:otherwise>
 				</c:choose>
 				</h4>
@@ -70,7 +60,5 @@
 			</div>
 		</div>
 		<p class="clearfix"><!--  --> <!--  --></p>
-
-		
 	</div>
 </jsp:root>

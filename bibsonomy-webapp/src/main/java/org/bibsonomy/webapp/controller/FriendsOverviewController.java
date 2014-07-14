@@ -37,6 +37,7 @@ public class FriendsOverviewController extends MultiResourceListController imple
 		if (!context.isUserLoggedIn()) {
 			throw new AccessDeniedException("please log in");
 		}
+		initializeDidYouKnowMessageCommand(command);
 		
 		final String loggedinUser = context.getLoginUser().getName();
 		command.setFriends(this.logic.getUserRelationship(loggedinUser, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag));

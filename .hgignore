@@ -3,6 +3,7 @@ bin
 work
 .classpath
 .project
+.settings
 .tomcatplugin
 .springBeans
 src/main/webapp/WEB-INF/lib
