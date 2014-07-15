@@ -1118,12 +1118,13 @@ public class DBLogic implements LogicInterface {
 			throw new ValidationException("No group name given.");
 		}
 		/*
-		 * only logged-in group owners and admins are allowed to perform update operations 
+		 * only logged-in group admins and admins are allowed to perform update operations 
 		 */
 		this.ensureLoggedIn();
-		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, groupName);
+		if (!this.permissionDBManager.userIsGroupAdmin(loginUser, groupName) || !this.permissionDBManager.isAdmin(loginUser)) {
+			throw new ValidationException("No rights.");
+		}
 
-		// TODO: check for grouprole
 		/*
 		 * perform operations
 		 */
@@ -1161,7 +1162,7 @@ public class DBLogic implements LogicInterface {
 					this.groupDBManager.deletePendingGroup(groupName, session);
 				}
 				break;
-			case ADD_INVITED: 
+			case ADD_INVITED:
 				for (final User user: group.getUsers()) {
 					this.groupDBManager.addUserToGroup(groupName, user.getName(), GroupRole.INVITED, session);
 				}
