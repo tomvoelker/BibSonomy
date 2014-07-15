@@ -158,7 +158,7 @@
 		<servlet-name>SettingsHandler</servlet-name>
 		<servlet-class>servlets.SettingsHandler</servlet-class>
 	</servlet>
-	
+
 	<!-- events -->
 	<servlet>
 		<servlet-name>events_statphys23</servlet-name>
@@ -180,32 +180,37 @@
 		in the DOCTYPE-statement + -->
 	&opensocial;
 
-	<!-- Servlet-Mappings  -->
+	<!-- Servlet-Mappings -->
 	<!-- spring main servlet -->
 	<servlet-mapping>
 		<servlet-name>bibsonomy2</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
-
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>*.js</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
-		<url-pattern>/resources</url-pattern>
+		<url-pattern>/resources/</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>*.css</url-pattern>
 	</servlet-mapping>
-	<servlet-mapping>
+
+	<!-- 
+		<servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>*.png</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>*.jpg</url-pattern>
+	</servlet-mapping> -->
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/documents/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
