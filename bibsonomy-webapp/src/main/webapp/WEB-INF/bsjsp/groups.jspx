@@ -56,9 +56,7 @@
 			</div>
 			<c:set var="lastChar" value=""/>
 			<div id="groups">
-				<!--  TODO: check if a description list can be used here.
-					Currently the group info explains the group avatar.
-					-->
+
 				<dl class="dl-horizontal dt-thumbnail-items group-list">
 				<c:forEach var="group" items="${command.list}">
 					<c:set var="firstGroupNameLetter" value="${fn:toLowerCase(fn:substring(group.name, 0, 1))}" />
@@ -74,19 +72,27 @@
 					<c:if test="${lastChar ne firstGroupNameLetter}">
 						<c:set var="lastChar" value="${firstGroupNameLetter}" />
 						<dt>
-							<h4><a href="#${anchor}" name="${firstGroupNameLetter}">${firstGroupNameLetter}</a></h4>
+							<c:choose>
+								<c:when test="${not fn:contains(letters, firstGroupNameLetter)}">
+									<h4><a href="#${anchor}" name="${anchor}">${firstGroupNameLetter}</a></h4>
+								</c:when>
+								<c:otherwise>
+										<h4><a href="#${anchor}" name="${firstGroupNameLetter}">${firstGroupNameLetter}</a></h4>
+								</c:otherwise>
+							</c:choose>
 						</dt>
 						<dd>
 							<p><small><a href="#letter-pagination"><span class="glyphicon glyphicon-arrow-up"><!-- keep me --></span><c:out value=" " /><fmt:message key="totop" /></a></small></p>
+							
 						</dd>
 					</c:if>
-						<dt><img class="img-thumbnail img-resposive user-avatar" src="/picture/user/${mtl:encodeURI(group.name)}"/></dt>
+						<c:set var="displayName" value="${group.name}" />
+						<c:if test="${not empty group.realname}">
+							<c:set var="displayName" value="${group.realname}" />
+						</c:if>
+						<dt><span class="sr-only"><c:out value="${group.name}" /></span><img class="img-thumbnail img-resposive user-avatar" src="/picture/user/${mtl:encodeURI(group.name)}"/></dt>
 						<dd>
 							<div class="row">
-								<c:set var="displayName" value="${group.name}" />
-								<c:if test="${not empty group.realname}">
-									<c:set var="displayName" value="${group.realname}" />
-								</c:if>
 								<div class="col-xs-9">
 									<a href="/group/${mtl:encodeURI(group.name)}">
 										<c:out value="${displayName}"/>
