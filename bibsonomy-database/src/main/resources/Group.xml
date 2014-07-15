@@ -166,4 +166,11 @@
 		WHERE `group` = #groupId# AND `user_name` = #name#
 	</update>
 	
+	<select id="countPerRole" resultClass="Integer" parameterClass="group">
+		SELECT COUNT(*) FROM groups WHERE groups.user_status = #groupRole.role# AND groups.group = #groupId#;
+	</select>
+	
+	<select id="getGroupRoleForUser" resultClass="GroupRole" parameterClass="group">
+		SELECT user_status FROM groups WHERE groups.user_name = #name# AND groups.group = #groupId#;
+	</select>
 </sqlMap>

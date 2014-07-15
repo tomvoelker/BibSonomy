@@ -205,8 +205,8 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			if (this.isUserInGroup(authUser, groupname, session)) break;
 			//$FALL-THROUGH$
 		case HIDDEN:
-			// only a group owner may always see the group members
-			if (!groupname.equalsIgnoreCase(authUser)) {
+			// only a group admin may always see the group members
+			if (!GroupRole.ADMINISTRATOR.equals(this.getGroupRoleForUser(authUser, group, session))) {
 				group.setUsers(Collections.<User>emptyList());
 			}
 			break;
@@ -223,6 +223,23 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 */
 	private Privlevel getPrivlevelForGroup(final int groupId, final DBSession session) {
 		return this.queryForObject("getPrivlevelForGroup", groupId, Privlevel.class, session);
+	}
+
+	/**
+	 * Returns the role for the given user.
+	 */
+	private GroupRole getGroupRoleForUser(final String userName, final Group group, final DBSession session) {
+		// XXX: the next line is semantically incorrect
+		group.setName(userName);
+		return this.queryForObject("getGroupRoleForUser", group, GroupRole.class, session);
+	}
+
+	/**
+	 * Returns true if there's only one admin for the group.
+	 */
+	private boolean hasOneAdmin(final Group g, final DBSession session) {
+		g.setGroupRole(GroupRole.ADMINISTRATOR);
+		return new Integer(1).equals(this.queryForObject("countPerRole", g, Integer.class, session));
 	}
 
 	/**
@@ -671,6 +688,17 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		if (!this.isUserInGroup(username, groupname, session)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') isn't a member of this group ('" + groupname + "')");
 		}
+		// check if we have only one group admin
+		if (this.hasOneAdmin(group, session)) {
+			// check the group role for the given username
+			GroupRole activeRole = this.getGroupRoleForUser(username, group, session);
+			// the user is the last admin, we can't remove him.
+			if (GroupRole.ADMINISTRATOR.equals(activeRole)) {
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') is the last group admin and can't be deleted.");		
+			}
+		}
+		
+		
 		// XXX: the next line is semantically incorrect
 		group.setName(username);
 
