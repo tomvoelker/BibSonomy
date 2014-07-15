@@ -44,44 +44,55 @@
 			<!--+
 				| show alphabet for direct links to groups
 				-->
-			
 			<c:set var="letters" value="abcdefghijklmnopqrstuvwxyz" />
-			<c:set var="alpha" value="${letters}" />
 			<div id="linkedAlphabet">
-			
 				<ul class="pagination pagination-sm" id="letter-pagination">
-				<c:forEach var="i" begin="0" end="${fn:length(alpha) - 1}" step="1">
-					<c:set var="letter" value="${fn:substring(alpha, i, i + 1)}" />
-					<c:set var="raute" value="#" />
-					<li><a href="${raute}${letter}"><c:out value="${letter}"/></a></li>
+					<li><a href="#numbers">#</a></li>
+				<c:forEach var="i" begin="0" end="${fn:length(letters) - 1}" step="1">
+					<c:set var="letter" value="${fn:substring(letters, i, i + 1)}" />
+					<li><a href="#${letter}"><c:out value="${fn:toUpperCase(letter)}"/></a></li>
 				</c:forEach>
 				</ul>
 			</div>
 			<c:set var="lastChar" value=""/>
 			<div id="groups">
+
 				<dl class="dl-horizontal dt-thumbnail-items group-list">
 				<c:forEach var="group" items="${command.list}">
 					<c:set var="firstGroupNameLetter" value="${fn:toLowerCase(fn:substring(group.name, 0, 1))}" />
-					<c:if test="${not fn:contains(letters, firstGroupNameLetter)}">
-						<c:set var="firstGroupNameLetter" value="#" />
-					</c:if>
+					<c:choose>
+						<c:when test="${not fn:contains(letters, firstGroupNameLetter)}">
+							<c:set var="firstGroupNameLetter" value="#" />
+							<c:set var="anchor" value="numbers" />
+						</c:when>
+						<c:otherwise>
+							<c:set var="anchor" value="${firstGroupNameLetter}" />
+						</c:otherwise>
+					</c:choose>
 					<c:if test="${lastChar ne firstGroupNameLetter}">
 						<c:set var="lastChar" value="${firstGroupNameLetter}" />
 						<dt>
-							<h4><a href="${raute}${firstGroupNameLetter}" name="${firstGroupNameLetter}">${firstGroupNameLetter}</a></h4>
+							<c:choose>
+								<c:when test="${not fn:contains(letters, firstGroupNameLetter)}">
+									<h4><a href="#${anchor}" name="${anchor}">${firstGroupNameLetter}</a></h4>
+								</c:when>
+								<c:otherwise>
+										<h4><a href="#${anchor}" name="${firstGroupNameLetter}">${firstGroupNameLetter}</a></h4>
+								</c:otherwise>
+							</c:choose>
 						</dt>
 						<dd>
-							<p><small><a href="#letter-pagination"><span class="glyphicon glyphicon-arrow-up"><!--  --></span>&amp;nbsp;<fmt:message key="totop" /></a></small></p>
+							<p><small><a href="#letter-pagination"><span class="glyphicon glyphicon-arrow-up"><!-- keep me --></span><c:out value=" " /><fmt:message key="totop" /></a></small></p>
 							
 						</dd>
 					</c:if>
-						<dt><img class="img-thumbnail img-resposive user-avatar" src="/picture/user/${mtl:encodeURI(group.name)}"/></dt>
+						<c:set var="displayName" value="${group.name}" />
+						<c:if test="${not empty group.realname}">
+							<c:set var="displayName" value="${group.realname}" />
+						</c:if>
+						<dt><span class="sr-only"><c:out value="${group.name}" /></span><img class="img-thumbnail img-resposive user-avatar" src="/picture/user/${mtl:encodeURI(group.name)}"/></dt>
 						<dd>
 							<div class="row">
-								<c:set var="displayName" value="${group.name}" />
-								<c:if test="${not empty group.realname}">
-									<c:set var="displayName" value="${group.realname}" />
-								</c:if>
 								<div class="col-xs-9">
 									<a href="/group/${mtl:encodeURI(group.name)}">
 										<c:out value="${displayName}"/>
@@ -94,7 +105,7 @@
 								<div class="col-xs-3">
 									<c:choose>
 										<c:when test="${mtl:contains(command.context.loginUser.groups, group)}">
-											<button class="btn btn-success btn-sm"><span class="glyphicon glyphicon-ok-sign"><!-- keep me --></span><c:out value=" "/> <span class="infotext"><fmt:message key="group.memberOf" /></span></button>
+											<button class="btn btn-success btn-sm"><span class="glyphicon glyphicon-ok-sign"><!-- keep me --></span><c:out value=" "/><span class="infotext"><fmt:message key="group.memberOf" /></span></button>
 											<!-- TODO: add link to leave group, if user is already member -->
 										</c:when>
 										<c:otherwise>
