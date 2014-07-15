@@ -82,7 +82,7 @@ public class UpdateGroupController extends SettingsPageController {
 					 * add a new user to the group
 					 */
 					final String username = command.getUsername();
-					if (present(username)) {
+					if (present(username) && !username.equals(groupName)) {
 						// the group to update
 						final Group groupToUpdate = this.logic.getGroupDetails(groupName);
 						try {
@@ -105,7 +105,7 @@ public class UpdateGroupController extends SettingsPageController {
 					 * TODO: not fully migrated yet, see {@link SettingsHandler}
 					 */
 					final String username = command.getUsername();
-					if (present(username)) {
+					if (present(username) && !username.equals(groupName)) {
 						// the group to update
 						final Group groupToUpdate = this.logic.getGroupDetails(groupName);
 						try {
