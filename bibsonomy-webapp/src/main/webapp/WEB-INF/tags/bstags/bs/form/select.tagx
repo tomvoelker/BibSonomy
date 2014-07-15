@@ -99,7 +99,7 @@
 -				<c:when test="${not empty itemLabels}">
 -					<form:select multiple="${multiple ? 'multiple' : 'false'}" path="${path}" cssClass="form-control ${helpPopover} ${ small ? classSmallField : ''}" onchange="${onchange}"> 
 -						<c:forEach items="${itemLabels}" var="optionLabel" varStatus="cnt">
--							<form:option value="${item[cnt.index]}"><c:out value="${optionLabel}" /></form:option>
+-							<form:option value="${items[cnt.index]}"><c:out value="${optionLabel}" /></form:option>
 -						</c:forEach>
 -					</form:select>
 -				</c:when>
