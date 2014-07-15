@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.Role;
@@ -394,14 +395,16 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * GEÄNDERT WERDEN
 	 * 
 	 * @param loginUser
-	 * @param group
-	 * @return loginUser equals group.getName
+	 * @param groupName
+	 * @return if the specified user is a group admin
 	 */
-	public boolean userIsGroupAdmin(final User loginUser, final Group group) {
-		/*
-		 * user name == group name
-		 */
-		return loginUser.getName().equals(group.getName());
+	public boolean userIsGroupAdmin(final User loginUser, final String groupName) {
+		for (Group g : loginUser.getGroups()) {
+			if (g.getName().equals(groupName))
+				if (GroupRole.ADMINISTRATOR.equals(g.getGroupRole()))
+					return true;
+		}
+		return false;
 	}
 
 	/**
@@ -434,7 +437,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 			if (UserUtils.isDBLPUser(targetUser)) {
 				throw new ValidationException("error.relationship_with_dblp");
 			}
-			if(loginUser.isSpammer()) {
+			if (loginUser.isSpammer()) {
 				throw new ValidationException("error.relationship_from_spammer");
 			}
 		}
