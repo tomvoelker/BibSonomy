@@ -95,7 +95,19 @@
 		</label>
 
 		<div class="col-sm-${inputColSpan}">
-			<form:select multiple="${multiple ? 'multiple' : 'false'}" path="${path}" cssClass="form-control ${helpPopover} ${ small ? classSmallField : ''}" onchange="${onchange}" items="${items}" />
+			<c:choose>
+-				<c:when test="${not empty itemLabels}">
+-					<form:select multiple="${multiple ? 'multiple' : 'false'}" path="${path}" cssClass="form-control ${helpPopover} ${ small ? classSmallField : ''}" onchange="${onchange}"> 
+-						<c:forEach items="${itemLabels}" var="optionLabel" varStatus="cnt">
+-							<form:option value="${item[cnt.index]}"><c:out value="${optionLabel}" /></form:option>
+-						</c:forEach>
+-					</form:select>
+-				</c:when>
+-				<c:otherwise>
+-					<form:select multiple="${multiple ? 'multiple' : 'false'}" path="${path}" cssClass="form-control ${helpPopover} ${ small ? classSmallField : ''}" onchange="${onchange}" items="${items}" /> 	
+-				</c:otherwise>
+-			</c:choose>
+			
 			<c:if test="${empty noHelp or not noHelp}">
 				<div class="help help-header hide"><c:out value="${labelText}" /></div>
 				<div class="help help-content hide">${helpText}</div>
