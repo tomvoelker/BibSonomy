@@ -23,17 +23,15 @@
 		<div class="extend hiddenSystemTag pull-left">
 			<a id="system-tags-link-${post.resource.intraHash}" href="#" class="system-tags-link"><span class="glyphicon glyphicon-asterisk"><!-- KEEP ME --></span></a>
 			<div class="popover system-tags hide" id="system-tags-${post.resource.intraHash}">
-				<div class="help popover-title">
-					System Tags
-					<a class="close popover-close" style="position: relative; top: 0; right: 6px;">&amp;times;</a>
-				</div>
+				<div class="help popover-title"><!--  --></div>
 				<div class="help popover-content" href="#">
-					<div style="font-size: 80% !important;">
-						<p>
+					<div>
+						<ul class="tags list-inline">
+
 							<c:forEach var="systag" items="${post.hiddenSystemTags}">
-								<a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(systag.name)}"><c:out value="${systag.name}"/></a><c:out value=" "/>
+								<li><span class="label label-info"><a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(systag.name)}"><c:out value="${systag.name}"/></a></span></li>
 							</c:forEach>
-						</p>
+						</ul>
 					</div>
 				</div>
 			</div>
@@ -50,7 +48,7 @@
 	<div class="extend">
 		<ul class="tags list-inline">
 			<c:forEach var="tag" items="${post.visibleTags}">
-				<li><a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}"><c:out value="${tag.name}"/></a></li>
+				<li><span class="label label-info"><a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}"><c:out value="${tag.name}"/></a></span></li>
 			</c:forEach>
 		</ul>
 <!-- 			<div>

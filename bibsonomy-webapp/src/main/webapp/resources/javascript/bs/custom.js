@@ -40,7 +40,8 @@ $(function() {
 		
 	});
 	
-	$('.system-tags-link').mouseenter(function(event){
+	$('.system-tags-link').click(function(event){
+		event.preventDefault();
 		$(this).popover('show');
 	});
 	
