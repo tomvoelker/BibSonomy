@@ -29,8 +29,13 @@
 			$(function() {
 				//hide all entrytypes
 				$("#post\\.resource\\.entrytype").change(function(e) {
-					$(this).siblings(".help-header").html($(this).val());
-					$(this).siblings(".help-content").html(getString("post.resource.bibtex."+$(this).val()+".help"));
+					var messageKey = "post.resource.entrytype."+$(this).val();
+				
+					if(getString(messageKey)=="???"+messageKey+"???")
+						$(this).siblings(".help-header").html($(this).val());
+					else
+						$(this).siblings(".help-header").html(getString(messageKey));
+					$(this).siblings(".help-content").html(getString(messageKey+".description"));
 				});
 				$('.entrytype-help').hide();
 				//show first
@@ -56,7 +61,6 @@
 				tabindex="2" 
 				size="1" 
 				items="${mtl:getBibTeXEntryTypes()}"
-				helpText=""
 				/>
 		
 			<bsform:textarea labelColSpan="3" id="post.resource.title" path="post.resource.title" required="${true}" />
