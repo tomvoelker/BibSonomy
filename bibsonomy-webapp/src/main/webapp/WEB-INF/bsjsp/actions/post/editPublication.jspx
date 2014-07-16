@@ -34,14 +34,16 @@
 				<c:if test="${not empty command.scrapingContext.selectedText}">
 					<span class="fsLabel"><fmt:message key="post.resource.fields.scraper.selectedText" /></span>
 					<buttons:help message="post.resource.fields.scraper.selectedText.help" cssClass="widehelp"/>
-					<textarea class="fsInput fsScraperSelectedText" readonly="readonly"><c:out value="${command.scrapingContext.selectedText}" /></textarea>
+					<textarea class="form-control fsInput fsScraperSelectedText" readonly="readonly"><c:out value="${command.scrapingContext.selectedText}" /></textarea>
 				</c:if>
 			</c:if>
         	<editpub:required post="${post}" autocompletion="$(false)"/>
 		</jsp:attribute>
 				
         <jsp:attribute name="detailedInformation">
+        
 			<editpub:files post="${post}" />
+		
 			<editpub:details post="${post}" />
 			
 			<c:if test="${not empty command.scrapingContext}">

@@ -18,15 +18,12 @@
      -->
 
 	<jsp:directive.attribute name="groups" type="java.util.List" required="true"/>
-	
-	<bsform:fieldset legendKey="post.resource.tags.describe">
-		<jsp:attribute name="content">
-		
+
 			<div class="form-group">
-				<label class="col-sm-2 control-label" for="${fn:escapeXml(id)}">
+				<label class="col-sm-3 control-label" for="${fn:escapeXml(id)}">
 					<fmt:message key="post.resource.viewablefor" />
 				</label>
-				<div class="col-sm-10">
+				<div class="col-sm-9">
 					<div class="row">
 						<div class="col-sm-4">
 							<form:radiobutton path="abstractGrouping" value="public" tabindex="2" />&amp;nbsp;<span class="expl"><fmt:message key="post.resource.public"/></span><br />
@@ -40,7 +37,7 @@
 		            		</form:select>
 		       			</div>
 		   			</div>
-		   			<div class="dissError"><form:errors path="post.groups" /><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+		   			<p class="help-block"><form:errors path="post.groups" /><!-- This comment is needed, otherwise this will result in an self-closing element --></p>
 				</div>
 			</div>
 			
@@ -72,6 +69,5 @@
 				});
 			]]>
 			</script>
-		</jsp:attribute>
-	</bsform:fieldset>
+
 </jsp:root>

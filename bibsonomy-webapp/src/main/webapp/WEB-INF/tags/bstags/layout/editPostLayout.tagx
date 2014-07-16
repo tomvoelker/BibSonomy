@@ -13,7 +13,7 @@
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/bstags/post"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
     xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
-  >
+   	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
 
     <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.actions.EditPostCommand" required="true"/>
     <jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
@@ -47,14 +47,18 @@
 	    	<post:tagfield containsComma="${command.containsComma}" labelColSpan="3" inputColSpan="9" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
             <!--
                | groups 
-      			       -->
-	        <post:groupBox groups="${command.context.loginUser.groups}"/>
-			<c:if test="${not empty command.context.loginUser.groups}">
-				<post:relevantForBox groups="${command.context.loginUser.groups}"/>
-			</c:if>	
-			<div class="clearfloat p">
-				<post:tagSets groups="${command.context.loginUser.groups}"/>
-			</div>
+    			-->
+ 			<bsform:fieldset legendKey="post.resource.groups.describe">
+				<jsp:attribute name="content">
+	        		<post:groupBox groups="${command.context.loginUser.groups}"/>
+					<c:if test="${not empty command.context.loginUser.groups}">
+						<post:relevantForBox groups="${command.context.loginUser.groups}"/>
+					</c:if>
+				</jsp:attribute>
+			</bsform:fieldset>	
+			
+			<post:tagSets groups="${command.context.loginUser.groups}"/>
+			
 		</jsp:attribute>
 	</layout:editGoldStandardPostLayout>
 </jsp:root>

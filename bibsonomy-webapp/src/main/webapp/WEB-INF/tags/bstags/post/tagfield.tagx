@@ -14,6 +14,7 @@
 
 	<jsp:directive.attribute name="labelColSpan" type="java.lang.Integer" required="false" description="Column span width of the label. labelColSpan and inputColSpan must add up to 12" />
 	<jsp:directive.attribute name="inputColSpan" type="java.lang.Integer" required="false" description="Column span width of the input field. labelColSpan and inputColSpan must add up to 12" />
+	
 	<c:choose>
 		<c:when test="${ (empty labelColSpan and empty inputColSpan) or (inputColSpan gt 10) or (labelColSpan gt 6) }">
 			<c:set var="labelColSpan" value="3" />
@@ -26,8 +27,11 @@
 			<c:set var="inputColSpan" value="${ 12 - labelColSpan }" />
 		</c:otherwise>
 	</c:choose>
+	
 	<bsform:fieldset legendKey="post.resource.tags.describe">
+	
 		<jsp:attribute name="content">
+		
 			<div class="form-group">
 				<label class="col-sm-${labelColSpan} control-label">
 					<fmt:message key="post.resource.tags"/>
@@ -39,7 +43,7 @@
 		        	<!-- name="tags"  -->
 		        	<!-- allow user to confirm tags containing comma or semicolon -->
 	        	</div>
-	        	<div class="col-sm-offset-2 col-sm-4">
+	        	<div class="col-sm-offset-${labelColSpan} col-sm-${inputColSpan}">
 					<p class="help-block">
 						<fmt:message key="post.resource.spaceseparated" />
 					</p>
@@ -65,10 +69,6 @@
 	            		<fmt:message var="reloadTags" key="post.resource.reloadRecommendation"/>
 	            		<img id="fsReloadButton" src="${resdir}/image/button_reload-inactive.png" alt="${reloadTags}" title="${reloadTags}"/>
 	          		</a>
-	            				
-            		<div class="help-content hide">
-            			<!--  -->
-					</div>
 				</div>
 			</div>
             

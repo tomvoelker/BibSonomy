@@ -67,7 +67,7 @@
 		
 			<bsform:textarea labelColSpan="3" id="post.resource.author" path="post.resource.author" required="${true}" />
 			<div class="form-group">
-	    		<div class="col-sm-offset-3 col-sm-10">
+	    		<div class="col-sm-offset-3 col-sm-9">
 					<div class="checkbox clearfix">
 						<label>
 			          		<input type="checkbox" class="help-popover" id="myownChkBox" tabindex="2" /> <fmt:message key="post.resource.myown"/>
@@ -78,8 +78,8 @@
 				</div>
 			</div>
 
-			<bsform:textarea labelColSpan="3" id="post.resource.editor" path="post.resource.editor" required="${true}"/>
-			<bsform:input labelColSpan="3" id="post.resource.year" small="true" path="post.resource.year" required="${true}"/>
+			<bsform:textarea labelColSpan="3" inputColSpan="9" id="post.resource.editor" path="post.resource.editor" required="${true}"/>
+			<bsform:input labelColSpan="3" inputColSpan="9" id="post.resource.year" small="true" path="post.resource.year" required="${true}"/>
 
 		<c:if test="${autocompletion}">
 			<script type="text/javascript">
