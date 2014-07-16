@@ -10,7 +10,7 @@
 	xmlns:form="http://www.springframework.org/tags/form">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
-	
+	<a name="detailedInformation"><!--  --></a>
 	<bsform:fieldset legendKey="post.resource.fields.detailed">
 		<jsp:attribute name="legendExt">
 	      <span class="small"><small>(<a id="collapse" href="javascript:showAll()"><fmt:message key="post.resource.fields.detailed.show.all"/></a>)</small></span>

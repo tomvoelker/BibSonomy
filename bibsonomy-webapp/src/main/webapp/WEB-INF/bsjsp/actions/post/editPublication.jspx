@@ -30,6 +30,7 @@
 	<layout:editPostLayout command="${command}" requPath="${requPath}" resourceType="Publication" activeTab="post" minimizedContentWidth="${true}">
 
 		<jsp:attribute name="generalInformation">
+			
 			<c:if test="${not empty command.scrapingContext}">
 				<c:if test="${not empty command.scrapingContext.selectedText}">
 					<span class="fsLabel"><fmt:message key="post.resource.fields.scraper.selectedText" /></span>

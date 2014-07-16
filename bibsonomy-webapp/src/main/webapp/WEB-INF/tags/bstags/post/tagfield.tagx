@@ -28,6 +28,7 @@
 		</c:otherwise>
 	</c:choose>
 	
+	<a name="tags"><!--  --></a>
 	<bsform:fieldset legendKey="post.resource.tags.describe">
 	
 		<jsp:attribute name="content">

@@ -11,19 +11,20 @@
 
 <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	
+	<a name="uploadedFiles"><!--  --></a>
 	<bsform:fieldset legendKey="post.bibtex.files">
 		
 		<jsp:attribute name="content">
 			<fmt:message var="delete" key="post.bibtex.delete"/>
 			<script type="text/javascript" src="${resdir}/javascript/jquery.documentuploader.js"><!-- keep me --></script>
-
+			
 			<!--+ 
 			 	|
 			 	| the documents of the post
 				|
 				+-->
 			<c:if test="${not empty command.post.resource.documents}">
-			
+				
 				<div class="form-group">
 				
 					<label class="col-sm-3 control-label"><fmt:message key="post.bibtex.uploadedFiles"/></label> 

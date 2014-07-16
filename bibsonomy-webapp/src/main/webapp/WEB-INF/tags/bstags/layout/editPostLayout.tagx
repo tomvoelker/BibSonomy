@@ -41,13 +41,16 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="tagsAndGroups">
+		
 			<!--
                | tags 
                       -->
 	    	<post:tagfield containsComma="${command.containsComma}" labelColSpan="3" inputColSpan="9" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
+	    	
             <!--
                | groups 
     			-->
+    		<a name="groups"><!--  --></a>
  			<bsform:fieldset legendKey="post.resource.groups.describe">
 				<jsp:attribute name="content">
 	        		<post:groupBox groups="${command.context.loginUser.groups}"/>
