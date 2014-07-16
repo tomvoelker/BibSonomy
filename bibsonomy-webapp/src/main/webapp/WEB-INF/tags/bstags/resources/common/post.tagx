@@ -49,7 +49,9 @@
 			</c:choose>
 		</div>
 		<div class="media-body">
-			<div class="pdesc ellipsis"><jsp:invoke fragment="desc"/></div>
+			<div class="pdesc ellipsis">
+				<div class="ellipsis-content"><jsp:invoke fragment="desc"/></div>
+			</div>
 			<div class="pmeta"><rc:metaDate post="${post}"/>&amp;nbsp;<rc:metaUsername post="${post}" />&amp;nbsp;<rc:metaGroups post="${post}" /></div>
 			<div class="ptags"><rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/></div>
 			<div class="pull-left">

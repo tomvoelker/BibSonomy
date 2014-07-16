@@ -3,37 +3,7 @@
 @import "bootstrap-tagsinput.less";
 @import "bootstrap-datepicker.less";
 @import "socicon.less";
-
-.ellipsis {
-	font-size: 12px;
-	height: 26px;
-	line-height: 13.199999809265137px;
-	margin-bottom: 3px;
-	margin-top: 11px;
-	text-align: left;
-}
-
-.ellipsis:after {
-	content: "\02026";  
-
-	box-sizing: content-box;
-	-webkit-box-sizing: content-box;
-	-moz-box-sizing: content-box;
-
-	float: right; 
-	position: relative;
-	left: -7px;
-	top: -38px;
-	width: 3.5em; 
-	margin-left: -3.5em;
-	text-align: right;
-	background: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), to(white), color-stop(50%, white));
-	background: -moz-linear-gradient(to right, rgba(255, 255, 255, 0), white 50%, white);			
-	background: -o-linear-gradient(to right, rgba(255, 255, 255, 0), white 50%, white);
-	background: -ms-linear-gradient(to right, rgba(255, 255, 255, 0), white 50%, white);
-	background: linear-gradient(to right, rgba(255, 255, 255, 0), white 50%, white); 
-}
-
+@import "multiline-ellipsis.less";
 
 body {
 	background-color: @background-color; 
@@ -395,22 +365,6 @@ li.post div.in-my-collection {
 	overflow: hidden;
 }
 
-
-
-.pdesc {
-	height: 1.3em !important;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	margin-top: 0px;
-	margin-bottom: 3px;
-}
-
-.pdesc p.description {
-	max-height: 32px;
-	overflow: hidden;
-	text-overflow: ellipsis
-}
-
 p.url {
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -418,8 +372,11 @@ p.url {
 }
 
 .pdesc {
-	height: 2.2em !important;
-	line-height: 1.1;
+	margin-bottom: 0.35em;
+}
+
+.ptags {
+	height: 17px;
 }
 
 .pmeta {
@@ -525,7 +482,7 @@ p.url {
 .stars-on-0\.75{background-position:0 -36px;position:absolute;}
 
 ul.tags {
-	height: 1.3em !important;
+	height: 17px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
@@ -1015,11 +972,14 @@ span.label.label-danger > a {
 
 .numpostsbadge {
 	position: relative;
-	top: -10px;
+	top: -5px;
+
 }
 
 .numpostsbadge .badge {
 	background-color: @light-element-color;
+	font-size: 60%;
+	line-height: 0.9;
 }
 
 .numpostsbadge:hover .badge {
@@ -1027,7 +987,7 @@ span.label.label-danger > a {
 }
 
 .post .media-heading {
-	margin-bottom: 10px;
+	margin-bottom: 8px;
 }
 
 .thumbnail-container .glyphicon {
