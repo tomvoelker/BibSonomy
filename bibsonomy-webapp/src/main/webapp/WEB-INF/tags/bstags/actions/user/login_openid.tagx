@@ -24,9 +24,10 @@
 				$(".provider").each(function() {
 					$(this).click(function(e) {
 						e.preventDefault();
-						// $(this).attr('href')
-						$("#openID").val($(this).attr('href'));
-						$("#form_openid").submit();
+						var oid = $(this).attr('href');
+						var action = $("#form_openid").attr('action');
+						$('<form action="'+ action +'"><input type="hidden" name="openID" value="'+oid+'" /></form>').appendTo('body').submit();
+						
 					});
 				});
 				$(".otherProvider").click(function() {
@@ -35,7 +36,7 @@
 			});
 			]]>
 		</script>	
-		<div class="openIDmanual" style="display: none">
+		<div class="openIDmanual" style="display: none;">
 			<p class="clearfix"><!--  --></p>
 			<fmt:message key="login.method.openid" var="openID" />
 			<bsform:input placeholder="openID" path="openID" noHelp="${true}" labelText="${openID}" required="true" />
