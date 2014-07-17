@@ -741,7 +741,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		// make sure that the group exists
 		final Group group = this.getGroupByName(groupname, session);
 		if (group == null) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't remove join request from nonexistent group");
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't remove join request/invite from nonexistent group");
 			throw new RuntimeException();
 		}
 		if (!this.isUserInGroup(username, groupname, session)) {
