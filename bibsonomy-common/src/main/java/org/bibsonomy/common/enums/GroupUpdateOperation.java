@@ -58,6 +58,9 @@ public enum GroupUpdateOperation {
 	/** Add an invited user */
 	ADD_INVITED,
 	
+	/** Remove an invited user */
+	REMOVE_INVITED,
+	
 	/** Request a new group. */
 	REQUEST,
 	
