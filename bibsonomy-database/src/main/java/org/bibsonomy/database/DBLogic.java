@@ -1149,6 +1149,18 @@ public class DBLogic implements LogicInterface {
 			case UPDATE_SETTINGS:
 				this.groupDBManager.updateGroupSettings(group, session);
 				break;
+			case UPDATE_GROUPROLE:
+				if (isGroupAdmin) {
+					for (final User user: group.getUsers()) {
+						// only allow the roles user, moderator and administrator.
+						if (GroupRole.ADMINISTRATOR.equals(group.getGroupRole()) || 
+							GroupRole.MODERATOR.equals(group.getGroupRole()) || 
+							GroupRole.USER.equals(group.getGroupRole())) {
+							this.groupDBManager.updateGroupRole(groupName, user.getName(), group.getGroupRole(), session);
+						}
+					}
+				}
+				break;
 			case ADD_NEW_USER:
 				if (isGroupAdmin || isPageAdmin) {
 					for (final User user: group.getUsers()) {
