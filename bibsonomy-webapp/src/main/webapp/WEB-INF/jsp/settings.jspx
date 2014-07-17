@@ -88,29 +88,31 @@
 					<span class="sidebar_h "><a href="/groups"><fmt:message key="groups"/></a></span>
 					<ul class="sidebar_collapse_content">
 					<c:forEach var="group" items="${command.context.loginUser.groups}">
-						<li>
-						<a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}'/>&amp;nbsp;</a> 
-							<c:if test="${group.sharedDocuments}">
-								<c:choose>
-									<c:when test="${! group.userSharedDocuments}">
-										<fmt:message var="shareDocumentsTitle" key="groups.actions.shareDocuments.title"></fmt:message>
-										<a class="action" 
-											href="/ajax/handleGroupShare?requestedGroup=${fn:escapeXml(group.name)}&amp;action=shareDocuments&amp;ckey=${ckey}&amp;forward=settings"
-											title="${shareDocumentsTitle}">
-											<fmt:message key="groups.actions.shareDocuments"/>
-										</a>
-									</c:when>
-									<c:otherwise>
-										<fmt:message var="unshareDocumentsTitle" key="groups.actions.unshareDocuments.title"></fmt:message>
+						<c:if test="${group.groupRole eq 'USER' || group.groupRole eq 'MODERATOR' || group.groupRole eq 'ADMINISTRATOR' }">
+							<li>
+							<a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}'/>&amp;nbsp;</a> 
+								<c:if test="${group.sharedDocuments}">
+									<c:choose>
+										<c:when test="${! group.userSharedDocuments}">
+											<fmt:message var="shareDocumentsTitle" key="groups.actions.shareDocuments.title"></fmt:message>
 											<a class="action" 
-												href="/ajax/handleGroupShare?requestedGroup=${fn:escapeXml(group.name)}&amp;action=unshareDocuments&amp;ckey=${ckey}&amp;forward=settings"
-												title="${unshareDocumentsTitle}">
-												<fmt:message key="groups.actions.unshareDocuments"/>
+												href="/ajax/handleGroupShare?requestedGroup=${fn:escapeXml(group.name)}&amp;action=shareDocuments&amp;ckey=${ckey}&amp;forward=settings"
+												title="${shareDocumentsTitle}">
+												<fmt:message key="groups.actions.shareDocuments"/>
 											</a>
-									</c:otherwise>
-								</c:choose>
-							</c:if>
-						</li>
+										</c:when>
+										<c:otherwise>
+											<fmt:message var="unshareDocumentsTitle" key="groups.actions.unshareDocuments.title"></fmt:message>
+												<a class="action" 
+													href="/ajax/handleGroupShare?requestedGroup=${fn:escapeXml(group.name)}&amp;action=unshareDocuments&amp;ckey=${ckey}&amp;forward=settings"
+													title="${unshareDocumentsTitle}">
+													<fmt:message key="groups.actions.unshareDocuments"/>
+												</a>
+										</c:otherwise>
+									</c:choose>
+								</c:if>
+							</li>
+						</c:if>
 					</c:forEach>
 					</ul>
 				</li>
