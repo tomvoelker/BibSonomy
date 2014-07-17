@@ -1121,7 +1121,10 @@ public class DBLogic implements LogicInterface {
 		 * only logged-in group admins and admins are allowed to perform update operations 
 		 */
 		this.ensureLoggedIn();
-		if (!this.permissionDBManager.userIsGroupAdmin(loginUser, groupName) || !this.permissionDBManager.isAdmin(loginUser)) {
+		boolean isPageAdmin = this.permissionDBManager.isAdmin(loginUser);
+		boolean isGroupAdmin = this.permissionDBManager.userHasGroupRole(loginUser, groupName, GroupRole.ADMINISTRATOR);
+		boolean isGroupModerator = this.permissionDBManager.userHasGroupRole(loginUser, groupName, GroupRole.MODERATOR);
+		if (!isPageAdmin && !isGroupAdmin && !isGroupModerator) {
 			throw new ValidationException("No rights.");
 		}
 
@@ -1137,13 +1140,17 @@ public class DBLogic implements LogicInterface {
 				this.groupDBManager.updateGroupSettings(group, session);
 				break;
 			case ADD_NEW_USER:
-				for (final User user: group.getUsers()) {
-					this.groupDBManager.addUserToGroup(groupName, user.getName(), GroupRole.USER, session);
+				if (isGroupAdmin || isPageAdmin) {
+					for (final User user: group.getUsers()) {
+						this.groupDBManager.addUserToGroup(groupName, user.getName(), GroupRole.USER, session);
+					}
 				}
 				break;
 			case REMOVE_USER:
-				for (final User user: group.getUsers()) {
-					this.groupDBManager.removeUserFromGroup(groupName, user.getName(), session);
+				if (isGroupAdmin || isPageAdmin) {
+					for (final User user: group.getUsers()) {
+						this.groupDBManager.removeUserFromGroup(groupName, user.getName(), session);
+					}
 				}
 				break;
 			case UPDATE_USER_SHARED_DOCUMENTS:
@@ -1153,12 +1160,12 @@ public class DBLogic implements LogicInterface {
 				this.groupDBManager.updateGroupPublicationReportingSettings(group, session);
 				break;
 			case ACTIVATE:
-				if (this.permissionDBManager.isAdmin(loginUser)) {
+				if (isPageAdmin) {
 					this.groupDBManager.activateGroup(groupName, session);
 				}
 				break;
 			case DELETE:
-				if (this.permissionDBManager.isAdmin(loginUser)) {
+				if (isPageAdmin) {
 					this.groupDBManager.deletePendingGroup(groupName, session);
 				}
 				break;
@@ -1177,6 +1184,7 @@ public class DBLogic implements LogicInterface {
 					this.groupDBManager.updateGroupRole(groupName, user.getName(), GroupRole.USER, session);
 				}
 				break;
+			case REMOVE_INVITED:
 			case DECLINE_JOIN_REQUEST:
 				for (final User user: group.getUsers()) {
 					this.groupDBManager.removeRequestOrInviteFromGroup(groupName, user.getName(), session);
