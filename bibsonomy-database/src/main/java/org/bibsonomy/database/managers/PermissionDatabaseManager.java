@@ -391,17 +391,16 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * FIXME: WENN DIE RICHTIGEN GRUPPENADMINS EXISTIEREN MUSS DIESE FUNKTION
-	 * GEÄNDERT WERDEN
+	 * Checks if a user has the specified role for the given group.
 	 * 
 	 * @param loginUser
 	 * @param groupName
-	 * @return if the specified user is a group admin
+	 * @return if role equals the users role
 	 */
-	public boolean userIsGroupAdmin(final User loginUser, final String groupName) {
+	public boolean userHasGroupRole(final User loginUser, final String groupName, GroupRole role) {
 		for (Group g : loginUser.getGroups()) {
 			if (g.getName().equals(groupName))
-				if (GroupRole.ADMINISTRATOR.equals(g.getGroupRole()))
+				if (role.equals(g.getGroupRole()))
 					return true;
 		}
 		return false;
