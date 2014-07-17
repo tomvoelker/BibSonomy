@@ -40,13 +40,36 @@
 		</form:form>
 	</fieldset>
 	<br />
+	<c:set var="showPendingInvites" value="false" />
+	<c:forEach items="${command.user.groups}" var="group" varStatus="status">
+		<c:if test="${group.groupRole eq 'INVITED' }">
+			<c:set var="showPendingInvites" value="true" />
+		</c:if>
+	</c:forEach>
+	<c:if test="${showPendingInvites}">
+		<fmt:message var="revuser" key="settings.group.remInvite.button"/>
+		<fmt:message var="revuserTitle" key="settings.group.remInvite.button.title"/>
+		<h2><fmt:message key="settings.group.pendingInvites"/></h2>
+		<fieldset class="fsOuter">
+			<c:forEach items="${command.user.groups}" var="group" varStatus="status">
+				<c:if test="${group.groupRole eq 'INVITED' }">
+					<div style="float: left; width: 130px; padding-bottom: 10px;">
+						<a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}'/></a><br />
+						<span class="smalltext">(<a href="/updateGroup?operation=remove_invited&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}" title="${revuserTitle}">${revuser}</a>)</span>
+					</div>
+				</c:if>
+			</c:forEach>
+		</fieldset>
+		<br />
+	</c:if>
 	<h2><fmt:message key="settings.groups"/></h2>
 	<fieldset class="fsOuter">
 		<c:forEach items="${command.user.groups}" var="group" varStatus="status">
+			<c:if test="${group.groupRole eq 'USER' || group.groupRole eq 'MODERATOR' || group.groupRole eq 'ADMINISTRATOR' }">
 				<bform:fieldset maximized="${true}" legendString="${group.name}" legendKey="">
 					<jsp:attribute name="content">
 						<div id="groups">
-							<c:if test="${group.groupRole == 'ADMINISTRATOR' || group.groupRole == 'MODERATOR'}">
+							<c:if test="${group.groupRole eq 'ADMINISTRATOR' || group.groupRole eq 'MODERATOR'}">
 								<h2><fmt:message key="settings.group.inviteUser"/></h2>
 								<form:form name="groupusers" method="post" action="/updateGroup?ckey=${ckey}">
 									<div id="fsform">
@@ -70,7 +93,7 @@
 								</form:form>
 								<br />
 							</c:if>
-							<c:if test="${group.groupRole == 'ADMINISTRATOR'}">
+							<c:if test="${group.groupRole eq 'ADMINISTRATOR'}">
 								<h2><fmt:message key="settings.group.addUser"/></h2>
 								<form:form name="groupusers" method="post" action="/updateGroup?ckey=${ckey}">
 									<div id="fsform">
@@ -94,7 +117,7 @@
 								</form:form>
 								<br />
 							</c:if>
-							<c:if test="${group.groupRole == 'ADMINISTRATOR' || group.groupRole == 'MODERATOR'}">
+							<c:if test="${group.groupRole eq 'ADMINISTRATOR' || group.groupRole eq 'MODERATOR'}">
 								<h2><fmt:message key="settings.group.pendingInvites"/></h2>
 								<div id="fsform">
 									<fmt:message var="revuser" key="settings.group.revUser.button"/>
@@ -145,7 +168,9 @@
 										<div style="float: left; width: 130px; padding-bottom: 10px;">
 											<a href="/user/${mtl:encodeURI(member.name)}"><img src="/picture/user/${mtl:encodeURI(user.name)}" /><c:out value="${member.name}"/></a><br />
 											<i><c:out value="${member.groupRole}" /></i><br />
-											<span class="smalltext">(<a href="/updateGroup?operation=remove_user&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>)</span>
+											<c:if test="${group.groupRole eq 'MODERATOR' || group.groupRole eq 'ADMINISTRATOR'}">
+												<span class="smalltext">(<a href="/updateGroup?operation=remove_user&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>)</span>
+											</c:if>
 										</div>
 									</c:if>
 								</c:forEach>
@@ -238,6 +263,7 @@
 						</c:if>
 					</jsp:attribute>
 				</bform:fieldset>
+			</c:if>
 		</c:forEach>
 	</fieldset>
 	<c:choose>
