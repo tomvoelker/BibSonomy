@@ -10,14 +10,12 @@ import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.controller.SettingsPageController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
-import org.springframework.web.servlet.ModelAndView;
 
 /**
  *
@@ -199,6 +197,23 @@ public class UpdateGroupController extends SettingsPageController {
 									"The request of User {0} couldn't be removed.");
 						}
 					}
+					break;
+				}
+				case UPDATE_GROUPROLE: {
+					final String username = command.getUsername();
+					if (!present(command.getGroup()) || !present(command.getGroup().getGroupRole())) {
+						this.errors.reject("settings.group.error.changeGroupRoleFailed", username);						
+					}
+					if (!this.errors.hasErrors()) {
+						final Group groupToUpdate = this.logic.getGroupDetails(groupName);
+						groupToUpdate.setGroupRole(command.getGroup().getGroupRole());
+						try {
+							groupToUpdate.setUsers(Collections.singletonList(new User(username)));
+							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_GROUPROLE);
+						} catch (final Exception ex) {
+							log.error("error while changing the the role of user '" + username + "' from group '" + groupName + "'", ex);
+						}
+					}					
 					break;
 				}
 				case REMOVE_INVITED: {
