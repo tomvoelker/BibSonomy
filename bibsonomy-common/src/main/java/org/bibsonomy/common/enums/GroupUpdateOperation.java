@@ -32,6 +32,9 @@ public enum GroupUpdateOperation {
 	/** Update the settings of a group. */
 	UPDATE_SETTINGS,
 	
+	/** Update the grouprole of a user */
+	UPDATE_GROUPROLE,
+	
 	/** Adds new user to a group. */
 	ADD_NEW_USER,
 	
