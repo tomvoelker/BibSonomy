@@ -1124,6 +1124,16 @@ public class DBLogic implements LogicInterface {
 		boolean isPageAdmin = this.permissionDBManager.isAdmin(loginUser);
 		boolean isGroupAdmin = this.permissionDBManager.userHasGroupRole(loginUser, groupName, GroupRole.ADMINISTRATOR);
 		boolean isGroupModerator = this.permissionDBManager.userHasGroupRole(loginUser, groupName, GroupRole.MODERATOR);
+		// we want to allow a user to remove his own invite without being a pageadmin/admin/mod.
+		if (present(group.getUsers())) {
+			if (loginUser.getName().equals(group.getUsers().get(0).getName())) {
+				if (GroupUpdateOperation.REMOVE_INVITED.equals(operation)) {
+					// in this case we set the moderator state to true
+					isGroupModerator = true;
+				}
+			}
+		}
+		
 		if (!isPageAdmin && !isGroupAdmin && !isGroupModerator) {
 			throw new ValidationException("No rights.");
 		}
