@@ -56,7 +56,7 @@ public class UpdateGroupController extends SettingsPageController {
 
 		if (present(command.getOperation())) {
 			switch (command.getOperation()) {
-				case REQUEST:
+				case REQUEST: {
 					// get the request
 					final Group requestedGroup = command.getGroup();
 					if (present(requestedGroup)) {
@@ -77,6 +77,26 @@ public class UpdateGroupController extends SettingsPageController {
 					}
 					// do set new settings here
 					break;
+				}
+				case ADD_INVITED: {
+					// sent an invite
+					final String username = command.getUsername();
+					if (present(username) && !username.equals(groupName)) {
+						// the group
+						final Group groupToUpdate = this.logic.getGroupDetails(groupName);
+						try {
+							// since now only one user can be invited to a group at once
+							groupToUpdate.setUsers(Collections.singletonList(new User(username)));
+							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_INVITED);
+						} catch (final Exception ex) {
+							log.error("error while inviting user '" + username + "' to group '" + groupName + "'", ex);
+							// if a user can't be added to a group, this exception is thrown
+							this.errors.rejectValue("username", "settings.group.error.inviteUserToGroupFailed", new Object[]{username, groupName},
+									"The User {0} couldn't be invited to the Group {1}.");
+						}
+					}
+					break;
+				}
 				case ADD_NEW_USER: {
 					/*
 					 * add a new user to the group
@@ -177,6 +197,22 @@ public class UpdateGroupController extends SettingsPageController {
 							log.error("error while accepting the join request of user '" + username + "' from group '" + groupName + "'", ex);
 							this.errors.rejectValue("username", "settings.group.error.declineJoinRequestFailed", new Object[]{username},
 									"The request of User {0} couldn't be removed.");
+						}
+					}
+					break;
+				}
+				case REMOVE_INVITED: {
+					final String username = command.getUsername();
+					if (present(username)) {
+						// the group to update
+						final Group groupToUpdate = this.logic.getGroupDetails(groupName);
+						try {
+							groupToUpdate.setUsers(Collections.singletonList(new User(username)));
+							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.REMOVE_INVITED);
+						} catch (final Exception ex) {
+							log.error("error while removing the invite of user '" + username + "' from group '" + groupName + "'", ex);
+							this.errors.rejectValue("username", "settings.group.error.removeInviteFailed", new Object[]{username},
+									"The invite of User {0} couldn't be removed.");
 						}
 					}
 					break;
