@@ -1102,7 +1102,7 @@
 		<property name="importerFactory" ref="deliciousImporterFactory"/>
 	</bean>
 	
-	<bean id="importJabRefLayout" class="org.bibsonomy.webapp.controller.actions.JabRefImportController" scope="request">
+	<bean id="importJabRefLayout" class="org.bibsonomy.webapp.controller.actions.JabRefImportController" scope="request" parent="settingsPageController">
 		<property name="logic" ref="logic" />
 		<property name="fileLogic" ref="fileLogic" />
 		<property name="jabrefLayoutRenderer" ref="jabrefLayoutRenderer" />
