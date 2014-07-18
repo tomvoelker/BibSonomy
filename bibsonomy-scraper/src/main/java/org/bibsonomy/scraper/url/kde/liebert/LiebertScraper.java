@@ -35,11 +35,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.CitedbyScraper;
-import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -49,10 +50,11 @@ import org.bibsonomy.util.WebUtils;
 /**
  * @author wbi
  */
-public class LiebertScraper extends AbstractUrlScraper implements CitedbyScraper, ReferencesScraper {
-
+public class LiebertScraper extends AbstractUrlScraper implements CitedbyScraper {
+	private static final Log log = LogFactory.getLog(LiebertScraper.class);
+	
 	private static final String SITE_NAME = "Liebert Online";
-	private static final String LIEBERT_HOST_NAME  = "http://www.liebertonline.com";	
+	private static final String LIEBERT_HOST_NAME  = "http://www.liebertonline.com";
 	private static final String SITE_URL  = LIEBERT_HOST_NAME+"/";
 	private static final String info = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
@@ -136,13 +138,12 @@ public class LiebertScraper extends AbstractUrlScraper implements CitedbyScraper
 		if(bibResult != null) {
 			try {
 				sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(bibResult,"abstract",abstractParser(sc.getUrl())));
-				scrapeCitedby(sc);
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.error("error while scraping " + sc.getUrl(), e);
 			}
 			return true;
-		}else
-			throw new ScrapingFailureException("getting bibtex failed");
+		}
+		throw new ScrapingFailureException("getting bibtex failed");
 	}
 
 	/** FIXME: refactor
@@ -211,23 +212,25 @@ public class LiebertScraper extends AbstractUrlScraper implements CitedbyScraper
 
 		StringBuffer cookieString = new StringBuffer();
 
-		for(String cookie : cookies) {
+		for (final String cookie : cookies) {
 			cookieString.append(cookie.substring(0, cookie.indexOf(";") + 1) + " ");
 		}
 
-		//This is neccessary, otherwise we don't get the Bibtex file.
+		// This is neccessary, otherwise we don't get the Bibtex file.
 		cookieString.append("I2KBRCK=1");
 
 		urlConn.disconnect();
 
 		return cookieString.toString();
 	}
+	
 	private static String abstractParser(URL url) throws IOException{
 		Matcher m = abstract_pattern.matcher(WebUtils.getContentAsString(url, WebUtils.getCookies(url)));
 		if(m.find())
 			return m.group(1);
 		return null;
 	}
+	
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
@@ -244,15 +247,6 @@ public class LiebertScraper extends AbstractUrlScraper implements CitedbyScraper
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
-	 */
-	@Override
-	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.scraper.CitedbyScraper#scrapeCitedby(org.bibsonomy.scraper.ScrapingContext)
 	 */
 	@Override
@@ -262,8 +256,8 @@ public class LiebertScraper extends AbstractUrlScraper implements CitedbyScraper
 			if(m.find())
 					scrapingContext.setCitedBy(m.group());
 			return true;
-		}catch(IOException e){
-			e.printStackTrace();
+		} catch(IOException e) {
+			log.error("error while scraping citedby for " + scrapingContext.getUrl(), e);
 		}
 		return false;
 	}
