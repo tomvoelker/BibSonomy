@@ -6,6 +6,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:form="http://www.springframework.org/tags/form">
 
     <jsp:directive.attribute name="tags" type="java.lang.String" required="true"/>
@@ -28,12 +29,26 @@
 		</c:otherwise>
 	</c:choose>
 	
+	<!-- errors -->
+	<c:set var="formErrors"><form:errors path="tags" /></c:set>
+	
+	
 	<a name="tags"><!--  --></a>
 	<bsform:fieldset legendKey="post.resource.tags.describe">
 	
 		<jsp:attribute name="content">
 		
-			<div class="form-group">
+			<div class="form-group${not empty formErrors ? ' has-error' : ''}">
+				<c:if test="${not empty formErrors}">
+					<div class="col-sm-offset-${labelColSpan} col-sm-${inputColSpan}">
+						<bs:feedback style="danger" size="defaultSize" >
+							<jsp:attribute name="feedbackBody">
+								<form:errors path="tags" />
+							</jsp:attribute>
+						</bs:feedback>
+					</div>
+				</c:if>
+				
 				<label class="col-sm-${labelColSpan} control-label">
 					<fmt:message key="post.resource.tags"/>
 				</label>

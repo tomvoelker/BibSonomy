@@ -4,6 +4,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 	<jsp:directive.tag description="Render a form input field in the way it should typically be done with bootstrap." />
@@ -82,17 +83,35 @@
 		<c:set var="id" value="${path}" />
 	</c:if>
 
+	
+	<!-- errors -->
+	<c:set var="formErrors"><form:errors path="${path}" /></c:set>
+
+	
+
 	<!--+
 		| bootstrap 3 form-group 
 		+-->
-	<div class="form-group clearfix">
+	<div class="form-group${not empty formErrors ? ' has-error' : ''}">
 	
-	<!--+
-		| followed by output label 
-		+-->
-	<label class="col-sm-${labelColSpan} control-label" for="${fn:escapeXml(id)}">
-		<c:out value="${labelText}" />
-	</label>
+	
+		<!-- error feedback -->
+		<c:if test="${not empty formErrors}">
+			<div class="col-sm-offset-${labelColSpan} col-sm-${inputColSpan}">
+				<bs:feedback style="danger" size="defaultSize" >
+					<jsp:attribute name="feedbackBody">
+						<form:errors path="${path}" />
+					</jsp:attribute>
+				</bs:feedback>
+			</div>
+		</c:if>
+	
+		<!--+
+			| followed by output label 
+			+-->
+		<label class="col-sm-${labelColSpan} control-label" for="${fn:escapeXml(id)}">
+			<c:out value="${labelText}" />
+		</label>
 		
 
 		<!--+
@@ -116,8 +135,7 @@
 				<div class="help help-content hide">${helpText}</div>
 			</c:if>
 			<jsp:invoke fragment="appendix" />
-			<!-- errors -->
-			<form:errors cssClass="alert alert-danger hide" path="${path}" />
+			
 		</div>
 	</div>
 </jsp:root>
