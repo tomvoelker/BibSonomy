@@ -200,7 +200,7 @@
 				</div>
 				
 				<div class="col-md-3 hidden-xs hidden-sm">
-					<div data-spy="affix" data-offset-top="100" data-offset-bottom="200">
+					<div data-spy="affix" data-offset-top="30" data-offset-bottom="200">
  						<div class="list-group">
  							<a class="list-group-item active" href="#generalInformation"><fmt:message key="post.resource.fields.general" /></a>
  							
@@ -212,6 +212,7 @@
  							<c:if test="${not empty detailedInformation}">
 	 							<a class="list-group-item" href="#uploadedFiles"><fmt:message key="post.bibtex.files" /></a>
  								<a class="list-group-item" href="#detailedInformation"><fmt:message key="post.resource.fields.detailed"/></a>
+ 								<a class="list-group-item" href="#comments"><fmt:message key="post.resource.fields.comments"/></a>
  							</c:if>
  						
   							

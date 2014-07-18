@@ -44,6 +44,7 @@
         </jsp:attribute>
      </bsform:fieldset>
      
+     <a name="comments"><!--  --></a>
      <bsform:fieldset legendKey="post.resource.fields.comments" >
 	     <jsp:attribute name="content">
          
