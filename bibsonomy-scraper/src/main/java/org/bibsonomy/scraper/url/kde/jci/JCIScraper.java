@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ReferencesScraper;
@@ -43,7 +45,8 @@ import org.bibsonomy.util.WebUtils;
  * @author wla
  */
 public class JCIScraper extends AbstractUrlScraper implements ReferencesScraper{
-
+	private static final Log log = LogFactory.getLog(JCIScraper.class);
+	
 	private static final String SITE_NAME = "The Journal of Clinical Investigation";
 
 	private static final String SITE_URL = "www.jci.org";
@@ -58,7 +61,6 @@ public class JCIScraper extends AbstractUrlScraper implements ReferencesScraper{
 	
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
-		
 		//scraper information
 		scrapingContext.setScraper(this);
 		
@@ -66,15 +68,12 @@ public class JCIScraper extends AbstractUrlScraper implements ReferencesScraper{
 			final String bibTex = WebUtils.getContentAsString(scrapingContext.getUrl() + BIBTEX_URL);
 			if (present(bibTex)) {
 				scrapingContext.setBibtexResult(bibTex);
-				scrapeReferences(scrapingContext);
 				return true;
-			} else {
-				throw new ScrapingFailureException("getting bibtex failed");
 			}
+			throw new ScrapingFailureException("getting bibtex failed");
 		} catch (final Exception e) {
 			throw new InternalFailureException(e);
 		}
-
 	}
 
 	@Override
@@ -102,15 +101,15 @@ public class JCIScraper extends AbstractUrlScraper implements ReferencesScraper{
 	 */
 	@Override
 	public boolean scrapeReferences(ScrapingContext scrapingContext)throws ScrapingException {
-		try{
-			Matcher m = REFERENCES.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
-			if(m.find()){
+		try {
+			final Matcher m = REFERENCES.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
+			if (m.find()) {
 				scrapingContext.setReferences(m.group(1));
 				return true;
 			}
-			}catch(Exception e){
-				e.printStackTrace();
-			}
+		} catch(final Exception e) {
+			log.error("error while scraping references for " + scrapingContext.getUrl(), e);
+		}
 		return false;
 	}
 
