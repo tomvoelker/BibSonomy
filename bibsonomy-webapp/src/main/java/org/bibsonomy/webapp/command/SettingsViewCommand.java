@@ -175,6 +175,13 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 * flag to indicate whether a prior uploaded picture file shall be deleted
 	 */
 	private boolean deletePicture;
+
+	/** the file to import **/
+	private CommonsMultipartFile fileBegin;
+
+	private CommonsMultipartFile fileItem;
+
+	private CommonsMultipartFile fileEnd;
 	
 
 	/**
@@ -761,6 +768,48 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	public void setAccessTokenDelete(final String accessTokenDelete) {
 		this.accessTokenDelete = accessTokenDelete;
+	}
+
+	/**
+	 * @return the fileBegin
+	 */
+	public CommonsMultipartFile getFileBegin() {
+		return this.fileBegin;
+	}
+
+	/**
+	 * @param fileBegin the fileBegin to set
+	 */
+	public void setFileBegin(CommonsMultipartFile fileBegin) {
+		this.fileBegin = fileBegin;
+	}
+
+	/**
+	 * @return the fileItem
+	 */
+	public CommonsMultipartFile getFileItem() {
+		return this.fileItem;
+	}
+
+	/**
+	 * @param fileItem the fileItem to set
+	 */
+	public void setFileItem(CommonsMultipartFile fileItem) {
+		this.fileItem = fileItem;
+	}
+
+	/**
+	 * @return the fileEnd
+	 */
+	public CommonsMultipartFile getFileEnd() {
+		return this.fileEnd;
+	}
+
+	/**
+	 * @param fileEnd the fileEnd to set
+	 */
+	public void setFileEnd(CommonsMultipartFile fileEnd) {
+		this.fileEnd = fileEnd;
 	}
 
 }

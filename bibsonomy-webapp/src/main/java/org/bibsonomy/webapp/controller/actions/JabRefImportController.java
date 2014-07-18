@@ -12,25 +12,28 @@ import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.command.actions.JabRefImportCommand;
 import org.bibsonomy.webapp.controller.SettingsPageController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
+import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.validation.JabRefImportValidator;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * TODO: add a validator for the command (should check file extension, …)
+ * controller for storing and deleting jabref layout files
+ * - /import/jabref
  * 
  * @author cvo
  */
-public class JabRefImportController extends SettingsPageController {
+public class JabRefImportController extends SettingsPageController implements ValidationAwareController<SettingsViewCommand> {
 	private static final Log log = LogFactory.getLog(ImportBookmarksController.class);
 	
 	private static final String DELETE = "delete";
 
 	private static final String CREATE = "create";
 	
+	private JabRefImportValidator validator;
 	private FileLogic fileLogic;
 
 	/**
@@ -82,34 +85,53 @@ public class JabRefImportController extends SettingsPageController {
 				/*
 				 * delete layout object from exporter
 				 */
-				jabrefLayoutRenderer.unloadUserLayout(userName);
+				this.jabrefLayoutRenderer.unloadUserLayout(userName);
 			} else {
 				errors.reject("error.document_not_found");
 			}
 
 		} else if (CREATE.equals(command.getAction())) {
-			log.debug("creating layouts for user " + loginUser.getName());
-			/*
-			 * .beginLAYOUT
-			 */
-			writeLayoutPart(loginUser, jabImpCommand.getFileBegin(), LayoutPart.BEGIN);
-			/*
-			 * .item LAYOUT
-			 */
-			writeLayoutPart(loginUser, jabImpCommand.getFileItem(), LayoutPart.ITEM);
-			/*
-			 * .end LAYOUT
-			 */
-			writeLayoutPart(loginUser, jabImpCommand.getFileEnd(), LayoutPart.END);
+			this.validator.validate(command, errors);
+			if (!this.errors.hasErrors()) {
+				log.debug("creating layouts for user " + loginUser.getName());
+				/*
+				 * .beginLAYOUT
+				 */
+				writeLayoutPart(loginUser, jabImpCommand.getFileBegin(), LayoutPart.BEGIN);
+				/*
+				 * .item LAYOUT
+				 */
+				writeLayoutPart(loginUser, jabImpCommand.getFileItem(), LayoutPart.ITEM);
+				/*
+				 * .end LAYOUT
+				 */
+				writeLayoutPart(loginUser, jabImpCommand.getFileEnd(), LayoutPart.END);
+			}
 		}
 		
 		/*
 		 * Show SettingsView-ImportTab(2)
 		 */
-		command.setSelTab(2);
+		command.setSelTab(Integer.valueOf(2));
 		return super.workOn(command);
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.util.ValidationAwareController#getValidator()
+	 */
+	@Override
+	public JabRefImportValidator getValidator() {
+		return this.validator;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.util.ValidationAwareController#isValidationRequired(org.bibsonomy.webapp.command.ContextCommand)
+	 */
+	@Override
+	public boolean isValidationRequired(final SettingsViewCommand command) {
+		return false;
+	}
+	
 	/**
 	 * Writes the file of the specified layout part to disk and into the 
 	 * database.
@@ -137,18 +159,8 @@ public class JabRefImportController extends SettingsPageController {
 	}
 
 	@Override
-	public JabRefImportCommand instantiateCommand() {
+	public SettingsViewCommand instantiateCommand() {
 		return new JabRefImportCommand();
-	}
-
-	@Override
-	public Errors getErrors() {
-		return this.errors;
-	}
-
-	@Override
-	public void setErrors(Errors errors) {
-		this.errors = errors;
 	}
 	
 	/**
@@ -157,12 +169,20 @@ public class JabRefImportController extends SettingsPageController {
 	public void setFileLogic(FileLogic fileLogic) {
 		this.fileLogic = fileLogic;
 	}
-
+	
 	/**
 	 * @param jabrefLayoutRenderer the jabrefLayoutRenderer to set
 	 */
 	@Required
 	public void setJabrefLayoutRenderer(JabrefLayoutRenderer jabrefLayoutRenderer) {
 		this.jabrefLayoutRenderer = jabrefLayoutRenderer;
+	}
+	
+	
+	/**
+	 * @param validator the validator to set
+	 */
+	public void setValidator(JabRefImportValidator validator) {
+		this.validator = validator;
 	}
 }
