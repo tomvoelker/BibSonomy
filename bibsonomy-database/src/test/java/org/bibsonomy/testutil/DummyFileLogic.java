@@ -1,6 +1,7 @@
 package org.bibsonomy.testutil;
 
 import java.io.File;
+import java.util.Collection;
 
 import org.bibsonomy.common.enums.LayoutPart;
 import org.bibsonomy.common.enums.PreviewSize;
@@ -91,5 +92,22 @@ public class DummyFileLogic implements FileLogic {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.filesystem.JabRefFileLogic#allowedJabRefFileExtensions()
+	 */
+	@Override
+	public Collection<String> allowedJabRefFileExtensions() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.filesystem.JabRefFileLogic#validJabRefLayoutFile(org.bibsonomy.model.util.file.UploadedFile)
+	 */
+	@Override
+	public boolean validJabRefLayoutFile(UploadedFile file) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

@@ -35,7 +35,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.sf.jabref.export.layout.Layout;
 import net.sf.jabref.export.layout.LayoutHelper;
@@ -45,7 +44,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.LayoutPart;
 import org.bibsonomy.layout.jabref.self.MSOfficeXMLLayout;
 import org.bibsonomy.layout.jabref.self.SelfRenderingJabrefLayout;
-import org.bibsonomy.util.Sets;
+import org.bibsonomy.services.filesystem.JabRefFileLogic;
 import org.bibsonomy.util.file.FileUtil;
 import org.springframework.beans.factory.annotation.Required;
 
@@ -160,7 +159,7 @@ public class JabrefLayouts {
 			 * Check if jabrefLayout is extended Info for SelfRenderingLayout
 			 */
 			if (selfRenderingLayouts.containsKey(jabrefLayout.getName())) {
-				SelfRenderingJabrefLayout srjl = selfRenderingLayouts.get(jabrefLayout.getName());
+				final SelfRenderingJabrefLayout srjl = selfRenderingLayouts.get(jabrefLayout.getName());
 				srjl.init(jabrefLayout);
 				layouts.put(srjl.getName(), srjl);
 				continue;
@@ -171,7 +170,7 @@ public class JabrefLayouts {
 			 * iterate over all subLayouts
 			 */
 			for (final String subLayout: subLayouts) {
-				final String fileName = filePath + jabrefLayout.getBaseFileName() + subLayout + "." + JabrefLayoutUtils.layoutFileExtension;
+				final String fileName = filePath + jabrefLayout.getBaseFileName() + subLayout + "." + JabRefFileLogic.LAYOUT_FILE_EXTENSION;
 				log.debug("trying to load sublayout " + fileName + "...");
 				final Layout layout = loadLayout(fileName);
 				if (layout != null) {
@@ -190,7 +189,7 @@ public class JabrefLayouts {
 	 * @return The loaded layout, or <code>null</code> if it could not be found.
 	 * @throws IOException
 	 */
-	private Layout loadLayout(final String fileLocation) throws IOException {
+	private static Layout loadLayout(final String fileLocation) throws IOException {
 		final InputStream resourceAsStream = JabrefLayoutUtils.getResourceAsStream(fileLocation);
 		if (resourceAsStream != null) {
 			/*
@@ -205,6 +204,8 @@ public class JabrefLayouts {
 			} catch (Exception e) {
 				log.error("Error while trying to load layout " + fileLocation + " : " + e.getMessage());
 				throw new IOException(e);
+			} finally {
+				resourceAsStream.close();
 			}
 		} 
 		return null;
@@ -214,12 +215,14 @@ public class JabrefLayouts {
 	 * @param directory
 	 * @return
 	 */
-	private String getDirectory(final String directory) {
+	private static String getDirectory(final String directory) {
 		if (directory == null) return "";
 		return directory + "/";
 	}
 
-	/** Returns the requested layout. This is for layouts which don't have item parts for specific publication types. 
+	/**
+	 * Returns the requested layout. This is for layouts which don't have item
+	 * parts for specific publication types. 
 	 * 
 	 * @param layout
 	 * @return
@@ -264,7 +267,8 @@ public class JabrefLayouts {
 
 			if (file.exists()) {
 				log.debug("custom layout (part '" + layoutPart + "') found!");
-				final LayoutHelper layoutHelper = new LayoutHelper(new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8")));
+				final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+				final LayoutHelper layoutHelper = new LayoutHelper(reader);
 				try {
 					jabrefLayout.addSubLayout(layoutPart, layoutHelper.getLayoutFromText(GLOBALS_FORMATTER_PACKAGE));
 				} catch (final Exception e) {
@@ -273,6 +277,8 @@ public class JabrefLayouts {
 					 * so we catch it here
 					 */
 					throw new IOException ("Could not load layout: " + e.getMessage());
+				} finally {
+					reader.close();
 				}
 			}
 		}

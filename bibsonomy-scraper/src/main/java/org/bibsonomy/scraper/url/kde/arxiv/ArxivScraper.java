@@ -24,7 +24,6 @@
 package org.bibsonomy.scraper.url.kde.arxiv;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -52,10 +51,11 @@ public class ArxivScraper extends AbstractUrlScraper {
 	private static final String info = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
 	private static final String ARXIV_HOST = "arxiv.org";
 	
-	private static final Pattern patternID = Pattern.compile("abs/([^?]*)");
+	private static final Pattern patternID = Pattern.compile("abs|pdf/([^?]*)");
 	private static final Pattern patternVer = Pattern.compile("(.+?)v\\d+");
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(ARXIV_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		
 		if (sc.getUrl() != null && sc.getUrl().getHost().endsWith(ARXIV_HOST)) {
@@ -104,18 +104,22 @@ public class ArxivScraper extends AbstractUrlScraper {
 		return false;
 	}
 
+	@Override
 	public String getInfo() {
 		return info;
 	}
 	
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}

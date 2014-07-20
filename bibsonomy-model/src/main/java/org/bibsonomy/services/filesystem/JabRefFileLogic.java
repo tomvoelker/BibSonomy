@@ -23,6 +23,8 @@
 
 package org.bibsonomy.services.filesystem;
 
+import java.util.Collection;
+
 import org.bibsonomy.common.enums.LayoutPart;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.util.file.UploadedFile;
@@ -32,6 +34,11 @@ import org.bibsonomy.model.util.file.UploadedFile;
  */
 public interface JabRefFileLogic {
 	
+	/**
+	 * The file extension of layout filter file names.
+	 */
+	public static final String LAYOUT_FILE_EXTENSION = "layout";
+
 	/**
 	 * 
 	 * @param username
@@ -47,4 +54,17 @@ public interface JabRefFileLogic {
 	 * @return <code>true</code> if file was deleted
 	 */
 	public boolean deleteJabRefLayout(final String hash);
+	
+	/**
+	 * 
+	 * @param file
+	 * @return <code>true</code> iff the file is valid (currently only checks the
+	 * file extension)
+	 */
+	public boolean validJabRefLayoutFile(final UploadedFile file);
+	
+	/**
+	 * @return a set of all allowed file extensions for jabref layout files
+	 */
+	public Collection<String> allowedJabRefFileExtensions();
 }

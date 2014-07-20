@@ -542,7 +542,7 @@
 	<URLTest id="url_89">
 		<TestDescription>Liebert Url test 2</TestDescription>
 		<URL>http://www.liebertonline.com/action/showCitFormats?doi=10.1089%2F152308604773934350</URL>
-		<BibFile>LiebertScraperUnitURLTest1.bib</BibFile>
+		<BibFile>LiebertScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.liebert.LiebertScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_90">
