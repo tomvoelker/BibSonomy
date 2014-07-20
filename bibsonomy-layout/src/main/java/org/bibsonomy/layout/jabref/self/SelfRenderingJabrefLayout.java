@@ -1,11 +1,5 @@
 package org.bibsonomy.layout.jabref.self;
 
-import java.util.List;
-
-import net.sf.jabref.BibtexDatabase;
-import net.sf.jabref.BibtexEntry;
-
-import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.layout.jabref.JabrefLayout;
 
 /**
@@ -30,5 +24,4 @@ public abstract class SelfRenderingJabrefLayout extends JabrefLayout {
 		this.publicLayout = layout.isPublicLayout();
 	}
 	
-	public abstract StringBuffer render(final BibtexDatabase database, final List<BibtexEntry> sorted, final JabrefLayout layout, final boolean embeddedLayout) throws LayoutRenderingException;
 }

@@ -14,7 +14,6 @@ import net.sf.jabref.BibtexEntry;
 import net.sf.jabref.msbib.MSBibDatabase;
 
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
-import org.bibsonomy.layout.jabref.JabrefLayout;
 import org.w3c.dom.Document;
 
 /**
@@ -33,11 +32,8 @@ public class MSOfficeXMLLayout extends SelfRenderingJabrefLayout{
 		super(LAYOUTNAME);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.layout.jabref.self.SelfRenderingJabrefLayout#render(net.sf.jabref.BibtexDatabase, java.util.List, org.bibsonomy.layout.jabref.JabrefLayout, boolean)
-	 */
 	@Override
-	public StringBuffer render(BibtexDatabase database, List<BibtexEntry> sorted, JabrefLayout layout, boolean embeddedLayout) throws LayoutRenderingException {
+	public StringBuffer render(final BibtexDatabase database, final List<BibtexEntry> sorted, final boolean embeddedLayout) throws LayoutRenderingException {
 		final MSBibDatabase msbibDB = new MSBibDatabase(database);
 		final Document doc = msbibDB.getDOMrepresentation();
 		

@@ -29,16 +29,12 @@ import java.util.Map;
 import java.util.Properties;
 
 import net.sf.jabref.BibtexDatabase;
-import net.sf.jabref.BibtexEntry;
 import net.sf.jabref.GlobalsSuper;
 import net.sf.jabref.JabRefPreferences;
-import net.sf.jabref.export.layout.Layout;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.LayoutPart;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
-import org.bibsonomy.layout.jabref.self.SelfRenderingJabrefLayout;
 import org.bibsonomy.layout.util.JabRefModelConverter;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -136,119 +132,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		/*
 		 * render the database
 		 */
-		return renderDatabase(database, JabRefModelConverter.convertPosts(posts, urlGenerator,false), layout, embeddedLayout);
-	}
-
-	/**
-	 * This is the export method for BibTeX entries to any available format. 
-	 * @param postList Entries to export.
-	 * @param userName User to whom the passed entries belong 
-	 * @param layout - the layout to be rendered. If "custom", export with user specific layout filter
-	 * @param embeddedLayout - if <code>true</code> the corresponding embedded begin/end parts 
-	 * (see {@link LayoutPart}) are used (only if available).
-	 * @return output The formatted BibTeX entries as a string.
-	 * @throws LayoutRenderingException - if a layout could not be found
-	 */
-	private StringBuffer renderDatabase(final BibtexDatabase database, final List<BibtexEntry> sorted, final JabrefLayout layout, final boolean embeddedLayout) throws LayoutRenderingException {
-		/*
-		 * Check for SelfRenderingLayout first
-		 * TODO: move rendering to JabRef class
-		 */
-		if (layout instanceof SelfRenderingJabrefLayout) {
-			return ((SelfRenderingJabrefLayout) layout).render(database, sorted, layout, embeddedLayout);
-		}
-
-		
-		final StringBuffer output = new StringBuffer();
-
-		/* 
-		 * *************** rendering the header ***************** 
-		 */
-		Layout beginLayout = null;
-		/*
-		 * first: try embedded begin layout, if requested.
-		 */
-		if (embeddedLayout && layout.hasEmbeddedLayout()) {
-			beginLayout = layout.getSubLayout(LayoutPart.EMBEDDEDBEGIN);
-		} 
-		/*
-		 * second: if not available, take normal begin layout
-		 */
-		else {
-			beginLayout = layout.getSubLayout(LayoutPart.BEGIN);
-		}
-		/*
-		 * third: render, if layout found
-		 */
-		if (beginLayout != null) {
-			output.append(beginLayout.doLayout(database, "UTF-8"));
-		}
-
-
-		/* 
-		 * *************** rendering the entries *****************
-		 */ 
-		if (layout.isUserLayout()) {
-			/*
-			 * render custom user layout
-			 */
-			final Layout itemLayout = layout.getSubLayout(LayoutPart.ITEM);
-			if (itemLayout == null) {
-				/*
-				 * no layout for user found -> throw an exception
-				 */
-				throw new LayoutRenderingException("no custom layout found");
-			}
-			
-			for (final BibtexEntry entry: sorted) {
-				output.append(itemLayout.doLayout(entry, database));
-			}
-		} else {
-			// try to retrieve type-specific layouts and process output
-			for (final BibtexEntry entry : sorted) {
-				// We try to get a type-specific layout for this entry
-				// FIXME: adding the dot "." here isn't so nice ...
-				Layout itemLayout = layout.getSubLayout("." + entry.getType().getName().toLowerCase());
-				if (itemLayout == null) {
-					/*
-					 * try to get a generic layout
-					 */
-					itemLayout = layout.getSubLayout("");
-					if (itemLayout == null) {
-						/*
-						 * no layout found -> throw an exception
-						 */
-						throw new LayoutRenderingException("layout file(s) for '" + layout.getName() + "' could not be found");
-					}
-				} 
-				output.append(itemLayout.doLayout(entry, database));
-			}
-		}
-
-		/* 
-		 * *************** rendering the footer ***************** 
-		 */
-		Layout endLayout = null;
-		/*
-		 * first: try embedded end layout, if requested.
-		 */
-		if (embeddedLayout && layout.hasEmbeddedLayout()) {
-			endLayout = layout.getSubLayout(LayoutPart.EMBEDDEDEND);
-		} 
-		/*
-		 * second: if not available, take normal begin layout
-		 */
-		else {
-			endLayout = layout.getSubLayout(LayoutPart.END);
-		}
-		/*
-		 * third: render, if layout found
-		 */
-		if (endLayout != null) {
-			output.append(endLayout.doLayout(database, "UTF-8"));
-		}
-
-		return output;
+		return layout.render(database, JabRefModelConverter.convertPosts(posts, urlGenerator,false), embeddedLayout);
 	}
 
 	/**

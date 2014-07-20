@@ -24,11 +24,15 @@
 package org.bibsonomy.layout.jabref;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.bibsonomy.common.enums.LayoutPart;
-
+import net.sf.jabref.BibtexDatabase;
+import net.sf.jabref.BibtexEntry;
 import net.sf.jabref.export.layout.Layout;
+
+import org.bibsonomy.common.enums.LayoutPart;
+import org.bibsonomy.common.exceptions.LayoutRenderingException;
 
 
 /**
@@ -62,7 +66,110 @@ public class JabrefLayout extends org.bibsonomy.model.Layout {
 	public JabrefLayout(final String name) {
 		super(name);
 	}
+	
+	/**
+	 * This is the export method for BibTeX entries to any available format. 
+	 * @param postList Entries to export.
+	 * @param userName User to whom the passed entries belong 
+	 * @param layout - the layout to be rendered. If "custom", export with user specific layout filter
+	 * @param embeddedLayout - if <code>true</code> the corresponding embedded begin/end parts 
+	 * (see {@link LayoutPart}) are used (only if available).
+	 * @return output The formatted BibTeX entries as a string.
+	 * @throws LayoutRenderingException - if a layout could not be found
+	 */
+	public StringBuffer render(final BibtexDatabase database, final List<BibtexEntry> sorted, final boolean embeddedLayout) throws LayoutRenderingException {
+		final StringBuffer output = new StringBuffer();
 
+		/* 
+		 * *************** rendering the header ***************** 
+		 */
+		Layout beginLayout = null;
+		/*
+		 * first: try embedded begin layout, if requested.
+		 */
+		if (embeddedLayout && hasEmbeddedLayout()) {
+			beginLayout = getSubLayout(LayoutPart.EMBEDDEDBEGIN);
+		} 
+		/*
+		 * second: if not available, take normal begin layout
+		 */
+		else {
+			beginLayout = getSubLayout(LayoutPart.BEGIN);
+		}
+		/*
+		 * third: render, if layout found
+		 */
+		if (beginLayout != null) {
+			output.append(beginLayout.doLayout(database, "UTF-8"));
+		}
+
+
+		/* 
+		 * *************** rendering the entries *****************
+		 */ 
+		if (isUserLayout()) {
+			/*
+			 * render custom user layout
+			 */
+			final Layout itemLayout = getSubLayout(LayoutPart.ITEM);
+			if (itemLayout == null) {
+				/*
+				 * no layout for user found -> throw an exception
+				 */
+				throw new LayoutRenderingException("no custom layout found");
+			}
+			
+			for (final BibtexEntry entry: sorted) {
+				output.append(itemLayout.doLayout(entry, database));
+			}
+		} else {
+			// try to retrieve type-specific layouts and process output
+			for (final BibtexEntry entry : sorted) {
+				// We try to get a type-specific layout for this entry
+				// FIXME: adding the dot "." here isn't so nice ...
+				Layout itemLayout = getSubLayout("." + entry.getType().getName().toLowerCase());
+				if (itemLayout == null) {
+					/*
+					 * try to get a generic layout
+					 */
+					itemLayout = getSubLayout("");
+					if (itemLayout == null) {
+						/*
+						 * no layout found -> throw an exception
+						 */
+						throw new LayoutRenderingException("layout file(s) for '" + getName() + "' could not be found");
+					}
+				} 
+				output.append(itemLayout.doLayout(entry, database));
+			}
+		}
+
+		/* 
+		 * *************** rendering the footer ***************** 
+		 */
+		Layout endLayout = null;
+		/*
+		 * first: try embedded end layout, if requested.
+		 */
+		if (embeddedLayout && hasEmbeddedLayout()) {
+			endLayout = getSubLayout(LayoutPart.EMBEDDEDEND);
+		} 
+		/*
+		 * second: if not available, take normal begin layout
+		 */
+		else {
+			endLayout = getSubLayout(LayoutPart.END);
+		}
+		/*
+		 * third: render, if layout found
+		 */
+		if (endLayout != null) {
+			output.append(endLayout.doLayout(database, "UTF-8"));
+		}
+
+		return output;
+	}
+	
 	public String getDirectory() {
 		return directory;
 	}
