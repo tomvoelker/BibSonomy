@@ -23,9 +23,7 @@
 
 package org.bibsonomy.layout.jabref;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.sf.jabref.BibtexDatabase;
 import net.sf.jabref.BibtexEntry;
@@ -40,14 +38,13 @@ import org.bibsonomy.common.exceptions.LayoutRenderingException;
  * JabrefLayoutDefinition.xsd.  
  * 
  * @author:  rja
- * 
  */
-public class JabrefLayout extends org.bibsonomy.model.Layout {
-
+public class JabrefLayout extends AbstractJabRefLayout {
 	/**
 	 * If the layout files are in a subdirectory of the layout directory, the name of the directory.
 	 */
 	private String directory;
+	
 	/**
 	 * The base file name, most often equal to {@link #name}.
 	 */
@@ -59,10 +56,9 @@ public class JabrefLayout extends org.bibsonomy.model.Layout {
 	private boolean userLayout;
 	
 	/**
-	 * The associated layouts filters. 
+	 * the default constructor
+	 * @param name
 	 */
-	private Map<String, Layout> subLayouts = new HashMap<String, Layout>();
-	
 	public JabrefLayout(final String name) {
 		super(name);
 	}
@@ -77,6 +73,7 @@ public class JabrefLayout extends org.bibsonomy.model.Layout {
 	 * @return output The formatted BibTeX entries as a string.
 	 * @throws LayoutRenderingException - if a layout could not be found
 	 */
+	@Override
 	public StringBuffer render(final BibtexDatabase database, final List<BibtexEntry> sorted, final boolean embeddedLayout) throws LayoutRenderingException {
 		final StringBuffer output = new StringBuffer();
 
@@ -102,8 +99,7 @@ public class JabrefLayout extends org.bibsonomy.model.Layout {
 		if (beginLayout != null) {
 			output.append(beginLayout.doLayout(database, "UTF-8"));
 		}
-
-
+		
 		/* 
 		 * *************** rendering the entries *****************
 		 */ 
@@ -170,18 +166,40 @@ public class JabrefLayout extends org.bibsonomy.model.Layout {
 		return output;
 	}
 	
-	public String getDirectory() {
-		return directory;
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.layout.jabref.AbstractJabRefLayout#init()
+	 */
+	@Override
+	public void init(final JabRefConfig config) throws Exception {
+		super.init(config);
+		
+		this.subLayouts = JabrefLayoutUtils.loadSubLayouts(this, config);
 	}
-	
+
+	/**
+	 * @return the directory
+	 */
+	public String getDirectory() {
+		return this.directory;
+	}
+
+	/**
+	 * @param directory the directory to set
+	 */
 	public void setDirectory(String directory) {
 		this.directory = directory;
 	}
-	
+
+	/**
+	 * @return the baseFileName
+	 */
 	public String getBaseFileName() {
-		return baseFileName;
+		return this.baseFileName;
 	}
-	
+
+	/**
+	 * @param baseFileName the baseFileName to set
+	 */
 	public void setBaseFileName(String baseFileName) {
 		this.baseFileName = baseFileName;
 	}
@@ -191,34 +209,17 @@ public class JabrefLayout extends org.bibsonomy.model.Layout {
 		return super.toString() + "/" + directory + "/" + baseFileName + "(" + subLayouts.size() + ")";
 	}
 
-	public Layout getSubLayout(final String subLayoutName) {
-		return subLayouts.get(subLayoutName);
-	}
-
-	public void addSubLayout(final String subLayoutName, final Layout layout) {
-		subLayouts.put(subLayoutName, layout);
-	}
-	
-	public Layout getSubLayout(final LayoutPart layoutPart) {
-		return getSubLayout("." + layoutPart);
-	}
-	
-	public void addSubLayout(final LayoutPart layoutPart, final Layout layout) {
-		addSubLayout("." + layoutPart, layout);
-	}
-
+	/**
+	 * @return the userLayout
+	 */
 	public boolean isUserLayout() {
-		return userLayout;
+		return this.userLayout;
 	}
 
+	/**
+	 * @param userLayout the userLayout to set
+	 */
 	public void setUserLayout(boolean userLayout) {
 		this.userLayout = userLayout;
 	}
-	
-	@Override
-	public boolean hasEmbeddedLayout() {
-		return (this.getSubLayout(LayoutPart.EMBEDDEDBEGIN) != null) && (this.getSubLayout(LayoutPart.EMBEDDEDEND) != null);
-	}
-
 }
-

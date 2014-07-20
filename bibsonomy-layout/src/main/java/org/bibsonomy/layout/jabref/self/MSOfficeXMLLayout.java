@@ -14,38 +14,34 @@ import net.sf.jabref.BibtexEntry;
 import net.sf.jabref.msbib.MSBibDatabase;
 
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
+import org.bibsonomy.layout.jabref.AbstractJabRefLayout;
 import org.w3c.dom.Document;
 
 /**
- * a self 
+ * a self rendering layout for MSOffice XML
  *
  * @author MarcelM
  */
-public class MSOfficeXMLLayout extends SelfRenderingJabrefLayout{
-	
-	public static final String LAYOUTNAME = "msofficexml";
+public class MSOfficeXMLLayout extends AbstractJabRefLayout {
 	
 	/**
 	 * @param name
 	 */
-	public MSOfficeXMLLayout() {
-		super(LAYOUTNAME);
+	public MSOfficeXMLLayout(final String name) {
+		super(name);
 	}
 
 	@Override
 	public StringBuffer render(final BibtexDatabase database, final List<BibtexEntry> sorted, final boolean embeddedLayout) throws LayoutRenderingException {
-		final MSBibDatabase msbibDB = new MSBibDatabase(database);
-		final Document doc = msbibDB.getDOMrepresentation();
-		
-		final StringBuffer output = new StringBuffer();
-		
 		try {
-			output.append(getStringFromDocument(doc));
+			final MSBibDatabase msbibDB = new MSBibDatabase(database);
+			final Document doc = msbibDB.getDOMrepresentation();
+			
+			final StringBuffer output = new StringBuffer();
+			return output.append(getStringFromDocument(doc));
 		} catch (final TransformerException e) {
-			throw new LayoutRenderingException(LAYOUTNAME);
+			throw new LayoutRenderingException(this.getName());
 		}
-		
-		return output;
 	}
 	
 	/**
@@ -55,13 +51,12 @@ public class MSOfficeXMLLayout extends SelfRenderingJabrefLayout{
 	 * @throws TransformerException
 	 */
 	private static String getStringFromDocument(Document doc) throws TransformerException {
-		DOMSource domSource = new DOMSource(doc);
-		StringWriter writer = new StringWriter();
-		StreamResult result = new StreamResult(writer);
-		TransformerFactory tf = TransformerFactory.newInstance();
-		Transformer transformer = tf.newTransformer();
+		final DOMSource domSource = new DOMSource(doc);
+		final StringWriter writer = new StringWriter();
+		final StreamResult result = new StreamResult(writer);
+		final TransformerFactory tf = TransformerFactory.newInstance();
+		final Transformer transformer = tf.newTransformer();
 		transformer.transform(domSource, result);
 		return writer.toString();
-	} 
-
+	}
 }
