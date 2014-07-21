@@ -106,7 +106,7 @@
 						
   					</c:if>
   					<ul class="edit-document-forms">
-  						<li class="document" id="file-upload-placeholder">
+  						<li class="document" style="display:none" id="file-upload-placeholder">
 							<div class="preview_meta">
 								<!--+ 
 								 	| delete and rename options
@@ -126,6 +126,7 @@
 									<c:set var="downloadTitle"><fmt:message key="qrcode.actions.download"/></c:set>
 									<c:set var="downloadQrTitle"><fmt:message key="qrcode.actions.qrDownload"/></c:set>
 									<c:set var="delete_doc"><fmt:message key="bibtex.actions.private_document.delete"/></c:set>
+									
 									<form class="renameDocForm" action="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=FILENAME_PLACEHOLDER&amp;action=rename" method='POST' enctype='multipart/form-data' autocomplete='off'>
 										<span class="showName" style="display:none;"><!-- keep --></span>
 										<div class="input-group">
