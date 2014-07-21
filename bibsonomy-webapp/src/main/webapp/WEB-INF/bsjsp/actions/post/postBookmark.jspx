@@ -32,24 +32,37 @@
 	
 		<jsp:attribute name="content">
 		
-		<fmt:message key="post_bookmark.description" var="desc" scope="request"/>
-		<fmt:message key="post.resource.post" var="post_bookmark" scope="request"/>
-		
-		<bs:panel messagesPropertiesKey="post_bookmark.heading">
-			<jsp:attribute name="panelBody">
-				<form:form cssClass="horizontal-form" role="form" method="POST" action="/editBookmark">
-					<fieldset>
-						<legend><c:out value="${postBookmarkPageTitle}" /></legend>
-						<p><c:out value="${desc}" /></p>
-						<bsform:input id="url" labelColSpan="3" inputColSpan="9" placeholder="http://" path="post.resource.url" required="${true}" noHelp="${true }"/>
-						<div class="col-md-offset-3">
+			<fmt:message key="post_bookmark.description" var="desc" scope="request"/>
+			
+			<!-- 
+			<bs:panel messagesPropertiesKey="post_bookmark.heading">
+				<jsp:attribute name="panelBody">
+	
+				</jsp:attribute>
+		 	</bs:panel>
+		 	-->
+		 	
+		 	
+		 	
+			<form:form cssClass="form-horizontal" role="form" method="POST" action="/editBookmark">
+				<fieldset>
+					<legend><c:out value="${postBookmarkPageTitle}" /></legend>
+					
+					<p><c:out value="${desc}" /></p>
+					<bsform:input id="url" labelColSpan="2" inputColSpan="10" placeholder="http://" path="post.resource.url" required="${true}" helpKey="post_bookmark.heading">
+						<jsp:attribute name="appendix">
+							<!-- <p class="help-block"><fmt:message key="post_bookmark.heading" /></p> -->
+						</jsp:attribute>
+					</bsform:input>
+					
+					<div class="form-group">
+						<div class="col-md-offset-2 col-md-10">
+							<fmt:message key="post.resource.post" var="post_bookmark" scope="request"/>
 							<button type="submit" class="btn btn-primary">${post_bookmark}</button>
 						</div>
-					</fieldset>
-				</form:form>
-			</jsp:attribute>
-	 	</bs:panel>
-
+					</div>
+				</fieldset>
+			</form:form>
 
 		</jsp:attribute>
 		
