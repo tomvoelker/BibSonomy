@@ -7,7 +7,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.text.Normalizer;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -46,7 +45,6 @@ import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.web.spring.converter.StringToEnumConverter;
 import org.bibsonomy.webapp.command.BaseCommand;
-import org.bibsonomy.webapp.command.DidYouKnowMessageCommand;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -119,6 +117,7 @@ public class Functions {
 	 *            one of NFC, NFD, NFKC, NFKD @see Normalizer.Form
 	 * @return normalized String
 	 */
+	@Deprecated // TODO: remove with old layout
 	public static String normalize(final String str, final String decomp) {
 		Normalizer.Form form;
 		try {
@@ -819,9 +818,14 @@ public class Functions {
 	 * @param command
 	 * @return true|false
 	 */
-	public static Boolean instanceOfDidYouKnowMessageCommand(BaseCommand command) {
-
-		return (command instanceof DidYouKnowMessageCommand);
+	/**
+	 * returns true, if command implements DidYouKnowMessageCommand interface and has a didYouKnowMessage set
+	 * @param command
+	 * @return true|false
+	 */
+	@Deprecated // TODO: (bootstrap) remove and use not empty check
+	public static Boolean hasDidYouKnowMessage(BaseCommand command) {
+		return (command.getDidYouKnowMessage() != null);
 	}
 
 }

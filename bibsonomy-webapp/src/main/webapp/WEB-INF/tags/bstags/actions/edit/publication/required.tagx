@@ -28,6 +28,15 @@
 		<script type="text/javascript">
 			$(function() {
 				//hide all entrytypes
+				$("#post\\.resource\\.entrytype").change(function(e) {
+					var messageKey = "post.resource.entrytype."+$(this).val();
+				
+					if(getString(messageKey)=="???"+messageKey+"???")
+						$(this).siblings(".help-header").html($(this).val());
+					else
+						$(this).siblings(".help-header").html(getString(messageKey));
+					$(this).siblings(".help-content").html(getString(messageKey+".description"));
+				});
 				$('.entrytype-help').hide();
 				//show first
 				$('#article').show();
@@ -42,21 +51,23 @@
 				});
 			});
 		</script>
-		
+			<c:set var="projectName" value="${properties['project.name']}" />
+			
 			<bsform:select 
 				multiple="${false}" 
 				path="post.resource.entrytype" 
 				id="post.resource.entrytype"
+				labelColSpan="3" 
 				tabindex="2" 
 				size="1" 
 				items="${mtl:getBibTeXEntryTypes()}"
 				/>
 		
-			<bsform:textarea id="post.resource.title" path="post.resource.title" required="${true}" />
+			<bsform:textarea labelColSpan="3" id="post.resource.title" path="post.resource.title" required="${true}" />
 		
-			<bsform:textarea id="post.resource.author" path="post.resource.author" required="${true}" />
+			<bsform:textarea labelColSpan="3" id="post.resource.author" path="post.resource.author" required="${true}" />
 			<div class="form-group">
-	    		<div class="col-sm-offset-2 col-sm-10">
+	    		<div class="col-sm-offset-3 col-sm-9">
 					<div class="checkbox clearfix">
 						<label>
 			          		<input type="checkbox" class="help-popover" id="myownChkBox" tabindex="2" /> <fmt:message key="post.resource.myown"/>
@@ -67,8 +78,8 @@
 				</div>
 			</div>
 
-			<bsform:textarea id="post.resource.editor" path="post.resource.editor" required="${true}"/>
-			<bsform:input id="post.resource.year" small="true" path="post.resource.year" required="${true}"/>
+			<bsform:textarea labelColSpan="3" inputColSpan="9" id="post.resource.editor" path="post.resource.editor" required="${true}"/>
+			<bsform:input labelColSpan="3" inputColSpan="9" id="post.resource.year" small="true" path="post.resource.year" required="${true}"/>
 
 		<c:if test="${autocompletion}">
 			<script type="text/javascript">

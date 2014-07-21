@@ -11,34 +11,39 @@
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons">
 	
 	<jsp:directive.attribute name="command"  type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
 
-	<!-- ############################################# profile tab ############################################# -->	
+	<!-- ############################################# profile tab ############################################# -->
 	<c:set var="user" value="${command.user}" />
-	
-	<!-- Outer surrounding -->
-	<bs:panel messagesPropertiesKey="navi.myprofile">
-		<jsp:attribute name="panelBody">
-
-	<!--+
-		|
-		| profile, contact, about 
-		| 
-	 	+-->
 		
-			<!-- Der Text der oben steht -->
-			<p>
-				<fmt:message key="settings.profileInfo">
-					<fmt:param><a href="/foaf/user/${mtl:encodeURI(user.name)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param>
-					<fmt:param><fmt:message key="settings.profileViewableFor"/></fmt:param>
-					<fmt:param value="/cv/user/${mtl:encodeURI(user.name)}"/>
-				</fmt:message>
-			</p>
+	<div id="selTab0" class="tab-pane ${(command.selTab eq 0) ? 'active' : ''}">
 	
-			<fieldset class="fsOuter">	
-				<form:form cssClass="form-horizontal" name="account" method="post" action="/updateUserProfile?ckey=${ckey}" enctype="multipart/form-data">
+		<fieldset class="fsOuter">	
+			
+			<form:form cssClass="form-horizontal" name="account" method="post" action="/updateUserProfile?ckey=${ckey}" enctype="multipart/form-data">
+				<fieldset>
+					<legend><fmt:message key="navi.myprofile" /></legend>
+			
+				<!--+
+					|
+					| profile, contact, about 
+					| 
+				 	+-->
+				
+					<!-- Der Text der oben steht -->
+					<p>
+						<fmt:message key="settings.profileInfo">
+							<fmt:param><a href="/foaf/user/${mtl:encodeURI(user.name)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param>
+							<fmt:param><fmt:message key="settings.profileViewableFor"/></fmt:param>
+							<fmt:param value="/cv/user/${mtl:encodeURI(user.name)}"/>
+						</fmt:message>
+					</p>
+				</fieldset>
+
+			
 			
 				<!--+
 					| username, realname, gender, birthday, place, profile privacy level
@@ -131,18 +136,6 @@
 		
 				<input type="hidden" name="action" value="update"/>
 				<input type="hidden" name="selTab" value="0"/>
-		<!-- 		<bform:submit messageKey="settings.saveChanges"/> -->
-				
-		<!--	</form:form>
-			</fieldset> 
-			
-			<fieldset class="fsOuter" style="margin-top: 2em">-->
-			
-				<!--+
-					| photo 
-					+-->
-					
-		<!-- 	<form:form id="settingImportForm" action="/picture/user/${mtl:encodeURI(user.name)}?ckey=${ckey}" method="post" enctype="multipart/form-data">-->
 
 					<fieldset>
 						<legend><fmt:message key="settings.picture.header" /></legend>
@@ -151,9 +144,9 @@
 							<div class ="form-group clearfix">
 								<form:label cssClass="col-sm-3 control-label" path="file"><fmt:message key="settings.picture.current"/></form:label>
 								<div class="col-sm-9">
-									<a title="@seboettg" href="/user/seboettg" class="img-thumbnail img-responsive">
+									<a title="${mtl:encodeURI(user.name)}" href="/user/${mtl:encodeURI(user.name)}" class="img-thumbnail img-responsive">
 										<img class="user-avatar" src="/picture/user/${mtl:encodeURI(user.name)}" />
-										<span>@seboettg</span>
+										<span><user:username user="${user}" noLink="${true}"/></span>
 									</a>
 								</div>
 							</div>
@@ -198,67 +191,6 @@
 								<div class="dissError"><form:errors path="user.gender" /></div>
 							</div>
 							
-							<!-- picture source OLD CODE
-							<div class="fsRow">
-								<fmt:message var="useExtService" key="user.useExternalPicture.service" />
-								<fmt:message var="useExtTrue" key="user.useExternalPicture.true">
-									<fmt:param>${useExtService}</fmt:param>
-								</fmt:message>
-								<fmt:message var="useExtFalse" key="user.useExternalPicture.false" />
-							
-								<form:label cssClass="fsLabel" path="user.useExternalPicture">
-									<fmt:message key="user.useExternalPicture"/>
-								</form:label>
-								
-								<buttons:help message="user.useExternalPicture.help">
-									<jsp:attribute name="helpText">
-										<ol>
-											<li>
-												<fmt:message key="user.useExternalPicture.help.true">
-													<fmt:param>${useExtTrue}</fmt:param>
-													<fmt:param>${useExtService}</fmt:param>
-												</fmt:message>
-											</li>
-											<li>
-												<fmt:message key="user.useExternalPicture.help.false">
-													<fmt:param>${useExtFalse}</fmt:param>
-												</fmt:message>
-											</li>
-										</ol>
-									</jsp:attribute>
-								</buttons:help>
-			
-								<form:select id="useExtPicSelect" cssClass="fsInput fsSmall" path="user.useExternalPicture">
-									<form:option label="${useExtTrue}" value="${true}" id="useExt" />
-									<form:option label="${useExtFalse}" value="${false}" id="useInt" />
-								</form:select>
-							</div>
-							
-							<c:choose>
-								<c:when test="${not user.useExternalPicture}">
-									<c:set var="displayUseInt">block</c:set>
-									<c:set var="displayUseExt">none</c:set>
-								</c:when>
-								<c:otherwise>
-									<c:set var="displayUseInt">none</c:set>
-									<c:set var="displayUseExt">block</c:set>
-								</c:otherwise>
-							</c:choose>
-								
-							<div class="fsRow" id="pictUseExt" style="display:${displayUseExt}">
-								<form:label cssClass="fsLabel" path="user.useExternalPicture">
-									<fmt:message key="user.useExternalPicture.service.label">
-										<fmt:param><fmt:message key="user.useExternalPicture.service" /></fmt:param>
-									</fmt:message>
-								</form:label>
-							
-								<fmt:message var="useExtServiceLink" key="user.useExternalPicture.service.link" />
-								<form:label path="user.useExternalPicture" cssClass="fsHelp">
-									<a target="_blank" href="${useExtServiceLink}">${useExtServiceLink}</a>
-								</form:label>
-							</div>
-							-->
-							
 							<!-- New Picture + delete picture -->
 							<div class="form-group clearfix">
 								
@@ -281,21 +213,7 @@
 								
 							</div>
 							
-							<!-- new picture + delete picture OLD CODE
-							<div id="pictUseInt" style="display:${displayUseInt}">
-								<div class="fsRow">
-									<form:label cssClass="fsLabel" path="picturefile"><fmt:message key="settings.picture.file"/></form:label>
-									<buttons:help message="settings.picture.help"/>
-									<input type="file" name="picturefile" class="fsInput fsSmall" id="useIntPath"/>
-								</div>
-								
-								<div class="fsRow">
-									<form:label cssClass="fsLabel" path="deletePicture"><fmt:message key="settings.picture.delete"/></form:label>
-									<buttons:help message="settings.picture.delete.help"/>
-									<input type="checkbox"  value="${true}" class="fsInput fsSmall" id="useIntDelete" />
-								</div>
-							</div>
-							 -->
+
 							
 							<!-- save changes button -->
 							<p class="clearfix"><!--  --></p>
@@ -304,9 +222,8 @@
 								<bsform:button type="submit" style="primary" size="defaultSize" value="${submitButton}" />
 							</div>
 							
-					</fieldset>
-				</form:form>
-			</fieldset>
-		</jsp:attribute>
-	</bs:panel>
+						</fieldset>
+					</form:form>
+				</fieldset>
+	</div>
 </jsp:root>

@@ -49,3 +49,26 @@ $(document).ready(function () {
 		});
 	})
 });
+
+function updatePrivNote() {
+	var textArea = $("#private-note");
+	var newVal = textArea.val();
+	var oldVal = $("#old-private-note").val();
+	if (newVal == oldVal) {
+		textArea.css('background-color', '#D8EBAE').animate({backgroundColor : '#ffffff'}, 1000);
+		return false;
+	}
+	var formData = $("#note").serialize();
+	$.ajax({
+		url : "/ajax/updateprivatenote",
+		data : formData,
+		dataType: "text",
+		success : function(data, textStatus, jqXHR) {
+			textArea.css('background-color', '#D8EBAE').animate({backgroundColor : '#ffffff'}, 1000);
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			alert("error: " + errorThrown);
+		}
+	});
+	return false;
+}

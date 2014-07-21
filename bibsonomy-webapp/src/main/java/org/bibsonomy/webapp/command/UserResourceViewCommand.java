@@ -9,7 +9,7 @@ import org.bibsonomy.webapp.util.DidYouKnowMessage;
  *
  * @author  Dominik Benz
  */
-public class UserResourceViewCommand extends TagResourceViewCommand implements DidYouKnowMessageCommand {
+public class UserResourceViewCommand extends TagResourceViewCommand {
 
 	/** the group whode resources are requested*/
 	private ConceptsCommand concepts = new ConceptsCommand();
@@ -35,10 +35,6 @@ public class UserResourceViewCommand extends TagResourceViewCommand implements D
 	 */
 	// TODO: use UserRelation as type
 	private String userSimilarity = UserRelation.FOLKRANK.name();
-	
-	
-	private DidYouKnowMessage didYouKnowMessage;
-	
 	
 	/**
 	 * @return the concepts
@@ -126,18 +122,6 @@ public class UserResourceViewCommand extends TagResourceViewCommand implements D
 	 */
 	public void setOfFriendUser(boolean ofFriendUser) {
 		this.ofFriendUser = ofFriendUser;
-	}
-
-	@Override
-	public DidYouKnowMessage getDidYouKnowMessage() {
-		
-		return this.didYouKnowMessage;
-	}
-
-	@Override
-	public void setDidYouKnowMessage(DidYouKnowMessage didYouKnowMessage) {
-		
-		this.didYouKnowMessage = didYouKnowMessage;
 	}
 
 }

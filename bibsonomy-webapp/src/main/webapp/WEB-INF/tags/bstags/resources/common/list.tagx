@@ -10,7 +10,6 @@
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
-	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false" description="Should navigation links (next/pref) be shown? Defaults to true if not set."/>
 	<jsp:directive.attribute name="listID"  type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="className"  type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="widthClassName"  type="java.lang.String" required="true"/>
@@ -26,20 +25,13 @@
 	<jsp:directive.attribute name="listHeadline" fragment="true" required="false"/>
 
 	<jsp:directive.variable name-given="post" scope="NESTED"/>
-
-	
-	<c:if test="${empty disableListNavigation}">
-		<c:set var="disableListNavigation" value="${false}"/>
-	</c:if>					
 	
 	<jsp:invoke fragment="listHeadline" />
 	
 	<div id="${listID}" class="${className} ${widthClassName}">
-			
 		<c:if test="${not empty extTitle}">
  			<div class="postlistTitle posts">${extTitle}</div>
 		</c:if>
-		
 		
 		<!-- iterate over a list of resources and create the list -->
 		<!-- ${widthClassName}  -->

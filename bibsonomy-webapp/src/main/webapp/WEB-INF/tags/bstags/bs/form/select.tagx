@@ -6,6 +6,7 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 	<jsp:directive.tag description="Render a form select field in bootstrap3 style." />
@@ -17,7 +18,9 @@
 	<jsp:directive.attribute name="noHelp" type="java.lang.Boolean" required="false" description="Shall the popover help be shown?"/>
 	
 	<jsp:directive.attribute name="labelText" type="java.lang.String" required="false" description="Alternativly to path, you can define directly a description for the label."/>
+	<jsp:directive.attribute name="labelKey" type="java.lang.String" required="false" description="Alternativly to path, you can define directly a message key for the label."/>
 	<jsp:directive.attribute name="helpText" type="java.lang.String" required="false" description="Alternativly to path.help, you can define the content for popover help"/>
+	<jsp:directive.attribute name="helpKey" type="java.lang.String" required="false" description="Alternativly to path.help, you can define the message key for popover help"/>
 	<jsp:directive.attribute name="small" type="java.lang.Boolean" required="false" description="Reduces the element width to 33 percent" />
 	
 	<!-- HTML attributes -->
@@ -52,32 +55,57 @@
 		</c:otherwise>
 	</c:choose>
 	
-	<c:if test="${empty labelText}">
+	<c:if test="${empty labelText and empty labelKey}">
 		<fmt:message var="labelText" key="${path}" />
 	</c:if>
 	
-	<c:if test="${empty helpText}">
+	<c:if test="${not empty labelKey}">
+		<fmt:message var="labelText" key="${labelKey}" />
+	</c:if>
+	
+	<c:if test="${empty helpText and empty helpKey}">
 		<fmt:message var="helpText" key="${path}.help" />
+	</c:if>
+	
+	<c:if test="${not empty helpKey}">
+		<fmt:message var="helpText" key="${helpKey}" />
 	</c:if>
 
 	<c:set var="helpPopover" value="" />
 	<c:if test="${empty noHelp or not noHelp}">
 		<c:set var="helpPopover" value="help-popover" />
 	</c:if>
-
-			
+	
 	<c:if test="${not empty small and small}">
-		<c:set var="classSmallField" value="smallField" />  
+		<c:set var="classSmallField" value="smallField" />
 	</c:if>
 
 	<c:if test="${empty id}">
 		<c:set var="id" value="${path}" />
 	</c:if>
 
+
+
+	<!-- errors -->
+	<c:set var="formErrors"><form:errors path="${path}" /></c:set>
+
+
 	<!--+
 		| bootstrap 3 form-group 
 		+-->
-	<div class="form-group">	
+	<div class="form-group${not empty formErrors ? ' has-error' : ''}">
+	
+		<!-- error feedback -->
+		<c:if test="${not empty formErrors}">
+			<div class="col-sm-offset-${labelColSpan} col-sm-${inputColSpan}">
+				<bs:feedback style="danger" size="defaultSize" >
+					<jsp:attribute name="feedbackBody">
+						<form:errors path="${path}" />
+					</jsp:attribute>
+				</bs:feedback>
+			</div>
+		</c:if>
+	
 		<!--+
 			| followed by output label 
 			+-->
@@ -86,28 +114,26 @@
 		</label>
 
 		<div class="col-sm-${inputColSpan}">
-			
 			<c:choose>
-				<c:when test="${not empty itemLabels}">
-					<form:select multiple="${multiple ? 'multiple' : 'false'}" path="${path}" cssClass="form-control ${helpPopover} ${ small ? classSmallField : ''}" onchange="${onchange}"> 
-						<c:forEach items="${itemLabels}" var="optionLabel" varStatus="cnt">
-							<form:option value="${item[cnt.index]}"><c:out value="${optionLabel}" /></form:option>
-						</c:forEach>
-					</form:select>
+				<c:when test="${ not empty itemLabels}">
+-					<form:select multiple="${multiple ? 'multiple' : 'false'}" path="${path}" cssClass="form-control ${helpPopover} ${ small ? classSmallField : ''}" onchange="${onchange}"> 
+-						<c:forEach items="${itemLabels}" var="optionLabel" varStatus="cnt">
+-							<form:option value="${items[cnt.index]}"><c:out value="${optionLabel}" /></form:option>
+-						</c:forEach>
+-					</form:select>
 				</c:when>
+			
 				<c:otherwise>
-					<form:select multiple="${multiple ? 'multiple' : 'false'}" path="${path}" cssClass="form-control ${helpPopover} ${ small ? classSmallField : ''}" onchange="${onchange}" items="${items}" /> 	
+					<form:select multiple="${multiple ? 'multiple' : 'false'}" path="${path}" cssClass="form-control ${helpPopover} ${ small ? classSmallField : ''}" onchange="${onchange}" items="${items}" />
 				</c:otherwise>
 			</c:choose>
-			
-			
+				
 			<c:if test="${empty noHelp or not noHelp}">
 				<div class="help help-header hide"><c:out value="${labelText}" /></div>
 				<div class="help help-content hide">${helpText}</div>
 			</c:if>
 			
-			<!-- errors -->
-			<form:errors path="${path}" />
-		</div>	
+			
+		</div>
 	</div>
 </jsp:root>

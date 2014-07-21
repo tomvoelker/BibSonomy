@@ -596,6 +596,11 @@
 						<property name="controllerBeanName" value="scraperInfoController"/>
 					</bean>
 				</entry>
+				<entry key="/friendsoverview">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="friendsOverviewController"/>
+					</bean>
+				</entry>
 				<entry key="/exportLayouts">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="exportFormatController"/>
@@ -872,6 +877,19 @@
 	</bean>
 	
 	<bean id="scraperInfoController" class="org.bibsonomy.webapp.controller.ScraperInfoController" scope="request" />
+	
+	<bean id="friendsOverviewController" class="org.bibsonomy.webapp.controller.FriendsOverviewController" scope="request" parent="multiResourceListController">
+		<property name="logic" ref="logic" />
+		<property name="supportedResources" ref="allResources" />
+		<property name="didYouKnowMessages">
+			<list>
+				<bean class="org.bibsonomy.webapp.util.DidYouKnowMessage">
+					<property name="messageKey" value="friendoverview.hint.addmore"/>
+					<property name="alertType" value="success" /> 
+				</bean>
+			</list>
+		</property>
+	</bean>
 
 	<bean id="exportFormatController" class="org.bibsonomy.webapp.controller.ExportFormatController" scope="request" >
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>

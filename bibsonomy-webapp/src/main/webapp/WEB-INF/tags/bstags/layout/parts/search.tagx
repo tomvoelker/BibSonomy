@@ -25,6 +25,8 @@
 	<jsp:directive.attribute name="formExtra" fragment="true" required="false" description="Any extra form input fields you want to add."/>
 		
 		
+		
+		<!-- FIXME: Currently the functionality of this tag is no longer used. There is now only one search form without consideration of the page content (in the old layout, the selected search depended on the current page (e.g. user search on a user page, concept search on a concept page). -->
 	<div id="search">
 		<form action="${formAction}" method="get" id="searchForm" class="smallform">
 			<div class="input-group">

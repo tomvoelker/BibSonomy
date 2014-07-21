@@ -7,15 +7,15 @@
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
 	xmlns:export="urn:jsptagdir:/WEB-INF/tags/bstags/export/bibtex"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
-    xmlns:pub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
-    xmlns:gpub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
-    xmlns:ref="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication/references"
-    xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion"
-    xmlns:review="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion/review"
+	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
+	xmlns:gpub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
+	xmlns:ref="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication/references"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion"
+	xmlns:review="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion/review"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:goldpub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
-	>
+	xmlns:goldpub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="otherPosts" type="java.util.List" required="true"/>
@@ -86,8 +86,8 @@
 										<li>
 											<fmt:message var="downloadPrivDocTitle" key="bibtex.actions.private_document.download"/>
 											<a href="${goldstandard.url}" title="${downloadPrivDocTitle}"> 
-								  				<img alt="${downloadPrivDocTitle}" src="${resdir}/image/document-txt-blue.png" style="float: left; margin-right: 10px;"/>
-								  				<c:out value="${goldstandard.url}" />											
+												<img alt="${downloadPrivDocTitle}" src="${resdir}/image/document-txt-blue.png" style="float: left; margin-right: 10px;"/>
+												<c:out value="${goldstandard.url}" />
 											</a>
 										</li>
 									</c:if>
@@ -120,43 +120,42 @@
 						<c:when test="${fn:length(command.relatedUserCommand.relatedUsers) lt 8}">
 							<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
 								<div class="ownerAvatar" >
-									<span>@${fn:escapeXml(user.name)}</span>
-									<a class="profilepic" href="/bibtex/1${publication.interHash}/${fn:escapeXml(user.name)}" title="@${fn:escapeXml(user.name)}">
-										<img alt="@${fn:escapeXml(user.name)}" src="/picture/user/${fn:escapeXml(user.name)}" />
+									<c:set var="relatedUsername"><user:username noLink="${true}" user="${user}" /></c:set>
+									<span>${relatedUsername}</span>
+									<a class="profilepic" href="/bibtex/1${publication.interHash}/${fn:escapeXml(user.name)}" title="${fn:escapeXml(relatedUsername)}">
+										<img alt="${fn:escapeXml(relatedUsername)}" src="/picture/user/${fn:escapeXml(user.name)}" />
 									</a>
 								</div>
 								<c:out value=" "/>
-								
 							</c:forEach>
 						</c:when>
 						<c:otherwise>
-							
-							
-								<div class="lessUser">
-									<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}" begin="0" end="6" varStatus="count">
-										<div class="ownerAvatar">
-											<span>@${fn:escapeXml(user.name)}</span>
-											<a class="profilepic" href="/bibtex/1${publication.interHash}/${fn:escapeXml(user.name)}" title="@${fn:escapeXml(user.name)}">
-												<img alt="@${fn:escapeXml(user.name)}" src="/picture/user/${fn:escapeXml(user.name)}" />
-											</a>
-										</div>
-									</c:forEach>
-									
-								</div>
-								<div class="moreUser" style="display: none;">
-								
-									<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}" begin="7" varStatus="count">
-										<div class="ownerAvatar">
-											<span>@${fn:escapeXml(user.name)}</span>
-											<a class="profilepic" href="/bibtex/1${publication.interHash}/${fn:escapeXml(user.name)}" title="@${fn:escapeXml(user.name)}">
-												<img alt="@${fn:escapeXml(user.name)}" src="/picture/user/${fn:escapeXml(user.name)}" />
-											</a>
-										</div>
-									</c:forEach>
-								</div>
-								<div style="float: left; padding-top: 56px;">
-									<a href="#" id="showMoreUser"><c:out value="${fn:length(command.relatedUserCommand.relatedUsers)-7} " /> <span>more</span></a>
-								</div>
+							<div class="lessUser">
+								<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}" begin="0" end="6" varStatus="count">
+									<div class="ownerAvatar">
+									<!-- TODO: (bootstrap) introduce tagx file -->
+										<c:set var="username"><user:username noLink="${true}" user="${user}" /></c:set>
+										<span>${username}</span>
+										<a class="profilepic" href="/bibtex/1${publication.interHash}/${fn:escapeXml(user.name)}" title="${fn:escapeXml(username)}">
+											<img alt="${fn:escapeXml(username)}" src="/picture/user/${fn:escapeXml(user.name)}" />
+										</a>
+									</div>
+								</c:forEach>
+							</div>
+							<div class="moreUser" style="display: none;">
+								<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}" begin="7" varStatus="count">
+									<div class="ownerAvatar">
+										<c:set var="username"><user:username noLink="${true}" user="${user}" /></c:set>
+										<span>${username}</span>
+										<a class="profilepic" href="/bibtex/1${publication.interHash}/${fn:escapeXml(user.name)}" title="${fn:escapeXml(username)}">
+											<img alt="${username}" src="/picture/user/${fn:escapeXml(user.name)}" />
+										</a>
+									</div>
+								</c:forEach>
+							</div>
+							<div style="float: left; padding-top: 56px;">
+								<a href="#" id="showMoreUser"><c:out value="${fn:length(command.relatedUserCommand.relatedUsers)-7} " /> <span>more</span></a>
+							</div>
 						</c:otherwise>
 					</c:choose>
 					<br style="clear:left" /><br />
@@ -172,8 +171,6 @@
 				
 				<!-- discussion -->
 				<!-- this is a goldstandard page => postUserName is the goldstandard user "" -->
-				
-				
 			</div>
 		</div>
 	</div>

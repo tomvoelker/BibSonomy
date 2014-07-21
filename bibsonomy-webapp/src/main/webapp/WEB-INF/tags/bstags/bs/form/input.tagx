@@ -4,6 +4,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 	<jsp:directive.tag description="Render a form input field in the way it should typically be done with bootstrap." />
@@ -16,7 +17,9 @@
 	<jsp:directive.attribute name="tagsinput" type="java.lang.Boolean" required="false" description="If true, Bootstrap Tags Input is used"/>
 	
 	<jsp:directive.attribute name="labelText" type="java.lang.String" required="false" description="Alternativly to path, you can define directly a description for the label."/>
+	<jsp:directive.attribute name="labelKey" type="java.lang.String" required="false" description="Alternativly to path, you can define directly the message key for the label."/>
 	<jsp:directive.attribute name="helpText" type="java.lang.String" required="false" description="Alternativly to path.help, you can define the content for popover help"/>
+	<jsp:directive.attribute name="helpKey" type="java.lang.String" required="false" description="Alternativly to path.help, you can define the message key for popover help"/>
 	<jsp:directive.attribute name="small" type="java.lang.Boolean" required="false" description="Reduces the element width to 33 percent" />
 	
 	<!-- HTML attributes -->
@@ -50,15 +53,22 @@
 		</c:otherwise>
 	</c:choose>
 	
-	<c:if test="${empty labelText}">
+	<c:if test="${empty labelText and empty labelKey}">
 		<fmt:message var="labelText" key="${path}" />
 	</c:if>
 	
-	<c:if test="${empty helpText}">
+	<c:if test="${not empty labelKey}">
+		<fmt:message var="labelText" key="${labelKey}" />
+	</c:if>
+	
+	<c:if test="${empty helpText and empty helpKey}">
 		<fmt:message var="helpText" key="${path}.help" />
 	</c:if>
 
-			
+	<c:if test="${not empty helpKey}">
+		<fmt:message var="helpText" key="${helpKey}" />
+	</c:if>
+	
 	<c:set var="helpPopover" value="" />
 	<c:if test="${empty noHelp or not noHelp}">
 		<c:set var="helpPopover" value="help-popover" />
@@ -73,17 +83,35 @@
 		<c:set var="id" value="${path}" />
 	</c:if>
 
+	
+	<!-- errors -->
+	<c:set var="formErrors"><form:errors path="${path}" /></c:set>
+
+	
+
 	<!--+
 		| bootstrap 3 form-group 
 		+-->
-	<div class="form-group clearfix">
+	<div class="form-group${not empty formErrors ? ' has-error' : ''}">
 	
-	<!--+
-		| followed by output label 
-		+-->
-	<label class="col-sm-${labelColSpan} control-label" for="${fn:escapeXml(id)}">
-		<c:out value="${labelText}" />
-	</label>
+	
+		<!-- error feedback -->
+		<c:if test="${not empty formErrors}">
+			<div class="col-sm-offset-${labelColSpan} col-sm-${inputColSpan}">
+				<bs:feedback style="danger" size="defaultSize" >
+					<jsp:attribute name="feedbackBody">
+						<form:errors path="${path}" />
+					</jsp:attribute>
+				</bs:feedback>
+			</div>
+		</c:if>
+	
+		<!--+
+			| followed by output label 
+			+-->
+		<label class="col-sm-${labelColSpan} control-label" for="${fn:escapeXml(id)}">
+			<c:out value="${labelText}" />
+		</label>
 		
 
 		<!--+
@@ -107,8 +135,7 @@
 				<div class="help help-content hide">${helpText}</div>
 			</c:if>
 			<jsp:invoke fragment="appendix" />
-			<!-- errors -->
-			<form:errors cssClass="alert alert-danger hide" path="${path}" />
+			
 		</div>
 	</div>
 </jsp:root>

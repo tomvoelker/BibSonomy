@@ -16,6 +16,7 @@
 
 	<div class="edit-media-buttons btn-group btn-group-xs dropdown">
 	
+	<c:set var="buttonClasses" value="btn btn-default btn-xsmall"/>
 		<!--+
 			| COPY/EDIT
 			+-->
@@ -29,17 +30,21 @@
 							<c:param name="user" value="${post.user.name}" />
 							<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
 						</c:url>
+						
 						<fmt:message key="bibtex.actions.copy.title" var="copyTitle"/>
-						<a class="btn btn-default btn-xsmall item copy" href="${copyLink}" 
-							title="${fn:escapeXml(copyTitle)}"><span class="glyphicon glyphicon-floppy-disk"><!--  --></span></a>
+						<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
+							<span class="glyphicon glyphicon-floppy-disk"><!--  --></span>
+						</a>
+					
 					</c:when>
 				
 					<!-- EDIT other actions -->
 					<c:otherwise><!-- user is post's owner -->
-						<fmt:message key="bibtex.actions.edit.title" var="editTitle"/>
 						
-						<a class="btn btn-default btn-xsmall item edit" href="/editPublication?intraHashToUpdate=${post.resource.intraHash}" 
-							title="${editTitle}"><span class="glyphicon glyphicon-edit ${post.user.name ne loginUserName ? 'btn-disabled' : ''}"><!--  --></span></a>
+						<fmt:message key="bibtex.actions.edit.title" var="editTitle"/>
+						<a class="${buttonClasses}" href="/editPublication?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
+							<span class="glyphicon glyphicon-edit ${post.user.name ne loginUserName ? 'btn-disabled' : ''}"><!--  --></span>
+						</a>
 
 					</c:otherwise>
 				</c:choose>
@@ -47,7 +52,9 @@
 			<c:otherwise>
 				<!-- For signed out users we always show the inactive copy button -->
 				<fmt:message key="bibtex.actions.copy.inactive" var="copyTitle"/>
-				<a class="item icopy btn-disabled" title="${copyTitle}"><!-- Keep Me --></a>
+				<a class="${buttonClasses}" title="${copyTitle}" disabled="disabled">
+					<span class="glyphicon glyphicon-floppy-disk"><!-- Keep Me --></span>
+				</a>
 			</c:otherwise>
 		</c:choose>
 		
@@ -66,8 +73,9 @@
 				<c:param name="clear" value="false" />
 			</c:url>
 				<fmt:message key="bibtex.actions.removeMessage.title" var="removeTitle" />
-						<a class="btn btn-default btn-xsmall item remove confirmdelete" href="${fn:escapeXml(message_remove)}" title="${removeTitle}" 
-							data-type="inboxpost"><span class="glyphicon glyphicon-remove"><!--  --></span></a>
+				<a class="${buttonClasses}" href="${fn:escapeXml(message_remove)}" title="${removeTitle}" data-type="inboxpost">
+					<span class="glyphicon glyphicon-remove"><!--  --></span>
+				</a>
 			</c:when>
 			<c:otherwise>
 				<!-- POST DELETE -->
@@ -78,12 +86,15 @@
 							<c:param name="resourceHash" value="${post.resource.intraHash}" />
 							<c:param name="ckey" value="${ckey}" />
 						</c:url>
-						<a class="btn btn-default btn-xsmall item delete confirmdelete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" 
-							data-type="post"><span class="glyphicon glyphicon-remove"><!--  --></span></a>
+						<a class="${buttonClasses}" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" data-type="post">
+							<span class="glyphicon glyphicon-remove"><!--  --></span>
+						</a>
 					</c:when>
 					<c:otherwise>
 						<fmt:message key="bibtex.actions.delete.inactive" var="deleteTitle"/>
-						<a class="btn btn-default btn-xsmall item btn-disabled" title="${deleteTitle}"><span class="glyphicon glyphicon-remove"><!--  --></span></a>
+						<a class="${buttonClasses}" title="${deleteTitle}" disabled="disabled">
+							<span class="glyphicon glyphicon-remove"><!--  --></span>
+						</a>
 					</c:otherwise>
 				</c:choose>
 			</c:otherwise>
@@ -94,53 +105,32 @@
 			| TODO: check if community post exists
 			+-->
 		<fmt:message key="bibtex.actions.communityPost" var="communityPost" />
-		
-		<a href="/bibtex/${post.resource.interHash}" class="btn btn-default btn-xsmall item communitypost" title="${fn:escapeXml(communityPost)}">
-			<span style="font-size:90%;" class="glyphicon glyphicon-user"><!--  --></span><span class="glyphicon glyphicon-user" style="margin-left:-4px; font-size: 70%;"><!--  --></span>
+		<a href="/bibtex/${post.resource.interHash}" class="${buttonClasses}" title="${fn:escapeXml(communityPost)}">
+			<span style="font-size:90%;" class="glyphicon glyphicon-user"><!--  --></span>
+			<span class="glyphicon glyphicon-user" style="margin-left:-4px; font-size: 70%;"><!--  --></span>
 		</a>
 		<!--+
-			| COPY/HISTORY
+			| HISTORY
 			+-->
 		<c:if test="${not empty enableHistory}">
 			<c:choose>
-				<c:when test="${command.context.userLoggedIn}">
-					<c:choose>
-						<!-- COPY -->
-						<c:when test="${loginUserName ne post.user.name}">
-							<!-- user is not post's owner -->
-							<fmt:message key="bibtex.actions.posthistory.inactive"
-								var="copyTitle" />-->
-						<!-- TODO  only post's owner has acces to post history  -->
-							<fmt:message key="bibtex.actions.posthistory.inactive"
-								var="historyTitle" />
-							<a class="btn btn-default btn-xsmall item ihistory" 
-								title="${fn:escapeXml(historyTitle)}"><span class="glyphicon glyphicon-floppy-disk"><!--  --></span></a>
-						</c:when>
-	
-						<!-- H -->
-						<c:otherwise>
-							<!-- user is post's owner -->
-							<fmt:message key="bibtex.actions.posthistory.title"
-								var="postHistoryTitle" />
-							<!-- 						<a class="item history"
-								href="/postHistory/${post.resource.intraHash}/${post.user.name}"
-								title="${postHistoryTitle}"> -->
-							<a class="btn btn-default btn-xsmall item history"
-								href="/history/publication/${post.resource.intraHash}/${post.user.name}"
-								title="${postHistoryTitle}"><span class="glyphicon glyphicon-time"><!--  --></span></a>
-	
-						</c:otherwise>
-					</c:choose>
+				<c:when test="${command.context.userLoggedIn and (loginUserName eq post.user.name)}">
+					<!-- user is post's owner -->
+					<fmt:message key="bibtex.actions.posthistory.title" var="postHistoryTitle" />
+					<a class="${buttonClasses}" href="/history/publication/${post.resource.intraHash}/${post.user.name}" title="${postHistoryTitle}">
+						<span class="glyphicon glyphicon-time"><!--  --></span>
+					</a>
 				</c:when>
 				<c:otherwise>
-					<!-- For signed out users we always show the inactive copy button -->
-					<fmt:message key="bibtex.actions.posthistory.inactive"
-						var="historyTitle" />
-					<a class="btn btn-default btn-xsmall item ihistory" title="${historyTitle}"><span class="glyphicon glyphicon-floppy-disk"><!--  --></span></a>
+					<!-- For signed out users and those who do not own the post we always show the inactive history button -->
+					<fmt:message key="bibtex.actions.posthistory.inactive" var="historyTitle" />
+					<a class="${buttonClasses}" title="${historyTitle}" disabled="disabled">
+						<span class="glyphicon glyphicon-floppy-disk"><!--  --></span>
+					</a>
 				</c:otherwise>
 			</c:choose>
 		</c:if>
-	
+
 		<!--+
 			| PICK / UNPICK 
 			+-->
@@ -158,23 +148,27 @@
 					<c:param name="action" value="${pickUnpick}"/>
 				</c:url>
 				<fmt:message key="bibtex.actions.${pickUnpick}.title" var="pickUnpickTitle"/>
-				<a class="btn btn-default btn-xsmall item ${pickUnpick}" onclick="return pickUnpickPublication(this);" 
-					title="${pickUnpickTitle}" href="${fn:escapeXml(pickUnpick_url)}"><span class="glyphicon glyphicon-folder-open"><!--  --></span></a>
+				<a class="${buttonClasses}" onclick="return pickUnpickPublication(this);" title="${pickUnpickTitle}" href="${fn:escapeXml(pickUnpick_url)}">
+					<span class="glyphicon glyphicon-folder-open"><!--  --></span>
+				</a>
 			</c:when>
 			<c:otherwise>
 				<fmt:message key="bibtex.actions.pick.inactive" var="pickUnpickTitle"/>
-				<span class="btn btn-default btn-xsmall item i${pickUnpick}" title="${pickUnpickTitle}"><span class="glyphicon glyphicon-folder-open"><!--  --></span></span>
+				<a class="${buttonClasses}" title="${pickUnpickTitle}" disabled="disabled">
+					<span class="glyphicon glyphicon-folder-open"><!--  --></span>
+				</a>
 			</c:otherwise>
 		</c:choose>
-	
-		<button class="btn btn-default btn-small dropdown-toggle" data-toggle="dropdown"><span class="caret"><!-- KEEP ME --></span></button>
-		
+
+		<button class="btn btn-default btn-small dropdown-toggle" data-toggle="dropdown">
+			<span class="caret"><!-- KEEP ME --></span>
+		</button>
+
 		<ul class="dropdown-menu">
-		
+
 			<!--+
 				| RESOURCE LINKS (URL, DOI, BIBTEX, OPEN URL)
 				+-->
-			
 			<c:if test="${not disableResourceLinks}">
 				<!-- URL -->
 				<li>
@@ -189,7 +183,7 @@
 						</c:otherwise>
 					</c:choose>
 				</li>
-				
+
 				<!-- DOI -->
 				<li>		
 					<c:choose>
@@ -203,13 +197,13 @@
 						</c:otherwise>
 					</c:choose>
 				</li>
-				
+
 				<!-- BibTeX -->
 				<li>
 					<fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />
 					<a class="litem" href="/bib/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}" title="${bibtexTitle}"><fmt:message key="bibtex.actions.bibtex.short"/></a>
 				</li>
-				
+
 				<!-- OPENURL -->
 				<li>
 					<c:if test="${command.context.userLoggedIn and not command.context.loginUser.settings.simpleInterface}">
@@ -228,9 +222,9 @@
 			</c:if>
 
 			<c:if test="${mtl:userIsGroup(command.context.loginUser)}">
-			
+
 				<li class="divider"><!--  --></li>
-				
+
 				<li>
 					<!-- TODO: get the group the group user represents -->
 					<c:forEach var="group" items="${command.context.loginUser.groups}">
@@ -261,30 +255,7 @@
 					</c:forEach>
 				</li>
 			</c:if>
-		
-			<!--+
-				| ADMIN ACTIONS (COMMUNITY POST)
-				+ -->
-			<!-- TODO: When this icon is made visible for non admins, change c:if userLoggedIn to c:choose and display inactive icon for signed out users -->
-			<c:if test="${command.context.userLoggedIn}">
 
-					<!-- COMMUNITY POST -->
-					<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
-						<li class="divider"><!--  --></li>
-				
-						<li>
-							<c:url var="editGoldStandardLink" value="/editGoldStandardPublication">
-								<c:param name="hash" value="${post.resource.intraHash}" />
-								<c:param name="user" value="${post.user.name}" />
-								<c:param name="editBeforeSaving" value="true" />
-							</c:url>
-							
-							<fmt:message key="bibtex.actions.gold" var="goldTitle" />
-							<a class="item community" href="${editGoldStandardLink}" title="${goldTitle}"><!-- Keep Me --><c:out value="${goldTitle}" /></a>
-						</li>
-					</c:if>
-			</c:if>
-			
 			<!-- UnAPI -->
 			<li><abbr class="unapi-id" title="${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"><c:out value=" "/></abbr></li>
 		

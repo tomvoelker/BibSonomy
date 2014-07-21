@@ -4,6 +4,7 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
@@ -15,18 +16,17 @@
 	<nav class="navbar navbar-bibsonomy" role="banner">
 		<div class="container navi noborder">
 			<!-- Brand and toggle get grouped for better mobile display -->
-		    <div class="navbar-header">
-		      <button type="button" class="navbar-toggle btn btn-default navbar-btn" data-toggle="collapse" data-target="#bs-navbar-collapse">
-		        <span class="sr-only">Toggle navigation</span>
-		        <span class="icon-bar"><!--  --></span>
-		        <span class="icon-bar"><!--  --></span>
-		        <span class="icon-bar"><!--  --></span>
-		      </button>
-		      <!-- <a class="navbar-brand" href="#">Brand</a> -->
-		    </div>
-		    <div class="collapse navbar-collapse" id="bs-navbar-collapse">
-			  	<ul class="nav navbar-nav">
-			  		<li class="${activeTab eq 'home' ? 'active' : ''}"><a href="/"><fmt:message key="navi.home"/></a></li>
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle btn btn-default navbar-btn" data-toggle="collapse" data-target="#bs-navbar-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"><!--  --></span>
+					<span class="icon-bar"><!--  --></span>
+					<span class="icon-bar"><!--  --></span>
+				</button>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li class="${activeTab eq 'home' ? 'active' : ''}"><a href="/"><fmt:message key="navi.home"/></a></li>
 					<!--+ 
 				 		| myProjectName
 				 		+-->
@@ -35,7 +35,6 @@
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.my"/>${properties['project.name']}<b class="caret">&amp;nbsp;</b></a>
 							<ul class="dropdown-menu">
 								<li><a href="/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.myPosts"/></a></li>
-								<li><a href="/recommended"><fmt:message key="navi.recommendedPosts"/></a></li>
 								<c:if test="${not command.context.loginUser.settings.simpleInterface}">
 									<li><a href="/viewable/private"><fmt:message key="navi.privatePosts"/></a></li>
 									<li><a href="/viewable/friends"><fmt:message key="navi.friendsPosts"/></a></li>
@@ -66,30 +65,29 @@
 					<!--+
 						| groups
 						+-->
-	
 					<c:choose>
 						<c:when test="${not empty loginUser.groups}">
 							<li class="dropdown ${activeTab eq 'groups' ? 'active' : ''}">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.groups"/><b class="caret">&amp;nbsp;</b></a>
 								<ul class="dropdown-menu">
-								<c:forEach var="grp" items="${loginUser.groups}">
+									<li><a href="/groups"><fmt:message key="navi.groups.all"/></a></li>
+									<li class="divider"><!-- keep me --></li>
+									<c:forEach var="grp" items="${loginUser.groups}">
 									<li class="dropdown-submenu">
-										<a href="#" class="dropdown-toggle" data-toggle="dropdown">blubb</a>
+										<a href="#" class="dropdown-toggle" data-toggle="dropdown"><c:out value="${grp.name}"/></a>
 										<ul class="dropdown-menu">
-											<li><a href="/group/${mtl:encodeURI(grp.name)}"><c:out value='${grp.name}'/></a></li>
+											<li><a href="/group/${mtl:encodeURI(grp.name)}"><fmt:message key="navi.posts" /></a></li>
 											<li><a href="/relevantfor/group/${mtl:encodeURI(grp.name)}"><fmt:message key="navi.relevantFor"/></a></li>
 											<li><a href="/viewable/${mtl:encodeURI(grp.name)}"><fmt:message key="navi.viewable"/></a></li>
 											<li>
 												<c:if test="${grp.sharedDocuments}">
-													<a href="/group/${mtl:encodeURI(grp.name)}?filter=JUST_PDF">
-														<fmt:message key="navi.groups" /><fmt:message key="navi.pdfs" />
-													</a>
+													<a href="/group/${mtl:encodeURI(grp.name)}?filter=JUST_PDF"><fmt:message key="navi.pdfs" /></a>
 												</c:if>
 											</li>
 											<li><a href="/discussed/group/${mtl:encodeURI(grp.name)}"><fmt:message key="navi.discussedPosts"/></a></li>
 										</ul>
 									</li>
-								</c:forEach>
+									</c:forEach>
 								</ul>
 							</li>
 						</c:when>
@@ -125,12 +123,12 @@
 							</ul>
 						</li>
 					</c:if>
-			  	</ul>
-	  			<ul class="nav navbar-nav navbar-right">
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
 					<c:if test="${not empty loginUserName}" >
-						<li><a href="/user/${mtl:encodeURI(loginUserName)}"><c:out value="${loginUserName}" /></a></li>
+						<li><user:username user="${command.context.loginUser}" /></li>
 					</c:if>
-					<li class="dropdown">
+					<li class="dropdown ${activeTab eq 'myprofile' ? 'active' : ''}">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"><!-- KEEP ME --></span><b class="caret">&amp;nbsp;</b></a>
 						<ul class="dropdown-menu">
 	
@@ -164,32 +162,36 @@
 									</li>
 									<li>
 										<fmt:message var="friends" key="navi.friends" />
-										<a href="/friends" title="friends">
+										<a href="/friendsoverview" title="friends">
 											<span class="glyphicon glyphicon-user"><!--  --></span>&amp;nbsp;
 											<fmt:message key="navi.friends"/>
 										</a>
 									</li>
+									<!-- 
 									<li>
 										<fmt:message var="titleSperes" key="navi.spheres" />
 										<a href="/spheres" title="${titleSpheres}">
-											<span class="glyphicon glyphicon-eye-open"><!-- KEEP ME --></span>&amp;nbsp;
+											<span class="glyphicon glyphicon-eye-open"> asd </span>&amp;nbsp;
 											<fmt:message key="navi.spheres" />
 										</a>
 									</li>
+									-->
 									<li> 
 										<fmt:message var="editTags" key="navi.editTags" />
-										<a href="/spheres" title="${editTags}">
+										<a href="/editTags" title="${editTags}">
 											<span class="glyphicon glyphicon-tag"><!-- KEEP ME --></span>&amp;nbsp;
 											<fmt:message key="navi.editTags" />
 										</a>
 									</li>
 									<li> 
 										<fmt:message var="concepts" key="navi.concepts" />
-										<a href="/spheres" title="${concepts}">
+										<a href="/concepts/${loginUserName}" title="${concepts}">
 											<span class="glyphicon glyphicon-tags"><!-- KEEP ME --></span>&amp;nbsp;
 											<fmt:message key="navi.concepts" />
 										</a>
 									</li>
+									
+									<!-- divider -->
 									<li class="divider"><!-- KEEP ME --></li>
 	
 									<li class="sidebarnavi_entry sidebarnavi_entry_active sidebarnavi_entry_06">
@@ -207,7 +209,10 @@
 											<fmt:message key="navi.help" />
 										</a>
 									</li>
+									
+									<!-- divider -->
 									<li class="divider"><!--  --></li>
+									
 									<li><a href="/settings"><span class="glyphicon glyphicon-cog"><!-- KEEP ME --></span>&amp;nbsp;<fmt:message key="navi.settings"/></a></li>
 									<li><a href="/logout"><span class="glyphicon glyphicon-off"><!-- KEEP ME --></span>&amp;nbsp;<fmt:message key="navi.logout"/></a></li>
 								</c:when>
@@ -227,7 +232,7 @@
 									</li>
 									<li class="divider"><!--  --></li>
 									<li>
-										<a href="/spheres" title="${titleSpheres}">
+										<a href="/login" title="${titleSpheres}">
 											<span class="glyphicon glyphicon glyphicon-log-in"><!-- KEEP ME --></span>&amp;nbsp;
 											<fmt:message key="navi.login" />
 										</a>
@@ -236,12 +241,10 @@
 										<a href="/register" title="${titleSpheres}">
 											<span class="glyphicon glyphicon-edit"><!-- KEEP ME --></span>&amp;nbsp;
 											<fmt:message key="navi.register" />
-										</a>	
+										</a>
 									</li>
 								</c:otherwise>
 							</c:choose>
-							
-							
 						</ul>
 					</li>
 				</ul>

@@ -5,7 +5,7 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
-	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
@@ -30,52 +30,69 @@
 	<layout:editPostLayout command="${command}" requPath="${requPath}" resourceType="Publication" activeTab="post" minimizedContentWidth="${true}">
 
 		<jsp:attribute name="generalInformation">
+			
 			<c:if test="${not empty command.scrapingContext}">
 				<c:if test="${not empty command.scrapingContext.selectedText}">
-					<span class="fsLabel"><fmt:message key="post.resource.fields.scraper.selectedText" /></span>
-					<buttons:help message="post.resource.fields.scraper.selectedText.help" cssClass="widehelp"/>
-					<textarea class="fsInput fsScraperSelectedText" readonly="readonly"><c:out value="${command.scrapingContext.selectedText}" /></textarea>
+					<div class="form-group">
+                    	<label class="col-sm-3 control-label"><fmt:message key="post.resource.fields.scraper.selectedText" /></label>
+                    	<div class="col-sm-9">
+                    		<textarea rows="2" class="form-control fsInput fsScraperSelectedText" readonly="readonly"><c:out value="${command.scrapingContext.selectedText}" /></textarea>
+                    		<p class="help-block"><fmt:message key="post.resource.fields.scraper.selectedText.help" /></p>
+                    	</div>
+                    </div>
+                    <hr />
 				</c:if>
 			</c:if>
         	<editpub:required post="${post}" autocompletion="$(false)"/>
 		</jsp:attribute>
 				
         <jsp:attribute name="detailedInformation">
+        
 			<editpub:files post="${post}" />
+		
 			<editpub:details post="${post}" />
 			
 			<c:if test="${not empty command.scrapingContext}">
-          		<bform:fieldset maximized="false" legendKey="post.resource.fields.scraper" >
-          			<jsp:attribute name="content">
+				<bsform:fieldset legendKey="post.resource.fields.scraper" >
+					<jsp:attribute name="content">
 
-		                  <div class="fsRow">
-		                    <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.url"/></span>
-		                    <span class="fsInput" style="background-color:#EEEEEE;"><a href="${fn:escapeXml(command.scrapingContext.url)}"><c:out value="${command.scrapingContext.url}"/></a></span>
-		                  </div>
+	                  	<div class="form-group">
+	                    	<label class="col-sm-3 control-label"><fmt:message key="post.resource.fields.scraper.url"/></label>
+	                    
+	                    	<div class="col-sm-3">
+                    			<p class="form-control-static">
+	                    			<span class="fsInput" style="background-color:#EEEEEE;">
+	                    				<a href="${fn:escapeXml(command.scrapingContext.url)}"><c:out value="${command.scrapingContext.url}"/></a>
+                    				</span>
+	                    		</p>
+	                    	</div>
+	                  	</div>
+	                  	
+	                  	<c:if test="${not empty command.scrapingContext.selectedText}">
+							<div class="form-group">
+								<label class="col-sm-3 control-label"><fmt:message key="post.resource.fields.scraper.selectedText"/></label>
+								<div class="col-sm-9">
+		        					<textarea class="form-control" rows="5" disabled="disabled"><c:out value="${command.scrapingContext.selectedText}"/></textarea>
+	        					</div>
+        					</div>
+						</c:if>
 		
-		                  <c:if test="${not empty command.scrapingContext.selectedText}">
-		                    <div class="fsRow">
-		                      <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.selectedText"/></span>
-		                      <span class="fsInput" style="background-color:#EEEEEE; max-width: 800px; overflow: scroll;"><c:out value="${command.scrapingContext.selectedText}"/></span>
-		                    </div>
-		                  </c:if>
-		
-		                  <div class="fsRow">
-		                    <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.scraper"/></span>
-		                    <!-- for some strange reason, "#" destroys the functionality of "$" and thus "/scraperinfo#${..}" does not work -->
-		                    <c:set var="scraperinfourl" value="/scraperinfo#"/>
-		                    <span class="fsInput" style="background-color:#EEEEEE;"><a href="${scraperinfourl}${fn:escapeXml(command.scrapingContext.scraper.class.simpleName)}"><c:out value="${command.scrapingContext.scraper.class.simpleName}"/></a>: ${command.scrapingContext.scraper.info}</span>
-		                  </div>
-		
-		                  <div class="fsRow">
-		                    <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.result"/></span>
-		                    <div style="overflow: scroll;">
-		                    	<pre class="fsInput" style="width:0px;"><c:out value="${command.scrapingContext.bibtexResult}"/></pre>
-		                    </div>
-		                  </div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label"><fmt:message key="post.resource.fields.scraper.scraper"/><!--  --></label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><a href="${scraperinfourl}${fn:escapeXml(command.scrapingContext.scraper.class.simpleName)}"><c:out value="${command.scrapingContext.scraper.class.simpleName}"/></a>: ${command.scrapingContext.scraper.info}</p>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label"><fmt:message key="post.resource.fields.scraper.result"/></label>
+							<div class="col-sm-9">
+								<textarea class="form-control" rows="5" disabled="disabled"><c:out value="${command.scrapingContext.bibtexResult}"/></textarea>
+							</div>
+						</div>
 		                  
                 	</jsp:attribute>
-            	</bform:fieldset>
+            	</bsform:fieldset>
          	</c:if>
          	
        </jsp:attribute>

@@ -30,6 +30,8 @@
 	<jsp:directive.attribute name="noLoginBox" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>	
 	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
+	<jsp:directive.attribute name="noSidebar" type="java.lang.Boolean" required="false"/>
+	
 	
 	<!--+
 		| 
@@ -37,7 +39,7 @@
 		|
 		+-->
 	<jsp:output omit-xml-declaration="true" />
-	<jsp:output doctype-root-element="html"	doctype-system="about:legacy-compat" />
+	<jsp:output doctype-root-element="HTML" doctype-system="about:legacy-compat" />
 	
 	<jsp:element name="html">
 		<jsp:body>
@@ -106,23 +108,43 @@
 						 <menu:navi activeTab="${activeTab}" loginUser="${loginUser}" />
 				</div> <!-- /#navigation -->
 				<div class="container main">
-					<div class="row">
-					  	<div class="col-md-9">
-
+				
+					<c:choose>
+						
+						<c:when test="${noSidebar}">
+							
+							<!-- without sidebar -->
+							
 							<div id="intro">
 								<jsp:invoke fragment="contentIntro"/>
 							</div>
 					    	<jsp:invoke fragment="content"/>
-						    	
-					  	</div>
-					  	<div class="col-md-3 sidebar" id="sidebar">
-
-		  					<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}" infobox="${infobox}"/>
-			  					
-					  	</div>
-					  
-					</div><!-- /.row -->
-
+						</c:when>
+						
+						<c:otherwise>
+						
+							<!-- with sidebar -->
+							<div class="row">
+							
+							  	<div class="col-md-9">
+		
+									<div id="intro">
+										<jsp:invoke fragment="contentIntro"/>
+									</div>
+							    	<jsp:invoke fragment="content"/>
+								    	
+							  	</div>
+							  	<div class="col-md-3 sidebar" id="sidebar">
+		
+				  					<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}" infobox="${infobox}"/>
+					  					
+							  	</div>
+							  
+							</div><!-- /.row -->
+									
+						</c:otherwise>
+					</c:choose>
+					
 				</div> <!--  /.container -->
 
 			  	<div class="container footer">

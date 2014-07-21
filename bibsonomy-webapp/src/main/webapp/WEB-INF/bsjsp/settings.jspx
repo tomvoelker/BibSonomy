@@ -6,22 +6,22 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
-    xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:sql="http://java.sun.com/jsp/jstl/sql"
-    xmlns:settings="urn:jsptagdir:/WEB-INF/tags/bstags/settings"
-    xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
-    xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-    xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/bstags/spheres"
+	xmlns:settings="urn:jsptagdir:/WEB-INF/tags/bstags/settings"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/bstags/spheres"
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs">
-    
+	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
 	<fmt:message key="navi.settings" var="settingsPageTitle"/>
 	
-	<layout:tabLayout pageTitle="${settingsPageTitle}" headerMessageKey="navi.settings" headerLogoClass="settings" command="${command}" requPath="${requPath}" activeTab="my" minimizedContentWidth="${true}">		
+	<layout:tabLayout pageTitle="${settingsPageTitle}" headerMessageKey="navi.settings" headerLogoClass="settings" command="${command}" requPath="${requPath}" activeTab="myprofile" minimizedContentWidth="${true}">		
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/cv_page.css" />
 			<script type="text/javascript" src="${resdir}/javascript/cv/handlers.js"><!--  --></script>
@@ -31,32 +31,26 @@
 			| page content
 			+-->
 		<jsp:attribute name="tabcontent">
+				
 			<!-- display potential errors -->
-		    <errors:global errors="${errors}"/>	
-			<c:choose>
-				<c:when test="${command.selTab == 0}">
-					<settings:profile command="${command}"/>
-				</c:when>
-				<c:when test="${command.selTab == 1}">
-					<settings:settings command="${command}"/>
-				</c:when>
-				<c:when test="${command.selTab == 2}">
-					<settings:import command="${command}"/>
-				</c:when>
-				<c:when test="${command.selTab == 3 and (command.hasOwnGroup or not (empty param.user or empty param.requGroup or param.requGroup eq command.context.loginUser.name))}">
-					<settings:group command="${command}"/>
-				</c:when>
-				<c:when test="${command.selTab == 4 and not command.user.spammer}">
-					<settings:sync command="${command}"/>
-				</c:when>
-				<c:when test="${command.selTab == 5}">
-					<settings:cv command="${command}"/>
-				</c:when>
-				<c:when test="${command.selTab == 6}">
-					<settings:oauth command="${command}"/>
-				</c:when>	
-			</c:choose>
+			<errors:global errors="${errors}"/>	
 			
+			
+			<settings:profile command="${command}"/>
+			
+			<settings:settings command="${command}"/>
+			
+			<settings:import command="${command}"/>
+			
+			<c:if test="${(command.hasOwnGroup or not (empty param.user or empty param.requGroup or param.requGroup eq command.context.loginUser.name))}">
+				<settings:group command="${command}"/>
+			</c:if>
+			<settings:cv command="${command}"/>
+			
+			<settings:oauth command="${command}"/>
+			
+			<settings:sync command="${command}"/>
+
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading">
@@ -76,8 +70,8 @@
 					</parts:infobox>
 				</c:when>
 			</c:choose>
-         </jsp:attribute>
-	
+		</jsp:attribute>
+		
 		<!--+
 			| sidebar
 			+-->
@@ -119,51 +113,47 @@
 				<li>
 					<span class="sidebar_h"><fmt:message key="friends.friendof"/></span> 
 					<ul class="tagcloud sidebar_collapse_content">
-              			<c:forEach var="user" items="${command.userFriends}">
-                			<li><a href="/friend/${mtl:encodeURI(user.name)}"><c:out value="${user.name}"/></a><c:out value=" "/></li>
-              			</c:forEach>
-            		</ul>
-          		</li>
+						<c:forEach var="user" items="${command.userFriends}">
+							<li><a href="/friend/${mtl:encodeURI(user.name)}"><c:out value="${user.name}"/></a><c:out value=" "/></li>
+						</c:forEach>
+					</ul>
+				</li>
 
-		          <li><span class="sidebar_h"><fmt:message key="friends.yourfriends"/></span>
-		            <ul class="sidebar_collapse_content">
-		              <c:forEach var="user" items="${command.friendsOfUser}">
-		                <li>
-		                  <a href="/user/${mtl:encodeURI(user.name)}"><c:out value='${user.name}'/>&amp;nbsp;</a> 
-			                <fmt:message var="deleteFriendTitle" key="friends.actions.delete.title"><fmt:param value="${fn:escapeXml(user.name)}"/></fmt:message>
-		                  <a
-		    	             class="action" 
-		    	             href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(user.name)}&amp;action=removeFriend&amp;ckey=${ckey}&amp;forward=settings"
-		    	             title="${deleteFriendTitle}">
-		    		        <fmt:message key="friends.actions.delete"/>
-		                  </a>
-		                </li>
-		              </c:forEach>
-		            </ul>
-		          </li>
-		          
-				  <!-- list all spheres -->
-				  <li>
+				<li><span class="sidebar_h"><fmt:message key="friends.yourfriends"/></span>
+					<ul class="sidebar_collapse_content">
+						<c:forEach var="user" items="${command.friendsOfUser}">
+						<li>
+							<a href="/user/${mtl:encodeURI(user.name)}"><c:out value='${user.name}'/>&amp;nbsp;</a> 
+								<fmt:message var="deleteFriendTitle" key="friends.actions.delete.title"><fmt:param value="${fn:escapeXml(user.name)}"/></fmt:message>
+							<a class="action" href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(user.name)}&amp;action=removeFriend&amp;ckey=${ckey}&amp;forward=settings" title="${deleteFriendTitle}">
+								<fmt:message key="friends.actions.delete"/>
+							</a>
+						</li>
+						</c:forEach>
+					</ul>
+				</li>
+				
+				<!-- list all spheres -->
+				<li>
 					<fmt:message key="spheres.sidebar.title" var="spheresCloudTitle" />
 					<spheres:spheresCloud title="${spheresCloudTitle}"><!-- keep me! --></spheres:spheresCloud>
-				  </li>
-						
-		          <!--  add a friend  -->
-		          <li>
+				</li>
+				
+				<!--  add a friend  -->
+				<li>
 					<span class="sidebar_h"><fmt:message key="friends.addfriend"/></span>
 					
-		            <form class="sidebar_collapse_content" name="friends" method="POST" onsubmit="return submitUsername($('#laddfriend'));">
-		              <label for="laddfriend"><fmt:message key="user"/> </label><c:out value=" "/>
-		              <input type="text" size="20" name="requestedUserName" id="laddfriend"/><c:out value=" "/>
-		              <input type="hidden" value="addFriend" name="action"/>
-		              <input type="hidden" value="settings" name="forward"/>
-		              <input type="hidden" value="${ckey}" name="ckey"/>
-		              <fmt:message var="addFriend" key="friends.button.add"/>
-		              <input type="submit" name="submit" value="${addFriend}"/>
-		            </form>
-		            </li>		            
-        	</ul>
-        </jsp:attribute>
-        
+					<form class="sidebar_collapse_content" name="friends" method="POST" onsubmit="return submitUsername($('#laddfriend'));">
+						<label for="laddfriend"><fmt:message key="user"/> </label><c:out value=" "/>
+						<input type="text" size="20" name="requestedUserName" id="laddfriend"/><c:out value=" "/>
+						<input type="hidden" value="addFriend" name="action"/>
+						<input type="hidden" value="settings" name="forward"/>
+						<input type="hidden" value="${ckey}" name="ckey"/>
+						<fmt:message var="addFriend" key="friends.button.add"/>
+						<input type="submit" name="submit" value="${addFriend}"/>
+					</form>
+				</li>
+			</ul>
+		</jsp:attribute>
 	</layout:tabLayout>
 </jsp:root>
