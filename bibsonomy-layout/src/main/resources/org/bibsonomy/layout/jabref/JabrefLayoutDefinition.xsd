@@ -58,8 +58,8 @@
     				</documentation>
     			</annotation>
     		</element>
-    		
     	</sequence>
+    	</xsd:extension>
     </complexType>
 
     <element name="layouts" type="tns:JabrefLayouts"></element>
