@@ -111,7 +111,7 @@ $(function() {
     });
     
     function handleDeleteResponse(o) {
-		if($("status", data).text()=="ok") o.parent.parentNode.removeChild(o.parent);
+		if($("status", o.data).text()=="ok") o.parent.parentNode.removeChild(o.parent);
 		else {
 			$(el).removeClass("btn-stripped").addClass("btn-danger").popover({
 					animation: false,
