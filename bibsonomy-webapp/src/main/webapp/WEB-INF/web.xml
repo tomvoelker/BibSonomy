@@ -187,6 +187,23 @@
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 
+<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/documents/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/resources/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/events/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/resources_puma/*</url-pattern>
+	</servlet-mapping>
+	<!--Old mappings
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>*.js</url-pattern>
@@ -227,6 +244,8 @@
 		<servlet-name>default</servlet-name>
 		<url-pattern>*.less</url-pattern>
 	</servlet-mapping>
+  	-->	
+	
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>/brokenurl.html</url-pattern>
