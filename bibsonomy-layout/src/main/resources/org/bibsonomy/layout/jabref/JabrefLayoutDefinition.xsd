@@ -39,7 +39,7 @@
     	<annotation>
     		<documentation>Defines one Jabref Layout.</documentation>
     	</annotation>
-    	<xsd:extension base="AbstractJabRefLayout">
+    	<extension base="AbstractJabRefLayout">
     		<sequence>
     		<element name="directory" type="string" maxOccurs="1"
     			minOccurs="0">
@@ -58,8 +58,8 @@
     				</documentation>
     			</annotation>
     		</element>
-    	</sequence>
-    	</xsd:extension>
+    	    </sequence>
+    	</extension>
     </complexType>
 
     <element name="layouts" type="tns:JabrefLayouts"></element>
