@@ -349,22 +349,28 @@ function uploadRequestSuccessful(data) {
 		alert($("reason", data).text());
 		return;
 	}
+	
 	if (status == "ok") {
 		var fileHash  = $("filehash", data).text();
 		var intrahash = $("intrahash", data).text();
 		var fileName  = $("filename", data).text();
 		
+		var copyData = $("#file-upload-placeholder").clone();
+		
 		var encodedFileName = encodeURIComponent(fileName).replace(/%20/g, '+');
 
 		var documentUri = "/documents/" + intrahash + "/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(encodedFileName);
 		var documentHelp = getString("bibtex.actions.private_document.download");
-		//var documentImg = "<img src='" + documentUploadSuccessIcon +"' style='float: left;'/>";
 		
 		var documentQRMessage = getString("qrcode.actions.download");
 		var params = [projectName];
 		var documentQRHelp = getString("qrcode.info.embedderInfoMessage", params);
 		
-		
+		var downloadForm = copyData.children(".download-btn").filter(":first").data("filename", encodedFileName).attr("href", documentUri + "?qrcode=false").attr("title", documentHelp);
+		var qrForm = copyData.children(".qrcode-btn").data("filename", encodedFileName).data("filename", encodedFileName).attr("href", documentUri + "?qrcode=true").attr("title", documentHelp);
+		var renameForm = copyData.children(".renameDoc").attr("href", "/ajax/documents?ckey="+ckey+"&temp=false&intraHash=" + intrahash + "&fileName="+encodedFileName +"&action=rename").data("filename", encodedFileName);
+		var deleteForm = copyData.children(".deleteDocument").attr("href", "/ajax/documents?intraHash=" + intrahash + "&fileName="+ encodedFileName + "&ckey=" + ckey + "&temp=false&action=delete");
+		var imgPreview = copyData.children(".pre_pic").attr("src", documentUri + "?preview=SMALL").attr("alt", fileName);
 		
 		/*
 		 * on /bibtex pages we have a list where we add links to the files
@@ -377,43 +383,31 @@ function uploadRequestSuccessful(data) {
 		var suffix = ".pdf";
 		
 		if (filesUl.length) {
+				
 			
-			var inner = "";
 			
-			var aQrCode    = "<a class='documentFileName preview' href='" + documentUri + "?qrcode=true'" + " title='" + documentHelp + "'>";
-			var aNoQrCode  = "<a class='documentFileName preview' href='" + documentUri + "?qrcode=false'" + " title='" + documentHelp + "'>";
-			var imgPreview = "<img style='display:none;' class='pre_pic' src='" + documentUri + "?preview=SMALL' alt='" + fileName + "' />";
-			var aDel       = "<a class='deleteDocument' href='/ajax/documents?intraHash=" + intrahash + "&fileName="+ encodedFileName + "&ckey=" + ckey + "&temp=false&action=delete'></a>";
-			var aRename = "<a class='renameDoc' href='/ajax/documents?ckey="+ckey+"&temp=false&intraHash=" + intrahash + "&fileName="+
-			encodedFileName +"&action=rename' data-filename='" + encodedFileName +"'></a>";
 			/*
 			 * check if file ends with '.pdf'
-			 */			
-			if (fileName.toLowerCase().indexOf(suffix, fileName.length - suffix.length) != -1) {
-				inner = aQrCode + imgPreview + fileName + "</a> ( " + aNoQrCode + imgPreview + documentQRMessage + "</a>" + 
-				"<div class='help' style='float:none'> <b class='smalltext' style=''>?</b><div>" + documentQRHelp + "</div></div>" +
-				") " + aDel +aRename;
-			} else {
-				inner = aNoQrCode + imgPreview + fileName + "</a> " + aDel +aRename;
-			}
+			 */
+			if (fileName.toLowerCase().indexOf(suffix, fileName.length - suffix.length) == -1) qrForm.hide();
 			
-			filesUl.find("li:last-child").before("<li>" + inner + "</li>");
-			$(".deleteDocument").click(deleteLinkClicked);
 			/*
 			 * find the new added document(it's always the element at index n-1 in filesUl)
 			 * and add listener
 			 */
-			filesUl.find("li").eq(filesUl.find("li").length-2).find(".renameDoc").click(renameClicked);
+			filesUl.append(copyData);
+			renameForm.click(renameClicked);
+			deleteForm.click(deleteLinkClicked);
 		} else {
 			/*
 			 * change document link
 			 */
-			var upA = upParent.children(".addDocument").first();
+			/*var upA = upParent.children(".addDocument").first();
 			upA.attr("href", documentUri);
 			upA.attr("class", "preview");
 			upA.attr("title", documentHelp);
 			upA.unbind('click');
-			if(documentImg!==undefined) upA.children().first().replaceWith($(documentImg));
+			if(documentImg!==undefined) upA.children().first().replaceWith($(documentImg));*/
 		}
 		
 		return;
