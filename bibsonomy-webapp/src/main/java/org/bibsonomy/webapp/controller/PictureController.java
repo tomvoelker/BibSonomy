@@ -150,7 +150,13 @@ public class PictureController implements MinimalisticController<PictureCommand>
 		if (present(loginUserName) && loginUserName.equals(requestedUserName)) {
 			return true;
 		}
-
+		/*
+		 * check if requested user is spammer
+		 * prevents others to see the photo of a spammer
+		 */
+		if (requestedUser.isSpammer()) {
+			return false;
+		 }
 		/*
 		 * Check the visibility depending on the profile privacy level.
 		 */
