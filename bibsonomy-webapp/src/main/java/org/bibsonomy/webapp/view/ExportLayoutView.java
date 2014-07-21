@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.view;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +13,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.layout.jabref.JabrefLayout;
+import org.bibsonomy.model.Layout;
 import org.bibsonomy.webapp.command.ExportPageCommand;
 import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.view.AbstractView;
@@ -21,7 +23,7 @@ import org.springframework.web.servlet.view.AbstractView;
  * View which exports a JSON-Object that contains all available JabRef-layouts.
  * This view is used in conjunction with the BibSonomy Typo3-PlugIn.
  * 
- * @author mwa
+ * @author mwa, lsc
  */
 @SuppressWarnings("deprecation")
 public class ExportLayoutView extends AbstractView {
@@ -49,15 +51,14 @@ public class ExportLayoutView extends AbstractView {
 			/*
 			 * put each layout into a JSON-object and add it to the JSON-array
 			 */
-			final Map<String, JabrefLayout> layoutMap = command.getLayoutMap();
+			final Set<Layout> layoutMap = command.getLayoutSet();
 			
-			for (final Entry<String, JabrefLayout> layoutEntry : layoutMap.entrySet()) {
-				final JabrefLayout layout = layoutEntry.getValue();
+			for (final Layout layoutEntry : layoutMap) {
 				/*
 				 * we return only public layouts
 				 */
-				if (layout.isPublicLayout()) {
-					jsonLayouts.add(JSONObject.fromObject(layout));
+				if (layoutEntry.isPublicLayout()) {
+					jsonLayouts.add(JSONObject.fromObject(layoutEntry));
 				}
 			}
 			

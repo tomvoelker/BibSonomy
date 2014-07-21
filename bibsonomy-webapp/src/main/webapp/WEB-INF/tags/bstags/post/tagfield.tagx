@@ -76,7 +76,7 @@
             		<fmt:message key="post.resource.recommendation"/>
            		</label>
             	<div class="col-sm-${inputColSpan}">
-           			<ul id="recommendedTags" style="display:inline" class="recommended ${command.postID} list-inline">
+           			<ul id="recommendedTags" class="recommended ${command.postID} list-inline">
 			    		<div class="fsWaitingText" style="font-weight: normal; color: #666;"><fmt:message key="post.resource.waitingForTags"/></div>
 			      		<!-- This comment is needed, otherwise this will result in a self-closing element -->
 			  		</ul>
