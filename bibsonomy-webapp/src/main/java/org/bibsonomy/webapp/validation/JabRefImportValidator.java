@@ -40,7 +40,7 @@ public class JabRefImportValidator implements Validator<SettingsViewCommand> {
 	 * @param errors 
 	 */
 	private void checkFileName(CommonsMultipartFile file, Errors errors, final String fieldSuffix) {
-		if (file == null) {
+		if (file == null || file.getSize() == 0) {
 			return; // not specified
 		}
 		if (!this.fileLogic.validJabRefLayoutFile(new ServerUploadedFile(file))) {
