@@ -86,6 +86,7 @@ import org.bibsonomy.scraper.url.kde.langev.LangevScraper;
 import org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper;
 import org.bibsonomy.scraper.url.kde.liebert.LiebertScraper;
 import org.bibsonomy.scraper.url.kde.mathscinet.MathSciNetScraper;
+import org.bibsonomy.scraper.url.kde.mdpi.MDPIScraper;
 import org.bibsonomy.scraper.url.kde.mendeley.MendeleyScraper;
 import org.bibsonomy.scraper.url.kde.metapress.MetapressScraper;
 import org.bibsonomy.scraper.url.kde.morganclaypool.MorganClaypoolScraper;
@@ -247,6 +248,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new IGIGlobalScraper());
 		addScraper(new DeGruyterScraper());
 		addScraper(new MorganClaypoolScraper());
+		addScraper(new MDPIScraper());
 	}
 
 }
