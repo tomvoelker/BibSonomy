@@ -67,13 +67,13 @@ public class JabrefLayoutRendererTest extends AbstractJabrefLayoutTest{
 	
 	@Override
 	@Test
-    public void testRender() throws Exception {
+	public void testRender() throws Exception {
 		testRender(getPosts(this.entryType));
 	}
 	
-    public static List<Post<BibTex>> getPosts(String entryType) throws PersonListParserException {
-    	final User u = new User();
-    	u.setName("Wiglaf Droste");
+	public static List<Post<BibTex>> getPosts(String entryType) throws PersonListParserException {
+		final User u = new User();
+		u.setName("Wiglaf Droste");
 
 		final BibTex publication = new BibTex(); 
 		publication.setEntrytype(entryType);
@@ -97,6 +97,5 @@ public class JabrefLayoutRendererTest extends AbstractJabrefLayoutTest{
 		post.setDescription("Our demo at HT 2009");
 		
 		return Collections.singletonList(post);
-    }
-    
+	}
 }

@@ -88,7 +88,11 @@
 	
 	<!-- Renders JabRef Layouts -->
 	<bean id="jabrefLayoutRenderer" class="org.bibsonomy.layout.jabref.JabrefLayoutRenderer">
-		<property name="userLayoutFilePath" value="${project.document.path}"/>
+		<constructor-arg>
+			<bean class="org.bibsonomy.layout.jabref.JabRefConfig">
+				<property name="userLayoutFilePath" value="${project.document.path}"/>
+			</bean>
+		</constructor-arg>
 		<property name="urlGenerator" ref="urlGenerator"/>
 		<property name="properties" ref="properties"/>
 	</bean>

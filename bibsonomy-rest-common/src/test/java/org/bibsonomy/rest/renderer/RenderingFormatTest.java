@@ -45,7 +45,6 @@ public class RenderingFormatTest {
 		assertEquals(RenderingFormat.JSON, RenderingFormat.getMediaTypeByFormat("json"));
 		assertEquals(RenderingFormat.BIBTEX, RenderingFormat.getMediaTypeByFormat("bibtex"));
 		assertEquals(RenderingFormat.ENDNOTE, RenderingFormat.getMediaTypeByFormat("endnote"));
-		assertEquals(RenderingFormat.MSOFFICEXML, RenderingFormat.getMediaTypeByFormat("msofficexml"));
 		
 		
 		assertNull(RenderingFormat.getMediaTypeByFormat("someUnsupportedRenderingFormat"));
