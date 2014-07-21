@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ReferencesScraper;
@@ -50,7 +52,7 @@ import org.bibsonomy.util.WebUtils;
  * @author wbi
  */
 public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
-
+	private static final Log log = LogFactory.getLog(OSAScraper.class);
 	
 	private static final String SITE_NAME = "Optical Society of America";
 	private static final String OSA_HOST_NAME  = "http://www.opticsinfobase.org";
@@ -120,9 +122,8 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 			sc.setBibtexResult(bibResult);
 			scrapeReferences(sc);
 			return true;
-		}else
-			throw new ScrapingFailureException("getting bibtex failed");
-
+		}
+		throw new ScrapingFailureException("getting bibtex failed");
 	}
 
 	/** FIXME: refactor
@@ -133,7 +134,7 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 	 * @return
 	 * @throws IOException
 	 */
-	private String getContent(URL queryURL, String cookie, String id, String actions) throws IOException {
+	private static String getContent(URL queryURL, String cookie, String id, String actions) throws IOException {
 		/*
 		 * get BibTex-File from ACS
 		 */
@@ -183,10 +184,8 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 	 * @return
 	 * @throws IOException
 	 */
-	private String getCookies(URL queryURL) throws IOException {
-		HttpURLConnection urlConn = null;
-
-		urlConn = (HttpURLConnection) queryURL.openConnection();
+	private static String getCookies(URL queryURL) throws IOException {
+		final HttpURLConnection urlConn = (HttpURLConnection) queryURL.openConnection();
 
 		urlConn.setAllowUserInteraction(false);
 		urlConn.setDoInput(true);
@@ -203,11 +202,11 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 		/*
 		 * extract cookie from connection
 		 */
-		List<String> cookies = urlConn.getHeaderFields().get("Set-Cookie");
+		final List<String> cookies = urlConn.getHeaderFields().get("Set-Cookie");
 
 		StringBuffer cookieString = new StringBuffer();
 
-		for(String cookie : cookies) {
+		for (final String cookie : cookies) {
 			cookieString.append(cookie.substring(0, cookie.indexOf(";") + 1) + " ");
 		}
 
@@ -242,8 +241,8 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 				scrapingContext.setReferences(m.group(1));
 				return true;
 			}
-		}catch(Exception e){
-			e.printStackTrace();
+		} catch(final Exception e) {
+			log.error("error while scraping references for " + scrapingContext.getUrl(), e);
 		}
 		return false;
 	}
