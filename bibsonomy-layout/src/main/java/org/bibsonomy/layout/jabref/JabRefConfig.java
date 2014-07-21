@@ -21,43 +21,45 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package net.sf.jabref.export.layout.format;
-
-import java.util.Properties;
-
-import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
-
-import net.sf.jabref.export.layout.LayoutFormatter;
+package org.bibsonomy.layout.jabref;
 
 /**
- * This Formatter inserts values of Properties managed by Spring
+ * configuration file
  *
- * @author MarcelM
+ * @author dzo
  */
-public class InsertPropertyFormatter implements LayoutFormatter {
+public class JabRefConfig {
+	/** Configured by the setter: the path where the user layout files are. */
+	private String userLayoutFilePath;
+	
+	/** Can be configured by the setter: the path where the default layout files are. */
+	private String defaultLayoutFilePath = "org/bibsonomy/layout/jabref";
 
-	/* (non-Javadoc)
-	 * @see net.sf.jabref.export.layout.LayoutFormatter#format(java.lang.String)
+	/**
+	 * @return the userLayoutFilePath
 	 */
-	@Override
-	public String format(String arg0) {
-		//Property,default
-		String[] parts = arg0.split(",", 2);
-		String property = null;
-		String defValue = null;
-		
-		if (parts != null && parts.length == 2) {
-			property = parts[0];
-			defValue = parts[1];
-		} else {
-			property = arg0;
-		}
-		//Get Spring-Managed Properties
-		Properties properties = JabrefLayoutRenderer.getProperties();
-		if (properties != null) {
-			return properties.getProperty(property);
-		}
-		return defValue;
+	public String getUserLayoutFilePath() {
+		return this.userLayoutFilePath;
 	}
 
+	/**
+	 * @param userLayoutFilePath the userLayoutFilePath to set
+	 */
+	public void setUserLayoutFilePath(String userLayoutFilePath) {
+		this.userLayoutFilePath = userLayoutFilePath;
+	}
+
+	/**
+	 * @return the defaultLayoutFilePath
+	 */
+	public String getDefaultLayoutFilePath() {
+		return this.defaultLayoutFilePath;
+	}
+
+	/**
+	 * @param defaultLayoutFilePath the defaultLayoutFilePath to set
+	 */
+	public void setDefaultLayoutFilePath(String defaultLayoutFilePath) {
+		this.defaultLayoutFilePath = defaultLayoutFilePath;
+	}
 }
