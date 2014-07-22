@@ -2,8 +2,87 @@
 @import "bootstrap-size.less";
 @import "bootstrap-tagsinput.less";
 @import "bootstrap-datepicker.less";
-@import "socicon.less";
 @import "multiline-ellipsis.less";
+@import "../fonts/font-awesome/less/variables.less";
+
+.glyphicon,
+.socicon {
+    display: inline-block;
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.glyphicon-asterisk:before {
+    content: @fa-var-asterisk;
+}
+
+.glyphicon-remove:before {
+    content: @fa-var-times;
+}
+
+.glyphicon-edit:before {
+    content: @fa-var-pencil;  
+} 
+
+.glyphicon-floppy-disk:before {
+    content: @fa-var-copy;   
+}
+
+.glyphicon-folder-open:before {
+	content: @fa-var-clipboard;
+}
+
+.glyphicon-inbox:before {
+	content: @fa-var-inbox;
+}
+
+.glyphicon-user:before {
+	content: @fa-var-user;
+}
+
+.glyphicon-tag:before {
+	content: @fa-var-tag;
+}
+
+.glyphicon-tags:before {
+	content: @fa-var-tags;
+}
+
+.glyphicon-question-sign:before {
+	content: @fa-var-question-circle;
+}
+
+.glyphicon-cog:before {
+	content: @fa-var-cog;
+}
+
+.glyphicon-off:before {
+	content: @fa-var-power-off;
+}
+
+.glyphicon-calendar:before {
+	content: @fa-var-calendar;
+}
+
+.glyphicon-plus:before {
+	content: @fa-var-plus;
+}
+
+.socicon-blogger:before {
+	content: @fa-var-book;
+}
+
+.socicon-twitter:before {
+	content: @fa-var-twitter;
+}
+
+.socicon-google:before {
+	content: @fa-var-google-plus;
+}
 
 body {
 	background-color: @background-color; 
