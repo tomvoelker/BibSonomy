@@ -99,7 +99,7 @@ public class StandardLayouts {
 		 */
 		for (final StandardLayout standardLayout : standardLayouts) {
 			log.debug("loading layout " + standardLayout.getName());
-			layouts.put(standardLayout.getDisplayName(), standardLayout);
+			layouts.put(standardLayout.getName(), standardLayout);
 		}
 		log.info("loaded " + layouts.size() + " layouts");
 	}

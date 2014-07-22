@@ -601,11 +601,6 @@
 						<property name="controllerBeanName" value="friendsOverviewController"/>
 					</bean>
 				</entry>
-				<entry key="/exportLayouts">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="exportFormatController"/>
-					</bean>
-				</entry>
 				<entry key="/bootstrapDemo">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="bootstrapDemoController"/>
@@ -891,9 +886,6 @@
 		</property>
 	</bean>
 
-	<bean id="exportFormatController" class="org.bibsonomy.webapp.controller.ExportFormatController" scope="request" >
-		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
-	</bean>
 	
 	<!--  #################### static views #################### -->
 	<bean id="bootstrapDemoController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
