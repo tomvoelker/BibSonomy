@@ -57,11 +57,16 @@
 		
 		<!-- Latest compiled and minified CSS -->
 		<link rel="stylesheet" href="/resources/bootstrap/css/bootstrap.min.css"  />
+
+		<!-- font awesome icon set -->
+		<mtl:styleSheet path="${resdir}/fonts/font-awesome/css/font-awesome.min.css" />
+
+
 		<mtl:styleSheet path="${resdir}/css/bootstrap-style.css" />
-		
 		<!--+
 			| END BOOTSTRAP SETTINGS 
 			+ -->
+			
 
 		<!-- FIXME: do we really need the complete jquery-ui.css? -->
 		<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/jquery-ui.css" type="text/css" media="all" />
