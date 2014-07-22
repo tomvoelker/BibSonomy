@@ -50,24 +50,32 @@ $(document).ready(function () {
 	})
 });
 
+function privNoteCallback(o) {
+	var form = o.parent.children(".form-group");
+	if(!form.hasClass(o.stateClass)) form.addClass(o.stateClass);
+	if(o.error!==undefined) alert("error: " + o.error);
+} 
+
 function updatePrivNote() {
 	var textArea = $("#private-note");
 	var newVal = textArea.val();
 	var oldVal = $("#old-private-note").val();
+	var parent = $("#note");
+	
 	if (newVal == oldVal) {
 		textArea.css('background-color', '#D8EBAE').animate({backgroundColor : '#ffffff'}, 1000);
 		return false;
 	}
-	var formData = $("#note").serialize();
+	
 	$.ajax({
 		url : "/ajax/updateprivatenote",
-		data : formData,
+		data : parent.serialize(),
 		dataType: "text",
 		success : function(data, textStatus, jqXHR) {
-			textArea.css('background-color', '#D8EBAE').animate({backgroundColor : '#ffffff'}, 1000);
+			privNoteCallback({stateClass:"has-success", parent:parent});	
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
-			alert("error: " + errorThrown);
+			privNoteCallback({stateClass:"has-error", parent:parent, error:errorThrown});
 		}
 	});
 	return false;
