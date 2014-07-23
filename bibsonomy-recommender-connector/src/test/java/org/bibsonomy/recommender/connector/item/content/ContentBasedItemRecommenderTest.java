@@ -1,10 +1,10 @@
 package org.bibsonomy.recommender.connector.item.content;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
-
-import junit.framework.Assert;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -71,7 +71,7 @@ public class ContentBasedItemRecommenderTest {
 		SortedSet<RecommendedItem> recommendations = reco.getRecommendation(new UserWrapper(u));
 		
 		// checks if the count of items correct
-		Assert.assertEquals(RECOMMENDATIONS_TO_CALCULATE, recommendations.size());
+		assertEquals(RECOMMENDATIONS_TO_CALCULATE, recommendations.size());
 		
 		// new dbAccess to make the database results non random
 		dbAccess = new DummyCollaborativeMainAccess();
@@ -82,8 +82,7 @@ public class ContentBasedItemRecommenderTest {
 		// this makes sure, for requesting user his bibtex and bookmark resources
 		// are used for getting his vocabulary
 		// also it ensures, that abstracts and descriptions get used
-		Assert.assertEquals(WINNER_TITLE, recommendations.first().getTitle());
-		
+		assertEquals(WINNER_TITLE, recommendations.first().getTitle());
 	}
 	
 	/**

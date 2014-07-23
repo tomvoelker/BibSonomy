@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.openuniversity;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -42,7 +40,7 @@ public class OpenUniversityScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_236"));
+		UnitTestRunner.runSingleTest("url_236");
 	}
 
 }

@@ -68,6 +68,9 @@ public class Functions {
 
 	private static final DateTimeFormatter ISO8601_FORMAT_HELPER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ");
 
+	/** used to get RFC 1123 formatted date */
+	private static final DateTimeFormatter RFC1123_DATE_TIME_FORMATTER = DateTimeFormat.forPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'").withZoneUTC();
+	
 	private static final DateTimeFormatter myDateFormatter = DateTimeFormat.forPattern("MMMM yyyy");
 
 	private static final DateTimeFormatter myDateFormat = DateTimeFormat.forPattern("yyyy-MM");
@@ -608,6 +611,23 @@ public class Functions {
 		}
 		return "";
 	}
+
+	/**
+	 * Formats the date to RFC 1123, e.g., "Wed, 12 Mar 2013 12:12:12 GMT" (needed for Memento).
+	 * 
+	 * Currently Java's formatter doesn't support this standard therefore we can
+	 * not use the fmt:formatDate tag with a pattern
+	 * 
+	 * @param date
+	 * @return the formatted date
+	 */
+	public static String formatDateRFC1123(final Date date) {
+		if (present(date)) {
+			return RFC1123_DATE_TIME_FORMATTER.print(new DateTime(date));
+		}
+		return "";
+	}
+
 
 	/**
 	 * Formats the date to W3CDTF, e.g., 2012-11-07T14:43:16+01:00 (needed for

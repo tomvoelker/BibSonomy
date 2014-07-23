@@ -33,27 +33,28 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
- * Reads a jabref layout definition XML file and it returns a list of {@link JabrefLayout}s.
+ * reads a jabref layout definition XML file and it returns a list of {@link JabrefLayout}s.
  * 
  * @author: rja
- * @version: $Id$ $Author$
- * 
  */
 public class XMLJabrefLayoutReader {
 
 	private Reader reader;
-
+	
+	/**
+	 * @param reader
+	 */
 	public XMLJabrefLayoutReader(final Reader reader) {
 		this.reader = reader;
 	}
 
 	/**
-	 * Reads a list of {@link JabrefLayout}s.
+	 * Reads a list of {@link AbstractJabRefLayout}s.
 	 * 
 	 * @return
 	 * @throws IOException
 	 */
-	public List<JabrefLayout> getJabrefLayoutsDefinitions() throws IOException {
+	public List<AbstractJabRefLayout> getJabrefLayoutsDefinitions() throws IOException {
 		try {
 			final XMLReader xr = XMLReaderFactory.createXMLReader();
 			/*

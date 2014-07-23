@@ -18,10 +18,22 @@
 				<!-- COPY -->
 				<c:when test="${loginUserName ne post.user.name}"><!-- user is not post's owner -->
 					<c:url var="copyLink" value="/editBookmark">
-						<c:param name="hash" value="${post.resource.intraHash}" />
+						<c:param name="hash">
+							<c:choose>
+								<c:when test="${not empty post.user.name}">
+									<!-- non-community post: use intra-hash -->
+									<c:out value="${post.resource.intraHash}" />
+								</c:when>
+								<c:otherwise>
+									<!-- community post: use inter-hash -->
+									<c:out value="${post.resource.interHash}" />
+								</c:otherwise>
+							</c:choose>
+						</c:param>
 						<c:param name="user" value="${post.user.name}" />
 						<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
-					</c:url>		
+					</c:url>	
+					
 					<fmt:message key="bookmark.actions.copy.title" var="copyTitle"/>
 					<a class="item copy" href="${copyLink}" title="${fn:escapeXml(copyTitle)}"><!-- Keep Me --></a>
 				</c:when>
@@ -95,6 +107,17 @@
 			<fmt:message key="bibtex.actions.gold" var="goldTitle" />
 			<a class="item community" href="${editGoldStandardLink}" title="${goldTitle}"><!-- Keep Me --></a>
 		</c:if>
-	</c:if>	
-
+	</c:if>
+	
+	<!--+
+		| link for the memento timegate to the archived version of the page
+		+-->
+		
+	<c:url var="mementoLink" value="/memento">
+		<c:param name="url" value="${post.resource.url}"/>
+		<c:param name="datetime" value="${mtl:formatDateW3CDTF(post.date)}"/>
+	</c:url>
+	<fmt:message key="bookmark.actions.memento" var="mementoTitle" />
+	<a class="item memento" href="${mementoLink}" rel="nofollow" title="${mementoTitle}"><!-- keep me --></a>
+		
 </jsp:root>

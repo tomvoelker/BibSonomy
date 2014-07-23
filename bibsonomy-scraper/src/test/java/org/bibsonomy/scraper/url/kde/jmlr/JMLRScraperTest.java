@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.jmlr;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -42,7 +40,7 @@ public class JMLRScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_101"));
+		UnitTestRunner.runSingleTest("url_101");
 	}
 	
 	/**
@@ -50,7 +48,7 @@ public class JMLRScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_102"));
+		UnitTestRunner.runSingleTest("url_102");
 	}
 	
 	/**
@@ -58,7 +56,7 @@ public class JMLRScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_103"));
+		UnitTestRunner.runSingleTest("url_103");
 	}
 	
 }

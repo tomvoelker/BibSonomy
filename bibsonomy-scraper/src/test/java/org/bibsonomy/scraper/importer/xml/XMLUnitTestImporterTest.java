@@ -28,8 +28,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
-import org.bibsonomy.scraper.ScraperUnitTest;
-import org.bibsonomy.scraper.URLTest.URLScraperUnitTest;
+import org.bibsonomy.scraper.ScraperTestData;
 import org.junit.Test;
 
 /**
@@ -40,7 +39,7 @@ public class XMLUnitTestImporterTest {
 	@Test
 	public void testGetUnitTests() throws Exception {
 		final XMLUnitTestImporter importer = new XMLUnitTestImporter();
-		final Map<String, ScraperUnitTest> unitTests = importer.getUnitTests();
+		final Map<String, ScraperTestData> unitTests = importer.getUnitTests();
 
 		/*
 		 * well, we have more than 60 scrapers, so we should have more than 100 tests ...
@@ -50,10 +49,8 @@ public class XMLUnitTestImporterTest {
 		/*
 		 * check each test
 		 */
-		for (final ScraperUnitTest scraperUnitTest : unitTests.values()) {
-			if (scraperUnitTest instanceof URLScraperUnitTest) {
-				assertNotNull(((URLScraperUnitTest) scraperUnitTest).getExpectedReference());
-			}
+		for (final ScraperTestData scraperTestData : unitTests.values()) {
+			assertNotNull(scraperTestData.getExpectedBibTeX());
 		}
 	}
 

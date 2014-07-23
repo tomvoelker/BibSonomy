@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -41,7 +42,7 @@ import org.bibsonomy.util.WebUtils;
  * Scraper for muse.jhu.edu
  * @author tst
  */
-public class ProjectmuseScraper extends AbstractUrlScraper {
+public class ProjectmuseScraper extends AbstractUrlScraper implements ReferencesScraper {
 
 	private static final String SITE_NAME = "Project MUSE";
 	private static final String SITE_URL = "http://muse.jhu.edu/";
@@ -69,13 +70,16 @@ public class ProjectmuseScraper extends AbstractUrlScraper {
 	private static final String PATTERN_SURNAME = "<surname>(.*)</surname>";
 	private static final String PATTERN_FNAME = "<fname>(.*)</fname>";
 	private static final String PATTERN_ABSTRACT = "<abstract>\\s*<p>([^<]*)</p>\\s*</abstract>";
+	private static final Pattern references_pattern = Pattern.compile("(?s)<h3 class=\"references\">(.*)</div>");
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
 
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
 		sc.setScraper(this);
 
@@ -208,6 +212,7 @@ public class ProjectmuseScraper extends AbstractUrlScraper {
 			bibtex.append("}\n");
 
 			sc.setBibtexResult(bibtex.toString());
+			scrapeReferences(sc);
 			return true;
 
 		} catch (IOException ex) {
@@ -229,15 +234,36 @@ public class ProjectmuseScraper extends AbstractUrlScraper {
 		return null;
 	}
 
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
+	 */
+	@Override
+	public boolean scrapeReferences(ScrapingContext scrapingContext)throws ScrapingException {
+		try{
+			Matcher m = references_pattern.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
+			if(m.find()){
+				scrapingContext.setReferences(m.group(1));
+				return true;
+			}
+				
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

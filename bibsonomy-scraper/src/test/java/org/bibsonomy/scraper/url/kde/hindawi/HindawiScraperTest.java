@@ -21,8 +21,13 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 package org.bibsonomy.scraper.url.kde.hindawi;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URL;
+
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -37,6 +42,29 @@ public class HindawiScraperTest {
 	 */
 	@Test
 	public void urlTestRun() {
-		assertTrue(UnitTestRunner.runSingleTest("url_256"));
+		UnitTestRunner.runSingleTest("url_256");
+	}
+	/**
+	 * @throws Exception
+	 */
+	@Test
+	public void testReferences() throws Exception{
+		final ScrapingContext sc = new ScrapingContext(new URL("http://www.hindawi.com/journals/tswj/2014/625754/ref/"));
+		
+		HindawiScraper hs = new HindawiScraper();
+		
+		assertTrue(hs.scrape(sc));
+		
+		assertTrue(hs.scrapeReferences(sc));
+		
+		final String reference = sc.getReferences();
+		
+		assertNotNull(reference);
+		
+		assertTrue(reference.length() > 100);
+		
+		assertEquals("<h4>Linked References</h4>".trim(), reference.substring(0, 26).trim());
+		
+		assertTrue(reference.contains("C. V. Rao, D. M. Wolf"));
 	}
 }
