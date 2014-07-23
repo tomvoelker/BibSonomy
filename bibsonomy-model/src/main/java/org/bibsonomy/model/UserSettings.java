@@ -121,7 +121,7 @@ public class UserSettings implements Serializable {
 	/**
 	 * which layout should be used?
 	 */
-	private ViewLayout layout = ViewLayout.CLASSIC;
+	private ViewLayout layout = ViewLayout.BOOTSTRAP;
 	
 	/**
 	 * @return {@link ViewLayout} 
