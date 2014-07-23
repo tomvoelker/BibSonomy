@@ -240,17 +240,42 @@
 
 	<!--  #################### view resolver #################### -->
 	<!-- default: JSPs -->
-	<bean id="viewResolver"	class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
-		<property name="prefix" value="/WEB-INF/bsjsp/" />
-		<property name="suffix" value=".jspx" />
-		<!-- expose the application context's beans to the view layer so that they can be accessed in all jsp's via ${beanName} -->
-		<property name="exposedContextBeanNames">
-			<list>
-				<value>authConfig</value>
-				<value>properties</value>
-			</list>
+	
+	<bean id="viewResolver" class="org.bibsonomy.webapp.util.spring.servlet.LayoutSwitchingViewResolver">
+		<property name="resolverMap">
+			<map>
+				<entry key="BOOTSTRAP">
+					<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+						<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+						<property name="prefix" value="/WEB-INF/bsjsp/" /> 
+						<property name="suffix" value=".jspx" />
+						<!-- expose the application context's beans to the view layer so that they can be accessed in all jsp's via ${beanName} -->
+						<property name="exposedContextBeanNames">
+							<list>
+								<value>authConfig</value>
+								<value>properties</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				
+				<entry key="CLASSIC">
+					<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+						<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+						<property name="prefix" value="/WEB-INF/jsp/" /> 
+						<property name="suffix" value=".jspx" />
+						<!-- expose the application context's beans to the view layer so that they can be accessed in all jsp's via ${beanName} -->
+						<property name="exposedContextBeanNames">
+							<list>
+								<value>authConfig</value>
+								<value>properties</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+			</map>
 		</property>
+	
 	</bean>
 	
 	<!-- used to resolve non-JSP views, e.g., JabRef's layout views -->

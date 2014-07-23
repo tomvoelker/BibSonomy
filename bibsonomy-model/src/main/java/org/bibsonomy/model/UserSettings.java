@@ -29,6 +29,7 @@ import java.util.TimeZone;
 import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.TagCloudSort;
 import org.bibsonomy.common.enums.TagCloudStyle;
+import org.bibsonomy.webapp.view.constants.ViewLayout;
 
 /**
  * Holds settings for a user.
@@ -117,6 +118,25 @@ public class UserSettings implements Serializable {
 	 */
 	private boolean isMaxCount = true;
 	
+	/**
+	 * which layout should be used?
+	 */
+	private ViewLayout layout = ViewLayout.CLASSIC;
+	
+	/**
+	 * @return {@link ViewLayout} 
+	 */
+	public ViewLayout getLayout() {
+		return layout;
+	}
+
+	/**
+	 * @param layout
+	 */
+	public void setLayout(ViewLayout layout) {
+		this.layout = layout;
+	}
+
 	/**
 	 * @return tagboxStyle
 	 */
@@ -328,4 +348,6 @@ public class UserSettings implements Serializable {
 	public TimeZone getTimeZone() {
 		return this.timeZone;
 	}
+	
+	
 }
