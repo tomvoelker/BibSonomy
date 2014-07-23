@@ -59,9 +59,7 @@
 						<util:constant static-field="org.bibsonomy.rest.renderer.RenderingFormat.JSON" />
 					</key>
 					<bean class="org.bibsonomy.rest.renderer.impl.json.JSONRenderer" parent="abstractRenderer">
-						<constructor-arg name="urlRenderer">
-							<ref bean="restUrlRenderer" />
-						</constructor-arg>
+						<constructor-arg name="urlRenderer" ref="restUrlRenderer" />
 					</bean>
 				</entry>
 				<entry>
@@ -69,9 +67,7 @@
 						<util:constant static-field="org.bibsonomy.rest.renderer.RenderingFormat.XML" />
 					</key>
 					<bean class="org.bibsonomy.rest.renderer.impl.xml.XMLRenderer" parent="abstractRenderer">
-						<constructor-arg name="urlRenderer">
-							<ref bean="restUrlRenderer" />
-						</constructor-arg>
+						<constructor-arg name="urlRenderer" ref="restUrlRenderer" />
 					</bean>
 				</entry>
 				<entry>
