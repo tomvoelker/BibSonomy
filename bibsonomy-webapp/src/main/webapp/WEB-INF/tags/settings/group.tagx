@@ -169,7 +169,22 @@
 											<a href="/user/${mtl:encodeURI(member.name)}"><img src="/picture/user/${mtl:encodeURI(user.name)}" /><c:out value="${member.name}"/></a><br />
 											<i><c:out value="${member.groupRole}" /></i><br />
 											<c:if test="${group.groupRole eq 'MODERATOR' || group.groupRole eq 'ADMINISTRATOR'}">
-												<span class="smalltext">(<a href="/updateGroup?operation=remove_user&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>)</span>
+												<span class="smalltext">(<a href="/updateGroup?operation=remove_user&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>
+												<c:if test="${group.groupRole eq 'ADMINISTRATOR'}">
+													<c:choose>
+														<c:when test="${member.groupRole eq 'USER'}">
+															| <a href="/updateGroup?operation=update_grouprole&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;group.groupRole=moderator&amp;ckey=${ckey}">&#8593;</a>)
+														</c:when>
+														<c:when test="${member.groupRole eq 'MODERATOR'}">
+															| <a href="/updateGroup?operation=update_grouprole&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;group.groupRole=administrator&amp;ckey=${ckey}">&#8593;</a>
+															| <a href="/updateGroup?operation=update_grouprole&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;group.groupRole=user&amp;ckey=${ckey}">&#8595;</a>)
+														</c:when>
+														<c:when test="${member.groupRole eq 'ADMINISTRATOR'}">
+															| <a href="/updateGroup?operation=update_grouprole&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;group.groupRole=moderator&amp;ckey=${ckey}">&#8595;</a>)
+														</c:when>
+													</c:choose>
+												</c:if>
+												</span>
 											</c:if>
 										</div>
 									</c:if>
