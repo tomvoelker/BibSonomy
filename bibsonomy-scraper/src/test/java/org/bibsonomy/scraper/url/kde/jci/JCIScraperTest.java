@@ -23,6 +23,13 @@
 
 package org.bibsonomy.scraper.url.kde.jci;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.net.URL;
+
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -40,5 +47,25 @@ public class JCIScraperTest {
 	@Test
 	public void urlTestRun() {
 		UnitTestRunner.runSingleTest("url_220");
+	}
+	@Test
+	public void testReferences() throws Exception{
+		final ScrapingContext sc = new ScrapingContext(new URL("http://www.jci.org/articles/view/19670"));
+		
+		JCIScraper jci = new JCIScraper();
+		
+		assertTrue(jci.scrape(sc));
+		
+		assertTrue(jci.scrapeReferences(sc));
+		
+		final String reference = sc.getReferences();
+		
+		assertNotNull(reference);
+		
+		assertTrue(reference.length() > 100);
+		
+		assertEquals("<a class=\"in-page\" NAME=\"B1\"></a><li class=\"reference\" VALUE=\"1\">".trim(), reference.substring(0, 67).trim());
+		
+		assertTrue(reference.contains("Liu, J"));
 	}
 }

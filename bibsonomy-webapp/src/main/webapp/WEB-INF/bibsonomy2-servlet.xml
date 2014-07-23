@@ -88,7 +88,11 @@
 	
 	<!-- Renders JabRef Layouts -->
 	<bean id="jabrefLayoutRenderer" class="org.bibsonomy.layout.jabref.JabrefLayoutRenderer">
-		<property name="userLayoutFilePath" value="${project.document.path}"/>
+		<constructor-arg>
+			<bean class="org.bibsonomy.layout.jabref.JabRefConfig">
+				<property name="userLayoutFilePath" value="${project.document.path}"/>
+			</bean>
+		</constructor-arg>
 		<property name="urlGenerator" ref="urlGenerator"/>
 		<property name="properties" ref="properties"/>
 	</bean>
@@ -532,6 +536,17 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/memento">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="mementoController"/>
+						<property name="allowedFields">
+							<list>
+								<value>url</value>
+								<value>datetime</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/downloadFile">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="downloadFileController"/>
@@ -669,7 +684,7 @@
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="wikiRenderer" ref="wikiRenderer" />
 		<property name="oauthLogic" ref="oauthLogic"/>
-		<property name="invisibleOAuthConsumers" value="${invisible.oauth.consumers}"/>		
+		<property name="invisibleOAuthConsumers" value="${invisible.oauth.consumers}"/>
 	</bean>
 
 	<bean id="userPageController" class="org.bibsonomy.webapp.controller.UserPageController" scope="request" parent="multiResourceListControllerWithTags">
@@ -806,7 +821,17 @@
 	<bean id="UnAPIController" class="org.bibsonomy.webapp.controller.special.UnAPIController" scope="request">
 		<property name="responseLogic" ref="responseLogic"/>
 	</bean>
-	 
+
+	<!-- 
+		provides access to archived versions of web pages using memento timegates, cf. http://www.mementoweb.org/
+	 -->
+	<bean id="mementoService" class="org.bibsonomy.services.memento.MementoService">
+		<constructor-arg value="${memento.timegate}"/>
+	</bean>
+	<bean id="mementoController" class="org.bibsonomy.webapp.controller.special.MementoController" scope="request">
+		<property name="mementoService" ref="mementoService"/>
+	</bean>
+	
 	<!-- 
 	   Does various redirects, like /myRelations, /myBibSonomy, etc.
 	 -->
