@@ -26,6 +26,7 @@ package org.bibsonomy.scraper.url.kde.sciencemag;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.net.URL;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.generic.CitationManagerScraper;
@@ -43,6 +44,22 @@ public class ScienceMagScraper extends CitationManagerScraper {
 			Pattern.compile(".*" + "sciencemag.org"), 
 			Pattern.compile("/content" + ".*")
 		));
+
+        /** 
+	 * If the IP where the scraper is run has not access to the full text, URLs ending with 
+	 * ".full" (e.g., http://www.sciencemag.org/content/302/5651/1704.full) do not contain
+	 * the BibTeX download link. If we modify the URL to ".short" (e.g., 
+	 * http://www.sciencemag.org/content/302/5651/1704.short), the link is contained.
+	 */
+	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
+	    final URL url = sc.getUrl();
+	    if (url != null) {
+		final String path = url.getPath();
+		if (path.endswith(".long")) {
+		    path.substr(
+		}
+	    }
+	}
 
 	public String getSupportedSiteName() {
 		return SITE_NAME;
