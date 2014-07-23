@@ -26,10 +26,16 @@ package org.bibsonomy.scraper.url.kde.sciencemag;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.print.attribute.standard.PresentationDirection;
+
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.CitationManagerScraper;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * @author clemens
@@ -43,22 +49,39 @@ public class ScienceMagScraper extends CitationManagerScraper {
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(
 			Pattern.compile(".*" + "sciencemag.org"), 
 			Pattern.compile("/content" + ".*")
-		));
+			));
 
-        /** 
+	/** 
 	 * If the IP where the scraper is run has not access to the full text, URLs ending with 
 	 * ".full" (e.g., http://www.sciencemag.org/content/302/5651/1704.full) do not contain
 	 * the BibTeX download link. If we modify the URL to ".short" (e.g., 
 	 * http://www.sciencemag.org/content/302/5651/1704.short), the link is contained.
 	 */
+	@Override
 	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
-	    final URL url = sc.getUrl();
-	    if (url != null) {
-		final String path = url.getPath();
-		if (path.endswith(".long")) {
-		    path.substr(
+		try {
+			sc.setUrl(this.fullUrlToShort(sc.getUrl()));
+		} catch (MalformedURLException e) {
+			throw new ScrapingException("Could not modify URL: " + e.getMessage());
 		}
-	    }
+		return super.scrapeInternal(sc);
+	}
+	
+	/**
+	 * Modifying URLs ending with .long to end with .short.
+	 * 
+	 * @param url
+	 * @return The modified URL.
+	 * @throws MalformedURLException 
+	 */
+	protected URL fullUrlToShort(final URL url) throws MalformedURLException {
+		if (url != null) {
+			final String path = url.getPath();
+			if (path.endsWith(".full")) {
+				return new URL(url.getProtocol(), url.getHost(), url.getPort(), path.substring(0, path.length() - ".long".length()) + ".short");
+			}
+		}
+		return url;
 	}
 
 	public String getSupportedSiteName() {
