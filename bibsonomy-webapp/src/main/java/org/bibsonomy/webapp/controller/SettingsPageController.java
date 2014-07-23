@@ -90,7 +90,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		if (UserUtils.userIsGroup(loginUser)) {
 			command.setHasOwnGroup(true);
 		}
-
 		/*
 		 * get friends for sidebar
 		 */
@@ -125,7 +124,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			this.errors.reject("error.settings.tab");
 			break;
 		}
-		
+
 		return Views.SETTINGSPAGE;
 	}
 

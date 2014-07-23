@@ -177,70 +177,108 @@
 								<div style="clear:both;"></div>
 							</div>
 							<br />
-						</div>
-
-						<c:if test="${group.groupRole == 'ADMINISTRATOR'}">
 							<!-- GROUP SETTINGS -->
 							<h2><fmt:message key="settings.group.settings"/></h2>
-							<form:form id="groupSettings" method="post" action="/updateGroup">
-								<div id="fsform">
-									<div class="fsRow">
-										<form:label cssClass="fsLabel" path="privlevel">
-											<fmt:message key="settings.group.memberList"/>
-										</form:label>
-										<buttons:help message="settings.group.memberList.help"/>
-										<select class="fsInput fsSmall" name="privlevel">
-											<c:choose>
-												<c:when test="${group.privlevel == 'PUBLIC' }">
-													<option value="0" selected="selected"><fmt:message key="settings.public"/></option>
-													<option value="1"><fmt:message key="settings.private"/></option>
-													<option value="2"><fmt:message key="settings.publicForMembers"/></option>
-												</c:when>
-												<c:when test="${group.privlevel == 'HIDDEN' }">
-													<option value="0"><fmt:message key="settings.public"/></option>
-													<option value="1" selected="selected"><fmt:message key="settings.private"/></option>
-													<option value="2"><fmt:message key="settings.publicForMembers"/></option>
-												</c:when>
-												<c:when test="${group.privlevel == 'MEMBERS' }">
-													<option value="0"><fmt:message key="settings.public"/></option>
-													<option value="1"><fmt:message key="settings.private"/></option>
-													<option value="2" selected="selected"><fmt:message key="settings.publicForMembers"/></option>
-												</c:when>
-											</c:choose>
-										</select>
-									</div>
+							<c:if test="${group.groupRole == 'ADMINISTRATOR'}">
+								<form:form id="groupSettings" method="post" action="/updateGroup">
+									<div id="fsform">
+										<div class="fsRow">
+											<form:label cssClass="fsLabel" path="privlevel">
+												<fmt:message key="settings.group.memberList"/>
+											</form:label>
+											<buttons:help message="settings.group.memberList.help"/>
+											<select class="fsInput fsSmall" name="privlevel">
+												<c:choose>
+													<c:when test="${group.privlevel == 'PUBLIC' }">
+														<option value="0" selected="selected"><fmt:message key="settings.public"/></option>
+														<option value="1"><fmt:message key="settings.private"/></option>
+														<option value="2"><fmt:message key="settings.publicForMembers"/></option>
+													</c:when>
+													<c:when test="${group.privlevel == 'HIDDEN' }">
+														<option value="0"><fmt:message key="settings.public"/></option>
+														<option value="1" selected="selected"><fmt:message key="settings.private"/></option>
+														<option value="2"><fmt:message key="settings.publicForMembers"/></option>
+													</c:when>
+													<c:when test="${group.privlevel == 'MEMBERS' }">
+														<option value="0"><fmt:message key="settings.public"/></option>
+														<option value="1"><fmt:message key="settings.private"/></option>
+														<option value="2" selected="selected"><fmt:message key="settings.publicForMembers"/></option>
+													</c:when>
+												</c:choose>
+											</select>
+										</div>
 
-									<div class="fsRow">
-										<form:label cssClass="fsLabel" path="sharedDocuments">
-											<fmt:message key="settings.group.sharedDocuments"/>
-										</form:label>
-										<buttons:help message="settings.group.sharedDocuments.help"/>
-										<select class="fsInput fsSmall" name="sharedDocuments">
-											<c:choose>
-												<c:when test="${group.sharedDocuments}">
-													<option value="0"><fmt:message key="settings.disabled"/></option>
-													<option value="1" selected="selected"><fmt:message key="settings.enabled"/></option>
-												</c:when>
-												<c:otherwise>
-													<option value="0" selected="selected"><fmt:message key="settings.disabled"/></option>
-													<option value="1"><fmt:message key="settings.enabled"/></option>
-												</c:otherwise>
-											</c:choose>
-										</select>
-									</div>
+										<div class="fsRow">
+											<form:label cssClass="fsLabel" path="sharedDocuments">
+												<fmt:message key="settings.group.sharedDocuments"/>
+											</form:label>
+											<buttons:help message="settings.group.sharedDocuments.help"/>
+											<select class="fsInput fsSmall" name="sharedDocuments">
+												<c:choose>
+													<c:when test="${group.sharedDocuments}">
+														<option value="0"><fmt:message key="settings.disabled"/></option>
+														<option value="1" selected="selected"><fmt:message key="settings.enabled"/></option>
+													</c:when>
+													<c:otherwise>
+														<option value="0" selected="selected"><fmt:message key="settings.disabled"/></option>
+														<option value="1"><fmt:message key="settings.enabled"/></option>
+													</c:otherwise>
+												</c:choose>
+											</select>
+										</div>
 
-									<div class="fsRow">
-										<input type="hidden" name="ckey" value="${ckey}"/>
-										<fmt:message var="updatesettings" key="settings.updatesettings"/>
-										<input type="hidden" name="groupName" value="${group.name}"/>
-										<input type="hidden" name="operation" value="update_settings" />
-										<input type="submit" value="${updatesettings}"/>
+										<div class="fsRow">
+											<input type="hidden" name="ckey" value="${ckey}"/>
+											<fmt:message var="updatesettings" key="settings.updatesettings"/>
+											<input type="hidden" name="groupName" value="${group.name}"/>
+											<input type="hidden" name="operation" value="update_settings" />
+											<input type="submit" value="${updatesettings}"/>
+										</div>
 									</div>
+								</form:form>
+								</c:if>
+								<form:form id="groupShareSettings" method="get"	action="/ajax/handleGroupShare">
+								<div class="fsRow">
+									<a href="/group/${mtl:encodeURI(group.name)}"><c:out
+											value='${group.name}' />&amp;nbsp;</a> <c:if
+										test="${group.sharedDocuments}">
+										<c:choose>
+											<c:when test="${! group.userSharedDocuments}">
+												<fmt:message var="unshareDocumentsTitle"
+													key="groups.actions.shareDocuments.title"></fmt:message>
+												<fmt:message var="shareDocuments"
+													key="groups.actions.shareDocuments"></fmt:message>
+												<input type="hidden" name="requestedGroup"
+													value="${fn:escapeXml(group.name)}" />
+												<input type="hidden" name="action" value="shareDocuments" />
+												<input type="hidden" name="ckey" value="${ckey}" />
+												<input type="hidden" name="forward"
+													value="settings?selTab=3" />
+												<input type="submit" title="${shareDocumentsTitle}"
+													value="${shareDocuments}" />
+
+											</c:when>
+											<c:otherwise>
+												<fmt:message var="unshareDocumentsTitle"
+													key="groups.actions.unshareDocuments.title"></fmt:message>
+												<fmt:message var="unshareDocuments"
+													key="groups.actions.unshareDocuments"></fmt:message>
+												<input type="hidden" name="requestedGroup"
+													value="${fn:escapeXml(group.name)}" />
+												<input type="hidden" name="action" value="unshareDocuments" />
+												<input type="hidden" name="ckey" value="${ckey}" />
+												<input type="hidden" name="forward"
+													value="settings?selTab=3" />
+												<input type="submit" title="${unshareDocumentsTitle}"
+													value="${unshareDocuments}" />
+											</c:otherwise>
+										</c:choose>
+									</c:if>
 								</div>
 							</form:form>
-							<br />
-							<!-- group reporting settings -->
-							<c:if test="${properties['publication.reporting.mode'] eq 'GROUP'}">
+								
+								<!-- group reporting settings -->
+								<c:if test="${properties['publication.reporting.mode'] eq 'GROUP'}">
 								<h2><fmt:message key="settings.group.reporting"/></h2>
 								<form:form id="groupSettings" method="post" action="/updateGroup">
 									<bform:fieldset maximized="${true}" legendKey="settings.group.reporting.mail">
@@ -259,7 +297,8 @@
 									<input type="hidden" name="groupName" value="${group.name}"/>
 									<input type="hidden" name="operation" value="update_group_reporting_settings" />
 								</form:form>
-							</c:if>
+							</c:if>						
+						</div>
 						</c:if>
 					</jsp:attribute>
 				</bform:fieldset>

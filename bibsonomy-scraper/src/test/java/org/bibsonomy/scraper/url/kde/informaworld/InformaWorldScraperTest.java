@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.informaworld;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -42,7 +40,7 @@ public class InformaWorldScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_77"));
+		UnitTestRunner.runSingleTest("url_77");
 	}
 	
 	/**
@@ -50,7 +48,7 @@ public class InformaWorldScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_78"));
+		UnitTestRunner.runSingleTest("url_78");
 	}
 	
 	/**
@@ -58,7 +56,7 @@ public class InformaWorldScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_123"));
+		UnitTestRunner.runSingleTest("url_123");
 	}
 	
 	/**
@@ -66,7 +64,7 @@ public class InformaWorldScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_135"));
+		UnitTestRunner.runSingleTest("url_135");
 	}
 	
 }

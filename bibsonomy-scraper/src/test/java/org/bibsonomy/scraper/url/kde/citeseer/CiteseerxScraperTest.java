@@ -49,7 +49,7 @@ public class CiteseerxScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_112"));
+		UnitTestRunner.runSingleTest("url_112");
 	}
 	
 	@Test

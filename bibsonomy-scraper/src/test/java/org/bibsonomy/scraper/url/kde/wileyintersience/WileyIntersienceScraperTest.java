@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.wileyintersience;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -43,7 +41,7 @@ public class WileyIntersienceScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_33"));
+		UnitTestRunner.runSingleTest("url_33");
 	}
 
 	/**
@@ -51,7 +49,7 @@ public class WileyIntersienceScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_34"));
+		UnitTestRunner.runSingleTest("url_34");
 	}
 
 	/**
@@ -59,7 +57,7 @@ public class WileyIntersienceScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_109"));
+		UnitTestRunner.runSingleTest("url_109");
 	}
 	
 	/**
@@ -67,7 +65,7 @@ public class WileyIntersienceScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_189"));
+		UnitTestRunner.runSingleTest("url_189");
 	}	
 	
 }

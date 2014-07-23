@@ -53,7 +53,7 @@
 							| abstract 
 							+-->
 				
-						<c:if test="${not empty post.resource.abstract}"> 
+						<c:if test="${not empty publication.abstract}"> 
 							<h4 style="clear:both;"><fmt:message key="publications.abstract.headline"/></h4>
 							<div id="abstract" class="more">
 								<c:out value="${post.resource.abstract}" />
@@ -219,7 +219,7 @@
 								<tr>
 									<td><fmt:message key="resources.searchExternal.dropDownLabel" />:</td>
 									<td><select name="dropDownExternal"
-										id="dropDownExternal" style="font-size: 8pt" onchange="javascript: return loadSelectedPage()">
+										id="dropDownExternal" style="font-size: 8pt">
 											<option selected="selected">---<fmt:message key="resources.searchExternal.dropDownTitle" />---</option>
 											<option value="${googleScholarPostUrl}">Google
 												Scholar</option>
@@ -264,29 +264,20 @@
 					<!--+
 						| documents
 						+-->
-					<c:choose>
-						<c:when test="${isOwnEntry}">
-							<div class="documents">
-								<pub:doc post="${post}" />
-							</div>
-						</c:when>
-						<c:otherwise>
-							<c:if test="${empty command.context.loginUser}">
-								<div class="register">
-									<fmt:message key="system.about" />
-								</div>
-							</c:if>
-
-						</c:otherwise>
-					</c:choose>
+					<c:if test="${not empty publication.documents or isOwnEntry}">
+						<div class="documents">
+						    <!-- FIXME: add isOwnEntry as tag attribute; do we need to pass the hole post to this tag? -->
+							<pub:doc post="${post}" />
+						</div>
+					</c:if>
 				</div>
 			</div>
 				
 				
 			<div class="clearfix"><!-- keep me --></div>
 			<ul class="pubmetainfo">
-				<li><fmt:message key="post.change_date" /> <rc:metaChangeDate post="${post}"/></li>
-				<li><fmt:message key="post.date" /> <rc:metaDate post="${post}"/></li>
+				<li><fmt:message key="post.change_date" /> <rc:metaChangeDate post="${post}"/>.</li>
+				<li><fmt:message key="post.date" /> <rc:metaDate post="${post}"/>.</li>
 			</ul>
 		</div> <!-- /.subcolumns -->
 

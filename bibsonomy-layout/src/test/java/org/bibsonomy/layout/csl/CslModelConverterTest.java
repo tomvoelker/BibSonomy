@@ -1,24 +1,23 @@
 package org.bibsonomy.layout.csl;
 
+import static org.bibsonomy.model.util.BibTexUtils.cleanBibTex;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.bibsonomy.layout.csl.model.Record;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Post;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.bibsonomy.model.util.BibTexUtils.cleanBibTex;
 
 public class CslModelConverterTest {
-
-	
 	final private Post<BibTex> inproceedingsPost = new Post<BibTex>();
 	final private BibTex inproceedings = new BibTex();
 	
@@ -107,47 +106,27 @@ public class CslModelConverterTest {
 		
 	}
 	
+	@Test
+	public void testConvertPostInproceedings() {
+		final Record inproceedingsRec = CslModelConverter.convertPost(inproceedingsPost);
+		//test series => collection title
+		assertTrue(inproceedingsRec.getCollection_title().equals(cleanBibTex(inproceedings.getSeries())));
+		//test booktitle => container title
+		assertTrue(inproceedingsRec.getContainer_title().equals(cleanBibTex(inproceedings.getBooktitle())));
+		//test inproceedings => paper-conference
+		assertEquals(cleanBibTex(inproceedingsRec.getType()), "paper-conference");
+	}
 	
 	@Test
-	public void convertPostTest() {
+	public void testConvertPostBook() {
+		final Record bookRec = CslModelConverter.convertPost(bookPost);
 		
-		/************************
-		 *** INPROCEEDINGS    ***
-		 ************************/
-		
-		Record inproceedingsRec = CslModelConverter.convertPost(inproceedingsPost);
-		System.out.println(inproceedingsRec.getContainer_title());
-		System.out.println(inproceedings.getBooktitle());
-		System.out.println(inproceedingsRec.getType());
-		System.out.println("-----------------------------------------------------------------");
-		//test series => collection title
-		Assert.assertTrue(inproceedingsRec.getCollection_title().equals(cleanBibTex(inproceedings.getSeries())));
-		//test booktitle => container title
-		Assert.assertTrue(inproceedingsRec.getContainer_title().equals(cleanBibTex(inproceedings.getBooktitle())));
-		//test inproceedings => paper-conference
-		Assert.assertEquals(cleanBibTex(inproceedingsRec.getType()), "paper-conference");
-		
-		
-		/************************
-		 *** BOOK             ***
-		 ************************/
-		
-		Record bookRec = CslModelConverter.convertPost(bookPost);
-		System.out.println(bookRec.getTitle());
-		System.out.println(book.getTitle());
-		
-		System.out.println(bookRec.getIssued().getDate_parts().get(0).get(0));
-		
-		System.out.println("-----------------------------------------------------------------");
-		
-		Assert.assertEquals(cleanBibTex(book.getTitle()), bookRec.getTitle());
-		Assert.assertEquals(cleanBibTex(book.getYear()), bookRec.getIssued().getDate_parts().get(0).get(0));
-		
-		
-		/************************
-		 *** ARTICLE          ***
-		 ************************/
-		
+		assertEquals(cleanBibTex(book.getTitle()), bookRec.getTitle());
+		assertEquals(cleanBibTex(book.getYear()), bookRec.getIssued().getDate_parts().get(0).get(0));
+	}
+	
+	@Test
+	public void testConvertPostArticle() {
 		//the journal entry of articles must be mapped to the container title
 		
 		Record articleRec = CslModelConverter.convertPost(articlePost);
@@ -156,8 +135,7 @@ public class CslModelConverterTest {
 		System.out.println(articleRec.getContainer_title());  //Journal?
 		System.out.println(article.getJournal());
 		
-		Assert.assertEquals(articleRec.getContainer_title(), article.getJournal());
-		
+		assertEquals(articleRec.getContainer_title(), article.getJournal());
 	}
 
 }

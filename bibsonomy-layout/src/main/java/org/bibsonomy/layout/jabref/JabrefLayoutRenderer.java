@@ -28,6 +28,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import net.sf.jabref.BibtexDatabase;
 import net.sf.jabref.BibtexEntry;
@@ -56,7 +57,9 @@ import org.springframework.beans.factory.annotation.Required;
  */
 public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	private static final Log log = LogFactory.getLog(JabrefLayoutRenderer.class);
-
+	
+	private static Properties properties;
+	
 	private URLGenerator urlGenerator;
 
 	/**
@@ -131,11 +134,11 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		 * new code: duplicate removal in controller, no sorting by year - must be enforced 
 		 * by another parameter
 		 */
-		final BibtexDatabase database = bibtex2JabrefDB(posts);
+		final BibtexDatabase database = JabRefModelConverter.bibtex2JabrefDB(posts,urlGenerator,false);
 		/*
 		 * render the database
 		 */
-		return renderDatabase(database, JabRefModelConverter.convertPosts(posts, urlGenerator), layout, embeddedLayout);
+		return renderDatabase(database, JabRefModelConverter.convertPosts(posts, urlGenerator,false), layout, embeddedLayout);
 	}
 
 	/**
@@ -242,25 +245,6 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	}
 
 	/**
-	 * This method converts BibSonomy BibTeX entries to JabRef entries and stores
-	 * them into a JabRef specific BibtexDatabase! 
-	 * @param bibtexList List of BibSonomy BibTeX objects
-	 * @return BibtexDatabase
-	 * @throws IOException
-	 * @throws KeyCollisionException If two entries have exactly the same BibTeX key
-	 */
-	private BibtexDatabase bibtex2JabrefDB(final List<? extends Post<? extends Resource>> bibtexList) {
-		final BibtexDatabase db = new BibtexDatabase();
-		for (final Post<? extends Resource> post : bibtexList) {
-			final BibtexEntry convertedPost = JabRefModelConverter.convertPost(post, this.urlGenerator);
-			if (present(convertedPost)) {
-				db.insertEntry(convertedPost);
-			}
-		}
-		return db;
-	}
-
-	/**
 	 * Prints the loaded layouts.
 	 * 
 	 * @see java.lang.Object#toString()
@@ -324,6 +308,22 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	@Override
 	public Map<String, JabrefLayout> getLayouts(){
 		return this.layouts.getLayoutMap();
+	}
+	
+	/**
+	 * Spring-Managed
+	 * @param properties
+	 */
+	public void setProperties(Properties properties) {
+		JabrefLayoutRenderer.properties = properties;
+	}
+	
+	/**
+	 * Returns Spring-Managed Properties
+	 * @return java.util.Properties
+	 */
+	public static Properties getProperties() {
+		return properties;
 	}
 
 }

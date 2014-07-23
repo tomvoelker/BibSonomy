@@ -23,6 +23,8 @@ import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -177,10 +179,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				return this.getEditPostView(command, loginUser);
 			}
 
-			// save the hash + user in the post for later use (metadata plugin).
-			post.setCopyIntraHash(hash);	
-			post.setCopyFrom(user);
-		
 			command.setPost(post);
 		}
 
@@ -445,7 +443,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		/*
 		 * send final redirect
 		 */
-		return this.finalRedirect(loginUserName, post, command.getReferer());
+		return this.finalRedirect(command, post, loginUserName);
 	}
 
 	/**
@@ -702,6 +700,20 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		this.createOrUpdateSuccess(command, loginUser, post);
 
+		return this.finalRedirect(command, post, loginUserName);
+	}
+
+	private View finalRedirect(final COMMAND command, final Post<RESOURCE> post, final String loginUserName) {
+		if (present(command.getSaveAndRate())) {
+			if (post.getResource() instanceof BibTex) {
+				final String publicationRatingUrl = this.urlGenerator.getPublicationRatingUrl(post.getResource().getInterHash(), loginUserName, post.getResource().getIntraHash());
+				return new ExtendedRedirectView(publicationRatingUrl);
+			}
+			if (post.getResource() instanceof Bookmark) {
+				final String bookmarkRatingUrl = this.urlGenerator.getBookmarkRatingUrl(post.getResource().getInterHash(), loginUserName, post.getResource().getIntraHash());
+				return new ExtendedRedirectView(bookmarkRatingUrl);
+			}
+		}
 		return this.finalRedirect(loginUserName, post, command.getReferer());
 	}
 

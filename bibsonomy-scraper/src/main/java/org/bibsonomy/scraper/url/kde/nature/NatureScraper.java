@@ -34,15 +34,18 @@ import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.converter.RisToBibtexConverter;
+import org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for publication from nature.com
  * @author tst
  */
-public class NatureScraper extends SimpleGenericURLScraper {
+public class NatureScraper extends PostprocessingGenericURLScraper {
 
 	private static final String SITE_URL = "http://www.nature.com/";
 
@@ -75,7 +78,7 @@ public class NatureScraper extends SimpleGenericURLScraper {
 	private static final String CITATION_DOWNLOAD_LINK_NAME2 = ">Citation<";
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
-
+	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("(?s)Abstract.*\\s+<p>(.*)</p>\\s+<div class=\"article-keywords inline-list cleared\">");
 	/**
 	 * get INFO
 	 */
@@ -83,55 +86,7 @@ public class NatureScraper extends SimpleGenericURLScraper {
 	public String getInfo() {
 		return INFO;
 	}
-/*
-	*//**
-	 * Scrapes publications from nature.com
-	 *//*
-	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		sc.setScraper(this);
 
-		try {
-
-			// get publication page
-			final String publicationPage = getPageContent(sc.getUrl());
-
-			// extract download citation link
-			final Matcher linkMatcher = linkPattern.matcher(publicationPage);
-			while(linkMatcher.find()){
-				String link = linkMatcher.group();
-
-				// check if link is download link
-				if(link.contains(CITATION_DOWNLOAD_LINK_NAME) || link.contains(CITATION_DOWNLOAD_LINK_NAME2)){
-
-					// get href attribute
-					final Matcher hrefMatcher = hrefPattern.matcher(link);
-					if(hrefMatcher.find()){
-						String href = hrefMatcher.group();
-						href = href.substring(6, href.length()-1);
-
-						// download citation (as ris)
-						final String ris = WebUtils.getContentAsString(new URL("http://" + sc.getUrl().getHost() + "/" + href));
-
-						// convert ris to bibtex
-						final RisToBibtexConverter converter = new RisToBibtexConverter();
-						final String bibtex = converter.risToBibtex(ris);
-
-						// return bibtex
-						if(bibtex != null){
-							sc.setBibtexResult(bibtex);
-							return true;
-						}else
-							throw new ScrapingFailureException("getting bibtex failed");
-
-					}
-				}
-			}
-			throw new PageNotSupportedException("Page not supported. Download URL is missing.");
-		} catch (IOException ex) {
-			throw new InternalFailureException(ex);
-		}
-	}*/
 	/**
 	 * Gets the page content of a publication page. It can't be commonly applied since it violates
 	 * RFC 2616.
@@ -200,6 +155,29 @@ public class NatureScraper extends SimpleGenericURLScraper {
 		}
 		catch (IOException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
+	 */
+	@Override
+	protected String postProcessScrapingResult(ScrapingContext sc, String result) {
+		try{
+			final RisToBibtexConverter converter = new RisToBibtexConverter();
+			return BibTexUtils.addFieldIfNotContained(converter.risToBibtex(result), "abstract", abstractParser(sc.getUrl()));
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	private static String abstractParser(URL url){
+		try{
+		Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(url));
+		if(m.find())
+			return m.group(1);
+		}catch(Exception e){
 			e.printStackTrace();
 		}
 		return null;
