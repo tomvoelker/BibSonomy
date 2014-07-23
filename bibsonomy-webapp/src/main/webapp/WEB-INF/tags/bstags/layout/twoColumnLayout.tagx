@@ -6,6 +6,7 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:spring="http://www.springframework.org/tags">
 	
 	<jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
@@ -41,102 +42,37 @@
 		| document starts here
 		|
 		+-->
-	<jsp:output omit-xml-declaration="true" />
-	<jsp:output doctype-root-element="HTML" doctype-system="about:legacy-compat" />
-	
-	<jsp:element name="html">
-		<jsp:body>
-			<parts:htmlHead 
-			headerExt="${headerExt}" 
-			loginUser="${loginUser}"
-			requestedUser="${requestedUser}"
-			requPath="${requPath}"
-			pageTitle="${pageTitle}"
-			personalized="${personalized}"
-			/>
-
-			<body>
-
-				<c:if test="${not empty beforeMainContainer}">
-					<jsp:invoke fragment="beforeMainContainer"/>
-				</c:if>
-
-
-				<div class="container header">
+		<layout:layout
+		content="${content}"
+		heading="${heading}"
+		loginUser="${command.context.loginUser}"
+		pageTitle="${editPageTitle}" 
+		requPath="${requPath}" 
+		activeTab="${activeTab}"
+		minimizedContentWidth="${minimizedContentWidth}"
+		noSidebar="${true}"
+		>
+			<div class="container main">
+				<div class="row">
 				
-					<div id="page-header bib-header">
+				  	<div class="col-md-6">
 	
-						<div class="row">
-						
-							<div class="col-md-6">
-								<!--+ 
-								 	| 
-								 	| logo and project name
-								 	|
-								 	+-->
-
-								<div id="logo">
-										<fmt:message var="homelink" key="navi.home"/> 
-										<h1><a href="/" title="${homelink}"><img src="/resources/image/logo4.png" alt="${properties['project.name']} Logo" /><span class="sr-only"> ${properties['project.name']}</span></a></h1>
-										<small class="sr-only"><fmt:message key="system.desc"/></small>
-								</div>
-								
-								
-							</div>
-							
-							<div class="col-md-6">
-								
-								<div id="lang-switcher" class="pull-right">
-									<span>(&amp;nbsp;</span>
-									<a href="/${mtl:setParam(fn:escapeXml(requPathAndQuery), 'lang', 'en')}">en</a>
-									<span>&amp;nbsp;|&amp;nbsp;</span>
-									<a href="/${mtl:setParam(fn:escapeXml(requPathAndQuery), 'lang', 'de')}">de</a>
-									<span>&amp;nbsp;)</span>
-								</div>
-								
-								<!--+ 
-								 	|
-								 	| search
-								 	|
-								 	+-->
-								 <br style="clear: both;" />
-								 <p style="line-height: 9px; font-size:9px; padding:0;margin:0;">&amp;nbsp;<!-- KEEP ME --></p>
-								<jsp:invoke fragment="heading"/>
-							</div>
+						<div id="intro">
+							<jsp:invoke fragment="contentIntro"/>
 						</div>
-							
-					</div><!-- /#bib-header -->
+				    	<jsp:invoke fragment="leftContent"/>
+					    	
+				  	</div>
+				  	<div class="col-md-6">
+	
+						<div id="intro">
+							<jsp:invoke fragment="contentIntro"/>
+						</div>
+				    	<jsp:invoke fragment="rightContent"/>
+					    	
+				  	</div>					  
 				</div>
-				<div id="navigation">
-						 <menu:navi activeTab="${activeTab}" loginUser="${loginUser}" />
-				</div> <!-- /#navigation -->
-				<div class="container main">
-					<div class="row">
-					
-					  	<div class="col-md-6">
-
-							<div id="intro">
-								<jsp:invoke fragment="contentIntro"/>
-							</div>
-					    	<jsp:invoke fragment="leftContent"/>
-						    	
-					  	</div>
-					  	<div class="col-md-6">
-
-							<div id="intro">
-								<jsp:invoke fragment="contentIntro"/>
-							</div>
-					    	<jsp:invoke fragment="rightContent"/>
-						    	
-					  	</div>					  
-					</div>
-				</div>
-				
-				<!-- FOOTER -->
-			  	<div class="container footer">
-			    	<parts:footer />
-				</div>
-			</body>
-		</jsp:body>
-	</jsp:element>
+			</div>
+		</layout:layout>
+	
 </jsp:root>

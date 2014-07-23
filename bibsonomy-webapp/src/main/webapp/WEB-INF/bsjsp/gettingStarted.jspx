@@ -7,17 +7,23 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
-	<layout:fullscreenLayout
+	<layout:twoColumnLayout
 		heading="${heading}"
 		loginUser="${command.context.loginUser}" 
 		pageTitle="${pageTitle}" 
 		requPath="${requPath}">
-		<jsp:attribute name="content">
+		<jsp:attribute name="leftContent">
 	
 
-			<h1> Getting Started </h1>
+			<h1> Getting Started links </h1>
+		
+		</jsp:attribute>
+		<jsp:attribute name="rightContent">
+	
+
+			<h1> Getting Started rechts </h1>
 		
 		</jsp:attribute>
 		
-	</layout:fullscreenLayout>
+	</layout:twoColumnLayout>
 </jsp:root>
