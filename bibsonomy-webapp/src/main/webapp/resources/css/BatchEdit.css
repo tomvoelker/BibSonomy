@@ -1,3 +1,49 @@
+.content li{
+    list-style-type: circle;
+    position:relative;
+    left:20px;
+}
+.Hint{
+	display: block;
+	font-weight:bold;
+    padding:10px;
+	color: black;
+	font-size: 120%;
+	text-decoration:none;
+	text-align: left;
+	width: 50%;
+}
+.Hint li{
+	display:inline-block;
+}
+.Hint a{
+    text-decoration:underline;
+    margin-right: 2px;
+    margin-left: 2px;
+    width: 10px;
+}
+.red{
+	border: 1px solid #FF9999;
+	background-color: #FF9999;
+}
+.green{
+	border: 1px solid #99FF99;
+	background-color: #99FF99;
+}
+.applyBtn{
+	display:block;
+    border: 1px solid #c6c6c6;
+    font-weight:bold;
+    color:black;       
+    white-space:nowrap;
+    background-color:#eee;
+    text-decoration:none;
+    cursor: pointer; cursor: hand;
+    float:left;  
+}
+.applyBtn:hover{
+	border: 2px solid #c6c6c6;
+}
 #nav{
     list-style:none;
     font-weight:bold;
@@ -36,9 +82,7 @@
     white-space:nowrap;
     color:black; 
 }
-#nav li:hover ul.showOptions{
-    left:0; 
-}
+
 #nav li:hover ul a{ 
     text-decoration:none;
 }
@@ -46,30 +90,17 @@
     background:#333;
     color:white;
 }
-.content ul{
-	padding: 0px; 
-}
-.content li{
+
+
+.postList li{
 	display: table-cell;  
 	margin: 5px; 
 	padding: 5px; 
 	vertical-align: top; 
 	position:relative; 
-}
-.content ul li{
-	border: 1px solid #ccc;
-}
-.content a{
-	display: block; 
-	width: 80px;
+	
 }
 
-.tagOptions{
-	border: 1px solid #c6c6c6; 
-    width:200px;
-    background-color:#eee;
-    color:transparent;
-}
 .delClass{
 	background-image: url(/resources/image/post_actions.png);
 	background-position:8px 1233px;
@@ -124,19 +155,34 @@
 }
 
 
-.tagClassDisabled{
-	background-image: url(/resources/image/editTagWithArrow.png);
+.tagEachClassDisabled{
+	background-image: url(/resources/image/editEachTag.png);
 	background-position:0px 156px;
-	width:30px;	
+	width:20px;	
 }
-.tagClass{
-	background-image: url(/resources/image/editTagWithArrow.png);
+.tagEachClass{
+	background-image: url(/resources/image/editEachTag.png);
 	background-position:0px 63px;
-	width:30px;
+	width:20px;
 }
-.tagClass:hover{
-    background-image: url(/resources/image/editTagWithArrow.png);
+.tagEachClass:hover{
+    background-image: url(/resources/image/editEachTag.png);
 	background-position:0px 110px
+}
+
+.tagAllClassDisabled{
+	background-image: url(/resources/image/add_Tag.png);
+	background-position:0px 155px;
+	width:20px;	
+}
+.tagAllClass{
+	background-image: url(/resources/image/add_Tag.png);
+	background-position:0px 105px;
+	width:20px;
+}
+.tagAllClass:hover{
+    background-image: url(/resources/image/add_Tag.png);
+	background-position:0px 49px
 }
 .kiste {
 	width:15%;
@@ -158,4 +204,7 @@
 	font-weight:bold;
 	border: 1px solid #ccc;
 	
+}
+.selectedButton{
+	background-color:#6666CC;
 }
