@@ -165,8 +165,8 @@ public class PictureController implements MinimalisticController<PictureCommand>
 		case PUBLIC:
 			return true;
 		case FRIENDS:
-			if (present(loginUserName)) // TODO: why shouldn't it?!
-			{
+			// only a logged in user can be friend of somebody else
+			if (present(loginUserName)) {
 				final List<User> friends = this.logic.getUserRelationship(requestedUserName, UserRelation.OF_FRIEND, null);
 				for (final User friend : friends) {
 					if (loginUserName.equals(friend.getName())) {
