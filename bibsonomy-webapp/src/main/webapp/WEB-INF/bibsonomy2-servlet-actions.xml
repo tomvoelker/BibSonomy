@@ -1081,8 +1081,8 @@
 	<!-- Handles the settings update of a user -->
 	<bean id="updateUserSettingsController" class="org.bibsonomy.webapp.controller.actions.UpdateUserSettingsController" scope="request" parent="settingsPageController" />
 	
-	<!-- Handles the settings update of a group-user -->
-	<bean id="updateGroupSettingsController" class="org.bibsonomy.webapp.controller.actions.GroupSettingsController" scope="request">
+	<!-- Handles the settings update of a group -->
+	<bean id="updateGroupSettingsController" class="org.bibsonomy.webapp.controller.actions.UpdateGroupController" scope="request">
 		<property name="logic" ref="logic"/>
 	</bean>
 	

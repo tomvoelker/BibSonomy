@@ -240,8 +240,8 @@
 								<form:form id="groupShareSettings" method="get"	action="/ajax/handleGroupShare">
 								<div class="fsRow">
 									<a href="/group/${mtl:encodeURI(group.name)}"><c:out
-											value='${group.name}' />&amp;nbsp;</a> <c:if
-										test="${group.sharedDocuments}">
+											value='${group.name}' />&amp;nbsp;</a> 
+										<c:if test="${group.sharedDocuments}">
 										<c:choose>
 											<c:when test="${! group.userSharedDocuments}">
 												<fmt:message var="unshareDocumentsTitle"
@@ -299,7 +299,6 @@
 								</form:form>
 							</c:if>						
 						</div>
-						</c:if>
 					</jsp:attribute>
 				</bform:fieldset>
 			</c:if>
