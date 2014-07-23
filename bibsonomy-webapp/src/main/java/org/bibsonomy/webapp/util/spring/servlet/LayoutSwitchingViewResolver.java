@@ -20,7 +20,7 @@ public class LayoutSwitchingViewResolver implements ViewResolver {
 	public View resolveViewName(String viewName, Locale locale) throws Exception {
 		
 		UserSettings settings = AuthenticationUtils.getUser().getSettings();
-		ViewLayout layout = settings.getLayout();
+		ViewLayout layout = settings.getLayoutSettings().getViewLayout();
 		
 		ViewResolver viewResolver = resolverMap.get(layout);
 		
