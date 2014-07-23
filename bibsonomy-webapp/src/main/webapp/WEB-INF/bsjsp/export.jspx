@@ -130,52 +130,40 @@
 		    	<c:if test="${mapEntry.value.publicLayout}">			
 					<tr>
 						<c:choose>
-							<c:when
-									test="${'JabrefLayout' eq mapEntry.value.class.simpleName}">
-								<c:url var="download"
-										value="/layout/${mapEntry.value.name}/${pathAndQueryString}?download=true" />
-								<c:url var="url"
-										value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />		
+							<c:when test="${'JabrefLayout' eq mapEntry.value.class.simpleName}">
+								<c:url var="download" value="/layout/${mapEntry.value.name}/${pathAndQueryString}?download=true" />
+								<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />		
 								<td>
-									<button type="button" class="btn btn-default btn-sm">
-									<a href="${fn:escapeXml(download)}">
-		  							<span class="glyphicon glyphicon-download-alt"></span>
-											</a>	
-									</button>
+									<a class="btn btn-default btn-sm" href="${fn:escapeXml(download)}">
+		  								<span class="fa fa-download"><!--  --></span>
+									</a>	
 								</td>
 								<td>
-		                  			${mapEntry.value.extension}
+		                  			<c:out value="${mapEntry.value.extension}" />
 		               			</td> 
 				    			<td>
-		                  			<a href="${fn:escapeXml(url)}"><c:out
-												value="${mapEntry.value.displayName}" /></a> *
+		                  			<a href="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}" /></a> *
 		               			</td>         
 								<td>
-		 			  				<c:out
-											value="${mapEntry.value.description[locale.language]}" />
+		 			  				<c:out value="${mapEntry.value.description[locale.language]}" />
 								</td>			
 							</c:when>
-							
 							<c:otherwise>
-								<c:url var="url"
-										value="/${mapEntry.value.name}/${pathAndQueryString}" />	
-										
+								<c:url var="url" value="/${mapEntry.value.name}/${pathAndQueryString}" />	
 								<td>
-									<button type="button" class="btn btn-default btn-sm">
-		  							<span class="glyphicon glyphicon-download-alt"></span>
-									</button>
+									<a href="${url}" type="button" class="btn btn-default btn-sm">
+		  								<span class="fa fa-external-link"><!--  --></span>
+									</a>
 								</td>
 								<td>
-		                  			${mapEntry.value.extension}
+		                  			<c:out value="${mapEntry.value.extension}" />
 		               			</td> 
 				    			<td>
-		                  			<a href="${fn:escapeXml(url)}"><c:out
-												value="${mapEntry.value.displayName}" /></a>
+		                  			<a href="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}" /></a>
 		               			</td>         
 								<td>
-		 			  				<c:out
-											value="${mapEntry.value.description[locale.language]}" />
-								</td>					
+		 			  				<c:out value="${mapEntry.value.description[locale.language]}" />
+								</td>			
 							</c:otherwise>
 						</c:choose>
 					</tr>

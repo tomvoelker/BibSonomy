@@ -96,7 +96,7 @@
 			 	| selection of citation format 
 			 	+-->
 			<hr />
-		 	<h4 class="pub-details"><fmt:message key="publications.citations.headline" /></h4>
+		 	<h4 class="pub-details"><span class="fa fa-quote-right"><!--  --></span><c:out value=" "/><fmt:message key="publications.citations.headline" /></h4>
 			<pub:citation post="${post}"/>
 			
 			<!--+
