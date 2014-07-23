@@ -80,11 +80,13 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 */
 	private static final ResourceFactory RESOURCE_FACTORY = new ResourceFactory();
 	
-	private static final int UPDATE_TAG_ACTION = 1;
-	private static final int NORMALIZE_ACTION = 2;
-	private static final int DELETE_ACTION = 3;
-	//private static final int IGNORE_ACTION = 4;
-	private static final int UPDATE_VIEWABLE_ACTION = 4;
+	private static final int IGNORE_ACTION = 0;
+	private static final int UPDATE_AllTAG_ACTION = 1;
+	private static final int UPDATE_EachTAG_ACTION = 2;
+	private static final int NORMALIZE_ACTION = 3;
+	private static final int DELETE_ACTION = 4;
+	private static final int UPDATE_VIEWABLE_ACTION = 5;
+	
 	
 	/**
 	 * 
@@ -123,6 +125,8 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 	@Override
 	public View workOn(final BatchEditCommand command) {
+
+		
 		/*
 		 * FIXME: rename the variables in this method. Most names are no longer
 		 * suitable and refer to the older version where this controler only
@@ -157,7 +161,10 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * get user name
 		 */
 		final String loginUserName = context.getLoginUser().getName();
-
+		final int action = command.getAction();
+		
+		
+		
 		log.debug("batch edit for user " + loginUserName + " started");
 
 		/* *******************************************************
@@ -178,6 +185,9 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			throw new IllegalArgumentException("please provide a resource type");
 		}
 		
+		if (IGNORE_ACTION == action) {
+			return this.getFinalRedirect(postsArePublications,command.getReferer(), loginUserName);
+		}
 		/*
 		 * FIXME: rename/check setting of that flag in the command
 		 */
@@ -212,7 +222,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		final Map<String, String> newTagsMap = command.getNewTags();
 		final Map<String, String> oldTagsMap = command.getOldTags();
 		
-		final int action = command.getAction();
+		
 				
 		log.debug("#postFlags: " + markedPostsMap.size() + ", #postMap: " + postMap.size() + ", #addTags: " + addTags.size() + ", #newTags: " + newTagsMap.size() + ", #oldTags: " + oldTagsMap.size());
 
@@ -275,18 +285,30 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 							post.setDate(now);
 							postsToNormalize.add(post);
 						}
-					} else if (UPDATE_TAG_ACTION == action) {
+					} else if (UPDATE_AllTAG_ACTION == action || UPDATE_EachTAG_ACTION == action) {
 						/*
 						 * We must store/update the post, thus we parse and check its tags
 						 */
 						try {
 							final Set<Tag> oldTags = TagUtils.parse(oldTagsMap.get(intraHash));
-							final Set<Tag> newTags = TagUtils.parse(newTagsMap.get(intraHash));
-						
+							final Set<Tag> newTags = new TreeSet<Tag>();
+							if (UPDATE_AllTAG_ACTION == action){
+								newTags.addAll(TagUtils.parse(oldTagsMap.get(intraHash)));
+								newTags.addAll(getTagsCopy(addTags));
+							}
+							else if(UPDATE_EachTAG_ACTION == action){
+								newTags.addAll(TagUtils.parse(newTagsMap.get(intraHash)));
+							}
+							
+							
+						//	final Set<Tag> newTags = TagUtils.parse(newTagsMap.get(intraHash));
+						//	if (UPDATE_AllTAG_ACTION == action){
+							//	newTags.addAll(getTagsCopy(addTags));
+							//}
 							/*
 							* we add all global tags to the set of new tags
 							*/
-							newTags.addAll(getTagsCopy(addTags));
+//							newTags.addAll(getTagsCopy(addTags));
 							/*
 							 * if we want to update the posts, we only need to update posts
 							 * where the tags have changed
@@ -407,13 +429,14 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 		/*
 		 * return to batch edit view on errors
-		 */
+		 * commented: because it is not working correctly.
+		 * 
 		if (this.errors.hasErrors()) {
 			if (postsArePublications) {
 				return Views.BATCHEDITBIB;
 			} 
 			return Views.BATCHEDITURL;  
-		}
+		}*/
 
 		/*
 		 * return to either the user page or current page(batchedit)
@@ -681,9 +704,8 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * @return
 	 */
 
-	private View getFinalRedirect(final boolean isPub, final String referer, final String loginUserName) {
-		String redirectUrl;
-		
+	private View getFinalRedirect(final boolean isPub,final String referer, final String loginUserName) {
+		String redirectUrl = referer;
 		if (referer.equals("justUpdate")){	
 			if (isPub) {
 				redirectUrl = UrlUtils.safeURIEncode("beditbib/" + "user/" + loginUserName); // TODO: should be done by the URLGenerator
@@ -697,6 +719,12 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			redirectUrl = UrlUtils.safeURIEncode("user/" + loginUserName); // TODO: should be done by the URLGenerator
 		}
 		return new ExtendedRedirectView(redirectUrl);
+
+		
+		
+
+		
+
 	}
 
 	@Override
