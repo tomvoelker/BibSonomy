@@ -1,11 +1,8 @@
 package org.bibsonomy.webapp.command;
 
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeSet;
 
-import org.bibsonomy.layout.jabref.JabrefLayout;
+import org.bibsonomy.layout.jabref.AbstractJabRefLayout;
 import org.bibsonomy.layout.standard.StandardLayout;
 import org.bibsonomy.model.Layout;
 
@@ -14,37 +11,37 @@ import org.bibsonomy.model.Layout;
  */
 public class ExportPageCommand extends ResourceViewCommand{
 	
-	private Set<Layout> layoutSet;
+	private Map<String, Layout> layoutMap;
 
 	/**
-	 * @return layout set
+	 * @return layout map
 	 */
-	public Set<Layout> getLayoutSet() {
-		return this.layoutSet;
+	public Map<String, Layout> getLayoutMap() {
+		return this.layoutMap;
 	}
 
-	/**
-	 * @param layoutSet
-	 */
-	public void setLayoutSet(final Set<Layout> layoutSet) {
-		this.layoutSet = layoutSet;
-	}
-	
 	/**
 	 * @param layoutMap
 	 */
-	public void addJabrefLayoutMap(final Map<String, JabrefLayout> layoutMap) {
-		for(Entry<String, JabrefLayout> layout : layoutMap.entrySet()){
-			this.layoutSet.add(layout.getValue());
+	public void setLayoutMap(final Map<String, Layout> layoutMap) {
+		this.layoutMap = layoutMap;
+	}
+	
+	/**
+	 * @param jabrefMap
+	 */
+	public void addJabrefLayoutMap(final Map<String, AbstractJabRefLayout> jabrefMap) {
+		for(AbstractJabRefLayout layout : jabrefMap.values()){
+			this.layoutMap.put(layout.getDisplayName(), layout);
 		}
 	}
 	
 	/**
-	 * @param layoutMap
+	 * @param standardMap
 	 */
-	public void addStandardLayoutMap(final Map<String, StandardLayout> layoutMap) {
-		for(Entry<String, StandardLayout> layout : layoutMap.entrySet()){
-			this.layoutSet.add(layout.getValue());
+	public void addStandardLayoutMap(final Map<String, StandardLayout> standardMap) {
+		for(StandardLayout layout : standardMap.values()){
+			this.layoutMap.put(layout.getDisplayName(), layout);
 		}
 	}
 	

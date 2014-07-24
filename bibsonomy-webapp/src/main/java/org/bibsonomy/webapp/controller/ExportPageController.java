@@ -35,8 +35,7 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 			e.printStackTrace();
 		}
 		final ExportPageCommand exportPageCommand = new ExportPageCommand();
-		LayoutComparator c = new LayoutComparator(); 
-		exportPageCommand.setLayoutSet(new TreeSet<Layout>(c));
+		exportPageCommand.setLayoutMap(new TreeMap<String, Layout>());
 		return exportPageCommand;
 	}
 
@@ -68,18 +67,6 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 	 */
 	public void setLayoutRenderer(final JabrefLayoutRenderer layoutRenderer) {
 		this.layoutRenderer = layoutRenderer;
-	}
-	
-	private static final class LayoutComparator implements Comparator<Layout>{
-
-		/* (non-Javadoc)
-		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-		 */
-		@Override
-		public int compare(Layout o1, Layout o2) {
-			return o1.getDisplayName().compareTo(o2.getDisplayName());
-		}
-		
 	}
 }
 

@@ -62,8 +62,6 @@
 		<URL>http://scitation.aip.org/content/aip/journal/jcp/139/12/10.1063/1.4820139</URL>
 		<BibFile>AipScitationScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aip.AipScitationScraper</Scraper>
-		<Enabled>false</Enabled>
-		<AdditionalInfo>The download link is broken by aip.org</AdditionalInfo>
 	</URLTest>
 	<URLTest id="url_10">
 		<TestDescription>URL scraping test with arxiv publications</TestDescription>
@@ -544,7 +542,7 @@
 	<URLTest id="url_89">
 		<TestDescription>Liebert Url test 2</TestDescription>
 		<URL>http://www.liebertonline.com/action/showCitFormats?doi=10.1089%2F152308604773934350</URL>
-		<BibFile>LiebertScraperUnitURLTest1.bib</BibFile>
+		<BibFile>LiebertScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.liebert.LiebertScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_90">
@@ -1071,7 +1069,7 @@
 	</URLTest>
 	<URLTest id="url_174">
 		<TestDescription>URL test for scraping a bibtex page from scitation.aip.org</TestDescription>
-		<URL>hhttp://scitation.aip.org/content/asa/journal/jasa/42/5/10.1121/1.2144160</URL>
+		<URL>http://scitation.aip.org/content/asa/journal/jasa/42/5/10.1121/1.2144160</URL>
 		<BibFile>AipScitationScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aip.AipScitationScraper</Scraper>
 	</URLTest>
@@ -1686,5 +1684,11 @@
 		<URL>http://www.morganclaypool.com/action/showCitFormats?doi=10.2200%2FS00334ED1V01Y201102WBE001</URL>
 		<BibFile>MorganClaypoolScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.morganclaypool.MorganClaypoolScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_275">
+		<TestDescription>MDPI Scraper</TestDescription>
+		<URL>http://www.mdpi.com/2072-4292/5/10/5122</URL>
+		<BibFile>MDPIScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.mdpi.MDPIScraper</Scraper>
 	</URLTest>
 </test:Tests>

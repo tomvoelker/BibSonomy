@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.karlsruhe;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -43,7 +41,7 @@ public class AIFBScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_2"));
+		UnitTestRunner.runSingleTest("url_2");
 	}
 	
 	/**
@@ -51,7 +49,7 @@ public class AIFBScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_3"));
+		UnitTestRunner.runSingleTest("url_3");
 	}
 	
 	/**
@@ -59,7 +57,7 @@ public class AIFBScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_4"));
+		UnitTestRunner.runSingleTest("url_4");
 	}
 	
 	/**
@@ -67,7 +65,7 @@ public class AIFBScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_5"));
+		UnitTestRunner.runSingleTest("url_5");
 	}
 	
 	/**
@@ -75,7 +73,7 @@ public class AIFBScraperTest {
 	 */
 	@Test
 	public void url5TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_6"));
+		UnitTestRunner.runSingleTest("url_6");
 	}
 	
 	/**
@@ -83,7 +81,7 @@ public class AIFBScraperTest {
 	 */
 	@Test
 	public void url6TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_7"));
+		UnitTestRunner.runSingleTest("url_7");
 	}
 	
 	/**
@@ -91,6 +89,6 @@ public class AIFBScraperTest {
 	 */
 	@Test
 	public void url7TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_72"));
+		UnitTestRunner.runSingleTest("url_72");
 	}
 }

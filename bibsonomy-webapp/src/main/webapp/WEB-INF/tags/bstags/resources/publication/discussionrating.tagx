@@ -11,7 +11,7 @@
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true" />
 	<c:set var="href" value="${otherPostsUrlPrefix}${post.resource.interHash}#discussionbox" />
 	
-	<h4 class="pub-details"><span class="pull-left"><fmt:message key="publications.discussion.headline"/>&amp;nbsp;&amp;nbsp;</span>
+	<h4 class="pub-details"><span class="pull-left"><spann class="fa fa-comments"><!-- --></spann><c:out value=" " /><fmt:message key="publications.discussion.headline"/>&amp;nbsp;&amp;nbsp;</span>
 		<div class="rating">
 			<c:if test="${not empty post.resource.rating}">
 				<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource.class.simpleName)}" />

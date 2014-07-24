@@ -12,7 +12,7 @@ import javax.servlet.jsp.JspException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
-import org.bibsonomy.layout.jabref.JabrefLayout;
+import org.bibsonomy.layout.jabref.AbstractJabRefLayout;
 import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -29,7 +29,7 @@ public class JabrefLayoutRendererTag extends RequestContextAwareTag {
 	private static final long serialVersionUID = 8006189027834637063L;
 	private static final Log log = LogFactory.getLog(JabrefLayoutRendererTag.class);
 	
-	private static final String SUPPORTED_EXTENSION = ".html";	
+	private static final String SUPPORTED_EXTENSION = ".html";
 
 	/**
 	 * the posts to render
@@ -41,7 +41,7 @@ public class JabrefLayoutRendererTag extends RequestContextAwareTag {
 	@Override
 	protected int doStartTagInternal() throws Exception {
 		try {
-			pageContext.getOut().print(this.renderPosts());		
+			pageContext.getOut().print(this.renderPosts());
 		} catch (final IOException ex) {
 			throw new JspException("Error: IOException while writing to client" + ex.getMessage());
 		}
@@ -52,14 +52,14 @@ public class JabrefLayoutRendererTag extends RequestContextAwareTag {
 		if (present(this.posts)) {
 			final JabrefLayoutRenderer renderer = this.getJabRefLayoutRenderer();
 			try {
-				final JabrefLayout layout = renderer.getLayout(this.layout, "");
-				if (!SUPPORTED_EXTENSION.equals(layout.getExtension())) {
-					return "The requested layout is not valid; only HTML layouts are allowed. Requested extension is: " + layout.getExtension();
+				final AbstractJabRefLayout jabRefLayout = renderer.getLayout(this.layout, "");
+				if (!SUPPORTED_EXTENSION.equals(jabRefLayout.getExtension())) {
+					return "The requested layout is not valid; only HTML layouts are allowed. Requested extension is: " + jabRefLayout.getExtension();
 				}
-				return renderer.renderLayout(layout, posts, true).toString();
+				return renderer.renderLayout(jabRefLayout, posts, true).toString();
 			} catch (final LayoutRenderingException ex) {
 				log.error(ex.getMessage());
-				return ex.getMessage();			
+				return ex.getMessage();
 			} catch (final UnsupportedEncodingException ex) {
 				log.error(ex.getMessage());
 				return "An Encoding error occured while trying to convert to layout '" + layout  + "'.";
@@ -75,8 +75,8 @@ public class JabrefLayoutRendererTag extends RequestContextAwareTag {
 	}
 	
 	private JabrefLayoutRenderer getJabRefLayoutRenderer() {
-        final WebApplicationContext ctx = this.getRequestContext().getWebApplicationContext();
-        return ctx.getBean(JabrefLayoutRenderer.class);
+		final WebApplicationContext ctx = this.getRequestContext().getWebApplicationContext();
+		return ctx.getBean(JabrefLayoutRenderer.class);
 	}
 	
 	/**

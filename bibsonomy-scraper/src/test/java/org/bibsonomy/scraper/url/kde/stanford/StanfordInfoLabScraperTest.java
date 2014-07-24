@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.stanford;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -41,6 +39,6 @@ public class StanfordInfoLabScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_221"));
+		UnitTestRunner.runSingleTest("url_221");
 	}
 }

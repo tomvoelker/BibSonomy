@@ -23,12 +23,10 @@
 
 package org.bibsonomy.scraper.generic;
 
-import static org.junit.Assert.assertTrue;
-import org.junit.experimental.categories.Category;
-import org.bibsonomy.scraper.junit.RemoteTest;
-
 import org.bibsonomy.scraper.UnitTestRunner;
+import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * Scraper URL tests #115 for BibtexScraper
@@ -43,7 +41,7 @@ public class BibtexScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_115"));
+		UnitTestRunner.runSingleTest("url_115");
 	}
 	
 	/**
@@ -51,7 +49,7 @@ public class BibtexScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_216"));
+		UnitTestRunner.runSingleTest("url_216");
 	}
 	
 }

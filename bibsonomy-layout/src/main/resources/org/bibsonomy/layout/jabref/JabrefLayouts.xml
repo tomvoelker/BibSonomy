@@ -290,7 +290,6 @@
 	</layout>
 
 	<!-- additional layouts, installed by us -->
-	<!-- typemap.put("custom",              new OutputType(null, "text/html")); -->
 	<layout name="se" public="false">
 		<displayName>SE Kassel</displayName>
 		<description xml:lang="en">
@@ -306,8 +305,7 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
-	<!--
-	-->
+	<!-- -->
 	<layout name="mms" public="false">
 		<displayName>HTML table, ABSTRACT &amp; BibTeX, sortable, MDC</displayName>
 		<description xml:lang="en">
@@ -749,7 +747,7 @@
 		<description xml:lang="en">
 			Publication list formatted according to the guidelines of the American Psychological
 			Association (APA); output is created in HTML format.
-			For further details, see http://ralmond.net/APAish/.	
+			For further details, see http://ralmond.net/APAish/.
 			This filter was originally created by Gottfried Vosgerau by adapting the Harvard RTF export filter.	
 		</description>
 		<description xml:lang="de">
@@ -763,4 +761,15 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
+	<selfrenderingLayout name="msofficexml" class="org.bibsonomy.layout.jabref.self.MSOfficeXMLLayout">
+		<displayName>MSOffice XML</displayName>
+		<description xml:lang="en">
+			A format to import into Microsoft Bibliography.
+		</description>
+		<description xml:lang="de">
+			Format zum Import in Microsoft Bibliography.
+		</description>
+		<mimeType>text/xml</mimeType>
+		<extension>.xml</extension>
+	</selfrenderingLayout>
 </layouts>

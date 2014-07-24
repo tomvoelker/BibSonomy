@@ -93,7 +93,7 @@ public class LayoutXMLHandler extends DefaultHandler {
 		} else if ("displayName".equals(name)) {
 			currentLayoutDefinition.setDisplayName(getBuf());
 		} else if ("description".equals(name)) {
-			currentLayoutDefinition.setDescription(this.languageAttribute, getBuf());
+			//currentLayoutDefinition.setDescription(this.languageAttribute, getBuf());
 		} else if ("extension".equals(name)) {
 			currentLayoutDefinition.setExtension(getBuf());
 		} else if ("mimeType".equals(name)) {

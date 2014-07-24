@@ -29,6 +29,7 @@ import java.util.TimeZone;
 import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.TagCloudSort;
 import org.bibsonomy.common.enums.TagCloudStyle;
+import org.bibsonomy.model.user.settings.LayoutSettings;
 
 /**
  * Holds settings for a user.
@@ -80,7 +81,7 @@ public class UserSettings implements Serializable {
 	// TODO: rename to showPublication
 	private boolean showBibtex = true;
 	
-	private boolean simpleInterface = true;
+	private LayoutSettings layoutSettings = new LayoutSettings();
 	
 	/**
 	 * the default language for i18n
@@ -117,6 +118,7 @@ public class UserSettings implements Serializable {
 	 */
 	private boolean isMaxCount = true;
 	
+
 	/**
 	 * @return tagboxStyle
 	 */
@@ -310,16 +312,20 @@ public class UserSettings implements Serializable {
 
 	/**
 	 * @return the simpleInterface
+	 * @deprecated use {@link #getLayoutSettings()}.isSimpleInterface()
 	 */
+	@Deprecated
 	public boolean isSimpleInterface() {
-		return this.simpleInterface;
+		return this.layoutSettings.isSimpleInterface();
 	}
 
 	/**
 	 * @param simpleInterface the simpleInterface to set
+	 * @deprecated use {@link #getLayoutSettings()}.setSimpleInterface()
 	 */
+	@Deprecated
 	public void setSimpleInterface(final boolean simpleInterface) {
-		this.simpleInterface = simpleInterface;
+		this.layoutSettings.setSimpleInterface(simpleInterface);
 	}
 
 	/**
@@ -328,4 +334,13 @@ public class UserSettings implements Serializable {
 	public TimeZone getTimeZone() {
 		return this.timeZone;
 	}
+	
+	public LayoutSettings getLayoutSettings() {
+		return this.layoutSettings;
+	}
+
+	public void setLayoutSettings(LayoutSettings layoutSettings) {
+		this.layoutSettings = layoutSettings;
+	}
+	
 }

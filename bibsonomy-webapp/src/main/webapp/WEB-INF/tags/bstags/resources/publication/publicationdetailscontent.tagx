@@ -36,7 +36,7 @@
 		| abstract 
 		+-->
 	<c:if test="${not empty post.resource.abstract}"> 
-		<h4 class="pub-details"><fmt:message key="publications.abstract.headline"/></h4>
+		<h4 class="pub-details"><span class="fa fa-align-justify"><!--  --></span><c:out value=" "/><fmt:message key="publications.abstract.headline"/></h4>
 		<div id="abstract" class="more">
 			<span class="contentContainer"><c:out value="${post.resource.abstract}" /></span>
 		</div>
@@ -46,7 +46,7 @@
 		| description
 		+-->
 	<c:if test="${not empty post.description}">
-		<h4 class="pub-details"><fmt:message key="post.resource.description.cap"/></h4>
+		<h4 class="pub-details"><span class="fa fa-ellipsis-h"><!--  --></span><c:out value=" "/><fmt:message key="post.resource.description.cap"/></h4>
 		<div id="desc" class="more">
 			<c:out value="${post.description}" />
 		</div>
@@ -57,7 +57,7 @@
 		| resources (URLs/PDF/etc.)
 		|
 		+-->
-	<h4 class="pub-details"><fmt:message key="publications.resource.headline" /></h4>
+	<h4 class="pub-details"><span class="fa fa-link" ><!--  --></span><c:out value=" "/><fmt:message key="publications.resource.headline" /></h4>
 	
 	<div class="form-horizontal" id="resources" style="font-size: 85%;" >
 		<!--+
@@ -252,7 +252,7 @@
 		| tag list
 		+-->
 	<!-- TODO: i18n? -->
-	<h4 class="pub-details">Tags</h4>
+	<h4 class="pub-details"><span class="fa fa-tag"><!--  --></span><c:out value=" " />Tags</h4>
 	<c:set var="tags" value="${post.tags}"/>
 	<c:if test="${not isOwnEntry}">
 		<c:set var="tags" value="${post.visibleTags}" />
