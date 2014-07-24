@@ -145,7 +145,13 @@
 				  <form:option label="${simple}" value="true" />
 				</form:select>
 			</div>
-			
+			<div class="fsRow">
+				<form:label cssClass="fsLabel" path="user.settings.simpleInterface"><fmt:message key="settings.editPublication.interFace"/></form:label>
+				<form:select cssClass="form-control help-popover" path="user.settings.layoutSettings.viewLayout" >
+					<form:option label="Classic" value="CLASSIC"/>
+					<form:option label="Bootstrap" value="BOOTSTRAP"/>
+				</form:select >
+			</div>
 			<div class="fsRow">
 				<form:label cssClass="fsLabel" path="user.settings.defaultLanguage"><fmt:message key="settings.tag.defaultLanguage"/></form:label>
 				<buttons:help message="settings.tag.defaultLanguage.help"/>
