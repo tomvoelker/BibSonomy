@@ -23,50 +23,53 @@
 
 package org.bibsonomy.rest.validation;
 
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
+import org.bibsonomy.rest.renderer.xml.BibtexType;
+import org.bibsonomy.rest.renderer.xml.BookmarkType;
+import org.bibsonomy.rest.renderer.xml.GroupType;
+import org.bibsonomy.rest.renderer.xml.PostType;
+import org.bibsonomy.rest.renderer.xml.TagType;
+import org.bibsonomy.rest.renderer.xml.UserType;
 
 /**
- * Validates the given model.
+ * interface for validating the xml input from the API
  * 
- * @author rja
+ * @author dzo
  */
-public interface ModelValidator {
+public interface XMLModelValidator {
 
 	/**
-	 * Check the publication for correctness.
-	 * @param publication
+	 * @param xmlPublication
 	 */
-	public void checkPublication(final BibTex publication);
+	public void checkPublicationXML(BibtexType xmlPublication);
 
 	/**
-	 * @param post
+	 * @param xmlBookmark
 	 */
-	public void checkPost(Post<? extends Resource> post);
+	public void checkBookmarkXML(BookmarkType xmlBookmark);
 
 	/**
-	 * @param user
+	 * @param xmlPost
 	 */
-	public void checkUser(User user);
+	public void checkPost(PostType xmlPost);
 
 	/**
-	 * @param tag
+	 * @param xmlTag
 	 */
-	public void checkTag(Tag tag);
+	public void checkTag(TagType xmlTag);
 
 	/**
-	 * @param group
+	 * @param xmlGroup
 	 */
-	public void checkGroup(Group group);
+	public void checkGroup(GroupType xmlGroup);
 
 	/**
-	 * @param bookmark
+	 * @param xmlUser
 	 */
-	public void checkBookmark(Bookmark bookmark);
-	
+	public void checkUser(UserType xmlUser);
+
+	/**
+	 * @param xmlPost
+	 */
+	public void checkStandardPost(PostType xmlPost);
+
 }

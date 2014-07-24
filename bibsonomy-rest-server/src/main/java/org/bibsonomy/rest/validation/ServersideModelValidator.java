@@ -16,25 +16,10 @@ import bibtex.parser.ParseException;
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
-public class ServersideModelValidator implements ModelValidator {
+public class ServersideModelValidator extends StandardModelValidator {
 	private static final Log log = LogFactory.getLog(ServersideModelValidator.class);
 
 	private static final String BIBTEX_IS_INVALID_MSG = "The validation of the BibTeX entry failed: ";
-	
-	private static ServersideModelValidator modelValidator;
-
-	/** Get an instance of this model validator
-	 * 
-	 * @return An instance of the model validator.
-	 */
-	public static ServersideModelValidator getInstance() {
-		if (ServersideModelValidator.modelValidator == null) {
-			ServersideModelValidator.modelValidator = new ServersideModelValidator();
-		}
-		return ServersideModelValidator.modelValidator;
-	}
-	
-	private ServersideModelValidator() {}
 	
 	/**
 	 * Parses the given publication using the BibTeX parser.
@@ -63,6 +48,7 @@ public class ServersideModelValidator implements ModelValidator {
 	 */
 	@Override
 	public void checkPublication(final BibTex publication) {
+		super.checkPublication(publication);
 		/*
 		 * parse BibTeX so see whether the entry is valid
 		 */
