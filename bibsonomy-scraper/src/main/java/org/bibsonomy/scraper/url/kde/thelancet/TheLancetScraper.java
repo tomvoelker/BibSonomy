@@ -1,0 +1,92 @@
+package org.bibsonomy.scraper.url.kde.thelancet;
+
+import java.net.URL;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.converter.RisToBibtexConverter;
+import org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper;
+import org.bibsonomy.util.WebUtils;
+
+/**
+ *
+ * @author Haile
+ */
+public class TheLancetScraper extends PostprocessingGenericURLScraper{
+	private static final String SITE_NAME = "THE LANCET";
+	private static final String SITE_URL = "http://www.thelancet.com";
+	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
+	
+	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "thelancet.com"), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final Pattern FORM_PATTERN = Pattern.compile("<form action=\"(.*)\" method=\"post\" name=\"citationDownload\">");
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.UrlScraper#getSupportedSiteName()
+	 */
+	@Override
+	public String getSupportedSiteName() {
+		return SITE_NAME;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.UrlScraper#getSupportedSiteURL()
+	 */
+	@Override
+	public String getSupportedSiteURL() {
+		return SITE_URL;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.Scraper#getInfo()
+	 */
+	@Override
+	public String getInfo() {
+		return INFO;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.AbstractUrlScraper#getUrlPatterns()
+	 */
+	@Override
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
+		return URL_PATTERNS;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
+	 */
+	@Override
+	protected String postProcessScrapingResult(ScrapingContext sc, String result) {
+		try {
+			final RisToBibtexConverter con = new RisToBibtexConverter();
+			final String bibtex = con.risToBibtex(result);
+			return bibtex;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.SimpleGenericURLScraper#getBibTeXURL(java.net.URL)
+	 */
+	@Override
+	public String getBibTeXURL(URL url) {
+		
+		try{
+		Matcher m = FORM_PATTERN.matcher(WebUtils.getContentAsString(url + "/exportCitation"));
+		if(m.find()){
+			return "http://www.thelancet.com" + m.group(1) + "?exportContent=1&downloadFormat=0&Submit=Export+Citation";
+		}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+}

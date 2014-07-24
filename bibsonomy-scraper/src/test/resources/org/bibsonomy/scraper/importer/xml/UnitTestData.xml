@@ -1703,4 +1703,10 @@
 		<BibFile>OxfordJournalsScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.oxfordjournals.OxfordJournalsScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_278">
+		<TestDescription>The LANCET Scraper</TestDescription>
+		<URL>http://www.thelancet.com/journals/lancet/article/PIIS0140-6736%2814%2960931-4/abstract</URL>
+		<BibFile>TheLancetScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.thelancet.TheLancetScraper</Scraper>
+	</URLTest>
 </test:Tests>
