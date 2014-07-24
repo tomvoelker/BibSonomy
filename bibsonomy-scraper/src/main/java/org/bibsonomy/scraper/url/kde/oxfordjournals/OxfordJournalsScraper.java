@@ -1,0 +1,65 @@
+package org.bibsonomy.scraper.url.kde.oxfordjournals;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.generic.CitationManagerScraper;
+
+/**
+ * TODO: add documentation to this class
+ *
+ * @author Haile
+ */
+public class OxfordJournalsScraper extends CitationManagerScraper{
+	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\"(.+?)\">Download citation</a>");
+	private static final String SITE_NAME = "Oxford Journals";
+	private static final String SITE_URL = "http://www.oxfordjournals.org/";
+	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
+	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(
+			Pattern.compile(".*" + "oxfordjournals.org"), 
+			Pattern.compile("/content" + ".*")
+			));
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.UrlScraper#getSupportedSiteName()
+	 */
+	@Override
+	public String getSupportedSiteName() {
+		return SITE_NAME;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.UrlScraper#getSupportedSiteURL()
+	 */
+	@Override
+	public String getSupportedSiteURL() {
+		return SITE_URL;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.Scraper#getInfo()
+	 */
+	@Override
+	public String getInfo() {
+		return INFO;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.CitationManagerScraper#getDownloadLinkPattern()
+	 */
+	@Override
+	public Pattern getDownloadLinkPattern() {
+		return DOWNLOAD_LINK_PATTERN;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.AbstractUrlScraper#getUrlPatterns()
+	 */
+	@Override
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
+		return URL_PATTERNS;
+	}
+
+}

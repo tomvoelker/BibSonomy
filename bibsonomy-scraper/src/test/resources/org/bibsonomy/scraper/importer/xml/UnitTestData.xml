@@ -1691,4 +1691,16 @@
 		<BibFile>MDPIScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.mdpi.MDPIScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_276">
+		<TestDescription>JStage Scraper</TestDescription>
+		<URL>https://www.jstage.jst.go.jp/article/abas/13/2/13_67/_article</URL>
+		<BibFile>JStageScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.jstage.JStageScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_277">
+		<TestDescription>Oxford Journal Scraper</TestDescription>
+		<URL>http://comjnl.oxfordjournals.org/content/55/1/82.abstract</URL>
+		<BibFile>OxfordJournalsScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.oxfordjournals.OxfordJournalsScraper</Scraper>
+	</URLTest>
 </test:Tests>
