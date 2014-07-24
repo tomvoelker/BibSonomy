@@ -53,23 +53,7 @@ public class StandardLayouts {
 	 */
 	private Map<String, StandardLayout> layouts;
 	
-	
-	public static void main(String[] args){
 		
-		StandardLayouts s = new StandardLayouts(); 
-		
-		try {
-			s.init();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		System.out.println(s.toString());
-		
-		
-	}
-	
-	
 	
 	/** Initialize the layouts by loading them into a map.
 	 * 

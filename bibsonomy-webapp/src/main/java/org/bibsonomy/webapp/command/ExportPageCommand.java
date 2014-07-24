@@ -2,7 +2,7 @@ package org.bibsonomy.webapp.command;
 
 import java.util.Map;
 
-import org.bibsonomy.layout.jabref.JabrefLayout;
+import org.bibsonomy.layout.jabref.AbstractJabRefLayout;
 import org.bibsonomy.layout.standard.StandardLayout;
 import org.bibsonomy.model.Layout;
 
@@ -30,8 +30,8 @@ public class ExportPageCommand extends ResourceViewCommand{
 	/**
 	 * @param jabrefMap
 	 */
-	public void addJabrefLayoutMap(final Map<String, JabrefLayout> jabrefMap) {
-		for(JabrefLayout layout : jabrefMap.values()){
+	public void addJabrefLayoutMap(final Map<String, AbstractJabRefLayout> jabrefMap) {
+		for(AbstractJabRefLayout layout : jabrefMap.values()){
 			this.layoutMap.put(layout.getDisplayName(), layout);
 		}
 	}
