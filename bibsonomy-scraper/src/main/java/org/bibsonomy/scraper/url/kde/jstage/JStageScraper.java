@@ -83,6 +83,7 @@ public class JStageScraper extends PostprocessingGenericURLScraper{
 	@Override
 	protected String postProcessScrapingResult(ScrapingContext sc, String result) {
 		try{
+			result = result.replace(result.split(",")[0],result.split(",")[0].replace(" ", ""));
 			result = BibTexUtils.addFieldIfNotContained(result, "url", sc.getUrl().toString());
 			result = BibTexUtils.addFieldIfNotContained(result, "abstract", abstractParser(sc.getUrl()));
 			return StringEscapeUtils.unescapeHtml(result);
