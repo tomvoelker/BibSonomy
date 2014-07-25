@@ -24,10 +24,15 @@
 
 package org.bibsonomy.scraper.url.kde.sciencemag;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Scraper URL test #192 for ScienceMagScraper
@@ -51,5 +56,11 @@ public class ScienceMagScraperTest {
 	@Test
 	public void urlTest2Run() {
 		UnitTestRunner.runSingleTest("url_229");
+	}
+	
+	@Test
+	public void testFullToShortUrl() throws MalformedURLException {
+		final ScienceMagScraper sms = new ScienceMagScraper();
+		assertEquals(new URL("http://www.sciencemag.org/content/302/5651/1704.short"), sms.fullUrlToShort(new URL("http://www.sciencemag.org/content/302/5651/1704.full")));
 	}
 }

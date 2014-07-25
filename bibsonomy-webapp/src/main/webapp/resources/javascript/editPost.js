@@ -877,6 +877,7 @@ function reloadRecommendation() {
 	    $("#fsReloadButton").attr("src","/resources/image/button_reload-inactive.png");
 	    $('#postForm').ajaxSubmit(tagRecoOptions); 
 	}
+	return false; // prevent default action
 }
 
 

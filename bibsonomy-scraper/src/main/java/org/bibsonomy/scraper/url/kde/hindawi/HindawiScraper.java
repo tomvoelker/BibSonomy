@@ -34,18 +34,20 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.CitedbyScraper;
+import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * @author Haile
  */
-public class HindawiScraper extends AbstractUrlScraper{
+public class HindawiScraper extends PostprocessingGenericURLScraper implements ReferencesScraper, CitedbyScraper{
 	private static final Log log = LogFactory.getLog(HindawiScraper.class);
 	
 	private static final String SITE_NAME = "Hindawi Publishing Corporation";
@@ -55,35 +57,11 @@ public class HindawiScraper extends AbstractUrlScraper{
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "hindawi.com"), AbstractUrlScraper.EMPTY_PATTERN));
 	private static final String BIBTEX_URL = "http://files.hindawi.com/journals/";
 	private static final Pattern ID_PATTERN = Pattern.compile(".*/journals/(.*\\d+)");
+	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<meta name=\"citation_abstract\" content=\"(.*)\"/>");
+	private static final Pattern REFERENCES_PATTERN = Pattern.compile("<h4>Linked References</h4>\\s+<ol>\\s+(.*)</ol>");
+	
 	private static final int ID_GROUP = 1;
-	@Override
-	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
-		scrapingContext.setScraper(this);
-		
-		final URL url = scrapingContext.getUrl();
-		final String id = extractId(url.toString());
-
-		if (!present(id)) {
-			log.error("can't parse publication id");
-			return false;
-		}
-		try {
-			
-			final String endNote = WebUtils.getContentAsString(new URL(BIBTEX_URL + id + ".enw"));
-			final EndnoteToBibtexConverter converter = new EndnoteToBibtexConverter();
-			
-			final String bibTex = converter.endnoteToBibtex(endNote);
-			
-			if (present(bibTex)) {
-				scrapingContext.setBibtexResult(bibTex);
-				return true;
-			}
-			
-			throw new ScrapingFailureException("getting bibtex failed");
-		} catch (final Exception e) {
-			throw new InternalFailureException(e);
-		}
-	}
+	
 	
 	/**
 	 * extracts publication id from url
@@ -91,10 +69,21 @@ public class HindawiScraper extends AbstractUrlScraper{
 	 * @param url
 	 * @return publication id
 	 */
-	private String extractId(final String url) {
+	private static String extractId(final String url) {
 		final Matcher matcher = ID_PATTERN.matcher(url);
 		if (matcher.find()) {
 			return matcher.group(ID_GROUP);
+		}
+		return null;
+	}
+	
+	private static String abstractParser(URL url){
+		try{
+		Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(url));
+		if(m.find())
+			return m.group(1);
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 		return null;
 	}
@@ -116,6 +105,68 @@ public class HindawiScraper extends AbstractUrlScraper{
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return PATTERNS;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
+	 */
+	@Override
+	protected String postProcessScrapingResult(ScrapingContext sc, String result) {
+		try {
+			final EndnoteToBibtexConverter converter = new EndnoteToBibtexConverter();
+			return BibTexUtils.addFieldIfNotContained(converter.endnoteToBibtex(result),"abstract",abstractParser(sc.getUrl()));
+		} catch (Exception e) {
+			log.error("post processing result failed for " + sc.getUrl(), e);
+		}
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.SimpleGenericURLScraper#getBibTeXURL(java.net.URL)
+	 */
+	@Override
+	public String getBibTeXURL(URL url) {
+		final String id = extractId(url.toString());
+		if (!present(id)) {
+			log.error("can't parse publication id");
+			return null;
+		}
+		return BIBTEX_URL + id + ".enw";
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.CitedbyScraper#scrapeCitedby(org.bibsonomy.scraper.ScrapingContext)
+	 */
+	@Override
+	public boolean scrapeCitedby(ScrapingContext scrapingContext) throws ScrapingException {
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
+	 */
+	@Override
+	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
+		final URL urlToScrape = scrapingContext.getUrl();
+		final String urlPath = urlToScrape.getPath();
+		final String path = urlPath.replace(urlPath.split("/")[5],"ref");
+		final String url = "http://" + urlToScrape.getHost().toString() + "/" + path;
+		try {
+			final String referencespage = WebUtils.getContentAsString(url);
+			String references = "";
+			
+			Matcher m = REFERENCES_PATTERN.matcher(referencespage);
+			if (m.find()) {
+				references = m.group();
+			}
+			if (present(references)) {
+				scrapingContext.setReferences(references);
+				return true;
+			}
+		} catch(Exception e) {
+			log.error("error while scraping references " + urlToScrape, e);
+		}
+		return false;
 	}
 	
 }
