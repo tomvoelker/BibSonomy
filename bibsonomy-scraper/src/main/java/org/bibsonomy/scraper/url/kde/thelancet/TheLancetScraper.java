@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -39,7 +41,9 @@ import org.bibsonomy.util.WebUtils;
  *
  * @author Haile
  */
-public class TheLancetScraper extends PostprocessingGenericURLScraper{
+public class TheLancetScraper extends PostprocessingGenericURLScraper {
+	private static final Log log = LogFactory.getLog(TheLancetScraper.class);
+	
 	private static final String SITE_NAME = "THE LANCET";
 	private static final String SITE_URL = "http://www.thelancet.com";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
@@ -88,25 +92,25 @@ public class TheLancetScraper extends PostprocessingGenericURLScraper{
 			final RisToBibtexConverter con = new RisToBibtexConverter();
 			final String bibtex = con.risToBibtex(result);
 			return bibtex;
-		}catch(Exception e){
-			e.printStackTrace();
+		} catch (final Exception e) {
+			log.error("error while converting ris to bibtex", e);
 		}
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/* FIXME: the getBibTexUrl is returning a url to a ris file
+	 *  (non-Javadoc)
 	 * @see org.bibsonomy.scraper.generic.SimpleGenericURLScraper#getBibTeXURL(java.net.URL)
 	 */
 	@Override
 	public String getBibTeXURL(URL url) {
-		
 		try{
-		Matcher m = FORM_PATTERN.matcher(WebUtils.getContentAsString(url + "/exportCitation"));
-		if(m.find()){
-			return "http://www.thelancet.com" + m.group(1) + "?exportContent=1&downloadFormat=0&Submit=Export+Citation";
-		}
-		}catch(Exception e){
-			e.printStackTrace();
+			Matcher m = FORM_PATTERN.matcher(WebUtils.getContentAsString(url + "/exportCitation"));
+			if (m.find()) {
+				return "http://www.thelancet.com" + m.group(1) + "?exportContent=1&downloadFormat=0&Submit=Export+Citation";
+			}
+		} catch (final Exception e) {
+			log.error("error while getting ris url", e);
 		}
 		return null;
 	}
