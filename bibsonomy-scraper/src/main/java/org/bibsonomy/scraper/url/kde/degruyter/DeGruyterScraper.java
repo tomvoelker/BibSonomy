@@ -47,7 +47,7 @@ import org.bibsonomy.util.WebUtils;
 /**
  * @author Haile
  */
-public class DeGruyterScraper  extends AbstractUrlScraper {
+public class DeGruyterScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME = "De Gruyter";
 	private static final String SITE_URL = "http://www.degruyter.com/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
@@ -78,8 +78,8 @@ public class DeGruyterScraper  extends AbstractUrlScraper {
 		}
 	}
 	
-	private String getCitationInRIS(final String stURL) throws IOException {
-		URL url = new URL(stURL);
+	private static String getCitationInRIS(final String stURL) throws IOException {
+		final URL url = new URL(stURL);
 		String path = "http://"  + url.getHost() + "/dg/cite/" + url.getPath().substring(url.getPath().indexOf("/j/")).replace("/", "$002f") + "?nojs=true";
 		
 		URL postURL = new URL("http://" + url.getHost() + "/dg/cite.form");
