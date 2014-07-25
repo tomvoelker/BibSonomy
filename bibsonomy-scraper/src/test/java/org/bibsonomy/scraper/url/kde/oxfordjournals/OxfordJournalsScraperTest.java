@@ -29,8 +29,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * 
- *
  * @author Haile
  */
 @Category(RemoteTest.class)

@@ -40,5 +40,4 @@ public class TheLancetScraperTest {
 	public void urlTestRun(){
 		UnitTestRunner.runSingleTest("url_278");
 	}
-
 }

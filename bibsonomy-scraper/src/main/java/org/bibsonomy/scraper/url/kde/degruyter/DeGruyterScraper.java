@@ -25,6 +25,7 @@ package org.bibsonomy.scraper.url.kde.degruyter;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -45,7 +46,6 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author Haile
- * @version $Id:$
  */
 public class DeGruyterScraper  extends AbstractUrlScraper {
 	private static final String SITE_NAME = "De Gruyter";
@@ -54,7 +54,6 @@ public class DeGruyterScraper  extends AbstractUrlScraper {
 	
 	private static final Pattern TAC = Pattern.compile("<input value=\"(.*)\" name=\"t:ac\" type=\"hidden\"/>");
 	private static final Pattern TFORMDATA = Pattern.compile("<input value=\"(H.*=)\" name=\"t:formdata\" type=\"hidden\"/>");
-	
 	
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "degruyter.com"), AbstractUrlScraper.EMPTY_PATTERN));
 	
@@ -74,23 +73,24 @@ public class DeGruyterScraper  extends AbstractUrlScraper {
 			}
 			
 			throw new ScrapingFailureException("getting bibtex failed");
-		} catch (final Exception e) {
+		} catch (final IOException e) {
 			throw new InternalFailureException(e);
 		}
 	}
-	private String getCitationInRIS(final String stURL) throws Exception {
+	
+	private String getCitationInRIS(final String stURL) throws IOException {
 		URL url = new URL(stURL);
-		String path = "http://"  +url.getHost()+"/dg/cite/" + url.getPath().substring(url.getPath().indexOf("/j/")).replace("/", "$002f") + "?nojs=true";
+		String path = "http://"  + url.getHost() + "/dg/cite/" + url.getPath().substring(url.getPath().indexOf("/j/")).replace("/", "$002f") + "?nojs=true";
 		
-		URL postURL = new URL("http://"  +url.getHost()+"/dg/cite.form");
+		URL postURL = new URL("http://" + url.getHost() + "/dg/cite.form");
 		
 		final String html = WebUtils.getContentAsString(path);
 		
 		Matcher m_tac = TAC.matcher(html);
 		String tac = "";
-		if(m_tac.find())
+		if (m_tac.find()) {
 			tac = m_tac.group(1);
-		
+		}
 		Matcher m_formdata = TFORMDATA.matcher(html);
 		String formdata = "";
 		if(m_formdata.find())
@@ -110,14 +110,17 @@ public class DeGruyterScraper  extends AbstractUrlScraper {
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
+	
 	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
+	
 	@Override
 	public String getInfo() {
 		return INFO;
 	}
+	
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return URL_PATTERNS;
