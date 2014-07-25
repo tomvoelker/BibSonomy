@@ -36,10 +36,10 @@ import org.bibsonomy.scraper.generic.RISGenericURLScraper;
 
 /**
  * Scraper for publications from http://www.agu.org/pubs/ using the RIS export
+ * 
  * @author tst
  */
 public class AGUScraper extends RISGenericURLScraper {
-
 	private static final String SITE_NAME = "American Geophysical Union (AGU)";
 	private static final String SITE_URL = "http://www.agu.org/pubs/";
 	private static final String INFO = "For Publications from the " + href(SITE_URL, SITE_NAME)+".";
@@ -74,21 +74,20 @@ public class AGUScraper extends RISGenericURLScraper {
 	}
 
 	@Override
-	public String getRISURL(URL url) {
-		String pageContent = null;
-		ScrapingContext sc = new ScrapingContext(url);
+	protected String getRISURL(URL url) {
 		try {
-			pageContent = sc.getPageContent();
-		} catch (ScrapingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if(pageContent != null){
-			Matcher matcherDownloadUrl = RIS_DOWNLOAD_PATTERN.matcher(pageContent);
-			if(matcherDownloadUrl.find()){
-				return "http://www.agu.org" + matcherDownloadUrl.group(1).replace("&amp;", "&");
+			final ScrapingContext sc = new ScrapingContext(url);
+			final String pageContent = sc.getPageContent();
+			if (pageContent != null) {
+				Matcher matcherDownloadUrl = RIS_DOWNLOAD_PATTERN.matcher(pageContent);
+				if (matcherDownloadUrl.find()){
+					return "http://www.agu.org" + matcherDownloadUrl.group(1).replace("&amp;", "&");
+				}
 			}
+		} catch (ScrapingException e) {
+			// ignore
 		}
+		
 		return null;
 	}
 }
