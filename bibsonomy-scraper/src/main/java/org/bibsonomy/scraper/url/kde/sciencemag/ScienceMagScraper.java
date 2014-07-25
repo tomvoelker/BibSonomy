@@ -68,7 +68,7 @@ public class ScienceMagScraper extends CitationManagerScraper {
 	}
 	
 	/**
-	 * Modifying URLs ending with .long to end with .short.
+	 * Modifying URLs ending with .full to end with .short.
 	 * 
 	 * @param url
 	 * @return The modified URL.
@@ -78,7 +78,7 @@ public class ScienceMagScraper extends CitationManagerScraper {
 		if (url != null) {
 			final String path = url.getPath();
 			if (path.endsWith(".full")) {
-				return new URL(url.getProtocol(), url.getHost(), url.getPort(), path.substring(0, path.length() - ".long".length()) + ".short");
+				return new URL(url.getProtocol(), url.getHost(), url.getPort(), path.substring(0, path.length() - ".full".length()) + ".short");
 			}
 		}
 		return url;
