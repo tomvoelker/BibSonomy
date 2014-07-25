@@ -26,7 +26,7 @@ package org.bibsonomy.scraper;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
- * TODO: add documentation to this class
+ * interface for scrapers that can scrape citedby data
  *
  * @author Haile
  */
@@ -41,5 +41,4 @@ public interface CitedbyScraper {
 	 * @throws ScrapingException
 	 */
 	public boolean scrapeCitedby(final ScrapingContext scrapingContext) throws ScrapingException;
-	
 }

@@ -31,11 +31,11 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.generic.CitationManagerScraper;
 
 /**
- * TODO: add documentation to this class
+ * scraper for Oxford Journals
  *
  * @author Haile
  */
-public class OxfordJournalsScraper extends CitationManagerScraper{
+public class OxfordJournalsScraper extends CitationManagerScraper {
 	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\"(.+?)\">Download citation</a>");
 	private static final String SITE_NAME = "Oxford Journals";
 	private static final String SITE_URL = "http://www.oxfordjournals.org/";

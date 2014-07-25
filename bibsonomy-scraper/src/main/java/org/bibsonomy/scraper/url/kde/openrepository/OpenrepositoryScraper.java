@@ -61,45 +61,49 @@ public class OpenrepositoryScraper extends RISGenericURLScraper {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SUPPORTED_HOST_GTCNI), Pattern.compile(SUPPORTED_HOST_GTCNI_PATH + ".*")));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SUPPORTED_HOST_HIRSLA), Pattern.compile(SUPPORTED_HOST_HIRSLA_PATH + ".*")));
 	}
+	
 	@Override
 	public String getInfo() {
 		return INFO;
 	}
+	
 	/**
 	 * get handle id from url
 	 * @param url
 	 * @return id, null if matching failed
 	 */
-	private String getHandle(String url){
-		String handle = null;
-
+	private static String getHandle(String url) {
 		Pattern handlePattern = Pattern.compile(PATTERN_HANDLE);
 		Matcher handleMatcher = handlePattern.matcher(url);
-		if(handleMatcher.find())
-			handle = handleMatcher.group(1);
-
-		return handle;
+		if (handleMatcher.find()) {
+			return handleMatcher.group(1);
+		}
+		return null;
 	}
+	
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
+	
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
+	
 	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
+	
 	@Override
 	public String getRISURL(URL url) {
 		final String sturl = url.toString();
-		if(sturl.contains(SUPPORTED_HOST_OPENREPOSITORY)){
+		if (sturl.contains(SUPPORTED_HOST_OPENREPOSITORY)) {
 			return "http://www." + SUPPORTED_HOST_OPENREPOSITORY + "/references?format=refman&handle=" + getHandle(sturl);
-		}else if(sturl.contains(SUPPORTED_HOST_E_SPACE + SUPPORTED_HOST_E_SPACE_PATH)){
+		} else if(sturl.contains(SUPPORTED_HOST_E_SPACE + SUPPORTED_HOST_E_SPACE_PATH)) {
 			return  "http://www." + SUPPORTED_HOST_E_SPACE + SUPPORTED_HOST_E_SPACE_PATH + "/references?format=refman&handle=" + getHandle(sturl);
-		}else if(sturl.contains(SUPPORTED_HOST_EXETER + SUPPORTED_HOST_EXETER_PATH)){
+		}else if(sturl.contains(SUPPORTED_HOST_EXETER + SUPPORTED_HOST_EXETER_PATH)) {
 			return "http://www." + SUPPORTED_HOST_EXETER + SUPPORTED_HOST_EXETER_PATH + "/references?format=refman&handle=" + getHandle(sturl);
 		}else if(sturl.contains(SUPPORTED_HOST_HIRSLA + SUPPORTED_HOST_HIRSLA_PATH)){
 			return "http://www." + SUPPORTED_HOST_HIRSLA + SUPPORTED_HOST_HIRSLA_PATH + "/references?format=refman&handle=" + getHandle(sturl);

@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ReferencesScraper;
@@ -43,7 +45,8 @@ import org.bibsonomy.util.WebUtils;
  * @author tst
  */
 public class ProjectmuseScraper extends AbstractUrlScraper implements ReferencesScraper {
-
+	private static final Log log = LogFactory.getLog(ProjectmuseScraper.class);
+	
 	private static final String SITE_NAME = "Project MUSE";
 	private static final String SITE_URL = "http://muse.jhu.edu/";
 	private static final String INFO = "Scraper for citations from " + href(SITE_URL, SITE_NAME)+".";
@@ -97,7 +100,7 @@ public class ProjectmuseScraper extends AbstractUrlScraper implements References
 			// author may be occur more then one time, thats why special behaviour
 			Pattern pattern = Pattern.compile(PATTERN_AUTHOR);
 			Matcher matcher = pattern.matcher(sgml);
-			while(matcher.find()){
+			while (matcher.find()) {
 				String author = matcher.group(1);
 				String surname = getRegexResult(PATTERN_SURNAME, author); 
 				String fname = getRegexResult(PATTERN_FNAME, author);
@@ -160,13 +163,13 @@ public class ProjectmuseScraper extends AbstractUrlScraper implements References
 			bibtex.append("@inproceedings{");
 
 			// add bibtex key
-			if(bibKey != null)
+			if (bibKey != null)
 				bibtex.append(bibKey).append(",\n");
 			else
 				bibtex.append("noKey,\n");
 
 			// add author
-			if(authors != null)
+			if (authors != null)
 				bibtex.append("author = {").append(authors).append("},\n");
 
 			// add year
@@ -212,7 +215,6 @@ public class ProjectmuseScraper extends AbstractUrlScraper implements References
 			bibtex.append("}\n");
 
 			sc.setBibtexResult(bibtex.toString());
-			scrapeReferences(sc);
 			return true;
 
 		} catch (IOException ex) {
@@ -227,10 +229,11 @@ public class ProjectmuseScraper extends AbstractUrlScraper implements References
 	 * @param content target of regex
 	 * @return matching result, null if no matching
 	 */
-	private String getRegexResult(String regex, String content){
+	private static String getRegexResult(String regex, String content){
 		final Matcher matcher = Pattern.compile(regex).matcher(content);
-		if(matcher.find())
+		if (matcher.find()) {
 			return matcher.group(1);
+		}
 		return null;
 	}
 
@@ -254,15 +257,14 @@ public class ProjectmuseScraper extends AbstractUrlScraper implements References
 	 */
 	@Override
 	public boolean scrapeReferences(ScrapingContext scrapingContext)throws ScrapingException {
-		try{
+		try {
 			Matcher m = references_pattern.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
 			if(m.find()){
 				scrapingContext.setReferences(m.group(1));
 				return true;
 			}
-				
-		}catch(Exception e){
-			e.printStackTrace();
+		} catch (final Exception e) {
+			log.error("error while scraping references " + scrapingContext.getUrl(), e);
 		}
 		return false;
 	}

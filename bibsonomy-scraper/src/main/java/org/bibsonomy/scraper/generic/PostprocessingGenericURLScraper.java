@@ -27,17 +27,10 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
- * TODO: add documentation to this class
- *
- * @author Haile
- */
-/**
  * Allows {@link SimpleGenericURLScraper}s to postprocess the scraped result, i.e., by converting it to BibTeX or modifying the BibTeX.
  * 
  * @author Haile
- *
  */
-
 public abstract class PostprocessingGenericURLScraper extends SimpleGenericURLScraper {
 
 
@@ -50,6 +43,6 @@ public abstract class PostprocessingGenericURLScraper extends SimpleGenericURLSc
 		return result;
 	}
 	
-	protected abstract String postProcessScrapingResult(ScrapingContext sc,final String result);
+	protected abstract String postProcessScrapingResult(ScrapingContext sc, final String result);
 
 }

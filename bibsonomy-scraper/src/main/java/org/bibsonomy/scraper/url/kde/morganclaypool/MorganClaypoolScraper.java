@@ -74,11 +74,12 @@ public class MorganClaypoolScraper extends SimpleGenericURLScraper {
 	public String getBibTeXURL(URL url) {
 		String DOI = "";
 		Matcher m = BIBTEX_DOI.matcher(url.toString());
-		if (m.find())
+		if (m.find()) {
 			DOI = m.group(1);
-
-		return "http://" + url.getHost().toString() + BIBTEX_PATH + DOI
-				+ "&format=bibtex";
+		}
+		
+		// TODO: what do we do if we don't find a DOI?
+		return "http://" + url.getHost().toString() + BIBTEX_PATH + DOI + "&format=bibtex";
 	}
 
 }
