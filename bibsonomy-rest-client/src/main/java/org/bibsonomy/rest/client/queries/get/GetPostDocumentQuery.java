@@ -74,7 +74,7 @@ public class GetPostDocumentQuery extends AbstractQuery<Document> {
 		
 		// create the file
 		try {
-			this.document.setFile(fileFactory.getFile(resourceHash+"_"+fileName)); 
+			this.document.setFile(fileFactory.getFile(username+resourceHash+"_"+fileName)); 
 			this.fileExists = !this.document.getFile().createNewFile();
 		} catch (final IOException ex) {
 			throw new IllegalArgumentException("could not create new file " + this.document.getFile().getAbsolutePath());
