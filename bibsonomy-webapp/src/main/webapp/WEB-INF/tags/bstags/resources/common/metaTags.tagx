@@ -27,9 +27,8 @@
 				<div class="help popover-content" href="#">
 					<div>
 						<ul class="tags list-inline">
-
 							<c:forEach var="systag" items="${post.hiddenSystemTags}">
-								<li><span class="label label-info"><a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(systag.name)}"><c:out value="${systag.name}"/></a></span></li>
+								<li><span class="label label-primary"><a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(systag.name)}"><c:out value="${systag.name}"/></a></span></li>
 							</c:forEach>
 						</ul>
 					</div>
@@ -45,17 +44,24 @@
 	<c:if test="${showTagsLabel}">
 		<fmt:message key="tags"/><c:out value=": "/>
 	</c:if>
-	<div class="extend">
+	
+		<span class="fa fa-tag"><!--  --></span><c:out value=" " />
+		<c:forEach var="tag" items="${post.visibleTags}">
+			<span class="label label-grey"><a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}"><c:out value="${tag.name}"/></a></span><c:out value=" " />
+		</c:forEach>
+		<!-- 
 		<ul class="tags list-inline">
+			<li><span class="fa fa-tag"> </span></li>
 			<c:forEach var="tag" items="${post.visibleTags}">
-				<li><span class="label label-info"><a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}"><c:out value="${tag.name}"/></a></span></li>
+				<li><span class="label label-grey"><a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}"><c:out value="${tag.name}"/></a></span></li>
 			</c:forEach>
 		</ul>
+		-->
 <!-- 			<div>
 				<c:forEach var="tag" items="${post.visibleTags}">
 					<a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}"><c:out value="${tag.name} "/></a><c:out value=" "/>
 				</c:forEach>
 			</div> -->
-	</div>
+	
 	
 </jsp:root>

@@ -8,7 +8,7 @@
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 
-
+	<span class="fa fa-clock-o"><!--  --></span>
 	<c:out value=" "/>
 	<fmt:timeZone value="${command.context.loginUser.settings.timeZone}">
 	
