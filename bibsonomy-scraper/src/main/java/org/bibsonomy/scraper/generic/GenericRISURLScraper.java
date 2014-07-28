@@ -23,48 +23,17 @@
 
 package org.bibsonomy.scraper.generic;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.io.IOException;
-import java.net.URL;
-
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.util.WebUtils;
 
 /**
  * Transforms the scraping result from RIS to BibTeX after scraping, using the {@link RisToBibtexConverter}.
  * 
  * @author Haile
  */
-public abstract class RISGenericURLScraper extends AbstractUrlScraper {
+public abstract class GenericRISURLScraper extends AbstractGenericFormatURLScraper {
 	private static final RisToBibtexConverter RIS2BIB = new RisToBibtexConverter();
 	
-	/**
-	 * @param url
-	 * @return the ris url for the publication
-	 */
-	protected abstract String getRISURL(final URL url);
-	
-	@Override
-	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
-		scrapingContext.setScraper(this);
-		try {
-			String risURL = getRISURL(scrapingContext.getUrl());
-			if (risURL == null) {
-				throw new ScrapingException("no RIS url found for " + scrapingContext.getUrl());
-			}
-			String ris = WebUtils.getContentAsString(risURL);
-			final String bibtex = RIS2BIB.risToBibtex(ris);
-			if (present(bibtex)) {
-				scrapingContext.setBibtexResult(bibtex);
-				return true;
-			}
-		} catch (IOException e) {
-			throw new ScrapingException(e);
-		}
-		return false;
+	protected String convert(String downloadResult) {
+		return RIS2BIB.risToBibtex(downloadResult);
 	}
 }

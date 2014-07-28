@@ -23,26 +23,21 @@
 
 package org.bibsonomy.scraper.generic;
 
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
- * Allows {@link SimpleGenericURLScraper}s to postprocess the scraped result, i.e., by converting it to BibTeX or modifying the BibTeX.
+ * abstract class for sites that provide BibTeX export
  * 
- * @author Haile
+ * @author hagen
  */
-public abstract class PostprocessingGenericURLScraper extends SimpleGenericURLScraper {
-
-
-	@Override
-	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
-		final boolean result = super.scrapeInternal(scrapingContext);
-		if (result) {
-			scrapingContext.setBibtexResult(this.postProcessScrapingResult(scrapingContext, scrapingContext.getBibtexResult()));
-		}
-		return result;
-	}
+public abstract class GenericBibTeXURLScraper extends AbstractGenericFormatURLScraper {
 	
-	protected abstract String postProcessScrapingResult(ScrapingContext sc, final String result);
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#convert(java.lang.String)
+	 */
+	@Override
+	protected String convert(String downloadResult) {
+		// nothing to convert
+		return downloadResult;
+	}
 
 }

@@ -37,6 +37,8 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -51,6 +53,7 @@ import org.bibsonomy.util.WebUtils;
  * @author tst
  */
 public class UsenixScraper extends AbstractUrlScraper {
+	private static final Log log = LogFactory.getLog(UsenixScraper.class);
 	
 	private static final String SITE_NAME = "USENIX";
 	private static final String SITE_URL = "http://usenix.org/";
@@ -279,13 +282,15 @@ public class UsenixScraper extends AbstractUrlScraper {
 				throw new InternalFailureException(ex);
 			}
 	}
+	
 	private static String abstractParser(URL url){
-		try{
+		try {
 			Matcher m = PATTERN_ABSTRACT.matcher(WebUtils.getContentAsString(url));
-			if(m.find())
+			if (m.find()) {
 				return m.group(1);
-		}catch(Exception e){
-			e.printStackTrace();
+			}
+		} catch(Exception e) {
+			log.error("error while getting abstract for " + url, e);
 		}
 		return null;
 	}
