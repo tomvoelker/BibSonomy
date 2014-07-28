@@ -21,8 +21,8 @@
 				
 				<dt><fmt:message key="footer.developer"/></dt>
 			
-				<dd><a href="http://bibsonomy.bitbucket.org/"><fmt:message key="footer.overview"/></a></dd>
-				<dd><a href="http://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/api/REST%20API"><fmt:message key="settings.apidoc"/></a></dd>
+				<dd><span class="fa fa-bitbucket"><!--  --></span><c:out value=" " /><a href="http://bibsonomy.bitbucket.org/"><fmt:message key="footer.overview"/></a></dd>
+				<dd><span class="fa fa-puzzle-piece"><!--  --></span><c:out value=" " /><a href="http://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/api/REST%20API"><fmt:message key="settings.apidoc"/></a></dd>
 			</dl>
 			
 			<dl class="col-md-3 col-sm-6">
