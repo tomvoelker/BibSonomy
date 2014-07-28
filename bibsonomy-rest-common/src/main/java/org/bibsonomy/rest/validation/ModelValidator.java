@@ -24,16 +24,49 @@
 package org.bibsonomy.rest.validation;
 
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 
-/** Validates the given model.
+/**
+ * Validates the given model.
  * 
  * @author rja
  */
 public interface ModelValidator {
 
-	/** Check the bibtex for correctness.
+	/**
+	 * Check the publication for correctness.
 	 * @param publication
 	 */
 	public void checkPublication(final BibTex publication);
+
+	/**
+	 * @param post
+	 */
+	public void checkPost(Post<? extends Resource> post);
+
+	/**
+	 * @param user
+	 */
+	public void checkUser(User user);
+
+	/**
+	 * @param tag
+	 */
+	public void checkTag(Tag tag);
+
+	/**
+	 * @param group
+	 */
+	public void checkGroup(Group group);
+
+	/**
+	 * @param bookmark
+	 */
+	public void checkBookmark(Bookmark bookmark);
 	
 }

@@ -104,7 +104,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		}
 	}
 
-	private <T extends Resource> void copyDocuments(final String intraHash, final String userName, final List<Document> documents, DBSession session) {
+	private void copyDocuments(final String intraHash, final String userName, final List<Document> documents, DBSession session) {
 		final String groupName = this.getArgument();
 		if (!this.hasPermissions(groupName, userName, session)) {
 			/*
@@ -201,7 +201,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		log.debug("copy post to group");
 		final String groupName = this.getArgument(); // the group's name
 		final String userName = userPost.getUser().getName();
-		T resource = userPost.getResource();
+		final T resource = userPost.getResource();
 		final String intraHash = resource.getIntraHash();
 
 		if (!this.hasPermissions(groupName, userName, session)) {

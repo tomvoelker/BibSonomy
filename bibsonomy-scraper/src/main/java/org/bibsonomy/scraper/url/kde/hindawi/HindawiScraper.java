@@ -112,12 +112,11 @@ public class HindawiScraper extends PostprocessingGenericURLScraper implements R
 	 */
 	@Override
 	protected String postProcessScrapingResult(ScrapingContext sc, String result) {
-		try{
-			scrapeReferences(sc);
+		try {
 			final EndnoteToBibtexConverter converter = new EndnoteToBibtexConverter();
 			return BibTexUtils.addFieldIfNotContained(converter.endnoteToBibtex(result),"abstract",abstractParser(sc.getUrl()));
-		}catch(Exception e){
-			e.printStackTrace();
+		} catch (Exception e) {
+			log.error("post processing result failed for " + sc.getUrl(), e);
 		}
 		return null;
 	}
@@ -148,23 +147,24 @@ public class HindawiScraper extends PostprocessingGenericURLScraper implements R
 	 */
 	@Override
 	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
-		String referencespage = "";
-		final String path = scrapingContext.getUrl().getPath().toString().replace(scrapingContext.getUrl().getPath().toString().split("/")[5],"ref");
-		final String url = "http://" + scrapingContext.getUrl().getHost().toString() + "/" + path;
-		try{
-			referencespage = WebUtils.getContentAsString(url);
+		final URL urlToScrape = scrapingContext.getUrl();
+		final String urlPath = urlToScrape.getPath();
+		final String path = urlPath.replace(urlPath.split("/")[5],"ref");
+		final String url = "http://" + urlToScrape.getHost().toString() + "/" + path;
+		try {
+			final String referencespage = WebUtils.getContentAsString(url);
 			String references = "";
 			
 			Matcher m = REFERENCES_PATTERN.matcher(referencespage);
-			if(m.find())
+			if (m.find()) {
 				references = m.group();
-			
-			if(present(references)){
+			}
+			if (present(references)) {
 				scrapingContext.setReferences(references);
 				return true;
 			}
-		}catch(Exception e){
-			e.printStackTrace();
+		} catch(Exception e) {
+			log.error("error while scraping references " + urlToScrape, e);
 		}
 		return false;
 	}

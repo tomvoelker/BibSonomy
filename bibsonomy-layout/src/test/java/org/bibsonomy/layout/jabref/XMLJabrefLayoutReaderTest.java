@@ -76,7 +76,7 @@ public class XMLJabrefLayoutReaderTest {
 		
 		final BufferedReader buf = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
 		final XMLJabrefLayoutReader reader = new XMLJabrefLayoutReader(buf);
-		final List<JabrefLayout> jabrefLayoutsDefinitions = reader.getJabrefLayoutsDefinitions();
+		final List<AbstractJabRefLayout> jabrefLayoutsDefinitions = reader.getJabrefLayoutsDefinitions();
 		
 		assertTrue(jabrefLayoutsDefinitions.size() > 10);
 		
@@ -84,11 +84,11 @@ public class XMLJabrefLayoutReaderTest {
 		 * find SE layout
 		 */
 		boolean found = false;
-		for(final JabrefLayout layout: jabrefLayoutsDefinitions) {
+		for(final AbstractJabRefLayout layout: jabrefLayoutsDefinitions) {
 			if (layout.getName().equals("se")) {
 				found = true;
-				
-				assertEquals("se", layout.getBaseFileName());
+				JabrefLayout jabrefLayout = (JabrefLayout) layout;
+				assertEquals("se", jabrefLayout.getBaseFileName());
 				assertEquals("text/html", layout.getMimeType());
 				assertEquals(".html", layout.getExtension());
 				assertEquals("SE Kassel", layout.getDisplayName());

@@ -20,8 +20,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-
-package org.bibsonomy.scraper.url.kde.bloodjournal;
+package org.bibsonomy.scraper.url.kde.thelancet;
 
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
@@ -29,18 +28,16 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
+ *
  * @author Haile
  */
 @Category(RemoteTest.class)
-public class BloodJournalScraperTest {
+public class TheLancetScraperTest {
 	/**
-	 * @param args
-	 */
-	/**
-	 * starts URL test with id url_264
+	 * url_278
 	 */
 	@Test
-	public void urlTestRun() {
-		UnitTestRunner.runSingleTest("url_264");
+	public void urlTestRun(){
+		UnitTestRunner.runSingleTest("url_278");
 	}
 }

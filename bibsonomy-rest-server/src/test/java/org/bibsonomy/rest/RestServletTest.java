@@ -7,13 +7,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
 
-import org.bibsonomy.rest.database.TestDBLogic;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.rest.renderer.RendererFactory;
-import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.testutil.TestRequest;
 import org.bibsonomy.rest.testutil.TestResponse;
 import org.bibsonomy.rest.utils.HeaderUtils;
@@ -21,26 +17,24 @@ import org.custommonkey.xmlunit.XMLAssert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.xml.sax.SAXException;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
-public class TestRestServlet {
-
+public class RestServletTest {
+	public static final ApplicationContext TEST_CONTEXT = new ClassPathXmlApplicationContext("TestRestServerContext.xml");
+	
 	private RestServlet servlet;
 	private TestRequest request;
 	private TestResponse response;
 
 	@Before
 	public void setUp() {
-		this.servlet = new RestServlet();
-		final BasicAuthenticationHandler authenticationHandler = new BasicAuthenticationHandler();
-		authenticationHandler.setLogicFactory(TestDBLogic.factory);
-		this.servlet.setAuthenticationHandlers(Arrays.<AuthenticationHandler<?>>asList(authenticationHandler));
-		this.servlet.setUrlRenderer(new UrlRenderer("http://www.bibsonomy.org/api/"));
-		this.servlet.setRendererFactory(new RendererFactory(new UrlRenderer("http://www.bibsonomy.org/api/")));
-
+		this.servlet = TEST_CONTEXT.getBean(RestServlet.class);
+		
 		this.request = new TestRequest();
 		this.response = new TestResponse();
 	}
