@@ -1,5 +1,5 @@
 <jsp:root version="2.0"
-  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns="http://www.w3.org/1999/xhtml"  
   xmlns:jsp="http://java.sun.com/JSP/Page"
   xmlns:c="http://java.sun.com/jsp/jstl/core"
   xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
@@ -67,9 +67,7 @@
 						
 					</div>
 					
-					
 					<!-- sort tags by -->
-					<!-- new -->
 					<div class="form-group">
 					
 						<form:label cssClass="col-sm-3 control-label" path="user.settings.tagboxSort">
@@ -91,7 +89,6 @@
 
 					
 					<!-- tooltips for tags -->
-					<!-- new -->
 					<div class="form-group">
 					
 						<form:label cssClass="col-sm-3 control-label" path="user.settings.tagboxTooltip">
@@ -114,7 +111,6 @@
 					</div>
 					
 					<!-- choice of tags -->
-					<!-- new -->
 					<div class="form-group">
 					
 						<form:label cssClass="col-sm-3 control-label" path="user.settings.isMaxCount">
@@ -253,13 +249,13 @@
 							
 							<div class="help help-header hide"><fmt:message key="settings.editPublication.interFace"/></div>
 							<div class="help help-content hide">
-								<p><fmt:message key="settings.editPublication.interFace.help"/></p>
+								<p><fmt:message key="settings.layout.mainhelp"/></p>
 								<ol>
-									<li> <fmt:message key="settings.editPublication.interFace.help.advanced">
+									<li> <fmt:message key="settings.layout.help.classic">
 											<fmt:param>Classic</fmt:param>
 										</fmt:message>
 									</li>
-									<li> <fmt:message key="settings.editPublication.interFace.help.simple">
+									<li> <fmt:message key="settings.layout.help.bootstrap">
 											<fmt:param>Bootstrap</fmt:param>
 										</fmt:message>
 									</li>

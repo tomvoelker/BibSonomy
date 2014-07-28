@@ -146,7 +146,21 @@
 				</form:select>
 			</div>
 			<div class="fsRow">
-				<form:label cssClass="fsLabel" path="user.settings.simpleInterface"><fmt:message key="settings.editPublication.interFace"/></form:label>
+				<form:label cssClass="fsLabel" path="user.settings.simpleInterface">Layout</form:label>
+				<buttons:help message="settings.layout.mainhelp">
+					<jsp:attribute name="helpText">
+						<ol>
+							<li> <fmt:message key="settings.layout.help.classic">
+									<fmt:param>Classic</fmt:param>
+								</fmt:message>
+							</li>
+							<li> <fmt:message key="settings.layout.help.bootstrap">
+									<fmt:param>Bootstrap</fmt:param>
+								</fmt:message>
+							</li>
+						</ol>
+					</jsp:attribute>
+				</buttons:help>
 				<form:select cssClass="form-control help-popover" path="user.settings.layoutSettings.viewLayout" >
 					<form:option label="Classic" value="CLASSIC"/>
 					<form:option label="Bootstrap" value="BOOTSTRAP"/>
