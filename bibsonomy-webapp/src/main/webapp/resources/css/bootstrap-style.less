@@ -88,6 +88,14 @@
 	content: @fa-var-google-plus;
 }
 
+.label-grey {
+    background-color: @light-grey;
+}
+
+.label-grey a {
+    color: @font-color;   
+}
+
 body {
 	background-color: @background-color; 
     background-image: url("/resources/image/bg.png");
@@ -470,6 +478,10 @@ p.url {
 
 .ptags {
 	height: 17px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
 }
 
 .pmeta {
