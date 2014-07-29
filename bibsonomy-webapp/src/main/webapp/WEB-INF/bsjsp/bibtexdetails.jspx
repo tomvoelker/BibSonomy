@@ -108,7 +108,7 @@
 					<li>
 						<hr />
 						<div id="privnote">
-							<form method="post" id="note">
+							<form method="post" id="note" role="form">
 								<div class="form-group">
 									<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
 									<input type="hidden" name="intraHash" value="${fn:escapeXml(publication.intraHash)}"/>
@@ -116,9 +116,10 @@
 									<input type="hidden" name="action" value="updatePrivateNote"/>
 									<label for="private-note"><fmt:message key="post.resource.privnote"/></label>
 									<textarea class="form-control" id="private-note" name="privateNote" rows="5"><c:out value="${publication.privnote}"/></textarea>
-									<fmt:message key="save" var="save" />
+									
 								</div>
 								<div class="pull-right">
+									<fmt:message key="save" var="save" />
 									<button type="submit" class="btn btn-primary btn-xs" id="makeP" onclick="javascript: return updatePrivNote($(this))"><c:out value="${save}" /></button>
 								</div>
 								<div class="clearfix">&amp;nbsp;</div>
