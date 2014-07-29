@@ -33,15 +33,6 @@
 		<jsp:attribute name="content">
 		
 			<fmt:message key="post_bookmark.description" var="desc" scope="request"/>
-			
-			<!-- 
-			<bs:panel messagesPropertiesKey="post_bookmark.heading">
-				<jsp:attribute name="panelBody">
-	
-				</jsp:attribute>
-		 	</bs:panel>
-		 	-->
-		 	
 		 	
 		 	
 			<form:form cssClass="form-horizontal" role="form" method="POST" action="/editBookmark">
@@ -68,13 +59,13 @@
 		
 		
 
-	<!--+
+		<!--+
 			| infobox
 			+-->
 		<jsp:attribute name="infobox">
 			<parts:infobox>
 				<jsp:attribute name="infoTextBody">
-					<buttons:addonHint resourceType='bookmark'/>
+					<bs:didYouKnow command="${command}" />
 				</jsp:attribute>
 			</parts:infobox>
 		</jsp:attribute>

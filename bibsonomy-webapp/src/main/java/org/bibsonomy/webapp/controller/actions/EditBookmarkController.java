@@ -52,7 +52,9 @@ public class EditBookmarkController extends EditPostController<Bookmark, EditBoo
 
 	@Override
 	public View workOn(EditBookmarkCommand command) {
-	
+		
+		initializeDidYouKnowMessageCommand(command);
+		
 		if (command.getPost().getResource().getUrl() == null) {
 			
 			command.getPost().getResource().setUrl("http://");
