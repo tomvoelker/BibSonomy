@@ -57,7 +57,7 @@ $(function() {
     moretext = "";
     lesstext = "";
     
-    $('.more').each(function() {
+    $('showmore').each(function() {
     	
         var moreLink = $(document.createElement("a"));
         var contentContainer = $(this).children(".contentContainer")[0];
@@ -69,11 +69,11 @@ $(function() {
             	$(this)
             	.html("(" + getString("more") + ")")
             	.removeClass("less")
-            	.addClass("more");
+            	.addClass("showmore");
             } else {
             	$(this)
             	.html("(" + getString("less") + ")")
-            	.removeClass("more")
+            	.removeClass("showmore")
             	.addClass("less");
             }
             shortenContent(contentContainer, moreLink.data("text"));
