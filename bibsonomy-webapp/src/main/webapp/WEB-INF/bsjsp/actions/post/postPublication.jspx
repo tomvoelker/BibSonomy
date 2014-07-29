@@ -27,13 +27,9 @@
 	<layout:layout 
 		loginUser="${command.context.loginUser}" 
 		pageTitle="${pageTitle}" 
-		heading="${heading}" 
 		sidebar="${sidebar}" 
 		requPath="${requPath}" 
-		headerExt="${headerExt}" 
-		activeTab="${activeTab}" 
-		hideFooterContainer="${true}"
-		minimizedContentWidth="${minimizedContentWidth}">
+		headerExt="${headerExt}">
 	
 		
 		
@@ -134,30 +130,15 @@
 				</jsp:attribute>
 			</bs:panel>
 		</jsp:attribute>
-		<!-- 
+		
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.postPublication"/>
+			<parts:search pathMessageKey="navi.postPublication" />
 		</jsp:attribute>
-		 -->
-	<!--  
-	<layout:tabLayout 
-		command="${command}" 
-		pageTitle="${msgPostPublication}" 
-		headerMessageKey="navi.postPublication" 
-		headerLogoClass="publications" 
-		requPath="${requPath}" 
-		activeTab="post"
-		minimizedContentWidth="${true}">
-			 
-		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.postPublication"/>
-		</jsp:attribute>
-	-->
- 
-		 		
+
+			
     	<!--+
 			| infobox
-			+-->
+			+
 		<jsp:attribute name="infobox">
 			<parts:infobox>
 				<jsp:attribute name="infoTextBody">
@@ -165,6 +146,7 @@
 				</jsp:attribute>
 			</parts:infobox>
          </jsp:attribute>
-		</layout:layout>
+        -->
+	</layout:layout>
 	
 </jsp:root>
