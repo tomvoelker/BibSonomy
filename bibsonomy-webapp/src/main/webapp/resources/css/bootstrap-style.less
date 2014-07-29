@@ -336,7 +336,7 @@ dl.dl-horizontal.dt-thumbnail-items dd {
  */
  
 h3.list-headline {
-	border-bottom: 1px @light-element-color solid;
+	border-bottom: 1px @light-border-color solid;
 	padding-top: 0;
 	margin-top: 10px;
 	margin-bottom: 20px;
@@ -1182,10 +1182,54 @@ div.clearline {
 	border-radius:6px 0 6px 6px;
 }
 
-h1.content-heading {
-	font-size: 1.8em;
-	border-bottom: 1px solid #333;
+
+.main .sidebar .alert h4 {
+    border: none;
+    font-size: 18px;
+    height: auto;
 }
+
+.sidebar .alert a {
+    text-decoration: underline;
+}
+
+div#titletext h4.media-heading {
+    border: none;   
+}
+
+h1.content-header,
+h1.content-heading {
+	font-size: 24px;
+    font-weight: normal;
+    height: 30px;
+    line-height: 30px;
+    margin-bottom: 20px;
+	border-bottom: 1px solid @light-border-color;
+}
+
+.main h2 {
+    font-size: 20px;
+    line-height: 28px;
+    height: 28px;
+}
+
+.main h3,
+.main .sidebar h4 {
+    font-size: 18px;
+    line-height: 28px;
+    height: 28px;
+    
+}
+
+.main h4 {
+    font-size: 14px;
+}
+
+.main .sidebar h4 {
+    
+    border-bottom: 1px solid @border-color;
+}
+
 
 button.removeFriend,
 button.addFriend {
@@ -1201,7 +1245,7 @@ button.removeFriend {
 }
 
 .underline {
-	border-bottom: 1px solid #333;
+	border-bottom: 1px solid #ddd;
 }
 
 .tab-content h2.content-header {
