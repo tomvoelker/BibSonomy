@@ -28,12 +28,12 @@ function removeFriendClick() {
 
 function removeFriendHover() {
 	$(this).removeClass('btn-success').addClass('btn-danger');
-	$(this).children('.glyphicon').removeClass('glyphicon-ok').addClass('glyphicon-remove');
+	$(this).children('.fa').removeClass('fa-check').addClass('fa-times');
 	$(this).children('.infotext').text(getString('friendoverview.friend.remove'));
 }
 
 function removeFriendLeave() {
 	$(this).removeClass('btn-danger').addClass('btn-success');
-	$(this).children('.glyphicon').removeClass('glyphicon-remove').addClass('glyphicon-ok');
+	$(this).children('.fa').removeClass('fa-times').addClass('fa-check');
 	$(this).children('.infotext').text(getString('friendoverview.friend'));
 }
