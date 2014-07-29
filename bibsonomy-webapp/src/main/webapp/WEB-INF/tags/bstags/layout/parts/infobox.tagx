@@ -11,33 +11,23 @@
 	<jsp:directive.attribute name="infoTextKey" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="infoTextBody" fragment="true" required="false"/>
 	
-	<c:choose>
-		<c:when test="${not command.context.loginUser.settings.simpleInterface}">
-			<c:set var="initialState" value="initially_collapsed" />
-			<c:set var="initialDisplay" value="none" />
-		</c:when>
-		<c:otherwise>
-			<c:set var="initialState" value="" />
-			<c:set var="initialDisplay" value="block" />
-		</c:otherwise>
-	</c:choose>
-	
 	<!--+
 		| render the infobox
 		+-->
 	<div id="infobox">
+	
 		<!-- header for the info box -->
-
-		<div class="postlistTitle">
+		<div class="postlist-title">
 			<c:choose>
 				<c:when test="${not empty headerKey}">
-					<h2><fmt:message key="headerKey"/></h2>
+					<h4 class="sidebar"><fmt:message key="headerKey"/></h4>
 				</c:when>
 				<c:otherwise>
-					<h2><fmt:message key="navi.infobox"/></h2>
+					<h4 class="sidebar"><fmt:message key="navi.infobox"/></h4>
 				</c:otherwise>
 			</c:choose>
 		</div>
+		
 		<!-- content of the info box -->
 		<div>
 			<c:choose>
