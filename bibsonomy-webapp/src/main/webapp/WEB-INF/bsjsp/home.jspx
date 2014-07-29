@@ -30,10 +30,7 @@
 			
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
-			
-<!-- 			<script type="text/javascript"> -->
-<!-- 				$(function(){updatePosts("/", 60);}); -->
-<!-- 			</script> -->
+
 		</jsp:attribute>
 
 		<!-- show info text if user not logged in -->
@@ -46,7 +43,7 @@
 				<!-- news box ( = latest blog posts) -->
 				<ul class="newsbox">
 					<li>
-						<h4><fmt:message key="navi.news"/></h4>
+						<h4 class="sidebar"><fmt:message key="navi.news"/></h4>
 						<posts:tinybookmarks posts="${command.news}" cssClass="news"/>
 					</li>
 				</ul>
@@ -56,7 +53,7 @@
 		<jsp:attribute name="sidebar">
 			<ul>
 				<li>
-					<h4 class="tagcloud-headline"><fmt:message key="busytags"/></h4>
+					<h4 class="sidebar tagcloud-headline"><fmt:message key="busytags"/></h4>
 					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" tagSizeMode="home"/>
 				</li>
 			</ul>
