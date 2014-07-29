@@ -142,7 +142,7 @@
 		<jsp:attribute name="infobox">
 			<parts:infobox>
 				<jsp:attribute name="infoTextBody">
-					<buttons:addonHint resourceType='publication'/>
+					<bs:didYouKnow command="${command}"></bs:didYouKnow>
 				</jsp:attribute>
 			</parts:infobox>
          </jsp:attribute>

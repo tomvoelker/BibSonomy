@@ -834,6 +834,14 @@
 		<property name="scraper" ref="kdeScraperChain"/>
 		<property name="urlGenerator" ref="urlGenerator"/>
 		<property name="publicationImporter" ref="publicationImporter"/>
+		<property name="didYouKnowMessages">
+			<list>
+				<bean class="org.bibsonomy.webapp.util.DidYouKnowMessage">
+					<property name="messageKey" value="didyouknow.browserButtons"/>
+					<property name="alertType" value="warning" /> 
+				</bean>
+			</list>
+		</property>
 	</bean>
 	
 	<bean id="publicationImporter" class="org.bibsonomy.webapp.util.importer.PublicationImporter">
