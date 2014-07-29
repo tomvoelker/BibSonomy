@@ -66,13 +66,6 @@
 				</ul>
 			</li>
 			</c:if>
-	
-			<c:if test="${command.context.loginUser.name eq command.requestedUser}">
-				<li>
-					<h4 class="sidebar"><fmt:message key="users.recommended"/></h4>
-					<users:related cmd="${command.relatedUserCommand}" displayFollowLink="${false}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
-				</li>
-			</c:if>
 			
 			<!-- display user's tag relations -->
 			<li>
@@ -86,23 +79,10 @@
 				</h4>	
 				<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
 			</li>
-			<!-- 
-			<c:if test="${command.context.userLoggedIn and command.context.loginUser.name eq command.requestedUser}">
-				
-				<li>
-					<h4 class="spheres-headline sidebar-headline"><fmt:message key="spheres.sidebar.title" var="spheresCloudTitle" /><fmt:message key="spheres.sidebar.title"/></h4>
-					<ul class="list-inline sidebar-setting-box clearfix">
-						<li>(<a href="/spheres"><fmt:message key="more"/>&amp;nbsp;<fmt:message key="navi.spheres.my"/></a>)</li>
-					</ul>
-					
-					
-					<spheres:spheresCloud title="${spheresCloudTitle}" />
-				</li>
-			</c:if>
-			-->
+
 			<!-- display similar users -->
 			<li>
-				<h4 class="similar-users-headline sidebar-headline">
+				<h4 class="sidebar similar-users-headline sidebar-headline">
 					<span class="left-corner"><!-- KEEP ME --></span>
 					<!-- requPath + query -->
 					<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
