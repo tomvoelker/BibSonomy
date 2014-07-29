@@ -24,9 +24,6 @@
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
 		
-		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="/resources/javascript/friendoverview.js"><!-- keep --></script>
-		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
 			<ul>
@@ -36,11 +33,10 @@
 			</ul>
 		</jsp:attribute>
 		
-		
 		<jsp:attribute name="content">
-		<!-- 
+		
 			<h1 class="content-header"><fmt:message key="friendoverview.title" /></h1>
-		 -->
+		
 		
 			<ul class="nav nav-tabs" role="tablist" id="friendtabs">
 				<li class="active"><a href="#friendsoverview" data-toggle="tab"><fmt:message key="friendoverview.friends.title" /></a></li>
