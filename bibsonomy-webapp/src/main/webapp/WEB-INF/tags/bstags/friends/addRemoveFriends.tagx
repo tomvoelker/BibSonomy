@@ -45,7 +45,7 @@
 							<input type="hidden" name="ckey" value="${ckey}" />
 							
 							<button type="submit" class="btn btn-sm btn-success removeFriend" style="${removeStyle}">
-								<span class="glyphicon glyphicon-ok"><!--  --></span>
+								<span class="fa fa-check"><!--  --></span>
 								<c:out value=" "/>
 								<span class="infotext"><fmt:message key="friendoverview.friend" /></span>
 							</button>		
