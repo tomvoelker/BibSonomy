@@ -129,7 +129,14 @@
 						<li><user:username user="${command.context.loginUser}" /></li>
 					</c:if>
 					<li class="dropdown ${activeTab eq 'myprofile' ? 'active' : ''}">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"><!-- KEEP ME --></span><b class="caret">&amp;nbsp;</b></a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							<span class="glyphicon glyphicon-user"><!-- KEEP ME --></span>
+							<c:if test="${(command.context.loginUser.inbox.numPosts + command.context.loginUser.basket.numPosts) gt 0}">
+								<b class="navi-info">
+									<span><c:out value="${(command.context.loginUser.inbox.numPosts + command.context.loginUser.basket.numPosts)}"/></span>
+								</b>
+							</c:if>
+							<b class="caret">&amp;nbsp;</b></a>
 						<ul class="dropdown-menu">
 	
 							<!--  WHEN USER IS LOGGED IN -->
@@ -140,12 +147,11 @@
 										<fmt:message var="titleInbox" key="navi.inbox" />
 										<a href="/inbox" title="${titleInbox}">
 											<span class="glyphicon glyphicon-inbox"><!-- KEEP ME --></span>&amp;nbsp;
-											<c:if test="${command.context.loginUser.inbox.numPosts gt 0}">
-												<b class="navi-info">
-													<span><c:out value="${command.context.loginUser.inbox.numPosts}"/></span>
-												</b>
-											</c:if>
+
 											<fmt:message key="navi.inbox" />
+											<c:if test="${command.context.loginUser.inbox.numPosts gt 0}">
+												<span class="pull-right badge"><c:out value="${command.context.loginUser.inbox.numPosts}"/></span>
+											</c:if>
 										</a>
 									</li>
 									<li>
@@ -153,9 +159,7 @@
 										<a href="/clipboard" title="${titleBasket}"><!-- empty -->
 											<span class="glyphicon glyphicon-folder-open"><!--  --></span>&amp;nbsp;
 											<c:if test="${command.context.loginUser.basket.numPosts gt 0}">
-												<b class="navi-info"><!-- maybe empty -->
-													<span><c:out value="${command.context.loginUser.basket.numPosts}"/></span>
-												</b>
+												<span class="pull-right badge"><c:out value="${command.context.loginUser.basket.numPosts}"/></span>
 											</c:if>
 											<fmt:message key="navi.basket" />
 										</a>
@@ -213,7 +217,7 @@
 									<!-- divider -->
 									<li class="divider"><!--  --></li>
 									
-									<li><a href="/settings"><span class="glyphicon glyphicon-cog"><!-- KEEP ME --></span>&amp;nbsp;<fmt:message key="navi.settings"/></a></li>
+									<li><a href="/settings"><span class="fa fa-cogs"><!-- KEEP ME --></span>&amp;nbsp;<fmt:message key="navi.settings"/></a></li>
 									<li><a href="/logout"><span class="glyphicon glyphicon-off"><!-- KEEP ME --></span>&amp;nbsp;<fmt:message key="navi.logout"/></a></li>
 								</c:when>
 								<c:otherwise>
