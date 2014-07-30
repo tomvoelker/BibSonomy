@@ -104,7 +104,7 @@
 			<c:if test="${not disableResourcetypeSelection}">
 	
 				<rc:resourcetype requPathAndQuery="${requPathAndQuery}" showBookmark="${showBookmark}" showPublication="${showPublication}" isBookmark="${isBookmark}" isPublication="${isPublication}"/>
-	
+				<br />
 			</c:if>	
 			<!--  entries per page -->
 			<c:if test="${not disableListNavigation}">
