@@ -9,7 +9,7 @@ $(function(){
 	/*
      * Handler for the layout-links
      */
-    $('.changeLayout').change(function(e){
+    $('#changeLayout').change(function(e){
         e.preventDefault();
         $.ajax({
             type: "POST",
@@ -48,14 +48,14 @@ $(function(){
      */
     $('#loadingDiv').ajaxStart(function(){
         $('#loadingDiv').show();
-        $('#saveButtonField').hide();
+        $('#saveButton').toggleClass("disabled");
     }).ajaxSuccess(function(){
         $('#loadingDiv').hide();
-        $('#saveButtonField').show();
+        $('#saveButton').toggleClass("disabled");
     }).ajaxError(function() {
         $('#loadingDiv').hide();
         // this now enforces the preview buttons to be shown.
-        $('#saveButtonField').hide();
+        $('#saveButton').toggleClass("disabled");
         // TODO: Handle Errors correctly.
 //        handleError("Rendering error.");
     });
@@ -65,9 +65,9 @@ $(function(){
      * Handler to hide the cvedit panel
      */
     $('#hideAdmin').click(function(){
-        $('#fsform').hide('blind',function() {
-			$('#showAdminField').show();
-			$('#hideAdminField').hide();
+        $('#wikiEditArea').hide('blind',function() {
+			$('#showAdmin').show();
+			$('#hideAdmin').hide();
 		});
     });
     
@@ -75,9 +75,9 @@ $(function(){
 	 * Handler to show the cvedit panel
 	 */
 	$('#showAdmin').click(function() {
-		$('#fsform').show('blind',function() {
-			$('#showAdminField').hide();
-			$('#hideAdminField').show();
+		$('#wikiEditArea').show('blind',function() {
+			$('#showAdmin').hide();
+			$('#hideAdmin').show();
 		});
 	});
 });

@@ -1,0 +1,23 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+	
+	<jsp:directive.tag description="Renders a panel with heading and body for bootstrap 3."/>
+
+	
+	<jsp:directive.attribute name="columnLeft" 			  fragment="true" required="true" description="body of the left column"/>
+	<jsp:directive.attribute name="columnRight" 		  fragment="true" required="true" description="body of the right column"/>
+	
+	
+	<jsp:directive.attribute name="columnSizeLeft"  	type="java.lang.Integer" required="true" description="Number between 2 and 10" />
+	<jsp:directive.attribute name="columnSizeRight"  	type="java.lang.Integer" required="true" description="Number between 2 and 10" />
+
+
+	<div class="row">
+		<div class="col-md-${columnSizeLeft}">
+			<jsp:invoke fragment="columnLeft" />
+		</div>
+		<div class="col-md-${columnSizeRight}">
+			<jsp:invoke fragment="columnRight" />
+		</div>
+	</div>
+</jsp:root>

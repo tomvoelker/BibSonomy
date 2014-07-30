@@ -23,9 +23,10 @@ public class EditBookmarkController extends EditPostController<Bookmark, EditBoo
 	protected Bookmark instantiateResource() {
 		final Bookmark bookmark = new Bookmark();
 		/*
-		 * set default values.
+		 * set default values
+		 * no default value. use placeholder attribute for default value.
 		 */
-		bookmark.setUrl("http://");
+		//bookmark.setUrl("http://");
 		return bookmark;
 	}
 
@@ -49,4 +50,16 @@ public class EditBookmarkController extends EditPostController<Bookmark, EditBoo
 		// noop
 	}
 
+	@Override
+	public View workOn(EditBookmarkCommand command) {
+		
+		initializeDidYouKnowMessageCommand(command);
+		
+		if (command.getPost().getResource().getUrl() == null) {
+			
+			command.getPost().getResource().setUrl("http://");
+			return Views.POST_BOOKMARK;
+		}
+		return super.workOn(command);
+	}
 }

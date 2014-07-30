@@ -43,7 +43,7 @@ import org.springframework.beans.factory.annotation.Required;
  * 
  * @author Jens Illig
  */
-public abstract class ResourceListController {
+public abstract class ResourceListController extends DidYouKnowMessageController {
 	/** default values for sorting when jabref layouts are to be rendered */
 	private static final String DEFAULT_SORTPAGE_JABREF_LAYOUTS = "year|author|title";
 	private static final String DEFAULT_SORTPAGEORDER_JABREF_LAYOUTS = "desc|asc|asc";

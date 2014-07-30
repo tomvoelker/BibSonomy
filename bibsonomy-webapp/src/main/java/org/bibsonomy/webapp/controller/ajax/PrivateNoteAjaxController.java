@@ -58,7 +58,7 @@ public class PrivateNoteAjaxController extends AjaxController implements Minimal
 		
 		this.logic.updatePosts(Collections.<Post<?>>singletonList(post), PostUpdateOperation.UPDATE_ALL);
 		
-		command.setResponseString("");
+		command.setResponseString("OK");
 		return Views.AJAX_JSON;
 	}
 
