@@ -57,7 +57,7 @@
 					<form:label cssClass="fsLabel" path="user.birthday"><fmt:message key="user.birthday"/></form:label>
 					<fmt:formatDate value="${command.user.birthday}" pattern="yyyy-MM-dd" var="userBirthday" />
 					<input class="fsInput fsSmall" name="user.birthday" id="user.birthday" value="${userBirthday}" type="text"/>
-					<div class="dissError"><form:errors path="user.birthday" /></div>		      
+					<div class="dissError"><form:errors path="user.birthday" /></div>
 					<form:label cssClass="fsHelp" path="user.birthday">format: YYYY-MM-DD</form:label>
 				</div>
 				<bform:input path="user.place" noHelp="${true}" small="${true}"/>

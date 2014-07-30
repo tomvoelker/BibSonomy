@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.openrepository;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -43,7 +41,7 @@ public class OpenrepositoryScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_117"));
+		UnitTestRunner.runSingleTest("url_117");
 	}
 	
 	/**
@@ -51,7 +49,7 @@ public class OpenrepositoryScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_118"));
+		UnitTestRunner.runSingleTest("url_118");
 	}
 	
 	/**
@@ -59,7 +57,7 @@ public class OpenrepositoryScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_119"));
+		UnitTestRunner.runSingleTest("url_119");
 	}
 	
 	/**
@@ -67,7 +65,7 @@ public class OpenrepositoryScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_120"));
+		UnitTestRunner.runSingleTest("url_120");
 	}
 
 }

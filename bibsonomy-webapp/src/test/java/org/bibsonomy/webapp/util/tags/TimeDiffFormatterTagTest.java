@@ -2,12 +2,12 @@ package org.bibsonomy.webapp.util.tags;
 
 import static org.junit.Assert.assertEquals;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -24,12 +24,12 @@ public class TimeDiffFormatterTagTest {
 	private static final String EN = "en";
 	private static final String DE = "de";
 
-	private static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+	private static final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
 	
 	/**
 	 * This date format is used for input parameters (e.g. beans)
 	 */
-	private static final SimpleDateFormat ISO8601_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+	private static final DateTimeFormatter ISO8601_DATE_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ");
 	
 	/**
 	 * This date gave some strange results.
@@ -43,8 +43,8 @@ public class TimeDiffFormatterTagTest {
 	 */
 	@Test
 	public void testGetDateDiffSomeYears() throws ParseException {
-		final Date startDate = df.parse("2005-12-30 17:04");
-		final Date endDate = df.parse("2012-02-02 08:05");
+		final Date startDate = FORMAT.parseDateTime("2005-12-30 17:04").toDate();
+		final Date endDate = FORMAT.parseDateTime("2012-02-02 08:05").toDate();
 		
 		final ResourceBundleMessageSource ms = new ResourceBundleMessageSource();
 		ms.setBasename("messages");
@@ -57,7 +57,7 @@ public class TimeDiffFormatterTagTest {
 	@Test
 	public void testIsoDateParsing() throws ParseException {
 		final String date = "2012-01-30T13:13:16+0100";
-		assertEquals(date, ISO8601_DATE_FORMAT.format(ISO8601_DATE_FORMAT.parse(date)));
+		assertEquals(date, ISO8601_DATE_FORMAT.print(ISO8601_DATE_FORMAT.parseDateTime(date)));
 	}
 	
 	/*

@@ -864,6 +864,32 @@ public class URLGenerator {
     }
     
     /**
+     * Constructs a URL to rate the new publication for the given publication and user name.
+     * 
+     * @param interHash
+     * @param userName
+     * @param intraHash
+     * @return The URL pointing to rating the post of that user for the publication represented by the given inter and intra hashes.
+     */
+    public String getPublicationRatingUrl(final String interHash, final String userName, final String intraHash) {
+        final String url = this.projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTER_HASH_ID + interHash + "?postOwner=" + UrlUtils.safeURIEncode(userName) + "&amp;intraHash=" + intraHash + "#discussionbox";       
+        return this.getUrl(url);
+    }
+    
+    /**
+     * Constructs a URL to rate the new bookmark for the given bookmark and user name.
+     * 
+     * @param interHash
+     * @param userName
+     * @param intraHash
+     * @return The URL pointing to rating the post of that user for the bookmark represented by the given inter and intra hashes.
+     */
+    public String getBookmarkRatingUrl(final String interHash, final String userName, final String intraHash) {
+        final String url = this.projectHome + BOOKMARK_PREFIX + "/" + interHash + "?postOwner=" + UrlUtils.safeURIEncode(userName) + "&amp;intraHash=" + intraHash + "#discussionbox";       
+        return this.getUrl(url);
+    }
+    
+    /**
      * ProjectHome defaults to <code>/</code>, such that relative URLs are
      * generated. Note that this does not work with {@link #setCheckUrls(boolean)} set to <code>true</code>, since {@link URL} does not support relative URLs
      * (or more correctly: relative URLs are not URLs).

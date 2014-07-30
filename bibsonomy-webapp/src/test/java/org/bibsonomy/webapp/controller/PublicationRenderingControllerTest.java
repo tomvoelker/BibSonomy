@@ -1,5 +1,8 @@
 package org.bibsonomy.webapp.controller;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,8 +11,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import junit.framework.Assert;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -47,7 +48,7 @@ public class PublicationRenderingControllerTest {
 				} catch (IOException ex) {
 					throw new RuntimeException(ex);
 				}
-				Assert.assertTrue(ArrayUtils.isEquals(bytes, receivedBytes));
+				assertTrue(ArrayUtils.isEquals(bytes, receivedBytes));
 				return bib;
 			}
 		});
@@ -59,10 +60,9 @@ public class PublicationRenderingControllerTest {
 		cmd.setFormat(Views.FORMAT_STRING_BIBTEX);
 		cmd.setFile(new MockMultipartFile("test.bib", "test.bib", "bla", bytes));
 		
-		Assert.assertEquals(Views.BIBTEX, ctrl.workOn(cmd));
-		Assert.assertEquals(1, cmd.getBibtex().getList().size() );
+		assertEquals(Views.BIBTEX, ctrl.workOn(cmd));
+		assertEquals(1, cmd.getBibtex().getList().size() );
 		CommonModelUtils.assertPropertyEquality(bib.get(0), cmd.getBibtex().getList().get(0).getResource(), 5, null);
-		
 	}
 
 	protected List<ImportResource> getBibtexFromFile() {

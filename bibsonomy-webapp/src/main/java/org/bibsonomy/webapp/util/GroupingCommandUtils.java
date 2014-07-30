@@ -57,6 +57,12 @@ public abstract class GroupingCommandUtils {
 			 * copy groups into post
 			 */
 			final List<String> groups = command.getGroups();
+			
+			/*
+			 * A post cannot be viweable to private (or public) , and other groups at the same time. 
+			 * So we need to clear the groupsToInit first.
+			 */
+			groupsToInit.clear();
 			log.debug("groups in command: " + groups);
 			for (final String groupname : groups) {
 				groupsToInit.add(new Group(groupname));

@@ -30,7 +30,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
@@ -68,7 +71,8 @@ import org.bibsonomy.util.WebUtils;
  * @author tst
  */
 public class IucrScraper extends AbstractUrlScraper {
-
+	private static final Log log = LogFactory.getLog(IucrScraper.class);
+	
 	private static final String SITE_NAME = "International Union of Crystallography";
 	private static final String SITE_URL = "http://www.iucr.org/";
 	private static final String INFO = "Scraper for journals from the " + href(SITE_URL, SITE_NAME) +".";
@@ -96,20 +100,22 @@ public class IucrScraper extends AbstractUrlScraper {
 	 * Download link
 	 */
 	private static final String DOWNLOAD_LINK_PART = "http://scripts.iucr.org/cgi-bin/biblio?Action=download&saveas=BIBTeX&cnor=";
+	private static final Pattern abstractPattern = Pattern.compile("<meta name=\"DC.description\" content=\"(.*) />");
 
-
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
 
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
 		sc.setScraper(this);
 
-		if(sc.getUrl().getHost().startsWith(HOST_JOURNAL_PREFIX)){
+		if (sc.getUrl().getHost().startsWith(HOST_JOURNAL_PREFIX)){
 			throw new UsageFailureException(USEAGE_FAILURE_MESSAGE);
-
-		}else if(sc.getUrl().getHost().startsWith(HOST_SCRIPTS_PREFIX)){
-
+		}
+		
+		if (sc.getUrl().getHost().startsWith(HOST_SCRIPTS_PREFIX)) {
 			try {
 				final String pageContent = sc.getPageContent();
 
@@ -119,43 +125,52 @@ public class IucrScraper extends AbstractUrlScraper {
 					final String cnor = cnorMatcher.group(1);
 
 					// download bibtex
-					final String bibtex = WebUtils.getContentAsString(new URL((DOWNLOAD_LINK_PART + cnor)));
+					String bibtex = WebUtils.getContentAsString(new URL((DOWNLOAD_LINK_PART + cnor)));
 
-					if(bibtex != null){
+					if (bibtex != null) {
 
+						bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "abstract", abstractParser(sc.getUrl()));
 						// successful
 						sc.setBibtexResult(bibtex);
 						return true;
 
-					}else{
-						// bibtex == null, may be wrong download url
-						throw new ScrapingFailureException("Bibtex download failed. Bibtex result is null.");
 					}
+					throw new ScrapingFailureException("Bibtex download failed. Bibtex result is null.");
 
 					// can't extract cnor
-				}else{
-					// missing id
-					throw new ScrapingFailureException("ID for donwload link is missing.");
 				}
-
+				// missing id
+				throw new ScrapingFailureException("ID for donwload link is missing.");
 			} catch (IOException ex) {
 				throw new InternalFailureException(ex);
 			}
-
-		}else{
-			// no journal or scripts page
-			throw new PageNotSupportedException(PageNotSupportedException.DEFAULT_ERROR_MESSAGE + this.getClass().getName());
 		}
+		// no journal or scripts page
+		throw new PageNotSupportedException(PageNotSupportedException.DEFAULT_ERROR_MESSAGE + this.getClass().getName());
 	}
-
+	
+	private static String abstractParser(URL url){
+		try {
+			Matcher m = abstractPattern.matcher(WebUtils.getContentAsString(url));
+			if(m.find()) {
+				return m.group(1);
+			}
+		} catch(Exception e) {
+			log.error("error while getting abstract for " + url, e);
+		}
+		return null;
+	}
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}

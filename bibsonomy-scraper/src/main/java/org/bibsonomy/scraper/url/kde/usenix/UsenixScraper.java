@@ -24,8 +24,10 @@
 package org.bibsonomy.scraper.url.kde.usenix;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -35,10 +37,12 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
-import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.WebUtils;
@@ -49,6 +53,7 @@ import org.bibsonomy.util.WebUtils;
  * @author tst
  */
 public class UsenixScraper extends AbstractUrlScraper {
+	private static final Log log = LogFactory.getLog(UsenixScraper.class);
 	
 	private static final String SITE_NAME = "USENIX";
 	private static final String SITE_URL = "http://usenix.org/";
@@ -82,17 +87,19 @@ public class UsenixScraper extends AbstractUrlScraper {
 	private static final String CURRENT_PATTERN_GET_PAGES = "<b>Pp.(.*)</b>";
 
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>(); 
-	
+	private static final Pattern PATTERN_ABSTRACT = Pattern.compile("(?i)(?s)<H\\d>Abstract</H\\d>(.*)\\s+(<LI>View|View|Download) the full text");
 	static {
 		final Pattern hostPattern = Pattern.compile(".*" + HOST);
 		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(PATH_1 + ".*")));
 		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(PATH_2)));
 	}
 	
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
 
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
 			sc.setScraper(this);
 			
@@ -266,7 +273,7 @@ public class UsenixScraper extends AbstractUrlScraper {
 
 					// append url
 					bibResult = BibTexUtils.addFieldIfNotContained(bibResult, "url", sc.getUrl().toString());
-					
+					bibResult = BibTexUtils.addFieldIfNotContained(bibResult, "abstract", abstractParser(sc.getUrl()));
 					// add downloaded bibtex to result 
 					sc.setBibtexResult(bibResult);
 					return true;
@@ -274,6 +281,18 @@ public class UsenixScraper extends AbstractUrlScraper {
 			} catch (UnsupportedEncodingException ex) {
 				throw new InternalFailureException(ex);
 			}
+	}
+	
+	private static String abstractParser(URL url){
+		try {
+			Matcher m = PATTERN_ABSTRACT.matcher(WebUtils.getContentAsString(url));
+			if (m.find()) {
+				return m.group(1);
+			}
+		} catch(Exception e) {
+			log.error("error while getting abstract for " + url, e);
+		}
+		return null;
 	}
 
 	/**
@@ -348,14 +367,17 @@ public class UsenixScraper extends AbstractUrlScraper {
 			return "20" + decade;
 	}
 	
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}

@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.jneurosci;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -41,7 +39,7 @@ public class JNeurosciScraperTest {
 	 */
 	@Test
 	public void url1TestRun() {
-		assertTrue(UnitTestRunner.runSingleTest("url_232"));
+		UnitTestRunner.runSingleTest("url_232");
 	}
 
 	/**
@@ -49,7 +47,7 @@ public class JNeurosciScraperTest {
 	 */
 	@Test
 	public void url2TestRun() {
-		assertTrue(UnitTestRunner.runSingleTest("url_233"));
+		UnitTestRunner.runSingleTest("url_233");
 	}
 
 }

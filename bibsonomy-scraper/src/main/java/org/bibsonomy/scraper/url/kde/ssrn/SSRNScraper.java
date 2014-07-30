@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -49,7 +51,8 @@ import org.w3c.dom.NodeList;
  * @author tst
  */
 public class SSRNScraper extends AbstractUrlScraper {
-
+	private static final Log log = LogFactory.getLog(SSRNScraper.class);
+	
 	private static final String SITE_NAME	   = "SSRN";
 	private static final String SSRN_HOST_NAME = "http://papers.ssrn.com";
 	private static final String SITE_URL	   = SSRN_HOST_NAME+"/";
@@ -64,6 +67,7 @@ public class SSRNScraper extends AbstractUrlScraper {
 	private static final String EDITOR_PATTERN	= "editor\\s*=\\s*[{]+(.+)[}]+";
 	private static final String TITLE_PATTERN	= "title\\s*=\\s*[{]+(.+)[}]+";
 	private static final String YEAR_PATTERN	= "year\\s*=\\s*[{]+(.+)[}]+";
+	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<div id=\"abstract\">(.*)</div>");
 	
 	private static final String HOST = "ssrn.com";
 	
@@ -73,6 +77,7 @@ public class SSRNScraper extends AbstractUrlScraper {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 	
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
 		String url = sc.getUrl().toString();
 		if(url.startsWith(SSRN_HOST_NAME)) {
@@ -120,6 +125,7 @@ public class SSRNScraper extends AbstractUrlScraper {
 				}
 				
 				if(bibtex != null) {
+					bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "abstract", abstractParser(sc.getUrl()));
 					sc.setBibtexResult(bibtex);
 					sc.setScraper(this);
 
@@ -132,7 +138,19 @@ public class SSRNScraper extends AbstractUrlScraper {
 
 		return false;
 	}
-		
+	
+	private static String abstractParser(URL url){
+		try{
+			Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(url));
+			if(m.find()) {
+				return m.group(1);
+			}
+		} catch(Exception e) {
+			log.error("error while getting abstract for " + url, e);
+		}
+		return null;
+	}
+	
 	private String generateBibtexKey(String bibtex) {
 		String authors	 = null;
 		String editors	 = null;
@@ -167,7 +185,7 @@ public class SSRNScraper extends AbstractUrlScraper {
 	}
 
 	private String getCookies(URL queryURL) throws IOException {
-		StringBuffer cookieString = new StringBuffer(WebUtils.getCookies(queryURL));
+		final StringBuffer cookieString = new StringBuffer(WebUtils.getCookies(queryURL));
 		
 		cookieString.append(" ; CFCLIENT_SSRN=loginexpire%3D%7Bts%20%272009%2D12%2D12%2012%3A35%3A00%27%7D%23blnlogedin%3D1401777%23;domain=hq.ssrn.com;path=/; ");
 		//login: wbi@cs.uni-kassel.de
@@ -177,18 +195,22 @@ public class SSRNScraper extends AbstractUrlScraper {
 		return cookieString.toString();
 	}
 
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
 	
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}

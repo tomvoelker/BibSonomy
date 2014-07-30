@@ -34,12 +34,12 @@ import java.util.regex.Pattern;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
  * @author hagen
  */
-public class JCBScraper extends SimpleGenericURLScraper {
+public class JCBScraper extends GenericBibTeXURLScraper {
 
 	private static final String SITE_NAME = "JCB";
 	private static final String SITE_URL = "http://jcb.rupress.org/";
@@ -69,7 +69,7 @@ public class JCBScraper extends SimpleGenericURLScraper {
 	}
 
 	@Override
-	public String getBibTeXURL(URL url) {
+	public String getDownloadURL(URL url) throws ScrapingException {
 		Matcher m = ID_PATTERN.matcher(url.toExternalForm());
 		if (!m.find()) return null;
 		String result = null;

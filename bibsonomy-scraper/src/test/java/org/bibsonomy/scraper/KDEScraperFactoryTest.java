@@ -23,10 +23,10 @@
 
 package org.bibsonomy.scraper;
 
+import static org.junit.Assert.assertTrue;
+
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import junit.framework.Assert;
 
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.junit.RemoteTest;
@@ -41,19 +41,13 @@ public class KDEScraperFactoryTest {
 
 	@Test
 	public void testGetScraper() throws MalformedURLException, ScrapingException {
-		
 		final String urlString = "http://dx.doi.org/10.1017/S0952523808080978";
-		
-		final CompositeScraper scraper = new KDEScraperFactory().getScraper();
+		final CompositeScraper<?> scraper = new KDEScraperFactory().getScraper();
 		
 		final ScrapingContext sc = new ScrapingContext(new URL(urlString));
-		
 		scraper.scrape(sc);
 		
-		Assert.assertTrue(scraper.scrape(sc));
-		
-		System.out.println(sc.getBibtexResult());
-		
+		assertTrue(scraper.scrape(sc));
 	}
 
 }

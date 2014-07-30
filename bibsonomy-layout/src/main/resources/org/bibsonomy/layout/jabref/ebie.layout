@@ -14,6 +14,6 @@
 \begin{year} \year\end{year}
 \begin{pages}- S. \format[FormatPagesForHTML]{\pages}\end{pages}
 \begin{isbn}- ISBN: \format[FormatPagesForHTML]{\isbn}\end{isbn}
-<a href="http://www.bibsonomy.org/bib/bibtex/\interhash/ebie">(bibtex)</a>
+<a href="\format[InsertPropertyFormatter]{project.home,http://www.bibsonomy.org/}bib/bibtex/\interhash/ebie">(bibtex)</a>
 </li>
 

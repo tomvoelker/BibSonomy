@@ -12,7 +12,7 @@
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
-		<version>2.0.44-SNAPSHOT</version>
+		<version>2.0.46-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
@@ -70,6 +70,11 @@
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-database</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.3</version>
 		</dependency>
 	</dependencies>
 	

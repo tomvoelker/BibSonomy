@@ -30,7 +30,6 @@ import java.util.Map;
 /**
  * 
  * @author:  rja
- * @version: $Id$ 
  */
 public abstract class Layout {
 
@@ -98,7 +97,7 @@ public abstract class Layout {
 	 * @param lang
 	 * @param description
 	 */
-	public void setDescription(String lang, String description) {
+	public void addDescription(String lang, String description) {
 		this.description.put(lang, description);
 	}
 

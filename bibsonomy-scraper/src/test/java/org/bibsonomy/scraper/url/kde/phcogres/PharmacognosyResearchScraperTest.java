@@ -24,8 +24,6 @@
 
 package org.bibsonomy.scraper.url.kde.phcogres;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -43,6 +41,6 @@ public class PharmacognosyResearchScraperTest {
 	 */
 	@Test
 	public void urlTestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_251"));
+		UnitTestRunner.runSingleTest("url_251");
 	}
 }

@@ -22,8 +22,6 @@
  */
 package org.bibsonomy.scraper.url.kde.firstmonday;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -39,7 +37,7 @@ public class FirstMondayScraperTest {
 	 */
 	@Test
 	public void urlTestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_263"));
+		UnitTestRunner.runSingleTest("url_263");
 	}
 	
 }

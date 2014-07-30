@@ -32,7 +32,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
@@ -53,6 +52,8 @@ import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.services.importer.RelationImporter;
 import org.bibsonomy.services.importer.RemoteServiceBookmarkImporter;
 import org.bibsonomy.util.io.xml.FilterInvalidXMLCharsReader;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -80,7 +81,7 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 	private static final String HEADER_USER_AGENT = "User-Agent";
 	private static final String HEADER_AUTHORIZATION = "Authorization";
 	private static final String HEADER_AUTH_BASIC = "Basic ";
-	private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+	private static final DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
 	/** The URL to contact Delicious. */
 	private final URL apiURL;
@@ -150,8 +151,8 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 			
 			post.setDescription(resource.getAttribute("extended"));
 			try {
-				post.setDate(df.parse(resource.getAttribute("time")));
-			} catch (ParseException e) {
+				post.setDate(fmt.parseDateTime(resource.getAttribute("time")).toDate());
+			} catch (Exception e) {
 				log.warn("Could not parse date.", e);
 				post.setDate(new Date());
 			}

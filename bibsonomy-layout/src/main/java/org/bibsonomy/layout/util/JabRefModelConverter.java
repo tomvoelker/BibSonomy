@@ -31,18 +31,20 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.IOException;
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.sf.jabref.BibtexDatabase;
 import net.sf.jabref.BibtexEntry;
 import net.sf.jabref.BibtexEntryType;
 import net.sf.jabref.GlobalsSuper;
 import net.sf.jabref.JabRefPreferences;
+import net.sf.jabref.KeyCollisionException;
 import net.sf.jabref.export.layout.format.AndSymbolIfBothPresent;
 
 import org.apache.commons.logging.Log;
@@ -56,6 +58,8 @@ import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.services.URLGenerator;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  * Converts between BibSonomy's and JabRef's BibTeX model.
@@ -87,14 +91,32 @@ public class JabRefModelConverter {
 	/**
 	 * date's in JabRef are stored as strings, in BibSonomy as Date objects
 	 */
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	private static final DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss");
 
 	/**
 	 * separates tags 
 	 */
 	private static final String jabRefKeywordSeparator = JabRefPreferences.getInstance().get("groupKeywordSeparator", ", ");
 
-
+	
+	/**
+	 * This method converts BibSonomy BibTeX entries to JabRef entries and stores
+	 * them into a JabRef specific BibtexDatabase! 
+	 * @param bibtexList List of BibSonomy BibTeX objects
+	 * @return BibtexDatabase
+	 * @throws IOException
+	 * @throws KeyCollisionException If two entries have exactly the same BibTeX key
+	 */
+	public static BibtexDatabase bibtex2JabrefDB(final List<? extends Post<? extends Resource>> bibtexList, URLGenerator urlGenerator, boolean cleanBibTex) {
+		final BibtexDatabase db = new BibtexDatabase();
+		for (final Post<? extends Resource> post : bibtexList) {
+			final BibtexEntry convertedPost = JabRefModelConverter.convertPost(post, urlGenerator,cleanBibTex);
+			if (present(convertedPost)) {
+				db.insertEntry(convertedPost);
+			}
+		}
+		return db;
+	}
 
 	/**
 	 * Converts a list of posts in BibSonomy's format into JabRef's format.
@@ -103,12 +125,19 @@ public class JabRefModelConverter {
 	 * @param urlGen - the URL generator to create the biburl-field
 	 * @return A list of posts in JabRef's data model.
 	 */
-	public static List<BibtexEntry> convertPosts(final List<? extends Post<? extends Resource>> posts, URLGenerator urlGen) {
+	public static List<BibtexEntry> convertPosts(final List<? extends Post<? extends Resource>> posts, URLGenerator urlGen, boolean cleanBibTex) {
 		final List<BibtexEntry> entries = new ArrayList<BibtexEntry>();
 		for (final Post<? extends Resource> post : posts) {
-			entries.add(convertPost(post, urlGen));		
+			entries.add(convertPost(post, urlGen, cleanBibTex));		
 		}
 		return entries;
+	}
+	
+	public static String clean(String value, boolean cleanBibTex) {
+		if (cleanBibTex && present(value)) {
+			return BibTexUtils.cleanBibTex(value);
+		}
+		return value;
 	}
 
 	/**
@@ -118,7 +147,7 @@ public class JabRefModelConverter {
 	 * @param urlGen - the URLGenerator to create the biburl-field
 	 * @return
 	 */
-	public static BibtexEntry convertPost(final Post<? extends Resource> post, URLGenerator urlGen) {
+	public static BibtexEntry convertPost(final Post<? extends Resource> post, URLGenerator urlGen, boolean cleanBibTex) {
 
 		try {
 			/*
@@ -154,7 +183,7 @@ public class JabRefModelConverter {
 						&& !JabRefModelConverter.EXCLUDE_FIELDS.contains(pd.getName())) {
 					final String value = ((String) o);
 					if (present(value))
-						entry.setField(pd.getName().toLowerCase(), value);
+						entry.setField(pd.getName().toLowerCase(), clean(value,cleanBibTex));
 				}
 			}
 
@@ -178,7 +207,7 @@ public class JabRefModelConverter {
 					for (final String key : bibtex.getMiscFields().keySet()) {
 						if ("id".equals(key)) {
 							// id is used by jabref
-							entry.setField("misc_id", bibtex.getMiscField(key));
+							entry.setField("misc_id", clean(bibtex.getMiscField(key),cleanBibTex));
 							continue;
 						}
 
@@ -187,7 +216,7 @@ public class JabRefModelConverter {
 							// control
 							continue;
 
-						entry.setField(key, bibtex.getMiscField(key));
+						entry.setField(key, clean(bibtex.getMiscField(key),cleanBibTex));
 					}
 
 			}
@@ -195,8 +224,12 @@ public class JabRefModelConverter {
 			/*
 			 * handle author and editor
 			 */
-			entry.setField("author", PersonNameUtils.serializePersonNames(bibtex.getAuthor()));
-			entry.setField("editor", PersonNameUtils.serializePersonNames(bibtex.getEditor()));
+			if (present(bibtex.getAuthor())) {
+				entry.setField("author", clean(PersonNameUtils.serializePersonNames(bibtex.getAuthor()),cleanBibTex));
+			}
+			if (present(bibtex.getEditor())) {
+				entry.setField("editor", clean(PersonNameUtils.serializePersonNames(bibtex.getEditor()),cleanBibTex));
+			}
 
 			final String month = bibtex.getMonth();
 			if (present(month)) {
@@ -205,15 +238,15 @@ public class JabRefModelConverter {
 				 */
 				final String longMonth = GlobalsSuper.MONTH_STRINGS.get(month);
 				if (present(longMonth)) {
-					entry.setField("month", longMonth);
+					entry.setField("month", clean(longMonth,cleanBibTex));
 				} else {
-					entry.setField("month", month);
+					entry.setField("month", clean(month,cleanBibTex));
 				}
 			}
 
 			final String bibAbstract = bibtex.getAbstract();
 			if (present(bibAbstract))
-				entry.setField("abstract", bibAbstract);
+				entry.setField("abstract", clean(bibAbstract,cleanBibTex));
 
 			/*
 			 * concatenate tags using the JabRef keyword separator
@@ -221,7 +254,7 @@ public class JabRefModelConverter {
 			final Set<Tag> tags = post.getTags();
 			final StringBuffer tagsBuffer = new StringBuffer();
 			for (final Tag tag : tags) {
-				tagsBuffer.append(tag.getName()	+ jabRefKeywordSeparator);
+				tagsBuffer.append(clean(tag.getName(),cleanBibTex)	+ jabRefKeywordSeparator);
 			}
 			/*
 			 * remove last separator
@@ -231,7 +264,7 @@ public class JabRefModelConverter {
 			}
 			final String tagsBufferString = tagsBuffer.toString();
 			if (present(tagsBufferString)) 
-				entry.setField(BibTexUtils.ADDITIONAL_MISC_FIELD_KEYWORDS, tagsBufferString);
+				entry.setField(BibTexUtils.ADDITIONAL_MISC_FIELD_KEYWORDS,tagsBufferString);
 
 
 			// set groups - will be used in jabref when exporting to bibsonomy
@@ -239,7 +272,7 @@ public class JabRefModelConverter {
 				final Set<Group> groups = post.getGroups();
 				final StringBuffer groupsBuffer = new StringBuffer();
 				for (final Group group : groups)
-					groupsBuffer.append(group.getName() + " ");
+					groupsBuffer.append(clean(group.getName(),cleanBibTex) + " ");
 
 				final String groupsBufferString = groupsBuffer.toString().trim();
 				if (present(groupsBufferString))
@@ -249,23 +282,23 @@ public class JabRefModelConverter {
 			// set comment + description
 			final String description = post.getDescription();
 			if (present(description)) {
-				entry.setField(BibTexUtils.ADDITIONAL_MISC_FIELD_DESCRIPTION, post.getDescription());
-				entry.setField("comment", post.getDescription());
+				entry.setField(BibTexUtils.ADDITIONAL_MISC_FIELD_DESCRIPTION, clean(post.getDescription(),cleanBibTex));
+				entry.setField("comment", clean(post.getDescription(),cleanBibTex));
 			}
 
 			if (present(post.getDate())) {
-				entry.setField("added-at", sdf.format(post.getDate()));
+				entry.setField("added-at", clean(fmt.print(post.getDate().getTime()),cleanBibTex));
 			}
 
 			if (present(post.getChangeDate())) {
-				entry.setField("timestamp", sdf.format(post.getChangeDate()));
+				entry.setField("timestamp", clean(fmt.print(post.getChangeDate().getTime()),cleanBibTex));
 			}
 
 			if (present(post.getUser()))
-				entry.setField("username", post.getUser().getName());
+				entry.setField("username", clean(post.getUser().getName(),cleanBibTex));
 
 			// set URL to bibtex version of this entry (bibrecord = ...)
-			entry.setField(BibTexUtils.ADDITIONAL_MISC_FIELD_BIBURL, urlGen.getPublicationUrl(bibtex, post.getUser()).toString());
+			entry.setField(BibTexUtils.ADDITIONAL_MISC_FIELD_BIBURL, clean(urlGen.getPublicationUrl(bibtex, post.getUser()).toString(),cleanBibTex));
 
 			AndSymbolIfBothPresent.prepare(entry);
 			
@@ -320,7 +353,7 @@ public class JabRefModelConverter {
 			// set the date of the post
 			final String timestamp = entry.getField("timestamp");
 			if (present(timestamp))
-				post.setDate(sdf.parse(timestamp));
+				post.setDate(fmt.parseDateTime(timestamp).toDate());
 
 			final String abstractt = entry.getField("abstract");
 			if (present(abstractt))

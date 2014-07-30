@@ -28,7 +28,7 @@
     <div class="topic">ESWC 2008. As Tagcloud.</div>
     
     <div id="logos">
-      <a href="http://www.eswc2008.org/"><img src="assets/eswc_top_bar.png"></a>
+      <a href="http://www.eswc2008.org/"><img src="/resources/events/eswc2008/eswc_top_bar.png"></a>
     </div>
   
     

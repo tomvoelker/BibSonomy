@@ -29,15 +29,22 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for ams.allenpress.com
  * @author tst
  */
-public class AmsScraper extends SimpleGenericURLScraper {
+public class AmsScraper extends GenericBibTeXURLScraper {
+	private static final Log log = LogFactory.getLog(AmsScraper.class);
 	
 	private static final String SITE_NAME = "American Meteorological Society";
 	private static final String SITE_URL = "http://ams.allenpress.com/";
@@ -49,6 +56,7 @@ public class AmsScraper extends SimpleGenericURLScraper {
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*ams.allenpress.com"), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	private static final Pattern pattern = Pattern.compile("doi=([^&]*)[&]?");
+	private static final Pattern abstractPattern = Pattern.compile("Abstract.*<p class=\"last\">(.*)</p>");
 	
 	@Override
 	public String getInfo() {
@@ -69,15 +77,36 @@ public class AmsScraper extends SimpleGenericURLScraper {
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
-
-	@Override
-	public String getBibTeXURL(URL url) {
-		final Matcher matcher = pattern.matcher(url.toString());
-		if (matcher.find()) {
-			final String doi = matcher.group(1).replace("%2F", "/");
-			final String downloadUrl = "http://journals.ametsoc.org/action/downloadCitation?doi=" + doi + "&include=cit";
-			return downloadUrl + FORMAT_BIBTEX;
+	
+	private static String abstactParser(final URL url){
+		try {
+			final Matcher m = abstractPattern.matcher(WebUtils.getContentAsString("http://journals.ametsoc.org/doi/abs/" + doiExtracter(url)));
+			if (m.find()) {
+				return m.group(1);
+			}
+		} catch(Exception e){
+			log.error("error while getting abstract for " + url, e);
 		}
 		return null;
-	}	
+	}
+	
+	private static String doiExtracter(URL url){
+		final Matcher matcher = pattern.matcher(url.toString());
+		if (matcher.find()) 
+			return matcher.group(1).replace("%2F", "/");
+		return null;
+	}
+	
+	@Override
+	public String getDownloadURL(URL url) throws ScrapingException {
+		return "http://journals.ametsoc.org/action/downloadCitation?doi=" + doiExtracter(url) + "&include=cit" + FORMAT_BIBTEX;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
+	 */
+	@Override
+	protected String postProcessScrapingResult(ScrapingContext sc, String result) {
+		return BibTexUtils.addFieldIfNotContained(result, "abstract", abstactParser(sc.getUrl()));
+	}
 }

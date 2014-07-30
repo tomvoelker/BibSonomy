@@ -23,23 +23,29 @@
 
 package org.bibsonomy.scraper.url.kde.iwap;
 
+import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for papers from http://www.iwaponline.com
  * @author tst
  */
 public class IWAPonlineScraper extends AbstractUrlScraper {
-
+	private static final Log log = LogFactory.getLog(IWAPonlineScraper.class);
+	
 	private static final String SITE_NAME = "IWA Publishing";
 
 	private static final String SITE_URL = "http://www.iwaponline.com";
@@ -86,11 +92,14 @@ public class IWAPonlineScraper extends AbstractUrlScraper {
 	private static final String META_ELEMENT_TITLE = "DC.Title";
 	private static final String META_ELEMENT_CREATOR = "DC.Creator";
 	private static final String META_ELEMENT_KEYWORD = "DC.Keyword";
+	private static final Pattern PATTERN_ABSTRACT = Pattern.compile("(?i)ABSTRACT.*\\s+<P>(.*)\\s+</P>");
 
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
 
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
 		sc.setScraper(this);
 
@@ -218,18 +227,31 @@ public class IWAPonlineScraper extends AbstractUrlScraper {
 		// finish building
 		bibtex.append("}");
 
-		sc.setBibtexResult(bibtex.toString());
+		sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(bibtex.toString(),"abstract",abstractPrser(sc.getUrl())));
 		return true;
 	}
-
+	private static String abstractPrser(URL url){
+		try {
+			final Matcher m = PATTERN_ABSTRACT.matcher(WebUtils.getContentAsString(url));
+			if(m.find()) {
+				return m.group(1);
+			}
+		} catch(Exception e) {
+			log.error("error while getting abstract for " + url, e);
+		}
+		return null;
+	}
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}

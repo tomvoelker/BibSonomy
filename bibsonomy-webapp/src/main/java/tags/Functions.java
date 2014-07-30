@@ -6,9 +6,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.text.DateFormat;
 import java.text.Normalizer;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -47,9 +45,9 @@ import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.web.spring.converter.StringToEnumConverter;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
-import org.springframework.format.datetime.DateFormatter;
 
 /**
  * TODO: move to org.bibsonomy.webapp.util.tags package
@@ -67,15 +65,15 @@ public class Functions {
 	// used to generate URLs
 	private static URLGenerator urlGenerator;
 
-	private static final SimpleDateFormat ISO8601_FORMAT_HELPER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+	private static final DateTimeFormatter ISO8601_FORMAT_HELPER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ");
 
-	private static final DateFormatter myDateFormatter = new DateFormatter("MMMM yyyy");
-	private static final DateFormatter dmyDateFormatter = new DateFormatter();
-	static {
-		dmyDateFormatter.setStyle(DateFormat.MEDIUM);
-	}
-	private static final DateFormat myDateFormat = new SimpleDateFormat("yyyy-MM");
-	private static final DateFormat dmyDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	/** used to get RFC 1123 formatted date */
+	private static final DateTimeFormatter RFC1123_DATE_TIME_FORMATTER = DateTimeFormat.forPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'").withZoneUTC();
+	
+	private static final DateTimeFormatter myDateFormatter = DateTimeFormat.forPattern("MMMM yyyy");
+
+	private static final DateTimeFormatter myDateFormat = DateTimeFormat.forPattern("yyyy-MM");
+	private static final DateTimeFormatter dmyDateFormat = DateTimeFormat.forPattern("yyyy-MM-dd");
 
 	private static final DateTimeFormatter W3CDTF_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
 
@@ -603,7 +601,7 @@ public class Functions {
 	public static String formatDateISO8601(final Date date) {
 		if (present(date)) {
 			try {
-				return ISO8601_FORMAT_HELPER.format(date);
+				return ISO8601_FORMAT_HELPER.print(new DateTime(date));
 			} catch (final Exception e) {
 				log.error("error while formating date to ISO8601", e);
 				return "";
@@ -611,6 +609,23 @@ public class Functions {
 		}
 		return "";
 	}
+
+	/**
+	 * Formats the date to RFC 1123, e.g., "Wed, 12 Mar 2013 12:12:12 GMT" (needed for Memento).
+	 * 
+	 * Currently Java's formatter doesn't support this standard therefore we can
+	 * not use the fmt:formatDate tag with a pattern
+	 * 
+	 * @param date
+	 * @return the formatted date
+	 */
+	public static String formatDateRFC1123(final Date date) {
+		if (present(date)) {
+			return RFC1123_DATE_TIME_FORMATTER.print(new DateTime(date));
+		}
+		return "";
+	}
+
 
 	/**
 	 * Formats the date to W3CDTF, e.g., 2012-11-07T14:43:16+01:00 (needed for
@@ -648,8 +663,9 @@ public class Functions {
 				final String monthAsNumber = BibTexUtils.getMonthAsNumber(cleanMonth);
 				if (present(day)) {
 					final String cleanDay = BibTexUtils.cleanBibTex(day.trim());
-					try {
-						return dmyDateFormatter.print(dmyDateFormat.parse(cleanYear + "-" + monthAsNumber + "-" + cleanDay), locale);
+					try {						
+						DateTime dt = dmyDateFormat.parseDateTime(cleanYear + "-" + monthAsNumber + "-" + cleanDay);
+						return DateTimeFormat.mediumDate().withLocale(locale).print(dt);
 					} catch (final Exception ex) {
 						// return default date
 						return cleanDay + " " + cleanMonth + " " + cleanYear;
@@ -659,7 +675,8 @@ public class Functions {
 				 * no day given
 				 */
 				try {
-					return myDateFormatter.print(myDateFormat.parse(cleanYear + "-" + monthAsNumber), locale);
+					DateTime dt = myDateFormat.parseDateTime(cleanYear + "-" + monthAsNumber);
+					return myDateFormatter.withLocale(locale).print(dt);
 				} catch (final Exception ex) {
 					// return default date
 					return cleanMonth + " " + cleanYear;
@@ -813,4 +830,5 @@ public class Functions {
 	public static String downloadFileId(final String filename) {
 		return filename.replaceAll("[^A-Za-z0-9]", "-");
 	}
+	
 }

@@ -28,7 +28,7 @@
     <div class="topic">ISWC+ASWC 2007. As Tagcloud.</div>
     
     <div id="logos">
-      <a href="http://iswc2007.semanticweb.org/"><img src="assets/iswc_flash.jpg"></a>
+      <a href="http://iswc2007.semanticweb.org/"><img src="/resources/events/iswc2007/iswc_flash.jpg"></a>
     </div>
   
     
