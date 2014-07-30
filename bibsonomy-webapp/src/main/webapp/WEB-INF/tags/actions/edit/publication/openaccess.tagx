@@ -9,11 +9,11 @@
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:form="http://www.springframework.org/tags/form"
-    xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication">
+	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication">
 
-    <jsp:directive.attribute name="tags" type="java.lang.String" required="false"/>
-    <jsp:directive.attribute name="bibtex" type="org.bibsonomy.model.BibTex" required="true"/>
-    <jsp:directive.attribute name="referer" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="tags" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="bibtex" type="org.bibsonomy.model.BibTex" required="true"/>
+	<jsp:directive.attribute name="referer" type="java.lang.String" required="true"/>
 
 	<!--+
 		|
@@ -161,7 +161,7 @@
 
 <!-- a style="cursor: pointer;" onclick="javascript:checkOpenAccess();"><fmt:message key="openaccess.check"/></a> -->
 
-				<c:if test="${((bibtex.entrytype=='article') and (!empty bibtex.journal)) or ((bibtex.entrytype!='article') and (!empty bibtex.publisher))}"> 
+				<c:if test="${((bibtex.entrytype=='article') and (!empty bibtex.journal)) or ((bibtex.entrytype!='article') and (!empty bibtex.publisher))}">
 				<div id="oasherparomeocontainer">
 					<h4><fmt:message key="post.resource.openaccess.sherparomeo.headline"/></h4>
 
@@ -171,7 +171,7 @@
 					</c:if>
 					<input type="hidden" id="oaRequestPublisherUrlParameter" value="${oaRequestPublisherUrlParameter}"/>
 					
-					<div id="oasherparomeopredescription" class="oasherparomeodescription"><fmt:message key="post.resource.openaccess.sherparomeo.description"/></div>				
+					<div id="oasherparomeopredescription" class="oasherparomeodescription"><fmt:message key="post.resource.openaccess.sherparomeo.description"/></div>
 					
 					<c:if test="${bibtex.entrytype=='article'}">
 					<div id="oasherparomeopublisher"><fmt:message key="post.resource.openaccess.sherparomeo.publisher.entrytype.article"><fmt:param value="${bibtex.journal}"/></fmt:message></div>
@@ -183,7 +183,7 @@
 					<div id="oasherparomeo"><fmt:message key="post.resource.openaccess.noinfoavailable"/></div>
 
 					<div id="oasherparomeocolordescription">
-					<fmt:message key="post.resource.openaccess.sherparomeo.color.description.intro"/>  
+					<fmt:message key="post.resource.openaccess.sherparomeo.color.description.intro"/>
 					<ul>
 						<li class="oa-green"><fmt:message key="post.resource.openaccess.sherparomeo.color.description.green"/></li>
 						<li class="oa-blue"><fmt:message key="post.resource.openaccess.sherparomeo.color.description.blue"/></li>

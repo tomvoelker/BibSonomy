@@ -118,7 +118,7 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 			}
 			
 			//pretty good idea to use an own client, since the session in the common client can become invalid
-			HttpClient client = WebUtils.getHttpClient();
+			final HttpClient client = WebUtils.getHttpClient();
 			
 			/*
 			 * Scrape entries from popup BibTeX site. BibTeX entry on these
@@ -162,8 +162,6 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 			}
 
 			final String result = DOIUtils.cleanDOI(bibtexEntries.toString().trim());
-			//final String result = bibtexEntries.toString().trim();
-
 			if (present(result)) {
 				sc.setBibtexResult(result);
 				return true;

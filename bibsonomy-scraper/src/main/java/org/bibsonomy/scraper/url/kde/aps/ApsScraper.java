@@ -30,16 +30,17 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.bcel.generic.RETURN;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * @author Haile
  */
-public class ApsScraper extends SimpleGenericURLScraper{
+public class ApsScraper extends GenericBibTeXURLScraper{
 	private static final String SITE_NAME = "American Psychological Society";
 	private static final String SITE_URL = "http://the-aps.org";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
@@ -72,17 +73,18 @@ public class ApsScraper extends SimpleGenericURLScraper{
 	}
 
 	@Override
-	public String getBibTeXURL(final URL url) {
+	public String getDownloadURL(final URL url) throws ScrapingException {
 		try {
-			Matcher m = BIBTEX_PATTERN.matcher(WebUtils.getContentAsString(url));
+			final Matcher m = BIBTEX_PATTERN.matcher(WebUtils.getContentAsString(url));
 			String download_link = "";
-			if(m.find())
+			if (m.find()) {
 				download_link = m.group(1);
+			} else {
+				throw new ScrapingFailureException("failure getting bibtex url for " + url);
+			}
 			return "http://" + url.getHost().toString() + download_link;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ScrapingException(e);
 		}
-		return null;
 	}
 }

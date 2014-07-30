@@ -99,6 +99,7 @@ import org.bibsonomy.scraper.url.kde.opac.OpacScraper;
 import org.bibsonomy.scraper.url.kde.openrepository.OpenrepositoryScraper;
 import org.bibsonomy.scraper.url.kde.openuniversity.OpenUniversityScraper;
 import org.bibsonomy.scraper.url.kde.osa.OSAScraper;
+import org.bibsonomy.scraper.url.kde.oxfordjournals.OxfordJournalsScraper;
 import org.bibsonomy.scraper.url.kde.phcogres.PharmacognosyResearchScraper;
 import org.bibsonomy.scraper.url.kde.pion.PionScraper;
 import org.bibsonomy.scraper.url.kde.plos.PlosScraper;
@@ -119,6 +120,7 @@ import org.bibsonomy.scraper.url.kde.springer.SpringerScraper;
 import org.bibsonomy.scraper.url.kde.ssrn.SSRNScraper;
 import org.bibsonomy.scraper.url.kde.stanford.StanfordInfoLabScraper;
 import org.bibsonomy.scraper.url.kde.taylorAndFrancis.TaylorAndFrancisScraper;
+import org.bibsonomy.scraper.url.kde.thelancet.TheLancetScraper;
 import org.bibsonomy.scraper.url.kde.usenix.UsenixScraper;
 import org.bibsonomy.scraper.url.kde.webofknowledge.WebOfKnowledgeScraper;
 import org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper;
@@ -249,6 +251,8 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new DeGruyterScraper());
 		addScraper(new MorganClaypoolScraper());
 		addScraper(new MDPIScraper());
+		addScraper(new OxfordJournalsScraper());
+		addScraper(new TheLancetScraper());
 	}
 
 }
