@@ -79,7 +79,7 @@
 			<ul>
 				<!-- loginUser.groups -->
 				<li>
-					<h4 class="sidebar"><fmt:message key="groups"/><c:out value=" "/><small class="small"><a href="/groups"><fmt:message key="overview"/></a></small></h4>
+					<h4 class="sidebar"><fmt:message key="groups"/><c:out value=" "/><small>(<a href="/groups"><fmt:message key="overview"/></a>)</small></h4>
 					<ul>
 					<c:forEach var="group" items="${command.context.loginUser.groups}">
 						<li>
