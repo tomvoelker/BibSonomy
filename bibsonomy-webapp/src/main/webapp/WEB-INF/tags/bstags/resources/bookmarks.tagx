@@ -67,7 +67,7 @@
 								<jsp:invoke fragment="customPageOptions"/>
 							</c:when>
 							<c:otherwise>
-								<div class="btn-group" style="margin-bottom: 2px;">
+								<div class="pull-right btn-group dropdown-align-right" style="margin-bottom: 2px;">
 									<bsform:button gear="${true}" value="" dropdown="${true}" size="xsmall" style="defaultStyle" dataToggle="dropdown" />
 									<ul class="dropdown-menu list-options">
 				

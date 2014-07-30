@@ -14,7 +14,7 @@
 
 	
 
-	<div class="edit-media-buttons btn-group btn-group-xs dropdown">
+	<div class="edit-media-buttons btn-group btn-group-xs dropdown dropdown-align-right">
 	
 	<c:set var="buttonClasses" value="btn btn-default btn-xsmall"/>
 		<!--+
