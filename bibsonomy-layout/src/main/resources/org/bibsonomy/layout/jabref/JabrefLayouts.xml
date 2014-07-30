@@ -100,6 +100,7 @@
 		<baseFileName>plain</baseFileName>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
+		<isFavorite>true</isFavorite>
 	</layout>
 	<layout name="tablerefs">
 		<displayName>HTML table</displayName>
@@ -232,6 +233,7 @@
 		<baseFileName>EndNote</baseFileName>
 		<mimeType>text/plain</mimeType>
 		<extension>.txt</extension>
+		<isFavorite>true</isFavorite>
 	</layout>
 	<layout name="ris_endnote">
 		<displayName>RIS (EndNote)</displayName>
@@ -771,5 +773,6 @@
 		</description>
 		<mimeType>text/xml</mimeType>
 		<extension>.xml</extension>
+		<isFavorite>true</isFavorite>
 	</selfrenderingLayout>
 </layouts>

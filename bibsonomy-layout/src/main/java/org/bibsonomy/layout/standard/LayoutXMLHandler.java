@@ -98,7 +98,9 @@ public class LayoutXMLHandler extends DefaultHandler {
 			currentLayoutDefinition.setExtension(getBuf());
 		} else if ("mimeType".equals(name)) {
 			currentLayoutDefinition.setMimeType(getBuf());
-		} 
+		} else if ("isFavorite".equals(name)) {
+			currentLayoutDefinition.setFavorite(getBuf());
+		}
 	}
 
 	private String getBuf() {

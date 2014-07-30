@@ -44,6 +44,7 @@
 		</description>
 		<mimeType>text/html</mimeType>
 		<extension>.bib</extension>
+		<isFavorite>true</isFavorite>
 	</layout>
 	<layout name="publ">
 		<displayName>HTML</displayName>
