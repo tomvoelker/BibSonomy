@@ -23,45 +23,60 @@
 
 package org.bibsonomy.scraper.generic;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.net.URL;
 
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import static org.bibsonomy.util.ValidationUtils.present;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
 
 /**
- * Super class to support pattern "URL in -> URL out".
- * 
- * @author hagen
+ * @author dzo
  */
-public abstract class SimpleGenericURLScraper extends AbstractUrlScraper {
-
-	/**
-	 * Implementations of this class should return the download link for the BibTeX file.
-	 * 
-	 * @param url The URL to be scraped.
-	 * @return The URL that points to the download.
-	 */
-	public abstract String getBibTeXURL(final URL url);
+public abstract class AbstractGenericFormatURLScraper extends AbstractUrlScraper {
+	
+	protected abstract String getDownloadURL(final URL url) throws ScrapingException;
 	
 	@Override
-	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
+	protected final boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
 		try {
-			String bibtexURL = getBibTeXURL(scrapingContext.getUrl());
-			String bibtexResult = WebUtils.getContentAsString(bibtexURL);
+			final URL url = scrapingContext.getUrl();
+			final String downloadURL = getDownloadURL(url);
+			if (downloadURL == null) {
+				throw new ScrapingFailureException("can't get download url for " + url);
+			}
+			final String downloadResult = WebUtils.getContentAsString(downloadURL);
 			
-			if (present(bibtexResult)) {
-				scrapingContext.setBibtexResult(bibtexResult);
+			String bibtex = this.convert(downloadResult);
+			
+			if (present(bibtex)) {
+				bibtex = postProcessScrapingResult(scrapingContext, bibtex);
+				scrapingContext.setBibtexResult(bibtex);
 				return true;
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new ScrapingException(e);
 		}
 		return false;
 	}
+	
+	/**
+	 * @param scrapingContext
+	 * @param bibtex
+	 * @return the postProcessed bibtex
+	 */
+	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
+		return bibtex;
+	}
 
+	/**
+	 * @param downloadResult
+	 * @return downloadResult, converted to bibtex
+	 */
+	protected abstract String convert(String downloadResult);
 }

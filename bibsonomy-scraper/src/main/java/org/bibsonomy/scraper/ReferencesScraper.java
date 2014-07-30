@@ -26,7 +26,7 @@ package org.bibsonomy.scraper;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
- * TODO: add documentation to this class
+ * interface for scrapers that can scrape reference data
  *
  * @author Haile
  */
@@ -41,5 +41,4 @@ public interface ReferencesScraper {
 	 * @throws ScrapingException
 	 */
 	public boolean scrapeReferences(final ScrapingContext scrapingContext) throws ScrapingException;
-	
 }

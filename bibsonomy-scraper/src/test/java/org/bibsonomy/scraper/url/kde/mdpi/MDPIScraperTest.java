@@ -58,6 +58,4 @@ public class MDPIScraperTest {
 		assertEquals("Zhang, L.; Guo, H.; Li, X.; Wang, L. Ecosystem assessment in the Tonle Sap Lake region".trim(), cby.substring(0, 86).trim());
 		assertTrue(cby.contains("Zhang, L."));
 	}
-
-	
 }

@@ -33,55 +33,43 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.RisToBibtexConverter;
-import org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericRISURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for publication from nature.com
  * @author tst
  */
-public class NatureScraper extends PostprocessingGenericURLScraper {
-
+public class NatureScraper extends GenericRISURLScraper {
+	private static final Log log = LogFactory.getLog(NatureScraper.class);
+	
 	private static final String SITE_URL = "http://www.nature.com/";
-
 	private static final String SITE_NAME = "Nature";
 
-	/**
-	 * Host
-	 */
 	private static final String HOST = "nature.com";
-
-	/**
-	 * INFO
-	 */
 	private static final String INFO = "Scraper for publications from " + href(SITE_URL, SITE_NAME)+".";
 
-	/**
-	 * pattern for links
-	 */
+	/** pattern for links */
 	private static final Pattern linkPattern = Pattern.compile("<a\\b[^<]*</a>");
 
-	/**
-	 * pattern for href field
-	 */
+	/** pattern for href field */
 	private static final Pattern hrefPattern = Pattern.compile("href=\"[^\"]*\"");
 
-	/**
-	 * name from download link
-	 */
+	/** name from download link */
 	private static final String CITATION_DOWNLOAD_LINK_NAME = ">Export citation<";
 	private static final String CITATION_DOWNLOAD_LINK_NAME2 = ">Citation<";
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("(?s)Abstract.*\\s+<p>(.*)</p>\\s+<div class=\"article-keywords inline-list cleared\">");
-	/**
-	 * get INFO
-	 */
+	
+	/** get INFO */
 	@Override
 	public String getInfo() {
 		return INFO;
@@ -132,7 +120,7 @@ public class NatureScraper extends PostprocessingGenericURLScraper {
 		return SITE_URL;
 	}
 	@Override
-	public String getBibTeXURL(URL url) {
+	public String getDownloadURL(URL url) throws ScrapingException {
 		try {
 			// get publication page
 			final String publicationPage = getPageContent(url);
@@ -152,33 +140,28 @@ public class NatureScraper extends PostprocessingGenericURLScraper {
 					} 
 				}
 			}
-		}
-		catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (IOException e) {
+			throw new ScrapingException(e);
 		}
 		return null;
 	}
+	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
 	 */
 	@Override
 	protected String postProcessScrapingResult(ScrapingContext sc, String result) {
-		try{
-			final RisToBibtexConverter converter = new RisToBibtexConverter();
-			return BibTexUtils.addFieldIfNotContained(converter.risToBibtex(result), "abstract", abstractParser(sc.getUrl()));
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return null;
+		return BibTexUtils.addFieldIfNotContained(result, "abstract", abstractParser(sc.getUrl()));
 	}
+	
 	private static String abstractParser(URL url){
-		try{
-		Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(url));
-		if(m.find())
-			return m.group(1);
-		}catch(Exception e){
-			e.printStackTrace();
+		try {
+			Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(url));
+			if (m.find()) {
+				return m.group(1);
+			}
+		} catch(IOException e){
+			log.error("error while getting abstract for " + url, e);
 		}
 		return null;
 	}

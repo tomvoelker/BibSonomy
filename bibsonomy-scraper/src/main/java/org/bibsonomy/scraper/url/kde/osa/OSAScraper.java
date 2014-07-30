@@ -179,7 +179,8 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 		return out.toString();
 	}
 
-	/** FIXME: refactor
+	/**
+	 * FIXME: refactor
 	 * @param queryURL
 	 * @return
 	 * @throws IOException
@@ -204,7 +205,7 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 		 */
 		final List<String> cookies = urlConn.getHeaderFields().get("Set-Cookie");
 
-		StringBuffer cookieString = new StringBuffer();
+		final StringBuffer cookieString = new StringBuffer();
 
 		for (final String cookie : cookies) {
 			cookieString.append(cookie.substring(0, cookie.indexOf(";") + 1) + " ");

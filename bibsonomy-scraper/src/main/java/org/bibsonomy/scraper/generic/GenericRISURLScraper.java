@@ -21,26 +21,19 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.bibsonomy.scraper.url.kde.bloodjournal;
+package org.bibsonomy.scraper.generic;
 
-import org.bibsonomy.scraper.UnitTestRunner;
-import org.bibsonomy.scraper.junit.RemoteTest;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 
 /**
+ * Transforms the scraping result from RIS to BibTeX after scraping, using the {@link RisToBibtexConverter}.
+ * 
  * @author Haile
  */
-@Category(RemoteTest.class)
-public class BloodJournalScraperTest {
-	/**
-	 * @param args
-	 */
-	/**
-	 * starts URL test with id url_264
-	 */
-	@Test
-	public void urlTestRun() {
-		UnitTestRunner.runSingleTest("url_264");
+public abstract class GenericRISURLScraper extends AbstractGenericFormatURLScraper {
+	private static final RisToBibtexConverter RIS2BIB = new RisToBibtexConverter();
+	
+	protected String convert(String downloadResult) {
+		return RIS2BIB.risToBibtex(downloadResult);
 	}
 }
