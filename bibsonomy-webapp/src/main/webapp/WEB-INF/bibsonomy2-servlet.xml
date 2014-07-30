@@ -247,19 +247,45 @@
 
 	<!--  #################### view resolver #################### -->
 	<!-- default: JSPs -->
-	<bean id="viewResolver"	class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
-		<property name="prefix" value="/WEB-INF/jsp/" />
-		<property name="suffix" value=".jspx" />
-		<!-- expose the application context's beans to the view layer so that they can be accessed in all jsp's via ${beanName} -->
-		<property name="exposedContextBeanNames">
-			<list>
-				<value>authConfig</value>
-				<value>properties</value>
-				<value>relativeUrlGenerator</value>
-				<value>absoluteUrlGenerator</value>
-			</list>
+	<bean id="viewResolver" class="org.bibsonomy.webapp.util.spring.servlet.LayoutSwitchingViewResolver">
+		<property name="resolverMap">
+			<map>
+				<entry key="BOOTSTRAP">
+					<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+						<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+						<property name="prefix" value="/WEB-INF/bsjsp/" /> 
+						<property name="suffix" value=".jspx" />
+						<!-- expose the application context's beans to the view layer so that they can be accessed in all jsp's via ${beanName} -->
+						<property name="exposedContextBeanNames">
+							<list>
+								<value>authConfig</value>
+								<value>properties</value>
+								<value>relativeUrlGenerator</value>
+								<value>absoluteUrlGenerator</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				
+				<entry key="CLASSIC">
+					<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+						<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+						<property name="prefix" value="/WEB-INF/jsp/" /> 
+						<property name="suffix" value=".jspx" />
+						<!-- expose the application context's beans to the view layer so that they can be accessed in all jsp's via ${beanName} -->
+						<property name="exposedContextBeanNames">
+							<list>
+								<value>authConfig</value>
+								<value>properties</value>
+								<value>relativeUrlGenerator</value>
+								<value>absoluteUrlGenerator</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+			</map>
 		</property>
+	
 	</bean>
 	
 	<!-- used to resolve non-JSP views, e.g., JabRef's layout views -->
@@ -596,6 +622,11 @@
 						<property name="controllerBeanName" value="buttonPageController"/>
 					</bean>
 				</entry>
+				<entry key="/gettingStarted">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="gettingStartedPageController"/>
+					</bean>
+				</entry>
 				<entry key="/allRelations">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="relationsController"/>
@@ -609,6 +640,16 @@
 				<entry key="/scraperinfo">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="scraperInfoController"/>
+					</bean>
+				</entry>
+				<entry key="/friendsoverview">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="friendsOverviewController"/>
+					</bean>
+				</entry>
+				<entry key="/bootstrapDemo">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="bootstrapDemoController"/>
 					</bean>
 				</entry>
 				<entry key="/errors/403">
@@ -693,6 +734,18 @@
 
 	<bean id="userPageController" class="org.bibsonomy.webapp.controller.UserPageController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>
+		<property name="didYouKnowMessages">
+			<list>
+				<bean class="org.bibsonomy.webapp.util.DidYouKnowMessage">
+					<property name="messageKey" value="didyouknow.browserButtons"/>
+					<property name="alertType" value="warning" /> 
+				</bean>
+				<bean class="org.bibsonomy.webapp.util.DidYouKnowMessage">
+					<property name="messageKey" value="didyouknow.editYourProfile" />
+					<property name="alertType" value="info" />
+				</bean>
+			</list>
+		</property>
 	</bean>
 
 	<bean id="downloadFileController" class="org.bibsonomy.webapp.controller.DownloadFileController" scope="request">
@@ -876,9 +929,29 @@
 	
 	<bean id="scraperInfoController" class="org.bibsonomy.webapp.controller.ScraperInfoController" scope="request" />
 	
+	<bean id="friendsOverviewController" class="org.bibsonomy.webapp.controller.FriendsOverviewController" scope="request" parent="multiResourceListController">
+		<property name="logic" ref="logic" />
+		<property name="supportedResources" ref="allResources" />
+		<property name="didYouKnowMessages">
+			<list>
+				<bean class="org.bibsonomy.webapp.util.DidYouKnowMessage">
+					<property name="messageKey" value="friendoverview.hint.addmore"/>
+					<property name="alertType" value="success" /> 
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	
 	<!--  #################### static views #################### -->
+	<bean id="bootstrapDemoController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="BOOTSTRAP_DEMO"/>
+	</bean>
 	<bean id="buttonPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="BUTTONS"/>
+	</bean>
+	<bean id="gettingStartedPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="GETTINGSTARTED"/>
 	</bean>
 	<bean id="error403PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="ERROR403"/>

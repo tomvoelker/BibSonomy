@@ -501,7 +501,7 @@
 				</entry>
 				<entry key="/postBookmark">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="postBookmarkController"/>
+						<property name="controllerBeanName" value="editBookmarkController"/>
 					</bean>
 				</entry>
 				<entry key="/postPublication">
@@ -620,7 +620,8 @@
 								<value>user.settings.defaultLanguage</value>
 								<value>user.settings.showBookmark</value>
 								<value>user.settings.showBibtex</value>
-								<value>user.settings.simpleInterface</value>
+								<value>user.settings.layoutSettings.simpleInterface</value>
+								<value>user.settings.layoutSettings.viewLayout</value>
 							</list>
 						</property>
 					</bean>
@@ -808,7 +809,18 @@
 	</bean>
 
 	<!-- Handles the edit bookmark process -->
-	<bean id="editBookmarkController" class="org.bibsonomy.webapp.controller.actions.EditBookmarkController" scope="request" parent="editPostController" />
+	<bean id="editBookmarkController" class="org.bibsonomy.webapp.controller.actions.EditBookmarkController" scope="request" parent="editPostController">
+		<property name="didYouKnowMessages">
+			<list>
+				<bean class="org.bibsonomy.webapp.util.DidYouKnowMessage">
+					<property name="messageKey" value="didyouknow.browserButtons"/>
+					<property name="alertType" value="warning" /> 
+				</bean>
+			</list>
+			
+		</property>
+	</bean>
+	
 	
 <!-- 	<bean id="diffBookmarkController" class="org.bibsonomy.webapp.controller.actions.DiffBookmarkMockupController" scope="request" parent="editPostController" /> -->
 
@@ -835,6 +847,22 @@
 		<property name="scraper" ref="kdeScraperChain"/>
 		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
 		<property name="publicationImporter" ref="publicationImporter"/>
+		<property name="didYouKnowMessages">
+			<list>
+				<bean class="org.bibsonomy.webapp.util.DidYouKnowMessage">
+					<property name="messageKey" value="didyouknow.browserButtons"/>
+					<property name="alertType" value="warning" /> 
+				</bean>
+				<bean class="org.bibsonomy.webapp.util.DidYouKnowMessage">
+					<property name="messageKey" value="didyouknow.isbn"/>
+					<property name="alertType" value="warning" /> 
+				</bean>
+				<bean class="org.bibsonomy.webapp.util.DidYouKnowMessage">
+					<property name="messageKey" value="didyouknow.scanningQr"/>
+					<property name="alertType" value="warning" /> 
+				</bean>
+			</list>
+		</property>
 	</bean>
 	
 	<bean id="publicationImporter" class="org.bibsonomy.webapp.util.importer.PublicationImporter">
@@ -1202,9 +1230,12 @@
 		<property name="view" value="REGISTER_USER_SUCCESS" />
 	</bean>
 	
+	<!-- NOW USING EditBookmarkController -->
+	<!-- 
 	<bean id="postBookmarkController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="POST_BOOKMARK" />
 	</bean>
+	-->
 	
 	<!-- EDIT TAGS -->
 	<bean id="batchEditController" class="org.bibsonomy.webapp.controller.actions.BatchEditController" scope="request">

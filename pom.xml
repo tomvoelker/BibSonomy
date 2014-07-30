@@ -143,6 +143,14 @@
 				<role>Developer</role>
 			</roles>
 		</developer>
+		<developer>
+			<name>Sebastian Böttger</name>
+			<id>seboettg</id>
+			<email>boettger@cs.uni-kassel.de</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
 	</developers>
 	<mailingLists>
 		<mailingList>

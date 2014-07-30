@@ -72,6 +72,10 @@
 					</execution>
 				</executions>
 				<configuration>
+					<excludes>
+          				<exclude>**/pdf.js</exclude>
+          				<exclude>**/pdfworker.js</exclude>
+					</excludes>
 					<encoding>UTF-8</encoding>
 					<jswarn>false</jswarn>
 					<nosuffix>true</nosuffix>
