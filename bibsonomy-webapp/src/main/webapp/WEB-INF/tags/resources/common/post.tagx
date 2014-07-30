@@ -56,7 +56,7 @@
 			<discussion:rating post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
 	
 			<!-- ACTIONS -->
-			<div class="action pull-right">
+			<div class="action">
 				<jsp:invoke fragment="actions"/>
 			</div>
 
