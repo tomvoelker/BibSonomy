@@ -9,8 +9,8 @@ import org.bibsonomy.model.Layout;
 /**
  * @author daill, lsc
  */
-public class ExportPageCommand extends ResourceViewCommand{
-	
+public class ExportPageCommand extends ResourceViewCommand {
+
 	private Map<String, Layout> layoutMap;
 
 	/**
@@ -26,23 +26,25 @@ public class ExportPageCommand extends ResourceViewCommand{
 	public void setLayoutMap(final Map<String, Layout> layoutMap) {
 		this.layoutMap = layoutMap;
 	}
-	
+
 	/**
 	 * @param jabrefMap
 	 */
-	public void addJabrefLayoutMap(final Map<String, AbstractJabRefLayout> jabrefMap) {
-		for(AbstractJabRefLayout layout : jabrefMap.values()){
+	public void addJabrefLayoutMap(
+			final Map<String, AbstractJabRefLayout> jabrefMap) {
+		for (AbstractJabRefLayout layout : jabrefMap.values()) {
 			this.layoutMap.put(layout.getDisplayName(), layout);
 		}
 	}
-	
+
 	/**
 	 * @param standardMap
 	 */
-	public void addStandardLayoutMap(final Map<String, StandardLayout> standardMap) {
-		for(StandardLayout layout : standardMap.values()){
+	public void addStandardLayoutMap(
+			final Map<String, StandardLayout> standardMap) {
+		for (StandardLayout layout : standardMap.values()) {
 			this.layoutMap.put(layout.getDisplayName(), layout);
 		}
 	}
-	
+
 }

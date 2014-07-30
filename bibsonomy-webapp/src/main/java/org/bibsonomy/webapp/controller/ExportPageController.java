@@ -1,9 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
 import org.bibsonomy.layout.standard.StandardLayouts;
