@@ -70,7 +70,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param itemType
 	 */
 	public void checkStartEnd(final User loginUser, final int start, final int end, final String itemType) {
-		if (!this.isAdmin(loginUser) && (end > END_MAX)) {
+		if (!this.isAdmin(loginUser) && (end - start > END_MAX)) {
 			throw new AccessDeniedException("You are not authorized to retrieve more than the last " + END_MAX + " " + itemType + " items.");
 		}
 	}
