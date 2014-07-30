@@ -1,0 +1,12 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"	
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
+	
+	<c:if test="${not empty publication.howpublished}">
+		<em><c:out value="${mtl:cleanBibtex(publication.howpublished)}" /><c:out value=", "/></em>
+	</c:if>
+</jsp:root>

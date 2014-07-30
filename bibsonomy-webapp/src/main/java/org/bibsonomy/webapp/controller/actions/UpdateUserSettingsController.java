@@ -115,8 +115,10 @@ public class UpdateUserSettingsController extends SettingsPageController impleme
 		userSettings.setShowBookmark(commandSettings.isShowBookmark());
 		userSettings.setShowBibtex(commandSettings.isShowBibtex());
 		
-		userSettings.setSimpleInterface(commandSettings.isSimpleInterface());
-
+		//userSettings.setSimpleInterface(commandSettings.isSimpleInterface());
+		userSettings.getLayoutSettings().setSimpleInterface(commandSettings.getLayoutSettings().isSimpleInterface());
+		userSettings.getLayoutSettings().setViewLayout(commandSettings.getLayoutSettings().getViewLayout());
+		
 		userSettings.setIsMaxCount(commandSettings.getIsMaxCount());
 		if (userSettings.getIsMaxCount()) {
 			userSettings.setTagboxMaxCount(command.getChangeTo());
