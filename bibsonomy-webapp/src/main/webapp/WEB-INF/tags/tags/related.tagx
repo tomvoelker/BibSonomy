@@ -49,8 +49,16 @@
 			</c:if>
 			
 			<!-- construct url to single tag -->
-			<c:url var="tagUrl"
-				   value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
+			<c:choose>
+				<c:when test="${!fn:contains(requPath, 'relevantfor')}">
+					<c:url var="tagUrl"
+					   value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
+				</c:when>
+				<c:otherwise>
+					<c:url var="tagUrl"
+					   value="/${fn:escapeXml(requPath)}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
+						</c:otherwise>
+			</c:choose>
 			
 			<!-- construct url to several tags -->
 			<c:url var="tagsUrl"
