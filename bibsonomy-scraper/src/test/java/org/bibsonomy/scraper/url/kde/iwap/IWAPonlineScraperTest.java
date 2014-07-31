@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.iwap;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -42,7 +40,7 @@ public class IWAPonlineScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_100"));
+		UnitTestRunner.runSingleTest("url_100");
 	}
 	
 }

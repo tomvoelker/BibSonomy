@@ -23,11 +23,6 @@
 
 package org.bibsonomy.rest.renderer;
 
-import static org.bibsonomy.model.util.ModelValidationUtils.checkBookmark;
-import static org.bibsonomy.model.util.ModelValidationUtils.checkGroup;
-import static org.bibsonomy.model.util.ModelValidationUtils.checkStandardPost;
-import static org.bibsonomy.model.util.ModelValidationUtils.checkTag;
-import static org.bibsonomy.model.util.ModelValidationUtils.checkUser;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.Reader;
@@ -106,6 +101,9 @@ import org.bibsonomy.rest.renderer.xml.UploadDataType;
 import org.bibsonomy.rest.renderer.xml.UserType;
 import org.bibsonomy.rest.renderer.xml.UsersType;
 import org.bibsonomy.rest.validation.ModelValidator;
+import org.bibsonomy.rest.validation.StandardModelValidator;
+import org.bibsonomy.rest.validation.StandardXMLModelValidator;
+import org.bibsonomy.rest.validation.XMLModelValidator;
 
 /**
  * @author dzo
@@ -113,7 +111,8 @@ import org.bibsonomy.rest.validation.ModelValidator;
 public abstract class AbstractRenderer implements Renderer {
 	private static final Log log = LogFactory.getLog(AbstractRenderer.class);
 	
-	protected ModelValidator modelValidator;
+	protected ModelValidator modelValidator = new StandardModelValidator();
+	protected XMLModelValidator xmlModelValidator = new StandardXMLModelValidator();
 	protected final UrlRenderer urlRenderer;
 	protected final DatatypeFactory datatypeFactory;
 	
@@ -234,10 +233,10 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	protected void fillXmlPost(final PostType xmlPost, final Post<? extends Resource> post) {
-		this.checkPost(post);
-	
+		this.modelValidator.checkPost(post);
+		this.modelValidator.checkUser(post.getUser());
+		
 		// set user
-		checkUser(post.getUser());
 		final UserType xmlUser = new UserType();
 		xmlUser.setName(post.getUser().getName());
 		xmlUser.setHref(this.urlRenderer.createHrefForUser(post.getUser().getName()));
@@ -252,7 +251,7 @@ public abstract class AbstractRenderer implements Renderer {
 		// add tags
 		if (post.getTags() != null) {
 			for (final Tag t : post.getTags()) {
-				checkTag(t);
+				this.modelValidator.checkTag(t);
 				final TagType xmlTag = new TagType();
 				xmlTag.setName(t.getName());
 				xmlTag.setHref(this.urlRenderer.createHrefForTag(t.getName()));
@@ -262,7 +261,7 @@ public abstract class AbstractRenderer implements Renderer {
 	
 		// add groups
 		for (final Group group : post.getGroups()) {
-			checkGroup(group);
+			this.modelValidator.checkGroup(group);
 			final GroupType xmlGroup = new GroupType();
 			xmlGroup.setName(group.getName());
 			xmlGroup.setHref(this.urlRenderer.createHrefForGroup(group.getName()));
@@ -275,7 +274,7 @@ public abstract class AbstractRenderer implements Renderer {
 		final Resource resource = post.getResource();
 		if ((resource instanceof BibTex) && !(resource instanceof GoldStandardPublication)) {
 			final BibTex publication = (BibTex) post.getResource();
-			this.checkPublication(publication);
+			this.modelValidator.checkPublication(publication);
 			final String userName = post.getUser().getName();
 			final BibtexType xmlBibtex = new BibtexType();
 	
@@ -301,7 +300,7 @@ public abstract class AbstractRenderer implements Renderer {
 		// if resource is a bookmark create a xml representation
 		if (resource instanceof Bookmark) {
 			final Bookmark bookmark = (Bookmark) post.getResource();
-			checkBookmark(bookmark);
+			this.modelValidator.checkBookmark(bookmark);
 			final BookmarkType xmlBookmark = new BookmarkType();
 			xmlBookmark.setHref(this.urlRenderer.createHrefForResource(post.getUser().getName(), bookmark.getIntraHash()));
 			xmlBookmark.setInterhash(bookmark.getInterHash());
@@ -390,21 +389,6 @@ public abstract class AbstractRenderer implements Renderer {
 		return this.datatypeFactory.newXMLGregorianCalendar(cal);
 	}
 
-	private void checkPost(final Post<? extends Resource> post) throws InternServerException {
-		if (post.getUser() == null) {
-			throw new InternServerException("error no user assigned!");
-		}
-		// there may be posts whithout tags
-		// 2009/01/07, fei: as stated above - there are situations where posts don't have tags
-		//                  for example, when serializing a post for submission to a remote 
-		//                  recommender -> commenting out
-		// 2010/03/19, dzo: gold standard posts have also no tags
-		// if( post.getTags() == null || post.getTags().size() == 0 ) throw new InternServerException( "error no tags assigned!" );
-		if (post.getResource() == null) {
-			throw new InternServerException("error no ressource assigned!");
-		}
-	}
-
 	@Override
 	public void serializeUsers(final Writer writer, final List<User> users, final ViewModel viewModel) throws InternServerException {
 		final UsersType xmlUsers = new UsersType();
@@ -443,7 +427,7 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	private UserType createXmlUser(final User user) throws InternServerException {
-		checkUser(user);
+		this.modelValidator.checkUser(user);
 		final UserType xmlUser = new UserType();
 		xmlUser.setEmail(user.getEmail());
 		if (user.getHomepage() != null) {
@@ -522,7 +506,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private TagType createXmlTag(final Tag tag) throws InternServerException {
 		final TagType xmlTag = new TagType();
-		checkTag(tag);
+		this.modelValidator.checkTag(tag);
 		xmlTag.setName(tag.getName());
 		xmlTag.setHref(this.urlRenderer.createHrefForTag(tag.getName()));
 		// if (tag.getGlobalcount() > 0) {
@@ -560,7 +544,7 @@ public abstract class AbstractRenderer implements Renderer {
 	 */
 	private TagType createXmlRecommendedTag(final RecommendedTag tag) throws InternServerException {
 		final TagType xmlTag = new TagType();
-		checkTag(tag);
+		this.modelValidator.checkTag(tag);
 		xmlTag.setName(tag.getName());
 		xmlTag.setHref(this.urlRenderer.createHrefForTag(tag.getName()));
 		// if (tag.getGlobalcount() > 0) {
@@ -613,7 +597,7 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	private GroupType createXmlGroup(final Group group) {
-		checkGroup(group);
+		this.modelValidator.checkGroup(group);
 		final GroupType xmlGroup = new GroupType();
 		xmlGroup.setName(group.getName());
 		xmlGroup.setDescription(group.getDescription());
@@ -1123,7 +1107,7 @@ public abstract class AbstractRenderer implements Renderer {
 	 * @return the converted user
 	 */
 	public User createUser(final UserType xmlUser) {
-		checkUser(xmlUser);
+		this.xmlModelValidator.checkUser(xmlUser);
 
 		final User user = new User();
 		user.setEmail(xmlUser.getEmail());
@@ -1169,7 +1153,7 @@ public abstract class AbstractRenderer implements Renderer {
 	 * @return the converted group
 	 */
 	public Group createGroup(final GroupType xmlGroup) {
-		checkGroup(xmlGroup);
+		this.xmlModelValidator.checkGroup(xmlGroup);
 
 		final Group group = new Group();
 		group.setName(xmlGroup.getName());
@@ -1208,7 +1192,7 @@ public abstract class AbstractRenderer implements Renderer {
 	 * @return the created tag
 	 */
 	public Tag createTag(final TagType xmlTag, final int depth) {
-		checkTag(xmlTag);
+		this.xmlModelValidator.checkTag(xmlTag);
 
 		final Tag tag = new Tag();
 		tag.setName(xmlTag.getName());
@@ -1274,7 +1258,7 @@ public abstract class AbstractRenderer implements Renderer {
 	 * @throws PersonListParserException 
 	 */
 	public Post<Resource> createCommunityPost(final PostType xmlPost) throws PersonListParserException {
-		checkStandardPost(xmlPost);
+		this.xmlModelValidator.checkStandardPost(xmlPost);
 
 		final Post<Resource> post = this.createPostWithUserAndDate(xmlPost);
 
@@ -1284,7 +1268,7 @@ public abstract class AbstractRenderer implements Renderer {
 			final GoldStandardPublication publication = new GoldStandardPublication();
 			this.fillPublicationWithInformations(xmlPublication, publication);
 
-			this.checkPublication(publication);
+			this.modelValidator.checkPublication(publication);
 
 			post.setResource(publication);
 		} else {
@@ -1320,14 +1304,14 @@ public abstract class AbstractRenderer implements Renderer {
 	 * @throws PersonListParserException 
 	 */
 	protected Post<Resource> createPost(final PostType xmlPost, DataAccessor uploadedFileAccessor) throws PersonListParserException {
- 		ModelValidationUtils.checkPost(xmlPost);
+		this.xmlModelValidator.checkPost(xmlPost);
 
 		// create post, user and date
 		final Post<Resource> post = this.createPostWithUserAndDate(xmlPost);
 
 		// create tags
 		for (final TagType xmlTag : xmlPost.getTag()) {
-			checkTag(xmlTag);
+			this.xmlModelValidator.checkTag(xmlTag);
 
 			final Tag tag = new Tag();
 			tag.setName(xmlTag.getName());
@@ -1337,7 +1321,7 @@ public abstract class AbstractRenderer implements Renderer {
 		// create resource
 		final BibtexType xmlPublication = xmlPost.getBibtex();
 		if (xmlPublication != null) {
-			ModelValidationUtils.checkPublication(xmlPublication);
+			this.xmlModelValidator.checkPublicationXML(xmlPublication);
 
 			final BibTex publication = new BibTex();
 			this.fillPublicationWithInformations(xmlPublication, publication);
@@ -1357,15 +1341,15 @@ public abstract class AbstractRenderer implements Renderer {
 				publication.setDocuments(documents);
 			}
 
-			this.checkPublication(publication);
+			this.modelValidator.checkPublication(publication);
 
 			post.setResource(publication);
 		}
 
 		final BookmarkType xmlBookmark = xmlPost.getBookmark();
 		if (xmlBookmark != null) {
-			checkBookmark(xmlBookmark);
-
+			this.xmlModelValidator.checkBookmarkXML(xmlBookmark);
+			
 			final Bookmark bookmark = new Bookmark();
 			bookmark.setIntraHash(xmlBookmark.getIntrahash());
 			bookmark.setTitle(xmlBookmark.getTitle());
@@ -1396,7 +1380,7 @@ public abstract class AbstractRenderer implements Renderer {
 		if (xmlPost.getGroup() != null) {
 			post.setGroups(new HashSet<Group>());
 			for (final GroupType xmlGroup : xmlPost.getGroup()) {
-				checkGroup(xmlGroup);
+				this.xmlModelValidator.checkGroup(xmlGroup);
 				final Group group = new Group();
 				group.setDescription(xmlGroup.getDescription());
 				group.setName(xmlGroup.getName());
@@ -1430,7 +1414,7 @@ public abstract class AbstractRenderer implements Renderer {
 	private User createUser(final PostType xmlPost) {
 		final User user = new User();
 		final UserType xmlUser = xmlPost.getUser();
-		checkUser(xmlUser);
+		this.xmlModelValidator.checkUser(xmlUser);
 		user.setName(xmlUser.getName());
 
 		return user;
@@ -1568,18 +1552,7 @@ public abstract class AbstractRenderer implements Renderer {
 		publication.setYear(xmlPublication.getYear());
 		publication.setPrivnote(xmlPublication.getPrivnote());
 	}
-
-	/**
-	 * Checks the bibtex. Here a model validator can be plugged in which does the checking.
-	 * 
-	 * @param publication
-	 */
-	protected void checkPublication(final BibTex publication) {
-		if (this.modelValidator != null) {
-			this.modelValidator.checkPublication(publication);
-		}
-	}
-
+	
 	/**
 	 * Helper method to create a date when parsing a post. Two situations may occur:
 	 * 
@@ -1614,5 +1587,12 @@ public abstract class AbstractRenderer implements Renderer {
 	 */
 	public void setModelValidator(final ModelValidator modelValidator) {
 		this.modelValidator = modelValidator;
+	}
+
+	/**
+	 * @param xmlModelValidator the xmlModelValidator to set
+	 */
+	public void setXmlModelValidator(XMLModelValidator xmlModelValidator) {
+		this.xmlModelValidator = xmlModelValidator;
 	}
 }

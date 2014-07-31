@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.biomed;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -43,7 +41,7 @@ public class BioMedCentralScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_61"));
+		UnitTestRunner.runSingleTest("url_61");
 	}
 	
 	/**
@@ -51,7 +49,7 @@ public class BioMedCentralScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_62"));
+		UnitTestRunner.runSingleTest("url_62");
 	}
 	
 }

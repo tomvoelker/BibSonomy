@@ -9,6 +9,7 @@ import java.util.Map;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.webapp.command.BibtexViewCommand;
+import org.bibsonomy.webapp.command.DidYouKnowMessageCommand;
 import org.bibsonomy.webapp.command.LayoutViewCommand;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.TabCommand;
@@ -21,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
  * 
  * @author ema
  */
-public class PostPublicationCommand extends EditPublicationCommand implements TabsCommandInterface<Object>, BibtexViewCommand, LayoutViewCommand {
+public class PostPublicationCommand extends EditPublicationCommand implements TabsCommandInterface<Object>, BibtexViewCommand, LayoutViewCommand, DidYouKnowMessageCommand {
 	
 	/**
 	 * The URL which the tab header links to.

@@ -20,7 +20,7 @@ import org.junit.BeforeClass;
  * @author Jens Illig
  * @author Christian Schenk
  */
-public abstract class AbstractDatabaseManagerTest extends AbstractDatabaseTest {	
+public abstract class AbstractDatabaseManagerTest extends AbstractDatabaseTest {
 	// TODO: move to a TestUtilClass
 	protected static final int PUBLIC_GROUP_ID = GroupID.PUBLIC.getId();
 	protected static final int PRIVATE_GROUP_ID = GroupID.PRIVATE.getId();
@@ -42,10 +42,7 @@ public abstract class AbstractDatabaseManagerTest extends AbstractDatabaseTest {
 	 */
 	@BeforeClass
 	public static void initDatabase() {
-		TestDatabaseLoader.getInstance().load();
-
 		dbSessionFactory = testDatabaseContext.getBean(DBSessionFactory.class);
-
 		pluginRegistry = DatabasePluginRegistry.getInstance();
 	}
 
@@ -53,13 +50,14 @@ public abstract class AbstractDatabaseManagerTest extends AbstractDatabaseTest {
 	 * create new database session and reset the pluginRegistry
 	 */
 	@Before
-	public final void setUp() {		
+	public final void setUp() {
+		TestDatabaseLoader.getInstance().load();
 		this.dbSession = dbSessionFactory.getDatabaseSession();
-
+		
 		// load plugins (some tests are removing plugins from the plugin registry
 		this.pluginMock = new DatabasePluginMock();
 		pluginRegistry.clearPlugins();
-
+		
 		pluginRegistry.add(this.pluginMock);
 		for (final DatabasePlugin plugin : DatabasePluginRegistry.getDefaultPlugins()) {
 			pluginRegistry.add(plugin);
@@ -70,7 +68,7 @@ public abstract class AbstractDatabaseManagerTest extends AbstractDatabaseTest {
 	 * Tear down
 	 */
 	@After
-	public void tearDown() {		
+	public void tearDown() {
 		// close session	
 		if (this.dbSession != null) {
 			this.dbSession.close();

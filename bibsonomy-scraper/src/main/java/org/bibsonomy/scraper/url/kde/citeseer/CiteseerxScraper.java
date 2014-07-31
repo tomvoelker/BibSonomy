@@ -35,8 +35,8 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
-import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.WebUtils;
@@ -61,10 +61,12 @@ public class CiteseerxScraper extends AbstractUrlScraper {
 	
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
 
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
 			sc.setScraper(this);
 			
@@ -100,10 +102,10 @@ public class CiteseerxScraper extends AbstractUrlScraper {
 			final Matcher matcher = bibtexPattern.matcher(page);
 			
 			if (matcher.find()) {
-				String bibtex = matcher.group(1).replace("<br/>", "\n").replace("&nbsp;", " ");
+				String bibtex = matcher.group(1).replace("<br/>", "\n").replace("&nbsp;", " ").replace(",,", ",");
 				
 				/*
-				 * search abstract
+				 * search abstract 
 				 */
 				final Matcher abstractMatcher = abstractPattern.matcher(page);
 				if (abstractMatcher.find()) {
@@ -122,14 +124,17 @@ public class CiteseerxScraper extends AbstractUrlScraper {
 				throw new PageNotSupportedException("no bibtex snippet available");
 	}
 	
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}

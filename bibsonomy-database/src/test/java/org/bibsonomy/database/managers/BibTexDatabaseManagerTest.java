@@ -996,7 +996,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		final String bibtexKey = "test %";
 		final String requestedUserName = "testuser1";
 		
-		final List<Post<BibTex>> posts = publicationDb.getPostsByBibTeXKey(bibtexKey, requestedUserName, PUBLIC_GROUP_ID, 20, 0, null, this.dbSession);
+		final List<Post<BibTex>> posts = publicationDb.getPostsByBibTeXKey(null, bibtexKey, requestedUserName, PUBLIC_GROUP_ID, 20, 0, null, this.dbSession);
 		assertEquals(1,posts.size());
 		assertEquals(posts.get(0).getResource().getBibtexKey(), "test bibtexKey");
 	}

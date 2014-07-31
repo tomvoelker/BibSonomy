@@ -24,8 +24,6 @@
 
 package org.bibsonomy.scraper.url.kde.jap;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -42,6 +40,6 @@ public class JAPScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_211"));
+		UnitTestRunner.runSingleTest("url_211");
 	}
 }

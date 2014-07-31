@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.l3s;
 
-import static org.junit.Assert.assertTrue;
-
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -43,7 +41,7 @@ public class L3SScraperTest {
 	 */
 	@Test
 	public void urlTestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_17"));
+		UnitTestRunner.runSingleTest("url_17");
 	}
 	
 }

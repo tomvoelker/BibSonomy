@@ -29,11 +29,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 
@@ -41,8 +44,8 @@ import org.bibsonomy.util.WebUtils;
  * Scraper for prola.aps.org. It scrapes selected bibtex snippets and selected articles.
  * @author tst
  */
-public class ProlaScraper extends PostprocessingGenericURLScraper {
-
+public class ProlaScraper extends GenericBibTeXURLScraper {
+	private static final Log log = LogFactory.getLog(ProlaScraper.class);
 	private static final String SITE_NAME = "PROLA";
 	private static final String PROLA_APS_URL_BASE = "http://prola.aps.org";
 	private static final String SITE_URL = PROLA_APS_URL_BASE+"/";
@@ -55,6 +58,8 @@ public class ProlaScraper extends PostprocessingGenericURLScraper {
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + PROLA_APS_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	private static final Pattern PATTERN_ABSTRACT = Pattern.compile("<meta name=\"description\" content=\"(.*)\">");
+	
+	
 	@Override
 	public String getInfo() {
 		return INFO;
@@ -76,7 +81,7 @@ public class ProlaScraper extends PostprocessingGenericURLScraper {
 	}
 
 	@Override
-	public String getBibTeXURL(URL url) {
+	public String getDownloadURL(URL url) throws ScrapingException {
 		return url.toString().replace("abstract", "export");
 	}
 
@@ -85,20 +90,17 @@ public class ProlaScraper extends PostprocessingGenericURLScraper {
 	 */
 	@Override
 	protected String postProcessScrapingResult(ScrapingContext sc, String result) {
-		try{
-			return BibTexUtils.addFieldIfNotContained(result, "abstract", abstractParser(sc.getUrl()));
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return null;
+		return BibTexUtils.addFieldIfNotContained(result, "abstract", abstractParser(sc.getUrl()));
 	}
+	
 	private static String abstractParser(URL url){
 		try{
-		Matcher m = PATTERN_ABSTRACT.matcher(WebUtils.getContentAsString(url));
-		if(m.find())
-			return m.group(1);
-		}catch(Exception e){
-			e.printStackTrace();
+			Matcher m = PATTERN_ABSTRACT.matcher(WebUtils.getContentAsString(url));
+			if(m.find()) {
+				return m.group(1);
+			}
+		} catch (Exception e) {
+			log.error("error while getting abstract for " + url, e);
 		}
 		return null;
 	}
