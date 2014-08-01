@@ -7,7 +7,8 @@
 	<jsp:directive.attribute name="cmd" type="org.bibsonomy.webapp.command.RelatedTagCommand" required="true" />
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="order" type="java.lang.String" required="true" />
-
+	<jsp:directive.attribute name="relevantfor" type="java.lang.String" required="false" />
+	
 	<ul class="taglist sidebar_collapse_content">
 		<c:forEach var="tag" items="${cmd.relatedTags}">
 
@@ -48,22 +49,32 @@
 				<fmt:message key="post" var="posts" /><!-- singular -->
 			</c:if>
 			
-			<!-- construct url to single tag -->
+			<!-- construct url to single tag and several tags -->
 			<c:choose>
-				<c:when test="${!fn:contains(requPath, 'relevantfor')}">
+				<c:when test="${!relevantfor eq '1'}">
 					<c:url var="tagUrl"
 					   value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
+					<c:url var="tagsUrl"
+			   			value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
 				</c:when>
-				<c:otherwise>
+				<!-- construct relevantfor/group url -->
+				<c:otherwise> 
 					<c:url var="tagUrl"
 					   value="/${fn:escapeXml(requPath)}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
-						</c:otherwise>
+					<!-- construct relevantfor/group for multiple tags -->
+					<c:choose>
+						<c:when test="${fn:length(fn:split(fn:escapeXml(requPath), '/')) > 3}">
+							<c:url var="tagsUrl"
+				   				value="/${fn:escapeXml(requPath)}+${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
+				   		</c:when>
+				   		<c:otherwise>
+				   			<c:url var="tagsUrl"
+				   				value="/${fn:escapeXml(requPath)}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
+				   		</c:otherwise>
+			   		</c:choose>
+				</c:otherwise>
 			</c:choose>
-			
-			<!-- construct url to several tags -->
-			<c:url var="tagsUrl"
-				   value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
-			
+		
 			<!-- set titles -->
 			<c:set var="tagTitle">
 				<c:choose>
