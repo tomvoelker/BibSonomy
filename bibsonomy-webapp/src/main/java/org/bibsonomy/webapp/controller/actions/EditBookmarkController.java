@@ -26,7 +26,7 @@ public class EditBookmarkController extends EditPostController<Bookmark, EditBoo
 		 * set default values
 		 * no default value. use placeholder attribute for default value.
 		 */
-		//bookmark.setUrl("http://");
+		bookmark.setUrl("http://");
 		return bookmark;
 	}
 
@@ -50,16 +50,24 @@ public class EditBookmarkController extends EditPostController<Bookmark, EditBoo
 		// noop
 	}
 
+	
 	@Override
 	public View workOn(EditBookmarkCommand command) {
 		
-		initializeDidYouKnowMessageCommand(command);
-		
+		/* 
+		 * if URL of resource null show POST_BOOKMARK view and 
+		 * initialize didYouKnowMessageCommand 
+		 */
 		if (command.getPost().getResource().getUrl() == null) {
-			
+			initializeDidYouKnowMessageCommand(command);
 			command.getPost().getResource().setUrl("http://");
 			return Views.POST_BOOKMARK;
 		}
+		
+		/*
+		 * otherwise use editPost workflow
+		 */
 		return super.workOn(command);
 	}
+	
 }
