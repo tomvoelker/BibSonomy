@@ -46,7 +46,7 @@ var errorData = new errorBoxData("#upload");
 			}
 
 			// create row with the added file
-			$("#upload").first('.documents').append($("<li class='loading' id='file_"+counter+"'><span class='documentFileName'>"+fileName+"</span></li>"));
+			$("#upload").find('.documents:first').append($("<li class='loading' id='file_"+counter+"'><span class='documentFileName'>"+fileName+"</span></li>"));
 
 			// create new form to upload added file
 			var form = ("<form class='upform' id='uploadForm_"+counter+"' action='/ajax/documents?ckey="+ckey+"&amp;temp=true' method='POST' enctype='multipart/form-data'></form>");
