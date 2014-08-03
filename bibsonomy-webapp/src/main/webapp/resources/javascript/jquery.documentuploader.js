@@ -101,7 +101,6 @@ function deleteFunction(button){
 	$.get($(button).attr("href"), {}, function(data) {
 		var fileID=data.getElementsByTagName("fileid")[0].innerHTML;
 		if( "ok"==data.getElementsByTagName("status")[0].innerHTML || "deleted"==data.getElementsByTagName("status")[0].innerHTML) {
-			errorData.msg = data.getElementsByTagName("response")[0].innerHTML;
 			$(button).parent().remove();
 			if(fileID != '') {
 				$("#file_"+fileID).remove();
