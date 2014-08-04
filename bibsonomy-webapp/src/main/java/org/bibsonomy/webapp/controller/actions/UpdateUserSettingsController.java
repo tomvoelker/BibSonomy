@@ -102,7 +102,7 @@ public class UpdateUserSettingsController extends SettingsPageController impleme
 			return;
 		}
 		
-		if (commandSettings.getListItemcount() > PermissionDatabaseManager.END_MAX) {		
+		if (commandSettings.getListItemcount() > PermissionDatabaseManager.END_MAX) {
 			errors.rejectValue("user.settings.listItemcount", "error.settings.list_item_count.size", new String[]{Integer.toString(PermissionDatabaseManager.END_MAX)}, "");
 			return;
 		}
@@ -115,7 +115,6 @@ public class UpdateUserSettingsController extends SettingsPageController impleme
 		userSettings.setShowBookmark(commandSettings.isShowBookmark());
 		userSettings.setShowBibtex(commandSettings.isShowBibtex());
 		
-		//userSettings.setSimpleInterface(commandSettings.isSimpleInterface());
 		userSettings.getLayoutSettings().setSimpleInterface(commandSettings.getLayoutSettings().isSimpleInterface());
 		userSettings.getLayoutSettings().setViewLayout(commandSettings.getLayoutSettings().getViewLayout());
 		
