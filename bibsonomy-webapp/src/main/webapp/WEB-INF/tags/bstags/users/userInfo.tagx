@@ -31,40 +31,34 @@
 		flag / unflag users as (non)spammers or mark as uncertain
 	-->
 	<td style="text-align: left" class="spamflag">
-	<a	
-		href="javascript:unflagSpammer('${spamUser.name}','sl${rowNumber}', '${moveFromTabNSpammer}')"
-		title="unflag this user as spammer" onClick="${do_flag_action}">NO</a>
-
-	<a
-		href="javascript:markUncertainUser('${spamUser.name}','sl${rowNumber}', '${moveFromTabUncertain}')"
-		title="mark as spammer status uncertain" onClick="${do_flag_action}">?</a>
-	<a
-		href="javascript:addSpammer('${spamUser.name}','sl${rowNumber}', '${moveFromTabSpammer}')"
-		title="flag this user as spammer" onClick="${do_flag_action}">YES</a>
-
+		<nobr><a	
+				href="javascript:unflagSpammer('${spamUser.name}','sl${rowNumber}', '${moveFromTabNSpammer}')"
+				title="unflag this user as spammer" onClick="${do_flag_action}"><span style="color: #333" class="fa fa-thumbs-down"><!--  --></span></a>&amp;nbsp;<a
+				href="javascript:markUncertainUser('${spamUser.name}','sl${rowNumber}', '${moveFromTabUncertain}')"
+				title="mark as spammer status uncertain" onClick="${do_flag_action}"><span style="color: #333" class="fa fa-question"><!--  --></span></a>&amp;nbsp;<a
+				href="javascript:addSpammer('${spamUser.name}','sl${rowNumber}', '${moveFromTabSpammer}')"
+				title="flag this user as spammer" onClick="${do_flag_action}"><span style="color: #333" class="fa fa-thumbs-up"><!--  --></span></a></nobr>
 	</td>
 
 	<!-- 
 		name of the user
 	-->
 	<td>
-	<a href="/user/${fn:escapeXml(spamUser.name)}">
-	<c:out value="${spamUser.name}" />
-	</a>
+		<a href="/user/${fn:escapeXml(spamUser.name)}">
+			<c:out value="${spamUser.name}" />
+		</a>
 
-	<!-- 
-		specific information, received via Ajax
-	-->
-	<a
-		onclick="javascript:ajax_showTooltip('${adminUrl}/ajax?action=latest_posts&amp;userName=${spamUser.name}',this);return false;"
-		style="cursor: pointer" title="show latest posts">
-	<img src="${resdir}/image/info.png" />
-	</a>
-	<a
-		onclick="javascript:ajax_showTooltip('${adminUrl}/ajax?action=prediction_history&amp;userName=${spamUser.name}',this);return false;"
-		style="cursor: pointer" title="show latest user predictions">
-	<img src="${resdir}/image/history.png" />
-	</a>
+		<!-- 
+			specific information, received via Ajax
+		-->
+		<c:out value=" " />
+		<a
+			onclick="javascript:ajax_showTooltip('${adminUrl}/ajax?action=latest_posts&amp;userName=${spamUser.name}',this);return false;"
+			style="cursor: pointer" title="show latest posts"><span class="fa fa-info"><!--  --></span></a>
+		<c:out value=" " />
+		<a
+			onclick="javascript:ajax_showTooltip('${adminUrl}/ajax?action=prediction_history&amp;userName=${spamUser.name}',this);return false;"
+			style="cursor: pointer" title="show latest user predictions"><span class="fa fa-h-square"><!--  --></span></a>
 	</td>
 
 	<!-- 

@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.controller.actions;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.PostValidator;
@@ -13,6 +14,8 @@ import org.springframework.validation.Errors;
  * @author fba
  */
 public class EditBookmarkController extends EditPostController<Bookmark, EditBookmarkCommand> {
+	
+	
 	
 	@Override
 	protected View getPostView() {
@@ -50,16 +53,25 @@ public class EditBookmarkController extends EditPostController<Bookmark, EditBoo
 		// noop
 	}
 
+	
 	@Override
 	public View workOn(EditBookmarkCommand command) {
 		
-		initializeDidYouKnowMessageCommand(command);
-		
-		if (command.getPost().getResource().getUrl() == null) {
+		/* 
+		 * if URL of resource null show POST_BOOKMARK view and 
+		 * initialize didYouKnowMessageCommand  
+		 */
+		if (command.getPost().getResource().getUrl() == null && ValidationUtils.present(command.getIntraHashToUpdate()) == false) { //Lieber Daniel, bitte kein cleanup machen. Das ist so beabsichtigt, da leichter lesbar.
 			
+			initializeDidYouKnowMessageCommand(command);
 			command.getPost().getResource().setUrl("http://");
 			return Views.POST_BOOKMARK;
 		}
+		
+		/*
+		 * otherwise use editPost workflow
+		 */
 		return super.workOn(command);
 	}
+	
 }
