@@ -1,9 +1,10 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.PostValidator;
@@ -15,8 +16,6 @@ import org.springframework.validation.Errors;
  */
 public class EditBookmarkController extends EditPostController<Bookmark, EditBookmarkCommand> {
 	
-	
-	
 	@Override
 	protected View getPostView() {
 		return Views.EDIT_BOOKMARK; // TODO: this could be configured using Spring!
@@ -24,13 +23,7 @@ public class EditBookmarkController extends EditPostController<Bookmark, EditBoo
 
 	@Override
 	protected Bookmark instantiateResource() {
-		final Bookmark bookmark = new Bookmark();
-		/*
-		 * set default values
-		 * no default value. use placeholder attribute for default value.
-		 */
-		//bookmark.setUrl("http://");
-		return bookmark;
+		return new Bookmark();
 	}
 
 	@Override
@@ -55,14 +48,12 @@ public class EditBookmarkController extends EditPostController<Bookmark, EditBoo
 
 	
 	@Override
-	public View workOn(EditBookmarkCommand command) {
-		
+	public View workOn(final EditBookmarkCommand command) {
 		/* 
 		 * if URL of resource null show POST_BOOKMARK view and 
 		 * initialize didYouKnowMessageCommand  
 		 */
-		if (command.getPost().getResource().getUrl() == null && ValidationUtils.present(command.getIntraHashToUpdate()) == false) { //Lieber Daniel, bitte kein cleanup machen. Das ist so beabsichtigt, da leichter lesbar.
-			
+		if (!present(command.getPost().getResource().getUrl()) && !present(command.getIntraHashToUpdate())) {
 			initializeDidYouKnowMessageCommand(command);
 			command.getPost().getResource().setUrl("http://");
 			return Views.POST_BOOKMARK;
