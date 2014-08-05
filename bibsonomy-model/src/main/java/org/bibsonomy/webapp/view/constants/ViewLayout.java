@@ -23,9 +23,16 @@
 
 package org.bibsonomy.webapp.view.constants;
 
+/**
+ * TODO: (bootstrap) remove as soons as the classic layout was removed
+ * 
+ * @author jil
+ */
 public enum ViewLayout {
-
+	
+	/** the new layout based on bootstrap */
 	BOOTSTRAP("bsjsp"),
+	/** the old layout */
 	CLASSIC("jsp");
 	
 	private final String jspPath;
@@ -33,7 +40,10 @@ public enum ViewLayout {
 	private ViewLayout(final String jspPath) {
 		this.jspPath = jspPath;
 	}
-
+	
+	/**
+	 * @return the jspPath
+	 */
 	public String getJspPath() {
 		return jspPath;
 	}
