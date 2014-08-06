@@ -90,7 +90,37 @@ public enum GroupingEntity {
 	 */
 	INBOX,
 	
-	PENDING;
+	PENDING,
+	
+	/**
+	 * Limit to posts to resources authored by the person with the id given in groupingName
+	 */
+ 	PERSON_AUTHOR,
+	
+ 	/**
+	 * Limit to posts to degree resources authored by the person with the id given in 'groupingName'
+	 */
+	PERSON_GRADUTED,
+	
+	/**
+	 * Limit to posts to resources advised by the person with the id given in 'groupingName'
+	 */
+	PERSON_ADVISOR,
+	
+	/**
+	 * Limit to posts to resources reviewed by the person with the id given in 'groupingName'
+	 */
+	PERSON_REVIEWER,
+	
+	/**
+	 * Limit to posts to resources with an 'other' relationship to the person with the id given in 'groupingName'
+	 */
+	PERSON_OTHER,
+	
+	/**
+	 * Limit to posts to resources with some known relationship to the person with the id given in 'groupingName'
+	 */
+	PERSON_ALL_RELATIONS;
 	
 	/**
 	 * @param groupingEntity name of the GroupingEntity Instance to retrieve
