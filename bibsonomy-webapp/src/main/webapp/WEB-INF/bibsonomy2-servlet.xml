@@ -679,14 +679,14 @@
 						<property name="controllerBeanName" value="linkCloudPageController"/>
 					</bean>
 				</entry>
-				<entry key="/bibsonomy3demo">
+				<entry key="/bibsonomy3preview">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="settingsPageController"/>
 						<property name="allowedFields">
 							<list>
 								<value>ckey</value>
 								<value>action</value>
-								<value>bibsonomy3demo</value>
+								<value>bibsonomy3preview</value>
 							</list>
 						</property>
 					</bean>

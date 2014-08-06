@@ -719,7 +719,7 @@ public enum Views implements View {
 	/**
 	 * show bibsonomy3 demo
 	 */
-	BIBSONOMY3DEMO("bibsonomy3demo");
+	BIBSONOMY3PREVIEW("bibsonomy3preview");
 
 	/*
 	 * both bookmarks and publications

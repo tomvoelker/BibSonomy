@@ -165,10 +165,10 @@
 		<to last="true">/linkcloud</to>
 	</rule>
 	<rule>
-		<name>/bibsonomy3demo</name>
-		<from>^/+bibsonomy3demo$</from>
-		<set type="parameter" name="bibsonomy3demo">true</set>
-		<to last="true">/bibsonomy3demo</to>
+		<name>/bibsonomy3preview</name>
+		<from>^/+bibsonomy3preview$</from>
+		<set type="parameter" name="bibsonomy3preview">true</set>
+		<to last="true">/bibsonomy3preview</to>
 	</rule>
 	<!-- ****** JabRef Layouts *****  -->
 	<rule>

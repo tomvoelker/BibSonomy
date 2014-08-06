@@ -106,7 +106,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		}
 		
 		// return View to choose Bootstrap Layout
-		if (command.getBibsonomy3demo().equals("true")) return Views.BIBSONOMY3DEMO;
+		if (command.getBibsonomy3preview().equals("true")) return Views.BIBSONOMY3PREVIEW;
 
 		return Views.SETTINGSPAGE;
 	}

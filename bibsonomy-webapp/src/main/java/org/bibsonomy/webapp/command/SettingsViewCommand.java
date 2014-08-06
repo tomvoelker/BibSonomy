@@ -36,7 +36,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	/**
 	* will be set to "true" if /bibsonomy3demo is being called
 	*/
-	private String bibsonomy3demo = "false";
+	private String bibsonomy3preview = "false";
 	
 	/**
 	 * action can be logging, api or layoutTagPost
@@ -493,15 +493,15 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	/**
 	 * @return string bibsonomy3demo true/false
 	 */
-	public String getBibsonomy3demo() {
-		return bibsonomy3demo;
+	public String getBibsonomy3preview() {
+		return bibsonomy3preview;
 	}
 	
 	/**
 	 * @param set the bibsonomy3demo true/false
 	 */
-	public void setBibsonomy3demo(String bibsonomy3demo) {
-		this.bibsonomy3demo = bibsonomy3demo;
+	public void setBibsonomy3preview(String bibsonomy3preview) {
+		this.bibsonomy3preview = bibsonomy3preview;
 	}
 	
 	/**
