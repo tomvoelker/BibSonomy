@@ -164,12 +164,7 @@
 		<set name="requPath">$1</set>
 		<to last="true">/linkcloud</to>
 	</rule>
-	<rule>
-		<name>/bibsonomy3preview</name>
-		<from>^/+bibsonomy3preview$</from>
-		<set type="parameter" name="bibsonomy3preview">true</set>
-		<to last="true">/bibsonomy3preview</to>
-	</rule>
+	
 	<!-- ****** JabRef Layouts *****  -->
 	<rule>
 		<name>/layout/</name>

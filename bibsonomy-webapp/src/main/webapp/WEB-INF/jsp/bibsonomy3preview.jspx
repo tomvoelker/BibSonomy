@@ -12,9 +12,11 @@
 	<c:choose>
 		<c:when test="${user.settings.layoutSettings.viewLayout eq 'CLASSIC'}">
 			<c:set var="setLayout" value="Switch to BibSonomy 3 beta" />
+			<c:set var="layoutName" value="BOOTSTRAP" />
 		</c:when>
 		<c:otherwise>
-			<c:set var="setLayout" value="Switch to BibSonomy 2" />
+			<c:set var="setLayout" value="Switch back to BibSonomy 2" />
+			<c:set var="layoutName" value="CLASSIC" />
 		</c:otherwise>
 	</c:choose>
 	
@@ -42,13 +44,12 @@
 						It is always possible to switch back to the BibSonomy 2 front-end.
 					</div>
 					
-					<form:form id="styleSettingsForm" method="POST" action="/updateUserSettings">
-						<form:input type="hidden" path="user.settings.defaultLanguage" />
+					<form id="styleSettingsForm" method="POST" action="/updateUserSettings">
 						<input type="hidden" name="ckey" value="${ckey}"/>
-						<input type="hidden" name="action" value="layoutTagPost"/>
-						<form:input type="hidden" path="user.settings.layoutSettings.viewLayout" value="BOOTSTRAP" />		
+						<input type="hidden" name="action" value="switchLayout"/>
+						<input type="hidden" name="user.settings.layoutSettings.viewLayout" value="${layoutName}" />
 						<button class="btn btn-primary btn-lg btn-block" type="submit" name="tagbox_style"><c:out value="${setLayout}" /></button>	
-					</form:form>
+					</form>
 					<br /><br /><br />
 				</div>
 			</div>
