@@ -58,6 +58,7 @@
 			<list>
 				<value>/WEB-INF/project.properties</value>
 				<value>file:${config.location}</value>
+				<value>file:${user.home}#{servletContext.contextPath}/bibsonomy.properties</value>
 			</list>
 		</property>
 		<property name="ignoreResourceNotFound" value="true" />
