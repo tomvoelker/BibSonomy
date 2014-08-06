@@ -374,7 +374,7 @@ public class WebUtils {
 		 * set cookie
 		 */
 		if (present(cookie)) {
-			method.setRequestHeader(COOKIE_HEADER_NAME, cookie);
+			method.addRequestHeader(COOKIE_HEADER_NAME, cookie);
 		}
 		
 		/*
@@ -514,8 +514,8 @@ public class WebUtils {
 	public static URL getRedirectUrl(final URL url, final List<Header> headers) {
 		final HttpMethod method = new GetMethod(url.toExternalForm());
 		if (present(headers)) {
-			for (final Header header: headers) {
-				method.setRequestHeader(header);
+			for (final Header header : headers) {
+				method.addRequestHeader(header);
 			}
 		}
 		final HttpClient client = getHttpClient();
