@@ -30,12 +30,13 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
  * @author Haile
  */
-public class MorganClaypoolScraper extends SimpleGenericURLScraper {
+public class MorganClaypoolScraper extends GenericBibTeXURLScraper {
 	private static final String SITE_NAME = "Morgan & Claypool Publisher";
 	private static final String SITE_URL = "http://www.morganclaypool.com/";
 	private static final String INFO = "This Scraper parses a publication from "
@@ -71,7 +72,7 @@ public class MorganClaypoolScraper extends SimpleGenericURLScraper {
 	}
 
 	@Override
-	public String getBibTeXURL(URL url) {
+	public String getDownloadURL(URL url) throws ScrapingException {
 		String DOI = "";
 		Matcher m = BIBTEX_DOI.matcher(url.toString());
 		if (m.find()) {

@@ -31,12 +31,13 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
  * @author clemens
  */
-public class NEJMScraper extends SimpleGenericURLScraper {
+public class NEJMScraper extends GenericBibTeXURLScraper {
 
 	private static final String SITE_NAME = "The New England Journal of Medicine";
 	private static final String SITE_URL = "http://www.nejm.org";
@@ -70,7 +71,7 @@ public class NEJMScraper extends SimpleGenericURLScraper {
 	}
 
 	@Override
-	public String getBibTeXURL(URL url) {
+	public String getDownloadURL(URL url) throws ScrapingException {
 		final Matcher matcher = pattern.matcher(url.toString());
 		if (matcher.find()) {
 			final String doi = matcher.group(1).replace("%2F", "/");
