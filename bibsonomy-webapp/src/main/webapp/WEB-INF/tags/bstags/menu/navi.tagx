@@ -185,7 +185,12 @@
 											<fmt:message key="navi.concepts" />
 										</a>
 									</li>
-									
+									<li>
+										<a href="/bibsonomy3preview">
+											<span class="fa fa-exchange"><!--  --></span>&amp;nbsp;
+											BibSonomy 2
+										</a>
+									</li>
 									<!-- divider -->
 									<li class="divider"><!-- KEEP ME --></li>
 	
