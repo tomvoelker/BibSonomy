@@ -125,7 +125,12 @@ public enum Views implements View {
 	 * concept page shows all suptags of an requested tag
 	 */
 	CONCEPTPAGE("concept"),
-
+	
+	/**
+	 * friend overview page
+	 */
+	FRIEND_OVERVIEW("friendOverview"),
+	
 	/**
 	 * friends page show all tags whose are viewable for friends by a friend of
 	 * you
@@ -599,10 +604,6 @@ public enum Views implements View {
 	 */
 	CSV("csv"),
 	/**
-	 * MS Office XML output
-	 */
-	MSOFFICEXML("msofficexml"),
-	/**
 	 * oEmbed, see http://www.oembed.org/
 	 */
 	OEMBED("oembed"),
@@ -638,6 +639,11 @@ public enum Views implements View {
 	 * show button-page view
 	 */
 	BUTTONS("buttons"),
+	
+	/**
+	 * show getting started page view
+	 */
+	GETTINGSTARTED("gettingStarted"),
 
 	/**
 	 * show popular concepts
@@ -650,6 +656,11 @@ public enum Views implements View {
 	 */
 	FOLLOWERS("followers"),
 
+	/**
+	 * 
+	 */
+	BOOTSTRAP_DEMO("bootstrapDemo"),
+	
 	/*
 	 * Error pages
 	 */
@@ -737,7 +748,6 @@ public enum Views implements View {
 	public static final String FORMAT_STRING_SWRC = "swrc";
 	public static final String FORMAT_STRING_PUBLRSS = "publrss";
 	public static final String FORMAT_STRING_PUBLRSSN = "publrssN";
-	public static final String FORMAT_STRING_MSOFFICEXML = "msofficexml";
 	/*
 	 * bookmarks
 	 */
@@ -772,7 +782,7 @@ public enum Views implements View {
 	 *         otherwise
 	 */
 	public static boolean isPublicationOnlyFormat(final String format) {
-		return FORMAT_STRING_BIBTEX.equals(format) || FORMAT_STRING_PUBLRSS.equals(format) || FORMAT_STRING_PUBL.equals(format) || FORMAT_STRING_APARSS.equals(format) || FORMAT_STRING_BURST.equals(format) || FORMAT_STRING_LAYOUT.equals(format) || FORMAT_STRING_CSL.equals(format) || "batcheditbib".equals(format) || FORMAT_STRING_SWRC.equals(format) || FORMAT_STRING_MSOFFICEXML.equals(format);
+		return FORMAT_STRING_BIBTEX.equals(format) || FORMAT_STRING_PUBLRSS.equals(format) || FORMAT_STRING_PUBL.equals(format) || FORMAT_STRING_APARSS.equals(format) || FORMAT_STRING_BURST.equals(format) || FORMAT_STRING_LAYOUT.equals(format) || FORMAT_STRING_CSL.equals(format) || "batcheditbib".equals(format) || FORMAT_STRING_SWRC.equals(format);
 	}
 
 	/**
@@ -817,7 +827,6 @@ public enum Views implements View {
 		if ("tagcloud".equals(format)) return AJAX_TAGCLOUD;
 		if (FORMAT_STRING_CSV.equals(format)) return CSV;
 		if (FORMAT_STRING_CSL.equals(format)) return CSL;
-		if (FORMAT_STRING_MSOFFICEXML.equals(format)) return MSOFFICEXML;
 		if (FORMAT_STRING_EMBED.equals(format)) return EMBED;
 		if (FORMAT_STRING_OEMBED.equals(format)) return OEMBED;
 		

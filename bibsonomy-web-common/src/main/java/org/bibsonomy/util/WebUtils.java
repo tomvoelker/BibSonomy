@@ -55,9 +55,14 @@ import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.Pair;
 
 /**
  * @author rja
+ */
+/**
+ * @author rja
+ *
  */
 public class WebUtils {
 	private static final Log log = LogFactory.getLog(WebUtils.class);
@@ -493,18 +498,32 @@ public class WebUtils {
 	}
 	
 	/**
-	 * Executes a request for the given URL following up to {@value #MAX_REDIRECT_COUNT}
-	 * redirects. If response is HTTP Status Code 200 returns the URL for that location,
-	 * otherwise return null.
-	 *  
-	 * 
+	 * Shortcut for {@link #getRedirectUrl(URL, List)}.
 	 * 
 	 * @param url The location to start.
 	 * @return - The redirect URL if received HTTP Status Code 200, null otherwise.
 	 */
 	public static URL getRedirectUrl(final URL url) {
+		return getRedirectUrl(url, null);
+	}
+
+	/**
+	 * Executes a request for the given URL following up to {@value #MAX_REDIRECT_COUNT}
+	 * redirects. If response is HTTP Status Code 200 returns the URL for that location,
+	 * otherwise return null. 
+	 * 
+	 * @param url The location to start.
+	 * @param headers Additional headers to be added to the request
+	 * @return - The redirect URL if received HTTP Status Code 200, null otherwise.
+	 */
+	public static URL getRedirectUrl(final URL url, final List<Header> headers) {
 		final HttpMethod method = new GetMethod(url.toExternalForm());
-		HttpClient client = getHttpClient();
+		if (present(headers)) {
+			for (final Header header: headers) {
+				method.setRequestHeader(header);
+			}
+		}
+		final HttpClient client = getHttpClient();
 		
 		try {
 			client.executeMethod(method);

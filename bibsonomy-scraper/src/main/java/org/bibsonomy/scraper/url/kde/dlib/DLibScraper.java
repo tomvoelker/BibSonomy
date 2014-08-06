@@ -32,6 +32,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -48,6 +50,7 @@ import org.bibsonomy.util.WebUtils;
  * @author tst
  */
 public class DLibScraper extends AbstractUrlScraper {
+	private static final Log log = LogFactory.getLog(DLibScraper.class);
 	
 	private static final String SITE_URL = "http://www.dlib.org/";
 	private static final String SITE_NAME = "D-Lib";
@@ -143,7 +146,7 @@ public class DLibScraper extends AbstractUrlScraper {
 
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		if(sc.getUrl().getHost().endsWith(DLIB_HOST)){
+		if (sc.getUrl().getHost().endsWith(DLIB_HOST)) {
 			try {
 				sc.setScraper(this);
 				
@@ -158,7 +161,7 @@ public class DLibScraper extends AbstractUrlScraper {
 				}
 				
 				// build xml to bibtex
-				if(metaData != null){
+				if (metaData != null) {
 					String bibtex = null;
 					
 					// extract & build bibtex
@@ -167,30 +170,31 @@ public class DLibScraper extends AbstractUrlScraper {
 					if(bibtex != null){
 						// success 
 						sc.setBibtexResult(StringEscapeUtils.unescapeHtml(bibtex));
-						
 						return true;
-					}else
-						throw new ScrapingFailureException("getting bibtex failed");
+					}
+					throw new ScrapingFailureException("getting bibtex failed");
 
-				}else
-					throw new PageNotSupportedException("This dlib page is not supported.");
+				}
+				throw new PageNotSupportedException("This dlib page is not supported.");
 			} catch (IOException ex) {
 				throw new InternalFailureException(ex);
 			}
 		}
 		return false;
 	}
-	@SuppressWarnings("unused")
+	
 	private static String abstractParser(URL url){
 		try{
-		Matcher m = PATTERN_ABSTRACT.matcher(WebUtils.getContentAsString(url));
-		if(m.find())
-			return m.group(1);
-		}catch(Exception e){
-			e.printStackTrace();
+			Matcher m = PATTERN_ABSTRACT.matcher(WebUtils.getContentAsString(url));
+			if (m.find()) {
+				return m.group(1);
+			}
+		} catch (final Exception e) {
+			log.error("error while getting abstract for " + url, e);
 		}
 		return null;
 	}
+	
 	private String buildBibtex(String metaData, String publUrl){
 		StringBuffer buffer = new StringBuffer();
 		

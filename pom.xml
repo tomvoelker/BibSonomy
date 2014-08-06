@@ -6,7 +6,7 @@
 	<groupId>org.bibsonomy</groupId>
 	<artifactId>bibsonomy</artifactId>
 	<packaging>pom</packaging>
-	<version>2.0.45</version>
+	<version>2.0.46-SNAPSHOT</version>
 	<description>
 		A blue social bookmark and publication sharing system.
 	</description>
@@ -139,6 +139,14 @@
 			<name>Christian Kramer</name>
 			<id>daill</id>
 			<email>ck.daill@gmail.com</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Sebastian Böttger</name>
+			<id>seboettg</id>
+			<email>boettger@cs.uni-kassel.de</email>
 			<roles>
 				<role>Developer</role>
 			</roles>

@@ -1,0 +1,494 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+	xmlns:bsbibcomp="urn:jsptagdir:/WEB-INF/tags/bstags/bs/bibcomponents"
+	xmlns:bsnav="urn:jsptagdir:/WEB-INF/tags/bstags/bs/nav"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<fmt:message var="exampleString" key="example" />
+	<fmt:message key="navi.buttons" var="buttonsPageTitle"/>
+	<layout:paneLayout 
+		pageTitle="${buttonsPageTitle}" 
+		headerMessageKey="buttons.bookmarklet"  
+		command="${command}" requPath="${requPath}"
+		minimizedContentWidth="${true}" >
+	
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="/resources/bootstrap/js/holder.js"><!-- KEEP ME --></script>
+			<script type="text/javascript" src="/resources/bootstrap/js/jquery.autoellipsis-1.0.10.min.js"><!-- KEEP ME --></script>
+			<!-- We're USING collapsing panels on this page. Here we can activate it. -->
+			<script type="text/javascript" src="/resources/bootstrap/js/collapse.js"><!-- KEEP ME --></script>
+			<script type="text/javascript" src="/resources/bootstrap/js/tooltip.js"><!-- KEEP ME --></script>
+			<script type="text/javascript" src="/resources/bootstrap/js/popover.js"><!-- KEEP ME --></script>
+			<style type="text/css">
+				/*.media-body {overflow:visible;}*/ 
+				
+				.edit-media-buttons {position: absolute; right: 15px;}
+				.media-list p {font-size: 12px; line-height: 1.4; height: 1.4em; padding: 0; margin: 0 0 0.2em 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;}
+				
+				ul.tags { 
+					height: 1.4em; 
+					font-size: 12px; 
+					line-height: 1.2; 
+					padding: 0; 
+					width: 100%; 
+					overflow: hidden;
+					text-overflow: ellipsis;
+					-o-text-overflow: ellipsis;
+					float: left;
+					max-width: 86%;
+				}
+				ul.tags li { overflow:hidden; white-space: nowrap; text-overflow: ellipsis; padding:0; white-space: nowrap; text-overflow: ellipsis;}
+				ul.tags li a {padding: 2px; background: #efefef; border-radius: 3px; }
+				
+				.media-list .media-body p.desc {  height: 2.8em;  overflow:hidden;  white-space: normal;}
+				.media-list .media-body p.url, .media-list .media-body p.authors { border-bottom: 1px solid #ccc; }
+				
+/* 				.media-list li.media { border-bottom: 1px solid #ccc;} */
+				h4.media-heading {white-space: nowrap; text-overflow: ellipsis; overflow: hidden; font-size: 16px;}
+				
+			</style>
+		</jsp:attribute>
+		
+		<jsp:attribute name="heading">
+
+		</jsp:attribute>
+	
+		<jsp:attribute name="content">
+			
+			<div class="row">
+
+				<div class="col-md-11 col-md-offset-1">
+					<h1>Demo page for Bootstrap</h1>
+					<!-- BUTTONS -->
+					<div class="button">
+						 
+						<h2>Buttons</h2>
+						
+						<h3>Styles</h3>
+						<bsform:button style="defaultStyle" size="defaultSize" value="Click me!" />&amp;nbsp;
+						<bsform:button style="success" size="defaultSize" value="Click me!" />&amp;nbsp;
+						<bsform:button style="warning" size="defaultSize" value="Click me!" />&amp;nbsp;
+						<bsform:button style="info" size="defaultSize" value="Click me!" />&amp;nbsp;
+						<bsform:button style="primary" size="defaultSize" value="Click me!" onclick="alert('Hello!');" />&amp;nbsp;
+						<bsform:button style="danger" size="defaultSize" value="Click me!" onclick="alert('Danger!');" />&amp;nbsp;
+						
+						<h3>Sizes</h3> 
+						<bsform:button size="large" style="defaultStyle" value="Large" />&amp;nbsp;
+						<bsform:button size="defaultSize" style="defaultStyle" value="Default" />&amp;nbsp;
+						<bsform:button size="small" style="defaultStyle" value="Small" />&amp;nbsp;
+						<bsform:button size="xsmall" style="defaultStyle" value="Xtra small" />&amp;nbsp;
+												
+					</div>
+					
+					<!-- BUTTON GROUPS -->
+					<h3>Button groups</h3>
+					<div class="btn-group">
+						<bsform:button size="defaultSize" style="info" value="left" />
+						<bsform:button size="defaultSize" style="info" value="middle" />
+						<bsform:button size="defaultSize" style="info" value="right" />
+					</div>
+					&amp;nbsp;
+					<div class="btn-group">
+						<bsform:button size="small" style="defaultStyle" value="left" />
+						<bsform:button size="small" style="defaultStyle" value="middle" />
+						<bsform:button size="small" style="defaultStyle" value="right" />
+					</div>
+					
+					
+					<h3>Dropdown buttons</h3>
+					
+					<div class="btn-group">
+						<bsform:button dropdown="${true}" value="Dropdown Button" size="defaultSize" style="defaultStyle" dataToggle="dropdown" />
+						<ul class="dropdown-menu">
+							<li><a href="#">Action</a></li>
+							<li><a href="#">Another action</a></li>
+							<li><a href="#">Something else here</a></li>
+							<li class="divider"></li>
+							<li><a href="#">Separated link</a></li>
+				  		</ul>
+					</div>
+				
+					<h3>Dropdown in button group</h3>	
+					<div class="btn-group">
+						<bsform:button value="Default Action" size="defaultSize" style="defaultStyle" />
+						<bsform:button dropdown="${true}" value="" size="defaultSize" style="defaultStyle" dataToggle="dropdown" />
+						<ul class="dropdown-menu">
+							<li><a href="#">Action</a></li>
+							<li><a href="#">Another action</a></li>
+							<li><a href="#">Something else here</a></li>
+							<li class="divider"></li>
+							<li><a href="#">Separated link</a></li>
+					  	</ul>
+					</div>
+					
+					
+					<br />
+					<h2>Alerts</h2>
+					
+					<bs:alert style="success">
+						<jsp:attribute name="alertBody">
+							<strong>Well done!</strong> You successfully read this important alert message.
+						</jsp:attribute>
+					</bs:alert> 
+					
+					<bs:alert style="warning" dismissable="${true}">
+						<jsp:attribute name="alertBody">
+							<strong>Caution!</strong> You can dismiss this important alert message.
+						</jsp:attribute>
+					</bs:alert> 
+					
+					<h2>Panels</h2>
+					
+					<h3>General panel</h3>
+					<bs:panel messagesPropertiesKey="post.resource.fields.general">
+						<jsp:attribute name="panelBody">
+							<h5>Some kind of headline</h5>
+							<p>Lorem Ipsum dolor sit amet.</p>
+							<ol>
+								<li>Item I.</li>
+								<li>Item II.</li>
+								<li>Item III.</li>
+							</ol>
+						</jsp:attribute>
+					</bs:panel>
+					
+					<h3>Panel group with collapsing</h3>
+					<bs:panelgroup id="accordion">
+						<jsp:attribute name="panels">
+						
+							<!-- erstes panel -->
+							<bs:panel messagesPropertiesKey="post.resource.fields.general" collapsed="${true}" groupId="accordion" collapseId="panel1">
+								<jsp:attribute name="panelBody">
+									<h5>In Latein</h5>
+									<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+								</jsp:attribute>
+							</bs:panel>
+							
+							<!-- zweites panel -->
+							<bs:panel messagesPropertiesKey="groups_visibility" collapsed="${false}" groupId="accordion" collapseId="panel2">
+								<jsp:attribute name="panelBody">
+									<h5>In deutscher Sprache</h5>
+									<p>Auch gibt es niemanden, der den Schmerz an sich liebt, sucht oder wünscht, nur, weil er Schmerz ist, es sei denn, es kommt zu zufälligen Umständen, in denen Mühen und Schmerz ihm große Freude bereiten können. Um ein triviales Beispiel zu nehmen, wer von uns unterzieht sich je anstrengender körperlicher Betätigung, außer um Vorteile daraus zu ziehen?</p>
+								</jsp:attribute>
+							</bs:panel>		
+									
+						</jsp:attribute>
+					</bs:panelgroup>
+					
+					<h2>Media object</h2>
+					
+					<h3>Single media object</h3>
+					<bs:mediaobject href="http://www.tagesschau.de/" mediaHeading="tagesschau.de" >
+						<jsp:attribute name="media">
+							<img alt="bild" data-src="/resources/bootstrap/js/holder.js/96x96"  class="img-responsive" />
+						</jsp:attribute>
+						<jsp:attribute name="mediaBody">
+							<div style="height: 4.6em; text-overflow: ellipsis !important; overflow: hidden; display: block; width: 100%;">
+								<p>Die Internetseite Tagesschau.de ist das zentrale internetbasierte Nachrichtenportal der ARD. Während die im August 1996 veröffentlichte Seite früher vorwiegend programmbegleitende Hintergrundinformationen zu den Fernsehsendungen von ARD-aktuell – etwa Tagesschau und Tagesthemen – bot, ist sie mittlerweile als eigenständiges Telemedienangebot zu betrachten und steht in Konkurrenz mit Seiten wie z. B. Spiegel Online oder faz.net. Über 20 Redakteure sind für die Inhalte tätig, Redaktionsleiter ist seit 2011 Andreas Hummelmeier.</p>
+							</div>
+						</jsp:attribute>
+					</bs:mediaobject>
+					
+					<h3>media object list</h3>
+					<div class="row">
+						<div class="col-md-6">
+							<h4><fmt:message key="bookmarks" /></h4>
+							<ul class="media-list">
+								<li class="media">
+									<div class="edit-media-buttons btn-group dropdown pull-right">
+										<bsform:button value="edit" gear="${true}" dropdown="${true}" style="defaultStyle" size="xsmall" dataToggle="dropdown" />
+										<ul class="dropdown-menu" role="menu" style="overflow:visible !important;">
+											<li><a href="#">copy</a></li>
+											<li class="divider"><!-- KEEP ME --></li>
+											<li><a href="#">Community Page <span class="badge">34</span></a></li>
+										</ul>
+									</div>
+									<a class="hidden-xs hidden-md pull-left thumbnail" href="http://www.tagesschau.de">
+										<img alt="bild" src="http://placekitten.com/g/64/88"  class="img-responsive" />
+									</a>
+							    	<div class="media-body">
+							    		<div class="row">
+							    			<div class="col-xs-9 col-sm-10 col-md-10 col-lg-10">
+												<h4 class="media-heading"><a href="http://www.tagesschau.de">tagesschau.de – Lorem Ipsum dolor sit amet, concedetur nomen tum. panem nostrum.</a></h4>
+											</div>
+										</div>
+										<p class="url"><a href="http://www.tagesschau.de" title="tagesschau.de" rel="nofollow">http://www.tagesschau.de</a></p>
+										<p class="desc">Die Internetseite Tagesschau.de ist das zentrale internetbasierte Nachrichtenportal der ARD. Während die im August 1996 veröffentlichte Seite früher vorwiegend programmbegleitende Hintergrundinformationen zu den Fernsehsendungen von ARD-aktuell – etwa Tagesschau und Tagesthemen – bot, ist sie mittlerweile als eigenständiges Telemedienangebot zu betrachten und steht in Konkurrenz mit Seiten wie z. B. Spiegel Online oder faz.net. Über 20 Redakteure sind für die Inhalte tätig, Redaktionsleiter ist seit 2011 Andreas Hummelmeier.</p>
+										<p class="meta pull-left">vor 3 Stunden von <a href="#">@seboettg</a></p><p class="tags pull-right">Tags: <a href="#">nachrichten</a><a href="#">news</a><a href="">tagesschau</a></p>
+									</div>
+								</li>
+								
+								<li class="media">
+									<div class="edit-media-buttons btn-group dropdown pull-right">
+										<bsform:button value="edit" gear="${true}" dropdown="${true}" style="defaultStyle" size="xsmall" dataToggle="dropdown" />
+										<ul class="dropdown-menu" role="menu" style="overflow:visible !important;">
+											<li><a href="#">copy</a></li>
+											<li class="divider"><!-- KEEP ME --></li>
+											<li><a href="#">Community Page <span class="badge">11</span></a></li>
+										</ul>
+									</div>
+									<a class="hidden-xs hidden-md pull-left thumbnail" href="http://www.spiegel.de">
+										<img alt="bild" src="http://placekitten.com/g/64/88"  class="img-responsive" />
+									</a>
+							    	<div class="media-body">
+										<div class="row">
+							    			<div class="col-xs-9 col-sm-10 col-md-10 col-lg-10">
+												<h4 class="media-heading"><a href="http://www.spiegel.de">Spiegel Online</a></h4>
+											</div>
+										</div>
+										<p class="url"><a href="http://www.spiegel.de" rel="nofollow" title="Spiegel Online">http://www.spiegel.de</a></p>
+										<p class="desc">Spiegel Online (Eigenschreibweise in Großbuchstaben; kurz SPON) ist eine der reichweitenstärksten deutschsprachigen Nachrichten-Websites. Sie wurde am 25. Oktober 1994 als Onlineversion des Nachrichtenmagazins Der Spiegel gegründet.</p>
+										<p class="meta pull-left">vor 14 Tagen von <a href="#">@hotho</a></p><p class="tags pull-right">Tags: <a href="#">nachrichten</a><a href="#">news</a><a href="">spon</a></p>
+
+										
+									</div>
+								</li>
+								<li class="media">
+									<div class="edit-media-buttons btn-group dropdown pull-right">
+										<bsform:button value="edit" gear="${true}" dropdown="${true}" style="defaultStyle" size="xsmall" dataToggle="dropdown" />
+										<ul class="dropdown-menu" role="menu" style="overflow:visible !important;">
+											<li><a href="#">copy</a></li>
+											<li><a href="#">delete</a></li>
+											<li><a href="#">edit</a></li>
+											<li class="divider"><!-- KEEP ME --></li>
+											<li><a href="#">Community Page <span class="badge">28</span></a></li>
+										</ul>
+									</div>
+									<a class="hidden-xs hidden-md pull-left thumbnail" href="http://www.faz.net">
+										<img alt="bild" src="http://placekitten.com/g/64/88"  class="img-responsive" />
+									</a>
+							    	<div class="media-body">
+										<div class="row">
+							    			<div class="col-xs-9 col-sm-10 col-md-10 col-lg-10">
+												<h4 class="media-heading"><a href="http://www.faz.net">FAZ.NET</a></h4>
+											</div>
+										</div>
+										<p class="url"><a href="http://www.faz.net" rel="nofollow" title="FAZ.NET">http://www.faz.net</a></p>
+										<p class="desc">Seit Januar 2001 ist die FAZ mit einem eigenständigen redaktionellen Nachrichten-Portal im Internet vertreten. 2006 hat FAZ.NET erstmals an der Erhebung der Arbeitsgemeinschaft Online-Forschung (AGOF) teilgenommen und verzeichnet die größte Reichweite deutscher Qualitätszeitungen bei Internetnutzern: 1,32 Millionen/Monat. 65 % sind männlich, die Hälfte hat Abitur. Im Jahr 2008 verzeichnete FAZ.NET laut den Ergebnissen der Studie AGOF Internet Facts 2009-I 2 Mio. Besucher pro Monat. Ab dem 17. November 2007 erhielt die Internetseite der FAZ ein verändertes Seitenlayout.</p>
+										<p class="meta pull-left">vor 1 Monat von <a href="#">@sdo</a></p><p class="tags pull-right">Tags: <a href="#">nachrichten</a><a href="#">news</a><a href="">faz</a></p>
+									</div>
+								</li>
+							</ul>
+						</div>
+						<div class="col-md-6">
+							<h4><fmt:message key="publications" /></h4>
+							<ul class="media-list">
+								<li class="media">
+									<div class="edit-media-buttons btn-group dropdown pull-right">
+										<bsform:button value="edit" gear="${true}" dropdown="${true}" style="defaultStyle" size="xsmall" dataToggle="dropdown" />
+										<ul class="dropdown-menu" role="menu" style="overflow:visible !important;">
+											<li><a href="#">copy</a></li>
+											<li><a href="#">delete</a></li>
+										</ul>
+									</div>
+									<a class="hidden-xs hidden-md pull-left thumbnail" href="#">
+										<img alt="bild" data-src="/resources/bootstrap/js/holder.js/64x88"  class="img-responsive" />
+									</a>
+							    	<div class="media-body">
+							    		<div class="row">
+							    			<div class="col-xs-9 col-sm-10 col-md-10 col-lg-10">
+												<h4 class="media-heading"><a href="#" title="Of course we share! Testing Assumptions about Social Tagging Systems">Of course we share! Testing Assumptions about Social Tagging Systems</a></h4>
+											</div>
+											<span class="badge"><a href="#">39</a></span>
+										</div>
+										<p class="authors"><a href="#">Stephan Doerfel</a>, <a href="#">Daniel Zoller</a>, Philipp Singer, Thomas Niebler, Andreas Hotho und Markus Strohmaier (2014).</p>
+										<p class="desc">Social tagging systems have established themselves as an important part in today's web and have attracted the interest from our research community in a variety of investigations.</p>
+										<p class="meta pull-left">vor zwei tagen von <a href="#">@seboettg</a></p><ul class="tags list-inline"><li><a href="/user/sdo/2014">2014</a></li><li><a href="/user/sdo/analysis">analysis</a></li><li><a href="/user/sdo/assumptions">assumptions</a></li><li><a href="/user/sdo/bibsonomy">bibsonomy</a></li><li><a href="/user/sdo/data">data</a></li><li><a href="/user/sdo/folksonomy">folksonomy</a></li><li><a href="/user/sdo/log">log</a></li><li><a href="/user/sdo/myown">myown</a></li><li><a href="/user/sdo/share">share</a></li><li><a href="/user/sdo/social">social</a></li><li><a href="/user/sdo/tagging">tagging</a></li><li><a href="/user/sdo/testing">testing</a></li><li><a href="/user/sdo/weblog">weblog</a></li></ul>
+									</div>
+								</li>
+								
+								<li class="media">
+									<div class="edit-media-buttons btn-group dropdown pull-right">
+										<bsform:button value="edit" gear="${true}" dropdown="${true}" style="defaultStyle" size="xsmall" dataToggle="dropdown" />
+										<ul class="dropdown-menu" role="menu" style="overflow:visible !important;">
+											<li><a href="#">copy</a></li>
+											<li><a href="#">delete</a></li>
+										</ul>
+									</div>
+									<a class="hidden-xs hidden-md pull-left thumbnail" href="http://www.spiegel.de">
+										<img alt="bild" src="http://placekitten.com/g/64/88"  class="img-responsive" />
+									</a>
+							    	<div class="media-body">
+										<div class="row">
+							    			<div class="col-xs-9 col-sm-10 col-md-10 col-lg-10">
+												<h4 class="media-heading"><a href="http://www.spiegel.de">Spiegel Online</a>&amp;nbsp;<span class="badge"><a href="#">11</a></span></h4>
+											</div>
+										</div>
+										<p class="url"><a href="http://www.spiegel.de" rel="nofollow" title="Spiegel Online">http://www.spiegel.de</a></p>
+										<p class="desc">Spiegel Online (Eigenschreibweise in Großbuchstaben; kurz SPON) ist eine der reichweitenstärksten deutschsprachigen Nachrichten-Websites. Sie wurde am 25. Oktober 1994 als Onlineversion des Nachrichtenmagazins Der Spiegel gegründet.</p>
+										<p class="meta">vor zwei tagen von <a href="#">@seboettg</a></p>
+										
+									</div>
+								</li>
+								<li class="media">
+									<div class="edit-media-buttons btn-group dropdown pull-right">
+										<bsform:button value="edit" gear="${true}" dropdown="${true}" style="defaultStyle" size="xsmall" dataToggle="dropdown" />
+										<ul class="dropdown-menu" role="menu" style="overflow:visible !important;">
+											<li><a href="#">copy</a></li>
+											<li><a href="#">delete</a></li>
+											<li><a href="#">edit</a></li>
+											<li class="divider"><!-- KEEP ME --></li>
+											<li><a href="#">blubb</a></li>
+										</ul>
+									</div>
+									<a class="hidden-xs hidden-md pull-left thumbnail" href="http://www.faz.net">
+										<img alt="bild" src="http://placekitten.com/g/64/88"  class="img-responsive" />
+									</a>
+							    	<div class="media-body">
+										<div class="row">
+							    			<div class="col-xs-9 col-sm-10 col-md-10 col-lg-10">
+												<h4 class="media-heading"><a href="http://www.faz.net">FAZ.NET</a>&amp;nbsp;<span class="badge"><a href="#">28</a></span></h4>
+											</div>
+										</div>
+										<p class="url"><a href="http://www.faz.net" rel="nofollow" title="FAZ.NET">http://www.faz.net</a></p>
+										<p class="desc">Seit Januar 2001 ist die FAZ mit einem eigenständigen redaktionellen Nachrichten-Portal im Internet vertreten. 2006 hat FAZ.NET erstmals an der Erhebung der Arbeitsgemeinschaft Online-Forschung (AGOF) teilgenommen und verzeichnet die größte Reichweite deutscher Qualitätszeitungen bei Internetnutzern: 1,32 Millionen/Monat. 65 % sind männlich, die Hälfte hat Abitur. Im Jahr 2008 verzeichnete FAZ.NET laut den Ergebnissen der Studie AGOF Internet Facts 2009-I 2 Mio. Besucher pro Monat. Ab dem 17. November 2007 erhielt die Internetseite der FAZ ein verändertes Seitenlayout.</p>
+										<p class="meta">vor zwei tagen von <a href="#">@seboettg</a></p>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+					
+					<!-- Modal -->
+					<h2>Modal popup window</h2>
+					<p>Toggle a modal by clicking the button below. It will slide down and fade in from the top of the page.</p>
+					
+					<!-- Button trigger modal -->
+					<bsform:button size="defaultSize" style="primary" value="Terms of usage" dataToggle="modal" dataTarget="#large-modal" />
+					
+					<!-- modal window -->
+					<bs:modal id="large-modal" modalTitle="A modal popup window">
+						<jsp:attribute name="modalBody">
+							<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+						</jsp:attribute>
+						<jsp:attribute name="modalFooter">
+							<bsform:button size="defaultSize" style="success" value="Accept terms of usage" />
+							<bsform:button size="defaultSize" style="defaultStyle" dataDismiss="modal" value="Close" />
+						</jsp:attribute>
+					</bs:modal>
+					
+					<h2>Tabs and Pills</h2>
+					<p>Tabs and Pills are ideal elements to navigate between content areas within one page</p>
+					
+					<h3>Tabs</h3>
+					
+					<bs:panel messagesPropertiesKey="publications.citations.headline">
+						<jsp:attribute name="panelBody">
+							<ul class="nav nav-tabs">
+		  						<li class="active"><a href="#harvard" data-toggle="tab">Harvard</a></li>
+		  						<li><a href="#chicago" data-toggle="tab">Chicago</a></li>
+		  						<li><a href="#apa" data-toggle="tab">APA</a></li>
+		  						<li><a href="#din1505" data-toggle="tab">DIN 1505</a></li>
+							</ul>
+							<br />
+							<div id="citation-styles" class="tab-content">
+								<div class="tab-pane active" id="harvard">
+						        	<p>Benz, D.; Hotho, A.; Jäschke, R.; Stumme, G.; Halle, A.; Lima-Gerlach, A. S.; Steenweg, H. &amp; Stefani, S. (2010), Academic Publication Management with PUMA - collect, organize and share publications, in 'Proceedings of the 14. European Conference on Research and Advanced Technology for Digital Libraries', pp. 417-420.</p>
+								</div>
+								<div class="tab-pane" id="chicago">
+									<p>Benz, Dominik, Hotho, Andreas, Jäschke, Robert, Stumme, Gerd, Halle, Axel, Lima-Gerlach, Angela Sanches, Steenweg, Helge and Stefani, Sven. "Academic Publication Management with PUMA - collect, organize and share publications." Paper presented at the meeting of the Proceedings of the 14. European Conference on Research and Advanced Technology for Digital Libraries, 2010.</p>
+								</div>
+								<div class="tab-pane" id="apa">
+									<p>Benz, D., Hotho, A., Jäschke, R., Stumme, G., Halle, A., Lima-Gerlach, A. S., Steenweg, H. &amp; Stefani, S. (2010). Academic Publication Management with PUMA - collect, organize and share publications. Proceedings of the 14. European Conference on Research and Advanced Technology for Digital Libraries (p./pp. 417-420.).</p>
+								</div>
+								<div class="tab-pane" id="din1505">
+									<p>Benz, Dominik ; Hotho, Andreas ; Jäschke, Robert ; Stumme, Gerd ; Halle, Axel ; Lima-Gerlach, Angela Sanches ; Steenweg, Helge ; Stefani, Sven: Academic Publication Management with PUMA - collect, organize and share publications. In: Proceedings of the 14. European Conference on Research and Advanced Technology for Digital Libraries, 2010, S. 417-420.</p>
+								</div>
+						    </div>
+						</jsp:attribute>
+					</bs:panel>
+					
+					<h3>Pills</h3>
+					
+					<bs:panel messagesPropertiesKey="publications.citations.headline">
+						
+						<jsp:attribute name="panelBody">
+						
+							<ul class="nav nav-pills">
+		  						<li class="active"><a href="#pill-harvard" data-toggle="pill">Harvard</a></li>
+		  						<li><a href="#pill-chicago" data-toggle="tab">Chicago</a></li>
+		  						<li><a href="#pill-apa" data-toggle="tab">APA</a></li>
+		  						<li><a href="#pill-din1505" data-toggle="tab">DIN 1505</a></li>
+							</ul>
+							<br />
+							<div id="citation-styles" class="tab-content">
+								<div class="tab-pane active" id="pill-harvard">
+						        	<p>Benz, D.; Hotho, A.; Jäschke, R.; Stumme, G.; Halle, A.; Lima-Gerlach, A. S.; Steenweg, H. &amp; Stefani, S. (2010), Academic Publication Management with PUMA - collect, organize and share publications, in 'Proceedings of the 14. European Conference on Research and Advanced Technology for Digital Libraries', pp. 417-420.</p>
+								</div>
+								<div class="tab-pane" id="pill-chicago">
+									<p>Benz, Dominik, Hotho, Andreas, Jäschke, Robert, Stumme, Gerd, Halle, Axel, Lima-Gerlach, Angela Sanches, Steenweg, Helge and Stefani, Sven. "Academic Publication Management with PUMA - collect, organize and share publications." Paper presented at the meeting of the Proceedings of the 14. European Conference on Research and Advanced Technology for Digital Libraries, 2010.</p>
+								</div>
+								<div class="tab-pane" id="pill-apa">
+									<p>Benz, D., Hotho, A., Jäschke, R., Stumme, G., Halle, A., Lima-Gerlach, A. S., Steenweg, H. &amp; Stefani, S. (2010). Academic Publication Management with PUMA - collect, organize and share publications. Proceedings of the 14. European Conference on Research and Advanced Technology for Digital Libraries (p./pp. 417-420.).</p>
+								</div>
+								<div class="tab-pane" id="pill-din1505">
+									<p>Benz, Dominik ; Hotho, Andreas ; Jäschke, Robert ; Stumme, Gerd ; Halle, Axel ; Lima-Gerlach, Angela Sanches ; Steenweg, Helge ; Stefani, Sven: Academic Publication Management with PUMA - collect, organize and share publications. In: Proceedings of the 14. European Conference on Research and Advanced Technology for Digital Libraries, 2010, S. 417-420.</p>
+								</div>
+						    </div>
+						    
+						</jsp:attribute>
+						
+					</bs:panel>
+					
+					<h2>List groups</h2>
+					
+					<div class="row">
+						<div class="col-md-4">
+							<h3>basic list group</h3>
+							<ul class="list-group">
+								<li class="list-group-item">Cras justo odio</li>
+								<li class="list-group-item">Dapibus ac facilisis in</li>
+								<li class="list-group-item">Morbi leo risus</li>
+								<li class="list-group-item">Porta ac consectetur ac</li>
+								<li class="list-group-item">Vestibulum at eros</li>
+							</ul>
+						</div>
+						<div class="col-md-4">
+							<h3>with badges</h3>
+							<ul class="list-group">
+								<li class="list-group-item"><span class="badge">14</span> Cras justo odio</li>
+								<li class="list-group-item"><span class="badge">7</span> Dapibus ac facilisis in</li>
+								<li class="list-group-item">Morbi leo risus</li>
+								<li class="list-group-item">Porta ac consectetur ac</li>
+								<li class="list-group-item">Vestibulum at eros</li>
+							</ul>
+						</div>
+						<div class="col-md-4">
+							<h3>linked items</h3>
+							<div class="list-group">
+								<a href="#" class="list-group-item active">Cras justo odio</a>
+								<a href="#" class="list-group-item">Dapibus ac facilisis in</a>
+								<a href="#" class="list-group-item">Morbi leo risus</a>
+								<a href="#" class="list-group-item">Porta ac consectetur ac</a>
+								<a href="#" class="list-group-item">Vestibulum at eros</a>
+							</div>
+						</div>
+					</div>
+					
+					<br /><br />	
+					
+					<h2>Quick helps</h2>
+
+					
+					<br /><br />	
+					
+					<br /><br />	
+				</div><!-- /.col-md-10 -->
+		
+			</div> <!-- /.row -->
+		
+		</jsp:attribute>
+		
+	</layout:paneLayout>
+	
+		
+</jsp:root>

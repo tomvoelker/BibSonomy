@@ -32,8 +32,8 @@ import java.util.Set;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.util.Sets;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,7 +70,7 @@ public class JabrefLayoutAntiScriptInjectionTest extends AbstractJabrefLayoutTes
 	
 	public static List<Post<BibTex>> getPosts(String entryType) throws PersonListParserException{
 		final User u = new User();
-    	u.setName("TestUser TestUserUser");
+		u.setName("TestUser TestUserUser");
 
 		final BibTex publication = new BibTex(); 
 		publication.setEntrytype(entryType);

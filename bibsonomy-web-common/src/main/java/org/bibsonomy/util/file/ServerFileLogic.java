@@ -24,6 +24,7 @@
 package org.bibsonomy.util.file;
 
 import java.io.File;
+import java.util.Collection;
 
 import org.bibsonomy.common.enums.LayoutPart;
 import org.bibsonomy.common.enums.PreviewSize;
@@ -81,14 +82,34 @@ public class ServerFileLogic implements FileLogic {
 		return this.profileFileLogic.getProfilePictureForUser(username);
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.services.filesystem.JabRefFileLogic#writeJabRefLayout(java.lang.String, org.bibsonomy.model.util.file.UploadedFile, org.bibsonomy.common.enums.LayoutPart)
+	 */
 	@Override
 	public Document writeJabRefLayout(String username, UploadedFile file, LayoutPart layoutPart) throws Exception {
 		return this.jabRefFileLogic.writeJabRefLayout(username, file, layoutPart);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.filesystem.JabRefFileLogic#validJabRefLayoutFile(org.bibsonomy.model.util.file.UploadedFile)
+	 */
+	@Override
+	public boolean validJabRefLayoutFile(UploadedFile file) {
+		return this.jabRefFileLogic.validJabRefLayoutFile(file);
+	}
+	
 	@Override
 	public boolean deleteJabRefLayout(String hash) {
 		return this.jabRefFileLogic.deleteJabRefLayout(hash);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.filesystem.JabRefFileLogic#allowedJabRefFileExtensions()
+	 */
+	@Override
+	public Collection<String> allowedJabRefFileExtensions() {
+		return this.jabRefFileLogic.allowedJabRefFileExtensions();
 	}
 
 	@Override
@@ -138,6 +159,6 @@ public class ServerFileLogic implements FileLogic {
 	public File getTempFile(String name) {
 		return this.tempFileLogic.getTempFile(name);
 	}
-
+	
 
 }

@@ -1,0 +1,120 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
+	xmlns:json="urn:jsptagdir:/WEB-INF/tags/bstags/export/json"
+	xmlns:users="urn:jsptagdir:/WEB-INF/tags/bstags/users"
+	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/bstags/spheres"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
+	xmlns:button="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<fmt:message key="navi.spheres" var="pageTitle"/>
+	
+	<layout:paneLayout pageTitle="${pageTitle}" headerMessageKey="navi.spheres" headerLogoClass="spheresHeader" requPath="${requPath}" command="${command}" activeTab="${(not empty command.context.loginUser.name) ? 'my' : ''}">
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.spheres"/>
+		</jsp:attribute>
+	
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/spheres.css" />
+		</jsp:attribute>
+		
+		<!--+
+			| sidebar
+			+-->
+		<jsp:attribute name="sidebar">
+			<ul>
+				<li>				
+				<span class="sidebar_h">					 
+					<!-- requPath + query -->
+					<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
+					<fmt:message key="users.recommended"/>
+					<c:out value=" "/><a href="${mtl:setParam(requPathAndQuery, 'userSimilarity', mtl:toggleUserSimilarity(command.userSimilarity)) }"><fmt:message key="more"/>...</a>
+				</span>
+				<users:related cmd="${command.relatedUserCommand}" displayFollowLink="${false}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
+			</li>
+			</ul>
+		</jsp:attribute>
+		
+		<!--+
+			| infobox
+			+-->
+		<jsp:attribute name="infobox">
+			<parts:infobox infoTextKey="spheres.intro"/>
+		</jsp:attribute>
+		
+		<!--+
+			| content
+			+-->
+		<jsp:attribute name="content">
+
+			<div id="general_100">
+				<!--+
+					| show spheres graph if supported by browser
+					+-->
+				<div id="spheresGraph" style="width: 100%;">
+	  				
+					<!-- 
+					<input type="button" id="Big" value="+" 	onclick="$('#spheresGraph').animate({height:'520px'}, 2700); externUpdate();"></input>
+    				<input type="button" id="Small" value=" - " onclick="$('#spheresGraph').animate({height:'300px'}, 2700); externUpdate();"></input>
+    				-->
+				</div>
+				
+			<div class="spheres">
+				<p class="spheres_initial_explanation">
+					<fmt:message key="spheres.interactive.explanation"/>
+				</p>
+				<c:forEach items="${command.spheres}" var="entry">
+				<span class="sphere sphere_hidden" id="sphere_${fn:escapeXml(entry.key)}">
+		    		<div class="sphere_header">
+		    			<fmt:message key="spheres.sphere.title">
+		    				<fmt:param>
+		    					<a href="/sphere/${fn:escapeXml(entry.key)}"><c:out value="${entry.key}"/></a>
+		    				</fmt:param>
+		    			</fmt:message>
+		    			<!-- 
+		    			<input type="button" value="Top" onclick="$('html, body').animate({scrollTop:0}, 'slow');" onmouseover="this.style.cursor='pointer';" style="float: right; position: relative"></input>
+		    			 -->
+		    		</div>
+		    		
+		    		<!--+
+		    			| display buddies
+		    			+-->
+		    		<div class="sphere_users left_sphere_list_entry">
+		    			<div class="sphere_bottom_header"><fmt:message key="group.cv.members"/>:</div>
+	    				<c:forEach items="${entry.value}" var="item" varStatus="loop">
+	    					<spheres:userLink user="${item}"/>
+					    </c:forEach>
+				    </div>
+				    
+				    <div class="sphere_tag_cloud">
+		    			<div class="sphere_bottom_header"><fmt:message key="post.resource.tags.cap"/>:</div>
+				    	<tags:cloud requPath="sphere/${fn:escapeXml(entry.key)}" cmd="${command.spheresTagClouds[entry.key]}" showTooltips="0"/>
+				    </div>
+	        		
+	        		<div class="sphere_footer"><!--  --></div>
+	        	</span>
+				</c:forEach>
+			</div>
+			</div>
+							<script type="text/javascript" src="${resdir}/javascript/d3-library/d3.js"><!-- keep me --></script>
+				<script type="text/javascript" src="${resdir}/javascript/d3-library/d3.geom.js"><!-- keep me --></script>
+				<script type="text/javascript" src="${resdir}/javascript/d3-library/d3.layout.js"><!-- keep me --></script>			
+				<script type="text/javascript" src="${resdir}/javascript/spheresGraph.js"><!-- keep me --></script>
+					    
+			    <script type="text/javascript">
+		    		SphereDisplay = new SphereDisplay();
+				</script>
+			
+		</jsp:attribute>
+	</layout:paneLayout>
+</jsp:root>

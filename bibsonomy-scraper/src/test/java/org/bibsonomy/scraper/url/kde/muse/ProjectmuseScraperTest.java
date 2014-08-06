@@ -23,6 +23,13 @@
 
 package org.bibsonomy.scraper.url.kde.muse;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.net.URL;
+
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -49,6 +56,18 @@ public class ProjectmuseScraperTest {
 	@Test
 	public void url2TestRun(){
 		UnitTestRunner.runSingleTest("url_114");
+	}
+	@Test
+	public void testReferences() throws Exception{
+		final ScrapingContext sc = new ScrapingContext(new URL("http://muse.jhu.edu/journals/social_science_history/v029/29.4mcnay.html"));
+		ProjectmuseScraper pms = new ProjectmuseScraper();
+		assertTrue(pms.scrape(sc));
+		assertTrue(pms.scrapeReferences(sc));
+		final String reference = sc.getReferences();
+		assertNotNull(reference);
+		assertTrue(reference.length() > 100);
+		assertEquals("<!--_references-->\nReferences\n<!--_/references-->\n</h3>\n\n<p class=\"noIndent\">".trim(), reference.substring(0, 79).trim());
+		assertTrue(reference.contains("Amin, S."));
 	}
 
 }

@@ -36,7 +36,25 @@ import org.bibsonomy.util.WebUtils;
  * 
  */
 public class ScrapingContext {
+	
+	public static class TemporaryScraperMetadata {
+		private String id;
 
+		/**
+		 * @return the id
+		 */
+		public String getId() {
+			return this.id;
+		}
+
+		/**
+		 * @param id the id to set
+		 */
+		public void setId(String id) {
+			this.id = id;
+		}
+	}
+	
 	/**
 	 * The URL of the web page where the entries to scrape are.
 	 */
@@ -68,6 +86,22 @@ public class ScrapingContext {
 	 * scraper and will be stored as is. May be <code>null</code>.
 	 */
 	private String metaResult = null;
+	
+	/**
+	 * The (plain!) string with the references, i.e., the papers cited by the given paper.
+	 */
+	private String references;
+	/**
+	 * The (plain!) string with the papers citing the given paper.
+	 */
+	private String citedBy;
+	
+	/**
+	 * Scrapers can use this field to store data between consecutive steps.
+	 */
+	private final TemporaryScraperMetadata tmpMetadata = new TemporaryScraperMetadata();
+	
+	
 	/**
 	 * The scraper which was successful in scraping.
 	 */
@@ -200,6 +234,41 @@ public class ScrapingContext {
 	 */
 	public void setScraper(final Scraper scraper) {
 		this.scraper = scraper;
+	}
+
+	/**
+	 * @return the references
+	 */
+	public String getReferences() {
+		return this.references;
+	}
+
+	/**
+	 * @param references the references to set
+	 */
+	public void setReferences(String references) {
+		this.references = references;
+	}
+
+	/**
+	 * @return the citedBy
+	 */
+	public String getCitedBy() {
+		return this.citedBy;
+	}
+
+	/**
+	 * @param citedBy the citedBy to set
+	 */
+	public void setCitedBy(String citedBy) {
+		this.citedBy = citedBy;
+	}
+
+	/**
+	 * @return the tmpMetadata
+	 */
+	public TemporaryScraperMetadata getTmpMetadata() {
+		return this.tmpMetadata;
 	}
 
 }
