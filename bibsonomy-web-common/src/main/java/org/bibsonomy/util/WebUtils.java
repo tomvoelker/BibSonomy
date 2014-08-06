@@ -55,14 +55,9 @@ import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.Pair;
 
 /**
  * @author rja
- */
-/**
- * @author rja
- *
  */
 public class WebUtils {
 	private static final Log log = LogFactory.getLog(WebUtils.class);
@@ -527,17 +522,18 @@ public class WebUtils {
 		
 		try {
 			client.executeMethod(method);
-		} catch (HttpException e) {
 		} catch (IOException e) {
+			// ignore
 		} finally {
 			method.releaseConnection();
 		}
+		
 		if (method.getStatusCode() != HttpStatus.SC_OK) return null;
 		
 		try {
 			return new URL(method.getURI().getURI());
-		} catch (URIException e) {
-		} catch (MalformedURLException e) {
+		} catch (URIException | MalformedURLException e) {
+			// ignore, just return null
 		}
 		return null;
 	}
