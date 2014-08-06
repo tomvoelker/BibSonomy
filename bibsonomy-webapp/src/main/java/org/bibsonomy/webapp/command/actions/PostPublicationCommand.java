@@ -9,7 +9,6 @@ import java.util.Map;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.webapp.command.BibtexViewCommand;
-import org.bibsonomy.webapp.command.DidYouKnowMessageCommand;
 import org.bibsonomy.webapp.command.LayoutViewCommand;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.TabCommand;
@@ -22,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
  * 
  * @author ema
  */
-public class PostPublicationCommand extends EditPublicationCommand implements TabsCommandInterface<Object>, BibtexViewCommand, LayoutViewCommand, DidYouKnowMessageCommand {
+public class PostPublicationCommand extends EditPublicationCommand implements TabsCommandInterface<Object>, BibtexViewCommand, LayoutViewCommand {
 	
 	/**
 	 * The URL which the tab header links to.
@@ -78,7 +77,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		//=== change default tab to the manual tab
 		
 		if (!present(selTab))
-			selTab = 0;
+			selTab = Integer.valueOf(0);
 		
 		this.setTabURL(TAB_URL);
 		
@@ -134,7 +133,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 */
 	private void addTabs(final String[] titles) {
 		for (int i = 0; i < titles.length; i++) {
-			addTab(i, titles[i]);
+			addTab(Integer.valueOf(i), titles[i]);
 		}
 	}
 
@@ -340,6 +339,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	/**
 	 * @return The list of publication posts.
 	 */
+	@Override
 	public ListCommand<Post<BibTex>> getBibtex() {
 		return this.posts;
 	}
