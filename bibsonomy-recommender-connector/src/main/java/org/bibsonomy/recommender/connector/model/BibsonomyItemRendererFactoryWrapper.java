@@ -12,6 +12,7 @@ import org.bibsonomy.model.RecommendedPost;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.data.NoDataAccessor;
 import org.bibsonomy.recommender.connector.database.ExtendedMainAccess;
+import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
@@ -33,27 +34,25 @@ import recommender.impl.model.RecommendedItem;
  * @param <T> The resource type to which recommendations should fit.
  * 			  Recommendations which do not match this type are ignored.
  */
-public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements
-		RecommendationRenderer<ItemRecommendationEntity, RecommendedItem> {
-
+public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements RecommendationRenderer<ItemRecommendationEntity, RecommendedItem> {
+	private static final RenderingFormat USED_FORMAT = RenderingFormat.XML;
+	
 	private Renderer renderer;
 	private ExtendedMainAccess dbAccess;
+	private Class<T> resourceType;
 	
 	public BibsonomyItemRendererFactoryWrapper(final RendererFactory factory) {
-		this.renderer = factory.getRenderer(RenderingFormat.XML);
+		this.renderer = factory.getRenderer(USED_FORMAT);
 	}
-	
-	private Class<T> resourceType;
 	
 	/*
 	 * (non-Javadoc)
 	 * @see recommender.core.interfaces.renderer.RecommendationRenderer#serializeRecommendationEntity(java.io.Writer, recommender.core.interfaces.model.RecommendationEntity)
 	 */
 	@Override
-	public void serializeRecommendationEntity(final Writer writer,
-			final ItemRecommendationEntity entity) {
-		if(entity instanceof UserWrapper) {
-			this.renderer.serializeUser(writer, ((UserWrapper) entity).getUser(), new org.bibsonomy.rest.ViewModel());
+	public void serializeRecommendationEntity(final Writer writer, final ItemRecommendationEntity entity) {
+		if (entity instanceof UserWrapper) {
+			this.renderer.serializeUser(writer, ((UserWrapper) entity).getUser(), new ViewModel());
 		}
 	}
 
@@ -62,11 +61,10 @@ public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements
 	 * @see recommender.core.interfaces.renderer.RecommendationRenderer#parseRecommendationResultList(java.io.Reader)
 	 */
 	@Override
-	public SortedSet<RecommendedItem> parseRecommendationResultList(
-			final Reader reader) throws BadRequestOrResponseException {
+	public SortedSet<RecommendedItem> parseRecommendationResultList(final Reader reader) throws BadRequestOrResponseException {
 		final List<RecommendedPost<? extends Resource>> posts = this.renderer.parseRecommendedItemList(reader, NoDataAccessor.getInstance());
 		final SortedSet<RecommendedItem> items = new TreeSet<RecommendedItem>(new RecommendationResultComparator<RecommendedItem>());
-		for(final RecommendedPost<? extends Resource> post : posts) {
+		for (final RecommendedPost<? extends Resource> post : posts) {
 			final RecommendedItem item = this.createRecommendedItem(post);
 			if(present(item)) {
 				items.add(this.createRecommendedItem(post));
@@ -80,8 +78,7 @@ public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements
 	 * @see recommender.core.interfaces.renderer.RecommendationRenderer#parseRecommendationResult(java.io.Reader)
 	 */
 	@Override
-	public RecommendedItem parseRecommendationResult(final Reader reader)
-			throws BadRequestOrResponseException {
+	public RecommendedItem parseRecommendationResult(final Reader reader) throws BadRequestOrResponseException {
 		final RecommendedPost<? extends Resource> post = this.renderer.parseRecommendedItem(reader, NoDataAccessor.getInstance());
 		return createRecommendedItem(post);
 	}
@@ -106,7 +103,7 @@ public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements
 	@SuppressWarnings("unchecked")
 	private RecommendedItem createRecommendedItem(final RecommendedPost<? extends Resource> post) {
 		// ignore posts which do not belong to the specified resourceType 
-		if(resourceType.isAssignableFrom(post.getPost().getResource().getClass())) {
+		if (resourceType.isAssignableFrom(post.getPost().getResource().getClass())) {
 			final RecommendedPost<T> casted = (RecommendedPost<T>) post;
 			final RecommendationItem validatedPost = this.validatePost(casted);
 			// was the post valid?
@@ -128,12 +125,12 @@ public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements
 	 */
 	private RecommendationItem validatePost(final RecommendedPost<T> post) {
 		RecommendationItem validated = null;
-		if(present(post.getPost()) && present(post.getPost().getResource())) {
+		if (present(post.getPost()) && present(post.getPost().getResource())) {
 			// first check if the post is saved in our database like we fetched it
-			if(present(post.getPost().getResource().getIntraHash()) && present(post.getPost().getUser().getName())) {
+			if (present(post.getPost().getResource().getIntraHash()) && present(post.getPost().getUser().getName())) {
 				// username should be the id, because we don't provide real usernames for external services
 				validated = this.dbAccess.getItemByUserIdWithHash(post.getPost().getResource().getIntraHash(), post.getPost().getUser().getName());
-				if(present(validated)) {
+				if (present(validated)) {
 					return validated;
 				}
 			}
@@ -146,13 +143,40 @@ public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements
 		// return the validated item or null, if no valid item could be found
 		return validated;
 	}
-
-	public void setResourceType(final Class<T> resourceType) {
-		this.resourceType = resourceType;
+	
+	/* (non-Javadoc)
+	 * @see recommender.core.interfaces.renderer.RecommendationRenderer#getContentType()
+	 */
+	@Override
+	public String getContentType() {
+		return USED_FORMAT.getMimeType();
+	}
+	/* (non-Javadoc)
+	 * @see recommender.core.interfaces.renderer.RecommendationRenderer#parseRecommendationEntity(java.io.Reader)
+	 */
+	@Override
+	public ItemRecommendationEntity parseRecommendationEntity(final Reader reader) {
+		return new UserWrapper(this.renderer.parseUser(reader));
 	}
 	
-	public void setRenderer(final Renderer renderer) {
-		this.renderer = renderer;
+	/* (non-Javadoc)
+	 * @see recommender.core.interfaces.renderer.RecommendationRenderer#serializeOK(java.io.Writer)
+	 */
+	@Override
+	public void serializeOK(Writer writer) {
+		this.renderer.serializeOK(writer);
+	}
+	
+	/* (non-Javadoc)
+	 * @see recommender.core.interfaces.renderer.RecommendationRenderer#serializeRecommendationResultList(java.io.Writer, java.util.SortedSet)
+	 */
+	@Override
+	public void serializeRecommendationResultList(Writer writer, SortedSet<RecommendedItem> recommendations) {
+		throw new UnsupportedOperationException("please implement");
+	}
+	
+	public void setResourceType(final Class<T> resourceType) {
+		this.resourceType = resourceType;
 	}
 	
 	public void setDbAccess(final ExtendedMainAccess dbAccess) {

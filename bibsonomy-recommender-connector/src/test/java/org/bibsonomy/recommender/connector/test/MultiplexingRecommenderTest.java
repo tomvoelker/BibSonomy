@@ -38,7 +38,7 @@ import recommender.impl.item.simple.DummyItemRecommender;
 import recommender.impl.model.RecommendedItem;
 import recommender.impl.model.RecommendedTag;
 import recommender.impl.multiplexer.MultiplexingRecommender;
-import recommender.impl.tags.simple.DummyTagRecommender;
+import recommender.impl.test.tags.simple.DummyTagRecommender;
 
 /**
  * Tests the multithreading with BibSonomy's implementation

@@ -3,6 +3,7 @@ package org.bibsonomy.recommender.connector.model;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+
 import recommender.core.interfaces.model.RecommendationUser;
 import recommender.core.interfaces.model.TagRecommendationEntity;
 
@@ -15,10 +16,7 @@ import recommender.core.interfaces.model.TagRecommendationEntity;
  */
 
 public class PostWrapper <T extends Resource> implements TagRecommendationEntity {
-
-	/**
-	 * for serialization
-	 */
+	/** for serialization */
 	private static final long serialVersionUID = -8716576273787930613L;
 	
 	private Post<T> post;
@@ -37,15 +35,16 @@ public class PostWrapper <T extends Resource> implements TagRecommendationEntity
 
 	@Override
 	public String getId() {
-		if(this.post != null) {
-			return ""+this.post.getContentId();
+		if (this.post != null) {
+			return String.valueOf(this.post.getContentId());
 		}
 		return null;
 	}
 
+	@Override
 	public void setId(String id) {
 		if(this.post != null) {
-			this.post.setContentId(Integer.parseInt(id));
+			this.post.setContentId(new Integer(id));
 		}
 	}
 
@@ -56,9 +55,12 @@ public class PostWrapper <T extends Resource> implements TagRecommendationEntity
 		}
 		return null;
 	}
-
+	
+	/**
+	 * @param user	the user to set
+	 */
 	public void setUser(RecommendationUser user) {
-		if(this.post != null) {
+		if (this.post != null) {
 			this.post.setUser(((UserWrapper) user).getUser());
 		}
 	}
@@ -83,7 +85,7 @@ public class PostWrapper <T extends Resource> implements TagRecommendationEntity
 
 	@Override
 	public String getUrl() {
-		if(this.post != null) {
+		if (this.post != null) {
 			if (this.post.getResource() != null &&
 					this.post.getResource() instanceof BibTex) {
 				return ((BibTex) this.post.getResource()).getUrl();
@@ -93,7 +95,7 @@ public class PostWrapper <T extends Resource> implements TagRecommendationEntity
 	}
 
 	public void setUrl(String url) {
-		if(this.post != null) {
+		if (this.post != null) {
 			if (this.post.getResource() != null && 
 					this.post.getResource() instanceof BibTex) {
 				((BibTex) this.post.getResource()).setUrl(url);
@@ -108,5 +110,4 @@ public class PostWrapper <T extends Resource> implements TagRecommendationEntity
 		}
 		return "";
 	}
-	
 }

@@ -11,17 +11,19 @@ import recommender.core.interfaces.model.RecommendationItem;
 import recommender.core.interfaces.model.RecommendationTag;
 
 /**
- * This class wraps a BibSonomy post as the result of a recommendation to
+ * This class wraps a post as the result of a recommendation to
  * allow greedy loading.
  * 
  * @author lukas
- *
- * @param <T>
  */
 public class RecommendationPost implements RecommendationItem {
 	
 	private Post<? extends Resource> post;
-
+	
+	/**
+	 * init the recommendation post
+	 * @param post
+	 */
 	public RecommendationPost(Post<? extends Resource> post) {
 		this.post = post;
 	}
@@ -36,29 +38,28 @@ public class RecommendationPost implements RecommendationItem {
 
 	@Override
 	public void setId(String id) {
-		if(post != null) {
-			this.post.setContentId(Integer.parseInt(id));
+		if (post != null) {
+			this.post.setContentId(new Integer(id));
 		}
 	}
 
 	@Override
 	public List<RecommendationTag> getTags() {
-		if(this.post != null) {
-			ArrayList<RecommendationTag> tags = new ArrayList<RecommendationTag>();
-			for(Tag tag : post.getTags()) {
+		final List<RecommendationTag> tags = new ArrayList<RecommendationTag>();
+		if (this.post != null) {
+			for (Tag tag : post.getTags()) {
 				tags.add(new TagWrapper(tag));
 			}
-			return tags;
 		}
-		return new ArrayList<RecommendationTag>();
+		return tags;
 	}
 
 	@Override
 	public void setTags(List<RecommendationTag> tags) {
-		if(this.post != null) {
-			ArrayList<Tag> bibTags = new ArrayList<Tag>();
-			for(RecommendationTag tag : tags) {
-				if(tag instanceof TagWrapper) {
+		if (this.post != null) {
+			final List<Tag> bibTags = new ArrayList<Tag>();
+			for (RecommendationTag tag : tags) {
+				if (tag instanceof TagWrapper) {
 					bibTags.add(((TagWrapper) tag).getTag());
 				}
 			}
@@ -67,8 +68,8 @@ public class RecommendationPost implements RecommendationItem {
 
 	@Override
 	public String getTitle() {
-		if(this.post != null) {
-			if(this.post.getResource() != null) {
+		if (this.post != null) {
+			if (this.post.getResource() != null) {
 				return this.post.getResource().getTitle();
 			}
 		}
@@ -77,19 +78,24 @@ public class RecommendationPost implements RecommendationItem {
 
 	@Override
 	public void setTitle(String title) {
-		if(this.post != null) {
-			if(this.post.getResource() != null) {
+		if (this.post != null) {
+			if (this.post.getResource() != null) {
 				this.post.getResource().setTitle(title);
 			}
 		}
 	}
-	
+
+	/**
+	 * @return the post
+	 */
 	public Post<? extends Resource> getPost() {
-		return post;
+		return this.post;
 	}
-	
+
+	/**
+	 * @param post the post to set
+	 */
 	public void setPost(Post<? extends Resource> post) {
 		this.post = post;
 	}
-
 }
