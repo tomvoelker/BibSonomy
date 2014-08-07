@@ -348,6 +348,21 @@
 						<property name="controllerBeanName" value="homepageController"/>
 					</bean>
 				</entry>
+				<entry key="/person">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="personPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requestedPersonId</value>
+								<value>requestedPersonName</value>
+								<value>requestedUser</value>
+								<value>requestedHash</value>
+								<value>requestedRole</value>
+								<value>requestedAction</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/recommended">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="recommendedPostsPageController"/>
@@ -703,6 +718,10 @@
 		<property name="supportedResources" ref="allResources"/>
 		<property name="newsGroup" value="${news.group}"/>
 		<property name="newsTag" value="${news.tag}"/>
+	</bean>
+	
+	<bean id="personPageController" class="org.bibsonomy.webapp.controller.PersonPageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources" ref="allResources"/>
 	</bean>
 	
 	<bean id="relationsController" class="org.bibsonomy.webapp.controller.RelationsController" scope="request">
