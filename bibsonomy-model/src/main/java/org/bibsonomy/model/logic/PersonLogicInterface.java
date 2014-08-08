@@ -7,20 +7,27 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.enums.PersonResourceRelation;
 
 /**
- * TODO: add documentation to this class
- *
+ * Interface for person entity logic.
+ * 
  * @author jil
  */
-public class PersonLogicInterface {
-	
-	public List<Person> getPersonCandidates(String interHash, PersonName personName) {
-		throw new UnsupportedOperationException();
-	}
-	
-	public Person getPersonRelatedToPublication(String interHash, PersonName personName, PersonResourceRelation rel) {
-		// im databasemanager:
-		// select p.* from pub_person pp, person p where pp.simhash1 = #interHash# AND pp.person_id = p.id <isNotNull property="rel"> AND pp.relator_code = #relCode# RequestDate#</isNotNull>
-		// bijektive PersonResourceRelation abbildung auf relator codes über iBatis TypeHandlerCallBack
-		throw new UnsupportedOperationException();
-	}
+public interface PersonLogicInterface {
+
+	/**
+	 * @param searchString a serach string coming from an autocomplete field. May contain an incomplete word, which will be internally autocompleted before searching persons
+	 * @return a list of Persons
+	 */
+	public List<Person> getPersonSuggestion(String searchString);
+
+	public List<Person> getPersonCandidates(String longHash, String publicationOwner, PersonName personName);
+
+	public Person getRelatedPerson(String longHash, String publicationOwner, PersonName personName, PersonResourceRelation rel);
+
+	public void addRelatedPerson(String longHash, String publicationOwner, Person person, PersonResourceRelation rel);
+
+	public void removeRelatedPerson(String longHash, String publicationOwner, Person person, PersonResourceRelation rel);
+
+	public int createPerson(Person person);
+
+	public int setPersonUserName(Person person, String userName);
 }
