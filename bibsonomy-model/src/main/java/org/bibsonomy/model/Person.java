@@ -23,7 +23,10 @@
 
 package org.bibsonomy.model;
 
+import java.awt.List;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -35,6 +38,22 @@ import java.util.Set;
 public class Person implements Serializable {
 
 	private static final long serialVersionUID = 4578956154246424767L;
+	
+	private String id;
+
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return this.id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	private String graduation;
 	/**
@@ -86,7 +105,11 @@ public class Person implements Serializable {
 	 * Default constructor
 	 */
 	public Person() {
-		// nothing to do
+		Set<PersonName> s = new HashSet<PersonName>();
+		s.add(new PersonName().withFirstName("Christian").withLastName("Pfeiffer"));
+		s.add(new PersonName().withFirstName("Chr").withLastName("Pf"));
+		s.add(new PersonName().withFirstName("Christ").withLastName("Pfeiff"));
+		this.setNames(s);
 	}
 
 	@Override
