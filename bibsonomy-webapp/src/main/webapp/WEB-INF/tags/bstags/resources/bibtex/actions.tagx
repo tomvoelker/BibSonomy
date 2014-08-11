@@ -201,7 +201,7 @@
 				<!-- BibTeX -->
 				<li>
 					<fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />
-					<a class="litem" href="/bib/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}" title="${bibtexTitle}"><fmt:message key="bibtex.actions.bibtex.short"/></a>
+					<a class="litem" href="/bib/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}" title="${bibtexTitle}"><fmt:message key="bibtex.actions.bibtex"/></a>
 				</li>
 
 				<!-- OPENURL -->

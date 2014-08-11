@@ -6,16 +6,16 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-    xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:sql="http://java.sun.com/jsp/jstl/sql"
-    xmlns:settings="urn:jsptagdir:/WEB-INF/tags/settings"
-    xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
-    xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-    xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"	
+	xmlns:settings="urn:jsptagdir:/WEB-INF/tags/settings"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"	
 	xmlns:spring="http://www.springframework.org/tags">
-    
+
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
 	<fmt:message key="navi.settings" var="settingsPageTitle"/>
@@ -31,7 +31,7 @@
 			+-->	
 		<jsp:attribute name="tabcontent">
 			<!-- display potential errors -->
-		    <errors:global errors="${errors}"/>	
+			<errors:global errors="${errors}"/>	
 			<c:choose>
 				<c:when test="${command.selTab == 0}">
 					<settings:profile command="${command}"/>
@@ -53,7 +53,7 @@
 				</c:when>
 				<c:when test="${command.selTab == 6}">
 					<settings:oauth command="${command}"/>
-				</c:when>	
+				</c:when>
 			</c:choose>
 			
 		</jsp:attribute>
@@ -75,7 +75,7 @@
 					</parts:infobox>
 				</c:when>
 			</c:choose>
-         </jsp:attribute>
+		</jsp:attribute>
 	
 		<!--+
 			| sidebar
@@ -160,9 +160,8 @@
 		              <fmt:message var="addFriend" key="friends.button.add"/>
 		              <input type="submit" name="submit" value="${addFriend}"/>
 		            </form>
-		            </li>		            
-        	</ul>
-        </jsp:attribute>
-        
+				</li>
+			</ul>
+		</jsp:attribute>
 	</layout:tabLayout>
 </jsp:root>

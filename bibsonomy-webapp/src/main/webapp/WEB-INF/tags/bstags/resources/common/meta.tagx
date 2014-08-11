@@ -24,12 +24,12 @@
 		<c:if test="${not empty post.user.name}">
 			<div class="ptime pull-left"><rc:metaDate post="${post}"/></div>
 			<div class="puser pull-left">&amp;nbsp;<rc:metaUsername post="${post}" /></div>
- 			<div class="pgroup pull-left">&amp;nbsp;<rc:metaGroups post="${post}" /></div>
+ 			<div class="pgroup pull-left">&amp;nbsp;<rc:metaGroups post="${post}" loginUserName="${loginUserName}" /></div>
 			<c:if test="${showUserSaves}">
 				<rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
 			</c:if>
 			<br class="clearfix" />
-		</c:if> 		
+		</c:if>
 
  		<!-- TAGS -->
 		<div class="ptags"> 

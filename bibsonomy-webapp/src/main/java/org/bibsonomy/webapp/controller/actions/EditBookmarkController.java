@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
@@ -21,13 +23,7 @@ public class EditBookmarkController extends EditPostController<Bookmark, EditBoo
 
 	@Override
 	protected Bookmark instantiateResource() {
-		final Bookmark bookmark = new Bookmark();
-		/*
-		 * set default values
-		 * no default value. use placeholder attribute for default value.
-		 */
-		//bookmark.setUrl("http://");
-		return bookmark;
+		return new Bookmark();
 	}
 
 	@Override
@@ -50,16 +46,23 @@ public class EditBookmarkController extends EditPostController<Bookmark, EditBoo
 		// noop
 	}
 
+	
 	@Override
-	public View workOn(EditBookmarkCommand command) {
-		
-		initializeDidYouKnowMessageCommand(command);
-		
-		if (command.getPost().getResource().getUrl() == null) {
-			
+	public View workOn(final EditBookmarkCommand command) {
+		/* 
+		 * if URL of resource null show POST_BOOKMARK view and 
+		 * initialize didYouKnowMessageCommand  
+		 */
+		if (!present(command.getPost().getResource().getUrl()) && !present(command.getIntraHashToUpdate())) {
+			initializeDidYouKnowMessageCommand(command);
 			command.getPost().getResource().setUrl("http://");
 			return Views.POST_BOOKMARK;
 		}
+		
+		/*
+		 * otherwise use editPost workflow
+		 */
 		return super.workOn(command);
 	}
+	
 }

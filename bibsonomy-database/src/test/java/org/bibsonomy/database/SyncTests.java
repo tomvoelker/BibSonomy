@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -29,7 +28,6 @@ import org.bibsonomy.testutil.TestUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -81,7 +79,6 @@ public class SyncTests extends AbstractDatabaseManagerTest {
      * test database
      */
     @Test
-    @Ignore
     public void testDatabase() {
         Map<String, SynchronizationPost> posts = bibTexDb.getSyncPostsMapForUser("syncuser1", this.dbSession);
 
@@ -115,7 +112,6 @@ public class SyncTests extends AbstractDatabaseManagerTest {
     }
 
     @Test
-    @Ignore
     public void getSynchronizationBibTexTest() {
         final Class<? extends Resource> resourceType = BibTex.class;
         final ConflictResolutionStrategy strategy = ConflictResolutionStrategy.LAST_WINS;

@@ -125,7 +125,7 @@
 			</div>
 			
 			<div class="fsRow">
-				<form:label cssClass="fsLabel" path="user.settings.simpleInterface"><fmt:message key="settings.editPublication.interFace"/></form:label>
+				<form:label cssClass="fsLabel" path="user.settings.layoutSettings.simpleInterface"><fmt:message key="settings.editPublication.interFace"/></form:label>
 				<buttons:help message="settings.editPublication.interFace.help">
 					<jsp:attribute name="helpText">
 						<ol>
@@ -140,14 +140,14 @@
 						</ol>
 					</jsp:attribute>
 				</buttons:help>
-				<form:select cssClass="fsInput fsSmall" path="user.settings.simpleInterface">
+				<form:select cssClass="fsInput fsSmall" path="user.settings.layoutSettings.simpleInterface">
 				  <form:option label="${advanced}" value="false" />
 				  <form:option label="${simple}" value="true" />
 				</form:select>
 			</div>
-			<c:if test="${command.context.loginUser.role eq 'ADMIN'}">			
+			<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
 				<div class="fsRow">
-					<form:label cssClass="fsLabel" path="user.settings.simpleInterface">Layout</form:label>
+					<form:label cssClass="fsLabel" path="user.settings.layoutSettings.viewLayout">Layout</form:label>
 					<buttons:help message="settings.layout.mainhelp">
 						<jsp:attribute name="helpText">
 							<ol>
