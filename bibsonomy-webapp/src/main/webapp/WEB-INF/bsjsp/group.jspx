@@ -26,10 +26,11 @@
 		<jsp:attribute name="sidebar">
 		<ul>
 			<li>
-				<h4 class="sidebar"><group:name group="${command.group}"/></h4>
-				<div>
+				<h4 class="sidebar"><c:out value="${command.group.name}" /></h4>
+				<div class="pull-right">
 					<group:groupcv group="${command.group}"/>
 				</div>
+				<group:name group="${command.group}"/>
 			</li>
 			
 			<!-- link to join group -->
