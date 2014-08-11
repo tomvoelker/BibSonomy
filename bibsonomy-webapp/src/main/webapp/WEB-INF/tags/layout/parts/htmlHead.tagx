@@ -71,7 +71,6 @@
 		<script type="text/javascript" src="${resdir}/javascript/merged/global.js"><!-- keep me --></script>
 
 		<c:set var="requestedUserString" value='"${fn:escapeXml(requestedUser)}"' />
-		<script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
 		<script type="text/javascript">
 				<![CDATA[
 					var projectName = "${properties['project.name']}";

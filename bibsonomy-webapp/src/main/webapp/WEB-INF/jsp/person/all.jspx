@@ -30,6 +30,7 @@
 			<script type='text/javascript' src='/resources/javascript/person/addName.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/all.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/addPerson.js'><!-- keep me --></script>
+			<script type="text/javascript" src="/resources/jquery/plugins/ui/jquery-ui.js"><!--keep me --></script>
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading">
@@ -52,9 +53,10 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="discussion">
+			<form method='post' name='personForm'>
 				<label for='graduation'>Your Graduation</label>
-				<INPUT type="text" name='personGraduation' id='personGraduation' placeholder="graduation" value="${command.person.graduation }"/>
-				<INPUT type='hidden' name='requestedAction' value='setPersonName'/>
+				<INPUT type="text" name='formGraduation' id='formGraduation' placeholder="graduation" value="${command.person.graduation }"/>
+				<input type='hidden' name='requestedAction' value='savePerson'/>
 				<table>
 					<thead>
 						<tr>
@@ -63,22 +65,21 @@
 						</tr>
 					</thead>
 					<tbody id='nameList'>
-						<form method='post'>
 							<c:forEach var="name" items="${command.person.names}">
 								<tr>
 									<td><c:out value="${name}"></c:out></td>
-									<td><INPUT type='radio' name='personName' value='${name}'/></td>
+									<td><INPUT type='radio' name='formSelectedName' value='${name}'/></td>
 								</tr>
 							</c:forEach>
-						</form>
 					</tbody>
 					<TFOOT>
 						<tr>
 							<td><button id='addNameButton'>Add Name</button></td>
-							<td><button id='saveNameButton'>Save Choice</button></td>
+							<td><button id='savePersonButton'>Save Choice</button></td>
 						</tr>
 					</TFOOT>
 				</table>
+			</form>
 			<br/><br/>
 		</jsp:attribute>
 	</layout:resourceLayout>

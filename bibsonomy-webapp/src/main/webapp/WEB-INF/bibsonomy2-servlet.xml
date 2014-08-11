@@ -359,6 +359,10 @@
 								<value>requestedHash</value>
 								<value>requestedRole</value>
 								<value>requestedAction</value>
+								<value>formGivenName</value>
+								<value>formSurName</value>
+								<value>formSelectedName</value>
+								<value>formGraduation</value>
 							</list>
 						</property>
 					</bean>

@@ -330,7 +330,6 @@
 		<set type="parameter" name="requestedHash">$3</set>
 		<set type="parameter" name="requestedUser">$4</set>
 		<set type="parameter" name="requestedRole">$5</set>
-		<set type="parameter" name="requestedAction">showSingle</set>
 		<to last="true">/person</to>
 	</rule>
 	<rule>
@@ -338,7 +337,6 @@
 		<from>^/+person/+([^/]+?)/+([^/]+?)$</from>
 		<set type="parameter" name="requestedPersonId">$1</set>
 		<set type="parameter" name="requestedPersonName">$2</set>
-		<set type="parameter" name="requestedAction">showAll</set>
 		<to last="true">/person</to>
 	</rule>
 	<!-- ############## /concept pages ############### -->
