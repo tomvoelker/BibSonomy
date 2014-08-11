@@ -53,7 +53,7 @@ public class DBTagAccessTest {
 		final Timestamp ts = new Timestamp(System.currentTimeMillis());
 		
 		// store and retrieve query
-		final Long qid = dbLogic.addQuery(post.getUser().getName(), ts, post, MultiplexingRecommender.getUnknownEID(), 1234);
+		final Long qid = dbLogic.addQuery(post.getUser().getName(), ts, post, MultiplexingRecommender.UNKNOWN_ENTITIYID, 1234);
 		final RecQueryParam retVal = dbLogic.getQuery(qid);
 		
 		final String queryUN = retVal.getUserName();
@@ -183,8 +183,7 @@ public class DBTagAccessTest {
 	 */
 	@Test
 	public void testGetRecommenderSid() {
-		dbLogic.insertRecommenderSetting("recommender.impl.tags.meta.TagsFromFirstWeightedBySecondTagRecommender", 
-				"foo", null);
+		dbLogic.insertRecommenderSetting("recommender.impl.tags.meta.TagsFromFirstWeightedBySecondTagRecommender", "foo", null);
 		assertTrue(dbLogic.getSettingIdForLocalRecommender("recommender.impl.tags.meta.TagsFromFirstWeightedBySecondTagRecommender") > -1);
 		assertTrue(dbLogic.getSettingIdForLocalRecommender("bar") == -1L);
 		dbLogic.insertRecommenderSetting("http://example.com", "foo", "abc".getBytes());

@@ -1,6 +1,5 @@
 package org.bibsonomy.recommender.connector.selector;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -35,7 +34,7 @@ public class AdaptedSelectAll<E extends RecommendationEntity, R extends Recommen
 	@Override
 	public void selectResult(Long qid,
 			RecommendationResultManager<E, R> resultCache,
-			Collection<R> recommendationResults) throws SQLException {
+			Collection<R> recommendationResults) {
 		super.selectResult(qid, resultCache, recommendationResults);
 		
 		// fetch bibsonomy model classes and wrap them

@@ -19,7 +19,7 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
-import recommender.impl.database.RecommenderStatisticsManager;
+import recommender.core.database.RecommenderStatisticsManager;
 
 /**
  * TODO: check inheritance to ResourceListController

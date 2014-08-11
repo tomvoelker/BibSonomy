@@ -1,6 +1,5 @@
 package org.bibsonomy.recommender.connector.testutil;
 
-import java.sql.SQLException;
 import java.util.Collection;
 
 import recommender.core.interfaces.model.RecommendationEntity;
@@ -20,7 +19,7 @@ public class SelectCounter<E extends RecommendationEntity, R extends Recommendat
 	 * Selection strategy which simply selects each recommended tag
 	 */
 	@Override
-	public void selectResult(final Long qid, final RecommendationResultManager<E, R> resultCache, final Collection<R> recommendedTags) throws SQLException {
+	public void selectResult(final Long qid, final RecommendationResultManager<E, R> resultCache, final Collection<R> recommendedTags) {
 		super.selectResult(qid, resultCache, recommendedTags);
 		this.recoCounter = dbLogic.getActiveRecommenderIDs(qid).size();
 	}

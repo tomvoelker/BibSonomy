@@ -73,4 +73,8 @@
 		<result property="confidence" column="confidence" javaType="double" />
 		<result property="name" column="tag" javaType="string" />
 	</resultMap>
+	
+	<resultMap class="webserviceRecommender" id="webServiceRecommender">
+		<result property="address" column="url" javaType="url" />
+	</resultMap>
 </sqlMap>

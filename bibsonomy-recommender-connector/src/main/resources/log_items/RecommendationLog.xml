@@ -102,10 +102,10 @@
        INSERT INTO recommender_settings_log (SELECT * from recommender_settings where rec_id = #url#)
    </insert>
    <delete id="deleteRecommenderFromRecommenderStatus" parameterClass="String">
-       DELETE FROM recommender_status WHERE url=#url#
+       DELETE FROM recommender_status WHERE url= #id#
    </delete>
    <delete id="deleteFromRecommenderSettings" parameterClass="String">
-       DELETE FROM recommender_settings WHERE rec_id=#url#
+       DELETE FROM recommender_settings WHERE rec_id= #id#
    </delete>
    <update id="updateRecommenderStatusUrl" parameterClass="recSetting">
        UPDATE recommender_status SET url=#recId# WHERE setting_id=#setting_id#
@@ -371,7 +371,7 @@
 	<select id="lookupRecommenderSetting" resultClass="long" parameterClass="recSetting">
 		SELECT setting_id
 		FROM recommender_settings
-		WHERE (rec_id = #recId# AND rec_meta = #recMeta#) 
+		WHERE rec_id = #recId#
 	</select>
 
 	<!--+ 
@@ -524,5 +524,16 @@
   		SELECT entityId FROM recommender_preset 
   		WHERE query_id = #qid#
 	</statement>
-
+	
+	<select id="getRemoteRecommenders" resultMap="RecommendationLogCommon.webServiceRecommender" parameterClass="integer">
+		SELECT url FROM recommender_status
+		WHERE local = #local#
+			AND status != 2
+	</select>
+	
+	<select id="getRecommenderStatus" resultClass="long" parameterClass="recSetting">
+		SELECT setting_id FROM recommender_status
+			JOIN recommender_settings USING(setting_id)
+			WHERE rec_id = #recId# AND status = 1
+	</select>
 </sqlMap>

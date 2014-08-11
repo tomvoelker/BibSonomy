@@ -25,7 +25,7 @@
 		<property name="resultModifiers" ref="resultFilterList" />
 		<property name="resultSelector" ref="selectOneTagWithoutReplacement" />
 		<property name="dbLogic" ref="tagRecommenderLogic" />
-		<property name="localRecommenders" ref="localTagRecommenderList" />
+		<property name="beanConfiguredRecommenders" ref="localTagRecommenderList" />
 		<property name="privacyFilter"  ref="postPrivacyFilter"/>
 		<property name="renderer" ref="renderer" />
 	</bean>
@@ -138,7 +138,7 @@
 		<property name="resultModifiers" ref="resultFilterList" />
 		<property name="resultSelector" ref="selectAllBookmarks" />
 		<property name="dbLogic" ref="bookmarkRecommenderLogic" />
-		<property name="localRecommenders" ref="localBookmarkRecommenderList" />
+		<property name="beanConfiguredRecommenders" ref="localBookmarkRecommenderList" />
 		<property name="privacyFilter"  ref="userPrivacyFilter"/>
 		<property name="numberOfResultsToRecommend" value="8"/>
 		<property name="renderer" ref="bookmarkRenderer" />
@@ -191,7 +191,7 @@
 		<property name="resultModifiers" ref="resultFilterList" />
 		<property name="resultSelector" ref="selectAllBibTexs" />
 		<property name="dbLogic" ref="bibtexRecommenderLogic" />
-		<property name="localRecommenders" ref="localBibTexRecommenderList" />
+		<property name="beanConfiguredRecommenders" ref="localBibTexRecommenderList" />
 		<property name="privacyFilter"  ref="userPrivacyFilter"/>
 		<property name="numberOfResultsToRecommend" value="8"/>
 		<property name="renderer" ref="bibtexRenderer" />

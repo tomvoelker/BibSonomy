@@ -233,7 +233,7 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 	 */
 	@Override
 	public List<RecommendedTag> getSelectedResults(Long qid) {
-			return this.manager.processQueryForList(RecommendedTag.class, "getSelectedRecommendationsByQid", qid);
+		return this.manager.processQueryForList(RecommendedTag.class, "getSelectedRecommendationsByQid", qid);
 	}
 	
 	/*

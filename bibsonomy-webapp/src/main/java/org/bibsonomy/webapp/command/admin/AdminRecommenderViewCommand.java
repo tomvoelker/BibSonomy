@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.command.admin;
 
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -9,7 +10,6 @@ import java.util.TreeMap;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 import recommender.core.database.params.RecAdminOverview;
-import recommender.impl.multiplexer.MultiplexingRecommender;
 
 /**
  * Command bean for admin page 
@@ -17,7 +17,6 @@ import recommender.impl.multiplexer.MultiplexingRecommender;
  * @author bsc
  */
 public class AdminRecommenderViewCommand extends BaseCommand {
-	private MultiplexingRecommender mp;
 	private List<RecAdminOverview> recOverviewItem;
 	private List<RecAdminOverview> recOverviewTag; 
 	private String action;
@@ -40,16 +39,16 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	private Map<Long, String> disabledTagRecommenders;
 
 	private long editSid;
-	private List<String> deleteRecIds;
+	private List<Long> deleteRecIds;
 	
-	// TODO: use URL instead of String as type
-	private String newrecurl;
+	private URL newrecurl;
 	
 	
 	/**
+	 * default constructor
 	 */
 	public AdminRecommenderViewCommand(){
-		this.queriesPerLatency = (long)1000;
+		this.queriesPerLatency = Long.valueOf(1000);
 		this.action = null;
 		
 		this.tabdescriptor = new TreeMap<Integer, String>();
@@ -192,37 +191,28 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	public List<RecAdminOverview> getRecOverviewTag() {
 		return this.recOverviewTag;
 	}
-	/**
-	 * @param mp multiplexer
-	 */
-	public void setMultiplexingTagRecommender(final MultiplexingRecommender mp){
-		this.mp = mp;
-	}
-	/**
-	 * @return multiplexer
-	 */
-	public MultiplexingRecommender getMultiplexingTagRecommender(){
-		return this.mp;
-	}
+	
 	/**
 	 * @param action the action which will be executed by the controller and set to null again
 	 */
 	public void setAction(final String action){
 		this.action = action;
 	}
+	
 	/**
 	 * @return the action which will be executed by the controller and set to null again
 	 */
 	public String getAction(){
 		return this.action;
 	}
+	
 	/**
 	 * @param queriesPerLatency number of values which will be fetched from the database to calculate average recommender-latencies
 	 */
 	public void setQueriesPerLatency(final Long queriesPerLatency){
-		//only accept positive values
-		if(queriesPerLatency > 0) {
-		   this.queriesPerLatency = queriesPerLatency;
+		// only accept positive values
+		if (queriesPerLatency > 0) {
+			this.queriesPerLatency = queriesPerLatency;
 		}
 	}
 	/**
@@ -313,30 +303,30 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	}
 
 	/**
-	 * @return ids/urls of recommenders to be deleted
+	 * @return ids of recommenders to be deleted
 	 */
-	public List<String> getDeleteRecIds() {
+	public List<Long> getDeleteRecIds() {
 		return this.deleteRecIds;
 	}
 
 	/**
-	 * @param deleteRecIds ids/urls of recommenders to be edited
+	 * @param deleteRecIds ids of recommenders to be edited
 	 */
-	public void setDeleteRecIds(final List<String> deleteRecIds) {
+	public void setDeleteRecIds(final List<Long> deleteRecIds) {
 		this.deleteRecIds = deleteRecIds;
 	}
+	
 	/**
 	 * @param recurl url of new recommender to be added
 	 */
-	public void setNewrecurl(final String recurl){
+	public void setNewrecurl(final URL recurl){
 		this.newrecurl = recurl;
 	}
+	
 	/**
 	 * @return url of new recommender to be added
 	 */
-	public String getNewrecurl(){
+	public URL getNewrecurl(){
 		return this.newrecurl;
 	}
-	
-	
 }

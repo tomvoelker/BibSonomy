@@ -37,8 +37,7 @@ import recommender.impl.multiplexer.MultiplexingRecommender;
  *
  */
 public class DBItemAccessTest {
-	
-private static DBLogic<ItemRecommendationEntity, RecommendedItem> dbLogic;
+	private static DBLogic<ItemRecommendationEntity, RecommendedItem> dbLogic;
 	
 	@BeforeClass
 	public static void setUp() {
@@ -55,7 +54,7 @@ private static DBLogic<ItemRecommendationEntity, RecommendedItem> dbLogic;
 		final Timestamp ts = new Timestamp(System.currentTimeMillis());
 		
 		// store and retrieve query
-		final Long qid = dbLogic.addQuery(entity.getUserName(), ts, entity, MultiplexingRecommender.getUnknownEID(), 1234);
+		final Long qid = dbLogic.addQuery(entity.getUserName(), ts, entity, MultiplexingRecommender.UNKNOWN_ENTITIYID, 1234);
 		final RecQueryParam retVal = dbLogic.getQuery(qid);
 		
 		final String queryUN = retVal.getUserName();
@@ -186,14 +185,15 @@ private static DBLogic<ItemRecommendationEntity, RecommendedItem> dbLogic;
 	 */
 	@Test
 	public void testGetRecommenderSid() {
-		dbLogic.insertRecommenderSetting("recommender.impl.item.simple.DummyItemRecommender", 
-				"foo", null);
-		assertTrue(dbLogic.getSettingIdForLocalRecommender("recommender.impl.item.simple.DummyItemRecommender") > -1);
+		final String recommenderId = "recommender.impl.item.simple.DummyItemRecommender";
+		final Long id = dbLogic.insertRecommenderSetting(recommenderId, "foo", null);
+		assertEquals(id, dbLogic.getSettingIdForLocalRecommender(recommenderId));
 		assertTrue(dbLogic.getSettingIdForLocalRecommender("bar") == -1L);
-		dbLogic.insertRecommenderSetting("http://example.com", "foo", "abc".getBytes());
-		assertTrue(dbLogic.getSettingIdForDistantRecommender("http://example.com") > -1);
-		assertTrue(dbLogic.getSettingIdForDistantRecommender("bar") == -1L);
-		dbLogic.removeRecommender("http://example.com");
+		final String secondRecommenderId = "http://example.com";
+		final Long secondId = dbLogic.insertRecommenderSetting(secondRecommenderId, "foo", "abc".getBytes());
+		assertEquals(secondId, dbLogic.getSettingIdForDistantRecommender(secondRecommenderId));
+		dbLogic.removeRecommender(secondRecommenderId);
+		assertEquals(Long.valueOf(-1), dbLogic.getSettingIdForDistantRecommender(secondRecommenderId));
 	}
 	
 	/**

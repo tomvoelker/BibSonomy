@@ -1,6 +1,7 @@
 package org.bibsonomy.recommender.connector.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,7 +25,6 @@ import org.bibsonomy.recommender.connector.testutil.RecommenderTestContext;
 import org.bibsonomy.recommender.connector.testutil.SelectCounter;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.UrlRenderer;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -76,8 +76,6 @@ public class MultiplexingRecommenderTest {
 			final DummyTagRecommender reco = new DummyTagRecommender();
 			reco.setWait(MSTOWAIT);
 			reco.setId(i);
-			reco.initialize(null);
-			reco.connect();
 			recos.add(reco);
 		}
 
@@ -95,7 +93,7 @@ public class MultiplexingRecommenderTest {
 		multi.setQueryTimeout(5*MSTOWAIT);
 
 		// add dummy recommender
-		multi.setDistRecommenders(recos);
+		multi.setBeanConfiguredRecommenders(recos);
 
 		// initialize multiplexer
 		multi.init();
@@ -103,11 +101,6 @@ public class MultiplexingRecommenderTest {
 		// query recommender
 		final TagRecommendationEntity post = createPost();
 		multi.getRecommendation(post);
-
-		// shut down
-		for( final RecommenderConnector<TagRecommendationEntity, RecommendedTag> reco : recos ) {
-			reco.disconnect();
-		}
 
 		// test
 		assertEquals("Not all recommenders delivered results", NROFRECOS, selector.getRecoCounter());
@@ -140,7 +133,7 @@ public class MultiplexingRecommenderTest {
 		filter.setDbAccess(new DummyMainItemAccess());
 		
 		mux.setPrivacyFilter(filter);
-		mux.setLocalRecommenders(locals);
+		mux.setBeanConfiguredRecommenders(locals);
 		
 		// dummy user
 		User dummyUser = new User();
@@ -158,11 +151,11 @@ public class MultiplexingRecommenderTest {
 		SortedSet<RecommendedItem> result = mux.getRecommendation(entity);
 		
 		// ensure result count is correct
-		Assert.assertEquals(RECOMMENDATIONS_TO_CALCULATE, result.size());
+		assertEquals(RECOMMENDATIONS_TO_CALCULATE, result.size());
 		
 		//ensure wrapping is successful
-		for(RecommendedItem item : result) {
-			Assert.assertNotNull(item.getId());
+		for (RecommendedItem item : result) {
+			assertNotNull(item.getId());
 		}
 	}
 	

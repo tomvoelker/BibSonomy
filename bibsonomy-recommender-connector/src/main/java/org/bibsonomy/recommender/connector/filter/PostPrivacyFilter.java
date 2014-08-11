@@ -15,6 +15,10 @@ import org.bibsonomy.recommender.connector.utilities.RecommendationUtilities;
 import recommender.core.interfaces.filter.PrivacyFilter;
 import recommender.core.interfaces.model.TagRecommendationEntity;
 
+/**
+ * 
+ * @author fei, rja
+ */
 public class PostPrivacyFilter implements PrivacyFilter<TagRecommendationEntity> {
 
 	/**
@@ -33,11 +37,10 @@ public class PostPrivacyFilter implements PrivacyFilter<TagRecommendationEntity>
 	 */
 	@Override
 	public TagRecommendationEntity filterEntity(final TagRecommendationEntity post) {
-		
 		final Post<? extends Resource> existingPost = RecommendationUtilities.unwrapTagRecommendationEntity(post);
 		
 		// in case of this is not a BibSonomy model type we can't filter
-		if(post == null) {
+		if (post == null) {
 			return post;
 		}
 		
@@ -62,7 +65,8 @@ public class PostPrivacyFilter implements PrivacyFilter<TagRecommendationEntity>
 			if (post.getUser() instanceof UserWrapper) {
 				postCopy.setUser(((UserWrapper) post.getUser()).getUser());
 			}
-			postCopy.setContentId(Integer.parseInt(post.getId()));
+			
+			postCopy.setContentId(new Integer(post.getId()));
 			
 			/*
 			 * bibtex

@@ -77,4 +77,8 @@
 		<result property="resultTitle" column="responsetitle" javaType="string" />
 		<result property="resultId" column="responseid" javaType="string" />
 	</resultMap>
+	
+	<resultMap class="webserviceRecommender" id="webServiceRecommender">
+		<result property="address" column="url" javaType="url" />
+	</resultMap>
 </sqlMap>

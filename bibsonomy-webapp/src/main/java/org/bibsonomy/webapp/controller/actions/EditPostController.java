@@ -59,8 +59,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
 import recommender.core.Recommender;
+import recommender.core.database.RecommenderStatisticsManager;
 import recommender.core.interfaces.model.TagRecommendationEntity;
-import recommender.impl.database.RecommenderStatisticsManager;
 
 /**
  * @author fba
