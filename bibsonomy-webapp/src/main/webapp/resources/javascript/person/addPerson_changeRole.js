@@ -1,6 +1,4 @@
 $(document).ready(function() {
-	
-	
 	var refresh = function() {	
 		$(".authorEditorList").each(function(indexA) {
 			$(this).find("table").attr("id", indexA);
@@ -19,7 +17,6 @@ $(document).ready(function() {
 		});
 		$(".deletePersonRole").unbind("click");
 		$(".deletePersonRole").on("click", function(e) {
-				e.preventDefault();
 				$(this).parent().parent().remove();
 			});
 		}
@@ -38,6 +35,31 @@ $(document).ready(function() {
 		}
 	});
 	$("#addPersonAuto").autocomplete("widget").css('z-index',1000);
+	
+	var changeRoleDialog = $("#changeRoleDialog").dialog({
+		autoOpen: false,
+		height: 300,
+		width: 350,
+		modal: true,
+		buttons: {
+			"Change Role": function() {
+				var id = $("#changeRoleForId").val(); 
+				var roles = "";
+				changeRoleDialog.find("input:checked").each(function() {
+					roles = roles + " " + $(this).val();
+				})
+				$("#"+id).find(".roleColoumn").text(roles);
+				changeRoleDialog.dialog("close");
+				$("#changeRoleField").val("");
+			},
+			Cancel: function() {
+				changeRoleDialog.dialog( "close" );
+			},
+		},
+		close: function() {
+			document.changeRoleForm.reset();
+		}
+	});
 	 
 	var addPersonDialog = $("#addPersonDialog").dialog({
 		autoOpen: false,
