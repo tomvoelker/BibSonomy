@@ -25,6 +25,7 @@
 	<c:set var="pageOptionsClass" value="${empty showPageOptions or showPageOptions == true ? 'config' : 'config disabled'}"/>
 	
 	<!-- bookmarks -->
+	<!-- 
 	<div id="bookmarksheader" class="${bookmarksWidthClass}">
 		<div id="bookmarkListConfig" class="${pageOptionsClass}">
 			<c:if test="${empty showPageOptions or showPageOptions == true }">
@@ -52,13 +53,13 @@
 		
 		<c:choose>
 			<c:when test="${headerHideable}">
-				<div class="headerLogo image bookmarks"><!--  --></div>
+				<div class="headerLogo image bookmarks"></div>
 				<h2 class="header ${bookmarksWidthClass}">
 					<a class="foldUnfold" href="div#hideableContent">
 						<img id="imgCollapseContent" class="imgCollapse" border="0" src="/resources/image/icon_collapse.png"/>
 						<img id="imgExpandContent" class="imgExpand" border="0" src="/resources/image/icon_expand.png" style="display:none" />
 						<fmt:message key="bookmarks" />	
-						<!-- Display total number of entries in list --> 
+						
 						<c:if test="${!empty command.bookmark.list}">
 							<c:if test="${command.bookmark.totalCount != 0}">
 								<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.bookmark.totalCount} "/> <fmt:message key="bookmarks" /></c:set>
@@ -69,7 +70,7 @@
 				</h2>
 			</c:when>
 			<c:otherwise>
-				<div class="headerLogo image bookmarks"><!--  --></div>
+				<div class="headerLogo image bookmarks"></div>
 				<h2 class="header ${bookmarksWidthClass}">
 					<c:choose>
 						<c:when test="${not empty customBookmarksHeaderText}">
@@ -79,7 +80,7 @@
 							<fmt:message key="bookmarks" />	
 						</c:otherwise>
 					</c:choose>
-					<!-- Display total number of entries in list --> 
+					
 					<c:if test="${!empty command.bookmark.list}">
 						<c:if test="${command.bookmark.totalCount != 0}">
 							<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.bookmark.totalCount} "/> <fmt:message key="bookmarks" /></c:set>
@@ -90,8 +91,9 @@
 		</c:otherwise>
 		</c:choose>
 	</div>
+	 -->
 	<!-- publications -->
-	<div id="publicationsheader" class="${publicationsWidthClass}">
+	<!-- <div id="publicationsheader" class="${publicationsWidthClass}">
 		<div id="publicationListConfig" class="${pageOptionsClass}">
 			<c:if test="${empty showPageOptions or showPageOptions == true }">
 				<div id="publicationListOptions" class="listOptions">
@@ -118,13 +120,12 @@
 		
 		<c:choose>
 			<c:when test="${headerHideable}">
-				<div class="headerLogo image publications"><!-- keep me --></div>
+				<div class="headerLogo image publications"></div>
 				<h2 class="header ${publicationsWidthClass}">
 					<a class="foldUnfold" href="div#hideableContent">
 						<img id="imgCollapseContent" class="imgCollapse" border="0" src="/resources/image/icon_collapse.png"/>
 					<img id="imgExpandContent" class="imgExpand" border="0" src="/resources/image/icon_expand.png" style="display:none" />
 						<fmt:message key="publications" />
-						<!-- Display total number of entries in list --> 
 						<c:if test="${!empty command.bibtex.list}">
 							<c:if test="${command.bibtex.totalCount != 0}">
 								<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.bibtex.totalCount} "/> <fmt:message key="publications" /></c:set>
@@ -135,7 +136,7 @@
 				</h2>
 			</c:when>
 			<c:otherwise>
-				<div class="headerLogo image publications"><!-- keep me --></div>
+				<div class="headerLogo image publications"></div>
 				<h2 class="header ${publicationsWidthClass}">
 					<c:choose>
 						<c:when test="${not empty customPublicationsHeaderText}">
@@ -145,7 +146,6 @@
 							<fmt:message key="publications" />
 						</c:otherwise>
 					</c:choose>
-					<!-- Display total number of entries in list --> 
 					<c:if test="${!empty command.bibtex.list}">
 						<c:if test="${command.bibtex.totalCount != 0}">
 							<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.bibtex.totalCount} "/> <fmt:message key="publications" /></c:set>
@@ -155,5 +155,5 @@
 				</h2>
 			</c:otherwise>
 		</c:choose>
-	</div>
+	</div>-->
 </jsp:root>

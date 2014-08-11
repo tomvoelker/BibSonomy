@@ -28,6 +28,9 @@ public enum Views implements View {
 	 * here users can calculate the hashes of their publications
 	 */
 	HASHEXAMPLE("hashexample"),
+	
+	PERSON_ALL("person/all"),
+	PERSON_SINGLE("person/single"),
 
 	/**
 	 * the page where a user can change his personal settings
