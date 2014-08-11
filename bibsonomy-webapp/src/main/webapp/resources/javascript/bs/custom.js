@@ -31,24 +31,18 @@ $(function() {
 		trigger: 'manual',
 		placement : 'right',
 		delay: 0,
-		title: function() {
-			return $(this).next().find('.popover-title').html();
-		},
 		content: function() {
 			return $(this).next().find('.popover-content').html();
 		}
 		
 	});
 	
+	
 	$('.system-tags-link').click(function(event){
 		event.preventDefault();
 		$(this).popover('show');
 	});
-	
-	$('.popover-close').click(function(event){
-		$(this).parent().parent().prev().popover('hide');
-	});
-	
+
 	/**
 	 * publication details abstract and description more link
 	 */
