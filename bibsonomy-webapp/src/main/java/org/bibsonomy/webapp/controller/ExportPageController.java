@@ -35,18 +35,19 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 	 */
 	@Override
 	public View workOn(final ExportPageCommand command) {
-		command.addLayoutMap(this.layouts.getLayoutMap());
 		command.addLayoutMap(this.layoutRenderer.getLayouts());
-		
-		if (command.getFormatEmbedded()) {
-			return Views.EXPORT_EMBEDDED;
-		}
 		
 		if ("json".equals(command.getFormat())) {
 			/*
 			 * JSON list about the available JabRef layouts on the /layoutinfo
 			 */
 			return Views.EXPORTLAYOUTS;
+		}
+		
+		command.addLayoutMap(this.layouts.getLayoutMap());
+
+		if (command.getFormatEmbedded()) {
+			return Views.EXPORT_EMBEDDED;
 		}
 		
 		return Views.EXPORT;
