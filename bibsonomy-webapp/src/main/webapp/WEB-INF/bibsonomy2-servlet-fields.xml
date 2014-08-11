@@ -33,6 +33,8 @@
 		<value>requestedHash</value>
 		<value>postOwner</value>
 		<value>intraHash</value>
+		<value>formGivenName</value>
+		<value>formSurName</value>
 		<value>requSim</value>
 		<value>requUrl</value>
 		<value>requUrlHash</value>

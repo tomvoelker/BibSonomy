@@ -40,45 +40,46 @@ import org.springframework.validation.Errors;
 /**
  * @author Christian Pfeiffer
  */
-public class PersonPageController extends SingleResourceListControllerWithTags implements MinimalisticController<PersonPageCommand> ,ErrorAware, RequestAware, ValidationAwareController<PersonPageCommand>{
+public class PersonPageController extends SingleResourceListControllerWithTags implements MinimalisticController<PersonPageCommand>, RequestAware {
 	private static final Log log = LogFactory.getLog(PersonPageController.class);
+	private RequestLogic requestLogic;
 	
 	@Override
 	public View workOn(final PersonPageCommand command) {
-		
-		System.out.println(command.getAction());
-		
+		System.out.println(command.getRequestedAction());
+		System.out.println(command.getFormGivenName()+"a");
 		if (!present(command.getRequestedPersonId())) {
 			throw new MalformedURLSchemeException("error.person_page_without_personname");
 		} else if(!present(command.getRequestedPersonName())) {
 			throw new MalformedURLSchemeException("error.person_page_without_personname");
 		}
 		
-		if(command.getAction() != null) {
-			if(command.getAction().equals("newPersonName")) {
-				System.out.println("action");
-				this.updatePersonSettings(command.getRequestedPersonId(), command.getUser(), command);
-				return this.showAllAction(command);
-			}
+		if(command.getRequestedAction().equals("newPersonName")) {
+			this.addNameAction(command.getRequestedPersonId(), command.getUser(), command);
 			return this.showAllAction(command);
 		} else if(command.getRequestedAction().equals("showSingle")) {
 			return this.showSingleAction(command);
-		} else if(command.getRequestedAction().equals("showAll")) {
-			command.setRequestedUser(command.getRequestedPersonId());
-			return this.showAllAction(command);
 		} else {
-			return this.actionAction(command);
+			return this.showAllAction(command);
 		}
 	}
 
+
 	/**
+	 * @param requestedPersonId
+	 * @param user
 	 * @param command
-	 * @return
 	 */
-	private View actionAction(PersonPageCommand command) {
-		// TODO Auto-generated method stub
-		return null;
+	private void addNameAction(String requestedPersonId, User user,
+			PersonPageCommand command) {
+		
+		Set<PersonName> names = new HashSet<PersonName>();
+		names.add(new PersonName(command.getFormGivenName(), command.getFormSurName()));
+		Person person = new Person();
+		person.setNames(names);
+		command.setPerson(person);		
 	}
+
 
 	/**
 	 * @param command
@@ -134,6 +135,7 @@ public class PersonPageController extends SingleResourceListControllerWithTags i
 	private View showAllAction(PersonPageCommand command) {
 		// retrieve and set the requested resource lists, along with total
 		// counts
+		command.setRequestedUser(command.getRequestedPersonId());
 		Class<? extends Resource> toRemove = null;
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command.getFormat(), command.getResourcetype())) {
 			if(resourceType.getName().equals("org.bibsonomy.model.Bookmark")) {
@@ -178,76 +180,15 @@ public class PersonPageController extends SingleResourceListControllerWithTags i
 		return new PersonPageCommand();
 	}
 
-	private void updatePersonSettings(final String personID, final User user, final PersonPageCommand command) {
-		Set<PersonName> names = new HashSet<PersonName>();
-		names.add(new PersonName(command.getFormGivenName(), command.getFormSurName()));
-		Person person = new Person();
-		person.setNames(names);
-		command.setPerson(person);
-	}
-
-	/**
-	 * Updates the user (including field length error checking!).
-	 * 
-	 * @param user
-	 */
-	private void updateUser(final User user) {
-		try {
-			this.logic.updateUser(user, UserUpdateOperation.UPDATE_CORE);
-		} catch(final DatabaseException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private void updatePerson(final Person person) {
-		return;
-	}
-
-	@Override
-	public Validator<PersonPageCommand> getValidator() {
-		return new PersonUpdateValidator();
-	}
-
-	public boolean isValidationRequired(final SettingsViewCommand command) {
-		return true;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.webapp.util.ValidationAwareController#isValidationRequired(org.bibsonomy.webapp.command.ContextCommand)
-	 */
-	@Override
-	public boolean isValidationRequired(PersonPageCommand command) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.webapp.util.RequestAware#setRequestLogic(org.bibsonomy.webapp.util.RequestLogic)
 	 */
 	@Override
 	public void setRequestLogic(RequestLogic requestLogic) {
-		// TODO Auto-generated method stub
+		this.requestLogic = requestLogic;
 		
 	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.webapp.util.ErrorAware#getErrors()
-	 */
-	@Override
-	public Errors getErrors() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.webapp.util.ErrorAware#setErrors(org.springframework.validation.Errors)
-	 */
-	@Override
-	public void setErrors(Errors errors) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
 
 
