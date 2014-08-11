@@ -146,22 +146,22 @@
 									<li>
 										<fmt:message var="titleInbox" key="navi.inbox" />
 										<a href="/inbox" title="${titleInbox}">
-											<span class="glyphicon glyphicon-inbox"><!-- KEEP ME --></span>&amp;nbsp;
+											<span class="fa fa-inbox"><!-- KEEP ME --></span>&amp;nbsp;
 
 											<fmt:message key="navi.inbox" />
 											<c:if test="${command.context.loginUser.inbox.numPosts gt 0}">
-												<span class="pull-right badge"><c:out value="${command.context.loginUser.inbox.numPosts}"/></span>
+												<span style="position: absolute; right: 10px;" class="badge"><c:out value="${command.context.loginUser.inbox.numPosts}"/></span>
 											</c:if>
 										</a>
 									</li>
 									<li>
 										<fmt:message var="titleBasket" key="navi.basket"/>
 										<a href="/clipboard" title="${titleBasket}"><!-- empty -->
-											<span class="glyphicon glyphicon-folder-open"><!--  --></span>&amp;nbsp;
-											<c:if test="${command.context.loginUser.basket.numPosts gt 0}">
-												<span class="pull-right badge"><c:out value="${command.context.loginUser.basket.numPosts}"/></span>
-											</c:if>
+											<span class="fa fa-folder-open"><!--  --></span>&amp;nbsp;
 											<fmt:message key="navi.basket" />
+											<c:if test="${command.context.loginUser.basket.numPosts gt 0}">
+												<span style="position: absolute; right: 10px;" class="badge"><c:out value="${command.context.loginUser.basket.numPosts}"/></span>
+											</c:if>
 										</a>
 									</li>
 									<li>
@@ -171,15 +171,6 @@
 											<fmt:message key="navi.friends"/>
 										</a>
 									</li>
-									<!-- 
-									<li>
-										<fmt:message var="titleSperes" key="navi.spheres" />
-										<a href="/spheres" title="${titleSpheres}">
-											<span class="glyphicon glyphicon-eye-open"> asd </span>&amp;nbsp;
-											<fmt:message key="navi.spheres" />
-										</a>
-									</li>
-									-->
 									<li> 
 										<fmt:message var="editTags" key="navi.editTags" />
 										<a href="/editTags" title="${editTags}">
@@ -194,7 +185,12 @@
 											<fmt:message key="navi.concepts" />
 										</a>
 									</li>
-									
+									<li>
+										<a href="/bibsonomy3preview">
+											<span class="fa fa-exchange"><!--  --></span>&amp;nbsp;
+											BibSonomy 2
+										</a>
+									</li>
 									<!-- divider -->
 									<li class="divider"><!-- KEEP ME --></li>
 	
