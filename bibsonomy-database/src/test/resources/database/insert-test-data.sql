@@ -5,7 +5,6 @@
 -- module. It expects the existence of all tables; their create statements
 -- are found in src/main/resources/bibsonomy_db_schema.sql
 --
--- $Id$
 -- 
 
 

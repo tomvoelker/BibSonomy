@@ -309,7 +309,36 @@
 		<to last="true">/reminder/change_password</to>
 	</rule>
 
-
+	<!-- ############## /person pages ############### -->
+	<!-- redirect to /person/PERSON page -->
+	<rule>
+		<name>redirect /person/PERSONID/PERSONNAME/HASH/USER/ROLE/ACTION</name>
+		<from>^/+person/+([^/]+?)/+([^/]+?)/+([^/]+?)/+([^/]+?)/+([^/]+?)/+([^/]+?)$</from>
+		<set type="parameter" name="requestedPersonId">$1</set>
+		<set type="parameter" name="requestedPersonName">$2</set>
+		<set type="parameter" name="requestedHash">$3</set>
+		<set type="parameter" name="requestedUser">$4</set>
+		<set type="parameter" name="requestedRole">$5</set>
+		<set type="parameter" name="requestedAction">$6</set>
+		<to last="true">/person</to>
+	</rule>
+	<rule>
+		<name>redirect /person/PERSONID/PERSONNAME/HASH/USER/ROLE</name>
+		<from>^/+person/+([^/]+?)/+([^/]+?)/+([^/]+?)/+([^/]+?)/+([^/]+?)$</from>
+		<set type="parameter" name="requestedPersonId">$1</set>
+		<set type="parameter" name="requestedPersonName">$2</set>
+		<set type="parameter" name="requestedHash">$3</set>
+		<set type="parameter" name="requestedUser">$4</set>
+		<set type="parameter" name="requestedRole">$5</set>
+		<to last="true">/person</to>
+	</rule>
+	<rule>
+		<name>redirect /person/PERSONID/PERSONNAME</name>
+		<from>^/+person/+([^/]+?)/+([^/]+?)$</from>
+		<set type="parameter" name="requestedPersonId">$1</set>
+		<set type="parameter" name="requestedPersonName">$2</set>
+		<to last="true">/person</to>
+	</rule>
 	<!-- ############## /concept pages ############### -->
 	<!-- /concept/user/USER/TAG -->
 	<rule>

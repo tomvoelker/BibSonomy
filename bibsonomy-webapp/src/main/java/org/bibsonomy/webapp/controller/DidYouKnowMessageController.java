@@ -19,10 +19,18 @@ public abstract class DidYouKnowMessageController {
 	 */
 	private List<DidYouKnowMessage> didYouKnowMessages;
 	
+	/**
+	 * sets random didYouKnowMessage
+	 * @param command
+	 */
 	public void initializeDidYouKnowMessageCommand(DidYouKnowMessageCommand command) {
 		command.setDidYouKnowMessage(this.getRandomDidYouKnowMessage());
 	}
 	
+	/**
+	 * returns a random didYouKnowMessage
+	 * @return didYouKnowMessage
+	 */
 	public DidYouKnowMessage getRandomDidYouKnowMessage() {
 		
 		int max = didYouKnowMessages.size();
@@ -31,10 +39,18 @@ public abstract class DidYouKnowMessageController {
 		return this.didYouKnowMessages.get(random);
 	}
 
+	/**
+	 * returns a list of didYouKnowMessages
+	 * @return didYouKnowMessage
+	 */
 	public List<DidYouKnowMessage> getDidYouKnowMessages() {
 		return didYouKnowMessages;
 	}
 
+	/**
+	 * 
+	 * @param didYouKnowMessages
+	 */
 	public void setDidYouKnowMessages(List<DidYouKnowMessage> didYouKnowMessages) {
 		this.didYouKnowMessages = didYouKnowMessages;
 	}

@@ -28,6 +28,9 @@ public enum Views implements View {
 	 * here users can calculate the hashes of their publications
 	 */
 	HASHEXAMPLE("hashexample"),
+	
+	PERSON_ALL("person/all"),
+	PERSON_SINGLE("person/single"),
 
 	/**
 	 * the page where a user can change his personal settings
@@ -714,7 +717,12 @@ public enum Views implements View {
 	/**
 	 * Recommended posts page. Showing recommendations for bibtexs and bookmarks.
 	 */
-	RECOMMENDEDPAGE("recommended");
+	RECOMMENDEDPAGE("recommended"),
+	
+	/**
+	 * show bibsonomy3 demo
+	 */
+	BIBSONOMY3PREVIEW("bibsonomy3preview");
 
 	/*
 	 * both bookmarks and publications

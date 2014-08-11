@@ -57,7 +57,7 @@ $(function() {
     moretext = "";
     lesstext = "";
     
-    $('showmore').each(function() {
+    $('.show-more').each(function() {
     	
         var moreLink = $(document.createElement("a"));
         var contentContainer = $(this).children(".contentContainer")[0];
@@ -68,13 +68,13 @@ $(function() {
             if($(this).hasClass('less')) {
             	$(this)
             	.html("(" + getString("more") + ")")
-            	.removeClass("less")
-            	.addClass("showmore");
+            	.removeClass("show-less")
+            	.addClass("show-more");
             } else {
             	$(this)
             	.html("(" + getString("less") + ")")
-            	.removeClass("showmore")
-            	.addClass("less");
+            	.removeClass("show-more")
+            	.addClass("show-less");
             }
             shortenContent(contentContainer, moreLink.data("text"));
             return false;
