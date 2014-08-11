@@ -58,6 +58,7 @@
 			<list>
 				<value>/WEB-INF/project.properties</value>
 				<value>file:${config.location}</value>
+				<value>file:${user.home}#{servletContext.contextPath}/bibsonomy.properties</value>
 			</list>
 		</property>
 		<property name="ignoreResourceNotFound" value="true" />
@@ -691,6 +692,18 @@
 				<entry key="/linkcloud">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="linkCloudPageController"/>
+					</bean>
+				</entry>
+				<entry key="/bibsonomy3preview">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="settingsPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>ckey</value>
+								<value>action</value>
+								<value>bibsonomy3preview</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 			</map>

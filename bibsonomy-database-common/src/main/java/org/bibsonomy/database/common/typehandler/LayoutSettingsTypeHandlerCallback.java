@@ -47,10 +47,10 @@ public class LayoutSettingsTypeHandlerCallback implements TypeHandlerCallback {
 	 */
 	private static int intValue(LayoutSettings settings) {
 		int intVal = 0b00000000;
-		if (settings.getViewLayout() == ViewLayout.BOOTSTRAP) {
+		if (ViewLayout.BOOTSTRAP.equals(settings.getViewLayout())) {
 			intVal |= LAYOUT_BIT;
 		}
-		if (settings.isSimpleInterface() == true) {
+		if (settings.isSimpleInterface()) {
 			intVal |= SIMPLE_BIT;
 		}
 		return intVal;
@@ -60,7 +60,7 @@ public class LayoutSettingsTypeHandlerCallback implements TypeHandlerCallback {
 	 * @see com.ibatis.sqlmap.client.extensions.TypeHandlerCallback#valueOf(java.lang.String)
 	 */
 	@Override
-	public Object valueOf(String stringRepresentation) {
+	public Object valueOf(final String stringRepresentation) {
 		return valueOf(Integer.parseInt(stringRepresentation));
 	}
 
@@ -80,7 +80,7 @@ public class LayoutSettingsTypeHandlerCallback implements TypeHandlerCallback {
 	 * @return
 	 */
 	private static ViewLayout booleanToViewLayout(boolean booleanValue) {
-		if (booleanValue == true) {
+		if (booleanValue) {
 			return ViewLayout.BOOTSTRAP;
 		}
 		return ViewLayout.CLASSIC;

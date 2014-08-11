@@ -46,7 +46,7 @@ var errorData = new errorBoxData("#upload");
 			}
 
 			// create row with the added file
-			$("#upload").children('ul').append($("<li class='loading' id='file_"+counter+"'><span class='documentFileName'>"+fileName+"</span></li>"));
+			$("#upload").find('.documents:first').append($("<li class='loading' id='file_"+counter+"'><span class='documentFileName'>"+fileName+"</span></li>"));
 
 			// create new form to upload added file
 			var form = ("<form class='upform' id='uploadForm_"+counter+"' action='/ajax/documents?ckey="+ckey+"&amp;temp=true' method='POST' enctype='multipart/form-data'></form>");
@@ -70,16 +70,16 @@ var errorData = new errorBoxData("#upload");
 	};
 
 	function onRequestComplete(data) {
-		if($("status", data).text() == "ok")
+		if(data.getElementsByTagName("status")[0].innerHTML == "ok")
 			return fileUploaded(data);
 		var file_id = prepareFileErrorBox(data);
 		$("#file_"+file_id).removeClass("loading").addClass("fileError");
 	}
 
 	function fileUploaded(data) {
-		var fileID=$("fileid", data).text();
-		var fileHash=$("filehash", data).text();
-		var fileName=$("filename", data).text();
+		var fileID=data.getElementsByTagName("fileid")[0].innerHTML;
+		var fileHash=data.getElementsByTagName("filehash")[0].innerHTML;
+		var fileName=data.getElementsByTagName("filename")[0].innerHTML;
 		var deleteLink = $("<a class='deleteDocument' href='/ajax/documents?fileHash="
 				+fileHash
 				+"&amp;ckey="
@@ -99,16 +99,15 @@ var errorData = new errorBoxData("#upload");
 
 function deleteFunction(button){
 	$.get($(button).attr("href"), {}, function(data) {
-		var fileID=$("fileid", data).text();
-		if( "ok"==$("status", data).text() || "deleted"==$("status", data).text() ) {
-			errorData.msg = $("response", data).text();
+		var fileID=data.getElementsByTagName("fileid")[0].innerHTML;
+		if( "ok"==data.getElementsByTagName("status")[0].innerHTML || "deleted"==data.getElementsByTagName("status")[0].innerHTML) {
 			$(button).parent().remove();
 			if(fileID != '') {
 				$("#file_"+fileID).remove();
 				$("#uploadForm_"+fileID).remove();			
 			}
 		}else {
-			errorData.msg = $("reason", data).text();	
+			errorData.msg = data.getElementsByTagName("reason")[0].innerHTML;	
 		}	
 		displayFileErrorBox(data);
 	}, "xml");
@@ -119,9 +118,9 @@ function prepareFileErrorBox(data) {
 	var fileID = "NaN";
 	var reason = "Unknown Error!";
 	
-	if($("status", data).text() == "error") {
-		fileID = $("fileid", data).text();
-		reason = $("reason", data).text();
+	if(data.getElementsByTagName("status")[0].innerHTML == "error") {
+		fileID = data.getElementsByTagName("fileid")[0].innerHTML;
+		reason = data.getElementsByTagName("reason")[0].innerHTML
 	}
 
 	errorData.msg = reason;

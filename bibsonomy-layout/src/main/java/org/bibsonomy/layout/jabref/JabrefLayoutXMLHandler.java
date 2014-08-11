@@ -109,7 +109,7 @@ public class JabrefLayoutXMLHandler extends DefaultHandler {
 		} else if ("mimeType".equals(name)) {
 			currentLayoutDefinition.setMimeType(getBuf());
 		} else if ("isFavorite".equals(name)) {
-			currentLayoutDefinition.setFavorite(getBuf());
+			currentLayoutDefinition.setIsFavorite(Boolean.parseBoolean(getBuf()));
 		}
 	}
 

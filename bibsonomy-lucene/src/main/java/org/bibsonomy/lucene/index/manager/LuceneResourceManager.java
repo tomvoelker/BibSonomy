@@ -477,7 +477,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 */
 	private void updatePredictions() {
 		// keeps track of the newest log_date during last index update
-		final Long lastLogDate = this.updatingIndex.getLastLogDate() - QUERY_TIME_OFFSET_MS;
+		final long lastLogDate = this.updatingIndex.getLastLogDate() - QUERY_TIME_OFFSET_MS;
 
 		// get date of last index update
 		final Date fromDate = new Date(lastLogDate);
