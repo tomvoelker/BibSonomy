@@ -2,31 +2,51 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.errors.FieldLengthErrorMessage;
+import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.PersonPageCommand;
+import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.config.Parameters;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
+import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestAware;
+import org.bibsonomy.webapp.util.RequestLogic;
+import org.bibsonomy.webapp.util.ValidationAwareController;
+import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.validation.PersonUpdateValidator;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.validation.Errors;
 
 /**
  * @author Christian Pfeiffer
  */
-public class PersonPageController extends SingleResourceListControllerWithTags implements MinimalisticController<PersonPageCommand> {
+public class PersonPageController extends SingleResourceListControllerWithTags implements MinimalisticController<PersonPageCommand> ,ErrorAware, RequestAware, ValidationAwareController<PersonPageCommand>{
 	private static final Log log = LogFactory.getLog(PersonPageController.class);
 	
 	@Override
 	public View workOn(final PersonPageCommand command) {
+		
+		System.out.println(command.getAction());
 		
 		if (!present(command.getRequestedPersonId())) {
 			throw new MalformedURLSchemeException("error.person_page_without_personname");
@@ -34,11 +54,18 @@ public class PersonPageController extends SingleResourceListControllerWithTags i
 			throw new MalformedURLSchemeException("error.person_page_without_personname");
 		}
 		
-		if(command.getRequestedAction().equals("showAll")) {
-			command.setRequestedUser(command.getRequestedPersonId());
+		if(command.getAction() != null) {
+			if(command.getAction().equals("newPersonName")) {
+				System.out.println("action");
+				this.updatePersonSettings(command.getRequestedPersonId(), command.getUser(), command);
+				return this.showAllAction(command);
+			}
 			return this.showAllAction(command);
 		} else if(command.getRequestedAction().equals("showSingle")) {
 			return this.showSingleAction(command);
+		} else if(command.getRequestedAction().equals("showAll")) {
+			command.setRequestedUser(command.getRequestedPersonId());
+			return this.showAllAction(command);
 		} else {
 			return this.actionAction(command);
 		}
@@ -105,7 +132,6 @@ public class PersonPageController extends SingleResourceListControllerWithTags i
 	 * @return
 	 */
 	private View showAllAction(PersonPageCommand command) {
-	
 		// retrieve and set the requested resource lists, along with total
 		// counts
 		Class<? extends Resource> toRemove = null;
@@ -151,4 +177,77 @@ public class PersonPageController extends SingleResourceListControllerWithTags i
 	public PersonPageCommand instantiateCommand() {
 		return new PersonPageCommand();
 	}
+
+	private void updatePersonSettings(final String personID, final User user, final PersonPageCommand command) {
+		Set<PersonName> names = new HashSet<PersonName>();
+		names.add(new PersonName(command.getFormGivenName(), command.getFormSurName()));
+		Person person = new Person();
+		person.setNames(names);
+		command.setPerson(person);
+	}
+
+	/**
+	 * Updates the user (including field length error checking!).
+	 * 
+	 * @param user
+	 */
+	private void updateUser(final User user) {
+		try {
+			this.logic.updateUser(user, UserUpdateOperation.UPDATE_CORE);
+		} catch(final DatabaseException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void updatePerson(final Person person) {
+		return;
+	}
+
+	@Override
+	public Validator<PersonPageCommand> getValidator() {
+		return new PersonUpdateValidator();
+	}
+
+	public boolean isValidationRequired(final SettingsViewCommand command) {
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.util.ValidationAwareController#isValidationRequired(org.bibsonomy.webapp.command.ContextCommand)
+	 */
+	@Override
+	public boolean isValidationRequired(PersonPageCommand command) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.util.RequestAware#setRequestLogic(org.bibsonomy.webapp.util.RequestLogic)
+	 */
+	@Override
+	public void setRequestLogic(RequestLogic requestLogic) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.util.ErrorAware#getErrors()
+	 */
+	@Override
+	public Errors getErrors() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.util.ErrorAware#setErrors(org.springframework.validation.Errors)
+	 */
+	@Override
+	public void setErrors(Errors errors) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
+
+

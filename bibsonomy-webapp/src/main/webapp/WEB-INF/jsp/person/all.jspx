@@ -26,6 +26,12 @@
 		disableResourcetypeSelection="${true}" 
 		minimizedContentWidth="${true}">
 		
+		<jsp:attribute name="headerExt">
+			<script type='text/javascript' src='/resources/javascript/person/addName.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/all.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/addPerson.js'><!-- keep me --></script>
+		</jsp:attribute>
+		
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.person" formAction="/person/${command.requestedPersonId}/${command.requestedPersonName}" formInputName="tag">
 				<jsp:attribute name="pathPart">
@@ -46,9 +52,9 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="discussion">
-			<form>
 				<label for='graduation'>Your Graduation</label>
-				<INPUT type="text" name='graduation' id='graduation' placeholder="graduation"/>
+				<INPUT type="text" name='personGraduation' id='personGraduation' placeholder="graduation" value="${command.person.graduation }"/>
+				<INPUT type='hidden' name='requestedAction' value='setPersonName'/>
 				<table>
 					<thead>
 						<tr>
@@ -57,152 +63,67 @@
 						</tr>
 					</thead>
 					<tbody id='nameList'>
-						<c:forEach var="name" items="${command.person.names}">
-							<tr>
-								<td><c:out value="${name}"></c:out></td>
-								<td><INPUT type='radio' name='myName' value='${name}'/></td>
-							</tr>
-						</c:forEach>
+						<form method='post'>
+							<c:forEach var="name" items="${command.person.names}">
+								<tr>
+									<td><c:out value="${name}"></c:out></td>
+									<td><INPUT type='radio' name='personName' value='${name}'/></td>
+								</tr>
+							</c:forEach>
+						</form>
 					</tbody>
 					<TFOOT>
 						<tr>
-							<td><button id='ShowAddNameDialogButton' name='addNameToPersonButton'>Add Name</button></td>
-							<td><input type='submit' name='save' value='save'/></td>
+							<td><button id='addNameButton'>Add Name</button></td>
+							<td><button id='saveNameButton'>Save Choice</button></td>
 						</tr>
 					</TFOOT>
-					<div style='display:none' id='addNameToPersonDialog' title='New Name for Person bla'>
-						<form action='' method="post">
-							<label for='givenName'>Given name</label>
-							<input id='givenName' type='text' name='givenName'/>
-							<label for='surName'>Surname</label>
-							<input id='surName' type='text' name='surName'/>
-							<input type='submit' name='add' id='addNameButton'/>
-						</form>
-					</div>
-					<div style='display:none' id='changeRoleDialog' title='Change role to'>
-						<form action='' method="post">
-							<label for='roleBetreuer'>Betreuer</label>
-							<input id='roleBetreuer' type='checkbox' name='roleEdit[]' value='Betreuer'/>
-							<label for='roleGutachter'>Gutachter</label>
-							<input id='roleGutachter' type='checkbox' name='roleEdit[]' value='Gutachter'/>
-							<label for='roleSonstiges'>Sonstiges</label>
-							<input id='roleSonstiges' type='checkbox' name='roleEdit[]' value='Sonstiges'/>
-							<input id='changeRoleForId' type='hidden' name='changeRoleForId'/>
-							<input type='submit' name='changeRoleDialogSaveButton' id='changeRoleDialogSaveButton'/>
-						</form>
-					</div>
-					<div style='display:none' id='addPersonDialog' title='Add Person to'>
-						<form action='' method="post">
-							<div class="ui-widget">
-								<label for='addPersonAuto'>Person</label>
-								<input id='addPersonAuto' type='text' name='addPersonAuto'/>
-							</div>
-							
-							<input type='hidden' id='addPersonId'/>
-							<input id='givenNameAdd' type='hidden' name='givenNameAdd'/>
-							<input id='surNameAdd' type='hidden' name='surNameAdd'/>
-							<input id='roleAdd' type='hidden' name='roleAdd'/>
-							<input type='submit' name='add' id='addPersonButton' style='display:none'/>
-						</form>
-					</div>
-					<script>
-						$(document).ready(function() {
-							
-							var refresh = function() {
-								$(".authorEditorList").each(function(indexA) {
-									$(this).find("table").attr("id", indexA);
-									var c = -1;
-									$(this).find(".personLine").each(function(indexB) {
-										$(this).attr("id", indexA + "_" + indexB);
-										c++;
-									});
-									$(this).find("table").attr("data-latestid", c);
-								})
-								$(".editPersonRole").unbind("click");
-								$(".editPersonRole").on("click", function(e) {
-									e.preventDefault();
-									var id = $(this).parent().parent().attr("id");
-									$("#changeRoleDialog").dialog();
-									$("#changeRoleForId").val(id);
-								});
-								$(".deletePersonRole").unbind("click");
-								$(".deletePersonRole").on("click", function(e) {
-									e.preventDefault();
-									$(this).parent().parent().remove();
-								});
-							}
-							
-							refresh();
-							
-							var names = [{role: "1", givenName: "Christian", surName: "Pfeiffer", label: "Christian Pfeiffer"},
-							             {role: "2", givenName: "Christ", surName: "Da", label: "Christ Da"},
-							             {role: "3", givenName: "Chr", surName: "A", label: "blablab bal"}];
-							$("#addPersonAuto").autocomplete({
-								source: names,
-								select: function(event, ui) {
-									$("#addPersonAuto").val(ui.item.label);
-									$("#givenNameAdd").val(ui.item.givenName);
-									$("#surNameAdd").val(ui.item.surName);
-									$("#roleAdd").val(ui.item.role);
-									$("#addPersonButton").click();
-								}
-							});
-							$("#addPersonAuto").autocomplete("widget").css('z-index',1000);
-							
-							
-							$("#ShowAddNameDialogButton").on("click", function(e) {
-								e.preventDefault();
-								$("#addNameToPersonDialog").dialog();	
-							});
-							$("#addNameButton").on("click", function(e) {
-								e.preventDefault();
-								$("#addNameToPersonDialog").dialog("close"); 
-								var x = $("<input/>", {type: "radio", name: "myName", value: $("#givenName").val() + "_" + $("#surName").val()})
-								$("#nameList").append("<tr><td>" + $("#givenName").val() + " " + $("#surName").val() +"</td><td>" + $("<div/>").append(x).html() +"</td></tr>");
-								$("#givenName").val("");
-								$("#surName").val("");
-								//$.ajax({});
-							});
-							$("#addPersonButton").on("click", function(e) {
-								e.preventDefault();
-								$("#addPersonDialog").dialog("close");
-								var subID = $(this).parent().parent().parent().parent().attr("data-latestid") + 1;
-								$(this).parent().parent().parent().parent().attr("data-latestid", subID);
-								var id = $("#addPersonId").val();
-								var x = $("<a/>", {href: "", text: "E", style: "color:red", class:'editPersonRole'});
-								var y = $("<a/>", {href: "", text: "D", style: "color:red", class:'deletePersonRole'});
-								$("#"+id).find("tbody").append('<tr class="personLine"><td class="personColoumn">' + $("#givenNameAdd").val() + " " + $("#surNameAdd").val() +'</td><td class="roleColoumn">'+$("#roleAdd").val()+"</td><td>" + $("<div/>").append(x).html() + $("<div/>").append(y).html() +"</td></tr>");
-								$("#addPersonAuto").val(" ");
-								$("#givenNameAdd").val(" ");
-								$("#surNameAdd").val(" ");
-								$("#roleAdd").val(" ");
-								refresh();
-							});
-							
-							$("#changeRoleDialogSaveButton").on("click", function(e) {
-								e.preventDefault();
-								var id = $("#changeRoleForId").val(); 
-								var roles = "";
-								$("#changeRoleDialog").find("input:checked").each(function() {
-									roles = roles + " " + $(this).val();
-								})
-								$("#"+id).find(".roleColoumn").text(roles);
-								$("#changeRoleDialog").dialog("close");
-								$("#changeRoleField").val("");
-							});
-							$(".addPerson").on("click", function(e) {
-								e.preventDefault();
-								var id = $(this).parent().parent().parent().parent().attr("id");
-								$("#addPersonId").val(id);
-								$("#addPersonDialog").dialog();
-							});
-
-							$("#bookmarks_0").remove();
-						});
-					</script>
 				</table>
-			</form>
 			<br/><br/>
 		</jsp:attribute>
 	</layout:resourceLayout>
+	<script>
+		$(document).ready(function() {
+			$("#bookmarks_0").remove();
+		});
+		
+	</script>
+	<div style='display:none' id='addNameDialog' title='New Name for Person bla'>
+		<form action="" method="post" id='addPersonNameForm' name="addPersonNameForm">
+			<fieldset>
+				<label for='formGivenName'>Given name</label>
+				<input id='formGivenName' type='text' name='formGivenName'/>
+				<label for='formSurName'>Surname</label>
+				<input id='formSurName' type='text' name='formSurName'/>
+				<input type='hidden' name='requestedAction' value='newPersonName'/>
+			</fieldset>
+		</form>
+	</div>
+	<div style='display:none' id='changeRoleDialog' name='changeRoleDialog' title='Change role to'>
+		<form  action="" method="post" name='changeRoleForm'>
+			<label for='roleBetreuer'>Betreuer</label>
+			<input id='roleBetreuer' type='checkbox' name='roleEdit[]' value='Betreuer'/>
+			<label for='roleGutachter'>Gutachter</label>
+			<input id='roleGutachter' type='checkbox' name='roleEdit[]' value='Gutachter'/>
+			<label for='roleSonstiges'>Sonstiges</label>
+			<input id='roleSonstiges' type='checkbox' name='roleEdit[]' value='Sonstiges'/>
+			<input type='hidden' name='requestedAction' value='changeRole'/>
+			<input id='changeRoleForId' type='hidden' name='changeRoleForId'/>
+		</form>
+	</div>
+	<div style='display:none' id='addPersonDialog' title='Add Person to'>
+		<form action="" method="post" name='addPersonForm'>
+			<div class="ui-widget">
+				<label for='addPersonAuto'>Person</label>
+				<input id='addPersonAuto' type='text' name='addPersonAuto'/>
+			</div>
+			
+			<input type='hidden' id='addPersonId'/>
+			<input id='givenNameAdd' type='hidden' name='givenNameAdd'/>
+			<input id='surNameAdd' type='hidden' name='surNameAdd'/>
+			<input id='roleAdd' type='hidden' name='roleAdd'/>
+			<input type='hidden' name='requestedAction' value='addPerson'/>
+			<input type='submit' name='add' id='addPersonButton' style='display:none'/>
+		</form>
+	</div>
 </jsp:root>

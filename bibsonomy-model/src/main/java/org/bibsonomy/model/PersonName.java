@@ -128,11 +128,19 @@ public class PersonName implements Serializable {
 		return super.hashCode();
 	}
 	
+	/**
+	 * @param firstName
+	 * @return
+	 */
 	public PersonName withFirstName(String firstName) {
 		this.setFirstName(firstName);
 		return this;
 	}
 	
+	/**
+	 * @param lastName
+	 * @return
+	 */
 	public PersonName withLastName(String lastName) {
 		this.setLastName(lastName);
 		return this;

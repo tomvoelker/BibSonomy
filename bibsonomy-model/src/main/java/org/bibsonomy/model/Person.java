@@ -104,13 +104,7 @@ public class Person implements Serializable {
 	/**
 	 * Default constructor
 	 */
-	public Person() {
-		Set<PersonName> s = new HashSet<PersonName>();
-		s.add(new PersonName().withFirstName("Christian").withLastName("Pfeiffer"));
-		s.add(new PersonName().withFirstName("Chr").withLastName("Pf"));
-		s.add(new PersonName().withFirstName("Christ").withLastName("Pfeiff"));
-		this.setNames(s);
-	}
+	public Person() {}
 
 	@Override
 	public boolean equals(Object obj) {

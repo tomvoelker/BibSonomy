@@ -82,15 +82,15 @@
 						<td class='personColoumn'><a href="${baseUrl}author/${fn:escapeXml(mtl:cleanBibtex(person.lastName))}"><c:out value="${personName}"/></a></td>
 						<td class='roleColoumn'>Betreuer</td>
 						<td>
-							<a class='editPersonRole' href='' style='color:red'>E</a>
-							<a class='deletePersonRole' href='' style='color:red'>D</a>
+							<a class='editPersonRole' href='#' style='color:red'>E</a>
+							<a class='deletePersonRole' href='#' style='color:red'>D</a>
 						</td>
 					</tr>
 				</c:forEach>
 			</tbody>
 			<tfoot>
 				<tr>
-					<td colspan='3'><a class='addPerson' href=''>Neue Person hinzufuegen</a></td>
+					<td colspan='3'><a class='addPerson' href='#'>Neue Person hinzufuegen</a></td>
 					<td></td>
 					<td></td>
 				</tr>
