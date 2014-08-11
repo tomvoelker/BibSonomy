@@ -26,15 +26,7 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 	 */
 	@Override
 	public ExportPageCommand instantiateCommand() {
-		this.layouts = new StandardLayouts(); 
-		try {
-			this.layouts.init();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		final ExportPageCommand exportPageCommand = new ExportPageCommand();
-		exportPageCommand.setLayoutMap(new TreeMap<String, Layout>());
-		return exportPageCommand;
+		return new ExportPageCommand();
 	}
 
 	/*
@@ -43,8 +35,8 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 	 */
 	@Override
 	public View workOn(final ExportPageCommand command) {
-		command.addStandardLayoutMap(this.layouts.getLayoutMap());
-		command.addJabrefLayoutMap(this.layoutRenderer.getLayouts());
+		command.addLayoutMap(this.layouts.getLayoutMap());
+		command.addLayoutMap(this.layoutRenderer.getLayouts());
 		
 		if (command.getFormatEmbedded()) {
 			return Views.EXPORT_EMBEDDED;
@@ -66,6 +58,12 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 	public void setLayoutRenderer(final JabrefLayoutRenderer layoutRenderer) {
 		this.layoutRenderer = layoutRenderer;
 	}
+
+	public StandardLayouts getLayouts() {
+		return layouts;
+	}
+
+	public void setLayouts(StandardLayouts layouts) {
+		this.layouts = layouts;
+	}
 }
-
-
