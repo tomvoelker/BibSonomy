@@ -643,6 +643,7 @@
 						<property name="controllerBeanName" value="friendsOverviewController"/>
 					</bean>
 				</entry>
+				<!-- TODO: (bootstrap) remove -->
 				<entry key="/bootstrapDemo">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="bootstrapDemoController"/>
