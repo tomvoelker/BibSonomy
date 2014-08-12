@@ -26,9 +26,9 @@ package org.bibsonomy.layout.standard;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,10 +37,8 @@ import org.apache.commons.logging.LogFactory;
  * Holds and manages the available standard layouts.
  * 
  * @author:  lsc
- * 
  */
 public class StandardLayouts {
-
 	private static final Log log = LogFactory.getLog(StandardLayouts.class);
 
 	/**
@@ -52,16 +50,14 @@ public class StandardLayouts {
 	 */
 	private Map<String, StandardLayout> layouts;
 	
-		
 	
-	/** Initialize the layouts by loading them into a map.
+	
+	/**
+	 * Initialize the layouts by loading them into a map.
+	 * @throws IOException 
 	 */
-	public StandardLayouts() {
-		try {
-			loadDefaultLayouts();
-		} catch (IOException ex) {
-			log.error("Couldn't load default layouts.");
-		}
+	public StandardLayouts() throws IOException {
+		loadDefaultLayouts();
 	}
 
 	/**
@@ -89,10 +85,10 @@ public class StandardLayouts {
 		log.info("loaded " + layouts.size() + " layouts");
 	}
 
-	/** Returns the requested layout. This is for layouts which don't have item parts for specific publication types. 
-	 * 
+	/**
 	 * @param layout
-	 * @return
+	 * @return the requested layout. This is for layouts which don't have item
+	 *         parts for specific publication types. 
 	 */
 	public StandardLayout getLayout(final String layout) {
 		return layouts.get(layout);
@@ -109,7 +105,6 @@ public class StandardLayouts {
 	public String toString() {
 		return layouts.toString();
 	}
-
 	
 	/**
 	 * Returns a map with all layouts
@@ -119,6 +114,4 @@ public class StandardLayouts {
 	public Map<String, StandardLayout> getLayoutMap(){
 		return this.layouts;
 	}
-
 }
-
