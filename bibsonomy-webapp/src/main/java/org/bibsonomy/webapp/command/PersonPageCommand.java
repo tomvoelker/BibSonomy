@@ -1,12 +1,47 @@
 package org.bibsonomy.webapp.command;
 
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 
 /**
  * @author Christian Pfeiffer
  */
 public class PersonPageCommand extends UserResourceViewCommand {
 
+
+	private String requestedPersonName;
+	private String requestedRole;
+	private String requestedPersonId;
+	private String requestedHash;
+	private String requestedAction;
+	
+	private PersonName formSelectedName;
+	private String formGraduation;
+	private String formGivenName;
+	private String formSurName;
+	
+	private Person person;
+	
+	
+	// TODO: inject person
+	public PersonPageCommand() {
+		this.person = new Person();
+	}
+	
+	/**
+	 * @return the formSelectedName
+	 */
+	public PersonName getFormSelectedName() {
+		return this.formSelectedName;
+	}
+
+	/**
+	 * @param formSelectedName the formSelectedName to set
+	 */
+	public void setFormSelectedName(PersonName formSelectedName) {
+		this.formSelectedName = formSelectedName;
+	}
+	
 	/**
 	 * @return the person
 	 */
@@ -20,27 +55,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	public void setPerson(Person person) {
 		this.person = person;
 	}
-
-	private String requestedPersonName;
-	private String requestedRole;
-	private String requestedPersonId;
-	private String requestedHash;
-	private String requestedAction;
 	
-	/**
-	 * @return the formSelectedName
-	 */
-	public String getFormSelectedName() {
-		return this.formSelectedName;
-	}
-
-	/**
-	 * @param formSelectedName the formSelectedName to set
-	 */
-	public void setFormSelectedName(String formSelectedName) {
-		this.formSelectedName = formSelectedName;
-	}
-
 	/**
 	 * @return the formGraduation
 	 */
@@ -54,12 +69,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	public void setFormGraduation(String formGraduation) {
 		this.formGraduation = formGraduation;
 	}
-
-	private String action;
-	private String formSelectedName;
-	private String formGraduation;
 	
-	private String formGivenName;
 	/**
 	 * @return the formGivenName
 	 */
@@ -87,24 +97,6 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	public void setFormSurName(String formSurName) {
 		this.formSurName = formSurName;
 	}
-
-	private String formSurName;
-
-	/**
-	 * @return the action
-	 */
-	public String getAction() {
-		return this.action;
-	}
-
-	/**
-	 * @param action the action to set
-	 */
-	public void setAction(String action) {
-		this.action = action;
-	}
-
-	private Person person;
 
 	/**
 	 * @return

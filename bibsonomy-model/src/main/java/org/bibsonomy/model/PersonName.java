@@ -47,6 +47,21 @@ public class PersonName implements Serializable {
 
 	private String firstName;
 	private String lastName;
+	private Person person;
+
+	/**
+	 * @return the person
+	 */
+	public Person getPerson() {
+		return this.person;
+	}
+
+	/**
+	 * @param person the person to set
+	 */
+	public void setPerson(Person person) {
+		this.person = person;
+	}
 
 	/**
 	 * Default constructor
