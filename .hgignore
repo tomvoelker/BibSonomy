@@ -10,3 +10,6 @@ src/main/webapp/WEB-INF/lib
 src/main/webapp/WEB-INF/classes
 src/main/webapp/META-INF
 bibsonomy-lucene/src/test/resources/lucene_*
+
+syntax: regexp
+^bibsonomy-webapp/\.externalToolBuilders/org\.eclipse\.wst\.jsdt\.core\.javascriptValidator \(1\)\.launch$
