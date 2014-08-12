@@ -618,11 +618,11 @@
 						<property name="controllerBeanName" value="buttonPageController"/>
 					</bean>
 				</entry>
-				<entry key="/gettingStarted">
+<!--				<entry key="/gettingStarted">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="gettingStartedPageController"/>
 					</bean>
-				</entry>
+				</entry>-->
 				<entry key="/allRelations">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="relationsController"/>
