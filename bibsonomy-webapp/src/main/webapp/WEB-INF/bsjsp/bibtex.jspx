@@ -59,11 +59,8 @@
 		
 		<jsp:attribute name="content">
 			<!-- COMMUNITY POST -->
-			<h3>h3 Wurst</h3>
 			<c:if test="${empty command.goldStandardPublications.list}">
-				<h4>h4 Wurst</h4>
 				<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
-					<h5>h5 wurst</h5>
 					<c:set var="post" value="${command.bibtex.list[0]}" />
 					<c:url var="editGoldStandardLink" value="/editGoldStandardPublication">
 						<c:param name="hash" value="${post.resource.intraHash}" />
@@ -76,7 +73,6 @@
 						<p><fmt:message key="bibtex.actions.community_post.no" /></p> 
 						<p><a class="button" href="${editGoldStandardLink}">${goldTitle}</a></p>
 					</div>
-					
 				</c:if>
 			</c:if>
 		</jsp:attribute>
