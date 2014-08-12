@@ -14,11 +14,8 @@ function includeJavaScript(jsFile) {
 }
 
 includeJavaScript("/resources/javascript/bs/jquery-2.1.0.min.js");
-includeJavaScript("/resources/javascript/bs/bootstrap.js");
+includeJavaScript("/resources/bootstrap/js/bootstrap.js");
 includeJavaScript("/resources/javascript/bs/holder.js");
-includeJavaScript("/resources/javascript/bs/collapse.js");
-includeJavaScript("/resources/javascript/bs/tooltip.js");
-includeJavaScript("/resources/javascript/bs/popover.js");
 includeJavaScript("/resources/javascript/bs/bootstrap-dialog.js");
 includeJavaScript("/resources/javascript/bs/custom.js");
 includeJavaScript("/resources/javascript/bs/bootstrap-datepicker.js");

@@ -87,11 +87,8 @@
 							<output>${project.build.webapp.resourcedir}/javascript/merged/bs/global.js</output>
 							<includes>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/jquery-2.1.0.min.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap.js</include>
+								<include>${project.build.webapp.resourcedir}/bootstrap/js/bootstrap.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/holder.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/collapse.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/tooltip.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/popover.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-dialog.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/custom.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-datepicker.js</include>
