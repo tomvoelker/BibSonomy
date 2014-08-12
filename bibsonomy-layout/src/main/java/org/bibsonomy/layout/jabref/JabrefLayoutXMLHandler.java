@@ -52,7 +52,7 @@ public class JabrefLayoutXMLHandler extends AbstractXMLHandler<AbstractJabRefLay
 	protected AbstractJabRefLayout initLayout(String name, Attributes attrs) {
 		if (SELF_RENDERING_LAYOUT_ELEMENT_TAG.equals(name)) {
 			try {
-				currentLayoutDefinition = (AbstractJabRefLayout) Class.forName(attrs.getValue("class")).getDeclaredConstructor(String.class).newInstance(attrs.getValue("name"));
+				return (AbstractJabRefLayout) Class.forName(attrs.getValue("class")).getDeclaredConstructor(String.class).newInstance(attrs.getValue("name"));
 			} catch (InstantiationException | IllegalAccessException
 					| IllegalArgumentException | InvocationTargetException
 					| NoSuchMethodException | SecurityException
@@ -63,12 +63,16 @@ public class JabrefLayoutXMLHandler extends AbstractXMLHandler<AbstractJabRefLay
 		return new JabrefLayout(attrs.getValue("name"));
 	}
 	
-	public void endElement(String uri, String name, String qName) {
-		super.endElement(uri, name, qName);
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.layout.common.AbstractXMLHandler#endElement(java.lang.String, java.lang.String, java.lang.String, org.bibsonomy.model.Layout)
+	 */
+	@Override
+	protected void endElement(String uri, String name, String qName, AbstractJabRefLayout currentLayout) {
+		super.endElement(uri, name, qName, currentLayout);
 		if ("baseFileName".equals(name)) {
-			((JabrefLayout) currentLayoutDefinition).setBaseFileName(getBuf());
+			((JabrefLayout) currentLayout).setBaseFileName(getBuf());
 		} else if ("directory".equals(name)) {
-			((JabrefLayout) currentLayoutDefinition).setDirectory(getBuf());
+			((JabrefLayout) currentLayout).setDirectory(getBuf());
 		}
 	}
 }

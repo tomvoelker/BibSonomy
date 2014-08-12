@@ -22,7 +22,7 @@ public abstract class AbstractXMLHandler<L extends Layout> extends DefaultHandle
 	
 	private List<L> layoutDefinitions;
 	
-	protected L currentLayoutDefinition;
+	private L currentLayoutDefinition;
 	
 	@Override
 	public void startDocument() {
@@ -71,8 +71,20 @@ public abstract class AbstractXMLHandler<L extends Layout> extends DefaultHandle
 		} else if ("isFavorite".equals(name)) {
 			currentLayoutDefinition.setIsFavorite(Boolean.parseBoolean(getBuf()));
 		}
+		
+		this.endElement(uri, name, qName, currentLayoutDefinition);
 	}
 	
+	/**
+	 * @param uri
+	 * @param name
+	 * @param qName
+	 * @param currentLayout
+	 */
+	protected void endElement(String uri, String name, String qName, L currentLayout) {
+		// noop
+	}
+
 	protected abstract boolean isLayoutElement(String name);
 	
 	protected abstract L initLayout(String name, Attributes attrs);
