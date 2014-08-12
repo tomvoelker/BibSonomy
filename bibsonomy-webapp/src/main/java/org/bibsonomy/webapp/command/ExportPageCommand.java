@@ -12,6 +12,9 @@ public class ExportPageCommand extends ResourceViewCommand {
 
 	private Map<String, Layout> layoutMap;
 	
+	/**
+	 * default constructor
+	 */
 	public ExportPageCommand() {
 		this.layoutMap = new TreeMap<>();
 	}
@@ -29,12 +32,12 @@ public class ExportPageCommand extends ResourceViewCommand {
 	public void setLayoutMap(final Map<String, Layout> layoutMap) {
 		this.layoutMap = layoutMap;
 	}
-
+	
+	/**
+	 * adds all maps the the layout map
+	 * @param map
+	 */
 	public void addLayoutMap(final Map<String, ? extends Layout> map) {
-		for (Layout layout: map.values()) {
-			// TODO: Check by which keys the values are saved in map, maybe a simple
-			// putAll is sufficient?
-			this.layoutMap.put(layout.getDisplayName(), layout);
-		}
+		this.layoutMap.putAll(map);
 	}
 }

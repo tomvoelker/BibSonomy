@@ -79,7 +79,7 @@
 			
 		<!--+
 			+ HTML header extension
-			+ -->		
+			+ -->
 		<jsp:attribute name="headerExt">
 			
 			<c:if test="${showPublication}">

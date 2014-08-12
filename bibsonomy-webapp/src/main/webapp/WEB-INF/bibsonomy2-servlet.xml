@@ -97,7 +97,9 @@
 		<property name="urlGenerator" ref="urlGenerator"/>
 		<property name="properties" ref="properties"/>
 	</bean>
-
+	
+	<bean id="standardLayouts" class="org.bibsonomy.layout.standard.StandardLayouts" />
+	
 	<!-- provides access to the request for all controllers, which need it -->
 	<bean id="requestLogic" class="org.bibsonomy.webapp.util.RequestLogic" scope="request"/>
 
@@ -981,8 +983,6 @@
 		<property name="view" value="LINK_CLOUD"/>
 	</bean>
 	
-	<bean id="standardLayouts" class="org.bibsonomy.layout.standard.StandardLayouts" scope="request" />
-		
 	<!--  #################### imports #################### -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-model-context.xml" />
 	

@@ -3,8 +3,6 @@ package org.bibsonomy.rest.database.renderer.impl;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.StringWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -23,12 +21,8 @@ public class JabrefLayoutRendererTest {
 	private JabrefLayoutRenderer renderer;
 
 	@Before
-	public void setUp() {
-		try {
-			renderer = new JabrefLayoutRenderer(new URLGenerator("http://www.bibsonomy.org/"),JabrefLayoutRenderer.LAYOUT_SIMPLEHTML);
-		} catch (Exception ex) {
-			Logger.getLogger(JabrefLayoutRendererTest.class.getName()).log(Level.SEVERE, null, ex);
-		}
+	public void setUp() throws Exception {
+		renderer = new JabrefLayoutRenderer(new URLGenerator("http://www.bibsonomy.org/"),JabrefLayoutRenderer.LAYOUT_SIMPLEHTML);
 	}
 
 	@Test
