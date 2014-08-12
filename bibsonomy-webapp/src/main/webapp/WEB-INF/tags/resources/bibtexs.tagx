@@ -55,10 +55,12 @@
 		<jsp:attribute name="actions">
 			<bib:actions loginUserName="${loginUserName}" post="${post}" disableResourceLinks="${false}"/>
 		</jsp:attribute>
+
 		<!-- BibTeX preview + document upload -->
 		<jsp:attribute name="documents">
 			<bib:documents post="${post}"/>
 		</jsp:attribute>
 		
 	</rc:list>
+	
 </jsp:root>

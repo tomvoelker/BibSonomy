@@ -109,7 +109,7 @@
 
 		<jsp:attribute name="content">
 			<div id="innercontent" style="background: #fff; padding-left: 40px;">
-				<resource:bibtexdetailsclean post="${command.bibtex.list[0]}" referer="${command.referer}"/>
+				<resource:bibtexdetailsclean post="${post}" referer="${command.referer}"/>
 			</div>
 		</jsp:attribute>
 		

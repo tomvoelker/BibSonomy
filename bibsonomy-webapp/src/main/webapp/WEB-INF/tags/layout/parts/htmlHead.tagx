@@ -103,6 +103,7 @@
 		<c:if test="${not empty additionalJS}">
 			<script type="text/javascript" src="${additionalJS}"><!-- keep me --></script>
 		</c:if>
+		
 		<!--+
 			| Piwik
 			+-->
