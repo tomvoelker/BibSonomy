@@ -220,10 +220,10 @@
 		<url-pattern>/resources/javascript/pdf.js/web/viewer.html</url-pattern>
 	</servlet-mapping>
 	
-	<servlet-mapping>
+<!--	<servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>*.properties</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping>-->
 
 	<!-- events -->
 	<servlet-mapping>
