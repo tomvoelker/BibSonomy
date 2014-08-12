@@ -1,0 +1,49 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	
+	<jsp:directive.tag description="Renders a panel with heading and body for bootstrap 3."/>
+
+	<jsp:directive.attribute name="messagesPropertiesKey" type="java.lang.String" required="true" description="Key for messages.properties which is used for heading."/>
+	<jsp:directive.attribute name="panelBody" 	fragment="true" required="true" description="body of the panel"/>
+	<jsp:directive.attribute name="collapseId"  type="java.lang.String" required="false" description="If this panel a part of a panel group and you want to active collapse action, you have to set the identifier for each panel in group" />
+	<jsp:directive.attribute name="groupId"     type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="collapsed"	type="java.lang.Boolean" required="false" />
+	
+	<c:set var="collapse" value="" />
+	<c:if test="${collapsed}">
+		<c:set var="collapse" value="in" />
+	</c:if>
+		<c:set var="hashKey" value="#" />
+	
+	 <div class="panel panel-default">
+		<div class="panel-heading">
+			<c:choose>
+				<c:when test="${not empty collapseId and not empty groupId}">
+					<c:set var="href" value="${hashKey}${collapseId}" />
+					<c:set var="dataParent" value="${hashKey}${groupId}" />
+					<h4 class="panel-title"><a href="${href}" data-toggle="collapse" data-parent="${dataParent}"><fmt:message key="${messagesPropertiesKey}" /></a></h4>
+				</c:when>
+				<c:otherwise>
+					<h4 class="panel-title"><fmt:message key="${messagesPropertiesKey}" /></h4>
+				</c:otherwise>
+			</c:choose>
+		</div>
+		<c:choose>
+			<c:when test="${not empty collapseId and not empty groupId}">
+				<div id="${collapseId}" class="panel-collapse collapse ${collapse}">
+					<div class="panel-body">
+   						<jsp:invoke fragment="panelBody"/>
+					</div>
+				</div>
+			</c:when>
+			<c:otherwise>
+				<div class="panel-body">
+   					<jsp:invoke fragment="panelBody"/>
+				</div>
+			</c:otherwise>
+		</c:choose>
+	</div>
+</jsp:root>

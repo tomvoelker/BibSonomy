@@ -30,13 +30,8 @@
 		</c:when>
 	</c:choose>
 	
-	<span class="authorEditorList"> 
+	<!-- <span class="authorEditorList"> 
 		<c:forEach var="person" items="${personList}" varStatus="loopStatus">
-			<!-- 
-				we don't need to escapeXml when building person name, because
-				it is displayed later only via c:out, which escapes XML chars 
-				anyway. 
-			 -->
 			<c:set var="personName" value="${mtl:cleanBibtex(person.firstName)} ${mtl:cleanBibtex(person.lastName)}" />
 			
 			<c:if test="${loopStatus.last and not loopStatus.first}">
@@ -57,14 +52,49 @@
 				</c:otherwise>
 			</c:choose>
 			
-			<!-- append separator "," -->
 			<c:if test="${not loopStatus.last}"><c:out value=", "/></c:if>
 		</c:forEach>
 		
-		<!-- append "(eds.)" -->
 		<c:if test="${empty publication.author and not empty publication.editor}">
 			<c:out value=" ("/><fmt:message key="bibtex.editors.abbr"/>).
 		</c:if>
 		<c:out value=". "/>
-	</span>
+	</span> -->
+	
+	<div class="authorEditorList">
+		<table>
+			<thead>
+				<tr>
+					<td>Name</td>
+					<td>Role</td>
+					<td></td>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach var="person" items="${personList}" varStatus="loopStatus">
+					<!-- 
+						we don't need to escapeXml when building person name, because
+						it is displayed later only via c:out, which escapes XML chars 
+						anyway. 
+					 -->
+					<c:set var="personName" value="${mtl:cleanBibtex(person.firstName)} ${mtl:cleanBibtex(person.lastName)}" />
+					<tr class='personLine'>
+						<td class='personColoumn'><a href="${baseUrl}author/${fn:escapeXml(mtl:cleanBibtex(person.lastName))}"><c:out value="${personName}"/></a></td>
+						<td class='roleColoumn'>Betreuer</td>
+						<td>
+							<a class='editPersonRole' href='#' style='color:red'>E</a>
+							<a class='deletePersonRole' href='#' style='color:red'>D</a>
+						</td>
+					</tr>
+				</c:forEach>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan='3'><a class='addPerson' href='#'>Neue Person hinzufuegen</a></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
 </jsp:root>

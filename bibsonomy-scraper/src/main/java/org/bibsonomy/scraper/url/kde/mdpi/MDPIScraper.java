@@ -25,6 +25,7 @@ package org.bibsonomy.scraper.url.kde.mdpi;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -32,6 +33,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -42,12 +45,13 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
 
 /**
- * TODO: add documentation to this class
+ * scraper for MDPI
  *
  * @author Haile
  */
 public class MDPIScraper extends AbstractUrlScraper implements CitedbyScraper{
-
+	private static final Log log = LogFactory.getLog(MDPIScraper.class);
+	
 	private static final String SITE_NAME = "MDPI - Open Access Publishing";
 	private static final String SITE_URL = "http://www.mdpi.com/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
@@ -56,8 +60,6 @@ public class MDPIScraper extends AbstractUrlScraper implements CitedbyScraper{
 	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<meta name=\"description\" content=\"(.*)\" >");
 	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<input type=\"hidden\" name=\"articles_ids\\[\\]\" value=\"(\\d+)\">");
 	private static final Pattern CITATION_PATTERN = Pattern.compile("<meta name=\"citation_doi\" content=\"(.*)\">");
-
-	private static String pageContent = "";
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.scraper.UrlScraper#getSupportedSiteName()
@@ -97,13 +99,14 @@ public class MDPIScraper extends AbstractUrlScraper implements CitedbyScraper{
 	@Override
 	public boolean scrapeCitedby(ScrapingContext scrapingContext) throws ScrapingException {
 		try{
+			final String pageContent = WebUtils.getContentAsString(scrapingContext.getUrl()); // TODO: cache!!
 			Matcher m = CITATION_PATTERN.matcher(pageContent);
-			if(m.find()){
+			if (m.find()) {
 				scrapingContext.setCitedBy(WebUtils.getContentAsString(SITE_URL + "citedby/" + m.group(1)));
 				return true;
 			}
-		}catch(Exception e){
-			e.printStackTrace();
+		} catch (final Exception e) {
+			log.error("error while scraping cited by " + scrapingContext.getUrl(), e);
 		}
 		return false;
 	}
@@ -112,15 +115,15 @@ public class MDPIScraper extends AbstractUrlScraper implements CitedbyScraper{
 	 * @see org.bibsonomy.scraper.AbstractUrlScraper#scrapeInternal(org.bibsonomy.scraper.ScrapingContext)
 	 */
 	@Override
-	protected boolean scrapeInternal(ScrapingContext scrapingContext)throws ScrapingException {
+	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
-		try{
-			pageContent = WebUtils.getContentAsString(scrapingContext.getUrl());
+		try {
+			final String pageContent = WebUtils.getContentAsString(scrapingContext.getUrl());
 			String id = "";
 			Matcher m = BIBTEX_PATTERN.matcher(pageContent);
-			if(m.find())
+			if (m.find()) {
 				id = m.group(1);
-			
+			}
 			final PostMethod post = new PostMethod(SITE_URL + "export");
 			post.addParameters(new NameValuePair[] {
 					new NameValuePair("articles_ids[]", id),
@@ -129,24 +132,26 @@ public class MDPIScraper extends AbstractUrlScraper implements CitedbyScraper{
 			});
 
 			String bibtex =  WebUtils.getPostContentAsString(WebUtils.getHttpClient(), post);
-			if(present(bibtex)){
-				scrapingContext.setBibtexResult(BibTexUtils.addFieldIfNotContained(bibtex, "abstract",abstractParser()));
-				scrapeCitedby(scrapingContext);
+			if (present(bibtex)) {
+				scrapingContext.setBibtexResult(BibTexUtils.addFieldIfNotContained(bibtex, "abstract", abstractParser(pageContent)));
 				return true;
-			}else
-				throw new ScrapingFailureException("getting bibtex failed");
-		}catch(Exception e){
-			e.printStackTrace();
+			}
+			
+			throw new ScrapingFailureException("getting bibtex failed");
+		} catch (final IOException e) {
+			log.error("error while scraping " + scrapingContext.getUrl(), e);
 		}
 		return false;
 	}
-	private static String abstractParser(){
-		try{
+	
+	private static String abstractParser(final String pageContent) {
+		try {
 			Matcher m = ABSTRACT_PATTERN.matcher(pageContent);
-			if(m.find())
+			if (m.find()) {
 				return m.group(1);
-		}catch(Exception e){
-			e.printStackTrace();
+			}
+		} catch (final Exception e) {
+			log.error("error while reading abstract", e);
 		}
 		return null;
 	}

@@ -40,5 +40,12 @@ public class JStageScraperTest {
 	public void url1TestRun(){
 		UnitTestRunner.runSingleTest("url_267");
 	}
+	/**
+	 * starts URL test with id url_276
+	 */
+	@Test
+	public void url2TestRun(){
+		UnitTestRunner.runSingleTest("url_276");
+	}
 
 }

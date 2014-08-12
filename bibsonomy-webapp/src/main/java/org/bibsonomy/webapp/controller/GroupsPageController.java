@@ -14,7 +14,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * Controller for group overview:
- * - groups
+ * - /groups
  * 
  * @author Folke Eisterlehner
  */
@@ -25,9 +25,6 @@ public class GroupsPageController extends SingleResourceListController implement
 	 */
 	@Override
 	public View workOn(final GroupsListCommand command) {
-		// fill out title
-		command.setPageTitle("groups"); // TODO: i18n
-		
 		/*
 		 * get all groups from db; Integer#MAX_VALUE should be enough
 		 */
@@ -42,5 +39,5 @@ public class GroupsPageController extends SingleResourceListController implement
 	@Override
 	public GroupsListCommand instantiateCommand() {
 		return new GroupsListCommand();
-	}	
+	}
 }

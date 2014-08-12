@@ -1,0 +1,69 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:spring="http://www.springframework.org/tags">
+	
+    <!-- 
+      set theme variables    
+     -->
+    <spring:theme code="image.dropdown.large" var="imageDropdown"/>
+	
+	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>
+	
+	<jsp:directive.attribute name="pathMessageKey" type="java.lang.String" required="true" description="The message key for the first element of the path"/>
+	<jsp:directive.attribute name="pathPart" fragment="true" required="false" description="Any further elements of the path. Should be enclosed in list elements."/>
+	<jsp:directive.attribute name="afterInput" fragment="true" required="false" description="Anything which should be shown after the form input field."/>
+	
+	
+	<jsp:directive.attribute name="formAction" type="java.lang.String" required="false" description="If not given, the form is hidden."/>
+	<jsp:directive.attribute name="formInputName" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="formInputValue" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="formExtra" fragment="true" required="false" description="Any extra form input fields you want to add."/>
+		
+		
+		
+		<!-- FIXME: Currently the functionality of this tag is no longer used. There is now only one search form without consideration of the page content (in the old layout, the selected search depended on the current page (e.g. user search on a user page, concept search on a concept page). -->
+	<div id="search">
+		<form action="${formAction}" method="get" id="searchForm" class="smallform">
+			<div class="input-group">
+		      <input id="inpf" type="text" name="search" class="form-control" value="${fn:escapeXml(formInputValue)}" />
+		      <input class="span2" id="scope" name="scope" type="hidden" />
+		      <div class="input-group-btn">
+		        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Search <span class="caret"></span></button>
+		        <ul class="dropdown-menu pull-right">
+					<li><a href="javascript:$('#scope').val('tag');$('#searchForm').attr('action','/redirect');$('#searchForm').submit();"><fmt:message key="navi.tag"/></a></li>
+					<li><a href="javascript:$('#scope').val('user');$('#searchForm').attr('action','/redirect');$('#searchForm').submit();"><fmt:message key="navi.user"/></a></li>
+					<li><a href="javascript:$('#scope').val('group');$('#searchForm').attr('action','/redirect');$('#searchForm').submit();"><fmt:message key="navi.group"/></a></li>
+					<li><a href="javascript:$('#scope').val('author');$('#searchForm').attr('action','/redirect');$('#searchForm').submit();"><fmt:message key="navi.author"/></a></li>
+					<li><a href="javascript:$('#scope').val('concept/tag');$('#searchForm').attr('action','/redirect');$('#searchForm').submit();"><fmt:message key="navi.concept"/></a></li>
+					<li><a href="javascript:$('#scope').val('bibtexkey');$('#searchForm').attr('action','/redirect');$('#searchForm').submit();"><fmt:message key="navi.bibtexkey"/></a></li>
+					<li><a href="javascript:$('#scope').val('search');$('#searchForm').attr('action','/redirect');$('#searchForm').submit();"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></a></li>
+					<c:if test="${not empty requestedUser}">
+						<li><a href="javascript:$('#scope').val('user:${fn:escapeXml(requestedUser)}');$('#searchForm').attr('action','/redirect');$('#searchForm').submit();"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></a></li>
+					</c:if>
+					<c:if test="${command.context.userLoggedIn and empty requestedUser}">
+						<li><a href="javascript:$('#scope').val('user:${fn:escapeXml(command.context.loginUser.name)}');$('#searchForm').attr('action','/redirect');$('#searchForm').submit();"><fmt:message key="navi.search"/>:<c:out value='${command.context.loginUser.name}'/></a></li>
+					</c:if>
+					<c:if test="${command.context.userLoggedIn and not empty command.context.loginUser.groups}">
+						<li class="pdSubHeader disabled"><a href="#"><fmt:message key="navi.search.in_group"/></a></li>
+						<c:forEach var="grp" items="${command.context.loginUser.groups}">
+							<li class="pdSubitems"><a href="javascript:$('#scope').val('group:${fn:escapeXml(grp.name)}');$('#searchForm').attr('action','/redirect');$('#searchForm').submit();">- <c:out value='${fn:escapeXml(grp.name)}'/></a></li>
+						</c:forEach>
+					</c:if>
+		        </ul>
+		      </div><!-- /btn-group -->
+		    </div><!-- /input-group -->
+			<c:if test="${not empty afterInput}"><!-- FIXME: wird noch nicht angezeigt -->
+				<div class="pull-right">
+					<jsp:invoke fragment="afterInput"/>
+				</div>
+			</c:if>
+	    </form>
+	    <br /><br />
+	</div><!-- /#search -->
+
+</jsp:root>
