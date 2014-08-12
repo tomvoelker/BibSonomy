@@ -1,9 +1,8 @@
 package org.bibsonomy.webapp.command;
 
 import java.util.Map;
+import java.util.TreeMap;
 
-import org.bibsonomy.layout.jabref.AbstractJabRefLayout;
-import org.bibsonomy.layout.standard.StandardLayout;
 import org.bibsonomy.model.Layout;
 
 /**
@@ -12,6 +11,10 @@ import org.bibsonomy.model.Layout;
 public class ExportPageCommand extends ResourceViewCommand {
 
 	private Map<String, Layout> layoutMap;
+	
+	public ExportPageCommand() {
+		this.layoutMap = new TreeMap<>();
+	}
 
 	/**
 	 * @return layout map
@@ -27,24 +30,11 @@ public class ExportPageCommand extends ResourceViewCommand {
 		this.layoutMap = layoutMap;
 	}
 
-	/**
-	 * @param jabrefMap
-	 */
-	public void addJabrefLayoutMap(
-			final Map<String, AbstractJabRefLayout> jabrefMap) {
-		for (AbstractJabRefLayout layout : jabrefMap.values()) {
+	public void addLayoutMap(final Map<String, ? extends Layout> map) {
+		for (Layout layout: map.values()) {
+			// TODO: Check by which keys the values are saved in map, maybe a simple
+			// putAll is sufficient?
 			this.layoutMap.put(layout.getDisplayName(), layout);
 		}
 	}
-
-	/**
-	 * @param standardMap
-	 */
-	public void addStandardLayoutMap(
-			final Map<String, StandardLayout> standardMap) {
-		for (StandardLayout layout : standardMap.values()) {
-			this.layoutMap.put(layout.getDisplayName(), layout);
-		}
-	}
-
 }

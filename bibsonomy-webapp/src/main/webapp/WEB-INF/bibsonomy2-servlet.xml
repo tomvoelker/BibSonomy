@@ -643,6 +643,7 @@
 						<property name="controllerBeanName" value="friendsOverviewController"/>
 					</bean>
 				</entry>
+				<!-- TODO: (bootstrap) remove -->
 				<entry key="/bootstrapDemo">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="bootstrapDemoController"/>
@@ -843,6 +844,7 @@
 	
 	<bean id="exportPageController" class="org.bibsonomy.webapp.controller.ExportPageController" scope="request">
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
+		<property name="layouts" ref="standardLayouts" />
 	</bean>
 
 	<bean id="conceptPageController" class="org.bibsonomy.webapp.controller.ConceptPageController" scope="request">
@@ -978,6 +980,9 @@
 	<bean id="linkCloudPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="LINK_CLOUD"/>
 	</bean>
+	
+	<bean id="standardLayouts" class="org.bibsonomy.layout.standard.StandardLayouts" scope="request" />
+		
 	<!--  #################### imports #################### -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-model-context.xml" />
 	
