@@ -13,9 +13,11 @@
 	<c:choose>
 		<c:when test="${user.settings.layoutSettings.viewLayout eq 'CLASSIC'}">
 			<c:set var="setLayout" value="Switch to BibSonomy 3 beta" />
+			<c:set var="layoutName" value="BOOTSTRAP" />
 		</c:when>
 		<c:otherwise>
-			<c:set var="setLayout" value="Switch to BibSonomy 2" />
+			<c:set var="setLayout" value="Switch back to BibSonomy 2" />
+			<c:set var="layoutName" value="CLASSIC" />
 		</c:otherwise>
 	</c:choose>
 	
@@ -33,28 +35,20 @@
 			
 			<div class="row">
 				<div class="col-sm-offset-3 col-sm-6">
-					<div class="lead text-center">
-						<p>Get a preview of the new font-end and help to shape it.</p>
-						<p>Sign up for our Beta Program.</p>
-					</div>
-					
-					<hr />
-					
-					<div class="alert alert-warning text-center" role="alert">
+					<div class="alert alert-info text-center" role="alert">
 						<strong>You're currently using BibSonomy 3 beta front-end.</strong><br />If you'd like to switch to BibSonomy 2 front-end, press the button below.
 					</div>
 					
 					<div class="lead">
-						<p>Before switching to the BibSonomy 2 front-end, help us to improve BibSonomy and give us some feedback about your interactions with the new front-end. <a href="http://blog.bibsonomy.org/2014/08/bibsonomy-gets-new-front-end.html">Give feedback</a>.</p>
+						<p>Before switching to the old BibSonomy 2 front-end, help us to improve BibSonomy and give us some feedback about your interactions with the new front-end. <a href="http://blog.bibsonomy.org/2014/08/bibsonomy-gets-new-front-end.html">Give feedback</a>.</p>
 					</div> 
 					
-					<form:form id="styleSettingsForm" method="POST" action="/updateUserSettings">
-						<form:input type="hidden" path="user.settings.defaultLanguage" />
+					<form id="styleSettingsForm" method="POST" action="/updateUserSettings">
 						<input type="hidden" name="ckey" value="${ckey}"/>
-						<input type="hidden" name="action" value="layoutTagPost"/>
-						<form:input type="hidden" path="user.settings.layoutSettings.viewLayout" value="CLASSIC" />		
+						<input type="hidden" name="action" value="switchLayout"/>
+						<input type="hidden" name="user.settings.layoutSettings.viewLayout" value="${layoutName}" />
 						<button class="btn btn-primary btn-lg btn-block" type="submit" name="tagbox_style"><c:out value="${setLayout}" /></button>	
-					</form:form>
+					</form>
 					<br /><br /><br />
 				</div>
 			</div>

@@ -42,7 +42,7 @@ import org.bibsonomy.common.exceptions.LayoutRenderingException;
 public abstract class AbstractJabRefLayout extends org.bibsonomy.model.Layout {
 
 	/** The associated layouts filters. */
-	protected Map<String, Layout> subLayouts = new HashMap<String, Layout>();
+	protected Map<String, Layout> subLayouts = new HashMap<>();
 
 	/**
 	 * @param name

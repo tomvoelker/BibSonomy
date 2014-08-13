@@ -68,16 +68,18 @@ public class JabrefLayoutRenderer implements LayoutRenderer<AbstractJabRefLayout
 	/**
 	 * constructs a new jabref layout renderer
 	 * @param config 
+	 * @throws Exception 
 	 */
-	public JabrefLayoutRenderer(final JabRefConfig config) {
+	public JabrefLayoutRenderer(final JabRefConfig config) throws Exception {
 		this.config = config;
 		this.init();
 	}
 
 	/**
 	 * Initializes the bean by loading default layouts.
+	 * @throws Exception 
 	 */
-	private void init() {
+	private void init() throws Exception {
 		/* 
 		 * initialize JabRef preferences. This is neccessary ... because they use global 
 		 * preferences and if we don't initialize them, we get NullPointerExceptions later 
@@ -85,11 +87,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<AbstractJabRefLayout
 		GlobalsSuper.prefs = JabRefPreferences.getInstance();
 
 		// load default filters 
-		try {
-			this.loadDefaultLayouts();
-		} catch (final Exception e) {
-			log.fatal("Could not load default layout filters.", e);
-		}
+		this.loadDefaultLayouts();
 	}
 	
 	/**
@@ -111,9 +109,13 @@ public class JabrefLayoutRenderer implements LayoutRenderer<AbstractJabRefLayout
 		 * iterate over all layout definitions
 		 */
 		for (final AbstractJabRefLayout jabrefLayout : jabrefLayouts) {
-			log.debug("loading layout " + jabrefLayout.getName());
+			final String layoutId = jabrefLayout.getName();
+			log.debug("loading layout " + layoutId);
 			jabrefLayout.init(this.config);
-			layouts.put(jabrefLayout.getName(), jabrefLayout);
+			if (this.layouts.containsKey(layoutId)) {
+				throw new IllegalStateException("layout '" + layoutId + "' already exists.");
+			}
+			this.layouts.put(layoutId, jabrefLayout);
 		}
 		log.info("loaded " + layouts.size() + " layouts");
 	}
