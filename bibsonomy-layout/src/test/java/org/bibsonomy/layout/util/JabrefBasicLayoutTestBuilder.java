@@ -40,6 +40,12 @@ import org.bibsonomy.services.URLGenerator;
 import org.junit.Ignore;
 import org.junit.Test;
 
+/**
+ * 
+ * TODO: add documentation to this class
+ *
+ * @author mme
+ */
 @Ignore
 public class JabrefBasicLayoutTestBuilder {
 	
@@ -47,8 +53,12 @@ public class JabrefBasicLayoutTestBuilder {
 	static {
 		final JabRefConfig config = new JabRefConfig();
 		config.setDefaultLayoutFilePath("src/main/resources/org/bibsonomy/layout/jabref");
-		RENDERER = new JabrefLayoutRenderer(config);
-		RENDERER.setUrlGenerator(new URLGenerator("http://www.bibsonomy.org"));
+		try {
+			RENDERER = new JabrefLayoutRenderer(config);
+			RENDERER.setUrlGenerator(new URLGenerator("http://www.bibsonomy.org"));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	/*

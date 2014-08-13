@@ -32,11 +32,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public final static int OAUTH_IDX = 6;
 	
 	private static final String TAB_URL = "/settings";
-
-	/**
-	* will be set to "true" if /bibsonomy3demo is being called
-	*/
-	private String bibsonomy3preview = "false";
+	
 	
 	/**
 	 * action can be logging, api or layoutTagPost
@@ -488,20 +484,6 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	public void setNewPasswordRetype(String newPasswordRetype) {
 		this.newPasswordRetype = newPasswordRetype;
-	}
-	
-	/**
-	 * @return string bibsonomy3demo true/false
-	 */
-	public String getBibsonomy3preview() {
-		return bibsonomy3preview;
-	}
-	
-	/**
-	 * @param set the bibsonomy3demo true/false
-	 */
-	public void setBibsonomy3preview(String bibsonomy3preview) {
-		this.bibsonomy3preview = bibsonomy3preview;
 	}
 	
 	/**

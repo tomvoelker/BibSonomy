@@ -21,7 +21,7 @@ public class JabrefLayoutRendererTest {
 	private JabrefLayoutRenderer renderer;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		renderer = new JabrefLayoutRenderer(new URLGenerator("http://www.bibsonomy.org/"),JabrefLayoutRenderer.LAYOUT_SIMPLEHTML);
 	}
 

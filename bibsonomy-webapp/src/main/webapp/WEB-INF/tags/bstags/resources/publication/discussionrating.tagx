@@ -66,7 +66,7 @@
 										<fmt:param><fmt:message key="post.resource.discussionItem.anonymous"/></fmt:param>
 									</c:when>
 									<c:otherwise>
-										<fmt:param><user:username user="${discussionUser}" /></fmt:param>
+										<fmt:param><user:username username="${discussionUser}" /></fmt:param>
 									</c:otherwise>
 								</c:choose>
 							</c:forEach>
@@ -82,7 +82,7 @@
 											<fmt:param><fmt:message key="post.resource.discussionItem.anonymous"/></fmt:param>
 										</c:when>
 										<c:otherwise>
-											<fmt:param><user:username user="${discussionUser}" /></fmt:param>
+											<fmt:param><user:username username="${discussionUser}" /></fmt:param>
 										</c:otherwise>
 									</c:choose>
 								</c:if>
@@ -94,7 +94,7 @@
 					</c:otherwise>
 				</c:choose>
 				&amp;nbsp;<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource.class.simpleName)}" />
-				<a href="${href}" title="${title}"><!-- href -->
+				<a href="${href}" title="${title}">
 					<fmt:message key="post.resource.discussion.discussionUser.join" />
 				</a>
 			</c:otherwise>
