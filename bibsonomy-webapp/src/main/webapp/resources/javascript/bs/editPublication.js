@@ -46,7 +46,9 @@ function changeView(showAll) {
 			message = getString('post.resource.fields.detailed.show.required');
 			$(collapse).parent().removeClass("hidden");
 		}
-	} 
+	} else {
+		$(collapse).parent().removeClass("hidden");
+	}
 	
 	collapse.firstChild.nodeValue = message;
 	
