@@ -78,10 +78,6 @@
 						<h4><fmt:message key="publications.resource.headline" /></h4>
 						<div id="resources" style="font-size: 90%;">
 							<table class="td-top">
-								<tr>
-									<td>Wrong Author:</td>
-									<td><button id='wrongAuthorButton'>Dies ist nicht der Autor der Publikation</button></td>
-								</tr>
 								<!--+
 									| DOI
 									+-->
