@@ -159,7 +159,7 @@ $(function() {
 		toggleView();
 	});
 	// load only, when extended fields are available                                                                                              
-	if (document.getElementById("post.resource.publisher")) toggleView();
+	if (document.getElementById("post.resource.publisher")==null) $("#collapse").parent().addClass("hidden");
 	
 	var hash = $("#post\\.resource\\.interHash").val();
 	if(hash == -1 || hash == undefined)
