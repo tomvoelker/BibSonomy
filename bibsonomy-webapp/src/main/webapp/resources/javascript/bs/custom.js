@@ -59,7 +59,7 @@ $(function() {
         	event.preventDefault();
         	var contentContainer = $(this.parentNode).children(".contentContainer")[0];
         	
-            if($(this).hasClass('less')) {
+            if($(this).hasClass('show-less')) {
             	$(this)
             	.html("(" + getString("more") + ")")
             	.removeClass("show-less")
