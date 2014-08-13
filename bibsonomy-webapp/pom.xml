@@ -84,6 +84,25 @@
 					<aggregations>
 						<aggregation>
 							<insertNewLine>true</insertNewLine>
+							<output>${project.build.webapp.resourcedir}/javascript/merged/global.js</output>
+							<includes>
+								<include>${project.build.webapp.resourcedir}/jquery/jquery.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/functions.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/actions/clipboard.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/fileUpload.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/jquery.fadebox.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/style.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/corner/jquery.corner.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/hoverIntent/jquery.hoverIntent.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/ajaxUtils.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/userRelation.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/addToSpheres.js</include>
+							</includes>
+						</aggregation>
+						<!-- javascript files for bootstrap front-end -->
+						<aggregation>
+							<insertNewLine>true</insertNewLine>
 							<output>${project.build.webapp.resourcedir}/javascript/merged/bs/global.js</output>
 							<includes>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/jquery-2.1.0.min.js</include>
@@ -103,6 +122,7 @@
 								<include>${project.build.webapp.resourcedir}/javascript/bs/addToSpheres.js</include>
 							</includes>
 						</aggregation>
+						
 						<!-- note: use the compressed javascript files in ${project.build.webapp.resourcedir} -->
 						<aggregation>
 							<insertNewLine>true</insertNewLine>
