@@ -37,6 +37,7 @@ import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.filesystem.FileLogic;
+import org.bibsonomy.util.DateTimeUtils;
 import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.util.JSONUtils;
 import org.bibsonomy.util.StringUtils;
@@ -68,9 +69,6 @@ public class Functions {
 
 	private static final DateTimeFormatter ISO8601_FORMAT_HELPER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ");
 
-	/** used to get RFC 1123 formatted date */
-	private static final DateTimeFormatter RFC1123_DATE_TIME_FORMATTER = DateTimeFormat.forPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'").withZoneUTC();
-	
 	private static final DateTimeFormatter myDateFormatter = DateTimeFormat.forPattern("MMMM yyyy");
 
 	private static final DateTimeFormatter myDateFormat = DateTimeFormat.forPattern("yyyy-MM");
@@ -622,10 +620,7 @@ public class Functions {
 	 * @return the formatted date
 	 */
 	public static String formatDateRFC1123(final Date date) {
-		if (present(date)) {
-			return RFC1123_DATE_TIME_FORMATTER.print(new DateTime(date));
-		}
-		return "";
+		return DateTimeUtils.formatDateRFC1123(date);
 	}
 
 
@@ -665,7 +660,7 @@ public class Functions {
 				final String monthAsNumber = BibTexUtils.getMonthAsNumber(cleanMonth);
 				if (present(day)) {
 					final String cleanDay = BibTexUtils.cleanBibTex(day.trim());
-					try {						
+					try {
 						DateTime dt = dmyDateFormat.parseDateTime(cleanYear + "-" + monthAsNumber + "-" + cleanDay);
 						return DateTimeFormat.mediumDate().withLocale(locale).print(dt);
 					} catch (final Exception ex) {
