@@ -26,13 +26,11 @@ import recommender.impl.model.RecommendedItem;
 public class AdaptedTagBasedItemRecommender extends TagBasedItemRecommender {
 
 	@Override
-	protected void addRecommendedItemsInternal(
-			Collection<RecommendedItem> recommendations,
-			ItemRecommendationEntity entity) {
+	protected void addRecommendedItemsInternal(Collection<RecommendedItem> recommendations, ItemRecommendationEntity entity) {
 		final List<RecommendationItem> requestingUserItems = new ArrayList<RecommendationItem>();
 		
 		//take bibtex and bookmark resources of requesting user to generate a more significant description of the user preferences
-		if(dbAccess instanceof ExtendedMainAccess) {
+		if (dbAccess instanceof ExtendedMainAccess) {
 			requestingUserItems.addAll(((ExtendedMainAccess) this.dbAccess).getAllItemsOfQueryingUser(maxItemsToEvaluate, entity.getUserName()));
 		} else {
 			requestingUserItems.addAll(this.dbAccess.getItemsForUser(maxItemsToEvaluate, entity.getUserName())); 
@@ -42,20 +40,20 @@ public class AdaptedTagBasedItemRecommender extends TagBasedItemRecommender {
 		
 		final List<RecommendationItem> userItems = new ArrayList<RecommendationItem>();
 		
-		List<CountedTag> sortedExtractedTags = this.extractTagsFromResources(requestingUserItems);
+		final List<CountedTag> sortedExtractedTags = this.extractTagsFromResources(requestingUserItems);
 		
 		final Set<String> tagsToUse = new HashSet<String>();
-		if(sortedExtractedTags.size() <= maxTagsToEvaluate) {
-			for(CountedTag tag : sortedExtractedTags) {
+		if (sortedExtractedTags.size() <= maxTagsToEvaluate) {
+			for (CountedTag tag : sortedExtractedTags) {
 				tagsToUse.add(tag.getName());
 			}
 			userItems.addAll(this.dbAccess.getTaggedItems(maxItemsToEvaluate, tagsToUse));
 		} else {
 			final int halfSize = sortedExtractedTags.size()/2;
-			for(int i = halfSize; (i-halfSize) < maxTagsToEvaluate && i < sortedExtractedTags.size(); i++) {
+			for (int i = halfSize; (i-halfSize) < maxTagsToEvaluate && i < sortedExtractedTags.size(); i++) {
 				tagsToUse.add(sortedExtractedTags.get(i).getName());
 			}
-			if(tagsToUse.size() > 0) {
+			if (tagsToUse.size() > 0) {
 				userItems.addAll(this.dbAccess.getTaggedItems(maxItemsToEvaluate, tagsToUse));
 			} else {
 				return;

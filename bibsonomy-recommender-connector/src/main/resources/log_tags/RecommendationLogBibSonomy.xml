@@ -20,7 +20,7 @@
 		FROM recommender_result r 
 		   JOIN recommender_querymap m ON (m.query_id = #id# AND m.query_id = r.query_id) 
 		WHERE r.query_id = #id#
-	</select>	
+	</select>
 	
 	<!-- +
 		 | Get the setting id of a local recommender by it's qualified name
@@ -65,11 +65,11 @@
 	
 	<!-- Get all important recommender-info for the admin statuspage  -->
 	<select id="recAdminOverview" resultMap="RecommendationLogCommonBibSonomy.recAdminOverview" parameterClass="String">
-		SELECT setting_id, rec_id, type, 0 AS rec_latency 
+		SELECT setting_id, rec_id, type, 0 AS rec_latency, IF (status = 1, 1, 0) AS active
 		FROM recommender_settings JOIN recommender_status
 		USING (setting_id)
 		WHERE rec_id = #id#
-	</select>	
+	</select>
 	
 	<select id="getRecommenderSettingIdsByStatus" resultClass="long" parameterClass="integer">
 	    SELECT setting_id FROM recommender_status
@@ -121,6 +121,11 @@
        INSERT INTO recommender_status (setting_id, url, status, type)
             values (#setting_id#, #recId#, 1, 0)
    </insert>
+   
+	<insert id="createStatusForRecommender" parameterClass="recSetting">
+		INSERT INTO recommender_status (setting_id, url, status, type)
+			VALUES (#setting_id#, #recId#, 1, #type#)
+	</insert>
 	
 	<!-- +
 		 | Get list of all recommenders used in given query
@@ -387,8 +392,8 @@
 		|          choice (see http://issues.apache.org/jira/browse/IBATIS-142)
 	  	+-->
 	<insert id="addRecommenderSetting" parameterClass="recSetting">
-		INSERT INTO recommender_settings (rec_id,rec_meta,rec_descr)
-		VALUES ( #recId#, #recMeta#, #recDescr# )
+		INSERT INTO recommender_settings (rec_id, rec_meta, rec_descr, trusted)
+		VALUES ( #recId#, #recMeta#, #recDescr#, #trusted# )
  		<selectKey resultClass="java.lang.Long" keyProperty="setting_id">
 			SELECT LAST_INSERT_ID() AS value
 	    </selectKey>
@@ -543,7 +548,8 @@
 	</statement>
 	
 	<select id="getRemoteRecommenders" resultMap="RecommendationLogCommonBibSonomy.webServiceRecommender" parameterClass="integer">
-		SELECT url FROM recommender_status
+		SELECT url, trusted FROM recommender_status
+			JOIN recommender_settings USING(setting_id)
 		WHERE type = #local#
 			AND status != 2
 	</select>
@@ -551,7 +557,7 @@
 	<select id="getRecommenderStatus" resultClass="long" parameterClass="recSetting">
 		SELECT setting_id FROM recommender_status
 			JOIN recommender_settings USING(setting_id)
-			WHERE rec_id = #recId# AND status = 1
+		WHERE rec_id = #recId# AND status = 1
 	</select>
 
 </sqlMap>

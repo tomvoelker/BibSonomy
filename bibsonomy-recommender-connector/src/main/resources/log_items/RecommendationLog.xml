@@ -65,7 +65,7 @@
 	
 	<!-- Get all important recommender-info for the admin statuspage  -->
 	<select id="recAdminOverview" resultMap="RecommendationLogCommon.recAdminOverview" parameterClass="String">
-		SELECT setting_id, rec_id, local, 0 AS rec_latency 
+		SELECT setting_id, rec_id, local, 0 AS rec_latency, IF (status = 1, 1, 0) AS active
 		FROM recommender_settings JOIN recommender_status
 		USING (setting_id)
 		WHERE rec_id = #id#
@@ -122,6 +122,10 @@
             values (#setting_id#, #recId#, 1, 0)
    </insert>
 	
+	<insert id="createStatusForRecommender" parameterClass="recSetting">
+		INSERT INTO recommender_status (setting_id, url, status, type)
+			VALUES (#setting_id#, #recId#, 1, #type#)
+	</insert>
 	<!-- +
 		 | Get list of all recommenders used in given query
 		 + -->  
@@ -390,8 +394,8 @@
 		|          choice (see http://issues.apache.org/jira/browse/IBATIS-142)
 	  	+-->
 	<insert id="addRecommenderSetting" parameterClass="recSetting">
-		INSERT INTO recommender_settings (rec_id,rec_meta,rec_descr)
-		VALUES ( #recId#, #recMeta#, #recDescr# )
+		INSERT INTO recommender_settings (rec_id, rec_meta, rec_descr, trusted)
+		VALUES ( #recId#, #recMeta#, #recDescr#, #trusted# )
  		<selectKey resultClass="java.lang.Long" keyProperty="setting_id">
 			SELECT LAST_INSERT_ID() AS value
 	    </selectKey>
@@ -521,12 +525,13 @@
 		 + -->
 	
 	<statement id="selectPresets" resultClass="java.util.HashMap">
-  		SELECT entityId FROM recommender_preset 
-  		WHERE query_id = #qid#
+		SELECT entityId FROM recommender_preset 
+		WHERE query_id = #qid#
 	</statement>
 	
 	<select id="getRemoteRecommenders" resultMap="RecommendationLogCommon.webServiceRecommender" parameterClass="integer">
-		SELECT url FROM recommender_status
+		SELECT url, trusted FROM recommender_status
+			JOIN recommender_settings USING(setting_id)
 		WHERE local = #local#
 			AND status != 2
 	</select>

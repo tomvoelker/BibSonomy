@@ -25,12 +25,13 @@
         <result property="recID"     column="rec_id"      javaType="string"  />
         <result property="latency"   column="rec_latency" javaType="long" />
         <result property="local" column="local" javaType="integer" />
+        <result property="active"    column="active"      javaType="boolean" />
     </resultMap>
     
     <resultMap id="selectorSetting" class="selectorSetting">
         <result property="info"        column="selector_name"   javaType="string"/>
         <result property="meta"        column="selector_meta"   jdbcType="BLOB"/>
-    </resultMap>    
+    </resultMap>
     
 	<resultMap id="recQuery" class="recQuery">
 		<result property="qid"         column="query_id"   javaType="long" />
@@ -79,6 +80,7 @@
 	</resultMap>
 	
 	<resultMap class="webserviceRecommender" id="webServiceRecommender">
-		<result property="address" column="url" javaType="url" />
+		<result property="address" column="url"     javaType="url" />
+		<result property="trusted" column="trusted" javaType="boolean" />
 	</resultMap>
 </sqlMap>

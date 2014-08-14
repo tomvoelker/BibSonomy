@@ -25,6 +25,7 @@
         <result property="recID"     column="rec_id"      javaType="string"  />
         <result property="latency"   column="rec_latency" javaType="long" />
         <result property="local"     column="type"        javaType="integer" />
+        <result property="active"    column="active"      javaType="boolean" />
     </resultMap>
     
     <resultMap id="selectorSetting" class="selectorSetting">
@@ -75,6 +76,7 @@
 	</resultMap>
 	
 	<resultMap class="webserviceRecommender" id="webServiceRecommender">
-		<result property="address" column="url" javaType="url" />
+		<result property="address" column="url"     javaType="url" />
+		<result property="trusted" column="trusted" javaType="boolean" />
 	</resultMap>
 </sqlMap>

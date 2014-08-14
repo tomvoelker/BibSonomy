@@ -1,15 +1,15 @@
 package org.bibsonomy.webapp.command.admin;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeMap;
 
 import org.bibsonomy.webapp.command.BaseCommand;
 
 import recommender.core.database.params.RecAdminOverview;
+import recommender.core.interfaces.model.RecommendationResult;
 
 /**
  * Command bean for admin page 
@@ -17,32 +17,16 @@ import recommender.core.database.params.RecAdminOverview;
  * @author bsc
  */
 public class AdminRecommenderViewCommand extends BaseCommand {
-	private List<RecAdminOverview> recOverviewItem;
-	private List<RecAdminOverview> recOverviewTag; 
-	private String action;
-	private String adminResponse;
+	private Map<Class<? extends RecommendationResult>, List<RecAdminOverview>> recommenderOverviewMap;
 	private Long queriesPerLatency;
-	private List<Long> activeItemRecs;
-	private List<Long> activeTagRecs;
-	private List<Long> disabledItemRecs;
-	private List<Long> disabledTagRecs;
-	private final Map<Integer, String> tabdescriptor;
-	/**
-	 * @author bsc
-	 *
-	 */
-	public enum Tab{ STATUS, ACTIVATE, ADD }
-	private Tab tab;
-	private Map<Long, String> activeItemRecommenders;
-	private Map<Long, String> disabledItemRecommenders;
-	private Map<Long, String> activeTagRecommenders;
-	private Map<Long, String> disabledTagRecommenders;
-
-	private long editSid;
-	private List<Long> deleteRecIds;
 	
+	private String action;
+	private Class<? extends RecommendationResult> recommendationResultClass;
+	private Long recommenderId;
 	private URL newrecurl;
+	private boolean trusted = false;
 	
+	private String adminResponse;
 	
 	/**
 	 * default constructor
@@ -50,146 +34,6 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	public AdminRecommenderViewCommand(){
 		this.queriesPerLatency = Long.valueOf(1000);
 		this.action = null;
-		
-		this.tabdescriptor = new TreeMap<Integer, String>();
-		this.tabdescriptor.put(Tab.STATUS.ordinal(), "Active Recommenders");
-		this.tabdescriptor.put(Tab.ACTIVATE.ordinal(), "Activate/deactivate");
-		this.tabdescriptor.put(Tab.ADD.ordinal(), "Add/Remove");
-		this.tab = Tab.STATUS;
-	}
-	
-	/**
-	 * @param activeItemRecommenders map {setting-id} -> {recommender-id}
-	 */
-	public void setActiveItemRecommenders(final Map<Long, String> activeItemRecommenders){
-		this.activeItemRecommenders = activeItemRecommenders;
-	}
-	
-	/**
-	 * @param disabledItemRecommenders map {setting-id} -> {recommender-id}
-	 */
-	public void setDisabledItemRecommenders(final Map<Long, String> disabledItemRecommenders){
-		this.disabledItemRecommenders = disabledItemRecommenders;
-	}
-	
-	/**
-	 * @return Entryset of currently activated item recommenders 
-	 */
-	public Set<Entry<Long, String>> getActiveItemRecommenders(){
-		if (this.activeItemRecommenders == null) {
-			return null;
-		}
-		return this.activeItemRecommenders.entrySet();
-	}
-	
-	/**
-	 * @return Entryset of currently deactivated item recommenders 
-	 */
-	public Set<Entry<Long, String>> getDisabledItemRecommenders(){
-		if (this.disabledItemRecommenders == null) {
-			return null;
-		}
-		return this.disabledItemRecommenders.entrySet();
-	}
-	
-	/**
-	 * @param activeTagRecommenders map {setting-id} -> {recommender-id}
-	 */
-	public void setActiveTagRecommenders(final Map<Long, String> activeTagRecommenders){
-		this.activeTagRecommenders = activeTagRecommenders;
-	}
-	
-	/**
-	 * @param disabledTagRecommenders map {setting-id} -> {recommender-id}
-	 */
-	public void setDisabledTagRecommenders(final Map<Long, String> disabledTagRecommenders){
-		this.disabledTagRecommenders = disabledTagRecommenders;
-	}
-	
-	/**
-	 * @return Entryset of currently activated item recommenders 
-	 */
-	public Set<Entry<Long, String>> getActiveTagRecommenders(){
-		if (this.activeTagRecommenders == null) {
-			return null;
-		}
-		return this.activeTagRecommenders.entrySet();
-	}
-	
-	/**
-	 * @return Entryset of currently deactivated item recommenders 
-	 */
-	public Set<Entry<Long, String>> getDisabledTagRecommenders(){
-		if (this.disabledTagRecommenders == null) {
-			return null;
-		}
-		return this.disabledTagRecommenders.entrySet();
-	}
-	
-	/**
-	 * @param t ordinal number of tab to be activated
-	 */
-	public void setTab(final Integer t){
-		if ((t>=0) && (t<Tab.values().length)) {
-		  this.tab = Tab.values()[t];
-		}
-	}
-	/**
-	 * @param t Tab to be activated
-	 */
-	public void setTab(final Tab t){
-		this.tab = t;
-	}
-	/**
-	 * @return ordinal number of active tab
-	 */
-	public Integer getTab(){
-		return this.tab.ordinal();
-	}
-	/**
-	 * @return name/description of currently activated tab
-	 */
-	public String getTabDescription(){
-		return this.tabdescriptor.get(this.tab.ordinal());
-	}
-	/**
-	 * @param t tab to get description for
-	 * @return Description of this tab
-	 */
-	public String getTabDescription(final Tab t){
-		return this.tabdescriptor.get(t.ordinal());
-	}
-
-	/**
-	 * @return Entryset containing Tab-id and their descriptions
-	 */
-	public Set<Entry<Integer, String>> getTabs(){
-		return this.tabdescriptor.entrySet();
-	}
-	
-	/**
-	 * @param recOverviewItem List of item recommmenders contained in item-multiplexer
-	 */
-	public void setRecOverviewItem(final List<RecAdminOverview> recOverviewItem){
-		this.recOverviewItem = recOverviewItem;
-	}
-	/**
-	 * @return List of item recommmenders contained in item-multiplexer
-	 */
-	public List<RecAdminOverview> getRecOverviewItem(){
-		return this.recOverviewItem;
-	}
-	/**
-	 * @param recOverviewTag list of tag recommenders contained in tag-multiplexer
-	 */
-	public void setRecOverviewTag(List<RecAdminOverview> recOverviewTag) {
-		this.recOverviewTag = recOverviewTag;
-	}
-	/**
-	 * @return list of tag recommenders contained in tag-multiplexer
-	 */
-	public List<RecAdminOverview> getRecOverviewTag() {
-		return this.recOverviewTag;
 	}
 	
 	/**
@@ -211,7 +55,7 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	 */
 	public void setQueriesPerLatency(final Long queriesPerLatency){
 		// only accept positive values
-		if (queriesPerLatency > 0) {
+		if (present(queriesPerLatency) && queriesPerLatency.longValue() > 0) {
 			this.queriesPerLatency = queriesPerLatency;
 		}
 	}
@@ -236,87 +80,6 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	}
 	
 	/**
-	 * @param activeItemRecs updated list of active item recommender setting-ids.
-	 * This property can be set in the view by administrators and will be managed and set back to null by the controller. 
-	 */
-	public void setActiveItemRecs(final List<Long> activeItemRecs){
-		this.activeItemRecs = activeItemRecs;
-	}
-	/**
-	 * @return updated active item recommenders
-	 */
-	public List<Long> getActiveItemRecs(){
-		return this.activeItemRecs;
-	}
-	
-	/**
-	 * @param disabledItemRecs updated list of inactive item recommender setting-ids
-	 */
-	public void setDisabledItemRecs(final List<Long> disabledItemRecs){
-		this.disabledItemRecs = disabledItemRecs;
-	}
-	/**
-	 * @return updated list of inactive setting-ids
-	 */
-	public List<Long> getDisabledItemRecs(){
-		return this.disabledItemRecs;
-	}
-	
-	/**
-	 * @param activeTagRecs updated list of active tag recommender setting-ids.
-	 * This property can be set in the view by administrators and will be managed and set back to null by the controller. 
-	 */
-	public void setActiveTagRecs(final List<Long> activeTagRecs){
-		this.activeTagRecs = activeTagRecs;
-	}
-	/**
-	 * @return updated active item recommenders
-	 */
-	public List<Long> getActiveTagRecs(){
-		return this.activeTagRecs;
-	}
-	
-	/**
-	 * @param disabledTagRecs updated list of inactive tag recommender setting-ids
-	 */
-	public void setDisabledTagRecs(final List<Long> disabledTagRecs){
-		this.disabledTagRecs = disabledTagRecs;
-	}
-	/**
-	 * @return updated list of inactive setting-ids
-	 */
-	public List<Long> getDisabledTagRecs(){
-		return this.disabledTagRecs;
-	}
-
-	/**
-	 * @param editSid setting-id of recommender to be edited
-	 */
-	public void setEditSid(final long editSid) {
-		this.editSid = editSid;
-	}
-	/**
-	 * @return setting-id of recommender to be edited
-	 */
-	public long getEditSid() {
-		return this.editSid;
-	}
-
-	/**
-	 * @return ids of recommenders to be deleted
-	 */
-	public List<Long> getDeleteRecIds() {
-		return this.deleteRecIds;
-	}
-
-	/**
-	 * @param deleteRecIds ids of recommenders to be edited
-	 */
-	public void setDeleteRecIds(final List<Long> deleteRecIds) {
-		this.deleteRecIds = deleteRecIds;
-	}
-	
-	/**
 	 * @param recurl url of new recommender to be added
 	 */
 	public void setNewrecurl(final URL recurl){
@@ -328,5 +91,63 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	 */
 	public URL getNewrecurl(){
 		return this.newrecurl;
+	}
+	
+	/**
+	 * @return the recommendationResultClass
+	 */
+	public Class<? extends RecommendationResult> getRecommendationResultClass() {
+		return this.recommendationResultClass;
+	}
+
+	/**
+	 * @param recommendationResultClass the recommendationResultClass to set
+	 */
+	public void setRecommendationResultClass(
+			Class<? extends RecommendationResult> recommendationResultClass) {
+		this.recommendationResultClass = recommendationResultClass;
+	}
+
+	/**
+	 * @return the recommenderOverviewMap
+	 */
+	public Map<Class<? extends RecommendationResult>, List<RecAdminOverview>> getRecommenderOverviewMap() {
+		return this.recommenderOverviewMap;
+	}
+
+	/**
+	 * @param recommenderOverviewMap the recommenderOverviewMap to set
+	 */
+	public void setRecommenderOverviewMap(
+			Map<Class<? extends RecommendationResult>, List<RecAdminOverview>> recommenderOverviewMap) {
+		this.recommenderOverviewMap = recommenderOverviewMap;
+	}
+
+	/**
+	 * @return the recommenderId
+	 */
+	public Long getRecommenderId() {
+		return this.recommenderId;
+	}
+
+	/**
+	 * @param recommenderId the recommenderId to set
+	 */
+	public void setRecommenderId(Long recommenderId) {
+		this.recommenderId = recommenderId;
+	}
+
+	/**
+	 * @return the trusted
+	 */
+	public boolean isTrusted() {
+		return this.trusted;
+	}
+
+	/**
+	 * @param trusted the trusted to set
+	 */
+	public void setTrusted(boolean trusted) {
+		this.trusted = trusted;
 	}
 }
