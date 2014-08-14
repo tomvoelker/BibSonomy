@@ -16,9 +16,11 @@ $(function() {
 		var messageKey = $(this).data('type');
 		return confirmDeleteByUser(messageKey);
 	});
-	
+	/*
+	 * adds a click event handler for the search scope form option entries
+	 */
 	$('#scopeDomain').children().each(function(i, el){
-		$(el).click(function(e){
+		$(el.childNodes[0]).click(function(e){
 			e.preventDefault();
 			$("#scope").val($(this).data("domain"));
 			$('#searchForm').attr('action','/redirect').submit();
