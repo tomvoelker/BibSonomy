@@ -77,9 +77,10 @@ public class MementoService {
 		// encode the URL into the mement
 		final URL queryUrl = new URL(getQueryUrl(url));
 		// encode the datetime as "Accept-Datetime" header
-		final List<Header> headers = Collections.singletonList(new Header("Accept-Datetime", DateTimeUtils.formatDateRFC1123(datetime)));
+		final String formatDateRFC1123 = DateTimeUtils.formatDateRFC1123(datetime);
+		final List<Header> headers = Collections.singletonList(new Header("Accept-Datetime", formatDateRFC1123));
 		// get redirect from timegate
-		log.debug("querying timegate " + timeGate + " for " + url + " at " + datetime);
+		log.debug("querying timegate " + timeGate + " for " + url + " at " + datetime + " (" + formatDateRFC1123 + ")");
 		final URL redirectUrl = WebUtils.getRedirectUrl(queryUrl, headers);
 		log.debug("result: " + redirectUrl);
 		return redirectUrl;
