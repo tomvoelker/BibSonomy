@@ -16,6 +16,15 @@ $(function() {
 		var messageKey = $(this).data('type');
 		return confirmDeleteByUser(messageKey);
 	});
+	
+	$('#scopeDomain').children().each(function(i, el){
+		$(el).click(function(e){
+			e.preventDefault();
+			$("#scope").val($(this).data("domain"));
+			$('#searchForm').attr('action','/redirect').submit();
+		});
+		
+	});
 });
 
 function confirmDeleteByUser(messageKey) {
@@ -1007,7 +1016,12 @@ this.imagePreview = function(){
 		 * build preview image URL by fetching URL from small preview pic
 		 * (insde the current <a href...></a>) and replacing the preview param
 		 */
-		var largePreviewImgUrl = $(this).children("img.pre_pic").first().attr("src").replace("preview\=SMALL", "preview=LARGE");		
+		var url = $(this).children("img.pre_pic").first().attr("src");
+		
+		if(url===undefined) return;
+
+		var largePreviewImgUrl = url.replace("preview\=SMALL", "preview=LARGE");		
+		
 		$("body").append("<p id='preview'><img src='" + largePreviewImgUrl + "'/>"+ c +"</p>");
 		$("#preview")
 		.css("top", (e.pageY + (e.pageY < window.innerHeight/2 ? 0 : -yOff)) + "px")
