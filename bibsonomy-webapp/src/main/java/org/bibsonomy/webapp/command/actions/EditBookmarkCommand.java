@@ -1,12 +1,11 @@
 package org.bibsonomy.webapp.command.actions;
 
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.webapp.command.DidYouKnowMessageCommand;
 
 /**
  * @author fba
  */
-public class EditBookmarkCommand extends EditPostCommand<Bookmark> implements DidYouKnowMessageCommand {
+public class EditBookmarkCommand extends EditPostCommand<Bookmark> {
 	/**
 	 * Sets the URL of the post. 
 	 * Needed for the (old) postBookmark button and "copy" links. 

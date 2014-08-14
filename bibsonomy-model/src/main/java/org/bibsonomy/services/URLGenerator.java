@@ -25,7 +25,6 @@ package org.bibsonomy.services;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -664,7 +663,7 @@ public class URLGenerator {
     	return this.getUrl(url);
     }
     
-
+    
     /**
      * Constructs the URL for the user's page.
      * 

@@ -44,24 +44,13 @@
 				<c:if test="${command.context.userLoggedIn and not ownCVPage}">
 					<li>
 						<users:socializer command="${command}" />
-					<!-- 
-						TODO: REPAIR
-						<users:socializer 
-							loginUser="${command.context.loginUser}" 
-							requestedUser="${command.requestedUser}" 
-							isOfFriendUser="${command.ofFriendUser}" 
-							isFriendOfUser="${command.friendOfUser}" 
-							isFollowerOfUser="${command.followerOfUser}" />
-							
-					-->
 					</li>
 				</c:if>
 			
     	 		<!-- display tags -->
 				<li>
-					<span class="sidebar_h">
-						<fmt:message key="tags"/> 
-					</span>
+					<h4 class="sidebar"><fmt:message key="tags"/></h4>
+
 					<!-- Diese Tagcloud vielleicht auch fuer User in den Lebenslauf einsetzbar gestalten?! -->
 					<tags:cloud
 						requPath="user/${command.requestedUser}"
@@ -69,7 +58,6 @@
 						tagboxMinfreqStyle="user"
 						tagSizeMode="user"
 						showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-						
 				</li>
 				
 <!-- 				<li>
@@ -86,23 +74,8 @@
     	 	| html header extension: page specific stylesheet
     	 	-->
 		<jsp:attribute name="headerExt">
-			<link rel="stylesheet" type="text/css" href="${resdir}/css/spheres.css" />
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/cv_page.css" />
-			<script type="text/javascript" src="${resdir}/javascript/cv/handlers.js"><!--  --></script>
 			
-	    	<!-- TODO: refator duplicate code -->
-			<!--+
-				| sphere dialog menu -> only for logged in users: friends, groups, etc.
-			 	+-->
-			<c:if test="${command.context.userLoggedIn and not ownCVPage}">
-				<!-- Javascript for the sphere dialog menu -->
-				<script>
-					$(function() {
-						// TODO: refactor function: parameters requestedUser ckey are available as global constants in javascript by default!
-						generateSphereDialog("${fn:escapeXml(command.requestedUser)}", "${ckey}", "linkButton", true, 0, "position2");
-					});
-				</script>
-			</c:if>
 	    </jsp:attribute>
 
 		<!--+
@@ -122,7 +95,7 @@
     	 	| page options
     	 	+-->
     	<jsp:attribute name="pageOptions">
-    		<a href="/settings?selTab=0"><fmt:message key="cv.editSettings" /></a><BR />
+    		<a href="/settings?selTab=0"><fmt:message key="cv.editSettings" /></a><br />
     		<a href="/settings?selTab=5"><fmt:message key="cv.editCV" /></a>
     	</jsp:attribute>
 		

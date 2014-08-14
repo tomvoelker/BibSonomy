@@ -58,6 +58,7 @@
 			<list>
 				<value>/WEB-INF/project.properties</value>
 				<value>file:${config.location}</value>
+				<value>file:${user.home}#{servletContext.contextPath}/bibsonomy.properties</value>
 			</list>
 		</property>
 		<property name="ignoreResourceNotFound" value="true" />
@@ -96,7 +97,9 @@
 		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
 		<property name="properties" ref="properties"/>
 	</bean>
-
+	
+	<bean id="standardLayouts" class="org.bibsonomy.layout.standard.StandardLayouts" />
+	
 	<!-- provides access to the request for all controllers, which need it -->
 	<bean id="requestLogic" class="org.bibsonomy.webapp.util.RequestLogic" scope="request"/>
 
@@ -622,11 +625,11 @@
 						<property name="controllerBeanName" value="buttonPageController"/>
 					</bean>
 				</entry>
-				<entry key="/gettingStarted">
+<!--				<entry key="/gettingStarted">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="gettingStartedPageController"/>
 					</bean>
-				</entry>
+				</entry>-->
 				<entry key="/allRelations">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="relationsController"/>
@@ -647,6 +650,7 @@
 						<property name="controllerBeanName" value="friendsOverviewController"/>
 					</bean>
 				</entry>
+				<!-- TODO: (bootstrap) remove -->
 				<entry key="/bootstrapDemo">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="bootstrapDemoController"/>
@@ -681,6 +685,12 @@
 				<entry key="/linkcloud">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="linkCloudPageController"/>
+					</bean>
+				</entry>
+				<!-- TODO: (bootstrap) remove -->
+				<entry key="/bibsonomy3preview">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="bibsonomyPreview"/>
 					</bean>
 				</entry>
 			</map>
@@ -841,6 +851,7 @@
 	
 	<bean id="exportPageController" class="org.bibsonomy.webapp.controller.ExportPageController" scope="request">
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
+		<property name="layouts" ref="standardLayouts" />
 	</bean>
 
 	<bean id="conceptPageController" class="org.bibsonomy.webapp.controller.ConceptPageController" scope="request">
@@ -968,10 +979,15 @@
 	<bean id="error503PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="ERROR503"/>
 	</bean>
+	<!-- TOOD: remove -->
+	<bean id="bibsonomyPreview" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="BIBSONOMY3PREVIEW"/>
+	</bean>
 	<!-- linkcloud TODO: in development TODODZO -->
 	<bean id="linkCloudPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="LINK_CLOUD"/>
 	</bean>
+	
 	<!--  #################### imports #################### -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-model-context.xml" />
 	

@@ -33,6 +33,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	
 	private static final String TAB_URL = "/settings";
 	
+	
 	/**
 	 * action can be logging, api or layoutTagPost
 	 * this three types determine the different possible actions which will be handled 
@@ -484,7 +485,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public void setNewPasswordRetype(String newPasswordRetype) {
 		this.newPasswordRetype = newPasswordRetype;
 	}
-
+	
 	/**
 	 * @return the action
 	 */

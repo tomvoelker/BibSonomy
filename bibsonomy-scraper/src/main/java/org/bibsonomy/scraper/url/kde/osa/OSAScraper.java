@@ -120,7 +120,6 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 
 		if(bibResult != null) {
 			sc.setBibtexResult(bibResult);
-			scrapeReferences(sc);
 			return true;
 		}
 		throw new ScrapingFailureException("getting bibtex failed");

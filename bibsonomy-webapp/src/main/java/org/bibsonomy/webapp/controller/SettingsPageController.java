@@ -104,7 +104,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			this.workOnCVTab(command);
 			this.workOnOAuthTab(command);
 		}
-
+		
 		return Views.SETTINGSPAGE;
 	}
 

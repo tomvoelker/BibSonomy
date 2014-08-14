@@ -1,11 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
-import java.io.IOException;
-import java.util.TreeMap;
-
 import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
 import org.bibsonomy.layout.standard.StandardLayouts;
-import org.bibsonomy.model.Layout;
 import org.bibsonomy.webapp.command.ExportPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -26,15 +22,7 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 	 */
 	@Override
 	public ExportPageCommand instantiateCommand() {
-		this.layouts = new StandardLayouts(); 
-		try {
-			this.layouts.init();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		final ExportPageCommand exportPageCommand = new ExportPageCommand();
-		exportPageCommand.setLayoutMap(new TreeMap<String, Layout>());
-		return exportPageCommand;
+		return new ExportPageCommand();
 	}
 
 	/*
@@ -43,18 +31,20 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 	 */
 	@Override
 	public View workOn(final ExportPageCommand command) {
-		command.addStandardLayoutMap(this.layouts.getLayoutMap());
-		command.addJabrefLayoutMap(this.layoutRenderer.getLayouts());
+		command.addLayoutMap(this.layoutRenderer.getLayouts());
 		
-		if (command.getFormatEmbedded()) {
-			return Views.EXPORT_EMBEDDED;
-		}
-		
+		// no standard exports in the json export!
 		if ("json".equals(command.getFormat())) {
 			/*
 			 * JSON list about the available JabRef layouts on the /layoutinfo
 			 */
 			return Views.EXPORTLAYOUTS;
+		}
+		
+		command.addLayoutMap(this.layouts.getLayoutMap());
+
+		if (command.getFormatEmbedded()) {
+			return Views.EXPORT_EMBEDDED;
 		}
 		
 		return Views.EXPORT;
@@ -66,6 +56,11 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 	public void setLayoutRenderer(final JabrefLayoutRenderer layoutRenderer) {
 		this.layoutRenderer = layoutRenderer;
 	}
+
+	/**
+	 * @param layouts the layouts to set
+	 */
+	public void setLayouts(StandardLayouts layouts) {
+		this.layouts = layouts;
+	}
 }
-
-
