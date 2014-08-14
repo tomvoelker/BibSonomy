@@ -23,8 +23,6 @@
 
 package org.bibsonomy.services.memento;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -34,10 +32,8 @@ import java.util.List;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.util.DateTimeUtils;
 import org.bibsonomy.util.WebUtils;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 /**
  * Interaction with Memento TimeGates, cf. http://www.mementoweb.org/ 
@@ -53,31 +49,6 @@ import org.joda.time.format.DateTimeFormatter;
  */
 public class MementoService {
 	private static final Log log = LogFactory.getLog(MementoService.class);
-	
-	/** used to get RFC 1123 formatted date */
-	protected static final DateTimeFormatter RFC1123_DATE_TIME_FORMATTER = DateTimeFormat.forPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'").withZoneUTC();
-	
-	/**
-	 * Formats the date to RFC 1123, e.g.,  Wed, 30 May 2007 18:47:52 GMT
-	 * 
-	 * Currently Java's formatter doesn't support this standard therefore we can
-	 * not use the fmt:formatDate tag with a pattern
-	 * 
-	 * @param date
-	 * @return the formatted date
-	 */
-	public static String formatDateRFC1123(final Date date) {
-		if (present(date)) {
-			try {
-				return RFC1123_DATE_TIME_FORMATTER.print(new DateTime(date));
-			} catch (final Exception e) {
-				log.error("error while formating date to RFC 1123", e);
-				return "";
-			}
-		}
-		return "";
-	}
-	
 	
 	private final URL timeGate;
 	
@@ -106,9 +77,10 @@ public class MementoService {
 		// encode the URL into the mement
 		final URL queryUrl = new URL(getQueryUrl(url));
 		// encode the datetime as "Accept-Datetime" header
-		final List<Header> headers = Collections.singletonList(new Header("Accept-Datetime", formatDateRFC1123(datetime)));
+		final String formatDateRFC1123 = DateTimeUtils.formatDateRFC1123(datetime);
+		final List<Header> headers = Collections.singletonList(new Header("Accept-Datetime", formatDateRFC1123));
 		// get redirect from timegate
-		log.debug("querying timegate " + timeGate + " for " + url + " at " + datetime);
+		log.debug("querying timegate " + timeGate + " for " + url + " at " + datetime + " (" + formatDateRFC1123 + ")");
 		final URL redirectUrl = WebUtils.getRedirectUrl(queryUrl, headers);
 		log.debug("result: " + redirectUrl);
 		return redirectUrl;
