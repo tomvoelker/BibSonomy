@@ -133,7 +133,7 @@
 			<h2><fmt:message key="admin.actions.user"/></h2>
 			
 			<table>	
-				<form:form name="userinfo" action="/admin">
+				<form:form name="userinfo" action="${relativeUrlGenerator.getAdminUrlByName('')}">
 				<tr>
 				<td width="180px"><form:label path="aclUserInfo">User name</form:label></td> 
   				<td width="220px"><form:input path="aclUserInfo" /></td>
