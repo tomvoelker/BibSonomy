@@ -50,7 +50,7 @@
 								<ul style="margin-left: 1em; list-style:disc;">
 									<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
 										<li class="${userclass}">
-											<a href="/user/${fn:escapeXml(user.name)}"><c:out value="${user.name}"/></a>
+											<a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(user.name))}"><c:out value="${user.name}"/></a>
 											<c:out value=" "/>
 										</li>
 									</c:forEach>
@@ -92,7 +92,7 @@
 				<li><h4 class="sidebar"><fmt:message key="tags"/></h4>
 						
 						<span style="font-size:80%;font-weight:lighter;">
-							(<a href="/user/${fn:escapeXml(post.user.name)}"><c:out value="${post.user.name}" /></a>
+							(<a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(post.user.name))}"><c:out value="${post.user.name}" /></a>
 							<fmt:message key="tags.highlighted.by_user"/>)
 						</span>
 

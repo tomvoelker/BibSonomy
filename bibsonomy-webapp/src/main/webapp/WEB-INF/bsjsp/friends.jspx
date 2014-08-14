@@ -47,7 +47,7 @@
             <ul class="sidebar_collapse_content">
               <c:forEach var="user" items="${command.friendsOfUser}">
                 <li>
-                  <a href="/user/${mtl:encodeURI(user.name)}"><c:out value='${user.name}'/>&amp;nbsp;</a> 
+                  <a href="${relativeUrlGenerator.getUserUrlByUserName(user.name)}"><c:out value='${user.name}'/>&amp;nbsp;</a> 
 	                <fmt:message var="deleteFriendTitle" key="friends.actions.delete.title"><fmt:param value="${fn:escapeXml(user.name)}"/></fmt:message>
                   <a
     	             class="action" 

@@ -220,7 +220,7 @@
 				<tr>
 					<td>
 					    <!-- show info boxes of users -->
-						<a href="/user/${user.name}"><c:out value="${user.name}" /></a>
+						<a href="${relativeUrlGenerator.getUserUrlByUserName(user.name)}"><c:out value="${user.name}" /></a>
 						<a
 										onclick="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${user.name}',this);return false;"
 										style="cursor: pointer" title="show latest posts"><img
