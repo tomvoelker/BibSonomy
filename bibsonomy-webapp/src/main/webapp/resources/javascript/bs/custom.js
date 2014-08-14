@@ -105,9 +105,10 @@ $(function() {
     });
     
     function handleDeleteResponse(o) {
-		if($("status", o.data).text()=="ok") o.parent.parentNode.removeChild(o.parent);
+		if(o.data.getElementsByTagName("status")[0].innerHTML=="deleted" 
+			|| o.data.getElementsByTagName("status")[0].innerHTML=="ok") o.parent.parentNode.removeChild(o.parent);
 		else {
-			$(el).removeClass("btn-stripped").addClass("btn-danger").popover({
+			$(o.el).removeClass("btn-stripped").addClass("btn-danger").popover({
 					animation: false,
 					trigger: 'manual',
 					delay: 0,
