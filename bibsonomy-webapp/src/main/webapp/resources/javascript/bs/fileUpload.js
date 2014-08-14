@@ -13,6 +13,7 @@ $(function() {
 	$(".deleteDocument").click(deleteLinkClicked);
 	$(".addDocument").click(addDocument).attr("title", documentUploadTitle);
 	$(".renameDoc").click(renameClicked);
+	
 });
 
 /**
@@ -54,8 +55,9 @@ function renameClicked() {
 	/*
 	 * build rename form
 	 */
-	var name = $(this).data('filename');
-	
+	var renameEntryField = $(this).closest(".input-group").children(".renameDocInput");
+	var name = renameEntryField.data('filename');
+	var ajaxInputs = renameEntryField.data('ajax-rename');
 	/*
 	 * the same rename button was clicked twice, so hide the rename form and do nothing 
 	 */
@@ -67,50 +69,52 @@ function renameClicked() {
 	 * on the edit publication page a label is already available,
 	 *  on the default view-publication page it's not
 	 */
-	if($("#showName").length) {
+	if(ajaxInputs) {
+		$("#renameForm").remove();
 		$("#showName").text(getString("post.bibtex.renameTitle") +" " +name);
-		var renameForm = "<form id='renameForm' action='" + $(this).attr('href') + "' method='POST' enctype='multipart/form-data' autocomplete='off'>" + 
-		 "<input id='renameFormTxt' type='text' name='newFileName' value='" +name.replace(/'/g, "&apos;") +"'/>" +
-				" <input id='renameBtn' type='button' value='"+ getString("post.bibtex.btnRename") +"' /></form> ";
+		var renameForm = "<li class='renameFormContainer'><form class='renameForm' style='display:none' action='" + renameEntryField.attr('href') + "' method='POST' enctype='multipart/form-data' autocomplete='off'>" + 
+		 "<input class='renameFormTxt' type='text' name='newFileName' value='" +name.replace(/'/g, "&apos;") +"'/>" +
+				" <input class='renameBtn' type='button' value='"+ getString("post.bibtex.btnRename") +"' /></form> </li>";
+		$(renameForm).css("display","none");
+		$("document").append($(renameForm));
 	} else {
-		var renameForm = "<form id='renameForm' action='" + $(this).attr('href') + "' method='POST' enctype='multipart/form-data' autocomplete='off'>" + 
-		"<p id='showName'>" +getString("post.bibtex.renameTitle") +" " +name +":</p> <input id='renameFormTxt' type='text' name='newFileName' value='" +name.replace(/'/g, "&apos;") +"' />" +
-				" <input id='renameBtn' type='button' value='"+ getString("post.bibtex.btnRename") +"' /></form> ";
-	}
-
-	/*
-	 * append form
-	 */
-	var inputDiv = $("#inputDiv");
-	if (inputDiv.length) {
+		if($("#showName").length) {
+			$("#showName").text(getString("post.bibtex.renameTitle") +" " +name);
+			var renameForm = "<form id='renameForm' style='action='" + $(this).attr('href') + "' method='POST' enctype='multipart/form-data' autocomplete='off'>" + 
+			 "<input id='renameFormTxt' type='text' name='newFileName' value='" +name.replace(/'/g, "&apos;") +"'/>" +
+					" <input id='renameBtn' type='button' value='"+ getString("post.bibtex.btnRename") +"' /></form> ";
+		} else {
+			var renameForm = "<form id='renameForm' action='" + $(this).attr('href') + "' method='POST' enctype='multipart/form-data' autocomplete='off'>" + 
+			"<p id='showName'>" +getString("post.bibtex.renameTitle") +" " +name +":</p> <input id='renameFormTxt' type='text' name='newFileName' value='" +name.replace(/'/g, "&apos;") +"' />" +
+					" <input id='renameBtn' type='button' value='"+ getString("post.bibtex.btnRename") +"' /></form> ";
+		}
+	
+		
 		/*
-		 * on /bibtex/... pages
+		 * append form
 		 */
-		inputDiv.append($(renameForm));
-	} else {
-		/*
-		 * on other pages 
-		 * 
-		 * this = a
-		 * parent = headline DIV
-		 */ 
-		$(this).parent().append($(renameForm));
+		var inputDiv = $("#inputDiv");
+		if (inputDiv.length) {
+			/*
+			 * on /bibtex/... pages
+			 */
+			inputDiv.append($(renameForm));
+		} else {
+			/*
+			 * on other pages 
+			 * 
+			 * this = a
+			 * parent = headline DIV
+			 */ 
+			var parent = $(this).parent().append($(renameForm));
+		}
 	}
 
 	/*
 	 * attach handler that is called when the user selected a file
 	 * Click handler
 	 */
-	$("#renameBtn").click(renameSelected);
-	/*
-	 * handler for presses enter button 
-	 */
-	$("#renameFormTxt").keypress(function(event) {
-		if(event.which == 13) {
-			renameSelected();
-			return false;
-		}
-	});
+	renameSelected(this);
 
 	return false;
 }
@@ -164,12 +168,13 @@ function checkConsistency(oldSuffix, newSuffix) {
 /**
  * renames a document
  */
-function renameSelected() {
+function renameSelected(button) {
 	/*
 	 * get the documents type to check wether
 	 * the new ending is equals the old
 	 */
-	var temp = $("#showName").text().split(" ");
+	var entry = $(button).closest(".input-group").children(".renameDocInput").addClass("current-form");
+	var temp = entry.val().split(" ");
 	var type;
 	$.each(temp, function(index, item) {
 		if(item.indexOf(".") >= 0) {
@@ -178,8 +183,7 @@ function renameSelected() {
 		}
 	});
 	
-	var renameForm = $("#renameForm");
-	var fileName = $("#renameFormTxt").val(); //get value of the rename field
+	var fileName = entry.data("filename"); //get value of the rename field
 	var newFileType = fileName.split(".");
 	var length = newFileType.length;
 	newFileType = newFileType[newFileType.length-1];
@@ -194,6 +198,11 @@ function renameSelected() {
 	
 	//check wether a file with this name already exists
 	$(".documentFileName").each(function() {
+		if($(this).hasClass("current-form")) {
+			$(this).removeClass("current-form")
+			return;
+		}
+		
 		var name = $.trim($(this).text());
 		if (name == fileName) {
 			fileExist = true;
@@ -203,16 +212,19 @@ function renameSelected() {
 	//file already exists
 	if (fileExist) {
 		alert(getString("post.bibtex.fileExists"));
-		$(renameForm).remove();
 		return;
 	}
 	
-	renameForm.val(decodeURI(renameForm.val()).replace(/&/g, "%26"));
+	entry.val(decodeURI(entry.val()).replace(/&/g, "%26"));
 	
 	//do an ajaxsubmit of the renameForm
-	$(renameForm).ajaxSubmit({
+	$("#renameBtn").ajaxSubmit({
 		dataType: "xml",
-		success: renameRequestSuccessful
+		success: function(data) {
+			$(button).addClass("btn-success");
+			renameRequestSuccessful(data);
+		}
+	
 	});
 }
 
@@ -231,8 +243,7 @@ function deleteLinkClicked () {
 			alert($("reason", data).text());
 		} else {
 			var test = $(button).next(".documentFileName").text();
-			alert($("response", data).text());
-			$(button).parent("li").remove();
+			$(button).closest("li").remove();
 		}
 	}, "xml");
 	return false;
@@ -317,7 +328,9 @@ function fileSelected(obj) {
 	}
 	$(upForm).ajaxSubmit({
 		dataType: "xml",
-		success: uploadRequestSuccessful	
+		success: function(data){
+			uploadRequestSuccessful(data);
+		}
 	});
 	
 	/*
@@ -356,8 +369,10 @@ function uploadRequestSuccessful(data) {
 		var fileName  = $("filename", data).text();
 		
 		var copyData = $("#file-upload-placeholder").clone();
-		
+		copyData.attr("id", "");
 		var encodedFileName = encodeURIComponent(fileName).replace(/%20/g, '+');
+		var inputGroup = copyData.find(".input-group").filter(":first");
+		var inputGroupButtons = copyData.find(".input-group-btn").filter(":first");
 
 		var documentUri = "/documents/" + intrahash + "/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(encodedFileName);
 		var documentHelp = getString("bibtex.actions.private_document.download");
@@ -366,49 +381,42 @@ function uploadRequestSuccessful(data) {
 		var params = [projectName];
 		var documentQRHelp = getString("qrcode.info.embedderInfoMessage", params);
 		
-		var downloadForm = copyData.children(".download-btn").filter(":first").data("filename", encodedFileName).attr("href", documentUri + "?qrcode=false").attr("title", documentHelp);
-		var qrForm = copyData.children(".qrcode-btn").data("filename", encodedFileName).data("filename", encodedFileName).attr("href", documentUri + "?qrcode=true").attr("title", documentHelp);
-		var renameForm = copyData.children(".renameDoc").attr("href", "/ajax/documents?ckey="+ckey+"&temp=false&intraHash=" + intrahash + "&fileName="+encodedFileName +"&action=rename").data("filename", encodedFileName);
-		var deleteForm = copyData.children(".deleteDocument").attr("href", "/ajax/documents?intraHash=" + intrahash + "&fileName="+ encodedFileName + "&ckey=" + ckey + "&temp=false&action=delete");
-		var imgPreview = copyData.children(".pre_pic").attr("src", documentUri + "?preview=SMALL").attr("alt", fileName);
+		var downloadForm = inputGroup.children(".download-btn").filter(":first").data("filename", encodedFileName).attr("href", documentUri + "?qrcode=false").attr("title", documentHelp);
+		var qrForm = inputGroupButtons.children(".qrcode-btn").data("filename", encodedFileName).data("filename", encodedFileName).attr("href", documentUri + "?qrcode=true").attr("title", documentHelp);
+		var renameInput = inputGroup.children(".renameDocInput").val(fileName).attr("href", "/ajax/documents?ckey="+ckey+"&temp=false&intraHash=" + intrahash + "&fileName="+encodedFileName +"&action=rename").data("filename", fileName);
+		var renameButton = inputGroupButtons.children(".rename-btn");
+		var deleteForm = inputGroupButtons.children(".remove-btn").attr("href", "/ajax/documents?intraHash=" + intrahash + "&fileName="+ encodedFileName + "&ckey=" + ckey + "&temp=false&action=delete").attr("title", getString("delete")).data("filename", fileName);
+		var imgPreview = inputGroup.children(".pre_pic").attr("src", documentUri + "?preview=SMALL").attr("alt", fileName);
 		
 		/*
 		 * on /bibtex pages we have a list where we add links to the files
 		 */
-		var filesUl = $("#files");
+		var filesUl = $(".edit-document-forms").filter(":first");
 
 		/*
 		 * file extension for qr code embedding
 		 */
 		var suffix = ".pdf";
 		
-		if (filesUl.length) {
-				
+		if (!filesUl.length) {
+			//if(documentImg!==undefined) upA.children().first().replaceWith($(documentImg));
+		}
 			
 			
 			/*
 			 * check if file ends with '.pdf'
 			 */
-			if (fileName.toLowerCase().indexOf(suffix, fileName.length - suffix.length) == -1) qrForm.hide();
+		if (fileName.toLowerCase().indexOf(suffix, fileName.length - suffix.length) == -1) qrForm.hide();
 			
 			/*
 			 * find the new added document(it's always the element at index n-1 in filesUl)
 			 * and add listener
 			 */
-			filesUl.append(copyData);
-			renameForm.click(renameClicked);
-			deleteForm.click(deleteLinkClicked);
-		} else {
-			/*
-			 * change document link
-			 */
-			/*var upA = upParent.children(".addDocument").first();
-			upA.attr("href", documentUri);
-			upA.attr("class", "preview");
-			upA.attr("title", documentHelp);
-			upA.unbind('click');
-			if(documentImg!==undefined) upA.children().first().replaceWith($(documentImg));*/
-		}
+		filesUl.prepend(copyData);
+		
+		renameButton.click(renameClicked);
+		deleteForm.click(deleteLinkClicked);
+		copyData.show();
 		
 		return;
 	}

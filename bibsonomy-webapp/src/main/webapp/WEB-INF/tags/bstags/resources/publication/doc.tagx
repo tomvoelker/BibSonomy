@@ -128,9 +128,9 @@
 									<c:set var="delete_doc"><fmt:message key="bibtex.actions.private_document.delete"/></c:set>
 									
 									<form class="renameDocForm" action="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=FILENAME_PLACEHOLDER&amp;action=rename" method='POST' enctype='multipart/form-data' autocomplete='off'>
-										<span class="showName" style="display:none;"><!-- keep --></span>
+										<span class="show-name" style="display:none;"><!-- keep --></span>
 										<div class="input-group">
-											<input class="form-control input-sm renameDocInput" name='newFileName' type="text" value="" />
+											<input class="form-control input-sm renameDocInput" data-ajax-rename="true" name='newFileName' type="text" value="" />
 											<span class="input-group-btn">
         										<a class="btn btn-sm btn-default btn-stripped rename-btn" title="${renameDocTitle}"><span class="fa fa-pencil"><!-- KEEP ME --></span></a>
         										<a class="btn btn-sm btn-default btn-stripped remove-btn" title="${deleteDocTitle}" href="${deleteUrl}" data-filename=""><span class="fa fa-times"><!-- KEEP ME --></span></a>
@@ -167,10 +167,11 @@
 									<c:set var="downloadQrTitle"><fmt:message key="qrcode.actions.qrDownload"/></c:set>
 									<c:set var="delete_doc"><fmt:message key="bibtex.actions.private_document.delete"/></c:set>
 									<form class="renameDocForm" action="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=${mtl:encodeURI(document.fileName)}&amp;action=rename" method='POST' enctype='multipart/form-data' autocomplete='off'>
-										<span class="showName" style="display:none;"><c:out value="${filename}" /></span>
+										<span class="show-name" style="display:none;"><c:out value="${filename}" /></span>
 										<div class="input-group">
-											<input class="form-control input-sm renameDocInput" name='newFileName' type="text" value="${filename}" />
+											<input class="form-control input-sm renameDocInput" data-ajax-rename="true" name='newFileName' type="text" value="${filename}" />
 											<span class="input-group-btn">
+											
         										<a class="btn btn-sm btn-default btn-stripped rename-btn" title="${renameDocTitle}"><span class="fa fa-pencil"><!-- KEEP ME --></span></a>
         										<a class="btn btn-sm btn-default btn-stripped remove-btn" title="${deleteDocTitle}" href="${deleteUrl}" data-filename="${fn:escapeXml(document.fileName)}"><span class="fa fa-times"><!-- KEEP ME --></span></a>
         										<a class="btn btn-sm btn-default btn-stripped download-btn" title="Download ${downloadTitle}"><span class="fa fa-download"><!-- KEEP ME --></span></a>
