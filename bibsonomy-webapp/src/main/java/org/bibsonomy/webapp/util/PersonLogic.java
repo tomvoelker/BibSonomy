@@ -98,7 +98,6 @@ public class PersonLogic implements PersonLogicInterface {
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#updatePerson(org.bibsonomy.model.Person)
 	 */
-	@Override
 	public int updatePerson(Person person) {
 		// TODO Auto-generated method stub
 		return 0;
@@ -107,9 +106,16 @@ public class PersonLogic implements PersonLogicInterface {
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonName(java.lang.String, java.lang.String)
 	 */
-	@Override
+
 	public PersonName getPersonName(String firstName, String lastName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public Person getPerson(String personId) {
+		// TODO
+		return null;
+	}
+	
+	
 }

@@ -27,7 +27,7 @@ import org.bibsonomy.webapp.view.Views;
 /**
  * @author Christian Pfeiffer
  */
-public class PersonPageController extends SingleResourceListControllerWithTags implements MinimalisticController<PersonPageCommand> {
+public class PersonPageController extends SingleResourceListController implements MinimalisticController<PersonPageCommand> {
 	private static final Log log = LogFactory.getLog(PersonPageController.class);
 	
 	//TODO: get by injection
@@ -37,18 +37,24 @@ public class PersonPageController extends SingleResourceListControllerWithTags i
 	public View workOn(final PersonPageCommand command) {
 		if (!present(command.getRequestedPersonId())) {
 			throw new MalformedURLSchemeException("error.person_page_without_personname");
-		} else if(!present(command.getRequestedPersonName())) {
-			throw new MalformedURLSchemeException("error.person_page_without_personname");
 		}
 		
+		command.setPerson(new Person());
+		command.getPerson().setId(12334);
+		Set<PersonName> set = new HashSet<PersonName>();
+		set.add(new PersonName("Christian", "Pfeiffer"));
+		set.add(new PersonName("Viktor", "Hemsen"));
+		command.getPerson().setAlternateNames(set);
+		command.getPerson().setMainName(new PersonName(command.getRequestedPersonId(), ""));
+		command.getPerson().setAcademicDegree("Doctor");
+		
 		switch(command.getRequestedAction()) {
-			case "show": return this.showAction(command);
 			case "update": return this.updateAction(command);
 			case "addName": return this.addNameAction(command);
 			case "details": return this.detailsAction(command);
 			case "editRole": return this.editRoleAction(command);
 			case "unlink": return this.unlinkAction(command);
-			default: throw new MalformedURLSchemeException("error.controller cant handle action " + command.getRequestedAction());
+			default: return this.showAction(command);
 		}
 	}
 
@@ -65,7 +71,7 @@ public class PersonPageController extends SingleResourceListControllerWithTags i
 		
 		this.personLogic.updatePerson(command.getPerson());
 		
-		return new ExtendedRedirectView("/person/show/" + command.getRequestedPersonId() + "/" + command.getRequestedPersonName());
+		return new ExtendedRedirectView("/person/" + command.getRequestedPersonId());
 	}
 
 
@@ -79,7 +85,9 @@ public class PersonPageController extends SingleResourceListControllerWithTags i
 		
 		log.info("Accessed editRoleAction -> getting redirected");
 		
-		return new ExtendedRedirectView("/person/show/" + command.getRequestedPersonId() + "/" + command.getRequestedPersonName());
+		this.personLogic.updatePerson(command.getPerson());
+		
+		return new ExtendedRedirectView("/person/" + command.getRequestedPersonId());
 	}
 
 
@@ -93,7 +101,7 @@ public class PersonPageController extends SingleResourceListControllerWithTags i
 		
 		this.personLogic.updatePerson(command.getPerson());
 		
-		return new ExtendedRedirectView("/person/show/" + command.getRequestedPersonId() + "/" + command.getRequestedPersonName());
+		return new ExtendedRedirectView("/person/" + command.getRequestedPersonId());
 	}
 
 
@@ -109,7 +117,7 @@ public class PersonPageController extends SingleResourceListControllerWithTags i
 		
 		this.personLogic.updatePerson(command.getPerson());
 		
-		return new ExtendedRedirectView("/person/show/" + command.getRequestedPersonId() + "/" + command.getRequestedPersonName());
+		return new ExtendedRedirectView("/person/" + command.getRequestedPersonId());
 	}
 
 
@@ -119,45 +127,9 @@ public class PersonPageController extends SingleResourceListControllerWithTags i
 	 */
 	private View detailsAction(PersonPageCommand command) {
 
-		// retrieve and set the requested resource lists, along with total
-		// counts
-		Class<? extends Resource> toRemove = null;
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command.getFormat(), command.getResourcetype())) {
-			if(resourceType.getName().equals("org.bibsonomy.model.Bookmark")) {
-				toRemove = resourceType;
-				continue;
-			}
-			command.getResourcetype().remove(toRemove);
-			final ListCommand<?> listCommand = command.getListCommand(resourceType);
-			final int entriesPerPage = listCommand.getEntriesPerPage();
-			
-			this.setList(command, resourceType, GroupingEntity.USER, command.getRequestedUser(), command.getRequestedTagsList(), command.getRequestedHash(), null, command.getFilter(), null, command.getStartDate(), command.getEndDate(), entriesPerPage);
-			this.postProcessAndSortList(command, resourceType);
-	
-			/*
-			 * set the post counts
-			 */
-			this.setTotalCount(command, resourceType, GroupingEntity.USER, command.getRequestedUser(), command.getRequestedTagsList(), command.getRequestedHash(), null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
-		}
+		command.setPost(this.logic.getPostDetails(command.getRequestedHash(), command.getRequestedPersonId()));
 		
-		// html format - retrieve tags and return HTML view
-		if ("html".equals(command.getFormat())) {
-	
-			// retrieve concepts
-			final List<Tag> concepts = this.logic.getConcepts(null, GroupingEntity.USER, command.getRequestedUser(), null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
-			command.getConcepts().setConceptList(concepts);
-			
-			// log if a user has reached threshold
-			if (command.getTagcloud().getTags().size() >= Parameters.TAG_THRESHOLD) {
-				log.debug("User " + command.getRequestedUser() + " has reached threshold of " + Parameters.TAG_THRESHOLD + " tags on user page");
-			}
-	
-			return Views.PERSON_SINGLE;
-		}
-		
-		this.endTiming();
-		// export - return the appropriate view
-		return Views.getViewByFormat(command.getFormat());
+		return this.showAction(command);
 	}
 
 	/**
@@ -165,6 +137,7 @@ public class PersonPageController extends SingleResourceListControllerWithTags i
 	 * @return
 	 */
 	private View showAction(PersonPageCommand command) {
+		
 		// retrieve and set the requested resource lists, along with total
 		// counts
 		command.setRequestedUser(command.getRequestedPersonId());
@@ -178,31 +151,29 @@ public class PersonPageController extends SingleResourceListControllerWithTags i
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 			
-			this.setList(command, resourceType, GroupingEntity.USER, command.getRequestedUser(), command.getRequestedTagsList(), command.getRequestedHash(), null, command.getFilter(), null, command.getStartDate(), command.getEndDate(), entriesPerPage);
+			this.setList(command, resourceType, GroupingEntity.USER, command.getRequestedPersonId(), command.getRequestedTagsList(), null, null, command.getFilter(), null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
 	
 			/*
 			 * set the post counts
 			 */
-			this.setTotalCount(command, resourceType, GroupingEntity.USER, command.getRequestedUser(), command.getRequestedTagsList(), command.getRequestedHash(), null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
+			this.setTotalCount(command, resourceType, GroupingEntity.USER, command.getRequestedPersonId(), command.getRequestedTagsList(), null, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 		}
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {
 	
 			// retrieve concepts
-			final List<Tag> concepts = this.logic.getConcepts(null, GroupingEntity.USER, command.getRequestedUser(), null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
+			final List<Tag> concepts = this.logic.getConcepts(null, GroupingEntity.USER, command.getRequestedPersonId(), null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
 			command.getConcepts().setConceptList(concepts);
 			
 			// log if a user has reached threshold
 			if (command.getTagcloud().getTags().size() >= Parameters.TAG_THRESHOLD) {
-				log.debug("User " + command.getRequestedUser() + " has reached threshold of " + Parameters.TAG_THRESHOLD + " tags on user page");
+				log.debug("User " + command.getRequestedPersonId() + " has reached threshold of " + Parameters.TAG_THRESHOLD + " tags on user page");
 			}
 	
-			return Views.PERSON_ALL;
+			return Views.PERSON;
 		}
-		
-		this.endTiming();
 		// export - return the appropriate view
 		return Views.getViewByFormat(command.getFormat());
 	}

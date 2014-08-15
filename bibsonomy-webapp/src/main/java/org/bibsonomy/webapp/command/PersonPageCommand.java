@@ -2,15 +2,14 @@ package org.bibsonomy.webapp.command;
 
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 
 /**
  * @author Christian Pfeiffer
  */
 public class PersonPageCommand extends UserResourceViewCommand {
 
-
-	private String requestedPersonName;
-	private String requestedRole;
 	private String requestedPersonId;
 	private String requestedHash;
 	private String requestedAction;
@@ -19,15 +18,11 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	private String formGraduation;
 	private String formGivenName;
 	private String formSurName;
+	private String formRole;
 	
 	private Person person;
-	
-	
-	// TODO: inject person
-	public PersonPageCommand() {
-		this.person = new Person();
-	}
-	
+	private Post<? extends Resource> post;
+
 	/**
 	 * @return the formSelectedName
 	 */
@@ -106,20 +101,6 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	}
 
 	/**
-	 * @return the requestedPersonName
-	 */
-	public String getRequestedPersonName() {
-		return this.requestedPersonName;
-	}
-
-	/**
-	 * @param requestedPersonName the requestedPersonName to set
-	 */
-	public void setRequestedPersonName(String requestedPersonName) {
-		this.requestedPersonName = requestedPersonName;
-	}
-
-	/**
 	 * @return the requestedAction
 	 */
 	public String getRequestedAction() {
@@ -132,13 +113,6 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	public void setRequestedAction(String requestedAction) {
 		this.requestedAction = requestedAction;
 	}
-
-	/**
-	 * @return
-	 */
-	public String getRequestedRole() {
-		return this.requestedRole;
-	}
 	
 	/**
 	 * @param person
@@ -146,25 +120,46 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	public void setRequestedPersonId(String personId) {
 		this.requestedPersonId = personId;
 	}
-	
-	/**
-	 * @param role
-	 */
-	public void setRequestedRole(String role) {		
-		this.requestedRole = role;
-	}
 
 	/**
-	 * @return
+	 * @return the requestedHash
 	 */
 	public String getRequestedHash() {
 		return this.requestedHash;
 	}
-	
+
 	/**
-	 * @param hash
+	 * @param requestedHash the requestedHash to set
 	 */
-	public void setRequestedHash(String hash) {
-		this.requestedHash = hash;
+	public void setRequestedHash(String requestedHash) {
+		this.requestedHash = requestedHash;
+	}
+
+	/**
+	 * @return the formRole
+	 */
+	public String getFormRole() {
+		return this.formRole;
+	}
+
+	/**
+	 * @param formRole the formRole to set
+	 */
+	public void setFormRole(String formRole) {
+		this.formRole = formRole;
+	}
+
+	/**
+	 * @return the post
+	 */
+	public Post<? extends Resource> getPost() {
+		return this.post;
+	}
+
+	/**
+	 * @param post the post to set
+	 */
+	public void setPost(Post<? extends Resource> post) {
+		this.post = post;
 	}
 }

@@ -29,8 +29,10 @@ public enum Views implements View {
 	 */
 	HASHEXAMPLE("hashexample"),
 	
-	PERSON_ALL("person/all"),
-	PERSON_SINGLE("person/single"),
+	/**
+	 * TODO:
+	 */
+	PERSON("person"),
 
 	/**
 	 * the page where a user can change his personal settings

@@ -137,14 +137,20 @@
         <div class="modal-body">
           	<form  action="/person/editRole/${command.requestedPersonId}/${command.requestedPersonName}" method="post" name='editRoleForm'>
           		<FIELDSET>
-					<label for='roleBetreuer'>Betreuer</label>
-					<input id='roleBetreuer' type='checkbox' name='role[]' value='Betreuer'/>
-					<label for='roleGutachter'>Gutachter</label>
-					<input id='roleGutachter' type='checkbox' name='role[]' value='Gutachter'/>
-					<label for='roleSonstiges'>Sonstiges</label>
-					<input id='roleSonstiges' type='checkbox' name='role[]' value='Sonstiges'/>
-					<input type='hidden' id='editRole_resourceInterHash' name='editRole_formResourceInterHash'/>
-					<input type='hidden' id='editRole_authorName' name='editRole_authorName'/>
+          			<div class="input-group">
+						<label for='roleBetreuer'>Betreuer</label>
+						<input id='roleBetreuer' type='checkbox' name='formRole[]' value='Betreuer'/>
+					</div>
+					<div class="input-group">
+						<label for='roleGutachter'>Gutachter</label>
+						<input id='roleGutachter' type='checkbox' name='formRole[]' value='Gutachter'/>
+					</div>
+					<div class="input-group">
+						<label for='roleSonstiges'>Sonstiges</label>
+						<input id='roleSonstiges' type='checkbox' name='formRole[]' value='Sonstiges'/>
+					</div>
+					<input type='hidden' id='editRole_resourceInterHash' name='formHash'/>
+					<input type='hidden' id='editRole_authorName' name='formPersonId'/>
 				</FIELDSET>
 			</form>
         </div>
@@ -166,8 +172,8 @@
         <div class="modal-body">
         	<p>Do you really want to unlink the Person?</p>
           	<form  action="/person/unlink/${command.requestedPersonId}/${command.requestedPersonName}" method="post" name='unlinkForm'>
-				<input type='hidden' id='unlink_resourceInterHash' name='unlink_resourceInterHash'/>
-				<input type='hidden' id='unlink_authorName' name='unlink_authorName'/>
+				<input type='hidden' id='unlink_resourceInterHash' name='formHash'/>
+				<input type='hidden' id='unlink_authorName' name='formPersonId'/>
 			</form>
         </div>
         <div class="modal-footer">

@@ -1,6 +1,5 @@
 var unlink = function(interhash, author) {
-	$("#unlink_resourceInterHash").val(interhash);
-	$("#unlink_authorName").val(author);
+	document.unlinkForm.action = "/person/" + author + "/unlink/" + interhash;
 };
 
 $(document).ready(function() {

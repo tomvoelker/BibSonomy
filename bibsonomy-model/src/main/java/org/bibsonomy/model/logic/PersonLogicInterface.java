@@ -30,8 +30,4 @@ public interface PersonLogicInterface {
 	public int createPerson(Person person);
 
 	public int setPersonUserName(Person person, String userName);
-	
-	public int updatePerson(Person person);
-	
-	public PersonName getPersonName(String firstName, String lastName);
 }

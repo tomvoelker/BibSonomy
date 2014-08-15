@@ -312,11 +312,11 @@
 	<!-- ############## /person pages ############### -->
 	<!-- redirect to /person/PERSON page -->
 	<rule>
-		<name>redirect /person/REQUESTEDACTION/PERSONID/PERSONNAME</name>
-		<from>^/+person/+([^/]+?)/+([^/]+?)/+([^/]+?)$</from>
-		<set type="parameter" name="requestedAction">$1</set>
-		<set type="parameter" name="requestedPersonId">$2</set>
-		<set type="parameter" name="requestedPersonName">$3</set>
+		<name>redirect /person/PERSONID/ACTION/HASH</name>
+		<from>^/+person/+([^/]+?)(|/+([^/]+?)/+([^/]+?))$</from>
+		<set type="parameter" name="requestedPersonId">$1</set>
+		<set type="parameter" name="requestedAction">$3</set>
+		<set type="parameter" name="requestedHash">$4</set>
 		<to last="true">/person</to>
 	</rule>
 	<!-- ############## /concept pages ############### -->
