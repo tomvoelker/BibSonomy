@@ -6,7 +6,7 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	
+
 	<layout:twoColumnLayout
 		heading="${heading}"
 		loginUser="${command.context.loginUser}" 
@@ -26,4 +26,5 @@
 		</jsp:attribute>
 		
 	</layout:twoColumnLayout>
+
 </jsp:root>

@@ -111,6 +111,7 @@
 								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-dialog.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/custom.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-datepicker.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-carousel.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/friendoverview.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/functions.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/actions/clipboard.js</include>
