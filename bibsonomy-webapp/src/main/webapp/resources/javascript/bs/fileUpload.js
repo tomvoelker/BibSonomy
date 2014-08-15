@@ -344,7 +344,7 @@ function uploadRequestSuccessful(data) {
 			 * find the new added document(it's always the element at index n-1 in filesUl)
 			 * and add listener
 			 */
-		filesUl.prepend(copyData);
+		filesUl.find(".bibtexpreviewimage").after(copyData);
 		
 		renameButton.click(function(e){
 			renameFile(o);
