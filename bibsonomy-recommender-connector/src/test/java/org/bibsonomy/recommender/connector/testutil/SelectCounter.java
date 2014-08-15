@@ -10,6 +10,8 @@ import recommender.impl.multiplexer.strategy.SelectAll;
 
 /**
  * @author fei
+ * @param <E> 
+ * @param <R> 
  */
 public class SelectCounter<E extends RecommendationEntity, R extends RecommendationResult> extends SelectAll<E, R> {
 	

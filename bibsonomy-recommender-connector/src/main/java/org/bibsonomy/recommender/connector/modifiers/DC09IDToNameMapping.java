@@ -43,22 +43,24 @@ public class DC09IDToNameMapping implements EntityModifier<TagRecommendationEnti
 	 */
 	@Override
 	public void alterEntity(TagRecommendationEntity post) {
-		final Integer userID = Integer.parseInt(post.getUser().getName()); 
+		final Integer userID = new Integer(post.getUser().getName()); 
 		String userName = this.idMap.get(userID);
 		if (userName == null) {
-			userName = this.getDbAccess().getUserNameByID(userID);
+			userName = this.dbAccess.getUserNameByID(userID.intValue());
 		}
-			
 		
 		if (userName == null) {
-		    userName = UNKOWNUSER;
+			userName = UNKOWNUSER;
 		}
-			
+		
 		post.getUser().setName(userName);
 		log.debug("Mapping id "+ userID +" to name " + userName);
 	}
-	
-	public RecommenderMainTagAccess getDbAccess() {
-		return dbAccess;
+
+	/**
+	 * @param dbAccess the dbAccess to set
+	 */
+	public void setDbAccess(RecommenderMainTagAccess dbAccess) {
+		this.dbAccess = dbAccess;
 	}
 }

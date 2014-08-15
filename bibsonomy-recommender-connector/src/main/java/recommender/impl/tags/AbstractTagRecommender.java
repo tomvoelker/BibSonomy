@@ -1,0 +1,135 @@
+package recommender.impl.tags;
+
+import java.util.Collection;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import recommender.core.Recommender;
+import recommender.core.interfaces.model.TagRecommendationEntity;
+import recommender.core.util.RecommendationResultComparator;
+import recommender.core.util.TagStringUtils;
+import recommender.impl.model.RecommendedTag;
+
+/**
+ * The basic skeleton to implement a tag recommender.
+ * 
+ * @author rja
+ */
+public abstract class AbstractTagRecommender implements Recommender<TagRecommendationEntity, RecommendedTag> {
+	private static final Log log = LogFactory.getLog(AbstractTagRecommender.class);
+	
+	/**
+	 * The maximal number of tags the recommender shall return on a call to
+	 * {@link #getRecommendation(RecommendationEntity)}.
+	 */
+	protected int numberOfTagsToRecommend = Recommender.DEFAULT_NUMBER_OF_RESULTS_TO_RECOMMEND;
+	
+	/**
+	 * Should the recommender return only tags cleaned according to 
+	 * {@link TagStringUtils#cleanTag(String)} and removed according to
+	 * {@link TagStringUtils#isIgnoreTag(String)}?
+	 */
+	protected boolean cleanTags = false;
+
+	/**
+	 * Returns user's five overall most popular tags
+	 * 
+	 * @see recommender.core.Recommender#getRecommendation(recommender.core.interfaces.model.RecommendationEntity)
+	 */
+	@Override
+	public SortedSet<RecommendedTag> getRecommendation(final TagRecommendationEntity entity) {
+		final SortedSet<RecommendedTag> recommendedTags = new TreeSet<RecommendedTag>(new RecommendationResultComparator<RecommendedTag>());
+		this.addRecommendation(recommendedTags, entity);
+		
+		return recommendedTags;
+	}
+
+	/**
+	 * @return The (maximal) number of tags this recommender shall return.
+	 */
+	public int getNumberOfTagsToRecommend() {
+		return this.numberOfTagsToRecommend;
+	}
+
+	/** Set the (maximal) number of tags this recommender shall return. The default is {@value #DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND}.
+	 * 
+	 * @param numberOfTagsToRecommend
+	 */
+	public void setNumberOfTagsToRecommend(int numberOfTagsToRecommend) {
+		this.numberOfTagsToRecommend = numberOfTagsToRecommend;
+	}
+
+	@Override
+	public void addRecommendation(final Collection<RecommendedTag> recommendedTags, final TagRecommendationEntity entity) {
+		log.debug("Getting tag recommendations for " + entity);
+		this.addRecommendedTagsInternal(recommendedTags, entity);
+		if (log.isDebugEnabled()) log.debug("Recommending tags " + recommendedTags);
+	}
+	
+	protected abstract void addRecommendedTagsInternal(Collection<RecommendedTag> recommendedTags, TagRecommendationEntity entity);
+
+	@Override
+	public void setFeedback(TagRecommendationEntity entity, RecommendedTag tag) {
+		log.debug("got TagRecomendationEntity with id " + entity.getId() + " as feedback.");
+		this.setFeedbackInternal(entity, tag);
+	}
+
+	protected abstract void setFeedbackInternal(TagRecommendationEntity post, RecommendedTag tag);
+
+	
+	/**
+	 * @return The current value of cleanTags. Defaults to <code>false</code>.
+	 */
+	public boolean isCleanTags() {
+		return this.cleanTags;
+	}
+
+	/**
+	 * Should the recommender return only tags cleaned according to 
+	 * {@link TagStringUtils#cleanTag(String)} and removed according to
+	 * {@link TagStringUtils#isIgnoreTag(String)}?
+	 * The default is <code>false</code>
+	 * 
+	 * @param cleanTags
+	 */
+	public void setCleanTags(boolean cleanTags) {
+		this.cleanTags = cleanTags;
+	}
+	
+	/**
+	 * Cleans the tag depending on the setting of {@link #cleanTags}. 
+	 * If it is <code>false</code> (default), the tag is returned as is.
+	 * If it is <code>true</code>, the tag is cleaned according to {@link TagStringUtils#cleanTag(String)}
+	 * and checked against {@link TagStringUtils#isIgnoreTag(String)}. 
+	 * If it should be ignored, <code>null</code> is returned, else the
+	 * cleaned tag.
+	 * 
+	 * This method should be used by all recommenders extending this class before
+	 * adding tags to the result set.
+	 * 
+	 * @param tag 
+	 * @return The tag - either cleaned or not, or <code>null</code> if it is
+	 * an ignore tag.
+	 */
+	protected String getCleanedTag(final String tag) {
+		if (cleanTags) {
+			final String cleanedTag = TagStringUtils.cleanTag(tag);
+			if (TagStringUtils.isIgnoreTag(cleanedTag)) {
+				return null;
+			}
+			
+			return cleanedTag;
+		}
+		
+		return tag;
+	}
+	
+	@Override
+	public void setNumberOfResultsToRecommend(int numberOfResultsToRecommend) {
+		this.numberOfTagsToRecommend = numberOfResultsToRecommend;
+	}
+
+}

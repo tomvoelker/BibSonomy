@@ -22,7 +22,7 @@ import recommender.impl.modifiers.EntityModifier;
  */
 public class DC09NameToIDMapping implements EntityModifier<TagRecommendationEntity> {
 	private static final Log log = LogFactory.getLog(DC09NameToIDMapping.class);
-	private static final Integer UNKNOWNID = Integer.MIN_VALUE;
+	private static final Integer UNKNOWNID = Integer.valueOf(Integer.MIN_VALUE);
 	
 	/** used for mapping user names to ids and vice versa */
 	private RecommenderMainTagAccess dbAccess;
@@ -50,21 +50,21 @@ public class DC09NameToIDMapping implements EntityModifier<TagRecommendationEnti
 		final Post<? extends Resource> post = RecommendationUtilities.unwrapTagRecommendationEntity(entity);
 		String userName = post.getUser().getName();
 		Integer userID = nameMap.get(userName);
-		if( userID == null )
-			userID = this.getDbAccess().getUserIDByName(userName);
+		if (userID == null) {
+			userID = this.dbAccess.getUserIDByName(userName);
+		}
 		
-		if( userID == null )
+		if (userID == null) {
 			userID = UNKNOWNID;
+		}
 		post.setUser(new User(userID.toString()));
 		log.debug("Mapping user "+userName+" to id "+userID);
 	}
-	
-	public RecommenderMainTagAccess getDbAccess() {
-		return dbAccess;
-	}
-	
+
+	/**
+	 * @param dbAccess the dbAccess to set
+	 */
 	public void setDbAccess(RecommenderMainTagAccess dbAccess) {
 		this.dbAccess = dbAccess;
 	}
-	
 }

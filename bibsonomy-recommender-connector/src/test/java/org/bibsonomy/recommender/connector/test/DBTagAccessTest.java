@@ -4,6 +4,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.net.MalformedURLException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +27,7 @@ import recommender.core.database.params.RecQueryParam;
 import recommender.core.database.params.RecSettingParam;
 import recommender.core.database.params.SelectorSettingParam;
 import recommender.core.interfaces.model.TagRecommendationEntity;
+import recommender.impl.meta.ResultsFromFirstWeightedBySecondRecommender;
 import recommender.impl.model.RecommendedTag;
 import recommender.impl.multiplexer.MultiplexingRecommender;
 
@@ -180,16 +182,25 @@ public class DBTagAccessTest {
 	
 	/**
 	 * Test retrieving setting ids of registered recommenders by their qualified name or url
+	 * @throws MalformedURLException 
 	 */
 	@Test
-	public void testGetRecommenderSid() {
-		dbLogic.insertRecommenderSetting("recommender.impl.tags.meta.TagsFromFirstWeightedBySecondTagRecommender", "foo", null);
-		assertTrue(dbLogic.getSettingIdForLocalRecommender("recommender.impl.tags.meta.TagsFromFirstWeightedBySecondTagRecommender") > -1);
-		assertTrue(dbLogic.getSettingIdForLocalRecommender("bar") == -1L);
-		dbLogic.insertRecommenderSetting("http://example.com", "foo", "abc".getBytes());
-		assertTrue(dbLogic.getSettingIdForDistantRecommender("http://example.com") > -1);
-		assertTrue(dbLogic.getSettingIdForDistantRecommender("bar") == -1L);
-		dbLogic.removeRecommender("http://example.com");
+	public void testGetRecommenderSid() throws MalformedURLException {
+		final ResultsFromFirstWeightedBySecondRecommender<TagRecommendationEntity, RecommendedTag> firstRecommender = new ResultsFromFirstWeightedBySecondRecommender<TagRecommendationEntity, RecommendedTag>();
+		dbLogic.registerRecommender(firstRecommender);
+		
+		assertTrue(dbLogic.getRecommenderId(firstRecommender).longValue() > -1);
+		
+		assertTrue(false); // TODO: fix code
+		/* final DummyRecommender<TagRecommendationEntity, RecommendedTag> notExistingRecommender = new DummyRecommender();
+		assertEquals(Long.valueOf(-1), dbLogic.getRecommenderId(notExistingRecommender));
+		
+		final WebserviceRecommender<TagRecommendationEntity, RecommendedTag> webserviceRecommender = new WebserviceRecommender<TagRecommendationEntity, RecommendedTag>();
+		webserviceRecommender.setAddress(new URL("http://example.com"));
+		
+		dbLogic.registerRecommender(webserviceRecommender);
+		
+		assertTrue(dbLogic.getRecommenderId(webserviceRecommender).longValue() > -1); */
 	}
 	
 	/**

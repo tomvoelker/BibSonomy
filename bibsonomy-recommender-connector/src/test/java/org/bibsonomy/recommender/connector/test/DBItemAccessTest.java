@@ -4,6 +4,8 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
@@ -26,8 +28,10 @@ import recommender.core.database.params.RecSettingParam;
 import recommender.core.database.params.SelectorSettingParam;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.impl.database.DBLogConfigItemAccess;
+import recommender.impl.item.simple.DummyItemRecommender;
 import recommender.impl.model.RecommendedItem;
 import recommender.impl.multiplexer.MultiplexingRecommender;
+import recommender.impl.webservice.WebserviceRecommender;
 
 /**
  * This class tests the database logging and configuration logic for
@@ -184,16 +188,19 @@ public class DBItemAccessTest {
 	 * Test retrieving setting ids of registered recommenders by their qualified name or url
 	 */
 	@Test
-	public void testGetRecommenderSid() {
-		final String recommenderId = "recommender.impl.item.simple.DummyItemRecommender";
-		final Long id = dbLogic.insertRecommenderSetting(recommenderId, "foo", null);
-		assertEquals(id, dbLogic.getSettingIdForLocalRecommender(recommenderId));
-		assertTrue(dbLogic.getSettingIdForLocalRecommender("bar") == -1L);
+	public void testGetRecommenderSid() throws MalformedURLException {
+		final DummyItemRecommender dummyItemRecommender = new DummyItemRecommender();
+		dbLogic.registerRecommender(dummyItemRecommender);
+		
+		assertTrue(dbLogic.getRecommenderId(dummyItemRecommender).longValue() > -1L);
+		
 		final String secondRecommenderId = "http://example.com";
-		final Long secondId = dbLogic.insertRecommenderSetting(secondRecommenderId, "foo", "abc".getBytes());
-		assertEquals(secondId, dbLogic.getSettingIdForDistantRecommender(secondRecommenderId));
-		dbLogic.removeRecommender(secondRecommenderId);
-		assertEquals(Long.valueOf(-1), dbLogic.getSettingIdForDistantRecommender(secondRecommenderId));
+		
+		final WebserviceRecommender<ItemRecommendationEntity, RecommendedItem> webserviceRecommender = new WebserviceRecommender<ItemRecommendationEntity, RecommendedItem>();
+		webserviceRecommender.setAddress(new URL("http://example.com"));
+		
+		assertTrue(dbLogic.getRecommenderId(webserviceRecommender).longValue() > -1L);
+		assertEquals(Long.valueOf(-1), dbLogic.getRecommenderId(webserviceRecommender));
 	}
 	
 	/**

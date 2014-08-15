@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.connector.tags.simple;
+package org.bibsonomy.recommender.tag.simple;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -10,10 +10,10 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
+import org.bibsonomy.recommender.tag.simple.SimpleContentBasedTagRecommender;
 import org.junit.Test;
 
 import recommender.impl.model.RecommendedTag;
-import recommender.impl.tags.simple.SimpleContentBasedTagRecommender;
 
 /**
  * Test of the {@link SimpleContentBasedTagRecommender} on base of

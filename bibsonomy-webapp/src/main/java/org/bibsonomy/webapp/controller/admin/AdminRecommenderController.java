@@ -109,6 +109,10 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	}
 	
 	private static void handleDeactivateRecommender(final AdminRecommenderViewCommand command, final MultiplexingRecommender<?, ?> recommender) {
+		if (recommender.getAllActiveRecommenders().size() == 1) {
+			command.setAdminResponse("Can't deactivate last active recommender");
+			return;
+		}
 		final Long recommenderId = command.getRecommenderId();
 		recommender.disableRecommender(recommenderId);
 		command.setAdminResponse("Deactivated recommender!");
