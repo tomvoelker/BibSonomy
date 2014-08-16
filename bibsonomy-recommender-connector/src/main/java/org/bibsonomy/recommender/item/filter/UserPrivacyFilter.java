@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.connector.filter;
+package org.bibsonomy.recommender.item.filter;
 
 import org.bibsonomy.model.User;
 import org.bibsonomy.recommender.connector.database.ExtendedMainAccess;
