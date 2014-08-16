@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.connector.filter;
+package org.bibsonomy.recommender.tag.filter;
 
 import java.util.Set;
 
