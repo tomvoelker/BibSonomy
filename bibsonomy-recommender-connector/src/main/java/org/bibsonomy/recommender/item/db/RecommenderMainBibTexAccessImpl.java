@@ -17,7 +17,6 @@ import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.recommender.connector.database.AbstractRecommenderMainItemAccessImpl;
 import org.bibsonomy.recommender.connector.model.RecommendationPost;
 
 import recommender.core.interfaces.model.ItemRecommendationEntity;
