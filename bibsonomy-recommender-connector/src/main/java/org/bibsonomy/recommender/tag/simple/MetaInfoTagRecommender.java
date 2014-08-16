@@ -11,14 +11,13 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.tag.AbstractTagRecommender;
+import org.bibsonomy.recommender.tag.model.RecommendedTag;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import recommender.impl.model.RecommendedTag;
 
 /**
  * Tag recommender which parses html file at given url for keywords from the meta-inf section.

@@ -6,10 +6,10 @@ import java.util.List;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.tag.AbstractTagRecommender;
+import org.bibsonomy.recommender.tag.model.RecommendedTag;
 import org.bibsonomy.recommender.tag.service.RecommenderMainTagAccess;
 
 import recommender.core.model.Pair;
-import recommender.impl.model.RecommendedTag;
 
 /**
  * Returns the most popular (i.e., most often used) tags of the user as 

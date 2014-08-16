@@ -7,10 +7,9 @@ import java.util.Scanner;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.tag.AbstractTagRecommender;
+import org.bibsonomy.recommender.tag.model.RecommendedTag;
 import org.bibsonomy.recommender.tag.util.termprocessing.TagTermProcessorIterator;
 import org.bibsonomy.recommender.util.termprocessing.TermProcessingIterator;
-
-import recommender.impl.model.RecommendedTag;
 
 /**
  * Extracts tags from the title of the entity. Cleans the words using a stopword list

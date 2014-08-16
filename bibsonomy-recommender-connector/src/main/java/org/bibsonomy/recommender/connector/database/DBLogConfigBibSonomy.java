@@ -22,12 +22,12 @@ import org.bibsonomy.recommender.connector.database.params.BibRecQueryParam;
 import org.bibsonomy.recommender.connector.database.params.PostRecParam;
 import org.bibsonomy.recommender.connector.database.params.RecommendedTagParam;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
+import org.bibsonomy.recommender.tag.db.DBLogConfigTagAccess;
 
 import recommender.core.database.params.RecQueryParam;
 import recommender.core.database.params.RecQuerySettingParam;
 import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.model.Pair;
-import recommender.impl.database.DBLogConfigTagAccess;
 import recommender.impl.model.RecommendedTag;
 
 /**

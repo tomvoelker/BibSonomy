@@ -1,4 +1,4 @@
-package recommender.impl.database;
+package org.bibsonomy.recommender.tag.db;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,9 +6,10 @@ import java.util.List;
 
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.recommender.tag.model.RecommendedTag;
 
 import recommender.core.database.params.ResultParam;
-import recommender.impl.model.RecommendedTag;
+import recommender.impl.database.DBLogConfigAccess;
 
 /**
  * 
@@ -24,9 +25,9 @@ public class DBLogConfigTagAccess extends DBLogConfigAccess<Post<? extends Resou
 	@Override
 	public void getRecommendations(Long qid, Long sid, Collection<RecommendedTag> recommendedTags) {
 		final List<ResultParam> queryResult = this.manager.processQueryForList(ResultParam.class, "getRecommendationsByQidSid", qid);
-		for(ResultParam result : queryResult) {
+		for (ResultParam result : queryResult) {
 			RecommendedTag tag = new RecommendedTag();
-			tag.setName(""+result.getResultId());
+			tag.setName(result.getResultId());
 			tag.setConfidence(result.getConfidence());
 			tag.setScore(result.getScore());
 			recommendedTags.add(tag);

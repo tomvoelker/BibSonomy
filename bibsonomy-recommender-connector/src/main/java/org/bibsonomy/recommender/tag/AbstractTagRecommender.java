@@ -8,11 +8,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.recommender.tag.model.RecommendedTag;
 import org.bibsonomy.util.TagStringUtils;
 
 import recommender.core.Recommender;
 import recommender.core.util.RecommendationResultComparator;
-import recommender.impl.model.RecommendedTag;
 
 /**
  * The basic skeleton to implement a tag recommender.

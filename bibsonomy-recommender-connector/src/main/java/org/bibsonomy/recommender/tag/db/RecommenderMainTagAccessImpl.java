@@ -11,7 +11,6 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.connector.database.params.GetTagForResourceParam;
-import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.bibsonomy.recommender.tag.service.RecommenderMainTagAccess;
 
 import recommender.core.model.Pair;
@@ -110,22 +109,18 @@ public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implem
 	 * (non-Javadoc)
 	 * @see recommender.core.interfaces.database.RecommenderDBAccess#getNumberOfTagsForRecommendationEntity(java.lang.Class, java.lang.String)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public Integer getNumberOfTagsForRecommendationEntity(
-			Post<? extends Resource> entity, String entityId) {
+	public Integer getNumberOfTagsForRecommendationEntity(Post<? extends Resource> entity, String entityId) {
 		final DBSession mainSession = this.openMainSession();
+		final Resource resource = entity.getResource();
 		try {
-			if (entity instanceof PostWrapper<?>) {
-				if (((PostWrapper<Resource>) entity).getPost() != null && ((PostWrapper<Resource>) entity).getPost().getResource() instanceof BibTex) {
-					return this.queryForObject("getNumberOfTagsForBibTeX", entityId, Integer.class, mainSession);
-				} else if (((PostWrapper<Resource>) entity).getPost() != null && ((PostWrapper<Resource>) entity).getPost().getResource() instanceof Bookmark) {
-					return this.queryForObject("getNumberOfTagsForBookmark", entityId, Integer.class, mainSession);
-				}
-
-				throw new UnsupportedResourceTypeException("Unknown resource type " + (((PostWrapper<Resource>) entity).getPost().getResource()).getClass().getName());
+			if (resource instanceof BibTex) {
+				return this.queryForObject("getNumberOfTagsForBibTeX", entityId, Integer.class, mainSession);
+			} else if (resource instanceof Bookmark) {
+				return this.queryForObject("getNumberOfTagsForBookmark", entityId, Integer.class, mainSession);
 			}
-			throw new UnsupportedResourceTypeException("Expected PostWrapper but got: " + entity.getClass().getName());
+
+			throw new UnsupportedResourceTypeException("Unknown resource type " + resource.getClass().getName());
 		} finally {
 			mainSession.close();
 		}
@@ -135,22 +130,18 @@ public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implem
 	 * (non-Javadoc)
 	 * @see recommender.core.interfaces.database.RecommenderDBAccess#getNumberOfTasForRecommendationEntity(java.lang.Class, java.lang.String)
 	 */
-	@SuppressWarnings("rawtypes")
 	@Override
-	public Integer getNumberOfTagAssignmentsForRecommendationEntity(
-			Post<? extends Resource> entity, String entityId) {
+	public Integer getNumberOfTagAssignmentsForRecommendationEntity(Post<? extends Resource> entity, String entityId) {
 		final DBSession mainSession = this.openMainSession();
+		final Resource resource = entity.getResource();
 		try {
-			if (entity instanceof PostWrapper<?>) {
-				if (((PostWrapper) entity).getPost() != null && ((PostWrapper) entity).getPost().getResource() instanceof BibTex) {
-					return this.queryForObject("getNumberOfTasForBibTeX", entityId, Integer.class, mainSession);
-				} else if (((PostWrapper) entity).getPost() != null && ((PostWrapper) entity).getPost().getResource() instanceof Bookmark) {
-					return this.queryForObject("getNumberOfTasForBookmark", entityId, Integer.class, mainSession);
-				}
-
-				throw new UnsupportedResourceTypeException("Unknown resource type " + (((PostWrapper) entity).getPost().getResource()).getClass().getName());
+			if (resource instanceof BibTex) {
+				return this.queryForObject("getNumberOfTasForBibTeX", entityId, Integer.class, mainSession);
+			} else if (resource instanceof Bookmark) {
+				return this.queryForObject("getNumberOfTasForBookmark", entityId, Integer.class, mainSession);
 			}
-			throw new UnsupportedResourceTypeException("Expected PostWrapper but got: " + entity.getClass().getName());
+
+			throw new UnsupportedResourceTypeException("Unknown resource type " + resource.getClass().getName());
 		} finally {
 			mainSession.close();
 		}

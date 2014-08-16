@@ -2,10 +2,10 @@ package org.bibsonomy.recommender.tag.simple;
 
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.recommender.tag.model.RecommendedTag;
 
 import recommender.core.util.RecommendationResultComparator;
 import recommender.impl.meta.CompositeRecommender;
-import recommender.impl.model.RecommendedTag;
 
 
 /**

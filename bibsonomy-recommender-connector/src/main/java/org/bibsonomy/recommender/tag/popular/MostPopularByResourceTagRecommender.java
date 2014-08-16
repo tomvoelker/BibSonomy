@@ -10,10 +10,10 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.tag.AbstractTagRecommender;
+import org.bibsonomy.recommender.tag.model.RecommendedTag;
 import org.bibsonomy.recommender.tag.service.RecommenderMainTagAccess;
 
 import recommender.core.model.Pair;
-import recommender.impl.model.RecommendedTag;
 
 /**
  * Returns the most popular (i.e., most often attached) tags of the resource as 
@@ -57,16 +57,18 @@ public class MostPopularByResourceTagRecommender extends AbstractTagRecommender 
 	public String getInfo() {
 		return "Most Popular Tags By Resource Recommender";
 	}
-
-	public void setDbAccess(RecommenderMainTagAccess dbAccess) {
-		this.dbAccess = dbAccess;
-	}
-
 	
 	@Override
 	protected void setFeedbackInternal(final Post<? extends Resource> entity, final RecommendedTag tag) {
 		/*
 		 * this recommender ignores feedback
 		 */
+	}
+
+	/**
+	 * @param dbAccess the dbAccess to set
+	 */
+	public void setDbAccess(RecommenderMainTagAccess dbAccess) {
+		this.dbAccess = dbAccess;
 	}
 }

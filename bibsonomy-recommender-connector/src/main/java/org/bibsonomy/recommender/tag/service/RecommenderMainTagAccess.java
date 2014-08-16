@@ -91,7 +91,7 @@ public interface RecommenderMainTagAccess {
 	 * @param userName user's name
 	 * @return user's id, null if user name doesn't exist
 	 */
-	public Integer getUserIDByName(String userName);	
+	public Integer getUserIDByName(String userName);
 
 	/**
 	 * This method should return an username for a user,

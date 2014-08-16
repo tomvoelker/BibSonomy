@@ -7,17 +7,16 @@ import java.util.LinkedList;
 import java.util.SortedSet;
 
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.data.NoDataAccessor;
 import org.bibsonomy.recommender.connector.utilities.RecommendationUtilities;
+import org.bibsonomy.recommender.tag.model.RecommendedTag;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 
 import recommender.core.error.BadRequestOrResponseException;
-import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.interfaces.renderer.RecommendationRenderer;
 
 /**
@@ -27,7 +26,7 @@ import recommender.core.interfaces.renderer.RecommendationRenderer;
  * @author lukas
  *
  */
-public class BibsonomyTagRendererFactoryWrapper implements RecommendationRenderer<TagRecommendationEntity, recommender.impl.model.RecommendedTag> {
+public class BibsonomyTagRendererFactoryWrapper implements RecommendationRenderer<Post<? extends Resource>, recommender.impl.model.RecommendedTag> {
 	private static final RenderingFormat RENDERING_FORMAT = RenderingFormat.XML;
 	
 	private Renderer renderer;
@@ -53,7 +52,7 @@ public class BibsonomyTagRendererFactoryWrapper implements RecommendationRendere
 	 * @see recommender.core.interfaces.renderer.RecommendationRenderer#parseRecommendationResultList(java.io.Reader)
 	 */
 	@Override
-	public SortedSet<recommender.impl.model.RecommendedTag> parseRecommendationResultList(final Reader reader) throws BadRequestOrResponseException {
+	public SortedSet<RecommendedTag> parseRecommendationResultList(final Reader reader) throws BadRequestOrResponseException {
 		return RecommendationUtilities.getRecommendedTagsFromBibRecTags(this.renderer.parseRecommendedTagList(reader));
 	}
 

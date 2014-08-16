@@ -5,10 +5,10 @@ import java.util.TreeSet;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.simple.FixedRecommender;
+import org.bibsonomy.recommender.tag.model.RecommendedTag;
 
 import recommender.core.interfaces.model.RecommendationResult;
 import recommender.core.util.RecommendationResultComparator;
-import recommender.impl.model.RecommendedTag;
 
 /**
  * Always recommends the tags given in the constructor.
