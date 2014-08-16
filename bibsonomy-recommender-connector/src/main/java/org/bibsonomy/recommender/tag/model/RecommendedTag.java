@@ -172,7 +172,6 @@ public class RecommendedTag extends Tag implements RecommendationResult {
 	 */
 	@Override
 	public String getTitle() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.getTitle();
 	}
 }
