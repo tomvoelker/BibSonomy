@@ -62,7 +62,7 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 		final DBSession mainSession = this.openMainSession();
 		try {
 			final ItemRecRequestParam param = new ItemRecRequestParam();
-			param.setUserName(entity.getUserName());
+			param.setUserName(null); // FIXME (refactor) entity.getUserName()
 			param.setCount(count);
 			
 			List<String> usernames = this.queryForList("getSimilarUsersByFolkrank", param, String.class, mainSession);

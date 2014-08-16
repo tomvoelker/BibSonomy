@@ -25,7 +25,6 @@ import org.springframework.security.access.AccessDeniedException;
 import recommender.core.Recommender;
 import recommender.core.database.DBLogic;
 import recommender.core.database.params.RecAdminOverview;
-import recommender.core.interfaces.model.RecommendationEntity;
 import recommender.core.interfaces.model.RecommendationResult;
 import recommender.core.util.RecommenderUtil;
 import recommender.impl.multiplexer.MultiplexingRecommender;
@@ -131,7 +130,7 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		}
 	}
 	
-	private static <E extends RecommendationEntity, R extends RecommendationResult> void handleAddRecommender(final AdminRecommenderViewCommand command, final MultiplexingRecommender<E, R> recommender) {
+	private static <E, R extends RecommendationResult> void handleAddRecommender(final AdminRecommenderViewCommand command, final MultiplexingRecommender<E, R> recommender) {
 		final URL recommenderUrl = command.getNewrecurl();
 		try {
 			if (!UrlUtils.isValid(recommenderUrl.toString())) {

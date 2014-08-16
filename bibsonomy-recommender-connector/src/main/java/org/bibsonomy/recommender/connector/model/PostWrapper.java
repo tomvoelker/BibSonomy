@@ -32,9 +32,9 @@ public class PostWrapper <T extends Resource> implements TagRecommendationEntity
 	public void setPost(Post<T> post) {
 		this.post = post;
 	}
-
+	
 	@Override
-	public String getId() {
+	public String getRecommendationId() {
 		if (this.post != null) {
 			return String.valueOf(this.post.getContentId());
 		}
@@ -101,13 +101,5 @@ public class PostWrapper <T extends Resource> implements TagRecommendationEntity
 				((BibTex) this.post.getResource()).setUrl(url);
 			}
 		}
-	}
-
-	@Override
-	public String getUserName() {
-		if(this.post != null && this.post.getUser() != null) {
-			return this.post.getUser().getName();
-		}
-		return "";
 	}
 }

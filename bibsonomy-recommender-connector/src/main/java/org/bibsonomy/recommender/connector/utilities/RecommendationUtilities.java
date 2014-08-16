@@ -9,11 +9,9 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.comparators.RecommendedTagComparator;
-import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.bibsonomy.recommender.connector.model.RecommendationPost;
 
 import recommender.core.interfaces.model.RecommendationItem;
-import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.impl.model.RecommendedItem;
 
 /**
@@ -90,21 +88,5 @@ public class RecommendationUtilities {
 			}
 		}
 		return posts; 
-	}
-	
-	/**
-	 * This method unwraps a TagRecommendationEntity to retrieve it's wrapped post.
-	 * 
-	 * @param entity the entity to unwrap
-	 * @return the wrapped post if contained, null otherwise
-	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Post<? extends Resource> unwrapTagRecommendationEntity(final TagRecommendationEntity entity) {
-		if(entity instanceof PostWrapper) {
-			if(((PostWrapper) entity).getPost() != null) {
-				return ((PostWrapper) entity).getPost();
-			}
-		}
-		return null;
 	}
 }

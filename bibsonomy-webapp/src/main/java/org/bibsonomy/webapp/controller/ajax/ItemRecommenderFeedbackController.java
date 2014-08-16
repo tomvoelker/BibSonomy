@@ -43,12 +43,12 @@ public class ItemRecommenderFeedbackController extends AjaxController implements
 		if(command.getAction().equalsIgnoreCase(ACTION_BIBTEX)) {
 			List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.USER, command.getUserName(), null, command.getIntraHash(), null, null, null, null, null, 0, 1);
 			if(posts != null && posts.size() > 0) {
-				this.multiplexingBibTexRecommender.setFeedback(new UserWrapper(command.getContext().getLoginUser()), new RecommendedItem(new RecommendationPost(posts.get(0))));
+				this.multiplexingBibTexRecommender.setFeedback(null, new UserWrapper(command.getContext().getLoginUser()), new RecommendedItem(new RecommendationPost(posts.get(0))));
 			}
 		} else if(command.getAction().equalsIgnoreCase(ACTION_BOOKMARK)) {
 			List<Post<Bookmark>> posts = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, command.getIntraHash(), null, null, null, null, null, 0, 1);
 			if(posts != null && posts.size() > 0) {
-				this.multiplexingBookmarkRecommender.setFeedback(new UserWrapper(command.getContext().getLoginUser()), new RecommendedItem(new RecommendationPost(posts.get(0))));
+				this.multiplexingBookmarkRecommender.setFeedback(null, new UserWrapper(command.getContext().getLoginUser()), new RecommendedItem(new RecommendationPost(posts.get(0))));
 			}
 		}
 		return Views.AJAX_XML;

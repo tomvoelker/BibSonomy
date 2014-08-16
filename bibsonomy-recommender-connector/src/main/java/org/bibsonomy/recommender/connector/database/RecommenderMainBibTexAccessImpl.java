@@ -45,7 +45,7 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 			BibTexParam bibtexParam = new BibTexParam();
 			bibtexParam.setGrouping(GroupingEntity.ALL);
 			bibtexParam.setGroupId(GroupID.PUBLIC.getId());
-			bibtexParam.setUserName(entity.getUserName());
+			bibtexParam.setUserName(null); // FIXME (refactor) entity.getUserName()
 			bibtexParam.setOffset(0);
 			bibtexParam.setLimit(2*count);
 			bibtexParam.setSimHash(HashID.INTRA_HASH);

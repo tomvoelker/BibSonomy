@@ -74,15 +74,7 @@ public class UserWrapper implements RecommendationUser, ItemRecommendationEntity
 	public void setUser(User user) {
 		this.user = user;
 	}
-
-	@Override
-	public String getUserName() {
-		if(this.user != null) {
-			return this.user.getName();
-		}
-		return "";
-	}
-
+	
 	@Override
 	public List<RecommendationTag> getTags() {
 		if(this.user != null && this.user.getTags() != null) {
@@ -103,6 +95,15 @@ public class UserWrapper implements RecommendationUser, ItemRecommendationEntity
 			}
 		}
 		return new ArrayList<RecommendationItem>();
+	}
+
+	/* (non-Javadoc)
+	 * @see recommender.core.interfaces.model.RecommendationEntity#getRecommendationId()
+	 */
+	@Override
+	public String getRecommendationId() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

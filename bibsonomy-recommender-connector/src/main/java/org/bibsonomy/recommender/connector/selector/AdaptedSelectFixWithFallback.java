@@ -11,7 +11,6 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.recommender.connector.database.ExtendedMainAccess;
 import org.bibsonomy.recommender.connector.model.RecommendationPost;
 
-import recommender.core.interfaces.model.RecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;
 import recommender.core.interfaces.model.RecommendationResult;
 import recommender.impl.model.RecommendedItem;
@@ -27,7 +26,7 @@ import recommender.impl.multiplexer.strategy.SelectFixRecommenderWithFallback;
  * @param <E>
  * @param <R>
  */
-public class AdaptedSelectFixWithFallback<E extends RecommendationEntity, R extends RecommendationResult> extends SelectFixRecommenderWithFallback<E, R> {
+public class AdaptedSelectFixWithFallback<E, R extends RecommendationResult> extends SelectFixRecommenderWithFallback<E, R> {
 	
 	private ExtendedMainAccess dbAccess;
 	
@@ -48,8 +47,8 @@ public class AdaptedSelectFixWithFallback<E extends RecommendationEntity, R exte
 		while(it.hasNext()) {
 			R current = it.next();
 			if(!(current instanceof RecommendationPost)) {
-				toRetrieve.add(Integer.parseInt(current.getId()));
-				saveEvaluation.put(current.getId(), new Pair<Double, Double>(current.getScore(), current.getConfidence()));
+				toRetrieve.add(Integer.parseInt(current.getRecommendationId()));
+				saveEvaluation.put(current.getRecommendationId(), new Pair<Double, Double>(current.getScore(), current.getConfidence()));
 				it.remove();
 			}
 		}

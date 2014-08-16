@@ -1,6 +1,8 @@
 package org.bibsonomy.recommender.tag.simple;
 
-import recommender.core.interfaces.model.TagRecommendationEntity;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+
 import recommender.core.util.RecommendationResultComparator;
 import recommender.impl.meta.CompositeRecommender;
 import recommender.impl.model.RecommendedTag;
@@ -11,7 +13,7 @@ import recommender.impl.model.RecommendedTag;
  * 
  * @author rja
  */
-public class DefaultTagRecommender extends CompositeRecommender<TagRecommendationEntity, RecommendedTag> {
+public class DefaultTagRecommender extends CompositeRecommender<Post<? extends Resource>, RecommendedTag> {
 
 	/**
 	 * Currently only the {@link SimpleContentBasedTagRecommender} is included.

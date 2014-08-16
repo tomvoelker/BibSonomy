@@ -1,8 +1,10 @@
-package recommender.core.interfaces.database;
+package org.bibsonomy.recommender.tag.service;
 
 import java.util.List;
 
-import recommender.core.interfaces.model.TagRecommendationEntity;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+
 import recommender.core.model.Pair;
 
 /**
@@ -36,7 +38,7 @@ public interface RecommenderMainTagAccess {
 	 * @param range
 	 * @return The most popular tags of the given resource.
 	 */
-	public List<Pair<String, Integer>> getMostPopularTagsForRecommendationEntity(final TagRecommendationEntity entity, final String entityId, final int range);
+	public List<Pair<String, Integer>> getMostPopularTagsForRecommendationEntity(final Post<? extends Resource> entity, final String entityId, final int range);
 
 	/**
 	 * This method should return the count of different tags a user ever used
@@ -59,13 +61,12 @@ public interface RecommenderMainTagAccess {
 	 * This method should return the count of tags which were used to tag the entity 
 	 * which is unique identified by it's entityId
 	 *
-	 * @param <T> 
-	 * @param resourceType - type of the resource 
+	 * @param entity - type of the resource 
 	 * @param entityId - id of the entity
 	 * 
 	 * @return The number of tags attached to the resource.
 	 */
-	public Integer getNumberOfTagsForRecommendationEntity(final TagRecommendationEntity entity, final String entityId);
+	public Integer getNumberOfTagsForRecommendationEntity(final Post<? extends Resource> entity, final String entityId);
 
 	/**
 	 *
@@ -81,7 +82,7 @@ public interface RecommenderMainTagAccess {
 	 * 
 	 * @return The number of tag assignments of the resource.
 	 */
-	public Integer getNumberOfTagAssignmentsForRecommendationEntity(final TagRecommendationEntity entity, final String entitiyId);
+	public Integer getNumberOfTagAssignmentsForRecommendationEntity(final Post<? extends Resource> entity, final String entitiyId);
 	
 	/**
 	 * This method should return an unique id for a user,

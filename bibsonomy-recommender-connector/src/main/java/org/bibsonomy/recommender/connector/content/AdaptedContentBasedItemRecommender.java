@@ -41,9 +41,9 @@ public class AdaptedContentBasedItemRecommender extends ContentBasedItemRecommen
 		
 		//take bibtex and bookmark resources of requesting user to generate a more significant description of the user preferences
 		if(dbAccess instanceof ExtendedMainAccess) {
-			requestingUserItems.addAll(((ExtendedMainAccess) this.dbAccess).getAllItemsOfQueryingUser(maxItemsToEvaluate, entity.getUserName()));
+			requestingUserItems.addAll(((ExtendedMainAccess) this.dbAccess).getAllItemsOfQueryingUser(maxItemsToEvaluate, null)); // TODO (refactor) entity.getUserName()
 		} else {
-			requestingUserItems.addAll(this.dbAccess.getItemsForUser(maxItemsToEvaluate, entity.getUserName())); 
+			requestingUserItems.addAll(this.dbAccess.getItemsForUser(maxItemsToEvaluate, null)); // TODO (refactor) entity.getUserName() 
 		}
 		
 		final Set<String> requestingUserTitles = calculateRequestingUserTitleSet(requestingUserItems);

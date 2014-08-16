@@ -2,7 +2,8 @@ package org.bibsonomy.recommender.connector.testutil;
 
 import java.util.List;
 
-import recommender.core.interfaces.database.RecommenderMainTagAccess;
+import org.bibsonomy.recommender.tag.service.RecommenderMainTagAccess;
+
 import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.model.Pair;
 

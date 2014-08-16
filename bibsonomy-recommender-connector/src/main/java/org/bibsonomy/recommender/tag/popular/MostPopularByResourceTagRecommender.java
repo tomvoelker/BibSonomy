@@ -1,20 +1,23 @@
-package recommender.impl.tags.popular;
+package org.bibsonomy.recommender.tag.popular;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.recommender.tag.AbstractTagRecommender;
+import org.bibsonomy.recommender.tag.service.RecommenderMainTagAccess;
 
-import recommender.core.interfaces.database.RecommenderMainTagAccess;
-import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.model.Pair;
 import recommender.impl.model.RecommendedTag;
-import recommender.impl.tags.AbstractTagRecommender;
 
 /**
  * Returns the most popular (i.e., most often attached) tags of the resource as 
- * recommendation for the entity.  
+ * recommendation for the entity.
  * 
  * @author fei
  */
@@ -24,11 +27,9 @@ public class MostPopularByResourceTagRecommender extends AbstractTagRecommender 
 	private RecommenderMainTagAccess dbAccess;
 	
 	@Override
-	protected void addRecommendedTagsInternal(final Collection<RecommendedTag> recommendedTags, final TagRecommendationEntity entity) {
-		
-
-		final String entityId = entity.getId();
-		if (entityId != null && !entityId.equals("")) {
+	protected void addRecommendedTagsInternal(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> entity) {
+		final String entityId = null; // TODO entity.getRecommendationId();
+		if (present(entityId)) {
 			/*
 			 * we get the count to normalize the score
 			 */
@@ -63,7 +64,7 @@ public class MostPopularByResourceTagRecommender extends AbstractTagRecommender 
 
 	
 	@Override
-	protected void setFeedbackInternal(final TagRecommendationEntity entity, final RecommendedTag tag) {
+	protected void setFeedbackInternal(final Post<? extends Resource> entity, final RecommendedTag tag) {
 		/*
 		 * this recommender ignores feedback
 		 */

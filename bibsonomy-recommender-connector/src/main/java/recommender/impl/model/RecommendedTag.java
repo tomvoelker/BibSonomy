@@ -9,6 +9,7 @@ import recommender.core.interfaces.model.RecommendationResult;
  * @author lukas
  */
 public class RecommendedTag extends AbstractRecommendationResult {
+	
 	private String name;
 	
 	/**
@@ -42,17 +43,8 @@ public class RecommendedTag extends AbstractRecommendationResult {
 	 * @see recommender.core.interfaces.model.RecommendationResult#getId()
 	 */
 	@Override
-	public String getId() {
+	public String getRecommendationId() {
 		return this.name;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see recommender.core.interfaces.model.RecommendationResult#setId(java.lang.String)
-	 */
-	@Override
-	public void setId(String id) {
-		this.name = id;	
 	}
 	
 	/*
@@ -80,13 +72,12 @@ public class RecommendedTag extends AbstractRecommendationResult {
 		}
 		return true;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	
+	/* (non-Javadoc)
+	 * @see recommender.core.interfaces.model.RecommendationResult#compareToOtherRecommendationResult(recommender.core.interfaces.model.RecommendationResult)
 	 */
 	@Override
-	public int compareTo(RecommendationResult o) {
+	public int compareToOtherRecommendationResult(RecommendationResult o) {
 		if( o instanceof RecommendedTag ) {
 			return this.name.toLowerCase().compareTo(((RecommendedTag) o).getName().toLowerCase());
 		}

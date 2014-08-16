@@ -1,6 +1,5 @@
 package org.bibsonomy.recommender.connector.test;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -24,13 +23,10 @@ import org.junit.Test;
 
 import recommender.core.database.DBLogic;
 import recommender.core.database.params.RecQueryParam;
-import recommender.core.database.params.RecSettingParam;
-import recommender.core.database.params.SelectorSettingParam;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.impl.database.DBLogConfigItemAccess;
 import recommender.impl.item.simple.DummyItemRecommender;
 import recommender.impl.model.RecommendedItem;
-import recommender.impl.multiplexer.MultiplexingRecommender;
 import recommender.impl.webservice.WebserviceRecommender;
 
 /**
@@ -58,62 +54,12 @@ public class DBItemAccessTest {
 		final Timestamp ts = new Timestamp(System.currentTimeMillis());
 		
 		// store and retrieve query
-		final Long qid = dbLogic.addQuery(entity.getUserName(), ts, entity, MultiplexingRecommender.UNKNOWN_ENTITIYID, 1234);
+		final Long qid = dbLogic.addQuery(entity.getUserName(), ts, entity, 1234);
 		final RecQueryParam retVal = dbLogic.getQuery(qid);
 		
 		final String queryUN = retVal.getUserName();
 		assertEquals(entity.getUserName(), queryUN);
 	}
-	
-	/**
-	 * Test registering a new recommender
-	 */
-	@Test
-	public void testAddNewRecommender()  {
-		final Long qid = Long.valueOf(0);
-		final String recInfo = "TestCase-non-Recommender";
-		final String recMeta = "NON-NULL-META";
-		final String recId = "mypackage.classname";
-		// store and retrieve recommender informations
-		Long sid;
-		RecSettingParam retVal = null;
-		sid = dbLogic.addRecommender(qid, recId, recInfo, recMeta.getBytes());
-		retVal = dbLogic.getRecommender(sid);
-		assertEquals(recId, retVal.getRecId());
-		assertArrayEquals(recMeta.getBytes(), retVal.getRecMeta());
-	}
-
-	/**
-	 * Test registering a new selector
-	 */
-	@Test
-	public void testAddNewSelector()  {
-		final Long qid = Long.valueOf(0);
-		final String selectorInfo = "TestCase-non-Selector";
-		final String selectorMeta = "NON-NULL-META";
-		// store and retrieve recommender informations
-		final Long sid = dbLogic.addResultSelector(qid, selectorInfo, selectorMeta.getBytes());
-		final SelectorSettingParam retVal = dbLogic.getSelector(sid);
-		assertEquals(selectorInfo, retVal.getInfo());
-		assertArrayEquals(selectorMeta.getBytes(), retVal.getMeta());
-	}	
-	
-	/**
-	 * Test registering a new selector 
-	 */
-	@Test
-	public void testAddNewSelector2()  {
-		final Long qid = Long.valueOf(0);
-		final String selectorInfo = "TestCase-non-Selector";
-		final byte[] selectorMeta = null;
-		// store and retrieve recommender informations
-		Long sid = null;
-		SelectorSettingParam retVal = null;
-		sid = dbLogic.addResultSelector(qid, selectorInfo, selectorMeta);
-		retVal = dbLogic.getSelector(sid);
-		assertEquals(selectorInfo, retVal.getInfo());
-		assertArrayEquals(null, retVal.getMeta());
-	}	
 	
 	/**
 	 * Test adding selected results.
@@ -162,29 +108,6 @@ public class DBItemAccessTest {
 	}
 	
 	/**
-	 * Test registering an already known recommender
-	 */
-	@Test
-	public void testAddKnownRecommender() {
-		final Long qid = Long.valueOf(0);
-		final String recInfo = "TestCase-non-Recommender";
-		final String recMeta = "NON-NULL-META";
-		final String recId = "mypackage.classname";
-		// store and retrieve recommender informations
-		Long sid;
-		RecSettingParam retVal = null;
-		sid = dbLogic.addRecommender(qid, recId, recInfo, recMeta.getBytes());
-		retVal = dbLogic.getRecommender(sid);
-		assertEquals(recId, retVal.getRecId());
-		assertArrayEquals(recMeta.getBytes(), retVal.getRecMeta());
-		// store same recommender again and check if information stays valid
-		sid = dbLogic.addRecommender(qid, recId, recInfo, recMeta.getBytes());
-		retVal = dbLogic.getRecommender(sid);
-		assertEquals(recId, retVal.getRecId());
-		assertArrayEquals(recMeta.getBytes(), retVal.getRecMeta());
-	}
-	
-	/**
 	 * Test retrieving setting ids of registered recommenders by their qualified name or url
 	 */
 	@Test
@@ -216,7 +139,7 @@ public class DBItemAccessTest {
 		final String postID = ""+(int)Math.floor(Math.random()*Integer.MAX_VALUE);
 		
 		// store and retrieve query
-		final Long qid = dbLogic.addQuery(post.getUserName(), ts, post, postID, 1234);
+		final Long qid = dbLogic.addQuery(post.getUserName(), ts, post, 1234);
 		final Long  id = dbLogic.getQueryForEntity(post.getUserName(), ts, postID);
 		
 		assertEquals(qid, id);

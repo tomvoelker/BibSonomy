@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.connector.database;
+package org.bibsonomy.recommender.tag.db;
 
 import java.util.List;
 
@@ -8,12 +8,12 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.connector.database.params.GetTagForResourceParam;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
+import org.bibsonomy.recommender.tag.service.RecommenderMainTagAccess;
 
-import recommender.core.interfaces.database.RecommenderMainTagAccess;
-import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.model.Pair;
 
 /**
@@ -39,8 +39,7 @@ public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implem
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Pair<String, Integer>> getMostPopularTagsForUser(
-			String username, int range) {
+	public List<Pair<String, Integer>> getMostPopularTagsForUser(String username, int range) {
 		final DBSession mainSession = this.openMainSession();
 		try {
 			final GetTagForResourceParam param = new GetTagForResourceParam();
@@ -59,24 +58,21 @@ public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implem
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Pair<String, Integer>> getMostPopularTagsForRecommendationEntity(
-			TagRecommendationEntity entity, String entityId, int range) {
+	public List<Pair<String, Integer>> getMostPopularTagsForRecommendationEntity(Post<? extends Resource> entity, String entityId, int range) {
 		final DBSession mainSession = this.openMainSession();
 		try {
 			final GetTagForResourceParam param = new GetTagForResourceParam();
-			param.setId(Integer.parseInt(entityId));
+			param.setId(Integer.parseInt(entityId)); // FIXME: this doesn't make any sense
 			param.setRange(range);
+			final Resource resource = entity.getResource();
 			
-			if (entity instanceof PostWrapper<?>) {
-				if (((PostWrapper<Resource>) entity).getPost() != null && ((PostWrapper<Resource>) entity).getPost().getResource() instanceof BibTex) {
-					return (List<Pair<String, Integer>>) this.queryForList("getMostPopularTagsForBibTeX", param, mainSession);
-				} else if (((PostWrapper<Resource>) entity).getPost() != null && ((PostWrapper<Resource>) entity).getPost().getResource() instanceof Bookmark) {
-					return (List<Pair<String, Integer>>) this.queryForList("getMostPopularTagsForBookmark", param, mainSession);
-				}
-
-				throw new UnsupportedResourceTypeException("Unknown resource type " + (((PostWrapper<Resource>) entity).getPost().getResource()).getClass().getName());
+			if (resource instanceof BibTex) {
+				return (List<Pair<String, Integer>>) this.queryForList("getMostPopularTagsForBibTeX", param, mainSession);
+			} else if (resource instanceof Bookmark) {
+				return (List<Pair<String, Integer>>) this.queryForList("getMostPopularTagsForBookmark", param, mainSession);
 			}
-			throw new UnsupportedResourceTypeException("Expected PostWrapper but got: " + entity.getClass().getName());
+			
+			throw new UnsupportedResourceTypeException("Unknown resource type " + resource.getClass().getName());
 		} finally {
 			mainSession.close();
 		}
@@ -117,7 +113,7 @@ public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implem
 	@SuppressWarnings("unchecked")
 	@Override
 	public Integer getNumberOfTagsForRecommendationEntity(
-			TagRecommendationEntity entity, String entityId) {
+			Post<? extends Resource> entity, String entityId) {
 		final DBSession mainSession = this.openMainSession();
 		try {
 			if (entity instanceof PostWrapper<?>) {
@@ -142,7 +138,7 @@ public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implem
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Integer getNumberOfTagAssignmentsForRecommendationEntity(
-			TagRecommendationEntity entity, String entityId) {
+			Post<? extends Resource> entity, String entityId) {
 		final DBSession mainSession = this.openMainSession();
 		try {
 			if (entity instanceof PostWrapper<?>) {

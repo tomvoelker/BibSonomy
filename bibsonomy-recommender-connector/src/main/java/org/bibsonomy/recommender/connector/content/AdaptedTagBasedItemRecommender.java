@@ -31,9 +31,9 @@ public class AdaptedTagBasedItemRecommender extends TagBasedItemRecommender {
 		
 		//take bibtex and bookmark resources of requesting user to generate a more significant description of the user preferences
 		if (dbAccess instanceof ExtendedMainAccess) {
-			requestingUserItems.addAll(((ExtendedMainAccess) this.dbAccess).getAllItemsOfQueryingUser(maxItemsToEvaluate, entity.getUserName()));
+			requestingUserItems.addAll(((ExtendedMainAccess) this.dbAccess).getAllItemsOfQueryingUser(maxItemsToEvaluate, null)); // FIXME (refactor) entity.getUserName()
 		} else {
-			requestingUserItems.addAll(this.dbAccess.getItemsForUser(maxItemsToEvaluate, entity.getUserName())); 
+			requestingUserItems.addAll(this.dbAccess.getItemsForUser(maxItemsToEvaluate, null)); // FIXME (refactor) entity.getUserName()
 		}
 		
 		final Set<String> requestingUserTitles = this.calculateRequestingUserTitleSet(requestingUserItems);

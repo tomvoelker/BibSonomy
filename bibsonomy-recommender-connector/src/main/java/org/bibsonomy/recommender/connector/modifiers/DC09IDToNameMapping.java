@@ -5,9 +5,10 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.recommender.tag.service.RecommenderMainTagAccess;
 
-import recommender.core.interfaces.database.RecommenderMainTagAccess;
-import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.impl.modifiers.EntityModifier;
 
 /**
@@ -16,7 +17,7 @@ import recommender.impl.modifiers.EntityModifier;
  * 
  * @author fei
  */
-public class DC09IDToNameMapping implements EntityModifier<TagRecommendationEntity> {
+public class DC09IDToNameMapping implements EntityModifier<Post<? extends Resource>> {
 	private static final Log log = LogFactory.getLog(DC09IDToNameMapping.class);
 	private static final String UNKOWNUSER = null;
 	
@@ -42,7 +43,7 @@ public class DC09IDToNameMapping implements EntityModifier<TagRecommendationEnti
 	 * @param post the post for which tags will be queried
 	 */
 	@Override
-	public void alterEntity(TagRecommendationEntity post) {
+	public void alterEntity(Post<? extends Resource> post) {
 		final Integer userID = new Integer(post.getUser().getName()); 
 		String userName = this.idMap.get(userID);
 		if (userName == null) {

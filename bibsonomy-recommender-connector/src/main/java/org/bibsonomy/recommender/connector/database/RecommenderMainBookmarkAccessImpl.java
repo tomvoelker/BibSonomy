@@ -45,7 +45,7 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 			BookmarkParam bookmarkParam = new BookmarkParam();
 			bookmarkParam.setGrouping(GroupingEntity.ALL);
 			bookmarkParam.setGroupId(GroupID.PUBLIC.getId());
-			bookmarkParam.setUserName(entity.getUserName());
+			bookmarkParam.setUserName(null); // FIXME (refactor) entity.getUserName()
 			bookmarkParam.setOffset(0);
 			bookmarkParam.setLimit(2*count);
 			bookmarkParam.setSimHash(HashID.INTRA_HASH);

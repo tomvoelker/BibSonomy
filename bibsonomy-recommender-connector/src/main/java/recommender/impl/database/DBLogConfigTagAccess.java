@@ -4,15 +4,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+
 import recommender.core.database.params.ResultParam;
-import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.impl.model.RecommendedTag;
 
 /**
  * 
  * @author lha
  */
-public class DBLogConfigTagAccess extends DBLogConfigAccess<TagRecommendationEntity, RecommendedTag> {
+public class DBLogConfigTagAccess extends DBLogConfigAccess<Post<? extends Resource>, RecommendedTag> {
 
 	/* 
 	 * TODO: abstract this method

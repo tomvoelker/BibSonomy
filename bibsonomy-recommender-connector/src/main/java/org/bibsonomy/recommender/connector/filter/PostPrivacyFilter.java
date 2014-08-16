@@ -8,18 +8,14 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.GroupUtils;
-import org.bibsonomy.recommender.connector.model.PostWrapper;
-import org.bibsonomy.recommender.connector.model.UserWrapper;
-import org.bibsonomy.recommender.connector.utilities.RecommendationUtilities;
 
 import recommender.core.interfaces.filter.PrivacyFilter;
-import recommender.core.interfaces.model.TagRecommendationEntity;
 
 /**
  * 
  * @author fei, rja
  */
-public class PostPrivacyFilter implements PrivacyFilter<TagRecommendationEntity> {
+public class PostPrivacyFilter implements PrivacyFilter<Post<? extends Resource>> {
 
 	/**
 	 * The methods checks if the post wrapped in an entity can be forwarded
@@ -36,15 +32,13 @@ public class PostPrivacyFilter implements PrivacyFilter<TagRecommendationEntity>
 	 * the post is not public at all.
 	 */
 	@Override
-	public TagRecommendationEntity filterEntity(final TagRecommendationEntity post) {
-		final Post<? extends Resource> existingPost = RecommendationUtilities.unwrapTagRecommendationEntity(post);
-		
+	public Post<? extends Resource> filterEntity(final Post<? extends Resource> post) {
 		// in case of this is not a BibSonomy model type we can't filter
 		if (post == null) {
 			return post;
 		}
 		
-		final Set<Group> groups = existingPost.getGroups();
+		final Set<Group> groups = post.getGroups();
 		
 		if (groups == null || !groups.contains(GroupUtils.getPublicGroup())) {
 			/*
@@ -57,21 +51,19 @@ public class PostPrivacyFilter implements PrivacyFilter<TagRecommendationEntity>
 		/*
 		 * resource
 		 */
-		if (existingPost.getResource() instanceof BibTex) {
+		if (post.getResource() instanceof BibTex) {
 			/*
 			 * create a copy of the post which is returned
 			 */
 			final Post<BibTex> postCopy = new Post<BibTex>();
-			if (post.getUser() instanceof UserWrapper) {
-				postCopy.setUser(((UserWrapper) post.getUser()).getUser());
-			}
+			postCopy.setUser(post.getUser());
 			
-			postCopy.setContentId(new Integer(post.getId()));
+			postCopy.setContentId(post.getContentId());
 			
 			/*
 			 * bibtex
 			 */
-			final BibTex bibtex = (BibTex) existingPost.getResource();
+			final BibTex bibtex = (BibTex) post.getResource();
 			final BibTex bibtexCopy = new BibTex();
 			
 			bibtexCopy.setAbstract(bibtex.getAbstract());
@@ -110,24 +102,22 @@ public class PostPrivacyFilter implements PrivacyFilter<TagRecommendationEntity>
 			/*
 			 * new hashes
 			 */
-			existingPost.getResource().recalculateHashes();
+			post.getResource().recalculateHashes();
 			postCopy.getResource().recalculateHashes();
 
-			return new PostWrapper<BibTex>(postCopy);
-		} else if (existingPost.getResource() instanceof Bookmark) {
+			return postCopy;
+		} else if (post.getResource() instanceof Bookmark) {
 			/*
 			 * create a copy of the post which is returned
 			 */
 			final Post<Bookmark> postCopy = new Post<Bookmark>();
-			if (post.getUser() instanceof UserWrapper) {
-				postCopy.setUser(((UserWrapper) post.getUser()).getUser());
-			}
-			postCopy.setContentId(Integer.parseInt(post.getId()));
+			postCopy.setUser(post.getUser());
+			postCopy.setContentId(post.getContentId());
 			
 			/*
 			 * bookmark
 			 */
-			final Bookmark bookmark = (Bookmark) existingPost.getResource();
+			final Bookmark bookmark = (Bookmark) post.getResource();
 			final Bookmark bookmarkCopy = new Bookmark();
 			
 			bookmarkCopy.setTitle(bookmark.getTitle());
@@ -138,10 +128,10 @@ public class PostPrivacyFilter implements PrivacyFilter<TagRecommendationEntity>
 			/*
 			 * new hashes
 			 */
-			existingPost.getResource().recalculateHashes();
+			post.getResource().recalculateHashes();
 			postCopy.getResource().recalculateHashes();
 
-			return new PostWrapper<Bookmark>(postCopy);
+			return postCopy;
 		}
 		
 		return null;

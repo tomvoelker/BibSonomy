@@ -8,10 +8,8 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
-import org.bibsonomy.recommender.connector.utilities.RecommendationUtilities;
+import org.bibsonomy.recommender.tag.service.RecommenderMainTagAccess;
 
-import recommender.core.interfaces.database.RecommenderMainTagAccess;
-import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.impl.modifiers.EntityModifier;
 
 /**
@@ -20,7 +18,7 @@ import recommender.impl.modifiers.EntityModifier;
  * 
  * @author fei
  */
-public class DC09NameToIDMapping implements EntityModifier<TagRecommendationEntity> {
+public class DC09NameToIDMapping implements EntityModifier<Post<? extends Resource>> {
 	private static final Log log = LogFactory.getLog(DC09NameToIDMapping.class);
 	private static final Integer UNKNOWNID = Integer.valueOf(Integer.MIN_VALUE);
 	
@@ -46,8 +44,7 @@ public class DC09NameToIDMapping implements EntityModifier<TagRecommendationEnti
 	 * @param post the post for which tags will be queried
 	 */
 	@Override
-	public void alterEntity(TagRecommendationEntity entity) {
-		final Post<? extends Resource> post = RecommendationUtilities.unwrapTagRecommendationEntity(entity);
+	public void alterEntity(Post<? extends Resource> post) {
 		String userName = post.getUser().getName();
 		Integer userID = nameMap.get(userName);
 		if (userID == null) {

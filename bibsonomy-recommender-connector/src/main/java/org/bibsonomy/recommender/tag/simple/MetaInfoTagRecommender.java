@@ -1,4 +1,4 @@
-package recommender.impl.tags.simple;
+package org.bibsonomy.recommender.tag.simple;
 
 import java.io.IOException;
 import java.net.URL;
@@ -6,16 +6,19 @@ import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.recommender.tag.AbstractTagRecommender;
+import org.bibsonomy.util.UrlUtils;
+import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import recommender.core.interfaces.model.TagRecommendationEntity;
-import recommender.core.util.UrlUtils;
-import recommender.core.util.XmlUtils;
 import recommender.impl.model.RecommendedTag;
-import recommender.impl.tags.AbstractTagRecommender;
 
 /**
  * Tag recommender which parses html file at given url for keywords from the meta-inf section.
@@ -26,10 +29,20 @@ public class MetaInfoTagRecommender extends AbstractTagRecommender {
 	private static final Log log = LogFactory.getLog(MetaInfoTagRecommender.class);
 	
 	@Override
-	protected void addRecommendedTagsInternal(Collection<RecommendedTag> recommendedTags, TagRecommendationEntity entity) {
-		if( entity.getUrl() != null) {
-			String url = entity.getUrl();
-			if( !UrlUtils.isValid(url) ) {
+	protected void addRecommendedTagsInternal(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> entity) {
+		String url = null;
+		if (entity.getResource() instanceof Bookmark) {
+			final Bookmark bookmark = (Bookmark) entity.getResource();
+			url = bookmark.getUrl();
+		}
+		
+		if (entity.getResource() instanceof BibTex) {
+			final BibTex publication = (BibTex) entity.getResource();
+			url = publication.getUrl();
+		}
+		
+		if (url != null) {
+			if (!UrlUtils.isValid(url)) {
 				log.debug("Invalid url: "+url);
 				return;
 			}
@@ -88,7 +101,7 @@ public class MetaInfoTagRecommender extends AbstractTagRecommender {
 	}
 
 	@Override
-	protected void setFeedbackInternal(TagRecommendationEntity entity, RecommendedTag tag) {
+	protected void setFeedbackInternal(Post<? extends Resource> entity, RecommendedTag tag) {
 		// ignored
 	}
 }

@@ -48,13 +48,12 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 	 */
 	@SuppressWarnings("rawtypes")
 	@Override
-	public Long addQuery(String userName, Date date,
-			TagRecommendationEntity entity, String entityID, int timeout) {
+	public Long addQuery(String userName, Date date, TagRecommendationEntity entity, int timeout) {
 		// construct parameter
 		final BibRecQueryParam recQuery = new BibRecQueryParam();
 		recQuery.setTimeStamp(new Timestamp(date.getTime()));
 		recQuery.setUserName(userName);
-		recQuery.setPost_id(Integer.parseInt(entityID));
+		recQuery.setPost_id(Integer.parseInt(entity.getRecommendationId()));
 		
 		if(entity instanceof PostWrapper) {
 			if(((PostWrapper) entity).getPost() instanceof Post) {
@@ -80,11 +79,11 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 	 */
 	@SuppressWarnings("rawtypes")
 	@Override
-	public void addFeedback(TagRecommendationEntity entity, RecommendedTag result) {
+	public void addFeedback(String userName, TagRecommendationEntity entity, RecommendedTag result) {
 		if (entity instanceof PostWrapper) {
 			Post post = ((PostWrapper) entity).getPost();
 			final PostRecParam postMap = new PostRecParam();
-			postMap.setUserName(entity.getUserName());
+			postMap.setUserName(null); // FIXME (refactor) entity.getUserName()
 			postMap.setDate(new Date());
 			postMap.setPostID(post.getContentId());
 			postMap.setHash(post.getResource().getIntraHash());
@@ -178,26 +177,6 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 			param.setGroupId(groupId);
 		}
 		this.manager.processInsertQuery("insertBookmark", param);
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see recommender.impl.database.DBLogConfigAccess#logRecommendation(java.lang.Long, java.lang.Long, long, java.util.SortedSet, java.util.SortedSet)
-	 */
-	@Override
-	public boolean logRecommendation(Long qid, Long sid, long latency, SortedSet<RecommendedTag> results, SortedSet<RecommendedTag> preset) {
-		// log each recommended tag
-		final RecommendedTagParam response = new RecommendedTagParam();
-		response.setQid(qid);
-		response.setSid(sid);
-		response.setLatency(latency);
-		for (final RecommendedTag result : results) {
-			response.setTagName(result.getName());
-			response.setConfidence(result.getConfidence());
-			response.setScore(result.getScore());
-			this.manager.processInsertQuery("addRecommenderResponse", response);
-		}
-		return false;
 	}
 	
 	/*

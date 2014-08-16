@@ -4,11 +4,13 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Scanner;
 
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.recommender.tag.AbstractTagRecommender;
+import org.bibsonomy.recommender.tag.util.termprocessing.TagTermProcessorIterator;
 import org.bibsonomy.recommender.util.termprocessing.TermProcessingIterator;
 
-import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.impl.model.RecommendedTag;
-import recommender.impl.tags.AbstractTagRecommender;
 
 /**
  * Extracts tags from the title of the entity. Cleans the words using a stopword list
@@ -27,8 +29,8 @@ public class SimpleContentBasedTagRecommender extends AbstractTagRecommender {
 	 * @see recommender.core.Recommender#addRecommendation(Collection, recommender.core.interfaces.model.RecommendationEntity)
 	 */
 	@Override
-	protected void addRecommendedTagsInternal(Collection<RecommendedTag> recommendedTags, TagRecommendationEntity entity) {
-		final String title = entity.getTitle();
+	protected void addRecommendedTagsInternal(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> entity) {
+		final String title = entity.getResource().getTitle();
 		if (title != null) {
 			/*
 			 * extract tags from title using Jens' Termprocessor.
@@ -57,14 +59,14 @@ public class SimpleContentBasedTagRecommender extends AbstractTagRecommender {
 		return "Simple content based recommender which extracts tags from title, description, URL.";
 	}
 
-	private Iterator<String> buildTagExtractionIterator(final String title) {
+	private static Iterator<String> buildTagExtractionIterator(final String title) {
 		final Scanner s = new Scanner(title);
 		s.useDelimiter("([\\|/\\\\ \t;!,\\-:\\)\\(\\]\\[\\}\\{]+)|(\\.[\\t ]+)");
-		return new TermProcessingIterator(s);
+		return new TagTermProcessorIterator(s);
 	}
 
 	@Override
-	protected void setFeedbackInternal(TagRecommendationEntity entity, RecommendedTag tag) {
+	protected void setFeedbackInternal(Post<? extends Resource> entity, RecommendedTag tag) {
 		// ignored
 	}
 

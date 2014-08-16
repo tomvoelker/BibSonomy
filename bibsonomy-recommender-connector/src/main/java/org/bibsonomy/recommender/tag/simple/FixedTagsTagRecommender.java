@@ -2,10 +2,11 @@ package org.bibsonomy.recommender.tag.simple;
 
 import java.util.TreeSet;
 
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.simple.FixedRecommender;
 
 import recommender.core.interfaces.model.RecommendationResult;
-import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.util.RecommendationResultComparator;
 import recommender.impl.model.RecommendedTag;
 
@@ -14,7 +15,7 @@ import recommender.impl.model.RecommendedTag;
  * 
  * @author rja
  */
-public class FixedTagsTagRecommender extends FixedRecommender<TagRecommendationEntity, RecommendedTag> {
+public class FixedTagsTagRecommender extends FixedRecommender<Post<? extends Resource>, RecommendedTag> {
 	
 	/**
 	 * Adds the given tags to the fixed set of tags, ordered by their 

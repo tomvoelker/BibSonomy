@@ -1,4 +1,4 @@
-package recommender.impl.tags;
+package org.bibsonomy.recommender.tag;
 
 import java.util.Collection;
 import java.util.SortedSet;
@@ -6,11 +6,12 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.util.TagStringUtils;
 
 import recommender.core.Recommender;
-import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.util.RecommendationResultComparator;
-import recommender.core.util.TagStringUtils;
 import recommender.impl.model.RecommendedTag;
 
 /**
@@ -18,7 +19,7 @@ import recommender.impl.model.RecommendedTag;
  * 
  * @author rja
  */
-public abstract class AbstractTagRecommender implements Recommender<TagRecommendationEntity, RecommendedTag> {
+public abstract class AbstractTagRecommender implements Recommender<Post<? extends Resource>, RecommendedTag> {
 	private static final Log log = LogFactory.getLog(AbstractTagRecommender.class);
 	
 	/**
@@ -40,7 +41,7 @@ public abstract class AbstractTagRecommender implements Recommender<TagRecommend
 	 * @see recommender.core.Recommender#getRecommendation(recommender.core.interfaces.model.RecommendationEntity)
 	 */
 	@Override
-	public SortedSet<RecommendedTag> getRecommendation(final TagRecommendationEntity entity) {
+	public SortedSet<RecommendedTag> getRecommendation(final Post<? extends Resource> entity) {
 		final SortedSet<RecommendedTag> recommendedTags = new TreeSet<RecommendedTag>(new RecommendationResultComparator<RecommendedTag>());
 		this.addRecommendation(recommendedTags, entity);
 		
@@ -63,21 +64,21 @@ public abstract class AbstractTagRecommender implements Recommender<TagRecommend
 	}
 
 	@Override
-	public void addRecommendation(final Collection<RecommendedTag> recommendedTags, final TagRecommendationEntity entity) {
+	public void addRecommendation(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> entity) {
 		log.debug("Getting tag recommendations for " + entity);
 		this.addRecommendedTagsInternal(recommendedTags, entity);
 		if (log.isDebugEnabled()) log.debug("Recommending tags " + recommendedTags);
 	}
 	
-	protected abstract void addRecommendedTagsInternal(Collection<RecommendedTag> recommendedTags, TagRecommendationEntity entity);
+	protected abstract void addRecommendedTagsInternal(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> entity);
 
 	@Override
-	public void setFeedback(TagRecommendationEntity entity, RecommendedTag tag) {
-		log.debug("got TagRecomendationEntity with id " + entity.getId() + " as feedback.");
+	public void setFeedback(Post<? extends Resource> entity, RecommendedTag tag) {
+		log.debug("got TagRecomendationEntity with id " + entity + " as feedback.");
 		this.setFeedbackInternal(entity, tag);
 	}
 
-	protected abstract void setFeedbackInternal(TagRecommendationEntity post, RecommendedTag tag);
+	protected abstract void setFeedbackInternal(Post<? extends Resource> post, RecommendedTag tag);
 
 	
 	/**
