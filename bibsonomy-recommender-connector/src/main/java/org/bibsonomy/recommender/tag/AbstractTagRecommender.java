@@ -70,6 +70,12 @@ public abstract class AbstractTagRecommender implements Recommender<Post<? exten
 		if (log.isDebugEnabled()) log.debug("Recommending tags " + recommendedTags);
 	}
 	
+	/**
+	 * use this methods to add recommendations
+	 * 
+	 * @param recommendedTags
+	 * @param entity
+	 */
 	protected abstract void addRecommendedTagsInternal(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> entity);
 
 	@Override
@@ -77,7 +83,12 @@ public abstract class AbstractTagRecommender implements Recommender<Post<? exten
 		log.debug("got TagRecomendationEntity with id " + entity + " as feedback.");
 		this.setFeedbackInternal(entity, tag);
 	}
-
+	
+	/**
+	 * use this method to set feedback
+	 * @param post
+	 * @param tag
+	 */
 	protected abstract void setFeedbackInternal(Post<? extends Resource> post, RecommendedTag tag);
 
 	
