@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.bibsonomy.recommender.item.filter.UserPrivacyFilter;
 
-import recommender.core.interfaces.database.RecommenderMainItemAccess;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;
 

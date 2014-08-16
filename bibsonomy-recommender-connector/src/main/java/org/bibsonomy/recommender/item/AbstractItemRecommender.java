@@ -6,10 +6,10 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.recommender.item.service.RecommenderMainItemAccess;
 
 import recommender.core.Recommender;
 import recommender.core.database.DBLogic;
-import recommender.core.interfaces.database.RecommenderMainItemAccess;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.util.RecommendationResultComparator;
 import recommender.impl.model.RecommendedItem;

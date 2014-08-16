@@ -16,14 +16,14 @@ import org.bibsonomy.recommender.connector.model.UserWrapper;
 import org.bibsonomy.recommender.connector.testutil.DummyMainItemAccess;
 import org.bibsonomy.recommender.connector.testutil.RecommenderTestContext;
 import org.bibsonomy.recommender.item.content.AdaptedContentBasedItemRecommender;
+import org.bibsonomy.recommender.item.db.DBLogConfigItemAccess;
+import org.bibsonomy.recommender.item.service.RecommenderMainItemAccess;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import recommender.core.database.DBLogic;
-import recommender.core.interfaces.database.RecommenderMainItemAccess;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;
-import recommender.impl.database.DBLogConfigItemAccess;
 import recommender.impl.item.content.ContentBasedItemRecommender;
 import recommender.impl.model.RecommendedItem;
 
