@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.connector.database;
+package org.bibsonomy.recommender.item.service;
 
 import java.util.List;
 

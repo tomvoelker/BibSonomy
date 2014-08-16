@@ -1,8 +1,8 @@
 package org.bibsonomy.recommender.item.filter;
 
 import org.bibsonomy.model.User;
-import org.bibsonomy.recommender.connector.database.ExtendedMainAccess;
 import org.bibsonomy.recommender.connector.model.UserWrapper;
+import org.bibsonomy.recommender.item.service.ExtendedMainAccess;
 
 import recommender.core.interfaces.filter.PrivacyFilter;
 import recommender.core.interfaces.model.ItemRecommendationEntity;

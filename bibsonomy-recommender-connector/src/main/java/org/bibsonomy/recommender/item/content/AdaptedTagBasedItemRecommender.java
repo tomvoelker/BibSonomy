@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.connector.content;
+package org.bibsonomy.recommender.item.content;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.recommender.connector.database.ExtendedMainAccess;
 import org.bibsonomy.recommender.connector.model.RecommendationPost;
+import org.bibsonomy.recommender.item.service.ExtendedMainAccess;
 
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;

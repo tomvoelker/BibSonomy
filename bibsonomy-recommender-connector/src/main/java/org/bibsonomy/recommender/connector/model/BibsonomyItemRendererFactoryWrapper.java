@@ -11,7 +11,7 @@ import java.util.TreeSet;
 import org.bibsonomy.model.RecommendedPost;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.data.NoDataAccessor;
-import org.bibsonomy.recommender.connector.database.ExtendedMainAccess;
+import org.bibsonomy.recommender.item.service.ExtendedMainAccess;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;

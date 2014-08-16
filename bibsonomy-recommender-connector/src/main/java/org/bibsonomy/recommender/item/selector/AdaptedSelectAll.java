@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.connector.selector;
+package org.bibsonomy.recommender.item.selector;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.recommender.connector.database.ExtendedMainAccess;
 import org.bibsonomy.recommender.connector.model.RecommendationPost;
+import org.bibsonomy.recommender.item.service.ExtendedMainAccess;
 
 import recommender.core.interfaces.model.RecommendationItem;
 import recommender.core.interfaces.model.RecommendationResult;
@@ -31,9 +31,7 @@ public class AdaptedSelectAll<E, R extends RecommendationResult> extends SelectA
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public void selectResult(Long qid,
-			RecommendationResultManager<E, R> resultCache,
-			Collection<R> recommendationResults) {
+	public void selectResult(Long qid, RecommendationResultManager<E, R> resultCache, Collection<R> recommendationResults) {
 		super.selectResult(qid, resultCache, recommendationResults);
 		
 		// fetch bibsonomy model classes and wrap them

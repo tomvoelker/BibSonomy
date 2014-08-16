@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.connector.database;
+package org.bibsonomy.recommender.item.db;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
@@ -13,10 +13,11 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.common.params.beans.TagIndex;
-import org.bibsonomy.database.params.BookmarkParam;
-import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.recommender.connector.database.AbstractRecommenderMainItemAccessImpl;
 import org.bibsonomy.recommender.connector.model.RecommendationPost;
 
 import recommender.core.interfaces.model.ItemRecommendationEntity;
@@ -25,12 +26,12 @@ import recommender.core.interfaces.model.RecommendationItem;
 /**
  * 
  * This class implements the database access on the bibsonomy database
- *  for the recommendation library to recommend bookmark posts.
+ * for the recommendation library to recommend bibtex posts.
  * 
  * @author Lukas
  *
  */
-public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainItemAccessImpl {
+public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItemAccessImpl {
 	
 	/*
 	 * (non-Javadoc)
@@ -42,19 +43,19 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 		
 		final DBSession mainSession = this.openMainSession();
 		try {
-			BookmarkParam bookmarkParam = new BookmarkParam();
-			bookmarkParam.setGrouping(GroupingEntity.ALL);
-			bookmarkParam.setGroupId(GroupID.PUBLIC.getId());
-			bookmarkParam.setUserName(null); // FIXME (refactor) entity.getUserName()
-			bookmarkParam.setOffset(0);
-			bookmarkParam.setLimit(2*count);
-			bookmarkParam.setSimHash(HashID.INTRA_HASH);
+			BibTexParam bibtexParam = new BibTexParam();
+			bibtexParam.setGrouping(GroupingEntity.ALL);
+			bibtexParam.setGroupId(GroupID.PUBLIC.getId());
+			bibtexParam.setUserName(null); // FIXME (refactor) entity.getUserName()
+			bibtexParam.setOffset(0);
+			bibtexParam.setLimit(2*count);
+			bibtexParam.setSimHash(HashID.INTRA_HASH);
 			
-			List<Post<Bookmark>> results = (List<Post<Bookmark>>) this.queryForList("getBookmarkForHomepage", bookmarkParam, mainSession);
+			List<Post<BibTex>> results = (List<Post<BibTex>>) this.queryForList("getBibTexForHomepage", bibtexParam, mainSession);
+			
 			List<RecommendationItem> items = new ArrayList<RecommendationItem>(results.size());
-			
-			for(Post<Bookmark> bookmark : results) {
-				RecommendationItem item =  new RecommendationPost(bookmark);
+			for(Post<BibTex> bibtex : results) {
+				RecommendationItem item =  new RecommendationPost(bibtex);
 				items.add(item);
 			}
 			
@@ -62,6 +63,7 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 		} finally {
 			mainSession.close();
 		}
+		
 	}
 	
 	/*
@@ -73,27 +75,25 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 	public List<RecommendationItem> getItemsForUser(final int count, final String username) {
 		final DBSession mainSession = this.openMainSession();
 		try {
-			final BookmarkParam bookmarkParam = new BookmarkParam();
-			bookmarkParam.setRequestedUserName(username);
-			bookmarkParam.setGroupId(GroupID.PUBLIC.getId());
-			bookmarkParam.setOffset(0);
-			bookmarkParam.setLimit(count);
+			final BibTexParam bibtexParam = new BibTexParam();
+			bibtexParam.setRequestedUserName(username);
+			bibtexParam.setOffset(0);
+			bibtexParam.setLimit(count);
+			bibtexParam.setGroupId(GroupID.PUBLIC.getId());
 			
+			final List<RecommendationItem> items = new ArrayList<RecommendationItem>();
 			// only get reduced data, because it's enough for calculation
-			List<Post<Bookmark>> results = (List<Post<Bookmark>>) this.queryForList("getReducedUserBookmark", bookmarkParam, mainSession);
-			List<RecommendationItem> items = new ArrayList<RecommendationItem>(results.size());
-			
-			for(Post<Bookmark> bookmark : results) {
-				RecommendationItem item =  new RecommendationPost(bookmark);
+			List<Post<BibTex>> results = (List<Post<BibTex>>) this.queryForList("getReducedUserBibTex", bibtexParam, mainSession);
+			for(Post<BibTex> bibtex : results) {
+				RecommendationItem item =  new RecommendationPost(bibtex);
 				items.add(item);
 			}
-			
 			return items;
 		} finally {
 			mainSession.close();
 		}
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see recommender.core.interfaces.database.RecommenderDBAccess#getItemsForUsers(int, java.util.List)
@@ -102,18 +102,19 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 	private List<RecommendationItem> getItemsForUsers(final int count, final List<String> usernames) {
 		final DBSession mainSession = this.openMainSession();
 		try {
-			final BookmarkParam bookmarkParam = new BookmarkParam();
-			bookmarkParam.setGroupId(GroupID.PUBLIC.getId());
-			bookmarkParam.setOffset(0);
-			bookmarkParam.setLimit(count);
+			final BibTexParam bibtexParam = new BibTexParam();
+			bibtexParam.setGroupId(GroupID.PUBLIC.getId());
+			bibtexParam.setOffset(0);
+			bibtexParam.setLimit(count);
 			
-			List<RecommendationItem> items = new ArrayList<RecommendationItem>();
+			final List<RecommendationItem> items = new ArrayList<RecommendationItem>();
+			
 			for(String username : usernames) {
-				bookmarkParam.setRequestedUserName(username);
+				bibtexParam.setRequestedUserName(username);
 				// only get reduced data, because it's enough for calculation
-				List<Post<Bookmark>> results = (List<Post<Bookmark>>) this.queryForList("getReducedUserBookmark", bookmarkParam, mainSession);
-				for(Post<Bookmark> bookmark : results) {
-					RecommendationItem item =  new RecommendationPost(bookmark);
+				List<Post<BibTex>> results = (List<Post<BibTex>>) this.queryForList("getReducedUserBibTex", bibtexParam, mainSession);
+				for(Post<BibTex> bibtex : results) {
+					RecommendationItem item =  new RecommendationPost(bibtex);
 					items.add(item);
 				}
 			}
@@ -133,20 +134,19 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 		final DBSession mainSession = this.openMainSession();
 		try {
 			final List<RecommendationItem> items = new ArrayList<RecommendationItem>();
-			final BookmarkParam param = new BookmarkParam();
+			final BibTexParam param = new BibTexParam();
 			param.setSimHash(HashID.INTRA_HASH);
 			for(Integer id : ids) {
 				param.setRequestedContentId(id);
-				Post<Bookmark> bookmark = this.queryForObject("getBookmarkById", param, Post.class, mainSession);
-				items.add(new RecommendationPost(bookmark));
+				Post<BibTex> bibtex = this.queryForObject("getBibTexById", param, Post.class, mainSession);
+				items.add(new RecommendationPost(bibtex));
 			}
 			return items;
-			
 		} finally {
 			mainSession.close();
 		}
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.recommender.connector.database.AbstractRecommenderMainItemAccessImpl#getItemsForContentBasedFiltering(int, recommender.core.interfaces.model.ItemRecommendationEntity)
@@ -170,10 +170,10 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 		final DBSession mainSession = this.openMainSession();
 		final List<RecommendationItem> items = new ArrayList<RecommendationItem>();
 		try {
-			final BookmarkParam param = new BookmarkParam();
+			final BibTexParam param = new BibTexParam();
 			param.setLimit(maxItemsToEvaluate/tags.size());
 			param.setOffset(0);
-			param.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
+			param.setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
 			param.setGroupId(GroupID.PUBLIC.getId());
 			param.setCaseSensitiveTagNames(false);
 			final List<TagIndex> tagIndeces = new ArrayList<TagIndex>();
@@ -183,7 +183,7 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 				index = new TagIndex(tag, 1);
 				tagIndeces.add(index);
 				param.setTagIndex(tagIndeces);
-				List<Post> bibtexs = this.queryForList("getBookmarkByTagNames", param, Post.class, mainSession);
+				List<Post> bibtexs = this.queryForList("getBibTexByTagNames", param, Post.class, mainSession);
 				for(Post post : bibtexs) {
 					items.add(new RecommendationPost(post));
 				}
@@ -203,14 +203,15 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 	public RecommendationItem getItemByUserIdWithHash(final String hash, final String userId) {
 		final DBSession mainSession = this.openMainSession();
 		try {
-			final BookmarkParam param = new BookmarkParam();
+			final BibTexParam param = new BibTexParam();
 			param.setHash(hash);
 			param.setRequestedUserName(userId);
 			param.setSimHash(HashID.INTRA_HASH);
+			param.setGrouping(GroupingEntity.USER);
 			param.setOffset(0);
 			param.setLimit(1);
 			
-			Post<? extends Resource> post = (Post<? extends Resource>) this.queryForObject("getBookmarkByHashForUserId", param, Post.class, mainSession);
+			Post<? extends Resource> post = (Post<? extends Resource>) this.queryForObject("getBibTexByHashForUserId", param, Post.class, mainSession);
 			
 			if(post != null) {
 				return new RecommendationPost(post);
@@ -230,14 +231,14 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 	public RecommendationItem getItemByTitle(final String title) {
 		final DBSession mainSession = this.openMainSession();
 		try {
-			final BookmarkParam param = new BookmarkParam();
+			final BibTexParam param = new BibTexParam();
 			param.setTitle(title);
 			param.setSimHash(HashID.INTRA_HASH);
 			param.setGroupId(GroupID.PUBLIC.getId());
 			param.setOffset(0);
 			param.setLimit(1);
 			
-			Post<? extends Resource> post = (Post<? extends Resource>) this.queryForObject("getBookmarkByTitle", param, Post.class, mainSession);
+			Post<? extends Resource> post = (Post<? extends Resource>) this.queryForObject("getBibTexByTitle", param, Post.class, mainSession);
 			
 			if(post != null) {
 				return new RecommendationPost(post);

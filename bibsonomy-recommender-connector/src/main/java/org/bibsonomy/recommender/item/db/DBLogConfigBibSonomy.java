@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.connector.database;
+package org.bibsonomy.recommender.item.db;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 

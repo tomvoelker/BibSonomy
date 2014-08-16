@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.connector.modifiers;
+package org.bibsonomy.recommender.tag.modifiers;
 
 import java.util.HashMap;
 import java.util.Map;

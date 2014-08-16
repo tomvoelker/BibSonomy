@@ -11,11 +11,11 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
-import org.bibsonomy.recommender.connector.content.AdaptedContentBasedItemRecommender;
 import org.bibsonomy.recommender.connector.model.RecommendationPost;
 import org.bibsonomy.recommender.connector.model.UserWrapper;
 import org.bibsonomy.recommender.connector.testutil.DummyMainItemAccess;
 import org.bibsonomy.recommender.connector.testutil.RecommenderTestContext;
+import org.bibsonomy.recommender.item.content.AdaptedContentBasedItemRecommender;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

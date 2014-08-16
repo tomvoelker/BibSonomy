@@ -17,6 +17,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.recommender.connector.database.params.ItemRecRequestParam;
 import org.bibsonomy.recommender.connector.model.RecommendationPost;
+import org.bibsonomy.recommender.item.service.ExtendedMainAccess;
 
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;
