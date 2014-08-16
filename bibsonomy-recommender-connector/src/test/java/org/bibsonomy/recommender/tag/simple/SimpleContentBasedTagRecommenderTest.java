@@ -9,11 +9,8 @@ import java.util.LinkedList;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
-import org.bibsonomy.recommender.connector.model.PostWrapper;
-import org.bibsonomy.recommender.tag.simple.SimpleContentBasedTagRecommender;
+import org.bibsonomy.recommender.tag.model.RecommendedTag;
 import org.junit.Test;
-
-import recommender.impl.model.RecommendedTag;
 
 /**
  * Test of the {@link SimpleContentBasedTagRecommender} on base of
@@ -35,7 +32,7 @@ public class SimpleContentBasedTagRecommenderTest {
 
 		final SimpleContentBasedTagRecommender recommender = new  SimpleContentBasedTagRecommender();
 		
-		final LinkedList<RecommendedTag> recommendedTags = new LinkedList<RecommendedTag>(recommender.getRecommendation(new PostWrapper<Bookmark>(post)));
+		final LinkedList<RecommendedTag> recommendedTags = new LinkedList<RecommendedTag>(recommender.getRecommendation(post));
 		
 		final String[] testTags = new String[]{"nepomuk", "main", "finalreviewnov2008script"};
 
@@ -70,7 +67,7 @@ public class SimpleContentBasedTagRecommenderTest {
 		 */
 		recommender.setNumberOfTagsToRecommend(5);
 		
-		final LinkedList<RecommendedTag> recommendedTags = new LinkedList<RecommendedTag>(recommender.getRecommendation(new PostWrapper<Bookmark>(post)));
+		final LinkedList<RecommendedTag> recommendedTags = new LinkedList<RecommendedTag>(recommender.getRecommendation(post));
 		
 		/*
 		 * check size
