@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.connector.test;
+package org.bibsonomy.recommender.tag.db;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

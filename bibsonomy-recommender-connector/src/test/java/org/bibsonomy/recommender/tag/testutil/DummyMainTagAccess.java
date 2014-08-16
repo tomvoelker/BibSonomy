@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.connector.testutil;
+package org.bibsonomy.recommender.tag.testutil;
 
 import java.util.List;
 
