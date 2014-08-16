@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
@@ -13,19 +14,20 @@ import java.util.TreeSet;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.recommender.connector.database.DBLogConfigBibSonomy;
-import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.bibsonomy.recommender.connector.testutil.RecommenderTestContext;
+import org.bibsonomy.recommender.tag.model.RecommendedTag;
+import org.bibsonomy.recommender.tag.testutil.DummyTagRecommender;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import recommender.core.database.DBLogic;
 import recommender.core.database.params.RecQueryParam;
-import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.impl.meta.ResultsFromFirstWeightedBySecondRecommender;
-import recommender.impl.model.RecommendedTag;
+import recommender.impl.webservice.WebserviceRecommender;
 
 /**
  * Test cases for recommender's DBAccess class, with old 
@@ -35,7 +37,7 @@ import recommender.impl.model.RecommendedTag;
  */
 public class DBTagAccessTest {
 
-	private static DBLogic<TagRecommendationEntity, RecommendedTag> dbLogic;
+	private static DBLogic<Post<? extends Resource>, RecommendedTag> dbLogic;
 	
 	@BeforeClass
 	public static void setUp() {
@@ -47,7 +49,7 @@ public class DBTagAccessTest {
 	 */
 	@Test
 	public void testAddQuery() {
-		final TagRecommendationEntity post = createPost();
+		final Post<? extends Resource> post = createPost();
 		final Timestamp ts = new Timestamp(System.currentTimeMillis());
 		
 		// store and retrieve query
@@ -109,21 +111,21 @@ public class DBTagAccessTest {
 	 */
 	@Test
 	public void testGetRecommenderSid() throws MalformedURLException {
-		final ResultsFromFirstWeightedBySecondRecommender<TagRecommendationEntity, RecommendedTag> firstRecommender = new ResultsFromFirstWeightedBySecondRecommender<TagRecommendationEntity, RecommendedTag>();
+		final ResultsFromFirstWeightedBySecondRecommender<Post<? extends Resource>, RecommendedTag> firstRecommender = new ResultsFromFirstWeightedBySecondRecommender<Post<? extends Resource>, RecommendedTag>();
 		dbLogic.registerRecommender(firstRecommender);
 		
 		assertTrue(dbLogic.getRecommenderId(firstRecommender).longValue() > -1);
 		
-		assertTrue(false); // TODO: fix code
-		/* final DummyRecommender<TagRecommendationEntity, RecommendedTag> notExistingRecommender = new DummyRecommender();
+		assertTrue(false); // TODO: (refactor) fix code
+		final DummyTagRecommender notExistingRecommender = new DummyTagRecommender();
 		assertEquals(Long.valueOf(-1), dbLogic.getRecommenderId(notExistingRecommender));
 		
-		final WebserviceRecommender<TagRecommendationEntity, RecommendedTag> webserviceRecommender = new WebserviceRecommender<TagRecommendationEntity, RecommendedTag>();
+		final WebserviceRecommender<Post<? extends Resource>, RecommendedTag> webserviceRecommender = new WebserviceRecommender<Post<? extends Resource>, RecommendedTag>();
 		webserviceRecommender.setAddress(new URL("http://example.com"));
 		
 		dbLogic.registerRecommender(webserviceRecommender);
 		
-		assertTrue(dbLogic.getRecommenderId(webserviceRecommender).longValue() > -1); */
+		assertTrue(dbLogic.getRecommenderId(webserviceRecommender).longValue() > -1);
 	}
 	
 	/**
@@ -134,9 +136,9 @@ public class DBTagAccessTest {
 		/*
 		 *  add query
 		 */
-		final TagRecommendationEntity post = createPost();
+		final Post<? extends Resource> post = createPost();
 		final Timestamp ts = new Timestamp(System.currentTimeMillis());
-		final String postID = ""+(int)Math.floor(Math.random()*Integer.MAX_VALUE);
+		final String postID = "" + (int) Math.floor(Math.random() * Integer.MAX_VALUE);
 		
 		// store and retrieve query
 		final Long qid = dbLogic.addQuery(post.getUser().getName(), ts, post, 1234);
@@ -151,7 +153,7 @@ public class DBTagAccessTest {
 	/**
 	 * Create an mockup post
 	 */
-	private static TagRecommendationEntity createPost() {
+	private static Post<? extends Resource> createPost() {
 		final Post<BibTex> post = new Post<BibTex>();
 		final User user = new User();
 		user.setName("foo");
@@ -174,7 +176,7 @@ public class DBTagAccessTest {
 		post.setContentId(0);
 		post.addGroup("public");
 		
-		return new PostWrapper<BibTex>(post);
+		return post;
 	}
 	
 	/**
@@ -193,5 +195,5 @@ public class DBTagAccessTest {
 			extracted.add(new RecommendedTag(re, score, confidence));
 		}
 		return extracted;
-	}		
+	}
 }
