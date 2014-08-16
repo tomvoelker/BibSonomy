@@ -2,12 +2,13 @@ package org.bibsonomy.recommender.tag.testutil;
 
 import java.util.List;
 
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.tag.service.RecommenderMainTagAccess;
 
-import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.model.Pair;
 
-public class DummyMainTagAccess implements RecommenderMainTagAccess{
+public class DummyMainTagAccess implements RecommenderMainTagAccess {
 
 	@Override
 	public List<Pair<String, Integer>> getMostPopularTagsForUser(
@@ -17,8 +18,7 @@ public class DummyMainTagAccess implements RecommenderMainTagAccess{
 	}
 
 	@Override
-	public List<Pair<String, Integer>> getMostPopularTagsForRecommendationEntity(
-			TagRecommendationEntity entity, String entityId, int range) {
+	public List<Pair<String, Integer>> getMostPopularTagsForRecommendationEntity(Post<? extends Resource> entity, String entityId, int range) {
 		// do nothing
 		return null;
 	}
@@ -36,15 +36,13 @@ public class DummyMainTagAccess implements RecommenderMainTagAccess{
 	}
 
 	@Override
-	public Integer getNumberOfTagsForRecommendationEntity(
-			TagRecommendationEntity entity, String entityId) {
+	public Integer getNumberOfTagsForRecommendationEntity(Post<? extends Resource> entity, String entityId) {
 		// do nothing
 		return null;
 	}
 
 	@Override
-	public Integer getNumberOfTagAssignmentsForRecommendationEntity(
-			TagRecommendationEntity entity, String entitiyId) {
+	public Integer getNumberOfTagAssignmentsForRecommendationEntity(Post<? extends Resource> entity, String entitiyId) {
 		// do nothing
 		return null;
 	}
@@ -66,6 +64,4 @@ public class DummyMainTagAccess implements RecommenderMainTagAccess{
 		// do nothing
 		return null;
 	}
-
-	
 }
