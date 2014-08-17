@@ -13,7 +13,6 @@ import org.bibsonomy.recommender.item.service.ExtendedMainAccess;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;
 import recommender.core.interfaces.model.RecommendationTag;
-import recommender.impl.item.content.TagBasedItemRecommender;
 import recommender.impl.model.RecommendedItem;
 
 /**

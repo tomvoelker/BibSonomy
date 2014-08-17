@@ -19,13 +19,13 @@ import org.bibsonomy.recommender.connector.model.RecommendationPost;
 import org.bibsonomy.recommender.connector.model.UserWrapper;
 import org.bibsonomy.recommender.connector.testutil.RecommenderTestContext;
 import org.bibsonomy.recommender.item.db.DBLogConfigItemAccess;
+import org.bibsonomy.recommender.item.simple.DummyItemRecommender;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import recommender.core.database.DBLogic;
 import recommender.core.database.params.RecQueryParam;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
-import recommender.impl.item.simple.DummyItemRecommender;
 import recommender.impl.model.RecommendedItem;
 import recommender.impl.webservice.WebserviceRecommender;
 

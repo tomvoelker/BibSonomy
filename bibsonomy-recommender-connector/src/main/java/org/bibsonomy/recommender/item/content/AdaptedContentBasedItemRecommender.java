@@ -17,7 +17,6 @@ import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;
 import recommender.core.interfaces.model.RecommendationTag;
 import recommender.impl.model.RecommendedItem;
-import recommender.impl.item.content.ContentBasedItemRecommender;
 
 /**
  * This class is an extension to the default CFFiltering algorithm in the recommender library.
