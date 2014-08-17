@@ -8,15 +8,17 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.recommender.item.AbstractItemRecommender;
+import org.bibsonomy.recommender.item.model.RecommendationUser;
+import org.bibsonomy.recommender.item.model.RecommendedPost;
 
-import recommender.core.interfaces.model.ItemRecommendationEntity;
-import recommender.core.interfaces.model.RecommendationItem;
-import recommender.core.interfaces.model.RecommendationTag;
 import recommender.core.util.RecommendationResultComparator;
-import recommender.impl.model.RecommendedItem;
 
 /**
  * This recommender realizes a mix of Collaborative Filtering and Content-Based recommender approaches.
@@ -26,44 +28,39 @@ import recommender.impl.model.RecommendedItem;
  * The score of the recommendations is equal to the computed cosine similarity.
  * 
  * @author lukas
+ * @param <R> 
  *
  */
-public class ContentBasedItemRecommender extends AbstractItemRecommender {
+public class ContentBasedItemRecommender<R extends Resource> extends AbstractItemRecommender<R> {
 
 	private static final String INFO = "This recommender takes similar users and evaluates their resources by similarity and returns the ones most similar.";
 	
+	/** the delimiter to used to spilt string into tokens */
 	protected static final String TOKEN_DELIMITER = " ";
 	
+	/** the default value of posts to evaluate */
 	protected static final int DEFAULT_MAXIMUM_ITEMS_TO_EVALUATE = 40;
-
+	
+	/** the max items to calculate similar posts */
 	protected int maxItemsToEvaluate = DEFAULT_MAXIMUM_ITEMS_TO_EVALUATE;
 	
 	@Override
 	public String getInfo() {
 		return INFO;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see recommender.impl.item.AbstractItemRecommender#addRecommendedItemsInternal(java.util.Collection, recommender.core.interfaces.model.ItemRecommendationEntity)
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.item.AbstractItemRecommender#addRecommendedItemsInternal(java.util.Collection, org.bibsonomy.recommender.item.model.RecommendationUser)
 	 */
 	@Override
-	protected void addRecommendedItemsInternal(
-			Collection<RecommendedItem> recommendations,
-			ItemRecommendationEntity entity) {
-		
-		final List<RecommendationItem> requestingUserItems = this.dbAccess.getItemsForUser(maxItemsToEvaluate, null); // FIXME (refactor) entity.getUserName() 
-		
+	protected void addRecommendedItemsInternal(Collection<RecommendedPost<R>> recommendations, RecommendationUser entity) {
+		final List<Post<? extends Resource>> requestingUserItems = this.dbAccess.getItemsForUser(maxItemsToEvaluate, entity.getUserName());
 		final Set<String> requestingUserTitles = calculateRequestingUserTitleSet(requestingUserItems);
 		
-		List<RecommendationItem> userItems = new ArrayList<RecommendationItem>();
+		final List<Post<R>> userItems = this.dbAccess.getItemsForContentBasedFiltering(maxItemsToEvaluate, entity);
 		
-		userItems.addAll(this.dbAccess.getItemsForContentBasedFiltering(maxItemsToEvaluate, entity));
-		
-		final List<RecommendedItem> results = this.calculateSimilarItems(userItems, requestingUserItems, requestingUserTitles);
-		
+		final List<RecommendedPost<R>> results = this.calculateSimilarItems(userItems, requestingUserItems, requestingUserTitles);
 		recommendations.addAll(results);
-		
 	}
 
 	/**
@@ -71,11 +68,12 @@ public class ContentBasedItemRecommender extends AbstractItemRecommender {
 	 * The set is needed to avoid recommendation of known items to the user.
 	 * 
 	 * @param requestingUserItems the items of the requesting user
+	 * @return a set of titles of the requesting user
 	 */
-	protected Set<String> calculateRequestingUserTitleSet(List<RecommendationItem> requestingUserItems) {
+	protected Set<String> calculateRequestingUserTitleSet(List<Post<? extends Resource>> requestingUserItems) {
 		final Set<String> requestingUserTitles = new HashSet<String>();
-		for(RecommendationItem item : requestingUserItems) {
-			requestingUserTitles.add(item.getTitle());
+		for (final Post<? extends Resource> item : requestingUserItems) {
+			requestingUserTitles.add(item.getResource().getTitle());
 		}
 		return requestingUserTitles;
 	}
@@ -89,46 +87,40 @@ public class ContentBasedItemRecommender extends AbstractItemRecommender {
 	 * 
 	 * @return the weighted items in descending order
 	 */
-	public List<RecommendedItem> calculateSimilarItems(
-			final List<RecommendationItem> userItems,
-			final List<RecommendationItem> requestingUserItems, final Set<String> requestingUserTitles) {
+	public List<RecommendedPost<R>> calculateSimilarItems(final List<Post<R>> userItems, final List<Post<?>> requestingUserItems, final Set<String> requestingUserTitles) {
+		final List<RecommendedPost<R>> results = new ArrayList<RecommendedPost<R>>(); // TODO: use tree set
 		
-		final List<RecommendedItem> results = new ArrayList<RecommendedItem>();
+		final Map<String, Document<? extends Resource>> saveDocuments = new HashMap<String, Document<? extends Resource>>();
 		
-		final Map<String, List<IndexEntry>> invertedIndex = new HashMap<String, List<IndexEntry>>();
-		final Map<String, Double> idfs = new HashMap<String, Double>();
-		final Map<String, Document> saveDocuments = new HashMap<String, Document>();
-		calculateInvertedIndex(requestingUserItems, userItems, invertedIndex, idfs, saveDocuments);
+		final Map<String, List<IndexEntry<? extends Resource>>> invertedIndex = calculateInvertedIndex(requestingUserItems, userItems, saveDocuments);
+		final Map<String, Double> idfs = calculateIdfs(invertedIndex);
 		
-		//calculate similarity of each item to all items of the requesting user
-		for(RecommendationItem toCheck : userItems) {
+		// calculate similarity of each item to all items of the requesting user
+		for (final Post<R> toCheck : userItems) {
+			double similarity = calculateSimilarity(toCheck, requestingUserItems, requestingUserTitles, invertedIndex, idfs, saveDocuments);
 			
-			double similarity = calculateSimilarity(toCheck, requestingUserItems, 
-					requestingUserTitles, invertedIndex, idfs, saveDocuments);
-			
-			if(similarity != 0) {
-				RecommendedItem recItem = new RecommendedItem(toCheck);
+			if (similarity != 0) {
+				RecommendedPost<R> recItem = new RecommendedPost<R>();
+				recItem.setPost(toCheck);
 				recItem.setScore(similarity);
-				
 				results.add(recItem);
 			}
-			
 		}
 		
-		//sort the results descending by its scores
-		Collections.sort(results, new RecommendationResultComparator<RecommendedItem>());
+		// sort the results descending by its scores
+		Collections.sort(results, new RecommendationResultComparator<RecommendedPost<R>>());
 		
-		//we want to present only a fix number of different items with different themes -> title
+		// we want to present only a fix number of different items with different themes -> title
 		final List<String> addedTitles = new ArrayList<String>();
-		Iterator<RecommendedItem> it = results.iterator();
+		Iterator<RecommendedPost<R>> it = results.iterator();
 		int index = 1;
-		while(it.hasNext()) {
-			RecommendedItem item = it.next();
-			if(addedTitles.contains(item.getTitle())) {
+		while (it.hasNext()) {
+			RecommendedPost<R> item = it.next();
+			// FIXME: do not use title
+			if (addedTitles.contains(item.getPost().getResource().getTitle())) {
 				it.remove();
 				continue;
-			}
-			else if(index > this.numberOfItemsToRecommend) {
+			} else if (index > this.numberOfItemsToRecommend) {
 				it.remove();
 				continue;
 			}
@@ -137,9 +129,30 @@ public class ContentBasedItemRecommender extends AbstractItemRecommender {
 		}
 		
 		return results;
-		
 	}
 	
+	/**
+	 * @param invertedIndex
+	 * @return
+	 */
+	private static Map<String, Double> calculateIdfs(Map<String, List<IndexEntry<? extends Resource>>> invertedIndex) {
+		final Map<String, Double> idfs = new HashMap<String, Double>();
+		// compute idf weights and add those to the final index
+		final int size = invertedIndex.keySet().size() + 1; // TODO: + 1?
+		for (String key : invertedIndex.keySet()) {
+			idfs.put(key, Double.valueOf(Math.log(size / (double) invertedIndex.get(key).size())));
+		}
+		
+		// compute vector length for each vector
+		for (String key : invertedIndex.keySet()) {
+			for (IndexEntry<? extends Resource> entry : invertedIndex.get(key)) {
+				entry.getDoc().setLength(entry.getDoc().getLength() + Math.pow(entry.getTf() * idfs.get(key).doubleValue(), 2));
+			}
+		}
+		
+		return idfs;
+	}
+
 	/**
 	 * computes the inverted index over the corpus of all given documents
 	 * 
@@ -148,57 +161,54 @@ public class ContentBasedItemRecommender extends AbstractItemRecommender {
 	 * @param invertedIndex the inverted index 
 	 * @param idfs a map which maps tokens to idfs
 	 * @param saveDocuments  a list of documents with their lengths
+	 * @return the inverted index
 	 */
-	public void calculateInvertedIndex(final List<RecommendationItem> requestingUserItems, final List<RecommendationItem> useritems, 
-			final Map<String, List<IndexEntry>> invertedIndex, final Map<String, Double> idfs, final Map<String, Document> saveDocuments) {
+	public Map<String, List<IndexEntry<? extends Resource>>> calculateInvertedIndex(final List<Post<?>> requestingUserItems, final List<Post<R>> useritems, final Map<String, Document<? extends Resource>> saveDocuments) {
+		final Map<String, List<IndexEntry<? extends Resource>>> invertedIndex = new HashMap<String, List<IndexEntry<? extends Resource>>>();
 		
-		//calculate the inverted index entries for all documents including tf
-		for(RecommendationItem item : requestingUserItems) {	
-			Document doc = new Document(item);
-			saveDocuments.put(doc.getItem().getId(), doc);
-			final Map<String, IndexEntry> documentEntries = calculateIndexEntries(doc);
-			for(String key : documentEntries.keySet()) {
-				if(invertedIndex.containsKey(key)) {
+		for (final Post<? extends Resource> item : requestingUserItems) {
+			final Document<? extends Resource> doc = createDoc(item);
+			saveDocuments.put(String.valueOf(doc.getItem().getContentId()), doc); // TODO: remove valueOf
+			final Map<String, IndexEntry<? extends Resource>> documentEntries = calculateIndexEntries(doc);
+			for (String key : documentEntries.keySet()) {
+				if (invertedIndex.containsKey(key)) {
 					invertedIndex.get(key).add(documentEntries.get(key));
 				} else {
-					invertedIndex.put(key, new ArrayList<IndexEntry>());
-					invertedIndex.get(key).add(documentEntries.get(key));
-				}
-			}
-		}
-		for(RecommendationItem item : useritems) {
-			Document doc = new Document(item);
-			saveDocuments.put(doc.getItem().getId(), doc);
-			final Map<String, IndexEntry> documentEntries = calculateIndexEntries(doc);
-			for(String key : documentEntries.keySet()) {
-				if(invertedIndex.containsKey(key)) {
-					invertedIndex.get(key).add(documentEntries.get(key));
-				} else {
-					invertedIndex.put(key, new ArrayList<IndexEntry>());
+					invertedIndex.put(key, new ArrayList<IndexEntry<? extends Resource>>());
 					invertedIndex.get(key).add(documentEntries.get(key));
 				}
 			}
 		}
 		
-		//compute idf weights and add those to the final index
-		final int size = invertedIndex.keySet().size()+1;
-		for(String key : invertedIndex.keySet()) {
-			idfs.put(key, Math.log(size/(double)invertedIndex.get(key).size()));
-		}
-		
-		//compute vector length for each vector
-		for(String key : invertedIndex.keySet()) {
-			for(IndexEntry entry : invertedIndex.get(key)) {
-				entry.getDoc().setLength(entry.getDoc().getLength() + Math.pow(entry.getTf()*idfs.get(key), 2));
+		for (final Post<? extends Resource> item : useritems) {
+			final Document<? extends Resource> doc = createDoc(item);
+			saveDocuments.put(String.valueOf(doc.getItem().getContentId()), doc); // TODO: remove valueOf
+			final Map<String, IndexEntry<? extends Resource>> documentEntries = calculateIndexEntries(doc);
+			for (String key : documentEntries.keySet()) {
+				if (invertedIndex.containsKey(key)) {
+					invertedIndex.get(key).add(documentEntries.get(key));
+				} else {
+					invertedIndex.put(key, new ArrayList<IndexEntry<? extends Resource>>());
+					invertedIndex.get(key).add(documentEntries.get(key));
+				}
 			}
 		}
 		
-		for(String key : saveDocuments.keySet()) {
+		for (String key : saveDocuments.keySet()) {
 			saveDocuments.get(key).setLength(Math.sqrt(saveDocuments.get(key).getLength()));
 		}
 		
+		return invertedIndex;
 	}
-	
+
+	/**
+	 * @param item
+	 * @return
+	 */
+	private <T extends Resource> Document<T> createDoc(Post<T> item) {
+		return new Document<T>(item);
+	}
+
 	/**
 	 * calculates a list of index entries which shall be added to the inverted index
 	 * 
@@ -206,30 +216,30 @@ public class ContentBasedItemRecommender extends AbstractItemRecommender {
 	 *  
 	 * @return a map which maps tokens to index entries, which shall be added to the inverted index
 	 */
-	protected Map<String, IndexEntry> calculateIndexEntries(Document doc) {
+	protected <T extends Resource> Map<String, IndexEntry<? extends Resource>> calculateIndexEntries(final Document<T> doc) {
+		final Map<String, Integer> alreadyAdded = new HashMap<String, Integer>();
 		
-		final Map<String, Integer> alreadyAdded = new HashMap<String, Integer>();		
-		
-		//for each token add a new entry or increase the entries tf
-		for(String token : this.calculateTokens(doc.getItem())) {
-			if(alreadyAdded.keySet().contains(token)) {
-				alreadyAdded.put(token, alreadyAdded.get(token)+1) ;
+		// for each token add a new entry or increase the entries tf
+		for (String token : this.calculateTokens(doc.getItem())) {
+			if (alreadyAdded.keySet().contains(token)) {
+				alreadyAdded.put(token, Integer.valueOf(alreadyAdded.get(token).intValue() + 1));
 			} else {
-				alreadyAdded.put(token, 1);
+				alreadyAdded.put(token, Integer.valueOf(1));
 			}
 		}
 		
 		int max = 0;
-		for(String key : alreadyAdded.keySet()) {
-			if(alreadyAdded.get(key) > max) {
-				max = alreadyAdded.get(key);
+		for (String key : alreadyAdded.keySet()) {
+			int toCheck = alreadyAdded.get(key).intValue();
+			if (toCheck > max) {
+				max = toCheck;
 			}
 		}
 		
-		//retrieve correct tfs by normalizing
-		final HashMap<String, IndexEntry> results = new HashMap<String, IndexEntry>();
-		for(String key : alreadyAdded.keySet()) {
-			results.put(key, new IndexEntry(doc, alreadyAdded.get(key)/(double)max));
+		// set correct tfs by normalizing
+		final Map<String, IndexEntry<? extends Resource>> results = new HashMap<String, IndexEntry<? extends Resource>>();
+		for (String key : alreadyAdded.keySet()) {
+			results.put(key, new IndexEntry<T>(doc, alreadyAdded.get(key).doubleValue() / max));
 		}
 		
 		return results;
@@ -239,81 +249,86 @@ public class ContentBasedItemRecommender extends AbstractItemRecommender {
 	 * calculates the sum of similarities of the item toCheck to the items of the requesting user
 	 * 
 	 * @param toCheck the item to calculate the similarity to the requesting user's items for
+	 * @param postsOfUser 
 	 * @param requestingUserTitles a set of all titles belonging to the requesting user
+	 * @param invertedIndex 
 	 * @param idfs a map which maps tokens to their idfs
 	 * @param saveDocuments a list of documents with their lengths
 	 * @param requestingUserItems the list of items belonging to the requesting user
 	 * 
 	 * @return a similarity value -> the bigger the better
 	 */
-	protected double calculateSimilarity(final RecommendationItem toCheck, final List<RecommendationItem> requestedUserItems, final Set<String> requestingUserTitles,
-			final Map<String, List<IndexEntry>> invertedIndex, final Map<String, Double> idfs, final Map<String, Document> saveDocuments) {
-		
+	protected double calculateSimilarity(final Post<R> toCheck, final List<Post<?>> postsOfUser, final Set<String> requestingUserTitles, final Map<String, List<IndexEntry<? extends Resource>>> invertedIndex, final Map<String, Double> idfs, final Map<String, Document<? extends Resource>> saveDocuments) {
+		// FIXME: do not use the title to check for duplicates use the intrahash
 		// avoid recommendation of known items
-		if(requestingUserTitles.contains(toCheck.getTitle())) {
+		// FIXME: even returning a similarity here has no effect that the post is not recommended (?)
+		if (requestingUserTitles.contains(toCheck.getResource().getTitle())) {
 			return 0.0;
 		}
 		
 		double similarity = 0.0;
 		
-		final Map<String, Double> similarities = new HashMap<String, Double>();
+		final Map<Integer, Double> similarities = new HashMap<Integer, Double>();
 		
-		//Maps tokens to it's weights
+		// maps tokens to it's weights
 		final Map<String, Double> tokens = new HashMap<String, Double>();
 		int max = 1;
-		for(String token : this.calculateTokens(toCheck)) {
+		for (String token : this.calculateTokens(toCheck)) {
 			token = token.toLowerCase();
-			if(tokens.keySet().contains(token)) {
-				double newWeight = tokens.get(token);
-				tokens.put(token, newWeight+1);
-				if(newWeight+1 > max) {
-					max++;
+			if (tokens.keySet().contains(token)) {
+				double newWeight = tokens.get(token).doubleValue();
+				newWeight += 1;
+				tokens.put(token, Double.valueOf(newWeight));
+				if (newWeight > max) {
+					max++; // TODO: check!
 				}
 			} else {
-				tokens.put(token, 1.0);
+				tokens.put(token, Double.valueOf(1));
 			}
 		}
 		
-		
-		for(String token : tokens.keySet()) {
-			tokens.put(token, tokens.get(token)/(double)max);
+		for (final Entry<String, Double> tokenEntry : tokens.entrySet()) {
+			tokens.put(tokenEntry.getKey(), Double.valueOf(tokenEntry.getValue().doubleValue() / max));
 		}
 		
-		
-		double calcSim = 0.0;
-		for(String token : tokens.keySet()) {
-			for(IndexEntry entry : invertedIndex.get(token)) {
-				
+		for (final Entry<String, Double> tokenEntry : tokens.entrySet()) {
+			final String token = tokenEntry.getKey();
+			final double value = tokenEntry.getValue().doubleValue();
+			
+			for (final IndexEntry<? extends Resource> entry : invertedIndex.get(token)) {
 				// if the document doesn't belong to the requesting user skip it since we dan't want to measure similarity
 				// of the items of the requesting user
-				if(!requestedUserItems.contains(entry.getDoc().getItem())) {
+				// FIXME: post does not override equals!
+				final Post<? extends Resource> post = entry.getDoc().getItem();
+				if (!postsOfUser.contains(post)) {
 					continue;
 				}
 				
-				calcSim = (entry.getTf()*idfs.get(token)) * (tokens.get(token)*idfs.get(token));
+				final double idf = idfs.get(token).doubleValue();
+				final Double calcSim = Double.valueOf((entry.getTf() * idf) * (value * idf));
 				
-				if(similarities.containsKey(entry.getDoc().getItem().getId()) && !entry.getDoc().getItem().getId().equals(toCheck.getId())) {
-					similarities.put(entry.getDoc().getItem().getId(), calcSim);
-				} else if(!similarities.containsKey(entry.getDoc().getItem().getId()) && !entry.getDoc().getItem().getId().equals(toCheck.getId())) {
-					similarities.put(entry.getDoc().getItem().getId(), calcSim);
+				if (similarities.containsKey(entry.getDoc().getItem().getContentId()) && !entry.getDoc().getItem().getContentId().equals(toCheck.getContentId())) {
+					similarities.put(entry.getDoc().getItem().getContentId(), calcSim);
+				} else if (!similarities.containsKey(entry.getDoc().getItem().getContentId()) && !entry.getDoc().getItem().getContentId().equals(toCheck.getContentId())) {
+					similarities.put(entry.getDoc().getItem().getContentId(), calcSim);
 				}
-				
 			}
 		}
 		
 		//prevent division by zero if no item containing a token was found
-		if(similarities.keySet().size() == 0) {
+		if (similarities.keySet().size() == 0) {
 			return 0.0;
 		}
 		
-		final double toCheckLength = saveDocuments.get(toCheck.getId()).getLength();
-		for(String item : similarities.keySet()) {
-			similarities.put(item, similarities.get(item)/(saveDocuments.get(item).getLength()*toCheckLength));
+		final double toCheckLength = saveDocuments.get(String.valueOf(toCheck.getContentId())).getLength();
+		for (Integer item : similarities.keySet()) {
+			similarities.put(item, similarities.get(item)/(saveDocuments.get(String.valueOf(item)).getLength()*toCheckLength));
 		}
 		
-		for(String key : similarities.keySet()) {
+		for (Integer key : similarities.keySet()) {
 			similarity += similarities.get(key);
 		}
+		
 		similarity /= similarities.keySet().size();
 		
 		return similarity;
@@ -325,24 +340,25 @@ public class ContentBasedItemRecommender extends AbstractItemRecommender {
 	 * @param item the item to extract the tokens out of
 	 * @return a list of tokens
 	 */
-	protected List<String> calculateTokens(RecommendationItem item) {
-		final ArrayList<String> tokens = new ArrayList<String>();
+	protected List<String> calculateTokens(Post<? extends Resource> item) {
+		final List<String> tokens = new ArrayList<String>();
 		
-		for(RecommendationTag tag : item.getTags()) {
+		for (Tag tag : item.getTags()) {
 			tokens.add(tag.getName().toLowerCase());
 		}
-		for(String titleToken : item.getTitle().split(TOKEN_DELIMITER)) {
+		for (String titleToken : item.getResource().getTitle().split(TOKEN_DELIMITER)) {
 			tokens.add(titleToken.toLowerCase());
 		}
 		
 		return tokens;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.item.AbstractItemRecommender#setFeedbackInternal(org.bibsonomy.recommender.item.model.RecommendationUser, org.bibsonomy.recommender.item.model.RecommendedPost)
+	 */
 	@Override
-	protected void setFeedbackInternal(ItemRecommendationEntity entity, RecommendedItem item) {
-		/*
-		 * no special feedback handling
-		 */
+	protected void setFeedbackInternal(RecommendationUser entity, RecommendedPost<R> item) {
+		// no feedback handling
 	}
 
 	
@@ -350,19 +366,20 @@ public class ContentBasedItemRecommender extends AbstractItemRecommender {
 	 * private class as inverted index helper
 	 * 
 	 * @author lukas
+	 * @param <R> 
 	 *
 	 */
-	protected class IndexEntry {
+	protected static class IndexEntry<R extends Resource> {
 		
-		private Document doc;
+		private Document<R> doc;
 		private double tf;
 		
-		public IndexEntry(Document doc, double tf) {
+		public IndexEntry(Document<R> doc, double tf) {
 			this.doc = doc;
 			this.tf = tf;
 		}
 		
-		public Document getDoc() {
+		public Document<R> getDoc() {
 			return doc;
 		}
 		
@@ -376,19 +393,20 @@ public class ContentBasedItemRecommender extends AbstractItemRecommender {
 	 * 
 	 * 
 	 * @author lukas
+	 * @param <R> 
 	 *
 	 */
-	protected class Document {
+	protected static class Document<R extends Resource> {
 		
 		private double length;
-		private RecommendationItem item;
+		private Post<R> item;
 		
-		public Document(RecommendationItem item) {
+		public Document(Post<R> item) {
 			this.item = item;
 			this.length = 0.0;
 		}
 		
-		public RecommendationItem getItem() {
+		public Post<R> getItem() {
 			return item;
 		}
 		

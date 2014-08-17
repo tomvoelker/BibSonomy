@@ -4,48 +4,44 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.recommender.item.model.RecommendationUser;
+import org.bibsonomy.recommender.item.model.RecommendedPost;
+
 import recommender.core.database.params.RecQuerySettingParam;
 import recommender.core.database.params.ResultParam;
-import recommender.core.interfaces.factories.RecommenderItemFactory;
-import recommender.core.interfaces.model.ItemRecommendationEntity;
-import recommender.core.interfaces.model.RecommendationItem;
 import recommender.impl.database.DBLogConfigAccess;
-import recommender.impl.model.RecommendedItem;
 
 /**
  * 
  * TODO: add documentation to this class
  *
  * @author lha
+ * @param <R> 
  */
-public class DBLogConfigItemAccess extends DBLogConfigAccess<ItemRecommendationEntity, RecommendedItem>{
-	
-	private RecommenderItemFactory itemFactory;
-	
-	public RecommenderItemFactory getItemFactory() {
-		return itemFactory;
-	}
-	
-	public void setItemFactory(RecommenderItemFactory itemFactory) {
-		this.itemFactory = itemFactory;
-	}
+public class DBLogConfigItemAccess<R extends Resource> extends DBLogConfigAccess<RecommendationUser, RecommendedPost<R>>{
 
 	/*
 	 * (non-Javadoc)
 	 * @see recommender.impl.database.DBLogConfigAccess#getRecommendations(java.lang.Long, java.lang.Long, java.util.Collection)
 	 */
 	@Override
-	public void getRecommendations(Long qid, Long sid, Collection<RecommendedItem> recommendedItems) {
+	public void getRecommendations(Long qid, Long sid, Collection<RecommendedPost<R>> recommendedItems) {
 		// print out newly added recommendations
 		final RecQuerySettingParam queryMap = new RecQuerySettingParam();
 		queryMap.setQid(qid);
 		queryMap.setSid(sid);
 		final List<ResultParam> queryResult = this.manager.processQueryForList(ResultParam.class, "getRecommendationsByQidSid", queryMap);
+		convertToRecommendedPosts(recommendedItems, queryResult);
+	}
+
+	private void convertToRecommendedPosts(Collection<RecommendedPost<R>> recommendedItems, final List<ResultParam> queryResult) {
 		for (final ResultParam result : queryResult) {
-			final RecommendationItem temp = itemFactory.getInstanceOfRecommendationItem();
-			temp.setId(String.valueOf(result.getResultId()));
-			temp.setTitle(result.getResultTitle());
-			final RecommendedItem recItem = new RecommendedItem(temp);
+			final Post<R> post = new Post<R>();
+			// FIXME: refactor init this post correctly
+			final RecommendedPost<R> recItem = new RecommendedPost<R>();
+			recItem.setPost(post);
 			recItem.setConfidence(result.getConfidence());
 			recItem.setScore(result.getScore());
 			recommendedItems.add(recItem);
@@ -57,17 +53,9 @@ public class DBLogConfigItemAccess extends DBLogConfigAccess<ItemRecommendationE
 	 * @see recommender.impl.database.DBLogConfigAccess#getRecommendations(java.lang.Long, java.util.Collection)
 	 */
 	@Override
-	public void getRecommendations(Long qid, Collection<RecommendedItem> recommendedItems) {
+	public void getRecommendations(Long qid, Collection<RecommendedPost<R>> recommendedItems) {
 		final List<ResultParam> queryResult = this.manager.processQueryForList(ResultParam.class, "getRecommendationsByQid", qid);	
-		for (ResultParam result : queryResult) {
-			RecommendationItem temp = itemFactory.getInstanceOfRecommendationItem();
-			temp.setId(""+result.getResultId());
-			temp.setTitle(result.getResultTitle());
-			RecommendedItem recItem = new RecommendedItem(temp);
-			recItem.setConfidence(result.getConfidence());
-			recItem.setScore(result.getScore());
-			recommendedItems.add(recItem);
-		}
+		convertToRecommendedPosts(recommendedItems, queryResult);
 	}
 
 	/*
@@ -75,18 +63,10 @@ public class DBLogConfigItemAccess extends DBLogConfigAccess<ItemRecommendationE
 	 * @see recommender.impl.database.DBLogConfigAccess#getSelectedResults(java.lang.Long)
 	 */
 	@Override
-	public List<RecommendedItem> getSelectedResults(Long qid) {
+	public List<RecommendedPost<R>> getSelectedResults(Long qid) {
 		final List<ResultParam> queryResult = this.manager.processQueryForList(ResultParam.class, "getSelectedRecommendationsByQid", qid);	
-		List<RecommendedItem> recommendations = new ArrayList<RecommendedItem>();	
-		for(ResultParam result : queryResult) {
-			RecommendationItem temp = itemFactory.getInstanceOfRecommendationItem();
-			temp.setId(""+result.getResultId());
-			temp.setTitle(result.getResultTitle());
-			RecommendedItem recItem = new RecommendedItem(temp);
-			recItem.setConfidence(result.getConfidence());
-			recItem.setScore(result.getScore());
-			recommendations.add(recItem);
-		}	
+		final List<RecommendedPost<R>> recommendations = new ArrayList<RecommendedPost<R>>();
+		convertToRecommendedPosts(recommendations, queryResult);
 		return recommendations;
 	}
 }

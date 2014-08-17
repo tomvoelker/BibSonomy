@@ -1,10 +1,9 @@
 package org.bibsonomy.recommender.item.db;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
@@ -15,19 +14,20 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.recommender.connector.database.params.ItemRecRequestParam;
-import org.bibsonomy.recommender.connector.model.RecommendationPost;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.recommender.item.db.params.ItemRecRequestParam;
+import org.bibsonomy.recommender.item.model.RecommendationUser;
+import org.bibsonomy.recommender.item.model.RecommendedPost;
 import org.bibsonomy.recommender.item.service.ExtendedMainAccess;
-
-import recommender.core.interfaces.model.ItemRecommendationEntity;
 
 /**
  * Implementation of the general methods which are equal for publication and bookmark recommendations.
  * 
  * @author lukas
+ * @param <T> 
  *
  */
-public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractDatabaseManager implements ExtendedMainAccess {
+public abstract class AbstractRecommenderMainItemAccessImpl<T extends Resource> extends AbstractDatabaseManager implements ExtendedMainAccess<T> {
 	
 	private static final int RETRIEVE_USERS_PER_TAG = 6;
 	private static final int USE_USERS_PER_TAG = 2;
@@ -45,29 +45,41 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 		this.mainFactory = mainFactory;
 	}
 	
+	protected List<RecommendedPost<T>> convertToRecommendedPost(final List<Post<T>> posts) {
+		final List<RecommendedPost<T>> recommendedPosts = new LinkedList<RecommendedPost<T>>();
+		
+		for (Post<T> post : posts) {
+			final RecommendedPost<T> recommendedPost = new RecommendedPost<T>();
+			recommendedPost.setPost(post);
+			recommendedPosts.add(recommendedPost);
+		}
+		
+		return recommendedPosts;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see recommender.core.interfaces.database.RecommenderMainItemAccess#getSimilarUsers(int, recommender.core.interfaces.model.ItemRecommendationEntity)
 	 */
 	@Override
-	public List<String> getSimilarUsers(final int count, final ItemRecommendationEntity entity) {
-		
+	public List<String> getSimilarUsers(final int count, final RecommendationUser entity) {
 		final DBSession mainSession = this.openMainSession();
 		try {
 			final ItemRecRequestParam param = new ItemRecRequestParam();
-			param.setUserName(null); // FIXME (refactor) entity.getUserName()
+			param.setUserName(entity.getUserName());
 			param.setCount(count);
 			
 			List<String> usernames = this.queryForList("getSimilarUsersByFolkrank", param, String.class, mainSession);
 			
 			// if folkrank calculated users were present use those
-			if(usernames.size() == count) {
+			if (usernames.size() == count) {
 				return usernames;
 			}
 			
 			// try to get similar users per cosine similarity
 			usernames = this.queryForList("getSimilarUsersByCosineSimilarity", param, String.class, mainSession);
 			
+			// TODO: fill up folkrank users with the new users?
 			if(usernames.size() == count) {
 				return usernames;
 			}
@@ -103,7 +115,7 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 						break;
 					}
 					// take not the top users because they might spammed this tag
-					if(tempnames.size()/2 + USE_USERS_PER_TAG > counter && tempnames.size()/2 <= counter) {
+					if (tempnames.size()/2 + USE_USERS_PER_TAG > counter && tempnames.size()/2 <= counter) {
 						if(!usernamesSimple.contains(username)) {
 							usernamesSimple.add(username);
 						}
@@ -116,7 +128,7 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 				}
 			}
 			
-			if(usernamesSimple.size() > usernames.size()) {
+			if (usernamesSimple.size() > usernames.size()) {
 				return usernamesSimple;
 			}
 			
@@ -125,22 +137,7 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 		} finally {
 			mainSession.close();
 		}
-		
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see recommender.core.interfaces.database.RecommenderMainItemAccess#getItemsForUser(int, java.lang.String)
-	 */
-	@Override
-	public abstract List<RecommendationItem> getItemsForUser(int count, String username);
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.recommender.connector.database.ExtendedMainAccess#getResourcesByIds(java.util.List)
-	 */
-	@Override
-	public abstract List<RecommendationItem> getResourcesByIds(final List<Integer> ids);
 	
 	/*
 	 * (non-Javadoc)
@@ -148,8 +145,8 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<RecommendationItem> getAllItemsOfQueryingUser(final int count, final String username) {
-		
+	public List<Post<? extends Resource>> getAllItemsOfQueryingUser(final int count, final String username) {
+		final List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
 		final DBSession mainSession = this.openMainSession();
 		try {
 			// get bookmarks of user
@@ -160,11 +157,7 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 			bookmarkParam.setLimit(count);
 			
 			List<Post<Bookmark>> bookmarkResults = (List<Post<Bookmark>>) this.queryForList("getReducedUserBookmark", bookmarkParam, mainSession);
-			List<RecommendationItem> items = new ArrayList<RecommendationItem>();
-			for(Post<Bookmark> bookmark : bookmarkResults) {
-				RecommendationItem item =  new RecommendationPost(bookmark);
-				items.add(item);
-			}
+			posts.addAll(bookmarkResults);
 			
 			//get publications of user
 			final BibTexParam bibtexParam = new BibTexParam();
@@ -174,12 +167,9 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 			bibtexParam.setLimit(count);
 			
 			List<Post<BibTex>> bibtexResults = (List<Post<BibTex>>) this.queryForList("getReducedUserBibTex", bibtexParam, mainSession);
-			for(Post<BibTex> bibtex : bibtexResults) {
-				RecommendationItem item =  new RecommendationPost(bibtex);
-				items.add(item);
-			}
+			posts.addAll(bibtexResults);
 			
-			return items;
+			return posts;
 		} finally {
 			mainSession.close();
 		}
@@ -199,32 +189,4 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 			mainSession.close();
 		}
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see recommender.core.interfaces.database.RecommenderMainItemAccess#getItemsForContentBasedFiltering(int, recommender.core.interfaces.model.ItemRecommendationEntity)
-	 */
-	@Override
-	public abstract Collection<RecommendationItem> getItemsForContentBasedFiltering(final int maxItemsToEvaluate, final ItemRecommendationEntity entity);
-	
-	/*
-	 * (non-Javadoc)
-	 * @see recommender.core.interfaces.database.RecommenderMainItemAccess#getTaggedItems(int, java.util.Set)
-	 */
-	@Override
-	public abstract List<RecommendationItem> getTaggedItems(final int maxItemsToEvaluate, final Set<String> tags);
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.recommender.connector.database.ExtendedMainAccess#getItemByTitle(java.lang.String)
-	 */
-	@Override
-	public abstract RecommendationItem getItemByTitle(final String title);
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.recommender.connector.database.ExtendedMainAccess#getItemByUserWithHash(java.lang.String, java.lang.String)
-	 */
-	@Override
-	public abstract RecommendationItem getItemByUserIdWithHash(final String hash, final String username);
 }

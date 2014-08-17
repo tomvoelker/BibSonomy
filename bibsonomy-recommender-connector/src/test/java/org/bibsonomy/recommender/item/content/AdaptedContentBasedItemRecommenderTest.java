@@ -1,8 +1,9 @@
-package org.bibsonomy.recommender.connector.item.content;
+package org.bibsonomy.recommender.item.content;
 
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedSet;
 
@@ -11,21 +12,16 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
-import org.bibsonomy.recommender.connector.model.RecommendationPost;
-import org.bibsonomy.recommender.connector.model.UserWrapper;
-import org.bibsonomy.recommender.connector.testutil.DummyMainItemAccess;
 import org.bibsonomy.recommender.connector.testutil.RecommenderTestContext;
-import org.bibsonomy.recommender.item.content.AdaptedContentBasedItemRecommender;
-import org.bibsonomy.recommender.item.content.ContentBasedItemRecommender;
 import org.bibsonomy.recommender.item.db.DBLogConfigItemAccess;
+import org.bibsonomy.recommender.item.model.RecommendationUser;
+import org.bibsonomy.recommender.item.model.RecommendedPost;
 import org.bibsonomy.recommender.item.service.RecommenderMainItemAccess;
+import org.bibsonomy.recommender.item.testutil.DummyMainItemAccess;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import recommender.core.database.DBLogic;
-import recommender.core.interfaces.model.ItemRecommendationEntity;
-import recommender.core.interfaces.model.RecommendationItem;
-import recommender.impl.model.RecommendedItem;
 
 /**
  * This class tests the {@link AdaptedContentBasedItemRecommender} extension of
@@ -35,18 +31,17 @@ import recommender.impl.model.RecommendedItem;
  * @author lukas
  *
  */
-public class ContentBasedItemRecommenderTest {
-
-	private static DBLogic<ItemRecommendationEntity, RecommendedItem> bibtexDBLogic;
-	
-	private static final int RECOMMENDATIONS_TO_CALCULATE = 4;
-
+public class AdaptedContentBasedItemRecommenderTest {
 	private static final String REQUESTING_USER_NAME = "requestUser";
-	private static final String[] USER_NAMES = {"cfUser1", "cfUser2"}; 
+	private static final int RECOMMENDATIONS_TO_CALCULATE = 4;
 	private static final String WINNER_TITLE = "winner title";
+	private static final String[] USER_NAMES = {"cfUser1", "cfUser2"}; 
 	
 	private static int id_generator = 0;
 	
+	private static DBLogic<RecommendationUser, RecommendedPost<BibTex>> bibtexDBLogic;
+	
+	@SuppressWarnings("unchecked")
 	@BeforeClass
 	public static void setUp() {
 		bibtexDBLogic = RecommenderTestContext.getBeanFactory().getBean("bibtexRecommenderLogic", DBLogConfigItemAccess.class);
@@ -58,26 +53,37 @@ public class ContentBasedItemRecommenderTest {
 	 */
 	@Test
 	public void testAdaptedContentBasedItemRecommender() {
+		RecommenderMainItemAccess<BibTex> dbAccess = new DummyMainItemAccess<BibTex>() {
+			@Override
+			protected BibTex createResource() {
+				return new BibTex();
+			}
+		};
 		
-		RecommenderMainItemAccess dbAccess = new DummyMainItemAccess();
-		
-		AdaptedContentBasedItemRecommender reco = new AdaptedContentBasedItemRecommender();
+		AdaptedContentBasedItemRecommender<BibTex> reco = new AdaptedContentBasedItemRecommender<BibTex>();
 		reco.setDbAccess(dbAccess);
 		reco.setDbLogic(bibtexDBLogic);
 		reco.setNumberOfItemsToRecommend(RECOMMENDATIONS_TO_CALCULATE);
 		
 		User u = new User(REQUESTING_USER_NAME);
+		final RecommendationUser user = new RecommendationUser();
+		user.setUserName(u.getName());
 		
-		SortedSet<RecommendedItem> recommendations = reco.getRecommendation(new UserWrapper(u));
+		SortedSet<RecommendedPost<BibTex>> recommendations = reco.getRecommendation(user);
 		
 		// checks if the count of items correct
 		assertEquals(RECOMMENDATIONS_TO_CALCULATE, recommendations.size());
 		
 		// new dbAccess to make the database results non random
-		dbAccess = new DummyCollaborativeMainAccess();
+		dbAccess = new DummyCollaborativeMainAccess<BibTex>() {
+			@Override
+			protected BibTex createResource() {
+				return new BibTex();
+			}
+		};
 		reco.setDbAccess(dbAccess);
 		
-		recommendations = reco.getRecommendation(new UserWrapper(u));
+		recommendations = reco.getRecommendation(user);
 		
 		// this makes sure, for requesting user his bibtex and bookmark resources
 		// are used for getting his vocabulary
@@ -143,44 +149,36 @@ public class ContentBasedItemRecommenderTest {
 	 * Extended dummy database implementation to return non random values.
 	 * @author lukas
 	 */
-	private class DummyCollaborativeMainAccess extends DummyMainItemAccess {
+	private abstract class DummyCollaborativeMainAccess<R extends Resource> extends DummyMainItemAccess<R> {
+		
 		/*
 		 * (non-Javadoc)
 		 * @see org.bibsonomy.recommender.connector.testutil.DummyMainItemAccess#getAllItemsOfQueryingUser(int, java.lang.String)
 		 */
 		@Override
-		public List<RecommendationItem> getAllItemsOfQueryingUser(int count,
-				String username) {
-			final List<RecommendationItem> items = new ArrayList<RecommendationItem>();
+		public List<Post<? extends Resource>> getAllItemsOfQueryingUser(int count, String username) {
+			final List<Post<? extends Resource>> items = new ArrayList<Post<? extends Resource>>();
 			final Post<BibTex> bibtexPost = createBibTexPost("request bibtex", "recommender systems", "empty descr", REQUESTING_USER_NAME);
 			final Post<Bookmark> bookmarkPost = createBookmarkPost("request bookmark", "empty descr", REQUESTING_USER_NAME);
-			items.add(new RecommendationPost(bibtexPost));
-			items.add(new RecommendationPost(bookmarkPost));
-			return items;
-		}
-		/*
-		 * (non-Javadoc)
-		 * @see org.bibsonomy.recommender.connector.testutil.DummyMainItemAccess#getItemsForUsers(int, java.util.List)
-		 */
-		@Override
-		public List<RecommendationItem> getItemsForUsers(int count,
-				List<String> usernames) {
-			final List<RecommendationItem> items = new ArrayList<RecommendationItem>();
-			for(Post<? extends Resource> post : createItemsForCfUsers()) {
-				items.add(new RecommendationPost(post));
-			}
+			items.add(bibtexPost);
+			items.add(bookmarkPost);
 			return items;
 		}
 		
-		/*
-		 * (non-Javadoc)
-		 * @see org.bibsonomy.recommender.connector.testutil.DummyMainItemAccess#getResourcesByIds(java.util.List)
+		/* (non-Javadoc)
+		 * @see org.bibsonomy.recommender.item.testutil.DummyMainItemAccess#getItemsForUser(int, java.lang.String)
 		 */
 		@Override
-		public List<RecommendationItem> getResourcesByIds(List<Integer> ids) {
-			// no new items are returned to prevent the similar dummy items to be overwritten
-			return new ArrayList<RecommendationItem>();
+		public List<Post<? extends Resource>> getItemsForUser(int count, String username) {
+			return createItemsForCfUsers();
+		}
+		
+		/* (non-Javadoc)
+		 * @see org.bibsonomy.recommender.item.testutil.DummyMainItemAccess#getResourcesByIds(java.util.List)
+		 */
+		@Override
+		public List<Post<R>> getResourcesByIds(List<Integer> ids) {
+			return new LinkedList<Post<R>>();
 		}
 	}
-	
 }

@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.recommender.connector.model.RecommendationPost;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.recommender.item.model.RecommendationUser;
+import org.bibsonomy.recommender.item.model.RecommendedPost;
 import org.bibsonomy.recommender.item.service.ExtendedMainAccess;
 
-import recommender.core.interfaces.model.RecommendationItem;
-import recommender.core.interfaces.model.RecommendationResult;
-import recommender.impl.model.RecommendedItem;
 import recommender.impl.multiplexer.RecommendationResultManager;
 import recommender.impl.multiplexer.strategy.SelectAll;
 
@@ -25,38 +25,42 @@ import recommender.impl.multiplexer.strategy.SelectAll;
  * @param <E>
  * @param <R>
  */
-public class AdaptedSelectAll<E, R extends RecommendationResult> extends SelectAll<E, R> {
+public class AdaptedSelectAll<R extends Resource> extends SelectAll<RecommendationUser, RecommendedPost<R>> {
 
-	private ExtendedMainAccess dbAccess;
+	private ExtendedMainAccess<R> dbAccess;
 	
-	@SuppressWarnings("unchecked")
+	/* (non-Javadoc)
+	 * @see recommender.impl.multiplexer.strategy.SelectAll#selectResult(java.lang.Long, recommender.impl.multiplexer.RecommendationResultManager, java.util.Collection)
+	 */
 	@Override
-	public void selectResult(Long qid, RecommendationResultManager<E, R> resultCache, Collection<R> recommendationResults) {
+	public void selectResult(Long qid, RecommendationResultManager<RecommendationUser, RecommendedPost<R>> resultCache, Collection<RecommendedPost<R>> recommendationResults) {
 		super.selectResult(qid, resultCache, recommendationResults);
 		
 		// fetch bibsonomy model classes and wrap them
-		Iterator<R> it = recommendationResults.iterator();
+		Iterator<RecommendedPost<R>> it = recommendationResults.iterator();
 		final List<Integer> toRetrieve = new ArrayList<Integer>();
 		final Map<String, Pair<Double, Double>> saveEvaluation = new HashMap<String, Pair<Double, Double>>();
 		while(it.hasNext()) {
-			R current = it.next();
-			if(!(current instanceof RecommendationPost)) {
-				toRetrieve.add(new Integer(current.getRecommendationId()));
-				saveEvaluation.put(current.getRecommendationId(), new Pair<Double, Double>(current.getScore(), current.getConfidence()));
-				it.remove();
-			}
+			RecommendedPost<R> current = it.next();
+			toRetrieve.add(new Integer(current.getRecommendationId()));
+			saveEvaluation.put(current.getRecommendationId(), new Pair<Double, Double>(current.getScore(), current.getConfidence()));
+			it.remove();
 		}
-		
-		final List<RecommendationItem> items = dbAccess.getResourcesByIds(toRetrieve);
-		for (RecommendationItem item : items) {
-			RecommendedItem recommended = new RecommendedItem(item);
-			recommended.setScore(saveEvaluation.get(item.getId()).getFirst());
-			recommended.setConfidence(saveEvaluation.get(item.getId()).getSecond());
-			recommendationResults.add((R) recommended);
+		// FIXME: save the posts in the framework maybe a remote recommender sends
+		final List<Post<R>> items = dbAccess.getResourcesByIds(toRetrieve);
+		for (Post<R> post : items) {
+			RecommendedPost<R> recommended = new RecommendedPost<R>();
+			recommended.setPost(post);
+			recommended.setScore(saveEvaluation.get(post.getContentId()).getFirst());
+			recommended.setConfidence(saveEvaluation.get(post.getContentId()).getSecond());
+			recommendationResults.add(recommended);
 		}
 	}
 	
-	public void setDbAccess(ExtendedMainAccess dbAccess) {
+	/**
+	 * @param dbAccess	the dbAccess to set
+	 */
+	public void setDbAccess(ExtendedMainAccess<R> dbAccess) {
 		this.dbAccess = dbAccess;
 	}
 }

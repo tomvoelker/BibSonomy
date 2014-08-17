@@ -1,5 +1,7 @@
 package org.bibsonomy.recommender.item.model;
 
+import java.io.Serializable;
+
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
@@ -9,15 +11,30 @@ import recommender.core.interfaces.model.RecommendationResult;
  * TODO: add documentation to this class
  *
  * @author lha
- * @param <T> 
+ * @param <R> 
  */
-public class RecommendedPost<T extends Resource> extends Post<T> implements RecommendationResult {
+public class RecommendedPost<R extends Resource> implements RecommendationResult, Serializable {
 	private static final long serialVersionUID = -2529041486151001015L;
+	
+	private Post<R> post;
 	
 	private double score;
 	private double confidence;
 	
-	
+	/**
+	 * @return the post
+	 */
+	public Post<R> getPost() {
+		return this.post;
+	}
+
+	/**
+	 * @param post the post to set
+	 */
+	public void setPost(Post<R> post) {
+		this.post = post;
+	}
+
 	/* (non-Javadoc)
 	 * @see recommender.core.interfaces.model.RecommendationResult#getScore()
 	 */
@@ -55,8 +72,7 @@ public class RecommendedPost<T extends Resource> extends Post<T> implements Reco
 	 */
 	@Override
 	public String getRecommendationId() {
-		// TODO Auto-generated method stub
-		return null;
+		return String.valueOf(this.post.getContentId());
 	}
 
 	/* (non-Javadoc)
@@ -76,8 +92,7 @@ public class RecommendedPost<T extends Resource> extends Post<T> implements Reco
 	 */
 	@Override
 	public String getTitle() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.post.getResource().getTitle();
 	}
 
 }

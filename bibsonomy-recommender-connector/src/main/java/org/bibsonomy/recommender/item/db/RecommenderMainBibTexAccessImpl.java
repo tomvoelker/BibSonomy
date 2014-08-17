@@ -3,7 +3,6 @@ package org.bibsonomy.recommender.item.db;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -17,10 +16,7 @@ import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.recommender.connector.model.RecommendationPost;
-
-import recommender.core.interfaces.model.ItemRecommendationEntity;
-import recommender.core.interfaces.model.RecommendationItem;
+import org.bibsonomy.recommender.item.model.RecommendationUser;
 
 /**
  * 
@@ -30,7 +26,7 @@ import recommender.core.interfaces.model.RecommendationItem;
  * @author Lukas
  *
  */
-public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItemAccessImpl {
+public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItemAccessImpl<BibTex> {
 	
 	/*
 	 * (non-Javadoc)
@@ -38,27 +34,19 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<RecommendationItem> getMostActualItems(final int count, final ItemRecommendationEntity entity) {
+	public List<Post<BibTex>> getMostActualItems(final int count, final RecommendationUser entity) {
 		
 		final DBSession mainSession = this.openMainSession();
 		try {
 			BibTexParam bibtexParam = new BibTexParam();
 			bibtexParam.setGrouping(GroupingEntity.ALL);
 			bibtexParam.setGroupId(GroupID.PUBLIC.getId());
-			bibtexParam.setUserName(null); // FIXME (refactor) entity.getUserName()
+			bibtexParam.setUserName(entity.getUserName());
 			bibtexParam.setOffset(0);
 			bibtexParam.setLimit(2*count);
 			bibtexParam.setSimHash(HashID.INTRA_HASH);
 			
-			List<Post<BibTex>> results = (List<Post<BibTex>>) this.queryForList("getBibTexForHomepage", bibtexParam, mainSession);
-			
-			List<RecommendationItem> items = new ArrayList<RecommendationItem>(results.size());
-			for(Post<BibTex> bibtex : results) {
-				RecommendationItem item =  new RecommendationPost(bibtex);
-				items.add(item);
-			}
-			
-			return items;
+			return (List<Post<BibTex>>) this.queryForList("getBibTexForHomepage", bibtexParam, mainSession);
 		} finally {
 			mainSession.close();
 		}
@@ -71,7 +59,7 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<RecommendationItem> getItemsForUser(final int count, final String username) {
+	public List<Post<? extends Resource>> getItemsForUser(final int count, final String username) {
 		final DBSession mainSession = this.openMainSession();
 		try {
 			final BibTexParam bibtexParam = new BibTexParam();
@@ -80,14 +68,7 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 			bibtexParam.setLimit(count);
 			bibtexParam.setGroupId(GroupID.PUBLIC.getId());
 			
-			final List<RecommendationItem> items = new ArrayList<RecommendationItem>();
-			// only get reduced data, because it's enough for calculation
-			List<Post<BibTex>> results = (List<Post<BibTex>>) this.queryForList("getReducedUserBibTex", bibtexParam, mainSession);
-			for(Post<BibTex> bibtex : results) {
-				RecommendationItem item =  new RecommendationPost(bibtex);
-				items.add(item);
-			}
-			return items;
+			return (List<Post<? extends Resource>>) this.queryForList("getReducedUserBibTex", bibtexParam, mainSession);
 		} finally {
 			mainSession.close();
 		}
@@ -98,7 +79,7 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 	 * @see recommender.core.interfaces.database.RecommenderDBAccess#getItemsForUsers(int, java.util.List)
 	 */
 	@SuppressWarnings("unchecked")
-	private List<RecommendationItem> getItemsForUsers(final int count, final List<String> usernames) {
+	private List<Post<BibTex>> getItemsForUsers(final int count, final List<String> usernames) {
 		final DBSession mainSession = this.openMainSession();
 		try {
 			final BibTexParam bibtexParam = new BibTexParam();
@@ -106,16 +87,13 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 			bibtexParam.setOffset(0);
 			bibtexParam.setLimit(count);
 			
-			final List<RecommendationItem> items = new ArrayList<RecommendationItem>();
+			final List<Post<BibTex>> items = new ArrayList<Post<BibTex>>();
 			
-			for(String username : usernames) {
+			for (String username : usernames) {
 				bibtexParam.setRequestedUserName(username);
 				// only get reduced data, because it's enough for calculation
 				List<Post<BibTex>> results = (List<Post<BibTex>>) this.queryForList("getReducedUserBibTex", bibtexParam, mainSession);
-				for(Post<BibTex> bibtex : results) {
-					RecommendationItem item =  new RecommendationPost(bibtex);
-					items.add(item);
-				}
+				items.addAll(results);
 			}
 			return items;
 		} finally {
@@ -129,34 +107,33 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<RecommendationItem> getResourcesByIds(final List<Integer> ids) {
+	public List<Post<BibTex>> getResourcesByIds(final List<Integer> ids) {
 		final DBSession mainSession = this.openMainSession();
 		try {
-			final List<RecommendationItem> items = new ArrayList<RecommendationItem>();
+			final List<Post<BibTex>> items = new ArrayList<Post<BibTex>>();
 			final BibTexParam param = new BibTexParam();
 			param.setSimHash(HashID.INTRA_HASH);
 			for(Integer id : ids) {
 				param.setRequestedContentId(id);
 				Post<BibTex> bibtex = this.queryForObject("getBibTexById", param, Post.class, mainSession);
-				items.add(new RecommendationPost(bibtex));
+				items.add(bibtex);
 			}
 			return items;
 		} finally {
 			mainSession.close();
 		}
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.recommender.connector.database.AbstractRecommenderMainItemAccessImpl#getItemsForContentBasedFiltering(int, recommender.core.interfaces.model.ItemRecommendationEntity)
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.item.service.RecommenderMainItemAccess#getItemsForContentBasedFiltering(int, org.bibsonomy.recommender.item.model.RecommendationUser)
 	 */
 	@Override
-	public Collection<RecommendationItem> getItemsForContentBasedFiltering(final int maxItemsToEvaluate, final ItemRecommendationEntity entity) {
+	public List<Post<BibTex>> getItemsForContentBasedFiltering(int maxItemsToEvaluate, RecommendationUser entity) {
 		final List<String> similarUsers = this.getSimilarUsers(USERS_TO_EVALUATE, entity);
-		if(present(similarUsers)) {
+		if (present(similarUsers)) {
 			return this.getItemsForUsers(maxItemsToEvaluate/similarUsers.size(), similarUsers);
 		}
-		return new ArrayList<RecommendationItem>();
+		return new ArrayList<Post<BibTex>>();
 	}
 	
 	/*
@@ -165,9 +142,9 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public List<RecommendationItem> getTaggedItems(final int maxItemsToEvaluate, final Set<String> tags) {
+	public List<Post<BibTex>> getTaggedItems(final int maxItemsToEvaluate, final Set<String> tags) {
 		final DBSession mainSession = this.openMainSession();
-		final List<RecommendationItem> items = new ArrayList<RecommendationItem>();
+		final List<Post<BibTex>> items = new ArrayList<Post<BibTex>>();
 		try {
 			final BibTexParam param = new BibTexParam();
 			param.setLimit(maxItemsToEvaluate/tags.size());
@@ -182,10 +159,8 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 				index = new TagIndex(tag, 1);
 				tagIndeces.add(index);
 				param.setTagIndex(tagIndeces);
-				List<Post> bibtexs = this.queryForList("getBibTexByTagNames", param, Post.class, mainSession);
-				for(Post post : bibtexs) {
-					items.add(new RecommendationPost(post));
-				}
+				List<Post<BibTex>> bibtexs = (List<Post<BibTex>>) this.queryForList("getBibTexByTagNames", param, mainSession);
+				items.addAll(bibtexs);
 			}
 			return items;
 		} finally {
@@ -199,7 +174,7 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public RecommendationItem getItemByUserIdWithHash(final String hash, final String userId) {
+	public Post<BibTex> getItemByUserIdWithHash(final String hash, final String userId) {
 		final DBSession mainSession = this.openMainSession();
 		try {
 			final BibTexParam param = new BibTexParam();
@@ -210,12 +185,7 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 			param.setOffset(0);
 			param.setLimit(1);
 			
-			Post<? extends Resource> post = (Post<? extends Resource>) this.queryForObject("getBibTexByHashForUserId", param, Post.class, mainSession);
-			
-			if(post != null) {
-				return new RecommendationPost(post);
-			}
-			return null;
+			return this.queryForObject("getBibTexByHashForUserId", param, Post.class, mainSession);
 		} finally {
 			mainSession.close();
 		}
@@ -227,7 +197,7 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public RecommendationItem getItemByTitle(final String title) {
+	public Post<BibTex> getItemByTitle(final String title) {
 		final DBSession mainSession = this.openMainSession();
 		try {
 			final BibTexParam param = new BibTexParam();
@@ -237,12 +207,7 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 			param.setOffset(0);
 			param.setLimit(1);
 			
-			Post<? extends Resource> post = (Post<? extends Resource>) this.queryForObject("getBibTexByTitle", param, Post.class, mainSession);
-			
-			if(post != null) {
-				return new RecommendationPost(post);
-			}
-			return null;
+			return this.queryForObject("getBibTexByTitle", param, Post.class, mainSession);
 		} finally {
 			mainSession.close();
 		}

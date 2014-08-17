@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.connector.test;
+package org.bibsonomy.recommender.item.db;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -14,19 +14,16 @@ import java.util.TreeSet;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
-import org.bibsonomy.recommender.connector.model.RecommendationPost;
-import org.bibsonomy.recommender.connector.model.UserWrapper;
 import org.bibsonomy.recommender.connector.testutil.RecommenderTestContext;
-import org.bibsonomy.recommender.item.db.DBLogConfigItemAccess;
+import org.bibsonomy.recommender.item.model.RecommendationUser;
+import org.bibsonomy.recommender.item.model.RecommendedPost;
 import org.bibsonomy.recommender.item.simple.DummyItemRecommender;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import recommender.core.database.DBLogic;
 import recommender.core.database.params.RecQueryParam;
-import recommender.core.interfaces.model.ItemRecommendationEntity;
-import recommender.impl.model.RecommendedItem;
+import recommender.core.util.RecommendationResultComparator;
 import recommender.impl.webservice.WebserviceRecommender;
 
 /**
@@ -37,7 +34,7 @@ import recommender.impl.webservice.WebserviceRecommender;
  *
  */
 public class DBItemAccessTest {
-	private static DBLogic<ItemRecommendationEntity, RecommendedItem> dbLogic;
+	private static DBLogic<RecommendationUser, RecommendedPost<BibTex>> dbLogic;
 	
 	@BeforeClass
 	public static void setUp() {
@@ -50,7 +47,7 @@ public class DBItemAccessTest {
 	 */
 	@Test
 	public void testAddQuery() {
-		final ItemRecommendationEntity entity = this.createItemRecommendationEntity();
+		final RecommendationUser entity = this.createItemRecommendationEntity();
 		final Timestamp ts = new Timestamp(System.currentTimeMillis());
 		
 		// store and retrieve query
@@ -71,18 +68,18 @@ public class DBItemAccessTest {
 		final int nr = 5;
 		
 		// create items
-		final SortedSet<RecommendedItem> items = this.createRecommendedItems(nr);
+		final SortedSet<RecommendedPost<BibTex>> items = this.createRecommendedItems(nr);
 		// store items
 		final int count = dbLogic.storeRecommendation(qid, rid, items);
 		// fetch items
-		final List<RecommendedItem> result = dbLogic.getSelectedResults(Long.valueOf(0));
+		final List<RecommendedPost<BibTex>> result = dbLogic.getSelectedResults(Long.valueOf(0));
 		
 		// compare items
-		final SortedSet<RecommendedItem> sort = new TreeSet<RecommendedItem>();
+		final SortedSet<RecommendedPost<BibTex>> sort = new TreeSet<RecommendedPost<BibTex>>();
 		assertEquals(nr, count);
 		sort.addAll(result);
 		final int i=0;
-		for( final RecommendedItem item : sort ) {
+		for( final RecommendedPost<BibTex> item : sort ) {
 			assertEquals(item.getTitle(), "testTitle" + (new Integer(i)).toString());
 			assertEquals((1.0*i)/count, item.getScore(), 0.0);
 			assertEquals(1.0/count, item.getConfidence(), 0.0);
@@ -93,12 +90,12 @@ public class DBItemAccessTest {
 	 * Test adding recommender response
 	 */
 	@Test
-	public void testAddRecommenderResult()  {
+	public void testAddRecommenderResult() {
 		final Long qid = Long.valueOf(0);
 		final Long sid = Long.valueOf(0);
 		final Long latency = Long.valueOf(0);
 		
-		final SortedSet<RecommendedItem> recommendations = new TreeSet<RecommendedItem>();
+		final SortedSet<RecommendedPost<BibTex>> recommendations = new TreeSet<RecommendedPost<BibTex>>(new RecommendationResultComparator<RecommendedPost<BibTex>>());
 		// usage of unix timestamp as unique id
 		recommendations.add(this.createRecommendedItemWithId((int) (System.currentTimeMillis()/1000L)));
 		
@@ -112,17 +109,24 @@ public class DBItemAccessTest {
 	 */
 	@Test
 	public void testGetRecommenderSid() throws MalformedURLException {
-		final DummyItemRecommender dummyItemRecommender = new DummyItemRecommender();
-		dbLogic.registerRecommender(dummyItemRecommender);
+		final DummyItemRecommender<BibTex> dummyItemRecommender = new DummyItemRecommender<BibTex>();
+		if (!dbLogic.isRecommenderRegistered(dummyItemRecommender)) {
+			dbLogic.registerRecommender(dummyItemRecommender);
+		}
 		
 		assertTrue(dbLogic.getRecommenderId(dummyItemRecommender).longValue() > -1L);
 		
 		final String secondRecommenderId = "http://example.com";
 		
-		final WebserviceRecommender<ItemRecommendationEntity, RecommendedItem> webserviceRecommender = new WebserviceRecommender<ItemRecommendationEntity, RecommendedItem>();
+		final WebserviceRecommender<RecommendationUser, RecommendedPost<BibTex>> webserviceRecommender = new WebserviceRecommender<RecommendationUser, RecommendedPost<BibTex>>();
 		webserviceRecommender.setAddress(new URL("http://example.com"));
+		assertEquals(Long.valueOf(-1), dbLogic.getRecommenderId(webserviceRecommender));
 		
+		dbLogic.registerRecommender(webserviceRecommender);
 		assertTrue(dbLogic.getRecommenderId(webserviceRecommender).longValue() > -1L);
+		
+		dbLogic.removeRecommender(webserviceRecommender);
+		
 		assertEquals(Long.valueOf(-1), dbLogic.getRecommenderId(webserviceRecommender));
 	}
 	
@@ -134,13 +138,13 @@ public class DBItemAccessTest {
 		/*
 		 *  add query
 		 */
-		final ItemRecommendationEntity post = this.createItemRecommendationEntity();
+		final RecommendationUser post = this.createItemRecommendationEntity();
 		final Timestamp ts = new Timestamp(System.currentTimeMillis());
-		final String postID = ""+(int)Math.floor(Math.random()*Integer.MAX_VALUE);
+		final String postID = ""+(int) Math.floor(Math.random() * Integer.MAX_VALUE);
 		
 		// store and retrieve query
 		final Long qid = dbLogic.addQuery(post.getUserName(), ts, post, 1234);
-		final Long  id = dbLogic.getQueryForEntity(post.getUserName(), ts, postID);
+		final Long id = dbLogic.getQueryForEntity(post.getUserName(), ts, post.getUserName());
 		
 		assertEquals(qid, id);
 	}
@@ -150,9 +154,10 @@ public class DBItemAccessTest {
 	 * 
 	 * @return an instance of {@link ItemRecommendationEntity} with username 'foo'
 	 */
-	private ItemRecommendationEntity createItemRecommendationEntity() {
-		final User user = new User("foo");
-		return new UserWrapper(user);
+	private RecommendationUser createItemRecommendationEntity() {
+		final RecommendationUser user = new RecommendationUser();
+		user.setUserName("foo");
+		return user;
 	}
 	
 	/**
@@ -161,10 +166,10 @@ public class DBItemAccessTest {
 	 * @param count the count of items to create
 	 * @return a set of items with size count
 	 */
-	private SortedSet<RecommendedItem> createRecommendedItems(final int count) {
-		final SortedSet<RecommendedItem> items = new TreeSet<RecommendedItem>();
+	private SortedSet<RecommendedPost<BibTex>> createRecommendedItems(final int count) {
+		final SortedSet<RecommendedPost<BibTex>> items = new TreeSet<RecommendedPost<BibTex>>(new RecommendationResultComparator<RecommendedPost<BibTex>>());
 		for(int i = 0; i < count; i++) {
-			final RecommendedItem item = this.createRecommendedItemWithId(i);
+			final RecommendedPost<BibTex> item = this.createRecommendedItemWithId(i);
 			item.setScore(1.0/(i+1.0));
 			item.setConfidence(1.0/(i+1.0));
 			items.add(item);
@@ -178,14 +183,15 @@ public class DBItemAccessTest {
 	 * @param id the id of the item to create
 	 * @return the item instance with given id
 	 */
-	private RecommendedItem createRecommendedItemWithId(final int id) {
+	private RecommendedPost<BibTex> createRecommendedItemWithId(final int id) {
 		final Post<BibTex> post = new Post<BibTex>();
 		final BibTex bibtex = new BibTex();
 		bibtex.setTitle("testTitle"+id);
 		post.setContentId(id);
 		post.setTags(new HashSet<Tag>());
 		post.setResource(bibtex);
-		final RecommendedItem item = new RecommendedItem(new RecommendationPost(post));
+		final RecommendedPost<BibTex> item = new RecommendedPost<BibTex>();
+		item.setPost(post);
 		return item;
 	}
 }

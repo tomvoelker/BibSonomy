@@ -33,13 +33,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.model.metadata.PostMetaData;
+
 /**
  * A post connects a given resource with a user and a certain date.
  * 
- * @param <T>
+ * @param <R>
  *            resource type
  */
-public class Post<T extends Resource> implements Serializable {
+public class Post<R extends Resource> implements Serializable {
 
 	/**
 	 * For persistency (Serializable)
@@ -49,7 +50,7 @@ public class Post<T extends Resource> implements Serializable {
 	/**
 	 * This is the {@link Resource} that this post is encapsulating.
 	 */
-	private T resource;
+	private R resource;
 
 	/**
 	 * We need this here if we want to use groupBy in iBatis
@@ -212,14 +213,14 @@ public class Post<T extends Resource> implements Serializable {
 	/**
 	 * @return resource
 	 */
-	public T getResource() {
+	public R getResource() {
 		return this.resource;
 	}
 
 	/**
 	 * @param resource
 	 */
-	public void setResource(T resource) {
+	public void setResource(R resource) {
 		this.resource = resource;
 	}
 

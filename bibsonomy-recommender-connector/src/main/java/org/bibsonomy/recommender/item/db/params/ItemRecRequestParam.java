@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.connector.database.params;
+package org.bibsonomy.recommender.item.db.params;
 
 /**
  * Parameter used to retrieve similar users from the database.

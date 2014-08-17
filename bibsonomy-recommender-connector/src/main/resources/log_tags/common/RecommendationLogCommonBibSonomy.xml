@@ -39,24 +39,6 @@
 		<result property="userName"    column="user_name"  javaType="string" />
 		<result property="timeStamp"   column="date"       javaType="timestamp"/> 
 	</resultMap>
-
-	<resultMap id="recLogResult"	class="tagRecLogEntry">
-		<result property="qid"          column="query_id"        javaType="string" />
-		<result property="userName"     column="user_name"       javaType="string" />
-		<result property="latency"      column="rec_latency"     javaType="long"/>
-		<result property="preset"       column="{qid=query_id}"  select="selectPresets"/>
-		<result property="tags"         column="{qid=query_id}"  select="selectResults"/>
-	</resultMap>
-	
-	<resultMap id="recResponseMeta"	class="tagRecLogEntry">
-		<result property="tagName"      column="tag"             javaType="string"/>
-		<result property="score"        column="score"           javaType="double"/>
-		<result property="confidence"   column="confidence"      javaType="double"/>
-		<result property="latency"      column="rec_latency"     javaType="long"/>
-		<result property="metaData"     column="rec_meta"        jdbcType="BLOB"/>
-		<result property="userName"     column="user_name"       javaType="string"/>
-		<result property="timeStamp"    column="date"            jdbcType="TIMESTAMP"/>
-	</resultMap>
 	
 	<resultMap id="recLog_preset" class="string">
 		<result property="tag"          column="tag"             javaType="string"/>

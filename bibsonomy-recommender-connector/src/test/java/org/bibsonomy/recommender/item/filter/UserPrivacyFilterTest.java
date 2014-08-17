@@ -1,12 +1,10 @@
 package org.bibsonomy.recommender.item.filter;
 
-import org.bibsonomy.model.User;
-import org.bibsonomy.recommender.connector.model.UserWrapper;
-import org.bibsonomy.recommender.connector.testutil.DummyMainItemAccess;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.recommender.item.model.RecommendationUser;
+import org.bibsonomy.recommender.item.testutil.DummyMainItemAccess;
 import org.junit.Assert;
 import org.junit.Test;
-
-import recommender.core.interfaces.model.ItemRecommendationEntity;
 
 
 /**
@@ -20,20 +18,28 @@ public class UserPrivacyFilterTest {
 	 */
 	@Test
 	public void testUserPrivacyFilter() {
-		final User user = new User("testuser");
-		final ItemRecommendationEntity entity = new UserWrapper(user);
+		final RecommendationUser entity = new RecommendationUser();
+		entity.setUserName("testuser");
 		
 		final UserPrivacyFilter filter = new UserPrivacyFilter();
-		filter.setDbAccess(new DummyMainItemAccess());
+		filter.setDbAccess(new DummyMainItemAccess<Bookmark>(){
+			/* (non-Javadoc)
+			 * @see org.bibsonomy.recommender.item.testutil.DummyMainItemAccess#createResource()
+			 */
+			@Override
+			protected Bookmark createResource() {
+				return new Bookmark();
+			}
+		});
 		
-		final ItemRecommendationEntity filteredEntity = filter.filterEntity(entity);
+		final RecommendationUser filteredEntity = filter.filterEntity(entity);
 		Long parsed = 0L;
 		try {
-			parsed = Long.parseLong(filteredEntity.getRecommendationId());
+			parsed = Long.parseLong(filteredEntity.getUserName());
 		} catch (NumberFormatException e) {
 			Assert.fail("Id was not a valid Long value!");
 		}
 		
-		Assert.assertEquals(filteredEntity.getRecommendationId(), parsed.toString());
+		Assert.assertEquals(filteredEntity.getUserName(), parsed.toString());
 	}
 }

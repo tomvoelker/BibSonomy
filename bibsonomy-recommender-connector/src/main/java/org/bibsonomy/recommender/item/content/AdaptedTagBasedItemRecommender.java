@@ -7,13 +7,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.recommender.connector.model.RecommendationPost;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.recommender.item.model.RecommendationUser;
+import org.bibsonomy.recommender.item.model.RecommendedPost;
 import org.bibsonomy.recommender.item.service.ExtendedMainAccess;
-
-import recommender.core.interfaces.model.ItemRecommendationEntity;
-import recommender.core.interfaces.model.RecommendationItem;
-import recommender.core.interfaces.model.RecommendationTag;
-import recommender.impl.model.RecommendedItem;
 
 /**
  * This class extends the {@link TagBasedItemRecommender}, to allow it to use
@@ -22,11 +21,14 @@ import recommender.impl.model.RecommendedItem;
  * @author lukas
  *
  */
-public class AdaptedTagBasedItemRecommender extends TagBasedItemRecommender {
+public class AdaptedTagBasedItemRecommender<R extends Resource> extends TagBasedItemRecommender<R> {
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.item.AbstractItemRecommender#addRecommendation(java.util.Collection, org.bibsonomy.recommender.item.model.RecommendationUser)
+	 */
 	@Override
-	protected void addRecommendedItemsInternal(Collection<RecommendedItem> recommendations, ItemRecommendationEntity entity) {
-		final List<RecommendationItem> requestingUserItems = new ArrayList<RecommendationItem>();
+	public void addRecommendation(Collection<RecommendedPost<R>> recommendations, RecommendationUser entity) {
+		final List<Post<? extends Resource>> requestingUserItems = new ArrayList<Post<? extends Resource>>();
 		
 		//take bibtex and bookmark resources of requesting user to generate a more significant description of the user preferences
 		if (dbAccess instanceof ExtendedMainAccess) {
@@ -37,7 +39,7 @@ public class AdaptedTagBasedItemRecommender extends TagBasedItemRecommender {
 		
 		final Set<String> requestingUserTitles = this.calculateRequestingUserTitleSet(requestingUserItems);
 		
-		final List<RecommendationItem> userItems = new ArrayList<RecommendationItem>();
+		final List<Post<R>> userItems = new ArrayList<Post<R>>();
 		
 		final List<CountedTag> sortedExtractedTags = this.extractTagsFromResources(requestingUserItems);
 		
@@ -59,40 +61,41 @@ public class AdaptedTagBasedItemRecommender extends TagBasedItemRecommender {
 			}
 		}
 		
-		final List<RecommendedItem> results = this.calculateSimilarItems(userItems, requestingUserItems, requestingUserTitles);
-		
+		final List<RecommendedPost<R>> results = this.calculateSimilarItems(userItems, requestingUserItems, requestingUserTitles);
 		recommendations.addAll(results);
 	}
 	
+	// FIXME: duplicate see AdptedContentBasedItemRecommender
 	/*
 	 * (non-Javadoc)
 	 * @see recommender.impl.item.collaborative.CollaborativeItemRecommender#calculateTokens(recommender.core.interfaces.model.RecommendationItem)
 	 */
 	@Override
-	protected List<String> calculateTokens(RecommendationItem item) {
-
+	protected List<String> calculateTokens(Post<? extends Resource> item) {
 		final ArrayList<String> tokens = new ArrayList<String>();
 		//add tags to tokens
-		for(RecommendationTag tag : item.getTags()) {
+		for (Tag tag : item.getTags()) {
 			tokens.add(tag.getName().toLowerCase());
 		}
-		//add title terms to tokens
-		for(String titleToken : item.getTitle().split(TOKEN_DELIMITER)) {
+		final Resource resource = item.getResource();
+		
+		// add title terms to tokens
+		for (String titleToken : resource.getTitle().split(TOKEN_DELIMITER)) {
 			tokens.add(titleToken.toLowerCase());
 		}
+		
 		//add description and abstract terms to tokens
-		if(item instanceof RecommendationPost && ((RecommendationPost) item).getPost() != null) {
-			if(((RecommendationPost) item).getPost().getDescription() != null) {
-				for(String token : ((RecommendationPost) item).getPost().getDescription().split(TOKEN_DELIMITER)) {
+		for (String token : item.getDescription().split(TOKEN_DELIMITER)) {
+			tokens.add(token.toLowerCase());
+		}
+		
+		if (resource instanceof BibTex) {
+			final BibTex publication = (BibTex) resource;
+			
+			final String publAbstract = publication.getAbstract();
+			if (publAbstract != null) {
+				for (String token : publAbstract.split(TOKEN_DELIMITER)) {
 					tokens.add(token.toLowerCase());
-				}
-			}
-			if(((RecommendationPost) item).getPost().getResource() instanceof BibTex) {
-				BibTex b = (BibTex) ((RecommendationPost) item).getPost().getResource();
-				if(b.getAbstract() != null) {
-					for(String token : b.getAbstract().split(TOKEN_DELIMITER)) {
-						tokens.add(token.toLowerCase());
-					}
 				}
 			}
 		}

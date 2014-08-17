@@ -17,11 +17,7 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.recommender.connector.model.RecommendationPost;
 import org.bibsonomy.recommender.item.model.RecommendationUser;
-import org.bibsonomy.recommender.item.model.RecommendedPost;
-
-import recommender.core.interfaces.model.ItemRecommendationEntity;
 
 /**
  * 
@@ -31,15 +27,15 @@ import recommender.core.interfaces.model.ItemRecommendationEntity;
  * @author Lukas
  *
  */
-public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainItemAccessImpl {
+public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainItemAccessImpl<Bookmark> {
 	
-	/*
-	 * (non-Javadoc)
-	 * @see recommender.core.interfaces.database.RecommenderDBAccess#getMostActualItems(int)
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.item.service.RecommenderMainItemAccess#getMostActualItems(int, org.bibsonomy.recommender.item.model.RecommendationUser)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<RecommendedPost<? extends Resource>> getMostActualItems(final int count, final RecommendationUser entity) {
+	public List<Post<Bookmark>> getMostActualItems(int count,
+			RecommendationUser entity) {
 		final DBSession mainSession = this.openMainSession();
 		try {
 			final BookmarkParam bookmarkParam = new BookmarkParam();
@@ -50,11 +46,12 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 			bookmarkParam.setLimit(2 * count);
 			bookmarkParam.setSimHash(HashID.INTRA_HASH);
 			
-			return (List<RecommendedPost<? extends Resource>>) this.queryForList("getBookmarkForHomepage", bookmarkParam, mainSession);
+			return (List<Post<Bookmark>>) this.queryForList("getBookmarkForHomepage", bookmarkParam, mainSession);
 		} finally {
 			mainSession.close();
 		}
 	}
+	
 	
 	/*
 	 * (non-Javadoc)
@@ -62,7 +59,7 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<RecommendationItem> getItemsForUser(final int count, final String username) {
+	public List<Post<? extends Resource>> getItemsForUser(final int count, final String username) {
 		final DBSession mainSession = this.openMainSession();
 		try {
 			final BookmarkParam bookmarkParam = new BookmarkParam();
@@ -72,15 +69,7 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 			bookmarkParam.setLimit(count);
 			
 			// only get reduced data, because it's enough for calculation
-			List<Post<Bookmark>> results = (List<Post<Bookmark>>) this.queryForList("getReducedUserBookmark", bookmarkParam, mainSession);
-			List<RecommendationItem> items = new ArrayList<RecommendationItem>(results.size());
-			
-			for(Post<Bookmark> bookmark : results) {
-				RecommendationItem item =  new RecommendationPost(bookmark);
-				items.add(item);
-			}
-			
-			return items;
+			return (List<Post<? extends Resource>>) this.queryForList("getReducedUserBookmark", bookmarkParam, mainSession);
 		} finally {
 			mainSession.close();
 		}
@@ -91,7 +80,7 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 	 * @see recommender.core.interfaces.database.RecommenderDBAccess#getItemsForUsers(int, java.util.List)
 	 */
 	@SuppressWarnings("unchecked")
-	private List<RecommendationItem> getItemsForUsers(final int count, final List<String> usernames) {
+	private List<Post<Bookmark>> getItemsForUsers(final int count, final List<String> usernames) {
 		final DBSession mainSession = this.openMainSession();
 		try {
 			final BookmarkParam bookmarkParam = new BookmarkParam();
@@ -99,15 +88,14 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 			bookmarkParam.setOffset(0);
 			bookmarkParam.setLimit(count);
 			
-			List<RecommendationItem> items = new ArrayList<RecommendationItem>();
-			for(String username : usernames) {
+			final List<Post<Bookmark>> items = new ArrayList<Post<Bookmark>>();
+			// TODO: here we query the database | usernames | times. rewrite query
+			// to query for all bookmarks at once
+			for (String username : usernames) {
 				bookmarkParam.setRequestedUserName(username);
 				// only get reduced data, because it's enough for calculation
 				List<Post<Bookmark>> results = (List<Post<Bookmark>>) this.queryForList("getReducedUserBookmark", bookmarkParam, mainSession);
-				for(Post<Bookmark> bookmark : results) {
-					RecommendationItem item =  new RecommendationPost(bookmark);
-					items.add(item);
-				}
+				items.addAll(results);
 			}
 			return items;
 		} finally {
@@ -121,46 +109,42 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<RecommendationItem> getResourcesByIds(final List<Integer> ids) {
+	public List<Post<Bookmark>> getResourcesByIds(final List<Integer> ids) {
 		final DBSession mainSession = this.openMainSession();
 		try {
-			final List<RecommendationItem> items = new ArrayList<RecommendationItem>();
+			final List<Post<Bookmark>> items = new ArrayList<Post<Bookmark>>();
 			final BookmarkParam param = new BookmarkParam();
 			param.setSimHash(HashID.INTRA_HASH);
-			for(Integer id : ids) {
-				param.setRequestedContentId(id);
-				Post<Bookmark> bookmark = this.queryForObject("getBookmarkById", param, Post.class, mainSession);
-				items.add(new RecommendationPost(bookmark));
+			for (Integer id : ids) {
+				param.setRequestedContentId(id.intValue());
+				items.add(this.queryForObject("getBookmarkById", param, Post.class, mainSession));
 			}
 			return items;
-			
 		} finally {
 			mainSession.close();
 		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.recommender.connector.database.AbstractRecommenderMainItemAccessImpl#getItemsForContentBasedFiltering(int, recommender.core.interfaces.model.ItemRecommendationEntity)
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.item.service.RecommenderMainItemAccess#getItemsForContentBasedFiltering(int, org.bibsonomy.recommender.item.model.RecommendationUser)
 	 */
 	@Override
-	public Collection<RecommendationItem> getItemsForContentBasedFiltering(final int maxItemsToEvaluate, final ItemRecommendationEntity entity) {
+	public List<Post<Bookmark>> getItemsForContentBasedFiltering(int maxItemsToEvaluate, RecommendationUser entity) {
 		final List<String> similarUsers = this.getSimilarUsers(USERS_TO_EVALUATE, entity);
-		if(present(similarUsers)) {
-			return this.getItemsForUsers(maxItemsToEvaluate/similarUsers.size(), similarUsers);
+		if (present(similarUsers)) {
+			return this.getItemsForUsers(maxItemsToEvaluate / similarUsers.size(), similarUsers);
 		}
-		return new ArrayList<RecommendationItem>();
+		return null;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.recommender.connector.database.AbstractRecommenderMainItemAccessImpl#getTaggedItems(int, java.util.Set)
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.item.db.RecommenderMainBookmarkAccessImpl#getTaggedItems(int, java.util.Set)
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<RecommendationItem> getTaggedItems(final int maxItemsToEvaluate, final Set<String> tags) {
+	public List<Post<Bookmark>> getTaggedItems(int maxItemsToEvaluate, Set<String> tags) {
 		final DBSession mainSession = this.openMainSession();
-		final List<RecommendationItem> items = new ArrayList<RecommendationItem>();
+		final List<Post<Bookmark>> items = new ArrayList<Post<Bookmark>>();
 		try {
 			final BookmarkParam param = new BookmarkParam();
 			param.setLimit(maxItemsToEvaluate/tags.size());
@@ -170,15 +154,12 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 			param.setCaseSensitiveTagNames(false);
 			final List<TagIndex> tagIndeces = new ArrayList<TagIndex>();
 			TagIndex index;
-			for(String tag : tags) {
+			for (String tag : tags) {
 				tagIndeces.clear();
 				index = new TagIndex(tag, 1);
 				tagIndeces.add(index);
 				param.setTagIndex(tagIndeces);
-				List<Post> bibtexs = this.queryForList("getBookmarkByTagNames", param, Post.class, mainSession);
-				for(Post post : bibtexs) {
-					items.add(new RecommendationPost(post));
-				}
+				items.addAll((Collection<? extends Post<Bookmark>>) this.queryForList("getBookmarkByTagNames", param, Post.class, mainSession));
 			}
 			return items;
 		} finally {
@@ -186,13 +167,14 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 		}
 	}
 	
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.recommender.connector.database.AbstractRecommenderMainItemAccessImpl#getItemByUserWithHash(java.lang.String, java.lang.String)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public RecommendationItem getItemByUserIdWithHash(final String hash, final String userId) {
+	public Post<Bookmark> getItemByUserIdWithHash(final String hash, final String userId) {
 		final DBSession mainSession = this.openMainSession();
 		try {
 			final BookmarkParam param = new BookmarkParam();
@@ -202,12 +184,7 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 			param.setOffset(0);
 			param.setLimit(1);
 			
-			Post<? extends Resource> post = (Post<? extends Resource>) this.queryForObject("getBookmarkByHashForUserId", param, Post.class, mainSession);
-			
-			if(post != null) {
-				return new RecommendationPost(post);
-			}
-			return null;
+			return this.queryForObject("getBookmarkByHashForUserId", param, Post.class, mainSession);
 		} finally {
 			mainSession.close();
 		}
@@ -219,7 +196,7 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public RecommendationItem getItemByTitle(final String title) {
+	public Post<Bookmark> getItemByTitle(final String title) {
 		final DBSession mainSession = this.openMainSession();
 		try {
 			final BookmarkParam param = new BookmarkParam();
@@ -229,12 +206,7 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 			param.setOffset(0);
 			param.setLimit(1);
 			
-			Post<? extends Resource> post = (Post<? extends Resource>) this.queryForObject("getBookmarkByTitle", param, Post.class, mainSession);
-			
-			if(post != null) {
-				return new RecommendationPost(post);
-			}
-			return null;
+			return this.queryForObject("getBookmarkByTitle", param, Post.class, mainSession);
 		} finally {
 			mainSession.close();
 		}

@@ -4,12 +4,12 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.SortedSet;
 
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.recommender.item.model.RecommendationUser;
+import org.bibsonomy.recommender.item.model.RecommendedPost;
 import org.bibsonomy.recommender.item.service.RecommenderMainItemAccess;
 import org.bibsonomy.recommender.item.testutil.DummyMainItemAccess;
 import org.junit.Test;
-
-import recommender.impl.model.RecommendedItem;
-import recommender.impl.test.testutil.DummyFactory;
 
 /**
  * This test checks the integrity of the {@link ContentBasedItemRecommender}.
@@ -25,13 +25,22 @@ public class ContentBasedItemRecommenderTest {
 	
 	@Test
 	public void testContentBasedItemRecommender() {
-		final RecommenderMainItemAccess dbAccess = new DummyMainItemAccess();
-		ContentBasedItemRecommender reco = new ContentBasedItemRecommender();
+		final RecommenderMainItemAccess<Bookmark> dbAccess = new DummyMainItemAccess<Bookmark>() {
+			/* (non-Javadoc)
+			 * @see org.bibsonomy.recommender.item.testutil.DummyMainItemAccess#createResource()
+			 */
+			@Override
+			protected Bookmark createResource() {
+				return new Bookmark();
+			}
+		};
+		ContentBasedItemRecommender<Bookmark> reco = new ContentBasedItemRecommender<Bookmark>();
 		reco.setDbAccess(dbAccess);
 		reco.setNumberOfItemsToRecommend(RECOMMENDATIONS_TO_CALCULATE);
 		reco.setMaxItemsToEvaluate(4);
-		
-		SortedSet<RecommendedItem> recommendations = reco.getRecommendation(DummyFactory.getInstanceOfItemRecommendationEntityWithUsername(DUMMY_CF_USER_NAME));
+		final RecommendationUser user = new RecommendationUser();
+		user.setUserName(DUMMY_CF_USER_NAME);
+		SortedSet<RecommendedPost<Bookmark>> recommendations = reco.getRecommendation(user);
 		
 		// should be one less, because already known items are not recommended
 		assertEquals(RECOMMENDATIONS_TO_CALCULATE - 1, recommendations.size());

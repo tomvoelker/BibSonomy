@@ -10,10 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import recommender.core.interfaces.model.ItemRecommendationEntity;
-import recommender.core.interfaces.model.RecommendationItem;
-import recommender.core.interfaces.model.RecommendationTag;
-import recommender.impl.model.RecommendedItem;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.recommender.item.model.RecommendationUser;
+import org.bibsonomy.recommender.item.model.RecommendedPost;
 
 /**
  * This recommender tries to find many items which have at least
@@ -21,9 +22,10 @@ import recommender.impl.model.RecommendedItem;
  * Found items are evaluated by cosine similarity.
  * 
  * @author lukas
+ * @param <R> 
  *
  */
-public class TagBasedItemRecommender extends ContentBasedItemRecommender {
+public class TagBasedItemRecommender<R extends Resource> extends ContentBasedItemRecommender<R> {
 
 	protected static final String INFO = "";
 	
@@ -35,27 +37,23 @@ public class TagBasedItemRecommender extends ContentBasedItemRecommender {
 	public String getInfo() {
 		return INFO;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see recommender.impl.item.content.ContentBasedItemRecommender#addRecommendedItemsInternal(java.util.Collection, recommender.core.interfaces.model.ItemRecommendationEntity)
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.item.content.ContentBasedItemRecommender#addRecommendedItemsInternal(java.util.Collection, org.bibsonomy.recommender.item.model.RecommendationUser)
 	 */
 	@Override
-	protected void addRecommendedItemsInternal(
-			Collection<RecommendedItem> recommendations,
-			ItemRecommendationEntity entity) {
-		
-		final List<RecommendationItem> requestingUserItems = this.dbAccess.getItemsForUser(maxItemsToEvaluate, null); // FIXME: (refactor) adapt was entity.getUserName()
+	protected void addRecommendedItemsInternal(Collection<RecommendedPost<R>> recommendations, RecommendationUser entity) {
+		final List<Post<? extends Resource>> requestingUserItems = this.dbAccess.getItemsForUser(maxItemsToEvaluate, entity.getUserName());
 		
 		final Set<String> requestingUserTitles = this.calculateRequestingUserTitleSet(requestingUserItems);
 		
-		final List<RecommendationItem> userItems = new ArrayList<RecommendationItem>();
+		final List<Post<R>> userItems = new ArrayList<Post<R>>();
 		
-		List<CountedTag> sortedExtractedTags = this.extractTagsFromResources(requestingUserItems);
+		final List<CountedTag> sortedExtractedTags = this.extractTagsFromResources(requestingUserItems);
 		
 		final Set<String> tagsToUse = new HashSet<String>();
-		if(sortedExtractedTags.size() <= maxTagsToEvaluate) {
-			for(CountedTag tag : sortedExtractedTags) {
+		if (sortedExtractedTags.size() <= maxTagsToEvaluate) {
+			for (CountedTag tag : sortedExtractedTags) {
 				tagsToUse.add(tag.getName());
 			}
 			userItems.addAll(this.dbAccess.getTaggedItems(maxItemsToEvaluate, tagsToUse));
@@ -71,10 +69,8 @@ public class TagBasedItemRecommender extends ContentBasedItemRecommender {
 			}
 		}
 		
-		final List<RecommendedItem> results = this.calculateSimilarItems(userItems, requestingUserItems, requestingUserTitles);
-		
+		final List<RecommendedPost<R>> results = this.calculateSimilarItems(userItems, requestingUserItems, requestingUserTitles);
 		recommendations.addAll(results);
-		
 	}
 
 	/**
@@ -84,11 +80,11 @@ public class TagBasedItemRecommender extends ContentBasedItemRecommender {
 	 * @param requestingUserItems a list with all items of the requesting user
 	 * @return a list with tags and their number of appearance
 	 */
-	protected List<CountedTag> extractTagsFromResources(List<RecommendationItem> requestingUserItems) {
+	protected List<CountedTag> extractTagsFromResources(List<Post<? extends Resource>> requestingUserItems) {
 		final Map<String, CountedTag> countTags = new HashMap<String, CountedTag>();
-		for(RecommendationItem item: requestingUserItems) {
-			for(RecommendationTag tag : item.getTags()) {
-				if(countTags.keySet().contains(tag.getName())) {
+		for (Post<? extends Resource> item : requestingUserItems) {
+			for (Tag tag : item.getTags()) {
+				if (countTags.keySet().contains(tag.getName())) {
 					countTags.put(tag.getName(), countTags.get(tag.getName()).incrementCount());
 				} else {
 					countTags.put(tag.getName(), new CountedTag(tag.getName()));
@@ -113,13 +109,6 @@ public class TagBasedItemRecommender extends ContentBasedItemRecommender {
 		});
 		return results;
 	}
-
-	@Override
-	protected void setFeedbackInternal(ItemRecommendationEntity entity,
-			RecommendedItem item) {
-		
-
-	}
 	
 	/**
 	 * This method creates a set with titles of the requesting user items.
@@ -127,10 +116,11 @@ public class TagBasedItemRecommender extends ContentBasedItemRecommender {
 	 * 
 	 * @param requestingUserItems the items of the requesting user
 	 */
-	protected Set<String> calculateRequestingUserTitleSet(List<RecommendationItem> requestingUserItems) {
+	@Override
+	protected Set<String> calculateRequestingUserTitleSet(List<Post<? extends Resource>> requestingUserItems) {
 		final Set<String> requestingUserTitles = new HashSet<String>();
-		for(RecommendationItem item : requestingUserItems) {
-			requestingUserTitles.add(item.getTitle());
+		for (Post<? extends Resource> item : requestingUserItems) {
+			requestingUserTitles.add(item.getResource().getTitle());
 		}
 		return requestingUserTitles;
 	}

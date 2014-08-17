@@ -13,7 +13,6 @@ import org.bibsonomy.recommender.item.service.RecommenderMainItemAccess;
 
 import recommender.core.Recommender;
 import recommender.core.database.DBLogic;
-import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.util.RecommendationResultComparator;
 
 /**
@@ -22,7 +21,7 @@ import recommender.core.util.RecommendationResultComparator;
  * @author lukas
  *
  */
-public abstract class AbstractItemRecommender implements Recommender<RecommendationUser, RecommendedPost<? extends Resource>> {
+public abstract class AbstractItemRecommender<T extends Resource> implements Recommender<RecommendationUser, RecommendedPost<T>> {
 	private static final Log log = LogFactory.getLog(AbstractItemRecommender.class);
 	
 	/**
@@ -31,16 +30,16 @@ public abstract class AbstractItemRecommender implements Recommender<Recommendat
 	 */
 	protected int numberOfItemsToRecommend = Recommender.DEFAULT_NUMBER_OF_RESULTS_TO_RECOMMEND;
 	
-	protected RecommenderMainItemAccess dbAccess;
-	protected DBLogic<RecommendationUser, RecommendedPost<? extends Resource>> dbLogic;
+	protected RecommenderMainItemAccess<T> dbAccess;
+	protected DBLogic<RecommendationUser, RecommendedPost<T>> dbLogic;
 	
 	/*
 	 * (non-Javadoc)
 	 * @see recommender.core.Recommender#getRecommendation(recommender.core.interfaces.model.RecommendationEntity)
 	 */
 	@Override
-	public SortedSet<RecommendedPost<? extends Resource>> getRecommendation(RecommendationUser entity) {
-		final SortedSet<RecommendedPost<? extends Resource>> recommendedItems = new TreeSet<RecommendedPost<? extends Resource>>(new RecommendationResultComparator<RecommendedPost<? extends Resource>>());
+	public SortedSet<RecommendedPost<T>> getRecommendation(RecommendationUser entity) {
+		final SortedSet<RecommendedPost<T>> recommendedItems = new TreeSet<RecommendedPost<T>>(new RecommendationResultComparator<RecommendedPost<T>>());
 		this.addRecommendation(recommendedItems, entity);
 		
 		return recommendedItems;
@@ -51,37 +50,37 @@ public abstract class AbstractItemRecommender implements Recommender<Recommendat
 	 * @see recommender.core.Recommender#addRecommendation(java.util.Collection, recommender.core.interfaces.model.RecommendationEntity)
 	 */
 	@Override
-	public void addRecommendation(Collection<RecommendedPost<? extends Resource>> recommendations, RecommendationUser entity) {
+	public void addRecommendation(Collection<RecommendedPost<T>> recommendations, RecommendationUser entity) {
 		log.debug("Getting item recommendations for " + entity);
 		this.addRecommendedItemsInternal(recommendations, entity);
 		if (log.isDebugEnabled()) log.debug("Recommending items " + recommendations);
 	}
 
-	protected abstract void addRecommendedItemsInternal(Collection<RecommendedPost<? extends Resource>> recommendations, RecommendationUser entity);
+	protected abstract void addRecommendedItemsInternal(Collection<RecommendedPost<T>> recommendations, RecommendationUser entity);
 	
 	/*
 	 * (non-Javadoc)
 	 * @see recommender.core.Recommender#setFeedback(recommender.core.interfaces.model.RecommendationEntity)
 	 */
 	@Override
-	public void setFeedback(final RecommendationUser entity, final RecommendedPost<? extends Resource> item) {
+	public void setFeedback(final RecommendationUser entity, final RecommendedPost<T> item) {
 		log.debug("got entity for itemrecommendation with id " + entity + " as feedback.");
 		this.setFeedbackInternal(entity, item);
 	}
 
-	protected abstract void setFeedbackInternal(RecommendationUser entity, RecommendedPost<? extends Resource> item);
+	protected abstract void setFeedbackInternal(RecommendationUser entity, RecommendedPost<T> item);
 	
 	/**
 	 * @param dbAccess the main access object to set
 	 */
-	public void setDbAccess(RecommenderMainItemAccess dbAccess) {
+	public void setDbAccess(RecommenderMainItemAccess<T> dbAccess) {
 		this.dbAccess = dbAccess;
 	}
 	
 	/**
 	 * @param dbLogic the log access object to set
 	 */
-	public void setDbLogic(DBLogic<RecommendationUser, RecommendedPost<? extends Resource>> dbLogic) {
+	public void setDbLogic(DBLogic<RecommendationUser, RecommendedPost<T>> dbLogic) {
 		this.dbLogic = dbLogic;
 	}
 	

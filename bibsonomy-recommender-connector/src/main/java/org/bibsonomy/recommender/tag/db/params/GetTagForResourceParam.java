@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.connector.database.params;
+package org.bibsonomy.recommender.tag.db.params;
 
 /**
  * Parameter to retrieve tags belonging to a resource.

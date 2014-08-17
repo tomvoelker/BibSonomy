@@ -19,9 +19,9 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.recommender.connector.database.params.PostRecParam;
-import org.bibsonomy.recommender.connector.database.params.RecommendedTagParam;
 import org.bibsonomy.recommender.tag.db.params.BibRecQueryParam;
+import org.bibsonomy.recommender.tag.db.params.PostRecParam;
+import org.bibsonomy.recommender.tag.db.params.RecommendedTagParam;
 import org.bibsonomy.recommender.tag.model.RecommendedTag;
 
 import recommender.core.database.params.RecQueryParam;
@@ -71,7 +71,6 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 	 * (non-Javadoc)
 	 * @see recommender.impl.database.DBLogConfigTagAccess#addFeedback(recommender.core.interfaces.model.TagRecommendationEntity, recommender.core.model.RecommendedTag)
 	 */
-	@SuppressWarnings("rawtypes")
 	@Override
 	public void addFeedback(String userName, Post<? extends Resource> entity, RecommendedTag result) {
 		final PostRecParam postMap = new PostRecParam();

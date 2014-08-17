@@ -175,52 +175,11 @@
  	<!-- +
 		 | Get list of all queries for given recommender
 		 + -->
- 	<select id="getQueriesBySID" parameterClass="long" resultMap="RecommendationLogCommonBibSonomy.recQuery">
- 		SELECT l.query_id, l.date, l.user_name, l.post_id
- 		FROM log_recommender l 
- 		   JOIN recommender_querymap m ON (m.query_id=l.query_id) 
- 		WHERE m.setting_id=#id#;
- 	</select>
- 	
-	<!-- +
-		 | Get list of all recommendations. 
-		 + -->
-	<select id="getAllRecommendations" resultMap="RecommendationLogCommonBibSonomy.recResponseMeta">
-		SELECT l.query_id,
-			   l.user_name,	
-			   l.date,			 
-			   m.setting_id,
-			   s.rec_id, 
-			   s.rec_meta, 
-			   r.score, 
-			   r.confidence, 
-			   r.tag, 
-			   r.rec_latency
+	<select id="getQueriesBySID" parameterClass="long" resultMap="RecommendationLogCommonBibSonomy.recQuery">
+		SELECT l.query_id, l.date, l.user_name, l.post_id
 		FROM log_recommender l 
-		   JOIN recommender_querymap m ON (l.query_id = m.query_id) 
-		   JOIN recommender_result r ON (r.query_id=l.query_id and r.setting_id=m.setting_id) 
-		   JOIN recommender_settings s ON (s.setting_id=m.setting_id)
-	</select>
-
-	<!-- +
-		 | Get list of all recommendations for given recommender in a given query. 
-		 + -->
-	<select id="getSpecificRecommendations" resultMap="RecommendationLogCommonBibSonomy.recResponseMeta" parameterClass="recQuerySetting">
-		SELECT l.query_id,
-			   l.user_name,	
-			   l.date,			 
-			   m.setting_id,
-			   s.rec_id, 
-			   s.rec_meta, 
-			   r.score, 
-			   r.confidence, 
-			   r.responsetitle, 
-			   r.rec_latency
-		FROM log_recommender l 
-		   JOIN recommender_querymap m ON (l.query_id = m.query_id) 
-		   JOIN recommender_result r ON (r.query_id=l.query_id and r.setting_id=m.setting_id) 
-		   JOIN recommender_settings s ON (s.setting_id=m.setting_id)
-		WHERE l.query_id = #qid# AND m.setting_id = #sid#
+		   JOIN recommender_querymap m ON (m.query_id=l.query_id) 
+		WHERE m.setting_id=#id#;
 	</select>
 
 	<!-- +

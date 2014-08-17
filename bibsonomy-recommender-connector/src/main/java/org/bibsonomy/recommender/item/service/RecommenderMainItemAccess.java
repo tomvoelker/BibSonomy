@@ -1,14 +1,11 @@
 package org.bibsonomy.recommender.item.service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.item.model.RecommendationUser;
-import org.bibsonomy.recommender.item.model.RecommendedPost;
-
-import recommender.core.interfaces.model.ItemRecommendationEntity;
 
 
 /**
@@ -19,9 +16,10 @@ import recommender.core.interfaces.model.ItemRecommendationEntity;
  * failures.
  * 
  * @author Lukas
+ * @param <R> 
  *
  */
-public interface RecommenderMainItemAccess {
+public interface RecommenderMainItemAccess<R extends Resource> {
 
 	/**
 	 * This method should return the count most actual items from the database,
@@ -32,7 +30,7 @@ public interface RecommenderMainItemAccess {
 	 * 
 	 * @return a list of the most actual items, sorted descending by creation date
 	 */
-	public List<RecommendedPost<? extends Resource>> getMostActualItems(final int count, final RecommendationUser entity);
+	public List<Post<R>> getMostActualItems(final int count, final RecommendationUser entity);
 	
 	/**
 	 * This method should provide access to a maximum of count items belonging to the specified user.
@@ -42,17 +40,17 @@ public interface RecommenderMainItemAccess {
 	 * 
 	 * @return a maximum of count items owned by the user
 	 */
-	public List<RecommendationItem> getItemsForUser(final int count, final String username);
+	public List<Post<? extends Resource>> getItemsForUser(final int count, final String username);
 	
 	/**
-	 * This method should return a Collection of items which will be evaluated by content based
+	 * This method should return a list of items which will be evaluated by content based
 	 * filtering.
 	 * 
 	 * @param maxItemsToEvaluate the count of items to return
 	 * @param entity the item recommendation entity to get recommendations for
 	 * @return a collection of items to evaluate
 	 */
-	public Collection<RecommendationItem> getItemsForContentBasedFiltering(final int maxItemsToEvaluate, final ItemRecommendationEntity entity);
+	public List<Post<R>> getItemsForContentBasedFiltering(final int maxItemsToEvaluate, final RecommendationUser entity);
 	
 	/**
 	 * This method should return a List of maxItemsToEvaluate items, with each item in it is tagged
@@ -62,6 +60,6 @@ public interface RecommenderMainItemAccess {
 	 * @param tags a set of tags, for which to retrieve the tagged items 
 	 * @return a list of tagged items
 	 */
-	public List<RecommendationItem> getTaggedItems(final int maxItemsToEvaluate, final Set<String> tags);
+	public List<Post<R>> getTaggedItems(final int maxItemsToEvaluate, final Set<String> tags);
 	
 }

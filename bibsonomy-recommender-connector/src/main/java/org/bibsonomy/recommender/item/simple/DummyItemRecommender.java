@@ -3,6 +3,7 @@ package org.bibsonomy.recommender.item.simple;
 import java.util.Collection;
 import java.util.List;
 
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.item.AbstractItemRecommender;
 import org.bibsonomy.recommender.item.model.RecommendationUser;
@@ -13,8 +14,9 @@ import org.bibsonomy.recommender.item.model.RecommendedPost;
  * Can be used as fallback recommender.
  * 
  * @author lukas
+ * @param <R> 
  */
-public class DummyItemRecommender extends AbstractItemRecommender {
+public class DummyItemRecommender<R extends Resource> extends AbstractItemRecommender<R> {
 
 	private static final String INFO = "This Itemrecommender returns the numberOfResultsToRecommend most actual itemsfrom the database";
 
@@ -23,12 +25,14 @@ public class DummyItemRecommender extends AbstractItemRecommender {
 	 * @see recommender.impl.item.AbstractItemRecommender#addRecommendedItemsInternal(java.util.Collection, recommender.core.interfaces.model.ItemRecommendationEntity)
 	 */
 	@Override
-	protected void addRecommendedItemsInternal(Collection<RecommendedPost<? extends Resource>> recommendations, RecommendationUser entity) {
-		final List<RecommendedPost<? extends Resource>> mostActualItems = this.dbAccess.getMostActualItems(this.numberOfItemsToRecommend, entity);
+	protected void addRecommendedItemsInternal(Collection<RecommendedPost<R>> recommendations, RecommendationUser entity) {
+		final List<Post<R>> mostActualItems = this.dbAccess.getMostActualItems(this.numberOfItemsToRecommend, entity);
 		int counter = 1;
-		for (final RecommendedPost<? extends Resource> item : mostActualItems) {
-			item.setScore(1.0 / (counter + 100));
-			recommendations.add(item);
+		for (final Post<R> item : mostActualItems) {
+			final RecommendedPost<R> recommendedPost = new RecommendedPost<R>();
+			recommendedPost.setPost(item);
+			recommendedPost.setScore(1.0 / (counter + 100));
+			recommendations.add(recommendedPost);
 			counter++;
 		}
 	}
@@ -38,7 +42,7 @@ public class DummyItemRecommender extends AbstractItemRecommender {
 	 * @see recommender.impl.item.AbstractItemRecommender#setFeedbackInternal(recommender.core.interfaces.model.ItemRecommendationEntity)
 	 */
 	@Override
-	protected void setFeedbackInternal(RecommendationUser entity, RecommendedPost<? extends Resource> item) {
+	protected void setFeedbackInternal(RecommendationUser entity, RecommendedPost<R> item) {
 		// ignore feedback
 	}
 

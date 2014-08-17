@@ -10,7 +10,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.recommender.connector.database.params.GetTagForResourceParam;
+import org.bibsonomy.recommender.tag.db.params.GetTagForResourceParam;
 import org.bibsonomy.recommender.tag.service.RecommenderMainTagAccess;
 
 import recommender.core.model.Pair;
