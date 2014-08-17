@@ -20,7 +20,6 @@ import org.bibsonomy.recommender.connector.model.RecommendationPost;
 import org.bibsonomy.recommender.item.service.ExtendedMainAccess;
 
 import recommender.core.interfaces.model.ItemRecommendationEntity;
-import recommender.core.interfaces.model.RecommendationItem;
 
 /**
  * Implementation of the general methods which are equal for publication and bookmark recommendations.
@@ -45,13 +44,6 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 	public void setMainFactory(DBSessionFactory mainFactory) {
 		this.mainFactory = mainFactory;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see recommender.core.interfaces.database.RecommenderMainItemAccess#getMostActualItems(int)
-	 */
-	@Override
-	public abstract List<RecommendationItem> getMostActualItems(final int count, final ItemRecommendationEntity entity);
 	
 	/*
 	 * (non-Javadoc)

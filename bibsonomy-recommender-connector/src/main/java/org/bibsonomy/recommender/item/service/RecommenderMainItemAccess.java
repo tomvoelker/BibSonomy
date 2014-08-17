@@ -4,8 +4,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.recommender.item.model.RecommendationUser;
+import org.bibsonomy.recommender.item.model.RecommendedPost;
+
 import recommender.core.interfaces.model.ItemRecommendationEntity;
-import recommender.core.interfaces.model.RecommendationItem;
 
 
 /**
@@ -25,10 +28,11 @@ public interface RecommenderMainItemAccess {
 	 * sorted descending by it's creation date
 	 * 
 	 * @param count the count of items to return
+	 * @param entity the user
 	 * 
 	 * @return a list of the most actual items, sorted descending by creation date
 	 */
-	public List<RecommendationItem> getMostActualItems(final int count, final ItemRecommendationEntity entity);
+	public List<RecommendedPost<? extends Resource>> getMostActualItems(final int count, final RecommendationUser entity);
 	
 	/**
 	 * This method should provide access to a maximum of count items belonging to the specified user.

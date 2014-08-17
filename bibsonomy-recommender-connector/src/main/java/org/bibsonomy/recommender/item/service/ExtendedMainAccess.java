@@ -5,7 +5,6 @@ import java.util.List;
 import org.bibsonomy.recommender.item.filter.UserPrivacyFilter;
 
 import recommender.core.interfaces.model.ItemRecommendationEntity;
-import recommender.core.interfaces.model.RecommendationItem;
 
 /**
  * This interface extends the main access interface of the recommender library.
@@ -25,7 +24,7 @@ public interface ExtendedMainAccess extends RecommenderMainItemAccess {
 	 * 
 	 * @return the wrapped posts belonging to the specified ids
 	 */
-	public abstract List<RecommendationItem> getResourcesByIds(final List<Integer> ids);
+	public List<RecommendationItem> getResourcesByIds(final List<Integer> ids);
 	
 	/**
 	 * This method should provide access to a maximum of count items belonging to the requesting user.

@@ -18,9 +18,10 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.connector.model.RecommendationPost;
+import org.bibsonomy.recommender.item.model.RecommendationUser;
+import org.bibsonomy.recommender.item.model.RecommendedPost;
 
 import recommender.core.interfaces.model.ItemRecommendationEntity;
-import recommender.core.interfaces.model.RecommendationItem;
 
 /**
  * 
@@ -38,26 +39,18 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<RecommendationItem> getMostActualItems(final int count, final ItemRecommendationEntity entity) {
+	public List<RecommendedPost<? extends Resource>> getMostActualItems(final int count, final RecommendationUser entity) {
 		final DBSession mainSession = this.openMainSession();
 		try {
 			final BookmarkParam bookmarkParam = new BookmarkParam();
 			bookmarkParam.setGrouping(GroupingEntity.ALL);
 			bookmarkParam.setGroupId(GroupID.PUBLIC.getId());
-			bookmarkParam.setUserName(null); // FIXME (refactor) entity.getUserName()
+			bookmarkParam.setUserName(entity.getUserName());
 			bookmarkParam.setOffset(0);
-			bookmarkParam.setLimit(2*count);
+			bookmarkParam.setLimit(2 * count);
 			bookmarkParam.setSimHash(HashID.INTRA_HASH);
 			
-			List<Post<Bookmark>> results = (List<Post<Bookmark>>) this.queryForList("getBookmarkForHomepage", bookmarkParam, mainSession);
-			List<RecommendationItem> items = new ArrayList<RecommendationItem>(results.size());
-			
-			for(Post<Bookmark> bookmark : results) {
-				RecommendationItem item =  new RecommendationPost(bookmark);
-				items.add(item);
-			}
-			
-			return items;
+			return (List<RecommendedPost<? extends Resource>>) this.queryForList("getBookmarkForHomepage", bookmarkParam, mainSession);
 		} finally {
 			mainSession.close();
 		}

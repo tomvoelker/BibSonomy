@@ -32,9 +32,7 @@ public class AdaptedContentBasedItemRecommender extends ContentBasedItemRecommen
 	 * @see recommender.impl.item.collaborative.CollaborativeItemRecommender#addRecommendedItemsInternal(java.util.Collection, recommender.core.interfaces.model.ItemRecommendationEntity)
 	 */
 	@Override
-	protected void addRecommendedItemsInternal(
-			Collection<RecommendedItem> recommendations,
-			ItemRecommendationEntity entity) {
+	protected void addRecommendedItemsInternal(Collection<RecommendedItem> recommendations, ItemRecommendationEntity entity) {
 
 		final List<RecommendationItem> requestingUserItems = new ArrayList<RecommendationItem>();
 		
