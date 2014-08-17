@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.item.db;
+package org.bibsonomy.recommender.tag.db;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
@@ -22,7 +22,6 @@ import org.bibsonomy.recommender.connector.database.params.BibRecQueryParam;
 import org.bibsonomy.recommender.connector.database.params.PostRecParam;
 import org.bibsonomy.recommender.connector.database.params.RecommendedTagParam;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
-import org.bibsonomy.recommender.tag.db.DBLogConfigTagAccess;
 
 import recommender.core.database.params.RecQueryParam;
 import recommender.core.database.params.RecQuerySettingParam;

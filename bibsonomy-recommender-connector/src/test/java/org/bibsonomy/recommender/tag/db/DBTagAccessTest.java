@@ -18,7 +18,6 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.recommender.connector.testutil.RecommenderTestContext;
-import org.bibsonomy.recommender.item.db.DBLogConfigBibSonomy;
 import org.bibsonomy.recommender.tag.model.RecommendedTag;
 import org.bibsonomy.recommender.tag.testutil.DummyTagRecommender;
 import org.junit.BeforeClass;
