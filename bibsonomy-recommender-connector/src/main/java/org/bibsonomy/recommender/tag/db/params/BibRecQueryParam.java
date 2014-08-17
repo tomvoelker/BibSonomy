@@ -2,8 +2,6 @@ package org.bibsonomy.recommender.tag.db.params;
 
 import java.sql.Timestamp;
 
-import recommender.core.interfaces.model.RecommendationEntity;
-
 /**
  * Parameter used to insert tag recommender queries.
  */
