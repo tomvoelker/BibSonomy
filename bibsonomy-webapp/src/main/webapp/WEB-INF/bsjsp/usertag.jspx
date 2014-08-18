@@ -40,7 +40,7 @@
 			<!-- display user's tag relations -->
 			<li>
 				<fmt:message key="tagrelations.title" var="tagRelationsTitle"/>
-				<h4 class="sidebar"><fmt:message key="tagrelations"/><c:out value=" " /><small>(<a href="/concepts/${fn:escapeXml(command.requestedUser)}" title="${tagRelationsTitle}"><fmt:message key="overview"/></a>)</small></h4>	
+				<h4 class="sidebar"><fmt:message key="tagrelations"/><c:out value=" " /><small>(<a href="${relativeUrlGenerator.getConceptsUrlByString(fn:escapeXml(command.requestedUser))}" title="${tagRelationsTitle}"><fmt:message key="overview"/></a>)</small></h4>	
 				<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
 			</li>
 			
