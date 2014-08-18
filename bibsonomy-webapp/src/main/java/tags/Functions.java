@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.Arrays;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -380,6 +382,150 @@ public class Functions {
 		final SpamStatus status = SpamStatus.getStatus(id);
 		return SpamStatus.isSpammer(status);
 	}
+	/**
+	 * returns the number of different entries*/
+	public static int DiffNum(final BibTex newBib, final BibTex oldBib) {
+		int Num=0;
+		if (!cleanBibtex(newBib.getEntrytype()).equals(cleanBibtex(oldBib.getEntrytype()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getTitle()).equals(cleanBibtex(oldBib.getTitle()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getAuthor().toString()).equals(cleanBibtex(oldBib.getAuthor().toString()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getEditor().toString()).equals(cleanBibtex(oldBib.getEditor().toString()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getYear()).equals(cleanBibtex(oldBib.getYear()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getBooktitle()).equals(cleanBibtex(oldBib.getBooktitle()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getJournal()).equals(cleanBibtex(oldBib.getJournal()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getVolume()).equals(cleanBibtex(oldBib.getVolume()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getNumber()).equals(cleanBibtex(oldBib.getNumber()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getPages()).equals(cleanBibtex(oldBib.getPages()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getMonth()).equals(cleanBibtex(oldBib.getMonth()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getDay()).equals(cleanBibtex(oldBib.getDay()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getPublisher()).equals(cleanBibtex(oldBib.getPublisher()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getAddress()).equals(cleanBibtex(oldBib.getAddress()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getEdition()).equals(cleanBibtex(oldBib.getEdition()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getChapter()).equals(cleanBibtex(oldBib.getChapter()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getUrl()).equals(cleanBibtex(oldBib.getUrl()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getKey()).equals(cleanBibtex(oldBib.getKey()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getHowpublished()).equals(cleanBibtex(oldBib.getHowpublished()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getInstitution()).equals(cleanBibtex(oldBib.getInstitution()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getOrganization()).equals(cleanBibtex(oldBib.getOrganization()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getSchool()).equals(cleanBibtex(oldBib.getSchool()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getSeries()).equals(cleanBibtex(oldBib.getSeries()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getCrossref()).equals(cleanBibtex(oldBib.getCrossref()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getMisc()).equals(cleanBibtex(oldBib.getMisc()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getAbstract()).equals(cleanBibtex(oldBib.getAbstract()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getPrivnote()).equals(cleanBibtex(oldBib.getPrivnote()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getAnnote()).equals(cleanBibtex(oldBib.getAnnote()))){
+			Num++;
+		}
+		if (!cleanBibtex(newBib.getNote()).equals(cleanBibtex(oldBib.getNote()))){
+			Num++;
+		}
+		return Num;
+	}
+	
+	/**
+	 * Return diff*/
+	public static String compareString(final String newValue, final String oldValue) {
+		String tmpNewValue ="";
+		String tmpOldValue ="";
+		if(newValue != null){
+			tmpNewValue =newValue;
+		}
+		if(oldValue != null){
+			tmpOldValue =oldValue;
+		}
+		final Set<String> Npost = new TreeSet<String>(Arrays.asList(tmpNewValue.split(" ")));
+		final Set<String> Opost = new TreeSet<String>(Arrays.asList(tmpOldValue.split(" ")));
+		
+		//String[] post = tmpNewValue.split(" ");
+		//String[] comparePost = tmpOldValue.split(" ");
+		
+		final Set<String> removed = new TreeSet<String>(Opost);
+		removed.removeAll(Npost);
+		String [] removedArr = removed.toArray(new String[0]);
+		
+		
+		final Set<String> same = new TreeSet<String>(Opost);
+		same.retainAll(Npost);
+		String [] sameArr = same.toArray(new String[0]);
+		
+		final Set<String> added = new TreeSet<String>(Npost);
+		added.removeAll(Opost);
+		String [] addedArr = added.toArray(new String[0]);
+		//result
+		String comparePostValue ="";
+		int i=0;
+		while(i<sameArr.length){
+			comparePostValue+= sameArr[i++];
+		}
+		
+		i=0;
+		while(i<addedArr.length){
+			comparePostValue+= ("<span class=\"fsDiffMissingColor\">" + addedArr[i++] + "</span>"+ " "); 
+					
+		}
+		
+		i=0;
+		while(i<removedArr.length){
+			comparePostValue+= ("<span class=\"fsDiffAddColor\">" + removedArr[i++] + "</span>"+ " ");
+		}
+		
+		return comparePostValue;
+		
+	}
 	
 	/**
 	 * Return the diff as String for history page
@@ -388,6 +534,7 @@ public class Functions {
 	 * @param oldValue
 	 * @return highlighted diff
 	 */
+		/*
 	public static String compareString(final String newValue, final String oldValue) {
 		String tmpNewValue ="";
 		String tmpOldValue ="";
@@ -439,7 +586,7 @@ public class Functions {
 		}
 		return comparePostValue;
 	}
-
+*/
 	/**
 	 * Quotes a String such that it is usable for JSON.
 	 * 

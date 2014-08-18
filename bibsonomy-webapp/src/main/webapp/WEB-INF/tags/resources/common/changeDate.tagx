@@ -21,5 +21,5 @@
 	</c:url>
 	<!-- TODO: change return changeDate to return this.changeDate in model/Post.java -->
 	<c:set var="changeDate" value="${mtl:cleanBibtex(post.changeDate)}"/>
-	<a href="${diffLink}" title="${changeDate}"><c:out value="${changeDate}" /></a>
+	<a href="${diffLink}" title="${changeDate}" style="white-space: nowrap;"><c:out value="${changeDate}" /></a>
 </jsp:root>

@@ -249,6 +249,12 @@
 	</function>
 	
 	<function>
+		<name>DiffNum</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>Integer DiffNum(org.bibsonomy.model.BibTex, org.bibsonomy.model.BibTex)</function-signature>
+	</function>
+	
+	<function>
 		<name>quoteJSON</name>
 		<function-class>tags.Functions</function-class>
 		<function-signature>String quoteJSON(java.lang.String)</function-signature>
