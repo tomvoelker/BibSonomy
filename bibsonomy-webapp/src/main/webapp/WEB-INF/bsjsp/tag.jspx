@@ -19,7 +19,7 @@
 			<parts:search pathMessageKey="navi.tag" formAction="/tag/" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="afterInput">
 					<!--  sorting options -->
-					<c:url var="tagUrl" value="/tag/${mtl:encodeURI(command.requestedTags)}"/>
+					<c:url var="tagUrl" value="${relativeUrlGenerator.getTagUrlByTagName(command.requestedTags)}"/>
 					<span style="font-size: 65%">
 						<fmt:message key="sort.orderBy"/>
 						(
