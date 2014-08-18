@@ -152,6 +152,12 @@ function toggleView() {
 	changeView(collapse.data("showAll"));
 }
 
+function activateAffixEntry (el) {
+	$(el).addClass("active").siblings().each(function(h, g){
+			$(g).removeClass("active");
+	});
+}
+
 $(function() {
 	$("#post\\.resource\\.entrytype").change(function(e) {
 		changeView($("#collapse").data("showAll"));	
