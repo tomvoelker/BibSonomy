@@ -43,7 +43,7 @@
 				</div>
 				
        			<span class="discussionPictureFrame">
-       				<img src="/picture/user/${fn:escapeXml(userName)}" alt="userPicture" class="discussionPicture" />
+       				<img src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(userName))}" alt="userPicture" class="discussionPicture" />
        			</span>
        			<span class="textBoxContainer">
 					<c:if test="${not empty additionalInputs}">
