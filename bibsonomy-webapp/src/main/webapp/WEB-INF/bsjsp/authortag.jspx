@@ -22,11 +22,11 @@
 		minimizedContentWidth="${true}"
 		disableResourcetypeSelection="${true}">
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.author" formAction="/author/${requestedAuthorEncoded}" formInputName="tag" formInputValue="${command.requestedTags}">
+			<parts:search pathMessageKey="navi.author" formAction="${relativeUrlGenerator.getAuthorUrlByName(requestedAuthorEncoded)}" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="pathPart">
 					<li>
 						:: <span itemscope="itemscope" itemtype="http://schema.org/Person">
-							<a href="/author/${requestedAuthorEncoded}" itemprop="name"><c:out value='${command.requestedAuthor}'/></a>
+							<a href="${relativeUrlGenerator.getAuthorUrlByName(requestedAuthorEncoded)}" itemprop="name"><c:out value='${command.requestedAuthor}'/></a>
 						</span>
 					</li>
 				</jsp:attribute>
