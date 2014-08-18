@@ -21,7 +21,7 @@
 					<c:set var="formAction" value="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"/>
 				</c:when> 
 				<c:when test="${not empty command.requestedGroup}">
-					<c:set var="formAction" value="/group/${mtl:encodeURI(command.requestedGroup)}"/> 
+					<c:set var="formAction" value="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}"/> 
 				</c:when>
 				<c:otherwise>
 					<c:set var="formAction" value="/tag"/>

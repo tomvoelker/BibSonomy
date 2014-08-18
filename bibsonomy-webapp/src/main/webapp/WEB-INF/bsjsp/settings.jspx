@@ -83,7 +83,7 @@
 					<ul>
 					<c:forEach var="group" items="${command.context.loginUser.groups}">
 						<li>
-						<a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}'/>&amp;nbsp;</a> 
+						<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"><c:out value='${group.name}'/>&amp;nbsp;</a> 
 							<c:if test="${group.sharedDocuments}">
 								<c:choose>
 									<c:when test="${not group.userSharedDocuments}">

@@ -94,7 +94,7 @@
 						<dd>
 							<div class="row">
 								<div class="col-xs-9">
-									<a href="/group/${mtl:encodeURI(group.name)}">
+									<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}">
 										<c:out value="${displayName}"/>
 										<br />
 										<c:if test="${not empty group.homepage}">
