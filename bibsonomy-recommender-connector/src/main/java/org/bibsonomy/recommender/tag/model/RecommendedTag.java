@@ -172,6 +172,6 @@ public class RecommendedTag extends Tag implements RecommendationResult {
 	 */
 	@Override
 	public String getTitle() {
-		return this.getTitle();
+		return this.getName();
 	}
 }
