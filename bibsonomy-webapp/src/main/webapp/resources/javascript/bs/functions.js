@@ -9,15 +9,8 @@ var getPos = null;
 var setPos = null;
 var getSetPos = 0;
 
-/*
- * update the counter at the navigation bar to reflect the amount of picked publications and unread messages
- */
-function updateCounter() {
-	var basketNum = document.getElementById("basket-counter");
-	var inboxNum = document.getElementById("inbox-counter");
-	var counter = document.getElementById("inbox-basket-counter");
-	if(counter!=null)
-		counter.innerHTML = (basketNum==null?0:parseInt(basketNum.innerHTML))+(inboxNum==null?0:parseInt(inboxNum.innerHTML));
+var constants = {
+		RESPONSE_TIMEOUT: 5000
 }
 
 $(function() {
@@ -1651,3 +1644,15 @@ function generateExportPostLink(value) {
 		self.location = value;
 	}
 };		
+
+
+/*
+ * update the counter at the navigation bar to reflect the amount of picked publications and unread messages
+ */
+function updateCounter() {
+	var basketNum = document.getElementById("basket-counter");
+	var inboxNum = document.getElementById("inbox-counter");
+	var counter = document.getElementById("inbox-basket-counter");
+	if(counter!=null)
+		counter.innerHTML = (basketNum==null?0:parseInt(basketNum.innerHTML))+(inboxNum==null?0:parseInt(inboxNum.innerHTML));
+}

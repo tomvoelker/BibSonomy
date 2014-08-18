@@ -17,7 +17,7 @@ $(function() {
 	$(".addDocument").click(addDocument).attr("title", documentUploadTitle);
 	$(".rename-btn").each(function(i, el) {
 		
-		var inputGroup = $(this).parent(".input-group");
+		var inputGroup = $(this).closest(".input-group");
 		var inputGroupButtons = $(this).parent(".input-group-btn");
 		var form = inputGroupButtons.closest("form");
 		var renameInput = inputGroup.children(".renameDocInput");
@@ -363,17 +363,32 @@ function uploadRequestSuccessful(data) {
 }
 
 function renameFile(o) {
+	var regExp = /\.[a-zA-Z0-9]*$/;
+	var oldFilename = o.deleteForm.data("filename");
+	var oldSuffix = o.deleteForm.data("filename").match(regExp)[0];
+	var newSuffix = o.renameInput.val().match(regExp)[0];
+	oldSuffix = (oldSuffix != null? oldSuffix.substr(1, oldSuffix.length-1):"");
+	newSuffix = (newSuffix != null? newSuffix.substr(1, newSuffix.length-1):"");
+	
+	if(!checkConsistency(oldSuffix, newSuffix)) return;
+	
 	o.form.ajaxSubmit({
 		dataType: "xml",
 		success: function(data) {
-			var oldFilename = o.deleteForm.data("filename");
+			var inputGrp = o.renameInput.parent();
 			
 			o.renameButton.addClass("btn-success");
+			//inputGrp.attr("title", $("response", data).text());
 			o.form.attr("action", o.form.attr("action").replace(oldFilename, o.renameInput.val()));
 			o.deleteForm.attr("href", o.deleteForm.data("filename", o.renameInput.val()).attr("href").replace(oldFilename, o.deleteForm.data("filename")));
+
 			renameRequestSuccessful(data);
-		},
-		error: function(e) {
+			//inputGrp.tooltip({trigger:"manual"}).tooltip("show");
+
+			setTimeout(function() {
+			  o.renameButton.removeClass("btn-success");
+			  //inputGrp.tooltip("destroy");
+			}, constants.RESPONSE_TIMEOUT);
 			
 		}
 	
@@ -401,8 +416,7 @@ function renameRequestSuccessful(data) {
 	 */
 	var oldName = $("oldName", data).text();
 	var newName = $("newName", data).text();
-	var response = $("response", data).text();
-	
+
 	/*
 	 * find and update all links, containing old filenames
 	 */
@@ -442,11 +456,6 @@ function renameRequestSuccessful(data) {
 	toRename.text(newName);
 	toRename.append(children);
 	toRename.siblings().filter('a:last').data('filename', newName);
-	
-	/*
-	 * print status 
-	 */
-	alert(response);
 	
 	return;
 }
