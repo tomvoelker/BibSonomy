@@ -102,7 +102,7 @@
 					var ckey = "${command.context.ckey}";
 					var currUser = "${loginUser.name}";
 					var requUser = ${(requestedUser ne '') ? requestedUserString : "null"};
-					var confirmDelete = "${loginUser.settings.confirmDelete}";
+					var confirmDelete = ${loginUser.settings.confirmDelete};
 					
 					$(function() {
 						init("${loginUser.settings.tagboxStyle}", "${loginUser.settings.tagboxSort}", "${loginUser.settings.tagboxMinfreq}");
