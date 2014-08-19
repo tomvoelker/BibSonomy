@@ -31,14 +31,13 @@ public interface RecommenderMainTagAccess {
 	/**
 	 * This method should return the range most popular tags of a
 	 * entity , unique identified by entityId
-	 * 
-	 * @param <T> The type of the resource.
-	 * @param resourceType
-	 * @param entityId
+	 * @param entity
+	 * @param hash
 	 * @param range
+	 * @param resourceType
 	 * @return The most popular tags of the given resource.
 	 */
-	public List<Pair<String, Integer>> getMostPopularTagsForRecommendationEntity(final Post<? extends Resource> entity, final String entityId, final int range);
+	public List<Pair<String, Integer>> getMostPopularTagsForRecommendationEntity(final Post<? extends Resource> entity, String hash, final int range);
 
 	/**
 	 * This method should return the count of different tags a user ever used
@@ -55,19 +54,8 @@ public interface RecommenderMainTagAccess {
 	 * @param username
 	 * @return number of tag assignments of given user
 	 */
-	public Integer getNumberOfTaggingsForUser(String username);
-
-	/**
-	 * This method should return the count of tags which were used to tag the entity 
-	 * which is unique identified by it's entityId
-	 *
-	 * @param entity - type of the resource 
-	 * @param entityId - id of the entity
-	 * 
-	 * @return The number of tags attached to the resource.
-	 */
-	public Integer getNumberOfTagsForRecommendationEntity(final Post<? extends Resource> entity, final String entityId);
-
+	public int getNumberOfTaggingsForUser(String username);
+	
 	/**
 	 *
 	 * This method should return the count of tag assignments for the specified entity
@@ -75,14 +63,12 @@ public interface RecommenderMainTagAccess {
 	 * 
 	 * The count of tagging includes all tags which were ever assigned to this entity
 	 * (even equal tag assignments count more than one time!)
+	 * @param hash 
+	 * @param entity - type of the resource 
 	 *
-	 * @param <T> 
-	 * @param resourceType - type of the resource 
-	 * @param entitiyId - id of the entity
-	 * 
 	 * @return The number of tag assignments of the resource.
 	 */
-	public Integer getNumberOfTagAssignmentsForRecommendationEntity(final Post<? extends Resource> entity, final String entitiyId);
+	public int getNumberOfTagAssignmentsForRecommendationEntity(final Post<? extends Resource> entity, String hash);
 	
 	/**
 	 * This method should return an unique id for a user,
@@ -101,15 +87,4 @@ public interface RecommenderMainTagAccess {
 	 * @return user's name, null if user id doesn't exist
 	 */
 	public String getUserNameByID(int userID);
-
-	/**
-	 * This method should return all tags, which were ever assigned to the entity,
-	 * identified by it's entityId
-	 * 
-	 * (also duplicates should be returned! no distinct!)
-	 * 
-	 * @param entityId unique id of the entity
-	 * @return list of all tags chosen by user for given entity
-	 */
-	public List<String> getTagNamesForRecommendationEntity(Integer entityId);
 }

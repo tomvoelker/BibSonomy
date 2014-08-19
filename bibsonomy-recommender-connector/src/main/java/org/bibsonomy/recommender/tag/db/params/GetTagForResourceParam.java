@@ -6,22 +6,21 @@ package org.bibsonomy.recommender.tag.db.params;
 public class GetTagForResourceParam {
 
 	private String userName;
-	private int id;
+	private String hash;
 	private int range;
 	private int timestamp;
 	
-	
 	/**
-	 * @return the id
+	 * @return the hash
 	 */
-	public int getId() {
-		return id;
+	public String getHash() {
+		return this.hash;
 	}
 	/**
-	 * @param i the id to set
+	 * @param hash the hash to set
 	 */
-	public void setId(int i) {
-		this.id = i;
+	public void setHash(String hash) {
+		this.hash = hash;
 	}
 	/**
 	 * @return the username

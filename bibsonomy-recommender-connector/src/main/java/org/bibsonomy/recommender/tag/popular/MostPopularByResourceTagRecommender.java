@@ -28,20 +28,25 @@ public class MostPopularByResourceTagRecommender extends AbstractTagRecommender 
 	
 	@Override
 	protected void addRecommendedTagsInternal(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> entity) {
-		final String entityId = null; // TODO entity.getRecommendationId();
-		if (present(entityId)) {
+		/*
+		 * recalculate the hashes
+		 */
+		entity.getResource().recalculateHashes();
+		
+		final String hash = entity.getResource().getInterHash(); // TODO: use intrahash?
+		if (present(hash)) {
 			/*
 			 * we get the count to normalize the score
 			 */
-			final int count = this.dbAccess.getNumberOfTagAssignmentsForRecommendationEntity(entity, entityId);
+			final int count = this.dbAccess.getNumberOfTagAssignmentsForRecommendationEntity(entity, hash);
 			log.debug("Resource has " + count + " TAS.");
 
-			final List<Pair<String, Integer>> tagsWithCount = this.dbAccess.getMostPopularTagsForRecommendationEntity(entity, entityId, this.numberOfTagsToRecommend);
-			if (tagsWithCount != null) {
+			final List<Pair<String, Integer>> tagsWithCount = this.dbAccess.getMostPopularTagsForRecommendationEntity(entity, hash, this.numberOfTagsToRecommend);
+			if (present(tagsWithCount)) {
 				for (final Pair<String, Integer> tagWithCount : tagsWithCount) {
 					final String tag = this.getCleanedTag(tagWithCount.getFirst());
 					if (tag != null) {
-						recommendedTags.add(new RecommendedTag(tag, ((1.0 * tagWithCount.getSecond()) / count), 0.5));
+						recommendedTags.add(new RecommendedTag(tag, ((1.0 * tagWithCount.getSecond().doubleValue()) / count), 0.5));
 					}
 				}
 				log.debug("Returning the tags " + recommendedTags);
@@ -60,9 +65,7 @@ public class MostPopularByResourceTagRecommender extends AbstractTagRecommender 
 	
 	@Override
 	protected void setFeedbackInternal(final Post<? extends Resource> entity, final RecommendedTag tag) {
-		/*
-		 * this recommender ignores feedback
-		 */
+		// this recommender ignores feedback
 	}
 
 	/**

@@ -28,7 +28,6 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
@@ -36,7 +35,7 @@ import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.util.TagUtils;
-import org.bibsonomy.recommender.connector.model.PostWrapper;
+import org.bibsonomy.recommender.tag.model.RecommendedTag;
 import org.bibsonomy.services.Pingback;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.ContextCommand;
@@ -58,9 +57,8 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
-import recommender.core.Recommender;
+import recommender.core.RecommendationService;
 import recommender.core.database.RecommenderStatisticsManager;
-import recommender.core.interfaces.model.TagRecommendationEntity;
 
 /**
  * @author fba
@@ -72,7 +70,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 	protected static final String LOGIN_NOTICE = "login.notice.post.";
 
-	private Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> recommender;
+	private RecommendationService<Post<? extends Resource>, RecommendedTag> recommender;
 	private Pingback pingback;
 	private Captcha captcha;
 
@@ -569,22 +567,23 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	/**
 	 * Update recommender table such that recommendations are linked to the
 	 * final post.
-	 * 
+	 * @param loggedinUser TODO
 	 * @param entity
 	 *            - the final post as saved in the database.
 	 * @param postID
 	 *            - the ID of the post during the posting process.
 	 */
-	protected void setRecommendationFeedback(final TagRecommendationEntity entity, final int postID) {
+	protected void setRecommendationFeedback(User loggedinUser, final Post<? extends Resource> entity, final int postID) {
 		try {
 			/*
 			 * To allow the recommender to identify the post and connect it with
 			 * the post we provided at recommendation time, we give it the post
 			 * id using the contentid field.
 			 */
-			this.recommender.setFeedback(entity, null);
+			// FIXME: use the used and clicked tags
+			this.recommender.setFeedback(loggedinUser.getName(), entity, null);
 		} catch (final Exception ex) {
-			log.warn("Could not connect post with recommendation.");
+			log.warn("Could not connect post with recommendation.", ex);
 			/*
 			 * fail silently to not confuse user with error 500 when recommender
 			 * fails
@@ -735,9 +734,8 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * update recommender table such that recommendations are linked to the
 		 * final post
 		 */
-		final PostWrapper<RESOURCE> wrapper = new PostWrapper<RESOURCE>(post);
-		wrapper.setId("" + command.getPostID());
-		this.setRecommendationFeedback(wrapper, command.getPostID());
+		post.setContentId(command.getPostID());
+		this.setRecommendationFeedback(loginUser, post, command.getPostID());
 		/*
 		 * Send a pingback/trackback for the public posted resource.
 		 */
@@ -943,20 +941,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	}
 
 	/**
-	 * @return The tag recommender associated with this controller.
+	 * @param recommender the recommender to set
 	 */
-	public Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> getTagRecommender() {
-		return this.recommender;
-	}
-
-	/**
-	 * The tag recommender is necessary to allow giving it feedback about the
-	 * post as it is stored in the database.
-	 * 
-	 * @param tagRecommender
-	 */
-	public void setRecommender(final Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> tagRecommender) {
-		this.recommender = tagRecommender;
+	public void setRecommender(RecommendationService<Post<? extends Resource>, RecommendedTag> recommender) {
+		this.recommender = recommender;
 	}
 
 	/**

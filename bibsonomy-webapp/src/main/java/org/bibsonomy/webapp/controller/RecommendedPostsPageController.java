@@ -2,8 +2,10 @@ package org.bibsonomy.webapp.controller;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 
 import org.bibsonomy.common.enums.TagCloudSort;
 import org.bibsonomy.common.enums.TagCloudStyle;
@@ -15,8 +17,8 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.TagUtils;
-import org.bibsonomy.recommender.connector.model.UserWrapper;
-import org.bibsonomy.recommender.connector.utilities.RecommendationUtilities;
+import org.bibsonomy.recommender.item.model.RecommendationUser;
+import org.bibsonomy.recommender.item.model.RecommendedPost;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 import org.bibsonomy.webapp.command.TagCloudCommand;
@@ -26,8 +28,6 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 import recommender.core.Recommender;
-import recommender.core.interfaces.model.ItemRecommendationEntity;
-import recommender.impl.model.RecommendedItem;
 
 /**
  * Controller for triggering a post recommendation and return the sorted list of recommended posts
@@ -36,8 +36,8 @@ import recommender.impl.model.RecommendedItem;
  */
 public class RecommendedPostsPageController extends SingleResourceListController implements MinimalisticController<TagResourceViewCommand> {
 
-	private Recommender<ItemRecommendationEntity, RecommendedItem> bibtexRecommender;
-	private Recommender<ItemRecommendationEntity, RecommendedItem> bookmarkRecommender;
+	private Recommender<RecommendationUser, RecommendedPost<BibTex>> bibtexRecommender;
+	private Recommender<RecommendationUser, RecommendedPost<Bookmark>> bookmarkRecommender;
 	
 	private static final int TAGS_ON_SITE = 20;
 	
@@ -130,24 +130,38 @@ public class RecommendedPostsPageController extends SingleResourceListController
 	 */
 	private <T extends Resource> void setList(SimpleResourceViewCommand cmd, User user, Class<? extends Resource> resourceType) {
 		
-		final ItemRecommendationEntity entity = new UserWrapper(user);
+		final RecommendationUser recommendationUser = new RecommendationUser();
+		recommendationUser.setUserName(user.getName());
 		
 		if (resourceType == BibTex.class) {
 			/** get publication recommendations */
 			final ListCommand<Post<BibTex>> listCommand = cmd.getBibtex();
-			List<Post<BibTex>> posts = RecommendationUtilities.unwrapRecommendedItems(BibTex.class, this.bibtexRecommender.getRecommendation(entity));
+			List<Post<BibTex>> posts = unwrapRecommendedItems(this.bibtexRecommender.getRecommendation(recommendationUser));
 			this.cleanVisibleTags(posts);
 			listCommand.setList(posts);
 		} else if(resourceType == Bookmark.class) { 
 			/** get bookmark recommendations */
 			final ListCommand<Post<Bookmark>> bookmarkListCmd = cmd.getBookmark();
-			List<Post<Bookmark>> posts = RecommendationUtilities.unwrapRecommendedItems(Bookmark.class, this.bookmarkRecommender.getRecommendation(entity));
+			List<Post<Bookmark>> posts = unwrapRecommendedItems(this.bookmarkRecommender.getRecommendation(recommendationUser));
 			this.cleanVisibleTags(posts);
 			bookmarkListCmd.setList(posts);
 		}
 
 	}
 	
+	/**
+	 * @param class1
+	 * @param recommendation
+	 * @return
+	 */
+	private <T extends Resource> List<Post<T>> unwrapRecommendedItems(SortedSet<RecommendedPost<T>> recommendation) {
+		final List<Post<T>> linkedList = new LinkedList<Post<T>>();
+		for (RecommendedPost<T> recommendedPost : recommendation) {
+			linkedList.add(recommendedPost.getPost());
+		}
+		return linkedList;
+	}
+
 	/**
 	 * Helper method to remove system tags from each given posts tags and
 	 * set the visible tags.
@@ -160,33 +174,5 @@ public class RecommendedPostsPageController extends SingleResourceListController
 			SystemTagsExtractor.removeHiddenSystemTags(tags);
 			post.setVisibleTags(tags);
 		}
-	}
-
-	/**
-	 * @return the bibtexRecommender
-	 */
-	public Recommender<ItemRecommendationEntity, RecommendedItem> getBibtexRecommender() {
-		return this.bibtexRecommender;
-	}
-
-	/**
-	 * @param bibtexRecommender the bibtexRecommender to set
-	 */
-	public void setBibtexRecommender(Recommender<ItemRecommendationEntity, RecommendedItem> bibtexRecommender) {
-		this.bibtexRecommender = bibtexRecommender;
-	}
-
-	/**
-	 * @return the bookmarkRecommender
-	 */
-	public Recommender<ItemRecommendationEntity, RecommendedItem> getBookmarkRecommender() {
-		return this.bookmarkRecommender;
-	}
-
-	/**
-	 * @param bookmarkRecommender the bookmarkRecommender to set
-	 */
-	public void setBookmarkRecommender(Recommender<ItemRecommendationEntity, RecommendedItem> bookmarkRecommender) {
-		this.bookmarkRecommender = bookmarkRecommender;
 	}
 }

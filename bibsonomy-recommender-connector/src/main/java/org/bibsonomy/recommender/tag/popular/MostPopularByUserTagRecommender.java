@@ -35,7 +35,7 @@ public class MostPopularByUserTagRecommender extends AbstractTagRecommender {
 			for (final Pair<String, Integer> tagWithCount : tagsWithCount) {
 				final String tag = this.getCleanedTag(tagWithCount.getFirst());
 				if (tag != null) {
-					recommendedTags.add(new RecommendedTag(tag, ((1.0 * tagWithCount.getSecond()) / count), 0.5));
+					recommendedTags.add(new RecommendedTag(tag, ((1.0 * tagWithCount.getSecond().doubleValue()) / count), 0.5));
 				}
 			}
 		}

@@ -3,11 +3,12 @@ package org.bibsonomy.webapp.controller.actions;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ObjectUtils;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
@@ -17,8 +18,6 @@ import org.bibsonomy.webapp.validation.GoldStandardPostValidator;
 import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
-
-import recommender.core.interfaces.model.TagRecommendationEntity;
 
 /**
  * controller for the edit gold standard publication form
@@ -108,9 +107,12 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 		return new GoldStandardPostValidator<BibTex>();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#setRecommendationFeedback(org.bibsonomy.model.Post, int)
+	 */
 	@Override
-	protected void setRecommendationFeedback(final TagRecommendationEntity post, final int postID) {
-		// noop gold standards have no tags
+	protected void setRecommendationFeedback(User loggedinUser, Post<? extends Resource> entity, int postID) {
+		// noop
 	}
 
 }

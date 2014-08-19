@@ -8,6 +8,9 @@ import org.bibsonomy.recommender.tag.service.RecommenderMainTagAccess;
 
 import recommender.core.model.Pair;
 
+/**
+ * @author lha
+ */
 public class DummyMainTagAccess implements RecommenderMainTagAccess {
 
 	@Override
@@ -18,7 +21,7 @@ public class DummyMainTagAccess implements RecommenderMainTagAccess {
 	}
 
 	@Override
-	public List<Pair<String, Integer>> getMostPopularTagsForRecommendationEntity(Post<? extends Resource> entity, String entityId, int range) {
+	public List<Pair<String, Integer>> getMostPopularTagsForRecommendationEntity(Post<? extends Resource> entity, String hash, int range) {
 		// do nothing
 		return null;
 	}
@@ -28,25 +31,19 @@ public class DummyMainTagAccess implements RecommenderMainTagAccess {
 		// do nothing
 		return null;
 	}
-
+	
 	@Override
-	public Integer getNumberOfTaggingsForUser(String username) {
-		// do nothing
-		return null;
+	public int getNumberOfTagAssignmentsForRecommendationEntity(Post<? extends Resource> entity, String hash) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	@Override
-	public Integer getNumberOfTagsForRecommendationEntity(Post<? extends Resource> entity, String entityId) {
+	public int getNumberOfTaggingsForUser(String username) {
 		// do nothing
-		return null;
+		return 0;
 	}
-
-	@Override
-	public Integer getNumberOfTagAssignmentsForRecommendationEntity(Post<? extends Resource> entity, String entitiyId) {
-		// do nothing
-		return null;
-	}
-
+	
 	@Override
 	public Integer getUserIDByName(String userName) {
 		// do nothing
@@ -55,12 +52,6 @@ public class DummyMainTagAccess implements RecommenderMainTagAccess {
 
 	@Override
 	public String getUserNameByID(int userID) {
-		// do nothing
-		return null;
-	}
-
-	@Override
-	public List<String> getTagNamesForRecommendationEntity(Integer entityId) {
 		// do nothing
 		return null;
 	}

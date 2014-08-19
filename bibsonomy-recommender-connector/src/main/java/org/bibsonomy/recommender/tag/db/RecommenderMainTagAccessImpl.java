@@ -22,6 +22,11 @@ import recommender.core.model.Pair;
  * 
  */
 public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implements RecommenderMainTagAccess {
+
+	private static int saveConvert(final Integer count) {
+		return count == null ? 0 : count.intValue();
+	}
+	
 	private DBSessionFactory mainFactory;
 	
 	protected DBSession openMainSession() {
@@ -57,11 +62,11 @@ public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implem
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Pair<String, Integer>> getMostPopularTagsForRecommendationEntity(Post<? extends Resource> entity, String entityId, int range) {
+	public List<Pair<String, Integer>> getMostPopularTagsForRecommendationEntity(Post<? extends Resource> entity, String hash, int range) {
 		final DBSession mainSession = this.openMainSession();
 		try {
 			final GetTagForResourceParam param = new GetTagForResourceParam();
-			param.setId(Integer.parseInt(entityId)); // FIXME: this doesn't make any sense
+			param.setHash(hash);
 			param.setRange(range);
 			final Resource resource = entity.getResource();
 			
@@ -96,31 +101,10 @@ public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implem
 	 * @see recommender.core.interfaces.database.RecommenderDBAccess#getNumberOfTaggingsForUser(java.lang.String)
 	 */
 	@Override
-	public Integer getNumberOfTaggingsForUser(String username) {
+	public int getNumberOfTaggingsForUser(String username) {
 		final DBSession mainSession = this.openMainSession();
 		try {
-			return this.queryForObject("getNumberOfTasForUser", username, Integer.class, mainSession);
-		} finally {
-			mainSession.close();
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see recommender.core.interfaces.database.RecommenderDBAccess#getNumberOfTagsForRecommendationEntity(java.lang.Class, java.lang.String)
-	 */
-	@Override
-	public Integer getNumberOfTagsForRecommendationEntity(Post<? extends Resource> entity, String entityId) {
-		final DBSession mainSession = this.openMainSession();
-		final Resource resource = entity.getResource();
-		try {
-			if (resource instanceof BibTex) {
-				return this.queryForObject("getNumberOfTagsForBibTeX", entityId, Integer.class, mainSession);
-			} else if (resource instanceof Bookmark) {
-				return this.queryForObject("getNumberOfTagsForBookmark", entityId, Integer.class, mainSession);
-			}
-
-			throw new UnsupportedResourceTypeException("Unknown resource type " + resource.getClass().getName());
+			return saveConvert(this.queryForObject("getNumberOfTasForUser", username, Integer.class, mainSession));
 		} finally {
 			mainSession.close();
 		}
@@ -131,14 +115,14 @@ public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implem
 	 * @see recommender.core.interfaces.database.RecommenderDBAccess#getNumberOfTasForRecommendationEntity(java.lang.Class, java.lang.String)
 	 */
 	@Override
-	public Integer getNumberOfTagAssignmentsForRecommendationEntity(Post<? extends Resource> entity, String entityId) {
+	public int getNumberOfTagAssignmentsForRecommendationEntity(Post<? extends Resource> entity, final String hash) {
 		final DBSession mainSession = this.openMainSession();
 		final Resource resource = entity.getResource();
 		try {
 			if (resource instanceof BibTex) {
-				return this.queryForObject("getNumberOfTasForBibTeX", entityId, Integer.class, mainSession);
+				return saveConvert(this.queryForObject("getNumberOfTasForBibTeX", hash, Integer.class, mainSession));
 			} else if (resource instanceof Bookmark) {
-				return this.queryForObject("getNumberOfTasForBookmark", entityId, Integer.class, mainSession);
+				return saveConvert(this.queryForObject("getNumberOfTasForBookmark", hash, Integer.class, mainSession));
 			}
 
 			throw new UnsupportedResourceTypeException("Unknown resource type " + resource.getClass().getName());
@@ -146,6 +130,7 @@ public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implem
 			mainSession.close();
 		}
 	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -174,20 +159,4 @@ public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implem
 			mainSession.close();
 		}
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see recommender.core.interfaces.database.RecommenderDBAccess#getTagNamesForRecommendationEntity(java.lang.Integer)
-	 */
-	@Override
-	public List<String> getTagNamesForRecommendationEntity(Integer entitiyId) {
-		final DBSession mainSession = this.openMainSession();
-		try {
-			return this.queryForList("getTagNamesForCID", entitiyId, String.class, mainSession);
-		} finally {
-			mainSession.close();
-		}
-	}
-	
-
 }

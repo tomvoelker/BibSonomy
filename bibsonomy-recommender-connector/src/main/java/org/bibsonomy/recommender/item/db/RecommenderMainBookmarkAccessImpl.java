@@ -3,7 +3,6 @@ package org.bibsonomy.recommender.item.db;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -159,7 +158,8 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 				index = new TagIndex(tag, 1);
 				tagIndeces.add(index);
 				param.setTagIndex(tagIndeces);
-				items.addAll((Collection<? extends Post<Bookmark>>) this.queryForList("getBookmarkByTagNames", param, Post.class, mainSession));
+				final List<Post<Bookmark>> queryForList = (List<Post<Bookmark>>) this.queryForList("getBookmarkByTagNames", param, mainSession);
+				items.addAll(queryForList);
 			}
 			return items;
 		} finally {

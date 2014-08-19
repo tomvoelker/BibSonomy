@@ -257,20 +257,24 @@
 		<property name="wikiRenderer" ref="wikiRenderer"/>
 		<property name="notLoggedInUserLogic" ref="notLoggedInUserLogic"/>
 	</bean>
-
-
+	
 	<bean id="documentsController" class="org.bibsonomy.webapp.controller.ajax.DocumentsController" scope="request" parent="ajaxController">
 		<property name="fileLogic" ref="fileLogic" />
 		<property name="messageSource" ref="messageSource"/>
-	</bean>	
-		
+	</bean>
+	
 	<!-- controller for handling recommendation requests -->
 	<bean id="ajaxTagsRecommendationsController" class="org.bibsonomy.webapp.controller.ajax.RecommendationsAjaxController" abstract="true" parent="ajaxController">
 		<!-- used for accessing spam informations -->
 		<property name="adminLogic" ref="adminLogic"/>  
 		<property name="recommender"	ref="multiplexingTagRecommender" />
 		<!-- tag recommender used for spammer -->
-		<property name="spamTagRecommender" ref="jensRecommender"/>
+		<property name="spamTagRecommender" ref="spamTagRecommender" />
+		<property name="recommendationRenderer" ref="recommendedTagRenderer" />
+	</bean>
+	
+	<bean id="spamTagRecommender" class="org.bibsonomy.recommender.RecommendationServiceWrapper">
+		<constructor-arg ref="jensRecommender" />
 	</bean>
 	
 	<bean id="ajaxItemRecommenderFeedbackController" class="org.bibsonomy.webapp.controller.ajax.ItemRecommenderFeedbackController" scope="request" parent="ajaxController">

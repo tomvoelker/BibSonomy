@@ -225,14 +225,14 @@ function handleRecommendedTags(json) {
 		// clear previous recommendations
 		tagField.empty();
 		
-		jQuery.each(json.tags.tag, function(key, value) {
-			    var tagName = value.name;
+		jQuery.each(json.recommendations, function(key, value) {
+				var tagName = value.name;
 				var newTag = $("<li tabindex='1'>" + tagName + " </li>");
 				newTag.click(copytag);
 				tagField.append(newTag);
 				var suggestion = new Object;
-				suggestion.label      = tagName;
-				suggestion.score      = value.score;
+				suggestion.label = tagName;
+				suggestion.score = value.score;
 				suggestion.confidence = value.confidence;
 				tagSuggestions.push(suggestion);
 			});

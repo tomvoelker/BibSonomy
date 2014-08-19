@@ -6,12 +6,11 @@
 	    -->
 	
 	<typeAlias alias="pair"                        type="recommender.core.model.Pair" />
-	<typeAlias alias="postGuess"                   type="org.bibsonomy.recommender.connector.database.params.PostGuess" />
-	<typeAlias alias="getTagsForResParam"          type="org.bibsonomy.recommender.connector.database.params.GetTagForResourceParam" />
+	<typeAlias alias="getTagsForResParam"          type="org.bibsonomy.recommender.tag.db.params.GetTagForResourceParam" />
 	<typeAlias alias="timestamp"                   type="java.sql.Timestamp" />
-	<typeAlias alias="postRecParam"                type="org.bibsonomy.recommender.connector.database.params.PostRecParam" />
+	<typeAlias alias="postRecParam"                type="org.bibsonomy.recommender.tag.db.params.PostRecParam" />
 	
-	<typeAlias alias="itemRecRequestParam"       type="org.bibsonomy.recommender.connector.database.params.ItemRecRequestParam" />
+	<typeAlias alias="itemRecRequestParam"       type="org.bibsonomy.recommender.item.db.params.ItemRecRequestParam" />
 	
 	<sqlMap resource="common/TypeAliases.xml" />
 	
