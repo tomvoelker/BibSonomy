@@ -310,6 +310,34 @@ public class URLGenerator {
     }
     
     /**
+     * Constructs a URL for a goldstandard publication specified by its inter hash.
+     * 
+     * @param interHash
+     * @return URL pointing to the publication represented by the inter hash
+     */
+    public String getGoldstandardUrlByInterHash(final String interHash) {
+    	return this.getGoldstandardUrlByInterHashAndUsername(interHash, null);
+    }
+    
+    /**
+     * Constructs a URL for a goldstandard publication specified by its inter hash and the username.
+     * If no username is present, it will not occur in the URL and the trailing '/' will be
+     * omitted.
+     * 
+     * @param interHash
+     * @param userName
+     * @return URL pointing to the goldstandard publication represented by the interHash and the userName
+     */
+    public String getGoldstandardUrlByInterHashAndUsername(final String interHash, final String userName) {
+    	String url = this.projectHome + prefix + PUBLICATION_PREFIX + "/" + interHash;
+    	
+    	if (present(userName))
+			return this.getUrl(url + "/" + UrlUtils.safeURIEncode(userName));
+			
+		return this.getUrl(url);
+    }  
+    
+    /**
      * Constructs the URL for the group's page.
      * 
      * @param groupName

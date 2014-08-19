@@ -30,6 +30,7 @@ import static org.junit.Assert.assertTrue;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.ModelUtils;
@@ -144,6 +145,24 @@ public class URLGeneratorTest {
 	public void testGetFriendUrlByUserNameAndTagName() throws Exception{
 		final String expected = projectHome + "friend/jaescke/kde";
 		assertEquals(expected, ug.getFriendUrlByUserNameAndTagName("jaescke", "kde"));
+	}
+	
+	@Test
+	public void testGetGoldstandardUrlByInterHash() throws Exception{
+		final GoldStandardPublication gst = ModelUtils.generatePost(GoldStandardPublication.class).getResource();
+		final String expected = projectHome + "bibtex/" + gst.getInterHash();
+		assertEquals(expected, ug.getGoldstandardUrlByInterHash(gst.getInterHash()));
+	}
+	
+	@Test
+	public void testGetGoldstandardUrlByInterHashAndUsername() throws Exception{
+		final Post<GoldStandardPublication> post = ModelUtils.generatePost(GoldStandardPublication.class);
+		final BibTex gst = post.getResource();
+		final String userName = post.getUser().getName();
+		
+		String expected = projectHome + "bibtex/" + gst.getInterHash() + "/" +
+						  userName;
+		assertEquals(expected, ug.getGoldstandardUrlByInterHashAndUsername(gst.getInterHash(), userName));
 	}
 
 	@Test
