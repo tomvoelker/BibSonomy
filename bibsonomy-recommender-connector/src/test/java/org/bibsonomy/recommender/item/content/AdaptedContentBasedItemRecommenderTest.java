@@ -3,7 +3,6 @@ package org.bibsonomy.recommender.item.content;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedSet;
 
@@ -17,6 +16,7 @@ import org.bibsonomy.recommender.item.db.DBLogConfigItemAccess;
 import org.bibsonomy.recommender.item.model.RecommendationUser;
 import org.bibsonomy.recommender.item.model.RecommendedPost;
 import org.bibsonomy.recommender.item.service.RecommenderMainItemAccess;
+import org.bibsonomy.recommender.item.testutil.DummyCollaborativeMainAccess;
 import org.bibsonomy.recommender.item.testutil.DummyMainItemAccess;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,10 +32,10 @@ import recommender.core.database.DBLogic;
  *
  */
 public class AdaptedContentBasedItemRecommenderTest {
-	private static final String REQUESTING_USER_NAME = "requestUser";
-	private static final int RECOMMENDATIONS_TO_CALCULATE = 4;
-	private static final String WINNER_TITLE = "winner title";
-	private static final String[] USER_NAMES = {"cfUser1", "cfUser2"}; 
+	public static final String REQUESTING_USER_NAME = "requestUser";
+	public static final int RECOMMENDATIONS_TO_CALCULATE = 4;
+	public static final String WINNER_TITLE = "recommender systems";
+	public static final String[] USER_NAMES = {"cfuser1", "cfuser2"}; 
 	
 	private static int id_generator = 0;
 	
@@ -65,13 +65,13 @@ public class AdaptedContentBasedItemRecommenderTest {
 		reco.setDbLogic(bibtexDBLogic);
 		reco.setNumberOfItemsToRecommend(RECOMMENDATIONS_TO_CALCULATE);
 		
-		User u = new User(REQUESTING_USER_NAME);
+		User u = new User(ContentBasedItemRecommenderTest.DUMMY_CF_USER_NAME);
 		final RecommendationUser user = new RecommendationUser();
 		user.setUserName(u.getName());
 		
 		SortedSet<RecommendedPost<BibTex>> recommendations = reco.getRecommendation(user);
 		
-		// checks if the count of items correct
+		// checks if the count of items is correct
 		assertEquals(RECOMMENDATIONS_TO_CALCULATE, recommendations.size());
 		
 		// new dbAccess to make the database results non random
@@ -96,10 +96,10 @@ public class AdaptedContentBasedItemRecommenderTest {
 	 * 
 	 * @return a list with fix specified attributes like given below
 	 */
-	private List<Post<? extends Resource>>createItemsForCfUsers() {
+	public static List<Post<? extends Resource>>createItemsForCfUsers() {
 		final List<Post<? extends Resource>> posts = new ArrayList<Post<? extends Resource>>();
-		posts.add(this.createBibTexPost(WINNER_TITLE, "recommender systems", "empty descr", USER_NAMES[0]));
-		posts.add(this.createBibTexPost("failed", "recommender systems", "unknown description", USER_NAMES[1]));
+		posts.add(createBibTexPost(WINNER_TITLE, "recommender systems", "recommender systems", USER_NAMES[0]));
+		posts.add(createBibTexPost("failed", "recommender systems", "unknown description", USER_NAMES[1]));
 		return posts;
 	}
 	
@@ -112,7 +112,7 @@ public class AdaptedContentBasedItemRecommenderTest {
 	 * @param username the username of the owner
 	 * @return an instance of a bibtex post
 	 */
-	private Post<BibTex> createBibTexPost(final String title, final String abstractString, final String description, final String username) {
+	public static Post<BibTex> createBibTexPost(final String title, final String abstractString, final String description, final String username) {
 		final Post<BibTex> post = new Post<BibTex>();
 		final BibTex bibtex = new BibTex();
 		bibtex.setTitle(title);
@@ -133,7 +133,7 @@ public class AdaptedContentBasedItemRecommenderTest {
 	 * @param username the username of the owder
 	 * @return an instance of a bookmark post
 	 */
-	private Post<Bookmark> createBookmarkPost(final String title, final String description, final String username) {
+	public static Post<Bookmark> createBookmarkPost(final String title, final String description, final String username) {
 		final Post<Bookmark> post = new Post<Bookmark>();
 		final Bookmark bookmark = new Bookmark();
 		bookmark.setTitle(title);
@@ -143,42 +143,5 @@ public class AdaptedContentBasedItemRecommenderTest {
 		post.setResource(bookmark);
 		post.setUser(new User(username));
 		return post;
-	}
-	
-	/**
-	 * Extended dummy database implementation to return non random values.
-	 * @author lukas
-	 */
-	private abstract class DummyCollaborativeMainAccess<R extends Resource> extends DummyMainItemAccess<R> {
-		
-		/*
-		 * (non-Javadoc)
-		 * @see org.bibsonomy.recommender.connector.testutil.DummyMainItemAccess#getAllItemsOfQueryingUser(int, java.lang.String)
-		 */
-		@Override
-		public List<Post<? extends Resource>> getAllItemsOfQueryingUser(int count, String username) {
-			final List<Post<? extends Resource>> items = new ArrayList<Post<? extends Resource>>();
-			final Post<BibTex> bibtexPost = createBibTexPost("request bibtex", "recommender systems", "empty descr", REQUESTING_USER_NAME);
-			final Post<Bookmark> bookmarkPost = createBookmarkPost("request bookmark", "empty descr", REQUESTING_USER_NAME);
-			items.add(bibtexPost);
-			items.add(bookmarkPost);
-			return items;
-		}
-		
-		/* (non-Javadoc)
-		 * @see org.bibsonomy.recommender.item.testutil.DummyMainItemAccess#getItemsForUser(int, java.lang.String)
-		 */
-		@Override
-		public List<Post<? extends Resource>> getItemsForUser(int count, String username) {
-			return createItemsForCfUsers();
-		}
-		
-		/* (non-Javadoc)
-		 * @see org.bibsonomy.recommender.item.testutil.DummyMainItemAccess#getResourcesByIds(java.util.List)
-		 */
-		@Override
-		public List<Post<R>> getResourcesByIds(List<Integer> ids) {
-			return new LinkedList<Post<R>>();
-		}
 	}
 }

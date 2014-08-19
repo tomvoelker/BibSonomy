@@ -1,8 +1,11 @@
 package org.bibsonomy.recommender.item.content;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -72,7 +75,7 @@ public class AdaptedContentBasedItemRecommender<R extends Resource> extends Cont
 	 */
 	@Override
 	protected List<String> calculateTokens(Post<? extends Resource> item) {
-		final ArrayList<String> tokens = new ArrayList<String>();
+		final List<String> tokens = new LinkedList<String>();
 		
 		// add tags to tokens
 		for (Tag tag : item.getTags()) {
@@ -81,13 +84,19 @@ public class AdaptedContentBasedItemRecommender<R extends Resource> extends Cont
 		final Resource resource = item.getResource();
 		
 		// add title terms to tokens
-		for (String titleToken : resource.getTitle().split(TOKEN_DELIMITER)) {
-			tokens.add(titleToken.toLowerCase());
+		final String title = resource.getTitle();
+		if (present(title)) {
+			for (String titleToken : title.split(TOKEN_DELIMITER)) {
+				tokens.add(titleToken.toLowerCase());
+			}
 		}
 		
 		// add description and abstract terms to tokens
-		for (String token : item.getDescription().split(TOKEN_DELIMITER)) {
-			tokens.add(token.toLowerCase());
+		final String description = item.getDescription();
+		if (present(description)) {
+			for (String token : description.split(TOKEN_DELIMITER)) {
+				tokens.add(token.toLowerCase());
+			}
 		}
 		
 		if (resource instanceof BibTex) {

@@ -7,6 +7,10 @@
 	<artifactId>bibsonomy-recommender-connector</artifactId>
 	<packaging>jar</packaging>
 	
+	<properties>
+		<recommender.version>1.0.1-SNAPSHOT</recommender.version>
+	</properties>
+	
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
@@ -28,12 +32,25 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-database-common</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-web-common</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>de.uni-kassel.cs</groupId>
 			<artifactId>recommender-impl</artifactId>
-			<version>1.0.1-SNAPSHOT</version>
+			<version>${recommender.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>de.uni-kassel.cs</groupId>
+			<artifactId>recommender-impl</artifactId>
+			<version>${recommender.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>

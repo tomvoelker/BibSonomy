@@ -20,7 +20,7 @@ import org.junit.Test;
 public class ContentBasedItemRecommenderTest {
 
 	private static final int RECOMMENDATIONS_TO_CALCULATE = 4;
-	public static final String DUMMY_CF_USER_NAME = "testCFItem";
+	public static final String DUMMY_CF_USER_NAME = "testcfitem";
 	public static final String[] TEST_USER_ITEMS = {"evaluation test", "recommender systems"};
 	
 	@Test

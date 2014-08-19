@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.bibsonomy.database.testutil.TestDatabaseLoader;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -41,6 +42,8 @@ public class DBTagAccessTest {
 	@BeforeClass
 	public static void setUp() {
 		dbLogic = RecommenderTestContext.getBeanFactory().getBean("tagRecommenderLogic", DBLogConfigBibSonomy.class);
+		TestDatabaseLoader loader = new TestDatabaseLoader("recommender-db-schema.sql");
+		loader.load("recommender-test.properties", "recommender.tag");
 	}
 	
 	/**
@@ -53,7 +56,7 @@ public class DBTagAccessTest {
 		
 		// store and retrieve query
 		final Long qid = dbLogic.addQuery(post.getUser().getName(), ts, post, 1234);
-		final RecQueryParam retVal = dbLogic.getQuery(qid);
+		final RecQueryParam<?> retVal = dbLogic.getQuery(qid);
 		
 		final String queryUN = retVal.getUserName();
 		assertEquals(post.getUser().getName(), queryUN);
@@ -115,7 +118,6 @@ public class DBTagAccessTest {
 		
 		assertTrue(dbLogic.getRecommenderId(firstRecommender).longValue() > -1);
 		
-		assertTrue(false); // TODO: (refactor) fix code
 		final DummyTagRecommender notExistingRecommender = new DummyTagRecommender();
 		assertEquals(Long.valueOf(-1), dbLogic.getRecommenderId(notExistingRecommender));
 		
@@ -137,7 +139,7 @@ public class DBTagAccessTest {
 		 */
 		final Post<? extends Resource> post = createPost();
 		final Timestamp ts = new Timestamp(System.currentTimeMillis());
-		final String postID = "" + (int) Math.floor(Math.random() * Integer.MAX_VALUE);
+		final String postID = String.valueOf(post.getContentId());
 		
 		// store and retrieve query
 		final Long qid = dbLogic.addQuery(post.getUser().getName(), ts, post, 1234);

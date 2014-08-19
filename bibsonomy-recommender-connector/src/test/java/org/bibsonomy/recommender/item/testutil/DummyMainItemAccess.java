@@ -11,11 +11,11 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.item.content.ContentBasedItemRecommenderTest;
 import org.bibsonomy.recommender.item.model.RecommendationUser;
-import org.bibsonomy.recommender.item.service.ExtendedMainAccess;
+import org.bibsonomy.recommender.item.service.RecommenderMainItemAccess;
 
-public abstract class DummyMainItemAccess<R extends Resource> implements ExtendedMainAccess<R> {
+public abstract class DummyMainItemAccess<R extends Resource> implements RecommenderMainItemAccess<R> {
 
-	public static String[] CF_DUMMY_USERNAMES = {"cfUserA", "cfUserB"};
+	public static String[] CF_DUMMY_USERNAMES = {"cfusera", "cfuserb"};
 	public static String[][] CF_DUMMY_USER_ITEMS = {{"recommender systems", "collaborative filtering"},
 													{"evaluation trees", "grass green"}};
 	private static final Random random = new Random();
@@ -54,6 +54,9 @@ public abstract class DummyMainItemAccess<R extends Resource> implements Extende
 				items.add(post);
 			}
 		}
+		
+		items.addAll(this.createRandomDummyPosts(3));
+		
 		return items;
 	}
 	
@@ -105,60 +108,5 @@ public abstract class DummyMainItemAccess<R extends Resource> implements Extende
 	public List<Post<R>> getTaggedItems(final int maxItemsToEvaluate, final Set<String> tags) {
 		// do nothing
 		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.recommender.item.service.ExtendedMainAccess#getAllItemsOfQueryingUser(int, java.lang.String)
-	 */
-	@Override
-	public List<Post<? extends Resource>> getAllItemsOfQueryingUser(int count,
-			String username) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.recommender.item.service.ExtendedMainAccess#getItemByTitle(java.lang.String)
-	 */
-	@Override
-	public Post<? extends Resource> getItemByTitle(String title) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.recommender.item.service.ExtendedMainAccess#getItemByUserIdWithHash(java.lang.String, java.lang.String)
-	 */
-	@Override
-	public Post<? extends Resource> getItemByUserIdWithHash(String hash,
-			String userId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.recommender.item.service.ExtendedMainAccess#getResourcesByIds(java.util.List)
-	 */
-	@Override
-	public List<Post<R>> getResourcesByIds(List<Integer> ids) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.recommender.item.service.ExtendedMainAccess#getSimilarUsers(int, org.bibsonomy.recommender.item.model.RecommendationUser)
-	 */
-	@Override
-	public List<String> getSimilarUsers(int count, RecommendationUser entity) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.recommender.item.service.ExtendedMainAccess#getUserIdByName(java.lang.String)
-	 */
-	@Override
-	public Long getUserIdByName(String username) {
-		return Long.valueOf(5);
 	}
 }

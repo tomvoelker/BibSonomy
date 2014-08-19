@@ -2,7 +2,7 @@ package org.bibsonomy.recommender.item.filter;
 
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.recommender.item.model.RecommendationUser;
-import org.bibsonomy.recommender.item.testutil.DummyMainItemAccess;
+import org.bibsonomy.recommender.item.testutil.DummyCollaborativeMainAccess;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -22,7 +22,7 @@ public class UserPrivacyFilterTest {
 		entity.setUserName("testuser");
 		
 		final UserPrivacyFilter filter = new UserPrivacyFilter();
-		filter.setDbAccess(new DummyMainItemAccess<Bookmark>(){
+		filter.setDbAccess(new DummyCollaborativeMainAccess<Bookmark>() {
 			/* (non-Javadoc)
 			 * @see org.bibsonomy.recommender.item.testutil.DummyMainItemAccess#createResource()
 			 */
@@ -33,9 +33,9 @@ public class UserPrivacyFilterTest {
 		});
 		
 		final RecommendationUser filteredEntity = filter.filterEntity(entity);
-		Long parsed = 0L;
+		Long parsed = Long.valueOf(0L);
 		try {
-			parsed = Long.parseLong(filteredEntity.getUserName());
+			parsed = Long.valueOf(filteredEntity.getUserName());
 		} catch (NumberFormatException e) {
 			Assert.fail("Id was not a valid Long value!");
 		}
