@@ -53,17 +53,18 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-/** Scrapes the ACM digital library
+/**
+ * Scrapes the ACM digital library
  * @author rja
  *
  */
 public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScraper, CitedbyScraper {
-
-	private final Log log = LogFactory.getLog(ACMBasicScraper.class);
-
+	private static final Log log = LogFactory.getLog(ACMBasicScraper.class);
+	
+	private static final String ACM_BASE_TAB_URL = "http://dl.acm.org/tab_";
 	private static final String SITE_NAME = "ACM Digital Library";
-	private static final String SITE_URL  = "http://portal.acm.org/";
-	private static final String info      = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
+	private static final String SITE_URL = "http://portal.acm.org/";
+	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 
@@ -77,7 +78,6 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 				EMPTY_PATTERN
 		));
 	}
-	
 	
 	
 	private static final String BROKEN_END = new String("},\n}");
@@ -118,7 +118,7 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 			}
 			
 			//pretty good idea to use an own client, since the session in the common client can become invalid
-			HttpClient client = WebUtils.getHttpClient();
+			final HttpClient client = WebUtils.getHttpClient();
 			
 			/*
 			 * Scrape entries from popup BibTeX site. BibTeX entry on these
@@ -162,18 +162,13 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 			}
 
 			final String result = DOIUtils.cleanDOI(bibtexEntries.toString().trim());
-			//final String result = bibtexEntries.toString().trim();
-
 			if (present(result)) {
-				
 				sc.setBibtexResult(result);
-				scrapeCitedby(sc);
-				scrapeReferences(sc);
 				return true;
-			} else
-				throw new ScrapingFailureException("getting bibtex failed");
-
-		} catch (Exception e) {
+			}
+			
+			throw new ScrapingFailureException("getting bibtex failed");
+		} catch (final Exception e) {
 			throw new InternalFailureException(e);
 		}
 	}
@@ -197,7 +192,7 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 	 * @throws MalformedURLException
 	 * @throws IOException
 	 */
-	private StringBuffer extractBibtexEntries(HttpClient client, final String siteUrl, final String path) throws MalformedURLException, IOException{
+	private static StringBuffer extractBibtexEntries(HttpClient client, final String siteUrl, final String path) throws MalformedURLException, IOException{
 		final StringBuffer bibtexEntries = new StringBuffer();
 		
 		//get content for siteUrl
@@ -220,7 +215,7 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 
 	@Override
 	public String getInfo() {
-		return info;
+		return INFO;
 	}
 
 	@Override
@@ -240,6 +235,7 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 		return SITE_URL;
 	}
 
+	// TODO create tests and remove main method
 	public static void main(String[] args) throws MalformedURLException, ScrapingException {
 		final String[] urls = new String[] {
 				"http://portal.acm.org/citation.cfm?id=1015428&amp;coll=Portal&amp;dl=ACM&amp;CFID=22531872&amp;CFTOKEN=18437036",
@@ -262,7 +258,6 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 			System.out.println("----------------------------------------\n");
 
 		}
-
 	}
 
 	/* (non-Javadoc)
@@ -270,21 +265,7 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 	 */
 	@Override
 	public boolean scrapeCitedby(ScrapingContext scrapingContext) throws ScrapingException {
-		HttpClient client = WebUtils.getHttpClient();
-		// TODO Auto-generated method stub
-		final String id = scrapingContext.getTmpMetadata().getId();
-		final String url = "http://dl.acm.org/tab_citings.cfm?id=" + id;
-		String citedby = "";
-		try{
-			citedby = WebUtils.getContentAsString(client, url);
-			if(present(citedby)){
-				scrapingContext.setCitedBy(citedby);
-				return true;
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return false;
+		return scrapeMetaData(scrapingContext, "citings");
 	}
 	
 	/* (non-Javadoc)
@@ -292,22 +273,22 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 	 */
 	@Override
 	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
-		HttpClient client = WebUtils.getHttpClient();
+		return scrapeMetaData(scrapingContext, "references");
+	}
+
+	private static boolean scrapeMetaData(ScrapingContext scrapingContext, final String kind) {
+		final HttpClient client = WebUtils.getHttpClient();
 		final String id = scrapingContext.getTmpMetadata().getId();
-		final String url = "http://dl.acm.org/tab_references.cfm?id=" + id;
-		String reference = "";
+		final String url = ACM_BASE_TAB_URL + kind +  ".cfm?id=" + id;
 		try{
-			WebUtils.getContentAsString(client, url);
+			final String reference = WebUtils.getContentAsString(client, url);
 			if(present(reference)){
 				scrapingContext.setReferences(reference);
 				return true;
 			}
-		}catch(Exception e){
-			e.printStackTrace();
+		} catch(Exception e) {
+			log.error("error while scraping references by for " + scrapingContext.getUrl(), e);
 		}
 		return false;
 	}
-	
-
 }
-

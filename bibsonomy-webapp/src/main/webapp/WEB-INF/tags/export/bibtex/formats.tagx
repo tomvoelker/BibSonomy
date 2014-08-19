@@ -14,7 +14,6 @@
 	<c:url var="swrc"    value="/swrc/${pathAndQueryString}" />
 	<c:url var="json"    value="/json/${pathAndQueryString}" />
 	<c:url var="csl"     value="/csl/${pathAndQueryString}" />
-	<c:url var="msofficexml" value="/msofficexml/${pathAndQueryString}" />
 	<c:url var="custom"  value="/layout/custom/${pathAndQueryString}" />
 
 	<select id="selectlink" onchange="generateExportPostLink(this.value)" size="1">
@@ -27,13 +26,14 @@
 		<option value="${fn:escapeXml(swrc)}">SWRC</option>
 		<option value="${fn:escapeXml(json)}">JSON</option>
 		<option value="${fn:escapeXml(csl)}"><fmt:message key="export.csl.caption" /></option>
-		<option value="${fn:escapeXml(msofficexml)}">MS Office XML</option>
 		<option value="${fn:escapeXml(custom)}">Custom</option>
 
 		<c:forEach var="entry" items="${command.layoutMap}">
 			<c:if test="${entry.value.publicLayout}">
-				<c:url var="url" value="/layout/${entry.value.name}/${pathAndQueryString}" />
-				<option value="${fn:escapeXml(url)}"><c:out value="${entry.value.displayName}"/></option>
+				<c:if test="${'JabrefLayout' eq mapEntry.value.class.simpleName}">
+					<c:url var="url" value="/layout/${entry.value.name}/${pathAndQueryString}" />
+					<option value="${fn:escapeXml(url)}"><c:out value="${entry.value.displayName}"/></option>
+				</c:if>
 			</c:if>
 		</c:forEach>
 	</select>

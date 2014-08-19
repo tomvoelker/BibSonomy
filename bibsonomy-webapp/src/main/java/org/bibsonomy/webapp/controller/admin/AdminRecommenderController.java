@@ -32,6 +32,8 @@ import recommender.impl.model.RecommendedTag;
 import recommender.impl.multiplexer.MultiplexingRecommender;
 
 /**
+ * TODO: more generic controller by using a map RecommendationResult.class -> MRecommender
+ * 
  * @author bsc
  */
 public class AdminRecommenderController implements MinimalisticController<AdminRecommenderViewCommand> {
@@ -70,24 +72,21 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 
 		/* ---------------------- Actions ---------------------------- */
 
-		if (!present(command.getAction())) {
-			// Do nothing
-		} else if (CMD_ADDTAGRECOMMENDER.equals(command.getAction())) {
-			this.handleAddTagRecommender(command);
+		if (CMD_ADDTAGRECOMMENDER.equals(command.getAction())) {
+			handleAddRecommender(command, this.tagRecommender);
 		} else if (CMD_ADDITEMRECOMMENDER.equals(command.getAction())) {
-			this.handleAddItemRecommender(command);
+			handleAddRecommender(command, this.itemRecommender);
 		} else if (CMD_REMOVETAGRECOMMENDER.equals(command.getAction())) {
-			this.handleRemoveTagRecommender(command);
+			handleRemoveRecommender(command, this.tagRecommender);
 		} else if (CMD_REMOVEITEMRECOMMENDER.equals(command.getAction())) {
-			this.handleRemoveItemRecommender(command);
+			handleRemoveRecommender(command, this.itemRecommender);
 		} else if (CMD_UPDATE_RECOMMENDERSTATUS.equals(command.getAction())) {
 			this.handleUpdateRecommenderStatus(command);
 		} else if (CMD_EDITTAGRECOMMENDER.equals(command.getAction())) {
-			this.handleEditTagRecommender(command);
+			handleEditRecommender(this.tagRecommender, this.dbTagLogic, command);
 		} else if (CMD_EDITITEMRECOMMENDER.equals(command.getAction())) {
-			this.handleEditItemRecommender(command);
+			handleEditRecommender(this.itemRecommender, this.dbItemLogic, command);
 		}
-
 		command.setAction(null);
 
 		/* ---------------------- Tabs ---------------------------- */
@@ -163,11 +162,9 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		/* Store info */
 		command.setRecOverviewItem(itemRecommenderInfoList);
 		command.setRecOverviewTag(tagRecommenderInfoList);
-		
 	}
 
-	private void handleEditTagRecommender(final AdminRecommenderViewCommand command) {
-		
+	private static void handleEditRecommender(final MultiplexingRecommender<?, ?> recommender, final DBLogic<?, ?> logic, final AdminRecommenderViewCommand command) {
 		try {
 			// TODO: add a validator?
 			if (!UrlUtils.isValid(command.getNewrecurl())) {
@@ -175,35 +172,11 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 			}
 			final URL newRecurl = new URL(command.getNewrecurl());
 
-			final long sid = command.getEditSid();
-			final boolean recommenderEnabled = this.tagRecommender.disableRecommender(sid);
-			this.dbTagLogic.updateRecommenderUrl(command.getEditSid(), newRecurl);
+			final Long sid = Long.valueOf(command.getEditSid());
+			final boolean recommenderEnabled = recommender.disableRecommender(sid);
+			logic.updateRecommenderUrl(command.getEditSid(), newRecurl);
 			if (recommenderEnabled) {
-				this.tagRecommender.enableRecommender(sid);
-			}
-
-			command.setAdminResponse("Changed url of tag recommender #" + command.getEditSid() + " to " + command.getNewrecurl() + ".");
-		} catch (final MalformedURLException ex) {
-			command.setAdminResponse("Could not edit tag recommender. Please check if '" + command.getNewrecurl() + "' is a valid url.");
-		}
-		command.setNewrecurl(null);
-		command.setTab(Tab.ADD);
-	}
-	
-	private void handleEditItemRecommender(final AdminRecommenderViewCommand command) {
-		
-		try {
-			// TODO: add a validator?
-			if (!UrlUtils.isValid(command.getNewrecurl())) {
-				throw new MalformedURLException();
-			}
-			final URL newRecurl = new URL(command.getNewrecurl());
-
-			final long sid = command.getEditSid();
-			final boolean recommenderEnabled = this.itemRecommender.disableRecommender(sid);
-			this.dbItemLogic.updateRecommenderUrl(command.getEditSid(), newRecurl);
-			if (recommenderEnabled) {
-				this.tagRecommender.enableRecommender(sid);
+				recommender.enableRecommender(sid);
 			}
 
 			command.setAdminResponse("Changed url of item recommender #" + command.getEditSid() + " to " + command.getNewrecurl() + ".");
@@ -238,19 +211,18 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		command.setTab(Tab.ACTIVATE);
 		command.setAdminResponse("Successfully Updated Recommenderstatus!");
 	}
-
-	private void handleRemoveItemRecommender(final AdminRecommenderViewCommand command) {
-
+	
+	private static void handleRemoveRecommender(final AdminRecommenderViewCommand command, final MultiplexingRecommender<?, ?> recommender) {
 		try {
 			int failures = 0;
 			
-			if((command.getDeleteRecIds() == null) || command.getDeleteRecIds().isEmpty()) {
+			if (!present(command.getDeleteRecIds())) {
 				command.setAdminResponse("Please select a recommender first!");
 			} else {
 				for(final String urlString : command.getDeleteRecIds()) {
 					final URL url = new URL(urlString);
-					final boolean success = this.itemRecommender.removeRecommender(url);
-					if(!success) {
+					final boolean success = recommender.removeRecommender(url);
+					if (!success) {
 						failures++;
 					}
 				}
@@ -267,67 +239,18 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		command.setTab(Tab.ADD);
 	}
 	
-	private void handleRemoveTagRecommender(final AdminRecommenderViewCommand command) {
-		try {
-			int failures = 0;
-			
-			if((command.getDeleteRecIds() == null) || command.getDeleteRecIds().isEmpty()) {
-				command.setAdminResponse("Please select a recommender first!");
-			} else {
-				for(final String urlString : command.getDeleteRecIds()) {
-					final URL url = new URL(urlString);
-					final boolean success = this.tagRecommender.removeRecommender(url);
-					if(!success) {
-						failures++;
-					}
-				}
-				if (failures == 0) {
-					command.setAdminResponse("Successfully removed all selected tag recommenders.");
-				} else {
-					command.setAdminResponse(failures + " recommender(s) could not be removed.");
-				}
-			}
-		} catch (final MalformedURLException ex) {
-			log.warn("Invalid url in removeRecommender ", ex);
-		}
-
-		command.setTab(Tab.ADD);
-	}
-
-	private void handleAddItemRecommender(final AdminRecommenderViewCommand command) {
-		
+	private static void handleAddRecommender(final AdminRecommenderViewCommand command, final MultiplexingRecommender<?, ?> recommender) {
 		try {
 			if (!UrlUtils.isValid(command.getNewrecurl())) {
 				throw new MalformedURLException();
 			}
-
-			this.itemRecommender.addRecommender(new URL(command.getNewrecurl()));
+			recommender.addRecommender(new URL(command.getNewrecurl()));
 			command.setAdminResponse("Successfully added and activated new item recommender!");
-
 		} catch (final MalformedURLException e) {
 			command.setAdminResponse("Could not add new item recommender. Please check if '" + command.getNewrecurl() + "' is a valid url.");
 		} catch (final Exception e) {
 			log.error("Error testing 'set recommender'", e);
 			command.setAdminResponse("Failed to add new item recommender");
-		}
-
-		command.setTab(Tab.ADD);
-	}
-	
-	private void handleAddTagRecommender(final AdminRecommenderViewCommand command) {
-		try {
-			if (!UrlUtils.isValid(command.getNewrecurl())) {
-				throw new MalformedURLException();
-			}
-
-			this.tagRecommender.addRecommender(new URL(command.getNewrecurl()));
-			command.setAdminResponse("Successfully added and activated new tag recommender!");
-
-		} catch (final MalformedURLException e) {
-			command.setAdminResponse("Could not add new tag recommender. Please check if '" + command.getNewrecurl() + "' is a valid url.");
-		} catch (final Exception e) {
-			log.error("Error testing 'set recommender'", e);
-			command.setAdminResponse("Failed to add new tag recommender");
 		}
 
 		command.setTab(Tab.ADD);

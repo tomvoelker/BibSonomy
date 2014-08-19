@@ -1,0 +1,24 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	
+	<jsp:directive.attribute name="title" type="java.lang.String" required="true" />
+
+	<!-- initilize spheres -->
+	<script src="${properties['project.home']}resources/javascript/jsrender.js" type="text/javascript"><!-- keep me! --></script>
+   	<script type="text/javascript">
+		// query for spheres
+		$(function() {
+			if (typeof sphereControl=="undefined") {
+				sphereControl = new SphereControl("${properties['project.home']}");
+			}
+
+			sphereControl.renderSpheres() 
+		});
+	</script>
+	<h4 class="sidebar"><c:out value="${title}"/></h4>
+	<div id="spheresTemplates"><!-- keep me! --></div>
+	<ul class="sidebarContainer sidebar_collapse_content"><li><span id="spheresCloudElement"><!-- keep me! --></span></li></ul>
+ </jsp:root>
