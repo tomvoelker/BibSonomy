@@ -22,8 +22,14 @@ import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
+import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.pingback.HttpClientLinkLoader;
+import org.bibsonomy.pingback.SimplePingback;
+import org.bibsonomy.pingback.TrackbackClient;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.services.Pingback;
 import org.bibsonomy.util.ObjectUtils;
 import org.bibsonomy.webapp.command.ajax.DiscussionItemAjaxCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -32,8 +38,11 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
+
+import com.malethan.pingback.impl.ApachePingbackClient;
 
 /**
  * @author dzo
@@ -43,6 +52,8 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 	private static final Log log = LogFactory.getLog(DiscussionItemAjaxController.class);
 	
 	private Errors errors;
+	private User loginUser;
+	private Pingback pingback;
 
 	@Override
 	public DiscussionItemAjaxCommand<D> instantiateCommand() {
@@ -76,7 +87,8 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 			return this.getErrorView();
 		}
 		
-		final String userName = command.getContext().getLoginUser().getName();
+		this.loginUser = command.getContext().getLoginUser();
+		final String userName = loginUser.getName();
 		
 		/*
 		 * don't call the validator
@@ -189,7 +201,14 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 			if (!present(originalPost)) {
 				throw new IllegalStateException("A discussion item could not be created for hash "+interHash+" and username "+postUserName+" by user "+userName+" because no post was found that it could have been appended to.");
 			}
-
+			
+			/*
+			 * Send a pingback/trackback for the public posted resource.
+			 */
+			if (present(this.pingback) && !this.loginUser.isSpammer() && GroupUtils.isPublicGroup(originalPost.getGroups())) {
+				this.pingback.sendPingback(originalPost);
+			}
+			
 			// we have found an original Post and now transform it into a goldstandard post
 			final Post<Resource> newGoldStandardPost = new Post<Resource>();
 			if (BibTex.class.isAssignableFrom(originalPost.getResource().getClass())) {
@@ -250,5 +269,14 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 	@Override
 	public boolean isValidationRequired(final DiscussionItemAjaxCommand<D> command) {
 		return false;
+	}
+
+	/**
+	 * A service that sends pingbacks / trackbacks to posted URLs.
+	 * 
+	 * @param pingback
+	 */
+	public void setPingback(final Pingback pingback) {
+		this.pingback = pingback;
 	}
 }

@@ -242,14 +242,18 @@
 		<property name="requestLogic" ref="requestLogic" />
 		<property name="responseLogic" ref="responseLogic"/>
 	</bean>
-
+	
+	<bean id="discussionItemAjaxController" class="org.bibsonomy.webapp.controller.ajax.DiscussionItemAjaxController" abstract="true" parent="ajaxController">
+		<property name="pingback" ref="pingback"/>
+	</bean>
+	
 	<bean id="generalAjaxController" class="org.bibsonomy.webapp.controller.ajax.GeneralAjaxController" scope="request" parent="ajaxController" />	
 	
 	<bean id="editGoldstandardReferencesController" class="org.bibsonomy.webapp.controller.ajax.EditGoldstandardReferencesController" scope="request" parent="ajaxController" />
 	
-	<bean id="commentController" class="org.bibsonomy.webapp.controller.ajax.CommentAjaxController" parent="ajaxController" scope="request" />
+	<bean id="commentController" class="org.bibsonomy.webapp.controller.ajax.CommentAjaxController" parent="discussionItemAjaxController" scope="request" />
 	
-	<bean id="reviewController" class="org.bibsonomy.webapp.controller.ajax.ReviewAjaxController" parent="ajaxController" scope="request" />
+	<bean id="reviewController" class="org.bibsonomy.webapp.controller.ajax.ReviewAjaxController" parent="discussionItemAjaxController" scope="request" />
 	
 	<bean id="additionalURLController" class="org.bibsonomy.webapp.controller.ajax.AdditionalURLController" scope="request" parent="ajaxController" />
 	
@@ -286,4 +290,25 @@
 	<bean id="basketController" class="org.bibsonomy.webapp.controller.ajax.BasketController" scope="request" parent="ajaxController" />
 	<bean id="conceptController" class="org.bibsonomy.webapp.controller.ajax.ConceptController" scope="request" parent="ajaxController" />
 	<bean id="privatenoteController" class="org.bibsonomy.webapp.controller.ajax.PrivateNoteAjaxController" scope="request" parent="ajaxController" />
+	
+	<!--+ 
+	 	|
+	 	| Pingback/Trackback sends a "PING" to a bookmarked URL.
+	 	|
+	 	| The corresponding cron trigger is defined in bibsonomy2-servlet-cronjobs.xml.
+	 	| The used pingback implementation can be chosen with the "project.bean.pingback" property.
+	 	+-->	
+	<bean id="pingbackClient" class="com.malethan.pingback.impl.ApachePingbackClient" />
+	<bean id="trackbackClient" class="org.bibsonomy.pingback.TrackbackClient" />
+
+	<bean id="linkLoader" class="org.bibsonomy.pingback.HttpClientLinkLoader" />
+
+	<bean id="realPingback" class="org.bibsonomy.pingback.ThreadedPingbackImpl">
+		<property name="urlGenerator" ref="urlGenerator" />
+		<property name="pingbackClient" ref="pingbackClient" />
+		<property name="trackbackClient" ref="trackbackClient" />
+		<property name="linkLoader" ref="linkLoader" />
+	</bean>
+	<bean id="mockPingback" class="org.bibsonomy.pingback.MockPingback"/>
+	<alias name="${project.bean.pingback}" alias="pingback"/>
 </beans>
