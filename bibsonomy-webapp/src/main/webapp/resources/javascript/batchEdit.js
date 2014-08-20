@@ -1,12 +1,13 @@
-var ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR='input[name="abstractGrouping"]';
-var OTHER_GROUPING_CLASS_SELECTOR=".otherGroupsBox";
 var tagAction=0;
 disableAll=true;
 
 $(document).ready(function () {
-
+	
 	// no feature is shown
 	hideAllFeatures();
+
+	//Hint messages are hided.
+	hideAllMessages();
 	
 	// buttons are shown, but disabled.
 	disableAllButtons();
@@ -14,18 +15,12 @@ $(document).ready(function () {
 	// checkboxes should be reset, when the page is reloaded
 	resetSelection();
 	
-	$(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
-	$.each($(".abstractGroupingGroup"),function(b,c){toggleGroupBox(c);});
-
 	/*
 	 * handler to change all sub checkboxes with the select all option
-	 */
+	 * */
 	$('#selectAll').change(function() {
 		var markAllChecked = $(this).is(':checked');
-		/*
-		 * mega haxxor jquery selector to select input checkboxes with name beginning
-		 * with posts.
-		 */
+		
 		$('input[name^=posts]:checkbox').each(function() {
 			$(this).prop('checked', markAllChecked);
 			$(this).change();
@@ -39,21 +34,20 @@ $(document).ready(function () {
 		if ($(this).is(':checked')) {
 			disableAll=false;
 			enableAllButtons();
+			$('div[id=editHint]').hide();
 		}
 		// 	we have to call change() in this case, because a new tag input should be shown.
 		if (tagAction==2){
-			$('#tagOption2').click();
+			$('#tagEachId').click();
 		}
 		
 		var oneNotChecked = false;
-		/*
-		 * mega haxxor jquery selector to select input checkboxes with name beginning
-		 * with posts that are not checked.
-		 */
+		
 		$('input[name^=posts]:checkbox:not(:checked)').each(function() {
 			oneNotChecked = true;
 			return;
 		});
+		
 		$('#selectAll').prop('checked', !oneNotChecked);
 		
 		var allNotChecked = true;
@@ -70,29 +64,38 @@ $(document).ready(function () {
 		
 	});
 
-	$('#tagOption1').click(function() {
+	$('#tagAllId').click(function() {
 		if (disableAll){
 			return false;
 		}
-		tagAction=1;
+		
+		enableAllButtons();
+		
 		hideAllFeatures();
+		hideAllMessages();
+		resetBackgroundColor();
+		$(this).css("background-color", "#6666CC");
 		$('div[name=AllpostTagsHeader]').show();
 		$('div[name=allTagBox]').show();
-		
-		
-		$('div[name=updateButton]').show();
-		$('div[name=UpdateRedirectButton]').show();
-		// action is set here
-		$('input[name=action]').val("1");
+		tagAction=1;
 		
 	});
-	
-	$('#tagOption2').click(function() {
+	$('#allTagOk').click(function() {
+		// action is set here
+		$('input[name=action]').val("1");
+		$('input[name=referer]').val("justUpdate");
+		$("#tagAllAdded").show();	
+		submitForm("#tagAllAdded");
+	});
+	$('#tagEachId').click(function() {
 		if (disableAll){
 			return false;
 		}
-		tagAction=2;
+		
 		hideAllFeatures();
+		hideAllMessages();
+		resetBackgroundColor();
+		$(this).css("background-color", "#6666CC");
 		
 		$('li[name=postTagsHeader]').show();
 		// the following lines are to show tag edit box, only for the selected posts
@@ -111,30 +114,40 @@ $(document).ready(function () {
 			}
 		});
 		
-		$('div[name=updateButton]').show();
-		$('div[name=UpdateRedirectButton]').show();
-		
-		$('input[name=action]').val("1");
-		
+		$('div[name=eachTagBtn]').show();
+		tagAction=2;
 	});	
 	
+	$('#eachTagOk').click(function() {
+		// action is set here
+		$('input[name=action]').val("2");
+		$('input[name=referer]').val("justUpdate");
+		submitForm("#tagEachEdited");
+	});
 	$('#delId').click(function() {
 		if (disableAll){
 			return false;
 		}
+		
 		hideAllFeatures();
+		resetBackgroundColor();
+		hideAllMessages();
+		$(this).css("background-color", "#6666CC");
 		
-		var value = true;
-		value = confirm(getString("batchedit.deleteSelected.confirm"));
-		
-		if(value){
-			$('input[name=action]').val("3");
-			//return to the edit page. 
-			$('input[name=referer]').val("justUpdate");
-			//submits the form, since we have no submit button in this case
-			submitForm();
-			
-		}
+		$('div[id=delConfirm]').show();	
+	});
+	
+	$('#delOk').click(function() {
+		$('div[id=delConfirm]').hide();
+		$('input[name=action]').val("4");
+		$('input[name=referer]').val("justUpdate");
+		simulateDeletePost();
+		submitForm("#deleted");
+	});
+	
+	$('#delCancel').click(function() {
+		$('div[id=delConfirm]').hide();
+		resetBackgroundColor();
 	});
 	
 	$('#normId').click(function() {
@@ -142,38 +155,47 @@ $(document).ready(function () {
 			return false;
 		}
 		hideAllFeatures();
+		resetBackgroundColor();
+		hideAllMessages();
 		
-		$('input[name=action]').val("2");
-		alert(getString("batchedit.normalizeBtn.alert"));
-		//return to the edit page.
-		$('input[name=referer]').val("justUpdate");
-		//submit the form, since we have no submit button in this case
-		submitForm();
+		$(this).css("background-color", "#6666CC");
+		$('div[id=normConfirm]').show();		
 	});
 	
+	$('#normOk').click(function() {
+		$('div[id=normConfirm]').hide();
+		$('input[name=action]').val("3");
+		$('input[name=referer]').val("justUpdate");
+		submitForm("#normalized");
+	});
+	
+	$('#normCancel').click(function() {
+		$('div[id=normConfirm]').hide();
+		resetBackgroundColor();
+	});
+			
 	$('#privacyId').click(function() {
 		if (disableAll){
 			return false;
 		}
 		hideAllFeatures();
-	
+		resetBackgroundColor();
+		hideAllMessages();
 		
-		$('div[name=privacyBox]').show();
-		$('div[name=updateButton]').show();
-		$('div[name=UpdateRedirectButton]').show();
+		$('div[id=privacyBox]').show();
+		$(this).css("background-color", "#6666CC");
+	});
+	
+	$('#privacyOk').click(function() {
 		//action is set here
-		$('input[name=action]').val("4");
-
-	});
-	
-	$('#updateBtnId').click(function() {
-		//referer is set here
+		$('input[name=action]').val("5");
 		$('input[name=referer]').val("justUpdate");
+		submitForm("#privacyChanged");
 	});
-	
-	$('#UpRidBtnId').click(function() {
-		//referer is set here
-		$('input[name=referer]').val("updateANDredirect");
+
+	$('#backBtn').click(function() {
+		$('input[name=action]').val("0");
+		submitForm("#back");
 	});
 	
 });
@@ -185,63 +207,94 @@ function resetSelection(){
 		$(this).prop('checked', false);
 	});
 }
-function submitForm(){
+
+function hideAllMessages(){
+
+	$('div[id=normConfirm]').hide();
+	$('div[id=normalized]').hide();	
+	$('div[id=privacyChanged]').hide();
+	$('div[id=delConfirm]').hide();
+	$('div[id=deleted]').hide();
+	$('div[id=tagAllAdded]').hide();
+	$('div[id=tagEachEdited]').hide();
+	$('div[id=back]').hide();
+	$('div[id=editHint]').hide();
+}
+
+function submitForm(messageId){
+	hideAllMessages();
+	$(messageId).show();
 	document.getElementById("batchedit").submit();
 }
 
 function hideAllFeatures(){
+	
 	$('li[name=eachPostTag]').hide();
 	$('li[name=postTagsHeader]').hide();
 	$('div[name=AllpostTagsHeader]').hide();
 	
-	$('div[name=privacyBox]').hide();
+	$('div[id=privacyBox]').hide();
 	$('div[name=allTagBox]').hide();
-	
-	$('div[name=updateButton]').hide();
-	$('div[name=UpdateRedirectButton]').hide();
+	$('div[name=eachTagBtn]').hide();
 }
 /**
  changes the CSS class of an element.
  --> enable to disable */
 function disableAllButtons(){
-	$('div[name=updateButton]').hide();
-	$('div[name=UpdateRedirectButton]').hide();
+	$('div[id=backBtn]').hide();
 
-	document.getElementById('options').setAttribute('class', '');
 	document.getElementById('delId').setAttribute('class', 'delClassDisabled');
-	document.getElementById('tagId').setAttribute('class', 'tagClassDisabled');
+	document.getElementById('tagEachId').setAttribute('class', 'tagEachClassDisabled');
+	document.getElementById('tagAllId').setAttribute('class', 'tagAllClassDisabled');
 
 	if (document.getElementById('normId')) {
 		document.getElementById('normId').setAttribute('class', 'normClassDisabled');
 	}
 	document.getElementById('privacyId').setAttribute('class', 'privacyClassDisabled');
+	tagAction=0;
+	resetBackgroundColor();
+	
+	hideAllMessages();
+	$('div[id=editHint]').show();
+	
+}
+
+function resetBackgroundColor(){
+	document.getElementById('delId').style.backgroundColor="#eee";
+	document.getElementById('tagEachId').style.backgroundColor="#eee";
+	document.getElementById('tagAllId').style.backgroundColor="#eee";	
+
+	if (document.getElementById('normId')) {
+		document.getElementById('normId').style.backgroundColor="#eee";
 	}
+	document.getElementById('privacyId').style.backgroundColor="#eee";
+	tagAction=0;
+}
 
 /**
 changes the CSS class of an element.
 --> disable to enable */
 function enableAllButtons(){
-	document.getElementById('options').setAttribute('class', 'showOptions');
 	document.getElementById('delId').setAttribute('class', 'delClass');
-	document.getElementById('tagId').setAttribute('class', 'tagClass');
+	document.getElementById('tagEachId').setAttribute('class', 'tagEachClass');
+	document.getElementById('tagAllId').setAttribute('class', 'tagAllClass');
 	if (document.getElementById('normId')) {
 		document.getElementById('normId').setAttribute('class', 'normClass');
 	}
 	document.getElementById('privacyId').setAttribute('class', 'privacyClass');
+	$('div[id=backBtn]').show();
+
 }
 
-function onAbstractGroupingClick(){toggleGroupBox($(this).parent());
+function simulateDeletePost(){
+	
+	$('input[name^=posts]:checkbox:checked').each(function() {
+		$(this).parent().hide();
+		$(this).parent().siblings().hide();
+		return;
+	});
+	
 }
-
-function toggleGroupBox(c){
-	var a=$(c).children("input:checked");
-	var b=$(c).siblings(OTHER_GROUPING_CLASS_SELECTOR);
-	if(!a.hasClass("otherGroups")){
-		b.attr("disabled","disabled");
-	}
-	else{
-		b.removeAttr("disabled");
-}}		           
 maximizeById("general");
 
 
@@ -272,5 +325,15 @@ function enableAllCheckboxes(){
 	$('input[name^=posts]:checkbox').each(function() {
 		$(this).prop('disabled', false);
 	});
+}
+
+function checkedPostsNum(){
+	
+	$('input[name^=posts]:checkbox:checked').each(function() {
+		checkedPost++;
+		return;
+	});
+	$('input[name=CheckedPostsNum]').val(checkedPost);
+	
 }
 */

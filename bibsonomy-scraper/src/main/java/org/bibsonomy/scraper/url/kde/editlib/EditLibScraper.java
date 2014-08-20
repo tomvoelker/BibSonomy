@@ -29,12 +29,13 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
  * @author wbi
  */
-public class EditLibScraper extends SimpleGenericURLScraper {
+public class EditLibScraper extends GenericBibTeXURLScraper {
 
 	private static final String SITE_NAME = "Ed/ITLib";
 	private static final String EDITLIB_HOST_NAME  = "http://www.editlib.org";
@@ -70,7 +71,7 @@ public class EditLibScraper extends SimpleGenericURLScraper {
 	}
 
 	@Override
-	public String getBibTeXURL(URL url) {
+	public String getDownloadURL(URL url) throws ScrapingException {
 		String id = null;
 		String sturl = url.toString();
 		if(sturl.startsWith(EDITLIB_HOST_NAME + EDITLIB_ABSTRACT_PATH)) {

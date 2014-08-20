@@ -11,7 +11,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.layout.jabref.JabrefLayout;
+import org.bibsonomy.layout.jabref.AbstractJabRefLayout;
 import org.bibsonomy.webapp.command.ExportPageCommand;
 import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.view.AbstractView;
@@ -49,10 +49,10 @@ public class ExportLayoutView extends AbstractView {
 			/*
 			 * put each layout into a JSON-object and add it to the JSON-array
 			 */
-			final Map<String, JabrefLayout> layoutMap = command.getLayoutMap();
+			final Map<String, AbstractJabRefLayout> layoutMap = command.getLayoutMap();
 			
-			for (final Entry<String, JabrefLayout> layoutEntry : layoutMap.entrySet()) {
-				final JabrefLayout layout = layoutEntry.getValue();
+			for (final Entry<String, AbstractJabRefLayout> layoutEntry : layoutMap.entrySet()) {
+				final AbstractJabRefLayout layout = layoutEntry.getValue();
 				/*
 				 * we return only public layouts
 				 */

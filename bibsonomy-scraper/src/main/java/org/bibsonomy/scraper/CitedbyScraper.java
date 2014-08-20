@@ -21,26 +21,24 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.bibsonomy.scraper.url.kde.bloodjournal;
+package org.bibsonomy.scraper;
 
-import org.bibsonomy.scraper.UnitTestRunner;
-import org.bibsonomy.scraper.junit.RemoteTest;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
+ * interface for scrapers that can scrape citedby data
+ *
  * @author Haile
  */
-@Category(RemoteTest.class)
-public class BloodJournalScraperTest {
-	/**
-	 * @param args
+public interface CitedbyScraper {
+
+	 /**
+	  * Tries to scrape the publications that cite the given publication.
+	  * Note that this method should only be called <em>after</em> {@link Scraper#scrape(ScrapingContext)}.
+	  * 
+	 * @param scrapingContext
+	 * @return <code>true</code>, if the citing papers were successfully be scraped
+	 * @throws ScrapingException
 	 */
-	/**
-	 * starts URL test with id url_264
-	 */
-	@Test
-	public void urlTestRun() {
-		UnitTestRunner.runSingleTest("url_264");
-	}
+	public boolean scrapeCitedby(final ScrapingContext scrapingContext) throws ScrapingException;
 }

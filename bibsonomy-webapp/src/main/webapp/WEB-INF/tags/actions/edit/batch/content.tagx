@@ -36,8 +36,8 @@
 	<!--=======================-->
 	<!-- VARIABLEN DEKLARATION -->
 	<!--=======================-->
-	<!-- I couldn't find any usage for these two variables! -->
 	
+	<!-- I couldn't find any usage for these two variables!!: deletedCheckedPosts and overwrite -->	
 	<!-- VIEW FOR SAVING OR DELETING POSTS -->
 	<c:if test="${empty deleteCheckedPosts}">
 		<c:set var="deleteCheckedPosts" value="true" />
@@ -47,24 +47,14 @@
 		<c:set var="overwrite" value="false" />
 	</c:if>
 	
-	<!-- BUTTONS -->
-	<fmt:message key="batchedit.button.update" var="buttonUpdate" />
-	<fmt:message key="batchedit.button.UpdateRedirect" var="buttonUpdateRedirect" />
-	<fmt:message key="image.button.delete" var="delBtnImg" />
-	<fmt:message key="image.button.normalize" var="normBtnImg" />
-	<fmt:message key="image.button.privacy" var="privacyBtnImg" />
-	<fmt:message key="image.button.editTags" var="editTagImg" />
-	
-	
 	<!-- tooltip messages-->
 	<fmt:message key="batchedit.delBtn.message" var="delBtnMsg" />
 	<fmt:message key="batchedit.normBtn.message" var="normBtnMsg" />
 	<fmt:message key="batchedit.privacyBtn.message" var="privacyBtnMsg" />
-	<fmt:message key="batchedit.updateSelector.message" var="updateSelectorMsg" />
-	<fmt:message key="batchedit.updateBtn.message" var="updateBtnMsg" />
-	<fmt:message key="batchedit.updateRedirectBtn.message" var="UptRedBtnMsg" />
 	<fmt:message key="batchedit.selectAll" var="selectAll" />
-	
+	<fmt:message key="batchedit.tagEachBtn.message" var="tagEachBtnMsg" />
+	<fmt:message key="batchedit.tagAllBtn.message" var="tagAllBtnMsg" />
+
 	<jsp:directive.variable name-given="post" scope="NESTED" />
 		
 		<form id="batchedit" action="/batchEdit" method="POST">
@@ -73,8 +63,35 @@
 			<input type="hidden" name="deleteCheckedPosts" value="${deleteCheckedPosts}" /> 
 			<input type="hidden" name="overwrite" value="${overwrite}" /> 
 			<input type="hidden" name="resourcetype" value="${resourceType}" />
+			
+			<!-- the following variable is defined to communicate with .js file -->
 			<input type="hidden" name="action"/>
-			<!-- edit options -->
+
+		<!-- Hint messages-->		
+		    <div id="editHint" class="Hint red"><fmt:message key="batchedit.editHint" /></div>
+		    <div id="normConfirm" class="Hint red">
+		    	<ul>
+		    		<li><fmt:message key="batchedit.normConfirm" /></li>
+		    		<li><a href="#" id="normOk"><fmt:message key="batchedit.ok" /></a></li>
+		    		<li><a href="#" id="normCancel"><fmt:message key="batchedit.cancel" /></a></li>
+		    	</ul>
+		    </div>
+		    <div id="normalized" class="Hint green"> <fmt:message key="batchedit.normalized"/></div>
+			<div id="privacyChanged" class="Hint green"><fmt:message key="batchedit.privacyChanged"/></div>
+			<div id="tagAllAdded" class="Hint green"><fmt:message key="batchedit.tagAllAdded"/></div>
+			<div id="tagEachEdited" class="Hint green"><fmt:message key="batchedit.tagEachEdited"/></div>
+			<div id="back" class="Hint red"><fmt:message key="batchedit.back"/></div>
+			<div id="delConfirm" class="Hint red">
+		    	<ul>
+		    		<li><fmt:message key="batchedit.delConfirm"/></li>
+		    		<li><a href="#" id="delOk"><fmt:message key="batchedit.ok" /></a></li>
+		    		<li><a href="#" id="delCancel"><fmt:message key="batchedit.cancel" /></a></li>
+		    	</ul>
+		    </div>
+		    <div id="deleted" class="Hint green"><fmt:message key="batchedit.deleted" /></div>
+			<br/>
+			
+		<!-- edit options -->
 			<ul id="nav" >
 				<c:if test="${resourceType eq 'bibtex'}">
 			    	<li>
@@ -89,15 +106,10 @@
 			    <li>
 			        <a href="#" id="delId" title="${delBtnMsg}">delete</a>
 			    </li>
-		
-			    <li>
-			      <a href="#"  title="${updateSelectorMsg}" id="tagId"  >edittags</a>
-			        <ul id="options">
-			            <li><a href="#" id="tagOption1"><fmt:message key="batchedit.Selection.addToAll"/></a></li>
+			    
+				<li><a href="#" id="tagEachId" title="${tagEachBtnMsg}">addToAll</a></li>
 			
-			            <li><a href="#" id="tagOption2"><fmt:message key="batchedit.Selection.addToEach"/></a></li>
-			        </ul>
-			    </li>
+	            <li><a href="#" id="tagAllId" title="${tagAllBtnMsg}">addToEach</a></li>
 			</ul>
 			<!-- If there is no post to edit -->
 			<c:if test="${empty listView.list}">
@@ -108,7 +120,7 @@
 			<!--  else.. -->
 			<c:if test="${not empty listView.list}">
 
-				<ul class="content">
+				<ul class="postList">
 
 					<li>
 						<ul>
@@ -199,7 +211,9 @@
 																<input type="text"
 																   name="newTags['${post.resource.intraHash}']" size="35"
 																   value="${fn:escapeXml(mtl:toTagString(post.tags))}"
-																   style="float: left;font-size: 90%;" />
+																   style="float: right;font-size: 90%;" />
+																   
+																   
 																<!--  we don't send the old tags, since we must try to update this post in any case  -->
 															</c:when>
 															<c:otherwise>
@@ -207,10 +221,10 @@
 																<input type="text"
 															   		name="newTags['${post.resource.intraHash}']" size="35"
 															   		value="${fn:escapeXml(mtl:toTagString(post.tags))}"
-															   		style="float: left;font-size: 90%;" />
+															   		style="float:right;font-size:90%;" />
 																	<!-- to check if the tags have been changed, we also send the original tags -->
 																<input type="hidden" 
-															   		name="oldTags['${post.resource.intraHash}']" 
+															   		name="oldTags['${post.resource.intraHash}']"
 															   		value="${fn:escapeXml(mtl:toTagString(post.tags))}" />
 															</c:otherwise>
 														</c:choose>
@@ -230,7 +244,14 @@
 							<c:set var="selectedgroups" value="${post.groups}" />
 						</c:forEach>
 					</li>
+			
 					<li>
+						<ul>
+							<div name="eachTagBtn">
+								
+								<li id="eachTagOk" class="applyBtn"><fmt:message key="batchedit.eachTagOk" /></li>
+							</div>
+						</ul>
 						<ul>	
 							<div name="AllpostTagsHeader" class="header" style="height:30px;">
 								<fmt:message key="batchedit.AllpostTagsHeader" />
@@ -240,24 +261,32 @@
 						<ul>
 							<div name="allTagBox">
 								<input type="text" name="tags" size="40"/>
+								
+								<ul>
+									<li id="allTagOk" class="applyBtn"><fmt:message key="batchedit.allTagOk" /></li>
+								</ul>
 							</div>
-							<div name="privacyBox" >
+			
+							<div id="privacyBox" >
 								<bform:fieldset maximized="true" legendKey="post.resource.viewablefor">
 									<jsp:attribute name="content">
 										<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" selectedGroups="${selectedgroups}"/>
 									</jsp:attribute>
 								</bform:fieldset>
-							</div>										
+								
+								<ul>
+									<li id="privacyOk" class="applyBtn"><fmt:message key="batchedit.privacyOk" /></li>
+								</ul>
+							</div>	
+							
+							<div id="backBtn">
+								<ul>
+									<li id="backButtton" class="applyBtn"><fmt:message key="batchedit.backbtn" /></li>
+								</ul>
+							</div>
+																
 						</ul>
 					</li>
-				</ul>
-				<ul style="float:right;">
-					<div name="updateButton">
-						<input type="submit" value="${buttonUpdate}" id="updateBtnId" style="float:right;" title="updateBtnMsg" />
-					</div>
-					<div name="UpdateRedirectButton">
-						<input type="submit" value="${buttonUpdateRedirect}" id="UpRidBtnId" style="float:center;" title="UptRedBtnMsg" />
-					</div>
 				</ul>
 				<ul>
 					<li >
@@ -267,7 +296,7 @@
 						</div>
 						<input type="hidden" name="ckey" value="${ckey}" />
 							<!-- referer will be set in .js file based on the user's choice--> 
-						<input type="hidden" name="referer"	value="" />
+						<input type="hidden" name="referer"	value="${fn:escapeXml(command.referer)}" />
 					</li>
 				</ul>
 			</c:if>

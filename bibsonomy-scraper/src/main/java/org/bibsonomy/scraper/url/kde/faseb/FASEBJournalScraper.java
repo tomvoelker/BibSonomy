@@ -35,12 +35,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
  * @author wla
  */
-public class FASEBJournalScraper extends SimpleGenericURLScraper {
+public class FASEBJournalScraper extends GenericBibTeXURLScraper {
 
 	private final Log log = LogFactory.getLog(FASEBJournalScraper.class);
 
@@ -110,7 +111,7 @@ public class FASEBJournalScraper extends SimpleGenericURLScraper {
 	}
 
 	@Override
-	public String getBibTeXURL(URL url) {
+	public String getDownloadURL(URL url) throws ScrapingException {
 		final String id = extractId(url.toString());
 		if (present(id)) {
 			return BIBTEX_URL + id;

@@ -29,10 +29,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
  * Scraper for Journalogy (Microsoft Academic Search)
@@ -40,7 +43,9 @@ import org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper;
  * 
  * @author clemens
  */
-public class JournalogyScraper extends PostprocessingGenericURLScraper {
+public class JournalogyScraper extends GenericBibTeXURLScraper {
+	private static final Log log = LogFactory.getLog(JournalogyScraper.class);
+	
 	private static final String SITE_NAME = "Journalogy (Microsoft Academic Search)";
 	private static final String SITE_URL = "http://www.journalogy.org/";
 	private static final String info = "This scraper parses a publication page of citations from "
@@ -89,7 +94,7 @@ public class JournalogyScraper extends PostprocessingGenericURLScraper {
 	 * @see org.bibsonomy.scraper.generic.SimpleGenericURLScraper#getBibTeXURL(java.net.URL)
 	 */
 	@Override
-	public String getBibTeXURL(URL url) {
+	public String getDownloadURL(URL url) throws ScrapingException {
 		try {
 			// extract id
 			final Matcher idMatcher = pattern_id.matcher(url.toString());
@@ -98,7 +103,7 @@ public class JournalogyScraper extends PostprocessingGenericURLScraper {
 				return "http://" + HOST2 + "/" + idMatcher.group(2) + pattern_download;
 			} 
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			log.error("error while getting download url for " + url, ex);
 		}
 		return null;
 	}

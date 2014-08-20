@@ -31,6 +31,7 @@ import org.bibsonomy.util.file.FileUtil;
  * @author Jens Illig
  */
 public class MultiDirectoryFileFactory implements FileFactory {
+	private static final String FILE_NAME_DELIMITER = "_";
 	
 	private final String fileDirectory;
 	private final String pdfDirectory;
@@ -41,16 +42,20 @@ public class MultiDirectoryFileFactory implements FileFactory {
 		this.pdfDirectory = pdfDirectory;
 		this.psDirectory = psDirectory;
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.client.util.FileFactory#getFileForResourceDocument(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
-	public File getFile(String fileName) {
-		final String extension = FileUtil.getFileExtension(fileName);
+	public File getFileForResourceDocument(String username, String hash, String filename) {
+		final String fullFileName = username + FILE_NAME_DELIMITER + hash + FILE_NAME_DELIMITER + filename;
+		final String extension = FileUtil.getFileExtension(fullFileName);
 		if ("pdf".equals(extension)) {
-			return new File(getPdfDirectory(), fileName);
+			return new File(getPdfDirectory(), fullFileName);
 		} else if ("ps".equals(extension)) {
-			return new File(getPsDirectory(), fileName);
+			return new File(getPsDirectory(), fullFileName);
 		} else {
-			return new File(getFileDirectory(), fileName);
+			return new File(getFileDirectory(), fullFileName);
 		}
 	}
 
