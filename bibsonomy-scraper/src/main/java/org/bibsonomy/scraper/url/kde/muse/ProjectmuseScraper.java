@@ -30,8 +30,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -41,8 +44,9 @@ import org.bibsonomy.util.WebUtils;
  * Scraper for muse.jhu.edu
  * @author tst
  */
-public class ProjectmuseScraper extends AbstractUrlScraper {
-
+public class ProjectmuseScraper extends AbstractUrlScraper implements ReferencesScraper {
+	private static final Log log = LogFactory.getLog(ProjectmuseScraper.class);
+	
 	private static final String SITE_NAME = "Project MUSE";
 	private static final String SITE_URL = "http://muse.jhu.edu/";
 	private static final String INFO = "Scraper for citations from " + href(SITE_URL, SITE_NAME)+".";
@@ -69,13 +73,16 @@ public class ProjectmuseScraper extends AbstractUrlScraper {
 	private static final String PATTERN_SURNAME = "<surname>(.*)</surname>";
 	private static final String PATTERN_FNAME = "<fname>(.*)</fname>";
 	private static final String PATTERN_ABSTRACT = "<abstract>\\s*<p>([^<]*)</p>\\s*</abstract>";
+	private static final Pattern references_pattern = Pattern.compile("(?s)<h3 class=\"references\">(.*)</div>");
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
 
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
 		sc.setScraper(this);
 
@@ -93,7 +100,7 @@ public class ProjectmuseScraper extends AbstractUrlScraper {
 			// author may be occur more then one time, thats why special behaviour
 			Pattern pattern = Pattern.compile(PATTERN_AUTHOR);
 			Matcher matcher = pattern.matcher(sgml);
-			while(matcher.find()){
+			while (matcher.find()) {
 				String author = matcher.group(1);
 				String surname = getRegexResult(PATTERN_SURNAME, author); 
 				String fname = getRegexResult(PATTERN_FNAME, author);
@@ -156,13 +163,13 @@ public class ProjectmuseScraper extends AbstractUrlScraper {
 			bibtex.append("@inproceedings{");
 
 			// add bibtex key
-			if(bibKey != null)
+			if (bibKey != null)
 				bibtex.append(bibKey).append(",\n");
 			else
 				bibtex.append("noKey,\n");
 
 			// add author
-			if(authors != null)
+			if (authors != null)
 				bibtex.append("author = {").append(authors).append("},\n");
 
 			// add year
@@ -222,22 +229,43 @@ public class ProjectmuseScraper extends AbstractUrlScraper {
 	 * @param content target of regex
 	 * @return matching result, null if no matching
 	 */
-	private String getRegexResult(String regex, String content){
+	private static String getRegexResult(String regex, String content){
 		final Matcher matcher = Pattern.compile(regex).matcher(content);
-		if(matcher.find())
+		if (matcher.find()) {
 			return matcher.group(1);
+		}
 		return null;
 	}
 
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
+	 */
+	@Override
+	public boolean scrapeReferences(ScrapingContext scrapingContext)throws ScrapingException {
+		try {
+			Matcher m = references_pattern.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
+			if(m.find()){
+				scrapingContext.setReferences(m.group(1));
+				return true;
+			}
+		} catch (final Exception e) {
+			log.error("error while scraping references " + scrapingContext.getUrl(), e);
+		}
+		return false;
 	}
 }

@@ -29,7 +29,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
-import org.bibsonomy.layout.jabref.JabrefLayout;
+import org.bibsonomy.layout.jabref.AbstractJabRefLayout;
+import org.bibsonomy.layout.jabref.JabRefConfig;
 import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
 import org.bibsonomy.layout.jabref.JabrefLayoutRendererTest;
 import org.bibsonomy.model.BibTex;
@@ -39,13 +40,25 @@ import org.bibsonomy.services.URLGenerator;
 import org.junit.Ignore;
 import org.junit.Test;
 
+/**
+ * 
+ * TODO: add documentation to this class
+ *
+ * @author mme
+ */
 @Ignore
 public class JabrefBasicLayoutTestBuilder {
 	
-	private static final JabrefLayoutRenderer RENDERER = new JabrefLayoutRenderer();
+	private static final JabrefLayoutRenderer RENDERER;
 	static {
-		RENDERER.setDefaultLayoutFilePath("src/main/resources/org/bibsonomy/layout/jabref");
-		RENDERER.setUrlGenerator(new URLGenerator("http://www.bibsonomy.org"));
+		final JabRefConfig config = new JabRefConfig();
+		config.setDefaultLayoutFilePath("src/main/resources/org/bibsonomy/layout/jabref");
+		try {
+			RENDERER = new JabrefLayoutRenderer(config);
+			RENDERER.setUrlGenerator(new URLGenerator("http://www.bibsonomy.org"));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	/*
@@ -75,7 +88,7 @@ public class JabrefBasicLayoutTestBuilder {
 	
 	@Test
 	public void createBasicResultLayout() throws LayoutRenderingException, IOException, PersonListParserException {
-		JabrefLayout layout = RENDERER.getLayout(layoutName, "foo");
+		AbstractJabRefLayout layout = RENDERER.getLayout(layoutName, "foo");
 		for (String entryType : entryTypes) {
 			/*
 			 * Here you can modify the post, from which the layoutTest should be build

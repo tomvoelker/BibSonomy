@@ -23,11 +23,14 @@
 
 package org.bibsonomy.scraper.url.kde.acm;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import junit.framework.Assert;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
@@ -107,7 +110,7 @@ public class ACMBasicScraperTest {
 		try {
 			acm.scrape(sc);
 		} catch (ScrapingException ex) {
-			fail(ex.getMessage());
+			Assert.fail(ex.getMessage());
 		}
 	}
 	
@@ -124,5 +127,46 @@ public class ACMBasicScraperTest {
 		assertTrue(a.supportsUrl(new URL("http://portal.acm.org/citation.cfm?id=1559845.1559994")));
 		assertTrue(a.supportsUrl(new URL("http://portal.acm.org/citation.cfm?id=1547343")));
 		assertTrue(a.supportsUrl(new URL("http://doi.acm.org/10.1145/1105664.1105676")));
+	}
+	
+	@Test
+	public void testCitedby() throws Exception {
+		final ScrapingContext sc = new ScrapingContext(new URL("http://dl.acm.org/citation.cfm?doid=1105664.1105676"));
+		
+		ACMBasicScraper acm = new ACMBasicScraper();
+		
+		assertTrue(acm.scrape(sc));
+		
+		assertTrue(acm.scrapeCitedby(sc));
+		
+		final String cby = sc.getCitedBy();
+		
+		assertNotNull(cby);
+		
+		assertTrue(cby.length() > 100);
+		
+		assertEquals("<div style=\"margin-left:10px; margin-top:0px; margin-right:10px; margin-bottom: 10px;".trim(), cby.substring(0, 86).trim());
+		
+		assertTrue(cby.contains("Margaret-Anne Storey"));
+	}
+	@Test
+	public void testReferences() throws Exception{
+		final ScrapingContext sc = new ScrapingContext(new URL("http://dl.acm.org/citation.cfm?doid=1105664.1105676"));
+		
+		ACMBasicScraper acm = new ACMBasicScraper();
+		
+		assertTrue(acm.scrape(sc));
+		
+		assertTrue(acm.scrapeReferences(sc));
+		
+		final String reference = sc.getReferences();
+		
+		assertNotNull(reference);
+		
+		assertTrue(reference.length() > 100);
+		
+		assertEquals("<div style=\"margin-left:10px; margin-top:0px; margin-right:10px; margin-bottom: 10px;".trim(), reference.substring(0, 86).trim());
+		
+		assertTrue(reference.contains("David Abrams"));
 	}
 }

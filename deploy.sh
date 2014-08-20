@@ -40,6 +40,7 @@ webapp[puma_gi_prod]=bibsonomy-webapp-puma-giessen
 
 declare -A tomcat
 tomcat[slave_hannover]=7
+tomcat[slave_kassel]=7
 
 declare -A archivable
 archivable[gandalf]=true

@@ -7,7 +7,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.text.Normalizer;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -38,6 +37,7 @@ import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.filesystem.FileLogic;
+import org.bibsonomy.util.DateTimeUtils;
 import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.util.JSONUtils;
 import org.bibsonomy.util.StringUtils;
@@ -45,6 +45,7 @@ import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.web.spring.converter.StringToEnumConverter;
+import org.bibsonomy.webapp.command.BaseCommand;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -117,6 +118,7 @@ public class Functions {
 	 *            one of NFC, NFD, NFKC, NFKD @see Normalizer.Form
 	 * @return normalized String
 	 */
+	@Deprecated // TODO: remove with old layout
 	public static String normalize(final String str, final String decomp) {
 		Normalizer.Form form;
 		try {
@@ -609,6 +611,20 @@ public class Functions {
 	}
 
 	/**
+	 * Formats the date to RFC 1123, e.g., "Wed, 12 Mar 2013 12:12:12 GMT" (needed for Memento).
+	 * 
+	 * Currently Java's formatter doesn't support this standard therefore we can
+	 * not use the fmt:formatDate tag with a pattern
+	 * 
+	 * @param date
+	 * @return the formatted date
+	 */
+	public static String formatDateRFC1123(final Date date) {
+		return DateTimeUtils.formatDateRFC1123(date);
+	}
+
+
+	/**
 	 * Formats the date to W3CDTF, e.g., 2012-11-07T14:43:16+01:00 (needed for
 	 * RSS feeds)
 	 * 
@@ -644,7 +660,7 @@ public class Functions {
 				final String monthAsNumber = BibTexUtils.getMonthAsNumber(cleanMonth);
 				if (present(day)) {
 					final String cleanDay = BibTexUtils.cleanBibTex(day.trim());
-					try {						
+					try {
 						DateTime dt = dmyDateFormat.parseDateTime(cleanYear + "-" + monthAsNumber + "-" + cleanDay);
 						return DateTimeFormat.mediumDate().withLocale(locale).print(dt);
 					} catch (final Exception ex) {
@@ -812,4 +828,19 @@ public class Functions {
 		return filename.replaceAll("[^A-Za-z0-9]", "-");
 	}
 	
+	/**
+	 * returns true, if command implements DidYouKnowMessageCommand interface
+	 * @param command
+	 * @return true|false
+	 */
+	/**
+	 * returns true, if command implements DidYouKnowMessageCommand interface and has a didYouKnowMessage set
+	 * @param command
+	 * @return true|false
+	 */
+	@Deprecated // TODO: (bootstrap) remove and use not empty check
+	public static Boolean hasDidYouKnowMessage(BaseCommand command) {
+		return (command.getDidYouKnowMessage() != null);
+	}
+
 }
