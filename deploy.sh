@@ -28,6 +28,7 @@ webapp[gandalf]=bibsonomy-webapp
 webapp[slave_kassel]=bibsonomy-webapp
 webapp[slave_wuerzburg]=bibsonomy-webapp
 webapp[slave_hannover]=bibsonomy-webapp
+webapp[slave_hetzner]=bibsonomy-webapp
 # PUMA sandbox
 webapp[puma_sandbox]=bibsonomy-webapp-puma-sandbox
 # PUMA productive systems
