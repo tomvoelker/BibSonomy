@@ -235,36 +235,41 @@
 						</div>
 						
 					</div>
-					<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
-						<!-- LAYOUT -->
-						<div class="form-group">
-						
-							<form:label cssClass="col-sm-3 control-label" path="user.settings.layoutSettings.viewLayout">Layout</form:label>
+					<!-- LAYOUT SWITCH -->
+					<c:choose>
+						<c:when test="${command.context.loginUser.role eq 'ADMIN'}">
+							<!-- LAYOUT -->
+							<div class="form-group">
 							
-							<div class="col-sm-9">
-								<form:select cssClass="form-control help-popover" path="user.settings.layoutSettings.viewLayout" >
-									<form:option label="Classic" value="CLASSIC"/>
-									<form:option label="Bootstrap" value="BOOTSTRAP"/>
-								</form:select >
+								<form:label cssClass="col-sm-3 control-label" path="user.settings.layoutSettings.viewLayout">Layout</form:label>
 								
-								<div class="help help-header hide"><fmt:message key="settings.editPublication.interFace"/></div>
-								<div class="help help-content hide">
-									<p><fmt:message key="settings.layout.mainhelp"/></p>
-									<ol>
-										<li> <fmt:message key="settings.layout.help.classic">
-												<fmt:param>Classic</fmt:param>
-											</fmt:message>
-										</li>
-										<li> <fmt:message key="settings.layout.help.bootstrap">
-												<fmt:param>Bootstrap</fmt:param>
-											</fmt:message>
-										</li>
-									</ol>
+								<div class="col-sm-9">
+									<form:select cssClass="form-control help-popover" path="user.settings.layoutSettings.viewLayout" >
+										<form:option label="Classic" value="CLASSIC"/>
+										<form:option label="Bootstrap" value="BOOTSTRAP"/>
+									</form:select >
+									
+									<div class="help help-header hide"><fmt:message key="settings.editPublication.interFace"/></div>
+									<div class="help help-content hide">
+										<p><fmt:message key="settings.layout.mainhelp"/></p>
+										<ol>
+											<li> <fmt:message key="settings.layout.help.classic">
+													<fmt:param>Classic</fmt:param>
+												</fmt:message>
+											</li>
+											<li> <fmt:message key="settings.layout.help.bootstrap">
+													<fmt:param>Bootstrap</fmt:param>
+												</fmt:message>
+											</li>
+										</ol>
+									</div>
 								</div>
 							</div>
-						</div>
-					</c:if>
-					
+						</c:when>
+						<c:otherwise>
+							<form:hidden path="user.settings.layoutSettings.viewLayout" />
+						</c:otherwise>
+					</c:choose>
 					<!-- language -->
 					<div class="form-group">
 					
