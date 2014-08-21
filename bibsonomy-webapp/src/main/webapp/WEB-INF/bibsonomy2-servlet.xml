@@ -366,6 +366,18 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/persondisambiguation">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="disambiguationPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requestedPersonId</value>
+								<value>requestedAction</value>
+								<value>requestedHash</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/recommended">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="recommendedPostsPageController"/>
@@ -736,6 +748,10 @@
 	</bean>
 	
 	<bean id="personPageController" class="org.bibsonomy.webapp.controller.PersonPageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources" ref="allResources"/>
+	</bean>
+	
+	<bean id="disambiguationPageController" class="org.bibsonomy.webapp.controller.DisambiguationPageController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>
 	</bean>
 	

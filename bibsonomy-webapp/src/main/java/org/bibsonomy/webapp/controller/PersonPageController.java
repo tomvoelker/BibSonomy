@@ -35,9 +35,6 @@ public class PersonPageController extends SingleResourceListController implement
 	
 	@Override
 	public View workOn(final PersonPageCommand command) {
-		if (!present(command.getRequestedPersonId())) {
-			throw new MalformedURLSchemeException("error.person_page_without_personname");
-		}
 		
 		command.setPerson(new Person());
 		command.getPerson().setId(12334);
@@ -54,7 +51,9 @@ public class PersonPageController extends SingleResourceListController implement
 			case "details": return this.detailsAction(command);
 			case "editRole": return this.editRoleAction(command);
 			case "unlink": return this.unlinkAction(command);
-			default: return this.showAction(command);
+			case "new": return this.newAction(command);
+			case "show": return this.showAction(command);
+			default: throw new MalformedURLSchemeException("Controller " + this.getClass().toString() + " cant handle action " + command.getRequestedAction());
 		}
 	}
 
@@ -63,7 +62,19 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 * @return
 	 */
+	private View newAction(PersonPageCommand command) {
+		return null;
+	}
+
+
+	/**
+	 * @param command
+	 * @return
+	 */
 	private View unlinkAction(PersonPageCommand command) {
+		if (!present(command.getRequestedHash())) {
+			throw new MalformedURLSchemeException("error.person_page_without_personname");
+		}
 		
 		//TODO: where is the person<->publication-relation stored?
 		
@@ -71,7 +82,7 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		this.personLogic.updatePerson(command.getPerson());
 		
-		return new ExtendedRedirectView("/person/" + command.getRequestedPersonId());
+		return new ExtendedRedirectView("/person/show/" + command.getRequestedPersonId() + (present(command.getRequestedHash()) ? "/" + command.getRequestedHash() : ""));
 	}
 
 
@@ -87,7 +98,7 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		this.personLogic.updatePerson(command.getPerson());
 		
-		return new ExtendedRedirectView("/person/" + command.getRequestedPersonId());
+		return new ExtendedRedirectView("/person/show/" + command.getRequestedPersonId() + (present(command.getRequestedHash()) ? "/" + command.getRequestedHash() : ""));
 	}
 
 
@@ -101,7 +112,7 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		this.personLogic.updatePerson(command.getPerson());
 		
-		return new ExtendedRedirectView("/person/" + command.getRequestedPersonId());
+		return new ExtendedRedirectView("/person/show/" + command.getRequestedPersonId() + (present(command.getRequestedHash()) ? "/" + command.getRequestedHash() : ""));
 	}
 
 
@@ -117,7 +128,7 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		this.personLogic.updatePerson(command.getPerson());
 		
-		return new ExtendedRedirectView("/person/" + command.getRequestedPersonId());
+		return new ExtendedRedirectView("/person/show/" + command.getRequestedPersonId() + (present(command.getRequestedHash()) ? "/" + command.getRequestedHash() : ""));
 	}
 
 
@@ -160,22 +171,7 @@ public class PersonPageController extends SingleResourceListController implement
 			this.setTotalCount(command, resourceType, GroupingEntity.USER, command.getRequestedPersonId(), command.getRequestedTagsList(), null, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 		}
 		
-		// html format - retrieve tags and return HTML view
-		if ("html".equals(command.getFormat())) {
-	
-			// retrieve concepts
-			final List<Tag> concepts = this.logic.getConcepts(null, GroupingEntity.USER, command.getRequestedPersonId(), null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
-			command.getConcepts().setConceptList(concepts);
-			
-			// log if a user has reached threshold
-			if (command.getTagcloud().getTags().size() >= Parameters.TAG_THRESHOLD) {
-				log.debug("User " + command.getRequestedPersonId() + " has reached threshold of " + Parameters.TAG_THRESHOLD + " tags on user page");
-			}
-	
-			return Views.PERSON;
-		}
-		// export - return the appropriate view
-		return Views.getViewByFormat(command.getFormat());
+		return Views.PERSON;
 	}
 
 	@Override

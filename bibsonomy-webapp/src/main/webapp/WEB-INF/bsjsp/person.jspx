@@ -16,6 +16,8 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/bstags/spheres"
 	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
+	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -36,18 +38,17 @@
 
 		<jsp:attribute name="headerExt">
 			<script type='text/javascript' src='/resources/javascript/person/addName.js'><!-- keep me --></script>
-			<script type='text/javascript' src='/resources/javascript/person/addPerson.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/editRole.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/update.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/unlink.js'><!-- keep me --></script>
 			<style type='text/css'>
-				.panel-heading a:after {
+				#personInfo .panel-heading a:after {
 				    font-family: 'Glyphicons Halflings';
 				    content: "\e114";    
 				    float: right; 
 				    color: grey; 
 				}
-				.panel-heading a.collapsed:after {
+				#personInfo .panel-heading a.collapsed:after {
 				    content: "\e080";
 				}
 			</style>
@@ -62,20 +63,16 @@
 		<jsp:attribute name="content">
 		
 			<div class="page-header">
-				<h1>Person <small>${command.person.mainName }</small></h1>
+				<h1>Person <small>${command.person.mainName}</small></h1>
 			</div>
 		
 			<c:if test="${not empty command.post}">
-				<div class='panel panel-success'>
-					<div class='panel-heading'>
-						<span>${command.post.resource.title}</span>
-					</div>
-				</div>
+				<resource:bibtexdetailsclean post="${command.post}" referer="${command.referer}"/>
 			</c:if>
-		
-			<div class='panel panel-default'>
+			<br/>
+			<div id='personInfo' class='panel panel-default'>
 				<div class='panel-heading'>
-					<h4><a data-toggle="collapse" data-target="#personPanel" href='#personPanel' class='collapsed'>About your person</a></h4>
+					<h4><a data-toggle="collapse" data-target="#personPanel" class='collapsed'>About your person</a></h4>
 				</div>
 				
 				<c:choose>
@@ -88,7 +85,7 @@
 				</c:choose>
 				<div id='personPanel' class="${collapseStyle}">
 					<div class='panel-body'>
-						<form method='post' name='personForm' action="/person/${command.requestedPersonId}/update/null" class='form-horizontal'>
+						<form method='post' name='personForm' action="/person/update/${command.requestedPersonId}/${command.requestedHash}" class='form-horizontal'>
 							<div class='form-group'>
 								<label class="control-label col-xs-3" for='formAcademicDegree'>Academic Degree</label>
 								<div class="col-xs-7">
@@ -139,11 +136,11 @@
 						<c:forEach var="post" items="${command.bibtex.list}">
 							<div class="list-group-item">
 								<div class="list-group-item-heading">
-									<a href='/person/${command.requestedPersonId}/details/${post.resource.intraHash}'>${post.resource.title}</a>
+									<a href='/person/details/${command.requestedPersonId}/${post.resource.intraHash}'>${post.resource.title}</a>
 								</div>
 								<div class="list-group-item-text">
 									<c:forEach var="author" items="${post.resource.author}">
-										<a href="/person/${command.requestedPersonId}">${author.firstName} ${author.lastName} </a>
+										<a href="/person/details/${author.lastName}/${post.resource.intraHash}">${author.firstName} ${author.lastName} </a>
 										<a data-toggle='modal' href="#editRole" onclick="editRole('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')">(Betreuer) </a>
 										<a data-toggle='modal' href='#unlink' onclick="unlink('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')" style='color:darkred'>x</a>
 										, 
@@ -168,7 +165,7 @@
           <h4 class="modal-title">Add new Name to Person</h4>
         </div>
         <div class="modal-body">
-          	<form action="/person/${command.requestedPersonId}/addName/null" method="post" id='addNameForm' name="addNameForm" class='form-horizontal'>
+          	<form action="/person/addName/${command.requestedPersonId}/null" method="post" id='addNameForm' name="addNameForm" class='form-horizontal'>
 				<fieldset>
 					<div class="form-group">
 						<label class="control-label col-xs-3" for='formGivenName'>Givenname</label>
@@ -255,20 +252,5 @@
       </div>
     </div>
   </div>
-
-	<div style='display:none' id='addPersonDialog' title='Add Person to'>
-		<form action="" method="post" name='addPersonForm'>
-			<div class="ui-widget">
-				<label for='addPersonAuto'>Person</label>
-				<input class='form-control' id='addPersonAuto' type='text' name='addPersonAuto'/>
-			</div>
-			
-			<input type='hidden' id='addPersonId'/>
-			<input id='roleAdd' type='hidden' name='roleAdd'/>
-			<input type='hidden' name='requestedAction' value='addPerson'/>
-			<input class='form-control' id='givenNameAdd' type='hidden' name='givenNameAdd'/>
-			<input class='form-control' id='surNameAdd' type='hidden' name='surNameAdd'/>
-			<input type='submit' name='add' id='addPersonButton' style='display:none'/>
-		</form>
-	</div>
+  
 </jsp:root>

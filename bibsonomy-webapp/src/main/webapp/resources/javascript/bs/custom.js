@@ -61,6 +61,12 @@ $(function() {
     	
         var moreLink = $(document.createElement("a"));
         var contentContainer = $(this).children(".contentContainer")[0];
+        /**
+		* TODO: Christian Pfeiffer
+		*/
+        if(contentContainer == undefined)
+        	return;
+       	// -----
         moreLink.data("text", contentContainer.innerHTML).html("(" + getString("more") + ")").addClass("moreLink").click(function(event){
         	event.preventDefault();
         	var contentContainer = $(this.parentNode).children(".contentContainer")[0];

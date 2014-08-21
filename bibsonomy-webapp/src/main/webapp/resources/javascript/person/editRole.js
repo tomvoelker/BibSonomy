@@ -1,5 +1,5 @@
 var editRole = function(interhash, author) {
-	document.editRoleForm.action = "/person/" + author + "/editRole/" + interhash;
+	document.editRoleForm.action = "/person/editRole/" + author +"/" + interhash;
 };
 
 $(document).ready(function() {

@@ -33,6 +33,7 @@ public enum Views implements View {
 	 * TODO:
 	 */
 	PERSON("person"),
+	DISAMBIGUATION("disambiguation"),
 
 	/**
 	 * the page where a user can change his personal settings

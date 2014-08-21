@@ -1,29 +1,17 @@
 package org.bibsonomy.webapp.util;
 
-import java.io.IOException;
-import java.util.Date;
 import java.util.List;
-import java.util.Random;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.enums.PersonResourceRelation;
 import org.bibsonomy.model.logic.PersonLogicInterface;
-import org.bibsonomy.util.StringUtils;
-import org.bibsonomy.webapp.util.spring.security.rememberMeServices.CookieBasedRememberMeServices;
-import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 /**
  * Some methods to help handling Persons.
  * 
- * @author rja
+ * @author Christian Pfeiffer
  */
 public class PersonLogic implements PersonLogicInterface {
 	private static final Log log = LogFactory.getLog(PersonLogic.class);

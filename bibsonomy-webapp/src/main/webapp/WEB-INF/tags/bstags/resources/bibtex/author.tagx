@@ -45,13 +45,13 @@
 			<c:choose>
 				<c:when test="${schemaOrgMarkUp}">
 					<span itemprop="${authorEditor}" itemscope="itemscope" itemtype="http://schema.org/Person">
-						<a href="${baseUrl}author/${fn:escapeXml(mtl:cleanBibtex(person.lastName))}" itemprop="name">
+						<a href="${baseUrl}pubauthor/${fn:escapeXml(mtl:cleanBibtex(person.lastName))}, ${fn:escapeXml(mtl:cleanBibtex(person.firstName))}/${publication.interHash}" itemprop="name">
 							<c:out value="${personName}"/>
 						</a>
 					</span>
 				</c:when>
 				<c:otherwise>
-				 	<a href="${baseUrl}author/${fn:escapeXml(mtl:cleanBibtex(person.lastName))}">
+				 	<a href="${baseUrl}pubauthor/${fn:escapeXml(mtl:cleanBibtex(person.lastName))}, ${fn:escapeXml(mtl:cleanBibtex(person.firstName))}/${publication.interHash}">
 						<c:out value="${personName}"/>
 				 	</a>
 				</c:otherwise>
