@@ -7,6 +7,8 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.recommender.renderer.json.JSONRecommendationRenderer;
 import org.bibsonomy.recommender.tag.model.RecommendedTag;
 
+import recommender.core.interfaces.renderer.RecommendationRenderer;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -18,24 +20,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 /**
- * TODO: add documentation to this class
+ * {@link RecommendationRenderer} for {@link RecommendedTag}
  *
  * @author lha, dzo
  */
 public class RecommendedTagRenderer extends JSONRecommendationRenderer<Post<? extends Resource>, RecommendedTag> {
 	
-	private ObjectMapper mapper;
-	
-	/**
-	 * 
-	 */
-	public RecommendedTagRenderer() {
-		this.mapper = new ObjectMapper();
-	}
-	
 	@Override
 	protected ObjectMapper createObjectMapper() {
-		// TODO Auto-generated method stub
 		final ObjectMapper createObjectMapper = super.createObjectMapper();
 		final SimpleModule module = new SimpleModule();
 		createObjectMapper.addMixInAnnotations(User.class, UserConfig.class);
