@@ -149,7 +149,7 @@
 			<c:choose>
 				<c:when test="${command.context.loginUser.role eq 'ADMIN'}">
 					<div class="fsRow">
-						<form:label cssClass="fsLabel" path="user.settings.layoutSettings.viewLayout">Layout</form:label>
+						<form:label cssClass="fsLabel" path="user.settings.layoutSettings.viewLayout"><fmt:message key="settings.layout" /></form:label>
 						<buttons:help message="settings.layout.mainhelp">
 							<jsp:attribute name="helpText">
 								<ol>
