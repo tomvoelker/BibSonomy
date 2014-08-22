@@ -136,7 +136,9 @@
 			+ main content (resource lists)
 			+-->
 		<jsp:attribute name="content">
-			<c:if test="${headline != ''}"><h1 class="content-header"><c:out value="${headline}"/></h1></c:if>			
+			<c:if test="${not empty headline}">
+				<h1 class="content-header"><c:out value="${headline}"/></h1>
+			</c:if>			
 			<jsp:invoke fragment="discussion" />
 			<jsp:invoke fragment="content" />
 			
