@@ -8,13 +8,13 @@
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="order" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="relevantfor" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="tagsRequested" type="java.lang.Boolean" required="false" />
 	
 	<!-- show '+' sign only when tag is selected for /relevantfor/group/ -->
-	<c:set var="showRelatedTagsURL" value="${relevantfor and fn:length(fn:split(fn:escapeXml(requPath), '/')) > 3}"/>
+	<c:set var="showRelatedTagsURL" value="${relevantfor and tagsRequested}"/>
 	
 	<ul class="taglist sidebar_collapse_content">
 		<c:forEach var="tag" items="${cmd.relatedTags}">
-					
 			<!-- determine css depending on folkrank weights -->
 			<c:if test="${order eq 'folkrank'}">
 				<c:choose>
@@ -58,16 +58,16 @@
 					<c:url var="tagUrl"
 					   value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
 					<c:url var="tagsUrl"
-			   			value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
+						value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
 				</c:when>
 				<!-- construct relevantfor/group url -->
 				<c:otherwise>
 						<c:url var="tagUrl"
-					   			value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${command.requestedGroup}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
+								value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${command.requestedGroup}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
 						<c:if test="${showRelatedTagsURL}">
 							<c:url var="tagsUrl"
-				   				value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${command.requestedGroup}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
-				   		</c:if>
+								value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${command.requestedGroup}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
+						</c:if>
 				</c:otherwise>
 			</c:choose>
 		

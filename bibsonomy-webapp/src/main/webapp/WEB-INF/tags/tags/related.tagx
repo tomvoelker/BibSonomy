@@ -8,9 +8,10 @@
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="order" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="relevantfor" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="tagsRequested" type="java.lang.Boolean" required="false" />
 	
 	<!-- show '+' sign only when tag is selected for /relevantfor/group/ -->
-	<c:set var="showRelatedTagsURL" value="${relevantfor and fn:length(fn:split(fn:escapeXml(requPath), '/')) > 3}"/>
+	<c:set var="showRelatedTagsURL" value="${relevantfor and tagsRequested}"/>
 	
 	<ul class="taglist sidebar_collapse_content">
 		<c:forEach var="tag" items="${cmd.relatedTags}">
