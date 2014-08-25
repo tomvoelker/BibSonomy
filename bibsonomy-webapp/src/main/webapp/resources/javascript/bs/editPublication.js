@@ -35,23 +35,29 @@ function changeView(showAll) {
 	
 	var requiredFields = requiredForType[document.getElementById('post.resource.entrytype').value];
 	var message = getString('post.resource.fields.detailed.show.all');
+	var noRequiredFields = (requiredFields === undefined); 
+	var collpase = document.getElementById('collapse');
 	
-	if(showAll) {
+	if(showAll || noRequiredFields) {
 		requiredFields = fields;
-		message = getString('post.resource.fields.detailed.show.required');
+		if(noRequiredFields)
+			$(collapse).parent().addClass("hidden");
+		else {
+			message = getString('post.resource.fields.detailed.show.required');
+			$(collapse).parent().removeClass("hidden");
+		}
 	} 
 	
-	document.getElementById('collapse').firstChild.nodeValue = message;
+	collapse.firstChild.nodeValue = message;
 	
 	for (var i=0; i<fields.length; i++) {
 		
 		var field = $("#post\\.resource\\." + fields[i]);
-
-		if(in_array(requiredFields,fields[i]) 
-				&& !field.is(":visible")) {
-			field.show();
+		var parent = field.closest(".form-group");
+		if(showAll || in_array(requiredFields,fields[i])) {
+			parent.show();
 		} else {
-			field.hide();
+			parent.hide();
 		}
 	}
 }	
@@ -136,10 +142,24 @@ function getFirstRelevantWord(title) {
 	return "";
 }
 
+function toggleView() {
+	 
+	var collapse = $("#collapse");
+	var showAll = collapse.data("showAll");
+	collapse.data("showAll", !showAll);
+	changeView(collapse.data("showAll"));
+}
+
 $(function() {
+	$("#post\\.resource\\.entrytype").change(function(e) {
+		changeView($("#collapse").data("showAll"));	
+	});
 	
+	$("#collapse").click(function(e){
+		toggleView();
+	});
 	// load only, when extended fields are available                                                                                              
-	if (document.getElementById("post.resource.publisher")) changeView();
+	if (document.getElementById("post.resource.publisher")) toggleView();
 	
 	var hash = $("#post\\.resource\\.interHash").val();
 	if(hash == -1 || hash == undefined)

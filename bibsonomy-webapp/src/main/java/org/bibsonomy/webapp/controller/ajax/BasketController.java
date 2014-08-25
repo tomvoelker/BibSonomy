@@ -47,12 +47,19 @@ public class BasketController extends AjaxController implements MinimalisticCont
 		// check if ckey is valid
 		if (!command.getContext().isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
+		}
+		
+		final String action = command.getAction();
+		if (!present(action)) {
+			errors.reject("error.action.valid");
+		}
+		
+		if (errors.hasErrors()) {
 			return Views.ERROR;
 		}
 		
-		
 		// if clear all is set, clear all
-		if ("clearAll".equals(command.getAction())) {
+		if ("clearAll".equals(action)) {
 			logic.deleteBasketItems(null, true);
 			return new ExtendedRedirectView(requestLogic.getReferer());
 		}
@@ -67,9 +74,9 @@ public class BasketController extends AjaxController implements MinimalisticCont
 		/*
 		 * decide which method will be called
 		 */
-		if (command.getAction().startsWith("pick")){
+		if (action.startsWith("pick")){
 			basketSize = logic.createBasketItems(posts);
-		} else if (command.getAction().startsWith("unpick")){
+		} else if (action.startsWith("unpick")){
 			basketSize = logic.deleteBasketItems(posts, false);
 		}
 		/*

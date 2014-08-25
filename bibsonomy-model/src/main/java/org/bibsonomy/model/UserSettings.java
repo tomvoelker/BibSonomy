@@ -334,13 +334,18 @@ public class UserSettings implements Serializable {
 	public TimeZone getTimeZone() {
 		return this.timeZone;
 	}
-	
+
+	/**
+	 * @return the layoutSettings
+	 */
 	public LayoutSettings getLayoutSettings() {
 		return this.layoutSettings;
 	}
 
+	/**
+	 * @param layoutSettings the layoutSettings to set
+	 */
 	public void setLayoutSettings(LayoutSettings layoutSettings) {
 		this.layoutSettings = layoutSettings;
 	}
-	
 }

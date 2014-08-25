@@ -308,7 +308,7 @@
 		<extension>.html</extension>
 	</layout>
 	<!-- -->
-	<layout name="mms" public="false">
+	<layout name="mdc" public="false">
 		<displayName>HTML table, ABSTRACT &amp; BibTeX, sortable, MDC</displayName>
 		<description xml:lang="en">
 		  Custom output format provided by AONO MEDIA for
@@ -396,7 +396,7 @@
 		<baseFileName>din1505year</baseFileName>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
-	</layout>	
+	</layout>
 	<layout name="mms">
 		<displayName>DIN 1505 MMS</displayName>
 		<description xml:lang="en">
@@ -436,12 +436,12 @@
 			HTML output format according to the German Institute for
 			Standardization (DIN). Special version of the
 			Mensch-Maschine-Systemtechnik Institute, grouped by year, 
-			and with an endnote export.		
+			and with an endnote export.
 		</description>
 		<description xml:lang="de">
 			HTML Ausgabe Format gemäß dem Deutschen Institut für Normung. 
 			Spezielle Version des Instituts Mensch-Maschine-Systemtechnik, gruppiert
-			nach Jahr und mit Endnote-Eintrag für jede Publikation.		
+			nach Jahr und mit Endnote-Eintrag für jede Publikation.
 		</description>
 		<directory>winfoyear</directory>
 		<baseFileName>winfoyear</baseFileName>
@@ -454,13 +454,13 @@
 			HTML output format according to the German Institute for
 			Standardization (DIN). Special version of the
 			Mensch-Maschine-Systemtechnik Institute, grouped by year, 
-			with an endnote export and display of the note.		
+			with an endnote export and display of the note.
 		</description>
 		<description xml:lang="de">
 			HTML Ausgabe Format gemäß dem Deutschen Institut für Normung. 
 			Spezielle Version des Instituts Mensch-Maschine-Systemtechnik, gruppiert
 			nach Jahr, mit Endnote-Eintrag für jede Publikation und Anzeige der
-			Notiz (note).		
+			Notiz (note).
 		</description>
 		<directory>winfoyear_n</directory>
 		<baseFileName>winfoyear_n</baseFileName>
