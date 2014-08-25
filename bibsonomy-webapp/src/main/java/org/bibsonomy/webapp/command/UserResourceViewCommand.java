@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.command;
 
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.User;
+import org.bibsonomy.webapp.util.DidYouKnowMessage;
 
 /**
  * Bean for User-Sites

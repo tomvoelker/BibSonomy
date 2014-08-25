@@ -31,7 +31,7 @@ import org.bibsonomy.model.User;
  * @author fei
  */
 public class UserRealnameResolver {
-	private final Log log = LogFactory.getLog(UserRealnameResolver.class);
+	private static final Log log = LogFactory.getLog(UserRealnameResolver.class);
 
 	/** number of entries to process per block while building the entity index */
 	private static final int INDEX_BLOCK_SIZE = 1000;
@@ -102,9 +102,9 @@ public class UserRealnameResolver {
 			final Processor proc = new Processor(this.config, this.userIndex);
 			proc.index(this.config.getDataSources(), INDEX_BLOCK_SIZE);
 		} catch (final CorruptIndexException e) {
-			this.log.error("Corrupt duke index.", e);
+			log.error("Corrupt duke index.", e);
 		} catch (final IOException e) {
-			this.log.error("Error accessing duke index.", e);
+			log.error("Error accessing duke index.", e);
 		}
 	}
 	
@@ -140,9 +140,9 @@ public class UserRealnameResolver {
 			final DataSource newEntries = createDataSource(others);
 			proc.linkRecords(Collections.singletonList(newEntries));
 		} catch (final CorruptIndexException e) {
-			this.log.error("Corrupt duke index.", e);
+			log.error("Corrupt duke index.", e);
 		} catch (final IOException e) {
-			this.log.error("Error accessing duke index.", e);
+			log.error("Error accessing duke index.", e);
 		}
 
 		//

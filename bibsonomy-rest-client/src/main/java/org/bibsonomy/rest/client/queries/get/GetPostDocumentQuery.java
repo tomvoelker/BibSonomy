@@ -71,9 +71,10 @@ public class GetPostDocumentQuery extends AbstractQuery<Document> {
 		this.document.setUserName(username);
 		this.resourceHash = resourceHash;
 		
+		
 		// create the file
 		try {
-			this.document.setFile(fileFactory.getFile(fileName));
+			this.document.setFile(fileFactory.getFileForResourceDocument(username, resourceHash, fileName)); 
 			this.fileExists = !this.document.getFile().createNewFile();
 		} catch (final IOException ex) {
 			throw new IllegalArgumentException("could not create new file " + this.document.getFile().getAbsolutePath());
@@ -86,7 +87,7 @@ public class GetPostDocumentQuery extends AbstractQuery<Document> {
 			final String docUrl = this.getUrlRenderer().createHrefForResourceDocument(this.document.getUserName(), this.resourceHash, this.document.getFileName());
 			this.performFileDownload(docUrl, this.document.getFile());
 		} else {
-			// TODO: never overwrite? what if there is a new document?
+			// FIXME: never overwrite? what if there is a new document?
 			this.setStatusCode(200);
 		}
 	}

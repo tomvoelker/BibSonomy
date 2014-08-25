@@ -792,6 +792,7 @@ function addBibtexExportOptions() {
 	 * add and show export options when hovering over the link
 	 */
 	var elm = $("#bibtexListExport"); 
+	if(elm===undefined) return;
 	elm.hoverIntent(function() {
 		/*
 		 * anchor element where to put the options

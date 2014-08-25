@@ -46,7 +46,7 @@ var errorData = new errorBoxData("#upload");
 			}
 
 			// create row with the added file
-			$("#upload").children('ul').append($("<li class='loading' id='file_"+counter+"'><span class='documentFileName'>"+fileName+"</span></li>"));
+			$("#upload").find('.documents:first').append($("<li class='loading' id='file_" + counter + "'><span class='documentFileName'>"+fileName+"</span></li>"));
 
 			// create new form to upload added file
 			var form = ("<form class='upform' id='uploadForm_"+counter+"' action='/ajax/documents?ckey="+ckey+"&amp;temp=true' method='POST' enctype='multipart/form-data'></form>");
@@ -58,7 +58,7 @@ var errorData = new errorBoxData("#upload");
 			$(".counter").val(counter);
 			var options = {
 					dataType: "xml",
-					success: onRequestComplete		
+					success: onRequestComplete
 			};
 			$("#"+form).ajaxSubmit(options);
 			// FIXME: why is a new input field appended? Can't we just replace #fu?
@@ -70,16 +70,18 @@ var errorData = new errorBoxData("#upload");
 	};
 
 	function onRequestComplete(data) {
-		if($("status", data).text() == "ok")
+		data = $(data);
+		var status = data.find("status").text();
+		if (status == "ok")
 			return fileUploaded(data);
 		var file_id = prepareFileErrorBox(data);
 		$("#file_"+file_id).removeClass("loading").addClass("fileError");
 	}
 
 	function fileUploaded(data) {
-		var fileID=$("fileid", data).text();
-		var fileHash=$("filehash", data).text();
-		var fileName=$("filename", data).text();
+		var fileID = data.find("fileid").text();
+		var fileHash = data.find("filehash").text();
+		var fileName = data.find("filename").text();
 		var deleteLink = $("<a class='deleteDocument' href='/ajax/documents?fileHash="
 				+fileHash
 				+"&amp;ckey="
@@ -99,17 +101,18 @@ var errorData = new errorBoxData("#upload");
 
 function deleteFunction(button){
 	$.get($(button).attr("href"), {}, function(data) {
-		var fileID=$("fileid", data).text();
-		if( "ok"==$("status", data).text() || "deleted"==$("status", data).text() ) {
-			errorData.msg = $("response", data).text();
+		data = $(data);
+		var fileID = data.find("fileid").text();
+		var status = data.find("status").text();
+		if ("ok" == status || "deleted" == status) {
 			$(button).parent().remove();
-			if(fileID != '') {
-				$("#file_"+fileID).remove();
-				$("#uploadForm_"+fileID).remove();			
+			if (fileID != '') {
+				$("#file_" + fileID).remove();
+				$("#uploadForm_" + fileID).remove();
 			}
-		}else {
-			errorData.msg = $("reason", data).text();	
-		}	
+		} else {
+			errorData.msg = data.find("reason").text();
+		}
 		displayFileErrorBox(data);
 	}, "xml");
 	return false;
@@ -118,10 +121,10 @@ function deleteFunction(button){
 function prepareFileErrorBox(data) {
 	var fileID = "NaN";
 	var reason = "Unknown Error!";
-	
-	if($("status", data).text() == "error") {
-		fileID = $("fileid", data).text();
-		reason = $("reason", data).text();
+	var status = data.find("status").text();
+	if (status == "error") {
+		fileID = data.find("fileid").text();
+		reason = data.find("reason").text();
 	}
 
 	errorData.msg = reason;
