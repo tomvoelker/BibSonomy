@@ -68,30 +68,32 @@
 			<input type="hidden" name="action"/>
 
 		<!-- Hint messages-->		
-		    <div id="editHint" class="Hint red"><fmt:message key="batchedit.editHint" /></div>
-		    <div id="normConfirm" class="Hint red">
+		    <div id="editHint" class="Hint red invisible"><fmt:message key="batchedit.editHint" /></div>
+		    <div id="normConfirm" class="Hint red invisible">
 		    	<ul>
 		    		<li><fmt:message key="batchedit.normConfirm" /></li>
 		    		<li><a href="#" id="normOk"><fmt:message key="batchedit.ok" /></a></li>
 		    		<li><a href="#" id="normCancel"><fmt:message key="batchedit.cancel" /></a></li>
 		    	</ul>
 		    </div>
-		    <div id="normalized" class="Hint green"> <fmt:message key="batchedit.normalized"/></div>
-			<div id="privacyChanged" class="Hint green"><fmt:message key="batchedit.privacyChanged"/></div>
-			<div id="tagAllAdded" class="Hint green"><fmt:message key="batchedit.tagAllAdded"/></div>
-			<div id="tagEachEdited" class="Hint green"><fmt:message key="batchedit.tagEachEdited"/></div>
-			<div id="back" class="Hint red"><fmt:message key="batchedit.back"/></div>
-			<div id="delConfirm" class="Hint red">
+		    <div id="normalized" class="Hint green invisible"> <fmt:message key="batchedit.normalized"/></div>
+			<div id="privacyChanged" class="Hint green invisible"><fmt:message key="batchedit.privacyChanged"/></div>
+			<div id="tagAllAdded" class="Hint green invisible"><fmt:message key="batchedit.tagAllAdded"/></div>
+			<div id="tagEachEdited" class="Hint green invisible"><fmt:message key="batchedit.tagEachEdited"/></div>
+			<div id="cancel" class="Hint red invisible"><fmt:message key="batchedit.cancelMsg"/></div>
+			<div id="delConfirm" class="Hint red invisible">
 		    	<ul>
 		    		<li><fmt:message key="batchedit.delConfirm"/></li>
 		    		<li><a href="#" id="delOk"><fmt:message key="batchedit.ok" /></a></li>
 		    		<li><a href="#" id="delCancel"><fmt:message key="batchedit.cancel" /></a></li>
 		    	</ul>
 		    </div>
-		    <div id="deleted" class="Hint green"><fmt:message key="batchedit.deleted" /></div>
-			<br/>
+		    <div id="deleted" class="Hint green invisible"><fmt:message key="batchedit.deleted" /></div>
+		    <div id="notYours" class="Hint red invisible"><fmt:message key="batchedit.notYours" /></div>
+			<br/><br/><br/>
 			
 		<!-- edit options -->
+		<div>
 			<ul id="nav" >
 				<c:if test="${resourceType eq 'bibtex'}">
 			    	<li>
@@ -111,6 +113,7 @@
 			
 	            <li><a href="#" id="tagAllId" title="${tagAllBtnMsg}">addToEach</a></li>
 			</ul>
+			</div>
 			<!-- If there is no post to edit -->
 			<c:if test="${empty listView.list}">
 				<div style="font-weight: bolder; float:center">
@@ -119,7 +122,7 @@
 			</c:if>
 			<!--  else.. -->
 			<c:if test="${not empty listView.list}">
-
+				<div>
 				<ul class="postList">
 
 					<li>
@@ -243,97 +246,78 @@
 							<!-- This variable is defined so that the input to 'ajaxgroupbox' don't be empty-->
 							<c:set var="selectedgroups" value="${post.groups}" />
 						</c:forEach>
-					</li>
-			
-					<li>
-						<ul>
-							<div name="eachTagBtn">
-								
-								<li id="eachTagOk" class="applyBtn"><fmt:message key="batchedit.eachTagOk" /></li>
-							</div>
-						</ul>
-						<ul>	
-							<div name="AllpostTagsHeader" class="header" style="height:30px;">
-								<fmt:message key="batchedit.AllpostTagsHeader" />
-							</div>	
-						</ul>
 						
-						<ul>
-							<div name="allTagBox">
-								<input type="text" name="tags" size="40"/>
-								
-								<ul>
-									<li id="allTagOk" class="applyBtn"><fmt:message key="batchedit.allTagOk" /></li>
-								</ul>
-							</div>
+						<c:if test="${not empty otherPosts}">
+								<c:forEach var="post" items="${listView.list}" varStatus="postCount">					
+									<!--  a post owned by the logged in user - show a tag edit form -->
+									<c:if test="${post.user.name ne command.context.loginUser.name}">
+										<ul>
+											<li style="text-align: center;">
+												<input type="checkbox" name="posts['${post.resource.intraHash}']" disabled="disabled" />
+											</li>
+											<!--  a short description of the post -->
+											<li class="postDescDisable">
+												<jsp:invoke	fragment="shortPostDescription" />
+											</li>
+										</ul>
+									</c:if>									
+								</c:forEach>
+						</c:if>
+						</li>
+						<li>
+							<ul>
+								<div name="eachTagBtn">
+									<li id="eachTagOk" class="applyBtn"><fmt:message key="batchedit.eachTagOk" /></li>
+								</div>
+							</ul>
+							<ul>	
+								<div name="AllpostTagsHeader" class="header" style="height:30px;">
+									<fmt:message key="batchedit.AllpostTagsHeader" />
+								</div>	
+							</ul>
+						
+							<ul>
+								<div name="allTagBox">
+									<input type="text" name="tags" size="40"/>
+										<ul>
+											<li id="allTagOk" class="applyBtn"><fmt:message key="batchedit.allTagOk" /></li>
+										</ul>
+								</div>
 			
-							<div id="privacyBox" >
-								<bform:fieldset maximized="true" legendKey="post.resource.viewablefor">
-									<jsp:attribute name="content">
-										<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" selectedGroups="${selectedgroups}"/>
-									</jsp:attribute>
-								</bform:fieldset>
+								<div id="privacyBox" >
+									<bform:fieldset maximized="true" legendKey="post.resource.viewablefor">
+										<jsp:attribute name="content">
+											<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" selectedGroups="${selectedgroups}"/>
+										</jsp:attribute>
+									</bform:fieldset>
 								
-								<ul>
-									<li id="privacyOk" class="applyBtn"><fmt:message key="batchedit.privacyOk" /></li>
-								</ul>
-							</div>	
+									<ul>
+										<li id="privacyOk" class="applyBtn"><fmt:message key="batchedit.privacyOk" /></li>
+									</ul>
+								</div>	
 							
-							<div id="backBtn">
-								<ul>
-									<li id="backButtton" class="applyBtn"><fmt:message key="batchedit.backbtn" /></li>
-								</ul>
-							</div>
+								<div id="cancelBtn">
+									<ul>
+										<li id="cancelButtton" class="applyBtn"><fmt:message key="batchedit.cancelbtn" /></li>
+									</ul>
+								</div>
 																
-						</ul>
-					</li>
-				</ul>
-				<ul>
-					<li >
-						<div class="kiste">
-							<rc:nextprev listView="${listView}"	listViewStartParamName="${listViewStartParamName}" />
-								${mtl:ch('nbsp')}
-						</div>
-						<input type="hidden" name="ckey" value="${ckey}" />
-							<!-- referer will be set in .js file based on the user's choice--> 
-						<input type="hidden" name="referer"	value="${fn:escapeXml(command.referer)}" />
-					</li>
-				</ul>
+							</ul>
+						</li>
+					</ul>
+				</div>
 			</c:if>
-		</form>
 
-		<c:if test="${not empty otherPosts}">
-			<h2 style="margin-top: 2em;">
-				<fmt:message key="batchedit.disregardedPosts" />
-			</h2>
-				
-			<p>
-				<fmt:message key="batchedit.disregardedPosts.info" />
-			</p>
-				<!-- iterate over a list of resources and create the list -->
-			<ul id="${listView.resourcetype}">
-				<c:forEach var="post" items="${listView.list}">
-					<c:if test="${post.user.name ne command.context.loginUser.name}">
-						<!-- show one post -->
-						<rc:post post="${post}"	otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${command.context.loginUser.name}">
-							<jsp:attribute name="title">
-							     <jsp:invoke fragment="title" />    
-							</jsp:attribute>
-							<jsp:attribute name="actions">   
-								<jsp:invoke	fragment="actions" />  
-							</jsp:attribute>
-								
-							<jsp:attribute name="desc">      
-								<jsp:invoke	fragment="desc" />     
-							</jsp:attribute>
-							
-							<jsp:attribute name="documents"> 
-								<jsp:invoke	fragment="documents" />
-							</jsp:attribute>
-						</rc:post>
-					</c:if>
-				</c:forEach>
+			<ul>
+				<li >
+					<div class="kiste">
+						<rc:nextprev listView="${listView}"	listViewStartParamName="${listViewStartParamName}" />
+							${mtl:ch('nbsp')}
+					</div>
+					<input type="hidden" name="ckey" value="${ckey}" /> 
+					<input type="hidden" name="referer"	value="${fn:escapeXml(command.referer)}" />
+				</li>
 			</ul>
-		</c:if>
+		</form>
 
 </jsp:root>

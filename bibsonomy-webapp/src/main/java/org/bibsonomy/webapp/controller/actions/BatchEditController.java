@@ -1,6 +1,6 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import static org.bibsonomy.util.ValidationUtils.present;
+import org.bibsonomy.util.ValidationUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -138,7 +138,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * We store the referer in the command, to send the user back to the 
 		 * page he's coming from at the end of the posting process. 
 		 */
-		if (!present(command.getReferer())) {
+		if (!ValidationUtils.present(command.getReferer())) {
 			command.setReferer(this.requestLogic.getReferer());
 		}
 
@@ -186,7 +186,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		}
 		
 		if (IGNORE_ACTION == action) {
-			return this.getFinalRedirect(postsArePublications,command.getReferer(), loginUserName);
+			return this.getFinalRedirect(postsArePublications, loginUserName);
 		}
 		/*
 		 * FIXME: rename/check setting of that flag in the command
@@ -267,16 +267,16 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 						Post<?> post;
 						post = this.logic.getPostDetails(intraHash, loginUserName);
-						if(present(post)) {
+						if(ValidationUtils.present(post)) {
 							// now, we change what should be changed from the post details
 							
 							BibTex bibtex = (BibTex) post.getResource();
 							
-							if(present(bibtex)) {
+							if(ValidationUtils.present(bibtex)) {
 								final String oldBibtexKey = bibtex.getBibtexKey();
 								final String newBibtexKey = BibTexUtils.generateBibtexKey(bibtex);
 								
-								if(present(oldBibtexKey) && present(newBibtexKey)) {
+								if(ValidationUtils.present(oldBibtexKey) && ValidationUtils.present(newBibtexKey)) {
 									if(!oldBibtexKey.equals(newBibtexKey)) {
 										((BibTex) post.getResource()).setBibtexKey(newBibtexKey);
 									}
@@ -300,15 +300,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 								newTags.addAll(TagUtils.parse(newTagsMap.get(intraHash)));
 							}
 							
-							
-						//	final Set<Tag> newTags = TagUtils.parse(newTagsMap.get(intraHash));
-						//	if (UPDATE_AllTAG_ACTION == action){
-							//	newTags.addAll(getTagsCopy(addTags));
-							//}
-							/*
-							* we add all global tags to the set of new tags
-							*/
-//							newTags.addAll(getTagsCopy(addTags));
 							/*
 							 * if we want to update the posts, we only need to update posts
 							 * where the tags have changed
@@ -345,7 +336,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 							 * Finally, add the post to the list of posts that should 
 							 * be stored or updated.
 							 */
-							if (!present(post)) {
+							if (!ValidationUtils.present(post)) {
 								log.warn("post with hash " + intraHash + " not found for user " + loginUserName + " while updating tags");
 							} else {
 								post.setDate(now);
@@ -360,7 +351,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 					else if (UPDATE_VIEWABLE_ACTION == action){
 						Post<?> post;
 						post = this.logic.getPostDetails(intraHash, loginUserName);
-						if (!present(post)) {
+						if (!ValidationUtils.present(post)) {
 							log.warn("post with hash " + intraHash + " not found for user " + loginUserName + " while updating tags");
 						} else {
 							// now, we change what should be changed from the post details
@@ -383,7 +374,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		/*
 		 * delete posts
 		 */
-		if (present(postsToDelete)) {
+		if (ValidationUtils.present(postsToDelete)) {
 			log.debug("deleting "  + postsToDelete.size() + " posts for user " + loginUserName);
 			try {
 				this.logic.deletePosts(loginUserName, postsToDelete);
@@ -441,7 +432,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		/*
 		 * return to either the user page or current page(batchedit)
 		 */
-		return this.getFinalRedirect(postsArePublications,command.getReferer(), loginUserName);
+		return this.getFinalRedirect(postsArePublications, loginUserName);
 		
 	}
 
@@ -512,7 +503,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				 * get all error messages for this post
 				 */
 				final List<ErrorMessage> postErrorMessages = errorMessages.get(postHash);
-				if (present(postErrorMessages)) {
+				if (ValidationUtils.present(postErrorMessages)) {
 					boolean hasErrors = false;
 					boolean hasDuplicate = false;
 					/*
@@ -590,7 +581,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				/*
 				 * if there are no errors, continue
 				 */
-				if (!present(postErrorMessages)) {
+				if (!ValidationUtils.present(postErrorMessages)) {
 					continue;
 				}
 				/*
@@ -664,7 +655,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	private Map<String, Post<? extends Resource>> getPostMap(final boolean updatePosts) {
 		final Map<String, Post<? extends Resource>> postMap = new HashMap<String, Post<? extends Resource>>();
 		final List<Post<? extends Resource>> postsFromSession = (List<Post<? extends Resource>>) this.requestLogic.getSessionAttribute(PostPublicationController.TEMPORARILY_IMPORTED_PUBLICATIONS);
-		if (!updatePosts && present(postsFromSession)) {
+		if (!updatePosts && ValidationUtils.present(postsFromSession)) {
 			/*
 			 * Put the posts into a map, so we don't have to loop 
 			 * through the list for every stored post.
@@ -688,7 +679,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			/*
 			 * ensure, that we don't try to parse a null string
 			 */
-			return TagUtils.parse(present(addTagString) ? addTagString : "");
+			return TagUtils.parse(ValidationUtils.present(addTagString) ? addTagString : "");
 		} catch (final RecognitionException ex) {
 			log.warn("can't parse tags that should be added to all posts", ex);
 		}
@@ -704,27 +695,15 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * @return
 	 */
 
-	private View getFinalRedirect(final boolean isPub,final String referer, final String loginUserName) {
-		String redirectUrl = referer;
-		if (referer.equals("justUpdate")){	
-			if (isPub) {
-				redirectUrl = UrlUtils.safeURIEncode("beditbib/" + "user/" + loginUserName); // TODO: should be done by the URLGenerator
-			} 
-			else{
-				redirectUrl = UrlUtils.safeURIEncode("bediturl/" + "user/" + loginUserName); // TODO: should be done by the URLGenerator
-			}
-		}
-		else {
-			
-			redirectUrl = UrlUtils.safeURIEncode("user/" + loginUserName); // TODO: should be done by the URLGenerator
+	private View getFinalRedirect(final boolean isPub, final String loginUserName) {
+		String redirectUrl = "referer";	
+		if (isPub) {
+			redirectUrl = UrlUtils.safeURIEncode("beditbib/" + "user/" + loginUserName); // TODO: should be done by the URLGenerator
+		} 
+		else{
+			redirectUrl = UrlUtils.safeURIEncode("bediturl/" + "user/" + loginUserName); // TODO: should be done by the URLGenerator
 		}
 		return new ExtendedRedirectView(redirectUrl);
-
-		
-		
-
-		
-
 	}
 
 	@Override

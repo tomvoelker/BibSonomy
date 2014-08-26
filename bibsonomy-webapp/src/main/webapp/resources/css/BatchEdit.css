@@ -12,6 +12,9 @@
 	text-decoration:none;
 	text-align: left;
 	width: 50%;
+	position: absolute;
+	margin-left: 35px;
+	    
 }
 .Hint li{
 	display:inline-block;
@@ -30,6 +33,10 @@
 	border: 1px solid #99FF99;
 	background-color: #99FF99;
 }
+
+.invisible{
+	visibility: hidden;
+}
 .applyBtn{
 	display:block;
     border: 1px solid #c6c6c6;
@@ -47,15 +54,19 @@
 #nav{
     list-style:none;
     font-weight:bold;
-    width:40%;
-    margin: 0 auto;
+    width:45%;
+   /* margin: 0 auto;*/
+   /* left:10px;
     position:relative;
-    padding:0;
+    padding:0;*/
+   padding-left: 35px;
+   
     z-index:5;
 }
 #nav li{
     display: table-cell;
-    position:relative;
+    
+/*    position:relative;*/
 }
 #nav a{
     display:block;
@@ -66,16 +77,19 @@
     text-decoration:none;
     margin-right: 2px;
     margin-left: 2px;
+    
 }
 #nav ul li{
 	float: none; 
-	position: relative;
+/*	position: relative;*/
     padding-top:1px;
     display:block;
+    
 }
 #nav li ul{
 	position: absolute;
     left:-9999px;
+    
 }
 
 #nav ul a{
@@ -186,18 +200,26 @@
 }
 .kiste {
 	width:15%;
-    margin: 0 auto;
+   /* margin: 0 auto;
     position:relative;
-    border-bottom: 1px solid #ccc;
+   /* border-bottom: 1px solid #ccc;
 	border-top: 1px solid #ccc;
-	clear: left;
+	clear: left;*/
+	padding-left: 35px;
 }
 .postDesc{
 	font-size: 90%;
 	width: 100%;
 	white-space:nowrap;
-	
 }
+
+.postDescDisable{
+	font-size: 90%;
+	width: 100%;
+	white-space:nowrap;
+	color: #808080;
+}
+
 .header{
 	background-color: #eee; 
 	text-align: center;
