@@ -31,6 +31,7 @@ import static org.junit.Assert.assertThat;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.bibsonomy.util.DateTimeUtils;
 import org.junit.Test;
 
 /**
@@ -55,7 +56,7 @@ public class MementoServiceTest {
 		final MementoService m = new MementoService(new URL("http://mementoweb.org/timegate/"));
 
 		final String url = "http://www.l3s.de/";
-		final URL mementoUrl = m.getMementoUrl(url, MementoService.RFC1123_DATE_TIME_FORMATTER.parseDateTime("Thu, 27 July 2006 12:00:00 GMT").toDate());
+		final URL mementoUrl = m.getMementoUrl(url, DateTimeUtils.RFC1123_DATE_TIME_FORMATTER.parseDateTime("Thu, 27 July 2006 12:00:00 GMT").toDate());
 		
 		assertNotNull(mementoUrl);
 		String mementoUrlString = mementoUrl.toString();
