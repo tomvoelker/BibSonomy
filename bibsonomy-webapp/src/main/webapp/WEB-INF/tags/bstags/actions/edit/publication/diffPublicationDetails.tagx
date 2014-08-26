@@ -14,7 +14,7 @@
 	
 	<bform:fieldset maximized="${not command.context.loginUser.settings.simpleInterface }" legendKey="post.resource.fields.detailed">
 		<jsp:attribute name="legendExt">
-	      (<a id="collapse" data-show-all="false"><fmt:message key="post.resource.fields.detailed.show.all"/></a>)
+	      (<a id="collapse" data-show-all="true"><fmt:message key="post.resource.fields.detailed.show.all"/></a>)
 	   	</jsp:attribute>
         
         <jsp:attribute name="content">

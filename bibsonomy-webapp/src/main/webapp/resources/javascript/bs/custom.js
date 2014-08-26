@@ -31,24 +31,18 @@ $(function() {
 		trigger: 'manual',
 		placement : 'right',
 		delay: 0,
-		title: function() {
-			return $(this).next().find('.popover-title').html();
-		},
 		content: function() {
 			return $(this).next().find('.popover-content').html();
 		}
 		
 	});
 	
+	
 	$('.system-tags-link').click(function(event){
 		event.preventDefault();
 		$(this).popover('show');
 	});
-	
-	$('.popover-close').click(function(event){
-		$(this).parent().parent().prev().popover('hide');
-	});
-	
+
 	/**
 	 * publication details abstract and description more link
 	 */
@@ -65,7 +59,7 @@ $(function() {
         	event.preventDefault();
         	var contentContainer = $(this.parentNode).children(".contentContainer")[0];
         	
-            if($(this).hasClass('less')) {
+            if($(this).hasClass('show-less')) {
             	$(this)
             	.html("(" + getString("more") + ")")
             	.removeClass("show-less")
@@ -111,9 +105,10 @@ $(function() {
     });
     
     function handleDeleteResponse(o) {
-		if($("status", o.data).text()=="ok") o.parent.parentNode.removeChild(o.parent);
+		if(o.data.getElementsByTagName("status")[0].innerHTML=="deleted" 
+			|| o.data.getElementsByTagName("status")[0].innerHTML=="ok") o.parent.parentNode.removeChild(o.parent);
 		else {
-			$(el).removeClass("btn-stripped").addClass("btn-danger").popover({
+			$(o.el).removeClass("btn-stripped").addClass("btn-danger").popover({
 					animation: false,
 					trigger: 'manual',
 					delay: 0,
