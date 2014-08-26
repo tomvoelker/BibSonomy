@@ -43,7 +43,7 @@ public class ContentBasedItemRecommenderTest {
 		SortedSet<RecommendedPost<Bookmark>> recommendations = reco.getRecommendation(user);
 		
 		// should be one less, because already known items are not recommended
-		assertEquals(RECOMMENDATIONS_TO_CALCULATE - 1, recommendations.size());
+		assertEquals(RECOMMENDATIONS_TO_CALCULATE, recommendations.size());
 		
 		// the first element should be 'evaluation trees', because it has one same token
 		// as 'evaluation test'

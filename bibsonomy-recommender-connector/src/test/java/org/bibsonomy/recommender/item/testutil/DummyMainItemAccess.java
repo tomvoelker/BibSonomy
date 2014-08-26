@@ -28,8 +28,11 @@ public abstract class DummyMainItemAccess<R extends Resource> implements Recomme
 	 */
 	@Override
 	public List<Post<R>> getMostActualItems(int count, RecommendationUser entity) {
-		List<Post<R>> itemsForContentBasedFiltering = getItemsForContentBasedFiltering(count, entity);
+		final List<Post<R>> itemsForContentBasedFiltering = getItemsForContentBasedFiltering(count, entity);
 		itemsForContentBasedFiltering.addAll(createRandomDummyPosts(count - itemsForContentBasedFiltering.size()));
+		while (itemsForContentBasedFiltering.size() > count) {
+			itemsForContentBasedFiltering.remove(itemsForContentBasedFiltering.size() - 1);
+		}
 		return itemsForContentBasedFiltering;
 	}
 
