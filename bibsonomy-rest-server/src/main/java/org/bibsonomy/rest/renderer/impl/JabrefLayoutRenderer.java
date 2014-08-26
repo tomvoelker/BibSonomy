@@ -50,8 +50,9 @@ public class JabrefLayoutRenderer implements Renderer {
 	/**
 	 * @param urlGenerator - the class to generate proper URLs
 	 * @param layout - the jabrefLayout used by the renderer
+	 * @throws Exception 
 	 */
-	public JabrefLayoutRenderer(final URLGenerator urlGenerator, final String layout) {
+	public JabrefLayoutRenderer(final URLGenerator urlGenerator, final String layout) throws Exception {
 		super();
 		final JabRefConfig config = new JabRefConfig();
 		config.setDefaultLayoutFilePath("org/bibsonomy/layout/jabref");
@@ -60,10 +61,7 @@ public class JabrefLayoutRenderer implements Renderer {
 		
 		try {
 			this.layout = this.renderer.getLayout(layout, null);
-		} catch (LayoutRenderingException ex) {
-			log.error(ex);
-			throw new InternServerException(ex);
-		} catch (IOException ex) {
+		} catch (Exception ex) {
 			log.error(ex);
 			throw new InternServerException(ex);
 		}

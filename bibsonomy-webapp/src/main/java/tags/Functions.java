@@ -37,6 +37,7 @@ import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.filesystem.FileLogic;
+import org.bibsonomy.util.DateTimeUtils;
 import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.util.JSONUtils;
 import org.bibsonomy.util.StringUtils;
@@ -44,6 +45,7 @@ import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.web.spring.converter.StringToEnumConverter;
+import org.bibsonomy.webapp.command.BaseCommand;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -67,9 +69,6 @@ public class Functions {
 
 	private static final DateTimeFormatter ISO8601_FORMAT_HELPER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ");
 
-	/** used to get RFC 1123 formatted date */
-	private static final DateTimeFormatter RFC1123_DATE_TIME_FORMATTER = DateTimeFormat.forPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'").withZoneUTC();
-	
 	private static final DateTimeFormatter myDateFormatter = DateTimeFormat.forPattern("MMMM yyyy");
 
 	private static final DateTimeFormatter myDateFormat = DateTimeFormat.forPattern("yyyy-MM");
@@ -119,6 +118,7 @@ public class Functions {
 	 *            one of NFC, NFD, NFKC, NFKD @see Normalizer.Form
 	 * @return normalized String
 	 */
+	@Deprecated // TODO: remove with old layout
 	public static String normalize(final String str, final String decomp) {
 		Normalizer.Form form;
 		try {
@@ -620,10 +620,7 @@ public class Functions {
 	 * @return the formatted date
 	 */
 	public static String formatDateRFC1123(final Date date) {
-		if (present(date)) {
-			return RFC1123_DATE_TIME_FORMATTER.print(new DateTime(date));
-		}
-		return "";
+		return DateTimeUtils.formatDateRFC1123(date);
 	}
 
 
@@ -663,7 +660,7 @@ public class Functions {
 				final String monthAsNumber = BibTexUtils.getMonthAsNumber(cleanMonth);
 				if (present(day)) {
 					final String cleanDay = BibTexUtils.cleanBibTex(day.trim());
-					try {						
+					try {
 						DateTime dt = dmyDateFormat.parseDateTime(cleanYear + "-" + monthAsNumber + "-" + cleanDay);
 						return DateTimeFormat.mediumDate().withLocale(locale).print(dt);
 					} catch (final Exception ex) {
@@ -831,4 +828,19 @@ public class Functions {
 		return filename.replaceAll("[^A-Za-z0-9]", "-");
 	}
 	
+	/**
+	 * returns true, if command implements DidYouKnowMessageCommand interface
+	 * @param command
+	 * @return true|false
+	 */
+	/**
+	 * returns true, if command implements DidYouKnowMessageCommand interface and has a didYouKnowMessage set
+	 * @param command
+	 * @return true|false
+	 */
+	@Deprecated // TODO: (bootstrap) remove and use not empty check
+	public static Boolean hasDidYouKnowMessage(BaseCommand command) {
+		return (command.getDidYouKnowMessage() != null);
+	}
+
 }

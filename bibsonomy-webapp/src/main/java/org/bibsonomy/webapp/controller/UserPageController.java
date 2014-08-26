@@ -38,6 +38,9 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 	
 	@Override
 	public View workOn(final UserResourceViewCommand command) {
+		
+		initializeDidYouKnowMessageCommand(command);
+		
 		final String format = command.getFormat();
 		this.startTiming(format);
 
