@@ -36,6 +36,7 @@ import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -397,7 +398,7 @@ public class BibTexChainTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void longTagQueries() {
 		final BibTexParam param = new BibTexParam();
-		for (int i = 0; i < PermissionDatabaseManager.MAX_TAG_SIZE; i++) {
+		for (int i = 0; i < PostLogicInterface.MAX_TAG_SIZE; i++) {
 			param.addTagName("test" + i);
 		}
 		
