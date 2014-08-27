@@ -285,6 +285,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		do {
 			tmp = this.logic.getPosts((Class<RESOURCE>)this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, null, null, null, null, startCount, startCount + step);
 			dbPosts.addAll(tmp);
+			startCount += step;
 		} while (tmp.size() == step);
 		
 		if (present(dbPosts)) {
