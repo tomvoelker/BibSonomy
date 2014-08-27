@@ -16,7 +16,7 @@
 			<c:forEach var="discussionItem" items="${discussionItems}">
 				<c:set var="clazz" value="${fn:toLowerCase(discussionItem['class'].simpleName)}" />
 				<c:if test="${discussionItem.anonymous}">
-					<c:set var="class" value="${clazz} anonymous" />
+					<c:set var="clazz" value="${clazz} anonymous" />
 				</c:if>
 				
 				<c:choose>

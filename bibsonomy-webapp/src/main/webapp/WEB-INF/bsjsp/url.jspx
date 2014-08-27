@@ -26,21 +26,21 @@
 	</c:if>
 	
 	<!-- FIXME: invalid html: move into body tag -->
-	<c:set var="public" value="${false}"/>
+	<c:set var="isPublic" value="${false}"/>
 	<c:choose>
 		<c:when test="${goldstandardPresent}">
-			<c:set var="public" value="${true }"/>
+			<c:set var="isPublic" value="${true }"/>
 		</c:when>
 		<c:otherwise>
 			<c:forEach var="group" items="${command.bookmark.list[0].groups}">
 				<c:if test="${group.name eq 'public'}">
-					<c:set var="public" value="${true}"/>
+					<c:set var="isPublic" value="${true}"/>
 				</c:if>
 			</c:forEach>
 		</c:otherwise>
 	</c:choose>
 	
-	<input id="publicInput" name="publicInput" value="${public}" type="hidden" />
+	<input id="publicInput" name="publicInput" value="${isPublic}" type="hidden" />
 	
 	<!--+
 		+ main layout

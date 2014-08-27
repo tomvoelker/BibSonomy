@@ -25,7 +25,7 @@
 				<ul>
 					<li><a href="${relativeUrlGenerator.getUserUrlByUserName(loginUserName)}"><fmt:message key="navi.posts"/></a></li>
 <!-- 					<li><a href="/recommended"><fmt:message key="navi.recommendedPosts"/></a></li> -->
-					<c:if test="${not command.context.loginUser.settings.simpleInterface}">
+					<c:if test="${not command.context.loginUser.settings.layoutSettings.simpleInterface}">
 						<li><a href="${relativeUrlGenerator.getViewablePrivateUrl()}"><fmt:message key="navi.privatePosts"/></a></li>
 						<li><a href="${relativeUrlGenerator.getViewableFriendsUrl()}"><fmt:message key="navi.friendsPosts"/></a></li>
 						<li><a href="${relativeUrlGenerator.getUserUrlByUserName(loginUserName)}?filter=JUST_PDF"><fmt:message key="navi.pdfs"/></a></li>
@@ -39,14 +39,14 @@
 					<li class="separator">${mtl:ch('nbsp')}</li>
 					
 					<li><a href="/spheres"><fmt:message key="navi.spheres"/></a></li>
-					<c:if test="${not command.context.loginUser.settings.simpleInterface}">
+					<c:if test="${not command.context.loginUser.settings.layoutSettings.simpleInterface}">
 						<li><a href="/friends"><fmt:message key="navi.friends"/></a></li>
 						<li><a href="${relativeUrlGenerator.getFollowersUrl()}"><fmt:message key="navi.followees"/></a></li>
 						<li class="separator">${mtl:ch('nbsp')}</li>
 					</c:if>
 					
 					<li><a href="${relativeUrlGenerator.getConceptsUrlByString(loginUserName)}"><fmt:message key="navi.relations"/></a></li>
-					<c:if test="${not command.context.loginUser.settings.simpleInterface}">
+					<c:if test="${not command.context.loginUser.settings.layoutSettings.simpleInterface}">
 						<li><a href="/cv/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.cv"/></a></li>
 						<li><a href="${relativeUrlGenerator.getMySearchUrl()}"><fmt:message key="navi.browse"/></a></li>
 						<li><a href="${relativeUrlGenerator.getPublicationsAsBibtexUrlByUserName(loginUserName)}?items=1000"><fmt:message key="navi.bibtex"/></a></li>
