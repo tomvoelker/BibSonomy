@@ -625,7 +625,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		// FIXME: why does GetPostsForGroup chain element not allow hash-selection?
 		final List<Post<T>> groupPosts = logic.getPosts(
 				(Class<T>)post.getResource().getClass(), groupingEntity, groupName, tags, 
-				post.getResource().getIntraHash(), "", null, null, null, null, 0, Integer.MAX_VALUE);
+				post.getResource().getIntraHash(), "", null, null, null, null, 0, LogicInterface.MAX_QUERY_SIZE);
 		return groupPosts;
 	}
 	
