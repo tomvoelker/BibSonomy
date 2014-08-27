@@ -37,7 +37,7 @@
 		+-->
 	<c:if test="${not empty post.resource.abstract}"> 
 		<h4 class="pub-details"><span class="fa fa-align-justify"><!--  --></span><c:out value=" "/><fmt:message key="publications.abstract.headline"/></h4>
-		<div id="abstract" class="showmore">
+		<div id="abstract" class="show-more">
 			<span class="contentContainer"><c:out value="${post.resource.abstract}" /></span>
 		</div>
 	</c:if>
@@ -47,7 +47,7 @@
 		+-->
 	<c:if test="${not empty post.description}">
 		<h4 class="pub-details"><span class="fa fa-ellipsis-h"><!--  --></span><c:out value=" "/><fmt:message key="post.resource.description.cap"/></h4>
-		<div id="desc" class="showmore">
+		<div id="desc" class="show-more">
 			<c:out value="${post.description}" />
 		</div>
 	</c:if>

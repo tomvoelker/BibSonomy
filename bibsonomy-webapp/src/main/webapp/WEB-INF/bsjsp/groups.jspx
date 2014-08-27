@@ -82,7 +82,7 @@
 							</c:choose>
 						</dt>
 						<dd>
-							<p><small><a href="#letter-pagination"><span class="glyphicon glyphicon-arrow-up"><!-- keep me --></span><c:out value=" " /><fmt:message key="totop" /></a></small></p>
+							<p><small><a href="#letter-pagination"><span class="fa fa-arrow-up"><!-- keep me --></span><c:out value=" " /><fmt:message key="totop" /></a></small></p>
 							
 						</dd>
 					</c:if>
@@ -105,11 +105,11 @@
 								<div class="col-xs-3">
 									<c:choose>
 										<c:when test="${mtl:contains(command.context.loginUser.groups, group)}">
-											<button class="btn btn-success btn-sm"><span class="glyphicon glyphicon-ok-sign"><!-- keep me --></span><c:out value=" "/><span class="infotext"><fmt:message key="group.memberOf" /></span></button>
+											<button class="btn btn-success btn-sm"><span class="fa fa-check"><!-- keep me --></span><c:out value=" "/><span class="infotext"><fmt:message key="group.memberOf" /></span></button>
 											<!-- TODO: add link to leave group, if user is already member -->
 										</c:when>
 										<c:otherwise>
-											<a href="/join_group?group=${fn:escapeXml(group.name)}" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus-sign"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>	
+											<a href="/join_group?group=${fn:escapeXml(group.name)}" class="btn btn-primary btn-sm"><span class="fa fa-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>	
 										</c:otherwise>
 									</c:choose>
 								</div>

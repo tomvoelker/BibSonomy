@@ -28,13 +28,12 @@
 		loginUser="${command.context.loginUser}" 
 		pageTitle="${pageTitle}" 
 		sidebar="${sidebar}" 
-		requPath="${requPath}" 
-		headerExt="${headerExt}">
-	
-		
-		
+		requPath="${requPath}">
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"><!-- keep me --></script>
+		</jsp:attribute>
 		<jsp:attribute name="content">
-		
+					
 			<h1 class="content-heading"><fmt:message key="navi.postPublication"/></h1>
 		
 			<c:set var="post" value="${command.post}"/>

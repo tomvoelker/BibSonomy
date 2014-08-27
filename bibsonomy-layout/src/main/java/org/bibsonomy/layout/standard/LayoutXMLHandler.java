@@ -23,93 +23,23 @@
 
 package org.bibsonomy.layout.standard;
 
-import java.util.LinkedList;
-import java.util.List;
-
+import org.bibsonomy.layout.common.AbstractXMLHandler;
 import org.xml.sax.Attributes;
-import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Callback handler for the SAX parser.
  * 
  * @author:  lsc
- * 
  */
-public class LayoutXMLHandler extends DefaultHandler {
-
-	private StringBuffer buf = new StringBuffer();
-
-	private List<StandardLayout> layoutDefinitions;
-	
-	private StandardLayout currentLayoutDefinition;
-	
-	// need to save the attribute from the description element in the
-	// startElement callback method to use it in the endElement method	
-	private String languageAttribute;
+public class LayoutXMLHandler extends AbstractXMLHandler<StandardLayout> {
 	
 	@Override
-	public void startDocument() {
-		 layoutDefinitions = new LinkedList<StandardLayout>();
+	protected boolean isLayoutElement(String name) {
+		return "layout".equals(name);
 	}
-
+	
 	@Override
-	public void endDocument() {
-		// nothing to do
+	protected StandardLayout initLayout(String name, Attributes attrs) {
+		return new StandardLayout(attrs.getValue("name"));
 	}
-
-	@Override
-	public void startElement (final String uri, final String name, final String qName, final Attributes atts) {
-		buf = new StringBuffer();
-		if ("layout".equals(name)) {
-			currentLayoutDefinition = new StandardLayout(atts.getValue("name"));
-			if (atts.getValue("public") != null){
-				currentLayoutDefinition.setPublicLayout(Boolean.parseBoolean(atts.getValue("public")));
-			}
-		} else 	if ("description".equals(name)) {
-			this.languageAttribute = atts.getValue("xml:lang");
-		}
-		
-	}
-
-	/** Collect characters.
-	 * 
-	 * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
-	 */
-	@Override
-	public void characters (final char ch[], final int start, final int length) {
-		/*
-		 * replace arbitrary long sequences of whitespace by one space.
-		 */
-		final String s = new String(ch, start, length).replaceAll("\\s+", " ");
-		buf.append(s);
-		
-	}
-
-	@Override
-	public void endElement (final String uri, final String name, final String qName) {
-		
-		if ("layout".equals(name)) {
-			layoutDefinitions.add(currentLayoutDefinition);
-		} else if ("displayName".equals(name)) {
-			currentLayoutDefinition.setDisplayName(getBuf());
-		} else if ("description".equals(name)) {
-			//currentLayoutDefinition.setDescription(this.languageAttribute, getBuf());
-		} else if ("extension".equals(name)) {
-			currentLayoutDefinition.setExtension(getBuf());
-		} else if ("mimeType".equals(name)) {
-			currentLayoutDefinition.setMimeType(getBuf());
-		} else if ("isFavorite".equals(name)) {
-			currentLayoutDefinition.setFavorite(getBuf());
-		}
-	}
-
-	private String getBuf() {
-		return buf.toString().trim();
-	}
-
-	public List<StandardLayout> getLayouts() {
-		return layoutDefinitions;
-	}
-
 }
-

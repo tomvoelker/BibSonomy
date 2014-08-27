@@ -41,10 +41,8 @@
 			<li><users:socializer command="${command}" /></li>
 			
 			<!-- Did you know? -->
-			<c:if test="${	command.context.userLoggedIn and 
-							command.context.loginUser.name eq command.requestedUser and 
-							mtl:hasDidYouKnowMessage(command) and
-							command.context.loginUser.settings.simpleInterface}">
+			<c:if test="${command.context.userLoggedIn and command.context.loginUser.name eq command.requestedUser and 
+							mtl:hasDidYouKnowMessage(command) and command.context.loginUser.settings.layoutSettings.simpleInterface}">
 				<li><bs:didYouKnow command="${command}"/></li>
 			</c:if>
 			
@@ -70,12 +68,7 @@
 			<!-- display user's tag relations -->
 			<li>
 				<fmt:message key="tagrelations.title" var="tagRelationsTitle" />
-				<h4 class="concepts-headline sidebar-headline">
-					<span class="left-corner"><!-- KEEP ME --></span>
-					<!-- <a href="/concepts/${fn:escapeXml(command.requestedUser)}" title="${tagRelationsTitle}">  -->
-						<span class="text"><fmt:message key="tagrelations"/></span>
-					<!-- </a>  -->
-					<span class="right-corner"><!-- KEEP ME --></span>
+				<h4 class="concepts-headline sidebar-headline"><fmt:message key="tagrelations"/>
 				</h4>	
 				<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
 			</li>
@@ -83,11 +76,11 @@
 			<!-- display similar users -->
 			<li>
 				<h4 class="sidebar similar-users-headline sidebar-headline">
-					<span class="left-corner"><!-- KEEP ME --></span>
+					
 					<!-- requPath + query -->
 					<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
-					<span class="text"><fmt:message key="users.similar"/></span>
-					<span class="right-corner"><!-- KEEP ME --></span>
+					<fmt:message key="users.similar"/>
+					
 				</h4>
 				<ul class="list-inline sidebar-setting-box clearfix">
 					<li>(<a href="${mtl:setParam(requPathAndQuery, 'userSimilarity', mtl:toggleUserSimilarity(command.userSimilarity)) }"><fmt:message key="more"/>...</a>)</li>
@@ -98,21 +91,13 @@
 	
 			<!-- display tags -->
 			<li>
-				<h4 class="tagcloud-headline sidebar-headline">
-					<span class="left-corner"><!-- KEEP ME --></span>
-					<span class="text"><fmt:message key="tags"/></span>
-					<span class="right-corner"><!-- KEEP ME --></span>
-				</h4>
+				<h4 class="tagcloud-headline sidebar-headline sidebar"><fmt:message key="tags"/></h4>
 				<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 			</li>
 			
 			<c:if test="${command.context.loginUser.role == 'ADMIN' and not empty command.user}">
 				<li>
-					<h4 class="admininfo-headline sidebar-headline clearfix">
-						<span class="left-corner"><!-- KEEP ME --></span>
-						<span class="text">user details</span>
-						<span class="right-corner"><!-- KEEP ME --></span>
-					</h4>
+					<h4 class="admininfo-headline sidebar-headline">user details</h4>
 					<user:details user="${command.user}"/>
 				</li>
 			</c:if>

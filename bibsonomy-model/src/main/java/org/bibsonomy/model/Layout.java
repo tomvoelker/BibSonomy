@@ -136,15 +136,15 @@ public abstract class Layout {
 	/**
 	 * @return is favorite 
 	 */
-	public boolean isFavorite() {
+	public boolean getIsFavorite() {
 		return this.isFavorite;
 	}
 
 	/**
 	 * @param favorite the extension to set
 	 */
-	public void setFavorite(String favorite) {
-		this.isFavorite = Boolean.parseBoolean(favorite);
+	public void setIsFavorite(boolean favorite) {
+		this.isFavorite = favorite;
 	}
 	
 
