@@ -11,7 +11,7 @@
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	
-	<bform:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.fields.detailed">
+	<bform:fieldset maximized="${not command.context.loginUser.settings.layoutSettings.simpleInterface}" legendKey="post.resource.fields.detailed">
 		<jsp:attribute name="legendExt">
 	      (<a id="collapse" href="javascript:showAll()"><fmt:message key="post.resource.fields.detailed.show.all"/></a>)
 	   	</jsp:attribute>
@@ -44,7 +44,7 @@
         </jsp:attribute>
      </bform:fieldset>
      
-     <bform:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.fields.comments" >
+     <bform:fieldset maximized="${not command.context.loginUser.settings.layoutSettings.simpleInterface}" legendKey="post.resource.fields.comments" >
 	     <jsp:attribute name="content">
          
         	<!--+ 
