@@ -48,7 +48,7 @@
 		<fmt:message key="post.resource.${discussionItemClass}.actions.edit.title" var="title"/>
 		<li><a href="#edit${discussionItemClass}" class="${discussionItemClass}EditLink editLink" title="${title}"><fmt:message key="post.resource.${discussionItemClass}.actions.edit" /></a></li>
 		<li>
-			<span class="deleteInfo initiallyHidden">
+			<span class="deleteInfo hidden">
 				<img src="${resdir}/image/ajax_loader.gif" alt="loading" />
 				<fmt:message key="post.resource.${discussionItemClass}.action.delete" />
 			</span>
