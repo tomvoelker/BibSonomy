@@ -670,7 +670,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		 * FIXME - !!!
 		 */
 		//final QueryParser searchTermParser = new QueryParser(Version.LUCENE_24, fieldName, this.analyzer);
-		final QueryParser searchTermParser = new QueryParser(Version.LUCENE_4_9, fieldName, this.analyzer);
+		final QueryParser searchTermParser = new QueryParser(Version.LUCENE_48, fieldName, this.analyzer);
 		searchTermParser.setDefaultOperator(this.defaultSearchTermJunctor);
 		try {
 			// disallow field specification in search query

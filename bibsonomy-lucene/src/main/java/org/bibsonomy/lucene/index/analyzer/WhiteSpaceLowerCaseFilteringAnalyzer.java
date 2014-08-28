@@ -23,7 +23,7 @@ import org.apache.lucene.util.Version;
  */
 public final class WhiteSpaceLowerCaseFilteringAnalyzer extends Analyzer {
 	
-	private static final Version VERSION_LUCENE = Version.LUCENE_4_9;
+	private static final Version VERSION_LUCENE = Version.LUCENE_48;
 	
 	/** set of stop words to filter out of queries */
 	private Set<String> stopSet;

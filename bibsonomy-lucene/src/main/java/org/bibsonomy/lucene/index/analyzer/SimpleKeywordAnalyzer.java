@@ -18,7 +18,7 @@ public final class SimpleKeywordAnalyzer extends Analyzer {
 	@Override
 	protected TokenStreamComponents createComponents(String fieldName,
 			Reader reader) {
-		Tokenizer tokenizer = new CharTokenizer(Version.LUCENE_4_9, reader) {
+		Tokenizer tokenizer = new CharTokenizer(Version.LUCENE_48, reader) {
 			@Override
 			protected boolean isTokenChar(int c) {
 				return true;
