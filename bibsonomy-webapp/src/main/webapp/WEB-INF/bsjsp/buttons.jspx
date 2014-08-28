@@ -33,7 +33,9 @@
 		<jsp:attribute name="content">
 		
 			<!-- HEADING OF THE PAGE -->
-			<h2 class="featurette-heading"><fmt:message key="buttons.bookmarklet" /></h2>
+			<h2 class="featurette-heading">
+				<fmt:message key="buttons.bookmarklet" />
+			</h2>
 
 		    
 			<!--+ 
@@ -55,31 +57,41 @@
            		
            		<hr class="featurette-divider"/>
            		
- 				<!-- Heading -->
-				<h2 class="featurette-heading">
-	           		<fmt:message key="bookmarklet.addon.headline">
-	           			<fmt:param value="${properties['project.name']}"/>
-	           		</fmt:message>
-				</h2>
-						
        			<div class="row ">
-			
 					<div class="col-md-7">
+
+	       				 <!-- Heading -->
+						<h2 class="featurette-heading">
+			           		<fmt:message key="bookmarklet.addon.headline">
+			           			<fmt:param value="${properties['project.name']}"/>
+			           		</fmt:message>
+						</h2>
 						
 						<!-- Text -->
 						<div class="lead">
-						<!-- 
-		           			<fmt:message key="bookmarklet.addon.text1">
-		           				<fmt:param value="${properties['project.name']}"/>
-		           			</fmt:message>
-						-->
-							<p>Erweitern Sie Ihren Browser mit diesem Add-on um drei nützliche BibSonomy -Schaltflächen.</p>
+						
+							<p>
+								<fmt:message key="bookmarklet.addon.text1.short">
+			           				<fmt:param value="${properties['project.name']}"/>
+			           			</fmt:message>
+							</p>
+							
 			           		<ul class="checklist">
 			           			<li><span class="fa fa-check" style="color:#0b0;"><!--  --></span> Mit einem Klick zu <c:out value="${properties['project.name']}" /></li>
 			           			<li><span class="fa fa-check" style="color:#0b0;"><!--  --></span> Publikationen speichern</li>
 			           			<li><span class="fa fa-check" style="color:#0b0;"><!--  --></span> Bookmarks speichern</li>
 		           			</ul>
+		           			
 		           		</div>
+		           		<div id="firefoxButton">
+							<!-- BUTTON -->
+							<p>
+			           			<a style="width:70%; margin: 0 auto" href="${properties['project.addons.firefox.url']}" class="btn btn-success btn-lg btn-block">
+			           				<fmt:message key="bookmarklet.buttonTextFirefox"/>
+			           			</a>
+				           	</p>
+		           		</div>
+		           		
 					</div>
 					
 						
@@ -95,12 +107,6 @@
 							<!-- TEXT -->
 							<p><fmt:message key="bookmarklet.addon.text2"/></p>
 						
-
-							<p>
-			           			<a style="width:70%; margin: 0 auto" href="${properties['project.addons.firefox.url']}" class="btn btn-success btn-lg btn-block">
-			           				<fmt:message key="bookmarklet.buttonTextFirefox"/>
-			           			</a>
-				           	</p>
 				        </div>
 
 						<!-- Chrome -->
@@ -151,6 +157,7 @@
 			           			</a>
 			           		</p>
 						</div>
+						
 					</div>
 	           		<!-- NOTE -->
 	           		<div class="col-md-12">
@@ -168,11 +175,13 @@
 						var ua = navigator.userAgent.toLowerCase();
 						
 						$("#firefox").hide();
+						$("#firefoxButton").hide();
 						$("#chrome").hide();
 						$("#safari").hide();
 						
 						if (ua.indexOf("firefox") > -1) { //this is firefox
 							$("#firefox").show();
+							$("#firefoxButton").show();
 						}
 						else if (ua.indexOf("safari") > -1) {
 							if(ua.indexOf("chrome" > -1)){ //this is chrome
@@ -186,95 +195,7 @@
 				</div>
 					
 				<hr class="featurette-divider"/>
-           		
-           		<!-- 
-           		<- =============== ->
-           		<- O L D   C O D E ->
-           		<- =============== ->
-           		
-           		<- HEADING for browser addons ->
-           		<h2 id="buttons.Addon" class="expandableSection" style="cursor:pointer">
-	           		<img src="${resdir}/image/icon_expand.png"/>
-	           		<![CDATA[&nbsp;]]>
-	           		<fmt:message key="bookmarklet.addon.headline">
-	           			<fmt:param value="${properties['project.name']}"/>
-	           		</fmt:message>
-           		</h2>
-           		
-           		<div style="display:none; margin-left:20px;">
-           		
-           			<- TEXT ->
-	           		<p>
-	           			<fmt:message key="bookmarklet.addon.text1">
-	           				<fmt:param value="${properties['project.name']}"/>
-	           			</fmt:message>
-	           		</p>
-	           		
-	           		<- FIREFOX ->
-	           		
-	           		<- Heading ->
-	           		<h3 class="expandableSection">
-	           			<img src="${resdir}/image/icon_expand.png"/>
-	           			Firefox
-	           		</h3>
-	           		
-	           		<- Picture, Text & Button ->
-	           		<div style="margin-left:15px;display:none">
-	           		
-	           			!- Picture ->
-		           		<p><img src="/resources/image/bookmarklet_screenshot_firefox_${fn:toLowerCase(exampleString)}.png"/></p>
-		           		
-		           		!- Text ->
-		           		<p><fmt:message key="bookmarklet.addon.text2"/></p>
-		           		
-		           		!- Button ->
-		           		<p>
-		           			<a href="${properties['project.addons.firefox.url']}" class="post.resource.firefox.installButton">
-		           				<fmt:message key="bookmarklet.buttonTextFirefox"/>
-		           			</a>
-		           		</p>
-		           		
-	           		</div>
-	           		
-	           		!- CHROME ->
-	           		
-	           		!- Heading ->
-	           		<h3 class="expandableSection"><img src="${resdir}/image/icon_expand.png"/>Chrome</h3>
-	           		
-	           		!- Picture, Text & Button ->
-	           		<div style="margin-left:15px;display:none">
-	           		
-	           			!- Picture ->
-		           		<p><img src="/resources/image/bookmarklet_screenshot_chrome_${fn:toLowerCase(exampleString)}.png"/></p>
-		           		
-		           		!- Text ->
-		           		<p>
-		           			<fmt:message key="bookmarklet.addon.text3">
-		           				<fmt:param value="${properties['project.name']}"/>
-		           			</fmt:message>
-		           		</p>
-
-						!- Button ->
-		           		<p>
-		           			<a href="${properties['project.addons.chrome.url']}" class="post.resource.chrome.installButton">
-		           				<fmt:message key="bookmarklet.buttonTextChrome"/>
-		           			</a>
-		           		</p>
-		           		
-	           		</div>
-	           		
-	           		!- NOTE ->
-	           		<p>
-	           			<i>
-	           				<fmt:message key="note"/> :
-           					<fmt:message key="bookmarklet.legacyNotice"/>&amp;nbsp;
-           					<fmt:message key="bookmarklet.legacyNotice.further1"/>
-	           			</i>
-	           		</p>
-	           		
-           		</div>
-           		-->
-           		
+           		         		
 				<c:set var="userName" value="${mtl:encodeURI(command.context.loginUser.name)}" />
 					
 				<!-- =========== -->
