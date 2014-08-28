@@ -43,14 +43,6 @@
 					]]>
 				</textarea>
 				
-				<!-- old code --><!-- 
-				<input
-					type="button"
-					value="${selectCode}"
-					onClick="javascript:this.form.text_area1.focus();this.form.text_area1.select();"
-				/>
-				 -->
-				
 				<!-- Button of code 1 -->
        			<button
        				style="margin: 10px"
@@ -61,6 +53,7 @@
        				<fmt:message key="buttons.select_code"/>
        				
        			</button>
+       			
        		</div>
            		
 					
@@ -101,14 +94,6 @@
 				
 				</textarea>
 				
-				<!-- old code --><!-- 
-				<input
-					type="button"
-					value="${selectCode}"
-					onClick="javascript:this.form.text_area2.focus();this.form.text_area2.select();"
-				/>
-				-->
-				
 				<!-- Button of code 2 -->
 				<button
 					style="margin: 10px"
@@ -134,7 +119,6 @@
 			</div>
 		
 		</div>
-		<!--  </table> -->
 		
 	</form>
 	  
