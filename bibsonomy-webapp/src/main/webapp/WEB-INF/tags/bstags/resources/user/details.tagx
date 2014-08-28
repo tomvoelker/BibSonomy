@@ -56,7 +56,7 @@
 
       <tr><th colspan="2">settings</th></tr>
       <tr><th>profilePrivlevel</th><td><c:out value="${user.settings.profilePrivlevel}"/></td></tr>
-      <tr><th>simpleInterface</th><td><c:out value="${user.settings.simpleInterface}"/></td></tr>
+      <tr><th>simpleInterface</th><td><c:out value="${user.settings.layoutSettings.simpleInterface}"/></td></tr>
       <tr><th>defaultLanguage</th><td><c:out value="${user.settings.defaultLanguage}"/></td></tr>
       <tr><th>logLevel</th><td><c:out value="${user.settings.logLevel}"/></td></tr>
 
