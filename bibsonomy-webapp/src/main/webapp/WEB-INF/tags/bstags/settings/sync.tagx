@@ -86,8 +86,14 @@
 			<p><fmt:message key="synchronization.server.add.intro"/></p>
 			<form:form method="POST" action="/updateSyncSettings" modelAttribute="command.newSyncServer" cssClass="form-horizontal"> 
 				
-				<bsform:select path="service" items="${command.availableSyncServers}" labelKey="synchronization.server" labelColSpan="4" helpKey="synchronization.help.server" />
-				
+				<div class="form-group">
+					<form:label cssClass="col-sm-4 control-label" path="resourceType" ><fmt:message key="synchronization.server"/></form:label>
+					<div class="col-sm-8">
+						<form:select cssClass="form-control" path="service" items="${command.availableSyncServers}" />
+						<div class="help help-header hide"><!--  --></div>
+						<div class="help help-content hide"><fmt:message key="synchronization.help.server" /></div>
+					</div>
+				</div>
 				<settings:syncFormFields />
 				
 				<input type="hidden" name="ckey" value="${command.context.ckey}"/>
