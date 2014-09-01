@@ -858,6 +858,12 @@
 		<set type="parameter" name="requestedSearch">$1</set>
 		<to last="true">/search</to>
 	</rule>
+	<rule>
+		<name>/elasticSearch/SEARCH</name>
+		<from>^/+elasticSearch/(.+)$</from>
+		<set type="parameter" name="requestedSearch">$1</set>
+		<to last="true">/elasticSearch</to>
+	</rule>
 	<!-- redirect for search formular on /search/SEARCHTERM page -->
 	<rule>
 		<name>redirect /search/SEARCH</name>

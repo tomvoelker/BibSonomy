@@ -595,6 +595,11 @@
 						<property name="controllerBeanName" value="searchPageController"/>
 					</bean>
 				</entry>
+				<entry key="/elasticSearch">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="elasticSearchPageController"/>
+					</bean>
+				</entry>
 				<entry key="/popular">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="popularPageController"/>
@@ -921,7 +926,9 @@
 	<bean id="searchPageController" class="org.bibsonomy.webapp.controller.SearchPageController" scope="request" parent="multiResourceListController">
 		<property name="supportedResources" ref="allResources"/>
 	</bean>
-	
+	<bean id="elasticSearchPageController" class="org.bibsonomy.webapp.controller.ElasticSearchPageController" scope="request" parent="multiResourceListController">
+		<property name="supportedResources" ref="allResources"/>
+	</bean>
 	<bean id="popularTagsPageController" class="org.bibsonomy.webapp.controller.PopularTagsPageController" scope="request">
 		<property name="logic" ref="logic"/>
 	</bean>
