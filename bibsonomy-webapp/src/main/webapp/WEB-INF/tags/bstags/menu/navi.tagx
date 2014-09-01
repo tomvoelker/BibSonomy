@@ -35,7 +35,7 @@
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.my"/>${properties['project.name']}<b class="caret">&amp;nbsp;</b></a>
 							<ul class="dropdown-menu">
 								<li><a href="/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.myPosts"/></a></li>
-								<c:if test="${not command.context.loginUser.settings.simpleInterface}">
+								<c:if test="${not command.context.loginUser.settings.layoutSettings.simpleInterface}">
 									<li><a href="/viewable/private"><fmt:message key="navi.privatePosts"/></a></li>
 									<li><a href="/viewable/friends"><fmt:message key="navi.friendsPosts"/></a></li>
 									<li><a href="/user/${mtl:encodeURI(loginUserName)}?filter=JUST_PDF"><fmt:message key="navi.pdfs"/></a></li>
@@ -43,7 +43,7 @@
 								</c:if>					
 								<li><a href="/discussed/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.discussedPosts"/></a></li>
 								
-								<c:if test="${not command.context.loginUser.settings.simpleInterface}">
+								<c:if test="${not command.context.loginUser.settings.layoutSettings.simpleInterface}">
 									<li class="divider"><!-- KEEP ME --></li>
 									<li><a href="/cv/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.cv"/></a></li>
 									<li><a href="/mySearch"><fmt:message key="navi.browse"/></a></li>

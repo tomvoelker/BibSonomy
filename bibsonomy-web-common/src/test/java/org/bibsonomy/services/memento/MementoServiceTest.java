@@ -33,6 +33,7 @@ import java.net.URL;
 
 import org.bibsonomy.util.DateTimeUtils;
 import org.junit.Test;
+import org.junit.Ignore;
 
 /**
  * 
@@ -52,6 +53,7 @@ public class MementoServiceTest {
 	}
 
 	@Test
+	@Ignore // FIXME: fails to often, external service
 	public void testGetMementoUrl() throws MalformedURLException {
 		final MementoService m = new MementoService(new URL("http://mementoweb.org/timegate/"));
 
