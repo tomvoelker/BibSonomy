@@ -21,6 +21,7 @@
 	<div class="form-group">
 		<form:label cssClass="col-sm-4 control-label" path="resourceType" ><fmt:message key="synchronization.resourceType"/></form:label>
 		<div class="col-sm-8">
+			<form:errors path="resourceType" />
 			<form:select cssClass="form-control help-popover" path="resourceType">
 				<form:option value="org.bibsonomy.model.Resource"><fmt:message key="resourceType.Resource.plural"/></form:option>
 				<form:option value="org.bibsonomy.model.BibTex"><fmt:message key="resourceType.BibTex.plural"/></form:option>
@@ -29,12 +30,12 @@
 			<div class="help help-header hide"><fmt:message key="synchronization.resourceType"/></div>
 			<div class="help help-content hide"><fmt:message key="synchronization.help.resourceTypes" /></div>
 		</div>
-		<form:errors path="resourceType" />
 	</div>
 	
 	<div class="form-group">
 		<form:label cssClass="col-sm-4 control-label" path="strategy"><fmt:message key="synchronization.conflictResolution"/></form:label>
 		<div class="col-sm-8">
+			<form:errors path="strategy" />
 			<form:select cssClass="form-control help-popover" path="strategy">
 				<form:option value="LAST_WINS"><fmt:message key="synchronization.lastWins"/></form:option>
 				<form:option value="FIRST_WINS"><fmt:message key="synchronization.firstWins"/></form:option>
@@ -44,11 +45,11 @@
 			<div class="help help-header hide"><fmt:message key="synchronization.conflictResolution"/></div>
 			<div class="help help-content hide"><fmt:message key="synchronization.help.conflictResolution" /></div>
 		</div>
-		<form:errors path="strategy" />
 	</div>
 	<div class="form-group">
 		<form:label cssClass="col-sm-4 control-label" path="direction" ><fmt:message key="synchronization.direction"/></form:label>
 		<div class="col-sm-8">
+			<form:errors path="direction" />
 			<form:select cssClass="form-control help-popover dirselect" path="direction">
 				<form:option value="BOTH"><fmt:message key="synchronization.direction.both"/></form:option>
 				<form:option value="CLIENT_TO_SERVER"><fmt:message key="synchronization.direction.client_to_server.on_client"/></form:option>
@@ -57,7 +58,6 @@
 			<div class="help help-header hide"><fmt:message key="synchronization.direction"/></div>
 			<div class="help help-content hide"><fmt:message key="synchronization.help.directions" /></div>
 		</div>
-		<form:errors path="direction" />
 	</div>
 	
 	<bsform:checkbox path="autosync" labelKey="synchronization.autosync" helpKey="synchronization.help.autoSync" inputColSpan="8" />
