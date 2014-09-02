@@ -301,36 +301,41 @@
 					<script type="text/javascript" >
 						var ua = navigator.userAgent.toLowerCase();
 						
+						
+						console.log("Browser: " + ua);
+						
+						
 						$("#firefox").hide();
 						$("#firefoxButton").hide();
+						
 						
 						$("#chrome").hide();
 						$("#chromeButton").hide();
 						
+						
 						$("#safari").hide();
 						$("#safariButton").hide();
 						
+						
 						$("#internetExplorer").hide();
+						
 						
 						if (ua.indexOf("firefox") > -1) {	//this is firefox
 							$("#firefox").show();
 							$("#firefoxButton").show();
 						}
-						else if (ua.indexOf("safari") > -1) {
-							if(ua.indexOf("chrome" > -1)){	//this is chrome
-								$("#chrome").show();
-								$("#chromeButton").show();
-							}
-							else{							//this is safari
-								$("#safari").show();
-								$("#safariButton").show();
-							}
+						else if (ua.indexOf("chrome") > -1) {	//this is chrome
+							$("#chrome").show();
+							$("#chromeButton").show();
+						}
+						else if (ua.indexOf("safari") > -1) { //this is safari
+							$("#safari").show();
+							$("#safariButton").show();
 						}
 						else{
 							$("#allBrowsers").hide();
 							$("#internetExplorer").show();
 						}
-						
 					</script>
 				</div>
 			</div>
