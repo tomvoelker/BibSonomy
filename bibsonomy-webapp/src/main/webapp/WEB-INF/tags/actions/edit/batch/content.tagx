@@ -67,7 +67,7 @@
 			<!-- the following variable is defined to communicate with .js file -->
 			<input type="hidden" name="action"/>
 
-		<!-- Hint messages-->		
+		<!-- Hint messages: hint-green, hint-red-->		
 		    <div id="editHint" class="Hint red invisible"><fmt:message key="batchedit.editHint" /></div>
 		    <div id="normConfirm" class="Hint red invisible">
 		    	<ul>
