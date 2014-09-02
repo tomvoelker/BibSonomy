@@ -25,3 +25,7 @@ position:relative;
 .diffNumText:hover{
 	text-decoration: none;
 }
+
+.invisible{
+	visibility: hidden;
+}

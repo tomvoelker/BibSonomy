@@ -374,7 +374,7 @@ public class WebUtils {
 		 * set cookie
 		 */
 		if (present(cookie)) {
-			method.setRequestHeader(COOKIE_HEADER_NAME, cookie);
+			method.addRequestHeader(COOKIE_HEADER_NAME, cookie);
 		}
 		
 		/*
@@ -493,32 +493,47 @@ public class WebUtils {
 	}
 	
 	/**
-	 * Executes a request for the given URL following up to {@value #MAX_REDIRECT_COUNT}
-	 * redirects. If response is HTTP Status Code 200 returns the URL for that location,
-	 * otherwise return null.
-	 *  
-	 * 
+	 * Shortcut for {@link #getRedirectUrl(URL, List)}.
 	 * 
 	 * @param url The location to start.
 	 * @return - The redirect URL if received HTTP Status Code 200, null otherwise.
 	 */
 	public static URL getRedirectUrl(final URL url) {
+		return getRedirectUrl(url, null);
+	}
+
+	/**
+	 * Executes a request for the given URL following up to {@value #MAX_REDIRECT_COUNT}
+	 * redirects. If response is HTTP Status Code 200 returns the URL for that location,
+	 * otherwise return null. 
+	 * 
+	 * @param url The location to start.
+	 * @param headers Additional headers to be added to the request
+	 * @return - The redirect URL if received HTTP Status Code 200, null otherwise.
+	 */
+	public static URL getRedirectUrl(final URL url, final List<Header> headers) {
 		final HttpMethod method = new GetMethod(url.toExternalForm());
-		HttpClient client = getHttpClient();
+		if (present(headers)) {
+			for (final Header header : headers) {
+				method.addRequestHeader(header);
+			}
+		}
+		final HttpClient client = getHttpClient();
 		
 		try {
 			client.executeMethod(method);
-		} catch (HttpException e) {
 		} catch (IOException e) {
+			// ignore
 		} finally {
 			method.releaseConnection();
 		}
+		
 		if (method.getStatusCode() != HttpStatus.SC_OK) return null;
 		
 		try {
 			return new URL(method.getURI().getURI());
-		} catch (URIException e) {
-		} catch (MalformedURLException e) {
+		} catch (URIException | MalformedURLException e) {
+			// ignore, just return null
 		}
 		return null;
 	}

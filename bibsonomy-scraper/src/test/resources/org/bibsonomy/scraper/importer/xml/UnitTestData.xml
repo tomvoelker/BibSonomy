@@ -542,7 +542,7 @@
 	<URLTest id="url_89">
 		<TestDescription>Liebert Url test 2</TestDescription>
 		<URL>http://www.liebertonline.com/action/showCitFormats?doi=10.1089%2F152308604773934350</URL>
-		<BibFile>LiebertScraperUnitURLTest1.bib</BibFile>
+		<BibFile>LiebertScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.liebert.LiebertScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_90">
@@ -1684,5 +1684,29 @@
 		<URL>http://www.morganclaypool.com/action/showCitFormats?doi=10.2200%2FS00334ED1V01Y201102WBE001</URL>
 		<BibFile>MorganClaypoolScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.morganclaypool.MorganClaypoolScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_275">
+		<TestDescription>MDPI Scraper</TestDescription>
+		<URL>http://www.mdpi.com/2072-4292/5/10/5122</URL>
+		<BibFile>MDPIScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.mdpi.MDPIScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_276">
+		<TestDescription>JStage Scraper</TestDescription>
+		<URL>https://www.jstage.jst.go.jp/article/abas/13/2/13_67/_article</URL>
+		<BibFile>JStageScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.jstage.JStageScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_277">
+		<TestDescription>Oxford Journal Scraper</TestDescription>
+		<URL>http://comjnl.oxfordjournals.org/content/55/1/82.abstract</URL>
+		<BibFile>OxfordJournalsScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.oxfordjournals.OxfordJournalsScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_278">
+		<TestDescription>The LANCET Scraper</TestDescription>
+		<URL>http://www.thelancet.com/journals/lancet/article/PIIS0140-6736%2814%2960931-4/abstract</URL>
+		<BibFile>TheLancetScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.thelancet.TheLancetScraper</Scraper>
 	</URLTest>
 </test:Tests>

@@ -1,19 +1,27 @@
 
 $(document).ready(function () {
 
+	$('a[id = hideDiff]').toggleClass('invisible', true);
 	$('a[id = hideDiff]').hide();
+	$('li[id = postDiffDesc]').toggleClass('invisible', true);
 	$('li[id = postDiffDesc]').hide();
 	
 	$('a[id = showDiff]').click(function() {
-			$(this).hide();
-			$(this).siblings().show();
-			$(this).parent().siblings('.postDiffDesc').show();
-		});
+		$(this).toggleClass('invisible', true);
+		$(this).hide();
+		$(this).siblings().toggleClass('invisible', false);
+		$(this).siblings().show();
+		$(this).parent().siblings('.postDiffDesc').toggleClass('invisible', false);
+		$(this).parent().siblings('.postDiffDesc').show();
+	});
 	
 	$('a[id = hideDiff]').click(function() {
-			$(this).hide();
-			$(this).siblings().show();
-			$(this).parent().siblings('.postDiffDesc').hide();
+		$(this).toggleClass('invisible', true);
+		$(this).hide();
+		$(this).siblings().toggleClass('invisible', false);
+		$(this).siblings().show();
+		$(this).parent().siblings('.postDiffDesc').toggleClass('invisible', true);
+		$(this).parent().siblings('.postDiffDesc').hide();
 	});
 });
 

@@ -108,7 +108,7 @@ public class JabRefModelConverterTest {
 	post.getResource().recalculateHashes();
 	final URLGenerator urlGen = new URLGenerator(PROJECT_HOME);
 	post.getResource().addMiscField(BibTexUtils.ADDITIONAL_MISC_FIELD_BIBURL, urlGen.getPublicationUrl(post.getResource(), post.getUser()));
-	final BibtexEntry entry = JabRefModelConverter.convertPost(post, new URLGenerator(PROJECT_HOME));
+	final BibtexEntry entry = JabRefModelConverter.convertPost(post, new URLGenerator(PROJECT_HOME),false);
 	final BibtexEntry expected = BibtexParser.singleFromString(bibtexSource);
 
 	for (final String field : entry.getAllFields()) {
@@ -182,7 +182,7 @@ public class JabRefModelConverterTest {
 	    list.add(post);
 	}
 
-	final List<BibtexEntry> bibtexNew = JabRefModelConverter.convertPosts(list, new URLGenerator("http://www.bibsonomy.org"));
+	final List<BibtexEntry> bibtexNew = JabRefModelConverter.convertPosts(list, new URLGenerator("http://www.bibsonomy.org"),false);
 
 	final BibtexEntry oldEntry = bibtexOld.getEntries().iterator().next();
 	final BibtexEntry newEntry = bibtexNew.get(0);
@@ -236,7 +236,7 @@ public class JabRefModelConverterTest {
 	try {
 	    final Post<BibTex> post = pbp.parseBibTeXPost(bibtexSource);	
 	    post.setUser(new User("alder"));
-	    final BibtexEntry jabrefEntry = JabRefModelConverter.convertPost(post, new URLGenerator(PROJECT_HOME));
+	    final BibtexEntry jabrefEntry = JabRefModelConverter.convertPost(post, new URLGenerator(PROJECT_HOME),false);
 	    Assert.assertEquals("alder", jabrefEntry.getField("username"));	    
 	} catch (final ParseException e) {
 	    Assert.fail(e.getMessage());

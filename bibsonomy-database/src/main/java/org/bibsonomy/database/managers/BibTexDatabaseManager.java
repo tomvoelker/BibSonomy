@@ -252,12 +252,12 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * bibtexKey
 	 * 
 	 * @param loginUser
-	 *            TODO
-	 * @param bibtexKey 
-	 * @param requestedUserName 
-	 * @param groupId 
-	 * @param limit 
-	 * @param offset 
+	 * @param bibtexKey
+	 * @param requestedUserName
+	 * @param groupId
+	 * @param visibleGroupIDs
+	 * @param limit
+	 * @param offset
 	 * @param systemTags
 	 * @param session
 	 *            a database session

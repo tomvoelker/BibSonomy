@@ -996,9 +996,24 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		final String bibtexKey = "test %";
 		final String requestedUserName = "testuser1";
 		
-		final List<Post<BibTex>> posts = publicationDb.getPostsByBibTeXKey(null, bibtexKey, requestedUserName, PUBLIC_GROUP_ID, 20, 0, null, this.dbSession);
-		assertEquals(1,posts.size());
+		List<Post<BibTex>> posts = publicationDb.getPostsByBibTeXKey(null, bibtexKey, requestedUserName, PUBLIC_GROUP_ID, Collections.singletonList(Integer.valueOf(PUBLIC_GROUP_ID)), 20, 0, null, this.dbSession);
+		assertEquals(1, posts.size());
 		assertEquals(posts.get(0).getResource().getBibtexKey(), "test bibtexKey");
+		
+		// some spamming post tests
+		posts = publicationDb.getPostsByBibTeXKey(null, "elsenbroich2006abductive", "testspammer", PUBLIC_GROUP_ID, Collections.singletonList(Integer.valueOf(PUBLIC_GROUP_ID)), 20, 0, null, this.dbSession);
+		assertEquals(0, posts.size());
+		
+		// only the normal post is visible
+		posts = publicationDb.getPostsByBibTeXKey(null, "elsenbroich2006abductive", null, PUBLIC_GROUP_ID, Collections.singletonList(Integer.valueOf(PUBLIC_GROUP_ID)), 20, 0, null, this.dbSession);
+		assertEquals(1, posts.size());
+		
+		// testspammer sees his own post
+		posts = publicationDb.getPostsByBibTeXKey("testspammer", "elsenbroich2006abductive", "testspammer", -1, Arrays.asList(Integer.valueOf(PUBLIC_GROUP_ID), Integer.valueOf(PUBLIC_GROUP_ID - Integer.MAX_VALUE)), 20, 0, null, this.dbSession);
+		assertEquals(1, posts.size());
+		
+		posts = publicationDb.getPostsByBibTeXKey("testspammer", "elsenbroich2006abductive", null, -1, Arrays.asList(Integer.valueOf(PUBLIC_GROUP_ID), Integer.valueOf(PUBLIC_GROUP_ID_SPAM)), 20, 0, null, this.dbSession);
+		assertEquals(2, posts.size());
 	}
 	
 	/**

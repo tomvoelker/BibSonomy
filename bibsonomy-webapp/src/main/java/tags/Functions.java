@@ -7,7 +7,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.text.Normalizer;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -17,6 +16,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,6 +40,7 @@ import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.filesystem.FileLogic;
+import org.bibsonomy.util.DateTimeUtils;
 import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.util.JSONUtils;
 import org.bibsonomy.util.StringUtils;
@@ -47,10 +48,19 @@ import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.web.spring.converter.StringToEnumConverter;
+import org.bibsonomy.webapp.command.BaseCommand;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
+
+
+
+
+
+import tags.diff_match_patch.Diff;
+import tags.diff_match_patch.LinesToCharsResult;
+import tags.diff_match_patch.Patch;
 
 /**
  * TODO: move to org.bibsonomy.webapp.util.tags package
@@ -119,6 +129,7 @@ public class Functions {
 	 *            one of NFC, NFD, NFKC, NFKD @see Normalizer.Form
 	 * @return normalized String
 	 */
+	@Deprecated // TODO: remove with old layout
 	public static String normalize(final String str, final String decomp) {
 		Normalizer.Form form;
 		try {
@@ -384,7 +395,7 @@ public class Functions {
 	}
 	/**
 	 * returns the number of different entries*/
-	public static int DiffNum(final BibTex newBib, final BibTex oldBib) {
+	public static int DiffNum(BibTex newBib, BibTex oldBib) {
 		int Num=0;
 		if (!cleanBibtex(newBib.getEntrytype()).equals(cleanBibtex(oldBib.getEntrytype()))){
 			Num++;
@@ -475,119 +486,62 @@ public class Functions {
 		}
 		return Num;
 	}
-	
 	/**
-	 * Return diff*/
-	public static String compareString(final String newValue, final String oldValue) {
-		String tmpNewValue ="";
-		String tmpOldValue ="";
-		if(newValue != null){
-			tmpNewValue =newValue;
-		}
-		if(oldValue != null){
-			tmpOldValue =oldValue;
-		}
-		final Set<String> Npost = new TreeSet<String>(Arrays.asList(tmpNewValue.split(" ")));
-		final Set<String> Opost = new TreeSet<String>(Arrays.asList(tmpOldValue.split(" ")));
-		
-		//String[] post = tmpNewValue.split(" ");
-		//String[] comparePost = tmpOldValue.split(" ");
-		
-		final Set<String> removed = new TreeSet<String>(Opost);
-		removed.removeAll(Npost);
-		String [] removedArr = removed.toArray(new String[0]);
-		
-		
-		final Set<String> same = new TreeSet<String>(Opost);
-		same.retainAll(Npost);
-		String [] sameArr = same.toArray(new String[0]);
-		
-		final Set<String> added = new TreeSet<String>(Npost);
-		added.removeAll(Opost);
-		String [] addedArr = added.toArray(new String[0]);
-		//result
-		String comparePostValue ="";
-		int i=0;
-		while(i<sameArr.length){
-			comparePostValue+= sameArr[i++];
-		}
-		
-		i=0;
-		while(i<addedArr.length){
-			comparePostValue+= ("<span class=\"fsDiffMissingColor\">" + addedArr[i++] + "</span>"+ " "); 
-					
-		}
-		
-		i=0;
-		while(i<removedArr.length){
-			comparePostValue+= ("<span class=\"fsDiffAddColor\">" + removedArr[i++] + "</span>"+ " ");
-		}
-		
-		return comparePostValue;
-		
-	}
-	
-	/**
-	 * Return the diff as String for history page
-	 * 
-	 * @param newValue
-	 * @param oldValue
-	 * @return highlighted diff
+	 * Compares two strings character-based. 
+	 * @param newValue and oldValue
+	 * @return The difference between two strings. (inserted: green, deleted: red, not_changed)
 	 */
-		/*
-	public static String compareString(final String newValue, final String oldValue) {
-		String tmpNewValue ="";
-		String tmpOldValue ="";
-		if(newValue != null){
-			tmpNewValue =newValue;
+	public static String compareString(String newValue, String oldValue) {
+		
+		if(newValue == null){
+			newValue=" ";
 		}
-		if(oldValue != null){
-			tmpOldValue =oldValue;
+		if(oldValue == null){
+			oldValue =" ";
 		}
-		String[] post = tmpNewValue.split(" ");
-		String[] comparePost = tmpOldValue.split(" ");
+		diff_match_patch dmp = new diff_match_patch();
 
-		//result
-		String comparePostValue ="";
-		//number of words of each field
-		int m = post.length;
-		int n = comparePost.length;
-
-		//opt is multidimensional array (opt[m+1][n+1])
-		int[][] opt= new int[m+1][n+1];
-	
-		for(int i=m-1; i>=0; i--) {
-			for(int j=n-1; j>=0; j--){
-				if(post[i] == comparePost[j]){
-					opt[i][j] = (opt[i+1][j+1] +1);
-				} else {
-					opt[i][j] = Math.max(opt[i+1][j], opt[i][j+1]);
-				}	
-			}
-		}
-	
-		int i=0;
-		int j=0;
-		while(i<m && j<n){
-			if(post[i] == comparePost[j]){
-				comparePostValue+=(comparePost[j]+" ");
-				i++;
-				j++;
-			} else if (opt[i+1][j] >= opt[i][j+1]){
-				comparePostValue+=("<span class=\"fsDiffMissingColor\">" + post[i++] + "</span>"+ " ");
-			} else {
-				comparePostValue+=("<span class=\"fsDiffAddColor\">" + comparePost[j++] + "</span>"+ " ");
-			}
-		}
-		while(i<m) {
-			comparePostValue+=("<span class=\"fsDiffMissingColor\">" + post[i++] + "</span>"+ " ");
-		}while(j<n){
-			comparePostValue+=("<span class=\"fsDiffAddColor\">" + comparePost[j++] + "</span>"+ " ");
-		}
-		return comparePostValue;
+    	LinkedList<Diff> d = dmp.diff_main(newValue, oldValue);
+        dmp.diff_cleanupSemantic(d);
+        return dmp.diff_prettyHtml(d);
+    
 	}
-*/
+	
+	
 	/**
+	 * Compares two strings word-based. (Maybe usefull in future!)
+	 * @param newValue and oldValue
+	 * @return The difference between two strings. (inserted: green, deleted: red, not_changed)
+	 */
+	/*public static String compareString(String newValue, String oldValue) {
+
+
+		if(newValue == null){
+			newValue=" ";
+		}
+		if(oldValue == null){
+			oldValue =" ";
+		}
+		diff_match_patch dmp = new diff_match_patch();
+
+		//split the texts based on words
+		LinesToCharsResult a = dmp.diff_linesToWords(newValue, oldValue);
+		
+		String lineText1 = a.chars1;
+		String lineText2 = a.chars2;
+		List<String> lineArray = a.lineArray;
+
+		LinkedList<Diff> diffs = dmp.diff_main(lineText1, lineText2, false);
+
+		dmp.diff_charsToLines(diffs, lineArray);
+		
+		//cleans the result so that be more human readable.
+		dmp.diff_cleanupSemantic(diffs);
+		
+		//applies appropriate colors to the result. (red, green)
+		return dmp.diff_prettyHtml(diffs);
+       }*/
+		/**
 	 * Quotes a String such that it is usable for JSON.
 	 * 
 	 * @param value
@@ -815,6 +769,20 @@ public class Functions {
 	}
 
 	/**
+	 * Formats the date to RFC 1123, e.g., "Wed, 12 Mar 2013 12:12:12 GMT" (needed for Memento).
+	 * 
+	 * Currently Java's formatter doesn't support this standard therefore we can
+	 * not use the fmt:formatDate tag with a pattern
+	 * 
+	 * @param date
+	 * @return the formatted date
+	 */
+	public static String formatDateRFC1123(final Date date) {
+		return DateTimeUtils.formatDateRFC1123(date);
+	}
+
+
+	/**
 	 * Formats the date to W3CDTF, e.g., 2012-11-07T14:43:16+01:00 (needed for
 	 * RSS feeds)
 	 * 
@@ -850,7 +818,7 @@ public class Functions {
 				final String monthAsNumber = BibTexUtils.getMonthAsNumber(cleanMonth);
 				if (present(day)) {
 					final String cleanDay = BibTexUtils.cleanBibTex(day.trim());
-					try {						
+					try {
 						DateTime dt = dmyDateFormat.parseDateTime(cleanYear + "-" + monthAsNumber + "-" + cleanDay);
 						return DateTimeFormat.mediumDate().withLocale(locale).print(dt);
 					} catch (final Exception ex) {
@@ -1018,4 +986,19 @@ public class Functions {
 		return filename.replaceAll("[^A-Za-z0-9]", "-");
 	}
 	
+	/**
+	 * returns true, if command implements DidYouKnowMessageCommand interface
+	 * @param command
+	 * @return true|false
+	 */
+	/**
+	 * returns true, if command implements DidYouKnowMessageCommand interface and has a didYouKnowMessage set
+	 * @param command
+	 * @return true|false
+	 */
+	@Deprecated // TODO: (bootstrap) remove and use not empty check
+	public static Boolean hasDidYouKnowMessage(BaseCommand command) {
+		return (command.getDidYouKnowMessage() != null);
+	}
+
 }

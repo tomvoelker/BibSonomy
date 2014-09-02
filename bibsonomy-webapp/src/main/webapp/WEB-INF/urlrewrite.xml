@@ -164,6 +164,7 @@
 		<set name="requPath">$1</set>
 		<to last="true">/linkcloud</to>
 	</rule>
+	
 	<!-- ****** JabRef Layouts *****  -->
 	<rule>
 		<name>/layout/</name>

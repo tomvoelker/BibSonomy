@@ -8,19 +8,19 @@ import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
+import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.controller.SettingsPageController;
-import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 /**
  * @author cvo
  */
-public class UpdateUserSettingsController extends SettingsPageController implements MinimalisticController<SettingsViewCommand>, RequestAware {
+public class UpdateUserSettingsController extends SettingsPageController {
 	private static final Log log = LogFactory.getLog(UpdateUserSettingsController.class);
 		
 	@Override
@@ -71,6 +71,11 @@ public class UpdateUserSettingsController extends SettingsPageController impleme
 			 * changes the layout of tag and post for a user
 			 */
 			updateLayoutTagPost(command, user);
+		} else if ("switchLayout".equals(action)) {
+			// TODO: (bootstrap) remove complete if statement
+			user.getSettings().getLayoutSettings().setViewLayout(command.getUser().getSettings().getLayoutSettings().getViewLayout());
+			this.logic.updateUser(user, UserUpdateOperation.UPDATE_SETTINGS);
+			return new ExtendedRedirectView("/");
 		} else {
 			errors.reject("error.invalid_parameter");
 		}
@@ -102,8 +107,8 @@ public class UpdateUserSettingsController extends SettingsPageController impleme
 			return;
 		}
 		
-		if (commandSettings.getListItemcount() > PermissionDatabaseManager.END_MAX) {		
-			errors.rejectValue("user.settings.listItemcount", "error.settings.list_item_count.size", new String[]{Integer.toString(PermissionDatabaseManager.END_MAX)}, "");
+		if (commandSettings.getListItemcount() > PostLogicInterface.MAX_QUERY_SIZE) {
+			errors.rejectValue("user.settings.listItemcount", "error.settings.list_item_count.size", new String[]{Integer.toString(PostLogicInterface.MAX_QUERY_SIZE)}, "");
 			return;
 		}
 		
@@ -115,8 +120,9 @@ public class UpdateUserSettingsController extends SettingsPageController impleme
 		userSettings.setShowBookmark(commandSettings.isShowBookmark());
 		userSettings.setShowBibtex(commandSettings.isShowBibtex());
 		
-		userSettings.setSimpleInterface(commandSettings.isSimpleInterface());
-
+		userSettings.getLayoutSettings().setSimpleInterface(commandSettings.getLayoutSettings().isSimpleInterface());
+		userSettings.getLayoutSettings().setViewLayout(commandSettings.getLayoutSettings().getViewLayout());
+		
 		userSettings.setIsMaxCount(commandSettings.getIsMaxCount());
 		if (userSettings.getIsMaxCount()) {
 			userSettings.setTagboxMaxCount(command.getChangeTo());

@@ -126,15 +126,15 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 				command.setConceptsOfAll(this.getConceptsForSidebar(command, GroupingEntity.ALL, null, requTags));
 				command.setPostCountForTagsForAll(this.getPostCountForSidebar(GroupingEntity.ALL, "", requTags));
 				
-				return Views.GROUPTAGPAGE;	
+				return Views.GROUPTAGPAGE;
 			} 
 
-			return Views.GROUPPAGE;		
+			return Views.GROUPPAGE;
 		}
 		
 		this.endTiming();
 		// export - return the appropriate view
-		return Views.getViewByFormat(format);		
+		return Views.getViewByFormat(format);
 	}
 
 	@Override

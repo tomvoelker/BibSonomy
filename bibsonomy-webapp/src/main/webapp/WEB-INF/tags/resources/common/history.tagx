@@ -100,13 +100,13 @@
 						<a href="#" class="diffNumText">
 						${diffNum} ${diffNumMsg}
 						</a>
-					</li>
+					</li> 
 					<li>
-						<a href="#" id="showDiff" title="Show changes">more...</a>
-						<a href="#" id="hideDiff" title="Hide changes">less...</a>
+						<a href="#" id="showDiff"  title="Show changes">more...</a>
+						<a href="#" id="hideDiff"  title="Hide changes">less...</a>
 					</li>	
 					
-					<li id="postDiffDesc" class="postDiffDesc">				
+				<!--  -->	<li id="postDiffDesc" class="postDiffDesc invisible">				
 						<rc:postDescDiff
 							publication="${listView.list[(fieldlength-index)]}"
 							newestPub="${listView.list[(fieldlength-index+1)]}" />

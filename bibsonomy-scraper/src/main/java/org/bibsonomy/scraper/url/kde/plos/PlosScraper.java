@@ -31,7 +31,8 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.ValidationUtils;
 
@@ -39,7 +40,7 @@ import org.bibsonomy.util.ValidationUtils;
  * Scraper for X.plosjournals.org
  * @author tst
  */
-public class PlosScraper extends SimpleGenericURLScraper {
+public class PlosScraper extends GenericBibTeXURLScraper {
 
 	private static final String SITE_NAME = "PLoS";
 	private static final String SITE_URL = "http://www.plos.org/journals/index.php";
@@ -102,7 +103,7 @@ public class PlosScraper extends SimpleGenericURLScraper {
 	}
 
 	@Override
-	public String getBibTeXURL(URL url) {
+	public String getDownloadURL(URL url) throws ScrapingException {
 		String decodedUrl = UrlUtils.safeURIDecode(url.toString());
 
 		final Matcher _m = PLOS_INFO_PATTERN.matcher(decodedUrl);

@@ -39,6 +39,8 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.CitedbyScraper;
+import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -56,12 +58,12 @@ import org.w3c.dom.NodeList;
  * @author rja
  *
  */
-public class IEEEXploreBookScraper extends AbstractUrlScraper {
+public class IEEEXploreBookScraper extends AbstractUrlScraper implements ReferencesScraper, CitedbyScraper {
 	private static final String SITE_NAME = "IEEEXplore Books";
 	private static final String SITE_URL = "http://ieeexplore.ieee.org/books/bkbrowse.jsp";
 	private static final Log log = LogFactory.getLog(IEEEXploreBookScraper.class);
 	private static final String info = "This scraper creates a BibTeX entry for the books at " +
-	href(SITE_URL, SITE_NAME);
+			href(SITE_URL, SITE_NAME);
 
 	private static final String IEEE_HOST        = "ieeexplore.ieee.org";
 	private static final String IEEE_BOOK_PATH   = "xpl";
@@ -74,59 +76,51 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 	private static final String CONST_EDITION  = "Edition: ";
 	private static final String CONST_VOLUME   = "Volume: ";
 	private static final String CONST_DATE	   = "Publication Date: ";
-	
+
 	private static final String EXPORT_ARNUM_URL = "http://ieeexplore.ieee.org/xpl/downloadCitations";
+	private static final String REFERENCE_ARNUM_URL = "http://ieeexplore.ieee.org/xpl/abstractReferences.jsp?arnumber=";
+	private static final String CITEDBY_ARNUM_URL = "http://ieeexplore.ieee.org/xpl/abstractCitations.jsp?arnumber=";
 
 	private static final Pattern URL_PATTERN_BKN      = Pattern.compile("bkn=([^&]*)");
 	private static final Pattern URL_PATTERN_ARNUMBER = Pattern.compile("arnumber=([^&]*)");
-	
+
 	private static final Pattern PAGE_PATTERN_ISBN = Pattern.compile("ISBN[^>]++>\\s++([\\dx]++)");
+	private static final Pattern CITEDBY_PATTERN = Pattern.compile("(?s)<ol id=\".*\" class=\"docs\">(.*)</ol>");
+	private static final Pattern REFERENCE_PATTERN = Pattern.compile("(?s)<ol class=\"docs\">(.*)</ol>");
+
 
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 
+	
 	static {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile(IEEE_BOOK_PATH + ".*")));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile(IEEE_SEARCH_PATH + ".*")));
 	}
-	
+
 	@Override
 	public boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
-		
+
 		String bibtex = null;
-		String recordIds = null;
-		
-		Matcher matcher = URL_PATTERN_BKN.matcher(sc.getUrl().toString());
-		
-		if (matcher.find()){
-			recordIds = matcher.group(1);
-		} else {
-			
-			matcher = URL_PATTERN_ARNUMBER.matcher(sc.getUrl().toString());
-			
-			if (matcher.find()){
-				recordIds = matcher.group(1);
-			}
-			
-		}
-		
+		String recordIds = ExtractID(sc);
+
 		if (recordIds != null) {
-			
+
 			//create a post method
 			PostMethod method = new PostMethod(EXPORT_ARNUM_URL);
 			method.addParameter("citations-format", "citation-abstract");
 			method.addParameter("fromPage", "");
 			method.addParameter("download-format", "download-bibtex");
 			method.addParameter("recordIds", recordIds);
-			
+
 			//using own client because I do not want to configure any client to allow circular redirects
 			HttpClient client = WebUtils.getHttpClient();
 			client.getParams().setBooleanParameter(HttpClientParams.ALLOW_CIRCULAR_REDIRECTS, true);
-			
+
 			try {
 				//better get the page first
 				WebUtils.getContentAsString(client, sc.getUrl().toExternalForm());
-				
+
 				bibtex = WebUtils.getPostContentAsString(client, method);
 			} catch (IOException ex) {
 				throw new InternalFailureException(ex);
@@ -138,13 +132,13 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 
 			// append url
 			bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
-			
+
 			// add downloaded bibtex to result 
 			sc.setBibtexResult(bibtex);
 			return true;
 
 		} else {
-			
+
 			//let's try to scrape it by isbn
 			try {
 				Matcher isbnMatcher = PAGE_PATTERN_ISBN.matcher(sc.getPageContent());
@@ -159,8 +153,8 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 			} catch (IOException ex) {
 				throw new ScrapingException(ex);
 			}
-			
-			
+
+
 			log.debug("IEEEXploreBookScraper use JTidy to get Bibtex from " + sc.getUrl().toString());
 			sc.setBibtexResult(ieeeBookScrape(sc));
 			return true;
@@ -175,6 +169,23 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 	 * @return bibtex
 	 * @throws ScrapingException
 	 */
+	private String ExtractID(ScrapingContext sc){
+		String recordIds = null;
+		Matcher matcher = URL_PATTERN_BKN.matcher(sc.getUrl().toString());
+
+		if (matcher.find()){
+			recordIds = matcher.group(1);
+		} else {
+
+			matcher = URL_PATTERN_ARNUMBER.matcher(sc.getUrl().toString());
+
+			if (matcher.find()){
+				recordIds = matcher.group(1);
+			}
+
+		}
+		return recordIds;
+	}
 	public String ieeeBookScrape (ScrapingContext sc) throws ScrapingException {
 		try{
 			//-- init all NodeLists and Node
@@ -221,7 +232,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 					title = curr.getFirstChild().getNodeValue();
 				}
 			} */
-			
+
 			if (title == null || title.equals("")) {
 				ident1 = "<title>";
 				ident2 = "</title>";
@@ -232,7 +243,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 					title = title.replaceAll("IEEEXplore#\\s", "");
 				}
 			}
-			
+
 			/* 
 			 * get the abstract block
 			 * 
@@ -244,7 +255,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 				_tempabs = sc.getPageContent().substring(sc.getPageContent().indexOf(ident1)+ident1.length(),sc.getPageContent().indexOf(ident2)).replaceAll("\\s\\s+", "").replaceAll("(<.+?>)", "").trim();
 				abstr = _tempabs;			
 			} */
-			
+
 			ident1 = "<span class=\"sectionHeaders\">Abstract</span>";
 			ident2 = "<td class=\"bodyCopyGrey\"><p class=\"bodyCopyGreySpaced\"><strong>";
 			if (sc.getPageContent().contains(ident1) && sc.getPageContent().contains(ident2)) {
@@ -253,7 +264,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 				_tempabs = sc.getPageContent().substring(_startIndex, _endIndex);
 				abstr = _tempabs.replaceAll("\\s\\s+", "").replaceAll("(<.+?>)", "").trim();
 			}
-			
+
 			/* 
 			 * get the book formats like hardcover
 			 * 
@@ -320,7 +331,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 
 			//init vars to count authors to form a bibtex String
 			int numaut = 0;
-			
+
 			 *
 			 * iterate through the a tags and search the attribute value "<in>aud)" 
 			 * to identify the authors in the source of the ieeexplore page
@@ -349,7 +360,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 					}
 				}
 			} */
-			
+
 			/*
 			 * get authors
 			 */
@@ -362,20 +373,20 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 					authors = sc.getPageContent().substring(_startIndex, _endIndex);
 					authors = authors.replaceAll("\\s\\s+", "").replaceAll("(<.+?>)", "").trim();
 					authors = authors.replaceAll("&nbsp;&nbsp;", " and ");
-					
+
 					if (authors.endsWith(" and ")) {
 						authors = authors.substring(0, authors.length() - 5);
 					}
 				}
 			}
-			
+
 			//-- kill special chars and add the year to bibtexkey
 			if ((isbn == null || !isbn.equals(""))
 					&& (year == null || !year.equals(""))) {
 				bibtexkey = isbn.replaceAll("-", "");
 				bibtexkey = bibtexkey.replaceAll("[^0-9A-Za-z]", "") + ":" + year;
 			}
-				
+
 			//create the book-bibtex
 			return type + " { " + bibtexkey + ", \n" 
 			+ "author = {" + authors + "}, \n" 
@@ -394,6 +405,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 		}
 	}
 
+	@Override
 	public String getInfo() {
 		return info;
 	}
@@ -403,11 +415,53 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.CitedbyScraper#scrapeCitedby(org.bibsonomy.scraper.ScrapingContext)
+	 */
+	@Override
+	public boolean scrapeCitedby(ScrapingContext scrapingContext) throws ScrapingException {
+		String citedBy = "";
+		String ids = ExtractID(scrapingContext);
+		try {
+			Matcher m = CITEDBY_PATTERN.matcher(WebUtils.getContentAsString(CITEDBY_ARNUM_URL + ids, WebUtils.getCookies(scrapingContext.getUrl())));
+			if(m.find()){
+				citedBy = m.group(1);
+				scrapingContext.setCitedBy(citedBy);
+				return true;
+			}
+		} catch (IOException ex) {
+			throw new InternalFailureException(ex);
+		}
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
+	 */
+	@Override
+	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
+		String reference = "";
+		String ids = ExtractID(scrapingContext);
+		try {
+			Matcher m = REFERENCE_PATTERN.matcher(WebUtils.getContentAsString(REFERENCE_ARNUM_URL + ids, WebUtils.getCookies(scrapingContext.getUrl())));
+			if(m.find()){
+				reference = m.group(1);
+				scrapingContext.setReferences(reference);
+				return true;
+			}
+		} catch (IOException ex) {
+			throw new InternalFailureException(ex);
+		}
+		return false;
 	}
 }
