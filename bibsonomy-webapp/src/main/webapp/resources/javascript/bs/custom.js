@@ -55,30 +55,35 @@ $(function() {
     	
         var moreLink = $(document.createElement("a"));
         var contentContainer = $(this).children(".contentContainer")[0];
-        moreLink.data("text", contentContainer.innerHTML).html("(" + getString("more") + ")").addClass("moreLink").click(function(event){
-        	event.preventDefault();
-        	var contentContainer = $(this.parentNode).children(".contentContainer")[0];
-        	
-            if($(this).hasClass('show-less')) {
-            	$(this)
-            	.html("(" + getString("more") + ")")
-            	.removeClass("show-less")
-            	.addClass("show-more");
-            } else {
-            	$(this)
-            	.html("(" + getString("less") + ")")
-            	.removeClass("show-more")
-            	.addClass("show-less");
-            }
-            shortenContent(contentContainer, moreLink.data("text"));
-            return false;
-        });
         
+        if(contentContainer) {
         
-        this.appendChild(moreLink[0]);
-        if(!shortenContent(contentContainer, moreLink.data("text"))) {
-        	moreLink.hide();
+	        moreLink.data("text", contentContainer.innerHTML).html("(" + getString("more") + ")").addClass("moreLink").click(function(event){
+	        	event.preventDefault();
+	        	var contentContainer = $(this.parentNode).children(".contentContainer")[0];
+	        	
+	            if($(this).hasClass('show-less')) {
+	            	$(this)
+	            	.html("(" + getString("more") + ")")
+	            	.removeClass("show-less")
+	            	.addClass("show-more");
+	            } else {
+	            	$(this)
+	            	.html("(" + getString("less") + ")")
+	            	.removeClass("show-more")
+	            	.addClass("show-less");
+	            }
+	            shortenContent(contentContainer, moreLink.data("text"));
+	            return false;
+	        });
+	        
+	        this.appendChild(moreLink[0]);
+	        if(!shortenContent(contentContainer, moreLink.data("text"))) {
+	        	moreLink.hide();
+	        }
         }
+        
+
     });
     
     $('.rename-tags-btn').click(function(){
