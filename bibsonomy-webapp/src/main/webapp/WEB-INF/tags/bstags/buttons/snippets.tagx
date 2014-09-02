@@ -25,7 +25,7 @@
 					<div class="col-sm-8">
 						<!-- Code 1 -->
 						<textarea id="text-area1" class="form-control" name="text_area1" rows="5">
-							<![CDATA[<!-- post bookmark link code --><script type="text/javascript">var url=encodeURIComponent(document.location.href);var title=encodeURIComponent(document.title);document.write("<a href=\"${properties['project.home']}ShowBookmarkEntry?url="+url+ "&amp;description="+title +"\" title=\"Bookmark this page to ${properties['project.name']}.\">Bookmark to ${properties['project.name']}!</a>");</script>]]>
+							<![CDATA[<!-- post bookmark link code --><script type="text/javascript">var url=encodeURIComponent(document.location.href);var title=encodeURIComponent(document.title);document.write("<a href=\"${properties['project.home']}ShowBookmarkEntry?url="+url+ "&amp;description="+title +"\" rel=\"nofollow\" title=\"Bookmark this page to ${properties['project.name']}.\">Bookmark to ${properties['project.name']}!</a>");</script>]]>
 						</textarea>
 					</div>
 				</div>
@@ -52,8 +52,9 @@
 						<![CDATA[
 						         var url=encodeURIComponent(document.location.href);
 						         var title=encodeURIComponent(document.title);
-						         document.write("<a href=\"${properties['project.home']}ShowBookmarkEntry?url="+url+ "&amp;description="+title +"\" title=\"Bookmark this page to ${properties['project.name']}.\">Bookmark to ${properties['project.name']}!</a>");
-						]]>
+						         document.write("<a href=\"${properties['project.home']}ShowBookmarkEntry?url="+url+ "&amp;description="+title +"\" rel=\"nofollow\" title=\"Bookmark this page to ${properties['project.name']}.\">Bookmark to ${properties['project.name']}!</a>");
+
+						         ]]>
 					</script>
 			</div>
 
@@ -69,7 +70,7 @@
 					<div class="col-sm-8">
 						<!-- code 2 -->
 						<textarea class="form-control" id="text-area2" name="text_area2" rows="10" style="width: 100%">
-						<![CDATA[<!-- post bookmark link code --><script type="text/javascript">var url=encodeURIComponent(document.location.href);var title=encodeURIComponent(document.title);document.write("<a href=\"${properties['project.name']}ShowBookmarkEntry?url="+url+ "&amp;description="+title +"\" title=\"Bookmark this page to ${properties['project.name']}.\"><img src=\"${imageBookmarkIt}\"></a>");</script>]]>
+							<![CDATA[<!-- post bookmark link code --><script type="text/javascript">var url=encodeURIComponent(document.location.href);var title=encodeURIComponent(document.title);document.write("<a href=\"${properties['project.home']}ShowBookmarkEntry?url="+url+ "&amp;description="+title +"\" rel=\"nofollow\" title=\"Bookmark this page to ${properties['project.name']}.\"><img src=\"${imageBookmarkIt}\"></a>");</script>]]>
 						</textarea>
 					</div>
 				</div>
@@ -98,7 +99,11 @@
 					<!-- Code Appearance 2 -->
 					<div>
 						<script type="text/javascript">
-							<![CDATA[var url=encodeURIComponent(document.location.href);var title=encodeURIComponent(document.title);document.write("<a href=\"${properties['project.name']}ShowBookmarkEntry?url="+url+ "&amp;description="+title +"\" title=\"Bookmark this page to ${properties['project.name']}.\"><img src=\"${imageBookmarkIt}\"></a>");]]>
+							<![CDATA[
+							         var url=encodeURIComponent(document.location.href);
+							         var title=encodeURIComponent(document.title);
+							         document.write("<a href=\"${properties['project.home']}ShowBookmarkEntry?url="+url+ "&amp;description="+title +"\" rel=\"nofollow\" title=\"Bookmark this page to ${properties['project.name']}.\"><img src=\"${imageBookmarkIt}\"></a>");
+							]]>
 						</script>
 					</div>
 			</div>
