@@ -197,13 +197,25 @@
 						</c:otherwise>
 					</c:choose>
 				</li>
-
+				<li class="divider"><!--  --></li>
 				<!-- BibTeX -->
 				<li>
 					<fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />
 					<a class="litem" href="/bib/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}" title="${bibtexTitle}"><fmt:message key="bibtex.actions.bibtex"/></a>
 				</li>
-
+				
+				<!-- ENDNOTE -->
+				<li>
+					<fmt:message key="bibtex.actions.endnote.title" var="endnoteTitle" />
+					<a class="litem" href="/layout/endnote/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}?formatEmbedded=true" title="${endnoteTitle}"><fmt:message key="bibtex.actions.endnote"/></a>
+				</li>
+				
+				<!-- MS WORD Reference Manager -->
+				<li>
+					<fmt:message key="bibtex.actions.msword.title" var="mswordTitle" />					
+					<a class="litem" href="/layout/msofficexml/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}?formatEmbedded=true" title="${mswordTitle}"><fmt:message key="bibtex.actions.msword"/></a>
+				</li>
+				
 				<!-- OPENURL -->
 				<li>
 					<c:if test="${command.context.userLoggedIn and not command.context.loginUser.settings.simpleInterface}">
