@@ -168,3 +168,9 @@ function dummyUpHandler(e) {
 	e.stopPropagation();
 	return false;
 }
+
+function activateAffixEntry (el) {
+	$(el).addClass("active").siblings().each(function(h, g){
+			$(g).removeClass("active");
+	});
+}
