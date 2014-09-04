@@ -54,13 +54,9 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-
-
-
-
-import tags.diff_match_patch.Diff;
-import tags.diff_match_patch.LinesToCharsResult;
-import tags.diff_match_patch.Patch;
+import com.sksamuel.diffpatch.DiffMatchPatch;
+import com.sksamuel.diffpatch.DiffMatchPatch.Diff;
+import com.sksamuel.diffpatch.DiffMatchPatch.Patch;
 
 /**
  * TODO: move to org.bibsonomy.webapp.util.tags package
@@ -499,10 +495,15 @@ public class Functions {
 		if(oldValue == null){
 			oldValue =" ";
 		}
-		diff_match_patch dmp = new diff_match_patch();
+		DiffMatchPatch dmp = new DiffMatchPatch();
 
+		//computes the diff
     	LinkedList<Diff> d = dmp.diff_main(newValue, oldValue);
+    	
+    	//cleans the result so that be more human readable.
         dmp.diff_cleanupSemantic(d);
+        
+        //applies appropriate colors to the result. (red, green)
         return dmp.diff_prettyHtml(d);
     
 	}
