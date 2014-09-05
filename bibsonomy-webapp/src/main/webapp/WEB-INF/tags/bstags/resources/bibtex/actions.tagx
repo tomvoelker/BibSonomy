@@ -112,7 +112,7 @@
 		<!--+
 			| HISTORY
 			+-->
-		<c:if test="${not empty enableHistory}">
+	<!-- 	<c:if test="${empty enableHistory}"> -->
 			<c:choose>
 				<c:when test="${command.context.userLoggedIn and (loginUserName eq post.user.name)}">
 					<!-- user is post's owner -->
@@ -129,7 +129,7 @@
 					</a>
 				</c:otherwise>
 			</c:choose>
-		</c:if>
+		<!--</c:if>-->
 
 		<!--+
 			| PICK / UNPICK 
