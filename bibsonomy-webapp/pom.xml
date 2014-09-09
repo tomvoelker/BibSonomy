@@ -72,10 +72,12 @@
 					</execution>
 				</executions>
 				<configuration>
+					<!-- 
 					<excludes>
 						<exclude>**/pdf.js</exclude>
 						<exclude>**/pdfworker.js</exclude>
 					</excludes>
+					-->
 					<encoding>UTF-8</encoding>
 					<jswarn>false</jswarn>
 					<nosuffix>true</nosuffix>
@@ -107,7 +109,7 @@
 							<includes>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/jquery-2.1.1.js</include>
 								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/jquery-ui.js</include>
-								<include>${project.build.webapp.resourcedir}/bootstrap/js/bootstrap.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/holder.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-dialog.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/custom.js</include>
@@ -124,25 +126,7 @@
 								<include>${project.build.webapp.resourcedir}/javascript/bs/addToSpheres.js</include>
 							</includes>
 						</aggregation>
-						
-						<!-- note: use the compressed javascript files in ${project.build.webapp.resourcedir} -->
-						<aggregation>
-							<insertNewLine>true</insertNewLine>
-							<output>${project.build.webapp.resourcedir}/javascript/merged/global.js</output>
-							<includes>
-								<include>${project.build.webapp.resourcedir}/jquery/jquery.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/functions.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/actions/clipboard.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/fileUpload.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/jquery.fadebox.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/style.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/corner/jquery.corner.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/hoverIntent/jquery.hoverIntent.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/ajaxUtils.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/userRelation.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/addToSpheres.js</include>
-							</includes>
-						</aggregation>
+
 						<aggregation>
 							<insertNewLine>true</insertNewLine>
 							<output>${project.build.webapp.resourcedir}/javascript/merged/discussion.js</output>
@@ -155,6 +139,24 @@
 								<include>${project.build.webapp.resourcedir}/javascript/discussion/reviews.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/discussion/comments.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/discussion/csllinks.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/csllocales.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/xmldom.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/citeproc.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/cslstyles.js</include>
+							</includes>
+						</aggregation>
+						<aggregation>
+							<insertNewLine>true</insertNewLine>
+							<output>${project.build.webapp.resourcedir}/javascript/merged/bs/discussion.js</output>
+							<includes>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/excanvas.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/jquery.flot.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/jquery.flot.stack.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/discussion/discussion.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/discussion/reviews.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/discussion/comments.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/discussion/csllinks.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/citeproc/csllocales.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/citeproc/xmldom.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/citeproc/citeproc.js</include>
