@@ -2,9 +2,12 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Set;
+
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
@@ -24,7 +27,7 @@ public class PostHistoryController extends SingleResourceListControllerWithTags 
 	}
 
 	@Override
-	public View workOn(ResourcePageCommand<BibTex> command) {
+	public View workOn(ResourcePageCommand command) {
 		final String format = command.getFormat();
 		this.startTiming(format);
 		
@@ -38,17 +41,42 @@ public class PostHistoryController extends SingleResourceListControllerWithTags 
 		
 
 		final FilterEntity filter = FilterEntity.POSTS_HISTORY;
-		Class<? extends Resource> resourceType = BibTex.class;
-
-			final ListCommand<?> listCommand = command.getListCommand(resourceType);
-			final int entriesPerPage = listCommand.getEntriesPerPage();
+//		Class<? extends Resource> resourceClass = null;
+		final Set<Class<? extends Resource>> resourceTypes = this.getListsToInitialize(format, command.getResourcetype());
+		Class<? extends Resource> resourceType = null;
+		if (resourceTypes.contains(BibTex.class)) {
+			resourceType = BibTex.class;
+		} else {
+			resourceType = Bookmark.class;
+		}
+		//final Set<Class<? extends Resource>> resourceTypes = command.getResourcetype();
+	//	for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			
-			this.setList(command, resourceType, groupingEntity,requUser, null, longHash, null, filter, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
-			this.postProcessAndSortList(command, resourceType);
-
+	//	final Set<Class<? extends Resource>> resourceTypes = this.getListsToInitialize(format, command.getResourcetype());
+		//	final ListCommand<?> listCommand = command.getListCommand(resourceType);
+		this.setList(command, resourceType, groupingEntity, requUser, null, longHash, null, filter, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
+		this.postProcessAndSortList(command, resourceType);
+	//		resourceClass = resourceType;
+		//	this.setList(command, resourceClass, groupingEntity,requUser, null, longHash, null, filter, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
+	//	}
+		
+		//int size = resourceTypes.size();
+		
+		//resourceClass = BibTex.class;
+		//final ListCommand<?> listCommand = command.getListCommand(resourceClass);
+		//final int entriesPerPage = listCommand.getEntriesPerPage();
+		
+	//	this.setList(command, resourceClass, groupingEntity,requUser, null, longHash, null, filter, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
+		//this.postProcessAndSortList(command, resourceClass);
+		//redirect to HistoryBM.jspx or HistoryBib.jspx
 		if ("html".equals(format)) {
 			this.endTiming();	
-			return Views.POSTHISTORYPAGE;
+			if(BibTex.class.equals(resourceType)){
+				return Views.HISTORYBIB;
+			}
+			else{
+				return Views.HISTORYBM;
+			}
 		}
 		
 		this.endTiming();

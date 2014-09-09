@@ -173,7 +173,12 @@ public enum Views implements View {
 	/**
 	 * PostHistory-Page. page with post history
 	 */
-	POSTHISTORYPAGE("postHistory"),
+	HISTORYBIB("HistoryBib"),
+
+	/**
+	 * History Page for Bookmarks. page with post history
+	 */
+	HISTORYBM("HistoryBM"),
 
 	/**
 	 * all the posts the user has picked in his basket

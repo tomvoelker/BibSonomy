@@ -10,19 +10,31 @@
 	
 	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="newestPub" type="org.bibsonomy.model.Post" required="true" />
+	<jsp:directive.attribute name="isPub" type="java.lang.Boolean" required="true" />
+	
 	<table>	
+	<c:if test="${not isPub}">
+		<c:if test="${mtl:cleanBibtex(publication.resource.url) != mtl:cleanBibtex(newestPub.resource.url)}">
+		<tr><td>
+			<em><b>entrytype:: </b> ${mtl:compareString(publication.resource.url, newestPub.resource.url)} </em>
+		</td></tr>
+		</c:if>
+	</c:if>
+	
+	
+	<c:if test="${isPub}">
 	<!-- Required -->
-	<c:if test="${mtl:cleanBibtex(publication.resource.entrytype) != mtl:cleanBibtex(newestPub.resource.entrytype)}">
-	<tr>
-	<td>
-		<em><b>entrytype:: </b> ${mtl:compareString(publication.resource.entrytype, newestPub.resource.entrytype)} </em>
+		<c:if test="${mtl:cleanBibtex(publication.resource.entrytype) != mtl:cleanBibtex(newestPub.resource.entrytype)}">
+		<tr><td>
+			<em><b>entrytype:: </b> ${mtl:compareString(publication.resource.entrytype, newestPub.resource.entrytype)} </em>
 		</td></tr>
 		</c:if>
 		
 		<c:if test="${mtl:cleanBibtex(publication.resource.title) != mtl:cleanBibtex(newestPub.resource.title)}">
 		<tr><td>
-		<em><b>title: </b> ${mtl:compareString(publication.resource.title, newestPub.resource.title) } </em>
-		</td></tr></c:if>
+			<em><b>title: </b> ${mtl:compareString(publication.resource.title, newestPub.resource.title) } </em>
+		</td></tr>
+		</c:if>
 		
 		<c:if test="${mtl:cleanBibtex(publication.resource.author) != mtl:cleanBibtex(newestPub.resource.author)}">
 		<tr><td>
@@ -171,6 +183,7 @@
 			<tr><td>
 		<em><b>note: </b> ${mtl:compareString(publication.resource.note, newestPub.resource.note) }</em>
 		</td></tr>
+	</c:if>
 	</c:if>
 	</table>
 </jsp:root>

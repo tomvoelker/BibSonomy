@@ -95,6 +95,27 @@
 			</c:otherwise>
 		</c:choose>
 
+	<!-- 	<c:if test="${empty enableHistory}"> -->
+		<c:choose>
+			<c:when test="${command.context.userLoggedIn and (loginUserName eq post.user.name)}">
+				<!-- user is post's owner -->
+				<fmt:message key="bookmark.actions.posthistory.title" var="postHistoryTitle" />
+				<a class="${buttonClasses}" href="/history/publication/${post.resource.intraHash}/${post.user.name}" title="${postHistoryTitle}">
+					<span class="glyphicon glyphicon-time"><!--  --></span>
+				</a>
+			</c:when>
+			<c:otherwise>
+				<!-- For signed out users and those who do not own the post we always show the inactive history button -->
+				<fmt:message key="bookmark.actions.posthistory.inactive" var="historyTitle" />
+				<a class="${buttonClasses}" title="${historyTitle}" disabled="disabled">
+					<span class="glyphicon glyphicon-floppy-disk"><!--  --></span>
+				</a>
+			</c:otherwise>
+		</c:choose>
+	<!--</c:if>-->
+
+
+
 		<!--+
 			| ADMIN ACTIONS (COMMUNITY POST)
 			+ -->

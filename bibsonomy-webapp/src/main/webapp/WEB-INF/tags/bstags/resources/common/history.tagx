@@ -18,13 +18,16 @@
 		required="true" />
 	<jsp:directive.attribute name="extTitle" type="java.lang.String"
 		required="false" />
-	<jsp:directive.attribute name="widthClassName" type="java.lang.String"
-		required="true" />
+	<!--<jsp:directive.attribute name="widthClassName" type="java.lang.String"
+		required="true" />-->
 	<jsp:directive.attribute name="addAsFirstItem" fragment="true"
 		required="false" />
 	<jsp:directive.attribute name="addAsLastItem" fragment="true"
 		required="false" />
-	
+	<jsp:directive.attribute name="title" fragment="true" required="true" />
+	<jsp:directive.attribute name="desc" fragment="true" required="true" />
+	<jsp:directive.attribute name="isPub" type="java.lang.Boolean" required="true" />
+
 	<mtl:styleSheet path="/resources/css/history.css" />
 	<script type="text/javascript" src="/resources/javascript/history.js"><!-- keep me --></script>
 	
@@ -33,11 +36,7 @@
 			<!--<c:set var="post" scope="request" value="${listView.list[0]}"/>-->
 			<c:set var="fieldlength" value="${fn:length(listView.list)-1}" />
 			<c:set var="newestPost" value="${listView.list[fieldlength]}" />		
-			<!-- 	
-			<div id="innercontent" style="background: #fff; padding-left: 40px;">
-				<resource:bibtexdetailsclean post="${listView.list[0]}" referer="${command.referer}"/>
-			</div> 
-			-->
+			
 			<div style="float:left; width:97%; margin-left:10px; margin-top:0px; padding-bottom:13px;">
 			<!--+
 				| complete Post
@@ -55,16 +54,18 @@
 					<jsp:attribute name="title">
 						<c:choose>
 							<c:when test="${empty newestPost.user.name}">
-								<bibgs:title post="${newestPost}" />
+								<!--<bibgs:title post="${newestPost}" />-->
 							</c:when>
 							<c:otherwise>
-								<bib:title post="${newestPost}" />
+								<jsp:invoke fragment="title"/>
+								<!--<bib:title post="${newestPost}" />-->
 							</c:otherwise>
 						</c:choose>
 					</jsp:attribute>
 					<jsp:attribute name="desc">
-							<bib:fullDescription publication="${newestPost.resource}" />
-						</jsp:attribute>
+							<!--<bib:fullDescription publication="${newestPost.resource}" />-->
+							<jsp:invoke fragment="desc"/>
+					</jsp:attribute>
 				</rc:diff>
 			</div>
 
@@ -106,10 +107,10 @@
 						<a href="#" id="hideDiff"  title="Hide changes">less...</a>
 					</li>	
 					
-				<!--  -->	<li id="postDiffDesc" class="postDiffDesc invisible">				
+					<li id="postDiffDesc" class="postDiffDesc invisible">				
 						<rc:postDescDiff
 							publication="${listView.list[(fieldlength-index)]}"
-							newestPub="${listView.list[(fieldlength-index+1)]}" />
+							newestPub="${listView.list[(fieldlength-index+1)]}" isPub="${isPub}"/>
 					</li>
 			</ul>	
 			</c:forEach>

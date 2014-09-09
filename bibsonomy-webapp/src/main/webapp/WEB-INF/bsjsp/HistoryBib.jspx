@@ -56,7 +56,16 @@
 				<rc:history listView="${command.bibtex}"
 						loginUserName="${command.context.loginUser.name}"
 						disableListNavigation="${disableListNavigation}"
-						requPath="${requPath}" widthClassName="${publicationsWidthClass}" />
+						requPath="${requPath}" isPub="${true}">
+					<jsp:attribute name="title">
+						<bib:title post="${newestPost}" />
+					</jsp:attribute>
+										
+					<jsp:attribute name="desc">
+						<bib:fullDescription publication="${newestPost.resource}" />
+					</jsp:attribute>
+					
+				</rc:history>
 			</div>
 		</div>
 
