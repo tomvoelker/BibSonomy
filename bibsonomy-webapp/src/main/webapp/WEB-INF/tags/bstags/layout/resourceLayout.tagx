@@ -14,6 +14,7 @@
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.SimpleResourceViewCommand" required="true"/>	
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="headline" type="java.lang.String" required="true"/>	
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
@@ -31,7 +32,6 @@
 	<!-- quick fix for discussion page -->
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="false" />
 	<jsp:directive.attribute name="discussionBox" type="java.lang.Boolean" required="false"/>
-	
 	
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
@@ -79,7 +79,7 @@
 			
 		<!--+
 			+ HTML header extension
-			+ -->		
+			+ -->
 		<jsp:attribute name="headerExt">
 			
 			<c:if test="${showPublication}">
@@ -136,6 +136,12 @@
 			+ main content (resource lists)
 			+-->
 		<jsp:attribute name="content">
+			<!-- 
+			<c:if test="${not empty headline}">
+				<h1 class="content-header"><c:out value="${headline}"/></h1>
+			</c:if>
+			-->
+			<!-- invokes discussion forms -->
 			<jsp:invoke fragment="discussion" />
 			
 			<jsp:invoke fragment="content" />
@@ -143,15 +149,11 @@
 			<c:choose>
 				<!-- if a community post is present show the community post, not the list of posts -->
 				<c:when test="${not empty command.goldStandardPublications.list}">
-					<c:choose>
-						<c:when test="${not empty param.cleanlayout}">
-							<goldstandardpublication:detailsclean otherPosts="${command.bibtex.list}" post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
-						</c:when>
-						<c:otherwise>
-							<goldstandardpublication:details otherPosts="${command.bibtex.list}" post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
-						</c:otherwise>
-					</c:choose>
+					
+					<goldstandardpublication:details otherPosts="${command.bibtex.list}" post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
+
 				</c:when>
+				
 				<c:otherwise>
 					<!-- additional heading for content area -->
 					 

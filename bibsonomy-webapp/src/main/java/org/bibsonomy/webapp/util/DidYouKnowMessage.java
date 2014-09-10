@@ -19,7 +19,6 @@ public class DidYouKnowMessage {
 	private BootstrapAlertStyle alertType;
 
 	public DidYouKnowMessage() {
-		super();
 	}
 	
 	public DidYouKnowMessage(String messageKey, BootstrapAlertStyle alertType) {

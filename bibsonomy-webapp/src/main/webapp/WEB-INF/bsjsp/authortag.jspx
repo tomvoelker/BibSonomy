@@ -15,12 +15,17 @@
 
 	<c:set var="requestedAuthorEncoded" value="${mtl:encodeURI(command.requestedAuthor)}" />
 	<fmt:message key="navi.author" var="authorPageTitle" />
+	<fmt:message var="headline" key="page.authortag.headline">
+		<fmt:param>${command.requestedAuthor}</fmt:param>
+		<fmt:param>${command.requestedTags}</fmt:param>
+	</fmt:message>
 	<layout:resourceLayout
 		pageTitle="${authorPageTitle} :: ${command.requestedAuthor} :: ${command.requestedTags}"
 		command="${command}"
 		requPath="${requPath}"
 		minimizedContentWidth="${true}"
-		disableResourcetypeSelection="${true}">
+		disableResourcetypeSelection="${true}"
+		headline="${headline}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.author" formAction="/author/${requestedAuthorEncoded}" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="pathPart">

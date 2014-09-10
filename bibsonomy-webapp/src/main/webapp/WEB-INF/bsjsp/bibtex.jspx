@@ -46,6 +46,7 @@
 	<fmt:message key="post.resource.discussion.headline" var="discussionsTitle"/>
 	
 	<fmt:message key="navi.publication" var="pageTitle"/>
+	<fmt:message var="headline" key="page.bibtex.headline" />
 	
 	<layout:resourceLayout pageTitle="${pageTitle} :: ${title}" 
 			command="${command}" 
@@ -55,15 +56,13 @@
 			customBookmarksHeaderText="${discussionsTitle}"
 			minimizedContentWidth="${true}"
 			resource="${publication}"
-			discussionBox="${discussionBox}">
+			discussionBox="${discussionBox}"
+			headline="${headline}${title}">
 		
 		<jsp:attribute name="content">
 			<!-- COMMUNITY POST -->
-			<h3>h3 Wurst</h3>
 			<c:if test="${empty command.goldStandardPublications.list}">
-				<h4>h4 Wurst</h4>
 				<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
-					<h5>h5 wurst</h5>
 					<c:set var="post" value="${command.bibtex.list[0]}" />
 					<c:url var="editGoldStandardLink" value="/editGoldStandardPublication">
 						<c:param name="hash" value="${post.resource.intraHash}" />
@@ -76,7 +75,6 @@
 						<p><fmt:message key="bibtex.actions.community_post.no" /></p> 
 						<p><a class="button" href="${editGoldStandardLink}">${goldTitle}</a></p>
 					</div>
-					
 				</c:if>
 			</c:if>
 		</jsp:attribute>
@@ -86,9 +84,9 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="${resdir}/javascript/merged/discussion.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/merged/bs/discussion.js"><!-- keep me --></script>
 			<c:if test="${goldstandardPresent}">
-				<script type="text/javascript" src="${resdir}/javascript/goldstandards.js"><!-- keep me --></script>
+				<script type="text/javascript" src="${resdir}/javascript/bs/goldstandards.js"><!-- keep me --></script>
 			</c:if>
 			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.css" />
 		</jsp:attribute>

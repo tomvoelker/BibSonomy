@@ -103,36 +103,16 @@
 			+ HTML header extension
 			+ -->
 		<jsp:attribute name="headerExt">
-			
 			<c:if test="${showPublication}">
-				<link rel="alternate" type="application/rss+xml"
-					title="${publicationRssFeed} /${excapedRequestPath}"
-					href="/publrss/${excapedRequestPath}" />
-				<link rel="alternate" type="application/rss+xml"
-					title="${burstRssFeed} /${excapedRequestPath}"
-					href="/burst/${excapedRequestPath}" />
-				<link rel="alternate" type="application/rdf+xml"
-					title="${swrcFeed} /${excapedRequestPath}"
-					href="/swrc/${excapedRequestPath}" />
+				<link rel="alternate" type="application/rss+xml" title="${publicationRssFeed} /${excapedRequestPath}" href="/publrss/${excapedRequestPath}" />
+				<link rel="alternate" type="application/rss+xml" title="${burstRssFeed} /${excapedRequestPath}" href="/burst/${excapedRequestPath}" />
+				<link rel="alternate" type="application/rdf+xml" title="${swrcFeed} /${excapedRequestPath}" href="/swrc/${excapedRequestPath}" />
 			</c:if>
 			<c:if test="${showBookmark}">
-				<link rel="alternate" type="application/rss+xml"
-					title="${bookmarkRssFeed} /${excapedRequestPath}"
-					href="/rss/${excapedRequestPath}" />
+				<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${excapedRequestPath}" href="/rss/${excapedRequestPath}" />
 			</c:if>
 			<!-- UnAPI service -->
-			<link rel="unapi-server" type="application/xml" title="unAPI"
-				href="${properties['project.home']}unapi" />
-			<script type="text/javascript"
-				src="${resdir}/bootstrap/js/tooltip.js">
-			<!-- keep me -->
-				
-			</script>
-			<script type="text/javascript"
-				src="${resdir}/bootstrap/js/popover.js">
-			<!-- keep me -->
-				
-			</script>
+			<link rel="unapi-server" type="application/xml" title="unAPI" href="${properties['project.home']}unapi" />
 			<script type="text/javascript">
 				$(function() {
 					$('.post-popover').popover(
@@ -215,17 +195,17 @@
 			</c:if>
 			
 			
-	    	<c:set var="all" value="${mtl:containsResourceClass(command.resourcetype, 'all')}" />
-	    	<c:set var="bm" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark')}" />
-	    	<c:set var="pub" value="${mtl:containsResourceClass(command.resourcetype, 'publication')}" />
-		    	
+			<c:set var="all" value="${mtl:containsResourceClass(command.resourcetype, 'all')}" />
+			<c:set var="bm" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark')}" />
+			<c:set var="pub" value="${mtl:containsResourceClass(command.resourcetype, 'publication')}" />
+			
 			<!-- bibtex/bookmark lists -->
-		    <div class="row">
-		    
-		    	<!-- bookmarks -->
+			<div class="row">
+			
+				<!-- bookmarks -->
 				<div class="${ (bm and pub) ? 'col-md-6' : ( (bm and not pub) ? 'col-md-12' : ((not bm) ? 'hide' : ''))} bookmark-list">
 					
-			        <resources:bookmarks listView="${command.bookmark}"
+					<resources:bookmarks listView="${command.bookmark}"
 						loginUserName="${command.context.loginUser.name}"
 						disableListNavigation="${disableListNavigation}"
 						requPath="${excapedRequestPath}"
@@ -237,8 +217,8 @@
 						showInboxActions="${showInboxActions}"
 						disableResourcetypeSelection="${disableResourceTypeSelection}"
 						>
-					 
-					 	
+					
+						
 						<jsp:attribute name="addAsLastItem">
 							<c:if test="${not disableListNavigation}">
 								<div id="bookmarksfooter" class="${bookmarksWidthClass}">
@@ -277,7 +257,6 @@
 							</c:if>
 						</jsp:attribute>
 					</resources:bibtexs>
-					 
 				</div>
 			</div>
 		</jsp:attribute>

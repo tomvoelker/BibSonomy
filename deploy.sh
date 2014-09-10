@@ -28,6 +28,7 @@ webapp[gandalf]=bibsonomy-webapp
 webapp[slave_kassel]=bibsonomy-webapp
 webapp[slave_wuerzburg]=bibsonomy-webapp
 webapp[slave_hannover]=bibsonomy-webapp
+webapp[slave_hetzner]=bibsonomy-webapp
 # PUMA sandbox
 webapp[puma_sandbox]=bibsonomy-webapp-puma-sandbox
 # PUMA productive systems
@@ -40,6 +41,8 @@ webapp[puma_gi_prod]=bibsonomy-webapp-puma-giessen
 
 declare -A tomcat
 tomcat[slave_hannover]=7
+tomcat[slave_kassel]=7
+tomcat[slave_hetzner]=7
 
 declare -A archivable
 archivable[gandalf]=true

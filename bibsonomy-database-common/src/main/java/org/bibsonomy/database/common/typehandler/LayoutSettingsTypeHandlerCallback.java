@@ -79,8 +79,8 @@ public class LayoutSettingsTypeHandlerCallback implements TypeHandlerCallback {
 	 * @param b
 	 * @return
 	 */
-	private static ViewLayout booleanToViewLayout(boolean booleanValue) {
-		if (booleanValue) {
+	private static ViewLayout booleanToViewLayout(boolean useBootStrapLayout) {
+		if (useBootStrapLayout) {
 			return ViewLayout.BOOTSTRAP;
 		}
 		return ViewLayout.CLASSIC;

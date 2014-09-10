@@ -14,8 +14,8 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="groups">
+	<fmt:message var="headline" key="page.group.headline" />
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="groups" headline="${headline}${command.group.name}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.group" formAction="/group/${mtl:encodeURI(command.requestedGroup)}" formInputName="tag">
 				
@@ -26,10 +26,11 @@
 		<jsp:attribute name="sidebar">
 		<ul>
 			<li>
-				<h4 class="sidebar"><group:name group="${command.group}"/></h4>
-				<div>
+				<h4 class="sidebar"><c:out value="${command.group.name}" /></h4>
+				<div class="pull-right">
 					<group:groupcv group="${command.group}"/>
 				</div>
+				<group:name group="${command.group}"/>
 			</li>
 			
 			<!-- link to join group -->

@@ -2,8 +2,10 @@
 @import "bootstrap-size.less";
 @import "bootstrap-tagsinput.less";
 @import "bootstrap-datepicker.less";
+
 @import "multiline-ellipsis.less";
 @import "../fonts/font-awesome/less/variables.less";
+
 
 .glyphicon,
 .socicon {
@@ -14,6 +16,10 @@
     line-height: 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+.glyphicon-bookmark:before {
+    content: @fa-var-bookmark;   
 }
 
 .glyphicon-asterisk:before {
@@ -88,6 +94,13 @@
 	content: @fa-var-google-plus;
 }
 
+
+ul.checklist {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
 .label-grey {
     background-color: @light-grey;
 }
@@ -160,14 +173,16 @@ ul.dropdown-menu.list-options > li > span {
 
 .container.main {
 /* 	padding-top: 20px; */
-	padding: 20px 30px;
+	padding: 20px 30px 0 30px;
 	border-top: none;
 /*	margin-bottom: 30px; */
 	-webkit-box-shadow: 2px 2px 30px 6px @border-color;
 	box-shadow: 2px 2px 30px 6px @border-color;
 }
 
-
+.container.main .row > .content {
+    margin-bottom: 20px;
+}
 
 
 /**
@@ -298,7 +313,7 @@ ul.dropdown-menu li.divider {
 	line-height: 15px;
 	text-align: center;
 	font-size: 9px;
-	z-index: 1000000;
+	z-index: 1000;
 }
 
 
@@ -822,7 +837,7 @@ span.help-popover {cursor:help}
 }
 
 .post a.thumbnail span.entrytype {
-	background-image: url("http://localhost:8080/resources/image/previews.png");
+	background-image: url("/resources/image/previews.png");
 	background-repeat: no-repeat;
 }
 
@@ -1334,3 +1349,26 @@ a.ui-corner-all:active {
 	float: right;
 }
 
+#userImg > img {
+	margin: 7px;
+	padding: 5px;
+	background-color: @background-color;
+	border: 1px solid @border-color;
+	border-radius: 3px; 
+	-moz-border-radius: 3px; 
+	-webkit-border-radius: 3px;
+
+}
+
+.moreLink {
+ cursor:pointer;
+}
+
+.verticalMiddle {
+	vertical-align: middle;
+	text-align: center;
+}
+
+
+@import "featurette.less";
+@import "bootstrap-discussion.less";

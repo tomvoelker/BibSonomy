@@ -15,6 +15,7 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
 	
 	<fmt:message key="navi.basket" var="pageTitle"/>
+	<fmt:message var="headline" key="page.basket.headline" />
 	
 	<layout:resourceLayout pageTitle="${pageTitle}" 
 			command="${command}" 
@@ -22,7 +23,8 @@
 			isBasket="${true}" 
 			disableListNavigation="${true}"
 			disableResourcetypeSelection="${true}"
-			minimizedContentWidth="${true}">
+			minimizedContentWidth="${true}"
+			headline="${headline}">
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.basket"/>
