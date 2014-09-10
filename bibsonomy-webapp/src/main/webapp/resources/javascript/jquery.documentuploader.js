@@ -45,13 +45,13 @@ var errorData = new errorBoxData("#upload");
 				return;
 			}
 			
-			$("input[name='saveAndRate']").hide();			
+			$("input[name='saveAndRate']").hide();
 			$("input[name='saveAndRate']").prev().prop('disabled', true).val(getString("post.bibtex.fileUploading"));
 
 			// create row with the added file
 			$("#upload").find('.documents:first').append($("<li class='loading' id='file_" + counter + "'><span class='documentFileName'>"+fileName+"</span></li>"));
 			//cancel button
-			var cancelUpload = $("<input class = 'cancelUp' type = 'button' id = 'cancelUp' value = 'cancel'/>");
+			var cancelUpload = $('<input class="btn btn-xs btn-danger cancelUp" type="button" id="cancelUp" />').attr('value', getString("upload.cancel"));
 			cancelUpload.click(function(){
 				$("li[ id = 'file_"+counter+"']").remove();
 				errorData.msg = getString("post.bibtex.uploadCancel");
@@ -71,9 +71,9 @@ var errorData = new errorBoxData("#upload");
 			$(".counter").val(counter);
 			var options = {
 					dataType: "xml",
-					success: function(data){
-						onRequestComplete(data);		
-						}			
+					success: function(data) {
+						onRequestComplete(data);
+					}
 			};
 			$("#"+form).ajaxSubmit(options);
 			// FIXME: why is a new input field appended? Can't we just replace #fu?
