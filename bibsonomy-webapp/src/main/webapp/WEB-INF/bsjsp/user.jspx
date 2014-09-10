@@ -16,9 +16,10 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}">
 	
+	<fmt:message var="headline" key="page.user.headline" />
+	
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}" headline="${headline}${command.requestedUser}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.user" formAction="/user/${fn:escapeXml(command.requestedUser)}" formInputName="tag" requestedUser="${command.requestedUser}">
 				<jsp:attribute name="pathPart">
@@ -41,8 +42,10 @@
 			<li><users:socializer command="${command}" /></li>
 			
 			<!-- Did you know? -->
-			<c:if test="${command.context.userLoggedIn and command.context.loginUser.name eq command.requestedUser and 
-							mtl:hasDidYouKnowMessage(command) and command.context.loginUser.settings.layoutSettings.simpleInterface}">
+			<c:if test="${	command.context.userLoggedIn and 
+							command.context.loginUser.name eq command.requestedUser and 
+							mtl:hasDidYouKnowMessage(command) and
+							command.context.loginUser.settings.simpleInterface}">
 				<li><bs:didYouKnow command="${command}"/></li>
 			</c:if>
 			

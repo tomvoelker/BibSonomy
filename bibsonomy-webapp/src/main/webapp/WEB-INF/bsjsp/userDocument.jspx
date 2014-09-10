@@ -12,13 +12,14 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	
+	<fmt:message var="headline" key="page.userDocument.headline" />
 	<layout:resourceLayout 
 		pageTitle="${command.pageTitle}" 
 		command="${command}" 
 		requPath="${requPath}" 
 		disableResourcetypeSelection="${true}"
-		minimizedContentWidth="${true}">	
+		minimizedContentWidth="${true}"
+		headline="${headline}${command.requestedUser}">	
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.documents" formAction="/user/${mtl:encodeURI(command.requestedUser)}" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="formExtra">

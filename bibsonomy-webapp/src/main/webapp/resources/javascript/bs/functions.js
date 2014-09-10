@@ -9,12 +9,25 @@ var getPos = null;
 var setPos = null;
 var getSetPos = 0;
 
-
+var constants = {
+		RESPONSE_TIMEOUT: 5000
+}
 
 $(function() {
 	$('a.confirmdelete').click(function() {
 		var messageKey = $(this).data('type');
 		return confirmDeleteByUser(messageKey);
+	});
+	/*
+	 * adds a click event handler for the search scope form option entries
+	 */
+	$('#scopeDomain').children().each(function(i, el){
+		$(el.childNodes[0]).click(function(e){
+			e.preventDefault();
+			$("#scope").val($(this).data("domain"));
+			$('#searchForm').attr('action','/redirect').submit();
+		});
+		
 	});
 });
 
@@ -1007,7 +1020,12 @@ this.imagePreview = function(){
 		 * build preview image URL by fetching URL from small preview pic
 		 * (insde the current <a href...></a>) and replacing the preview param
 		 */
-		var largePreviewImgUrl = $(this).children("img.pre_pic").first().attr("src").replace("preview\=SMALL", "preview=LARGE");		
+		var url = $(this).children("img.pre_pic").first().attr("src");
+		
+		if(url===undefined) return;
+
+		var largePreviewImgUrl = url.replace("preview\=SMALL", "preview=LARGE");		
+		
 		$("body").append("<p id='preview'><img src='" + largePreviewImgUrl + "'/>"+ c +"</p>");
 		$("#preview")
 		.css("top", (e.pageY + (e.pageY < window.innerHeight/2 ? 0 : -yOff)) + "px")
@@ -1626,3 +1644,15 @@ function generateExportPostLink(value) {
 		self.location = value;
 	}
 };		
+
+
+/*
+ * update the counter at the navigation bar to reflect the amount of picked publications and unread messages
+ */
+function updateCounter() {
+	var basketNum = document.getElementById("basket-counter");
+	var inboxNum = document.getElementById("inbox-counter");
+	var counter = document.getElementById("inbox-basket-counter");
+	if(counter!=null)
+		counter.innerHTML = (basketNum==null?0:parseInt(basketNum.innerHTML))+(inboxNum==null?0:parseInt(inboxNum.innerHTML));
+}

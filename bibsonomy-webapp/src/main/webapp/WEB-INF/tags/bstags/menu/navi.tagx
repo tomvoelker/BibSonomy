@@ -133,7 +133,7 @@
 							<span class="glyphicon glyphicon-user"><!-- KEEP ME --></span>
 							<c:if test="${(command.context.loginUser.inbox.numPosts + command.context.loginUser.basket.numPosts) gt 0}">
 								<b class="navi-info">
-									<span><c:out value="${(command.context.loginUser.inbox.numPosts + command.context.loginUser.basket.numPosts)}"/></span>
+									<span id="inbox-basket-counter"><c:out value="${(command.context.loginUser.inbox.numPosts + command.context.loginUser.basket.numPosts)}"/></span>
 								</b>
 							</c:if>
 							<b class="caret">&amp;nbsp;</b></a>
@@ -150,7 +150,7 @@
 
 											<fmt:message key="navi.inbox" />
 											<c:if test="${command.context.loginUser.inbox.numPosts gt 0}">
-												<span style="position: absolute; right: 10px;" class="badge"><c:out value="${command.context.loginUser.inbox.numPosts}"/></span>
+												<span id="inbox-counter" style="position: absolute; right: 10px;" class="badge"><c:out value="${command.context.loginUser.inbox.numPosts}"/></span>
 											</c:if>
 										</a>
 									</li>
@@ -160,7 +160,7 @@
 											<span class="fa fa-folder-open"><!--  --></span>&amp;nbsp;
 											<fmt:message key="navi.basket" />
 											<c:if test="${command.context.loginUser.basket.numPosts gt 0}">
-												<span style="position: absolute; right: 10px;" class="badge"><c:out value="${command.context.loginUser.basket.numPosts}"/></span>
+												<span id="basket-counter" style="position: absolute; right: 10px;" class="badge"><c:out value="${command.context.loginUser.basket.numPosts}"/></span>
 											</c:if>
 										</a>
 									</li>

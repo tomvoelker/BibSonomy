@@ -46,7 +46,9 @@ function changeView(showAll) {
 			message = getString('post.resource.fields.detailed.show.required');
 			$(collapse).parent().removeClass("hidden");
 		}
-	} 
+	} else {
+		$(collapse).parent().removeClass("hidden");
+	}
 	
 	collapse.firstChild.nodeValue = message;
 	
@@ -150,6 +152,12 @@ function toggleView() {
 	changeView(collapse.data("showAll"));
 }
 
+function activateAffixEntry (el) {
+	$(el).addClass("active").siblings().each(function(h, g){
+			$(g).removeClass("active");
+	});
+}
+
 $(function() {
 	$("#post\\.resource\\.entrytype").change(function(e) {
 		changeView($("#collapse").data("showAll"));	
@@ -159,7 +167,8 @@ $(function() {
 		toggleView();
 	});
 	// load only, when extended fields are available                                                                                              
-	if (document.getElementById("post.resource.publisher")) toggleView();
+	//if (document.getElementById("post.resource.publisher")) toggleView();
+	toggleView();
 	
 	var hash = $("#post\\.resource\\.interHash").val();
 	if(hash == -1 || hash == undefined)

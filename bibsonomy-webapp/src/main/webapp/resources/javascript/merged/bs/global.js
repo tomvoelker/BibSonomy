@@ -19,6 +19,7 @@ includeJavaScript("/resources/javascript/bs/holder.js");
 includeJavaScript("/resources/javascript/bs/bootstrap-dialog.js");
 includeJavaScript("/resources/javascript/bs/custom.js");
 includeJavaScript("/resources/javascript/bs/bootstrap-datepicker.js");
+includeJavaScript("/resources/javascript/bs/bootstrap-carousel.js");
 includeJavaScript("/resources/javascript/bs/friendoverview.js");
 
 includeJavaScript("/resources/javascript/bs/functions.js");
