@@ -659,6 +659,18 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return returnedPosts;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPostsForElasticSearch(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, java.lang.String, org.bibsonomy.common.enums.FilterEntity, org.bibsonomy.model.enums.Order, java.util.Date, java.util.Date, int, int)
+	 */
+	@Override
+	public <T extends Resource> List<Post<T>> getPostsForElasticSearch(
+			Class<T> resourceType, GroupingEntity grouping,
+			String groupingName, List<String> tags, String hash, String search,
+			String searchType, FilterEntity filter, Order order,
+			Date startDate, Date endDate, int start, int end) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	/**
 	 * runs the test defined by {@link #getTagDetails(String)} with a certain argument
@@ -1310,4 +1322,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
+
 }

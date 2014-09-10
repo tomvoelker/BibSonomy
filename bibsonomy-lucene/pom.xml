@@ -13,9 +13,15 @@
 	
 	<properties>
 		<lucene.version>4.8.1</lucene.version>
+		<es.version>1.2.4</es.version>
 	</properties>
 	
 	<dependencies>
+		<dependency>
+   			<groupId>org.elasticsearch</groupId>
+    		<artifactId>elasticsearch</artifactId>
+    		<version>${es.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>

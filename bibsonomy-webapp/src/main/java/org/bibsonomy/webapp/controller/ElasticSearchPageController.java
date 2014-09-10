@@ -15,6 +15,10 @@ import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.node.Node;
+
+import static org.elasticsearch.node.NodeBuilder.*;
 
 /**
  * Controller for search page
@@ -38,6 +42,7 @@ public class ElasticSearchPageController extends SingleResourceListController im
 		
 		this.startTiming(format);
 		String search = command.getRequestedSearch();
+		final String searchType = "ELASTICSEARCH";
 		if (!present(search)) {
 			throw new MalformedURLSchemeException("error.search_page_without_search");
 		}
@@ -93,7 +98,7 @@ public class ElasticSearchPageController extends SingleResourceListController im
 		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
-			this.setList(command, resourceType, groupingEntity, groupingName, requestedTags, null, search, null, command.getOrder(), command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
+			this.setListElasticSearch(command, resourceType, groupingEntity, groupingName, requestedTags, null, search, searchType, null, command.getOrder(), command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
 			
 			this.postProcessAndSortList(command, resourceType);
 		}
@@ -117,5 +122,4 @@ public class ElasticSearchPageController extends SingleResourceListController im
 		command.setOrder(Order.RANK);
 		return command;
 	}
-
 }

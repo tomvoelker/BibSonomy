@@ -702,6 +702,92 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPostsForElasticSearch(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, java.lang.String, org.bibsonomy.common.enums.FilterEntity, org.bibsonomy.model.enums.Order, java.util.Date, java.util.Date, int, int)
+	 */
+	@Override
+	public <T extends Resource> List<Post<T>> getPostsForElasticSearch(
+			Class<T> resourceType, GroupingEntity grouping,
+			String groupingName, List<String> tags, String hash, String search,
+			String searchType, FilterEntity filter, Order order,
+			Date startDate, Date endDate, int start, int end) {
+		// check allowed start-/end-values
+				if (GroupingEntity.ALL.equals(grouping) && !present(tags) && !present(search)) {
+					this.permissionDBManager.checkStartEnd(loginUser, start, end, "post");
+				}
+				
+				this.handleAdminFilters(filter);
+				
+				// check for systemTags disabling this resourceType
+				if (!this.systemTagsAllowResourceType(tags, resourceType)) {
+					return new ArrayList<Post<T>>();
+				}
+				final DBSession session = this.openSession();
+				try {
+					/*
+					 * if (resourceType == Resource.class) { yes, this IS unsave and
+					 * indeed it BREAKS restrictions on generic-constraints. it is the
+					 * result of two designs: 1. @ibatis: database-results should be
+					 * accessible as a stream or should at least be saved using the
+					 * visitor pattern (collection<? super X> arguments would do fine)
+					 * 2. @bibsonomy: this method needs runtime-type-checking which is
+					 * not supported by generics so what: copy each and every entry
+					 * manually or split this method to become type-safe WITHOUT falling
+					 * back to <? extends Resource> (which means read-only) in the whole
+					 * project result = bibtexDBManager.getPosts(authUser, grouping,
+					 * groupingName, tags, hash, popular, added, start, end, false); //
+					 * TODO: solve problem with limit+offset:
+					 * result.addAll(bookmarkDBManager.getPosts(authUser, grouping,
+					 * groupingName, tags, hash, popular, added, start, end, false));
+					 * 
+					 */
+					if (resourceType == BibTex.class) {
+						final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
+						// check permissions for displaying links to documents
+						final boolean allowedToAccessUsersOrGroupDocuments = this.permissionDBManager.isAllowedToAccessUsersOrGroupDocuments(this.loginUser, grouping, groupingName, filter, session);
+						if (!allowedToAccessUsersOrGroupDocuments) {
+							if (FilterEntity.JUST_PDF.equals(filter)) {
+								throw new AccessDeniedException("error.pdf_only_not_authorized_for_" + grouping.toString().toLowerCase());
+							}
+							param.setPostAccess(PostAccess.POST_ONLY);
+						} else {
+							// user can access all post details (including docs)
+							param.setPostAccess(PostAccess.FULL);
+						}
+
+					 	// this is save because of RTTI-check of resourceType argument
+						// which is of class T
+						final List<Post<T>> publications = (List) this.publicationDBManager.getPosts(param, session);
+						SystemTagsExtractor.handleHiddenSystemTags(publications, loginUser.getName());
+						return publications;
+					} 
+
+					if (resourceType == Bookmark.class) {
+						final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
+						final List<Post<T>> bookmarks= (List) this.bookmarkDBManager.getPosts(param, session);
+						SystemTagsExtractor.handleHiddenSystemTags(bookmarks, loginUser.getName());
+						return bookmarks;
+					}
+
+					if (resourceType == GoldStandardPublication.class) {
+						final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
+						return (List) this.goldStandardPublicationDBManager.getPosts(param, session);
+					}
+
+					if (resourceType == GoldStandardBookmark.class) {
+						final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
+						return (List) this.goldStandardBookmarkDBManager.getPosts(param, session);
+					}
+
+					throw new UnsupportedResourceTypeException();
+				} catch (final QueryTimeoutException ex) {
+					// if a query times out, we return an empty list
+					return new ArrayList<Post<T>>();
+				} finally {
+					session.close();
+				}
+	}
+	
 	private boolean systemTagsAllowResourceType(final Collection<String> tags, final Class<? extends Resource> resourceType) {
 		if (present(tags)) {
 			for (final String tagName : tags) {

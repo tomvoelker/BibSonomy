@@ -253,6 +253,34 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 		// list settings
 		listCommand.setEntriesPerPage(itemsPerPage);
 	}
+	
+	/**
+	 * retrieve a list of posts from the database logic using ElasticSearch and add them to the command object
+	 * 
+	 * @param <T> extends Resource
+	 * @param cmd the command object
+	 * @param resourceType the resource type
+	 * @param groupingEntity the grouping entity
+	 * @param groupingName the grouping name
+	 * @param tags 
+	 * @param hash 
+	 * @param search 
+	 * @param searchType 
+	 * @param filter 
+	 * @param order 
+	 * @param startDate 
+	 * @param endDate 
+	 * @param itemsPerPage number of items to be displayed on each page
+	 */
+	protected <T extends Resource> void setListElasticSearch(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final String search, final String searchType, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int itemsPerPage) {
+		final ListCommand<Post<T>> listCommand = cmd.getListCommand(resourceType);
+		// retrieve posts		
+		log.debug("getPostsForElasticSearch " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
+		final int start = listCommand.getStart();
+		listCommand.setList(this.logic.getPostsForElasticSearch(resourceType, groupingEntity, groupingName, tags, hash, search, searchType, filter, order, startDate, endDate, start, start + itemsPerPage));
+		// list settings
+		listCommand.setEntriesPerPage(itemsPerPage);
+	}
 
 	/**
 	 * retrieve the number of posts from the database logic and add it to the command object
