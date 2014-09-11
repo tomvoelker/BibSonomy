@@ -72,17 +72,16 @@
 					</execution>
 				</executions>
 				<configuration>
-					
 					<excludes>
 						<exclude>**/pdf.js</exclude>
 						<exclude>**/pdfworker.js</exclude>
 					</excludes>
-					
 					<encoding>UTF-8</encoding>
 					<jswarn>false</jswarn>
 					<nosuffix>true</nosuffix>
 					<suffix></suffix>
 					<disableOptimizations>true</disableOptimizations>
+					<!-- note: use the compressed javascript files in ${project.build.webapp.resourcedir} -->
 					<aggregations>
 						<aggregation>
 							<insertNewLine>true</insertNewLine>

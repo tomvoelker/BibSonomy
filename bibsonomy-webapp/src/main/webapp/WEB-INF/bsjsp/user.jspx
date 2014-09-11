@@ -20,7 +20,6 @@
 	<fmt:message var="headline" key="page.user.headline" />
 	
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}" headline="${headline}${command.requestedUser}">
-				
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.user" formAction="/user/${fn:escapeXml(command.requestedUser)}" formInputName="tag" requestedUser="${command.requestedUser}">
 				<jsp:attribute name="pathPart">

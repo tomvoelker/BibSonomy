@@ -218,7 +218,7 @@
 				
 				<!-- OPENURL -->
 				<li>
-					<c:if test="${command.context.userLoggedIn and not command.context.loginUser.settings.simpleInterface}">
+					<c:if test="${command.context.userLoggedIn and not command.context.loginUser.settings.layoutSettings.simpleInterface}">
 						<c:choose>
 							<c:when test="${not empty command.context.loginUser.openURL}">
 								<fmt:message key="bibtex.actions.openurl.title" var="openurlTitle" />
