@@ -11,6 +11,7 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.TagsType;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
@@ -26,7 +27,6 @@ import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 
 /**
@@ -39,7 +39,6 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 	
 	@Override
 	public View workOn(final UserResourceViewCommand command) {
-		
 		initializeDidYouKnowMessageCommand(command);
 		
 		final String format = command.getFormat();
@@ -60,7 +59,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		
 		// wrong user similarity requested -> error
 		if (!present(userRelation)) {
-			throw new MalformedURLSchemeException("error.user_page_with_wrong_user_similarity");			
+			throw new MalformedURLSchemeException("error.user_page_with_wrong_user_similarity");
 		}
 		
 		/*
@@ -90,7 +89,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			uupc.logic = this.logic;
 			uupc.userSettings = this.userSettings;
 			return uupc.workOn(command);
-		}		
+		}
 
 		int totalNumPosts = 1;
 
@@ -202,7 +201,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			
 			//if user does not exist, trigger 404
 			if (!present(command.getUser().getName())) {
-				return Views.ERROR404;
+				throw new ObjectNotFoundException(groupingName);
 			}
 			
 			return Views.USERPAGE;
