@@ -197,7 +197,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			// forward to bibtex page if filter is set
 			if (publicationFilter) {
 				return Views.USERDOCUMENTPAGE;
-			} 
+			}
 			
 			//if user does not exist, trigger 404
 			if (!present(command.getUser().getName())) {
