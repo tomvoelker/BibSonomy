@@ -41,8 +41,8 @@
 			<bform:input path="post.resource.crossref"/>
 			<bform:textarea path="post.resource.misc"/>
 			<bform:textarea path="post.resource.abstract"/>
-		</jsp:attribute>
-	</bform:fieldset>
+        </jsp:attribute>
+    </bform:fieldset>
 	<bform:fieldset maximized="${maximized}" legendKey="post.resource.fields.comments" >
 		<jsp:attribute name="content">
 			<!--+ 
