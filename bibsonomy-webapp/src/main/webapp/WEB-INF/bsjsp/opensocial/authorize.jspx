@@ -9,6 +9,7 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/actions/user"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
@@ -63,10 +64,13 @@
 			| content
 			+-->
 		<jsp:attribute name="content">
-				<p>
+		
+				<bs:alert style="info">
+				<jsp:attribute name="alertBody">
 					<fmt:message key="oauth.authorization.intro"/>
-				</p>
-
+				</jsp:attribute>
+				</bs:alert>
+				
 				<c:if test="${not empty command.appIcon}">
 					<div class="oauthIcon">
 						<img src="${command.appIcon}"/>
@@ -87,11 +91,13 @@
 					</c:set>
 					
 					<form class="oauthActions" name="authZForm" action="authorize" method="POST">
-						<input type="hidden" name="oauth_callback" value="${command.callBackUrl}"><!-- keep me --></input>
-						<input type="hidden" name="oauth_token" value="${command.entry.token}"><!-- keep me --></input>
-						<input type="submit" name="authorizeAction" value="Deny"><!-- keep me --></input>
-						<input type="submit" name="authorizeAction" value="Authorize"><!-- keep me --></input>
+						<input type="hidden" name="oauth_callback" value="${command.callBackUrl}"/>
+						<input type="hidden" name="oauth_token" value="${command.entry.token}"/>
+						<input type="submit" class="btn btn-sm btn-danger" name="authorizeAction" value="Deny"/>
+						<c:out value=" "/>
+						<input type="submit" class="btn btn-sm btn-success" name="authorizeAction" value="Authorize"/>
 					</form>
+            		
 				</div>
 				<div style="clear: both;"><!-- keep me --></div>
 				
