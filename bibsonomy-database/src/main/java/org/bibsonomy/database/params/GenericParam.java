@@ -156,6 +156,8 @@ public abstract class GenericParam {
 
 	/* modified search parameter */
 	private String search;
+	/* search type */
+	private String searchType;
 
 	/* not modified search parameter */
 	private String rawSearch;
@@ -1100,5 +1102,19 @@ public abstract class GenericParam {
 	@Override
 	public String toString() {
 		return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
+
+	/**
+	 * @return the searchType
+	 */
+	public String getSearchType() {
+		return this.searchType;
+	}
+
+	/**
+	 * @param searchType the searchType to set
+	 */
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
 	}
 }

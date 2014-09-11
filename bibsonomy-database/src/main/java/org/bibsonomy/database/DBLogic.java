@@ -743,6 +743,9 @@ public class DBLogic implements LogicInterface {
 					 */
 					if (resourceType == BibTex.class) {
 						final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
+						//sets the search type to ealasticSearch
+						param.setSearchType("elasticsearch");
+						
 						// check permissions for displaying links to documents
 						final boolean allowedToAccessUsersOrGroupDocuments = this.permissionDBManager.isAllowedToAccessUsersOrGroupDocuments(this.loginUser, grouping, groupingName, filter, session);
 						if (!allowedToAccessUsersOrGroupDocuments) {
@@ -764,6 +767,9 @@ public class DBLogic implements LogicInterface {
 
 					if (resourceType == Bookmark.class) {
 						final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
+						//sets the search type to ealasticSearch
+						param.setSearchType("elasticsearch");
+						
 						final List<Post<T>> bookmarks= (List) this.bookmarkDBManager.getPosts(param, session);
 						SystemTagsExtractor.handleHiddenSystemTags(bookmarks, loginUser.getName());
 						return bookmarks;
@@ -771,11 +777,17 @@ public class DBLogic implements LogicInterface {
 
 					if (resourceType == GoldStandardPublication.class) {
 						final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
+						//sets the search type to ealasticSearch
+						param.setSearchType("elasticsearch");
+						
 						return (List) this.goldStandardPublicationDBManager.getPosts(param, session);
 					}
 
 					if (resourceType == GoldStandardBookmark.class) {
 						final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
+						//sets the search type to ealasticSearch
+						param.setSearchType("elasticsearch");
+						
 						return (List) this.goldStandardBookmarkDBManager.getPosts(param, session);
 					}
 
