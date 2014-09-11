@@ -11,50 +11,47 @@
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	
-	<bform:fieldset maximized="${not command.context.loginUser.settings.layoutSettings.simpleInterface}" legendKey="post.resource.fields.detailed">
+	<c:set var="maximized" value="${not command.context.loginUser.settings.layoutSettings.simpleInterface}" />
+	<bform:fieldset maximized="${maximized}" legendKey="post.resource.fields.detailed">
 		<jsp:attribute name="legendExt">
-	      (<a id="collapse" href="javascript:showAll()"><fmt:message key="post.resource.fields.detailed.show.all"/></a>)
-	   	</jsp:attribute>
-        
-        <jsp:attribute name="content">
-        	
-        	<bform:input path="post.resource.booktitle"/>
-        	<bform:input path="post.resource.journal"/>
-        	<bform:input path="post.resource.volume" small="${true}"/>
-        	<bform:input path="post.resource.number" small="${true}"/>
-        	<bform:input path="post.resource.pages" small="${true}"/>
-        	<bform:input path="post.resource.month" small="${true}"/>
-        	<bform:input path="post.resource.day" small="${true}"/>
-        	<bform:input path="post.resource.publisher"/>
-        	<bform:input path="post.resource.address"/>
-        	<bform:input path="post.resource.edition" small="${true}"/>
-        	<bform:input path="post.resource.chapter" small="${true}"/>
-        	<bform:input path="post.resource.url"/>
-        	<bform:input path="post.resource.key" small="${true}"/>
-        	<bform:input path="post.resource.type"/>
-        	<bform:input path="post.resource.howpublished"/>
-        	<bform:input path="post.resource.institution"/>
-        	<bform:input path="post.resource.organization"/>
-        	<bform:input path="post.resource.school"/>
+			(<a id="collapse" href="javascript:showAll()"><fmt:message key="post.resource.fields.detailed.show.all"/></a>)
+		</jsp:attribute>
+		
+		<jsp:attribute name="content">
+			
+			<bform:input path="post.resource.booktitle"/>
+			<bform:input path="post.resource.journal"/>
+			<bform:input path="post.resource.volume" small="${true}"/>
+			<bform:input path="post.resource.number" small="${true}"/>
+			<bform:input path="post.resource.pages" small="${true}"/>
+			<bform:input path="post.resource.month" small="${true}"/>
+			<bform:input path="post.resource.day" small="${true}"/>
+			<bform:input path="post.resource.publisher"/>
+			<bform:input path="post.resource.address"/>
+			<bform:input path="post.resource.edition" small="${true}"/>
+			<bform:input path="post.resource.chapter" small="${true}"/>
+			<bform:input path="post.resource.url"/>
+			<bform:input path="post.resource.key" small="${true}"/>
+			<bform:input path="post.resource.type"/>
+			<bform:input path="post.resource.howpublished"/>
+			<bform:input path="post.resource.institution"/>
+			<bform:input path="post.resource.organization"/>
+			<bform:input path="post.resource.school"/>
 			<bform:input path="post.resource.series"/>
-			<bform:input path="post.resource.crossref"/>	
+			<bform:input path="post.resource.crossref"/>
 			<bform:textarea path="post.resource.misc"/>
 			<bform:textarea path="post.resource.abstract"/>
-
         </jsp:attribute>
-     </bform:fieldset>
-     
-     <bform:fieldset maximized="${not command.context.loginUser.settings.layoutSettings.simpleInterface}" legendKey="post.resource.fields.comments" >
-	     <jsp:attribute name="content">
-         
-        	<!--+ 
-            	| TODO: explain difference between fields!
-            	+-->
-            <bform:textarea path="post.description"/>
+    </bform:fieldset>
+	<bform:fieldset maximized="${maximized}" legendKey="post.resource.fields.comments" >
+		<jsp:attribute name="content">
+			<!--+ 
+				| TODO: explain difference between fields!
+				+-->
+			<bform:textarea path="post.description"/>
 			<bform:textarea path="post.resource.privnote"/>
-            <bform:input path="post.resource.annote"/>
-            <bform:input path="post.resource.note"/>
-
-    	</jsp:attribute>
+			<bform:input path="post.resource.annote"/>
+			<bform:input path="post.resource.note"/>
+		</jsp:attribute>
 	</bform:fieldset>
 </jsp:root>

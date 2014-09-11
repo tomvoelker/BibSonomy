@@ -41,10 +41,8 @@
 			<li><users:socializer command="${command}" /></li>
 			
 			<!-- Did you know? -->
-			<c:if test="${	command.context.userLoggedIn and 
-							command.context.loginUser.name eq command.requestedUser and 
-							mtl:hasDidYouKnowMessage(command) and
-							command.context.loginUser.settings.layoutSettings.simpleInterface}">
+			<c:if test="${command.context.userLoggedIn and command.context.loginUser.name eq command.requestedUser and 
+							mtl:hasDidYouKnowMessage(command) and command.context.loginUser.settings.layoutSettings.simpleInterface}">
 				<li><bs:didYouKnow command="${command}"/></li>
 			</c:if>
 			

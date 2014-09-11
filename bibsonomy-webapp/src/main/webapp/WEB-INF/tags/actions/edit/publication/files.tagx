@@ -16,8 +16,6 @@
 		<jsp:attribute name="content">
 			<fmt:message var="delete" key="post.bibtex.delete"/>
 			<script type="text/javascript" src="${resdir}/javascript/jquery.documentuploader.js"><!-- keep me --></script>
-				
-	
 			<!--+ 
 			 	|
 			 	| the documents of the post
@@ -81,10 +79,9 @@
 							<!-- increase temporary file counter -->
 							<script type="text/javascript">$(".counter").val(${status.count});</script>
 						</c:forEach>
-					</c:if>				
+					</c:if>
 				</ul>
 			</div>
-						
 		</jsp:attribute>
 	</bform:fieldset>
 	
