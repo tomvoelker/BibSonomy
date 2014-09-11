@@ -1,0 +1,1 @@
+UPDATE USER SET list_itemcount = 1000 WHERE list_itemcount > 1000;
