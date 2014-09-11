@@ -120,14 +120,14 @@ $(document).ready(function() {
 	$('.descriptiveLabel').each(function() {
 		$(this).descrInputLabel({});
 	});
-	$('.textAreaAutoresize').each(function() {
-		$(this).autosize({}).focus(showMenu);
+	$('.reviewTextBox').children().first("textarea").each(function() {
+		$(this).autosize().focus(showMenu);
 	});
 	$('.reviewrating').stars({split:2});
 });
 
 function setUpLinkbox(o) {
-	o.textArea = o.bgFrame.parents('.fsOuter').children('.textBoxContainer').find(".textAreaAutoresize");
+	o.textArea = o.bgFrame.parents('.fsOuter').children('.textBoxContainer').find("textarea");
 	o.textArea.css({"z-index":5,"position":"relative"});
 	o.ctrlsContainer.find('input').trigger("focus");
 	o.menuItem.css("position","");
@@ -171,8 +171,9 @@ function createStandaloneReply(parent) {
 		form.append($('<input />').attr('name', 'discussionItem.parentHash').attr('type', 'hidden').attr('value', parentHash));
 		
 		// bind some actions (submit, group switch)
-		form.submit(createComment);
+		form.submit(createComment).parent().removeClass("hidden");
 		form.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
+		form.find("textarea").focus(showMenu);
 		addAutocompletionToLinkBox(form);
 }
 
