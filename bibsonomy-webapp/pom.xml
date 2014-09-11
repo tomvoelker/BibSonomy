@@ -101,6 +101,24 @@
 								<include>${project.build.webapp.resourcedir}/javascript/addToSpheres.js</include>
 							</includes>
 						</aggregation>
+						<aggregation>
+							<insertNewLine>true</insertNewLine>
+							<output>${project.build.webapp.resourcedir}/javascript/merged/discussion.js</output>
+							<includes>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/excanvas.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/jquery.flot.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/jquery.flot.stack.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/discussion/discussion.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/discussion/reviews.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/discussion/comments.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/discussion/csllinks.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/csllocales.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/xmldom.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/citeproc.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/cslstyles.js</include>
+							</includes>
+						</aggregation>
 						<!-- javascript files for bootstrap front-end -->
 						<aggregation>
 							<insertNewLine>true</insertNewLine>
@@ -123,25 +141,6 @@
 								<include>${project.build.webapp.resourcedir}/javascript/bs/jquery.fadebox.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/userRelation.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/addToSpheres.js</include>
-							</includes>
-						</aggregation>
-
-						<aggregation>
-							<insertNewLine>true</insertNewLine>
-							<output>${project.build.webapp.resourcedir}/javascript/merged/discussion.js</output>
-							<includes>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/excanvas.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/jquery.flot.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/jquery.flot.stack.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/discussion/discussion.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/discussion/reviews.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/discussion/comments.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/discussion/csllinks.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/csllocales.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/xmldom.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/citeproc.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/cslstyles.js</include>
 							</includes>
 						</aggregation>
 						<aggregation>
