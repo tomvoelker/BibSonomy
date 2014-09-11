@@ -941,6 +941,7 @@ function addListOptions() {
 					});
 				}		
 		);
+		return this;
 	};
 })(jQuery);
 
