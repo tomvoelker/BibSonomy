@@ -27,7 +27,6 @@
 		>
 
 		<jsp:attribute name="headerExtResource">
-			<script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/bs/editBookmark.js"><!-- keep me --></script>
 		</jsp:attribute>
 
