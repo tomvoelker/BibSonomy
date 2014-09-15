@@ -13,8 +13,8 @@
 	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/bstags/spheres"	
 	>
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}"	activeTab="${command.context.loginUser.name != null ? 'my' : ''}">
+	<fmt:message var="headline" key="page.friends.headline" />
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}"	activeTab="${command.context.loginUser.name != null ? 'my' : ''}" headline="${headline}">
 	
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.friends" formAction="/friends/" formInputName="user"/>

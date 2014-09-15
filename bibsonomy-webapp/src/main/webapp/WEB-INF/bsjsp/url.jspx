@@ -41,7 +41,7 @@
 	</c:choose>
 	
 	<input id="publicInput" name="publicInput" value="${isPublic}" type="hidden" />
-	
+	<fmt:message var="headline" key="page.url.headline" />
 	<!--+
 		+ main layout
 		+ -->
@@ -52,7 +52,8 @@
 		showPageOptions="${false}"
 		resource="${bookmark}"
 		discussionBox="${true}"
-		minimizedContentWidth="${true}">
+		minimizedContentWidth="${true}"
+		headline="${headline}${bookmark.title}">
 		
 		<!--+
 			+ page heading
