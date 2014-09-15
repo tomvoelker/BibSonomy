@@ -54,10 +54,10 @@
 		<!--+
 			| abstract
 			+-->
-		<c:if test="${not empty goldstandard.abstract}"> 
+		<c:if test="${not empty goldstandard['abstract']}"> 
 			<h4><fmt:message key="publications.abstract.headline"/></h4>
 			<div id="abstract" class="more">
-				<c:out value="${mtl:cleanBibtex(goldstandard.abstract)}" />
+				<c:out value="${mtl:cleanBibtex(goldstandard['abstract'])}" />
 			</div>
 		</c:if>
 				<c:choose>
