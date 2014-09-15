@@ -27,10 +27,10 @@
 	</c:choose>
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" headline="${headline}">
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.relevantFor" formAction="/relevantfor/group/${mtl:encodeURI(command.requestedGroup)}" formInputName="tag" formInputValue="${command.requestedTags}">
+			<parts:search pathMessageKey="navi.relevantFor" formAction="${relativeUrlGenerator.prefix('relevantfor/').getGroupUrlByGroupName(command.requestedGroup)}" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="pathPart">
 					<li>
-						:: <a href="/relevantfor/group/${mtl:encodeURI(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
+						:: <a href="${relativeUrlGenerator.prefix('relevantfor/').getGroupUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
 					</li>
 				</jsp:attribute>
 			</parts:search>

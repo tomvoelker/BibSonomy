@@ -17,7 +17,7 @@
 	<fmt:message var="headline" key="page.group.headline" />
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="groups" headline="${headline}${command.group.name}">
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.group" formAction="/group/${mtl:encodeURI(command.requestedGroup)}" formInputName="tag">
+			<parts:search pathMessageKey="navi.group" formAction="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}" formInputName="tag">
 				
 			</parts:search>	
 		</jsp:attribute>		

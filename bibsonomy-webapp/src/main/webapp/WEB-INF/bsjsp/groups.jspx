@@ -90,11 +90,11 @@
 						<c:if test="${not empty group.realname}">
 							<c:set var="displayName" value="${group.realname}" />
 						</c:if>
-						<dt><span class="sr-only"><c:out value="${group.name}" /></span><img class="img-thumbnail img-resposive user-avatar" src="/picture/user/${mtl:encodeURI(group.name)}"/></dt>
+						<dt><span class="sr-only"><c:out value="${group.name}" /></span><img class="img-thumbnail img-resposive user-avatar" src="${relativeUrlGenerator.getUserPictureUrlByUsername(group.name)}"/></dt>
 						<dd>
 							<div class="row">
 								<div class="col-xs-9">
-									<a href="/group/${mtl:encodeURI(group.name)}">
+									<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}">
 										<c:out value="${displayName}"/>
 										<br />
 										<c:if test="${not empty group.homepage}">

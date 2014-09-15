@@ -66,7 +66,7 @@
       Clicking on a tag (keyword) will retrieve from BibSonomy the abstracts
       that have been tagged with it. 
 
-      The publication metadata are <a href="/export/user/ht09">available in many formats</a>, including  <a href="/bib/user/ht09">BibTeX</a> and  <a href="/burst/user/ht09">RDF</a>.
+      The publication metadata are <a href="${relativeUrlGenerator.prefix('export/').getUserUrlByUserName('ht09')}">available in many formats</a>, including  <a href="${relativeUrlGenerator.getPublicationsAsBibtexUrlByUserName('ht09')}">BibTeX</a> and  <a href="${relativeUrlGenerator.prefix('burst/').getUserUrlByUserName('ht09')}">RDF</a>.
     </div>
 
 
