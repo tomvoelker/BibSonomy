@@ -300,13 +300,13 @@ CREATE TABLE `gold_standard` (
 SET character_set_client = @saved_cs_client;
 
 --
--- Table structure for table `gold_standard_publications_references`
+-- Table structure for table `gold_standard_relations`
 --
 
-DROP TABLE IF EXISTS `gold_standard_publication_references`;
+DROP TABLE IF EXISTS `gold_standard_relations`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-CREATE TABLE `gold_standard_publication_references` (
+CREATE TABLE `gold_standard_relations` (
   `publication` char(32) NOT NULL default '',
   `reference` char(32) NOT NULL default '',
   `user_name` varchar(255) default NULL,
@@ -377,13 +377,13 @@ SET character_set_client = @saved_cs_client;
 
 
 --
--- Table structure for table `log_gold_standard_publication_references`
+-- Table structure for table `log_gold_standard_relations`
 --
 
-DROP TABLE IF EXISTS `log_gold_standard_publication_references`;
+DROP TABLE IF EXISTS `log_gold_standard_relations`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-CREATE TABLE `log_gold_standard_publication_references` (
+CREATE TABLE `log_gold_standard_relations` (
   `publication` char(32) NOT NULL default '',
   `reference` char(32) NOT NULL default '',
   `user_name` varchar(255) default NULL,

@@ -3,7 +3,7 @@ package org.bibsonomy.rest.strategy.posts.community.references;
 import java.io.Reader;
 import java.util.Set;
 
-import org.bibsonomy.model.enums.RelationsEnum;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.rest.strategy.AbstractDeleteStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
@@ -14,14 +14,14 @@ public class DeleteReferencesStrategy extends AbstractDeleteStrategy {
 
 	private final String hash;
 	private final Reader doc;
-	private final RelationsEnum relation;
+	private final GoldStandardRelation relation;
 
 	/**
 	 * @param context
 	 * @param hash
 	 * @param relation
 	 */
-	public DeleteReferencesStrategy(final Context context, final String hash, final RelationsEnum relation) {
+	public DeleteReferencesStrategy(final Context context, final String hash, final GoldStandardRelation relation) {
 		super(context);
 
 		this.hash = hash;

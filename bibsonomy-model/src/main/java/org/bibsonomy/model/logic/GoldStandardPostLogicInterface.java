@@ -25,7 +25,7 @@ package org.bibsonomy.model.logic;
 
 import java.util.Set;
 
-import org.bibsonomy.model.enums.RelationsEnum;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 
 
 /**
@@ -45,7 +45,7 @@ public interface GoldStandardPostLogicInterface extends PostLogicInterface {
 	 * @param references the references to add (interhashes)
 	 * @param relation  the relation between a post and its reference
 	 */
-	public void createRelations(final String postHash, final Set<String> references, final RelationsEnum relation);
+	public void createRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation);
 
 	/**
 	 * deletes relations from a gold stanard resource
@@ -54,5 +54,5 @@ public interface GoldStandardPostLogicInterface extends PostLogicInterface {
 	 * @param references the references to delete (interhashes)
 	 * @param relation  the relation between a post and its reference
 	 */
-	public void deleteRelations(final String postHash, final Set<String> references, final RelationsEnum relation);
+	public void deleteRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation);
 }

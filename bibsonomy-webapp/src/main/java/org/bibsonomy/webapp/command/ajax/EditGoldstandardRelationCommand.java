@@ -3,7 +3,7 @@ package org.bibsonomy.webapp.command.ajax;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bibsonomy.model.enums.RelationsEnum;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /**
  * @author lka
@@ -11,7 +11,7 @@ import org.bibsonomy.model.enums.RelationsEnum;
 public class EditGoldstandardRelationCommand extends AjaxCommand {
 	private String hash;
 	private Set<String> references;
-	private RelationsEnum relation;
+	private GoldStandardRelation relation;
 	/**
 	 * inits the references set
 	 */
@@ -48,7 +48,7 @@ public class EditGoldstandardRelationCommand extends AjaxCommand {
 				}
 			}
 		}
-		for(RelationsEnum r: RelationsEnum.values()){
+		for(GoldStandardRelation r: GoldStandardRelation.values()){
 			if(r.name().equalsIgnoreCase(tRelation)){
 				this.relation = r;
 				break;
@@ -58,7 +58,7 @@ public class EditGoldstandardRelationCommand extends AjaxCommand {
 	/**
 	 * @return the relation
 	 */
-	public RelationsEnum getRelation() {
+	public GoldStandardRelation getRelation() {
 		return relation;
 	}
 

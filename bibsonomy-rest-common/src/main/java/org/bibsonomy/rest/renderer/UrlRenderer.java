@@ -33,7 +33,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.enums.RelationsEnum;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationDirection;
@@ -513,7 +513,7 @@ public class UrlRenderer {
 	 * @param relation 
 	 * @return the path to the references of a community post
 	 */
-	public String createHrefForCommunityPostReferences(String hash,RelationsEnum relation) {
+	public String createHrefForCommunityPostReferences(String hash,GoldStandardRelation relation) {
 		final UrlBuilder builder = this.createHrefForCommunity(hash);
 		int relationValue = relation.getValue();
 		if(relationValue==0){

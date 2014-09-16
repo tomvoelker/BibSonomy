@@ -15,7 +15,7 @@ import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 import org.bibsonomy.model.DiscussionItem;
-import org.bibsonomy.model.enums.RelationsEnum;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /**
  * This plugin implements logging: on several occasions it'll save the old state
@@ -96,23 +96,14 @@ public class Logging extends AbstractDatabasePlugin {
     }
 
     @Override
-    public void onGoldStandardPublicationReferenceDelete(final String userName, final String interHashPublication, final String interHashReference,final String interHashRelation, final DBSession session) {
+    public void onGoldStandardRelationDelete(final String userName, final String interHashPublication, final String interHashReference, final GoldStandardRelation relation, final DBSession session) {
         final GoldStandardReferenceParam param = new GoldStandardReferenceParam();
-//        String tRelation =  interHashRelation.toUpperCase();
-//		tRelation = tRelation.replaceAll("_MENU", "");
-		int relationValue = Integer.valueOf(interHashRelation);
-//		for(RelationsEnum r : RelationsEnum.values()){
-//			if(r.name().equals(tRelation)){
-//				relationValue = r.getValue();
-//				break;
-//				}
-//		}
         param.setHash(interHashPublication);
         param.setRefHash(interHashReference);
         param.setUsername(userName);
-        param.setRelation(relationValue);
+        param.setRelation(relation);
 
-        this.insert("logGoldStandardPublicationReferenceDelete", param, session);
+        this.insert("logGoldStandardRelationDelete", param, session);
     }
 
     @Override

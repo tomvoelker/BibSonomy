@@ -26,6 +26,8 @@ package org.bibsonomy.model;
 import java.util.Set;
 
 /**
+ * TODO: aggreate relation sets to a map
+ * 
  * @author dzo
  * @param <R> 
  */

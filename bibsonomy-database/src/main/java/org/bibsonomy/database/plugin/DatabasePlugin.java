@@ -9,6 +9,7 @@ import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /**
  * This interface supplies hooks which can be implemented by plugins. This way
@@ -83,10 +84,10 @@ public interface DatabasePlugin {
 	 * @param userName
 	 * @param interHash_publication
 	 * @param interHash_reference
-	 * @param interHash_relation,
+	 * @param interHashRelation
 	 * @param session
 	 */
-	public void onGoldStandardPublicationReferenceDelete(String userName, String interHash_publication, String interHash_reference,String interHash_relation, DBSession session);
+	public void onGoldStandardRelationDelete(String userName, String interHash_publication, String interHash_reference, GoldStandardRelation interHashRelation, DBSession session);
 	
 	/**
 	 * Called when a gold standard publication is deleted.

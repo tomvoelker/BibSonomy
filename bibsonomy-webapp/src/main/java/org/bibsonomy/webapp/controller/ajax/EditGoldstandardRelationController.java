@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
-import org.bibsonomy.model.enums.RelationsEnum;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.webapp.command.ajax.EditGoldstandardRelationCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -49,7 +49,7 @@ public class EditGoldstandardRelationController extends AjaxController implement
 		
 		final String hash = command.getHash();
 		final Set<String> references = command.getReferences();
-		final RelationsEnum relation = command.getRelation();
+		final GoldStandardRelation relation = command.getRelation();
 		
 		if (!present(hash) || !present(references) || !present(relation)) {
 			this.responseLogic.setHttpStatus(HttpServletResponse.SC_BAD_REQUEST);

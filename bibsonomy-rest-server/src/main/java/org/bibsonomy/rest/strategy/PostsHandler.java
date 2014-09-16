@@ -2,7 +2,7 @@ package org.bibsonomy.rest.strategy;
 
 import java.util.StringTokenizer;
 
-import org.bibsonomy.model.enums.RelationsEnum;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
@@ -86,8 +86,8 @@ public class PostsHandler implements ContextHandler {
 				if (!RESTConfig.COMMUNITY_SUB_PATH.equalsIgnoreCase(path) || (!RESTConfig.RELATION_REFERENCE.equalsIgnoreCase(relation) && !RESTConfig.RELATION_PARTOF.equalsIgnoreCase(relation))) {
 					break;
 				}			
-				RelationsEnum relationEnum = RelationsEnum.REFERENCE;
-				for(RelationsEnum r: RelationsEnum.values()){
+				GoldStandardRelation relationEnum = GoldStandardRelation.REFERENCE;
+				for(GoldStandardRelation r: GoldStandardRelation.values()){
 					if(r.name().equalsIgnoreCase(relation)){
 						relationEnum = r;
 						break;

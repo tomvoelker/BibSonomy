@@ -26,7 +26,7 @@ import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.RelationsEnum;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.util.ReflectionUtils;
 
@@ -104,10 +104,6 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		
 		return post;
 	}
-	
-	
-
-	
 
 	@SuppressWarnings("unchecked")
 	protected Post<R> getGoldStandardPostByHash(final String resourceHash, final DBSession session) {
@@ -124,31 +120,30 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	@SuppressWarnings("unchecked")
 	protected Set<RR> getRefencedByForPost(final String resourceHash, final DBSession session) {
 		final P param = createResourceParam(resourceHash);
-		param.setRelation(RelationsEnum.REFERENCE.getValue());
-		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRefercencedBy", param, session));
+		param.setRelation(GoldStandardRelation.REFERENCE);
+		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRelatedBy", param, session));
 	}
 	
 	@SuppressWarnings("unchecked")
 	protected Set<RR> getReferencePartOfThisPublication(final String resourceHash, final DBSession session) {
 		final P param = createResourceParam(resourceHash);
-		param.setRelation(RelationsEnum.PART_OF.getValue());
-		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRefercencedBy", param, session));
+		param.setRelation(GoldStandardRelation.PART_OF);
+		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRelatedBy", param, session));
 	}
 
 	@SuppressWarnings("unchecked")
 	private Set<RR> getReferenceThisPublicationIsPublishedIn(String resourceHash, DBSession session) {
 		final P param = createResourceParam(resourceHash);
-		param.setRelation(RelationsEnum.PART_OF.getValue());
-		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRefercences", param, session));
+		param.setRelation(GoldStandardRelation.PART_OF);
+		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRelated", param, session));
 	}
 	
 	@SuppressWarnings("unchecked")
 	protected Set<RR> getReferencesForPost(final String interHash, final DBSession session) {
 		final P param = createResourceParam(interHash);
-		param.setRelation(RelationsEnum.REFERENCE.getValue());
-		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRefercences", param, session));
+		param.setRelation(GoldStandardRelation.REFERENCE);
+		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRelated", param, session));
 	}
-	
 	
 	@Override
 	public List<Post<R>> getPosts(final P param, final DBSession session) {
@@ -335,9 +330,8 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	 * @param relation 
 	 * @param session
 	 */
-	public void addReferencesToPost(final String userName, final String interHash, final Set<String> references, final RelationsEnum relation, final DBSession session) {
+	public void addRelationsToPost(final String userName, final String interHash, final Set<String> references, final GoldStandardRelation relation, final DBSession session) {
 		session.beginTransaction();
-		int relationValue = relation.getValue();
 		try {
 			final Post<R> post = this.getGoldStandardPostByHash(interHash, session);
 			if (!present(post)) {
@@ -352,8 +346,8 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 					final Post<R> refPost = this.getGoldStandardPostByHash(referenceHash, session);
 					if (present(refPost)) {
 						param.setRefHash(referenceHash);
-						param.setRelation(relationValue);
-						this.insert("insert" + this.resourceClassName + "Reference", param, session);
+						param.setRelation(relation);
+						this.insert("insertGoldStandardRelation", param, session);
 					} else {
 						log.info("Can't add reference. Gold standard " + this.resourceClassName +  " reference with resourceHash " + referenceHash + " not found.");
 					}
@@ -375,9 +369,8 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	 * @param relation 
 	 * @param session
 	 */
-	public void removeReferencesFromPost(final String userName, final String interHash, final Set<String> references, final RelationsEnum relation, final DBSession session) {
+	public void removeRelationsFromPost(final String userName, final String interHash, final Set<String> references, final GoldStandardRelation relation, final DBSession session) {
 		session.beginTransaction();
-		int relationValue = relation.getValue();
 		try {
 			final Post<R> post = this.getGoldStandardPostByHash(interHash, session);
 			if (!present(post)) {
@@ -391,8 +384,9 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 					final Post<R> refPost = this.getGoldStandardPostByHash(referenceHash, session);
 					if (present(refPost)) {
 						param.setRefHash(referenceHash);
-						param.setRelation(relationValue);
-						this.delete("delete" + this.resourceClassName + "Reference", param, session);
+						param.setRelation(relation);
+						this.onGoldStandardRelationDelete(userName, interHash, referenceHash, relation, session);
+						this.delete("deleteGoldStandardRelation", param, session);
 					} else {
 						log.info("Can't remove reference. Gold standard " + this.resourceClassName +  " reference with resourceHash " + referenceHash + " not found.");
 					}
@@ -417,7 +411,13 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		this.plugins.onGoldStandardDelete(resourceHash, session);
 	}
 	
-	protected abstract void onGoldStandardReferenceDelete(final String userName, final String interHash, final String interHashRef,final String interHashRelation, final DBSession session);
-
-
+	/**
+	 * 
+	 * @param userName
+	 * @param interHash
+	 * @param interHashRef
+	 * @param interHashRelation
+	 * @param session
+	 */
+	protected abstract void onGoldStandardRelationDelete(final String userName, final String interHash, final String interHashRef, final GoldStandardRelation interHashRelation, final DBSession session);
 }

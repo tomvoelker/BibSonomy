@@ -63,7 +63,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.enums.RelationsEnum;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
@@ -571,7 +571,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public void createRelations(final String postHash, final Set<String> references, final RelationsEnum relation) {
+	public void createRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
 		if (!present(postHash) || !present(references) ||!present(relation)) {
 			// FIXME: who needs/reads this warning? 
 			log.warn("can't create references because no post hash/ no references/ no relation given");
@@ -584,7 +584,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public void deleteRelations(final String postHash, final Set<String> references, final RelationsEnum relation) {
+	public void deleteRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
 		throw new UnsupportedOperationException();
 	}
 
