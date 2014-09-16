@@ -48,6 +48,7 @@ public class WorldScientificScraperTest {
 	public void urlTestRun1(){
 		UnitTestRunner.runSingleTest("url_279");
 	}
+	
 	@Test
 	public void testCitedby() throws Exception {
 		final ScrapingContext sc = new ScrapingContext(new URL("http://www.worldscientific.com/doi/pdf/10.1142/S0219622006002271"));
@@ -63,6 +64,7 @@ public class WorldScientificScraperTest {
 		
 		assertTrue(cby.contains("XIANYONG FANG"));
 	}
+	
 	@Test
 	public void testReferences() throws Exception {
 		final ScrapingContext sc = new ScrapingContext(new URL("http://www.worldscientific.com/doi/pdf/10.1142/S0219622006002271"));
@@ -78,6 +80,4 @@ public class WorldScientificScraperTest {
 		
 		assertTrue(references.contains("A. D.   Baxevanis"));
 	}
-
-
 }
