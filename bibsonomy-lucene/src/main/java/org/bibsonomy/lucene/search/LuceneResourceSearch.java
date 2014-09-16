@@ -34,12 +34,14 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.Version;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.database.LuceneInfoLogic;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.QuerySortContainer;
 import org.bibsonomy.lucene.search.collector.TagCountCollector;
+import org.bibsonomy.lucene.util.generator.ElasticSearchGenerateResourceIndex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
@@ -63,6 +65,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * members)
 	 */
 	private LuceneInfoLogic dbLogic;
+	private LuceneDBInterface<R> dbInterfaceLogic;
 
 	/** default field analyzer */
 	private Analyzer analyzer;
@@ -737,4 +740,41 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	public void setTagCloudLimit(final int tagCloudLimit) {
 		this.tagCloudLimit = tagCloudLimit;
 	}
+
+	
+
+	/**
+	 * @return the dbInterfaceLogic
+	 */
+	public LuceneDBInterface<R> getDbInterfaceLogic() {
+		return this.dbInterfaceLogic;
+	}
+
+	/**
+	 * @param dbInterfaceLogic the dbInterfaceLogic to set
+	 */
+	public void setDbInterfaceLogic(LuceneDBInterface<R> dbInterfaceLogic) {
+		this.dbInterfaceLogic = dbInterfaceLogic;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPostsForElasticSearch(java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.model.enums.Order, int, int)
+	 */
+	@Override
+	public List<Post<R>> getPostsForElasticSearch(String userName,
+			String requestedUserName, String requestedGroupName,
+			List<String> requestedRelationNames,
+			Collection<String> allowedGroups, String searchTerms,
+			String titleSearchTerms, String authorSearchTerms,
+			Collection<String> tagIndex, String year, String firstYear,
+			String lastYear, List<String> negatedTags, Order order, int limit,
+			int offset) {
+		ElasticSearchGenerateResourceIndex<R> generator = new ElasticSearchGenerateResourceIndex<R>();
+		generator.setLogic(this.dbInterfaceLogic);
+		generator.setResourceConverter(this.resourceConverter);
+		generator.run();
+		return null;
+	}
+
+
 }

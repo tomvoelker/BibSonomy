@@ -117,7 +117,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	/** instance of the lucene searcher */
 	private ResourceSearch<R> resourceSearch;
 
-	/** the validator for the posts*/
 	protected DatabaseModelValidator<R> validator;
 
 	private Chain<List<Post<R>>, P> chain;
@@ -575,6 +574,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param requestedGroupName
 	 * @param requestedRelationName
 	 * @param allowedGroups
+	 * @param searchType 
 	 * @param searchTerms
 	 * @param titleSearchTerms
 	 * @param authorSearchTerms
@@ -588,8 +588,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param offset
 	 * @return a list of posts
 	 */
-	public List<Post<R>> getPostsByResourceSearch(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {
+	public List<Post<R>> getPostsByResourceSearch(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationName, final Collection<String> allowedGroups, final String searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {
 		if (present(this.resourceSearch)) {
+			if(!searchType.equals(null)){
+			if(searchType.equalsIgnoreCase("elasticsearch"))
+				return this.resourceSearch.getPostsForElasticSearch(userName, requestedUserName, requestedGroupName, requestedRelationName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
+			}
 			return this.resourceSearch.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
 		}
 

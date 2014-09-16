@@ -67,10 +67,11 @@ public class ElasticSearchGenerateResourceIndex<R extends Resource> implements R
 	 */
 	public void shutdown() throws CorruptIndexException, IOException {
 
+		//closing the node
+		log.info("closing node " + this.node);
+		//on shutdown
 		this.node.close();
-//		if (this.callback != null) {
-//			this.callback.generatedIndex(this.resourceIndex);
-//		}
+					
 	}
 
 	/**
@@ -173,13 +174,8 @@ public class ElasticSearchGenerateResourceIndex<R extends Resource> implements R
 
 		try {
 			executor.shutdown();
-			
 			executor.awaitTermination(18, TimeUnit.HOURS);
 
-			// close resource indexWriter
-			log.info("closing node " + this.node);
-			//on shutdown
-			this.node.close();
 			// all done
 			// log.info("(" + i + " indexed entries, " + is +
 			// " not indexed spam entries)");

@@ -23,4 +23,20 @@ public class DummyResourceSearch implements ResourceSearch<Resource> {
 	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, List<String> negatedTags, final int limit, final int offset) {
 		return null;
 	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPostsForElasticSearch(java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.model.enums.Order, int, int)
+	 */
+	@Override
+	public List<Post<Resource>> getPostsForElasticSearch(String userName,
+			String requestedUserName, String requestedGroupName,
+			List<String> requestedRelationNames,
+			Collection<String> allowedGroups, String searchTerms,
+			String titleSearchTerms, String authorSearchTerms,
+			Collection<String> tagIndex, String year, String firstYear,
+			String lastYear, List<String> negatedTags, Order order, int limit,
+			int offset) {
+		return null;
+	}
+
 }
