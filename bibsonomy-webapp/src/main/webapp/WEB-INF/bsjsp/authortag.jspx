@@ -15,18 +15,23 @@
 
 	<c:set var="requestedAuthorEncoded" value="${mtl:encodeURI(command.requestedAuthor)}" />
 	<fmt:message key="navi.author" var="authorPageTitle" />
+	<fmt:message var="headline" key="page.authortag.headline">
+		<fmt:param>${command.requestedAuthor}</fmt:param>
+		<fmt:param>${command.requestedTags}</fmt:param>
+	</fmt:message>
 	<layout:resourceLayout
 		pageTitle="${authorPageTitle} :: ${command.requestedAuthor} :: ${command.requestedTags}"
 		command="${command}"
 		requPath="${requPath}"
 		minimizedContentWidth="${true}"
-		disableResourcetypeSelection="${true}">
+		disableResourcetypeSelection="${true}"
+		headline="${headline}">
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.author" formAction="/author/${requestedAuthorEncoded}" formInputName="tag" formInputValue="${command.requestedTags}">
+			<parts:search pathMessageKey="navi.author" formAction="${relativeUrlGenerator.getAuthorUrlByName(requestedAuthorEncoded)}" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="pathPart">
 					<li>
 						:: <span itemscope="itemscope" itemtype="http://schema.org/Person">
-							<a href="/author/${requestedAuthorEncoded}" itemprop="name"><c:out value='${command.requestedAuthor}'/></a>
+							<a href="${relativeUrlGenerator.getAuthorUrlByName(requestedAuthorEncoded)}" itemprop="name"><c:out value='${command.requestedAuthor}'/></a>
 						</span>
 					</li>
 				</jsp:attribute>

@@ -26,7 +26,7 @@
 			<parts:search pathMessageKey="navi.admin">
 				<jsp:attribute name="pathPart">
 					<li>
-						:: <a rel="path_menu" href="/admin/group">Group</a>
+						:: <a rel="path_menu" href="${relativeUrlGenerator.getAdminUrlByName('group')}">Group</a>
 					</li>
 				</jsp:attribute>
 			</parts:search>
@@ -91,7 +91,7 @@
 		      	<c:if test="${not empty command.adminResponse}">
 					<div class="adminResponse"><c:out value="${command.adminResponse}"/></div>
 			  	</c:if>
-				<form:form name="addgroup" action="/admin/group?action=createGroup">
+				<form:form name="addgroup" action="${relativeUrlGenerator.getAdminUrlByName('group')}?action=createGroup">
 					<fieldset class="fsInner" style="margin-bottom: 8px;">
 						<div class="fsRow">
 							<form:label cssClass="fsLabel" path="group.name">Group name</form:label>
