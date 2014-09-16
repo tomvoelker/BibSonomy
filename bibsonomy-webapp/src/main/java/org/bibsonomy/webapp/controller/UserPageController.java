@@ -39,10 +39,10 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 	
 	@Override
 	public View workOn(final UserResourceViewCommand command) {
-		initializeDidYouKnowMessageCommand(command);
-		
 		final String format = command.getFormat();
 		this.startTiming(format);
+		
+		initializeDidYouKnowMessageCommand(command);
 
 		final String groupingName = command.getRequestedUser();
 		
@@ -199,7 +199,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				return Views.USERDOCUMENTPAGE;
 			}
 			
-			//if user does not exist, trigger 404
+			// if user does not exist, trigger 404
 			if (!present(command.getUser().getName())) {
 				throw new ObjectNotFoundException(groupingName);
 			}
