@@ -12,18 +12,20 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
  * @author pba
+ * @author Nasim Nabavi
  */
-public class PostHistoryController extends SingleResourceListControllerWithTags implements MinimalisticController<ResourcePageCommand<BibTex>> {
+public class PostHistoryController <R extends Resource> extends SingleResourceListControllerWithTags implements MinimalisticController<ResourcePageCommand<R>> {
 
 	
 	@Override
-	public ResourcePageCommand<BibTex> instantiateCommand() {
-		return new ResourcePageCommand<BibTex>();
+	public ResourcePageCommand<R> instantiateCommand() {
+		return new ResourcePageCommand<R>();
 	}
 
 	@Override
@@ -37,37 +39,21 @@ public class PostHistoryController extends SingleResourceListControllerWithTags 
 		 */
 		final String longHash = command.getRequestedHash();
 		final String requUser = command.getRequestedUser();
+		final String resourceClass = command.getResourceClass();
 		final GroupingEntity groupingEntity = present(requUser) ? GroupingEntity.USER : GroupingEntity.ALL;
 		
 
 		final FilterEntity filter = FilterEntity.POSTS_HISTORY;
-//		Class<? extends Resource> resourceClass = null;
-		final Set<Class<? extends Resource>> resourceTypes = this.getListsToInitialize(format, command.getResourcetype());
 		Class<? extends Resource> resourceType = null;
-		if (resourceTypes.contains(BibTex.class)) {
+	//	if (resourceClass.equals("bibtex")) {
 			resourceType = BibTex.class;
-		} else {
-			resourceType = Bookmark.class;
-		}
-		//final Set<Class<? extends Resource>> resourceTypes = command.getResourcetype();
-	//	for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
-			
-	//	final Set<Class<? extends Resource>> resourceTypes = this.getListsToInitialize(format, command.getResourcetype());
-		//	final ListCommand<?> listCommand = command.getListCommand(resourceType);
-		this.setList(command, resourceType, groupingEntity, requUser, null, longHash, null, filter, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
-		this.postProcessAndSortList(command, resourceType);
-	//		resourceClass = resourceType;
-		//	this.setList(command, resourceClass, groupingEntity,requUser, null, longHash, null, filter, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
+	//	} else {
+	//		resourceType = Bookmark.class;
 	//	}
 		
-		//int size = resourceTypes.size();
-		
-		//resourceClass = BibTex.class;
-		//final ListCommand<?> listCommand = command.getListCommand(resourceClass);
-		//final int entriesPerPage = listCommand.getEntriesPerPage();
-		
-	//	this.setList(command, resourceClass, groupingEntity,requUser, null, longHash, null, filter, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
-		//this.postProcessAndSortList(command, resourceClass);
+		this.setList(command, resourceType, groupingEntity, requUser, null, longHash, null, filter, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
+		this.postProcessAndSortList(command, resourceType);
+
 		//redirect to HistoryBM.jspx or HistoryBib.jspx
 		if ("html".equals(format)) {
 			this.endTiming();	

@@ -17,7 +17,7 @@
      -->
 	
     <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
-    <jsp:directive.attribute name="postDiff" type="org.bibsonomy.model.Post" required="true"/>
+    <jsp:directive.attribute name="comparePost" type="org.bibsonomy.model.Post" required="true"/>
     
     
    		<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/jquery-ui.css" type="text/css" media="all" />
@@ -29,13 +29,13 @@
             <form:label cssClass="fsLabel" path="post.resource.entrytype" ><fmt:message key="post.resource.entrytype"/>* </form:label>
             <buttons:help message="post.resource.entrytype.help" cssClass="widehelp"/>
             <form:select multiple="false" path="post.resource.entrytype" cssClass="reqinput" tabindex="2" size="1" id="post.resource.entrytype" items="${mtl:getBibTeXEntryTypes()}" onchange="changeView();"/>
-            <form:select multiple="false" path="postDiff.resource.entrytype" cssClass="reqinput" tabindex="2" size="1" id="postDiff.resource.entrytype" items="${mtl:getBibTeXEntryTypes()}" onchange="changeView();"/>
+            <form:select multiple="false" path="comparePost.resource.entrytype" cssClass="reqinput" tabindex="2" size="1" id="postDiff.resource.entrytype" items="${mtl:getBibTeXEntryTypes()}" onchange="changeView();"/>
             <div class="dissError"><form:errors path="post.resource.entrytype" /></div>
 		</div>
 		
-		<bform:diffField path="post.resource.title" pathDiff="postDiff.resource.title" small="true" required="true" rows="2"/>
-		<bform:diffField path="post.resource.author" pathDiff="postDiff.resource.author" small="true" required="true" rows="2"/>
-		<bform:diffField path="post.resource.editor" pathDiff="postDiff.resource.editor" small="true" required="true" rows="2"/>
-		<bform:diffField path="post.resource.year" pathDiff="postDiff.resource.year" small="true" required="true" />
+		<bform:diffField path="post.resource.title" pathDiff="comparePost.resource.title" small="true" required="true" rows="2"/>
+		<bform:diffField path="post.resource.author" pathDiff="comparePost.resource.author" small="true" required="true" rows="2"/>
+		<bform:diffField path="post.resource.editor" pathDiff="comparePost.resource.editor" small="true" required="true" rows="2"/>
+		<bform:diffField path="post.resource.year" pathDiff="comparePost.resource.year" small="true" required="true" />
 
 </jsp:root>

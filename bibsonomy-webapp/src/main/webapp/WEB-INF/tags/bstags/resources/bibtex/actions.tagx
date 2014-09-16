@@ -10,7 +10,7 @@
 	<jsp:directive.attribute name="disableResourceLinks" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="enableHistory" type="java.lang.Boolean" required="false" />	
 		
-
+	<c:set var="rscType" value="bibtex" />
 
 	
 
@@ -117,9 +117,10 @@
 				<c:when test="${command.context.userLoggedIn and (loginUserName eq post.user.name)}">
 					<!-- user is post's owner -->
 					<fmt:message key="bibtex.actions.posthistory.title" var="postHistoryTitle" />
-					<a class="${buttonClasses}" href="/history/publication/${post.resource.intraHash}/${post.user.name}" title="${postHistoryTitle}">
-						<span class="glyphicon glyphicon-time"><!--  --></span>
-					</a>
+					<!-- we need to send the resource type, in order to call the appropriate view later (HistoryBM or HistoryBib) -->
+				 	<a class="${buttonClasses}" href="/history/${rscType}/${post.resource.intraHash}/${post.user.name}" title="${postHistoryTitle}">
+						<span class="glyphicon glyphicon-time"></span>
+				  	</a>
 				</c:when>
 				<c:otherwise>
 					<!-- For signed out users and those who do not own the post we always show the inactive history button -->

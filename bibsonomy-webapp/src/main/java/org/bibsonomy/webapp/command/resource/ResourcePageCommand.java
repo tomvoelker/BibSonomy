@@ -21,6 +21,8 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 	private String postOwner;
 	
 	private String intraHash;
+	
+	private String resourceClass; 
 
 	/**
 	 * @return the intraHash of a post
@@ -92,5 +94,19 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 	 */
 	public void setCopyUsersMap(Map<String, List<String>> copyUsersMap) {
 		this.copyUsersMap = copyUsersMap;
+	}
+
+	/**
+	 * @return the resourceClass
+	 */
+	public String getResourceClass() {
+		return this.resourceClass;
+	}
+
+	/**
+	 * @param resourceClass the resourceClass to set
+	 */
+	public void setResourceClass(String resourceClass) {
+		this.resourceClass = resourceClass;
 	}
 }

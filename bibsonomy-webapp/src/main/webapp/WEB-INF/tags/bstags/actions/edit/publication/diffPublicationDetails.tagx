@@ -10,7 +10,7 @@
 	xmlns:form="http://www.springframework.org/tags/form">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
-	<jsp:directive.attribute name="postDiff" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="comparePost" type="org.bibsonomy.model.Post" required="true"/>
 	<c:set var="maximized" value="${not command.context.loginUser.settings.layoutSettings.simpleInterface}" />
 	<bform:fieldset maximized="${maximized}" legendKey="post.resource.fields.detailed">
 		<jsp:attribute name="legendExt">
@@ -19,28 +19,28 @@
         
         <jsp:attribute name="content">
         
-        	<bform:diffField path="post.resource.booktitle" pathDiff="postDiff.resource.booktitle" small="true" required="true" />
-        	<bform:diffField path="post.resource.journal" pathDiff="postDiff.resource.journal" small="true" required="true" />
-        	<bform:diffField path="post.resource.volume" pathDiff="postDiff.resource.volume" small="true" required="true" />
-        	<bform:diffField path="post.resource.number" pathDiff="postDiff.resource.number" small="true" required="true" />
-        	<bform:diffField path="post.resource.pages" pathDiff="postDiff.resource.pages" small="true" required="true" />
-        	<bform:diffField path="post.resource.month" pathDiff="postDiff.resource.month" small="true" required="true" />
-        	<bform:diffField path="post.resource.day" pathDiff="postDiff.resource.day" small="true" required="true" />
-        	<bform:diffField path="post.resource.publisher" pathDiff="postDiff.resource.publisher" small="true" required="true" />
-        	<bform:diffField path="post.resource.address" pathDiff="postDiff.resource.address" small="true" required="true" />
-        	<bform:diffField path="post.resource.edition" pathDiff="postDiff.resource.edition" small="true" required="true" />
-        	<bform:diffField path="post.resource.chapter" pathDiff="postDiff.resource.chapter" small="true" required="true" />
-        	<bform:diffField path="post.resource.url" pathDiff="postDiff.resource.url" small="true" required="true" />
-        	<bform:diffField path="post.resource.key" pathDiff="postDiff.resource.key" small="true" required="true" />
-        	<bform:diffField path="post.resource.type" pathDiff="postDiff.resource.type" small="true" required="true" />
-        	<bform:diffField path="post.resource.howpublished" pathDiff="postDiff.resource.howpublished" small="true" required="true" />
-        	<bform:diffField path="post.resource.institution" pathDiff="postDiff.resource.institution" small="true" required="true" />
-        	<bform:diffField path="post.resource.organization" pathDiff="postDiff.resource.organization" small="true" required="true" />
-        	<bform:diffField path="post.resource.school" pathDiff="postDiff.resource.school" small="true" required="true" />
-        	<bform:diffField path="post.resource.series" pathDiff="postDiff.resource.series" small="true" required="true" />
-        	<bform:diffField path="post.resource.crossref" pathDiff="postDiff.resource.crossref" small="true" required="true" />
-        	<bform:diffField path="post.resource.misc" pathDiff="postDiff.resource.misc" small="true" required="true" />
-        	<bform:diffField path="post.resource.abstract" pathDiff="postDiff.resource.abstract" small="true" required="true" rows="3"/>
+        	<bform:diffField path="post.resource.booktitle" pathDiff="comparePost.resource.booktitle" small="true" required="true" />
+        	<bform:diffField path="post.resource.journal" pathDiff="comparePost.resource.journal" small="true" required="true" />
+        	<bform:diffField path="post.resource.volume" pathDiff="comparePost.resource.volume" small="true" required="true" />
+        	<bform:diffField path="post.resource.number" pathDiff="comparePost.resource.number" small="true" required="true" />
+        	<bform:diffField path="post.resource.pages" pathDiff="comparePost.resource.pages" small="true" required="true" />
+        	<bform:diffField path="post.resource.month" pathDiff="comparePost.resource.month" small="true" required="true" />
+        	<bform:diffField path="post.resource.day" pathDiff="comparePost.resource.day" small="true" required="true" />
+        	<bform:diffField path="post.resource.publisher" pathDiff="comparePost.resource.publisher" small="true" required="true" />
+        	<bform:diffField path="post.resource.address" pathDiff="comparePost.resource.address" small="true" required="true" />
+        	<bform:diffField path="post.resource.edition" pathDiff="comparePost.resource.edition" small="true" required="true" />
+        	<bform:diffField path="post.resource.chapter" pathDiff="comparePost.resource.chapter" small="true" required="true" />
+        	<bform:diffField path="post.resource.url" pathDiff="comparePost.resource.url" small="true" required="true" />
+        	<bform:diffField path="post.resource.key" pathDiff="comparePost.resource.key" small="true" required="true" />
+        	<bform:diffField path="post.resource.type" pathDiff="comparePost.resource.type" small="true" required="true" />
+        	<bform:diffField path="post.resource.howpublished" pathDiff="comparePost.resource.howpublished" small="true" required="true" />
+        	<bform:diffField path="post.resource.institution" pathDiff="comparePost.resource.institution" small="true" required="true" />
+        	<bform:diffField path="post.resource.organization" pathDiff="comparePost.resource.organization" small="true" required="true" />
+        	<bform:diffField path="post.resource.school" pathDiff="comparePost.resource.school" small="true" required="true" />
+        	<bform:diffField path="post.resource.series" pathDiff="comparePost.resource.series" small="true" required="true" />
+        	<bform:diffField path="post.resource.crossref" pathDiff="comparePost.resource.crossref" small="true" required="true" />
+        	<bform:diffField path="post.resource.misc" pathDiff="comparePost.resource.misc" small="true" required="true" />
+        	<bform:diffField path="post.resource.abstract" pathDiff="comparePost.resource.abstract" small="true" required="true" rows="3"/>
         	
         	<!-- diff button -->
 	    	<div style="cursor:pointer; float:left; margin-top: 2px; margin-bottom: 2px; margin-left: 5px; margin-right: 5px">
@@ -52,10 +52,10 @@
       <bform:fieldset maximized="${maximized}" legendKey="post.resource.fields.comments" >
 	     <jsp:attribute name="content">
          
-			<bform:diffField path="post.description" pathDiff="postDiff.description" small="true" required="true" rows="3"/>
-			<bform:diffField path="post.resource.privnote" pathDiff="postDiff.resource.privnote" small="true" required="true" rows="3"/>
-            <bform:diffField path="post.resource.annote" pathDiff="postDiff.resource.annote" small="true" required="true" />
-        	<bform:diffField path="post.resource.note" pathDiff="postDiff.resource.note" small="true" required="true" />
+			<bform:diffField path="post.description" pathDiff="comparePost.description" small="true" required="true" rows="3"/>
+			<bform:diffField path="post.resource.privnote" pathDiff="comparePost.resource.privnote" small="true" required="true" rows="3"/>
+            <bform:diffField path="post.resource.annote" pathDiff="comparePost.resource.annote" small="true" required="true" />
+        	<bform:diffField path="post.resource.note" pathDiff="comparePost.resource.note" small="true" required="true" />
 
     	</jsp:attribute>
 	</bform:fieldset>

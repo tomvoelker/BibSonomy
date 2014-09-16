@@ -11,16 +11,26 @@ $(document).ready(function()
 });
 
 function diff() {
+	var dmp = new diff_match_patch();
+	
 	var icon_copy = document.getElementById("icon_copy");
 	var icon_copy_greyed = document.getElementById("icon_copy_greyed");
 	for (var index=0; index<pubFields.length; index++) {
-		//text input
-		var post = $(pubFields[index] == "description"?"#post\\."+pubFields[index]:"#post\\.resource\\."+pubFields[index]).val().split(" ");
-		var comparePost =  $(pubFields[index] == "description"?"#tmppost\\."+pubFields[index]:"#tmppost\\.resource\\."+pubFields[index]).val().split(" ");
-			
 		var changed = false;
-		
-		//result
+		var comparePostValue = "";
+		//text input
+		var post = $(pubFields[index] == "description"?"#post\\."+pubFields[index]:"#post\\.resource\\."+pubFields[index]).val();
+		var comparePost =  $(pubFields[index] == "description"?"#tmppost\\."+pubFields[index]:"#tmppost\\.resource\\."+pubFields[index]).val();
+		if (post!=comparePost){
+			comparePostValue = dmp.diff_main(comparePost,post);
+			dmp.diff_cleanupSemantic(comparePostValue);
+			comparePostValue = dmp.diff_prettyHtml(comparePostValue);
+			changed = true;
+		}
+		else{
+			comparePostValue = comparePost;
+		}
+		/*//result
 		var comparePostValue = "";
 		//number of words of each field
 		var m = post.length;
@@ -63,7 +73,9 @@ function diff() {
 		}while(j<n){
 			comparePostValue+=('<span class="fsDiffAddColor">' + comparePost[j++] + '</span>'+ " ");
 			changed = true;
-		}document.getElementById(pubFields[index] == "description"?"comparePost."+pubFields[index]:"comparePost.resource."+pubFields[index]).innerHTML= comparePostValue;
+		}
+		*/
+		document.getElementById(pubFields[index] == "description"?"comparePost."+pubFields[index]:"comparePost.resource."+pubFields[index]).innerHTML= comparePostValue;
 		if(changed){
 			changeButtonImg(icon_copy, document.getElementById(pubFields[index] == "description"?"post."+pubFields[index]+"Img":"post.resource."+pubFields[index]+"Img"));
 		}else {

@@ -16,6 +16,9 @@
 	<jsp:directive.attribute name="noHelp" type="java.lang.Boolean" required="false" description="Shall the fly-by help be shown?"/>	
 	<jsp:directive.attribute name="rows" type="java.lang.Integer" required="false" description="The number of rows. Default is 3."/>
 		 
+	<script type="text/javascript" src="${resdir}/javascript/diffPublication.js"><!-- keep me --></script>
+	<script type="text/javascript" src="${resdir}/javascript/diff_match_patch.js"><!-- keep me --></script>		 
+
 	<div class="fsRow" style="min-height:auto">
 		<!-- label -->
 		<form:label cssClass="fsLabel" path="${path}"><fmt:message key="${path}"/>${required ? '* ' : ''}</form:label>

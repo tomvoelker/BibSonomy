@@ -58,7 +58,7 @@
 			<list>
 				<bean class="org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByResourceSearch" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesWithDiscussions" parent="bookmarkChainElement" />
-				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByParent" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByParent" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesForHomepage" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesPopular" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesForUser" parent="bookmarkChainElement" />
