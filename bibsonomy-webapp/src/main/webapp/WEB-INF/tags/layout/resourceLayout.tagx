@@ -167,14 +167,11 @@
 			+ main content (resource lists)
 			+-->
 		<jsp:attribute name="content">
-		
-					<c:if test="${not empty content}">
-						<div id="innercontent" style="margin-left: 8px;">
-							<jsp:invoke fragment="content" />
-						</div>
-					</c:if>
-					
-		
+			<c:if test="${not empty content}">
+				<div id="innercontent" style="margin-left: 8px;">
+					<jsp:invoke fragment="content" />
+				</div>
+			</c:if>
 			<jsp:invoke fragment="discussion" />
 			<c:if test="${not empty discussion}">
 				<parts:postHeader 
@@ -205,7 +202,6 @@
 							<goldstandardpublication:detailsclean otherPosts="${command.bibtex.list}" post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
 						</c:when>
 						<c:otherwise>
-						
 							<goldstandardpublication:details otherPosts="${command.bibtex.list}" post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
 						</c:otherwise>
 					</c:choose>

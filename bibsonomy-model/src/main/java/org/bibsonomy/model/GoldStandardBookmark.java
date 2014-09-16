@@ -163,7 +163,7 @@ public class GoldStandardBookmark extends Bookmark implements GoldStandard<Bookm
 	}
 
 	@Override
-	public Set<Bookmark> getReferencePartOfThisPublication() {
+	public Set<Bookmark> getSubGoldStandards() {
 		// TODO Auto-generated method stub
 		return null;
 	}

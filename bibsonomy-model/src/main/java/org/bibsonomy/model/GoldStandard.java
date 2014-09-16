@@ -97,7 +97,7 @@ public interface GoldStandard<R extends Resource> {
 	 */
 	public boolean removeAllFromReferencedBy(final Set<? extends R> resources);
 
-	public Set<R> getReferencePartOfThisPublication();
+	public Set<R> getSubGoldStandards();
 
 	public boolean addToReferencePartOfThisPublication(final R resource);
 

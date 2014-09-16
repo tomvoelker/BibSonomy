@@ -1,8 +1,12 @@
 package org.bibsonomy.model.enums;
 
 public enum RelationsEnum {
-	REFERENCE(0), PART_OF(1);
+	REFERENCE(0),
+	
+	PART_OF(1);
+	
 	private int value;
+	
 	private final String [] keys = {"Reference", "Part of"};
 	public int getIndex(String key) {
 		int i= 0;
@@ -12,14 +16,8 @@ public enum RelationsEnum {
 		}
 		return -1;
 	}
+	
 	private RelationsEnum(int value) {
-		this.setValue(value);	}
-
-	public int getValue() {
-		return value;
-	}
-
-	public void setValue(int value) {
 		this.value = value;
 	}
 }

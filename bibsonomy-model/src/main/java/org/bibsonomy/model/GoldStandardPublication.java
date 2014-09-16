@@ -120,7 +120,7 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	 * @see org.bibsonomy.model.GoldStandard#getReferencePartOfThisPublication()
 	 */
 	@Override
-	public Set<BibTex> getReferencePartOfThisPublication() {
+	public Set<BibTex> getSubGoldStandards() {
 		this.lacyLoadreferencePartOfThisPublication();
 		return Collections.unmodifiableSet(this.referencePartOfThisPublication);
 	}

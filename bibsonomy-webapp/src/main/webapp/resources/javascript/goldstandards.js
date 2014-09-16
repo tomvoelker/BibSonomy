@@ -14,23 +14,23 @@ $(function() {
 	if ($("li.reference").length == 1) { // 1 because template for list item is in the list :)
 		$("#gold_references").hide();
 	}
+	
+	$('.relationMenu').click(function() {
+		var relationKind = $(this).data('relation');
+		if ($('.reference_menu').length > 0 || $('.new_reference_menu').length >0 ) {
+			removeRelationMenu();
+		} else {
+			// display list if hidden
+			$("#gold_references").show();
+			$("#gold_referenceThisPublicationIsPublishedIn").show();
+			$("#gold_referencedBy").show();
+			$("#gold_referencePartOfThisPublication").show();
+			addRelationMenu($(this), relationKind);
+		}
+	});
 });
 
-function editReferences() {
-	// TODO replace menu text
-	if ($('.reference_menu').length > 0 || $('.new_reference_menu').length >0 ) {
-		removeReferenceMenu();
-	} else {
-		// display list if hidden
-		$("#gold_references").show();
-		$("#gold_referenceThisPublicationIsPublishedIn").show();
-		$("#gold_referencedBy").show();
-		$("#gold_referencePartOfThisPublication").show();
-		addReferenceMenu();
-	}
-}
-
-function addReferenceMenu() {
+function addRelationMenu(link, relationKind) {
 	$("li.reference").each(function() {
 		// display delete link
 		var deleteLink = $('<span class="reference_menu"><a href="#">' + getString('post.actions.edit.gold.references.delete') + '</a></span>');
@@ -52,15 +52,8 @@ function addReferenceMenu() {
 	});
 	
 	// display function for searching gold standards
-	var addForm = $('<form class="reference_menu"><h3>'+getString('post.actions.edit.gold.references.addcitation')+'</h3></form>');
-	var relationType = [getString('post.actions.edit.gold.references.ref'),
-	                    getString('post.actions.edit.gold.references.partof')
-	                    ];
-	var relationInput = $('<select id="relation" />');
-	for(var val in relationType) {
-		    $('<option />', {value: relationType[val], text: relationType[val]}).appendTo(relationInput);
-		}
-	addForm.append($('<label>'+getString('post.actions.edit.gold.references.relation')+': </label>'));
+	var addForm = $('<form class="reference_menu"><h3>' + getString('post.actions.edit.gold.references.addcitation')+'</h3></form>');
+	var relationInput = $('<input type="hidden" id="relation" name="relation" />').attr('value', relationKind);
 	addForm.append(relationInput);
 	
 	addForm.append($('<label>\n' + getString('post.actions.edit.gold.references.publication') + ': </label>'));	
@@ -109,22 +102,25 @@ function addReferenceMenu() {
 	};
 	
 	addForm.hide();
-	$("#gold_refs").append(addForm);
+	var menu = link.closest('.newMenu');
+	
+	menu.after(addForm);
+	
 	addForm.fadeIn(FADE_DURATION);
 	$("#addButon").click(function(){
-		RELATION = document.getElementById("relation").value;
-		addReferenceNRelation(REFHASH, RELATION);
+		RELATION = $(this).parent().find('[name="relation"]').attr('value');
+		alert(RELATION);
+		addRelation(REFHASH, RELATION);
 	});
 }
 
-function removeReferenceMenu() {
+function removeRelationMenu() {
 	$('.reference_menu').fadeOut(FADE_DURATION, function() {
 		$(this).remove();
 	});
 	$('.new_reference_menu').fadeOut(FADE_DURATION, function() {
 		$(this).remove();
 	});
-	
 }
 
 function deleteReference() {
@@ -149,7 +145,7 @@ function deleteReference() {
 	return false;
 }
 
-function addReferenceNRelation(reference, relation) {
+function addRelation(reference, relation) {
 	var referenceHash = reference.value;
 	$.ajax({
 		url: GOLD_REFERENCE_URL,
