@@ -32,7 +32,7 @@ public class DeleteReferencesStrategy extends AbstractDeleteStrategy {
 	@Override
 	protected boolean delete() {
 		final Set<String> references = this.getRenderer().parseReferences(this.doc);
-		this.getLogic().deleteReferences(this.hash, references, relation);
+		this.getLogic().deleteRelations(this.hash, references, relation);
 
 		// no exception => delete successful
 		return true;

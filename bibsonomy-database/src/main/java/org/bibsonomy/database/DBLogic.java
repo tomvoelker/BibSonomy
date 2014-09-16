@@ -2520,7 +2520,7 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.GoldStandardPostLogicInterface#createRelation(java.lang.String, java.util.Set)
 	 */
 	@Override
-	public void createRelation(final String postHash, final Set<String> references, final RelationsEnum relation) {
+	public void createRelations(final String postHash, final Set<String> references, final RelationsEnum relation) {
 		this.permissionDBManager.ensureAdminAccess(loginUser); // only admins can create references
 
 		final DBSession session = this.openSession();
@@ -2536,7 +2536,7 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.GoldStandardPostLogicInterface#deleteReferences(java.lang.String, java.util.Set)
 	 */
 	@Override
-	public void deleteReferences(final String postHash, final Set<String> references, final RelationsEnum relation) {
+	public void deleteRelations(final String postHash, final Set<String> references, final RelationsEnum relation) {
 		this.permissionDBManager.ensureAdminAccess(loginUser); // only admins can delete references
 
 		final DBSession session = this.openSession();

@@ -939,12 +939,12 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public void createRelation(final String postHash, final Set<String> references, final RelationsEnum relation) {
+	public void createRelations(final String postHash, final Set<String> references, final RelationsEnum relation) {
 		// TODO Auto-generated method stub	
 	}
 
 	@Override
-	public void deleteReferences(final String postHash, final Set<String> references, final RelationsEnum relation) {
+	public void deleteRelations(final String postHash, final Set<String> references, final RelationsEnum relation) {
 		// TODO Auto-generated method stub
 	}
 

@@ -39,20 +39,20 @@ public interface GoldStandardPostLogicInterface extends PostLogicInterface {
 	public static final String GOLD_STANDARD_USER_NAME = "";
 
 	/**
-	 * adds references to a gold standard resource
+	 * adds relations to a gold standard resource
 	 * 
 	 * @param postHash   the hash of the gold standard post
 	 * @param references the references to add (interhashes)
 	 * @param relation  the relation between a post and its reference
 	 */
-	public void createRelation(final String postHash, final Set<String> references, final RelationsEnum relation);
+	public void createRelations(final String postHash, final Set<String> references, final RelationsEnum relation);
 
 	/**
-	 * deletes references from a gold stanard resource
+	 * deletes relations from a gold stanard resource
 	 * 
 	 * @param postHash	 the hash of the gold standard post
 	 * @param references the references to delete (interhashes)
 	 * @param relation  the relation between a post and its reference
 	 */
-	public void deleteReferences(final String postHash, final Set<String> references, final RelationsEnum relation);
+	public void deleteRelations(final String postHash, final Set<String> references, final RelationsEnum relation);
 }
