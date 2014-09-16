@@ -30,8 +30,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
@@ -40,17 +43,17 @@ import org.bibsonomy.util.WebUtils;
  * @author rja
  *
  */
-public class ScienceDirectScraper extends SimpleGenericURLScraper {
-	private static final String SITE_NAME = "ScienceDirect";
-
-	private static final String SITE_URL = "http://www.sciencedirect.com/";
-
-	private static final String info = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
-
+public class ScienceDirectScraper extends GenericBibTeXURLScraper {
+	private static final Log log = LogFactory.getLog(ScienceDirectScraper.class);
+	
 	private static final String SCIENCE_CITATION_HOST     = "sciencedirect.com";
+	
+	private static final String SITE_NAME = "ScienceDirect";
+	private static final String SITE_URL = "http://www." + SCIENCE_CITATION_HOST;
+	private static final String info = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
 	private static final String SCIENCE_CITATION_PATH     = "/science";
 
-	private static final String end = "zone=exportDropDown&citation-type=BIBTEX&export=Export";
+	private static final String end = "zone=exportDropDown&citation-type=BIBTEX&export=Export&format=cite-abs";
 	private static final Pattern PATTERN_FORM = Pattern.compile("<form name=\"exportCite\" method=post action=(.*) target=\"\">");
 	
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SCIENCE_CITATION_HOST), Pattern.compile(SCIENCE_CITATION_PATH + ".*")));
@@ -81,17 +84,18 @@ public class ScienceDirectScraper extends SimpleGenericURLScraper {
 
 
 	@Override
-	public String getBibTeXURL(URL url) {
+	public String getDownloadURL(URL url) throws ScrapingException {
 		String download_link = "";
 		try{
-		Matcher m = PATTERN_FORM.matcher(WebUtils.getContentAsString(url));
-		if(m.find()){
-			download_link = m.group(1);
+			Matcher m = PATTERN_FORM.matcher(WebUtils.getContentAsString(url));
+			if (m.find()){
+				download_link = m.group(1);
+			}
+			return "http://" + url.getHost().toString() + download_link + end;
+		} catch(IOException e) {
+			log.error("error while getting download url for " + url, e);
 		}
-		}catch(IOException e){
-			e.printStackTrace();
-		}
-		return "http://" + url.getHost().toString() + download_link + end;
+		return null;
 	}
 
 }

@@ -252,22 +252,22 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * bibtexKey
 	 * 
 	 * @param loginUser
-	 *            TODO
 	 * @param bibtexKey
 	 * @param requestedUserName
 	 * @param groupId
+	 * @param visibleGroupIDs
 	 * @param limit
 	 * @param offset
 	 * @param systemTags
 	 * @param session
 	 *            a database session
-	 * 
 	 * @return list of publication posts
 	 */
-	public List<Post<BibTex>> getPostsByBibTeXKey(final String loginUser, final String bibtexKey, final String requestedUserName, final int groupId, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<BibTex>> getPostsByBibTeXKey(final String loginUser, final String bibtexKey, final String requestedUserName, final int groupId, List<Integer> visibleGroupIDs, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		final BibTexParam param = this.createParam(loginUser, requestedUserName, limit, offset);
 		param.setBibtexKey(bibtexKey);
 		param.setGroupId(groupId);
+		param.setGroups(visibleGroupIDs);
 		param.addAllToSystemTags(systemTags);
 
 		return this.postList("getBibTexByKey", param, session);

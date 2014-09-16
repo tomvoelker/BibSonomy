@@ -1,0 +1,70 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:spring="http://www.springframework.org/tags">
+	
+	<jsp:directive.attribute name="headerLogo" fragment="true" required="false"/>
+	<jsp:directive.attribute name="headerLogoClass" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="headerContent" fragment="true" required="false"/>
+	<jsp:directive.attribute name="pageOptions" fragment="true" required="false"/>
+	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
+	<jsp:directive.attribute name="showPageOptions" type="java.lang.Boolean" required="false"/>
+	
+	<!--+
+		| panel header element: [headerLogo][headerContent]
+		+-->
+	<div id="panelheader">
+		<!-- logo for the page content -->
+		<div class="headerLogo ${not empty headerLogoClass ? headerLogoClass : ''}">
+			<!-- keep me -->
+			<c:if test="${not empty headerLogo}">
+				<jsp:invoke fragment="headerLogo"/>
+			</c:if>
+		</div>
+		
+		<!-- page options, customPageOptions -->
+		<c:choose>		
+			<c:when test="${showPageOptions and not empty pageOptions}">
+				<div id="pageConfig" class="config">
+					<div id="pageOptions" class="pageOptions">
+						<jsp:invoke fragment="pageOptions"/>
+					</div>
+				</div>
+			</c:when>
+			<c:otherwise>
+				<c:choose>
+					<c:when test="${not empty customPageOptions}">
+						<div id="pageOptions" class="customConfig">
+							<jsp:invoke fragment="customPageOptions"/>
+						</div>
+					</c:when>
+					<c:otherwise>
+						<div id="pageConfig" class="config disabled">
+							<!-- leave me -->
+						</div>
+					</c:otherwise>
+				</c:choose>
+			</c:otherwise>
+		</c:choose>
+		
+		
+		<!-- header for the page content -->
+		<c:if test="${not empty headerContent}">
+			<h2 class="header">
+				<jsp:invoke fragment="headerContent"/>
+			</h2>
+		</c:if>
+	</div>
+		
+</jsp:root>
+
+
+
+
+
+
+

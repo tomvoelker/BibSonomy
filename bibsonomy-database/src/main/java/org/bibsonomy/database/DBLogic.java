@@ -627,9 +627,7 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		// check allowed start-/end-values
-		if (GroupingEntity.ALL.equals(grouping) && !present(tags) && !present(search)) {
-			this.permissionDBManager.checkStartEnd(loginUser, start, end, "post");
-		}
+		this.permissionDBManager.checkStartEnd(loginUser, start, end, "post");
 		
 		this.handleAdminFilters(filter);
 		

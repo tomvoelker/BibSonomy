@@ -33,7 +33,7 @@
 		
 		<!-- title of the publication -->
 		<h2 id="gold_title" data-interhash="${goldstandard.interHash}">
-			<a href="/bibtex/${goldstandard.interHash}" itemprop="name"><c:out value="${mtl:cleanBibtex(goldstandard.title)}"/></a>
+			<a href="${relativeUrlGenerator.getGoldstandardUrlByInterHash(goldstandard.interHash)}" itemprop="name"><c:out value="${mtl:cleanBibtex(goldstandard.title)}"/></a>
 		</h2>
 		<bib:desc publication="${post.resource}"/>
 		
@@ -86,8 +86,8 @@
 			</div>
 			<div id="gold_abstract_tab">
 				<c:choose>
-					<c:when test="${not empty goldstandard.abstract}">
-						<div id="gold_abstract" itemprop="about"><c:out value="${mtl:cleanBibtex(goldstandard.abstract)}" /></div>
+					<c:when test="${not empty goldstandard['abstract']}">
+						<div id="gold_abstract" itemprop="about"><c:out value="${mtl:cleanBibtex(goldstandard['abstract'])}" /></div>
 					</c:when>
 					<c:otherwise>
 						<fmt:message key="goldstandard.resource.info.noAbstract"/>

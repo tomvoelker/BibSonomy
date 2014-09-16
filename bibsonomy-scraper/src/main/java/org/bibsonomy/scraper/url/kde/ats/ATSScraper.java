@@ -35,16 +35,14 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.RisToBibtexConverter;
-import org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper;
+import org.bibsonomy.scraper.generic.GenericRISURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * @author clemens
  */
-
-public class ATSScraper extends PostprocessingGenericURLScraper {
-	private final Log log = LogFactory.getLog(ATSScraper.class);
+public class ATSScraper extends GenericRISURLScraper {
+	private static final Log log = LogFactory.getLog(ATSScraper.class);
 	
 	private static final String SITE_NAME = "American Thoracic Society Journals";
 	private static final String SITE_URL = "http://www.atsjournals.org/";
@@ -84,39 +82,33 @@ public class ATSScraper extends PostprocessingGenericURLScraper {
 	}
 
 	private static String abstractParser(URL url){
-		try{
-		String cookie = WebUtils.getCookies(url);
-		Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(url.toString(),cookie));
-		if(m.find())
-			return m.group(1);
-		}catch(Exception e){
-			e.printStackTrace();
+		try {
+			final String cookie = WebUtils.getCookies(url);
+			final Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(url.toString(),cookie));
+			if (m.find()) {
+				return m.group(1);
+			}
+		} catch (Exception e) {
+			log.error("error while getting abstract " + url, e);
 		}
 		return null;
 	}
-	@Override
-	protected String postProcessScrapingResult(ScrapingContext sc, String result) {
-		try{
-			RisToBibtexConverter ris = new RisToBibtexConverter();
-			return BibTexUtils.addFieldIfNotContained(ris.risToBibtex(result),"abstract",abstractParser(sc.getUrl()));
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return null;
-	}
+	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.SimpleGenericURLScraper#getBibTeXURL(java.net.URL)
+	 * @see org.bibsonomy.scraper.generic.RISGenericURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
 	 */
 	@Override
-	public String getBibTeXURL(URL url) {
+	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
+		return BibTexUtils.addFieldIfNotContained(bibtex,"abstract",abstractParser(scrapingContext.getUrl()));
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.RISGenericURLScraper#getRISURL(java.net.URL)
+	 */
+	@Override
+	protected String getDownloadURL(URL url) {
 		final String id = extractId(url.toString());
-		try {
-			return BIBTEX_URL + id;
-
-		} catch (final Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}	
+		return BIBTEX_URL + id;
+	}
 }
 

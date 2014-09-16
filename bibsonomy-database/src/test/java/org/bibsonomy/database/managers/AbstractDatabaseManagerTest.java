@@ -23,6 +23,7 @@ import org.junit.BeforeClass;
 public abstract class AbstractDatabaseManagerTest extends AbstractDatabaseTest {
 	// TODO: move to a TestUtilClass
 	protected static final int PUBLIC_GROUP_ID = GroupID.PUBLIC.getId();
+	protected static final int PUBLIC_GROUP_ID_SPAM = GroupID.PUBLIC_SPAM.getId();
 	protected static final int PRIVATE_GROUP_ID = GroupID.PRIVATE.getId();
 	protected static final int FRIENDS_GROUP_ID = GroupID.FRIENDS.getId();
 	protected static final int INVALID_GROUP_ID = GroupID.INVALID.getId();

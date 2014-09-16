@@ -22,7 +22,7 @@ public class GetBibtexByKey extends ResourceChainElement<BibTex, BibTexParam> {
 
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		return ((BibTexDatabaseManager) this.databaseManager).getPostsByBibTeXKey(param.getUserName(), param.getBibtexKey(), param.getRequestedUserName(), param.getGroupId(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
+		return ((BibTexDatabaseManager) this.databaseManager).getPostsByBibTeXKey(param.getUserName(), param.getBibtexKey(), param.getRequestedUserName(), param.getGroupId(), param.getGroups(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 	}
 
 	@Override

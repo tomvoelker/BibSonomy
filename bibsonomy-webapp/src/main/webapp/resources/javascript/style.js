@@ -26,7 +26,7 @@ $(function() {
  * @return
  */
 function init_tagbox(tagbox, show, sort, minfreq) {
-	var styleList = $("<ul class='floatul'></ul>")
+	var styleList = $("<ul class='floatul list-inline'></ul>")
 	.append(getStyleItem(tagbox, styleList, style_sort[sort], style_sort))
 	.append(getStyleItem(tagbox, styleList, style_show[show], style_show));
 

@@ -23,6 +23,13 @@
 
 package org.bibsonomy.scraper.url.kde.liebert;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.net.URL;
+
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -57,5 +64,24 @@ public class LiebertScraperTest {
 	@Test
 	public void url3TestRun(){
 		UnitTestRunner.runSingleTest("url_248");
+	}
+	@Test
+	public void testCitedby() throws Exception {
+		final ScrapingContext sc = new ScrapingContext(new URL("http://www.liebertonline.com/doi/abs/10.1089/152308604773934350"));
+		
+		LiebertScraper ls = new LiebertScraper();
+		assertTrue(ls.scrape(sc));
+		
+		assertTrue(ls.scrapeCitedby(sc));
+		
+		final String cby = sc.getCitedBy();
+		
+		assertNotNull(cby);
+		
+		assertTrue(cby.length() > 100);
+		
+		assertEquals("<div class=\"citedByEntry\"><div class=\"art_title\">RGD-conjugated triarylmethyl radical as probe".trim(), cby.substring(0, 95).trim());
+		
+		assertTrue(cby.contains("Benoît Driesschaert"));
 	}
 }
