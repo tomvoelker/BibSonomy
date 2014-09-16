@@ -13,22 +13,23 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	
+	<fmt:message var="headline" key="page.groupDocument.headline" />
 	<layout:resourceLayout 
 		pageTitle="${command.pageTitle}" 
 		command="${command}" 
 		requPath="${requPath}" 
 		disableResourcetypeSelection="${true}"
-		minimizedContentWidth="${true}">
+		minimizedContentWidth="${true}"
+		headline="${headline}">
 		
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.documents" formAction="/group/${mtl:encodeURI(command.requestedGroup)}" formInputName="tag" formInputValue="${command.requestedTags}">
+			<parts:search pathMessageKey="navi.documents" formAction="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="formExtra">
 					<input type="hidden" name="filter" value="JUST_PDF"/>
 				</jsp:attribute>
 				<jsp:attribute name="pathPart">
 					<li>
-						:: <a href="/group/${mtl:encodeURI(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
+						:: <a href="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
 					</li>
 				</jsp:attribute>
 			</parts:search>	

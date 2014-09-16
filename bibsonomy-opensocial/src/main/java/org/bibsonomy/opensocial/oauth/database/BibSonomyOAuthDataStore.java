@@ -60,8 +60,16 @@ public class BibSonomyOAuthDataStore implements OAuthDataStore {
 	/** singleton pattern */
 	private static BibSonomyOAuthDataStore instance;
 	
-	@Inject
-	public BibSonomyOAuthDataStore(@Named("shindig.oauth.base-url") final String baseUrl) {
+	public static BibSonomyOAuthDataStore getInstance() {
+		if (instance == null) {
+			instance = new BibSonomyOAuthDataStore();
+		}
+		
+		return instance;
+	}
+	
+	
+	public BibSonomyOAuthDataStore(final String baseUrl) {
 		this.serviceProvider = new OAuthServiceProvider(baseUrl + "requestToken", baseUrl + "authorize", baseUrl + "accessToken");
 	}
 	
@@ -69,13 +77,7 @@ public class BibSonomyOAuthDataStore implements OAuthDataStore {
 		this.serviceProvider = new OAuthServiceProvider(OAUTH_BASEURL+ "requestToken", OAUTH_BASEURL + "authorize", OAUTH_BASEURL + "accessToken");
 	}
 
-	public static BibSonomyOAuthDataStore getInstance() {
-		if (instance==null) {
-			instance = new BibSonomyOAuthDataStore();
-		};
-		
-		return instance;
-	}
+	
 
 	//------------------------------------------------------------------------
 	// OAuthDataStore interface

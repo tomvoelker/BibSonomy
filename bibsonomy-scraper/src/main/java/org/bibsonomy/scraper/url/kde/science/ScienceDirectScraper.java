@@ -53,7 +53,7 @@ public class ScienceDirectScraper extends GenericBibTeXURLScraper {
 	private static final String info = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
 	private static final String SCIENCE_CITATION_PATH     = "/science";
 
-	private static final String end = "zone=exportDropDown&citation-type=BIBTEX&export=Export";
+	private static final String end = "zone=exportDropDown&citation-type=BIBTEX&export=Export&format=cite-abs";
 	private static final Pattern PATTERN_FORM = Pattern.compile("<form name=\"exportCite\" method=post action=(.*) target=\"\">");
 	
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SCIENCE_CITATION_HOST), Pattern.compile(SCIENCE_CITATION_PATH + ".*")));

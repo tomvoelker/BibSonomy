@@ -179,7 +179,6 @@ public class UsernameSecurityContextRepository implements SecurityContextReposit
 					final String loginUsername = user.getUsername();
 					final HttpSession session = request.getSession(true);
 					session.setAttribute(ATTRIBUTE_LOGIN_USER_NAME, loginUsername);
-					session.setAttribute("test", loginUsername);
 					if (principal instanceof RemoteOnlyUserDetails) {
 						// this happens in cases when SAML credentials are sent that could not be mapped to a local user
 						//  -> remember credentials here so they can be handled after a redirect to the entry controller

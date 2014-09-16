@@ -20,6 +20,10 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+.glyphicon-bookmark:before {
+    content: @fa-var-bookmark;   
+}
+
 .glyphicon-asterisk:before {
     content: @fa-var-asterisk;
 }
@@ -90,6 +94,13 @@
 
 .socicon-google:before {
 	content: @fa-var-google-plus;
+}
+
+
+ul.checklist {
+	list-style: none;
+	padding: 0;
+	margin: 0;
 }
 
 .label-grey {
@@ -164,14 +175,16 @@ ul.dropdown-menu.list-options > li > span {
 
 .container.main {
 /* 	padding-top: 20px; */
-	padding: 20px 30px;
+	padding: 20px 30px 0 30px;
 	border-top: none;
 /*	margin-bottom: 30px; */
 	-webkit-box-shadow: 2px 2px 30px 6px @border-color;
 	box-shadow: 2px 2px 30px 6px @border-color;
 }
 
-
+.container.main .row > .content {
+    margin-bottom: 20px;
+}
 
 
 /**
@@ -302,7 +315,7 @@ ul.dropdown-menu li.divider {
 	line-height: 15px;
 	text-align: center;
 	font-size: 9px;
-	z-index: 1000000;
+	z-index: 1000;
 }
 
 
@@ -487,10 +500,15 @@ p.url {
     text-overflow: ellipsis;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
+    font-size: 110%;
+}
+
+.ptags .label {
+	font-weight: 500;
 }
 
 .pmeta {
-	font-size: 11px;
+	font-size: 12px;
 }
 
 .ptitle {
@@ -537,7 +555,7 @@ p.url {
 
 .post .rating,
 .post .btn-group {
-	margin-top: 5px;
+	margin-top: 8px;
 }
 
 .reviewInfo {
@@ -915,6 +933,10 @@ a.img-thumbnail span {
     font-weight: 300;
     font-stretch: extra-expanded;
 	padding: 0 1px;
+	width: 64px;
+	overflow:hidden; 
+	text-overflow: ellipsis; 
+	white-space: nowrap;
 }
 
 div.title a:hover {
@@ -1194,8 +1216,8 @@ div.clearline {
     height: auto;
 }
 
-.sidebar .alert a {
-    text-decoration: underline;
+.alert a {
+    text-decoration: underline !important;
 }
 
 div#titletext h4.media-heading {
@@ -1222,15 +1244,30 @@ div#titletext h4.media-heading {
 	color: #006699;
 }
 
+h2.getting-started {
+	font-size: 34px !important;
+	font-weight: 400;
+	text-align:center;
+}
+
+.content-header,
+.content-heading {
+	margin-bottom: 20px;
+	border-bottom: 1px solid @light-border-color;
+	font-size: 200%;
+	font-weight: 400; 
+	margin-top:0;
+}
+
+
 h1.content-header,
 h1.content-heading {
 	font-size: 24px;
     font-weight: normal;
     height: 30px;
     line-height: 30px;
-    margin-bottom: 20px;
-	border-bottom: 1px solid @light-border-color;
 }
+
 
 .main h2 {
     font-size: 20px;
@@ -1338,3 +1375,32 @@ a.ui-corner-all:active {
 	float: right;
 }
 
+#userImg > img {
+	margin: 7px;
+	padding: 5px;
+	background-color: @background-color;
+	border: 1px solid @border-color;
+	border-radius: 3px; 
+	-moz-border-radius: 3px; 
+	-webkit-border-radius: 3px;
+
+}
+
+.moreLink {
+ cursor:pointer;
+}
+
+.verticalMiddle {
+	vertical-align: middle;
+	text-align: center;
+}
+
+.affix {
+	position: relative;
+	margin-bottom: 300px;
+	z-index: 999;
+}
+
+
+@import "featurette.less";
+@import "bootstrap-discussion.less";

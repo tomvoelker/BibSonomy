@@ -43,7 +43,7 @@
 			</c:forEach>. 
         </span></c:if>
         <!-- title  -->
-        <span class="entry_title"><a href="${properties['project.home']}bibtex/${hash.intra.id}${bib.intraHash}/${fn:escapeXml(post.user.name)}">${mtl:cleanBibtex(bib.title)}</a>. </span>
+        <span class="entry_title"><a href="${relativeUrlGenerator.getPublicationUrlByIntraHashAndUsername(bib.intraHash, fn:escapeXml(post.user.name))}">${mtl:cleanBibtex(bib.title)}</a>. </span>
         <!-- editor -->
         <c:if test="${not empty bib.editor}"><span class="entry_editor">In 
         	<c:forEach var="person" items="${bib.editor}" varStatus="loopStatus">

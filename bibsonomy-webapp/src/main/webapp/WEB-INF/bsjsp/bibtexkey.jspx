@@ -11,20 +11,21 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
+	<fmt:message var="headline" key="page.bibtexkey.headline" />
 	<layout:resourceLayout 
 		pageTitle="${command.pageTitle}" 
 		command="${command}" 
 		requPath="${requPath}" 
 		disableResourcetypeSelection="${true}"
-		minimizedContentWidth="${true}" >
+		minimizedContentWidth="${true}" 
+		headline="${headline}${command.requestedKey}">
 		
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.bibtexkey" formAction="/bibtexkey" formInputName="requestedKey" formInputValue="${command.requestedKey}">
 				<jsp:attribute name="pathPart">
 					<c:if test="${not empty command.requestedUser}">
 						<li>
-							:: <a href="/user/${mtl:encodeURI(command.requestedUser)}">${fn:escapeXml(command.requestedUser)}</a> 
+							:: <a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}">${fn:escapeXml(command.requestedUser)}</a> 
 				 		</li>
 				 	</c:if>
 				</jsp:attribute>

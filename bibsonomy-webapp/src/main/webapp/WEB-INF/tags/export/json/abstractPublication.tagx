@@ -49,7 +49,7 @@
          <c:if test="${!empty post.resource.number}">"number": "${mtl:quoteJSONcleanBibTeX(post.resource.number)}",</c:if>
          <c:if test="${!empty post.resource.pages}">"pages": "${mtl:quoteJSONcleanBibTeX(post.resource.pages)}",</c:if>
          <c:if test="${!empty post.resource.note}">"note": "${mtl:quoteJSONcleanBibTeX(post.resource.note)}",</c:if>
-         <c:if test="${!empty post.resource.abstract}">"abstract": "${mtl:quoteJSONcleanBibTeX(post.resource.abstract)}",</c:if>
+         <c:if test="${!empty post.resource['abstract']}">"abstract": "${mtl:quoteJSONcleanBibTeX(post.resource['abstract'])}",</c:if>
          <c:forEach var="miscEntry" varStatus="miscStatus" items="${post.resource.miscFields}">
          "${mtl:quoteJSON(miscEntry.key)}" : "${mtl:quoteJSONcleanBibTeX(miscEntry.value)}",
          </c:forEach>

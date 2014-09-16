@@ -26,6 +26,7 @@ import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 
 /**
@@ -193,11 +194,16 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			}
 			
 			this.endTiming();
-
+			
 			// forward to bibtex page if filter is set
 			if (publicationFilter) {
 				return Views.USERDOCUMENTPAGE;
 			} 
+			
+			//if user does not exist, trigger 404
+			if (!present(command.getUser().getName())) {
+				return Views.ERROR404;
+			}
 			
 			return Views.USERPAGE;
 		}

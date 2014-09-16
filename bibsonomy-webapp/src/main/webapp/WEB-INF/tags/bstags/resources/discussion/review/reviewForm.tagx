@@ -35,24 +35,22 @@
 	<discussionItem:discussionItemForm resource="${resource}" discussionItem="${discussionItem}" action="${action}" discussionItemClass="${discussionItemClass}" userName="${userName}" postUserName="${postUserName}">
 		<jsp:attribute name="additionalMenuItems">
 				<span class="discussionRatingCounter" style="float:right" >
-					<buttons:help>
-						<jsp:attribute name="helpText">
-					       	<fmt:message key="post.resource.discussion.help"/>
-				       	</jsp:attribute>
-			        </buttons:help>
+					<div class="help ${cssClass}" style="${cssStyle}">
+				              <span class="smalltext help-popover" style="${iconTextStyle}"><c:out value="${iconText}"/></span>
+				              <div class="help help-content"><fmt:message key="post.resource.discussion.help"/></div>
+					</div>
 					<span style="float:left; vertical-align:middle;">
 						<fmt:message key="post.resource.rating.enabled"/>
 						<c:choose>
 								<c:when test="${type eq 'review'}">
-									<input type="checkbox" style="vertical-align:middle" onclick="toggleRating(this);" class="ratingToggleCheckbox" checked="checked"/>
+									<input type="checkbox" style="vertical-align:middle" onclick="toggleRating(this);" class="checkbox ratingToggleCheckbox" checked="checked"/>
 								</c:when>
 								<c:otherwise>
-									<input type="checkbox" style="vertical-align:middle" class="ratingToggleCheckbox" disabled="disabled"/>
-									<buttons:help cssStyle="float:none">
-										<jsp:attribute name="helpText">
-									       	<fmt:message key="post.resource.discussion.rating.disabled"/>
-								       	</jsp:attribute>
-							        </buttons:help>
+									<input type="checkbox" style="vertical-align:middle" class="checkbox ratingToggleCheckbox" disabled="disabled"/>
+								    <div class="help ${cssClass}" style="${cssStyle}">
+					              		<span class="smalltext help-popover" style="${iconTextStyle}"></span>
+					              		<div class="help help-content"><fmt:message key="post.resource.discussion.rating.disabled"/></div>
+									</div>
 								</c:otherwise>
 						</c:choose>
 					</span>
@@ -73,7 +71,7 @@
 									</c:choose>
 							</c:forEach>
 					</span>
-					<span class="discussionRatingValue"><b class="discussionRatingText">0</b> <img src="${resdir}/image/arrow_rating.png"/></span>
+					<span class="discussionRatingValue"><b class="discussionRatingText">0</b></span>
 					</c:when>
 					<c:otherwise>
 					<span class="reviewrating discussionStarsContainer ratingDisabled" style="float:right; margin-top:-5px;margin-left:-2px;">
@@ -82,14 +80,14 @@
 								<input name="discussionItem.rating" type="radio" value="${ratingStep}" disabled="disabled"/>
 							</c:forEach>
 					</span>
-					<span class="discussionRatingValue"><b class="discussionRatingText">-</b> <img src="${resdir}/image/arrow_rating.png"/></span>
+					<span class="discussionRatingValue"><b class="discussionRatingText"><!-- keep --></b></span>
 					</c:otherwise>	
 					</c:choose>
 				</span>
 		</jsp:attribute>
 		<jsp:attribute name="additionalInputs">
 			<div class="fsRow reviewTextBox">
-				<textarea class="reqinput descriptiveLabel textAreaAutoresize textAreaWithMinHeightSmall" rows="3" name="discussionItem.text">
+				<textarea class="form-control reqinput descriptiveLabel textAreaWithMinHeightSmall" rows="3" name="discussionItem.text">
 				<c:choose><c:when test="${not empty discussionItem}"><c:out value="${discussionItem.text}" /></c:when><c:otherwise><fmt:message key="post.resource.${discussionItemClass}.actions.post"/></c:otherwise></c:choose>
 				</textarea>
 			</div>
