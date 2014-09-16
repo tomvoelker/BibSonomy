@@ -20,10 +20,10 @@
 	<c:set var="publication" value="${command.bibtex.list[0].resource}" />
 
 	<!-- FIXME: move into body element -->
-	<c:set var="public" value="${false}"/>
+	<c:set var="isPublic" value="${false}"/>
 	<c:choose>
 		<c:when test="${goldstandardPresent}">
-			<c:set var="public" value="${true }"/>
+			<c:set var="isPublic" value="${true }"/>
 		</c:when>
 		<c:otherwise>
 
@@ -32,12 +32,12 @@
 			<c:set var="discussionBox" value="${true}"/>
 			<c:forEach var="group" items="${command.bibtex.list[0].groups}">
 				<c:if test="${group.name eq 'public'}">
-					<c:set var="public" value="${true}"/>
+					<c:set var="isPublic" value="${true}"/>
 				</c:if>
 			</c:forEach>
 		</c:otherwise>
 	</c:choose>
-	<input id="publicInput" name="publicInput" value="${public}" type="hidden" />
+	<input id="publicInput" name="publicInput" value="${isPublic}" type="hidden" />
 
 	<c:if test="${goldstandardPresent}">
 		<c:set var="publication" value="${command.goldStandardPublications.list[0].resource}" />
@@ -46,6 +46,7 @@
 	<fmt:message key="post.resource.discussion.headline" var="discussionsTitle"/>
 	
 	<fmt:message key="navi.publication" var="pageTitle"/>
+	<fmt:message var="headline" key="page.bibtex.headline" />
 	
 	<layout:resourceLayout pageTitle="${pageTitle} :: ${title}" 
 			command="${command}" 
@@ -55,7 +56,8 @@
 			customBookmarksHeaderText="${discussionsTitle}"
 			minimizedContentWidth="${true}"
 			resource="${publication}"
-			discussionBox="${discussionBox}">
+			discussionBox="${discussionBox}"
+			headline="${headline}${title}">
 		
 		<jsp:attribute name="content">
 			<!-- COMMUNITY POST -->
@@ -82,9 +84,9 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="${resdir}/javascript/merged/discussion.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/merged/bs/discussion.js"><!-- keep me --></script>
 			<c:if test="${goldstandardPresent}">
-				<script type="text/javascript" src="${resdir}/javascript/goldstandards.js"><!-- keep me --></script>
+				<script type="text/javascript" src="${resdir}/javascript/bs/goldstandards.js"><!-- keep me --></script>
 			</c:if>
 			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.css" />
 		</jsp:attribute>
@@ -106,7 +108,7 @@
 						<ul class="tagcloud">
 							<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
 								<li class="${userclass}">
-									<a href="/bibtex/1${publication.interHash}/${fn:escapeXml(user.name)}"><c:out value="${user.name}"/></a>
+									<a href="${relativeUrlGenerator.getPublicationUrlByInterHashAndUsername(publication.interHash, fn:escapeXml(user.name))}"><c:out value="${user.name}"/></a>
 									<c:out value=" "/>
 								</li>
 							</c:forEach>

@@ -51,7 +51,7 @@ public class ArxivScraper extends AbstractUrlScraper {
 	private static final String info = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
 	private static final String ARXIV_HOST = "arxiv.org";
 	
-	private static final Pattern patternID = Pattern.compile("abs|pdf/([^?]*)");
+	private static final Pattern patternID = Pattern.compile("(abs|pdf)/([^?]*)");
 	private static final Pattern patternVer = Pattern.compile("(.+?)v\\d+");
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(ARXIV_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
@@ -64,7 +64,7 @@ public class ArxivScraper extends AbstractUrlScraper {
 				
 				final Matcher matcherID = patternID.matcher(sc.getUrl().toString());
 				if(matcherID.find()) {
-					final String id = matcherID.group(1);
+					final String id = matcherID.group(2);
 					
 					/* 
 					 	OAI interface supports only the notion of an arXiv article and not access to individual versions.

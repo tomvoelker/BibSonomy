@@ -22,7 +22,6 @@ function scraping() {
 $(function() {
 	scraping();
 	checkUrlForTitle();
-	$("")
 });
 
 function checkUrlForTitle() {

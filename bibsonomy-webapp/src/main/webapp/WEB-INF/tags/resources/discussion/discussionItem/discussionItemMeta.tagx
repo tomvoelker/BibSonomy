@@ -33,7 +33,7 @@
 						<fmt:message key="post.groups.private" /> <!-- TODO: look for message key -->
 					</c:when>
 					<c:otherwise>
-						<a href="/group/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
+						<a href="${relativeUrlGenerator.getGroupUrlByGroupName(fn:escapeXml(group.name))}"><c:out value="${group.name}" /></a>
 					</c:otherwise>
 				</c:choose>
 			</c:if>	

@@ -26,7 +26,7 @@
 			<parts:search pathMessageKey="navi.admin">
 				<jsp:attribute name="pathPart">
 					<li>
-						:: <a rel="path_menu" href="/admin/sync">Synchronization</a>
+						:: <a rel="path_menu" href="${relativeUrlGenerator.getAdminUrlByName('sync')}">Synchronization</a>
 					</li>
 				</jsp:attribute>
 			</parts:search>
@@ -49,13 +49,13 @@
 			<fmt:message var="addService" key="synchronization.addService" />
 			<div id="outerBox">
 				<div>
-					<form:form action="/admin/sync?action=createService" method="POST" id="clientForm">
+					<form:form action="${relativeUrlGenerator.getAdminUrlByName('sync')}?action=createService" method="POST" id="clientForm">
 						<fieldset id="clients" class="fsInner">
 							<legend><label><c:out value="Clients"/></label></legend>
 							<c:forEach var="service" items="${command.avlClients}">
 								<div class="fsRow">
 									<span><c:out value="Name: ${service.name} URI: ${service.service} SSL DN: ${service.sslDn} ("/></span>
-									<a href="/admin/sync?action=deleteService&amp;service.service=${fn:escapeXml(service)}&amp;server=false">
+									<a href="${relativeUrlGenerator.getAdminUrlByName('sync')}?action=deleteService&amp;service.service=${fn:escapeXml(service)}&amp;server=false">
 										<c:out value="${delete}" />
 									</a>
 									<c:out value=")"/>
@@ -76,13 +76,13 @@
 					</form:form>
 				</div>
 				<div>
-					<form:form action="/admin/sync?action=createService" method="POST" id="serverForm">
+					<form:form action="${relativeUrlGenerator.getAdminUrlByName('sync')}?action=createService" method="POST" id="serverForm">
 						<fieldset id="server" class="fsInner">
 							<legend><label><c:out value="Server"/></label></legend>
 							<c:forEach var="service" items="${command.avlServer}">
 								<div class="fsRow">
 									<span><c:out value="Name: ${service.name} URI: ${service.service} SECURE API URL:: ${service.secureAPI}("/></span>
-									<a href="/admin/sync?action=deleteService&amp;service.service=${fn:escapeXml(service)}&amp;server=true">
+									<a href="${relativeUrlGenerator.getAdminUrlByName('sync')}?action=deleteService&amp;service.service=${fn:escapeXml(service)}&amp;server=true">
 										<c:out value="${delete}" />
 									</a>
 									<c:out value=")"/>

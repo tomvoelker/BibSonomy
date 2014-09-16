@@ -80,7 +80,7 @@
 						<div class="form-group">
 							<label class="col-sm-3 control-label"><fmt:message key="post.resource.fields.scraper.scraper"/><!--  --></label>
 							<div class="col-sm-9">
-								<p class="form-control-static"><a href="${scraperinfourl}${fn:escapeXml(command.scrapingContext.scraper.class.simpleName)}"><c:out value="${command.scrapingContext.scraper.class.simpleName}"/></a>: ${command.scrapingContext.scraper.info}</p>
+								<p class="form-control-static"><a href="${scraperinfourl}${fn:escapeXml(command.scrapingContext.scraper['class'].simpleName)}"><c:out value="${command.scrapingContext.scraper['class'].simpleName}"/></a>: ${command.scrapingContext.scraper.info}</p>
 							</div>
 						</div>
 

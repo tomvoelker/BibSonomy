@@ -43,7 +43,7 @@
 				</div>
 				
        			<span class="discussionPictureFrame">
-       				<img src="/picture/user/${fn:escapeXml(userName)}" alt="userPicture" class="discussionPicture" />
+       				<img src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(userName))}" alt="userPicture" class="discussionPicture" />
        			</span>
        			<span class="textBoxContainer">
 					<c:if test="${not empty additionalInputs}">
@@ -54,42 +54,41 @@
  					<div class="discussionAdditionalControls"><!-- keep --></div>
 
  					<fmt:message key="post.resource.${discussionItemClass}.actions.${action}" var="buttonText" />
- 					<input type="submit" style="float:right; margin-right:0px;" value="${buttonText}" />
+ 					<input type="submit" class="btn btn-default" style="float:right; margin-right:0px;" value="${buttonText}" />
  					<span class="hoveringControl">
 						<div class="controlsContainer">
-								<img style="display:block; margin-left:auto; margin-right:auto;z-index:7;position:relative;" src="${resdir}/image/arrow_up.png"/>
-								<span class="fsOuter" style="padding:10px;margin-top:-1px;margin-bottom:0px;position:relative;display:block">
-									<buttons:help>
+<!-- 								<img style="display:block; margin-left:auto; margin-right:auto;z-index:7;position:relative;" src="${resdir}/image/arrow_up.png"/>
+								<span style="padding:10px;margin-top:-1px;margin-bottom:0px;position:relative;display:block"> -->
+									<!--<buttons:help>
 										<jsp:attribute name="helpText">
 							       			<fmt:message key="post.resource.addreference.hint"/>
 										</jsp:attribute>
-					        		</buttons:help>
+					        		</buttons:help>!-->
 									<fmt:message var="alternateClose" key="close" />
-									<a class="closeReference" href="#" onclick="$(this).parents('.hoveringControl').children('.hoveringMenuItem').trigger('click'); return false;" title="${alternateClose}" style="float:right;"><img src="${resdir}/image/icon_close.png" alt="${alternateClose}" /></a>
+									<!-- <a class="closeReference" href="#" onclick="$(this).parents('.hoveringControl').children('.hoveringMenuItem').trigger('click'); return false;" title="${alternateClose}" style="float:right;"><img src="${resdir}/image/icon_close.png" alt="${alternateClose}" /></a> -->
 									<input class="referenceAutocompletion" size="60" type="text" value=""/>
-								</span>
+								<!-- </span> -->
 						</div>
-						<buttons:help cssStyle="float:none">
+						<!--<buttons:help cssStyle="float:none">
 							<jsp:attribute name="helpText">
 				       			<fmt:message key="post.resource.addreference.help">
 									<fmt:param value="${properties['project.name']}"/>
 								</fmt:message>
 							</jsp:attribute>
-		        		</buttons:help>
+		        		</buttons:help>!-->
 						<a class="hoveringMenuItem" onclick="showAppendixForm({menuItem:$(this), callback: setUpLinkbox});return false;">
 							<fmt:message key="post.resource.addreference" />	
 						</a>
 					</span>
 					<span class="hoveringControl">
 							<div class="controlsContainer">
-								<img style="display:block; margin-left:auto; margin-right:auto;z-index:7;position:relative;" src="${resdir}/image/arrow_up.png"/>
-								<span class="fsOuter" style="padding:10px;margin-top:-1px;margin-bottom:0px;position:relative;display:block">
+								<!-- <span class="fsOuter" style="padding:10px;margin-top:-1px;margin-bottom:0px;position:relative;display:block">  -->
 									<c:choose>
 										<c:when test="${not empty discussionItem and discussionItem.anonymous}">
-											<input type="checkbox" name="discussionItem.anonymous" value="true" checked="checked" style="float:left"/>
+											<input type="checkbox" class="checkbox" name="discussionItem.anonymous" value="true" checked="checked" style="float:left"/>
 										</c:when>
 										<c:otherwise>
-											<input type="checkbox" name="discussionItem.anonymous" value="true" style="position:relative"/>
+											<input type="checkbox" class="checkbox" name="discussionItem.anonymous" value="true" style="position:relative"/>
 										</c:otherwise>
 									</c:choose>
 									<label style="float:left" for="discussionItem.anonymous">
@@ -101,7 +100,7 @@
 											<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" selectedGroups="${discussionItem.groups}"/>
 						  				</jsp:attribute>
 									</bform:fieldset>
-								</span>
+								<!-- </span> -->
 							</div>
 							<buttons:help cssStyle="float:none">
 								<jsp:attribute name="helpText">
@@ -111,7 +110,7 @@
 							<a class="hoveringMenuItem" onclick="showAppendixForm({menuItem: $(this)});return false;"><fmt:message key="post.resource.visibility"/></a>
 					</span>
 					
-					<div class="spinner initiallyHidden" style="float:left; margin-right:10px">
+					<div class="spinner hidden" style="float:left; margin-right:10px">
 						<img src="${resdir}/image/ajax_loader.gif" alt="loading"/><span class="spinnerClass"><fmt:message key="post.resource.${discussionItemClass}.action.${action}" /></span>
 					</div>
  				</div>

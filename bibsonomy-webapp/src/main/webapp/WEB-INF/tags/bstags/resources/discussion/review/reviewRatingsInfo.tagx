@@ -11,7 +11,7 @@
 	<div id="review_info_rating" itemprop="aggregateRating" itemscope="itemscope" itemtype="http://schema.org/AggregateRating">
 		<c:if test="${empty resource.numberOfRatings or resource.numberOfRatings &lt; 1 }">
 			<!-- TODO: change message keys when renaming BibTex class to Publication -->
-			<div id="noReviewInfo"><fmt:message key="post.resource.review.${fn:toLowerCase(resource.class.simpleName)}.noReview" /></div>
+			<div id="noReviewInfo"><fmt:message key="post.resource.review.${fn:toLowerCase(resource['class'].simpleName)}.noReview" /></div>
 		</c:if>
 		<div id="ratingDistribution">
 			<fmt:message key="post.resource.review.info.ratingDistribution" />

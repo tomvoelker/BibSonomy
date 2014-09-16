@@ -12,10 +12,10 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-		
+	<fmt:message var="headline" key="page.followers.headline" />		
 	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 
-	<layout:resourceLayout pageTitle="${command.pageTitle}"	command="${command}" requPath="${requPath}"	activeTab="${command.context.loginUser.name != null ? 'my' : ''}">
+	<layout:resourceLayout pageTitle="${command.pageTitle}"	command="${command}" requPath="${requPath}"	activeTab="${command.context.loginUser.name != null ? 'my' : ''}" headline="${headline}">
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.followees"/>
@@ -31,7 +31,7 @@
             <ul class="sidebar_collapse_content">
               <c:forEach var="user" items="${command.userIsFollowing}">
                 <li><a
-						href="/personalized/user/${mtl:encodeURI(user.name)}"><c:out
+						href="${relativeUrlGenerator.prefix('personalized/').getUserUrlByUserName(user.name)}"><c:out
 						value="${user.name}" /></a></li>
               </c:forEach>
             </ul>
@@ -43,7 +43,7 @@
               <c:forEach var="user" items="${command.followersOfUser}">
                 <li>
                   <a
-						href="/personalized/user/${mtl:encodeURI(user.name)}"><c:out
+						href="${relativeUrlGenerator.prefix('personalized/').getUserUrlByUserName(user.name)}"><c:out
 						value='${user.name}' />&amp;nbsp;</a> 
 	                <fmt:message var="deleteFriendTitle"
 						key="follow.actions.delete.title">
@@ -126,7 +126,7 @@
 							</c:when>
 						<c:otherwise>
 							<fmt:message key="followersPage.entries.ofUser">
-								<fmt:param><a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a></fmt:param>
+								<fmt:param><a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(command.requestedUser))}"><c:out value='${command.requestedUser}'/></a></fmt:param>
 							</fmt:message>
 						</c:otherwise>
 						</c:choose>

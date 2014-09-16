@@ -16,14 +16,15 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}">
 	
+	<fmt:message var="headline" key="page.user.headline" />
+	
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}" headline="${headline}${command.requestedUser}">
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.user" formAction="/user/${fn:escapeXml(command.requestedUser)}" formInputName="tag" requestedUser="${command.requestedUser}">
+			<parts:search pathMessageKey="navi.user" formAction="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(command.requestedUser))}" formInputName="tag" requestedUser="${command.requestedUser}">
 				<jsp:attribute name="pathPart">
 					<li>
-						:: <a href="/user/${mtl:encodeURI(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> 
+						:: <a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> 
 					</li>
 				</jsp:attribute>
 				<!-- 
@@ -41,8 +42,10 @@
 			<li><users:socializer command="${command}" /></li>
 			
 			<!-- Did you know? -->
-			<c:if test="${command.context.userLoggedIn and command.context.loginUser.name eq command.requestedUser and 
-							mtl:hasDidYouKnowMessage(command) and command.context.loginUser.settings.layoutSettings.simpleInterface}">
+			<c:if test="${	command.context.userLoggedIn and 
+							command.context.loginUser.name eq command.requestedUser and 
+							mtl:hasDidYouKnowMessage(command) and
+							command.context.loginUser.settings.simpleInterface}">
 				<li><bs:didYouKnow command="${command}"/></li>
 			</c:if>
 			
@@ -57,7 +60,7 @@
 									<fmt:param value="${fn:escapeXml(command.requestedUser)}"/>
 								</fmt:message>
 						</h5>
-						<a href="/discussed/user/${fn:escapeXml(command.requestedUser)}" title="${title}">
+						<a href="${relativeUrlGenerator.prefix('discussed/').getUserUrlByUserName(fn:escapeXml(command.requestedUser))}" title="${title}">
 							<fmt:message key="discussion.byUser"><fmt:param value="${fn:escapeXml(command.requestedUser)}"/></fmt:message>
 						</a>
 					</li>
