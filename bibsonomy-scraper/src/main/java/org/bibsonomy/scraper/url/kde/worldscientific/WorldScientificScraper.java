@@ -39,13 +39,13 @@ import org.bibsonomy.scraper.CitedbyScraper;
 import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
+import org.bibsonomy.scraper.generic.GenericRISURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * @author Haile
  */
-public class WorldScientificScraper extends GenericBibTeXURLScraper implements CitedbyScraper, ReferencesScraper{
+public class WorldScientificScraper extends GenericRISURLScraper implements CitedbyScraper, ReferencesScraper{
 	private static final Log log = LogFactory.getLog(WorldScientificScraper.class);
 
 	private static final String SITE_NAME = "World Scientific";
