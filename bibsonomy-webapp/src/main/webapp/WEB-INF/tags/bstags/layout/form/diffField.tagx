@@ -15,6 +15,13 @@
 	<jsp:directive.attribute name="required" type="java.lang.Boolean" required="false" description="Must the user fill out the form, i.e., is the content required (adds '*' before form and CSS class 'reqinput')?"/>
 	<jsp:directive.attribute name="noHelp" type="java.lang.Boolean" required="false" description="Shall the fly-by help be shown?"/>	
 	<jsp:directive.attribute name="rows" type="java.lang.Integer" required="false" description="The number of rows. Default is 3."/>
+	
+	<link rel="stylesheet" href="${resdir}/css/style_old.css" type="text/css" media="all" />
+	<link rel="stylesheet" href="${resdir}/css/forms.less" type="text/css" media="all" />
+	
+	<script type="text/javascript" src="${resdir}/javascript/diffPublication.js"><!-- keep me --></script>
+	<script type="text/javascript" src="${resdir}/javascript/diff_match_patch.js"><!-- keep me --></script>		 
+	
 		 
 	<div class="fsRow" style="min-height:auto">
 		<!-- label -->
@@ -39,7 +46,10 @@
 		<!-- style="min-height:16px;margin-top: 2px; margin-bottom: 2px; border: 1px solid #069; padding: 2px; font-family: monospace; font-weight: normal; background-color: #eee">--> 
 			<!--  -->
 		</div>
-
+		<div id="icons" style="display:none">
+			<img id="icon_copy" alt="" src="${resdir}/image/arrow_rating.png"/>
+			<img id="icon_copy_greyed" alt="" src="${resdir}/image/button_diff_greyed.png"/>
+		</div>
 		<!-- errors -->
 		<div class="dissError"><form:errors path="${path}" /></div>
 	</div>

@@ -45,11 +45,11 @@ public class PostHistoryController <R extends Resource> extends SingleResourceLi
 
 		final FilterEntity filter = FilterEntity.POSTS_HISTORY;
 		Class<? extends Resource> resourceType = null;
-	//	if (resourceClass.equals("bibtex")) {
+		if (resourceClass.equals("bibtex")) {
 			resourceType = BibTex.class;
-	//	} else {
-	//		resourceType = Bookmark.class;
-	//	}
+		} else {
+			resourceType = Bookmark.class;
+		}
 		
 		this.setList(command, resourceType, groupingEntity, requUser, null, longHash, null, filter, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
 		this.postProcessAndSortList(command, resourceType);
