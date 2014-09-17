@@ -329,6 +329,7 @@ public final class RestServlet extends HttpServlet {
 	 */
 	private void sendError(final HttpServletRequest request, final HttpServletResponse response, final int code, final String message) throws IOException {
 		// get renderer
+		// FIXME: handle exception if accept != content rendering format
 		final RenderingFormat mediaType = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), getMainContentType(request));
 		final Renderer renderer = rendererFactory.getRenderer(mediaType);
 

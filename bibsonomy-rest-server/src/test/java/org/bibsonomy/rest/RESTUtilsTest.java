@@ -36,6 +36,15 @@ public class RESTUtilsTest {
 
 		format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "text/html", "");
 		assertEquals(RenderingFormat.XML, format);
+		
+		format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "*/*", "");
+		assertEquals(RenderingFormat.XML, format);
+		
+		format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "application/*", "");
+		assertEquals(RenderingFormat.APP_XML, format);
+		
+		format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "application/xml", "");
+		assertEquals(RenderingFormat.APP_XML, format);
 
 		// standard firefox, chromium header
 		format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", "");
@@ -52,6 +61,15 @@ public class RESTUtilsTest {
 
 		format = RESTUtils.getRenderingFormatForRequest(Collections.singletonMap("format", new String[] { "csl" }), "", "");
 		assertEquals(RenderingFormat.CSL, format);
+	}
+	
+	@Test
+	public void notSupportedFormats() {
+		RenderingFormat format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "", "application/x-www-form-urlencoded");
+		assertEquals(null, format); // TODO: should result in an exception
+		
+		format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "*/*", "application/x-www-form-urlencoded");
+		assertEquals(null, format);
 	}
 
 	/**
