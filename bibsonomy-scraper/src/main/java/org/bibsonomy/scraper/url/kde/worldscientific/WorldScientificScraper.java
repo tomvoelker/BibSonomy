@@ -39,13 +39,13 @@ import org.bibsonomy.scraper.CitedbyScraper;
 import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * @author Haile
  */
-public class WorldScientificScraper extends AbstractGenericFormatURLScraper implements CitedbyScraper, ReferencesScraper{
+public class WorldScientificScraper extends GenericBibTeXURLScraper implements CitedbyScraper, ReferencesScraper{
 	private static final Log log = LogFactory.getLog(WorldScientificScraper.class);
 
 	private static final String SITE_NAME = "World Scientific";
@@ -160,13 +160,5 @@ public class WorldScientificScraper extends AbstractGenericFormatURLScraper impl
 	@Override
 	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
 		return BibTexUtils.addFieldIfNotContained(bibtex, "abstract", abstractParser(scrapingContext.getUrl()));
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#convert(java.lang.String)
-	 */
-	@Override
-	protected String convert(String downloadResult) {
-		return downloadResult;
 	}
 }
