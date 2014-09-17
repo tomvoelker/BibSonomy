@@ -43,6 +43,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.ModelUtils;
@@ -625,7 +626,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		// FIXME: why does GetPostsForGroup chain element not allow hash-selection?
 		final List<Post<T>> groupPosts = logic.getPosts(
 				(Class<T>)post.getResource().getClass(), groupingEntity, groupName, tags, 
-				post.getResource().getIntraHash(), "", null, null, null, null, 0, LogicInterface.MAX_QUERY_SIZE);
+				post.getResource().getIntraHash(), "", null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
 		return groupPosts;
 	}
 	
