@@ -43,6 +43,7 @@ declare -A tomcat
 tomcat[slave_hannover]=7
 tomcat[slave_kassel]=7
 tomcat[slave_hetzner]=7
+tomcat[gromit]=7
 
 declare -A archivable
 archivable[gandalf]=true
@@ -75,7 +76,7 @@ fi
 
 # environment variables
 export MAVEN_OPTS='-Xmx1024m -Xms512m'
-export JAVA_HOME=/usr/lib/jvm/java-6-sun/
+export JAVA_HOME=/usr/lib/jvm/java-7-oracle
 
 # programs
 MAVEN=mvn

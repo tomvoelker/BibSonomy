@@ -128,7 +128,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 						groupDocument.setFileName(fileName);
 						groupDBLogic.createDocument(groupDocument, intraHash);
 					} catch (final Exception e) {
-						log.error("error while coping user document to group post", e);
+						log.error("error while copying user document to group post", e);
 					}
 				} else {
 					/*

@@ -265,7 +265,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 			return new ModelAndView((org.springframework.web.servlet.View) view, model);
 		}
 		
-		return new ModelAndView(view.getName(), model);			
+		return new ModelAndView(view.getName(), model);
 	}
 
 	@Override
