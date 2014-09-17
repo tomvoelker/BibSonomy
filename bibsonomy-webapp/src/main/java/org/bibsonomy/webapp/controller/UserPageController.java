@@ -161,18 +161,18 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			 * with the requested user. 
 			 */
 			final String loginUserName = context.getLoginUser().getName();
+			
+			/*
+			 * Put the user into command to be able to show some details.
+			 * 
+			 * The DBLogic checks, if the login user may see the user's 
+			 * details. 
+			 */
+			final User requestedUser = this.logic.getUserDetails(groupingName);
+			command.setUser(requestedUser);
 			if (context.isUserLoggedIn()) {
-				
 				/*
-				 * Put the user into command to be able to show some details.
-				 * 
-				 * The DBLogic checks, if the login user may see the user's 
-				 * details. 
-				 */
-				final User requestedUser = this.logic.getUserDetails(groupingName);
-				command.setUser(requestedUser);
-				/*
-				 * Has loginUser this user set as friend?
+				 * has loginUser this user set as friend?
 				 */
 				command.setOfFriendUser(this.logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag).contains(requestedUser));
 				command.setFriendOfUser(this.logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag).contains(requestedUser));
@@ -200,7 +200,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			}
 			
 			// if user does not exist, trigger 404
-			if (!present(command.getUser().getName())) {
+			if (!present(requestedUser.getName())) {
 				throw new ObjectNotFoundException(groupingName);
 			}
 			
