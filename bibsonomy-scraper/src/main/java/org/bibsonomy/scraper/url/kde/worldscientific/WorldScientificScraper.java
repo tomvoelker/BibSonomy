@@ -51,7 +51,6 @@ public class WorldScientificScraper extends GenericBibTeXURLScraper implements C
 	private static final String SITE_URL = "http://www.worldscientific.com/";
 	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME);
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<>(Pattern.compile(".*" + "worldscientific.com"), AbstractUrlScraper.EMPTY_PATTERN));
-	// FIXME: Find correct pattern. This one breaks if there's #blabla at the end of the URL
 	private static final Pattern ID_PATTERN = Pattern.compile("\\d+.*");
 	private static final Pattern REFERENCES_PATTERN = Pattern.compile("(?s)<b>References:</b><ul>(.*)</ul>");
 	private static final Pattern CITEDBY_PATTERN = Pattern.compile("(?s)<div class=\"citedByEntry\">(.*)<!-- /fulltext content --></div>");
@@ -154,7 +153,7 @@ public class WorldScientificScraper extends GenericBibTeXURLScraper implements C
 	@Override
 	protected String getDownloadURL(URL url) throws ScrapingException {
 		String id = null;
-		String bibtex_url = "http://" + url.getHost() + "/action/downloadCitation?doi=";
+		String bibtex_url = "http://" + url.getHost() + "/action/downloadCitation?format=bibtex&doi=";
 
 		Matcher m = ID_PATTERN.matcher(url.toString());
 		if (m.find()) {
@@ -165,7 +164,7 @@ public class WorldScientificScraper extends GenericBibTeXURLScraper implements C
 			return null;
 		}
 
-		return bibtex_url + id + "&format=bibtex";
+		return bibtex_url + id;
 	}
 
 	@Override
