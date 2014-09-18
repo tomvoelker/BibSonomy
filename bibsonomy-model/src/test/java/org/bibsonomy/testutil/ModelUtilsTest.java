@@ -47,7 +47,7 @@ public class ModelUtilsTest {
 	public void assertPropertyEquality() {
 		final Post<BibTex> postA = ModelUtils.generatePost(BibTex.class);
 		final Post<BibTex> postB = ModelUtils.generatePost(BibTex.class);
-		CommonModelUtils.assertPropertyEquality(postA, postB, Integer.MAX_VALUE, null, "date");
+		CommonModelUtils.assertPropertyEquality(postA, postB, Integer.MAX_VALUE, null, "date", "user.birthday", "user.registrationDate", "user.reminderPasswordRequestDate");
 		postB.getTags().clear();
 		try {
 			CommonModelUtils.assertPropertyEquality(postA, postB, Integer.MAX_VALUE, null);

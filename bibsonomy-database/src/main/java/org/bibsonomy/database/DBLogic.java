@@ -90,6 +90,8 @@ import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.ImportResource;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Review;
@@ -97,6 +99,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.enums.PersonResourceRelation;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -2864,5 +2867,53 @@ public class DBLogic implements LogicInterface {
 			// add public spam group to the groups of the loggedin users
 			this.loginUser.addGroup(new Group(GroupID.PUBLIC_SPAM));
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String)
+	 */
+	@Override
+	public List<Person> getPersonSuggestion(String searchString) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Person> getPersons(String longHash, String publicationOwner, PersonName personName, PersonResourceRelation rel) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void addPersonRelation(String longHash, String publicationOwner, Person person, PersonResourceRelation rel) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removeRelatedPerson(java.lang.String, java.lang.String, org.bibsonomy.model.Person, org.bibsonomy.model.enums.PersonResourceRelation)
+	 */
+	@Override
+	public void removePersonRelation(String longHash, String publicationOwner, Person person, PersonResourceRelation rel) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createPerson(org.bibsonomy.model.Person)
+	 */
+	@Override
+	public void createOrUpdatePerson(Person person) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonById(int)
+	 */
+	@Override
+	public Person getPersonById(int id) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 	}
 }

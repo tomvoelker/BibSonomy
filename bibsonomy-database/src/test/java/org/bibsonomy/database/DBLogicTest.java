@@ -12,13 +12,14 @@ import static org.junit.Assert.fail;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
-import junit.framework.Assert;
 
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
@@ -38,6 +39,8 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Repository;
 import org.bibsonomy.model.Resource;
@@ -45,12 +48,17 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.enums.PersonResourceRelation;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.PersonLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.testutil.CommonModelUtils;
+import org.bibsonomy.testutil.DepthEqualityTester;
 import org.bibsonomy.testutil.DummyFileLogic;
 import org.bibsonomy.testutil.ModelUtils;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -917,7 +925,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		String hash = createPosts.get(0);
 		
 		final Post<? extends Resource> savedPost = dbl.getPostDetails(hash, userName);
-		Assert.assertEquals(1, savedPost.getGroups().size());
+		assertEquals(1, savedPost.getGroups().size());
 		Assert.assertTrue(savedPost.getGroups().contains(expectedGroup));
 		
 		dbl.deletePosts(userName, Collections.singletonList(hash));
@@ -1119,5 +1127,104 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		} catch (final ValidationException ex) {
 			// ok
 		}		
+	}
+	
+	@Test
+	@Ignore
+	public void testGetPersonByName() {
+		final PersonLogicInterface logic = getDbLogic(TEST_USER_1);
+		final List<Person> resultList = logic.getPersons(null, null, new PersonName("Max", "Mustermann"), PersonResourceRelation.MAIN_PERSON_NAME);
+		Assert.assertEquals(1, resultList.size());
+		final Person max = resultList.get(0);
+		assertMaxMustermann( max);
+	}
+
+	private static void assertMaxMustermann(final Person max) {
+		Assert.assertEquals(new PersonName("Max", "Mustermann"), max.getMainName());
+		Assert.assertEquals(Integer.valueOf(1), max.getId());
+		Assert.assertEquals("Dipl.-Ing.", max.getAcademicDegree());
+		Assert.assertTrue(max.getAlternateNames().contains(new PersonName("Stefan", "Müller")));
+		Assert.assertTrue(max.getAlternateNames().contains(new PersonName("Henner", "Schorsche")));
+		Assert.assertEquals(2, max.getAlternateNames().size());
+		Assert.assertEquals("0000-0002-9056-5667", max.getOrcid());
+		Assert.assertEquals(new GregorianCalendar(2014, 8, 13, 19, 21, 10).getTime(), max.getModifiedAt());
+		Assert.assertEquals(new User("jil"), max.getModifiedBy());
+		Assert.assertEquals(new User("hansii"), max.getUser());
+	}
+	
+	private static void assertEqual(final Person expected, Person actual) {
+		CommonModelUtils.assertPropertyEquality(expected, actual, Integer.MAX_VALUE, null, "user", "modifiedBy");
+		Assert.assertEquals(expected.getUser(), actual.getUser());
+		Assert.assertEquals(expected.getModifiedBy(), actual.getModifiedBy());
+	}
+	
+	@Test
+	@Ignore
+	public void testSaveAndUpdateDummyPerson() {
+		final PersonLogicInterface logic1 = getDbLogic(TEST_USER_1);
+		final PersonLogicInterface logic2 = getDbLogic(TEST_USER_2);
+		
+		// createDummyPerson
+		final Person dummyPerson = new Person();
+		CommonModelUtils.setBeanPropertiesOn(dummyPerson);
+		dummyPerson.setId(null);
+		final PersonName blaName = new PersonName("bla", "blub");
+		dummyPerson.getAlternateNames().add(blaName);
+		
+		// assert dummy Person does not exist
+		Assert.assertEquals(0, logic1.getPersons(null, null, dummyPerson.getMainName(), PersonResourceRelation.MAIN_PERSON_NAME).size());
+		
+		// create Person
+		logic1.createOrUpdatePerson(dummyPerson);
+		Assert.assertNotNull(dummyPerson.getId());
+		Assert.assertEquals(new User(TEST_USER_1), dummyPerson.getModifiedBy());
+		Assert.assertTrue(System.currentTimeMillis() - dummyPerson.getModifiedAt().getTime() < 100);
+		
+		// assert person exists
+		final List<Person> resultList = logic2.getPersons(null, null, dummyPerson.getMainName(), PersonResourceRelation.MAIN_PERSON_NAME);
+		Assert.assertEquals(1, resultList.size());
+		final Person resultPerson = resultList.get(0);
+		assertEqual(dummyPerson, resultPerson);
+		
+		// change main name of person to henner (alternative name of existing user)
+		setToHenner(resultPerson);
+		final Person henner = resultPerson;
+		logic2.createOrUpdatePerson(henner);
+		Assert.assertEquals(new User(TEST_USER_2), henner.getModifiedBy());
+		
+		// assert two persons are found
+		final List<Person> hennerList = logic2.getPersons(null, null, henner.getMainName(), null);
+		Assert.assertEquals(2, hennerList.size());
+		final Person hennerResult = (hennerList.get(0).getId().equals(henner.getId())) ? hennerList.get(0) : hennerList.get(1);
+		assertEqual(henner, hennerResult);
+		
+		// person no longer found by dummy name
+		Assert.assertEquals(0, logic1.getPersons(null, null, dummyPerson.getMainName(), PersonResourceRelation.MAIN_PERSON_NAME).size());
+		
+		// but still found using alternative name
+		final List<Person> blaList = logic2.getPersons(null, null, blaName, PersonResourceRelation.MAIN_PERSON_NAME);
+		Assert.assertEquals(1, blaList.size());
+		final Person blaPerson = blaList.get(0);
+		assertEqual(hennerResult, blaPerson);
+		
+		/* 
+		 TODO: test updateing some other properties
+		
+		final Person newPerson = new Person();
+		newPerson.setAcademicDegree("Dr. phil. nat.");
+		newPerson.setMainName(erika);
+		newPerson.getAlternateNames().add(new PersonName("Claudia", "Müller"));
+		logic.saveOrUpdatePerson(newPerson);
+		
+		Assert.assertEquals(1, logic.getPersons(null, null, erika, PersonResourceRelation.MAIN_PERSON_NAME).size());
+		
+		*/
+	}
+
+	/**
+	 * @param resultPerson
+	 */
+	private void setToHenner(Person resultPerson) {
+		resultPerson.setMainName(new PersonName("Henner", "Schorsche"));
 	}
 }

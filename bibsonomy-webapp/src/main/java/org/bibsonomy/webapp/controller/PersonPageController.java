@@ -80,7 +80,7 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		log.info("Accessed unlinkAction -> getting redirected");
 		
-		this.personLogic.updatePerson(command.getPerson());
+		// TODO: this.personLogic.updatePerson(command.getPerson());
 		
 		return new ExtendedRedirectView("/person/show/" + command.getRequestedPersonId() + (present(command.getRequestedHash()) ? "/" + command.getRequestedHash() : ""));
 	}
@@ -96,7 +96,7 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		log.info("Accessed editRoleAction -> getting redirected");
 		
-		this.personLogic.updatePerson(command.getPerson());
+		// TODO: this.personLogic.updatePerson(command.getPerson());
 		
 		return new ExtendedRedirectView("/person/show/" + command.getRequestedPersonId() + (present(command.getRequestedHash()) ? "/" + command.getRequestedHash() : ""));
 	}
@@ -110,7 +110,7 @@ public class PersonPageController extends SingleResourceListController implement
 		command.getPerson().setAcademicDegree(command.getFormGraduation());
 		command.getPerson().setMainName(command.getFormSelectedName());
 		
-		this.personLogic.updatePerson(command.getPerson());
+		// TODO: this.personLogic.updatePerson(command.getPerson());
 		
 		return new ExtendedRedirectView("/person/show/" + command.getRequestedPersonId() + (present(command.getRequestedHash()) ? "/" + command.getRequestedHash() : ""));
 	}
@@ -126,7 +126,7 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		command.getPerson().getAlternateNames().add(new PersonName(command.getFormGivenName(), command.getFormSurName()));
 		
-		this.personLogic.updatePerson(command.getPerson());
+		// TODO: this.personLogic.updatePerson(command.getPerson());
 		
 		return new ExtendedRedirectView("/person/show/" + command.getRequestedPersonId() + (present(command.getRequestedHash()) ? "/" + command.getRequestedHash() : ""));
 	}

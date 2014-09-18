@@ -1,5 +1,9 @@
 package org.bibsonomy.model.enums;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NoSuchElementException;
+
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Resource;
 
@@ -12,17 +16,47 @@ public enum PersonResourceRelation {
 	/**
 	 * Author
 	 */
-	AUTHOR,
+	AUTHOR("Maut"),
 	/**
 	 * thesis advisor
 	 */
-	THESIS_ADVISOR,
+	THESIS_ADVISOR("Mths"),
 	/**
 	 * reviewer of a thesis
 	 */
-	THESIS_REVIEWER,
+	THESIS_REVIEWER("Mrev"),
 	/**
 	 * some non-specific relation influence
 	 */
-	OTHER;
+	OTHER("Moth"),
+	/** Main person (actually not a relation to a resource, but to a null-resource)  */
+	MAIN_PERSON_NAME("Bmnm");
+	
+	private final String relatorCode;
+	private static final Map<String, PersonResourceRelation> byRelatorCode = new HashMap<String, PersonResourceRelation>();
+	
+	static {
+		for (PersonResourceRelation value : PersonResourceRelation.values()) {
+			byRelatorCode.put(value.getRelatorCode(), value);
+		}
+	}
+
+	private PersonResourceRelation(String relatorCode) {
+		this.relatorCode = relatorCode;
+	}
+	
+	/**
+	 * @return the relatorCode
+	 */
+	public String getRelatorCode() {
+		return this.relatorCode;
+	}
+	
+	public static PersonResourceRelation getByRelatorCode(String relatorCode) {
+		final PersonResourceRelation rVal = byRelatorCode.get(relatorCode);
+		if (rVal == null) {
+			throw new NoSuchElementException(relatorCode);
+		}
+		return rVal;
+	}
 }

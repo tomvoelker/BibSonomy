@@ -19,15 +19,26 @@ public interface PersonLogicInterface {
 	 */
 	public List<Person> getPersonSuggestion(String searchString);
 
-	public List<Person> getPersonCandidates(String longHash, String publicationOwner, PersonName personName);
+	/**
+	 * @param longHash publication hash with prefix 1 or 2. Can be null for instance when searching persons just by name.
+	 * @param publicationOwner owner of the publication post. May be null which, e.g., is reasonable for inter- or null-hashes. 
+	 * @param personName exact name of the person as appearing in the resource. Can be null, when searching for all persons related to a resource
+	 * @param rel type of relation. null means all 
+	 * @return non-null list of all persons matching all given non-null criteria
+	 */
+	public List<Person> getPersons(String longHash, String publicationOwner, PersonName personName, PersonResourceRelation rel);
 
-	public Person getRelatedPerson(String longHash, String publicationOwner, PersonName personName, PersonResourceRelation rel);
+	public void addPersonRelation(String longHash, String publicationOwner, Person person, PersonResourceRelation rel);
 
-	public void addRelatedPerson(String longHash, String publicationOwner, Person person, PersonResourceRelation rel);
+	public void removePersonRelation(String longHash, String publicationOwner, Person person, PersonResourceRelation rel);
 
-	public void removeRelatedPerson(String longHash, String publicationOwner, Person person, PersonResourceRelation rel);
+	/**
+	 * sets id for new persons
+	 * 
+	 * @param person the person to be saved or updated
+	 */
+	public void createOrUpdatePerson(Person person);
+	
+	public Person getPersonById(int id);
 
-	public int createPerson(Person person);
-
-	public int setPersonUserName(Person person, String userName);
 }

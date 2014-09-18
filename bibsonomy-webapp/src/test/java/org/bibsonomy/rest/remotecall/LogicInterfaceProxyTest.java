@@ -48,12 +48,15 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.enums.PersonResourceRelation;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.metadata.PostMetaData;
@@ -120,10 +123,10 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	/*
 	 * FIXME: clean up this mess :-(
 	 */
-	private static final String COMMON_USER_PROPERTIES = "apiKey|homepage|realname|email|password|date|openURL|gender|place|interests|hobbies|IPAddress|basket|inbox|profession|institution|place|spammer|settings|toClassify|updatedBy|gravatarAddress";
-	private static final String[] IGNORE1 = new String[] {"[0].date", "[0].user.apiKey", "[0].user.email", "[0].user.homepage", "[0].user.password", "[0].user.passwordSalt", "[0].user.realname", "[0].user.confidence", "[0].resource.scraperId", "[0].resource.openURL", "[0].resource.numberOfRatings", "[0].resource.rating", "[0].user.IPAddress", "[0].user.basket", "[0].user.inbox", "[0].user.gender", "[0].user.interests", "[0].user.hobbies", "[0].user.profession", "[0].user.institution", "[0].user.openURL", "[0].user.place", "[0].user.spammer", "[0].user.settings", "[0].user.algorithm", "[0].user.prediction", "[0].user.mode", "[0].user.updatedBy", "[0].user.toClassify", "[0].user.reminderPassword", "[0].user.openID", "[0].user.ldapId", "[0].user.activationCode", "[0].user.remoteUserIds", "[0].user.gravatarAddress"};
-	private static final String[] IGNORE2 = new String[] {"activationCode", "apiKey", "email", "homepage", "password", "passwordSalt", "realname", "date", "openURL", "gender", "place", "IPAddress", "basket", "inbox", "profession", "spammer", "settings", "hobbies", "interests", "toClassify", "updatedBy", "reminderPassword", "openID", "ldapId", "institution", "remoteUserIds", "gravatarAddress"};
-	private static final String[] IGNORE3 = new String[] {"date", "user.activationCode", "user.apiKey", "user.email", "user.homepage", "user.password", "user.passwordSalt", "user.realname", "resource.scraperId", "resource.openURL", "resource.numberOfRatings", "resource.rating", "user.IPAddress", "user.basket", "user.inbox", "user.gender", "user.interests", "user.hobbies", "user.profession", "user.institution", "user.openURL", "user.place", "user.spammer", "user.confidence", "user.settings", "user.algorithm", "user.prediction", "user.mode", "user.toClassify", "user.updatedBy", "user.reminderPassword", "user.openID", "user.ldapId", "user.remoteUserIds", "user.gravatarAddress"};
+	private static final String COMMON_USER_PROPERTIES = "apiKey|homepage|realname|email|password|date|openURL|gender|place|interests|hobbies|IPAddress|basket|inbox|profession|institution|place|spammer|settings|toClassify|updatedBy|gravatarAddress|birthday|registrationDate|reminderPasswordRequestDate|updatedAt|tags";
+	private static final String[] IGNORE1 = new String[] {"[0].date", "[0].user.apiKey", "[0].user.email", "[0].user.homepage", "[0].user.password", "[0].user.passwordSalt", "[0].user.realname", "[0].user.confidence", "[0].resource.scraperId", "[0].resource.openURL", "[0].resource.numberOfRatings", "[0].resource.rating", "[0].user.IPAddress", "[0].user.basket", "[0].user.inbox", "[0].user.gender", "[0].user.interests", "[0].user.hobbies", "[0].user.profession", "[0].user.institution", "[0].user.openURL", "[0].user.place", "[0].user.spammer", "[0].user.settings", "[0].user.algorithm", "[0].user.prediction", "[0].user.mode", "[0].user.updatedBy", "[0].user.toClassify", "[0].user.reminderPassword", "[0].user.openID", "[0].user.ldapId", "[0].user.activationCode", "[0].user.remoteUserIds", "[0].user.gravatarAddress", "[0].user.birthday", "[0].user.registrationDate", "[0].user.reminderPasswordRequestDate", "[0].user.updatedAt", "[0].user.tags", "[0].resource.discussionItems", "[0].resource.documents", "[0].resource.extraUrls"};
+	private static final String[] IGNORE2 = new String[] {"activationCode", "apiKey", "email", "homepage", "password", "passwordSalt", "realname", "date", "openURL", "gender", "place", "IPAddress", "basket", "inbox", "profession", "spammer", "settings", "hobbies", "interests", "toClassify", "updatedBy", "reminderPassword", "openID", "ldapId", "institution", "remoteUserIds", "gravatarAddress", "birthday", "registrationDate", "reminderPasswordRequestDate", "updatedAt", "tags"};
+	private static final String[] IGNORE3 = new String[] {"date", "user.activationCode", "user.apiKey", "user.email", "user.homepage", "user.password", "user.passwordSalt", "user.realname", "resource.scraperId", "resource.openURL", "resource.numberOfRatings", "resource.rating", "user.IPAddress", "user.basket", "user.inbox", "user.gender", "user.interests", "user.hobbies", "user.profession", "user.institution", "user.openURL", "user.place", "user.spammer", "user.confidence", "user.settings", "user.algorithm", "user.prediction", "user.mode", "user.toClassify", "user.updatedBy", "user.reminderPassword", "user.openID", "user.ldapId", "user.remoteUserIds", "user.gravatarAddress", "resource.discussionItems", "resource.documents", "resource.extraUrls", "user.birthday", "user.registrationDate", "user.reminderPasswordRequestDate", "user.updatedAt", "user.tags"};
 	
 	private static final int PORT = 41252;
 
@@ -352,7 +355,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		 */
 		group.setPrivlevel(null); 
 		
-		EasyMock.expect(serverLogic.createGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"))).andReturn(group.getName() + "-new");
+		EasyMock.expect(serverLogic.createGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId", "tagSets"))).andReturn(group.getName() + "-new");
 		EasyMock.replay(serverLogic);
 		assertEquals(group.getName() + "-new", clientLogic.createGroup(group));
 		EasyMock.verify(serverLogic);
@@ -504,7 +507,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.replay(serverLogic);
 		final Group returnedGroup = clientLogic.getGroupDetails(groupName);
 		log.debug(returnedGroup.getUser().getIPAddress());
-		CommonModelUtils.assertPropertyEquality(returnedGroupExpectation, returnedGroup, 5, Pattern.compile(".*users.*\\.(" + COMMON_USER_PROPERTIES + ")|.*\\.date|.*\\.scraperId|.*\\.openURL|.*groupId|user.*"));
+		CommonModelUtils.assertPropertyEquality(returnedGroupExpectation, returnedGroup, 5, Pattern.compile(".*users.*\\.(" + COMMON_USER_PROPERTIES + ")|.*\\.date|.*\\.scraperId|.*\\.openURL|.*groupId|user.*|tagSets"));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return returnedGroup;
@@ -541,7 +544,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.expect(serverLogic.getGroups(start, end)).andReturn(expectedList);
 		EasyMock.replay(serverLogic);
 		final List<Group> returnedGroups = clientLogic.getGroups(start,end);
-		CommonModelUtils.assertPropertyEquality(expectedList, returnedGroups, 3, Pattern.compile(".*\\.groupId"));
+		CommonModelUtils.assertPropertyEquality(expectedList, returnedGroups, 3, Pattern.compile(".*\\.groupId|.*\\.tagSets"));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return returnedGroups;
@@ -653,7 +656,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.replay(serverLogic);
 
 		final List<Post<T>> returnedPosts = clientLogic.getPosts(resourceType, grouping, groupingName, tags, hash, search, filter, order, null, null, start, end);
-		CommonModelUtils.assertPropertyEquality(expectedPosts, returnedPosts, 5, Pattern.compile(".*\\.user\\.(" + COMMON_USER_PROPERTIES + "|confidence|activationCode|reminderPassword|openID|ldapId|remoteUserIds|prediction|algorithm|mode)|.*\\.date|.*\\.scraperId|.*\\.openURL|.*\\.numberOfRatings|.*\\.rating"));
+		CommonModelUtils.assertPropertyEquality(expectedPosts, returnedPosts, 5, Pattern.compile(".*\\.user\\.(" + COMMON_USER_PROPERTIES + "|confidence|activationCode|reminderPassword|openID|ldapId|remoteUserIds|prediction|algorithm|mode)|.*\\.date|.*\\.scraperId|.*\\.openURL|.*\\.numberOfRatings|.*\\.rating|.*\\.discussionItems|.*resource\\.documents|.*resource\\.extraUrls"));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return returnedPosts;
@@ -766,7 +769,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		switch (operation) {
 		case ADD_NEW_USER:
 
-			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"), PropertyEqualityArgumentMatcher.eq(operation, ""))).andReturn("OK");
+			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId", "tagSets"), PropertyEqualityArgumentMatcher.eq(operation, ""))).andReturn("OK");
 			EasyMock.replay(serverLogic);
 			assertEquals("OK", clientLogic.updateGroup(group, operation));
 			EasyMock.verify(serverLogic);
@@ -780,7 +783,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			 */
 			group.setPrivlevel(null); 
 			
-			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"), PropertyEqualityArgumentMatcher.eq(operation, ""))).andReturn(group.getName() + "-new");
+			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId", "tagSets"), PropertyEqualityArgumentMatcher.eq(operation, ""))).andReturn(group.getName() + "-new");
 			EasyMock.replay(serverLogic);
 			assertEquals(group.getName() + "-new", clientLogic.updateGroup(group, operation));
 			EasyMock.verify(serverLogic);
@@ -1307,6 +1310,60 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	
 	@Override
 	public List<PostMetaData> getPostMetaData(HashID hashType, String resourceHash, String userName, String metaDataPluginKey) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String)
+	 */
+	@Override
+	public List<Person> getPersonSuggestion(String searchString) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersons(java.lang.String, java.lang.String, org.bibsonomy.model.PersonName, org.bibsonomy.model.enums.PersonResourceRelation)
+	 */
+	@Override
+	public List<Person> getPersons(String longHash, String publicationOwner, PersonName personName, PersonResourceRelation rel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#addPersonRelation(java.lang.String, java.lang.String, org.bibsonomy.model.Person, org.bibsonomy.model.enums.PersonResourceRelation)
+	 */
+	@Override
+	public void addPersonRelation(String longHash, String publicationOwner, Person person, PersonResourceRelation rel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonRelation(java.lang.String, java.lang.String, org.bibsonomy.model.Person, org.bibsonomy.model.enums.PersonResourceRelation)
+	 */
+	@Override
+	public void removePersonRelation(String longHash, String publicationOwner, Person person, PersonResourceRelation rel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePerson(org.bibsonomy.model.Person)
+	 */
+	@Override
+	public void createOrUpdatePerson(Person person) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonById(int)
+	 */
+	@Override
+	public Person getPersonById(int id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

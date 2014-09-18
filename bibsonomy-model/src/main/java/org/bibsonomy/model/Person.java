@@ -26,11 +26,7 @@ package org.bibsonomy.model;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-
-import org.bibsonomy.model.enums.PersonResourceRelation;
 
 /**
  * Entity class of a real person. Note that {@link User} and {@link Author} are
@@ -43,56 +39,94 @@ public class Person implements Serializable {
 
 	private static final long serialVersionUID = 4578956154246424767L;
 	
-	private int id;
+	/** null means new non-persistent object */
+	private Integer id;
 	/** usually current real name */
 	private PersonName mainName;
 	/** other names like former names or pseudonyms */
 	private Set<PersonName> alternateNames;
+	/** something like "Dr. rer. nat." */
 	private String academicDegree;
+	/** researcher id on http://orcid.org/ */
+	private String orcid;
+	/** sameAs relation to a user */
+	private User user;
 	private User modifiedBy;
+	/** {@link User} who last modified this {@link Person} */
 	private Date modifiedAt;
-	private Map<PersonResourceRelation, List<BibTex>> relatedPublications;
-	
+
 	public Person() {
 		this.alternateNames = new HashSet<PersonName>();
 	}
-
-	public int getId() {
+	
+	/**
+	 * @return synthetic id. null means new non-persistent object
+	 */
+	public Integer getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	/**
+	 * @param id synthetic id. null means new non-persistent object
+	 */
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
+	/**
+	 * @return usually current real name
+	 */
 	public PersonName getMainName() {
 		return this.mainName;
 	}
 
+	/**
+	 * @param name usually current real name
+	 */
 	public void setMainName(PersonName name) {
 		this.mainName = name;
 	}
 
+	/**
+	 * @return something like "Dr. rer. nat."
+	 */
 	public String getAcademicDegree() {
 		return this.academicDegree;
 	}
 
+	/**
+	 * @param scientificDegree something like "Dr. rer. nat."
+	 */
 	public void setAcademicDegree(String scientificDegree) {
 		this.academicDegree = scientificDegree;
 	}
 
+	/**
+	 * @return {@link User} who last modified this {@link Person}
+	 */
 	public User getModifiedBy() {
 		return this.modifiedBy;
 	}
 
+	/**
+	 * @param modifiedBy {@link User} who last modified this {@link Person}
+	 */
 	public void setModifiedBy(User modifiedBy) {
 		this.modifiedBy = modifiedBy;
 	}
 
+	/**
+	 * @return date of last modification
+	 * @see #getModifiedBy()
+	 */
 	public Date getModifiedAt() {
 		return this.modifiedAt;
 	}
 
+	/**
+	 * @param modifiedAt date of last modification
+	 * @see #setModifiedBy(User)
+	 */
 	public void setModifiedAt(Date modifiedAt) {
 		this.modifiedAt = modifiedAt;
 	}
@@ -112,26 +146,46 @@ public class Person implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof Person) {
-			final Person other = (Person) obj;
-			for(PersonName pn : other.getAlternateNames()) {
-				if(!this.getAlternateNames().contains(pn))
-					return false;
-			}
-			for(PersonName pn: this.getAlternateNames()) {
-				if(!other.getAlternateNames().contains(pn))
-					return false;
-			}
+		if (id == null) {
+			return obj == this;
 		}
-		return false;
+		return ((obj instanceof Person) && (this.getId() == ((Person)obj).getId()));
 	}
 	
 	@Override
 	public int hashCode() {
-		int hash = 0;
-		for(PersonName pn : this.getAlternateNames()){
-			hash = hash ^ pn.getFirstName().hashCode() ^ pn.getLastName().hashCode();
+		if (id == null) {
+			return System.identityHashCode(this);
 		}
-		return hash;
+		return id;
 	}
+
+	/** 
+	 * @return {@link User} in sameAs relation to this {@link Person} 
+	 */
+	public User getUser() {
+		return this.user;
+	}
+
+	/**
+	 * @param user {@link User} in sameAs relation to this {@link Person} 
+	 */
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	/**
+	 * @return researcher id on http://orcid.org/
+	 */
+	public String getOrcid() {
+		return this.orcid;
+	}
+
+	/**
+	 * @param orcid researcher id on http://orcid.org/
+	 */
+	public void setOrcid(String orcid) {
+		this.orcid = orcid;
+	}
+
 }

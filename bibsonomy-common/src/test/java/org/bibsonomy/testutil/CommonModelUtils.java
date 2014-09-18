@@ -33,7 +33,11 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -42,6 +46,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.testutil.DepthEqualityTester.EqualityChecker;
+import org.bibsonomy.util.DateUtils;
 import org.bibsonomy.util.ExceptionUtils;
 
 /**
@@ -54,6 +59,7 @@ import org.bibsonomy.util.ExceptionUtils;
 public final class CommonModelUtils {
 
 	private static final Log log = LogFactory.getLog(CommonModelUtils.class);
+	private static final long DAY_MILLIS = 24 * 60 * 60 * 1000;;
 
 	/**
 	 * Don't create instances of this class - use the static methods instead.
@@ -108,6 +114,14 @@ public final class CommonModelUtils {
 			} catch (final MalformedURLException ex) {
 				throw new RuntimeException(ex);
 			}
+		}
+		if (Date.class == type) {
+			Calendar cal = GregorianCalendar.getInstance();
+			cal.setTimeInMillis( (cal.getTimeInMillis() / DAY_MILLIS) * DAY_MILLIS + name.hashCode()); // this could cause trouble if test is run exactly at 00:00 at night
+			return cal.getTime();
+		}
+		if (type.isAssignableFrom(ArrayList.class)) {
+			return new ArrayList<Object>();
 		}
 		if (Privlevel.class == type) {
 			return Privlevel.MEMBERS;
