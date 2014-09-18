@@ -88,7 +88,7 @@
 				<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${excapedRequestPath}" href="/rss/${excapedRequestPath}" />
 			</c:if>
 			<!-- UnAPI service -->
-			<link rel="unapi-server" type="application/xml" title="unAPI" href="${properties['project.home']}unapi"/>
+			<link rel="unapi-server" type="application/xml" title="unAPI" href="${relativeUrlGenerator.getProjectHome()}unapi"/>
 			
 			<c:if test="${not empty param.cleanlayout}">
 				<!--+

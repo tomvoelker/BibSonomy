@@ -18,7 +18,7 @@
 			        	<li><fmt:message key="post.resource.discussion.anonymous.help"/></li>
 			        	<li><fmt:message key="post.resource.discussion.visibility.help"/></li>
 			       	</ul>
-			       	<fmt:message key="post.resource.comment.${fn:toLowerCase(resource.class.simpleName)}.several"/>
+			       	<fmt:message key="post.resource.comment.${fn:toLowerCase(resource['class'].simpleName)}.several"/>
 	        	</jsp:attribute>
 	        </buttons:help>
 		</jsp:attribute>

@@ -311,24 +311,6 @@ public class UserSettings implements Serializable {
 	}
 
 	/**
-	 * @return the simpleInterface
-	 * @deprecated use {@link #getLayoutSettings()}.isSimpleInterface()
-	 */
-	@Deprecated
-	public boolean isSimpleInterface() {
-		return this.layoutSettings.isSimpleInterface();
-	}
-
-	/**
-	 * @param simpleInterface the simpleInterface to set
-	 * @deprecated use {@link #getLayoutSettings()}.setSimpleInterface()
-	 */
-	@Deprecated
-	public void setSimpleInterface(final boolean simpleInterface) {
-		this.layoutSettings.setSimpleInterface(simpleInterface);
-	}
-
-	/**
 	 * @return the timeZone
 	 */
 	public TimeZone getTimeZone() {

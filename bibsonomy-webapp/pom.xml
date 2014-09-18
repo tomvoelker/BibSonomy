@@ -73,20 +73,21 @@
 				</executions>
 				<configuration>
 					<excludes>
-						<exclude>**/pdf.js</exclude>
 						<exclude>**/pdfworker.js</exclude>
+						<exclude>**/pdf.js/**</exclude>
 					</excludes>
 					<encoding>UTF-8</encoding>
 					<jswarn>false</jswarn>
 					<nosuffix>true</nosuffix>
 					<suffix></suffix>
 					<disableOptimizations>true</disableOptimizations>
+					<!-- note: use the compressed javascript files in ${project.build.webapp.resourcedir} -->
 					<aggregations>
 						<aggregation>
 							<insertNewLine>true</insertNewLine>
 							<output>${project.build.webapp.resourcedir}/javascript/merged/bs/global.js</output>
 							<includes>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/jquery-2.1.0.min.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/jquery-2.1.1.js</include>
 								<include>${project.build.webapp.resourcedir}/bootstrap/js/bootstrap.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/holder.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-dialog.js</include>
@@ -134,6 +135,48 @@
 								<include>${project.build.webapp.resourcedir}/javascript/discussion/reviews.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/discussion/comments.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/discussion/csllinks.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/csllocales.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/xmldom.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/citeproc.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/cslstyles.js</include>
+							</includes>
+						</aggregation>
+						<!-- javascript files for bootstrap front-end -->
+						<aggregation>
+							<insertNewLine>true</insertNewLine>
+							<output>${project.build.webapp.resourcedir}/javascript/merged/bs/global.js</output>
+							<includes>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/jquery-2.1.1.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/jquery-ui.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/holder.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-dialog.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/custom.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-datepicker.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-carousel.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/friendoverview.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/functions.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/actions/clipboard.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/ajaxUtils.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/fileUpload.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/style.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/jquery.fadebox.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/userRelation.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/addToSpheres.js</include>
+							</includes>
+						</aggregation>
+						<aggregation>
+							<insertNewLine>true</insertNewLine>
+							<output>${project.build.webapp.resourcedir}/javascript/merged/bs/discussion.js</output>
+							<includes>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/excanvas.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/jquery.flot.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/jquery.flot.stack.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/discussion/discussion.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/discussion/reviews.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/discussion/comments.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/discussion/csllinks.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/citeproc/csllocales.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/citeproc/xmldom.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/citeproc/citeproc.js</include>
@@ -315,6 +358,10 @@
 				<exclusion>
 					<groupId>org.apache.tomcat</groupId>
 					<artifactId>el-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jasper-el</artifactId>
+					<groupId>org.apache.tomcat</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>

@@ -17,7 +17,7 @@
         <div class="ptitle"><bib:title post="${post}"/></div>
         <div class="pdesc"> <bib:desc publication="${post.resource}"/></div>
         <span>
-           <rc:meta post="${post}" otherPostsUrlPrefix="/bib/"/>
+           <rc:meta post="${post}" otherPostsUrlPrefix="${relativeUrlGenerator.getPublicationsAsBibtexUrl()}"/>
         </span>
       </div>
     </span>

@@ -46,6 +46,17 @@ import org.bibsonomy.model.statistics.Statistics;
  * @author Jens Illig
  */
 public interface PostLogicInterface {
+	
+	/**
+	 * the number of tags allowed for querying the db
+	 */
+	public static final int MAX_TAG_SIZE = 10;
+	
+	/**
+	 * the maximum number of items for querying the db
+	 */
+	public static final int MAX_QUERY_SIZE = 1000;
+	
 	/**  
 	 * retrieves a filterable list of posts.
 	 * 
