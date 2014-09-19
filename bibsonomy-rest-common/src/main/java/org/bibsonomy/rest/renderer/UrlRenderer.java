@@ -513,13 +513,17 @@ public class UrlRenderer {
 	 * @param relation 
 	 * @return the path to the references of a community post
 	 */
-	public String createHrefForCommunityPostReferences(String hash, GoldStandardRelation relation) {
+	public String createHrefForCommunityPostReferences(final String hash, final GoldStandardRelation relation) {
 		final UrlBuilder builder = this.createHrefForCommunity(hash);
-		int relationValue = relation.getValue();
-		if(relationValue==0){
+		switch (relation) {
+		case REFERENCE:
 			builder.addPathElement(RESTConfig.RELATION_REFERENCE);
-		}else if(relationValue==1){
+			break;
+		case PART_OF:
 			builder.addPathElement(RESTConfig.RELATION_PARTOF);
+			break;
+		default:
+			throw new IllegalArgumentException("relation " + relation + " not supported");
 		}
 		return builder.asString();
 	}
