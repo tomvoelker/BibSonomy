@@ -102,7 +102,7 @@ import org.bibsonomy.rest.client.queries.post.CreateConceptQuery;
 import org.bibsonomy.rest.client.queries.post.CreateGroupQuery;
 import org.bibsonomy.rest.client.queries.post.CreatePostDocumentQuery;
 import org.bibsonomy.rest.client.queries.post.CreatePostQuery;
-import org.bibsonomy.rest.client.queries.post.CreateReferenceQuery;
+import org.bibsonomy.rest.client.queries.post.CreateRelationQuery;
 import org.bibsonomy.rest.client.queries.post.CreateSyncPlanQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserRelationshipQuery;
@@ -578,7 +578,7 @@ public class RestLogic implements LogicInterface {
 			return;
 		}
 		for (final String referenceHash : references) {
-			final CreateReferenceQuery query = new CreateReferenceQuery(postHash, referenceHash, relation);
+			final CreateRelationQuery query = new CreateRelationQuery(postHash, referenceHash, relation);
 			execute(query);
 		}
 	}
