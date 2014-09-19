@@ -12,7 +12,7 @@ import org.bibsonomy.rest.strategy.Context;
  * 
  * @author dzo
  */
-public class PostReferencesStrategy extends AbstractCreateStrategy {
+public class PostRelationsStrategy extends AbstractCreateStrategy {
 
 	private final String hash;
 	private final GoldStandardRelation relation;
@@ -22,7 +22,7 @@ public class PostReferencesStrategy extends AbstractCreateStrategy {
 	 * @param hash 
 	 * @param relation
 	 */
-	public PostReferencesStrategy(final Context context, final String hash, final GoldStandardRelation relation) {
+	public PostRelationsStrategy(final Context context, final String hash, final GoldStandardRelation relation) {
 		super(context);
 		this.hash = hash;
 		this.relation = relation;

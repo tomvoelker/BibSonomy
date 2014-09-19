@@ -10,7 +10,7 @@ import org.bibsonomy.rest.strategy.Context;
 /**
  * @author dzo
  */
-public class DeleteReferencesStrategy extends AbstractDeleteStrategy {
+public class DeleteRelationsStrategy extends AbstractDeleteStrategy {
 
 	private final String hash;
 	private final Reader doc;
@@ -21,7 +21,7 @@ public class DeleteReferencesStrategy extends AbstractDeleteStrategy {
 	 * @param hash
 	 * @param relation
 	 */
-	public DeleteReferencesStrategy(final Context context, final String hash, final GoldStandardRelation relation) {
+	public DeleteRelationsStrategy(final Context context, final String hash, final GoldStandardRelation relation) {
 		super(context);
 
 		this.hash = hash;
