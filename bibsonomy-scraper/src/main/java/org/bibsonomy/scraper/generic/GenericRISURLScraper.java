@@ -33,6 +33,7 @@ import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 public abstract class GenericRISURLScraper extends AbstractGenericFormatURLScraper {
 	private static final RisToBibtexConverter RIS2BIB = new RisToBibtexConverter();
 	
+	@Override
 	protected String convert(String downloadResult) {
 		return RIS2BIB.risToBibtex(downloadResult);
 	}

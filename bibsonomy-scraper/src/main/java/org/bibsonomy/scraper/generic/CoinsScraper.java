@@ -86,7 +86,7 @@ public class CoinsScraper implements Scraper {
 			final String titleValue = matcherCoins.group(1);
 
 			// store all key/value tuples
-			final Map<String, String> tuples = new HashMap<String, String>();
+			final Map<String, String> tuples = new HashMap<>();
 
 			final Matcher m = PATTERN_KEY_VALUE.matcher(titleValue);
 
@@ -225,7 +225,7 @@ public class CoinsScraper implements Scraper {
 
 	private static void append(final String fieldName, final String fieldValue, final StringBuffer bibtex) {
 		if (present(fieldValue)) {
-			bibtex.append(fieldName + " = {").append(fieldValue).append("},\n");
+			bibtex.append(fieldName).append(" = {").append(fieldValue).append("},\n");
 		}
 	}
 

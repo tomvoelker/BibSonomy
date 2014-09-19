@@ -93,6 +93,7 @@ public class AipScitationScraper extends GenericBibTeXURLScraper {
 		}
 		return null;
 	}
+	
 	private static String firstPageParser(URL url){
 		try{
 			Matcher m = firstPagePattern.matcher(WebUtils.getContentAsString(url));
@@ -104,6 +105,7 @@ public class AipScitationScraper extends GenericBibTeXURLScraper {
 		}
 		return null;
 	}
+	
 	@Override
 	public String getDownloadURL(URL url) throws ScrapingException {
 		return "http://" + url.getHost().toString() + url.getPath().toString() + BIBTEX_PATH;
@@ -114,7 +116,9 @@ public class AipScitationScraper extends GenericBibTeXURLScraper {
 	 */
 	@Override
 	protected String postProcessScrapingResult(ScrapingContext sc, String result) {
+		// add an abstract
 		String bibtex = BibTexUtils.addFieldIfNotContained(result, "abstract", abstractParser(sc.getUrl()));
+		// fix the eid
 		bibtex = bibtex.replace("eid = ,", "eid = " + firstPageParser(sc.getUrl()) + ",");
 		return bibtex;
 	}
