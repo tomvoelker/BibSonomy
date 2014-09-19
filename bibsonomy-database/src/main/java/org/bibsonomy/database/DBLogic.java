@@ -96,6 +96,7 @@ import org.bibsonomy.model.Review;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
@@ -2516,18 +2517,18 @@ public class DBLogic implements LogicInterface {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.GoldStandardPostLogicInterface#createReferences(java.lang.String, java.util.Set)
+	 * @see org.bibsonomy.model.logic.GoldStandardPostLogicInterface#createRelation(java.lang.String, java.util.Set)
 	 */
 	@Override
-	public void createReferences(final String postHash, final Set<String> references) {
+	public void createRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
 		this.permissionDBManager.ensureAdminAccess(loginUser); // only admins can create references
 
 		final DBSession session = this.openSession();
 		try {
-			this.goldStandardPublicationDBManager.addReferencesToPost(this.loginUser.getName(), postHash, references, session);
+			this.goldStandardPublicationDBManager.addRelationsToPost(this.loginUser.getName(), postHash, references, relation, session);
 		} finally {
 			session.close();
-		}	
+		}
 	}
 
 	/*
@@ -2535,12 +2536,12 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.GoldStandardPostLogicInterface#deleteReferences(java.lang.String, java.util.Set)
 	 */
 	@Override
-	public void deleteReferences(final String postHash, final Set<String> references) {
+	public void deleteRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
 		this.permissionDBManager.ensureAdminAccess(loginUser); // only admins can delete references
 
 		final DBSession session = this.openSession();
 		try {
-			this.goldStandardPublicationDBManager.removeReferencesFromPost(this.loginUser.getName(), postHash, references, session);
+			this.goldStandardPublicationDBManager.removeRelationsFromPost(this.loginUser.getName(), postHash, references, relation, session);
 		} finally {
 			session.close();
 		}	
