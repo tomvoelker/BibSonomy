@@ -2759,7 +2759,7 @@ public class DBLogic implements LogicInterface {
 			// verify that there exists a gold standard
 			final Post<? extends Resource> goldStandardPost = this.getPostDetails(interHash, GoldStandardPostLogicInterface.GOLD_STANDARD_USER_NAME);
 			if (!present(goldStandardPost)) {
-				throw new ObjectNotFoundException("To the discussion item no post could be found for interHash "+interHash+" and user "+username+".");
+				throw new ObjectNotFoundException(interHash);
 			}
 			/*
 			 * create the discussion item

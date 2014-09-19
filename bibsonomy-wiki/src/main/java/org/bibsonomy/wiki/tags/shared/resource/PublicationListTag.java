@@ -18,6 +18,7 @@ import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Layout;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.SortUtils;
@@ -152,7 +153,7 @@ public class PublicationListTag extends SharedTag {
 		 * FIXME: We want these working in a different way. We want the
 		 * publication's year, not the BibSonomy year of the posting.
 		 */
-		List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, this.getGroupingEntity(), requestedName, Arrays.asList(tags.split(" ")), null, null, null, null, null, null, 0, Integer.MAX_VALUE);
+		List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, this.getGroupingEntity(), requestedName, Arrays.asList(tags.split(" ")), null, null, null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
 		BibTexUtils.removeDuplicates(posts);
 
 		/*
