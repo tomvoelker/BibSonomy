@@ -31,13 +31,14 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
  * @author hagen
  */
-public class PharmacognosyResearchScraper extends AbstractGenericFormatURLScraper {
+public class PharmacognosyResearchScraper extends GenericBibTeXURLScraper {
 
 	private static final String SITE_NAME = "Pharmacognosy Research";
 	private static final String SITE_URL = "http://www.phcogres.com/";
@@ -83,18 +84,19 @@ public class PharmacognosyResearchScraper extends AbstractGenericFormatURLScrape
 			return url.toString().replace(m.group(1), "citeman") + ";t=6";
 		return null;
 	}
-
+	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#convert(java.lang.String)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
 	 */
 	@Override
-	protected String convert(String downloadResult) {
-		String[] alllines = downloadResult.split("\n");
+	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
+		String[] alllines = bibtex.split("\n");
 		String bibtex_key = alllines[0];
 		String bibtex_new_key = "@article{nokey,\n";
-		if(!(bibtex_key.contains("@") && bibtex_key.contains("{") && bibtex_key.contains(",\n")))
-			return downloadResult.replace(bibtex_key, bibtex_new_key + bibtex_key);
+		if (!(bibtex_key.contains("@") && bibtex_key.contains("{") && bibtex_key.contains(",\n"))) {
+			// TODO: remove html entities in bibtex!
+			return bibtex.replace(bibtex_key, bibtex_new_key + bibtex_key);
+		}
 		return null;
 	}
-
 }
