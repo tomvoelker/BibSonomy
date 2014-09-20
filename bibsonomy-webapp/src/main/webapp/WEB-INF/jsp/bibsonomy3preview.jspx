@@ -9,16 +9,9 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"> 
 		
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<c:choose>
-		<c:when test="${user.settings.layoutSettings.viewLayout eq 'CLASSIC'}">
-			<c:set var="setLayout" value="Switch to BibSonomy 3 beta" />
-			<c:set var="layoutName" value="BOOTSTRAP" />
-		</c:when>
-		<c:otherwise>
-			<c:set var="setLayout" value="Switch back to BibSonomy 2" />
-			<c:set var="layoutName" value="CLASSIC" />
-		</c:otherwise>
-	</c:choose>
+	
+	<c:set var="setLayout" value="Switch to BibSonomy 3 beta" />
+	<c:set var="layoutName" value="BOOTSTRAP" />
 	
 	<layout:layout loginUser="${command.context.loginUser}" heading="${heading}" pageTitle="" requPath="${requPath}" noSidebar="${true}">
 	
@@ -44,12 +37,20 @@
 						It is always possible to switch back to the BibSonomy 2 front-end.
 					</div>
 					
-					<form id="styleSettingsForm" method="POST" action="/updateUserSettings">
-						<input type="hidden" name="ckey" value="${ckey}"/>
-						<input type="hidden" name="action" value="switchLayout"/>
-						<input type="hidden" name="user.settings.layoutSettings.viewLayout" value="${layoutName}" />
-						<button class="btn btn-primary btn-lg btn-block" type="submit" name="tagbox_style"><c:out value="${setLayout}" /></button>	
-					</form>
+					<c:choose>
+						<c:when test="${command.context.userLoggedIn}">
+					
+							<form id="styleSettingsForm" method="POST" action="/updateUserSettings">
+								<input type="hidden" name="ckey" value="${ckey}"/>
+								<input type="hidden" name="action" value="switchLayout"/>
+								<input type="hidden" name="user.settings.layoutSettings.viewLayout" value="${layoutName}" />
+								<button class="btn btn-primary btn-lg btn-block" type="submit" name="tagbox_style"><c:out value="${setLayout}" /></button>	
+							</form>
+						</c:when>
+						<c:otherwise>
+							<a class="btn btn-primary btn-lg btn-block" href="/login">Please login first.</a>
+						</c:otherwise>
+					</c:choose>
 					<br /><br /><br />
 				</div>
 			</div>
