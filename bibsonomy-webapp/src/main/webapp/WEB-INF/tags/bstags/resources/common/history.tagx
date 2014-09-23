@@ -73,7 +73,6 @@
 						</jsp:attribute>
 					</rc:diff>
 				</div>
-				<br/>
 		<c:choose>
 		<c:when test="${fn:length(listView.list) gt 1}">
 				<!--+
@@ -86,38 +85,70 @@
 						<c:set var="additionalItemClasses"
 							value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}" />
 						<br/>
-						<hr class="fancy-line"></hr>
+						<hr class="fancy-line fancy-line-bolder"></hr>
 						<ul class="HistTable no-bullet">
-						
-							<li>
-								<rc:changeDate postIndex="${(fieldlength-index+1)}"
-									post="${listView.list[(fieldlength-index)]}"
-									newestPub="${listView.list[(fieldlength-index+1)]}" loginUserName="${loginUserName}" />
+							<li id="versionNum">
+								<a href="#" class="diffNumText">
+								Ver. ${fieldlength-index+1}
+								</a>
 							</li>
-							<c:set var="diffNum" value="${mtl:DiffNum(listView.list[(fieldlength-index)].resource,listView.list[(fieldlength-index+1)].resource)}"/>
+							<li>
+								<rc:changeDate post="${listView.list[(fieldlength-index)]}"
+									newestPost="${listView.list[(fieldlength)]}" />
+							</li>
+							<!--  -->
+							<c:set var="diffNumPre" value="${mtl:DiffNum(listView.list[(fieldlength-index)].resource,listView.list[(fieldlength-index+1)].resource)}"/>
 							<c:choose>
-		      					<c:when test="${diffNum > 1}">
-		      						<c:set var="diffNumMsg" value=" entries are changed"/>
+		      					<c:when test="${diffNumPre > 1}">
+		      						<c:set var="diffNumPreMsg" value=" entries are changed"/>
 		      					</c:when>
 						      	<c:otherwise>
-		 							<c:set var="diffNumMsg" value=" entry is changed   "/>
+		 							<c:set var="diffNumPreMsg" value=" entry is changed   "/>
 		 					    </c:otherwise>
 							</c:choose>
 							 
-							<li id="postDiffNum">
+							<li id="postDiffNumPre">
 								<a href="#" class="diffNumText">
-								${diffNum} ${diffNumMsg}
+								${diffNumPre} ${diffNumPreMsg}
 								</a>
 							</li> 
+							<!--  -->
+							<c:set var="diffNumCurr" value="${mtl:DiffNum(listView.list[(fieldlength-index)].resource,listView.list[(fieldlength)].resource)}"/>
+							<c:choose>
+		      					<c:when test="${diffNumCurr > 1}">
+		      						<c:set var="diffNumCurrMsg" value=" entries are changed"/>
+		      					</c:when>
+						      	<c:otherwise>
+		 							<c:set var="diffNumCurrMsg" value=" entry is changed   "/>
+		 					    </c:otherwise>
+							</c:choose>
+							 
+							<li id="postDiffNumCurr">
+								<a href="#" class="diffNumText">
+								${diffNumCurr} ${diffNumCurrMsg}
+								</a>
+							</li> 
+							<!-- -->
 							<li>
-								<a href="#" id="showDiff"  title="Show changes">more...</a>
-								<a href="#" id="hideDiff"  title="Hide changes">less...</a>
+								<a href="#" id="compareChoose">
+								Compare to <span id="pre" class="selected">previous</span>/<span id="curr" class="underline">current</span> version</a>
 							</li>	
 							<hr class="fancy-line"></hr>
-							<li id="postDiffDesc" class="postDiffDesc invisible">				
-								<rc:postDescDiff
-									publication="${listView.list[(fieldlength-index)]}"
-									newestPub="${listView.list[(fieldlength-index+1)]}" isPub="${isPub}"/>
+							<li id="postDiffPre" class="postDiffPre">				
+						
+									${mtl:BibDiff(listView.list[(fieldlength-index)].resource,listView.list[(fieldlength-index+1)].resource)}
+						
+								<!--<rc:postDescDiff
+									publication="${listView.list[(fieldlength-index)].resource}"
+									newestPub="${listView.list[(fieldlength-index+1)].resource}" isPub="${isPub}"/>-->
+							</li>
+							<li id="postDiffCurr" class="postDiffCurr invisible">				
+						
+									${mtl:BibDiff(listView.list[(fieldlength-index)].resource,listView.list[(fieldlength)].resource)}
+						
+								<!--<rc:postDescDiff
+									publication="${listView.list[(fieldlength-index)].resource}"
+									newestPub="${listView.list[(fieldlength)].resource}" isPub="${isPub}"/>-->
 							</li>
 						</ul>	
 						
@@ -132,5 +163,49 @@
 			</c:if>
 		</c:otherwise>
 	</c:choose>
+			<br/>
+		
+		<div id="originalVersion">
+			<hr class="fancy-line fancy-line-bolder"></hr>
+			<ul class="HistTable no-bullet">
+				<li id="versionNum">
+					<a href="#" class="diffNumText">Ver.0 (before editing)</a>
+				</li>	
+				<hr class="fancy-line"></hr>
+				<rc:diff post="${listView.list[(0)]}" loginUserName="${loginUserName}"
+						additionalItemClasses="${'odd'}">
+						<jsp:attribute name="title">
+							<c:choose>
+								<c:when test="${empty listView.list[(0)].user.name}">
+									<bibgs:title post="${listView.list[(0)]}"/>
+								</c:when>
+								<c:otherwise>
+									<c:choose>
+										<c:when test="${isPub}">
+											<bib:title post="${listView.list[(0)]}" />
+										</c:when>
+										<c:otherwise>
+											<bm:title post="${listView.list[(0)]}"/>
+										</c:otherwise>
+									</c:choose>
+								</c:otherwise>
+							</c:choose>
+						</jsp:attribute>
+						<jsp:attribute name="desc">
+						<ul><li class="no-bullet">
+							<c:choose>
+								<c:when test="${isPub}">
+									<bib:fullDescription publication="${listView.list[(0)].resource}"/>
+								</c:when>
+								<c:otherwise>
+									<bm:desc post="${listView.list[(0)]}"/>
+								</c:otherwise>	
+							</c:choose>
+						</li></ul>
+						</jsp:attribute>
+					</rc:diff>
+			</ul>	
+	
+		</div>
 
 </jsp:root>

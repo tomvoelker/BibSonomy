@@ -299,6 +299,7 @@ public class BibTex extends Resource {
 		return this.editor;
 	}
 
+	
 	/**
 	 * @param editor
 	 */
@@ -677,8 +678,14 @@ public class BibTex extends Resource {
 		return extraUrls;
 	}
 
-	@Override
-	public String toString() {
+	/*
+	 * Nasim's comment: this overrided function ruins "toString" method which is also needed 
+	 * for getting editors. So it should be renamed with a more specific name.
+	 * I changed it to "toStringAuthor"**/
+	
+	//@Override
+	//public String toString(){
+	public String toStringAuthor() {
 		return super.toString() + " by <" + author + ">";	
 	}
 	
