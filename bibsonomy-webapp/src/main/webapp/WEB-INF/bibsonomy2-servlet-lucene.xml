@@ -13,7 +13,7 @@
 	<!-- import the config from the lucene module -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-lucene-context.xml" />
 	
-	<bean id="itemRecommenderDataSource"
+	<bean id="luceneDataSource"
 		class="org.apache.tomcat.dbcp.dbcp.BasicDataSource">
 		<property name="driverClassName" value="${database.lucene.driverClassName}" />
 		<property name="url" value="${database.lucene.url}" />
