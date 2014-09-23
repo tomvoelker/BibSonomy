@@ -136,6 +136,22 @@ $(function() {
         $(el).html(text);
         return shortened;
     }
+    
+    
+    $('.community-page-user-list li a.show-less').click(function(event){
+    	event.preventDefault();
+    	$(this).parent().parent().find('.show').each(function() {
+    		$(this).removeClass('show').addClass('hidden');
+    	});
+    });
+    
+    $('.community-page-user-list li a.show-more').click(function(event){
+    	event.preventDefault();
+    	$(this).parent().parent().find('.hidden').each(function() {
+    		$(this).removeClass('hidden').addClass('show');
+    	});
+    	
+    });
 });
 
 function dummyDownHandler(e) {
