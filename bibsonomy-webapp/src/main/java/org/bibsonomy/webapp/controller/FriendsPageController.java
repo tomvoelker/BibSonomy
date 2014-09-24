@@ -81,7 +81,7 @@ public class FriendsPageController extends SingleResourceListController implemen
 			}
 		
 			// when users only are requested, we don't need resources
-			this.setInitializeNoResources(true);		
+			this.setInitializeNoResources(true);
 		}
 	}
 
