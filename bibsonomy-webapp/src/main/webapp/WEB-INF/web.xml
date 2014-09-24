@@ -13,7 +13,6 @@
 		- see -->
 	<distributable />
 
-
 	<!-- Initialization parameters -->
 	<display-name>bibsonomy</display-name>
 	<session-config>
@@ -181,6 +180,13 @@
 	<!--+ | OpenSocial - this imports the file 'web-opensocial.xml' as configured 
 		in the DOCTYPE-statement + -->
 	<!--   &opensocial;-->
+	<!--+
+		| maps some of BibSonomy's configuration parameters to system.properties for
+		| configuring shindig  
+		+-->
+	<listener>
+		<listener-class>org.bibsonomy.opensocial.config.SystemPropertiesContextListener</listener-class>
+	</listener>  
 
 	<!-- Servlet-Mappings  -->
 	<!-- spring main servlet -->
