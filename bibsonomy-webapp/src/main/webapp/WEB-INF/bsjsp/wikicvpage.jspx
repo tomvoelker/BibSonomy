@@ -85,7 +85,7 @@
 			<parts:search pathMessageKey="navi.cv">
 				<jsp:attribute name="pathPart">
 					<li>
-						:: <a href="/user/${mtl:encodeURI(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
+						:: <a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
 					</li>
 				</jsp:attribute>
 			</parts:search>	
@@ -103,9 +103,21 @@
 			| page content 
 			+-->
 		<jsp:attribute name="content">
+			<h1 class="content-header"> 
+				Curriculum Vitae <c:out value=" " />
+				<c:if test="${command.context.userLoggedIn and ownCVPage}">
+					<div class="btn-group" style="margin-bottom: 2px;">
+						<button data-toggle="dropdown" class="btn btn-xs btn-default dropdown-toggle"><span class="fa fa-cog"><!--  --></span>&amp;nbsp;<span class="caret"><!--  --></span></button>
+						<ul class="dropdown-menu">
+							<li><a href="/settings?selTab=0"><fmt:message key="cv.editSettings" /></a></li>
+		    				<li><a href="/settings?selTab=5"><fmt:message key="cv.editCV" /></a></li>
+						</ul>
+					</div>
+				</c:if>
+			</h1>
 			<div>
 				<!-- In wikiArea steht der gesamte Text drin. Inklusive Ueberschriften! -->
-				<div id="wikiArea">
+				<div>
 					<c:choose>
 						<c:when test="${not empty command.wikiText}">
 							<c:out value="${command.renderedWikiText}" escapeXml="false" />

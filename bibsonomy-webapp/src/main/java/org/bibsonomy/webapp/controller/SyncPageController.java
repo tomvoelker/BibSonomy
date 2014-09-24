@@ -18,6 +18,7 @@ import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.util.ResourceUtils;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.synchronization.TwoStepSynchronizationClient;
 import org.bibsonomy.webapp.command.ajax.AjaxSynchronizationCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -43,7 +44,7 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 
 	private RequestLogic requestLogic;
 	private MessageSource messageSource;
-	private String projectHome;
+	private URLGenerator urlGenerator;
 
 	@Override
 	public AjaxSynchronizationCommand instantiateCommand() {
@@ -124,7 +125,7 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 				/*
 				 * plan found in session -> get summary and return last sync data
 				 */
-				syncService.setPlan(getPlanSummary(syncPlan, syncService.getService().toString(), requestLogic.getLocale(), messageSource, projectHome));
+				syncService.setPlan(getPlanSummary(syncPlan, syncService.getService().toString(), requestLogic.getLocale(), messageSource, urlGenerator.getProjectHome()));
 				return lastSyncData;
 			}
 			/*
@@ -181,11 +182,10 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 	}
 
 	/**
-	 * @param projectHome the projectHome to set
+	 * 
+	 * @param urlGenerator
 	 */
-	public void setProjectHome(final String projectHome) {
-		this.projectHome = projectHome;
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
 	}
-
-
 }

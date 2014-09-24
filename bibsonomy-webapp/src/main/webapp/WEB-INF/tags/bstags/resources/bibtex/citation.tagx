@@ -46,7 +46,7 @@
 					| title of the publication 
 					+-->
 				<h3 style="margin-top: 0;">
-					<a href="/bibtex/${post.resource.interHash}"><c:out value="${mtl:cleanBibtex(post.resource.title)}" /></a>
+					<a href="${relativeUrlGenerator.getGoldstandardUrlByInterHash(post.resource.interHash)}"><c:out value="${mtl:cleanBibtex(post.resource.title)}" /></a>
 				</h3>
 				<bib:desc publication="${post.resource}"/>
 			</div>

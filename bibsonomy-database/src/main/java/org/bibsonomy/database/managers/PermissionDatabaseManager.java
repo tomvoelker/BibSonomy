@@ -22,6 +22,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
 
@@ -33,16 +34,6 @@ import org.bibsonomy.model.util.UserUtils;
 public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(PermissionDatabaseManager.class);
 	
-	/**
-	 * the number of tags allowed for querying the db
-	 */
-	public static final int MAX_TAG_SIZE = 10;
-	
-	/**
-	 * the maximum number of items for querying the db
-	 */
-	public static final int END_MAX = 1000;
-
 	private final static PermissionDatabaseManager singleton = new PermissionDatabaseManager();
 
 	/**
@@ -70,8 +61,8 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param itemType
 	 */
 	public void checkStartEnd(final User loginUser, final int start, final int end, final String itemType) {
-		if (!this.isAdmin(loginUser) && (end > END_MAX)) {
-			throw new AccessDeniedException("You are not authorized to retrieve more than the last " + END_MAX + " " + itemType + " items.");
+		if (!this.isAdmin(loginUser) && (end - start > PostLogicInterface.MAX_QUERY_SIZE)) {
+			throw new AccessDeniedException("You are not authorized to retrieve more than " + PostLogicInterface.MAX_QUERY_SIZE + " " + itemType + " items at a time.");
 		}
 	}
 
@@ -345,7 +336,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @return true if maximum size is exceeded, false otherwise
 	 */
 	public boolean useResourceSearchForTagQuery(final int i) {
-		return i >= MAX_TAG_SIZE;
+		return i >= PostLogicInterface.MAX_TAG_SIZE;
 	}
 	
 	/**
