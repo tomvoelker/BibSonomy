@@ -1,6 +1,5 @@
 package org.bibsonomy.opensocial.oauth.database;
 
-import java.io.Reader;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
@@ -10,6 +9,7 @@ import net.oauth.OAuthConsumer;
 import net.oauth.OAuthServiceProvider;
 import net.oauth.signature.RSA_SHA1;
 
+import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shindig.auth.SecurityToken;
@@ -26,12 +26,12 @@ import org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenIndex;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenInfo;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthParam;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.orm.ibatis.SqlMapClientFactoryBean;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import com.ibatis.common.resources.Resources;
 import com.ibatis.sqlmap.client.SqlMapClient;
-import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 
 /**
  * TODO: use {@link AbstractDatabaseManager}
@@ -52,13 +52,26 @@ public class IbatisOAuthLogic implements OAuthLogic {
 	private String defaultCallbackUrl;
 
 	private static OAuthLogic instance = null;
-
+	
 	private IbatisOAuthLogic() {
 		try {
 			// initialize database client
-			String resource = "SqlMapConfig_OpenSocial.xml";
-			Reader reader = Resources.getResourceAsReader (resource);
-			sqlMap = SqlMapClientBuilder.buildSqlMapClient(reader);
+			// FIXME: this should be configured by spring and not manually
+			SqlMapClientFactoryBean factory = new SqlMapClientFactoryBean();
+			BasicDataSource dataSource = new BasicDataSource();
+			dataSource.setDriverClassName(System.getProperty("database.opensocial.driverClassName"));
+			dataSource.setUrl(System.getProperty("database.opensocial.url"));
+			dataSource.setMaxIdle(Integer.parseInt(System.getProperty("database.opensocial.maxIdle")));
+			dataSource.setMaxActive(Integer.parseInt(System.getProperty("database.opensocial.maxActive")));
+			dataSource.setMaxWait(Integer.parseInt(System.getProperty("database.opensocial.maxWait")));
+			dataSource.setRemoveAbandoned(Boolean.parseBoolean(System.getProperty("database.opensocial.removeAbandoned")));
+			dataSource.setRemoveAbandonedTimeout(Integer.parseInt(System.getProperty("database.opensocial.removeAbandonedTimeout")));
+			dataSource.setUsername(System.getProperty("database.opensocial.username"));
+			dataSource.setUsername(System.getProperty("database.opensocial.password"));
+			factory.setConfigLocation(new ClassPathResource("SqlMapConfig_OpenSocial.xml"));
+			factory.setDataSource(dataSource);
+			factory.afterPropertiesSet();
+			sqlMap = factory.getObject();
 			log.info("OpenSocial database connection initialized.");
 
 		} catch (Exception e) {

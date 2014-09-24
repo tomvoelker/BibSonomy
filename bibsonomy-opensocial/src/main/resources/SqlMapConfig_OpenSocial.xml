@@ -13,15 +13,7 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
 	<typeAlias alias="tokenEntry"            type="org.apache.shindig.social.opensocial.oauth.OAuthEntry"/>
 	<typeAlias alias="userInfo"            	 type="org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo"/>
 	<typeAlias alias="oAuthParam" 		     type="org.bibsonomy.opensocial.oauth.database.beans.OAuthParam"/>
-	<!--+
-		| data source configuration
-		+-->
-	<transactionManager type="JDBC">
-		<dataSource type="JNDI">
-			<property name="DataSource" value="java:comp/env/jdbc/bibsonomy_opensocial"/>
-		</dataSource>
-	</transactionManager>
-
+	
 	<!--+
 		| imports: queries, ...
 		+-->
