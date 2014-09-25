@@ -26,8 +26,6 @@
 			<c:set var="public" value="${true }"/>
 		</c:when>
 		<c:otherwise>
-
-		
 			<!-- quick fix for discussion page -->
 			<c:set var="discussionBox" value="${true}"/>
 			<c:forEach var="group" items="${command.bibtex.list[0].groups}">
@@ -60,6 +58,7 @@
 			headline="${headline}${title}">
 		
 		<jsp:attribute name="content">
+			
 			<!-- COMMUNITY POST -->
 			<c:if test="${empty command.goldStandardPublications.list}">
 				<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
