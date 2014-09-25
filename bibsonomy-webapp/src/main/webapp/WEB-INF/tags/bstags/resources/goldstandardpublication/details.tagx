@@ -100,18 +100,6 @@
 					</c:otherwise>
 				</c:choose>
 				
-				<!--+  
-					| related tags
-					+-->
-				<h4>Tags</h4>
-				<div class="taglist" style="clear:both; margin-top: 1em;">
-					<ul>
-						<c:forEach var="tag" items="${command.tagcloud.tags}">
-							<li style="display:list-item;"><span class="tagitem_rightborder"><a class="tagitem" href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}" rel="nofollow" title=""><nobr><c:out value="${tag.name}"/></nobr></a></span></li>
-						</c:forEach>
-					</ul>
-					<br style="clear:left" />
-				</div>
 				
 				<!--+
 					|  related users
@@ -119,49 +107,36 @@
 				<c:if test="${not empty command.relatedUserCommand.relatedUsers}">
 					<c:set var="publication" value="${command.bibtex.list[0].resource}" />
 					<h4><fmt:message key="goldstandard.resource.relatedUsers"/></h4>
-					<c:choose>
-						<c:when test="${fn:length(command.relatedUserCommand.relatedUsers) lt 8}">
-							<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
-								<div class="ownerAvatar" >
-									<span>@${fn:escapeXml(user.name)}</span>
-									<a class="profilepic" href="/bibtex/1${publication.interHash}/${fn:escapeXml(user.name)}" title="@${fn:escapeXml(user.name)}">
-										<img alt="@${fn:escapeXml(user.name)}" src="/picture/user/${fn:escapeXml(user.name)}" />
-									</a>
-								</div>
-								<c:out value=" "/>
-								
-							</c:forEach>
-						</c:when>
-						<c:otherwise>
-							
-							
-								<div class="lessUser">
-									<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}" begin="0" end="6" varStatus="count">
-										<div class="ownerAvatar">
+					
+					<ul class="list-inline community-page-user-list">
+						<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}" varStatus="count">
+							<c:choose>
+								<c:when test="${count.index lt 6}">
+									<li>
+										<a title="@${fn:escapeXml(user.name)}" href="/user/${fn:escapeXml(user.name)}" class="img-thumbnail img-responsive">
+											<img class="user-avatar" src="/picture/user/${fn:escapeXml(user.name)}" alt="@${fn:escapeXml(user.name)}" />
 											<span>@${fn:escapeXml(user.name)}</span>
-											<a class="profilepic" href="/bibtex/1${publication.interHash}/${fn:escapeXml(user.name)}" title="@${fn:escapeXml(user.name)}">
-												<img alt="@${fn:escapeXml(user.name)}" src="/picture/user/${fn:escapeXml(user.name)}" />
-											</a>
-										</div>
-									</c:forEach>
+										</a>
+									</li>
+								</c:when>
+								<c:otherwise>
+									<li class="hidden">
+										<a title="@${fn:escapeXml(user.name)}" href="/user/${fn:escapeXml(user.name)}" class="img-thumbnail img-responsive">
+											<img class="user-avatar" src="/picture/user/${fn:escapeXml(user.name)}" alt="@${fn:escapeXml(user.name)}" />
+											<span>@${fn:escapeXml(user.name)}</span>
+										</a>
+									</li>
 									
-								</div>
-								<div class="moreUser" style="display: none;">
-								
-									<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}" begin="7" varStatus="count">
-										<div class="ownerAvatar">
-											<span>@${fn:escapeXml(user.name)}</span>
-											<a class="profilepic" href="/bibtex/1${publication.interHash}/${fn:escapeXml(user.name)}" title="@${fn:escapeXml(user.name)}">
-												<img alt="@${fn:escapeXml(user.name)}" src="/picture/user/${fn:escapeXml(user.name)}" />
-											</a>
-										</div>
-									</c:forEach>
-								</div>
-								<div style="float: left; padding-top: 56px;">
-									<a href="#" id="showMoreUser"><c:out value="${fn:length(command.relatedUserCommand.relatedUsers)-7} " /> <span>more</span></a>
-								</div>
-						</c:otherwise>
-					</c:choose>
+								</c:otherwise>
+							</c:choose>
+
+						</c:forEach>
+						<c:if test="${fn:length(command.relatedUserCommand.relatedUsers) gt 6}">
+							<li class="hidden"><a class="show-less" href="#">show less</a></li>
+							<li class="show"><a class="show-more" href="#">show all</a></li>
+						</c:if>
+					</ul>
+
 					<br style="clear:left" /><br />
 				</c:if>
 				<!--+
