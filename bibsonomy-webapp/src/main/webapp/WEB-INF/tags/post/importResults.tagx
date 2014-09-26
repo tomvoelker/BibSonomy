@@ -99,8 +99,8 @@
 						</fmt:message>
 
 					<ul>
-						<c:forEach items="${command.storedConcepts}" var="concept">
-							<li><a href="/concept/user/${fn:escapeXml(command.context.loginUser.name)}/tag/${fn:escapeXml(concept)}"><c:out value="${concept}"/></a></li>
+						<c:forEach items="${command.storedConcepts}" var="concept">							
+							<li><a href="${relativeUrlGenerator.getConceptUrlByUserNameAndTagName(fn:escapeXml(command.context.loginUser.name), fn:escapeXml(concept))}"><c:out value="${concept}"/></a></li>
 						</c:forEach>
 					</ul>
 			</fieldset>

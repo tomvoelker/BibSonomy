@@ -34,8 +34,8 @@
 		FROM gold_standard WHERE simhash1 = #oldId#
 	</insert>
 		
-	<insert id="logGoldStandardPublicationReferenceDelete">
-		INSERT INTO log_gold_standard_publication_references (publication, reference, user_name) VALUES (#hash#, #refHash#, #username#)
+	<insert id="logGoldStandardRelationDelete">
+		INSERT INTO log_gold_standard_relations (publication, reference, user_name) VALUES (#hash#, #refHash#, #username#)
 	</insert>
 
 	<insert id="logBookmark" parameterClass="bookmarkParam">

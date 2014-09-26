@@ -57,7 +57,7 @@ public class HomepageController extends SingleResourceListController implements 
 				}
 			} else {
 				entriesPerPage = POSTS_PER_RESOURCETYPE;
-			}			
+			}
 			setList(command, resourceType, GroupingEntity.ALL, null, null, null, null, command.getFilter(), null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			postProcessAndSortList(command, resourceType);
 		}
@@ -68,7 +68,7 @@ public class HomepageController extends SingleResourceListController implements 
 			setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, MAX_TAGS, null);
 			
 			/*
-			 * add news posts (= latest blog posts) FIXME: make configurable
+			 * add news posts (= latest blog posts)
 			 */
 			command.setNews(this.logic.getPosts(Bookmark.class, GroupingEntity.GROUP, newsGroup, Arrays.asList(newsTag), null, null, null, null, null, null, 0, 3));
 			this.endTiming();

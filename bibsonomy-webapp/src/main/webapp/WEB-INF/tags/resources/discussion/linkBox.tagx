@@ -6,7 +6,7 @@
     <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
     
    	<c:set var="resourceName" value="publication" />
-   	<c:if test="${fn:contains(fn:toLowerCase(resource.class.simpleName), 'bookmark')}">
+   	<c:if test="${fn:contains(fn:toLowerCase(resource['class'].simpleName), 'bookmark')}">
    		<c:set var="resourceName" value="url" />
    	</c:if>
    	

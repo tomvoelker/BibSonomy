@@ -58,7 +58,7 @@
       Clicking on a tag (keyword) will retrieve from BibSonomy the abstracts
       that have been tagged with it. 
 
-      The publication metadata are <a href="/export/user/eswc2008">available in many formats</a>, including BibTeX and RDF.
+      The publication metadata are <a href="${relativeUrlGenerator.prefix('export/').getUserUrlByUserName('eswc2008')}">available in many formats</a>, including BibTeX and RDF.
     </div>
 
 

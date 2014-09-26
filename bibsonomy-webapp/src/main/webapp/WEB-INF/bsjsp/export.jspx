@@ -80,7 +80,7 @@
 			  				| JabRef layouts
 			  				 -->
 							<c:when
-									test="${'JabrefLayout' eq mapEntry.value.class.simpleName}">
+									test="${'JabrefLayout' eq mapEntry.value['class'].simpleName}">
 								<c:url var="download"
 										value="/layout/${mapEntry.value.name}/${pathAndQueryString}?download=true" />
 								<c:url var="url"
@@ -201,7 +201,7 @@
 			  				| JabRef layouts
 			  				 -->
 							<c:when
-									test="${'JabrefLayout' eq mapEntry.value.class.simpleName}">
+									test="${'JabrefLayout' eq mapEntry.value['class'].simpleName}">
 								<c:url var="download"
 										value="/layout/${mapEntry.value.name}/${pathAndQueryString}?download=true" />
 								<c:url var="url"

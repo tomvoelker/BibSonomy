@@ -79,7 +79,7 @@
   <div id="topNavBar">
   <c:choose>
     <c:when test="${!empty user.name}">
-      logged in as <a href="/user/<c:out value="${user.name}" />"><c:out value="${user.name}" /></a> &middot;
+      logged in as <a href="/user/<c:out value="${user.name}" />"><c:out value="${user.name} !!!" /></a> &middot;
           <a href="/settings">settings</a> &middot;
           <a href="/logout">logout</a> &middot;
     </c:when>

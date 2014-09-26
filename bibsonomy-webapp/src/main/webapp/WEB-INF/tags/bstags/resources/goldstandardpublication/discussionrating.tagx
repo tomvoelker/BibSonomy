@@ -9,12 +9,11 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
 	<c:set var="href" value="${otherPostsUrlPrefix}${post.resource.interHash}#discussionbox"/>
-	
 	<h4>
 		<span style="display:block; float:left"><fmt:message key="publications.discussion.headline"/>&amp;nbsp;&amp;nbsp;</span>
 		<div style="float:left;" class="rating">
 			<c:if test="${not empty post.resource.rating}">
-				<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource.class.simpleName)}" />
+				<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource['class'].simpleName)}" />
 				
 				<!--+
 					|TODO: Once we know for each post whether a goldstandard exists,
@@ -33,7 +32,7 @@
 		</div>
 	</h4>
 	<br />
-	<div id="discussion" style="margin-top: 0.5em;">
+	<div style="margin-top: 0.5em;">
 	
 		<!--  mtl:uniqueDiscussionUsers extracts the user objects of the discussion items -->
 		<c:set var="discussionUsers" value="${mtl:uniqueDiscussionUsers(post.resource.discussionItems)}"/>
@@ -88,7 +87,7 @@
 			</fmt:message>
 		</c:if>
 		<c:if test="${not empty discussionUsers}">
-			&amp;nbsp;<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource.class.simpleName)}" />
+			&amp;nbsp;<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource['class'].simpleName)}" />
 			<fmt:message key="post.resource.discussion.discussionUser.join" />
 		</c:if>
 	</div>

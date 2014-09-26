@@ -46,7 +46,7 @@ import org.joda.time.format.DateTimeFormatter;
  *   User is member of given group 
  * @author fei
  */
-public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSystemTag, Cloneable {
+public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSystemTag {
 
 	private static final String NAME = "for";
 	private static boolean toHide = true;
@@ -128,7 +128,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 						groupDocument.setFileName(fileName);
 						groupDBLogic.createDocument(groupDocument, intraHash);
 					} catch (final Exception e) {
-						log.error("error while updating document of group post", e);
+						log.error("error while copying user document to group post", e);
 					}
 				} else {
 					/*

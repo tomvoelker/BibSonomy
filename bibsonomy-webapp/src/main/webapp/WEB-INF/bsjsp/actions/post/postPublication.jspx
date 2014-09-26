@@ -20,8 +20,8 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
 	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication">
-    
-    <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />	
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />	
 	<fmt:message key="post_bibtex.heading" var="msgPostPublication"/>
 	
 	<layout:layout 
@@ -29,11 +29,7 @@
 		pageTitle="${pageTitle}" 
 		sidebar="${sidebar}" 
 		requPath="${requPath}">
-		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"><!-- keep me --></script>
-		</jsp:attribute>
 		<jsp:attribute name="content">
-					
 			<h1 class="content-heading"><fmt:message key="navi.postPublication"/></h1>
 		
 			<c:set var="post" value="${command.post}"/>
@@ -101,9 +97,8 @@
 			        					listView="${command.bibtex}" 
 			        					otherPostsUrlPrefix="bla" 
 			        					listViewStartParamName="bibtex.start"
-	  									overwrite="${command.overwrite}"
-	   									deleteCheckedPosts="${command.deleteCheckedPosts}" >
-			        					 		
+										overwrite="${command.overwrite}"
+										deleteCheckedPosts="${command.deleteCheckedPosts}" >
 							<jsp:attribute name="shortPostDescription">
 								<bib:shortDescription post="${post}"/>
 							</jsp:attribute>
@@ -112,9 +107,9 @@
 								<bib:title post="${post}"/>
 							</jsp:attribute>
 								
-				   			<jsp:attribute name="desc">
-				   				<bib:desc publication="${post.resource}"/>
-				   			</jsp:attribute>
+							<jsp:attribute name="desc">
+								<bib:desc publication="${post.resource}"/>
+							</jsp:attribute>
 				      		
 				      		<jsp:attribute name="documents"> 
 				      			<bib:documents post="${post}"/>

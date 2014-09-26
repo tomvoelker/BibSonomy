@@ -41,7 +41,7 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 		
 		// set grouping entity, grouping name, tags, user similarity
 		final GroupingEntity groupingEntity = GroupingEntity.USER;
-		final List<String> requTags = command.getRequestedTagsList();		
+		final List<String> requTags = command.getRequestedTagsList();
 		final UserRelation userRelation = EnumUtils.searchEnumByName(UserRelation.values(), command.getUserSimilarity()); 
 
 		// handle case when only tags are requested
@@ -57,26 +57,26 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 		final List<Tag> loginUserTags = this.logic.getTags(Resource.class, groupingEntity, command.getContext().getLoginUser().getName(), null, null, null, null, null, null, command.getStartDate(), command.getEndDate(), 0, Integer.MAX_VALUE);
 		
 		// fetch all tags of requested user
-		final List<Tag> targetUserTags = this.logic.getTags(Resource.class, groupingEntity, groupingName, null, null, null, null, null, null, command.getStartDate(), command.getEndDate(), 0, Integer.MAX_VALUE);		
+		final List<Tag> targetUserTags = this.logic.getTags(Resource.class, groupingEntity, groupingName, null, null, null, null, null, null, command.getStartDate(), command.getEndDate(), 0, Integer.MAX_VALUE);
 		
 		// retrieve and set the requested resource lists, along with total
 		// counts
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
-						
+			
 			final int origEntriesPerPage = listCommand.getEntriesPerPage();
 			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			listCommand.setEntriesPerPage(origEntriesPerPage);
-										
+			
 			// compute the ranking for each post in the list
 			RankingUtil.computeRanking(loginUserTags, targetUserTags, command.getListCommand(resourceType).getList(), RankingMethod.TFIDF, false);
-
+			
 			// post-process & sort
 			this.postProcessAndSortList(command, resourceType);
-
+			
 			// show only the top ranked resources for each resource type
 			if (command.getListCommand(resourceType).getList().size() > origEntriesPerPage) {
-				this.restrictResourceList(command, resourceType, listCommand.getStart(), listCommand.getStart() + origEntriesPerPage);				
+				this.restrictResourceList(command, resourceType, listCommand.getStart(), listCommand.getStart() + origEntriesPerPage);
 			}
 			
 			// set total nr. 

@@ -44,10 +44,23 @@ var errorData = new errorBoxData("#upload");
 				$("#fu").documentUploader();
 				return;
 			}
+			
+			$("input[name='saveAndRate']").hide();
+			$("input[name='saveAndRate']").prev().prop('disabled', true).val(getString("post.bibtex.fileUploading"));
 
 			// create row with the added file
 			$("#upload").find('.documents:first').append($("<li class='loading' id='file_" + counter + "'><span class='documentFileName'>"+fileName+"</span></li>"));
-
+			//cancel button
+			var cancelUpload = $('<input class="btn btn-xs btn-danger cancelUp" type="button" id="cancelUp" />').attr('value', getString("upload.cancel"));
+			cancelUpload.click(function(){
+				$("li[ id = 'file_"+counter+"']").remove();
+				errorData.msg = getString("post.bibtex.uploadCancel");
+				displayFileErrorBox(errorData);
+				$("input[name='saveAndRate']").show();
+				$("input[name='saveAndRate']").prev().prop('disabled', false).val(getString("save"));
+			});
+			$("li[ id = 'file_"+counter+"']").append(cancelUpload);
+			
 			// create new form to upload added file
 			var form = ("<form class='upform' id='uploadForm_"+counter+"' action='/ajax/documents?ckey="+ckey+"&amp;temp=true' method='POST' enctype='multipart/form-data'></form>");
 			$("#hiddenUpload").append(form);
@@ -58,7 +71,9 @@ var errorData = new errorBoxData("#upload");
 			$(".counter").val(counter);
 			var options = {
 					dataType: "xml",
-					success: onRequestComplete
+					success: function(data) {
+						onRequestComplete(data);
+					}
 			};
 			$("#"+form).ajaxSubmit(options);
 			// FIXME: why is a new input field appended? Can't we just replace #fu?
@@ -70,6 +85,10 @@ var errorData = new errorBoxData("#upload");
 	};
 
 	function onRequestComplete(data) {
+		$("input[name='saveAndRate']").show();
+		$("input[name='saveAndRate']").prev().prop('disabled', false).val(getString("save"));
+		$("li[ id = 'file_"+$(".counter").val()+"']").children('.cancelUp').remove();
+		
 		data = $(data);
 		var status = data.find("status").text();
 		if (status == "ok")

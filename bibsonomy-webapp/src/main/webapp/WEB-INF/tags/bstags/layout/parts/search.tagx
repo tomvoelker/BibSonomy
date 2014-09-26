@@ -23,10 +23,7 @@
 	<jsp:directive.attribute name="formInputName" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="formInputValue" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="formExtra" fragment="true" required="false" description="Any extra form input fields you want to add."/>
-		
-		
-		
-		<!-- FIXME: Currently the functionality of this tag is no longer used. There is now only one search form without consideration of the page content (in the old layout, the selected search depended on the current page (e.g. user search on a user page, concept search on a concept page). -->
+	<!-- FIXME: Currently the functionality of this tag is no longer used. There is now only one search form without consideration of the page content (in the old layout, the selected search depended on the current page (e.g. user search on a user page, concept search on a concept page). -->
 	<div id="search">
 		<form action="${formAction}" method="get" id="searchForm" class="smallform">
 			<div class="input-group">
@@ -34,24 +31,24 @@
 		      <input class="span2" id="scope" name="scope" type="hidden" />
 		      <div class="input-group-btn">
 		        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Search <span class="caret"></span></button>
-		        <ul class="dropdown-menu pull-right">
-					<li><a href="javascript:$('#scope').val('tag');$('#searchForm').attr('action','/redirect');$('#searchForm').submit();"><fmt:message key="navi.tag"/></a></li>
-					<li><a href="javascript:$('#scope').val('user');$('#searchForm').attr('action','/redirect');$('#searchForm').submit();"><fmt:message key="navi.user"/></a></li>
-					<li><a href="javascript:$('#scope').val('group');$('#searchForm').attr('action','/redirect');$('#searchForm').submit();"><fmt:message key="navi.group"/></a></li>
-					<li><a href="javascript:$('#scope').val('author');$('#searchForm').attr('action','/redirect');$('#searchForm').submit();"><fmt:message key="navi.author"/></a></li>
-					<li><a href="javascript:$('#scope').val('concept/tag');$('#searchForm').attr('action','/redirect');$('#searchForm').submit();"><fmt:message key="navi.concept"/></a></li>
-					<li><a href="javascript:$('#scope').val('bibtexkey');$('#searchForm').attr('action','/redirect');$('#searchForm').submit();"><fmt:message key="navi.bibtexkey"/></a></li>
-					<li><a href="javascript:$('#scope').val('search');$('#searchForm').attr('action','/redirect');$('#searchForm').submit();"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></a></li>
+		        <ul id="scopeDomain" class="dropdown-menu pull-right">
+					<li><a href="#" data-domain="tag"><fmt:message key="navi.tag"/></a></li>
+					<li><a href="#" data-domain="user"><fmt:message key="navi.user"/></a></li>
+					<li><a href="#" data-domain="group"><fmt:message key="navi.group"/></a></li>
+					<li><a href="#" data-domain="author"><fmt:message key="navi.author"/></a></li>
+					<li><a href="#" data-domain="concept/tag"><fmt:message key="navi.concept"/></a></li>
+					<li><a href="#" data-domain="bibtexkey"><fmt:message key="navi.bibtexkey"/></a></li>
+					<li><a href="#" data-domain="search"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></a></li>
 					<c:if test="${not empty requestedUser}">
-						<li><a href="javascript:$('#scope').val('user:${fn:escapeXml(requestedUser)}');$('#searchForm').attr('action','/redirect');$('#searchForm').submit();"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></a></li>
+						<li><a href="#" data-domain="user:${fn:escapeXml(requestedUser)}"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></a></li>
 					</c:if>
 					<c:if test="${command.context.userLoggedIn and empty requestedUser}">
-						<li><a href="javascript:$('#scope').val('user:${fn:escapeXml(command.context.loginUser.name)}');$('#searchForm').attr('action','/redirect');$('#searchForm').submit();"><fmt:message key="navi.search"/>:<c:out value='${command.context.loginUser.name}'/></a></li>
+						<li><a href="#" data-domain="user:${fn:escapeXml(command.context.loginUser.name)}"><fmt:message key="navi.search"/>:<c:out value='${command.context.loginUser.name}'/></a></li>
 					</c:if>
 					<c:if test="${command.context.userLoggedIn and not empty command.context.loginUser.groups}">
 						<li class="pdSubHeader disabled"><a href="#"><fmt:message key="navi.search.in_group"/></a></li>
 						<c:forEach var="grp" items="${command.context.loginUser.groups}">
-							<li class="pdSubitems"><a href="javascript:$('#scope').val('group:${fn:escapeXml(grp.name)}');$('#searchForm').attr('action','/redirect');$('#searchForm').submit();">- <c:out value='${fn:escapeXml(grp.name)}'/></a></li>
+							<li class="pdSubitems"><a href="#" data-domain="group:${fn:escapeXml(grp.name)}">- <c:out value='${fn:escapeXml(grp.name)}'/></a></li>
 						</c:forEach>
 					</c:if>
 		        </ul>

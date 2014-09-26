@@ -14,7 +14,7 @@
 	<c:set var="maximized" value="${not command.context.loginUser.settings.layoutSettings.simpleInterface}" />
 	<bform:fieldset maximized="${maximized}" legendKey="post.resource.fields.detailed">
 		<jsp:attribute name="legendExt">
-	      (<a id="collapse" data-show-all="false"><fmt:message key="post.resource.fields.detailed.show.all"/></a>)
+	      (<a id="collapse" data-show-all="true"><fmt:message key="post.resource.fields.detailed.show.all"/></a>)
 	   	</jsp:attribute>
         
         <jsp:attribute name="content">

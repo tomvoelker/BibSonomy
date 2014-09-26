@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.model.User;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.special.RedirectCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -41,6 +42,7 @@ public class RedirectController implements MinimalisticController<RedirectComman
   
 	private RequestLogic requestLogic;
 	private Errors errors;
+	private URLGenerator urlGenerator;
 
 	@Override
 	public View workOn(final RedirectCommand command) {
@@ -178,8 +180,7 @@ public class RedirectController implements MinimalisticController<RedirectComman
 			return "/relations/" + encodedLoggedinUserName;
 		}
 		
-		// TODO: use urlgenerator
-		final String userPage = "/user/" + encodedLoggedinUserName;
+		final String userPage = urlGenerator.getUserUrlByUserName(loginUserName);
 		/*
 		 * XXX: it would be nice that myPUMA and myBibSonomy redirects are only
 		 * available in the corresponding themes, but e.g. old and new help pages

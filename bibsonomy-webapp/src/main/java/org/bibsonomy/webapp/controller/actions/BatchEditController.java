@@ -1,6 +1,6 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import org.bibsonomy.util.ValidationUtils;
+import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,8 +21,8 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -33,6 +33,7 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.BatchEditCommand;
@@ -53,11 +54,14 @@ import org.springframework.validation.Errors;
  * The controller handles two cases if multiple posts are edited (on batch edit 
  * site or post publication site):
  * <ol>
- * <li>the given posts should be updated (and eventually some posts deleted or normalized - if the user flagged them)</li>
- * <li>the given posts should be stored (and eventually some posts ignored - if the user flagged them)</li>
+ * <li>the given posts should be updated (and eventually some posts deleted or
+ * normalized - if the user flagged them)</li>
+ * <li>the given posts should be stored (and eventually some posts ignored - if
+ * the user flagged them)</li>
  * </ol>
  * 
- * The controller also updates tags for single posts with fast edit or on bibtex details page.
+ * The controller also updates tags for single posts with fast edit or on bibtex
+ * details page.
  * 
  * @author pbu
  * @author dzo
@@ -69,9 +73,9 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	private static final int HASH_LENGTH = 32;
 
 	/**
-	 * To redirect the user to the page she initially viewed before pressing
-	 * the (batch)"edit" button, we need to strip the "bedit*" part of the URL
-	 * using this pattern.  
+	 * To redirect the user to the page she initially viewed before pressing the
+	 * (batch)"edit" button, we need to strip the "bedit*" part of the URL using
+	 * this pattern.
 	 */
 	private static final Pattern BATCH_EDIT_URL_PATTERN = Pattern.compile("(bedit[a-z,A-Z]+/)");
 
@@ -106,6 +110,8 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 	private Errors errors;
 
+	private URLGenerator urlGenerator;
+
 	@Override
 	public BatchEditCommand instantiateCommand() {
 		final BatchEditCommand command = new BatchEditCommand();
@@ -138,7 +144,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * We store the referer in the command, to send the user back to the 
 		 * page he's coming from at the end of the posting process. 
 		 */
-		if (!ValidationUtils.present(command.getReferer())) {
+		if (!present(command.getReferer())) {
 			command.setReferer(this.requestLogic.getReferer());
 		}
 
@@ -267,16 +273,16 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 						Post<?> post;
 						post = this.logic.getPostDetails(intraHash, loginUserName);
-						if(ValidationUtils.present(post)) {
+						if(present(post)) {
 							// now, we change what should be changed from the post details
 							
 							BibTex bibtex = (BibTex) post.getResource();
 							
-							if(ValidationUtils.present(bibtex)) {
+							if(present(bibtex)) {
 								final String oldBibtexKey = bibtex.getBibtexKey();
 								final String newBibtexKey = BibTexUtils.generateBibtexKey(bibtex);
 								
-								if(ValidationUtils.present(oldBibtexKey) && ValidationUtils.present(newBibtexKey)) {
+								if(present(oldBibtexKey) && present(newBibtexKey)) {
 									if(!oldBibtexKey.equals(newBibtexKey)) {
 										((BibTex) post.getResource()).setBibtexKey(newBibtexKey);
 									}
@@ -336,7 +342,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 							 * Finally, add the post to the list of posts that should 
 							 * be stored or updated.
 							 */
-							if (!ValidationUtils.present(post)) {
+							if (!present(post)) {
 								log.warn("post with hash " + intraHash + " not found for user " + loginUserName + " while updating tags");
 							} else {
 								post.setDate(now);
@@ -351,7 +357,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 					else if (UPDATE_VIEWABLE_ACTION == action){
 						Post<?> post;
 						post = this.logic.getPostDetails(intraHash, loginUserName);
-						if (!ValidationUtils.present(post)) {
+						if (!present(post)) {
 							log.warn("post with hash " + intraHash + " not found for user " + loginUserName + " while updating tags");
 						} else {
 							// now, we change what should be changed from the post details
@@ -374,7 +380,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		/*
 		 * delete posts
 		 */
-		if (ValidationUtils.present(postsToDelete)) {
+		if (present(postsToDelete)) {
 			log.debug("deleting "  + postsToDelete.size() + " posts for user " + loginUserName);
 			try {
 				this.logic.deletePosts(loginUserName, postsToDelete);
@@ -503,7 +509,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				 * get all error messages for this post
 				 */
 				final List<ErrorMessage> postErrorMessages = errorMessages.get(postHash);
-				if (ValidationUtils.present(postErrorMessages)) {
+				if (present(postErrorMessages)) {
 					boolean hasErrors = false;
 					boolean hasDuplicate = false;
 					/*
@@ -581,7 +587,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				/*
 				 * if there are no errors, continue
 				 */
-				if (!ValidationUtils.present(postErrorMessages)) {
+				if (!present(postErrorMessages)) {
 					continue;
 				}
 				/*
@@ -655,7 +661,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	private Map<String, Post<? extends Resource>> getPostMap(final boolean updatePosts) {
 		final Map<String, Post<? extends Resource>> postMap = new HashMap<String, Post<? extends Resource>>();
 		final List<Post<? extends Resource>> postsFromSession = (List<Post<? extends Resource>>) this.requestLogic.getSessionAttribute(PostPublicationController.TEMPORARILY_IMPORTED_PUBLICATIONS);
-		if (!updatePosts && ValidationUtils.present(postsFromSession)) {
+		if (!updatePosts && present(postsFromSession)) {
 			/*
 			 * Put the posts into a map, so we don't have to loop 
 			 * through the list for every stored post.
@@ -679,7 +685,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			/*
 			 * ensure, that we don't try to parse a null string
 			 */
-			return TagUtils.parse(ValidationUtils.present(addTagString) ? addTagString : "");
+			return TagUtils.parse(present(addTagString) ? addTagString : "");
 		} catch (final RecognitionException ex) {
 			log.warn("can't parse tags that should be added to all posts", ex);
 		}
@@ -733,4 +739,15 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		this.requestLogic = requestLogic;
 	}
 
+	
+	/**
+	 * 
+	 * @param urlGenerator
+	 */
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
+	}
+
+	
+	
 }

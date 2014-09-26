@@ -10,6 +10,7 @@ import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /**
  * This class should be used by plugins. This way they don't have to implement
@@ -49,12 +50,12 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	}
 
 	@Override
-	public void onGoldStandardPublicationReferenceCreate(final String userName, final String interHash_publication, final String interHash_reference) {
+	public void onGoldStandardPublicationReferenceCreate(final String userName, final String interHash_publication, final String interHash_reference, final String interHash_relation) {
 		// noop
 	}
 
 	@Override
-	public void onGoldStandardPublicationReferenceDelete(final String userName, final String interHash_publication, final String interHash_reference, final DBSession session) {
+	public void onGoldStandardRelationDelete(final String userName, final String interHash_publication, final String interHash_reference, final GoldStandardRelation relation, final DBSession session) {
 		// noop
 	}
 
