@@ -35,7 +35,7 @@
 		      FROM log_bibtex t1, bibtex b
 		      WHERE t1.current_content_id = b.content_id
 		      	AND b.simhash2 = #hash# 
-				AND t1.user_name = #requestedUserName#	
+				AND b.user_name = #requestedUserName#	
 		      ORDER BY content_id DESC
 			  LIMIT #limit# OFFSET #offset#) AS b2
 		LEFT OUTER JOIN log_tas AS t ON b2.content_id = t.content_id
@@ -98,7 +98,7 @@
 		      WHERE bm.book_url_hash = #hash#
 		        AND bm.content_id = t1.current_content_id
 		        <include refid="restrictToGroups"/>
-		        AND t1.user_name = #requestedUserName#
+		        AND bm.user_name = #requestedUserName#
 		      ORDER BY t1.date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b
 		LEFT OUTER JOIN log_tas t ON b.content_id = t.content_id <include refid="reviewRatingsJoinBookmark" />, urls u, groupids g
