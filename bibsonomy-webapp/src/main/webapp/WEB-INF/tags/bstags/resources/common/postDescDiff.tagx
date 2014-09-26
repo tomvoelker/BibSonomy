@@ -8,8 +8,8 @@
 	<script type="text/javascript" src="/resources/javascript/postDescDiff.js"><!-- keep me --></script>
 	<mtl:styleSheet path="/resources/css/postDescDiff.css" />
 	
-	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.Post" required="true" />
-	<jsp:directive.attribute name="newestPub" type="org.bibsonomy.model.Post" required="true" />
+	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.Bibtex" required="true" />
+	<jsp:directive.attribute name="newestPub" type="org.bibsonomy.model.Bibtex" required="true" />
 	<jsp:directive.attribute name="isPub" type="java.lang.Boolean" required="true" />
 	
 	<table>	
@@ -24,7 +24,7 @@
 	
 	<c:if test="${isPub}">
 	<!-- Required -->
-		<c:if test="${mtl:cleanBibtex(publication.resource.entrytype) != mtl:cleanBibtex(newestPub.resource.entrytype)}">
+		<c:if test="${mtl:cleanBibtex(publication.getEntrytype()).equals(cleanBibtex(newestPub.getEntrytype()))}">
 		<tr><td>
 			<em><b>entrytype:: </b> ${mtl:compareString(publication.resource.entrytype, newestPub.resource.entrytype)} </em>
 		</td></tr>
@@ -158,7 +158,7 @@
 		<em><b>misc: </b> ${mtl:compareString(publication.resource.misc, newestPub.resource.misc) }</em>
 		</td></tr>
 	</c:if>
-<!--  	<c:if test="${mtl:cleanBibtex(publication.resource.bibtexAbstract) != mtl:cleanBibtex(newestPub.resource.bibtexAbstract)}">
+	<!--<c:if test="${mtl:cleanBibtex(publication.resource.bibtexAbstract) != mtl:cleanBibtex(newestPub.resource.bibtexAbstract)}">
 		<tr><td>
 		<em><b>abstract: </b> ${mtl:compareString(publication.resource.bibtexAbstract, newestPub.resource.bibtexAbstract) }</em>
 		</td></tr>

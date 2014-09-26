@@ -231,24 +231,24 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			/*
 			 * compareVersion-1 to change index begin from 1 to 0
 			 */
-			 final int compareVersion = (command.getCompareVersion()-1);
+		//	 final int compareVersion = (command.getCompareVersion()-1);
 			
-			 if (present(compareVersion) && (compareVersion!=-1)) {
+			// if (present(compareVersion) && (compareVersion!=-1)) {
 
-				 log.debug("intra hash to compare post found -> handling diff of existing post");
-				 final List<?> dbPosts = logic.getPosts(post.getResource().getClass(),
-						 GroupingEntity.ALL, user, null, intraHashToUpdate, null,
-						 FilterEntity.POSTS_HISTORY, null, null, null, compareVersion,
-						 compareVersion+1);
-				 command.setComparePost((Post<RESOURCE>) dbPosts.get(0));
+		//		 log.debug("intra hash to compare post found -> handling diff of existing post");
+			//	 final List<?> dbPosts = logic.getPosts(post.getResource().getClass(),
+				//		 GroupingEntity.ALL, user, null, intraHashToUpdate, null,
+					//	 FilterEntity.POSTS_HISTORY, null, null, null, compareVersion,
+						// compareVersion+1);
+//				 command.setComparePost((Post<RESOURCE>) dbPosts.get(0));
 				 // TODO: check dbPosts.get(1)
-				 command.setPost((Post<RESOURCE>) dbPosts.get(1)/*getPostDetails(intraHashToUpdate, user)*/);
+	//			 command.setPost((Post<RESOURCE>) dbPosts.get(1)/*getPostDetails(intraHashToUpdate, user)*/);
 				 this.handleUpdatePost(command, context, loginUser, post, intraHashToUpdate);
 				 return Views.DIFFPUBLICATIONPAGE;
-			 } else {
-			log.debug("intra hash to update found -> handling update of existing post");
-			return this.handleUpdatePost(command, context, loginUser, post, intraHashToUpdate);
-			 }
+		//	 } else {
+			//log.debug("intra hash to update found -> handling update of existing post");
+			//return this.handleUpdatePost(command, context, loginUser, post, intraHashToUpdate);
+			 //}
 		}
 
 		log.debug("no intra hash given -> new post");

@@ -36,9 +36,9 @@
 		
 		
 		
-		<bform:diffField path="post.resource.title" pathDiff="comparePost.resource.title" small="true" required="true" rows="2"/>
-		<bform:diffField path="post.resource.author" pathDiff="comparePost.resource.author" small="true" required="true" rows="2"/>
-		<bform:diffField path="post.resource.editor" pathDiff="comparePost.resource.editor" small="true" required="true" rows="2"/>
-		<bform:diffField path="post.resource.year" pathDiff="comparePost.resource.year" small="true" required="true" />
+		<bform:diffField field="post.resource.title" History_field="comparePost.resource.title" small="true" required="true" rows="2"/>
+		<bform:diffField field="post.resource.author" History_field="comparePost.resource.author" small="true" required="true" rows="2"/>
+		<bform:diffField field="post.resource.editor" History_field="comparePost.resource.editor" small="true" required="true" rows="2"/>
+		<bform:diffField field="post.resource.year" History_field="comparePost.resource.year" small="true" required="true" />
 
 </jsp:root>
