@@ -33,6 +33,7 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.BatchEditCommand;
@@ -105,7 +106,8 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	private LogicInterface logic;
 
 	private Errors errors;
-
+	private URLGenerator urlGenerator;
+	
 	@Override
 	public BatchEditCommand instantiateCommand() {
 		final BatchEditCommand command = new BatchEditCommand();
@@ -186,7 +188,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		}
 		
 		if (IGNORE_ACTION == action) {
-			return this.getFinalRedirect(postsArePublications, loginUserName);
+			return this.getFinalRedirect(command.getReferer(), loginUserName);
 		}
 		/*
 		 * FIXME: rename/check setting of that flag in the command
@@ -432,7 +434,8 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		/*
 		 * return to either the user page or current page(batchedit)
 		 */
-		return this.getFinalRedirect(postsArePublications, loginUserName);
+		//return this.getFinalRedirect(postsArePublications, loginUserName);
+		return this.getFinalRedirect(command.getReferer(), loginUserName);
 		
 	}
 
@@ -695,7 +698,29 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * @return
 	 */
 
-	private View getFinalRedirect(final boolean isPub, final String loginUserName) {
+	private View getFinalRedirect(final String referer, final String loginUserName) {
+		String redirectUrl = referer;
+		if (present(referer)) {
+			/*
+			 * if we come from bedit{bib, burl}/{group, user}/{groupname,
+			 * username}, we remove this prefix to get back to the simple
+			 * resource view in the group or user section
+			 */
+			final Matcher prefixMatcher = BATCH_EDIT_URL_PATTERN.matcher(referer);
+			if (prefixMatcher.find()) {
+				redirectUrl = prefixMatcher.replaceFirst("");
+			}
+		}
+		/*
+		 * if no URL is given, we redirect to the user's page
+		 */
+		if (!present(redirectUrl)) {
+			redirectUrl = urlGenerator.getUserUrlByUserName(loginUserName);
+		}
+		return new ExtendedRedirectView(redirectUrl);
+	}
+
+/*	private View getFinalRedirect(final boolean isPub, final String loginUserName) {
 		String redirectUrl = "referer";	
 		if (isPub) {
 			redirectUrl = UrlUtils.safeURIEncode("beditbib/" + "user/" + loginUserName); // TODO: should be done by the URLGenerator
@@ -705,7 +730,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		}
 		return new ExtendedRedirectView(redirectUrl);
 	}
-
+*/
 	@Override
 	public Errors getErrors() {
 		return this.errors;
@@ -731,6 +756,13 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 */
 	public void setRequestLogic(final RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
+	}
+	/**
+	 * 
+	 * @param urlGenerator
+	 */
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
 	}
 
 }

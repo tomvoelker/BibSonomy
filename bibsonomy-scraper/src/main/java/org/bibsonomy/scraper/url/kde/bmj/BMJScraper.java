@@ -35,19 +35,17 @@ import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
  */
-public class BMJScraper extends AbstractGenericFormatURLScraper implements ReferencesScraper{
+public class BMJScraper extends GenericBibTeXURLScraper implements ReferencesScraper{
 	private static final String SITE_NAME = "BMJ";
 	private static final String SITE_URL = "http://www.bmj.com/";
 	private static final String INFO = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
-	//private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\"([^\"]++)\"[^>]*+>Download to citation manager</a>");
-	//private static final Pattern CITATION_MANAGER_PATTERN = Pattern.compile("href=\"(/highwire/citation/\\d++/bibtex)\"");
 	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<li .*>BibTeX .*<a href=\"(.*)\" .*>Download</a></li>");
 	private static final Pattern REFERENCES_PATTERN = Pattern.compile("<ol class=\"cit-list\">(.*)</ol>");
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = new ArrayList<Pair<Pattern,Pattern>>();
@@ -75,6 +73,7 @@ public class BMJScraper extends AbstractGenericFormatURLScraper implements Refer
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return URL_PATTERNS;
 	}
+	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
 	 */
@@ -83,15 +82,16 @@ public class BMJScraper extends AbstractGenericFormatURLScraper implements Refer
 		String st_url = SITE_URL;
 		try{
 			Matcher m = BIBTEX_PATTERN.matcher(WebUtils.getContentAsString(url));
-			if(m.find()){
+			if (m.find()) {
 				st_url += m.group(1);
 				return st_url;
 			}
-		}catch(IOException e){
+		} catch (IOException e) {
 			throw new ScrapingException(e);
 		}
 		return null;
 	}
+	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
 	 */
@@ -100,31 +100,33 @@ public class BMJScraper extends AbstractGenericFormatURLScraper implements Refer
 		String references = null;
 		try{
 			Matcher m = REFERENCES_PATTERN.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
-			if(m.find())
+			if (m.find()) {
 				references = m.group(1);
-			if(references != null){
+			}
+			if (references != null) {
 				scrapingContext.setReferences(references);
 				return true;
 			}
-				
-		}catch(IOException e){
+		} catch (IOException e) {
 			throw new ScrapingException(e);
 		}
 		return false;
 	}
-
+	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#convert(java.lang.String)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
 	 */
 	@Override
-	protected String convert(String downloadResult) {
-		String[] allfields = downloadResult.split("\n");
-		String[] firstline = allfields[0].split("\\{");
-		String bibtex_replace = "", bibtex = null;
+	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
+		// add bibtex key if not present
+		final String[] allfields = bibtex.split("\n");
+		final String[] firstline = allfields[0].split("\\{");
 		
-		if(firstline.length == 1){
-			bibtex_replace = allfields[0].replace("{","{noKey,");
-			bibtex = downloadResult.replace(allfields[0], bibtex_replace);
+		if (firstline.length == 1) {
+			// TODO: shouldn't we only replace the first match?
+			// TODO: generate a nice key
+			final String bibtex_replace = allfields[0].replace("{","{noKey,");
+			return bibtex.replace(allfields[0], bibtex_replace);
 		}
 		return bibtex;
 	}

@@ -13,7 +13,7 @@
 <jsp:directive.page contentType="application/xml; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" isELIgnored="false"/>	
 <jsp:output omit-xml-declaration="false" />
 <rdf:RDF 
-		 xml:base="${properties['project.home']}${fn:escapeXml(requPath)}"
+		 xml:base="${relativeUrlGenerator.getProjectHome()}${fn:escapeXml(requPath)}"
 		 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 		 xmlns="http://purl.org/rss/1.0/"
 		 xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
@@ -43,7 +43,7 @@
      only on the tag page, which is based on the TagResourceViewCommand, which 
      has the necessary attributes we access here. dbe, 20080509
      still a hack. dzo 20110727 -->
-	<c:if test="${command.class.simpleName == 'TagResourceViewCommand'}">
+	<c:if test="${command['class'].simpleName == 'TagResourceViewCommand'}">
 		<swrctags:relatedUsers cmd="${command.relatedUserCommand}" tags="${command['requestedTags']}"/>
 	</c:if>
 </rdf:RDF>

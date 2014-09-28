@@ -2,6 +2,7 @@ package org.bibsonomy.rest.strategy;
 
 import java.util.StringTokenizer;
 
+import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
@@ -10,8 +11,8 @@ import org.bibsonomy.rest.strategy.posts.GetNewPostsStrategy;
 import org.bibsonomy.rest.strategy.posts.GetPopularPostsStrategy;
 import org.bibsonomy.rest.strategy.posts.community.PostCommunityPostStrategy;
 import org.bibsonomy.rest.strategy.posts.community.PutCommunityPostStrategy;
-import org.bibsonomy.rest.strategy.posts.community.references.DeleteReferencesStrategy;
-import org.bibsonomy.rest.strategy.posts.community.references.PostReferencesStrategy;
+import org.bibsonomy.rest.strategy.posts.community.references.DeleteRelationsStrategy;
+import org.bibsonomy.rest.strategy.posts.community.references.PostRelationsStrategy;
 import org.bibsonomy.rest.strategy.users.DeletePostStrategy;
 import org.bibsonomy.rest.strategy.users.GetPostDetailsStrategy;
 
@@ -76,22 +77,27 @@ public class PostsHandler implements ContextHandler {
 				break;
 			}
 		case 3: {
+				// /posts/community/[hash]/reference/ or /posts/community/[hash]/part_of/
 				final String path = urlTokens.nextToken();
-		
-				// /posts/community/[hash]/references/
 				final String hash = urlTokens.nextToken();
-				final String references = urlTokens.nextToken();
-				if (!RESTConfig.COMMUNITY_SUB_PATH.equalsIgnoreCase(path) || !RESTConfig.REFERENCES_SUB_PATH.equalsIgnoreCase(references)) {
+				
+				final String relationString = urlTokens.nextToken();
+				if (!RESTConfig.COMMUNITY_SUB_PATH.equalsIgnoreCase(path)) {
 					break;
-				}			
-			
-				switch (httpMethod) {
+				}
+				try {
+					final GoldStandardRelation relation = Enum.valueOf(GoldStandardRelation.class, relationString.toUpperCase());
+					switch (httpMethod) {
 					case POST:
-						return new PostReferencesStrategy(context, hash);
+						return new PostRelationsStrategy(context, hash, relation);
 					case DELETE:
-						return new DeleteReferencesStrategy(context, hash);
+						return new DeleteRelationsStrategy(context, hash, relation);
 					default:
 						break;
+					}
+				} catch (IllegalArgumentException e) {
+					// invalid relation
+					break;
 				}
 			}
 		}

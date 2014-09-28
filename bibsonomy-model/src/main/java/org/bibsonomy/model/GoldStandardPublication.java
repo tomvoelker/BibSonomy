@@ -40,6 +40,9 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	
 	private Set<BibTex> references;
 	private Set<BibTex> referencedBy;
+	private Set<BibTex> referencePartOfThisPublication;
+	private Set<BibTex> referenceThisPublicationIsPublishedIn;
+
 	
 	private void lacyLoadReferences() {
 		if (this.references == null) {
@@ -51,6 +54,114 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 		if (this.referencedBy == null) {
 			this.referencedBy = new HashSet<BibTex>();
 		}
+	}
+	
+	private void lacyLoadreferencePartOfThisPublication() {
+		if (this.referencePartOfThisPublication == null) {
+			this.referencePartOfThisPublication = new HashSet<BibTex>();
+		}
+	}
+	
+	private void lacyLoadReferenceThisPublicationIsPublishedIn() {
+		if (this.referenceThisPublicationIsPublishedIn == null) {
+			this.referenceThisPublicationIsPublishedIn = new HashSet<BibTex>();
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#getReferenceThisPublicationIsPublishedIn()
+	 */
+	@Override
+	public Set<BibTex> getReferenceThisPublicationIsPublishedIn() {
+		this.lacyLoadReferenceThisPublicationIsPublishedIn();
+		return Collections.unmodifiableSet(this.referenceThisPublicationIsPublishedIn);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#addToReferenceThisPublicationIsPublishedIn(org.bibsonomy.model.GoldStandardPublication)
+	 */
+	@Override
+	public boolean addToReferenceThisPublicationIsPublishedIn(final BibTex publication) {
+		this.lacyLoadReferenceThisPublicationIsPublishedIn();
+		return this.referenceThisPublicationIsPublishedIn.add(publication);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#addAllToReferenceThisPublicationIsPublishedIn(java.util.Set)
+	 */
+	@Override
+	public boolean addAllToReferenceThisPublicationIsPublishedIn(final Set<? extends BibTex> publications) {
+		this.lacyLoadReferenceThisPublicationIsPublishedIn();
+		if (publications != null) {
+			return this.referenceThisPublicationIsPublishedIn.addAll(publications);
+		}
+		
+		return false;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#removeFromReferenceThisPublicationIsPublishedIn(org.bibsonomy.model.GoldStandard)
+	 */
+	@Override
+	public boolean removeFromReferenceThisPublicationIsPublishedIn(final BibTex publication) {
+		return this.referenceThisPublicationIsPublishedIn == null ? false : this.referenceThisPublicationIsPublishedIn.remove(publication);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#removeAllFromReferenceThisPublicationIsPublishedIn(java.util.Set)
+	 */
+	@Override
+	public boolean removeAllFromReferenceThisPublicationIsPublishedIn(final Set<? extends BibTex> publications) {
+		return this.referenceThisPublicationIsPublishedIn == null ? false : this.referenceThisPublicationIsPublishedIn.removeAll(publications);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#getReferencePartOfThisPublication()
+	 */
+	@Override
+	public Set<BibTex> getSubGoldStandards() {
+		this.lacyLoadreferencePartOfThisPublication();
+		return Collections.unmodifiableSet(this.referencePartOfThisPublication);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#addToReferencePartOfThisPublication(org.bibsonomy.model.GoldStandardPublication)
+	 */
+	@Override
+	public boolean addToReferencePartOfThisPublication(final BibTex publication) {
+		this.lacyLoadreferencePartOfThisPublication();
+		return this.referencePartOfThisPublication.add(publication);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#addAllToReferencePartOfThisPublication(java.util.Set)
+	 */
+	@Override
+	public boolean addAllToReferencePartOfThisPublication(final Set<? extends BibTex> publications) {
+		this.lacyLoadreferencePartOfThisPublication();
+		if (publications != null) {
+			return this.referencePartOfThisPublication.addAll(publications);
+		}
+		
+		return false;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#removeFromReferencePartOfThisPublication(org.bibsonomy.model.GoldStandard)
+	 */
+	@Override
+	public boolean removeFromReferencePartOfThisPublication(final BibTex publication) {
+		return this.referencePartOfThisPublication == null ? false : this.referencePartOfThisPublication.remove(publication);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#removeAllFromReferencePartOfThisPublication(java.util.Set)
+	 */
+	@Override
+	public boolean removeAllFromReferencePartOfThisPublication(final Set<? extends BibTex> publications) {
+		return this.referencePartOfThisPublication == null ? false : this.referencePartOfThisPublication.removeAll(publications);
 	}
 	
 	/* (non-Javadoc)
