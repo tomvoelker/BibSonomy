@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Method;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,14 +24,8 @@ import org.bibsonomy.util.spring.security.AuthenticationUtils;
  */
 @Deprecated
 public class AdminHandler extends HttpServlet {
-	
 	private static final long serialVersionUID = 3691036578076309554L;
 	private static final Log log = LogFactory.getLog(AdminHandler.class);
-	
-	@Override
-	public void init(ServletConfig config) throws ServletException{
-		super.init(config);
-	}	
 	
 	@Override
 	public void doGet (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

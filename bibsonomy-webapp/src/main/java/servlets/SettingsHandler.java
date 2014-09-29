@@ -91,7 +91,7 @@ public class SettingsHandler extends AbstractServlet {
 						stmtP = conn.prepareStatement("INSERT INTO log_groups (`user_name`, `group`, `defaultgroup`, `start_date`, `user_status`) SELECT g.user_name, g.group, g.defaultgroup, g.start_date, g.user_status FROM groups g WHERE g.user_name = ? AND g.group = ?");
 						stmtP.setString(1, userToDelete);
 						stmtP.setInt(2, groupid);
-						stmtP.executeUpdate();						
+						stmtP.executeUpdate();
 						// remove user from group
 						stmtP = conn.prepareStatement("DELETE FROM groups WHERE user_name = ? AND `group` = ?");
 						stmtP.setString(1, userToDelete);
@@ -106,17 +106,17 @@ public class SettingsHandler extends AbstractServlet {
 						stmtP = conn.prepareStatement("INSERT INTO log_bibtex (content_id, `group`, user_name) SELECT content_id, `group`, user_name FROM bibtex WHERE user_name = ? AND `group` = ?");
 						stmtP.setString(1, userToDelete);
 						stmtP.setInt(2, groupid);
-						stmtP.executeUpdate();												
+						stmtP.executeUpdate();
 						// update bibtex table
 						stmtP = conn.prepareStatement("UPDATE bibtex b SET b.group = " + SettingsHandler.SQL_CONST_GROUP_PRIVATE + " WHERE b.user_name = ? AND b.group = ?");
 						stmtP.setString(1, userToDelete);
 						stmtP.setInt(2, groupid);
-						stmtP.executeUpdate();						
+						stmtP.executeUpdate();
 						// log bookmark
 						stmtP = conn.prepareStatement("INSERT INTO log_bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, user_name, change_date, rating) SELECT content_id, book_url_hash, book_description, book_extended, `group`, date, user_name, change_date, rating FROM bookmark WHERE user_name = ? AND `group` = ?");
 						stmtP.setString(1, userToDelete);
 						stmtP.setInt(2, groupid);
-						stmtP.executeUpdate();												
+						stmtP.executeUpdate();
 						// update bookmark table
 						stmtP = conn.prepareStatement("UPDATE bookmark b SET b.group = " + SettingsHandler.SQL_CONST_GROUP_PRIVATE + " WHERE b.user_name = ? AND b.group = ?");
 						stmtP.setString(1, userToDelete);
@@ -145,9 +145,9 @@ public class SettingsHandler extends AbstractServlet {
 					}
 				}
 				
-				conn.commit();				
+				conn.commit();
 				if (redirectOnSuccess != null) {
-					response.sendRedirect(redirectOnSuccess);	
+					response.sendRedirect(redirectOnSuccess);
 				} else {
 					final String referer = request.getHeader("Referer");
 					response.sendRedirect(referer != null ? referer : SETTINGS_URL);
@@ -156,7 +156,7 @@ public class SettingsHandler extends AbstractServlet {
 				conn.rollback();     // rollback all queries
 				log.fatal("Could not change settings for user " + currUser + ".", e);
 				this.getServletConfig().getServletContext().getRequestDispatcher("/errors/error.jsp").forward(request, response);
-			}       
+			}
 		} catch (final Exception e) {
 			log.fatal(e);
 			response.sendRedirect("/errors/error.jsp");
