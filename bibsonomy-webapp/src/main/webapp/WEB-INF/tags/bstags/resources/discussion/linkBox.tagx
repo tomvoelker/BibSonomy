@@ -17,7 +17,7 @@
     <div id="referenceLinkContainer">
 		<fmt:message var="linkType" key="discussion.info.resource"/>
 		
-		<input class="form-control help-popover" type="text" value="${linkText}" size="${fn:length(linkText)}"/>
+		<input class="form-control help-popover" type="text" value="${linkText}" size="${fn:length(linkText)}" style="width:50%"/>
 		<div class="help help-header hide"><c:out value="${labelText}" /></div>
 		<div class="help help-content hide">
 			<fmt:message key="discussion.resourceLink.help">

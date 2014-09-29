@@ -63,18 +63,6 @@
 				<li><a href="#collapseAllThreads" id="collapseAllThreads"><fmt:message key="post.resource.discussion.actions.collapseAllThreads" /></a></li>
 			-->
 		</span>
-		
-		
-   		<div class="row">
-   			<div class="col-sm-6">
-				<!-- Aggregated RatingInfo -->
-    			<review:reviewRatingsInfo resource="${resource}" />
-			</div>
-			<div class="col-sm-6">
-				<!-- Publication reference link -->
-				<discussion:linkBox resource="${resource}"/>
-			</div>
-    	</div> <!-- ./row -->
 
 		<c:if test="${not fn:contains(resource.class.simpleName, 'Bookmark') and resource.entrytype=='preprint' and empty resource.discussionItems}">
 			<p class="help-block">

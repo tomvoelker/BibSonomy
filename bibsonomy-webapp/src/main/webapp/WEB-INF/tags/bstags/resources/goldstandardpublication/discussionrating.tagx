@@ -4,7 +4,8 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:review="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion/review"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
@@ -94,4 +95,13 @@
 			<fmt:message key="post.resource.discussion.discussionUser.join" />
 		</c:if>
 	</div>
+	
+	<br />
+
+	<!-- Aggregated RatingInfo -->
+	<review:reviewRatingsInfo resource="${post.resource}" />
+
+	<!-- Publication reference link -->
+	<discussion:linkBox resource="${post.resource}"/>
+
 </jsp:root>

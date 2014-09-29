@@ -141,10 +141,10 @@
 					<!--+
 						| discussion and rating
 						+-->
-					<div id="discussion">
+					
 						<gpub:discussionrating post="${post}" otherPostsUrlPrefix="/bibtex/${hash.inter.id}"/>
 						<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName=""/>
-					</div>
+
 					<!-- discussion -->
 					<!-- this is a goldstandard page => postUserName is the goldstandard user "" -->
 					
