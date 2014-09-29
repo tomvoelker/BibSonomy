@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
+import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListControllerWithTags;
@@ -123,7 +123,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 		 * know the type of the requested hash. The getPosts() method of the 
 		 * LogicInterface checks for the type and returns the corresponding post(s). 
 		 */
-		final int entriesPerPage = command.getListCommand(this.getResourceClass()).getEntriesPerPage();		
+		final int entriesPerPage = command.getListCommand(this.getResourceClass()).getEntriesPerPage();
 		final Date startDate = command.getStartDate();
 		final Date endDate = command.getEndDate();
 		this.setList(command, this.getResourceClass(), groupingEntity, requUser, null, longHash, null, command.getFilter(), null, startDate, endDate, entriesPerPage);
@@ -245,9 +245,9 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			if (GroupingEntity.USER.equals(groupingEntity) || present(goldStandard)) {
 				/*
 				 * fetch posts of all users with the given hash, add users to related
-				 * users list				
+				 * users list
 				 */
-				final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, null, null, null, null, 0, 1000);
+				final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
 				for (final Post<R> post : allPosts) {
 					command.getRelatedUserCommand().getRelatedUsers().add(post.getUser());
 				}

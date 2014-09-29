@@ -52,7 +52,7 @@ public class FollowersPageController extends SingleResourceListController implem
 		// ranking settings
 		final Integer start = command.getRanking().getPeriod() * Parameters.NUM_RESOURCES_FOR_PERSONALIZED_RANKING;
 		command.getRanking().setPeriodStart(start + 1);
-		command.getRanking().setPeriodEnd(start + Parameters.NUM_RESOURCES_FOR_PERSONALIZED_RANKING);		
+		command.getRanking().setPeriodEnd(start + Parameters.NUM_RESOURCES_FOR_PERSONALIZED_RANKING);
 		
 		
 		// handle case when only tags are requested
@@ -92,7 +92,7 @@ public class FollowersPageController extends SingleResourceListController implem
 
 			// show only the top ranked resources for each resource type
 			if (command.getListCommand(resourceType).getList().size() > origEntriesPerPage) {
-				this.restrictResourceList(command, resourceType, listCommand.getStart(), listCommand.getStart() + origEntriesPerPage);				
+				this.restrictResourceList(command, resourceType, listCommand.getStart(), listCommand.getStart() + origEntriesPerPage);
 			}
 			
 			// set total count
@@ -106,8 +106,8 @@ public class FollowersPageController extends SingleResourceListController implem
 			command.setUserIsFollowing(logic.getUsers(null, GroupingEntity.FOLLOWER, null, null, null, null, UserRelation.OF_FOLLOWER, null, 0, 0));
 
 			// retrieve similar users, by the given user similarity measure
-			final List<User> similarUsers = this.logic.getUsers(null, GroupingEntity.USER, username, null, null, null, userRelation, null, 0, 10);	
-			command.getRelatedUserCommand().setRelatedUsers(similarUsers);			
+			final List<User> similarUsers = this.logic.getUsers(null, GroupingEntity.USER, username, null, null, null, userRelation, null, 0, 10);
+			command.getRelatedUserCommand().setRelatedUsers(similarUsers);
 			
 			this.endTiming();
 			return Views.FOLLOWERS;

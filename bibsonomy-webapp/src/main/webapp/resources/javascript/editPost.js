@@ -57,11 +57,11 @@ function enableHandler() {
 }
 
 function disableHandler() {
-	if ($.browser.msie || $.browser.opera) {
-		document.onkeydown = document.onkeypress = document.onkeyup;
-	} else {
+//	if ($.browser.msie || $.browser.opera) {
+//		document.onkeydown = document.onkeypress = document.onkeyup;
+//	} else {
 		document.onkeydown = document.onkeypress = document.onkeyup = disHandler;
-	}
+//	}
 }
 
 function Suggestion(tagname, wighting)	{
@@ -404,7 +404,7 @@ function completeTag(tag) {
 				break;
 			}
 			else if(sortedCollection) {
-				if(sortedCollection[getPos()] != "") {
+				if(sortedCollection[getPos()] != "" && sortedCollection[getPos()]!==undefined) {
 					// tag found in collection
 					reset = true;
 					var tag = sortedCollection[getPos()];

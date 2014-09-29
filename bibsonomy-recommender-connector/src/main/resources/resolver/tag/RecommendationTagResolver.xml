@@ -26,11 +26,11 @@
 		 | Get list of pairs containing given user's most popular tag name and frequency
 		 + --> 
 	<select id="getMostPopularTagsForUser" parameterClass="getTagsForResParam" resultMap="RecommendationBibCommon.tagFrequency">
-		SELECT t.tag_lower as first, COUNT(tag_lower) as second 
+		SELECT t.tag_lower AS first, COUNT(tag_lower) AS second 
 		FROM tas t
 		WHERE t.user_name = #userName# 
 		GROUP BY tag_lower 
-		ORDER BY COUNT(tag_lower) DESC 
+		ORDER BY second DESC 
 		LIMIT #range#
 	</select>
 	
@@ -61,7 +61,7 @@
 		GROUP BY tag_lower 
 		ORDER BY COUNT(tag_lower) DESC 
 		LIMIT #range#
-	</select>	
+	</select>
 		
 	<!-- +
 		 | Get number of tags used by 

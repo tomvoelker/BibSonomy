@@ -1,0 +1,54 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<jsp:directive.attribute name="postIndex" type="java.lang.Integer"  required="true" />
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="disableResourceLinks" type="java.lang.Boolean" required="true" />
+
+
+	<!--+
+		| DIFF
+		+-->
+	<c:choose>
+		<c:when test="${command.context.userLoggedIn}">
+			<c:choose>
+				<!-- COPY -->
+				<c:when test="${loginUserName ne post.user.name}"><!-- user is not post's owner -->
+					<!-- Only post's owner has acces to post diff -->
+					<!--<c:url var="copyLink" value="/diffPublication">
+						<c:param name="hash" value="${post.resource.intraHash}" />
+						<c:param name="user" value="${post.user.name}" />
+						<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
+					</c:url>
+					<fmt:message key="bibtex.actions.copy.title" var="copyTitle"/>
+         			<a class="item copy" href="${copyLink}" title="${fn:escapeXml(copyTitle)}"></a>-->
+         			<!-- For signed out users we always show the inactive copy button -->
+					<fmt:message key="bibtex.actions.copy.inactive" var="copyTitle"/>
+    				<a class="item icopy" title="${copyTitle}"><!-- Keep Me --></a>
+				</c:when>
+			
+				<!-- EDIT -->
+				<c:otherwise><!-- user is post's owner -->
+					<fmt:message key="bibtex.actions.edit.title" var="editTitle"/>
+					<c:url var="diffLink" value="/diffPublication">
+						<c:param name="intraHashToUpdate" value="${post.resource.intraHash}" />
+						<c:param name="user" value="${post.user.name}" />
+						<c:param name="historyIndex" value="${postIndex}" />
+					</c:url>
+       				<a class="item edit" href="${diffLink}" title="${editTitle}"><!-- Keep Me--></a>
+			
+				</c:otherwise>
+			</c:choose>
+		</c:when>
+		<c:otherwise>
+			<!-- For signed out users we always show the inactive copy button -->
+			<fmt:message key="bibtex.actions.copy.inactive" var="copyTitle"/>
+    		<a class="item icopy" title="${copyTitle}"><!-- Keep Me --></a>
+    	</c:otherwise>
+	</c:choose>
+    
+</jsp:root>

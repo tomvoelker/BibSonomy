@@ -48,7 +48,7 @@ public class DOIScraperTest {
 	public void testScraper1() throws ScrapingException, MalformedURLException {
 		final ScrapingContext sc = new ScrapingContext(new URL("http://dx.doi.org/10.1007/11922162"));
 		assertFalse(SCRAPER.scrape(sc));
-		assertEquals("http://link.springer.com/book/10.1007/11922162/page/1", sc.getUrl().toString());
+		assertEquals("http://link.springer.com/book/10.1007/11922162", sc.getUrl().toString());
 	}
 
 	

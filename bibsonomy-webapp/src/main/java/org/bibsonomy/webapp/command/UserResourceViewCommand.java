@@ -61,7 +61,7 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	 */
 	public void setUser(User user) {
 		this.user = user;
-	}	
+	}
 
 	/**
 	 * Set user similarity 

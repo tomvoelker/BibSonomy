@@ -32,8 +32,11 @@ import java.io.File;
  */
 public interface FileFactory {
 	/**
+	 * @param username 
+	 * @param hash 
+	 * @param filename 
 	 * @param fileName simple fileName without directory path
 	 * @return the file (including directory)
 	 */
-	public File getFile(String fileName);
+	public File getFileForResourceDocument(String username, String hash, String filename);
 }

@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>2.0.46-SNAPSHOT</version>
+		<version>2.0.48-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>bibsonomy-webapp</artifactId>
@@ -72,13 +72,17 @@
 					</execution>
 				</executions>
 				<configuration>
+					<excludes>
+						<exclude>**/pdfworker.js</exclude>
+						<exclude>**/pdf.js/**</exclude>
+					</excludes>
 					<encoding>UTF-8</encoding>
 					<jswarn>false</jswarn>
 					<nosuffix>true</nosuffix>
 					<suffix></suffix>
 					<disableOptimizations>true</disableOptimizations>
+					<!-- note: use the compressed javascript files in ${project.build.webapp.resourcedir} -->
 					<aggregations>
-						<!-- note: use the compressed javascript files in ${project.build.webapp.resourcedir} -->
 						<aggregation>
 							<insertNewLine>true</insertNewLine>
 							<output>${project.build.webapp.resourcedir}/javascript/merged/global.js</output>
@@ -91,7 +95,7 @@
 								<include>${project.build.webapp.resourcedir}/javascript/style.js</include>
 								<include>${project.build.webapp.resourcedir}/jquery/plugins/corner/jquery.corner.js</include>
 								<include>${project.build.webapp.resourcedir}/jquery/plugins/hoverIntent/jquery.hoverIntent.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/jquery-ui.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/ajaxUtils.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/userRelation.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/addToSpheres.js</include>
@@ -115,6 +119,48 @@
 								<include>${project.build.webapp.resourcedir}/javascript/citeproc/cslstyles.js</include>
 							</includes>
 						</aggregation>
+						<!-- javascript files for bootstrap front-end -->
+						<aggregation>
+							<insertNewLine>true</insertNewLine>
+							<output>${project.build.webapp.resourcedir}/javascript/merged/bs/global.js</output>
+							<includes>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/jquery-2.1.1.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/jquery-ui.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/holder.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-dialog.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/custom.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-datepicker.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-carousel.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/friendoverview.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/functions.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/actions/clipboard.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/ajaxUtils.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/fileUpload.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/style.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/jquery.fadebox.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/userRelation.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/addToSpheres.js</include>
+							</includes>
+						</aggregation>
+						<aggregation>
+							<insertNewLine>true</insertNewLine>
+							<output>${project.build.webapp.resourcedir}/javascript/merged/bs/discussion.js</output>
+							<includes>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/excanvas.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/jquery.flot.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/jquery.flot.stack.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/discussion/discussion.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/discussion/reviews.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/discussion/comments.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/discussion/csllinks.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/csllocales.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/xmldom.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/citeproc.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/cslstyles.js</include>
+							</includes>
+						</aggregation>
 					</aggregations>
 				</configuration>
 			</plugin>
@@ -127,6 +173,7 @@
 					<outputDirectory>${project.build.directory}/${project.build.finalName}/resources/css</outputDirectory>
 					<compress>true</compress>
 					<includes>
+						<include>bootstrap-style.less</include>
 						<include>style.less</include>
 					</includes>
 				</configuration>
@@ -293,6 +340,10 @@
 				<exclusion>
 					<groupId>org.apache.tomcat</groupId>
 					<artifactId>el-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jasper-el</artifactId>
+					<groupId>org.apache.tomcat</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>

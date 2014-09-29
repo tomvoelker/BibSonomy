@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+     
+     BibSonomy-Layout - Layout engine for the webapp.
+      
+     Copyright (C) 2006 - 2010 Knowledge & Data Engineering Group, 
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+     
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+    
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+     
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<layouts
+	xmlns="http://www.bibsonomy.org/resources/xml/JabrefLayoutDefinition"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.bibsonomy.org/resources/xml/JabrefLayoutDefinition JabrefLayoutDefinition.xsd "
+	xmlns:xml="http://www.w3.org/XML/1998/namespace">
+	<layout name="bib">
+		<displayName>BibTeX</displayName>
+		<description xml:lang="en">
+			BibTeX is a popular bibliography management tool for LaTeX. Save this output and include it 
+			in your LaTeX file with the command bibliography{FILENAME} by substituting FILENAME with the 
+			name you gave the file while saving it and omitting the .bib ending.
+		</description>
+		<description xml:lang="de">
+			BibTeX ist ein populäres Verwaltungswerkzeug für Literaturreferenzen in LaTeX. 
+			Speichern Sie die Ausgabe und binden Sie diese mit dem Befehl bibliography{FILENAME} 
+			in Ihre LaTeX-Datei ein. Das Argument FILENAME muss anschließend durch den Namen der 
+			Datei, in der Sie die Ausgabe gespeichert haben, ersetzt werden (ohne die Endung .bib).
+		</description>
+		<mimeType>text/html</mimeType>
+		<extension>.bib</extension>
+		<isFavorite>true</isFavorite>
+	</layout>
+	<layout name="publ">
+		<displayName>HTML</displayName>
+		<description xml:lang="en">
+			This gives you a simple HTML formatted page which you can include into your homepage.
+		</description>
+		<description xml:lang="de">
+			Eine einfach formatierte HTML-Seite, die Sie in Ihre Homepage einfügen können.
+		</description>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="publrss">
+		<displayName>RSS</displayName>
+		<description xml:lang="en">
+			With an appropriate RSS-tool you can subscribe to this RSS feed and get notifications 
+			when someone adds publications to it.
+		</description>
+		<description xml:lang="de">
+			Mit einem geeigneten RSS-Programm können Sie sich an diesem RSS-Feed anmelden. 
+			Sie werden dadurch benachrichtigt, sobald eine Publikation hinzugefügt wurde.
+		</description>
+		<mimeType>text/html</mimeType>
+		<extension>.rdf</extension>
+	</layout>			  
+	<layout name="aparss">
+		<displayName>RSS (APA 5th Style)</displayName>
+		<description xml:lang="en">
+			With an appropriate RSS-tool you can subscribe to this RSS feed and get notifications 
+			when someone adds publications to it.
+		</description>
+		<description xml:lang="de">
+			Mit einem geeigneten RSS-Programm können Sie sich an diesem RSS-Feed anmelden. 
+			Sie werden dadurch benachrichtigt, sobald eine Publikation hinzugefügt wurde.
+		</description>
+		<mimeType>text/html</mimeType>
+		<extension>.rdf</extension>
+	</layout>	
+	<layout name="burst">
+		<displayName>BuRST</displayName>
+		<description xml:lang="en">
+			This is a RDF output according to the BuRST specification. It is a valid RSS feed, 
+			therefore you can subscribe to it with appropriate applications. It is basically 
+			a union of the RSS and SWRC output.
+		</description>
+		<description xml:lang="de">
+			Ein gültiger RSS Feed entsprechend der RDF-Spezifikation. Sie können diesen mit einem 
+			geeigneten RSS-Programm einlesen. Die Ausgabe vereint RSS und SWRC.
+		</description>
+		<mimeType>text/html</mimeType>
+		<extension>.rdf</extension>
+	</layout>
+	<layout name="swrc">
+		<displayName>SWRC</displayName>
+		<description xml:lang="en">
+			This is a RDF output according to the SWRC ontology.
+		</description>
+		<description xml:lang="de">
+			Eine RDF-Ausgabe entsprechend der SWRC-Ontologie.   
+		</description>
+		<mimeType>text/html</mimeType>
+		<extension>.rdf</extension>
+	</layout>
+	<layout name="json">
+		<displayName>JSON</displayName>
+		<description xml:lang="en">
+			JSON (JavaScript Object Notation) is a lightweight exchange format for web programming 
+			with JavaScript. Using the callback parameter you get output in JSONP format.
+		</description>
+		<description xml:lang="de">
+			JSON (JavaScript Object Notation) ist ein leichtgewichtiges Austauschformat für die 
+			Webprogrammierung mit JavaScript. Mittels der Option callback erhalten Sie eine Ausgabe im 
+			JSONP-Format.
+		</description>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>	
+	<layout name="csl">
+		<displayName>CSL</displayName>
+		<description xml:lang="en">
+			The Citation Style Language (CSL)  is an open XML-based language to format bibliographies 
+			and citations. This JSON export is compatible with most of the CiteProc implementations.
+		</description>
+		<description xml:lang="de">
+			Die Citation Style Language (CSL) ist eine offene, auf XML basierende Sprache, um 
+			bibliografische Angaben und Zitationen zu formatieren. Dieser JSON Export ist mit den 
+			meisten CiteProc Implementationen kompatibel.
+		</description>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>	
+</layouts>

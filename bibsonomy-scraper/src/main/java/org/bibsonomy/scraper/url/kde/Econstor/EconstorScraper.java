@@ -35,14 +35,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
  * Scraper for www.econstor.eu
  * @author hmi
  *
  */
-public class EconstorScraper extends SimpleGenericURLScraper {
+public class EconstorScraper extends GenericBibTeXURLScraper {
 
 	private final Log log = LogFactory.getLog(EconstorScraper.class);
 
@@ -93,7 +94,7 @@ public class EconstorScraper extends SimpleGenericURLScraper {
 		return INFO;
 	}
 	@Override
-	public String getBibTeXURL(URL url) {
+	public String getDownloadURL(URL url) throws ScrapingException {
 		final String id = extractId(url.toString());
 		if (present(id)) {
 			return BIBTEX_URL + id;

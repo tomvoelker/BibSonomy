@@ -31,13 +31,13 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.generic.RISGenericURLScraper;
+import org.bibsonomy.scraper.generic.GenericRISURLScraper;
 
 /**
  * Scraper for openrepository pages
  * @author tst
  */
-public class OpenrepositoryScraper extends RISGenericURLScraper {
+public class OpenrepositoryScraper extends GenericRISURLScraper {
 
 	private static final String SITE_URL = "http://openrepository.com/";
 	private static final String SITE_NAME = "Open Repository";
@@ -97,7 +97,7 @@ public class OpenrepositoryScraper extends RISGenericURLScraper {
 	}
 	
 	@Override
-	public String getRISURL(URL url) {
+	public String getDownloadURL(URL url) {
 		final String sturl = url.toString();
 		if (sturl.contains(SUPPORTED_HOST_OPENREPOSITORY)) {
 			return "http://www." + SUPPORTED_HOST_OPENREPOSITORY + "/references?format=refman&handle=" + getHandle(sturl);

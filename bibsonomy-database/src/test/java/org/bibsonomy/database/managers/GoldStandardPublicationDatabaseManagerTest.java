@@ -19,6 +19,7 @@ import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.BeforeClass;
@@ -206,15 +207,16 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
     @Test
     public void testAddRemoveReferences() {
         final String interHash = this.createGoldStandardPublication();
-        goldPubManager.addReferencesToPost("", INTERHASH_GOLD_1, Collections.singleton(interHash), this.dbSession);
+        GoldStandardRelation relation = GoldStandardRelation.REFERENCE;
+        goldPubManager.addRelationsToPost("", INTERHASH_GOLD_1, Collections.singleton(interHash), relation, this.dbSession);
 
         final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", null, this.dbSession);
-        assertEquals(1 + 1, post.getResource().getReferences().size());
+        assertEquals(1 + 1, post.getResource().getReferences().size()+post.getResource().getReferenceThisPublicationIsPublishedIn().size());
 
-        goldPubManager.removeReferencesFromPost("", INTERHASH_GOLD_1, Collections.singleton(interHash), this.dbSession);
+        goldPubManager.removeRelationsFromPost("", INTERHASH_GOLD_1, Collections.singleton(interHash), relation, this.dbSession);
 
         final Post<GoldStandardPublication> postAfterRemove = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", null, this.dbSession);
-        assertEquals(1, postAfterRemove.getResource().getReferences().size());
+        assertEquals(1, postAfterRemove.getResource().getReferences().size()+post.getResource().getReferenceThisPublicationIsPublishedIn().size());
 
         this.deletePost(interHash);
     }

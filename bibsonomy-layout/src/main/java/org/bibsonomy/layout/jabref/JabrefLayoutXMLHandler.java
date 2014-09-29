@@ -24,98 +24,55 @@
 package org.bibsonomy.layout.jabref;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.LinkedList;
-import java.util.List;
 
+import org.bibsonomy.layout.common.AbstractXMLHandler;
 import org.xml.sax.Attributes;
-import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Callback handler for the SAX parser.
  * 
  * @author:  rja
  */
-public class JabrefLayoutXMLHandler extends DefaultHandler {
+public class JabrefLayoutXMLHandler extends AbstractXMLHandler<AbstractJabRefLayout> {
+	private static final String SELF_RENDERING_LAYOUT_ELEMENT_TAG = "selfrenderingLayout";
 
-	private StringBuffer buf = new StringBuffer();
-
-	private List<AbstractJabRefLayout> layoutDefinitions;
 	
-	private AbstractJabRefLayout currentLayoutDefinition;
-	
-	// need to save the attribute from the description element in the
-	// startElement callback method to use it in the endElement method	
-	private String languageAttribute;
-	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.layout.common.AbstractXMLHandler#isLayoutElement(java.lang.String)
+	 */
 	@Override
-	public void startDocument() {
-		 layoutDefinitions = new LinkedList<AbstractJabRefLayout>();
+	protected boolean isLayoutElement(String name) {
+		return SELF_RENDERING_LAYOUT_ELEMENT_TAG.equals(name) || "layout".equals(name);
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.layout.common.AbstractXMLHandler#initLayout(org.xml.sax.Attributes)
+	 */
 	@Override
-	public void endDocument() {
-		// nothing to do
-	}
-
-	@Override
-	public void startElement (final String uri, final String name, final String qName, final Attributes atts) {
-		buf = new StringBuffer();
-		if ("layout".equals(name)) {
-			currentLayoutDefinition = new JabrefLayout(atts.getValue("name"));
-			if (atts.getValue("public") != null){
-				currentLayoutDefinition.setPublicLayout(Boolean.parseBoolean(atts.getValue("public")));
-			}
-		} else if ("selfrenderingLayout".equals(name)) {
+	protected AbstractJabRefLayout initLayout(String name, Attributes attrs) {
+		if (SELF_RENDERING_LAYOUT_ELEMENT_TAG.equals(name)) {
 			try {
-				currentLayoutDefinition = (AbstractJabRefLayout) Class.forName(atts.getValue("class")).getDeclaredConstructor(String.class).newInstance(atts.getValue("name"));
+				return (AbstractJabRefLayout) Class.forName(attrs.getValue("class")).getDeclaredConstructor(String.class).newInstance(attrs.getValue("name"));
 			} catch (InstantiationException | IllegalAccessException
 					| IllegalArgumentException | InvocationTargetException
 					| NoSuchMethodException | SecurityException
 					| ClassNotFoundException e) {
 				throw new RuntimeException("error initializing self rendering JabRef layout", e);
 			}
-		} else if ("description".equals(name)) {
-			this.languageAttribute = atts.getValue("xml:lang");
 		}
+		return new JabrefLayout(attrs.getValue("name"));
 	}
-
-	/** Collect characters.
-	 * 
-	 * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.layout.common.AbstractXMLHandler#endElement(java.lang.String, java.lang.String, java.lang.String, org.bibsonomy.model.Layout)
 	 */
 	@Override
-	public void characters (final char ch[], final int start, final int length) {
-		/*
-		 * replace arbitrary long sequences of whitespace by one space.
-		 */
-		final String s = new String(ch, start, length).replaceAll("\\s+", " ");
-		buf.append(s);
-	}
-
-	@Override
-	public void endElement (final String uri, final String name, final String qName) {
-		if ("layout".equals(name) || "selfrenderingLayout".equals(name)) {
-			layoutDefinitions.add(currentLayoutDefinition);
-		} else if ("displayName".equals(name)) {
-			currentLayoutDefinition.setDisplayName(getBuf());
-		} else if ("baseFileName".equals(name)) {
-			((JabrefLayout) currentLayoutDefinition).setBaseFileName(getBuf());
+	protected void endElement(String uri, String name, String qName, AbstractJabRefLayout currentLayout) {
+		super.endElement(uri, name, qName, currentLayout);
+		if ("baseFileName".equals(name)) {
+			((JabrefLayout) currentLayout).setBaseFileName(getBuf());
 		} else if ("directory".equals(name)) {
-			((JabrefLayout) currentLayoutDefinition).setDirectory(getBuf());
-		} else if ("description".equals(name)) {
-			currentLayoutDefinition.addDescription(this.languageAttribute, getBuf());
-		} else if ("extension".equals(name)) {
-			currentLayoutDefinition.setExtension(getBuf());
-		} else if ("mimeType".equals(name)) {
-			currentLayoutDefinition.setMimeType(getBuf());
+			((JabrefLayout) currentLayout).setDirectory(getBuf());
 		}
-	}
-
-	private String getBuf() {
-		return buf.toString().trim();
-	}
-
-	public List<AbstractJabRefLayout> getLayouts() {
-		return layoutDefinitions;
 	}
 }

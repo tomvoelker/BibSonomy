@@ -84,10 +84,13 @@ public class UserRealnameResolver {
 	public void init() {
 		try {
 			this.userIndex = this.config.createDatabase(false);
+			this.userIndex.openSearchers();
 		} catch (final OverlappingFileLockException e) {
-			this.log.error("Error opening user name index for the Facebook importer: " + e.getMessage());
+			log.error("Error opening user name index for the Facebook importer: " + e.getMessage());
+		} catch (final IOException e) {
+			log.error("Error opening index", e);
 		} catch (final Exception e) {
-			this.log.warn("error while creating database, disabling index", e);
+			log.warn("error while creating database, disabling index", e);
 		}
 	}
 	

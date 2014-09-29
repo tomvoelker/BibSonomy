@@ -31,12 +31,13 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
  * @author hagen
  */
-public class StanfordInfoLabScraper extends SimpleGenericURLScraper {
+public class StanfordInfoLabScraper extends GenericBibTeXURLScraper {
 
 	private static final String SITE_NAME = "Stanford InfoLab Publication Server";
 	private static final String SITE_URL  = "http://ilpubs.stanford.edu";
@@ -92,7 +93,7 @@ public class StanfordInfoLabScraper extends SimpleGenericURLScraper {
 	}*/
 
 	@Override
-	public String getBibTeXURL(URL url) {
+	public String getDownloadURL(URL url) throws ScrapingException {
 		Matcher idMatcher = ID_PATTERN.matcher(url.toString());
 		if (idMatcher.find()){
 			return"http://ilpubs.stanford.edu:8090/cgi/export/" + idMatcher.group(1) + "/BibTeX/ilprints-eprint-1015.bib";

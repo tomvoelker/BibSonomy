@@ -30,8 +30,10 @@
 
 		<c:forEach var="entry" items="${command.layoutMap}">
 			<c:if test="${entry.value.publicLayout}">
-				<c:url var="url" value="/layout/${entry.value.name}/${pathAndQueryString}" />
-				<option value="${fn:escapeXml(url)}"><c:out value="${entry.value.displayName}"/></option>
+				<c:if test="${'JabrefLayout' eq mapEntry.value['class'].simpleName}">
+					<c:url var="url" value="/layout/${entry.value.name}/${pathAndQueryString}" />
+					<option value="${fn:escapeXml(url)}"><c:out value="${entry.value.displayName}"/></option>
+				</c:if>
 			</c:if>
 		</c:forEach>
 	</select>

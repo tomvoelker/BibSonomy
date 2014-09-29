@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:output="urn:jsptagdir:/WEB-INF/tags/bstags/export/bibtex"> 
+	
+<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+<html>
+  <head>
+    <title>${properties['project.name']}</title>
+    <link rel="stylesheet" type="text/css" href="/resources/css/prolearn.css" />
+  </head>
+  <body>
+  
+  <h1><fmt:message key="bookmarks"/></h1>
+  
+  <c:forEach var="post" items="${command.bookmark.list}">
+  ${post.resource.title}
+  <br>${mtl:ch('nbsp')}${mtl:ch('nbsp')}<a href="${post.resource.url}">${post.resource.url}</a></br>
+  </c:forEach>
+ </body>
+</html>
+</jsp:root>

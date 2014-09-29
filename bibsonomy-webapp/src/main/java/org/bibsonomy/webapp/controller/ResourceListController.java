@@ -39,11 +39,11 @@ import org.springframework.beans.factory.annotation.Required;
 
 /**
  * controller for retrieving multiple windowed lists with resources. 
- * These are currently the bookmark an the bibtex list
+ * These are currently the bookmark and the bibtex list
  * 
  * @author Jens Illig
  */
-public abstract class ResourceListController {
+public abstract class ResourceListController extends DidYouKnowMessageController {
 	/** default values for sorting when jabref layouts are to be rendered */
 	private static final String DEFAULT_SORTPAGE_JABREF_LAYOUTS = "year|author|title";
 	private static final String DEFAULT_SORTPAGEORDER_JABREF_LAYOUTS = "desc|asc|asc";

@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.controller;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.resource.PublicationPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -34,8 +35,10 @@ public class BasketPageController extends SingleResourceListController implement
 		final GroupingEntity groupingEntity = GroupingEntity.CLIPBOARD;
 
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {			
-			this.setList(command, resourceType, groupingEntity, loginUserName, null, null, null, null, null, null, null, Integer.MAX_VALUE);
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+			final ListCommand<?> listCommand = command.getListCommand(resourceType);
+			final int entriesPerPage = listCommand.getEntriesPerPage();
+			this.setList(command, resourceType, groupingEntity, loginUserName, null, null, null, null, null, null, null, entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
 
 			/*
