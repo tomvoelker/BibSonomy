@@ -74,6 +74,7 @@ public class SystemPropertiesContextListener implements ServletContextListener {
 			propertyFactory.afterPropertiesSet();
 
 			Properties p = propertyFactory.getObject();
+			// TODO: This looks not very nice.
 			addSystemProperties(p, "database.opensocial.url", "database.opensocial.driverClassName", "database.opensocial.maxIdle", "database.opensocial.maxActive", "database.opensocial.maxWait", "database.opensocial.removeAbandoned", "database.opensocial.removeAbandonedTimeout", "database.opensocial.username", "database.opensocial.password");
 			
 			final String projectHome = p.getProperty("project.home");

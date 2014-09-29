@@ -47,7 +47,7 @@ public class IbatisOAuthLogic implements OAuthLogic {
 	/**
 	 * Initialize iBatis layer.
 	 */
-	private final SqlMapClient sqlMap;
+	private SqlMapClient sqlMap;
 
 	private String defaultCallbackUrl;
 
@@ -310,4 +310,9 @@ public class IbatisOAuthLogic implements OAuthLogic {
 	public void setDefaultCallbackUrl(String defaultCallbackUrl) {
 		this.defaultCallbackUrl = defaultCallbackUrl;
 	}
+	
+	public void setSqlMap(SqlMapClient sqlMap) {
+		this.sqlMap = sqlMap;
+	}
+
 }
