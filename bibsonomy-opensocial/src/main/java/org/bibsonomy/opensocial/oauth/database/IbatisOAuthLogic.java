@@ -54,29 +54,6 @@ public class IbatisOAuthLogic implements OAuthLogic {
 	private static OAuthLogic instance = null;
 	
 	private IbatisOAuthLogic() {
-		try {
-			// initialize database client
-			// FIXME: this should be configured by spring and not manually
-			SqlMapClientFactoryBean factory = new SqlMapClientFactoryBean();
-			BasicDataSource dataSource = new BasicDataSource();
-			dataSource.setDriverClassName(System.getProperty("database.opensocial.driverClassName"));
-			dataSource.setUrl(System.getProperty("database.opensocial.url"));
-			dataSource.setMaxIdle(Integer.parseInt(System.getProperty("database.opensocial.maxIdle")));
-			dataSource.setMaxActive(Integer.parseInt(System.getProperty("database.opensocial.maxActive")));
-			dataSource.setMaxWait(Integer.parseInt(System.getProperty("database.opensocial.maxWait")));
-			dataSource.setRemoveAbandoned(Boolean.parseBoolean(System.getProperty("database.opensocial.removeAbandoned")));
-			dataSource.setRemoveAbandonedTimeout(Integer.parseInt(System.getProperty("database.opensocial.removeAbandonedTimeout")));
-			dataSource.setUsername(System.getProperty("database.opensocial.username"));
-			dataSource.setUsername(System.getProperty("database.opensocial.password"));
-			factory.setConfigLocation(new ClassPathResource("SqlMapConfig_OpenSocial.xml"));
-			factory.setDataSource(dataSource);
-			factory.afterPropertiesSet();
-			sqlMap = factory.getObject();
-			log.info("OpenSocial database connection initialized.");
-
-		} catch (Exception e) {
-			throw new RuntimeException ("Error initializing DBAccess class. Cause: " + e);
-		}
 	}
 
 	/**

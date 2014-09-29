@@ -103,7 +103,6 @@
 	<bean id="oAuthLogic" class="org.bibsonomy.opensocial.oauth.database.IbatisOAuthLogic">
 		<property name="sqlMap" ref="oAuthSqlMapClient" />
 	</bean>
-
 	
 	<bean id="oAuthController" class="org.bibsonomy.webapp.controller.opensocial.OAuthProtocolController" abstract="true">
 		<property name="dataStore" ref="oauthDataStore"/>

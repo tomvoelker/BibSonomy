@@ -189,8 +189,7 @@
 	</bean>
 	
 	<bean id="adminOAuthController" class="org.bibsonomy.webapp.controller.admin.AdminOAuthController" scope="request">
-		<property name="oauthLogic" ref="oauthLogic"/>
+		<property name="oauthLogic" ref="oAuthLogic"/>
 	</bean>
 	
-	<bean id="oauthLogic" class="org.bibsonomy.opensocial.oauth.database.IbatisOAuthLogic" scope="singleton" factory-method="getInstance"/>
 </beans>
