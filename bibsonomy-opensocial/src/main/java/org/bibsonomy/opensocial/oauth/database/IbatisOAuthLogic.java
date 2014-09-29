@@ -11,7 +11,6 @@ import net.oauth.OAuthConsumer;
 import net.oauth.OAuthServiceProvider;
 import net.oauth.signature.RSA_SHA1;
 
-import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shindig.auth.SecurityToken;
@@ -28,8 +27,6 @@ import org.bibsonomy.opensocial.oauth.database.beans.OAuthParam;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenIndex;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenInfo;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.orm.ibatis.SqlMapClientFactoryBean;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 
@@ -40,29 +37,11 @@ import com.ibatis.sqlmap.client.SqlMapClient;
  */
 public class IbatisOAuthLogic implements OAuthLogic {
 	private static final Log log = LogFactory.getLog(IbatisOAuthLogic.class);
-
-	//------------------------------------------------------------------------
-	// database logic interface
-	//------------------------------------------------------------------------
-	/**
-	 * Initialize iBatis layer.
-	 */
+	
+	/** Initialize iBatis layer. */
 	private SqlMapClient sqlMap;
 
 	private String defaultCallbackUrl;
-
-	private static OAuthLogic instance = null;
-	
-	private IbatisOAuthLogic() {
-	}
-
-	/**
-	 * @return An instance of this implementation of {@link OAuthLogic}
-	 */
-	public static OAuthLogic getInstance() {
-		if (instance == null) instance = new IbatisOAuthLogic();
-		return instance;
-	}
 	
 	@Override
 	public void createAuthentication(String gadgetUrl, String server, String consumerKey, String consumerSecret, KeyType keyType) {
@@ -75,23 +54,23 @@ public class IbatisOAuthLogic implements OAuthLogic {
 		OAuthConsumerInfo consumerParam = makeConsumerInfo(securityToken, serviceName);
 		OAuthConsumerInfo consumerInfo = null;
 		try {
-			consumerInfo = (OAuthConsumerInfo)this.sqlMap.queryForObject("getAuthentication", consumerParam);
+			consumerInfo = (OAuthConsumerInfo) this.sqlMap.queryForObject("getAuthentication", consumerParam);
 		} catch (SQLException e) {
 			log.error("No consumer information found for '"+securityToken.getActiveUrl()+"' on '"+serviceName+"'");
 		}
+		
 		if (!present(consumerInfo)) {
 			throw new OAuthRequestException(OAuthError.INVALID_PARAMETER, "No key for gadget " + securityToken.getAppUrl() + " and service " + serviceName);
 		}
-		//String key, String secret, KeyType type, String name,String callbackUrl
-		BasicOAuthStoreConsumerKeyAndSecret cks = 
-			new BasicOAuthStoreConsumerKeyAndSecret(
+		
+		final BasicOAuthStoreConsumerKeyAndSecret cks = new BasicOAuthStoreConsumerKeyAndSecret(
 					consumerInfo.getConsumerKey(),
 					consumerInfo.getConsumerSecret(),
 					consumerInfo.getKeyType(), 
 					consumerInfo.getKeyName(), 
 					consumerInfo.getCallbackUrl()
 			);
-		OAuthConsumer consumer = null;
+		final OAuthConsumer consumer;
 		if (cks.getKeyType() == KeyType.RSA_PRIVATE) {
 			consumer = new OAuthConsumer(null, cks.getConsumerKey(), null, provider);
 			// The oauth.net java code has lots of magic.  By setting this property here, code thousands
@@ -126,7 +105,7 @@ public class IbatisOAuthLogic implements OAuthLogic {
 
 	@Override
 	public void deleteToken(SecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName, String tokenName) {
-		OAuthTokenIndex tokenIndex = makeTokenIndex(securityToken, serviceName);
+		final OAuthTokenIndex tokenIndex = makeTokenIndex(securityToken, serviceName);
 		
 		try {
 			this.sqlMap.delete("removeToken", tokenIndex);
@@ -154,7 +133,7 @@ public class IbatisOAuthLogic implements OAuthLogic {
 	}
 
 	private static OAuthTokenIndex makeTokenIndex(SecurityToken securityToken, String serviceName) {
-		OAuthTokenIndex tokenIndex = new OAuthTokenIndex();
+		final OAuthTokenIndex tokenIndex = new OAuthTokenIndex();
 		tokenIndex.setGadgetUri(securityToken.getAppUrl());
 		tokenIndex.setServiceName(serviceName);
 		tokenIndex.setModuleId(securityToken.getModuleId());
@@ -190,14 +169,13 @@ public class IbatisOAuthLogic implements OAuthLogic {
 	
 	@Override
 	public OAuthConsumerInfo readConsumer(String consumerKey) {
-		OAuthConsumerInfo consumerInfo = null;
 		try {
-			consumerInfo = (OAuthConsumerInfo )this.sqlMap.queryForObject("getConsumerInfo", consumerKey);
+			return (OAuthConsumerInfo ) this.sqlMap.queryForObject("getConsumerInfo", consumerKey);
 		} catch (SQLException e) {
-			log.error("Error fetching consumer info for consumer key '"+consumerKey+"'", e);
+			log.error("Error fetching consumer info for consumer key '" + consumerKey + "'", e);
 		}
 		
-		return consumerInfo;
+		return null;
 	}
 	
 	@Override
@@ -205,7 +183,7 @@ public class IbatisOAuthLogic implements OAuthLogic {
 		try {
 			this.sqlMap.delete("removeConsumerInfo", consumerKey);
 		} catch (SQLException e) {
-			log.error("Error removing consumerInfo for consumerKey '"+ consumerKey +"'", e);
+			log.error("Error removing consumerInfo for consumerKey '" + consumerKey + "'", e);
 		}
 	}
 	
@@ -224,7 +202,7 @@ public class IbatisOAuthLogic implements OAuthLogic {
 	@Override
 	public OAuthEntry readProviderToken(String oauthToken) {
 		try {
-			return (OAuthEntry)this.sqlMap.queryForObject("getProviderToken", oauthToken);
+			return (OAuthEntry) this.sqlMap.queryForObject("getProviderToken", oauthToken);
 		} catch (SQLException e) {
 			log.error("Error retrieving token details for token '"+oauthToken+"'", e);
 		}
@@ -251,7 +229,7 @@ public class IbatisOAuthLogic implements OAuthLogic {
 	
 	@Override
 	public void removeSpecificAccessToken(String userName, String accessToken){
-		OAuthParam param = new OAuthParam(userName, accessToken);
+		final OAuthParam param = new OAuthParam(userName, accessToken);
 		try{
 			this.sqlMap.delete("removeSpecificAccessToken", param);
 		} catch (SQLException e) {
@@ -269,8 +247,7 @@ public class IbatisOAuthLogic implements OAuthLogic {
 		}
 		return Collections.emptyList();
 	}
-
-
+	
 	//------------------------------------------------------------------------
 	// private helper
 	//------------------------------------------------------------------------
@@ -287,9 +264,11 @@ public class IbatisOAuthLogic implements OAuthLogic {
 	public void setDefaultCallbackUrl(String defaultCallbackUrl) {
 		this.defaultCallbackUrl = defaultCallbackUrl;
 	}
-	
+
+	/**
+	 * @param sqlMap the sqlMap to set
+	 */
 	public void setSqlMap(SqlMapClient sqlMap) {
 		this.sqlMap = sqlMap;
 	}
-
 }
