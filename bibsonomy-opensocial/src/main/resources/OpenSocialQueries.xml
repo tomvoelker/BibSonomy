@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
  "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="OpenSocial">
- 	<!-- +
+	<!-- +
 		 | result maps
 		 + -->
 	<resultMap id="consumerKeyAndSecret" class="oAuthConsumer">
@@ -28,7 +28,7 @@
 	<resultMap id="userInfo" class="userInfo">
 		<result property="userId"            column="viewer"           javaType="string" />
 		<result property="consumerKey"       column="consumer_key"     javaType="string" />
-        <result property="issueTime"         column="creation_date"    javaType="date"/>
+		<result property="issueTime"         column="creation_date"    javaType="date"/>
 		<result property="domain"            column="server"           javaType="string"/>
 		<result property="oauthVersion"      column="oauth_version"    javaType="string"/>
 		<result property="appId"             column="gadget_url"       javaType="string"/>
@@ -52,7 +52,7 @@
 		<result property="tokenSecret"       column="token_secret"     javaType="string" />
 		<result property="userId"            column="viewer"           javaType="string" />
 		<result property="consumerKey"       column="consumer_key"     javaType="string" />
-        <result property="issueTime"         column="creation_date"    javaType="date"/>
+		<result property="issueTime"         column="creation_date"    javaType="date"/>
 		<result property="domain"            column="server"           javaType="string"/>
 		<result property="container"         column="container"        javaType="string"/>
 		<result property="oauthVersion"      column="oauth_version"    javaType="string"/>
@@ -61,7 +61,7 @@
 		<result property="authorized"        column="is_authorized"    javaType="boolean"/>
 		<result property="type"              column="token_type"       javaType="boolean"/>
 	</resultMap>
-		
+	
  	<!-- +
 		 | query for oauth consumer information
 		 + -->  
@@ -144,11 +144,11 @@
 	</delete>
 	
 	<delete id="removeProviderToken" parameterClass="string">
-    	DELETE FROM oauth_provider_tokens
-    	WHERE access_token = #token#
+		DELETE FROM oauth_provider_tokens
+		WHERE access_token = #token#
 	</delete>
 
- 	<!-- +
+	<!-- +
 		 | query for oauth security token
 		 + -->  
 	<select id="getToken" parameterClass="tokenIndex" resultMap="tokenInfo">
@@ -159,7 +159,7 @@
 		  AND viewer      = #userId#
 	</select>
 	
- 	<!-- +
+	<!-- +
 		 | query for oauth security token
 		 + -->  
 	<insert id="setToken" parameterClass="tokenIndex">
@@ -167,13 +167,13 @@
 		VALUES (#gadgetUri#, #serviceName#, #userId#, #accessToken#, #tokenSecret#, #sessionHandle#, #tokenExpireMillis#)
 	</insert>
 	
- 	<!-- +
+	<!-- +
 		 | query for removing a oauth security token
 		 + -->  
 	<delete id="removeToken" parameterClass="tokenIndex">
-    	DELETE FROM oauth_tokens
-    	WHERE gagdet_url  = #gadgetUri#
-    	  AND server      = #serviceName#
-    	  AND viewer      = #userId#
+		DELETE FROM oauth_tokens
+		WHERE gagdet_url  = #gadgetUri#
+		  AND server      = #serviceName#
+		  AND viewer      = #userId#
 	</delete>
 </sqlMap>

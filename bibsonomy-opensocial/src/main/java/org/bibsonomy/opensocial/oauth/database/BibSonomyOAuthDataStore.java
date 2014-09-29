@@ -16,10 +16,6 @@ import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry.Type;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
 
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
-
-
 /**
  * TODO: remove BibSonomy from class name
  * {@link OAuthDataStore} implementation that is used during both 2 and 3-legged OAuth authorizations.
@@ -68,20 +64,21 @@ public class BibSonomyOAuthDataStore implements OAuthDataStore {
 		return instance;
 	}
 	
+	/**
+	 * default constructor uses {@link #OAUTH_BASEURL} as baseurl
+	 */
+	public BibSonomyOAuthDataStore() {
+		this(OAUTH_BASEURL);
+	}
 	
+	/**
+	 * 
+	 * @param baseUrl the baseurl to use
+	 */
 	public BibSonomyOAuthDataStore(final String baseUrl) {
 		this.serviceProvider = new OAuthServiceProvider(baseUrl + "requestToken", baseUrl + "authorize", baseUrl + "accessToken");
 	}
 	
-	public BibSonomyOAuthDataStore() {
-		this.serviceProvider = new OAuthServiceProvider(OAUTH_BASEURL+ "requestToken", OAUTH_BASEURL + "authorize", OAUTH_BASEURL + "accessToken");
-	}
-
-	
-
-	//------------------------------------------------------------------------
-	// OAuthDataStore interface
-	//------------------------------------------------------------------------
 	/**
 	 * Authorize the request token for the given user id.
 	 *
