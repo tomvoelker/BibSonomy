@@ -1,11 +1,11 @@
-package org.bibsonomy.lucene.util.generator;
-
-import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
+package org.bibsonomy.es;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -15,32 +15,40 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
-import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.es.ESClient;
+import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.node.Node;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * reads data from database and builds ElasticSearch index for all resource entries
+ * reads data from database and builds ElasticSearch index for all resource
+ * entries
  * 
  * @author lka
  * 
  * @param <R>
  *            the resource of the index to generate
  */
-public class ElasticSearchGenerateResourceIndex<R extends Resource> implements Runnable {
+public class ElasticSearchGenerateResourceIndex<R extends Resource> implements
+		Runnable {
 
 	public static final String TMP_INDEX_SUFFIX = ".tmp";
 
-	protected static final Log log = LogFactory.getLog(ElasticSearchGenerateResourceIndex.class);
+	protected static final Log log = LogFactory
+			.getLog(ElasticSearchGenerateResourceIndex.class);
 
-	/** the number of posts to fetch from the database by a single generating step */
-	private static final int SQL_BLOCKSIZE = 25000;
+	/**
+	 * the number of posts to fetch from the database by a single generating
+	 * step
+	 */
+	private static final int SQL_BLOCKSIZE = 150;
 
 	/** database logic */
 	private LuceneDBInterface<R> dbLogic;
@@ -56,9 +64,9 @@ public class ElasticSearchGenerateResourceIndex<R extends Resource> implements R
 	private int numberOfPosts;
 	private int numberOfPostsImported;
 
-	//Node for ElasticSearch client
-	private Node node;
-	
+	// ElasticSearch client
+	private final ESClient esClient = new ESNodeClient();
+
 	/**
 	 * frees allocated resources and closes all files
 	 * 
@@ -67,11 +75,9 @@ public class ElasticSearchGenerateResourceIndex<R extends Resource> implements R
 	 */
 	public void shutdown() throws CorruptIndexException, IOException {
 
-		//closing the node
-		log.info("closing node " + this.node);
-		//on shutdown
-		this.node.close();
-					
+		log.info("closing node " + this.esClient.getNode());
+		this.esClient.shutdown();
+
 	}
 
 	/**
@@ -85,7 +91,8 @@ public class ElasticSearchGenerateResourceIndex<R extends Resource> implements R
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void generateIndex() throws CorruptIndexException, IOException, ClassNotFoundException, SQLException {
+	public void generateIndex() throws CorruptIndexException, IOException,
+			ClassNotFoundException, SQLException {
 		// Allow only one index-generation at a time.
 		if (this.isRunning) {
 			return;
@@ -99,13 +106,12 @@ public class ElasticSearchGenerateResourceIndex<R extends Resource> implements R
 		this.isRunning = false;
 	}
 
-//	/**
-//	 * deletes the old index and replaces it with the new one
-//	 */
-//	public void replaceIndex() {
-//		
-//	}
-
+	// /**
+	// * deletes the old index and replaces it with the new one
+	// */
+	// public void replaceIndex() {
+	//
+	// }
 
 	/**
 	 * creates index of resource entries
@@ -113,10 +119,12 @@ public class ElasticSearchGenerateResourceIndex<R extends Resource> implements R
 	 * @throws CorruptIndexException
 	 * @throws IOException
 	 */
-	public void createIndexFromDatabase() throws CorruptIndexException, IOException {
+	public void createIndexFromDatabase() throws CorruptIndexException,
+			IOException {
 		log.info("Filling index with database post entries.");
 
-		final ExecutorService executor = Executors.newFixedThreadPool(this.numberOfThreads);
+		final ExecutorService executor = Executors
+				.newFixedThreadPool(this.numberOfThreads);
 
 		// number of post entries to calculate progress
 		// FIXME: the number of posts is wrong
@@ -138,11 +146,7 @@ public class ElasticSearchGenerateResourceIndex<R extends Resource> implements R
 		int skip = 0;
 		int lastContenId = -1;
 		int postListSize = 0;
-		
-		//on startup
-		this.node = nodeBuilder().client(true).node();
-		Client client = node.client();
-					
+
 		do {
 			postList = this.dbLogic.getPostEntries(lastContenId, SQL_BLOCKSIZE);
 			postListSize = postList.size();
@@ -153,18 +157,49 @@ public class ElasticSearchGenerateResourceIndex<R extends Resource> implements R
 			for (final LucenePost<R> post : postList) {
 				post.setLastLogDate(lastLogDate);
 				post.setLastTasId(lastTasId);
-
 				if (ElasticSearchGenerateResourceIndex.this.isNotSpammer(post)) {
-					// create index document from post model
-					final Document doc = ElasticSearchGenerateResourceIndex.this.resourceConverter.readPost(post);
-					IndexResponse response = client.prepareIndex("bibsonomy", "posts")
-												  	.setSource(doc)
-												  	.execute()
-												  	.actionGet();
-					
+
+					int indexTry = 1;
+					while (indexTry < 3) {
+						if (indexTry == 0) {
+							indexTry++;	
+							String Json = null;
+								Json = new ObjectMapper()
+										.writeValueAsString(post);
+								esClient.getClient()
+										.prepareIndex("posts", "publication")
+										.setSource(Json).execute().actionGet();
+								log.info("post has been indexed.");
+								
+							
+						} else if (indexTry == 1) {
+							indexTry++;
+							// create index document from post model
+							final Document doc = ElasticSearchGenerateResourceIndex.this.resourceConverter
+									.readPost(post);
+						
+							esClient.getClient()
+									.prepareIndex("posts", "publication", String.valueOf(post.getContentId()))
+									.setSource(doc).execute().actionGet();
+							log.info("post has been indexed.");
+						}else if(indexTry == 2)
+						{
+							final ExpBibPost expPost = createTestPost();
+							String postJson = null;
+							try {
+							    postJson = new ObjectMapper().writeValueAsString(expPost);
+							    esClient.getClient().prepareIndex("posts", "publication")
+								    .setSource(postJson).execute().actionGet();
+							    log.info("publication has been indexed.");
+							    indexTry++;
+							} catch (final JsonProcessingException jpe) {
+							    log.error("publication could not be serialized. ", jpe);
+							}
+						}
+					}
+
 					ElasticSearchGenerateResourceIndex.this.importedPost(post);
 				}
-
 			}
 
 			if (postListSize > 0) {
@@ -184,7 +219,6 @@ public class ElasticSearchGenerateResourceIndex<R extends Resource> implements R
 		}
 	}
 
-	
 	protected synchronized void importedPost(final LucenePost<R> post) {
 		// update counter
 		this.numberOfPostsImported++;
@@ -214,7 +248,8 @@ public class ElasticSearchGenerateResourceIndex<R extends Resource> implements R
 	 * @return the progressPercentage
 	 */
 	public int getProgressPercentage() {
-		return (int) Math.round(100 * ((double) this.numberOfPostsImported / this.numberOfPosts));
+		return (int) Math
+				.round(100 * ((double) this.numberOfPostsImported / this.numberOfPosts));
 	}
 
 	/** Run the index-generation in a thread. */
@@ -223,7 +258,7 @@ public class ElasticSearchGenerateResourceIndex<R extends Resource> implements R
 		try {
 			this.generateIndex();
 		} catch (final Exception e) {
-			log.error("Failed to generate " + this.node + "-index!", e);
+			log.error("Failed to generate index!", e);
 		} finally {
 			try {
 				this.shutdown();
@@ -245,7 +280,8 @@ public class ElasticSearchGenerateResourceIndex<R extends Resource> implements R
 	 * @param resourceConverter
 	 *            the resourceConverter to set
 	 */
-	public void setResourceConverter(final LuceneResourceConverter<R> resourceConverter) {
+	public void setResourceConverter(
+			final LuceneResourceConverter<R> resourceConverter) {
 		this.resourceConverter = resourceConverter;
 	}
 
@@ -256,5 +292,28 @@ public class ElasticSearchGenerateResourceIndex<R extends Resource> implements R
 	public void setNumberOfThreads(final int numberOfThreads) {
 		this.numberOfThreads = numberOfThreads;
 	}
+	
+    private static ExpBibPost createTestPost() {
+	final ExpBibPost expPost = new ExpBibPost();
+	expPost.setTitle("blabla title");
+	expPost.setDescription("blabla description");
+	expPost.setAuthor("blabla author");
+	return expPost;
+    }
 
+    /**
+     * converts post into JSON document for ES to index
+     * 
+     * @param post
+     * @return JSON document of the post
+     */
+    public static Map<String, Object> putJsonDocument(LucenePost<Resource> post) {
+
+		Map<String, Object> jsonDocument = new HashMap<String, Object>();
+		
+		jsonDocument.put("changeDate", post.getChangeDate());
+		jsonDocument.put("contentId", post.getContentId());
+
+		return jsonDocument;
+	}
 }

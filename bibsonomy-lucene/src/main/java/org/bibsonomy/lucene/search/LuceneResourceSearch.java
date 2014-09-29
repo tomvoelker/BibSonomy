@@ -16,6 +16,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -34,14 +35,17 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.Version;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.es.ElasticSearchGenerateResourceIndex;
+import org.bibsonomy.es.EsResourceSearch;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.database.LuceneInfoLogic;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
+import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.lucene.param.QuerySortContainer;
 import org.bibsonomy.lucene.search.collector.TagCountCollector;
-import org.bibsonomy.lucene.util.generator.ElasticSearchGenerateResourceIndex;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
@@ -65,8 +69,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * members)
 	 */
 	private LuceneInfoLogic dbLogic;
-	private LuceneDBInterface<R> dbInterfaceLogic;
-
+	
 	/** default field analyzer */
 	private Analyzer analyzer;
 
@@ -78,6 +81,8 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 
 	/** the index the searcher is currently using */
 	private LuceneResourceIndex<R> index;
+
+	private LuceneResourceManager<R> luceneBibTexManager;
 
 	/**
 	 * config values
@@ -741,22 +746,6 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		this.tagCloudLimit = tagCloudLimit;
 	}
 
-	
-
-	/**
-	 * @return the dbInterfaceLogic
-	 */
-	public LuceneDBInterface<R> getDbInterfaceLogic() {
-		return this.dbInterfaceLogic;
-	}
-
-	/**
-	 * @param dbInterfaceLogic the dbInterfaceLogic to set
-	 */
-	public void setDbInterfaceLogic(LuceneDBInterface<R> dbInterfaceLogic) {
-		this.dbInterfaceLogic = dbInterfaceLogic;
-	}
-
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPostsForElasticSearch(java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.model.enums.Order, int, int)
 	 */
@@ -769,12 +758,39 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			Collection<String> tagIndex, String year, String firstYear,
 			String lastYear, List<String> negatedTags, Order order, int limit,
 			int offset) {
+		
+		boolean generateIndex = true;
+		if(generateIndex){
 		ElasticSearchGenerateResourceIndex<R> generator = new ElasticSearchGenerateResourceIndex<R>();
-		generator.setLogic(this.dbInterfaceLogic);
+		generator.setLogic(this.luceneBibTexManager.getDbLogic());
 		generator.setResourceConverter(this.resourceConverter);
 		generator.run();
+		}else{
+			EsResourceSearch<R> searchResource =  new EsResourceSearch<R>();
+			searchResource.setSearchTerms(searchTerms);
+			try {
+				searchResource.fullTextSearch();
+			} catch (CorruptIndexException e) {
+				log.error("TODO", e);
+			} catch (IOException e) {
+				log.error("TODO", e);
+			}
+		}
 		return null;
 	}
 
+	/**
+	 * @return the luceneBibTexManager
+	 */
+	public LuceneResourceManager<R> getLuceneBibTexManager() {
+		return this.luceneBibTexManager;
+	}
+
+	/**
+	 * @param luceneBibTexManager the luceneBibTexManager to set
+	 */
+	public void setLuceneBibTexManager(LuceneResourceManager<R> luceneBibTexManager) {
+		this.luceneBibTexManager = luceneBibTexManager;
+	}
 
 }
