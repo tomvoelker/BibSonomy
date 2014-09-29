@@ -11,23 +11,28 @@
 	                    http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
 
 	<!-- import recommenderLogic -->
-	<bean id="itemRecommenderDataSource"
-		class="org.apache.tomcat.dbcp.dbcp.BasicDataSource">
-		<property name="url" value="${database.recommender.url}" />
-		<property name="username" value="${database.recommender.username}" />
-		<property name="password" value="${database.recommender.password}" />
-		<property name="driverClassName" value="${database.recommender.driverClassName}" />
-		<property name="maxIdle" value="${database.recommender.maxIdle}" />
-		<property name="maxActive" value="${database.recommender.maxActive}" />
-		<property name="maxWait" value="${database.recommender.maxWait}" />
-		<property name="removeAbandoned" value="${database.recommender.removeAbandoned}" />
-		<property name="removeAbandonedTimeout" value="${database.recommender.removeAbandonedTimeout}" />
+	<bean id="tagRecommenderDataSource" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource">
+		<property name="url" value="${database.recommender.tag.url}" />
+		<property name="username" value="${database.recommender.tag.username}" />
+		<property name="password" value="${database.recommender.tag.password}" />
+		<property name="driverClassName" value="${database.recommender.tag.driverClassName}" />
+		<property name="maxIdle" value="${database.recommender.tag.maxIdle}" />
+		<property name="maxActive" value="${database.recommender.tag.maxActive}" />
+		<property name="maxWait" value="${database.recommender.tag.maxWait}" />
+		<property name="removeAbandoned" value="${database.recommender.tag.removeAbandoned}" />
+		<property name="removeAbandonedTimeout" value="${database.recommender.tag.removeAbandonedTimeout}" />
 	</bean>
-	<bean parent="itemRecommenderDataSource" id="tagRecommenderDataSource"
-		class="org.apache.tomcat.dbcp.dbcp.BasicDataSource">
-		<property name="url" value="${database.recommender.url}" />
-		<property name="username" value="${database.recommender.username}" />
-		<property name="password" value="${database.recommender.password}" />
+	
+	<bean id="itemRecommenderDataSource" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource">
+		<property name="url" value="${database.recommender.item.url}" />
+		<property name="username" value="${database.recommender.item.username}" />
+		<property name="password" value="${database.recommender.item.password}" />
+		<property name="driverClassName" value="${database.recommender.item.driverClassName}" />
+		<property name="maxIdle" value="${database.recommender.item.maxIdle}" />
+		<property name="maxActive" value="${database.recommender.item.maxActive}" />
+		<property name="maxWait" value="${database.recommender.item.maxWait}" />
+		<property name="removeAbandoned" value="${database.recommender.item.removeAbandoned}" />
+		<property name="removeAbandonedTimeout" value="${database.recommender.item.removeAbandonedTimeout}" />
 	</bean>
 	
 	<import resource="classpath:org/bibsonomy/bibsonomy-recommender-log-context.xml" />
