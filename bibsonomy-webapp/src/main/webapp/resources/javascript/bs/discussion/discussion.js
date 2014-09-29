@@ -61,6 +61,7 @@ $(function() {
 	$(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
 	 
 	$.each($('.abstractGroupingGroup'), function(index, box) {
+		
 		toggleGroupBox(box);
 	});
 	var publicValue = $(PUBLIC_POST_SELECTOR).val();
@@ -217,17 +218,18 @@ function addReviewActions() {
 
 // TODO: move and use in post edit views
 function onAbstractGroupingClick() {
-	toggleGroupBox($(this).parent());
+	toggleGroupBox($(this).parent().parent().parent().parent());
 }
 
 // TODO: move and use in post edit views
 function toggleGroupBox(radioButtonGroup) {
+	
 	// find the checked abstract grouping
-	var selectedAbstractGrouping = $(radioButtonGroup).children('input:checked');
-	
+	var selectedAbstractGrouping = $(radioButtonGroup).find('input:checked');
+
 	// find otherGroupsBox of the abstract grouping
-	var otherBox = $(radioButtonGroup).siblings(OTHER_GROUPING_CLASS_SELECTOR);
-	
+	var otherBox = $(radioButtonGroup).find('.otherGroupsBox');
+
 	// disable groups select if private or public is checked or enable
 	// if other is checked
 	if (!selectedAbstractGrouping.hasClass('otherGroups')) {

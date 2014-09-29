@@ -1,6 +1,9 @@
 @import "bootstrap-color.less";
 
-#goldstandard .discussion_all {
+#goldstandard .discussion-all {
+	
+	padding-left: 1em;
+	border-left: 3px @border-color solid;
 	margin-top: 1em;
 }
 
@@ -253,11 +256,28 @@ h3 {
 	-moz-border-radius: 3px;
 	border-radius:3px;
 	padding: 5px;
-	border: 1px solid @main-color;
+	border: 1px solid @border-color;
 	display: inline-block;
-	float: right; 
-	margin-top: -5px;
-	margin-left: -2px;
+	margin-top: 7px;
+	float: left;
+}
+
+.discussionRatingValue {
+	line-height: 18px;
+	font-size: 18px;
+	font-weight: 200;
+	display: block;
+	float: left;
+	padding-left: 0.3em;
+	margin-top: 10px;
+}
+
+.discussionRatingText:before {
+	content: "(";
+}
+
+.discussionRatingText:after {
+	content: ")";
 }
 
 .discussionPostbuttonFrame {

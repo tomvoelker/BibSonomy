@@ -107,7 +107,7 @@
 			<c:if test="${discussionBox}">
 				<!-- Headline -->
 				<div class="header">
-					${mtl:cleanBibtex(resource.title)}
+					<c:out value="${mtl:cleanBibtex(resource.title)}" />
 				</div>
 			</c:if>
 			
