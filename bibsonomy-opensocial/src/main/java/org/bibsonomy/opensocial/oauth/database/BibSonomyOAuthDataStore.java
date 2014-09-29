@@ -45,7 +45,7 @@ public class BibSonomyOAuthDataStore implements OAuthDataStore {
 	 * database logic for accessing OAuth tokens
 	 * FIXME: configure via spring
 	 */
-	OAuthLogic authLogic = IbatisOAuthLogic.getInstance();
+	private OAuthLogic authLogic;
 
 	/** 
 	 * properties of our OAuth service provider 
@@ -248,4 +248,8 @@ public class BibSonomyOAuthDataStore implements OAuthDataStore {
 
 	}
 
+	public void setAuthLogic(OAuthLogic authLogic) {
+		this.authLogic = authLogic;
+	}
+	
 }
