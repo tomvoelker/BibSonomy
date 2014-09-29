@@ -7,7 +7,7 @@
 						http://www.springframework.org/schema/util
 						http://www.springframework.org/schema/util/spring-util.xsd">
 	
-	<util:constant id="luceneVersion" static-field="org.apache.lucene.util.Version.LUCENE_4_9" />
+	<util:constant id="luceneVersion" static-field="org.apache.lucene.util.Version.LUCENE_48" />
 	
 	<!--+
 	    | type handler 
