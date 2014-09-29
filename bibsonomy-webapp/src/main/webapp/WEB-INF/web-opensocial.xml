@@ -16,14 +16,6 @@
 </context-param>
 
 <!--+
-	| maps some of BibSonomy's configuration parameters to system.properties for
-	| configuring shindig  
-	+-->
-<listener>
-	<listener-class>org.bibsonomy.opensocial.config.SystemPropertiesContextListener</listener-class>
-</listener>  
-
-<!--+
 	| Configure custom Guice module(s) as a colon-separated list. 
 	+-->	
 <context-param>
