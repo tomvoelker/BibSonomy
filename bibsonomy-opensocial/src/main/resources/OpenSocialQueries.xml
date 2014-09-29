@@ -59,7 +59,7 @@
 		<result property="appId"             column="gadget_url"       javaType="string"/>
 		<result property="callbackUrl"       column="callback_url"     javaType="string"/>
 		<result property="authorized"        column="is_authorized"    javaType="boolean"/>
-		<result property="type"              column="token_type"       javaType="boolean"/>
+		<result property="type"              column="token_type"       typeHandler="org.bibsonomy.opensocial.oauth.database.typehandler.TokenTypeHandler"/>
 	</resultMap>
 	
  	<!-- +
