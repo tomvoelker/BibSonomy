@@ -77,7 +77,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		//=== change default tab to the manual tab
 		
 		if (!present(selTab))
-			selTab = 0;
+			selTab = Integer.valueOf(0);
 		
 		this.setTabURL(TAB_URL);
 		
@@ -133,7 +133,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 */
 	private void addTabs(final String[] titles) {
 		for (int i = 0; i < titles.length; i++) {
-			addTab(i, titles[i]);
+			addTab(Integer.valueOf(i), titles[i]);
 		}
 	}
 
@@ -339,6 +339,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	/**
 	 * @return The list of publication posts.
 	 */
+	@Override
 	public ListCommand<Post<BibTex>> getBibtex() {
 		return this.posts;
 	}

@@ -52,11 +52,11 @@
 	</bean>
 	
 	<!-- used for making shindig's beans available to the spring configuration -->
-	<bean id="guiceBeanImporter" class="org.bibsonomy.webapp.util.opensocial.GuiceBeanImporter" init-method="init"/>
+	<!-- bean id="guiceBeanImporter" class="org.bibsonomy.webapp.util.opensocial.GuiceBeanImporter" init-method="init"/ -->
 
 	<!-- database interface for accessing token information -->	
-	<bean id="oauthDataStore" factory-bean="guiceBeanImporter" factory-method="getGuiceBean">
-		<constructor-arg value="org.apache.shindig.social.opensocial.oauth.OAuthDataStore" />
+	<bean id="oauthDataStore" class="org.bibsonomy.opensocial.oauth.database.BibSonomyOAuthDataStore">
+		<constructor-arg value="/oauth/" />
 	</bean>
 	
 	<!-- TODO: application-context.xml in opensocial also defines an oauthLogicFactory -->
@@ -72,10 +72,10 @@
 
 	<!--  #################### controller #################### -->
 	
-	<bean id="containerPageController" class="org.bibsonomy.webapp.controller.opensocial.ContainerPageController" scope="request">
+	<!-- bean id="containerPageController" class="org.bibsonomy.webapp.controller.opensocial.ContainerPageController" scope="request">
 		<property name="logic" ref="logic" />
 		<property name="userSettings" ref="userSettings" />
-	</bean>
+	</bean -->
 	
 	<bean id="oAuthController" class="org.bibsonomy.webapp.controller.opensocial.OAuthProtocolController" abstract="true">
 		<property name="dataStore" ref="oauthDataStore"/>

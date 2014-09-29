@@ -107,6 +107,17 @@
 			<fmt:message key="bibtex.actions.gold" var="goldTitle" />
 			<a class="item community" href="${editGoldStandardLink}" title="${goldTitle}"><!-- Keep Me --></a>
 		</c:if>
-	</c:if>	
-
+	</c:if>
+	
+	<!--+
+		| link for the memento timegate to the archived version of the page
+		+-->
+		
+	<c:url var="mementoLink" value="/memento">
+		<c:param name="url" value="${post.resource.url}"/>
+		<c:param name="datetime" value="${mtl:formatDateW3CDTF(post.date)}"/>
+	</c:url>
+	<fmt:message key="bookmark.actions.memento" var="mementoTitle" />
+	<a class="item memento" href="${mementoLink}" rel="nofollow" title="${mementoTitle}"><!-- keep me --></a>
+		
 </jsp:root>

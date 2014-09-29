@@ -1,0 +1,44 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/bstags/post"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+    <jsp:directive.attribute name="tags" type="java.lang.String" required="true"/>
+    <jsp:directive.attribute name="recommendedTags" type="java.util.Set" required="true"/>
+    <jsp:directive.attribute name="containsComma" type="java.lang.Boolean" required="true"/>
+
+	<jsp:directive.attribute name="labelColSpan" type="java.lang.Integer" required="false" description="Column span width of the label. labelColSpan and inputColSpan must add up to 12" />
+	<jsp:directive.attribute name="inputColSpan" type="java.lang.Integer" required="false" description="Column span width of the input field. labelColSpan and inputColSpan must add up to 12" />
+	
+	<c:choose>
+		<c:when test="${ (empty labelColSpan and empty inputColSpan) or (inputColSpan gt 10) or (labelColSpan gt 6) }">
+			<c:set var="labelColSpan" value="3" />
+			<c:set var="inputColSpan" value="10" />
+		</c:when>
+		<c:when test="${empty labelColSpan and not empty inputColSpan}">
+			<c:set var="labelColSpan" value="${ 12 - inputColSpan }" />
+		</c:when>
+		<c:otherwise>
+			<c:set var="inputColSpan" value="${ 12 - labelColSpan }" />
+		</c:otherwise>
+	</c:choose>
+	
+	<!-- errors -->
+	<c:set var="formErrors"><form:errors path="tags" /></c:set>
+	
+	
+	<a name="tags"><!--  --></a>
+	<bsform:fieldset legendKey="post.resource.tags.describe">
+	
+		<jsp:attribute name="content">
+			<post:tagform containsComma="${command.containsComma}" labelColSpan="${labelColSpan}" inputColSpan="${inputColSpan}" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
+		</jsp:attribute>
+	</bsform:fieldset>
+</jsp:root>

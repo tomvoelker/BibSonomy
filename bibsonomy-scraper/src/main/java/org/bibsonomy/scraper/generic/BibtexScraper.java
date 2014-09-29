@@ -27,6 +27,8 @@ import java.io.BufferedReader;
 import java.io.StringReader;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bibsonomy.scraper.Scraper;
@@ -45,6 +47,7 @@ import bibtex.parser.BibtexParser;
  */
 public class BibtexScraper implements Scraper {
 
+	private final static Pattern invalidChar = Pattern.compile("[^\\p{L}\\p{Nd}\\p{Punct}\\p{Space}]+");
 	private static final String INFO = "Scraper for BibTeX, independent from URL.";
 
 	@Override
@@ -65,8 +68,13 @@ public class BibtexScraper implements Scraper {
 	public boolean scrape(final ScrapingContext sc) throws ScrapingException {
 		if ((sc != null) && (sc.getUrl() != null)) {
 			final String result = this.parseBibTeX(sc.getPageContent());
-
-			if (result != null) {
+			
+			String hasInvalidChar = null;
+			Matcher m = invalidChar.matcher(result);
+			if(m.find())
+				hasInvalidChar = m.group();
+			
+			if (result != null && hasInvalidChar == null) {
 				sc.setScraper(this);
 				sc.setBibtexResult(result);
 				return true;

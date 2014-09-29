@@ -10,7 +10,7 @@
 	                    http://www.springframework.org/schema/jee
 	                    http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
 
-    <!-- import recommenderLogic -->
+	<!-- import recommenderLogic -->
 	<bean id="itemRecommenderDataSource"
 		class="org.apache.tomcat.dbcp.dbcp.BasicDataSource">
 		<property name="url" value="${database.recommender.url}" />
@@ -37,15 +37,15 @@
 	    | Multiplexing tag recommender
 	    +-->
 	<bean id="multiplexingTagRecommender" class="recommender.impl.multiplexer.MultiplexingRecommender" init-method="init" scope="singleton">
-	    <property name="queryTimeout" value="1000" />
+		<property name="queryTimeout" value="1000" />
 		<property name="entityModifiers" ref="postModifierList" />
 		<property name="resultModifiers" ref="resultFilterList" />
 		<property name="resultSelector" ref="selectOneTagWithoutReplacement" />
 		<property name="dbLogic" ref="tagRecommenderLogic" />
-	    <property name="localRecommenders" ref="localTagRecommenderList" />
-	    <property name="privacyFilter"  ref="postPrivacyFilter"/>
-	    <property name="renderer" ref="renderer" />
-	</bean>	  
+		<property name="localRecommenders" ref="localTagRecommenderList" />
+		<property name="privacyFilter"  ref="postPrivacyFilter"/>
+		<property name="renderer" ref="renderer" />
+	</bean>
 	 
 	<bean id="postPrivacyFilter" class="org.bibsonomy.recommender.connector.filter.PostPrivacyFilter" />
 
@@ -160,7 +160,7 @@
 	    <property name="privacyFilter"  ref="userPrivacyFilter"/>
 	    <property name="numberOfResultsToRecommend" value="8"/>
 	    <property name="renderer" ref="bookmarkRenderer" />
-	</bean>	
+	</bean>
 	    
 	<bean id="bookmarkRenderer" class="org.bibsonomy.recommender.connector.model.BibsonomyItemRendererFactoryWrapper">
 		<constructor-arg name="factory" ref="rendererFactory" />
@@ -168,7 +168,7 @@
 		<property name="dbAccess" ref="recommenderBookmarkMainLogic" />
 	</bean>    
 	
-	<util:list id="localBookmarkRecommenderList" list-class="java.util.ArrayList"> 		
+	<util:list id="localBookmarkRecommenderList" list-class="java.util.ArrayList">
   		<ref bean="dummyBookmarkRecommender"/>
   		<ref bean="tagBasedBookmarkRecommender"/>
   		<ref bean="cbBookmarkRecommender"/>
@@ -203,7 +203,7 @@
 		<property name="dbLogic" ref="bibtexRecommenderLogic" />
 		<property name="dbAccess" ref="recommenderBibTexMainLogic" />
 	</bean>
-	    
+
 	<bean id="multiplexingBibTexRecommender" class="recommender.impl.multiplexer.MultiplexingRecommender" init-method="init" scope="singleton">
 	    <property name="queryTimeout" value="1000" />
 		<property name="resultModifiers" ref="resultFilterList" />
@@ -213,13 +213,13 @@
 	    <property name="privacyFilter"  ref="userPrivacyFilter"/>
 	    <property name="numberOfResultsToRecommend" value="8"/>
 	    <property name="renderer" ref="bibtexRenderer" />
-	</bean>	  	 
+	</bean>
 	
 	<bean id="bibtexRenderer" class="org.bibsonomy.recommender.connector.model.BibsonomyItemRendererFactoryWrapper">
 		<constructor-arg name="factory" ref="rendererFactory" />
 		<property name="resourceType" value="org.bibsonomy.model.BibTex" />
 		<property name="dbAccess" ref="recommenderBibTexMainLogic" />
-	</bean>  
+	</bean>
 	
 	<util:list id="localBibTexRecommenderList" list-class="java.util.ArrayList"> 		
   		<ref bean="dummyBibTexRecommender"/>

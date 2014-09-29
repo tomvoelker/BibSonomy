@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.command;
 
 import java.util.List;
 
+import org.bibsonomy.webapp.util.DidYouKnowMessage;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 
 /**
@@ -14,13 +15,15 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
  * 
  * @author Jens Illig
  */
-public class BaseCommand implements ContextCommand {
+public class BaseCommand implements ContextCommand, DidYouKnowMessageCommand {
 	
 	private RequestWrapperContext context;
 
 	private String messageKey;
 	
 	private List<String> messageParams;
+	
+	private DidYouKnowMessage didYouKnowMessage;
 	
 	@Deprecated
 	private String pageTitle;
@@ -77,8 +80,6 @@ public class BaseCommand implements ContextCommand {
 		return messageKey;
 	}
 	
-	
-	
 	/**
 	 * @return Message Params
 	 */
@@ -101,5 +102,15 @@ public class BaseCommand implements ContextCommand {
 	public void setMessage(String key, List<String> params) {
 		this.setMessageKey(key);
 		this.setMessageParams(params);
+	}
+	
+	@Override
+	public DidYouKnowMessage getDidYouKnowMessage() {
+		return this.didYouKnowMessage;
+	}
+
+	@Override
+	public void setDidYouKnowMessage(DidYouKnowMessage didYouKnowMessage) {
+		this.didYouKnowMessage = didYouKnowMessage;
 	}
 }

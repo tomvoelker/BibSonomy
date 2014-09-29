@@ -9,7 +9,7 @@
 	
     <fmt:message var="selectCode" key="buttons.select_code"/>
     <spring:theme code="image.snippet.bookmarkit" var="imageBookmarkIt" />
-	<c:set var="imageBookmarkIt" value="${properties['project.home']}${imageBookmarkIt}" />
+	<c:set var="imageBookmarkIt" value="${relativeUrlGenerator.getProjectHome()}${imageBookmarkIt}" />
     
 	<form name="select_all">
 		<table width="100%" border="0" cellspacing="0" cellpadding="5">
@@ -34,7 +34,7 @@
 <script type="text/javascript">    	
    var url=encodeURIComponent(document.location.href);
    var title=encodeURIComponent(document.title);
-   document.write("<a href=\"${properties['project.home']}ShowBookmarkEntry?url="+url+ "&amp;description="+title +"\" title=\"Bookmark this page to ${properties['project.name']}.\">Bookmark to ${properties['project.name']}!</a>");
+   document.write("<a href=\"${relativeUrlGenerator.getProjectHome()}ShowBookmarkEntry?url="+url+ "&amp;description="+title +"\" rel=\"nofollow\" title=\"Bookmark this page to ${properties['project.name']}.\">Bookmark to ${properties['project.name']}!</a>");
 </script>
 ]]>
 					</textarea>
@@ -46,7 +46,7 @@
 							<![CDATA[
 							         var url=encodeURIComponent(document.location.href);
 							         var title=encodeURIComponent(document.title);
-							         document.write("<a href=\"${properties['project.home']}ShowBookmarkEntry?url="+url+ "&amp;description="+title +"\" title=\"Bookmark this page to ${properties['project.name']}.\">Bookmark to ${properties['project.name']}!</a>");
+							         document.write("<a href=\"${relativeUrlGenerator.getProjectHome()}ShowBookmarkEntry?url="+url+ "&amp;description="+title +"\" rel=\"nofollow\" title=\"Bookmark this page to ${properties['project.name']}.\">Bookmark to ${properties['project.name']}!</a>");
 							]]>
 						</script>
 					</div>
@@ -75,7 +75,7 @@
 <script type="text/javascript">
    var url=encodeURIComponent(document.location.href);
    var title=encodeURIComponent(document.title);
-   document.write("<a href=\"${properties['project.name']}ShowBookmarkEntry?url="+url+ "&amp;description="+title +"\" title=\"Bookmark this page to ${properties['project.name']}.\"><img src=\"${imageBookmarkIt}\"></a>");	
+   document.write("<a href=\"${properties['project.home']}ShowBookmarkEntry?url="+url+ "&amp;description="+title +"\" rel=\"nofollow\" title=\"Bookmark this page to ${properties['project.name']}.\"><img src=\"${imageBookmarkIt}\"></a>");	
 </script>
 ]]>
 					
@@ -88,7 +88,7 @@
 							<![CDATA[
 							         var url=encodeURIComponent(document.location.href);
 							         var title=encodeURIComponent(document.title);
-							         document.write("<a href=\"${properties['project.name']}ShowBookmarkEntry?url="+url+ "&amp;description="+title +"\" title=\"Bookmark this page to ${properties['project.name']}.\"><img src=\"${imageBookmarkIt}\"></a>");
+							         document.write("<a href=\"${properties['project.home']}ShowBookmarkEntry?url="+url+ "&amp;description="+title +"\" rel=\"nofollow\" title=\"Bookmark this page to ${properties['project.name']}.\"><img src=\"${imageBookmarkIt}\"></a>");
 							]]>
 						</script>
 					</div>

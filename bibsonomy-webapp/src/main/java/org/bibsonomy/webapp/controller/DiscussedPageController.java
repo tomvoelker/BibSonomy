@@ -51,7 +51,7 @@ public class DiscussedPageController extends SingleResourceListControllerWithTag
 		
 		// if filter is set to POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER alle posts of both users, positive classified users and not classified users, will be retrieved.
 		// add to url: ?filter==POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER
-		final FilterEntity filter = present(command.getFilter()) ? command.getFilter() : FilterEntity.POSTS_WITH_DISCUSSIONS; 
+		final FilterEntity filter = present(command.getFilter()) ? command.getFilter() : FilterEntity.POSTS_WITH_DISCUSSIONS;
 		
 		// retrieve and set the requested resource lists, along with total counts
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {

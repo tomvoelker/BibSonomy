@@ -23,6 +23,13 @@
 
 package org.bibsonomy.scraper.url.kde.osa;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.net.URL;
+
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -41,5 +48,25 @@ public class OSAScraperTest {
 	@Test
 	public void urlTestRun(){
 		UnitTestRunner.runSingleTest("url_93");
+	}
+	@Test
+	public void testReferences() throws Exception {
+		final ScrapingContext sc = new ScrapingContext(new URL("http://www.opticsinfobase.org/josaa/abstract.cfm?uri=josaa-25-5-1084"));
+		
+		OSAScraper osa = new OSAScraper();
+		
+		assertTrue(osa.scrape(sc));
+		
+		assertTrue(osa.scrapeReferences(sc));
+		
+		final String references = sc.getReferences();
+		
+		assertNotNull(references);
+		
+		assertTrue(references.length() > 100);
+		
+		assertEquals("<li>\n\t\n\n\t\n\t\n\t\t\nR. K. Tyson, Principles of Adaptive Optics (Academic, 1991)".trim(), references.substring(0, 100).trim());
+		
+		assertTrue(references.contains("R. K. Tyson"));
 	}
 }
