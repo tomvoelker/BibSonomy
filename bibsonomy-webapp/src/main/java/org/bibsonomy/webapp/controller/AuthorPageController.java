@@ -39,7 +39,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		// get author query - it might still contain some system tags at this point!
 		String authorQuery = command.getRequestedAuthor();
 
-		// if no author given throw error 		
+		// if no author given throw error 
 		if (!present(authorQuery)) {
 			throw new MalformedURLSchemeException("error.author_page_without_authorname");
 		}
@@ -73,15 +73,15 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		// handle case when only tags are requested
 		this.handleTagsOnly(command, groupingEntity, null, null, requTags, null, 1000, null);
 		
-		int totalNumPosts = 1;
+		int totalNumPosts = 0;
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
-			this.setList(command, resourceType, groupingEntity, null, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
-
+			this.setList(command, resourceType, groupingEntity, null, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), listCommand.getEntriesPerPage());
+			
 			this.postProcessAndSortList(command, resourceType);
 			totalNumPosts += listCommand.getTotalCount();
-		}		
+		}
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
@@ -107,7 +107,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		return new AuthorResourceCommand();
 	}
 	
-	private String removeSystemtagsFromQuery(String authorQuery, final List<String> sysTags) {
+	private static String removeSystemtagsFromQuery(String authorQuery, final List<String> sysTags) {
 		for (final String sysTag : sysTags) {
 			// remove them from author query string
 			authorQuery = authorQuery.replace(sysTag, "");
