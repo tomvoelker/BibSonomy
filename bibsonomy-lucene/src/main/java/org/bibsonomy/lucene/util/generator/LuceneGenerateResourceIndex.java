@@ -178,7 +178,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 		// create index, possibly overwriting existing index files
 		log.info("Creating empty lucene index...");
 		final Directory indexDirectory = FSDirectory.open(new File(this.resourceIndex.getIndexPath() + TMP_INDEX_SUFFIX));
-		final IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_4_9, this.resourceIndex.getAnalyzer());
+		final IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_48, this.resourceIndex.getAnalyzer());
 		iwc.setOpenMode(OpenMode.CREATE);
 		this.indexWriter = new IndexWriter(indexDirectory, iwc);
 	}
