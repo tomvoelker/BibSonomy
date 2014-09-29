@@ -49,7 +49,7 @@
 						<configuration>
 							<tasks>
 								<mkdir dir="${project.downloaded-resources.directory}" />
-								<get src="http://surfnet.dl.sourceforge.net/project/wurfl/WURFL/${wurfl.version}/wurfl-${wurfl.version}.zip"
+								<get src="http://skylink.dl.sourceforge.net/project/wurfl/WURFL/${wurfl.version}/wurfl-${wurfl.version}.zip"
 									dest="${project.downloaded-resources.directory}/wurfl.zip" />
 							</tasks>
 						</configuration>
