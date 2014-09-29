@@ -433,16 +433,21 @@ public class LuceneResourceIndex<R extends Resource> {
 					return;
 				}
 			}
-
+			
+			boolean openedIndexWriter = false;
 			try {
 				openIndexWriter();
+				openedIndexWriter = true;
 			} catch (final IOException e) {
 				log.error("Error opening index writer", e);
 			}
-			try {
-				openSearcherManager();
-			} catch (final IOException e) {
-				log.error("Error opening SearcherManager", e);
+			
+			if (openedIndexWriter) {
+				try {
+					openSearcherManager();
+				} catch (final IOException e) {
+					log.error("Error opening SearcherManager", e);
+				}
 			}
 
 			// delete the lists
