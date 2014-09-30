@@ -9,7 +9,7 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="withoutClock" type="java.lang.Boolean" required="false"  />
 
-	<c:if test="${withoutClock}">
+	<c:if test="${not withoutClock}">
 		<span class="fa fa-clock-o"><!--  --></span>
 	</c:if>
 	<c:out value=" "/>
