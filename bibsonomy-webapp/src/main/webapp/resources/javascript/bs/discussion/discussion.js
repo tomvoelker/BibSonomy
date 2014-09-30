@@ -75,7 +75,6 @@ $(function() {
 	$('.toggleReplies').click(function(event) {
 		event.preventDefault();
 		var replies = $(this).parent().parent().parent().children('.media');
-		console.log(replies);
 		
 		$(replies).each(function(){
 			if( $(this).hasClass('hidden') ) {
