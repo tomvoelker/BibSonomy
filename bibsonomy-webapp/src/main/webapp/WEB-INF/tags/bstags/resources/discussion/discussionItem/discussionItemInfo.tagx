@@ -37,7 +37,7 @@
 							</c:choose>
 						</c:when>
 						<c:otherwise>
-							<a href="/user/${fn:escapeXml(discussionItem.user.name)}" itemprop="name"><c:out value="${discussionItem.user.name}" /></a>
+							<a href="/user/${fn:escapeXml(discussionItem.user.name)}" itemprop="name">@<c:out value="${discussionItem.user.name}" /></a>
 						</c:otherwise>
 					</c:choose>
 				</span>
