@@ -11,7 +11,7 @@
 	
 	<div class="pull-right">
 	
-		<div class="btn-group btn-group-xs edit-media-buttons">
+		<div class="btn-group btn-group-sm edit-media-buttons">
 			
 			<!-- reply links  -->
 			<c:if test="${command.context.userLoggedIn and not disableReply}">
@@ -19,7 +19,7 @@
 					<fmt:message key="post.resource.comment.actions.reply.title" var="title"/>
 					<fmt:message key="post.resource.comment.actions.reply" var="reply"/>
 					<a href="#reply" class="btn btn-default reply" title="${title}">
-						<span class="fa fa-reply"><!--  --></span>
+						<span class="fa fa-reply"><!--  --><c:out value=" " /></span>
 					</a>
 				
 			</c:if>
@@ -30,19 +30,13 @@
 			<c:choose>
 				<c:when test="${subDiscussionItemsSize > 0}">
 					
-						<a href="#toggleReplies" class="btn btn-default toggleReplies" title="${title}">
+						<a  href="#" class="btn btn-default toggleReplies" title="${title}">
 							<!-- <fmt:message key="post.resource.discussion.replies.hide" /> -->
+							<span class="fa fa-comments-o"><!--  --></span>
 						</a>
 					
 				</c:when>
-				<c:otherwise>
-					
-						<a href="#toggleReplies" class="btn btn-default toggleReplies hide">
-							
-							<!-- <fmt:message key="post.resource.discussion.replies.hide" /> -->
-						</a>
-					
-				</c:otherwise>
+
 			</c:choose>
 			
 			<!-- edit and delete link -->
@@ -72,5 +66,5 @@
 					<fmt:message key="post.resource.${discussionItemClass}.action.delete" />
 				</span>
 	</div>
-	<p style="clear: both"><!--  --></p>
+	<p class="clearfix"><!--  --></p>
 </jsp:root>

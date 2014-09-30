@@ -71,9 +71,8 @@
 	
 		<!-- actions -->
 		<discussionItem:discussionItemActions discussionItem="${discussionItem}" />
-		
 		<!-- sub items -->
 		<discussionItem:subDiscussionItems discussionItems="${discussionItem.subDiscussionItems}" loginUser="${loginUser}" resource="${resource}"/>
 	</div>
-	<p style="clear: left"><!--  --></p>
+	
 </jsp:root>
