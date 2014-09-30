@@ -9,7 +9,7 @@
 	
 	<c:set var="discussionItemClass" value="${fn:toLowerCase(discussionItem.class.simpleName)}" />
 	
-	<div class="pull-right ">
+	<div class="pull-right">
 	
 		<div class="btn-group btn-group-xs edit-media-buttons">
 			
@@ -72,4 +72,5 @@
 					<fmt:message key="post.resource.${discussionItemClass}.action.delete" />
 				</span>
 	</div>
+	<p style="clear: both"><!--  --></p>
 </jsp:root>

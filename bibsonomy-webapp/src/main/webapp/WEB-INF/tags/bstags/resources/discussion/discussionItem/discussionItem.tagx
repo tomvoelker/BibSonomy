@@ -20,7 +20,7 @@
 	
 	<c:set var="displayUserName"><user:username noLink="${true}" username="${discussionItemUserName}"/></c:set>
 	
-	<a href="/user/${fn:escapeXml(discussionItemUserName)}" class="pull-left img-thumbnail img-responsive" title="${displayUserName}">
+	<a href="/user/${fn:escapeXml(discussionItemUserName)}" class="img-thumbnail pull-left" title="${displayUserName}">
 		
 		<c:choose>
 			<c:when test="${anonymous}">
@@ -75,5 +75,5 @@
 		<!-- sub items -->
 		<discussionItem:subDiscussionItems discussionItems="${discussionItem.subDiscussionItems}" loginUser="${loginUser}" resource="${resource}"/>
 	</div>
-		
+	<p style="clear: left"><!--  --></p>
 </jsp:root>

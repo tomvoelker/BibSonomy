@@ -109,9 +109,6 @@ ul.discussionitemMenu li {
 	padding-right: 0.25em;
 }
 
-ul.subdiscussionItems ul.subdiscussionItems {
-
-}
 
 ul.discussionitemMenu li {
 	border-left: 1px solid grey;
@@ -332,4 +329,26 @@ h3 {
 	margin-top: 7px;
 	padding-right: 0px;
 	float: right;
+}
+.img-thumbnail {
+	width: 74px;
+}
+
+.media-body {
+	overflow-x: hidden;
+	overflow-y: hidden;
+	display: block;
+	box-sizing: border-box;
+}
+
+.media {
+	border-bottom: 1px solid @border-color;
+}
+
+.media:after {
+	content: " ";
+	clear: left;
+}
+.media:last-child {
+	border-bottom: none;
 }
