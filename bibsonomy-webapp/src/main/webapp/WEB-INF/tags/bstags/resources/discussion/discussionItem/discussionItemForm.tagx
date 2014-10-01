@@ -102,15 +102,11 @@
 
 				<div class="col-sm-9">
 					<c:if test="${not empty additionalInputs}">
-						<textarea class="form-control help-popover reqinput" rows="4" name="discussionItem.text">
-							<c:choose>
-								<c:when test="${not empty discussionItem}">
-									<c:out value="${discussionItem.text}" />
-								</c:when>
-								<c:otherwise>
-									<fmt:message key="post.resource.${discussionItemClass}.actions.post"/>
-								</c:otherwise>
-							</c:choose>
+						<fmt:message var="placeholder" key="post.resource.${discussionItemClass}.actions.post"/>	
+						<textarea placeholder="${placeholder}" class="form-control help-popover reqinput" rows="4" name="discussionItem.text">
+							<c:if test="${not empty discussionItem}">
+								<c:out value="${discussionItem.text}" />
+							</c:if>
 						</textarea>
 						<div class="help help-header hide"><!--  --></div>
 						<div class="help help-content hide"><fmt:message key="post.resource.discussion.help"/></div>
