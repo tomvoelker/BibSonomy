@@ -7,30 +7,17 @@
 	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
 	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion">
 
-	<jsp:directive.attribute name="discussionItem"
-		type="org.bibsonomy.model.DiscussionItem" required="false" />
-	<jsp:directive.attribute name="resource"
-		type="org.bibsonomy.model.Resource" required="true" />
-	<jsp:directive.attribute name="action" type="java.lang.String"
-		required="true" />
-	<jsp:directive.attribute name="discussionItemClass"
-		type="java.lang.String" required="true" />
-	<jsp:directive.attribute name="additionalInputs" fragment="true"
-		required="false" />
-	<jsp:directive.attribute name="additionalMenuItems" fragment="true"
-		required="false" />
-	<jsp:directive.attribute name="userName" type="java.lang.String"
-		required="true" />
-	<jsp:directive.attribute name="postUserName" type="java.lang.String"
-		required="true" />
+	<jsp:directive.attribute name="discussionItem" type="org.bibsonomy.model.DiscussionItem" required="false" />
+	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
+	<jsp:directive.attribute name="action" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="discussionItemClass" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="additionalInputs" fragment="true" required="false" />
+	<jsp:directive.attribute name="additionalMenuItems" fragment="true" required="false" />
+	<jsp:directive.attribute name="userName" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true" />
 
 
-
-	<script src="/resources/jquery/plugins/autoresize/jquery.autoresize.js"
-		type="text/javascript">
-	<!--keep me!-->
-		
-	</script>
+	<script src="/resources/jquery/plugins/autoresize/jquery.autoresize.js" type="text/javascript"><!--keep me!--></script>
 
 	<form action="/ajax/${discussionItemClass}s" method="post"
 		class="form-horizontal ${action}${discussionItemClass}">
@@ -41,13 +28,12 @@
 				<input type="hidden" value="PUT" name="_method" />
 			</c:if>
 			<input name="ckey" value="${command.context.ckey}" type="hidden" />
-			<input name="hash" value="${resource.interHash}" type="hidden" /> <input
-				name="postUserName" value="${postUserName}" type="hidden" /> <input
-				name="intraHash" value="${command.intraHash}" type="hidden" />
+			<input name="hash" value="${resource.interHash}" type="hidden" />
+			<input name="postUserName" value="${postUserName}" type="hidden" />
+			<input name="intraHash" value="${command.intraHash}" type="hidden" />
 
 			<c:if test="${not empty discussionItem.hash}">
-				<input name="discussionItem.hash" value="${discussionItem.hash}"
-					type="hidden" />
+				<input name="discussionItem.hash" value="${discussionItem.hash}" type="hidden" />
 			</c:if>
 
 
@@ -63,10 +49,7 @@
 				</label>
 				<div class="col-sm-9">
 					<div class="">
-						<discussion:ajaxGroupBox
-							groups="${command.context.loginUser.groups}"
-							selectedGroups="${discussionItem.groups}" />
-
+						<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" selectedGroups="${discussionItem.groups}" />
 					</div>
 					<div class="checkbox">
 						<label>
@@ -90,7 +73,7 @@
 					<p class="help-block"><fmt:message key="post.resource.visibility.help" /></p>
 				</div>
 			</div>
-							
+			
 			<!-- review text/textarea -->
 			<div class="form-group">
 				<label class="col-sm-3 control-label"> 
@@ -117,8 +100,8 @@
 			
 			<!-- add reference -->
 			<div class="form-group">
-				<label class="col-sm-3 control-label"> <fmt:message
-						key="post.resource.addreference" />
+				<label class="col-sm-3 control-label">
+					<fmt:message key="post.resource.addreference" />
 				</label>
 				<div class="col-sm-9">
 					<input class="form-control help-popover referenceAutocompletion"
@@ -129,7 +112,7 @@
 					<div class="help help-content hide">
 						<fmt:message key="post.resource.addreference.help">
 							<fmt:param>
-								<!-- -->
+								<!-- TODO why an empty param? -->
 							</fmt:param>
 						</fmt:message>
 					</div>
@@ -139,17 +122,13 @@
 			<!-- submit -->
 			<div class="form-group">
 				<div class="col-sm-offset-3 col-sm-9">
-					<fmt:message
-						key="post.resource.${discussionItemClass}.actions.${action}"
-						var="buttonText" />
+					<fmt:message key="post.resource.${discussionItemClass}.actions.${action}" var="buttonText" />
 					<input type="submit" class="btn btn-primary" value="${buttonText}" />
 				</div>
 			</div>
 
 			<div class="spinner hidden">
-				<img src="${resdir}/image/ajax_loader.gif" alt="loading" /><span
-					class="spinnerClass"><fmt:message
-						key="post.resource.${discussionItemClass}.action.${action}" /></span>
+				<img src="${resdir}/image/ajax_loader.gif" alt="loading" /><span class="spinnerClass"><fmt:message key="post.resource.${discussionItemClass}.action.${action}" /></span>
 			</div>
 		</fieldset>
 	</form>
