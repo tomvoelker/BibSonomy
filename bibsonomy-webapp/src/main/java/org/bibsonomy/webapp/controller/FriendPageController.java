@@ -47,7 +47,7 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 		final List<String> requTags = command.getRequestedTagsList();
 
 		// handle the case when tags only are requested
-		this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags, null, Integer.MAX_VALUE, null);	
+		this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags, null, Integer.MAX_VALUE, null);
 
 		// retrieve and set the requested resource lists, along with total
 		// counts

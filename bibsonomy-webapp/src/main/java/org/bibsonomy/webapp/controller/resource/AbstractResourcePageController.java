@@ -123,7 +123,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 		 * know the type of the requested hash. The getPosts() method of the 
 		 * LogicInterface checks for the type and returns the corresponding post(s). 
 		 */
-		final int entriesPerPage = command.getListCommand(this.getResourceClass()).getEntriesPerPage();		
+		final int entriesPerPage = command.getListCommand(this.getResourceClass()).getEntriesPerPage();
 		final Date startDate = command.getStartDate();
 		final Date endDate = command.getEndDate();
 		this.setList(command, this.getResourceClass(), groupingEntity, requUser, null, longHash, null, command.getFilter(), null, startDate, endDate, entriesPerPage);
