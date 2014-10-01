@@ -95,7 +95,7 @@
 			    </div> --> 
 			</c:if>
 
-			<discussionItem:subDiscussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" />
+			<discussionItem:discussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" />
 		</div>
 
 		<!-- TODO: use spring security tags -->
