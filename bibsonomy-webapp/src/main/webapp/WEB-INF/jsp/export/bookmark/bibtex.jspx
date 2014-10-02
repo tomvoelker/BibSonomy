@@ -18,7 +18,8 @@ BibTeX output for bookmarks
 <c:forEach var="post" items="${command.bookmark.list}">
 	<c:set var="bookmark" value="${post.resource}"/>
   
-<jsp:text>
+<!--
+jsp:text>
 @electronic{${mtl:getHostName(bookmark.url)},
    title       = {${bookmark.title}}, 
    url         = {${bookmark.url}},
@@ -32,4 +33,5 @@ BibTeX output for bookmarks
 </jsp:text>
   
 </c:forEach>
-</jsp:root>
+</jsp:root
+-->
