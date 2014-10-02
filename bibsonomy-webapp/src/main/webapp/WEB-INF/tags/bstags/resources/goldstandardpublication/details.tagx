@@ -55,8 +55,8 @@
 				+-->
 			<c:if test="${not empty goldstandard.abstract}"> 
 				<h4 class="pub-details"><span class="fa fa-align-justify"><!--  --></span><c:out value=" " /><fmt:message key="publications.abstract.headline"/></h4>
-				<div id="abstract" class="more">
-					<c:out value="${mtl:cleanBibtex(goldstandard.abstract)}" />
+				<div id="abstract" class="show-more">
+					<span class="contentContainer"><c:out value="${mtl:cleanBibtex(goldstandard.abstract)}" /></span>
 				</div>
 			</c:if>
 					<c:choose>
