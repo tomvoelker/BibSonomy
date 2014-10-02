@@ -39,15 +39,14 @@
 				</span>
 				-->
 				<div class="media-body" id="titletext">
+					<div class="pull-right"><gpub:actions post="${post}" /></div>
 					<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(goldstandard.title)}" /></h1>
 					<p><bib:desc publication="${post.resource}"/></p>
 				</div>
 			</div>		
 		</div>
-		<div style="border-top: 1px #cccccc solid; clear:left">
-			<ul id="gold_menu">
-				<gpub:actions post="${post}" />
-			</ul>
+		<div style="border-top: 1px #cccccc solid;">
+			<!--  -->
 		</div> <!-- border -->	
 				
 				
