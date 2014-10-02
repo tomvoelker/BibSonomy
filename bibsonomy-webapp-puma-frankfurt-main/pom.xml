@@ -26,37 +26,4 @@
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
-	<profiles>
-		<profile>
-			<id>deploy-to-puma-ffm-dev</id>
-			<!-- change tomcat deploy destination when -Ddeploy-to=puma_ffm_dev is 
-				given as parameter. -->
-			<activation>
-				<property>
-					<name>deploy-to</name>
-					<value>puma_frankfurt-main_dev</value>
-				</property>
-			</activation>
-			<properties>
-				<maven.tomcat.server>tomcat_puma_ffm_dev</maven.tomcat.server>
-				<maven.tomcat.url>http://ffm-dev.puma.bibliothek.uni-kassel.de:8080/manager/text</maven.tomcat.url>
-			</properties>
-		</profile>
-		<profile>
-			<id>deploy-to-puma-ffm-rc</id>
-			<!-- change tomcat deploy destination when -Ddeploy-to=puma_ffm_rc is 
-				given as parameter. -->
-			<activation>
-				<property>
-					<name>deploy-to</name>
-					<value>puma_ffm_rc</value>
-				</property>
-			</activation>
-			<properties>
-				<maven.tomcat.server>tomcat_puma_ffm_rc</maven.tomcat.server>
-				<maven.tomcat.url>http://p217.puma.bibliothek.uni-kassel.de:8080/manager/text</maven.tomcat.url>
-				<maven.tomcat.path>/bibsonomy-webapp</maven.tomcat.path>
-			</properties>
-		</profile>
-	</profiles>
 </project>
