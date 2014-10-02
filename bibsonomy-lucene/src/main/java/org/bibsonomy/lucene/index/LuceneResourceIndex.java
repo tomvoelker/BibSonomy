@@ -15,6 +15,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexNotFoundException;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
@@ -434,20 +435,17 @@ public class LuceneResourceIndex<R extends Resource> {
 				}
 			}
 			
-			boolean openedIndexWriter = false;
 			try {
 				openIndexWriter();
-				openedIndexWriter = true;
-			} catch (final IOException e) {
-				log.error("Error opening index writer", e);
-			}
-			
-			if (openedIndexWriter) {
 				try {
 					openSearcherManager();
 				} catch (final IOException e) {
 					log.error("Error opening SearcherManager", e);
 				}
+			} catch(final IndexNotFoundException e) {
+				log.error("Error opening IndexWriter (" + e.getMessage() + ") - This is ok while creating a new index.");
+			} catch (final IOException e) {
+				log.error("Error opening IndexWriter", e);
 			}
 
 			// delete the lists
@@ -565,12 +563,12 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * @throws LockObtainFailedException
 	 * @throws IOException
 	 */
-	private void openIndexWriter() throws CorruptIndexException, LockObtainFailedException, IOException {
+	private void openIndexWriter() throws CorruptIndexException, LockObtainFailedException, IndexNotFoundException, IOException  {
 		closeIndexWriter();
 		//open new indexWriter
 		log.debug("Opening indexWriter " + this.indexPath);
 		IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_48, this.analyzer);
-		iwc.setOpenMode(OpenMode.CREATE_OR_APPEND);		
+		iwc.setOpenMode(OpenMode.APPEND);		
 		indexWriter = new IndexWriter(indexDirectory, iwc);
 	}
 	
