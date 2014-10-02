@@ -10,6 +10,13 @@
 	<packaging>war</packaging>
 	<name>BibSonomy Webapp PUMA Stuttgart</name>
 	<description>PUMA for univerity library Stuttgart</description>
+
+	<properties>
+		<property>
+			<maven.tomcat.path>/bibsonomy-webapp</maven.tomcat.path>
+		</property>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>

@@ -10,6 +10,13 @@
 	<packaging>war</packaging>
 	<name>BibSonomy Webapp PUMA Sandbox</name>
 	<description>PUMA testsystem for everyone interested in PUMA</description>
+
+	<properties>
+		<property>
+			<maven.tomcat.path>/bibsonomy-webapp</maven.tomcat.path>
+		</property>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>

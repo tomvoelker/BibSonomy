@@ -10,6 +10,13 @@
 	<packaging>war</packaging>
 	<name>BibSonomy Webapp PUMA Giessen</name>
 	<description>PUMA version of BibSonomy for Library of Giessen University</description>
+
+	<properties>
+		<property>
+			<maven.tomcat.path>/bibsonomy-webapp</maven.tomcat.path>
+		</property>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
