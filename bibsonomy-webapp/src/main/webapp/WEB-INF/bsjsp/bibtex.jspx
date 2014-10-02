@@ -60,22 +60,37 @@
 		<jsp:attribute name="content">
 			
 			<!-- COMMUNITY POST -->
-			<c:if test="${empty command.goldStandardPublications.list}">
-				<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
-					<c:set var="post" value="${command.bibtex.list[0]}" />
-					<c:url var="editGoldStandardLink" value="/editGoldStandardPublication">
-						<c:param name="hash" value="${post.resource.intraHash}" />
-						<c:param name="user" value="${post.user.name}" />
-						<c:param name="editBeforeSaving" value="true" />
-					</c:url>
+			<c:choose>
+				<c:when test="${empty command.goldStandardPublications.list}">
+					<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
+						<c:set var="post" value="${command.bibtex.list[0]}" />
+						<c:url var="editGoldStandardLink" value="/editGoldStandardPublication">
+							<c:param name="hash" value="${post.resource.intraHash}" />
+							<c:param name="user" value="${post.user.name}" />
+							<c:param name="editBeforeSaving" value="true" />
+						</c:url>
+						
+						<fmt:message key="bibtex.actions.community_post.create" var="goldTitle" />
+						<h1 class="content-header"><c:out value="${pageTitle}" /></h1>
+						<div class="text-center">	
+							<div class="lead">
+								<p><fmt:message key="bibtex.actions.community_post.no" /></p> 
+							</div>
+							
+							<a class="btn btn-primary" href="${editGoldStandardLink}">${goldTitle}</a>
+							<hr />
+						</div>
+					</c:if>
 					
-					<fmt:message key="bibtex.actions.community_post.create" var="goldTitle" />
-					<div class="info-box">
-						<p><fmt:message key="bibtex.actions.community_post.no" /></p> 
-						<p><a class="button" href="${editGoldStandardLink}">${goldTitle}</a></p>
-					</div>
-				</c:if>
-			</c:if>
+					<!-- invokes discussion forms -->
+					<c:if test="${not goldstandardPresent}">
+					
+						<discussion:discussion loginUser="${command.context.loginUser}" resource="${publication}" discussionItems="${command.discussionItems}"  postUserName="${command.postOwner}"/>
+					</c:if>
+					<input type="hidden" id="gs_present" value="${goldstandardPresent}"/>
+					
+				</c:when>
+			</c:choose>
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading">
@@ -143,12 +158,7 @@
 			| discussion
 		 	+-->
 		<jsp:attribute name="discussion">
-			<c:if test="${not goldstandardPresent}">
-				<div id="fscontent" style="margin-top: 10px;">
-					<discussion:singleResourceDiscussionLayout resource="${publication}" discussionItems="${command.discussionItems}"  postUserName="${command.postOwner}"/>
-				</div>
-			</c:if>
-			<input type="hidden" id="gs_present" value="${goldstandardPresent}"/>
+
 		</jsp:attribute>
 		
 	</layout:resourceLayout>

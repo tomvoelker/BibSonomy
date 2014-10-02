@@ -51,12 +51,6 @@ $(function() {
 		});
 	}
 	
-	$(DISCUSSION_TOGGLE_LINK_SELECTOR).click(function() {
-		$(REVIEW_INFO_SELECTOR).toggle('slow');
-		$(DISCUSSION_SELECTOR).toggle('slow', updateDiscussionToggleLink);
-		return false;
-	});
-	
 	// TODO: move and use in post edit views
 	$(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
 	 
@@ -485,7 +479,7 @@ $(function(){
 		$('#sidebar').height($('#postcontainer').height() + 11);		
 		
 	} else if (!gsPresent){
-		$("div#discussion").hide();
+		//$("div#discussion").hide();
 		$("#imgExpandDiscussion").show();
 		$("#imgCollapseDiscussion").hide();
 		$("#textExpandDiscussion").show();

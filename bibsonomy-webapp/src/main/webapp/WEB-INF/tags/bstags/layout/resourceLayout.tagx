@@ -141,10 +141,11 @@
 				<h1 class="content-header"><c:out value="${headline}"/></h1>
 			</c:if>
 			-->
-			<!-- invokes discussion forms -->
-			<jsp:invoke fragment="discussion" />
+			
 			
 			<jsp:invoke fragment="content" />
+			
+			
 			
 			<c:choose>
 				<!-- if a community post is present show the community post, not the list of posts -->
@@ -208,9 +209,10 @@
 									</c:if>
 								</jsp:attribute>
 							</resources:bibtexs>
-							 
+							<p class="clearfix"><!--  --></p>
 						</div>
 				    </div>
+				    <p class="clearfix"><!--  --></p>
 				</c:otherwise>
 			</c:choose>
 			
