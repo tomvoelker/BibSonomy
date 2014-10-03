@@ -12,9 +12,7 @@
 	<description>PUMA testsystem for everyone interested in PUMA</description>
 
 	<properties>
-		<property>
-			<maven.tomcat.path>/bibsonomy-webapp</maven.tomcat.path>
-		</property>
+		<maven.tomcat.path>/bibsonomy-webapp</maven.tomcat.path>
 	</properties>
 
 	<dependencies>

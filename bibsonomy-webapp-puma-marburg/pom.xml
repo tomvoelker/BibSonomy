@@ -12,9 +12,7 @@
 	<description>PUMA version of BibSonomy for Library of Marburg University</description>
 
 	<properties>
-		<property>
-			<maven.tomcat.path>/bibsonomy-webapp</maven.tomcat.path>
-		</property>
+		<maven.tomcat.path>/bibsonomy-webapp</maven.tomcat.path>
 	</properties>
 
 	<dependencies>
