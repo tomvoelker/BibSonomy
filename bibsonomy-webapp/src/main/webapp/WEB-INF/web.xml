@@ -174,14 +174,6 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	
-	<!--+
-		| maps some of BibSonomy's configuration parameters to system.properties for
-		| configuring shindig  
-		+-->
-	<listener>
-		<listener-class>org.bibsonomy.opensocial.config.SystemPropertiesContextListener</listener-class>
-	</listener>
-
 	<!-- Servlet-Mappings  -->
 	<!-- spring main servlet -->
 	<servlet-mapping>
