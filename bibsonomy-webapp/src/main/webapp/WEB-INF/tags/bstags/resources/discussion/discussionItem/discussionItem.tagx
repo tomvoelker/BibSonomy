@@ -20,7 +20,7 @@
 	
 	<c:set var="displayUserName"><user:username noLink="${true}" username="${discussionItemUserName}"/></c:set>
 	
-	<a href="/user/${fn:escapeXml(discussionItemUserName)}" class="img-thumbnail pull-left" title="${displayUserName}">
+	<a href="/user/${fn:escapeXml(discussionItemUserName)}" class="thumbnail img-thumbnail pull-left" title="${displayUserName}">
 		
 		<c:choose>
 			<c:when test="${anonymous}">
