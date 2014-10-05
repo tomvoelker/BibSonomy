@@ -1,9 +1,11 @@
 package org.bibsonomy.webapp;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 
 import org.apache.catalina.Context;
+import org.apache.catalina.deploy.ApplicationParameter;
 import org.apache.catalina.loader.WebappLoader;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.http.client.methods.HttpGet;
@@ -60,16 +62,25 @@ public abstract class WebappTest extends AbstractDatabaseManagerTest {
 	public static final void startServer() throws Exception {
 		JNDIBinder.bind();
 		if (tomcat == null) {
+			final String webappDirLocation = "src/main/webapp/";
 			tomcat = new Tomcat();
 			
 			tomcat.setPort(PORT);
 			tomcat.setBaseDir("");
-			final String externalForm = WebappTest.class.getClassLoader().getResource("").toExternalForm();
-			final Context mainContext = tomcat.addWebapp("", externalForm.substring("file:".length()));
+			final String externalForm = new File(webappDirLocation).getAbsolutePath();
+			final Context context = tomcat.addWebapp("/", externalForm);
 			final ClassLoader classLoader = MinimalisticController.class.getClassLoader();
 			final WebappLoader loader = new WebappLoader(classLoader);
 			loader.setDelegate(true);
-			mainContext.setLoader(loader);
+			context.setLoader(loader);
+			
+			final ApplicationParameter parameter = new ApplicationParameter();
+			parameter.setOverride(false);
+			
+			parameter.setValue(new File("src/test/resources/server.properties").getAbsolutePath());
+			parameter.setName("config.location");
+			context.addApplicationParameter(parameter);
+			
 			tomcat.start();
 			
 			// load home page to compile jspx files

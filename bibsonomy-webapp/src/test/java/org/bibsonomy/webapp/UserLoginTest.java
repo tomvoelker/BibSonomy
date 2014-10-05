@@ -2,14 +2,14 @@ package org.bibsonomy.webapp;
 
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.WebDriver;
 
 /**
  * @author dzo
  */
-@Ignore // TODO: reactivate it
+@Category(WebappTest.class)
 public class UserLoginTest extends WebappTest {
 
 	private static final String INTERNAL_COOKIE_NAME = "db_user";

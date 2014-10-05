@@ -195,14 +195,6 @@
 				<directory>${project.downloaded-resources.directory}</directory>
 			</resource>
 		</resources>
-		<testResources>
-			<testResource>
-				<directory>src/test/resources</directory>
-			</testResource>
-			<testResource>
-				<directory>src/main/webapp</directory>
-			</testResource>
-		</testResources>
 		<pluginManagement>
 			<plugins>
 				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
@@ -605,6 +597,12 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-dbcp</artifactId>
+			<version>${tomcat.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-logging-juli</artifactId>
 			<version>${tomcat.version}</version>
@@ -659,7 +657,7 @@
 		<wurfl.version>2.3.1</wurfl.version>
 		<project.build.webapp.resourcedir>${project.build.directory}/${project.build.finalName}/resources</project.build.webapp.resourcedir>
 		<project.downloaded-resources.directory>${project.build.directory}/downloaded-resources</project.downloaded-resources.directory>
-		<tomcat.version>7.0.29</tomcat.version>
+		<tomcat.version>7.0.55</tomcat.version>
 		<!-- We need to wrap the mave.build.timestamp property as it is not used for filtering, cf. http://stackoverflow.com/questions/13228472/how-to-acces-maven-build-timestamp-for-resource-filtering -->
 		<build.timestamp>${maven.build.timestamp}</build.timestamp>
 		<maven.build.timestamp.format>HH:mm dd.MM.yyyy</maven.build.timestamp.format>
