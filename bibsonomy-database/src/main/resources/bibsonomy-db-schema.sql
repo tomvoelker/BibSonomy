@@ -312,7 +312,7 @@ CREATE TABLE `gold_standard_relations` (
   `user_name` varchar(255) default NULL,
   `date` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `relation_kind` tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (`publication`, `reference`)
+  PRIMARY KEY  (`publication`, `reference`, `relation_kind`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 

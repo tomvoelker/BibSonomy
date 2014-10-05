@@ -118,7 +118,7 @@
 			| followed by input field surrounded by div column container with width inputColSpan
 			+-->
 		<div class="col-sm-${inputColSpan}">
-			<form:input cssClass="fsInput${small ? smallField : ''}${required ? ' reqinput' : ''} ${fn:escapeXml(cssClass)} form-control ${helpPopover}" 
+			<form:input cssClass="${small ? smallField : ''}${required ? ' reqinput' : ''} ${fn:escapeXml(cssClass)} form-control ${helpPopover}" 
 						path="${path}" 
 						placeholder="${placeholder}" 
 						autocomplete="${autocomplete}" 
