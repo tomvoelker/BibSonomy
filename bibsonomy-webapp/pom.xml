@@ -396,6 +396,11 @@
 			<artifactId>commons-httpclient</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.3.3</version>
+		</dependency>
+		<dependency>
 			<groupId>dom4j</groupId>
 			<artifactId>dom4j</artifactId>
 			<exclusions>
@@ -630,7 +635,7 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
-			<version>2.24.1</version>
+			<version>2.43.1</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- http unit needs a newer version of these dependencies -->
@@ -639,6 +644,11 @@
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.nekohtml</groupId>
+			<artifactId>nekohtml</artifactId>
+			<version>1.9.21</version>
 		</dependency>
 		<!-- TODO: shinding not compatible with newer version -->
 		<dependency>

@@ -8,8 +8,9 @@ import org.apache.catalina.Context;
 import org.apache.catalina.deploy.ApplicationParameter;
 import org.apache.catalina.loader.WebappLoader;
 import org.apache.catalina.startup.Tomcat;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.junit.After;
@@ -19,7 +20,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 /**
@@ -41,7 +41,7 @@ public abstract class WebappTest extends AbstractDatabaseManagerTest {
 	@Parameters
 	public static Collection<Object[]> data() {
 		return Arrays.asList(new Object[][]{
-			{ FirefoxDriver.class }
+			{ HtmlUnitDriver.class }
 		});
 	}
 	
@@ -78,7 +78,7 @@ public abstract class WebappTest extends AbstractDatabaseManagerTest {
 			tomcat.start();
 			
 			// load home page to compile jspx files
-			final DefaultHttpClient client = new DefaultHttpClient();
+			final HttpClient client = HttpClientBuilder.create().build();
 			final HttpGet get = new HttpGet(BASE_URL);
 			client.execute(get);
 		}
@@ -115,6 +115,6 @@ public abstract class WebappTest extends AbstractDatabaseManagerTest {
 	 */
 	@After
 	public void shutdownSelenium() {
-		this.driver.close();
+		this.driver.quit();
 	}
 }
