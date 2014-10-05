@@ -326,6 +326,12 @@
 								<value>abstractGrouping</value>
 								<value>groups</value>
 								<value>ckey</value>
+								
+								<!-- something -->
+								<value>selectNorm</value>
+								<value>selectTagAll</value>
+								<value>inputTagAll</value>
+								<value>selectTagEach</value>
 							</list>
 						</property>
 					</bean>
@@ -537,12 +543,17 @@
 								<value>action</value>
 								<value>referer</value>
 								<!-- retaining postPublication options -->
-								<value>deleteCheckedPosts</value>
+								<value>updateExistingPost</value>
 								<value>overwrite</value>
+								<value>selectNorm</value>
+								<value>selectTagAll</value>
+								<value>inputTagAll</value>
+								<value>selectTagEach</value>
 								<value>resourcetype</value>
 								<value>format</value>
 								<value>abstractGrouping</value>
 								<value>groups</value>
+								
 							</list>
 						</property>
 					</bean>

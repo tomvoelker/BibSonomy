@@ -1,6 +1,7 @@
 var tagAction=0;
 disableAll=true;
-
+var action=[];
+var index;
 $(document).ready(function () {
 	
 	// no feature is shown
@@ -20,6 +21,57 @@ $(document).ready(function () {
 		$('div[id=editHint]').toggleClass('invisible', false);
 	}
 	
+	$('#SelectTagAll').change(function() {
+		var checked = $(this).is(':checked');
+		if(checked){
+			$('#inputTagAll').show();
+			$('div[id=combiEditBtn]').show();
+			$('div[id=cancelBtn]').show();
+			//set action
+			action.push(1);
+			
+		}else{
+			$('#inputTagAll').hide();
+			showEditBtn();
+			//remove action
+			action.splice(index, 1);
+		}
+	});
+	
+	$('#SelectTagEach').change(function() {
+		var checked = $(this).is(':checked');
+		if(checked){
+			showEachTag();
+			$('div[id=combiEditBtn]').show();
+			$('div[id=cancelBtn]').show();
+			action.push(2);
+		}
+		else{
+			$('ul[name=eachPostTag]').hide();
+			$('ul[name=postTagsHeader]').hide();
+			showEditBtn();
+			action.splice(index, 2);
+		}
+	});
+	
+	$('#SelectNorm').change(function() {
+		var checked = $(this).is(':checked');
+		if(checked){
+			$('div[id=combiEditBtn]').show();
+			$('div[id=cancelBtn]').show();
+			action.push(3);
+		}
+		else{
+			showEditBtn();
+			action.splice(index, 3);
+		}
+	});
+
+	$('#combiEditBtn').click(function() {
+		//action is set here
+		$('input[name=action]').val(action);
+		submitForm("#combiEditConfirm");
+	});
 	/*
 	 * handler to change all sub checkboxes with the select all option
 	 * */
@@ -32,7 +84,8 @@ $(document).ready(function () {
 		});
 	});
 
-	/*
+	
+		/*
 	 * handler for changing of sub checkboxes
 	 */
 	$('input[name^=posts]:checkbox').change(function() {
@@ -43,7 +96,11 @@ $(document).ready(function () {
 		}
 		// 	we have to call change() in this case, because a new tag input should be shown.
 		if (tagAction==2){
-			$('#tagEachId').click();
+			if (document.getElementById('tagEachId')) {
+				$('#tagEachId').click();
+			} else{
+				showEachTag();
+			}
 		}
 		
 		var oneNotChecked = false;
@@ -80,7 +137,7 @@ $(document).ready(function () {
 		hideAllMessages();
 		resetBackgroundColor();
 		
-		$(this).css("background-color", "#6666CC");
+		$(this).css("background-color", "#e6e6e6");
 		$('div[name=AllpostTagsHeader]').show();
 		$('div[name=allTagBox]').show();
 		$('div[id=cancelBtn]').show();
@@ -88,8 +145,11 @@ $(document).ready(function () {
 		
 	});
 	$('#allTagOk').click(function() {
-		// action is set here
-		$('input[name=action]').val("1");
+		//clear the action array
+		action.splice(0,action.lenght);
+		//action is set here
+		action.push(1);
+		$('input[name=action]').val(action);
 		$("#tagAllAdded").toggleClass('invisible', false);
 		submitForm("#tagAllAdded");
 	});
@@ -98,37 +158,22 @@ $(document).ready(function () {
 		if (disableAll){
 			return false;
 		}
-		
+		$(this).css("background-color", "#e6e6e6");
 		hideAllFeatures();
 		hideAllMessages();
 		resetBackgroundColor();
-		$(this).css("background-color", "#6666CC");
 		$('div[id=cancelBtn]').show();
-		$('li[name=postTagsHeader]').show();
-	
-		// the following lines are to show tag edit box, only for the selected posts
-		var a = [];
-		$('input[name^=posts]:checkbox').each(function() {
-			if ($(this).is(':checked')) {
-				a.push(true);
-			}else{
-				a.push(false);
-			}
-		});
-		a=a.reverse();
-		$('li[name=eachPostTag]').each(function() {
-			if (a.pop()==true) {
-				$(this).show();
-			}
-		});
-		
 		$('div[name=eachTagBtn]').show();
-		tagAction=2;
+
+		showEachTag();
 	});	
 	
 	$('#eachTagOk').click(function() {
+		//clear the action array
+		action.splice(0,action.lenght);
 		// action is set here
-		$('input[name=action]').val("2");
+		action.push(2);
+		$('input[name=action]').val(action);
 		submitForm("#tagEachEdited");
 	});
 
@@ -140,14 +185,17 @@ $(document).ready(function () {
 		hideAllFeatures();
 		resetBackgroundColor();
 		hideAllMessages();
-		$(this).css("background-color", "#6666CC");
+		$(this).css("background-color", "#e6e6e6");
 		
 		$('div[id=delConfirm]').toggleClass('invisible', false);
 	});
 	
 	$('#delOk').click(function() {
 		$('div[id=delConfirm]').toggleClass('invisible', true);
-		$('input[name=action]').val("4");
+		//clear the action array
+		action.splice(0,action.lenght);
+		action.push(4);
+		$('input[name=action]').val(action);
 		submitForm("#deleted");
 	});
 	
@@ -164,13 +212,16 @@ $(document).ready(function () {
 		resetBackgroundColor();
 		hideAllMessages();
 		
-		$(this).css("background-color", "#6666CC");
+		$(this).css("background-color", "#e6e6e6");
 		$('div[id=normConfirm]').toggleClass('invisible', false);		
 	});
 	
 	$('#normOk').click(function() {
 		$('div[id=normConfirm]').toggleClass('invisible', true);
-		$('input[name=action]').val("3");
+		//clear the action array
+		action.splice(0,action.lenght);
+		action.push(3);
+		$('input[name=action]').val(action);
 		submitForm("#normalized");
 	});
 	
@@ -188,19 +239,22 @@ $(document).ready(function () {
 		resetBackgroundColor();
 		hideAllMessages();
 		$('div[id=cancelBtn]').show();
-		
 		$('div[id=privacyBox]').show();
-		$(this).css("background-color", "#6666CC");
+		$(this).css("background-color", "#e6e6e6");
 	});
 	
 	$('#privacyOk').click(function() {
+		//clear the action array
+		action.splice(0,action.lenght);
 		//action is set here
-		$('input[name=action]').val("5");
+		action.push(5);
+		$('input[name=action]').val(action);
 		submitForm("#privacyChanged");
 	});
 
 	$('#cancelBtn').click(function() {
-		$('input[name=action]').val("0");
+		action.push(0);
+		$('input[name=action]').val(action);
 		submitForm("#cancel");
 	});
 	
@@ -225,6 +279,8 @@ function hideAllMessages(){
 	$('div[id=back]').toggleClass('invisible', true);
 	$('div[id=editHint]').toggleClass('invisible', true);
 	$('div[id="cancel"]').toggleClass('invisible', true);
+	$('ul[name=eachPostTag]').toggleClass('invisible', true);
+	$('div[id=combiEditConfirm]').toggleClass('invisible', true);
 }
 
 function submitForm(messageId){
@@ -235,31 +291,44 @@ function submitForm(messageId){
 
 function hideAllFeatures(){
 	
-	$('li[name=eachPostTag]').hide();
-	$('li[name=postTagsHeader]').hide();
+	$('ul[name=eachPostTag]').hide();
+	$('ul[name=postTagsHeader]').hide();
 	$('div[name=AllpostTagsHeader]').hide();
 	
 	$('div[id=privacyBox]').hide();
 	$('div[name=allTagBox]').hide();
 	$('div[name=eachTagBtn]').hide();
 	$('div[id=cancelBtn]').hide();
+	$('div[id=combiEditBtn]').hide();
+	
+	$('#inputTagAll').hide();
 }
 /**
  changes the CSS class of an element.
  --> enable to disable */
 function disableAllButtons(){
 	$('div[id=cancelBtn]').hide();
-
-	document.getElementById('delId').setAttribute('class', 'delClassDisabled');
-	document.getElementById('tagEachId').setAttribute('class', 'tagEachClassDisabled');
-	document.getElementById('tagAllId').setAttribute('class', 'tagAllClassDisabled');
-
-	if (document.getElementById('normId')) {
-		document.getElementById('normId').setAttribute('class', 'normClassDisabled');
+	$('div[id=combiEditBtn]').hide();
+	
+	if (document.getElementById('delId')) {	// if direct edit:
+		$('div[id=editButtonsDisabled]').show();
+		$('div[id=editButtonsEnabled]').hide();
+		$('div[id=editButtonsEnabled]').toggleClass('invisible', true);
+		/*document.getElementById('delId').disabled = true; 
+		document.getElementById('tagEachId').disabled = true; 
+		document.getElementById('tagAllId').disabled = true; 
+	
+		if (document.getElementById('normId')) {
+			document.getElementById('normId').disabled = true; 
+		}
+		document.getElementById('privacyId').disabled = true;*/ 
+	}else{
+		document.getElementById('SelectNorm').disabled = true;
+		document.getElementById('SelectTagAll').disabled = true;
+		document.getElementById('SelectTagEach').disabled = true;
 	}
-	document.getElementById('privacyId').setAttribute('class', 'privacyClassDisabled');
 	tagAction=0;
-	resetBackgroundColor();
+	//resetBackgroundColor();
 	
 	hideAllMessages();
 	$('div[id=editHint]').toggleClass('invisible', false);
@@ -267,14 +336,16 @@ function disableAllButtons(){
 }
 
 function resetBackgroundColor(){
-	document.getElementById('delId').style.backgroundColor="#eee";
-	document.getElementById('tagEachId').style.backgroundColor="#eee";
-	document.getElementById('tagAllId').style.backgroundColor="#eee";	
-
-	if (document.getElementById('normId')) {
-		document.getElementById('normId').style.backgroundColor="#eee";
+	if (document.getElementById('delId')) {	// if direct edit:
+		document.getElementById('delId').style.backgroundColor="white";
+		document.getElementById('tagEachId').style.backgroundColor="white";
+		document.getElementById('tagAllId').style.backgroundColor="white";	
+	
+		if (document.getElementById('normId')) {
+			document.getElementById('normId').style.backgroundColor="white";
+		}
+		document.getElementById('privacyId').style.backgroundColor="white";
 	}
-	document.getElementById('privacyId').style.backgroundColor="#eee";
 	tagAction=0;
 }
 
@@ -282,14 +353,23 @@ function resetBackgroundColor(){
 changes the CSS class of an element.
 --> disable to enable */
 function enableAllButtons(){
-	document.getElementById('delId').setAttribute('class', 'delClass');
-	document.getElementById('tagEachId').setAttribute('class', 'tagEachClass');
-	document.getElementById('tagAllId').setAttribute('class', 'tagAllClass');
-	if (document.getElementById('normId')) {
-		document.getElementById('normId').setAttribute('class', 'normClass');
-	}
-	document.getElementById('privacyId').setAttribute('class', 'privacyClass');
 
+	if (document.getElementById('delId')) {	// if direct edit:
+		$('div[id=editButtonsDisabled]').hide();
+		$('div[id=editButtonsEnabled]').show();
+		$('div[id=editButtonsEnabled]').toggleClass('invisible', false);
+	/*	document.getElementById('delId').disabled = false;
+		document.getElementById('tagEachId').disabled = false;
+		document.getElementById('tagAllId').disabled = false;
+		if (document.getElementById('normId')) {
+			document.getElementById('normId').disabled = false;
+		}
+		document.getElementById('privacyId').disabled = false;*/
+	}else{
+		document.getElementById('SelectNorm').disabled = false;
+		document.getElementById('SelectTagAll').disabled = false;
+		document.getElementById('SelectTagEach').disabled = false;
+	}
 }
 
 function disableAllCheckboxes(){
@@ -299,6 +379,52 @@ function disableAllCheckboxes(){
 	});
 }
 
+function showEachTag(){
+	
+
+	$('ul[name=postTagsHeader]').show();
+
+	// the following lines are to show tag edit box, only for the selected posts
+	var a = [];
+	$('input[name^=posts]:checkbox').each(function() {
+		if ($(this).is(':checked')) {
+			a.push(true);
+		}else{
+			a.push(false);
+		}
+	});
+	a=a.reverse();
+	$('ul[name=eachPostTag]').each(function() {
+		$(this).show();
+	});
+	
+	$('ul[name=eachPostTag]').each(function() {
+		if (a.pop()==true) {
+			$(this).toggleClass('invisible', false);
+		}else{
+			$(this).toggleClass('invisible', true);
+		}
+	});
+	
+	tagAction=2;
+
+}
+
+function showEditBtn(){
+	var oneIsChecked = false;
+	// if atleast one edit option is selected, edit button should be remained, 
+	//otherwise should be hidden.
+	$('input[id^=Select]:checkbox:checked').each(function() {
+		oneIsChecked = true;
+	});
+	if(oneIsChecked){
+		$('div[id=combiEditBtn]').show();
+		$('div[id=cancelBtn]').show();
+	}else{
+		$('div[id=combiEditBtn]').hide();
+		$('div[id=cancelBtn]').hide();
+	}
+}
 maximizeById("general");
 
 

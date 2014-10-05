@@ -20,7 +20,7 @@
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true" />
 	<jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true" />
-	<jsp:directive.attribute name="deleteCheckedPosts" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="updateExistingPost" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="overwrite" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" description="The type of resource that are edited (bookmark or bibtex)." />
 
@@ -39,8 +39,8 @@
 	
 	<!-- I couldn't find any usage for these two variables!!: deletedCheckedPosts and overwrite -->	
 	<!-- VIEW FOR SAVING OR DELETING POSTS -->
-	<c:if test="${empty deleteCheckedPosts}">
-		<c:set var="deleteCheckedPosts" value="true" />
+	<c:if test="${empty updateExistingPost}">
+		<c:set var="updateExistingPost" value="true" />
 	</c:if>
 	<!-- OVERWRITE DUPLICATES -->
 	<c:if test="${empty overwrite}">
@@ -60,7 +60,7 @@
 		<form id="batchedit" action="/batchEdit" method="POST">
 
 			<!-- POSSIBLE TODO: make command variable nested/tunnel through servlet-actions.xml for both commands -->
-			<input type="hidden" name="deleteCheckedPosts" value="${deleteCheckedPosts}" /> 
+			<input type="hidden" name="updateExistingPost" value="${updateExistingPost}" /> 
 			<input type="hidden" name="overwrite" value="${overwrite}" /> 
 			<input type="hidden" name="resourcetype" value="${resourceType}" />
 			

@@ -1392,12 +1392,15 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		case UPDATE_TAGS:
 			this.performUpdateOnlyTags(post, oldPost, session);
 			break;
-		case UPDATE_VIEWABLE:
+			/**
+			 * The two following updates will not be logged in database.
+			 * So, they are temporarily commented. Instead of them update_all is called.*/
+/*		case UPDATE_VIEWABLE:
 			this.performUpdateOnlyPrivacy(post, oldPost, session);
 			break;
 		case UPDATE_NORMALIZE:
 			this.performUpdateOnlyNormalize(post, oldPost, session);
-			break;	
+			break;*/	
 		default:
 			/*
 			 * as default update all parts of a post

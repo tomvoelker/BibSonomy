@@ -63,6 +63,7 @@ import org.springframework.validation.Errors;
  * @author pbu
  * @author dzo
  * @author ema
+ * @author Nasim
  */
 public class BatchEditController implements MinimalisticController<BatchEditCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(BatchEditController.class);
@@ -87,7 +88,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	private static final int NORMALIZE_ACTION = 3;
 	private static final int DELETE_ACTION = 4;
 	private static final int UPDATE_VIEWABLE_ACTION = 5;
-	
 	
 	/**
 	 * 
@@ -118,13 +118,26 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		command.getBibtex().setList(new LinkedList<Post<BibTex>>());
 		command.getBookmark().setList(new LinkedList<Post<Bookmark>>());
 		
-		//GroupingCommandUtils.initGroupingCommand(command);
 		command.setGroups(new ArrayList<String>());
 		command.setAbstractGrouping(GroupUtils.getPublicGroup().getName());
-		
+		//command.setSelectNorm(true);
+		command.setAction(new ArrayList<Integer>());
 		return command;
 	}
-
+/**
+ * This controller is called in two cases:
+	1. When user clicks the gear button and selects 'edit own entries'
+	2. When user imports several bibTexes through: Add post-> post publication->BibTeX/EndNote snippet
+	
+	In order to distinguish two cases, I have called the first case 'direct edit' and the second case 'indirect edit'.
+	
+	differences:
+	In direct edit, user each time can apply one edit option to the posts. So we have
+	a list for each edit option in order to reduce database call load for each update.
+	In indirect edit, choosing several edit options at the same time is also possible. So we 
+	have only one list (postsToCombiUpdate) of posts and a complete update will
+	be performed on the post. 
+*/
 	@Override
 	public View workOn(final BatchEditCommand command) {
 
@@ -158,21 +171,29 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			this.errors.reject("error.field.valid.ckey");
 			return Views.ERROR;
 		}
-
+		
 		/*
 		 * get user name
 		 */
 		final String loginUserName = context.getLoginUser().getName();
-		final int action = command.getAction();
 		
+		/*
+		 * get edit action
+		 */
+		final List<Integer> action =command.getAction(); 
 		
-		
+		/*
+		 * check if editing is direct
+		 */
+		boolean direct_edit = command.isDirectEdit();
+		 
 		log.debug("batch edit for user " + loginUserName + " started");
 
 		/* *******************************************************
 		 * FIRST: determine some flags which control the operation
 		 * ******************************************************
 		 */
+		
 		/*
 		 * the type of resource we're dealing with 
 		 */
@@ -187,30 +208,20 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			throw new IllegalArgumentException("please provide a resource type");
 		}
 		
-		if (IGNORE_ACTION == action) {
+		if ( action.contains(IGNORE_ACTION)) {
 			return this.getFinalRedirect(command.getReferer(), loginUserName);
 		}
-		/*
-		 * FIXME: rename/check setting of that flag in the command
-		 */
-		final boolean flagMeansDelete = command.getDeleteCheckedPosts();
-		/*
-		 * When the user can flag posts to be deleted, this means those
-		 * posts already exist. Thus, all other posts must be updated.
-		 * 
-		 * The other setting is, where the posts don't exist in the database
-		 * (only in the session) and where they must be stored.
-		 */
-		final boolean updatePosts = flagMeansDelete;
-
-		log.debug("resourceType: " + resourceTypes + ", delete: " + flagMeansDelete + ", update: " + updatePosts);
-
+		/**
+		 * checks whether new post(s) should be stored (and updated) or we are editing
+		 * existing post(s)*/
+		final boolean updatePosts = command.isUpdateExistingPost();
+		
 		/* *******************************************************
 		 * SECOND: get the data we're working on
 		 * ******************************************************
 		 */
 		/*
-		 * put the posts from the session into a hash map (for faster access)
+		 * put the posts (if they are not new posts) from the session into a hash map (for faster access)
 		 */
 		final Map<String, Post<? extends Resource>> postMap = this.getPostMap(updatePosts);
 		final Map<String, Boolean> markedPostsMap = command.getPosts();
@@ -223,8 +234,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 */
 		final Map<String, String> newTagsMap = command.getNewTags();
 		final Map<String, String> oldTagsMap = command.getOldTags();
-		
-		
 				
 		log.debug("#postFlags: " + markedPostsMap.size() + ", #postMap: " + postMap.size() + ", #addTags: " + addTags.size() + ", #newTags: " + newTagsMap.size() + ", #oldTags: " + oldTagsMap.size());
 
@@ -232,13 +241,16 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * THIRD: initialize temporary variables (lists)
 		 * ******************************************************
 		 */
+		
 		/*
 		 * create lists for the different types of actions
 		 */
 		final List<String> postsToDelete = new LinkedList<String>();   // delete
-		final List<Post<?>> postsToUpdate = new LinkedList<Post<?>>(); // update/store
-		final List<Post<?>> postsToNormalize = new LinkedList<Post<?>>();
-		final List<Post<?>> postsToUpdateViewable = new LinkedList<Post<?>>();
+		final List<Post<?>> postsToUpdate = new LinkedList<Post<?>>(); // update tags
+		final List<Post<?>> postsToNormalize = new LinkedList<Post<?>>(); //update normalize
+		final List<Post<?>> postsToUpdateViewable = new LinkedList<Post<?>>(); //update viewable
+		final List<Post<?>> postsToCombiUpdate = new LinkedList<Post<?>>(); // several updates actions at the same time
+
 		/*
 		 * All posts will get the same date.
 		 */
@@ -260,116 +272,106 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				 * SECTION 1: Check if post should be deleted or ignored.
 				 */
 				if (markedPostsMap.containsKey(intraHash) && markedPostsMap.get(intraHash)) {
-					if (DELETE_ACTION == action) {
+		
+					if (action.contains(DELETE_ACTION)) {
 						postsToDelete.add(intraHash);
 						continue;
-					//}else if (IGNORE_ACTION == action) {
-						//continue;
-					} else if (NORMALIZE_ACTION == action) {
-
-						Post<?> post;
+					}
+					
+					Post<?> post;
+										
+					if(updatePosts){//updating a post which is already stored
 						post = this.logic.getPostDetails(intraHash, loginUserName);
 						if(ValidationUtils.present(post)) {
-							// now, we change what should be changed from the post details
+							post.setDate(now);
+						}else{
+							log.warn("post with hash " + intraHash + " not found for user " + loginUserName + " while updating");
+						}
+					}
+					else{//the post is temporarily stored. we update it and if successful store it.
+						
+						post = postMap.get(intraHash);
+						post.setDate(now);
+					}
+					
+					if (action.contains(NORMALIZE_ACTION)) {
+
+						// now, we change what should be changed from the post details	
+						BibTex bibtex = (BibTex) post.getResource();
+						
+						if(ValidationUtils.present(bibtex)) {
+							final String oldBibtexKey = bibtex.getBibtexKey();
+							final String newBibtexKey = BibTexUtils.generateBibtexKey(bibtex);
 							
-							BibTex bibtex = (BibTex) post.getResource();
-							
-							if(ValidationUtils.present(bibtex)) {
-								final String oldBibtexKey = bibtex.getBibtexKey();
-								final String newBibtexKey = BibTexUtils.generateBibtexKey(bibtex);
-								
-								if(ValidationUtils.present(oldBibtexKey) && ValidationUtils.present(newBibtexKey)) {
-									if(!oldBibtexKey.equals(newBibtexKey)) {
-										((BibTex) post.getResource()).setBibtexKey(newBibtexKey);
-									}
+							if(ValidationUtils.present(oldBibtexKey) && ValidationUtils.present(newBibtexKey)) {
+								if(!oldBibtexKey.equals(newBibtexKey)) {
+									((BibTex) post.getResource()).setBibtexKey(newBibtexKey);
 								}
 							}
-							post.setDate(now);
-							postsToNormalize.add(post);
 						}
-					} else if (UPDATE_AllTAG_ACTION == action || UPDATE_EachTAG_ACTION == action) {
+						if (direct_edit){
+							postsToNormalize.add(post);
+							/**
+							 * we do not need to go further, because in direct mode,
+							 * only one edit option is performed on each post. **/
+							continue;
+						}
+					}
+					if (action.contains(UPDATE_AllTAG_ACTION) || action.contains(UPDATE_EachTAG_ACTION)) {
 						/*
 						 * We must store/update the post, thus we parse and check its tags
 						 */
 						try {
 							final Set<Tag> oldTags = TagUtils.parse(oldTagsMap.get(intraHash));
 							final Set<Tag> newTags = new TreeSet<Tag>();
-							if (UPDATE_AllTAG_ACTION == action){
-								newTags.addAll(TagUtils.parse(oldTagsMap.get(intraHash)));
-								newTags.addAll(getTagsCopy(addTags));
+							// the following 'if' is for indirect mode, in which both updates can be done at the same time.
+							if (action.contains(UPDATE_AllTAG_ACTION) &&
+									action.contains(UPDATE_EachTAG_ACTION)){
+								newTags.addAll(TagUtils.parse(newTagsMap.get(intraHash)));//each tag
+								newTags.addAll(getTagsCopy(addTags));//all tag
 							}
-							else if(UPDATE_EachTAG_ACTION == action){
+							else if(action.contains(UPDATE_EachTAG_ACTION)){
 								newTags.addAll(TagUtils.parse(newTagsMap.get(intraHash)));
+							}
+							else if(action.contains(UPDATE_AllTAG_ACTION)){
+								newTags.addAll(TagUtils.parse(oldTagsMap.get(intraHash)));//old tags
+								newTags.addAll(getTagsCopy(addTags));//each tag is added to the old one.
 							}
 							
 							/*
 							 * if we want to update the posts, we only need to update posts
-							 * where the tags have changed
+							 * which their tags have changed
 							 */
-							if (updatePosts && oldTags.equals(newTags)) {
-								/*
-								 * tags haven't changed and bibtex keys should not be changed, nothing to do
-								 */
+							if (!oldTags.equals(newTags)) {
+								
+								post.setTags(newTags);
+							}							
+							if (direct_edit){	
+								postsToUpdate.add(post);
 								continue;
 							}
-							
-							/*
-							 * For the create/update methods we need a post -> 
-							 * create/get one.
-							 */
-							Post<?> post;
-							if (updatePosts) {
-								/*
-								 * we need only a "mock" posts containing the hash, the date
-								 * and the tags, since only the post's tags are updated 
-								 */
-								final Post<Resource> postR = new Post<Resource>();
-								postR.setResource(RESOURCE_FACTORY.createResource(resourceClass));
-								postR.getResource().setIntraHash(intraHash);
-								post = postR;
-							} else {
-								/*
-								 * we get the complete post from the session, and store
-								 * it in the database
-								 */
-								post = postMap.get(intraHash);
-							}
-							/*
-							 * Finally, add the post to the list of posts that should 
-							 * be stored or updated.
-							 */
-							if (!ValidationUtils.present(post)) {
-								log.warn("post with hash " + intraHash + " not found for user " + loginUserName + " while updating tags");
-							} else {
-								post.setDate(now);
-								post.setTags(newTags);
-								postsToUpdate.add(post);
-							}
-
 						} catch (final RecognitionException ex) {
 							log.debug("can't parse tags of resource " + intraHash + " for user " + loginUserName, ex);
 						}
 					}
-					else if (UPDATE_VIEWABLE_ACTION == action){
-						Post<?> post;
-						post = this.logic.getPostDetails(intraHash, loginUserName);
-						if (!ValidationUtils.present(post)) {
-							log.warn("post with hash " + intraHash + " not found for user " + loginUserName + " while updating tags");
-						} else {
-							// now, we change what should be changed from the post details
-							
-							post.setDate(now);
-							/** set visibility of this post for the groups, the user specified
-							*/
-							GroupingCommandUtils.initGroups(command, post.getGroups());
-
+					if (action.contains(UPDATE_VIEWABLE_ACTION)){
+						/** set visibility of this post for the groups, 
+						 * the user specified
+						*/
+						GroupingCommandUtils.initGroups(command, post.getGroups());
+						if (direct_edit){
 							postsToUpdateViewable.add(post);
+							continue;
 						}
 					}
-
+					/**
+					 * if we reach here, it means we have skipped all 'continues' and we 
+					are in indirect_edit mode*/
+					postsToCombiUpdate.add(post);
+					}
 				}
 			}
-		}
+		
 		/* *******************************************************
 		 * FIFTH: update the database
 		 * *******************************************************/
@@ -398,16 +400,32 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		/*
 		 * update/store posts
 		 */
-		if (updatePosts) {
-			log.debug("updating " + postsToUpdate.size() + " posts for user " + loginUserName);
-			this.updatePosts(postsToUpdate, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_TAGS, loginUserName);
-			this.updatePosts(postsToNormalize, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_NORMALIZE, loginUserName);
-			this.updatePosts(postsToUpdateViewable, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_VIEWABLE, loginUserName);
-		} else {
-			log.debug("storing "  + postsToUpdate.size() + " posts for user " + loginUserName);
-			this.storePosts(postsToUpdate, resourceClass, postMap, postsWithErrors, command.isOverwrite(), loginUserName);
+		if(direct_edit){
+			if(ValidationUtils.present(postsToUpdate)){
+				this.updatePosts(postsToUpdate, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_TAGS, loginUserName);
+			}
+			/* in the two following updates, postUpdateOperation is set to UPDATE_NORMALIZE and UPDATE_VIEWABLE in order to decrease
+			 * database calling load. But actually for some database reasons, we will ignore the postUpdateOperation value in database manager
+			 * and Update_all will be performed on the posts. Corresponding methods are available but commented in database manager.
+			 * When the database issue is corrected, you should simply uncomment corresponding methods in database manager and 
+			 * the PostUpdateOperation value will be considered then. 
+			 * */
+			if(ValidationUtils.present(postsToNormalize)){
+				this.updatePosts(postsToNormalize, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_NORMALIZE, loginUserName);
+			}
+			if(ValidationUtils.present(postsToUpdateViewable)){
+				this.updatePosts(postsToUpdateViewable, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_VIEWABLE, loginUserName);
+			}
 		}
-
+		else{//if indirect edit
+			if(updatePosts){
+				this.updatePosts(postsToCombiUpdate, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_ALL, loginUserName);				
+			}
+			else{
+				log.debug("storing "  + postsToUpdate.size() + " posts for user " + loginUserName);
+				this.storePosts(postsToCombiUpdate, resourceClass, postMap, postsWithErrors, command.isOverwrite(), loginUserName);				
+			}
+		}
 		log.debug("finished batch edit for user " + loginUserName);
 
 		/* *******************************************************
@@ -434,7 +452,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		/*
 		 * return to either the user page or current page(batchedit)
 		 */
-		//return this.getFinalRedirect(postsArePublications, loginUserName);
 		return this.getFinalRedirect(command.getReferer(), loginUserName);
 		
 	}
@@ -700,21 +717,18 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 	private View getFinalRedirect(final String referer, final String loginUserName) {
 		String redirectUrl = referer;
-		if (present(referer)) {
-			/*
-			 * if we come from bedit{bib, burl}/{group, user}/{groupname,
-			 * username}, we remove this prefix to get back to the simple
-			 * resource view in the group or user section
-			 */
+/*		if (ValidationUtils.present(referer)) {
+			
 			final Matcher prefixMatcher = BATCH_EDIT_URL_PATTERN.matcher(referer);
 			if (prefixMatcher.find()) {
 				redirectUrl = prefixMatcher.replaceFirst("");
+				redirectUrl = prefixMatcher.toString();
 			}
-		}
+		}*/
 		/*
 		 * if no URL is given, we redirect to the user's page
 		 */
-		if (!present(redirectUrl)) {
+		if (!ValidationUtils.present(redirectUrl)) {
 			redirectUrl = urlGenerator.getUserUrlByUserName(loginUserName);
 		}
 		return new ExtendedRedirectView(redirectUrl);

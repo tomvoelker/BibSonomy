@@ -77,6 +77,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		command.setPost(new Post<BibTex>());
 		command.setAbstractGrouping(GroupUtils.getPublicGroup().getName());
 		command.getPost().setResource(new BibTex());
+		//command.setSelectNorm("nasim");
 
 		return command;
 	}
@@ -319,7 +320,8 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * Trigger the correct setting of the "delete/save" check boxes on
 			 * the batch edit page.
 			 */
-			command.setDeleteCheckedPosts(false);
+			command.setUpdateExistingPost(false);
+		
 			/*
 			 * save posts in session
 			 */
@@ -332,10 +334,11 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * greater than the treshold, we will forward him to the appropriate
 		 * site, where he can delete posts (they were saved)
 		 */
+		
 		if (!command.isEditBeforeImport() && (!errors.hasErrors() || posts.size() > MAXCOUNT_ERRORHANDLING)) {
-			command.setDeleteCheckedPosts(true); //posts will have to get saved, because the user decided to
+			command.setUpdateExistingPost(true);
 		} else {
-			command.setDeleteCheckedPosts(false);
+			command.setUpdateExistingPost(false);
 		}
 
 		/*

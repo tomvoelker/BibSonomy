@@ -17,11 +17,11 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
 	 * should publications be edited before they're stored? 
 	 */
 	private boolean editBeforeImport = false;
+//	private boolean selectNorm;
 	/**
-	 * this flag determines, whether the dialogue called was configured to 
-	 * edit(delete) or edit(create) existing posts.
-	 */
-	private boolean deleteCheckedPosts;	
+	 * this flag determines, whether an existing post is being edited or a new post 
+	 * should be added and edited**/
+	private boolean updateExistingPost;
 	/**
 	 * when batchedit is used after importing posts, this flag
 	 * stores if the user wants to overwrite existing posts 
@@ -46,12 +46,15 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
 	/**
 	 * actions to apply to post
 	 */
-	private int action;
+	private List<Integer> action;
+	//private int[] combiAction;
 	
 	private String abstractGrouping;
 
     private List<String> groups;
-
+    
+    private boolean directEdit;
+    
         
     /**
      * @return the groups
@@ -86,32 +89,7 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
     public void setAbstractGrouping(final String abstractGrouping) {
         this.abstractGrouping = abstractGrouping;
     }
-    
-    
-	/**
-	 * @return the flag that determines, weather the dialogue called was configured to 
-	 * edit(delete) or edit(create) existing posts.
-	 */
-	public boolean getDeleteCheckedPosts() {
-		return this.deleteCheckedPosts;
-	}
-
-	/**
-	 * @return the flag that determines, weather the dialogue called was configured to 
-	 * edit(delete) or edit(create) existing posts.
-	 */
-	public boolean isDeleteCheckedPosts() {
-		return this.deleteCheckedPosts;
-	}
-	
-	/**
-	 * @param deleteCheckedPosts the flag that determines, weather the dialogue called was configured to 
-	 * edit(delete) or edit(create) existing posts.
-	 */
-	public void setDeleteCheckedPosts(final boolean deleteCheckedPosts) {
-		this.deleteCheckedPosts = deleteCheckedPosts;
-	}
-	
+    	
 	/**
 	 * @return the tags
 	 */
@@ -171,14 +149,14 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
 	/**
 	 * @return the action
 	 */
-	public int getAction() {
+	public List<Integer> getAction() {
 		return this.action;
 	}
 
 	/**
 	 * @param action the action to set
 	 */
-	public void setAction(int action) {
+	public void setAction(List<Integer> action) {
 		this.action = action;
 	}
 
@@ -209,4 +187,47 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
 	public void setOverwrite(final boolean overwrite) {
 		this.overwrite = overwrite;
 	}
+
+	/**
+	 * @return the directEdit
+	 */
+	public boolean isDirectEdit() {
+		return this.directEdit;
+	}
+
+	/**
+	 * @param directEdit the directEdit to set
+	 */
+	public void setDirectEdit(boolean directEdit) {
+		this.directEdit = directEdit;
+	}
+
+	/**
+	 * @return the updateExistingPost
+	 */
+	public boolean isUpdateExistingPost() {
+		return this.updateExistingPost;
+	}
+
+	/**
+	 * @param updateExistingPost the updateExistingPost to set
+	 */
+	public void setUpdateExistingPost(boolean updateExistingPost) {
+		this.updateExistingPost = updateExistingPost;
+	}
+
+	/**
+	 * @return the selectNorm
+	 */
+	/*public boolean getSelectNorm() {
+		return this.selectNorm;
+	}*/
+
+	/**
+	 * @param selectNorm the selectNorm to set
+	 */
+	/*
+	public void setSelectNorm(boolean selectNorm) {
+		this.selectNorm = selectNorm;
+	}*/
 }

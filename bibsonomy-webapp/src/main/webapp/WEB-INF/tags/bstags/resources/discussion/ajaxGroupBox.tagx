@@ -6,6 +6,8 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts">
 
+	<script type="text/javascript" src="/resources/javascript/AjaxGroupBox.js"><!-- keep me --></script>
+	
 	<jsp:useBean id="publicGroup" class="org.bibsonomy.model.Group">
 		<jsp:setProperty name="publicGroup" property="name" value="public"/>
 	</jsp:useBean>
@@ -33,8 +35,8 @@
 	<c:set var="isPrivate" value="${mtl:contains(selectedGroups, privateGroup)}" />
 	<c:set var="isFriend" value="${mtl:contains(selectedGroups, friendsGroup)}" />
 	
-	<div class="groupBoxleft">
-		<div style="float: left; margin-right: 1ex;" class="abstractGroupingGroup">
+	<div class="groupBoxleft" style="background-color: #eec;">
+		<div style="float: left; margin-right: 1ex;padding:5px;" class="abstractGroupingGroup">
 	        <!-- radio buttons for public, private, other -->
 			<!-- public -->
 			<c:choose>

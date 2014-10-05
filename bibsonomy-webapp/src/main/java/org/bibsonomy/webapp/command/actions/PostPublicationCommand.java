@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public class PostPublicationCommand extends EditPublicationCommand implements TabsCommandInterface<Object>, BibtexViewCommand, LayoutViewCommand {
 	
+	//private String selectNorm;
 	/**
 	 * The URL which the tab header links to.
 	 */
@@ -163,36 +164,11 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 * FOR ALL IMPORTS
 	 ****************************/
 	
-
-	/**
-	 * this flag determines, weather the dialogue called was configured to 
-	 * edit(delete) or edit(create) existing posts.
-	 */
-	private boolean deleteCheckedPosts;
 	
 	/**
-	 * @return the flag that determines, weather the dialogue called was configured to 
-	 * edit(delete) or edit(create) existing posts.
-	 */
-	public boolean getDeleteCheckedPosts() {
-		return this.deleteCheckedPosts;
-	}
-
-	/**
-	 * @return the flag that determines, weather the dialogue called was configured to 
-	 * edit(delete) or edit(create) existing posts.
-	 */
-	public boolean isDeleteCheckedPosts() {
-		return this.deleteCheckedPosts;
-	}
-	
-	/**
-	 * @param deleteCheckedPosts the flag that determines, weather the dialogue called was configured to 
-	 * edit(delete) or edit(create) existing posts.
-	 */
-	public void setDeleteCheckedPosts(final boolean deleteCheckedPosts) {
-		this.deleteCheckedPosts = deleteCheckedPosts;
-	}
+	 * this flag determines, whether an existing post is being edited or a new post 
+	 * should be added and edited**/
+	private boolean updateExistingPost;
 	
 	/**
 	 * @return the description
@@ -395,5 +371,33 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 */
 	public void setOverwrite(boolean overwrite) {
 		this.overwrite = overwrite;
+	}
+
+	/**
+	 * @return the selectNorm
+	 */
+/*	public String getSelectNorm() {
+		return this.selectNorm;
+	}
+*/
+	/**
+	 * @param selectNorm the selectNorm to set
+	 */
+/*	public void setSelectNorm(String selectNorm) {
+		this.selectNorm = selectNorm;
+	}
+*/
+	/**
+	 * @return the updateExistingPost
+	 */
+	public boolean isUpdateExistingPost() {
+		return this.updateExistingPost;
+	}
+
+	/**
+	 * @param updateExistingPost the updateExistingPost to set
+	 */
+	public void setUpdateExistingPost(boolean updateExistingPost) {
+		this.updateExistingPost = updateExistingPost;
 	}
 }

@@ -4307,6 +4307,30 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
 .breadcrumb > .active {
   color: #777;
 }
+.listnav {
+	border:1px solid #c6c6c6;
+	margin:2px;
+	padding: 2px;
+	min-width: 20px;
+	display:inline-block;
+	text-align:center;
+	font-weight:bold;
+}
+
+.listnav:hover {
+	background-color: #c6c6c6;
+}
+.listnavSelected {
+	border:1px solid #c6c6c6;
+	background-color: #c6c6c6;
+	margin:2px;
+	padding: 2px;
+	min-width: 20px;
+	display:inline-block;
+	text-align:center;
+	font-weight:bold;
+}
+
 .pagination {
   display: inline-block;
   padding-left: 0;
