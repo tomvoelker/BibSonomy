@@ -148,9 +148,9 @@
 	
 	<c:if test ="${fn:length(post.tags) != 0}">
 		<swrc:keywords>
-			 <c:forEach var="tag" items="${post.tags}">
-                 <c:out value ='${tag.name}'/><c:out value=" "/>
-             </c:forEach>
+			<c:forEach var="tag" items="${post.tags}">
+				<c:out value ='${tag.name}'/><c:out value=" "/>
+			</c:forEach>
 		</swrc:keywords>
 	</c:if>
 	
@@ -160,9 +160,9 @@
 		</swrc:day>
 	</c:if>
 	
-	<c:if test ="${!empty post.resource.abstract}">
+	<c:if test ="${!empty post.resource.bibtexAbstract}">
 		<swrc:abstract>
-			<c:out value="${post.resource.abstract}"/>
+			<c:out value="${post.resource.bibtexAbstract}"/>
 		</swrc:abstract>
 	</c:if>
 	
@@ -191,7 +191,7 @@
 		     <![CDATA[<rdf:_${status.index + 1}><swrc:Person swrc:name="${fn:escapeXml(person.firstName)}${' '}${fn:escapeXml(person.lastName)}"/></rdf:_${status.index + 1}>]]>
 		  </c:forEach>
 		  </rdf:Seq>
-		</swrc:editor>	
+		</swrc:editor>
 	</c:if>
 	
 </jsp:root>
