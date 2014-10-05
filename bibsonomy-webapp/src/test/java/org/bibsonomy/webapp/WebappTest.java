@@ -25,7 +25,8 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 /**
  * TODO: setup a selenium grid?
  * 
- * abstract webapp test (starts a tomcat server and inits 
+ * abstract webapp test (starts a tomcat server and inits the selenium web
+ * driver)
  * 
  * @author dzo
  */
