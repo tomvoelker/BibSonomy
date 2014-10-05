@@ -11,10 +11,8 @@ import org.apache.catalina.startup.Tomcat;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
-import org.bibsonomy.database.testutil.JNDIBinder;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -59,7 +57,6 @@ public abstract class WebappTest extends AbstractDatabaseManagerTest {
 	 */
 	@BeforeClass
 	public static final void startServer() throws Exception {
-		JNDIBinder.bind();
 		if (tomcat == null) {
 			final String webappDirLocation = "src/main/webapp/";
 			tomcat = new Tomcat();
@@ -87,11 +84,6 @@ public abstract class WebappTest extends AbstractDatabaseManagerTest {
 			final HttpGet get = new HttpGet(BASE_URL);
 			client.execute(get);
 		}
-	}
-	
-	@AfterClass
-	public static final void unbindJNDIContext() {
-		JNDIBinder.unbind();
 	}
 	
 	private final Class<WebDriver> webDriverClass;
