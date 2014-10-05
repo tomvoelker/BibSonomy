@@ -44,11 +44,10 @@ public abstract class WebappTest extends AbstractDatabaseManagerTest {
 	 */
 	@Parameters
 	public static Collection<Object[]> data() {
-	    return Arrays.asList(new Object[][]{
-	    	{ HtmlUnitDriver.class }
-	   });
+		return Arrays.asList(new Object[][]{
+			{ HtmlUnitDriver.class }
+		});
 	}
-	 
 	
 	private static final int PORT = 31415;
 	protected static final String BASE_URL = "http://localhost:" + PORT + "/";
@@ -113,12 +112,12 @@ public abstract class WebappTest extends AbstractDatabaseManagerTest {
 	 */
 	@Before
 	public void setupSelenium() throws Exception {
-		final WebDriver driver = this.webDriverClass.newInstance();		
+		final WebDriver driver = this.webDriverClass.newInstance();
 		if (driver instanceof HtmlUnitDriver) {
 			final HtmlUnitDriver htmlUnitDriver = (HtmlUnitDriver) driver;
 			htmlUnitDriver.setJavascriptEnabled(true);
 		}
-	    this.selenium = new WebDriverBackedSelenium(driver, BASE_URL);
+		this.selenium = new WebDriverBackedSelenium(driver, BASE_URL);
 	}
 	
 	/**
