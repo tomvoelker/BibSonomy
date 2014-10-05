@@ -209,10 +209,10 @@
 									</c:if>
 								</jsp:attribute>
 							</resources:bibtexs>
-							<p class="clearfix"><!--  --></p>
+							
 						</div>
 				    </div>
-				    <p class="clearfix"><!--  --></p>
+				    
 				</c:otherwise>
 			</c:choose>
 			

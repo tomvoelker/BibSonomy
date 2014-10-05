@@ -133,6 +133,7 @@
 				<!-- copy users -->
 				<resources:metaData command="${command}" />
 			</ul>
+			<p class="clearfix"><!--  --></p>
 		</jsp:attribute>
 		
 		<!--+
