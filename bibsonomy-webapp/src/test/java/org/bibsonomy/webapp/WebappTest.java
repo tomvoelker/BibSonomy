@@ -19,10 +19,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverBackedSelenium;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-
-import com.thoughtworks.selenium.Selenium;
 
 /**
  * TODO: setup a selenium grid?
@@ -43,7 +41,7 @@ public abstract class WebappTest extends AbstractDatabaseManagerTest {
 	@Parameters
 	public static Collection<Object[]> data() {
 		return Arrays.asList(new Object[][]{
-			{ HtmlUnitDriver.class }
+			{ FirefoxDriver.class }
 		});
 	}
 	
@@ -87,7 +85,7 @@ public abstract class WebappTest extends AbstractDatabaseManagerTest {
 	}
 	
 	private final Class<WebDriver> webDriverClass;
-	protected Selenium selenium;
+	protected WebDriver driver;
 	
 	/**
 	 * @param webDriver	webDriver tests
@@ -109,7 +107,7 @@ public abstract class WebappTest extends AbstractDatabaseManagerTest {
 			final HtmlUnitDriver htmlUnitDriver = (HtmlUnitDriver) driver;
 			htmlUnitDriver.setJavascriptEnabled(true);
 		}
-		this.selenium = new WebDriverBackedSelenium(driver, BASE_URL);
+		this.driver = driver;
 	}
 	
 	/**
@@ -117,6 +115,6 @@ public abstract class WebappTest extends AbstractDatabaseManagerTest {
 	 */
 	@After
 	public void shutdownSelenium() {
-		this.selenium.close();
+		this.driver.close();
 	}
 }

@@ -4,7 +4,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 /**
  * @author dzo
@@ -21,20 +23,23 @@ public class UserLoginTest extends WebappTest {
 	@Test
 	public void quickLoginInternal() {
 		// open homepage
-		this.selenium.open("/");
+		this.driver.get(BASE_URL);
 
 		// type username in field
-		this.selenium.type("id=un", "testuser1");
+		final WebElement usernamefield = this.driver.findElement(By.id("un"));
+		usernamefield.sendKeys("testuser1");
 		// click hack field for password
-		this.selenium.click("id=pw_form_copy");
+		final WebElement copy = this.driver.findElement(By.id("pw_form_copy"));
+		copy.click();
 		// type password
-		this.selenium.type("id=pw", "test123");
+		final WebElement passwordField = this.driver.findElement(By.id("pw"));
+		passwordField.sendKeys("test123");
 		// click login
-		this.selenium.click("css=input[type=\"image\"]");
-		this.selenium.waitForPageToLoad("3000");
-	
-		assertTrue(this.selenium.isTextPresent("logged in as"));
-		// ensure quick login sets cookie
-		assertTrue(this.selenium.isCookiePresent(INTERNAL_COOKIE_NAME));
+		final WebElement loginButton = this.driver.findElement(By.className("jsLoginButtonNonPermanent"));
+		loginButton.click();
+		
+		assertTrue(this.driver.findElement(By.id("navigation2")).getText().contains("logged in as"));
+		
+		assertTrue(this.driver.manage().getCookieNamed(INTERNAL_COOKIE_NAME) != null);
 	}
 }
