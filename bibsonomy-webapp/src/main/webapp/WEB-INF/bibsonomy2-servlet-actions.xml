@@ -327,11 +327,11 @@
 								<value>groups</value>
 								<value>ckey</value>
 								
-								<!-- something -->
+								<!-- 
 								<value>selectNorm</value>
 								<value>selectTagAll</value>
 								<value>inputTagAll</value>
-								<value>selectTagEach</value>
+								<value>selectTagEach</value>-->
 							</list>
 						</property>
 					</bean>
