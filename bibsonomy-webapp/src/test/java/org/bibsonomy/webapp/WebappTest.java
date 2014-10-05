@@ -72,7 +72,8 @@ public abstract class WebappTest extends AbstractDatabaseManagerTest {
 			final ApplicationParameter parameter = new ApplicationParameter();
 			parameter.setOverride(false);
 			
-			parameter.setValue(new File("src/test/resources/server.properties").getAbsolutePath());
+			final String serverProps = WebappTest.class.getClassLoader().getResource("server.properties").getFile();
+			parameter.setValue(serverProps);
 			parameter.setName("config.location");
 			context.addApplicationParameter(parameter);
 			
