@@ -176,6 +176,13 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<excludedGroups>org.bibsonomy.webapp.WebappTest</excludedGroups>
+				</configuration>
+			</plugin>
 		</plugins>
 		<resources>
 			<resource>
@@ -663,4 +670,21 @@
 		<build.timestamp>${maven.build.timestamp}</build.timestamp>
 		<maven.build.timestamp.format>HH:mm dd.MM.yyyy</maven.build.timestamp.format>
 	</properties>
+	<profiles>
+		<profile>
+			<id>webappTests</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<!-- use standard config don't exclude RemoteTests -->
+						<configuration combine.self="override">
+							<groups>org.bibsonomy.webapp.WebappTest</groups>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
