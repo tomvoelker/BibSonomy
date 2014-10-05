@@ -475,8 +475,6 @@ $(function(){
 			}
 		});
 		
-		//Fix to redefine the Sidebar height
-		$('#sidebar').height($('#postcontainer').height() + 11);		
 		
 	} else if (!gsPresent){
 		//$("div#discussion").hide();
@@ -487,9 +485,7 @@ $(function(){
 		$("#imgExpandContent").hide();
 		$("#imgCollapseContent").show();
 		
-		//Fix to redefine the Sidebar height
-		$('#sidebar').height($('#postcontainer').height() + 11);
-
+		
 	}
 });
 
@@ -508,7 +504,6 @@ $(document).ready(function() {
 	}
 
 	$("a.foldUnfold").click(function(){
-		$('#sidebar').height("auto");
 		$(".posts, .wide").height("auto");
 
 		var selector = $(this).attr("href");
@@ -524,7 +519,6 @@ $(document).ready(function() {
 		$(this).find(".imgExpand").hide();
 		
 		//Fix to redefine the Sidebar height
-		$('#sidebar').height($('#postcontainer').height() + 11);
 		return false;
 	});
 	
