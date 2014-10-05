@@ -8,6 +8,7 @@
 	xmlns:export="urn:jsptagdir:/WEB-INF/tags/bstags/export/bibtex"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
     xmlns:pub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
+    xmlns:pub2="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
     xmlns:gpub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
     xmlns:ref="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication/references"
     xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion"
@@ -137,6 +138,12 @@
 						</ul>
 						<br />
 					</c:if>
+					
+					
+				 	<h4 class="pub-details"><span class="fa fa-quote-right"><!--  --></span><c:out value=" "/><fmt:message key="publications.citations.headline" /></h4>
+					<pub2:citation post="${post}"/>
+					
+					
 					<!--+
 						| discussion and rating
 						+-->
