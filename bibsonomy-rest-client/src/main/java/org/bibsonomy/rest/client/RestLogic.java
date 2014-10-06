@@ -725,4 +725,8 @@ public class RestLogic implements LogicInterface {
 	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey) {
 		throw new UnsupportedOperationException(); // TODO: implement me
 	}
+	@Override
+	public void isPostDuplicate(final Post<?> post){
+		throw new UnsupportedOperationException(); // TODO: implement me
+	}
 }
