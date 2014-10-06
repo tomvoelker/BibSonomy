@@ -727,6 +727,6 @@ public class RestLogic implements LogicInterface {
 	}
 	@Override
 	public void isPostDuplicate(final Post<?> post){
-		throw new UnsupportedOperationException(); // TODO: implement me
+		return;
 	}
 }
