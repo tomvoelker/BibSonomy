@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.command;
 import java.util.Set;
 
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
@@ -11,13 +12,14 @@ import org.bibsonomy.model.Resource;
  */
 public class DisambiguationPageCommand extends UserResourceViewCommand {
 
-	private String requestedPersonId;
+	private String requestedAuthorName;
 	private String requestedHash;
 	private String requestedAction;
 	
 	private Set<Person> suggestedPersons;
 	private Person person;
 	private Post<? extends Resource> post;
+	private PersonName authorName;
 
 	/**
 	 * @return the suggestedPersons
@@ -34,13 +36,6 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	}
 
 	/**
-	 * @return
-	 */
-	public String getRequestedPersonId() {
-		return this.requestedPersonId;
-	}
-
-	/**
 	 * @return the requestedAction
 	 */
 	public String getRequestedAction() {
@@ -52,13 +47,6 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	 */
 	public void setRequestedAction(String requestedAction) {
 		this.requestedAction = requestedAction;
-	}
-	
-	/**
-	 * @param person
-	 */
-	public void setRequestedPersonId(String personId) {
-		this.requestedPersonId = personId;
 	}
 
 	/**
@@ -101,5 +89,34 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	 */
 	public void setPerson(Person person) {
 		this.person = person;
+	}
+
+	/**
+	 * @return the requestedAuthorName
+	 */
+	public String getRequestedAuthorName() {
+		return this.requestedAuthorName;
+	}
+
+	/**
+	 * @param requestedAuthorName the requestedAuthorName to set
+	 */
+	public void setRequestedAuthorName(String requestedAuthorName) {
+		this.requestedAuthorName = requestedAuthorName;
+	}
+
+	/**
+	 * @param PersonName personName
+	 */
+	public void setAuthorName(PersonName personName) {
+		this.authorName = personName;
+		
+	}
+
+	/**
+	 * @return the authorName
+	 */
+	public PersonName getAuthorName() {
+		return this.authorName;
 	}
 }

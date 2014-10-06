@@ -357,6 +357,7 @@
 								<value>requestedPersonId</value>
 								<value>requestedAction</value>
 								<value>requestedHash</value>
+								<value>requestedUser</value>
 								<value>formRole</value>
 								<value>formGivenName</value>
 								<value>formSurName</value>
@@ -371,9 +372,10 @@
 						<property name="controllerBeanName" value="disambiguationPageController"/>
 						<property name="allowedFields">
 							<list>
-								<value>requestedPersonId</value>
+								<value>requestedAuthorName</value>
 								<value>requestedAction</value>
 								<value>requestedHash</value>
+								<value>requestedUser</value>
 							</list>
 						</property>
 					</bean>

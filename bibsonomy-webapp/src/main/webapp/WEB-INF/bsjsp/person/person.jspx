@@ -18,6 +18,7 @@
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
 	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -67,60 +68,54 @@
 			</div>
 		
 			<c:if test="${not empty command.post}">
-				<resource:bibtexdetailsclean post="${command.post}" referer="${command.referer}"/>
+				<div class='panel panel-default'>
+					<div class='panel-heading'>
+						<h4>Selected Post</h4>
+					</div>
+					<div class='panel-body'>
+						<div class="title">
+							<pub:title post="${command.post}">
+								<jsp:attribute name="bibActionButtons">
+									<div class="pull-right">
+										<bib:actions post="${command.post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/>
+									</div>
+								</jsp:attribute>
+							</pub:title>
+						</div>
+						<a href='/person/unlink/${command.requestedPersonId}/${post.resource.intraHash}/${command.requestedPersonId}' class='btn btn-primary' id=''>Dieser Author gehoert nicht zu dieser Publikation</a>
+					</div>
+				</div>
 			</c:if>
 			<br/>
 			<div id='personInfo' class='panel panel-default'>
 				<div class='panel-heading'>
-					<h4><a data-toggle="collapse" data-target="#personPanel" class='collapsed'>About your person</a></h4>
+					<h4>About the person</h4>
 				</div>
 				
-				<c:choose>
-					<c:when test="${empty command.person.academicDegree or empty command.person.mainName}">
-						<c:set var='collapseStyle'>in</c:set>
-					</c:when>
-					<c:otherwise>
-						<c:set var='collapseStyle'>collapse in</c:set>
-					</c:otherwise>
-				</c:choose>
-				<div id='personPanel' class="${collapseStyle}">
-					<div class='panel-body'>
-						<form method='post' name='personForm' action="/person/update/${command.requestedPersonId}/${command.requestedHash}" class='form-horizontal'>
-							<div class='form-group'>
-								<label class="control-label col-xs-3" for='formAcademicDegree'>Academic Degree</label>
-								<div class="col-xs-7">
-									<input class='form-control' type="text" name='formAcademicDegree' id='formAcademicDegree' placeholder="Academic degree" value="${command.person.academicDegree }"/>
-								</div>
+				<div class='panel-body'>
+					<form method='post' name='personForm' action="/person/update/${command.myUrl}" class='form-horizontal'>
+						<div class='form-group'>
+							<label class="control-label col-xs-4" for='formAcademicDegree'>Academic Degree</label>
+							<div class="col-xs-6">
+								<input class='form-control' type="text" name='formAcademicDegree' id='formAcademicDegree' placeholder="Academic degree" value="${command.person.academicDegree }"/>
 							</div>
-							<br/>
-							<div class='form-group'>
-								<label class="control-label col-xs-3">Your name</label>
-								<div class="col-xs-7">
-									<c:forEach var="name" items="${command.person.alternateNames}">
-										<div class='input-group'>
-											<span class="input-group-addon">
-										    	<c:choose>
-													<c:when test="${name eq command.person.mainName}">
-														<INPUT type='radio' name='formSelectedName' value='${name}' selected='selected'/>
-													</c:when>
-													<c:otherwise>
-														<INPUT type='radio' name='formSelectedName' value='${name}'/>
-													</c:otherwise>
-												</c:choose>
-										    </span>
-										   	<p class='form-control'>${name}</p>
-										</div>
-									</c:forEach>
-								</div>
+						</div>
+						<br/>
+						<div class='form-group'>
+							<label class="control-label col-xs-4">Person's alternate names</label>
+							<div class="col-xs-6">
+								<c:forEach var="name" items="${command.person.alternateNames}">
+									<p class='form-control-static'>${name}</p>
+								</c:forEach>
 							</div>
-							<br/>
-						</form>
-						<div class='col-xs-3'><span></span></div>
-						<div class="col-xs-7">
-							<div class='btn-group'>
-								<button type='button' class='btn btn-default' data-toggle="modal" data-target="#addName" href='#addPerson'>Add Name</button>
-								<button type='button' class='btn btn-primary' id='savePersonButton'>Save</button>
-							</div>
+						</div>
+						<br/>
+					</form>
+					<div class='col-xs-4'><span></span></div>
+					<div class="col-xs-6">
+						<div class='btn-group'>
+							<button type='button' class='btn btn-default' data-toggle="modal" data-target="#addName" href='#addPerson'>Add Name</button>
+							<button type='button' class='btn btn-primary' id='savePersonButton'>Save</button>
 						</div>
 					</div>
 				</div>
@@ -136,11 +131,11 @@
 						<c:forEach var="post" items="${command.bibtex.list}">
 							<div class="list-group-item">
 								<div class="list-group-item-heading">
-									<a href='/person/details/${command.requestedPersonId}/${post.resource.intraHash}'>${post.resource.title}</a>
+									<a href='/person/details/${command.requestedPersonId}/${post.resource.intraHash}/${command.requestedPersonId}'>${post.resource.title}</a>
 								</div>
 								<div class="list-group-item-text">
 									<c:forEach var="author" items="${post.resource.author}">
-										<a href="/person/details/${author.lastName}/${post.resource.intraHash}">${author.firstName} ${author.lastName} </a>
+										<a href="/person/show/${author.lastName}">${author.firstName} ${author.lastName} </a>
 										<a data-toggle='modal' href="#editRole" onclick="editRole('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')">(Betreuer) </a>
 										<a data-toggle='modal' href='#unlink' onclick="unlink('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')" style='color:darkred'>x</a>
 										, 
@@ -165,7 +160,7 @@
           <h4 class="modal-title">Add new Name to Person</h4>
         </div>
         <div class="modal-body">
-          	<form action="/person/addName/${command.requestedPersonId}/null" method="post" id='addNameForm' name="addNameForm" class='form-horizontal'>
+          	<form action="/person/addName/${command.myUrl}" method="post" id='addNameForm' name="addNameForm" class='form-horizontal'>
 				<fieldset>
 					<div class="form-group">
 						<label class="control-label col-xs-3" for='formGivenName'>Givenname</label>

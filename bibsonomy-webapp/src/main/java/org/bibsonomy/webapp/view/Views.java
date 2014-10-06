@@ -32,7 +32,8 @@ public enum Views implements View {
 	/**
 	 * TODO:
 	 */
-	PERSON("person"),
+	PERSON("person/person"),
+	PERSON_ADD("person/add"),
 	DISAMBIGUATION("disambiguation"),
 
 	/**

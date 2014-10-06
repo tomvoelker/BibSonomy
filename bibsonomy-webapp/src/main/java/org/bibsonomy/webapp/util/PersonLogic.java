@@ -11,7 +11,6 @@ import org.bibsonomy.model.logic.PersonLogicInterface;
 /**
  * Some methods to help handling Persons.
  * 
- * @author Christian Pfeiffer
  */
 public class PersonLogic implements PersonLogicInterface {
 	private static final Log log = LogFactory.getLog(PersonLogic.class);

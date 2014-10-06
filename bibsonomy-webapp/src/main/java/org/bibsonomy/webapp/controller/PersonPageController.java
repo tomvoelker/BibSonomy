@@ -35,7 +35,6 @@ public class PersonPageController extends SingleResourceListController implement
 	
 	@Override
 	public View workOn(final PersonPageCommand command) {
-		
 		command.setPerson(new Person());
 		command.getPerson().setId(12334);
 		Set<PersonName> set = new HashSet<PersonName>();
@@ -63,7 +62,8 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View newAction(PersonPageCommand command) {
-		return null;
+		
+		return Views.PERSON_ADD;
 	}
 
 
@@ -80,9 +80,9 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		log.info("Accessed unlinkAction -> getting redirected");
 		
-		// TODO: this.personLogic.updatePerson(command.getPerson());
+		this.personLogic.updatePerson(command.getPerson());
 		
-		return new ExtendedRedirectView("/person/show/" + command.getRequestedPersonId() + (present(command.getRequestedHash()) ? "/" + command.getRequestedHash() : ""));
+		return new ExtendedRedirectView("/person/show/" + command.getRequestedPersonId() + (present(command.getRequestedHash()) ? "/" + command.getRequestedHash() : "") + (present(command.getRequestedUser()) ? "/" + command.getRequestedUser() : ""));
 	}
 
 
@@ -96,9 +96,10 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		log.info("Accessed editRoleAction -> getting redirected");
 		
-		// TODO: this.personLogic.updatePerson(command.getPerson());
+		this.personLogic.updatePerson(command.getPerson());
+		command.getPerson().getAlternateNames().add(new PersonName(command.getFormGivenName(), command.getFormSurName()));
 		
-		return new ExtendedRedirectView("/person/show/" + command.getRequestedPersonId() + (present(command.getRequestedHash()) ? "/" + command.getRequestedHash() : ""));
+		return new ExtendedRedirectView("/person/show/" + command.getRequestedPersonId() + (present(command.getRequestedHash()) ? "/" + command.getRequestedHash() : "") + (present(command.getRequestedUser()) ? "/" + command.getRequestedUser() : ""));
 	}
 
 
@@ -110,9 +111,9 @@ public class PersonPageController extends SingleResourceListController implement
 		command.getPerson().setAcademicDegree(command.getFormGraduation());
 		command.getPerson().setMainName(command.getFormSelectedName());
 		
-		// TODO: this.personLogic.updatePerson(command.getPerson());
+		this.personLogic.updatePerson(command.getPerson());
 		
-		return new ExtendedRedirectView("/person/show/" + command.getRequestedPersonId() + (present(command.getRequestedHash()) ? "/" + command.getRequestedHash() : ""));
+		return new ExtendedRedirectView("/person/show/" + command.getRequestedPersonId() + (present(command.getRequestedHash()) ? "/" + command.getRequestedHash() : "") + (present(command.getRequestedUser()) ? "/" + command.getRequestedUser() : ""));
 	}
 
 
@@ -126,9 +127,9 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		command.getPerson().getAlternateNames().add(new PersonName(command.getFormGivenName(), command.getFormSurName()));
 		
-		// TODO: this.personLogic.updatePerson(command.getPerson());
+		this.personLogic.updatePerson(command.getPerson());
 		
-		return new ExtendedRedirectView("/person/show/" + command.getRequestedPersonId() + (present(command.getRequestedHash()) ? "/" + command.getRequestedHash() : ""));
+		return new ExtendedRedirectView("/person/show/" + command.getRequestedPersonId() + (present(command.getRequestedHash()) ? "/" + command.getRequestedHash() : "") + (present(command.getRequestedUser()) ? "/" + command.getRequestedUser() : ""));
 	}
 
 
@@ -138,7 +139,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 */
 	private View detailsAction(PersonPageCommand command) {
 
-		command.setPost(this.logic.getPostDetails(command.getRequestedHash(), command.getRequestedPersonId()));
+		command.setPost(this.logic.getPostDetails(command.getRequestedHash(), command.getRequestedUser()));
 		
 		return this.showAction(command);
 	}
@@ -151,7 +152,6 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		// retrieve and set the requested resource lists, along with total
 		// counts
-		command.setRequestedUser(command.getRequestedPersonId());
 		Class<? extends Resource> toRemove = null;
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command.getFormat(), command.getResourcetype())) {
 			if(resourceType.getName().equals("org.bibsonomy.model.Bookmark")) {
@@ -164,11 +164,6 @@ public class PersonPageController extends SingleResourceListController implement
 			
 			this.setList(command, resourceType, GroupingEntity.USER, command.getRequestedPersonId(), command.getRequestedTagsList(), null, null, command.getFilter(), null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
-	
-			/*
-			 * set the post counts
-			 */
-			this.setTotalCount(command, resourceType, GroupingEntity.USER, command.getRequestedPersonId(), command.getRequestedTagsList(), null, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 		}
 		
 		return Views.PERSON;

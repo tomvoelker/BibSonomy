@@ -22,6 +22,8 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	
 	private Person person;
 	private Post<? extends Resource> post;
+	
+	private String myUrl;
 
 	/**
 	 * @return the formSelectedName
@@ -161,5 +163,20 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	 */
 	public void setPost(Post<? extends Resource> post) {
 		this.post = post;
+	}
+	
+	public String getMyUrl() {
+		if(this.myUrl == null) {
+			this.myUrl = "";
+			this.myUrl += this.getRequestedPersonId();
+			if(!this.getRequestedHash().equals("")) {
+				this.myUrl += "/" + this.getRequestedHash();
+				
+				if(!this.getRequestedUser().equals("")) {
+					this.myUrl += "/" + this.getRequestedUser();
+				}
+			}
+		}
+		return this.myUrl;
 	}
 }
