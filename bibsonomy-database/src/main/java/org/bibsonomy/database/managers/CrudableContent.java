@@ -79,4 +79,8 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	 * @return <code>true</code> iff update was successful
 	 */
 	public boolean updatePost(Post<T> post, String oldHash, PostUpdateOperation operation, DBSession session, User loginUser);
+
+	
+	public void isPostDuplicate(final Post<?> post, final DBSession session);
+	
 }

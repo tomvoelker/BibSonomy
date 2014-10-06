@@ -163,7 +163,7 @@
 					<fmt:message key="batchedit.checkboxNormalize" /></input>		   	
 				<br/>
 				<input type="checkbox" id="SelectTagAll" title="Edit all tag" style="align:left">
-	           		<fmt:message key="batchedit.checkboxEditAllTag" /></input>
+				<fmt:message key="batchedit.checkboxEditAllTag" /></input>
 	           		
 			    <input type="text" id="inputTagAll" name="tags" style="font-size:90%;width:40%;height: 27px;padding-left:2px;" />
 			    <br/>
@@ -196,7 +196,6 @@
 							<input type="checkbox" id="selectAll" value="true" title="${selectAll}" style="align:center" />
 						</ul>
 										
-						<!--  next n rows are filled with posts -->
 						<c:forEach var="post" items="${listView.list}" varStatus="postCount">
 							<spring:bind
 								path="command.${resourceType}.list[${postCount.count - 1}].resource.*">
@@ -309,7 +308,7 @@
 						<ul class="myHeader" name="postTagsHeader">
 							<fmt:message key="batchedit.yourPostsTags" />
 						</ul>
-						<!--  next n rows are filled with posts -->
+						
 						<c:forEach var="post" items="${listView.list}" varStatus="postCount">
 							<spring:bind
 								path="command.${resourceType}.list[${postCount.count - 1}].resource.*">

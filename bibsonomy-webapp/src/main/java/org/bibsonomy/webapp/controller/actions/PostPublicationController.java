@@ -20,6 +20,7 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
@@ -298,17 +299,45 @@ public class PostPublicationController extends AbstractEditPublicationController
 		/*
 		 * finally store the posts
 		 */
+		/******CHECK for duplicates******/
+	//	Post<R> postInDB = null;
+		//try {
+			//postInDB = this.getPostDetails(userName, intraHash, userName, new ArrayList<Integer>(), session);
+		//} catch(final ResourceMovedException ex) {
+			/*
+			 * getPostDetails() throws a ResourceMovedException for hashes for which
+			 * no actual post exists, but an old post has existed with that hash.
+			 * 
+			 * Since we are not interested in former posts with that hash we ignore
+			 * this exception silently. 
+			 */
+		//}
+		/*
+		 * check if user is trying to create a resource that already exists
+		 */
+		//if (present(postInDB)) {
+			//final ErrorMessage errorMessage = new DuplicatePostErrorMessage(this.resourceClassName, post.getResource().getIntraHash());
+			//session.addError(post.getResource().getIntraHash(), errorMessage);
+			//log.warn("Added DuplicatePostErrorMessage for post " + post.getResource().getIntraHash());
+			//session.commitTransaction();
+			//return false;
+		//}
+		
+		 isPostDuplicate(postsToStore);
 		if (command.isEditBeforeImport()) {
 			/*
 			 * user wants to edit the posts before storing them 
 			 * -> put them into the session
 			 */
 			setSessionAttribute(TEMPORARILY_IMPORTED_PUBLICATIONS, posts);
+			
+			command.setUpdateExistingPost(false);
 		} else {
 			/*
 			 * the publications are saved in the database
 			 */
 			storePosts(postsToStore, command.getOverwrite());
+			command.setUpdateExistingPost(true);
 		}
 
 		/*
@@ -320,7 +349,13 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * Trigger the correct setting of the "delete/save" check boxes on
 			 * the batch edit page.
 			 */
-			command.setUpdateExistingPost(false);
+	//		command.setUpdateExistingPost(false);
+			/*
+			 * if editBeforeImport is not checked, and user is importing 
+			 * a new and old bibtex, storeposts (orevious else) is executed with errors.
+			 * the new bibtex will be stored and the old one won't. in this case we will have 
+			 * error and we would like to update an existing post**/
+			command.setUpdateExistingPost(true);
 		
 			/*
 			 * save posts in session
@@ -337,9 +372,9 @@ public class PostPublicationController extends AbstractEditPublicationController
 		
 		if (!command.isEditBeforeImport() && (!errors.hasErrors() || posts.size() > MAXCOUNT_ERRORHANDLING)) {
 			command.setUpdateExistingPost(true);
-		} else {
-			command.setUpdateExistingPost(false);
-		}
+		} //else {
+//			command.setUpdateExistingPost(false);
+	//	}
 
 		/*
 		 * If there are errors now or not - we return to the post
@@ -544,5 +579,19 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 */
 	public void setPublicationImporter(PublicationImporter publicationImporter) {
 		this.publicationImporter = publicationImporter;
+	}
+	
+	
+	private void isPostDuplicate(final Map<Post<BibTex>, Integer> postsToStore) {
+		final List<Post<?>> posts = new LinkedList<Post<?>>(postsToStore.keySet());
+		for (final Post<?> post : posts) {
+			
+			try {
+				
+				logic.isPostDuplicate(post);
+			} catch (final DatabaseException e) {
+				/***/
+			}
+		}
 	}
 }

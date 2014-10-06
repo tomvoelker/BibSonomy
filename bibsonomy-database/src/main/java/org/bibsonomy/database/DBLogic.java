@@ -2864,4 +2864,17 @@ public class DBLogic implements LogicInterface {
 			this.loginUser.addGroup(new Group(GroupID.PUBLIC_SPAM));
 		}
 	}
+	@ Override
+	public void isPostDuplicate(final Post<?> post) {
+		final DBSession session = openSession();
+		try{
+			final CrudableContent<?, GenericParam> manager = this.getFittingDatabaseManager(post);
+			manager.isPostDuplicate(post, session);
+		}
+		finally {
+			session.close();
+		}
+		return;
+	}
+	
 }
