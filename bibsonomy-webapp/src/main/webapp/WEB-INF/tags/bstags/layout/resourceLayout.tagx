@@ -107,7 +107,7 @@
 			<c:if test="${discussionBox}">
 				<!-- Headline -->
 				<div class="header">
-					${mtl:cleanBibtex(resource.title)}
+					<c:out value="${mtl:cleanBibtex(resource.title)}" />
 				</div>
 			</c:if>
 			
@@ -141,10 +141,11 @@
 				<h1 class="content-header"><c:out value="${headline}"/></h1>
 			</c:if>
 			-->
-			<!-- invokes discussion forms -->
-			<jsp:invoke fragment="discussion" />
+			
 			
 			<jsp:invoke fragment="content" />
+			
+			
 			
 			<c:choose>
 				<!-- if a community post is present show the community post, not the list of posts -->
@@ -208,9 +209,10 @@
 									</c:if>
 								</jsp:attribute>
 							</resources:bibtexs>
-							 
+							
 						</div>
 				    </div>
+				    
 				</c:otherwise>
 			</c:choose>
 			
