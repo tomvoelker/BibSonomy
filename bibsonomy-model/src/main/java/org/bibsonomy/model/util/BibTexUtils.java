@@ -281,7 +281,8 @@ public class BibTexUtils {
 			"simhash0", // not added
 			"simhash1", // not added
 			"simhash2", // not added
-			"simhash3"  // not added
+			"simhash3",  // not added
+			"bibtexabstract"  // added using getter getAbstract (which is not accessible from jsps due to abstract keyword)
 	));
 
 	/**
