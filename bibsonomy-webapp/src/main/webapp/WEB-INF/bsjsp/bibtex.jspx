@@ -56,6 +56,19 @@
 			resource="${publication}"
 			discussionBox="${discussionBox}"
 			headline="${headline}${title}">
+				
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/javascript/merged/bs/discussion.js"><!-- keep me --></script>
+			<c:if test="${goldstandardPresent}">
+				<script type="text/javascript" src="${resdir}/javascript/bs/goldstandards.js"><!-- keep me --></script>
+			</c:if>
+			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.css" />
+		</jsp:attribute>
+		
+				
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
+		</jsp:attribute>
 		
 		<jsp:attribute name="content">
 			
@@ -92,19 +105,7 @@
 				</c:when>
 			</c:choose>
 		</jsp:attribute>
-		
-		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
-		</jsp:attribute>
-		
-		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="${resdir}/javascript/merged/bs/discussion.js"><!-- keep me --></script>
-			<c:if test="${goldstandardPresent}">
-				<script type="text/javascript" src="${resdir}/javascript/bs/goldstandards.js"><!-- keep me --></script>
-			</c:if>
-			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.css" />
-		</jsp:attribute>
-		
+
 		<!--+
 		    | sidebar
 		 	+-->
@@ -155,12 +156,6 @@
 			</parts:infobox>
 		</jsp:attribute>
 
-		<!--+
-			| discussion
-		 	+-->
-		<jsp:attribute name="discussion">
-
-		</jsp:attribute>
 		
 	</layout:resourceLayout>
 
