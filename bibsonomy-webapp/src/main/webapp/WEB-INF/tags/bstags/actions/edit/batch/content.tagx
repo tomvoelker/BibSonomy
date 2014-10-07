@@ -13,7 +13,8 @@
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion"
-	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form">
+	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
 
 	<!-- This page is called in two cases:
 	1. When user clicks the gear button and selects 'edit own entries'
@@ -376,10 +377,13 @@
 
 				</li>
 				<li>
-					<div name="eachTagBtn" id="eachTagOk" ><ul><li>
+					<div name="eachTagBtn" id="eachTagOk" >
+					<bsform:button size="defaultSize" style="primary" value="editEachtag"/>
+					<!-- <ul><li>
 						<span class="applyBtn">
 							<fmt:message key="batchedit.eachTagOk" /></span>
-					</li></ul></div>
+					</li></ul> -->
+					</div>
 					
 					
 					<div name="AllpostTagsHeader" class="myHeader" style="height:35px;font-size:90%">
@@ -389,11 +393,12 @@
 				
 					<div name="allTagBox">
 						<input type="text" name="tags" size="40"/>
-							<ul>
+							<!--  <ul>
 								<li id="allTagOk"><span class="applyBtn">
 									<fmt:message key="batchedit.allTagOk" />
 								</span></li>
-							</ul>
+							</ul>-->
+							<bsform:button size="defaultSize" style="primary" value="allTagEdit"/>
 					</div>
 	
 					<div id="privacyBox" >
@@ -401,29 +406,32 @@
 							<ul><li>viewable for:</li></ul>
 						</div>
 						<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" selectedGroups="${selectedgroups}"/>						
-						<ul>
+						<!--  <ul>
 							<li id="privacyOk" ><span class="applyBtn">
 								<fmt:message key="batchedit.privacyOk" /></span>
 							</li>
-						</ul>
+						</ul>-->
+						<bsform:button size="defaultSize" style="primary" value="privacyOK"/>
 					</div>	
 					
 						
 					<!-- This button is shown in "InDirect" batchedit page -->
 					<div id="combiEditBtn">
-						<ul>
+					<bsform:button size="defaultSize" style="primary" value="combiedit"/>
+					<!-- 	<ul>
 							<li id="combiEditButtton"><span class="applyBtn">
 								<fmt:message key="batchedit.editBtn" /></span>
 							</li>
-						</ul>
+						</ul> -->
 					</div>
 					
 					<div id="cancelBtn">
-						<ul>
+						<bsform:button size="defaultSize" style="primary" value="cancel"/>
+						<!-- <ul>
 							<li id="cancelButtton"><span class="applyBtn">
 								<fmt:message key="batchedit.cancelbtn" /></span>
 							</li>
-						</ul>
+						</ul> -->
 					</div>								
 				
 				</li>

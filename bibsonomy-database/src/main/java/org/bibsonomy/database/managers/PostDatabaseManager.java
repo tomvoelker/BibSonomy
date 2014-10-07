@@ -1830,6 +1830,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 @Override
 public void isPostDuplicate(final Post<?> post, final DBSession session) {
 	session.beginTransaction();
+	try{
 		final String userName = post.getUser().getName();
 	/*
 	* the current intra hash of the resource
@@ -1859,7 +1860,10 @@ public void isPostDuplicate(final Post<?> post, final DBSession session) {
 			log.warn("Added DuplicatePostErrorMessage for post " + post.getResource().getIntraHash());
 			session.commitTransaction();
 		}
-	
+	session.commitTransaction();
+	} finally {
+		session.endTransaction();
+	}
 
 	return;
 }

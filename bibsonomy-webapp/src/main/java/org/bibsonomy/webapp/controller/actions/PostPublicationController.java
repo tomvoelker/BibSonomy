@@ -355,11 +355,12 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * a new and old bibtex, storeposts (orevious else) is executed with errors.
 			 * the new bibtex will be stored and the old one won't. in this case we will have 
 			 * error and we would like to update an existing post**/
-			command.setUpdateExistingPost(true);
+		//	command.setUpdateExistingPost(true);
 		
 			/*
 			 * save posts in session
 			 */
+			//this can be commented too
 			setSessionAttribute(TEMPORARILY_IMPORTED_PUBLICATIONS, posts);
 		}
 
@@ -584,14 +585,56 @@ public class PostPublicationController extends AbstractEditPublicationController
 	
 	private void isPostDuplicate(final Map<Post<BibTex>, Integer> postsToStore) {
 		final List<Post<?>> posts = new LinkedList<Post<?>>(postsToStore.keySet());
-		for (final Post<?> post : posts) {
-			
+		//for (final Post<?> Post : posts) {
+		//final List<Post<?>> posts = new LinkedList<Post<?>>(postsToStore.keySet());
 			try {
-				
-				logic.isPostDuplicate(post);
+				//for (final Post<?> Post : posts) {//maybe for should go to the dbLogic
+				logic.isPostDuplicate(posts);//}
 			} catch (final DatabaseException e) {
-				/***/
+				/*
+				 * get error messages
+				 */
+				final Map<String, List<ErrorMessage>> errorMessages = e.getErrorMessages();
+				log.debug("caught database exception, found " + errorMessages.size() + " errors");
+				/*
+				 * these posts will be updated
+				 */
+				final LinkedList<Post<?>> postsForUpdate = new LinkedList<Post<?>>();
+				/*
+				 * check for all posts what kind of errors they have
+				 */
+				for (final Entry<Post<BibTex>, Integer> entry : postsToStore.entrySet()) {
+					/*
+					 * get post and its position in the original list of posts
+					 */
+					final Post<BibTex> post = entry.getKey();
+					final Integer i = entry.getValue();
+					log.debug("found errors in post no. " + i);
+					/*
+					 * get all error messages for this post
+					 */
+					final List<ErrorMessage> postErrorMessages = errorMessages.get(post.getResource().getIntraHash());
+					if (present(postErrorMessages)) {
+						boolean hasErrors = false;
+						boolean hasDuplicate = false;
+						/*
+						 * go over all error messages
+						 */
+						for (final ErrorMessage errorMessage : postErrorMessages) {
+							log.debug("found error " + errorMessage);
+							if (errorMessage instanceof DuplicatePostErrorMessage) {
+								hasDuplicate = true;
+								
+							}
+							/*
+							 * add error to error list
+							 */
+							hasErrors = true;
+							errors.rejectValue("bibtex.list[" + i + "].resource", errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
+						}
+					}
+				}
 			}
-		}
+		
 	}
 }

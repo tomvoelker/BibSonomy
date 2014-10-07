@@ -133,7 +133,7 @@ public interface PostLogicInterface {
 	/**
 	 * @param post
 	 */
-	public void isPostDuplicate(final Post<?> post);
+	public void isPostDuplicate(final List<Post<?>> posts);
 	/**
 	 * Updates the posts in the database.
 	 * 

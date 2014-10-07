@@ -2865,16 +2865,35 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 	@ Override
-	public void isPostDuplicate(final Post<?> post) {
+	public void isPostDuplicate(final List<Post<?>> posts) {
 		final DBSession session = openSession();
+		final DatabaseException collectedException = new DatabaseException();
 		try{
-			final CrudableContent<?, GenericParam> manager = this.getFittingDatabaseManager(post);
-			manager.isPostDuplicate(post, session);
+			
+			for (final Post<?> Post : posts) {
+				final CrudableContent<?, GenericParam> manager = this.getFittingDatabaseManager(Post);
+			try{
+				manager.isPostDuplicate(Post, session);
+			}
+			catch (final DatabaseException dbex) {
+				collectedException.addErrors(dbex);
+				log.warn("error message due to exception", dbex);
+			} catch (final Exception ex) {
+			// some exception other than those covered in the DatabaseException was thrown					
+				collectedException.addToErrorMessages(Post.getResource().getIntraHash(), new UnspecifiedErrorMessage(ex));
+				log.warn("'unspecified' error message due to exception", ex);
+			}
+			}
 		}
 		finally {
 			session.close();
 		}
+
+		if (collectedException.hasErrorMessages()) {
+			throw collectedException;
+		}
 		return;
+	
 	}
 	
 }
