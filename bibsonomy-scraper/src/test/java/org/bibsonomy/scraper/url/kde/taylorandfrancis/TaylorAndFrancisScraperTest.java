@@ -23,8 +23,16 @@
 
 package org.bibsonomy.scraper.url.kde.taylorandfrancis;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.net.URL;
+
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.scraper.url.kde.taylorAndFrancis.TaylorAndFrancisScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -56,6 +64,20 @@ public class TaylorAndFrancisScraperTest {
 	@Test
 	public void url3TestRun(){
 		UnitTestRunner.runSingleTest("url_241");
+	}
+	@Test
+	public void testReferences() throws Exception{
+		final ScrapingContext sc = new ScrapingContext(new URL("http://www.tandfonline.com/doi/abs/10.1080/14786419.2010.534733?url_ver=Z39.88-2003&amp;rfr_id=ori:rid:crossref.org&amp;rfr_dat=cr_pub%3dpubmed#.VClwLRaWeUk"));
+		TaylorAndFrancisScraper tfs = new TaylorAndFrancisScraper();		
+		assertTrue(tfs.scrape(sc));		
+		assertTrue(tfs.scrapeReferences(sc));
+	
+		final String reference = sc.getReferences();		
+		assertNotNull(reference);
+		assertTrue(reference.length() > 100);
+		
+		assertEquals("<li id=\"CIT0001\"><strong>1.".trim(), reference.substring(0, 40).trim());
+		assertTrue(reference.contains("Adams, RP."));
 	}
 	
 }

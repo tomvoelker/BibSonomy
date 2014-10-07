@@ -40,12 +40,12 @@
 					<h2 class="featurette-heading">
 						<fmt:message key="buttons.bookmarklet" />
 					</h2>
-			
+
 			   		<!-- INTRODUCTION -->
 			   		<p class="lead">
 			   			<fmt:message key="buttons.page.introduction.short"/>
 			   		</p>
-			   	</div>
+		        </div>
 			   		<!-- =========================== -->
 			   		<!-- BROWSER ADDONS (first part) -->
 			   		<!-- =========================== -->
@@ -66,6 +66,85 @@
 							<!-- Text -->
 							<div class="lead">
 							
+								<p>
+									<fmt:message key="bookmarklet.addon.text1.short">
+				           				<fmt:param value="${properties['project.name']}"/>
+				           			</fmt:message>
+								</p>
+								
+				           		<ul class="checklist">
+				           			<li><span class="fa fa-check" style="color:#0b0;"><!--  --></span>&amp;nbsp
+										<fmt:message key="bookmarklet.addon.text1.check1">
+											<fmt:param value="${properties['project.name']}"/>
+										</fmt:message>
+									</li>
+				           			<li><span class="fa fa-check" style="color:#0b0;"><!--  --></span>&amp;nbsp <fmt:message key="bookmarklet.addon.text1.check2"/></li>
+				           			<li><span class="fa fa-check" style="color:#0b0;"><!--  --></span>&amp;nbsp <fmt:message key="bookmarklet.addon.text1.check3"/></li>
+			           			</ul>
+
+		           		</div>
+			           		
+			           		<!-- Firefox button -->
+			           		<div id="firefoxButton">
+								<p>
+									<!-- Vorübergehend entfernt-> margin: 0 auto -->
+				           			<a style="width:70%" href="${properties['project.addons.firefox.url']}" class="btn btn-success btn-lg btn-block">
+				           				<fmt:message key="bookmarklet.buttonTextFirefox"/>
+				           			</a>
+					           	</p>
+	           		</div>
+			           		
+			           		<!-- Chrome button -->
+			           		<div id="chromeButton">
+							<p>
+									<!-- Vorübergehend entfernt-> margin: 0 auto -->
+				           			<a style="width:70%" href="${properties['project.addons.chrome.url']}" class="btn btn-success btn-lg btn-block">
+				           				<fmt:message key="bookmarklet.buttonTextChrome"/>
+				           			</a>
+							</p>
+			           		</div>
+			           		
+			           		<!-- Safari button -->
+			           		<div id="safariButton">
+							<p>
+								<fmt:message key="buttons.mybibsonomy_part_three"/>
+								<a href="${relativeUrlGenerator.getUserUrlByUserName(userName)}">
+									<fmt:message key="buttons.mybibsonomy_part_four"/>
+								</a>
+								<fmt:message key="buttons.mybibsonomy_part_five"/>
+								<a href="${relativeUrlGenerator.getUserUrlByUserName(userName)}">
+									<fmt:message key="buttons.mybibsonomy"><fmt:param value="${properties['project.name']}"></fmt:param></fmt:message>
+								</a>
+			                    <c:out value=" "/>
+								<fmt:message key="buttons.mybibsonomy_part_six"/>
+							</p>
+			           		</div>
+			           		
+						</div>
+								
+						<div class="col-md-5">
+							
+							<!-- FIREFOX -->
+							<div id="firefox">
+								<!-- Screenshot -->
+								<img
+									class="featurette-image img-responsive"
+									src="/resources/image/bookmarklet_screenshot_firefox_${fn:toLowerCase(exampleString)}.png"
+								/>
+								<!-- TEXT -->
+								<p><fmt:message key="bookmarklet.addon.text2"/></p>
+							
+					        </div>
+
+							<!-- Chrome -->
+							<div id="chrome">
+
+								<!-- Screenshot -->
+								<img
+									class="featurette-image img-responsive"
+									src="/resources/image/bookmarklet_screenshot_chrome_${fn:toLowerCase(exampleString)}.png"
+								/>
+								<!-- TEXT -->
 								<p>
 									<fmt:message key="bookmarklet.addon.text1.short">
 				           				<fmt:param value="${properties['project.name']}"/>

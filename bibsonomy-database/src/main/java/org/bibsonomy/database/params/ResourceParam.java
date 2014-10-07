@@ -2,6 +2,7 @@ package org.bibsonomy.database.params;
 
 import org.bibsonomy.common.enums.RatingAverage;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /** 
  * Super class for parameter objects that are about resources.
@@ -15,7 +16,21 @@ public class ResourceParam<T extends Resource> extends GenericParam {
 	private RatingAverage ratingAverage = RatingAverage.ARITHMETIC_MEAN;
 
 	protected T resource;
+	protected GoldStandardRelation relation;
 
+	/**
+	 * @return the relation between the posts
+	 */
+	public GoldStandardRelation getRelation() {
+		return relation;
+	}
+	
+	/**
+	 * @param relation the relation between the posts
+	 */
+	public void setRelation(final GoldStandardRelation relation){
+		this.relation = relation;
+	}
 	/**
 	 * @param resource the resource to set
 	 */

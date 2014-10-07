@@ -3,6 +3,7 @@ package org.bibsonomy.rest.strategy.posts.community.references;
 import java.io.Writer;
 import java.util.Set;
 
+import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.rest.strategy.AbstractCreateStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
@@ -11,24 +12,26 @@ import org.bibsonomy.rest.strategy.Context;
  * 
  * @author dzo
  */
-public class PostReferencesStrategy extends AbstractCreateStrategy {
+public class PostRelationsStrategy extends AbstractCreateStrategy {
 
 	private final String hash;
+	private final GoldStandardRelation relation;
 	
 	/**
 	 * @param context
 	 * @param hash 
+	 * @param relation
 	 */
-	public PostReferencesStrategy(final Context context, final String hash) {
+	public PostRelationsStrategy(final Context context, final String hash, final GoldStandardRelation relation) {
 		super(context);
-		
 		this.hash = hash;
+		this.relation = relation;
 	}
 
 	@Override
 	protected String create() {
 		final Set<String> references = this.getRenderer().parseReferences(this.doc);
-		this.getLogic().createReferences(this.hash, references);
+		this.getLogic().createRelations(this.hash, references, relation);
 		
 		return this.hash;
 	}
