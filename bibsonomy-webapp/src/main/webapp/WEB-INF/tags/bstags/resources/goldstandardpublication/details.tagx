@@ -16,6 +16,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:goldpub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
+	xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
 	>
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
@@ -141,13 +142,13 @@
 					
 					
 	 	<h4 class="pub-details"><span class="fa fa-quote-right"><!--  --></span><c:out value=" "/><fmt:message key="publications.citations.headline" /></h4>
-		<pub2:citation post="${post}"/>
-					
-					
+	 	
+		<!-- citation box -->
+		<goldstandardpublication:citation post="${post}" />
+		
 		<!--+
 			| discussion and rating
 			+-->
-		
 		<h4 class="pub-details">
 			<span class="fa fa-comments"><!--  --></span><c:out value=" " />
 			<fmt:message key="publications.discussion.headline"/>
