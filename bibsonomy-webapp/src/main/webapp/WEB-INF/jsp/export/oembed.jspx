@@ -28,12 +28,12 @@
   
 
 	<!-- not valid XHTML, since only allowed in <head> -->
-<!--	<base href="${properties['project.home']}"/>-->
+<!--	<base href="${relativeUrlGenerator.getProjectHome()}"/>-->
 	
 	<!-- FIXME: does not work because stylesheet.main is always a relative path -->
-<!--	<spring:theme code="stylesheet.main" var="stylesheet_main" text="${properties['project.home']}${resdir}/css/style.css"/>-->
+<!--	<spring:theme code="stylesheet.main" var="stylesheet_main" text="${relativeUrlGenerator.getProjectHome()}${resdir}/css/style.css"/>-->
 <!--	<link rel="stylesheet" type="text/css" href="${stylesheet_main}" />-->
-	<link rel="stylesheet" type="text/css" href="${properties['project.home']}${resdir}/css/style.css" />
+	<link rel="stylesheet" type="text/css" href="${relativeUrlGenerator.getProjectHome()}${resdir}/css/style.css" />
 
 	<c:if test="${not empty command.bookmark.list}">
 		<resources:bookmarks listView="${command.bookmark}" 

@@ -39,6 +39,11 @@ import org.bibsonomy.model.util.SimHash;
  * 
  * @author Christian Schenk
  */
+/**
+ * TODO: add documentation to this class
+ *
+ * @author jensi
+ */
 public class BibTex extends Resource {
 	/** for persistence (Serializable) */
 	private static final long serialVersionUID = -8528225443908615779L;
@@ -193,7 +198,7 @@ public class BibTex extends Resource {
 	public void setAbstract(final String bibtexAbstract) {
 		this.bibtexAbstract = bibtexAbstract;
 	}
-
+	
 	/**
 	 * @return bibtexKey
 	 */

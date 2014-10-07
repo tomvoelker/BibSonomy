@@ -15,10 +15,10 @@
 	<fmt:message var="headline" key="page.viewable.headline" />
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" headline="${headline}${command.requestedGroup}">
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.viewable" formAction="/viewable/${mtl:encodeURI(command.requestedGroup)}" formInputName="tag">
+			<parts:search pathMessageKey="navi.viewable" formAction="${relativeUrlGenerator.getViewableUrlByGroupName(command.requestedGroup)}" formInputName="tag">
 				<jsp:attribute name="pathPart">
 					<li>
-						:: <a href="/viewable/${mtl:encodeURI(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
+						:: <a href="${relativeUrlGenerator.getViewableUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
 					</li>
 				</jsp:attribute>
 			</parts:search>

@@ -25,6 +25,7 @@ package org.bibsonomy.rest.client.queries.post;
 
 import java.io.StringWriter;
 
+import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -34,25 +35,28 @@ import org.bibsonomy.util.StringUtils;
 /**
  * @author wla
  */
-public class CreateReferenceQuery extends AbstractQuery<String> {
+public class CreateRelationQuery extends AbstractQuery<String> {
 	private final String hash;
-	private final String referenceHash;
+	private final String otherHashString;
+	private final GoldStandardRelation relation;
 	
 	/**
 	 * 
 	 * @param hash the hash of the community post
-	 * @param referenceHash the reference hash of the other community post
+	 * @param otherHash the target hash of the other community post
+	 * @param relation  the relation between the community post and the reference hash
 	 */
-	public CreateReferenceQuery(final String hash, final String referenceHash) {
+	public CreateRelationQuery(final String hash, final String otherHash,final GoldStandardRelation relation) {
 		this.hash = hash;
-		this.referenceHash = referenceHash;
+		this.otherHashString = otherHash;
+		this.relation = relation;
 	}
 
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
-		this.getRenderer().serializeReference(sw, this.referenceHash);
-		final String url = this.getUrlRenderer().createHrefForCommunityPostReferences(this.hash);
+		this.getRenderer().serializeReference(sw, this.otherHashString);
+		final String url = this.getUrlRenderer().createHrefForCommunityPostReferences(this.hash, this.relation);
 		this.downloadedDocument = performRequest(HttpMethod.POST, url, StringUtils.toDefaultCharset(sw.toString()));
 	}
 

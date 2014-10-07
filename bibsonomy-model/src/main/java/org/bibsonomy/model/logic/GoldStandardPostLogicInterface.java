@@ -25,6 +25,8 @@ package org.bibsonomy.model.logic;
 
 import java.util.Set;
 
+import org.bibsonomy.model.enums.GoldStandardRelation;
+
 
 /**
  * @author dzo
@@ -37,18 +39,20 @@ public interface GoldStandardPostLogicInterface extends PostLogicInterface {
 	public static final String GOLD_STANDARD_USER_NAME = "";
 
 	/**
-	 * adds references to a gold standard resource
+	 * adds relations to a gold standard resource
 	 * 
 	 * @param postHash   the hash of the gold standard post
 	 * @param references the references to add (interhashes)
+	 * @param relation  the relation between a post and its reference
 	 */
-	public void createReferences(final String postHash, final Set<String> references);
-	
+	public void createRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation);
+
 	/**
-	 * deletes references from a gold stanard resource
+	 * deletes relations from a gold stanard resource
 	 * 
 	 * @param postHash	 the hash of the gold standard post
 	 * @param references the references to delete (interhashes)
+	 * @param relation  the relation between a post and its reference
 	 */
-	public void deleteReferences(final String postHash, final Set<String> references);
+	public void deleteRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation);
 }

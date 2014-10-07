@@ -8,8 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.rest.enums.HttpMethod;
-import org.bibsonomy.webapp.command.ajax.EditGoldstandardReferencesCommand;
+import org.bibsonomy.webapp.command.ajax.EditGoldstandardRelationCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -19,21 +20,21 @@ import org.springframework.validation.Errors;
 
 /**
  * Controller for editing references of a gold standard post
- *    - ajax/goldstandards/references
+ *    - ajax/goldstandards/relation
  * 
- * @author dzo
+ * @author lka
  */
-public class EditGoldstandardReferencesController extends AjaxController implements MinimalisticController<EditGoldstandardReferencesCommand>, ErrorAware {
+public class EditGoldstandardRelationController extends AjaxController implements MinimalisticController<EditGoldstandardRelationCommand>, ErrorAware {
 	
 	@Override
-	public EditGoldstandardReferencesCommand instantiateCommand() {
-		return new EditGoldstandardReferencesCommand();
+	public EditGoldstandardRelationCommand instantiateCommand() {
+		return new EditGoldstandardRelationCommand();
 	}
 
 	private Errors errors;
 	
 	@Override
-	public View workOn(final EditGoldstandardReferencesCommand command) {
+	public View workOn(final EditGoldstandardRelationCommand command) {
 
 		final RequestWrapperContext context = command.getContext();
 		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(context.getLoginUser().getRole())) {
@@ -48,8 +49,9 @@ public class EditGoldstandardReferencesController extends AjaxController impleme
 		
 		final String hash = command.getHash();
 		final Set<String> references = command.getReferences();
+		final GoldStandardRelation relation = command.getRelation();
 		
-		if (!present(hash) || !present(references)) {
+		if (!present(hash) || !present(references) || !present(relation)) {
 			this.responseLogic.setHttpStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return Views.AJAX_TEXT;
 		}
@@ -58,10 +60,11 @@ public class EditGoldstandardReferencesController extends AjaxController impleme
 		
 		switch (httpMethod) {
 		case POST: 
-			this.logic.createReferences(hash, references);
+		
+			this.logic.createRelations(hash, references, relation);
 			break;
 		case DELETE: 
-			this.logic.deleteReferences(hash, references);
+			this.logic.deleteRelations(hash, references, relation);
 			break;
 		default: 
 			this.responseLogic.setHttpStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
