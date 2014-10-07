@@ -323,7 +323,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			//return false;
 		//}
 		
-		 isPostDuplicate(postsToStore);
+		 isPostDuplicate(postsToStore, command.isOverwrite());
 		if (command.isEditBeforeImport()) {
 			/*
 			 * user wants to edit the posts before storing them 
@@ -583,7 +583,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 	}
 	
 	
-	private void isPostDuplicate(final Map<Post<BibTex>, Integer> postsToStore) {
+	private void isPostDuplicate(final Map<Post<BibTex>, Integer> postsToStore, boolean isOverwrite) {
 		final List<Post<?>> posts = new LinkedList<Post<?>>(postsToStore.keySet());
 		//for (final Post<?> Post : posts) {
 		//final List<Post<?>> posts = new LinkedList<Post<?>>(postsToStore.keySet());
@@ -596,7 +596,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 					 */
 					final String intraHash = Post.getResource().getIntraHash();
 					//isPostDuplicate(posts);
-					if(present(logic.getPostDetails(intraHash, userName))){//check .tostring()
+					if(!isOverwrite && present(logic.getPostDetails(intraHash, userName))){//check .tostring()
 						final ErrorMessage errorMessage = new DuplicatePostErrorMessage(Post.getResource().getClass().toString(), Post.getResource().getIntraHash());
 						errors.rejectValue(null, errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
 					}
