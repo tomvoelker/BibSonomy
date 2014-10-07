@@ -131,7 +131,7 @@ public interface PostLogicInterface {
 	public List<String> createPosts(List<Post<? extends Resource>> posts);
 
 	/**
-	 * @param post
+	 * @param posts 
 	 */
 	public void isPostDuplicate(final List<Post<?>> posts);
 	/**
