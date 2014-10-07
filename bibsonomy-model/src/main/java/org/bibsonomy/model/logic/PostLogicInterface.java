@@ -131,10 +131,6 @@ public interface PostLogicInterface {
 	public List<String> createPosts(List<Post<? extends Resource>> posts);
 
 	/**
-	 * @param posts 
-	 */
-	public void isPostDuplicate(final List<Post<?>> posts);
-	/**
 	 * Updates the posts in the database.
 	 * 
 	 * @param posts  the posts to update

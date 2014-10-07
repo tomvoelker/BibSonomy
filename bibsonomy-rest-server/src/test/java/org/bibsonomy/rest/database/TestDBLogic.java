@@ -1101,9 +1101,4 @@ public class TestDBLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	@Override
-	public void isPostDuplicate(final List<Post<?>> posts){
-		return;
-	}
 }

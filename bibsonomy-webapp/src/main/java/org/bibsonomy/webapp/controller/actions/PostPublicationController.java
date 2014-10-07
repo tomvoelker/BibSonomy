@@ -587,54 +587,20 @@ public class PostPublicationController extends AbstractEditPublicationController
 		final List<Post<?>> posts = new LinkedList<Post<?>>(postsToStore.keySet());
 		//for (final Post<?> Post : posts) {
 		//final List<Post<?>> posts = new LinkedList<Post<?>>(postsToStore.keySet());
-			try {
-				//for (final Post<?> Post : posts) {//maybe for should go to the dbLogic
-				logic.isPostDuplicate(posts);//}
-			} catch (final DatabaseException e) {
-				/*
-				 * get error messages
-				 */
-				final Map<String, List<ErrorMessage>> errorMessages = e.getErrorMessages();
-				log.debug("caught database exception, found " + errorMessages.size() + " errors");
-				/*
-				 * these posts will be updated
-				 */
-				final LinkedList<Post<?>> postsForUpdate = new LinkedList<Post<?>>();
-				/*
-				 * check for all posts what kind of errors they have
-				 */
-				for (final Entry<Post<BibTex>, Integer> entry : postsToStore.entrySet()) {
+			
+				for (final Post<?> Post : posts) {//maybe for should go to the dbLogic
+					
+					final String userName = Post.getUser().getName();
 					/*
-					 * get post and its position in the original list of posts
+					 * the current intra hash of the resource
 					 */
-					final Post<BibTex> post = entry.getKey();
-					final Integer i = entry.getValue();
-					log.debug("found errors in post no. " + i);
-					/*
-					 * get all error messages for this post
-					 */
-					final List<ErrorMessage> postErrorMessages = errorMessages.get(post.getResource().getIntraHash());
-					if (present(postErrorMessages)) {
-						boolean hasErrors = false;
-						boolean hasDuplicate = false;
-						/*
-						 * go over all error messages
-						 */
-						for (final ErrorMessage errorMessage : postErrorMessages) {
-							log.debug("found error " + errorMessage);
-							if (errorMessage instanceof DuplicatePostErrorMessage) {
-								hasDuplicate = true;
-								
-							}
-							/*
-							 * add error to error list
-							 */
-							hasErrors = true;
-							errors.rejectValue("bibtex.list[" + i + "].resource", errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
-						}
+					final String intraHash = Post.getResource().getIntraHash();
+					//isPostDuplicate(posts);
+					if(present(logic.getPostDetails(intraHash, userName))){//check .tostring()
+						final ErrorMessage errorMessage = new DuplicatePostErrorMessage(Post.getResource().getClass().toString(), Post.getResource().getIntraHash());
+						errors.rejectValue(null, errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
 					}
-				}
-			}
-		
+				}//getposts
+					
 	}
 }

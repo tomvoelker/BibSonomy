@@ -326,6 +326,7 @@
 								<value>abstractGrouping</value>
 								<value>groups</value>
 								<value>ckey</value>
+								<value>tags</value>
 								
 								<!-- 
 								<value>selectNorm</value>

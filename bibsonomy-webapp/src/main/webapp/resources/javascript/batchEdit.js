@@ -67,11 +67,11 @@ $(document).ready(function () {
 		}
 	});
 
-	$('#combiEditBtn').click(function() {
+	/*$('#combiEditBtn').click(function() {
 		//action is set here
 		$('input[name=action]').val(action);
 		submitForm("#combiEditConfirm");
-	});
+	});*/
 	/*
 	 * handler to change all sub checkboxes with the select all option
 	 * */
@@ -144,7 +144,7 @@ $(document).ready(function () {
 		tagAction=1;
 		
 	});
-	$('#allTagOk').click(function() {
+	/*$('#allTagOk').click(function() {
 		//clear the action array
 		action.splice(0,action.lenght);
 		//action is set here
@@ -153,7 +153,7 @@ $(document).ready(function () {
 		$("#tagAllAdded").toggleClass('invisible', false);
 		submitForm("#tagAllAdded");
 	});
-
+*/
 	$('#tagEachId').click(function() {
 		if (disableAll){
 			return false;
@@ -243,7 +243,7 @@ $(document).ready(function () {
 		$(this).css("background-color", "#e6e6e6");
 	});
 	
-	$('#privacyOk').click(function() {
+	/*$('#privacyOk').click(function() {
 		//clear the action array
 		action.splice(0,action.lenght);
 		//action is set here
@@ -251,16 +251,44 @@ $(document).ready(function () {
 		$('input[name=action]').val(action);
 		submitForm("#privacyChanged");
 	});
-
-	$('#cancelBtn').click(function() {
+*/
+/*	$('#cancelBtn').click(function() {
 		action.push(0);
 		$('input[name=action]').val(action);
 		submitForm("#cancel");
 	});
-	
+	*/
 });
 
+function allTagOK(){
+		//clear the action array
+		action.splice(0,action.lenght);
+		//action is set here
+		action.push(1);
+		$('input[name=action]').val(action);
+		$("#tagAllAdded").toggleClass('invisible', false);
+		submitForm("#tagAllAdded");
+	
+}
+function privacyOK(){
+	//clear the action array
+	action.splice(0,action.lenght);
+	//action is set here
+	action.push(5);
+	$('input[name=action]').val(action);
+	submitForm("#privacyChanged");
+}
+function combiEditOK(){
+	//action is set here
+	$('input[name=action]').val(action);
+	submitForm("#combiEditConfirm");
+}
 
+function cancelBtnClick(){
+	action.push(0);
+	$('input[name=action]').val(action);
+	submitForm("#cancel");
+}
 function resetSelection(){
 	$('#selectAll').prop('checked', false);
 	$('input[name^=posts]:checkbox').each(function() {

@@ -393,12 +393,8 @@
 				
 					<div name="allTagBox">
 						<input type="text" name="tags" size="40"/>
-							<!--  <ul>
-								<li id="allTagOk"><span class="applyBtn">
-									<fmt:message key="batchedit.allTagOk" />
-								</span></li>
-							</ul>-->
-							<bsform:button size="defaultSize" style="primary" value="allTagEdit"/>
+							<bsform:button size="defaultSize" style="primary"
+							onclick="allTagOK()" value="allTagEdit"/>
 					</div>
 	
 					<div id="privacyBox" >
@@ -406,27 +402,20 @@
 							<ul><li>viewable for:</li></ul>
 						</div>
 						<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" selectedGroups="${selectedgroups}"/>						
-						<!--  <ul>
-							<li id="privacyOk" ><span class="applyBtn">
-								<fmt:message key="batchedit.privacyOk" /></span>
-							</li>
-						</ul>-->
-						<bsform:button size="defaultSize" style="primary" value="privacyOK"/>
+						<bsform:button size="defaultSize" style="primary"
+						onclick="privacyOK()" value="privacyOK"/>
 					</div>	
 					
 						
 					<!-- This button is shown in "InDirect" batchedit page -->
 					<div id="combiEditBtn">
-					<bsform:button size="defaultSize" style="primary" value="combiedit"/>
-					<!-- 	<ul>
-							<li id="combiEditButtton"><span class="applyBtn">
-								<fmt:message key="batchedit.editBtn" /></span>
-							</li>
-						</ul> -->
+						<bsform:button size="defaultSize" style="primary"
+						onclick="combiEditOK" value="combiedit"/>
 					</div>
 					
 					<div id="cancelBtn">
-						<bsform:button size="defaultSize" style="primary" value="cancel"/>
+						<bsform:button size="defaultSize" style="primary"
+						onclick="cancelBtnClick" value="cancel"/>
 						<!-- <ul>
 							<li id="cancelButtton"><span class="applyBtn">
 								<fmt:message key="batchedit.cancelbtn" /></span>

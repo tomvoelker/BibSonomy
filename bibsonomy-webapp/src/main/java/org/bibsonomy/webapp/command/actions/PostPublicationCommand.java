@@ -23,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public class PostPublicationCommand extends EditPublicationCommand implements TabsCommandInterface<Object>, BibtexViewCommand, LayoutViewCommand {
 	
-	//private String selectNorm;
 	/**
 	 * The URL which the tab header links to.
 	 */
@@ -43,7 +42,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		"post_bibtex.doi_isbn.title",
 		"post_bibtex.scan.title"
 	};
-	
 	/**
 	 * stores if the user wants to overwrite existing posts 
 	 */
@@ -372,21 +370,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	public void setOverwrite(boolean overwrite) {
 		this.overwrite = overwrite;
 	}
-
-	/**
-	 * @return the selectNorm
-	 */
-/*	public String getSelectNorm() {
-		return this.selectNorm;
-	}
-*/
-	/**
-	 * @param selectNorm the selectNorm to set
-	 */
-/*	public void setSelectNorm(String selectNorm) {
-		this.selectNorm = selectNorm;
-	}
-*/
 	/**
 	 * @return the updateExistingPost
 	 */
@@ -400,4 +383,5 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	public void setUpdateExistingPost(boolean updateExistingPost) {
 		this.updateExistingPost = updateExistingPost;
 	}
+	
 }

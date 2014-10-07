@@ -1312,8 +1312,4 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	@Override
-	public void isPostDuplicate(final Post<?> post){
-		return;
-	}
 }
