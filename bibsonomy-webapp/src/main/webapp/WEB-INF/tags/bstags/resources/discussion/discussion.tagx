@@ -57,7 +57,7 @@
 			</c:if>
 
 
-		<c:if test="${not fn:contains(resource.class.simpleName, 'Bookmark') and resource.entrytype=='preprint' and empty resource.discussionItems}">
+		<c:if test="${not fn:contains(resource['class'].simpleName, 'Bookmark') and resource.entrytype=='preprint' and empty resource.discussionItems}">
 			<p class="help-block">
 				<fmt:message key="post.resource.preprint.hint" />
 			</p>

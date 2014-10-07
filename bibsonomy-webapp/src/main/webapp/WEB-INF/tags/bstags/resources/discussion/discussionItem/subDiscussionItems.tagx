@@ -14,34 +14,34 @@
 	
 	<c:if test="${not empty discussionItems}">
 		<c:forEach var="discussionItem" items="${discussionItems}">
-			<c:set var="class" value="${fn:toLowerCase(discussionItem.class.simpleName)}" />
+			<c:set var="clazz" value="${fn:toLowerCase(discussionItem['class'].simpleName)}" />
 			<c:if test="${discussionItem.anonymous}">
-				<c:set var="class" value="${class} anonymous" />
+				<c:set var="clazz" value="${clazz} anonymous" />
 			</c:if>
 			
 			<c:choose>
-				<c:when test="${'Review' eq discussionItem.class.simpleName}">
+				<c:when test="${'Review' eq discussionItem['class'].simpleName}">
 					<c:choose>
 						<!-- check if user has reviewed this resource -->
 						<c:when test="${discussionItem.user.name eq command.context.loginUser.name}">
-							<div id="ownReview" class="${class} media">
+							<div id="ownReview" class="${clazz} media">
 								<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" schemaOrgMarkUp="true"/>
 							</div>
 						</c:when>
 						<c:otherwise>
-							<div class="${class} media">
+							<div class="${clazz} media">
 								<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" schemaOrgMarkUp="true"/>
 							</div>
 						</c:otherwise>
 					</c:choose>
 				</c:when>
-				<c:when test="${'Comment' eq discussionItem.class.simpleName}">
-					<div class="${class} media">
+				<c:when test="${'Comment' eq discussionItem['class'].simpleName}">
+					<div class="${clazz} media">
 						<comment:comment comment="${discussionItem}" loginUser="${loginUser}" resource="${resource}" schemaOrgMarkUp="true"/>
 					</div>
 				</c:when>
-				<c:when test="${discussionItem.class.simpleName eq 'DiscussionItem'}">
-					<div class="${class} media">
+				<c:when test="${discussionItem['class'].simpleName eq 'DiscussionItem'}">
+					<div class="${clazz} media">
 						<div class="deletedInfo">
 							<fmt:message key="post.resource.discussion.info" />
 						</div>
@@ -50,7 +50,7 @@
 					</div>
 				</c:when>
 				<c:otherwise>
-					WARN: no view for ${discussionItem.class.simpleName}
+					WARN: no view for ${discussionItem['class'].simpleName}
 				</c:otherwise>
 			</c:choose>
 		</c:forEach>
