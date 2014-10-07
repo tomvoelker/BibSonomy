@@ -34,63 +34,61 @@
 
 	<discussionItem:discussionItemForm resource="${resource}" discussionItem="${discussionItem}" action="${action}" discussionItemClass="${discussionItemClass}" userName="${userName}" postUserName="${postUserName}">
 		<jsp:attribute name="additionalMenuItems">
-				<span class="discussionRatingCounter" style="float:right" >
-					<div class="help ${cssClass}" style="${cssStyle}">
-				              <span class="smalltext help-popover" style="${iconTextStyle}"><c:out value="${iconText}"/></span>
-				              <div class="help help-content"><fmt:message key="post.resource.discussion.help"/></div>
-					</div>
-					<span style="float:left; vertical-align:middle;">
+				<div class="form-group" >
+					<label class="col-sm-3 control-label">
 						<fmt:message key="post.resource.rating.enabled"/>
+					</label>
+					<div class="col-sm-9">
+						<div class="checkbox hidden">
+							<label>
+								<c:choose>
+									<c:when test="${type eq 'review'}">
+										<input type="checkbox" style="vertical-align:middle" onclick="toggleRating(this);" class="ratingToggleCheckbox" checked="checked"/>
+									</c:when>
+									<c:otherwise>
+										<input type="checkbox" style="vertical-align:middle" class="ratingToggleCheckbox" disabled="disabled"/>
+									    <div class="help help-header hide"><c:out value="${labelText}" /></div>
+						              	<div class="help-content hide"><fmt:message key="post.resource.discussion.rating.disabled"/></div>
+									</c:otherwise>
+								</c:choose>
+							<c:out value=" " /><fmt:message key="post.resource.rating.enabled"/>
+							</label>
+						</div>
+						<!-- TODO: REVIEW: titles for rating steps? -->
 						<c:choose>
-								<c:when test="${type eq 'review'}">
-									<input type="checkbox" style="vertical-align:middle" onclick="toggleRating(this);" class="checkbox ratingToggleCheckbox" checked="checked"/>
-								</c:when>
-								<c:otherwise>
-									<input type="checkbox" style="vertical-align:middle" class="checkbox ratingToggleCheckbox" disabled="disabled"/>
-								    <div class="help ${cssClass}" style="${cssStyle}">
-					              		<span class="smalltext help-popover" style="${iconTextStyle}"></span>
-					              		<div class="help help-content"><fmt:message key="post.resource.discussion.rating.disabled"/></div>
-									</div>
-								</c:otherwise>
+							<c:when test="${type eq 'review'}">
+								<span class="reviewrating discussionStarsContainer" onclick="updateRatingCounter(this);">
+										<c:forEach var="i" begin="1" end="10">
+											<c:set var="ratingStep" value="${i / 2}" />
+												<c:choose>								
+													<c:when test="${not empty review and review.rating eq ratingStep}">
+														<input name="discussionItem.rating" type="radio" value="${ratingStep}" />
+													</c:when>
+													<c:otherwise>
+														<input name="discussionItem.rating" type="radio" value="${ratingStep}" />
+													</c:otherwise>
+												</c:choose>
+										</c:forEach>
+								</span>
+								<span class="discussionRatingValue"><span class="discussionRatingText">0</span></span>
+							</c:when>
+							<c:otherwise>
+								<span class="reviewrating discussionStarsContainer ratingDisabled">
+										<c:forEach var="i" begin="1" end="10">
+											<c:set var="ratingStep" value="${i / 2}" />
+											<input name="discussionItem.rating" type="radio" value="${ratingStep}" disabled="disabled"/>
+										</c:forEach>
+								</span>
+								<span class="discussionRatingValue"><span class="discussionRatingText"><!-- keep --></span></span>
+							</c:otherwise>	
 						</c:choose>
-					</span>
-					
-					<!-- TODO: REVIEW: titles for rating steps? -->
-					<c:choose>
-					<c:when test="${type eq 'review'}">
-					<span class="reviewrating discussionStarsContainer" onclick="updateRatingCounter(this);">
-							<c:forEach var="i" begin="1" end="10">
-								<c:set var="ratingStep" value="${i / 2}" />
-									<c:choose>								
-										<c:when test="${not empty review and review.rating eq ratingStep}">
-											<input name="discussionItem.rating" type="radio" value="${ratingStep}" />
-										</c:when>
-										<c:otherwise>
-											<input name="discussionItem.rating" type="radio" value="${ratingStep}" />
-										</c:otherwise>
-									</c:choose>
-							</c:forEach>
-					</span>
-					<span class="discussionRatingValue"><b class="discussionRatingText">0</b></span>
-					</c:when>
-					<c:otherwise>
-					<span class="reviewrating discussionStarsContainer ratingDisabled" style="float:right; margin-top:-5px;margin-left:-2px;">
-							<c:forEach var="i" begin="1" end="10">
-								<c:set var="ratingStep" value="${i / 2}" />
-								<input name="discussionItem.rating" type="radio" value="${ratingStep}" disabled="disabled"/>
-							</c:forEach>
-					</span>
-					<span class="discussionRatingValue"><b class="discussionRatingText"><!-- keep --></b></span>
-					</c:otherwise>	
-					</c:choose>
-				</span>
+					</div>
+				</div>
 		</jsp:attribute>
 		<jsp:attribute name="additionalInputs">
-			<div class="fsRow reviewTextBox">
-				<textarea class="form-control reqinput descriptiveLabel textAreaWithMinHeightSmall" rows="3" name="discussionItem.text">
-				<c:choose><c:when test="${not empty discussionItem}"><c:out value="${discussionItem.text}" /></c:when><c:otherwise><fmt:message key="post.resource.${discussionItemClass}.actions.post"/></c:otherwise></c:choose>
-				</textarea>
-			</div>
+			
+				
+
 		</jsp:attribute>
 	</discussionItem:discussionItemForm>
 </jsp:root>
