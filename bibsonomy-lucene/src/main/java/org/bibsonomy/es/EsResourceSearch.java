@@ -30,7 +30,7 @@ public class EsResourceSearch<R extends Resource> {
 	 * 
 	 */
 	protected static final Log log = LogFactory
-			.getLog(ElasticSearchGenerateResourceIndex.class);
+			.getLog(EsResourceSearch.class);
 
 	// ElasticSearch client
 	private final ESClient esClient = new ESNodeClient();

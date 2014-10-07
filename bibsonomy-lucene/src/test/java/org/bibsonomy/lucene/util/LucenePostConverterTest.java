@@ -17,6 +17,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.CommonModelUtils;
@@ -43,7 +44,7 @@ public class LucenePostConverterTest {
 	public void writeBookmarkPost() {
 		final LucenePost<Bookmark> refPost = generateBookmarkTestPost("testTitle", "testTag", "testUser", new Date(System.currentTimeMillis()), GroupID.PUBLIC);
 		
-		final Document doc = bookmarkConverter.readPost(refPost);
+		final Document doc = (Document) bookmarkConverter.readPost(refPost, SearchType.LUCENESEARCH);
 		
 		final Post<Bookmark> testPost = bookmarkConverter.writePost(doc); 
 
@@ -73,7 +74,7 @@ public class LucenePostConverterTest {
 	@Test
 	public void writeBibTexPost() throws PersonListParserException {
 		final LucenePost<BibTex> refPost = generateBibTexTestPost( "testTitle", "testTag", "testAuthor", "testUser", new Date(System.currentTimeMillis()), GroupID.PUBLIC);
-		final Document doc = bibTexConverter.readPost(refPost);
+		final Document doc = (Document) bibTexConverter.readPost(refPost, SearchType.LUCENESEARCH);
 		
 		final Post<BibTex> testPost = bibTexConverter.writePost(doc); 
 
@@ -107,7 +108,7 @@ public class LucenePostConverterTest {
 	public void bibTexPost() throws PersonListParserException {
 		final LucenePost<BibTex> testPost = generateBibTexTestPost("testTitle", "testTag", "testAuthor", "testUser", new Date(System.currentTimeMillis()), GroupID.PUBLIC);
 		
-		final Document postDoc = bibTexConverter.readPost(testPost);
+		final Document postDoc = (Document) bibTexConverter.readPost(testPost, SearchType.LUCENESEARCH);
 		
 		//--------------------------------------------------------------------
 		// compare some elements

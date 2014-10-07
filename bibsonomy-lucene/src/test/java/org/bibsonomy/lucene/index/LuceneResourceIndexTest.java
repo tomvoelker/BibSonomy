@@ -15,6 +15,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.testutil.CommonModelUtils;
@@ -45,8 +46,8 @@ public class LuceneResourceIndexTest {
 		bmPost.setContentId(0);
 		bibPost.setContentId(0);
 		
-		final Document bmDoc = bookmarkConverter.readPost(bmPost);
-		final Document bibDoc = bibTexConverter.readPost(bibPost);
+		final Document bmDoc = (Document) bookmarkConverter.readPost(bmPost, SearchType.LUCENESEARCH);
+		final Document bibDoc = (Document) bibTexConverter.readPost(bibPost, SearchType.LUCENESEARCH);
 		
 		final LuceneResourceIndex<Bookmark> bmIndex = new LuceneResourceIndex<Bookmark>();
 		bmIndex.setIndexId(0);
@@ -68,8 +69,8 @@ public class LuceneResourceIndexTest {
 			bmPost.setContentId(i);
 			bibPost.setContentId(i);
 
-			bmIndex.insertDocument(bookmarkConverter.readPost(bmPost));
-			bibIndex.insertDocument(bibTexConverter.readPost(bibPost));
+			bmIndex.insertDocument((Document) bookmarkConverter.readPost(bmPost, SearchType.LUCENESEARCH));
+			bibIndex.insertDocument((Document) bibTexConverter.readPost(bibPost, SearchType.LUCENESEARCH));
 		}
 
 		assertEquals(postSize, bmIndex.getPostsToInsert().size());

@@ -10,11 +10,13 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.webapp.command.SearchViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+import org.bibsonomy.es.*;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.node.Node;
 
@@ -42,7 +44,7 @@ public class ElasticSearchPageController extends SingleResourceListController im
 		
 		this.startTiming(format);
 		String search = command.getRequestedSearch();
-		final String searchType = "ELASTICSEARCH";
+		final SearchType searchType = SearchType.ELASTICSEARCH;
 		if (!present(search)) {
 			throw new MalformedURLSchemeException("error.search_page_without_search");
 		}

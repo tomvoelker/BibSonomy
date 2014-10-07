@@ -35,8 +35,8 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.Version;
 import org.bibsonomy.common.enums.GroupID;
-import org.bibsonomy.es.ElasticSearchGenerateResourceIndex;
 import org.bibsonomy.es.EsResourceSearch;
+import org.bibsonomy.es.GenerateSharedResourceIndex;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.database.LuceneInfoLogic;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
@@ -45,12 +45,12 @@ import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.lucene.param.QuerySortContainer;
 import org.bibsonomy.lucene.search.collector.TagCountCollector;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
@@ -749,11 +749,12 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPostsForElasticSearch(java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.model.enums.Order, int, int)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Post<R>> getPostsForElasticSearch(String userName,
 			String requestedUserName, String requestedGroupName,
 			List<String> requestedRelationNames,
-			Collection<String> allowedGroups, String searchTerms,
+			Collection<String> allowedGroups,SearchType searchType,String searchTerms,
 			String titleSearchTerms, String authorSearchTerms,
 			Collection<String> tagIndex, String year, String firstYear,
 			String lastYear, List<String> negatedTags, Order order, int limit,
@@ -761,9 +762,10 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		
 		boolean generateIndex = true;
 		if(generateIndex){
-		ElasticSearchGenerateResourceIndex<R> generator = new ElasticSearchGenerateResourceIndex<R>();
-		generator.setLogic(this.luceneBibTexManager.getDbLogic());
-		generator.setResourceConverter(this.resourceConverter);
+		GenerateSharedResourceIndex generator = new GenerateSharedResourceIndex();
+		generator.setLogic((LuceneDBInterface<Resource>) this.luceneBibTexManager.getDbLogic());
+		generator.setResourceConverter((LuceneResourceConverter<Resource>) this.resourceConverter);
+		generator.setSearchType(searchType);
 		generator.run();
 		}else{
 			EsResourceSearch<R> searchResource =  new EsResourceSearch<R>();

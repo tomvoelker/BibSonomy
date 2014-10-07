@@ -97,6 +97,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -707,7 +708,7 @@ public class DBLogic implements LogicInterface {
 	public <T extends Resource> List<Post<T>> getPostsForElasticSearch(
 			Class<T> resourceType, GroupingEntity grouping,
 			String groupingName, List<String> tags, String hash, String search,
-			String searchType, FilterEntity filter, Order order,
+			SearchType searchType, FilterEntity filter, Order order,
 			Date startDate, Date endDate, int start, int end) {
 		// check allowed start-/end-values
 				if (GroupingEntity.ALL.equals(grouping) && !present(tags) && !present(search)) {
@@ -742,7 +743,7 @@ public class DBLogic implements LogicInterface {
 					if (resourceType == BibTex.class) {
 						final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
 						//sets the search type to ealasticSearch
-						param.setSearchType("elasticsearch");
+						param.setSearchType(searchType);
 						
 						// check permissions for displaying links to documents
 						final boolean allowedToAccessUsersOrGroupDocuments = this.permissionDBManager.isAllowedToAccessUsersOrGroupDocuments(this.loginUser, grouping, groupingName, filter, session);
@@ -766,7 +767,7 @@ public class DBLogic implements LogicInterface {
 					if (resourceType == Bookmark.class) {
 						final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
 						//sets the search type to ealasticSearch
-						param.setSearchType("elasticsearch");
+						param.setSearchType(searchType);
 						
 						final List<Post<T>> bookmarks= (List) this.bookmarkDBManager.getPosts(param, session);
 						SystemTagsExtractor.handleHiddenSystemTags(bookmarks, loginUser.getName());
@@ -776,7 +777,7 @@ public class DBLogic implements LogicInterface {
 					if (resourceType == GoldStandardPublication.class) {
 						final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
 						//sets the search type to ealasticSearch
-						param.setSearchType("elasticsearch");
+						param.setSearchType(searchType);
 						
 						return (List) this.goldStandardPublicationDBManager.getPosts(param, session);
 					}
@@ -784,7 +785,7 @@ public class DBLogic implements LogicInterface {
 					if (resourceType == GoldStandardBookmark.class) {
 						final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
 						//sets the search type to ealasticSearch
-						param.setSearchType("elasticsearch");
+						param.setSearchType(searchType);
 						
 						return (List) this.goldStandardBookmarkDBManager.getPosts(param, session);
 					}

@@ -10,6 +10,7 @@ import static org.bibsonomy.lucene.util.LuceneBase.CFG_TYPEHANDLER;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -25,6 +26,7 @@ import org.bibsonomy.lucene.param.typehandler.LuceneTypeHandler;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.util.tex.TexDecode;
 
@@ -90,16 +92,24 @@ public class LuceneResourceConverter<R extends Resource> {
 	 * read property values from given object as defined in given propertyMap
 	 * 
 	 * @param post
+	 * @param searchType 
 	 * @return the lucene document representation of the post
 	 */
-	public Document readPost(final Post<R> post) {
-		final Document luceneDocument = new Document();
+	@SuppressWarnings("null")
+	public Object readPost(final Post<R> post, final SearchType searchType) {
+		Document luceneDocument = null;
+		Map<String, Object> jsonDocument = null;
 		
 		// all fields are concatenated for full text search
 		final StringBuilder fulltextField = new StringBuilder();
 		// all private fields are concatenated for full text search
 		final StringBuilder privateField = new StringBuilder();
 		
+		if(searchType == SearchType.ELASTICSEARCH){
+			jsonDocument = new HashMap<String, Object>();
+		}else{
+			luceneDocument = new Document();
+		}
 		/*
 		 * cycle though all properties and store the corresponding
 		 * values in the content hash map
@@ -116,25 +126,34 @@ public class LuceneResourceConverter<R extends Resource> {
 			final Index fieldIndex = this.getFieldIndexForProperty(propertyName);
 			final Store fieldStore = this.getFieldStoreForProperty(propertyName);
 			final String fieldName = this.getFieldName(propertyName);
+			if(searchType == SearchType.ELASTICSEARCH){
+				jsonDocument.put(fieldName, propertyValue);
+			}else{
+				// add field to the lucene document
+				luceneDocument.add(new Field(fieldName, propertyValue, fieldStore, fieldIndex));
 			
-			// add field to the lucene document
-			luceneDocument.add(new Field(fieldName, propertyValue, fieldStore, fieldIndex));
-			
-			// TODO: only add non default values to these fields
-			if (present(propertyValue)) {
-				// add term to full text search field, if configured accordingly 
-				if (this.isFulltextProperty(propertyName)) {
-					fulltextField.append(CFG_LIST_DELIMITER);
-					fulltextField.append(propertyValue);
-				}
-				// add term to private full text search field, if configured accordingly 
-				if (this.isPrivateProperty(propertyName)) {
-					privateField.append(CFG_LIST_DELIMITER);
-					privateField.append(propertyValue);
+				// TODO: only add non default values to these fields
+				if (present(propertyValue)) {
+					// add term to full text search field, if configured accordingly 
+					if (this.isFulltextProperty(propertyName)) {
+						fulltextField.append(CFG_LIST_DELIMITER);
+						fulltextField.append(propertyValue);
+					}
+					// add term to private full text search field, if configured accordingly 
+					if (this.isPrivateProperty(propertyName)) {
+						privateField.append(CFG_LIST_DELIMITER);
+						privateField.append(propertyValue);
+					}
 				}
 			}
 		}
 		
+		if(searchType == SearchType.ELASTICSEARCH){
+			jsonDocument.put(LuceneFieldNames.MERGED_FIELDS, decodeTeX(fulltextField.toString()));
+			jsonDocument.put(LuceneFieldNames.PRIVATE_FIELDS, decodeTeX(privateField.toString()));
+
+			return jsonDocument;
+		}
 		// store merged field
 		luceneDocument.add(new Field(LuceneFieldNames.MERGED_FIELDS, decodeTeX(fulltextField.toString()), Field.Store.NO, Field.Index.ANALYZED));
 

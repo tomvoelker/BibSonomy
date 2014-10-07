@@ -28,6 +28,7 @@ import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.es.SearchType;
 
 /**
  * reads data from database and builds lucene index for all resource entries
@@ -45,27 +46,32 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 	protected static final Log log = LogFactory.getLog(LuceneGenerateResourceIndex.class);
 
 	/** the number of posts to fetch from the database by a single generating step */
-	private static final int SQL_BLOCKSIZE = 25000;
+	protected static final int SQL_BLOCKSIZE = 25000;
 
 	/** database logic */
-	private LuceneDBInterface<R> dbLogic;
+	protected LuceneDBInterface<R> dbLogic;
 
 	/** writes the resource index */
 	private IndexWriter indexWriter;
 
-	private int numberOfThreads = 1;
+	protected int numberOfThreads = 1;
 
 	/** converts post model objects to lucene documents */
-	private LuceneResourceConverter<R> resourceConverter;
+	protected LuceneResourceConverter<R> resourceConverter;
 
 	private LuceneResourceIndex<R> resourceIndex;
 
 	private GenerateIndexCallback<R> callback = null;
+	
+	/**
+	 * the search type
+	 */
+	protected SearchType searchType;
 
 	/** set to true if the generator is currently generating an index */
-	private boolean isRunning;
+	protected boolean isRunning;
 
-	private int numberOfPosts;
+	protected int numberOfPosts;
 	private int numberOfPostsImported;
 
 	/**
@@ -227,7 +233,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 
 				if (LuceneGenerateResourceIndex.this.isNotSpammer(post)) {
 					// create index document from post model
-					final Document doc = LuceneGenerateResourceIndex.this.resourceConverter.readPost(post);
+					final Document doc = (Document) LuceneGenerateResourceIndex.this.resourceConverter.readPost(post, SearchType.LUCENESEARCH);
 					try {
 						LuceneGenerateResourceIndex.this.indexWriter.addDocument(doc);
 						LuceneGenerateResourceIndex.this.importedPost(post);
@@ -311,7 +317,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 				// public void run() {
 				if (LuceneGenerateResourceIndex.this.isNotSpammer(post)) {
 					// create index document from post model
-					final Document doc = LuceneGenerateResourceIndex.this.resourceConverter.readPost(post);
+					final Document doc = (Document) LuceneGenerateResourceIndex.this.resourceConverter.readPost(post, searchType.LUCENESEARCH);
 
 					try {
 						LuceneGenerateResourceIndex.this.indexWriter.addDocument(doc);
@@ -440,5 +446,19 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 	 */
 	public int getGeneratingIndexId() {
 		return this.resourceIndex.getIndexId();
+	}
+	
+	/**
+	 * @return the searchType
+	 */
+	public SearchType getSearchType() {
+		return this.searchType;
+	}
+
+	/**
+	 * @param searchType the searchType to set
+	 */
+	public void setSearchType(SearchType searchType) {
+		this.searchType = searchType;
 	}
 }

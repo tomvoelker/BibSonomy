@@ -25,6 +25,7 @@ import org.bibsonomy.lucene.util.generator.LuceneGenerateResourceIndex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.es.SearchType;
 
 /**
  * class for maintaining the lucene index
@@ -209,7 +210,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		 */
 		for (final LucenePost<R> post : newPosts) {
 			post.setLastLogDate(new Date(currentLogDate));
-			final Document postDoc = this.resourceConverter.readPost(post);
+			final Document postDoc = (Document) this.resourceConverter.readPost(post, SearchType.LUCENESEARCH);
 			this.updatingIndex.insertDocument(postDoc);
 		}
 
@@ -496,7 +497,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 							// deletion
 							this.updatingIndex.deleteDocumentForContentId(post.getContentId());
 							// cache document for writing
-							this.updatingIndex.insertDocument(this.resourceConverter.readPost(post));
+							this.updatingIndex.insertDocument((Document) this.resourceConverter.readPost(post, SearchType.LUCENESEARCH));
 						}
 					}
 					this.updatingIndex.unFlagUser(user.getName());

@@ -30,6 +30,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.es.SearchType;
 
 /**
  * Interface for resource search operations
@@ -91,7 +92,7 @@ public interface ResourceSearch<R extends Resource> {
 	public List<Post<R>> getPostsForElasticSearch(
 			final String userName, final String requestedUserName, String requestedGroupName, 
 			final List<String> requestedRelationNames,
-			final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms,
+			final Collection<String> allowedGroups,final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms,
 			final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset);
 	
 	/**

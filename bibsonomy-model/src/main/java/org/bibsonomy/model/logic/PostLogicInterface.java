@@ -36,6 +36,7 @@ import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
 
@@ -118,7 +119,7 @@ public interface PostLogicInterface {
 	 * @param end - exclusive end index of the view window
 	 * @return A filtered list of posts. may be empty but not null
 	 */
-	public <T extends Resource> List<Post<T>> getPostsForElasticSearch(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, String searchType, FilterEntity filter, Order order, Date startDate, Date endDate, int start, int end);
+	public <T extends Resource> List<Post<T>> getPostsForElasticSearch(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, FilterEntity filter, Order order, Date startDate, Date endDate, int start, int end);
 
 	
 	/**

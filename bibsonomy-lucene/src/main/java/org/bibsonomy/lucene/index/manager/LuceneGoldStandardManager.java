@@ -11,6 +11,7 @@ import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.es.SearchType;
 
 /**
  * Updates the gold standard publication posts
@@ -57,7 +58,7 @@ public class LuceneGoldStandardManager<R extends Resource & GoldStandard<?>> ext
 	    for (final LucenePost<GoldStandardPublication> post : newPosts) {
 	    	post.setLastLogDate(currentDate);
 	    	post.setLastTasId(lastId);
-	    	final Document postDoc = this.resourceConverter.readPost(post);
+	    	final Document postDoc = (Document) this.resourceConverter.readPost(post, SearchType.LUCENESEARCH);
 	    	this.updatingIndex.insertDocument(postDoc);
 	    }
 	    

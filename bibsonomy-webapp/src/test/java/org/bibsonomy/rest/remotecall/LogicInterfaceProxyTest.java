@@ -54,6 +54,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.metadata.PostMetaData;
@@ -666,7 +667,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public <T extends Resource> List<Post<T>> getPostsForElasticSearch(
 			Class<T> resourceType, GroupingEntity grouping,
 			String groupingName, List<String> tags, String hash, String search,
-			String searchType, FilterEntity filter, Order order,
+			SearchType searchType, FilterEntity filter, Order order,
 			Date startDate, Date endDate, int start, int end) {
 		// TODO Auto-generated method stub
 		return null;

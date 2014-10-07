@@ -26,6 +26,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.es.SearchType;
 
 /**
  * This is the most generic param. All fields which are not specific to
@@ -157,7 +158,7 @@ public abstract class GenericParam {
 	/* modified search parameter */
 	private String search;
 	/* search type */
-	private String searchType;
+	private SearchType searchType;
 
 	/* not modified search parameter */
 	private String rawSearch;
@@ -1107,14 +1108,14 @@ public abstract class GenericParam {
 	/**
 	 * @return the searchType
 	 */
-	public String getSearchType() {
+	public SearchType getSearchType() {
 		return this.searchType;
 	}
 
 	/**
 	 * @param searchType the searchType to set
 	 */
-	public void setSearchType(String searchType) {
+	public void setSearchType(SearchType searchType) {
 		this.searchType = searchType;
 	}
 }
