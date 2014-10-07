@@ -198,20 +198,6 @@ public class BibTex extends Resource {
 	public void setAbstract(final String bibtexAbstract) {
 		this.bibtexAbstract = bibtexAbstract;
 	}
-
-	/**
-	 * @return the abstract
-	 */
-	public String getBibtexAbstract() {
-		return this.bibtexAbstract;
-	}
-
-	/**
-	 * @param bibtexAbstract
-	 */
-	public void setBibtexAbstract(String bibtexAbstract) {
-		this.bibtexAbstract = bibtexAbstract;
-	}
 	
 	/**
 	 * @return bibtexKey
