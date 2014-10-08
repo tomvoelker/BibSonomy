@@ -14,15 +14,22 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<fmt:message key="navi.authors" var="pageTitle" />
-	<layout:paneLayout pageTitle="${pageTitle}" headerMessageKey="navi.authors" command="${command}" requPath="${requPath}" activeTab="popular">
-		<jsp:attribute name="heading">
+	
+	<layout:oneColumnLayout 
+		loginUser="${command.context.loginUser }"  
+		pageTitle="${pageTitle}" 
+		requPath="${requPath}"
+		>
+ 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.authors" formAction="/author/" formInputName="author"/>
 		</jsp:attribute>
-				
+		
+		
 		<!--+
 			| page content
 			+-->
 		<jsp:attribute name="content">
+			<h1 class="content-header"><fmt:message key="navi.authors" /></h1>
 			<c:if test="${not empty command.authorList}">
 			<div style="text-align:center;padding:2em 5em 2em 5em;" class="tags_first">
 				<fmt:message var="posts" key="posts"/>
@@ -38,8 +45,7 @@
 				</div>
 			</c:if>
 		</jsp:attribute>
-		
+	</layout:oneColumnLayout>
 
-	</layout:paneLayout>
-
+				
 </jsp:root>
