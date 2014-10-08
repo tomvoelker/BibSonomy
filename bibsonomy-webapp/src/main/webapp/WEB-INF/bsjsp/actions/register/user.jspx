@@ -162,7 +162,7 @@
 	        				<div class="col-sm-offset-3 col-sm-9">
 	        					<div class="checkbox">
 	       							<label>
-										<input type="checkbox" name="acceptPrivacy" id="acceptPrivacy" value="checked" />
+										<input type="checkbox" name="acceptPrivacy" id="acceptPrivacy" value="yes" />
 			  							<fmt:message key="register.acceptPrivacy">
 			  								<fmt:param value="${properties['project.name']}" />
 			  							</fmt:message>
