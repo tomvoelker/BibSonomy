@@ -1398,7 +1398,13 @@ a.ui-corner-all:active {
 	margin-bottom: 300px;
 	z-index: 999;
 }
-
+ul.scraper-list li { padding-right: 0; }
+ul.scraper-list li:after {
+	content: " |";
+}
+ul.scraper-list li:last-child:after {
+	content: "";
+}
 
 @import "featurette.less";
 @import "bootstrap-discussion.less";
