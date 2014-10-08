@@ -6,7 +6,11 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.CorruptIndexException;
+import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
+import org.bibsonomy.lucene.search.LuceneResourceSearch;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.es.ESClient;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -21,10 +25,13 @@ import org.elasticsearch.search.SearchHit;
  * @author lka
  * @param <R> 
  */
-public class EsResourceSearch<R extends Resource> {
+public class EsResourceSearch<R extends Resource>{
 
 	private static final String INDEX_NAME = "posts";
 	private static final String TYPE_NAME = "publication";
+	
+	/** post model converter */
+	private LuceneResourceConverter<R> resourceConverter;
 	
 	/**
 	 * 
@@ -70,13 +77,14 @@ public class EsResourceSearch<R extends Resource> {
 	
 	
 	/**
+	 * @return 
 	 * @throws IOException 
 	 * @throws CorruptIndexException 
 	 * 
 	 */
-	public void fullTextSearch() throws CorruptIndexException, IOException {
+	public ResultList<Post<R>> fullTextSearch() throws CorruptIndexException, IOException {
 
-			
+		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
 		try {
 			QueryBuilder queryBuilder = QueryBuilders.queryString("*"
 					+ this.searchTerms + "*");
@@ -96,8 +104,8 @@ public class EsResourceSearch<R extends Resource> {
 
 						Map<String, Object> result = hit.getSource();					
 						log.warn(result);
-						
-				
+						final Post<R> post = this.resourceConverter.writePost(result);
+						postList.add(post);
 					}
 				}
 			
@@ -106,6 +114,21 @@ public class EsResourceSearch<R extends Resource> {
 		}finally{
 			this.shutdown();		
 			}
+		return postList;
+	}
+
+	/**
+	 * @return the resourceConverter
+	 */
+	public LuceneResourceConverter<R> getResourceConverter() {
+		return this.resourceConverter;
+	}
+
+	/**
+	 * @param resourceConverter the resourceConverter to set
+	 */
+	public void setResourceConverter(LuceneResourceConverter<R> resourceConverter) {
+		this.resourceConverter = resourceConverter;
 	}
 
 	

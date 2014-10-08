@@ -21,7 +21,7 @@ public class ESNodeClient implements ESClient {
      */
     public ESNodeClient() {
 	final Settings settings = ImmutableSettings.settingsBuilder()
-		.put("node.name", "bibsonomy").build();
+		.put("node.name", "bibsonomy_client").build();
 
 	node = new NodeBuilder().settings(settings)
 //		.clusterName("elasticsearch-bibsonomy")

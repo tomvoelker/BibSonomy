@@ -89,34 +89,14 @@ public class GenerateSharedResourceIndex extends LuceneGenerateResourceIndex<Res
 				post.setLastLogDate(lastLogDate);
 				post.setLastTasId(lastTasId);
 				if (this.isNotSpammer(post)) {
-
-					int indexTry = 0;
-					while (indexTry < 3) {
-						if (indexTry == 0) {
-							indexTry=3;
-							Map<String, Object> jsonDocument = new HashMap<String, Object>();
-							jsonDocument = (Map<String, Object>) this.resourceConverter.readPost(post, this.searchType);
-								esClient.getClient()
-										.prepareIndex("posts", "publication", post.getContentId().toString())
-										.setSource(jsonDocument).execute().actionGet();
-								log.info("post has been indexed.");
-								
-							
-						}else if(indexTry == 2){
-							indexTry=3;
-							final ExpBibPost expPost = createTestPost();
-							String postJson = null;
-							try {
-							    postJson = new ObjectMapper().writeValueAsString(expPost);
-							    esClient.getClient().prepareIndex("posts", "publication")
-								    .setSource(postJson).execute().actionGet();
-							    log.info("publication has been indexed.");							  
-							} catch (final JsonProcessingException jpe) {
-							    log.error("publication could not be serialized. ", jpe);
-							}
-						}
-					}
-
+					
+					Map<String, Object> jsonDocument = new HashMap<String, Object>();
+					jsonDocument = (Map<String, Object>) this.resourceConverter.readPost(post, this.searchType);
+					esClient.getClient()
+							.prepareIndex("posts", "publication", post.getContentId().toString())
+							.setSource(jsonDocument).execute().actionGet();
+					log.info("post has been indexed.");
+					
 					this.importedPost(post);
 				}
 			}
@@ -124,6 +104,7 @@ public class GenerateSharedResourceIndex extends LuceneGenerateResourceIndex<Res
 			if (postListSize > 0) {
 				lastContenId = postList.get(postListSize - 1).getContentId();
 			}
+			
 		} while (postListSize == SQL_BLOCKSIZE);
 
 		try {
@@ -163,29 +144,4 @@ public class GenerateSharedResourceIndex extends LuceneGenerateResourceIndex<Res
 			}
 		}
 	}
-	
-    private static ExpBibPost createTestPost() {
-	final ExpBibPost expPost = new ExpBibPost();
-	expPost.setTitle("blabla title");
-	expPost.setDescription("blabla description");
-	expPost.setAuthor("blabla author");
-	return expPost;
-    }
-
-    /**
-     * converts post into JSON document for ES to index
-     * 
-     * @param post
-     * @return JSON document of the post
-     */
-    private static Map<String, Object> putJsonDocument(LucenePost<Resource> post) {
-
-		Map<String, Object> jsonDocument = new HashMap<String, Object>();
-		
-		jsonDocument.put("changeDate", post.getChangeDate());
-		jsonDocument.put("contentId", post.getContentId());
-
-		return jsonDocument;
-	}
-
 }
