@@ -29,11 +29,11 @@
 		
 		<jsp:attribute name="headerExt">
 			<!--  -->
-  		</jsp:attribute>
+		</jsp:attribute>
 
 		<jsp:attribute name="heading">
 			<!--  -->
-    	</jsp:attribute>
+		</jsp:attribute>
 		
 		<jsp:attribute name="content">
 		
@@ -41,7 +41,7 @@
 			<div class="lead text-center">
 				<p><fmt:message key="register.description"/></p>
 			</div>
-			<form action="/register" method="POST" class="form-horizontal">
+			<form:form action="/register" method="POST" class="form-horizontal">
 		        
 		        <errors:global errors="${errors}" />
 
@@ -181,7 +181,7 @@
 					</jsp:attribute>
 				</bsform:fieldset>
 
-			</form>
+			</form:form>
 			<br /><br />
 			<hr />
 		</jsp:attribute>
