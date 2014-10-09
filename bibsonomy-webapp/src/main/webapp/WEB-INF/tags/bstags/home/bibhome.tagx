@@ -15,12 +15,16 @@
 					<fmt:param value="${properties['project.name']}"/>
 				</fmt:message>
 				<p>
-					<a href="/gettingStarted" class="btn btn-primary btn-md" role="button">
-						<fmt:message key="system.about.bs.learnmore"/>
+					<a href="/register" class="btn btn-success" role="button">
+						<span class="fa fa-pencil-square-o"><!--  --></span>&amp;nbsp;<fmt:message key="system.about.bs.register"/>
 					</a>&amp;nbsp;&amp;nbsp;&amp;nbsp;
-					<a href="/register" class="btn btn-success btn-md" role="button">
-						<fmt:message key="system.about.bs.register"/>
+					<a href="/gettingStarted" class="btn btn-primary" role="button">
+						<span class="fa fa-thumb-tack"><!--  --></span>&amp;nbsp;<fmt:message key="system.about.bs.learnmore"/>
+					</a>&amp;nbsp;&amp;nbsp;&amp;nbsp;
+					<a href="/login" class="btn btn-primary" role="button">
+						<span class="fa fa-sign-in"><!--  --></span>&amp;nbsp;<fmt:message key="navi.login" />
 					</a>
+					
 				</p>
 			</div>
 		</div>
