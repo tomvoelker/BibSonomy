@@ -109,6 +109,12 @@ $(function() {
     	return false;
     });
     
+    if($('#sidebar').prev().hasClass('content')) {
+    	var contentContainer = $('#sidebar').prev();
+    	var contentHeight = contentContainer.height() + 20;
+    	$('#sidebar').css('height', contentHeight);
+    }
+    
     function handleDeleteResponse(o) {
 		if(o.data.getElementsByTagName("status")[0].innerHTML=="deleted" 
 			|| o.data.getElementsByTagName("status")[0].innerHTML=="ok") o.parent.parentNode.removeChild(o.parent);

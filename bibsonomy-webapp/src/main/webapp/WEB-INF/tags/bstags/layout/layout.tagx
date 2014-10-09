@@ -123,13 +123,14 @@
 							<div class="row">
 							
 							  	<div class="col-md-9 content">
-		
-									<div id="intro">
-										<jsp:invoke fragment="contentIntro"/>
-									</div>
-							    	<jsp:invoke fragment="content"/>
-								    	
-							  	</div>
+									<div class="wrapper">
+										<div id="intro">
+											<jsp:invoke fragment="contentIntro"/>
+										</div>
+								    	<jsp:invoke fragment="content"/>
+									    	
+								  	</div>
+								</div>
 							  	<div class="col-md-3 sidebar" id="sidebar">
 		
 				  					<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}" infobox="${infobox}"/>

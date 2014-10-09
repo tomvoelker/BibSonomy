@@ -180,8 +180,8 @@ ul.dropdown-menu.list-options > li > span {
 	box-shadow: 2px 2px 30px 6px @border-color;
 }
 
-.container.main .row > .content {
-    margin-bottom: 20px;
+.container .wrapper {
+	margin-bottom: 20px;
 }
 
 
@@ -377,6 +377,10 @@ ul.posts li.post {
 	height: 146px;
 	border-bottom: 1px #ccc solid;
 	margin-bottom: 5px;
+}
+
+ul.posts li.post:last-child {
+	border-bottom: none;
 }
 
 li.post div.in-my-collection {
@@ -628,7 +632,7 @@ ul.tags li {
  * SIDEBAR
  */
  
-div.sidebar {
+div#sidebar {
 	
 	background: rgb(218,223,249) url("/resources/image/bg-sidebar.png") top left repeat;
 	margin-right: -15px;
@@ -638,52 +642,15 @@ div.sidebar {
 	margin-left: 15px;
 	border-left: 1px #ccc solid;
 } 
-/*
-.sidebar-headline {
-	text-shadow: 1px 0px #333;
 
-	margin-left: -26px;
-	margin-right: -30px;
-	padding-left: 0;
-
-	
-	color: #fff;
-	height: 44px;
-	line-height: 35px;
-	float: left;
-}
-
-.sidebar-headline > span.left-corner {
-	display:block;
-	float: left;
-	width: 18px;
-	padding-left: 3px;
-	height: 100%;
-	background: transparent url("/resources/image/bg-sidebar-headline-left.png") top left no-repeat;
-}
-
-
-.sidebar-headline > span.right-corner {
-	display:block;
-	float: left;
-	width: 18px;
-	padding-right: 3px;
-	height: 100%;
-	background: transparent url("/resources/image/bg-sidebar-headline-right.png") top left no-repeat;
-}
-
-.sidebar-headline > span.text {
-	display: block;
-	padding: 0 0.5em;
-	float: left;
-	height: 100%;
-	background: transparent url("/resources/image/bg-sidebar-headline.png") 0 0 no-repeat;
-}
-*/
 .sidebar h4 {
 
 }
- 
+
+#sidebar {
+
+}
+
 #sidebar ul {
 	list-style: none;
 	margin: 0;
