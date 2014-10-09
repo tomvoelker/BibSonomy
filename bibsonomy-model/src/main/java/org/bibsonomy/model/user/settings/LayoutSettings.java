@@ -39,7 +39,7 @@ public class LayoutSettings {
 	/**
 	 * which layout should be used?
 	 */
-	private ViewLayout viewLayout = ViewLayout.CLASSIC;
+	private ViewLayout viewLayout = ViewLayout.BOOTSTRAP;
 
 	/**
 	 * @return {@link ViewLayout} 

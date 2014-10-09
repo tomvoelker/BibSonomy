@@ -39,7 +39,46 @@ var PUBLIC_POST_SELECTOR = 'input#publicInput';
 
 var pub = true;
 
-$(function() {	
+$(function() {
+	
+	
+	$('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+		var targetElement  = $(e.target.getAttribute("href"));
+		if(targetElement.html().length > 0) return; 
+		
+		if(e.target.getAttribute("href")=="#citation_all") {
+				var url = $(e.target).data("formaturl");
+				$.ajax(
+						  {
+							  url: url, 
+							  dataType: "html", 
+							  success: function(data) {
+								  	targetElement
+								  	.html(data)
+									.find("select")
+									.addClass("form-control input-sm");
+									
+							  }
+						  }
+					);
+				return;
+		}
+			
+		targetElement.html(getString("bibtex.citation_format.loading")); // activated tab
+		var url = $(e.target).data("formaturl");
+		$.ajax(
+			  {
+				  url: url, 
+				  dataType: "html", 
+				  success: function(data) {
+					  targetElement.html(data);
+				  }
+			  }
+		);
+	});
+	
+	$($(".firstTab")[0]).tab("show");
+	
 	// remove all create review links if user already reviewed resource
 	if ($(REVIEW_OWN_SELECTOR).length > 0) {
 		// user has reviewed this resource hide all create review forms
@@ -51,16 +90,11 @@ $(function() {
 		});
 	}
 	
-	$(DISCUSSION_TOGGLE_LINK_SELECTOR).click(function() {
-		$(REVIEW_INFO_SELECTOR).toggle('slow');
-		$(DISCUSSION_SELECTOR).toggle('slow', updateDiscussionToggleLink);
-		return false;
-	});
-	
 	// TODO: move and use in post edit views
 	$(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
 	 
 	$.each($('.abstractGroupingGroup'), function(index, box) {
+		
 		toggleGroupBox(box);
 	});
 	var publicValue = $(PUBLIC_POST_SELECTOR).val();
@@ -71,7 +105,18 @@ $(function() {
 	if (!pub) {
 		alert(getString('post.resource.discusssion.warning.goldstandard'));
 	}
-
+	$('.toggleReplies').click(function(event) {
+		event.preventDefault();
+		var replies = $(this).parent().parent().parent().children('.media');
+		
+		$(replies).each(function(){
+			if( $(this).hasClass('hidden') ) {
+				$(this).removeClass('hidden');
+			} else {
+				$(this).addClass('hidden');
+			}
+		});
+	});
 });
 
 function showAppendixForm(o) {
@@ -217,17 +262,18 @@ function addReviewActions() {
 
 // TODO: move and use in post edit views
 function onAbstractGroupingClick() {
-	toggleGroupBox($(this).parent());
+	toggleGroupBox($(this).parent().parent().parent().parent());
 }
 
 // TODO: move and use in post edit views
 function toggleGroupBox(radioButtonGroup) {
+	
 	// find the checked abstract grouping
-	var selectedAbstractGrouping = $(radioButtonGroup).children('input:checked');
-	
+	var selectedAbstractGrouping = $(radioButtonGroup).find('input:checked');
+
 	// find otherGroupsBox of the abstract grouping
-	var otherBox = $(radioButtonGroup).siblings(OTHER_GROUPING_CLASS_SELECTOR);
-	
+	var otherBox = $(radioButtonGroup).find('.otherGroupsBox');
+
 	// disable groups select if private or public is checked or enable
 	// if other is checked
 	if (!selectedAbstractGrouping.hasClass('otherGroups')) {
@@ -468,11 +514,9 @@ $(function(){
 			}
 		});
 		
-		//Fix to redefine the Sidebar height
-		$('#sidebar').height($('#postcontainer').height() + 11);		
 		
 	} else if (!gsPresent){
-		$("div#discussion").hide();
+		//$("div#discussion").hide();
 		$("#imgExpandDiscussion").show();
 		$("#imgCollapseDiscussion").hide();
 		$("#textExpandDiscussion").show();
@@ -480,9 +524,7 @@ $(function(){
 		$("#imgExpandContent").hide();
 		$("#imgCollapseContent").show();
 		
-		//Fix to redefine the Sidebar height
-		$('#sidebar').height($('#postcontainer').height() + 11);
-
+		
 	}
 });
 
@@ -501,7 +543,6 @@ $(document).ready(function() {
 	}
 
 	$("a.foldUnfold").click(function(){
-		$('#sidebar').height("auto");
 		$(".posts, .wide").height("auto");
 
 		var selector = $(this).attr("href");
@@ -517,7 +558,6 @@ $(document).ready(function() {
 		$(this).find(".imgExpand").hide();
 		
 		//Fix to redefine the Sidebar height
-		$('#sidebar').height($('#postcontainer').height() + 11);
 		return false;
 	});
 	

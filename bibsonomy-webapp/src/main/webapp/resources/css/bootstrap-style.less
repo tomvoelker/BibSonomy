@@ -1277,7 +1277,6 @@ h1.content-heading {
     line-height: 30px;
 }
 
-
 .main h2 {
     font-size: 20px;
     line-height: 28px;
@@ -1307,6 +1306,11 @@ h1.content-heading {
     border-bottom: 1px solid @border-color;
 }
 
+.jumbotron h2 {
+	font-size: 28px;
+	line-height: 38px;
+	height: auto;
+}
 
 button.removeFriend,
 button.addFriend {
@@ -1409,7 +1413,13 @@ a.ui-corner-all:active {
 	margin-bottom: 300px;
 	z-index: 999;
 }
-
+ul.scraper-list li { padding-right: 0; }
+ul.scraper-list li:after {
+	content: " |";
+}
+ul.scraper-list li:last-child:after {
+	content: "";
+}
 span.info {
 	position: relative;
 	z-index: 24;
@@ -1437,7 +1447,6 @@ span.info:hover>div,div.help:hover>div {
 	color: #000;
 	padding: 5px;
 }
-
 
 @import "featurette.less";
 @import "bootstrap-discussion.less";

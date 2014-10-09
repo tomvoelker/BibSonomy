@@ -8,6 +8,7 @@
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
@@ -29,11 +30,11 @@
 		
 		<jsp:attribute name="headerExt">
 			<!--  -->
-  		</jsp:attribute>
+		</jsp:attribute>
 
 		<jsp:attribute name="heading">
 			<!--  -->
-    	</jsp:attribute>
+		</jsp:attribute>
 		
 		<jsp:attribute name="content">
 		
@@ -41,7 +42,7 @@
 			<div class="lead text-center">
 				<p><fmt:message key="register.description"/></p>
 			</div>
-			<form action="/register" method="POST" class="form-horizontal">
+			<form:form action="/register" method="POST" class="form-horizontal">
 		        
 		        <errors:global errors="${errors}" />
 
@@ -51,6 +52,16 @@
 		        		<!-- username -->
 		        		<c:set var="formErrors"><form:errors path="registerUser.name" /></c:set>
 		        		<div class="form-group${not empty formErrors ? ' has-error' : ''}">
+		        			<c:if test="${not empty formErrors}">
+		        				<div class="col-sm-offset-3 col-sm-9">
+		        					<bs:feedback style="danger" size="defaultSize" >
+		        						<jsp:attribute name="feedbackBody">
+		        							<form:errors path="registerUser.name" />
+		        						</jsp:attribute>
+		        					</bs:feedback>
+		        				</div>
+		        			</c:if>
+
 		        			<label class="col-sm-3 control-label" for="registerUser.name">
 								<fmt:message key="navi.username" var="username"/>
 								<c:out value="${username}" />
@@ -68,6 +79,15 @@
 		       			<!-- password -->
 		       			<c:set var="formErrors"><form:errors path="registerUser.password" /></c:set>
 		        		<div class="form-group${not empty formErrors ? ' has-error' : ''}">
+		        			<c:if test="${not empty formErrors}">
+		        				<div class="col-sm-offset-3 col-sm-9">
+		        					<bs:feedback style="danger" size="defaultSize" >
+		        						<jsp:attribute name="feedbackBody">
+		        							<form:errors path="registerUser.password" />
+		        						</jsp:attribute>
+		        					</bs:feedback>
+		        				</div>
+		        			</c:if>
 		        			<label class="col-sm-3 control-label" for="registerUser.password">
 		        				<fmt:message key="navi.password" var="password"/>
 		        				<c:out value="${password}" />
@@ -85,6 +105,16 @@
 		       			<!-- password check -->
 		       			<c:set var="formErrors"><form:errors path="passwordCheck" /></c:set>
 		        		<div class="form-group${not empty formErrors ? ' has-error' : ''}">
+	        				<c:if test="${not empty formErrors}">
+		        				<div class="col-sm-offset-3 col-sm-9">
+		        					<bs:feedback style="danger" size="defaultSize" >
+		        						<jsp:attribute name="feedbackBody">
+		        							<form:errors path="passwordCheck" />
+		        						</jsp:attribute>
+		        					</bs:feedback>
+		        				</div>
+	        				</c:if>
+		        				
 		        			<label class="col-sm-3 control-label" for="passwordCheck">
 		        				<fmt:message key="user.settings.passwordCheck"/>
 		        			</label>
@@ -101,6 +131,17 @@
 		       			<!-- email -->
 		       			<c:set var="formErrors"><form:errors path="registerUser.email" /></c:set>
 		        		<div class="form-group${not empty formErrors ? ' has-error' : ''}">
+		        		
+		        			<c:if test="${not empty formErrors}">
+		        				<div class="col-sm-offset-3 col-sm-9">
+		        					<bs:feedback style="danger" size="defaultSize" >
+		        						<jsp:attribute name="feedbackBody">
+		        							<form:errors path="registerUser.email" />
+		        						</jsp:attribute>
+		        					</bs:feedback>
+		        				</div>
+	        				</c:if>
+		        		
 		        			<label class="col-sm-3 control-label" for="registerUser.email">
 		        				<fmt:message key="user.settings.email" var="email"/>
 		        				<c:out value="${email}" />
@@ -120,6 +161,15 @@
 		       			<!-- homepage -->
 		       			<c:set var="formErrors"><form:errors path="registerUser.homepage" /></c:set>
 		        		<div class="form-group${not empty formErrors ? ' has-error' : ''}">
+		        			<c:if test="${not empty formErrors}">
+		        				<div class="col-sm-offset-3 col-sm-9">
+		        					<bs:feedback style="danger" size="defaultSize" >
+		        						<jsp:attribute name="feedbackBody">
+		        							<form:errors path="registerUser.homepage" />
+		        						</jsp:attribute>
+		        					</bs:feedback>
+		        				</div>
+	        				</c:if>
 		        			<label class="col-sm-3 control-label" for="registerUser.homepage">
 		        				<fmt:message key="user.settings.homepage" var="homepage"/>
 		        				<c:out value="${homepage}" />
@@ -137,6 +187,15 @@
 	       				<!-- homepage -->
 		       			<c:set var="formErrors"><form:errors path="registerUser.realname" /></c:set>
 		        		<div class="form-group${not empty formErrors ? ' has-error' : ''}">
+		        			<c:if test="${not empty formErrors}">
+		        				<div class="col-sm-offset-3 col-sm-9">
+		        					<bs:feedback style="danger" size="defaultSize" >
+		        						<jsp:attribute name="feedbackBody">
+		        							<form:errors path="registerUser.realname" />
+		        						</jsp:attribute>
+		        					</bs:feedback>
+		        				</div>
+	        				</c:if>
 		        			<label class="col-sm-3 control-label" for="registerUser.realname">
 		        				<fmt:message key="user.settings.realname" var="realname"/>
 		        				<c:out value="${realname}" />
@@ -155,14 +214,24 @@
 		       		
 				<bsform:fieldset legendKey="register.captchaAndPrivacy">
         			<jsp:attribute name="content">
-        				<bform:captcha />
-						
-
+        				<div class="col-sm-offest-3 col-sm-9">
+        					<bform:captcha />
+						</div>
+						<c:set var="formErrors"><form:errors path="acceptPrivacy"/></c:set>
         				<div class="form-group${not empty formErrors ? ' has-error' : ''}">
+        					<c:if test="${not empty formErrors}">
+		        				<div class="col-sm-offset-3 col-sm-9">
+		        					<bs:feedback style="danger" size="defaultSize" >
+		        						<jsp:attribute name="feedbackBody">
+		        							<form:errors path="acceptPrivacy" />
+		        						</jsp:attribute>
+		        					</bs:feedback>
+		        				</div>
+	        				</c:if>
 	        				<div class="col-sm-offset-3 col-sm-9">
 	        					<div class="checkbox">
 	       							<label>
-										<input type="checkbox" name="acceptPrivacy" id="acceptPrivacy" value="checked" />
+										<input type="checkbox" name="acceptPrivacy" id="acceptPrivacy" value="yes" />
 			  							<fmt:message key="register.acceptPrivacy">
 			  								<fmt:param value="${properties['project.name']}" />
 			  							</fmt:message>
@@ -180,8 +249,8 @@
 			  			
 					</jsp:attribute>
 				</bsform:fieldset>
-
-			</form>
+				
+			</form:form>
 			<br /><br />
 			<hr />
 		</jsp:attribute>

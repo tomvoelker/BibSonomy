@@ -26,9 +26,10 @@
 						<fmt:message key="by"/><c:out value=": "/><bib:author publication="${post.resource}"/>
 					</p>
 					<!-- ###############  ABSTRACT ################# -->
-					<c:if test="${not empty bibtex.abstract}">
+					<c:set var="publAbstract" value="${bibtex['abstract']}" />
+					<c:if test="${not empty publAbstract}">
 						<h3><fmt:message key="bibtex.abstract.cap"/></h3>
-						<p id="abstract"><c:out value="${mtl:cleanBibtex(bibtex.abstract)}" /></p>
+						<p id="abstract"><c:out value="${mtl:cleanBibtex(publAbstract)}" /></p>
 					</c:if>
 					<!-- ############## DESCRIPTION ############## -->		
 					<c:if test="${not empty post.description}">
