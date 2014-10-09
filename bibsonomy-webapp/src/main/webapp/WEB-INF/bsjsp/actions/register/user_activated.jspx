@@ -23,7 +23,6 @@
 				<p><fmt:message key="register.confirmationMail"/></p>
 			</div>
 		
-		
 		</jsp:attribute>
 	
 	</actions:getting_started>
