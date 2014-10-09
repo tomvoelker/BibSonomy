@@ -111,8 +111,13 @@ $(function() {
     
     if($('#sidebar').prev().hasClass('content')) {
     	var contentContainer = $('#sidebar').prev();
-    	var contentHeight = contentContainer.height() + 20;
-    	$('#sidebar').css('height', contentHeight);
+    	var contentHeight = contentContainer.height();
+    	var sidebarHeight = $('#sidebar').height();
+    	
+    	if(contentHeight > sidebarHeight) {
+    		$('#sidebar').css('height', contentHeight+20);
+    	}
+    	
     }
     
     function handleDeleteResponse(o) {
