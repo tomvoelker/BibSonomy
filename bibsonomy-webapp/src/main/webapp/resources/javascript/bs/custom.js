@@ -88,26 +88,7 @@ $(function() {
     
     $('.rename-tags-btn').click(function(){
     	$(this).parent().prev().focus().next().show().hide();
-    });
-    
-    $('.remove-btn').click(function(e){
-    	e.preventDefault();
-    	var url = this.getAttribute("href");
-    	var parent = this.parentNode.parentNode;
-    	var el = this;
-    	$.ajax({
-    		url: url,
-    		dataType: "xml",
-    		success: function(data) {
-    			handleDeleteResponse({parent:parent, data: data, el: el});
-    		},
-    		error: function(data) {
-    			handleDeleteResponse({parent:parent, data: data, el: el});
-    		}
-    	});
-    	
-    	return false;
-    });
+    }); 
     
     if($('#sidebar').prev().hasClass('content')) {
     	var contentContainer = $('#sidebar').prev();
@@ -118,24 +99,6 @@ $(function() {
     		$('#sidebar').css('height', contentHeight+20);
     	}
     	
-    }
-    
-    function handleDeleteResponse(o) {
-		if(o.data.getElementsByTagName("status")[0].innerHTML=="deleted" 
-			|| o.data.getElementsByTagName("status")[0].innerHTML=="ok") o.parent.parentNode.removeChild(o.parent);
-		else {
-			$(o.el).removeClass("btn-stripped").addClass("btn-danger").popover({
-					animation: false,
-					trigger: 'manual',
-					delay: 0,
-					title: function() {
-						return getString("post.resource.remove.error.title");
-					},
-					content: function() {
-						return getString("post.resource.remove.error");
-					}
-			}).popover("show");
-		}
     }
     
     function shortenContent (el, text) {
