@@ -68,6 +68,12 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/admin/generateSharedIndex">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="adminGenerateSharedIndexController" />
+					</bean>
+				</entry>
+				
 				<entry key="/admin/ajax">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="adminAjaxController"/>
@@ -168,6 +174,10 @@
 
 	<bean id="adminLuceneController" class="org.bibsonomy.webapp.controller.admin.AdminLuceneController" scope="request">
 		<property name="luceneResourceManagers" ref="luceneResourceManagers" />
+	</bean>
+	<bean id="adminGenerateSharedIndexController" class="org.bibsonomy.webapp.controller.admin.AdminLuceneController" scope="request">
+		<property name="luceneResourceManagers" ref="luceneResourceManagers" />
+		<property name="generateSharedIndex" value = "true"/>
 	</bean>
 	
 	<bean id="adminAjaxController" class="org.bibsonomy.webapp.controller.admin.AdminAjaxController" scope="request">

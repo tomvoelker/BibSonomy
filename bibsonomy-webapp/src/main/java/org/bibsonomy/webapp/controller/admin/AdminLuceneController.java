@@ -1,13 +1,19 @@
 package org.bibsonomy.webapp.controller.admin;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.es.GenerateSharedResourceIndex;
+import org.bibsonomy.lucene.database.LuceneDBInterface;
+import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.webapp.command.admin.AdminLuceneViewCommand;
 import org.bibsonomy.webapp.command.admin.LuceneResourceIndicesInfoContainer;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -28,9 +34,10 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 	private static final String GENERATE_INDEX = "generateIndex";
 	private static final String GENERATE_ONE_INDEX = "generateOneIndex";
 	
-	
+	private boolean generateSharedIndex;
 	private List<LuceneResourceManager<? extends Resource>> luceneResourceManagers;
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public View workOn(final AdminLuceneViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
@@ -43,6 +50,28 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
 			throw new AccessDeniedException("please log in as admin");
 		}	
+		
+		if(generateSharedIndex){
+			GenerateSharedResourceIndex generator = new GenerateSharedResourceIndex();
+			generator.setSearchType(SearchType.ELASTICSEARCH);
+			for(LuceneResourceManager<? extends Resource> manager: luceneResourceManagers){
+				generator.setLogic((LuceneDBInterface<Resource>) manager.getDbLogic());
+				generator.setTYPE_NAME(manager.getResourceName());
+				generator.setResourceConverter((LuceneResourceConverter<Resource>) manager.getResourceConverter());
+				generator.run();
+			}
+			try {
+				generator.shutdown();
+			} catch (CorruptIndexException e) {
+				// TODO Auto-generated catch block
+				log.error("TODO", e);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				log.error("TODO", e);
+			}
+			
+			return Views.SUCCESS;
+		}
 		
 		if (GENERATE_INDEX.equals(command.getAction()) 
 				|| (GENERATE_ONE_INDEX.equals(command.getAction()))) {
@@ -100,5 +129,20 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 	 */
 	public void setLuceneResourceManagers(final List<LuceneResourceManager<? extends Resource>> luceneResourceManagers) {
 		this.luceneResourceManagers = luceneResourceManagers;
+	}
+
+
+	/**
+	 * @return the generateSharedIndex
+	 */
+	public boolean isGenerateSharedIndex() {
+		return this.generateSharedIndex;
+	}
+
+	/**
+	 * @param generateSharedIndex the generateSharedIndex to set
+	 */
+	public void setGenerateSharedIndex(boolean generateSharedIndex) {
+		this.generateSharedIndex = generateSharedIndex;
 	}
 }

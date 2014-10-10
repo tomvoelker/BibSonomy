@@ -27,8 +27,9 @@ import org.elasticsearch.search.SearchHit;
  */
 public class EsResourceSearch<R extends Resource>{
 
-	private static final String INDEX_NAME = "posts";
-	private static final String TYPE_NAME = "publication";
+	private final String INDEX_NAME = "posts";
+
+	private String TYPE_NAME = "BibTex";
 	
 	/** post model converter */
 	private LuceneResourceConverter<R> resourceConverter;
@@ -131,6 +132,26 @@ public class EsResourceSearch<R extends Resource>{
 		this.resourceConverter = resourceConverter;
 	}
 
-	
+	/**
+	 * @return the tYPE_NAME
+	 */
+	public String getTYPE_NAME() {
+		return this.TYPE_NAME;
+	}
+
+	/**
+	 * @param tYPE_NAME the tYPE_NAME to set
+	 */
+	public void setTYPE_NAME(String tYPE_NAME) {
+		TYPE_NAME = tYPE_NAME;
+	}
+
+	/**
+	 * @return the iNDEX_NAME
+	 */
+	public String getINDEX_NAME() {
+		return this.INDEX_NAME;
+	}
+
 	
 }

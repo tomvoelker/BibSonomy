@@ -26,6 +26,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class GenerateSharedResourceIndex extends LuceneGenerateResourceIndex<Resource>{
 	
+	private final String INDEX_NAME = "posts";
+	private String TYPE_NAME;
+
+
 	// ElasticSearch client
 	private final ESClient esClient = new ESNodeClient();
 
@@ -93,7 +97,7 @@ public class GenerateSharedResourceIndex extends LuceneGenerateResourceIndex<Res
 					Map<String, Object> jsonDocument = new HashMap<String, Object>();
 					jsonDocument = (Map<String, Object>) this.resourceConverter.readPost(post, this.searchType);
 					esClient.getClient()
-							.prepareIndex("posts", "publication", post.getContentId().toString())
+							.prepareIndex(INDEX_NAME, TYPE_NAME, post.getContentId().toString())
 							.setSource(jsonDocument).execute().actionGet();
 					log.info("post has been indexed.");
 					
@@ -130,18 +134,37 @@ public class GenerateSharedResourceIndex extends LuceneGenerateResourceIndex<Res
 
 			this.isRunning = true;
 
+			log.warn("Generating index for"+ this.TYPE_NAME+"...");
 			// generate index
 			GenerateSharedResourceIndex.this.createIndexFromDatabase();
 
 			this.isRunning = false;
 		} catch (final Exception e) {
 			log.error("Failed to generate index!", e);
-		} finally {
-			try {
-				GenerateSharedResourceIndex.this.shutdown();
-			} catch (final Exception e) {
-				log.error("Failed to close node!", e);
-			}
+		}finally{
+			log.warn("Finished generating index for"+ this.TYPE_NAME);
 		}
 	}
+
+	/**
+	 * @return the indexName
+	 */
+	public String getIndexName() {
+		return this.INDEX_NAME;
+	}
+	
+	/**
+	 * @return the tYPE_NAME
+	 */
+	public String getTYPE_NAME() {
+		return this.TYPE_NAME;
+	}
+
+	/**
+	 * @param tYPE_NAME the tYPE_NAME to set
+	 */
+	public void setTYPE_NAME(String tYPE_NAME) {
+		TYPE_NAME = tYPE_NAME;
+	}
+
 }

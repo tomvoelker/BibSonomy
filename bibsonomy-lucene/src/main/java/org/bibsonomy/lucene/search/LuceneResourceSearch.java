@@ -760,14 +760,6 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			String lastYear, List<String> negatedTags, Order order, int limit,
 			int offset) {
 		
-		boolean generateIndex = false;
-		if(generateIndex){
-		GenerateSharedResourceIndex generator = new GenerateSharedResourceIndex();
-		generator.setLogic((LuceneDBInterface<Resource>) this.luceneBibTexManager.getDbLogic());
-		generator.setResourceConverter((LuceneResourceConverter<Resource>) this.resourceConverter);
-		generator.setSearchType(searchType);
-		generator.run();
-		}else{
 			EsResourceSearch<R> searchResource =  new EsResourceSearch<R>();
 			searchResource.setSearchTerms(searchTerms);
 			searchResource.setResourceConverter(this.resourceConverter);
@@ -779,8 +771,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			} catch (IOException e) {
 				log.error("TODO", e);
 			}
-		}
-		return null;
+			return null;
 	}
 
 	/**
