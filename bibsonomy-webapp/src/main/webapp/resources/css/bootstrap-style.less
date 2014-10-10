@@ -383,14 +383,30 @@ ul.posts li.post:last-child {
 	border-bottom: none;
 }
 
-li.post div.in-my-collection {
+.glyphicon-private:before {
+    content: @fa-var-eye-slash ;
+}
+
+
+li.post div.in-my-collection,
+li.post div.glyphicon-private {
 	position:relative; 
 	width: 0px;
 	overflow: visible; 
 	height: 0px; 
-	font-size: 18px; 
+}
+
+li.post div.in-my-collection {
+	font-size: 18px;
 	top: -88px; 
 	left: 5px; 
+	color: #005588;
+}
+
+li.post div.glyphicon-private {
+	font-size: 18px; 
+	top: -88px; 
+	left: 42px; 
 	color: #005588;
 }
 
