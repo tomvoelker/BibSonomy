@@ -59,20 +59,21 @@
 		
 	<c:set var="projectName" value="${properties['project.name']}" />
 	
-	<div class="form-group">
-		<label class="col-sm-3 control-label" for="post.resource.entrytype">
-			<fmt:message key="post.resource.entrytype" />
-		</label>
-		<c:choose>
-			<c:when test="${empty hideBibTeXKey or not hideBibTeXKey}">
+	<c:choose>
+		<c:when test="${empty hideBibTeXKey or not hideBibTeXKey}">
+					
+			<div class="form-group">
+				<label class="col-sm-3 control-label" for="post.resource.entrytype">
+					<fmt:message key="post.resource.entrytype" />
+				</label>
 				<div class="col-sm-9">
 					<div class="row">
 						<div class="col-md-6">
 							<select name="post.resource.entrytype" id="post.resource.entrytype" class="form-control">
 								<c:set var="items" value="${mtl:getBibTeXEntryTypes()}" />
 								<c:forEach items="${items}" var="optionLabel" varStatus="cnt">
-		-							<option value="${items[cnt.index]}"><c:out value="${optionLabel}" /></option>
-		-						</c:forEach>
+			-							<option value="${items[cnt.index]}"><c:out value="${optionLabel}" /></option>
+			-						</c:forEach>
 							</select>
 						</div>
 						
@@ -90,20 +91,20 @@
 						</div>
 					</div>
 				</div>
-			</c:when>
-			<c:otherwise>
-				<bsform:select 
-					multiple="${false}" 
-					path="post.resource.entrytype" 
-					id="post.resource.entrytype"
-					labelColSpan="3" 
-					tabindex="2" 
-					size="1" 
-					items="${mtl:getBibTeXEntryTypes()}" noHelp="true"
-					/>
-			</c:otherwise>
-		</c:choose>
-	</div>
+			</div>
+		</c:when>
+		<c:otherwise>
+			<bsform:select 
+				multiple="${false}" 
+				path="post.resource.entrytype" 
+				id="post.resource.entrytype"
+				labelColSpan="3" 
+				tabindex="2" 
+				size="1" 
+				items="${mtl:getBibTeXEntryTypes()}" noHelp="true"
+				/>
+		</c:otherwise>
+	</c:choose>
 			
 	<bsform:textarea labelColSpan="3" id="post.resource.title" path="post.resource.title" required="${true}" />
 
