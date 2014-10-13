@@ -110,7 +110,6 @@
 										</c:when>
 										<c:otherwise>
 											<c:url var="joinLink" value="/join_group">
-												<c:param name="joinRequest" value="true" />
 												<c:param name="group" value="${group.name}" />
 											</c:url>
 											<a href="${joinLink}" class="btn btn-primary btn-sm"><span class="fa fa-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>	

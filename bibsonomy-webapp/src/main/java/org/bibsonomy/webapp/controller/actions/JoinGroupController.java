@@ -85,34 +85,6 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 
 		final String reason = command.getReason();
 		final String deniedUserName = command.getDeniedUser();
-		boolean joinRequest = command.isJoinRequest();
-		
-		if (joinRequest) {
-			// check if user is already in this group
-			if (loginUser.getGroups().contains(group)) {
-				// user wants to join a group that he's already a member of => error since he cannot use the join_group page
-				errors.reject("joinGroup.already.member.error");
-				return Views.ERROR;
-			}
-			
-			if (!present(reason)) {
-				errors.rejectValue("reason", "error.field.required");
-				return Views.JOIN_GROUP;
-			}
-		}
-		
-		if (!joinRequest && !present(deniedUserName)) {
-			// no deniedUser, and no join request => probably wants to see the join_group page
-			command.setCaptchaHTML(captcha.createCaptchaHtml(requestLogic.getLocale()));
-			return Views.JOIN_GROUP;
-		}
-
-		/*
-		 * check if ckey is valid
-		 */
-		if (!command.getContext().isValidCkey()) {
-			errors.reject("error.field.valid.ckey");
-		}
 		
 		// We can not check the ckey if "deny request" was chosen, since the deny
 		// handle deny join request action
@@ -133,10 +105,28 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 			return new ExtendedRedirectView(denyUserRedirectURI);
 		}
 		
+		/*
+		 * from here we assume, that the user has sent a join group request from the join group form
+		 */
+		final boolean joinRequest = command.isJoinRequest();
+		
+		// check if user is already in this group
+		if (loginUser.getGroups().contains(group)) {
+			// user wants to join a group that he's already a member of => error since he cannot use the join_group page
+			errors.reject("joinGroup.already.member.error");
+			return Views.ERROR;
+		}
+		
+		if (!present(reason)) {
+			errors.rejectValue("reason", "error.field.required");
+		}
 		
 		/*
-		 * From here we assume, that the user has sent a join group request from the join group form
+		 * check if ckey is valid
 		 */
+		if (joinRequest && !command.getContext().isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
+		}
 		
 		// check user is spammer
 		if (loginUser.isSpammer()) {
