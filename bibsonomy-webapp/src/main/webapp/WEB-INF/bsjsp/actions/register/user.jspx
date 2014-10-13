@@ -12,7 +12,7 @@
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
+	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/actions/user"
 	>
 
@@ -87,10 +87,9 @@
 				       		
 						<bsform:fieldset legendKey="register.captchaAndPrivacy">
 		        			<jsp:attribute name="content">
-		        				<label class="control-label col-sm-3">Captcha</label>
-		        				<div class="col-sm-9">
-		        					<bform:captcha />
-								</div>
+
+		        				<bform:captcha labelColSpan="3" inputColSpan="9" />
+								
 								<c:set var="formErrors"><form:errors path="acceptPrivacy"/></c:set>
 		        				<div class="form-group${not empty formErrors ? ' has-error' : ''}">
 		        					<c:if test="${not empty formErrors}">
