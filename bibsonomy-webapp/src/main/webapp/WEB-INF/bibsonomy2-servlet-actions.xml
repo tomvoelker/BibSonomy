@@ -328,11 +328,6 @@
 								<value>ckey</value>
 								<value>tags</value>
 								
-								<!-- 
-								<value>selectNorm</value>
-								<value>selectTagAll</value>
-								<value>inputTagAll</value>
-								<value>selectTagEach</value>-->
 							</list>
 						</property>
 					</bean>
@@ -546,14 +541,12 @@
 								<!-- retaining postPublication options -->
 								<value>updateExistingPost</value>
 								<value>overwrite</value>
-								<value>selectNorm</value>
-								<value>selectTagAll</value>
-								<value>inputTagAll</value>
-								<value>selectTagEach</value>
+								
 								<value>resourcetype</value>
 								<value>format</value>
 								<value>abstractGrouping</value>
 								<value>groups</value>
+								
 								
 							</list>
 						</property>

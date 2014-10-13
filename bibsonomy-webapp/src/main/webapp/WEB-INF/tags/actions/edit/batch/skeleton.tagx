@@ -59,7 +59,9 @@ xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 
 		<jsp:attribute name="content">
 		
-			<batch:content resourceType="${resourceType}" listView="${listView}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" listViewStartParamName="${listViewStartParamName}" updateExistingPost="${updateExistingPost}" overwrite="${overwrite}">
+			<batch:content resourceType="${resourceType}" listView="${listView}" 
+			otherPostsUrlPrefix="${otherPostsUrlPrefix}" listViewStartParamName="${listViewStartParamName}" 
+			updateExistingPost="${updateExistingPost}" directEdit="${true}" overwrite="${overwrite}">
         						 
 			<jsp:attribute name="shortPostDescription">
 				<jsp:invoke fragment="shortPostDescription" />

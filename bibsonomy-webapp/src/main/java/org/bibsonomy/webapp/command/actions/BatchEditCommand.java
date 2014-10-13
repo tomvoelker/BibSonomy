@@ -17,7 +17,7 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
 	 * should publications be edited before they're stored? 
 	 */
 	private boolean editBeforeImport = false;
-//	private boolean selectNorm;
+
 	/**
 	 * this flag determines, whether an existing post is being edited or a new post 
 	 * should be added and edited**/
@@ -215,19 +215,4 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
 	public void setUpdateExistingPost(boolean updateExistingPost) {
 		this.updateExistingPost = updateExistingPost;
 	}
-
-	/**
-	 * @return the selectNorm
-	 */
-	/*public boolean getSelectNorm() {
-		return this.selectNorm;
-	}*/
-
-	/**
-	 * @param selectNorm the selectNorm to set
-	 */
-	/*
-	public void setSelectNorm(boolean selectNorm) {
-		this.selectNorm = selectNorm;
-	}*/
 }

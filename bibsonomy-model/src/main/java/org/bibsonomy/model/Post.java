@@ -118,6 +118,11 @@ public class Post<T extends Resource> implements Serializable {
 	 * identifier if post is in the inbox
 	 * use only to create the inbox page of a user
 	 */
+	/*Nasim's comment:
+	 * If you want to access a <b>boolean</b> variable from JSP file, 
+	 * you shouldn't start its name with 'is'.
+	 * (the following variable is not accessible from JSP files)
+	 * **/
 	private boolean isInboxPost = false;
 	
 	/**
@@ -135,7 +140,10 @@ public class Post<T extends Resource> implements Serializable {
 	 * TODO: use User as type
 	 */
 	private String copyFrom;
-	
+
+	/*
+	 * this field is true, if the post is alredy stored in DB.**/
+	private boolean duplicatePost = false;
 	/**
 	 * @return the repositories
 	 */
@@ -434,4 +442,20 @@ public class Post<T extends Resource> implements Serializable {
 		}
 		this.visibleTags.add(tag);
 	}
+
+
+	/**
+	 * @return the duplicatePost
+	 */
+	public boolean isDuplicatePost() {
+		return this.duplicatePost;
+	}
+
+	/**
+	 * @param duplicatePost the duplicatePost to set
+	 */
+	public void setDuplicatePost(boolean duplicatePost) {
+		this.duplicatePost = duplicatePost;
+	}
+	
 }

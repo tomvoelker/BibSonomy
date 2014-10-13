@@ -23,7 +23,8 @@
 	<jsp:directive.attribute name="updateExistingPost" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="overwrite" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" description="The type of resource that are edited (bookmark or bibtex)." />
-
+	<jsp:directive.attribute name="directEdit" type="java.lang.Boolean" required="false"/>
+	
 	<jsp:directive.attribute name="shortPostDescription" fragment="true" required="true" description="A one line description of a post" />
 	<jsp:directive.attribute name="title" fragment="true" required="true" />
 	<jsp:directive.attribute name="desc" fragment="true" required="true" />
@@ -37,10 +38,11 @@
 	<!-- VARIABLEN DEKLARATION -->
 	<!--=======================-->
 	
-	<!-- I couldn't find any usage for these two variables!!: deletedCheckedPosts and overwrite -->	
-	<!-- VIEW FOR SAVING OR DELETING POSTS -->
 	<c:if test="${empty updateExistingPost}">
 		<c:set var="updateExistingPost" value="true" />
+	</c:if>
+	<c:if test="${empty directEdit}">
+		<input type="hidden" name="directEdit" value="true" />
 	</c:if>
 	<!-- OVERWRITE DUPLICATES -->
 	<c:if test="${empty overwrite}">
@@ -67,7 +69,7 @@
 			<!-- the following variable is defined to communicate with .js file -->
 			<input type="hidden" name="action"/>
 
-		<!-- Hint messages: hint-green, hint-red-->		
+		<!-- Hint messages-->		
 		    <div id="editHint" class="Hint red invisible"><fmt:message key="batchedit.editHint" /></div>
 		    <div id="normConfirm" class="Hint red invisible">
 		    	<ul>
@@ -93,7 +95,9 @@
 			<br/><br/><br/>
 			
 		<!-- edit options -->
-		<div>
+		<c:choose>
+			<c:when test="${directEdit}">
+			<div>
 			<ul id="nav" >
 				<c:if test="${resourceType eq 'bibtex'}">
 			    	<li>
@@ -114,6 +118,25 @@
 	            <li><a href="#" id="tagAllId" title="${tagAllBtnMsg}">addToEach</a></li>
 			</ul>
 			</div>
+			</c:when>
+			<c:otherwise>
+				<!-- edit options : checkboxes-->
+			<div id="editCheckboxes" style="margin-left:5px;margin-bottom:10px;background-color: #dbdbdb;width:100%">
+				
+				<input type="checkbox" id="SelectNorm" title="Normalize" style="align:left;margin-right:5px;">
+					<fmt:message key="batchedit.checkboxNormalize" /></input>		   	
+				<br/>
+				<input type="checkbox" id="SelectTagAll" title="Edit all tag" style="align:left;margin-right:5px;">
+				<fmt:message key="batchedit.checkboxEditAllTag" /></input>
+	           		
+			    <input type="text" id="inputTagAll" name="tags" style="font-size:90%;width:40%;height: 29px;line-height: 29px;margin-left:5px;" />
+			    <br/>
+			    
+			    <input type="checkbox" id="SelectTagEach" title="Edit tag each" style="align:left;margin-right:5px;">
+			    <fmt:message key="batchedit.checkboxEditEachTag" /></input>
+			</div>
+			</c:otherwise>
+			</c:choose>
 			<!-- If there is no post to edit -->
 			<c:if test="${empty listView.list}">
 				<div style="font-weight: bolder; float:center">
@@ -152,7 +175,7 @@
 								</spring:bind>
 							</c:if>
 							<c:choose>
-								<c:when test="${postHasError}">
+								<c:when test="${postHasError || post.duplicatePost}">
 									<c:choose>
 										<c:when	test="${post.user.name eq command.context.loginUser.name}">
 											<ul>
@@ -267,7 +290,7 @@
 						<li>
 							<ul>
 								<div name="eachTagBtn">
-									<li id="eachTagOk" class="applyBtn"><fmt:message key="batchedit.eachTagOk" /></li>
+									<li id="eachTagOk" class="applyBtn" onclick="eachTagOK()"><fmt:message key="batchedit.eachTagOk" /></li>
 								</div>
 							</ul>
 							<ul>	
@@ -280,7 +303,8 @@
 								<div name="allTagBox">
 									<input type="text" name="tags" size="40"/>
 										<ul>
-											<li id="allTagOk" class="applyBtn"><fmt:message key="batchedit.allTagOk" /></li>
+											<li id="allTagOk" class="applyBtn" onclick="allTagOK()">
+											<fmt:message key="batchedit.allTagOk" /></li>
 										</ul>
 								</div>
 			
@@ -292,13 +316,20 @@
 									</bform:fieldset>
 								
 									<ul>
-										<li id="privacyOk" class="applyBtn"><fmt:message key="batchedit.privacyOk" /></li>
+										<li id="privacyOk" class="applyBtn" onclick="privacyOK()">
+										<fmt:message key="batchedit.privacyOk" /></li>
 									</ul>
 								</div>	
-							
+								<div id="combiEditBtn">
+									<ul>
+										<li id="combiEditButtton" class="applyBtn" onclick="combiEditOK()">
+										<fmt:message key="batchedit.editBtn" /></li>
+									</ul>
+								</div>
 								<div id="cancelBtn">
 									<ul>
-										<li id="cancelButtton" class="applyBtn"><fmt:message key="batchedit.cancelbtn" /></li>
+										<li id="cancelButtton" class="applyBtn" onclick="cancelBtnClick()">
+										<fmt:message key="batchedit.cancelbtn" /></li>
 									</ul>
 								</div>
 																
@@ -316,6 +347,7 @@
 					</div>
 					<input type="hidden" name="ckey" value="${ckey}" /> 
 					<input type="hidden" name="referer"	value="${fn:escapeXml(command.referer)}" />
+					<input type="hidden" name="directEdit" value="${directEdit}" />
 				</li>
 			</ul>
 		</form>

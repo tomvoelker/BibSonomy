@@ -286,9 +286,10 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 							post.setDate(now);
 						}else{
 							log.warn("post with hash " + intraHash + " not found for user " + loginUserName + " while updating");
+							continue;
 						}
 					}
-					else{//the post is temporarily stored. we update it and if successful store it.
+					else{//the post is already temporarily stored. we update it and if successful, store it.
 						
 						post = postMap.get(intraHash);
 						post.setDate(now);
@@ -440,14 +441,13 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 		/*
 		 * return to batch edit view on errors
-		 * commented: because it is not working correctly.
-		 * 
+		 */ 
 		if (this.errors.hasErrors()) {
 			if (postsArePublications) {
 				return Views.BATCHEDITBIB;
 			} 
 			return Views.BATCHEDITURL;  
-		}*/
+		}
 
 		/*
 		 * return to either the user page or current page(batchedit)

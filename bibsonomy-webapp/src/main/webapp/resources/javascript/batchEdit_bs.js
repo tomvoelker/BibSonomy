@@ -47,8 +47,8 @@ $(document).ready(function () {
 			action.push(2);
 		}
 		else{
-			$('li[name=eachPostTag]').hide();
-			$('li[name=postTagsHeader]').hide();
+			$('ul[name=eachPostTag]').hide();
+			$('ul[name=postTagsHeader]').hide();
 			showEditBtn();
 			action.splice(index, 2);
 		}
@@ -102,7 +102,7 @@ $(document).ready(function () {
 				showEachTag();
 			}
 		}
-		// when this variable is false, it means that all posts are selected.
+		
 		var oneNotChecked = false;
 		
 		$('input[name^=posts]:checkbox:not(:checked)').each(function() {
@@ -122,7 +122,6 @@ $(document).ready(function () {
 			disableAll = true;
 			disableAllButtons();
 			hideAllFeatures();
-			resetBackgroundColor();
 			document.getElementById("batchedit").reset();
 		};
 		
@@ -138,7 +137,7 @@ $(document).ready(function () {
 		hideAllMessages();
 		resetBackgroundColor();
 		
-		$(this).css("background-color", "#6666CC");
+		$(this).css("background-color", "#e6e6e6");
 		$('div[name=AllpostTagsHeader]').show();
 		$('div[name=allTagBox]').show();
 		$('div[id=cancelBtn]').show();
@@ -150,11 +149,11 @@ $(document).ready(function () {
 		if (disableAll){
 			return false;
 		}
-		$(this).css("background-color", "#6666CC");
+		$(this).css("background-color", "#e6e6e6");
 		hideAllFeatures();
 		hideAllMessages();
 		resetBackgroundColor();
-		$(this).css("background-color", "#6666CC");
+		$(this).css("background-color", "#e6e6e6");
 		$('div[id=cancelBtn]').show();
 		$('div[name=eachTagBtn]').show();
 
@@ -169,7 +168,7 @@ $(document).ready(function () {
 		hideAllFeatures();
 		resetBackgroundColor();
 		hideAllMessages();
-		$(this).css("background-color", "#6666CC");
+		$(this).css("background-color", "#e6e6e6");
 		
 		$('div[id=delConfirm]').toggleClass('invisible', false);
 	});
@@ -196,7 +195,7 @@ $(document).ready(function () {
 		resetBackgroundColor();
 		hideAllMessages();
 		
-		$(this).css("background-color", "#6666CC");
+		$(this).css("background-color", "#e6e6e6");
 		$('div[id=normConfirm]').toggleClass('invisible', false);		
 	});
 	
@@ -224,7 +223,7 @@ $(document).ready(function () {
 		hideAllMessages();
 		$('div[id=cancelBtn]').show();
 		$('div[id=privacyBox]').show();
-		$(this).css("background-color", "#6666CC");
+		$(this).css("background-color", "#e6e6e6");
 	});
 	
 });
@@ -285,7 +284,7 @@ function hideAllMessages(){
 	$('div[id=back]').toggleClass('invisible', true);
 	$('div[id=editHint]').toggleClass('invisible', true);
 	$('div[id="cancel"]').toggleClass('invisible', true);
-	$('li[name=eachPostTag]').toggleClass('invisible', true);
+	$('ul[name=eachPostTag]').toggleClass('invisible', true);
 	$('div[id=combiEditConfirm]').toggleClass('invisible', true);
 }
 
@@ -297,9 +296,10 @@ function submitForm(messageId){
 
 function hideAllFeatures(){
 	$('#inputTagAll').hide();
-	$('li[name=eachPostTag]').hide();
-	$('li[name=postTagsHeader]').hide();
+	$('ul[name=eachPostTag]').hide();
+	$('ul[name=postTagsHeader]').hide();
 	$('div[name=AllpostTagsHeader]').hide();
+	$('ul[name=erroneousPost]').hide();
 	
 	$('div[id=privacyBox]').hide();
 	$('div[name=allTagBox]').hide();
@@ -317,14 +317,9 @@ function disableAllButtons(){
 	$('div[id=combiEditBtn]').hide();
 	
 	if (document.getElementById('delId')) {	// if direct edit:
-		document.getElementById('delId').setAttribute('class', 'delClassDisabled');
-		document.getElementById('tagEachId').setAttribute('class', 'tagEachClassDisabled');
-		document.getElementById('tagAllId').setAttribute('class', 'tagAllClassDisabled');
-
-		if (document.getElementById('normId')) {
-			document.getElementById('normId').setAttribute('class', 'normClassDisabled');
-		}
-		document.getElementById('privacyId').setAttribute('class', 'privacyClassDisabled');
+		$('div[id=editButtonsDisabled]').show();
+		$('div[id=editButtonsEnabled]').hide();
+		$('div[id=editButtonsEnabled]').toggleClass('invisible', true);
 	}else{
 		document.getElementById('SelectNorm').disabled = true;
 		document.getElementById('SelectTagAll').disabled = true;
@@ -340,14 +335,14 @@ function disableAllButtons(){
 
 function resetBackgroundColor(){
 	if (document.getElementById('delId')) {	// if direct edit:
-		document.getElementById('delId').style.backgroundColor="#eee";
-		document.getElementById('tagEachId').style.backgroundColor="#eee";
-		document.getElementById('tagAllId').style.backgroundColor="#eee";	
-
+		document.getElementById('delId').style.backgroundColor="white";
+		document.getElementById('tagEachId').style.backgroundColor="white";
+		document.getElementById('tagAllId').style.backgroundColor="white";	
+	
 		if (document.getElementById('normId')) {
-			document.getElementById('normId').style.backgroundColor="#eee";
+			document.getElementById('normId').style.backgroundColor="white";
 		}
-		document.getElementById('privacyId').style.backgroundColor="#eee";
+		document.getElementById('privacyId').style.backgroundColor="white";
 	}
 	tagAction=0;
 }
@@ -358,13 +353,9 @@ changes the CSS class of an element.
 function enableAllButtons(){
 
 	if (document.getElementById('delId')) {	// if direct edit:
-		document.getElementById('delId').setAttribute('class', 'delClass');
-		document.getElementById('tagEachId').setAttribute('class', 'tagEachClass');
-		document.getElementById('tagAllId').setAttribute('class', 'tagAllClass');
-		if (document.getElementById('normId')) {
-			document.getElementById('normId').setAttribute('class', 'normClass');
-		}
-		document.getElementById('privacyId').setAttribute('class', 'privacyClass');
+		$('div[id=editButtonsDisabled]').hide();
+		$('div[id=editButtonsEnabled]').show();
+		$('div[id=editButtonsEnabled]').toggleClass('invisible', false);
 	}else{
 		document.getElementById('SelectNorm').disabled = false;
 		document.getElementById('SelectTagAll').disabled = false;
@@ -382,7 +373,7 @@ function disableAllCheckboxes(){
 function showEachTag(){
 	
 
-	$('li[name=postTagsHeader]').show();
+	$('ul[name=postTagsHeader]').show();
 
 	// the following lines are to show tag edit box, only for the selected posts
 	var a = [];
@@ -394,11 +385,11 @@ function showEachTag(){
 		}
 	});
 	a=a.reverse();
-	$('li[name=eachPostTag]').each(function() {
+	$('ul[name=eachPostTag]').each(function() {
 		$(this).show();
 	});
 	
-	$('li[name=eachPostTag]').each(function() {
+	$('ul[name=eachPostTag]').each(function() {
 		if (a.pop()==true) {
 			$(this).toggleClass('invisible', false);
 		}else{

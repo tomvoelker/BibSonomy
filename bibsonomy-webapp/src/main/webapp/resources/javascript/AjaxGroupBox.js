@@ -38,14 +38,13 @@ function toggleGroupBox(radioButtonGroup) {
 	// if other is checked
 	if (!selectedAbstractGrouping.hasClass('otherGroups')) {
 		
-	//	clearSelected(otherBox);
 		/*var Options = otherBox.options;
 		  //  var elements = document.getElementById("ddBusinessCategory").options;
 
 		for(var i = 0; i < Options.length; i++){
 		     Options[i].selected = false;
 		 }*/
-		otherBox.attr('selected', false);
+		//otherBox.attr('selected', false);
 		otherBox.attr('disabled', 'disabled');
 	} else {
 		otherBox.removeAttr('disabled');
@@ -53,8 +52,7 @@ function toggleGroupBox(radioButtonGroup) {
 }
 function clearSelected(element){
 	var Options = element.options;
-  //  var elements = document.getElementById("ddBusinessCategory").options;
-
+ 
     for(var i = 0; i < Options.length; i++){
       Options[i].selected = false;
     }

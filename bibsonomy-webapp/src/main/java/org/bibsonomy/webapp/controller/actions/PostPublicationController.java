@@ -291,47 +291,24 @@ public class PostPublicationController extends AbstractEditPublicationController
 		ValidationUtils.invokeValidator(new PostPublicationCommandValidator(), command, errors);
 
 		/*
-		 * We try to store only posts that have no validation errors.
+		 * We try to store only posts that have no validation errors and are not already stored.
 		 */
-		final Map<Post<BibTex>, Integer> postsToStore = getPostsWithNoValidationErrors(posts);
+		final Map<Post<BibTex>, Integer> postsToStore = getPostsWithNoValidationErrors(posts, command.isOverwrite());
+		
 		log.debug("will try to store " + postsToStore.size() + " of " + posts.size() + " posts in database");
+		final List<Post<?>> validPosts = new LinkedList<Post<?>>(postsToStore.keySet());
 
 		/*
 		 * finally store the posts
 		 */
-		/******CHECK for duplicates******/
-	//	Post<R> postInDB = null;
-		//try {
-			//postInDB = this.getPostDetails(userName, intraHash, userName, new ArrayList<Integer>(), session);
-		//} catch(final ResourceMovedException ex) {
-			/*
-			 * getPostDetails() throws a ResourceMovedException for hashes for which
-			 * no actual post exists, but an old post has existed with that hash.
-			 * 
-			 * Since we are not interested in former posts with that hash we ignore
-			 * this exception silently. 
-			 */
-		//}
-		/*
-		 * check if user is trying to create a resource that already exists
-		 */
-		//if (present(postInDB)) {
-			//final ErrorMessage errorMessage = new DuplicatePostErrorMessage(this.resourceClassName, post.getResource().getIntraHash());
-			//session.addError(post.getResource().getIntraHash(), errorMessage);
-			//log.warn("Added DuplicatePostErrorMessage for post " + post.getResource().getIntraHash());
-			//session.commitTransaction();
-			//return false;
-		//}
-		
-		 isPostDuplicate(postsToStore, command.isOverwrite());
 		if (command.isEditBeforeImport()) {
 			/*
 			 * user wants to edit the posts before storing them 
 			 * -> put them into the session
 			 */
-			setSessionAttribute(TEMPORARILY_IMPORTED_PUBLICATIONS, posts);
-			
+			setSessionAttribute(TEMPORARILY_IMPORTED_PUBLICATIONS, validPosts);
 			command.setUpdateExistingPost(false);
+			
 		} else {
 			/*
 			 * the publications are saved in the database
@@ -339,43 +316,6 @@ public class PostPublicationController extends AbstractEditPublicationController
 			storePosts(postsToStore, command.getOverwrite());
 			command.setUpdateExistingPost(true);
 		}
-
-		/*
-		 * If there were any errors, some posts were not stored in the database. We
-		 * need to get them from the session later on, thus we store them there.
-		 */
-		if (errors.hasErrors()) {
-			/*
-			 * Trigger the correct setting of the "delete/save" check boxes on
-			 * the batch edit page.
-			 */
-	//		command.setUpdateExistingPost(false);
-			/*
-			 * if editBeforeImport is not checked, and user is importing 
-			 * a new and old bibtex, storeposts (orevious else) is executed with errors.
-			 * the new bibtex will be stored and the old one won't. in this case we will have 
-			 * error and we would like to update an existing post**/
-		//	command.setUpdateExistingPost(true);
-		
-			/*
-			 * save posts in session
-			 */
-			//this can be commented too
-			setSessionAttribute(TEMPORARILY_IMPORTED_PUBLICATIONS, posts);
-		}
-
-		/*
-		 * If the user wants to store the posts permanently AND (his posts have
-		 * no errors OR he ignores the errors OR the number of bibtexes is
-		 * greater than the treshold, we will forward him to the appropriate
-		 * site, where he can delete posts (they were saved)
-		 */
-		
-		if (!command.isEditBeforeImport() && (!errors.hasErrors() || posts.size() > MAXCOUNT_ERRORHANDLING)) {
-			command.setUpdateExistingPost(true);
-		} //else {
-//			command.setUpdateExistingPost(false);
-	//	}
 
 		/*
 		 * If there are errors now or not - we return to the post
@@ -387,7 +327,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 
 	/**
-	 * Checks each post for validation errors and returns only those posts, 
+	 * Checks each post for validation errors and being already stored in DB, and returns only those posts, 
 	 * that don't have any errors. The posts are returned in a hashmap, where
 	 * each post points to its position in the original list such that we can
 	 * later add errors (from the database) at the correct position.  
@@ -395,9 +335,10 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 * @param posts
 	 * @return
 	 */
-	private Map<Post<BibTex>, Integer> getPostsWithNoValidationErrors(final List<Post<BibTex>> posts) {
+	private Map<Post<BibTex>, Integer> getPostsWithNoValidationErrors(final List<Post<BibTex>> posts, boolean isOverwrite) {
 		final Map<Post<BibTex>, Integer> storageList = new LinkedHashMap<Post<BibTex>, Integer>();
-
+		boolean test1;
+		boolean test2;
 		/*
 		 * iterate over all posts
 		 */
@@ -405,10 +346,17 @@ public class PostPublicationController extends AbstractEditPublicationController
 			/*
 			 * check, if this post has field errors
 			 */
-			if (!present(errors.getFieldErrors("bibtex.list[" + i + "]*"))) {
+			test1 = present(errors.getFieldErrors("bibtex.list[" + i + "]*"));
+			
+			/*
+			 * check if this post is already stored in DB
+			 */
+			test2 = isPostDuplicate(posts.get(i), isOverwrite);
+			
+			if(!test1 && !test2){
 				log.debug("post no. " + i + " has no field errors");
 				/*
-				 * post has no field errors --> try to store it in database
+				 * post has no field errors & is not duplicate--> try to store it in database
 				 * 
 				 * We also remember the original position of the post to 
 				 * add error messages later.
@@ -582,25 +530,19 @@ public class PostPublicationController extends AbstractEditPublicationController
 		this.publicationImporter = publicationImporter;
 	}
 	
+	private boolean isPostDuplicate(final Post<?> post, boolean isOverwrite) {
 	
-	private void isPostDuplicate(final Map<Post<BibTex>, Integer> postsToStore, boolean isOverwrite) {
-		final List<Post<?>> posts = new LinkedList<Post<?>>(postsToStore.keySet());
-		//for (final Post<?> Post : posts) {
-		//final List<Post<?>> posts = new LinkedList<Post<?>>(postsToStore.keySet());
-			
-				for (final Post<?> Post : posts) {//maybe for should go to the dbLogic
-					
-					final String userName = Post.getUser().getName();
-					/*
-					 * the current intra hash of the resource
-					 */
-					final String intraHash = Post.getResource().getIntraHash();
-					//isPostDuplicate(posts);
-					if(!isOverwrite && present(logic.getPostDetails(intraHash, userName))){//check .tostring()
-						final ErrorMessage errorMessage = new DuplicatePostErrorMessage(Post.getResource().getClass().toString(), Post.getResource().getIntraHash());
-						errors.rejectValue(null, errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
-					}
-				}//getposts
-					
+		final String userName = post.getUser().getName();
+		final String intraHash = post.getResource().getIntraHash();
+		
+		if(!isOverwrite && present(logic.getPostDetails(intraHash, userName))){
+			/*
+			 * DuplicatePost flag is set to true here. In batch edit view, 
+			 * duplicate posts are shown as erroneous posts.
+			 */
+			post.setDuplicatePost(true);
+			return true;
+		}
+		return false;
 	}
 }

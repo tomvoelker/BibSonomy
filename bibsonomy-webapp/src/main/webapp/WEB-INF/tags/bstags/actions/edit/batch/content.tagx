@@ -35,6 +35,7 @@
 	<jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="updateExistingPost" type="java.lang.Boolean" required="false" />
+	
 	<jsp:directive.attribute name="overwrite" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" description="The type of resource that are edited (bookmark or bibtex)." />
 	<jsp:directive.attribute name="directEdit" type="java.lang.Boolean" required="false"/>
@@ -45,14 +46,15 @@
 	<jsp:directive.attribute name="actions" fragment="true" required="true" />
 	<jsp:directive.attribute name="documents" fragment="true" required="true" />
 
-	<script type="text/javascript" src="/resources/javascript/batchEdit.js"><!-- keep me --></script>
-	<mtl:styleSheet path="${resdir}/css/BatchEdit.css" />
+	<script type="text/javascript" src="/resources/javascript/batchEdit_bs.js"><!-- keep me --></script>
+	<mtl:styleSheet path="${resdir}/css/BatchEdit_bs.css" />
 
 	<!--=======================-->
 	<!-- VARIABLEN DEKLARATION -->
 	<!--=======================-->
 	
 	<!-- VIEW FOR SAVING OR DELETING POSTS -->
+	
 	<c:if test="${empty updateExistingPost}">
 		<c:set var="updateExistingPost" value="true" />
 	</c:if>
@@ -116,7 +118,7 @@
 			<!-- for some unknown! reasons (probably the buttonClasses), I couldn't disable buttons 
 			via javascript. so we have two divs: one for disabled buttons and one for enabled buttons. -->
 			
-			<div id="editButtonsDisabled" class="edit-media-buttons btn-group" style="padding-left:35px;padding-bottom:10px">
+			<div id="editButtonsDisabled" class="edit-media-buttons btn-group" style="padding-left:5px;padding-bottom:10px">
 				<c:if test="${resourceType eq 'bibtex'}">   	
 			       	<a id="normID" class="${buttonClasses}" title="${normBtnMsg}" disabled="disabled">
 			        	<span class="fa fa-refresh"><!--  --></span></a>
@@ -136,7 +138,7 @@
 	            	<span class="fa fa-tags"><!--  --></span></a>
 			</div>
 			
-			<div id="editButtonsEnabled" class="edit-media-buttons btn-group invisible" style="padding-left:35px;padding-bottom:10px">
+			<div id="editButtonsEnabled" class="edit-media-buttons btn-group invisible" style="padding-left:5px;padding-bottom:10px">
 				<c:if test="${resourceType eq 'bibtex'}">   	
 			       	<a id="normId" class="${buttonClasses}" title="${normBtnMsg}">
 			        	<span class="fa fa-refresh"><!--  --></span></a>
@@ -158,18 +160,18 @@
 			</c:when>
 			<c:otherwise>
 				<!-- edit options : checkboxes-->
-			<div id="editCheckboxes" style="padding-left:35px;padding-bottom:10px">
+			<div id="editCheckboxes" style="margin-left:5px;margin-bottom:10px;background-color: #dbdbdb;width:109%">
 				
-				<input type="checkbox" id="SelectNorm" title="Normalize" style="align:left">
+				<input type="checkbox" id="SelectNorm" title="Normalize" style="align:left;margin-right:5px;">
 					<fmt:message key="batchedit.checkboxNormalize" /></input>		   	
 				<br/>
-				<input type="checkbox" id="SelectTagAll" title="Edit all tag" style="align:left">
+				<input type="checkbox" id="SelectTagAll" title="Edit all tag" style="align:left;margin-right:5px;">
 				<fmt:message key="batchedit.checkboxEditAllTag" /></input>
 	           		
-			    <input type="text" id="inputTagAll" name="tags" style="font-size:90%;width:40%;height: 27px;padding-left:2px;" />
+			    <input type="text" id="inputTagAll" name="tags" style="font-size:90%;width:40%;height: 29px;line-height: 29px;margin-left:5px;" />
 			    <br/>
 			    
-			    <input type="checkbox" id="SelectTagEach" title="Edit tag each" style="align:left">
+			    <input type="checkbox" id="SelectTagEach" title="Edit tag each" style="align:left;margin-right:5px;">
 			    <fmt:message key="batchedit.checkboxEditEachTag" /></input>
 			</div>
 			</c:otherwise>
@@ -191,10 +193,10 @@
 				this approach is selected in order to go around different 'styles' in different browsers.
 				So that the table be shown the same in all browsers.-->
 				
-				<ul class="postList">
+				<ul class="postList" style="padding:0px;margin:0px;	list-style-type: none;">
 					<li> <!-- fist column: check boxes for selecting post(s)-->
-						<ul	class="myHeader">
-							<input type="checkbox" id="selectAll" value="true" title="${selectAll}" style="align:center" />
+						<ul	class="selectAllCheckbox">
+							<input type="checkbox" id="selectAll" title="${selectAll}"  />
 						</ul>
 										
 						<c:forEach var="post" items="${listView.list}" varStatus="postCount">
@@ -207,12 +209,13 @@
 									<c:set var="postHasError" value="${status.error}" />
 								</spring:bind>
 							</c:if>
+							
 							<c:choose>
-								<c:when test="${postHasError}">								
+								<c:when test="${postHasError || post.duplicatePost}">								
 									<c:if test="${post.user.name eq command.context.loginUser.name}">
 										<ul>
 												
-											<buttons:help iconText="X" cssStyle="width:100%;" iconTextStyle="display:block; color:red; font-size:120%; text-align:center;">
+											<buttons:help iconText="X" iconTextStyle="display:block; color:red; font-size:120%; text-align:center;">
 												<jsp:attribute name="helpText">
 													<ul>
 														<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].resource.*">
@@ -226,6 +229,10 @@
 									                			<li class="info_bold">${errorMessage}</li>
 										               		</c:forEach>
 									               		</spring:bind>
+									               		<c:if test="${post.duplicatePost}">
+									               			<li class="info_bold"><fmt:message key="batchedit.DuplicatePostError" /></li>
+									               		</c:if>
+									               		
 									            	</ul>
 												</jsp:attribute>
 											</buttons:help>
@@ -235,15 +242,15 @@
 								<c:otherwise>
 									<c:choose>
 									<c:when test="${post.user.name eq command.context.loginUser.name}">
-										<ul style="text-align: center;height: 27px;">
-											<input type="checkbox" name="posts['${post.resource.intraHash}']" value="true" style="margin-right:5px"/>
+										<ul class="checkboxes">
+											<input type="checkbox" name="posts['${post.resource.intraHash}']" value="true"/>
 										</ul>
 									</c:when>
 									<c:otherwise>
 									<!-- if the user is not posts' owner: -->				
 										<c:forEach var="post" items="${listView.list}" varStatus="postCount">		
-											<ul>
-												<input type="checkbox" name="posts['${post.resource.intraHash}']" disabled="disabled" style="margin-right:5px;"/>
+											<ul class="checkboxes">
+												<input type="checkbox" name="posts['${post.resource.intraHash}']" disabled="disabled"/>
 											</ul>
 										</c:forEach>
 									</c:otherwise>
@@ -254,14 +261,12 @@
 										
 						
 					</li>						
-					<li> <!-- second column: posts' descriptions -->
-						<div class="myHeader">
-						<ul>
+					<li > <!-- second column: posts' descriptions -->
+						<div >
+						<ul class="myHeader">
 							<fmt:message key="batchedit.yourPosts" />
 							
-						</ul>
-						</div>		
-		
+						</ul>		
 						<!--  next n rows are filled with posts -->
 						<c:forEach var="post" items="${listView.list}" varStatus="postCount">
 							<spring:bind
@@ -273,8 +278,9 @@
 									<c:set var="postHasError" value="${status.error}" />
 								</spring:bind>
 							</c:if>
+							
 							<c:choose>
-								<c:when test="${postHasError}">
+								<c:when test="${postHasError || post.duplicatePost}">
 									<c:if	test="${post.user.name eq command.context.loginUser.name}">		
 										<ul class="postDesc">
 											<jsp:invoke fragment="shortPostDescription" />
@@ -284,11 +290,10 @@
 								<c:otherwise>
 									<c:choose>
 									<c:when test="${post.user.name eq command.context.loginUser.name}">
-											<!--  a short description of the post -->
-										 	<ul class="postDesc" style="height: 27px;">
-												<jsp:invoke	fragment="shortPostDescription" />
-											</ul> 
-										
+										<!--  a short description of the post -->
+									 	<ul class="postDesc">
+											<jsp:invoke	fragment="shortPostDescription" />
+										</ul> 	
 									</c:when>
 									<c:otherwise>
 									<!-- if the user is not posts' owner: -->				
@@ -303,7 +308,7 @@
 								</c:otherwise>
 							</c:choose>
 						</c:forEach>
-
+						</div>
 					</li>
 					<li> <!-- third column: text boxes for editing posts' tags -->
 						<ul class="myHeader" name="postTagsHeader">
@@ -321,20 +326,17 @@
 								</spring:bind>
 							</c:if>
 							<c:choose>
-								<c:when test="${postHasError}">
-									
-										<c:if	test="${post.user.name eq command.context.loginUser.name}">
-											<ul style="text-align:center">
-				                       			<!-- NO TAGS HERE BECAUSE POST HAS ERRORS -->
-				                       			<b class="smalltext"><fmt:message key="error" /></b> 
-					                   		</ul>
-
-										</c:if>
-										
-								</c:when>
-								<c:otherwise>
-									
-									<!--  a post owned by the logged in user - show a tag edit form -->
+							<c:when test="${postHasError || post.duplicatePost}">
+								<ul name="erroneousPost" class="invisible">
+									<input type="text" disabled="disabled"
+										name="oldTags['${post.resource.intraHash}']"
+										value="${fn:escapeXml(mtl:toTagString(post.tags))}"
+										style="float:left;font-size:90%;
+										width:100%;height: 29px;line-height: 29px;" />
+								</ul>
+							</c:when>
+							<c:otherwise>
+								<!--  a post owned by the logged in user - show a tag edit form -->
 										<c:if test="${post.user.name eq command.context.loginUser.name}">
 											<!-- the input field for the tags -->
 											<ul name="eachPostTag" class="invisible">
@@ -347,7 +349,7 @@
 														   name="newTags['${post.resource.intraHash}']"
 														   value="${fn:escapeXml(mtl:toTagString(post.tags))}"
 														   style="float:left;font-size:90%;
-													   		width:100%;height: 27px;padding-left:2px;" />
+													   		width:100%;height: 29px;line-height: 29px;padding-left:2px;" />
 														<!--  we don't send the old tags, since we must try to update this post in any case  -->
 													</c:when>
 													<c:otherwise>
@@ -356,7 +358,7 @@
 													   		name="newTags['${post.resource.intraHash}']"
 													   		value="${fn:escapeXml(mtl:toTagString(post.tags))}"
 													   		style="float:left;font-size:90%;
-													   		width:100%;height: 27px;padding-left:2px;" />
+													   		width:100%;height: 29px;line-height: 29px;" />
 															<!-- to check if the tags have been changed, we also send the original tags -->
 														<input type="hidden" 
 													   		name="oldTags['${post.resource.intraHash}']"
@@ -367,60 +369,56 @@
 										</ul>
 									</c:if>
 									
-								
-							</c:otherwise>
-						</c:choose>
-				
+								</c:otherwise>
+								</c:choose>
 							<!-- This variable is defined so that the input to 'ajaxgroupbox' don't be empty-->
 						<c:set var="selectedgroups" value="${post.groups}" />
 					</c:forEach>
 
 				</li>
 				<li>
-					<div name="eachTagBtn" id="eachTagOk" >
-					<bsform:button size="defaultSize" style="primary" value="editEachtag"/>
-					<!-- <ul><li>
-						<span class="applyBtn">
-							<fmt:message key="batchedit.eachTagOk" /></span>
-					</li></ul> -->
+					<div name="eachTagBtn" id="eachTagOk" style="margin:2px" >
+					<bsform:button size="defaultSize" style="primary" 
+						onclick="eachTagOK()" value="edit"/>
 					</div>
 					
 					
-					<div name="AllpostTagsHeader" class="myHeader" style="height:35px;font-size:90%">
-						<ul><li><fmt:message key="batchedit.AllpostTagsHeader" />
+					<div name="AllpostTagsHeader" >
+						<ul ><li class="myHeader" style="height:5px;font-size:90%">
+						<fmt:message key="batchedit.AllpostTagsHeader" />
 						</li></ul></div>	
 					
 				
-					<div name="allTagBox">
-						<input type="text" name="tags" size="40"/>
-							<bsform:button size="defaultSize" style="primary"
-							onclick="allTagOK()" value="allTagEdit"/>
+					<div name="allTagBox" style="margin:2px">
+						<input type="text" name="tags" />
+						<br/>
+						<div style="margin-top:2px">
+						<bsform:button size="defaultSize" style="primary"
+							onclick="allTagOK()" value="edit"/>
+						</div>
 					</div>
 	
 					<div id="privacyBox" >
-						<div name="privacyHeader" class="myHeader" >
-							<ul><li>viewable for:</li></ul>
-						</div>
-						<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" selectedGroups="${selectedgroups}"/>						
+						<ul name="privacyHeader" class="myHeader" style="width:230px">
+							<fmt:message key="batchedit.viewable"/>
+						</ul>
+						<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" selectedGroups="${selectedgroups}"/>
+						<div style="margin:2px">						
 						<bsform:button size="defaultSize" style="primary"
-						onclick="privacyOK()" value="privacyOK"/>
+						onclick="privacyOK()" value="edit"/>
+						</div>
 					</div>	
 					
 						
 					<!-- This button is shown in "InDirect" batchedit page -->
-					<div id="combiEditBtn">
+					<div id="combiEditBtn" style="margin:2px">
 						<bsform:button size="defaultSize" style="primary"
-						onclick="combiEditOK" value="combiedit"/>
+						onclick="combiEditOK()" value="edit"/>
 					</div>
 					
-					<div id="cancelBtn">
+					<div id="cancelBtn" style="margin:2px">
 						<bsform:button size="defaultSize" style="primary"
-						onclick="cancelBtnClick" value="cancel"/>
-						<!-- <ul>
-							<li id="cancelButtton"><span class="applyBtn">
-								<fmt:message key="batchedit.cancelbtn" /></span>
-							</li>
-						</ul> -->
+						onclick="cancelBtnClick()" value="cancel"/>
 					</div>								
 				
 				</li>
@@ -430,12 +428,13 @@
 				</ul>
 			</div>
 		</c:if>
-
-			
-		<div style="padding-left: 35px;">
-			<rc:nextprev listView="${listView}"	listViewStartParamName="${listViewStartParamName}" />
+		<!-- we don't have pagination in indirect mode. -->
+		<c:if test="${directEdit}">
+			<div style="padding-left: 5px;">
+				<rc:nextprev listView="${listView}"	listViewStartParamName="${listViewStartParamName}" />
 				${mtl:ch('nbsp')}
-		</div>
+			</div>
+		</c:if>
 		<input type="hidden" name="ckey" value="${ckey}" /> 
 		<input type="hidden" name="referer"	value="${fn:escapeXml(command.referer)}" />
 		<input type="hidden" name="directEdit" value="${directEdit}" />
