@@ -106,13 +106,14 @@
 					<c:out value=" "/>
 				</ul>
 				<br /><br />
-				<p><fmt:message key="relations.editRelations" /></p>
-				
+				<c:if test="${usersOwnRelations}">
+					<p><fmt:message key="relations.editRelations" /></p>
+				</c:if>
 			</c:when>
 			<c:otherwise>
-				
-				<p><fmt:message key="relations.noRelations" /></p>
-				
+				<c:if test="${usersOwnRelations}">
+					<p><fmt:message key="relations.noRelations" /></p>
+				</c:if>
 			</c:otherwise>
 		</c:choose>
 	
