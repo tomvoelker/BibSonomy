@@ -57,19 +57,19 @@
 				<bsform:fieldset legendKey="register.personal">
 					<jsp:attribute name="content">
 
-		       			<bsform:input labelColSpan="3" path="registerUser.name" labelKey="navi.username" placeholderLikeLabel="true" inputGroupSymbol="@"/>
+		       			<bsform:input labelColSpan="3" path="registerUser.name" labelKey="navi.username" placeholderLikeLabel="true" inputGroupSymbol="@" noHelp="true" />
 		       			
-		       			<bsform:password labelColSpan="3" path="registerUser.password" labelKey="navi.password" placeholderLikeLabel="true" inputGroupFaIcon="fa-key" />
+		       			<bsform:password labelColSpan="3" path="registerUser.password" labelKey="navi.password" placeholderLikeLabel="true" inputGroupFaIcon="fa-key" noHelp="true" />
 		       			
-		       			<bsform:password labelColSpan="3" path="passwordCheck" labelKey="user.settings.passwordCheck" placeholderLikeLabel="true" inputGroupFaIcon="fa-key" />
+		       			<bsform:password labelColSpan="3" path="passwordCheck" labelKey="user.settings.passwordCheck" placeholderLikeLabel="true" inputGroupFaIcon="fa-key" noHelp="true" />
 		       			
-						<bsform:input labelColSpan="3" path="registerUser.email" labelKey="user.settings.email" placeholderLikeLabel="true" inputGroupFaIcon="fa-envelope" />
+						<bsform:input labelColSpan="3" path="registerUser.email" labelKey="user.settings.email" placeholderLikeLabel="true" inputGroupFaIcon="fa-envelope" noHelp="true" />
 		       			
 		       			<hr />
 		       			
-		       			<bsform:input labelColSpan="3" path="registerUser.homepage" labelKey="user.settings.homepage" placeholderLikeLabel="true" inputGroupFaIcon="fa-globe" />
+		       			<bsform:input labelColSpan="3" path="registerUser.homepage" labelKey="user.settings.homepage" placeholderLikeLabel="true" inputGroupFaIcon="fa-globe" noHelp="true" />
 		       			
-						<bsform:input labelColSpan="3" path="registerUser.realname" labelKey="user.settings.realname" placeholderLikeLabel="true" inputGroupFaIcon="fa-user" /> 
+						<bsform:input labelColSpan="3" path="registerUser.realname" labelKey="user.settings.realname" placeholderLikeLabel="true" inputGroupFaIcon="fa-user" noHelp="true" /> 
 		       			
 		       		</jsp:attribute>
 				</bsform:fieldset>
