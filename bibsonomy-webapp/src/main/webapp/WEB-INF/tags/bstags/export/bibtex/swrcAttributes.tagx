@@ -160,9 +160,10 @@
 		</swrc:day>
 	</c:if>
 	
-	<c:if test ="${!empty post.resource.bibtexAbstract}">
+	<c:set var="pubAbstract" value="${post.resource['abstract']}" />
+	<c:if test ="${!empty pubAbstract}">
 		<swrc:abstract>
-			<c:out value="${post.resource.bibtexAbstract}"/>
+			<c:out value="${pubAbstract}"/>
 		</swrc:abstract>
 	</c:if>
 	

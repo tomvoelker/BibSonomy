@@ -42,21 +42,7 @@
 				<li><h4 class="sidebar"><fmt:message key="bibtex.details.meta"/></h4>
 					<ul>
 						<li><fmt:message key="post.change_date" /> <rc:metaChangeDate post="${post}"/><br /></li>
-						<li><fmt:message key="post.date" /> <rc:metaDate post="${post}"/><br /></li>
-						
-						<c:if test="${fn:length(command.relatedUserCommand.relatedUsers) gt 1}">
-							<li>
-								<h5><fmt:message key="bibtex.details.related_users"/></h5>
-								<ul style="margin-left: 1em; list-style:disc;">
-									<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
-										<li class="${userclass}">
-											<a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(user.name))}"><c:out value="${user.name}"/></a>
-											<c:out value=" "/>
-										</li>
-									</c:forEach>
-								</ul>
-							</li>
-						</c:if>
+						<li><fmt:message key="post.date" /> <rc:metaDate post="${post}" withoutClock="${true}"/><br /></li>
 					</ul>
 				</li>
 				<c:set var="tagsString" value="${mtl:toTagString(post.tags)}" />
@@ -74,7 +60,7 @@
 							</div>
 							<input type="hidden" name="oldTags['${fn:escapeXml(publication.intraHash)}']" value="${fn:escapeXml(tagsString)}"/>
 							<input type="hidden" name="posts['${fn:escapeXml(publication.intraHash)}']" value="true" checked="checked" />
-							<input type="hidden" name="referer" value="${relativeUrlGenerator.getPublicationUrlByIntraHashAndUsername(publication.intraHash, post.user.name)}"/>
+							<input type="hidden" name="referer" value="/bibtex/2${publication.intraHash}/${mtl:encodeURI(post.user.name)}"/>
 							<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
 							<input type="hidden" name="resourcetype" value="bibtex"/>
 							<input type="hidden" name="deleteCheckedPosts" value="true"/>
@@ -97,20 +83,21 @@
 							</li>
 						</c:if>
 
-				<!--+
-					| 
-					| tags
-					|
-					+-->
+							
+						<!--+
+							| 
+							| tags
+							|
+							+-->
 						<li><h5><fmt:message key="tags"/>
-						
+								
 								<small style="font-size:80%;">
-									(<a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(post.user.name))}"><c:out value="${post.user.name}" /></a>
+									(<a href="/user/${fn:escapeXml(post.user.name)}"><c:out value="${post.user.name}" /></a>
 									<fmt:message key="tags.highlighted.by_user"/>)
 								</small>
 							</h5>
-					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagSizeMode="detail" tagboxMinfreqStyle="none" highlightTags="${tagsString}"/>
-				</li>
+							<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagSizeMode="detail" tagboxMinfreqStyle="none" highlightTags="${tagsString}"/>
+						</li>
 					</ul>
 				</li>
 				

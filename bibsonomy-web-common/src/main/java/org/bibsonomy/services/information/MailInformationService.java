@@ -77,8 +77,6 @@ public class MailInformationService implements InformationService {
 		}
 	}
 	
-	
-
 	/**
 	 * the subject of the mail
 	 * @param locale

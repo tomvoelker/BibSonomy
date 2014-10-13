@@ -12,7 +12,7 @@
   
     <c:out value="${mtl:cleanBibtex(mtl:shortPublicationDescription(post))}" />
     <c:out value=" "/>
-    <span class="info">...
+    <span class="info hidden">...
       <div>
         <div class="ptitle"><bib:title post="${post}"/></div>
         <div class="pdesc"> <bib:desc publication="${post.resource}"/></div>

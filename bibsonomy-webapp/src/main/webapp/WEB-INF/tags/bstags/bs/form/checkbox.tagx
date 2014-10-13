@@ -54,7 +54,7 @@
 							tabindex="${tabindex}"
 							value="${false}"/>
        				 <c:out value="${labelText}"/>
-      				<c:if test="${not empty noHelp or not noHelp}">
+      				<c:if test="${empty noHelp or not noHelp}">
 		          		<div class="help-content hide">${helpText}</div>
           			</c:if>
 	        	</label>
