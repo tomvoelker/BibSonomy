@@ -12,7 +12,7 @@
 		<div class="alert alert-${command.didYouKnowMessage.alertType}">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&amp;times;</button>
 			<h4><fmt:message key="didyouknow" /></h4>
-			<p><fmt:message key="${command.didYouKnowMessage.messageKey}" /></p>
+			<p><fmt:message key="${command.didYouKnowMessage.messageKey}"><fmt:param>${properties['project.name']}</fmt:param></fmt:message></p>
 		</div>
 	</c:if>
 

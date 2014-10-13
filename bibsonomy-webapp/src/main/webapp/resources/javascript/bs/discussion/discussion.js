@@ -489,77 +489,7 @@ function parseLinks(reviewText) {
 }
 
 
-//functions for redesigned page  
-$(function(){
-	var hash = window.location.hash;
-	var gsPresent = ($("#gs_present").val()=="true");
-	if(hash=="#discussionbox" && !gsPresent) {
-		$("#hideableContent").hide();
-		$("#imgExpandDiscussion").hide();
-		$("#imgCollapseDiscussion").show();
-		
-		$("#textExpandDiscussion").hide();
-		$("#textCollapseDiscussion").show();		
-		
-		
-		$(".imgCollapse").each(function(){
-			if($(this).attr("id") == "imgCollapseContent") {
-				$(this).hide();
-			}
-		});
-		
-		$(".imgExpand").each(function(){
-			if($(this).attr("id") == "imgExpandContent") {
-				$(this).show();
-			}
-		});
-		
-		
-	} else if (!gsPresent){
-		//$("div#discussion").hide();
-		$("#imgExpandDiscussion").show();
-		$("#imgCollapseDiscussion").hide();
-		$("#textExpandDiscussion").show();
-		$("#textCollapseDiscussion").hide();
-		$("#imgExpandContent").hide();
-		$("#imgCollapseContent").show();
-		
-		
-	}
-});
-
-
 $(document).ready(function() {
-	
-	numberOfBookmarkLists = $(".bookmarksContainer").size(); // every id bookmarks_* must have a class bookmarksContainer
-	numberOfPublicationLists = $(".publicationsContainer").size(); // every id publications_* must have a class publicationsContainer
-
-	if (numberOfBookmarkLists != 0) {
-		$("#bookmarks_"+(numberOfBookmarkLists-1)).height("auto");
-	}
-	
-	if (numberOfBookmarkLists != 0) {
-		$("#publications_"+(numberOfPublicationLists-1)).height("auto");
-	}
-
-	$("a.foldUnfold").click(function(){
-		$(".posts, .wide").height("auto");
-
-		var selector = $(this).attr("href");
-		var resource = $(selector);
-		if(resource.is(":visible")) {
-			resource.hide();
-			$(this).find(".imgCollapse").hide();
-			$(this).find(".imgExpand").show();
-			return false;
-		}
-		resource.show();
-		$(this).find(".imgCollapse").show();
-		$(this).find(".imgExpand").hide();
-		
-		//Fix to redefine the Sidebar height
-		return false;
-	});
 	
 	initCSLSugestions($("input.referenceAutocompletion"));
 
