@@ -67,8 +67,21 @@
 				</div>
 				-->
 				<div class="single-container ${boxStyle}">
-	
-					<bs:logo />
+					<div class="row">
+						<div class="col-sm-10" style="padding-left: 0;">
+							<bs:logo />	
+						</div>
+						<div class="col-sm-2" style="padding-right: 0; padding-top: 20px;">
+							<div id="lang-switcher" class="pull-right">
+								<span>(&amp;nbsp;</span>
+								<a href="/${mtl:setParam(fn:escapeXml(requPathAndQuery), 'lang', 'en')}">en</a>
+								<span>&amp;nbsp;|&amp;nbsp;</span>
+								<a href="/${mtl:setParam(fn:escapeXml(requPathAndQuery), 'lang', 'de')}">de</a>
+								<span>&amp;nbsp;)</span>
+							</div>
+						</div>
+					</div>
+					
 					
 					<div style="margin-bottom: 40px"><!--  --></div>
 				</div>			
