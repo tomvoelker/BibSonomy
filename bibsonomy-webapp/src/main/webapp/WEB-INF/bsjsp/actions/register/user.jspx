@@ -38,9 +38,17 @@
 		
 		<jsp:attribute name="content">
 		
-			<h1 class="text-center"><fmt:message key="register.heading1" /></h1>
+			<h1 class="text-center">
+				<fmt:message key="register.heading1">
+					<fmt:param value="${properties['project.name']}"></fmt:param>
+				</fmt:message>
+			</h1>
 			<div class="lead text-center">
-				<p><fmt:message key="register.description"/></p>
+				<p>
+					<fmt:message key="register.description">
+						<fmt:param value="${properties['project.name']}"></fmt:param>
+					</fmt:message>
+				</p>
 			</div>
 			<form:form action="/register" method="POST" class="form-horizontal">
 		        
