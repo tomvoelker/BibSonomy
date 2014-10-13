@@ -52,7 +52,7 @@
 			
 			<!-- link-buttons on what you can do -->	
 			<ul>			
-	          <li style="text-align: center;">
+	          <li>
 	            <!-- edit -->
 	            <div class="form-group">
 		            <fmt:message key="basket.edit.tags" var="editTags"/>
