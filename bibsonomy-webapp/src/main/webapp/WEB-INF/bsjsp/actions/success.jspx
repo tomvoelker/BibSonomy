@@ -24,8 +24,8 @@
 				<jsp:attribute name="alertBody">
 					<fmt:message key="${command.messageKey}">
 					<c:if test="${not empty command.messageParams}">
-						<c:forEach var="param" items="${command.messageParams}">
-							<fmt:param value="${fn:escapeXml(param)}" />
+						<c:forEach var="paramValue" items="${command.messageParams}">
+							<fmt:param value="${fn:escapeXml(paramValue)}" />
 						</c:forEach>
 					</c:if>
 					</fmt:message>
