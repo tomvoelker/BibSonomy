@@ -15,6 +15,20 @@ public class ResourceParam<T extends Resource> extends GenericParam {
 	private RatingAverage ratingAverage = RatingAverage.ARITHMETIC_MEAN;
 
 	protected T resource;
+	protected String resourceType;
+	/**
+	 * @return the resourceType
+	 */
+	public String getResourceType() {
+		return this.resourceType;
+	}
+
+	/**
+	 * @param resourceType the resourceType to set
+	 */
+	public void setResourceType(String resourceType) {
+		this.resourceType = resourceType;
+	}
 
 	/**
 	 * @param resource the resource to set

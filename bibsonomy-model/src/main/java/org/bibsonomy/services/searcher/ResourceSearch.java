@@ -70,7 +70,7 @@ public interface ResourceSearch<R extends Resource> {
 
 	/**
 	 * search for posts using the ES index
-	 * 
+	 * @param resourceType resourceType of the posts to set the type in ES node 
 	 * @param userName
 	 * @param requestedUserName
 	 * @param requestedGroupName
@@ -89,7 +89,7 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param offset
 	 * @return a list of posts containing the search result
 	 */
-	public List<Post<R>> getPostsForElasticSearch(
+	public List<Post<R>> getPostsForElasticSearch(final String resourceType,
 			final String userName, final String requestedUserName, String requestedGroupName, 
 			final List<String> requestedRelationNames,
 			final Collection<String> allowedGroups,final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms,

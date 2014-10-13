@@ -751,7 +751,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Post<R>> getPostsForElasticSearch(String userName,
+	public List<Post<R>> getPostsForElasticSearch(String resourceType, String userName,
 			String requestedUserName, String requestedGroupName,
 			List<String> requestedRelationNames,
 			Collection<String> allowedGroups,SearchType searchType,String searchTerms,
@@ -762,6 +762,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		
 			EsResourceSearch<R> searchResource =  new EsResourceSearch<R>();
 			searchResource.setSearchTerms(searchTerms);
+			searchResource.setTYPE_NAME(resourceType);
 			searchResource.setResourceConverter(this.resourceConverter);
 			try {
 				List<Post<R>> posts = searchResource.fullTextSearch();

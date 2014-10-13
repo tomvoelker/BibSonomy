@@ -756,6 +756,9 @@ public class DBLogic implements LogicInterface {
 							// user can access all post details (including docs)
 							param.setPostAccess(PostAccess.FULL);
 						}
+						
+						//sets the resource type to later use it as the Type name to search in the index
+						param.setResourceType(resourceType.getSimpleName());
 
 					 	// this is save because of RTTI-check of resourceType argument
 						// which is of class T
@@ -768,6 +771,8 @@ public class DBLogic implements LogicInterface {
 						final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
 						//sets the search type to ealasticSearch
 						param.setSearchType(searchType);
+						//sets the resource type to later use it as the Type name to search in the index
+						param.setResourceType(resourceType.getSimpleName());
 						
 						final List<Post<T>> bookmarks= (List) this.bookmarkDBManager.getPosts(param, session);
 						SystemTagsExtractor.handleHiddenSystemTags(bookmarks, loginUser.getName());
@@ -778,6 +783,8 @@ public class DBLogic implements LogicInterface {
 						final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
 						//sets the search type to ealasticSearch
 						param.setSearchType(searchType);
+						//sets the resource type to later use it as the Type name to search in the index
+						param.setResourceType(resourceType.getSimpleName());
 						
 						return (List) this.goldStandardPublicationDBManager.getPosts(param, session);
 					}
@@ -786,6 +793,8 @@ public class DBLogic implements LogicInterface {
 						final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
 						//sets the search type to ealasticSearch
 						param.setSearchType(searchType);
+						//sets the resource type to later use it as the Type name to search in the index
+						param.setResourceType(resourceType.getSimpleName());
 						
 						return (List) this.goldStandardBookmarkDBManager.getPosts(param, session);
 					}

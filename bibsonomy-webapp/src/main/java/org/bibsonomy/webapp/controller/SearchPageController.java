@@ -31,6 +31,7 @@ public class SearchPageController extends SingleResourceListController implement
 	 */
 	private static final List<GroupingEntity> SUPPORTED_GROUPING_ENTITIES = Arrays.asList(GroupingEntity.USER, GroupingEntity.GROUP);
 	
+	private boolean searchSharedIndex;
 	@Override
 	public View workOn(final SearchViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
@@ -116,6 +117,20 @@ public class SearchPageController extends SingleResourceListController implement
 		// set the order to rank by default
 		command.setOrder(Order.RANK);
 		return command;
+	}
+
+	/**
+	 * @return the searchSharedIndex
+	 */
+	public boolean isSearchSharedIndex() {
+		return this.searchSharedIndex;
+	}
+
+	/**
+	 * @param searchSharedIndex the searchSharedIndex to set
+	 */
+	public void setSearchSharedIndex(boolean searchSharedIndex) {
+		this.searchSharedIndex = searchSharedIndex;
 	}
 
 }

@@ -100,11 +100,11 @@ public class ElasticSearchPageController extends SingleResourceListController im
 		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
-			if(resourceType.getName().equals("org.bibsonomy.model.BibTex")){
+//			if(resourceType.getName().equals("org.bibsonomy.model.BibTex")){
 			this.setListElasticSearch(command, resourceType, groupingEntity, groupingName, requestedTags, null, search, searchType, null, command.getOrder(), command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
 			
 			this.postProcessAndSortList(command, resourceType);
-			}
+//			}
 		}
 		
 		// html format - retrieve tags and return HTML view

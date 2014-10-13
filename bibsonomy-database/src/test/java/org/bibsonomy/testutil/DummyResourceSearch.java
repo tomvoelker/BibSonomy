@@ -25,14 +25,13 @@ public class DummyResourceSearch implements ResourceSearch<Resource> {
 		return null;
 	}
 
-
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPostsForElasticSearch(java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, org.bibsonomy.model.es.SearchType, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.model.enums.Order, int, int)
+	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPostsForElasticSearch(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, org.bibsonomy.model.es.SearchType, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.model.enums.Order, int, int)
 	 */
 	@Override
-	public List<Post<Resource>> getPostsForElasticSearch(String userName,
-			String requestedUserName, String requestedGroupName,
-			List<String> requestedRelationNames,
+	public List<Post<Resource>> getPostsForElasticSearch(String resourceType,
+			String userName, String requestedUserName,
+			String requestedGroupName, List<String> requestedRelationNames,
 			Collection<String> allowedGroups, SearchType searchType,
 			String searchTerms, String titleSearchTerms,
 			String authorSearchTerms, Collection<String> tagIndex, String year,
@@ -41,5 +40,6 @@ public class DummyResourceSearch implements ResourceSearch<Resource> {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 }
