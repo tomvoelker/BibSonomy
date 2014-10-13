@@ -65,7 +65,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		if (!command.getContext().isUserLoggedIn()) {
 			throw new org.springframework.security.access.AccessDeniedException("please log in");
 		}
-        
+		
 		/*
 		 * The user has three options and needs:
 		 * * see join site: loginUser, group
@@ -87,9 +87,18 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		final String deniedUserName = command.getDeniedUser();
 		boolean joinRequest = command.isJoinRequest();
 		
-		if (joinRequest && !present(reason)) {
-			errors.rejectValue("reason", "error.field.required");
-			return Views.JOIN_GROUP;
+		if (joinRequest) {
+			// check if user is already in this group
+			if (loginUser.getGroups().contains(group)) {
+				// user wants to join a group that he's already a member of => error since he cannot use the join_group page
+				errors.reject("joinGroup.already.member.error");
+				return Views.ERROR;
+			}
+			
+			if (!present(reason)) {
+				errors.rejectValue("reason", "error.field.required");
+				return Views.JOIN_GROUP;
+			}
 		}
 		
 		if (!joinRequest && !present(deniedUserName)) {
@@ -128,13 +137,6 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		/*
 		 * From here we assume, that the user has sent a join group request from the join group form
 		 */
-		
-		// check if user is already in this group
-		if (loginUser.getGroups().contains(group)) {
-			// user wants to join a group that he's already a member of => error since he cannot use the join_group page
-			errors.reject("joinGroup.already.member.error");
-			return Views.ERROR;
-		}
 		
 		// check user is spammer
 		if (loginUser.isSpammer()) {
