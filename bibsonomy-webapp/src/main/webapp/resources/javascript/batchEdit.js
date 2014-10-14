@@ -412,7 +412,7 @@ function showEachTag(){
 
 function showEditBtn(){
 	var oneIsChecked = false;
-	// if at least one edit option is selected, edit button should remain, 
+	// if at least one edit option is selected, edit button should be visible, 
 	//otherwise it should be hidden.
 	$('input[id^=Select]:checkbox:checked').each(function() {
 		oneIsChecked = true;
@@ -427,22 +427,9 @@ function showEditBtn(){
 }
 maximizeById("general");
 
-
-
 /**
  * useful functions, for future maybe
  */
-/*
-function changeTagInputs(selector, disabled) {
-	$(selector).each(function() {
-		
-		// * remove possible special characters from selector string
-		 
-	//	var attr = $(this).prop('name').replace('posts','newTags').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1');
-		//$('input[name=' + attr + ']:text').prop('disabled', disabled);
-	});
-}
-*/
 /*
 function enableAllCheckboxes(){
 	$('#selectAll').prop('disabled', false);

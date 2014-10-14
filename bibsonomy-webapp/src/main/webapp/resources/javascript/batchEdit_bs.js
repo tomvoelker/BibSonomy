@@ -238,13 +238,13 @@ function eachTagOK(){
 	submitForm("#tagEachEdited");
 }
 function allTagOK(){
-		//clear the action array
-		action.splice(0,action.lenght);
-		//action is set here
-		action.push(1);
-		$('input[name=action]').val(action);
-		$("#tagAllAdded").toggleClass('invisible', false);
-		submitForm("#tagAllAdded");
+	//clear the action array
+	action.splice(0,action.lenght);
+	//action is set here
+	action.push(1);
+	$('input[name=action]').val(action);
+	$("#tagAllAdded").toggleClass('invisible', false);
+	submitForm("#tagAllAdded");
 	
 }
 function privacyOK(){
@@ -299,7 +299,6 @@ function hideAllFeatures(){
 	$('ul[name=eachPostTag]').hide();
 	$('ul[name=postTagsHeader]').hide();
 	$('div[name=AllpostTagsHeader]').hide();
-	$('ul[name=erroneousPost]').hide();
 	
 	$('div[id=privacyBox]').hide();
 	$('div[name=allTagBox]').hide();

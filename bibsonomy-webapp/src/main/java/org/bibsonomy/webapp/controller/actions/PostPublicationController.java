@@ -9,6 +9,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -196,7 +198,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			/*
 			 * Parse the BibTeX snippet
 			 */
-			posts = parser.parseBibTeXPosts(snippet);
+			posts = parser.parseBibTeXPosts(snippet);		
 		} catch (final ParseException ex) {
 			errors.reject("error.upload.failed.parse", ex.getMessage());
 		} catch (final IOException ex) {
@@ -249,6 +251,15 @@ public class PostPublicationController extends AbstractEditPublicationController
 			}
 		}
 
+		/* user may import n bibtexes which m>1 of them are the same.
+		 * 
+		 * Since similar bibtexes have similar intrahashes, we find duplicate bibtexes 
+		 * by comparing intrahashes, and filter unique bibtexes.
+		 * **It is much more efficient to do this check during parsing snippet.
+		 */
+		Set <String>unique_hashes = new TreeSet<String>();
+		List<Post<BibTex>> unique_posts = new ArrayList<Post<BibTex>>();
+		
 		/*
 		 * Complete the posts with missing information:
 		 * 
@@ -269,8 +280,23 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * hashes have to be set, in order to call the validator
 			 */
 			post.getResource().recalculateHashes();
+			
+			if(!unique_hashes.contains(post.getResource().getIntraHash())){
+				unique_hashes.add(post.getResource().getIntraHash());
+				unique_posts.add(post);
+			}
 		}
-
+		
+		/*
+		 * in order to avoid out of place runtime increase, we check the size of the
+		 * unique_posts' array. If it is the same as posts' array, there were no duplicate
+		 * posts and posts array needn't be updated**/
+		
+		if(posts.size()!=unique_posts.size()){
+			posts.clear();
+			posts.addAll(unique_posts);
+		}
+		
 		/*
 		 * add list of posts to command for showing them to the user 
 		 * (such that he can edit them)
@@ -530,7 +556,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		this.publicationImporter = publicationImporter;
 	}
 	
-	private boolean isPostDuplicate(final Post<?> post, boolean isOverwrite) {
+	private boolean isPostDuplicate(final Post<BibTex> post, boolean isOverwrite) {
 	
 		final String userName = post.getUser().getName();
 		final String intraHash = post.getResource().getIntraHash();

@@ -327,10 +327,8 @@
 							</c:if>
 							<c:choose>
 							<c:when test="${postHasError || post.duplicatePost}">
-								<ul name="erroneousPost" class="invisible">
+								<ul class="invisible" >
 									<input type="text" disabled="disabled"
-										name="oldTags['${post.resource.intraHash}']"
-										value="${fn:escapeXml(mtl:toTagString(post.tags))}"
 										style="float:left;font-size:90%;
 										width:100%;height: 29px;line-height: 29px;" />
 								</ul>
