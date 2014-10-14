@@ -102,26 +102,26 @@
 			<!-- link to user page -->
 			<c:if test="${not empty command.requestedUser}">
 				<li>				
-					<span class="sidebar_h">
+					<h4 class="sidebar">
 						<a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(command.requestedUser))}">
 							<fmt:message key="discussion.showUser">
 								<fmt:param value="${fn:escapeXml(command.requestedUser)}"/>
 							</fmt:message>
 						</a>
-					</span>
+					</h4>
 				</li>
 			</c:if>
 
 			<!-- link to user page -->
 			<c:if test="${not empty command.requestedGroup}">
 				<li>				
-					<span class="sidebar_h">
+					<h4 class="sidebar">
 						<a href="${relativeUrlGenerator.getGroupUrlByGroupName(fn:escapeXml(command.requestedGroup))}">
 							<fmt:message key="discussion.showGroup">
 								<fmt:param value="${fn:escapeXml(command.requestedGroup)}"/>
 							</fmt:message>
 						</a>
-					</span>
+					</h4>
 				</li>
 			</c:if>
 
