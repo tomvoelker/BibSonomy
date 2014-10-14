@@ -12,32 +12,55 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld" 
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:review="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion/review">
+	xmlns:review="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion/review"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
+	<fmt:message var="headline" key="page.discussions.headline" />
 	<fmt:message key="navi.discussedPosts" var="pageTitle" />
 	<layout:resourceLayout 
 		pageTitle="${pageTitle}" 
 		command="${command}" 
 		requPath="${requPath}"
 		showPageOptions="${false}"
-		activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}">
+		activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}"
+		headline="${headline}${command.requestedUser}">
 	
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.discussedPosts">
 				<jsp:attribute name="pathPart">
 					<c:if test="${not empty command.requestedUser}">
 						<li>
-							:: <a href="/user/${mtl:encodeURI(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
+							:: <a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
 						</li>
 					</c:if>
 				</jsp:attribute>
 			</parts:search>	
 		</jsp:attribute>
 
+		<jsp:attribute name="breadcrumbs">	
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<c:choose>
+						<c:when test="${command.requestedUser eq command.context.loginUser.name}">
+							<fmt:message key="buttons.mybibsonomy" var="my">
+								<fmt:param>${properties['project.name']}</fmt:param>
+							</fmt:message>
+							<nav:crumb name="${my}" href="/user/${command.context.loginUser.name}" />
+						</c:when>
+						<c:otherwise>
+							<fmt:message var="popular" key="navi.popular" />
+							<nav:crumb name="${popular}" href="/popular" />
+						</c:otherwise>
+					</c:choose>
+					<fmt:message var="posts" key="navi.discussedPosts" />
+					<nav:crumb name="${posts}" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+
 		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="${resdir}/javascript/merged/discussion.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/merged/bs/discussion.js"><!-- keep me --></script>
 			
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/discussion.css" />
 			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.css" />
@@ -79,26 +102,26 @@
 			<!-- link to user page -->
 			<c:if test="${not empty command.requestedUser}">
 				<li>				
-					<span class="sidebar_h">
-						<a href="/user/${fn:escapeXml(command.requestedUser)}">
+					<h4 class="sidebar">
+						<a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(command.requestedUser))}">
 							<fmt:message key="discussion.showUser">
 								<fmt:param value="${fn:escapeXml(command.requestedUser)}"/>
 							</fmt:message>
 						</a>
-					</span>
+					</h4>
 				</li>
 			</c:if>
 
 			<!-- link to user page -->
 			<c:if test="${not empty command.requestedGroup}">
 				<li>				
-					<span class="sidebar_h">
-						<a href="/group/${fn:escapeXml(command.requestedGroup)}">
+					<h4 class="sidebar">
+						<a href="${relativeUrlGenerator.getGroupUrlByGroupName(fn:escapeXml(command.requestedGroup))}">
 							<fmt:message key="discussion.showGroup">
 								<fmt:param value="${fn:escapeXml(command.requestedGroup)}"/>
 							</fmt:message>
 						</a>
-					</span>
+					</h4>
 				</li>
 			</c:if>
 

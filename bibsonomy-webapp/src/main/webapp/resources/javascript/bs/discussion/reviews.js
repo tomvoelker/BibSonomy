@@ -1,0 +1,489 @@
+var REVIEWS_URL = "/ajax/reviews";
+var STAR_WIDTH = 16;
+var RATING_STEPS = 11;
+var STEP_RATING = 2;
+
+var RATING_AVG_DIV_SELECTOR = '#ratingAvg';
+var RATING_AVG_SELECTOR = RATING_AVG_DIV_SELECTOR + ' span[property=ratingAverage]';
+
+var REVIEW_EDIT_LINK_SELECTOR = 'a.reviewEditLink';
+var REVIEW_DELETE_LINK_SELECTOR = 'a.reviewDeleteLink';
+
+var REVIEW_TEXTAREA_SELECTOR = 'textarea[name="discussionItem\\.text"]';
+var REVIEW_ANONYMOUS_SELECTOR = 'input[name="discussionItem\\.anonymous"]';
+var REVIEW_RATING_SELECTOR = '.reviewrating';
+
+$(function() {
+	plotRatingDistribution();
+	
+	// init all selectable stars
+	initStars();
+	
+	$(REVIEW_UPDATE_FORM_SELECTOR).hide();
+	
+	// hide graph and info
+	if ($('#noReviewInfo').length > 0) {
+		$(RATING_AVG_DIV_SELECTOR).hide();
+		$('#ratingDistribution').hide();
+	}
+	
+	$(CREATE_REVIEW_LINKS_SELECTOR).click(showReviewForm);
+	
+	// create review form
+	$(REVIEW_CREATE_FORM_SELECTOR).submit(createReview);
+	
+	$(REVIEW_UPDATE_FORM_SELECTOR).submit(updateReview);
+	
+	// delete link for own review
+	$(REVIEW_OWN_SELECTOR).find(REVIEW_DELETE_LINK_SELECTOR).click(deleteReview);
+	
+	// show edit form for own review
+	$(REVIEW_OWN_SELECTOR).find(REVIEW_EDIT_LINK_SELECTOR).click(showUpdateReviewForm);
+});
+
+function showUpdateReviewForm() {
+	removeAllOtherDiscussionForms();
+	var reviewForm = $(REVIEW_UPDATE_FORM_SELECTOR);
+	var reviewRating = reviewForm.find(".reviewRating");
+
+	reviewForm.toggle('slow').find(".descriptiveLabel").bind("click", updateRatingCounter).removeClass("descriptiveLabel").autosize({}).bind("focus", showMenu).trigger("focus");
+	reviewRating.prev().find(".ratingToggleCheckbox")[0].disabled=true;
+	updateRatingCounter(reviewRating.stars("select", parseFloat(getOwnReviewRating())));
+}
+
+function initStars() {
+	$('.reviewrating').stars({
+		split: STEP_RATING
+	});
+}
+
+function getReviewCount() {
+	return parseInt($('#review_info_rating span[property=ratingCount]').text());
+}
+
+function getAvg() {
+	return Number($(RATING_AVG_SELECTOR).text().replace(',', '.'));
+}
+
+function setAvg(value) {
+	value = value.toFixed(2);
+	$(RATING_AVG_SELECTOR).text(value);
+	var starWidth = getStarsWidth(value);
+	$('#review_info_rating .stars-on-1').css('width', starWidth); // TODO
+	$(PUBLICATION_LIST_SELECTOR + ' .stars-on-0\.75').css('width', starWidth);
+	$(BOOKMARK_LIST_SELECTOR + ' .stars-on-0\.75').css('width', starWidth);
+}
+
+function showReviewForm() {
+	removeAllOtherDiscussionForms();
+	showDiscussion();
+	
+	$(REVIEW_CREATE_FORM_SELECTOR).parent().show();
+	return true;
+}
+
+function setReviewCount(value) {
+	var title = getString("post.resource.review.review");
+	if (value > 1) {
+		title = getString("post.resource.review.reviews");
+	}
+	
+	$('#review_info_rating span[property=ratingCount]').text(value);
+	$('#review_info_rating span[property=ratingCount]').next('span').text(title);
+}
+
+function updateRatingCounter(element) {
+	if(element.target != undefined) element = element.target;
+	var val = $(element).children('input[type=hidden]').val();
+	
+	if(val!=undefined) 
+		$(element).next('.discussionRatingValue').children('b').html(val);
+}
+
+function getOwnReviewRating() {
+	return Number($('#ownReview .rating').data('rating'));
+}
+
+function validateRating(starsWrapperId) {
+	var reviewRating = getRating(starsWrapperId);
+	if (reviewRating == 0) {
+		if (!confirm(getString("post.resource.review.rating0"))) {
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+function plotRatingDistribution() {
+	if ($("#ratingDistributionGraph").length == 0) {
+		return;
+	}
+	
+	var ratings = [];
+	var rating_ticks = [];
+	var d1 = [];
+	var maxValue = 0;
+
+	if ($(".ratingDistributionData").length > 0) {
+		// get all ratings from hidden statistik tags
+		$('#ratingDistribution').find('.ratingDistributionData').each(function() {
+			var key = $(this).data("rating");
+			var value = $(this).data("count");
+			ratings[key] = value;
+			if (value > maxValue) { 
+				maxValue = value; 
+			}
+		});
+	} else {
+		// get all ratings from all reviews
+		$('.subdiscussionItems li').not('#newReview').find('.rating').each(function() {
+			var key = parseFloat($(this).data("rating"));
+			if (ratings[key]) {
+				ratings[key] += 1;
+			} else {
+				ratings[key] = 1;
+			}
+			if (ratings[key] > maxValue) {
+				maxValue = ratings[key]; 
+			}
+		});
+	}
+	
+	for (var i = 0; i < RATING_STEPS; i++) {
+		var key = parseFloat(i) / parseFloat(STEP_RATING);
+		var value = 0;
+		if (ratings[key]) {
+			value = ratings[key];
+		}
+		
+		var count = getReviewCount();
+		if (value > 0) {
+			value = value / maxValue * 100;
+		} else {
+			// 0 values are producing a thin line
+			value = Number.NaN;
+		}
+		d1.push([key, value]);
+		rating_ticks.push(key);
+	}
+	
+	// set bars default styles 
+	var barsStyleColor	= null;
+
+	// set bars values, if set as tag attribute
+	if ($("#ratingDistributionGraph").css("border-left-style") == "dashed") {
+		barsStyleColor = $("#ratingDistributionGraph").css("border-left-color");
+	}
+	
+	$.plot($("#ratingDistributionGraph"),[ { data: d1, color: barsStyleColor } ], {
+		bars: {
+			show: true,
+			align: "center",
+			lineWidth: 1,
+			barWidth: 0.3,
+			fill: 0.7,
+		},
+		xaxis: {
+			ticks: rating_ticks,
+			tickDecimals: 1,
+			tickColor: 'transparent',
+			autoscaleMargin: 0.02
+		},
+		yaxis: {
+			show: false,
+			min: 0,
+		    max: 110
+		},
+		grid: {
+			markings: [ { xaxis: { from: getAvg(), to: getAvg() }, yaxis: { from: 0, to: 110 }, color: "#bb0000" }]
+		}
+    });
+}
+
+function createReview() {
+	// first unbind the form (no double submit while calling server)
+	var reviewForm = $(this);
+	reviewForm.unbind('submit');
+	
+	var reviewRatingInput = reviewForm.find(REVIEW_RATING_SELECTOR);
+	if (!validateRating(reviewRatingInput)) {
+		reviewForm.submit(createReview);
+		return false;
+	}
+	if (!hasGoldstandardCreationPermission()) {
+		// what does that do?
+		reviewForm.submit(createReview);
+		return false;
+	}
+	var spinner = reviewForm.find('.spinner');
+	spinner.show('slow');
+	
+	var reviewText = reviewForm.find(REVIEW_TEXTAREA_SELECTOR).val();
+	var anonymous = reviewForm.find(REVIEW_ANONYMOUS_SELECTOR).is(':checked');
+	var reviewRating = getRating(reviewRatingInput);
+	
+	var abstractGrouping = reviewForm.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR + ':checked').val();
+	var groups = reviewForm.find(OTHER_GROUPING_CLASS_SELECTOR).val();
+	
+	// TODO: allow multiple groups; remove the next five lines after this comment
+	if (groups == null) {
+		groups = new Array();
+	} else {
+		groups = new Array(groups);
+	}
+	
+	// call service
+	var reviewData = reviewForm.serialize();
+	$.ajax({
+		url:		REVIEWS_URL,
+		type:		"POST",
+		dataType:   "json",
+		data:		reviewData,
+		success:	function(response) {
+						var reload = (response.reload);
+						if(reload == "true") {
+							window.location.reload();
+						}
+						// display review
+						var reviewView = $('#newReview').remove();
+						
+						reviewView.attr("id", "ownReview");
+						updateReviewView(reviewView, reviewText, reviewRating, abstractGrouping, groups);
+						
+						// get root discussion item list
+						$(DISCUSSION_SELECTOR + ' .subdiscussionItems:first').prepend(reviewView);
+						
+						updateHash(reviewView, response.hash);
+						highlight(reviewView);
+						
+						/*
+						 * update update form
+						 */
+			 			var updateForm = $(REVIEW_UPDATE_FORM_SELECTOR);
+						updateForm.find(REVIEW_TEXTAREA_SELECTOR).text(reviewText);
+		     			updateForm.find(REVIEW_RATING_SELECTOR).stars({
+		     				split: STEP_RATING,
+		     			});
+		     			
+		     			updateForm.find(REVIEW_RATING_SELECTOR).stars("select", reviewRating.toFixed(1));
+						if (anonymous) {
+							reviewView.addClass(ANONYMOUS_CLASS);
+							updateForm.find(REVIEW_ANONYMOUS_SELECTOR).attr("checked", "checked");
+						}
+						
+						updateForm.submit(updateReview);
+						
+						// groups
+						populateFormWithGroups(updateForm, abstractGrouping, groups);
+						updateForm.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
+		     			/*
+		     			 * update and bind links
+		     			 */
+		     			removeReviewActions();
+		     			reviewView.find(REVIEW_EDIT_LINK_SELECTOR).click(showUpdateReviewForm);
+		     			reviewView.find(REVIEW_DELETE_LINK_SELECTOR).click(deleteReview);
+		     			reviewView.find(REPLY_SELECTOR).click(reply);
+		     			
+		     			/*
+		     			 * update rating view 
+		     			 */
+		     			var oldCount = getReviewCount();
+		     			var oldAvg = getAvg();
+		     			var newCount = oldCount + 1;
+		     			var newAvg = (oldAvg * oldCount + reviewRating) / newCount;
+		     			setReviewCount(newCount);
+		     			setAvg(newAvg);
+		     			plotRatingDistribution();
+		     			
+		     			$('#noReviewInfo').hide();
+		     			$('#ratingAvg').show('slow');
+		     			$('#ratingDistribution').show('slow');
+		     			scrollTo(REVIEW_OWN_ID);
+					},
+		error:		function(jqXHR, data, errorThrown) {
+						handleAjaxErrors(reviewForm, jQuery.parseJSON(jqXHR.responseText));
+						reviewForm.submit(updateReview);
+					},
+	});
+	
+	return false;
+}
+
+function updateReview() {
+	var reviewForm = $(this);
+	reviewForm.unbind('submit');
+	var reviewRatingInput = reviewForm.find(REVIEW_RATING_SELECTOR);
+	if (!validateRating(reviewRatingInput)) {
+		reviewForm.submit(updateReview);
+		return false;
+	}
+	
+	var abstractGrouping = reviewForm.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR + ':checked').val();
+	var groups = reviewForm.find(OTHER_GROUPING_CLASS_SELECTOR).val();
+	// TODO: allow multiple groups; remove the next five lines after this comment
+	if (groups == null) {
+		groups = new Array();
+	} else {
+		groups = new Array(groups);
+	}
+	
+	// show spinner "updating review"s
+	var spinner = reviewForm.find('.spinner');
+	spinner.show('slow');
+	
+	// save all values for success action
+	var reviewText = reviewForm.find(REVIEW_TEXTAREA_SELECTOR).val();
+	var anonymous = reviewForm.find(REVIEW_ANONYMOUS_SELECTOR).is(':checked');
+	var reviewRating = getRating(reviewRatingInput);
+	var oldReviewRating = getOwnReviewRating();
+	
+	// call service
+	var reviewData = reviewForm.serialize();
+	
+	$.ajax({
+		url:		REVIEWS_URL,
+		type:		"POST",
+		dataType:  "json",
+		data: 		reviewData,
+		success:	function(response) {
+						reviewForm.hide('slow');
+						spinner.hide('slow');
+						
+						var reviewView = $(REVIEW_OWN_SELECTOR);
+		     			
+						updateHash(reviewView, response.hash);
+						
+						if (anonymous) {
+							reviewView.addClass(ANONYMOUS_CLASS);
+						} else {
+							reviewView.removeClass(ANONYMOUS_CLASS);
+						}
+						
+						// update values
+						updateReviewView(reviewView, parseLinks(reviewText), reviewRating, abstractGrouping, groups);
+						highlight(reviewView);
+						
+		     			// update over all values
+		     			var count = getReviewCount();
+		     			var oldAvg = getAvg();
+		     			var newAvg = (oldAvg * count - oldReviewRating + reviewRating) / count;
+		     			setAvg(newAvg);
+		     			plotRatingDistribution();
+		     			reviewForm.siblings(".originalText").remove();
+		     			reviewForm.submit(updateReview);
+		     			reviewForm.siblings(".citeBox").children("div").remove();
+		     			reviewForm.siblings(".citeBox").hide();
+		     			reviewForm.siblings(".bookCiteBox").children("div").remove();
+		     			reviewForm.siblings(".bookCiteBox").hide();
+		     			handleLinks(reviewForm.parent());
+					},
+		error:		function(jqXHR, data, errorThrown) {
+						handleAjaxErrors(reviewForm, jQuery.parseJSON(jqXHR.responseText));
+						reviewForm.submit(updateReview);
+					},
+	});
+	return false;
+}
+
+function deleteReview() {
+	if (!confirmDeleteByUser("review")) {
+		return false;
+	}
+	var deleteLink = $(this);
+	$(this).siblings('.deleteInfo').show();
+	
+	var hash = getInterHash();
+	var review = $(REVIEW_OWN_SELECTOR);
+	var reviewHash = review.find('.info').data(DISCUSSIONITEM_DATA_KEY);
+	
+	var oldReviewRating = getOwnReviewRating();
+	var revDelUrl = REVIEWS_URL + "?hash=" + hash + "&ckey=" + ckey + "&discussionItem.hash=" + reviewHash;
+	var success = function() {
+		// update overall count
+		var oldCount = getReviewCount();
+			var oldAvg = getAvg();
+			var newAvg = 0;
+			var newCount = oldCount - 1;
+			
+			if (newCount > 0) {
+				newAvg = (oldAvg * oldCount - oldReviewRating) / newCount;	 
+			}
+			
+			setReviewCount(oldCount - 1);
+			setAvg(newAvg);
+			plotRatingDistribution();
+			addReviewActions();
+			deleteLink.closest("li").remove();
+	};
+	
+	$.ajax({
+		url:		revDelUrl,
+		type:		"DELETE",
+		success:	function(msg) {
+			if(msg.statusText=="OK") deleteDiscussionItemView(review, success);
+		},
+		error: function(msg) {
+			if(msg.statusText=="OK") deleteDiscussionItemView(review, success);
+		}
+		// TODO: handle error
+	});
+	return false;
+}
+
+function updateReviewView(reviewView, text, rating, abstractGrouping, groups) {
+	var starWidth = getStarsWidth(rating);
+	var ratingView = reviewView.find('.rating');
+	ratingView.data("rating", rating);
+	reviewView.find('.review.text').replaceWith(text);
+	ratingView.find('.stars-on-1').css('width', starWidth);
+	
+	// groups
+	reviewView.find('.' + GROUPS_CLASS).remove();
+	var groupsView = buildGroupView(abstractGrouping, groups);
+	reviewView.find('.info').append(groupsView);
+}
+
+function getRating(element) {
+	var stars = $(element).data("stars");
+	return parseFloat(stars.options.value);
+}
+
+function toggleRating(element) {
+	if(element.target) element = element.target;
+	var stars = $(element).parent().next('.reviewrating');
+	var parent = $(element).parents("fieldset");
+	var textBoxContainer = parent.find(".textBoxContainer");
+	var form;
+	var formParent;
+	var textBoxVal = (textBoxContainer.find(REVIEW_TEXTAREA_SELECTOR).val()==getString("post.resource.comment.actions.post")
+			||textBoxContainer.find(REVIEW_TEXTAREA_SELECTOR).val()==getString("post.resource.review.actions.post")?"":textBoxContainer.find(REVIEW_TEXTAREA_SELECTOR).val());
+	
+	removeAllOtherDiscussionForms();
+	
+	if(!element.checked) { 
+		form = $(COMMENT_CREATE_FORM);
+		var formParent = $(REVIEW_CREATE_FORM_SELECTOR)
+		var toggleCheckbox = form.find(".discussionControlsFrame").find(".ratingToggleCheckbox")[0];
+	
+		if(toggleCheckbox  != undefined && toggleCheckbox.disabled) {
+			$(toggleCheckbox).bind("click", toggleRating).removeAttr("disabled");
+			createStandaloneReply($("#createCommentInstance"));
+		}
+		element.checked = true;
+	}else{
+		form = $(REVIEW_CREATE_FORM_SELECTOR);
+		formParent = $(COMMENT_CREATE_FORM);
+		element.checked = false;
+	}
+	
+	
+	form.fadeIn().find(REVIEW_TEXTAREA_SELECTOR).trigger("focus").val(textBoxVal);
+	form.find(REVIEW_ANONYMOUS_SELECTOR)[0].checked = parent.find(REVIEW_ANONYMOUS_SELECTOR)[0].checked;
+	scrollTo(form.attr("id"));
+	formParent.hide();
+}
+
+function getStarsWidth(rating) {
+	return STAR_WIDTH * rating;
+}

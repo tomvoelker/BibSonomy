@@ -2,8 +2,10 @@
 @import "bootstrap-size.less";
 @import "bootstrap-tagsinput.less";
 @import "bootstrap-datepicker.less";
+
 @import "multiline-ellipsis.less";
 @import "../fonts/font-awesome/less/variables.less";
+
 
 .glyphicon,
 .socicon {
@@ -14,6 +16,10 @@
     line-height: 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+.glyphicon-bookmark:before {
+    content: @fa-var-bookmark;   
 }
 
 .glyphicon-asterisk:before {
@@ -88,6 +94,13 @@
 	content: @fa-var-google-plus;
 }
 
+
+ul.checklist {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
 .label-grey {
     background-color: @light-grey;
 }
@@ -160,14 +173,16 @@ ul.dropdown-menu.list-options > li > span {
 
 .container.main {
 /* 	padding-top: 20px; */
-	padding: 20px 30px;
+	padding: 20px 30px 0 30px;
 	border-top: none;
 /*	margin-bottom: 30px; */
 	-webkit-box-shadow: 2px 2px 30px 6px @border-color;
 	box-shadow: 2px 2px 30px 6px @border-color;
 }
 
-
+.container .wrapper {
+	margin-bottom: 20px;
+}
 
 
 /**
@@ -277,6 +292,10 @@ a {
 }
 
 
+.navbar-nav ul.items-with-icons li > a > .fa {
+	width: 1.5em !important;
+} 
+
 .noborder {
 	border: none;
 	background: transparent;
@@ -298,13 +317,9 @@ ul.dropdown-menu li.divider {
 	line-height: 15px;
 	text-align: center;
 	font-size: 9px;
-	z-index: 1000000;
+	z-index: 1000;
 }
 
-
-.navbar-bibsonomy .glyphicon {
-	width: 1.2em !important;
-}
 
 .navi-info span {
 	display:block;
@@ -364,14 +379,34 @@ ul.posts li.post {
 	margin-bottom: 5px;
 }
 
-li.post div.in-my-collection {
+ul.posts li.post:last-child {
+	border-bottom: none;
+}
+
+.glyphicon-private:before {
+    content: @fa-var-eye-slash ;
+}
+
+
+li.post div.in-my-collection,
+li.post div.glyphicon-private {
 	position:relative; 
 	width: 0px;
 	overflow: visible; 
 	height: 0px; 
-	font-size: 18px; 
+}
+
+li.post div.in-my-collection {
+	font-size: 18px;
 	top: -88px; 
 	left: 5px; 
+	color: #005588;
+}
+
+li.post div.glyphicon-private {
+	font-size: 18px; 
+	top: -88px; 
+	left: 42px; 
 	color: #005588;
 }
 
@@ -483,10 +518,15 @@ p.url {
     text-overflow: ellipsis;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
+    font-size: 110%;
+}
+
+.ptags .label {
+	font-weight: 500;
 }
 
 .pmeta {
-	font-size: 11px;
+	font-size: 12px;
 }
 
 .ptitle {
@@ -533,7 +573,7 @@ p.url {
 
 .post .rating,
 .post .btn-group {
-	margin-top: 5px;
+	margin-top: 8px;
 }
 
 .reviewInfo {
@@ -608,7 +648,7 @@ ul.tags li {
  * SIDEBAR
  */
  
-div.sidebar {
+div#sidebar {
 	
 	background: rgb(218,223,249) url("/resources/image/bg-sidebar.png") top left repeat;
 	margin-right: -15px;
@@ -618,52 +658,15 @@ div.sidebar {
 	margin-left: 15px;
 	border-left: 1px #ccc solid;
 } 
-/*
-.sidebar-headline {
-	text-shadow: 1px 0px #333;
 
-	margin-left: -26px;
-	margin-right: -30px;
-	padding-left: 0;
-
-	
-	color: #fff;
-	height: 44px;
-	line-height: 35px;
-	float: left;
-}
-
-.sidebar-headline > span.left-corner {
-	display:block;
-	float: left;
-	width: 18px;
-	padding-left: 3px;
-	height: 100%;
-	background: transparent url("/resources/image/bg-sidebar-headline-left.png") top left no-repeat;
-}
-
-
-.sidebar-headline > span.right-corner {
-	display:block;
-	float: left;
-	width: 18px;
-	padding-right: 3px;
-	height: 100%;
-	background: transparent url("/resources/image/bg-sidebar-headline-right.png") top left no-repeat;
-}
-
-.sidebar-headline > span.text {
-	display: block;
-	padding: 0 0.5em;
-	float: left;
-	height: 100%;
-	background: transparent url("/resources/image/bg-sidebar-headline.png") 0 0 no-repeat;
-}
-*/
 .sidebar h4 {
 
 }
- 
+
+#sidebar {
+
+}
+
 #sidebar ul {
 	list-style: none;
 	margin: 0;
@@ -911,6 +914,10 @@ a.img-thumbnail span {
     font-weight: 300;
     font-stretch: extra-expanded;
 	padding: 0 1px;
+	width: 64px;
+	overflow:hidden; 
+	text-overflow: ellipsis; 
+	white-space: nowrap;
 }
 
 div.title a:hover {
@@ -933,6 +940,15 @@ h4.pub-details {
 a.publication.preview {
 
 	box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+}
+
+
+.bibtexpreviewimage {
+	/**
+	Hide all previews by default. A JavaScript function 
+	shows only the first item of the preview stack
+    */
+	display: none;
 }
 
 div.pub-citation-tab-content {
@@ -1190,8 +1206,8 @@ div.clearline {
     height: auto;
 }
 
-.sidebar .alert a {
-    text-decoration: underline;
+.alert a {
+    text-decoration: underline !important;
 }
 
 div#titletext h4.media-heading {
@@ -1218,14 +1234,28 @@ div#titletext h4.media-heading {
 	color: #006699;
 }
 
+h2.getting-started {
+	font-size: 34px !important;
+	font-weight: 400;
+	text-align:center;
+}
+
+.content-header,
+.content-heading {
+	margin-bottom: 20px;
+	border-bottom: 1px solid @light-border-color;
+	font-size: 200%;
+	font-weight: 400; 
+	margin-top:0;
+}
+
+
 h1.content-header,
 h1.content-heading {
 	font-size: 24px;
     font-weight: normal;
     height: 30px;
     line-height: 30px;
-    margin-bottom: 20px;
-	border-bottom: 1px solid @light-border-color;
 }
 
 .main h2 {
@@ -1257,6 +1287,11 @@ h1.content-heading {
     border-bottom: 1px solid @border-color;
 }
 
+.jumbotron h2 {
+	font-size: 28px;
+	line-height: 38px;
+	height: auto;
+}
 
 button.removeFriend,
 button.addFriend {
@@ -1334,3 +1369,38 @@ a.ui-corner-all:active {
 	float: right;
 }
 
+#userImg > img {
+	margin: 7px;
+	padding: 5px;
+	background-color: @background-color;
+	border: 1px solid @border-color;
+	border-radius: 3px; 
+	-moz-border-radius: 3px; 
+	-webkit-border-radius: 3px;
+
+}
+
+.moreLink {
+ cursor:pointer;
+}
+
+.verticalMiddle {
+	vertical-align: middle;
+	text-align: center;
+}
+
+.affix {
+	position: relative;
+	margin-bottom: 300px;
+	z-index: 999;
+}
+ul.scraper-list li { padding-right: 0; }
+ul.scraper-list li:after {
+	content: " |";
+}
+ul.scraper-list li:last-child:after {
+	content: "";
+}
+
+@import "featurette.less";
+@import "bootstrap-discussion.less";

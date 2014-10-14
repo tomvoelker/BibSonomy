@@ -32,6 +32,7 @@ import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
@@ -509,11 +510,21 @@ public class UrlRenderer {
 
 	/**
 	 * @param hash
+	 * @param relation 
 	 * @return the path to the references of a community post
 	 */
-	public String createHrefForCommunityPostReferences(String hash) {
+	public String createHrefForCommunityPostReferences(final String hash, final GoldStandardRelation relation) {
 		final UrlBuilder builder = this.createHrefForCommunity(hash);
-		builder.addPathElement(RESTConfig.REFERENCES_SUB_PATH);
+		switch (relation) {
+		case REFERENCE:
+			builder.addPathElement(RESTConfig.RELATION_REFERENCE);
+			break;
+		case PART_OF:
+			builder.addPathElement(RESTConfig.RELATION_PARTOF);
+			break;
+		default:
+			throw new IllegalArgumentException("relation " + relation + " not supported");
+		}
 		return builder.asString();
 	}
 	
@@ -723,4 +734,6 @@ public class UrlRenderer {
 		
 		return urlBuilder.asString();
 	}
+
+
 }

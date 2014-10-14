@@ -146,11 +146,8 @@ public class CslModelConverter {
 
 		// date mapping
 		final Date date = new Date();
-		
-		//TODO: remove if test with php citeproc successful
-		//date.setLiteral(bib.getYear());
-		
 		date.setDate_parts(Collections.singletonList(new DateParts(bib.getYear())));
+		date.setLiteral(bib.getYear());
 		rec.setIssued(date);
 		
 		// mapping abstract

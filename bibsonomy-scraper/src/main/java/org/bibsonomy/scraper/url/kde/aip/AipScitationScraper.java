@@ -60,6 +60,7 @@ public class AipScitationScraper extends GenericBibTeXURLScraper {
 	private static final String BIBTEX_PATH = "/cite/bibtex";
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(hostPattern, pathPattern));
 	private static final Pattern abstractPattern = Pattern.compile("<meta name=\"citation_abstract\" content=\"(.*)\"\\s*/>");
+	private static final Pattern firstPagePattern = Pattern.compile("<meta name=\"citation_firstpage\" content=\"(.*)\" />");
 	
 	@Override
 	public String getInfo() {
@@ -93,6 +94,18 @@ public class AipScitationScraper extends GenericBibTeXURLScraper {
 		return null;
 	}
 	
+	private static String firstPageParser(URL url){
+		try{
+			Matcher m = firstPagePattern.matcher(WebUtils.getContentAsString(url));
+			if (m.find()) {
+				return m.group(1);
+			}
+		} catch (final Exception e) {
+			log.error("error while getting abstract for " + url, e);
+		}
+		return null;
+	}
+	
 	@Override
 	public String getDownloadURL(URL url) throws ScrapingException {
 		return "http://" + url.getHost().toString() + url.getPath().toString() + BIBTEX_PATH;
@@ -103,6 +116,10 @@ public class AipScitationScraper extends GenericBibTeXURLScraper {
 	 */
 	@Override
 	protected String postProcessScrapingResult(ScrapingContext sc, String result) {
-		return BibTexUtils.addFieldIfNotContained(result, "abstract", abstractParser(sc.getUrl()));
+		// add an abstract
+		String bibtex = BibTexUtils.addFieldIfNotContained(result, "abstract", abstractParser(sc.getUrl()));
+		// fix the eid
+		bibtex = bibtex.replace("eid = ,", "eid = " + firstPageParser(sc.getUrl()) + ",");
+		return bibtex;
 	}
 }

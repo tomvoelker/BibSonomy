@@ -6,7 +6,8 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:spring="http://www.springframework.org/tags">
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs">
 	
 	<jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
 	
@@ -52,6 +53,7 @@
 			requPath="${requPath}"
 			pageTitle="${pageTitle}"
 			personalized="${personalized}"
+			
 			/>
 
 			<body>
@@ -65,15 +67,25 @@
 				</div>
 				-->
 				<div class="single-container ${boxStyle}">
-					<div id="logo" style="margin-top: 30px;">
-					
-						<fmt:message var="homelink" key="navi.home"/> 
-						<h1><a href="/" title="${homelink}"><img src="/resources/image/logo4.png" alt="${properties['project.name']} Logo" /><span class="sr-only"> ${properties['project.name']}</span></a></h1>
-						<small class="sr-only"><fmt:message key="system.desc"/></small>
+					<div class="row">
+						<div class="col-sm-10" style="padding-left: 0;">
+							<bs:logo />	
+						</div>
+						<div class="col-sm-2" style="padding-right: 0; padding-top: 20px;">
+							<div id="lang-switcher" class="pull-right">
+								<span>(&amp;nbsp;</span>
+								<a href="/${mtl:setParam(fn:escapeXml(requPathAndQuery), 'lang', 'en')}">en</a>
+								<span>&amp;nbsp;|&amp;nbsp;</span>
+								<a href="/${mtl:setParam(fn:escapeXml(requPathAndQuery), 'lang', 'de')}">de</a>
+								<span>&amp;nbsp;)</span>
+							</div>
+						</div>
 					</div>
-					<div style="margin-bottom: 40px"><!--  --></div>
+					
+					
+					<div style="margin-bottom: 30px"><!--  --></div>
 				</div>			
-				<div class="main container single-container ${boxStyle}">
+				<div class="main container single-container ${boxStyle}" style="margin-bottom: 30px;">
 
 					
 					<div class="row">
@@ -90,10 +102,7 @@
 						<c:out value=" - "/>
 						<fmt:message key="navi.helpUrl" var="helpLangUrl" />
 						<a href="${helpLangUrl}/contact"><fmt:message key="navi.about"/></a>
-						
-						<c:if test="${cookie.mobile.value == 'false' or param.mobile == 'false'}">
-							<c:out value=" "/><a href="?mobile=true"><fmt:message key="mobile.switchMobile" /></a>
-						</c:if>
+						<p>&amp;nbsp;</p>
 					</div>
 				</div> <!--  /.container -->
 				

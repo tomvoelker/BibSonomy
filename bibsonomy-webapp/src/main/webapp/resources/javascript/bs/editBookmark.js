@@ -22,8 +22,19 @@ function scraping() {
 $(function() {
 	scraping();
 	checkUrlForTitle();
-	$("")
+	setFocus();
 });
+
+function setFocus() {
+	var emptyFields = $("input:text").filter(function() { 
+		return $(this).val() == ""; 
+	});
+	if (emptyFields.length > 0) {
+		emptyFields.first().focus();
+	} else {
+		$("#inpf_tags").focus();
+	}
+}
 
 function checkUrlForTitle() {
 	var req = new XMLHttpRequest();

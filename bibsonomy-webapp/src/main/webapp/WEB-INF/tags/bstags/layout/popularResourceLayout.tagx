@@ -17,6 +17,7 @@
 	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>	
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
+	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 	
 	<layout:layout 
 		loginUser="${command.context.loginUser}" 
@@ -27,7 +28,8 @@
 		sidebar="${sidebar}" 
 		requPath="${requPath}" 
 		activeTab="${activeTab}"
-		minimizedContentWidth="${minimizedContentWidth}">
+		minimizedContentWidth="${minimizedContentWidth}"
+		breadcrumbs="${breadcrumbs}">
 		
 		<jsp:attribute name="headerExt"/>
 
@@ -52,7 +54,7 @@
 					
 					<c:forEach var="bibtex" items="${command.listsBookmark}" varStatus="status">
 						<c:set var="extTitle">${command.listsBookmarkDescription[status.index]}<c:out value=" "/><fmt:message key="days"/></c:set>
-						<resources:simplebookmarks listView="${command.listsBookmark[status.index]}" loginUserName="${command.context.loginUser.name}">
+						<resources:simplebookmarks listView="${command.listsBookmark[status.index]}" loginUserName="${command.context.loginUser.name}" disablePagination="${true}">
 							<jsp:attribute name="extTitle">
 								<h4 class="list-sub-headline"><fmt:message key="within.last.days"><fmt:param value="${command.listsBookmarkDescription[status.index]}" /></fmt:message></h4>
 							</jsp:attribute>
@@ -66,7 +68,7 @@
 					 
 					<c:forEach var="bibtex" items="${command.listsBookmark}" varStatus="status">
 						<c:set var="extTitle">${command.listsBibTeXDescription[status.index]}<c:out value=" "/><fmt:message key="days"/></c:set>
-						<resources:simplebibtexs listView="${command.listsBibTeX[status.index]}" loginUserName="${command.context.loginUser.name}">
+						<resources:simplebibtexs listView="${command.listsBibTeX[status.index]}" loginUserName="${command.context.loginUser.name}" disablePagination="${true}">
 							<jsp:attribute name="extTitle">
 								<h4 class="list-sub-headline"><fmt:message key="within.last.days"><fmt:param value="${command.listsBibTeXDescription[status.index]}" /></fmt:message></h4>
 							</jsp:attribute>

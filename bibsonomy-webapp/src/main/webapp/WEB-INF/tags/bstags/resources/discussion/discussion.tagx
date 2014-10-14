@@ -30,9 +30,9 @@
    		<c:set var="discussionItems" value="${resource.discussionItems}" />
    	</c:if>
    	
- 	<div class="discussion_all">  	
+ 	<div class="discussion-all">  	
 	
-		<!-- hide/show discussion field -->    		
+		<!-- hide/show discussion field  		
 	   	<a class="foldUnfold" href="div#discussion" style="font-size: 16px; margin: 0 auto;">
 	   		<img id="imgCollapseDiscussion" class="imgCollapse" border="0" src="/resources/image/icon_collapse.png" style="display:none;"/>
 	   		<img id="imgExpandDiscussion" class="imgExpand" border="0" src="/resources/image/icon_expand.png" style="display:none;" />
@@ -45,38 +45,23 @@
 	   			<fmt:message key="post.resource.discussion.actions.show" />
 	   		</span>
 	   	</a>		
-   		
-   		<!-- The three Buttons -->
-   		<span class="initiallyHidden">
-<!-- 
-			<li>
-				<a href="#discussion" id="toggleDiscussion"><fmt:message key="post.resource.discussion.actions.hide" /></a>
-			</li>
- -->
+   		-->
+
 			<!-- TODO: use spring security tags -->
 			<c:if test="${command.context.userLoggedIn}">
-				<span><span id="discussionRef"><fmt:message key="post.resource.comment.actions.create" /></span></span>
+				<h4 class="pub-details">
+					<span class="fa fa-comment-o"><!--  --></span>
+					<c:out value=" " />
+					<fmt:message key="post.resource.comment.actions.create" />
+				</h4>
 			</c:if>
-		
-			<!--
-				<li><a href="#showOnlyReviews" id="toggleReviews"><fmt:message key="post.resource.discussion.actions.showReviews" /></a></li>
-				<li><a href="#collapseAllThreads" id="collapseAllThreads"><fmt:message key="post.resource.discussion.actions.collapseAllThreads" /></a></li>
-			-->
-		</span>
-		
-		
-   				
-		<!-- Aggregated RatingInfo -->
-    	<review:reviewRatingsInfo resource="${resource}" />
-		
-		<!-- Publication reference link -->
-		<discussion:linkBox resource="${resource}"/>
-    		
-		<div cssClass="fsRow">
-			<c:if test="${not fn:contains(resource.class.simpleName, 'Bookmark') and resource.entrytype=='preprint' and empty resource.discussionItems}">
+
+
+		<c:if test="${not fn:contains(resource['class'].simpleName, 'Bookmark') and resource.entrytype=='preprint' and empty resource.discussionItems}">
+			<p class="help-block">
 				<fmt:message key="post.resource.preprint.hint" />
-			</c:if>
-		</div>
+			</p>
+		</c:if>
 	
  	  	<!-- The input forms -->
  	  	<div id="discussion" data-interhash="${resource.interHash}">
@@ -87,29 +72,29 @@
 		    		<!-- TODO: add tips for reviewing a resource !--> 
 	    		</div>
 		    	<!-- review and comment forms !-->
-	    		<div id="createComment" class="initiallyHidden">
+	    		<div id="createComment" class="hidden">
 		    		<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}" type="comment"/>
 		    		<!-- TODO: add tips for reviewing a resource !--> 
 	    		</div>
 	    		<!-- review and comment forms !-->
-	    		<div id="createCommentInstance" class="initiallyHidden">
+	    		<div id="createCommentInstance" class="hidden">
 		    		<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}" type="comment"/>
 		    		<!-- TODO: add tips for reviewing a resource !--> 
 	    		</div>
 
-<!-- <div id="createComment" class="initiallyHidden">
+				<!-- <div id="createComment" class="initiallyHidden">
 			    	<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}" rating="${false}"/>
 			    	<comment:commentForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}"/>
 			    </div> --> 
 			</c:if>
 
-			<discussionItem:subDiscussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" />
+			<discussionItem:discussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" />
 		</div>
 
 		<!-- TODO: use spring security tags -->
 		<c:choose>
 			<c:when test="${command.context.userLoggedIn}">
-				<div id="discussionTemplates" class="initiallyHidden">
+				<div id="discussionTemplates" class="hidden">
 					<!-- create comment div structure -->
 					<div id="commentTemplate">
 				   		<comment:comment comment="${newComment}" loginUser="${loginUser}" resource="${resource}" schemaOrgMarkUp="false"/>

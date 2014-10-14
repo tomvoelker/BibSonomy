@@ -13,7 +13,7 @@
 	<a name="detailedInformation"><!--  --></a>
 	<bsform:fieldset legendKey="post.resource.fields.detailed">
 		<jsp:attribute name="legendExt">
-	      <span class="small"><small>(<a id="collapse" data-show-all="false"><fmt:message key="post.resource.fields.detailed.show.all"/></a>)</small></span>
+	      <span class="small"><small>(<a id="collapse" data-show-all="true"><fmt:message key="post.resource.fields.detailed.show.all"/></a>)</small></span>
 	   	</jsp:attribute>
         
         <jsp:attribute name="content">

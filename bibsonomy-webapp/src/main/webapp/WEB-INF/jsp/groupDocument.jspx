@@ -22,13 +22,13 @@
 		minimizedContentWidth="${true}">
 		
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.documents" formAction="/group/${mtl:encodeURI(command.requestedGroup)}" formInputName="tag" formInputValue="${command.requestedTags}">
+			<parts:search pathMessageKey="navi.documents" formAction="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="formExtra">
 					<input type="hidden" name="filter" value="JUST_PDF"/>
 				</jsp:attribute>
 				<jsp:attribute name="pathPart">
 					<li>
-						:: <a href="/group/${mtl:encodeURI(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
+						:: <a href="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
 					</li>
 				</jsp:attribute>
 			</parts:search>	

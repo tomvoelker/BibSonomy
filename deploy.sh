@@ -20,6 +20,7 @@ declare -A webapp
 webapp[gromit]=bibsonomy-webapp
 # PUMA test systems
 webapp[puma_ks_dev]=bibsonomy-webapp
+webapp[puma_ffm_dev]=bibsonomy-webapp-puma-frankfurt-main
 webapp[puma_ffm_rc]=bibsonomy-webapp-puma-frankfurt-main
 webapp[puma_s_dev]=bibsonomy-webapp-puma-stuttgart
 
@@ -43,6 +44,7 @@ declare -A tomcat
 tomcat[slave_hannover]=7
 tomcat[slave_kassel]=7
 tomcat[slave_hetzner]=7
+tomcat[gromit]=7
 
 declare -A archivable
 archivable[gandalf]=true
@@ -50,6 +52,7 @@ archivable[gandalf]=true
 declare -A unnoticed
 unnoticed[gromit]=true
 unnoticed[puma_ks_dev]=true
+unnoticed[puma_ffm_dev]=true
 unnoticed[puma_ffm_rc]=true
 unnoticed[puma_gi_prod]=true
 unnoticed[puma_s_dev]=true
@@ -75,7 +78,7 @@ fi
 
 # environment variables
 export MAVEN_OPTS='-Xmx1024m -Xms512m'
-export JAVA_HOME=/usr/lib/jvm/java-6-sun/
+export JAVA_HOME=/usr/lib/jvm/java-7-oracle
 
 # programs
 MAVEN=mvn

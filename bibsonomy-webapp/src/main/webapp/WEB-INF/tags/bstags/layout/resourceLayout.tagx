@@ -14,6 +14,7 @@
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.SimpleResourceViewCommand" required="true"/>	
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="headline" type="java.lang.String" required="true"/>	
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
@@ -32,7 +33,6 @@
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="false" />
 	<jsp:directive.attribute name="discussionBox" type="java.lang.Boolean" required="false"/>
 	
-	
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
 	<jsp:directive.attribute name="beforeMainContainer" fragment="true" required="false"/>
@@ -42,6 +42,7 @@
 	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>
 	<jsp:directive.attribute name="discussion" fragment="true" required="false"/>
 	<jsp:directive.attribute name="content" fragment="true" required="false" />
+	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 	
 	<!--+
 		|
@@ -75,7 +76,8 @@
 			personalized="${command.personalized}"
 			hideFooterContainer="${hideFooterContainer}"
 			beforeMainContainer="${beforeMainContainer}"
-			minimizedContentWidth="${minimizedContentWidth}" >
+			minimizedContentWidth="${minimizedContentWidth}"
+			breadcrumbs="${breadcrumbs}" >
 			
 		<!--+
 			+ HTML header extension
@@ -107,7 +109,7 @@
 			<c:if test="${discussionBox}">
 				<!-- Headline -->
 				<div class="header">
-					${mtl:cleanBibtex(resource.title)}
+					<c:out value="${mtl:cleanBibtex(resource.title)}" />
 				</div>
 			</c:if>
 			
@@ -136,22 +138,25 @@
 			+ main content (resource lists)
 			+-->
 		<jsp:attribute name="content">
-			<jsp:invoke fragment="discussion" />
+			<!-- 
+			<c:if test="${not empty headline}">
+				<h1 class="content-header"><c:out value="${headline}"/></h1>
+			</c:if>
+			-->
+			
 			
 			<jsp:invoke fragment="content" />
+			
+			
 			
 			<c:choose>
 				<!-- if a community post is present show the community post, not the list of posts -->
 				<c:when test="${not empty command.goldStandardPublications.list}">
-					<c:choose>
-						<c:when test="${not empty param.cleanlayout}">
-							<goldstandardpublication:detailsclean otherPosts="${command.bibtex.list}" post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
-						</c:when>
-						<c:otherwise>
-							<goldstandardpublication:details otherPosts="${command.bibtex.list}" post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
-						</c:otherwise>
-					</c:choose>
+					
+					<goldstandardpublication:details otherPosts="${command.bibtex.list}" post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
+
 				</c:when>
+				
 				<c:otherwise>
 					<!-- additional heading for content area -->
 					 
@@ -206,9 +211,10 @@
 									</c:if>
 								</jsp:attribute>
 							</resources:bibtexs>
-							 
+							
 						</div>
 				    </div>
+				    
 				</c:otherwise>
 			</c:choose>
 			

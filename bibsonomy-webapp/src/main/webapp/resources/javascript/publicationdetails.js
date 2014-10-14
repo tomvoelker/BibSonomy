@@ -35,7 +35,7 @@ $(function() {
 	/*
 	 * tabs for citation style
 	 */
-	$('#citation').tabs().tabs('select', 1).tabs({
+	$('#citation').tabs().tabs('option', 'active', 1).tabs({
 		disabled: [0],
 		spinner: "",
 		cache: true,
@@ -45,10 +45,11 @@ $(function() {
 		 		$panel.append(getString("bibtex.citation_format.loading"));
 		 	}
 	    }
-		           }); //{event: "mouseover"} // only nice with fixed height :(
-
-    $( ".tabs, .tabs .tab > li" ).removeClass( "ui-corner-all ui-corner-top ui-corner-bottom" );
-    
+	}); //{event: "mouseover"} // only nice with fixed height :(
+	
+	// FIXME: this should not be done using javascript
+	$(".tabs, .tabs .tab > li").removeClass("ui-corner-all ui-corner-top ui-corner-bottom");
+	
     /*
      * (un)folding of boxes
      */
