@@ -33,6 +33,7 @@
 	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
 	<jsp:directive.attribute name="noSidebar" type="java.lang.Boolean" required="false"/>
 	
+	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 	
 	<!--+
 		| 
@@ -104,13 +105,16 @@
 						 <menu:navi activeTab="${activeTab}" loginUser="${loginUser}" />
 				</div> <!-- /#navigation -->
 				<div class="container main">
-				
+					
 					<c:choose>
 						
 						<c:when test="${noSidebar}">
 							
 							<!-- without sidebar -->
-							
+							<!-- Breadcrumbs -->
+							<c:if test="${not empty breadcrumbs}">
+								<jsp:invoke fragment="breadcrumbs" />
+							</c:if>
 							<div id="intro">
 								<jsp:invoke fragment="contentIntro"/>
 							</div>
@@ -123,6 +127,10 @@
 							<div class="row">
 							
 							  	<div class="col-md-9 content">
+			  						<!-- Breadcrumbs -->
+									<c:if test="${not empty breadcrumbs}">
+										<jsp:invoke fragment="breadcrumbs" />
+									</c:if>
 									<div class="wrapper">
 										<div id="intro">
 											<jsp:invoke fragment="contentIntro"/>

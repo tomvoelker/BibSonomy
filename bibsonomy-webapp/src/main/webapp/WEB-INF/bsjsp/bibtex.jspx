@@ -70,6 +70,8 @@
 			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
 		</jsp:attribute>
 		
+		
+		
 		<jsp:attribute name="content">
 			
 			<!-- COMMUNITY POST -->
