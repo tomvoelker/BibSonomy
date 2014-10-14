@@ -42,6 +42,7 @@
 	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>
 	<jsp:directive.attribute name="discussion" fragment="true" required="false"/>
 	<jsp:directive.attribute name="content" fragment="true" required="false" />
+	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 	
 	<!--+
 		|
@@ -75,7 +76,8 @@
 			personalized="${command.personalized}"
 			hideFooterContainer="${hideFooterContainer}"
 			beforeMainContainer="${beforeMainContainer}"
-			minimizedContentWidth="${minimizedContentWidth}" >
+			minimizedContentWidth="${minimizedContentWidth}"
+			breadcrumbs="${breadcrumbs}" >
 			
 		<!--+
 			+ HTML header extension
@@ -107,7 +109,7 @@
 			<c:if test="${discussionBox}">
 				<!-- Headline -->
 				<div class="header">
-					${mtl:cleanBibtex(resource.title)}
+					<c:out value="${mtl:cleanBibtex(resource.title)}" />
 				</div>
 			</c:if>
 			
@@ -141,10 +143,11 @@
 				<h1 class="content-header"><c:out value="${headline}"/></h1>
 			</c:if>
 			-->
-			<!-- invokes discussion forms -->
-			<jsp:invoke fragment="discussion" />
+			
 			
 			<jsp:invoke fragment="content" />
+			
+			
 			
 			<c:choose>
 				<!-- if a community post is present show the community post, not the list of posts -->
@@ -208,9 +211,10 @@
 									</c:if>
 								</jsp:attribute>
 							</resources:bibtexs>
-							 
+							
 						</div>
 				    </div>
+				    
 				</c:otherwise>
 			</c:choose>
 			

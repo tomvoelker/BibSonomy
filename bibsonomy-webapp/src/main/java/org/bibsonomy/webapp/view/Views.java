@@ -437,7 +437,7 @@ public enum Views implements View {
 	JOIN_GROUP("actions/join_group"),
 
 	/**
-	 * join group view
+	 * general success page
 	 */
 	SUCCESS("actions/success"),
 

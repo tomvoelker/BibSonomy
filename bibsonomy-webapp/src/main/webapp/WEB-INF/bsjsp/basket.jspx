@@ -10,7 +10,8 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
 	
@@ -28,6 +29,16 @@
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.basket"/>
+		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">	
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<fmt:message key="navi.account" var="account"/>
+					<nav:crumb name="${account}" />
+					<nav:crumb name="${headline}" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
 		</jsp:attribute>
 		
 		<!--+
@@ -50,14 +61,42 @@
 				
 			</parts:qrcode>
 			
+			<!-- link-buttons on what you can do -->	
 			<ul>			
-	          <li style="text-align: center;">
-	            <fmt:message key="basket.removeAllVerbose" var="removeAllVerbose"/>
-	          	<button:linkButton name="linkButton" title="${fn:escapeXml(removeAllVerbose)}" href="/ajax/pickUnpickPost?action=clearAll&amp;ckey=${mtl:encodeURI(command.context.ckey)}">
-					<jsp:attribute name="text">
-						<fmt:message key="basket.removeAll"/>
-					</jsp:attribute>
-				</button:linkButton>
+	          <li>
+	            <!-- edit -->
+	            <div class="form-group">
+		            <fmt:message key="basket.edit.tags" var="editTags"/>
+		          	<button:linkButton name="linkButton" title="${fn:escapeXml(editTags)}"
+		          		href="/beditbib/${fn:escapeXml(requPath)}">
+						<jsp:attribute name="text">
+							<fmt:message key="basket.editTags"/>
+						</jsp:attribute>
+					</button:linkButton>
+	            </div>
+	            
+	            <!-- export -->
+	            <div class="form-group">
+		            <fmt:message key="basket.export" var="exportPosts"/>
+		          	<button:linkButton name="linkButton" title="${fn:escapeXml(exportPosts)}"
+		          		href="/export/${fn:escapeXml(requPath)}${requQueryString}">
+						<jsp:attribute name="text">
+							<fmt:message key="basket.exportPosts"/>
+						</jsp:attribute>
+					</button:linkButton>
+	            </div>
+	            
+	            <!-- remove -->
+	            <div class="form-group">
+            	
+		            <fmt:message key="basket.removeAllVerbose" var="removeAllVerbose"/>
+		          	<button:linkButton name="linkButton" title="${fn:escapeXml(removeAllVerbose)}"
+		          		href="/ajax/pickUnpickPost?action=clearAll&amp;ckey=${mtl:encodeURI(command.context.ckey)}">
+						<jsp:attribute name="text">
+							<fmt:message key="basket.removeAll"/>
+						</jsp:attribute>
+					</button:linkButton>
+				</div>	
 	          </li>
 			</ul>
  		</jsp:attribute>
@@ -70,15 +109,7 @@
 				<jsp:attribute name="infoTextBody">
 		        	<!-- short info, what the basket is -->
 		            <fmt:message key="basket.info"/>                 
-		
-					<!-- quick links on what you can do -->
-					
 					<p><fmt:message key="basket.info.examples"/></p>
-					<ul class="news">
-						<li><a href="/beditbib/${fn:escapeXml(requPath)}" title="${editPageTags}"><fmt:message key="basket.edit.tags"/></a></li>
-						<li><a href="/export/${fn:escapeXml(requPath)}${requQueryString}"><fmt:message key="basket.export"/></a></li>
-						<li><a href="/beditbib/${fn:escapeXml(requPath)}" title="${editPageTags}"><fmt:message key="basket.delete"/></a></li>
-					</ul>
 				</jsp:attribute>
 			</parts:infobox>
          </jsp:attribute>

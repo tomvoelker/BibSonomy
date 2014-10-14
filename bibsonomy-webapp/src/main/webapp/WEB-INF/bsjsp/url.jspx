@@ -66,8 +66,10 @@
 			+ HTML header extension
 			+ -->
 		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="${resdir}/javascript/merged/discussion.js"><!-- keep me --></script>
-			
+			<script type="text/javascript" src="${resdir}/javascript/merged/bs/discussion.js"><!-- keep me --></script>
+			<c:if test="${goldstandardPresent}">
+				<script type="text/javascript" src="${resdir}/javascript/bs/goldstandards.js"><!-- keep me --></script>
+			</c:if>
 			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.css" />
 		</jsp:attribute>
 
@@ -105,10 +107,32 @@
 		<!--+
 			+ content heading
 			+ -->
-		<jsp:attribute name="discussion">
+		<jsp:attribute name="content">
+			<h1 class="content-header">Community Page</h1>
+			<div class="title">
+				<div class="media">
+					<!-- 
+					<span class="pull-left">
+						<span style="font-size: 64px;" class="fa fa-user">&amp;nbsp;</span>
+					</span>
+					-->
+					<div class="media-body" id="titletext">
+						
+						<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(command.bookmark.list[0].resource.title)}" /></h1>
+						<c:set var="url" value="${command.bookmark.list[0].resource.url}" />
+						<p><a href="${url}"><c:out value="${url}" /></a></p>
+					</div>
+				</div>		
+			</div>
+			<div style="border-top: 1px #cccccc solid;">
+				<!--  -->
+			</div> <!-- border -->	
+		
 			<div id="fscontent" style="margin-top: 10px;">
 				<discussion:singleResourceDiscussionLayout resource="${bookmark}" discussionItems="${command.discussionItems}" postUserName="${command.postOwner}"/>
 			</div>
 		</jsp:attribute>
+		
+		
 	</layout:resourceLayout>
 </jsp:root>

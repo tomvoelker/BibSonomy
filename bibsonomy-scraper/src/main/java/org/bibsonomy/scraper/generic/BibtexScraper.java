@@ -68,18 +68,15 @@ public class BibtexScraper implements Scraper {
 	public boolean scrape(final ScrapingContext sc) throws ScrapingException {
 		if ((sc != null) && (sc.getUrl() != null)) {
 			final String result = this.parseBibTeX(sc.getPageContent());
-			
-			String hasInvalidChar = null;
+
 			Matcher m = invalidChar.matcher(result);
-			if(m.find())
-				hasInvalidChar = m.group();
-			
-			if (result != null && hasInvalidChar == null) {
-				sc.setScraper(this);
-				sc.setBibtexResult(result);
-				return true;
+			if(!m.find()){
+				if (result != null) {
+					sc.setScraper(this);
+					sc.setBibtexResult(result);
+					return true;
+				}
 			}
-			
 		}
 		return false;
 	}
@@ -88,14 +85,14 @@ public class BibtexScraper implements Scraper {
 		if (pageContent == null) {
 			return null;
 		}
-		
+
 		// html clean up
 		final String source = StringEscapeUtils.unescapeHtml(pageContent).replaceAll("<\\s*+br\\s*+/?>", "\n")
 				//this should remove the remaining html tags
 				.replaceAll("</?\\s*+\\w++.*?>", "");
 
 		try {
-			
+
 			/* 
 			 * copied from SnippetScraper
 			 */
@@ -120,7 +117,7 @@ public class BibtexScraper implements Scraper {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public boolean supportsScrapingContext(final ScrapingContext sc) {
 		if ((sc != null) && (sc.getUrl() != null)) {
@@ -134,14 +131,14 @@ public class BibtexScraper implements Scraper {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * @return site name
 	 */
 	public String getSupportedSiteName(){
 		return null;
 	}
-	
+
 	/**
 	 * @return site url
 	 */

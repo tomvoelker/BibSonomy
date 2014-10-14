@@ -17,7 +17,7 @@
 	</c:if>
 	
 	<div class="alert alert-${fn:escapeXml(style.cssClassName)} alert-dismissable fb fb${fn:escapeXml(size.cssClassName)}">
-		<button aria-hidden="true" data-dismiss="alert" class="close" type="button">&amp;times;</button>
+		<button aria-hidden="true" data-dismiss="alert" class="close" type="button" tabindex="-1">&amp;times;</button>
 		<jsp:invoke fragment="feedbackBody" />
 	</div>
 </jsp:root>
