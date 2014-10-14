@@ -42,6 +42,7 @@
 	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>
 	<jsp:directive.attribute name="discussion" fragment="true" required="false"/>
 	<jsp:directive.attribute name="content" fragment="true" required="false" />
+	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 	
 	<!--+
 		|
@@ -75,7 +76,8 @@
 			personalized="${command.personalized}"
 			hideFooterContainer="${hideFooterContainer}"
 			beforeMainContainer="${beforeMainContainer}"
-			minimizedContentWidth="${minimizedContentWidth}" >
+			minimizedContentWidth="${minimizedContentWidth}"
+			breadcrumbs="${breadcrumbs}" >
 			
 		<!--+
 			+ HTML header extension

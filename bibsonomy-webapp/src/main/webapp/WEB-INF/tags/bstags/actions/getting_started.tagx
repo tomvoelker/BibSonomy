@@ -5,7 +5,8 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 
 	<jsp:directive.attribute name="confirmationMailFragment" required="false" fragment="true"/>
 	
@@ -28,7 +29,17 @@
 			<script type="text/javascript" src="/resources/javascript/bs/animate-scroll-affix.js"><!-- --></script>
 		
 		</jsp:attribute>
-
+		
+		<!-- 
+		<jsp:attribute name="breadcrumbs">	
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:crumb name="${gettingStartedTitle}" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		-->
+		
 		<jsp:attribute name="content">
 			<div class="row">
 				<div class="col-md-offset-1 col-xs-12 col-sm-12 col-md-10">

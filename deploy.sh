@@ -20,6 +20,7 @@ declare -A webapp
 webapp[gromit]=bibsonomy-webapp
 # PUMA test systems
 webapp[puma_ks_dev]=bibsonomy-webapp
+webapp[puma_ffm_dev]=bibsonomy-webapp-puma-frankfurt-main
 webapp[puma_ffm_rc]=bibsonomy-webapp-puma-frankfurt-main
 webapp[puma_s_dev]=bibsonomy-webapp-puma-stuttgart
 
@@ -51,6 +52,7 @@ archivable[gandalf]=true
 declare -A unnoticed
 unnoticed[gromit]=true
 unnoticed[puma_ks_dev]=true
+unnoticed[puma_ffm_dev]=true
 unnoticed[puma_ffm_rc]=true
 unnoticed[puma_gi_prod]=true
 unnoticed[puma_s_dev]=true

@@ -12,7 +12,8 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld" 
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:review="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion/review">
+	xmlns:review="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion/review"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<fmt:message var="headline" key="page.discussions.headline" />
@@ -35,6 +36,27 @@
 					</c:if>
 				</jsp:attribute>
 			</parts:search>	
+		</jsp:attribute>
+
+		<jsp:attribute name="breadcrumbs">	
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<c:choose>
+						<c:when test="${command.requestedUser eq command.context.loginUser.name}">
+							<fmt:message key="buttons.mybibsonomy" var="my">
+								<fmt:param>${properties['project.name']}</fmt:param>
+							</fmt:message>
+							<nav:crumb name="${my}" href="/user/${command.context.loginUser.name}" />
+						</c:when>
+						<c:otherwise>
+							<fmt:message var="popular" key="navi.popular" />
+							<nav:crumb name="${popular}" href="/popular" />
+						</c:otherwise>
+					</c:choose>
+					<fmt:message var="posts" key="navi.posts" />
+					<nav:crumb name="${posts}" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
 		</jsp:attribute>
 
 		<jsp:attribute name="headerExt">
