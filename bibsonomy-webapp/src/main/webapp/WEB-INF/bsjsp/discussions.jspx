@@ -53,7 +53,7 @@
 							<nav:crumb name="${popular}" href="/popular" />
 						</c:otherwise>
 					</c:choose>
-					<fmt:message var="posts" key="navi.posts" />
+					<fmt:message var="posts" key="navi.discussedPosts" />
 					<nav:crumb name="${posts}" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>

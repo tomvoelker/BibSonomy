@@ -16,7 +16,8 @@
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
 	xmlns:output="urn:jsptagdir:/WEB-INF/tags/bstags/export/bibtex"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 	
 	<!--
 		This is the standard CV Page for all users. You can NOT edit the CV on this page.
@@ -34,6 +35,28 @@
 		headerLogoClass="cv" 
 		showPageOptions="${command.context.userLoggedIn and command.context.loginUser.name eq command.requestedUser}"
 		minimizedContentWidth="${true}">
+		
+		<jsp:attribute name="breadcrumbs">	
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<c:choose>
+						<c:when test="${ownCVPage}">
+							<fmt:message key="buttons.mybibsonomy" var="my">
+								<fmt:param>${properties['project.name']}</fmt:param>
+							</fmt:message>
+							<nav:crumb name="${my}" href="/user/${command.context.loginUser.name}" />
+							<nav:crumb name="${cvPageTitle}" />
+						</c:when>
+						<c:otherwise>
+							<fmt:message key="navi.user" var="user" />
+							<nav:crumb name="${user}" />
+							<nav:crumb name="${command.requestedUser}" href="/user/${requestedUser}" />
+							<nav:crumb name="${cvPageTitle}" active="true"/>
+						</c:otherwise>
+					</c:choose>
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
 		 	<ul>
