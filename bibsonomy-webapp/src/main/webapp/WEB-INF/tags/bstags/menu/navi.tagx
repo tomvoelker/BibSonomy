@@ -219,7 +219,7 @@
 								<c:otherwise>
 									<li class="sidebarnavi_entry sidebarnavi_entry_active sidebarnavi_entry_06">
 										<a href="${properties['project.blog']}" title="${titleBlog}">
-											<span class="socicon socicon-Blogger"><!-- KEEP ME --></span>&amp;nbsp;
+											<span class="socicon socicon-blogger"><!-- KEEP ME --></span>&amp;nbsp;
 											<fmt:message key="navi.blog" />
 										</a>
 									</li>
@@ -233,13 +233,13 @@
 									<li class="divider"><!--  --></li>
 									<li>
 										<a href="/login" title="${titleSpheres}">
-											<span class="glyphicon glyphicon glyphicon-log-in"><!-- KEEP ME --></span>&amp;nbsp;
+											<span class="fa fa-sign-in"><!-- KEEP ME --></span>&amp;nbsp;
 											<fmt:message key="navi.login" />
 										</a>
 									</li>
 									<li> 
 										<a href="/register" title="${titleSpheres}">
-											<span class="glyphicon glyphicon-edit"><!-- KEEP ME --></span>&amp;nbsp;
+											<span class="fa fa-pencil-square-o"><!-- KEEP ME --></span>&amp;nbsp;
 											<fmt:message key="navi.register" />
 										</a>
 									</li>

@@ -58,7 +58,7 @@
 					</div>
 				</li>
 	  		<c:choose>
-		  		<c:when test="${empty publication.documents}">
+		  		<c:when test="${empty publication.documents}"> <!-- no documents -->
 			  		<c:if test="${isOwnEntry}">
 			  			<div class="img-thumbnail publication preview bibtexpreviewimage">
 							<a class="addDocument addDocumentImg" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
@@ -70,7 +70,7 @@
 						</div>
 					</c:if>
 		  		</c:when>
-		  		<c:otherwise>
+		  		<c:otherwise> <!-- documents available -->
 		  			<c:set var="count" value="0" scope="page" />
 		  			<c:forEach var="document" items="${publication.documents}">
 		  			 
@@ -87,7 +87,7 @@
 										</div>
 									</c:when>
 									<c:otherwise>
-										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage" style="display:none;">
+										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage">
 											<!-- preview picture of first document -->
 											<!--  <a class="publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="${fn:escapeXml(document.fileName)}"> -->
 											<a class="img-thumbnail pdfFile" data-toggle="lightbox" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false">
@@ -172,7 +172,7 @@
 											<span class="input-group-btn">
 											
         										<a class="btn btn-sm btn-default btn-stripped rename-btn" title="${renameDocTitle}"><span class="fa fa-pencil"><!-- KEEP ME --></span></a>
-        										<a class="btn btn-sm btn-default btn-stripped remove-btn" title="${deleteDocTitle}" href="${deleteUrl}" data-filename="${fn:escapeXml(document.fileName)}"><span class="fa fa-times"><!-- KEEP ME --></span></a>
+        										<a class="btn btn-sm btn-default btn-stripped remove-btn" title="${deleteDocTitle}" href="${deleteUrl}" data-filename="${fn:escapeXml(document.fileName)}" data-ident="${mtl:downloadFileId(document.fileName)}"><span class="fa fa-times"><!-- KEEP ME --></span></a>
         										<a class="btn btn-sm btn-default btn-stripped download-btn" title="Download ${downloadTitle}"><span class="fa fa-download"><!-- KEEP ME --></span></a>
         										<c:if test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
         											<a class="btn btn-sm btn-default btn-stripped download-btn" title="${downloadQrTitle}"><span class="fa fa-qrcode"><!-- KEEP ME --></span></a>

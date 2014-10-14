@@ -67,7 +67,7 @@
 		
 	<c:set var="smallField" value="" />
 	<c:if test="${not empty small or small}">
-		<c:set var="classSmallField" value="smallField" />  
+		<c:set var="classSmallField" value="smallField" />
 	</c:if>
 
 	<c:if test="${(empty id)}">

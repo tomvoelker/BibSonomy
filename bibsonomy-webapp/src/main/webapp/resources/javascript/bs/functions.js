@@ -311,47 +311,6 @@ function fadePostIn(post) {
 	post.fadeIn("slow").parents("ul.posts").find("li.post:last").fadeOut("slow").remove();
 }
 
-
-/**
- * Adds [-] buttons to sidebar elements to toggle visibility of each element. 
- * 
- * @return
- */
-function init_sidebar() {
-	$("#sidebar li .sidebar_h").each(function(index,item){
-		var span;
-		if ($(item).hasClass("initially_collapsed")) {
-			span = $("<span class='toggler'><img src='/resources/image/icon_expand.png'/></span>");
-		} else { 
-			span = $("<span class='toggler'><img src='/resources/image/icon_collapse.png'/></span>");
-		}
-		
-		span.click(function(){
-			fadeNextList(item);
-		});
-		$(this).prepend(span); 
-	});
-
-}
-
-function fadeNextList(target) {
-	$(target).nextAll(".sidebar_collapse_content").toggle("slow", function(){
-		$(target).find(".toggler img").attr("src", "/resources/image/icon_" + ($(this).css('display') == 'none' ? "expand" : "collapse") + ".png");
-	});
-}
-
-/**
- * if window is small, maximizes the "general" div to 95%
- * 
- * @param id
- * @return
- */
-function maximizeById(id) {
-	if (window.innerWidth < 1200) {
-		$("#" + id).css("width", "95%");
-	}
-}
-
 /** 
  * 	prepare a text form which we'll use to switch between
  * 	password and text form to circumvent an issue caused
