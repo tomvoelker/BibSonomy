@@ -42,15 +42,24 @@
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<c:choose>
-						<c:when test="${command.requestedUser eq command.context.loginUser.name}">
-							<fmt:message key="buttons.mybibsonomy" var="my">
-								<fmt:param>${properties['project.name']}</fmt:param>
-							</fmt:message>
-							<nav:crumb name="${my}" href="/user/${command.context.loginUser.name}" />
+						<c:when test="${empty command.requestedGroup}">
+							<c:choose>
+								<c:when test="${command.requestedUser eq command.context.loginUser.name}">
+									<fmt:message key="buttons.mybibsonomy" var="my">
+										<fmt:param>${properties['project.name']}</fmt:param>
+									</fmt:message>
+									<nav:crumb name="${my}" href="/user/${command.context.loginUser.name}" />
+								</c:when>
+								<c:otherwise>
+									<fmt:message var="popular" key="navi.popular" />
+									<nav:crumb name="${popular}" href="/popular" />
+								</c:otherwise>
+							</c:choose>
 						</c:when>
 						<c:otherwise>
-							<fmt:message var="popular" key="navi.popular" />
-							<nav:crumb name="${popular}" href="/popular" />
+							<fmt:message key="navi.groups" var="groups" />
+							<nav:crumb name="${groups}" href="/groups" />
+							<nav:crumb name="${command.requestedGroup}" href="/group/${command.requestedGroup}" />
 						</c:otherwise>
 					</c:choose>
 					<fmt:message var="posts" key="navi.discussedPosts" />

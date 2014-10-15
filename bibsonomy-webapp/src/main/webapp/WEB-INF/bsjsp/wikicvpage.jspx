@@ -50,7 +50,7 @@
 						<c:otherwise>
 							<fmt:message key="navi.user" var="user" />
 							<nav:crumb name="${user}" />
-							<nav:crumb name="${command.requestedUser}" href="/user/${requestedUser}" />
+							<nav:crumb name="${command.requestedUser}" href="/user/${command.requestedUser}" />
 							<nav:crumb name="${cvPageTitle}" active="true"/>
 						</c:otherwise>
 					</c:choose>

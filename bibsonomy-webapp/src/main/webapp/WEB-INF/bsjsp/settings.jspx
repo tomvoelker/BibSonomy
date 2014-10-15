@@ -15,7 +15,8 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/bstags/spheres"
 	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs">
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
@@ -27,6 +28,18 @@
 			<script type="text/javascript" src="${resdir}/javascript/cv/handlers.js"><!--  --></script>
 			<script type="text/javascript" src="${resdir}/javascript/profile/handlers.js"><!-- --></script>
 		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">	
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<fmt:message key="navi.account" var="account"/>
+					<nav:crumb name="${account}" />
+					<fmt:message key="navi.settings" var="settings"/>
+					<nav:crumb name="${settings}" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		
 		<!--+
 			| page content
 			+-->
