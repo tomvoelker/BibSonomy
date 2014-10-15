@@ -246,13 +246,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param itemsPerPage number of items to be displayed on each page
 	 */
 	protected <T extends Resource> void setList(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int itemsPerPage) {
-		final ListCommand<Post<T>> listCommand = cmd.getListCommand(resourceType);
-		// retrieve posts		
-		log.debug("getPosts " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
-		final int start = listCommand.getStart();
-		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search, filter, order, startDate, endDate, start, start + itemsPerPage));
-		// list settings
-		listCommand.setEntriesPerPage(itemsPerPage);
+		this.setList(cmd, resourceType, groupingEntity, groupingName, tags, hash, search, SearchType.LUCENESEARCH, filter, order, startDate, endDate, itemsPerPage);
 	}
 	
 	/**
@@ -273,12 +267,12 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param endDate 
 	 * @param itemsPerPage number of items to be displayed on each page
 	 */
-	protected <T extends Resource> void setListElasticSearch(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int itemsPerPage) {
+	protected <T extends Resource> void setList(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int itemsPerPage) {
 		final ListCommand<Post<T>> listCommand = cmd.getListCommand(resourceType);
 		// retrieve posts		
-		log.debug("getPostsForElasticSearch " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
+		log.debug("getPosts " + resourceType + " " + searchType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
 		final int start = listCommand.getStart();
-		listCommand.setList(this.logic.getPostsForElasticSearch(resourceType, groupingEntity, groupingName, tags, hash, search, searchType, filter, order, startDate, endDate, start, start + itemsPerPage));
+		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search, searchType, filter, order, startDate, endDate, start, start + itemsPerPage));
 		// list settings
 		listCommand.setEntriesPerPage(itemsPerPage);
 	}

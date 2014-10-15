@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.webapp.command.SearchViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -31,12 +32,12 @@ public class SearchPageController extends SingleResourceListController implement
 	 */
 	private static final List<GroupingEntity> SUPPORTED_GROUPING_ENTITIES = Arrays.asList(GroupingEntity.USER, GroupingEntity.GROUP);
 	
-	private boolean searchSharedIndex;
+	private SearchType searchType;
+	private boolean searchFromSharedIndex;
 	@Override
 	public View workOn(final SearchViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
-		
 		this.startTiming(format);
 		String search = command.getRequestedSearch();
 		if (!present(search)) {
@@ -91,18 +92,25 @@ public class SearchPageController extends SingleResourceListController implement
 		}
 		
 		final List<String> requestedTags = command.getRequestedTagsList();
+
 		
-		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
-			this.setList(command, resourceType, groupingEntity, groupingName, requestedTags, null, search, null, command.getOrder(), command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
-			
-			this.postProcessAndSortList(command, resourceType);
-		}
-		
+		if(searchFromSharedIndex){
+			searchType = SearchType.ELASTICSEARCH;
+		}else{		
+			searchType = SearchType.LUCENESEARCH;
+			}
+			// retrieve and set the requested resource lists
+			for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+
+				this.setList(command, resourceType, groupingEntity, groupingName, requestedTags, null, search, searchType, null, command.getOrder(), command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
+				
+				this.postProcessAndSortList(command, resourceType);
+			}
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
 			// fill the tag cloud with all tag assignments of the relevant documents
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, maximumTags, search);
+			if(!searchFromSharedIndex)
+				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, maximumTags, search);
 			this.endTiming();
 			return Views.SEARCHPAGE;
 		}
@@ -120,17 +128,17 @@ public class SearchPageController extends SingleResourceListController implement
 	}
 
 	/**
-	 * @return the searchSharedIndex
+	 * @return the searchFromSharedIndex
 	 */
-	public boolean isSearchSharedIndex() {
-		return this.searchSharedIndex;
+	public boolean isSearchFromSharedIndex() {
+		return this.searchFromSharedIndex;
 	}
 
 	/**
-	 * @param searchSharedIndex the searchSharedIndex to set
+	 * @param searchFromSharedIndex the searchFromSharedIndex to set
 	 */
-	public void setSearchSharedIndex(boolean searchSharedIndex) {
-		this.searchSharedIndex = searchSharedIndex;
+	public void setSearchFromSharedIndex(boolean searchFromSharedIndex) {
+		this.searchFromSharedIndex = searchFromSharedIndex;
 	}
 
 }

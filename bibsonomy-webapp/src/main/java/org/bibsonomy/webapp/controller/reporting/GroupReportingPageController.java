@@ -13,6 +13,7 @@ import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.webapp.command.reporting.GroupReportingCommand;
@@ -59,7 +60,7 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 		/*
 		 * fetch all bibtex & remove duplicates
 		 */
-		final List<Post<BibTex>> groupBibtexEntries = logic.getPosts(BibTex.class, GroupingEntity.GROUP, command.getRequestedGroup(), tags, null, null, null, null, null, null, 0, 10000);
+		final List<Post<BibTex>> groupBibtexEntries = logic.getPosts(BibTex.class, GroupingEntity.GROUP, command.getRequestedGroup(), tags, null, null, SearchType.LUCENESEARCH,null, null, null, null, 0, 10000);
 		BibTexUtils.removeDuplicates(groupBibtexEntries);
 		
 		

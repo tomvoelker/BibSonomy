@@ -99,24 +99,6 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.bibsonomy.services.searcher.ResourceSearch#getPosts(java.lang.String,
-	 * java.lang.String, java.lang.String, java.util.Collection,
-	 * java.lang.String, java.lang.String, java.lang.String,
-	 * java.util.Collection, java.lang.String, java.lang.String,
-	 * java.lang.String, int, int)
-	 */
-	@Override
-	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {
-		// build query
-		final QuerySortContainer query = this.buildQuery(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, order);
-		// perform search query
-		return this.searchLucene(query, limit, offset);
-	}
-
-	/*
-	 * (non-Javadoc)
 	 *  
 	 * @see
 	 * org.bibsonomy.services.searcher.ResourceSearch#getTags(java.lang.String,
@@ -747,19 +729,15 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPostsForElasticSearch(java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.model.enums.Order, int, int)
+	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPosts(java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.model.enums.Order, int, int)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Post<R>> getPostsForElasticSearch(String resourceType, String userName,
-			String requestedUserName, String requestedGroupName,
-			List<String> requestedRelationNames,
-			Collection<String> allowedGroups,SearchType searchType,String searchTerms,
-			String titleSearchTerms, String authorSearchTerms,
+	public List<Post<R>> getPosts(String resourceType, String userName,String requestedUserName, String requestedGroupName,List<String> requestedRelationNames,	Collection<String> allowedGroups,SearchType searchType,String searchTerms,String titleSearchTerms, String authorSearchTerms,
 			Collection<String> tagIndex, String year, String firstYear,
 			String lastYear, List<String> negatedTags, Order order, int limit,
 			int offset) {
-		
+		if(searchType==SearchType.ELASTICSEARCH){
 			EsResourceSearch<R> searchResource =  new EsResourceSearch<R>();
 			searchResource.setSearchTerms(searchTerms);
 			searchResource.setTYPE_NAME(resourceType);
@@ -772,6 +750,14 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			} catch (IOException e) {
 				log.error("TODO", e);
 			}
+		
+			return null;
+		}else if(searchType==SearchType.LUCENESEARCH){
+			// build query
+			final QuerySortContainer query = this.buildQuery(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, order);
+			// perform search query
+			return this.searchLucene(query, limit, offset);
+		}
 			return null;
 	}
 

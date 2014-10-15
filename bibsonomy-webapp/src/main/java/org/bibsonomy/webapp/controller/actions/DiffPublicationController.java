@@ -11,6 +11,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.webapp.command.actions.DiffPublicationCommand;
 import org.bibsonomy.webapp.controller.PostHistoryController;
@@ -64,7 +65,7 @@ public class DiffPublicationController extends ResourceListController implements
 		final int compareVersion = command.getCompareVersion();
 		if (present(compareVersion) && present(intraHashToUpdate)) {
 			LOGGER.debug("intra hash to diff found -> handling diff of existing post");
-			final List<?> dbPosts = logic.getPosts(post.getResource().getClass(), GroupingEntity.ALL, command.getUser(), null, intraHashToUpdate, null, FilterEntity.POSTS_HISTORY_BIBTEX, null, null, null, compareVersion, compareVersion+1);
+			final List<?> dbPosts = logic.getPosts(post.getResource().getClass(), GroupingEntity.ALL, command.getUser(), null, intraHashToUpdate, null,SearchType.LUCENESEARCH, FilterEntity.POSTS_HISTORY_BIBTEX, null, null, null, compareVersion, compareVersion+1);
 			command.setPostDiff((Post<BibTex>) dbPosts.get(0));
 		}
 		command.setPost(getPostDetails(intraHashToUpdate, requestedUser));

@@ -40,42 +40,15 @@ import org.bibsonomy.model.es.SearchType;
  * @param <R>
  */
 public interface ResourceSearch<R extends Resource> {
-
 	/**
-	 * search for posts using the lucene index
-	 * 
-	 * @param userName
-	 * @param requestedUserName
-	 * @param requestedGroupName
-	 * @param requestedRelationNames
-	 * @param allowedGroups
-	 * @param searchTerms
-	 * @param titleSearchTerms
-	 * @param authorSearchTerms
-	 * @param tagIndex
-	 * @param year
-	 * @param firstYear
-	 * @param lastYear
-	 * @param negatedTags
-	 * @param order			the order to use (supported {@link Order#ADDED} and {@link Order#RANK}
-	 * @param limit
-	 * @param offset
-	 * @return a list of posts containing the search result
-	 */
-	public List<Post<R>> getPosts(
-			final String userName, final String requestedUserName, String requestedGroupName, 
-			final List<String> requestedRelationNames,
-			final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms,
-			final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset);
-
-	/**
-	 * search for posts using the ES index
+	 * search for posts using the ES / lucene index
 	 * @param resourceType resourceType of the posts to set the type in ES node 
 	 * @param userName
 	 * @param requestedUserName
 	 * @param requestedGroupName
 	 * @param requestedRelationNames
 	 * @param allowedGroups
+	 * @param searchType 
 	 * @param searchTerms
 	 * @param titleSearchTerms
 	 * @param authorSearchTerms
@@ -89,7 +62,7 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param offset
 	 * @return a list of posts containing the search result
 	 */
-	public List<Post<R>> getPostsForElasticSearch(final String resourceType,
+	public List<Post<R>> getPosts(final String resourceType,
 			final String userName, final String requestedUserName, String requestedGroupName, 
 			final List<String> requestedRelationNames,
 			final Collection<String> allowedGroups,final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms,

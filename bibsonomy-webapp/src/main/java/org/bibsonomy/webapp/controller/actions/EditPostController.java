@@ -33,6 +33,7 @@ import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.SimHash;
@@ -283,7 +284,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		final int step = PostLogicInterface.MAX_QUERY_SIZE;
 		
 		do {
-			tmp = this.logic.getPosts((Class<RESOURCE>)this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, null, null, null, null, startCount, startCount + step);
+			tmp = this.logic.getPosts((Class<RESOURCE>)this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null,SearchType.LUCENESEARCH, null, null, null, null, startCount, startCount + step);
 			dbPosts.addAll(tmp);
 			startCount += step;
 		} while (tmp.size() == step);

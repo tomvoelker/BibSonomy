@@ -11,6 +11,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.MultiResourceViewCommand;
 
@@ -59,7 +60,7 @@ public abstract class MultiResourceListController extends ResourceListController
 		final ListCommand<Post<T>> listCommand = new ListCommand<Post<T>>(cmd);
 		// retrieve posts		
 		log.debug("getPosts " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
-		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search, filter, order, null, null, listCommand.getStart(), listCommand.getStart() + itemsPerPage) );
+		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search,SearchType.LUCENESEARCH, filter, order, null, null, listCommand.getStart(), listCommand.getStart() + itemsPerPage) );
 		cmd.getListCommand(resourceType).add(listCommand);
 
 		// list settings

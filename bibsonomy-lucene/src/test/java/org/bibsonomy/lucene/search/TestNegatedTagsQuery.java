@@ -23,16 +23,19 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
+import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.testutil.TestDatabaseLoader;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class TestNegatedTagsQuery extends AbstractDatabaseManagerTest {
 
 	private static LuceneResourceManager<BibTex> manager;
 	private static LuceneResourceSearch<BibTex> searcher;
+	private static final String BIB_RESOURCE_TYPE 	= "Bibtex";
 
 	/**
 	 * generates the gold standard publication index
@@ -93,7 +96,7 @@ public class TestNegatedTagsQuery extends AbstractDatabaseManagerTest {
 
 	private ResultList<Post<BibTex>> query(final LuceneResourceSearch<BibTex> lsr, final List<String> testTags, final List<String> negatedTags) {
 		ResultList<Post<BibTex>> resList;
-		resList = lsr.getPosts(null, null, null, null, Collections.singletonList("public"), null, null, null, testTags, null, null, null, negatedTags, null, 100, 0);
+		resList = (ResultList<Post<BibTex>>) lsr.getPosts(BIB_RESOURCE_TYPE,null, null, null, null, Collections.singletonList("public"),SearchType.LUCENESEARCH, null, null, null, testTags, null, null, null, negatedTags, null, 100, 0);
 		return resList;
 	}
 

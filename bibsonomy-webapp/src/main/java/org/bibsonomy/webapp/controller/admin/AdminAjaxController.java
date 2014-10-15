@@ -20,6 +20,7 @@ import org.bibsonomy.model.EvaluatorUser;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.webapp.command.ajax.AdminAjaxCommand;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -191,7 +192,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 			if (command.getShowSpamPosts().equals("true")) {
 				filter = FilterEntity.ADMIN_SPAM_POSTS;
 			}
-			final List<Post<Bookmark>> bookmarks = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, filter, Order.ADDED, null, null, 0, 5);
+			final List<Post<Bookmark>> bookmarks = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, SearchType.LUCENESEARCH,filter, Order.ADDED, null, null, 0, 5);
 			command.setBookmarks(bookmarks);
 
 			final int totalBookmarks = this.logic.getPostStatistics(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, filter, null, null, null, null, 0, 100).getCount();

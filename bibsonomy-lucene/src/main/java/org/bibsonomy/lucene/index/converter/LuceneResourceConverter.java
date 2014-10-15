@@ -280,22 +280,21 @@ public class LuceneResourceConverter<R extends Resource> {
 	 */
 	public Post<R> writePost(Map<String, Object> result) {
 		// initialize 
-				final Post<R> post = this.createEmptyPost();
+		final Post<R> post = this.createEmptyPost();
 				
-				// cycle though all properties and set the properties
-				for (final String propertyName : postPropertyMap.keySet()) {
-					// get index properties
-					final String fieldName = this.getFieldName(propertyName);
-					final String propertyStr = (String) result.get(fieldName); 
-					if (!present(propertyStr)) {
-						continue;
-					}
-
-					final Object propertyValue = this.getPropertyValue(propertyName, propertyStr);			
-					try {
-						PropertyUtils.setNestedProperty(post, propertyName, propertyValue);
-					} catch (final Exception e) {
-						log.error("Error setting property " + propertyName + " to " + propertyValue.toString(), e);
+		// cycle though all properties and set the properties
+		for (final String propertyName : postPropertyMap.keySet()) {
+			// get index properties
+			final String fieldName = this.getFieldName(propertyName);
+			final String propertyStr = (String) result.get(fieldName); 
+				if (!present(propertyStr)) {
+					continue;
+				}
+			final Object propertyValue = this.getPropertyValue(propertyName, propertyStr);			
+			try {
+				PropertyUtils.setNestedProperty(post, propertyName, propertyValue);
+				} catch (final Exception e) {
+					log.error("Error setting property " + propertyName + " to " + propertyValue.toString(), e);
 					}
 				}
 				

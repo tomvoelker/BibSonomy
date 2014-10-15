@@ -16,6 +16,7 @@ import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
@@ -247,7 +248,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 				 * fetch posts of all users with the given hash, add users to related
 				 * users list				
 				 */
-				final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, null, null, null, null, 0, 1000);
+				final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null,SearchType.LUCENESEARCH, null, null, null, null, 0, 1000);
 				for (final Post<R> post : allPosts) {
 					command.getRelatedUserCommand().getRelatedUsers().add(post.getUser());
 				}
