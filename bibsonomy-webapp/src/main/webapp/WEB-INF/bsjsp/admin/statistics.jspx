@@ -1,0 +1,217 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/users"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/bstags/menu"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="urn:http://www.springframework.org/tags"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<layout:layout pageTitle="${command.pageTitle}" loginUser="${command.context.loginUser}" requPath="">
+	
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.admin">
+				<jsp:attribute name="pathPart">
+					<li>
+						:: <a rel="path_menu" href="${relativeUrlGenerator.getAdminUrlByName('statistics')}">Statistics</a>
+					</li>
+				</jsp:attribute>
+			</parts:search>
+		</jsp:attribute>
+		
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/admin.css" />
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/adminrecommender.css" />
+			<script src="${resdir}/javascript/admin/statistics.js" type="text/javascript"><!-- keep me --></script>
+		</jsp:attribute>
+		
+		
+		<jsp:attribute name="content">
+			<h1 class="content-header">Statistics</h1>
+			
+			show statistics for: <a href="/admin/statistics?spammers=no">without spammers</a>, <a href="/admin/statistics?all=yes">with spammers</a>, <a href="/admin/statistics?spammers=yes&amp;all=no">only for spammers</a>
+			<h2>resource, post and TAS counts</h2>
+			
+			<h3>overall</h3>
+			<table class="table table-bordered table-condensed">
+				<tr>
+					<th><!-- keep me --></th>
+					<th>all</th>
+					<th>bookmarks</th>
+					<th>publications</th>
+				</tr>
+				<tr>
+					<td>resources</td>
+					<td data-url="/statistics?type=posts&amp;">loading</td>
+					<td>loading</td>
+					<td>loading</td>
+				</tr>
+				<tr>
+					<td>posts</td>
+					<td>loading</td>
+					<td>loading</td>
+					<td>loading</td>
+				</tr>
+				<tr>
+					<td>tas</td>
+					<td>loading</td>
+					<td>loading</td>
+					<td>loading</td>
+				</tr>
+			</table>
+			
+			<h3>overall (without DBLP)</h3>
+			<table class="table table-bordered table-condensed">
+				<tr>
+					<th><!-- keep me --></th>
+					<th>all</th>
+					<th>bookmarks</th>
+					<th>publications</th>
+				</tr>
+				<tr>
+					<td>resources</td>
+					<td data-url="/statistics?type=posts&amp;">loading</td>
+					<td>loading</td>
+					<td>loading</td>
+				</tr>
+				<tr>
+					<td>posts</td>
+					<td>loading</td>
+					<td>loading</td>
+					<td>loading</td>
+				</tr>
+				<tr>
+					<td>tas</td>
+					<td>loading</td>
+					<td>loading</td>
+					<td>loading</td>
+				</tr>
+			</table>
+			
+			<h3>24 hours (without DBLP)</h3>
+			<table class="table table-bordered table-condensed">
+				<tr>
+					<th><!-- keep me --></th>
+					<th>all</th>
+					<th>bookmarks</th>
+					<th>publications</th>
+				</tr>
+				<tr>
+					<td>resources</td>
+					<td data-url="/statistics?type=posts&amp;">loading</td>
+					<td>loading</td>
+					<td>loading</td>
+				</tr>
+				<tr>
+					<td>posts</td>
+					<td>loading</td>
+					<td>loading</td>
+					<td>loading</td>
+				</tr>
+				<tr>
+					<td>tas</td>
+					<td>loading</td>
+					<td>loading</td>
+					<td>loading</td>
+				</tr>
+			</table>
+			
+			<h2>logging tables</h2>
+			
+			<h3>overall</h3>
+			<table class="table table-bordered table-condensed">
+				<tr>
+					<td>bookmarks</td>
+					<td data-url="/statistics?type=posts&amp;">loading</td>
+				</tr>
+				<tr>
+					<td>publications</td>
+					<td>loading</td>
+				</tr>
+				<tr>
+					<td>posts from baskets</td>
+					<td>loading</td>
+				</tr>
+				<tr>
+					<td>friendships</td>
+					<td>loading</td>
+				</tr>
+				<tr>
+					<td>group memberships</td>
+					<td>loading</td>
+				</tr>
+				<tr>
+					<td>tag-tag relations</td>
+					<td>loading</td>
+				</tr>
+			</table>
+			
+			<h3>overall (without DBLP)</h3>
+			<table class="table table-bordered table-condensed">
+				<tr>
+					<td>bookmarks</td>
+					<td data-url="/statistics?type=posts&amp;">loading</td>
+				</tr>
+				<tr>
+					<td>publications</td>
+					<td>loading</td>
+				</tr>
+			</table>
+			
+			<h2>users</h2>
+			<table class="table table-bordered table-condensed">
+				<tr>
+					<td>users</td>
+					<td data-url="/statistics?type=users&amp;all=true&amp;spammers=true">loading</td>
+				</tr>
+				<tr>
+					<td>spammers</td>
+					<td data-url="/statistics?type=users&amp;spammers=true&amp;all=false">TODO</td>
+				</tr>
+				<tr>
+					<td>active users</td>
+					<td>TODO</td>
+				</tr>
+				<tr>
+					<td>active users 24 hours</td>
+					<td>TODO</td>
+				</tr>
+				<tr>
+					<td>active users last month</td>
+					<td>TODO</td>
+				</tr>
+			</table>
+			
+			<h2>misc</h2>
+			<table class="table table-bordered table-condensed">
+				<tr>
+					<td>tags</td>
+					<td data-url="/statistics?type=user&amp;grouping=all">loading</td>
+				</tr>
+				<tr>
+					<td>tag-tag relations</td>
+					<td>TODO</td>
+				</tr>
+				<tr>
+					<td>posts in baskets</td>
+					<td>TODO</td>
+				</tr>
+				<tr>
+					<td>user layouts</td>
+					<td>TODO</td>
+				</tr>
+				<tr>
+					<td>uploaded documents</td>
+					<td>TODO</td>
+				</tr>
+			</table>
+		</jsp:attribute>
+	</layout:layout>
+</jsp:root>

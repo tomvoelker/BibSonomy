@@ -72,5 +72,8 @@
 		    <!-- AND d.group >=0 -->
  		GROUP BY rating
 	</select>
- 
+ 	
+ 	<select id="getUserCount" resultClass="int">
+ 		SELECT count(*) FROM user
+ 	</select>
 </sqlMap>

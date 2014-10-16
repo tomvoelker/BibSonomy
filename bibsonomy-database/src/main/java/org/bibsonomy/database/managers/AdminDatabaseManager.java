@@ -347,18 +347,37 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 *            db session
 	 * @return count of users
 	 */
+	@Deprecated
 	public Integer getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval, final DBSession session) {
 		final AdminParam param = new AdminParam();
 		param.setInterval(interval);
 
 		if (classifier.equals(Classifier.ADMIN) && (status.equals(SpamStatus.SPAMMER) || status.equals(SpamStatus.NO_SPAMMER))) {
-			param.setPrediction(status.getId());
-			return this.queryForObject("getAdminClassifiedUsersCount", param, Integer.class, session);
+			return getNumberOfClassifedUsersByAdmin(status, interval, session);
 		} else if (classifier.equals(Classifier.CLASSIFIER)) {
 			param.setPrediction(status.getId());
 			return this.queryForObject("getClassifiedUsersCount", param, Integer.class, session);
 		}
 		return null;
+	}
+	
+	public int getNumberOfClassifedUsersByAdmin(final SpamStatus status, final int interval, final DBSession session) {
+		final AdminParam param = buildAdminParam(status, interval);
+		final Integer count = this.queryForObject("getAdminClassifiedUsersCount", param, Integer.class, session);
+		return count == null ? 0 : count.intValue();
+	}
+	
+	public int getNumberOfClassifedUsersByClassifier(final SpamStatus status, final int interval, final DBSession session) {
+		final AdminParam param = buildAdminParam(status, interval);
+		final Integer count = this.queryForObject("getClassifiedUsersCount", param, Integer.class, session);
+		return count == null ? 0 : count.intValue();
+	}
+	
+	private static AdminParam buildAdminParam(final SpamStatus status, final int interval) {
+		final AdminParam param = new AdminParam();
+		param.setInterval(interval);
+		param.setPrediction(status.getId());
+		return param;
 	}
 
 	/**

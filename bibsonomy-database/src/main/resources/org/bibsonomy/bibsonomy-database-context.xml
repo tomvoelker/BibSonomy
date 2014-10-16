@@ -171,6 +171,16 @@
 		</property>
 	</bean>
 	
+	<bean id="userStatisticsChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.statistic.user.GetUserClassifiedByClassifierCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.user.GetUserClassifiedByAdminCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.user.GetAllUserCount" />
+			</list>
+		</property>
+	</bean>
+	
 	<bean id="databaseValidator" class="org.bibsonomy.database.validation.DatabaseModelValidator">
 		<property name="databaseSchemaInformation" ref="dbSchemaInformation" />
 	</bean>
@@ -178,6 +188,7 @@
 	<bean id="statisticsDatabaseManager" class="org.bibsonomy.database.managers.StatisticsDatabaseManager" factory-method="getInstance">
 		<property name="postChain" ref="postStatisticChain" />
 		<property name="tagChain" ref="tagStatisticChain" />
+		<property name="userChain" ref="userStatisticsChain" />
 	</bean>
 		
 	<bean id="discussionDatabaseManager" class="org.bibsonomy.database.managers.discussion.DiscussionDatabaseManager" factory-method="getInstance">

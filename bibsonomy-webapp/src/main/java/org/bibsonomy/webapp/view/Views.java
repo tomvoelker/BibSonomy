@@ -343,6 +343,9 @@ public enum Views implements View {
 	 * general admin page
 	 */
 	ADMIN("actions/admin/index"),
+	
+	/** statistics about the system */
+	ADMIN_STATISTICS("admin/statistics"),
 
 	/* *****************************************************
 	 * action views 

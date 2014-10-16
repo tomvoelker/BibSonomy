@@ -430,6 +430,18 @@
 						<property name="controllerBeanName" value="exportPageController"/>
 					</bean>
 				</entry>
+				<entry key="/statistics">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="statisticsController"/>
+						<property name="allowedFields">
+							<list>
+								<value>spammer</value>
+								<value>all</value>
+								<value>type</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/groups">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="groupsPageController"/>
@@ -850,6 +862,10 @@
 	<bean id="exportPageController" class="org.bibsonomy.webapp.controller.ExportPageController" scope="request">
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
 		<property name="layouts" ref="standardLayouts" />
+	</bean>
+	
+	<bean id="statisticsController" class="org.bibsonomy.webapp.controller.StatisticsController" scope="request">
+		<property name="logic" ref="logic" />
 	</bean>
 
 	<bean id="conceptPageController" class="org.bibsonomy.webapp.controller.ConceptPageController" scope="request">

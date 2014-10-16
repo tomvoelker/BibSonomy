@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
@@ -38,12 +40,15 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	
 	private Chain<Statistics, StatisticsParam> postChain;
 	private Chain<Statistics, StatisticsParam> tagChain;
+	private Chain<Statistics, StatisticsParam> userChain;
 
 	private final BibTexDatabaseManager bibtexDBManager;
 	private final BookmarkDatabaseManager bookmarkDBManager;
+	private final AdminDatabaseManager adminDatabaseManager;
 	private final Map<Class<? extends Resource>, PostDatabaseManager<? extends Resource, ? extends ResourceParam<? extends Resource>>> postDatabaseManager;
 
 	private StatisticsDatabaseManager() {
+		this.adminDatabaseManager = AdminDatabaseManager.getInstance();
 		this.bibtexDBManager = BibTexDatabaseManager.getInstance();
 		this.bookmarkDBManager = BookmarkDatabaseManager.getInstance();
 
@@ -60,10 +65,30 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 */
 	public Statistics getPostStatistics(final StatisticsParam param, final DBSession session) {
-	    final Statistics statisticData = postChain.perform(param, session);  
+		final Statistics statisticData = postChain.perform(param, session);
 		// to not get NPEs later
 		if (present(statisticData)) {
-			return statisticData ;    
+			return statisticData;
+		}
+		return new Statistics();
+	}
+	
+	/**
+	 * @param interval 
+	 * @param status 
+	 * @param classifier 
+	 * @param session 
+	 * @return the statistics (currently only count) of all registered users matching
+	 * 			the criteria
+	 */
+	public Statistics getUserStatistics(Classifier classifier, SpamStatus status, int interval, final DBSession session) {
+		final StatisticsParam param = new StatisticsParam();
+		param.setClassifier(classifier);
+		param.setSpamStatus(status);
+		param.setInterval(interval);
+		final Statistics statistics = this.userChain.perform(param, session);
+		if (present(statistics)) {
+			return statistics;
 		}
 		return new Statistics();
 	}
@@ -138,7 +163,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @return a statistical number (int)
 	 */
 	public int getNumberOfResourcesForHash(final Class<? extends Resource> resourceType, final String requHash, final HashID simHash, final DBSession session) {
-		return this.getDatabaseManagerForResourceType(resourceType).getPostsByHashCount(requHash, simHash, session);	
+		return this.getDatabaseManagerForResourceType(resourceType).getPostsByHashCount(requHash, simHash, session);
 	}
 
 	/**
@@ -209,7 +234,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	public int getTagGlobalCount(final String tagName) {
 		// FIXME: implement me...
 		return 0;
-	}	
+	}
 
 	/**
 	 * 
@@ -263,6 +288,35 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	public StatisticsValues getUserDiscussionsStatisticsForGroup(final StatisticsParam param, final DBSession session){
 		return this.queryForObject("userRatingStatisticForGroup", param, StatisticsValues.class, session);
 	}
+	
+	/**
+	 * @param session
+	 * @return the number of registered users
+	 */
+	public int getNumberOfUsers(final DBSession session) {
+		final Integer result = this.queryForObject("getUserCount", Integer.class, session);
+		return result == null ? 0 : result.intValue();
+	}
+
+	/**
+	 * @param spamStatus
+	 * @param interval
+	 * @param session
+	 * @return the number of users classified by an admin matching the interval and spam status
+	 */
+	public int getNumberOfClassifiedUsersByAdmin(SpamStatus spamStatus, int interval, DBSession session) {
+		return this.adminDatabaseManager.getNumberOfClassifedUsersByAdmin(spamStatus, interval, session);
+	}
+	
+	/**
+	 * @param spamStatus
+	 * @param interval
+	 * @param session
+	 * @return the number of users classified by the classifier
+	 */
+	public int getNumberOfClassifiedUsersByClassifier(SpamStatus spamStatus, int interval, DBSession session) {
+		return this.adminDatabaseManager.getNumberOfClassifedUsersByClassifier(spamStatus, interval, session);
+	}
 
 	/**
 	 * @param postChain the postChain to set
@@ -277,4 +331,13 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	public void setTagChain(final Chain<Statistics, StatisticsParam> tagChain) {
 		this.tagChain = tagChain;
 	}
+
+	/**
+	 * @param userChain the userChain to set
+	 */
+	public void setUserChain(Chain<Statistics, StatisticsParam> userChain) {
+		this.userChain = userChain;
+	}
+
+	
 }

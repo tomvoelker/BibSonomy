@@ -53,6 +53,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 
@@ -108,7 +109,12 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @return list of user
 	 */
 	public List<User> getUsers (Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, UserRelation relation, String search, int start, int end);	
-
+	
+	/**
+	 * @return statistic informations about the users
+	 */
+	public Statistics getUserStatistics(final Classifier classifier, final SpamStatus status, final int interval);
+	
 	/**
 	 * Returns details about a specified user
 	 * 

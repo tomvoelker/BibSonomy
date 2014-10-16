@@ -2128,6 +2128,19 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getUserStatistics()
+	 */
+	@Override
+	public Statistics getUserStatistics(Classifier classifier, SpamStatus status, int interval) {
+		final DBSession session = openSession();
+		try {
+			return this.statisticsDBManager.getUserStatistics(classifier, status, interval, session);
+		} finally {
+			session.close();
+		}
+	}
 
 	/*
 	 * (non-Javadoc)

@@ -150,6 +150,11 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/admin/statistics">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="adminStatisticsController"/>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -192,4 +197,7 @@
 		<property name="oauthLogic" ref="oAuthLogic"/>
 	</bean>
 	
+	<bean id="adminStatisticsController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="ADMIN_STATISTICS"/>
+	</bean>
 </beans>
