@@ -73,7 +73,15 @@
 								 	| logo and project name
 								 	|
 								 	+-->
-								<bs:logo />
+								<c:choose>
+									<c:when test="${properties['project.name'] eq 'PUMA'}">
+										<bs:logoPuma />
+									</c:when>
+									<c:otherwise>
+										<bs:logo />
+									</c:otherwise>
+								</c:choose>
+								
 								
 								
 							</div>

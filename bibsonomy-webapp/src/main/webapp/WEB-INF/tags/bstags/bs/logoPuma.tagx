@@ -1,0 +1,20 @@
+<jsp:root version="2.0"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+	
+	<div class="pull-left">
+		<img src="/resources_puma/image/puma_logo.png" style="height: 120px;position: relative; top: 15px; z-index: 100;"/>
+	</div>
+	<div id="logo">
+		<h1>
+			<a title="home" href="/">PUMA</a>
+			<c:out value=" " />
+			<small id="beta">
+				<span class="label label-default">Beta</span>
+			</small>
+		</h1>
+		<p class="logo-desc"><small><fmt:message key="system.desc" /></small></p>
+	</div>
+	
+</jsp:root>
