@@ -51,7 +51,7 @@
 		    <!-- AND d.group >=0 -->
 		GROUP BY rating
 	</select>
- 
+
 	<select id="userRatingStatisticForGroup" resultMap="Statistics.userDiscussionsRatingStatistic" parameterClass="StatisticsParam" >
 		SELECT rating, COUNT(rating) cnt, (COUNT(rating) / maxcnt * 100) percent, maxcnt, avgrating, maxrating, minrating 
 		FROM groups g, discussion AS d, 
@@ -60,23 +60,27 @@
 				WHERE
 					<include refid="discussionVisibleForGroup"/>
 					AND type = 1 AND rating IS NOT NULL
-   				    AND g.group = #groupId#
- 				    AND g.user_name = d.user_name
-  				    <!-- AND d.group >=0 -->
- 			) AS m 
+				    AND g.group = #groupId#
+				    AND g.user_name = d.user_name
+				    <!-- AND d.group >=0 -->
+			) AS m 
 		WHERE 
 			<include refid="discussionVisibleForGroup"/>
 			AND type = 1 AND rating IS NOT NULL
 		    AND g.group = #groupId#
 		    AND g.user_name = d.user_name
 		    <!-- AND d.group >=0 -->
- 		GROUP BY rating
+		GROUP BY rating
 	</select>
- 	
- 	<select id="getUserCount" resultClass="int" parameterClass="StatisticsParam">
- 		SELECT count(*) FROM user
- 		<isNotNull property="spamStatus">
- 			WHERE spammer = #spamStatus.id#
- 		</isNotNull>
- 	</select>
+	
+	<select id="getUserCount" resultClass="int" parameterClass="StatisticsParam">
+		SELECT count(*) FROM user
+		<isNotNull property="spamStatus">
+			WHERE spammer = #spamStatus.id#
+		</isNotNull>
+	</select>
+	
+	<select id="getActiveUserCount" resultClass="int" parameterClass="StatisticsParam">
+		SELECT COUNT(*) AS ctr FROM (SELECT COUNT(*) FROM tas GROUP BY user_name) AS users
+	</select>
 </sqlMap>

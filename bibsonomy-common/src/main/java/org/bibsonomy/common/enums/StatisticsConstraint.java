@@ -26,9 +26,10 @@ package org.bibsonomy.common.enums;
 /**
  * defines possible constraints on statistical queries
  * 
- * TODO: to be filled when necessary
- * 
  * @author Dominik Benz
  */
 public enum StatisticsConstraint {
+	
+	/** only active things. e.g. users */
+	ACTIVE;
 }

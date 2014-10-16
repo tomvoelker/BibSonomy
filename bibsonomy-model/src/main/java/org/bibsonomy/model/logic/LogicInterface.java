@@ -37,6 +37,7 @@ import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.SpamStatus;
+import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
@@ -111,12 +112,13 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	public List<User> getUsers (Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, UserRelation relation, String search, int start, int end);	
 	
 	/**
+	 * @param constraint 
 	 * @param classifier 
 	 * @param status 
 	 * @param interval 
 	 * @return statistic informations about the users
 	 */
-	public Statistics getUserStatistics(final Classifier classifier, final SpamStatus status, final int interval);
+	public Statistics getUserStatistics(final StatisticsConstraint constraint, final Classifier classifier, final SpamStatus status, final Integer interval);
 	
 	/**
 	 * Returns details about a specified user

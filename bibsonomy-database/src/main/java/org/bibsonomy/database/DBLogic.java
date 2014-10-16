@@ -2133,10 +2133,10 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#getUserStatistics()
 	 */
 	@Override
-	public Statistics getUserStatistics(Classifier classifier, SpamStatus status, int interval) {
+	public Statistics getUserStatistics(StatisticsConstraint constraint, Classifier classifier, SpamStatus status, Integer interval) {
 		final DBSession session = openSession();
 		try {
-			return this.statisticsDBManager.getUserStatistics(classifier, status, interval, session);
+			return this.statisticsDBManager.getUserStatistics(constraint, classifier, status, interval, session);
 		} finally {
 			session.close();
 		}

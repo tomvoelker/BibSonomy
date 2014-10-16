@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.command;
 
+import org.bibsonomy.common.enums.StatisticsConstraint;
+
 
 /**
  * command for statistic informations
@@ -14,6 +16,8 @@ public class StatisticsCommand extends BaseCommand {
 	
 	private boolean spammers;
 	private boolean all;
+	private StatisticsConstraint contraint;
+	private Integer interval;
 	private StatisticType type = StatisticType.POSTS;
 	
 	private String responseString;
@@ -26,7 +30,7 @@ public class StatisticsCommand extends BaseCommand {
 	}
 
 	/**
-	 * @param spammer the spammers to set
+	 * @param spammers the spammers to set
 	 */
 	public void setSpammers(boolean spammers) {
 		this.spammers = spammers;
@@ -72,5 +76,33 @@ public class StatisticsCommand extends BaseCommand {
 	 */
 	public void setResponseString(String responseString) {
 		this.responseString = responseString;
+	}
+
+	/**
+	 * @return the interval
+	 */
+	public Integer getInterval() {
+		return this.interval;
+	}
+
+	/**
+	 * @param interval the interval to set
+	 */
+	public void setInterval(Integer interval) {
+		this.interval = interval;
+	}
+
+	/**
+	 * @return the contraint
+	 */
+	public StatisticsConstraint getContraint() {
+		return this.contraint;
+	}
+
+	/**
+	 * @param contraint the contraint to set
+	 */
+	public void setContraint(StatisticsConstraint contraint) {
+		this.contraint = contraint;
 	}
 }

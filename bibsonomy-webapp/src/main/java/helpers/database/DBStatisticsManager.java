@@ -59,7 +59,8 @@ public class DBStatisticsManager extends DBManager {
 		return -1;
 	}
 	public static int getActiveUsers(final String showSpammer) {
-		return getCtr("SELECT count(*) AS ctr FROM (SELECT count(*) FROM tas " + getSpammer(showSpammer) + " GROUP BY user_name) AS users");
+		return -1;
+		// getCtr("SELECT count(*) AS ctr FROM (SELECT count(*) FROM tas " + getSpammer(showSpammer) + " GROUP BY user_name) AS users");
 	}
 	public static int getActiveUsersLastMonth(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM (SELECT count(*) FROM tas " + getSpammer(showSpammer) + " AND " + dateM  + " GROUP BY user_name) AS users");

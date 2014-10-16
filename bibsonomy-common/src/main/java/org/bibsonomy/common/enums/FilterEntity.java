@@ -42,8 +42,8 @@ public enum FilterEntity {
 	DUPLICATES,
 	
 	/**
-	 * Filter to retrieve posts for spammers
-	 * This can be only used by admins
+	 * Filter to retrieve posts of spammers
+	 * This can only be used by admins
 	 */
 	ADMIN_SPAM_POSTS,
 	

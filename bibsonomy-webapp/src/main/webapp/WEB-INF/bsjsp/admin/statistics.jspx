@@ -177,7 +177,7 @@
 				</tr>
 				<tr>
 					<td>active users</td>
-					<td>TODO</td>
+					<td data-url="/statistics?type=users&amp;contraint=active">TODO</td>
 				</tr>
 				<tr>
 					<td>active users 24 hours</td>

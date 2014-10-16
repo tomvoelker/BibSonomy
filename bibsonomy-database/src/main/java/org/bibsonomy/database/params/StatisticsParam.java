@@ -2,16 +2,32 @@ package org.bibsonomy.database.params;
 
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.SpamStatus;
+import org.bibsonomy.common.enums.StatisticsConstraint;
 
 /**
  * @author Christian Kramer
  */
 public class StatisticsParam extends GenericParam {
+	private StatisticsConstraint constraint;
 	private Classifier classifier;
 	
-	private int interval;
+	private Integer interval;
 	
 	private SpamStatus spamStatus;
+
+	/**
+	 * @return the constraint
+	 */
+	public StatisticsConstraint getConstraint() {
+		return this.constraint;
+	}
+
+	/**
+	 * @param constraint the constraint to set
+	 */
+	public void setConstraint(StatisticsConstraint constraint) {
+		this.constraint = constraint;
+	}
 
 	/**
 	 * @return the classifier
@@ -44,14 +60,14 @@ public class StatisticsParam extends GenericParam {
 	/**
 	 * @return the interval
 	 */
-	public int getInterval() {
+	public Integer getInterval() {
 		return this.interval;
 	}
 
 	/**
 	 * @param interval the interval to set
 	 */
-	public void setInterval(int interval) {
+	public void setInterval(Integer interval) {
 		this.interval = interval;
 	}
 }

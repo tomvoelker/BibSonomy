@@ -37,7 +37,7 @@ public class StatisticsController implements MinimalisticController<StatisticsCo
 		}
 		switch (command.getType()) {
 		case USERS:
-			stats = this.logic.getUserStatistics(null, spamStatus, -1);
+			stats = this.logic.getUserStatistics(command.getContraint(), null, spamStatus, command.getInterval());
 			break;
 
 		default:

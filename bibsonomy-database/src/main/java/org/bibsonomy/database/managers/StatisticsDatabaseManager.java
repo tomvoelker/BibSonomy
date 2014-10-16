@@ -9,6 +9,7 @@ import java.util.Map;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.SpamStatus;
+import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
@@ -74,6 +75,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
+	 * @param constraint 
 	 * @param interval 
 	 * @param status 
 	 * @param classifier 
@@ -81,11 +83,13 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @return the statistics (currently only count) of all registered users matching
 	 * 			the criteria
 	 */
-	public Statistics getUserStatistics(Classifier classifier, SpamStatus status, int interval, final DBSession session) {
+	public Statistics getUserStatistics(final StatisticsConstraint constraint, Classifier classifier, SpamStatus status, Integer interval, final DBSession session) {
 		final StatisticsParam param = new StatisticsParam();
 		param.setClassifier(classifier);
 		param.setSpamStatus(status);
 		param.setInterval(interval);
+		param.setConstraint(constraint);
+		
 		final Statistics statistics = this.userChain.perform(param, session);
 		if (present(statistics)) {
 			return statistics;
@@ -298,6 +302,17 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 		final StatisticsParam param = new StatisticsParam();
 		param.setSpamStatus(spamStatus);
 		final Integer result = this.queryForObject("getUserCount", param, Integer.class, session);
+		return result == null ? 0 : result.intValue();
+	}
+	
+	/**
+	 * 
+	 * @param session
+	 * @return the number of active users (posted at least one post)
+	 */
+	public int getNumberOfActiveUsers(final DBSession session) {
+		final StatisticsParam param = new StatisticsParam();
+		final Integer result = this.queryForObject("getActiveUserCount", param, Integer.class, session);
 		return result == null ? 0 : result.intValue();
 	}
 

@@ -176,6 +176,7 @@
 			<list>
 				<bean class="org.bibsonomy.database.managers.chain.statistic.user.GetUserClassifiedByClassifierCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.user.GetUserClassifiedByAdminCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.user.GetActiveUserCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.user.GetAllUserCount" />
 			</list>
 		</property>
