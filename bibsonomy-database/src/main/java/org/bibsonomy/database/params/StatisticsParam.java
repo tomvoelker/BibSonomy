@@ -3,12 +3,15 @@ package org.bibsonomy.database.params;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
+import org.bibsonomy.common.enums.StatisticsUnit;
 
 /**
  * @author Christian Kramer
  */
 public class StatisticsParam extends GenericParam {
 	private StatisticsConstraint constraint;
+	private StatisticsUnit unit;
+	
 	private Classifier classifier;
 	
 	private Integer interval;
@@ -27,6 +30,20 @@ public class StatisticsParam extends GenericParam {
 	 */
 	public void setConstraint(StatisticsConstraint constraint) {
 		this.constraint = constraint;
+	}
+
+	/**
+	 * @return the unit
+	 */
+	public StatisticsUnit getUnit() {
+		return this.unit;
+	}
+
+	/**
+	 * @param unit the unit to set
+	 */
+	public void setUnit(StatisticsUnit unit) {
+		this.unit = unit;
 	}
 
 	/**

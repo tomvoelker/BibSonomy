@@ -181,11 +181,11 @@
 				</tr>
 				<tr>
 					<td>active users 24 hours</td>
-					<td>TODO</td>
+					<td data-url="/statistics?type=users&amp;contraint=active&amp;interval=24&amp;unit=hour">TODO</td>
 				</tr>
 				<tr>
 					<td>active users last month</td>
-					<td>TODO</td>
+					<td data-url="/statistics?type=users&amp;contraint=active&amp;interval=1&amp;unit=month"><!-- keep me --></td>
 				</tr>
 			</table>
 			

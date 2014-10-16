@@ -24,6 +24,6 @@ public class GetActiveUserCount extends StatisticChainElement {
 	 */
 	@Override
 	protected Statistics handle(StatisticsParam param, DBSession session) {
-		return new Statistics(db.getNumberOfActiveUsers(session));
+		return new Statistics(db.getNumberOfActiveUsers(param.getInterval(), param.getUnit(), session));
 	}
 }

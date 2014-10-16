@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.command;
 
 import org.bibsonomy.common.enums.StatisticsConstraint;
+import org.bibsonomy.common.enums.StatisticsUnit;
 
 
 /**
@@ -18,6 +19,7 @@ public class StatisticsCommand extends BaseCommand {
 	private boolean all;
 	private StatisticsConstraint contraint;
 	private Integer interval;
+	private StatisticsUnit unit;
 	private StatisticType type = StatisticType.POSTS;
 	
 	private String responseString;
@@ -90,6 +92,20 @@ public class StatisticsCommand extends BaseCommand {
 	 */
 	public void setInterval(Integer interval) {
 		this.interval = interval;
+	}
+
+	/**
+	 * @return the unit
+	 */
+	public StatisticsUnit getUnit() {
+		return this.unit;
+	}
+
+	/**
+	 * @param unit the unit to set
+	 */
+	public void setUnit(StatisticsUnit unit) {
+		this.unit = unit;
 	}
 
 	/**

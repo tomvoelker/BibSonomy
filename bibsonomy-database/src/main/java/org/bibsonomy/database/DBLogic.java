@@ -32,6 +32,7 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
+import org.bibsonomy.common.enums.StatisticsUnit;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
@@ -2133,10 +2134,10 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#getUserStatistics()
 	 */
 	@Override
-	public Statistics getUserStatistics(StatisticsConstraint constraint, Classifier classifier, SpamStatus status, Integer interval) {
+	public Statistics getUserStatistics(StatisticsConstraint constraint, Classifier classifier, SpamStatus status, Integer interval, final StatisticsUnit unit) {
 		final DBSession session = openSession();
 		try {
-			return this.statisticsDBManager.getUserStatistics(constraint, classifier, status, interval, session);
+			return this.statisticsDBManager.getUserStatistics(constraint, classifier, status, interval, unit, session);
 		} finally {
 			session.close();
 		}

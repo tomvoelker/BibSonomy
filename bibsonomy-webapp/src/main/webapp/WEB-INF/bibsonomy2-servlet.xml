@@ -440,6 +440,7 @@
 								<value>type</value>
 								<value>interval</value>
 								<value>contraint</value>
+								<value>unit</value>
 							</list>
 						</property>
 					</bean>
