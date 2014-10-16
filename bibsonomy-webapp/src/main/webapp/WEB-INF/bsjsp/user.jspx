@@ -40,7 +40,7 @@
 		
 		
 		<jsp:attribute name="breadcrumbs">
-			<c:set var="ownPage" value="${command.requestedUser eq command.context.loginUser}" />
+			<c:set var="ownPage" value="${command.context.userLoggedIn and (command.requestedUser eq command.context.loginUser)}" />
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<c:choose>
