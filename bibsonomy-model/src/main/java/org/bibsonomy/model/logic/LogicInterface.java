@@ -111,6 +111,9 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	public List<User> getUsers (Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, UserRelation relation, String search, int start, int end);	
 	
 	/**
+	 * @param classifier 
+	 * @param status 
+	 * @param interval 
 	 * @return statistic informations about the users
 	 */
 	public Statistics getUserStatistics(final Classifier classifier, final SpamStatus status, final int interval);
@@ -478,6 +481,9 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	public void deleteRelation(String upper, String lower, GroupingEntity grouping, String groupingName);
 
 	/**
+	 * TODO: can we merge this with the {@link #getUsers(Class, GroupingEntity, String, List, String, Order, UserRelation, String, int, int)}
+	 * method?
+	 * 
 	 * Returns all users that are classified to the specified state by
 	 * the given classifier 
 	 * 
@@ -488,16 +494,6 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @author sts
 	 */
 	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status, int limit);
-
-	/**
-	 * Returns number of classfied user 
-	 * 
-	 * @param classifier the classifier
-	 * @param status the status classifed
-	 * @param interval 
-	 * @return count of users
-	 */
-	public int getClassifiedUserCount(Classifier classifier, SpamStatus status, int interval);
 	
 	/**
 	 * Returns the value of the specified classifier setting

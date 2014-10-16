@@ -2195,25 +2195,7 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.bibsonomy.model.logic.LogicInterface#getClassifiedUserCount(org.bibsonomy
-	 * .common.enums.Classifier, org.bibsonomy.common.enums.SpamStatus, int)
-	 */
-	@Override
-	public int getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval) {
-		this.permissionDBManager.ensureAdminAccess(this.loginUser);
-		final DBSession session = openSession();
-		try {
-			return this.adminDBManager.getClassifiedUserCount(classifier, status, interval, session);
-		} finally {
-			session.close();
-		}
-	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 

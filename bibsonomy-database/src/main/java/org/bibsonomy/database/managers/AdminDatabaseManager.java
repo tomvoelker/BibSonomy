@@ -333,33 +333,6 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			this.update("updateClassifierSettings", param, session);
 		}
 	}
-
-	/**
-	 * Returns number of classfied user
-	 * 
-	 * @param classifier
-	 *            the classifier
-	 * @param status
-	 *            the status classifed
-	 * @param interval
-	 *            the time period of classifications
-	 * @param session
-	 *            db session
-	 * @return count of users
-	 */
-	@Deprecated
-	public Integer getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval, final DBSession session) {
-		final AdminParam param = new AdminParam();
-		param.setInterval(interval);
-
-		if (classifier.equals(Classifier.ADMIN) && (status.equals(SpamStatus.SPAMMER) || status.equals(SpamStatus.NO_SPAMMER))) {
-			return getNumberOfClassifedUsersByAdmin(status, interval, session);
-		} else if (classifier.equals(Classifier.CLASSIFIER)) {
-			param.setPrediction(status.getId());
-			return this.queryForObject("getClassifiedUsersCount", param, Integer.class, session);
-		}
-		return null;
-	}
 	
 	public int getNumberOfClassifedUsersByAdmin(final SpamStatus status, final int interval, final DBSession session) {
 		final AdminParam param = buildAdminParam(status, interval);
