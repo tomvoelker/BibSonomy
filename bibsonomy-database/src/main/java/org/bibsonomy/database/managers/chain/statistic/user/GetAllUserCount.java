@@ -25,6 +25,6 @@ public class GetAllUserCount extends StatisticChainElement {
 	 */
 	@Override
 	protected Statistics handle(StatisticsParam param, DBSession session) {
-		return new Statistics(db.getNumberOfUsers(session));
+		return new Statistics(db.getNumberOfUsers(param.getSpamStatus(), session));
 	}
 }

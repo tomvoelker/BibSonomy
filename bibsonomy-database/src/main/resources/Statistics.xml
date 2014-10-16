@@ -73,7 +73,10 @@
  		GROUP BY rating
 	</select>
  	
- 	<select id="getUserCount" resultClass="int">
+ 	<select id="getUserCount" resultClass="int" parameterClass="StatisticsParam">
  		SELECT count(*) FROM user
+ 		<isNotNull property="spamStatus">
+ 			WHERE spammer = #spamStatus.id#
+ 		</isNotNull>
  	</select>
 </sqlMap>

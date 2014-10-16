@@ -290,11 +290,14 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
+	 * @param spamStatus 
 	 * @param session
 	 * @return the number of registered users
 	 */
-	public int getNumberOfUsers(final DBSession session) {
-		final Integer result = this.queryForObject("getUserCount", Integer.class, session);
+	public int getNumberOfUsers(SpamStatus spamStatus, final DBSession session) {
+		final StatisticsParam param = new StatisticsParam();
+		param.setSpamStatus(spamStatus);
+		final Integer result = this.queryForObject("getUserCount", param, Integer.class, session);
 		return result == null ? 0 : result.intValue();
 	}
 

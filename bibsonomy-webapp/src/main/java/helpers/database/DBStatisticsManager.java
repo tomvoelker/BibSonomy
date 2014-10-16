@@ -33,16 +33,16 @@ public class DBStatisticsManager extends DBManager {
 	/* ******************************************************************************************
 	 * Misc
 	 */
-	public static int getTags(final String showSpammer) {              
+	public static int getTags(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM tags WHERE tag_ctr_public > 0");
 	}
-	public static int getPostsInBaskets(final String showSpammer) {    
+	public static int getPostsInBaskets(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM collector");
 	}
-	public static int getTagTagRelations(final String showSpammer) {   
+	public static int getTagTagRelations(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM tagtagrelations");
 	}
-	public static int getUploadedDocuments(final String showSpammer) { 
+	public static int getUploadedDocuments(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM document WHERE content_id > 0");
 	}
 	public static int getUsersWithOwnLayout(final String showSpammer) {
@@ -53,10 +53,10 @@ public class DBStatisticsManager extends DBManager {
 	 * users
 	 */
 	public static int getUsers(final String showSpammer) {
-		return getCtr("SELECT count(*) AS ctr FROM user");
+		return -1;
 	}
 	public static int getSpammers(final String showSpammer) {
-		return getCtr("SELECT count(*) AS ctr FROM user where spammer=1");
+		return -1;
 	}
 	public static int getActiveUsers(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM (SELECT count(*) FROM tas " + getSpammer(showSpammer) + " GROUP BY user_name) AS users");

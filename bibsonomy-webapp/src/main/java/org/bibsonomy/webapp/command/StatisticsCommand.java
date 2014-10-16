@@ -12,24 +12,24 @@ public class StatisticsCommand extends BaseCommand {
 		USERS;
 	}
 	
-	private boolean spammer;
+	private boolean spammers;
 	private boolean all;
 	private StatisticType type = StatisticType.POSTS;
 	
 	private String responseString;
 	
 	/**
-	 * @return the spammer
+	 * @return the spammers
 	 */
-	public boolean isSpammer() {
-		return this.spammer;
+	public boolean isSpammers() {
+		return this.spammers;
 	}
 
 	/**
-	 * @param spammer the spammer to set
+	 * @param spammer the spammers to set
 	 */
-	public void setSpammer(boolean spammer) {
-		this.spammer = spammer;
+	public void setSpammers(boolean spammers) {
+		this.spammers = spammers;
 	}
 
 	/**

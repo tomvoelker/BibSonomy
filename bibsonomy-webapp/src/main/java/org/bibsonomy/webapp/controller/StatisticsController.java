@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.controller;
 
+import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.webapp.command.StatisticsCommand;
@@ -30,9 +31,13 @@ public class StatisticsController implements MinimalisticController<StatisticsCo
 	@Override
 	public View workOn(StatisticsCommand command) {
 		final Statistics stats;
+		SpamStatus spamStatus = null;
+		if (command.isSpammers() && !command.isAll()) {
+			spamStatus = SpamStatus.SPAMMER;
+		}
 		switch (command.getType()) {
 		case USERS:
-			stats = this.logic.getUserStatistics(null, null, -1);
+			stats = this.logic.getUserStatistics(null, spamStatus, -1);
 			break;
 
 		default:

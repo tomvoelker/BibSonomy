@@ -435,7 +435,7 @@
 						<property name="controllerBeanName" value="statisticsController"/>
 						<property name="allowedFields">
 							<list>
-								<value>spammer</value>
+								<value>spammers</value>
 								<value>all</value>
 								<value>type</value>
 							</list>
