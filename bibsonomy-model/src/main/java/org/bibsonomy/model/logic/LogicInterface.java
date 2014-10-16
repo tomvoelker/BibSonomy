@@ -683,8 +683,4 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @return the new size of the inbox
 	 */
 	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox);
-
-	/**
-	 * @param post
-	 */	
 }

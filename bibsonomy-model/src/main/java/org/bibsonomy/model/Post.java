@@ -118,11 +118,6 @@ public class Post<T extends Resource> implements Serializable {
 	 * identifier if post is in the inbox
 	 * use only to create the inbox page of a user
 	 */
-	/*Nasim's comment:
-	 * If you want to access a <b>boolean</b> variable from JSP file, 
-	 * you shouldn't start its name with 'is'.
-	 * (the following variable is not accessible from JSP files)
-	 * **/
 	private boolean isInboxPost = false;
 	
 	/**

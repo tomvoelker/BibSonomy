@@ -42,18 +42,27 @@
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<c:choose>
-						<c:when test="${command.requestedUser eq command.context.loginUser.name}">
-							<fmt:message key="buttons.mybibsonomy" var="my">
-								<fmt:param>${properties['project.name']}</fmt:param>
-							</fmt:message>
-							<nav:crumb name="${my}" href="/user/${command.context.loginUser.name}" />
+						<c:when test="${empty command.requestedGroup}">
+							<c:choose>
+								<c:when test="${command.requestedUser eq command.context.loginUser.name}">
+									<fmt:message key="buttons.mybibsonomy" var="my">
+										<fmt:param>${properties['project.name']}</fmt:param>
+									</fmt:message>
+									<nav:crumb name="${my}" href="/user/${command.context.loginUser.name}" />
+								</c:when>
+								<c:otherwise>
+									<fmt:message var="popular" key="navi.popular" />
+									<nav:crumb name="${popular}" href="/popular" />
+								</c:otherwise>
+							</c:choose>
 						</c:when>
 						<c:otherwise>
-							<fmt:message var="popular" key="navi.popular" />
-							<nav:crumb name="${popular}" href="/popular" />
+							<fmt:message key="navi.groups" var="groups" />
+							<nav:crumb name="${groups}" href="/groups" />
+							<nav:crumb name="${command.requestedGroup}" href="/group/${command.requestedGroup}" />
 						</c:otherwise>
 					</c:choose>
-					<fmt:message var="posts" key="navi.posts" />
+					<fmt:message var="posts" key="navi.discussedPosts" />
 					<nav:crumb name="${posts}" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
@@ -102,26 +111,26 @@
 			<!-- link to user page -->
 			<c:if test="${not empty command.requestedUser}">
 				<li>				
-					<span class="sidebar_h">
+					<h4 class="sidebar">
 						<a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(command.requestedUser))}">
 							<fmt:message key="discussion.showUser">
 								<fmt:param value="${fn:escapeXml(command.requestedUser)}"/>
 							</fmt:message>
 						</a>
-					</span>
+					</h4>
 				</li>
 			</c:if>
 
 			<!-- link to user page -->
 			<c:if test="${not empty command.requestedGroup}">
 				<li>				
-					<span class="sidebar_h">
+					<h4 class="sidebar">
 						<a href="${relativeUrlGenerator.getGroupUrlByGroupName(fn:escapeXml(command.requestedGroup))}">
 							<fmt:message key="discussion.showGroup">
 								<fmt:param value="${fn:escapeXml(command.requestedGroup)}"/>
 							</fmt:message>
 						</a>
-					</span>
+					</h4>
 				</li>
 			</c:if>
 

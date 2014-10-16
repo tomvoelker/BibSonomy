@@ -680,4 +680,5 @@
 	<update id="updateBookmarkGroup" parameterClass="bookmarkParam">
 		UPDATE bookmark SET `group` = #groupId#  WHERE content_id = #requestedContentId#
 	</update>
+	-->
 </sqlMap>
