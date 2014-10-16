@@ -535,32 +535,31 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * FIXME: is this global or for a given user/group only?
 	 * 
-     * @param user the requesting user
-     * @param tagName name of the tag where we need 
+	 * @param user the requesting user
+	 * @param tagName name of the tag where we need 
 	 * @param session the DBSession to be queried.
 	 * @return the tag's details, null else
 	 */
 	public Tag getTagDetails(final User user, final String tagName, final DBSession session) {
-        final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, null, user.getName(), Arrays.asList(tagName), null, null, 0, 1, null, null, null, null, user);
-
-        param.setLimit(10000);
+		final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, null, user.getName(), Arrays.asList(tagName), null, null, 0, 1, null, null, null, null, user);
+		param.setLimit(10000);
 		param.setOffset(0);
 		param.setCaseSensitiveTagNames(true);
 
-        // query the database if tagName is a proper tag
+		// query the database if tagName is a proper tag
 		final Tag tag = this.getTagByName(param, session);
 
 		if (present(tag)) {
-            /*
-             * retrieve all sub-/supertags
-             */
+			/*
+			 * retrieve all sub-/supertags
+			*/
 			final List<Tag> subTags = this.getSubtagsOfTag(param, session);
 			tag.setSubTags(setUsercountToGlobalCount(subTags));
 			final List<Tag> superTags = this.getSupertagsOfTag(param, session);
 			tag.setSuperTags(setUsercountToGlobalCount(superTags));
 
-            // FIXME: this is just a hack as long as we don't supply separate user
-            // counts for each tag, DB
+			// FIXME: this is just a hack as long as we don't supply separate user
+			// counts for each tag, DB
 			tag.setUsercount(tag.getGlobalcount());
 		}
 
@@ -607,7 +606,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param year
 	 * @param firstYear
 	 * @param lastYear
-	 * @param negatedTags TODO
+	 * @param negatedTags
 	 * @param limit
 	 * @param offset
 	 * @return a list of tags
@@ -618,16 +617,14 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
 			final String year, final String firstYear, final String lastYear, List<String> negatedTags, final int limit, final int offset) {
 		
-		if (present(this.publicationSearch) && present(this.bookmarkSearch) ) {
-			final List<Tag> bookmarkTags = 
-				bookmarkSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
-			final List<Tag> publicationTags =
-				publicationSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+		if (present(this.publicationSearch) && present(this.bookmarkSearch)) {
+			final List<Tag> bookmarkTags = bookmarkSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+			final List<Tag> publicationTags = publicationSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
 			final List<Tag> retVal = TagUtils.mergeTagLists(bookmarkTags, publicationTags, Order.POPULAR, Order.POPULAR, limit);
 			return retVal;
 		}
 		
-		log.error("no resource searcher is set");		
+		log.error("no resource searcher is set");
 		return new LinkedList<Tag>();
 	}
 
@@ -993,11 +990,21 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		final TagParam param = new TagParam();
 		param.setBibtexKey(bibtexKey);
 		param.setGroups(visibleGroupIDs);
-		param.setUserName(loginUserName);		
+		param.setUserName(loginUserName);
 		param.setRequestedUserName(requestedUserName);
 		param.setLimit(limit);
 		param.setOffset(offset);
 		return this.queryForList("getTagsByBibtexkey", param, Tag.class, session);
+	}
+	
+
+	/**
+	 * @param session
+	 * @return the number of distinct tags used by the users
+	 */
+	public int getNumberOfTags(DBSession session) {
+		final Integer count = this.queryForObject("getGlobalTagCount", Integer.class, session);
+		return count == null ? 0 : count.intValue();
 	}
 
 	/**

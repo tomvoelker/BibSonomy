@@ -166,6 +166,7 @@
 	<bean id="tagStatisticChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
 			<list>
+				<bean class="org.bibsonomy.database.managers.chain.statistic.tag.GetGlobalTagCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.tag.get.GetRelationCountByUser" />
 			</list>
 		</property>

@@ -12,6 +12,7 @@ import org.bibsonomy.common.enums.StatisticsUnit;
 public class StatisticsCommand extends BaseCommand {
 	public enum StatisticType {
 		POSTS,
+		TAGS,
 		USERS;
 	}
 	

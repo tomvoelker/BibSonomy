@@ -193,7 +193,7 @@
 			<table class="table table-bordered table-condensed">
 				<tr>
 					<td>tags</td>
-					<td data-url="/statistics?type=user&amp;grouping=all">loading</td>
+					<td data-url="/statistics?type=tags">loading</td>
 				</tr>
 				<tr>
 					<td>tag-tag relations</td>

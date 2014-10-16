@@ -433,6 +433,10 @@
 		LIMIT #limit# OFFSET #offset#
 	</select>
 	
+	<select id="getGlobalTagCount" resultClass="int">
+		SELECT count(*) AS ctr FROM tags WHERE tag_ctr_public > 0
+	</select>
+	
 	<insert id="insertTas" parameterClass="tagParam">
 		INSERT INTO tas (tas_id, tag_name, content_id, content_type, user_name, date, change_date, `group`, tag_lower)
 		VALUES (#tasId#, #tagName#, #newContentId#, #contentType#, #userName#, #date#, #changeDate#, #groupId#, #tagNameLower#)

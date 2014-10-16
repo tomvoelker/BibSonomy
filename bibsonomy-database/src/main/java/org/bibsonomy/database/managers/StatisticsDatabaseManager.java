@@ -46,6 +46,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 
 	private final BibTexDatabaseManager bibtexDBManager;
 	private final BookmarkDatabaseManager bookmarkDBManager;
+	private final TagDatabaseManager tagDatabaseManager;
 	private final AdminDatabaseManager adminDatabaseManager;
 	private final Map<Class<? extends Resource>, PostDatabaseManager<? extends Resource, ? extends ResourceParam<? extends Resource>>> postDatabaseManager;
 
@@ -53,6 +54,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 		this.adminDatabaseManager = AdminDatabaseManager.getInstance();
 		this.bibtexDBManager = BibTexDatabaseManager.getInstance();
 		this.bookmarkDBManager = BookmarkDatabaseManager.getInstance();
+		this.tagDatabaseManager = TagDatabaseManager.getInstance();
 
 		// TODO: refactor @see DBLogic
 		this.postDatabaseManager = new HashMap<Class<? extends Resource>, PostDatabaseManager<? extends Resource, ? extends ResourceParam<? extends Resource>>>();
@@ -242,6 +244,14 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 		// FIXME: implement me...
 		return 0;
 	}
+	
+	/**
+	 * @param session
+	 * @return the number of distinct tags in the system
+	 */
+	public int getNumberOfTags(DBSession session) {
+		return this.tagDatabaseManager.getNumberOfTags(session);
+	}
 
 	/**
 	 * 
@@ -363,6 +373,4 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	public void setUserChain(Chain<Statistics, StatisticsParam> userChain) {
 		this.userChain = userChain;
 	}
-
-	
 }

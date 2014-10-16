@@ -1,8 +1,8 @@
 package org.bibsonomy.webapp.controller;
 
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.webapp.command.StatisticsCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -30,21 +30,27 @@ public class StatisticsController implements MinimalisticController<StatisticsCo
 	 */
 	@Override
 	public View workOn(StatisticsCommand command) {
-		final Statistics stats;
+		final int count;
 		SpamStatus spamStatus = null;
 		if (command.isSpammers() && !command.isAll()) {
 			spamStatus = SpamStatus.SPAMMER;
 		}
 		switch (command.getType()) {
 		case USERS:
-			stats = this.logic.getUserStatistics(command.getContraint(), null, spamStatus, command.getInterval(), command.getUnit());
+			count = this.logic.getUserStatistics(command.getContraint(), null, spamStatus, command.getInterval(), command.getUnit()).getCount();
+			break;
+		case TAGS:
+			count = this.logic.getTagStatistics(null, GroupingEntity.ALL, null, null, null, null, null, null, 0, 1000);
+			break;
+		case POSTS:
+			count = -1;
 			break;
 
 		default:
 			throw new UnsupportedOperationException(command.getType() + " is not supported");
 		}
 		
-		command.setResponseString(String.valueOf(stats.getCount()));
+		command.setResponseString(String.valueOf(count));
 		return Views.AJAX_JSON;
 	}
 
