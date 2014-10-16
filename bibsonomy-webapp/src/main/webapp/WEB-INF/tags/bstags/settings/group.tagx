@@ -76,29 +76,36 @@
 								<input type="hidden" name="ckey" value="${ckey}"/>
 								
 								<bsform:input path="addUserToGroup" labelKey="user.name" helpKey="settings.group.addUser.help" autocomplete="true" labelColSpan="3" inputColSpan="9" />
-								
-								<div class="clearfix col-sm-offset-3">
-									<fmt:message var="adduser" key="settings.group.addUser.button"/>
-									<bsform:button type="submit" style="primary" size="defaultSize" value="${adduser}" />
+								<div class="form-group">
+									<div class="col-sm-offset-3 col-sm-9">
+										<fmt:message var="adduser" key="settings.group.addUser.button"/>
+										<bsform:button type="submit" style="primary" size="defaultSize" value="${adduser}" />
+									</div>
 								</div>
 							</form:form>
-						</fieldset>
-							
-						<!-- User List -->
-						<fieldset>
-							<legend><fmt:message key="settings.group.delUser"/></legend>
-							<!-- TODO: when there are no members, show a coresponding message-->
-							<fmt:message var="deluser" key="settings.group.delUser.button"/>
-							<fmt:message var="deluserTitle" key="settings.group.delUser.button.title"/>
-
-							<!-- show group member list -->
-							<!-- TODO: Beautify this! -->
-							<c:forEach items="${command.group.users}" var="member">
-								<c:if test="${member.name ne loginUser.name}">
-									<a href="${relativeUrlGenerator.getUserUrlByUserName(member.name)}"><c:out value="${member.name}"/></a> 
-									(<a href="/SettingsHandler?del_group_user=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>)
-								</c:if>
-							</c:forEach>
+						
+							<form class="form-horizontal">
+								<!-- TODO: when there are no members, show a coresponding message-->
+								<fmt:message var="deluser" key="settings.group.delUser.button"/>
+								<fmt:message var="deluserTitle" key="settings.group.delUser.button.title"/>
+								<div class="form-group">
+									<label class="control-label col-sm-3"><fmt:message key="settings.group.delUser"/></label>
+									<div class="col-sm-9">
+										<ul class="list-inline form-control-static">
+										<c:forEach items="${command.group.users}" var="member">
+											<c:if test="${member.name ne loginUser.name}">
+												<li>
+													<a href="${relativeUrlGenerator.getUserUrlByUserName(member.name)}">
+														<c:out value="${member.name}"/>
+													</a>
+													(<a href="/SettingsHandler?del_group_user=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}"><c:out value="${deluser}" /></a>)&amp;nbsp;
+												</li>
+											</c:if>
+										</c:forEach>
+										</ul>
+									</div>
+								</div>
+							</form>
 						</fieldset>
 
 						<c:if test="${showDeny}">
@@ -163,10 +170,11 @@
 										<div class="help help-content hide"><p><fmt:message key="settings.group.sharedDocuments.help" /></p></div>
 									</div>
 								</div>
-
-								<div class="clearfix col-sm-offset-3">
-									<fmt:message var="updatesettings" key="settings.updatesettings" />
-									<bsform:button type="submit" style="primary" size="defaultSize" value="${updatesettings}" />
+								<div class="form-group">
+									<div class="col-sm-offset-3 col-sm-9">
+										<fmt:message var="updatesettings" key="settings.updatesettings" />
+										<bsform:button type="submit" style="primary" size="defaultSize" value="${updatesettings}" />
+									</div>
 								</div>
 							</form:form>
 						</fieldset>
