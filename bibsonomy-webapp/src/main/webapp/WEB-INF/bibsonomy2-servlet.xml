@@ -346,7 +346,7 @@
 				  Will be put into the command by the controllerBase
 				-->
 				<ref local="requestWrapperContextInterceptor"/>
-				<ref local="mobileDetectionHandlerInterceptor"/>
+				<!-- <ref local="mobileDetectionHandlerInterceptor"/> -->
 			</list>
 		</property>
 		<property name="urlMap">
