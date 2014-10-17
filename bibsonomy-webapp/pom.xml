@@ -616,6 +616,10 @@
 			<version>3.0.1</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+		</dependency>
 		<!-- jsp support -->
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
