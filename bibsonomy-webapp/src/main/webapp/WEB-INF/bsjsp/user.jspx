@@ -22,23 +22,13 @@
 	
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}" headline="${headline}${command.requestedUser}">
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.user" formAction="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(command.requestedUser))}" formInputName="tag" requestedUser="${command.requestedUser}">
+			<parts:search pathMessageKey="navi.user" formAction="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}" formInputName="tag" requestedUser="${command.requestedUser}">
 				<jsp:attribute name="pathPart">
-					<li>
-						:: <a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> 
-					</li>
+					<a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> 
 				</jsp:attribute>
-				<!-- 
-				<jsp:attribute name="afterInput">
-					<user:name user="${command.user}"/>
-					<user:cv user="${command.user}"/>
-				</jsp:attribute>
-				-->
 			</parts:search>
 		</jsp:attribute>
-		
-		
-		
+
 		<jsp:attribute name="breadcrumbs">
 			<c:set var="ownPage" value="${command.context.userLoggedIn and (command.requestedUser eq command.context.loginUser)}" />
 			<nav:breadcrumbs>

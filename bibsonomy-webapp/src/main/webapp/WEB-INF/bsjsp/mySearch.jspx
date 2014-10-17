@@ -25,7 +25,7 @@
 		minimizedContentWidth="${true}">
 
     	<jsp:attribute name="heading">
-    		<parts:search pathMessageKey="navi.mysearch"/>
+    		<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
 
    		<jsp:attribute name="headerExt">

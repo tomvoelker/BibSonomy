@@ -19,7 +19,7 @@
 		requPath="${requPath}" noSidebar="${true}">
 
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="gettingStarted" />
+			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
 
 		<jsp:attribute name="headerExt">

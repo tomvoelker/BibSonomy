@@ -28,16 +28,19 @@
 				</c:otherwise>
             </c:choose>
 			<!-- build form -->
-			<parts:search pathMessageKey="navi.concept" formAction="/concept${formAction}" formInputName="tag" formInputValue="${command.requestedTags}">
-				<jsp:attribute name="pathPart">
-					<c:if test="${not empty command.requestedGroup || not empty command.requestedUser}">
-						<li>
-							:: <fmt:message key="navi.${not empty command.requestedGroup ? 'group' : 'user'}"/> ::
-							<a href="${formAction}"><c:out value="${not empty command.requestedGroup ? command.requestedGroup : command.requestedUser}"/></a>
-						</li>
-					</c:if>
-				</jsp:attribute>
-			</parts:search>	
+			<c:choose>
+				<c:when test="${not empty command.requestedGroup || not empty command.requestedUser}">
+					<parts:search pathMessageKey="navi.concept" formAction="/concept${formAction}" formInputName="tag" formInputValue="${command.requestedTags}">
+						<jsp:attribute name="pathPart"><fmt:message key="navi.${not empty command.requestedGroup ? 'group' : 'user'}"/>
+							<a href="${formAction}"><c:out value="${not empty command.requestedGroup ? command.requestedGroup : command.requestedUser}"/>
+							</a>
+						</jsp:attribute>
+					</parts:search>
+				</c:when>
+				<c:otherwise>
+					<parts:search pathMessageKey="navi.concept" formAction="/concept${formAction}" formInputName="tag" formInputValue="${command.requestedTags}" />
+				</c:otherwise>
+			</c:choose>	
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">

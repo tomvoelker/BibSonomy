@@ -19,7 +19,9 @@
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="groups" headline="${headline}${command.group.name}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.group" formAction="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}" formInputName="tag">
-				
+				<jsp:attribute name="pathPart">
+					<a href="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
+				</jsp:attribute>
 			</parts:search>	
 		</jsp:attribute>		
 		

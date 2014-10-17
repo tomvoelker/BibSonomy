@@ -30,9 +30,7 @@
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.relevantFor" formAction="${relativeUrlGenerator.prefix('relevantfor/').getGroupUrlByGroupName(command.requestedGroup)}" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="pathPart">
-					<li>
-						:: <a href="${relativeUrlGenerator.prefix('relevantfor/').getGroupUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
-					</li>
+					<a href="${relativeUrlGenerator.prefix('relevantfor/').getGroupUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
 				</jsp:attribute>
 			</parts:search>
 		</jsp:attribute>
