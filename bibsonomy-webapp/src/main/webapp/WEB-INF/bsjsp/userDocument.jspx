@@ -27,9 +27,7 @@
 					<input type="hidden" name="filter" value="JUST_PDF"/>
 				</jsp:attribute>
 				<jsp:attribute name="pathPart">
-					<li>
-						:: <a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
-					</li>
+					<a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
 				</jsp:attribute>
 			</parts:search>
 		</jsp:attribute>

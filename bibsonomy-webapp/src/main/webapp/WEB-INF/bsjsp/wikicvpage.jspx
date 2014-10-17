@@ -36,6 +36,10 @@
 		showPageOptions="${command.context.userLoggedIn and command.context.loginUser.name eq command.requestedUser}"
 		minimizedContentWidth="${true}">
 		
+		<jsp:attribute name="heading">
+    		<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
+		</jsp:attribute>
+		
 		<jsp:attribute name="breadcrumbs">	
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">

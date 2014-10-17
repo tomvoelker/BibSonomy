@@ -29,9 +29,7 @@
 					<input type="hidden" name="filter" value="JUST_PDF"/>
 				</jsp:attribute>
 				<jsp:attribute name="pathPart">
-					<li>
-						:: <a href="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
-					</li>
+					<a href="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
 				</jsp:attribute>
 			</parts:search>	
 		</jsp:attribute>

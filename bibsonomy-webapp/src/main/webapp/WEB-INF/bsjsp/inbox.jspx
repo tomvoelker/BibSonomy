@@ -26,8 +26,10 @@
 			headline="${headline}">
 
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.inbox"/>
+			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
+		
+		
 		
 		<jsp:attribute name="breadcrumbs">	
 			<nav:breadcrumbs>
