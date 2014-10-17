@@ -29,9 +29,10 @@ public class StatisticsController implements MinimalisticController<StatisticsCo
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(org.bibsonomy.webapp.command.ContextCommand)
 	 */
 	@Override
-	public View workOn(StatisticsCommand command) {
+	public View workOn(final StatisticsCommand command) {
 		final int count;
 		SpamStatus spamStatus = null;
+		final GroupingEntity grouping = command.getGrouping();
 		if (command.isSpammers() && !command.isAll()) {
 			spamStatus = SpamStatus.SPAMMER;
 		}
@@ -40,12 +41,11 @@ public class StatisticsController implements MinimalisticController<StatisticsCo
 			count = this.logic.getUserStatistics(command.getContraint(), null, spamStatus, command.getInterval(), command.getUnit()).getCount();
 			break;
 		case TAGS:
-			count = this.logic.getTagStatistics(null, GroupingEntity.ALL, null, null, null, null, null, null, 0, 1000);
+			count = this.logic.getTagStatistics(null, grouping, null, null, null, null, null, null, 0, 1000);
 			break;
 		case POSTS:
-			count = -1;
+			count = this.logic.getPostStatistics(command.getResourceType(), grouping, null, null, null, null, null, command.getContraint(), null, null, null, 0, 1000).getCount();
 			break;
-
 		default:
 			throw new UnsupportedOperationException(command.getType() + " is not supported");
 		}

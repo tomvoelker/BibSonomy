@@ -96,4 +96,8 @@
 			</isNotNull>
 		GROUP BY user_name) AS users
 	</select>
+	
+	<select id="getClipboardCount" resultClass="int">
+		SELECT count(*) AS ctr FROM collector
+	</select>
 </sqlMap>

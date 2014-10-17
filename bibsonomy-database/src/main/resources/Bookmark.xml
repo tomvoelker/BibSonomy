@@ -675,4 +675,12 @@
 		WHERE bb.group = g.group 
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
+	
+	<select id="getBookmarkCount" resultClass="int">
+		SELECT COUNT(*) FROM bookmark WHERE user_name != "dblp";
+	</select>
+	
+	<select id="getUniqueBookmarkCount" resultClass="int">
+		SELECT COUNT(DISTINCT book_url_hash) AS ctr FROM bookmark WHERE user_name != "dblp"
+	</select>
 </sqlMap>

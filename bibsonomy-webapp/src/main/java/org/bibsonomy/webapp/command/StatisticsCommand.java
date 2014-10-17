@@ -1,7 +1,9 @@
 package org.bibsonomy.webapp.command;
 
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.StatisticsUnit;
+import org.bibsonomy.model.Resource;
 
 
 /**
@@ -20,6 +22,8 @@ public class StatisticsCommand extends BaseCommand {
 	private boolean all;
 	private StatisticsConstraint contraint;
 	private Integer interval;
+	private Class<? extends Resource> resourceType = Resource.class;
+	private GroupingEntity grouping;
 	private StatisticsUnit unit;
 	private StatisticType type = StatisticType.POSTS;
 	
@@ -121,5 +125,33 @@ public class StatisticsCommand extends BaseCommand {
 	 */
 	public void setContraint(StatisticsConstraint contraint) {
 		this.contraint = contraint;
+	}
+
+	/**
+	 * @return the grouping
+	 */
+	public GroupingEntity getGrouping() {
+		return this.grouping;
+	}
+
+	/**
+	 * @param grouping the grouping to set
+	 */
+	public void setGrouping(GroupingEntity grouping) {
+		this.grouping = grouping;
+	}
+
+	/**
+	 * @return the resourceType
+	 */
+	public Class<? extends Resource> getResourceType() {
+		return this.resourceType;
+	}
+
+	/**
+	 * @param resourceType the resourceType to set
+	 */
+	public void setResourceType(Class<? extends Resource> resourceType) {
+		this.resourceType = resourceType;
 	}
 }

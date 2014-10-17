@@ -1014,7 +1014,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setGroups(visibleGroupIDs);
 
 		final Integer result = this.queryForObject("getGroup" + this.resourceClassName + "CountByTag", param, Integer.class, session);
-		return present(result) ? result : 0;
+		return present(result) ? result.intValue() : 0;
 	}
 
 	/**
@@ -1031,7 +1031,25 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setGroups(visibleGroupIDs);
 
 		final Integer result = this.queryForObject("getGroup" + this.resourceClassName + "Count", param, Integer.class, session);
-		return present(result) ? result : 0;
+		return present(result) ? result.intValue() : 0;
+	}
+	
+	/**
+	 * @param session
+	 * @return number of unique resources
+	 */
+	public int getUniqueResourcesCount(DBSession session) {
+		final Integer result = this.queryForObject("getUnique" + this.resourceClassName + "Count", Integer.class, session);
+		return present(result) ? result.intValue() : 0;
+	}
+	
+	/**
+	 * @param session
+	 * @return number of posts
+	 */
+	public int getPostsCount(DBSession session) {
+		final Integer result = this.queryForObject("get" + this.resourceClassName + "Count", Integer.class, session);
+		return present(result) ? result.intValue() : 0;
 	}
 
 	/**
@@ -1712,12 +1730,13 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	
 	/**
 	 * returns a list of all metadata for the given post and MetaDataPluginKey.
-	 *
-	 * @param HashID
+	 * 
+	 * @param hashType
 	 * @param resourceHash
 	 * @param userName
 	 * @param metaDataPluginKey
 	 * @param session
+	 * @return 
 	 */
 	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey, final DBSession session) {
 		final PostParam param = new PostParam();

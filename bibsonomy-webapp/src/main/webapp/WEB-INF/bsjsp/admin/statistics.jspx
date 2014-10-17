@@ -27,8 +27,6 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="headerExt">
-			<link rel="stylesheet" type="text/css" href="${resdir}/css/admin.css" />
-			<link rel="stylesheet" type="text/css" href="${resdir}/css/adminrecommender.css" />
 			<script src="${resdir}/javascript/admin/statistics.js" type="text/javascript"><!-- keep me --></script>
 		</jsp:attribute>
 		
@@ -49,15 +47,15 @@
 				</tr>
 				<tr>
 					<td>resources</td>
-					<td>loading</td>
-					<td>loading</td>
-					<td>loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraint=unique"><!-- keep me --></td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraint=unique&amp;resourceType=bookmark"><!-- keep me --></td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraint=unique&amp;resourceType=publication"><!-- keep me --></td>
 				</tr>
 				<tr>
 					<td>posts</td>
-					<td>loading</td>
-					<td>loading</td>
-					<td>loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all"><!-- keep me --></td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark"><!-- keep me --></td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication"><!-- keep me --></td>
 				</tr>
 				<tr>
 					<td>tas</td>
@@ -193,7 +191,7 @@
 			<table class="table table-bordered table-condensed">
 				<tr>
 					<td>tags</td>
-					<td data-url="/statistics?type=tags">loading</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all"><!-- keep me --></td>
 				</tr>
 				<tr>
 					<td>tag-tag relations</td>
@@ -201,7 +199,7 @@
 				</tr>
 				<tr>
 					<td>posts in baskets</td>
-					<td>TODO</td>
+					<td data-url="/statistics?type=posts&amp;grouping=clipboard"><!-- keep me --></td>
 				</tr>
 				<tr>
 					<td>user layouts</td>

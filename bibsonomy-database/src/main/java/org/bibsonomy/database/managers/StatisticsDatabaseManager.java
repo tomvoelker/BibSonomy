@@ -217,6 +217,33 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	public int getNumberOfResourcesForUserAndTags(final Class<? extends Resource> resourceType, final List<TagIndex> tagIndex, final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session) {
 		return this.getDatabaseManagerForResourceType(resourceType).getPostsByTagNamesForUserCount(requestedUserName, loginUserName, tagIndex, visibleGroupIDs, session);
 	}
+	
+	/**
+	 * @param resourceType
+	 * @param session
+	 * @return number of posts
+	 */
+	public int getNumberOfPosts(Class<? extends Resource> resourceType, DBSession session) {
+		return this.getDatabaseManagerForResourceType(resourceType).getPostsCount(session);
+	}
+	
+	/**
+	 * @param resourceType
+	 * @param session
+	 * @return number of unique items
+	 */
+	public int getNumberOfUniqueResources(Class<? extends Resource> resourceType, DBSession session) {
+		return this.getDatabaseManagerForResourceType(resourceType).getUniqueResourcesCount(session);
+	}
+	
+	/**
+	 * @param session
+	 * @return the number of posts in the clipboard
+	 */
+	public int getNumberOfClipboardPosts(DBSession session) {
+		final Integer result = this.queryForObject("getClipboardCount", Integer.class, session);
+		return result == null ? 0 : result.intValue();
+	}
 
 	/**
 	 * Returns the number of resources for a given user that occur at least twice

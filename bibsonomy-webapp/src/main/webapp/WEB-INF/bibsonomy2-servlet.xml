@@ -441,6 +441,8 @@
 								<value>interval</value>
 								<value>contraint</value>
 								<value>unit</value>
+								<value>grouping</value>
+								<value>resourceType</value>
 							</list>
 						</property>
 					</bean>

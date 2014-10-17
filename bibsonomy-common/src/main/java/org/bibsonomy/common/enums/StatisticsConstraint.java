@@ -31,5 +31,7 @@ package org.bibsonomy.common.enums;
 public enum StatisticsConstraint {
 	
 	/** only active things. e.g. users */
-	ACTIVE;
+	ACTIVE,
+	
+	UNIQUE;
 }

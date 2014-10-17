@@ -33,9 +33,11 @@ public class DBStatisticsManager extends DBManager {
 	/* ******************************************************************************************
 	 * Misc
 	 */
+	@Deprecated
 	public static int getTags(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM tags WHERE tag_ctr_public > 0");
 	}
+	@Deprecated
 	public static int getPostsInBaskets(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM collector");
 	}
@@ -118,17 +120,17 @@ public class DBStatisticsManager extends DBManager {
 	/* ******************************************************************************************
 	 * TAS
 	 */
-	public static int getTasBookmarks(final String showSpammer) {       
+	public static int getTasBookmarks(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM tas " + getSpammer(showSpammer) + " AND " + contentTypeBookmark);
 	}
-	public static int getTasPublications(final String showSpammer) {    
+	public static int getTasPublications(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM tas " + getSpammer(showSpammer) + " AND " + contentTypePublication);
 	}
 	public static int getTas(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM tas " + getSpammer(showSpammer));
 	}
 
-	public static int getTasBookmarksDBLP(final String showSpammer) {   
+	public static int getTasBookmarksDBLP(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM tas " + getSpammer(showSpammer) + " AND " + contentTypeBookmark    + " AND " + nUserDBLP);
 	}
 	public static int getTasPublicationsDBLP(final String showSpammer) {
@@ -138,7 +140,7 @@ public class DBStatisticsManager extends DBManager {
 		return getCtr("SELECT count(*) AS ctr FROM tas " + getSpammer(showSpammer) + " AND " + nUserDBLP);
 	}
 
-	public static int getTasBookmarks24(final String showSpammer) {     
+	public static int getTasBookmarks24(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM tas " + getSpammer(showSpammer) + " AND " + contentTypeBookmark    + " AND " + nUserDBLP + " AND " + date24);
 	}
 	public static int getTasPublications24(final String showSpammer) {  
