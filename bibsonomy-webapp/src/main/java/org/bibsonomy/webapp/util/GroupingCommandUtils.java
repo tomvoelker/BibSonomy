@@ -64,7 +64,6 @@ public abstract class GroupingCommandUtils {
 			 */
 			groupsToInit.clear();
 			log.debug("groups in command: " + groups);
-			
 			for (final String groupname : groups) {
 				groupsToInit.add(new Group(groupname));
 			}

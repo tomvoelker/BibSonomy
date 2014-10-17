@@ -50,8 +50,7 @@
 							<tasks>
 								<mkdir dir="${project.downloaded-resources.directory}" />
 								<get src="http://download.sourceforge.net/project/wurfl/WURFL/${wurfl.version}/wurfl-${wurfl.version}.zip"
-
- 									dest="${project.downloaded-resources.directory}/wurfl.zip" />
+									dest="${project.downloaded-resources.directory}/wurfl.zip" />
 							</tasks>
 						</configuration>
 						<goals>
