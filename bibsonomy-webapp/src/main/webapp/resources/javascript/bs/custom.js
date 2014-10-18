@@ -90,8 +90,9 @@ $(function() {
     	$(this).parent().prev().focus().next().show().hide();
     }); 
     
-    $(window).resize(function(e){
-        if($('#sidebar').prev().hasClass('content')) {
+    
+    var sidebarAdjustments = function sidebarAdjusts() {
+    	if($('#sidebar').prev().hasClass('content')) {
         	
         	var contentContainer = $('#sidebar').prev();
         	var contentHeight = contentContainer.height();
@@ -101,7 +102,11 @@ $(function() {
         		$('#sidebar').css('height', contentHeight+20);
         	}
         }
-    });
+    }
+    
+	sidebarAdjustments();
+    
+	$(window).resize(sidebarAdjustments);
     
     function shortenContent (el, text) {
     	var shortened = false;
