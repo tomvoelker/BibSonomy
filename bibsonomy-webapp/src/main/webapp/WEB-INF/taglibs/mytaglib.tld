@@ -256,15 +256,15 @@
 	</function>
 	
 	<function>
-		<name>DiffNum</name>
+		<name>DiffEntries</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>Integer DiffNum(org.bibsonomy.model.BibTex, org.bibsonomy.model.BibTex)</function-signature>
+		<function-signature>java.util.List DiffEntries(org.bibsonomy.model.BibTex, org.bibsonomy.model.BibTex)</function-signature>
 	</function>
 	
 	<function>
 		<name>BibDiff</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String BibDiff(org.bibsonomy.model.BibTex, org.bibsonomy.model.BibTex)</function-signature>
+		<function-signature>String BibDiff(java.lang.String,org.bibsonomy.model.BibTex, org.bibsonomy.model.BibTex)</function-signature>
 	</function>
 	
 	<function>

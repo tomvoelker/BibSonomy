@@ -31,11 +31,14 @@
 	<script type="text/javascript" src="/resources/javascript/history.js"><!-- keep me --></script>
 	
 	
-			<!--<c:set var="post" scope="request" value="${listView.list[0]}"/>-->
-			<c:set var="fieldlength" value="${fn:length(listView.list)-1}" />
-			<c:set var="newestPost" value="${listView.list[fieldlength]}" />		
-			
-			
+	<form id="history" action="/editPublication" method="POST">
+		<c:set var="buttonClasses" value=" "/>
+		<!--<c:set var="post" scope="request" value="${listView.list[0]}"/>-->
+		<c:set var="fieldlength" value="${fn:length(listView.list)-1}" />
+		<c:set var="newestPost" value="${listView.list[fieldlength]}" />		
+		<input type="hidden" name="newestPost" value="${newestPost}" />
+		<input type="hidden" name="differentEntryArray" />
+		<input type="hidden" name="HistoryPost" />			
 				<!--+
 					| complete Post
 					+-->
@@ -79,12 +82,11 @@
 				| history list
 				+-->
 				<div id="historylist">
+					<br/>
 					<!-- newest post is index 0 and do not contain to history list -->
-					<c:forEach var="index" begin="1" end="${fieldlength}"
-						varStatus="loopStatus" step="1">
+					<c:forEach var="index" begin="1" end="${fieldlength}" varStatus="loopStatus" step="1">
 						<c:set var="additionalItemClasses"
-							value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}" />
-						<br/>
+							value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}" />	
 						<hr class="fancy-line fancy-line-bolder"></hr>
 						<ul class="HistTable no-bullet">
 							<li id="versionNum">
@@ -93,11 +95,17 @@
 								</a>
 							</li>
 							<li>
+							<!-- check the input to change data -->
+								<c:set var="changeDate" value="${mtl:cleanBibtex(listView.list[(fieldlength-index+1)].changeDate)}"/>
+								<a href="#" class="diffNumText"><c:out value="${changeDate}" /></a>
+								<!-- 
 								<rc:changeDate post="${listView.list[(fieldlength-index)]}"
 									newestPost="${listView.list[(fieldlength)]}" />
+								-->
 							</li>
 							<!--  -->
-							<c:set var="diffNumPre" value="${mtl:DiffNum(listView.list[(fieldlength-index)].resource,listView.list[(fieldlength-index+1)].resource)}"/>
+							<c:set var="diffArrayPre" value="${mtl:DiffEntries(listView.list[(fieldlength-index)].resource,listView.list[(fieldlength-index+1)].resource)}"/>
+							<c:set var="diffNumPre" value="${fn:length(diffArrayPre)}"/>
 							<c:choose>
 		      					<c:when test="${diffNumPre > 1}">
 		      						<c:set var="diffNumPreMsg" value=" entries are changed"/>
@@ -113,7 +121,8 @@
 								</a>
 							</li> 
 							<!--  -->
-							<c:set var="diffNumCurr" value="${mtl:DiffNum(listView.list[(fieldlength-index)].resource,listView.list[(fieldlength)].resource)}"/>
+							<c:set var="diffArrayCurr" value="${mtl:DiffEntries(listView.list[(fieldlength)].resource,listView.list[(fieldlength-index+1)].resource)}"/>
+							<c:set var="diffNumCurr" value="${fn:length(diffArrayCurr)}"/>
 							<c:choose>
 		      					<c:when test="${diffNumCurr > 1}">
 		      						<c:set var="diffNumCurrMsg" value=" entries are changed"/>
@@ -133,23 +142,44 @@
 								<a href="#" id="compareChoose">
 								Compare to <span id="pre" class="selected">previous</span>/<span id="curr" class="underline">current</span> version</a>
 							</li>	
+							<li>							
+								<!--<c:url var="diffLink" value="/editPublication">
+									<c:param name="intraHashToUpdate" value="${listView.list[(fieldlength-index+1)].resource.intraHash}" />
+									<c:param name="user" value="${listView.list[(fieldlength-index+1)].user.name}" />
+								</c:url>-->
+								<a id="restoreBtn" class="${buttonClasses}" title="restore to this version">
+									<span class="fa fa-times"><!--  --></span>
+								</a>
+							</li>
 							<hr class="fancy-line"></hr>
 							<li id="postDiffPre" class="postDiffPre">				
-						
-									${mtl:BibDiff(listView.list[(fieldlength-index)].resource,listView.list[(fieldlength-index+1)].resource)}
-						
+								<c:forEach var="diffEntry" items="${diffArrayPre}">
+									<input type="checkbox" id="preEntryCheckbox" class="invisible"/>
+									${mtl:BibDiff(diffEntry,listView.list[(fieldlength-index)].resource,listView.list[(fieldlength-index+1)].resource)}
+								</c:forEach>
 								<!--<rc:postDescDiff
 									publication="${listView.list[(fieldlength-index)].resource}"
 									newestPub="${listView.list[(fieldlength-index+1)].resource}" isPub="${isPub}"/>-->
 							</li>
 							<li id="postDiffCurr" class="postDiffCurr invisible">				
-						
-									${mtl:BibDiff(listView.list[(fieldlength-index)].resource,listView.list[(fieldlength)].resource)}
-						
+								<c:forEach var="diffEntry" items="${diffArrayCurr}">
+									<input type="checkbox" id="CurrEntryCheckbox" class="invisible"/>
+									${mtl:BibDiff(diffEntry,listView.list[(fieldlength)].resource,listView.list[(fieldlength-index+1)].resource)}
+									<input type="hidden" name="diffEntry" value="${diffEntry}" />
+								</c:forEach>
+								<input type="hidden" name="HistoryPostTMP" value="${listView.list[(fieldlength-index+1)]}" />
 								<!--<rc:postDescDiff
 									publication="${listView.list[(fieldlength-index)].resource}"
 									newestPub="${listView.list[(fieldlength)].resource}" isPub="${isPub}"/>-->
 							</li>
+							<div id="restoreConfirm" class="Hint red invisible">
+								<fmt:message key="history.restore.confirm" />
+								<a href="#" id="restoreOk"><fmt:message key="history.restore.ok" /></a>
+								<a href="#" id="restoreCancel"><fmt:message key="history.restore.cancel" /></a>
+							</div>
+
+							
+							<!-- <li id="restoreConfirm" class="Hint red invisible"><fmt:message key="history.restoreConfirm" /></li> -->
 						</ul>	
 						
 					</c:forEach>
@@ -207,5 +237,5 @@
 			</ul>	
 	
 		</div>
-
+</form>
 </jsp:root>

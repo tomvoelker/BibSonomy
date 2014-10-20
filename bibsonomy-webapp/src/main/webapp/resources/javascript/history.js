@@ -71,13 +71,64 @@ $(document).ready(function () {
 		$('li[id = postDiffNumCurr]').toggleClass('invisible', true);
 		$('li[id = postDiffNumCurr]').hide();*/
 	});
-	
-	
+	/*
+	 * if it is a button, this function should be changed to onclick()**/
+	$('a[id = restoreBtn]').click(function() {	
+	//	if($('#postDiffPre').hasClass('invisible')){
+			$(this).parents('li').siblings('#restoreConfirm').toggleClass('invisible', false);
+		//$('div[id=restoreConfirm]').toggleClass('invisible', false);
+			show_hide_Checkboxes($(this).parents('li'),false);//invisible:false
+	//	}
+	});
+	$('a[id=restoreOk]').click(function() {
+		submitForm($(this).parent().siblings('.postDiffCurr'));
+	});
+
+	$('#restoreCancel').click(function() {
+		$('div[id=restoreConfirm]').toggleClass('invisible', true);
+		show_hide_Checkboxes(true);//invisible:true
+	});
+
 });
 
+function show_hide_Checkboxes(element,invisible){
+	//if($('#postDiffPre').hasClass('invisible')){
+//		element.siblings('#postDiffPre').find('input').toggleClass('invisible', invisible);
+		//$('a:input[id=preEntryCheckbox]').each(function() {
+			//$(this).toggleClass('invisible', invisible);
+		//});
+	//}
+	//else{
+		element.siblings('#postDiffCurr').find('input[id=CurrEntryCheckbox]').toggleClass('invisible', invisible);
+	//	$('input[id=currEntryCheckbox]').each(function() {
+		//	$(this).toggleClass('invisible', invisible);
+		//});
+	//}
+}  
+function submitForm(element){
+	var diffArray = [];
+	var historyPost;
+	$(element).find('input[id=CurrEntryCheckbox]').each(function() {
+		alert("first of loop!");
+		var checked = $(this).is(':checked');
+		if(checked){
 
-/**
- * Return diff*/
 
-  
+			alert("in loop");
+			// here, the problem is that sibling(..) is looking for something. we should do it in two steps.
+			diffArray.push($(this).siblings($('input[name=diffEntry]').val()));
+			historyPost =  $(this).parent().siblings($('input[name=HistoryPostTMP]').val());
+		}
+	});
+	
+	//alert(diffArray);
+	$('input[name=differentEntryArray]').val(diffArray);
+	alert('pause');
+	alert($('input[name=differentEntryArray]').val());
+	$('input[name=HistoryPost]').val(historyPost);
+	
+	document.getElementById("history").submit();
+}
+
+
 maximizeById("general");

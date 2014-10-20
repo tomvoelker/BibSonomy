@@ -106,8 +106,15 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		command.getPost().setResource(this.instantiateResource());
 
 		// initalize comparePost & resource for diff
-		 command.setComparePost(new Post<RESOURCE>());
-		 command.getComparePost().setResource(this.instantiateResource());
+		 command.setHistoryPost(new Post<RESOURCE>());
+		 command.getHistoryPost().setResource(this.instantiateResource());
+		 
+		 command.setNewestPost(new Post<RESOURCE>());
+		 command.getNewestPost().setResource(this.instantiateResource());
+		 
+		 command.setDifferentEntryArray(new ArrayList<String>());
+		 
+		 
 		/*
 		 * set default values.
 		 */
@@ -231,9 +238,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			/*
 			 * compareVersion-1 to change index begin from 1 to 0
 			 */
-		//	 final int compareVersion = (command.getCompareVersion()-1);
+			 final int compareVersion = (command.getCompareVersion()-1);
 			
-			// if (present(compareVersion) && (compareVersion!=-1)) {
+			 if (present(compareVersion) && (compareVersion!=-1)) {
 
 		//		 log.debug("intra hash to compare post found -> handling diff of existing post");
 			//	 final List<?> dbPosts = logic.getPosts(post.getResource().getClass(),
@@ -245,10 +252,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	//			 command.setPost((Post<RESOURCE>) dbPosts.get(1)/*getPostDetails(intraHashToUpdate, user)*/);
 				 this.handleUpdatePost(command, context, loginUser, post, intraHashToUpdate);
 				 return Views.DIFFPUBLICATIONPAGE;
-		//	 } else {
-			//log.debug("intra hash to update found -> handling update of existing post");
-			//return this.handleUpdatePost(command, context, loginUser, post, intraHashToUpdate);
-			 //}
+			 } else {
+			log.debug("intra hash to update found -> handling update of existing post");
+			return this.handleUpdatePost(command, context, loginUser, post, intraHashToUpdate);
+			}
 		}
 
 		log.debug("no intra hash given -> new post");

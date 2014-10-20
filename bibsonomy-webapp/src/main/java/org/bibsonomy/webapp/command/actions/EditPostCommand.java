@@ -30,17 +30,19 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 * FIXME: What is the difference between diffPost and postDiff? Please use
 	 * intuitive names and add commentary.
 	 */
-
+//?
 	private Post<RESOURCE> diffPost;
 
 	/**
 	 * Post required for Diff Post View
 	 */
+	//?
 	private Post<RESOURCE> postDiff;
 
 	/**
 	 * stores version (index of publication in history list)
 	 */
+	//?
 	private int compareVersion;
 
 	/**
@@ -79,6 +81,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
     /**
      * compare Post required for Diff Post View
      */
+	//?
     private Post<RESOURCE> comparePost;
 
 	private List<String> relevantGroups;
@@ -113,6 +116,10 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 * whether to redirect to the rating page after editing a post
 	 */
 	private String saveAndRate;
+	
+	private Post<RESOURCE> newestPost;
+	private List<String> differentEntryArray;
+	private Post<RESOURCE> HistoryPost;
 
 	/**
 	 * @return saveAndRate
@@ -485,4 +492,46 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
     public void setComparePost(final Post<RESOURCE> postDiff) {
         this.comparePost = postDiff;
     }
+
+	/**
+	 * @return the newestPost
+	 */
+	public Post<RESOURCE> getNewestPost() {
+		return this.newestPost;
+	}
+
+	/**
+	 * @param newestPost the newestPost to set
+	 */
+	public void setNewestPost(Post<RESOURCE> newestPost) {
+		this.newestPost = newestPost;
+	}
+
+	/**
+	 * @return the differentEntryArray
+	 */
+	public List<String> getDifferentEntryArray() {
+		return this.differentEntryArray;
+	}
+
+	/**
+	 * @param differentEntryArray the differentEntryArray to set
+	 */
+	public void setDifferentEntryArray(List<String> differentEntryArray) {
+		this.differentEntryArray = differentEntryArray;
+	}
+
+	/**
+	 * @return the historyPost
+	 */
+	public Post<RESOURCE> getHistoryPost() {
+		return this.HistoryPost;
+	}
+
+	/**
+	 * @param historyPost the historyPost to set
+	 */
+	public void setHistoryPost(Post<RESOURCE> historyPost) {
+		HistoryPost = historyPost;
+	}
 }

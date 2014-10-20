@@ -96,3 +96,32 @@ hr.fancy-line-bolder:after {
 	text-decoration: none;
 	cursor: default;
 }
+
+.Hint{
+	display: block;
+	font-weight:bold;
+    padding:10px;
+	color: black;
+	font-size: 120%;
+	text-decoration:none;
+	text-align: left;
+	width: 50%;
+	/*position: absolute;*/
+}
+
+.Hint li{
+	display:inline-block;
+}
+
+.Hint a{
+    text-decoration:underline;
+    margin-right: 2px;
+    margin-left: 2px;
+	width: 10px;
+}
+
+.red{
+	border: 1px solid #FF9999;
+	background-color: #FF9999;
+}
+
