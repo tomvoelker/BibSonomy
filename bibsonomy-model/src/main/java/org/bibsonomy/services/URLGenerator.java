@@ -868,7 +868,16 @@ public class URLGenerator {
         return url.matches(".*/(" + PUBLICATION_PREFIX + "|" + BOOKMARK_PREFIX + ")/[0-3]?" + intraHash + "/" + userName + ".*");
     }
     
-    public URLGenerator prefix(String prefix){
+    /**
+     * @param prefix the prefix to use for this url generator
+     * @return the url generator
+     */
+    public URLGenerator prefix(String prefix) {
+    	if (present(prefix)) {
+    		if (!prefix.endsWith("/")) {
+    			prefix += "/";
+    		}
+    	}
     	this.prefix = prefix;
     	return this;
     }
