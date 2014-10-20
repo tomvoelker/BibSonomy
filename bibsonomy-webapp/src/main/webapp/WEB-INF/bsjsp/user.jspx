@@ -38,7 +38,7 @@
 							<fmt:message key="buttons.mybibsonomy" var="my">
 								<fmt:param>${properties['project.name']}</fmt:param>
 							</fmt:message>
-							<nav:crumb name="${my}" href="/user/${command.context.loginUser.name}" />
+							<nav:crumb name="${my}" href="${relativeUrlGenerator.getUserUrlByUserName(command.context.loginUser.name)}" />
 						</c:when>
 						<c:otherwise>
 							<fmt:message key="navi.user" var="user" />
