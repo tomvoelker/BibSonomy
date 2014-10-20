@@ -244,7 +244,7 @@
 							<exclude>target/**</exclude>
 						</excludes>
 						<properties>
-							<year>${project.inceptionYear} - 2013</year>
+							<year>${project.inceptionYear} - 2014</year>
 							<description>
 								${project.name} - ${project.description}
 							</description>
