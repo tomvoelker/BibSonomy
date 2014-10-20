@@ -53,6 +53,10 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
 
     private List<String> groups;
     
+    /*
+     * true means: we are in the batch edit page
+     * false means: we are in the snippet posting workflow
+     */
     private boolean directEdit;
     
         

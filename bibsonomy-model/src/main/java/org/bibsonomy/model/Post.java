@@ -33,11 +33,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.model.metadata.PostMetaData;
+
 /**
  * A post connects a given resource with a user and a certain date.
  * 
  * @param <T>
- *            resource type
+ *        resource type
  */
 public class Post<T extends Resource> implements Serializable {
 
@@ -72,7 +73,7 @@ public class Post<T extends Resource> implements Serializable {
 	 * This post is tagged with these {@link Tag}s.
 	 */
 	private Set<Tag> tags;
-	
+
 	/**
 	 * This post is tagged with these {@link SystemTag}s
 	 * they are hidden but can be called when needed
@@ -88,12 +89,12 @@ public class Post<T extends Resource> implements Serializable {
 	 * This is the {@link Date} when this post was lastly modified.
 	 */
 	private Date changeDate;
-	
+
 	/**
 	 * This is the {@link Date} when this post was created.
 	 */
 	private Date date;
-	
+
 	/**
 	 * This is a text describing the post. <br/>
 	 * 
@@ -102,24 +103,23 @@ public class Post<T extends Resource> implements Serializable {
 	 * the post with another text.
 	 */
 	private String description;
-	
-	
+
 	/**
 	 * a ranking (used to sort a list of posts)
 	 */
 	private double ranking = 0.0;
-	
+
 	/**
 	 * identifier if this post is picked or not
 	 */
 	private boolean picked = false;
-	
+
 	/**
 	 * identifier if post is in the inbox
 	 * use only to create the inbox page of a user
 	 */
 	private boolean isInboxPost = false;
-	
+
 	/**
 	 * List of the collected metadata
 	 */
@@ -137,8 +137,14 @@ public class Post<T extends Resource> implements Serializable {
 	private String copyFrom;
 
 	/*
-	 * this field is true, if the post is alredy stored in DB.**/
+	 * this field is true, if the post is alredy stored in DB. (gettes and
+	 * setters as well)*
+	 */
+	/*
+	 * FIXME: rename to alreadyInCollection
+	 */
 	private boolean duplicatePost = false;
+
 	/**
 	 * @return the repositories
 	 */
@@ -149,7 +155,7 @@ public class Post<T extends Resource> implements Serializable {
 	/**
 	 * @param repositorys the repositories to set
 	 */
-	public void setRepositorys(List<Repository> repositorys) {
+	public void setRepositorys(final List<Repository> repositorys) {
 		this.repositorys = repositorys;
 	}
 
@@ -163,7 +169,7 @@ public class Post<T extends Resource> implements Serializable {
 	/**
 	 * @param contentId
 	 */
-	public void setContentId(Integer contentId) {
+	public void setContentId(final Integer contentId) {
 		this.contentId = contentId;
 	}
 
@@ -180,14 +186,14 @@ public class Post<T extends Resource> implements Serializable {
 	/**
 	 * @param groups
 	 */
-	public void setGroups(Set<Group> groups) {
+	public void setGroups(final Set<Group> groups) {
 		this.groups = groups;
 	}
 
 	/**
 	 * @param changeDate the changeDate to set
 	 */
-	public void setChangeDate(Date changeDate) {
+	public void setChangeDate(final Date changeDate) {
 		this.changeDate = changeDate;
 	}
 
@@ -195,7 +201,7 @@ public class Post<T extends Resource> implements Serializable {
 	 * @return the changeDate
 	 */
 	public Date getChangeDate() {
-		return changeDate;
+		return this.changeDate;
 	}
 
 	/**
@@ -208,7 +214,7 @@ public class Post<T extends Resource> implements Serializable {
 	/**
 	 * @param postingDate
 	 */
-	public void setDate(Date postingDate) {
+	public void setDate(final Date postingDate) {
 		this.date = postingDate;
 	}
 
@@ -222,7 +228,7 @@ public class Post<T extends Resource> implements Serializable {
 	/**
 	 * @param resource
 	 */
-	public void setResource(T resource) {
+	public void setResource(final T resource) {
 		this.resource = resource;
 	}
 
@@ -243,7 +249,7 @@ public class Post<T extends Resource> implements Serializable {
 	/**
 	 * @param tags
 	 */
-	public void setTags(Set<Tag> tags) {
+	public void setTags(final Set<Tag> tags) {
 		this.tags = tags;
 	}
 
@@ -257,7 +263,7 @@ public class Post<T extends Resource> implements Serializable {
 	/**
 	 * @param user
 	 */
-	public void setUser(User user) {
+	public void setUser(final User user) {
 		this.user = user;
 	}
 
@@ -294,9 +300,9 @@ public class Post<T extends Resource> implements Serializable {
 
 	/**
 	 * @param description
-	 *            the description to set
+	 *        the description to set
 	 */
-	public void setDescription(String description) {
+	public void setDescription(final String description) {
 		this.description = description;
 	}
 
@@ -306,13 +312,13 @@ public class Post<T extends Resource> implements Serializable {
 	 * @return copyFrom
 	 */
 	public String getCopyFrom() {
-		return copyFrom;
+		return this.copyFrom;
 	}
 
 	/**
 	 * @param copyFrom
 	 */
-	public void setCopyFrom(String copyFrom) {
+	public void setCopyFrom(final String copyFrom) {
 		this.copyFrom = copyFrom;
 	}
 
@@ -320,9 +326,9 @@ public class Post<T extends Resource> implements Serializable {
 	 * Set a ranking value
 	 * 
 	 * @param ranking
-	 * 			the ranking to set
+	 *        the ranking to set
 	 */
-	public void setRanking(double ranking) {
+	public void setRanking(final double ranking) {
 		this.ranking = ranking;
 	}
 
@@ -332,7 +338,7 @@ public class Post<T extends Resource> implements Serializable {
 	 * @return a double representing the ranking of this post
 	 */
 	public double getRanking() {
-		return ranking;
+		return this.ranking;
 	}
 
 	/**
@@ -349,9 +355,10 @@ public class Post<T extends Resource> implements Serializable {
 	 * 
 	 * @param isInboxPost
 	 */
-	public void setInboxPost(boolean isInboxPost) {
+	public void setInboxPost(final boolean isInboxPost) {
 		this.isInboxPost = isInboxPost;
 	}
+
 	/**
 	 * Returns if this post is picked or not
 	 * 
@@ -369,7 +376,7 @@ public class Post<T extends Resource> implements Serializable {
 	public void setPicked(final boolean picked) {
 		this.picked = picked;
 	}
-	
+
 	/**
 	 * @return the metaData
 	 */
@@ -380,19 +387,19 @@ public class Post<T extends Resource> implements Serializable {
 	/**
 	 * @param metaData the metaData to set
 	 */
-	public void setMetaData(List<PostMetaData> metaData) {
+	public void setMetaData(final List<PostMetaData> metaData) {
 		this.metaData = metaData;
 	}
 
 	@Override
 	public String toString() {
-		return "\n" + (user == null ? "" : user.getName()) + "\n\ttagged\n\t\t" + resource + "\n\twith\n" + tags;
+		return "\n" + (this.user == null ? "" : this.user.getName()) + "\n\ttagged\n\t\t" + this.resource + "\n\twith\n" + this.tags;
 	}
 
 	/**
 	 * @param hiddenSystemTags
 	 */
-	public void setHiddenSystemTags(Set<Tag> hiddenSystemTags) {
+	public void setHiddenSystemTags(final Set<Tag> hiddenSystemTags) {
 		this.hiddenSystemTags = hiddenSystemTags;
 	}
 
@@ -400,14 +407,15 @@ public class Post<T extends Resource> implements Serializable {
 	 * @return the hidden system Tags of this post
 	 */
 	public Set<Tag> getHiddenSystemTags() {
-		return hiddenSystemTags;
+		return this.hiddenSystemTags;
 	}
-	
+
 	/**
 	 * Add a SystemTag (Tag) to the HiddenSystemTag list
+	 * 
 	 * @param tag
 	 */
-	public void addHiddenSystemTag(Tag tag) {
+	public void addHiddenSystemTag(final Tag tag) {
 		if (!present(this.hiddenSystemTags)) {
 			this.hiddenSystemTags = new HashSet<Tag>();
 		}
@@ -417,7 +425,7 @@ public class Post<T extends Resource> implements Serializable {
 	/**
 	 * @param visibleTags
 	 */
-	public void setVisibleTags(Set<Tag> visibleTags) {
+	public void setVisibleTags(final Set<Tag> visibleTags) {
 		this.visibleTags = visibleTags;
 	}
 
@@ -425,19 +433,18 @@ public class Post<T extends Resource> implements Serializable {
 	 * @return the visible tags
 	 */
 	public Set<Tag> getVisibleTags() {
-		return visibleTags;
+		return this.visibleTags;
 	}
-	
+
 	/**
 	 * @param tag
 	 */
-	public void addVisibleTag(Tag tag) {
+	public void addVisibleTag(final Tag tag) {
 		if (!present(this.visibleTags)) {
 			this.visibleTags = new HashSet<Tag>();
 		}
 		this.visibleTags.add(tag);
 	}
-
 
 	/**
 	 * @return the duplicatePost
@@ -449,8 +456,8 @@ public class Post<T extends Resource> implements Serializable {
 	/**
 	 * @param duplicatePost the duplicatePost to set
 	 */
-	public void setDuplicatePost(boolean duplicatePost) {
+	public void setDuplicatePost(final boolean duplicatePost) {
 		this.duplicatePost = duplicatePost;
 	}
-	
+
 }
