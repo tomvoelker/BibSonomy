@@ -174,7 +174,7 @@
 								</spring:bind>
 							</c:if>
 							<c:choose>
-								<c:when test="${postHasError || post.duplicatePost}">
+								<c:when test="${postHasError || post.alreadyInCollection}">
 									<c:choose>
 										<c:when	test="${post.user.name eq command.context.loginUser.name}">
 											<ul>

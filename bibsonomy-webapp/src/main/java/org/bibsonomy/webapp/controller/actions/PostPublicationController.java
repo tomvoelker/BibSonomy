@@ -257,7 +257,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * 
 		 * Since similar bibtexes have similar intrahashes, we find duplicate
 		 * bibtexes
-		 * by comparing intrahashes, and filter unique bibtexes.
+		 * by comparing intrahashes, and then filter unique bibtexes.
 		 * **It is much more efficient to do this check during parsing snippet.
 		 */
 		/*
@@ -265,7 +265,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * the snippet
 		 */
 		final Set<String> unique_hashes = new TreeSet<String>();
-		final List<Post<BibTex>> unique_posts = new ArrayList<Post<BibTex>>();
+		//final List<Post<BibTex>> unique_posts = new ArrayList<Post<BibTex>>();
 
 		/*
 		 * Complete the posts with missing information:
@@ -290,7 +290,8 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 			if (!unique_hashes.contains(post.getResource().getIntraHash())) {
 				unique_hashes.add(post.getResource().getIntraHash());
-				unique_posts.add(post);
+				post.setAlreadyInCollection(true);
+	//			unique_posts.add(post);
 			}
 		}
 
@@ -300,13 +301,13 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * unique_posts' array. If it is the same as posts' array, there were no
 		 * duplicate
 		 * posts and posts array needn't be updated*
-		 */
+		 *
 
 		if (posts.size() != unique_posts.size()) {
 			posts.clear();
 			posts.addAll(unique_posts);
 		}
-
+*/
 		/*
 		 * add list of posts to command for showing them to the user
 		 * (such that he can edit them)
@@ -388,9 +389,16 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 			/*
 			 * check if this post is already stored in DB
+			 * 
+			 * We have already checked if this post bibtex is in the snippet or not.
+			 * (if yes, 'alreadyincollection' is already true. If no, it means that the user didn't type
+			 * the bibtex of this post twice in the snippet.
 			 */
-			test2 = this.isPostDuplicate(posts.get(i), isOverwrite);
-
+			if(posts.get(i).isAlreadyInCollection()){
+				test2 = true;
+			}else{
+				test2 = this.isPostDuplicate(posts.get(i), isOverwrite);
+			}
 			if (!test1 && !test2) {
 				log.debug("post no. " + i + " has no field errors");
 				/*
@@ -584,10 +592,10 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 		if (!isOverwrite && present(this.logic.getPostDetails(intraHash, userName))) {
 			/*
-			 * DuplicatePost flag is set to true here. In batch edit view,
+			 * alreadyInCollection flag is set to true here. In batch edit view,
 			 * duplicate posts are shown as erroneous posts.
 			 */
-			post.setDuplicatePost(true);
+			post.setAlreadyInCollection(true);
 			return true;
 		}
 		return false;

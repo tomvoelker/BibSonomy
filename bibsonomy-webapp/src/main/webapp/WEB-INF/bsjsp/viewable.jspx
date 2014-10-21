@@ -18,9 +18,7 @@
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.viewable" formAction="${relativeUrlGenerator.getViewableUrlByGroupName(command.requestedGroup)}" formInputName="tag">
 				<jsp:attribute name="pathPart">
-					<li>
-						:: <a href="${relativeUrlGenerator.getViewableUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
-					</li>
+					<a href="${relativeUrlGenerator.getViewableUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
 				</jsp:attribute>
 			</parts:search>
 		</jsp:attribute>

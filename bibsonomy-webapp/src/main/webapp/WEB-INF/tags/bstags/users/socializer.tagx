@@ -43,7 +43,7 @@
 		</h4>
 		
 		
-		<div class="media">
+		<div class="media" style="border:none;">
 			<!-- user thumbnail -->
 			<a class="pull-left img-thumbnail img-responsive" href="/user/${mtl:encodeURI(command.requestedUser)}" title="${mtl:encodeURI(username)}">
 				<img alt="${fn:escapeXml(username)}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(command.requestedUser))}" class="user-avatar"/>
@@ -73,7 +73,9 @@
 				</c:choose>
 			</div>
 		</div>
-		<div class="clearfix"><!--  --> <!--  --></div>
+		
+		<p class="clearfix"><!--  --></p>
 
 	</div>
+	
 </jsp:root>

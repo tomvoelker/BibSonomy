@@ -46,8 +46,9 @@
 		<jsp:attribute name="tabcontent">
 				
 			<!-- display potential errors -->
-			<errors:global errors="${errors}"/>	
+			<errors:global errors="${errors}"/>
 			
+			<settings:group command="${command}"/>
 			
 			<settings:profile command="${command}"/>
 			
@@ -55,9 +56,6 @@
 			
 			<settings:import command="${command}"/>
 			
-			<c:if test="${(command.hasOwnGroup or not (empty param.user or empty param.requGroup or param.requGroup eq command.context.loginUser.name))}">
-				<settings:group command="${command}"/>
-			</c:if>
 			<settings:cv command="${command}"/>
 			
 			<settings:oauth command="${command}"/>
@@ -67,7 +65,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.settings"/>
+			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
 	
 		<!--+

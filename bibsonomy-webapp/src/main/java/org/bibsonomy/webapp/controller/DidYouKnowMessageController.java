@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
 import java.util.List;
+import java.util.Random;
 
 import org.bibsonomy.webapp.command.DidYouKnowMessageCommand;
 import org.bibsonomy.webapp.util.DidYouKnowMessage;
@@ -32,11 +33,8 @@ public abstract class DidYouKnowMessageController {
 	 * @return didYouKnowMessage
 	 */
 	public DidYouKnowMessage getRandomDidYouKnowMessage() {
-		
-		int max = didYouKnowMessages.size();
-		int random = (int)(Math.random() * max);
-		
-		return this.didYouKnowMessages.get(random);
+		final Random random = new Random();
+		return this.didYouKnowMessages.get(random.nextInt(this.didYouKnowMessages.size()));
 	}
 
 	/**

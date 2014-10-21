@@ -30,9 +30,7 @@
 			<parts:search pathMessageKey="navi.discussedPosts">
 				<jsp:attribute name="pathPart">
 					<c:if test="${not empty command.requestedUser}">
-						<li>
-							:: <a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
-						</li>
+						<a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
 					</c:if>
 				</jsp:attribute>
 			</parts:search>	

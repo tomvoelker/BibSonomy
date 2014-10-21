@@ -143,8 +143,8 @@ public class Post<T extends Resource> implements Serializable {
 	/*
 	 * FIXME: rename to alreadyInCollection
 	 */
-	private boolean duplicatePost = false;
-
+	private boolean alreadyInCollection = false;
+//duplicatePost
 	/**
 	 * @return the repositories
 	 */
@@ -445,19 +445,19 @@ public class Post<T extends Resource> implements Serializable {
 		}
 		this.visibleTags.add(tag);
 	}
-
+	
 	/**
-	 * @return the duplicatePost
+	 * @return the alreadyInCollection
 	 */
-	public boolean isDuplicatePost() {
-		return this.duplicatePost;
+	public boolean isAlreadyInCollection() {
+		return this.alreadyInCollection;
 	}
 
 	/**
-	 * @param duplicatePost the duplicatePost to set
+	 * @param alreadyInCollection the alreadyInCollection to set
 	 */
-	public void setDuplicatePost(final boolean duplicatePost) {
-		this.duplicatePost = duplicatePost;
+	public void setAlreadyInCollection(boolean alreadyInCollection) {
+		this.alreadyInCollection = alreadyInCollection;
 	}
 
 }
