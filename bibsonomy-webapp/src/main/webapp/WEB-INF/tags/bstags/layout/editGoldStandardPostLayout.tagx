@@ -121,7 +121,7 @@
 						    +-->
 						<c:if test="${not empty command.diffPost}">
 		                 	
-		                 	<bs:alert style="warning" >
+		                 	<bs:alert style="warning" dismissable="true">
 		                 		<jsp:attribute name="alertBody">
 		                 			<h4><fmt:message key="note"/>: <fmt:message key="post.edit.existent" /></h4>
 		                 			<p><fmt:message key="post.edit.existent.help" /></p>
