@@ -64,16 +64,6 @@ public class EsResourceSearch<R extends Resource>{
 	public void setSearchTerms(String searchTerms) {
 		this.searchTerms = searchTerms;
 	}
-	/**
-	 * @throws CorruptIndexException
-	 * @throws IOException
-	 */
-	public void shutdown() throws CorruptIndexException, IOException {
-
-		log.info("closing node " + this.esClient.getNode());
-		this.esClient.shutdown();
-
-	}
 
 	
 	
@@ -87,16 +77,14 @@ public class EsResourceSearch<R extends Resource>{
 
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
 		try {
-			QueryBuilder queryBuilder = QueryBuilders.queryString("*"
-					+ this.searchTerms + "*");
+			QueryBuilder queryBuilder = QueryBuilders.queryString("*" + this.searchTerms + "*");
 			SearchRequestBuilder searchRequestBuilder = esClient.getClient().prepareSearch(INDEX_NAME);
 			searchRequestBuilder.setTypes(TYPE_NAME);
 			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 			searchRequestBuilder.setQuery(queryBuilder);
 			searchRequestBuilder.setFrom(0).setSize(60).setExplain(true);
 
-			SearchResponse response = searchRequestBuilder.execute()
-					.actionGet();
+			SearchResponse response = searchRequestBuilder.execute().actionGet();
 
 			if (response != null) {
 				log.info("Current Search results for wildcard '" + this.searchTerms + "': "
@@ -104,7 +92,6 @@ public class EsResourceSearch<R extends Resource>{
 				for (SearchHit hit : response.getHits()) {
 
 						Map<String, Object> result = hit.getSource();					
-						log.warn(result);
 						final Post<R> post = this.resourceConverter.writePost(result);
 						postList.add(post);
 					}
@@ -112,9 +99,8 @@ public class EsResourceSearch<R extends Resource>{
 			
 		} catch (IndexMissingException ex) {
 			log.error("IndexMissingException: " + ex.toString());
-		}finally{
-			this.shutdown();		
-			}
+		}
+		
 		return postList;
 	}
 

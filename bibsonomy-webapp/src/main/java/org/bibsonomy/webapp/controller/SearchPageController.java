@@ -2,14 +2,18 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.es.ESNodeClient;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.es.ESClient;
 import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.webapp.command.SearchViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -34,6 +38,7 @@ public class SearchPageController extends SingleResourceListController implement
 	
 	private SearchType searchType;
 	private boolean searchFromSharedIndex;
+	private ESClient esClient;
 	@Override
 	public View workOn(final SearchViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
@@ -96,29 +101,45 @@ public class SearchPageController extends SingleResourceListController implement
 		
 		if(searchFromSharedIndex){
 			searchType = SearchType.ELASTICSEARCH;
+			this.esClient = new ESNodeClient();
 		}else{		
 			searchType = SearchType.LUCENESEARCH;
 			}
-			// retrieve and set the requested resource lists
-			for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+		// retrieve and set the requested resource lists
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 
-				this.setList(command, resourceType, groupingEntity, groupingName, requestedTags, null, search, searchType, null, command.getOrder(), command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
+			this.setList(command, resourceType, groupingEntity, groupingName, requestedTags, null, search, searchType, null, command.getOrder(), command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
 				
-				this.postProcessAndSortList(command, resourceType);
-			}
+			this.postProcessAndSortList(command, resourceType);
+		}
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
 			// fill the tag cloud with all tag assignments of the relevant documents
 			if(!searchFromSharedIndex)
 				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, maximumTags, search);
 			this.endTiming();
+			this.ESClientShutdown();
 			return Views.SEARCHPAGE;
 		}
 		
 		this.endTiming();
+		this.ESClientShutdown();
 		return Views.getViewByFormat(format);
 	}
+	/**
+	 * @throws CorruptIndexException
+	 * @throws IOException
+	 */
+	public void ESClientShutdown(){
 
+		log.info("closing node " + this.esClient.getNode());
+		try {
+			this.esClient.shutdown();
+		} catch (Exception e) {
+			log.error("Error cloing node", e);
+		}
+
+	}
 	@Override
 	public SearchViewCommand instantiateCommand() {
 		final SearchViewCommand command = new SearchViewCommand();
