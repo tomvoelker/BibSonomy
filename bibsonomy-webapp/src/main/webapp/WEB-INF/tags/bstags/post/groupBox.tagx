@@ -20,15 +20,27 @@
 	<jsp:directive.attribute name="groups" type="java.util.List" required="true"/>
 
 			<div class="form-group">
-				<label class="col-sm-3 control-label" for="${fn:escapeXml(id)}">
+				<label class="col-sm-2 control-label" for="${fn:escapeXml(id)}">
 					<fmt:message key="post.resource.viewablefor" />
 				</label>
-				<div class="col-sm-9">
+				<div class="col-sm-10">
 					<div class="row">
 						<div class="col-sm-4">
-							<form:radiobutton path="abstractGrouping" value="public" tabindex="2" />&amp;nbsp;<span class="expl"><fmt:message key="post.resource.public"/></span><br />
-		       				<form:radiobutton path="abstractGrouping" value="private" tabindex="2" />&amp;nbsp;<span class="expl"><fmt:message key="post.resource.private"/></span><br />
-		       				<form:radiobutton path="abstractGrouping" value="other" tabindex="2" id="post.groups.other" />&amp;nbsp;<span class="expl"><fmt:message key="post.resource.other"/></span><br />
+							<div class="radio">
+								<label>
+									<form:radiobutton path="abstractGrouping" value="public" tabindex="2" /> <fmt:message key="post.resource.public"/>
+								</label>
+							</div>
+							<div class="radio">
+								<label>
+		       						<form:radiobutton path="abstractGrouping" value="private" tabindex="2" /> <fmt:message key="post.resource.private"/>
+		       					</label>
+		       				</div>
+		       				<div class="radio">
+			       				<label>
+			       					<form:radiobutton path="abstractGrouping" value="other" tabindex="2" id="post.groups.other" /> <fmt:message key="post.resource.other"/>
+			       				</label>
+			       			</div>
 		       			</div>
 		       			<div class="col-sm-8">
 		       				<form:select class="initiallyHidden form-control" multiple="false" path="groups" size="5" id="post.groups.other2" tabindex="2">

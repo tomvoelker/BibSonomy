@@ -19,28 +19,18 @@
 		<fieldset>
 			<legend><fmt:message key="post_bibtex.pub_snippet.heading" /></legend>
 			<p><fmt:message key="post_bibtex.pub_snippet.description" /></p>
+			
 			<input type="hidden" name="selTab" value="1" />
 			<input type="hidden" name="ckey" value="${ckey}" />
-			
-			
-			<bsform:textarea path="selection" id="selection">
-				<jsp:attribute name="appendix">	
-					<div class="fsLabel"><!--  --></div>
-				</jsp:attribute>
-			</bsform:textarea>
+
+			<bsform:textarea labelColSpan="2" inputColSpan="10" path="selection" id="selection" />
 			
 			<post:groupBox groups="${command.context.loginUser.groups}"/>
-					
-				
+
 			<legend><fmt:message key="post_bibtex.upload.options" /></legend>
 			
-			<fmt:message var="labelEditBeforeImport" key="import.edit_before_import"/>
-			<fmt:message var="helpEditBeforeImport" key="import.edit_before_import.help" />
-			<bsform:checkbox path="editBeforeImport" labelText="${labelEditBeforeImport}" helpText="${helpEditBeforeImport}" />
-			
-			<fmt:message var="overwriteLabel" key="import.overwritten" />
-			<fmt:message var="overwriteHelp" key="import.overwrite2"/>
-			<bsform:checkbox path="overwrite" labelText="${overwriteLabel}" helpText="${overwriteHelp}"/>
+			<bsform:checkbox inputColSpan="10" path="editBeforeImport" labelKey="import.edit_before_import" helpKey="import.edit_before_import.help" />
+			<bsform:checkbox inputColSpan="10" path="overwrite"  labelKey="import.overwrite2" helpKey="import.overwritten"/>
 
 			<!--+
 				|
