@@ -9,18 +9,21 @@
 	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form">
 
 	<jsp:directive.tag language="java" pageEncoding="UTF-8" display-name="OpenID Login Form" description="Renders the login form for OpenID login." />
-
+	<br /><br />
 	<fieldset>
 		<legend>Sign with another provider</legend>
+		<!-- TODO: Create list of privders according to
+			http://stackoverflow.com/questions/1116743/where-can-i-find-a-list-of-openid-provider-urls
+			or http://openid.net/get-an-openid/ and generate code dynamically -->
 		<ul class="list-inline">
 			<li><span><fmt:message key="login.openid.provider"/></span></li>
 			<li><a class="provider" data-provider="google" href="https://www.google.com/accounts/o8/id">Google</a></li> 
-			<li><a class="provider" data-provider="yahoo" href="http://yahoo.com/">Yahoo!</a></li>
+			<li><a class="provider" data-provider="yahoo" href="http://me.yahoo.com/">Yahoo!</a></li>
 			<li><a class="otherProvider" data-provider="other" href="#">Other OpenID-Provider</a></li>
 		</ul>
 
 		<div class="openIDmanual" style="display: none;">
-			<p class="clearfix"><!--  --></p>
+			
 			<form class="form-horizontal" action="/login_openid" id="openIDForm">
 				<div class="form-group">
 					<label class="control-label col-sm-3">

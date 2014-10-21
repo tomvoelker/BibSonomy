@@ -73,7 +73,15 @@
 								 	| logo and project name
 								 	|
 								 	+-->
-								<bs:logo />
+								<c:choose>
+									<c:when test="${properties['project.name'] eq 'PUMA'}">
+										<bs:logoPuma />
+									</c:when>
+									<c:otherwise>
+										<bs:logo />
+									</c:otherwise>
+								</c:choose>
+								
 								
 								
 							</div>
@@ -126,7 +134,7 @@
 							<!-- with sidebar -->
 							<div class="row">
 							
-							  	<div class="col-md-9 content">
+							  	<div class="col-md-9 col-sm-12 col-xs-12 content">
 			  						<!-- Breadcrumbs -->
 									<c:if test="${not empty breadcrumbs}">
 										<jsp:invoke fragment="breadcrumbs" />
@@ -139,7 +147,7 @@
 									    	
 								  	</div>
 								</div>
-							  	<div class="col-md-3 sidebar" id="sidebar">
+							  	<div class="col-md-3 hidden-xs hidden-sm sidebar" id="sidebar">
 		
 				  					<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}" infobox="${infobox}"/>
 					  					

@@ -26,17 +26,17 @@
 			headline="${headline}">
 
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.inbox"/>
+			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
+		
+		
 		
 		<jsp:attribute name="breadcrumbs">	
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<fmt:message key="buttons.mybibsonomy" var="my">
-						<fmt:param>${properties['project.name']}</fmt:param>
-					</fmt:message>
-					<nav:crumb name="${my}" href="/user/${command.context.loginUser.name}" />
-					<nav:crumb name="${headline}" />
+					<fmt:message key="navi.account" var="account"/>
+					<nav:crumb name="${account}" />
+					<nav:crumb name="${headline}" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>

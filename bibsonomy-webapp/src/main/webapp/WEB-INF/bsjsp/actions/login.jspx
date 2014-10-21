@@ -57,17 +57,55 @@
 					</jsp:attribute>
 				</bs:alert>
 			</c:if>
-
-			<div class="tab-content">
+			<ul class="nav nav-tabs" role="tablist">
 				<c:forEach var="authMethod" items="${authConfig}" varStatus="authMethodLoopState">
+	  				<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+	  				<fmt:message var="tabTitle" key="login.method.${authMethodName}" />
+	  				<!-- we can disable showing certain login methods by storing an empty string for login.method.AUTHMETHODNAME -->
+	  				<c:if test="${not empty tabTitle}">
+            			<li class="${authMethodLoopState.index eq 0 ? ' active' : ''}"><a data-toggle="tab" href="#login_${authMethodName}"><c:out value="${tabTitle}"/></a></li>
+            		</c:if>
+          		</c:forEach>
+			</ul>
+			<div class="tab-content">
+				<c:forEach var="authMethod" items="${authConfig}" varStatus="authMethodLoopState" >
 					<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
-					<form:form action="/login_${authMethodName}" id="form_${authMethodName}" method="POST" cssClass="form-horizontal">
-						<c:if test="${authMethod == 'OPENID'}">  <user:login_openid/></c:if>
-						<c:if test="${authMethod == 'INTERNAL'}"><user:login_internal/></c:if>
-						<c:if test="${authMethod == 'LDAP'}">    <user:login_ldap/></c:if>
-						<c:if test="${authMethod == 'SAML'}">    <user:login_saml/></c:if>
-						<input class="form-control" type="hidden" name="selTab" value="${authMethodLoopState.index}"></input>
-					</form:form>
+				
+					<c:if test="${authMethod == 'OPENID'}">
+						<div id="login_${authMethodName}" class="tab-pane${authMethodLoopState.index eq 0 ? ' active' : ''}">
+							<form:form action="/login_${authMethodName}" id="form_${authMethodName}" method="POST" cssClass="form-horizontal">
+								<user:login_openid/>
+							</form:form>
+						</div>
+					</c:if>
+				
+					<c:if test="${authMethod == 'INTERNAL'}">
+						<div id="login_${authMethodName}" class="tab-pane${authMethodLoopState.index eq 0 ? ' active' : ''}">
+							<form:form action="/login_${authMethodName}" id="form_${authMethodName}" method="POST" cssClass="form-horizontal">
+								<user:login_internal/>
+							</form:form>
+						</div>	
+					</c:if>
+				
+				
+					<c:if test="${authMethod == 'LDAP'}">
+						<div id="login_${authMethodName}" class="tab-pane${authMethodLoopState.index eq 0 ? ' active' : ''}">
+							<form:form action="/login_${authMethodName}" id="form_${authMethodName}" method="POST" cssClass="form-horizontal">
+								<user:login_ldap/>
+							</form:form>
+						</div>
+					</c:if>
+
+					<c:if test="${authMethod == 'SAML'}">
+						<div id="login_${authMethodName}" class="tab-pane${authMethodLoopState.index eq 0 ? ' active' : ''}">
+							<form:form action="/login_${authMethodName}" id="form_${authMethodName}" method="POST" cssClass="form-horizontal">
+								<user:login_saml/>
+							</form:form>
+						</div>
+					</c:if>
+					
+					<input class="form-control" type="hidden" name="selTab" value="${authMethodLoopState.index}"></input>
+						
 				</c:forEach>
 			</div>
 		</jsp:attribute>

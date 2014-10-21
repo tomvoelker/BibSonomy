@@ -21,9 +21,7 @@
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.group" formAction="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="pathPart">
-					<li>
-						:: <a href="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
-					</li>
+					<a href="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
 				</jsp:attribute>
 				<jsp:attribute name="afterInput">
 					<group:name group="${command.group}"/>

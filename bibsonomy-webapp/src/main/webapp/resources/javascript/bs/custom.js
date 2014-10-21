@@ -90,16 +90,23 @@ $(function() {
     	$(this).parent().prev().focus().next().show().hide();
     }); 
     
-    if($('#sidebar').prev().hasClass('content')) {
-    	var contentContainer = $('#sidebar').prev();
-    	var contentHeight = contentContainer.height();
-    	var sidebarHeight = $('#sidebar').height();
-    	
-    	if(contentHeight > sidebarHeight) {
-    		$('#sidebar').css('height', contentHeight+20);
-    	}
-    	
+    
+    var sidebarAdjustments = function sidebarAdjusts() {
+    	if($('#sidebar').prev().hasClass('content')) {
+        	
+        	var contentContainer = $('#sidebar').prev();
+        	var contentHeight = contentContainer.height();
+        	var sidebarHeight = $('#sidebar').height();
+        	
+        	if( contentHeight > sidebarHeight && $('#sidebar').is(':visible') ) {
+        		$('#sidebar').css('height', contentHeight+20);
+        	}
+        }
     }
+    
+	sidebarAdjustments();
+    
+	$(window).resize(sidebarAdjustments);
     
     function shortenContent (el, text) {
     	var shortened = false;
@@ -126,6 +133,22 @@ $(function() {
     	});
     	
     });
+    
+    /** MOBILE FUNCTIONS **/
+    
+    $('#hide-bookmarks').click(function(event) {
+    	event.preventDefault();
+    	$('.bookmarksContainer').is(':visible') ? $(this).text(getString("list.hide")) : $(this).text(getString("list.show"));
+    	$('.bookmarksContainer').slideToggle();
+    	
+    });
+    
+    $('#hide-publications').click(function(event) {
+    	event.preventDefault();
+    	$('.publicationsContainer').is(':visible') ? $(this).text(getString("list.hide")) : $(this).text(getString("list.show"));
+    	$('.publicationsContainer').slideToggle();
+    });
+
 });
 
 function dummyDownHandler(e) {
@@ -163,4 +186,22 @@ function activateAffixEntry (el) {
 	$(el).addClass("active").siblings().each(function(h, g){
 			$(g).removeClass("active");
 	});
+}
+
+
+function findBootstrapEnvironment() {
+    var envs = ['xs', 'sm', 'md', 'lg'];
+
+    $el = $('<div>');
+    $el.appendTo($('body'));
+
+    for (var i = envs.length - 1; i >= 0; i--) {
+        var env = envs[i];
+
+        $el.addClass('hidden-'+env);
+        if ($el.is(':hidden')) {
+            $el.remove();
+            return env
+        }
+    };
 }

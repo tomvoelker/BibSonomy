@@ -21,7 +21,6 @@ import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.ajax.AjaxURLCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
@@ -39,7 +38,7 @@ import org.springframework.validation.Errors;
  * 
  * @author Bernd Terbrack
  */
-public class AdditionalURLController extends AjaxController implements MinimalisticController<AjaxURLCommand>, ErrorAware, ValidationAwareController<AjaxURLCommand> {
+public class AdditionalURLController extends AjaxController implements ErrorAware, ValidationAwareController<AjaxURLCommand> {
 
 	private static final Log log = LogFactory.getLog(AdditionalURLController.class);
 	private Errors errors;

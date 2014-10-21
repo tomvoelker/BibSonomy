@@ -285,14 +285,14 @@ function switchNavi(scope, element) {
 	 * some time until we make the list visible again (though it's then 
 	 * otherwise hidden by CSS).
 	 */
-	var ul = element.parents("ul");
-	ul.css("visibility", "hidden");
-	window.setTimeout(function() {ul.css("visibility", "visible");}, 10);
 
 	/*
 	 * remove old scope inputs
 	 */
 	$("input[name='scope']").remove();
+	
+	/* if exist, remove #pathPart */
+	$("#pathPart").remove();
 	
 	/*
 	 * change form action to redirect with the given scope
@@ -306,13 +306,7 @@ function switchNavi(scope, element) {
 	if (text.search(/- /) != -1) { // search in a group
 		text = getString("navi.group") + ":" + text.substr(2); 
 	}
-	$("#search a:first").html(text);
-	/*
-	 * remove all remaining list elements 
-	 */
-	$("#search > ul > li").each(function(){
-		if (!$(this).find("form, ul").length) $(this).remove(); 
-	});
+	$("#search a:first .search-scope").html(text);
 
 	/*
 	 * heuristic to get the hint for the input field  
@@ -327,9 +321,12 @@ function switchNavi(scope, element) {
 	 */
 	$("#inpf")
 	.attr("name", "search") // always do a search
-	.val(hint) // set hint as value
+	//.val(hint) // set hint as value
 	.addClass('descriptiveLabel') // add class
-	.descrInputLabel({}); // make the label disappear on click/submit
+	.descrInputLabel({}) // make the label disappear on click/submit
+	.attr('placeholder', hint); // set hint as placeholder
+	
+	//TODO: WHAT DOES THIS DO????
 	$("#inpf").parents("li").removeClass("hidden"); // show form
 	
 	/*
@@ -353,7 +350,6 @@ function switchNavi(scope, element) {
 
 // TODO: cleanup functions below; check for unused methods
 $(function() { 
-
 
 });
 
