@@ -9,7 +9,7 @@
 	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form">
 
 	<jsp:directive.tag language="java" pageEncoding="UTF-8" display-name="OpenID Login Form" description="Renders the login form for OpenID login." />
-
+	<br /><br />
 	<fieldset>
 		<legend>Sign with another provider</legend>
 		<!-- TODO: Create list of privders according to
@@ -23,7 +23,7 @@
 		</ul>
 
 		<div class="openIDmanual" style="display: none;">
-			<p class="clearfix"><!--  --></p>
+			
 			<form class="form-horizontal" action="/login_openid" id="openIDForm">
 				<div class="form-group">
 					<label class="control-label col-sm-3">
