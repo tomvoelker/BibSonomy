@@ -1175,7 +1175,19 @@ public class DBLogic implements LogicInterface {
 		try {
 			for (final Post<?> post : posts) {
 				try {
-					hashes.add(this.createPost(post, session));
+					String intrahash = this.createPost(post, session);					
+					// check for publication
+					if (BibTex.class.equals(post.getResource().getClass())) {
+						List<BibTexExtra> extraUrls = ((BibTex) post.getResource()).getExtraUrls();
+						// do we have extraUrls ?
+						if(extraUrls != null) {
+							for(BibTexExtra resourceExtra : extraUrls) {
+								// ... add them
+								this.bibTexExtraDBManager.createURL(intrahash, this.loginUser.getName(), resourceExtra.getUrl().toExternalForm(), resourceExtra.getText(), session);
+							}				
+						}
+					}
+					hashes.add(intrahash);
 				} catch (final DatabaseException dbex) {
 					collectedException.addErrors(dbex);
 					log.warn("error message due to exception", dbex);
