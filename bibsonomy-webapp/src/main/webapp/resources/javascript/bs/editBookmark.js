@@ -27,7 +27,7 @@ function scraping() {
 					
 					$('#publication-found-form-placeholder').html(form);
 					
-					$('#url-resource-title').popover('show');
+					$('#post\\.resource\\.url').popover('show');
 				}
 			},
 			dataType : "text"
@@ -37,7 +37,7 @@ function scraping() {
 
 $(function() {
 
-	$('#url-resource-title').popover({ 
+	$('#post\\.resource\\.url').popover({ 
 	    html : true,
 	    trigger: 'manual',
 	    container: 'body',
@@ -56,7 +56,8 @@ $(function() {
 	    },
 		delay: 0
 	});
-	
+	/* popover show is triggered in scraping() */
+	//$('#post\\.resource\\.url').popover('show');
 	scraping();
 	checkUrlForTitle();
 	setFocus();

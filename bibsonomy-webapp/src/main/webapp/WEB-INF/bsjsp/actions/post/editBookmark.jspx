@@ -33,15 +33,8 @@
 				+-->
 			
 			<!-- URL -->
-			<bsform:input labelColSpan="3" inputColSpan="9" placeholder="http://" labelText="URL" path="post.resource.url" required="${true}" noHelp="${true }"/>
-			
-			<!-- TITLE -->
-			<fmt:message key="post.resource.title" var="title"/>
-			
-			<bsform:input id="url-resource-title" labelColSpan="3" inputColSpan="9" placeholder="${title}" path="post.resource.title" required="${true}" noHelp="true">
+			<bsform:input labelColSpan="3" inputColSpan="9" placeholder="http://" labelText="URL" path="post.resource.url" required="${true}" noHelp="${true}">
 				<jsp:attribute name="appendix">
-					<div class="fsSuggestion" id="suggestion.resource.title"><!-- KEEP ME --></div>
-					
 					<!-- publication found -->
 					<div class="hide">
 						<span class="publication-found-title"><fmt:message key="post.meta.recommended"/>: <fmt:message key="post.meta.save_as_publication"/></span>
@@ -51,10 +44,19 @@
 								<p><fmt:message key="post.resource.bookmark_a_publication2"/></p>
 								<button class="btn btn-primary btn-xs" type="submit" name="submit"><fmt:message key="post.meta.save_as_publication" /></button>
 								<c:out value=" "/><!-- space between buttons -->
-								<button type="button" class="btn btn-default btn-xs" onclick="$('#url-resource-title').popover('hide');"><fmt:message key="box.close" /></button>
+								<button type="button" class="btn btn-default btn-xs" onclick="$('#post\\.resource\\.url').popover('hide');"><fmt:message key="box.close" /></button>
 							</div>
 						</div>
 					</div>
+				</jsp:attribute>
+			</bsform:input>
+			
+			<!-- TITLE -->
+			<fmt:message key="post.resource.title" var="title"/>
+			
+			<bsform:input labelColSpan="3" inputColSpan="9" placeholder="${title}" path="post.resource.title" required="${true}" noHelp="true">
+				<jsp:attribute name="appendix">
+					<div class="fsSuggestion" id="suggestion.resource.title"><!-- KEEP ME --></div>
 				</jsp:attribute>
 			</bsform:input>
 			
