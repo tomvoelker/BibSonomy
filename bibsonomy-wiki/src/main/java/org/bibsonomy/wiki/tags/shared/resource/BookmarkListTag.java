@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.wiki.tags.SharedTag;
 
@@ -57,7 +58,7 @@ public class BookmarkListTag extends SharedTag {
  		List<Post<Bookmark>> posts;
  		
  		// TODO: Remove duplicates, if rendered for group
- 		posts = this.logic.getPosts(Bookmark.class, this.getGroupingEntity(), this.getRequestedName(), Arrays.asList(tags.split(" ")), null, null, null, null, null, null, 0, Integer.MAX_VALUE);
+ 		posts = this.logic.getPosts(Bookmark.class, this.getGroupingEntity(), this.getRequestedName(), Arrays.asList(tags.split(" ")), null, null,SearchType.LUCENESEARCH, null, null, null, null, 0, Integer.MAX_VALUE);
 		
 		if (tagAttributes.get(LIMIT) != null) {
 			try {
