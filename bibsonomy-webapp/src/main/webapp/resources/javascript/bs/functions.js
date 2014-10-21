@@ -1530,24 +1530,25 @@ function setupPostExportSize() {
 	    }
 	}
 	
-	var links = $("dt").children();
+	var links = $(".export-link");
 	
-	//append to all links '?items=5' - exportPostSize initiated with '5'
+	// append to all links '?items=5' - exportPostSize initiated with '5'
 	$.each(links, function(index, value) {
-		//get the elements of all links [<a..] without the ones with a star '*' [they reference only to jabref on the page - #jabref]
-		if(value.href.indexOf("#jabref") == -1) {
+		// get the elements of all links [<a..] 
+		var linkHref = $(value).attr('href');
 			
-			//Contains the href any other parameters? Distinguish this cases.
-			if(value.href.indexOf("?") != -1) {
-				if(value.href.indexOf("items=") != -1) {
-					value.href = value.href.replace(/\items=\d*/g, "items=" + exportPostSize);
-				} else {
-					value.href = value.href + '&items=' + exportPostSize;
-				}
+		// contains the href any other parameters? Distinguish this cases.
+		if (linkHref.indexOf("?") != -1) {
+			if (linkHref.indexOf("items=") != -1) {
+				linkHref = linkHref.replace(/\items=\d*/g, "items=" + exportPostSize);
 			} else {
-				value.href = value.href + "?items=" + exportPostSize;
+				linkHref = linkHref + '&items=' + exportPostSize;
 			}
+		} else {
+			linkHref = linkHref + "?items=" + exportPostSize;
 		}
+		
+		$(value).attr('href', linkHref);
 	});
 	
 	//A click on a radio button replaces in any link the old value X '?items=X' with the new value Y '?items=Y'
