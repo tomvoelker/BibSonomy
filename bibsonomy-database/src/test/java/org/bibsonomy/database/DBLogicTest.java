@@ -228,64 +228,6 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		assertNull(bibTexPostsList.get(0).getResource().getDocuments());
 		assertList(bibTexPostsList, DEFAULT_USERNAME_SET, null, null, TEST_REQUEST_HASH, null, null);
 	}
-	
-	/**
-	 * tests createPosts
-	 */
-	@Test
-	public void testCreatePosts() {		
-		final String url1 = "http://www.test1.de";
-		final String url2 = "http://www.test2.de";
-		final String url3 = "http://www.test3.de";
-		final String url4 = "http://www.test4.de";
-		final String url5 = "http://www.test5.de";
-		final Post<BibTex> aPost = ModelUtils.generatePost(BibTex.class);
-		final Post<BibTex> bPost = ModelUtils.generatePost(BibTex.class);
-		// to avoid conflicts set a new name
-		aPost.getResource().setYear("2013");
-		bPost.getResource().setYear("2014");
-		aPost.getResource().recalculateHashes();
-		bPost.getResource().recalculateHashes();
-		List<BibTexExtra> aExtraUrls = new ArrayList<>();
-		try {
-			aExtraUrls.add(new BibTexExtra(new URL(url1), "test1", new Date()));
-			aExtraUrls.add(new BibTexExtra(new URL(url2), "test2", new Date()));
-			aExtraUrls.add(new BibTexExtra(new URL(url3), "test3", new Date()));
-		} catch (MalformedURLException e) {
-			// should not happen
-		}
-		List<BibTexExtra> bExtraUrls = new ArrayList<>();
-		try {
-			bExtraUrls.add(new BibTexExtra(new URL(url4), "test4", new Date()));
-			bExtraUrls.add(new BibTexExtra(new URL(url5), "test5", new Date()));
-		} catch (MalformedURLException e) {
-			// should not happen
-		}
-		
-		aPost.getResource().setExtraUrls(aExtraUrls);
-		bPost.getResource().setExtraUrls(bExtraUrls);
-		
-		ArrayList<Post<?>> posts = new ArrayList<>();
-		posts.add(aPost);
-		posts.add(bPost);
-		
-		// create
-		List<String> hashes = this.getDbLogic().createPosts(posts);
-		
-		// 2 posts should be created
-		assertEquals(2, hashes.size());
-		
-		Post<?> cPost = this.getDbLogic().getPostDetails(hashes.get(0), aPost.getUser().getName());
-		assertEquals(3, ((BibTex)cPost.getResource()).getExtraUrls().size());
-		assertEquals(url1, ((BibTex)cPost.getResource()).getExtraUrls().get(0).getUrl().toExternalForm());
-		assertEquals(url2, ((BibTex)cPost.getResource()).getExtraUrls().get(1).getUrl().toExternalForm());
-		assertEquals(url3, ((BibTex)cPost.getResource()).getExtraUrls().get(2).getUrl().toExternalForm());
-		
-		Post<?> dPost = this.getDbLogic().getPostDetails(hashes.get(1), aPost.getUser().getName());
-		assertEquals(2, ((BibTex)dPost.getResource()).getExtraUrls().size());
-		assertEquals(url4, ((BibTex)dPost.getResource()).getExtraUrls().get(0).getUrl().toExternalForm());
-		assertEquals(url5, ((BibTex)dPost.getResource()).getExtraUrls().get(1).getUrl().toExternalForm());
-	}
 
 	/**
 	 * tests getPostsByViewable

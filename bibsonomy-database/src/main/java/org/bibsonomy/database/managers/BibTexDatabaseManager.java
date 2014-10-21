@@ -27,8 +27,10 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ScraperMetadata;
+import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.util.file.FileSystemFile;
 import org.bibsonomy.services.filesystem.FileLogic;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Used to create, read, update and delete BibTexs from the database.
@@ -401,7 +403,21 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	protected void createdPost(final Post<BibTex> post, final DBSession session) {
 		super.createdPost(post, session);
 
+		this.handleExtraUrls(post, session);		
 		this.handleDocuments(post, session);
+	}
+
+	/**
+	 * @param post
+	 * @param session
+	 */
+	private void handleExtraUrls(Post<BibTex> post, DBSession session) {
+		List<BibTexExtra> extraUrls = post.getResource().getExtraUrls();
+		if(ValidationUtils.present(extraUrls)) {
+			for(BibTexExtra resourceExtra : extraUrls) {
+				this.extraDb.createURL(post.getResource().getIntraHash(), post.getUser().getName(), resourceExtra.getUrl().toExternalForm(), resourceExtra.getText(), session);
+			}				
+		}
 	}
 
 	@Override

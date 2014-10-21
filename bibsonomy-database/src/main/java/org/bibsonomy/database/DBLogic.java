@@ -115,6 +115,7 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Database Implementation of the LogicInterface
@@ -1175,19 +1176,7 @@ public class DBLogic implements LogicInterface {
 		try {
 			for (final Post<?> post : posts) {
 				try {
-					String intrahash = this.createPost(post, session);					
-					// check for publication
-					if (BibTex.class.equals(post.getResource().getClass())) {
-						List<BibTexExtra> extraUrls = ((BibTex) post.getResource()).getExtraUrls();
-						// do we have extraUrls ?
-						if(extraUrls != null) {
-							for(BibTexExtra resourceExtra : extraUrls) {
-								// ... add them
-								this.bibTexExtraDBManager.createURL(intrahash, this.loginUser.getName(), resourceExtra.getUrl().toExternalForm(), resourceExtra.getText(), session);
-							}				
-						}
-					}
-					hashes.add(intrahash);
+					hashes.add(this.createPost(post, session));
 				} catch (final DatabaseException dbex) {
 					collectedException.addErrors(dbex);
 					log.warn("error message due to exception", dbex);

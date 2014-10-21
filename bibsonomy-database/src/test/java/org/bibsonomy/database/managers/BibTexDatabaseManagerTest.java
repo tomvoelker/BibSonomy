@@ -8,6 +8,8 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,6 +17,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -759,6 +762,12 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		publication.setType("2");
 		publication.recalculateHashes();
 		
+		try {
+			ModelUtils.addExtraUrls(publication, new BibTexExtra(new URL("http://www.test1.de"), "test1", new Date()), new BibTexExtra(new URL("http://www.test2.de"), "test2", new Date()));
+		} catch (MalformedURLException e) {
+			// should not happen
+		}
+		
 		post.setResource(publication);
 		return post;
 	}
@@ -815,8 +824,12 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		assertEquals(1, posts.size());
 		CommonModelUtils.assertPropertyEquality(toInsert, posts.get(0), Integer.MAX_VALUE, null, new String[] { "resource", "tags", "user", "date", "changeDate"});
 		toInsert.getResource().setCount(1);
-		CommonModelUtils.assertPropertyEquality(toInsert.getResource(), posts.get(0).getResource(), Integer.MAX_VALUE, null, new String[] { "openURL", "numberOfRatings", "rating"});
+		CommonModelUtils.assertPropertyEquality(toInsert.getResource(), posts.get(0).getResource(), Integer.MAX_VALUE, null, new String[] { "openURL", "numberOfRatings", "rating", "extraUrls"});
 
+		// check extra urls 
+		final Post<BibTex> post = publicationDb.getPostDetails(loginUser.getName(), bibtexHashForUpdate, loginUser.getName(),  Collections.singletonList(PUBLIC_GROUP_ID), this.dbSession);
+		CommonModelUtils.assertPropertyEquality(toInsert.getResource().getExtraUrls(), post.getResource().getExtraUrls(), Integer.MAX_VALUE, Pattern.compile("date"), new String[]{});
+		
 		// post a duplicate and check whether plugins are called		
 		assertFalse(this.pluginMock.isOnBibTexUpdate());
 		this.pluginMock.reset();
