@@ -58,7 +58,7 @@ public class BMJScraperTest {
 	}
 	@Test
 	public void testReferences() throws Exception{
-		final ScrapingContext sc = new ScrapingContext(new URL("http://www.bmj.com/content/336/7655/1221.abstract"));
+		final ScrapingContext sc = new ScrapingContext(new URL("http://www.bmj.com/content/336/7655/1221"));
 		BMJScraper bmj = new BMJScraper();
 		assertTrue(bmj.scrape(sc));
 		assertTrue(bmj.scrapeReferences(sc));

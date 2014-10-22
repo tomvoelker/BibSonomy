@@ -199,17 +199,55 @@ ul.dropdown-menu.list-options > li > span {
 	margin-top: 30px;
 }
 
+#logo h1,
+#puma-logo h1 {
+    font-size: 36px;
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.1;
+    color: inherit;
+    margin-top: 20px;
+    margin-bottom: 0px;
+}
+
+#logo h1 small#beta,
+#puma-logo h1 small#beta {
+    font-size: 17px;
+    position: relative;
+    top: -7px;
+}
+
+#logo h1 a,
+#puma-logo h1 a {
+	color: @main-color;
+}
+
 .slogan {
 	text-transform: uppercase;
 	color: @main-color;
+}
+
+#puma-logo-img {
+	height: 120px;
+	position: relative; 
+	top: 15px; 
+	z-index: 100;
+}
+
+#puma-logo {
+	position: static;
+	top: 0;
+	font-family: Arial, 'sans-serif';
+	position: relative;
+	top: 26px;
 }
 
 a {
 	color: @link-color;
 }
 
-#search {
-	clear: both;
+#search ul.dropdown-menu li a {
+	cursor: pointer;
 }
 
 
@@ -1211,26 +1249,6 @@ div.clearline {
 
 div#titletext h4.media-heading {
     border: none;   
-}
-
-#logo h1 {
-    font-size: 36px;
-    font-family: inherit;
-    font-weight: 500;
-    line-height: 1.1;
-    color: inherit;
-    margin-top: 20px;
-    margin-bottom: 0px;
-}
-
-#logo h1 small#beta {
-    font-size: 17px;
-    position: relative;
-    top: -7px;
-}
-
-#logo h1 a {
-	color: @main-color;
 }
 
 h2.getting-started {
