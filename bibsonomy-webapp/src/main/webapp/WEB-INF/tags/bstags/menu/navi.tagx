@@ -214,13 +214,6 @@
 									
 									<!-- divider -->
 									<li class="divider"><!--  --></li>
-									
-									<li>
-										<a href="/bibsonomy3preview">
-											<span class="fa fa-exchange"><!--  --></span>
-											BibSonomy 2
-										</a>
-									</li>
 									<li>
 										<a href="/logout">
 											<span class="fa fa-power-off"><!-- KEEP ME --></span>
