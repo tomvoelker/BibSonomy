@@ -88,37 +88,6 @@
 			+-->
 		<jsp:attribute name="sidebar">
 			<ul>
-				<!-- loginUser.groups -->
-				<li>
-					<h4 class="sidebar"><fmt:message key="groups"/><c:out value=" "/><small>(<a href="/groups"><fmt:message key="overview"/></a>)</small></h4>
-					<ul>
-					<c:forEach var="group" items="${command.context.loginUser.groups}">
-						<li>
-						<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"><c:out value='${group.name}'/>&amp;nbsp;</a> 
-							<c:if test="${group.sharedDocuments}">
-								<c:choose>
-									<c:when test="${not group.userSharedDocuments}">
-										<fmt:message var="shareDocumentsTitle" key="groups.actions.shareDocuments.title"></fmt:message>
-										<a class="action btn btn-default btn-xs" 
-											href="/ajax/handleGroupShare?requestedGroup=${fn:escapeXml(group.name)}&amp;action=shareDocuments&amp;ckey=${ckey}&amp;forward=settings"
-											title="${shareDocumentsTitle}">
-											<fmt:message key="groups.actions.shareDocuments"/>
-										</a>
-									</c:when>
-									<c:otherwise>
-										<fmt:message var="unshareDocumentsTitle" key="groups.actions.unshareDocuments.title"></fmt:message>
-											<a class="action btn btn-default btn-xs" 
-												href="/ajax/handleGroupShare?requestedGroup=${fn:escapeXml(group.name)}&amp;action=unshareDocuments&amp;ckey=${ckey}&amp;forward=settings"
-												title="${unshareDocumentsTitle}">
-												<fmt:message key="groups.actions.unshareDocuments"/>
-											</a>
-									</c:otherwise>
-								</c:choose>
-							</c:if>
-						</li>
-					</c:forEach>
-					</ul>
-				</li>
 
 				<!-- loginUser.friends -->
 				<li class="user-friends">
