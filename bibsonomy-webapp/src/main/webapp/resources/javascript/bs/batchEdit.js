@@ -18,8 +18,10 @@ $(document).ready(function () {
 	if($('input[name^=posts]:checkbox').prop('disabled')) {
 			disableAllCheckboxes();
 			$('div[id=notYours]').toggleClass('invisible', false);	
+			$('div[id=notYours]').show();
 	} else{
 		$('div[id=editHint]').toggleClass('invisible', false);
+		$('div[id=editHint]').show();
 	}
 	
 	$('#SelectTagAll').change(function() {
@@ -91,6 +93,7 @@ $(document).ready(function () {
 			disableAll=false;
 			enableAllButtons();
 			$('div[id=editHint]').toggleClass('invisible', true);
+			$('div[id=editHint]').hide();
 		}
 		// 	we have to call change() in this case, because a new tag input should be shown.
 		if (tagAction==2){
@@ -169,10 +172,13 @@ $(document).ready(function () {
 		$(this).css("background-color", "#e6e6e6");
 		
 		$('div[id=delConfirm]').toggleClass('invisible', false);
+		$('div[id=delConfirm]').show();
+		
 	});
 	
 	$('#delOk').click(function() {
 		$('div[id=delConfirm]').toggleClass('invisible', true);
+		$('div[id=delConfirm]').hide();
 		//clear the action array
 		action.splice(0,action.lenght);
 		action.push(4);
@@ -182,6 +188,7 @@ $(document).ready(function () {
 	
 	$('#delCancel').click(function() {
 		$('div[id=delConfirm]').toggleClass('invisible', true);
+		$('div[id=delConfirm]').hide();
 		resetBackgroundColor();
 	});
 	
@@ -194,11 +201,14 @@ $(document).ready(function () {
 		hideAllMessages();
 		
 		$(this).css("background-color", "#e6e6e6");
-		$('div[id=normConfirm]').toggleClass('invisible', false);		
+		$('div[id=normConfirm]').toggleClass('invisible', false);	
+		$('div[id=normConfirm]').show();
+		
 	});
 	
 	$('#normOk').click(function() {
 		$('div[id=normConfirm]').toggleClass('invisible', true);
+		$('div[id=normConfirm]').hide();
 		//clear the action array
 		action.splice(0,action.lenght);
 		action.push(3);
@@ -208,6 +218,7 @@ $(document).ready(function () {
 	
 	$('#normCancel').click(function() {
 		$('div[id=normConfirm]').toggleClass('invisible', true);
+		$('div[id=normConfirm]').hide();
 		resetBackgroundColor();
 	});
 			
@@ -249,6 +260,7 @@ function allTagOK(){
 	//alert(a);
 	//alert($('input[name=tags]').val());
 	$("#tagAllAdded").toggleClass('invisible', false);
+	$("#tagAllAdded").show();
 	submitForm("#tagAllAdded");
 	
 }
@@ -324,11 +336,25 @@ function hideAllMessages(){
 	$('div[id="cancel"]').toggleClass('invisible', true);
 	$('ul[name=eachPostTag]').toggleClass('invisible', true);
 	$('div[id=combiEditConfirm]').toggleClass('invisible', true);
+	
+	$('div[id=normConfirm]').hide();
+	$('div[id=normalized]').hide();
+	$('div[id=privacyChanged]').hide();
+	$('div[id=delConfirm]').hide();
+	$('div[id=deleted]').hide();
+	$('div[id=tagAllAdded]').hide();
+	$('div[id=tagEachEdited]').hide();
+	$('div[id=back]').hide();
+	$('div[id=editHint]').hide();
+	$('div[id="cancel"]').hide();
+	$('ul[name=eachPostTag]').hide();
+	$('div[id=combiEditConfirm]').hide();
 }
 
 function submitForm(messageId){
 	hideAllMessages();
 	$(messageId).toggleClass('invisible', false);
+	$(messageId).show();
 	document.getElementById("batchedit").submit();
 }
 
@@ -368,6 +394,8 @@ function disableAllButtons(){
 	
 	hideAllMessages();
 	$('div[id=editHint]').toggleClass('invisible', false);
+	$('div[id=editHint]').show();
+	
 	
 }
 
@@ -457,7 +485,6 @@ function showEditBtn(){
 		$('div[id=cancelBtn]').hide();
 	}
 }
-maximizeById("general");
 
 
 

@@ -41,7 +41,9 @@ xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 					<!-- short info about batchEdit -->
 					<ul>
 						<fmt:message key="batchedit.info1"/>
-						<li><fmt:message key="batchedit.option1"/></li>                
+						<c:if test="${resourceType eq bibtex}">
+							<li><fmt:message key="batchedit.option1"/></li>
+						</c:if>                
 						<li><fmt:message key="batchedit.option2"/></li>
 						<li><fmt:message key="batchedit.option3"/></li>
 						<li><fmt:message key="batchedit.option4"/></li>

@@ -89,26 +89,51 @@
 			<!-- the following variable is defined to communicate with .js file -->
 			<input type="hidden" name="action"/>
 			<input type="hidden" name="tags" />
-			<!-- Hint messages: hint-green, hint-red-->		
-		    <div id="editHint" class="Hint red invisible"><fmt:message key="batchedit.editHint" /></div>
-		    <div id="normConfirm" class="Hint red invisible">
-	    		<fmt:message key="batchedit.normConfirm" />
-	    		<a href="#" id="normOk"><fmt:message key="batchedit.ok" /></a>
+			<!-- Hint messages-->		
+			<div id="editHint" class="alert alert-info invisible hint" role="alert">
+  				 <strong>Info:</strong><fmt:message key="batchedit.editHint" />
+			</div>
+		
+		    <div id="normConfirm" class="alert alert-warning invisible hint" role="alert">
+  				<fmt:message key="batchedit.normConfirm" />
+  				<a href="#" id="normOk"><fmt:message key="batchedit.ok" /></a>
 	    		<a href="#" id="normCancel"><fmt:message key="batchedit.cancel" /></a>
-		    </div>
-		    <div id="normalized" class="Hint green invisible"> <fmt:message key="batchedit.normalized"/></div>
-			<div id="privacyChanged" class="Hint green invisible"><fmt:message key="batchedit.privacyChanged"/></div>
-			<div id="combiEditConfirm" class="Hint green invisible"><fmt:message key="batchedit.combiEditConfirm"/></div>
-			<div id="tagAllAdded" class="Hint green invisible"><fmt:message key="batchedit.tagAllAdded"/></div>
-			<div id="tagEachEdited" class="Hint green invisible"><fmt:message key="batchedit.tagEachEdited"/></div>
-			<div id="cancel" class="Hint red invisible"><fmt:message key="batchedit.cancelMsg"/></div>
-			<div id="delConfirm" class="Hint red invisible">
-	    		<fmt:message key="batchedit.delConfirm"/>
-	    		<a href="#" id="delOk"><fmt:message key="batchedit.ok" /></a>
+			</div>
+		  
+		  <div id="normalized" class="alert alert-success invisible hint" role="alert">
+  				 <fmt:message key="batchedit.normalized" />
+			</div>
+		 	<div id="privacyChanged" class="alert alert-success invisible hint" role="alert">
+  				 <fmt:message key="batchedit.privacyChanged" />
+			</div>
+			
+			<div id="combiEditConfirm" class="alert alert-success invisible hint" role="alert">
+  				 <fmt:message key="batchedit.combiEditConfirm" />
+			</div>
+			
+			<div id="tagAllAdded" class="alert alert-success invisible hint" role="alert">
+  				 <fmt:message key="batchedit.tagAllAdded" />
+			</div>
+			<div id="tagEachEdited" class="alert alert-success invisible hint" role="alert">
+  				 <fmt:message key="batchedit.tagEachEdited" />
+			</div>
+			
+			<div id="cancel" class="alert alert-info invisible hint" role="alert">
+  				 <fmt:message key="batchedit.cancelMsg" />
+			</div>
+			
+			<div id="delConfirm" class="alert alert-warning invisible hint" role="alert">
+  				<fmt:message key="batchedit.delConfirm" />
+  				<a href="#" id="delOk"><fmt:message key="batchedit.ok" /></a>
 	    		<a href="#" id="delCancel"><fmt:message key="batchedit.cancel" /></a>
-		    </div>
-		    <div id="deleted" class="Hint green invisible"><fmt:message key="batchedit.deleted" /></div>
-		    <div id="notYours" class="Hint red invisible"><fmt:message key="batchedit.notYours" /></div>
+			</div>
+		    
+		    <div id="deleted" class="alert alert-success invisible hint" role="alert">
+  				 <fmt:message key="batchedit.deleted" />
+			</div>
+		   <div id="notYours" class="alert alert-danger invisible hint" role="alert">
+  				 <fmt:message key="batchedit.notYours" />
+			</div>
 			<br/><br/><br/>
 			<c:choose>
 			<c:when test="${directEdit}">
@@ -118,7 +143,7 @@
 			<!-- for some unknown! reasons (probably the buttonClasses), I couldn't disable buttons 
 			via javascript. so we have two divs: one for disabled buttons and one for enabled buttons. -->
 			
-			<div id="editButtonsDisabled" class="edit-media-buttons btn-group" style="padding-left:5px;padding-bottom:10px">
+			<div id="editButtonsDisabled" class="edit-media-buttons btn-group" style="padding-left:5px;padding-bottom:10px;">
 				<c:if test="${resourceType eq 'bibtex'}">   	
 			       	<a id="normID" class="${buttonClasses}" title="${normBtnMsg}" disabled="disabled">
 			        	<span class="fa fa-refresh"><!--  --></span></a>

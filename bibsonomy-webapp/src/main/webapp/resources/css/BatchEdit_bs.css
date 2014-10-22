@@ -1,18 +1,13 @@
 
-.Hint{
-	display: block;
-	font-weight:bold;
-    padding:10px;
-	color: black;
-	text-decoration:none;
-	text-align: left;
-	width: 100%;
+.hint{
+	/*padding:10px;
+	color: black;*/
 	position: absolute;
 	margin-left: 5px;
 	
 	    
 }
-.Hint a{
+.hint a{
     text-decoration:underline;
     margin-right: 2px;
     margin-left: 2px;
