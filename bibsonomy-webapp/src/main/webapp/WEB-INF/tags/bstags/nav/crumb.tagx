@@ -13,12 +13,17 @@
 	<jsp:directive.attribute name="leadingIcon" type="java.lang.String" required="false" description="Insert a leading font awesome icon." />
 	
 	<li class="${ (not empty active and active) ? 'active' : ''}">
-		<c:if test="${not empty leadingIcon}">
+		<c:if test="${empty href and not empty leadingIcon}">
 			<span class="fa ${leadingIcon}"><!--  --></span><c:out value=" " />
 		</c:if>
 		<c:choose>
 			<c:when test="${not empty href}">
-				<a href="${href}"><c:out value="${name}" /></a>
+				<a href="${href}">
+					<c:if test="${not empty leadingIcon}">
+						<span class="fa ${leadingIcon}"><!--  --></span><c:out value=" " />
+					</c:if>
+					<c:out value="${name}" />
+				</a>
 			</c:when>
 			<c:otherwise>
 				<c:out value="${name}" />
