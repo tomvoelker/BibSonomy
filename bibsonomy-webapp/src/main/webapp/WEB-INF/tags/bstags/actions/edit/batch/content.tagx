@@ -47,7 +47,6 @@
 	<jsp:directive.attribute name="documents" fragment="true" required="true" />
 
 	<script type="text/javascript" src="/resources/javascript/bs/batchEdit.js"><!-- keep me --></script>
-	<mtl:styleSheet path="${resdir}/css/BatchEdit_bs.css" />
 
 	<!--=======================-->
 	<!-- VARIABLEN DEKLARATION -->
