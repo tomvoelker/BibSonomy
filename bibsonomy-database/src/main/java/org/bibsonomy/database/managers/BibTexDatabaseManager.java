@@ -410,7 +410,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @param post
 	 * @param session
 	 */
-	private void handleExtraUrls(Post<BibTex> post, DBSession session) {
+	private void handleExtraUrls(final Post<BibTex> post, final DBSession session) {
 		final List<BibTexExtra> extraUrls = post.getResource().getExtraUrls();
 		if (present(extraUrls)) {
 			for (final BibTexExtra resourceExtra : extraUrls) {
