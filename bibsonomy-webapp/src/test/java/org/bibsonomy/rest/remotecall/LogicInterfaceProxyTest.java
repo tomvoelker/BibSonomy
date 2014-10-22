@@ -79,7 +79,7 @@ import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.util.HashUtils;
 import org.bibsonomy.util.file.ServerFileLogic;
-import org.bibsonomy.util.file.document.ServerDocumentFileLogic;
+import org.bibsonomy.webapp.util.file.document.ServerDocumentFileLogic;
 import org.easymock.EasyMock;
 import org.easymock.IArgumentMatcher;
 import org.eclipse.jetty.server.AbstractConnector;
