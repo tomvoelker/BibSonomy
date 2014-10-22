@@ -20,7 +20,7 @@ public class ESNodeClient implements ESClient {
      * Default constructor, initializing the client node.
      */
     public ESNodeClient() {
-
+    	
     	if(node == null){
     		final Settings settings = ImmutableSettings.settingsBuilder()
     				.put("node.name", "bibsonomy_client").build();
@@ -30,7 +30,7 @@ public class ESNodeClient implements ESClient {
     				//	.clusterName("elasticsearch-bibsonomy")
     				// .local(true)
     				.client(true).build().start();
-    	}
+    	}	
     }	
 	
 	/*
@@ -44,8 +44,7 @@ public class ESNodeClient implements ESClient {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
+	 * (non-Javadoc) 
 	 * @see org.bibsonomy.model.es.ESClient#shutdown()
 	 */
 	@Override
@@ -64,4 +63,6 @@ public class ESNodeClient implements ESClient {
 	public Node getNode() {
 		return this.node;
 	}
+
+	
 }

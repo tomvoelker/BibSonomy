@@ -41,7 +41,7 @@ public class EsResourceSearch<R extends Resource>{
 			.getLog(EsResourceSearch.class);
 
 	// ElasticSearch client
-	private final ESClient esClient = new ESNodeClient();
+	private ESClient esClient = new ESNodeClient();
 
 	private String searchTerms;
 	/**
@@ -90,15 +90,14 @@ public class EsResourceSearch<R extends Resource>{
 				log.info("Current Search results for wildcard '" + this.searchTerms + "': "
 						+ response.getHits().getTotalHits());
 				for (SearchHit hit : response.getHits()) {
-
 						Map<String, Object> result = hit.getSource();					
 						final Post<R> post = this.resourceConverter.writePost(result);
 						postList.add(post);
 					}
 				}
 			
-		} catch (IndexMissingException ex) {
-			log.error("IndexMissingException: " + ex.toString());
+		} catch (IndexMissingException e) {
+			log.error("IndexMissingException: " + e);
 		}
 		
 		return postList;

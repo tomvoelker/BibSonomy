@@ -10,18 +10,19 @@ import org.elasticsearch.node.Node;
  * @author lka
  */
 public interface ESClient {
+	
 	/**
      * Get a reference to an ElasticSearch Client.
      * 
      * @return the Client.
      */
+	
     Client getClient();
     
     /**
      * @return the node
      */
     Node getNode();
-
 
     /**
      * Shutdown the ElasticSearch Client. The client will be no more available

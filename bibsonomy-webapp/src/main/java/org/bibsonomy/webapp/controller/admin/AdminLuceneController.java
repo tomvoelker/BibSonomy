@@ -60,15 +60,13 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 				generator.setResourceConverter((LuceneResourceConverter<Resource>) manager.getResourceConverter());
 				generator.run();
 			}
-			try {
-				generator.shutdown();
-			} catch (CorruptIndexException e) {
-				// TODO Auto-generated catch block
-				log.error("TODO", e);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				log.error("TODO", e);
-			}
+//			try {
+//				generator.shutdown();
+//			} catch (CorruptIndexException e) {
+//				log.error("Error shutting down the shared resource index generator", e);
+//			} catch (IOException e) {
+//				log.error("Error shutting down the shared resource index generator", e);
+//			}
 			
 			return Views.SUCCESS;
 		}

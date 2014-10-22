@@ -32,20 +32,6 @@ public class GenerateSharedResourceIndex extends LuceneGenerateResourceIndex<Res
 
 	// ElasticSearch client
 	private final ESClient esClient = new ESNodeClient();
-
-	/**
-	 * frees allocated resources and closes all files
-	 * 
-	 * @throws IOException
-	 * @throws CorruptIndexException
-	 */
-	@Override
-	public void shutdown() throws CorruptIndexException, IOException {
-
-		log.info("closing node " + this.esClient.getNode());
-		this.esClient.shutdown();
-
-	}
 	
 	/**
 	 * creates index of resource entries
@@ -74,7 +60,7 @@ public class GenerateSharedResourceIndex extends LuceneGenerateResourceIndex<Res
 			lastLogDate = new Date(System.currentTimeMillis() - 1000);
 		}
 
-		log.info("Start writing data to lucene index (with duplicate detection)");
+		log.info("Start writing data to shared index");
 
 		// read block wise all posts
 		List<LucenePost<Resource>> postList = null;
@@ -115,11 +101,8 @@ public class GenerateSharedResourceIndex extends LuceneGenerateResourceIndex<Res
 			executor.shutdown();
 			executor.awaitTermination(18, TimeUnit.HOURS);
 
-			// all done
-			// log.info("(" + i + " indexed entries, " + is +
-			// " not indexed spam entries)");
 		} catch (final InterruptedException e) {
-			log.error("lucene finished not in 18 hours", e);
+			log.error("Generating shared index did not finish in 18 hours", e);
 		}
 	}
 	

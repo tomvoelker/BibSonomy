@@ -38,7 +38,7 @@ public class SearchPageController extends SingleResourceListController implement
 	
 	private SearchType searchType;
 	private boolean searchFromSharedIndex;
-	private ESClient esClient;
+	
 	@Override
 	public View workOn(final SearchViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
@@ -101,7 +101,6 @@ public class SearchPageController extends SingleResourceListController implement
 		
 		if(searchFromSharedIndex){
 			searchType = SearchType.ELASTICSEARCH;
-			this.esClient = new ESNodeClient();
 		}else{		
 			searchType = SearchType.LUCENESEARCH;
 			}
@@ -118,28 +117,13 @@ public class SearchPageController extends SingleResourceListController implement
 			if(!searchFromSharedIndex)
 				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, maximumTags, search);
 			this.endTiming();
-			this.ESClientShutdown();
 			return Views.SEARCHPAGE;
 		}
 		
 		this.endTiming();
-		this.ESClientShutdown();
 		return Views.getViewByFormat(format);
 	}
-	/**
-	 * @throws CorruptIndexException
-	 * @throws IOException
-	 */
-	public void ESClientShutdown(){
 
-		log.info("closing node " + this.esClient.getNode());
-		try {
-			this.esClient.shutdown();
-		} catch (Exception e) {
-			log.error("Error cloing node", e);
-		}
-
-	}
 	@Override
 	public SearchViewCommand instantiateCommand() {
 		final SearchViewCommand command = new SearchViewCommand();
