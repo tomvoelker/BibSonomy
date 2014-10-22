@@ -21,7 +21,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.bibsonomy.util.file.profilepicture;
+package org.bibsonomy.webapp.util.file.profilepicture;
 
 import java.awt.image.RenderedImage;
 import java.io.File;
@@ -36,6 +36,7 @@ import org.bibsonomy.services.filesystem.extension.ExtensionChecker;
 import org.bibsonomy.services.filesystem.extension.ListExtensionChecker;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.file.FileUtil;
+import org.bibsonomy.util.file.profilepicture.PictureScaler;
 
 /**
  * @author dzo

@@ -18,7 +18,8 @@
 			  			<!-- 
 		  				| JabRef layouts
 		  				 -->	
-						<c:when test="${'JabrefLayout' eq mapEntry.value['class'].simpleName}">
+						<c:when test="${'JabrefLayout' eq mapEntry.value['class'].simpleName 
+							or 'MSOfficeXMLLayout' eq mapEntry.value['class'].simpleName}">
 							<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />	
 							<option value="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></option>
 						</c:when>
