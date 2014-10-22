@@ -41,10 +41,10 @@
 						<c:otherwise>
 							<fmt:message key="navi.user" var="user" />
 							<nav:crumb name="${user}" />
-							<nav:crumb name="${command.requestedUser}" href="/user/${command.requestedUser}" />
+							<nav:crumb name="@${command.requestedUser}" href="/user/${command.requestedUser}" />
 						</c:otherwise>
 					</c:choose>
-					<nav:crumb name="${command.requestedTags}" active="true" />
+					<nav:crumb name="${command.requestedTags}" active="true" leadingIcon="fa-tag" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		

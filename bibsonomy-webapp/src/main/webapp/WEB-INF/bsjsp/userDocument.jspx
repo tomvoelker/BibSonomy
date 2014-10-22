@@ -27,7 +27,7 @@
 					<input type="hidden" name="filter" value="JUST_PDF"/>
 				</jsp:attribute>
 				<jsp:attribute name="pathPart">
-					<a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
+					<a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}">@<c:out value='${command.requestedUser}'/></a>
 				</jsp:attribute>
 			</parts:search>
 		</jsp:attribute>
@@ -55,7 +55,7 @@
 						<c:otherwise>
 							<fmt:message key="navi.user" var="user" />
 							<nav:crumb name="${user}" />
-							<nav:crumb name="${command.requestedUser}" href="/user/${command.requestedUser}" />
+							<nav:crumb name="@${command.requestedUser}" href="/user/${command.requestedUser}" />
 							<c:if test="${command.filter eq JUST_PDF}">
 								<nav:crumb name="${headline}" active="true" />
 							</c:if>

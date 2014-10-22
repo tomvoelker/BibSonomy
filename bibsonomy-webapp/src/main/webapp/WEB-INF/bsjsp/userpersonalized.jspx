@@ -25,7 +25,7 @@
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.user" >
 				<jsp:attribute name="pathPart">
-					<a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> <span style="font-size:65%"><c:out value=" "/>(<fmt:message key="personalized"/>)</span>
+					<a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}">@<c:out value='${command.requestedUser}'/></a> <span style="font-size:65%"><c:out value=" "/>(<fmt:message key="personalized"/>)</span>
 				</jsp:attribute>
 			</parts:search>
 		</jsp:attribute>

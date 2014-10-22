@@ -10,8 +10,9 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"> 
-	
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
+	 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<fmt:message var="headline" key="page.grouptag.headline">
 		<fmt:param>${command.requestedGroup}</fmt:param>
@@ -29,7 +30,16 @@
 				</jsp:attribute>
 			</parts:search>							
 		</jsp:attribute>
-		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<fmt:message key="navi.group" var="group" />
+					<nav:crumb name="${group}" />
+					<nav:crumb name="${command.group}" href="/group/${command.group}" />
+					<nav:crumb name="${command.requestedTags}" active="true" leadingIcon="fa-tag" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
 		<jsp:attribute name="sidebar">
 		<ul>
 			<div class="smalltext">
