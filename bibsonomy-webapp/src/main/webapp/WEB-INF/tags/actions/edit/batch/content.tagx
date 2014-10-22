@@ -67,7 +67,8 @@
 			
 			<!-- the following variable is defined to communicate with .js file -->
 			<input type="hidden" name="action"/>
-
+			<input type="hidden" name="tags" />
+			
 		<!-- Hint messages-->		
 		    <div id="editHint" class="Hint red invisible"><fmt:message key="batchedit.editHint" /></div>
 		    <div id="normConfirm" class="Hint red invisible">
@@ -122,17 +123,16 @@
 				<!-- edit options : checkboxes-->
 			<div id="editCheckboxes" style="margin-left:5px;margin-bottom:10px;background-color: #dbdbdb;width:100%">
 				
-				<input type="checkbox" id="SelectNorm" title="Normalize" style="align:left;margin-right:5px;">
-					<fmt:message key="batchedit.checkboxNormalize" /></input>		   	
+				<input type="checkbox" id="SelectNorm" title="Normalize" style="align:left;margin-right:5px;"/>
+					<fmt:message key="batchedit.checkboxNormalize" />		   	
 				<br/>
-				<input type="checkbox" id="SelectTagAll" title="Edit all tag" style="align:left;margin-right:5px;">
-				<fmt:message key="batchedit.checkboxEditAllTag" /></input>
-	           		
-			    <input type="text" id="inputTagAll" name="tags" style="font-size:90%;width:40%;height: 29px;line-height: 29px;margin-left:5px;" />
+				<input type="checkbox" id="SelectTagAll" title="Edit all tag" style="align:left;margin-right:5px;"/>
+				<fmt:message key="batchedit.checkboxEditAllTag" />
+	           	<input type="text" id="indirectTagAll" style="font-size:90%;width:40%;height: 25px;line-height: 25px;margin-left:5px;" />
 			    <br/>
 			    
-			    <input type="checkbox" id="SelectTagEach" title="Edit tag each" style="align:left;margin-right:5px;">
-			    <fmt:message key="batchedit.checkboxEditEachTag" /></input>
+			    <input type="checkbox" id="SelectTagEach" title="Edit tag each" style="align:left;margin-right:5px;"/>
+			    <fmt:message key="batchedit.checkboxEditEachTag" />
 			</div>
 			</c:otherwise>
 			</c:choose>
@@ -174,7 +174,7 @@
 								</spring:bind>
 							</c:if>
 							<c:choose>
-								<c:when test="${postHasError || post.alreadyInCollection}">
+								<c:when test="${postHasError || post.alreadyInCollection || post.alreadyInSnippet}">
 									<c:choose>
 										<c:when	test="${post.user.name eq command.context.loginUser.name}">
 											<ul>
@@ -193,6 +193,13 @@
 											                			<li class="info_bold">${errorMessage}</li>
 												               		</c:forEach>
 											               		</spring:bind>
+											               		<c:if test="${post.alreadyInCollection}">
+									               					<li class="info_bold"><fmt:message key="batchedit.alreadyInCollectionError"/></li>
+									               				</c:if>
+
+											               		<c:if test="${post.alreadyInSnippet}">
+									               					<li class="info_bold"><fmt:message key="batchedit.alreadyInSnippetError"/></li>
+									               				</c:if>									               		
 											            	</ul>
 														</jsp:attribute>
 													</buttons:help>
@@ -246,7 +253,8 @@
 																<input type="text"
 															   		name="newTags['${post.resource.intraHash}']" size="35"
 															   		value="${fn:escapeXml(mtl:toTagString(post.tags))}"
-															   		style="float:right;font-size:90%;" />
+															   		style="float:right;font-size:90%;" 
+															   		data-toggle="tooltip" data-placement="right" title="Empty tag field is not allowed!" />
 																	<!-- to check if the tags have been changed, we also send the original tags -->
 																<input type="hidden" 
 															   		name="oldTags['${post.resource.intraHash}']"
@@ -300,7 +308,7 @@
 						
 							<ul>
 								<div name="allTagBox">
-									<input type="text" name="tags" size="40"/>
+									<input type="text" id="directTagAll" size="40px"/>
 										<ul>
 											<li id="allTagOk" class="applyBtn" onclick="allTagOK()">
 											<fmt:message key="batchedit.allTagOk" /></li>

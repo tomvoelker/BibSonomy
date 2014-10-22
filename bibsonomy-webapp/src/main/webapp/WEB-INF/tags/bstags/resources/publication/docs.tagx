@@ -92,7 +92,7 @@
 												
 												<c:out value=""/>
 												
-												<buttons:help cssStyle="float:none">
+												<buttons:help> <!-- cssStyle="float:none"> -->
 													<jsp:attribute name="helpText">
 														<fmt:message key="qrcode.info.embedderInfoMessage">
 															<fmt:param>${properties['project.name']}</fmt:param>

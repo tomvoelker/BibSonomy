@@ -46,7 +46,7 @@
 	<jsp:directive.attribute name="actions" fragment="true" required="true" />
 	<jsp:directive.attribute name="documents" fragment="true" required="true" />
 
-	<script type="text/javascript" src="/resources/javascript/batchEdit_bs.js"><!-- keep me --></script>
+	<script type="text/javascript" src="/resources/javascript/bs/batchEdit.js"><!-- keep me --></script>
 	<mtl:styleSheet path="${resdir}/css/BatchEdit_bs.css" />
 
 	<!--=======================-->
@@ -66,6 +66,7 @@
 	<c:if test="${empty directEdit}">
 		<input type="hidden" name="directEdit" value="true" />
 	</c:if>
+	
 	
 	<c:set var="buttonClasses" value="btn btn-default btn-xsmall"/>
 	
@@ -88,7 +89,7 @@
 			
 			<!-- the following variable is defined to communicate with .js file -->
 			<input type="hidden" name="action"/>
-
+			<input type="hidden" name="tags" />
 			<!-- Hint messages: hint-green, hint-red-->		
 		    <div id="editHint" class="Hint red invisible"><fmt:message key="batchedit.editHint" /></div>
 		    <div id="normConfirm" class="Hint red invisible">
@@ -168,7 +169,7 @@
 				<input type="checkbox" id="SelectTagAll" title="Edit all tag" style="align:left;margin-right:5px;"/>
 				<fmt:message key="batchedit.checkboxEditAllTag" />
 	           		
-			    <input type="text" id="inputTagAll" name="tags" style="font-size:90%;width:40%;height: 29px;line-height: 29px;margin-left:5px;" />
+			    <input type="text" id="indirectTagAll" style="font-size:90%;width:40%;height: 29px;line-height: 29px;margin-left:5px;" />
 			    <br/>
 			    
 			    <input type="checkbox" id="SelectTagEach" title="Edit tag each" style="align:left;margin-right:5px;"/>
@@ -211,31 +212,10 @@
 							</c:if>
 							
 							<c:choose>
-								<c:when test="${postHasError || post.alreadyInCollection}">								
+								<c:when test="${postHasError || post.alreadyInCollection || post.alreadyInSnippet}">								
 									<c:if test="${post.user.name eq command.context.loginUser.name}">
-										<ul>
-											<!-- 	
-											<buttons:help iconText="X" iconTextStyle="display:block; color:red; font-size:120%; text-align:center;">
-												<jsp:attribute name="helpText">
-													<ul>
-														<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].resource.*">
-										            		<c:forEach var="errorMessage" items="${status.errorMessages}">
-										   			   			<li class="info_bold">${errorMessage}</li>
-										               		</c:forEach>
-								    	           		</spring:bind>
-									        	   
-								            	   		<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].resource">
-									            			<c:forEach var="errorMessage" items="${status.errorMessages}">
-									                			<li class="info_bold">${errorMessage}</li>
-										               		</c:forEach>
-									               		</spring:bind>
-									               		<c:if test="${post.alreadyInCollection}">
-									               			<li class="info_bold"><fmt:message key="batchedit.DuplicatePostError" /></li>
-									               		</c:if>
-									               		
-									            	</ul>
-												</jsp:attribute>
-											</buttons:help> -->
+										<ul style="height: 29px;line-height: 29px;">
+											<input type="checkbox" disabled="disabled"/>
 										</ul>
 									</c:if>	
 								</c:when>
@@ -272,19 +252,32 @@
 							<spring:bind
 								path="command.${resourceType}.list[${postCount.count - 1}].resource.*">
 							<c:set var="postHasError" value="${status.error}" />
+							<c:set var="tooltip_msg" value="${status.errorMessages}"/>
 							</spring:bind>
 							<c:if test="${not postHasError}">
 								<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].resource">
 									<c:set var="postHasError" value="${status.error}" />
+									<c:set var="tooltip_msg" value="${status.errorMessages}"/>
 								</spring:bind>
 							</c:if>
+							<c:if test="${post.alreadyInCollection}">
+								<fmt:message key="batchedit.alreadyInCollectionError" var="alreadyInCollectionError"/>
+								<c:set var="tooltip_msg" value="${alreadyInCollectionError}"/>
+							</c:if>
+							<c:if test="${post.alreadyInSnippet}">
+								<fmt:message key="batchedit.alreadyInSnippetError" var="alreadyInSnippetError"/>
+								<c:set var="tooltip_msg" value="${alreadyInSnippetError}"/>
+							</c:if>
+							
 							
 							<c:choose>
-								<c:when test="${postHasError || post.alreadyInCollection}">
-									<c:if	test="${post.user.name eq command.context.loginUser.name}">		
-										<ul class="postDesc">
+								<c:when test="${postHasError || post.alreadyInCollection || post.alreadyInSnippet}">
+									<c:if	test="${post.user.name eq command.context.loginUser.name}">
+									<div data-toggle="tooltip" data-placement="right" title="${tooltip_msg}">		
+										<ul class="postDesc bg-danger">
 											<jsp:invoke fragment="shortPostDescription" />
 										</ul>
+										</div>
 									</c:if>
 								</c:when>
 								<c:otherwise>
@@ -326,11 +319,11 @@
 								</spring:bind>
 							</c:if>
 							<c:choose>
-							<c:when test="${postHasError || post.alreadyInCollection}">
-								<ul class="invisible" >
+							<c:when test="${postHasError || post.alreadyInCollection || post.alreadyInSnippet}">
+								<ul name="eachPostTagError" class="invisible">
 									<input type="text" disabled="disabled"
-										style="float:left;font-size:90%;
-										width:100%;height: 29px;line-height: 29px;" />
+										style="float:left;width:100%;
+										height: 29px;line-height: 29px;" />
 								</ul>
 							</c:when>
 							<c:otherwise>
@@ -356,7 +349,8 @@
 													   		name="newTags['${post.resource.intraHash}']"
 													   		value="${fn:escapeXml(mtl:toTagString(post.tags))}"
 													   		style="float:left;font-size:90%;
-													   		width:100%;height: 29px;line-height: 29px;" />
+													   		width:100%;height: 29px;line-height: 29px;"
+													   		data-toggle="tooltip" data-placement="right" title="Empty tag field is not allowed!" />
 															<!-- to check if the tags have been changed, we also send the original tags -->
 														<input type="hidden" 
 													   		name="oldTags['${post.resource.intraHash}']"
@@ -375,12 +369,6 @@
 
 				</li>
 				<li>
-					<div name="eachTagBtn" id="eachTagOk" style="margin:2px" >
-					<bsform:button size="defaultSize" style="primary" 
-						onclick="eachTagOK()" value="edit"/>
-					</div>
-					
-					
 					<div name="AllpostTagsHeader" >
 						<ul ><li class="myHeader" style="height:5px;font-size:90%">
 						<fmt:message key="batchedit.AllpostTagsHeader" />
@@ -388,9 +376,9 @@
 					
 				
 					<div name="allTagBox" style="margin:2px">
-						<input type="text" name="tags" />
+						<input type="text" id="directTagAll" size="32px"/>
 						<br/>
-						<div style="margin-top:2px">
+						<div style="margin-top:4px; float:left;">
 						<bsform:button size="defaultSize" style="primary"
 							onclick="allTagOK()" value="edit"/>
 						</div>
@@ -401,20 +389,23 @@
 							<fmt:message key="batchedit.viewable"/>
 						</ul>
 						<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" selectedGroups="${selectedgroups}"/>
-						<div style="margin:2px">						
+						<div style="margin:2px; float:left;">						
 						<bsform:button size="defaultSize" style="primary"
 						onclick="privacyOK()" value="edit"/>
 						</div>
 					</div>	
 					
-						
+					<div name="eachTagBtn" id="eachTagOk" style="margin:2px; float:left;" >
+						<bsform:button size="defaultSize" style="primary" 
+						onclick="eachTagOK()" value="edit"/>
+					</div>	
 					<!-- This button is shown in "InDirect" batchedit page -->
-					<div id="combiEditBtn" style="margin:2px">
+					<div id="combiEditBtn" style="margin:2px; float:left;">
 						<bsform:button size="defaultSize" style="primary"
 						onclick="combiEditOK()" value="edit"/>
 					</div>
 					
-					<div id="cancelBtn" style="margin:2px">
+					<div id="cancelBtn" style="margin:2px; float:left;">
 						<bsform:button size="defaultSize" style="primary"
 						onclick="cancelBtnClick()" value="cancel"/>
 					</div>								

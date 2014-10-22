@@ -290,8 +290,11 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 			if (!unique_hashes.contains(post.getResource().getIntraHash())) {
 				unique_hashes.add(post.getResource().getIntraHash());
-				post.setAlreadyInCollection(true);
+				
 	//			unique_posts.add(post);
+			}
+			else{
+				post.setAlreadyInSnippet(true);
 			}
 		}
 
@@ -390,11 +393,12 @@ public class PostPublicationController extends AbstractEditPublicationController
 			/*
 			 * check if this post is already stored in DB
 			 * 
-			 * We have already checked if this post bibtex is in the snippet or not.
-			 * (if yes, 'alreadyincollection' is already true. If no, it means that the user didn't type
-			 * the bibtex of this post twice in the snippet.
+			 * We have already checked if this post bibtex is in the snippet more than one time
+			 * or not.
+			 * (if yes, 'alreadyinSnippet' is already true and the post is already erroneous and
+			 * we don't have to look for more errors!
 			 */
-			if(posts.get(i).isAlreadyInCollection()){
+			if(posts.get(i).isAlreadyInSnippet()){
 				test2 = true;
 			}else{
 				test2 = this.isPostDuplicate(posts.get(i), isOverwrite);
@@ -580,11 +584,6 @@ public class PostPublicationController extends AbstractEditPublicationController
 		this.publicationImporter = publicationImporter;
 	}
 
-	/*
-	 * TODO: Please add a message to the user saying:
-	 * "your snippet contained posts that were already in your collection". They
-	 * have not been imported again.
-	 */
 	private boolean isPostDuplicate(final Post<BibTex> post, final boolean isOverwrite) {
 
 		final String userName = post.getUser().getName();
@@ -593,7 +592,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		if (!isOverwrite && present(this.logic.getPostDetails(intraHash, userName))) {
 			/*
 			 * alreadyInCollection flag is set to true here. In batch edit view,
-			 * duplicate posts are shown as erroneous posts.
+			 * alreadyInCollection posts are shown as erroneous posts.
 			 */
 			post.setAlreadyInCollection(true);
 			return true;

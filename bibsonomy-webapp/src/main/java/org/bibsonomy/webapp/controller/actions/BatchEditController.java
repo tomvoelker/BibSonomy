@@ -83,11 +83,11 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	private static final ResourceFactory RESOURCE_FACTORY = new ResourceFactory();
 	
 	private static final int IGNORE_ACTION = 0;
-	private static final int UPDATE_AllTAG_ACTION = 1;
+	private static final int UPDATE_ALLTAG_ACTION = 1;
 	/**
 * FIXME: rename EACH
 */
-	private static final int UPDATE_EachTAG_ACTION = 2;
+	private static final int UPDATE_EACHTAG_ACTION = 2;
 	private static final int NORMALIZE_ACTION = 3;
 	private static final int DELETE_ACTION = 4;
 	private static final int UPDATE_VIEWABLE_ACTION = 5;
@@ -321,7 +321,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 							continue;
 						}
 					}
-					if (action.contains(UPDATE_AllTAG_ACTION) || action.contains(UPDATE_EachTAG_ACTION)) {
+					if (action.contains(UPDATE_ALLTAG_ACTION) || action.contains(UPDATE_EACHTAG_ACTION)) {
 						/*
 						 * We must store/update the post, thus we parse and check its tags
 						 */
@@ -329,15 +329,15 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 							final Set<Tag> oldTags = TagUtils.parse(oldTagsMap.get(intraHash));
 							final Set<Tag> newTags = new TreeSet<Tag>();
 							// the following 'if' is for indirect mode, in which both updates can be done at the same time.
-							if (action.contains(UPDATE_AllTAG_ACTION) &&
-									action.contains(UPDATE_EachTAG_ACTION)){
+							if (action.contains(UPDATE_ALLTAG_ACTION) &&
+									action.contains(UPDATE_EACHTAG_ACTION)){
 								newTags.addAll(TagUtils.parse(newTagsMap.get(intraHash)));//each tag
 								newTags.addAll(getTagsCopy(addTags));//all tag
 							}
-							else if(action.contains(UPDATE_EachTAG_ACTION)){
+							else if(action.contains(UPDATE_EACHTAG_ACTION)){
 								newTags.addAll(TagUtils.parse(newTagsMap.get(intraHash)));
 							}
-							else if(action.contains(UPDATE_AllTAG_ACTION)){
+							else if(action.contains(UPDATE_ALLTAG_ACTION)){
 								newTags.addAll(TagUtils.parse(oldTagsMap.get(intraHash)));//old tags
 								newTags.addAll(getTagsCopy(addTags));//each tag is added to the old one.
 							}

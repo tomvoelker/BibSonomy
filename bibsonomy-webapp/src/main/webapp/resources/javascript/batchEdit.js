@@ -24,14 +24,14 @@ $(document).ready(function () {
 	$('#SelectTagAll').change(function() {
 		var checked = $(this).is(':checked');
 		if(checked){
-			$('#inputTagAll').show();
+			$('#indirectTagAll').show();
 			$('div[id=combiEditBtn]').show();
 			$('div[id=cancelBtn]').show();
 			//set action
 			action.push(1);
 			
 		}else{
-			$('#inputTagAll').hide();
+			$('#indirectTagAll').hide();
 			showEditBtn();
 			//remove action
 			action.splice(index, 1);
@@ -67,11 +67,7 @@ $(document).ready(function () {
 		}
 	});
 
-	$('#combiEditBtn').click(function() {
-		//action is set here
-		$('input[name=action]').val(action);
-		submitForm("#combiEditConfirm");
-	});
+	
 	/*
 	 * handler to change all sub checkboxes with the select all option
 	 * */
@@ -231,12 +227,16 @@ $(document).ready(function () {
 
 
 function eachTagOK(){
-	//clear the action array
-	action.splice(0,action.lenght);
-	// action is set here
-	action.push(2);
-	$('input[name=action]').val(action);
-	submitForm("#tagEachEdited");
+//	var canSubmit = checkEmptyFields();
+	var canSubmit = true;
+	if(canSubmit){
+		//clear the action array
+		action.splice(0,action.lenght);
+		// action is set here
+		action.push(2);
+		$('input[name=action]').val(action);
+		submitForm("#tagEachEdited");
+	}
 }
 function allTagOK(){
 		//clear the action array
@@ -257,15 +257,46 @@ function privacyOK(){
 	submitForm("#privacyChanged");
 }
 function combiEditOK(){
-	//action is set here
-	$('input[name=action]').val(action);
-	submitForm("#combiEditConfirm");
+	var b= $('input[id=indirectTagAll]').val();
+	$('input[name=tags]').val(b);
+	var canSubmit = true;//checkEmptyFields(); 
+	if(canSubmit){
+		//action is set here
+		$('input[name=action]').val(action);
+		submitForm("#combiEditConfirm");
+	}
 }
 
 function cancelBtnClick(){
 	action.push(0);
 	$('input[name=action]').val(action);
 	submitForm("#cancel");
+}
+/**works only in new layout
+ * this function checks input fields for tags.
+ * If atleast one of them is empty,
+ * shows a tooltip */
+function checkEmptyFields(){
+	var canSubmit = true;
+	a=[];
+	$('input[name^=posts]:checkbox').each(function() {
+		if ($(this).is(':checked')) {
+			a.push(true);
+		}else{
+			a.push(false);
+		}
+	});
+	a = a.reverse();
+	
+	$('input[name^=newTags]').each(function() {
+		if (a.pop()==true) {
+			if($(this).val()==''){
+				$(this).tooltip('show');
+				canSubmit = false;
+			}
+		}
+	});
+	return canSubmit;
 }
 function resetSelection(){
 	$('#selectAll').prop('checked', false);
@@ -296,7 +327,7 @@ function submitForm(messageId){
 }
 
 function hideAllFeatures(){
-	$('#inputTagAll').hide();
+	$('#indirectTagAll').hide();
 	$('li[name=eachPostTag]').hide();
 	$('li[name=postTagsHeader]').hide();
 	$('div[name=AllpostTagsHeader]').hide();

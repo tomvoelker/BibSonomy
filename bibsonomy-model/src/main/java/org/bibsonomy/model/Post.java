@@ -140,11 +140,10 @@ public class Post<T extends Resource> implements Serializable {
 	 * this field is true, if the post is alredy stored in DB. (gettes and
 	 * setters as well)*
 	 */
-	/*
-	 * FIXME: rename to alreadyInCollection
-	 */
+	
 	private boolean alreadyInCollection = false;
-//duplicatePost
+	
+	private boolean alreadyInSnippet = false;
 	/**
 	 * @return the repositories
 	 */
@@ -458,6 +457,20 @@ public class Post<T extends Resource> implements Serializable {
 	 */
 	public void setAlreadyInCollection(boolean alreadyInCollection) {
 		this.alreadyInCollection = alreadyInCollection;
+	}
+
+	/**
+	 * @return the alreadyInSnippet
+	 */
+	public boolean isAlreadyInSnippet() {
+		return this.alreadyInSnippet;
+	}
+
+	/**
+	 * @param alreadyInSnippet the alreadyInSnippet to set
+	 */
+	public void setAlreadyInSnippet(boolean alreadyInSnippet) {
+		this.alreadyInSnippet = alreadyInSnippet;
 	}
 
 }
