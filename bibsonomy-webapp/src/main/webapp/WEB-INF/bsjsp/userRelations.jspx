@@ -53,13 +53,9 @@
 <!-- FIXME: Currently the search is the same on all pages (it used to depend on the current page at hand) -->
 			<parts:search pathMessageKey="navi.relations" formAction="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(command.requestedUser))}" formInputName="tag">
 				<jsp:attribute name="pathPart">
-					<li>
-						:: <a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
-					</li>
+					<a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}">@<c:out value='${command.requestedUser}'/></a>
 				</jsp:attribute>
-<!-- 				<jsp:attribute name="afterInput"> -->
-<!-- 					<user:name user="${command.user}"/> -->
-<!-- 				</jsp:attribute> -->
+å
 			</parts:search>
 		</jsp:attribute>
 

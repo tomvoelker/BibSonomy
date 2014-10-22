@@ -28,9 +28,8 @@
 		<jsp:attribute name="breadcrumbs">	
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<fmt:message key="navi.groups" var="groups" />
-					<nav:crumb name="${groups}" href="/groups" />
-					
+					<fmt:message key="navi.group" var="group" />
+					<nav:crumb name="${group}"  />
 					<nav:crumb name="${command.group.name}" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>

@@ -38,23 +38,21 @@
 		<jsp:attribute name="breadcrumbs">	
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
+					<fmt:message key="navi.relevantFor" var="relevantFor" />
+					<nav:crumb name="${relevantFor}"/>
 					
-					<fmt:message key="navi.groups" var="groups" />
-					<nav:crumb name="${groups}" href="/groups" />
+					<fmt:message key="navi.group" var="group" />
+					<nav:crumb name="${group}" />
 					
 					<c:choose>
 						<c:when test="${not empty command.requestedTags}">
-							<nav:crumb name="${command.requestedGroup}" href="/group/${command.requestedGroup}"/>
-							<nav:crumb name="${command.requestedTags}" href="/group/${command.requestedTags}" />
+							<nav:crumb name="${command.requestedGroup}" href="/relevantfor/group/${command.requestedGroup}"/>
+							<nav:crumb name="${command.requestedTags}" leadingIcon="fa-tag" active="true" />
 						</c:when>
 						<c:otherwise>
-							<nav:crumb name="${command.requestedGroup}" href="/group/${command.requestedGroup}" />
+							<nav:crumb name="${command.requestedGroup}" href="/group/${command.requestedGroup}" active="true" />
 						</c:otherwise>
 					</c:choose>
-					
-					<fmt:message key="navi.relevantFor" var="relevantFor" />
-					<nav:crumb name="${relevantFor}" active="true"/>
-					
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
