@@ -115,7 +115,6 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
-import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Database Implementation of the LogicInterface

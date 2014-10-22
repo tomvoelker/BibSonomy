@@ -28,7 +28,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -48,7 +47,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.extra.BibTexExtra;
 
 /**
  * Methods to create objects from the model like {@link Bookmark},
@@ -338,15 +336,5 @@ public final class ModelUtils {
 			}
 		}
 		return tags;
-	}
-
-	/**
-	 * adds the extra urls to the publication
-	 * 
-	 * @param publication
-	 * @param urls
-	 */
-	public static void addExtraUrls(final BibTex publication, final BibTexExtra ...urls) {
-		publication.setExtraUrls(Arrays.asList(urls));
 	}
 }

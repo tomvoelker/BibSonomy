@@ -8,8 +8,6 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -48,6 +46,7 @@ import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.DBTestUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
+import org.bibsonomy.testutil.TestUtils;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -749,10 +748,10 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		
 		final BibTex publication = new BibTex();
 		CommonModelUtils.setBeanPropertiesOn(publication);
-		publication.setCount(0);		
+		publication.setCount(0);
 		publication.setEntrytype("inproceedings");
 		publication.setAuthor(PersonNameUtils.discoverPersonNames("Testauthor, Hans and Testauthorin, Liese"));
-		publication.setEditor(PersonNameUtils.discoverPersonNames("Silie, Peter"));		
+		publication.setEditor(PersonNameUtils.discoverPersonNames("Silie, Peter"));
 		publication.setTitle("test friend title");
 		publication.setYear("test year");
 		publication.setJournal("test journal");
@@ -761,12 +760,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		publication.setNumber("test number");
 		publication.setType("2");
 		publication.recalculateHashes();
-		
-		try {
-			ModelUtils.addExtraUrls(publication, new BibTexExtra(new URL("http://www.test1.de"), "test1", new Date()), new BibTexExtra(new URL("http://www.test2.de"), "test2", new Date()));
-		} catch (MalformedURLException e) {
-			// should not happen
-		}
+		publication.setExtraUrls(Arrays.asList(new BibTexExtra(TestUtils.createURL("http://www.test1.de"), "test1", null)));
 		
 		post.setResource(publication);
 		return post;
@@ -780,7 +774,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	@Test
 	public void storePostBibTexUpdatePlugin() {
 		this.printMethod("storePostBibTexUpdatePlugin");
-		final String hash = "b77ddd8087ad8856d77c740c8dc2864a";		
+		final String hash = "b77ddd8087ad8856d77c740c8dc2864a";
 		final String loginUserName = "testuser1";
 
 		List<BibTexExtra> extras = bibTexExtraDb.getURL(hash, loginUserName, this.dbSession);
@@ -830,7 +824,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		final Post<BibTex> post = publicationDb.getPostDetails(loginUser.getName(), bibtexHashForUpdate, loginUser.getName(),  Collections.singletonList(PUBLIC_GROUP_ID), this.dbSession);
 		CommonModelUtils.assertPropertyEquality(toInsert.getResource().getExtraUrls(), post.getResource().getExtraUrls(), Integer.MAX_VALUE, Pattern.compile("date"), new String[]{});
 		
-		// post a duplicate and check whether plugins are called		
+		// post a duplicate and check whether plugins are called
 		assertFalse(this.pluginMock.isOnBibTexUpdate());
 		this.pluginMock.reset();
 		

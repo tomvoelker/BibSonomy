@@ -30,7 +30,6 @@ import org.bibsonomy.model.ScraperMetadata;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.util.file.FileSystemFile;
 import org.bibsonomy.services.filesystem.FileLogic;
-import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Used to create, read, update and delete BibTexs from the database.
@@ -394,16 +393,16 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 
 		/*
 		 * store the post
+		 * insert post and update/insert hashes
 		 */
-		super.insertPost(param, session); // insert post and update/insert
-											// hashes
+		super.insertPost(param, session);
 	}
 
 	@Override
 	protected void createdPost(final Post<BibTex> post, final DBSession session) {
 		super.createdPost(post, session);
-
-		this.handleExtraUrls(post, session);		
+		
+		this.handleExtraUrls(post, session);
 		this.handleDocuments(post, session);
 	}
 
@@ -412,18 +411,18 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @param session
 	 */
 	private void handleExtraUrls(Post<BibTex> post, DBSession session) {
-		List<BibTexExtra> extraUrls = post.getResource().getExtraUrls();
-		if(ValidationUtils.present(extraUrls)) {
-			for(BibTexExtra resourceExtra : extraUrls) {
+		final List<BibTexExtra> extraUrls = post.getResource().getExtraUrls();
+		if (present(extraUrls)) {
+			for (final BibTexExtra resourceExtra : extraUrls) {
 				this.extraDb.createURL(post.getResource().getIntraHash(), post.getUser().getName(), resourceExtra.getUrl().toExternalForm(), resourceExtra.getText(), session);
-			}				
+			}
 		}
 	}
 
 	@Override
 	protected void updatedPost(final Post<BibTex> post, final DBSession session) {
 		super.updatedPost(post, session);
-
+		
 		this.handleDocuments(post, session);
 	}
 

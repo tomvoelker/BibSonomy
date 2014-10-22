@@ -9,18 +9,14 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
-import junit.framework.Assert;
 
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
@@ -47,12 +43,10 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
-import org.bibsonomy.testutil.DummyFileLogic;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -920,8 +914,8 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		String hash = createPosts.get(0);
 		
 		final Post<? extends Resource> savedPost = dbl.getPostDetails(hash, userName);
-		Assert.assertEquals(1, savedPost.getGroups().size());
-		Assert.assertTrue(savedPost.getGroups().contains(expectedGroup));
+		assertEquals(1, savedPost.getGroups().size());
+		assertTrue(savedPost.getGroups().contains(expectedGroup));
 		
 		dbl.deletePosts(userName, Collections.singletonList(hash));
 	}
@@ -934,8 +928,8 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	public void testUpdateLimitedUser() throws Exception {
 		final LogicInterface logic = getAdminDbLogic(TEST_USER_1);
 		User user = logic.getUserDetails(TEST_LIMITED_USER_NAME);
-		Assert.assertNotNull(user);
-		Assert.assertEquals(Role.LIMITED, user.getRole());
+		assertNotNull(user);
+		assertEquals(Role.LIMITED, user.getRole());
 		user.setRole(Role.DEFAULT);
 		final String oldRealName = user.getRealname();
 		final String oldEmail = user.getRealname();
@@ -952,11 +946,11 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		user.setEmail("quatsch@biblicious.org");
 		user.setPassword("quatsch");
 		user = logic.getUserDetails(TEST_LIMITED_USER_NAME);
-		Assert.assertEquals(Role.DEFAULT, user.getRole());
-		Assert.assertEquals("testUpdateUserRole", user.getRealname());
-		Assert.assertEquals(new URL("http://www.biblicious.org/testUpdateUserRole"), user.getHomepage());
-		Assert.assertEquals("testUpdateUserRole@biblicious.org", user.getEmail());
-		Assert.assertEquals(oldPw, user.getPassword());
+		assertEquals(Role.DEFAULT, user.getRole());
+		assertEquals("testUpdateUserRole", user.getRealname());
+		assertEquals(new URL("http://www.biblicious.org/testUpdateUserRole"), user.getHomepage());
+		assertEquals("testUpdateUserRole@biblicious.org", user.getEmail());
+		assertEquals(oldPw, user.getPassword());
 		
 		user.setRole(Role.LIMITED);
 		user.setRealname(oldRealName);
@@ -964,7 +958,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		user.setEmail(oldEmail);
 		logic.updateUser(user, UserUpdateOperation.UPDATE_LIMITED_USER);
 		user = logic.getUserDetails(TEST_LIMITED_USER_NAME);
-		Assert.assertEquals(Role.LIMITED, user.getRole());
+		assertEquals(Role.LIMITED, user.getRole());
 	}
 	
 	/**
