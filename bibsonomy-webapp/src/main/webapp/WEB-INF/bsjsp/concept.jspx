@@ -8,12 +8,37 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts">
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<fmt:message var="headline" key="page.concept.headline" />
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" headline="${headline}${command.requestedTags}">
-	
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<fmt:message key="navi.concept" var="concept"/>
+					<nav:crumb name="${concept}" />
+					<c:choose>
+						<c:when test="${not empty command.requestedUser}">
+							<fmt:message key="navi.user" var="user"/>
+							<nav:crumb name="${user}" />
+							<nav:crumb name="@${command.requestedUser}" href="/concept/user/${command.requestedUser}" />
+						</c:when>
+						
+						<c:when test="${not empty command.requestedGroup}">
+							<fmt:message key="navi.group" var="group" />
+							<nav:crumb name="${group}" />
+							<nav:crumb name="${command.requestedGroup}" leadingIcon="fa-group" href="/concept/group/${command.requestedGroup}" />
+						</c:when>
+					</c:choose>
+					<c:if test="${not empty command.requestedTags}">
+						<nav:crumb name="${command.requestedTags}" active="true" leadingIcon="fa-tag" />
+					</c:if>
+					
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
 		<jsp:attribute name="heading">
 			<!-- find out correct form action -->
 			<c:choose>
