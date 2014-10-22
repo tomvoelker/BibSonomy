@@ -56,8 +56,16 @@
 			<c:choose>
 				<c:when test="${not empty command.requestedGroup || not empty command.requestedUser}">
 					<parts:search pathMessageKey="navi.concept" formAction="/concept${formAction}" formInputName="tag" formInputValue="${command.requestedTags}">
-						<jsp:attribute name="pathPart"><fmt:message key="navi.${not empty command.requestedGroup ? 'group' : 'user'}"/>
-							<a href="${formAction}"><c:out value="${not empty command.requestedGroup ? command.requestedGroup : command.requestedUser}"/>
+						<jsp:attribute name="pathPart">
+							<a href="${formAction}">
+								<c:choose>
+									<c:when test="${not empty command.requestedGroup }">
+										<span class="fa fa-group"><!--  --></span><c:out value=" ${command.requestedGroup}" />
+									</c:when>
+									<c:otherwise>
+										<c:out value="@${command.requestedUser}"/>
+									</c:otherwise>
+								</c:choose>
 							</a>
 						</jsp:attribute>
 					</parts:search>

@@ -28,11 +28,16 @@
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
+					
+					<fmt:message key="navi.friend.shared" var="shared"/>
+					<nav:crumb name="${shared}"/>
 					<nav:crumb name="user" />
 					<nav:crumb name="@${command.requestedUser}" href="/user/${command.requestedUser}" />
 					<!-- <nav:crumb name="shared with friends" /> -->
-					<fmt:message key="navi.friend.shared" var="shared"/>
-					<nav:crumb name="${shared}" active="true"/>
+					<c:if test="${not empty command.requestedTags}">
+						<nav:crumb name="${command.requestedTags}" leadingIcon="fa-tag" active="true" />
+					</c:if>
+
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		
