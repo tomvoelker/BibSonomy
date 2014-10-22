@@ -21,7 +21,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.bibsonomy.util.file.temp;
+package org.bibsonomy.webapp.util.file.temp;
 
 import java.io.File;
 

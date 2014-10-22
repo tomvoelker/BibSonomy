@@ -7,12 +7,16 @@
 
 	<jsp:directive.tag language="java" pageEncoding="UTF-8" display-name="SAML Login Form" description="Renders the login form for SAML login." />
 
-	<img src="${resdir}/image/saml-logo-small.png" />
-
-	<fieldset class="fsInner">
+	<fieldset>
+		<legend><fmt:message key="navi.login" /></legend>
 		<form:form action="/login_saml" method="POST">
-			<fmt:message key="navi.login" var="submit" />
-			<input type="submit" style="margin-left: 1em" value="${submit}"/>
-		</form:form>
+		
+			<div class="form-group">
+				<div class="col-sm-offset-3 col-sm-9">
+					<p class="form-control-static"><fmt:message key="login.help.saml" /></p>
+					<button class="btn btn-success" type="submit"><fmt:message key="navi.login" /></button>
+				</div>
+			</div>
+		 </form:form>
 	</fieldset>
 </jsp:root>
