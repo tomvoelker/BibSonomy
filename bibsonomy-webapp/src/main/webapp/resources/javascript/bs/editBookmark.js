@@ -2,24 +2,22 @@
 
 function scraping() {
 	var url = $("#post\\.resource\\.url").val();
+	var selection = $("#post\\.description").val();
 	if (url.length > 'http://'.length) {
 		$.ajax({
 			url : '/scrapingservice?url=' + encodeURIComponent(url)
 					+ '&format=bibtex&doIE=false&selection='
-					+ encodeURIComponent($("#post\\.description").val()),
+					+ encodeURIComponent(selection),
 			success : function(data) {
 				if (data != '') {
-					
 					var f = document.createElement('form');
-					var form = $(f);
-					form.attr('action', '/editPublication');
-					form.attr('method', 'POST');
+					var form = $(f)
+					.attr('action', '/editPublication')
+					.attr('method', 'POST');
 					
-					var i = document.createElement('input');
-					var input = $(i);
-					input.attr('type', 'hidden');
-					input.attr('name', 'selection');
-					input.val(data);
+					var input = $('<input />').attr('type', 'hidden')
+					.attr('name', 'url')
+					.val(url);
 					
 					var content = $('#publication-found-form-placeholder').html();
 					form.append(input);

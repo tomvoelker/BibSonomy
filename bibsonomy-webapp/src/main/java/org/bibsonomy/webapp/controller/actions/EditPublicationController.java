@@ -21,7 +21,7 @@ import de.unikassel.puma.openaccess.sword.SwordService;
  * to make that controller abstract and implement the method 
  * here.
  * 
- * The underlying problem is a bit deeper: I had to parametrize
+ * The underlying problem is a bit deeper: I had to parameterize
  * {@link AbstractEditPublicationController} to subclass it in
  * {@link PostPublicationController}.
  * 
@@ -51,13 +51,6 @@ public class EditPublicationController extends AbstractEditPublicationController
 		}
 		return super.finalRedirect(userName, post, referer);
 	}
-	
-	/**
-	 * @return the swordService
-	 */
-	public SwordService getSwordService() {
-		return this.swordService;
-	}
 
 	/**
 	 * @param swordService the swordService to set
@@ -65,5 +58,4 @@ public class EditPublicationController extends AbstractEditPublicationController
 	public void setSwordService(SwordService swordService) {
 		this.swordService = swordService;
 	}
-	
 }
