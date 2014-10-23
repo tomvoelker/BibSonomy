@@ -17,12 +17,7 @@
 
 	<fmt:message key="navi.login" var="loginTitle" />
 
-	<layout:singleContainerLayout  loginUser="${command.context.loginUser}" command="${command}" pageTitle="${loginTitle}" requPath="${requPath}" smallBox="${true}">
-
-		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.login"/>
-		</jsp:attribute>
-
+	<layout:singleContainerLayout loginUser="${command.context.loginUser}" command="${command}" pageTitle="${loginTitle}" requPath="${requPath}" smallBox="${true}">
 		<jsp:attribute name="content">
 			<h1 class="content-header"><fmt:message key="login.local.legend"/><c:out value=" ${properties['project.name']}"/>
 				<c:if test="${not mtl:contains(authConfig, mtl:convertToEnum('org.bibsonomy.common.enums.AuthMethod', 'SAML'))}">
@@ -107,7 +102,6 @@
 					</c:if>
 					
 					<input class="form-control" type="hidden" name="selTab" value="${authMethodLoopState.index}"></input>
-						
 				</c:forEach>
 			</div>
 		</jsp:attribute>
