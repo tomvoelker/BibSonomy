@@ -25,7 +25,9 @@
 
 		<jsp:attribute name="content">
 			<h1 class="content-header"><fmt:message key="login.local.legend"/><c:out value=" ${properties['project.name']}"/>
-				<small class="pull-right" style="position: relative; bottom: -14px; font-size: 14px;"><a href="/register"><fmt:message key="login.register.bs"/></a></small>
+				<c:if test="${not mtl:contains(authConfig, mtl:convertToEnum('org.bibsonomy.common.enums.AuthMethod', 'SAML'))}">
+					<small class="pull-right" style="position: relative; bottom: -14px; font-size: 14px;"><a href="/register"><fmt:message key="login.register.bs"/></a></small>
+				</c:if>
 			</h1>
 			<br />
 			<mtl:exists path="command.notice">

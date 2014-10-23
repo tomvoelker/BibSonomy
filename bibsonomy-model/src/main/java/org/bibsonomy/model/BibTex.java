@@ -38,10 +38,6 @@ import org.bibsonomy.model.util.SimHash;
  * BibTex fields like the author, publisher etc.
  * 
  * @author Christian Schenk
- */
-/**
- * TODO: add documentation to this class
- *
  * @author jensi
  */
 public class BibTex extends Resource {

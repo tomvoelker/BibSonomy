@@ -21,7 +21,7 @@
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.user" formAction="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(command.requestedUser))}" formInputName="tag" formInputValue="${command.requestedTags}"	>
 				<jsp:attribute name="pathPart">
-					<a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
+					<a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"><c:out value='@${command.requestedUser}'/></a>
 				</jsp:attribute>
 			</parts:search>
 		</jsp:attribute>
@@ -41,10 +41,10 @@
 						<c:otherwise>
 							<fmt:message key="navi.user" var="user" />
 							<nav:crumb name="${user}" />
-							<nav:crumb name="${command.requestedUser}" href="/user/${command.requestedUser}" />
+							<nav:crumb name="@${command.requestedUser}" href="/user/${command.requestedUser}" />
 						</c:otherwise>
 					</c:choose>
-					<nav:crumb name="${command.requestedTags}" active="true" />
+					<nav:crumb name="${command.requestedTags}" active="true" leadingIcon="fa-tag" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		

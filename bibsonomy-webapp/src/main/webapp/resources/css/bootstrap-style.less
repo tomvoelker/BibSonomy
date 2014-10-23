@@ -37,47 +37,24 @@
 
 @container-navi-border: #005588;
 
-/**
 
-@header-link-color: #FFFFFF;
+/** SMALL FONT SIZE */
+@small-font-size: 12px;
 
-@navigation-color: #c6c6c6;
-@navigation-link-color: #FFFFFF;
+/** currently not used */
+/* @import "bootstrap-tagsinput.less"; */
 
-@legal-background-color: #f4f4f4;
-
-@footer-background-color: #ffffff;
-
-@info-box-background: #d9e7fa;
-@info-box-border: #006699;
-
-*/
-
-@import "bootstrap-size.less";
-@import "bootstrap-tagsinput.less";
+/** DATE PICKER */
 @import "bootstrap-datepicker.less";
 
+/** MULTI LINE ELLIPSIS */
 @import "multiline-ellipsis.less";
+
+/** FONT VARIABLES OF FONT AWESOME */ 
 @import "../fonts/font-awesome/less/variables.less";
 
-/** CORRECT MOBILE LAYOUT */
-
-
-@media (min-width: 991) {
-	#sidebar {
-		background: none;
-		height: auto !important;
-		border: none;
-		padding-left: 0;
-	}
-}
-
+/** MAIN BOOTSTRAP LAYOUT */
 @import "bootstrap-main.less";
 
+/** BOOTSTRAP DISCUSSION LAYOUT */
 @import "bootstrap-discussion.less";
-
-#search ul.dropdown-menu li a {
-	cursor: pointer;
-}
-
-

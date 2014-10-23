@@ -39,7 +39,7 @@ public class QRCodeRenderer {
 	/**
 	 * project home. important for URL to encode
 	 */
-	private String projectHome = null; 
+	private String projectHome = null;
 
 	/**
 	 * method to manipulate pdf document. only return
@@ -51,43 +51,35 @@ public class QRCodeRenderer {
 	 * @return the path to the manipulated pdf file
 	 * @throws Exception if something goes wrong during process
 	 */
-	public String manipulate(String filePath, String requestedUser, String intraHash) throws Exception {		
+	public String manipulate(String filePath, String requestedUser, String intraHash) throws Exception {
 		/*
 		 * build URL: e.g. http://www.bibsonomy.org/bibtex/INTRAHASH/USERNAME
 		 */
 		final String encodee = projectHome + "bibtex/" + intraHash + "/" + requestedUser;
-
+		
 		/*
 		 * create executor service
 		 */
-		ExecutorService pool = Executors.newFixedThreadPool(1);
-
-		Future<String> embedderFuture = pool.submit(new QRCodeEmbedder(filePath, encodee));
-
-		/*
-		 * get result within 5 seconds or throw an exception
-		 */
-		String manipulatedFilePath = null;
+		final ExecutorService pool = Executors.newFixedThreadPool(1);
+		
+		final Future<String> embedderFuture = pool.submit(new QRCodeEmbedder(filePath, encodee));
 		
 		try {
-			manipulatedFilePath = embedderFuture.get(QRCodeEmbedder.WAIT_TIME, TimeUnit.MILLISECONDS);
+			/*
+			 * get result within 5 seconds or throw an exception
+			 */
+			return embedderFuture.get(QRCodeEmbedder.WAIT_TIME, TimeUnit.MILLISECONDS);
 		} catch (final Exception e) {
 			
 			/*
 			 * if embedding fails, safely shutdown executor and delete output file
 			 */
-			pool.shutdownNow();
 			new File(filePath.concat(".qr")).delete();
 			
 			throw new Exception(e);
+		} finally {
+			pool.shutdownNow();
 		}
-
-		pool.shutdownNow();
-		
-		/*
-		 * return the manipulated file path
-		 */
-		return manipulatedFilePath;
 	}
 
 	/**
@@ -96,7 +88,4 @@ public class QRCodeRenderer {
 	public void setProjectHome(String projectHome) {
 		this.projectHome = projectHome;
 	}
-
-	
-	
 }

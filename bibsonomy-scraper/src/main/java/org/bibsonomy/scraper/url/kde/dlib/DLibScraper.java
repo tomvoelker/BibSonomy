@@ -336,13 +336,13 @@ public class DLibScraper extends AbstractUrlScraper implements ReferencesScraper
 	 */
 	@Override
 	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
-		try{
-			Matcher m = REFERENCES.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
-			if(m.find()){
+		try {
+			final Matcher m = REFERENCES.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
+			if (m.find()) {
 				scrapingContext.setReferences(m.group(1));
 				return true;
 			}	
-		}catch(IOException ex){
+		} catch (IOException ex) {
 			throw new ScrapingException(ex);
 		}
 		return false;

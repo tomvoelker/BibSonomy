@@ -33,7 +33,6 @@
 					<nav:crumb name="${command.requestedAuthor}" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
-		
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading">

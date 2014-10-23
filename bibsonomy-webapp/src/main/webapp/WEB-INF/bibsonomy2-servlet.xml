@@ -660,7 +660,7 @@
 					</bean>
 				</entry>
 				<!-- TODO: (bootstrap) remove -->
-				<entry key="/bibsonomy3preview">
+				<entry key="/bibsonomy3">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="bibsonomyPreview"/>
 					</bean>
@@ -953,7 +953,7 @@
 	</bean>
 	<!-- TOOD: remove -->
 	<bean id="bibsonomyPreview" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
-		<property name="view" value="BIBSONOMY3PREVIEW"/>
+		<property name="view" value="BIBSONOMY3"/>
 	</bean>
 	<!-- linkcloud TODO: in development TODODZO -->
 	<bean id="linkCloudPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">

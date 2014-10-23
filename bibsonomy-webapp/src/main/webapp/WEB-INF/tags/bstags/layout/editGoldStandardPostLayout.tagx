@@ -223,7 +223,8 @@
 				</div>
 				
 			</div>
-
+			<!-- margins -->
+			<p>&amp;nbsp;<c:out value=" " /></p>
 		</jsp:attribute>
 		
 	</layout:layout>

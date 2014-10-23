@@ -70,7 +70,7 @@
 					<div class="row">
 						<div class="col-sm-10" style="padding-left: 0;">
 							<c:choose>
-								<c:when test="${properties['project.name'] eq 'PUMA'}">
+								<c:when test="${properties['project.theme'] eq 'puma'}">
 									<div id="puma-logo">
 										<bs:logoPuma />
 									</div>
