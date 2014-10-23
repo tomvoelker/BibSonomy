@@ -152,7 +152,7 @@
 				<buttons:help message="settings.layout.mainhelp">
 					<jsp:attribute name="helpText">
 						<c:choose>
-							<c:when test="${properties['project.name'] eq 'PUMA'}">
+							<c:when test="${properties['project.theme'] eq 'puma'}">
 								<ol>
 									<li> <fmt:message key="settings.layout.help.classic">
 											<fmt:param>Classic</fmt:param>
@@ -181,7 +181,7 @@
 				</buttons:help>
 				<form:select cssClass="form-control help-popover" path="user.settings.layoutSettings.viewLayout" >
 					<c:choose>
-						<c:when test="${properties['project.name'] eq 'PUMA'}">
+						<c:when test="${properties['project.theme'] eq 'puma'}">
 							<form:option label="Classic" value="CLASSIC"/>
 							<form:option label="Bootstrap" value="BOOTSTRAP"/>
 						</c:when>
