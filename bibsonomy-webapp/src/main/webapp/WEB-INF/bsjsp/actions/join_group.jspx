@@ -47,7 +47,7 @@
 				</bs:alert>
 				
 				<form:form action="/join_group" method="POST" cssClass="form-horizontal">
-					<errors:global errors="${errors}"/>
+					<errors:global />
 					
 					<form:hidden path="group" />
 					<input type="hidden" name="ckey" value="${command.context.ckey}"/>

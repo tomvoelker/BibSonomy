@@ -7,7 +7,6 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
@@ -16,12 +15,8 @@
 
 	<fmt:message key="navi.authors" var="pageTitle" />
 	
-	<layout:oneColumnLayout 
-		loginUser="${command.context.loginUser }"  
-		pageTitle="${pageTitle}" 
-		requPath="${requPath}"
-		>
- 		<jsp:attribute name="heading">
+	<layout:oneColumnLayout loginUser="${command.context.loginUser }" pageTitle="${pageTitle}" requPath="${requPath}">
+		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.authors" formAction="/author/" formInputName="author"/>
 		</jsp:attribute>
 		
@@ -54,6 +49,4 @@
 			</c:if>
 		</jsp:attribute>
 	</layout:oneColumnLayout>
-
-				
 </jsp:root>

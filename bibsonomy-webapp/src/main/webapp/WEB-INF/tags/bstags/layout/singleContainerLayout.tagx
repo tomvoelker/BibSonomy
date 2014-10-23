@@ -15,7 +15,8 @@
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="false"/>
 	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>	
-	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>	
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
+	<!-- TODO: remove -->
 	<jsp:directive.attribute name="heading" fragment="true" required="false"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" />

@@ -129,7 +129,7 @@
 				<h3><fmt:message key="admin.actions.consumer.register"/></h3>
 				
         	    <form:form action="${relativeUrlGenerator.getAdminUrlByName('oauth')}" method="POST">
-		        	<errors:global errors="${errors}"/>             
+		        	<errors:global />
 
 						<fieldset class="fsInner">
 							<legend><fmt:message key="admin.oauth.consumer.details"/></legend>

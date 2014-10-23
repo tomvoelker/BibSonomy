@@ -21,7 +21,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">
-			<errors:global errors="${errors}" dismissible="${false}"/>
+			<errors:global dismissible="${false}"/>
 		</jsp:attribute>
 	</layout:paneLayout>
 </jsp:root>

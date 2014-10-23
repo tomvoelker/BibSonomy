@@ -50,7 +50,7 @@
 			</mtl:exists>
 
 			<!-- show global error messages -->
-			<errors:global errors="${errors}" />
+			<errors:global />
 
 			<c:if test="${not empty command.message}">
 				<bs:alert style="danger">

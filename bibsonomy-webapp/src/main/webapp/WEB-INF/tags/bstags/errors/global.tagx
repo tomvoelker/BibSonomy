@@ -9,12 +9,10 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
-	<jsp:directive.attribute name="errors"  type="org.springframework.validation.Errors" required="true"/>
 	<jsp:directive.attribute name="cssClass"  type="java.lang.String" required="false" description="The CSS class for the div the errors are written to"/>
 	<jsp:directive.attribute name="dismissible" type="java.lang.Boolean" required="false" description="alert dismissible"/>
 
-	<!-- this tag is necessary, otherwise errors is empty!  -->
-	<spring:hasBindErrors name="command">
+	<spring:hasBindErrors name="command"> <!-- this tag is necessary, otherwise errors is empty!  -->
 		<c:if test="${not empty errors.globalErrors}">
 			<bs:alert style="danger" dismissable="${empty dismissible ? true : dismissible}">
 				<jsp:attribute name="alertBody">

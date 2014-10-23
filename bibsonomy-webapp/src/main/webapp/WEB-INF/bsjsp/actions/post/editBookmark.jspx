@@ -8,7 +8,6 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/bstags/post"
 	xmlns:editBook="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/bookmark"

@@ -46,7 +46,7 @@
 			+-->
 		<jsp:attribute name="tabcontent">
 			<!-- display potential errors -->
-			<errors:global errors="${errors}"/>
+			<errors:global />
 			
 			<settings:group command="${command}"/>
 			
