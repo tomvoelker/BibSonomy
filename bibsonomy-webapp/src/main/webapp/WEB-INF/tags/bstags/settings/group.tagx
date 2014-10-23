@@ -34,9 +34,9 @@
 								<!-- show per user group sharing options -->
 								<c:forEach var="group" items="${loginUser.groups}">
 									<c:if test="${group.name ne loginUser.name}">
-										<form:form cssClass="form-horizontal" id="groupShareSettings"> <!--  method="get" action="/ajax/handleGroupShare" -->
+										<form:form cssClass="form-horizontal" id="groupShareSettings"  method="get" action="/ajax/handleGroupShare">
 											<div class="row">
-												<div class="col-md-10"><a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}' />&amp;nbsp;</a></div>
+												<div class="col-md-10"><a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}' /></a></div>
 												<c:choose>
 													<c:when test="${group.sharedDocuments}">
 														<input type="hidden" name="requestedGroup" value="${fn:escapeXml(group.name)}" />
@@ -47,19 +47,13 @@
 																<fmt:message var="buttonTitle" key="groups.actions.unshareDocuments.title" />
 																<fmt:message var="buttonValue" key="groups.actions.unshareDocuments" />
 																<input type="hidden" name="action" value="unshareDocuments" />
-																<div class="col-md-2 display:none"><bsform:button style="success" size="defaultSize" type="submit" value="${buttonValue}" className="btn-block removeFriend" /></div>
-																<div class="col-md-2"><a class="action btn-block removeFriend" href="/ajax/handleGroupShare?requestedGroup=${fn:escapeXml(group.name)}&amp;action=unshareDocuments&amp;ckey=${ckey}&amp;forward=settings" title="${buttonTitle}">
-																	<fmt:message key="groups.actions.unshareDocuments"/>
-																</a></div>
+																<div class="col-md-2"><bsform:button style="success" size="defaultSize" type="submit" value="${buttonValue}" className="btn-block" /></div>
 															</c:when>
 															<c:otherwise>
 																<fmt:message var="buttonTitle" key="groups.actions.shareDocuments.title" />
 																<fmt:message var="buttonValue" key="groups.actions.shareDocuments" />
 																<input type="hidden" name="action" value="shareDocuments" />
-																<div class="col-md-2 display:none"><bsform:button style="defaultStyle" size="defaultSize" type="submit" value="${buttonValue}" className="btn-block" /></div>
-																<div class="col-md-2"><a class="action btn-block" href="/ajax/handleGroupShare?requestedGroup=${fn:escapeXml(group.name)}&amp;action=shareDocuments&amp;ckey=${ckey}&amp;forward=settings" title="${buttonTitle}">
-																	<fmt:message key="groups.actions.shareDocuments"/>
-																</a></div>
+																<div class="col-md-2"><bsform:button style="defaultStyle" size="defaultSize" type="submit" value="${buttonValue}" className="btn-block" /></div>
 															</c:otherwise>
 														</c:choose>
 													</c:when>
