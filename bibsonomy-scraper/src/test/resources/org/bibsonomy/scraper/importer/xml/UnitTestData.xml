@@ -1715,4 +1715,10 @@
 		<BibFile>WorldScientificScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.worldscientific.WorldScientificScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_280">
+		<TestDescription>test for nature.com</TestDescription>
+		<URL>http://www.nature.com/news/online-collaboration-scientists-and-the-social-network-1.15711</URL>
+		<BibFile>NatureScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.nature.NatureScraper</Scraper>
+	</URLTest>
 </test:Tests>
