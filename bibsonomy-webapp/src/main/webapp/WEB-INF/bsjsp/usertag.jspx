@@ -8,7 +8,8 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"> 
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<fmt:message var="headline" key="page.usertag.headline">
@@ -18,13 +19,35 @@
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" headline="${headline}">
 	
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.user" formAction="/user/${fn:escapeXml(command.requestedUser)}" formInputName="tag" formInputValue="${command.requestedTags}"	>
+			<parts:search pathMessageKey="navi.user" formAction="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(command.requestedUser))}" formInputName="tag" formInputValue="${command.requestedTags}"	>
 				<jsp:attribute name="pathPart">
-					<li>
-						:: <a href="/user/${mtl:encodeURI(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
-					</li>
+					<a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"><c:out value='@${command.requestedUser}'/></a>
 				</jsp:attribute>
 			</parts:search>
+		</jsp:attribute>
+		
+				
+		<jsp:attribute name="breadcrumbs">
+			<c:set var="ownPage" value="${command.context.userLoggedIn and (command.requestedUser eq command.context.loginUser)}" />
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<c:choose>
+						<c:when test="${ownPage}">
+							<fmt:message key="buttons.mybibsonomy" var="my">
+								<fmt:param>${properties['project.name']}</fmt:param>
+							</fmt:message>
+							<nav:crumb name="${my}" href="/user/${command.context.loginUser.name}" />
+						</c:when>
+						<c:otherwise>
+							<fmt:message key="navi.user" var="user" />
+							<nav:crumb name="${user}" />
+							<nav:crumb name="@${command.requestedUser}" href="/user/${command.requestedUser}" />
+						</c:otherwise>
+					</c:choose>
+					<nav:crumb name="${command.requestedTags}" active="true" leadingIcon="fa-tag" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
@@ -43,7 +66,7 @@
 			<!-- display user's tag relations -->
 			<li>
 				<fmt:message key="tagrelations.title" var="tagRelationsTitle"/>
-				<h4 class="sidebar"><fmt:message key="tagrelations"/><c:out value=" " /><small>(<a href="/concepts/${fn:escapeXml(command.requestedUser)}" title="${tagRelationsTitle}"><fmt:message key="overview"/></a>)</small></h4>	
+				<h4 class="sidebar"><fmt:message key="tagrelations"/><c:out value=" " /><small>(<a href="${relativeUrlGenerator.getConceptsUrlByString(fn:escapeXml(command.requestedUser))}" title="${tagRelationsTitle}"><fmt:message key="overview"/></a>)</small></h4>	
 				<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
 			</li>
 			

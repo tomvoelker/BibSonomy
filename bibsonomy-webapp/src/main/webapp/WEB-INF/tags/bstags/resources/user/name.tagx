@@ -3,6 +3,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 
 	<!--+
@@ -11,10 +12,18 @@
 		|
 		+-->
 	<jsp:directive.attribute name="user" type="org.bibsonomy.model.User" required="true" />
-
-	<c:if test="${not empty user.realname}">
-		<span class="realname">
-			<c:out value="${user.realname}"/>
-		</span>
-	</c:if>
+	
+	
+	<c:choose>
+		<c:when test="${not empty user.realname}">
+			<span class="realname">
+				<c:out value="${user.realname}"/>
+			</span>
+		</c:when>
+		<c:otherwise>
+			<span class="nickname">
+				<user:username user="${user}" noLink="${true}"/>
+			</span>
+		</c:otherwise>
+	</c:choose>
 </jsp:root>

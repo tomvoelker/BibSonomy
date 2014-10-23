@@ -18,7 +18,7 @@
 	<!-- all in one line to avoid leading spaces -->
 	<c:set var="cleanedLinktext" value="${mtl:cleanBibtex(linktext)}" />
 	<c:choose>
-		<c:when test="${not empty crossref}"><a href="/bibtexkey/${fn:escapeXml(crossref)}"><c:out value="${cleanedLinktext}" /></a></c:when>
+		<c:when test="${not empty crossref}"><a href="${relativeUrlGenerator.getPublicationUrlByBibTexKey(fn:escapeXml(crossref))}"><c:out value="${cleanedLinktext}" /></a></c:when>
 		<c:otherwise><c:out value="${cleanedLinktext}"/></c:otherwise>
 	</c:choose>
 	

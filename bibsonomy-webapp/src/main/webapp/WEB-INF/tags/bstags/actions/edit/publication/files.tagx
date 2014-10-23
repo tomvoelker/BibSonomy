@@ -16,7 +16,7 @@
 		
 		<jsp:attribute name="content">
 			<fmt:message var="delete" key="post.bibtex.delete"/>
-			<script type="text/javascript" src="${resdir}/javascript/jquery.documentuploader.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/bs/jquery.documentuploader.js"><!-- keep me --></script>
 			
 			<!--+ 
 			 	|
@@ -50,12 +50,14 @@
 			<div class="form-group">
 				<label class="col-sm-3 control-label" for="fu"><fmt:message key="bibtex.actions.private_document.upload"/></label>
 				<div class="col-sm-9">
-					<input id="fu" type="file" name="file"/>
+					<div id="inputDiv">
+						<input id="fu" type="file" name="file"/>
+					</div>
 					<p class="help-block"><fmt:message key="post.bibtex.help"/></p>
 					<script type="text/javascript">
-							$(function(){
-								$("#fu").documentUploader();
-							});
+						$(function(){
+							$("#fu").documentUploader();
+						});
 					</script>
 				</div>
 			</div>

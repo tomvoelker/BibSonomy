@@ -2,9 +2,9 @@
 <!DOCTYPE webapp [
 	<!ENTITY opensocial SYSTEM "web-opensocial.xml">
 ]>
-<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
-	version="2.4">
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	version="3.0">
 
 	<!-- This flag is to mark the application as distributable, which implies 
 		among others that all objects which shall be stored in a session need to 
@@ -81,7 +81,7 @@
 		<init-param>
 			<description>The pattern defines, which URLs should not be touched by the filter.</description>
 			<param-name>excludePattern</param-name>
-			<param-value>^/(api|resources|ajax)/.*</param-value>
+			<param-value>^/(api|resources|resources_puma|ajax)/.*</param-value>
 		</init-param>
 	</filter>
 	<filter-mapping>
@@ -180,7 +180,7 @@
 
 	<!--+ | OpenSocial - this imports the file 'web-opensocial.xml' as configured 
 		in the DOCTYPE-statement + -->
-	&opensocial;
+	<!--   &opensocial;-->
 
 	<!-- Servlet-Mappings  -->
 	<!-- spring main servlet -->

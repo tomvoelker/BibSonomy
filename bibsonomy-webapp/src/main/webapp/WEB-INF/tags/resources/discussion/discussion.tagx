@@ -73,7 +73,7 @@
 		<discussion:linkBox resource="${resource}"/>
     		
 		<div cssClass="fsRow">
-			<c:if test="${not fn:contains(resource.class.simpleName, 'Bookmark') and resource.entrytype=='preprint' and empty resource.discussionItems}">
+			<c:if test="${not fn:contains(resource['class'].simpleName, 'Bookmark') and resource.entrytype=='preprint' and empty resource.discussionItems}">
 				<fmt:message key="post.resource.preprint.hint" />
 			</c:if>
 		</div>

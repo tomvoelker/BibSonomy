@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.command;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.bibsonomy.model.Layout;
@@ -25,19 +26,14 @@ public class ExportPageCommand extends ResourceViewCommand {
 	public Map<String, Layout> getLayoutMap() {
 		return this.layoutMap;
 	}
-
-	/**
-	 * @param layoutMap
-	 */
-	public void setLayoutMap(final Map<String, Layout> layoutMap) {
-		this.layoutMap = layoutMap;
-	}
 	
 	/**
 	 * adds all maps the the layout map
 	 * @param map
 	 */
 	public void addLayoutMap(final Map<String, ? extends Layout> map) {
-		this.layoutMap.putAll(map);
+		for (Entry<String, ? extends Layout> entry : map.entrySet()){
+			this.layoutMap.put(entry.getValue().getDisplayName(), entry.getValue());
+		}
 	}
 }

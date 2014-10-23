@@ -32,7 +32,7 @@
    	
  	<div class="discussion-all">  	
 	
-		<!-- hide/show discussion field -->    		
+		<!-- hide/show discussion field  		
 	   	<a class="foldUnfold" href="div#discussion" style="font-size: 16px; margin: 0 auto;">
 	   		<img id="imgCollapseDiscussion" class="imgCollapse" border="0" src="/resources/image/icon_collapse.png" style="display:none;"/>
 	   		<img id="imgExpandDiscussion" class="imgExpand" border="0" src="/resources/image/icon_expand.png" style="display:none;" />
@@ -45,26 +45,19 @@
 	   			<fmt:message key="post.resource.discussion.actions.show" />
 	   		</span>
 	   	</a>		
-   		
-   		<!-- The three Buttons -->
-   		<span class="initiallyHidden">
-<!-- 
-			<li>
-				<a href="#discussion" id="toggleDiscussion"><fmt:message key="post.resource.discussion.actions.hide" /></a>
-			</li>
- -->
+   		-->
+
 			<!-- TODO: use spring security tags -->
 			<c:if test="${command.context.userLoggedIn}">
-				<h5><span id="discussionRef"><fmt:message key="post.resource.comment.actions.create" /></span></h5>
+				<h4 class="pub-details">
+					<span class="fa fa-comment-o"><!--  --></span>
+					<c:out value=" " />
+					<fmt:message key="post.resource.comment.actions.create" />
+				</h4>
 			</c:if>
-		
-			<!--
-				<li><a href="#showOnlyReviews" id="toggleReviews"><fmt:message key="post.resource.discussion.actions.showReviews" /></a></li>
-				<li><a href="#collapseAllThreads" id="collapseAllThreads"><fmt:message key="post.resource.discussion.actions.collapseAllThreads" /></a></li>
-			-->
-		</span>
 
-		<c:if test="${not fn:contains(resource.class.simpleName, 'Bookmark') and resource.entrytype=='preprint' and empty resource.discussionItems}">
+
+		<c:if test="${not fn:contains(resource['class'].simpleName, 'Bookmark') and resource.entrytype=='preprint' and empty resource.discussionItems}">
 			<p class="help-block">
 				<fmt:message key="post.resource.preprint.hint" />
 			</p>

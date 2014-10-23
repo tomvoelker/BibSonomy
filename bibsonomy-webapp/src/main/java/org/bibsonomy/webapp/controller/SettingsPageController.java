@@ -82,9 +82,8 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		// check whether the user is a group
 		if (UserUtils.userIsGroup(loginUser)) {
 			command.setHasOwnGroup(true);
-			command.showGroupTab(true);
 		}
-
+		
 		/*
 		 * get friends for sidebar
 		 */
@@ -95,7 +94,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		// show sync tab only for non-spammers
 		command.showSyncTab(!loginUser.isSpammer());
 
-		if (command.getSelTab() < 0 || command.getSelTab() > 6) {
+		if (command.getSelTab() < 0 || command.getSelTab() > 7) {
 			this.errors.reject("error.settings.tab");
 		} else {
 			this.checkInstalledJabrefLayout(command);

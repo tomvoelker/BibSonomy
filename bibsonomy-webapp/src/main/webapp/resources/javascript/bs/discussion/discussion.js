@@ -39,7 +39,46 @@ var PUBLIC_POST_SELECTOR = 'input#publicInput';
 
 var pub = true;
 
-$(function() {	
+$(function() {
+	
+	
+	$('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+		var targetElement  = $(e.target.getAttribute("href"));
+		if(targetElement.html().length > 0) return; 
+		
+		if(e.target.getAttribute("href")=="#citation_all") {
+				var url = $(e.target).data("formaturl");
+				$.ajax(
+						  {
+							  url: url, 
+							  dataType: "html", 
+							  success: function(data) {
+								  	targetElement
+								  	.html(data)
+									.find("select")
+									.addClass("form-control input-sm");
+									
+							  }
+						  }
+					);
+				return;
+		}
+			
+		targetElement.html(getString("bibtex.citation_format.loading")); // activated tab
+		var url = $(e.target).data("formaturl");
+		$.ajax(
+			  {
+				  url: url, 
+				  dataType: "html", 
+				  success: function(data) {
+					  targetElement.html(data);
+				  }
+			  }
+		);
+	});
+	
+	$($(".firstTab")[0]).tab("show");
+	
 	// remove all create review links if user already reviewed resource
 	if ($(REVIEW_OWN_SELECTOR).length > 0) {
 		// user has reviewed this resource hide all create review forms
@@ -50,12 +89,6 @@ $(function() {
 			createStandaloneReply($("#createCommentInstance"));
 		});
 	}
-	
-	$(DISCUSSION_TOGGLE_LINK_SELECTOR).click(function() {
-		$(REVIEW_INFO_SELECTOR).toggle('slow');
-		$(DISCUSSION_SELECTOR).toggle('slow', updateDiscussionToggleLink);
-		return false;
-	});
 	
 	// TODO: move and use in post edit views
 	$(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
@@ -456,83 +489,7 @@ function parseLinks(reviewText) {
 }
 
 
-//functions for redesigned page  
-$(function(){
-	var hash = window.location.hash;
-	var gsPresent = ($("#gs_present").val()=="true");
-	if(hash=="#discussionbox" && !gsPresent) {
-		$("#hideableContent").hide();
-		$("#imgExpandDiscussion").hide();
-		$("#imgCollapseDiscussion").show();
-		
-		$("#textExpandDiscussion").hide();
-		$("#textCollapseDiscussion").show();		
-		
-		
-		$(".imgCollapse").each(function(){
-			if($(this).attr("id") == "imgCollapseContent") {
-				$(this).hide();
-			}
-		});
-		
-		$(".imgExpand").each(function(){
-			if($(this).attr("id") == "imgExpandContent") {
-				$(this).show();
-			}
-		});
-		
-		//Fix to redefine the Sidebar height
-		$('#sidebar').height($('#postcontainer').height() + 11);		
-		
-	} else if (!gsPresent){
-		$("div#discussion").hide();
-		$("#imgExpandDiscussion").show();
-		$("#imgCollapseDiscussion").hide();
-		$("#textExpandDiscussion").show();
-		$("#textCollapseDiscussion").hide();
-		$("#imgExpandContent").hide();
-		$("#imgCollapseContent").show();
-		
-		//Fix to redefine the Sidebar height
-		$('#sidebar').height($('#postcontainer').height() + 11);
-
-	}
-});
-
-
 $(document).ready(function() {
-	
-	numberOfBookmarkLists = $(".bookmarksContainer").size(); // every id bookmarks_* must have a class bookmarksContainer
-	numberOfPublicationLists = $(".publicationsContainer").size(); // every id publications_* must have a class publicationsContainer
-
-	if (numberOfBookmarkLists != 0) {
-		$("#bookmarks_"+(numberOfBookmarkLists-1)).height("auto");
-	}
-	
-	if (numberOfBookmarkLists != 0) {
-		$("#publications_"+(numberOfPublicationLists-1)).height("auto");
-	}
-
-	$("a.foldUnfold").click(function(){
-		$('#sidebar').height("auto");
-		$(".posts, .wide").height("auto");
-
-		var selector = $(this).attr("href");
-		var resource = $(selector);
-		if(resource.is(":visible")) {
-			resource.hide();
-			$(this).find(".imgCollapse").hide();
-			$(this).find(".imgExpand").show();
-			return false;
-		}
-		resource.show();
-		$(this).find(".imgCollapse").show();
-		$(this).find(".imgExpand").hide();
-		
-		//Fix to redefine the Sidebar height
-		$('#sidebar').height($('#postcontainer').height() + 11);
-		return false;
-	});
 	
 	initCSLSugestions($("input.referenceAutocompletion"));
 

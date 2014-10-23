@@ -56,7 +56,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />  
 		
 		<!-- Latest compiled and minified CSS -->
-		<link rel="stylesheet" href="/resources/bootstrap/css/bootstrap.min.css"  />
+		<mtl:styleSheet path="${resdir}/css/bootstrap.css"  />
 
 		<!-- font awesome icon set -->
 		<mtl:styleSheet path="${resdir}/fonts/font-awesome/css/font-awesome.min.css" />

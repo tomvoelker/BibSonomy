@@ -15,7 +15,9 @@
 	xmlns:common="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common">
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
+	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication">
 		
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<!--+
@@ -31,6 +33,17 @@
 	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}" showPageOptions="${true}" minimizedContentWidth="${true}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
+		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">	
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<fmt:message key="navi.user" var="user" />
+					<nav:crumb name="${user}" />
+					<nav:crumb name="${post.user.name}" href="/user/${post.user.name}" />
+					<nav:crumb name="${mtl:shorten(title, 25)}" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
 		</jsp:attribute>
 		
 		<!--+

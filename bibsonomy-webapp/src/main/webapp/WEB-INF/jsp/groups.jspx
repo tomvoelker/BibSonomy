@@ -86,7 +86,7 @@
 				    </td>
 				    <!-- show group name -->
 				    <td class="groupName">
-				    	<a href="/group/${mtl:encodeURI(entry.name)}">
+				    	<a href="${relativeUrlGenerator.getGroupUrlByGroupName(entry.name)}">
 				    	<c:out value="${entry.name}"/>
 				    	</a>
 				    </td>
