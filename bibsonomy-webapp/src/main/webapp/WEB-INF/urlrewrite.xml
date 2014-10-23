@@ -312,12 +312,13 @@
 	<!-- ############## /person pages ############### -->
 	<!-- redirect to /person/PERSON page -->
 	<rule>
-		<name>redirect /person/ACTION/PERSONID/HASH/USER</name>
-		<from>^/+person/+([^/]+?)/+([^/]+?)(|/+([^/]+?)(|/+([^/]+?)))$</from>
+		<name>redirect /person/ACTION/PERSONID/PERSONNAME/HASH/USER</name>
+		<from>^/+person/+([^/]+?)/+([^/]+?)/+([^/]+?)(|/+([^/]+?)(|/+([^/]+?)))$</from>
 		<set type="parameter" name="requestedAction">$1</set>
 		<set type="parameter" name="requestedPersonId">$2</set>
-		<set type="parameter" name="requestedHash">$4</set>
-		<set type="parameter" name="requestedUser">$6</set>
+		<set type="parameter" name="requestedPersonName">$3</set>
+		<set type="parameter" name="requestedHash">$5</set>
+		<set type="parameter" name="requestedUser">$7</set>
 		<to last="true">/person</to>
 	</rule>
 	
@@ -325,9 +326,9 @@
 	<!-- redirect to /persondisambiguation page -->
 	
 		<rule>
-		<name>redirect /pubauthor/AUTHORNAME/HASH/USER</name>
-		<from>^/+pubauthor/+([^/]+?)/+([^/]+?)/+([^/]+?)$</from>
-		<to>/persondisambiguation/redirected/$1/$2/$3</to>
+		<name>redirect /pubauthor/AUTHORNAME/HASH/USER/ROLE</name>
+		<from>^/+pubauthor/+([^/]+?)/+([^/]+?)/+([^/]+?)/+([^/]+?)$</from>
+		<to>/persondisambiguation/redirected/$1/$2/$3/$4</to>
 	</rule>
 	<rule>
 		<name>redirect /pubauthor/AUTHORNAME/HASH</name>
@@ -336,12 +337,13 @@
 	</rule>
 	
 	<rule>
-		<name>redirect /persondisambiguation/ACTION/AUTHORNAME/HASH/USER</name>
-		<from>^/+persondisambiguation/+([^/]+?)/+([^/]+?)(|/+([^/]+?)(|/+([^/]+?)))$</from>
+		<name>redirect /persondisambiguation/ACTION/AUTHORNAME/HASH/USER/ROLE</name>
+		<from>^/+persondisambiguation/+([^/]+?)/+([^/]+?)(|/+([^/]+?)(|/+([^/]+?)/+([^/]+?)))$</from>
 		<set type="parameter" name="requestedAction">$1</set>
 		<set type="parameter" name="requestedAuthorName">$2</set>
 		<set type="parameter" name="requestedHash">$4</set>
-		<set type="parameter" name="requestedUser">$2</set>
+		<set type="parameter" name="requestedUser">$6</set>
+		<set type="parameter" name="requestedRole">$7</set>
 		<to last="true">/persondisambiguation</to>
 	</rule>
 	

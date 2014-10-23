@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.command;
 
+import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.model.Person;
@@ -15,23 +16,25 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	private String requestedAuthorName;
 	private String requestedHash;
 	private String requestedAction;
+	private String requestedRole;
 	
-	private Set<Person> suggestedPersons;
+	private String formAddPersonId;
+	
+	private List<Person> suggestedPersons;
 	private Person person;
 	private Post<? extends Resource> post;
-	private PersonName authorName;
 
 	/**
 	 * @return the suggestedPersons
 	 */
-	public Set<Person> getSuggestedPersons() {
+	public List<Person> getSuggestedPersons() {
 		return this.suggestedPersons;
 	}
 
 	/**
 	 * @param suggestedPersons the suggestedPersons to set
 	 */
-	public void setSuggestedPersons(Set<Person> suggestedPersons) {
+	public void setSuggestedPersons(List<Person> suggestedPersons) {
 		this.suggestedPersons = suggestedPersons;
 	}
 
@@ -106,17 +109,30 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	}
 
 	/**
-	 * @param PersonName personName
+	 * @return
 	 */
-	public void setAuthorName(PersonName personName) {
-		this.authorName = personName;
-		
+	public String getRequestedRole() {
+		return this.requestedRole;
 	}
 
 	/**
-	 * @return the authorName
+	 * @param requestedRole the requestedRole to set
 	 */
-	public PersonName getAuthorName() {
-		return this.authorName;
+	public void setRequestedRole(String requestedRole) {
+		this.requestedRole = requestedRole;
+	}
+
+	/**
+	 * @return the formAddPersonId
+	 */
+	public String getFormAddPersonId() {
+		return this.formAddPersonId;
+	}
+
+	/**
+	 * @param formAddPersonId the formAddPersonId to set
+	 */
+	public void setFormAddPersonId(String formAddPersonId) {
+		this.formAddPersonId = formAddPersonId;
 	}
 }

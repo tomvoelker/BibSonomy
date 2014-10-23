@@ -18,6 +18,7 @@
 	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/bstags/spheres"
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
+	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -52,12 +53,26 @@
 
 		<jsp:attribute name="content">
 			<div class="page-header">
-				<h1>Disambiguation <small>${command.person.mainName }</small></h1>
+				<h1>Disambiguation <small>${command.requestedAuthorName}</small></h1>
 			</div>
 		
 			<c:if test="${not empty command.post}">
-				<resource:bibtexdetailsclean post="${command.post}" referer="${command.referer}"/>
-				<br/>
+				<div class='panel panel-default'>
+					<div class='panel-heading'>
+						<h4>Selected Post</h4>
+					</div>
+					<div class='panel-body'>
+						<div class="title">
+							<pub:title post="${command.post}">
+								<jsp:attribute name="bibActionButtons">
+									<div class="pull-right">
+										<bib:actions post="${command.post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/>
+									</div>
+								</jsp:attribute>
+							</pub:title>
+						</div>
+					</div>
+				</div>
 			</c:if>
 			
 			<div class='panel panel-default'>
@@ -66,14 +81,23 @@
 				</div>
 				<div class='panel-body'>
 					<div class="list-group">
-						<c:forEach var='person' items="${command.suggestedPersons}">
-							<div class="list-group-item">
-								<a href="/persondisambiguation/show/${person.id}">${person.mainName.firstName} ${person.mainName.lastName}</a>
-								<a class='pull-right' href="#" data-toggle="modal" data-target='#linkPerson' onclick="linkPerson('${post.resource.intraHash}', '${person.id}')"><span class='glyphicon glyphicon-plus'></span></a>
-							</div>
-						</c:forEach>
+						<c:choose>
+							<c:when test="${fn:length(command.suggestedPersons) gt 0}">
+								<c:forEach var='person' items="${command.suggestedPersons}">
+									<div class="list-group-item">
+										<a href="/persondisambiguation/show/${person.id}">${person.mainName.firstName} ${person.mainName.lastName}</a>
+										<a class='pull-right' href="#" data-toggle="modal" data-target='#linkPerson' onclick="linkPerson('${post.resource.intraHash}', '${person.id}')"><span class='glyphicon glyphicon-plus'></span></a>
+									</div>
+								</c:forEach>
+							</c:when>
+							<c:otherwise>
+								<div class="list-group-item">
+									<span>No persons found for authorname '${command.requestedAuthorName}'</span>
+								</div>
+							</c:otherwise>
+						</c:choose>
 					</div>
-					<button class='btn btn-primary' data-toggle="modal" data-target="#otherPerson">Other Person</button>
+					<button class='btn btn-primary pull-right' data-toggle="modal" data-target="#otherPerson">Other Person</button>
 				</div>
 			</div>
 		</jsp:attribute>
@@ -137,31 +161,31 @@
 		aria-labelledby="otherPersonLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&amp;times;</button>
-					<h4 class="modal-title">Add Person to thesis</h4>
-				</div>
-				<div class="modal-body">
-					<form  action="" method="post" name='editRoleForm' class='form-horizontal'>
+				<form action="/persondisambiguation/link/${command.requestedAuthorName}/${command.requestedHash}/${command.requestedUser}/${command.requestedRole}" method="post" name='editRoleForm' class='form-horizontal'>
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&amp;times;</button>
+						<h4 class="modal-title">Add Person to thesis</h4>
+					</div>
+					<div class="modal-body">
           				<FIELDSET>
           					<div class="form-group">
 								<label for='addPersonAuto' class="control-label col-xs-3">Person</label>
         						<div class="col-xs-7">
         							<div class='input-group'>
 										<input class='form-control typeahead' id='addPersonAuto' type='text' name='addPersonAuto' autocomplete="off"/>
+										<input type='hidden' id='formAddPersonId' name='formAddPersonId' value='0'/>
 									</div>
 								</div>
 							</div>
 						</FIELDSET>
-					</form>
-				</div>
-				<div class="modal-footer">
-					<a class='pull-left' href='/person/new/0/${command.requestedHash}'>new Person</a>
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary"
-						id='otherPersonSubmit'>Add</button>
-				</div>
+					</div>
+					<div class="modal-footer">
+						<a class='pull-left' href='/person/new/null/null/${command.requestedHash}/${command.requestedUser}'>new Person</a>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<input type="submit" class="btn btn-primary" id='formAddPersonSubmit' name='formAddPersonSubmit' value='Add' />
+					</div>
+				</form>
 			</div>
 		</div>
 	</div>

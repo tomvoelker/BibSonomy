@@ -355,12 +355,15 @@
 						<property name="allowedFields">
 							<list>
 								<value>requestedPersonId</value>
+								<value>requestedPersonName</value>
 								<value>requestedAction</value>
 								<value>requestedHash</value>
 								<value>requestedUser</value>
 								<value>formRole</value>
-								<value>formGivenName</value>
-								<value>formSurName</value>
+								<value>formFirstName</value>
+								<value>formMiddleName</value>
+								<value>formLastName</value>
+								<value>formNewPersonSubmit</value>
 								<value>formSelectedName</value>
 								<value>formAcademicDegree</value>
 							</list>
@@ -376,6 +379,8 @@
 								<value>requestedAction</value>
 								<value>requestedHash</value>
 								<value>requestedUser</value>
+								<value>requestedRole</value>
+								<value>formAddPersonId</value>
 							</list>
 						</property>
 					</bean>

@@ -1,7 +1,9 @@
 package org.bibsonomy.model.logic;
 
 import java.util.List;
+import java.util.Map;
 
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.enums.PersonResourceRelation;
@@ -30,7 +32,7 @@ public interface PersonLogicInterface {
 
 	public void addPersonRelation(String longHash, String publicationOwner, Person person, PersonResourceRelation rel);
 
-	public void removePersonRelation(String longHash, String publicationOwner, Person person, PersonResourceRelation rel);
+	public void removePersonRelation(String longHash, String publicationOwner, String person_ID, PersonResourceRelation rel);
 
 	/**
 	 * sets id for new persons
@@ -40,5 +42,12 @@ public interface PersonLogicInterface {
 	public void createOrUpdatePerson(Person person);
 	
 	public Person getPersonById(int id);
+
+	/**
+	 * @param personName
+	 * @return
+	 */
+	public Map<Person, BibTex> getQualifyingPublications(String personName);
+
 
 }

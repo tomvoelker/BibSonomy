@@ -2869,49 +2869,31 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String)
-	 */
-	@Override
 	public List<Person> getPersonSuggestion(String searchString) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public List<Person> getPersons(String longHash, String publicationOwner, PersonName personName, PersonResourceRelation rel) {
 		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		return new ArrayList<Person>();
 	}
 
-	@Override
 	public void addPersonRelation(String longHash, String publicationOwner, Person person, PersonResourceRelation rel) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removeRelatedPerson(java.lang.String, java.lang.String, org.bibsonomy.model.Person, org.bibsonomy.model.enums.PersonResourceRelation)
-	 */
-	@Override
 	public void removePersonRelation(String longHash, String publicationOwner, Person person, PersonResourceRelation rel) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createPerson(org.bibsonomy.model.Person)
-	 */
-	@Override
 	public void createOrUpdatePerson(Person person) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonById(int)
-	 */
-	@Override
 	public Person getPersonById(int id) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();

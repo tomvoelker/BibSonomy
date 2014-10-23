@@ -24,7 +24,7 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<c:set var="requestedUserEncoded" value="${mtl:encodeURI(command.requestedUser)}" />
-	<c:set var="post" value="${command.bibtex.list[0]}" />
+	<c:set var="post" value="${command.post}" />
 	<c:set var="publication" value="${post.resource}" />
 	
 	<fmt:message key="navi.person" var="PersonPageTitle" />
@@ -64,32 +64,12 @@
 		<jsp:attribute name="content">
 		
 			<div class="page-header">
-				<h1>Person <small>${command.person.mainName}</small></h1>
+				<h1>Person <small>${command.requestedPersonName}</small></h1>
 			</div>
 		
-			<c:if test="${not empty command.post}">
-				<div class='panel panel-default'>
-					<div class='panel-heading'>
-						<h4>Selected Post</h4>
-					</div>
-					<div class='panel-body'>
-						<div class="title">
-							<pub:title post="${command.post}">
-								<jsp:attribute name="bibActionButtons">
-									<div class="pull-right">
-										<bib:actions post="${command.post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/>
-									</div>
-								</jsp:attribute>
-							</pub:title>
-						</div>
-						<a href='/person/unlink/${command.requestedPersonId}/${post.resource.intraHash}/${command.requestedPersonId}' class='btn btn-primary' id=''>Dieser Author gehoert nicht zu dieser Publikation</a>
-					</div>
-				</div>
-			</c:if>
-			<br/>
 			<div id='personInfo' class='panel panel-default'>
 				<div class='panel-heading'>
-					<h4>About the person</h4>
+					<h4>About this person</h4>
 				</div>
 				
 				<div class='panel-body'>
@@ -104,9 +84,16 @@
 						<div class='form-group'>
 							<label class="control-label col-xs-4">Person's alternate names</label>
 							<div class="col-xs-6">
-								<c:forEach var="name" items="${command.person.alternateNames}">
-									<p class='form-control-static'>${name}</p>
-								</c:forEach>
+								<c:choose>
+									<c:when test="${fn:length(command.person.alternateNames) gt 0}">
+										<c:forEach var='person' items="${command.person.alternateNames}">
+											<span><input type='checkbox' name='selectedName'/>${person.firstName}, ${person.lastName}</span>
+										</c:forEach>
+									</c:when>
+									<c:otherwise>
+										<p class='form-control-static'>No alternate names</p>
+									</c:otherwise>
+								</c:choose>
 							</div>
 						</div>
 						<br/>
@@ -127,23 +114,94 @@
 				</div>
 				
 				<div class='panel-body'>
-					<div class="list-group">
-						<c:forEach var="post" items="${command.bibtex.list}">
-							<div class="list-group-item">
-								<div class="list-group-item-heading">
-									<a href='/person/details/${command.requestedPersonId}/${post.resource.intraHash}/${command.requestedPersonId}'>${post.resource.title}</a>
-								</div>
-								<div class="list-group-item-text">
-									<c:forEach var="author" items="${post.resource.author}">
-										<a href="/person/show/${author.lastName}">${author.firstName} ${author.lastName} </a>
-										<a data-toggle='modal' href="#editRole" onclick="editRole('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')">(Betreuer) </a>
-										<a data-toggle='modal' href='#unlink' onclick="unlink('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')" style='color:darkred'>x</a>
-										, 
+					<ul id='resourcesTabList' class="nav nav-tabs" role="tablist">
+						<li><a href="#thesis" role="tab" data-toggle="tab">Thesis</a></li>
+						<li><a href="#advisedThesis" role="tab" data-toggle="tab">Advised Thesis</a></li>
+						<li><a href="#all" role="tab" data-toggle="tab">All</a></li>
+					</ul>
+					<div class='tab-content'>
+						<div id='thesis' class='tab-pane'>
+							<br/>
+							<c:choose>
+								<c:when test="${fn:length(command.thesis) gt 0}">
+									<c:forEach var="post" items="${command.thesis}">
+										<div>
+											<div>
+												<a href='/person/details/${command.requestedPersonId}/${command.requestedPersonName}/${post.resource.intraHash}/${command.requestedPersonId}'>${post.resource.title}</a>
+											</div>
+											<div>
+												<c:forEach var="author" items="${post.resource.author}">
+													<a href="/person/show/${author.lastName}">${author.firstName} ${author.lastName} </a>
+													<a data-toggle='modal' href="#editRole" onclick="editRole('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')">(Betreuer) </a>
+													<a data-toggle='modal' href='#unlink' onclick="unlink('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')" style='color:darkred'>x</a>
+													, 
+												</c:forEach>
+											</div>
+										</div>
+										<HR />
 									</c:forEach>
-								</div>
-							</div>
-						</c:forEach>
+								</c:when>
+								<c:otherwise>
+									<p class="text-info">No resources found</p>
+								</c:otherwise>
+							</c:choose>
+						</div>
+						<div id='advisedThesis' class='tab-pane'>
+							<br/>
+							<c:choose>
+								<c:when test="${fn:length(command.advisedThesis) gt 0}">
+									<c:forEach var="post" items="${command.advisedThesis}">
+										<div>
+											<div>
+												<a href='/person/details/${command.requestedPersonId}/${command.requestedPersonName}/${post.resource.intraHash}/${command.requestedPersonId}'>${post.resource.title}</a>
+											</div>
+											<div>
+												<c:forEach var="author" items="${post.resource.author}">
+													<a href="/person/show/${author.lastName}">${author.firstName} ${author.lastName} </a>
+													<a data-toggle='modal' href="#editRole" onclick="editRole('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')">(Betreuer) </a>
+													<a data-toggle='modal' href='#unlink' onclick="unlink('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')" style='color:darkred'>x</a>
+													, 
+												</c:forEach>
+											</div>
+										</div>
+										<HR />
+									</c:forEach>
+								</c:when>
+								<c:otherwise>
+									<p class="text-info">No resources found</p>
+								</c:otherwise>
+							</c:choose>
+						</div>
+						<div id='all' class='tab-pane'>
+							<br/>
+							<c:choose>
+								<c:when test="${fn:length(command.allPosts) gt 0}">
+									<c:forEach var="post" items="${command.allPosts}">
+										<div>
+											<div>
+												<a href='/person/details/${command.requestedPersonId}/${command.requestedPersonName}/${post.resource.intraHash}/${command.requestedPersonId}'>${post.resource.title}</a>
+											</div>
+											<div>
+												<c:forEach var="author" items="${post.resource.author}">
+													<a href="/person/show/${author.lastName}">${author.firstName} ${author.lastName} </a>
+													<a data-toggle='modal' href="#editRole" onclick="editRole('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')">(Betreuer) </a>
+													<a data-toggle='modal' href='#unlink' onclick="unlink('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')" style='color:darkred'>x</a>
+													, 
+												</c:forEach>
+											</div>
+										</div>
+										<HR />
+									</c:forEach>
+								</c:when>
+								<c:otherwise>
+									<p class="text-info">No resources found</p>
+								</c:otherwise>
+							</c:choose>
+						</div>
 					</div>
+					<SCRIPT type="text/javascript">
+						$("#resourcesTabList a:first").click();
+					</SCRIPT>
 				</div>
 			</div>
 		</jsp:attribute>
@@ -152,6 +210,7 @@
 	
 	
 	  <!-- Modal -->
+	  <!-- Notfalls nur in Nachname -->
   <div class="modal fade" id="addName" tabindex="-1" role="dialog" aria-labelledby="addNameLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">

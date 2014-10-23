@@ -38,6 +38,12 @@
 		minimizedContentWidth="${true}" >
 
 		<jsp:attribute name="headerExt">
+			<script type='text/javascript' src='/resources/javascript/person/editRole.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/unlink.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/typeahead.js/js/typeahead.bundle.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/autocompleteLinkOtherPerson.js'><!-- keep me --></script>
+			
+			<link rel="stylesheet" type="text/css" href='/resources/typeahead.js/css/typeahead.css'/>
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading">
@@ -49,54 +55,44 @@
 		<jsp:attribute name="content">
 		
 			<div class="page-header">
-				<h1>New Person</h1>
+				<h1>Person <small>${command.requestedPersonName}</small></h1>
 			</div>
 		
-			<c:if test="${not empty command.post}">
-				<div class='panel panel-default'>
-					<div class='panel-heading'>
-						<h4>Selected Post</h4>
-					</div>
-					<div class='panel-body'>
-						<div class="title">
-							<pub:title post="${command.post}">
-								<jsp:attribute name="bibActionButtons">
-									<div class="pull-right">
-										<bib:actions post="${command.post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/>
-									</div>
-								</jsp:attribute>
-							</pub:title>
-						</div>
-						<button type='button' class='btn btn-primary' id=''>Dieser Author gehoert nicht zu dieser Publikation</button>
-					</div>
-				</div>
-			</c:if>
-			<br/>
 			<div class='panel panel-default'>
 				<div class='panel-heading'>
-					<h4>About the person</h4>
+					<h4>Selected Post</h4>
+				</div>
+				<div class='panel-body'>
+					<div class="title">
+						<pub:title post="${command.post}">
+							<jsp:attribute name="bibActionButtons">
+								<div class="pull-right">
+									<bib:actions post="${command.post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/>
+								</div>
+							</jsp:attribute>
+						</pub:title>
+					</div>
+					<a href='/person/unlink/${command.requestedPersonId}/${command.requestedPersonName}/${command.requestedHash}/${command.requestedUser}' class='btn btn-primary' id=''>Dieser Author gehoert nicht zu dieser Publikation</a>
+				</div>
+			</div>
+
+			<br/>
+			
+			<div class='panel panel-default'>
+				<div class='panel-heading'>
+					<h4>Involved People</h4>
 				</div>
 				
 				<div class='panel-body'>
-					<form method='post' name='newPersonForm' action="/person/new/0/${command.post.intraHash}" class='form-horizontal'>
-						<div class='form-group'>
-							<label class="control-label col-xs-4" for='formFirstName'>First name</label>
-							<div class="col-xs-6">
-								<input class='form-control' type="text" name='formFirstName' id='formFirstName' placeholder="First name" value="${command.person.mainName.firstName}"/>
-							</div>
-							<label class="control-label col-xs-4" for='formLastName'>Last name</label>
-							<div class="col-xs-6">
-								<input class='form-control' type="text" name='formLastName' id='formLastName' placeholder="Last name" value="${command.person.mainName.lastName }"/>
-							</div>
-						</div>
-						<br/>
-					</form>
-					<div class='col-xs-4'><span></span></div>
-					<div class="col-xs-6">
-						<div class='btn-group'>
-							<button type='button' class='btn btn-primary' id='addPersonButton'>Add</button>
-						</div>
+					<div class="list-group">
+						<c:forEach var="author" items="${command.post.resource.author}">
+							<a href="/person/show/${author.lastName}">${author.firstName} ${author.lastName} </a>
+							<a data-toggle='modal' href="#editRole" onclick="editRole('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')">(Betreuer) </a>
+							<a data-toggle='modal' href='#unlink' onclick="unlink('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')" style='color:darkred'>x</a>
+							, 
+						</c:forEach>
 					</div>
+					<button class='btn btn-primary pull-right' data-toggle="modal" data-target="#linkPerson">Link Person</button>
 				</div>
 			</div>
 		</jsp:attribute>
@@ -105,6 +101,7 @@
 	
 	
 	  <!-- Modal -->
+	  <!-- Notfalls nur in Nachname -->
   <div class="modal fade" id="addName" tabindex="-1" role="dialog" aria-labelledby="addNameLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -200,5 +197,38 @@
       </div>
     </div>
   </div>
+  
+  <div class="modal fade" id="linkPerson" tabindex="-1" role="dialog"
+		aria-labelledby="linkPersonLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form action="#todo" method="post" name='linkPersonForm' class='form-horizontal'>
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&amp;times;</button>
+						<h4 class="modal-title">Link Person to thesis</h4>
+					</div>
+					<div class="modal-body">
+          				<FIELDSET>
+          					<div class="form-group">
+								<label for='linkPersonAuto' class="control-label col-xs-3">Person</label>
+        						<div class="col-xs-7">
+        							<div class='input-group'>
+										<input class='form-control typeahead' id='linkPersonAutp' type='text' name='linkPersonAuto' autocomplete="off"/>
+										<input type='hidden' id='formLinkPersonId' name='formLinkPersonId' value='0'/>
+									</div>
+								</div>
+							</div>
+						</FIELDSET>
+					</div>
+					<div class="modal-footer">
+						<a class='pull-left' href='/person/new/null/null/${command.requestedHash}/${command.requestedUser}'>new Person</a>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<input type="submit" class="btn btn-primary" id='formLinkPersonSubmit' name='formLinkPersonSubmit' value='Add' />
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
   
 </jsp:root>

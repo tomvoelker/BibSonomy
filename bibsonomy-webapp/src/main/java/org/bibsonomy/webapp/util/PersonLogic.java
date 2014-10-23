@@ -1,8 +1,12 @@
 package org.bibsonomy.webapp.util;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.enums.PersonResourceRelation;
@@ -30,7 +34,7 @@ public class PersonLogic implements PersonLogicInterface {
 	@Override
 	public List<Person> getPersons(String longHash, String publicationOwner, PersonName personName, PersonResourceRelation rel) {
 		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<Person>();
 	}
 
 	/* (non-Javadoc)
@@ -46,7 +50,7 @@ public class PersonLogic implements PersonLogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonRelation(java.lang.String, java.lang.String, org.bibsonomy.model.Person, org.bibsonomy.model.enums.PersonResourceRelation)
 	 */
 	@Override
-	public void removePersonRelation(String longHash, String publicationOwner, Person person, PersonResourceRelation rel) {
+	public void removePersonRelation(String longHash, String publicationOwner, String person_ID, PersonResourceRelation rel) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -69,4 +73,8 @@ public class PersonLogic implements PersonLogicInterface {
 		return null;
 	}
 	
+	@Override
+	public Map<Person, BibTex> getQualifyingPublications(String personName) {
+		return null;
+	}
 }
