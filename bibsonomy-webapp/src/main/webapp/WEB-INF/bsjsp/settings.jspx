@@ -27,9 +27,10 @@
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/cv_page.css" />
 			<script type="text/javascript" src="${resdir}/javascript/cv/handlers.js"><!--  --></script>
 			<script type="text/javascript" src="${resdir}/javascript/profile/handlers.js"><!-- --></script>
+			<script type="text/javascript" src="${resdir}/javascript/bs/settings.js"><!-- keep me --></script>
 		</jsp:attribute>
 		
-		<jsp:attribute name="breadcrumbs">	
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<fmt:message key="navi.account" var="account"/>
@@ -44,7 +45,6 @@
 			| page content
 			+-->
 		<jsp:attribute name="tabcontent">
-				
 			<!-- display potential errors -->
 			<errors:global errors="${errors}"/>
 			
@@ -61,7 +61,6 @@
 			<settings:oauth command="${command}"/>
 			
 			<settings:sync command="${command}"/>
-
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading">
@@ -88,7 +87,6 @@
 			+-->
 		<jsp:attribute name="sidebar">
 			<ul>
-
 				<!-- loginUser.friends -->
 				<li class="user-friends">
 					<h4 class="sidebar"><fmt:message key="friends.friendof"/></h4> 
