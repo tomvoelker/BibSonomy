@@ -26,40 +26,47 @@
 					<!-- TODO: Include a help text -->
 					<fieldset>
 						<legend><fmt:message key="settings.group.sharedDocuments" /></legend>
-						<!-- show per user group sharing options -->
-						<c:forEach var="group" items="${loginUser.groups}">
-							<c:if test="${group.name ne loginUser.name}">
-								<form:form cssClass="form-horizontal" id="groupShareSettings" method="get" action="/ajax/handleGroupShare">
-									<div class="row">
-										<div class="col-md-10"><a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}' />&amp;nbsp;</a></div>
-										<c:choose>
-											<c:when test="${group.sharedDocuments}">
-												<input type="hidden" name="requestedGroup" value="${fn:escapeXml(group.name)}" />
-												<input type="hidden" name="ckey" value="${ckey}" />
-												<input type="hidden" name="forward" value="settings?selTab=3" />
+						<c:choose>
+							<c:when test="${empty loginUser.groups}">
+								<fmt:message key="settings.group.noGroups" />
+							</c:when>
+							<c:otherwise>
+								<!-- show per user group sharing options -->
+								<c:forEach var="group" items="${loginUser.groups}">
+									<c:if test="${group.name ne loginUser.name}">
+										<form:form cssClass="form-horizontal" id="groupShareSettings"  method="get" action="/ajax/handleGroupShare">
+											<div class="row">
+												<div class="col-md-10"><a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}' /></a></div>
 												<c:choose>
-													<c:when test="${group.userSharedDocuments}">
-														<fmt:message var="buttonTitle" key="groups.actions.unshareDocuments.title" />
-														<fmt:message var="buttonValue" key="groups.actions.unshareDocuments" />
-														<input type="hidden" name="action" value="unshareDocuments" />
-														<div class="col-md-2"><bsform:button style="success" size="defaultSize" type="submit" value="${buttonValue}" className="btn-block removeFriend" /></div>
+													<c:when test="${group.sharedDocuments}">
+														<input type="hidden" name="requestedGroup" value="${fn:escapeXml(group.name)}" />
+														<input type="hidden" name="ckey" value="${ckey}" />
+														<input type="hidden" name="forward" value="settings?selTab=3" />
+														<c:choose>
+															<c:when test="${group.userSharedDocuments}">
+																<fmt:message var="buttonTitle" key="groups.actions.unshareDocuments.title" />
+																<fmt:message var="buttonValue" key="groups.actions.unshareDocuments" />
+																<input type="hidden" name="action" value="unshareDocuments" />
+																<div class="col-md-2"><bsform:button style="success" size="defaultSize" type="submit" value="${buttonValue}" className="btn-block" /></div>
+															</c:when>
+															<c:otherwise>
+																<fmt:message var="buttonTitle" key="groups.actions.shareDocuments.title" />
+																<fmt:message var="buttonValue" key="groups.actions.shareDocuments" />
+																<input type="hidden" name="action" value="shareDocuments" />
+																<div class="col-md-2"><bsform:button style="defaultStyle" size="defaultSize" type="submit" value="${buttonValue}" className="btn-block" /></div>
+															</c:otherwise>
+														</c:choose>
 													</c:when>
 													<c:otherwise>
-														<fmt:message var="buttonTitle" key="groups.actions.shareDocuments.title" />
-														<fmt:message var="buttonValue" key="groups.actions.shareDocuments" />
-														<input type="hidden" name="action" value="shareDocuments" />
-														<div class="col-md-2"><bsform:button style="defaultStyle" size="defaultSize" type="submit" value="${buttonValue}" className="btn-block" /></div>
+														<div class="col-md-2"><bsform:button style="defaultStyle" size="defaultSize" type="button" value="disabled" className="disabled btn-block" /></div>
 													</c:otherwise>
 												</c:choose>
-											</c:when>
-											<c:otherwise>
-												<div class="col-md-2"><bsform:button style="defaultStyle" size="defaultSize" type="button" value="disabled" className="disabled btn-block" /></div>
-											</c:otherwise>
-										</c:choose>
-									</div>
-								</form:form>
-							</c:if>
-						</c:forEach>
+											</div>
+										</form:form>
+									</c:if>
+								</c:forEach>
+							</c:otherwise>
+						</c:choose>
 					</fieldset>
 				</c:when>
 				
