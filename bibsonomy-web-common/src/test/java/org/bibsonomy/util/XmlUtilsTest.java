@@ -30,6 +30,9 @@ import static org.junit.Assert.fail;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -46,15 +49,20 @@ public class XmlUtilsTest {
 
 	/**
 	 * Tests also thread safety!
+	 * @throws Exception 
 	 */
 	@Test
-	public void testGetDOM() {
+	public void testGetDOM() throws Exception {
+		final ExecutorService service = Executors.newFixedThreadPool(10);
 		final List<XMLParsingThreadimplements> runables = new LinkedList<XMLParsingThreadimplements>();
 		for (int i = 0; i < 10; i++) {
 			final XMLParsingThreadimplements runable = new XMLParsingThreadimplements(("thread " + i));
 			runables.add(runable);
-			new Thread(runable).start();
+			service.submit(runable);
 		}
+		
+		service.shutdown();
+		service.awaitTermination(10, TimeUnit.MINUTES);
 		
 		for (XMLParsingThreadimplements xmlParsingThreadimplements : runables) {
 			if (xmlParsingThreadimplements.error != null) {

@@ -55,7 +55,6 @@
 				<jsp:attribute name="pathPart">
 					<a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}">@<c:out value='${command.requestedUser}'/></a>
 				</jsp:attribute>
-å
 			</parts:search>
 		</jsp:attribute>
 
