@@ -130,7 +130,6 @@
 		<property name="tagCloudLimit" value="${lucene.tagCloud.limit}" />
 		<property name="tagCloudEnabled" value="${lucene.tagCloud.enabled}" />
 		<property name="dbLogic" ref="luceneInfoDBLogic" />
-		<property name="luceneBibTexManager" ref="lucenePublicationManager" />
 	</bean>
 	
 	<bean id="lucenePublicationSearch" class="org.bibsonomy.lucene.search.LucenePublicationSearch" parent="luceneResourceSearch">

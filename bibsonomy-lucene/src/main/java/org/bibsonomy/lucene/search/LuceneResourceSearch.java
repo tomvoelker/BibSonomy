@@ -36,13 +36,10 @@ import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.Version;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.es.EsResourceSearch;
-import org.bibsonomy.es.GenerateSharedResourceIndex;
-import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.database.LuceneInfoLogic;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
-import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.lucene.param.QuerySortContainer;
 import org.bibsonomy.lucene.search.collector.TagCountCollector;
 import org.bibsonomy.model.Post;
@@ -81,8 +78,6 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 
 	/** the index the searcher is currently using */
 	private LuceneResourceIndex<R> index;
-
-	private LuceneResourceManager<R> luceneBibTexManager;
 
 	/**
 	 * config values
@@ -746,9 +741,9 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 				List<Post<R>> posts = searchResource.fullTextSearch();
 				return posts;
 			} catch (CorruptIndexException e) {
-				log.error("TODO", e);
+				log.error("Failed to search post from shared resources", e);
 			} catch (IOException e) {
-				log.error("TODO", e);
+				log.error("Failed to search post from shared resource", e);
 			}
 		
 			return null;
@@ -759,20 +754,6 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			return this.searchLucene(query, limit, offset);
 		}
 			return null;
-	}
-
-	/**
-	 * @return the luceneBibTexManager
-	 */
-	public LuceneResourceManager<R> getLuceneBibTexManager() {
-		return this.luceneBibTexManager;
-	}
-
-	/**
-	 * @param luceneBibTexManager the luceneBibTexManager to set
-	 */
-	public void setLuceneBibTexManager(LuceneResourceManager<R> luceneBibTexManager) {
-		this.luceneBibTexManager = luceneBibTexManager;
 	}
 
 }
