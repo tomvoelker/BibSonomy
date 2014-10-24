@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
@@ -38,12 +39,13 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  *
  * @author Haile
  */
-public class AkademiaiScraper extends AbstractUrlScraper{
+public class AkademiaiScraper extends AbstractUrlScraper {
 	private static final Log log = LogFactory.getLog(AkademiaiScraper.class);
 
 	private static final String SITE_NAME = "Akademiai Kiado";
@@ -90,29 +92,25 @@ public class AkademiaiScraper extends AbstractUrlScraper{
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.scraper.AbstractUrlScraper#scrapeInternal(org.bibsonomy.scraper.ScrapingContext)
 	 */
-	private static String ExtractID(String url){
-		String id = null;
-		Matcher m = URL_PATTERN.matcher(url.toString());
-		if(m.find()){
-			id = m.group(1);
+	private static String extractID(final URL url){
+		final Matcher m = URL_PATTERN.matcher(url.toString());
+		if (m.find()) {
+			return m.group(1);
 		}
-		return id;
+		return null;
 	}
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
-		String url = sc.getUrl().toString();
-		String id = ExtractID(url);
-		String ris_url = RIS_URL + id + "&mode=ris";
-		String bibtex = null;
+		final URL url = sc.getUrl();
+		final String id = extractID(url);
+		final String ris_url = RIS_URL + id + "&mode=ris";
 		try {
-			String  content = WebUtils.getContentAsString(ris_url,WebUtils.getCookies(new URL(url)));
-			RisToBibtexConverter rbc = new RisToBibtexConverter();
+			final String content = WebUtils.getContentAsString(ris_url, WebUtils.getCookies(url));
+			final String bibtex = new RisToBibtexConverter().risToBibtex(content);
 
-			bibtex = rbc.risToBibtex(content);
-
-			if(bibtex != null){
+			if (ValidationUtils.present(bibtex)) {
 				sc.setBibtexResult(bibtex);
 				return true;
 			}
