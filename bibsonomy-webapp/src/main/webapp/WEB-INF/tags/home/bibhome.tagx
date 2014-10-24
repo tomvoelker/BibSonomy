@@ -28,7 +28,7 @@
 						</div>
 						
 						<!-- registration -->
-						<div class="systemRegister">	
+						<div class="systemRegister">
 							<h2><a href="/login"><fmt:message key="system.loginRegister"/></a></h2>
 						</div>
 						
