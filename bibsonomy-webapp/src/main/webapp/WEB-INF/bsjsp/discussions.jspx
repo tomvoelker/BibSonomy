@@ -46,23 +46,7 @@
 							<nav:crumb name="${command.requestedGroup}" href="/group/${command.requestedGroup}" />
 						</c:when>
 						<c:when test="${not empty command.requestedUser}">
-							<!-- some user is present, check if the requested user is
-								 the logged in user  -->
-							<c:set var="linkToUser" value="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}" />
-							<c:choose>
-								<c:when test="${command.requestedUser eq command.context.loginUser.name}">
-									<fmt:message key="buttons.mybibsonomy" var="my">
-										<fmt:param>${properties['project.name']}</fmt:param>
-									</fmt:message>
-									<nav:crumb name="${my}" href="${linkToUser}" />
-								</c:when>
-								<c:otherwise>
-									<fmt:message key="navi.user" var="user" />
-									<nav:crumb name="${user}" />
-									<c:set var="username"><user:username noLink="${true}" username="${command.requestedUser}" /></c:set>
-									<nav:crumb name="${username}" href="${linkToUser}"/>
-								</c:otherwise>
-							</c:choose>
+							<nav:usercrumb requestedUser="${command.requestedUser}" loginUser="${command.context.loginUser}" />
 						</c:when>
 						<c:otherwise>
 							<fmt:message var="popular" key="navi.popular" />

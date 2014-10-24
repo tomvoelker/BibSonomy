@@ -42,9 +42,7 @@
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<fmt:message key="navi.user" var="user" />
-					<nav:crumb name="${user}" />
-					<nav:crumb name="${post.user.name}" href="/user/${post.user.name}" />
+					<nav:usercrumb requestedUser="${command.requestedUser}" loginUser="${command.context.loginUser}" />
 					<nav:crumb name="${mtl:shorten(title, 25)}" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>

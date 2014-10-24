@@ -33,20 +33,7 @@
 			<c:set var="ownPage" value="${command.context.userLoggedIn and (command.requestedUser eq command.context.loginUser)}" />
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<c:choose>
-						<c:when test="${ownPage}">
-							<fmt:message key="buttons.mybibsonomy" var="my">
-								<fmt:param>${properties['project.name']}</fmt:param>
-							</fmt:message>
-							<nav:crumb name="${my}" href="${relativeUrlGenerator.getUserUrlByUserName(command.context.loginUser.name)}" />
-						</c:when>
-						<c:otherwise>
-							<fmt:message key="navi.user" var="user" />
-							<nav:crumb name="${user}" />
-							<c:set var="username"><user:username noLink="${true}" username="${command.requestedUser}" /></c:set>
-							<nav:crumb name="${username}" active="true" />
-						</c:otherwise>
-					</c:choose>
+					<nav:usercrumb requestedUser="${command.requestedUser}" loginUser="${command.context.loginUser}" active="${true}" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
