@@ -24,18 +24,22 @@
 		| variables, messages
 		+-->
 	<c:set var="post" value="${command.bibtex.list[0]}" />
-	<c:set var="publication" value="${post.resource}" />	
+	<c:set var="publication" value="${post.resource}" />
 	<c:set var="title" value="${mtl:cleanBibtex(publication.title)}" />
 	<c:set var="isOwnPost" value="${post.user.name eq command.context.loginUser.name}"/>
-	<fmt:message key="navi.publication" var="pageTitle" />	
-	
+	<fmt:message key="navi.publication" var="pageTitle" />
 	
 	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}" showPageOptions="${true}" minimizedContentWidth="${true}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
 		</jsp:attribute>
 		
-		<jsp:attribute name="breadcrumbs">	
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/javascript/bs/publicationdetails.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/bs/publication.js"><!-- keep me --></script>
+		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<fmt:message key="navi.user" var="user" />

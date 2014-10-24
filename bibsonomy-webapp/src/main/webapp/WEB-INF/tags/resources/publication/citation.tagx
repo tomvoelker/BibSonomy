@@ -33,7 +33,7 @@
 				<a href="#citation_plain"><fmt:message key="bibtex.citation_format.plain" /></a>
 			</li>
 			<c:forEach var="citationStyle" items="${fn:split('harvardhtml,chicago,apa_html,din1505',',')}">
-				<c:set var="prefix" value="/layout/${citationStyle}" />
+				<c:set var="prefix" value="layout/${citationStyle}" />
 				<li><a href="${relativeUrlGenerator.prefix(prefix).getPublicationUrlByPost(post)}?formatEmbedded=true"><fmt:message key="bibtex.citation_format.${citationStyle}" /></a></li>
 			</c:forEach>
 			<li><a href="#citation_bibtex">BibTeX</a></li>
