@@ -58,7 +58,7 @@
 			<body>
 				<!-- 
 				<div id="logo" class="${boxStyle}" style="margin-top: 50px; margin-bottom: 50px;">									
-					<h1><a href="/"><img src="/resources/image/bibsonomy-logo.png" title="BibSonomy" /></a></h1>
+					<h1><a href="${relativeUrlGenerator.getProjectHome()}"><img src="/resources/image/bibsonomy-logo.png" title="BibSonomy" /></a></h1>
 					<small class="slogan"><fmt:message key="system.desc"/></small>
 					<c:if test="${not empty headerMessageKey}">
 						<h2><fmt:message key="${headerMessageKey}" /></h2>

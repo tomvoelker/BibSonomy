@@ -51,7 +51,7 @@
 							</form>
 						</c:when>
 						<c:otherwise>
-							<a class="btn btn-primary btn-lg btn-block" href="/login">Please login first.</a>
+							<a class="btn btn-primary btn-lg btn-block" href="${relativeUrlGenerator.getLoginUrl()}">Please login first.</a>
 						</c:otherwise>
 					</c:choose>
 					<br /><br /><br />

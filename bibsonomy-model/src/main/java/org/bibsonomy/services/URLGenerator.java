@@ -87,8 +87,10 @@ public class URLGenerator {
 	private static final String CONCEPT_PREFIX = "concept";
 	private static final String FOLLOWERS_PREFIX = "followers";
 	private static final String FRIEND_PREFIX = "friend";
+	private static final String GROUPS = "groups";
 	private static final String GROUP_PREFIX = "group";
 	private static final String LOGIN_PREFIX = "login";
+	private static final String REGISTER = "register";
 	private static final String MYBIBTEX_PREFIX = "myBibTex";
 	private static final String MYDOCUMENTS_PREFIX = "myDocuments";
 	private static final String MYDUPLICATES_PREFIX = "myDuplicates";
@@ -101,8 +103,8 @@ public class URLGenerator {
 	private static final String SEARCH_PREFIX = "search";
 	private static final String TAG_PREFIX = "tag";
 	private static final String USER_PREFIX = "user";
-	private static final String VIEWABLE_FRIENDS_SUFFIX = "friends";
 	private static final String VIEWABLE_PREFIX = "viewable";
+	private static final String VIEWABLE_FRIENDS_SUFFIX = "friends";
 	private static final String VIEWABLE_PRIVATE_SUFFIX = "private";
 	private static final String VIEWABLE_PUBLIC_SUFFIX = "public";
 	
@@ -335,7 +337,17 @@ public class URLGenerator {
 			return this.getUrl(url + "/" + UrlUtils.safeURIEncode(userName));
 			
 		return this.getUrl(url);
-	}  
+	}
+	
+	/**
+	 * Constructs the URL for the groups page
+	 * 
+	 * @return URL pointing to the groups page
+	 */
+	public String getGroupsUrl() {
+		String url = this.projectHome + prefix + GROUPS;
+		return this.getUrl(url);
+	}
 	
 	/**
 	 * Constructs the URL for the group's page.
@@ -363,7 +375,6 @@ public class URLGenerator {
 		return this.getUrl(url);
 	}
 	
-	
 	/**
 	 * Constructs the URL for the login page
 	 * 
@@ -371,6 +382,16 @@ public class URLGenerator {
 	 */
 	public String getLoginUrl() {
 		String url = this.projectHome + prefix + LOGIN_PREFIX;
+		return this.getUrl(url);
+	}
+	
+	/**
+	 * Constructs the URL for the register page
+	 * 
+	 * @return URL pointing to the register page
+	 */
+	public String getRegisterUrl() {
+		final String url = this.projectHome + prefix + REGISTER;
 		return this.getUrl(url);
 	}
 	

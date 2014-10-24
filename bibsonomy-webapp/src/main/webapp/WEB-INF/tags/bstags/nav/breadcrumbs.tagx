@@ -10,7 +10,7 @@
 	<jsp:directive.attribute name="crumbs" fragment="true" required="true" description="Crumb items "/>
 	
 	<ol class="breadcrumb">
-		<li><a href="/"><span class="fa fa-home"><!--  --></span></a></li>
+		<li><a href="${relativeUrlGenerator.getProjectHome()}"><span class="fa fa-home"><!--  --></span></a></li>
 		<jsp:invoke fragment="crumbs" />
 	</ol>
 	

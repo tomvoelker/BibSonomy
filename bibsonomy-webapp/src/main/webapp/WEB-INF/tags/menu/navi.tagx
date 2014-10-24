@@ -15,7 +15,7 @@
 		<!--+ 
 			| Home
 			+-->
-		<li class="${activeTab eq 'home' ? 'active' : ''}"><a href="/"><fmt:message key="navi.home"/></a></li>
+		<li class="${activeTab eq 'home' ? 'active' : ''}"><a href="${relativeUrlGenerator.getProjectHome()}"><fmt:message key="navi.home"/></a></li>
 		<!--+ 
 		 	| myProjectName
 		 	+-->
@@ -75,7 +75,7 @@
 					<span><fmt:message key="navi.groups"/></span>
 					<table>
 						<tr>
-							<td colspan="6"><a href="/groups"><fmt:message key="navi.groups.all"/></a></td>
+							<td colspan="6"><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups.all"/></a></td>
 						</tr>
 						<c:forEach var="grp" items="${loginUser.groups}">
 							<tr>
@@ -96,7 +96,7 @@
 				</li>
 			</c:when>
 			<c:otherwise>
-				<li class="${activeTab eq 'groups' ? 'active' : ''}"><a href="/groups"><fmt:message key="navi.groups"/></a></li>
+				<li class="${activeTab eq 'groups' ? 'active' : ''}"><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups"/></a></li>
 			</c:otherwise>
 		</c:choose>
 		<!--+

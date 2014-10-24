@@ -125,7 +125,7 @@
 							<c:otherwise>
 								<p>
 									<fmt:message key="buttons.shortcut_login_one"/>
-									<a href="/login"><fmt:message key="buttons.shortcut_login_two"/></a>
+									<a href="${relativeUrlGenerator.getLoginUrl()}"><fmt:message key="buttons.shortcut_login_two"/></a>
 									<fmt:message key="buttons.shortcut_login_three"/>
 								</p>
 							</c:otherwise>

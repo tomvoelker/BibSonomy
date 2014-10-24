@@ -24,7 +24,7 @@
         </jsp:attribute>
         
         <jsp:attribute name="content">
-            <h1 class="content-heading"><fmt:message key="register.welcome"/> <a href="/">${properties['project.name']}</a>!</h1>
+            <h1 class="content-heading"><fmt:message key="register.welcome"/> <a href="${relativeUrlGenerator.getProjectHome()}">${properties['project.name']}</a>!</h1>
    	        <div class="lead">
    	        	<p><fmt:message key="register.activate"/></p>
    	        </div>

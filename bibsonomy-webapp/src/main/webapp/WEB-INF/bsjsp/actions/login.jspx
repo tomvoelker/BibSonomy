@@ -21,7 +21,7 @@
 		<jsp:attribute name="content">
 			<h1 class="content-header"><fmt:message key="login.local.legend"/><c:out value=" ${properties['project.name']}"/>
 				<c:if test="${not mtl:contains(authConfig, mtl:convertToEnum('org.bibsonomy.common.enums.AuthMethod', 'SAML'))}">
-					<small class="pull-right" style="position: relative; bottom: -14px; font-size: 14px;"><a href="/register"><fmt:message key="login.register.bs"/></a></small>
+					<small class="pull-right" style="position: relative; bottom: -14px; font-size: 14px;"><a href="${relativeUrlGenerator.getRegisterUrl()}"><fmt:message key="login.register.bs"/></a></small>
 				</c:if>
 			</h1>
 			<br />
@@ -29,7 +29,7 @@
 				<c:if test="${not empty command.notice}">
 					<bs:alert style="info">
 						<jsp:attribute name="alertBody">
-							<fmt:message key="login.notice.welcome_1" /> <a style="font-weight: bold;" href="/">${properties['project.name']}</a>, <fmt:message key="login.notice.welcome_2" />
+							<fmt:message key="login.notice.welcome_1" /> <a style="font-weight: bold;" href="${relativeUrlGenerator.getProjectHome()}">${properties['project.name']}</a>, <fmt:message key="login.notice.welcome_2" />
 							<br />
 							<br />
 							<b><fmt:message key="${fn:escapeXml(command.notice)}" /></b>

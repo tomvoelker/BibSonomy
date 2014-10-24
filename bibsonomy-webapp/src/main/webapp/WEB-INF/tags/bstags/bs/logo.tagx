@@ -6,7 +6,7 @@
 	<div id="logo">
 			<fmt:message var="homelink" key="navi.home"/> 
 			<h1>
-				<a href="/" title="${homelink}">
+				<a href="${relativeUrlGenerator.getProjectHome()}" title="${homelink}">
 					<!-- <img src="/resources/image/logo4.png" alt="${properties['project.name']} Logo" /> --> 
 					<c:out value="${properties['project.name']}"/>
 				</a>
