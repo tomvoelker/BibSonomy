@@ -30,9 +30,8 @@
 	<c:set var="citationStylesToShow" value="harvardhtml,chicago,apa_html,din1505" />
 	<div class="citation-box">
 		<ul class="nav nav-tabs">
-			<c:forEach var="citationStyle" items="${fn:split(citationStylesToShow,',')}" varStatus="status">
+			<c:forEach var="citationStyle" items="${fn:split(citationStylesToShow,',')}">
 				<li>
-					<c:set var="linkClass" value="${status.first ? 'firstTab' : ''}" />
 					<c:set var="prefix" value="layout/${citationStyle}" />
 					<c:choose>
 						<c:when test="${isCommunityPost}">
@@ -42,7 +41,7 @@
 							<c:set var="exportUrl" value="${relativeUrlGenerator.prefix(prefix).getPublicationUrlByPost(post)}" />
 						</c:otherwise>
 					</c:choose>
-					<a class="${linkClass}" data-toggle="tab" href="#citation_${citationStyle}" data-formatUrl="${exportUrl}?formatEmbedded=true">
+					<a data-toggle="tab" href="#citation_${citationStyle}" data-formatUrl="${exportUrl}?formatEmbedded=true">
 						<fmt:message key="bibtex.citation_format.${citationStyle}" />
 					</a>
 				</li>
