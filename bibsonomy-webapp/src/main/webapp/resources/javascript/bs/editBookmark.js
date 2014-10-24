@@ -19,9 +19,15 @@ function scraping() {
 					.attr('name', 'url')
 					.val(url);
 					
+					var selectionInput = $('<input />').attr('type', 'hidden')
+					.attr('name', 'selection')
+					.val(selection);
+					
 					var content = $('#publication-found-form-placeholder').html();
-					form.append(input);
-					form.append(content);
+					
+					form.append(input)
+					.append(selectionInput)
+					.append(content);
 					
 					$('#publication-found-form-placeholder').html(form);
 					
@@ -39,7 +45,7 @@ $(function() {
 	    html : true,
 	    trigger: 'manual',
 	    container: 'body',
-	    placement: 'top',	    	
+	    placement: 'top',
 	    title: function() {
 	      	var title = $(this).parent().parent().find('.publication-found-title');
 	      	/*
