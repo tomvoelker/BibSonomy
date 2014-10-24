@@ -23,14 +23,12 @@
 					<a href="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
 				</jsp:attribute>
 			</parts:search>	
-		</jsp:attribute>		
+		</jsp:attribute>
 		
-		<jsp:attribute name="breadcrumbs">	
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<fmt:message key="navi.group" var="group" />
-					<nav:crumb name="${group}"  />
-					<nav:crumb name="${command.group.name}" active="true" />
+					<nav:groupcrumb requestedGroup="${command.requestedGroup}" active="${true}"/>
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>

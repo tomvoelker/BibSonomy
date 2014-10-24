@@ -49,8 +49,7 @@
 							<nav:usercrumb requestedUser="${command.requestedUser}" loginUser="${command.context.loginUser}" />
 						</c:when>
 						<c:otherwise>
-							<fmt:message var="popular" key="navi.popular" />
-							<nav:crumb name="${popular}" />
+							<nav:popular />
 						</c:otherwise>
 					</c:choose>
 					<fmt:message var="posts" key="navi.discussedPosts" />

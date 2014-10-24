@@ -8,35 +8,33 @@
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
-	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="true" description="the requested user"/>
+	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false" description="the requested user"/>
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" description="the requested user"/>
 	<jsp:directive.attribute name="active" type="java.lang.Boolean" required="false" description="the requested user"/>
 	
 	<c:if test="${empty active}">
 		<c:set var="active" value="${false}" />
 	</c:if>
-	
-	<c:set var="ownPage" value="${command.context.userLoggedIn and (requestedUser eq loginUser)}" />
+	<c:set var="ownPage" value="${command.context.userLoggedIn and ((requestedUser eq loginUser) or empty requestedUser)}" />
 	<c:choose>
 		<c:when test="${ownPage}">
 			<fmt:message key="buttons.mybibsonomy" var="my">
 				<fmt:param>${properties['project.name']}</fmt:param>
 			</fmt:message>
-			<c:choose>
-				<c:when test="${active}">
-					<c:set var="link" value="" />
-				</c:when>
-				<c:otherwise>
-					<c:set var="link" value="${relativeUrlGenerator.getUserUrlByUserName(loginUser)}" />
-				</c:otherwise>
-			</c:choose>
-			<nav:crumb name="${my}" href="${link}" />
+			<c:set var="userLink" value="" />
+			<c:if test="${not active}">
+				<c:set var="userLink" value="${relativeUrlGenerator.getUserUrlByUserName(loginUser.name)}" />
+			</c:if>
+			<nav:crumb name="${my}" href="${userLink}" active="${active}" />
 		</c:when>
 		<c:otherwise>
-			<fmt:message key="navi.user" var="user" />
-			<nav:crumb name="${user}" />
+			<nav:crumb nameKey="navi.user" />
 			<c:set var="username"><user:username noLink="${true}" username="${requestedUser}" /></c:set>
-			<nav:crumb name="${username}" href="${relativeUrlGenerator.getUserUrlByUserName(requestedUser)}" />
+			<c:set var="userLink" value="" />
+			<c:if test="${not active}">
+				<c:set var="userLink" value="${relativeUrlGenerator.getUserUrlByUserName(requestedUser)}" />
+			</c:if>
+			<nav:crumb name="${username}" href="${userLink}" active="${active}"/>
 		</c:otherwise>
 	</c:choose>
 </jsp:root>

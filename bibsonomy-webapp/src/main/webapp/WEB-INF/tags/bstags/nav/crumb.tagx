@@ -8,10 +8,14 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="href" type="java.lang.String" required="false" description="link"/>
-	<jsp:directive.attribute name="name" type="java.lang.String" required="true" description="name" />
+	<jsp:directive.attribute name="name" type="java.lang.String" required="false" description="name" />
+	<jsp:directive.attribute name="nameKey" type="java.lang.String" required="false" description="name" />
 	<jsp:directive.attribute name="active" type="java.lang.Boolean" required="false" description="active crumb" />
 	<jsp:directive.attribute name="leadingIcon" type="java.lang.String" required="false" description="Insert a leading font awesome icon." />
 	
+	<c:if test="${empty name and not empty nameKey}">
+		<fmt:message var="name" key="${nameKey}"/>
+	</c:if>
 	<li class="${ (not empty active and active) ? 'active' : ''}">
 		<c:if test="${empty href and not empty leadingIcon}">
 			<span class="fa ${leadingIcon}"><!--  --></span><c:out value=" " />

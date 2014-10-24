@@ -23,6 +23,7 @@
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
+					<nav:popular />
 					<nav:crumb name="${pageTitle}" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>

@@ -23,14 +23,11 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="headerExt">
-			
 			<script type="text/javascript" src="/resources/javascript/bs/animatescroll.js"><!-- --></script>
-				
 			<script type="text/javascript" src="/resources/javascript/bs/animate-scroll-affix.js"><!-- --></script>
-		
 		</jsp:attribute>
 		
-		<!-- 
+		<!-- TODO breadcrumbs
 		<jsp:attribute name="breadcrumbs">	
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">

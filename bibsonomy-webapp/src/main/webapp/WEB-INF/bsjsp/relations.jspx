@@ -23,22 +23,21 @@
     		activeTab="popular"
     		showPageOptions="${command.context.userLoggedIn}"
     		minimizedContentWidth="${true}">
-      	
-    	<jsp:attribute name="heading">
+
+		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.relations" formAction="/concept/tag/" formInputName="tag"/>
-    	</jsp:attribute>
-    	
-    	<jsp:attribute name="breadcrumbs">	
+		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<fmt:message var="popular" key="navi.popular" />
-					<nav:crumb name="${popular}" href="/popular" />
+					<nav:popular />
 					<fmt:message var="concepts" key="navi.relations" />
 					<nav:crumb name="${concepts}" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
-    	<!--+
+		<!--+
 			| infobox
 			+-->
 		<jsp:attribute name="infobox">

@@ -23,16 +23,13 @@
 			</parts:search>
 		</jsp:attribute>
 		
-		<jsp:attribute name="breadcrumbs">	
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<fmt:message key="buttons.mybibsonomy" var="my">
-						<fmt:param>${properties['project.name']}</fmt:param>
-					</fmt:message>
-					<nav:crumb name="${my}" href="/user/${command.context.loginUser.name}" />
+					<nav:usercrumb requestedUser="${command.requestedUser}" loginUser="${command.context.loginUser}" />
 					<c:choose>
-						<c:when test="${command.requestedGroup eq 'private'}">
-							<fmt:message key="navi.privatePosts" var="privatePosts" />
+						<c:when test="${command.requestedGroup eq 'private' or command.requestedGroup eq 'friends'}">
+							<fmt:message key="navi.${command.requestedGroup}Posts" var="privatePosts" />
 							<nav:crumb name="${privatePosts}" active="true" />
 						</c:when>
 						<c:otherwise>
@@ -43,8 +40,8 @@
 			</nav:breadcrumbs>
 		</jsp:attribute>
 		
-		<jsp:attribute name="sidebar">	
-			<ul>		
+		<jsp:attribute name="sidebar">
+			<ul>
 				<rc:members requPath="${requPath}" users="${command.group.users}"/>
 				<li>
 					<h4 class="sidebar"><fmt:message key="tags"/></h4>

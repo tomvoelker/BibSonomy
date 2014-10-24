@@ -69,20 +69,20 @@
 			</nav:breadcrumbs>
 		</jsp:attribute>
 		
-		<jsp:attribute name="sidebar">		
+		<jsp:attribute name="sidebar">
 			<ul>
 				<div class="smalltext">	
 					<parts:tagsAndConceptsForSidebar/>
-				</div>			
+				</div>
 				
-				<!-- display user's tag relations -->			
+				<!-- display user's tag relations -->
 				<li>
 					<fmt:message key="tagrelations.title" var="tagRelationsTitle"/>
 					<h4 class="sidebar">
 						<a href="${relativeUrlGenerator.getConceptsUrlByString(fn:escapeXml(command.requestedUser))}" title="${tagRelationsTitle}">
-							<fmt:message key="tagrelations"/>
+							<fmt:message key="tagrelations" />
 						</a>
-					</h4>	
+					</h4>
 					<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
 				</li>
 				
