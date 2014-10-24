@@ -615,9 +615,18 @@ public class URLGenerator {
 		
 		if (present(userName))
 			return this.getUrl(url + "/" + UrlUtils.safeURIEncode(userName));
-			
 		return this.getUrl(url);
-	}  
+	}
+	
+	/**
+	 * Constructs a URL for a publication specified by its post
+	 * 
+	 * @param post
+	 * @return URL pointing to the publication represented by the intraHash and the userName
+	 */
+	public String getPublicationUrlByPost(final Post<BibTex> post) {
+		return getPublicationUrlByIntraHashAndUsername(post.getResource().getIntraHash(), post.getUser().getName());
+	}
 	
 	/**
 	 * Constructs a URL for the relevant posts for a group.
