@@ -21,19 +21,22 @@
 	
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
-
+	<jsp:directive.attribute name="isCommunityPost" type="java.lang.Boolean" required="false" />
 	
-	<!-- <fmt:message key="bibtex.citation_format_in"/> -->
-
+	<c:if test="${empty isCommunityPost}">
+		<c:set var="isCommunityPost" value="${false}" />
+	</c:if>
+	
+	<c:set var="citationStylesToShow" value="harvardhtml,chicago,apa_html,din1505" />
 	<div class="citation-box">
 		<ul class="nav nav-tabs">
-			<li>
-				<a class="firstTab" data-toggle="tab" href="#citation_harvardhtml" data-formatUrl="/layout/harvardhtml/bibtex/2${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}?formatEmbedded=true">
-					<fmt:message key="bibtex.citation_format.harvardhtml" />
-				</a>
-			</li>
-			<c:forEach var="citationStyle" items="${fn:split('chicago,apa_html,din1505',',')}">
-				<li><a data-toggle="tab" href="#citation_${citationStyle}" data-formatUrl="/layout/${citationStyle}/bibtex/2${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}?formatEmbedded=true"><fmt:message key="bibtex.citation_format.${citationStyle}" /></a></li>
+			<c:forEach var="citationStyle" items="${fn:split(citationStylesToShow,',')}" varStatus="status">
+				<li>
+					<c:set var="linkClass" value="${status.first ? 'firstTab' : ''}" />
+					<a class="${linkClass}" data-toggle="tab" href="#citation_${citationStyle}" data-formatUrl="/layout/${citationStyle}/bibtex/2${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}?formatEmbedded=true">
+						<fmt:message key="bibtex.citation_format.${citationStyle}" />
+					</a>
+				</li>
 			</c:forEach>
 			<li><a data-toggle="tab" href="#citation_bibtex">BibTeX</a></li>
 			<li><a data-toggle="tab" href="#citation_endnote">EndNote</a></li>
@@ -42,10 +45,7 @@
 			</li>
 		</ul>
 		<div id="citation-styles" class="tab-content pub-citation-tab-content">
-			<div class="tab-pane" id="citation_harvardhtml">
-				<!-- keep -->
-			</div>
-			<c:forEach var="citationStyle" items="${fn:split('chicago,apa_html,din1505',',')}">
+			<c:forEach var="citationStyle" items="${fn:split(citationStylesToShow,',')}">
 				<div class="tab-pane" id="citation_${citationStyle}">
 					<!-- keep -->
 				</div>
