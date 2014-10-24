@@ -94,7 +94,7 @@
 						<ul class="tagcloud sidebar_collapse_content">
 							<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
 								<li class="${userclass}">
-									<a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(user.name))}"><c:out value="${user.name}"/></a>
+									<a href="${relativeUrlGenerator.getUserUrl(user)}"><c:out value="${user.name}"/></a>
 									<c:out value=" "/>
 								</li>
 							</c:forEach>

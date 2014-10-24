@@ -30,8 +30,10 @@ import java.net.URL;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
+import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -168,6 +170,28 @@ public class URLGenerator {
 		}
 		return this.getUrl(url);
 	}
+	
+	/**
+	 * Constructs the URL for the author's page.
+	 * 
+	 * @param name the name of the author
+	 * @return The URL for the author's page.
+	 */
+	public String getAuthorUrlByPersonName(final PersonName name) {
+		final String url = this.projectHome + prefix + AUTHOR_PREFIX + "/" + UrlUtils.safeURIEncode(name.getFirstName() + " " + name.getLastName());
+		return this.getUrl(url);
+	}
+	
+	/**
+	 * Constructs the URL for the author's page.
+	 * 
+	 * @param author the name of the author
+	 * @return The URL for the author's page.
+	 */
+	public String getAuthorUrlByAuthor(final Author author) {
+		final String url = this.projectHome + prefix + AUTHOR_PREFIX + "/" + UrlUtils.safeURIEncode(author.getFirstName() + " " + author.getLastName());
+		return this.getUrl(url);
+	}
 
 	/**
 	 * Constructs the URL for the author's page.
@@ -255,6 +279,17 @@ public class URLGenerator {
 		}
 		return this.getUrl(url);
 	}
+	
+	/**
+	 * Constructs a concepts URL for the given user
+	 * i.e. a URL of the form /concepts/USERNAME
+	 * 
+	 * @param user
+	 * @return The URL pointing to the concepts of the user
+	 */
+	public String getConceptsUrlForUser(final User user) {
+		return this.getConceptsUrlByString(user.getName());
+	}
 
 	/**
 	 * Constructs a concept URL for the given username and tagname,
@@ -265,7 +300,7 @@ public class URLGenerator {
 	 * @return The URL pointing to the concepts of the user with the specified tags.
 	 */
 	public String getConceptUrlByUserNameAndTagName(final String userName, final String tagName) {
-		String url = this.projectHome + prefix + CONCEPT_PREFIX + "/" + USER_PREFIX;
+		String url = this.projectHome + prefix + USER_PREFIX + CONCEPT_PREFIX + "/" + USER_PREFIX;
 		url += "/" + UrlUtils.safeURIEncode(userName);
 		url += "/" + UrlUtils.safeURIEncode(tagName);
 		

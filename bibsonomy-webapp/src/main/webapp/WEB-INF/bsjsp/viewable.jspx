@@ -28,15 +28,7 @@
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<nav:usercrumb requestedUser="${command.requestedUser}" loginUser="${command.context.loginUser}" />
-					<c:choose>
-						<c:when test="${command.requestedGroup eq 'private' or command.requestedGroup eq 'friends'}">
-							<nav:crumb nameKey="navi.${command.requestedGroup}Posts" active="true" />
-						</c:when>
-						<c:otherwise>
-							<fmt:message var="viewable" key="post.resource.viewablefor"/>
-							<nav:crumb name="${viewable} ${command.requestedGroup}" active="true" />
-						</c:otherwise>
-					</c:choose>
+					<nav:viewableCrumb requestedGroup="${command.requestedGroup}" active="${true}" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>

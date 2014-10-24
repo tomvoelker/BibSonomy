@@ -8,6 +8,7 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 	
@@ -21,18 +22,18 @@
 					<nav:crumb name="${concept}" />
 					<c:choose>
 						<c:when test="${not empty command.requestedUser}">
-							<fmt:message key="navi.user" var="user"/>
-							<nav:crumb name="${user}" />
-							<nav:crumb name="@${command.requestedUser}" href="/concept/user/${command.requestedUser}" />
+							<nav:crumb nameKey="navi.user" />
+							<c:set var="username"><user:username username="${command.requestedUser}" noLink="${true}" /></c:set>
+							<nav:crumb name="${username}" href="${relativeUrlGenerator.getConceptsUrlByString(command.requestedUser)}" />
 						</c:when>
 						
 						<c:when test="${not empty command.requestedGroup}">
-							<fmt:message key="navi.group" var="group" />
-							<nav:crumb name="${group}" />
-							<nav:crumb name="${command.requestedGroup}" leadingIcon="fa-group" href="/concept/group/${command.requestedGroup}" />
+							<!-- TODO: there is no group concepts page -->
+							<nav:groupcrumb requestedGroup="${command.requestedGroup}" />
 						</c:when>
 					</c:choose>
 					<c:if test="${not empty command.requestedTags}">
+						<!-- TODO: other leading icon because a tag != concept -->
 						<nav:crumb name="${command.requestedTags}" active="true" leadingIcon="fa-tag" />
 					</c:if>
 					

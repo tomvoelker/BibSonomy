@@ -68,6 +68,7 @@
 			<li>
 				<c:set var="tagRelationsTitle"><fmt:message key="tagrelations.title"/></c:set>
 				<span class="sidebar_h">
+					TODO: use url generator for link
 					<a href="/concepts/${fn:escapeXml(command.requestedUser)}" title="${tagRelationsTitle}">
 						<fmt:message key="tagrelations"/>
 					</a>
@@ -78,6 +79,7 @@
 			<!-- display tags -->
 			<li>
 				<span class="sidebar_h">
+					<!-- TODO_RELEASE: i18n -->
 					Interesting Tags of user ${fn:escapeXml(command.requestedUser)} for you:
 					<!-- <fmt:message key="tags"/> -->
 				</span>

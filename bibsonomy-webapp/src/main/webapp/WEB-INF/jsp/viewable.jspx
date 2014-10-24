@@ -24,7 +24,7 @@
 			</parts:search>
 		</jsp:attribute>
 		
-		<jsp:attribute name="sidebar">	
+		<jsp:attribute name="sidebar">
 			<ul>		
 				<rc:members requPath="${requPath}" users="${command.group.users}"/>
 				<li>
