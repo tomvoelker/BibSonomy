@@ -31,10 +31,9 @@
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<fmt:message key="navi.authors" var="authors" />
-					<nav:crumb name="${authors}" href="/authors" />
-					<nav:crumb name="${command.requestedAuthor}" href="/author/${command.requestedAuthor}" />
-					<nav:crumb name="${command.requestedTags}" active="true" />
+					<nav:authors />
+					<nav:crumb name="${command.requestedAuthor}" href="${relativeUrlGenerator.getAuthorUrlByName(command.requestedAuthor)}" />
+					<nav:tagcrumb requestedTags="${command.requestedTags}" active="${true}"/>
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
@@ -46,14 +45,14 @@
 						<a href="${relativeUrlGenerator.getAuthorUrlByName(requestedAuthorEncoded)}" itemprop="name"><c:out value='${command.requestedAuthor}'/></a>
 					</span>
 				</jsp:attribute>
-			</parts:search>								
+			</parts:search>
 		</jsp:attribute>
 		
-		<jsp:attribute name="sidebar">	
+		<jsp:attribute name="sidebar">
 			<ul>			
 				<!-- display related tags -->
 				<li>
-					<h4 class="sidebar"><fmt:message key="relatedtags"/></h4>			
+					<h4 class="sidebar"><fmt:message key="relatedtags"/></h4>
 					<tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.order}"/>
 				</li>
 				

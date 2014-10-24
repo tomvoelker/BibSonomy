@@ -19,13 +19,8 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
-	<layout:paneLayout 
-	pageTitle="${pageTitle} :: ${command.context.loginUser.name}" 
-	headerMessageKey="navi.editTags" 
-	headerLogoClass="editTags" 
-	command="${command}" 
-	requPath="${requPath}"
-	minimizedContentWidth="${true}">
+	<layout:paneLayout pageTitle="${pageTitle} :: ${command.context.loginUser.name}" headerMessageKey="navi.editTags" 
+		headerLogoClass="editTags" command="${command}" requPath="${requPath}" minimizedContentWidth="${true}">
 		
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.editTags"/>
@@ -35,11 +30,10 @@
 			<script type="text/javascript" src="${resdir}/javascript/editPost.js"><!-- keep me --></script>
 		</jsp:attribute>
 
-		<jsp:attribute name="breadcrumbs">	
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<fmt:message key="navi.account" var="account"/>
-					<nav:crumb name="${account}" />
+					<nav:account />
 					<fmt:message key="navi.editTags" var="editTags"/>
 					<nav:crumb name="${editTags}" active="true" />
 				</jsp:attribute>
@@ -60,8 +54,8 @@
 						</div>
 					</div>
 						
-					<bsform:input path="editTags.delTags" labelColSpan="3" inputColSpan="9"/>		
-					<bsform:input path="editTags.addTags" labelColSpan="3" inputColSpan="9"/>
+					<bsform:input path="editTags.delTags" labelColSpan="3" inputColSpan="9" />
+					<bsform:input path="editTags.addTags" labelColSpan="3" inputColSpan="9" />
 					<bsform:checkbox path="editTags.updateRelations" inputColSpan="9">
 						<jsp:attribute name="labelText">
 							<fmt:message key="editTags.updateRelations"/>
@@ -147,8 +141,8 @@
 
 		</jsp:attribute>
 
-		<jsp:attribute name="sidebar">	
-			<ul>			
+		<jsp:attribute name="sidebar">
+			<ul>
 				<li>
 					<fmt:message key="tagrelations.title" var="tagRelationsTitle"/>
 					<span class="sidebar_h">
@@ -186,8 +180,6 @@
 	
 ]]>			
 			</script>
-
 		</jsp:attribute>
 	</layout:paneLayout>
-
 </jsp:root>

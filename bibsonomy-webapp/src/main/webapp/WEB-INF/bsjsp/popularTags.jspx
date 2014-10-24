@@ -24,8 +24,7 @@
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<nav:popular />
-					<fmt:message var="tags" key="navi.tags" />
-					<nav:crumb name="${tags}" active="true" />
+					<nav:crumb nameKey="navi.tags" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>

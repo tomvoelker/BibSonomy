@@ -31,7 +31,7 @@
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<nav:usercrumb requestedUser="${command.requestedUser}" loginUser="${command.context.loginUser}" />
-					<nav:crumb name="${command.requestedTags}" active="true" leadingIcon="fa-tag" />
+					<nav:tagcrumb requestedTags="${command.requestedTags}" active="${true}"/>
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		

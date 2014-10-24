@@ -32,46 +32,23 @@
 			</parts:search>
 		</jsp:attribute>
 		
-		<jsp:attribute name="breadcrumbs">	
-			<c:set var="ownPage" value="${command.requestedUser eq command.context.loginUser}" />
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<c:choose>
-						<c:when test="${ownPage}">
-							<fmt:message key="buttons.mybibsonomy" var="my">
-								<fmt:param>${properties['project.name']}</fmt:param>
-							</fmt:message>
-							<nav:crumb name="${my}" href="/user/${command.context.loginUser.name}" />
-							
-							<c:if test="${command.filter eq 'JUST_PDF'}">
-								<fmt:message key="navi.documents" var="documents"/>
-								<nav:crumb name="${documents}" active="true" />
-							</c:if>
-							<c:if test="${command.filter eq 'DUPLICATES'}">
-								<fmt:message key="navi.duplicates" var="duplicates" />
-								<nav:crumb name="${duplicates}" active="true" />
-							</c:if>
-						</c:when>
-						<c:otherwise>
-							<fmt:message key="navi.user" var="user" />
-							<nav:crumb name="${user}" />
-							<nav:crumb name="@${command.requestedUser}" href="/user/${command.requestedUser}" />
-							<c:if test="${command.filter eq JUST_PDF}">
-								<nav:crumb name="${headline}" active="true" />
-							</c:if>
-							<c:if test="${command.filter eq DUPLICATES}">
-								<fmt:message key="navi.duplicates" var="duplicates" />
-								<nav:crumb name="${duplicates}" active="true" />
-							</c:if>
-						</c:otherwise>
-					</c:choose>
+					<nav:usercrumb loginUser="${command.context.loginUser}" requestedUser="${command.requestedUser}"></nav:usercrumb>
+					<c:if test="${command.filter eq 'JUST_PDF'}">
+						<nav:crumb nameKey="navi.documents" active="true" />
+					</c:if>
+					<c:if test="${command.filter eq 'DUPLICATES'}">
+						<nav:crumb nameKey="navi.duplicates" active="true" />
+					</c:if>
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
 			<ul>
-				<div class="smalltext">	
+				<div class="smalltext">
 					<parts:tagsAndConceptsForSidebar/>
 				</div>
 				

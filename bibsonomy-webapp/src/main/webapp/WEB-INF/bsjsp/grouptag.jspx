@@ -33,7 +33,7 @@
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<nav:groupcrumb requestedGroup="${command.requestedGroup}" />
-					<nav:crumb name="${command.requestedTags}" active="true" leadingIcon="fa-tag" />
+					<nav:tagcrumb requestedTags="${command.requestedTags}" active="${true}"/>
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>

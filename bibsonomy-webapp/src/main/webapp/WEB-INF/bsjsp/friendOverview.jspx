@@ -25,13 +25,11 @@
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
 		
-		<jsp:attribute name="breadcrumbs">	
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<fmt:message key="navi.account" var="account" />
-					<nav:crumb name="${account}" />
-					<fmt:message key="navi.friends" var="friends" />
-					<nav:crumb name="${friends}" active="true" />
+					<nav:account />
+					<nav:crumb nameKey="navi.friends" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>

@@ -41,9 +41,7 @@
 				<jsp:attribute name="crumbs">
 					<c:choose>
 						<c:when test="${not empty command.requestedGroup}">
-							<fmt:message key="navi.groups" var="groups" />
-							<nav:crumb name="${groups}" href="/groups" />
-							<nav:crumb name="${command.requestedGroup}" href="/group/${command.requestedGroup}" />
+							<nav:groupcrumb requestedGroup="${command.requestedGroup}" />
 						</c:when>
 						<c:when test="${not empty command.requestedUser}">
 							<nav:usercrumb requestedUser="${command.requestedUser}" loginUser="${command.context.loginUser}" />

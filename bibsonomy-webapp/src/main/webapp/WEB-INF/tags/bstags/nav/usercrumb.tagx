@@ -18,14 +18,7 @@
 	<c:set var="ownPage" value="${command.context.userLoggedIn and ((requestedUser eq loginUser) or empty requestedUser)}" />
 	<c:choose>
 		<c:when test="${ownPage}">
-			<fmt:message key="buttons.mybibsonomy" var="my">
-				<fmt:param>${properties['project.name']}</fmt:param>
-			</fmt:message>
-			<c:set var="userLink" value="" />
-			<c:if test="${not active}">
-				<c:set var="userLink" value="${relativeUrlGenerator.getUserUrlByUserName(loginUser.name)}" />
-			</c:if>
-			<nav:crumb name="${my}" href="${userLink}" active="${active}" />
+			<nav:myUserCrumb loginUser="${loginUser}" active="${active}" />
 		</c:when>
 		<c:otherwise>
 			<nav:crumb nameKey="navi.user" />

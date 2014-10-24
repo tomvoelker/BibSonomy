@@ -21,13 +21,11 @@
 		minimizedContentWidth="${true}" 
 		headline="${headline}${command.requestedKey}">
 		
-		<jsp:attribute name="breadcrumbs">	
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<fmt:message var="bibtexkey" key="navi.bibtexkey" />
-					<nav:crumb name="${bibtexkey}"  />
-					<fmt:message var="concepts" key="navi.relations" />
-					<nav:crumb name="${command.requestedKey}" active="true" />
+					<nav:crumb nameKey="navi.bibtexkey" />
+					<nav:crumb name="${command.requestedKey}" active="${true}" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
