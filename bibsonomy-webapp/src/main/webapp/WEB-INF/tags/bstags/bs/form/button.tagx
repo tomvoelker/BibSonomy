@@ -37,14 +37,14 @@
 			<c:if test="${not empty icon}">
 				<span class="fa fa-${icon}"><!-- keep me --></span><c:out value=" " />
 			</c:if>
-			<span class="button-text"><c:out value="${value}" />&amp;nbsp;</span>
+			<span class="button-text"><c:out value="${value}" /></span>
 		</c:if>
 		<c:if test="${gear}">
-			<span class="glyphicon glyphicon-cog"><!-- KEEP ME --></span>&amp;nbsp;
+			&amp;nbsp;<span class="glyphicon glyphicon-cog"><!-- KEEP ME --></span>&amp;nbsp;
 			<span class="sr-only">edit</span> <!-- TODO: i18n for edit -->
 		</c:if>
 		<c:if test="${dropdown or dropup}">
-			<span class="caret"><!-- KEEP ME --></span>
+			&amp;nbsp;<span class="caret"><!-- KEEP ME --></span>
 		</c:if>
 	</button>
 </jsp:root>

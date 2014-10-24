@@ -70,9 +70,7 @@
 				
 					<c:if test="${authMethod == 'OPENID'}">
 						<div id="login_${authMethodName}" class="tab-pane${authMethodLoopState.index eq 0 ? ' active' : ''}">
-							<form:form action="/login_${authMethodName}" id="form_${authMethodName}" method="POST" cssClass="form-horizontal">
-								<user:login_openid/>
-							</form:form>
+							<user:login_openid />
 						</div>
 					</c:if>
 				
