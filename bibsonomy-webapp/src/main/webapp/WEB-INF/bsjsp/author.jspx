@@ -23,8 +23,7 @@
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<fmt:message key="navi.authors" var="author"></fmt:message>
-					<nav:crumb name="${author}" href="/authors" />
+					<nav:authors />
 					<nav:crumb name="${command.requestedAuthor}" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
