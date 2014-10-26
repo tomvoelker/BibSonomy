@@ -8,7 +8,7 @@
 	<jsp:directive.attribute name="usersOwnRelations" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="requestedUserName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="requestedConcepts" type="java.util.List" required="false" />	
-	
+	<jsp:directive.attribute name="disableEditLink" type="java.lang.Boolean" required="false" />
 	<!-- show buttons to hide/show all of the users (own!) relations -->
 		
 		<c:if test="${usersOwnRelations}">
@@ -105,8 +105,8 @@
 					</c:forEach>
 					<c:out value=" "/>
 				</ul>
-				<br /><br />
-				<c:if test="${usersOwnRelations}">
+				<c:if test="${usersOwnRelations and (empty disableEditLink or not disableEditLink)}">
+					<br />
 					<p><fmt:message key="relations.editRelations" /></p>
 				</c:if>
 			</c:when>
