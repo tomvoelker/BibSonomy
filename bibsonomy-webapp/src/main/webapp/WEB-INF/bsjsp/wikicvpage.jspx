@@ -63,7 +63,7 @@
 					| only for logged in users: followers, friends, groups, etc.
 					| and not on his own cv page
 			 		-->
-				<c:if test="${command.context.userLoggedIn and not ownCVPage}">
+				<c:if test="${command.context.userLoggedIn and not ownCVPage and not command.isGroup}">
 					<li>
 						<users:socializer command="${command}" />
 					</li>
