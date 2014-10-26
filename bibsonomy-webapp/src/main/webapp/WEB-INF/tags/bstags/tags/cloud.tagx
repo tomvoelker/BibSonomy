@@ -39,7 +39,7 @@
 	<c:if test="${not empty highlightTags}">
 		<c:set var="highlightTags" value="${' '}${highlightTags}${' '}"/>
 	</c:if>
-			
+	
 	<!-- display of tag tooltips is disabled by default -->
 	<c:set var="showTooltips" value="${not (empty showTooltips or showTooltips == 0)}"/>
 

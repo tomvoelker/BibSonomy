@@ -9,6 +9,7 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
 	xmlns:users="urn:jsptagdir:/WEB-INF/tags/bstags/users"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
@@ -18,7 +19,7 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
 	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication">
-		
+	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<!--+
 		| variables, messages
@@ -90,8 +91,7 @@
 								<ul style="margin-left: 1em; list-style:disc;">
 									<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
 										<li class="${userclass}">
-											<a href="${relativeUrlGenerator.getUserUrl(user)}"><c:out value="${user.name}"/></a>
-											<c:out value=" "/>
+											<user:username user="${user}" />
 										</li>
 									</c:forEach>
 								</ul>
@@ -107,7 +107,7 @@
 						<li><h5><fmt:message key="tags"/>
 								
 								<small style="font-size:80%;">
-									(<a href="${relativeUrlGenerator.getUserUrl(post.user)}"><c:out value="${post.user.name}" /></a>
+									(<user:username user="${post.user}" />
 									<fmt:message key="tags.highlighted.by_user"/>)
 								</small>
 							</h5>

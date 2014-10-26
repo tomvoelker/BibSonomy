@@ -80,11 +80,9 @@
 				<!-- display similar users -->
 				<li>
 					<h4 class="sidebar similar-users-headline sidebar-headline">
-						
 						<!-- requPath + query -->
 						<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 						<fmt:message key="users.similar"/>
-						
 					</h4>
 					<ul class="list-inline sidebar-setting-box clearfix">
 						<li>(<a href="${mtl:setParam(requPathAndQuery, 'userSimilarity', mtl:toggleUserSimilarity(command.userSimilarity)) }"><fmt:message key="more"/>...</a>)</li>

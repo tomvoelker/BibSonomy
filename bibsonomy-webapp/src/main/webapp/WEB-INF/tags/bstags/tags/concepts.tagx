@@ -32,8 +32,8 @@
 							</a>)
 					</li>
 				</ul>
-			</div>	     	  
-	  	</c:if>
+			</div>
+		</c:if>
 	
 		<c:choose>
 			<c:when test="${not empty cmd.conceptList}">
@@ -82,10 +82,10 @@
 							<ul>
 								<!-- iterate over subtags to get highest usercount -->
 								<c:set var="maxCount" value="0" />
-			     	  			<c:forEach var="subtag" items="${concept.subTags}">
-			     	  				<c:if test="${subtag.usercount>=maxCount}"> <c:set var="maxCount" value="${subtag.usercount}" /></c:if>
-			     	  			</c:forEach>
-			     	  			<!-- display subtags -->
+			     				<c:forEach var="subtag" items="${concept.subTags}">
+			     					<c:if test="${subtag.usercount>=maxCount}"> <c:set var="maxCount" value="${subtag.usercount}" /></c:if>
+			     				</c:forEach>
+			     				<!-- display subtags -->
 								<c:forEach var="subtag" items="${concept.subTags}">
 									<li>
 										<!-- show style attribute for fontsize only when neccessary -->

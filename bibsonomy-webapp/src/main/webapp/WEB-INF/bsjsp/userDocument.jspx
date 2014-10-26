@@ -7,6 +7,7 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
 	xmlns:users="urn:jsptagdir:/WEB-INF/tags/bstags/users"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
@@ -27,7 +28,7 @@
 					<input type="hidden" name="filter" value="JUST_PDF"/>
 				</jsp:attribute>
 				<jsp:attribute name="pathPart">
-					<a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}">@<c:out value='${command.requestedUser}'/></a>
+					<user:username username="${command.requestedUser}" />
 				</jsp:attribute>
 			</parts:search>
 		</jsp:attribute>

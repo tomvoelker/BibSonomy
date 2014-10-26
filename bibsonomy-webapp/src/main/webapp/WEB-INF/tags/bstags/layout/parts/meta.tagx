@@ -12,10 +12,10 @@
 		</jsp:attribute>
 		<jsp:attribute name="lang">
 			<c:out value="${locale.language}" />
-		</jsp:attribute>		
+		</jsp:attribute>
 		<jsp:attribute name="content">
 			<fmt:message key="meta.${fieldName}"/>
-		</jsp:attribute>		
+		</jsp:attribute>
 	</jsp:element>
 
 </jsp:root>
