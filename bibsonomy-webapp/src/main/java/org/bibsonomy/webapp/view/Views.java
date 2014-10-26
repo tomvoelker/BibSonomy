@@ -28,9 +28,6 @@ public enum Views implements View {
 	 * here users can calculate the hashes of their publications
 	 */
 	HASHEXAMPLE("hashexample"),
-	
-	PERSON_ALL("person/all"),
-	PERSON_SINGLE("person/single"),
 
 	/**
 	 * the page where a user can change his personal settings
@@ -440,7 +437,7 @@ public enum Views implements View {
 	JOIN_GROUP("actions/join_group"),
 
 	/**
-	 * join group view
+	 * general success page
 	 */
 	SUCCESS("actions/success"),
 
@@ -722,7 +719,7 @@ public enum Views implements View {
 	/**
 	 * show bibsonomy3 demo
 	 */
-	BIBSONOMY3PREVIEW("bibsonomy3preview");
+	BIBSONOMY3("bibsonomy3");
 
 	/*
 	 * both bookmarks and publications

@@ -40,7 +40,7 @@
 				    <c:if test="${command.context.userLoggedIn}">
 				    <c:out value=" " />
 						<fmt:message key="tagrelations.all.text.partTwo">
-					    	<fmt:param><a href="/concepts/${mtl:encodeURI(command.context.loginUser.name)}"><fmt:message key="navi.my.plural"/><fmt:message key="navi.relations.cap"/></a></fmt:param>
+					    	<fmt:param><a href="${relativeUrlGenerator.getConceptsUrlByString(command.context.loginUser.name)}"><fmt:message key="navi.my.plural"/><fmt:message key="navi.relations.cap"/></a></fmt:param>
 					      	<fmt:param><a href="/editTags"><fmt:message key="navi.editTags"/></a></fmt:param>
 					    </fmt:message>
 				    </c:if>
@@ -85,7 +85,7 @@
 							  	</c:if>
 					          	<!-- We hand over maxUpperCount to the local variable tagMaxFrequency to ensure that 
 					          	subTags in every tagCloud have the same size if their usercount is the same.  -->
-					          	<a style="font-size:${mtl:computeTagFontsize(relation.usercount, minUpperCount, maxUpperCount, '')*1.1}%" title="${relation.usercount} ${subTagUsers}" href="/tag/${mtl:encodeURI(relation.name)}"><c:out value="${relation.name}"/></a>	  	
+					          	<a style="font-size:${mtl:computeTagFontsize(relation.usercount, minUpperCount, maxUpperCount, '')*1.1}%" title="${relation.usercount} ${subTagUsers}" href="${relativeUrlGenerator.getTagUrlByTagName(relation.name)}"><c:out value="${relation.name}"/></a>	  	
 					    	  	<c:out value="&#32;"/>
 							</li>
 			        	</c:forEach>

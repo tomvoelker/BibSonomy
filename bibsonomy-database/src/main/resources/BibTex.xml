@@ -37,7 +37,7 @@
 			 <include refid="reviewRatingsJoinPublication" />
 		WHERE b.content_id = t1.content_id
 		AND b.simhash$simHash$ = h.hash
-		AND h.type= #simHash#		
+		AND h.type= #simHash#
 		<include refid="restrictToGroups"/>
 		<include refid="sysTagsEntryType"/>
 		ORDER BY date DESC

@@ -31,24 +31,18 @@ $(function() {
 		trigger: 'manual',
 		placement : 'right',
 		delay: 0,
-		title: function() {
-			return $(this).next().find('.popover-title').html();
-		},
 		content: function() {
 			return $(this).next().find('.popover-content').html();
 		}
 		
 	});
 	
+	
 	$('.system-tags-link').click(function(event){
 		event.preventDefault();
 		$(this).popover('show');
 	});
-	
-	$('.popover-close').click(function(event){
-		$(this).parent().parent().prev().popover('hide');
-	});
-	
+
 	/**
 	 * publication details abstract and description more link
 	 */
@@ -61,71 +55,58 @@ $(function() {
     	
         var moreLink = $(document.createElement("a"));
         var contentContainer = $(this).children(".contentContainer")[0];
-        moreLink.data("text", contentContainer.innerHTML).html("(" + getString("more") + ")").addClass("moreLink").click(function(event){
-        	event.preventDefault();
-        	var contentContainer = $(this.parentNode).children(".contentContainer")[0];
-        	
-            if($(this).hasClass('less')) {
-            	$(this)
-            	.html("(" + getString("more") + ")")
-            	.removeClass("show-less")
-            	.addClass("show-more");
-            } else {
-            	$(this)
-            	.html("(" + getString("less") + ")")
-            	.removeClass("show-more")
-            	.addClass("show-less");
-            }
-            shortenContent(contentContainer, moreLink.data("text"));
-            return false;
-        });
         
+        if(contentContainer) {
         
-        this.appendChild(moreLink[0]);
-        if(!shortenContent(contentContainer, moreLink.data("text"))) {
-        	moreLink.hide();
+	        moreLink.data("text", contentContainer.innerHTML).html("(" + getString("more") + ")").addClass("moreLink").click(function(event){
+	        	event.preventDefault();
+	        	var contentContainer = $(this.parentNode).children(".contentContainer")[0];
+	        	
+	            if($(this).hasClass('show-less')) {
+	            	$(this)
+	            	.html("(" + getString("more") + ")")
+	            	.removeClass("show-less")
+	            	.addClass("show-more");
+	            } else {
+	            	$(this)
+	            	.html("(" + getString("less") + ")")
+	            	.removeClass("show-more")
+	            	.addClass("show-less");
+	            }
+	            shortenContent(contentContainer, moreLink.data("text"));
+	            return false;
+	        });
+	        
+	        this.appendChild(moreLink[0]);
+	        if(!shortenContent(contentContainer, moreLink.data("text"))) {
+	        	moreLink.hide();
+	        }
         }
+        
+
     });
     
     $('.rename-tags-btn').click(function(){
     	$(this).parent().prev().focus().next().show().hide();
-    });
+    }); 
     
-    $('.remove-btn').click(function(e){
-    	e.preventDefault();
-    	var url = this.getAttribute("href");
-    	var parent = this.parentNode.parentNode;
-    	var el = this;
-    	$.ajax({
-    		url: url,
-    		dataType: "xml",
-    		success: function(data) {
-    			handleDeleteResponse({parent:parent, data: data, el: el});
-    		},
-    		error: function(data) {
-    			handleDeleteResponse({parent:parent, data: data, el: el});
-    		}
-    	});
-    	
-    	return false;
-    });
     
-    function handleDeleteResponse(o) {
-		if($("status", o.data).text()=="ok") o.parent.parentNode.removeChild(o.parent);
-		else {
-			$(el).removeClass("btn-stripped").addClass("btn-danger").popover({
-					animation: false,
-					trigger: 'manual',
-					delay: 0,
-					title: function() {
-						return getString("post.resource.remove.error.title");
-					},
-					content: function() {
-						return getString("post.resource.remove.error");
-					}
-			}).popover("show");
-		}
+    var sidebarAdjustments = function sidebarAdjusts() {
+    	if($('#sidebar').prev().hasClass('content')) {
+        	
+        	var contentContainer = $('#sidebar').prev();
+        	var contentHeight = contentContainer.height();
+        	var sidebarHeight = $('#sidebar').height();
+        	
+        	if( contentHeight > sidebarHeight && $('#sidebar').is(':visible') ) {
+        		$('#sidebar').css('height', contentHeight+20);
+        	}
+        }
     }
+    
+	sidebarAdjustments();
+    
+	$(window).resize(sidebarAdjustments);
     
     function shortenContent (el, text) {
     	var shortened = false;
@@ -136,6 +117,38 @@ $(function() {
         $(el).html(text);
         return shortened;
     }
+    
+    
+    $('.community-page-user-list li a.show-less').click(function(event){
+    	event.preventDefault();
+    	$(this).parent().parent().find('.show').each(function() {
+    		$(this).removeClass('show').addClass('hidden');
+    	});
+    });
+    
+    $('.community-page-user-list li a.show-more').click(function(event){
+    	event.preventDefault();
+    	$(this).parent().parent().find('.hidden').each(function() {
+    		$(this).removeClass('hidden').addClass('show');
+    	});
+    	
+    });
+    
+    /** MOBILE FUNCTIONS **/
+    
+    $('#hide-bookmarks').click(function(event) {
+    	event.preventDefault();
+    	$('.bookmarksContainer').is(':visible') ? $(this).text(getString("list.hide")) : $(this).text(getString("list.show"));
+    	$('.bookmarksContainer').slideToggle();
+    	
+    });
+    
+    $('#hide-publications').click(function(event) {
+    	event.preventDefault();
+    	$('.publicationsContainer').is(':visible') ? $(this).text(getString("list.hide")) : $(this).text(getString("list.show"));
+    	$('.publicationsContainer').slideToggle();
+    });
+
 });
 
 function dummyDownHandler(e) {
@@ -167,4 +180,28 @@ function dummyUpHandler(e) {
 	
 	e.stopPropagation();
 	return false;
+}
+
+function activateAffixEntry (el) {
+	$(el).addClass("active").siblings().each(function(h, g){
+			$(g).removeClass("active");
+	});
+}
+
+
+function findBootstrapEnvironment() {
+    var envs = ['xs', 'sm', 'md', 'lg'];
+
+    $el = $('<div>');
+    $el.appendTo($('body'));
+
+    for (var i = envs.length - 1; i >= 0; i--) {
+        var env = envs[i];
+
+        $el.addClass('hidden-'+env);
+        if ($el.is(':hidden')) {
+            $el.remove();
+            return env
+        }
+    };
 }

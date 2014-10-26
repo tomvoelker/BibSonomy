@@ -204,7 +204,7 @@
 					<!-- appearance -->
 					<div class="form-group">
 					
-						<form:label cssClass="col-sm-3 control-label" path="user.settings.simpleInterface">
+						<form:label cssClass="col-sm-3 control-label" path="user.settings.layoutSettings.simpleInterface">
 							<fmt:message key="settings.editPublication.interFace"/>
 						</form:label>
 						
@@ -235,35 +235,59 @@
 						</div>
 						
 					</div>
-					<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
-						<!-- LAYOUT -->
-						<div class="form-group">
+					
+					<!-- LAYOUT SWITCH -->
+
+					<div class="form-group">
+					
+						<form:label cssClass="col-sm-3 control-label" path="user.settings.layoutSettings.viewLayout"><fmt:message key="settings.layout" /></form:label>
 						
-							<form:label cssClass="col-sm-3 control-label" path="user.settings.layoutSettings.viewLayout">Layout</form:label>
+						<div class="col-sm-9">
+							<form:select cssClass="form-control help-popover" path="user.settings.layoutSettings.viewLayout" >
+								<c:choose>
+									<c:when test="${properties['project.theme'] eq 'puma'}">
+										<form:option label="Classic" value="CLASSIC"/>
+										<form:option label="Bootstrap" value="BOOTSTRAP"/>
+									</c:when>
+									<c:otherwise>
+										<form:option label="BibSonomy 2" value="CLASSIC"/>
+										<form:option label="BibSonomy 3" value="BOOTSTRAP"/>
+									</c:otherwise>
+								</c:choose>
+							</form:select >
 							
-							<div class="col-sm-9">
-								<form:select cssClass="form-control help-popover" path="user.settings.layoutSettings.viewLayout" >
-									<form:option label="Classic" value="CLASSIC"/>
-									<form:option label="Bootstrap" value="BOOTSTRAP"/>
-								</form:select >
-								
-								<div class="help help-header hide"><fmt:message key="settings.editPublication.interFace"/></div>
-								<div class="help help-content hide">
-									<p><fmt:message key="settings.layout.mainhelp"/></p>
-									<ol>
-										<li> <fmt:message key="settings.layout.help.classic">
-												<fmt:param>Classic</fmt:param>
-											</fmt:message>
-										</li>
-										<li> <fmt:message key="settings.layout.help.bootstrap">
-												<fmt:param>Bootstrap</fmt:param>
-											</fmt:message>
-										</li>
-									</ol>
-								</div>
+							<div class="help help-header hide"><fmt:message key="settings.editPublication.interFace"/></div>
+							<div class="help help-content hide">
+								<p><fmt:message key="settings.layout.mainhelp"/></p>
+								<c:choose>
+									<c:when test="${properties['project.theme'] eq 'puma'}">
+										<ol>
+											<li> <fmt:message key="settings.layout.help.classic">
+													<fmt:param>Classic</fmt:param>
+												</fmt:message>
+											</li>
+											<li> <fmt:message key="settings.layout.help.bootstrap">
+													<fmt:param>Bootstrap</fmt:param>
+												</fmt:message>
+											</li>
+										</ol>
+									</c:when>
+									<c:otherwise>
+										<ol>
+											<li> <fmt:message key="settings.layout.help.classic">
+													<fmt:param>BibSonomy&amp;nbsp;2</fmt:param>
+												</fmt:message>
+											</li>
+											<li> <fmt:message key="settings.layout.help.bootstrap">
+													<fmt:param>BibSonomy&amp;nbsp;3</fmt:param>
+												</fmt:message>
+											</li>
+										</ol>
+									</c:otherwise>
+								</c:choose>
 							</div>
 						</div>
-					</c:if>
+					</div>
 					
 					<!-- language -->
 					<div class="form-group">

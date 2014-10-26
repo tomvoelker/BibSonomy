@@ -23,6 +23,13 @@
 
 package org.bibsonomy.scraper.url.kde.bmj;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.net.URL;
+
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -48,5 +55,18 @@ public class BMJScraperTest {
 	@Test
 	public void url2TestRun(){
 		UnitTestRunner.runSingleTest("url_69");
+	}
+	@Test
+	public void testReferences() throws Exception{
+		final ScrapingContext sc = new ScrapingContext(new URL("http://www.bmj.com/content/336/7655/1221"));
+		BMJScraper bmj = new BMJScraper();
+		assertTrue(bmj.scrape(sc));
+		assertTrue(bmj.scrapeReferences(sc));
+
+		final String reference = sc.getReferences();
+		assertNotNull(reference);
+		assertTrue(reference.length() > 100);
+		assertEquals("<li><a class=\"rev-xref-ref\" href=\"#xref-ref-1-1\" title=\"View reference 1 in text\" id=\"ref-1\">↵</a>".trim(), reference.substring(0, 98).trim());
+		assertTrue(reference.contains("Smith LK"));
 	}
 }

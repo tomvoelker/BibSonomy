@@ -13,8 +13,8 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}">
+	<fmt:message var="headline" key="page.userpersonalized.headline" />
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}" headline="${headline}">
 	
 		<!-- include javascript -->
 		<jsp:attribute name="headerExt">
@@ -25,9 +25,7 @@
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.user" >
 				<jsp:attribute name="pathPart">
-					<li>
-						:: <a href="/user/${mtl:encodeURI(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> <span style="font-size:65%"><c:out value=" "/>(<fmt:message key="personalized"/>)</span>
-					</li>
+					<a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}">@<c:out value='${command.requestedUser}'/></a> <span style="font-size:65%"><c:out value=" "/>(<fmt:message key="personalized"/>)</span>
 				</jsp:attribute>
 			</parts:search>
 		</jsp:attribute>
@@ -108,7 +106,7 @@
 					<jsp:attribute name="infoTextBody">
 				
 						<c:set var="userPageLink">
-							<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
+							<a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(command.requestedUser))}"><c:out value='${command.requestedUser}'/></a>
 						</c:set>
 					
 						<fmt:message key="followersPage.contentHeading">

@@ -9,20 +9,45 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
+	<fmt:message var="headline" key="page.viewabletag.headline">
+		<fmt:param>${command.requestedGroup}</fmt:param>
+		<fmt:param>${command.requestedTags}</fmt:param>
+	</fmt:message>
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" headline="${headline}">
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.viewable" formAction="/viewable/${mtl:encodeURI(command.requestedGroup)}" formInputName="tag" formInputValue="${command.requestedTags}">
+			<parts:search pathMessageKey="navi.viewable" formAction="${relativeUrlGenerator.getViewableUrlByGroupName(command.requestedGroup)}" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="pathPart">
-					<li>
-						:: <a href="/viewable/${mtl:encodeURI(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
-					</li>
+					<a href="${relativeUrlGenerator.getViewableUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
 				</jsp:attribute>
 			</parts:search>
 		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">	
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<fmt:message key="buttons.mybibsonomy" var="my">
+						<fmt:param>${properties['project.name']}</fmt:param>
+					</fmt:message>
+					<nav:crumb name="${my}" href="/user/${command.context.loginUser.name}" />
+					<c:choose>
+						<c:when test="${command.requestedGroup eq 'private'}">
+							<fmt:message key="navi.privatePosts" var="privatePosts" />
+							<nav:crumb name="${privatePosts}" href="/viewable/private" />
+						</c:when>
+						<c:otherwise>
+							<fmt:message var="viewable" key="page.viewable.headline" />
+							<nav:crumb name="${viewable} ${command.requestedGroup}" href="/viewable/${command.requestedGroup}"/>
+						</c:otherwise>
+					</c:choose>
+					<nav:crumb name="${command.requestedTags}" active="true" leadingIcon="fa-tag"/>
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		
 		
 		<jsp:attribute name="sidebar">
 		<ul>
@@ -30,20 +55,20 @@
 		
 			<!-- links to user's  or global concept / tag pages -->
 			<li>
-				<a href="/tag/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+				<a href="${relativeUrlGenerator.getTagUrlByTagName(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 				<c:out value=" "/>
 				<fmt:message key="tag.asTagFromAll"/>						
 			</li>			
 			<c:if test="${command.context.userLoggedIn}">
 				<li>
-					<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+					<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(fn:escapeXml(command.context.loginUser.name), command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 					<c:out value=" "/>
 					<fmt:message key="tag.asTagFrom"/>
 					<c:out value=" "/>
 					${fn:escapeXml(command.context.loginUser.name)}						
 				</li>					
 				<li>
-					<a href="/concept/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+					<a href="${relativeUrlGenerator.getConceptUrlByUserNameAndTagName(fn:escapeXml(command.context.loginUser.name), command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 					<c:out value=" "/>
 					<fmt:message key="tag.asConceptFrom"/>
 					<c:out value=" "/>
@@ -52,7 +77,7 @@
 			</c:if>
 			
 			<li style="margin-bottom: 1ex;">
-				<a href="/concept/tag/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+				<a href="${relativeUrlGenerator.prefix('concept/').getTagUrlByTagName(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 				<c:out value=" "/>
 				<fmt:message key="tag.asConceptFromAll"/>
 			</li>					

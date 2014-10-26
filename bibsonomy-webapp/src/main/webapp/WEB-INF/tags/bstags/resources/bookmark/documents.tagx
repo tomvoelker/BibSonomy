@@ -5,19 +5,16 @@
 
 	<fmt:message var="altPreview" key="preview"/>
 	<c:set var="bookUrl"><c:out value="${mtl:cleanUrl(post.resource.url)}" escapeXml="true"/></c:set>
-	<c:choose>
-		<c:when test="${not empty properties['project.img']}">  
-			
-			<a class="preview bookmark thumbnail" href="${bookUrl}"> 
+	<a class="preview bookmark thumbnail" href="${bookUrl}" rel="nofollow">
+		<c:choose>
+			<c:when test="${not empty properties['project.img']}">   
 				<!-- <img class="pre_pic" src="${properties['project.img']}preview/bookmark/${post.resource.interHash}?preview=SMALL" alt="${altPreview}"/> -->
 				<span class="entrytype" style="width: 52px; height: 76px; background-image: url(${properties['project.img']}preview/bookmark/${post.resource.interHash}?preview=MEDIUM); background-size:auto 100%; background-position:center;"><!--  --></span>
-			</a>
-		</c:when> 
-		<c:otherwise>
-			<a class="preview bookmark thumbnail" href="${bookUrl}"> 
+			</c:when> 
+			<c:otherwise> 
 				<span class="entrytype web"><!-- --></span>
-			</a>
-		</c:otherwise>
-	</c:choose>
+			</c:otherwise>
+		</c:choose>
+	</a>
 
 </jsp:root>

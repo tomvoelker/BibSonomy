@@ -34,7 +34,10 @@ xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	<!-- page title -->
 	<fmt:message key="post.meta.edit" var="pageTitle" />
 
-	<layout:paneLayout requPath="${requPath}" command="${command}" pageTitle="${pageTitle}" activeTab="my" headerMessageKey="batchedit.info" showPageOptions="${true}">
+	<layout:oneColumnLayout 
+		requPath="${requPath}" 
+		pageTitle="${pageTitle}" 
+		loginUser="${command.context.loginUser}">
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="post.meta.edit" />
@@ -42,38 +45,39 @@ xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 
 
 		<jsp:attribute name="content">
-		
-			<batch:content resourceType="${resourceType}" listView="${listView}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" listViewStartParamName="${listViewStartParamName}" deleteCheckedPosts="${deleteCheckedPosts}" overwrite="${overwrite}">
-        						 
-			<jsp:attribute name="shortPostDescription">
-				<jsp:invoke fragment="shortPostDescription" />
-			</jsp:attribute>
+			<h1 class="content-header"><fmt:message key="batchedit.title" /></h1>
 			
-			<jsp:attribute name="title">  
-				<jsp:invoke fragment="title" />
-			</jsp:attribute>
-				
-   			<jsp:attribute name="desc">
-   				<jsp:invoke fragment="desc" />
-   			</jsp:attribute>
+			<batch:content 
+				resourceType="${resourceType}" 
+				listView="${listView}" 
+				otherPostsUrlPrefix="${otherPostsUrlPrefix}" 
+				listViewStartParamName="${listViewStartParamName}" 
+				deleteCheckedPosts="${deleteCheckedPosts}" 
+				overwrite="${overwrite}">
+        						 
+					<jsp:attribute name="shortPostDescription">
+						<jsp:invoke fragment="shortPostDescription" />
+					</jsp:attribute>
+					
+					<jsp:attribute name="title">  
+						<jsp:invoke fragment="title" />
+					</jsp:attribute>
+						
+		   			<jsp:attribute name="desc">
+		   				<jsp:invoke fragment="desc" />
+		   			</jsp:attribute>
+		      		
+		      		<jsp:attribute name="documents"> 
+		      			<jsp:invoke fragment="documents" />
+		      		</jsp:attribute>
+		      		
+		      		<jsp:attribute name="actions">
+		      			<jsp:invoke fragment="actions" />
+		      		</jsp:attribute>
       		
-      		<jsp:attribute name="documents"> 
-      			<jsp:invoke fragment="documents" />
-      		</jsp:attribute>
-      		
-      		<jsp:attribute name="actions">
-      			<jsp:invoke fragment="actions" />
-      		</jsp:attribute>
-      		
-        </batch:content> 
-      </jsp:attribute>
-      
-      <jsp:attribute name="pageOptions">
-      	<ul>
-      		<li><a href="/editTags"><fmt:message key="edittags.main.Header"/>...</a></li>
-      	</ul>
+			</batch:content> 
       </jsp:attribute>
 
-	</layout:paneLayout>
+	</layout:oneColumnLayout>
 
 </jsp:root>

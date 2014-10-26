@@ -44,10 +44,23 @@ var errorData = new errorBoxData("#upload");
 				$("#fu").documentUploader();
 				return;
 			}
+			
+			$("input[name='saveAndRate']").hide();
+			$("input[name='saveAndRate']").prev().prop('disabled', true).val(getString("post.bibtex.fileUploading"));
 
 			// create row with the added file
-			$("#upload").find('.documents:first').append($("<li class='loading' id='file_"+counter+"'><span class='documentFileName'>"+fileName+"</span></li>"));
-
+			$("#upload").find('.documents:first').append($("<li class='loading' id='file_" + counter + "'><span class='documentFileName'>"+fileName+"</span></li>"));
+			//cancel button
+			var cancelUpload = $('<input class="btn btn-xs btn-danger cancelUp" type="button" id="cancelUp" />').attr('value', getString("upload.cancel"));
+			cancelUpload.click(function(){
+				$("li[ id = 'file_"+counter+"']").remove();
+				errorData.msg = getString("post.bibtex.uploadCancel");
+				displayFileErrorBox(errorData);
+				$("input[name='saveAndRate']").show();
+				$("input[name='saveAndRate']").prev().prop('disabled', false).val(getString("save"));
+			});
+			$("li[ id = 'file_"+counter+"']").append(cancelUpload);
+			
 			// create new form to upload added file
 			var form = ("<form class='upform' id='uploadForm_"+counter+"' action='/ajax/documents?ckey="+ckey+"&amp;temp=true' method='POST' enctype='multipart/form-data'></form>");
 			$("#hiddenUpload").append(form);
@@ -58,7 +71,9 @@ var errorData = new errorBoxData("#upload");
 			$(".counter").val(counter);
 			var options = {
 					dataType: "xml",
-					success: onRequestComplete		
+					success: function(data) {
+						onRequestComplete(data);
+					}
 			};
 			$("#"+form).ajaxSubmit(options);
 			// FIXME: why is a new input field appended? Can't we just replace #fu?
@@ -70,16 +85,22 @@ var errorData = new errorBoxData("#upload");
 	};
 
 	function onRequestComplete(data) {
-		if(data.getElementsByTagName("status")[0].innerHTML == "ok")
+		$("input[name='saveAndRate']").show();
+		$("input[name='saveAndRate']").prev().prop('disabled', false).val(getString("save"));
+		$("li[ id = 'file_"+$(".counter").val()+"']").children('.cancelUp').remove();
+		
+		data = $(data);
+		var status = data.find("status").text();
+		if (status == "ok")
 			return fileUploaded(data);
 		var file_id = prepareFileErrorBox(data);
 		$("#file_"+file_id).removeClass("loading").addClass("fileError");
 	}
 
 	function fileUploaded(data) {
-		var fileID=data.getElementsByTagName("fileid")[0].innerHTML;
-		var fileHash=data.getElementsByTagName("filehash")[0].innerHTML;
-		var fileName=data.getElementsByTagName("filename")[0].innerHTML;
+		var fileID = data.find("fileid").text();
+		var fileHash = data.find("filehash").text();
+		var fileName = data.find("filename").text();
 		var deleteLink = $("<a class='deleteDocument' href='/ajax/documents?fileHash="
 				+fileHash
 				+"&amp;ckey="
@@ -99,16 +120,18 @@ var errorData = new errorBoxData("#upload");
 
 function deleteFunction(button){
 	$.get($(button).attr("href"), {}, function(data) {
-		var fileID=data.getElementsByTagName("fileid")[0].innerHTML;
-		if( "ok"==data.getElementsByTagName("status")[0].innerHTML || "deleted"==data.getElementsByTagName("status")[0].innerHTML) {
+		data = $(data);
+		var fileID = data.find("fileid").text();
+		var status = data.find("status").text();
+		if ("ok" == status || "deleted" == status) {
 			$(button).parent().remove();
-			if(fileID != '') {
-				$("#file_"+fileID).remove();
-				$("#uploadForm_"+fileID).remove();			
+			if (fileID != '') {
+				$("#file_" + fileID).remove();
+				$("#uploadForm_" + fileID).remove();
 			}
-		}else {
-			errorData.msg = data.getElementsByTagName("reason")[0].innerHTML;	
-		}	
+		} else {
+			errorData.msg = data.find("reason").text();
+		}
 		displayFileErrorBox(data);
 	}, "xml");
 	return false;
@@ -117,10 +140,10 @@ function deleteFunction(button){
 function prepareFileErrorBox(data) {
 	var fileID = "NaN";
 	var reason = "Unknown Error!";
-	
-	if(data.getElementsByTagName("status")[0].innerHTML == "error") {
-		fileID = data.getElementsByTagName("fileid")[0].innerHTML;
-		reason = data.getElementsByTagName("reason")[0].innerHTML
+	var status = data.find("status").text();
+	if (status == "error") {
+		fileID = data.find("fileid").text();
+		reason = data.find("reason").text();
 	}
 
 	errorData.msg = reason;

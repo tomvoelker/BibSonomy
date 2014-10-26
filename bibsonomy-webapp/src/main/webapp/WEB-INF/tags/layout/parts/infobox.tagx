@@ -12,7 +12,7 @@
 	<jsp:directive.attribute name="infoTextBody" fragment="true" required="false"/>
 	
 	<c:choose>
-		<c:when test="${not command.context.loginUser.settings.simpleInterface}">
+		<c:when test="${not command.context.loginUser.settings.layoutSettings.simpleInterface}">
 			<c:set var="initialState" value="initially_collapsed" />
 			<c:set var="initialDisplay" value="none" />
 		</c:when>

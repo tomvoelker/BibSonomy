@@ -23,7 +23,16 @@
 
 package org.bibsonomy.scraper.url.kde.dlib;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -57,5 +66,18 @@ public class DLibScraperTest {
 	@Test
 	public void urlTest3Run(){
 		UnitTestRunner.runSingleTest("url_266");
+	}
+	@Test
+	public void referencesTest() throws ScrapingException, MalformedURLException{
+		ScrapingContext sc = new ScrapingContext(new URL("http://www.dlib.org/dlib/may08/monnich/05monnich.html"));
+		DLibScraper ds = new DLibScraper();
+		assertTrue(ds.scrape(sc));
+		assertTrue(ds.scrapeReferences(sc));
+		
+		final String reference = sc.getReferences();
+		assertNotNull(reference);
+		assertTrue(reference.length() > 100);
+		assertEquals("<p align=\"left\">".trim(), reference.substring(0, 19).trim());
+		assertTrue(reference.contains("DFG - Deutsche Forschungsgemeinschaft"));
 	}
 }

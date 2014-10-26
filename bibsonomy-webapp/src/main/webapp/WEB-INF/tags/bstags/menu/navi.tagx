@@ -35,15 +35,21 @@
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.my"/>${properties['project.name']}<b class="caret">&amp;nbsp;</b></a>
 							<ul class="dropdown-menu">
 								<li><a href="/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.myPosts"/></a></li>
-								<c:if test="${not command.context.loginUser.settings.simpleInterface}">
+								<c:if test="${not command.context.loginUser.settings.layoutSettings.simpleInterface}">
 									<li><a href="/viewable/private"><fmt:message key="navi.privatePosts"/></a></li>
 									<li><a href="/viewable/friends"><fmt:message key="navi.friendsPosts"/></a></li>
 									<li><a href="/user/${mtl:encodeURI(loginUserName)}?filter=JUST_PDF"><fmt:message key="navi.pdfs"/></a></li>
 									<li><a href="/user/${mtl:encodeURI(loginUserName)}?filter=DUPLICATES"><fmt:message key="navi.duplicates"/></a></li>
+									<li> 
+										<fmt:message var="concepts" key="navi.concepts" />
+										<a href="/concepts/${loginUserName}" title="${concepts}">
+											<fmt:message key="navi.concepts" />
+										</a>
+									</li>
 								</c:if>					
 								<li><a href="/discussed/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.discussedPosts"/></a></li>
 								
-								<c:if test="${not command.context.loginUser.settings.simpleInterface}">
+								<c:if test="${not command.context.loginUser.settings.layoutSettings.simpleInterface}">
 									<li class="divider"><!-- KEEP ME --></li>
 									<li><a href="/cv/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.cv"/></a></li>
 									<li><a href="/mySearch"><fmt:message key="navi.browse"/></a></li>
@@ -130,14 +136,14 @@
 					</c:if>
 					<li class="dropdown ${activeTab eq 'myprofile' ? 'active' : ''}">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<span class="glyphicon glyphicon-user"><!-- KEEP ME --></span>
+							<span class="fa fa-user"><!-- KEEP ME --></span>
 							<c:if test="${(command.context.loginUser.inbox.numPosts + command.context.loginUser.basket.numPosts) gt 0}">
 								<b class="navi-info">
-									<span><c:out value="${(command.context.loginUser.inbox.numPosts + command.context.loginUser.basket.numPosts)}"/></span>
+									<span id="inbox-basket-counter"><c:out value="${(command.context.loginUser.inbox.numPosts + command.context.loginUser.basket.numPosts)}"/></span>
 								</b>
 							</c:if>
 							<b class="caret">&amp;nbsp;</b></a>
-						<ul class="dropdown-menu">
+						<ul class="dropdown-menu items-with-icons">
 	
 							<!--  WHEN USER IS LOGGED IN -->
 							<c:choose>
@@ -146,100 +152,99 @@
 									<li>
 										<fmt:message var="titleInbox" key="navi.inbox" />
 										<a href="/inbox" title="${titleInbox}">
-											<span class="fa fa-inbox"><!-- KEEP ME --></span>&amp;nbsp;
+											<span class="fa fa-inbox"><!-- KEEP ME --></span>
 
 											<fmt:message key="navi.inbox" />
 											<c:if test="${command.context.loginUser.inbox.numPosts gt 0}">
-												<span style="position: absolute; right: 10px;" class="badge"><c:out value="${command.context.loginUser.inbox.numPosts}"/></span>
+												<span id="inbox-counter" style="position: absolute; right: 10px;" class="badge"><c:out value="${command.context.loginUser.inbox.numPosts}"/></span>
 											</c:if>
 										</a>
 									</li>
 									<li>
 										<fmt:message var="titleBasket" key="navi.basket"/>
 										<a href="/clipboard" title="${titleBasket}"><!-- empty -->
-											<span class="fa fa-folder-open"><!--  --></span>&amp;nbsp;
+											<span class="fa fa-folder-open"><!--  --></span>
 											<fmt:message key="navi.basket" />
 											<c:if test="${command.context.loginUser.basket.numPosts gt 0}">
-												<span style="position: absolute; right: 10px;" class="badge"><c:out value="${command.context.loginUser.basket.numPosts}"/></span>
+												<span id="basket-counter" style="position: absolute; right: 10px;" class="badge"><c:out value="${command.context.loginUser.basket.numPosts}"/></span>
 											</c:if>
 										</a>
 									</li>
 									<li>
 										<fmt:message var="friends" key="navi.friends" />
 										<a href="/friendsoverview" title="friends">
-											<span class="glyphicon glyphicon-user"><!--  --></span>&amp;nbsp;
+											<span class="fa fa-user"><!--  --></span>
 											<fmt:message key="navi.friends"/>
 										</a>
 									</li>
 									<li> 
 										<fmt:message var="editTags" key="navi.editTags" />
 										<a href="/editTags" title="${editTags}">
-											<span class="glyphicon glyphicon-tag"><!-- KEEP ME --></span>&amp;nbsp;
+											<span class="fa fa-tag"><!-- KEEP ME --></span>
 											<fmt:message key="navi.editTags" />
 										</a>
 									</li>
-									<li> 
-										<fmt:message var="concepts" key="navi.concepts" />
-										<a href="/concepts/${loginUserName}" title="${concepts}">
-											<span class="glyphicon glyphicon-tags"><!-- KEEP ME --></span>&amp;nbsp;
-											<fmt:message key="navi.concepts" />
-										</a>
-									</li>
+									
+									<!-- settings -->
 									<li>
-										<a href="/bibsonomy3preview">
-											<span class="fa fa-exchange"><!--  --></span>&amp;nbsp;
-											BibSonomy 2
+										<a href="/settings">
+											<span class="fa fa-cogs"><!-- KEEP ME --></span>
+											<fmt:message key="navi.settings"/>
 										</a>
 									</li>
+									
 									<!-- divider -->
 									<li class="divider"><!-- KEEP ME --></li>
 	
-									<li class="sidebarnavi_entry sidebarnavi_entry_active sidebarnavi_entry_06">
+									<li>
 									<fmt:message var="titleBlog" key="navi.blog" />
 										<a href="${properties['project.blog']}" title="${titleBlog}">
-											<span class="socicon socicon-blogger"><!-- KEEP ME --></span>&amp;nbsp;
+											<span class="fa fa-book"><!-- KEEP ME --></span>
 											<fmt:message key="navi.blog" />
 										</a>
 									</li>
-									<li class="sidebarnavi_entry sidebarnavi_entry_active sidebarnavi_entry_07">
+									<li>
 										<fmt:message var="titleHelp" key="navi.help"/>
 										<fmt:message key="navi.helpUrl" var="helpLangUrl" />
 										<a href="${helpLangUrl}" title="${titleHelp}">
-											<span class="glyphicon glyphicon-question-sign"><!-- KEEP ME --></span>&amp;nbsp;
+											<span class="fa fa-question-circle"><!-- KEEP ME --></span>
 											<fmt:message key="navi.help" />
 										</a>
 									</li>
 									
 									<!-- divider -->
 									<li class="divider"><!--  --></li>
-									
-									<li><a href="/settings"><span class="fa fa-cogs"><!-- KEEP ME --></span>&amp;nbsp;<fmt:message key="navi.settings"/></a></li>
-									<li><a href="/logout"><span class="glyphicon glyphicon-off"><!-- KEEP ME --></span>&amp;nbsp;<fmt:message key="navi.logout"/></a></li>
+									<li>
+										<a href="/logout">
+											<span class="fa fa-power-off"><!-- KEEP ME --></span>
+											<fmt:message key="navi.logout"/>
+										</a>
+									</li>
 								</c:when>
 								<c:otherwise>
-									<li class="sidebarnavi_entry sidebarnavi_entry_active sidebarnavi_entry_06">
+									<li>
 										<a href="${properties['project.blog']}" title="${titleBlog}">
-											<span class="socicon socicon-Blogger"><!-- KEEP ME --></span>&amp;nbsp;
+											<span class="fa fa-book"><!-- KEEP ME --></span>
 											<fmt:message key="navi.blog" />
 										</a>
 									</li>
-									<li class="sidebarnavi_entry sidebarnavi_entry_active sidebarnavi_entry_07">
+									<li>
 										<fmt:message key="navi.helpUrl" var="helpLangUrl" />
 										<a href="${helpLangUrl}" title="${titleHelp}">
-											<span class="glyphicon glyphicon glyphicon-question-sign"><!-- KEEP ME --></span>&amp;nbsp;
+											<span class="fa fa-question-circle"><!-- KEEP ME --></span>
 											<fmt:message key="navi.help" />
 										</a>
 									</li>
 									<li class="divider"><!--  --></li>
 									<li>
 										<a href="/login" title="${titleSpheres}">
-											<span class="glyphicon glyphicon glyphicon-log-in"><!-- KEEP ME --></span>&amp;nbsp;
+											<span class="fa fa-sign-in"><!-- KEEP ME --></span>
 											<fmt:message key="navi.login" />
 										</a>
 									</li>
 									<li> 
 										<a href="/register" title="${titleSpheres}">
-											<span class="glyphicon glyphicon-edit"><!-- KEEP ME --></span>&amp;nbsp;
+											<span class="fa fa-pencil-square-o"><!-- KEEP ME --></span>
 											<fmt:message key="navi.register" />
 										</a>
 									</li>

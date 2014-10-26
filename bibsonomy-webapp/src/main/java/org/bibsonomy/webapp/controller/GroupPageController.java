@@ -67,7 +67,7 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 		}
 		
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {			
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, filter, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
@@ -126,15 +126,15 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 				command.setConceptsOfAll(this.getConceptsForSidebar(command, GroupingEntity.ALL, null, requTags));
 				command.setPostCountForTagsForAll(this.getPostCountForSidebar(GroupingEntity.ALL, "", requTags));
 				
-				return Views.GROUPTAGPAGE;	
+				return Views.GROUPTAGPAGE;
 			} 
 
-			return Views.GROUPPAGE;		
+			return Views.GROUPPAGE;
 		}
 		
 		this.endTiming();
 		// export - return the appropriate view
-		return Views.getViewByFormat(format);		
+		return Views.getViewByFormat(format);
 	}
 
 	@Override

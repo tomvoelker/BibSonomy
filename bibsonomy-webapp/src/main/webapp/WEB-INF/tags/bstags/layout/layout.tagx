@@ -6,7 +6,8 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:spring="http://www.springframework.org/tags">
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs">
 	
 	<jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
 
@@ -32,6 +33,7 @@
 	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
 	<jsp:directive.attribute name="noSidebar" type="java.lang.Boolean" required="false"/>
 	
+	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 	
 	<!--+
 		| 
@@ -71,12 +73,15 @@
 								 	| logo and project name
 								 	|
 								 	+-->
-
-								<div id="logo">
-										<fmt:message var="homelink" key="navi.home"/> 
-										<h1><a href="/" title="${homelink}"><!-- <img src="/resources/image/logo4.png" alt="${properties['project.name']} Logo" /> --> ${properties['project.name']}</a><c:out value=" "/><small id="beta"><span class="label label-default">Beta</span></small></h1>
-										<p style="color:#006699;"><small>The blue social bookmark and publication sharing system.</small></p>
-								</div>
+								<c:choose>
+									<c:when test="${properties['project.theme'] eq 'puma'}">
+										<bs:logoPuma />
+									</c:when>
+									<c:otherwise>
+										<bs:logo />
+									</c:otherwise>
+								</c:choose>
+								
 								
 								
 							</div>
@@ -108,13 +113,16 @@
 						 <menu:navi activeTab="${activeTab}" loginUser="${loginUser}" />
 				</div> <!-- /#navigation -->
 				<div class="container main">
-				
+					
 					<c:choose>
 						
 						<c:when test="${noSidebar}">
 							
 							<!-- without sidebar -->
-							
+							<!-- Breadcrumbs -->
+							<c:if test="${not empty breadcrumbs}">
+								<jsp:invoke fragment="breadcrumbs" />
+							</c:if>
 							<div id="intro">
 								<jsp:invoke fragment="contentIntro"/>
 							</div>
@@ -126,15 +134,20 @@
 							<!-- with sidebar -->
 							<div class="row">
 							
-							  	<div class="col-md-9">
-		
-									<div id="intro">
-										<jsp:invoke fragment="contentIntro"/>
-									</div>
-							    	<jsp:invoke fragment="content"/>
-								    	
-							  	</div>
-							  	<div class="col-md-3 sidebar" id="sidebar">
+							  	<div class="col-md-9 col-sm-12 col-xs-12 content">
+			  						<!-- Breadcrumbs -->
+									<c:if test="${not empty breadcrumbs}">
+										<jsp:invoke fragment="breadcrumbs" />
+									</c:if>
+									<div class="wrapper">
+										<div id="intro">
+											<jsp:invoke fragment="contentIntro"/>
+										</div>
+								    	<jsp:invoke fragment="content"/>
+									    	
+								  	</div>
+								</div>
+							  	<div class="col-md-3 hidden-xs hidden-sm sidebar" id="sidebar">
 		
 				  					<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}" infobox="${infobox}"/>
 					  					

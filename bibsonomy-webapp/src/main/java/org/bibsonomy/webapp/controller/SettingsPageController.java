@@ -90,6 +90,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		if (UserUtils.userIsGroup(loginUser)) {
 			command.setHasOwnGroup(true);
 		}
+		
 		/*
 		 * get friends for sidebar
 		 */
@@ -100,7 +101,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		// show sync tab only for non-spammers
 		command.showSyncTab(!loginUser.isSpammer());
 
-		if (command.getSelTab() < 0 || command.getSelTab() > 6) {
+		if (command.getSelTab() < 0 || command.getSelTab() > 7) {
 			this.errors.reject("error.settings.tab");
 		} else {
 			this.checkInstalledJabrefLayout(command);
@@ -110,9 +111,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			this.workOnOAuthTab(command);
 		}
 		
-		// return View to choose Bootstrap Layout
-		if (command.getBibsonomy3preview().equals("true")) return Views.BIBSONOMY3PREVIEW;
-
 		return Views.SETTINGSPAGE;
 	}
 
@@ -211,32 +209,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			// get the details and members
 			group.setUsers(this.logic.getUsers(null, GroupingEntity.GROUP, group.getName(), null, null, null, null, null, 0, Integer.MAX_VALUE));
 		}
-		
-		/*
-		final String groupName = command.getContext().getLoginUser().getName();
-		// the group to update
-		final Group group = logic.getGroupDetails(groupName);
-		if (present(group)) {
-			command.setGroup(group);
-			/*
-			 * get group users
-			 *
-			group.setUsers(this.logic.getUsers(null, GroupingEntity.GROUP, groupName, null, null, null, null, null, 0, Integer.MAX_VALUE));
-			/*
-			 * FIXME: use the group in the command instead of this hand-written
-			 * conversion
-			 *
-			command.setPrivlevel(group.getPrivlevel().ordinal());
-
-			/*
-			 * TODO: use share docs directly
-			 *
-			int sharedDocsAsInt = 0;
-			if (group.isSharedDocuments()) {
-				sharedDocsAsInt = 1;
-			}
-			command.setSharedDocuments(sharedDocsAsInt);
-		}*/
 	}
 
 	/**

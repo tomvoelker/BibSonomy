@@ -14,7 +14,7 @@
 	<h4 class="pub-details"><span class="pull-left"><spann class="fa fa-comments"><!-- --></spann><c:out value=" " /><fmt:message key="publications.discussion.headline"/>&amp;nbsp;&amp;nbsp;</span>
 		<div class="rating">
 			<c:if test="${not empty post.resource.rating}">
-				<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource.class.simpleName)}" />
+				<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource['class'].simpleName)}" />
 				
 				<!--+
 					|TODO: Once we know for each post whether a goldstandard exists,
@@ -66,7 +66,7 @@
 										<fmt:param><fmt:message key="post.resource.discussionItem.anonymous"/></fmt:param>
 									</c:when>
 									<c:otherwise>
-										<fmt:param><user:username user="${discussionUser}" /></fmt:param>
+										<fmt:param><user:username username="${discussionUser}" /></fmt:param>
 									</c:otherwise>
 								</c:choose>
 							</c:forEach>
@@ -82,7 +82,7 @@
 											<fmt:param><fmt:message key="post.resource.discussionItem.anonymous"/></fmt:param>
 										</c:when>
 										<c:otherwise>
-											<fmt:param><user:username user="${discussionUser}" /></fmt:param>
+											<fmt:param><user:username username="${discussionUser}" /></fmt:param>
 										</c:otherwise>
 									</c:choose>
 								</c:if>
@@ -93,8 +93,8 @@
 						</fmt:message>
 					</c:otherwise>
 				</c:choose>
-				&amp;nbsp;<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource.class.simpleName)}" />
-				<a href="${href}" title="${title}"><!-- href -->
+				&amp;nbsp;<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource['class'].simpleName)}" />
+				<a href="${href}" title="${title}">
 					<fmt:message key="post.resource.discussion.discussionUser.join" />
 				</a>
 			</c:otherwise>

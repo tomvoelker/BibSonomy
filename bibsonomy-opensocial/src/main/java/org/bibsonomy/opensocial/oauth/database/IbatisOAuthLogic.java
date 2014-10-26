@@ -1,5 +1,7 @@
 package org.bibsonomy.opensocial.oauth.database;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.Reader;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -14,20 +16,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret;
+import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret.KeyType;
 import org.apache.shindig.gadgets.oauth.OAuthError;
 import org.apache.shindig.gadgets.oauth.OAuthRequestException;
-import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret.KeyType;
 import org.apache.shindig.gadgets.oauth.OAuthStore.ConsumerInfo;
 import org.apache.shindig.gadgets.oauth.OAuthStore.TokenInfo;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
+import org.bibsonomy.opensocial.oauth.database.beans.OAuthParam;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenIndex;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenInfo;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
-import org.bibsonomy.opensocial.oauth.database.beans.OAuthParam;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 import com.ibatis.common.resources.Resources;
 import com.ibatis.sqlmap.client.SqlMapClient;
@@ -236,7 +236,7 @@ public class IbatisOAuthLogic implements OAuthLogic {
 		try {
 			entry = (OAuthEntry)this.sqlMap.queryForObject("getProviderToken", oauthToken);
 		} catch (SQLException e) {
-			log.error("Error retrieving token details for token '"+oauthToken+"'", e);
+			log.error("Error retrieving token details for token '" + oauthToken + "'", e);
 		}
 		return entry;
 	}
@@ -245,7 +245,7 @@ public class IbatisOAuthLogic implements OAuthLogic {
 		try {
 			this.sqlMap.insert("updateProviderToken", entry);
 		} catch (SQLException e) {
-			log.error("Error updating provider token for '"+entry.getAppId()+"'", e);
+			log.error("Error updating provider token for '" + entry.getAppId() + "'", e);
 		}
 	}
 	
@@ -266,12 +266,13 @@ public class IbatisOAuthLogic implements OAuthLogic {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List <OAuthUserInfo> getOAuthUserApplication (String username) {
 		try {
 			 return this.sqlMap.queryForList("getUserInfo", username);
 		} catch (SQLException e) {
-			log.error("No user information found about OAuth for '"+username+"'");
+			log.error("No user information found about OAuth for '" + username + "'", e);
 		}
 		return Collections.emptyList();
 	}

@@ -26,40 +26,37 @@ package org.bibsonomy.layout.standard;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.model.Layout;
 
 /**
  * Holds and manages the available standard layouts.
  * 
  * @author:  lsc
- * 
  */
 public class StandardLayouts {
-
 	private static final Log log = LogFactory.getLog(StandardLayouts.class);
 
 	/**
 	 * Can be configured by the setter: the path where the default layout files are.
 	 */
-	private String defaultLayoutFilePath = "org/bibsonomy/layout/standard";
+	private final String defaultLayoutFilePath = "org/bibsonomy/layout/standard";
 	/**
 	 * saves all loaded layouts (bibtex, html, burst, ...)
 	 */
 	private Map<String, StandardLayout> layouts;
 	
-		
 	
-	/** Initialize the layouts by loading them into a map.
-	 * 
-	 * @throws IOException
+	
+	/**
+	 * Initialize the layouts by loading them into a map.
+	 * @throws IOException 
 	 */
-	public void init() throws IOException {
+	public StandardLayouts() throws IOException {
 		loadDefaultLayouts();
 	}
 
@@ -72,7 +69,7 @@ public class StandardLayouts {
 		/*
 		 * create a new hashmap to store the layouts
 		 */
-		layouts = new TreeMap<String, StandardLayout>();
+		layouts = new TreeMap<>();
 		/*
 		 * load layout definition from XML file
 		 */
@@ -88,21 +85,12 @@ public class StandardLayouts {
 		log.info("loaded " + layouts.size() + " layouts");
 	}
 
-	/** Create string for directories. If no given, the string is empty.
-	 * @param directory
-	 * @return
-	 */
-	private String getDirectory(final String directory) {
-		if (directory == null) return "";
-		return directory + "/";
-	}
-
-	/** Returns the requested layout. This is for layouts which don't have item parts for specific publication types. 
-	 * 
+	/**
 	 * @param layout
-	 * @return
+	 * @return the requested layout. This is for layouts which don't have item
+	 *         parts for specific publication types. 
 	 */
-	protected StandardLayout getLayout(final String layout) {
+	public StandardLayout getLayout(final String layout) {
 		return layouts.get(layout);
 	}
 
@@ -117,7 +105,6 @@ public class StandardLayouts {
 	public String toString() {
 		return layouts.toString();
 	}
-
 	
 	/**
 	 * Returns a map with all layouts
@@ -127,6 +114,4 @@ public class StandardLayouts {
 	public Map<String, StandardLayout> getLayoutMap(){
 		return this.layouts;
 	}
-
 }
-

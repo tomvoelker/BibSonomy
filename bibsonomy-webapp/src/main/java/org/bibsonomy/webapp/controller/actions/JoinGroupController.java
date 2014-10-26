@@ -69,7 +69,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		if (!command.getContext().isUserLoggedIn()) {
 			throw new org.springframework.security.access.AccessDeniedException("please log in");
 		}
-        
+		
 		/*
 		 * The user has three options and needs:
 		 * * see join site: loginUser, group
@@ -89,25 +89,6 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 
 		final String reason = command.getReason();
 		final String deniedUserName = command.getDeniedUser();
-		boolean joinRequest = command.isJoinRequest();
-		
-		if (joinRequest && !present(reason)) {
-			errors.rejectValue("reason", "error.field.required");
-			return Views.JOIN_GROUP;
-		}
-		
-		if (!joinRequest && !present(deniedUserName)) {
-			// no deniedUser, and no join request => probably wants to see the join_group page
-			command.setCaptchaHTML(captcha.createCaptchaHtml(requestLogic.getLocale()));
-			return Views.JOIN_GROUP;
-		}
-
-		/*
-		 * check if ckey is valid
-		 */
-		if (!command.getContext().isValidCkey()) {
-			errors.reject("error.field.valid.ckey");
-		}
 		
 		// We can not check the ckey if "deny request" was chosen, since the deny
 		// handle deny join request action
@@ -128,10 +109,10 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 			return new ExtendedRedirectView(denyUserRedirectURI);
 		}
 		
-		
 		/*
-		 * From here we assume, that the user has sent a join group request from the join group form
+		 * from here we assume, that the user has sent a join group request from the join group form
 		 */
+		final boolean joinRequest = command.isJoinRequest();
 		
 		// check if user is already in this group or has an open request
 		for (Group g : loginUser.getGroups()) {
@@ -144,6 +125,17 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 				errors.reject("joinGroup.already.member.error");
 				return Views.ERROR;		
 			}
+		}
+		
+		if (!present(reason)) {
+			errors.rejectValue("reason", "error.field.required");
+		}
+		
+		/*
+		 * check if ckey is valid
+		 */
+		if (joinRequest && !command.getContext().isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
 		}
 		
 		// check user is spammer

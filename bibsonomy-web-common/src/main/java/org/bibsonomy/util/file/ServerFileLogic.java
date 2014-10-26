@@ -159,6 +159,4 @@ public class ServerFileLogic implements FileLogic {
 	public File getTempFile(String name) {
 		return this.tempFileLogic.getTempFile(name);
 	}
-	
-
 }

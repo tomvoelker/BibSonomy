@@ -201,13 +201,14 @@
                         </bean>
                     </constructor-arg>
                 </bean> -->
-                
+                 
 				<bean class="org.opensaml.saml2.metadata.provider.FilesystemMetadataProvider">
 					<constructor-arg>
 						<value type="java.io.File">${auth.saml.idp.1.metadata.file}</value>
 					</constructor-arg>
 					<property name="parserPool" ref="parserPool" />
 				</bean>
+
 				<!-- 
 				<bean class="org.opensaml.saml2.metadata.provider.HTTPMetadataProvider">
 					<constructor-arg>

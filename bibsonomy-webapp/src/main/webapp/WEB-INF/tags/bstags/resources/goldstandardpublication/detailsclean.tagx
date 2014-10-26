@@ -51,10 +51,10 @@
 				<!--+
 					| abstract
 					+-->
-				<c:if test="${not empty goldstandard.abstract}"> 
+				<c:if test="${not empty goldstandard['abstract']}"> 
 					<h4><fmt:message key="publications.abstract.headline"/></h4>
 					<div id="abstract" class="more">
-						<c:out value="${mtl:cleanBibtex(goldstandard.abstract)}" />
+						<c:out value="${mtl:cleanBibtex(goldstandard['abstract'])}" />
 					</div>
 				</c:if>
 				<c:choose>
@@ -123,7 +123,7 @@
 									<c:set var="relatedUsername"><user:username noLink="${true}" user="${user}" /></c:set>
 									<span>${relatedUsername}</span>
 									<a class="profilepic" href="/bibtex/1${publication.interHash}/${fn:escapeXml(user.name)}" title="${fn:escapeXml(relatedUsername)}">
-										<img alt="${fn:escapeXml(relatedUsername)}" src="/picture/user/${fn:escapeXml(user.name)}" />
+										<img alt="${fn:escapeXml(relatedUsername)}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(user.name))}" />
 									</a>
 								</div>
 								<c:out value=" "/>
@@ -137,7 +137,7 @@
 										<c:set var="username"><user:username noLink="${true}" user="${user}" /></c:set>
 										<span>${username}</span>
 										<a class="profilepic" href="/bibtex/1${publication.interHash}/${fn:escapeXml(user.name)}" title="${fn:escapeXml(username)}">
-											<img alt="${fn:escapeXml(username)}" src="/picture/user/${fn:escapeXml(user.name)}" />
+											<img alt="${fn:escapeXml(username)}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(user.name))}" />
 										</a>
 									</div>
 								</c:forEach>
@@ -148,7 +148,7 @@
 										<c:set var="username"><user:username noLink="${true}" user="${user}" /></c:set>
 										<span>${username}</span>
 										<a class="profilepic" href="/bibtex/1${publication.interHash}/${fn:escapeXml(user.name)}" title="${fn:escapeXml(username)}">
-											<img alt="${username}" src="/picture/user/${fn:escapeXml(user.name)}" />
+											<img alt="${username}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(user.name))}" />
 										</a>
 									</div>
 								</c:forEach>
