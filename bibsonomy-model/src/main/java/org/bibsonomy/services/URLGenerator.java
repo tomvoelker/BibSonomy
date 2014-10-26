@@ -300,7 +300,7 @@ public class URLGenerator {
 	 * @return The URL pointing to the concepts of the user with the specified tags.
 	 */
 	public String getConceptUrlByUserNameAndTagName(final String userName, final String tagName) {
-		String url = this.projectHome + prefix + USER_PREFIX + CONCEPT_PREFIX + "/" + USER_PREFIX;
+		String url = this.projectHome + prefix + CONCEPT_PREFIX + "/" + USER_PREFIX;
 		url += "/" + UrlUtils.safeURIEncode(userName);
 		url += "/" + UrlUtils.safeURIEncode(tagName);
 		
