@@ -15,7 +15,6 @@
 	<ul>
 	<!-- Tags -->
 	
-	
 	<!--  link to loginuser's tag-page (if the user has ALL of the requestedTags as tags) -->
 	<c:if test="${command.postCountForTagsForLoginUser > 0}">
 		<li>
@@ -36,7 +35,7 @@
 					</c:otherwise>
 				</c:choose>
 				<c:out value=")"/>
-			</c:if>			
+			</c:if>
 		</li>
 	</c:if>	
 	
@@ -48,7 +47,7 @@
 			<c:out value=" "/>
 			<fmt:message key="tag.asTagFrom"/>
 			<c:out value=" "/>
-			${fn:escapeXml(command.requestedUser)}		
+			${fn:escapeXml(command.requestedUser)}
 			<!-- if user is logged in, he benefits of seeing the postCount -->
 			<c:if test="${command.context.userLoggedIn}">
 				<c:out value=" (${fn:escapeXml(command.postCountForTagsForRequestedUser)} "/>
@@ -61,9 +60,9 @@
 					</c:otherwise>
 				</c:choose>
 				<c:out value=")"/>
-			</c:if>			
+			</c:if>
 		</li>
-	</c:if>	
+	</c:if>
 	
 	<!--  link to requested group's tag-page (if the group has ALL of the requestedTags as tags) -->
 	<c:if test="${command.postCountForTagsForGroup > 0}"> 

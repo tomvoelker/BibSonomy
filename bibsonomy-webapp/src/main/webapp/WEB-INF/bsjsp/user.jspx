@@ -14,7 +14,7 @@
 	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/bstags/spheres"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"	
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"> 
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
@@ -72,8 +72,9 @@
 				<!-- display user's tag relations -->
 				<li>
 					<fmt:message key="tagrelations.title" var="tagRelationsTitle" />
-					<h4 class="sidebar concepts-headline sidebar-headline"><fmt:message key="tagrelations"/>
-					</h4>	
+					<h4 class="sidebar concepts-headline sidebar-headline">
+						<fmt:message key="tagrelations"/>
+					</h4>
 					<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
 				</li>
 	
