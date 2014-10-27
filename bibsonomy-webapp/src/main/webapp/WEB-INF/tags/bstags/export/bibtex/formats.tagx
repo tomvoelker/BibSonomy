@@ -9,7 +9,7 @@
 	<c:set var="pathAndQueryString" value="${requPath}${requQueryString}" />
 		
 	<div class="col-sm-9">
-		<select class="form-control">
+		<select class="form-control" onchange="generateExportPostLink(this.value)" size="1">
 			<option value=""><fmt:message key="form.input.select"/></option>
 			
 			<c:forEach var="mapEntry" items="${command.layoutMap}">

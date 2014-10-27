@@ -53,14 +53,14 @@
         
         <div>
         
-        <form class="form-horizontal" role="form" >
+        <form class="form-horizontal" role="form"  method='POST'>
 			
-			<div class="form-group" id="selectlink" onchange="generateExportPostLink(this.value)" size="1">
+			<div class="form-group" id="selectlink">
 				<label for="selectlink" class="col-sm-3 control-label"><fmt:message key="export.format" /></label>	
 	          	<export:formats />
           	</div>
         
-	        <div class="form-group" id="exportOptions" method='POST'>
+	        <div class="form-group" id="exportOptions">
 	        	<label for="exportOptions" class="col-sm-3 control-label"><fmt:message key="posts" /></label>	
 	        	<div class="col-sm-9">
 					<div class="radio">
