@@ -35,6 +35,5 @@ public class ExportPageCommand extends ResourceViewCommand {
 		for (Entry<String, ? extends Layout> entry : map.entrySet()){
 			this.layoutMap.put(entry.getValue().getDisplayName(), entry.getValue());
 		}
-		//this.layoutMap.putAll(map);
 	}
 }

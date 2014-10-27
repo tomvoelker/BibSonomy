@@ -21,43 +21,21 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.bibsonomy.scraper.url.kde.nature;
+package org.bibsonomy.scraper.url.kde.akademiai;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
 
 /**
- * Scraper URL tests #45 for NatureScraper
- * @author tst
+ *
+ * @author Haile
  */
-@Category(RemoteTest.class)
-public class NatureScraperTest {
-
+public class AkademiaiScraperTest {
 	/**
-	 * starts URL test with id url_45
+	 * starts URL test with id url_281
 	 */
 	@Test
-	public void urlTest1Run(){
-		UnitTestRunner.runSingleTest("url_45");
+	public void urlTestRun(){
+		UnitTestRunner.runSingleTest("url_281");
 	}
-
-	/**
-	 * starts URL test with id url_231
-	 */
-	@Test
-	public void urlTest2Run(){
-		UnitTestRunner.runSingleTest("url_231");
-	}
-	/**
-	 * starts URL test with id url_231
-	 */
-	@Test
-	public void urlTest3Run(){
-		UnitTestRunner.runSingleTest("url_280");
-	}
-	
-		
 }

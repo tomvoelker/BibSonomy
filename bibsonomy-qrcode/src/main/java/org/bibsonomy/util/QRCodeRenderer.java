@@ -74,7 +74,6 @@ public class QRCodeRenderer {
 			/*
 			 * if embedding fails, safely shutdown executor and delete output file
 			 */
-			pool.shutdownNow();
 			new File(filePath.concat(".qr")).delete();
 			
 			throw new Exception(e);
