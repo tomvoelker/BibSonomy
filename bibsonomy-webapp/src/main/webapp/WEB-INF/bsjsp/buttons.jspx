@@ -110,14 +110,15 @@
 			           		</div>
 			           		
 			           		<!-- Safari button -->
+							<!-- TODO: check when this is used! -->
 			           		<div id="safariButton">
 							<p>
 								<fmt:message key="buttons.mybibsonomy_part_three" />
-								<a href="${relativeUrlGenerator.getUserUrlByUserName(userName)}">
+								<a href="${absoluteUrlGenerator.getUserUrlByUserName(userName)}">
 									<fmt:message key="buttons.mybibsonomy_part_four" />
 								</a>
 								<fmt:message key="buttons.mybibsonomy_part_five" />
-								<a href="${relativeUrlGenerator.getUserUrlByUserName(userName)}">
+								<a href="${absoluteUrlGenerator.getUserUrlByUserName(userName)}">
 									<fmt:message key="buttons.mybibsonomy">
 											<fmt:param value="${properties['project.name']}"></fmt:param>
 										</fmt:message>

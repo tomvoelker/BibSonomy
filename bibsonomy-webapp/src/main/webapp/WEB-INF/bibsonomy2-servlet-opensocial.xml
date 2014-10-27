@@ -40,9 +40,6 @@
 		</property>
 	</bean>
 	
-	<!-- used for making shindig's beans available to the spring configuration -->
-	<!-- bean id="guiceBeanImporter" class="org.bibsonomy.webapp.util.opensocial.GuiceBeanImporter" init-method="init"/ -->
-
 	<!-- database interface for accessing token information -->	
 	<bean id="oauthDataStore" class="org.bibsonomy.opensocial.oauth.database.BibSonomyOAuthDataStore">
 		<constructor-arg value="/oauth/" />
