@@ -93,19 +93,20 @@
 						
 						<!-- Text edit area -->
 						<div style="display: none" id="wikiEditArea">
-							<bsform:textarea labelColSpan="3" inputColSpan="9" id="wikiTextArea" path="wikiText" labelKey="cv.editCV" noHelp="true" />
+							<bsform:textarea labelColSpan="3" inputColSpan="9" id="wikiTextArea" path="wikiText" labelKey="cv.editCV" noHelp="true" rows="10" />
 							<div class="form-group">
 								<div id="editButtons" class="col-sm-offset-3 col-sm-9 btn-group btn-group-sm">
-										<button type="button" onclick="return submitWiki('preview');" class="btn btn-default">
-											<c:out value="${preview}" />
-										</button>
-										<button type="button" onclick="return submitWiki('publicPreview');" class="btn btn-default">
-											<c:out value="${pPrev}" />
-										</button>
-										<button type="button" onclick="return clearCVTextField();" class="btn btn-danger">
-											<c:out value="${clear}" />
-										</button>
+									<button type="button" onclick="return submitWiki('preview');" class="btn btn-default">
+										<c:out value="${preview}" />
+									</button>
+									<button type="button" onclick="return submitWiki('publicPreview');" class="btn btn-default">
+										<c:out value="${pPrev}" />
+									</button>
+									<button type="button" onclick="return clearCVTextField();" class="btn btn-sm btn-danger">
+										<c:out value="${clear}" />
+									</button>
 								</div>
+								
 							</div>
 						</div>
 						
