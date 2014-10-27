@@ -150,7 +150,7 @@
 			
 			<c:if test="${empty discussion}">
 				<parts:postHeader headerHideable="${false}"
-					showPageOptions="${empty showPageOptions or showPageOptions == true}"
+					showPageOptions="${empty showPageOptions or showPageOptions}"
 					publicationsWidthClass="${publicationsWidthClass}"
 					bookmarksWidthClass="${bookmarksWidthClass}"
 					customPageOptions="${customPageOptions}"
@@ -212,7 +212,7 @@
 						widthClassName="${bookmarksWidthClass}"
 						showBookmark="${showBookmark}"
 						showPublication="${showPublications}"
-						showPageOptions="${empty showPageOptions or showPageOptions == true}"
+						showPageOptions="${empty showPageOptions or showPageOptions}"
 						isBasket="${isBasket}"
 						showInboxActions="${showInboxActions}"
 						disableResourcetypeSelection="${disableResourceTypeSelection}"
@@ -242,7 +242,7 @@
 						widthClassName="${publicationsWidthClass}"
 						showBookmark="${showBookmark}"
 						showPublication="${showPublications}"
-						showPageOptions="${empty showPageOptions or showPageOptions == true}"
+						showPageOptions="${empty showPageOptions or showPageOptions}"
 						isBasket="${isBasket}"
 						disableResourcetypeSelection="${disableResourceTypeSelection}">
 						

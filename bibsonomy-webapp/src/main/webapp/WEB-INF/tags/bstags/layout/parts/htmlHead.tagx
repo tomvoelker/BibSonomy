@@ -74,7 +74,7 @@
 		<!-- 
 		<mtl:styleSheet path="${resdir}/css/style.css" />
 		-->
-		<c:if test="${not empty personalized and personalized == true}">
+		<c:if test="${not empty personalized and personalized}">
 			<!-- <link rel="stylesheet" type="text/css" href="${resdir}/css/personalized.css" /> -->
 		</c:if>
 		

@@ -117,7 +117,7 @@
 			<c:if test="${empty discussion}">
 				<parts:postHeader 
 					headerHideable="${false}"
-					showPageOptions="${empty showPageOptions or showPageOptions == true}"
+					showPageOptions="${empty showPageOptions or showPageOptions}"
 					publicationsWidthClass="${publicationsWidthClass}"
 					bookmarksWidthClass="${bookmarksWidthClass}"
 					customPageOptions="${customPageOptions}"
