@@ -94,7 +94,7 @@
 							<c:param name="resourceHash" value="${post.resource.intraHash}" />
 							<c:param name="ckey" value="${ckey}" />
 						</c:url>
-						<a class="${buttonClasses}" href="${deleteUrl}" title="${deleteTitle}" data-type="post">
+						<a class="${buttonClasses} confirmdelete" href="${deleteUrl}" title="${deleteTitle}" data-type="post">
 							<span class="glyphicon glyphicon-remove"><!--  --></span>
 						</a>
 					</c:when>

@@ -45,9 +45,7 @@
 	
 	<jsp:element name="html">
 		<jsp:body>
-			<parts:htmlHead 
-			headerExt="${headerExt}" 
-			loginUser="${loginUser}"
+			<parts:htmlHead headerExt="${headerExt}" loginUser="${loginUser}"
 			requestedUser="${requestedUser}"
 			requPath="${requPath}"
 			pageTitle="${pageTitle}"

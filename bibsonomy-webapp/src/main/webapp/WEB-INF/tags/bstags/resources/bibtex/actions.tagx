@@ -73,7 +73,7 @@
 				<c:param name="clear" value="false" />
 			</c:url>
 				<fmt:message key="bibtex.actions.removeMessage.title" var="removeTitle" />
-				<a class="${buttonClasses}" href="${message_remove}" title="${removeTitle}" data-type="inboxpost">
+				<a class="${buttonClasses} confirmdelete" href="${message_remove}" title="${removeTitle}" data-type="inboxpost">
 					<span class="glyphicon glyphicon-remove"><!--  --></span>
 				</a>
 			</c:when>
@@ -86,7 +86,7 @@
 							<c:param name="resourceHash" value="${post.resource.intraHash}" />
 							<c:param name="ckey" value="${ckey}" />
 						</c:url>
-						<a class="${buttonClasses}" href="${deleteUrl}" title="${deleteTitle}" data-type="post">
+						<a class="${buttonClasses} confirmdelete" href="${deleteUrl}" title="${deleteTitle}" data-type="post">
 							<span class="glyphicon glyphicon-remove"><!--  --></span>
 						</a>
 					</c:when>
