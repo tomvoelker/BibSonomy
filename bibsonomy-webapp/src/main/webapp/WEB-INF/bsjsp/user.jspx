@@ -71,7 +71,6 @@
 				
 				<!-- display user's tag relations -->
 				<li>
-					<fmt:message key="tagrelations.title" var="tagRelationsTitle" />
 					<h4 class="sidebar concepts-headline sidebar-headline">
 						<fmt:message key="tagrelations"/>
 					</h4>
