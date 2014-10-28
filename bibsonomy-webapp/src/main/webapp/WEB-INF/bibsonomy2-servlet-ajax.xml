@@ -168,7 +168,7 @@
 								<value>relation</value>
 							</list>
 						</property>
-					</bean>				
+					</bean>
 				</entry>
 				<entry key="/ajax/usersearch">
 					<bean parent="controllerBase">

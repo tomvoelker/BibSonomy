@@ -97,9 +97,6 @@ public class DBLPScraper extends GenericBibTeXURLScraper {
 	 */
 	@Override
 	protected String getDownloadURL(URL url) throws ScrapingException {
-		String st_url = url.toString().replace("bibtex", "bib") + ".bib";
-		return st_url;
+		return url.toString().replace("bibtex", "bib") + ".bib";
 	}
 }
-
-

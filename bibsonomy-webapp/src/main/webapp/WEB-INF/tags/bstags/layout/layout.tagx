@@ -74,7 +74,7 @@
 								 	|
 								 	+-->
 								<c:choose>
-									<c:when test="${properties['project.name'] eq 'PUMA'}">
+									<c:when test="${properties['project.theme'] eq 'puma'}">
 										<bs:logoPuma />
 									</c:when>
 									<c:otherwise>

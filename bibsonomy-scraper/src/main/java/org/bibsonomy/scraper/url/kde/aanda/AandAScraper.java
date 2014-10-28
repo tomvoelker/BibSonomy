@@ -146,23 +146,23 @@ public class AandAScraper extends AbstractUrlScraper implements ReferencesScrape
 	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
 		String references = null;
 		try{
-			Matcher m = pat_link_ref.matcher(WebUtils.getContentAsString(scrapingContext.getUrl().toString()));
-			if(m.find()){
+			final Matcher m = pat_link_ref.matcher(WebUtils.getContentAsString(scrapingContext.getUrl().toString()));
+			if (m.find()) {
 				String url = "http://" + scrapingContext.getUrl().getHost().toString() + m.group(1);
 				Matcher m2 = pat_references.matcher(WebUtils.getContentAsString(url));
-				if(m2.find())
+				if (m2.find()) {
 					references = m2.group(1);
-				else{
+				} else {
 					Matcher m3 = pat_references_1.matcher(WebUtils.getContentAsString(url));
 					if(m3.find())
 						references = m3.group(1);
 				}
 			}
-			if(references != null){
+			if (references != null) {
 				scrapingContext.setReferences(references);
 				return true;
 			}
-		}catch(final IOException ex){
+		} catch (final IOException ex) {
 			throw new InternalFailureException(ex);
 		}
 			

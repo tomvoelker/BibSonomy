@@ -167,9 +167,6 @@
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
 			</resource>
-			<resource>
-				<directory>${project.downloaded-resources.directory}</directory>
-			</resource>
 		</resources>
 		<testResources>
 			<testResource>
@@ -627,7 +624,6 @@
 	<properties>
 		<wtpversion>1.5</wtpversion>
 		<project.build.webapp.resourcedir>${project.build.directory}/${project.build.finalName}/resources</project.build.webapp.resourcedir>
-		<project.downloaded-resources.directory>${project.build.directory}/downloaded-resources</project.downloaded-resources.directory>
 		<tomcat.version>7.0.29</tomcat.version>
 		<!-- We need to wrap the mave.build.timestamp property as it is not used for filtering, cf. http://stackoverflow.com/questions/13228472/how-to-acces-maven-build-timestamp-for-resource-filtering -->
 		<build.timestamp>${maven.build.timestamp}</build.timestamp>

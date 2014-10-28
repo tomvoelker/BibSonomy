@@ -15,13 +15,11 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">
-		
 			<div class="text-center">
 				<h1><fmt:message key="error.404.header" /></h1>
 				<p class="lead"><fmt:message key="error.404" /></p>
 				
 				<img src="/resources/image/404.jpg" />
-				
 			</div>
 		</jsp:attribute>
 	

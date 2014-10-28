@@ -572,7 +572,7 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public void createRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
-		if (!present(postHash) || !present(references) ||!present(relation)) {
+		if (!present(postHash) || !present(references) || !present(relation)) {
 			// FIXME: who needs/reads this warning? 
 			log.warn("can't create references because no post hash/ no references/ no relation given");
 			return;

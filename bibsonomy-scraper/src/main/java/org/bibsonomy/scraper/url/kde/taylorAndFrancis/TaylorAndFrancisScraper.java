@@ -119,19 +119,20 @@ public class TaylorAndFrancisScraper extends AbstractUrlScraper implements Refer
 	@Override
 	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
 		try{
-		Matcher m = ref_pattern.matcher(WebUtils.getContentAsString(scrapingContext.getUrl().toString().replace("abs", "ref") + "#tabModule"));
-		String references = null;
-		if(m.find())
-			references = m.group(1);
-		
-		if(references != null){
-			scrapingContext.setReferences(references);
-			return true;
-		}
-		
-		}catch(IOException ex){
+			final Matcher m = ref_pattern.matcher(WebUtils.getContentAsString(scrapingContext.getUrl().toString().replace("abs", "ref") + "#tabModule"));
+			String references = null;
+			if (m.find()) {
+				references = m.group(1);
+			}
+			
+			if (references != null) {
+				scrapingContext.setReferences(references);
+				return true;
+			}
+		} catch (IOException ex) {
 			throw new ScrapingException(ex);
 		}
+		
 		return false;
 	}
 

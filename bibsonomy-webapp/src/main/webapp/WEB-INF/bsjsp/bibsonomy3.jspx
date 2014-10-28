@@ -29,7 +29,7 @@
 		
 		<jsp:attribute name="content">
 		
-			<h1 class="text-center">BibSonomy 3 is coming soon.</h1>
+			<h1 class="text-center">BibSonomy 3 is out.</h1>
 
 			
 			
@@ -38,10 +38,6 @@
 					<div class="alert alert-info text-center" role="alert">
 						<strong>You're currently using BibSonomy 3 beta front-end.</strong><br />If you'd like to switch to BibSonomy 2 front-end, press the button below.
 					</div>
-					
-					<div class="lead">
-						<p>Before switching to the old BibSonomy 2 front-end, help us to improve BibSonomy and give us some feedback about your interactions with the new front-end. <a href="http://blog.bibsonomy.org/2014/08/bibsonomy-gets-new-front-end.html">Give feedback</a>.</p>
-					</div> 
 					
 					<form id="styleSettingsForm" method="POST" action="/updateUserSettings">
 						<input type="hidden" name="ckey" value="${ckey}"/>

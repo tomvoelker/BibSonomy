@@ -8,7 +8,8 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<fmt:message var="headline" key="page.bibtexkey.headline" />
@@ -20,6 +21,16 @@
 		minimizedContentWidth="${true}" 
 		headline="${headline}${command.requestedKey}">
 		
+		<jsp:attribute name="breadcrumbs">	
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<fmt:message var="bibtexkey" key="navi.bibtexkey" />
+					<nav:crumb name="${bibtexkey}"  />
+					<fmt:message var="concepts" key="navi.relations" />
+					<nav:crumb name="${command.requestedKey}" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.bibtexkey" formAction="/bibtexkey" formInputName="requestedKey" formInputValue="${command.requestedKey}">
 				<jsp:attribute name="pathPart">

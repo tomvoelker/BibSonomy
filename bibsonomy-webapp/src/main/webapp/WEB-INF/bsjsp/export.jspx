@@ -10,7 +10,8 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8"
 		language="java" pageEncoding="UTF-8" session="true" />
@@ -37,6 +38,14 @@
 				]]>
 			</script>
 		</jsp:attribute> 
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:crumb name="export" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
 		
 		<jsp:attribute name="content">
         <c:set var="pathAndQueryString"
@@ -100,8 +109,7 @@
 				  			<!-- 
 			  				| JabRef layouts
 			  				 -->
-							<c:when test="${'JabrefLayout' eq mapEntry.value['class'].simpleName 
-								or 'MSOfficeXMLLayout' eq mapEntry.value['class'].simpleName}">							
+							<c:when test="${'JabrefLayout' eq mapEntry.value['class'].simpleName}">							
 								<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />	
 								<td>
 									<a class="btn btn-primary btn-sm export-link" href="${fn:escapeXml(url)}" > 

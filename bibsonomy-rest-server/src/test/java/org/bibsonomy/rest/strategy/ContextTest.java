@@ -275,6 +275,7 @@ public class ContextTest extends AbstractContextTest {
 				null, new HashMap<Object, Object>(), null);
 		assertTrue("failure initializing DeleteReferenceStrategy", c.getStrategy() instanceof DeleteRelationsStrategy);
 	}
+	
 	@Test
 	public void testWrongUsage() {
 		try {
