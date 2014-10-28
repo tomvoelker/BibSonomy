@@ -63,7 +63,7 @@ public class URLGenerator {
 		/**
 		 * all posts I have picked
 		 */
-		BASKET("basket");
+		BASKET("clipboard");
 
 		private final String path;
 
@@ -81,7 +81,6 @@ public class URLGenerator {
 
 	private static final String ADMIN_PREFIX = "admin";
 	private static final String AUTHOR_PREFIX = "author";
-	private static final String BASKET_PREFIX = "basket";
 	private static final String BIBTEXEXPORT_PREFIX = "bib";
 	private static final String BIBTEXKEY_PREFIX = "bibtexkey";
 	private static final String BOOKMARK_PREFIX = "url";
@@ -200,7 +199,7 @@ public class URLGenerator {
 	 * @return The URL for the author's page.
 	 */
 	public String getAuthorUrlByName(final String authorLastName) {
-		String url = this.projectHome + prefix + AUTHOR_PREFIX + "/" + UrlUtils.safeURIEncode(authorLastName);
+		String url = this.projectHome + prefix + AUTHOR_PREFIX + "/" + UrlUtils.safeURIEncode(BibTexUtils.cleanBibTex(authorLastName));
 		return this.getUrl(url);
 	}
 	
@@ -210,7 +209,7 @@ public class URLGenerator {
 	 * @return URL pointing to the basket page.
 	 */
 	public String getBasketUrl() {
-		String url = this.projectHome + prefix + BASKET_PREFIX;
+		String url = this.projectHome + prefix + Page.BASKET.getPath();
 		return this.getUrl(url);
 	}
 	
