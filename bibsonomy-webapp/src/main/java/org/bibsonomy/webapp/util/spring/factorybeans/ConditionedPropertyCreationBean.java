@@ -28,7 +28,7 @@ public abstract class ConditionedPropertyCreationBean<T> implements Initializing
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		obj = (condition.eval() == true) ? produceSucessBean() :  produceFailureBean();
+		obj = (condition.eval()) ? produceSucessBean() :  produceFailureBean();
 	}
 
 	/**

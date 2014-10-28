@@ -452,7 +452,7 @@ $(function(){
 		$("#imgCollapseDiscussion").show();
 		
 		$("#textExpandDiscussion").hide();
-		$("#textCollapseDiscussion").show();		
+		$("#textCollapseDiscussion").show();
 		
 		
 		$(".imgCollapse").each(function(){
@@ -468,7 +468,7 @@ $(function(){
 		});
 		
 		//Fix to redefine the Sidebar height
-		$('#sidebar').height($('#postcontainer').height() + 11);		
+		$('#sidebar').height($('#postcontainer').height() + 11);
 		
 	} else if (!gsPresent){
 		$("div#discussion").hide();

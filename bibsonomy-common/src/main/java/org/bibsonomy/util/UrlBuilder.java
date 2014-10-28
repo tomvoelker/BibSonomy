@@ -73,8 +73,8 @@ public class UrlBuilder {
 		if (allowedParams == null) {
 			return this;
 		}
-		for (Iterator<Entry<String, String>> it = parameters.entrySet().iterator(); (it.hasNext() == true); ) {
-			if (allowedParams.contains(it.next().getKey()) == false) {
+		for (Iterator<Entry<String, String>> it = parameters.entrySet().iterator(); it.hasNext(); ) {
+			if (!allowedParams.contains(it.next().getKey())) {
 				it.remove();
 			}
 		}

@@ -56,6 +56,7 @@ public final class DepthEqualityTester  {
 	
 	private static final EqualityChecker simpleChecker = new EqualityChecker() {
 
+		@Override
 		public boolean checkEquals(Object should, Object is, String path) {
 			/*
 			 * to allow null values, we first compare memory addresses
@@ -63,6 +64,7 @@ public final class DepthEqualityTester  {
 			return should == is || should.equals(is);
 		}
 
+		@Override
 		public boolean checkTrue(boolean value, String path, String checkName) {
 			return value;
 		}
@@ -85,7 +87,6 @@ public final class DepthEqualityTester  {
 		}
 		return skip;
 	}
-
 	public static boolean areEqual(Object should, Object is, final EqualityChecker checker, final int maxDepth, final Pattern exclusionPattern, final String... excludeProperties) {
 		return areEqual(should, is, checker, maxDepth, exclusionPattern, toSet(excludeProperties));
 	}
@@ -98,7 +99,7 @@ public final class DepthEqualityTester  {
 		if (remainingDepth < 0) {
 			return true;
 		}
-		if (((excludeProperties != null) && (excludeProperties.contains(path) == true)) || ((exclusionPattern != null) && (exclusionPattern.matcher(path).find() == true))) {
+		if (((excludeProperties != null) && (excludeProperties.contains(path))) || ((exclusionPattern != null) && (exclusionPattern.matcher(path).find()))) {
 			log.debug("skipping '" + path + "'");
 			return true;
 		}
@@ -107,22 +108,22 @@ public final class DepthEqualityTester  {
 			return checker.checkEquals(should, is, path);
 		}
 		final Class<?> shouldType = should.getClass();
-		/*if (checker.checkTrue(shouldType.isAssignableFrom(is.getClass()), path, "should be " + shouldType.getName()) == false) {
+		/*if (checker.checkTrue(shouldType.isAssignableFrom(is.getClass()), path, "should be " + !shouldType.getName())) {
 			return false;
 		}*/
 
-		if ((shouldType == String.class) || (shouldType.isPrimitive() == true) || (Number.class.isAssignableFrom(shouldType) == true) || (shouldType == Date.class) || (shouldType == URL.class)) {
+		if ((shouldType == String.class) || (shouldType.isPrimitive()) || (Number.class.isAssignableFrom(shouldType)) || (shouldType == Date.class) || (shouldType == URL.class)) {
 			return checker.checkEquals(should, is, path);
 		} 
 		if (remainingDepth <= 0) {
 			return true;
 		}
-		if (visited.contains(should) == true) {
+		if (visited.contains(should)) {
 			return true;
 		}
 		visited.add(should);
 
-		if ((Set.class.isAssignableFrom(shouldType) == true) && (SortedSet.class.isAssignableFrom(shouldType) == false)) {
+		if ((Set.class.isAssignableFrom(shouldType)) && (!SortedSet.class.isAssignableFrom(shouldType))) {
 			final Set<?> shouldSet = (Set<?>) should;
 			final Set<?> isSet = (Set<?>) is;
 			int i = 0;
@@ -130,26 +131,26 @@ public final class DepthEqualityTester  {
 				final String entryPath = path + "[" + i + "]";
 				boolean found = false;
 				for (Object isEntry : isSet) {
-					if (assertPropertyEquality(shouldEntry, isEntry, simpleChecker, remainingDepth - 1, exclusionPattern, excludeProperties, entryPath, visited) == true) {
+					if (assertPropertyEquality(shouldEntry, isEntry, simpleChecker, remainingDepth - 1, exclusionPattern, excludeProperties, entryPath, visited)) {
 						found = true;
 						break;
 					}
 				}
-				if (checker.checkTrue(found, entryPath, "should be present") == false) {
+				if (!checker.checkTrue(found, entryPath, "should be present")) {
 					return false;
 				}
 				i++;
 			}
-			if (checker.checkEquals(i, isSet.size(), path + ": too much entries") == false) {
+			if (!checker.checkEquals(i, isSet.size(), path + ": too much entries")) {
 				return false;
 			}
-		} else if (Iterable.class.isAssignableFrom(shouldType) == true) {
+		} else if (Iterable.class.isAssignableFrom(shouldType)) {
 			final Iterable<?> shouldIterable = (Iterable<?>) should;
 			final Iterator<?> isIterator = ((Iterable<?>) is).iterator();
 			int i = 0;
 			for (Object shouldEntry : shouldIterable) {
 				final String entryPath = path + "[" + i + "]";
-				if (checker.checkTrue(isIterator.hasNext(), entryPath, "should be present") == false) {
+				if (!checker.checkTrue(isIterator.hasNext(), entryPath, "should be present")) {
 					return false;
 				}
 				if (assertPropertyEquality(shouldEntry, isIterator.next(), checker, remainingDepth - 1, exclusionPattern, excludeProperties, entryPath, visited) == false) {
@@ -157,7 +158,7 @@ public final class DepthEqualityTester  {
 				}
 				i++;
 			}
-			if (checker.checkTrue(isIterator.hasNext() == false, path, "should not be present") == false) {
+			if (!checker.checkTrue(isIterator.hasNext() == false, path, "should not be present")) {
 				return false;
 			}
 		} else {

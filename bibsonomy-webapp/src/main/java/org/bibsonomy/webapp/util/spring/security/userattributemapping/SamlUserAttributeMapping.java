@@ -56,7 +56,7 @@ public class SamlUserAttributeMapping implements UserAttributeMapping<SAMLCreden
 	}
 
 	protected void writeAttributeDebugLogs(SAMLCredential samlCred) {
-		if (log.isDebugEnabled() == true) {
+		if (log.isDebugEnabled()) {
 			StringBuilder sb = new StringBuilder();
 			for (Attribute a : samlCred.getAttributes()) {
 				sb.append(a.getName()).append(" or simply ").append(a.getFriendlyName()).append(" = ");

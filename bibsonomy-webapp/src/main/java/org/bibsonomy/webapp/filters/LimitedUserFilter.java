@@ -22,6 +22,7 @@ import org.bibsonomy.util.spring.security.AuthenticationUtils;
 
 /**
  * This filter redirects Limited Users to the limitedAccountActivation page
+ * FIXME: this filter restricts access to some pages => this should be done by spring security
  */
 public class LimitedUserFilter implements Filter {
 	private final static Log log = LogFactory.getLog(LimitedUserFilter.class);
@@ -41,7 +42,7 @@ public class LimitedUserFilter implements Filter {
 	protected boolean isAllowedForLimitedUser(HttpServletRequest request) {
 		final String requPath = request.getServletPath();
 		for (String prefix : this.allowedPathPrefixes) {
-			if (requPath.startsWith(prefix) == true) {
+			if (requPath.startsWith(prefix)) {
 				return true;
 			}
 		}

@@ -806,10 +806,10 @@ public class BibTexUtils {
 		if (text == null) {
 			return null;
 		}
-		if (containsBibtexMarkup(text) || ((escapeForPersonName == true) && (text.indexOf(',') >= 0))) {
+		if (containsBibtexMarkup(text) || (escapeForPersonName && (text.indexOf(',') >= 0))) {
 			return "{" + text + "}";
 		}
-		if (escapeForPersonName == true) {
+		if (escapeForPersonName) {
 			return text.replace(" and ", " {and} ");
 		}
 		return text;
