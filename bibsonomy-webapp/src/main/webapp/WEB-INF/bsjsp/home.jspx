@@ -26,6 +26,27 @@
 			<c:if test="${properties['project.theme'] eq 'puma'}">
 				<script type="text/javascript" src="/resources_puma/javascript/tools.js">&#160;</script>
 			</c:if>
+			
+			<script type="text/javascript">
+				$(function() {
+					$('.post-popover').popover(
+						{
+							html : true,
+							trigger : "hover",
+							container : 'body',
+							placement : 'top',
+							title : function() {
+								console.log("#popover-head-" + $(this).attr('data-ident'));
+								return $("#popover-head-" + $(this).attr('data-ident')).html();
+							},
+							content : function() {
+								console.log("#popover-head-" + $(this).attr('data-ident'));
+								return $("#popover-content-" + $(this).attr('data-ident')).html();
+							}
+						}
+					);
+				});
+			</script>
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">
