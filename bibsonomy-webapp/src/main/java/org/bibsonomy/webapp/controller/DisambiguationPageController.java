@@ -86,7 +86,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 			return new ExtendedRedirectView("/person/details/"+ PersonNameUtils.serializePersonName(matchingPersons.get(0).getMainName()) + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/" + command.getRequestedRole());	
 		}
 		
-		return new ExtendedRedirectView("/persondisambiguation/details/"+command.getRequestedAuthorName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/" + command.getRequestedRole());
+		return new ExtendedRedirectView("/persondisambiguation/details/" + matchingPersons.get(0).getId() + "/" + command.getRequestedAuthorName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/" + command.getRequestedRole());
 
 	}
 	

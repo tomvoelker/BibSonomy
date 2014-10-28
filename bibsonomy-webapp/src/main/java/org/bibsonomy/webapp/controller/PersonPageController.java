@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -126,7 +127,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return 
 	 */
 	private View addNameAction(PersonPageCommand command) {
-		
+		command.getPerson().setAcademicDegree(command.getFormAcademicDegree());
 		command.getPerson().getAlternateNames().add(new PersonName(command.getFormFirstName(), command.getFormLastName()));
 		this.personLogic.createOrUpdatePerson(command.getPerson());
 		
@@ -157,7 +158,14 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View showAction(PersonPageCommand command) {
+		//command.setPerson(this.personLogic.getPersonById(Integer.parseInt(command.getRequestedPersonId())));
+		Person p = new Person();
+		p.setMainName(new PersonName("Christian", "Pfeiffer"));
+		p.setAlternateNames(new HashSet<PersonName>());
+		p.getAlternateNames().add(new PersonName("Viktor", "Hemsen"));
+		command.setPerson(p);
 		
+		//TODO set correct parameters
 		command.setThesis(this.logic.getPosts(BibTex.class, GroupingEntity.PERSON_GRADUTED, null, null, null, command.getRequestedPersonId(), null, null, null, null, 0, 3));
 		command.setAdvisedThesis(this.logic.getPosts(BibTex.class, GroupingEntity.PERSON_ADVISOR, null, null, null, command.getRequestedPersonId(), null, null, null, null, 0, 3));
 		command.setAllPosts(this.logic.getPosts(BibTex.class, GroupingEntity.USER, command.getRequestedPersonId(), null, null, null, null, null, null, null, 0, 3));

@@ -64,45 +64,48 @@
 		<jsp:attribute name="content">
 		
 			<div class="page-header">
-				<h1>Person <small>${command.requestedPersonName}</small></h1>
+				<h1>Person <small>${command.person.mainName.firstName} ${command.person.mainName.lastName}</small></h1>
 			</div>
 		
 			<div id='personInfo' class='panel panel-default'>
 				<div class='panel-heading'>
-					<h4>About this person</h4>
+					<a data-toggle="collapse" class='collapsed'  data-target="#aboutThisPerson" href='#person'><strong>About</strong></a>
 				</div>
-				
-				<div class='panel-body'>
-					<form method='post' name='personForm' action="/person/update/${command.myUrl}" class='form-horizontal'>
-						<div class='form-group'>
-							<label class="control-label col-xs-4" for='formAcademicDegree'>Academic Degree</label>
-							<div class="col-xs-6">
-								<input class='form-control' type="text" name='formAcademicDegree' id='formAcademicDegree' placeholder="Academic degree" value="${command.person.academicDegree }"/>
+				<div  id='aboutThisPerson' class='panel-collapse collapse in'>
+					<div class='panel-body'>
+						<form method='post' name='personForm' action="" class='form-horizontal'>
+							<div class='form-group'>
+								<label class="control-label col-xs-4" for='formAcademicDegree'>Academic Degree</label>
+								<div class="col-xs-6">
+									<input class='form-control' type="text" name='formAcademicDegree' id='formAcademicDegree' placeholder="Academic degree" value="${command.person.academicDegree }"/>
+								</div>
 							</div>
-						</div>
-						<br/>
-						<div class='form-group'>
-							<label class="control-label col-xs-4">Person's alternate names</label>
-							<div class="col-xs-6">
-								<c:choose>
-									<c:when test="${fn:length(command.person.alternateNames) gt 0}">
-										<c:forEach var='person' items="${command.person.alternateNames}">
-											<span><input type='checkbox' name='selectedName'/>${person.firstName}, ${person.lastName}</span>
-										</c:forEach>
-									</c:when>
-									<c:otherwise>
-										<p class='form-control-static'>No alternate names</p>
-									</c:otherwise>
-								</c:choose>
+							<br/>
+							<div class='form-group'>
+								<label class="control-label col-xs-4">Person's alternate names</label>
+								<div class="col-xs-6">
+									<c:choose>
+										<c:when test="${fn:length(command.person.alternateNames) gt 0}">
+											<c:forEach var='person' items="${command.person.alternateNames}">
+												<div id='${person.firstName}${person.lastName}'>
+													<span class='form-control-static'>${person.firstName} ${person.lastName}</span>	
+												</div>
+											</c:forEach>
+										</c:when>
+										<c:otherwise>
+											<p class='form-control-static'>No alternate names</p>
+										</c:otherwise>
+									</c:choose>
+								</div>
 							</div>
-						</div>
-						<br/>
-					</form>
-					<div class='col-xs-4'><span></span></div>
-					<div class="col-xs-6">
-						<div class='btn-group'>
-							<button type='button' class='btn btn-default' data-toggle="modal" data-target="#addName" href='#addPerson'>Add Name</button>
-							<button type='button' class='btn btn-primary' id='savePersonButton'>Save</button>
+							<br/>
+						</form>
+						<div class='col-xs-4'><span><button class='btn btn-success'>That's me</button></span></div>
+						<div class="col-xs-6">
+							<div class='btn-group'>
+								<button type='button' class='btn btn-default' data-toggle="modal" data-target="#addName" href='#addPerson'>Add Name</button>
+								<button type='button' class='btn btn-primary' id='savePersonButton'>Save</button>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -110,14 +113,14 @@
 			
 			<div class='panel panel-default'>
 				<div class='panel-heading'>
-					<h4>Found Resources</h4>
+					<strong>Found Resources</strong>
 				</div>
 				
 				<div class='panel-body'>
 					<ul id='resourcesTabList' class="nav nav-tabs" role="tablist">
-						<li><a href="#thesis" role="tab" data-toggle="tab">Thesis</a></li>
-						<li><a href="#advisedThesis" role="tab" data-toggle="tab">Advised Thesis</a></li>
-						<li><a href="#all" role="tab" data-toggle="tab">All</a></li>
+						<li><a href="#thesis" role="tab" data-toggle="tab"><strong>Thesis</strong></a></li>
+						<li><a href="#advisedThesis" role="tab" data-toggle="tab"><strong>Advised Thesis</strong></a></li>
+						<li><a href="#all" role="tab" data-toggle="tab"><strong>All</strong></a></li>
 					</ul>
 					<div class='tab-content'>
 						<div id='thesis' class='tab-pane'>
@@ -127,7 +130,7 @@
 									<c:forEach var="post" items="${command.thesis}">
 										<div>
 											<div>
-												<a href='/person/details/${command.requestedPersonId}/${command.requestedPersonName}/${post.resource.intraHash}/${command.requestedPersonId}'>${post.resource.title}</a>
+												<a href='/person/details/${command.requestedPersonId}/${command.requestedPersonName}/${post.resource.intraHash}/${command.requestedPersonId}/AUTHOR'>${post.resource.title}</a>
 											</div>
 											<div>
 												<c:forEach var="author" items="${post.resource.author}">
@@ -142,7 +145,7 @@
 									</c:forEach>
 								</c:when>
 								<c:otherwise>
-									<p class="text-info">No resources found</p>
+									<p class="text-info"><STRONG>No resources found</STRONG></p>
 								</c:otherwise>
 							</c:choose>
 						</div>
@@ -153,7 +156,7 @@
 									<c:forEach var="post" items="${command.advisedThesis}">
 										<div>
 											<div>
-												<a href='/person/details/${command.requestedPersonId}/${command.requestedPersonName}/${post.resource.intraHash}/${command.requestedPersonId}'>${post.resource.title}</a>
+												<a href='/person/details/${command.requestedPersonId}/${command.requestedPersonName}/${post.resource.intraHash}/${command.requestedPersonId}/AUTHOR'>${post.resource.title}</a>
 											</div>
 											<div>
 												<c:forEach var="author" items="${post.resource.author}">
@@ -168,7 +171,7 @@
 									</c:forEach>
 								</c:when>
 								<c:otherwise>
-									<p class="text-info">No resources found</p>
+									<p class="text-info"><STRONG>No resources found</STRONG></p>
 								</c:otherwise>
 							</c:choose>
 						</div>
@@ -179,7 +182,7 @@
 									<c:forEach var="post" items="${command.allPosts}">
 										<div>
 											<div>
-												<a href='/person/details/${command.requestedPersonId}/${command.requestedPersonName}/${post.resource.intraHash}/${command.requestedPersonId}'>${post.resource.title}</a>
+												<a href='/person/details/${command.requestedPersonId}/${command.requestedPersonName}/${post.resource.intraHash}/${command.requestedPersonId}/AUTHOR'>${post.resource.title}</a>
 											</div>
 											<div>
 												<c:forEach var="author" items="${post.resource.author}">
@@ -194,7 +197,7 @@
 									</c:forEach>
 								</c:when>
 								<c:otherwise>
-									<p class="text-info">No resources found</p>
+									<p class="text-info"><STRONG>No resources found</STRONG></p>
 								</c:otherwise>
 							</c:choose>
 						</div>

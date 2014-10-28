@@ -46,7 +46,6 @@
 			<c:choose>
 				<c:when test="${schemaOrgMarkUp}">
 					<span itemprop="${authorEditor}" itemscope="itemscope" itemtype="http://schema.org/Person">
-					<!--  post.user.name durchreichen -->
 						<a href="${baseUrl}pubauthor/${fn:escapeXml(mtl:cleanBibtex(person.lastName))}, ${fn:escapeXml(mtl:cleanBibtex(person.firstName))}/${publication.intraHash}/${post.user.name}/AUTHOR" itemprop="name">
 							<c:out value="${personName}"/>
 						</a>

@@ -60,7 +60,7 @@
 		
 			<div class='panel panel-default'>
 				<div class='panel-heading'>
-					<h4>Selected Post</h4>
+					<h4>Related Post <a href='/person/show/${command.requestedPersonId}/${command.requestedPersonName}' class="pull-right glyphicon glyphicon-remove"></a></h4>
 				</div>
 				<div class='panel-body'>
 					<div class="title">
@@ -80,7 +80,7 @@
 			
 			<div class='panel panel-default'>
 				<div class='panel-heading'>
-					<h4>Involved People</h4>
+					<h4>Related People</h4>
 				</div>
 				
 				<div class='panel-body'>

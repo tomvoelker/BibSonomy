@@ -312,13 +312,14 @@
 	<!-- ############## /person pages ############### -->
 	<!-- redirect to /person/PERSON page -->
 	<rule>
-		<name>redirect /person/ACTION/PERSONID/PERSONNAME/HASH/USER</name>
-		<from>^/+person/+([^/]+?)/+([^/]+?)/+([^/]+?)(|/+([^/]+?)(|/+([^/]+?)))$</from>
+		<name>redirect /person/ACTION/PERSONID/PERSONNAME/HASH/USER/ROLE</name>
+		<from>^/+person/+([^/]+?)/+([^/]+?)/+([^/]+?)(|/+([^/]+?))(|/+([^/]+?))(|/+([^/]+?))$</from>
 		<set type="parameter" name="requestedAction">$1</set>
 		<set type="parameter" name="requestedPersonId">$2</set>
 		<set type="parameter" name="requestedPersonName">$3</set>
 		<set type="parameter" name="requestedHash">$5</set>
 		<set type="parameter" name="requestedUser">$7</set>
+		<set type="parameter" name="requestedRole">$9</set>
 		<to last="true">/person</to>
 	</rule>
 	
