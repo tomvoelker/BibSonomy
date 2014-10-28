@@ -44,7 +44,7 @@
      has the necessary attributes we access here. dbe, 20080509
      still a hack. dzo 20110727 -->
 	<c:if test="${command['class'].simpleName == 'TagResourceViewCommand'}">
-		<swrctags:relatedUsers cmd="${command.relatedUserCommand}" tags="${command['requestedTags']}"/>
+		<swrctags:relatedUsers cmd="${command.relatedUserCommand}" tags="${command.requestedTags}"/>
 	</c:if>
 </rdf:RDF>
 </jsp:root>
