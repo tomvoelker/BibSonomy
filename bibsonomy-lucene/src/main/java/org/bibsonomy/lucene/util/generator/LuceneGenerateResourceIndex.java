@@ -317,7 +317,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 				// public void run() {
 				if (LuceneGenerateResourceIndex.this.isNotSpammer(post)) {
 					// create index document from post model
-					final Document doc = (Document) LuceneGenerateResourceIndex.this.resourceConverter.readPost(post, searchType.LUCENESEARCH);
+					final Document doc = (Document) LuceneGenerateResourceIndex.this.resourceConverter.readPost(post, SearchType.LUCENESEARCH);
 
 					try {
 						LuceneGenerateResourceIndex.this.indexWriter.addDocument(doc);

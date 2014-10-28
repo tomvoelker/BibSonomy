@@ -9,15 +9,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.util.generator.LuceneGenerateResourceIndex;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.es.ESClient;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * TODO: add documentation to this class
@@ -39,7 +35,7 @@ public class GenerateSharedResourceIndex extends LuceneGenerateResourceIndex<Res
 	 * @throws CorruptIndexException
 	 * @throws IOException
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "boxing" })
 	@Override
 	public void createIndexFromDatabase() throws CorruptIndexException,
 			IOException {

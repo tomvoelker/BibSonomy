@@ -27,7 +27,7 @@ import org.bibsonomy.model.es.SearchType;
 public class LuceneGoldStandardManager<R extends Resource & GoldStandard<?>> extends LuceneResourceManager<GoldStandardPublication> {
 	
 	@Override
-	protected int updateIndex(final long currentLogDate, int lastId, final long lastLogDate) {
+	protected int updateIndex(final long currentLogDate, int lastId, final long lastLogDate, final SearchType searchType) {
 	    /*
 	     * get new posts 
 	     */
@@ -58,7 +58,7 @@ public class LuceneGoldStandardManager<R extends Resource & GoldStandard<?>> ext
 	    for (final LucenePost<GoldStandardPublication> post : newPosts) {
 	    	post.setLastLogDate(currentDate);
 	    	post.setLastTasId(lastId);
-	    	final Document postDoc = (Document) this.resourceConverter.readPost(post, SearchType.LUCENESEARCH);
+	    	final Document postDoc = (Document) this.resourceConverter.readPost(post, searchType);
 	    	this.updatingIndex.insertDocument(postDoc);
 	    }
 	    

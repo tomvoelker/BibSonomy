@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.es.GenerateSharedResourceIndex;
+import org.bibsonomy.es.SharedResourceManager;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
@@ -36,6 +37,7 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 	
 	private boolean generateSharedIndex;
 	private List<LuceneResourceManager<? extends Resource>> luceneResourceManagers;
+	private SharedResourceManager<? extends Resource> srManager;
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -52,22 +54,17 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		}	
 		
 		if(generateSharedIndex){
-			GenerateSharedResourceIndex generator = new GenerateSharedResourceIndex();
-			generator.setSearchType(SearchType.ELASTICSEARCH);
-			for(LuceneResourceManager<? extends Resource> manager: luceneResourceManagers){
-				generator.setLogic((LuceneDBInterface<Resource>) manager.getDbLogic());
-				generator.setTYPE_NAME(manager.getResourceName());
-				generator.setResourceConverter((LuceneResourceConverter<Resource>) manager.getResourceConverter());
-				generator.run();
-			}
-//			try {
-//				generator.shutdown();
-//			} catch (CorruptIndexException e) {
-//				log.error("Error shutting down the shared resource index generator", e);
-//			} catch (IOException e) {
-//				log.error("Error shutting down the shared resource index generator", e);
-//			}
-			
+//			GenerateSharedResourceIndex generator = new GenerateSharedResourceIndex();
+//			generator.setSearchType(SearchType.ELASTICSEARCH);
+//			for(LuceneResourceManager<? extends Resource> manager: luceneResourceManagers){
+//				generator.setLogic((LuceneDBInterface<Resource>) manager.getDbLogic());
+//				generator.setTYPE_NAME(manager.getResourceName());
+//				generator.setResourceConverter((LuceneResourceConverter<Resource>) manager.getResourceConverter());
+//				generator.run();
+//			}		
+			srManager = new SharedResourceManager<Resource>();
+			srManager.setLuceneResourceManagers(luceneResourceManagers);
+			srManager.generateIndex();
 			return Views.SUCCESS;
 		}
 		

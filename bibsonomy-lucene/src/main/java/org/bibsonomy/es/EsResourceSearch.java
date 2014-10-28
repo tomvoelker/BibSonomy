@@ -7,7 +7,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
-import org.bibsonomy.lucene.search.LuceneResourceSearch;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
@@ -37,8 +36,7 @@ public class EsResourceSearch<R extends Resource>{
 	/**
 	 * 
 	 */
-	protected static final Log log = LogFactory
-			.getLog(EsResourceSearch.class);
+	protected static final Log log = LogFactory.getLog(EsResourceSearch.class);
 
 	// ElasticSearch client
 	private ESClient esClient = new ESNodeClient();
@@ -68,7 +66,7 @@ public class EsResourceSearch<R extends Resource>{
 	
 	
 	/**
-	 * @return 
+	 * @return postList
 	 * @throws IOException 
 	 * @throws CorruptIndexException 
 	 * 
