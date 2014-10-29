@@ -89,8 +89,8 @@ function handleError(e){
 }
 
 function handleSuccessStatus(e) {
-//	$('#statusText').text("Success: " + e);
-    $('#statusField').removeClass('error success').addClass('success');
+	$('#statusText').text("");
+	$('#statusField').removeClass('error success').addClass('success');
 }
 
 /**
