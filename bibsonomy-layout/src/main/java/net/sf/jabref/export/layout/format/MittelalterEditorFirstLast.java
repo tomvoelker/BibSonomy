@@ -33,7 +33,6 @@ public class MittelalterEditorFirstLast extends MittelalterEditorNamesFormatter 
 
 	@Override
 	public String format(String fieldText) {
-		
 		return getEditorsString(fieldText);
 	}
 	
@@ -46,5 +45,4 @@ public class MittelalterEditorFirstLast extends MittelalterEditorNamesFormatter 
 	protected String getPersonNames(AuthorList list) {
 		return list.getAuthorsFirstFirst(false, false);
 	}
-	
 }

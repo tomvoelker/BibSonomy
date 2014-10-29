@@ -28,10 +28,7 @@ import net.sf.jabref.AuthorList.Author;
 import net.sf.jabref.export.layout.LayoutFormatter;
 
 /**
- * 
- * 
  * @author Sebastian Böttger sbo@cs.uni-kassel.de
- * 
  */
 public abstract class MittelalterEditorNamesFormatter implements LayoutFormatter {
 
@@ -42,9 +39,8 @@ public abstract class MittelalterEditorNamesFormatter implements LayoutFormatter
 	 * @return formatted string
 	 */
 	public String getEditorsString(final String fieldText) {
-
 		final AuthorList authorlist = AuthorList.getAuthorList(fieldText);
-		final StringBuffer ret = new StringBuffer();
+		final StringBuilder ret = new StringBuilder();
 		/*
 		 * If the publication has more than three editors only the first is
 		 * displayed with (Hgg.) to hint at further editors.
@@ -64,10 +60,9 @@ public abstract class MittelalterEditorNamesFormatter implements LayoutFormatter
 	 * @return
 	 */
 	protected String getAllPersonsString(final AuthorList list) {
+		final StringBuilder ret = new StringBuilder();
 
-		final StringBuffer ret = new StringBuffer();
-
-		for (int i = 0; i < list.size(); ++i) {
+		for (int i = 0; i < list.size(); i++) {
 			String author = this.getPersonName(list.getAuthor(i));
 
 			// (Über.) for translator
@@ -97,7 +92,11 @@ public abstract class MittelalterEditorNamesFormatter implements LayoutFormatter
 	 * @return
 	 */
 	protected abstract String getPersonName(final Author a);
-
+	
+	/**
+	 * @param list
+	 * @return
+	 */
 	protected abstract String getPersonNames(final AuthorList list);
 
 }

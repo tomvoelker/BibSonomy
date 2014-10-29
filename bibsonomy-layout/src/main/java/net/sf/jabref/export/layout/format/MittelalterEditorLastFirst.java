@@ -26,6 +26,12 @@ package net.sf.jabref.export.layout.format;
 import net.sf.jabref.AuthorList;
 import net.sf.jabref.AuthorList.Author;
 
+/**
+ * 
+ * TODO: add documentation to this class
+ *
+ * @author sbo
+ */
 public class MittelalterEditorLastFirst extends MittelalterEditorNamesFormatter {
 
 	@Override
@@ -44,5 +50,4 @@ public class MittelalterEditorLastFirst extends MittelalterEditorNamesFormatter 
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
 }

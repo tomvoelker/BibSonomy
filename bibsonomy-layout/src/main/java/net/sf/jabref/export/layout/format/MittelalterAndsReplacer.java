@@ -25,6 +25,12 @@ package net.sf.jabref.export.layout.format;
 
 import net.sf.jabref.export.layout.LayoutFormatter;
 
+/**
+ * 
+ * TODO: add documentation to this class
+ *
+ * @author sbo
+ */
 public class MittelalterAndsReplacer implements LayoutFormatter {
 
 	@Override
