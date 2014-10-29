@@ -9,11 +9,6 @@ var userMinFreq = 1;
  */
 var currentSortStyle = null;
 
-$(function() {
-	/* Function, to fix the functionality of the  menubar if the user is a touchable device */
-	touchableMenubar();
-});
-
 /**
  * XXX: variable "tagbox_minfreq_style" is defined in cloud.tagx!
  * 
@@ -35,10 +30,8 @@ function init_tagbox(tagbox, show, sort, minfreq) {
 			styleList.append(getUserMinfreq(tagbox, styleList, minfreq));
 		} else if (tagbox_minfreq_style == "default") {
 			styleList.append(getUserMinfreq(tagbox, styleList, -1));  
-		} 
+		}
 	}
-	
-	
 	
 	changeTagBox(tagbox, styleList, style_show[show]);
 	changeTagBox(tagbox, styleList, style_sort[sort]);
@@ -185,7 +178,7 @@ function setTagBoxFreq(tagbox) {
 	/* store tagbox */
 	var litags = tagbox.getElementsByTagName("li");
 	for (var x = 0; x < litags.length; x++) {
-		var tags = litags[x].getElementsByTagName("a");		
+		var tags = litags[x].getElementsByTagName("a");
 		var tagname = tags[0].firstChild.nodeValue;
 		collection_tagname.push(tagname);
 		collection_li[tagname] = litags[x];//.cloneNode(true); //NOTE: does new code work in all browsers?
@@ -197,7 +190,7 @@ function setTagBoxFreq(tagbox) {
 		for (y = 0; y < collection_numberofposts.length; y++) {
 			if (collection_numberofposts[y] == numberofpost) {
 				newnumberofposts = false;
-			}					
+			}
 		}
 		// remember post count
 		if (newnumberofposts) {
@@ -227,12 +220,11 @@ function setTagBoxFreq(tagbox) {
 		delete tags;
 	}
 
-	/* clean up */	
+	/* clean up */
 	delete collection_tagname;
 	delete collection_li;
 	delete collection_tagposts;
 	delete collection_numberofposts;
-
 }
 
 
@@ -345,39 +337,4 @@ function switchNavi(scope, element) {
 	}*/
 	
 	return false;
-}
-
-
-// TODO: cleanup functions below; check for unused methods
-$(function() { 
-
-});
-
-
-
-/**
- * Function to check if the user is a touchable device.
- * If the user is a touchable device, we fix the functionality of the menubar for the touchable device. 
- */
-function touchableMenubar() {
-	var touchOS = ('ontouchstart' in document.documentElement) ? true : false;
-		if (touchOS) {
-			$("#mySystem").click(function() {
-				var touch = $("#mySystem").data('touch');
-				if (touch == "true") {
-					return true;
-				} else {
-					$("#mySystem").data("touch", "true");
-					return false;
-				}
-			});
-			
-			$("#addPost").click(function(){
-				$("#mySystem").data("touch", "false");
-			});
-	
-			$("#popular").click(function(){
-				$("#mySystem").data("touch", "false");
-			});
-		}
 }

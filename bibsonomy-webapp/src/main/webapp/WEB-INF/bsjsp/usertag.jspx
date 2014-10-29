@@ -8,6 +8,8 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"> 
 	
@@ -26,25 +28,11 @@
 			</parts:search>
 		</jsp:attribute>
 		
-				
 		<jsp:attribute name="breadcrumbs">
-			<c:set var="ownPage" value="${command.context.userLoggedIn and (command.requestedUser eq command.context.loginUser)}" />
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<c:choose>
-						<c:when test="${ownPage}">
-							<fmt:message key="buttons.mybibsonomy" var="my">
-								<fmt:param>${properties['project.name']}</fmt:param>
-							</fmt:message>
-							<nav:crumb name="${my}" href="/user/${command.context.loginUser.name}" />
-						</c:when>
-						<c:otherwise>
-							<fmt:message key="navi.user" var="user" />
-							<nav:crumb name="${user}" />
-							<nav:crumb name="@${command.requestedUser}" href="/user/${command.requestedUser}" />
-						</c:otherwise>
-					</c:choose>
-					<nav:crumb name="${command.requestedTags}" active="true" leadingIcon="fa-tag" />
+					<nav:usercrumb requestedUser="${command.requestedUser}" loginUser="${command.context.loginUser}" />
+					<nav:tagcrumb requestedTags="${command.requestedTags}" active="${true}"/>
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		
@@ -53,26 +41,30 @@
 		<jsp:attribute name="sidebar">
 		<ul>
 			<div class="smalltext">
-				<parts:tagsAndConceptsForSidebar/>
+				<parts:tagsAndConceptsForSidebar />
 			</div>
 
 			<!-- display related tags -->
 			<li>
-				<h4 class="sidebar"><fmt:message key="relatedtags"/></h4>
+				<sidebar:sidebarHeader textKey="relatedtags" />
 				<tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.order}"/>
 			</li>
 			
 			
 			<!-- display user's tag relations -->
 			<li>
-				<fmt:message key="tagrelations.title" var="tagRelationsTitle"/>
-				<h4 class="sidebar"><fmt:message key="tagrelations"/><c:out value=" " /><small>(<a href="${relativeUrlGenerator.getConceptsUrlByString(fn:escapeXml(command.requestedUser))}" title="${tagRelationsTitle}"><fmt:message key="overview"/></a>)</small></h4>	
+				<sidebar:sidebarHeader>
+					<jsp:attribute name="text">
+						<fmt:message key="tagrelations.title" var="tagRelationsTitle"/>
+						<fmt:message key="tagrelations"/><c:out value=" " /><small>(<a href="${relativeUrlGenerator.getConceptsUrlByString(command.requestedUser)}" title="${tagRelationsTitle}"><fmt:message key="overview"/></a>)</small>
+					</jsp:attribute>
+				</sidebar:sidebarHeader>
 				<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
 			</li>
 			
 			<!-- display tags -->
 			<li>
-				<h4 class="sidebar"><fmt:message key="tags"/></h4>
+				<sidebar:sidebarHeader textKey="tags" />
 				<tags:cloud requPath="${mtl:getLowerPath(requPath)}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user"  showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 			</li>
 		</ul>

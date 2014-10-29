@@ -22,9 +22,10 @@
 	<jsp:directive.attribute name="helpPage" type="java.lang.String" required="false" description="A link to a help page."/>
 	<jsp:directive.attribute name="small" type="java.lang.Boolean" required="false" description="Reduces the element width to 33 percent" />
 
-	<!-- HTML attributes -->	
+	<!-- HTML attributes -->
 	<jsp:directive.attribute name="id" type="java.lang.String" required="false" description="Id for input field"/>
 	<jsp:directive.attribute name="placeholder" required="false" description="Placeholder for input field." />
+	<jsp:directive.attribute name="rows" required="false" type="java.lang.Integer" description="Placeholder for input field." />
 	
 	<jsp:directive.attribute name="appendix" fragment="true" required="false" description="Additional items for input field"/>
 	
@@ -70,8 +71,12 @@
 		<c:set var="classSmallField" value="smallField" />
 	</c:if>
 
-	<c:if test="${(empty id)}">
+	<c:if test="${empty id}">
 		<c:set var="id" value="${path}" />
+	</c:if>
+	
+	<c:if test="${empty rows}">
+		<c:set var="rows" value="2" />
 	</c:if>
 	
 	<!-- errors -->
@@ -107,7 +112,7 @@
 			| followed by input field surrounded by div column container with width inputColSpan
 			+-->
 		<div class="col-sm-${inputColSpan}">
-			<form:textarea path="${path}" cssClass="form-control ${helpPopover} ${small ? smallField : ''}" id="${id}" placeholder="${placeholder}" />
+			<form:textarea path="${path}" cssClass="form-control ${helpPopover} ${small ? smallField : ''}" id="${id}" placeholder="${placeholder}" rows="${rows}"/>
 			
 			<!-- followed by popover help -->
 			<c:if test="${empty noHelp or not noHelp}">
@@ -119,12 +124,6 @@
 			
 			<!-- followed by appendix for recommendations or additional content -->
 			<jsp:invoke fragment="appendix" />
-			
-			
-
-			
-
-			
 		</div> <!-- /.col-sm-x -->
 	</div> <!-- /.form-grpup -->
 </jsp:root>
