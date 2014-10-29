@@ -10,10 +10,6 @@
 		<div class="col-xs-9">
 			<h1>
 				<a title="home" href="${relativeUrlGenerator.getProjectHome()}">${properties['project.name']}</a>
-				<c:out value=" " />
-				<small id="beta">
-					<span class="label label-default">Beta</span>
-				</small>
 			</h1>
 			<p class="logo-desc"><small><fmt:message key="system.desc" /></small></p>
 		</div>
