@@ -128,7 +128,7 @@ public class JabRefModelConverter {
 	public static List<BibtexEntry> convertPosts(final List<? extends Post<? extends Resource>> posts, URLGenerator urlGen, boolean cleanBibTex) {
 		final List<BibtexEntry> entries = new ArrayList<BibtexEntry>();
 		for (final Post<? extends Resource> post : posts) {
-			entries.add(convertPost(post, urlGen, cleanBibTex));		
+			entries.add(convertPost(post, urlGen, cleanBibTex));
 		}
 		return entries;
 	}

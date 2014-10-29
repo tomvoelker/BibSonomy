@@ -17,22 +17,19 @@
 
 	<fmt:message key="navi.login" var="loginTitle" />
 
-	<layout:singleContainerLayout  loginUser="${command.context.loginUser}" command="${command}" pageTitle="${loginTitle}" requPath="${requPath}" smallBox="${true}">
-
-		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.login"/>
-		</jsp:attribute>
-
+	<layout:singleContainerLayout loginUser="${command.context.loginUser}" command="${command}" pageTitle="${loginTitle}" requPath="${requPath}" smallBox="${true}">
 		<jsp:attribute name="content">
 			<h1 class="content-header"><fmt:message key="login.local.legend"/><c:out value=" ${properties['project.name']}"/>
-				<small class="pull-right" style="position: relative; bottom: -14px; font-size: 14px;"><a href="/register"><fmt:message key="login.register.bs"/></a></small>
+				<c:if test="${not mtl:contains(authConfig, mtl:convertToEnum('org.bibsonomy.common.enums.AuthMethod', 'SAML'))}">
+					<small class="pull-right" style="position: relative; bottom: -14px; font-size: 14px;"><a href="${relativeUrlGenerator.getRegisterUrl()}"><fmt:message key="login.register.bs"/></a></small>
+				</c:if>
 			</h1>
 			<br />
 			<mtl:exists path="command.notice">
 				<c:if test="${not empty command.notice}">
 					<bs:alert style="info">
 						<jsp:attribute name="alertBody">
-							<fmt:message key="login.notice.welcome_1" /> <a style="font-weight: bold;" href="/">${properties['project.name']}</a>, <fmt:message key="login.notice.welcome_2" />
+							<fmt:message key="login.notice.welcome_1" /> <a style="font-weight: bold;" href="${relativeUrlGenerator.getProjectHome()}">${properties['project.name']}</a>, <fmt:message key="login.notice.welcome_2" />
 							<br />
 							<br />
 							<b><fmt:message key="${fn:escapeXml(command.notice)}" /></b>
@@ -48,7 +45,7 @@
 			</mtl:exists>
 
 			<!-- show global error messages -->
-			<errors:global errors="${errors}" />
+			<errors:global />
 
 			<c:if test="${not empty command.message}">
 				<bs:alert style="danger">
@@ -57,17 +54,52 @@
 					</jsp:attribute>
 				</bs:alert>
 			</c:if>
-
-			<div class="tab-content">
+			<ul class="nav nav-tabs" role="tablist">
 				<c:forEach var="authMethod" items="${authConfig}" varStatus="authMethodLoopState">
+	  				<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+	  				<fmt:message var="tabTitle" key="login.method.${authMethodName}" />
+	  				<!-- we can disable showing certain login methods by storing an empty string for login.method.AUTHMETHODNAME -->
+	  				<c:if test="${not empty tabTitle}">
+            			<li class="${authMethodLoopState.index eq 0 ? ' active' : ''}"><a data-toggle="tab" href="#login_${authMethodName}"><c:out value="${tabTitle}"/></a></li>
+            		</c:if>
+          		</c:forEach>
+			</ul>
+			<div class="tab-content">
+				<c:forEach var="authMethod" items="${authConfig}" varStatus="authMethodLoopState" >
 					<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
-					<form:form action="/login_${authMethodName}" id="form_${authMethodName}" method="POST" cssClass="form-horizontal">
-						<c:if test="${authMethod == 'OPENID'}">  <user:login_openid/></c:if>
-						<c:if test="${authMethod == 'INTERNAL'}"><user:login_internal/></c:if>
-						<c:if test="${authMethod == 'LDAP'}">    <user:login_ldap/></c:if>
-						<c:if test="${authMethod == 'SAML'}">    <user:login_saml/></c:if>
-						<input class="form-control" type="hidden" name="selTab" value="${authMethodLoopState.index}"></input>
-					</form:form>
+				
+					<c:if test="${authMethod == 'OPENID'}">
+						<div id="login_${authMethodName}" class="tab-pane${authMethodLoopState.index eq 0 ? ' active' : ''}">
+							<user:login_openid />
+						</div>
+					</c:if>
+				
+					<c:if test="${authMethod == 'INTERNAL'}">
+						<div id="login_${authMethodName}" class="tab-pane${authMethodLoopState.index eq 0 ? ' active' : ''}">
+							<form:form action="/login_${authMethodName}" id="form_${authMethodName}" method="POST" cssClass="form-horizontal">
+								<user:login_internal/>
+							</form:form>
+						</div>	
+					</c:if>
+				
+				
+					<c:if test="${authMethod == 'LDAP'}">
+						<div id="login_${authMethodName}" class="tab-pane${authMethodLoopState.index eq 0 ? ' active' : ''}">
+							<form:form action="/login_${authMethodName}" id="form_${authMethodName}" method="POST" cssClass="form-horizontal">
+								<user:login_ldap/>
+							</form:form>
+						</div>
+					</c:if>
+
+					<c:if test="${authMethod == 'SAML'}">
+						<div id="login_${authMethodName}" class="tab-pane${authMethodLoopState.index eq 0 ? ' active' : ''}">
+							<form:form action="/login_${authMethodName}" id="form_${authMethodName}" method="POST" cssClass="form-horizontal">
+								<user:login_saml/>
+							</form:form>
+						</div>
+					</c:if>
+					
+					<input class="form-control" type="hidden" name="selTab" value="${authMethodLoopState.index}"></input>
 				</c:forEach>
 			</div>
 		</jsp:attribute>

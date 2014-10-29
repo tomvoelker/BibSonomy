@@ -33,6 +33,7 @@
 	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>	
 	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
 	
+	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 	
 	<!--+
 		| 
@@ -49,6 +50,7 @@
 			minimizedContentWidth="${minimizedContentWidth}"
 			noSidebar="${true}"
 			headerExt="${headerExt}"
+			breadcrumbs="${breadcrumbs}"
 		>
 		
 		<c:if test="${not empty headerMessageKey}">

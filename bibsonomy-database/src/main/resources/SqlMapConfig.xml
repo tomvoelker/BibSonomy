@@ -2,7 +2,6 @@
 <!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
 
 <sqlMapConfig>
-
 	<!-- define query timeout (works only with mysql-connector-java 5.0.5+) -->	
 	<settings defaultStatementTimeout="30" />
 
@@ -25,7 +24,7 @@
 	<typeHandler javaType="conflictStrategy"    callback="org.bibsonomy.database.common.typehandler.ConflictResolutionStrategyTypeHandlerCallback" />
 	<typeHandler javaType="personNameList"      callback="org.bibsonomy.database.common.typehandler.PersonNameTypeHandlerCallback" />
 	<typeHandler javaType="LayoutSettings"      callback="org.bibsonomy.database.common.typehandler.LayoutSettingsTypeHandlerCallback" />
-
+	<typeHandler javaType="goldStandardRelation" callback="org.bibsonomy.database.common.typehandler.GoldStandardRelationTypeHandlerCallback"/>
 	
 	<sqlMap resource="common/Common.xml" />
 	<sqlMap resource="common/BookmarkCommon.xml" />
@@ -72,6 +71,6 @@
 	<!-- plugins -->
 	<sqlMap resource="plugins/Logging.xml" />
 	<sqlMap resource="plugins/MetaDataPlugin.xml" />
-	<sqlMap resource="plugins/GoldStandardPublicationReference.xml" />
+	<sqlMap resource="plugins/GoldStandardRelation.xml" />
 	<sqlMap resource="plugins/DiscussionPlugin.xml" />
 </sqlMapConfig>

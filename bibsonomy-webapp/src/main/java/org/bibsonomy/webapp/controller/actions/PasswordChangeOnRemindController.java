@@ -43,7 +43,7 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 
 	private String cryptKey;
 	private Errors errors;
-		
+	
 	private List<AuthMethod> authConfig;
 	
 	private int maxMinutesPasswordReminderValid = 60;
@@ -259,5 +259,4 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 	public void setAuthConfig(final List<AuthMethod> authConfig) {
 		this.authConfig = authConfig;
 	}
-	
 }

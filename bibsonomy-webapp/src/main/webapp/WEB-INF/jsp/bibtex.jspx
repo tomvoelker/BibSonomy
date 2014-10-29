@@ -26,8 +26,6 @@
 			<c:set var="isPublic" value="${true }"/>
 		</c:when>
 		<c:otherwise>
-
-		
 			<!-- quick fix for discussion page -->
 			<c:set var="discussionBox" value="${true}"/>
 			<c:forEach var="group" items="${command.bibtex.list[0].groups}">

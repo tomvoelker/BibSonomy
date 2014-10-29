@@ -47,6 +47,20 @@
 					<div class="in-my-collection glyphicon"><!--  --></div>
 				</c:otherwise>
 			</c:choose>
+			
+			<c:forEach var="group" items="${post.groups}">
+				<c:if test="${!empty group.name and group.name ne 'public'}">
+					<c:choose>
+						<c:when test="${group.name eq 'friends'}">
+							<!-- TODO: friends marker? -->
+						</c:when>
+						<c:when test="${group.name eq 'private'}">
+							<div class="glyphicon-private glyphicon"><!--  --></div>
+						</c:when>
+					</c:choose>
+				</c:if>
+			</c:forEach>
+			
 		</div>
 		<div class="media-body">
 			<div class="pdesc ellipsis">

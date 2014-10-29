@@ -9,14 +9,14 @@
 		WHERE b.simhash1 = #hash# AND b.content_type = #contentType# ORDER BY b.date DESC
 	</select>
 	
-	<select id="getGoldStandardRefercences" resultMap="GoldStandardPublicationCommon.abstractResource" parameterClass="resourceParam">
-		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, scraperid, 1 AS count, -1 AS rating, -1 AS number_of_ratings FROM (gold_standard b, gold_standard_publication_references r)
-		WHERE r.publication = #hash# AND b.simhash1 = r.reference ORDER BY b.title DESC
+	<select id="getGoldStandardRelated" resultMap="GoldStandardPublicationCommon.abstractResource" parameterClass="resourceParam">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, scraperid, 1 AS count, -1 AS rating, -1 AS number_of_ratings FROM (gold_standard b, gold_standard_relations r)
+		WHERE r.publication = #hash# AND b.simhash1 = r.reference AND r.relation_kind = #relation# ORDER BY b.title DESC
 	</select>
 	
-	<select id="getGoldStandardRefercencedBy" resultMap="GoldStandardPublicationCommon.abstractResource" parameterClass="resourceParam">
-		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, scraperid, 1 AS count, -1 AS rating, -1 AS number_of_ratings FROM (gold_standard b, gold_standard_publication_references r)
-		WHERE r.reference = #hash# AND b.simhash1 = r.publication ORDER BY b.title DESC
+	<select id="getGoldStandardRelatedBy" resultMap="GoldStandardPublicationCommon.abstractResource" parameterClass="resourceParam">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, scraperid, 1 AS count, -1 AS rating, -1 AS number_of_ratings FROM (gold_standard b, gold_standard_relations r)
+		WHERE r.reference = #hash# AND b.simhash1 = r.publication AND r.relation_kind = #relation# ORDER BY b.title DESC
 	</select>
 	
 	<insert id="insertGoldStandardPublication" parameterClass="bibtexParam">
@@ -33,13 +33,13 @@
 		DELETE FROM gold_standard WHERE simhash1 = #hash# AND content_type = #contentType#
 	</delete>
 	
-	<insert id="insertGoldStandardPublicationReference">
-		INSERT INTO gold_standard_publication_references (publication, reference, user_name) VALUES (#hash#, #refHash#, #username#)
+	<insert id="insertGoldStandardRelation">
+		INSERT INTO gold_standard_relations (publication, reference, user_name, relation_kind) VALUES (#hash#, #refHash#, #username#, #relation#)
 	</insert>
 	
 	<!-- be careful hash or refHash must be not null!!! or you delete everything -->
-	<delete id="deleteGoldStandardPublicationReference">
-		DELETE FROM gold_standard_publication_references WHERE publication = #hash# AND reference = #refHash#
+	<delete id="deleteGoldStandardRelation">
+		DELETE FROM gold_standard_relations WHERE publication = #hash# AND reference = #refHash# AND relation_kind = #relation#
 	</delete>
 	
 </sqlMap>

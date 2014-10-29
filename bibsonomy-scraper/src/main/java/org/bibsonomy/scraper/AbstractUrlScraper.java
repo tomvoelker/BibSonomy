@@ -31,6 +31,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Scrapers of this type can decide using only the URL, if they
@@ -58,7 +59,7 @@ public abstract class AbstractUrlScraper implements UrlScraper {
 	 */
 	@Override
 	public boolean supportsUrl(final URL url) {
-		if (url != null) {
+	    if (ValidationUtils.present(url)) {
 			final List<Pair<Pattern, Pattern>> urlPatterns = this.getUrlPatterns();
 
 			/*
@@ -100,7 +101,7 @@ public abstract class AbstractUrlScraper implements UrlScraper {
 	 */
 	@Override
 	public boolean scrape(final ScrapingContext sc) throws ScrapingException {
-		if ((sc != null) && this.supportsScrapingContext(sc)) {
+	    if (ValidationUtils.present(sc) && this.supportsScrapingContext(sc)) {
 			return this.scrapeInternal(sc);
 		}
 		return false;

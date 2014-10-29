@@ -23,6 +23,8 @@
 
 package org.bibsonomy.model.user.settings;
 
+import java.io.Serializable;
+
 import org.bibsonomy.webapp.view.constants.ViewLayout;
 
 /**
@@ -30,7 +32,9 @@ import org.bibsonomy.webapp.view.constants.ViewLayout;
  *
  * @author jil
  */
-public class LayoutSettings {
+public class LayoutSettings implements Serializable {
+	private static final long serialVersionUID = 4543802036448366427L;
+
 	/** 
 	 * are advanced buttons & ui options hidden from the user?
 	 */
@@ -39,7 +43,7 @@ public class LayoutSettings {
 	/**
 	 * which layout should be used?
 	 */
-	private ViewLayout viewLayout = ViewLayout.CLASSIC;
+	private ViewLayout viewLayout = ViewLayout.BOOTSTRAP;
 
 	/**
 	 * @return {@link ViewLayout} 

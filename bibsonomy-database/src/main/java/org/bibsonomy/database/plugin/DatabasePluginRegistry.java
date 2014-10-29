@@ -20,6 +20,7 @@ import org.bibsonomy.database.plugin.plugins.MetaDataPlugin;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /**
  * All database plugins are registered here.
@@ -133,16 +134,16 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	}
 	
 	@Override
-	public void onGoldStandardPublicationReferenceCreate(final String userName, final String interHashPublication, final String interHashReference) {
+	public void onGoldStandardPublicationReferenceCreate(final String userName, final String interHashPublication, final String interHashReference, final String interHashRelation) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
-			plugin.onGoldStandardPublicationReferenceCreate(userName, interHashPublication, interHashReference);
+			plugin.onGoldStandardPublicationReferenceCreate(userName, interHashPublication, interHashReference, interHashRelation);
 		}	
 	}
 
 	@Override
-	public void onGoldStandardPublicationReferenceDelete(final String userName, final String interHashPublication, final String interHashReference, final DBSession session) {
+	public void onGoldStandardRelationDelete(final String userName, final String interHashPublication, final String interHashReference, final GoldStandardRelation interHashRelation, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
-			plugin.onGoldStandardPublicationReferenceDelete(userName, interHashPublication, interHashReference, session);
+			plugin.onGoldStandardRelationDelete(userName, interHashPublication, interHashReference, interHashRelation, session);
 		}
 	}
 

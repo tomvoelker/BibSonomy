@@ -3,6 +3,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 	
 	<jsp:directive.attribute name="labelColSpan" type="java.lang.Integer" required="false" description="Column span width of the label. labelColSpan and inputColSpan must add up to 12" />
@@ -21,15 +22,26 @@
 		</c:otherwise>
 	</c:choose>
 	
+	<!-- if no captcha html present mockcaptcha is used and we do not need to output the captcha -->
 	<c:if test="${not empty command.captchaHTML}">
-		<div class="form-group">
-			<div class="col-sm-offset-${12-inputColSpan} col-sm-${inputColSpan}">
-				<form:label cssClass="fsLabel" path="recaptcha_response_field" ><fmt:message key="captcha"/></form:label>
-			</div>
+		<!-- errors -->
+		<c:set var="formErrors"><form:errors path="recaptcha_response_field" /></c:set>
+		
+		<div class="form-group${not empty formErrors ? ' has-error' : ''}">
+			<c:if test="${not empty formErrors}">
+				<div class="col-sm-offset-${labelColSpan} col-sm-${inputColSpan}">
+					<bs:feedback style="danger" size="defaultSize" >
+						<jsp:attribute name="feedbackBody">
+							<form:errors path="recaptcha_response_field" />
+						</jsp:attribute>
+					</bs:feedback>
+				</div>
+			</c:if>
+			
+			<form:label cssClass="control-label col-sm-${labelColSpan}" path="recaptcha_response_field" ><fmt:message key="captcha"/></form:label>
 			<div class="col-sm-${inputColSpan}">
 				${command.captchaHTML}
 			</div>
-			<form:errors path="recaptcha_response_field" />
 		</div>
 	</c:if>
 </jsp:root>

@@ -41,13 +41,6 @@
 	</li>
 	
 	<!--+ 
-		+ placeholder for extended bibtex export options 
-		+-->
-	<c:if test="${isPublication}">
-		<span id="bibtexListExportOptions">${mtl:ch('nbsp')}</span>
-	</c:if>	
-	
-	<!--+ 
 		+ sort options
 		+-->
 	<c:if test="${not disableSort}">

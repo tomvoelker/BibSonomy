@@ -157,14 +157,15 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/ajax/goldstandards/references">
+				<entry key="/ajax/goldstandards/relation">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="editGoldstandardReferencesController"/>
+						<property name="controllerBeanName" value="editGoldstandardRelationController"/>
 						 <property name="allowedFields">
 							<list>
 								<value>action</value>
 								<value>hash</value>
 								<value>references</value>
+								<value>relation</value>
 							</list>
 						</property>
 					</bean>
@@ -244,10 +245,9 @@
 	</bean>
 
 	<bean id="generalAjaxController" class="org.bibsonomy.webapp.controller.ajax.GeneralAjaxController" scope="request" parent="ajaxController" />	
-	
-	<bean id="editGoldstandardReferencesController" class="org.bibsonomy.webapp.controller.ajax.EditGoldstandardReferencesController" scope="request" parent="ajaxController" />
-	
+	<bean id="editGoldstandardRelationController" class="org.bibsonomy.webapp.controller.ajax.EditGoldstandardRelationController" parent="ajaxController" scope="request" />å
 	<bean id="commentController" class="org.bibsonomy.webapp.controller.ajax.CommentAjaxController" parent="ajaxController" scope="request" />
+	
 	
 	<bean id="reviewController" class="org.bibsonomy.webapp.controller.ajax.ReviewAjaxController" parent="ajaxController" scope="request" />
 	
@@ -282,12 +282,21 @@
 		<property name="multiplexingBookmarkRecommender" ref="multiplexingBookmarkRecommender" />
 	</bean>
 	
+	
 	<bean id="userSearchController" class="org.bibsonomy.webapp.controller.ajax.UserSearchController" scope="request" parent="ajaxController" />
+	
 	<bean id="ajaxGetBookmarkRecommendedTagsController" class="org.bibsonomy.webapp.controller.ajax.GetBookmarkRecommendedTagsController" scope="request" parent="ajaxTagsRecommendationsController" />
+	
 	<bean id="ajaxGetPublicationRecommendedTagsController" class="org.bibsonomy.webapp.controller.ajax.GetPublicationRecommendedTagsController" scope="request" parent="ajaxTagsRecommendationsController" />
+	
 	<bean id="userRelationAjaxController" class="org.bibsonomy.webapp.controller.ajax.UserRelationAjaxController" scope="request" parent="ajaxController" />
+	
 	<bean id="groupShareAjaxController" class="org.bibsonomy.webapp.controller.ajax.GroupShareAjaxController" scope="request" parent="ajaxController" />
+	
 	<bean id="basketController" class="org.bibsonomy.webapp.controller.ajax.BasketController" scope="request" parent="ajaxController" />
+	
 	<bean id="conceptController" class="org.bibsonomy.webapp.controller.ajax.ConceptController" scope="request" parent="ajaxController" />
+	
 	<bean id="privatenoteController" class="org.bibsonomy.webapp.controller.ajax.PrivateNoteAjaxController" scope="request" parent="ajaxController" />
+	
 </beans>

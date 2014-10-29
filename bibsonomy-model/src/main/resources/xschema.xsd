@@ -185,22 +185,15 @@
 	<xsd:complexType name="PostType">
 		<xsd:sequence>
 			<xsd:element name="user" type="UserType" />
-			<xsd:element maxOccurs="unbounded" minOccurs="0"
-				name="group" type="GroupType" />
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="group" type="GroupType" />
 			<!-- Note: a post must have at least one tag -->
-			<xsd:element maxOccurs="unbounded" name="tag"
-				type="TagType" />				
-			<xsd:element minOccurs="0" maxOccurs="1" name="documents"
-				type="DocumentsType" />
+			<xsd:element maxOccurs="unbounded" name="tag" type="TagType" />				
+			<xsd:element minOccurs="0" maxOccurs="1" name="documents" type="DocumentsType" />
 			<xsd:choice>
-				<xsd:element name="bookmark" maxOccurs="1"
-					type="BookmarkType" />
-				<xsd:element name="bibtex" maxOccurs="1"
-					type="BibtexType" />
-				<xsd:element name="publicationFileUpload" maxOccurs="1"
-					type="UploadDataType" />
-				<xsd:element name="goldStandardPublication"
-					maxOccurs="1" type="GoldStandardPublicationType" />
+				<xsd:element name="bookmark" maxOccurs="1" type="BookmarkType" />
+				<xsd:element name="bibtex" maxOccurs="1" type="BibtexType" />
+				<xsd:element name="publicationFileUpload" maxOccurs="1"	type="UploadDataType" />
+				<xsd:element name="goldStandardPublication" maxOccurs="1" type="GoldStandardPublicationType" />
 			</xsd:choice>
 		</xsd:sequence>
 		<xsd:attribute name="description" type="xsd:string" />
@@ -223,13 +216,33 @@
 	
 	
 	<!-- 
-		list of Documents to be shown in the xml 
+		list of Documents
 	 -->
 	<xsd:complexType name="DocumentsType">
 		<xsd:sequence>
 			<xsd:element maxOccurs="unbounded" name="document" type="DocumentType" />
 		</xsd:sequence>
 	</xsd:complexType>
+
+
+	<!--
+		a URL for a publication
+	 -->
+	<xsd:complexType name="ExtraUrlType">
+		<xsd:attribute name="title" type="xsd:string" />
+		<xsd:attribute name="href" type="xsd:anyURI" />
+		<xsd:attribute name="date" type="xsd:dateTime" />
+	</xsd:complexType>
+	
+	<!-- 
+		list of extra URLs to be shown in the xml 
+	 -->
+	<xsd:complexType name="ExtraUrlsType">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="url" type="ExtraUrlType" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
 
 	<!--
 		a bookmark
@@ -251,6 +264,10 @@
 		(else GoldStandardPublicationType would extend BibtexType)
    		-->
 	<xsd:complexType name="AbstractPublicationType">
+		<!-- extra URLs -->
+		<xsd:sequence>
+		  <xsd:element minOccurs="0" maxOccurs="1" name="extraurls" type="ExtraUrlsType" />
+		</xsd:sequence>
 		<xsd:attribute name="title" type="xsd:string" use="required" />
 		<xsd:attribute name="bibtexKey" type="xsd:string" />
 		<xsd:attribute name="bKey" type="xsd:string" />

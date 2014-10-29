@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.http.HttpSession;
 
 import org.bibsonomy.util.spring.security.RemoteOnlyUserDetails;
@@ -94,7 +95,10 @@ public class UsernameSecurityContextRepository implements SecurityContextReposit
 	 * @see org.springframework.security.web.context.SecurityContextRepository#saveContext(org.springframework.security.core.context.SecurityContext, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public void saveContext(final SecurityContext context, final HttpServletRequest request, final HttpServletResponse response) {
+	public void saveContext(final SecurityContext context, final HttpServletRequest request, HttpServletResponse response) {
+		while ( ((response instanceof UsernameSecurityWrapper) == false) && (response instanceof HttpServletResponseWrapper) ) {
+			response = (HttpServletResponse) ((HttpServletResponseWrapper)response).getResponse();
+		}
 		final UsernameSecurityWrapper wrapper = (UsernameSecurityWrapper) response;
 		if (!wrapper.isContextSaved()) {
 			wrapper.saveContext(context);

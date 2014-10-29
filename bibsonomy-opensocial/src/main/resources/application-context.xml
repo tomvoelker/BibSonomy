@@ -30,8 +30,4 @@
 	<bean id="personSpi" class="org.bibsonomy.opensocial.spi.BibSonomyPersonSpi">
 		<property name="dbLogicFactory" ref="shindigLogicFactory" />
 	</bean>
-
-	<bean id="mockupPersonSpi" class="org.bibsonomy.opensocial.spi.MockPersonSpi" />
-
-	<bean id="oAuthDataStore" class="org.bibsonomy.opensocial.spi.MockOAuthDataStore" />
 </beans>

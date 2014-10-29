@@ -43,7 +43,6 @@
 					${fn:escapeXml(command.context.loginUser.name)}						
 				</li>					
 				<li>
-					
 					<a href="${relativeUrlGenerator.getConceptUrlByUserNameAndTagName(fn:escapeXml(command.context.loginUser.name), command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 					<c:out value=" "/>
 					<fmt:message key="tag.asConceptFrom"/>

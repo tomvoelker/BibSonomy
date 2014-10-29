@@ -1,0 +1,33 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<jsp:directive.attribute name="requestedGroup" type="java.lang.String" required="true" description="the requested user"/>
+	<jsp:directive.attribute name="relevantFor" type="java.lang.Boolean" required="false" description="the requested user"/>
+	<jsp:directive.attribute name="active" type="java.lang.Boolean" required="false" description="the requested user"/>
+
+	<c:if test="${empty active}">
+		<c:set var="active" value="${false}" />
+	</c:if>
+	
+	<nav:crumb nameKey="navi.group" />
+	<c:set var="groupLink" value="" />
+	
+	<c:if test="${not active}">
+		<c:choose>
+			<c:when test="${empty relevantFor or not relevantFor}">
+				<c:set var="groupLink" value="${relativeUrlGenerator.getGroupUrlByGroupName(requestedGroup)}" />
+			</c:when>
+			<c:otherwise>
+				<c:set var="groupLink" value="${relativeUrlGenerator.getRelevantForUrlByGroupName(requestedGroup)}" />
+			</c:otherwise>
+		</c:choose>
+	</c:if>
+	<nav:crumb name="${requestedGroup}" href="${groupLink}" leadingIcon="fa-group" active="${active}"/>
+</jsp:root>

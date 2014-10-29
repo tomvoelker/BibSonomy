@@ -30,7 +30,7 @@
     <jsp:directive.attribute name="tags" fragment="true" required="false" />
     <jsp:directive.attribute name="groups" fragment="true" required="false" />
     <jsp:directive.attribute name="extraInformation" fragment="true" required="false" description="Extra information which shall be displayed outside the form."/>
-    <jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
+    <jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
     
 	
 	<fmt:message key="navi.edit${resourceType}" var="editPageTitle" />
@@ -108,7 +108,7 @@
 					<!--+ 
 		  	          	| show global errors
 		    		  	+ -->
-					<errors:global errors="${errors}"/>
+					<errors:global />
 		            
 		            <!--+
 		                | form starts here
@@ -121,13 +121,13 @@
 						    +-->
 						<c:if test="${not empty command.diffPost}">
 		                 	
-							<fmt:message key="note"/>
-		                 		
-							<span style="float:left; font-weight: bold; margin-left: 1em;">
-								<fmt:message key="post.edit.existent" />
-							</span>
-							<buttons:help message="post.edit.existent.help"/>
-		                   	
+		                 	<bs:alert style="warning" dismissable="true">
+		                 		<jsp:attribute name="alertBody">
+		                 			<h4><fmt:message key="note"/>: <fmt:message key="post.edit.existent" /></h4>
+		                 			<p><fmt:message key="post.edit.existent.help" /></p>
+		                 		</jsp:attribute>
+		                 	</bs:alert>
+
 						</c:if>
 						<!--+
 		                    | general information 
@@ -223,7 +223,8 @@
 				</div>
 				
 			</div>
-
+			<!-- margins -->
+			<p>&amp;nbsp;<c:out value=" " /></p>
 		</jsp:attribute>
 		
 	</layout:layout>
