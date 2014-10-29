@@ -40,14 +40,14 @@
 		<script language="javascript">
 		function generateIndex(resource) { 
 			var box = window.confirm("This will (re)-generate the active and inactive " + resource +"Index. Are you sure?");
-			if (box == true) { 
+			if (box) { 
 			    window.location.href="?action=generateIndex&amp;resource=" + resource; 
 			}
 		} 
 		
 		function generateOneIndex(resource, id) { 
 			var box = window.confirm("This will (re)-generate the " + resource +"Index with id "+ id +". Are you sure?");
-			if (box == true) { 
+			if (box) { 
 			    window.location.href="?action=generateOneIndex&amp;id="+id+"&amp;resource=" + resource; 
 			}
 		}
@@ -181,7 +181,7 @@
 						</div>
 						<div>
 								<span>${generatingIndex.indexGenerationProgress} % done.</span>
-						</div>			    		
+						</div>
 			    	</c:if>
 			    </c:when>
 		 		<c:otherwise>
@@ -208,6 +208,6 @@
    </c:forEach>
 </div>    
             
-		</jsp:attribute>				
+		</jsp:attribute>
 	</layout:layout>
 </jsp:root>

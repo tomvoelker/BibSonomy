@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>2.0.48-SNAPSHOT</version>
+		<version>3.0.0-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>bibsonomy-webapp</artifactId>
@@ -33,31 +33,6 @@
 					-->
 					<warSourceExcludes>**/*.js,**/*.css</warSourceExcludes>
 				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.4</version>
-				<executions>
-					<execution>
-						<!--
-							download the latest WURLF specs each time a war file is created.
-							if this is too frequent for any reason, check the version history
-							of this file for rev. 1.86 which checks if the file already
-							exists.
-						-->
-						<phase>generate-resources</phase>
-						<configuration>
-							<tasks>
-								<mkdir dir="${project.downloaded-resources.directory}" />
-								<get src="http://download.sourceforge.net/project/wurfl/WURFL/${wurfl.version}/wurfl-${wurfl.version}.zip"
-									dest="${project.downloaded-resources.directory}/wurfl.zip" />
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>net.alchim31.maven</groupId>
@@ -167,12 +142,13 @@
 			<plugin>
 				<groupId>org.lesscss</groupId>
 				<artifactId>lesscss-maven-plugin</artifactId>
-				<version>1.3.3</version>
+				<version>1.7.0.1.1</version>
 				<configuration>
 					<sourceDirectory>${project.basedir}/src/main/webapp/resources/css</sourceDirectory>
 					<outputDirectory>${project.build.directory}/${project.build.finalName}/resources/css</outputDirectory>
 					<compress>true</compress>
 					<includes>
+						<include>bootstrap.less</include>
 						<include>bootstrap-style.less</include>
 						<include>style.less</include>
 					</includes>
@@ -190,9 +166,6 @@
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
-			</resource>
-			<resource>
-				<directory>${project.downloaded-resources.directory}</directory>
 			</resource>
 		</resources>
 		<testResources>
@@ -251,11 +224,6 @@
 			<groupId>org.directwebremoting</groupId>
 			<artifactId>dwr</artifactId>
 			<version>2.0.10</version>
-		</dependency>
-		<dependency>
-			<groupId>net.sourceforge.wurfl</groupId>
-			<artifactId>wurfl</artifactId>
-			<version>1.2.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -393,11 +361,6 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>taglibs</groupId>
-			<artifactId>standard</artifactId>
-			<version>1.1.2</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-httpclient</groupId>
@@ -616,6 +579,10 @@
 			<version>3.0.1</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+		</dependency>
 		<!-- jsp support -->
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
@@ -656,11 +623,9 @@
 	</dependencies>
 	<properties>
 		<wtpversion>1.5</wtpversion>
-		<wurfl.version>2.3.1</wurfl.version>
 		<project.build.webapp.resourcedir>${project.build.directory}/${project.build.finalName}/resources</project.build.webapp.resourcedir>
-		<project.downloaded-resources.directory>${project.build.directory}/downloaded-resources</project.downloaded-resources.directory>
 		<tomcat.version>7.0.29</tomcat.version>
-		<!-- We need to wrap the mave.build.timestamp property as it is not used for filtering, cf. http://stackoverflow.com/questions/13228472/how-to-acces-maven-build-timestamp-for-resource-filtering -->
+		<!-- We need to wrap the maven.build.timestamp property as it is not used for filtering, cf. http://stackoverflow.com/questions/13228472/how-to-acces-maven-build-timestamp-for-resource-filtering -->
 		<build.timestamp>${maven.build.timestamp}</build.timestamp>
 		<maven.build.timestamp.format>HH:mm dd.MM.yyyy</maven.build.timestamp.format>
 	</properties>

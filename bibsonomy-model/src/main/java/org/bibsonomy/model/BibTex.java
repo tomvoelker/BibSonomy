@@ -38,6 +38,7 @@ import org.bibsonomy.model.util.SimHash;
  * BibTex fields like the author, publisher etc.
  * 
  * @author Christian Schenk
+ * @author jensi
  */
 public class BibTex extends Resource {
 	/** for persistence (Serializable) */
@@ -193,7 +194,7 @@ public class BibTex extends Resource {
 	public void setAbstract(final String bibtexAbstract) {
 		this.bibtexAbstract = bibtexAbstract;
 	}
-
+	
 	/**
 	 * @return bibtexKey
 	 */

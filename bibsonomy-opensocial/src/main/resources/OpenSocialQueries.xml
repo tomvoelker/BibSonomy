@@ -33,7 +33,7 @@
 		<result property="oauthVersion"      column="oauth_version"    javaType="string"/>
 		<result property="appId"             column="gadget_url"       javaType="string"/>
 		<result property="authorized"        column="is_authorized"    javaType="boolean"/>
-		<result property="type"              column="token_type"       javaType="long"/>
+		<result property="type"              column="token_type"       javaType="int"/>
 		<result property="appTitle"          column="title"       	   javaType="string"/>
 		<result property="appIconUrl"        column="icon"       	   javaType="string"/>
 		<result property="accessToken"		 column="access_token"	   javaType="string"/>

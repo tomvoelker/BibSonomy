@@ -40,7 +40,7 @@
     <script type="text/javascript" src="/resources/jquery/plugins/form/jquery.form.js"></script>
     <script type="text/javascript" src="/resources/jquery/plugins/corner/jquery.corner.js"></script>
 	<script type="text/javascript" src="/resources/jquery/plugins/autocomplete/jquery.autocomplete.js"></script>    
-    <c:if test="${projectName == 'PUMA'}">
+    <c:if test="${properties['project.theme'] eq 'puma'}">
 		<link rel="stylesheet" type="text/css" href="/resources_puma/css/puma.css">
     </c:if> 
     
@@ -84,12 +84,12 @@
 	<a href="?lang=en"><img alt="en" src="/resources/image/lang_en.png"/></a>
   </div>
 
-  <div id="main">
+	<div id="main">
 
-    <c:if test="${projectName == 'PUMA'}">
+	<c:if test="${properties['project.theme'] eq 'puma'}">
 		<img id="headerlogoimage" src="/resources_puma/image/puma_2b_comic_150_3.png">
 	</c:if>
-	  
+	
 	<div id="main_header">
 	
 		<!-- Navigation -->

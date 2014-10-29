@@ -43,8 +43,7 @@ public class QRCodeRendererTest {
 	public void testTemplatePDF() {
 		File template = new File("src/test/resources/template.pdf");
 		
-		if(template.exists()) {
-			
+		if (template.exists()) {
 			final String encodee = "http://localhost:8080/bibtex/2dfac402f7dac97c1b303bb53764ace82/derbeukatt";
 
 			/*
@@ -96,7 +95,7 @@ public class QRCodeRendererTest {
 	public void errorPDF() {
 		File error = new File("src/test/resources/error.pdf");
 		
-		if(error.exists()) {
+		if (error.exists()) {
 			
 			final String encodee = "http://localhost:8080/bibtex/2dfac402f7dac97c1b303bb53764ace82/derbeukatt";
 

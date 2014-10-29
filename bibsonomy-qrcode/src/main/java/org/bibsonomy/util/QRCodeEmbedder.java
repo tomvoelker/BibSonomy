@@ -149,7 +149,7 @@ public class QRCodeEmbedder implements Callable<String> {
 					this.setY((float) pageAt.getCropBox().toNormalizedRectangle().getHeight() - freeSquare.getY());
 					this.setSize(freeSquare.getSize());
 					
-					if (this.getSize() > MINIMUM_SIZE) {		
+					if (this.getSize() > MINIMUM_SIZE) {
 						
 						/*
 						 * generate qr code
@@ -405,6 +405,4 @@ public class QRCodeEmbedder implements Callable<String> {
 	public void setSize(int size) {
 		this.size = size;
 	}
-		
 }
-

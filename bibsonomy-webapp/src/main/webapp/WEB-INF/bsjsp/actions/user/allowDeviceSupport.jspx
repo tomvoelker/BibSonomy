@@ -10,32 +10,30 @@
 	
 	<fmt:message key="devicesupport.header" var="pageTitle" />
 	
-	<layout:paneLayout command="${command}" 
-		pageTitle="${pageTitle}" 
-		requPath="${requPath}" 
-		headerMessageKey="devicesupport.header"
-		minimizedContentWidth="${true}">
+	<layout:paneLayout command="${command}" pageTitle="${pageTitle}" requPath="${requPath}" headerMessageKey="devicesupport.header" minimizedContentWidth="${true}">
 		
 		<jsp:attribute name="heading">
 			<!-- nothing to show -->
-    	</jsp:attribute>
+		</jsp:attribute>
 		
 		<jsp:attribute name="content">
-         	<div><fmt:message key="devicesupport.description" /></div>
-         	
-         	<fmt:message key="devicesupport.allow" var="allow" />
-         	<fmt:message key="devicesupport.deny" var="deny" />
-         	
-         	<form style="display: inline;">
-         		<input type="hidden" name="shareInformation" value="true" />
-         		<input type="hidden" name="ckey" value="${command.context.ckey}" />
-         		<input type="submit" value="${allow}" />
-         	</form>
-         	<form style="display: inline;">
-         		<input type="hidden" name="shareInformation" value="false" />
-         		<input type="hidden" name="ckey" value="${command.context.ckey}" />
-         		<input type="submit" value="${deny}" />
-         	</form>
-      	</jsp:attribute>      	
+			<div><fmt:message key="devicesupport.description" /></div>
+			
+			<fmt:message key="devicesupport.allow" var="allow" />
+			<fmt:message key="devicesupport.deny" var="deny" />
+			
+			<br />
+			<form style="display: inline;">
+				<input type="hidden" name="shareInformation" value="true" />
+				<input type="hidden" name="ckey" value="${command.context.ckey}" />
+				<input type="submit" class="btn btn-sm btn-success" value="${allow}" />
+			</form>
+			<c:out value=" " />
+			<form style="display: inline;">
+				<input type="hidden" name="shareInformation" value="false" />
+				<input type="hidden" name="ckey" value="${command.context.ckey}" />
+				<input type="submit" class="btn btn-sm btn-danger" value="${deny}" />
+			</form>
+		</jsp:attribute>
 	</layout:paneLayout>
 </jsp:root>

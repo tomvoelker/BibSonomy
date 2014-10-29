@@ -440,7 +440,7 @@ public enum Views implements View {
 	JOIN_GROUP("actions/join_group"),
 
 	/**
-	 * join group view
+	 * general success page
 	 */
 	SUCCESS("actions/success"),
 
@@ -722,7 +722,7 @@ public enum Views implements View {
 	/**
 	 * show bibsonomy3 demo
 	 */
-	BIBSONOMY3PREVIEW("bibsonomy3preview");
+	BIBSONOMY3("bibsonomy3");
 
 	/*
 	 * both bookmarks and publications

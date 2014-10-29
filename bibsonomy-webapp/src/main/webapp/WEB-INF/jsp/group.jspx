@@ -28,7 +28,7 @@
 					<group:groupcv group="${command.group}"/>
 				</jsp:attribute>
 			</parts:search>	
-		</jsp:attribute>		
+		</jsp:attribute>
 			
 		
 		<jsp:attribute name="sidebar">

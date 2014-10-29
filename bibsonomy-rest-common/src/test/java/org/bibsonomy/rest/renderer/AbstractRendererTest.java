@@ -33,8 +33,11 @@ import java.io.FileWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigInteger;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -56,6 +59,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.util.ModelValidationUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
@@ -66,6 +70,8 @@ import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 import org.bibsonomy.rest.renderer.xml.BibtexType;
 import org.bibsonomy.rest.renderer.xml.BookmarkType;
 import org.bibsonomy.rest.renderer.xml.DocumentType;
+import org.bibsonomy.rest.renderer.xml.ExtraUrlType;
+import org.bibsonomy.rest.renderer.xml.ExtraUrlsType;
 import org.bibsonomy.rest.renderer.xml.GoldStandardPublicationType;
 import org.bibsonomy.rest.renderer.xml.GroupType;
 import org.bibsonomy.rest.renderer.xml.PostType;
@@ -116,7 +122,8 @@ public abstract class AbstractRendererTest {
 	private void assertWithFile(final Writer sw, final String filename) {
 		try {
 			final String fileContents = TestUtils.readEntryFromFile(filename);
-			this.compare(fileContents.trim(), sw.toString().trim());
+			final String actual = sw.toString().trim();
+			this.compare(fileContents.trim(), actual);
 		} catch (final Exception ex1) {
 			fail(ex1.getMessage());
 		}
@@ -259,6 +266,18 @@ public abstract class AbstractRendererTest {
 		publicationType.setBibtexKey(bibKey);
 		xmlPost.setBibtex(publicationType);
 		
+		// extra URLs
+		final ExtraUrlsType extraUrlsType = new ExtraUrlsType();
+		final List<ExtraUrlType> urls = extraUrlsType.getUrl();
+		final ExtraUrlType extraUrlType = new ExtraUrlType();
+		extraUrlType.setDate(dataFact.newXMLGregorianCalendar("2008-12-04T10:42:06.000+01:00"));
+		extraUrlType.setTitle("Data");
+		final String extraUrl = "http://github.com/L3S";
+		extraUrlType.setHref(extraUrl);
+		urls.add(extraUrlType);
+		publicationType.setExtraurls(extraUrlsType);
+		
+		
 		tmpFile = File.createTempFile("bibsonomy-publ", this.getFileExt());
 		this.marshalToFile(bibXML, tmpFile);
 		
@@ -269,6 +288,12 @@ public abstract class AbstractRendererTest {
 		assertEquals(bibKey, publication.getBibtexKey());
 		assertEquals(year, publication.getYear());
 		assertEquals(firstName, publication.getAuthor().get(0).getFirstName());
+	
+		
+		final List<BibTexExtra> extraUrls = publication.getExtraUrls();
+		assertEquals(1, extraUrls.size());
+		assertEquals(extraUrl, extraUrls.get(0).getUrl().toExternalForm());
+		
 	}
 	
 	@Test
@@ -793,6 +818,18 @@ public abstract class AbstractRendererTest {
 		xmlBibtex.setBibtexKey("myBibtexKey");
 		xmlBibtex.setEntrytype("inproceedings");
 		xmlBibtex.setAuthor("Hans Dampf");
+		
+		// extra URLs
+		final ExtraUrlsType extraUrlsType = new ExtraUrlsType();
+		final List<ExtraUrlType> urls = extraUrlsType.getUrl();
+		final ExtraUrlType extraUrlType = new ExtraUrlType();
+		extraUrlType.setDate(dataFact.newXMLGregorianCalendar("2008-12-04T10:42:06.000+01:00"));
+		extraUrlType.setTitle("Data");
+		final String extraUrl = "http://github.com/L3S";
+		extraUrlType.setHref(extraUrl);
+		urls.add(extraUrlType);
+		xmlBibtex.setExtraurls(extraUrlsType);
+		
 
 		// check valid post with bibtex
 		post = this.getRenderer().createPost(xmlPost, NoDataAccessor.getInstance());
@@ -800,6 +837,9 @@ public abstract class AbstractRendererTest {
 		assertTrue("model not correctly initialized", post.getResource() instanceof BibTex);
 		assertEquals("model not correctly initialized", "foo bar", ((BibTex) post.getResource()).getTitle());
 		assertEquals("model not correctly initialized", "testtag", post.getTags().iterator().next().getName());
+		assertEquals("model not correctly initialized", extraUrl, ((BibTex) post.getResource()).getExtraUrls().get(0).getUrl().toExternalForm());
+		
+		
 	}
 
 	private void checkInvalidPost(final PostType xmlPost, final String exceptionMessage) throws PersonListParserException {
@@ -820,9 +860,21 @@ public abstract class AbstractRendererTest {
 		publication.setAuthor(Arrays.asList(new PersonName("Donald E.", "Knuth")));
 		publication.setIntraHash("abc");
 		publication.setInterHash("abc");
+		
+		// extra URLs
+		publication.setExtraUrls(Collections.singletonList(new BibTexExtra(this.createURL("http://github.com/L3S"), "Data", new Date(1303978514000l))));
+		
 		return publication;
 	}
 
+	private URL createURL(final String s) {
+		try {
+			return new URL(s);
+		} catch (MalformedURLException e) {
+			return null;
+		}
+	}
+	
 	/**
 	 * @return
 	 */
