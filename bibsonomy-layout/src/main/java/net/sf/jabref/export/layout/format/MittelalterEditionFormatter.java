@@ -31,11 +31,10 @@ import net.sf.jabref.export.layout.LayoutFormatter;
 /**
  * 
  * @author Sebastian Böttger, sbo@cs.uni-kassel.de
- *
  */
 public class MittelalterEditionFormatter implements LayoutFormatter {
 	
-	public static final Pattern EDITION_NUMBER_PATTERN = Pattern.compile(".*(\\d).*"); 
+	private static final Pattern EDITION_NUMBER_PATTERN = Pattern.compile(".*(\\d).*"); 
 	
 	@Override
 	public String format(String arg0) {

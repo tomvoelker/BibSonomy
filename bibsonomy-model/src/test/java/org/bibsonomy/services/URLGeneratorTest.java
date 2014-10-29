@@ -71,7 +71,7 @@ public class URLGeneratorTest {
 	
 	@Test
 	public void testGetBasketUrl() throws Exception{
-		final String expected = projectHome + "basket";
+		final String expected = projectHome + "clipboard";
 		assertEquals(expected, ug.getBasketUrl());
 	}
 	
@@ -86,9 +86,8 @@ public class URLGeneratorTest {
 		assertEquals(expected, ug.getBookmarkUrl(bm, null));
 		
 		//Test with user
-		expected = projectHome + "url/" + bm.getIntraHash() + "/" +
-				   UrlUtils.safeURIEncode(user.getName());
-		assertEquals(expected, ug.getBookmarkUrl(bm, user));		
+		expected = projectHome + "url/" + bm.getIntraHash() + "/" + UrlUtils.safeURIEncode(user.getName());
+		assertEquals(expected, ug.getBookmarkUrl(bm, user));
 		
 	}
 	
@@ -396,12 +395,12 @@ public class URLGeneratorTest {
 	@Test
 	public void testMatch() {
 		assertTrue(ug.matchesPage(projectHome + "inbox", URLGenerator.Page.INBOX));
-		assertTrue(ug.matchesPage(projectHome + "basket", URLGenerator.Page.BASKET));
-		assertTrue(ug.matchesPage(projectHome + "basket?start=0", URLGenerator.Page.BASKET));
+		assertTrue(ug.matchesPage(projectHome + "clipboard", URLGenerator.Page.BASKET));
+		assertTrue(ug.matchesPage(projectHome + "clipboard?start=0", URLGenerator.Page.BASKET));
 		
-		assertFalse(ug.matchesPage(projectHome + "basket", URLGenerator.Page.INBOX));
-		assertFalse(ug.matchesPage(projectHome + "foo/basket", URLGenerator.Page.BASKET));
-		assertFalse(ug.matchesPage("/basket", URLGenerator.Page.BASKET));
+		assertFalse(ug.matchesPage(projectHome + "clipboard", URLGenerator.Page.INBOX));
+		assertFalse(ug.matchesPage(projectHome + "foo/clipboard", URLGenerator.Page.BASKET));
+		assertFalse(ug.matchesPage("/clipboard", URLGenerator.Page.BASKET));
 	}
 
 	@Test

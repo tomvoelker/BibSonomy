@@ -28,18 +28,25 @@ import java.util.regex.Pattern;
 
 import net.sf.jabref.export.layout.LayoutFormatter;
 
+/**
+ * TODO: document difference to {@link MittelalterEditorNamesFormatter}
+ * TODO: add documentation to this class
+ *
+ * @author sbo
+ */
 public class MittelalterPersonNamesFormatter implements LayoutFormatter {
 	
-	public static final Pattern PERSON_NAMES_PATTERN = Pattern.compile("(\\A|and\\s)(.+?)(,|\\z)");
+	// TODO: check if this pattern is sufficient for every strange author list
+	private static final Pattern PERSON_NAMES_PATTERN = Pattern.compile("(\\A|and\\s)(.+?)(,|\\z)");
 
 	@Override
-	public String format(String arg0) {
-		arg0 = arg0.trim().replaceAll("[\\{\\}]", ""); // we need to remove curly brackets, as they break the regex later
-		Matcher m = PERSON_NAMES_PATTERN.matcher(arg0);
+	public String format(String fieldString) {
+		fieldString = fieldString.trim().replaceAll("[\\{\\}]", ""); // we need to remove curly brackets, as they break the regex later
+		Matcher m = PERSON_NAMES_PATTERN.matcher(fieldString);
 		while (m.find()) {
-			arg0 = arg0.replaceFirst(Pattern.quote(m.group()), Matcher.quoteReplacement(m.group(1) + "<span style=\"font-variant: small-caps\">" + m.group(2) + "</span>" + m.group(3)));
+			fieldString = fieldString.replaceFirst(Pattern.quote(m.group()), Matcher.quoteReplacement(m.group(1) + "<span style=\"font-variant: small-caps\">" + m.group(2) + "</span>" + m.group(3)));
 		}
-		return arg0;
+		return fieldString;
 	}
 
 }
