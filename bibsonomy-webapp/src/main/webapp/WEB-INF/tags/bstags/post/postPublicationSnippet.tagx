@@ -1,0 +1,68 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/bstags/post"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
+
+    <!-- 
+    	the form for snippet posting on /postPublication
+     -->
+	
+	
+
+	<form:form cssClass="form-horizontal" method="post" action="/import/publications">
+		<fieldset>
+			<legend><fmt:message key="post_bibtex.pub_snippet.heading" /></legend>
+			<p><fmt:message key="post_bibtex.pub_snippet.description" /></p>
+			
+			<input type="hidden" name="selTab" value="1" />
+			<input type="hidden" name="ckey" value="${ckey}" />
+
+			<bsform:textarea labelColSpan="2" inputColSpan="10" path="selection" id="selection" />
+			
+			<post:groupBox groups="${command.context.loginUser.groups}"/>
+
+			<legend><fmt:message key="post_bibtex.upload.options" /></legend>
+			
+			<bsform:checkbox inputColSpan="10" path="editBeforeImport" labelKey="import.edit_before_import" helpKey="import.edit_before_import.help" />
+			<bsform:checkbox inputColSpan="10" path="overwrite"  labelKey="import.overwrite2" helpKey="import.overwritten"/>
+
+			<!--+
+				|
+				| Dirty hack because spring form's option tag cannot find their parent select field, when invokes in jsp fragment.
+				| 
+				+-->
+   			<c:set var="labels">' ' (<fmt:message key="delimiters.whitespace"/>)|, (<fmt:message key="delimiters.comma"/>)|; (<fmt:message key="delimiters.semicolon"/>)</c:set>
+	    	<bsform:select path="delimiter" onchange="updateWS(this);" items="${fn:split(' |,|;','|')}" itemLabels="${fn:split(labels, '|')}" />
+
+	      	<fmt:message var="whitespaceLabel" key="post_bibtex.upload.option.whitespace_substitute" />
+	      	<fmt:message var="whitespaceHelp" key="post_bibtex.upload.option.whitespace_substitute_help"/>
+		    <bsform:input path="whitespace" labelText="${whitespaceLabel}" helpText="${whitespaceHelp}" small="${true}" disabled="true"/>
+
+    	
+		   <script type="text/javascript">
+		     //<mtl:cdata>
+		     <![CDATA[
+		       updateWS(document.getElementById("delimiter"));
+		       function updateWS(select) {
+		    	   document.getElementById("whitespace").disabled = select.options[select.options.selectedIndex].value == " ";
+		       }
+		     ]]> 
+		     //</mtl:cdata>
+			</script>
+
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<fmt:message var="post_button" key="post_bibtex.button_label_post" />
+					<bsform:button type="submit" style="primary" size="defaultSize" value="${post_button}" />
+				</div>
+			</div>
+		</fieldset>
+    </form:form>
+
+</jsp:root>

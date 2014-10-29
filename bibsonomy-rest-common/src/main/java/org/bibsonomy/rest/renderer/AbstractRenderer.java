@@ -65,6 +65,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.comparators.RecommendedTagComparator;
+import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.sync.SynchronizationAction;
 import org.bibsonomy.model.sync.SynchronizationData;
@@ -84,6 +85,8 @@ import org.bibsonomy.rest.renderer.xml.BibtexType;
 import org.bibsonomy.rest.renderer.xml.BookmarkType;
 import org.bibsonomy.rest.renderer.xml.DocumentType;
 import org.bibsonomy.rest.renderer.xml.DocumentsType;
+import org.bibsonomy.rest.renderer.xml.ExtraUrlType;
+import org.bibsonomy.rest.renderer.xml.ExtraUrlsType;
 import org.bibsonomy.rest.renderer.xml.GoldStandardPublicationType;
 import org.bibsonomy.rest.renderer.xml.GroupType;
 import org.bibsonomy.rest.renderer.xml.GroupsType;
@@ -104,6 +107,7 @@ import org.bibsonomy.rest.validation.ModelValidator;
 import org.bibsonomy.rest.validation.StandardModelValidator;
 import org.bibsonomy.rest.validation.StandardXMLModelValidator;
 import org.bibsonomy.rest.validation.XMLModelValidator;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author dzo
@@ -276,13 +280,13 @@ public abstract class AbstractRenderer implements Renderer {
 			final BibTex publication = (BibTex) post.getResource();
 			this.modelValidator.checkPublication(publication);
 			final String userName = post.getUser().getName();
-			final BibtexType xmlBibtex = new BibtexType();
+			final BibtexType xmlPublication = new BibtexType();
 	
-			xmlBibtex.setHref(this.urlRenderer.createHrefForResource(userName, publication.getIntraHash()));
+			xmlPublication.setHref(this.urlRenderer.createHrefForResource(userName, publication.getIntraHash()));
 	
-			this.fillXmlPublicationDetails(publication, xmlBibtex);
+			this.fillXmlPublicationDetails(publication, xmlPublication);
 	
-			xmlPost.setBibtex(xmlBibtex);
+			xmlPost.setBibtex(xmlPublication);
 	
 			// if the publication has documents …
 			final List<Document> documents = publication.getDocuments();
@@ -296,6 +300,28 @@ public abstract class AbstractRenderer implements Renderer {
 				}
 				xmlPost.setDocuments(xmlDocuments);
 			}
+			
+			/*
+			 * add extra URLs (if they exist)
+			 */
+			final List<BibTexExtra> extraUrls = publication.getExtraUrls();
+			if (ValidationUtils.present(extraUrls)) {
+				final ExtraUrlsType xmlExtraUrls = new ExtraUrlsType();
+				xmlPublication.setExtraurls(xmlExtraUrls);
+				
+				final List<ExtraUrlType> urlList = xmlExtraUrls.getUrl();
+				
+				for (final BibTexExtra bibtexExtra: extraUrls) {
+					final ExtraUrlType xmlExtraUrl = new ExtraUrlType();
+					xmlExtraUrl.setTitle(bibtexExtra.getText());
+					xmlExtraUrl.setHref(bibtexExtra.getUrl().toExternalForm());
+					xmlExtraUrl.setDate(this.createXmlCalendar(bibtexExtra.getDate()));
+					
+					urlList.add(xmlExtraUrl);
+				}
+				
+			}
+			
 		}
 		// if resource is a bookmark create a xml representation
 		if (resource instanceof Bookmark) {
@@ -758,7 +784,7 @@ public abstract class AbstractRenderer implements Renderer {
 		xmlDoc.setReferences(refsType);
 		this.serialize(writer, xmlDoc);
 	}
-
+	
 	@Override
 	public String parseError(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
@@ -1111,11 +1137,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 		final User user = new User();
 		user.setEmail(xmlUser.getEmail());
-		try {
-			// FIXME move into Factory
-			user.setHomepage(new URL(xmlUser.getHomepage()));
-		} catch (final MalformedURLException e) {
-		}
+		user.setHomepage(this.createURL(xmlUser.getHomepage()));
 		user.setName(xmlUser.getName());
 		user.setRealname(xmlUser.getRealname());
 		user.setPassword(xmlUser.getPassword());
@@ -1159,11 +1181,7 @@ public abstract class AbstractRenderer implements Renderer {
 		group.setName(xmlGroup.getName());
 		group.setDescription(xmlGroup.getDescription());
 		group.setRealname(xmlGroup.getRealname());
-		try {
-			// FIXME move into Factory
-			group.setHomepage(new URL(xmlGroup.getHomepage()));
-		} catch (final MalformedURLException e) {
-		}
+		group.setHomepage(this.createURL(xmlGroup.getHomepage()));
 		if (xmlGroup.getUser().size() > 0) {
 			group.setUsers(new ArrayList<User>());
 			for (final UserType xmlUser : xmlGroup.getUser()) {
@@ -1266,7 +1284,7 @@ public abstract class AbstractRenderer implements Renderer {
 		if (present(xmlPublication)) {
 			ModelValidationUtils.checkPublication(xmlPublication);
 			final GoldStandardPublication publication = new GoldStandardPublication();
-			this.fillPublicationWithInformations(xmlPublication, publication);
+			this.fillPublicationWithInformation(xmlPublication, publication);
 
 			this.modelValidator.checkPublication(publication);
 
@@ -1324,7 +1342,7 @@ public abstract class AbstractRenderer implements Renderer {
 			this.xmlModelValidator.checkPublicationXML(xmlPublication);
 
 			final BibTex publication = new BibTex();
-			this.fillPublicationWithInformations(xmlPublication, publication);
+			this.fillPublicationWithInformation(xmlPublication, publication);
 
 			/*
 			 * check, of the post contains documents
@@ -1340,7 +1358,7 @@ public abstract class AbstractRenderer implements Renderer {
 				}
 				publication.setDocuments(documents);
 			}
-
+			
 			this.modelValidator.checkPublication(publication);
 
 			post.setResource(publication);
@@ -1517,7 +1535,7 @@ public abstract class AbstractRenderer implements Renderer {
 	 * @param publication
 	 * @throws PersonListParserException 
 	 */
-	private void fillPublicationWithInformations(final AbstractPublicationType xmlPublication, final BibTex publication) throws PersonListParserException {
+	private void fillPublicationWithInformation(final AbstractPublicationType xmlPublication, final BibTex publication) throws PersonListParserException {
 		publication.setAddress(xmlPublication.getAddress());
 		publication.setAnnote(xmlPublication.getAnnote());
 		publication.setAuthor(PersonNameUtils.discoverPersonNames(xmlPublication.getAuthor()));
@@ -1551,7 +1569,35 @@ public abstract class AbstractRenderer implements Renderer {
 		publication.setVolume(xmlPublication.getVolume());
 		publication.setYear(xmlPublication.getYear());
 		publication.setPrivnote(xmlPublication.getPrivnote());
+		
+		// extra URLs
+		final ExtraUrlsType extraurls = xmlPublication.getExtraurls();
+		if (ValidationUtils.present(extraurls)) {
+			final List<ExtraUrlType> urls = extraurls.getUrl();
+			final List<BibTexExtra> eurls = new ArrayList<BibTexExtra>(urls.size());
+			
+			for (final ExtraUrlType extraUrl : urls) {
+				eurls.add(new BibTexExtra(this.createURL(extraUrl.getHref()), extraUrl.getTitle(), this.createDate(extraUrl.getDate())));
+			}
+			publication.setExtraUrls(eurls);
+		}
+		
 	}
+	
+	/**
+	 * Helper method to create a new URL object with ignoring exceptions.
+	 * 
+	 * @param s The string to be converted to a URL
+	 * @return <code>null</code> if the string could not be converted
+	 */
+	private URL createURL(final String s) {
+		try {
+			return new URL(s);
+		} catch (MalformedURLException e) {
+			return null;
+		}
+	}
+	
 	
 	/**
 	 * Helper method to create a date when parsing a post. Two situations may occur:

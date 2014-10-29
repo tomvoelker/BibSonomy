@@ -68,7 +68,7 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		int totalNumPosts = 1; 
 		
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {			
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 
@@ -93,7 +93,7 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		
 		// html format - retrieve related tags and return HTML view
 		if ("html".equals(format)) {
-			command.setPageTitle("tag :: " + StringUtils.implodeStringCollection(requTags, " "));		
+			command.setPageTitle("tag :: " + StringUtils.implodeStringCollection(requTags, " "));
 			if (tagCount > 0) {
 				this.setRelatedTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, command.getStartDate(), command.getEndDate(), order, 0, Parameters.NUM_RELATED_TAGS, null);
 			}

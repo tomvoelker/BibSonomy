@@ -64,7 +64,7 @@ public class DiffPublicationController extends ResourceListController implements
 		final int compareVersion = command.getCompareVersion();
 		if (present(compareVersion) && present(intraHashToUpdate)) {
 			LOGGER.debug("intra hash to diff found -> handling diff of existing post");
-			final List<?> dbPosts = logic.getPosts(post.getResource().getClass(), GroupingEntity.ALL, command.getUser(), null, intraHashToUpdate, null, FilterEntity.POSTS_HISTORY_BIBTEX, null, null, null, compareVersion, compareVersion+1);
+			final List<?> dbPosts = logic.getPosts(post.getResource().getClass(), GroupingEntity.ALL, command.getUser(), null, intraHashToUpdate, null, FilterEntity.POSTS_HISTORY_BIBTEX, null, null, null, compareVersion, compareVersion + 1);
 			command.setPostDiff((Post<BibTex>) dbPosts.get(0));
 		}
 		command.setPost(getPostDetails(intraHashToUpdate, requestedUser));

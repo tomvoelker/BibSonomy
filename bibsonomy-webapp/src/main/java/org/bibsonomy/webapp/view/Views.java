@@ -125,7 +125,12 @@ public enum Views implements View {
 	 * concept page shows all suptags of an requested tag
 	 */
 	CONCEPTPAGE("concept"),
-
+	
+	/**
+	 * friend overview page
+	 */
+	FRIEND_OVERVIEW("friendOverview"),
+	
 	/**
 	 * friends page show all tags whose are viewable for friends by a friend of
 	 * you
@@ -432,7 +437,7 @@ public enum Views implements View {
 	JOIN_GROUP("actions/join_group"),
 
 	/**
-	 * join group view
+	 * general success page
 	 */
 	SUCCESS("actions/success"),
 
@@ -634,6 +639,11 @@ public enum Views implements View {
 	 * show button-page view
 	 */
 	BUTTONS("buttons"),
+	
+	/**
+	 * show getting started page view
+	 */
+	GETTINGSTARTED("gettingStarted"),
 
 	/**
 	 * show popular concepts
@@ -646,6 +656,11 @@ public enum Views implements View {
 	 */
 	FOLLOWERS("followers"),
 
+	/**
+	 * 
+	 */
+	BOOTSTRAP_DEMO("bootstrapDemo"),
+	
 	/*
 	 * Error pages
 	 */
@@ -699,7 +714,12 @@ public enum Views implements View {
 	/**
 	 * Recommended posts page. Showing recommendations for bibtexs and bookmarks.
 	 */
-	RECOMMENDEDPAGE("recommended");
+	RECOMMENDEDPAGE("recommended"),
+	
+	/**
+	 * show bibsonomy3 demo
+	 */
+	BIBSONOMY3("bibsonomy3");
 
 	/*
 	 * both bookmarks and publications

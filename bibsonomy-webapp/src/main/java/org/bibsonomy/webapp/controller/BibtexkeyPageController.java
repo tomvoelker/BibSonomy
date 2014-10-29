@@ -41,14 +41,14 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 		
 		// add bibtexkey as the only systemtag (sys:user:USERNAME is handeled below)
 		command.getRequestedTagsList().clear();
-		command.getRequestedTagsList().add(SystemTagsUtil.buildSystemTagString(BibTexKeySystemTag.NAME, command.getRequestedKey()));		
+		command.getRequestedTagsList().add(SystemTagsUtil.buildSystemTagString(BibTexKeySystemTag.NAME, command.getRequestedKey()));
 		
 		// default grouping entity / grouping name
 		GroupingEntity groupingEntity = GroupingEntity.ALL;
 		String groupingName = null;
 				
 		// check for systemtag sys:user:USERNAME
-		List<String> sysTags = SystemTagsExtractor.extractSearchSystemTagsFromString(command.getRequestedTags(), TagUtils.getDefaultListDelimiter());		
+		List<String> sysTags = SystemTagsExtractor.extractSearchSystemTagsFromString(command.getRequestedTags(), TagUtils.getDefaultListDelimiter());
 		final String systemTagUser = extractSystemTagUser(sysTags);
 		if (systemTagUser != null) {
 			command.setRequestedUser(systemTagUser);
@@ -62,7 +62,7 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
-			setList(command, resourceType, groupingEntity, groupingName, command.getRequestedTagsList(), null, null, null, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());			
+			setList(command, resourceType, groupingEntity, groupingName, command.getRequestedTagsList(), null, null, null, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
 			postProcessAndSortList(command, resourceType);
 		}
 		

@@ -30,6 +30,7 @@ import org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper;
 import org.bibsonomy.scraper.url.kde.acs.ACSScraper;
 import org.bibsonomy.scraper.url.kde.agu.AGUScraper;
 import org.bibsonomy.scraper.url.kde.aip.AipScitationScraper;
+import org.bibsonomy.scraper.url.kde.akademiai.AkademiaiScraper;
 import org.bibsonomy.scraper.url.kde.amazon.AmazonScraper;
 import org.bibsonomy.scraper.url.kde.ams.AmsScraper;
 import org.bibsonomy.scraper.url.kde.annualreviews.AnnualreviewsScraper;
@@ -125,6 +126,7 @@ import org.bibsonomy.scraper.url.kde.usenix.UsenixScraper;
 import org.bibsonomy.scraper.url.kde.webofknowledge.WebOfKnowledgeScraper;
 import org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper;
 import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
+import org.bibsonomy.scraper.url.kde.worldscientific.WorldScientificScraper;
 import org.bibsonomy.scraper.url.kde.wormbase.WormbaseScraper;
 
 /**
@@ -253,6 +255,8 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new MDPIScraper());
 		addScraper(new OxfordJournalsScraper());
 		addScraper(new TheLancetScraper());
+		addScraper(new WorldScientificScraper());
+		addScraper(new AkademiaiScraper());
 	}
 
 }

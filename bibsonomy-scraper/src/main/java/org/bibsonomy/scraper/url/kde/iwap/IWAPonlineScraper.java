@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -42,7 +44,8 @@ import org.bibsonomy.util.WebUtils;
  * @author tst
  */
 public class IWAPonlineScraper extends AbstractUrlScraper {
-
+	private static final Log log = LogFactory.getLog(IWAPonlineScraper.class);
+	
 	private static final String SITE_NAME = "IWA Publishing";
 
 	private static final String SITE_URL = "http://www.iwaponline.com";
@@ -228,12 +231,13 @@ public class IWAPonlineScraper extends AbstractUrlScraper {
 		return true;
 	}
 	private static String abstractPrser(URL url){
-		try{
-			Matcher m = PATTERN_ABSTRACT.matcher(WebUtils.getContentAsString(url));
-			if(m.find())
+		try {
+			final Matcher m = PATTERN_ABSTRACT.matcher(WebUtils.getContentAsString(url));
+			if(m.find()) {
 				return m.group(1);
-		}catch(Exception e){
-			e.printStackTrace();
+			}
+		} catch(Exception e) {
+			log.error("error while getting abstract for " + url, e);
 		}
 		return null;
 	}

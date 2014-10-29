@@ -13,7 +13,7 @@
 	</resultMap>
 
 	<resultMap id="user" class="user" extends="userForGroup">
-		<result property="apiKey"           column="api_key"       javaType="string" />
+		<result property="apiKey"           column="api_key"       javaType="string"  />
 		<result property="birthday"         column="birthday"      javaType="date" />
 		<result property="email"            column="user_email"    javaType="string" />
 		<result property="gender"           column="gender"        javaType="string" />
@@ -66,7 +66,7 @@
 		<result property="profilePrivlevel" column="profilegroup"   	javaType="ProfilePrivlevel" />	
 		<result property="showBookmark"   	column="show_bookmark"  	javaType="boolean" />
 		<result property="showBibtex"   	column="show_bibtex"  		javaType="boolean" />
-		<result property="simpleInterface"  column="simple_interface"  	javaType="boolean" />	
+		<result property="layoutSettings"   column="simple_interface"  javaType="LayoutSettings" />	
 	</resultMap>	
 
 	<resultMap id="userWithTags" extends="Common.user" class="user">
@@ -109,7 +109,7 @@
 		<isNotNull property="settings.defaultLanguage">#settings.defaultLanguage#,</isNotNull>
 		<isNull property="settings.defaultLanguage">DEFAULT(lang),</isNull> 
 		#settings.logLevel#, #settings.confirmDelete#, #settings.profilePrivlevel#, #settings.tagboxMaxCount#, #settings.isMaxCount#, 
-		#settings.showBookmark#, #settings.showBibtex#, #settings.simpleInterface#
+		#settings.showBookmark#, #settings.showBibtex#, #settings.layoutSettings#
 	</sql>
 
 	<sql id="updateUserProfileAttributes">
@@ -140,7 +140,7 @@
 		confirmDelete = #settings.confirmDelete#, 
 		show_bookmark = #settings.showBookmark#,
 		show_bibtex = #settings.showBibtex#, 
-		simple_interface = #settings.simpleInterface#
+		simple_interface = #settings.layoutSettings#
 	</sql>
 	
 	<!-- matches resources owned by group members which trust the currUser -->

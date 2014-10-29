@@ -65,7 +65,7 @@ public class UsernamePasswordAuthenticationFilter extends org.springframework.se
 					+ remainingWaitSecondsName + ", " + remainingWaitSecondsIP + ") = " + waitingSeconds + " seconds.");
 
 			/* 
-			 * Send user error message.
+			 * send user error message.
 			 */
 			throw new ServiceUnavailableException("error.service_unavailable", waitingSeconds);
 		}

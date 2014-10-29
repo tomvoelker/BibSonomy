@@ -9,9 +9,9 @@
 		<c:when test="${not empty properties['project.img']}">  
 			<c:set var="bookUrl"><c:out value="${mtl:cleanUrl(post.resource.url)}" escapeXml="true"/></c:set>
 			<span class="">
-					<a class="preview bookmark" href="${bookUrl}"> 
-						<img class="pre_pic" src="${properties['project.img']}preview/bookmark/${post.resource.interHash}?preview=SMALL" alt="${altPreview}"/>
-					</a>
+				<a class="preview bookmark" href="${bookUrl}" rel="nofollow"> 
+					<img class="pre_pic" src="${properties['project.img']}preview/bookmark/${post.resource.interHash}?preview=SMALL" alt="${altPreview}"/>
+				</a>
 			</span>
 		</c:when> 
 		<c:otherwise>

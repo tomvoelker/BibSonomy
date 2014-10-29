@@ -32,14 +32,15 @@ import java.util.regex.Pattern;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for citeulike.org
  * @author tst
  */
-public class CiteulikeScraper extends SimpleGenericURLScraper {
+public class CiteulikeScraper extends GenericBibTeXURLScraper {
 
 	private static final String SITE_NAME = "CiteUlike";
 
@@ -78,7 +79,7 @@ public class CiteulikeScraper extends SimpleGenericURLScraper {
 	}
 
 	@Override
-	public String getBibTeXURL(URL url) {
+	public String getDownloadURL(URL url) throws ScrapingException {
 		String downloadUrl = url.toString();
 
 		// build bibtex download URL
@@ -86,16 +87,12 @@ public class CiteulikeScraper extends SimpleGenericURLScraper {
 			downloadUrl = downloadUrl.replace(ARTICLE_POSTS, ARTICLE);
 			try {
 				downloadUrl = WebUtils.getRedirectUrl(new URL(downloadUrl)).toString();
-			} catch (MalformedURLException ex) {
-				try {
-					throw new InternalFailureException(ex);
-				} catch (InternalFailureException e) {
-					e.printStackTrace();
-				}
+			} catch (final MalformedURLException ex) {
+				throw new InternalFailureException(ex);
 			}
 		}
 
-		return  downloadUrl.replace(HOST, HOST + BIBTEX);
+		return downloadUrl.replace(HOST, HOST + BIBTEX);
 	}
 
 }

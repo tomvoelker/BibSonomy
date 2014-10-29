@@ -84,6 +84,9 @@ public class PostPublicationController extends AbstractEditPublicationController
 	@Override
 	public View workOn(final PostPublicationCommand command) {
 		log.debug("workOn started");
+
+		initializeDidYouKnowMessageCommand(command);
+
 		final RequestWrapperContext context = command.getContext();
 
 		/*

@@ -36,6 +36,7 @@ my %keyPatterns = ();
 print STDERR "\nINFO: extracting message keys from JavaScript files " . join (", ", @jsFiles) . "\n\n";
 
 foreach my $file (@jsFiles) {
+	next if (-d $file);
     open (JS, "<$file") or die "could not open $file\n";
     while (<JS>) {
 	# extract all calls to the "getString" method

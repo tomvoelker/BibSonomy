@@ -31,13 +31,16 @@ import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
+import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * Scraper URL tests #275 for MDPIScraper
  *
  * @author Haile
  */
+@Category(RemoteTest.class)
 public class MDPIScraperTest {
 	/**
 	 * starts URL test with id url_275
@@ -46,6 +49,7 @@ public class MDPIScraperTest {
 	public void url1TestRun(){
 		UnitTestRunner.runSingleTest("url_275");
 	}
+	
 	@Test
 	public void testCitedBy() throws Exception{
 		final ScrapingContext sc = new ScrapingContext(new URL("http://www.mdpi.com/2072-4292/5/10/5122"));

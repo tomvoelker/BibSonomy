@@ -24,7 +24,7 @@
 		<jsp:body>
 			<parts:htmlHead requPath="${requPath}" pageTitle="${command.pageTitle}" loginUser="${command.context.loginUser}" requestedUser="${command.requestedUser}">
 				<jsp:attribute name="headerExt">
-					<base href="${properties['project.home']}embed/"/>
+					<base href="${relativeUrlGenerator.getProjectHome()}embed/"/>
 					<style type="text/css">
 						.post .image, .post .overlay {
 							display: block;

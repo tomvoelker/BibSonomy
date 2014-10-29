@@ -148,9 +148,9 @@
 	
 	<c:if test ="${fn:length(post.tags) != 0}">
 		<swrc:keywords>
-			 <c:forEach var="tag" items="${post.tags}">
-                 <c:out value ='${tag.name}'/><c:out value=" "/>
-             </c:forEach>
+			<c:forEach var="tag" items="${post.tags}">
+				<c:out value ='${tag.name}'/><c:out value=" "/>
+			</c:forEach>
 		</swrc:keywords>
 	</c:if>
 	
@@ -160,9 +160,10 @@
 		</swrc:day>
 	</c:if>
 	
-	<c:if test ="${!empty post.resource.abstract}">
+	<c:set var="pubAbstract" value="${post.resource['abstract']}" />
+	<c:if test ="${!empty pubAbstract}">
 		<swrc:abstract>
-			<c:out value="${post.resource.abstract}"/>
+			<c:out value="${pubAbstract}"/>
 		</swrc:abstract>
 	</c:if>
 	

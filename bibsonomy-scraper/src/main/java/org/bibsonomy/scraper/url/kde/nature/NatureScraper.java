@@ -27,61 +27,61 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
-import org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for publication from nature.com
  * @author tst
  */
-public class NatureScraper extends PostprocessingGenericURLScraper {
-
+public class NatureScraper extends AbstractUrlScraper {
+	private static final Log log = LogFactory.getLog(NatureScraper.class);
+	
 	private static final String SITE_URL = "http://www.nature.com/";
-
 	private static final String SITE_NAME = "Nature";
 
-	/**
-	 * Host
-	 */
 	private static final String HOST = "nature.com";
-
-	/**
-	 * INFO
-	 */
 	private static final String INFO = "Scraper for publications from " + href(SITE_URL, SITE_NAME)+".";
 
-	/**
-	 * pattern for links
-	 */
+	/** pattern for links */
 	private static final Pattern linkPattern = Pattern.compile("<a\\b[^<]*</a>");
 
-	/**
-	 * pattern for href field
-	 */
+	/** pattern for href field */
 	private static final Pattern hrefPattern = Pattern.compile("href=\"[^\"]*\"");
 
-	/**
-	 * name from download link
-	 */
+	/** name from download link */
 	private static final String CITATION_DOWNLOAD_LINK_NAME = ">Export citation<";
 	private static final String CITATION_DOWNLOAD_LINK_NAME2 = ">Citation<";
+	
+	private static final Pattern author = Pattern.compile("<meta name=\"citation_authors\" content=\"(.*?)\"/>");
+	private static final Pattern journal = Pattern.compile("<meta name=\"citation_journal_title\" content=\"(.*?)\"/>");
+	private static final Pattern doi = Pattern.compile("<meta name=\"citation_doi\" content=\"doi:(.*?)\"/>");
+	private static final Pattern title = Pattern.compile("<meta name=\"citation_title\" content=\"(.*?)\"/>");
+	private static final Pattern pages = Pattern.compile("<meta name=\"citation_firstpage\" content=\"(.*?)\"/>");
+	private static final Pattern date = Pattern.compile("<meta name=\"citation_date\" content=\"(.*?)\"/>");
+	private static final Pattern volume = Pattern.compile("<meta name=\"citation_volume\" content=\"(.*?)\"/>");
+	private static final Pattern number = Pattern.compile("<meta name=\"citation_issue\" content=\"(.*?)\"/>");
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("(?s)Abstract.*\\s+<p>(.*)</p>\\s+<div class=\"article-keywords inline-list cleared\">");
-	/**
-	 * get INFO
-	 */
+	
+	/** get INFO */
 	@Override
 	public String getInfo() {
 		return INFO;
@@ -131,8 +131,26 @@ public class NatureScraper extends PostprocessingGenericURLScraper {
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
+
+	private static String abstractParser(URL url){
+		try {
+			Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(url));
+			if (m.find()) {
+				return m.group(1);
+			}
+		} catch(IOException e){
+			log.error("error while getting abstract for " + url, e);
+		}
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.AbstractUrlScraper#scrapeInternal(org.bibsonomy.scraper.ScrapingContext)
+	 */
 	@Override
-	public String getBibTeXURL(URL url) {
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+		String bibtex_url = null;
+		final URL url = sc.getUrl();
 		try {
 			// get publication page
 			final String publicationPage = getPageContent(url);
@@ -148,38 +166,95 @@ public class NatureScraper extends PostprocessingGenericURLScraper {
 						String href = hrefMatcher.group();
 						href = href.substring(6, href.length()-1);
 						// download citation (as ris)
-						return "http://" + url.getHost() + "/" + href;
+						bibtex_url =  "http://" + url.getHost() + "/" + href;
 					} 
 				}
 			}
+			if(bibtex_url != null){
+				RisToBibtexConverter ris = new RisToBibtexConverter();
+				sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(ris.risToBibtex(WebUtils.getContentAsString(bibtex_url)),"abstract",abstractParser(sc.getUrl())));
+				return true;
+			}
+			try{
+			String bibtex = constructBibtex(sc);
+			if(bibtex != "}")
+			{
+				bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
+				sc.setBibtexResult(bibtex);
+				return true;
+			}
+			}catch(ParseException pe){
+				throw new ScrapingException(pe);
+			}
+				
+		} catch (IOException e) {
+			throw new ScrapingException(e);
 		}
-		catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+		return false;
 	}
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
-	 */
-	@Override
-	protected String postProcessScrapingResult(ScrapingContext sc, String result) {
-		try{
-			final RisToBibtexConverter converter = new RisToBibtexConverter();
-			return BibTexUtils.addFieldIfNotContained(converter.risToBibtex(result), "abstract", abstractParser(sc.getUrl()));
-		}catch(Exception e){
-			e.printStackTrace();
+	private static String constructBibtex(ScrapingContext sc) throws IOException, ParseException{
+		URL url = sc.getUrl();
+		String content = WebUtils.getContentAsString(url.toExternalForm());
+		StringBuilder bibtex = new StringBuilder();
+		bibtex.append("@article{nokey,\n");
+		
+		//add author
+		Matcher m_author = author.matcher(content);
+		if(m_author.find())
+			bibtex.append("author = {" + m_author.group(1) + "},\n");
+		
+		//add journal
+		Matcher m_journal = journal.matcher(content);
+		if(m_journal.find())
+			bibtex.append("journal = {" + m_journal.group(1) + "},\n");
+		
+		//add doi
+		Matcher m_doi = doi.matcher(content);
+		if(m_doi.find())
+			bibtex.append("doi = {" + m_doi.group(1) + "},\n");
+		
+		//add title
+		Matcher m_title = title.matcher(content);
+		if(m_title.find())
+			bibtex.append("title = {" + m_title.group(1) + "},\n");
+		
+		//add pages
+		Matcher m_pages = pages.matcher(content);
+		if(m_pages.find())
+			bibtex.append("pages = {" + m_pages.group(1) + "},\n");
+		
+		// add date
+		Matcher m_date = date.matcher(content);
+		if(m_date.find()){
+			try{
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			Date parse = sdf.parse(m_date.group(1));
+	
+			bibtex.append("year = {" + new SimpleDateFormat("yyyy").format(parse) + "},\n");
+			bibtex.append("month = {" + new SimpleDateFormat("MMM").format(parse)+ "},\n");
+			
+			}catch(ParseException pe){
+				try {
+					throw new ScrapingException(pe);
+				} catch (ScrapingException e) {
+					
+					log.error("Date parsing error", e);
+				}
+			}
 		}
-		return null;
-	}
-	private static String abstractParser(URL url){
-		try{
-		Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(url));
-		if(m.find())
-			return m.group(1);
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return null;
+		
+		// add volume
+		Matcher m_volume = volume.matcher(content);
+		if(m_volume.find())
+			bibtex.append("volume = {" + m_volume.group(1) + "},\n");
+		
+		//add number
+		Matcher m_number = number.matcher(content);
+		if(m_number.find())
+			bibtex.append("number = {" + m_number.group(1) + "}\n");
+		
+		bibtex.append("}");
+		
+		return bibtex.toString();
 	}
 }

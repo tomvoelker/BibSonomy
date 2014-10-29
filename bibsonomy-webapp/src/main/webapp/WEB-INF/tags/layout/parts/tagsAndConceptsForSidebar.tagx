@@ -19,7 +19,7 @@
 	<!--  link to loginuser's tag-page (if the user has ALL of the requestedTags as tags) -->
 	<c:if test="${command.postCountForTagsForLoginUser > 0}">
 		<li>
-			<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+			<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(fn:escapeXml(command.context.loginUser.name), command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 			<c:out value=" "/>
 			<fmt:message key="tag.asTagFrom"/>
 			<c:out value=" "/>
@@ -44,7 +44,7 @@
 	<!--  link to requested user's tag-page (if the user has ALL of the requestedTags as tags) -->
 	<c:if test="${command.postCountForTagsForRequestedUser > 0}">
 		<li>
-			<a href="/user/${fn:escapeXml(command.requestedUser)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+			<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(fn:escapeXml(command.requestedUser), command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 			<c:out value=" "/>
 			<fmt:message key="tag.asTagFrom"/>
 			<c:out value=" "/>
@@ -68,7 +68,7 @@
 	<!--  link to requested group's tag-page (if the group has ALL of the requestedTags as tags) -->
 	<c:if test="${command.postCountForTagsForGroup > 0}"> 
 		<li>
-			<a href="/group/${fn:escapeXml(command.requestedGroup)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+			<a href="${relativeUrlGenerator.getGroupUrlByGroupNameAndTagName(fn:escapeXml(command.requestedGroup), command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 			<c:out value=" "/>
 			<fmt:message key="tag.asTagFromGroup"/>
 			<c:out value=" "/>
@@ -92,7 +92,7 @@
 	<!-- link to global tag-page (if a user has ALL of the requestedTags as tags) -->
   	<c:if test="${command.postCountForTagsForAll > 0}"> 
 		<li> 
-			<a href="/tag/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+			<a href="${relativeUrlGenerator.getTagUrlByTagName(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 			<c:out value=" "/>
 			<fmt:message key="tag.asTagFromAll"/>
 			<!-- if user is logged in, he benefits of seeing the postCount -->
@@ -131,7 +131,7 @@
 					<c:forEach var="subtag" items="${conceptVar.subTags}"> ${fn:escapeXml(subtag.name)} <c:out value=" "/></c:forEach>
 				</c:set>
 				<a title="${conceptTitle}" 
-					href="/concept/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodeURI(conceptVar.name)}">
+					href="${relativeUrlGenerator.getConceptUrlByUserNameAndTagName(fn:escapeXml(command.context.loginUser.name), conceptVar.name)}">
 					<c:out value="${conceptVar.name}"/>
 				</a>
 				<c:out value=" "/>
@@ -141,8 +141,8 @@
 			</li>
 		</c:forEach>
 		<c:if test="${requTagsListLength > 1}" >
-			<li>
-				<a href="/concept/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+			<li>				
+				<a href="${relativeUrlGenerator.getConceptUrlByUserNameAndTagName(fn:escapeXml(command.context.loginUser.name), command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 				<c:out value=" "/>
 				<fmt:message key="tag.asConceptFrom"/>
 				<c:out value=" "/>
@@ -161,8 +161,8 @@
 					<!-- following code has to be in one line - do neither separate nor remove space characters! -->
 					<c:forEach var="subtag" items="${conceptVar.subTags}"> ${fn:escapeXml(subtag.name)} <c:out value=" "/></c:forEach>
 				</c:set>
-				<a title="${conceptTitle}" 
-					href="/concept/user/${fn:escapeXml(command.requestedUser)}/${mtl:encodeURI(conceptVar.name)}">
+				<a title="${conceptTitle}" 					
+					href="${relativeUrlGenerator.getConceptUrlByUserNameAndTagName(fn:escapeXml(command.requestedUser), conceptVar.name)}">
 					<c:out value="${conceptVar.name}"/>
 				</a>
 				<c:out value=" "/>
@@ -172,8 +172,8 @@
 			</li>
 		</c:forEach>
 		<c:if test="${requTagsListLength > 1}" >
-			<li>
-				<a href="/concept/user/${fn:escapeXml(command.requestedUser)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+			<li>				
+				<a href="${relativeUrlGenerator.getConceptUrlByUserNameAndTagName(fn:escapeXml(command.requestedUser), command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 				<c:out value=" "/>
 				<fmt:message key="tag.asConceptFrom"/>
 				<c:out value=" "/>
@@ -203,8 +203,8 @@
 			</li>
 		</c:forEach>
 		<c:if test="${requTagsListLength > 1}" >
-			<li>
-				<a href="/concept/user/${fn:escapeXml(command.requestedGroup)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+			<li>				
+				<a href="${relativeUrlGenerator.getConceptUrlByUserNameAndTagName(fn:escapeXml(command.requestedGroup), command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 				<c:out value=" "/>
 				<fmt:message key="tag.asConceptFromGroup"/>
 				<c:out value=" "/>

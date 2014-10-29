@@ -15,7 +15,7 @@
     <fmt:message key="navi.my" var="buttonsMy"/>
     <fmt:message key="image.button.myProject" var="buttonImage"/>
   
-    <a href="${properties['project.home']}user/${fn:escapeXml(username)}" class="bookmarklet2" title="${buttonsTitle}">
+    <a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(username))}" class="bookmarklet2" title="${buttonsTitle}">
       <img src="${buttonImage}" alt="${buttonsMy}${properties['project.name']}" title="${buttonsMy}${properties['project.name']}"/>
     </a>
 	          

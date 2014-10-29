@@ -26,9 +26,10 @@ public abstract class MultiResourceListController extends ResourceListController
 	 * do some post processing with the retrieved resources
 	 * 
 	 * @param cmd
+	 * @param resourceType 
 	 */
 	@SuppressWarnings("unchecked")
-	protected void postProcessAndSortList(final MultiResourceViewCommand cmd, Class<? extends Resource> resourceType) {				
+	protected void postProcessAndSortList(final MultiResourceViewCommand cmd, Class<? extends Resource> resourceType) {
 		for (ListCommand<?> listCommand: cmd.getListCommand(resourceType)) {
 			if (resourceType == BibTex.class) {
 				// TODO: how can we do this in a clean way without SuppressWarnings?
@@ -46,6 +47,11 @@ public abstract class MultiResourceListController extends ResourceListController
 	 * @param resourceType the resource type
 	 * @param groupingEntity the grouping entity
 	 * @param groupingName the grouping name
+	 * @param tags 
+	 * @param hash 
+	 * @param order 
+	 * @param filter 
+	 * @param search 
 	 * @param itemsPerPage number of items to be displayed on each page
 	 */
 	protected <T extends Resource> void addList(final MultiResourceViewCommand cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, String search, int itemsPerPage) {

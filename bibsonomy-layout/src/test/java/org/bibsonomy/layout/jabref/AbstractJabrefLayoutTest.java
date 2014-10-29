@@ -55,11 +55,15 @@ public abstract class AbstractJabrefLayoutTest {
 	
 	protected static final JabrefLayoutRenderer RENDERER;
 	static {
-		final JabRefConfig config = new JabRefConfig();
-		config.setDefaultLayoutFilePath("org/bibsonomy/layout/jabref");
-		RENDERER = new JabrefLayoutRenderer(config);
-		
-		RENDERER.setUrlGenerator(new URLGenerator("http://www.bibsonomy.org"));
+		try {
+			final JabRefConfig config = new JabRefConfig();
+			config.setDefaultLayoutFilePath("org/bibsonomy/layout/jabref");
+			RENDERER = new JabrefLayoutRenderer(config);
+			
+			RENDERER.setUrlGenerator(new URLGenerator("http://www.bibsonomy.org"));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public AbstractJabrefLayoutTest(File layoutTest, String layoutName) {

@@ -33,6 +33,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	
 	private static final String TAB_URL = "/settings";
 	
+	
 	/**
 	 * action can be logging, api or layoutTagPost
 	 * this three types determine the different possible actions which will be handled 
@@ -193,21 +194,13 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		this.addTab(IMPORTS_IDX, "navi.imports");	
 		this.addTab(CV_IDX, "navi.cvedit");
 		this.addTab(OAUTH_IDX, "navi.oauth.consumers");
+		this.addTab(GROUP_IDX, "navi.groups");
 		//OAuth tab added in SettingsPageController.java
 		this.setSelTab(MY_PROFILE_IDX);
 		this.setTabURL(TAB_URL);
 	}
 	
-	/**
-	 * shows the group tab on the settings.settings site if the user is a group
-	 * @param show
-	 */
-	public void showGroupTab(boolean show) {
-		if (show) {
-			this.addTab(GROUP_IDX, "navi.groups");
-		}
-	}
-	
+
 	/**
 	 * shows the sync tab for admins
 	 * @param show
@@ -484,7 +477,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public void setNewPasswordRetype(String newPasswordRetype) {
 		this.newPasswordRetype = newPasswordRetype;
 	}
-
+	
 	/**
 	 * @return the action
 	 */

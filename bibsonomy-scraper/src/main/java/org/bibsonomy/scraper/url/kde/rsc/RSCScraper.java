@@ -35,12 +35,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
  * @author wla
  */
-public class RSCScraper extends SimpleGenericURLScraper {
+public class RSCScraper extends GenericBibTeXURLScraper {
 
 	private final Log log = LogFactory.getLog(RSCScraper.class);
 
@@ -96,7 +97,7 @@ public class RSCScraper extends SimpleGenericURLScraper {
 	}
 
 	@Override
-	public String getBibTeXURL(URL url) {
+	public String getDownloadURL(URL url) throws ScrapingException {
 		final String id = extractId(url.toString());
 		if (present(id)) {
 			return BIBTEX_URL + id;

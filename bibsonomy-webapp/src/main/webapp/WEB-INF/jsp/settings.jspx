@@ -6,16 +6,16 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-    xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:sql="http://java.sun.com/jsp/jstl/sql"
-    xmlns:settings="urn:jsptagdir:/WEB-INF/tags/settings"
-    xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
-    xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-    xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"	
+	xmlns:settings="urn:jsptagdir:/WEB-INF/tags/settings"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"	
 	xmlns:spring="http://www.springframework.org/tags">
-    
+
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
 	<fmt:message key="navi.settings" var="settingsPageTitle"/>
@@ -31,7 +31,7 @@
 			+-->	
 		<jsp:attribute name="tabcontent">
 			<!-- display potential errors -->
-		    <errors:global errors="${errors}"/>	
+			<errors:global errors="${errors}"/>	
 			<c:choose>
 				<c:when test="${command.selTab == 0}">
 					<settings:profile command="${command}"/>
@@ -42,7 +42,7 @@
 				<c:when test="${command.selTab == 2}">
 					<settings:import command="${command}"/>
 				</c:when>
-				<c:when test="${command.selTab == 3 and (command.hasOwnGroup or not (empty param.user or empty param.requGroup or param.requGroup eq command.context.loginUser.name))}">
+				<c:when test="${command.selTab == 3}">			
 					<settings:group command="${command}"/>
 				</c:when>
 				<c:when test="${command.selTab == 4 and not command.user.spammer}">
@@ -53,7 +53,7 @@
 				</c:when>
 				<c:when test="${command.selTab == 6}">
 					<settings:oauth command="${command}"/>
-				</c:when>	
+				</c:when>
 			</c:choose>
 			
 		</jsp:attribute>
@@ -75,7 +75,7 @@
 					</parts:infobox>
 				</c:when>
 			</c:choose>
-         </jsp:attribute>
+		</jsp:attribute>
 	
 		<!--+
 			| sidebar
@@ -84,11 +84,11 @@
 			<ul>
 				<!-- loginUser.groups -->
 				<li>
-					<span class="sidebar_h "><a href="/groups"><fmt:message key="groups"/></a></span>
+					<span class="sidebar_h "><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="groups"/></a></span>
 					<ul class="sidebar_collapse_content">
 					<c:forEach var="group" items="${command.context.loginUser.groups}">
 						<li>
-						<a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}'/>&amp;nbsp;</a> 
+						<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"><c:out value='${group.name}'/>&amp;nbsp;</a> 
 							<c:if test="${group.sharedDocuments}">
 								<c:choose>
 									<c:when test="${! group.userSharedDocuments}">
@@ -119,7 +119,7 @@
 					<span class="sidebar_h"><fmt:message key="friends.friendof"/></span> 
 					<ul class="tagcloud sidebar_collapse_content">
               			<c:forEach var="user" items="${command.userFriends}">
-                			<li><a href="/friend/${mtl:encodeURI(user.name)}"><c:out value="${user.name}"/></a><c:out value=" "/></li>
+                			<li><a href="${relativeUrlGenerator.getFriendUrlByUserName(user.name)}"><c:out value="${user.name}"/></a><c:out value=" "/></li>
               			</c:forEach>
             		</ul>
           		</li>
@@ -128,7 +128,7 @@
 		            <ul class="sidebar_collapse_content">
 		              <c:forEach var="user" items="${command.friendsOfUser}">
 		                <li>
-		                  <a href="/user/${mtl:encodeURI(user.name)}"><c:out value='${user.name}'/>&amp;nbsp;</a> 
+		                  <a href="${relativeUrlGenerator.getUserUrlByUserName(user.name)}"><c:out value='${user.name}'/>&amp;nbsp;</a> 
 			                <fmt:message var="deleteFriendTitle" key="friends.actions.delete.title"><fmt:param value="${fn:escapeXml(user.name)}"/></fmt:message>
 		                  <a
 		    	             class="action" 
@@ -141,14 +141,14 @@
 		            </ul>
 		          </li>
 		          
-				  <!-- list all spheres -->
-				  <li>
+				<!-- list all spheres -->
+				<li>
 					<fmt:message key="spheres.sidebar.title" var="spheresCloudTitle" />
 					<spheres:spheresCloud title="${spheresCloudTitle}"><!-- keep me! --></spheres:spheresCloud>
-				  </li>
-						
-		          <!--  add a friend  -->
-		          <li>
+				</li>
+				
+				<!--  add a friend  -->
+				<li>
 					<span class="sidebar_h"><fmt:message key="friends.addfriend"/></span>
 					
 		            <form class="sidebar_collapse_content" name="friends" method="POST" onsubmit="return submitUsername($('#laddfriend'));">
@@ -160,9 +160,8 @@
 		              <fmt:message var="addFriend" key="friends.button.add"/>
 		              <input type="submit" name="submit" value="${addFriend}"/>
 		            </form>
-		            </li>		            
-        	</ul>
-        </jsp:attribute>
-        
+				</li>
+			</ul>
+		</jsp:attribute>
 	</layout:tabLayout>
 </jsp:root>

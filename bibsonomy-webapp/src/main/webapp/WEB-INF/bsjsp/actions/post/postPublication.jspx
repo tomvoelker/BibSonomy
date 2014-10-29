@@ -1,0 +1,145 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+	xmlns:bsbibcomp="urn:jsptagdir:/WEB-INF/tags/bstags/bs/bibcomponents"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/bstags/post"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+	xmlns:batch="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/batch"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
+	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />	
+	<fmt:message key="post_bibtex.heading" var="msgPostPublication"/>
+	
+	<layout:layout 
+		loginUser="${command.context.loginUser}" 
+		pageTitle="${pageTitle}" 
+		sidebar="${sidebar}" 
+		requPath="${requPath}">
+		<jsp:attribute name="content">
+			<h1 class="content-heading"><fmt:message key="navi.postPublication"/></h1>
+		
+			<c:set var="post" value="${command.post}"/>
+			
+			<ul class="nav nav-tabs">
+				<li class="${command.selTab == 0 ? 'active' : ''}"><a href="?selTab=0#selTab0" data-toggle="tab"><fmt:message key="post_bibtex.manual.title" /></a></li>
+				<li class="${command.selTab == 1 ? 'active' : ''}"><a href="?selTab=1#selTab1" data-toggle="tab"><fmt:message key="post_bibtex.pub_snippet.snippet"/></a></li>
+				<li class="${command.selTab == 2 ? 'active' : ''}"><a href="?selTab=2#selTab2" data-toggle="tab"><fmt:message key="post_bibtex.upload.title" /></a></li>
+				<li class="${command.selTab == 3 ? 'active' : ''}"><a href="?selTab=3#selTab3" data-toggle="tab"><fmt:message key="post_bibtex.doi_isbn.title" /></a></li>
+				<li class="${command.selTab == 4 ? 'active' : ''}"><a href="?selTab=4#selTab4" data-toggle="tab"><fmt:message key="post_bibtex.scan.title" /></a></li>
+			</ul>
+			<br />
+			<div id="citation-styles" class="tab-content">
+				<div class="tab-pane ${command.selTab == 0 ? 'active' : ''}" id="selTab0">
+					<!-- manual posting -->
+					<div id="suggestionBox" style="position:absolute; display:none;"><!--  --></div>
+					<form:form cssClass="form-horizontal" id="postForm" action="/editPublication" method="post">
+						<fieldset>
+							<legend><fmt:message key="post_bibtex.manual.heading"/></legend>
+							<p><fmt:message key="post_bibtex.manual.description" /></p>	
+							
+						
+							<input type="hidden" name="selTab" value="0" />
+							<input type="hidden" name="ckey" value="${ckey}"/>
+									
+							<editpub:required post="${post}" autocompletion="${true}" hideBibTeXKey="${true}"/>
+							
+							<div class="form-group">
+ 								<div class="col-sm-offset-3 col-sm-9">
+ 									<fmt:message var="post_button" key="post_bibtex.button_label_post" />
+									<bsform:button size="defaultSize" type="submit" style="primary" value="${post_button}"/>
+								</div>
+							</div>
+						</fieldset>
+					</form:form>
+				</div>
+				<div class="tab-pane ${command.selTab == 1 ? 'active' : ''}" id="selTab1">
+					<post:postPublicationSnippet/>
+				</div>
+				<div class="tab-pane ${command.selTab == 2 ? 'active' : ''}" id="selTab2">
+					<post:postPublicationUpload/>
+				</div>
+				<div class="tab-pane ${command.selTab == 3 ? 'active' : ''}" id="selTab3">
+					<post:postPublicationID/>
+				</div>
+				<div class="tab-pane ${command.selTab == 4 ? 'active' : ''}" id="selTab4">
+					<post:postPublicationScan/>
+				</div>
+				
+		    </div>
+		    
+    		<c:if test="${not empty command.bibtex and not empty command.bibtex.list}">
+				<div style="margin-top:2em">
+					<a onclick="toggleImage('toggleParsedPostViewButton', '${resdir}/image/nice_box_arrow_right.png', '${resdir}/image/nice_box_arrow.png', 'parsedPostView')"><img id="toggleParsedPostViewButton" style="float:left; height:10pt; padding:5pt" src="${resdir}/image/nice_box_arrow.png" alt=""/><h3><fmt:message key="import.error.parse_or_incomplete_bibtex"/></h3></a>
+				</div>
+
+				<div id="parsedPostView">
+					<p class="smalltext" style="margin-top:1em; margin-bottom:1em">
+						<fmt:message key="import.error.parse_or_incomplete_bibtex.description">
+							<fmt:param value="${properties['project.name']}" />
+						</fmt:message>
+					</p>
+					<fieldset>
+						<batch:content	resourceType="bibtex"
+			        					listView="${command.bibtex}" 
+			        					otherPostsUrlPrefix="bla" 
+			        					listViewStartParamName="bibtex.start"
+										overwrite="${command.overwrite}"
+										deleteCheckedPosts="${command.deleteCheckedPosts}" >
+							<jsp:attribute name="shortPostDescription">
+								<bib:shortDescription post="${post}"/>
+							</jsp:attribute>
+							
+							<jsp:attribute name="title">  
+								<bib:title post="${post}"/>
+							</jsp:attribute>
+								
+							<jsp:attribute name="desc">
+								<bib:desc publication="${post.resource}"/>
+							</jsp:attribute>
+				      		
+				      		<jsp:attribute name="documents"> 
+				      			<bib:documents post="${post}"/>
+				      		</jsp:attribute>
+				      		
+				      		<jsp:attribute name="actions">
+				      			<actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/>
+				      		</jsp:attribute>
+				        </batch:content>
+			        </fieldset>
+				</div> 
+			</c:if> 
+
+		</jsp:attribute>
+		
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.postPublication" />
+		</jsp:attribute>
+
+			
+    	<!--+
+			| infobox
+			+-->
+		<jsp:attribute name="infobox">
+			<parts:infobox>
+				<jsp:attribute name="infoTextBody">
+					<bs:didYouKnow command="${command}"></bs:didYouKnow>
+				</jsp:attribute>
+			</parts:infobox>
+         </jsp:attribute>
+        
+	</layout:layout>
+	
+</jsp:root>

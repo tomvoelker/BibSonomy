@@ -540,10 +540,10 @@ public class User implements Serializable {
 	}
 	
 	/**
-	 * @return <code>true</code> if and only if spammer == true.
+	 * @return <code>true</code> if and only if spammer is <code>true</code>.
 	 */
 	public boolean isSpammer() {
-		return this.spammer == null ? false : this.spammer;
+		return this.spammer == null ? false : this.spammer.booleanValue();
 	}
 
 	/**

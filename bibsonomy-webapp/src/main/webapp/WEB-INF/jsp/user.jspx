@@ -35,10 +35,10 @@
 		</jsp:attribute>
 	
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.user" formAction="/user/${fn:escapeXml(command.requestedUser)}" formInputName="tag" requestedUser="${command.requestedUser}">
+			<parts:search pathMessageKey="navi.user" formAction="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}" formInputName="tag" requestedUser="${command.requestedUser}">
 				<jsp:attribute name="pathPart">
 					<li>
-						:: <a href="/user/${mtl:encodeURI(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> 
+						:: <a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> 
 					</li>
 				</jsp:attribute>
 				<jsp:attribute name="afterInput">
@@ -83,7 +83,7 @@
 			<li>
 				<fmt:message key="tagrelations.title" var="tagRelationsTitle" />
 				<span class="sidebar_h">
-					<a href="/concepts/${fn:escapeXml(command.requestedUser)}" title="${tagRelationsTitle}">
+					<a href="${relativeUrlGenerator.getConceptsUrlByString(fn:escapeXml(command.requestedUser))}" title="${tagRelationsTitle}">
 						<fmt:message key="tagrelations"/>
 					</a>
 				</span>	

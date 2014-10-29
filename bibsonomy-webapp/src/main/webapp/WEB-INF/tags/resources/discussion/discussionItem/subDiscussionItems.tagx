@@ -14,37 +14,37 @@
 	<ul class="subdiscussionItems">
 		<c:if test="${not empty discussionItems}">
 			<c:forEach var="discussionItem" items="${discussionItems}">
-				<c:set var="class" value="${fn:toLowerCase(discussionItem.class.simpleName)}" />
+				<c:set var="clazz" value="${fn:toLowerCase(discussionItem['class'].simpleName)}" />
 				<c:if test="${discussionItem.anonymous}">
-					<c:set var="class" value="${class} anonymous" />
+					<c:set var="clazz" value="${clazz} anonymous" />
 				</c:if>
 				
 				<c:choose>
-					<c:when test="${'Review' eq discussionItem.class.simpleName}">
+					<c:when test="${'Review' eq discussionItem['class'].simpleName}">
 						<c:choose>
 							<!-- check if user has reviewed this resource -->
 							<c:when test="${discussionItem.user.name eq command.context.loginUser.name}">
-								<li id="ownReview" class="${class}">
-<!-- 								<li id="ownReview" class="${class}" itemprop="reviews" itemscope="itemscope" itemtype="http://schema.org/Review"> -->
+								<li id="ownReview" class="${clazz}">
+<!-- 								<li id="ownReview" class="${clazz}" itemprop="reviews" itemscope="itemscope" itemtype="http://schema.org/Review"> -->
 									<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" schemaOrgMarkUp="true"/>
 								</li>
 							</c:when>
 							<c:otherwise>
-								<li class="${class}">
-<!-- 								<li class="${class}" itemprop="reviews" itemscope="itemscope" itemtype="http://schema.org/Review"> -->
+								<li class="${clazz}">
+<!-- 								<li class="${clazz}" itemprop="reviews" itemscope="itemscope" itemtype="http://schema.org/Review"> -->
 									<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" schemaOrgMarkUp="true"/>
 								</li>
 							</c:otherwise>
 						</c:choose>
 					</c:when>
-					<c:when test="${'Comment' eq discussionItem.class.simpleName}">
-						<li class="${class}">
-<!-- 						<li class="${class}" itemprop="comment" itemscope="itemscope" itemtype="http://schema.org/UserComments"> -->
+					<c:when test="${'Comment' eq discussionItem['class'].simpleName}">
+						<li class="${clazz}">
+<!-- 						<li class="${clazz}" itemprop="comment" itemscope="itemscope" itemtype="http://schema.org/UserComments"> -->
 							<comment:comment comment="${discussionItem}" loginUser="${loginUser}" resource="${resource}" schemaOrgMarkUp="true"/>
 						</li>
 					</c:when>
-					<c:when test="${discussionItem.class.simpleName eq 'DiscussionItem'}">
-						<li class="${class}">
+					<c:when test="${discussionItem['class'].simpleName eq 'DiscussionItem'}">
+						<li class="${clazz}">
 							<div class="deletedInfo">
 								<fmt:message key="post.resource.discussion.info" />
 							</div>
@@ -53,7 +53,7 @@
 						</li>
 					</c:when>
 					<c:otherwise>
-						WARN: no view for ${discussionItem.class.simpleName}
+						WARN: no view for ${discussionItem['class'].simpleName}
 					</c:otherwise>
 				</c:choose>
 			</c:forEach>

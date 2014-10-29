@@ -1,0 +1,97 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	
+	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
+	<jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="buttonUpdate" type="java.lang.String" required="false"/>
+	
+	<ul class="pagination pagination-sm">
+           <!-- ********** FIRST ************** -->
+        <c:if test="${listView.totalCount > 0}">
+            <c:url var="firstUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,0)}"/>
+            <fmt:message var="gotoFirst" key="goto.first"/>           
+            <li><a class="listnav" href="${fn:escapeXml(firstUrl)}" title="${gotoFirst}" rel="First"><fmt:message key="first"/></a></li>
+		</c:if>
+		
+        <!-- ********** PREVIOUS ************** -->
+        <c:if test="${!(listView.numCurrentItems == 0 and listView.curPage.start == 0)}">
+			<c:choose>
+				<c:when test="${listView.previousPage != null}">
+			       <c:url var="previousUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,listView.previousPage.start)}"/>
+                   <fmt:message var="gotoPrevious" key="goto.previous"/>
+                   <li><a class="listnav" href="${fn:escapeXml(previousUrl)}" title="${gotoPrevious}" rel="Prev"> <fmt:message key="previous"/></a></li>
+				</c:when>
+				<c:otherwise>
+					<li class="disabled">
+						<span class="listnav">
+							<fmt:message key="previous"/>
+						</span>
+					</li>
+				</c:otherwise>
+			</c:choose>
+		</c:if>
+		     
+        <!-- ********** PREVIOUS PAGES ************** -->
+		<c:if test="${not empty listView.previousPages and listView.totalCount > 0}">
+			<c:forEach var="page" items="${listView.previousPages}">
+                <c:url var="previousPagesUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,page.start)}"/>
+				<li><a class="listnav" href="${fn:escapeXml(previousPagesUrl)}">${page.number}</a></li>
+			</c:forEach>					
+		</c:if>
+		
+		<c:if test="${listView.totalCount > 0}">
+			<li class="active">
+				<span class="listnavSelected">
+		        	${listView.curPage.number}
+		        </span>
+	        </li>
+        </c:if>
+           
+        <!-- ********** NEXT PAGES ************** -->
+		<c:if test="${not empty listView.nextPages and listView.totalCount > 0}">
+			<c:forEach var="page" items="${listView.nextPages}">
+                   <c:url var="nextPagesUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,page.start)}"/>
+                   <li><a class="listnav" href="${fn:escapeXml(nextPagesUrl)}">${page.number}</a></li>
+			</c:forEach>					
+		</c:if>
+     
+     
+        <!-- ********** NEXT ************** -->
+        <c:if test="${listView.numCurrentItems > 0}">
+			<c:choose>
+				<c:when test="${listView.nextPage != null}">
+                   <c:url var="nextUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,listView.nextPage.start)}">
+                    <!-- <c:param name="${listViewStartParamName}" value="${listView.nextPage.start}" /> -->
+                   </c:url>
+                   <fmt:message var="gotoNext" key="goto.next"/>
+                   <li><a class="listnav" href="${fn:escapeXml(nextUrl)}" title="${gotoNext}" rel="Next"> <fmt:message key="next"/></a></li>
+				</c:when>
+				<c:otherwise>
+					<li class="disabled">
+						<span class="listnav">
+							<fmt:message key="next"/>
+						</span>
+					</li>
+				</c:otherwise>
+			</c:choose>
+		</c:if>
+		     
+        <!-- ********** LAST ************** -->
+        <c:if test="${listView.totalCount > 0}">
+         <c:url var="lastUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,listView.last)}">
+           <!-- <c:param name="${listViewStartParamName}" value="${listView.last}" /> -->
+         </c:url>
+         <fmt:message var="gotoLast" key="goto.last"/>
+         <li><a class="listnav" href="${fn:escapeXml(lastUrl)}" title="${gotoLast}" rel="Last"><fmt:message key="last"/></a></li>
+        </c:if>
+        
+        <c:if test="${not empty buttonUpdate}">
+        	<li><input type="submit" class="batchUpdateButton" value="${buttonUpdate}" style="float: right;vertical-align: middle;" disabled="disabled" /></li>
+        </c:if>     						
+	</ul>
+</jsp:root>
