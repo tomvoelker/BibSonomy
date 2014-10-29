@@ -30,38 +30,34 @@ public class CSLView extends AbstractView {
 
 	@Override
 	protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-
 		/*
 		 * get the data
 		 */
 		final Object object = model.get(BaseCommandController.DEFAULT_COMMAND_NAME);
 		
 		final List<? extends Post<? extends BibTex>> publicationList = getPublicationList(object);
-		if(!present(publicationList)) {
+		if (!present(publicationList)) {
 			return;
 		}
 
-			/*
-			 * set the content type headers
-			 */
-			response.setContentType("application/json");
-			response.setCharacterEncoding("UTF-8");
+		/*
+		 * set the content type headers
+		 */
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
 
-			/*
-			 * output stream
-			 */
-			final ServletOutputStream outputStream = response.getOutputStream();
-			final OutputStreamWriter writer = new OutputStreamWriter(outputStream);
-
-			if (publicationList != null) {
-				RecordList recList = new RecordList();
-				for (final Post<? extends BibTex> post : publicationList) {
-					final Record rec = CslModelConverter.convertPost(post);
-					recList.add(rec);
-				}
-				writer.write(JSONSerializer.toJSON(recList, CslModelConverter.getJsonConfig()).toString());
-				writer.close();
-			}
+		/*
+		 * output stream
+		 */
+		final ServletOutputStream outputStream = response.getOutputStream();
+		final OutputStreamWriter writer = new OutputStreamWriter(outputStream);
+		final RecordList recList = new RecordList();
+		for (final Post<? extends BibTex> post : publicationList) {
+			final Record rec = CslModelConverter.convertPost(post);
+			recList.add(rec);
+		}
+		writer.write(JSONSerializer.toJSON(recList, CslModelConverter.getJsonConfig()).toString());
+		writer.close();
 	}
 	
 	/**
@@ -70,11 +66,10 @@ public class CSLView extends AbstractView {
 	 * @return List of publications if supported command is given, null otherwise
 	 */
 	private List<? extends Post<? extends BibTex>> getPublicationList (Object commandObject) {
-		if(commandObject instanceof SimpleResourceViewCommand) {
-			SimpleResourceViewCommand command = (SimpleResourceViewCommand)commandObject;
+		if (commandObject instanceof SimpleResourceViewCommand) {
+			final SimpleResourceViewCommand command = (SimpleResourceViewCommand)commandObject;
 			return command.getBibtex().getList();
 		}
 		return null;
 	}
-	
 }
