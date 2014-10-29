@@ -16,12 +16,9 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
 	
 	<fmt:message key="navi.basket" var="pageTitle"/>
-	<fmt:message var="headline" key="page.basket.headline" />
 	
-	<layout:resourceLayout pageTitle="${pageTitle}" 
-			command="${command}" 
-			requPath="${requPath}" 
-			isBasket="${true}" 
+	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" 
+			requPath="${requPath}" isBasket="${true}" 
 			disableListNavigation="${true}"
 			disableResourcetypeSelection="${true}"
 			minimizedContentWidth="${true}"
@@ -31,12 +28,11 @@
 			<parts:search pathMessageKey="navi.basket"/>
 		</jsp:attribute>
 		
-		<jsp:attribute name="breadcrumbs">	
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<fmt:message key="navi.account" var="account"/>
-					<nav:crumb name="${account}" />
-					<nav:crumb name="${headline}" active="true" />
+					<nav:account />
+					<nav:crumb name="${pageTitle}" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
@@ -45,75 +41,57 @@
 			| sidebar
 			+-->
 		<jsp:attribute name="sidebar">
-			<parts:qrcode>
-				
-				<jsp:attribute name="errorHeader">
-					<fmt:message key="qrcode.error.errorHeader" />
-				</jsp:attribute>
-				
-				<jsp:attribute name="errorMessage">
-					<fmt:message key="qrcode.error.errorMessage" />
-				</jsp:attribute>
-				
-				<jsp:attribute name="infoMessage">
-					<fmt:message key="qrcode.info.basket.readerInfoMessage" />
-				</jsp:attribute>
-				
-			</parts:qrcode>
-			
-			<!-- link-buttons on what you can do -->	
-			<ul>			
-	          <li>
-	            <!-- edit -->
-	            <div class="form-group">
-		            <fmt:message key="basket.edit.tags" var="editTags"/>
-		          	<button:linkButton name="linkButton" title="${fn:escapeXml(editTags)}"
-		          		href="/beditbib/${fn:escapeXml(requPath)}">
-						<jsp:attribute name="text">
-							<fmt:message key="basket.editTags"/>
-						</jsp:attribute>
-					</button:linkButton>
-	            </div>
-	            
-	            <!-- export -->
-	            <div class="form-group">
-		            <fmt:message key="basket.export" var="exportPosts"/>
-		          	<button:linkButton name="linkButton" title="${fn:escapeXml(exportPosts)}"
-		          		href="/export/${fn:escapeXml(requPath)}${requQueryString}">
-						<jsp:attribute name="text">
-							<fmt:message key="basket.exportPosts"/>
-						</jsp:attribute>
-					</button:linkButton>
-	            </div>
-	            
-	            <!-- remove -->
-	            <div class="form-group">
-            	
-		            <fmt:message key="basket.removeAllVerbose" var="removeAllVerbose"/>
-		          	<button:linkButton name="linkButton" title="${fn:escapeXml(removeAllVerbose)}"
-		          		href="/ajax/pickUnpickPost?action=clearAll&amp;ckey=${mtl:encodeURI(command.context.ckey)}">
-						<jsp:attribute name="text">
-							<fmt:message key="basket.removeAll"/>
-						</jsp:attribute>
-					</button:linkButton>
-				</div>	
-	          </li>
-			</ul>
- 		</jsp:attribute>
- 		
-    	<!--+
+			<h4 class="sidebar"><fmt:message key="post_bibtex.scan.title" /></h4>
+			<parts:qrcode infoMessageKey="qrcode.info.basket.readerInfoMessage" />
+		</jsp:attribute>
+		
+		<!--+
 			| infobox
 			+-->
 		<jsp:attribute name="infobox">
 			<parts:infobox>
 				<jsp:attribute name="infoTextBody">
-		        	<!-- short info, what the basket is -->
-		            <fmt:message key="basket.info"/>                 
+					<!-- short info, what the basket is -->
+					<fmt:message key="basket.info"/>
 					<p><fmt:message key="basket.info.examples"/></p>
+					<!-- link-buttons on what you can do -->
+					<ul>
+						<li>
+						<!-- edit -->
+						<div class="form-group">
+							<fmt:message key="basket.edit.tags" var="editTags"/>
+							<button:linkButton name="linkButton" title="${fn:escapeXml(editTags)}" href="/beditbib/${fn:escapeXml(requPath)}">
+								<jsp:attribute name="text">
+									<fmt:message key="basket.editTags"/>
+								</jsp:attribute>
+							</button:linkButton>
+						</div>
+						
+						<!-- export -->
+			            <div class="form-group">
+				            <fmt:message key="basket.export" var="exportPosts"/>
+				          	<button:linkButton name="linkButton" title="${fn:escapeXml(exportPosts)}"
+				          		href="/export/${fn:escapeXml(requPath)}${requQueryString}">
+								<jsp:attribute name="text">
+									<fmt:message key="basket.exportPosts"/>
+								</jsp:attribute>
+							</button:linkButton>
+			            </div>
+			            
+			            <!-- remove -->
+			            <div class="form-group">
+				            <fmt:message key="basket.removeAllVerbose" var="removeAllVerbose"/>
+				          	<button:linkButton name="linkButton" title="${fn:escapeXml(removeAllVerbose)}"
+				          		href="/ajax/pickUnpickPost?action=clearAll&amp;ckey=${mtl:encodeURI(command.context.ckey)}">
+								<jsp:attribute name="text">
+									<fmt:message key="basket.removeAll" />
+								</jsp:attribute>
+							</button:linkButton>
+						</div>
+			          </li>
+					</ul>
 				</jsp:attribute>
 			</parts:infobox>
-         </jsp:attribute>
-    
+		</jsp:attribute>
 	</layout:resourceLayout>
-
 </jsp:root>

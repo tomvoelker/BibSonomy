@@ -20,11 +20,10 @@
 			<parts:search pathMessageKey="navi.popular" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
 		
-		<jsp:attribute name="breadcrumbs">	
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<fmt:message var="popular" key="navi.popular" />
-					<nav:crumb name="${popular}" href="/popular" />
+					<nav:popular />
 					<fmt:message var="posts" key="navi.posts" />
 					<nav:crumb name="${posts}" active="true" />
 				</jsp:attribute>

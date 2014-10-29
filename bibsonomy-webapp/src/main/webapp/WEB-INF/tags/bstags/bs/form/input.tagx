@@ -106,7 +106,7 @@
 	<!-- errors -->
 	<c:set var="formErrors"><form:errors path="${path}" /></c:set>
 
-	
+
 
 	<!--+
 		| bootstrap 3 form-group 
@@ -180,7 +180,6 @@
 			</c:choose>
 
 			<jsp:invoke fragment="appendix" />
-			
 		</div>
 	</div>
 </jsp:root>

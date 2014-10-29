@@ -466,8 +466,7 @@
 								<value>firstLastNames</value>
 								<value>generatedBibtexKeys</value>
 								<value>download</value>
-								<value>absoluteUrlGenerator</value>
-								<value>relativeUrlGenerator</value>
+								<value>urlGenerator</value>
 								<value>skipDummyValues</value>
 								<!-- used for metadata plugin -->
 								<value>post.copyIntraHash</value>
@@ -787,8 +786,7 @@
 		<value>firstLastNames</value>
 		<value>generatedBibtexKeys</value>
 		<value>download</value>
-		<value>absoluteUrlGenerator</value>
-		<value>relativeUrlGenerator</value>
+		<value>urlGenerator</value>
 		<value>skipDummyValues</value>
 		
 		<value>saveAndRate</value>

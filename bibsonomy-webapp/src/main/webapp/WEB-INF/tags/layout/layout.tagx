@@ -95,12 +95,12 @@
 						<spring:theme code="image.head.logo" var="headerLogo" text=""/>
 						<c:if test="${not empty headerLogo}">
 							<div id="logoimage">
-								<a href="/"><img id="headerlogoimage" src="${headerLogo}"/></a>
+								<a href="${relativeUrlGenerator.getProjectHome()}"><img id="headerlogoimage" src="${headerLogo}"/></a>
 							</div>
 						</c:if>
 
 						<div id="logo">
-							<span class="text"><a href="/">${properties['project.name']}</a></span>
+							<span class="text"><a href="${relativeUrlGenerator.getProjectHome()}">${properties['project.name']}</a></span>
 							
 							<!--+ 
 							 	|
@@ -128,7 +128,7 @@
 							</c:when>
 							<c:otherwise>
 								<c:if test="${properties['project.theme'] ne 'puma'}">
-									<a href="/login"><fmt:message key="navi.login"/></a>
+									<a href="${relativeUrlGenerator.getLoginUrl()}"><fmt:message key="navi.login"/></a>
 								</c:if>
 							</c:otherwise>
 						</c:choose>	

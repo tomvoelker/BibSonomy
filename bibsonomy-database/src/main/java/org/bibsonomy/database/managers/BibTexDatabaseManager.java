@@ -315,7 +315,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 			final BibTex publication = post.getResource();
 			if (this.permissionDb.isAllowedToAccessPostsDocuments(authUser, post, session)) {
 				publication.setDocuments(this.docDb.getDocumentsForPost(userName, resourceHash, session));
-			} else if (failIfDocumentsNotAccessible == true) {
+			} else if (failIfDocumentsNotAccessible) {
 				throw new AccessDeniedException("You are not allowed to access documents of this post");
 			}
 

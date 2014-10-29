@@ -30,7 +30,7 @@
     <jsp:directive.attribute name="tags" fragment="true" required="false" />
     <jsp:directive.attribute name="groups" fragment="true" required="false" />
     <jsp:directive.attribute name="extraInformation" fragment="true" required="false" description="Extra information which shall be displayed outside the form."/>
-    <jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
+    <jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
     
 	
 	<fmt:message key="navi.edit${resourceType}" var="editPageTitle" />
@@ -108,7 +108,7 @@
 					<!--+ 
 		  	          	| show global errors
 		    		  	+ -->
-					<errors:global errors="${errors}"/>
+					<errors:global />
 		            
 		            <!--+
 		                | form starts here

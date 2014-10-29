@@ -25,7 +25,7 @@ public class HttpsMetadataGeneratorFilter extends MetadataGeneratorFilter {
 	@Override
 	public void afterPropertiesSet() throws ServletException {
 		String s = generator.getEntityBaseURL();
-		if (removeTrailingBaseUrlSlash == true) {
+		if (removeTrailingBaseUrlSlash) {
 			if (s.endsWith("/")) {
 				s = s.substring(0, s.length() - 1);
 			}

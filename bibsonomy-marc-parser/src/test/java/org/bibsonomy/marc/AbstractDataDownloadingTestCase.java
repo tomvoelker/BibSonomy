@@ -71,11 +71,11 @@ public abstract class AbstractDataDownloadingTestCase {
 
 	private InputStream readCached(final String hebisId, final boolean overwriteWithAlternative) throws MalformedURLException, IOException {
 		final String fileName = hebisId + ".xml";
-		InputStream rVal = (overwriteWithAlternative == true) ? null : this.getClass().getResourceAsStream(fileName);
+		InputStream rVal = (overwriteWithAlternative) ? null : this.getClass().getResourceAsStream(fileName);
 		if (rVal == null) {
 			final String absoluteFileName = "src/test/resources/" + getClass().getPackage().getName().replace('.','/') + "/"  + fileName;
 			InputStream is;
-			if (overwriteWithAlternative == true) {
+			if (overwriteWithAlternative) {
 				is = new URL("http://solr.hebis.de/solr/hebis/select?q=id%3A" + hebisId + "&wt=xml&indent=true").openStream();
 			} else {
 				//new URL("http://wastl.hebis.uni-frankfurt.de:8983/solr/hebis_neu/select?q=id%3A" + hebisId + "&wt=xml&indent=true"));

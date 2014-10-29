@@ -17,7 +17,6 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
 	<fmt:message key="navi.inbox" var="inboxPageTitle" />
-	<fmt:message var="headline" key="page.inbox.headline" />
 	<layout:resourceLayout pageTitle="${inboxPageTitle}" 
 			command="${command}" 
 			requPath="${requPath}"  
@@ -29,14 +28,11 @@
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
 		
-		
-		
-		<jsp:attribute name="breadcrumbs">	
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<fmt:message key="navi.account" var="account"/>
-					<nav:crumb name="${account}" />
-					<nav:crumb name="${headline}" active="true" />
+					<nav:account />
+					<nav:crumb name="${inboxPageTitle}" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>

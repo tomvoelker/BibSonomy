@@ -7,7 +7,6 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
@@ -16,18 +15,15 @@
 
 	<fmt:message key="navi.authors" var="pageTitle" />
 	
-	<layout:oneColumnLayout 
-		loginUser="${command.context.loginUser }"  
-		pageTitle="${pageTitle}" 
-		requPath="${requPath}"
-		>
- 		<jsp:attribute name="heading">
+	<layout:oneColumnLayout loginUser="${command.context.loginUser }" pageTitle="${pageTitle}" requPath="${requPath}">
+		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.authors" formAction="/author/" formInputName="author"/>
 		</jsp:attribute>
 		
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
+					<nav:popular />
 					<nav:crumb name="${pageTitle}" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
@@ -45,15 +41,13 @@
 						<a	class="${mtl:getTagSize(author.ctr, command.maxCount)}" 
 							style="font-size:${mtl:authorFontSize(author, command.maxCount)}%; padding-left:0.3em; padding-right:0.3em;"
 							title="${fn:escapeXml(author.firstName)}${' '}${fn:escapeXml(author.lastName)}: ${author.ctr}${' '}${posts}" 
-							href="/author/${fn:escapeXml(author.firstName)}${'+'}${fn:escapeXml(author.lastName)}">
+							href="${relativeUrlGenerator.getAuthorUrlByAuthor(author)}">
 						<c:out value="${author.lastName}"/>
 						</a>
-						<c:out value=" "/>
+						<c:out value=" " />
 					</c:forEach>
 				</div>
 			</c:if>
 		</jsp:attribute>
 	</layout:oneColumnLayout>
-
-				
 </jsp:root>

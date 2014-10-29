@@ -17,6 +17,7 @@
 		<fmt:param>${command.requestedGroup}</fmt:param>
 		<fmt:param>${command.requestedTags}</fmt:param>
 	</fmt:message>
+	
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" headline="${headline}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.viewable" formAction="${relativeUrlGenerator.getViewableUrlByGroupName(command.requestedGroup)}" formInputName="tag" formInputValue="${command.requestedTags}">
@@ -26,24 +27,12 @@
 			</parts:search>
 		</jsp:attribute>
 		
-		<jsp:attribute name="breadcrumbs">	
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<fmt:message key="buttons.mybibsonomy" var="my">
-						<fmt:param>${properties['project.name']}</fmt:param>
-					</fmt:message>
-					<nav:crumb name="${my}" href="/user/${command.context.loginUser.name}" />
-					<c:choose>
-						<c:when test="${command.requestedGroup eq 'private'}">
-							<fmt:message key="navi.privatePosts" var="privatePosts" />
-							<nav:crumb name="${privatePosts}" href="/viewable/private" />
-						</c:when>
-						<c:otherwise>
-							<fmt:message var="viewable" key="page.viewable.headline" />
-							<nav:crumb name="${viewable} ${command.requestedGroup}" href="/viewable/${command.requestedGroup}"/>
-						</c:otherwise>
-					</c:choose>
-					<nav:crumb name="${command.requestedTags}" active="true" leadingIcon="fa-tag"/>
+					<nav:usercrumb requestedUser="${command.requestedUser}" loginUser="${command.context.loginUser}" />
+					<nav:viewableCrumb requestedGroup="${command.requestedGroup}" />
+					<nav:tagcrumb requestedTags="${command.requestedTags}" active="${true}"/>
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
@@ -57,45 +46,45 @@
 			<li>
 				<a href="${relativeUrlGenerator.getTagUrlByTagName(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 				<c:out value=" "/>
-				<fmt:message key="tag.asTagFromAll"/>						
-			</li>			
+				<fmt:message key="tag.asTagFromAll"/>
+			</li>
 			<c:if test="${command.context.userLoggedIn}">
 				<li>
 					<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(fn:escapeXml(command.context.loginUser.name), command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 					<c:out value=" "/>
 					<fmt:message key="tag.asTagFrom"/>
 					<c:out value=" "/>
-					${fn:escapeXml(command.context.loginUser.name)}						
-				</li>					
+					${fn:escapeXml(command.context.loginUser.name)}
+				</li>
 				<li>
 					<a href="${relativeUrlGenerator.getConceptUrlByUserNameAndTagName(fn:escapeXml(command.context.loginUser.name), command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 					<c:out value=" "/>
 					<fmt:message key="tag.asConceptFrom"/>
 					<c:out value=" "/>
 					${fn:escapeXml(command.context.loginUser.name)}
-				</li>				
+				</li>
 			</c:if>
 			
 			<li style="margin-bottom: 1ex;">
-				<a href="${relativeUrlGenerator.prefix('concept/').getTagUrlByTagName(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+				<a href="${relativeUrlGenerator.prefix('concept').getTagUrlByTagName(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 				<c:out value=" "/>
 				<fmt:message key="tag.asConceptFromAll"/>
-			</li>					
+			</li>
 			
-			</div>				
+			</div>
 			
 			<!-- group members -->
 			<rc:members requPath="${requPath}" users="${command.group.users}"/>
 			
 			<!-- related tags -->
 			<li>
-				<span class="sidebar_h"><fmt:message key="relatedtags"/></span>			
+				<span class="sidebar_h"><fmt:message key="relatedtags"/></span>
 				<tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}" order=""/>
-			</li>			
+			</li>
 			
-			<!-- tags -->	
+			<!-- tags -->
 			<li>
-				<span class="sidebar_h"><fmt:message key="tags"/></span>			
+				<span class="sidebar_h"><fmt:message key="tags"/></span>
 				<tags:cloud requPath="${mtl:getLowerPath(requPath)}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 			</li>
 		</ul>
