@@ -67,13 +67,6 @@ public class BibTeXView extends AbstractPublicationView<BibtexViewCommand> {
 	}
 
 	/**
-	 * @return the urlGenerators
-	 */
-	public Map<String, URLGenerator> getUrlGenerators() {
-		return this.urlGenerators;
-	}
-
-	/**
 	 * @param urlGenerators the urlGenerators to set
 	 */
 	public void setUrlGenerators(Map<String, URLGenerator> urlGenerators) {
