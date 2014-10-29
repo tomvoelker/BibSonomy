@@ -11,8 +11,9 @@
 	
 	<c:set var="baseUrl" value="/" />
 	
+	<c:set var="urlGenerator" value="${relativeUrlGenerator}" />
 	<c:if test="${useAbsoluteURL}">
-		<c:set var="baseUrl" value="${properties['project.home']}" />
+		<c:set var="urlGenerator" value="${absoluteUrlGenerator}" />
 	</c:if>
 	
 	<!-- initialize with empty list -->
@@ -45,13 +46,13 @@
 			<c:choose>
 				<c:when test="${schemaOrgMarkUp}">
 					<span itemprop="${authorEditor}" itemscope="itemscope" itemtype="http://schema.org/Person">
-						<a href="${baseUrl}author/${fn:escapeXml(mtl:cleanBibtex(person.lastName))}" itemprop="name">
+						<a href="${urlGenerator.getAuthorUrlByName(person.lastName)}" itemprop="name">
 							<c:out value="${personName}"/>
 						</a>
 					</span>
 				</c:when>
 				<c:otherwise>
-				 	<a href="${baseUrl}author/${fn:escapeXml(mtl:cleanBibtex(person.lastName))}">
+				 	<a href="${urlGenerator.getAuthorUrlByName(person.lastName)}">
 						<c:out value="${personName}"/>
 				 	</a>
 				</c:otherwise>

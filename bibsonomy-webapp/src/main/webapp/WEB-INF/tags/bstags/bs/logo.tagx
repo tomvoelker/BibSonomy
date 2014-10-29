@@ -4,19 +4,13 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
 	
 	<div id="logo">
-			<fmt:message var="homelink" key="navi.home"/> 
-			<h1>
-				<a href="/" title="${homelink}">
-					<!-- <img src="/resources/image/logo4.png" alt="${properties['project.name']} Logo" /> --> 
-					<c:out value="${properties['project.name']}"/>
-				</a>
-				<!-- 
-				<c:out value=" "/>
-				<small id="beta">
-					<span class="label label-default">Beta</span>
-				</small>
-				-->
-			</h1>
-			<p style="color:#006699;"><small>The blue social bookmark and publication sharing system.</small></p>
+		<fmt:message var="homelink" key="navi.home"/>
+		<h1>
+			<a href="${relativeUrlGenerator.getProjectHome()}" title="${homelink}">
+				<!-- <img src="/resources/image/logo4.png" alt="${properties['project.name']} Logo" /> --> 
+				<c:out value="${properties['project.name']}"/>
+			</a>
+		</h1>
+		<p style="color:#006699;"><small>The blue social bookmark and publication sharing system.</small></p>
 	</div>
 </jsp:root>

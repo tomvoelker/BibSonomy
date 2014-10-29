@@ -34,19 +34,15 @@
 			</parts:search>	
 		</jsp:attribute>
 		
-		<jsp:attribute name="breadcrumbs">	
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<fmt:message key="navi.groups" var="groups" />
-					<nav:crumb name="${groups}" href="/groups" />
-					<nav:crumb name="${command.group.name}" href="/groups/${command.group.name}"/>
+					<nav:groupcrumb requestedGroup="${command.group.name}" />
 					<c:if test="${command.filter eq 'JUST_PDF'}">
-						<fmt:message key="navi.documents" var="documents" />
-						<nav:crumb name="${documents}" active="true" />
+						<nav:crumb nameKey="navi.documents" active="true" />
 					</c:if>
 					<c:if test="${command.filter eq 'DUPLICATES'}">
-						<fmt:message key="navi.duplicates" var="duplicates" />
-						<nav:crumb name="${duplicates}" active="true" />
+						<nav:crumb nameKey="navi.duplicates" active="true" />
 					</c:if>
 				</jsp:attribute>
 			</nav:breadcrumbs>

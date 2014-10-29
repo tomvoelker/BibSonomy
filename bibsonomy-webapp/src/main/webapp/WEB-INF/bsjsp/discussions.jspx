@@ -6,8 +6,8 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
-    xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
-    xmlns:users="urn:jsptagdir:/WEB-INF/tags/bstags/users"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
+	xmlns:users="urn:jsptagdir:/WEB-INF/tags/bstags/users"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld" 
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
@@ -36,28 +36,18 @@
 			</parts:search>	
 		</jsp:attribute>
 
-		<jsp:attribute name="breadcrumbs">	
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<c:choose>
-						<c:when test="${empty command.requestedGroup}">
-							<c:choose>
-								<c:when test="${command.requestedUser eq command.context.loginUser.name}">
-									<fmt:message key="buttons.mybibsonomy" var="my">
-										<fmt:param>${properties['project.name']}</fmt:param>
-									</fmt:message>
-									<nav:crumb name="${my}" href="/user/${command.context.loginUser.name}" />
-								</c:when>
-								<c:otherwise>
-									<fmt:message var="popular" key="navi.popular" />
-									<nav:crumb name="${popular}" href="/popular" />
-								</c:otherwise>
-							</c:choose>
+						<c:when test="${not empty command.requestedGroup}">
+							<nav:groupcrumb requestedGroup="${command.requestedGroup}" />
+						</c:when>
+						<c:when test="${not empty command.requestedUser}">
+							<nav:usercrumb requestedUser="${command.requestedUser}" loginUser="${command.context.loginUser}" />
 						</c:when>
 						<c:otherwise>
-							<fmt:message key="navi.groups" var="groups" />
-							<nav:crumb name="${groups}" href="/groups" />
-							<nav:crumb name="${command.requestedGroup}" href="/group/${command.requestedGroup}" />
+							<nav:popular />
 						</c:otherwise>
 					</c:choose>
 					<fmt:message var="posts" key="navi.discussedPosts" />
@@ -80,12 +70,12 @@
 			<parts:infobox>
 				<jsp:attribute name="infoTextBody">
 	  			  <c:choose>
-	  				<c:when test="${not empty command.requestedUser }">
+	  				<c:when test="${not empty command.requestedUser}">
 						<fmt:message key="system.recentlyDiscussed.intro.requUser">
 							<fmt:param value="${fn:escapeXml(command.requestedUser)}"/>
 						</fmt:message>
 	               	</c:when>
-	               	<c:when test ="${not empty command.requestedGroup }">
+	               	<c:when test ="${not empty command.requestedGroup}">
 	               		<fmt:message key="system.recentlyDiscussed.intro.requGroup">
 							<fmt:param value="${fn:escapeXml(command.requestedGroup)}"/>
 						</fmt:message>

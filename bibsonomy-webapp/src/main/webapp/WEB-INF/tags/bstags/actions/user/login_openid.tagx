@@ -6,7 +6,7 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
-	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form">
+	xmlns:login="urn:jsptagdir:/WEB-INF/tags/bstags/actions/user">
 
 	<jsp:directive.tag language="java" pageEncoding="UTF-8" display-name="OpenID Login Form" description="Renders the login form for OpenID login." />
 	<br /><br />
@@ -17,13 +17,12 @@
 			or http://openid.net/get-an-openid/ and generate code dynamically -->
 		<ul class="list-inline">
 			<li><span><fmt:message key="login.openid.provider"/></span></li>
-			<li><a class="provider" data-provider="google" href="https://www.google.com/accounts/o8/id">Google</a></li> 
-			<li><a class="provider" data-provider="yahoo" href="http://me.yahoo.com/">Yahoo!</a></li>
+			<li><login:login_openid_provider url="https://www.google.com/accounts/o8/id" name="Google" /></li>
+			<li><login:login_openid_provider url="http://me.yahoo.com/" name="Yahoo!" /></li>
 			<li><a class="otherProvider" data-provider="other" href="#">Other OpenID-Provider</a></li>
 		</ul>
 
 		<div class="openIDmanual" style="display: none;">
-			
 			<form class="form-horizontal" action="/login_openid" id="openIDForm">
 				<div class="form-group">
 					<label class="control-label col-sm-3">
@@ -37,7 +36,7 @@
 				<div class="form-group">
 					<div class="col-sm-offset-3 col-sm-9">
 						<div class="checkbox">
-        					<label>
+							<label>
 								<input type="checkbox" name="rememberMe" id="rememberMe" /><c:out value=" " />
 								<fmt:message key="login.rememberMe" />
 							</label>
@@ -50,35 +49,21 @@
 					<div class="col-sm-offset-3 col-sm-3 col-md-3 col-lg-3">
 						<bsform:button type="submit" style="success" value="${submit}" size="defaultSize" />
 					</div>
-
-					
 				</div>
 			</form>
 		</div>
 		
-		
 		<script type="text/javascript">
 			<![CDATA[
-				$(document).ready(function() {
-					$(".provider").each(function() {
-						$(this).click(function(e) {
-							e.preventDefault();
-							var oid = $(this).attr('href');
-							$('#openID').val(oid);
-							$('#openIDForm').submit();
-						});
-					});
-					
-					$(".otherProvider").click(function(e) {
-						e.preventDefault();
+				$(function() {
+					$(".otherProvider").click(function() {
 						$(".openIDmanual").toggle();
+						return false;
 					});
 				});
 			]]>
-		</script>	
+		</script>
+	</fieldset>
 
-   	</fieldset>
-
-   	<hr />
-
+	<hr />
 </jsp:root>

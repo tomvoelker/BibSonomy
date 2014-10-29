@@ -25,54 +25,50 @@
 	<jsp:directive.attribute name="formExtra" fragment="true" required="false" description="Any extra form input fields you want to add."/>
 			
 	<div id="search">
-		<ul class="list-inline">
-
-			<li class="${empty formAction ? 'hidden' : ''}">
-				<form action="${formAction}" method="get" class="smallform">
-					<div class="input-group">
-						<div class="input-group-addon">
-							<a href="#"  style="background-color: #eee;" class="dropdown-toggle" data-toggle="dropdown"><span class="search-scope"><fmt:message key="${pathMessageKey}"/></span>&amp;nbsp;<span class="caret"><!--  --></span></a>
-							<ul class="dropdown-menu" role="menu">
-								<li><a onclick="return switchNavi('tag', this);"><fmt:message key="navi.tag"/></a></li>
-								<li><a onclick="return switchNavi('user', this);"><fmt:message key="navi.user"/></a></li>
-								<li><a onclick="return switchNavi('group', this);"><fmt:message key="navi.group"/></a></li>
-								<li><a onclick="return switchNavi('author', this);"><fmt:message key="navi.author"/></a></li>
-								<li><a onclick="return switchNavi('concept/tag', this);"><fmt:message key="navi.concept"/></a></li>
-								<li><a onclick="return switchNavi('bibtexkey', this);"><fmt:message key="navi.bibtexkey"/></a></li>
-								<li><a onclick="return switchNavi('search', this);"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></a></li>
-								<c:if test="${not empty requestedUser}">
-									<li><a onclick="return switchNavi('user:${fn:escapeXml(requestedUser)}', this);"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></a></li>
-								</c:if>
-								<c:if test="${command.context.userLoggedIn and empty requestedUser}">
-									<li><a onclick="return switchNavi('user:${fn:escapeXml(command.context.loginUser.name)}', this);"><fmt:message key="navi.search"/>:<c:out value='${command.context.loginUser.name}'/></a></li>
-								</c:if>
-								<c:if test="${command.context.userLoggedIn and not empty command.context.loginUser.groups}">
-									<li><a class="pdSubHeader"><fmt:message key="navi.search.in_group"/></a></li>
-									<c:forEach var="grp" items="${command.context.loginUser.groups}">
-										<li><a class="pdSubitems" onclick="return switchNavi('group:${fn:escapeXml(grp.name)}', this);">- <c:out value='${fn:escapeXml(grp.name)}'/></a></li>
-									</c:forEach>
-								</c:if>
-							</ul>
-						</div>
-						<c:if test="${not empty pathPart}">
-							<span id="pathPart" class="input-group-addon">
-								<jsp:invoke fragment="pathPart"/>
-							</span>
-						</c:if>
-			  			<input class="form-control" style="" type="text" size="20" name="${formInputName}" id="inpf" value="${fn:escapeXml(formInputValue)}"/>
-			  			<c:if test="${not empty formExtra}">
-			  				<jsp:invoke fragment="formExtra"/>
-			  			</c:if>
-			  			<fmt:message key="navi.search" var="searchButton"/>
-			  			<span class="input-group-btn">
-			  				<button class="btn btn-default" type="submit"><span class="sr-only"><c:out value="${searchButton}" /></span><span class="fa fa-search"><!--  --></span></button>
-			  			</span>
-			  		</div>
-			  		<div class="pull-right"><jsp:invoke fragment="afterInput"/></div>
-				</form>
-			</li>
-		</ul>
-		
+		<div class="${empty formAction ? 'hidden' : ''}">
+			<form action="${formAction}" method="get" class="smallform">
+				<div class="input-group">
+					<div class="input-group-addon">
+						<a href="#"  style="background-color: #eee;" class="dropdown-toggle" data-toggle="dropdown"><span class="search-scope"><fmt:message key="${pathMessageKey}"/></span>&amp;nbsp;<span class="caret"><!--  --></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a onclick="return switchNavi('tag', this);"><fmt:message key="navi.tag"/></a></li>
+							<li><a onclick="return switchNavi('user', this);"><fmt:message key="navi.user"/></a></li>
+							<li><a onclick="return switchNavi('group', this);"><fmt:message key="navi.group"/></a></li>
+							<li><a onclick="return switchNavi('author', this);"><fmt:message key="navi.author"/></a></li>
+							<li><a onclick="return switchNavi('concept/tag', this);"><fmt:message key="navi.concept"/></a></li>
+							<li><a onclick="return switchNavi('bibtexkey', this);"><fmt:message key="navi.bibtexkey"/></a></li>
+							<li><a onclick="return switchNavi('search', this);"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></a></li>
+							<c:if test="${not empty requestedUser}">
+								<li><a onclick="return switchNavi('user:${fn:escapeXml(requestedUser)}', this);"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></a></li>
+							</c:if>
+							<c:if test="${command.context.userLoggedIn and empty requestedUser}">
+								<li><a onclick="return switchNavi('user:${fn:escapeXml(command.context.loginUser.name)}', this);"><fmt:message key="navi.search"/>:<c:out value='${command.context.loginUser.name}'/></a></li>
+							</c:if>
+							<c:if test="${command.context.userLoggedIn and not empty command.context.loginUser.groups}">
+								<li><a class="pdSubHeader"><fmt:message key="navi.search.in_group"/></a></li>
+								<c:forEach var="grp" items="${command.context.loginUser.groups}">
+									<li><a class="pdSubitems" onclick="return switchNavi('group:${fn:escapeXml(grp.name)}', this);">- <c:out value='${fn:escapeXml(grp.name)}'/></a></li>
+								</c:forEach>
+							</c:if>
+						</ul>
+					</div>
+					<c:if test="${not empty pathPart}">
+						<span id="pathPart" class="input-group-addon">
+							<jsp:invoke fragment="pathPart"/>
+						</span>
+					</c:if>
+		  			<input class="form-control" style="" type="text" size="20" name="${formInputName}" id="inpf" value="${fn:escapeXml(formInputValue)}"/>
+		  			<c:if test="${not empty formExtra}">
+		  				<jsp:invoke fragment="formExtra"/>
+		  			</c:if>
+		  			<fmt:message key="navi.search" var="searchButton"/>
+		  			<span class="input-group-btn">
+		  				<button class="btn btn-default" type="submit"><span class="sr-only"><c:out value="${searchButton}" /></span><span class="fa fa-search"><!--  --></span></button>
+		  			</span>
+		  		</div>
+		  		<div class="pull-right"><jsp:invoke fragment="afterInput"/></div>
+			</form>
+		</div>
 	</div>
 	
 </jsp:root>

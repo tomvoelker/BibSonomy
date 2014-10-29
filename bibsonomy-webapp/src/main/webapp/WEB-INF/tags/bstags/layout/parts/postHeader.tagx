@@ -23,7 +23,7 @@
 	<jsp:directive.attribute name="showBookmark" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="showPublication" type="java.lang.Boolean" required="true"/>
 	
-	<c:set var="pageOptionsClass" value="${empty showPageOptions or showPageOptions == true ? 'config' : 'config disabled'}"/>
+	<c:set var="pageOptionsClass" value="${empty showPageOptions or showPageOptions ? 'config' : 'config disabled'}"/>
 	
 	<!-- bookmarks -->
 	<div class="row">

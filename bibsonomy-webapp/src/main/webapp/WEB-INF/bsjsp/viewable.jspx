@@ -13,6 +13,7 @@
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<!-- TODO: this key is missing -->"
 	<fmt:message var="headline" key="page.viewable.headline" />
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" headline="${headline}${command.requestedGroup}">
 		<jsp:attribute name="heading">
@@ -23,28 +24,17 @@
 			</parts:search>
 		</jsp:attribute>
 		
-		<jsp:attribute name="breadcrumbs">	
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<fmt:message key="buttons.mybibsonomy" var="my">
-						<fmt:param>${properties['project.name']}</fmt:param>
-					</fmt:message>
-					<nav:crumb name="${my}" href="/user/${command.context.loginUser.name}" />
-					<c:choose>
-						<c:when test="${command.requestedGroup eq 'private'}">
-							<fmt:message key="navi.privatePosts" var="privatePosts" />
-							<nav:crumb name="${privatePosts}" active="true" />
-						</c:when>
-						<c:otherwise>
-							<nav:crumb name="${headline} ${command.requestedGroup}" active="true" />
-						</c:otherwise>
-					</c:choose>
+					<nav:usercrumb requestedUser="${command.requestedUser}" loginUser="${command.context.loginUser}" />
+					<nav:viewableCrumb requestedGroup="${command.requestedGroup}" active="${true}" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
 		
-		<jsp:attribute name="sidebar">	
-			<ul>		
+		<jsp:attribute name="sidebar">
+			<ul>
 				<rc:members requPath="${requPath}" users="${command.group.users}"/>
 				<li>
 					<h4 class="sidebar"><fmt:message key="tags"/></h4>
