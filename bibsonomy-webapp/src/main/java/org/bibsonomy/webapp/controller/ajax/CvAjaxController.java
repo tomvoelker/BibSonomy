@@ -99,7 +99,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		 * If the renderOption was set to "SAVE_OPTION", we just write the whole thing into the database.
 		 */
 		if (SAVE_OPTION.equals(renderOptions)) {
-			if (command.getLayout() == null && (wikiText == null || wikiText.isEmpty())) {
+			if (command.getLayout() == null && (!present(wikiText))) {
 				return handleError("cv.error.edit.noEmptyCV");
 			}
 
