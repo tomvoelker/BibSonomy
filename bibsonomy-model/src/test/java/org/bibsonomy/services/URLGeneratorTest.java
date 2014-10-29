@@ -92,8 +92,14 @@ public class URLGeneratorTest {
 	}
 	
 	@Test
+	public void testGetPublicationCommunityUrlByInterHash() {
+		String publicationCommunityUrlByInterHash = ug.getPublicationCommunityUrlByInterHash("testinterhash");
+		assertEquals(projectHome + "bibtex/testinterhash", publicationCommunityUrlByInterHash);
+	}
+	
+	@Test
 	public void testGetBookmarkUrlByIntraHash() throws Exception{
-		final Bookmark bm = ModelUtils.generatePost(Bookmark.class).getResource();		
+		final Bookmark bm = ModelUtils.generatePost(Bookmark.class).getResource();
 		
 		final String expected = projectHome + "url/" + bm.getIntraHash();
 		assertEquals(expected, ug.getBookmarkUrlByIntraHash(bm.getIntraHash()));

@@ -680,9 +680,23 @@ public class URLGenerator {
 	 * @return URL pointing to the publication represented by the intraHash and the userName
 	 */
 	public String getPublicationUrlByPost(final Post<BibTex> post) {
-		return getPublicationUrlByIntraHashAndUsername(post.getResource().getIntraHash(), post.getUser().getName());
+		final User user = post.getUser();
+		if (present(user)) {
+			return this.getPublicationUrlByIntraHashAndUsername(post.getResource().getIntraHash(), user.getName());
+		}
+		
+		return this.getPublicationCommunityUrlByInterHash(post.getResource().getInterHash());
 	}
 	
+	/**
+	 * @param interHash
+	 * @return the link to the community post
+	 */
+	public String getPublicationCommunityUrlByInterHash(String interHash) {
+		final String url = this.projectHome + this.prefix + PUBLICATION_PREFIX + "/" + interHash;
+		return this.getUrl(url);
+	}
+
 	/**
 	 * Constructs a URL for the relevant posts for a group.
 	 * 
