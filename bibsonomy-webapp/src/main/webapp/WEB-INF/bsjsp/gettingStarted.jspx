@@ -8,10 +8,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:actions="urn:jsptagdir:/WEB-INF/tags/bstags/actions">
 
-	<jsp:directive.page contentType="text/html; charset=UTF-8"
-		language="java" pageEncoding="UTF-8" session="true" />
-
-	<fmt:message key="gettingStarted" var="gettingStartedTitle" />
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
-	<actions:getting_started command="${command}"><!--  --></actions:getting_started>
+	<actions:getting_started command="${command}" />
 </jsp:root>
