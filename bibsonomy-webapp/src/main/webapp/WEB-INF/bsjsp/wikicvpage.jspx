@@ -16,7 +16,8 @@
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
 	xmlns:output="urn:jsptagdir:/WEB-INF/tags/bstags/export/bibtex"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 	
 	<!--
 		This is the standard CV Page for all users. You can NOT edit the CV on this page.
@@ -35,13 +36,34 @@
 		showPageOptions="${command.context.userLoggedIn and command.context.loginUser.name eq command.requestedUser}"
 		minimizedContentWidth="${true}">
 		
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
+		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<c:choose>
+						<c:when test="${command.isGroup}">
+							<!-- please note the requestedUser is the requestedGroup -->
+							<nav:groupcrumb requestedGroup="${command.requestedUser}" />
+						</c:when>
+						<c:otherwise>
+							<nav:usercrumb loginUser="${command.context.loginUser}" requestedUser="${command.requestedUser}"/>
+						</c:otherwise>
+					</c:choose>
+					<nav:crumb name="${cvPageTitle}" active="true"/>
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		
 		<jsp:attribute name="sidebar">
 		 	<ul>
 		 		<!--+
 					| only for logged in users: followers, friends, groups, etc.
 					| and not on his own cv page
 			 		-->
-				<c:if test="${command.context.userLoggedIn and not ownCVPage}">
+				<c:if test="${command.context.userLoggedIn and not ownCVPage and not command.isGroup}">
 					<li>
 						<users:socializer command="${command}" />
 					</li>

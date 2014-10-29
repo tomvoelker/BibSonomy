@@ -13,29 +13,57 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
-	<layout:homeLayout pageTitle="${command.pageTitle}" 
+	<!-- TODO: fix headline -->
+	<layout:resourceLayout pageTitle="${command.pageTitle}" 
 			command="${command}" 
 			requPath="${requPath}" 
 			disableListNavigation="${true}"
 			activeTab="home"
 			showPageOptions="${true}"
+			headline="${command.pageTitle}"
 			hideFooterContainer="${true}">
-			
 		<jsp:attribute name="headerExt">
 			<c:if test="${properties['project.theme'] eq 'puma'}">
 				<script type="text/javascript" src="/resources_puma/javascript/tools.js">&#160;</script>
 			</c:if>
-		</jsp:attribute>
 			
+			<script type="text/javascript">
+				$(function() {
+					$('.post-popover').popover(
+						{
+							html : true,
+							trigger : "hover",
+							container : 'body',
+							placement : 'top',
+							title : function() {
+								console.log("#popover-head-" + $(this).attr('data-ident'));
+								return $("#popover-head-" + $(this).attr('data-ident')).html();
+							},
+							content : function() {
+								console.log("#popover-head-" + $(this).attr('data-ident'));
+								return $("#popover-content-" + $(this).attr('data-ident')).html();
+							}
+						}
+					);
+				});
+			</script>
+		</jsp:attribute>
+		
+		<jsp:attribute name="content">
+			<c:if test="${not command.context.userLoggedIn and (empty errors or errors.errorCount == 0)}">
+				<c:choose>
+					<c:when test="${properties['project.theme'] eq 'puma'}">
+						<home:pumahome command="${command}" />
+					</c:when>
+					<c:otherwise>
+						<home:bibhome command="${command}" />
+					</c:otherwise>
+				</c:choose>
+			</c:if>
+		</jsp:attribute>
+		
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
-
-		</jsp:attribute>
-
-		<!-- show info text if user not logged in -->
-		<jsp:attribute name="beforeMainContainer">
-
 		</jsp:attribute>
 
 		<jsp:attribute name="newsbar">
@@ -58,7 +86,5 @@
 				</li>
 			</ul>
 		</jsp:attribute>
-
-	</layout:homeLayout>
-
+	</layout:resourceLayout>
 </jsp:root>

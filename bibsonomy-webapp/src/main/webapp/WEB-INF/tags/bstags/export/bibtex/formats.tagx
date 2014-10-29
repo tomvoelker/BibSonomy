@@ -3,37 +3,62 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"		
-	xmlns:jsp="http://java.sun.com/JSP/Page">
-	
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
+
 	<c:set var="pathAndQueryString" value="${requPath}${requQueryString}" />
-	<c:url var="bibtex"  value="/bib/${pathAndQueryString}" />
-	<c:url var="publ"    value="/publ/${pathAndQueryString}" />
-	<c:url var="publrss" value="/publrss/${pathAndQueryString}" />
-	<c:url var="aparss"  value="/aparss/${pathAndQueryString}" />
-	<c:url var="burst"   value="/burst/${pathAndQueryString}" />
-	<c:url var="swrc"    value="/swrc/${pathAndQueryString}" />
-	<c:url var="json"    value="/json/${pathAndQueryString}" />
-	<c:url var="csl"     value="/csl/${pathAndQueryString}" />
-	<c:url var="custom"  value="/layout/custom/${pathAndQueryString}" />
-
-	<select id="selectlink" onchange="generateExportPostLink(this.value)" size="1">
-		<option value=""><fmt:message key="form.input.select"/></option>
-		<option value="${fn:escapeXml(bibtex)}">BibTeX</option>
-		<option value="${fn:escapeXml(publ)}">HTML</option>
-		<option value="${fn:escapeXml(publrss)}">RSS</option>
-		<option value="${fn:escapeXml(aparss)}">RSS (APA 5th Style)</option>
-		<option value="${fn:escapeXml(burst)}">BuRST</option>
-		<option value="${fn:escapeXml(swrc)}">SWRC</option>
-		<option value="${fn:escapeXml(json)}">JSON</option>
-		<option value="${fn:escapeXml(csl)}"><fmt:message key="export.csl.caption" /></option>
-		<option value="${fn:escapeXml(custom)}">Custom</option>
-
-		<c:forEach var="entry" items="${command.layoutMap}">
-			<c:if test="${entry.value.publicLayout}">
-				<c:url var="url" value="/layout/${entry.value.name}/${pathAndQueryString}" />
-				<option value="${fn:escapeXml(url)}"><c:out value="${entry.value.displayName}"/></option>
-			</c:if>
-		</c:forEach>
-	</select>
+		
+	<div class="col-sm-9">
+		<select class="form-control" onchange="generateExportPostLink(this.value)" size="1">
+			<option value=""><fmt:message key="form.input.select"/></option>
+			
+			<c:forEach var="mapEntry" items="${command.layoutMap}">
+		    	<c:if test="${mapEntry.value.publicLayout and mapEntry.value.isFavorite}">	
+			    	<c:choose>
+			  			<!-- 
+		  				| JabRef layouts
+		  				 -->	
+						<c:when test="${'JabrefLayout' eq mapEntry.value['class'].simpleName 
+							or 'MSOfficeXMLLayout' eq mapEntry.value['class'].simpleName}">
+							<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />	
+							<option value="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></option>
+						</c:when>
+						<!-- 
+		  				| Standard layouts
+		  				 -->
+						<c:otherwise>
+							<c:url var="url" value="/${mapEntry.value.name}/${pathAndQueryString}" />	
+							<option value="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></option>
+						</c:otherwise>
+					</c:choose>
+				</c:if>
+			</c:forEach>
+			
+			<c:if test="/layout/custom/${pathAndQueryString}">
+	 			<c:url var="url" value="/layout/custom/${pathAndQueryString}" />	
+				<option value="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></option>	
+	 		</c:if>
+			<c:forEach var="mapEntry" items="${command.layoutMap}">
+		    	<c:if test="${mapEntry.value.publicLayout and not mapEntry.value.isFavorite}">	
+			    	<c:choose>
+			  			<!-- 
+		  				| JabRef layouts
+		  				 -->	
+						<c:when test="${'JabrefLayout' eq mapEntry.value['class'].simpleName}">
+							<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />	
+							<option value="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></option>
+						</c:when>
+						<!-- 
+		  				| Standard layouts
+		  				 -->
+						<c:otherwise>
+							<c:url var="url" value="/${mapEntry.value.name}/${pathAndQueryString}" />	
+							<option value="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></option>
+						</c:otherwise>
+					</c:choose>
+				</c:if>
+			</c:forEach>
+		</select>
+	</div>
 	
 </jsp:root>

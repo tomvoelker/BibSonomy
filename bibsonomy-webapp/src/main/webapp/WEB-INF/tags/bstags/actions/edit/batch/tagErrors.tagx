@@ -22,11 +22,11 @@
 					<li class="info_bold">
 						<c:choose>
 							<!--  use a larger font during fast-edit -->
-							<c:when test="${not empty fastEdit and fastEdit == true}">
+							<c:when test="${not empty fastEdit and fastEdit}">
 								<span style="font-size:120%">${errorMessage}</span>
 							</c:when>
 							<c:otherwise>${errorMessage}</c:otherwise>
-						</c:choose>					
+						</c:choose>
 					</li>
 				</c:forEach>
 			</ul>

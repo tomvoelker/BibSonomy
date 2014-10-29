@@ -1,0 +1,86 @@
+package org.bibsonomy.webapp.controller.ajax;
+
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.Set;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
+import org.bibsonomy.model.enums.GoldStandardRelation;
+import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.webapp.command.ajax.EditGoldstandardRelationCommand;
+import org.bibsonomy.webapp.util.ErrorAware;
+import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
+import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.Views;
+import org.springframework.validation.Errors;
+
+/**
+ * Controller for editing references of a gold standard post
+ *    - ajax/goldstandards/relation
+ * 
+ * @author lka
+ */
+public class EditGoldstandardRelationController extends AjaxController implements MinimalisticController<EditGoldstandardRelationCommand>, ErrorAware {
+	
+	@Override
+	public EditGoldstandardRelationCommand instantiateCommand() {
+		return new EditGoldstandardRelationCommand();
+	}
+
+	private Errors errors;
+	
+	@Override
+	public View workOn(final EditGoldstandardRelationCommand command) {
+
+		final RequestWrapperContext context = command.getContext();
+		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(context.getLoginUser().getRole())) {
+			throw new AccessDeniedException("You are not allowed to edit references of a goldstandard");
+		}
+
+		//check if ckey is valid
+		if (!context.isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
+			return Views.ERROR;
+		}
+		
+		final String hash = command.getHash();
+		final Set<String> references = command.getReferences();
+		final GoldStandardRelation relation = command.getRelation();
+		
+		if (!present(hash) || !present(references) || !present(relation)) {
+			this.responseLogic.setHttpStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return Views.AJAX_TEXT;
+		}
+		
+		final HttpMethod httpMethod = this.requestLogic.getHttpMethod();
+		
+		switch (httpMethod) {
+		case POST: 
+		
+			this.logic.createRelations(hash, references, relation);
+			break;
+		case DELETE: 
+			this.logic.deleteRelations(hash, references, relation);
+			break;
+		default: 
+			this.responseLogic.setHttpStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+		}
+		
+		return Views.AJAX_TEXT;
+	}
+
+	@Override
+	public Errors getErrors() {
+		return errors;
+	}
+
+	@Override
+	public void setErrors(Errors errors) {
+		this.errors = errors;
+	}
+
+}

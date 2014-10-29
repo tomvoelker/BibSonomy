@@ -4,6 +4,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardBookmark;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /**
  * TODO: implement chain
@@ -26,7 +27,7 @@ public class GoldStandardBookmarkDatabaseManager extends GoldStandardDatabaseMan
 	}
 
 	@Override
-	protected void onGoldStandardReferenceDelete(final String userName, final String interHash, final String interHashRef, final DBSession session) {
+	protected void onGoldStandardRelationDelete(final String userName, final String interHash, final String interHashRef,final GoldStandardRelation interHashRelation, final DBSession session) {
 		// TODO: implement reference model for bookmarks
 	}
 

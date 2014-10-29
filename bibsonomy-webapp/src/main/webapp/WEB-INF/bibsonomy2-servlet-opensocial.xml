@@ -15,17 +15,6 @@
 	<bean id="opensocialUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="urlMap">
 			<map merge="true">
-			<!-- TODO: finish open social implementation or remove this in two years (29.01.2016)
-				<entry key="/container">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName"	value="containerPageController" />
-						<property name="allowedFields">	
-							<list>
-								<value>gadgetUrl</value>
-							</list>
-						</property>
-					</bean> 
-				</entry>  -->
 				<entry key="/oauth/requestToken">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName"	value="oAuthRequestTokenController" />
@@ -51,9 +40,6 @@
 		</property>
 	</bean>
 	
-	<!-- used for making shindig's beans available to the spring configuration -->
-	<!-- bean id="guiceBeanImporter" class="org.bibsonomy.webapp.util.opensocial.GuiceBeanImporter" init-method="init"/ -->
-
 	<!-- database interface for accessing token information -->	
 	<bean id="oauthDataStore" class="org.bibsonomy.opensocial.oauth.database.BibSonomyOAuthDataStore">
 		<constructor-arg value="/oauth/" />
@@ -71,11 +57,6 @@
 	</bean>	
 
 	<!--  #################### controller #################### -->
-	
-	<!-- bean id="containerPageController" class="org.bibsonomy.webapp.controller.opensocial.ContainerPageController" scope="request">
-		<property name="logic" ref="logic" />
-		<property name="userSettings" ref="userSettings" />
-	</bean -->
 	
 	<bean id="oAuthController" class="org.bibsonomy.webapp.controller.opensocial.OAuthProtocolController" abstract="true">
 		<property name="dataStore" ref="oauthDataStore"/>

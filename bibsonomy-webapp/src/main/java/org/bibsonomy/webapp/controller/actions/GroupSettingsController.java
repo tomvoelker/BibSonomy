@@ -60,18 +60,16 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 		
 		// used to set the user specific value of maxCount/minFreq 
 		command.setChangeTo((loginUser.getSettings().getIsMaxCount() ? loginUser.getSettings().getTagboxMaxCount() : loginUser.getSettings().getTagboxMinfreq()));
+		// show sync tab only for non-spammers
+		command.showSyncTab(!loginUser.isSpammer());
 		
 		// check whether the user is a group
 		if (UserUtils.userIsGroup(loginUser)) {
 			command.setHasOwnGroup(true);
-			command.showGroupTab(true);
-			// show sync tab only for non-spammers
-			command.showSyncTab(!loginUser.isSpammer());
 		} else {
-			// if he is not, he will be forwarded to the first settings tab
-			command.showGroupTab(false);
-			command.showSyncTab(!loginUser.isSpammer());
-			command.setSelTab(SettingsViewCommand.MY_PROFILE_IDX);
+			// if he is not, an error message is shown, because this controller
+			// can only be called from a group admin page.
+			command.setSelTab(SettingsViewCommand.GROUP_IDX);
 			this.errors.reject("settings.group.error.groupDoesNotExist");
 			return Views.SETTINGSPAGE;
 		}
@@ -91,16 +89,9 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 		
 		// the group to update
 		final Group groupToUpdate = this.logic.getGroupDetails(loginUser.getName());
-		
-		if (!present(groupToUpdate)) {
-			// TODO: are these statements unreachable? @see if (UserUtils.userIsGroup())
-			command.showGroupTab(false);
-			command.setSelTab(SettingsViewCommand.MY_PROFILE_IDX);
-			this.errors.reject("settings.group.error.groupDoesNotExist");
-			return Views.SETTINGSPAGE;
-		}
-		
+		// this should be always the same as loginUser.getName()
 		final String groupName = groupToUpdate.getName();
+
 		if ("updateGroupReportingSettings".equals(command.getAction())) {
 			groupToUpdate.setPublicationReportingSettings(command.getGroup().getPublicationReportingSettings());
 			this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_GROUP_REPORTING_SETTINGS);

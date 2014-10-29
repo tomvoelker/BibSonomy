@@ -1,6 +1,8 @@
-@import "bootstrap-color.less";
 
-#goldstandard .discussion_all {
+#goldstandard .discussion-all {
+	
+	padding-left: 1em;
+	border-left: 3px @border-color solid;
 	margin-top: 1em;
 }
 
@@ -16,7 +18,7 @@
 	margin: 5%;
 }
 .sidebarcontainer #ratingDistribution, .sidebarcontainer #ratingAvg {
-	display: inline ;
+
 }
 
 #postReview, #review_info_rating {
@@ -24,9 +26,7 @@
 }
 
 #ratingDistribution, #ratingAvg {
-	display: table-cell;
-	width: 50%;
-	font-size: 85%;
+	/* font-size: 85%; */
 }
 
 #replyReview, #replyForm, #editcomment, #createReview {
@@ -46,6 +46,10 @@
 	.stars-off-1 {
 		text-align: left !important;
 	}
+}
+
+#ratingAvg {
+	
 }
 
 .stars-off-1, .stars-on-1 {
@@ -71,18 +75,17 @@
 }
 
 .commentPicture {
-	width: 30px;
-	padding-right: 5px;
-	float:left;
+	width: 64px;
+
 }
 
 .review.info, .comment.info {
 	color: #555;
-	font-size: 80%;
+	font-size: 90%;
 }
 
 .review.details, .comment.details {
-	display: table-cell;
+	min-height: 70px;
 }
 
 .review.info a, .comment.info a {
@@ -96,17 +99,15 @@ ul.discussionitemMenu {
 	font-size: 80%;
 	display: block;
 }
-
+ul.subdiscussionItems {
+	list-style: none;
+}
 ul.discussionitemMenu li {
 	display: inline;
 	padding-left: 0.25em;
 	padding-right: 0.25em;
 }
 
-ul.subdiscussionItems ul.subdiscussionItems {
-	margin-top: 0.75em;
-	margin-left: 35px;
-}
 
 ul.discussionitemMenu li {
 	border-left: 1px solid grey;
@@ -119,7 +120,7 @@ ul.discussionitemMenu li:first-child {
 }
 
 .review.text, .comment.text {
-	font-size: 90%;
+	/* font-size: 90%; */
 	white-space: pre-wrap;
 }
 
@@ -253,11 +254,28 @@ h3 {
 	-moz-border-radius: 3px;
 	border-radius:3px;
 	padding: 5px;
-	border: 1px solid @main-color;
+	border: 1px solid @border-color;
 	display: inline-block;
-	float: right; 
-	margin-top: -5px;
-	margin-left: -2px;
+	margin-top: 7px;
+	float: left;
+}
+
+.discussionRatingValue {
+	line-height: 18px;
+	font-size: 18px;
+	font-weight: 200;
+	display: block;
+	float: left;
+	padding-left: 0.3em;
+	margin-top: 10px;
+}
+
+.discussionRatingText:before {
+	content: "(";
+}
+
+.discussionRatingText:after {
+	content: ")";
 }
 
 .discussionPostbuttonFrame {
@@ -310,4 +328,23 @@ h3 {
 	margin-top: 7px;
 	padding-right: 0px;
 	float: right;
+}
+
+.thumbnail {
+	width: 74px;
+}
+
+.discussionItems .media-body {
+	overflow-x: hidden;
+	overflow-y: hidden;
+	display: block;
+	box-sizing: border-box;
+}
+
+.media {
+	border-bottom: 1px solid @border-color;
+}
+
+.media:last-child {
+	border-bottom: none;
 }
