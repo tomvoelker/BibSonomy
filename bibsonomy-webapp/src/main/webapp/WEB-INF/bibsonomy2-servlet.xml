@@ -187,11 +187,6 @@
 	
 	<bean id="requestWrapperContextInterceptor" class="org.bibsonomy.webapp.util.spring.RequestWrapperContextHandlerInterceptor" />
 	
-	<bean id="mobileDetectionHandlerInterceptor" class="org.bibsonomy.webapp.util.spring.MobileDetectionHandlerInterceptor">
-		<property name="wurflManager" ref="wurfl.manager" />
-		<property name="cookieAge" ref="cookieAge" />
-	</bean>
-	
 	<!--  #################### locale and theme resolver #################### -->
 	<bean id="localeResolver" class="org.bibsonomy.webapp.util.spring.i18n.SecurityContextAwareSessionLocaleResolver">
 		<property name="defaultLocale" value="${project.defaultLocale}" />
@@ -313,28 +308,6 @@
 		<constructor-arg ref="bibtexReaders"/>
 	</bean>
 	
-	<!-- WURFL -->
-	<bean id="wurfl.model" class="net.sourceforge.wurfl.core.resource.DefaultWURFLModel">
-		<constructor-arg index="0">
-			<bean class="net.sourceforge.wurfl.core.resource.SpringXMLResource">
-				<constructor-arg value="classpath:wurfl.zip" />
-			</bean>
-		</constructor-arg>
-	</bean>
-	<bean id="wurfl.matcherManager" class="net.sourceforge.wurfl.core.handlers.matchers.MatcherManager">
-		<constructor-arg ref="wurfl.model" />
-	</bean>
-	<bean id="wurfl.deviceProvider" class="net.sourceforge.wurfl.core.DefaultDeviceProvider">
-		<constructor-arg ref="wurfl.model" />
-	</bean>
-	<bean id="wurfl.service" class="net.sourceforge.wurfl.core.DefaultWURFLService">
-		<constructor-arg ref="wurfl.matcherManager" />
-		<constructor-arg ref="wurfl.deviceProvider" />
-	</bean>
-	<bean id="wurfl.manager" class="net.sourceforge.wurfl.core.DefaultWURFLManager">
-		<constructor-arg ref="wurfl.service" />
-	</bean>
-	
 	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="interceptors">
 			<list>
@@ -344,7 +317,6 @@
 				  Will be put into the command by the controllerBase
 				-->
 				<ref local="requestWrapperContextInterceptor"/>
-				<ref local="mobileDetectionHandlerInterceptor"/>
 			</list>
 		</property>
 		<property name="urlMap">
@@ -686,7 +658,7 @@
 					</bean>
 				</entry>
 				<!-- TODO: (bootstrap) remove -->
-				<entry key="/bibsonomy3preview">
+				<entry key="/bibsonomy3">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="bibsonomyPreview"/>
 					</bean>
@@ -979,7 +951,7 @@
 	</bean>
 	<!-- TOOD: remove -->
 	<bean id="bibsonomyPreview" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
-		<property name="view" value="BIBSONOMY3PREVIEW"/>
+		<property name="view" value="BIBSONOMY3"/>
 	</bean>
 	<!-- linkcloud TODO: in development TODODZO -->
 	<bean id="linkCloudPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">

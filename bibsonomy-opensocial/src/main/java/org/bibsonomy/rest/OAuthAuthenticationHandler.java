@@ -38,7 +38,6 @@ public class OAuthAuthenticationHandler implements AuthenticationHandler<Securit
 	public SecurityToken extractAuthentication(HttpServletRequest request) {
 		return this.oauthValidator.getSecurityTokenFromRequest(request);
 	}
-	
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.AuthenticationHandler#authenticateUser(javax.servlet.http.HttpServletRequest)

@@ -311,47 +311,6 @@ function fadePostIn(post) {
 	post.fadeIn("slow").parents("ul.posts").find("li.post:last").fadeOut("slow").remove();
 }
 
-
-/**
- * Adds [-] buttons to sidebar elements to toggle visibility of each element. 
- * 
- * @return
- */
-function init_sidebar() {
-	$("#sidebar li .sidebar_h").each(function(index,item){
-		var span;
-		if ($(item).hasClass("initially_collapsed")) {
-			span = $("<span class='toggler'><img src='/resources/image/icon_expand.png'/></span>");
-		} else { 
-			span = $("<span class='toggler'><img src='/resources/image/icon_collapse.png'/></span>");
-		}
-		
-		span.click(function(){
-			fadeNextList(item);
-		});
-		$(this).prepend(span); 
-	});
-
-}
-
-function fadeNextList(target) {
-	$(target).nextAll(".sidebar_collapse_content").toggle("slow", function(){
-		$(target).find(".toggler img").attr("src", "/resources/image/icon_" + ($(this).css('display') == 'none' ? "expand" : "collapse") + ".png");
-	});
-}
-
-/**
- * if window is small, maximizes the "general" div to 95%
- * 
- * @param id
- * @return
- */
-function maximizeById(id) {
-	if (window.innerWidth < 1200) {
-		$("#" + id).css("width", "95%");
-	}
-}
-
 /** 
  * 	prepare a text form which we'll use to switch between
  * 	password and text form to circumvent an issue caused
@@ -1571,24 +1530,25 @@ function setupPostExportSize() {
 	    }
 	}
 	
-	var links = $("dt").children();
+	var links = $(".export-link");
 	
-	//append to all links '?items=5' - exportPostSize initiated with '5'
+	// append to all links '?items=5' - exportPostSize initiated with '5'
 	$.each(links, function(index, value) {
-		//get the elements of all links [<a..] without the ones with a star '*' [they reference only to jabref on the page - #jabref]
-		if(value.href.indexOf("#jabref") == -1) {
+		// get the elements of all links [<a..] 
+		var linkHref = $(value).attr('href');
 			
-			//Contains the href any other parameters? Distinguish this cases.
-			if(value.href.indexOf("?") != -1) {
-				if(value.href.indexOf("items=") != -1) {
-					value.href = value.href.replace(/\items=\d*/g, "items=" + exportPostSize);
-				} else {
-					value.href = value.href + '&items=' + exportPostSize;
-				}
+		// contains the href any other parameters? Distinguish this cases.
+		if (linkHref.indexOf("?") != -1) {
+			if (linkHref.indexOf("items=") != -1) {
+				linkHref = linkHref.replace(/\items=\d*/g, "items=" + exportPostSize);
 			} else {
-				value.href = value.href + "?items=" + exportPostSize;
+				linkHref = linkHref + '&items=' + exportPostSize;
 			}
+		} else {
+			linkHref = linkHref + "?items=" + exportPostSize;
 		}
+		
+		$(value).attr('href', linkHref);
 	});
 	
 	//A click on a radio button replaces in any link the old value X '?items=X' with the new value Y '?items=Y'

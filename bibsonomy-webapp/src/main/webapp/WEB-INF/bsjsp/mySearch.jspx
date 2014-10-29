@@ -10,7 +10,8 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
     xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
     xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
       	
@@ -24,35 +25,42 @@
 		minimizedContentWidth="${true}">
 
     	<jsp:attribute name="heading">
-    		<parts:search pathMessageKey="navi.mysearch"/>
+    		<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
 
    		<jsp:attribute name="headerExt">
-   			<script type="text/javascript" src="${resdir}/javascript/mySearch.js"><!-- keep me --></script>		
+   			<script type="text/javascript" src="${resdir}/javascript/mySearch.js"><!-- keep me --></script>
    		</jsp:attribute>
 		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:myUserCrumb loginUser="${command.context.loginUser}" />
+					<nav:crumb nameKey="navi.mysearch" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
 		<!--+
 			| page content
 			+-->
 		<jsp:attribute name="content">
-        	
       <div id="searchbox">
 	    
 	
 	    <form name="searchform" onsubmit="checkInput()">
 	      <fieldset class="fsVisible">
-	        <legend><fmt:message key="mysearch.option.header"/></legend>		
+	        <legend><fmt:message key="mysearch.option.header"/></legend>
 		<table border="0">
 			<tr>
 				<td><fmt:message key="mysearch.option.tag"/></td>
 				<td><fmt:message key="mysearch.option.author"/></td>
 			</tr>
 			<tr>
-				<td>	
+				<td>
 					<select name="tags" size="10" onchange="clearFilter(); updateAuthorsForTags(); updateTitles(); showTitleList();" multiple="true"></select>	
 				</td>
 				<td>
-					<select name="authors" size="10" onchange="clearFilter(); updateTitles(); showTitleList();" multiple="true"></select>		
+					<select name="authors" size="10" onchange="clearFilter(); updateTitles(); showTitleList();" multiple="true"></select>
 				</td>
 			</tr>
 			<tr>
@@ -62,7 +70,7 @@
 				</td>
 				<td>
 					<input type="radio" name="author_op" value="and"/><fmt:message key="logic.and"/>
-					<input type="radio" name="author_op" value="or" checked="true" /><fmt:message key="logic.or"/> 		
+					<input type="radio" name="author_op" value="or" checked="true" /><fmt:message key="logic.or"/>
 				</td>
 			</tr>
 		</table>
@@ -71,16 +79,16 @@
 	
 	<c:set var="listboxtitle"><fmt:message key="mysearch.option.filter.text"/></c:set>
 	<fieldset class="fsVisible">
-	<legend><fmt:message key="mysearch.option.result.header"/></legend>			
+	<legend><fmt:message key="mysearch.option.result.header"/></legend>
 		<fmt:message key="mysearch.option.filter"/>&#160;
-		<input value='${listboxtitle}' name="filter" class="descriptiveLabel" type="text" size="40" onKeyUp="showTitleList();" /> 						
+		<input value='${listboxtitle}' name="filter" class="descriptiveLabel" type="text" size="40" onKeyUp="showTitleList();" />
 		<p>		
-			<div id='numresult' style="text-align:right; padding-bottom:2px; color:gray;">&#160;</div>	
+			<div id='numresult' style="text-align:right; padding-bottom:2px; color:gray;">&#160;</div>
 			<div class="scroller">
 				<table class="result_table"><tbody id="resultlist"></tbody></table>
-			</div>			
-		</p>						
-	</fieldset>		
+			</div>
+		</p>
+	</fieldset>
 	</form>	
 </div>
 

@@ -88,44 +88,25 @@ $(function() {
     
     $('.rename-tags-btn').click(function(){
     	$(this).parent().prev().focus().next().show().hide();
-    });
+    }); 
     
-    $('.remove-btn').click(function(e){
-    	e.preventDefault();
-    	var url = this.getAttribute("href");
-    	var parent = this.parentNode.parentNode;
-    	var el = this;
-    	$.ajax({
-    		url: url,
-    		dataType: "xml",
-    		success: function(data) {
-    			handleDeleteResponse({parent:parent, data: data, el: el});
-    		},
-    		error: function(data) {
-    			handleDeleteResponse({parent:parent, data: data, el: el});
-    		}
-    	});
-    	
-    	return false;
-    });
     
-    function handleDeleteResponse(o) {
-		if(o.data.getElementsByTagName("status")[0].innerHTML=="deleted" 
-			|| o.data.getElementsByTagName("status")[0].innerHTML=="ok") o.parent.parentNode.removeChild(o.parent);
-		else {
-			$(o.el).removeClass("btn-stripped").addClass("btn-danger").popover({
-					animation: false,
-					trigger: 'manual',
-					delay: 0,
-					title: function() {
-						return getString("post.resource.remove.error.title");
-					},
-					content: function() {
-						return getString("post.resource.remove.error");
-					}
-			}).popover("show");
-		}
+    var sidebarAdjustments = function sidebarAdjusts() {
+    	if($('#sidebar').prev().hasClass('content')) {
+        	
+        	var contentContainer = $('#sidebar').prev();
+        	var contentHeight = contentContainer.height();
+        	var sidebarHeight = $('#sidebar').height();
+        	
+        	if( contentHeight > sidebarHeight && $('#sidebar').is(':visible') ) {
+        		$('#sidebar').css('height', contentHeight+20);
+        	}
+        }
     }
+    
+	sidebarAdjustments();
+    
+	$(window).resize(sidebarAdjustments);
     
     function shortenContent (el, text) {
     	var shortened = false;
@@ -152,6 +133,22 @@ $(function() {
     	});
     	
     });
+    
+    /** MOBILE FUNCTIONS **/
+    
+    $('#hide-bookmarks').click(function(event) {
+    	event.preventDefault();
+    	$('.bookmarksContainer').is(':visible') ? $(this).text(getString("list.hide")) : $(this).text(getString("list.show"));
+    	$('.bookmarksContainer').slideToggle();
+    	
+    });
+    
+    $('#hide-publications').click(function(event) {
+    	event.preventDefault();
+    	$('.publicationsContainer').is(':visible') ? $(this).text(getString("list.hide")) : $(this).text(getString("list.show"));
+    	$('.publicationsContainer').slideToggle();
+    });
+
 });
 
 function dummyDownHandler(e) {
@@ -189,4 +186,22 @@ function activateAffixEntry (el) {
 	$(el).addClass("active").siblings().each(function(h, g){
 			$(g).removeClass("active");
 	});
+}
+
+
+function findBootstrapEnvironment() {
+    var envs = ['xs', 'sm', 'md', 'lg'];
+
+    $el = $('<div>');
+    $el.appendTo($('body'));
+
+    for (var i = envs.length - 1; i >= 0; i--) {
+        var env = envs[i];
+
+        $el.addClass('hidden-'+env);
+        if ($el.is(':hidden')) {
+            $el.remove();
+            return env
+        }
+    };
 }

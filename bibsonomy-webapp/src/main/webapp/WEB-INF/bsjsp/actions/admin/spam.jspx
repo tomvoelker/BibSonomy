@@ -222,7 +222,7 @@
 								<c:choose>
 									<c:when test="${command.selTab == 1 or command.selTab == 3}">
 										<c:choose>
-											<c:when test="${user.spammer == true}">
+											<c:when test="${user.spammer}">
 												<c:set var="Unflag" value="true" />
 												<c:set var="Uncertain" value="true" />
 												<c:set var="Flag" value="false" />
