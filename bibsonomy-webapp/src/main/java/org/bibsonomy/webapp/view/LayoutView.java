@@ -141,6 +141,9 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 	 * @throws IOException
 	 */
 	private <T extends Resource> void renderResponse(final String layoutName, final String requPath, final List<Post<BibTex>> publicationPosts, final String loginUserName, final HttpServletResponse response, final boolean formatEmbedded, LayoutViewCommand command) throws LayoutRenderingException, IOException {
+		if (!present(publicationPosts)) {
+			return;
+		}
 		final LAYOUT layout = layoutRenderer.getLayout(layoutName, loginUserName);
 
 		log.info("got layout " + layout);

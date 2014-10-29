@@ -16,7 +16,6 @@ import net.sf.json.JSONSerializer;
 
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 import org.directwebremoting.util.SwallowingHttpServletResponse;
-import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.view.AbstractView;
@@ -31,7 +30,7 @@ import org.springframework.web.servlet.view.JstlView;
  * 
  * @author rja
  */
-public class OEmbedView extends AbstractView implements ServletContextAware {
+public class OEmbedView extends AbstractView {
 
 	private ViewResolver viewResolver; // FIXME: unused
 	private String projectName;
