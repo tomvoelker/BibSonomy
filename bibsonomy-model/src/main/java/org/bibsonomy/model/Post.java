@@ -141,9 +141,9 @@ public class Post<T extends Resource> implements Serializable {
 	 * setters as well)*
 	 */
 	
-	private boolean alreadyInCollection = false;
+//	private boolean alreadyInCollection = false;
 	
-	private boolean alreadyInSnippet = false;
+//	private boolean alreadyInSnippet = false;
 	/**
 	 * @return the repositories
 	 */
@@ -448,29 +448,29 @@ public class Post<T extends Resource> implements Serializable {
 	/**
 	 * @return the alreadyInCollection
 	 */
-	public boolean isAlreadyInCollection() {
+	/*public boolean isAlreadyInCollection() {
 		return this.alreadyInCollection;
-	}
+	}*/
 
 	/**
 	 * @param alreadyInCollection the alreadyInCollection to set
 	 */
-	public void setAlreadyInCollection(boolean alreadyInCollection) {
+/*	public void setAlreadyInCollection(boolean alreadyInCollection) {
 		this.alreadyInCollection = alreadyInCollection;
 	}
-
+*/
 	/**
 	 * @return the alreadyInSnippet
 	 */
-	public boolean isAlreadyInSnippet() {
+	/*public boolean isAlreadyInSnippet() {
 		return this.alreadyInSnippet;
-	}
+	}*/
 
 	/**
 	 * @param alreadyInSnippet the alreadyInSnippet to set
 	 */
-	public void setAlreadyInSnippet(boolean alreadyInSnippet) {
+	/*public void setAlreadyInSnippet(boolean alreadyInSnippet) {
 		this.alreadyInSnippet = alreadyInSnippet;
-	}
+	}*/
 
 }

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.webapp.command.BibtexViewCommand;
@@ -63,6 +64,10 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 */
 	private String description;
 	
+	//nasim: should the type be string or error?
+	// maps post's intrahash to its errormessages
+	private Map<String, List<ErrorMessage>> ErrorMessages;
+	//private String[] erroneous_posts;
 	/**
 	 * constructor
 	 * inits the tabs and sets their titles
@@ -383,5 +388,20 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	public void setUpdateExistingPost(boolean updateExistingPost) {
 		this.updateExistingPost = updateExistingPost;
 	}
+
+	/**
+	 * @return the errorMessages
+	 */
+	public Map<String, List<ErrorMessage>> getErrorMessages() {
+		return this.ErrorMessages;
+	}
+
+	/**
+	 * @param errorMessages the errorMessages to set
+	 */
+	public void setErrorMessages(Map<String, List<ErrorMessage>> errorMessages) {
+		ErrorMessages = errorMessages;
+	}
+
 	
 }

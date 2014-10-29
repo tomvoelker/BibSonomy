@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
+import org.bibsonomy.common.errors.DuplicatePostInSnippetErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.BibTex;
@@ -72,6 +73,8 @@ public class PostPublicationController extends AbstractEditPublicationController
 		command.setPost(new Post<BibTex>());
 		command.setAbstractGrouping(GroupUtils.getPublicGroup().getName());
 		command.getPost().setResource(new BibTex());
+		command.setErrorMessages(new LinkedHashMap<String, List<ErrorMessage>>());
+		//command.setErroneous_posts
 
 		return command;
 	}
@@ -273,6 +276,10 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * add additional information from the form to the
 		 * post (description, groups)... present in both upload tabs
 		 */
+		//command.getErrorMessages().put(key, value)
+		//setErroneous_posts(new String[posts.size()]);
+		//int i = 0;
+		ErrorMessage errorMessage;
 		for (final Post<BibTex> post : posts) {
 			post.setUser(context.getLoginUser());
 			post.setDescription(command.getDescription());
@@ -290,27 +297,16 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 			if (!unique_hashes.contains(post.getResource().getIntraHash())) {
 				unique_hashes.add(post.getResource().getIntraHash());
-				
 	//			unique_posts.add(post);
 			}
 			else{
-				post.setAlreadyInSnippet(true);
+				errorMessage = new DuplicatePostInSnippetErrorMessage("BibTex", post.getResource().getIntraHash());
+				List<ErrorMessage> errorList = new ArrayList<ErrorMessage>();			
+				errorList.add(errorMessage);
+				command.getErrorMessages().put(post.getResource().getIntraHash(), errorList);
 			}
 		}
 
-		/*
-		 * in order to avoid out of place runtime increase, we check the size of
-		 * the
-		 * unique_posts' array. If it is the same as posts' array, there were no
-		 * duplicate
-		 * posts and posts array needn't be updated*
-		 *
-
-		if (posts.size() != unique_posts.size()) {
-			posts.clear();
-			posts.addAll(unique_posts);
-		}
-*/
 		/*
 		 * add list of posts to command for showing them to the user
 		 * (such that he can edit them)
@@ -336,7 +332,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * We try to store only posts that have no validation errors and are not
 		 * already stored.
 		 */
-		final Map<Post<BibTex>, Integer> postsToStore = this.getPostsWithNoValidationErrors(posts, command.isOverwrite());
+		final Map<Post<BibTex>, Integer> postsToStore = this.getPostsWithNoValidationErrors(posts, command.getErrorMessages(),command.isOverwrite());
 
 		log.debug("will try to store " + postsToStore.size() + " of " + posts.size() + " posts in database");
 		final List<Post<?>> validPosts = new LinkedList<Post<?>>(postsToStore.keySet());
@@ -377,14 +373,16 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 * @param posts
 	 * @return
 	 */
-	private Map<Post<BibTex>, Integer> getPostsWithNoValidationErrors(final List<Post<BibTex>> posts, final boolean isOverwrite) {
+	private Map<Post<BibTex>, Integer> getPostsWithNoValidationErrors(final List<Post<BibTex>> posts, final Map<String, List<ErrorMessage>> errorMessages, final boolean isOverwrite) {
 		final Map<Post<BibTex>, Integer> storageList = new LinkedHashMap<Post<BibTex>, Integer>();
 		boolean test1;
 		boolean test2;
 		/*
 		 * iterate over all posts
 		 */
+		ErrorMessage errorMessage;
 		for (int i = 0; i < posts.size(); i++) {
+			final List<ErrorMessage> postErrorMessages = errorMessages.get(posts.get(i).getResource().getIntraHash());
 			/*
 			 * check, if this post has field errors
 			 */
@@ -398,10 +396,16 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * (if yes, 'alreadyinSnippet' is already true and the post is already erroneous and
 			 * we don't have to look for more errors!
 			 */
-			if(posts.get(i).isAlreadyInSnippet()){
+			 //posts.get(i).isAlreadyInSnippet()
+			if(!postErrorMessages.isEmpty()){
 				test2 = true;
 			}else{
 				test2 = this.isPostDuplicate(posts.get(i), isOverwrite);
+				if(test2){
+					errorMessage = new DuplicatePostErrorMessage("BibTex", posts.get(i).getResource().getIntraHash());
+					postErrorMessages.add(errorMessage);
+					errorMessages.put(posts.get(i).getResource().getIntraHash(), postErrorMessages);
+				}
 			}
 			if (!test1 && !test2) {
 				log.debug("post no. " + i + " has no field errors");
@@ -594,7 +598,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * alreadyInCollection flag is set to true here. In batch edit view,
 			 * alreadyInCollection posts are shown as erroneous posts.
 			 */
-			post.setAlreadyInCollection(true);
+			//post.setAlreadyInCollection(true);
 			return true;
 		}
 		return false;

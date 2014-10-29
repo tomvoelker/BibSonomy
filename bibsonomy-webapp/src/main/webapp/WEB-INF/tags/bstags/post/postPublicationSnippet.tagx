@@ -25,7 +25,7 @@
 
 			<bsform:textarea labelColSpan="2" inputColSpan="10" path="selection" id="selection" />
 			
-			<post:groupBox groups="${command.context.loginUser.groups}"/>
+			<!--<post:groupBox groups="${command.context.loginUser.groups}"/>-->
 
 			<legend><fmt:message key="post_bibtex.upload.options" /></legend>
 			

@@ -76,24 +76,7 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
     public void setGroups(final List<String> groups) {
         this.groups = groups;
     }
-    
-    /**
-     * @return the abstractGrouping
-     */
-    @Override
-    public String getAbstractGrouping() {
-        return this.abstractGrouping;
-    }
-
-    /**
-     * @param abstractGrouping
-     *            the abstractGrouping to set
-     */
-    @Override
-    public void setAbstractGrouping(final String abstractGrouping) {
-        this.abstractGrouping = abstractGrouping;
-    }
-    	
+     	
 	/**
 	 * @return the tags
 	 */
@@ -218,5 +201,22 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
 	 */
 	public void setUpdateExistingPost(boolean updateExistingPost) {
 		this.updateExistingPost = updateExistingPost;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.command.GroupingCommand#getAbstractGrouping()
+	 */
+	@Override
+	public String getAbstractGrouping() {
+		return this.abstractGrouping;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.command.GroupingCommand#setAbstractGrouping(java.lang.String)
+	 */
+	@Override
+	public void setAbstractGrouping(String abstractGrouping) {
+		this.abstractGrouping = abstractGrouping;
+		
 	}
 }

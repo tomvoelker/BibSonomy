@@ -544,8 +544,9 @@
 								
 								<value>resourcetype</value>
 								<value>format</value>
-								<value>abstractGrouping</value>
 								<value>groups</value>
+								<value>abstractGrouping</value>
+								
 								
 								
 							</list>
