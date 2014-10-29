@@ -50,7 +50,7 @@
 								
 								<c:if test="${not loginUser.settings.layoutSettings.simpleInterface}">
 									<li class="divider"><!-- KEEP ME --></li>
-									<li><a href="${relativeUrlGenerator.getConceptsUrlByString(loginUserName)}"><fmt:message key="navi.cv"/></a></li>
+									<li><a href="/cv/user/${fn:escapeXml(loginUserName)}"><fmt:message key="navi.cv"/></a></li>
 									<li><a href="${relativeUrlGenerator.getMySearchUrl()}"><fmt:message key="navi.browse"/></a></li>
 									<li><a href="${relativeUrlGenerator.prefix('bib').getUserUrlByUserName(loginUserName)}?items=1000"><fmt:message key="navi.bibtex"/></a></li>
 								</c:if>

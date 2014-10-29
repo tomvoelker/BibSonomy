@@ -36,7 +36,7 @@
 <!-- 				$(function(){updatePosts("/", 60);}); -->
 <!-- 			</script> -->
 		</jsp:attribute>
-
+	
 		<!-- show info text if user not logged in -->
 		<jsp:attribute name="beforeMainContainer">
 			<c:choose>
@@ -50,7 +50,7 @@
 						</c:otherwise>
 					</c:choose>
 				</c:when>
-				<c:when test="${command.context.userLoggedIn and not properties['project.theme'] eq 'puma'}">
+				<c:when test="${command.context.userLoggedIn and not (properties['project.theme'] eq 'puma')}">
 					<div id="overlayInfobox">
 						<!-- FIXME: add theme! ??-->
 						<div class="close"><a onclick="$('#overlayInfobox').hide();"><fmt:message key="box.close"/></a></div>
