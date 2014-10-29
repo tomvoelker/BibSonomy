@@ -121,7 +121,7 @@ the button on one of the listed pages.</p>
               <c:if test="${not empty bean.scraper}">
                   <h3>active scraper</h3> 
                   <p>
-                    <em><c:out value="${bean.scraper.class.name}"/>: </em>
+                    <em><c:out value="${bean.scraper['class'].name}"/>: </em>
                     ${bean.scraper.info}
                   </p>
               </c:if>
