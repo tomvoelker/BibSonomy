@@ -45,19 +45,19 @@
 	</c:if>
 	
 	<div class="form-group">
-   		<div class="col-sm-offset-${12-inputColSpan} col-sm-${inputColSpan}">
-   			<div class="checkbox">
+		<div class="col-sm-offset-${12-inputColSpan} col-sm-${inputColSpan}">
+			<div class="checkbox">
 				<label>
-	          		<form:checkbox
-	          				path="${path}" 
-	          				class="${not empty noHelp or not noHelp ? 'help-popover' : ''}" 
+					<form:checkbox
+							path="${path}" 
+							class="${not empty noHelp or not noHelp ? 'help-popover' : ''}" 
 							tabindex="${tabindex}"
 							value="${false}"/>
-       				 <c:out value="${labelText}"/>
-      				<c:if test="${not empty noHelp or not noHelp}">
-		          		<div class="help-content hide">${helpText}</div>
-          			</c:if>
-	        	</label>
+					 <c:out value="${labelText}"/>
+					<c:if test="${empty noHelp or not noHelp}">
+						<div class="help-content hide">${helpText}</div>
+					</c:if>
+				</label>
 			</div>
 		</div>
 	</div>

@@ -17,10 +17,10 @@
 
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="groups">
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.group" formAction="/group/${mtl:encodeURI(command.requestedGroup)}" formInputName="tag">
+			<parts:search pathMessageKey="navi.group" formAction="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}" formInputName="tag">
 				<jsp:attribute name="pathPart">
 					<li>
-						:: <a href="/group/${mtl:encodeURI(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
+						:: <a href="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
 					</li>
 				</jsp:attribute>
 				<jsp:attribute name="afterInput">
@@ -28,7 +28,7 @@
 					<group:groupcv group="${command.group}"/>
 				</jsp:attribute>
 			</parts:search>	
-		</jsp:attribute>		
+		</jsp:attribute>
 			
 		
 		<jsp:attribute name="sidebar">

@@ -27,6 +27,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ScraperMetadata;
+import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.util.file.FileSystemFile;
 import org.bibsonomy.services.filesystem.FileLogic;
 
@@ -314,7 +315,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 			final BibTex publication = post.getResource();
 			if (this.permissionDb.isAllowedToAccessPostsDocuments(authUser, post, session)) {
 				publication.setDocuments(this.docDb.getDocumentsForPost(userName, resourceHash, session));
-			} else if (failIfDocumentsNotAccessible == true) {
+			} else if (failIfDocumentsNotAccessible) {
 				throw new AccessDeniedException("You are not allowed to access documents of this post");
 			}
 
@@ -392,22 +393,36 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 
 		/*
 		 * store the post
+		 * insert post and update/insert hashes
 		 */
-		super.insertPost(param, session); // insert post and update/insert
-											// hashes
+		super.insertPost(param, session);
 	}
 
 	@Override
 	protected void createdPost(final Post<BibTex> post, final DBSession session) {
 		super.createdPost(post, session);
-
+		
+		this.handleExtraUrls(post, session);
 		this.handleDocuments(post, session);
+	}
+
+	/**
+	 * @param post
+	 * @param session
+	 */
+	private void handleExtraUrls(final Post<BibTex> post, final DBSession session) {
+		final List<BibTexExtra> extraUrls = post.getResource().getExtraUrls();
+		if (present(extraUrls)) {
+			for (final BibTexExtra resourceExtra : extraUrls) {
+				this.extraDb.createURL(post.getResource().getIntraHash(), post.getUser().getName(), resourceExtra.getUrl().toExternalForm(), resourceExtra.getText(), session);
+			}
+		}
 	}
 
 	@Override
 	protected void updatedPost(final Post<BibTex> post, final DBSession session) {
 		super.updatedPost(post, session);
-
+		
 		this.handleDocuments(post, session);
 	}
 

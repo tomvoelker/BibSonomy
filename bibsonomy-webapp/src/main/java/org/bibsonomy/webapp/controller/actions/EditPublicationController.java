@@ -21,7 +21,7 @@ import de.unikassel.puma.openaccess.sword.SwordService;
  * to make that controller abstract and implement the method 
  * here.
  * 
- * The underlying problem is a bit deeper: I had to parametrize
+ * The underlying problem is a bit deeper: I had to parameterize
  * {@link AbstractEditPublicationController} to subclass it in
  * {@link PostPublicationController}.
  * 
@@ -46,17 +46,10 @@ public class EditPublicationController extends AbstractEditPublicationController
 		
 		if (present(swordService) && SystemTagsUtil.containsSystemTag(post.getTags(), MyOwnSystemTag.NAME)) {
 			String ref = UrlUtils.safeURIEncode(referer);
-			String publicationUrl = urlGenerator.getPublicationUrl(post.getResource().getIntraHash(), userName);
+			String publicationUrl = urlGenerator.getPublicationUrlByIntraHashAndUsername(post.getResource().getIntraHash(), userName);
 			return new ExtendedRedirectView(publicationUrl + "?referer=" + ref);
 		}
 		return super.finalRedirect(userName, post, referer);
-	}
-	
-	/**
-	 * @return the swordService
-	 */
-	public SwordService getSwordService() {
-		return this.swordService;
 	}
 
 	/**
@@ -65,5 +58,4 @@ public class EditPublicationController extends AbstractEditPublicationController
 	public void setSwordService(SwordService swordService) {
 		this.swordService = swordService;
 	}
-	
 }

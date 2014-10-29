@@ -7,17 +7,16 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/bstags/post"
 	xmlns:editBook="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/bookmark"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs">
 	
-    <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
- 
- 	<layout:editGoldStandardPostLayout 
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<layout:editPostLayout 
 		requPath="${requPath}" 
 		command="${command}" 
 		detailedInformation="${detailedInformation}"
@@ -26,10 +25,6 @@
 		minimizedContentWidth="${true}"
 		>
 
-		<jsp:attribute name="headerExtResource">
-			<script type="text/javascript" src="${resdir}/javascript/bs/editBookmark.js"><!-- keep me --></script>
-		</jsp:attribute>
-
 		<jsp:attribute name="generalInformation">
 		
 			<!--+
@@ -37,11 +32,27 @@
 				+-->
 			
 			<!-- URL -->
-			<bsform:input labelColSpan="3" inputColSpan="9" placeholder="http://" labelText="URL" path="post.resource.url" required="${true}" noHelp="${true }"/>
+			<bsform:input labelColSpan="3" inputColSpan="9" placeholder="http://" labelText="URL" path="post.resource.url" required="${true}" noHelp="${true}">
+				<jsp:attribute name="appendix">
+					<!-- publication found -->
+					<div class="hide">
+						<span class="publication-found-title"><fmt:message key="post.meta.recommended"/>: <fmt:message key="post.meta.save_as_publication"/></span>
+						<div class="publication-found-content">
+							<div id="publication-found-form-placeholder">
+								<p><fmt:message key="post.resource.bookmark_a_publication2"/></p>
+								<button class="btn btn-primary btn-xs" type="submit" name="submit"><fmt:message key="post.meta.save_as_publication" /></button>
+								<c:out value=" "/><!-- space between buttons -->
+								<button type="button" class="btn btn-default btn-xs" onclick="$('#post\\.resource\\.url').popover('hide');"><fmt:message key="box.close" /></button>
+							</div>
+						</div>
+					</div>
+				</jsp:attribute>
+			</bsform:input>
 			
 			<!-- TITLE -->
 			<fmt:message key="post.resource.title" var="title"/>
-			<bsform:input labelColSpan="3" inputColSpan="9" placeholder="${title}" path="post.resource.title" required="${true}" noHelp="${false}">
+			
+			<bsform:input labelColSpan="3" inputColSpan="9" placeholder="${title}" path="post.resource.title" required="${true}" noHelp="${true}">
 				<jsp:attribute name="appendix">
 					<div class="fsSuggestion" id="suggestion.resource.title"><!-- KEEP ME --></div>
 				</jsp:attribute>
@@ -53,80 +64,11 @@
 					<div class="fsSuggestion" id="suggestion.description"><!-- KEEP ME --></div>
 				</jsp:attribute>
 			</bsform:textarea>
+
+			<post:tagSets groups="${command.context.loginUser.groups}"/>
 			
-			<!--+
-                | INPUT FIELD FOR TAGS
-                +-->
-    	  	<post:tagform containsComma="${command.containsComma}" labelColSpan="3" inputColSpan="9" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
-           
-		<post:tagSets groups="${command.context.loginUser.groups}"/>
+		</jsp:attribute>
 		
-	</jsp:attribute>
-
-	<jsp:attribute name="groups">
-		
-		<!--+
-            | groups 
-  		    +-->
-  		<c:set var="groups" value="${command.context.loginUser.groups}" />
-
-		<div class="row">
-			<div class="col-md-6">
-				<div class="postlistTitle"><h2><fmt:message key="post.resource.viewablefor" /></h2></div>
-				<div class="row">
-					<div class="col-md-6">
-						
-						<fmt:message var="public"  key="post.resource.public" />
-						<fmt:message var="private" key="post.resource.private" />
-						<fmt:message var="other"   key="post.resource.other" />
-						
-		   				<bsform:radio path="abstractGrouping" value="public" 	tabindex="1" labelText="${public}"/>
-		          		<bsform:radio path="abstractGrouping" value="private" 	tabindex="2" labelText="${private}"/>
-		          		<bsform:radio path="abstractGrouping" value="other" 	tabindex="3" labelText="${other}" id="post.groups.other" />
-          			</div>
-          			<div class="col-md-6">
-		      			<form:select class="initiallyHidden form-control" multiple="false" path="groups" size="5" id="post.groups.other2" tabindex="2">
-		           			<form:option label="friends" value="friends"/>
-		       				<form:options items="${groups}" itemValue="name" itemLabel="name"/>
-		           		</form:select>
-					</div>
-				</div>
-				<form:errors path="post.groups" /><!-- This comment is needed, otherwise this will result in an self-closing element -->
-       		</div>
-       		
-   			<div class="col-md-6">
-				<c:if test="${not empty command.context.loginUser.groups}">
-					<post:relevantForBox groups="${command.context.loginUser.groups}"/>
-				</c:if>	     
-			</div>
-		</div>
-	</jsp:attribute>
-      		
-
-		
-		<jsp:attribute name="extraInformation">        
-            <!-- 
-               | check, if this bookmark can be scraped
-               -->	
-            <div id="scrapable" style="display:none">
-                <br/>
-                <form:form action="/editPublication" method="post" id="bibtex_snippet">      
-
-					<div class="postlistTitle"><h2><fmt:message key="post.meta.recommended"/>: <fmt:message key="post.meta.save_as_publication"/></h2></div>
-					<div class="form-group">
-	                      	<fmt:message key="post.resource.bookmark_a_publication"/>:<c:out value=" "/>
-	                      	<fmt:message key="post.meta.save_as_publication" var="post_publication"/>
-	                      	<input type="hidden" name="referer" value="${fn:escapeXml(command.referer)}"/>
-	                      	<button id="button" type="submit" name="submit" value="${post_publication}"/>
-					</div>
-					<!--<bsform:textarea id="bib" name="selection" rows="15" class="reqinput form-control" />-->
-
-				</form:form>
-			</div>
-       
-       </jsp:attribute>
-       
-	</layout:editGoldStandardPostLayout>
- 
+	</layout:editPostLayout>
 
 </jsp:root>

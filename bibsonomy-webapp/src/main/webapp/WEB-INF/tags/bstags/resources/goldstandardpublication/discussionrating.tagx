@@ -18,7 +18,7 @@
 		</span>
 		<div style="float:left;" class="rating">
 			<c:if test="${not empty post.resource.rating}">
-				<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource.class.simpleName)}" />
+				<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource['class'].simpleName)}" />
 				
 				<!--+
 					|TODO: Once we know for each post whether a goldstandard exists,
@@ -91,7 +91,7 @@
 			</fmt:message>
 		</c:if>
 		<c:if test="${not empty discussionUsers}">
-			&amp;nbsp;<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource.class.simpleName)}" />
+			&amp;nbsp;<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource['class'].simpleName)}" />
 			<fmt:message key="post.resource.discussion.discussionUser.join" />
 		</c:if>
 	</div>

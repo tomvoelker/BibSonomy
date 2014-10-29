@@ -38,7 +38,7 @@
 		<h2 style="margin-top: 1em;"><fmt:message key="login.register" /></h2>
 		<p>
 			<fmt:message key="login.notRegistered_1" />
-			<a href="/register"><fmt:message key="login.notRegistered_2" /></a>
+			<a href="${relativeUrlGenerator.getRegisterUrl()}"><fmt:message key="login.notRegistered_2" /></a>
 			<fmt:message key="login.notRegistered_3" />
 		</p>
 	</c:if>

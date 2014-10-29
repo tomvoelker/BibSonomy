@@ -51,6 +51,7 @@
 				<h3 class="list-headline">
 				
 					<fmt:message key="bookmarks" />	
+					&amp;nbsp;<small class="hidden-lg hidden-md">(<a id="hide-bookmarks" href=""><fmt:message key="list.hide" /></a>)</small>
 					<!-- Display total number of entries in list --> 
 					<c:if test="${!empty command.bookmark.list}">
 						<c:if test="${command.bookmark.totalCount != 0}">
@@ -60,7 +61,7 @@
 					</c:if>
 		
 					<!-- default: show page options -->
-					<c:if test="${empty showPageOptions or showPageOptions == true }">
+					<c:if test="${empty showPageOptions or showPageOptions }">
 						<c:out value=" " />
 						<c:choose>
 							<c:when test="${not empty customPageOptions}">

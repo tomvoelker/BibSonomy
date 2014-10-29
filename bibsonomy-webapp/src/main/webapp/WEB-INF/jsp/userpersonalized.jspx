@@ -26,7 +26,7 @@
 			<parts:search pathMessageKey="navi.user" >
 				<jsp:attribute name="pathPart">
 					<li>
-						:: <a href="/user/${mtl:encodeURI(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> <span style="font-size:65%"><c:out value=" "/>(<fmt:message key="personalized"/>)</span>
+						:: <a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser) }"><c:out value='${command.requestedUser}'/></a> <span style="font-size:65%"><c:out value=" "/>(<fmt:message key="personalized"/>)</span>
 					</li>
 				</jsp:attribute>
 			</parts:search>
@@ -70,7 +70,7 @@
 			<li>
 				<c:set var="tagRelationsTitle"><fmt:message key="tagrelations.title"/></c:set>
 				<span class="sidebar_h">
-					<a href="/concepts/${fn:escapeXml(command.requestedUser)}" title="${tagRelationsTitle}">
+					<a href="${relativeUrlGenerator.getConceptsUrlByString(fn:escapeXml(command.requestedUser))}" title="${tagRelationsTitle}">
 						<fmt:message key="tagrelations"/>
 					</a>
 				</span>	
@@ -108,7 +108,7 @@
 					<jsp:attribute name="infoTextBody">
 				
 						<c:set var="userPageLink">
-							<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
+							<a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(command.requestedUser))}"><c:out value='${command.requestedUser}'/></a>
 						</c:set>
 					
 						<fmt:message key="followersPage.contentHeading">

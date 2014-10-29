@@ -15,7 +15,7 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---
+
 -- Table structure for Table `sync_data`
 --
 DROP TABLE IF EXISTS `sync_data`;
@@ -300,18 +300,19 @@ CREATE TABLE `gold_standard` (
 SET character_set_client = @saved_cs_client;
 
 --
--- Table structure for table `gold_standard_publications_references`
+-- Table structure for table `gold_standard_relations`
 --
 
-DROP TABLE IF EXISTS `gold_standard_publication_references`;
+DROP TABLE IF EXISTS `gold_standard_relations`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-CREATE TABLE `gold_standard_publication_references` (
+CREATE TABLE `gold_standard_relations` (
   `publication` char(32) NOT NULL default '',
   `reference` char(32) NOT NULL default '',
   `user_name` varchar(255) default NULL,
   `date` timestamp NOT NULL default CURRENT_TIMESTAMP,
-  PRIMARY KEY  (`publication`, `reference`)
+  `relation_kind` tinyint(1) NOT NULL default '0',
+  PRIMARY KEY  (`publication`, `reference`, `relation_kind`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
@@ -376,17 +377,18 @@ SET character_set_client = @saved_cs_client;
 
 
 --
--- Table structure for table `log_gold_standard_publication_references`
+-- Table structure for table `log_gold_standard_relations`
 --
 
-DROP TABLE IF EXISTS `log_gold_standard_publication_references`;
+DROP TABLE IF EXISTS `log_gold_standard_relations`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-CREATE TABLE `log_gold_standard_publication_references` (
+CREATE TABLE `log_gold_standard_relations` (
   `publication` char(32) NOT NULL default '',
   `reference` char(32) NOT NULL default '',
   `user_name` varchar(255) default NULL,
   `log_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `relation_kind` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`publication`, `reference`, `log_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;

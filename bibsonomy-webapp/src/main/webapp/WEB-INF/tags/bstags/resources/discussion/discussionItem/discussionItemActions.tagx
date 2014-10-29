@@ -7,7 +7,7 @@
 	<jsp:directive.attribute name="discussionItem" type="org.bibsonomy.model.DiscussionItem" required="false" />
 	<jsp:directive.attribute name="disableReply" type="java.lang.Boolean" required="false" />
 	
-	<c:set var="discussionItemClass" value="${fn:toLowerCase(discussionItem.class.simpleName)}" />
+	<c:set var="discussionItemClass" value="${fn:toLowerCase(discussionItem['class'].simpleName)}" />
 	
 	<div class="pull-right">
 	

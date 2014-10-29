@@ -22,7 +22,7 @@
 			<parts:search pathMessageKey="navi.admin">
 				<jsp:attribute name="pathPart">
 					<li>
-						:: <a rel="path_menu" href="/admin/oauth">OAuth</a>
+						:: <a rel="path_menu" href="${relativeUrlGenerator.getAdminUrlByName('oauth')}">OAuth</a>
 					</li>
 				</jsp:attribute>
 			</parts:search>
@@ -117,7 +117,7 @@
         	    <!--+
         	    	| Delete Consumer (invisible)
         	    	+--> 
-		    	<form action="/admin/oauth" id="deleteConsumerForm" method="POST">
+		    	<form action="${relativeUrlGenerator.getAdminUrlByName('oauth')}" id="deleteConsumerForm" method="POST">
              		<input type="hidden" name="adminAction" value="Remove" />
 		    		<input type="hidden" name="consumerInfo.consumerKey" id="consumerKey" />
 		    	</form>
@@ -128,8 +128,8 @@
 					+-->
 				<h3><fmt:message key="admin.actions.consumer.register"/></h3>
 				
-        	    <form:form action="/admin/oauth" method="POST">
-		        	<errors:global errors="${errors}"/>             
+        	    <form:form action="${relativeUrlGenerator.getAdminUrlByName('oauth')}" method="POST">
+		        	<errors:global />
 
 						<fieldset class="fsInner">
 							<legend><fmt:message key="admin.oauth.consumer.details"/></legend>
@@ -233,7 +233,7 @@
                 // Ensure consumer is to be removed and delete it.
         		function deleteConsumer(consumerKey) {
         			var box = window.confirm(getString('admin.oauth.consumer.ensure_delete'));
-        			if (box == true) { 
+        			if (box) { 
         				document.getElementById("consumerKey").value = consumerKey;
         				document.getElementById("deleteConsumerForm").submit();
         			}
@@ -242,6 +242,6 @@
              //</mtl:cdata>
           </script>
 			
-		</jsp:attribute>				
+		</jsp:attribute>
 	</layout:layout>
 </jsp:root>

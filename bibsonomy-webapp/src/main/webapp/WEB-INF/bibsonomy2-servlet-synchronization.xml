@@ -61,7 +61,7 @@
 		<property name="syncClient" ref="synchronizationClient" />
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="messageSource" ref="messageSource"/>
-		<property name="projectHome" value="${project.home}"/>
+		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
 	</bean>
 		
 	<!-- handles synchronization request -->

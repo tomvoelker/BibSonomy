@@ -72,7 +72,7 @@
             <dl class="scraperList">
               <c:forEach var="scraper" items="${command.scraperList}">
               	<c:if test="${(scraper.supportedSiteURL ne null) and (scraper.supportedSiteName ne null)}">
-              		<dt><a name="${scraper.class.simpleName}">${scraper.class.simpleName}</a>:</dt> 
+              		<dt><a name="${scraper['class'].simpleName}">${scraper['class'].simpleName}</a>:</dt> 
     				<dd>${scraper.info}</dd>
               	</c:if>
               </c:forEach>

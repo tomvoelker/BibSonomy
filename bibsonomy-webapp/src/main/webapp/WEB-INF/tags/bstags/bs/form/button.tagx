@@ -7,12 +7,12 @@
 	
 	<jsp:directive.tag description="Renders a bootstrap3 button." />
 	
-
+	
 	<jsp:directive.attribute type="java.lang.String" name="value" required="true" description="inscription of the button" />
 	<jsp:directive.attribute type="org.bibsonomy.webapp.view.constants.BootstrapButtonStyle" name="style" required="true" description="Button Style Type" />
 	<jsp:directive.attribute type="org.bibsonomy.webapp.view.constants.BootstrapButtonSize" name="size" required="true" description="Button Style Type" />
 	<jsp:directive.attribute type="java.lang.String" name="type" required="false" description="content for html attribute type" />
-	
+	<jsp:directive.attribute type="java.lang.String" name="icon" required="false" description="icon dispayed before value" />
 	<jsp:directive.attribute type="java.lang.String" 	name="dataToggle" 	required="false" description="If you need to use attribute 'data-toggle'."/>
 	<jsp:directive.attribute type="java.lang.String" 	name="dataTarget" 	required="false" description="If you need to use attribute 'data-target'."/>
 	<jsp:directive.attribute type="java.lang.String" 	name="dataDismiss"	required="false" description="If you need to use attribute 'data-dismiss'." />
@@ -34,14 +34,17 @@
 	
 	<button type="${fn:escapeXml(type)}" class="${className}btn ${fn:escapeXml(style.cssClassName)} ${fn:escapeXml(size.cssClassName)} ${dropdown ? 'dropdown-toggle':''} ${dropup ? 'dropup-toggle':''}" data-toggle="${fn:escapeXml(dataToggle)}" data-target="${fn:escapeXml(dataTarget)}" data-dismiss="${fn:escapeXml(dataDismiss)}" onclick="${fn:escapeXml(onclick)}">
 		<c:if test="${not empty value and not gear}">
-			<c:out value="${value}" />&amp;nbsp;
+			<c:if test="${not empty icon}">
+				<span class="fa fa-${icon}"><!-- keep me --></span><c:out value=" " />
+			</c:if>
+			<span class="button-text"><c:out value="${value}" /></span>
 		</c:if>
 		<c:if test="${gear}">
-			<span class="glyphicon glyphicon-cog"><!-- KEEP ME --></span>&amp;nbsp;
-			<span class="sr-only">edit</span>
+			&amp;nbsp;<span class="glyphicon glyphicon-cog"><!-- KEEP ME --></span>&amp;nbsp;
+			<span class="sr-only">edit</span> <!-- TODO: i18n for edit -->
 		</c:if>
 		<c:if test="${dropdown or dropup}">
-			<span class="caret"><!-- KEEP ME --></span>
+			&amp;nbsp;<span class="caret"><!-- KEEP ME --></span>
 		</c:if>
 	</button>
 </jsp:root>

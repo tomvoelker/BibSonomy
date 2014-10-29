@@ -22,7 +22,7 @@
 	<bean id="bibtexExport" class="org.bibsonomy.webapp.view.BibTeXView">
 		<property name="urlGenerators">
 			<map>
-				<entry key="default" value-ref="urlGenerator"/>
+				<entry key="default" value-ref="absoluteUrlGenerator"/>
 				<entry key="vufind" value-ref="vuFindUrlGenerator"/>
 			</map>
 		</property>

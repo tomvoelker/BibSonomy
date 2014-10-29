@@ -33,7 +33,7 @@
 						
 						<fmt:message key="bibtex.actions.copy.title" var="copyTitle"/>
 						<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
-							<span class="glyphicon glyphicon-floppy-disk"><!--  --></span>
+							<span class="fa fa-copy"><!--  --></span>
 						</a>
 					
 					</c:when>
@@ -43,7 +43,7 @@
 						
 						<fmt:message key="bibtex.actions.edit.title" var="editTitle"/>
 						<a class="${buttonClasses}" href="/editPublication?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
-							<span class="glyphicon glyphicon-edit ${post.user.name ne loginUserName ? 'btn-disabled' : ''}"><!--  --></span>
+							<span class="fa fa-pencil ${post.user.name ne loginUserName ? 'btn-disabled' : ''}"><!--  --></span>
 						</a>
 
 					</c:otherwise>
@@ -53,7 +53,7 @@
 				<!-- For signed out users we always show the inactive copy button -->
 				<fmt:message key="bibtex.actions.copy.inactive" var="copyTitle"/>
 				<a class="${buttonClasses}" title="${copyTitle}" disabled="disabled">
-					<span class="glyphicon glyphicon-floppy-disk"><!-- Keep Me --></span>
+					<span class="fa fa-copy"><!-- Keep Me --></span>
 				</a>
 			</c:otherwise>
 		</c:choose>
@@ -73,7 +73,7 @@
 				<c:param name="clear" value="false" />
 			</c:url>
 				<fmt:message key="bibtex.actions.removeMessage.title" var="removeTitle" />
-				<a class="${buttonClasses}" href="${fn:escapeXml(message_remove)}" title="${removeTitle}" data-type="inboxpost">
+				<a class="${buttonClasses} confirmdelete" href="${message_remove}" title="${removeTitle}" data-type="inboxpost">
 					<span class="glyphicon glyphicon-remove"><!--  --></span>
 				</a>
 			</c:when>
@@ -86,7 +86,7 @@
 							<c:param name="resourceHash" value="${post.resource.intraHash}" />
 							<c:param name="ckey" value="${ckey}" />
 						</c:url>
-						<a class="${buttonClasses}" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" data-type="post">
+						<a class="${buttonClasses} confirmdelete" href="${deleteUrl}" title="${deleteTitle}" data-type="post">
 							<span class="glyphicon glyphicon-remove"><!--  --></span>
 						</a>
 					</c:when>
@@ -105,7 +105,7 @@
 			| TODO: check if community post exists
 			+-->
 		<fmt:message key="bibtex.actions.communityPost" var="communityPost" />
-		<a href="/bibtex/${post.resource.interHash}" class="${buttonClasses}" title="${fn:escapeXml(communityPost)}">
+		<a href="${relativeUrlGenerator.getGoldstandardUrlByInterHash(post.resource.interHash)}" class="${buttonClasses}" title="${fn:escapeXml(communityPost)}">
 			<span style="font-size:90%;" class="glyphicon glyphicon-user"><!--  --></span>
 			<span class="glyphicon glyphicon-user" style="margin-left:-4px; font-size: 70%;"><!--  --></span>
 		</a>

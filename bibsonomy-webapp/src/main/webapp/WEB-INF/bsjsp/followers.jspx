@@ -12,7 +12,8 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<fmt:message var="headline" key="page.followers.headline" />		
+	
+	<fmt:message var="headline" key="page.followers.headline" />
 	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 
 	<layout:resourceLayout pageTitle="${command.pageTitle}"	command="${command}" requPath="${requPath}"	activeTab="${command.context.loginUser.name != null ? 'my' : ''}" headline="${headline}">
@@ -26,12 +27,11 @@
 		<jsp:attribute name="sidebar">
 		<ul>
 			<script type="text/javascript" src="${resdir}/javascript/userRelation.js"><!-- keep me --></script>
-          <li><span class="sidebar_h"><fmt:message
+			<li><span class="sidebar_h"><fmt:message
 				key="follow.followerof" /></span> 
             <ul class="sidebar_collapse_content">
               <c:forEach var="user" items="${command.userIsFollowing}">
-                <li><a
-						href="/personalized/user/${mtl:encodeURI(user.name)}"><c:out
+                <li><a href="${relativeUrlGenerator.prefix('personalized').getUserUrlByUserName(user.name)}"><c:out
 						value="${user.name}" /></a></li>
               </c:forEach>
             </ul>
@@ -42,8 +42,7 @@
             <ul id="followedUsers" class="sidebar_collapse_content">
               <c:forEach var="user" items="${command.followersOfUser}">
                 <li>
-                  <a
-						href="/personalized/user/${mtl:encodeURI(user.name)}"><c:out
+                  <a href="${relativeUrlGenerator.prefix('personalized').getUserUrlByUserName(user.name)}"><c:out
 						value='${user.name}' />&amp;nbsp;</a> 
 	                <fmt:message var="deleteFriendTitle"
 						key="follow.actions.delete.title">
@@ -64,14 +63,14 @@
           </li>
           
 			<!-- display similar users -->
-			<li>				
-				<span class="sidebar_h">					 
-					<!-- requPath + query -->					
+			<li>
+				<span class="sidebar_h">
+					<!-- requPath + query -->
 					<fmt:message key="users.similar.your"/>
 					<c:out value=" "/><a href="${mtl:setParam(requPathAndQuery, 'userSimilarity', mtl:toggleUserSimilarity(command.userSimilarity)) }"><fmt:message key="more"/>...</a>
 				</span>
 				<users:related cmd="${command.relatedUserCommand}" displayFollowLink="${true}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
-			</li>          
+			</li>
 
           <!-- add a follower -->
           <li>
@@ -83,7 +82,7 @@
             	<input type="hidden" name="forward" value="followers"/>
             	<input type="hidden" name="ckey" value="${ckey}"/>
             	<input type="hidden" name="action" value="addFollower"/>
-            	<input type="submit" name="submit" value="${addFollower}"/>            	
+            	<input type="submit" name="submit" value="${addFollower}"/>
             </form:form>
           </li>
           
@@ -106,9 +105,9 @@
           		<input type="hidden" name="requestedUser" value="${command.requestedUser}"/>
           		<br/>          		
           		<input type="submit" name="submit" value="${go}"/>
-          	</form:form>          	
+          	</form:form>
           </li>
-        </ul>              			
+        </ul>
 		</jsp:attribute>
 		
 		<!-- content heading -->
@@ -126,7 +125,7 @@
 							</c:when>
 						<c:otherwise>
 							<fmt:message key="followersPage.entries.ofUser">
-								<fmt:param><a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a></fmt:param>
+								<fmt:param><a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(command.requestedUser))}"><c:out value='${command.requestedUser}'/></a></fmt:param>
 							</fmt:message>
 						</c:otherwise>
 						</c:choose>

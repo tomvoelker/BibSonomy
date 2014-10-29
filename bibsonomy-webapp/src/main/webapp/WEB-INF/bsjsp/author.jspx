@@ -9,29 +9,32 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<c:set var="requestedAuthorEncoded" value="${mtl:encodeURI(command.requestedAuthor)}" />
 	<fmt:message key="navi.author" var="authorPageTitle" />
 	<fmt:message var="headline" key="page.author.headline" />
-	<layout:resourceLayout 
-		pageTitle="${authorPageTitle} :: ${command.requestedAuthor}" 
-		command="${command}" 
-		requPath="${requPath}" 
-		disableResourcetypeSelection="${true}" 
-		minimizedContentWidth="${true}"
-		headline="${headline}${command.requestedAuthor}">
+	<c:set var="pageTitle" value="${authorPageTitle} :: ${command.requestedAuthor}" />
+	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" requPath="${requPath}" disableResourcetypeSelection="${true}" minimizedContentWidth="${true}" headline="${pageTitle}">
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:authors />
+					<nav:crumb name="${command.requestedAuthor}" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
 		
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.author" formAction="/author/${requestedAuthorEncoded}" formInputName="tag">
+			<parts:search pathMessageKey="navi.author" formAction="${relativeUrlGenerator.getAuthorUrlByName(requestedAuthorEncoded)}" formInputName="tag">
 				<jsp:attribute name="pathPart">
-					<li>
-						:: <span itemscope="itemscope" itemtype="http://schema.org/Person">
-							<a href="/author/${requestedAuthorEncoded}" itemprop="name"><c:out value='${command.requestedAuthor}'/></a>
-						</span>
-					</li>
+					<span itemscope="itemscope" itemtype="http://schema.org/Person">
+						<a href="${relativeUrlGenerator.getAuthorUrlByName(requestedAuthorEncoded)}" itemprop="name"><c:out value='${command.requestedAuthor}'/></a>
+					</span>
 				</jsp:attribute>
 			</parts:search>
 		</jsp:attribute>
@@ -39,8 +42,7 @@
 		<jsp:attribute name="sidebar">
 			<ul>
 				<li>
-				<c:out value="${authorPageTitle} :: ${command.requestedAuthor} "></c:out>
-					<span class="sidebar_h"><fmt:message key="tags"/></span>
+					<h4 class="tagcloud-headline sidebar-headline sidebar"><fmt:message key="tags"/></h4>
 					<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 				</li>
 			</ul>

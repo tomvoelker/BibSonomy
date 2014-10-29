@@ -12,49 +12,69 @@
 		| The title and complete metadata of the publication, shown in a tab
 		| with additional tabs to retrieve the metadata in a different format.
 		|
-		| NOTE: to get this working, the JavaScript code in bibtexdetails.js to
+		| NOTE: to get this working, the JavaScript code in publication.js to
 		| initialize the TABs is required! Hence, if you re-use this tag file,
 		| ensure that either the JavaScript code is included here (and removed
-		| from bibtexdetails.js) or ensure that bibtexdetails.js is loaded. 
+		| from publication.js) or ensure that bibtexdetails.js is loaded. 
 		| 
 		+-->
 	
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
-
+	<jsp:directive.attribute name="isCommunityPost" type="java.lang.Boolean" required="false" />
 	
-	<!-- <fmt:message key="bibtex.citation_format_in"/> -->
-
+	<c:if test="${empty isCommunityPost}">
+		<c:set var="isCommunityPost" value="${false}" />
+	</c:if>
+	
+	<c:set var="citationStylesToShow" value="harvardhtml,chicago,apa_html,din1505" />
 	<div class="citation-box">
 		<ul class="nav nav-tabs">
-			<li>
-				<a class="firstTab" data-toggle="tab" href="#citation_harvardhtml" data-formatUrl="/layout/harvardhtml/bibtex/2${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}?formatEmbedded=true">
-					<fmt:message key="bibtex.citation_format.harvardhtml" />
-				</a>
-			</li>
-			<c:forEach var="citationStyle" items="${fn:split('chicago,apa_html,din1505',',')}">
-				<li><a data-toggle="tab" href="#citation_${citationStyle}" data-formatUrl="/layout/${citationStyle}/bibtex/2${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}?formatEmbedded=true"><fmt:message key="bibtex.citation_format.${citationStyle}" /></a></li>
+			<c:forEach var="citationStyle" items="${fn:split(citationStylesToShow,',')}">
+				<li>
+					<c:set var="prefix" value="layout/${citationStyle}" />
+					<c:choose>
+						<c:when test="${isCommunityPost}">
+							<c:set var="exportUrl" value="${relativeUrlGenerator.prefix(prefix).getGoldstandardUrlByInterHash(post.resource.interHash)}" />
+						</c:when>
+						<c:otherwise>
+							<c:set var="exportUrl" value="${relativeUrlGenerator.prefix(prefix).getPublicationUrlByPost(post)}" />
+						</c:otherwise>
+					</c:choose>
+					<a data-toggle="tab" href="#citation_${citationStyle}" data-formatUrl="${exportUrl}?formatEmbedded=true">
+						<fmt:message key="bibtex.citation_format.${citationStyle}" />
+					</a>
+				</li>
 			</c:forEach>
 			<li><a data-toggle="tab" href="#citation_bibtex">BibTeX</a></li>
 			<li><a data-toggle="tab" href="#citation_endnote">EndNote</a></li>
 			<li>
-				<a data-toggle="tab" href="#citation_all" data-formatUrl="/export/bibtex/2${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}?formatEmbedded=true"><fmt:message key="bibtex.all_exports" /></a>
+				<c:choose>
+					<c:when test="${isCommunityPost}">
+						<c:set var="exportUrl" value="${relativeUrlGenerator.prefix('export').getGoldstandardUrlByInterHash(post.resource.interHash)}" />
+					</c:when>
+					<c:otherwise>
+						<c:set var="exportUrl" value="${relativeUrlGenerator.prefix('export').getPublicationUrlByPost(post)}" />
+					</c:otherwise>
+				</c:choose>
+				<a data-toggle="tab" href="#citation_all" data-formatUrl="${exportUrl}?formatEmbedded=true"><fmt:message key="bibtex.all_exports" /></a>
 			</li>
 		</ul>
 		<div id="citation-styles" class="tab-content pub-citation-tab-content">
-			<div class="tab-pane" id="citation_harvardhtml">
-				<!-- keep -->
-			</div>
-			<c:forEach var="citationStyle" items="${fn:split('chicago,apa_html,din1505',',')}">
+			<c:forEach var="citationStyle" items="${fn:split(citationStylesToShow,',')}">
 				<div class="tab-pane" id="citation_${citationStyle}">
 					<!-- keep -->
 				</div>
 			</c:forEach>
 			<div class="tab-pane" id="citation_bibtex">
-				<textarea style="width:100%;font-size:80%;border:none;" rows="15"><export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/></textarea>
+				<textarea style="width:100%;font-size:80%;border:none;" rows="15">
+					<export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/>
+				</textarea>
 			</div>
 			<div class="tab-pane" id="citation_endnote">
-				<textarea style="width:100%;font-size:80%;border:none;" rows="15"><export:endnote post="${post}" escapeXml="${true}" /></textarea>
+				<textarea style="width:100%;font-size:80%;border:none;" rows="15">
+					<export:endnote post="${post}" escapeXml="${true}" />
+				</textarea>
 			</div>
 			<div class="tab-pane" id="citation_all">
 				<!-- keep -->

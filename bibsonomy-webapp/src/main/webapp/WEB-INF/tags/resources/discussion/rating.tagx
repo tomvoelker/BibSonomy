@@ -10,7 +10,7 @@
 
 	<div class="rating">
 		<c:if test="${not empty post.resource.rating}">
-			<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource.class.simpleName)}" />
+			<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource['class'].simpleName)}" />
 			<!--+
 				|TODO: Once we know for each post whether a goldstandard exists,
 				| we can use that information for the decision between long or short link

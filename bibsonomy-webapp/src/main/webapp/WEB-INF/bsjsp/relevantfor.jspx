@@ -9,7 +9,8 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<c:choose>
@@ -27,19 +28,36 @@
 	</c:choose>
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" headline="${headline}">
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.relevantFor" formAction="/relevantfor/group/${mtl:encodeURI(command.requestedGroup)}" formInputName="tag" formInputValue="${command.requestedTags}">
+			<parts:search pathMessageKey="navi.relevantFor" formAction="${relativeUrlGenerator.getRelevantForUrlByGroupName(command.requestedGroup)}" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="pathPart">
-					<li>
-						:: <a href="/relevantfor/group/${mtl:encodeURI(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
-					</li>
+					<a href="${relativeUrlGenerator.getRelevantForUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
 				</jsp:attribute>
 			</parts:search>
+		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<fmt:message key="navi.relevantFor" var="relevantFor" />
+					<nav:crumb name="${relevantFor}"/>
+					
+					<c:choose>
+						<c:when test="${not empty command.requestedTags}">
+							<nav:groupcrumb requestedGroup="${command.requestedGroup}" relevantFor="${true}"/>
+							<nav:tagcrumb requestedTags="${command.requestedTags}" active="${true}"/>
+						</c:when>
+						<c:otherwise>
+							<nav:groupcrumb requestedGroup="${command.requestedGroup}" active="${true}" relevantFor="${true}"/>
+						</c:otherwise>
+					</c:choose>
+				</jsp:attribute>
+			</nav:breadcrumbs>
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
 		<ul>
 			<li>
-				<span class="sidebar_h"><fmt:message key="relatedtags"/></span>
+				<h4 class="sidebar"><fmt:message key="relatedtags"/></h4>
 				<tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}" order="" relevantfor="${true}" tagsRequested="${not empty command.requestedTags}"/>
 			</li>
 		</ul>

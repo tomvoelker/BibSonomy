@@ -42,7 +42,7 @@
 				<c:when test="${command.selTab == 2}">
 					<settings:import command="${command}"/>
 				</c:when>
-				<c:when test="${command.selTab == 3 and (command.hasOwnGroup or not (empty param.user or empty param.requGroup or param.requGroup eq command.context.loginUser.name))}">
+				<c:when test="${command.selTab == 3}">			
 					<settings:group command="${command}"/>
 				</c:when>
 				<c:when test="${command.selTab == 4 and not command.user.spammer}">
@@ -84,11 +84,11 @@
 			<ul>
 				<!-- loginUser.groups -->
 				<li>
-					<span class="sidebar_h "><a href="/groups"><fmt:message key="groups"/></a></span>
+					<span class="sidebar_h "><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="groups"/></a></span>
 					<ul class="sidebar_collapse_content">
 					<c:forEach var="group" items="${command.context.loginUser.groups}">
 						<li>
-						<a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}'/>&amp;nbsp;</a> 
+						<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"><c:out value='${group.name}'/>&amp;nbsp;</a> 
 							<c:if test="${group.sharedDocuments}">
 								<c:choose>
 									<c:when test="${! group.userSharedDocuments}">
@@ -119,7 +119,7 @@
 					<span class="sidebar_h"><fmt:message key="friends.friendof"/></span> 
 					<ul class="tagcloud sidebar_collapse_content">
               			<c:forEach var="user" items="${command.userFriends}">
-                			<li><a href="/friend/${mtl:encodeURI(user.name)}"><c:out value="${user.name}"/></a><c:out value=" "/></li>
+                			<li><a href="${relativeUrlGenerator.getFriendUrlByUserName(user.name)}"><c:out value="${user.name}"/></a><c:out value=" "/></li>
               			</c:forEach>
             		</ul>
           		</li>
@@ -128,7 +128,7 @@
 		            <ul class="sidebar_collapse_content">
 		              <c:forEach var="user" items="${command.friendsOfUser}">
 		                <li>
-		                  <a href="/user/${mtl:encodeURI(user.name)}"><c:out value='${user.name}'/>&amp;nbsp;</a> 
+		                  <a href="${relativeUrlGenerator.getUserUrlByUserName(user.name)}"><c:out value='${user.name}'/>&amp;nbsp;</a> 
 			                <fmt:message var="deleteFriendTitle" key="friends.actions.delete.title"><fmt:param value="${fn:escapeXml(user.name)}"/></fmt:message>
 		                  <a
 		    	             class="action" 

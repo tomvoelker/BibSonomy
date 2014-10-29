@@ -28,7 +28,7 @@ public class EndnoteView extends AbstractPublicationView<PublicationViewCommand>
 	protected void render(PublicationViewCommand command, OutputStreamWriter writer) throws IOException {
 		boolean first = true;
 		for (final Post<BibTex> post : command.getBibtex().getList()) {
-			if (first == true) {
+			if (first) {
 				first = false;
 			} else {
 				writer.append('\n');

@@ -21,7 +21,7 @@
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search" formInputValue="${command.requestedSearch}">
 				<jsp:attribute name="afterInput">
 					<!--  sorting options -->
-					<c:url var="searchUrl" value="/search/${mtl:encodeURI(command.requestedSearch)}"/>
+					<c:url var="searchUrl" value="${relativeUrlGenerator.getSearchUrl(command.requestedSearch)}"/>
 					<span style="font-size: 65%">
 						<fmt:message key="sort.orderBy"/>
 						(
