@@ -7,17 +7,12 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
-    xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<!-- TODO: i18n -->
-	<layout:paneLayout pageTitle="scraper info" 
-		command="${command}" 
-		headerMessageKey="scraper_info.title" 
-		requPath="${requPath}"
-		minimizedContentWidth="${true}">
+	<!-- TODO: title i18n -->
+	<layout:oneColumnLayout pageTitle="scraper info" requPath="${requPath}" loginUser="${command.context.loginUser}">
     
         <jsp:attribute name="headerExt">
             <style type="text/css">
@@ -38,18 +33,18 @@
         </jsp:attribute>
 
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="scraper_info.title" />
+			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
       
 		<jsp:attribute name="content">
-            <h2><fmt:message key="scraper_info.link_header" /></h2>
+            <h1 class="content-header"><fmt:message key="scraper_info.link_header" /></h1>
             <p>
             	<fmt:message key="scraper_info.scraper_link_description">
             		<fmt:param value="${properties['project.name']}" />
             	</fmt:message>
             </p>
           
-            <ul class="scraperList">
+            <ul class="scraper-list list-inline">
             	<!-- FIXME: assumes that every Scraper has a SiteURL method
             		 but only UrlScrapers have a siteURL method (what about the
             		 generic ones) please change and remove the siteURL methods
@@ -69,14 +64,15 @@
             </p>
 
             <h2><fmt:message key="scraper_info.scraper_details_header"/></h2>          
-            <dl class="scraperList">
+            <dl class="scraper-list">
               <c:forEach var="scraper" items="${command.scraperList}">
               	<c:if test="${(scraper.supportedSiteURL ne null) and (scraper.supportedSiteName ne null)}">
               		<dt><a name="${scraper['class'].simpleName}">${scraper['class'].simpleName}</a>:</dt> 
-    				<dd>${scraper.info}</dd>
+    				<dd style="margin: 0.1em 0 0.5em 0">${scraper.info}</dd>
               	</c:if>
               </c:forEach>
             </dl>
+            <br /><br />
 		</jsp:attribute>
-	</layout:paneLayout>
+	</layout:oneColumnLayout>
 </jsp:root>

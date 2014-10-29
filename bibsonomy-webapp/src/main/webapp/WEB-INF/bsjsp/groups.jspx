@@ -10,7 +10,8 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
@@ -23,6 +24,16 @@
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.groups" formAction="/group/" formInputName="group"/>
 		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">	
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<fmt:message key="navi.groups" var="groups" />
+					<nav:crumb name="${groups}" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		
 		
 		<!--+
 		 	| content
@@ -109,7 +120,10 @@
 											<!-- TODO: add link to leave group, if user is already member -->
 										</c:when>
 										<c:otherwise>
-											<a href="/join_group?group=${fn:escapeXml(group.name)}" class="btn btn-primary btn-sm"><span class="fa fa-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>	
+											<c:url var="joinLink" value="/join_group">
+												<c:param name="group" value="${group.name}" />
+											</c:url>
+											<a href="${joinLink}" class="btn btn-primary btn-sm"><span class="fa fa-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>	
 										</c:otherwise>
 									</c:choose>
 								</div>

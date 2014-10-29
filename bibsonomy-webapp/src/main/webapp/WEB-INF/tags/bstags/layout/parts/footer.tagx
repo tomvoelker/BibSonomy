@@ -42,6 +42,7 @@
 				<dd><a href="http://typo3.org/extensions/repository/view/ext_bibsonomy_csl"><fmt:message key="typoThree.plugin"/></a></dd>
 				<dd><a href="http://wordpress.org/plugins/bibsonomy-csl/"><fmt:message key="wordpress.plugin"/></a></dd>
 				<dd><a href="http://dev.bibsonomy.org/maven2/org/bibsonomy/bibsonomy-rest-client/"><fmt:message key="restClient.java"/></a></dd>
+				<dd><a href="/scraperinfo"><fmt:message key="footer.scraperInfo" /></a></dd>
 				<dd><a href="${helpLangUrl}/Integration"><fmt:message key="more"/></a></dd>
 			</dl>
 						

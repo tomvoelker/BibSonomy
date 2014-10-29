@@ -77,7 +77,7 @@
 		<init-param>
 			<description>The pattern defines, which URLs should not be touched by the filter.</description>
 			<param-name>excludePattern</param-name>
-			<param-value>^/(api|resources|ajax)/.*</param-value>
+			<param-value>^/(api|resources|resources_puma|ajax)/.*</param-value>
 		</init-param>
 	</filter>
 	<filter-mapping>

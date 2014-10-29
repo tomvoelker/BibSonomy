@@ -18,8 +18,8 @@ public class GoldStandardRelationTypeHandlerCallback extends AbstractTypeHandler
 		if (parameter == null) {
 			setter.setInt(GoldStandardRelation.REFERENCE.getValue());
 		} else {
-			final GoldStandardRelation privlevel = (GoldStandardRelation) parameter;
-			setter.setInt(privlevel.getValue());
+			final GoldStandardRelation relation = (GoldStandardRelation) parameter;
+			setter.setInt(relation.getValue());
 		}
 	}
 

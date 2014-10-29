@@ -28,7 +28,11 @@
 				<c:set var="user" value="${command.user}" />
 				<c:choose>
 					<c:when test="${empty command.oauthUserInfo}">
-						<fmt:message key="oauth.noToken"/>
+						<bs:alert style="info">
+							<jsp:attribute name="alertBody">
+								<fmt:message key="oauth.noToken" />
+							</jsp:attribute>
+						</bs:alert>
 					</c:when>
 					<c:otherwise>
 				

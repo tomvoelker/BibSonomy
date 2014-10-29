@@ -2,17 +2,21 @@
 <jsp:root version="2.0"
 	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
-    xmlns:register="urn:jsptagdir:/WEB-INF/tags/bstags/actions/register"
-    xmlns:actions="urn:jsptagdir:/WEB-INF/tags/bstags/actions"
-	>
+	xmlns:register="urn:jsptagdir:/WEB-INF/tags/bstags/actions/register"
+	xmlns:actions="urn:jsptagdir:/WEB-INF/tags/bstags/actions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<actions:getting_started command="${command}">
-		<jsp:attribute name="registrationSuccessful">
+		<jsp:attribute name="confirmationMailFragment">
 			<h1><fmt:message key="register.success.heading"/></h1>
 			<div class="lead">
-				<p><fmt:message key="register.success" ><fmt:param value="${command.context.loginUser.name}"/></fmt:message> &#160; <fmt:message key="register.success.text" /></p>
+				<p>
+					<fmt:message key="register.success" >
+						<fmt:param value="${command.context.loginUser.name}"/>
+					</fmt:message> &#160; <fmt:message key="register.success.text" />
+				</p>
 			</div>
 		</jsp:attribute>
 	</actions:getting_started>

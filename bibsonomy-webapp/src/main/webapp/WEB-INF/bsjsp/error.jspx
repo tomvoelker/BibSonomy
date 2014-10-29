@@ -8,8 +8,8 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-    xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
-    xmlns:spring="http://www.springframework.org/tags"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
+	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -18,22 +18,10 @@
 	<layout:paneLayout pageTitle="An error occured!" requPath="" command="${command}" headerMessageKey="error" showPageOptions="${true}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="error"/>
-		</jsp:attribute>	
-		
-		<jsp:attribute name="content">
-            <errors:global errors="${errors}"/>
 		</jsp:attribute>
 		
-		<jsp:attribute name="pageOptions">
-            	<spring:hasBindErrors name="command">
-					<c:if test="${not empty errors.globalErrors}">
-						<ul>
-							<li><fmt:message key="error.report"/>${mtl:ch('nbsp')}:${mtl:ch('nbsp')}<parts:email address="${properties['project.email']}" subject="[${command.context.loginUser.name}] error on /${requPath}" body="${errors.globalErrors}"/></li>
-						</ul>
-					</c:if>
-				</spring:hasBindErrors>		
-		</jsp:attribute>		
-						
+		<jsp:attribute name="content">
+			<errors:global dismissible="${false}"/>
+		</jsp:attribute>
 	</layout:paneLayout>
-
 </jsp:root>

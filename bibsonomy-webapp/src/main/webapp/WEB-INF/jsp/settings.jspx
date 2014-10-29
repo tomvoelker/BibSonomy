@@ -42,7 +42,7 @@
 				<c:when test="${command.selTab == 2}">
 					<settings:import command="${command}"/>
 				</c:when>
-				<c:when test="${command.selTab == 3 and (command.hasOwnGroup or not (empty param.user or empty param.requGroup or param.requGroup eq command.context.loginUser.name))}">
+				<c:when test="${command.selTab == 3}">			
 					<settings:group command="${command}"/>
 				</c:when>
 				<c:when test="${command.selTab == 4 and not command.user.spammer}">
@@ -84,7 +84,7 @@
 			<ul>
 				<!-- loginUser.groups -->
 				<li>
-					<span class="sidebar_h "><a href="/groups"><fmt:message key="groups"/></a></span>
+					<span class="sidebar_h "><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="groups"/></a></span>
 					<ul class="sidebar_collapse_content">
 					<c:forEach var="group" items="${command.context.loginUser.groups}">
 						<li>

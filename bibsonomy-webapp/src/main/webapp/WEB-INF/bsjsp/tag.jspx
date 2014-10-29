@@ -9,12 +9,22 @@
 	xmlns:users="urn:jsptagdir:/WEB-INF/tags/bstags/users"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts">
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<fmt:message var="headline" key="page.tag.headline" />
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" headline="${headline}${command.requestedTags}">
-	
+
+    	<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:crumb nameKey="navi.tag" />
+					<nav:tagcrumb requestedTags="${command.requestedTags}" active="${true}" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.tag" formAction="/tag/" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="afterInput">
