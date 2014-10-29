@@ -2,7 +2,8 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:jsp="http://java.sun.com/JSP/Page">
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	
@@ -11,7 +12,8 @@
 	   		<c:out value="${post.description} "/>&#183;
 	   	</c:when>
 		<c:otherwise>
-			<a rel="nofollow" href="${fn:escapeXml(post.resource.url)}"><c:out value="${post.resource.url}"/></a>
+			<a rel="nofollow" href="${fn:escapeXml(post.resource.url)}"
+data-versiondate="${mtl:formatDateW3CDTF(post.date)}"><c:out value="${post.resource.url}"/></a>
 		</c:otherwise>
 	</c:choose>
 </jsp:root>
