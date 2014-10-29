@@ -42,7 +42,7 @@
 				    		<div class="fsRow" style="float:left">
 								<c:choose>
 									<c:when test="${command.isGroup}">
-										<select class="changeLayout">
+										<select id="changeLayout">
 										    <option data-layout='LAYOUT_CURRENT' value="${curr}">${curr}</option>
 											<option data-layout="LAYOUT_G_DEFAULT_I_EN" value="${def1en}">${def1en}</option>
 											<option data-layout="LAYOUT_G_DEFAULT_I_GER" value="${def1ger}">${def1ger}</option>
@@ -50,7 +50,7 @@
 									</c:when>
 									
 									<c:otherwise>
-										<select class="changeLayout">
+										<select id="changeLayout">
 										    <option data-layout='LAYOUT_CURRENT' value="${curr}">${curr}</option>
 											<option data-layout='LAYOUT_DEFAULT_I_EN' value="${def1en}">${def1en}</option>
 											<option data-layout='LAYOUT_DEFAULT_I_GER' value="${def1ger}">${def1ger}</option>
@@ -61,15 +61,13 @@
 									</c:otherwise>
 								</c:choose>
 							</div>
-						    <div style="float: right; height: 30px; width: 80px; text-align: right">
+						    <div style="float: right; text-align: right">
 						    	<div id="saveButtonField">
 								    <input type="button" href='#' onclick="return submitWiki('save');" value="${save}" />
 						    	</div>
 								<div id="statusField">
-									<div id="statusText"><!-- keep me --></div>
-<!-- 									<div style="float:right; display: inline-block"> -->
 									<img src="${resdir}/image/ajax_loader.gif" alt="wait" id="loadingDiv" />
-<!-- 									</div> -->
+									<div id="statusText"><!-- keep me --></div>
 								</div>
 						    </div>
 					    </div>
@@ -81,14 +79,14 @@
 							<input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}" />
 							<fieldset class="fsInner">
 								<legend>
-									<div id="showAdminField">
+									<div id="showAdmin">
 										<input type="button" value="${show}" id="showAdmin" />
 									</div>
-									<div id="hideAdminField" style="display: none;">
-								    	<input type="button" value="${hide}" id="hideAdmin" />
-								    </div>
-							    </legend>
-								<div id="fsform" style="display: None">
+									<div id="hideAdmin" style="display: none;">
+										<input type="button" value="${hide}" id="hideAdmin" />
+									</div>
+								</legend>
+								<div id="wikiEditArea" style="display: None">
 									<div class="fsRow" id="customdesign">
 										<form:textarea id="wikiTextArea" rows="10" cssClass="fsInput" path="wikiText" />
 									</div>

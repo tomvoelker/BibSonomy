@@ -30,9 +30,6 @@ $(function(){
                         wikiArea.empty();
                         wikiArea.append(renderedWikiText);
                         handleSuccessStatus("changing layout to " + $(this).find("option:selected").text());
-                    } else {
-                        wikiTextArea.val(wikiText);
-                        handleError("We do not want empty CVses! No, my preciousssss")
                     }
                 }
                 // status is not ok.
