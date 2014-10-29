@@ -26,7 +26,8 @@
 	
 				<bsform:fieldset legendKey="register.openid.required" >
 					<jsp:attribute name="content">
-						<bsform:input labelColSpan="3" path="registerUser.name" labelKey="navi.username" />
+						<!-- TODO: Add help messages -->
+						<bsform:input labelColSpan="3" path="registerUser.name" labelKey="navi.username" noHelp="${true}" />
 	
 						<bsform:input labelColSpan="3" path="registerUser.email" labelKey="user.settings.email" noHelp="${true}"/>
 	
