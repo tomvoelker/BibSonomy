@@ -53,15 +53,7 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 			throw new AccessDeniedException("please log in as admin");
 		}	
 		
-		if(generateSharedIndex){
-//			GenerateSharedResourceIndex generator = new GenerateSharedResourceIndex();
-//			generator.setSearchType(SearchType.ELASTICSEARCH);
-//			for(LuceneResourceManager<? extends Resource> manager: luceneResourceManagers){
-//				generator.setLogic((LuceneDBInterface<Resource>) manager.getDbLogic());
-//				generator.setTYPE_NAME(manager.getResourceName());
-//				generator.setResourceConverter((LuceneResourceConverter<Resource>) manager.getResourceConverter());
-//				generator.run();
-//			}		
+		if(generateSharedIndex){	
 			srManager = new SharedResourceManager<Resource>();
 			srManager.setLuceneResourceManagers(luceneResourceManagers);
 			srManager.generateIndex();

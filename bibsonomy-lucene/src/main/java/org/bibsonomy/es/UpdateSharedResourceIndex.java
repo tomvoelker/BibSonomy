@@ -1,5 +1,7 @@
 package org.bibsonomy.es;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -7,9 +9,12 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.document.Document;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
+import org.bibsonomy.lucene.param.comparator.DocumentCacheComparator;
 import org.bibsonomy.model.Resource;
 import org.elasticsearch.action.delete.DeleteResponse;
+import org.elasticsearch.action.deletebyquery.DeleteByQueryResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -26,15 +31,15 @@ import org.elasticsearch.search.sort.SortOrder;
  *            the resource of the index
  */
 public class UpdateSharedResourceIndex<R extends Resource> {
-	private static final Log log = LogFactory.getLog(UpdateSharedResourceIndex.class);
-
+	private static final Log log = LogFactory
+			.getLog(UpdateSharedResourceIndex.class);
 
 	private final String INDEX_NAME = "posts";
 
 	private String TYPE_NAME;
 
 	/** list posts to insert into index */
-	private Set<Map<String, Object>> esPostsToInsert = new TreeSet<Map<String, Object>>();
+	private ArrayList<Map<String, Object>> esPostsToInsert;
 
 	private final ESNodeClient esClient = new ESNodeClient();
 
@@ -49,7 +54,16 @@ public class UpdateSharedResourceIndex<R extends Resource> {
 	 * 
 	 */
 	protected Set<String> usersToFlag;
-	
+
+	/**
+	 * 
+	 */
+	public UpdateSharedResourceIndex() {
+		this.contentIdsToDelete = new LinkedList<Integer>();
+		this.esPostsToInsert = new ArrayList<Map<String, Object>>();
+		this.usersToFlag = new TreeSet<String>();
+	}
+
 	/**
 	 * @return lastLogDate
 	 */
@@ -138,7 +152,7 @@ public class UpdateSharedResourceIndex<R extends Resource> {
 	 * @param lastTasId
 	 *            the lastTasId to set
 	 */
-	
+
 	public void setLastTasId(Integer lastTasId) {
 		this.lastTasId = lastTasId;
 	}
@@ -184,7 +198,7 @@ public class UpdateSharedResourceIndex<R extends Resource> {
 	/**
 	 * @return the esPostsToInsert
 	 */
-	public Set<Map<String, Object>> getEsPostsToInsert() {
+	public ArrayList<Map<String, Object>> getEsPostsToInsert() {
 		return this.esPostsToInsert;
 	}
 
@@ -192,14 +206,14 @@ public class UpdateSharedResourceIndex<R extends Resource> {
 	 * @param postsToInsert
 	 *            the esPostsToInsert to set
 	 */
-	public void setEsPostsToInsert(Set<Map<String, Object>> postsToInsert) {
+	public void setEsPostsToInsert(ArrayList<Map<String, Object>> postsToInsert) {
 		this.esPostsToInsert = postsToInsert;
 	}
 
 	/**
 	 * perform all cached operations to index
 	 */
-	
+
 	public void flush() {
 		synchronized (this) {
 			// ----------------------------------------------------------------
@@ -244,11 +258,12 @@ public class UpdateSharedResourceIndex<R extends Resource> {
 	}
 
 	/**
-	 * @param postsToInsert
+	 * @param esPostsToInsert2
 	 */
-	private void InsertNewPosts(Set<Map<String, Object>> postsToInsert) {
-		for (Map<String, Object> jsonDocument : postsToInsert) {
-			esClient.getClient()
+	private void InsertNewPosts(ArrayList<Map<String, Object>> esPostsToInsert2) {
+		for (Map<String, Object> jsonDocument : esPostsToInsert2) {
+			this.esClient
+					.getClient()
 					.prepareIndex(
 							INDEX_NAME,
 							TYPE_NAME,
@@ -264,8 +279,12 @@ public class UpdateSharedResourceIndex<R extends Resource> {
 	 * @param userName
 	 */
 	private void DeleteIndexForForUser(String userName) {
-		// TODO Dont forget to refresh
 
+		@SuppressWarnings("unused")
+		DeleteByQueryResponse response = this.esClient.getClient().prepareDeleteByQuery(INDEX_NAME)
+				.setTypes(TYPE_NAME).setQuery(QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, userName)).execute()
+				.actionGet();
+//		log.warn(response);
 	}
 
 	/**
@@ -273,7 +292,7 @@ public class UpdateSharedResourceIndex<R extends Resource> {
 	 */
 	@SuppressWarnings("unused")
 	private void DeleteIndexForContentId(Integer contentId) {
-		DeleteResponse response = esClient
+		DeleteResponse response = this.esClient
 				.getClient()
 				.prepareDelete(INDEX_NAME, TYPE_NAME, String.valueOf(contentId))
 				.setRefresh(true).execute().actionGet();
@@ -298,9 +317,9 @@ public class UpdateSharedResourceIndex<R extends Resource> {
 	 * @param contentId
 	 */
 	public void deleteDocumentForContentId(Integer contentId) {
-		synchronized(this) {
+		synchronized (this) {
 			this.contentIdsToDelete.add(contentId);
-		}		
+		}
 	}
 
 	/**
@@ -310,21 +329,20 @@ public class UpdateSharedResourceIndex<R extends Resource> {
 	 * @param username
 	 */
 	public void flagUser(final String username) {
-		synchronized(this) {
+		synchronized (this) {
 			this.usersToFlag.add(username);
 		}
 	}
-	
+
 	/**
-	 * unflag given user as spammer - enabling further posts to be inserted 
+	 * unflag given user as spammer - enabling further posts to be inserted
 	 * 
 	 * @param userName
 	 */
 	public void unFlagUser(final String userName) {
-		synchronized(this) {
+		synchronized (this) {
 			this.usersToFlag.remove(userName);
 		}
 	}
-	
 
 }
