@@ -54,6 +54,7 @@ import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.Author;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
@@ -756,7 +757,7 @@ public class RestLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonRelation(java.lang.String, java.lang.String, org.bibsonomy.model.Person, org.bibsonomy.model.enums.PersonResourceRelation)
 	 */
 	@Override
-	public void removePersonRelation(String longHash, String publicationOwner, Person person, PersonResourceRelation rel) {
+	public void removePersonRelation(String longHash, String publicationOwner, String person, PersonResourceRelation rel) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -774,5 +775,14 @@ public class RestLogic implements LogicInterface {
 	@Override
 	public Person getPersonById(int id) {
 		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getQualifyingPublications(java.lang.String)
+	 */
+	@Override
+	public Map<Person, BibTex> getQualifyingPublications(String personName) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
