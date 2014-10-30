@@ -68,7 +68,7 @@ $(function() {
 });
 
 function setFocus() {
-	var emptyFields = $("input:text").filter(function() { 
+	var emptyFields = $(".content > input:text").filter(function() { 
 		return $(this).val() == ""; 
 	});
 	if (emptyFields.length > 0) {
