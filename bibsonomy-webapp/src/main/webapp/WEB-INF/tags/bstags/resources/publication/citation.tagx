@@ -15,7 +15,7 @@
 		| NOTE: to get this working, the JavaScript code in publication.js to
 		| initialize the TABs is required! Hence, if you re-use this tag file,
 		| ensure that either the JavaScript code is included here (and removed
-		| from publication.js) or ensure that bibtexdetails.js is loaded. 
+		| from publication.js) or ensure that publication.js is loaded. 
 		| 
 		+-->
 	
@@ -35,13 +35,14 @@
 					<c:set var="prefix" value="layout/${citationStyle}" />
 					<c:choose>
 						<c:when test="${isCommunityPost}">
-							<c:set var="exportUrl" value="${relativeUrlGenerator.prefix(prefix).getGoldstandardUrlByInterHash(post.resource.interHash)}" />
+							<!-- TODO: use goldstandard not the first post -->
+							<c:set var="exportUrl" value="${relativeUrlGenerator.prefix(prefix).getGoldstandardUrlByInterHash(post.resource.interHash)}?formatEmbedded=true&amp;items=1" />
 						</c:when>
 						<c:otherwise>
-							<c:set var="exportUrl" value="${relativeUrlGenerator.prefix(prefix).getPublicationUrlByPost(post)}" />
+							<c:set var="exportUrl" value="${relativeUrlGenerator.prefix(prefix).getPublicationUrlByPost(post)}?formatEmbedded=true" />
 						</c:otherwise>
 					</c:choose>
-					<a data-toggle="tab" href="#citation_${citationStyle}" data-formatUrl="${exportUrl}?formatEmbedded=true">
+					<a data-toggle="tab" href="#citation_${citationStyle}" data-formatUrl="${exportUrl}">
 						<fmt:message key="bibtex.citation_format.${citationStyle}" />
 					</a>
 				</li>
@@ -51,10 +52,10 @@
 			<li>
 				<c:choose>
 					<c:when test="${isCommunityPost}">
-						<c:set var="exportUrl" value="${relativeUrlGenerator.prefix('export').getGoldstandardUrlByInterHash(post.resource.interHash)}" />
+						<c:set var="exportUrl" value="${relativeUrlGenerator.prefix('export').getGoldstandardUrlByInterHash(post.resource.interHash)}?formatEmbedded=true&amp;items=1" />
 					</c:when>
 					<c:otherwise>
-						<c:set var="exportUrl" value="${relativeUrlGenerator.prefix('export').getPublicationUrlByPost(post)}" />
+						<c:set var="exportUrl" value="${relativeUrlGenerator.prefix('export').getPublicationUrlByPost(post)}?formatEmbedded=true" />
 					</c:otherwise>
 				</c:choose>
 				<a data-toggle="tab" href="#citation_all" data-formatUrl="${exportUrl}?formatEmbedded=true"><fmt:message key="bibtex.all_exports" /></a>
