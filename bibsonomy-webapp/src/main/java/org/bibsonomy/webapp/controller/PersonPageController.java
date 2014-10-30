@@ -43,16 +43,45 @@ public class PersonPageController extends SingleResourceListController implement
 	@Override
 	public View workOn(final PersonPageCommand command) {
 		
-		switch(command.getRequestedAction()) {
-			case "update": return this.updateAction(command);
-			case "addName": return this.addNameAction(command);
-			case "details": return this.detailsAction(command);
-			case "editRole": return this.editRoleAction(command);
-			case "unlink": return this.unlinkAction(command);
-			case "new": return this.newAction(command);
-			case "show": return this.showAction(command);
-			default: throw new MalformedURLSchemeException("Controller " + this.getClass().toString() + " cant handle action " + command.getRequestedAction());
+		/**
+		 * PreDefinitions (for presentation)
+		 */
+		
+		Person p = new Person();
+		p.setMainName(new PersonName("Max", "Musterman"));
+		p.setAlternateNames(new HashSet<PersonName>());
+		p.getAlternateNames().add(new PersonName("Viktor", "Hemsen"));
+		p.getAlternateNames().add(new PersonName("Max", "Musterman"));
+		command.setPerson(p);
+		
+		if(present(command.getFormAction())) {
+			switch(command.getFormAction()) {
+				case "Save": return this.updateAction(command);
+				case "Add name": return this.addNameAction(command);
+				case "Change role": return this.editRoleAction(command);
+				case "unlink": return this.unlinkAction(command);
+				case "New person": return this.newAction(command);
+				case "Thats me": return this.assignAction(command);
+				default: return this.showAction(command);
+			}
 		}
+		return this.showAction(command);
+		
+	}
+
+
+	/**
+	 * @param command
+	 * @return
+	 */
+	@SuppressWarnings("boxing")
+	private View assignAction(PersonPageCommand command) {
+		
+//		Person p = this.personLogic.getPersonById(Integer.valueOf(command.getRequestedPersonId()));
+//		p.setUser(this.logic.getAuthenticatedUser());
+//		this.personLogic.createOrUpdatePerson(p);
+		
+		return new ExtendedRedirectView("/person/" + command.getRequestedPersonId() + "/" + command.getRequestedPersonName());
 	}
 
 
@@ -63,16 +92,15 @@ public class PersonPageController extends SingleResourceListController implement
 	private View newAction(PersonPageCommand command) {
 		
 		command.setPost(this.logic.getPostDetails(command.getRequestedHash(), command.getRequestedUser()));
-		
-		if(present(command.getFormNewPersonSubmit())) {
+		if(present(command.getFormFirstName()) || present(command.getFormLastName())) {
 			Person person = new Person();
 			person.setMainName(new PersonName(command.getFormFirstName(), command.getFormLastName()));
 			person.setAcademicDegree(command.getFormAcademicDegree());
 			this.personLogic.createOrUpdatePerson(person);
 			
-			return new ExtendedRedirectView("/person/details/" + person.getId() + "/" + PersonNameUtils.serializePersonName(person.getMainName()) + "/" + command.getRequestedHash() + "/" + command.getRequestedUser());
+			return new ExtendedRedirectView("/person/" +command.getRequestedPersonId() + "/" + command.getRequestedPersonName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/AUTHOR");
 		}
-
+		
 		return Views.PERSON_NEW;
 	}
 
@@ -82,13 +110,10 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View unlinkAction(PersonPageCommand command) {
-		if (!present(command.getRequestedHash())) {
-			throw new MalformedURLSchemeException("error.person_page_without_personname");
-		}
 		
 		this.personLogic.removePersonRelation(command.getRequestedHash(), command.getRequestedUser(), command.getRequestedPersonId(), PersonResourceRelation.valueOf(command.getRequestedRole()));
+		return new ExtendedRedirectView("/person/" + command.getRequestedPersonId() + "/" + command.getRequestedPersonName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/AUTHOR");
 		
-		return new ExtendedRedirectView("/person/show/" + command.getRequestedPersonId() + (present(command.getRequestedHash()) ? "/" + command.getRequestedHash() : "") + (present(command.getRequestedUser()) ? "/" + command.getRequestedUser() : ""));
 	}
 
 
@@ -98,10 +123,11 @@ public class PersonPageController extends SingleResourceListController implement
 	 */
 	private View editRoleAction(PersonPageCommand command) {
 		
-		//TODO
-		this.personLogic.createOrUpdatePerson(command.getPerson());
-		
-		return new ExtendedRedirectView("/person/show/" + command.getRequestedPersonId() + (present(command.getRequestedHash()) ? "/" + command.getRequestedHash() : "") + (present(command.getRequestedUser()) ? "/" + command.getRequestedUser() : ""));
+		for(String role : command.getFormRoles()) {
+			this.personLogic.addPersonRelation(command.getRequestedHash(), command.getRequestedUser(), command.getRequestedPersonId(), PersonResourceRelation.valueOf(role));
+		}
+				
+		return new ExtendedRedirectView("/person/" + command.getRequestedPersonId() + "/" + command.getRequestedPersonName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/AUTHOR");	
 	}
 
 
@@ -111,27 +137,27 @@ public class PersonPageController extends SingleResourceListController implement
 	private View updateAction(PersonPageCommand command) {
 		
 		command.getPerson().setAcademicDegree(command.getFormAcademicDegree());
-		//TODO
-		//command.getPerson().setMainName(command.getFormSelectedName());
-		
+		PersonName pn = new PersonName();
+		pn.setFirstName(command.getFormSelectedName().split(",")[1].trim());
+		pn.setLastName(command.getFormSelectedName().split(",")[0].trim());
+		command.getPerson().setMainName(pn);
 		this.personLogic.createOrUpdatePerson(command.getPerson());
 		
-		return new ExtendedRedirectView("/person/show/" + command.getRequestedPersonId() + (present(command.getRequestedHash()) ? "/" + command.getRequestedHash() : "") + (present(command.getRequestedUser()) ? "/" + command.getRequestedUser() : ""));
+		
+		return new ExtendedRedirectView("/person/" + command.getRequestedPersonId() + "/" + command.getRequestedPersonName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/AUTHOR");
 	}
 
-
 	/**
-	 * @param requestedPersonId
-	 * @param user
+	 * 
 	 * @param command
-	 * @return 
 	 */
 	private View addNameAction(PersonPageCommand command) {
-		command.getPerson().setAcademicDegree(command.getFormAcademicDegree());
+		
 		command.getPerson().getAlternateNames().add(new PersonName(command.getFormFirstName(), command.getFormLastName()));
 		this.personLogic.createOrUpdatePerson(command.getPerson());
 		
-		return new ExtendedRedirectView("/person/show/" + command.getRequestedPersonId() + (present(command.getRequestedHash()) ? "/" + command.getRequestedHash() : "") + (present(command.getRequestedUser()) ? "/" + command.getRequestedUser() : ""));
+		return new ExtendedRedirectView("/person/" +command.getRequestedPersonId() + "/" + command.getRequestedPersonName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/AUTHOR");
+
 	}
 	
 	/**
@@ -141,18 +167,6 @@ public class PersonPageController extends SingleResourceListController implement
 	 * add person to thesis
 	 */
 
-
-	/**
-	 * @param command
-	 * @return
-	 */
-	private View detailsAction(PersonPageCommand command) {
-
-		command.setPost(this.logic.getPostDetails(command.getRequestedHash(), command.getRequestedUser()));
-		
-		return Views.PERSON_DETAILS;
-	}
-
 	/**
 	 * @param command
 	 * @return
@@ -160,12 +174,12 @@ public class PersonPageController extends SingleResourceListController implement
 	private View showAction(PersonPageCommand command) {
 		//command.setPerson(this.personLogic.getPersonById(Integer.parseInt(command.getRequestedPersonId())));
 		Person p = new Person();
-		p.setMainName(new PersonName("Christian", "Pfeiffer"));
+		p.setMainName(new PersonName("Max", "Musterman"));
 		p.setAlternateNames(new HashSet<PersonName>());
 		p.getAlternateNames().add(new PersonName("Viktor", "Hemsen"));
+		p.getAlternateNames().add(new PersonName("Max", "Musterman"));
 		command.setPerson(p);
 		
-		//TODO set correct parameters
 		command.setThesis(this.logic.getPosts(BibTex.class, GroupingEntity.PERSON_GRADUTED, null, null, null, command.getRequestedPersonId(), null, null, null, null, 0, 3));
 		command.setAdvisedThesis(this.logic.getPosts(BibTex.class, GroupingEntity.PERSON_ADVISOR, null, null, null, command.getRequestedPersonId(), null, null, null, null, 0, 3));
 		command.setAllPosts(this.logic.getPosts(BibTex.class, GroupingEntity.USER, command.getRequestedPersonId(), null, null, null, null, null, null, null, 0, 3));

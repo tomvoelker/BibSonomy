@@ -26,12 +26,6 @@ public class DisambiguationPageController extends SingleResourceListController i
 	@Override
 	public View workOn(final DisambiguationPageCommand command) {
 		
-		/**
-		 * preprocessing
-		 */
-		
-		command.setPost(this.logic.getPostDetails(command.getRequestedHash(), command.getRequestedUser()));
-		
 		switch(command.getRequestedAction()) {
 			case "redirected" : return this.redirectAction(command);
 			case "link" : return this.linkAction(command);
@@ -47,13 +41,6 @@ public class DisambiguationPageController extends SingleResourceListController i
 	 */
 	private View detailsAction(DisambiguationPageCommand command) {
 
-		/**
-		 * TODO
-		 * differ between 	intrahash+user
-		 * 					interhash
-		 * 
-		 * 
-		 */
 		command.setPost(this.logic.getPostDetails(command.getRequestedHash(), command.getRequestedUser()));
 		PersonName pn = new PersonName(command.getRequestedAuthorName().split(",")[1], command.getRequestedAuthorName().split(",")[0]);
 		command.setSuggestedPersons(this.logic.getPersons(null, null, pn, PersonResourceRelation.valueOf(command.getRequestedRole())));
@@ -67,32 +54,22 @@ public class DisambiguationPageController extends SingleResourceListController i
 	}
 	
 	private View redirectAction(DisambiguationPageCommand command) {
-		
-		/** 
-		 * intrahash + user or interhash (starts with 1)
-		 * TODO
-		 * 1. 	Check if hash is interhash or intrahash
-		 * 2. 	if intrahash, set current user to author of this post
-		 * 			redirect to personPage
-		 * 		else
-		 * 			redirect to persondisambiguationPage		
-		 *  
-		 */
+
 		PersonName pn = new PersonName(command.getRequestedAuthorName().split(",")[1],command.getRequestedAuthorName().split(",")[0]);
 		List<Person> matchingPersons = this.personLogic.getPersons(command.getRequestedHash(), command.getRequestedUser(), pn, PersonResourceRelation.valueOf(command.getRequestedRole()));
 		
 		if(matchingPersons.size() > 0 ) {
 			log.warn("Too many persons for " + command.getRequestedHash());
-			return new ExtendedRedirectView("/person/details/"+ PersonNameUtils.serializePersonName(matchingPersons.get(0).getMainName()) + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/" + command.getRequestedRole());	
+			return new ExtendedRedirectView("/person/"+ PersonNameUtils.serializePersonName(matchingPersons.get(0).getMainName()) + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/" + command.getRequestedRole());	
 		}
 		
-		return new ExtendedRedirectView("/persondisambiguation/details/" + matchingPersons.get(0).getId() + "/" + command.getRequestedAuthorName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/" + command.getRequestedRole());
+		return new ExtendedRedirectView("/persondisambiguation/details/" + command.getRequestedAuthorName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/" + command.getRequestedRole());
 
 	}
 	
 	private View linkAction(DisambiguationPageCommand command) {
 		
-		this.personLogic.addPersonRelation(command.getRequestedHash(), command.getRequestedUser(), this.personLogic.getPersonById(Integer.parseInt(command.getFormAddPersonId())), PersonResourceRelation.valueOf(command.getRequestedRole()));	
+		this.personLogic.addPersonRelation(command.getRequestedHash(), command.getRequestedUser(), command.getFormAddPersonId(), PersonResourceRelation.valueOf(command.getRequestedRole()));	
 		
 		return new ExtendedRedirectView("/persondisambiguation/details/"+command.getRequestedAuthorName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/" + command.getRequestedRole());
 	}

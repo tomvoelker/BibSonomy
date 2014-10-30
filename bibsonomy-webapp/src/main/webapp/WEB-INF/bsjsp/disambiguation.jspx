@@ -161,31 +161,34 @@
 		aria-labelledby="otherPersonLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
-				<form action="/persondisambiguation/link/${command.requestedAuthorName}/${command.requestedHash}/${command.requestedUser}/${command.requestedRole}" method="post" name='editRoleForm' class='form-horizontal'>
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal"
 							aria-hidden="true">&amp;times;</button>
 						<h4 class="modal-title">Add Person to thesis</h4>
 					</div>
+					
 					<div class="modal-body">
-          				<FIELDSET>
+          				<fieldset>
           					<div class="form-group">
 								<label for='addPersonAuto' class="control-label col-xs-3">Person</label>
         						<div class="col-xs-7">
         							<div class='input-group'>
 										<input class='form-control typeahead' id='addPersonAuto' type='text' name='addPersonAuto' autocomplete="off"/>
-										<input type='hidden' id='formAddPersonId' name='formAddPersonId' value='0'/>
 									</div>
 								</div>
 							</div>
-						</FIELDSET>
+						</fieldset>
 					</div>
 					<div class="modal-footer">
-						<a class='pull-left' href='/person/new/null/null/${command.requestedHash}/${command.requestedUser}'>new Person</a>
+						<form action="/person/null/${command.requestedAuthorName}/${command.requestedHash}/${command.requestedUser}/${command.requestedRole}" method="post">
+							<input type="submit" class="btn btn-primary pull-left" name='formAction' value='New person' />
+						</form>
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<input type="submit" class="btn btn-primary" id='formAddPersonSubmit' name='formAddPersonSubmit' value='Add' />
+						<form action="/persondisambiguation/link/${command.requestedAuthorName}/${command.requestedHash}/${command.requestedUser}/${command.requestedRole}" method="post" name='editRoleForm' class='form-horizontal'>
+							<input type='hidden' id='formAddPersonId' name='formAddPersonId' value='0'/>
+							<input type="submit" class="btn btn-primary" name='formAction' value='Add person' />
+						</form>
 					</div>
-				</form>
 			</div>
 		</div>
 	</div>

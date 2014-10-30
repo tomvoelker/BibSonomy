@@ -86,10 +86,6 @@
 							<div class="col-xs-6">
 								<input class='form-control' type="text" name='formFirstName' id='formFirstName' placeholder="First name" value="${command.person.mainName.firstName}"/>
 							</div>
-							<label class="control-label col-xs-4" for='formMiddleName'>Middle name</label>
-							<div class="col-xs-6">
-								<input class='form-control' type="text" name='formMiddleName' id='formMiddleName' placeholder="Middle name" value="${command.person.mainName.middleName }"/>
-							</div>
 							<label class="control-label col-xs-4" for='formLastName'>Last name</label>
 							<div class="col-xs-6">
 								<input class='form-control' type="text" name='formLastName' id='formLastName' placeholder="Last name" value="${command.person.mainName.lastName }"/>
@@ -99,7 +95,7 @@
 						<div class='col-xs-4'><span></span></div>
 						<div class="col-xs-6">
 							<div class='btn-group'>
-								<input type='submit' name='formNewPersonSubmit' id='formNewPersonSubmit' value='New' class='btn btn-primary'/>
+								<input type='submit' name='formAction' value='New person' class='btn btn-primary'/>
 							</div>
 						</div>
 					</form>
@@ -108,103 +104,4 @@
 		</jsp:attribute>
 	
 	</layout:paneLayout>
-	
-	
-	  <!-- Modal -->
-  <div class="modal fade" id="addName" tabindex="-1" role="dialog" aria-labelledby="addNameLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
-          <h4 class="modal-title">Add new Name to Person</h4>
-        </div>
-        <div class="modal-body">
-          	<form action="/person/addName/${command.myUrl}" method="post" id='addNameForm' name="addNameForm" class='form-horizontal'>
-				<fieldset>
-					<div class="form-group">
-						<label class="control-label col-xs-3" for='formGivenName'>Givenname</label>
-						<div class="col-xs-7">
-					  		<input type="text" class="form-control" placeholder="Givenname" name='formGivenName' id='formGivenName'/>
-					  	</div>
-
-						<label class="control-label col-xs-3" for='formSurName'>Surname</label>
-						<div class="col-xs-7">
-					  		<input type="text" class="form-control" placeholder="Surname" name='formSurName' id='formSurName'/>
-					  	</div>
-					</div>
-				</fieldset>
-			</form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" id='addNameSubmit'>Add Person</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
- <div class="modal fade" id="editRole" tabindex="-1" role="dialog" aria-labelledby="editRoleLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
-          <h4 class="modal-title">Change role of Person</h4>
-        </div>
-        <div class="modal-body">
-          	<form  action="" method="post" name='editRoleForm' class='form-horizontal'>
-          		<FIELDSET>
-          			<div class="form-group">
-          				<label class="control-label col-xs-3">Role</label>
-          				
-          				<div class="col-xs-7">
-          					<div class='input-group'>
-								<span class="input-group-addon">
-									<input id='roleBetreuer' type='checkbox' name='formRole[]' value='Betreuer'/>
-								</span>
-								<p class="form-control">Betreuer</p>
-							</div>
-							<div class='input-group'>
-								<span class="input-group-addon">
-									<input id='roleGutachter' type='checkbox' name='formRole[]' value='Gutachter'/>
-								</span>
-								<p class="form-control">Gutachter</p>
-							</div>
-							<div class='input-group'>
-								<span class="input-group-addon">
-									<input id='roleSonstiges' type='checkbox' name='formRole[]' value='Sonstiges'/>
-								</span>
-								<p class="form-control">Sonstiges</p>
-							</div>
-						</div>
-					</div>
-				</FIELDSET>
-			</form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" id='editRoleSubmit'>Save changes</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-    <div class="modal fade" id="unlink" tabindex="-1" role="dialog" aria-labelledby="unlinkLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
-          <h4 class="modal-title">Unlink person from Resource</h4>
-        </div>
-        <div class="modal-body">
-        	<p>Do you really want to unlink the Person?</p>
-          	<form  action="" method="post" name='unlinkForm'><input type='hidden'/></form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-          <button type="button" class="btn btn-primary" id='unlinkSubmit'>Yes</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
 </jsp:root>

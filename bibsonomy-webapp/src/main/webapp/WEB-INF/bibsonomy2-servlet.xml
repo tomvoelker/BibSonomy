@@ -359,11 +359,11 @@
 								<value>requestedAction</value>
 								<value>requestedHash</value>
 								<value>requestedUser</value>
-								<value>formRole</value>
+								<value>formAction</value>
+								<value>formRoles</value>
 								<value>formFirstName</value>
 								<value>formMiddleName</value>
 								<value>formLastName</value>
-								<value>formNewPersonSubmit</value>
 								<value>formSelectedName</value>
 								<value>formAcademicDegree</value>
 							</list>

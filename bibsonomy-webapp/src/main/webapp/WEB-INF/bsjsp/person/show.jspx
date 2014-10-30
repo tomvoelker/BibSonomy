@@ -39,7 +39,6 @@
 
 		<jsp:attribute name="headerExt">
 			<script type='text/javascript' src='/resources/javascript/person/addName.js'><!-- keep me --></script>
-			<script type='text/javascript' src='/resources/javascript/person/editRole.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/update.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/unlink.js'><!-- keep me --></script>
 			<style type='text/css'>
@@ -66,14 +65,13 @@
 			<div class="page-header">
 				<h1>Person <small>${command.person.mainName.firstName} ${command.person.mainName.lastName}</small></h1>
 			</div>
-		
 			<div id='personInfo' class='panel panel-default'>
 				<div class='panel-heading'>
-					<a data-toggle="collapse" class='collapsed'  data-target="#aboutThisPerson" href='#person'><strong>About</strong></a>
+					<a data-toggle="collapse" data-target="#aboutThisPerson" href='#person'><strong>About</strong></a>
 				</div>
-				<div  id='aboutThisPerson' class='panel-collapse collapse in'>
+				<div  id='aboutThisPerson' class='panel-collapse collapse'>
+					<form method='post' name='personForm' action="" class='form-horizontal'>
 					<div class='panel-body'>
-						<form method='post' name='personForm' action="" class='form-horizontal'>
 							<div class='form-group'>
 								<label class="control-label col-xs-4" for='formAcademicDegree'>Academic Degree</label>
 								<div class="col-xs-6">
@@ -82,14 +80,19 @@
 							</div>
 							<br/>
 							<div class='form-group'>
-								<label class="control-label col-xs-4">Person's alternate names</label>
+								<label class="control-label col-xs-4">Person's alternate names<br/>(Select main name)</label>
 								<div class="col-xs-6">
 									<c:choose>
 										<c:when test="${fn:length(command.person.alternateNames) gt 0}">
-											<c:forEach var='person' items="${command.person.alternateNames}">
-												<div id='${person.firstName}${person.lastName}'>
-													<span class='form-control-static'>${person.firstName} ${person.lastName}</span>	
-												</div>
+											<c:forEach var='name' items="${command.person.alternateNames}">
+												<c:choose>
+													<c:when test="${name.firstName eq command.person.mainName.firstName and name.lastName eq command.person.mainName.lastName}">
+														<div class="checkbox"><label><input type='radio' name='formSelectedName' value='${name.lastName}, ${name.firstName}' checked='checked' /> ${name.firstName} ${name.lastName} </label> &#160;<span onclick='' style='color:darkred;cursor:pointer' href="#" class='glyphicon glyphicon-remove'></span></div>
+													</c:when>
+													<c:otherwise>
+														<div class="checkbox"><label><input type='radio' name='formSelectedName' value='${name.lastName}, ${name.firstName}' /> ${name.firstName} ${name.lastName} </label> &#160;<span onclick='' style='color:darkred;cursor:pointer' href="#" class='glyphicon glyphicon-remove'></span></div>
+													</c:otherwise>
+												</c:choose>
 											</c:forEach>
 										</c:when>
 										<c:otherwise>
@@ -99,15 +102,16 @@
 								</div>
 							</div>
 							<br/>
-						</form>
-						<div class='col-xs-4'><span><button class='btn btn-success'>That's me</button></span></div>
+						<div class='col-xs-4'>&#160;</div>
 						<div class="col-xs-6">
-							<div class='btn-group'>
 								<button type='button' class='btn btn-default' data-toggle="modal" data-target="#addName" href='#addPerson'>Add Name</button>
-								<button type='button' class='btn btn-primary' id='savePersonButton'>Save</button>
+							<div class='btn-group  pull-right'>
+								<input type='submit' name='formAction' class='btn btn-primary' value='Save'/>
+								<input type='submit' name='formAction' class='btn btn-default' value='Thats me'/>
 							</div>
 						</div>
 					</div>
+					</form>
 				</div>
 			</div>
 			
@@ -180,18 +184,20 @@
 							<c:choose>
 								<c:when test="${fn:length(command.allPosts) gt 0}">
 									<c:forEach var="post" items="${command.allPosts}">
-										<div>
-											<div>
-												<a href='/person/details/${command.requestedPersonId}/${command.requestedPersonName}/${post.resource.intraHash}/${command.requestedPersonId}/AUTHOR'>${post.resource.title}</a>
-											</div>
-											<div>
-												<c:forEach var="author" items="${post.resource.author}">
-													<a href="/person/show/${author.lastName}">${author.firstName} ${author.lastName} </a>
-													<a data-toggle='modal' href="#editRole" onclick="editRole('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')">(Betreuer) </a>
-													<a data-toggle='modal' href='#unlink' onclick="unlink('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')" style='color:darkred'>x</a>
-													, 
-												</c:forEach>
-											</div>
+										<div class="title">
+											<pub:title post="${post}">
+												<jsp:attribute name="bibActionButtons">
+													<div class="pull-right">
+														<bib:actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/>
+													</div>
+												</jsp:attribute>
+											</pub:title>
+											<c:forEach var="author" items="${post.resource.author}">
+												<a href="/person/show/${author.lastName}">${author.firstName} ${author.lastName} </a>
+												<a data-toggle='modal' href="#editRole" onclick="editRole('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')">(Betreuer) </a>
+												<a data-toggle='modal' href='#unlink' onclick="unlink('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')" style='color:darkred'>x</a>
+												, 
+											</c:forEach>
 										</div>
 										<HR />
 									</c:forEach>
@@ -217,12 +223,12 @@
   <div class="modal fade" id="addName" tabindex="-1" role="dialog" aria-labelledby="addNameLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
+      <form action="" method="post" id='addNameForm' name="addNameForm" class='form-horizontal'>
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
           <h4 class="modal-title">Add new Name to Person</h4>
         </div>
         <div class="modal-body">
-          	<form action="/person/addName/${command.myUrl}" method="post" id='addNameForm' name="addNameForm" class='form-horizontal'>
 				<fieldset>
 					<div class="form-group">
 						<label class="control-label col-xs-3" for='formGivenName'>Givenname</label>
@@ -236,12 +242,12 @@
 					  	</div>
 					</div>
 				</fieldset>
-			</form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" id='addNameSubmit'>Add Person</button>
+          <input type="submit" class="btn btn-primary" name='formAction' value='Add name'/>
         </div>
+        			</form>
       </div>
     </div>
   </div>
@@ -249,12 +255,12 @@
  <div class="modal fade" id="editRole" tabindex="-1" role="dialog" aria-labelledby="editRoleLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
+        <form  action="" method="post" name='editRoleForm' class='form-horizontal'>
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
           <h4 class="modal-title">Change role of Person</h4>
         </div>
         <div class="modal-body">
-          	<form  action="" method="post" name='editRoleForm' class='form-horizontal'>
           		<FIELDSET>
           			<div class="form-group">
           				<label class="control-label col-xs-3">Role</label>
@@ -262,31 +268,31 @@
           				<div class="col-xs-7">
           					<div class='input-group'>
 								<span class="input-group-addon">
-									<input id='roleBetreuer' type='checkbox' name='formRole[]' value='Betreuer'/>
+									<input id='roleBetreuer' type='checkbox' name='formRoles' value='THESIS_ADVISOR'/>
 								</span>
 								<p class="form-control">Betreuer</p>
 							</div>
 							<div class='input-group'>
 								<span class="input-group-addon">
-									<input id='roleGutachter' type='checkbox' name='formRole[]' value='Gutachter'/>
+									<input id='roleGutachter' type='checkbox' name='formRoles' value='THESIS_REVIEWER'/>
 								</span>
 								<p class="form-control">Gutachter</p>
 							</div>
 							<div class='input-group'>
 								<span class="input-group-addon">
-									<input id='roleSonstiges' type='checkbox' name='formRole[]' value='Sonstiges'/>
+									<input id='roleSonstiges' type='checkbox' name='formRoles' value='OTHER'/>
 								</span>
 								<p class="form-control">Sonstiges</p>
 							</div>
 						</div>
 					</div>
 				</FIELDSET>
-			</form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" id='editRoleSubmit'>Save changes</button>
+          <input type="submit" class="btn btn-primary" name='formAction' value='Change role'/>
         </div>
+              </form>
       </div>
     </div>
   </div>

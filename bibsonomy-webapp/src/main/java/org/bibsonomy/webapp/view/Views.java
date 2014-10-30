@@ -32,9 +32,13 @@ public enum Views implements View {
 	/**
 	 * TODO:
 	 */
-	PERSON("person/person"),
+	PERSON("person/show"),
 	PERSON_NEW("person/new"),
 	PERSON_DETAILS("person/details"),
+	PERSON_ADDNAME("person/addname"),
+	PERSON_EDITROLE("person/editrole"),
+	PERSON_UNLINK("person/unlink"),
+	PERSON_ASSIGN("person/assign"),
 	DISAMBIGUATION("disambiguation"),
 
 	/**

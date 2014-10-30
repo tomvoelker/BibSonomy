@@ -24,8 +24,9 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	private String formFirstName;
 	private String formMiddleName;
 	private String formLastName;
-	private String formRole;
-	private String formNewPersonSubmit;
+	private List<String> formRoles;
+	
+	private String formAction;
 	
 	private Person person;
 	private Post<? extends Resource> post;
@@ -150,15 +151,16 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the formRole
 	 */
-	public String getFormRole() {
-		return this.formRole;
+	public List<String> getFormRoles() {
+		return this.formRoles;
 	}
 
 	/**
+	 * @param formRoles 
 	 * @param formRole the formRole to set
 	 */
-	public void setFormRole(String formRole) {
-		this.formRole = formRole;
+	public void setFormRoles(List<String> formRoles) {
+		this.formRoles = formRoles;
 	}
 
 	/**
@@ -202,20 +204,6 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	 */
 	public void setRequestedRole(String requestedRole) {
 		this.requestedRole = requestedRole;
-	}
-
-	/**
-	 * @return the formNewPersonSubmit
-	 */
-	public String getFormNewPersonSubmit() {
-		return this.formNewPersonSubmit;
-	}
-
-	/**
-	 * @param formNewPersonSubmit the formNewPersonSubmit to set
-	 */
-	public void setFormNewPersonSubmit(String formNewPersonSubmit) {
-		this.formNewPersonSubmit = formNewPersonSubmit;
 	}
 
 	/**
@@ -286,5 +274,19 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	 */
 	public void setAllPosts(List<Post<BibTex>> allPosts) {
 		this.allPosts = allPosts;
+	}
+
+	/**
+	 * @return the formAction
+	 */
+	public String getFormAction() {
+		return this.formAction;
+	}
+
+	/**
+	 * @param formAction the formAction to set
+	 */
+	public void setFormAction(String formAction) {
+		this.formAction = formAction;
 	}
 }
