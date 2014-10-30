@@ -2898,4 +2898,21 @@ public class DBLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonRelation(java.lang.String, java.lang.String, java.lang.String, org.bibsonomy.model.enums.PersonResourceRelation)
+	 */
+	@Override
+	public void removePersonRelation(String longHash, String publicationOwner, String person_ID, PersonResourceRelation rel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getQualifyingPublications(java.lang.String)
+	 */
+	@Override
+	public Map<Person, BibTex> getQualifyingPublications(String personName) {
+		throw new UnsupportedOperationException();
+	}
 }

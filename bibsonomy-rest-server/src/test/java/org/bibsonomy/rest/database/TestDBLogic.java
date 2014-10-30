@@ -1137,7 +1137,7 @@ public class TestDBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonRelation(java.lang.String, java.lang.String, org.bibsonomy.model.Person, org.bibsonomy.model.enums.PersonResourceRelation)
 	 */
 	@Override
-	public void removePersonRelation(String longHash, String publicationOwner, Person person, PersonResourceRelation rel) {
+	public void removePersonRelation(String longHash, String publicationOwner, String person, PersonResourceRelation rel) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -1158,6 +1158,15 @@ public class TestDBLogic implements LogicInterface {
 	 */
 	@Override
 	public Person getPersonById(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getQualifyingPublications(java.lang.String)
+	 */
+	@Override
+	public Map<Person, BibTex> getQualifyingPublications(String personName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
