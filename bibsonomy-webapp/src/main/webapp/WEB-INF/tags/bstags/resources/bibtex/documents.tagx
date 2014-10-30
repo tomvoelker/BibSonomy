@@ -20,10 +20,18 @@
 		</c:when>
 		
 		<c:otherwise>
+		<!-- Quick Fix for a meaningful Link. Please clean up -->
+			<c:set var="bibUrlTemplate" value="/bibtex/${hash.inter.id}${post.resource.interHash}"/>
+			<c:set var="bibTitle" value="${mtl:cleanBibtex(post.resource.title)}"/>
+		
+			<c:if test="${not empty post.user.name}">
+				<c:set var="bibUrlTemplate" value="/bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}"/>
+			</c:if>
+		
 			<!--+
 				| post has no documents => show entrytype + if user logged in link for upload
 				+-->
-				<a href="" class="preview bibtex thumbnail">
+				<a href="${bibUrlTemplate}" title="${fn:escapeXml(bibTitle)}" class="preview bibtex thumbnail">
 					<span class="entrytype ${post.resource.entrytype}"><!-- Keep ME--></span>
 				</a>
 			<!-- 
