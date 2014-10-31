@@ -19,6 +19,7 @@
 	<c:set var="loginUser" value="${command.context.loginUser}" />
 
 	<div id="selTab3" class="tab-pane ${(command.selTab eq 3) ? 'active' : ''}">
+		<!-- TODO: Incorporate this into the group specific settings -->
 		<fieldset class="fsOuter">
 
 			<c:choose>
@@ -222,5 +223,27 @@
 				</c:otherwise>
 			</c:choose>
 		</fieldset>
+		
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+
+		<!-- Request a new group -->
+		<fieldset>
+			<label><h2><fmt:message key="settings.group.reqGroup"/></h2></label>
+			<form:form method="post" action="/updateGroup?action=REQUEST" cssClass="form-horizontal">
+				<input type="hidden" name="ckey" value="${ckey}"/>
+				<input type="hidden" name="operation" value="REQUEST" />
+				<bsform:input path="group.name" labelColSpan="3" inputColSpan="9" />
+				<bsform:textarea path="group.description" rows="4"  labelColSpan="3" inputColSpan="9" />
+				<bsform:textarea path="group.groupRequest.reason" rows="4"  labelColSpan="3" inputColSpan="9" />
+				
+				<div class="col-sm-offset-3" >
+					<bsform:button style="success" size="defaultSize" value="submit${settings.group.reqGroup.button}" type="submit" />
+				</div>
+			</form:form>
+		</fieldset>
+	
+	
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+
 	</div>
 </jsp:root>
