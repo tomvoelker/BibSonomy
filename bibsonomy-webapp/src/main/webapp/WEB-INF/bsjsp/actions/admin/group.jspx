@@ -18,21 +18,21 @@
 	
 	<fmt:message key="navi.admin" var="adminPageTitle" />
 	
-		<jsp:attribute name="breadcrumbs">
-			<nav:breadcrumbs>
-				<jsp:attribute name="crumbs">
-					<nav:account />
-					<nav:crumb nameKey="navi.admin" active="true" />
-				</jsp:attribute>
-			</nav:breadcrumbs>
-		</jsp:attribute>
-
 	<layout:layout 
 		pageTitle="${adminPageTitle} :: Group" 
 		loginUser="${command.context.loginUser}" 
 		requPath="${requPath}"
 		minimizedContentWidth="${true}">
 		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:admin />
+					<nav:crumb nameKey="navi.admin.group" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.admin">
 				<jsp:attribute name="pathPart">
@@ -69,7 +69,7 @@
 						<input type="hidden" value="createGroup" name="action" />
 						<fieldset class="fsInner">
 							<bsform:input path="group.name" helpKey="settings.group.addUser.help" autocomplete="true" labelColSpan="3" inputColSpan="9" />
-							<bsform:input path="group.groupRequest.userName" helpKey="settings.group.addUser.help" autocomplete="true" labelColSpan="3" inputColSpan="9" />
+							<bsform:input path="group.groupRequest.userName" helpKey="settings.group.addUser.help" autocomplete="true" labelColSpan="3" inputColSpan="9" id="designatedAdmin" />
 							<bsform:textarea path="group.groupRequest.reason" labelColSpan="3" inputColSpan="9" />
 							<div class="form-group">
 								<form:label cssClass="col-sm-3 control-label" path="privlevel">
@@ -114,52 +114,13 @@
 				</fieldset>
 			</fieldset>
 			
-			<div id="outerBox">
-				<!--  <h2>Manage Groups</h2> -->
-			
-				<h2><fmt:message key="admin.actions.group"/></h2>
-	    		<!-- Box for adminmessages -->
-		      	<c:if test="${not empty command.adminResponse}">
-					<div class="adminResponse"><c:out value="${command.adminResponse}"/></div>
-			  	</c:if>
-				<form:form name="addgroup" action="${relativeUrlGenerator.getAdminUrlByName('group')}" method="POST">
-					<input type="hidden" value="createGroup" name="action" />
-					<fieldset class="fsInner" style="margin-bottom: 8px;">
-						<div class="fsRow">
-							<form:label cssClass="fsLabel" path="group.name">Group name</form:label>
-				  			<form:input id="selectedGroupName" cssClass="fsInput" tabindex="1" path="group.name"/>
-				  			<div class="dissError"><form:errors path="group.name" /></div>
-			  			</div>
-			  			  
-						<!-- The privacylevel -->
-						<div class="fsRow">
-				      		<form:label cssClass="fsLabel" path="group.privlevel">Privacy</form:label>
-				      		<form:select cssClass="fsInput" tabindex="2" path="group.privlevel" size="1" multiple="false">
-								<c:forEach var="entry" items="${command.privlevel}">
-									<form:option value="${entry.value}" label="${entry.key}" />
-								</c:forEach>
-							</form:select>
-						</div>
-						  
-					 	  <!-- SharedDocuments -->
-						<div class="fsRow">
-							<form:label cssClass="fsLabel" path="group.sharedDocuments">Shared Documents</form:label>
-						    <form:checkbox tabindex="3" path="group.sharedDocuments" checked="checked" />
-						</div>
-						  
-			            <div class="clearfloat p">
-			  				<input type="submit" />
-			  			</div>
-					</fieldset>
-				</form:form>
-			</div>
-				
 			<!-- TODO: Move this to JavaScript-File  -->
+			<!-- Have this working properly, like tag recommendation -->
 			<!--  autocomplete user info box -->
 			<script type="text/javascript">
 			<![CDATA[
 				$(function() {
-					addAutocomplete("#selectedGroupName", '2');
+					addAutocomplete("#designatedAdmin", '2');
 			});
 				function addAutocomplete(id, type) {
 					$(id).autocomplete({
