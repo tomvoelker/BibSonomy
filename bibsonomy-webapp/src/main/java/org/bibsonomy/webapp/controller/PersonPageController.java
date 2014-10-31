@@ -81,7 +81,7 @@ public class PersonPageController extends SingleResourceListController implement
 //		p.setUser(this.logic.getAuthenticatedUser());
 //		this.personLogic.createOrUpdatePerson(p);
 		
-		return new ExtendedRedirectView("/person/" + command.getRequestedPersonId() + "/" + command.getRequestedPersonName());
+		return new ExtendedRedirectView("/person/" +command.getRequestedPersonId() + "/" + command.getRequestedPersonName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/AUTHOR");
 	}
 
 
@@ -182,7 +182,7 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		command.setThesis(this.logic.getPosts(BibTex.class, GroupingEntity.PERSON_GRADUTED, null, null, null, command.getRequestedPersonId(), null, null, null, null, 0, 3));
 		command.setAdvisedThesis(this.logic.getPosts(BibTex.class, GroupingEntity.PERSON_ADVISOR, null, null, null, command.getRequestedPersonId(), null, null, null, null, 0, 3));
-		command.setAllPosts(this.logic.getPosts(BibTex.class, GroupingEntity.USER, command.getRequestedPersonId(), null, null, null, null, null, null, null, 0, 3));
+		command.setAllPosts(this.logic.getPosts(BibTex.class, GroupingEntity.USER, command.getRequestedUser(), null, null, null, null, null, null, null, 0, 3));
 		
 		return Views.PERSON;
 	}

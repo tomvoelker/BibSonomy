@@ -198,8 +198,11 @@
 												<a data-toggle='modal' href='#unlink' onclick="unlink('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')" style='color:darkred'>x</a>
 												, 
 											</c:forEach>
+											<br/>
+											<div class="btn-group btn-group-sm pull-right"><button class='btn btn-primary ' data-toggle="modal" data-target="#linkPerson">Add Person</button></div>
+											<br/>
 										</div>
-										<HR />
+										<hr />
 									</c:forEach>
 								</c:when>
 								<c:otherwise>
@@ -216,10 +219,7 @@
 		</jsp:attribute>
 	
 	</layout:paneLayout>
-	
-	
-	  <!-- Modal -->
-	  <!-- Notfalls nur in Nachname -->
+
   <div class="modal fade" id="addName" tabindex="-1" role="dialog" aria-labelledby="addNameLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -315,5 +315,43 @@
       </div>
     </div>
   </div>
+  
+  <div class="modal fade" id="linkPerson" tabindex="-1" role="dialog"
+		aria-labelledby="linkPersonLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&amp;times;</button>
+						<h4 class="modal-title">Add Person to thesis</h4>
+					</div>
+					
+					<div class="modal-body">
+						<fieldset>
+          					<div class="form-group">
+								<label for='addPersonAuto' class="control-label col-xs-3">Person</label>
+        						<div class="col-xs-7">
+        							<div class='input-group'>
+										<input class='form-control' id='addPersonAuto' type='text' name='addPersonAuto' autocomplete="off"/>
+									</div>
+								</div>
+							</div>
+						</fieldset>
+					</div>
+					<div class="modal-footer">
+						<form action="" method="post">
+							<input type="submit" class="btn btn-primary pull-left" name='formAction' value='New person' />
+						</form>
+						<form action="" method="post" class='form-inline'>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							<input type='hidden' id='formPersonId' name='formPersonId' value='0'/>&#160;
+							<input type='hidden' id='formResourceHash' name='formResourceHash' value=''/>
+							<input type='hidden' id='formResourceUser' name='formResourceUser' value=''/>
+							<input type="submit" class="btn btn-primary" name='formAction' value='Add person' />
+						</form>
+					</div>
+			</div>
+		</div>
+	</div>
   
 </jsp:root>

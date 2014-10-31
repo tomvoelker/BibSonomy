@@ -60,7 +60,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 		
 		if(matchingPersons.size() > 0 ) {
 			log.warn("Too many persons for " + command.getRequestedHash());
-			return new ExtendedRedirectView("/person/"+ PersonNameUtils.serializePersonName(matchingPersons.get(0).getMainName()) + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/" + command.getRequestedRole());	
+			return new ExtendedRedirectView("/person/" + matchingPersons.get(0).getId()  + "/" + PersonNameUtils.serializePersonName(matchingPersons.get(0).getMainName()) + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/" + command.getRequestedRole());	
 		}
 		
 		return new ExtendedRedirectView("/persondisambiguation/details/" + command.getRequestedAuthorName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/" + command.getRequestedRole());
@@ -71,7 +71,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 		
 		this.personLogic.addPersonRelation(command.getRequestedHash(), command.getRequestedUser(), command.getFormAddPersonId(), PersonResourceRelation.valueOf(command.getRequestedRole()));	
 		
-		return new ExtendedRedirectView("/persondisambiguation/details/"+command.getRequestedAuthorName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/" + command.getRequestedRole());
+		return new ExtendedRedirectView("/person/"+command.getFormAddPersonId()+"/"+ command.getRequestedAuthorName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/" + command.getRequestedRole());
 	}
 }
 

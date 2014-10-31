@@ -183,8 +183,8 @@
 						<form action="/person/null/${command.requestedAuthorName}/${command.requestedHash}/${command.requestedUser}/${command.requestedRole}" method="post">
 							<input type="submit" class="btn btn-primary pull-left" name='formAction' value='New person' />
 						</form>
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 						<form action="/persondisambiguation/link/${command.requestedAuthorName}/${command.requestedHash}/${command.requestedUser}/${command.requestedRole}" method="post" name='editRoleForm' class='form-horizontal'>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>&#160;
 							<input type='hidden' id='formAddPersonId' name='formAddPersonId' value='0'/>
 							<input type="submit" class="btn btn-primary" name='formAction' value='Add person' />
 						</form>
