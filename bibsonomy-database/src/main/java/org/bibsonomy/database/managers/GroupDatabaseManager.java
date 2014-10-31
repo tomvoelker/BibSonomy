@@ -14,13 +14,11 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Privlevel;
-import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagSetParam;
-import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.params.WikiParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
@@ -287,7 +285,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @return a new list of groups with special groups removed
 	 */
 	public List<Group> removeSpecialGroups(final List<Group> groups) {
-		final List<Group> newGroups = new ArrayList<Group>();
+		final List<Group> newGroups = new ArrayList<>();
 		for (final Group group : groups) {
 			if (!GroupID.isSpecialGroupId(group.getGroupId()))
 				newGroups.add(group);
@@ -313,7 +311,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		 * are typically in very few groups and with linked lists there is
 		 * probably no much more efficient way to do it.
 		 */
-		final List<Group> commonGroups = new LinkedList<Group>();
+		final List<Group> commonGroups = new LinkedList<>();
 		for (final Group groupOfUserA : groupsOfUserA) {
 			for (final Group groupOfUserB : groupsOfUserB) {
 				if (groupOfUserA.getGroupId() == groupOfUserB.getGroupId()) {
@@ -349,7 +347,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @return A list of groupids
 	 */
 	public List<Integer> getGroupIdsForUser(final String userName, final DBSession session) {
-		if (!present(userName)) return new ArrayList<Integer>();
+		if (!present(userName)) return new ArrayList<>();
 		return this.queryForList("getGroupIdsForUser", userName, Integer.class, session);
 	}
 
@@ -467,7 +465,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		 * check if a user or a pending user exists with that name
 		 * currently every group also has a corresponding user in the system
 		 */
-		User u = new User(normedGroupName);
+//		User u = new User(normedGroupName);
 		final User groupUser = this.getUserDb().getUserDetails(normedGroupName, session);
 		final List<User> pendingUserList = this.getUserDb().getPendingUserByUsername(normedGroupName, 0, Integer.MAX_VALUE, session);
 		
@@ -476,7 +474,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		}
 		
 		// create the user
-		u = UserUtils.getDummyUser(normedGroupName);
+		User u = UserUtils.getDummyUser(normedGroupName);
 		
 		try {
 			session.beginTransaction();
@@ -551,7 +549,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		if (!present(group)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
 		}
-		if(tagset.getSetName().length() == 0 || tagset.getTags().size() == 0){
+		if(tagset.getSetName().isEmpty() || tagset.getTags().isEmpty()){
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Invalid tagset - a tagset must contain a setname and at least one valid tag");
 		}
 

@@ -60,7 +60,9 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		} else if (UPDATE_GROUP.equals(action)) {
 			command.setAdminResponse(updateGroup(command.getGroup()));
 		} else if (CREATE_GROUP.equals(action)) {
-			command.setAdminResponse(createGroup(command.getGroup()));
+			Group g = command.getGroup();
+			command.setAdminResponse(command.getGroup() + " " + g.getGroupRequest());
+//			command.setAdminResponse(createGroup(command.getGroup()));
 		} else if (ACCEPT_GROUP.equals(action)) {
 			final String groupName = command.getGroup().getName();
 			log.debug("accepting group \""+groupName+"\"");

@@ -110,6 +110,8 @@
 								<value>group.name</value>
 								<value>group.privlevel</value>
 								<value>group.sharedDocuments</value>
+								<value>group.groupRequest.userName</value>
+								<value>group.groupRequest.reason</value>
 							</list>
 						</property>
 					</bean>

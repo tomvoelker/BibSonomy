@@ -266,7 +266,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @return The post from the inbox.
 	 * @throws ObjectNotFoundException
 	 */
-	
 	@SuppressWarnings("unchecked")
 	private Post<RESOURCE> getInboxPost(final String loginUserName, final String hash, final String user) throws ObjectNotFoundException {
 		/*
@@ -1009,6 +1008,13 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 */
 	protected Object getSessionAttribute(final String key) {
 		return this.requestLogic.getSessionAttribute(key);
+	}
+
+	/**
+	 * @return The URLGenerator to be used to generate (redirect) URLs.
+	 */
+	public URLGenerator getUrlGenerator() {
+		return this.urlGenerator;
 	}
 
 	/**
