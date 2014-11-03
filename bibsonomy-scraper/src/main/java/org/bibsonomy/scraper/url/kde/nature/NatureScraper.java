@@ -200,8 +200,10 @@ public class NatureScraper extends AbstractUrlScraper {
 		
 		//add author
 		Matcher m_author = author.matcher(content);
-		if(m_author.find())
-			bibtex.append("author = {" + m_author.group(1) + "},\n");
+		if(m_author.find()){
+			String authors = "author = {" + m_author.group(1).trim() + "},\n";
+			bibtex.append(authors.replace(";}", "}").replace(";", " and"));
+		}
 		
 		//add journal
 		Matcher m_journal = journal.matcher(content);
@@ -230,8 +232,8 @@ public class NatureScraper extends AbstractUrlScraper {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date parse = sdf.parse(m_date.group(1));
 	
-			bibtex.append("year = {" + new SimpleDateFormat("yyyy").format(parse) + "},\n");
-			bibtex.append("month = {" + new SimpleDateFormat("MMM").format(parse)+ "},\n");
+			bibtex.append("year = " + new SimpleDateFormat("yyyy").format(parse) + ",\n");
+			bibtex.append("month = " + new SimpleDateFormat("MMM").format(parse).toLowerCase() + ",\n");
 			
 			}catch(ParseException pe){
 				try {

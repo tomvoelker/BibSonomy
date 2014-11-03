@@ -1727,4 +1727,10 @@
 		<BibFile>AkademiaiScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.akademiai.AkademiaiScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_282">
+		<TestDescription>test for nature.com</TestDescription>
+		<URL>http://www.nature.com/news/images-of-the-month-october-2014-1.16228</URL>
+		<BibFile>NatureScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.nature.NatureScraper</Scraper>
+	</URLTest>
 </test:Tests>
