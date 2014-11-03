@@ -70,7 +70,7 @@
 		<li>
 			<span>
 				<strong><fmt:message key="navi.basket"/>:</strong><br />
-				<rc:basket isBasket="${isBasket}" />
+				<rc:clipboard isBasket="${isBasket}" />
 			</span>
 		</li>	
 	</c:if>

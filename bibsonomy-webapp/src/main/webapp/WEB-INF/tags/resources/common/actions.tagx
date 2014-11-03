@@ -74,7 +74,7 @@
 		<div class="listOptionHeading"><fmt:message key="navi.basket"/>:</div>
 		<ul>	
 			<li>
-				<rc:basket isBasket="${isBasket}" />
+				<rc:clipboard isBasket="${isBasket}" />
 			</li>
 		</ul>
 	</c:if>

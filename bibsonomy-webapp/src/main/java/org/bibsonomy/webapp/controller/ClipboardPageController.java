@@ -11,14 +11,12 @@ import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
 
 /**
- * TODO: rename to ClipboardPageController
- * 
  * Controller for the clipboard page
  * - /clipboard
  * 
  * @author Dominik Benz, benz@cs.uni-kassel.de
  */
-public class BasketPageController extends SingleResourceListController implements MinimalisticController<PublicationPageCommand> {
+public class ClipboardPageController extends SingleResourceListController implements MinimalisticController<PublicationPageCommand> {
 
 	@Override
 	public View workOn(final PublicationPageCommand command) {
@@ -42,14 +40,14 @@ public class BasketPageController extends SingleResourceListController implement
 			this.postProcessAndSortList(command, resourceType);
 
 			/*
-			 * set all posts from basket page to "picked" such that their "pick"
+			 * set all posts from clipboard page to "picked" such that their "pick"
 			 * link changes to "unpick"
 			 */
 			for (final Post<? extends Resource> post : command.getListCommand(resourceType).getList()){
 				post.setPicked(true);
 			}
 
-			// the number of items in this user's basket has already been fetched
+			// the number of items in this user's clipboard has already been fetched
 			command.getListCommand(resourceType).setTotalCount(command.getContext().getLoginUser().getBasket().getNumPosts());
 		}	
 

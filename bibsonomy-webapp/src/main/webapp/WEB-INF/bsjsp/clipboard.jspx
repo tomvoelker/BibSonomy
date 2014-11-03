@@ -107,7 +107,7 @@
 		<jsp:attribute name="infobox">
 			<parts:infobox>
 				<jsp:attribute name="infoTextBody">
-		        	<!-- short info, what the basket is -->
+		        	<!-- short info, what the clipboard is -->
 		            <fmt:message key="basket.info"/>                 
 					<p><fmt:message key="basket.info.examples"/></p>
 				</jsp:attribute>
