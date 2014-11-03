@@ -16,6 +16,6 @@
 		<input type="hidden" name="openID" id="openID" value="${url}"/>
 		<!-- TODO: think about it -->
 		<input type="hidden" name="rememberMe" id="rememberMe" value="on"/>
-		<bsform:button type="submit" style="default" value="${name}" size="defaultSize" />
+		<bsform:button type="submit" style="defaultStyle" value="${name}" size="defaultSize" />
 	</form>
 </jsp:root>
