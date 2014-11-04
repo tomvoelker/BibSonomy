@@ -66,7 +66,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	
 	//nasim: should the type be string or error?
 	// maps post's intrahash to its errormessages
-	private Map<String, List<ErrorMessage>> ErrorMessages;
+	private Map<String, List<ErrorMessage>> postsErrorList;
 	//private String[] erroneous_posts;
 	/**
 	 * constructor
@@ -389,18 +389,19 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		this.updateExistingPost = updateExistingPost;
 	}
 
+	
 	/**
-	 * @return the errorMessages
+	 * @return the postsErrorList
 	 */
-	public Map<String, List<ErrorMessage>> getErrorMessages() {
-		return this.ErrorMessages;
+	public Map<String, List<ErrorMessage>> getPostsErrorList() {
+		return this.postsErrorList;
 	}
 
 	/**
-	 * @param errorMessages the errorMessages to set
+	 * @param postsErrorList the postsErrorList to set
 	 */
-	public void setErrorMessages(Map<String, List<ErrorMessage>> errorMessages) {
-		ErrorMessages = errorMessages;
+	public void setPostsErrorList(Map<String, List<ErrorMessage>> postsErrorList) {
+		this.postsErrorList = postsErrorList;
 	}
 
 	

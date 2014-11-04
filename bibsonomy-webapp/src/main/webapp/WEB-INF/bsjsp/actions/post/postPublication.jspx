@@ -97,7 +97,7 @@
 			        					listView="${command.bibtex}" 
 			        					otherPostsUrlPrefix="bla" 
 			        					listViewStartParamName="bibtex.start"
-			        					postsErrorMessages="${command.ErrorMessages}"
+			        					postsErrorMessages="${command.postsErrorList}"
 			        					directEdit="${false}"
 										overwrite="${command.overwrite}"
 										updateExistingPost="${command.updateExistingPost}" >

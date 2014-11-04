@@ -73,7 +73,8 @@ public class PostPublicationController extends AbstractEditPublicationController
 		command.setPost(new Post<BibTex>());
 		command.setAbstractGrouping(GroupUtils.getPublicGroup().getName());
 		command.getPost().setResource(new BibTex());
-		command.setErrorMessages(new LinkedHashMap<String, List<ErrorMessage>>());
+		command.setPostsErrorList(new LinkedHashMap<String, List<ErrorMessage>>());
+		
 		//command.setErroneous_posts
 
 		return command;
@@ -289,7 +290,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			/*
 			 * set visibility of this post for the groups, the user specified
 			 */
-			GroupingCommandUtils.initGroups(command, post.getGroups());
+			//GroupingCommandUtils.initGroups(command, post.getGroups());
 			/*
 			 * hashes have to be set, in order to call the validator
 			 */
@@ -303,7 +304,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 				errorMessage = new DuplicatePostInSnippetErrorMessage("BibTex", post.getResource().getIntraHash());
 				List<ErrorMessage> errorList = new ArrayList<ErrorMessage>();			
 				errorList.add(errorMessage);
-				command.getErrorMessages().put(post.getResource().getIntraHash(), errorList);
+				command.getPostsErrorList().put(post.getResource().getIntraHash(), errorList);
 			}
 		}
 
@@ -332,7 +333,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * We try to store only posts that have no validation errors and are not
 		 * already stored.
 		 */
-		final Map<Post<BibTex>, Integer> postsToStore = this.getPostsWithNoValidationErrors(posts, command.getErrorMessages(),command.isOverwrite());
+		final Map<Post<BibTex>, Integer> postsToStore = this.getPostsWithNoValidationErrors(posts, command.getPostsErrorList(),command.isOverwrite());
 
 		log.debug("will try to store " + postsToStore.size() + " of " + posts.size() + " posts in database");
 		final List<Post<?>> validPosts = new LinkedList<Post<?>>(postsToStore.keySet());
@@ -382,7 +383,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 */
 		ErrorMessage errorMessage;
 		for (int i = 0; i < posts.size(); i++) {
-			final List<ErrorMessage> postErrorMessages = errorMessages.get(posts.get(i).getResource().getIntraHash());
+			List<ErrorMessage> postErrorMessages = errorMessages.get(posts.get(i).getResource().getIntraHash());
 			/*
 			 * check, if this post has field errors
 			 */
@@ -397,12 +398,15 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * we don't have to look for more errors!
 			 */
 			 //posts.get(i).isAlreadyInSnippet()
-			if(!postErrorMessages.isEmpty()){
+			if(present(postErrorMessages) && !postErrorMessages.isEmpty()){
 				test2 = true;
 			}else{
 				test2 = this.isPostDuplicate(posts.get(i), isOverwrite);
 				if(test2){
 					errorMessage = new DuplicatePostErrorMessage("BibTex", posts.get(i).getResource().getIntraHash());
+					if(!present(postErrorMessages)){
+						postErrorMessages = new ArrayList<ErrorMessage>();			
+					}	
 					postErrorMessages.add(errorMessage);
 					errorMessages.put(posts.get(i).getResource().getIntraHash(), postErrorMessages);
 				}

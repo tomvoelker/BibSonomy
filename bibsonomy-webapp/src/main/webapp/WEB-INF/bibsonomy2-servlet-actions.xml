@@ -327,6 +327,7 @@
 								<value>groups</value>
 								<value>ckey</value>
 								<value>tags</value>
+								<value>postsErrorList</value>
 								
 							</list>
 						</property>

@@ -10,8 +10,11 @@
 	
     <!-- shows a short description of a post - only title, author, year - the complete data in a hover-box -->
   
-    <c:out value="${mtl:cleanBibtex(mtl:shortPublicationDescription(post))}" />
-    <c:out value=" "/>
+   <!--   <c:out value="${mtl:cleanBibtex(mtl:shortPublicationDescription(post))}" />-->
+   	<span class="truncatedDesc">
+   		${post.resource.title}, ${post.resource.author}, ${post.resource.year}   		
+   	</span>
+   	<c:out value=" "/>
     <span class="info hidden">...
       <div>
         <div class="ptitle"><bib:title post="${post}"/></div>
@@ -21,6 +24,10 @@
         </span>
       </div>
     </span>
-    
+<!-- 	<input type="text" class="help-popover"/>-->
+			   	
+	<!-- <div class="help help-header hide"> --><!--  --><!-- </div>
+	<div class="help help-content hide"><fmt:message key="batchedit.selection.help" /></div>      
+   	 -->	
 	
 </jsp:root>

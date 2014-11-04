@@ -84,7 +84,7 @@
 			</div>
 		</div>
 		
-		<div class="col-lg-9 col-sm-8">
+		<div class="col-sm-8">
 		    <!-- select box for "other" groups -->
 		    <!-- TODO: allow multiple groups ( multiple="multiples") -->
 			<select name="groups" size="4" class="form-control otherGroupsBox" tabindex="2" >

@@ -1,16 +1,19 @@
 var ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR='input[name="abstractGrouping"]';
 var OTHER_GROUPING_CLASS_SELECTOR=".otherGroupsBox";
+var allNotChecked = false;
 
 $(document).ready(function () {
 	$(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
 	$.each($(".abstractGroupingGroup"),function(b,c){toggleGroupBox(c);});
-	
-		/*
+	$('#selector').find('option:eq(0)').prop("selected", true);
+	$('input[name=abstractGrouping]').prop('disabled', true);
+	//$('.normalizeAlert').toggleClass('hidden',true);
+	/*
 	 * handler to change all sub checkboxes with the select all option
 	 */
 	$('#selectAll').change(function() {
 		var markAllChecked = $(this).is(':checked');
-		alert($('input[name=testCommand]').val());
+		
 		/*
 		 * mega haxxor jquery selector to select input checkboxes with name beginning
 		 * with posts.
@@ -47,77 +50,110 @@ $(document).ready(function () {
 			return;
 		});
 		$('#selectAll').prop('checked', !oneNotChecked);
+		
+		allNotChecked = true;
+		$('input[name^=posts]:checkbox:checked').each(function() {
+			allNotChecked = false;
+			return;
+		});
+		if(!allNotChecked){
+			$('#selector').change();
+		};
+		// if no post is checked, every thing should be hided.
+		if(allNotChecked){
+			$('#selector').find('option:eq(0)').prop("selected", true);
+			$('#selector').change();
+		//	document.getElementById("batchedit").reset();
+		};
+	
 	});
 
 	$('#selector').change(function() {
+		
 		if($(this).val() == 0) {
 			changeTagInputs('input[name^=posts]:checkbox:checked', true);
 			$('input[name=tags]').prop('disabled', true);
 			$('.batchUpdateButton').prop('disabled', true);
-			$('div[id=privacyBox]').prop('disabled',false);
-			//$('.batchUpdateButtonViewable').prop('disabled',true);
-		} else if($(this).val() == 1) {
-			changeTagInputs('input[name^=posts]:checkbox:checked', true);
-			$('input[name=tags]').prop('disabled', false);
-			$('.batchUpdateButton').prop('disabled', false);
-			$('div[id=privacyBox]').prop('disabled',false);
-			//$('.batchUpdateButtonViewable').prop('disabled',true);
+			$('input[name=abstractGrouping]').prop('disabled', true);
+			$('.deleteAlert').toggleClass('invisible', true);
+			$('.deleteAlert').toggleClass('hidden', true);
+			$('.normalizeAlert').toggleClass('invisible', true);
+			$('.normalizeAlert').toggleClass('hidden', true);
+			$('.selectPostAlert').toggleClass('invisible', false);
+			$('.selectPostAlert').toggleClass('hidden', false);
+			
+			$('td[id=viewable]').css({'font-weight':'normal'});
+			$('td[id=yourTags]').css({'font-weight':'normal'});
+			$('td[id=allTags]').css({'font-weight':'normal'});
 		}
-		else if($(this).val() == 2){
-			changeTagInputs('input[name^=posts]:checkbox:checked', false);
-			$('.batchUpdateButton').prop('disabled', false);
-			$('div[id=privacyBox]').prop('disabled',false);
-			//$('.batchUpdateButtonViewable').prop('disabled',true);		
-		} 
-		else if($(this).val() == 3) {
-			changeTagInputs('input[name^=posts]:checkbox:checked', true);
-			$('input[name=tags]').prop('disabled', true);
-			$('.batchUpdateButton').prop('disabled', false);
-			$('div[id=privacyBox]').prop('disabled',false);
-			//$('.batchUpdateButtonViewable').prop('disabled',true);
-		} else if($(this).val() == 4) {
-			var value = true;
-			value = confirm(getString("batchedit.deleteSelected.confirm"));
-			if(!value) {
-				$(this).find('option:eq(0)').prop("selected", true);
+		if(!allNotChecked){
+			$('.selectPostAlert').toggleClass('invisible', true);
+			//$('.selectPostAlert').toggleClass('hidden', true);
+			if($(this).val() == 1) {
 				changeTagInputs('input[name^=posts]:checkbox:checked', true);
+				$('td[id=allTags]').css({'font-weight':'bold'});
+				$('td[id=viewable]').css({'font-weight':'normal'});
+				$('td[id=yourTags]').css({'font-weight':'normal'});
+				$('input[name=tags]').prop('disabled', false);
+				$('.batchUpdateButton').prop('disabled', false);
+				$('input[name=abstractGrouping]').prop('disabled', true);
+				$('.deleteAlert').toggleClass('invisible', true);
+				$('.normalizeAlert').toggleClass('invisible', true);
+			}
+			else if($(this).val() == 2){
+				changeTagInputs('input[name^=posts]:checkbox:checked', false);
+				$('td[id=yourTags]').css({'font-weight':'bold'});
+				$('td[id=viewable]').css({'font-weight':'normal'});
+				$('td[id=allTags]').css({'font-weight':'normal'});
 				$('input[name=tags]').prop('disabled', true);
-				$('.batchUpdateButton').prop('disabled', true);
-			} else {
+				$('.batchUpdateButton').prop('disabled', false);
+				$('input[name=abstractGrouping]').prop('disabled', true);
+				$('.deleteAlert').toggleClass('invisible', true);
+				$('.normalizeAlert').toggleClass('invisible', true);
+				
+			} 
+			else if($(this).val() == 3) {
 				changeTagInputs('input[name^=posts]:checkbox:checked', true);
 				$('input[name=tags]').prop('disabled', true);
 				$('.batchUpdateButton').prop('disabled', false);
-				//$('.batchUpdateButtonViewable').prop('disabled',true);
+				$('input[name=abstractGrouping]').prop('disabled', true);
+				$('.selectPostAlert').toggleClass('hidden', true);
+				$('.deleteAlert').toggleClass('invisible', true);
+				$('.deleteAlert').toggleClass('hidden', true);
+				$('.normalizeAlert').toggleClass('invisible', false);
+				$('.normalizeAlert').toggleClass('hidden', false);
+				
+				$('td[id=viewable]').css({'font-weight':'normal'});
+				$('td[id=yourTags]').css({'font-weight':'normal'});
+				$('td[id=allTags]').css({'font-weight':'normal'});
 			}
-			$('div[id=privacyBox]').prop('disabled',false);
-		} 
-		else if($(this).val() == 5) {
-			changeTagInputs('input[name^=posts]:checkbox:checked', true);
-			$('input[name=tags]').prop('disabled', true);
-			$('.batchUpdateButton').prop('disabled', false);
-			$('div[id=privacyBox]').prop('disabled',false);
-		}
-/*		else {
-			var value = true;
-			
-			if($(this).val() == 3) {
-				value = confirm(getString("batchedit.deleteSelected.confirm"));
-			} else if($(this).val() == 4) {
-				value = confirm(getString("batchedit.ignoreSelected.confirm"));
-			}
-			
-			if(!value) {
-				$(this).find('option:eq(0)').prop("selected", true);
-				changeTagInputs('input[name^=posts]:checkbox:checked', true);
-				$('input[name=tags]').prop('disabled', true);
-				$('.batchUpdateButton').prop('disabled', true);
-			} else {
+			else if($(this).val() == 4) {
+				$('.deleteAlert').toggleClass('invisible', false);	
 				changeTagInputs('input[name^=posts]:checkbox:checked', true);
 				$('input[name=tags]').prop('disabled', true);
 				$('.batchUpdateButton').prop('disabled', false);
-				$('.batchUpdateButtonViewable').prop('disabled',true);
+				$('input[name=abstractGrouping]').prop('disabled', true);
+				$('.selectPostAlert').toggleClass('hidden', true);
+				$('.normalizeAlert').toggleClass('invisible', true);
+				$('.deleteAlert').toggleClass('hidden', false);
+				$('.normalizeAlert').toggleClass('hidden', true);
+				
+				$('td[id=viewable]').css({'font-weight':'normal'});
+				$('td[id=yourTags]').css({'font-weight':'normal'});
+				$('td[id=allTags]').css({'font-weight':'normal'});
+			} 
+			else if($(this).val() == 5) {
+				changeTagInputs('input[name^=posts]:checkbox:checked', true);
+				$('input[name=tags]').prop('disabled', true);
+				$('.batchUpdateButton').prop('disabled', false);
+				$('td[id=viewable]').css({'font-weight':'bold'});
+				$('td[id=yourTags]').css({'font-weight':'normal'});
+				$('td[id=allTags]').css({'font-weight':'normal'});
+				$('input[name=abstractGrouping]').prop('disabled', false);
+				$('.deleteAlert').toggleClass('invisible', true);
+				$('.normalizeAlert').toggleClass('invisible', true);
 			}
-		}*/
+		}
 	});
 });
 	
