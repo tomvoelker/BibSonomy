@@ -195,7 +195,7 @@ public class NatureScraper extends AbstractUrlScraper {
 		// add author
 		final Matcher m_author = author.matcher(content);
 		if (m_author.find())
-		    bibtex.append("author = {" + m_author.group(1).trim().replace(";", " and ") + "},\n");
+			bibtex.append("author = {" + m_author.group(1).trim().replaceAll("[;]*$", "").replace(";", " and ") + "},\n"); 
 		
 		// add journal
 		final Matcher m_journal = journal.matcher(content);
