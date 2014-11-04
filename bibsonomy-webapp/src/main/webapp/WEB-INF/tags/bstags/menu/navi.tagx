@@ -266,16 +266,14 @@
 													<fmt:message key="navi.login" />
 												</a>
 											</li>
+											<li> 
+												<a href="${relativeUrlGenerator.getRegisterUrl()}" title="${titleSpheres}">
+													<span class="fa fa-pencil-square-o"><!-- KEEP ME --></span>
+													<fmt:message key="navi.register" />
+												</a>
+											</li>
 										</c:otherwise>
 									</c:choose>
-									<c:if test="${not properties['project.theme'] eq 'puma'}">
-										<li> 
-											<a href="${relativeUrlGenerator.getRegisterUrl()}" title="${titleSpheres}">
-												<span class="fa fa-pencil-square-o"><!-- KEEP ME --></span>
-												<fmt:message key="navi.register" />
-											</a>
-										</li>
-									</c:if>
 								</c:otherwise>
 							</c:choose>
 						</ul>
