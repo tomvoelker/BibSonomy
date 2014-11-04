@@ -56,50 +56,73 @@
 			</c:if>
 			<ul class="nav nav-tabs" role="tablist">
 				<c:forEach var="authMethod" items="${authConfig}" varStatus="authMethodLoopState">
-	  				<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
-	  				<fmt:message var="tabTitle" key="login.method.${authMethodName}" />
-	  				<!-- we can disable showing certain login methods by storing an empty string for login.method.AUTHMETHODNAME -->
-	  				<c:if test="${not empty tabTitle}">
-            			<li class="${authMethodLoopState.index eq 0 ? ' active' : ''}"><a data-toggle="tab" href="#login_${authMethodName}"><c:out value="${tabTitle}"/></a></li>
-            		</c:if>
-          		</c:forEach>
+					<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+					<c:choose>
+						<c:when test="${not empty command.selTab}">
+							<c:set var='tabActive' value="${(command.selTab == authMethodLoopState.index) ? ' active' : ''}"/>
+						</c:when>
+						<c:otherwise>
+							<c:set var='tabActive' value="${authMethodLoopState.index eq 0 ? ' active' : ''}"/>
+						</c:otherwise>
+					</c:choose>
+					
+					<fmt:message var="tabTitle" key="login.method.${authMethodName}" />
+					<!-- we can disable showing certain login methods by storing an empty string for login.method.AUTHMETHODNAME -->
+					<c:if test="${not empty tabTitle}">
+						<li class="${tabActive}"><a data-toggle="tab" href="#login_${authMethodName}"><c:out value="${tabTitle}"/></a></li>
+					</c:if>
+				</c:forEach>
 			</ul>
 			<div class="tab-content">
 				<c:forEach var="authMethod" items="${authConfig}" varStatus="authMethodLoopState" >
 					<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+					
+					<c:choose>
+						<c:when test="${not empty command.selTab}">
+							<c:set var='tabActive' value="${(command.selTab == authMethodLoopState.index) ? ' active' : ''}"/>
+						</c:when>
+						<c:otherwise>
+							<c:set var='tabActive' value="${authMethodLoopState.index eq 0 ? ' active' : ''}"/>
+						</c:otherwise>
+					</c:choose>
+					
 				
 					<c:if test="${authMethod == 'OPENID'}">
-						<div id="login_${authMethodName}" class="tab-pane${authMethodLoopState.index eq 0 ? ' active' : ''}">
+						<div id="login_${authMethodName}" class="tab-pane${tabActive}">
 							<user:login_openid />
+							<input class="form-control" type="hidden" name="selTab" value="${authMethodLoopState.index}"></input>
 						</div>
 					</c:if>
 				
 					<c:if test="${authMethod == 'INTERNAL'}">
-						<div id="login_${authMethodName}" class="tab-pane${authMethodLoopState.index eq 0 ? ' active' : ''}">
+						<div id="login_${authMethodName}" class="tab-pane${tabActive}">
 							<form:form action="/login_${authMethodName}" id="form_${authMethodName}" method="POST" cssClass="form-horizontal">
 								<user:login_internal/>
+								<input class="form-control" type="hidden" name="selTab" value="${authMethodLoopState.index}"></input>
 							</form:form>
 						</div>	
 					</c:if>
 				
 				
 					<c:if test="${authMethod == 'LDAP'}">
-						<div id="login_${authMethodName}" class="tab-pane${authMethodLoopState.index eq 0 ? ' active' : ''}">
+						<div id="login_${authMethodName}" class="tab-pane${tabActive}">
 							<form:form action="/login_${authMethodName}" id="form_${authMethodName}" method="POST" cssClass="form-horizontal">
 								<user:login_ldap/>
+								<input class="form-control" type="hidden" name="selTab" value="${authMethodLoopState.index}"></input>
 							</form:form>
 						</div>
 					</c:if>
 
 					<c:if test="${authMethod == 'SAML'}">
-						<div id="login_${authMethodName}" class="tab-pane${authMethodLoopState.index eq 0 ? ' active' : ''}">
+						<div id="login_${authMethodName}" class="tab-pane${tabActive}">
 							<form:form action="/login_${authMethodName}" id="form_${authMethodName}" method="POST" cssClass="form-horizontal">
 								<user:login_saml/>
+								<input class="form-control" type="hidden" name="selTab" value="${authMethodLoopState.index}"></input>
 							</form:form>
 						</div>
 					</c:if>
 					
-					<input class="form-control" type="hidden" name="selTab" value="${authMethodLoopState.index}"></input>
+					
 				</c:forEach>
 			</div>
 		</jsp:attribute>
