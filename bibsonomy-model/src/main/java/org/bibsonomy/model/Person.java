@@ -51,9 +51,11 @@ public class Person implements Serializable {
 	private String orcid;
 	/** sameAs relation to a user */
 	private User user;
-	private User modifiedBy;
+	private User changeBy;
 	/** {@link User} who last modified this {@link Person} */
-	private Date modifiedAt;
+	private Date changeDate;
+	
+	private BibTex disambiguatingPublication;
 
 	public Person() {
 		this.alternateNames = new HashSet<PersonName>();
@@ -104,31 +106,31 @@ public class Person implements Serializable {
 	/**
 	 * @return {@link User} who last modified this {@link Person}
 	 */
-	public User getModifiedBy() {
-		return this.modifiedBy;
+	public User getChangeBy() {
+		return this.changeBy;
 	}
 
 	/**
 	 * @param modifiedBy {@link User} who last modified this {@link Person}
 	 */
-	public void setModifiedBy(User modifiedBy) {
-		this.modifiedBy = modifiedBy;
+	public void setChangeBy(User modifiedBy) {
+		this.changeBy = modifiedBy;
 	}
 
 	/**
 	 * @return date of last modification
-	 * @see #getModifiedBy()
+	 * @see #getChangeBy()
 	 */
-	public Date getModifiedAt() {
-		return this.modifiedAt;
+	public Date getChangeDate() {
+		return this.changeDate;
 	}
 
 	/**
 	 * @param modifiedAt date of last modification
-	 * @see #setModifiedBy(User)
+	 * @see #setChangeBy(User)
 	 */
-	public void setModifiedAt(Date modifiedAt) {
-		this.modifiedAt = modifiedAt;
+	public void setChangeDate(Date modifiedAt) {
+		this.changeDate = modifiedAt;
 	}
 	/**
 	 * @return the names
@@ -186,6 +188,14 @@ public class Person implements Serializable {
 	 */
 	public void setOrcid(String orcid) {
 		this.orcid = orcid;
+	}
+
+	public BibTex getDisambiguatingPublication() {
+		return this.disambiguatingPublication;
+	}
+
+	public void setDisambiguatingPublication(BibTex disambiguatingPublication) {
+		this.disambiguatingPublication = disambiguatingPublication;
 	}
 
 }

@@ -1147,15 +1147,15 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		Assert.assertTrue(max.getAlternateNames().contains(new PersonName("Henner", "Schorsche")));
 		Assert.assertEquals(2, max.getAlternateNames().size());
 		Assert.assertEquals("0000-0002-9056-5667", max.getOrcid());
-		Assert.assertEquals(new GregorianCalendar(2014, 8, 13, 19, 21, 10).getTime(), max.getModifiedAt());
-		Assert.assertEquals(new User("jil"), max.getModifiedBy());
+		Assert.assertEquals(new GregorianCalendar(2014, 8, 13, 19, 21, 10).getTime(), max.getChangeDate());
+		Assert.assertEquals(new User("jil"), max.getChangeBy());
 		Assert.assertEquals(new User("hansii"), max.getUser());
 	}
 	
 	private static void assertEqual(final Person expected, Person actual) {
 		CommonModelUtils.assertPropertyEquality(expected, actual, Integer.MAX_VALUE, null, "user", "modifiedBy");
 		Assert.assertEquals(expected.getUser(), actual.getUser());
-		Assert.assertEquals(expected.getModifiedBy(), actual.getModifiedBy());
+		Assert.assertEquals(expected.getChangeBy(), actual.getChangeBy());
 	}
 	
 	@Test
@@ -1177,8 +1177,8 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		// create Person
 		logic1.createOrUpdatePerson(dummyPerson);
 		Assert.assertNotNull(dummyPerson.getId());
-		Assert.assertEquals(new User(TEST_USER_1), dummyPerson.getModifiedBy());
-		Assert.assertTrue(System.currentTimeMillis() - dummyPerson.getModifiedAt().getTime() < 100);
+		Assert.assertEquals(new User(TEST_USER_1), dummyPerson.getChangeBy());
+		Assert.assertTrue(System.currentTimeMillis() - dummyPerson.getChangeDate().getTime() < 100);
 		
 		// assert person exists
 		final List<Person> resultList = logic2.getPersons(null, null, dummyPerson.getMainName(), PersonResourceRelation.MAIN_PERSON_NAME);
@@ -1190,7 +1190,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		setToHenner(resultPerson);
 		final Person henner = resultPerson;
 		logic2.createOrUpdatePerson(henner);
-		Assert.assertEquals(new User(TEST_USER_2), henner.getModifiedBy());
+		Assert.assertEquals(new User(TEST_USER_2), henner.getChangeBy());
 		
 		// assert two persons are found
 		final List<Person> hennerList = logic2.getPersons(null, null, henner.getMainName(), null);

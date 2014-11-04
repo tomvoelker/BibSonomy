@@ -1336,7 +1336,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#addPersonRelation(java.lang.String, java.lang.String, org.bibsonomy.model.Person, org.bibsonomy.model.enums.PersonResourceRelation)
 	 */
 	@Override
-	public void addPersonRelation(String longHash, String publicationOwner, Person person, PersonResourceRelation rel) {
+	public void addPersonRelation(String longHash, String publicationOwner, String personId, PersonResourceRelation rel) {
 		// TODO Auto-generated method stub
 		
 	}

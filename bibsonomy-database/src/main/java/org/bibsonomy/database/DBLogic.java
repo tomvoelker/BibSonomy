@@ -60,6 +60,7 @@ import org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.InboxDatabaseManager;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
+import org.bibsonomy.database.managers.PersonDatabaseManager;
 import org.bibsonomy.database.managers.StatisticsDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.managers.TagRelationDatabaseManager;
@@ -153,6 +154,7 @@ public class DBLogic implements LogicInterface {
 
 	private final UserDatabaseManager userDBManager;
 	private final GroupDatabaseManager groupDBManager;
+	private final PersonDatabaseManager personDBManager;
 	private final TagDatabaseManager tagDBManager;
 	private final AdminDatabaseManager adminDBManager;
 	private final DBSessionFactory dbSessionFactory;
@@ -211,6 +213,7 @@ public class DBLogic implements LogicInterface {
 		this.permissionDBManager = PermissionDatabaseManager.getInstance();
 		this.statisticsDBManager = StatisticsDatabaseManager.getInstance();
 		this.tagRelationsDBManager = TagRelationDatabaseManager.getInstance();
+		this.personDBManager = PersonDatabaseManager.getInstance();
 
 		this.clipboardDBManager = BasketDatabaseManager.getInstance();
 		this.inboxDBManager = InboxDatabaseManager.getInstance();
@@ -2869,43 +2872,77 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
+	@Override
 	public List<Person> getPersonSuggestion(String searchString) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List<Person> getPersons(String longHash, String publicationOwner, PersonName personName, PersonResourceRelation rel) {
-		// TODO Auto-generated method stub
-		return new ArrayList<Person>();
-	}
-
-	public void addPersonRelation(String longHash, String publicationOwner, Person person, PersonResourceRelation rel) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public void removePersonRelation(String longHash, String publicationOwner, Person person, PersonResourceRelation rel) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	public void createOrUpdatePerson(Person person) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	
+	private static final List<Person> personsHack = new ArrayList<Person>();
+	private static int personIds = 4712;
+	
+	static {
+		Person p = new Person();
+		p.setId(4711);
+		p.setAcademicDegree("Dr. rer. nat.");
+		p.setMainName(new PersonName("Gerd", "Stumme"));
+		BibTex pub = new BibTex();
+		pub.setEntrytype("phdthesis");
+		p.setDisambiguatingPublication(pub);
+		personsHack.add(p);
+		Person p2 = new Person();
+		p.setId(4712);
+		p.setAcademicDegree("M.Sc.");
+		p.setMainName(new PersonName("Gerd", "Stumme"));
+		personsHack.add(p);
 	}
 	
-	public Person getPersonById(int id) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonRelation(java.lang.String, java.lang.String, java.lang.String, org.bibsonomy.model.enums.PersonResourceRelation)
-	 */
 	@Override
-	public void removePersonRelation(String longHash, String publicationOwner, String person_ID, PersonResourceRelation rel) {
+	public List<Person> getPersons(String longHash, String publicationOwner, PersonName personName, PersonResourceRelation rel) {
+		List<Person> rVal =  new ArrayList<>();
+		for (Person p : personsHack) {
+			//if ((longhash != null) && (longHash.startsWith("1"))
+			rVal.add(p);
+		}
+		return rVal;
+	}
+
+	@Override
+	public void addPersonRelation(String longHash, String publicationOwner, String personId, PersonResourceRelation rel) {
 		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void removePersonRelation(String longHash, String publicationOwner, String personId, PersonResourceRelation rel) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void createOrUpdatePerson(Person person) {
+		Person p = null;
+		if (person.getId() != null) {
+			p = getPersonById(person.getId());
+		}
+		if (p == null) {
+			if (person.getId() == null) {
+				person.setId(++personIds);
+			}
+			personsHack.add(person);
+		}
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public Person getPersonById(int id) {
+		for (Person p : personsHack) {
+			if ((p.getId() != null) && (p.getId() == id)) {
+				return p;
+			}
+		}
+		return null;
 	}
 
 	/* (non-Javadoc)

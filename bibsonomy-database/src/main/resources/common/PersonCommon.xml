@@ -1,0 +1,12 @@
+PersonDatabaseManager<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PersonCommon">
+	<resultMap id="person" class="person">
+		<result property="id"         column="id"           javaType="java.lang.Integer" />
+		<result property="orcid"      column="orcid"        javaType="string" />
+		<result property="postCount"  column="post_ctr"     javaType="int" />
+		<result property="changedBy"  column="changed_by"   javaType="org.bibsonomy.model.User" />
+		<result property="changeDate" column="change_date"  javaType="java.util.Date" />
+	</resultMap>
+</sqlMap>
