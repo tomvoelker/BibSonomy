@@ -354,6 +354,11 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/settings/group">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="groupSettingsPageController" />
+					</bean>
+				</entry>
 				<entry key="/user">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="userPageController" />
@@ -712,6 +717,11 @@
 		<property name="wikiRenderer" ref="wikiRenderer" />
 		<property name="oauthLogic" ref="oauthLogic"/>
 		<property name="invisibleOAuthConsumers" value="${invisible.oauth.consumers}"/>
+	</bean>
+	
+	<bean id="groupSettingsPageController" class="org.bibsonomy.webapp.controller.GroupSettingsPageController" scope="request">
+		<property name="logic" ref ="logic" />
+		<property name="requestLogic" ref="requestLogic"/>
 	</bean>
 
 	<bean id="userPageController" class="org.bibsonomy.webapp.controller.UserPageController" scope="request" parent="multiResourceListControllerWithTags">

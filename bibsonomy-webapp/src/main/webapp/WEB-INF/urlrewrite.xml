@@ -563,6 +563,14 @@
 		<to last="true">/group</to>
 	</rule>
 
+	<!-- /settings/group/GROUP -->
+	<rule>
+		<name>/settings/group/GROUP</name>
+		<from>^/+settings/+group/+([^/]+)$</from>
+		<set type="parameter" name="requestedGroup">$1</set>
+		<to last="true">/settings/group</to>
+	</rule>
+	
 	<!-- /groups -->
 	<rule>
 		<name>redirect /group/GROUP</name>

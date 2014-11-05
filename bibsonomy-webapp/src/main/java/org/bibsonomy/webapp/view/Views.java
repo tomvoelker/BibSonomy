@@ -81,6 +81,11 @@ public enum Views implements View {
 	GROUPPAGE("group"),
 
 	/**
+	 * group page showing all resources of a specified group
+	 */
+	GROUPSETTINGSPAGE("groupSettings"),
+
+	/**
 	 * group page showing all resources of a specified group and a given tag or
 	 * list of tags
 	 */
