@@ -5,17 +5,19 @@
     Author     : niebler
 -->
 <jsp:root version="2.0"
-	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
-	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
-	xmlns:form="http://www.springframework.org/tags/form"
-	xmlns:button="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
-	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
-	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
+		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+		  xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
+		  xmlns:form="http://www.springframework.org/tags/form"
+		  xmlns:button="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
@@ -27,188 +29,206 @@
 		requPath="${requPath}" 
 		activeTab="settings"
 		minimizedContentWidth="${true}">
-		
+
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
+
+		<jsp:attribute name="breadcrumbs">	
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:account />
+					<nav:crumb nameKey="navi.settings" active="true" />
+					<nav:crumb nameKey="navi.groups" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
 		
 		<jsp:attribute name="content">
+			<c:set var="group" value="${command.group}" />
 			<c:choose>
-				<c:when test="${not empty command.group}">
-					Here we go with the content for group <c:out value="${command.group}" />, baby!
-					<c:set var="group" value="${command.group}" />
-				<c:if test="${group.groupRole eq 'USER' || group.groupRole eq 'MODERATOR' || group.groupRole eq 'ADMINISTRATOR' }">
-					<fieldset>
-						<label><c:out value="${group.name}" /></label>
-						
-						<c:if test="${group.groupRole eq 'ADMINISTRATOR' || group.groupRole eq 'MODERATOR'}">
-							<!-- Invite users -->
-							<bsform:fieldset legendKey="user.name">
-								<jsp:attribute name="content">
-									<form:form cssClass="form-inline" name="groupusers" method="post" action="/updateGroup?ckey=${ckey}">
-										<bsform:input path="username" helpKey="settings.group.inviteUser.help"
-													  labelKey="user.name" autocomplete="${true}" />
-										<input type="hidden" name="groupName" value="${group.name}"/>
-										<input type="hidden" name="operation" value="ADD_INVITED" />
-										<fmt:message var="inviteuser" key="settings.group.inviteUser.button"/>
-										<bsform:button type="submit" size="defaultSize" style="success" value="${inviteuser}" />
-									</form:form>
-								</jsp:attribute>
-							</bsform:fieldset>
-
-							<!-- Invited users -->
-							<bsform:fieldset legendKey="settings.group.pendingInvites">
-								<jsp:attribute name="content">
-									<fmt:message var="revuser" key="settings.group.revUser.button"/>
-									<fmt:message var="revuserTitle" key="settings.group.revUser.button.title"/>
-
-									<c:forEach items="${group.users}" var="member" varStatus="status">
-										<c:if test="${member.groupRole eq 'INVITED'}">
-											<div style="float: left; width: 130px; padding-bottom: 10px;">
-												<a href="${relativeUrlGenerator.getUserUrlByUserName(member.name)}"><img src="${relativeUrlGenerator.getUserPictureUrlByUsername(user.name)}" /><c:out value="${member.name}"/></a><br />
-												<span class="smalltext">(<a href="/updateGroup?operation=remove_invited&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${revuserTitle}">${revuser}</a>)</span>
-											</div>
-										</c:if>
-									</c:forEach>
-								</jsp:attribute>
-							</bsform:fieldset>
-								
-							<!-- Join requests -->
-							<bsform:fieldset legendKey="settings.group.joinRequests">
-								<jsp:attribute name="content">
-									<!-- TODO: when there are no members, show a coresponding message-->
-									<fmt:message var="decuser" key="settings.group.decUser.button"/>
-									<fmt:message var="decuserTitle" key="settings.group.decUser.button.title"/>
-									<fmt:message var="accuser" key="settings.group.accUser.button"/>
-									<fmt:message var="accuserTitle" key="settings.group.accUser.button.title"/>
-
-									<c:forEach items="${group.users}" var="member" varStatus="status">
-										<c:if test="${member.groupRole eq 'REQUESTED'}">
-											<div style="float: left; width: 130px; padding-bottom: 10px;">
-												<a href="${relativeUrlGenerator.getUserUrlByUserName(member.name)}"><img src="${relativeUrlGenerator.getUserPictureUrlByUsername(user.name)}" /><c:out value="${member.name}"/></a><br />
-												<span class="smalltext">(<a href="/updateGroup?operation=accept_join_request&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${accuserTitle}">${accuser}</a>) (<a href="/updateGroup?operation=decline_join_request&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${decuserTitle}">${decuser}</a>)</span>
-											</div>
-										</c:if>
-									</c:forEach>
-								</jsp:attribute>
-							</bsform:fieldset>
-						</c:if>
-						
-						<bsform:fieldset legendKey="settings.group.memberList">
-							<jsp:attribute name="content">
-								<!-- TODO: when there are no members, show a coresponding message-->
-								<fmt:message var="deluser" key="settings.group.delUser.button"/>
-								<fmt:message var="deluserTitle" key="settings.group.delUser.button.title"/>
-
-								<!-- show group member list -->
-								<c:forEach items="${group.users}" var="member" varStatus="status">
-									<c:if test="${member.groupRole ne 'DUMMY' and member.groupRole ne 'REQUESTED' and member.groupRole ne 'INVITED'}">
-										<div style="float: left; width: 130px; padding-bottom: 10px;">
-											<a href="${relativeUrlGenerator.getUserUrlByUserName(member.name)}"><img src="${relativeUrlGenerator.getUserPictureUrlByUsername(user.name)}" /><c:out value="${member.name}"/></a><br />
-											<i><c:out value="${member.groupRole}" /></i><br />
-											<c:if test="${group.groupRole eq 'MODERATOR' || group.groupRole eq 'ADMINISTRATOR'}">
-												<span class="smalltext">(<a href="/updateGroup?operation=remove_user&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>
-												<c:if test="${group.groupRole eq 'ADMINISTRATOR'}">
-													<c:choose>
-														<c:when test="${member.groupRole eq 'USER'}">
-															| <a href="/updateGroup?operation=update_grouprole&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;group.groupRole=moderator&amp;ckey=${ckey}">&#8593;</a>)
-														</c:when>
-														<c:when test="${member.groupRole eq 'MODERATOR'}">
-															| <a href="/updateGroup?operation=update_grouprole&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;group.groupRole=administrator&amp;ckey=${ckey}">&#8593;</a>
-															| <a href="/updateGroup?operation=update_grouprole&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;group.groupRole=user&amp;ckey=${ckey}">&#8595;</a>)
-														</c:when>
-														<c:when test="${member.groupRole eq 'ADMINISTRATOR'}">
-															| <a href="/updateGroup?operation=update_grouprole&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;group.groupRole=moderator&amp;ckey=${ckey}">&#8595;</a>)
-														</c:when>
-													</c:choose>
-												</c:if>
-												</span>
-											</c:if>
-										</div>
-									</c:if>
-								</c:forEach>
-							</jsp:attribute>
-						</bsform:fieldset>
-
-
-						<c:if test="${group.groupRole == 'ADMINISTRATOR'}">
-							<!-- Basic Group Settings -->
-							<bsform:fieldset legendKey="settings.group.settings">
-								<jsp:attribute name="content">
-									<form:form id="groupSettings" cssClass="form-horizontal" method="post" action="/updateGroup">
-										<input type="hidden" name="ckey" value="${ckey}" />
-										<input type="hidden" name="groupName" value="${group.name}"/>
-										<input type="hidden" name="operation" value="update_settings" />
-
-										<div class="form-group">
-											<form:label cssClass="col-sm-3 control-label" path="privlevel">
-												<fmt:message key="settings.group.memberList" />
-											</form:label>
-
-											<div class="col-sm-9">
-												<form:select cssClass="form-control help-popover" path="privlevel">
-													<form:option value="0"><fmt:message key="settings.public" /></form:option>
-													<form:option value="1"><fmt:message key="settings.private" /></form:option>
-													<form:option value="2"><fmt:message key="settings.publicForMembers" /></form:option>
-												</form:select>
-												<div class="help help-header hide"><fmt:message key="settings.group.memberList" /></div>
-												<div class="help help-content hide"><fmt:message key="settings.group.memberList.help" /></div>
-											</div>
-										</div>
-
-										<div class="form-group">
-											<form:label cssClass="col-sm-3 control-label" path="sharedDocuments">
-												<fmt:message key="settings.group.sharedDocuments" />
-											</form:label>
-
-											<div class="col-sm-9">
-												<form:select cssClass="form-control help-popover" path="sharedDocuments">
-													<form:option value="0"><fmt:message key="settings.disabled" /></form:option>
-													<form:option value="1"><fmt:message key="settings.enabled" /></form:option>
-												</form:select>
-
-												<div class="help help-header hide"><fmt:message key="settings.group.sharedDocuments" /></div>
-												<div class="help help-content hide"><p><fmt:message key="settings.group.sharedDocuments.help" /></p></div>
-											</div>
-										</div>
-										<div class="form-group">
-											<div class="col-sm-offset-3 col-sm-9">
-												<fmt:message var="updatesettings" key="settings.updatesettings" />
-												<bsform:button type="submit" style="primary" size="defaultSize" value="${updatesettings}" />
-											</div>
-										</div>
-									</form:form>
-								</jsp:attribute>
-							</bsform:fieldset>
-									
-									
-							<!-- group reporting settings -->
-							<c:if test="${properties['publication.reporting.mode'] eq 'GROUP'}">
-								<bsform:fieldset legendKey="settings.group.reporting">
+				<c:when test="${not empty group}">
+					<c:if test="${group.groupRole eq 'USER' || group.groupRole eq 'MODERATOR' || group.groupRole eq 'ADMINISTRATOR' }">
+						<fieldset class="fsOuter">
+							<c:if test="${group.groupRole eq 'ADMINISTRATOR' || group.groupRole eq 'MODERATOR'}">
+								<!-- Invite users -->
+								<bsform:fieldset legendKey="user.name">
 									<jsp:attribute name="content">
-										<form:form cssClass="form-horizontal" id="groupSettings" method="post" action="/updateGroup">
+										<form:form cssClass="form-inline" name="groupusers" method="post" action="/updateGroup?ckey=${ckey}">
+											<bsform:input path="username" helpKey="settings.group.inviteUser.help"
+														  labelKey="user.name" autocomplete="${true}" />
 											<input type="hidden" name="groupName" value="${group.name}"/>
-											<input type="hidden" name="operation" value="update_group_reporting_settings" />
-											<bsform:fieldset legendKey="settings.group.reporting.mail">
-												<jsp:attribute name="content">
-													<bsform:input path="group.publicationReportingSettings.reportingMailAddress" noHelp="${true}" />
-													<bsform:textarea path="group.publicationReportingSettings.reportingMailTemplate" noHelp="${true}" rows="10" />
-												</jsp:attribute>
-											</bsform:fieldset>
-
-											<bsform:fieldset legendKey="settings.group.reporting.address">
-												<jsp:attribute name="content">
-													<bsform:input path="group.publicationReportingSettings.externalReportingUrl" noHelp="${true}" />
-												</jsp:attribute>
-											</bsform:fieldset>
-											<bsform:button size="defaultSize" style="success" value="settings.group.reporting.update" />
+											<input type="hidden" name="operation" value="ADD_INVITED" />
+											<fmt:message var="inviteuser" key="settings.group.inviteUser.button"/>
+											<bsform:button type="submit" size="defaultSize" style="success" value="${inviteuser}" />
 										</form:form>
 									</jsp:attribute>
 								</bsform:fieldset>
+
+								<!-- Invited users -->
+								<bsform:fieldset legendKey="settings.group.pendingInvites">
+									<jsp:attribute name="content">
+										<fmt:message var="revuser" key="settings.group.revUser.button"/>
+										<fmt:message var="revuserTitle" key="settings.group.revUser.button.title"/>
+										TODO: Beautify this!<br />
+										<c:forEach items="${group.users}" var="member" varStatus="status">
+											<c:if test="${member.groupRole eq 'INVITED'}">
+												<div class="row">
+													<div class="col-sm-2">
+														<user:thumbnail user="${member}" />
+													</div>
+													<div class="column" style="vertical-align: middle">
+														<a href="/updateGroup?operation=remove_invited&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${revuserTitle}" class="btn btn-danger">${revuser}</a>
+													</div>
+												</div>
+											</c:if>
+										</c:forEach>
+									</jsp:attribute>
+								</bsform:fieldset>
+
+								<!-- Join requests -->
+								<bsform:fieldset legendKey="settings.group.joinRequests">
+									<jsp:attribute name="content">
+										<!-- TODO: when there are no members, show a coresponding message-->
+										<fmt:message var="decuser" key="settings.group.decUser.button"/>
+										<fmt:message var="decuserTitle" key="settings.group.decUser.button.title"/>
+										<fmt:message var="accuser" key="settings.group.accUser.button"/>
+										<fmt:message var="accuserTitle" key="settings.group.accUser.button.title"/>
+
+										<c:forEach items="${group.users}" var="member" varStatus="status">
+											<c:if test="${member.groupRole eq 'REQUESTED'}">
+												<div style="float: left; width: 130px; padding-bottom: 10px;">
+													<user:thumbnail user="${member}" /><br />
+													<a class="btn btn-success" href="/updateGroup?operation=accept_join_request&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${accuserTitle}">${accuser}</a> <a class="btn btn-danger" href="/updateGroup?operation=decline_join_request&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${decuserTitle}">${decuser}</a>
+												</div>
+											</c:if>
+										</c:forEach>
+									</jsp:attribute>
+								</bsform:fieldset>
 							</c:if>
-						</c:if>
-					</fieldset>
-				</c:if>
+
+							<bsform:fieldset legendKey="settings.group.memberList">
+								<jsp:attribute name="content">
+									<!-- TODO: when there are no members, show a coresponding message-->
+									<fmt:message var="deluser" key="settings.group.delUser.button"/>
+									<fmt:message var="deluserTitle" key="settings.group.delUser.button.title"/>
+
+									<!-- show group member list -->
+									<c:forEach items="${group.users}" var="member" varStatus="status">
+										<dl>
+										<c:if test="${member.groupRole ne 'DUMMY' and member.groupRole ne 'REQUESTED' and member.groupRole ne 'INVITED'}">
+											<div class="row">
+												<div class="col-md-2">
+													<user:thumbnail user="${member}" /><br />
+													<i><c:out value="${member.groupRole}" /></i>
+												</div>
+												<div class="col-md-10" style="text-align:right">
+													<c:if test="${group.groupRole eq 'MODERATOR' || group.groupRole eq 'ADMINISTRATOR'}">
+														<c:if test="${group.groupRole eq 'ADMINISTRATOR'}">
+															<c:choose>
+																<c:when test="${member.groupRole eq 'USER'}">
+																	<a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;group.groupRole=moderator&amp;ckey=${ckey}">&#8593;</a>
+																	| <a class="btn btn-default disabled">&#8595;</a>
+																</c:when>
+																<c:when test="${member.groupRole eq 'MODERATOR'}">
+																	<a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;group.groupRole=administrator&amp;ckey=${ckey}">&#8593;</a>
+																	| <a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;group.groupRole=user&amp;ckey=${ckey}">&#8595;</a>
+																</c:when>
+																<c:when test="${member.groupRole eq 'ADMINISTRATOR'}">
+																	<a class="btn btn-default disabled">&#8593;</a>
+																	| <a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;group.groupRole=moderator&amp;ckey=${ckey}">&#8595;</a>
+																</c:when>
+															</c:choose>
+														</c:if>
+														| <a class="btn btn-danger" href="/updateGroup?operation=remove_user&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>
+													</c:if>
+												</div>
+											</div>
+										</c:if>
+										</dl>
+									</c:forEach>
+								</jsp:attribute>
+							</bsform:fieldset>
+
+
+							<c:if test="${group.groupRole == 'ADMINISTRATOR'}">
+								<!-- Basic Group Settings -->
+								<bsform:fieldset legendKey="settings.group.settings">
+									<jsp:attribute name="content">
+										<form:form id="groupSettings" cssClass="form-horizontal" method="post" action="/updateGroup">
+											<input type="hidden" name="ckey" value="${ckey}" />
+											<input type="hidden" name="groupName" value="${group.name}"/>
+											<input type="hidden" name="operation" value="update_settings" />
+
+											<div class="form-group">
+												<form:label cssClass="col-sm-3 control-label" path="privlevel">
+													<fmt:message key="settings.group.memberList" />
+												</form:label>
+
+												<div class="col-sm-9">
+													<form:select cssClass="form-control help-popover" path="privlevel">
+														<form:option value="0"><fmt:message key="settings.public" /></form:option>
+														<form:option value="1"><fmt:message key="settings.private" /></form:option>
+														<form:option value="2"><fmt:message key="settings.publicForMembers" /></form:option>
+													</form:select>
+													<div class="help help-header hide"><fmt:message key="settings.group.memberList" /></div>
+													<div class="help help-content hide"><fmt:message key="settings.group.memberList.help" /></div>
+												</div>
+											</div>
+
+											<div class="form-group">
+												<form:label cssClass="col-sm-3 control-label" path="sharedDocuments">
+													<fmt:message key="settings.group.sharedDocuments" />
+												</form:label>
+
+												<div class="col-sm-9">
+													<form:select cssClass="form-control help-popover" path="sharedDocuments">
+														<form:option value="0"><fmt:message key="settings.disabled" /></form:option>
+														<form:option value="1"><fmt:message key="settings.enabled" /></form:option>
+													</form:select>
+
+													<div class="help help-header hide"><fmt:message key="settings.group.sharedDocuments" /></div>
+													<div class="help help-content hide"><p><fmt:message key="settings.group.sharedDocuments.help" /></p></div>
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="col-sm-offset-3 col-sm-9">
+													<fmt:message var="updatesettings" key="settings.updatesettings" />
+													<bsform:button type="submit" style="primary" size="defaultSize" value="${updatesettings}" />
+												</div>
+											</div>
+										</form:form>
+									</jsp:attribute>
+								</bsform:fieldset>
+
+
+								<!-- group reporting settings -->
+								<c:if test="${properties['publication.reporting.mode'] eq 'GROUP'}">
+									<bsform:fieldset legendKey="settings.group.reporting">
+										<jsp:attribute name="content">
+											<form:form cssClass="form-horizontal" id="groupSettings" method="post" action="/updateGroup">
+												<input type="hidden" name="groupName" value="${group.name}"/>
+												<input type="hidden" name="operation" value="update_group_reporting_settings" />
+												<bsform:fieldset legendKey="settings.group.reporting.mail">
+													<jsp:attribute name="content">
+														<bsform:input path="group.publicationReportingSettings.reportingMailAddress" noHelp="${true}" />
+														<bsform:textarea path="group.publicationReportingSettings.reportingMailTemplate" noHelp="${true}" rows="10" />
+													</jsp:attribute>
+												</bsform:fieldset>
+
+												<bsform:fieldset legendKey="settings.group.reporting.address">
+													<jsp:attribute name="content">
+														<bsform:input path="group.publicationReportingSettings.externalReportingUrl" noHelp="${true}" />
+													</jsp:attribute>
+												</bsform:fieldset>
+												<bsform:button size="defaultSize" style="success" value="settings.group.reporting.update" />
+											</form:form>
+										</jsp:attribute>
+									</bsform:fieldset>
+								</c:if>
+							</c:if>
+						</fieldset>
+					</c:if>
 				</c:when>
 				<c:otherwise>
 					No group requested.
@@ -216,7 +236,7 @@
 				</c:otherwise>
 			</c:choose>
 		</jsp:attribute>
-		
+
 	</layout:paneLayout>
 
 </jsp:root>

@@ -10,7 +10,12 @@ import org.bibsonomy.model.User;
 public class GroupSettingsPageCommand extends BaseCommand {
 	
 	private Group group;
-	private User user;
+	private User loggedinUser;
+	private String requestedGroup;
+	
+	private String username;
+	private int privlevel;
+	private int sharedDocuments;
 
 	public Group getGroup() {
 		return group;
@@ -20,14 +25,44 @@ public class GroupSettingsPageCommand extends BaseCommand {
 		this.group = group;
 	}
 
-	public User getUser() {
-		return user;
+	public User getLoggedinUser() {
+		return loggedinUser;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setLoggedinUser(User loggedinUser) {
+		this.loggedinUser = loggedinUser;
 	}
-	
-	
+
+	public String getRequestedGroup() {
+		return requestedGroup;
+	}
+
+	public void setRequestedGroup(String requestedGroup) {
+		this.requestedGroup = requestedGroup;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public int getPrivlevel() {
+		return privlevel;
+	}
+
+	public void setPrivlevel(int privlevel) {
+		this.privlevel = privlevel;
+	}
+
+	public int getSharedDocuments() {
+		return sharedDocuments;
+	}
+
+	public void setSharedDocuments(int sharedDocuments) {
+		this.sharedDocuments = sharedDocuments;
+	}
 	
 }

@@ -1035,7 +1035,7 @@ public class DBLogic implements LogicInterface {
 		}
 
 		// no group specified -> make it public
-		if (groups.size() == 0) {
+		if (groups.isEmpty()) {
 			groups.add(GroupUtils.getPublicGroup());
 		}
 	}

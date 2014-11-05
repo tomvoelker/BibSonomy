@@ -44,8 +44,11 @@
 			<!--+ 
 				| explain what groups are good for
 				+-->
-			<bs:alert style="info">
+			<bs:alert style="info" dismissable="${true}">
 				<jsp:attribute name="alertBody">
+					TODO: Replace this message with something like <b>you can create a new
+						group on the settings page</b> or whatever!!!<br />
+						Also, make this closeable<br/><br />
 					<fmt:message key="system.groups">
 						<fmt:param value="${properties['project.email']}" />
 					</fmt:message>
@@ -97,38 +100,38 @@
 							
 						</dd>
 					</c:if>
-						<c:set var="displayName" value="${group.name}" />
-						<c:if test="${not empty group.realname}">
-							<c:set var="displayName" value="${group.realname}" />
-						</c:if>
-						<dt><span class="sr-only"><c:out value="${group.name}" /></span><img class="img-thumbnail img-resposive user-avatar" src="${relativeUrlGenerator.getUserPictureUrlByUsername(group.name)}"/></dt>
-						<dd>
-							<div class="row">
-								<div class="col-xs-9">
-									<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}">
-										<c:out value="${displayName}"/>
-										<br />
-										<c:if test="${not empty group.homepage}">
-											<small><a href="${mtl:encodeURI(group.homepage)}">Homepage</a></small>
-										</c:if>
-									</a>
-								</div>
-								<div class="col-xs-3">
-									<c:choose>
-										<c:when test="${mtl:contains(command.context.loginUser.groups, group)}">
-											<button class="btn btn-success btn-sm"><span class="fa fa-check"><!-- keep me --></span><c:out value=" "/><span class="infotext"><fmt:message key="group.memberOf" /></span></button>
-											<!-- TODO: add link to leave group, if user is already member -->
-										</c:when>
-										<c:otherwise>
-											<c:url var="joinLink" value="/join_group">
-												<c:param name="group" value="${group.name}" />
-											</c:url>
-											<a href="${joinLink}" class="btn btn-primary btn-sm"><span class="fa fa-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>	
-										</c:otherwise>
-									</c:choose>
-								</div>
+					<dt><span class="sr-only"><c:out value="${group.name}" /></span><img class="img-thumbnail img-resposive user-avatar" src="${relativeUrlGenerator.getUserPictureUrlByUsername(group.name)}"/></dt>
+					<dd>
+						<div class="row">
+							<div class="col-xs-9">
+								<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}">
+									<c:out value="${group.name}"/>
+								</a>
+								<c:if test="${not empty group.realname}">
+									(<c:out value="${group.realname}" />)
+								</c:if>
+								<br />
+								<c:if test="${not empty group.homepage}">
+									TODO: Check if this is possible!<br />
+									<small><a href="${mtl:encodeURI(group.homepage)}">Homepage</a></small>
+								</c:if>
 							</div>
-						</dd>
+							<div class="col-xs-3">
+								<c:choose>
+									<c:when test="${mtl:contains(command.context.loginUser.groups, group)}">
+										<button class="btn btn-success btn-sm"><span class="fa fa-check"><!-- keep me --></span><c:out value=" "/><span class="infotext"><fmt:message key="group.memberOf" /></span></button>
+										<!-- TODO: add link to leave group, if user is already member -->
+									</c:when>
+									<c:otherwise>
+										<c:url var="joinLink" value="/join_group">
+											<c:param name="group" value="${group.name}" />
+										</c:url>
+										<a href="${joinLink}" class="btn btn-primary btn-sm"><span class="fa fa-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>	
+									</c:otherwise>
+								</c:choose>
+							</div>
+						</div>
+					</dd>
 				</c:forEach>
 				</dl>
 			</div>

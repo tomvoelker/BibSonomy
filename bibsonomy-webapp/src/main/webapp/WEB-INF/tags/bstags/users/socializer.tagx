@@ -34,10 +34,7 @@
 		
 		<div class="media" style="border:none;">
 			<!-- user thumbnail -->
-			<a class="pull-left img-thumbnail img-responsive" href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}" title="${username}">
-				<img alt="${username}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(command.requestedUser)}" class="user-avatar"/>
-				<span><c:out value="${username}" /></span>
-			</a>
+			<user:thumbnail user="${command.user}" />
 			
 			<div class="media-body" id="titletext">
 
