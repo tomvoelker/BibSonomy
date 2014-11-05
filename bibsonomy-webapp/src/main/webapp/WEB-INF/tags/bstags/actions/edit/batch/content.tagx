@@ -80,16 +80,21 @@
 			<input type="hidden" name="updateExistingPost" value="${updateExistingPost}" />  
 			<input type="hidden" name="overwrite" value="${overwrite}" /> 
 			<input type="hidden" name="resourcetype" value="${resourceType}" />
-
+						
+			<!-- the following variable is defined to communicate with .js file -->
+			<input type="hidden" name="action"/>
+			
+			<c:choose>
+			<c:when test="${directEdit}">
 			<div class="form-group">
 				<label class="col-sm-3 control-label">
 					<fmt:message key="batchedit.selection.initial"/>
 				</label>
 				<div class="col-sm-9">
-					<select id="selector" class="form-control help-popover" name="action">
+					<select id="selector" class="form-control help-popover">
 						<option value="0"><fmt:message key="batchedit.selection.initial"/></option>
-						<option value="1">Add a tag to all the selected posts</option>
-						<option value="2">Edit each posts' tags separately</option>
+						<option value="1"><fmt:message key="batchedit.EditAllTag"/></option>
+						<option value="2"><fmt:message key="batchedit.EditEachTag"/></option>
 						
 						<c:if test="${resourceType eq 'bibtex'}">
 							<option value="3"><fmt:message key="batchedit.normalizeSelected"/></option>
@@ -97,12 +102,39 @@
 						<c:if test="${updateExistingPost and directEdit}">
 							<option value="4"><fmt:message key="batchedit.deleteSelected"/></option>
 						</c:if>
-						<option value="5">update privacy</option>
+						<option value="5"><fmt:message key="batchedit.updatePrivacy"/></option>
 					</select>
 					<div class="help help-header hide"><!--  --></div>
 					<div class="help help-content hide"><fmt:message key="batchedit.selection.help" /></div>
 				</div>
 			</div>
+			</c:when>
+			<c:otherwise>
+				<table class="table table-striped" style="margin-bottom:0px;">
+				<thead>
+					<th colspan="4">
+						<fmt:message key="batchedit.selection.initial"/>
+					</th>
+				</thead>
+				<tbody>
+				<tr style="border-bottom:2px solid #eee">
+					<td>
+						<input type="checkbox" id="checkboxAllTag"  value="true"/><fmt:message key="batchedit.EditAllTag"/>
+					</td>
+					<td>
+						<input type="checkbox" id="checkboxEachTag" /><fmt:message key="batchedit.EditEachTag"/>
+					</td>
+					<td>
+						<input type="checkbox" id="checkboxNormalize"/><fmt:message key="batchedit.normalizeSelected"/>
+					</td>
+					<td>
+						<input type="checkbox" id="checkboxPrivacy"/><fmt:message key="batchedit.updatePrivacy"/>
+					</td>
+				</tr>
+				</tbody>
+				</table>
+			</c:otherwise>
+			</c:choose>
 			<table class="table table-striped" style="margin-bottom:0px;">
 				<THEAD>
 					<tr>
@@ -125,7 +157,8 @@
 					</tr>
 					<tr>
 						<td colspan="2">
-							<div class="alert alert-warning col-sm-10 invisible deleteAlert" style="margin-bottom:0px;" role="alert"><fmt:message key="batchedit.deleteAlert" /></div>
+							<div class="alert col-sm-10 invisible invisible emptyBlock" style="margin-bottom:0px;" role="alert">I am an empty block to avoid other sections moving</div>
+							<div class="alert alert-warning col-sm-10 invisible hidden deleteAlert" style="margin-bottom:0px;" role="alert"><fmt:message key="batchedit.deleteAlert" /></div>
 							<div class="alert alert-info col-sm-10 invisible hidden normalizeAlert" style="margin-bottom:0px;" role="alert"><fmt:message key="batchedit.normalizeAlert" /></div>
 							<div class="alert alert-info col-sm-10 invisible hidden selectPostAlert" style="margin-bottom:0px;" role="alert"><fmt:message key="batchedit.editHint" /></div>
 							<button type="submit" class="btn btn-primary batchUpdateButton" style="float:right" disabled="disabled"><c:out value="${buttonUpdate}" /></button>
@@ -145,8 +178,14 @@
 				<thead>
 					<tr>
 						<th>
-						<input type="checkbox" id="selectAll" value="true" checked="checked" title="select all"/>
-									
+						<c:choose>
+							<c:when test="${directEdit}">
+								<input type="checkbox" id="selectAll" value="true" checked="checked" title="select all"/>
+							</c:when>
+							<c:otherwise>
+								<input type="checkbox" id="selectAll" value="true" title="select all"/>
+							</c:otherwise>	
+						</c:choose>
 						</th>
 						<th>
 							<fmt:message key="batchedit.yourPosts" />
@@ -178,21 +217,27 @@
 											<td style="text-align: center;">
 												<input type="checkbox" disabled="disabled" />
 											</td>
-							
+											
 											<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].resource.*">
-								            	<c:set var="tooltip_msg" value="${status.errorMessages}"/>
+												<c:forEach var="errorMessage" items="${status.errorMessages}" varStatus="stat">
+													<c:set var="tooltip_msg" value="${stat.first ? '' : tooltip_msg} ${stat.count}. ${errorMessage}" />
+									           	</c:forEach>
 							               	</spring:bind>
 							               
 							               	<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].resource">
-								            	<c:set var="tooltip_msg" value="${status.errorMessages}"/>
+												<c:forEach var="errorMessage" items="${status.errorMessages}" varStatus="stat">
+													<c:set var="tooltip_msg" value="${stat.first ? '' : tooltip_msg} ${stat.count}. ${errorMessage}" />
+									           	</c:forEach>
 							               	</spring:bind>
 							               	
 							               	<c:if test="${not empty postsErrorMessages[post.resource.intraHash]}">
-							               		<c:set var="tooltip_msg" value="${postsErrorMessages[post.resource.intraHash]}"/>
+												<c:forEach var="errorMessage" items="${postsErrorMessages[post.resource.intraHash]}" varStatus="stat">
+													<c:set var="tooltip_msg" value="${stat.first ? '' : tooltip_msg} ${stat.count}. ${errorMessage}" />
+									           	</c:forEach>
 											</c:if>
 																								
-											<td class="chunkybib bg-danger">
-												<div data-toggle="tooltip" data-placement="right" title="${tooltip_msg}">
+											<td class="chunkybib">
+												<div class="bg-danger" data-toggle="tooltip" data-placement="right" title="${tooltip_msg}">
 													<jsp:invoke fragment="shortPostDescription" />
 												</div>
 											</td>

@@ -47,7 +47,6 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
 	 * actions to apply to post
 	 */
 	private List<Integer> action;
-	//private int[] combiAction;
 	
 	private String abstractGrouping;
 
