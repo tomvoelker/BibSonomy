@@ -16,6 +16,7 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.view.Views;
 
 /**
  *
@@ -247,6 +248,6 @@ public class UpdateGroupController extends SettingsPageController {
 
 		// success: go back where you've come from
 		// TODO: inform the user about the success!
-		return new ExtendedRedirectView("/settings?selTab=" + SettingsViewCommand.GROUP_IDX);
+		return Views.GROUPSETTINGSPAGE;
 	}
 }

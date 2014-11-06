@@ -113,7 +113,7 @@
 								<br />
 								<c:if test="${not empty group.homepage}">
 									TODO: Check if this is possible!<br />
-									<small><a href="${mtl:encodeURI(group.homepage)}">Homepage</a></small>
+									<small><a href="${fn:escapeXml(group.homepage)}">Homepage</a></small>
 								</c:if>
 							</div>
 							<div class="col-xs-3">

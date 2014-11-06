@@ -90,6 +90,8 @@
 												</c:if>
 											</li>
 											<li><a href="${relativeUrlGenerator.prefix('discussed').getGroupUrlByGroupName(grp.name)}"><fmt:message key="navi.discussedPosts"/></a></li>
+											<li class="divider"><!-- keep me --></li>
+											<li><a href="${relativeUrlGenerator.prefix('settings').getGroupUrlByGroupName(grp.name)}"><fmt:message key="navi.groupsettings" /></a></li>
 										</ul>
 									</li>
 									</c:forEach>
