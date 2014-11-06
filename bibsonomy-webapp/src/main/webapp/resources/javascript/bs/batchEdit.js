@@ -9,6 +9,12 @@ $(document).ready(function () {
 	$.each($(".abstractGroupingGroup"),function(b,c){toggleGroupBox(c);});
 	$('#selector').find('option:eq(0)').prop("selected", true);
 	$('input[name=abstractGrouping]').prop('disabled', true);
+	
+	allNotChecked = true;
+	$('input[name^=posts]:checkbox:checked').each(function() {
+		allNotChecked = false;
+		return;
+	});
 	//allNotChecked = !($('#selectAll').is(':checked'));
 	/*
 	 * handler to change all sub checkboxes with the select all option
@@ -54,11 +60,17 @@ $(document).ready(function () {
 		});
 		if(!allNotChecked){
 			$('#selector').change();
+			trigger_checkboxes();
 		};
 		// if no post is checked, every thing should be hided.
 		if(allNotChecked){
-			$('#selector').find('option:eq(0)').prop("selected", true);
-			$('#selector').change();
+		//	$('#selector').find('option:eq(0)').prop("selected", true);
+			//$('#selector').change();
+			$('.selectPostAlert').toggleClass('invisible', false);
+			$('.selectPostAlert').toggleClass('hidden', false);
+			$('.emptyBlock').toggleClass('hidden', true);
+			resetSelection();
+			
 		};
 	});
 
@@ -73,6 +85,7 @@ $(document).ready(function () {
 			
 			$('.selectPostAlert').toggleClass('invisible', true);
 			$('.selectPostAlert').toggleClass('hidden', true);
+			$('.emptyBlock').toggleClass('hidden', false);
 			if($(this).val() == 1) {
 				resetSelection();
 				AddAllTag();
@@ -106,6 +119,11 @@ $(document).ready(function () {
 			action.splice(index, 1);
 			AddAllTag_Uncheck();
 		}}
+		else{
+			$('.emptyBlock').toggleClass('hidden', true);
+			$('.selectPostAlert').toggleClass('invisible', false);
+			$('.selectPostAlert').toggleClass('hidden', false);
+		}
 	});
 	$('#checkboxEachTag').change(function() {
 		if(!allNotChecked){
@@ -118,6 +136,11 @@ $(document).ready(function () {
 			action.splice(index, 2);
 			AddEachTag_Uncheck();		
 		}}
+		else{
+			$('.emptyBlock').toggleClass('hidden', true);
+			$('.selectPostAlert').toggleClass('invisible', false);
+			$('.selectPostAlert').toggleClass('hidden', false);
+		}
 	});
 	$('#checkboxNormalize').change(function() {
 		if(!allNotChecked){
@@ -130,6 +153,11 @@ $(document).ready(function () {
 			action.splice(index, 3);
 			normalizeBibTexKey_Uncheck();
 		}}
+		else{
+			$('.emptyBlock').toggleClass('hidden', true);
+			$('.selectPostAlert').toggleClass('invisible', false);
+			$('.selectPostAlert').toggleClass('hidden', false);
+		}
 	});
 	$('#checkboxPrivacy').change(function() {
 		if(!allNotChecked){
@@ -142,6 +170,11 @@ $(document).ready(function () {
 			action.splice(index, 5);
 			updatePrivacy_Uncheck();
 		}}
+		else{
+			$('.emptyBlock').toggleClass('hidden', true);
+			$('.selectPostAlert').toggleClass('invisible', false);
+			$('.selectPostAlert').toggleClass('hidden', false);
+		}
 	});
 	$('.batchUpdateButton').click(function(){
 		if(action.length!=0){
@@ -154,6 +187,16 @@ $(document).ready(function () {
 	
 });
 
+function trigger_checkboxes(){
+	if(!allNotChecked){
+		$('.selectPostAlert').toggleClass('invisible', true);
+		$('.selectPostAlert').toggleClass('hidden', true);
+	}
+	$('#checkboxAllTag').change();
+	$('#checkboxEachTag').change();
+	$('#checkboxNormalize').change();
+	$('#checkboxPrivacy').change();
+}
 function updatePrivacy(){
 	$('.batchUpdateButton').prop('disabled', false);
 	$('td[id=viewable]').css({'font-weight':'bold'});
@@ -253,7 +296,7 @@ function resetSelection(){
 	$('.deleteAlert').toggleClass('hidden', true);
 	$('.normalizeAlert').toggleClass('invisible', true);
 	$('.normalizeAlert').toggleClass('hidden', true);
-	$('.emptyBlock').toggleClass('hidden', false);
+	
 	
 	$('td[id=viewable]').css({'font-weight':'normal'});
 	$('td[id=yourTags]').css({'font-weight':'normal'});

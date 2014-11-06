@@ -66,7 +66,8 @@
 	<!-- SUBMITBUTTON -->
 
 	<fmt:message key="batchedit.button.update" var="buttonUpdate" />
-	<fmt:message key="batchedit.button.update" var="buttonUpdateViewable" />	
+	<fmt:message key="batchedit.button.update" var="buttonUpdateViewable" />
+	<fmt:message key="batchedit.disregardedPosts.info" var="disregardedPosts" />	
 	<!--=======================-->
 	<!-- VARIABLEN DEKLARATION -->
 	<!--=======================-->
@@ -178,14 +179,7 @@
 				<thead>
 					<tr>
 						<th>
-						<c:choose>
-							<c:when test="${directEdit}">
-								<input type="checkbox" id="selectAll" value="true" checked="checked" title="select all"/>
-							</c:when>
-							<c:otherwise>
-								<input type="checkbox" id="selectAll" value="true" title="select all"/>
-							</c:otherwise>	
-						</c:choose>
+							<input type="checkbox" id="selectAll" value="true" checked="checked" title="select all"/>	
 						</th>
 						<th>
 							<fmt:message key="batchedit.yourPosts" />
@@ -308,14 +302,52 @@
 								</c:choose>
 							</c:otherwise>
 						</c:choose>
-	
 					</c:forEach>
+					
+					
+					<c:if test="${not empty otherPosts}">
+						<c:set var="tooltip_msg" value="${disregardedPosts}" />
+						<c:forEach var="post" items="${listView.list}">
+							<c:if test="${post.user.name ne command.context.loginUser.name}">
+								<tr>
+									<td style="text-align: center;">
+										
+										<input type="checkbox" value="true" disabled="disabled" />
+									</td>
+									<!--  a short description of the post -->
+									<td class="chunkybib">
+										<div class="bg-danger" data-toggle="tooltip" data-placement="right" title="${tooltip_msg}">
+												<jsp:invoke fragment="shortPostDescription" />
+										</div>
+									</td>
+									<!-- the input field for the tags -->
+									<td>
+										<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].tags">
+											<c:choose>
+												<c:when test="${status.error}">
+													<!--  the post has some errors on the tags - show the tags -->
+													<batch:tagErrors errors="${status}" />
+													<input type="text" size="37" value="${fn:escapeXml(mtl:toTagString(post.tags))}"
+														   disabled="disabled" class="form-control" autocomplete="off" />
+												</c:when>
+												<c:otherwise>
+													<!--  the post has no errors on the tags - show the tags -->
+													<input type="text" size="40" value="${fn:escapeXml(mtl:toTagString(post.tags))}"
+														   disabled="disabled" class="form-control" autocomplete="off" />
+												</c:otherwise>
+											</c:choose>
+										</spring:bind>
+									</td>
+								</tr>
+							</c:if>
+						</c:forEach>
+					</c:if>
 				</tbody>
 			</table>
 			</c:if>
 			<input type="hidden" name="ckey" value="${ckey}" /> 
 			<input type="hidden" name="referer"	value="${fn:escapeXml(command.referer)}" />
-<!-- 			<p><button type="submit" class="btn btn-primary batchUpdateButton" disabled="disabled"><c:out value="${buttonUpdate}"/></button></p> -->
+
 			<!-- we don't have pagination in indirect mode. -->
 			<c:if test="${directEdit}">
 				<div style="padding-left: 5px;">
@@ -328,37 +360,4 @@
 			<p class="clearfix"><!--  --></p>
 			
 		</form>
-
-		<c:if test="${not empty otherPosts}">
-			<h2 style="margin-top: 2em;">
-				<fmt:message key="batchedit.disregardedPosts" />
-			</h2>
-			<div class="alert alert-danger col-sm-10" style="margin-bottom:0px;" role="alert"><fmt:message key="batchedit.disregardedPosts.info" /></div>
-			
-			<!-- iterate over a list of resources and create the list -->
-			<ul id="${listView.resourcetype}">
-				<c:forEach var="post" items="${listView.list}">
-					<c:if test="${post.user.name ne command.context.loginUser.name}">
-						<!-- show one post -->
-						<rc:post post="${post}"	otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${command.context.loginUser.name}">
-							<jsp:attribute name="title">
-							     <jsp:invoke fragment="title" />    
-							</jsp:attribute>
-							
-							<jsp:attribute name="actions">   
-								<jsp:invoke	fragment="actions" />  
-							</jsp:attribute>
-							
-							<jsp:attribute name="desc">      
-								<jsp:invoke	fragment="desc" />     
-							</jsp:attribute>
-							
-							<jsp:attribute name="documents"> 
-								<jsp:invoke	fragment="documents" />
-							</jsp:attribute>
-						</rc:post>
-					</c:if>
-				</c:forEach>
-			</ul>
-		</c:if>
 </jsp:root>
