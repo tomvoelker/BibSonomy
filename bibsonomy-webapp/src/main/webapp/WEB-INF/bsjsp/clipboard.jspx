@@ -18,7 +18,7 @@
 	<fmt:message key="navi.basket" var="pageTitle"/>
 	
 	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" 
-			requPath="${requPath}" isBasket="${true}" 
+			requPath="${requPath}" isClipboard="${true}" 
 			disableListNavigation="${true}"
 			disableResourcetypeSelection="${true}"
 			minimizedContentWidth="${true}"

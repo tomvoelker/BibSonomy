@@ -19,7 +19,7 @@
 	<layout:resourceLayout pageTitle="${pageTitle}" 
 			command="${command}" 
 			requPath="${requPath}" 
-			isBasket="${true}" 
+			isClipboard="${true}" 
 			disableListNavigation="${true}"
 			disableResourcetypeSelection="${true}"
 			minimizedContentWidth="${true}">
