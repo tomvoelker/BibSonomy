@@ -498,7 +498,7 @@
 				</entry>
 				<entry key="/clipboard">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="basketPageController"/>
+						<property name="controllerBeanName" value="clipboardPageController"/>
 					</bean>
 				</entry>
 				<entry key="/inbox">
@@ -840,7 +840,7 @@
 		</property>
 	</bean>
 
-	<bean id="basketPageController" class="org.bibsonomy.webapp.controller.BasketPageController" scope="request" parent="multiResourceListController">
+	<bean id="clipboardPageController" class="org.bibsonomy.webapp.controller.ClipboardPageController" scope="request" parent="multiResourceListController">
 		<property name="supportedResources">
 			<set>
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
