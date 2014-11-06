@@ -13,8 +13,10 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.ajax.ClipboardManagerCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.ValidationAwareController;
+import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.validation.ajax.ClipboardValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
@@ -22,7 +24,7 @@ import org.springframework.validation.Errors;
 /**
  * @author Christian Kramer
  */
-public class ClipboardController extends AjaxController implements MinimalisticController<ClipboardManagerCommand>, ErrorAware {
+public class ClipboardController extends AjaxController implements ValidationAwareController<ClipboardManagerCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(ClipboardController.class);
 	
 	private Errors errors;
@@ -48,21 +50,7 @@ public class ClipboardController extends AjaxController implements MinimalisticC
 		if (!command.getContext().isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
 		}
-		
 		final String action = command.getAction();
-		if (!present(action)) {
-			errors.reject("error.action.valid");
-		}
-		
-		final String user = command.getUser();
-		if (!present(user)) {
-			errors.reject("error.user.valid");
-		}
-		
-		final String hash = command.getHash();
-		if (!present(hash)) {
-			errors.reject("error.hash.valid");
-		}
 		
 		if (errors.hasErrors()) {
 			return Views.ERROR;
@@ -144,6 +132,22 @@ public class ClipboardController extends AjaxController implements MinimalisticC
 		post.setResource(publication);
 		post.setUser(new User(userName));
 		return post;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.util.ValidationAwareController#getValidator()
+	 */
+	@Override
+	public Validator<ClipboardManagerCommand> getValidator() {
+		return new ClipboardValidator();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.util.ValidationAwareController#isValidationRequired(org.bibsonomy.webapp.command.ContextCommand)
+	 */
+	@Override
+	public boolean isValidationRequired(ClipboardManagerCommand command) {
+		return true;
 	}
 
 	@Override
