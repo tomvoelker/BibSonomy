@@ -7,12 +7,12 @@
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
 	xmlns:export="urn:jsptagdir:/WEB-INF/tags/bstags/export/bibtex"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
-    xmlns:pub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
-    xmlns:pub2="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
-    xmlns:gpub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
-    xmlns:ref="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication/references"
-    xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion"
-    xmlns:review="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion/review"
+	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
+	xmlns:pub2="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
+	xmlns:gpub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
+	xmlns:ref="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication/references"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion"
+	xmlns:review="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion/review"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:goldpub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
@@ -45,13 +45,11 @@
 					<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(goldstandard.title)}" /></h1>
 					<p><bib:desc publication="${post.resource}"/></p>
 				</div>
-			</div>		
+			</div>
 		</div>
 		<div style="border-top: 1px #cccccc solid;">
 			<!--  -->
-		</div> <!-- border -->	
-				
-				
+		</div> <!-- border -->
 		<!--+
 			| abstract
 			+-->
@@ -139,12 +137,11 @@
 			</ul>
 			<br />
 		</c:if>
-					
-					
-	 	<h4 class="pub-details"><span class="fa fa-quote-right"><!--  --></span><c:out value=" "/><fmt:message key="publications.citations.headline" /></h4>
-	 	
+		
+		<h4 class="pub-details"><span class="fa fa-quote-right"><!--  --></span><c:out value=" "/><fmt:message key="publications.citations.headline" /></h4>
+		
 		<!-- citation box -->
-		<goldstandardpublication:citation post="${post}" />
+		<pub2:citation post="${post}" isCommunityPost="${true}" />
 		
 		<!--+
 			| discussion and rating
@@ -160,11 +157,7 @@
 		<!-- Publication reference link -->
 		<discussion:linkBox resource="${post.resource}"/>
 		
-		<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName=""/>
-
 		<!-- discussion -->
-		<!-- this is a goldstandard page => postUserName is the goldstandard user "" -->
-					
-					
+		<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName=""/>
 	</div>
 </jsp:root>

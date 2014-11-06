@@ -8,11 +8,10 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:bsbibcomp="urn:jsptagdir:/WEB-INF/tags/bstags/bs/bibcomponents"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/bstags/post"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
@@ -45,7 +44,7 @@
 			<div id="citation-styles" class="tab-content">
 				<div class="tab-pane ${command.selTab == 0 ? 'active' : ''}" id="selTab0">
 					<!-- manual posting -->
-					<div id="suggestionBox" style="position:absolute; display:none;"><!--  --></div>        
+					<div id="suggestionBox" style="position:absolute; display:none;"><!--  --></div>
 					<form:form cssClass="form-horizontal" id="postForm" action="/editPublication" method="post">
 						<fieldset>
 							<legend><fmt:message key="post_bibtex.manual.heading"/></legend>
@@ -53,13 +52,13 @@
 							
 						
 							<input type="hidden" name="selTab" value="0" />
-					       	<input type="hidden" name="ckey" value="${ckey}"/>	
+							<input type="hidden" name="ckey" value="${ckey}"/>
 									
 							<editpub:required post="${post}" autocompletion="${true}" hideBibTeXKey="${true}"/>
 							
 							<div class="form-group">
-   								<div class="col-sm-offset-3 col-sm-9">
-   									<fmt:message var="post_button" key="post_bibtex.button_label_post" />
+ 								<div class="col-sm-offset-3 col-sm-9">
+ 									<fmt:message var="post_button" key="post_bibtex.button_label_post" />
 									<bsform:button size="defaultSize" type="submit" style="primary" value="${post_button}"/>
 								</div>
 							</div>

@@ -33,10 +33,8 @@
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<fmt:message key="navi.account" var="account"/>
-					<nav:crumb name="${account}" />
-					<fmt:message key="navi.settings" var="settings"/>
-					<nav:crumb name="${settings}" active="true" />
+					<nav:account />
+					<nav:crumb nameKey="navi.settings" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
@@ -46,7 +44,7 @@
 			+-->
 		<jsp:attribute name="tabcontent">
 			<!-- display potential errors -->
-			<errors:global errors="${errors}"/>
+			<errors:global />
 			
 			<settings:group command="${command}"/>
 			
@@ -92,7 +90,7 @@
 					<h4 class="sidebar"><fmt:message key="friends.friendof"/></h4> 
 					<ul>
 						<c:forEach var="user" items="${command.userFriends}" begin="0" end="4">
-							<li><a href="${relativeUrlGenerator.getFriendUrlByUserName(user.name)}"><c:out value="${user.name}"/></a><c:out value=" "/></li>
+							<li><a href="${relativeUrlGenerator.getFriendUrlByUserName(user.name)}"><user:username user="${user}" noLink="${true}" /></a><c:out value=" "/></li>
 						</c:forEach>
 						<c:if test="${fn:length(command.userFriends) gt 4}">
 							<li class="more-link-item"><a class="more" onclick="$('.user-friends #user-friends-list-more').show();$(this).parent().hide();"><fmt:message key="more" />...</a></li>
@@ -103,7 +101,7 @@
 						<div id="user-friends-list-more" style="display:none;">
 							<ul>
 								<c:forEach var="user" items="${command.userFriends}" begin="5">
-									<li><a href="${relativeUrlGenerator.getFriendUrlByUserName(user.name)}"><c:out value="${user.name}"/></a><c:out value=" "/></li>
+									<li><a href="${relativeUrlGenerator.getFriendUrlByUserName(user.name)}"><user:username user="${user}" noLink="${true}" /></a><c:out value=" "/></li>
 								</c:forEach>
 								<li><a class="less" onclick="$('.user-friends #user-friends-list-more').hide();$('.user-friends .more-link-item').show();"><fmt:message key="less" />...</a></li>
 							</ul>
@@ -115,10 +113,13 @@
 				<li class="friends-of-user">
 					<h4 class="sidebar"><fmt:message key="friends.yourfriends"/></h4>
 					<ul>
+						<!-- FIXME: remove copy paste code, create a tagx file and pass begin and end to it or just render all items and
+							use a javascript script to do the more/less thing -->
 						<c:forEach var="user" items="${command.friendsOfUser}" begin="0" end="4">
 						<li>
-							<a href="${relativeUrlGenerator.getUserUrlByUserName(user.name)}"><c:out value='${user.name}'/>&amp;nbsp;</a> 
-								<fmt:message var="deleteFriendTitle" key="friends.actions.delete.title"><fmt:param value="${fn:escapeXml(user.name)}"/></fmt:message>
+							<user:username user="${user}" />
+							<fmt:message var="deleteFriendTitle" key="friends.actions.delete.title"><fmt:param value="${fn:escapeXml(user.name)}"/></fmt:message>
+							&amp;nbsp;
 							<a class="action" href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(user.name)}&amp;action=removeFriend&amp;ckey=${ckey}&amp;forward=settings" title="${deleteFriendTitle}">
 								<fmt:message key="friends.actions.delete"/>
 							</a>
@@ -133,8 +134,9 @@
 							<ul>
 								<c:forEach var="user" items="${command.friendsOfUser}" begin="5">
 								<li>
-									<a href="${relativeUrlGenerator.getUserUrlByUserName(user.name)}"><c:out value='${user.name}'/>&amp;nbsp;</a> 
-										<fmt:message var="deleteFriendTitle" key="friends.actions.delete.title"><fmt:param value="${fn:escapeXml(user.name)}"/></fmt:message>
+									<user:username user="${user}" />
+									<fmt:message var="deleteFriendTitle" key="friends.actions.delete.title"><fmt:param value="${fn:escapeXml(user.name)}"/></fmt:message>
+									&amp;nbsp;
 									<a class="action" href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(user.name)}&amp;action=removeFriend&amp;ckey=${ckey}&amp;forward=settings" title="${deleteFriendTitle}">
 										<fmt:message key="friends.actions.delete"/>
 									</a>

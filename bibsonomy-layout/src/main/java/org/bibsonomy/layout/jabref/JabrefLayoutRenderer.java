@@ -162,11 +162,11 @@ public class JabrefLayoutRenderer implements LayoutRenderer<AbstractJabRefLayout
 		 * new code: duplicate removal in controller, no sorting by year - must be enforced 
 		 * by another parameter
 		 */
-		final BibtexDatabase database = JabRefModelConverter.bibtex2JabrefDB(posts,urlGenerator,false);
+		final BibtexDatabase database = JabRefModelConverter.bibtex2JabrefDB(posts, urlGenerator, false);
 		/*
 		 * render the database
 		 */
-		return layout.render(database, JabRefModelConverter.convertPosts(posts, urlGenerator,false), embeddedLayout);
+		return layout.render(database, JabRefModelConverter.convertPosts(posts, urlGenerator, false), embeddedLayout);
 	}
 
 	/**

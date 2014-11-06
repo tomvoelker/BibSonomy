@@ -87,4 +87,11 @@ public class ApsScraper extends GenericBibTeXURLScraper{
 			throw new ScrapingException(e);
 		}
 	}
+	@Override
+	protected String convert(String result){
+		final String firstLine = result.split("\n")[0].trim();
+		if(firstLine.split("\\{").length == 1)
+			result = result.replace(firstLine,firstLine.replace("{", "{nokey,"));
+		return result;
+	}
 }

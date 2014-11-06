@@ -8,7 +8,6 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/bstags/post"
 	xmlns:editBook="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/bookmark"
@@ -40,7 +39,6 @@
 						<span class="publication-found-title"><fmt:message key="post.meta.recommended"/>: <fmt:message key="post.meta.save_as_publication"/></span>
 						<div class="publication-found-content">
 							<div id="publication-found-form-placeholder">
-								<input type="hidden" id="bib" name="selection" value=" "/>
 								<p><fmt:message key="post.resource.bookmark_a_publication2"/></p>
 								<button class="btn btn-primary btn-xs" type="submit" name="submit"><fmt:message key="post.meta.save_as_publication" /></button>
 								<c:out value=" "/><!-- space between buttons -->

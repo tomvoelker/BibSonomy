@@ -36,7 +36,11 @@
 									<c:if test="${group.name ne loginUser.name}">
 										<form:form cssClass="form-horizontal" class="groupShareSettings"  method="POST" action="/ajax/handleGroupShare">
 											<div class="row">
-												<div class="col-md-10"><a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}' /></a></div>
+												<div class="col-md-10">
+													<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}">
+														<c:out value='${group.name}' />
+													</a>
+												</div>
 												<c:choose>
 													<c:when test="${group.sharedDocuments}">
 														<input type="hidden" name="requestedGroup" value="${fn:escapeXml(group.name)}" />

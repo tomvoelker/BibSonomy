@@ -2,28 +2,32 @@
 
 function scraping() {
 	var url = $("#post\\.resource\\.url").val();
+	var selection = $("#post\\.description").val();
 	if (url.length > 'http://'.length) {
 		$.ajax({
 			url : '/scrapingservice?url=' + encodeURIComponent(url)
 					+ '&format=bibtex&doIE=false&selection='
-					+ encodeURIComponent($("#post\\.description").val()),
+					+ encodeURIComponent(selection),
 			success : function(data) {
 				if (data != '') {
-					
 					var f = document.createElement('form');
-					var form = $(f);
-					form.attr('action', '/editPublication');
-					form.attr('method', 'POST');
+					var form = $(f)
+					.attr('action', '/editPublication')
+					.attr('method', 'POST');
 					
-					var i = document.createElement('input');
-					var input = $(i);
-					input.attr('type', 'hidden');
-					input.attr('name', 'selection');
-					input.val(data);
+					var input = $('<input />').attr('type', 'hidden')
+					.attr('name', 'url')
+					.val(url);
+					
+					var selectionInput = $('<input />').attr('type', 'hidden')
+					.attr('name', 'selection')
+					.val(selection);
 					
 					var content = $('#publication-found-form-placeholder').html();
-					form.append(input);
-					form.append(content);
+					
+					form.append(input)
+					.append(selectionInput)
+					.append(content);
 					
 					$('#publication-found-form-placeholder').html(form);
 					
@@ -41,7 +45,7 @@ $(function() {
 	    html : true,
 	    trigger: 'manual',
 	    container: 'body',
-	    placement: 'top',	    	
+	    placement: 'top',
 	    title: function() {
 	      	var title = $(this).parent().parent().find('.publication-found-title');
 	      	/*
@@ -64,7 +68,7 @@ $(function() {
 });
 
 function setFocus() {
-	var emptyFields = $("input:text").filter(function() { 
+	var emptyFields = $(".content > input:text").filter(function() { 
 		return $(this).val() == ""; 
 	});
 	if (emptyFields.length > 0) {

@@ -17,37 +17,17 @@
 
 	<fmt:message key="navi.register" var="pageTitle" />
 
-	<layout:singleContainerLayout 
-		command="${command}" 
-		pageTitle="${pageTitle}" 
-		requPath="${requPath}" 
-		headerMessageKey="register.openid.step2"
-		smallBox="${true}">
-		
-		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.register" />
-		</jsp:attribute>
-
+	<layout:singleContainerLayout command="${command}" pageTitle="${pageTitle}" requPath="${requPath}" headerMessageKey="register.openid.step2" smallBox="${true}">
 		<jsp:attribute name="content">
-
 			<h1 class="content-header"><fmt:message key="register.openid.step2" /></h1>
 			
 			<form:form action="/registerOpenID" class="form-horizontal" method="POST">
-			
-				<c:set var="globalErrors"><errors:global errors="${errors}"/></c:set>
-				
-				<c:if test="${not empty globalErrors}">
-					<bs:feedback style="danger" size="defaultSize">
-						<jsp:attribute name="feedbackBody">
-							<errors:global errors="${errors}"/>
-						</jsp:attribute>
-					</bs:feedback>
-				</c:if>
-				
+				<errors:global />
 	
 				<bsform:fieldset legendKey="register.openid.required" >
 					<jsp:attribute name="content">
-						<bsform:input labelColSpan="3" path="registerUser.name" labelKey="navi.username" />
+						<!-- TODO: Add help messages -->
+						<bsform:input labelColSpan="3" path="registerUser.name" labelKey="navi.username" noHelp="${true}" />
 	
 						<bsform:input labelColSpan="3" path="registerUser.email" labelKey="user.settings.email" noHelp="${true}"/>
 	
@@ -69,12 +49,12 @@
 						<div class="form-group${not empty genderError ? ' has-error' : ''}">
 							<c:if test="${not empty genderError}">
 								<div class="col-sm-offset-3 col-sm-9">
-		        					<bs:feedback style="danger" size="defaultSize" >
-		        						<jsp:attribute name="feedbackBody">
-		        							<form:errors path="registerUser.name" />
-		        						</jsp:attribute>
-		        					</bs:feedback>
-		        				</div>
+									<bs:feedback style="danger" size="defaultSize" >
+										<jsp:attribute name="feedbackBody">
+											<form:errors path="registerUser.name" />
+										</jsp:attribute>
+									</bs:feedback>
+								</div>
 							</c:if>
 							<form:label cssClass="control-label col-sm-3" path="registerUser.gender" ><fmt:message key="navi.gender"/></form:label>
 							<div class="col-sm-9">
@@ -96,15 +76,9 @@
 								<button class="btn btn-primary" type="submit" role="submit"><fmt:message key="register.send" /></button>
 							</div>
 						</div>
-						
 					</jsp:attribute>
 				</bsform:fieldset>
-
-			
 			</form:form>
-			
 		</jsp:attribute>
-
 	</layout:singleContainerLayout>
-
 </jsp:root>

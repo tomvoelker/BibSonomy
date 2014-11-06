@@ -103,13 +103,13 @@
 			<li class="${tagclass}">
 			<c:if test="${!relevantfor or showRelatedTagsURL}">
 				<a title="${tagsTitle}" href="${tagsUrl}">
-					<fmt:message key="tag.addRelatedTag"/>${mtl:ch('nbsp')}
+					<fmt:message key="tag.addRelatedTag"/>
 				</a>
+				<c:out value=" "/>
 			</c:if>
 			<a title="${tagTitle}" href="${tagUrl}">
 				<c:out value="${tag.name}" />
 			</a>
-			<c:out value=" "/>
 			</li>
 		</c:forEach>
 	</ul>

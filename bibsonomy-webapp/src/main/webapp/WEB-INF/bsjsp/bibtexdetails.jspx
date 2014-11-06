@@ -9,6 +9,7 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
 	xmlns:users="urn:jsptagdir:/WEB-INF/tags/bstags/users"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
@@ -18,29 +19,31 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
 	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication">
-		
+	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<!--+
 		| variables, messages
 		+-->
 	<c:set var="post" value="${command.bibtex.list[0]}" />
-	<c:set var="publication" value="${post.resource}" />	
+	<c:set var="publication" value="${post.resource}" />
 	<c:set var="title" value="${mtl:cleanBibtex(publication.title)}" />
 	<c:set var="isOwnPost" value="${post.user.name eq command.context.loginUser.name}"/>
-	<fmt:message key="navi.publication" var="pageTitle" />	
-	
+	<fmt:message key="navi.publication" var="pageTitle" />
 	
 	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}" showPageOptions="${true}" minimizedContentWidth="${true}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
 		</jsp:attribute>
 		
-		<jsp:attribute name="breadcrumbs">	
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/javascript/bs/publicationdetails.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/bs/publication.js"><!-- keep me --></script>
+		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<fmt:message key="navi.user" var="user" />
-					<nav:crumb name="${user}" />
-					<nav:crumb name="${post.user.name}" href="/user/${post.user.name}" />
+					<nav:usercrumb requestedUser="${command.requestedUser}" loginUser="${command.context.loginUser}" />
 					<nav:crumb name="${mtl:shorten(title, 25)}" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
@@ -88,8 +91,7 @@
 								<ul style="margin-left: 1em; list-style:disc;">
 									<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
 										<li class="${userclass}">
-											<a href="/user/${fn:escapeXml(user.name)}"><c:out value="${user.name}"/></a>
-											<c:out value=" "/>
+											<user:username user="${user}" />
 										</li>
 									</c:forEach>
 								</ul>
@@ -105,7 +107,7 @@
 						<li><h5><fmt:message key="tags"/>
 								
 								<small style="font-size:80%;">
-									(<a href="/user/${fn:escapeXml(post.user.name)}"><c:out value="${post.user.name}" /></a>
+									(<user:username user="${post.user}" />
 									<fmt:message key="tags.highlighted.by_user"/>)
 								</small>
 							</h5>

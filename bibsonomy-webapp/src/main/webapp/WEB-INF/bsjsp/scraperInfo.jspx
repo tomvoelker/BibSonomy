@@ -7,17 +7,12 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
-    xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<!-- TODO: i18n -->
-	<layout:oneColumnLayout 
-		pageTitle="scraper info"  
-		requPath="${requPath}"
-		loginUser="${command.context.loginUser}"
-		>
+	<!-- TODO: title i18n -->
+	<layout:oneColumnLayout pageTitle="scraper info" requPath="${requPath}" loginUser="${command.context.loginUser}">
     
         <jsp:attribute name="headerExt">
             <style type="text/css">

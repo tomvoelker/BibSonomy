@@ -11,7 +11,7 @@
 	<jsp:directive.tag language="java" pageEncoding="UTF-8" display-name="Internal Login Form" description="Renders the login form for internal login. This includes links to the registration page and the password reminder page." />
 	
 	<c:if test="${mtl:contains(authConfig, mtl:convertToEnum('org.bibsonomy.common.enums.AuthMethod', 'SAML'))}">
-		<small class="pull-right" style="margin-top: 5px;"><a href="/register"><fmt:message key="login.register.bs.group"/></a></small>
+		<small class="pull-right" style="margin-top: 5px;"><a href="${relativeUrlGenerator.getRegisterUrl()}"><fmt:message key="login.register.bs.group"/></a></small>
 	</c:if>	
 	<div class="clearline" style="margin-bottom: 15px;">&#160;</div>
 		

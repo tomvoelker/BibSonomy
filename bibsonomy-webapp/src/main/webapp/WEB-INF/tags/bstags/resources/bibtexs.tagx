@@ -60,7 +60,7 @@
 					</c:if>
 				</c:if>
 				
-				<c:if test="${empty showPageOptions or showPageOptions == true }">
+				<c:if test="${empty showPageOptions or showPageOptions}">
 					<c:out value=" " />
 					<c:choose>
 						<c:when test="${not empty customPageOptions}">

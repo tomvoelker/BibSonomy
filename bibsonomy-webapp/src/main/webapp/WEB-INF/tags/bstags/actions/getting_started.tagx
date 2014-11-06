@@ -7,7 +7,8 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
-
+	
+	<!-- TODO: rename fragment name -->
 	<jsp:directive.attribute name="confirmationMailFragment" required="false" fragment="true"/>
 	
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
@@ -23,14 +24,11 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="headerExt">
-			
 			<script type="text/javascript" src="/resources/javascript/bs/animatescroll.js"><!-- --></script>
-				
 			<script type="text/javascript" src="/resources/javascript/bs/animate-scroll-affix.js"><!-- --></script>
-		
 		</jsp:attribute>
 		
-		<!-- 
+		<!-- TODO breadcrumbs
 		<jsp:attribute name="breadcrumbs">	
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">

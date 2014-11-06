@@ -45,9 +45,7 @@
 	
 	<jsp:element name="html">
 		<jsp:body>
-			<parts:htmlHead 
-			headerExt="${headerExt}" 
-			loginUser="${loginUser}"
+			<parts:htmlHead headerExt="${headerExt}" loginUser="${loginUser}"
 			requestedUser="${requestedUser}"
 			requPath="${requPath}"
 			pageTitle="${pageTitle}"
@@ -55,18 +53,12 @@
 			/>
 
 			<body>
-
 				<c:if test="${not empty beforeMainContainer}">
 					<jsp:invoke fragment="beforeMainContainer"/>
 				</c:if>
-
-
 				<div class="container header">
-				
 					<div id="page-header bib-header">
-	
 						<div class="row">
-						
 							<div class="col-md-6">
 								<!--+ 
 								 	| 
@@ -81,13 +73,9 @@
 										<bs:logo />
 									</c:otherwise>
 								</c:choose>
-								
-								
-								
 							</div>
 							
 							<div class="col-md-6">
-								
 								<div id="lang-switcher" class="pull-right">
 									<span>(&amp;nbsp;</span>
 									<a href="/${mtl:setParam(fn:escapeXml(requPathAndQuery), 'lang', 'en')}">en</a>
@@ -106,11 +94,10 @@
 								<jsp:invoke fragment="heading"/>
 							</div>
 						</div>
-							
 					</div><!-- /#bib-header -->
 				</div>
 				<div id="navigation">
-						 <menu:navi activeTab="${activeTab}" loginUser="${loginUser}" />
+					<menu:navi activeTab="${activeTab}" loginUser="${loginUser}" />
 				</div> <!-- /#navigation -->
 				<div class="container main">
 					
@@ -126,16 +113,14 @@
 							<div id="intro">
 								<jsp:invoke fragment="contentIntro"/>
 							</div>
-					    	<jsp:invoke fragment="content"/>
+							<jsp:invoke fragment="content"/>
 						</c:when>
 						
 						<c:otherwise>
-						
 							<!-- with sidebar -->
 							<div class="row">
-							
-							  	<div class="col-md-9 col-sm-12 col-xs-12 content">
-			  						<!-- Breadcrumbs -->
+								<div class="col-md-9 col-sm-12 col-xs-12 content">
+									<!-- Breadcrumbs -->
 									<c:if test="${not empty breadcrumbs}">
 										<jsp:invoke fragment="breadcrumbs" />
 									</c:if>
@@ -143,27 +128,20 @@
 										<div id="intro">
 											<jsp:invoke fragment="contentIntro"/>
 										</div>
-								    	<jsp:invoke fragment="content"/>
-									    	
-								  	</div>
+										<jsp:invoke fragment="content"/>
+									</div>
 								</div>
-							  	<div class="col-md-3 hidden-xs hidden-sm sidebar" id="sidebar">
-		
-				  					<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}" infobox="${infobox}"/>
-					  					
-							  	</div>
-							  
+								<div class="col-md-3 hidden-xs hidden-sm sidebar" id="sidebar">
+									<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}" infobox="${infobox}"/>
+								</div>
 							</div><!-- /.row -->
-									
 						</c:otherwise>
 					</c:choose>
 					
 				</div> <!--  /.container -->
-
-			  	<div class="container footer">
-			    	<parts:footer />
+				<div class="container footer">
+					<parts:footer />
 				</div>
-
 			</body>
 		</jsp:body>
 	</jsp:element>
