@@ -16,12 +16,11 @@
 	<fmt:message var="headline" key="page.tag.headline" />
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" headline="${headline}${command.requestedTags}">
 
-    	<jsp:attribute name="breadcrumbs">	
+    	<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<fmt:message var="tag" key="navi.tag" />
-					<nav:crumb name="${tag}" />
-					<nav:crumb name="${command.requestedTags}" active="true" leadingIcon="fa-tag" />
+					<nav:crumb nameKey="navi.tag" />
+					<nav:tagcrumb requestedTags="${command.requestedTags}" active="${true}" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>

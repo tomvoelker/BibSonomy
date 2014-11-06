@@ -52,7 +52,7 @@ public class CSVView extends AbstractView {
 
 			/*
 			 * set the content type headers
-			 */				
+			 */
 			response.setContentType("text/csv");
 			response.setCharacterEncoding("UTF-8");
 
@@ -147,7 +147,6 @@ public class CSVView extends AbstractView {
 						csvWriter.writeNext(getArray(post, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null));
 					}
 				}
-
 				csvWriter.close();
 
 			} catch (final IOException e) {

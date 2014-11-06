@@ -299,11 +299,11 @@ public final class ModelUtils {
 	public static boolean checkGroups(final Post<?> post, final Set<Integer> mustBeInGroups, final Set<Integer> mustNotBeInGroups) {
 		int required = (mustBeInGroups != null) ? mustBeInGroups.size() : 0;
 		for (final Group group : post.getGroups()) {
-			if ((mustBeInGroups != null) && (mustBeInGroups.contains(group.getGroupId()) == true)) {
+			if ((mustBeInGroups != null) && (mustBeInGroups.contains(group.getGroupId()))) {
 				--required;
 				log.debug("found group " + group.getGroupId());
 			}
-			if ((mustNotBeInGroups != null) && (mustNotBeInGroups.contains(group.getGroupId()) == true)) {
+			if ((mustNotBeInGroups != null) && (mustNotBeInGroups.contains(group.getGroupId()))) {
 				log.debug("found incorrect group " + group.getGroupId());
 				return false;
 			}

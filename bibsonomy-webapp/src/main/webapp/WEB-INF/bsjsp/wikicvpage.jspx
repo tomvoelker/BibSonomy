@@ -37,27 +37,22 @@
 		minimizedContentWidth="${true}">
 		
 		<jsp:attribute name="heading">
-    		<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
+			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
 		
-		<jsp:attribute name="breadcrumbs">	
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<c:choose>
-						<c:when test="${ownCVPage}">
-							<fmt:message key="buttons.mybibsonomy" var="my">
-								<fmt:param>${properties['project.name']}</fmt:param>
-							</fmt:message>
-							<nav:crumb name="${my}" href="/user/${command.context.loginUser.name}" />
-							<nav:crumb name="${cvPageTitle}" />
+						<c:when test="${command.isGroup}">
+							<!-- please note the requestedUser is the requestedGroup -->
+							<nav:groupcrumb requestedGroup="${command.requestedUser}" />
 						</c:when>
 						<c:otherwise>
-							<fmt:message key="navi.user" var="user" />
-							<nav:crumb name="${user}" />
-							<nav:crumb name="${command.requestedUser}" href="/user/${command.requestedUser}" />
-							<nav:crumb name="${cvPageTitle}" active="true"/>
+							<nav:usercrumb loginUser="${command.context.loginUser}" requestedUser="${command.requestedUser}"/>
 						</c:otherwise>
 					</c:choose>
+					<nav:crumb name="${cvPageTitle}" active="true"/>
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
@@ -68,7 +63,7 @@
 					| only for logged in users: followers, friends, groups, etc.
 					| and not on his own cv page
 			 		-->
-				<c:if test="${command.context.userLoggedIn and not ownCVPage}">
+				<c:if test="${command.context.userLoggedIn and not ownCVPage and not command.isGroup}">
 					<li>
 						<users:socializer command="${command}" />
 					</li>

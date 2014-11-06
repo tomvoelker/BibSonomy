@@ -28,29 +28,26 @@
 	</c:choose>
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" headline="${headline}">
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.relevantFor" formAction="${relativeUrlGenerator.prefix('relevantfor/').getGroupUrlByGroupName(command.requestedGroup)}" formInputName="tag" formInputValue="${command.requestedTags}">
+			<parts:search pathMessageKey="navi.relevantFor" formAction="${relativeUrlGenerator.getRelevantForUrlByGroupName(command.requestedGroup)}" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="pathPart">
-					<a href="${relativeUrlGenerator.prefix('relevantfor/').getGroupUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
+					<a href="${relativeUrlGenerator.getRelevantForUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
 				</jsp:attribute>
 			</parts:search>
 		</jsp:attribute>
 		
-		<jsp:attribute name="breadcrumbs">	
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<fmt:message key="navi.relevantFor" var="relevantFor" />
 					<nav:crumb name="${relevantFor}"/>
 					
-					<fmt:message key="navi.group" var="group" />
-					<nav:crumb name="${group}" />
-					
 					<c:choose>
 						<c:when test="${not empty command.requestedTags}">
-							<nav:crumb name="${command.requestedGroup}" href="/relevantfor/group/${command.requestedGroup}"/>
-							<nav:crumb name="${command.requestedTags}" leadingIcon="fa-tag" active="true" />
+							<nav:groupcrumb requestedGroup="${command.requestedGroup}" relevantFor="${true}"/>
+							<nav:tagcrumb requestedTags="${command.requestedTags}" active="${true}"/>
 						</c:when>
 						<c:otherwise>
-							<nav:crumb name="${command.requestedGroup}" href="/group/${command.requestedGroup}" active="true" />
+							<nav:groupcrumb requestedGroup="${command.requestedGroup}" active="${true}" relevantFor="${true}"/>
 						</c:otherwise>
 					</c:choose>
 				</jsp:attribute>

@@ -21,16 +21,6 @@
 	<fmt:message key="navi.register" var="pageTitle" />
 	
 	<layout:singleContainerLayout requPath="${requPath}" command="${command}" pageTitle="${pageTitle}" loginUser="${command.context.loginUser}" smallBox="${true}">
-		
-		
-		<jsp:attribute name="headerExt">
-			<!--  -->
-		</jsp:attribute>
-
-		<jsp:attribute name="heading">
-			<!--  -->
-		</jsp:attribute>
-		
 		<jsp:attribute name="content">
 		
 			<h1 class="text-center">
@@ -56,64 +46,60 @@
 				<br />
 				<div class="tab-pane active" id="local">
 					<form:form action="/register" method="POST" class="form-horizontal">
-				        
-				        <errors:global errors="${errors}" />
+						<errors:global />
 		
 						<bsform:fieldset legendKey="register.personal">
 							<jsp:attribute name="content">
-		
-				       			<bsform:input labelColSpan="3" path="registerUser.name" labelKey="navi.username" placeholderLikeLabel="true" inputGroupSymbol="@" noHelp="true" />
-				       			
-				       			<bsform:password labelColSpan="3" path="registerUser.password" labelKey="navi.password" placeholderLikeLabel="true" inputGroupFaIcon="fa-key" noHelp="true" />
-				       			
-				       			<bsform:password labelColSpan="3" path="passwordCheck" labelKey="user.settings.passwordCheck" placeholderLikeLabel="true" inputGroupFaIcon="fa-key" noHelp="true" />
-				       			
+								<bsform:input labelColSpan="3" path="registerUser.name" labelKey="navi.username" placeholderLikeLabel="true" inputGroupSymbol="@" noHelp="true" />
+								
+								<bsform:password labelColSpan="3" path="registerUser.password" labelKey="navi.password" placeholderLikeLabel="true" inputGroupFaIcon="fa-key" noHelp="true" />
+								
+								<bsform:password labelColSpan="3" path="passwordCheck" labelKey="user.settings.passwordCheck" placeholderLikeLabel="true" inputGroupFaIcon="fa-key" noHelp="true" />
+								
 								<bsform:input labelColSpan="3" path="registerUser.email" labelKey="user.settings.email" placeholderLikeLabel="true" inputGroupFaIcon="fa-envelope" noHelp="true" />
-				       			
-				       			<hr />
-				       			
-				       			<bsform:input labelColSpan="3" path="registerUser.homepage" labelKey="user.settings.homepage" placeholderLikeLabel="true" inputGroupFaIcon="fa-globe" noHelp="true" />
-				       			
+								
+								<hr />
+								
+								<bsform:input labelColSpan="3" path="registerUser.homepage" labelKey="user.settings.homepage" placeholderLikeLabel="true" inputGroupFaIcon="fa-globe" noHelp="true" />
+								
 								<bsform:input labelColSpan="3" path="registerUser.realname" labelKey="user.settings.realname" placeholderLikeLabel="true" inputGroupFaIcon="fa-user" noHelp="true" /> 
-				       			
-				       		</jsp:attribute>
+							</jsp:attribute>
 						</bsform:fieldset>
-				       		
+						
 						<bsform:fieldset legendKey="register.captchaAndPrivacy">
-		        			<jsp:attribute name="content">
-
-		        				<bsform:captcha labelColSpan="3" inputColSpan="9" />
+							<jsp:attribute name="content">
+								<bsform:captcha labelColSpan="3" inputColSpan="9" />
 								
 								<c:set var="formErrors"><form:errors path="acceptPrivacy"/></c:set>
-		        				<div class="form-group${not empty formErrors ? ' has-error' : ''}">
-		        					<c:if test="${not empty formErrors}">
-				        				<div class="col-sm-offset-3 col-sm-9">
-				        					<bs:feedback style="danger" size="defaultSize" >
-				        						<jsp:attribute name="feedbackBody">
-				        							<form:errors path="acceptPrivacy" />
-				        						</jsp:attribute>
-				        					</bs:feedback>
-				        				</div>
-			        				</c:if>
-			        				<div class="col-sm-offset-3 col-sm-9">
-			        					<div class="checkbox">
-			       							<label>
+								<div class="form-group${not empty formErrors ? ' has-error' : ''}">
+									<c:if test="${not empty formErrors}">
+										<div class="col-sm-offset-3 col-sm-9">
+											<bs:feedback style="danger" size="defaultSize" >
+												<jsp:attribute name="feedbackBody">
+													<form:errors path="acceptPrivacy" />
+												</jsp:attribute>
+											</bs:feedback>
+										</div>
+									</c:if>
+									<div class="col-sm-offset-3 col-sm-9">
+										<div class="checkbox">
+											<label>
 												<input type="checkbox" name="acceptPrivacy" id="acceptPrivacy" value="yes" />
-					  							<fmt:message key="register.acceptPrivacy">
-					  								<fmt:param value="${properties['project.name']}" />
-					  							</fmt:message>
-					  						</label>
-					  					</div>
-					  				</div>
-					  			</div>
-					  			<br />
+												<fmt:message key="register.acceptPrivacy">
+													<fmt:param value="${properties['project.name']}" />
+												</fmt:message>
+											</label>
+										</div>
+									</div>
+								</div>
+								<br />
 								<div class="form-group">
 									<div class="col-sm-offset-3 col-sm-9">
-					       				<fmt:message key="register.send" var="submit" />
-				        				<bsform:button type="submit" style="success" size="defaultSize" value="${submit}" />
-				        			</div>
+										<fmt:message key="register.send" var="submit" />
+										<bsform:button type="submit" style="success" size="defaultSize" value="${submit}" />
+									</div>
 								</div>
-					  			
+								
 							</jsp:attribute>
 						</bsform:fieldset>
 						
@@ -126,6 +112,4 @@
 			<br />
 		</jsp:attribute>
 	</layout:singleContainerLayout>
-	
-
 </jsp:root>

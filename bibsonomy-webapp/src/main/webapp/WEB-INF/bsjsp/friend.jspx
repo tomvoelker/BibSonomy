@@ -17,27 +17,25 @@
 	<fmt:message var="headline" key="page.friend.headline" />
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}"	activeTab="${command.context.loginUser.name != null ? 'my' : ''}" headline="${headline}${command.requestedUser}">
 		
-        <jsp:attribute name="heading">
+		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.friend" formAction="${relativeUrlGenerator.getFriendUrlByUserName(command.requestedUser)}" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="pathPart">
-					<a href="${relativeUrlGenerator.getFriendUrlByUserName(command.requestedUser)}">@<c:out value="${command.requestedUser}"/></a>					
+					<a href="${relativeUrlGenerator.getFriendUrlByUserName(command.requestedUser)}">
+						<user:username username="${command.requestedUser}" noLink="${true}" />
+					</a>
 				</jsp:attribute>
-			</parts:search>	
-        </jsp:attribute>
+			</parts:search>
+		</jsp:attribute>
 		
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
+					<nav:crumb nameKey="navi.friend.shared"/>
+					<nav:usercrumb loginUser="${command.context.loginUser}" requestedUser="${command.requestedUser}" />
 					
-					<fmt:message key="navi.friend.shared" var="shared"/>
-					<nav:crumb name="${shared}"/>
-					<nav:crumb name="user" />
-					<nav:crumb name="@${command.requestedUser}" href="/user/${command.requestedUser}" />
-					<!-- <nav:crumb name="shared with friends" /> -->
 					<c:if test="${not empty command.requestedTags}">
-						<nav:crumb name="${command.requestedTags}" leadingIcon="fa-tag" active="true" />
+						<nav:tagcrumb requestedTags="${command.requestedTags}" active="${true}" />
 					</c:if>
-
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		

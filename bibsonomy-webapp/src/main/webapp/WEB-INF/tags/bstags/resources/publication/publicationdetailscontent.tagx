@@ -25,7 +25,6 @@
 	<c:set var="isOwnEntry" value="${post.user.name eq command.context.loginUser.name}"/>
 	
 	<spring:theme code="javascript.openaccess" var="jsOpenAccess" text=""/>
-	<script type="text/javascript" src="${resdir}/javascript/bs/publicationdetails.js"><!-- keep me --></script>
 	
 	<c:if test="${not empty jsOpenAccess}"> 
 		<script type="text/javascript" src="${jsOpenAccess}"><!-- keep me --></script>
