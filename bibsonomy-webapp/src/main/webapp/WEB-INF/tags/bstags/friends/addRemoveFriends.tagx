@@ -59,7 +59,7 @@
 
 			</div>
 			
-			<c:if test="${friendStatus.index != 0 and friendStatus.index % 2 == 0}">
+			<c:if test="${friendStatus.index != 0 and friendStatus.index % 3 == 0}">
 				<mtl:newRow />
 			</c:if>
 		</c:forEach>
