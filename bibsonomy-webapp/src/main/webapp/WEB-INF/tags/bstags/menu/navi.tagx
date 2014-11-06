@@ -267,7 +267,7 @@
 												</a>
 											</li>
 											<li> 
-												<a href="${relativeUrlGenerator.getRegisterUrl()}" title="${titleSpheres}">
+												<a href="${relativeUrlGenerator.getRegisterUrl()}">
 													<span class="fa fa-pencil-square-o"><!-- KEEP ME --></span>
 													<fmt:message key="navi.register" />
 												</a>

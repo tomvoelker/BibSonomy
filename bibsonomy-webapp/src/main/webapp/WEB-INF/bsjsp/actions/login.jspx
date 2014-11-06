@@ -29,14 +29,14 @@
 				<c:if test="${not empty command.notice}">
 					<bs:alert style="info">
 						<jsp:attribute name="alertBody">
-							<fmt:message key="login.notice.welcome_1" /> <a style="font-weight: bold;" href="${relativeUrlGenerator.getProjectHome()}">${properties['project.name']}</a>, <fmt:message key="login.notice.welcome_2" />
+							<fmt:message key="login.notice.welcome_1" /><a style="font-weight: bold;" href="${relativeUrlGenerator.getProjectHome()}">${properties['project.name']}</a>, <fmt:message key="login.notice.welcome_2" />
 							<br />
 							<br />
 							<b><fmt:message key="${fn:escapeXml(command.notice)}" /></b>
 							<br />
 							<br />
 							<fmt:message key="login.notice.welcome_3">
-								<fmt:param value="${fn:escapeXml('/register')}" />
+								<fmt:param value="${fn:escapeXml('/register')}" /> <!-- TODO: url generator -->
 								<fmt:param value="${fn:escapeXml(command.referer)}" />
 							</fmt:message>
 						</jsp:attribute>
@@ -86,43 +86,38 @@
 						</c:otherwise>
 					</c:choose>
 					
-				
 					<c:if test="${authMethod == 'OPENID'}">
 						<div id="login_${authMethodName}" class="tab-pane${tabActive}">
-							<user:login_openid />
-							<input class="form-control" type="hidden" name="selTab" value="${authMethodLoopState.index}"></input>
+							<user:login_openid selectedTab="${authMethodLoopState.index}"/>
 						</div>
 					</c:if>
-				
+					
 					<c:if test="${authMethod == 'INTERNAL'}">
 						<div id="login_${authMethodName}" class="tab-pane${tabActive}">
 							<form:form action="/login_${authMethodName}" id="form_${authMethodName}" method="POST" cssClass="form-horizontal">
-								<user:login_internal/>
-								<input class="form-control" type="hidden" name="selTab" value="${authMethodLoopState.index}"></input>
+								<user:login_internal />
+								<input type="hidden" name="selTab" value="${authMethodLoopState.index}"></input>
 							</form:form>
-						</div>	
+						</div>
 					</c:if>
-				
-				
+					
 					<c:if test="${authMethod == 'LDAP'}">
 						<div id="login_${authMethodName}" class="tab-pane${tabActive}">
 							<form:form action="/login_${authMethodName}" id="form_${authMethodName}" method="POST" cssClass="form-horizontal">
-								<user:login_ldap/>
-								<input class="form-control" type="hidden" name="selTab" value="${authMethodLoopState.index}"></input>
+								<user:login_ldap />
+								<input type="hidden" name="selTab" value="${authMethodLoopState.index}"></input>
 							</form:form>
 						</div>
 					</c:if>
-
+					
 					<c:if test="${authMethod == 'SAML'}">
 						<div id="login_${authMethodName}" class="tab-pane${tabActive}">
 							<form:form action="/login_${authMethodName}" id="form_${authMethodName}" method="POST" cssClass="form-horizontal">
-								<user:login_saml/>
-								<input class="form-control" type="hidden" name="selTab" value="${authMethodLoopState.index}"></input>
+								<user:login_saml />
+								<input type="hidden" name="selTab" value="${authMethodLoopState.index}"></input>
 							</form:form>
 						</div>
 					</c:if>
-					
-					
 				</c:forEach>
 			</div>
 		</jsp:attribute>
