@@ -735,7 +735,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		if(searchType==SearchType.ELASTICSEARCH){
 			EsResourceSearch<R> searchResource =  new EsResourceSearch<R>();
 			searchResource.setSearchTerms(searchTerms);
-			searchResource.setTYPE_NAME(resourceType);
+			searchResource.setINDEX_TYPE(resourceType);
 			searchResource.setResourceConverter(this.resourceConverter);
 			try {
 				List<Post<R>> posts = searchResource.fullTextSearch();

@@ -18,6 +18,7 @@ import org.elasticsearch.action.deletebyquery.DeleteByQueryResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.search.SearchHit;
@@ -30,19 +31,21 @@ import org.elasticsearch.search.sort.SortOrder;
  * @param <R>
  *            the resource of the index
  */
-public class UpdateSharedResourceIndex<R extends Resource> {
+public class SharedResourceIndexUpdater<R extends Resource> {
 	private static final Log log = LogFactory
-			.getLog(UpdateSharedResourceIndex.class);
+			.getLog(SharedResourceIndexUpdater.class);
 
-	private final String INDEX_NAME = "posts";
+	private final String INDEX_NAME = ESConstants.INDEX_NAME;
 
-	private String TYPE_NAME;
+	private String INDEX_TYPE;
 
 	/** list posts to insert into index */
 	private ArrayList<Map<String, Object>> esPostsToInsert;
-
-	private final ESNodeClient esClient = new ESNodeClient();
-
+	/** the node client */
+//	private final ESNodeClient esClient = new ESNodeClient();
+	/** the transport client */
+	private final ESTransportClient esClient = new ESTransportClient();
+	
 	/** keeps track of the newest log_date during last index update */
 	private Long lastLogDate;
 
@@ -58,7 +61,7 @@ public class UpdateSharedResourceIndex<R extends Resource> {
 	/**
 	 * 
 	 */
-	public UpdateSharedResourceIndex() {
+	public SharedResourceIndexUpdater() {
 		this.contentIdsToDelete = new LinkedList<Integer>();
 		this.esPostsToInsert = new ArrayList<Map<String, Object>>();
 		this.usersToFlag = new TreeSet<String>();
@@ -77,7 +80,7 @@ public class UpdateSharedResourceIndex<R extends Resource> {
 			try {
 				SearchRequestBuilder searchRequestBuilder = esClient
 						.getClient().prepareSearch(INDEX_NAME);
-				searchRequestBuilder.setTypes(TYPE_NAME);
+				searchRequestBuilder.setTypes(INDEX_TYPE);
 				searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 				searchRequestBuilder.setQuery(QueryBuilders.matchAllQuery());
 				searchRequestBuilder.setSize(1).setExplain(true);
@@ -123,7 +126,7 @@ public class UpdateSharedResourceIndex<R extends Resource> {
 			try {
 				SearchRequestBuilder searchRequestBuilder = esClient
 						.getClient().prepareSearch(INDEX_NAME);
-				searchRequestBuilder.setTypes(TYPE_NAME);
+				searchRequestBuilder.setTypes(INDEX_TYPE);
 				searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 				searchRequestBuilder.setQuery(QueryBuilders.matchAllQuery());
 				searchRequestBuilder.setSize(1).setExplain(true);
@@ -177,8 +180,8 @@ public class UpdateSharedResourceIndex<R extends Resource> {
 	/**
 	 * @return the nodeClient
 	 */
-	public ESNodeClient getNodeClient() {
-		return this.esClient;
+	public Client getClient() {
+		return this.esClient.getClient();
 	}
 
 	/**
@@ -186,13 +189,6 @@ public class UpdateSharedResourceIndex<R extends Resource> {
 	 */
 	public String getINDEX_NAME() {
 		return this.INDEX_NAME;
-	}
-
-	/**
-	 * @return the tYPE_NAME
-	 */
-	public String getTYPE_NAME() {
-		return this.TYPE_NAME;
 	}
 
 	/**
@@ -224,7 +220,7 @@ public class UpdateSharedResourceIndex<R extends Resource> {
 			if ((contentIdsToDelete.size() > 0) || (usersToFlag.size() > 0)) {
 				// remove each cached post from index
 				for (final Integer contentId : this.contentIdsToDelete) {
-					this.DeleteIndexForContentId(contentId);
+					this.deleteIndexForContentId(contentId);
 					log.debug("deleted post " + contentId);
 				}
 
@@ -233,7 +229,7 @@ public class UpdateSharedResourceIndex<R extends Resource> {
 					// final int cnt = purgeDocumentsForUser(userName);
 					// log.debug("Purged " + cnt + " posts for user " +
 					// userName);
-					this.DeleteIndexForForUser(userName);
+					this.deleteIndexForForUser(userName);
 					log.debug("Purged posts for user " + userName);
 				}
 			}
@@ -244,7 +240,7 @@ public class UpdateSharedResourceIndex<R extends Resource> {
 			log.debug("Performing " + esPostsToInsert.size()
 					+ " insert operations");
 			if (this.esPostsToInsert.size() > 0) {
-				this.InsertNewPosts(esPostsToInsert);
+				this.insertNewPosts(esPostsToInsert);
 			}
 
 			// ----------------------------------------------------------------
@@ -260,13 +256,13 @@ public class UpdateSharedResourceIndex<R extends Resource> {
 	/**
 	 * @param esPostsToInsert2
 	 */
-	private void InsertNewPosts(ArrayList<Map<String, Object>> esPostsToInsert2) {
+	private void insertNewPosts(ArrayList<Map<String, Object>> esPostsToInsert2) {
 		for (Map<String, Object> jsonDocument : esPostsToInsert2) {
 			this.esClient
 					.getClient()
 					.prepareIndex(
 							INDEX_NAME,
-							TYPE_NAME,
+							INDEX_TYPE,
 							jsonDocument.get(LuceneFieldNames.CONTENT_ID)
 									.toString()).setSource(jsonDocument)
 					.setRefresh(true).execute().actionGet();
@@ -278,11 +274,12 @@ public class UpdateSharedResourceIndex<R extends Resource> {
 	/**
 	 * @param userName
 	 */
-	private void DeleteIndexForForUser(String userName) {
+	private void deleteIndexForForUser(String userName) {
 
 		@SuppressWarnings("unused")
 		DeleteByQueryResponse response = this.esClient.getClient().prepareDeleteByQuery(INDEX_NAME)
-				.setTypes(TYPE_NAME).setQuery(QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, userName)).execute()
+				.setTypes(INDEX_TYPE).setQuery(QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, userName))
+				.execute()
 				.actionGet();
 //		log.warn(response);
 	}
@@ -291,26 +288,32 @@ public class UpdateSharedResourceIndex<R extends Resource> {
 	 * @param contentId
 	 */
 	@SuppressWarnings("unused")
-	private void DeleteIndexForContentId(Integer contentId) {
+	private void deleteIndexForContentId(Integer contentId) {
 		DeleteResponse response = this.esClient
 				.getClient()
-				.prepareDelete(INDEX_NAME, TYPE_NAME, String.valueOf(contentId))
+				.prepareDelete(INDEX_NAME, INDEX_TYPE, String.valueOf(contentId))
 				.setRefresh(true).execute().actionGet();
 	}
 
+	/**
+	 * @return the iNDEX_TYPE
+	 */
+	public String getINDEX_TYPE() {
+		return this.INDEX_TYPE;
+	}
+
+	/**
+	 * @param iNDEX_TYPE the iNDEX_TYPE to set
+	 */
+	public void setINDEX_TYPE(String iNDEX_TYPE) {
+		INDEX_TYPE = iNDEX_TYPE;
+	}
+	
 	/**
 	 * @param postDoc
 	 */
 	public void insertDocument(Map<String, Object> postDoc) {
 		esPostsToInsert.add(postDoc);
-	}
-
-	/**
-	 * @param tYPE_NAME
-	 *            the tYPE_NAME to set
-	 */
-	public void setTYPE_NAME(String tYPE_NAME) {
-		TYPE_NAME = tYPE_NAME;
 	}
 
 	/**

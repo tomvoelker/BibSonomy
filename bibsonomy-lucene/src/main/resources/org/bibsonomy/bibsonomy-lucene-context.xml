@@ -21,8 +21,8 @@
 		<constructor-arg value="org.bibsonomy.model.GoldStandardPublication" />
 	</bean>
 	
-	<bean id= "ESNodeClient" class= "org.bibsonomy.es.ESNodeClient"/>
-	
+	<!-- <bean id= "ESNodeClient" class= "org.bibsonomy.es.ESNodeClient"/> -->
+	<bean id= "ESTransportClient" class= "org.bibsonomy.es.ESTransportClient"/>
 	<!--+
 	    | lucene post converter
 	    +-->

@@ -22,13 +22,15 @@ import org.bibsonomy.model.es.ESClient;
  */
 public class GenerateSharedResourceIndex extends LuceneGenerateResourceIndex<Resource>{
 	
-	private final String INDEX_NAME = "posts";
-	private String TYPE_NAME;
+	private final String INDEX_NAME = ESConstants.INDEX_NAME;
+	private String INDEX_TYPE;
 
 
-	// ElasticSearch client
-	private final ESClient esClient = new ESNodeClient();
-	
+	// ElasticSearch Node client
+//	private final ESClient esClient = new ESNodeClient();
+	// ElasticSearch Transport client
+	private final ESClient esClient = new ESTransportClient();
+		
 	/**
 	 * creates index of resource entries
 	 * 
@@ -79,7 +81,7 @@ public class GenerateSharedResourceIndex extends LuceneGenerateResourceIndex<Res
 					Map<String, Object> jsonDocument = new HashMap<String, Object>();
 					jsonDocument = (Map<String, Object>) this.resourceConverter.readPost(post, this.searchType);
 					esClient.getClient()
-							.prepareIndex(INDEX_NAME, TYPE_NAME, post.getContentId().toString())
+							.prepareIndex(INDEX_NAME, INDEX_TYPE, post.getContentId().toString())
 							.setSource(jsonDocument).execute().actionGet();
 					log.info("post has been indexed.");
 					
@@ -113,7 +115,7 @@ public class GenerateSharedResourceIndex extends LuceneGenerateResourceIndex<Res
 
 			this.isRunning = true;
 
-			log.warn("Generating index for"+ this.TYPE_NAME+"...");
+			log.warn("Generating index for "+ this.INDEX_TYPE+"...");
 			// generate index
 			GenerateSharedResourceIndex.this.createIndexFromDatabase();
 
@@ -121,7 +123,7 @@ public class GenerateSharedResourceIndex extends LuceneGenerateResourceIndex<Res
 		} catch (final Exception e) {
 			log.error("Failed to generate index!", e);
 		}finally{
-			log.warn("Finished generating index for"+ this.TYPE_NAME);
+			log.warn("Finished generating index for "+ this.INDEX_TYPE);
 		}
 	}
 
@@ -133,17 +135,17 @@ public class GenerateSharedResourceIndex extends LuceneGenerateResourceIndex<Res
 	}
 	
 	/**
-	 * @return the tYPE_NAME
+	 * @return the INDEX_TYPE
 	 */
-	public String getTYPE_NAME() {
-		return this.TYPE_NAME;
+	public String getINDEX_TYPE() {
+		return this.INDEX_TYPE;
 	}
 
 	/**
-	 * @param tYPE_NAME the tYPE_NAME to set
+	 * @param INDEX_TYPE the INDEX_TYPE to set
 	 */
-	public void setTYPE_NAME(String tYPE_NAME) {
-		TYPE_NAME = tYPE_NAME;
+	public void setINDEX_TYPE(String INDEX_TYPE) {
+		this.INDEX_TYPE = INDEX_TYPE;
 	}
 
 }

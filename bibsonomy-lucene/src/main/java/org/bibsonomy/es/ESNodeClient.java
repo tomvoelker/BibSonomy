@@ -8,9 +8,9 @@ import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 
 /**
- * Wrapper around an ElasticSearch Node, to obtain a Client
+ *	starts the Node Client for connecting with the elastic search cluster
  * 
- * @author lka
+ * @author lutful
  */
 public class ESNodeClient implements ESClient {
 
@@ -23,7 +23,7 @@ public class ESNodeClient implements ESClient {
     	
     	if(node == null){
     		final Settings settings = ImmutableSettings.settingsBuilder()
-    				.put("node.name", "bibsonomy_client").build();
+    				.put("node.name", ESConstants.ES_NODE_NAME).build();
 
 	
     		node = new NodeBuilder().settings(settings)

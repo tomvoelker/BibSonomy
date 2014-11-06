@@ -26,9 +26,9 @@ import org.elasticsearch.search.SearchHit;
  */
 public class EsResourceSearch<R extends Resource>{
 
-	private final String INDEX_NAME = "posts";
+	private final String INDEX_NAME = ESConstants.INDEX_NAME;
 
-	private String TYPE_NAME = "BibTex";
+	private String INDEX_TYPE;
 	
 	/** post model converter */
 	private LuceneResourceConverter<R> resourceConverter;
@@ -38,8 +38,10 @@ public class EsResourceSearch<R extends Resource>{
 	 */
 	protected static final Log log = LogFactory.getLog(EsResourceSearch.class);
 
-	// ElasticSearch client
-	private ESClient esClient = new ESNodeClient();
+	// ElasticSearch node client
+//	private ESClient esClient = new ESNodeClient();
+	// ElasticSearch Transport client
+	private ESClient esClient = new ESTransportClient();
 
 	private String searchTerms;
 	/**
@@ -75,9 +77,9 @@ public class EsResourceSearch<R extends Resource>{
 
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
 		try {
-			QueryBuilder queryBuilder = QueryBuilders.queryString("*" + this.searchTerms + "*");
+			QueryBuilder queryBuilder = QueryBuilders.queryString(this.searchTerms);
 			SearchRequestBuilder searchRequestBuilder = esClient.getClient().prepareSearch(INDEX_NAME);
-			searchRequestBuilder.setTypes(TYPE_NAME);
+			searchRequestBuilder.setTypes(INDEX_TYPE);
 			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 			searchRequestBuilder.setQuery(queryBuilder);
 			searchRequestBuilder.setFrom(0).setSize(60).setExplain(true);
@@ -85,7 +87,7 @@ public class EsResourceSearch<R extends Resource>{
 			SearchResponse response = searchRequestBuilder.execute().actionGet();
 
 			if (response != null) {
-				log.info("Current Search results for wildcard '" + this.searchTerms + "': "
+				log.info("Current Search results for '" + this.searchTerms + "': "
 						+ response.getHits().getTotalHits());
 				for (SearchHit hit : response.getHits()) {
 						Map<String, Object> result = hit.getSource();					
@@ -116,17 +118,17 @@ public class EsResourceSearch<R extends Resource>{
 	}
 
 	/**
-	 * @return the tYPE_NAME
+	 * @return the INDEX_TYPE
 	 */
-	public String getTYPE_NAME() {
-		return this.TYPE_NAME;
+	public String getINDEX_TYPE() {
+		return this.INDEX_TYPE;
 	}
 
 	/**
-	 * @param tYPE_NAME the tYPE_NAME to set
+	 * @param INDEX_TYPE the INDEX_TYPE to set
 	 */
-	public void setTYPE_NAME(String tYPE_NAME) {
-		TYPE_NAME = tYPE_NAME;
+	public void setINDEX_TYPE(String INDEX_TYPE) {
+		this.INDEX_TYPE = INDEX_TYPE;
 	}
 
 	/**

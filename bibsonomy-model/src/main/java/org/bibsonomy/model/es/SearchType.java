@@ -14,5 +14,10 @@ public enum SearchType {
 	/**
 	 * 
 	 */
-	LUCENESEARCH;
+	LUCENESEARCH,
+	
+	/**
+	 * 
+	 */
+	BOTH;
 }

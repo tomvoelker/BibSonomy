@@ -2,18 +2,14 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.es.ESNodeClient;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.es.ESClient;
 import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.webapp.command.SearchViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
