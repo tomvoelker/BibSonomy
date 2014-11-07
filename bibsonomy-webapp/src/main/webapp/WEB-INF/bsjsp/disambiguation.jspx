@@ -77,7 +77,7 @@
 			
 			<div class='panel panel-default'>
 				<div class='panel-heading'>
-					<h4>The following persons may be related</h4>
+					<h4>Persons with the name '${command.requestedAuthorName}'</h4>
 				</div>
 				<div class='panel-body'>
 					<div class="list-group">
@@ -85,7 +85,7 @@
 							<c:when test="${fn:length(command.suggestedPersons) gt 0}">
 								<c:forEach var='person' items="${command.suggestedPersons}">
 									<div class="list-group-item">
-										<a href="/persondisambiguation/show/${person.id}">${person.mainName.firstName} ${person.mainName.lastName}</a>
+										<span>${person.mainName.lastName}, ${person.mainName.firstName}, ${person.academicDegree}</span>
 										<a class='pull-right' href="#" data-toggle="modal" data-target='#linkPerson' onclick="linkPerson('${post.resource.intraHash}', '${person.id}')"><span class='glyphicon glyphicon-plus'></span></a>
 									</div>
 								</c:forEach>
@@ -97,65 +97,16 @@
 							</c:otherwise>
 						</c:choose>
 					</div>
-					<button class='btn btn-primary pull-right' data-toggle="modal" data-target="#otherPerson">Other Person</button>
+					<p>Is there no person for the searched name?</p>
+					<form action="/person/null/${command.requestedAuthorName}/${command.requestedHash}/${command.requestedUser}/${command.requestedRole}" method="post">
+						<input type="submit" class="btn btn-primary pull-left" name='formAction' value='New person' />
+					</form>
+					<button class='btn btn-primary pull-right' data-toggle="modal" data-target="#otherPerson">Search other name</button>
 				</div>
 			</div>
 		</jsp:attribute>
 	
 	</layout:paneLayout>
-	
-	
-	  <!-- Modal -->
-  <div class="modal fade" id="linkPerson" tabindex="-1" role="dialog" aria-labelledby="linkPersonLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
-          <h4 class="modal-title">Link Person to Thesis</h4>
-        </div>
-        <div class="modal-body">
-          	<form action="" method="post" id='linkPersonForm' name="linkPersonForm" class='form-horizontal'>
-				<FIELDSET>
-          			<div class="form-group">
-          				<label class="control-label col-xs-3">Role</label>
-          				
-          				<div class="col-xs-7">
-          					<div class='input-group'>
-								<span class="input-group-addon">
-									<input id='roleAuthor' type='checkbox' name='formRole[]' value='Author'/>
-								</span>
-								<p class="form-control">Author</p>
-							</div>
-          					<div class='input-group'>
-								<span class="input-group-addon">
-									<input id='roleBetreuer' type='checkbox' name='formRole[]' value='Betreuer'/>
-								</span>
-								<p class="form-control">Betreuer</p>
-							</div>
-							<div class='input-group'>
-								<span class="input-group-addon">
-									<input id='roleGutachter' type='checkbox' name='formRole[]' value='Gutachter'/>
-								</span>
-								<p class="form-control">Gutachter</p>
-							</div>
-							<div class='input-group'>
-								<span class="input-group-addon">
-									<input id='roleSonstiges' type='checkbox' name='formRole[]' value='Sonstiges'/>
-								</span>
-								<p class="form-control">Sonstiges</p>
-							</div>
-						</div>
-					</div>
-				</FIELDSET>
-			</form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" id='linkPersonSubmit'>Link</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
 	<div class="modal fade" id="otherPerson" tabindex="-1" role="dialog"
 		aria-labelledby="otherPersonLabel" aria-hidden="true">
@@ -180,9 +131,6 @@
 						</fieldset>
 					</div>
 					<div class="modal-footer">
-						<form action="/person/null/${command.requestedAuthorName}/${command.requestedHash}/${command.requestedUser}/${command.requestedRole}" method="post">
-							<input type="submit" class="btn btn-primary pull-left" name='formAction' value='New person' />
-						</form>
 						<form action="/persondisambiguation/link/${command.requestedAuthorName}/${command.requestedHash}/${command.requestedUser}/${command.requestedRole}" method="post" name='editRoleForm' class='form-horizontal'>
 							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>&#160;
 							<input type='hidden' id='formAddPersonId' name='formAddPersonId' value='0'/>

@@ -62,10 +62,13 @@ public class PersonPageController extends SingleResourceListController implement
 				case "unlink": return this.unlinkAction(command);
 				case "New person": return this.newAction(command);
 				case "Thats me": return this.assignAction(command);
-				default: return this.showAction(command);
+				case "Search": return this.indexAction(command);
+				default: return this.indexAction(command);
 			}
+		} else if(present(command.getRequestedPersonId())) {
+			return this.showAction(command);
 		}
-		return this.showAction(command);
+		return this.indexAction(command);
 		
 	}
 
@@ -82,6 +85,10 @@ public class PersonPageController extends SingleResourceListController implement
 //		this.personLogic.createOrUpdatePerson(p);
 		
 		return new ExtendedRedirectView("/person/" +command.getRequestedPersonId() + "/" + command.getRequestedPersonName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/AUTHOR");
+	}
+	
+	private View indexAction(PersonPageCommand command) {	
+		return Views.PERSON;
 	}
 
 
@@ -172,19 +179,11 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View showAction(PersonPageCommand command) {
-		//command.setPerson(this.personLogic.getPersonById(Integer.parseInt(command.getRequestedPersonId())));
-		Person p = new Person();
-		p.setMainName(new PersonName("Max", "Musterman"));
-		p.setAlternateNames(new HashSet<PersonName>());
-		p.getAlternateNames().add(new PersonName("Viktor", "Hemsen"));
-		p.getAlternateNames().add(new PersonName("Max", "Musterman"));
-		command.setPerson(p);
-		
 		command.setThesis(this.logic.getPosts(BibTex.class, GroupingEntity.PERSON_GRADUTED, null, null, null, command.getRequestedPersonId(), null, null, null, null, 0, 3));
 		command.setAdvisedThesis(this.logic.getPosts(BibTex.class, GroupingEntity.PERSON_ADVISOR, null, null, null, command.getRequestedPersonId(), null, null, null, null, 0, 3));
-		command.setAllPosts(this.logic.getPosts(BibTex.class, GroupingEntity.USER, command.getRequestedUser(), null, null, null, null, null, null, null, 0, 3));
+		command.setAllPosts(this.logic.getPosts(BibTex.class, GroupingEntity.USER, command.getRequestedPersonId(), null, null, null, null, null, null, null, 0, 3));
 		
-		return Views.PERSON;
+		return Views.PERSON_SHOW;
 	}
 
 	@Override

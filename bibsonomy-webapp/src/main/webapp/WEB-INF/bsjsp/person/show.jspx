@@ -15,6 +15,7 @@
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/bstags/spheres"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
 	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
@@ -51,6 +52,9 @@
 				#personInfo .panel-heading a.collapsed:after {
 				    content: "\e080";
 				}
+				.title > li {
+					list-style-type: none;
+				}
 			</style>
 		</jsp:attribute>
 		
@@ -72,43 +76,53 @@
 				<div  id='aboutThisPerson' class='panel-collapse collapse'>
 					<form method='post' name='personForm' action="" class='form-horizontal'>
 					<div class='panel-body'>
-							<div class='form-group'>
-								<label class="control-label col-xs-4" for='formAcademicDegree'>Academic Degree</label>
+						<div class='form-group'>
+							<label class="control-label col-xs-4">Author of</label>
+							<div class="col-xs-6">
+								<p class='form-control-static'></p>
+							</div>
+						</div>
+						<div class='form-group'>
+							<label class="control-label col-xs-4" for='formAcademicDegree'>Academic Degree</label>
+							<div class="col-xs-6">
+								<input class='form-control' type="text" name='formAcademicDegree' id='formAcademicDegree' placeholder="Academic degree" value="${command.person.academicDegree }"/>
+							</div>
+						</div>
+						<br/>
+						<div class='form-group'>
+							<label class="control-label col-xs-4">Person's alternate names<br/>(Select main name)</label>
+							<div class="col-xs-6">
+								<c:choose>
+									<c:when test="${fn:length(command.person.alternateNames) gt 0}">
+										<c:forEach var='name' items="${command.person.alternateNames}">
+											<c:choose>
+												<c:when test="${name.firstName eq command.person.mainName.firstName and name.lastName eq command.person.mainName.lastName}">
+													<div class="checkbox"><label><input type='radio' name='formSelectedName' value='${name.lastName}, ${name.firstName}' checked='checked' /> ${name.firstName} ${name.lastName} </label> &#160;<span onclick='' style='color:darkred;cursor:pointer' href="#" class='glyphicon glyphicon-remove'></span></div>
+												</c:when>
+												<c:otherwise>
+													<div class="checkbox"><label><input type='radio' name='formSelectedName' value='${name.lastName}, ${name.firstName}' /> ${name.firstName} ${name.lastName} </label> &#160;<span onclick='' style='color:darkred;cursor:pointer' href="#" class='glyphicon glyphicon-remove'></span></div>
+												</c:otherwise>
+											</c:choose>
+										</c:forEach>
+									</c:when>
+									<c:otherwise>
+										<p class='form-control-static'>No alternate names</p>
+									</c:otherwise>
+								</c:choose>
+								<br/><button type='button' class='btn btn-default' data-toggle="modal" data-target="#addName" href='#addPerson'>Add alternate name</button>
+							</div>
+						</div>
+						<div class='form-group'>
+								<label class="control-label col-xs-4" for='formOrcidID'>OrcidID</label>
 								<div class="col-xs-6">
-									<input class='form-control' type="text" name='formAcademicDegree' id='formAcademicDegree' placeholder="Academic degree" value="${command.person.academicDegree }"/>
+									<input class='form-control' type="text" name='formOrcidID' id='formOrcidID' placeholder="Orcid ID" value="${command.person.orcid}"/>
 								</div>
 							</div>
-							<br/>
-							<div class='form-group'>
-								<label class="control-label col-xs-4">Person's alternate names<br/>(Select main name)</label>
-								<div class="col-xs-6">
-									<c:choose>
-										<c:when test="${fn:length(command.person.alternateNames) gt 0}">
-											<c:forEach var='name' items="${command.person.alternateNames}">
-												<c:choose>
-													<c:when test="${name.firstName eq command.person.mainName.firstName and name.lastName eq command.person.mainName.lastName}">
-														<div class="checkbox"><label><input type='radio' name='formSelectedName' value='${name.lastName}, ${name.firstName}' checked='checked' /> ${name.firstName} ${name.lastName} </label> &#160;<span onclick='' style='color:darkred;cursor:pointer' href="#" class='glyphicon glyphicon-remove'></span></div>
-													</c:when>
-													<c:otherwise>
-														<div class="checkbox"><label><input type='radio' name='formSelectedName' value='${name.lastName}, ${name.firstName}' /> ${name.firstName} ${name.lastName} </label> &#160;<span onclick='' style='color:darkred;cursor:pointer' href="#" class='glyphicon glyphicon-remove'></span></div>
-													</c:otherwise>
-												</c:choose>
-											</c:forEach>
-										</c:when>
-										<c:otherwise>
-											<p class='form-control-static'>No alternate names</p>
-										</c:otherwise>
-									</c:choose>
-								</div>
-							</div>
-							<br/>
+						<br/>
 						<div class='col-xs-4'>&#160;</div>
 						<div class="col-xs-6">
-								<button type='button' class='btn btn-default' data-toggle="modal" data-target="#addName" href='#addPerson'>Add Name</button>
-							<div class='btn-group  pull-right'>
-								<input type='submit' name='formAction' class='btn btn-primary' value='Save'/>
-								<input type='submit' name='formAction' class='btn btn-default' value='Thats me'/>
-							</div>
+							<input type='submit' name='formAction' class='btn btn-default pull-left' value='Thats me'/>
+							<input type='submit' name='formAction' class='btn btn-primary pull-right' value='Save'/>
 						</div>
 					</div>
 					</form>
@@ -122,12 +136,12 @@
 				
 				<div class='panel-body'>
 					<ul id='resourcesTabList' class="nav nav-tabs" role="tablist">
-						<li><a href="#thesis" role="tab" data-toggle="tab"><strong>Thesis</strong></a></li>
+						<li><a href="#ownThesis" role="tab" data-toggle="tab"><strong>Own Thesis</strong></a></li>
 						<li><a href="#advisedThesis" role="tab" data-toggle="tab"><strong>Advised Thesis</strong></a></li>
-						<li><a href="#all" role="tab" data-toggle="tab"><strong>All</strong></a></li>
+						<li><a href="#ownPublications" role="tab" data-toggle="tab"><strong>Own Puplications</strong></a></li>
 					</ul>
 					<div class='tab-content'>
-						<div id='thesis' class='tab-pane'>
+						<div id='ownThesis' class='tab-pane'>
 							<br/>
 							<c:choose>
 								<c:when test="${fn:length(command.thesis) gt 0}">
@@ -179,28 +193,36 @@
 								</c:otherwise>
 							</c:choose>
 						</div>
-						<div id='all' class='tab-pane'>
+						<div id='ownPublications' class='tab-pane'>
 							<br/>
+							<button style='width: 100%;' class='btn btn-primary'>Add Thesis</button>
+							<hr/>
 							<c:choose>
 								<c:when test="${fn:length(command.allPosts) gt 0}">
 									<c:forEach var="post" items="${command.allPosts}">
 										<div class="title">
-											<pub:title post="${post}">
-												<jsp:attribute name="bibActionButtons">
-													<div class="pull-right">
-														<bib:actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/>
-													</div>
-												</jsp:attribute>
-											</pub:title>
-											<c:forEach var="author" items="${post.resource.author}">
-												<a href="/person/show/${author.lastName}">${author.firstName} ${author.lastName} </a>
-												<a data-toggle='modal' href="#editRole" onclick="editRole('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')">(Betreuer) </a>
-												<a data-toggle='modal' href='#unlink' onclick="unlink('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')" style='color:darkred'>x</a>
-												, 
-											</c:forEach>
-											<br/>
-											<div class="btn-group btn-group-sm pull-right"><button class='btn btn-primary ' data-toggle="modal" data-target="#linkPerson">Add Person</button></div>
-											<br/>
+											<!-- show one post -->
+											<rc:post post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}">
+												<jsp:attribute name="title">    <bib:title post="${post}"/>    </jsp:attribute>
+												<jsp:attribute name="actions">  <bib:desc publication="${post.resource}"/>  </jsp:attribute>
+												<jsp:attribute name="desc">     <bib:actions loginUserName="${loginUserName}" post="${post}" disableResourceLinks="${false}"/>     </jsp:attribute>
+												<jsp:attribute name="documents"><bib:documents post="${post}"/></jsp:attribute>
+											</rc:post>
+											<ul>
+												<li>Doktorvater: <span onclick='' style='color:green;cursor:pointer' href="#" class='glyphicon glyphicon-plus'></span></li>
+												<li>Betreuer: <span onclick='' style='color:green;cursor:pointer' href="#" class='glyphicon glyphicon-plus'></span></li>
+												<li>Erstgutachter: <span onclick='' style='color:green;cursor:pointer' href="#" class='glyphicon glyphicon-plus'></span></li>
+												<li>Weitere Gutachter: <span onclick='' style='color:green;cursor:pointer' href="#" class='glyphicon glyphicon-plus'></span></li>
+												<li>Sonstige Beteiligte:
+													<c:forEach var="author" items="${post.resource.author}">
+														<a href="/person/show/${author.lastName}">${author.firstName} ${author.lastName} </a>
+														<a data-toggle='modal' href="#editRole" onclick="editRole('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')"><span style='color:orange;cursor:pointer' class='glyphicon glyphicon-pencil'></span></a>
+														<a data-toggle='modal' href='#unlink' onclick="unlink('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')"><span style='color:darkred;cursor:pointer' class='glyphicon glyphicon-remove'></span></a>
+														&#160;
+													</c:forEach> 
+													<span onclick='' style='color:green;cursor:pointer' href="#" class='glyphicon glyphicon-plus'></span>
+												</li>
+											</ul>
 										</div>
 										<hr />
 									</c:forEach>

@@ -1,0 +1,72 @@
+<?xml version="1.0" ?>
+
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:sql="http://java.sun.com/jsp/jstl/sql"
+	xmlns:settings="urn:jsptagdir:/WEB-INF/tags/bstags/settings"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/bstags/spheres"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
+	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"> 
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<c:set var="requestedUserEncoded" value="${mtl:encodeURI(command.requestedUser)}" />
+	<c:set var="post" value="${command.post}" />
+	<c:set var="publication" value="${post.resource}" />
+	
+	<fmt:message key="navi.person" var="PersonPageTitle" />
+	
+	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" 
+		headerLogoClass="publications" 
+		command="${command}" 
+		requestedUser="${requestedUserEncoded}" 
+		requPath="${requPath}"
+		showPageOptions="${true}"
+		minimizedContentWidth="${true}" >
+
+		<jsp:attribute name="headerExt">
+			<script type='text/javascript' src='/resources/typeahead.js/js/typeahead.bundle.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/autocompleteSearchPerson.js'><!-- keep me --></script>
+			
+			<link rel="stylesheet" type="text/css" href='/resources/typeahead.js/css/typeahead.css'/>
+		</jsp:attribute>
+		
+		<jsp:attribute name="heading">
+		</jsp:attribute>
+		
+		<jsp:attribute name="sidebar">
+		</jsp:attribute>
+
+		<jsp:attribute name="content">
+		
+			<div class="page-header">
+				<h1>Person Search</h1>
+			</div>
+			<div class='page-content'>
+				<div class="panel panel-default">
+				  <div class="panel-body">
+				    <div class='input-group'>
+				    	<span class="input-group-btn">
+					        <button class="btn btn-primary" type="button">Search Person</button>
+					      </span>
+						<input class='form-control typeahead' id='searchPersonAutocomplete' type='text' name='searchPersonAutocomplete' autocomplete="off" placeholder='Enter person name here'/>
+					</div>
+				  </div>
+				</div>
+			</div>	
+		</jsp:attribute>
+	</layout:paneLayout>  
+</jsp:root>

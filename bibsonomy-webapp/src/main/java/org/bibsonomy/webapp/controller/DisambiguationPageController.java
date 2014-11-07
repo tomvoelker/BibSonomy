@@ -1,12 +1,14 @@
 package org.bibsonomy.webapp.controller;
 
 import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.enums.PersonResourceRelation;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.DisambiguationPageCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -24,13 +26,17 @@ public class DisambiguationPageController extends SingleResourceListController i
 	private PersonLogic personLogic = new PersonLogic();
 	
 	@Override
+	public DisambiguationPageCommand instantiateCommand() {
+		return new DisambiguationPageCommand();
+	}
+	
+	@Override
 	public View workOn(final DisambiguationPageCommand command) {
-		
+
 		switch(command.getRequestedAction()) {
 			case "redirected" : return this.redirectAction(command);
 			case "link" : return this.linkAction(command);
-			case "details" : return this.detailsAction(command);
-			default: throw new MalformedURLSchemeException("Controller " + this.getClass().toString() + " cant handle action " + command.getRequestedAction());
+			default: return this.indexAction(command);
 		}
 	}
 
@@ -39,18 +45,13 @@ public class DisambiguationPageController extends SingleResourceListController i
 	 * @param command
 	 * @return
 	 */
-	private View detailsAction(DisambiguationPageCommand command) {
+	private View indexAction(DisambiguationPageCommand command) {
 
 		command.setPost(this.logic.getPostDetails(command.getRequestedHash(), command.getRequestedUser()));
 		PersonName pn = new PersonName(command.getRequestedAuthorName().split(",")[1], command.getRequestedAuthorName().split(",")[0]);
 		command.setSuggestedPersons(this.logic.getPersons(null, null, pn, PersonResourceRelation.valueOf(command.getRequestedRole())));
 		
 		return Views.DISAMBIGUATION;
-	}
-
-	@Override
-	public DisambiguationPageCommand instantiateCommand() {
-		return new DisambiguationPageCommand();
 	}
 	
 	private View redirectAction(DisambiguationPageCommand command) {
