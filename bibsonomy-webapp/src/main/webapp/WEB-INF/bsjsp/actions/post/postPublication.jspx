@@ -103,22 +103,6 @@
 							<jsp:attribute name="shortPostDescription">
 								<bib:shortDescription post="${post}"/>
 							</jsp:attribute>
-							
-							<jsp:attribute name="title">  
-								<bib:title post="${post}"/>
-							</jsp:attribute>
-								
-							<jsp:attribute name="desc">
-								<bib:desc publication="${post.resource}"/>
-							</jsp:attribute>
-				      		
-				      		<jsp:attribute name="documents"> 
-				      			<bib:documents post="${post}"/>
-				      		</jsp:attribute>
-				      		
-				      		<jsp:attribute name="actions">
-				      			<actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/>
-				      		</jsp:attribute>
 				        </batch:content>
 			        </fieldset>
 				</div> 

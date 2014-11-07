@@ -74,8 +74,6 @@ public class PostPublicationController extends AbstractEditPublicationController
 		command.setAbstractGrouping(GroupUtils.getPublicGroup().getName());
 		command.getPost().setResource(new BibTex());
 		command.setPostsErrorList(new LinkedHashMap<String, List<ErrorMessage>>());
-		
-		//command.setErroneous_posts
 
 		return command;
 	}
@@ -256,19 +254,6 @@ public class PostPublicationController extends AbstractEditPublicationController
 			}
 		}
 
-		/*
-		 * user may import n bibtexes which m>1 of them are the same.
-		 * 
-		 * Since similar bibtexes have similar intrahashes, we find duplicate
-		 * bibtexes
-		 * by comparing intrahashes, and then filter unique bibtexes.
-		 * **It is much more efficient to do this check during parsing snippet.
-		 */
-		/*
-		 * TODO: Introduce new error symbol for the case of duplicate posts in
-		 * the snippet
-		 */
-		final Set<String> unique_hashes = new TreeSet<String>();
 
 		/*
 		 * Complete the posts with missing information:
@@ -276,6 +261,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * add additional information from the form to the
 		 * post (description, groups)... present in both upload tabs
 		 */
+		final Set<String> unique_hashes = new TreeSet<String>();
 		ErrorMessage errorMessage;
 		for (final Post<BibTex> post : posts) {
 			post.setUser(context.getLoginUser());
@@ -287,6 +273,13 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * hashes have to be set, in order to call the validator
 			 */
 			post.getResource().recalculateHashes();
+
+			/**
+			 * user may import n bibtexes which m>1 of them are the same.
+			 * 
+			 * Since similar bibtexes have similar intrahashes, we find duplicate bibtexes
+			 * by comparing intrahashes, and then add an error to not_unique bibtexes.
+			 */
 
 			if (!unique_hashes.contains(post.getResource().getIntraHash())) {
 				unique_hashes.add(post.getResource().getIntraHash());
@@ -321,8 +314,8 @@ public class PostPublicationController extends AbstractEditPublicationController
 		ValidationUtils.invokeValidator(new PostPublicationCommandValidator(), command, this.errors);
 
 		/*
-		 * We try to store only posts that have no validation errors and are not
-		 * already stored.
+		 * We try to store only posts that have no validation errors.
+		 * The following function, add error(s) to the erroneous posts.
 		 */
 		final Map<Post<BibTex>, Integer> postsToStore = this.getPostsWithNoValidationErrors(posts, command.getPostsErrorList(),command.isOverwrite());
 
@@ -386,10 +379,9 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * 
 			 * We have already checked if this post bibtex is in the snippet more than one time
 			 * or not.
-			 * (if yes, 'alreadyinSnippet' is already true)
+			 * (if yes, postErrorMessages.size()>=1)
 			 */
-			 //posts.get(i).isAlreadyInSnippet()
-			if(present(postErrorMessages) && postErrorMessages.size()>1){
+			if(present(postErrorMessages) && postErrorMessages.size()>1){ 
 				test3 = true;
 			}
 			else{
@@ -593,11 +585,6 @@ public class PostPublicationController extends AbstractEditPublicationController
 		final String intraHash = post.getResource().getIntraHash();
 
 		if (!isOverwrite && present(this.logic.getPostDetails(intraHash, userName))) {
-			/*
-			 * alreadyInCollection flag is set to true here. In batch edit view,
-			 * alreadyInCollection posts are shown as erroneous posts.
-			 */
-			//post.setAlreadyInCollection(true);
 			return true;
 		}
 		return false;

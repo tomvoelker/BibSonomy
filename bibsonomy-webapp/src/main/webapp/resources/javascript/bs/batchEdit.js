@@ -10,19 +10,22 @@ $(document).ready(function () {
 	$('#selector').find('option:eq(0)').prop("selected", true);
 	$('input[name=abstractGrouping]').prop('disabled', true);
 	
+	/**
+	 * If allNotChecked is true, edit options will not be activated.
+	 * */
 	allNotChecked = true;
 	$('input[name^=posts]:checkbox:checked').each(function() {
 		allNotChecked = false;
 		return;
 	});
-	//allNotChecked = !($('#selectAll').is(':checked'));
-	/*
+	
+	/**
 	 * handler to change all sub checkboxes with the select all option
 	 */
 	$('#selectAll').change(function() {
 		var markAllChecked = $(this).is(':checked');
 		
-		/*
+		/**
 		 * mega haxxor jquery selector to select input checkboxes with name beginning
 		 * with posts.
 		 */
@@ -42,8 +45,12 @@ $(document).ready(function () {
 		} else {
 			changeTagInputs(this, true);
 		}
+		/**
+		 * If oneNotChecked is false, 'select all' checkbox should be selected*
+		 */
+		
 		var oneNotChecked = false;
-		/*
+		/**
 		 * mega haxxor jquery selector to select input checkboxes with name beginning
 		 * with posts that are not checked.
 		 */
@@ -60,12 +67,13 @@ $(document).ready(function () {
 		});
 		if(!allNotChecked){
 			$('#selector').change();
+			/**
+			 * The following function works only in indirect mode*
+			 */
 			trigger_checkboxes();
 		};
 		// if no post is checked, every thing should be hided.
 		if(allNotChecked){
-		//	$('#selector').find('option:eq(0)').prop("selected", true);
-			//$('#selector').change();
 			$('.selectPostAlert').toggleClass('invisible', false);
 			$('.selectPostAlert').toggleClass('hidden', false);
 			$('.emptyBlock').toggleClass('hidden', true);
@@ -81,95 +89,106 @@ $(document).ready(function () {
 			$('.selectPostAlert').toggleClass('hidden', false);
 			resetSelection();
 		}
+		/**
+		 * If at least one post is selected, options can be enabled and do their job!
+		 */
 		if(!allNotChecked){
 			
 			$('.selectPostAlert').toggleClass('invisible', true);
 			$('.selectPostAlert').toggleClass('hidden', true);
 			$('.emptyBlock').toggleClass('hidden', false);
-			if($(this).val() == 1) {
+			if($(this).val() == 1) { //If edit all tag
 				resetSelection();
 				AddAllTag();
 			}
-			else if($(this).val() == 2){
+			else if($(this).val() == 2){ // If edit each posts' tag
 				resetSelection();
 				AddEachTag();
 			} 
-			else if($(this).val() == 3) {
+			else if($(this).val() == 3) { // If normalize BibTex Key
 				resetSelection();
 				normalizeBibTexKey();
 			}
-			else if($(this).val() == 4) {
+			else if($(this).val() == 4) { // If delete post
 				resetSelection();
 				deletePosts();
 			} 
-			else if($(this).val() == 5) {
+			else if($(this).val() == 5) { // If update privacy
 				resetSelection();
 				updatePrivacy();
 			}
 		}
 	});
+	/**
+	 * This function is called in indirect mode*/
 	$('#checkboxAllTag').change(function() {
 		if(!allNotChecked){
-		if ($(this).is(':checked')) {
-			action.push(1);
-			AddAllTag();			
-		}
-		else{
-			//remove action
-			action.splice(index, 1);
-			AddAllTag_Uncheck();
-		}}
+			if ($(this).is(':checked')) {
+				action.push(1);
+				AddAllTag();			
+			}
+			else{
+				//remove action
+				action.splice(index, 1);
+				AddAllTag_Uncheck();
+			}}
 		else{
 			$('.emptyBlock').toggleClass('hidden', true);
 			$('.selectPostAlert').toggleClass('invisible', false);
 			$('.selectPostAlert').toggleClass('hidden', false);
 		}
 	});
+	/**
+	 * This function is called in indirect mode*/
 	$('#checkboxEachTag').change(function() {
 		if(!allNotChecked){
-		if ($(this).is(':checked')) {
-			action.push(2);
-			AddEachTag();		
-		}
-		else{
-			//remove action
-			action.splice(index, 2);
-			AddEachTag_Uncheck();		
-		}}
+			if ($(this).is(':checked')) {
+				action.push(2);
+				AddEachTag();		
+			}
+			else{
+				//remove action
+				action.splice(index, 2);
+				AddEachTag_Uncheck();		
+			}}
 		else{
 			$('.emptyBlock').toggleClass('hidden', true);
 			$('.selectPostAlert').toggleClass('invisible', false);
 			$('.selectPostAlert').toggleClass('hidden', false);
 		}
 	});
+	/**
+	 * This function is called in indirect mode*/
 	$('#checkboxNormalize').change(function() {
 		if(!allNotChecked){
-		if ($(this).is(':checked')) {
-			action.push(3);
-			normalizeBibTexKey();
-		}
-		else{
-			//remove action
-			action.splice(index, 3);
-			normalizeBibTexKey_Uncheck();
-		}}
+			if ($(this).is(':checked')) {
+				action.push(3);
+				normalizeBibTexKey();
+			}
+			else{
+				//remove action
+				action.splice(index, 3);
+				normalizeBibTexKey_Uncheck();
+			}}
 		else{
 			$('.emptyBlock').toggleClass('hidden', true);
 			$('.selectPostAlert').toggleClass('invisible', false);
 			$('.selectPostAlert').toggleClass('hidden', false);
 		}
 	});
+	/**
+	 * This function is called in indirect mode*/
 	$('#checkboxPrivacy').change(function() {
 		if(!allNotChecked){
-		if ($(this).is(':checked')) {
-			action.push(5);
-			updatePrivacy();			
-		}
-		else{
-			//remove action
-			action.splice(index, 5);
-			updatePrivacy_Uncheck();
-		}}
+			if ($(this).is(':checked')) {
+				action.push(5);
+				updatePrivacy();			
+			}
+			else{
+				//remove action
+				action.splice(index, 5);
+				updatePrivacy_Uncheck();
+			}}
 		else{
 			$('.emptyBlock').toggleClass('hidden', true);
 			$('.selectPostAlert').toggleClass('invisible', false);
@@ -177,7 +196,12 @@ $(document).ready(function () {
 		}
 	});
 	$('.batchUpdateButton').click(function(){
-		if(action.length!=0){
+		/**
+		 * If  we are in indirect mode, action variable is set via this .js file,
+		 * therefore action var is not empty. Otherwise action is set in content.tagx file 
+		 * via selector option value and it is empty here*/
+		
+		if(action.length!=0){ 
 			$('input[name=action]').val(action);
 		}
 		else{
@@ -207,11 +231,16 @@ function updatePrivacy_Uncheck(){
 	$('td[id=viewable]').css({'font-weight':'normal'});
 	$('input[name=abstractGrouping]').prop('disabled', true);
 	
+	/**
+	 * var all_NotChecked_undirect is true if we are in indirect mode 
+	 * and no other edit option is selected. 
+	 * In this case update button should be disabled.*/
 	var all_NotChecked_undirect = true;
 	$('input[id^=checkbox]:checkbox:checked').each(function() {
 		all_NotChecked_undirect = false;
 		return;
 	});
+	
 	if(all_NotChecked_undirect){
 		$('.emptyBlock').toggleClass('hidden', false);
 		$('.batchUpdateButton').prop('disabled', true);

@@ -16,13 +16,11 @@
    	</span>
    	<c:out value=" "/>
     <span class="info hidden">...
-      <div>
         <div class="ptitle"><bib:title post="${post}"/></div>
         <div class="pdesc"> <bib:desc publication="${post.resource}"/></div>
         <span>
            <rc:meta post="${post}" otherPostsUrlPrefix="/bib/"/>
         </span>
-      </div>
     </span>
 <!-- 	<input type="text" class="help-popover"/>-->
 			   	

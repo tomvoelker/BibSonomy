@@ -38,14 +38,11 @@
 	<jsp:directive.attribute name="overwrite" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" description="The type of resource that are edited (bookmark or bibtex)." />
 	<jsp:directive.attribute name="directEdit" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="postsErrorMessages" type="java.util.Map" required="false"/>
+	<jsp:directive.attribute name="postsErrorMessages" type="java.util.Map" required="false" 
+		description="In indirect mode, each intrahash(post) is associated with a list of errors"/>
 
 	<jsp:directive.attribute name="shortPostDescription" fragment="true" required="true" description="A one line description of a post" />
-	<jsp:directive.attribute name="title" fragment="true" required="true" />
-	<jsp:directive.attribute name="desc" fragment="true" required="true" />
-	<jsp:directive.attribute name="actions" fragment="true" required="true" />
-	<jsp:directive.attribute name="documents" fragment="true" required="true" />
-
+	
 	<script type="text/javascript" src="/resources/javascript/bs/batchEdit.js"><!-- keep me --></script>
 
 	<!--=======================-->
@@ -86,6 +83,7 @@
 			<input type="hidden" name="action"/>
 			
 			<c:choose>
+			<!-- In direct edit mode, we show a selector, otherwise we show four checkboxes. -->
 			<c:when test="${directEdit}">
 			<div class="form-group">
 				<label class="col-sm-3 control-label">
@@ -100,7 +98,8 @@
 						<c:if test="${resourceType eq 'bibtex'}">
 							<option value="3"><fmt:message key="batchedit.normalizeSelected"/></option>
 						</c:if>
-						<c:if test="${updateExistingPost and directEdit}">
+						<!-- We do not have delete option in indirect mode -->
+						<c:if test="${directEdit}">
 							<option value="4"><fmt:message key="batchedit.deleteSelected"/></option>
 						</c:if>
 						<option value="5"><fmt:message key="batchedit.updatePrivacy"/></option>
@@ -120,22 +119,25 @@
 				<tbody>
 				<tr style="border-bottom:2px solid #eee">
 					<td>
-						<input type="checkbox" id="checkboxAllTag"  value="true"/><fmt:message key="batchedit.EditAllTag"/>
+						<input type="checkbox" id="checkboxAllTag" style="margin-right:2px"/><fmt:message key="batchedit.EditAllTag"/>
 					</td>
 					<td>
-						<input type="checkbox" id="checkboxEachTag" /><fmt:message key="batchedit.EditEachTag"/>
+						<input type="checkbox" id="checkboxEachTag" style="margin-right:2px"/><fmt:message key="batchedit.EditEachTag"/>
 					</td>
 					<td>
-						<input type="checkbox" id="checkboxNormalize"/><fmt:message key="batchedit.normalizeSelected"/>
+						<input type="checkbox" id="checkboxNormalize" style="margin-right:2px"/><fmt:message key="batchedit.normalizeSelected"/>
 					</td>
 					<td>
-						<input type="checkbox" id="checkboxPrivacy"/><fmt:message key="batchedit.updatePrivacy"/>
+						<input type="checkbox" id="checkboxPrivacy" style="margin-right:2px"/><fmt:message key="batchedit.updatePrivacy"/>
 					</td>
 				</tr>
 				</tbody>
 				</table>
 			</c:otherwise>
 			</c:choose>
+			<!-- the following tabel contains two edit options: 
+				1. add a tag to all posts
+				2. update privacy  -->
 			<table class="table table-striped" style="margin-bottom:0px;">
 				<THEAD>
 					<tr>
@@ -304,7 +306,7 @@
 						</c:choose>
 					</c:forEach>
 					
-					
+					<!-- if there exists some posts which are not owned by the user -->
 					<c:if test="${not empty otherPosts}">
 						<c:set var="tooltip_msg" value="${disregardedPosts}" />
 						<c:forEach var="post" items="${listView.list}">

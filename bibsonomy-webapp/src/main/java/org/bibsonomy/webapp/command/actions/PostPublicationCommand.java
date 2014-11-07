@@ -64,10 +64,11 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 */
 	private String description;
 	
-	//nasim: should the type be string or error?
-	// maps post's intrahash to its errormessages
+
+	/**
+	 * each intrahash(post) is maped to a list of errors. Erroneous posts cannot be edited later*/
 	private Map<String, List<ErrorMessage>> postsErrorList;
-	//private String[] erroneous_posts;
+
 	/**
 	 * constructor
 	 * inits the tabs and sets their titles
