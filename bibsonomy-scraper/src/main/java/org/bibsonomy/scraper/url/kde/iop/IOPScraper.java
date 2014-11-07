@@ -36,6 +36,7 @@ import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.WebUtils;
 
 
@@ -96,7 +97,7 @@ public class IOPScraper extends AbstractUrlScraper {
 		
 		String bibtex = "";
 		try {
-			bibtex = WebUtils.getPostContentAsString(new URL("http://iopscience.iop.org/export"), postArgs, "UTF-8");
+			bibtex = WebUtils.getPostContentAsString(new URL("http://iopscience.iop.org/export"), postArgs, StringUtils.CHARSET_UTF_8);
 		} catch (MalformedURLException ex) {
 			throw new ScrapingFailureException("URL to scrape does not exist. It maybe malformed.");
 		} catch (IOException ex) {

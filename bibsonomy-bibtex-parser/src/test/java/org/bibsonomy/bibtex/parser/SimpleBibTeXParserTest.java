@@ -36,6 +36,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.util.StringUtils;
 import org.junit.Test;
 
 /**
@@ -270,7 +271,7 @@ public class SimpleBibTeXParserTest {
 	}
 
 	private static String getTestFile(final String filename) throws IOException {
-		final BufferedReader stream = new BufferedReader(new InputStreamReader(SimpleBibTeXParserTest.class.getClassLoader().getResourceAsStream(filename), "UTF-8"));
+		final BufferedReader stream = new BufferedReader(new InputStreamReader(SimpleBibTeXParserTest.class.getClassLoader().getResourceAsStream(filename), StringUtils.CHARSET_UTF_8));
 		final StringBuilder buf = new StringBuilder();
 		String line;
 		while ((line = stream.readLine()) != null) {

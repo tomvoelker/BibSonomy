@@ -19,6 +19,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.services.renderer.LayoutRenderer;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.LayoutViewCommand;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.BindingResult;
@@ -156,7 +157,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 		 * set the content type headers
 		 */
 		response.setContentType(layout.getMimeType());
-		response.setCharacterEncoding("UTF-8");
+		response.setCharacterEncoding(StringUtils.CHARSET_UTF_8);
 		String extension = layout.getExtension();
 		/*
 		 * If an extension is given, which is differrent from ".html", this suggests to the 
@@ -171,7 +172,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 		/*
 		 * write the buffer to the response
 		 */
-		response.getOutputStream().write(buf.toString().getBytes("UTF-8"));
+		response.getOutputStream().write(buf.toString().getBytes(StringUtils.CHARSET_UTF_8));
 	}
 	
 	/**

@@ -35,6 +35,7 @@ import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Document;
@@ -99,7 +100,7 @@ public class UnAPIScraper implements Scraper {
 						/*
 						 * build URL to get record in bibtex format
 						 */
-						final URL url = new URL(href + "?format=bibtex&id=" + URLEncoder.encode(id, "UTF-8"));
+						final URL url = new URL(href + "?format=bibtex&id=" + URLEncoder.encode(id, StringUtils.CHARSET_UTF_8));
 						log.debug("querying service at " + url);
 						/*
 						 * get the data

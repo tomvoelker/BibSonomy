@@ -179,7 +179,7 @@ public class JabrefLayoutUtils {
 			/*
 			 * give file to layout helper
 			 */
-			final LayoutHelper layoutHelper = new LayoutHelper(new BufferedReader(new InputStreamReader(resourceAsStream, "UTF-8")));
+			final LayoutHelper layoutHelper = new LayoutHelper(new BufferedReader(new InputStreamReader(resourceAsStream, StringUtils.CHARSET_UTF_8)));
 			/*
 			 * load layout
 			 */
@@ -223,7 +223,7 @@ public class JabrefLayoutUtils {
 
 			if (file.exists()) {
 				log.debug("custom layout (part '" + layoutPart + "') found!");
-				final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+				final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StringUtils.CHARSET_UTF_8));
 				final LayoutHelper layoutHelper = new LayoutHelper(reader);
 				try {
 					jabrefLayout.addSubLayout(layoutPart, layoutHelper.getLayoutFromText(GLOBALS_FORMATTER_PACKAGE));

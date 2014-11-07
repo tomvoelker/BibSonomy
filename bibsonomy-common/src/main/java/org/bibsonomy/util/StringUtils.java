@@ -45,7 +45,13 @@ import org.bibsonomy.common.exceptions.InvalidModelException;
  */
 public class StringUtils {
 	
-	private static final String DEFAULT_CHARSET = "UTF-8";
+	/** the UTF-8 charset */
+	public static final String CHARSET_UTF_8 = "UTF-8";
+	
+	/**
+	 * the default charset for all BibSonomy modules
+	 */
+	public static final String DEFAULT_CHARSET = CHARSET_UTF_8;
 	
 	private static final Pattern WHITE_SPACE = Pattern.compile("\\s+");
 	private static final Pattern SINGLE_NUMBER = Pattern.compile("\\b\\d+\\b");

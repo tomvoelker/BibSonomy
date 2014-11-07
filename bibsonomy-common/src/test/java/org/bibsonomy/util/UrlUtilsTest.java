@@ -113,7 +113,8 @@ public class UrlUtilsTest {
 		// but spaces should
 		assertEquals("$+&+++,+/+:+;+?+@", UrlUtils.encodeURLExceptReservedChars("$ & + , / : ; ? @"));
 		
-		assertEquals(URLEncoder.encode("should_be_same_as_plain_encoded_']} §°^äöü*ÄÖU", "UTF-8"), UrlUtils.encodeURLExceptReservedChars("should_be_same_as_plain_encoded_']} §°^äöü*ÄÖU"));
+		final String testString = "should_be_same_as_plain_encoded_']} §°^äöü*ÄÖU";
+		assertEquals(URLEncoder.encode(testString, StringUtils.CHARSET_UTF_8), UrlUtils.encodeURLExceptReservedChars(testString));
 		assertEquals("http://www.bibsonomy.org/user/%7Cthe_man%7C/?bookmark.start=10&bibtex.start=0", UrlUtils.encodeURLExceptReservedChars("http://www.bibsonomy.org/user/|the_man|/?bookmark.start=10&bibtex.start=0"));
 	}
 	

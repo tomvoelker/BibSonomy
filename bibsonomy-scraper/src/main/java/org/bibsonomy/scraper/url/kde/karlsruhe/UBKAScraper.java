@@ -29,9 +29,7 @@ package org.bibsonomy.scraper.url.kde.karlsruhe;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
@@ -48,6 +46,7 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
 
 
@@ -169,24 +168,16 @@ public class UBKAScraper extends AbstractUrlScraper {
 	 * @return extracted value
 	 */
 	private String extractQueryParamValue(final String query, final String name) throws ScrapingException{
-
 		final StringTokenizer st = new StringTokenizer(query,"&=",true);
 		final Properties params = new Properties();
 		String previous = null;
-		while (st.hasMoreTokens())
-		{
+		while (st.hasMoreTokens()) {
 			final String currToken = st.nextToken();
-			if ("?".equals(currToken) || "&".equals(currToken))
-			{
+			if ("?".equals(currToken) || "&".equals(currToken)) {
 				//ignore
-			}else if ("=".equals(currToken))
-			{
-				try {
-					params.setProperty(URLDecoder.decode(previous, "UTF-8"),URLDecoder.decode(st.nextToken(), "UTF-8"));
-				} catch (final UnsupportedEncodingException e) {
-					throw new InternalFailureException(e);
-				}
-			}else{
+			} else if ("=".equals(currToken)) {
+				params.setProperty(UrlUtils.safeURIDecode(previous), UrlUtils.safeURIDecode(st.nextToken()));
+			} else {
 				previous = currToken;
 			}
 		}

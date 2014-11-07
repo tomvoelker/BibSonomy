@@ -261,7 +261,7 @@ public class MailUtils {
 
 		// Setting the Subject and Content Type
 		msg.setSubject(subject);
-		msg.setText(message, "UTF-8");
+		msg.setText(message, StringUtils.CHARSET_UTF_8);
 		Transport.send(msg);
 	}
 

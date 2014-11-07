@@ -398,7 +398,7 @@ public class BibTexUtils {
 
 	private static void appendOpenURL(final StringBuilder buffer, final String name, final String value) throws UnsupportedEncodingException {
 		if (present(value)) {
-			buffer.append("&" + name + "=" + URLEncoder.encode(value.trim(), "UTF-8"));
+			buffer.append("&" + name + "=" + URLEncoder.encode(value.trim(), StringUtils.CHARSET_UTF_8));
 		}
 	}
 

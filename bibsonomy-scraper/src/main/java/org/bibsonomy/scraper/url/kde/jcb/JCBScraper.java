@@ -23,18 +23,16 @@
 
 package org.bibsonomy.scraper.url.kde.jcb;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
+import org.bibsonomy.util.UrlUtils;
 
 /**
  * @author hagen
@@ -70,14 +68,12 @@ public class JCBScraper extends GenericBibTeXURLScraper {
 
 	@Override
 	public String getDownloadURL(URL url) throws ScrapingException {
-		Matcher m = ID_PATTERN.matcher(url.toExternalForm());
-		if (!m.find()) return null;
-		String result = null;
-		try {
-			result = URLEncoder.encode(m.group().replaceFirst("/", ";"), "UTF-8");
-		} catch (UnsupportedEncodingException ex) {
+		final Matcher m = ID_PATTERN.matcher(url.toExternalForm());
+		if (!m.find()) {
 			return null;
 		}
+		
+		final String result = UrlUtils.safeURIEncode(m.group().replaceFirst("/", ";"));
 		return "http://jcb.rupress.org/citmgr?type=bibtex&gca=jcb" + result;
 	}
 
