@@ -39,7 +39,7 @@
 				<jsp:attribute name="crumbs">
 					<nav:account />
 					<nav:crumb nameKey="navi.settings" active="true" />
-					<nav:crumb nameKey="navi.groupsettings" active="true" />
+					<nav:crumb nameKey="navi.group" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
