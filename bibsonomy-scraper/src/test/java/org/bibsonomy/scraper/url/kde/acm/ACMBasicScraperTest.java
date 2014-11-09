@@ -141,6 +141,8 @@ public class ACMBasicScraperTest {
 		
 		final String cby = sc.getCitedBy();
 		
+		System.out.println(cby);
+		
 		assertNotNull(cby);
 		
 		assertTrue(cby.length() > 100);
