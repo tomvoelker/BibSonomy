@@ -228,8 +228,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public boolean isRelationPresent(final TagRelationParam param, final DBSession session) {
 		final String relationID = queryForObject("getRelationID", param, String.class, session);
-		if (relationID == null) return false;
-		return true;
+		return relationID != null;
 	}
 	
 	/**
