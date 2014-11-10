@@ -99,7 +99,7 @@ public class UBKAScraper extends AbstractUrlScraper {
 		return SITE_URL;
 	}
 
-	private static String extractId(String url) {
+	private static String extractId(final String url) {
 		final Matcher m = UBKA_ID_PATTERN.matcher(url);
 		if(m.find())
 			return m.group(1);
