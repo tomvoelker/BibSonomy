@@ -58,10 +58,9 @@ public class UBKAScraper extends AbstractUrlScraper {
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + UBKA_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
 
-	private static final Pattern ubka_id = Pattern.compile("doc=KITSRC(.*?)&");
-	private static final String ubka_bibtex_url = "http://swb.bsz-bw.de/DB=2.1/PPNSET?PPN=";
-	private static final Pattern bibtex_result = Pattern.compile("<div>(@.*?})</div>");
-	private static final Pattern rpl = Pattern.compile("</div>|<div>|<NOBR>|</NOBR>");
+	private static final Pattern UBKA_ID_PATTERN = Pattern.compile("doc=KITSRC(.*?)&");
+	private static final String UBKA_BIBTEX_URL = "http://swb.bsz-bw.de/DB=2.1/PPNSET?PPN=";
+	
 
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
@@ -69,7 +68,7 @@ public class UBKAScraper extends AbstractUrlScraper {
 
 		final String id = extractId(sc.getUrl().toString());
 		try {
-			final ScrapingContext scrapingContext = new ScrapingContext(new URL(ubka_bibtex_url + id + "&PRS=bibtex"));
+			final ScrapingContext scrapingContext = new ScrapingContext(new URL(UBKA_BIBTEX_URL + id + "&PRS=bibtex"));
 			final BibtexScraper bibtexScraper = new BibtexScraper();
 			bibtexScraper.scrape(scrapingContext);
 			final String bibtex = scrapingContext.getBibtexResult();
@@ -101,7 +100,7 @@ public class UBKAScraper extends AbstractUrlScraper {
 	}
 
 	private static String extractId(String url) {
-		final Matcher m = ubka_id.matcher(url);
+		final Matcher m = UBKA_ID_PATTERN.matcher(url);
 		if(m.find())
 			return m.group(1);
 		return null;
