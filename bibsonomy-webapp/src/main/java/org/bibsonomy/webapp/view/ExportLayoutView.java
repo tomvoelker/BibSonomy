@@ -11,6 +11,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Layout;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.ExportPageCommand;
 import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.view.AbstractView;
@@ -66,8 +67,8 @@ public class ExportLayoutView extends AbstractView {
 			 * write the output, it will show the JSON-object as a plaintext string
 			 */
 			response.setContentType("application/json");
-			response.setCharacterEncoding("UTF-8");
-			response.getOutputStream().write(json.toString().getBytes("UTF-8"));
+			response.setCharacterEncoding(StringUtils.CHARSET_UTF_8);
+			response.getOutputStream().write(json.toString().getBytes(StringUtils.CHARSET_UTF_8));
 		}
 	}
 

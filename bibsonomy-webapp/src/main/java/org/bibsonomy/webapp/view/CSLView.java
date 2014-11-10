@@ -17,6 +17,7 @@ import org.bibsonomy.layout.csl.model.Record;
 import org.bibsonomy.layout.csl.model.RecordList;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.view.AbstractView;
@@ -44,7 +45,7 @@ public class CSLView extends AbstractView {
 		 * set the content type headers
 		 */
 		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
+		response.setCharacterEncoding(StringUtils.CHARSET_UTF_8);
 
 		/*
 		 * output stream

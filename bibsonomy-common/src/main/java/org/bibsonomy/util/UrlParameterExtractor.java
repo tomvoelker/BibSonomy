@@ -50,13 +50,13 @@ public class UrlParameterExtractor {
 	 * @return the parameter
 	 */
 	public String parseParameterValueFromUrl(String url) {
-		Matcher m = this.extractParameterValuePattern.matcher(url);
-		if (m.matches() == false) {
+		final Matcher m = this.extractParameterValuePattern.matcher(url);
+		if (!m.matches()) {
 			return null;
 		}
 		String encodedValue = m.group(2);
 		try {
-			return URLDecoder.decode(encodedValue, "UTF-8");
+			return URLDecoder.decode(encodedValue, StringUtils.CHARSET_UTF_8);
 		} catch (UnsupportedEncodingException ex) {
 			throw new IllegalStateException(ex);
 		}

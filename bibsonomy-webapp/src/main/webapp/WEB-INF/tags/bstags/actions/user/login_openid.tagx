@@ -9,21 +9,27 @@
 	xmlns:login="urn:jsptagdir:/WEB-INF/tags/bstags/actions/user">
 
 	<jsp:directive.tag language="java" pageEncoding="UTF-8" display-name="OpenID Login Form" description="Renders the login form for OpenID login." />
+	
+	<jsp:directive.attribute name="selectedTab" type="java.lang.Integer" required="false"/>
+	
+	
 	<br /><br />
 	<fieldset>
+		<!-- TODO: (Bootstrap) i18n -->
 		<legend>Sign with another provider</legend>
 		<!-- TODO: Create list of privders according to
 			http://stackoverflow.com/questions/1116743/where-can-i-find-a-list-of-openid-provider-urls
 			or http://openid.net/get-an-openid/ and generate code dynamically -->
 		<ul class="list-inline">
 			<li><span><fmt:message key="login.openid.provider"/></span></li>
-			<li><login:login_openid_provider url="https://www.google.com/accounts/o8/id" name="Google" /></li>
-			<li><login:login_openid_provider url="http://me.yahoo.com/" name="Yahoo!" /></li>
+			<li><login:login_openid_provider url="https://www.google.com/accounts/o8/id" name="Google" selectedTab="${selectedTab}"/></li>
+			<li><login:login_openid_provider url="http://me.yahoo.com/" name="Yahoo!" selectedTab="${selectedTab}" /></li>
 			<li><a class="otherProvider" data-provider="other" href="#">Other OpenID-Provider</a></li>
 		</ul>
 
 		<div class="openIDmanual" style="display: none;">
 			<form class="form-horizontal" action="/login_openid" id="openIDForm">
+				<input type="hidden" name="selTab" value="${selectedTab}"></input>
 				<div class="form-group">
 					<label class="control-label col-sm-3">
 						<fmt:message key="login.method.openid" />

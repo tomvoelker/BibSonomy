@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.karlsruhe;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
@@ -60,7 +62,7 @@ public class UBKAScraper extends AbstractUrlScraper {
 
 	private static final Pattern UBKA_ID_PATTERN = Pattern.compile("doc=KITSRC(.*?)&");
 	private static final String UBKA_BIBTEX_URL = "http://swb.bsz-bw.de/DB=2.1/PPNSET?PPN=";
-	
+
 
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
@@ -72,8 +74,10 @@ public class UBKAScraper extends AbstractUrlScraper {
 			final BibtexScraper bibtexScraper = new BibtexScraper();
 			bibtexScraper.scrape(scrapingContext);
 			final String bibtex = scrapingContext.getBibtexResult();
-			sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString()));
-			return true;
+			if(present(bibtex)) {
+				sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString()));
+				return true;
+			}
 		} catch (final IOException me) {
 			throw new InternalFailureException(me);
 		}

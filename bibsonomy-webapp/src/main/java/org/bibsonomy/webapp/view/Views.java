@@ -176,10 +176,9 @@ public enum Views implements View {
 	POSTHISTORYPAGE("postHistory"),
 
 	/**
-	 * all the posts the user has picked in his basket
-	 * TODO: move basket.jspx to clipboard.jspx
+	 * all the posts the user has picked in his clipboard
 	 */
-	CLIPBOARDPAGE("basket"),
+	CLIPBOARDPAGE("clipboard"),
 
 	/**
 	 * relations page shows all the relations of an user

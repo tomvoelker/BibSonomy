@@ -25,7 +25,6 @@ package org.bibsonomy.scraper.url.kde.ieee;
 
 import java.io.IOException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -38,6 +37,7 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.id.DOIUtils;
 
@@ -52,10 +52,6 @@ public class IEEEComputerSocietyScraper extends AbstractUrlScraper {
 	private static final String INFO = "Scraper for publications from " + href(SITE_URL, SITE_NAME);
 	private static final String HOST_OLD= "csdl2.computer.org";
 	private static final String HOST_NEW = "computer.org";
-
-	private static final String PATTERN_HREF = "href=\"[^\"]*\"";
-
-	private static final String LINK_SUFFIX = "BibTex</A>";
 	
 	private static final String DOWNLOAD_URL = "http://www.computer.org/plugins/dl/doi/";
 	
@@ -63,10 +59,6 @@ public class IEEEComputerSocietyScraper extends AbstractUrlScraper {
 	
 	private static final Pattern doiPattern1 = Pattern.compile("doi/(.*)");
 	private static final Pattern doiPattern2 = Pattern.compile("\\&DOI=([^\\&]*)");
-
-	public String getInfo() {
-		return INFO;
-	}
 	
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 	
@@ -74,37 +66,39 @@ public class IEEEComputerSocietyScraper extends AbstractUrlScraper {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST_OLD), AbstractUrlScraper.EMPTY_PATTERN));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST_NEW), AbstractUrlScraper.EMPTY_PATTERN));
 	}
-
+	
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
 		String doi = null;
 		Matcher doi1Matcher = doiPattern1.matcher(sc.getUrl().toString());
 		Matcher doi2Matcher = doiPattern2.matcher(sc.getUrl().toString());
-		if(doi1Matcher.find())
+		if (doi1Matcher.find()) {
 			doi = doi1Matcher.group(1);
-		else if(doi2Matcher.find())
+		} else if (doi2Matcher.find()) {
 			doi = doi2Matcher.group(1);
-		
-		if(doi != null){
+		}
+		if (doi != null){
 			try {
-				if(doi.contains("#"))
+				if (doi.contains("#")) {
 					doi = doi.substring(0, doi.indexOf("#"));
+				}
 				
 				final String page = WebUtils.getContentAsString(new URL(DOWNLOAD_URL + doi));
 
 				String bibtex = null;
 				Matcher bibtexMatcher = bibtexPattern.matcher(page);
-				if(bibtexMatcher.find())
+				if (bibtexMatcher.find()) {
 					bibtex = bibtexMatcher.group(1).trim();
-
-				if(bibtex != null){
+				}
+				if (bibtex != null) {
 					bibtex = bibtex.replace("<br>", "\n");
 					bibtex = bibtex.replace("<xsl:text>", "");
 					bibtex = bibtex.replace("</xsl:text>", "");
 					bibtex = bibtex.replace("&nbsp;", " ");
 	
-					bibtex = URLDecoder.decode(bibtex, "UTF-8");
+					bibtex = UrlUtils.safeURIDecode(bibtex);
 	
 					// append url
 					bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
@@ -116,9 +110,9 @@ public class IEEEComputerSocietyScraper extends AbstractUrlScraper {
 					sc.setBibtexResult(bibtex);
 					sc.setScraper(this);
 					return true;
-				}else
-					throw new ScrapingFailureException("Cannot download bibtex.");
+				}
 				
+				throw new ScrapingFailureException("Cannot download bibtex.");
 			} catch (IOException ex) {
 				throw new InternalFailureException(ex);
 			}
@@ -126,16 +120,24 @@ public class IEEEComputerSocietyScraper extends AbstractUrlScraper {
 		}
 		return false;
 	}
-
+	
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
-
+	
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
-
+	
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
+	}
+	
+	@Override
+	public String getInfo() {
+		return INFO;
 	}
 }
