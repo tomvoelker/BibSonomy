@@ -107,8 +107,7 @@ public class NatureScraper extends AbstractUrlScraper {
 			} else {
 				in = con.getInputStream();
 			}
-			StringBuilder sb = WebUtils.inputStreamToStringBuilder(in, WebUtils.extractCharset(con.getContentType()));
-			return sb.toString();
+			return WebUtils.inputStreamToStringBuilder(in, WebUtils.extractCharset(con.getContentType())).toString();
 		} finally {
 			if (con != null) con.disconnect();
 			try {
@@ -134,7 +133,7 @@ public class NatureScraper extends AbstractUrlScraper {
 
 	private static String abstractParser(URL url){
 		try {
-			Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(url));
+			final Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(url));
 			if (m.find()) {
 				return m.group(1);
 			}
@@ -149,110 +148,102 @@ public class NatureScraper extends AbstractUrlScraper {
 	 */
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		String bibtex_url = null;
-		final URL url = sc.getUrl();
-		try {
-			// get publication page
-			final String publicationPage = getPageContent(url);
-			// extract download citation link
-			final Matcher linkMatcher = linkPattern.matcher(publicationPage);
-			while(linkMatcher.find()){
-				String link = linkMatcher.group();
-				// check if link is download link
-				if(link.contains(CITATION_DOWNLOAD_LINK_NAME) || link.contains(CITATION_DOWNLOAD_LINK_NAME2)){
-					// get href attribute
-					final Matcher hrefMatcher = hrefPattern.matcher(link);
-					if(hrefMatcher.find()){
-						String href = hrefMatcher.group();
-						href = href.substring(6, href.length()-1);
-						// download citation (as ris)
-						bibtex_url =  "http://" + url.getHost() + "/" + href;
-					} 
-				}
-			}
-			if(bibtex_url != null){
-				RisToBibtexConverter ris = new RisToBibtexConverter();
-				sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(ris.risToBibtex(WebUtils.getContentAsString(bibtex_url)),"abstract",abstractParser(sc.getUrl())));
-				return true;
-			}
-			try{
-			String bibtex = constructBibtex(sc);
-			if(bibtex != "}")
-			{
-				bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
-				sc.setBibtexResult(bibtex);
-				return true;
-			}
-			}catch(ParseException pe){
-				throw new ScrapingException(pe);
-			}
-				
-		} catch (IOException e) {
-			throw new ScrapingException(e);
+	    try {
+		final String bibtexUrl = findBibtexUrl(sc.getUrl());
+		if (bibtexUrl != null) {
+		    final RisToBibtexConverter ris = new RisToBibtexConverter();
+		    sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(ris.risToBibtex(WebUtils.getContentAsString(bibtexUrl)),"abstract",abstractParser(sc.getUrl())));
+		    return true;
 		}
-		return false;
+		sc.setBibtexResult(constructBibtexFromHtmlMeta(sc));
+		return true;
+	    } catch (final IOException e) {
+		throw new ScrapingException(e);
+	    } catch (final ParseException pe) {
+		throw new ScrapingException(pe);
+	    }
 	}
-	private static String constructBibtex(ScrapingContext sc) throws IOException, ParseException{
-		URL url = sc.getUrl();
-		String content = WebUtils.getContentAsString(url.toExternalForm());
-		StringBuilder bibtex = new StringBuilder();
+    
+    private String findBibtexUrl(final URL url) throws IOException {
+	// get publication page
+	final String publicationPage = getPageContent(url);
+	// extract download citation link
+	final Matcher linkMatcher = linkPattern.matcher(publicationPage);
+	while (linkMatcher.find()) {
+	    final String link = linkMatcher.group();
+	    // check if link is download link
+	    if (link.contains(CITATION_DOWNLOAD_LINK_NAME) || link.contains(CITATION_DOWNLOAD_LINK_NAME2)) {
+		// get href attribute
+		final Matcher hrefMatcher = hrefPattern.matcher(link);
+		if (hrefMatcher.find()) {
+		    final String href = hrefMatcher.group();
+		    // download citation (as RIS)
+		    return  "http://" + url.getHost() + "/" + href.substring(6, href.length() - 1);
+		} 
+	    }
+	}
+	return null;
+    }
+
+	private String constructBibtexFromHtmlMeta(final ScrapingContext sc) throws IOException, ParseException {
+		final URL url = sc.getUrl();
+		final String content = WebUtils.getContentAsString(url.toExternalForm());
+		final StringBuilder bibtex = new StringBuilder();
 		bibtex.append("@article{nokey,\n");
+		bibtex.append("url = {" + url + "},\n");
+
+		// add author
+		final Matcher m_author = author.matcher(content);
+		if (m_author.find())
+			bibtex.append("author = {" + m_author.group(1).trim().replaceAll("[;]*$", "").replace(";", " and ") + "},\n"); 
 		
-		//add author
-		Matcher m_author = author.matcher(content);
-		if(m_author.find()){
-			String authors = "author = {" + m_author.group(1).trim() + "},\n";
-			bibtex.append(authors.replace(";}", "}").replace(";", " and"));
-		}
-		
-		//add journal
-		Matcher m_journal = journal.matcher(content);
-		if(m_journal.find())
+		// add journal
+		final Matcher m_journal = journal.matcher(content);
+		if (m_journal.find())
 			bibtex.append("journal = {" + m_journal.group(1) + "},\n");
 		
-		//add doi
-		Matcher m_doi = doi.matcher(content);
-		if(m_doi.find())
+		// add doi
+		final Matcher m_doi = doi.matcher(content);
+		if (m_doi.find())
 			bibtex.append("doi = {" + m_doi.group(1) + "},\n");
 		
-		//add title
-		Matcher m_title = title.matcher(content);
-		if(m_title.find())
+		// add title
+		final Matcher m_title = title.matcher(content);
+		if (m_title.find())
 			bibtex.append("title = {" + m_title.group(1) + "},\n");
 		
-		//add pages
-		Matcher m_pages = pages.matcher(content);
-		if(m_pages.find())
+		// add pages
+		final Matcher m_pages = pages.matcher(content);
+		if (m_pages.find())
 			bibtex.append("pages = {" + m_pages.group(1) + "},\n");
 		
 		// add date
-		Matcher m_date = date.matcher(content);
-		if(m_date.find()){
-			try{
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			Date parse = sdf.parse(m_date.group(1));
+		final Matcher m_date = date.matcher(content);
+		if (m_date.find()) {
+			try {
+			final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			final Date parse = sdf.parse(m_date.group(1));
 	
 			bibtex.append("year = " + new SimpleDateFormat("yyyy").format(parse) + ",\n");
 			bibtex.append("month = " + new SimpleDateFormat("MMM").format(parse).toLowerCase() + ",\n");
 			
-			}catch(ParseException pe){
+			} catch(ParseException pe) {
 				try {
 					throw new ScrapingException(pe);
 				} catch (ScrapingException e) {
-					
 					log.error("Date parsing error", e);
 				}
 			}
 		}
 		
 		// add volume
-		Matcher m_volume = volume.matcher(content);
-		if(m_volume.find())
+		final Matcher m_volume = volume.matcher(content);
+		if (m_volume.find())
 			bibtex.append("volume = {" + m_volume.group(1) + "},\n");
 		
-		//add number
-		Matcher m_number = number.matcher(content);
-		if(m_number.find())
+		// add number
+		final Matcher m_number = number.matcher(content);
+		if (m_number.find())
 			bibtex.append("number = {" + m_number.group(1) + "}\n");
 		
 		bibtex.append("}");

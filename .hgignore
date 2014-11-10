@@ -4,6 +4,7 @@ work
 .classpath
 .project
 .settings
+.externalToolBuilders
 .tomcatplugin
 .springBeans
 src/main/webapp/WEB-INF/lib

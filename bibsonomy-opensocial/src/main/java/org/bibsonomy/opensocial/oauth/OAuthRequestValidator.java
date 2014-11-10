@@ -31,6 +31,7 @@ import org.apache.shindig.social.core.oauth.OAuthSecurityToken;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
+import org.bibsonomy.util.StringUtils;
 
 /**
  * Utility class for verifying OAuth signed requests
@@ -271,7 +272,7 @@ public class OAuthRequestValidator {
 		byte[] bb = ArrayUtils.EMPTY_BYTE_ARRAY;
 		if (present(s)) {
 			try {
-				bb = s.getBytes("UTF-8");
+				bb = s.getBytes(StringUtils.CHARSET_UTF_8);
 			} catch (final UnsupportedEncodingException e) {
 				log.error("Unsupported encoding", e);
 			}

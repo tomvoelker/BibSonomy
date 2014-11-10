@@ -43,6 +43,7 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.utils.HeaderUtils;
 import org.bibsonomy.services.filesystem.FileLogic;
+import org.bibsonomy.util.StringUtils;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -70,12 +71,12 @@ public final class RestServlet extends HttpServlet {
 	/**
 	 * the response encoding used to encode HTTP responses.
 	 */
-	public static final String RESPONSE_ENCODING = "UTF-8";
+	public static final String RESPONSE_ENCODING = StringUtils.CHARSET_UTF_8;
 
 	/**
 	 * the request default encoding
 	 */
-	public static final String REQUEST_ENCODING = "UTF-8";
+	public static final String REQUEST_ENCODING = StringUtils.CHARSET_UTF_8;
 
 	/**
 	 * Name of header, that shows successful ssl verification

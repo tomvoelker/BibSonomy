@@ -31,7 +31,6 @@ import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -46,6 +45,7 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
@@ -68,9 +68,6 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 	
 	private static final Pattern inputPattern = Pattern.compile("<input\\b[^>]*>");
 	private static final Pattern valuePattern = Pattern.compile("value=\"[^\"]*\"");
-
-	private static final Pattern selectPattern = Pattern.compile("<select\\b[^>]*>");
-	private static final Pattern namePattern = Pattern.compile("name=\"[^\"]*\"");
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + OSA_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
@@ -151,11 +148,11 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 		StringBuffer sbContent = new StringBuffer();
 
 		sbContent.append("Articles=");
-		sbContent.append(URLEncoder.encode(id,"UTF-8") + "&");
+		sbContent.append(UrlUtils.safeURIEncode(id) + "&");
 		sbContent.append("ArticleAction=");
-		sbContent.append(URLEncoder.encode("save_bibtex2","UTF-8") + "&");
+		sbContent.append(UrlUtils.safeURIEncode("save_bibtex2") + "&");
 		sbContent.append(actions + "=");
-		sbContent.append(URLEncoder.encode("save_bibtex2","UTF-8"));
+		sbContent.append(UrlUtils.safeURIEncode("save_bibtex2"));
 
 		urlConn.setRequestProperty("Content-Length", String.valueOf(sbContent.length()));
 

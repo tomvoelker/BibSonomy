@@ -72,14 +72,13 @@ public class WebUtils {
 	 */
 	private static final String USER_AGENT_PROPERTY_VALUE = "BibSonomy/2.0.32 (Linux x86_64; en) Gecko/20120714 Iceweasel/3.5.16 (like Firefox/3.5.16)";
 
-	private static final String CHARSET			= "charset=";
-	private static final String DEFAULT_CHARSET	= "UTF-8";
-	private static final String EQUAL_SIGN		= "=";
-	private static final String AMP_SIGN		= "&";
-	private static final String NEWLINE			= "\n";
-	private static final String SEMICOLON		= ";";
-	private static final String USER_AGENT_HEADER_NAME   = "User-Agent";
-	private static final String COOKIE_HEADER_NAME  	 = "Cookie";
+	private static final String CHARSET = "charset=";
+	private static final String EQUAL_SIGN = "=";
+	private static final String AMP_SIGN = "&";
+	private static final String NEWLINE = "\n";
+	private static final String SEMICOLON = ";";
+	private static final String USER_AGENT_HEADER_NAME = "User-Agent";
+	private static final String COOKIE_HEADER_NAME = "Cookie";
 	private static final String CONTENT_TYPE_HEADER_NAME = "Content-Type";
 
 	/**
@@ -636,7 +635,7 @@ public class WebUtils {
 		/*
 		 * default charset
 		 */
-		return DEFAULT_CHARSET;
+		return StringUtils.CHARSET_UTF_8;
 	}
 
 	/**
