@@ -3,10 +3,14 @@
 
 <sqlMap namespace="Person">
 
-	<select id="getAllUsers" resultMap="Common.user" parameterClass="userParam">
-		SELECT <include refid="commonUserAttributes"/>, NULL as ldapUserId, NULL as openID
-		  FROM user 
-		  WHERE spammer = 0 LIMIT #limit# OFFSET #offset#
+	<select id="getPersonById" resultMap="PersonCommon.person" parameterClass="int">
+		SELECT <include refid="commonPersonAttributes"/> FROM person
+			WHERE id = #id#
 	</select>	
-
+	
+	<insert id="insertPerson" parameterClass="org.bibsonomy.model.Person">
+		INSERT INTO user (<include refid="commonPersonAttributes"/>)
+			VALUES (<include refid="insertPersonAttributes"/>)
+	</insert>
+	
 </sqlMap>

@@ -3,10 +3,20 @@ PersonDatabaseManager<?xml version="1.0" encoding="UTF-8"?>
 
 <sqlMap namespace="PersonCommon">
 	<resultMap id="person" class="person">
-		<result property="id"         column="id"           javaType="java.lang.Integer" />
-		<result property="orcid"      column="orcid"        javaType="string" />
-		<result property="postCount"  column="post_ctr"     javaType="int" />
-		<result property="changedBy"  column="changed_by"   javaType="org.bibsonomy.model.User" />
-		<result property="changeDate" column="change_date"  javaType="java.util.Date" />
+		<result property="id"          column="id"           javaType="java.lang.Integer" />
+		<result property="orcid"       column="orcid"        javaType="string" />
+		<result property="postCounter" column="post_ctr"     javaType="int" />
+		<result property="changedBy"   column="changed_by"   javaType="java.lang.String" />
+		<result property="changeDate"  column="change_date"  javaType="java.util.Date" />
+		<result property="user"        column="user_name"    javaType="java.lang.String" />
 	</resultMap>
+	
+	<sql id="personAttributes">
+		id, orcid, post_ctr, changed_by, change_date
+	</sql>
+	
+	<sql id="insertPersonAttributes">
+		#id#, #orcid#, #postCounter#, #changedBy#, #changeDate#, #user#
+	</sql>
+	
 </sqlMap>

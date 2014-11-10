@@ -44,22 +44,21 @@ public class Person implements Serializable {
 	/** usually current real name */
 	private PersonName mainName;
 	/** other names like former names or pseudonyms */
-	private Set<PersonName> alternateNames;
+	private Set<PersonName> alternateNames = new HashSet<PersonName>();
 	/** something like "Dr. rer. nat." */
 	private String academicDegree;
 	/** researcher id on http://orcid.org/ */
 	private String orcid;
 	/** sameAs relation to a user */
-	private User user;
-	private User changeBy;
+	private String user;
 	/** {@link User} who last modified this {@link Person} */
+	private String changedBy;
+	/** point in time when the last change was made */
 	private Date changeDate;
-	
+	/** a publication which disambiguates the person. Usually the person's thesis of highest degree such as a phd thesis. */
 	private BibTex disambiguatingPublication;
-
-	public Person() {
-		this.alternateNames = new HashSet<PersonName>();
-	}
+	/** the number of posts in the system, which this {@link Person} as an author */
+	private int postCounter;
 	
 	/**
 	 * @return synthetic id. null means new non-persistent object
@@ -104,22 +103,21 @@ public class Person implements Serializable {
 	}
 
 	/**
-	 * @return {@link User} who last modified this {@link Person}
+	 * @return user who last modified this {@link Person}
 	 */
-	public User getChangeBy() {
-		return this.changeBy;
+	public String getChangedBy() {
+		return this.changedBy;
 	}
 
 	/**
-	 * @param modifiedBy {@link User} who last modified this {@link Person}
+	 * @param modifiedBy user who last modified this {@link Person}
 	 */
-	public void setChangeBy(User modifiedBy) {
-		this.changeBy = modifiedBy;
+	public void setChangedBy(String modifiedBy) {
+		this.changedBy = modifiedBy;
 	}
 
 	/**
 	 * @return date of last modification
-	 * @see #getChangeBy()
 	 */
 	public Date getChangeDate() {
 		return this.changeDate;
@@ -127,7 +125,6 @@ public class Person implements Serializable {
 
 	/**
 	 * @param modifiedAt date of last modification
-	 * @see #setChangeBy(User)
 	 */
 	public void setChangeDate(Date modifiedAt) {
 		this.changeDate = modifiedAt;
@@ -165,14 +162,14 @@ public class Person implements Serializable {
 	/** 
 	 * @return {@link User} in sameAs relation to this {@link Person} 
 	 */
-	public User getUser() {
+	public String getUser() {
 		return this.user;
 	}
 
 	/**
 	 * @param user {@link User} in sameAs relation to this {@link Person} 
 	 */
-	public void setUser(User user) {
+	public void setUser(String user) {
 		this.user = user;
 	}
 
@@ -190,12 +187,32 @@ public class Person implements Serializable {
 		this.orcid = orcid;
 	}
 
+	/**
+	 * @return a publication which disambiguates the person. Usually the person's thesis of highest degree such as a phd thesis.
+	 */
 	public BibTex getDisambiguatingPublication() {
 		return this.disambiguatingPublication;
 	}
 
+	/**
+	 * @param disambiguatingPublication a publication which disambiguates the person. Usually the person's thesis of highest degree such as a phd thesis.
+	 */
 	public void setDisambiguatingPublication(BibTex disambiguatingPublication) {
 		this.disambiguatingPublication = disambiguatingPublication;
+	}
+
+	/**
+	 * @return the number of posts in the system, which this {@link Person} as an author
+	 */
+	public int getPostCounter() {
+		return this.postCounter;
+	}
+
+	/**
+	 * @param postCounter the number of posts in the system, which this {@link Person} as an author
+	 */
+	public void setPostCounter(int postCounter) {
+		this.postCounter = postCounter;
 	}
 
 }
