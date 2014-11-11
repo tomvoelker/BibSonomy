@@ -21,7 +21,7 @@
 			<parts:search pathMessageKey="navi.admin">
 				<jsp:attribute name="pathPart">
 					<li>
-						:: <a rel="path_menu" href="/admin/recommender">Recommender</a>
+						:: <a rel="path_menu" href="${relativeUrlGenerator.getAdminUrlByName('recommender')}">Recommender</a>
 					</li>
 				</jsp:attribute>
 			</parts:search>
@@ -90,7 +90,7 @@
 						    </table>
 						    
 						    <br />
-					        <form:form name="latencyCalculation" action="/admin/recommender">
+					        <form:form name="latencyCalculation" action="${relativeUrlGenerator.getAdminUrlByName('recommender')}">
 							    <form:label path="queriesPerLatency"><fmt:message key="admin.recommender.latencyvalues"/></form:label>
 					  		    <input type="text" id="queriesPerLatency" name="queriesPerLatency" value="${command.queriesPerLatency}" />
 					  	        <input class="adminBtn" type="submit" value="${submitBtn}"/>
@@ -102,7 +102,7 @@
 					    <c:if test="${command.tab == 2}">
 					        <div class="compound">
 					        	<div class="subcompound">
-						        <form:form name="tagRecommenderAdd" action="/admin/recommender?action=addtagrecommender">
+						        <form:form name="tagRecommenderAdd" action="${relativeUrlGenerator.getAdminUrlByName('recommender')}?action=addtagrecommender">
 						            <form:label path="newrecurl"><fmt:message key="admin.recommender.add.tag"/></form:label>
 						            <br />
 						            <input type="text" name="newrecurl" />
@@ -110,7 +110,7 @@
 						        </form:form>
 						        </div>
 						        <div class="subcompound">
-						        <form:form name="itemRecommenderAdd" action="/admin/recommender?action=additemrecommender">
+						        <form:form name="itemRecommenderAdd" action="${relativeUrlGenerator.getAdminUrlByName('recommender')}?action=additemrecommender">
 						            <form:label path="newrecurl"><fmt:message key="admin.recommender.add.item"/></form:label>
 						            <br />
 						            <input type="text" name="newrecurl"  />
@@ -122,7 +122,7 @@
 						    <hr />
 					        <div class="compound">
 						        <div class="subcompound">
-							        <form:form name="tagRecommenderRemove" action="/admin/recommender?action=removetagrecommender">
+							        <form:form name="tagRecommenderRemove" action="${relativeUrlGenerator.getAdminUrlByName('recommender')}?action=removetagrecommender">
 							            <form:label path="deleteRecIds"><fmt:message key="admin.recommender.remove.tag"/></form:label><br />
 							            
 									  	<select id="deleteRecTagIds" name="deleteRecIds" size="15" multiple="multiple">
@@ -137,7 +137,7 @@
 							        </form:form>
 						        </div>
 						        <div class="subcompound">
-							        <form:form name="itemRecommenderRemove" action="/admin/recommender?action=removeitemrecommender">
+							        <form:form name="itemRecommenderRemove" action="${relativeUrlGenerator.getAdminUrlByName('recommender')}?action=removeitemrecommender">
 							            <form:label path="deleteRecIds"><fmt:message key="admin.recommender.remove.item"/></form:label><br />
 							            
 									  	<select id="deleteRecItemIds" name="deleteRecIds" size="15" multiple="multiple">
@@ -156,7 +156,7 @@
 					        <div id="recommenderEditDiv">
 					            <div class="compound">
 					 		    <br />
-					 		    <form:form id="editRecommenderForm" name="recommenderEdit" action="/admin/recommender?action=editRecommender">
+					 		    <form:form id="editRecommenderForm" name="recommenderEdit" action="${relativeUrlGenerator.getAdminUrlByName('recommender')}?action=editRecommender">
 					 		    <form:label path="editSid" id="editRecoTitle"><fmt:message key="admin.recommender.edit"/></form:label><br />
 					 		    <input type="hidden" id="editId" name="editSid"  />
 					 		    <input type="text" id="editedRecurl" name="newrecurl" />
@@ -171,7 +171,7 @@
 						<!-- Tab: Activate/Deactivate -->
 					    <c:if test="${command.tab == 1}">
 					        <div class="activationCompound">
-							<form:form id="newConfigSubmissionForm" name="recConfig" action="/admin/recommender?action=updateRecommenderstatus" >
+							<form:form id="newConfigSubmissionForm" name="recConfig" action="${relativeUrlGenerator.getAdminUrlByName('recommender')}?action=updateRecommenderstatus" >
 							    <div id="disabledItemSelect" class="floatleft">
 								    <form:label path="disabledItemRecs"><fmt:message key="admin.recommender.disabled.item"/></form:label><br />
 							  		<select name="disabledItemRecs" size="20" multiple="multiple">

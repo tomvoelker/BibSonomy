@@ -30,12 +30,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
  * @author clemens
  */
-public class GoogleBooksScraper extends SimpleGenericURLScraper {
+public class GoogleBooksScraper extends GenericBibTeXURLScraper {
 
 	private static final String SITE_URL  = "http://books.google.com/";
 	private static final String SITE_NAME = "Google Books";
@@ -69,7 +70,7 @@ public class GoogleBooksScraper extends SimpleGenericURLScraper {
 	}
 
 	@Override
-	public String getBibTeXURL(URL url) {
+	public String getDownloadURL(URL url) throws ScrapingException {
 		// extract id from url
 		final Matcher idMatcher = ID_PATTERN.matcher(url.toString());
 		

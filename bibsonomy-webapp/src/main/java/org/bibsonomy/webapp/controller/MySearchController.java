@@ -16,6 +16,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.MySearchCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -64,7 +65,8 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 			 * FIXME: we should deliver items dynamically via ajax,
 			 * displaying a 'wheel of fortune' until all items are loaded
 			 */ 
-			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, null, null, null, null, Integer.MAX_VALUE);
+			// FIXME: load all publications
+			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, null, null, null, null, PostLogicInterface.MAX_QUERY_SIZE);
 			this.postProcessAndSortList(command, resourceType);
 		}
 

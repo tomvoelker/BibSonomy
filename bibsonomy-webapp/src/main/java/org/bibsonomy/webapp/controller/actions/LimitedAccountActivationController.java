@@ -4,6 +4,7 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlBuilder;
 import org.bibsonomy.webapp.command.actions.LimitedAccountActivationCommand;
@@ -26,7 +27,7 @@ public class LimitedAccountActivationController implements ErrorAware, Validatio
 	/** after successful activation, the user is redirected to this page. */
 	private String successRedirect;
 	
-	private String projectHome;
+	private URLGenerator urlGenerator;
 
 	private Errors errors= null;
 	
@@ -87,7 +88,7 @@ public class LimitedAccountActivationController implements ErrorAware, Validatio
 		 * to the redirect
 		 * TODO: document why we add the hash here!
 		 */
-		final String hash = StringUtils.getMD5Hash(this.projectHome + "register_saml_success+" + loginUser.getName());
+		final String hash = StringUtils.getMD5Hash(this.urlGenerator.getProjectHome() + "register_saml_success+" + loginUser.getName());
 		final String redirectUrl = new UrlBuilder(this.successRedirect).addParameter("hash", hash).asString();
 		return new ExtendedRedirectView(redirectUrl);
 	}
@@ -120,10 +121,11 @@ public class LimitedAccountActivationController implements ErrorAware, Validatio
 	}
 
 	/**
-	 * @param projectHome the projectHome to set
+	 * 
+	 * @param urlGenerator
 	 */
-	public void setProjectHome(String projectHome) {
-		this.projectHome = projectHome;
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
 	}
 
 	/**

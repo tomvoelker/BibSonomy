@@ -16,7 +16,7 @@
 			<ul id="groupmembers" class="cloud sidebar_collapse_content">
 				<c:forEach var="member" items="${users}">
 					<li>
-						<a href="/user/${fn:escapeXml(member.name)}"><c:out value="${member.name}" /></a>
+						<a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(member.name))}"><c:out value="${member.name}" /></a>
 						<c:out value=" "/>
 					</li>
 				</c:forEach>

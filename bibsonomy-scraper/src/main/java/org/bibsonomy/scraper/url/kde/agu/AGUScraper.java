@@ -32,14 +32,14 @@ import java.util.regex.Pattern;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.RISGenericURLScraper;
+import org.bibsonomy.scraper.generic.GenericRISURLScraper;
 
 /**
  * Scraper for publications from http://www.agu.org/pubs/ using the RIS export
  * 
  * @author tst
  */
-public class AGUScraper extends RISGenericURLScraper {
+public class AGUScraper extends GenericRISURLScraper {
 	private static final String SITE_NAME = "American Geophysical Union (AGU)";
 	private static final String SITE_URL = "http://www.agu.org/pubs/";
 	private static final String INFO = "For Publications from the " + href(SITE_URL, SITE_NAME)+".";
@@ -74,7 +74,7 @@ public class AGUScraper extends RISGenericURLScraper {
 	}
 
 	@Override
-	protected String getRISURL(URL url) {
+	protected String getDownloadURL(URL url) {
 		try {
 			final ScrapingContext sc = new ScrapingContext(url);
 			final String pageContent = sc.getPageContent();

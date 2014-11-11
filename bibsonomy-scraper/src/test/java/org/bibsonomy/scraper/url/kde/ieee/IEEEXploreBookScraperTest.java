@@ -23,6 +23,13 @@
 
 package org.bibsonomy.scraper.url.kde.ieee;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.net.URL;
+
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -61,5 +68,45 @@ public class IEEEXploreBookScraperTest {
 	@Test
 	public void urlTestRun3(){
 		UnitTestRunner.runSingleTest("url_158");
+	}
+	@Test
+	public void testCitedby() throws Exception {
+		final ScrapingContext sc = new ScrapingContext(new URL("http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=5286085"));
+		
+		IEEEXploreBookScraper book = new IEEEXploreBookScraper();
+		
+		assertTrue(book.scrape(sc));
+		
+		assertTrue(book.scrapeCitedby(sc));
+		
+		final String cby = sc.getCitedBy();
+		
+		assertNotNull(cby);
+		
+		assertTrue(cby.length() > 100);
+		
+		assertEquals("<!-- BEGIN IEEE CITATIONS LI Records --".trim(), cby.substring(0, 43).trim());
+		
+		assertTrue(cby.contains("Beldjoudi, S.;"));
+	}
+	@Test
+	public void testReferences() throws Exception{
+		final ScrapingContext sc = new ScrapingContext(new URL("http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=5286085"));
+		
+		IEEEXploreBookScraper book = new IEEEXploreBookScraper();
+		
+		assertTrue(book.scrape(sc));
+		
+		assertTrue(book.scrapeReferences(sc));
+		
+		final String reference = sc.getReferences();
+		
+		assertNotNull(reference);
+		
+		assertTrue(reference.length() > 100);
+		
+		assertEquals("<li>".trim(), reference.substring(0, 50).trim());
+		
+		assertTrue(reference.contains("U. Bojars"));
 	}
 }

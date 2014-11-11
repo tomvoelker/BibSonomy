@@ -1,0 +1,71 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:spring="http://www.springframework.org/tags">
+
+	<fmt:message key="navi.helpUrl" var="helpLangUrl" />
+
+	<div id="footer-more">
+		<nav class="row">
+			<dl class="col-md-3 col-sm-6">
+				<dt><fmt:message key="footer.what"><fmt:param>${properties['project.name']}</fmt:param></fmt:message></dt>
+				
+				<dd><a href="/gettingStarted"><fmt:message key="footer.quickstart"/></a></dd>
+				<dd><a href="/buttons"><fmt:message key="footer.buttons"/></a></dd>
+				<dd><a href="${helpLangUrl}/Main"><fmt:message key="help"/></a></dd>
+				
+				
+				<dt><fmt:message key="footer.developer"/></dt>
+			
+				<dd><span class="fa fa-bitbucket"><!--  --></span><c:out value=" " /><a href="http://bibsonomy.bitbucket.org/"><fmt:message key="footer.overview"/></a></dd>
+				<dd><span class="fa fa-puzzle-piece"><!--  --></span><c:out value=" " /><a href="http://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/api/REST%20API"><fmt:message key="settings.apidoc"/></a></dd>
+			</dl>
+			
+			<dl class="col-md-3 col-sm-6">
+				<dt><fmt:message key="footer.privacyContact"/></dt>
+				
+				<dd><a href="${helpLangUrl}/contact"><fmt:message key="navi.about"/></a></dd>
+				<dd><fmt:message key="system.termsOfUse"/></dd>
+				<dd><fmt:message key="footer.cookies"/></dd>
+				<dd><a href="http://bitbucket.org/bibsonomy/bibsonomy/issues"><fmt:message key="issues"/></a></dd>
+				<dd><a href="https://bitbucket.org/bibsonomy/bibsonomy/wiki"><c:out value="${properties['project.name']}" /> Wiki</a></dd>
+			</dl>
+			
+			<dl class="col-md-3 col-sm-6">
+				<dt><fmt:message key="footer.integration"/></dt>
+			
+				<dd><a href="http://academic-puma.de/"><fmt:message key="footer.academicPuma"/></a></dd>
+				<dd><a href="http://typo3.org/extensions/repository/view/ext_bibsonomy_csl"><fmt:message key="typoThree.plugin"/></a></dd>
+				<dd><a href="http://wordpress.org/plugins/bibsonomy-csl/"><fmt:message key="wordpress.plugin"/></a></dd>
+				<dd><a href="http://dev.bibsonomy.org/maven2/org/bibsonomy/bibsonomy-rest-client/"><fmt:message key="restClient.java"/></a></dd>
+				<dd><a href="/scraperinfo"><fmt:message key="footer.scraperInfo" /></a></dd>
+				<dd><a href="${helpLangUrl}/Integration"><fmt:message key="more"/></a></dd>
+			</dl>
+						
+			<dl class="col-md-3 col-sm-6">
+				<dt><fmt:message key="footer.about"/>&amp;nbsp;<c:out value="${properties['project.name']}" /></dt>
+				
+				<dd><a href="${helpLangUrl}/Team"><fmt:message key="footer.team"/></a></dd>
+				<dd><a href="${properties['project.blog']}"><fmt:message key="blog"/></a></dd>
+				<dd><a href="https://mail.cs.uni-kassel.de/mailman/listinfo/bibsonomy-discuss">Mailing List</a></dd>
+				
+				<dt>Social Media</dt>
+				<dd><span class="socicon socicon-twitter"><!--  --></span>&amp;nbsp;<a href="http://twitter.com/bibsonomyCrew"><fmt:message key="footer.twitter"/></a></dd>
+				<dd><span class="socicon socicon-google"><!--  --></span>&amp;nbsp;<a href="https://plus.google.com/communities/102073418538419220890">Google+ Community</a></dd>
+			</dl>
+		</nav>
+
+		<div class="legal-notices">
+			<hr />
+			<p>
+				<fmt:message key="system.offeredBy">
+					<fmt:param>${properties['project.name']}</fmt:param>
+				</fmt:message>
+			</p>
+		</div>
+	</div>
+</jsp:root>

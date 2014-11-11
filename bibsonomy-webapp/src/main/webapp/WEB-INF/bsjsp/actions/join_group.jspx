@@ -1,0 +1,95 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<layout:paneLayout pageTitle="${command.pageTitle}" requPath="${requPath}" command="${command}" headerMessageKey="joinGroup" minimizedContentWidth="${true}">
+		<!--+
+		 	| heading
+		 	+-->
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="joinGroup">
+				<jsp:attribute name="pathPart">
+					<li>
+						:: <a href="${relativeUrlGenerator.getGroupUrlByGroupName(command.group)}" itemprop="name"><c:out value='${command.group}'/></a>
+					</li>
+				</jsp:attribute>
+			</parts:search>
+		</jsp:attribute>
+
+		<!--+
+		 	| content
+		 	-->
+		<jsp:attribute name="content">
+				<h1 class="content-header">
+					<fmt:message key="navi.join">
+						<fmt:param>${command.group}</fmt:param>
+					</fmt:message>
+				</h1>
+				
+				<bs:alert style="info">
+					<jsp:attribute name="alertBody">
+						<fmt:message key="joinGroup.info" />
+					</jsp:attribute>
+				</bs:alert>
+				
+				<form:form action="/join_group" method="POST" cssClass="form-horizontal">
+					<errors:global />
+					
+					<form:hidden path="group" />
+					<input type="hidden" name="ckey" value="${command.context.ckey}"/>
+					<form:hidden path="joinRequest" value="true" />
+					
+					<bsform:textarea path="reason" labelKey="joinGroup.reason" labelColSpan="3" required="${true}">
+						<jsp:attribute name="helpText">
+							<fmt:message key="joinGroup.reason.hint" />
+							<fmt:message key="joinGroup.reason.hint.appendix">
+								<fmt:param value="${command.reasonMaxLen}" />
+							</fmt:message>
+						</jsp:attribute>
+					</bsform:textarea>
+					
+					<bsform:captcha inputColSpan="9"/>
+					
+					<fmt:message key="joinGroup.action" var="buttonValue" />
+					<div class="form-group">
+						<div class="col-sm-offset-3 col-sm-9">
+							<bsform:button value="${buttonValue}" type="submit" style="primary" size="defaultSize" />
+						</div>
+					</div>
+				</form:form>
+				<br />
+		</jsp:attribute>
+		
+		<!--+
+			| sidebar
+			+-->
+		<jsp:attribute name="sidebar">
+			<ul>
+				<!-- loginUser.groups -->
+				<li>
+					<span class="sidebar_h"><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="groups"/></a></span>
+					<ul class="sidebar_collapse_content">
+						<c:forEach var="group" items="${command.context.loginUser.groups}">
+							<li><a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"><c:out value='${group.name}'/></a></li>
+						</c:forEach>
+					</ul>
+				</li>
+			</ul>
+		</jsp:attribute>
+	
+	</layout:paneLayout>
+</jsp:root>

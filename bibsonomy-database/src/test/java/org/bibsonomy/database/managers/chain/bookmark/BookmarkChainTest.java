@@ -31,6 +31,7 @@ import org.bibsonomy.database.managers.chain.resource.get.GetResourcesViewable;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -295,7 +296,7 @@ public class BookmarkChainTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void longTagQueries() {
 		final BookmarkParam param = new BookmarkParam();
-		for (int i = 0; i < PermissionDatabaseManager.MAX_TAG_SIZE; i++) {
+		for (int i = 0; i < PostLogicInterface.MAX_TAG_SIZE; i++) {
 			param.addTagName("test" + i);
 		}
 		

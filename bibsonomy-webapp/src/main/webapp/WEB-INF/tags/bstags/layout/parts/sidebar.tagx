@@ -1,0 +1,31 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:spring="http://www.springframework.org/tags">
+	
+	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
+	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>
+	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
+
+	<!--+
+	 	| display info box
+	 	+-->
+	<c:if test="${not empty infobox}">
+		<jsp:invoke fragment="infobox" />
+	</c:if>
+	
+	<c:if test="${not empty newsbar}">
+		<jsp:invoke fragment="newsbar" />
+	</c:if>
+
+	<c:if test="${not empty sidebar}">
+		<div id="sidebox">
+			<jsp:invoke fragment="sidebar" />
+		</div>
+	</c:if>
+
+</jsp:root>

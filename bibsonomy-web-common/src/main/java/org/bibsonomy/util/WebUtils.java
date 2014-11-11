@@ -55,14 +55,9 @@ import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.Pair;
 
 /**
  * @author rja
- */
-/**
- * @author rja
- *
  */
 public class WebUtils {
 	private static final Log log = LogFactory.getLog(WebUtils.class);
@@ -379,7 +374,7 @@ public class WebUtils {
 		 * set cookie
 		 */
 		if (present(cookie)) {
-			method.setRequestHeader(COOKIE_HEADER_NAME, cookie);
+			method.addRequestHeader(COOKIE_HEADER_NAME, cookie);
 		}
 		
 		/*
@@ -519,25 +514,26 @@ public class WebUtils {
 	public static URL getRedirectUrl(final URL url, final List<Header> headers) {
 		final HttpMethod method = new GetMethod(url.toExternalForm());
 		if (present(headers)) {
-			for (final Header header: headers) {
-				method.setRequestHeader(header);
+			for (final Header header : headers) {
+				method.addRequestHeader(header);
 			}
 		}
 		final HttpClient client = getHttpClient();
 		
 		try {
 			client.executeMethod(method);
-		} catch (HttpException e) {
 		} catch (IOException e) {
+			// ignore
 		} finally {
 			method.releaseConnection();
 		}
+		
 		if (method.getStatusCode() != HttpStatus.SC_OK) return null;
 		
 		try {
 			return new URL(method.getURI().getURI());
-		} catch (URIException e) {
-		} catch (MalformedURLException e) {
+		} catch (URIException | MalformedURLException e) {
+			// ignore, just return null
 		}
 		return null;
 	}

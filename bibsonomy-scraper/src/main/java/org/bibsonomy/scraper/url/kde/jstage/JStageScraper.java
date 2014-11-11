@@ -37,13 +37,14 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * @author Haile
  */
-public class JStageScraper extends PostprocessingGenericURLScraper{
+public class JStageScraper extends GenericBibTeXURLScraper {
 	private static final Log log = LogFactory.getLog(JStageScraper.class);
 	
 	private static final String SITE_NAME = "J-Stage";
@@ -98,7 +99,7 @@ public class JStageScraper extends PostprocessingGenericURLScraper{
 	 * @see org.bibsonomy.scraper.generic.SimpleGenericURLScraper#getBibTeXURL(java.net.URL)
 	 */
 	@Override
-	public String getBibTeXURL(URL url) {
+	public String getDownloadURL(URL url) throws ScrapingException {
 		final String[] bibPath = url.getPath().split("/");
 		try {
 			return "https://" + url.getHost() + "/AF06S010ShoshJkuDld?sryCd=" + bibPath[2] + "&noVol=" + bibPath[3] + "&noIssue=" + bibPath[4] + "&kijiCd=" + bibPath[5] + "&kijiLangKrke=en&kijiToolIdHkwtsh=AT0073";

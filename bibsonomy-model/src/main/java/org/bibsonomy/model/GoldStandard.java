@@ -26,6 +26,8 @@ package org.bibsonomy.model;
 import java.util.Set;
 
 /**
+ * TODO: aggreate relation sets to a map
+ * 
  * @author dzo
  * @param <R> 
  */
@@ -96,5 +98,25 @@ public interface GoldStandard<R extends Resource> {
 	 * @return <code>true</code> iff the referenced by set was changed as a result of the call
 	 */
 	public boolean removeAllFromReferencedBy(final Set<? extends R> resources);
+
+	public Set<R> getSubGoldStandards();
+
+	public boolean addToReferencePartOfThisPublication(final R resource);
+
+	public boolean addAllToReferencePartOfThisPublication(final Set<? extends R> resources);
+
+	public boolean removeFromReferencePartOfThisPublication(final R resource);
+	
+	public boolean removeAllFromReferencePartOfThisPublication(final Set<? extends R> resources);
+	
+	public Set<R> getReferenceThisPublicationIsPublishedIn();
+
+	public boolean addToReferenceThisPublicationIsPublishedIn(final R resource);
+
+	public boolean addAllToReferenceThisPublicationIsPublishedIn(final Set<? extends R> resources);
+
+	public boolean removeFromReferenceThisPublicationIsPublishedIn(final R resource);
+	
+	public boolean removeAllFromReferenceThisPublicationIsPublishedIn(final Set<? extends R> resources);
 
 }

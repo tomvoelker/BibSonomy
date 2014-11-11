@@ -24,6 +24,8 @@
 
 package org.bibsonomy.rest;
 
+import org.bibsonomy.model.enums.GoldStandardRelation;
+
 
 /**
  * DO NOT CHANGE any constant values after a release
@@ -57,6 +59,10 @@ public final class RESTConfig {
 	public static final String RELATION_PARAM = "relation";
 
 	public static final String REFERENCES_SUB_PATH = "references";
+	
+	public static final String RELATION_REFERENCE = GoldStandardRelation.REFERENCE.toString().toLowerCase();
+
+	public static final String RELATION_PARTOF = GoldStandardRelation.PART_OF.toString().toLowerCase();
 
 	public static final String USERS_URL = "users";
 

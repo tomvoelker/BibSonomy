@@ -32,14 +32,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.generic.RISGenericURLScraper;
+import org.bibsonomy.scraper.generic.GenericRISURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  *
  * @author Haile
  */
-public class TheLancetScraper extends RISGenericURLScraper {
+public class TheLancetScraper extends GenericRISURLScraper {
 	private static final Log log = LogFactory.getLog(TheLancetScraper.class);
 	
 	private static final String SITE_NAME = "THE LANCET";
@@ -85,7 +85,7 @@ public class TheLancetScraper extends RISGenericURLScraper {
 	 * @see org.bibsonomy.scraper.generic.RISGenericURLScraper#getRISURL(java.net.URL)
 	 */
 	@Override
-	public String getRISURL(URL url) {
+	public String getDownloadURL(URL url) {
 		try{
 			Matcher m = FORM_PATTERN.matcher(WebUtils.getContentAsString(url + "/exportCitation"));
 			if (m.find()) {

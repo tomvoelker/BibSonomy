@@ -1,27 +1,39 @@
 package org.bibsonomy.webapp.command;
 
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
-import org.bibsonomy.layout.jabref.AbstractJabRefLayout;
+import org.bibsonomy.model.Layout;
 
 /**
- * @author daill
+ * @author daill, lsc
  */
-public class ExportPageCommand extends ResourceViewCommand{
-	
-	private Map<String, AbstractJabRefLayout> layoutMap;
+public class ExportPageCommand extends ResourceViewCommand {
 
+	private Map<String, Layout> layoutMap;
+	
 	/**
-	 * @return jabref layout map
+	 * default constructor
 	 */
-	public Map<String, AbstractJabRefLayout> getLayoutMap() {
-		return this.layoutMap;
+	public ExportPageCommand() {
+		this.layoutMap = new TreeMap<>();
 	}
 
 	/**
-	 * @param layoutMap
+	 * @return layout map
 	 */
-	public void setLayoutMap(final Map<String, AbstractJabRefLayout> layoutMap) {
-		this.layoutMap = layoutMap;
+	public Map<String, Layout> getLayoutMap() {
+		return this.layoutMap;
+	}
+	
+	/**
+	 * adds all maps the the layout map
+	 * @param map
+	 */
+	public void addLayoutMap(final Map<String, ? extends Layout> map) {
+		for (Entry<String, ? extends Layout> entry : map.entrySet()){
+			this.layoutMap.put(entry.getValue().getDisplayName(), entry.getValue());
+		}
 	}
 }

@@ -51,5 +51,13 @@ public class NatureScraperTest {
 	public void urlTest2Run(){
 		UnitTestRunner.runSingleTest("url_231");
 	}
+	/**
+	 * starts URL test with id url_231
+	 */
+	@Test
+	public void urlTest3Run(){
+		UnitTestRunner.runSingleTest("url_280");
+	}
+	
 		
 }

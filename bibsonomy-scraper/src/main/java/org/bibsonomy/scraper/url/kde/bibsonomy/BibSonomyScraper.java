@@ -29,7 +29,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 
 /**
@@ -39,7 +40,7 @@ import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
  * 
  * @author tst
  */
-public class BibSonomyScraper extends SimpleGenericURLScraper {
+public class BibSonomyScraper extends GenericBibTeXURLScraper {
 	private static final String SITE_NAME = "BibSonomy";
 	private static final String SITE_URL = "http://www.bibsonomy.org";
 	private static final String INFO = "If you don't like the copy button from " + href(SITE_URL, SITE_NAME) + ", use your postPublication button.";
@@ -76,7 +77,7 @@ public class BibSonomyScraper extends SimpleGenericURLScraper {
 	}
 
 	@Override
-	public String getBibTeXURL(URL url) {
+	public String getDownloadURL(URL url) throws ScrapingException {
 		final String path = url.getPath();
 		// if /bibtex page or /publication page then change path to add /bib as prefix and download
 		if (!path.startsWith(BIBTEX_FORMAT_PATH_PREFIX + "/")) {

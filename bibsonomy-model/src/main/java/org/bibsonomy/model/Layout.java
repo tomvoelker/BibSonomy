@@ -61,7 +61,11 @@ public abstract class Layout {
 	 * The extension of the rendered file.
 	 */
 	protected String extension;
-
+	/**
+	 * Favorite layouts get a top position in the list of export layouts 
+	 */
+	protected boolean isFavorite = false;
+	
 	/** 
 	 * @param name the name of the layout
 	 */
@@ -128,6 +132,21 @@ public abstract class Layout {
 	public void setExtension(String extension) {
 		this.extension = extension;
 	}
+	
+	/**
+	 * @return is favorite 
+	 */
+	public boolean getIsFavorite() {
+		return this.isFavorite;
+	}
+
+	/**
+	 * @param favorite the extension to set
+	 */
+	public void setIsFavorite(boolean favorite) {
+		this.isFavorite = favorite;
+	}
+	
 
 	/**
 	 * @return the name

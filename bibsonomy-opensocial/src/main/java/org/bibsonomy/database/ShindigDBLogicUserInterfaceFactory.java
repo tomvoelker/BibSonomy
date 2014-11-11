@@ -10,6 +10,7 @@ import org.bibsonomy.model.logic.LogicInterface;
  */
 public class ShindigDBLogicUserInterfaceFactory extends DBLogicNoAuthInterfaceFactory implements ShindigLogicInterfaceFactory {
 	
+	@Override
 	public LogicInterface getLogicAccess(final SecurityToken st) {
 		if (present(st) && !st.isAnonymous()) {
 			return this.getLogicAccess(st.getViewerId(), null);

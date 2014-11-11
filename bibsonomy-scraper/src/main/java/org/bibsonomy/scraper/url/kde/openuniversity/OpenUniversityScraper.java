@@ -31,12 +31,13 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
  * @author hagen
  */
-public class OpenUniversityScraper extends SimpleGenericURLScraper {
+public class OpenUniversityScraper extends GenericBibTeXURLScraper {
 
 	private static final String SITE_NAME = "The Open University";
 	private static final String SITE_URL = "http://www.open.ac.uk/";
@@ -72,7 +73,7 @@ public class OpenUniversityScraper extends SimpleGenericURLScraper {
 	}
 
 	@Override
-	public String getBibTeXURL(URL url) {
+	public String getDownloadURL(URL url) throws ScrapingException {
 		Matcher m = ID_PATTERN.matcher(url.toExternalForm());
 		if (!m.find()) return null;
 		return DOWNLOAD_LINK_PREFIX + m.group(1) + DOWNLOAD_LINK_SUFFIX;

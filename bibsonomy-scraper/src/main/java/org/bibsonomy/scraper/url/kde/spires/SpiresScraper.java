@@ -33,10 +33,13 @@ import java.util.regex.Pattern;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.CitedbyScraper;
+import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -46,7 +49,7 @@ import org.w3c.dom.NodeList;
  * @author rja
  *
  */
-public class SpiresScraper extends AbstractUrlScraper{
+public class SpiresScraper extends AbstractUrlScraper implements ReferencesScraper, CitedbyScraper{
 	private static final String SITE_NAME = "SLAC National Accelerator Laboratory";
 	private static final String SITE_URL = "http://slac.stanford.edu/";
 	private static final String FORMAT_WWWBRIEFBIBTEX = "FORMAT=WWWBRIEFBIBTEX";
@@ -56,6 +59,11 @@ public class SpiresScraper extends AbstractUrlScraper{
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 	private static Pattern BRIEFBIBTEX_PATTERN = Pattern.compile("<a href=\"?(/spires/find/hep/www\\?.*?\\&FORMAT=WWWBRIEFBIBTEX)\"?>");
 	private static Pattern BIBTEX_PATTERN = Pattern.compile("<a href=\"(.*?)\".*?>BibTeX</a>");
+	
+	private static Pattern REFERENCES_URL_PATTERN = Pattern.compile("<a href=\"(.*)\">References</a>");
+	private static Pattern REFERENCES_PATTERN = Pattern.compile("(?s)<table>(.*)</table>");
+	private static Pattern CITEDBY_PATTERN = Pattern.compile("(?s)<table>(.*)</table>");
+	
 	static {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "slac.stanford.edu"), AbstractUrlScraper.EMPTY_PATTERN));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "www-library.desy.de"), AbstractUrlScraper.EMPTY_PATTERN));
@@ -63,6 +71,7 @@ public class SpiresScraper extends AbstractUrlScraper{
 	}
 	
 	
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 			sc.setScraper(this);
 			
@@ -112,21 +121,77 @@ public class SpiresScraper extends AbstractUrlScraper{
 				throw new InternalFailureException(e);
 			}
 	}
+	private static String getReferenceURL(ScrapingContext sc) throws IOException{
+		Matcher m = REFERENCES_URL_PATTERN.matcher(WebUtils.getContentAsString(sc.getUrl()));
+		if(m.find())
+			return m.group(1);
+		return null;
+	}
 
+	@Override
 	public String getInfo() {
 		return info;
 	}
 	
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.CitedbyScraper#scrapeCitedby(org.bibsonomy.scraper.ScrapingContext)
+	 */
+	@Override
+	public boolean scrapeCitedby(ScrapingContext scrapingContext) throws ScrapingException {
+		try {
+			String url = getReferenceURL(scrapingContext).replace("references", "citations");
+			String citedby = null;
+			Matcher m = CITEDBY_PATTERN.matcher(WebUtils.getContentAsString(url));
+			if(m.find())
+				citedby = m.group(1);
+			
+			if(citedby != null){
+				scrapingContext.setCitedBy(citedby);
+				return true;
+			}
+				
+		} catch (IOException e) {
+			
+			throw new InternalFailureException(e);
+		}
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
+	 */
+	@Override
+	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
+		try{
+			String url = getReferenceURL(scrapingContext);
+			String references = null;
+			Matcher m = REFERENCES_PATTERN.matcher(WebUtils.getContentAsString(url));
+			if(m.find())
+				references = m.group(1);
+			if(references != null){
+				scrapingContext.setReferences(references);
+				return true;
+			}
+			
+		}catch(IOException e){
+			throw new InternalFailureException(e);
+		}
+		return false;
 	}
 
 }

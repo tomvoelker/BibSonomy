@@ -37,7 +37,7 @@ public abstract class SingleResourceListController extends ResourceListControlle
 		if (resourceType == Bookmark.class) {
 			if (!"none".equals(cmd.getSortPage())) {
 				BookmarkUtils.sortBookmarkList(cmd.getBookmark().getList(), SortUtils.parseSortKeys(cmd.getSortPage()), SortUtils.parseSortOrders(cmd.getSortPageOrder()) );
-			}			
+			}
 		}
 	}
 

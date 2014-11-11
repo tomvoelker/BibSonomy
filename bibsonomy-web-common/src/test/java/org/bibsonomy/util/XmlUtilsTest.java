@@ -28,7 +28,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
@@ -44,23 +50,37 @@ public class XmlUtilsTest {
 
 	/**
 	 * Tests also thread safety!
+	 * @throws Exception 
 	 */
 	@Test
-	public void testGetDOM() {
+	public void testGetDOM() throws Exception {
+		final ExecutorService service = Executors.newFixedThreadPool(10);
+		final List<XMLParsingThreadimplements> runables = new LinkedList<XMLParsingThreadimplements>();
 		for (int i = 0; i < 10; i++) {
-			new Thread(new XMLParsingThreadimplements(("thread " + i))).start();
+			final XMLParsingThreadimplements runable = new XMLParsingThreadimplements(("thread " + i));
+			runables.add(runable);
+			service.submit(runable);
+		}
+		
+		service.shutdown();
+		service.awaitTermination(10, TimeUnit.MINUTES);
+		
+		for (XMLParsingThreadimplements xmlParsingThreadimplements : runables) {
+			if (xmlParsingThreadimplements.error != null) {
+				fail(xmlParsingThreadimplements.error.getMessage());
+			}
 		}
 	}
-
 	
 	@Test
+	@Ignore // FIXME: bibsonomy boostrap layout is html 5 so jtidy does not work
 	public void testGetDom() throws Exception {
 		assertNotNull(XmlUtils.getDOM(new URL("http://www.bibsonomy.org/")));
 	}
-	
 
 	private static class XMLParsingThreadimplements implements Runnable {
 		private final String name;
+		private Throwable error;
 
 		public XMLParsingThreadimplements(final String name) {
 			this.name = name;
@@ -77,11 +97,9 @@ public class XmlUtilsTest {
 					assertEquals(text, nodeValue);
 					Thread.sleep(10);
 				}
-			} catch (final Exception e) {
-				fail(e.getMessage());
+			} catch (final Throwable e) {
+				this.error = e;
 			}
 		}
 	}
-	
-	
 }

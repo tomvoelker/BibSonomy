@@ -11,7 +11,7 @@
 
 	<a class="linkButton" name="${name}" href="${href}" title="${title}" onclick="${onclick}"> 
 		<c:if test='${image != null}'>
-			<img style="margin-right: -3px" src="${image}">&amp;nbsp;</img>
+			<img style="margin-right: -3px" src="${image}" />
 		</c:if> 
 		
 		<span><jsp:invoke fragment="text" /></span>

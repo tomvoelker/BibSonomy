@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;

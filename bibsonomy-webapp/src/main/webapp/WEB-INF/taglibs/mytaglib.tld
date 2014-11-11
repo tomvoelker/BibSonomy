@@ -52,7 +52,14 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
-
+	
+	<tag>
+		<name>newRow</name>
+		<info>Inserts a new row</info>
+		<tagclass>org.bibsonomy.webapp.util.tags.RowTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+	</tag>
+	
 	<tag>
 		<name>strShorten</name>
 		<info>Shortens a string</info>
@@ -418,4 +425,11 @@
 		<function-class>tags.Functions</function-class>
 		<function-signature>java.lang.String downloadFileId(java.lang.String)</function-signature>
 	</function>
+	
+	<function>
+		<name>hasDidYouKnowMessage</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>java.lang.Boolean hasDidYouKnowMessage(org.bibsonomy.webapp.command.BaseCommand)</function-signature>
+	</function>
+	
 </taglib>

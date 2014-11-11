@@ -94,32 +94,29 @@ public class AmazonScraper extends AbstractUrlScraper {
 	 * Scrapes a product from amazon
 	 */
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc)
-			throws ScrapingException {
-
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
-		String content = "";
-		String isbn = "";
-		try {
-			content = WebUtils.getContentAsString(sc.getUrl().toString());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		Matcher m = ISBN.matcher(content);
-		if (m.find())
-			isbn = m.group(1);
+		
 		// try to extract isbn and use the worldcat scraper
-		else
-			isbn = ISBNUtils.extractISBN(sc.getPageContent());
-
-		if (!present(isbn)) {
-			return false;
-		}
 		try {
-			String bibtex = WorldCatScraper.getBibtexByISBNAndReplaceURL(isbn,
-					sc.getUrl().toString());
-			if (!present(bibtex))
+			final String content = WebUtils.getContentAsString(sc.getUrl().toString());
+			final Matcher m = ISBN.matcher(content);
+			final String isbn;
+			if (m.find()) {
+				isbn = m.group(1);
+			} else {
+				isbn = ISBNUtils.extractISBN(sc.getPageContent());
+			}
+			
+			if (!present(isbn)) {
 				return false;
+			}
+			
+			final String bibtex = WorldCatScraper.getBibtexByISBNAndReplaceURL(isbn, sc.getUrl().toString());
+			if (!present(bibtex)) {
+				return false;
+			}
+			
 			sc.setBibtexResult(bibtex);
 			return true;
 		} catch (IOException ex) {

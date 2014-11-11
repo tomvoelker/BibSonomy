@@ -23,6 +23,13 @@
 
 package org.bibsonomy.scraper.url.kde.spires;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.net.URL;
+
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -42,6 +49,46 @@ public class SpiresScraperTest {
 	@Test
 	public void urlTestRun(){
 		UnitTestRunner.runSingleTest("url_29");
+	}
+	@Test
+	public void testCitedby() throws Exception {
+		final ScrapingContext sc = new ScrapingContext(new URL("http://inspirehep.net/search?p=find+r+desy-thesis-2007-018"));
+		
+		SpiresScraper ss = new SpiresScraper();
+		
+		assertTrue(ss.scrape(sc));
+		
+		assertTrue(ss.scrapeCitedby(sc));
+		
+		final String cby = sc.getCitedBy();
+		
+		assertNotNull(cby);
+		
+		assertTrue(cby.length() > 100);
+		
+		assertEquals("<tr><td>".trim(), cby.substring(0, 30).trim());
+		
+		assertTrue(cby.contains("D'Ascenzo, Nicola"));
+	}
+	@Test
+	public void testReferences() throws Exception{
+		final ScrapingContext sc = new ScrapingContext(new URL("http://inspirehep.net/search?p=find+r+desy-thesis-2007-018"));
+		
+		SpiresScraper ss = new SpiresScraper();
+		
+		assertTrue(ss.scrape(sc));
+		
+		assertTrue(ss.scrapeReferences(sc));
+		
+		final String reference = sc.getReferences();
+		
+		assertNotNull(reference);
+		
+		assertTrue(reference.length() > 100);
+		
+		assertEquals(" <tr><td valign=\"top\"> </td><td> <small><strong>".trim(), reference.substring(0, 48).trim());
+		
+		assertTrue(reference.contains("Andreev, V."));
 	}
 	
 }

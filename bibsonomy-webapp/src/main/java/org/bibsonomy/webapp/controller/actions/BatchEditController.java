@@ -33,6 +33,7 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.BatchEditCommand;
@@ -108,6 +109,8 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	private LogicInterface logic;
 
 	private Errors errors;
+	
+	private URLGenerator urlGenerator;
 
 	@Override
 	public BatchEditCommand instantiateCommand() {
@@ -717,13 +720,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * if no URL is given, we redirect to the user's page
 		 */
 		if (!present(redirectUrl)) {
-			redirectUrl = UrlUtils.safeURIEncode("/user" + loginUserName); // TODO:
-																			// should
-																			// be
-																			// done
-																			// by
-																			// the
-																			// URLGenerator
+			redirectUrl = urlGenerator.getUserUrlByUserName(loginUserName);
 		}
 		return new ExtendedRedirectView(redirectUrl);
 	}
@@ -758,4 +755,15 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		this.requestLogic = requestLogic;
 	}
 
+	
+	/**
+	 * 
+	 * @param urlGenerator
+	 */
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
+	}
+
+	
+	
 }

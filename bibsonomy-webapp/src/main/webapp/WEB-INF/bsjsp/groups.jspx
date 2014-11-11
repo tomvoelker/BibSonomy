@@ -1,0 +1,137 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"> 
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<fmt:message key="navi.groups" var="pageTitle" />
+	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.groups" command="${command}" pageTitle="${pageTitle}" activeTab="groups" minimizedContentWidth="${true}">
+
+		<!--+
+		 	| heading
+		 	+-->
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.groups" formAction="/group/" formInputName="group"/>
+		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">	
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<fmt:message key="navi.groups" var="groups" />
+					<nav:crumb name="${groups}" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		
+		
+		<!--+
+		 	| content
+		 	+-->
+		<jsp:attribute name="content">
+		
+			<h1 class="content-heading"><fmt:message key="navi.groups.all" /></h1>
+			<!--+ 
+				| explain what groups are good for
+				+-->
+			<bs:alert style="info">
+				<jsp:attribute name="alertBody">
+					<fmt:message key="system.groups">
+						<fmt:param value="${properties['project.email']}" />
+					</fmt:message>
+				</jsp:attribute>
+			</bs:alert>
+			
+			<!--+
+				| show alphabet for direct links to groups
+				-->
+			<c:set var="letters" value="abcdefghijklmnopqrstuvwxyz" />
+			<div id="linkedAlphabet">
+				<ul class="pagination pagination-sm" id="letter-pagination">
+					<li><a href="#numbers">#</a></li>
+				<c:forEach var="i" begin="0" end="${fn:length(letters) - 1}" step="1">
+					<c:set var="letter" value="${fn:substring(letters, i, i + 1)}" />
+					<li><a href="#${letter}"><c:out value="${fn:toUpperCase(letter)}"/></a></li>
+				</c:forEach>
+				</ul>
+			</div>
+			<c:set var="lastChar" value=""/>
+			<div id="groups">
+
+				<dl class="dl-horizontal dt-thumbnail-items group-list">
+				<c:forEach var="group" items="${command.list}">
+					<c:set var="firstGroupNameLetter" value="${fn:toLowerCase(fn:substring(group.name, 0, 1))}" />
+					<c:choose>
+						<c:when test="${not fn:contains(letters, firstGroupNameLetter)}">
+							<c:set var="firstGroupNameLetter" value="#" />
+							<c:set var="anchor" value="numbers" />
+						</c:when>
+						<c:otherwise>
+							<c:set var="anchor" value="${firstGroupNameLetter}" />
+						</c:otherwise>
+					</c:choose>
+					<c:if test="${lastChar ne firstGroupNameLetter}">
+						<c:set var="lastChar" value="${firstGroupNameLetter}" />
+						<dt>
+							<c:choose>
+								<c:when test="${not fn:contains(letters, firstGroupNameLetter)}">
+									<h4><a href="#${anchor}" name="${anchor}">${firstGroupNameLetter}</a></h4>
+								</c:when>
+								<c:otherwise>
+										<h4><a href="#${anchor}" name="${firstGroupNameLetter}">${firstGroupNameLetter}</a></h4>
+								</c:otherwise>
+							</c:choose>
+						</dt>
+						<dd>
+							<p><small><a href="#letter-pagination"><span class="fa fa-arrow-up"><!-- keep me --></span><c:out value=" " /><fmt:message key="totop" /></a></small></p>
+							
+						</dd>
+					</c:if>
+						<c:set var="displayName" value="${group.name}" />
+						<c:if test="${not empty group.realname}">
+							<c:set var="displayName" value="${group.realname}" />
+						</c:if>
+						<dt><span class="sr-only"><c:out value="${group.name}" /></span><img class="img-thumbnail img-resposive user-avatar" src="${relativeUrlGenerator.getUserPictureUrlByUsername(group.name)}"/></dt>
+						<dd>
+							<div class="row">
+								<div class="col-xs-9">
+									<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}">
+										<c:out value="${displayName}"/>
+										<br />
+										<c:if test="${not empty group.homepage}">
+											<small><a href="${mtl:encodeURI(group.homepage)}">Homepage</a></small>
+										</c:if>
+									</a>
+								</div>
+								<div class="col-xs-3">
+									<c:choose>
+										<c:when test="${mtl:contains(command.context.loginUser.groups, group)}">
+											<button class="btn btn-success btn-sm"><span class="fa fa-check"><!-- keep me --></span><c:out value=" "/><span class="infotext"><fmt:message key="group.memberOf" /></span></button>
+											<!-- TODO: add link to leave group, if user is already member -->
+										</c:when>
+										<c:otherwise>
+											<c:url var="joinLink" value="/join_group">
+												<c:param name="group" value="${group.name}" />
+											</c:url>
+											<a href="${joinLink}" class="btn btn-primary btn-sm"><span class="fa fa-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>	
+										</c:otherwise>
+									</c:choose>
+								</div>
+							</div>
+						</dd>
+				</c:forEach>
+				</dl>
+			</div>
+		</jsp:attribute>
+	</layout:paneLayout>
+</jsp:root>

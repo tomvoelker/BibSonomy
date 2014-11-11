@@ -92,6 +92,4 @@ public class VuFindURLGenerator extends URLGenerator {
 	public void setPumaUrlMiscFieldName(String pumaUrlMiscFieldName) {
 		this.pumaUrlMiscFieldName = pumaUrlMiscFieldName;
 	}
-	
-	
 }

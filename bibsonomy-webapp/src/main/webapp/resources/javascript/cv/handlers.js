@@ -9,7 +9,7 @@ $(function(){
 	/*
      * Handler for the layout-links
      */
-    $('.changeLayout').change(function(e){
+    $('#changeLayout').change(function(e){
         e.preventDefault();
         $.ajax({
             type: "POST",
@@ -30,9 +30,6 @@ $(function(){
                         wikiArea.empty();
                         wikiArea.append(renderedWikiText);
                         handleSuccessStatus("changing layout to " + $(this).find("option:selected").text());
-                    } else {
-                        wikiTextArea.val(wikiText);
-                        handleError("We do not want empty CVses! No, my preciousssss")
                     }
                 }
                 // status is not ok.
@@ -48,14 +45,14 @@ $(function(){
      */
     $('#loadingDiv').ajaxStart(function(){
         $('#loadingDiv').show();
-        $('#saveButtonField').hide();
+        $('#saveButton').toggleClass("disabled");
     }).ajaxSuccess(function(){
         $('#loadingDiv').hide();
-        $('#saveButtonField').show();
+        $('#saveButton').toggleClass("disabled");
     }).ajaxError(function() {
         $('#loadingDiv').hide();
         // this now enforces the preview buttons to be shown.
-        $('#saveButtonField').hide();
+        $('#saveButton').toggleClass("disabled");
         // TODO: Handle Errors correctly.
 //        handleError("Rendering error.");
     });
@@ -65,9 +62,9 @@ $(function(){
      * Handler to hide the cvedit panel
      */
     $('#hideAdmin').click(function(){
-        $('#fsform').hide('blind',function() {
-			$('#showAdminField').show();
-			$('#hideAdminField').hide();
+        $('#wikiEditArea').hide('blind',function() {
+			$('#showAdmin').show();
+			$('#hideAdmin').hide();
 		});
     });
     
@@ -75,9 +72,9 @@ $(function(){
 	 * Handler to show the cvedit panel
 	 */
 	$('#showAdmin').click(function() {
-		$('#fsform').show('blind',function() {
-			$('#showAdminField').hide();
-			$('#hideAdminField').show();
+		$('#wikiEditArea').show('blind',function() {
+			$('#showAdmin').hide();
+			$('#hideAdmin').show();
 		});
 	});
 });
@@ -92,8 +89,8 @@ function handleError(e){
 }
 
 function handleSuccessStatus(e) {
-//	$('#statusText').text("Success: " + e);
-    $('#statusField').removeClass('error success').addClass('success');
+	$('#statusText').text("");
+	$('#statusField').removeClass('error success').addClass('success');
 }
 
 /**

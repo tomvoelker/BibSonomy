@@ -500,7 +500,7 @@
 				</entry>
 				<entry key="/postBookmark">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="postBookmarkController"/>
+						<property name="controllerBeanName" value="editBookmarkController"/>
 					</bean>
 				</entry>
 				<entry key="/postPublication">
@@ -619,7 +619,8 @@
 								<value>user.settings.defaultLanguage</value>
 								<value>user.settings.showBookmark</value>
 								<value>user.settings.showBibtex</value>
-								<value>user.settings.simpleInterface</value>
+								<value>user.settings.layoutSettings.simpleInterface</value>
+								<value>user.settings.layoutSettings.viewLayout</value>
 							</list>
 						</property>
 					</bean>
@@ -800,13 +801,24 @@
 	<bean id="editPostController" class="org.bibsonomy.webapp.controller.actions.EditPostController" scope="request" abstract="true" parent="resourceController">
 		<property name="recommender" ref="multiplexingTagRecommender"/>
 		<property name="captcha" ref="captcha"/>
-		<property name="urlGenerator" ref="urlGenerator"/>
+		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="pingback" ref="pingback"/>
 	</bean>
 
 	<!-- Handles the edit bookmark process -->
-	<bean id="editBookmarkController" class="org.bibsonomy.webapp.controller.actions.EditBookmarkController" scope="request" parent="editPostController" />
+	<bean id="editBookmarkController" class="org.bibsonomy.webapp.controller.actions.EditBookmarkController" scope="request" parent="editPostController">
+		<property name="didYouKnowMessages">
+			<list>
+				<bean class="org.bibsonomy.webapp.util.DidYouKnowMessage">
+					<property name="messageKey" value="didyouknow.browserButtons"/>
+					<property name="alertType" value="warning" /> 
+				</bean>
+			</list>
+			
+		</property>
+	</bean>
+	
 	
 <!-- 	<bean id="diffBookmarkController" class="org.bibsonomy.webapp.controller.actions.DiffBookmarkMockupController" scope="request" parent="editPostController" /> -->
 
@@ -831,8 +843,24 @@
 		<property name="captcha" ref="captcha"/>
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="scraper" ref="kdeScraperChain"/>
-		<property name="urlGenerator" ref="urlGenerator"/>
+		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
 		<property name="publicationImporter" ref="publicationImporter"/>
+		<property name="didYouKnowMessages">
+			<list>
+				<bean class="org.bibsonomy.webapp.util.DidYouKnowMessage">
+					<property name="messageKey" value="didyouknow.browserButtons"/>
+					<property name="alertType" value="warning" /> 
+				</bean>
+				<bean class="org.bibsonomy.webapp.util.DidYouKnowMessage">
+					<property name="messageKey" value="didyouknow.isbn"/>
+					<property name="alertType" value="warning" /> 
+				</bean>
+				<bean class="org.bibsonomy.webapp.util.DidYouKnowMessage">
+					<property name="messageKey" value="didyouknow.scanningQr"/>
+					<property name="alertType" value="warning" /> 
+				</bean>
+			</list>
+		</property>
 	</bean>
 	
 	<bean id="publicationImporter" class="org.bibsonomy.webapp.util.importer.PublicationImporter">
@@ -857,7 +885,7 @@
 	<bean id="deletePostController" class="org.bibsonomy.webapp.controller.actions.DeletePostController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="requestLogic" ref="requestLogic"/>
-		<property name="urlGenerator" ref="urlGenerator"/>
+		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
 	</bean>
 	
 	<!-- Handles remove message process -->
@@ -1064,7 +1092,7 @@
 	<bean id="linkLoader" class="org.bibsonomy.pingback.HttpClientLinkLoader" />
 
 	<bean id="realPingback" class="org.bibsonomy.pingback.ThreadedPingbackImpl">
-		<property name="urlGenerator" ref="urlGenerator" />
+		<property name="urlGenerator" ref="absoluteUrlGenerator" />
 		<property name="pingbackClient" ref="pingbackClient" />
 		<property name="trackbackClient" ref="trackbackClient" />
 		<property name="linkLoader" ref="linkLoader" />
@@ -1126,7 +1154,7 @@
 	
 	<!-- handles import of facebook friends -->
 	<bean id="facebookFriendsImportController" class="org.bibsonomy.webapp.controller.actions.FacebookFriendsImportController" scope="request">
-		<property name="projectHome" value="${project.home}"/>
+		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
 		<property name="fbApiKey" value="${facebook.api.key}"/>
 		<property name="fbSecret" value="${facebook.api.secret}"/>
 		<!-- defined in bibsonomy-entityresolver-context.xml -->
@@ -1137,11 +1165,11 @@
 		<property name="allowedExtensions" value="${project.document.allowedExtensions}" />
 	</bean>
 	
-	<bean id="tempFileLogic" class="org.bibsonomy.util.file.temp.ServerTempFileLogic">
+	<bean id="tempFileLogic" class="org.bibsonomy.webapp.util.file.temp.ServerTempFileLogic">
 		<constructor-arg value="${project.document.temp}" />
 	</bean>
 	
-	<bean id="profileFileLogic" class="org.bibsonomy.util.file.profilepicture.ServerProfilePictureLogic">
+	<bean id="profileFileLogic" class="org.bibsonomy.webapp.util.file.profilepicture.ServerProfilePictureLogic">
 		<constructor-arg value="${project.picture.path}" />
 		<property name="defaultFileName" value="no_picture.png" />
 		<property name="pictureScaler">
@@ -1153,11 +1181,11 @@
 		<property name="adminLogic" ref="adminLogic" />
 	</bean>
 	
-	<bean id="jabRefFileLogic" class="org.bibsonomy.util.file.jabref.ServerJabRefFileLogic">
+	<bean id="jabRefFileLogic" class="org.bibsonomy.webapp.util.file.jabref.ServerJabRefFileLogic">
 		<constructor-arg value="${project.document.path}" />
 	</bean>
 	
-	<bean id="documentFileLogic" class="org.bibsonomy.util.file.document.ServerDocumentFileLogic">
+	<bean id="documentFileLogic" class="org.bibsonomy.webapp.util.file.document.ServerDocumentFileLogic">
 		<constructor-arg value="${project.document.path}" />
 		<property name="extensionChecker" ref="extensionChecker" />
 	</bean>
@@ -1180,7 +1208,7 @@
 	<bean id="limitedAccountActivationController" class="org.bibsonomy.webapp.controller.actions.LimitedAccountActivationController" scope="request">
 		<property name="adminLogic" ref="adminLogic"/>
 		<property name="successRedirect" value="${limited_account.redirect_url}" />
-		<property name="projectHome" value="${project.home}" />
+		<property name="urlGenerator" ref="absoluteUrlGenerator" />
 	</bean>
 	
 	<!-- 
@@ -1200,14 +1228,18 @@
 		<property name="view" value="REGISTER_USER_SUCCESS" />
 	</bean>
 	
+	<!-- NOW USING EditBookmarkController -->
+	<!-- 
 	<bean id="postBookmarkController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="POST_BOOKMARK" />
 	</bean>
+	-->
 	
 	<!-- EDIT TAGS -->
 	<bean id="batchEditController" class="org.bibsonomy.webapp.controller.actions.BatchEditController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="requestLogic" ref="requestLogic"/>
+		<property name="urlGenerator" ref="relativeUrlGenerator"/>
 	</bean>
 		
 	<bean id="editTagsPageViewController" class="org.bibsonomy.webapp.controller.actions.EditTagsPageViewController" scope="request">

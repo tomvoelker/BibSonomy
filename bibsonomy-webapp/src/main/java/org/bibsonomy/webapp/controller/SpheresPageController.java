@@ -117,12 +117,12 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 		}
 		
 		// set all resourcetypes for the given sphere
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {			
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 			this.setList(command, resourceType, GroupingEntity.FRIEND, loginUser.getName(), queryTags, null, null, null, Order.ADDED, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
-		}	
+		}
 		
 		// set the tags / related tags for the sphere
 		this.setTags(command, Resource.class, GroupingEntity.FRIEND, loginUser.getName(), null, queryTags, null, Integer.MAX_VALUE, null);

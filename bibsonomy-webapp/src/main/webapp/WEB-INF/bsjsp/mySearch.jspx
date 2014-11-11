@@ -1,0 +1,157 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
+    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+    xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+      	
+	<layout:paneLayout 
+		pageTitle="${command.pageTitle}" 
+		headerMessageKey="mysearch.header" 
+		headerLogoClass="search" 
+		command="${command}" 
+		requPath="${requPath}" 
+		activeTab="my"
+		minimizedContentWidth="${true}">
+
+    	<jsp:attribute name="heading">
+    		<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
+		</jsp:attribute>
+
+   		<jsp:attribute name="headerExt">
+   			<script type="text/javascript" src="${resdir}/javascript/mySearch.js"><!-- keep me --></script>
+   		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:myUserCrumb loginUser="${command.context.loginUser}" />
+					<nav:crumb nameKey="navi.mysearch" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		<!--+
+			| page content
+			+-->
+		<jsp:attribute name="content">
+      <div id="searchbox">
+	    
+	
+	    <form name="searchform" onsubmit="checkInput()">
+	      <fieldset class="fsVisible">
+	        <legend><fmt:message key="mysearch.option.header"/></legend>
+		<table border="0">
+			<tr>
+				<td><fmt:message key="mysearch.option.tag"/></td>
+				<td><fmt:message key="mysearch.option.author"/></td>
+			</tr>
+			<tr>
+				<td>
+					<select name="tags" size="10" onchange="clearFilter(); updateAuthorsForTags(); updateTitles(); showTitleList();" multiple="true"></select>	
+				</td>
+				<td>
+					<select name="authors" size="10" onchange="clearFilter(); updateTitles(); showTitleList();" multiple="true"></select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="radio" name="tag_op" value="and"/><fmt:message key="logic.and"/>
+					<input type="radio" name="tag_op" value="or" checked="true" /><fmt:message key="logic.or"/> 
+				</td>
+				<td>
+					<input type="radio" name="author_op" value="and"/><fmt:message key="logic.and"/>
+					<input type="radio" name="author_op" value="or" checked="true" /><fmt:message key="logic.or"/>
+				</td>
+			</tr>
+		</table>
+	</fieldset>
+	<br/>
+	
+	<c:set var="listboxtitle"><fmt:message key="mysearch.option.filter.text"/></c:set>
+	<fieldset class="fsVisible">
+	<legend><fmt:message key="mysearch.option.result.header"/></legend>
+		<fmt:message key="mysearch.option.filter"/>&#160;
+		<input value='${listboxtitle}' name="filter" class="descriptiveLabel" type="text" size="40" onKeyUp="showTitleList();" />
+		<p>		
+			<div id='numresult' style="text-align:right; padding-bottom:2px; color:gray;">&#160;</div>
+			<div class="scroller">
+				<table class="result_table"><tbody id="resultlist"></tbody></table>
+			</div>
+		</p>
+	</fieldset>
+	</form>	
+</div>
+
+
+<script language="javascript">
+	var authors = new Array(<c:forEach var='author' items='${command.authors}' varStatus="loopStatus">
+								"${mtl:quoteJSON(author)}"<c:if test="${not loopStatus.last}">,</c:if>
+							</c:forEach>);
+							
+	var tags = new Array(<c:forEach var='tag' items='${command.tags}' varStatus="loopStatus">
+								"${mtl:quoteJSON(tag)}"<c:if test="${not loopStatus.last}">,</c:if>
+						</c:forEach>);
+	
+	var titles = new Array(<c:forEach var='title' items='${command.titles}' varStatus="loopStatus">
+								"<c:out value="${mtl:quoteJSONcleanBibTeX(title)}"/>"<c:if test="${not loopStatus.last}">,</c:if>
+							</c:forEach>);
+							
+	/**
+	* relation arrays for relations between authors, tags and titles
+	**/	
+	var tagTitle 		= <c:out value='${command.tagTitle}'/>;
+	var authorTitle 	= <c:out value='${command.authorTitle}'/>;	
+	var tagAuthor 		= <c:out value='${command.tagAuthor}'/>;	
+	var titleAuthor 	= <c:out value='${command.titleAuthor}'/>;
+	var simHashID       = <c:out value='${command.simHash}'/>;
+	
+	/**
+	* array containing bibtex hashes of each publication
+	**/
+	var contentIds = new Array(<c:forEach var='id' items='${command.bibtexHash}' varStatus="loopStatus">
+								"<c:out value='${mtl:quoteJSON(id)}'/>"<c:if test="${not loopStatus.last}">,</c:if>
+							</c:forEach>);	
+							
+	var titleUrls = new Array(<c:forEach var='id' items='${command.bibtexUrls}' varStatus="loopStatus">
+								"<c:out value='${mtl:quoteJSON(id)}'/>"<c:if test="${not loopStatus.last}">,</c:if>
+							</c:forEach>);				
+	var titleTag 	= new Array();
+	var titlesIdx	= new Array();
+	
+	// a string of authors separated by comma
+	var titleAuthorStringArray = new Array();	
+
+
+	<![CDATA[
+	
+	for (var i=0;i < titles.length;i++) {
+		titleTag[i] = "";
+	}
+	
+	for (var i=0;i<tagTitle.length;i++) {
+		var lst = tagTitle[i];
+		for (var j=0;j<lst.length;j++) {
+			titleTag[lst[j]] += tags[i] + " ";
+		}
+	}	
+	
+	// initialize the form
+	initBoxes();
+	
+  	]]>
+</script>
+ 
+		</jsp:attribute>
+	</layout:paneLayout>
+
+</jsp:root>

@@ -1,0 +1,79 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:discussion ="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
+	
+	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="additionalItemClasses" type="java.lang.String" required="false"/>
+
+	<jsp:directive.attribute name="title" fragment="true" required="true"/>
+	<jsp:directive.attribute name="desc" fragment="true" required="true"/>
+	<jsp:directive.attribute name="actions" fragment="true" required="true"/>
+	<jsp:directive.attribute name="documents" fragment="true" required="true"/>
+
+   <!--+ 
+       | TODO: Several tests (not empty post.user.name) are here to test for community posts. 
+       | They never have a userName. 
+       | Since they also dont have several other properties, we dont show those.
+       +-->
+
+	<li class="media post ${additionalItemClasses}">
+		<div class="clearline">&#160;</div>
+		<h4 class="media-heading" data-ident="${post.resource.intraHash}">
+			<div>
+			<div class="clearline">&#160;</div>
+			<rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" />
+			<span class="ptitle"><jsp:invoke fragment="title"/></span>
+			<div class="clearline">&#160;</div>
+			</div>
+		</h4>
+		
+		<div class="hidden-xs hidden-md pull-left thumbnail-container">
+			<jsp:invoke fragment="documents"/>
+			<!-- IN MY COLLECTION: only display the in-my-collection-icon when the user is logged in -->
+			<!-- FIXME: user name for community posts not given - copying currently not possible -->
+			<c:choose>
+				<c:when test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name)}">	
+					<div class="in-my-collection glyphicon glyphicon-bookmark"><!--  --></div>
+				</c:when>
+				<c:otherwise>
+					<div class="in-my-collection glyphicon"><!--  --></div>
+				</c:otherwise>
+			</c:choose>
+			
+			<c:forEach var="group" items="${post.groups}">
+				<c:if test="${!empty group.name and group.name ne 'public'}">
+					<c:choose>
+						<c:when test="${group.name eq 'friends'}">
+							<!-- TODO: friends marker? -->
+						</c:when>
+						<c:when test="${group.name eq 'private'}">
+							<div class="glyphicon-private glyphicon"><!--  --></div>
+						</c:when>
+					</c:choose>
+				</c:if>
+			</c:forEach>
+			
+		</div>
+		<div class="media-body">
+			<div class="pdesc ellipsis">
+				<div class="ellipsis-content"><jsp:invoke fragment="desc"/></div>
+			</div>
+			<div class="pmeta"><rc:metaDate post="${post}"/><rc:metaUsername post="${post}" /><rc:metaGroups post="${post}" loginUserName="${loginUserName}" /></div>
+			<div class="ptags"><rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/></div>
+			<div class="pull-left">
+				<discussion:rating post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
+			</div>
+			<div class="pull-right"><jsp:invoke fragment="actions"/></div>
+			<div class="clearline">&#160;</div>
+		</div>
+		<div class="clearline">&#160;</div>
+	</li>
+</jsp:root>
