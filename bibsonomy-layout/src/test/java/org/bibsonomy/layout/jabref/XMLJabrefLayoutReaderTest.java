@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import org.bibsonomy.util.StringUtils;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -46,7 +47,7 @@ public class XMLJabrefLayoutReaderTest {
 	public void testGetJabrefLayouts() throws IOException {
 		final InputStream stream = XMLJabrefLayoutReader.class.getClassLoader().getResourceAsStream("org/bibsonomy/layout/jabref/JabrefLayouts.xml");
 		
-		final BufferedReader buf = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+		final BufferedReader buf = new BufferedReader(new InputStreamReader(stream, StringUtils.CHARSET_UTF_8));
 		
 		final XMLJabrefLayoutReader reader = new XMLJabrefLayoutReader(buf);
 		
@@ -74,7 +75,7 @@ public class XMLJabrefLayoutReaderTest {
 	public void testGetJabrefLayoutsSE() throws SAXException, IOException {
 		final InputStream stream = XMLJabrefLayoutReader.class.getClassLoader().getResourceAsStream("org/bibsonomy/layout/jabref/JabrefLayouts.xml");
 		
-		final BufferedReader buf = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+		final BufferedReader buf = new BufferedReader(new InputStreamReader(stream, StringUtils.CHARSET_UTF_8));
 		final XMLJabrefLayoutReader reader = new XMLJabrefLayoutReader(buf);
 		final List<AbstractJabRefLayout> jabrefLayoutsDefinitions = reader.getJabrefLayoutsDefinitions();
 		

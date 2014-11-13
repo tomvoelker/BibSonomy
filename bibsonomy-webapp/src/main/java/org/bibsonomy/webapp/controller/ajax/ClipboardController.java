@@ -11,10 +11,12 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
-import org.bibsonomy.webapp.command.ajax.BasketManagerCommand;
+import org.bibsonomy.webapp.command.ajax.ClipboardManagerCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.ValidationAwareController;
+import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.validation.ajax.ClipboardValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
@@ -22,18 +24,18 @@ import org.springframework.validation.Errors;
 /**
  * @author Christian Kramer
  */
-public class BasketController extends AjaxController implements MinimalisticController<BasketManagerCommand>, ErrorAware {
-	private static final Log log = LogFactory.getLog(BasketController.class);
+public class ClipboardController extends AjaxController implements ValidationAwareController<ClipboardManagerCommand>, ErrorAware {
+	private static final Log log = LogFactory.getLog(ClipboardController.class);
 	
 	private Errors errors;
 
 	@Override
-	public BasketManagerCommand instantiateCommand() {
-		return new BasketManagerCommand();
+	public ClipboardManagerCommand instantiateCommand() {
+		return new ClipboardManagerCommand();
 	}
 
 	@Override
-	public View workOn(BasketManagerCommand command) {
+	public View workOn(ClipboardManagerCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		
 		// user has to be logged in
@@ -48,11 +50,7 @@ public class BasketController extends AjaxController implements MinimalisticCont
 		if (!command.getContext().isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
 		}
-		
 		final String action = command.getAction();
-		if (!present(action)) {
-			errors.reject("error.action.valid");
-		}
 		
 		if (errors.hasErrors()) {
 			return Views.ERROR;
@@ -68,21 +66,21 @@ public class BasketController extends AjaxController implements MinimalisticCont
 		final List<Post<? extends Resource>> posts = createObjects(command);
 		
 		/*
-		 * new basket size
+		 * new clipboard size
 		 */
-		int basketSize = 0;
+		int clipboardSize = 0;
 		/*
 		 * decide which method will be called
 		 */
 		if (action.startsWith("pick")){
-			basketSize = logic.createBasketItems(posts);
+			clipboardSize = logic.createBasketItems(posts);
 		} else if (action.startsWith("unpick")){
-			basketSize = logic.deleteBasketItems(posts, false);
+			clipboardSize = logic.deleteBasketItems(posts, false);
 		}
 		/*
-		 * set new basket size
+		 * set new clipboard size
 		 */
-		command.setResponseString(Integer.toString(basketSize));
+		command.setResponseString(Integer.toString(clipboardSize));
 		
 		return Views.AJAX_TEXT;
 	}
@@ -93,7 +91,7 @@ public class BasketController extends AjaxController implements MinimalisticCont
 	 * @param command
 	 * @return List<Post<BibTex>>
 	 */
-	private static List<Post<? extends Resource>> createObjects(final BasketManagerCommand command){
+	private static List<Post<? extends Resource>> createObjects(final ClipboardManagerCommand command){
 		// create new list and necessary variables
 		final List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
 		
@@ -134,6 +132,22 @@ public class BasketController extends AjaxController implements MinimalisticCont
 		post.setResource(publication);
 		post.setUser(new User(userName));
 		return post;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.util.ValidationAwareController#getValidator()
+	 */
+	@Override
+	public Validator<ClipboardManagerCommand> getValidator() {
+		return new ClipboardValidator();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.util.ValidationAwareController#isValidationRequired(org.bibsonomy.webapp.command.ContextCommand)
+	 */
+	@Override
+	public boolean isValidationRequired(ClipboardManagerCommand command) {
+		return true;
 	}
 
 	@Override

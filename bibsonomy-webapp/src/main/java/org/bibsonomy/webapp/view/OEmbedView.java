@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONSerializer;
 
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 import org.directwebremoting.util.SwallowingHttpServletResponse;
 import org.springframework.web.servlet.ViewResolver;
@@ -51,12 +52,12 @@ public class OEmbedView extends AbstractView {
 			// of SwallowingHttpServletResponse
 			final StringWriter sout = new StringWriter();
 
-			final HttpServletResponse swallowingResponse = new SwallowingHttpServletResponse(response, sout, "UTF-8");
+			final HttpServletResponse swallowingResponse = new SwallowingHttpServletResponse(response, sout, StringUtils.CHARSET_UTF_8);
 
 
 			try {
 				response.setContentType("application/json");
-				response.setCharacterEncoding("UTF-8");
+				response.setCharacterEncoding(StringUtils.CHARSET_UTF_8);
 
 				// "include" the file (but not really an include) with the dispatcher
 				// The resulting rendering will come out in swallowing response,

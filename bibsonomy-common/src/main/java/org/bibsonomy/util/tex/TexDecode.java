@@ -29,6 +29,8 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.util.StringUtils;
+
 /**
  * Framework to encode TeX Macros to unicode.
  * 
@@ -119,7 +121,7 @@ public class TexDecode {
 	 * macros and store it in texMap.
 	 */
 	private static final void loadMapFile() {
-		Scanner scanner = new Scanner(TexDecode.class.getClassLoader().getResourceAsStream(LATEXMACRO_UNICODECHAR_MAP_FILENAME), "UTF-8");
+		Scanner scanner = new Scanner(TexDecode.class.getClassLoader().getResourceAsStream(LATEXMACRO_UNICODECHAR_MAP_FILENAME), StringUtils.CHARSET_UTF_8);
 		String line;
 		String[] parts;
 		while (scanner.hasNextLine()) {
@@ -128,7 +130,7 @@ public class TexDecode {
 			// convert hex representation into unicode string
 			texMap.put(parts[1].trim(), String.valueOf(Character.toChars(Integer.parseInt(parts[0].trim(), 16))));
 		}
-
+		scanner.close();
 	}
 
 }

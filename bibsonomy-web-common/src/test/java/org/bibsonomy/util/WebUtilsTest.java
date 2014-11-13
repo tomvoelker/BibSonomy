@@ -42,7 +42,7 @@ public class WebUtilsTest {
 	
 	@Test
 	public void testExtractCharset1() {
-		assertEquals("UTF-8", WebUtils.extractCharset("text/html; charset=utf-8; qs=1"));
+		assertEquals(StringUtils.CHARSET_UTF_8, WebUtils.extractCharset("text/html; charset=utf-8; qs=1"));
 	}
 
 	@Test
