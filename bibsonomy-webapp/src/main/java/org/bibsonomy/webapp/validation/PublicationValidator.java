@@ -172,7 +172,7 @@ public class PublicationValidator implements Validator<BibTex> {
 	 */
 	public static void handleParserWarnings(final Errors errors, final SimpleBibTeXParser parser, final String bibTexAsString, final String authorFieldName) {
 		final List<ExpansionException> warnings = parser.getWarnings();
-		final List<ExpansionException> warningsToError = new LinkedList<ExpansionException>();
+		final List<String> warningsToError = new LinkedList<String>();
 		if (present(warnings)) {
 			for (final ExpansionException warning : warnings) {
 				final Class<? extends ExpansionException> clazz = warning.getClass();
@@ -192,7 +192,7 @@ public class PublicationValidator implements Validator<BibTex> {
 						/*
 						 * We add the errors as global errors.  
 						 */
-						warningsToError.add(warning);
+						warningsToError.add(warning.getMessage());
 					}
 				} else if (CrossReferenceExpansionException.class.equals(clazz)) {
 					/*
@@ -203,7 +203,7 @@ public class PublicationValidator implements Validator<BibTex> {
 					/*
 					 * we add all other warnings as errors
 					 */
-					warningsToError.add(warning);
+					warningsToError.add(warning.getMessage());
 				}
 			}
 		}
@@ -213,7 +213,7 @@ public class PublicationValidator implements Validator<BibTex> {
 	}
 
 
-	private static String toString(final List<ExpansionException> list) {
+	private static String toString(final List<String> list) {
 		final StringBuffer buf = new StringBuffer();
 		for (final String item : list) {
 			buf.append(item).append("\n");
