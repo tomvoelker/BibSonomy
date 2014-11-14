@@ -39,6 +39,9 @@ import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.util.StringUtils;
 import org.junit.Test;
 
+import bibtex.expansions.CrossReferenceExpansionException;
+import bibtex.expansions.ExpansionException;
+
 /**
  * @author rja
  */
@@ -192,7 +195,9 @@ public class SimpleBibTeXParserTest {
 				"  author = {" + author + "}\n" + 
 				"}"
 		);
-		assertEquals("bibtex.expansions.PersonListParserException: Name ends with comma: 'Foo, Bar,' - in 'foo'", parser.getWarnings().get(0));
+		
+		final ExpansionException warning = parser.getWarnings().get(0);
+		assertEquals("bibtex.expansions.PersonListParserException: Name ends with comma: 'Foo, Bar,' - in 'foo'", warning.getMessage());
 		
 
 //		System.out.println(BibTexUtils.toBibtexString(parsedBibTeX));
@@ -314,7 +319,13 @@ public class SimpleBibTeXParserTest {
 		// We have two entries, both with missing crossrefs.
 		assertEquals(2, parser.getWarnings().size());
 		
-		assertEquals("Crossref key not found: \"dblp:conf/acl/2014-1\"", parser.getWarnings().get(0));
+		assertEquals(CrossReferenceExpansionException.class, parser.getWarnings().get(0).getClass());
+		
+		final CrossReferenceExpansionException firstWarning = (CrossReferenceExpansionException) parser.getWarnings().get(0); 
+		
+		assertEquals("crossref key not found", firstWarning.getMessage());
+		assertEquals("DBLP:conf/acl/PickhardtGKWSS14",  firstWarning.getEntryKey());
+		assertEquals("dblp:conf/acl/2014-1",  firstWarning.getCrossrefKey());
 	}	
 
 	

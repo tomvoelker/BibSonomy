@@ -33,6 +33,7 @@ package bibtex.expansions;
 import java.util.LinkedList;
 import java.util.List;
 
+
 /**
  * @author henkel
  */
@@ -82,36 +83,16 @@ public abstract class AbstractExpander {
 	 * @param message
 	 * @throws ExpansionException
 	 */
-	protected void throwExpansionException(String message) throws ExpansionException {
+	protected void throwExpansionException(final ExpansionException ex) throws ExpansionException {
 		if (this.throwAllExpansionExceptions)
-			throw new ExpansionException(message);
+			throw ex;
 		else {
 			try {
-				throw new ExpansionException(message);
+				throw ex;
 			} catch (ExpansionException e) {
 				this.exceptions.add(e);
 			}
 		}
 	}
-
-	/**
-	 * Call this whenever you want to throw an ExpansionException. This method may or may not throw
-	 * the exception, depending on the throwAllExpansionExceptions flag.
-	 * 
-	 * @param cause
-	 * @throws ExpansionException
-	 */
-	protected void throwExpansionException(Exception cause) throws ExpansionException {
-		if (this.throwAllExpansionExceptions)
-			throw new ExpansionException(cause);
-		else {
-			try {
-				throw new ExpansionException(cause);
-			} catch (ExpansionException e) {
-				this.exceptions.add(e);
-			}
-		}
-	}
-
 
 }

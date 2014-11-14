@@ -78,14 +78,14 @@ public class SimpleBibTeXParser {
 	private ParseException[] caughtExceptions;
 
 	/**
-	 * Stores warnings occuring during parsing.
+	 * Stores warnings occurring during parsing.
 	 */
-	private final List<String> warnings;
+	private final List<ExpansionException> warnings;
 	/**
 	 * inits the warnings list
 	 */
 	public SimpleBibTeXParser() {
-		this.warnings = new LinkedList<String>();
+		this.warnings = new LinkedList<ExpansionException>();
 	}
 
 	/**
@@ -120,7 +120,7 @@ public class SimpleBibTeXParser {
 	/**
 	 * @return The warnings created during parsing.
 	 */
-	public List<String> getWarnings() {
+	public List<ExpansionException> getWarnings() {
 		return this.warnings;
 	}
 
@@ -250,8 +250,8 @@ public class SimpleBibTeXParser {
 			final MacroReferenceExpander macroReferenceExpander = new MacroReferenceExpander(true, false, false, false);
 			macroReferenceExpander.expand(bibtexFile);
 			addWarnings(macroReferenceExpander);
-		} catch (ExpansionException ee) {
-			warnings.add(ee.getMessage());
+		} catch (final ExpansionException ee) {
+			this.warnings.add(ee);
 		}
 
 		try {
@@ -264,8 +264,8 @@ public class SimpleBibTeXParser {
 			final CrossReferenceExpander crossReferenceExpander = new CrossReferenceExpander(false);
 			crossReferenceExpander.expand(bibtexFile);
 			addWarnings(crossReferenceExpander);
-		} catch (ExpansionException ee) {
-			warnings.add(ee.getMessage());
+		} catch (final ExpansionException ee) {
+			this.warnings.add(ee);
 		}
 
 		try {
@@ -273,13 +273,13 @@ public class SimpleBibTeXParser {
 			personListExpander.expand(bibtexFile);
 			addWarnings(personListExpander);
 		} catch (ExpansionException ee) {
-			warnings.add(ee.getMessage());
+			this.warnings.add(ee);
 		}
 	}
 
 	private void addWarnings(final AbstractExpander abstractExpander) {
 		for (final ExpansionException expansionException : abstractExpander.getExceptions()) {
-			warnings.add(expansionException.getMessage());	
+			this.warnings.add(expansionException);	
 		}
 	}
 

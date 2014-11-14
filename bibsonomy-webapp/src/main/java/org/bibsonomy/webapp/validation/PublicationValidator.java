@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.validation;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
@@ -14,6 +15,8 @@ import org.bibsonomy.webapp.util.Validator;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 
+import bibtex.expansions.CrossReferenceExpansionException;
+import bibtex.expansions.ExpansionException;
 import bibtex.expansions.PersonListParserException;
 import bibtex.parser.ParseException;
 
@@ -62,7 +65,7 @@ public class PublicationValidator implements Validator<BibTex> {
 			if (!present(bibtex.getBibtexKey()) || containsWhiteSpace(bibtex.getBibtexKey())) {
 				errors.rejectValue("bibtexKey", "error.field.valid.bibtexKey");
 			}
-			
+
 			/*
 			 * initialize parser
 			 * 
@@ -168,37 +171,56 @@ public class PublicationValidator implements Validator<BibTex> {
 	 * to this field. The errors are then added as global errors.
 	 */
 	public static void handleParserWarnings(final Errors errors, final SimpleBibTeXParser parser, final String bibTexAsString, final String authorFieldName) {
-		final List<String> warnings = parser.getWarnings();
+		final List<ExpansionException> warnings = parser.getWarnings();
+		final List<ExpansionException> warningsToError = new LinkedList<ExpansionException>();
 		if (present(warnings)) {
-			if (present(authorFieldName)) {
-				for (final String warning : warnings) {
+			for (final ExpansionException warning : warnings) {
+				final Class<? extends ExpansionException> clazz = warning.getClass();
+				if (PersonListParserException.class.equals(clazz)) {
 					/*
-					 * special handling for name errors that look like 
-					 * "bibtex.expansions.PersonListParserException: Name ends with comma: 'Foo, Bar,' - in 'foo'"
+					 * special handling for person name parsing errors, e.g.,  
+					 * "Name ends with comma: 'Foo, Bar,' - in 'foo'"
 					 */
-					if (warning.startsWith(PersonListParserException.class.getName())) {
+					if (present(authorFieldName)) {
 						/*
 						 * FIXME: we don't know whether to reject author or editor.
 						 * So we pick the author = best guess. Not a good idea but
 						 * my quick solution for today. :-( 
 						 */
-						errors.rejectValue(authorFieldName, "error.field.valid.authorOrEditor.parseError", new Object[]{warning}, "The author or editor field caused the following parse error: {0}");
+						errors.rejectValue(authorFieldName, "error.field.valid.authorOrEditor.parseError", new Object[]{warning.getMessage()}, "The author or editor field caused the following parse error: {0}");
+					} else {
+						/*
+						 * We add the errors as global errors.  
+						 */
+						warningsToError.add(warning);
 					}
+				} else if (CrossReferenceExpansionException.class.equals(clazz)) {
+					/*
+					 * new since 2014-11-14: we ignore crossref expansion errors
+					 * (TODO: show them as warnings instead)
+					 */
+				} else {
+					/*
+					 * we add all other warnings as errors
+					 */
+					warningsToError.add(warning);
 				}
-			} else {
-				errors.reject(PARSE_ERROR_MESSAGE_KEY, new Object[]{bibTexAsString, toString(warnings)}, DEFAULT_PARSE_ERROR_MESSAGE);
 			}
+		}
+		if (present(warningsToError)) {
+			errors.reject(PARSE_ERROR_MESSAGE_KEY, new Object[]{bibTexAsString, toString(warningsToError)}, DEFAULT_PARSE_ERROR_MESSAGE);
 		}
 	}
 
-	private static String toString(final List<String> list) {
+
+	private static String toString(final List<ExpansionException> list) {
 		final StringBuffer buf = new StringBuffer();
 		for (final String item : list) {
 			buf.append(item).append("\n");
 		}
 		return buf.toString();
 	}
-	
+
 	private static boolean containsWhiteSpace(final String s) {
 		return s.matches("\\s");
 	}

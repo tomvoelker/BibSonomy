@@ -23,7 +23,7 @@
  */
 
 /*
- * Created on Mar 28, 2003
+ * Created on Mar 29, 2003
  *
  * @author henkel@cs.colorado.edu
  * 
@@ -31,22 +31,17 @@
 package bibtex.expansions;
 
 /**
+ * Exception thrown by an MacroReferenceExpander object. 
+ * 
  * @author henkel
  */
-public class PersonListParserException extends ExpansionException {
+public class MacroReferenceExpansionException extends ExpansionException {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -5255662562139124653L;
 
-	final String entryKey;
-	
-	PersonListParserException(final String message, final String entryKey) {
+	MacroReferenceExpansionException(final String message) {
 		super(message);
-		this.entryKey = entryKey;
-	}
-
-	public String getEntryKey() {
-		return entryKey;
 	}
 }
