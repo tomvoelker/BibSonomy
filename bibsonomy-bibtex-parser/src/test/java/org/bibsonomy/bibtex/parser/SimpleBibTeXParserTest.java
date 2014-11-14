@@ -246,6 +246,54 @@ public class SimpleBibTeXParserTest {
 	}
 
 	@Test
+	public void testCrossrefExpansion() throws Exception {
+		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+
+		final List<BibTex> parsedBibTeX = parser.parseBibTeXs(
+				"@proceedings{iswc,\n" +
+				"   booktitle = \"ISWC\",\n" +
+				"   editor = \"John Doe\",\n" +
+				"   year = 2222,\n" +
+				" }\n" +
+				"@inproceedings{foo,\n" +
+				"  month = jun,\n" + 
+				"  crossref = iswc,\n" +
+				"  title = \"Cool paper\",\n" +
+				"  author = \"Bit Bucket\"\n" + 
+				"}"
+		);
+		assertEquals(Arrays.asList(new PersonName("John", "Doe")), parsedBibTeX.get(0).getEditor());
+		assertEquals("2222", parsedBibTeX.get(0).getYear());
+		assertEquals(Arrays.asList(new PersonName("Bit", "Bucket")), parsedBibTeX.get(1).getAuthor());
+	}
+
+	@Test
+	public void testCrossrefExpansionMissingCrossref() throws Exception {
+		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+
+		final BibTex parsedBibTeX = parser.parseBibTeX(
+				"@inproceedings{foo,\n" +
+				"  month = jun,\n" + 
+				"  crossref = iswc,\n" +
+				"  title = \"Cool paper\",\n" +
+				"  author = \"Bit Bucket\",\n" + 
+				"}"
+		);
+		assertEquals(Arrays.asList(new PersonName("Bit", "Bucket")), parsedBibTeX.getAuthor());
+	}
+	
+	@Test
+	public void testCrossrefExpansionMissingCrossref2() throws Exception {
+		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+
+		final List<BibTex> parsedBibTeX = parser.parseBibTeXs(getTestFile("test2.bib"));
+		
+		assertEquals("2014", parsedBibTeX.get(0).getYear());
+		assertEquals("1145--1154", parsedBibTeX.get(0).getPages());
+	}	
+
+	
+	@Test
 	public void testFile1() throws Exception {
 		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
 		final BibTex parsedBibTeX = parser.parseBibTeX(getTestFile("test1.bib"));
