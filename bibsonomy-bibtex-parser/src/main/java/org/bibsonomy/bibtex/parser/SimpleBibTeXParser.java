@@ -29,7 +29,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -256,7 +255,15 @@ public class SimpleBibTeXParser {
 		}
 
 		try {
-			new CrossReferenceExpander(true).expand(bibtexFile);
+			/*
+			 * rja, 2014-11-14; disabled immediate throwing of warnings such
+			 * that we can parse BibTeX lists where entries have crossref entries
+			 * which are missing (can happen when users import from DBLP, where
+			 * entries are complete but still refer to the crossref).
+			 */
+			final CrossReferenceExpander crossReferenceExpander = new CrossReferenceExpander(false);
+			crossReferenceExpander.expand(bibtexFile);
+			addWarnings(crossReferenceExpander);
 		} catch (ExpansionException ee) {
 			warnings.add(ee.getMessage());
 		}

@@ -245,6 +245,11 @@ public class SimpleBibTeXParserTest {
 		assertEquals("Journal of the ACM", parsedBibTeX.getJournal());
 	}
 
+	/**
+	 * Test if crossref expansion works
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testCrossrefExpansion() throws Exception {
 		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
@@ -267,6 +272,11 @@ public class SimpleBibTeXParserTest {
 		assertEquals(Arrays.asList(new PersonName("Bit", "Bucket")), parsedBibTeX.get(1).getAuthor());
 	}
 
+	/**
+	 * Test if one entry is parsed even when crossref entry is missing. 
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testCrossrefExpansionMissingCrossref() throws Exception {
 		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
@@ -282,14 +292,27 @@ public class SimpleBibTeXParserTest {
 		assertEquals(Arrays.asList(new PersonName("Bit", "Bucket")), parsedBibTeX.getAuthor());
 	}
 	
+	/**
+	 * Test if several entries are parsed and warnings are added.  
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testCrossrefExpansionMissingCrossref2() throws Exception {
 		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
 
 		final List<BibTex> parsedBibTeX = parser.parseBibTeXs(getTestFile("test2.bib"));
 		
+		assertEquals(2, parsedBibTeX.size());
+		
 		assertEquals("2014", parsedBibTeX.get(0).getYear());
 		assertEquals("1145--1154", parsedBibTeX.get(0).getPages());
+		
+		assertEquals("2014", parsedBibTeX.get(1).getYear());
+		assertEquals("2065--2074", parsedBibTeX.get(1).getPages());
+		
+		// We have two entries, both with missing crossrefs.
+		assertEquals(2, parser.getWarnings().size());
 		
 		assertEquals("Crossref key not found: \"dblp:conf/acl/2014-1\"", parser.getWarnings().get(0));
 	}	

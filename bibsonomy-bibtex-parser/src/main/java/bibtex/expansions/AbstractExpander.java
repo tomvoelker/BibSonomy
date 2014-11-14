@@ -31,11 +31,16 @@
 package bibtex.expansions;
 
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author henkel
  */
 public abstract class AbstractExpander {
+	
+	private final List<ExpansionException> exceptions;
+	private ExpansionException[] exceptionsAsArrays;
+	private final boolean throwAllExpansionExceptions;
 
 	/**
 	 * @param throwAllExpansionExceptions
@@ -47,10 +52,9 @@ public abstract class AbstractExpander {
 
 	protected AbstractExpander(boolean throwAllExpansionExceptions) {
 		this.throwAllExpansionExceptions = throwAllExpansionExceptions;
-		this.exceptions = throwAllExpansionExceptions ? null : new LinkedList();
+		this.exceptions = throwAllExpansionExceptions ? null : new LinkedList<ExpansionException>();
 	}
 
-	private final boolean throwAllExpansionExceptions;
 
 	/*
 	 * (non-Javadoc)
@@ -109,8 +113,5 @@ public abstract class AbstractExpander {
 		}
 	}
 
-	
-	private final LinkedList exceptions;
-	private ExpansionException[] exceptionsAsArrays;
 
 }

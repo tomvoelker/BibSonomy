@@ -35,6 +35,11 @@ package bibtex.parser;
  */
 public final class ParseException extends Exception {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8876608094366528401L;
+
 	ParseException(int line, int column, String encountered, String expected){
 		super(""+line+":"+column+": encountered '"+encountered+"', expected '"+expected+"'.");	
 	}
