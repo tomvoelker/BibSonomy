@@ -290,6 +290,8 @@ public class SimpleBibTeXParserTest {
 		
 		assertEquals("2014", parsedBibTeX.get(0).getYear());
 		assertEquals("1145--1154", parsedBibTeX.get(0).getPages());
+		
+		assertEquals("Crossref key not found: \"dblp:conf/acl/2014-1\"", parser.getWarnings().get(0));
 	}	
 
 	
