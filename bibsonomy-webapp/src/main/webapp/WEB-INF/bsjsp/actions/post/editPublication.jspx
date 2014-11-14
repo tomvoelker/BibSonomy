@@ -41,14 +41,14 @@
 					<hr />
 				</c:if>
 			</c:if>
-			<editpub:required post="${post}" autocompletion="$(false)"/>
+			<editpub:required post="${command.post}" autocompletion="$(false)"/>
 		</jsp:attribute>
 		
 		<jsp:attribute name="detailedInformation">
 		
-			<editpub:files post="${post}" />
+			<editpub:files post="${command.post}" />
 		
-			<editpub:details post="${post}" />
+			<editpub:details post="${command.post}" />
 			
 			<c:if test="${not empty command.scrapingContext}">
 				<bsform:fieldset legendKey="post.resource.fields.scraper" >

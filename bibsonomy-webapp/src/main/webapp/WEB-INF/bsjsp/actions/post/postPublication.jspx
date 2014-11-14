@@ -18,7 +18,8 @@
 	xmlns:batch="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/batch"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
-	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication">
+	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />	
 	<fmt:message key="post_bibtex.heading" var="msgPostPublication"/>
@@ -30,6 +31,8 @@
 		requPath="${requPath}">
 		<jsp:attribute name="content">
 			<h1 class="content-heading"><fmt:message key="navi.postPublication"/></h1>
+		
+			<errors:global />
 		
 			<c:set var="post" value="${command.post}"/>
 			
