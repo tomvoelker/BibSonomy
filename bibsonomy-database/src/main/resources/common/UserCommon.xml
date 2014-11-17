@@ -11,13 +11,13 @@
 	<resultMap id="userForGroupWithRole" extends="userForGroup" class="user">
 		<result property="homepage"   column="user_homepage"  javaType="url"  />
 		<result property="realname"   column="user_realname"  javaType="string" />
-		<result property="groupRole" column="user_status" javaType="org.bibsonomy.common.enums.GroupRole"/>
+		<result property="groupRole" column="group_role" javaType="org.bibsonomy.common.enums.GroupRole"/>
 	</resultMap>
 	
 	<resultMap id="userWithWeight" extends="Common.user" class="user">
 		<result property="prediction" column="weight"         javaType="integer"/>
 	</resultMap>
-
+	
 	<resultMap id="user" class="user" extends="userForGroup">
 		<result property="apiKey"           column="api_key"       javaType="string"  />
 		<result property="birthday"         column="birthday"      javaType="date" />

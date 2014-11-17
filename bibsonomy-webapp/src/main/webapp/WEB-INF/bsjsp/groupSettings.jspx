@@ -39,7 +39,7 @@
 				<jsp:attribute name="crumbs">
 					<nav:account />
 					<nav:crumb nameKey="navi.settings" active="true" />
-					<nav:crumb nameKey="navi.groupsettings" active="true" />
+					<nav:crumb nameKey="navi.group" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
@@ -84,7 +84,7 @@
 													<fmt:message var="revuserTitle" key="settings.group.revUser.button.title"/>
 													TODO: Beautify this!<br />
 													<dl class="dl-horizontal dt-thumbnail-items group-list">
-													<c:forEach items="${group.users}" var="member" varStatus="status">
+													<c:forEach items="${group.users}" var="member">
 														<c:if test="${member.groupRole eq 'INVITED'}">
 															<dt>
 																<user:thumbnail user="${member}" />

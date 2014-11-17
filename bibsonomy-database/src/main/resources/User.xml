@@ -183,7 +183,7 @@
 	
 	<update id="updateUserSharedDocuments" parameterClass="group">
 		UPDATE groups
-		SET userSharedDocuments = #userSharedDocuments#
+		SET user_shared_documents = #userSharedDocuments#
 		WHERE `group` = #groupId#
 		AND user_name = #name#
 	</update>

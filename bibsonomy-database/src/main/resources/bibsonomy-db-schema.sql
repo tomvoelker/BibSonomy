@@ -553,8 +553,8 @@ CREATE TABLE `groups` (
   `group` int(10) default '0',
   `defaultgroup` int(10) default '0',
   `start_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  `user_status` int(10) NOT NULL default '7',
-  `userSharedDocuments` tinyint(1) default '0'
+  `group_role` int(10) NOT NULL default '7',
+  `user_shared_documents` tinyint(1) default '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
@@ -894,7 +894,7 @@ CREATE TABLE `log_groups` (
   `defaultgroup` int(10) default '0',
   `start_date` datetime NOT NULL default '1815-12-10 00:00:00',
   `end_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  `user_status` int(11) default NULL
+  `group_role` int(11) default NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 

@@ -3,7 +3,6 @@ package org.bibsonomy.webapp.controller;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.util.ValidationUtils;
 import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.webapp.command.GroupSettingsPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -31,9 +30,11 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 			
 			command.setLoggedinUser(command.getContext().getLoginUser());
 			
-			for (Group g : command.getLoggedinUser().getGroups())
-				if (g.getName().equals(command.getRequestedGroup()))
-					command.setGroup(g);
+//			for (Group g : command.getLoggedinUser().getGroups())
+//				if (g.getName().equals(command.getRequestedGroup()))
+//					command.setGroup(g);
+			
+			command.setGroup(logic.getGroupDetails(command.getRequestedGroup()));
 			
 			// refresh the requested group
 			if (present(command.getGroup()))

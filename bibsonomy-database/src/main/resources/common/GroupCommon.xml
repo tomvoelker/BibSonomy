@@ -11,9 +11,15 @@
 	</resultMap>
 
 	<resultMap id="groupWithUserSharedDocumentsAndRole" extends="group_basic" class="group">
-		<result property="userSharedDocuments" 	column="userSharedDocuments" javaType="boolean" />
-		<result property="groupRole" 	column="groupRole" javaType="GroupRole" />
+		<result property="userSharedDocuments" 	column="user_shared_documents" javaType="boolean" />
+		<result property="groupRole" 	column="group_role" javaType="GroupRole" />
 		<result property="publicationReportingSettings" resultMap="GroupCommon.publReportingSettings" />
+	</resultMap>
+	
+	<resultMap id="groupMembership" class="groupMembership">
+		<result property="userSharedDocuments" 	column="user_shared_documents" javaType="boolean" />
+		<result property="groupRole" 	column="group_role" javaType="GroupRole" />
+		<result property="user"    resultMap="Common.user" />
 	</resultMap>
 	
 	<resultMap id="publReportingSettings" class="publicationReportingSettings">
@@ -37,7 +43,11 @@
 	
 	<resultMap id="groupWithMembers" class="group" extends="group_basic" groupBy="name">
 		<result property="users"    resultMap="UserCommon.userForGroupWithRole" />
-		<result property="userSharedDocuments" 	column="userSharedDocuments" javaType="boolean"/>
+		<result property="userSharedDocuments" 	column="user_shared_documents" javaType="boolean"/>
+	</resultMap>
+	
+	<resultMap id="groupWithMemberships" class="group" extends="group_basic" groupBy="name" >
+		<result property="memberships" resultMap="GroupCommon.groupMembership" />
 	</resultMap>
 	
 	<resultMap id="tagsets" class="tagset" groupBy="setName">

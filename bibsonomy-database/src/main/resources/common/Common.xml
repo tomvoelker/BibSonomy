@@ -144,7 +144,7 @@
 		- from userName, if in the group
 	-->
 	<sql id="selectContentIDs">
-		((SELECT t1.content_id, t1.date, IF(t1.user_name = #userName#, TRUE, g.userSharedDocuments) AS userSharedDocuments         <!-- currUser's own items + items from users of group which currUser may see -->
+		((SELECT t1.content_id, t1.date, IF(t1.user_name = #userName#, TRUE, g.user_shared_documents) AS user_shared_documents         <!-- currUser's own items + items from users of group which currUser may see -->
 		  FROM groups g, <include refid="tagFromQuery"/>
 		  WHERE <include refid="tagWhereQuery"/>
 		        AND g.group = #groupId#
@@ -155,7 +155,7 @@
 		        ) 
 		        AND t1.content_type = #contentType#
 		 ) UNION (
-		  SELECT t1.content_id, t1.date, g.userSharedDocuments      <!-- items from users of group which have currUser as friend -->
+		  SELECT t1.content_id, t1.date, g.user_shared_documents      <!-- items from users of group which have currUser as friend -->
 		  FROM groups g, friends f, <include refid="tagFromQuery"/>
 		  WHERE <include refid="tagWhereQuery"/>
 		        AND g.group = #groupId#
@@ -184,7 +184,7 @@
 		        AND (
 		         t1.user_name = #userName#                <!-- currUser's own items -->
 		         OR (<include refid="inGroupsUnchecked"/>  <!-- items of other users wich currUser may see -->
-		        	AND g.userSharedDocuments = TRUE
+		        	AND g.user_shared_documents = TRUE
 		        	)
 		        ) 
 		        AND d.content_id = t1.content_id		  <!-- join documents -->
@@ -199,7 +199,7 @@
 		        AND t1.group = #groupTypeFriends#   <!-- item is only for friends -->
 		        AND d.content_id = t1.content_id	<!-- join documents -->
 		        AND t1.content_type = #contentType#
-		        AND g.userSharedDocuments = TRUE 	<!-- only if user allows sharing -->
+		        AND g.user_shared_documents = TRUE 	<!-- only if user allows sharing -->
 		 )
 		ORDER BY date DESC
 		LIMIT #limit# OFFSET #offset#) AS bb

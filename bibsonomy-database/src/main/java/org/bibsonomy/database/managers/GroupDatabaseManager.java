@@ -125,7 +125,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			return GroupUtils.getFriendsGroup();
 		}
 
-		return this.queryForObject("getGroupByName", normedGroupName, Group.class, session);
+		return this.queryForObject("getGroupMemberships", normedGroupName, Group.class, session);
 	}
 
 	/**
@@ -214,6 +214,12 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		}
 
 		return group;
+	}
+	
+	public Group getGroupsWithpMemberships(final String groupName, final DBSession session) {
+		Group g = this.queryForObject("getGroupMemberships", Group.class, session);
+		
+		return g;
 	}
 
 	/**

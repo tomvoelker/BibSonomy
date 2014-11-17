@@ -18,6 +18,7 @@
 	<typeAlias alias="user"               type="org.bibsonomy.model.User" />
 	<typeAlias alias="userSettings"       type="org.bibsonomy.model.UserSettings" />
 	<typeAlias alias="group"              type="org.bibsonomy.model.Group" />
+	<typeAlias alias="groupMembership"    type="org.bibsonomy.model.GroupMembership" />
 	<typeAlias alias="publicationReportingSettings" type="org.bibsonomy.model.GroupPublicationReportingSettings" />
 	<typeAlias alias="groupRequest"       type="org.bibsonomy.model.GroupRequest" />
 	<typeAlias alias="tagset"             type="org.bibsonomy.model.TagSet" />

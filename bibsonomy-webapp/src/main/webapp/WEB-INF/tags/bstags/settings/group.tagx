@@ -8,6 +8,7 @@
 		  xmlns:form="http://www.springframework.org/tags/form"
 		  xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
 		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+		  xmlns:users="urn:jsptagdir:/WEB-INF/tags/bstags/users"
 		  xmlns:spring="http://www.springframework.org/tags"
 		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
@@ -50,7 +51,15 @@
 					<jsp:attribute name="content">
 						<fmt:message var="revuser" key="settings.group.remInvite.button"/>
 						<fmt:message var="revuserTitle" key="settings.group.remInvite.button.title"/>
-						<c:forEach items="${command.user.groups}" var="group" varStatus="status">
+						<users:smallList userlist="${command.user.groups}">
+							<jsp:attribute name="userinfo">
+								<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"><c:out value='${group.name}'/></a>
+							</jsp:attribute>
+							<jsp:attribute name="action">
+								<a class="btn btn-small" href="/updateGroup?operation=remove_invited&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}" title="${revuserTitle}">${revuser}</a>
+							</jsp:attribute>
+						</users:smallList>
+						<c:forEach items="${command.user.groups}" var="group">
 							<c:if test="${group.groupRole eq 'INVITED' }">
 								<div style="float: left; width: 130px; padding-bottom: 10px;">
 									<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"><c:out value='${group.name}'/></a><br />

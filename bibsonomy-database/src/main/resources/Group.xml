@@ -35,7 +35,17 @@
 	</select>
 
 	<select id="getGroupMembers" resultMap="GroupCommon.groupWithMembers" parameterClass="string">
-		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, u.user_name, g.user_status, g.userSharedDocuments
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, u.user_name, g.group_role, g.user_shared_documents
+		FROM groupids i 
+		  JOIN groups g USING (`group`) 
+		  JOIN user u ON (u.user_name = g.user_name) 
+		WHERE group_name = #groupname#
+		  AND i.group > 2
+		  <!-- AND g.user_name != #requestedGroupName# -->
+	</select>
+
+	<select id="getGroupMemberships" resultMap="GroupCommon.groupWithMemberships" parameterClass="string">
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, u.user_name, g.group_role, g.user_shared_documents
 		FROM groupids i 
 		  JOIN groups g USING (`group`) 
 		  JOIN user u ON (u.user_name = g.user_name) 
@@ -49,20 +59,20 @@
 	</select>
 
 	<select id="getGroupsForUser" resultMap="GroupCommon.groupWithUserSharedDocumentsAndRole" parameterClass="string">
-		(SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, g.userSharedDocuments, g.user_status AS groupRole
+		(SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, g.user_shared_documents, g.group_role
 		 FROM groups g
 		   JOIN groupids i USING (`group`)
 		 WHERE g.user_name = #username#
 		)
 		UNION
-		(SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, NULL AS publ_reporting_mail, NULL AS publ_reporting_mail_template, NULL AS publ_reporting_external_url, FALSE AS userSharedDocuments, 7 AS groupRole
+		(SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, NULL AS publ_reporting_mail, NULL AS publ_reporting_mail_template, NULL AS publ_reporting_external_url, FALSE AS user_shared_documents, 7 AS group_role
 		 FROM groupids i
 		 WHERE i.group BETWEEN 0 AND 2)
 		ORDER BY `group`
 	</select>
 
 	<select id="getGroupsForContentId" resultMap="GroupCommon.group_basic" parameterClass="int">
-		SELECT DISTINCT i.group, i.group_name, i.privlevel, i.sharedDocuments, FALSE as userSharedDocuments 
+		SELECT DISTINCT i.group, i.group_name, i.privlevel, i.sharedDocuments, FALSE as user_shared_documents 
 		  FROM groupids i JOIN grouptas t USING (`group`) 
 		  WHERE t.content_id = #contentId# 
 	</select>	
@@ -129,7 +139,7 @@
 	</delete>
 
 	<insert id="addUserToGroup" parameterClass="group">
-		INSERT INTO groups (user_name, `group`, defaultgroup, `user_status`) VALUES (#name#, #groupId#, #groupId#, #groupRole.role#)
+		INSERT INTO groups (user_name, `group`, defaultgroup, `group_role`) VALUES (#name#, #groupId#, #groupId#, #groupRole.role#)
 	</insert>
 
 	<delete id="removeUserFromGroup" parameterClass="group">
@@ -162,15 +172,15 @@
 
 	<update id="updateGroupRole" parameterClass="group">
 		UPDATE groups 
-		SET user_status=#groupRole#
+		SET group_role=#groupRole.role#
 		WHERE `group` = #groupId# AND `user_name` = #name#
 	</update>
 	
 	<select id="countPerRole" resultClass="Integer" parameterClass="group">
-		SELECT COUNT(*) FROM groups WHERE groups.user_status = #groupRole.role# AND groups.group = #groupId#;
+		SELECT COUNT(*) FROM groups WHERE groups.group_role = #groupRole.role# AND groups.group = #groupId#;
 	</select>
 	
 	<select id="getGroupRoleForUser" resultClass="GroupRole" parameterClass="group">
-		SELECT user_status FROM groups WHERE groups.user_name = #name# AND groups.group = #groupId#;
+		SELECT group_role FROM groups WHERE groups.user_name = #name# AND groups.group = #groupId#;
 	</select>
 </sqlMap>

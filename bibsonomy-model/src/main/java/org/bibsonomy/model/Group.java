@@ -117,6 +117,8 @@ public class Group implements Serializable{
 	/** stores information regarding the group request */
 	private GroupRequest groupRequest;
 	
+	private List<GroupMembership> memberships;
+	
 	/**
 	 * constructor
 	 */
@@ -216,6 +218,7 @@ public class Group implements Serializable{
 	/**
 	 * @return users
 	 */
+	@Deprecated
 	public List<User> getUsers() {
 		if (this.users == null) {
 			this.users = new LinkedList<User>();
@@ -226,6 +229,7 @@ public class Group implements Serializable{
 	/**
 	 * @param users
 	 */
+	@Deprecated
 	public void setUsers(List<User> users) {
 		this.users = users;
 	}
@@ -447,5 +451,15 @@ public class Group implements Serializable{
 	 */
 	public void setGroupRole(GroupRole groupRole) {
 		this.groupRole = groupRole;
+	}
+
+	public List<GroupMembership> getMemberships() {
+		if (this.memberships == null)
+			return new LinkedList<>();
+		return memberships;
+	}
+
+	public void setMemberships(List<GroupMembership> memberships) {
+		this.memberships = memberships;
 	}
 }
