@@ -13,11 +13,10 @@ import java.security.spec.X509EncodedKeySpec;
 
 import net.oauth.signature.pem.PEMReader;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret.KeyType;
 import org.bibsonomy.opensocial.oauth.database.OAuthLogic;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.opensocial.OAuthAdminCommand;
 import org.bibsonomy.webapp.command.opensocial.OAuthAdminCommand.AdminAction;
 import org.bibsonomy.webapp.util.Validator;
@@ -28,7 +27,7 @@ import org.springframework.validation.ValidationUtils;
  * @author fei
  */
 public class BibSonomyOAuthValidator implements  Validator<OAuthAdminCommand>{
-	private static final Log log = LogFactory.getLog(BibSonomyOAuthValidator.class);
+	
 	private final OAuthLogic logic;
 	
 	/**
@@ -83,7 +82,7 @@ public class BibSonomyOAuthValidator implements  Validator<OAuthAdminCommand>{
 	// private helpers
 	//------------------------------------------------------------------------
 	private PublicKey getPublicKeyFromPem(String pem) throws GeneralSecurityException, IOException {
-		InputStream stream = new ByteArrayInputStream(pem.getBytes("UTF-8"));
+		InputStream stream = new ByteArrayInputStream(pem.getBytes(StringUtils.CHARSET_UTF_8));
 
 		PEMReader reader = new PEMReader(stream);
 		byte[] bytes = reader.getDerBytes(); 	

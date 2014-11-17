@@ -23,7 +23,6 @@
 		<property name="urlGenerators">
 			<map>
 				<entry key="default" value-ref="absoluteUrlGenerator"/>
-				<entry key="relative" value-ref="relativeUrlGenerator"/>
 				<entry key="vufind" value-ref="vuFindUrlGenerator"/>
 			</map>
 		</property>

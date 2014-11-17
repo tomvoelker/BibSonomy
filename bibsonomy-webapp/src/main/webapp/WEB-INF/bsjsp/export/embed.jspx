@@ -46,6 +46,9 @@
 			<c:set var="publicationsWidthClass" value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}"/>
 
 			<body style="min-width:0px;">
+			
+			<div class="row">
+				<div class="col-md-6">
 				<c:if test="${not empty command.bookmark.list}">
 					<resources:bookmarks listView="${command.bookmark}" 
 									loginUserName="${command.context.loginUser.name}" 
@@ -54,11 +57,12 @@
 									widthClassName="${bookmarksWidthClass}"
 									showBookmark="${showBookmark}"
 									showPublication="${showPublication}"
-									isBasket="false"
+									isClipboard="false"
 									showPageOptions="false"
 					/>
 				</c:if>
-			
+				</div>
+				<div class="col-md-6">
 				<c:if test="${not empty command.bibtex.list}">
 					<resources:bibtexs listView="${command.bibtex}" 
 									loginUserName="${command.context.loginUser.name}" 
@@ -67,11 +71,12 @@
 									widthClassName="${publicationsWidthClass}"
 									showBookmark="${showBookmark}"
 									showPublication="${showPublication}"
-									isBasket="false"
+									isClipboard="false"
 									showPageOptions="false"
 					/>
 				</c:if>
-			
+				</div>
+			</div>
 				<!--+
 					| This adds the ?format=embed parameter to all URLs that start with a slash "/"
 					| and do not contain parameters. 

@@ -36,19 +36,59 @@
 <!-- 				$(function(){updatePosts("/", 60);}); -->
 <!-- 			</script> -->
 		</jsp:attribute>
-
+	
 		<!-- show info text if user not logged in -->
 		<jsp:attribute name="beforeMainContainer">
-			<c:if test="${not command.context.userLoggedIn and (empty errors or errors.errorCount == 0)}">
-				<c:choose>
-					<c:when test="${properties['project.theme'] eq 'puma'}">
-						<home:pumahome command="${command}" />
-					</c:when>
-					<c:otherwise>
-						<home:bibhome command="${command}" />
-					</c:otherwise>
-				</c:choose>
-			</c:if>
+			<c:choose>
+				<c:when test="${not command.context.userLoggedIn and (empty errors or errors.errorCount == 0)}">
+					<c:choose>
+						<c:when test="${properties['project.theme'] eq 'puma'}">
+							<home:pumahome command="${command}" />
+						</c:when>
+						<c:otherwise>
+							<home:bibhome command="${command}" />
+						</c:otherwise>
+					</c:choose>
+				</c:when>
+				<c:when test="${command.context.userLoggedIn and properties['project.theme'] ne 'puma'}">
+					<div id="overlayInfobox">
+						<!-- FIXME: add theme! ??-->
+						<div class="close"><a onclick="$('#overlayInfobox').hide();"><fmt:message key="box.close"/></a></div>
+						<div class="content">
+							<!-- logo -->
+<!-- 							<img src="/resources/image/logo.png" alt="${fn:escapeXml(properties['project.name'])}"  
+	style="float:left; margin: 10px;" width="98" height="120"/> -->
+							
+							<!-- project name -->
+							<div style="color: #006699; font-size: 36px; line-height: 48px;">
+								<fmt:message key="system.bib3.switch">
+									<fmt:param>${properties['project.name']} 3</fmt:param>
+								</fmt:message>
+							</div>
+							
+							<!-- introduction -->
+							<div class="systemAbout">
+								<fmt:message key="system.bib3.about">
+									<fmt:param value="${properties['project.name']}"/>
+								</fmt:message>
+							</div>
+							
+							<!-- switch -->
+							<div class="systemRegister">
+								<h2>
+									<a href="/bibsonomy3">
+										<fmt:message key="system.bib3.switch.now">
+											<fmt:param>${properties['project.name']} 3</fmt:param>
+										</fmt:message>
+									</a>
+								</h2>
+							</div>
+							
+							<div class="systemInfoClear"> <!-- do not remove --></div>
+						</div>
+					</div>
+				</c:when>
+			</c:choose>
 		</jsp:attribute>
 
 		<jsp:attribute name="newsbar">

@@ -28,6 +28,7 @@ import java.io.UnsupportedEncodingException;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.bibsonomy.rest.auth.AuthenticationAccessor;
+import org.bibsonomy.rest.client.util.RestClientUtils;
 import org.bibsonomy.rest.client.worker.HttpWorker;
 
 /**
@@ -54,7 +55,7 @@ public final class PutWorker extends HttpWorker<PutMethod> {
 		put.setFollowRedirects(false);
 
 		try {
-			put.setRequestEntity(new StringRequestEntity(requestBody, CONTENT_TYPE, "UTF-8"));
+			put.setRequestEntity(new StringRequestEntity(requestBody, CONTENT_TYPE, RestClientUtils.CONTENT_CHARSET));
 		} catch (final UnsupportedEncodingException ex) {
 			LOGGER.fatal("Could not encode request entity to UTF-8", ex);
 			throw new RuntimeException(ex);

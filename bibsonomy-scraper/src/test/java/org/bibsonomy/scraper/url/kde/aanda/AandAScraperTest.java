@@ -23,6 +23,13 @@
 
 package org.bibsonomy.scraper.url.kde.aanda;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.net.URL;
+
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -47,5 +54,25 @@ public class AandAScraperTest {
 	@Test
 	public void url2TestRun(){
 		UnitTestRunner.runSingleTest("url_182");
+	}
+	@Test
+	public void testReferences() throws Exception{
+		final ScrapingContext sc = new ScrapingContext(new URL("http://www.aanda.org/index.php?option=article&amp;access=doi&amp;doi=10.1051/0004-6361/201014294"));
+		
+		AandAScraper aas = new AandAScraper();
+		
+		assertTrue(aas.scrape(sc));
+		
+		assertTrue(aas.scrapeReferences(sc));
+		
+		final String reference = sc.getReferences();
+		
+		assertNotNull(reference);
+		
+		assertTrue(reference.length() > 100);
+		
+		assertEquals("<li>\n\t\t\t<a name=\"BH98\"></a>Balbus, S. A., &amp; Hawley, J. F. 1998, Rev. Mod.".trim(), reference.substring(0, 85).trim());
+		
+		assertTrue(reference.contains("Balbus, S. A."));
 	}
 }

@@ -21,6 +21,7 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.entity.UserRealnameResolver;
 import org.bibsonomy.model.User;
 import org.bibsonomy.services.URLGenerator;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.webapp.command.actions.FacebookAccessCommand;
@@ -217,7 +218,7 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 			
 			// the raw response string
 			
-			responseString = WebUtils.inputStreamToStringBuilder(method.getResponseBodyAsStream(), "UTF-8").toString();
+			responseString = WebUtils.inputStreamToStringBuilder(method.getResponseBodyAsStream(), StringUtils.CHARSET_UTF_8).toString();
 			
 			if (present(responseString) && responseString.startsWith(OAUTH_ACCESS_TOKEN)) {
 				// accessToken = responseString.split("=", 2)[1];

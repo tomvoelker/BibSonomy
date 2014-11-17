@@ -32,6 +32,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.util.StringUtils;
 
 /**
  * Holds and manages the available standard layouts.
@@ -73,7 +74,7 @@ public class StandardLayouts {
 		/*
 		 * load layout definition from XML file
 		 */
-		final List<StandardLayout> standardLayouts = new XMLLayoutReader(new BufferedReader(new InputStreamReader(LayoutUtils.getResourceAsStream(defaultLayoutFilePath + "/" + "StandardLayouts.xml"), "UTF-8"))).getLayoutsDefinitions();
+		final List<StandardLayout> standardLayouts = new XMLLayoutReader(new BufferedReader(new InputStreamReader(LayoutUtils.getResourceAsStream(defaultLayoutFilePath + "/" + "StandardLayouts.xml"), StringUtils.CHARSET_UTF_8))).getLayoutsDefinitions();
 		log.info("found " + standardLayouts.size() + " layout definitions");
 		/*
 		 * iterate over all layout definitions

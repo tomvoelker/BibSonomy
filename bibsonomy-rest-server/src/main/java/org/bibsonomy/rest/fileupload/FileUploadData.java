@@ -7,6 +7,7 @@ import java.io.Reader;
 import java.nio.charset.Charset;
 
 import org.bibsonomy.model.util.data.Data;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.ValidationUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,6 +42,6 @@ public class FileUploadData implements Data {
 
 	@Override
 	public Reader getReader() {
-		return new InputStreamReader(getInputStream(), Charset.forName("UTF-8"));
+		return new InputStreamReader(getInputStream(), Charset.forName(StringUtils.CHARSET_UTF_8));
 	}
 }

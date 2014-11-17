@@ -1,0 +1,16 @@
+<jsp:root version="2.0"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+	
+	<div id="logo">
+		<fmt:message var="homelink" key="navi.home"/>
+		<h1>
+			<a href="${relativeUrlGenerator.getProjectHome()}" title="${homelink}">
+				<!-- <img src="/resources/image/logo4.png" alt="${properties['project.name']} Logo" /> --> 
+				<c:out value="${properties['project.name']}"/>
+			</a>
+		</h1>
+		<p style="color:#006699;"><small>The blue social bookmark and publication sharing system.</small></p>
+	</div>
+</jsp:root>

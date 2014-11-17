@@ -9,33 +9,37 @@
 	<c:if test="${command.context.userLoggedIn}">
 		<c:set var="goldstandard" value="${post.resource}" />
 	
-		<li>
-			<fmt:message key="post.actions.copy.title" var="copyTitle"/>
-			<a href="/editPublication?hash=${goldstandard.interHash}&amp;user=&amp;" title="${fn:escapeXml(copyTitle)}">
-				<fmt:message key="post.actions.copy"/>
-			</a>
-		</li>
+		<div class="btn-group btn-group-sm">
 		
-		<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
-			<li>
-				<fmt:message key="post.actions.edit.gold.title" var="editTitle"/>
-				<a href="/editGoldStandardPublication?intraHashToUpdate=${goldstandard.interHash}" title="${fn:escapeXml(editTitle)}">
-					<fmt:message key="post.actions.edit"/>
-				</a>
-			</li>
-			<!-- FIXME: implement -->
-			<!--<li>
-				<fmt:message key="post.actions.delete.gold.title" var="deleteTitle"/>
-				<c:url var="deleteUrl" value="/deletePost">
-		           <c:param name="resourceHash" value="${goldstandard.interHash}" />
-		           <c:param name="ckey" value="${ckey}" />
-		        </c:url>
-		                
-				 SHOW A CONFIRM WINDOW 
-              	 <a class="confirmdelete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" data-type="communitypost">
-	               		<fmt:message key="post.actions.delete"/>
-                 </a>
-		      </li>-->
-		</c:if>
+			<fmt:message key="post.actions.copy.title" var="copyTitle"/>
+			<a class="btn btn-default" href="/editPublication?hash=${goldstandard.interHash}&amp;user=&amp;" title="${fn:escapeXml(copyTitle)}">
+				<span class="fa fa-copy"><!--  --></span>
+				<span class="sr-only"><fmt:message key="post.actions.copy"/></span>
+			</a>
+		
+		
+			<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
+				
+					<fmt:message key="post.actions.edit.gold.title" var="editTitle"/>
+					<a class="btn btn-default" href="/editGoldStandardPublication?intraHashToUpdate=${goldstandard.interHash}" title="${fn:escapeXml(editTitle)}">
+						<span class="fa fa-pencil"><!--  --></span>
+						<span class="sr-only"><fmt:message key="post.actions.edit"/></span>
+					</a>
+				
+				<!-- FIXME: implement -->
+				<!--<li>
+					<fmt:message key="post.actions.delete.gold.title" var="deleteTitle"/>
+					<c:url var="deleteUrl" value="/deletePost">
+			           <c:param name="resourceHash" value="${goldstandard.interHash}" />
+			           <c:param name="ckey" value="${ckey}" />
+			        </c:url>
+			                
+					 SHOW A CONFIRM WINDOW 
+	              	 <a class="confirmdelete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" data-type="communitypost">
+		               		<fmt:message key="post.actions.delete"/>
+	                 </a>
+			      </li>-->
+			</c:if>
+		</div>
 	</c:if>
 </jsp:root>

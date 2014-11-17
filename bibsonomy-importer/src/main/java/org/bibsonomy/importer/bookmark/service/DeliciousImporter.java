@@ -31,7 +31,6 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.ParseException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
@@ -51,6 +50,7 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.services.importer.RelationImporter;
 import org.bibsonomy.services.importer.RemoteServiceBookmarkImporter;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.io.xml.FilterInvalidXMLCharsReader;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -77,7 +77,7 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 
 	private static final Log log = LogFactory.getLog(DeliciousImporter.class);
 	
-	private static final String DELICIOUS_DEFAULT_ENCODING = "UTF-8";
+	private static final String DELICIOUS_DEFAULT_ENCODING = StringUtils.CHARSET_UTF_8;
 	private static final String HEADER_USER_AGENT = "User-Agent";
 	private static final String HEADER_AUTHORIZATION = "Authorization";
 	private static final String HEADER_AUTH_BASIC = "Basic ";

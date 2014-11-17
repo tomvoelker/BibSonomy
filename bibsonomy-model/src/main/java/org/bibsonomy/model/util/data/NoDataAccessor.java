@@ -33,15 +33,18 @@ public class NoDataAccessor implements DataAccessor {
 	private static final NoDataAccessor instance = new NoDataAccessor();
 	
 	/**
-	 * @return a singleton instance
+	 * @return the singleton instance
 	 */
 	public static NoDataAccessor getInstance() {
 		return instance;
+	}
+	
+	private NoDataAccessor() {
+		// noop, singleton pattern
 	}
 	
 	@Override
 	public Data getData(String multipartName) {
 		return null;
 	}
-
 }

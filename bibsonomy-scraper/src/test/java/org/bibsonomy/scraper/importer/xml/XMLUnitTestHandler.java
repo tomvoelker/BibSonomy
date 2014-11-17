@@ -32,6 +32,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.scraper.ScraperTestData;
+import org.bibsonomy.util.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -145,7 +146,7 @@ public class XMLUnitTestHandler extends DefaultHandler {
 	 * @throws IOException
 	 */
 	private String getExpectedReference(String bibFile) throws IOException{
-		final InputStreamReader is = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(PATH_TO_BIBS + bibFile), "UTF-8");
+		final InputStreamReader is = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(PATH_TO_BIBS + bibFile), StringUtils.CHARSET_UTF_8);
 		final StringWriter writer = new StringWriter();
 		
 		int read = is.read();

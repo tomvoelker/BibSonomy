@@ -47,6 +47,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.renderer.LayoutRenderer;
+import org.bibsonomy.util.StringUtils;
 
 /**
  * This renderer handles jabref layouts. 
@@ -103,7 +104,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<AbstractJabRefLayout
 		/*
 		 * load layout definition from XML file
 		 */
-		final List<AbstractJabRefLayout> jabrefLayouts = new XMLJabrefLayoutReader(new BufferedReader(new InputStreamReader(JabrefLayoutUtils.getResourceAsStream(this.config.getDefaultLayoutFilePath() + "/" + "JabrefLayouts.xml"), "UTF-8"))).getJabrefLayoutsDefinitions();
+		final List<AbstractJabRefLayout> jabrefLayouts = new XMLJabrefLayoutReader(new BufferedReader(new InputStreamReader(JabrefLayoutUtils.getResourceAsStream(this.config.getDefaultLayoutFilePath() + "/" + "JabrefLayouts.xml"), StringUtils.CHARSET_UTF_8))).getJabrefLayoutsDefinitions();
 		log.info("found " + jabrefLayouts.size() + " layout definitions");
 		/*
 		 * iterate over all layout definitions
@@ -162,11 +163,11 @@ public class JabrefLayoutRenderer implements LayoutRenderer<AbstractJabRefLayout
 		 * new code: duplicate removal in controller, no sorting by year - must be enforced 
 		 * by another parameter
 		 */
-		final BibtexDatabase database = JabRefModelConverter.bibtex2JabrefDB(posts,urlGenerator,false);
+		final BibtexDatabase database = JabRefModelConverter.bibtex2JabrefDB(posts, urlGenerator, false);
 		/*
 		 * render the database
 		 */
-		return layout.render(database, JabRefModelConverter.convertPosts(posts, urlGenerator,false), embeddedLayout);
+		return layout.render(database, JabRefModelConverter.convertPosts(posts, urlGenerator, false), embeddedLayout);
 	}
 
 	/**

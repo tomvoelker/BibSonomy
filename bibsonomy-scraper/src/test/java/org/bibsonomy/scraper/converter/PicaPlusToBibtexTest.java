@@ -30,6 +30,7 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 
 import org.bibsonomy.scraper.converter.picatobibtex.PicaRecord;
+import org.bibsonomy.util.StringUtils;
 import org.junit.Test;
 
 /**
@@ -44,7 +45,7 @@ public class PicaPlusToBibtexTest {
 	@Test
 	public void readPicaPlus() throws Exception {
 		final PicaPlusReader reader = new PicaPlusReader();
-		final BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("dwl20100116-01p.txt"), "UTF-8"));
+		final BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("dwl20100116-01p.txt"), StringUtils.CHARSET_UTF_8));
 		final Collection<PicaRecord> picas = reader.parseRawPicaPlus(br);
 		br.close();
 		assertEquals(133, picas.size());

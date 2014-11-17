@@ -23,6 +23,13 @@
 
 package org.bibsonomy.scraper.url.kde.plos;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.net.URL;
+
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -128,6 +135,19 @@ public class PlosScraperTest {
 	@Test
 	public void urlTest11Run(){
 		UnitTestRunner.runSingleTest("url_206");
+	}
+	@Test
+	public void testReferences() throws Exception{
+		final ScrapingContext sc = new ScrapingContext(new URL("http://www.plosntds.org/article/info%3Adoi%2F10.1371%2Fjournal.pntd.0001305"));
+		PlosScraper ps = new PlosScraper();
+		assertTrue(ps.scrape(sc));
+		assertTrue(ps.scrapeReferences(sc));
+	
+		final String reference = sc.getReferences();		
+		assertNotNull(reference);
+		assertTrue(reference.length() > 100);
+		assertEquals("<li><span class=\"label\">1.".trim(), reference.substring(0, 30).trim());
+		assertTrue(reference.contains("Portaels F"));
 	}
 
 }
