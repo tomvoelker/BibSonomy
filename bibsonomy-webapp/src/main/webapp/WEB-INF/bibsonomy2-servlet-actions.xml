@@ -461,6 +461,9 @@
 								<value>hash</value>
 								<value>user</value>
 								<value>compareVersion</value>
+								<value>differentEntryKeys</value>
+								<value>differentEntryValues</value>
+								<value>historyPost</value>
 								
 								<!-- used for fileHandling -->
 								<value>fileName</value>

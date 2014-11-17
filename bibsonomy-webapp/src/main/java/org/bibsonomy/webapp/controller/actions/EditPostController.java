@@ -106,13 +106,12 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		command.getPost().setResource(this.instantiateResource());
 
 		// initalize comparePost & resource for diff
-		 command.setHistoryPost(new Post<RESOURCE>());
-		 command.getHistoryPost().setResource(this.instantiateResource());
 		 
 		 command.setNewestPost(new Post<RESOURCE>());
 		 command.getNewestPost().setResource(this.instantiateResource());
 		 
-		 command.setDifferentEntryArray(new ArrayList<String>());
+		 command.setDifferentEntryKeys(new ArrayList<String>());
+	//	 command.setDifferentEntryValues(new ArrayList<Object>());
 		 
 		 
 		/*
@@ -219,28 +218,31 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		/*
 		 * compareVersion-1 to change index begin from 1 to 0
 		 */
-		// final int compareVersion = (command.getCompareVersion()-1);
-		//
-		// if (present(compareVersion) && (compareVersion!=-1) &&
-		// present(intraHashToUpdate)) {
-		// log.debug("intra hash to diff found -> handling diff of existing post");
-		// final List<?> dbPosts = logic.getPosts(post.getResource().getClass(),
-		// GroupingEntity.ALL, user, null, intraHashToUpdate, null,
-		// FilterEntity.POSTS_HISTORY_BIBTEX, null, null, null, compareVersion,
-		// compareVersion+1);
+		
+		//final int compareVersion = 0;//(command.getCompareVersion()-1);
+		//results: intrahash to update: 652fd80d60a15b8e38da88ed8892ad69, 652fd80d60a15b8e38da88ed8892ad69
+		 // compare version = 2,1 ---> empty list
+		 /*if (present(compareVersion) && (compareVersion!=-1) &&
+		 present(intraHashToUpdate)) {
+		 log.debug("intra hash to diff found -> handling diff of existing post");
+		 final List<?> dbPosts = logic.getPosts(post.getResource().getClass(),
+		 GroupingEntity.ALL, user, null, intraHashToUpdate, null,
+		 FilterEntity.POSTS_HISTORY, null, null, null, compareVersion,
+		 compareVersion+1);*/
 		// command.setPostDiff((Post<RESOURCE>) dbPosts.get(0));
-		// command.setPost(getPostDetails(intraHashToUpdate, user));
-		// return Views.DIFFPUBLICATIONPAGE;
-		// }
+		// command.setPost((Post<RESOURCE>) dbPosts.get(0));
+		 //command.setPost(getPostDetails(intraHashToUpdate, user));
+		 //return Views.DIFFPUBLICATIONPAGE;
+		 //}
 
 		if (present(intraHashToUpdate)) {
 			
 			/*
 			 * compareVersion-1 to change index begin from 1 to 0
 			 */
-			 final int compareVersion = (command.getCompareVersion()-1);
+		//	 final int compareVersion = (command.getCompareVersion()-1);
 			
-			 if (present(compareVersion) && (compareVersion!=-1)) {
+			// if (present(compareVersion) && (compareVersion!=-1)) {
 
 		//		 log.debug("intra hash to compare post found -> handling diff of existing post");
 			//	 final List<?> dbPosts = logic.getPosts(post.getResource().getClass(),
@@ -250,18 +252,124 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 //				 command.setComparePost((Post<RESOURCE>) dbPosts.get(0));
 				 // TODO: check dbPosts.get(1)
 	//			 command.setPost((Post<RESOURCE>) dbPosts.get(1)/*getPostDetails(intraHashToUpdate, user)*/);
-				 this.handleUpdatePost(command, context, loginUser, post, intraHashToUpdate);
-				 return Views.DIFFPUBLICATIONPAGE;
-			 } else {
+				// this.handleUpdatePost(command, context, loginUser, post, intraHashToUpdate);
+				 //return Views.DIFFPUBLICATIONPAGE;
+			 //} else {
+			if(present(command.getDifferentEntryValues())){
+				List <String> diffEntryValList = new ArrayList<String>();//
+				Collections.addAll(diffEntryValList, command.getDifferentEntryValues().split("//,"));
+				List <String> diffEntryKeyList = command.getDifferentEntryKeys();
+				final BibTex bibResource = (BibTex) post.getResource();
+				for(int i =0;i<diffEntryKeyList.size();i++){
+					replaceResourceEntries(bibResource,diffEntryKeyList.get(i), diffEntryValList.get(i));
+				}
+			//	bibResource.set.... switch case
+				post.setResource((RESOURCE) bibResource);
+			}
+			
 			log.debug("intra hash to update found -> handling update of existing post");
 			return this.handleUpdatePost(command, context, loginUser, post, intraHashToUpdate);
-			}
+		//	}
 		}
 
 		log.debug("no intra hash given -> new post");
 		return this.handleCreatePost(command, context, loginUser, post);
 	}
-
+	protected void replaceResourceEntries(BibTex bibResource, String key, String value){
+		switch(key){
+			case "entrytype":
+				bibResource.setEntrytype(value);
+				break;
+			case "title":
+				bibResource.setTitle(value);
+				break;
+			case "author":
+			//	List <String> authors = new ArrayList<String>();//
+				//Collections.addAll(authors, value.split(","));
+				//bibResource.setAuthor(authors);
+				break;
+			case "editor":
+				break;
+			case "year":
+				bibResource.setYear(value);
+				break;
+			case "booktitle":
+				bibResource.setBooktitle(value);
+				break;
+			case "journal":
+				bibResource.setJournal(value);
+				break;
+			case "volume":
+				bibResource.setVolume(value);
+				break;
+			case "number":
+				bibResource.setNumber(value);
+				break;
+			case "pages":
+				bibResource.setPages(value);
+				break;
+			case "month":
+				bibResource.setMonth(value);
+				break;
+			case "day":
+				bibResource.setDay(value);
+				break;
+			case "publisher":
+				bibResource.setPublisher(value);
+				break;
+			case "address":
+				bibResource.setAddress(value);
+				break;
+			case "edition":
+				bibResource.setEdition(value);
+				break;
+			case "chapter":
+				bibResource.setChapter(value);
+				break;
+			case "url":
+				bibResource.setUrl(value);
+				break;
+			case "key":
+				bibResource.setKey(value);
+				break;
+			case "howpublished":
+				bibResource.setHowpublished(value);
+				break;
+			case "institution":
+				bibResource.setInstitution(value);
+				break;
+			case "organization":
+				bibResource.setOrganization(value);
+				break;
+			case "school":
+				bibResource.setSchool(value);
+				break;
+			case "series":
+				bibResource.setSeries(value);
+				break;
+			case "crossref":
+				bibResource.setCrossref(value);
+				break;
+			case "misc":
+				bibResource.setMisc(value);
+				break;
+			case "bibtexAbstract":
+				bibResource.setAbstract(value);
+				break;
+			case "privnote":
+				bibResource.setPrivnote(value);
+				break;
+			case "annote":
+				bibResource.setAnnote(value);
+				break;
+			case "note":
+				bibResource.setNote(value);
+				break;
+			}
+	}
+	
+	
+	
 	protected boolean canEditPost(final RequestWrapperContext context) {
 		return context.isUserLoggedIn();
 	}

@@ -10,8 +10,10 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
@@ -391,17 +393,20 @@ public class Functions {
 	}
 	/**
 	 * returns the number of different entries*/
-	public static List<String> DiffEntries(BibTex newBib, BibTex oldBib) {
-		List<String> DiffArray = new ArrayList<String>();
-				
+	public static Map<String,String> DiffEntries(BibTex newBib, BibTex oldBib) {
+		Map<String,String> DiffArray = new LinkedHashMap<String,String>();
+		String tmp;		
 		if (!cleanBibtex(newBib.getEntrytype()).equals(cleanBibtex(oldBib.getEntrytype()))){
-			DiffArray.add("entrytype");
+			tmp = compareString(newBib.getEntrytype(),oldBib.getEntrytype());
+			DiffArray.put("entrytype",tmp);
 		}
 		if (!cleanBibtex(newBib.getTitle()).equals(cleanBibtex(oldBib.getTitle()))){
-			DiffArray.add("title");
+			tmp = compareString(newBib.getTitle(),oldBib.getTitle());
+			DiffArray.put("title",tmp);
 		}
 		if (!cleanBibtex(newBib.getAuthor().toString()).equals(cleanBibtex(oldBib.getAuthor().toString()))){
-			DiffArray.add("author");
+			tmp = compareString(newBib.getAuthor().toString(),oldBib.getAuthor().toString());
+			DiffArray.put("author",tmp);
 		}
 		/*Nasim's comment:
 		 * Since there is no input check while creating a post, some "required" fields
@@ -410,109 +415,141 @@ public class Functions {
 		 * **/
 		if(newBib.getEditor()!=null && oldBib.getEditor()!=null){
 			if (cleanBibtex(newBib.getEditor().toString()).equals(cleanBibtex(oldBib.getEditor().toString()))){
-				DiffArray.add("editor");
+				tmp = compareString(newBib.getEditor().toString(),oldBib.getEditor().toString());
+				DiffArray.put("editor",tmp);
 			}
 		}
 		else if(newBib.getEditor()!=null || oldBib.getEditor()!=null){
-			DiffArray.add("title");			
+			tmp = compareString(newBib.getEditor().toString(),oldBib.getEditor().toString());
+			DiffArray.put("editor",tmp);
 		}
 		
 		if (!cleanBibtex(newBib.getYear()).equals(cleanBibtex(oldBib.getYear()))){
-			DiffArray.add("year");
+			tmp = compareString(newBib.getYear(),oldBib.getYear());
+			DiffArray.put("year",tmp);
 		}
 		if (!cleanBibtex(newBib.getBooktitle()).equals(cleanBibtex(oldBib.getBooktitle()))){
-			DiffArray.add("booktitle");
+			tmp = compareString(newBib.getBooktitle(),oldBib.getBooktitle());
+			DiffArray.put("booktitle",tmp);
 		}
 		if (!cleanBibtex(newBib.getJournal()).equals(cleanBibtex(oldBib.getJournal()))){
-			DiffArray.add("journal");
+			tmp = compareString(newBib.getJournal(),oldBib.getJournal());
+			DiffArray.put("journal",tmp);
 		}
 		if (!cleanBibtex(newBib.getVolume()).equals(cleanBibtex(oldBib.getVolume()))){
-			DiffArray.add("volume");
+			tmp = compareString(newBib.getVolume(),oldBib.getVolume());
+			DiffArray.put("volume",tmp);
 		}
 		if (!cleanBibtex(newBib.getNumber()).equals(cleanBibtex(oldBib.getNumber()))){
-			DiffArray.add("number");
+			tmp = compareString(newBib.getNumber(),oldBib.getNumber());
+			DiffArray.put("number",tmp);
 		}
 		if (!cleanBibtex(newBib.getPages()).equals(cleanBibtex(oldBib.getPages()))){
-			DiffArray.add("pages");
+			tmp = compareString(newBib.getPages(),oldBib.getPages());
+			DiffArray.put("pages",tmp);
 		}
 		if (!cleanBibtex(newBib.getMonth()).equals(cleanBibtex(oldBib.getMonth()))){
-			DiffArray.add("month");
+			tmp = compareString(newBib.getMonth(),oldBib.getMonth());
+			DiffArray.put("month",tmp);
 		}
 		if (!cleanBibtex(newBib.getDay()).equals(cleanBibtex(oldBib.getDay()))){
-			DiffArray.add("day");
+			tmp = compareString(newBib.getDay(),oldBib.getDay());
+			DiffArray.put("day",tmp);
 		}
 		if (!cleanBibtex(newBib.getPublisher()).equals(cleanBibtex(oldBib.getPublisher()))){
-			DiffArray.add("publisher");
+			tmp = compareString(newBib.getPublisher(),oldBib.getPublisher());
+			DiffArray.put("publisher",tmp);
 		}
 		if (!cleanBibtex(newBib.getAddress()).equals(cleanBibtex(oldBib.getAddress()))){
-			DiffArray.add("address");
+			tmp = compareString(newBib.getAddress(),oldBib.getAddress());
+			DiffArray.put("address",tmp);
 		}
 		if (!cleanBibtex(newBib.getEdition()).equals(cleanBibtex(oldBib.getEdition()))){
-			DiffArray.add("edition");
+			tmp = compareString(newBib.getEdition(),oldBib.getEdition());
+			DiffArray.put("edition",tmp);
 		}
 		if (!cleanBibtex(newBib.getChapter()).equals(cleanBibtex(oldBib.getChapter()))){
-			DiffArray.add("chapter");
+			tmp = compareString(newBib.getChapter(),oldBib.getChapter());
+			DiffArray.put("chapter",tmp);
 		}
 		if (!cleanBibtex(newBib.getUrl()).equals(cleanBibtex(oldBib.getUrl()))){
-			DiffArray.add("url");
+			tmp = compareString(newBib.getUrl(),oldBib.getUrl());
+			DiffArray.put("url",tmp);
 		}
 		if (!cleanBibtex(newBib.getKey()).equals(cleanBibtex(oldBib.getKey()))){
-			DiffArray.add("key");
+			tmp = compareString(newBib.getKey(),oldBib.getKey());
+			DiffArray.put("key",tmp);
 		}
 		if (!cleanBibtex(newBib.getHowpublished()).equals(cleanBibtex(oldBib.getHowpublished()))){
-			DiffArray.add("howpublished");
+			tmp = compareString(newBib.getHowpublished(),oldBib.getHowpublished());
+			DiffArray.put("howpublished",tmp);
 		}
 		if (!cleanBibtex(newBib.getInstitution()).equals(cleanBibtex(oldBib.getInstitution()))){
-			DiffArray.add("institution");
+			tmp = compareString(newBib.getInstitution(),oldBib.getInstitution());
+			DiffArray.put("institution",tmp);
 		}
 		if (!cleanBibtex(newBib.getOrganization()).equals(cleanBibtex(oldBib.getOrganization()))){
-			DiffArray.add("organization");
+			tmp = compareString(newBib.getOrganization(),oldBib.getOrganization());
+			DiffArray.put("organization",tmp);
 		}
 		if (!cleanBibtex(newBib.getSchool()).equals(cleanBibtex(oldBib.getSchool()))){
-			DiffArray.add("school");
+			tmp = compareString(newBib.getSchool(),oldBib.getSchool());
+			DiffArray.put("school",tmp);
 		}
 		if (!cleanBibtex(newBib.getSeries()).equals(cleanBibtex(oldBib.getSeries()))){
-			DiffArray.add("series");
+			tmp = compareString(newBib.getSeries(),oldBib.getSeries());
+			DiffArray.put("series",tmp);
 		}
 		if (!cleanBibtex(newBib.getCrossref()).equals(cleanBibtex(oldBib.getCrossref()))){
-			DiffArray.add("crossref");
+			tmp = compareString(newBib.getCrossref(),oldBib.getCrossref());
+			DiffArray.put("crossref",tmp);
 		}
 		if (!cleanBibtex(newBib.getMisc()).equals(cleanBibtex(oldBib.getMisc()))){
-			DiffArray.add("misc");
+			tmp = compareString(newBib.getMisc(),oldBib.getMisc());
+			DiffArray.put("misc",tmp);
 		}
 		if (!cleanBibtex(newBib.getAbstract()).equals(cleanBibtex(oldBib.getAbstract()))){
-			DiffArray.add("bibtexAbstract");
+			tmp = compareString(newBib.getAbstract(),oldBib.getAbstract());
+			DiffArray.put("bibtexAbstract",tmp);
 		}
 		if (!cleanBibtex(newBib.getPrivnote()).equals(cleanBibtex(oldBib.getPrivnote()))){
-			DiffArray.add("privnote");
+			tmp = compareString(newBib.getPrivnote(),oldBib.getPrivnote());
+			DiffArray.put("privnote",tmp);
 		}
 		if (!cleanBibtex(newBib.getAnnote()).equals(cleanBibtex(oldBib.getAnnote()))){
-			DiffArray.add("annote");
+			tmp = compareString(newBib.getAnnote(),oldBib.getAnnote());
+			DiffArray.put("annote",tmp);
 		}
 		if (!cleanBibtex(newBib.getNote()).equals(cleanBibtex(oldBib.getNote()))){
-			DiffArray.add("note");
+			tmp = compareString(newBib.getNote(),oldBib.getNote());
+			DiffArray.put("note",tmp);
 		}
 		return DiffArray;
 	}
-	
-	public static String BibDiff(String DiffEntry, BibTex newBib, BibTex oldBib) {
-		StringBuilder BibDiff = new StringBuilder();
-		String tmp="";
-			switch(DiffEntry){
+	public static String getEntryValue(String key,BibTex Bib){
+		String val="";
+	//public static String BibDiff(String DiffEntry, BibTex newBib, BibTex oldBib) {
+		//StringBuilder BibDiff = new StringBuilder();
+		//String tmp="";
+			//switch(DiffEntry){
+		switch(key){
 			case "entrytype":
-				tmp=compareString(newBib.getEntrytype(),oldBib.getEntrytype())+"<br>";
-				BibDiff.append("<span class=\"selected\">").append("Entrytype: ").append("</span>")
-				.append(tmp);
+			//	tmp=compareString(newBib.getEntrytype(),oldBib.getEntrytype())+"<br>";
+				//BibDiff.append("<span class=\"selected\">").append("Entrytype: ").append("</span>")
+				//.append(tmp);
+				val = Bib.getEntrytype();
 				break;
 			case "title":
-				tmp=compareString(newBib.getTitle(),oldBib.getTitle())+"<br>";
-				BibDiff.append("<span class=\"selected\">").append("Title: ").append("</span>")
-				.append(tmp);
+				//tmp=compareString(newBib.getTitle(),oldBib.getTitle())+"<br>";
+				//BibDiff.append("<span class=\"selected\">").append("Title: ").append("</span>")
+				//.append(tmp);
+				val = Bib.getTitle();
 				break;
 			case "author":
-				tmp=compareString(newBib.getAuthor().toString(),oldBib.getAuthor().toString())+"<br>";
-				BibDiff.append("<span class=\"selected\">").append("Author: ").append("</span>")
-				.append(tmp);
+				//tmp=compareString(newBib.getAuthor().toString(),oldBib.getAuthor().toString())+"<br>";
+				//BibDiff.append("<span class=\"selected\">").append("Author: ").append("</span>")
+				//.append(tmp);
+				val = Bib.getAuthor().toString();
 				break;
 			case "editor":
 				/*Nasim's comment:
@@ -520,10 +557,12 @@ public class Functions {
 				 * might remain empty. So we have to check for the emptiness(null) here. When an 
 				 * input check is added to post creating procedure, the following check can be removed.
 				 * **/
-				if(newBib.getEditor()!=null && oldBib.getEditor()!=null){
+				/*if(newBib.getEditor()!=null && oldBib.getEditor()!=null){
 					tmp=compareString(newBib.getEditor().toString(),oldBib.getEditor().toString())+"<br>";
 					BibDiff.append("<span class=\"selected\">").append("Editor: ").append("</span>")
-					.append(tmp);
+					.append(tmp);*/
+				if(Bib.getEditor()!=null){
+					val = Bib.getEditor().toString();
 					
 				}
 				/* if one of them is null
@@ -537,132 +576,158 @@ public class Functions {
 				*/
 				break;
 			case "year":
-				tmp=compareString(newBib.getYear(),oldBib.getYear())+"<br>";
+				/*tmp=compareString(newBib.getYear(),oldBib.getYear())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("Year: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getYear();
 				break;
 			case "booktitle":
-				tmp=compareString(newBib.getBooktitle(),oldBib.getBooktitle())+"<br>";
+				/*tmp=compareString(newBib.getBooktitle(),oldBib.getBooktitle())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("Booktitle: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getBooktitle();
 				break;
 			case "journal":
-				tmp=compareString(newBib.getJournal(),oldBib.getJournal())+"<br>";
+				/*tmp=compareString(newBib.getJournal(),oldBib.getJournal())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("Journal: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getJournal();
 				break;
 			case "volume":
-				tmp=compareString(newBib.getVolume(),oldBib.getVolume())+"<br>";
+				/*tmp=compareString(newBib.getVolume(),oldBib.getVolume())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("Volume: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getVolume();
 				break;
 			case "number":
-				tmp=compareString(newBib.getNumber(),oldBib.getNumber())+"<br>";
+				/*tmp=compareString(newBib.getNumber(),oldBib.getNumber())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("Number: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getNumber();
 				break;
 			case "pages":
-				tmp=compareString(newBib.getPages(),oldBib.getPages())+"<br>";
+				/*tmp=compareString(newBib.getPages(),oldBib.getPages())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("Pages: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getPages();
 				break;
 			case "month":
-				tmp=compareString(newBib.getMonth(),oldBib.getMonth())+"<br>";
+				/*tmp=compareString(newBib.getMonth(),oldBib.getMonth())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("Month: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getMonth();
 				break;
 			case "day":
-				tmp=compareString(newBib.getDay(),oldBib.getDay())+"<br>";
+				/*tmp=compareString(newBib.getDay(),oldBib.getDay())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("Day: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getDay();
 				break;
 			case "publisher":
-				tmp=compareString(newBib.getPublisher(),oldBib.getPublisher())+"<br>";
+				/*tmp=compareString(newBib.getPublisher(),oldBib.getPublisher())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("Publisher: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getPublisher();
 				break;
 			case "address":
-				tmp=compareString(newBib.getAddress(),oldBib.getAddress())+"<br>";
+				/*tmp=compareString(newBib.getAddress(),oldBib.getAddress())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("Address: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getAddress();
 				break;
 			case "edition":
-				tmp=compareString(newBib.getEdition(),oldBib.getEdition())+"<br>";
+				/*tmp=compareString(newBib.getEdition(),oldBib.getEdition())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("Edition: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getEdition();
 				break;
 			case "chapter":
-				tmp=compareString(newBib.getChapter(),oldBib.getChapter())+"<br>";
+				/*tmp=compareString(newBib.getChapter(),oldBib.getChapter())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("Chapter: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getChapter();
 				break;
 			case "url":
-				tmp=compareString(newBib.getUrl(),oldBib.getUrl())+"<br>";
+				/*tmp=compareString(newBib.getUrl(),oldBib.getUrl())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("Url: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getUrl();
 				break;
 			case "key":
-				tmp=compareString(newBib.getKey(),oldBib.getKey())+"<br>";
+				/*tmp=compareString(newBib.getKey(),oldBib.getKey())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("Key: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getKey();
 				break;
 			case "howpublished":
-				tmp=compareString(newBib.getHowpublished(),oldBib.getHowpublished())+"<br>";
+				/*tmp=compareString(newBib.getHowpublished(),oldBib.getHowpublished())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("Howpublished: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getHowpublished();
 				break;
 			case "institution":
-				tmp=compareString(newBib.getInstitution(),oldBib.getInstitution())+"<br>";
+				/*tmp=compareString(newBib.getInstitution(),oldBib.getInstitution())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("Institution: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getInstitution();
 				break;
 			case "organization":
-				tmp=compareString(newBib.getOrganization(),oldBib.getOrganization())+"<br>";
+				/*tmp=compareString(newBib.getOrganization(),oldBib.getOrganization())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("Organization: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getOrganization();
 				break;
 			case "school":
-				tmp=compareString(newBib.getSchool(),oldBib.getSchool())+"<br>";
+				/*tmp=compareString(newBib.getSchool(),oldBib.getSchool())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("School: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getSchool();
 				break;
 			case "series":
-				tmp=compareString(newBib.getSeries(),oldBib.getSeries())+"<br>";
+				/*tmp=compareString(newBib.getSeries(),oldBib.getSeries())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("Series: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getSeries();
 				break;
 			case "crossref":
-				tmp=compareString(newBib.getCrossref(),oldBib.getCrossref())+"<br>";
+			/*	tmp=compareString(newBib.getCrossref(),oldBib.getCrossref())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("Crossref: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getCrossref();
 				break;
 			case "misc":
-				tmp=compareString(newBib.getMisc(),oldBib.getMisc())+"<br>";
+				/*tmp=compareString(newBib.getMisc(),oldBib.getMisc())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("Misc: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getMisc();
 				break;
 			case "bibtexAbstract":
-				tmp=compareString(newBib.getAbstract(),oldBib.getAbstract())+"<br>";
+				/*tmp=compareString(newBib.getAbstract(),oldBib.getAbstract())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("Abstract: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getAbstract();
 				break;
 			case "privnote":
-				tmp=compareString(newBib.getPrivnote(),oldBib.getPrivnote())+"<br>";
+				/*tmp=compareString(newBib.getPrivnote(),oldBib.getPrivnote())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("Privnote: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getPrivnote();
 				break;
 			case "annote":
-				tmp=compareString(newBib.getAnnote(),oldBib.getAnnote())+"<br>";
+				/*tmp=compareString(newBib.getAnnote(),oldBib.getAnnote())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("Annote: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getAnnote();
 				break;
 			case "note":
-				tmp=compareString(newBib.getNote(),oldBib.getNote())+"<br>";
+				/*tmp=compareString(newBib.getNote(),oldBib.getNote())+"<br>";
 				BibDiff.append("<span class=\"selected\">").append("Note: ").append("</span>")
-				.append(tmp);
+				.append(tmp);*/
+				val = Bib.getNote();
 				break;
 			}
-		return BibDiff.toString();
+		//return BibDiff.toString();
+		return val;
 	}
 
 	/**

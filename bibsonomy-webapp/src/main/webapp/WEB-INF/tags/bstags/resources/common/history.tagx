@@ -27,7 +27,7 @@
 		required="false" />
 	<jsp:directive.attribute name="isPub" type="java.lang.Boolean" required="true" />
 
-	<mtl:styleSheet path="/resources/css/history.css" />
+	<!--<mtl:styleSheet path="/resources/css/history.css" />-->
 	<script type="text/javascript" src="/resources/javascript/history.js"><!-- keep me --></script>
 	
 	
@@ -37,72 +37,71 @@
 		<c:set var="fieldlength" value="${fn:length(listView.list)-1}" />
 		<c:set var="newestPost" value="${listView.list[fieldlength]}" />		
 		<input type="hidden" name="newestPost" value="${newestPost}" />
-		<input type="hidden" name="differentEntryArray" />
-		<input type="hidden" name="HistoryPost" />			
+		<input type="hidden" name="differentEntryKeys" />
+		<input type="hidden" name="differentEntryValues" />
+		<input type="hidden" name="historyPost" />			
+		<input type="hidden" name="intraHashToUpdate" value="${newestPost.resource.intraHash}"/>
 				<!--+
 					| complete Post
 					+-->
-				<div id="fullPost" >
-					<rc:diff post="${newestPost}" loginUserName="${loginUserName}"
-						additionalItemClasses="${'odd'}">
-						<jsp:attribute name="title">
-							<c:choose>
-								<c:when test="${empty newestPost.user.name}">
-									<bibgs:title post="${newestPost}"/>
-								</c:when>
-								<c:otherwise>
-									<c:choose>
-										<c:when test="${isPub}">
-											<bib:title post="${newestPost}" />
-										</c:when>
-										<c:otherwise>
-											<bm:title post="${newestPost}"/>
-										</c:otherwise>
-									</c:choose>
-								</c:otherwise>
-							</c:choose>
-						</jsp:attribute>
-						<jsp:attribute name="desc">
-						<ul><li class="no-bullet">
+			
+			<strong>
+					<c:choose>
+						<c:when test="${empty newestPost.user.name}">
+							<bibgs:title post="${newestPost}"/>
+						</c:when>
+						<c:otherwise>
 							<c:choose>
 								<c:when test="${isPub}">
-									<bib:fullDescription publication="${newestPost.resource}"/>
+									<bib:title post="${newestPost}" />
 								</c:when>
 								<c:otherwise>
-									<bm:desc post="${newestPost}"/>
-								</c:otherwise>	
+									<bm:title post="${newestPost}"/>
+								</c:otherwise>
 							</c:choose>
-						</li></ul>
-						</jsp:attribute>
-					</rc:diff>
-				</div>
+						</c:otherwise>
+					</c:choose>
+					</strong>
+			<br/>
+					<c:choose>
+						<c:when test="${isPub}">
+							<bib:fullDescription publication="${newestPost.resource}"/>
+						</c:when>
+						<c:otherwise>
+							<bm:desc post="${newestPost}"/>
+						</c:otherwise>	
+					</c:choose>
+					
 		<c:choose>
 		<c:when test="${fn:length(listView.list) gt 1}">
 				<!--+
 				| history list
 				+-->
-				<div id="historylist">
-					<br/>
+				<table class="table table-striped">
+				
+				
+				<!-- <div id="historylist"> -->
+					
 					<!-- newest post is index 0 and do not contain to history list -->
 					<c:forEach var="index" begin="1" end="${fieldlength}" varStatus="loopStatus" step="1">
 						<c:set var="additionalItemClasses"
 							value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}" />	
-						<hr class="fancy-line fancy-line-bolder"></hr>
-						<ul class="HistTable no-bullet">
-							<li id="versionNum">
-								<a href="#" class="diffNumText">
+						
+						<tr class="HistTable no-bullet"><!-- ul -->
+							<td id="versionNum"><!-- li -->
+								<span class="label label-default diffNumText">
 								Ver. ${fieldlength-index+1}
-								</a>
-							</li>
-							<li>
+								</span>
+							</td>
+							<td>
 							<!-- check the input to change data -->
 								<c:set var="changeDate" value="${mtl:cleanBibtex(listView.list[(fieldlength-index+1)].changeDate)}"/>
-								<a href="#" class="diffNumText"><c:out value="${changeDate}" /></a>
+								<span class="label label-primary diffNumText">${changeDate}</span>
 								<!-- 
 								<rc:changeDate post="${listView.list[(fieldlength-index)]}"
 									newestPost="${listView.list[(fieldlength)]}" />
 								-->
-							</li>
+							</td>
 							<!--  -->
 							<c:set var="diffArrayPre" value="${mtl:DiffEntries(listView.list[(fieldlength-index)].resource,listView.list[(fieldlength-index+1)].resource)}"/>
 							<c:set var="diffNumPre" value="${fn:length(diffArrayPre)}"/>
@@ -115,13 +114,15 @@
 		 					    </c:otherwise>
 							</c:choose>
 							 
-							<li id="postDiffNumPre">
-								<a href="#" class="diffNumText">
+							<!-- <td id="postDiffNumPre">
+								<a href="#" class="label label-primary diffNumText">
 								${diffNumPre} ${diffNumPreMsg}
 								</a>
-							</li> 
+							</td> --> 
 							<!--  -->
+							
 							<c:set var="diffArrayCurr" value="${mtl:DiffEntries(listView.list[(fieldlength)].resource,listView.list[(fieldlength-index+1)].resource)}"/>
+							
 							<c:set var="diffNumCurr" value="${fn:length(diffArrayCurr)}"/>
 							<c:choose>
 		      					<c:when test="${diffNumCurr > 1}">
@@ -132,17 +133,24 @@
 		 					    </c:otherwise>
 							</c:choose>
 							 
-							<li id="postDiffNumCurr">
-								<a href="#" class="diffNumText">
+							<!-- <td id="postDiffNumCurr">
+								<a href="#" class="label label-primary diffNumText">
 								${diffNumCurr} ${diffNumCurrMsg}
 								</a>
-							</li> 
+							</td> --> 
 							<!-- -->
-							<li>
-								<a href="#" id="compareChoose">
-								Compare to <span id="pre" class="selected">previous</span>/<span id="curr" class="underline">current</span> version</a>
-							</li>	
-							<li>							
+							<td>
+								
+								Compare to <span id="pre" class="label label-info">previous <span data-toggle="tooltip" 
+									title="${diffNumPre} ${diffNumPreMsg}" class="badge">${diffNumPre}</span></span>
+								<c:if test = "${diffNumCurr ne 0}">
+									/<span id="curr" class="underline">current <span data-toggle="tooltip" 
+									title="${diffNumCurr} ${diffNumCurrMsg}" class="badge">${diffNumCurr}</span></span>
+								</c:if>
+								version
+							</td>	
+							<td>					
+									
 								<!--<c:url var="diffLink" value="/editPublication">
 									<c:param name="intraHashToUpdate" value="${listView.list[(fieldlength-index+1)].resource.intraHash}" />
 									<c:param name="user" value="${listView.list[(fieldlength-index+1)].user.name}" />
@@ -150,41 +158,95 @@
 								<a id="restoreBtn" class="${buttonClasses}" title="restore to this version">
 									<span class="fa fa-times"><!--  --></span>
 								</a>
-							</li>
-							<hr class="fancy-line"></hr>
-							<li id="postDiffPre" class="postDiffPre">				
+								</td>
+							
+							</tr>
+							<tr >
+							<td colspan="3" id="postDiffPre" class="postDiffPre">				
 								<c:forEach var="diffEntry" items="${diffArrayPre}">
 									<input type="checkbox" id="preEntryCheckbox" class="invisible"/>
-									${mtl:BibDiff(diffEntry,listView.list[(fieldlength-index)].resource,listView.list[(fieldlength-index+1)].resource)}
+										<strong>${diffEntry.key}</strong>
+										<c:out value=": "/>
+										${diffEntry.value}
+										<br/>
+<!--  							${mtl:BibDiff(diffEntry,listView.list[(fieldlength-index)].resource,listView.list[(fieldlength-index+1)].resource)}-->
 								</c:forEach>
 								<!--<rc:postDescDiff
 									publication="${listView.list[(fieldlength-index)].resource}"
 									newestPub="${listView.list[(fieldlength-index+1)].resource}" isPub="${isPub}"/>-->
-							</li>
-							<li id="postDiffCurr" class="postDiffCurr invisible">				
+							</td>
+							
+							<c:if test = "${diffNumCurr ne 0}">
+							<td colspan="3" id="postDiffCurr" class="postDiffCurr">	
+											
 								<c:forEach var="diffEntry" items="${diffArrayCurr}">
 									<input type="checkbox" id="CurrEntryCheckbox" class="invisible"/>
-									${mtl:BibDiff(diffEntry,listView.list[(fieldlength)].resource,listView.list[(fieldlength-index+1)].resource)}
-									<input type="hidden" name="diffEntry" value="${diffEntry}" />
+									<strong>${diffEntry.key}</strong>
+									<c:out value=": "/>
+									${diffEntry.value}
+									<br/>
+									
+									<!-- ${mtl:BibDiff(diffEntry,listView.list[(fieldlength)].resource,listView.list[(fieldlength-index+1)].resource)} -->
+									<!--  -->
+									<div>
+									<input type="hidden" name="diffEntryKey" value="${diffEntry.key}"/>
+									<input type="hidden" name="diffEntryValue" 
+										value="${mtl:getEntryValue(diffEntry.key,listView.list[(fieldlength-index+1)].resource)}"/>
+										</div>
 								</c:forEach>
-								<input type="hidden" name="HistoryPostTMP" value="${listView.list[(fieldlength-index+1)]}" />
-								<!--<rc:postDescDiff
-									publication="${listView.list[(fieldlength-index)].resource}"
-									newestPub="${listView.list[(fieldlength)].resource}" isPub="${isPub}"/>-->
-							</li>
-							<div id="restoreConfirm" class="Hint red invisible">
-								<fmt:message key="history.restore.confirm" />
-								<a href="#" id="restoreOk"><fmt:message key="history.restore.ok" /></a>
-								<a href="#" id="restoreCancel"><fmt:message key="history.restore.cancel" /></a>
-							</div>
-
-							
+								<!-- <input type="hidden" name="HistoryPostTMP" value="${listView.list[(fieldlength-index+1)]}" /> -->
+								<div class="alert col-sm-10 alert-warning" role="alert">
+									<fmt:message key="history.restore.confirm" />
+								</div>
+								<button class="btn btn-primary restoreButton" style="float:right">restore</button>
+								
+							</td>
+							</c:if>						
 							<!-- <li id="restoreConfirm" class="Hint red invisible"><fmt:message key="history.restoreConfirm" /></li> -->
-						</ul>	
+						</tr>	
 						
 					</c:forEach>
-				</div>
-			
+				<!-- </div> -->
+				<tr>
+				<td colspan="4" id="versionNum">
+					<span class="label label-default">Ver.0 (before editing)</span>
+				</td>
+				</tr>
+				<tr>
+				<td colspan="4">
+					<strong>
+					<c:choose>
+						<c:when test="${empty listView.list[(0)].user.name}">
+							<bibgs:title post="${listView.list[(0)]}"/>
+						</c:when>
+						<c:otherwise>
+							<c:choose>
+								<c:when test="${isPub}">
+									<bib:title post="${listView.list[(0)]}" />
+								</c:when>
+								<c:otherwise>
+									<bm:title post="${listView.list[(0)]}"/>
+								</c:otherwise>
+							</c:choose>
+						</c:otherwise>
+					</c:choose>
+					</strong>
+			<br/>
+					<c:choose>
+						<c:when test="${isPub}">
+							<bib:fullDescription publication="${listView.list[(0)].resource}"/>
+						</c:when>
+						<c:otherwise>
+							<bm:desc post="${listView.list[(0)]}"/>
+						</c:otherwise>	
+					</c:choose>
+					
+				
+				</td>	
+			</tr>	
+				
+				
+			</table>
 		</c:when>
 		<c:otherwise>
 			<!-- only show message "no posts available" when no artificial list items (e.g. discussions) are present -->
@@ -193,49 +255,9 @@
 			</c:if>
 		</c:otherwise>
 	</c:choose>
-			<br/>
 		
-		<div id="originalVersion">
-			<hr class="fancy-line fancy-line-bolder"></hr>
-			<ul class="HistTable no-bullet">
-				<li id="versionNum">
-					<a href="#" class="diffNumText">Ver.0 (before editing)</a>
-				</li>	
-				<hr class="fancy-line"></hr>
-				<rc:diff post="${listView.list[(0)]}" loginUserName="${loginUserName}"
-						additionalItemClasses="${'odd'}">
-						<jsp:attribute name="title">
-							<c:choose>
-								<c:when test="${empty listView.list[(0)].user.name}">
-									<bibgs:title post="${listView.list[(0)]}"/>
-								</c:when>
-								<c:otherwise>
-									<c:choose>
-										<c:when test="${isPub}">
-											<bib:title post="${listView.list[(0)]}" />
-										</c:when>
-										<c:otherwise>
-											<bm:title post="${listView.list[(0)]}"/>
-										</c:otherwise>
-									</c:choose>
-								</c:otherwise>
-							</c:choose>
-						</jsp:attribute>
-						<jsp:attribute name="desc">
-						<ul><li class="no-bullet">
-							<c:choose>
-								<c:when test="${isPub}">
-									<bib:fullDescription publication="${listView.list[(0)].resource}"/>
-								</c:when>
-								<c:otherwise>
-									<bm:desc post="${listView.list[(0)]}"/>
-								</c:otherwise>	
-							</c:choose>
-						</li></ul>
-						</jsp:attribute>
-					</rc:diff>
-			</ul>	
-	
-		</div>
+	<!-- <input type="hidden" name="diffEntryKey" value="${diffArrayCurr}" /> -->
+		
 </form>
+
 </jsp:root>

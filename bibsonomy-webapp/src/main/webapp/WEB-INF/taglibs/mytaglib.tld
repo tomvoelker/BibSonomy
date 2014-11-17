@@ -258,13 +258,13 @@
 	<function>
 		<name>DiffEntries</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>java.util.List DiffEntries(org.bibsonomy.model.BibTex, org.bibsonomy.model.BibTex)</function-signature>
+		<function-signature>java.util.Map DiffEntries(org.bibsonomy.model.BibTex, org.bibsonomy.model.BibTex)</function-signature>
 	</function>
 	
 	<function>
-		<name>BibDiff</name>
+		<name>getEntryValue</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String BibDiff(java.lang.String,org.bibsonomy.model.BibTex, org.bibsonomy.model.BibTex)</function-signature>
+		<function-signature>String getEntryValue(java.lang.String,org.bibsonomy.model.BibTex)</function-signature>
 	</function>
 	
 	<function>

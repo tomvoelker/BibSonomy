@@ -118,8 +118,10 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	private String saveAndRate;
 	
 	private Post<RESOURCE> newestPost;
-	private List<String> differentEntryArray;
-	private Post<RESOURCE> HistoryPost;
+	private List<String> differentEntryKeys;
+	private String differentEntryValues;
+	
+
 
 	/**
 	 * @return saveAndRate
@@ -508,30 +510,34 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	}
 
 	/**
-	 * @return the differentEntryArray
+	 * @return the differentEntryKeys
 	 */
-	public List<String> getDifferentEntryArray() {
-		return this.differentEntryArray;
+	public List<String> getDifferentEntryKeys() {
+		return this.differentEntryKeys;
 	}
 
 	/**
-	 * @param differentEntryArray the differentEntryArray to set
+	 * @param differentEntryKeys the differentEntryKeys to set
 	 */
-	public void setDifferentEntryArray(List<String> differentEntryArray) {
-		this.differentEntryArray = differentEntryArray;
+	public void setDifferentEntryKeys(List<String> differentEntryKeys) {
+		this.differentEntryKeys = differentEntryKeys;
 	}
 
 	/**
-	 * @return the historyPost
+	 * @return the differentEntryValues
 	 */
-	public Post<RESOURCE> getHistoryPost() {
-		return this.HistoryPost;
+	public String getDifferentEntryValues() {
+		return this.differentEntryValues;
 	}
 
 	/**
-	 * @param historyPost the historyPost to set
+	 * @param differentEntryValues the differentEntryValues to set
 	 */
-	public void setHistoryPost(Post<RESOURCE> historyPost) {
-		HistoryPost = historyPost;
+	public void setDifferentEntryValues(String differentEntryValues) {
+		this.differentEntryValues = differentEntryValues;
 	}
+
+	
+
+	
 }
