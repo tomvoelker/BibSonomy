@@ -41,6 +41,7 @@ import org.junit.Test;
 
 import bibtex.expansions.CrossReferenceExpansionException;
 import bibtex.expansions.ExpansionException;
+import bibtex.expansions.PersonListParserException;
 
 /**
  * @author rja
@@ -197,7 +198,8 @@ public class SimpleBibTeXParserTest {
 		);
 		
 		final ExpansionException warning = parser.getWarnings().get(0);
-		assertEquals("bibtex.expansions.PersonListParserException: Name ends with comma: 'Foo, Bar,' - in 'foo'", warning.getMessage());
+		assertEquals(PersonListParserException.class, warning.getClass());
+		assertEquals("Name ends with comma: 'Foo, Bar,' - in 'foo'", warning.getMessage());
 		
 
 //		System.out.println(BibTexUtils.toBibtexString(parsedBibTeX));
