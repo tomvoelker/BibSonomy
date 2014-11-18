@@ -124,7 +124,14 @@ public class LuceneResourceIndex<R extends Resource> {
         
         try {
         	this.searcherManager.maybeRefreshBlocking();
-        	DirectoryReader indexReader = (DirectoryReader) this.aquireIndexSearcher().getIndexReader();
+        	IndexSearcher searcher = this.aquireIndexSearcher();
+        	final DirectoryReader indexReader;
+        	try {
+        		indexReader = (DirectoryReader) searcher.getIndexReader();
+        	} finally {
+        		this.searcherManager.release(searcher);
+        		searcher = null;
+        	}
         	
         	// Get the ID of this index 
         	statistics.setIndexId(this.indexId);
@@ -568,7 +575,7 @@ public class LuceneResourceIndex<R extends Resource> {
 		//open new indexWriter
 		log.debug("Opening indexWriter " + this.indexPath);
 		IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_48, this.analyzer);
-		iwc.setOpenMode(OpenMode.APPEND);		
+		iwc.setOpenMode(OpenMode.APPEND);
 		indexWriter = new IndexWriter(indexDirectory, iwc);
 	}
 	
