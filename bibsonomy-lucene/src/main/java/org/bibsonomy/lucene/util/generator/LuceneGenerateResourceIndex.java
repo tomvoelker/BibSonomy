@@ -200,7 +200,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 		log.info("Number of post entries: " + this.numberOfPosts);
 
 		// initialize variables
-		final Integer lastTasId = this.dbLogic.getLastTasId();
+		//Integer lastTasId = this.dbLogic.getLastTasId();
 		Date lastLogDate = this.dbLogic.getLastLogDate();
 
 		if (lastLogDate == null) {
@@ -223,7 +223,8 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 			// cycle through all posts of currently read block
 			for (final LucenePost<R> post : postList) {
 				post.setLastLogDate(lastLogDate);
-				post.setLastTasId(lastTasId);
+				//post.setLastTasId(lastTasId); 
+				//lastTasId = Math.max(lastTasId, post.getLastTasId());
 
 				if (LuceneGenerateResourceIndex.this.isNotSpammer(post)) {
 					// create index document from post model
@@ -278,7 +279,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 		log.info("Number of post entries: " + this.numberOfPosts);
 
 		// initialize variables
-		final Integer lastTasId = this.dbLogic.getLastTasId();
+		//final Integer lastTasId = this.dbLogic.getLastTasId();
 		Date lastLogDate = this.dbLogic.getLastLogDate();
 
 		if (lastLogDate == null) {
@@ -302,7 +303,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 			// cycle through all posts of currently read block
 			for (final LucenePost<R> post : postList) {
 				post.setLastLogDate(lastLogDate);
-				post.setLastTasId(lastTasId);
+				//post.setLastTasId(lastTasId);
 				// executor.execute(new Runnable() {
 
 				// FIXME had to remove Thread creation because reading FolkRank
