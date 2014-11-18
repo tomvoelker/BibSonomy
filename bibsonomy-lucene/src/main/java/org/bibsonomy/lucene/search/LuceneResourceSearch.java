@@ -169,7 +169,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 				}
 			}
 		} catch (final IOException e) {
-			log.error("Error building full text tag cloud for query " + qf.getQuery().toString());
+			log.error("Error building full text tag cloud for query " + qf.getQuery().toString(), e);
 		} finally {
 			this.index.releaseIndexSearcher(searcher);
 		}
