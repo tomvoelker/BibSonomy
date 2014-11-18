@@ -309,7 +309,12 @@
 					<!-- if there exists some posts which are not owned by the user -->
 					<c:if test="${not empty otherPosts}">
 						<c:set var="tooltip_msg" value="${disregardedPosts}" />
-						<c:forEach var="post" items="${listView.list}">
+							<tr>
+							<div class="alert alert-info col-sm-10" style="margin-bottom:0px;" role="alert">
+								<fmt:message key="batchedit.disregardedPosts.alert" />
+							</div>
+							</tr>
+						<c:forEach var="post" items="${listView.list}" varStatus="postCount">
 							<c:if test="${post.user.name ne command.context.loginUser.name}">
 								<tr>
 									<td style="text-align: center;">
