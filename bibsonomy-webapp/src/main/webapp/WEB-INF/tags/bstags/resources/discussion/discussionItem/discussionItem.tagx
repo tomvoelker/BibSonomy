@@ -2,6 +2,7 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
 	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion/discussionItem">
 	
 	<jsp:directive.attribute name="discussionItem" type="org.bibsonomy.model.DiscussionItem" required="true" />
@@ -17,54 +18,61 @@
 	
 	<c:set var="clazz" value="${fn:toLowerCase(discussionItem['class'].simpleName)}" />
 	
-	<c:choose>
-		<c:when test="${anonymous}">
-			<img src="${resdir}/image/anonymous.png" alt="anonymous" class="commentPicture" />
-		</c:when>
-		<c:otherwise>
-			<img src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(discussionItemUserName))}" alt="userPicture" class="commentPicture"/>
-		</c:otherwise>
-	</c:choose>
+	<c:set var="displayUserName"><user:username noLink="${true}" username="${discussionItemUserName}"/></c:set>
 	
-	<c:choose>
-		<c:when test="${schemaOrgMarkUp}">
-			<c:set var="itemtype" value="http://schema.org/Review"/>
-			<c:set var="itemprop" value="reviews"/>
-			<c:if test="${clazz eq 'comment'}">
-				<c:set var="itemtype" value="http://schema.org/UserComment"/>
-				<c:set var="itemprop" value="comment"/>
-			</c:if>
-
-			<div class="${clazz} details"  itemprop="${itemprop}" itemscope="itemscope" itemtype="${itemtype}">
-				<discussionItem:discussionItemInfo discussionItem="${discussionItem}" content="${content}" anonymous="${anonymous}" ownDiscussionItem="${ownDiscussionItem}" schemaOrgMarkUp="${schemaOrgMarkUp}"/>
-				<div class="citeBox" style="display:none" >
-					<!-- keep it -->
-					<h3><fmt:message key="discussion.references" /></h3>
-				</div>
-				<div class="bookCiteBox" style="display:none" >
-						<!-- keep it -->
-						<h3><fmt:message key="discussion.bookmarkReferences" /></h3>
-					</div>
-			</div>
-		</c:when>
-		<c:otherwise>
-			<div class="${clazz} details">
-				<discussionItem:discussionItemInfo discussionItem="${discussionItem}" content="${content}" anonymous="${anonymous}" ownDiscussionItem="${ownDiscussionItem}" schemaOrgMarkUp="${schemaOrgMarkUp}"/>
+	<a href="/user/${fn:escapeXml(discussionItemUserName)}" class="thumbnail img-thumbnail pull-left" title="${displayUserName}">
+		
+		<c:choose>
+			<c:when test="${anonymous}">
+				<img src="${resdir}/image/anonymous.png" alt="anonymous" class="media-object commentPicture" />
+			</c:when>
+			<c:otherwise>
+				<img src="/picture/user/${fn:escapeXml(discussionItemUserName)}" alt="userPicture" class="media-object commentPicture"/>
+			</c:otherwise>
+		</c:choose>
+		<span><c:out value="${displayUserName}" /></span>
+	</a>
+	<div class="media-body">
+		<c:choose>
+			<c:when test="${schemaOrgMarkUp}">
+				<c:set var="itemtype" value="http://schema.org/Review"/>
+				<c:set var="itemprop" value="reviews"/>
+				<c:if test="${clazz eq 'comment'}">
+					<c:set var="itemtype" value="http://schema.org/UserComment"/>
+					<c:set var="itemprop" value="comment"/>
+				</c:if>
+	
+				<div class="${clazz} details"  itemprop="${itemprop}" itemscope="itemscope" itemtype="${itemtype}">
+					<discussionItem:discussionItemInfo discussionItem="${discussionItem}" content="${content}" anonymous="${anonymous}" ownDiscussionItem="${ownDiscussionItem}" schemaOrgMarkUp="${schemaOrgMarkUp}"/>
 					<div class="citeBox" style="display:none" >
 						<!-- keep it -->
 						<h3><fmt:message key="discussion.references" /></h3>
 					</div>
 					<div class="bookCiteBox" style="display:none" >
-						<!-- keep it -->
-						<h3><fmt:message key="discussion.bookmarkReferences" /></h3>
-					</div>
-			</div>
-		</c:otherwise>
-	</c:choose>
+							<!-- keep it -->
+							<h3><fmt:message key="discussion.bookmarkReferences" /></h3>
+						</div>
+				</div>
+			</c:when>
+			<c:otherwise>
+				<div class="${clazz} details">
+					<discussionItem:discussionItemInfo discussionItem="${discussionItem}" content="${content}" anonymous="${anonymous}" ownDiscussionItem="${ownDiscussionItem}" schemaOrgMarkUp="${schemaOrgMarkUp}"/>
+						<div class="citeBox" style="display:none" >
+							<!-- keep it -->
+							<h3><fmt:message key="discussion.references" /></h3>
+						</div>
+						<div class="bookCiteBox" style="display:none" >
+							<!-- keep it -->
+							<h3><fmt:message key="discussion.bookmarkReferences" /></h3>
+						</div>
+				</div>
+			</c:otherwise>
+		</c:choose>
 	
-	<!-- actions -->
-	<discussionItem:discussionItemActions discussionItem="${discussionItem}" />
+		<!-- actions -->
+		<discussionItem:discussionItemActions discussionItem="${discussionItem}" />
+		<!-- sub items -->
+		<discussionItem:subDiscussionItems discussionItems="${discussionItem.subDiscussionItems}" loginUser="${loginUser}" resource="${resource}"/>
+	</div>
 	
-	<!-- sub items -->
-	<discussionItem:subDiscussionItems discussionItems="${discussionItem.subDiscussionItems}" loginUser="${loginUser}" resource="${resource}"/>
 </jsp:root>

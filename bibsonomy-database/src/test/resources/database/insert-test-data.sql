@@ -151,11 +151,11 @@ INSERT INTO `gold_standard` (`content_id`, `title`, `url`, `description`, `date`
 (1025, 'Universität Kassel', 'http://www.uni-kassel.de', 'Nordhessen', '2011-01-01 00:00:00', 'testuser1', '20592a292e53843965c1bb42bfd51876', 1);
 
 -- 
--- Data for table `gold_standard_publication_references`
+-- Data for table `gold_standard_relations`
 -- 
-INSERT INTO `gold_standard_publication_references` (`publication`, `reference`, `user_name`, `date`) VALUES
-('097248439469d8f5a1e7fad6b02cbfcd', 'ac6aa3ccb181e61801cefbc1401d409a', 'testuser1', '2008-03-20 16:24:55'),
-('ac6aa3ccb181e61801cefbc1401d409a', '097248439469d8f5a1e7fad6b02cbfcd', 'testuser1', '2008-03-20 16:24:55');
+INSERT INTO `gold_standard_relations` (`publication`, `reference`, `user_name`, `date`, `relation_kind`) VALUES
+('097248439469d8f5a1e7fad6b02cbfcd', 'ac6aa3ccb181e61801cefbc1401d409a', 'testuser1', '2008-03-20 16:24:55', '0'),
+('ac6aa3ccb181e61801cefbc1401d409a', '097248439469d8f5a1e7fad6b02cbfcd', 'testuser1', '2008-03-20 16:24:55','0');
 
 
 -- 

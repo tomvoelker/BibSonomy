@@ -76,7 +76,7 @@ public class UnitTestRunner {
 							final BufferedReader sr = new BufferedReader(new StringReader(bibTeXResult));
 							// parse source
 							parser.parse(bibtexFile, sr);
-				
+							
 							for (Object potentialEntry:bibtexFile.getEntries())
 								if ((potentialEntry instanceof BibtexEntry))
 									bibtexValid = true;

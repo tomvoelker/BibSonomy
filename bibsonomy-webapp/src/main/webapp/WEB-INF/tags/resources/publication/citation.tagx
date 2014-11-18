@@ -33,12 +33,13 @@
 				<a href="#citation_plain"><fmt:message key="bibtex.citation_format.plain" /></a>
 			</li>
 			<c:forEach var="citationStyle" items="${fn:split('harvardhtml,chicago,apa_html,din1505',',')}">
-				<li><a href="/layout/${citationStyle}/bibtex/2${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}?formatEmbedded=true"><fmt:message key="bibtex.citation_format.${citationStyle}" /></a></li>
+				<c:set var="prefix" value="layout/${citationStyle}" />
+				<li><a href="${relativeUrlGenerator.prefix(prefix).getPublicationUrlByPost(post)}?formatEmbedded=true"><fmt:message key="bibtex.citation_format.${citationStyle}" /></a></li>
 			</c:forEach>
 			<li><a href="#citation_bibtex">BibTeX</a></li>
 			<li><a href="#citation_endnote">EndNote</a></li>
-			<li>				
-				<a href="${relativeUrlGenerator.prefix('export/').getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, post.user.name)}?formatEmbedded=true"><fmt:message key="bibtex.all_exports" /></a>
+			<li>
+				<a href="${relativeUrlGenerator.prefix('export').getPublicationUrlByPost(post)}?formatEmbedded=true"><fmt:message key="bibtex.all_exports" /></a>
 			</li>
 		</ul>
 		<div class="tab_content">

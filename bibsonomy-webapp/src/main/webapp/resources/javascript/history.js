@@ -15,11 +15,11 @@ $(document).ready(function () {
 	
 	$('span[id = curr]').click(function() {
 		$(this).toggleClass('underline', false);
-		$(this).toggleClass('label label-info', true);
+		$(this).toggleClass('mark', true);
 	//	$(this).hide();
 		
 		$(this).siblings().toggleClass('underline', true);
-		$(this).siblings().toggleClass('label label-info', false);
+		$(this).siblings().toggleClass('mark', false);
 		//$(this).siblings().show();
 	
 		$(this).parents('tr').next().find('.postDiffPre').toggleClass('invisible', true);
@@ -47,11 +47,11 @@ $(document).ready(function () {
 	
 	$('span[id = pre]').click(function() {
 		$(this).toggleClass('underline', false);
-		$(this).toggleClass('label label-info', true);
+		$(this).toggleClass('mark', true);
 	//	$(this).hide();
 		
 		$(this).siblings().toggleClass('underline', true);
-		$(this).siblings().toggleClass('label label-info', false);
+		$(this).siblings().toggleClass('mark', false);
 		//$(this).siblings().show();
 		
 		$(this).parents('tr').next().find('.postDiffPre').toggleClass('invisible', false);

@@ -1020,4 +1020,10 @@
 		<to type="redirect" last="true">/hashExample</to>
 	</rule>
 	
+	<!-- TODO: (Bootstrap) remove after updating the link in the blog -->
+	<rule>
+		<name>/bibsonomy3preview</name>
+		<from>^/bibsonomy3preview$</from>
+		<to type="redirect" last="true">/bibsonomy3</to>
+	</rule>
 </urlrewrite>

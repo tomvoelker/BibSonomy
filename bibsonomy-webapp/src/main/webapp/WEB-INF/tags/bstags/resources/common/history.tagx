@@ -32,7 +32,7 @@
 	
 	
 	<form id="history" action="/editPublication" method="POST">
-		<c:set var="buttonClasses" value=" "/>
+		<c:set var="buttonClasses" value="btn btn-primary btn-xs"/>
 		<!--<c:set var="post" scope="request" value="${listView.list[0]}"/>-->
 		<c:set var="fieldlength" value="${fn:length(listView.list)-1}" />
 		<c:set var="newestPost" value="${listView.list[fieldlength]}" />		
@@ -141,7 +141,7 @@
 							<!-- -->
 							<td>
 								
-								Compare to <span id="pre" class="label label-info">previous <span data-toggle="tooltip" 
+								Compare to <span id="pre" class="mark">previous <span data-toggle="tooltip" 
 									title="${diffNumPre} ${diffNumPreMsg}" class="badge">${diffNumPre}</span></span>
 								<c:if test = "${diffNumCurr ne 0}">
 									/<span id="curr" class="underline">current <span data-toggle="tooltip" 
@@ -156,7 +156,7 @@
 									<c:param name="user" value="${listView.list[(fieldlength-index+1)].user.name}" />
 								</c:url>-->
 								<a id="restoreBtn" class="${buttonClasses}" title="restore to this version">
-									<span class="fa fa-times"><!--  --></span>
+									<span class="fa fa-undo"><!--  --></span>
 								</a>
 								</td>
 							
@@ -180,7 +180,7 @@
 							<td colspan="3" id="postDiffCurr" class="postDiffCurr">	
 											
 								<c:forEach var="diffEntry" items="${diffArrayCurr}">
-									<input type="checkbox" id="CurrEntryCheckbox" class="invisible"/>
+									<input type="checkbox" id="CurrEntryCheckbox" class="invisible" checked="checked/>
 									<strong>${diffEntry.key}</strong>
 									<c:out value=": "/>
 									${diffEntry.value}

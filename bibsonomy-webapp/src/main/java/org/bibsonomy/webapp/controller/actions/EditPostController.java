@@ -255,17 +255,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				// this.handleUpdatePost(command, context, loginUser, post, intraHashToUpdate);
 				 //return Views.DIFFPUBLICATIONPAGE;
 			 //} else {
-			if(present(command.getDifferentEntryValues())){
-				List <String> diffEntryValList = new ArrayList<String>();//
-				Collections.addAll(diffEntryValList, command.getDifferentEntryValues().split("//,"));
-				List <String> diffEntryKeyList = command.getDifferentEntryKeys();
-				final BibTex bibResource = (BibTex) post.getResource();
-				for(int i =0;i<diffEntryKeyList.size();i++){
-					replaceResourceEntries(bibResource,diffEntryKeyList.get(i), diffEntryValList.get(i));
-				}
-			//	bibResource.set.... switch case
-				post.setResource((RESOURCE) bibResource);
-			}
 			
 			log.debug("intra hash to update found -> handling update of existing post");
 			return this.handleUpdatePost(command, context, loginUser, post, intraHashToUpdate);
@@ -525,6 +514,19 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				this.errors.reject("error.post.notfound", "The post with the given intra hash could not be found.");
 				return Views.ERROR;
 			}
+			
+			if(present(command.getDifferentEntryValues())){
+				List <String> diffEntryValList = new ArrayList<String>();//
+				Collections.addAll(diffEntryValList, command.getDifferentEntryValues().split("//,"));
+				List <String> diffEntryKeyList = command.getDifferentEntryKeys();
+				final BibTex bibResource = (BibTex) post.getResource();
+				for(int i =0;i<diffEntryKeyList.size();i++){
+					replaceResourceEntries(bibResource,diffEntryKeyList.get(i), diffEntryValList.get(i));
+				}
+			//	bibResource.set.... switch case
+				post.setResource((RESOURCE) bibResource);
+			}
+
 			/*
 			 * put post into command
 			 */
@@ -1148,13 +1150,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 */
 	protected Object getSessionAttribute(final String key) {
 		return this.requestLogic.getSessionAttribute(key);
-	}
-
-	/**
-	 * @return The URLGenerator to be used to generate (redirect) URLs.
-	 */
-	public URLGenerator getUrlGenerator() {
-		return this.urlGenerator;
 	}
 
 	/**

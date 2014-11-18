@@ -34,7 +34,6 @@
 		</c:if>
 		
 		<!-- iterate over a list of resources and create the list -->
-		<!-- ${widthClassName}  -->
 		<ul class="posts ${widthClassName} media-list">
 		
 			<c:if test="${not empty addAsFirstItem}">
@@ -64,9 +63,7 @@
 					</c:if>
 				</c:otherwise>
 			</c:choose>
-			<c:if test="${not empty addAsLastItem}">
-				<li class="last"><jsp:invoke fragment="addAsLastItem"/></li>
-			</c:if>
 		</ul>
+		<jsp:invoke fragment="addAsLastItem"/>
 	</div>
 </jsp:root>

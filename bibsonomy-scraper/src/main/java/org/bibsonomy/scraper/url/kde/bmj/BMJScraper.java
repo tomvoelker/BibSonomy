@@ -46,8 +46,6 @@ public class BMJScraper extends GenericBibTeXURLScraper implements ReferencesScr
 	private static final String SITE_URL = "http://www.bmj.com/";
 	private static final String INFO = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
-	//private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\"([^\"]++)\"[^>]*+>Download to citation manager</a>");
-	//private static final Pattern CITATION_MANAGER_PATTERN = Pattern.compile("href=\"(/highwire/citation/\\d++/bibtex)\"");
 	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<li .*>BibTeX .*<a href=\"(.*)\" .*>Download</a></li>");
 	private static final Pattern REFERENCES_PATTERN = Pattern.compile("<ol class=\"cit-list\">(.*)</ol>");
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = new ArrayList<Pair<Pattern,Pattern>>();
@@ -126,6 +124,7 @@ public class BMJScraper extends GenericBibTeXURLScraper implements ReferencesScr
 		
 		if (firstline.length == 1) {
 			// TODO: shouldn't we only replace the first match?
+			// TODO: generate a nice key
 			final String bibtex_replace = allfields[0].replace("{","{noKey,");
 			return bibtex.replace(allfields[0], bibtex_replace);
 		}

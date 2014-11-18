@@ -37,6 +37,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
@@ -49,7 +50,7 @@ import org.bibsonomy.util.WebUtils;
  * Scraper for www.dlib.org
  * @author tst
  */
-public class DLibScraper extends AbstractUrlScraper {
+public class DLibScraper extends AbstractUrlScraper implements ReferencesScraper {
 	private static final Log log = LogFactory.getLog(DLibScraper.class);
 	
 	private static final String SITE_URL = "http://www.dlib.org/";
@@ -137,7 +138,9 @@ public class DLibScraper extends AbstractUrlScraper {
 	 */
 	private static final String PATTERN_BIBTEX_KEY = "dlib/(.*)/(.*)/";
 	private static final Pattern PATTERN_ABSTRACT = Pattern.compile("<H3 class=\"blue\">Abstract</H3>\\s+<p class=\"blue\">\\s+(.*)\\s+</p>");
-
+	
+	//Pattern for references
+	private static final Pattern REFERENCES = Pattern.compile("(?s)<h3>Notes.*</h3>(.*)<center><h6>Copyright");
 	
 	@Override
 	public String getInfo() {
@@ -326,6 +329,23 @@ public class DLibScraper extends AbstractUrlScraper {
 	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
+	 */
+	@Override
+	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
+		try {
+			final Matcher m = REFERENCES.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
+			if (m.find()) {
+				scrapingContext.setReferences(m.group(1));
+				return true;
+			}	
+		} catch (IOException ex) {
+			throw new ScrapingException(ex);
+		}
+		return false;
 	}
 	
 }

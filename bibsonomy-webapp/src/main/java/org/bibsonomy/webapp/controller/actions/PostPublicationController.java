@@ -42,6 +42,7 @@ import bibtex.parser.ParseException;
 /**
  * 
  * @author ema
+ * @author rja
  */
 public class PostPublicationController extends AbstractEditPublicationController<PostPublicationCommand> {
 	private static final Log log = LogFactory.getLog(PostPublicationController.class);
@@ -81,6 +82,16 @@ public class PostPublicationController extends AbstractEditPublicationController
 		return command;
 	}
 
+	/**
+	 * Handles posting of several posts, e.g., parsed from a BibTeX file.
+	 * 
+	 * TODO: We need to integrate a mechanism into the view to show warnings for
+	 * posts we could import (currently, only errors are shown and then those 
+	 * posts are also not imported).  
+	 * 
+	 * 
+	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#workOn(org.bibsonomy.webapp.command.actions.EditPostCommand)
+	 */
 	@Override
 	public View workOn(final PostPublicationCommand command) {
 		log.debug("workOn started");
@@ -196,18 +207,18 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 */
 			posts = parser.parseBibTeXPosts(snippet);
 		} catch (final ParseException ex) {
-			errors.reject("error.upload.failed.parse", ex.getMessage());
+			this.errors.reject("error.upload.failed.parse", ex.getMessage());
 		} catch (final IOException ex) {
-			errors.reject("error.upload.failed.parse", ex.getMessage());
+			this.errors.reject("error.upload.failed.parse", ex.getMessage());
 		}
-		PublicationValidator.handleParserWarnings(errors, parser, snippet, null);
+		PublicationValidator.handleParserWarnings(this.errors, parser, snippet, null);
 
 		/*
 		 * The errors we have collected until now should be fixed before we proceed.
 		 * 
 		 * (We did not collect errors due to individual broken BibTeX lines, yet!)
 		 */
-		if (errors.hasErrors()) {
+		if (this.errors.hasErrors()) {
 			return Views.POST_PUBLICATION;
 		}
 
@@ -216,12 +227,12 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 */
 		handleParseExceptions(parser.getCaughtExceptions());
 
-		if (!errors.hasErrors() && !present(posts)) {
+		if (!this.errors.hasErrors() && !present(posts)) {
 			/*
 			 * no errors ... but also no posts ... Ooops!
 			 * the parser was not able to produce posts but did not add errors nor throw exceptions
 			 */
-			errors.reject("error.upload.failed.parse", "Upload failed because of parser errors.");
+			this.errors.reject("error.upload.failed.parse", "Upload failed because of parser errors.");
 			return Views.POST_PUBLICATION;
 		}
 
@@ -229,7 +240,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * If exactly one post has been extracted, and there were no parse exceptions, 
 		 * the edit post controller can handle the remaining work.
 		 */
-		if (posts.size() == 1 && !errors.hasErrors()) {
+		if (posts.size() == 1 && !this.errors.hasErrors()) {
 			final Post<BibTex> post = posts.get(0);
 			if (present(post)) {
 				/*
@@ -286,7 +297,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		/*
 		 * validate the posts
 		 */
-		ValidationUtils.invokeValidator(new PostPublicationCommandValidator(), command, errors);
+		ValidationUtils.invokeValidator(new PostPublicationCommandValidator(), command, this.errors);
 
 		/*
 		 * We try to store only posts that have no validation errors.
@@ -314,7 +325,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * If there were any errors, some posts were not stored in the database. We
 		 * need to get them from the session later on, thus we store them there.
 		 */
-		if (errors.hasErrors()) {
+		if (this.errors.hasErrors()) {
 			/*
 			 * Trigger the correct setting of the "delete/save" check boxes on
 			 * the batch edit page.
@@ -332,7 +343,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * greater than the treshold, we will forward him to the appropriate
 		 * site, where he can delete posts (they were saved)
 		 */
-		if (!command.isEditBeforeImport() && (!errors.hasErrors() || posts.size() > MAXCOUNT_ERRORHANDLING)) {
+		if (!command.isEditBeforeImport() && (!this.errors.hasErrors() || posts.size() > MAXCOUNT_ERRORHANDLING)) {
 			command.setDeleteCheckedPosts(true); //posts will have to get saved, because the user decided to
 		} else {
 			command.setDeleteCheckedPosts(false);
@@ -340,7 +351,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 		/*
 		 * If there are errors now or not - we return to the post
-		 * publication view to let the user edit his posts. 
+		 * publication view to let the user edit his/her posts. 
 		 */
 		return Views.POST_PUBLICATION;
 	}

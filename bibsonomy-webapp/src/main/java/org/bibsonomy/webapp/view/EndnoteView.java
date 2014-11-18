@@ -1,7 +1,10 @@
 package org.bibsonomy.webapp.view;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.List;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -27,13 +30,16 @@ public class EndnoteView extends AbstractPublicationView<PublicationViewCommand>
 	@Override
 	protected void render(PublicationViewCommand command, OutputStreamWriter writer) throws IOException {
 		boolean first = true;
-		for (final Post<BibTex> post : command.getBibtex().getList()) {
-			if (first == true) {
-				first = false;
-			} else {
-				writer.append('\n');
+		final List<Post<BibTex>> publicationPosts = command.getBibtex().getList();
+		if (present(publicationPosts)) {
+			for (final Post<BibTex> post : publicationPosts) {
+				if (first) {
+					first = false;
+				} else {
+					writer.append('\n');
+				}
+				EndnoteUtils.append(writer, post, command.isSkipDummyValues());
 			}
-			EndnoteUtils.append(writer, post, command.isSkipDummyValues());
 		}
 	}
 }

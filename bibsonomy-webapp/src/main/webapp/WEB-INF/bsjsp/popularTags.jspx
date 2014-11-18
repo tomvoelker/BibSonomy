@@ -10,7 +10,8 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources">
+	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
@@ -18,22 +19,32 @@
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.tags" formAction="/tag/" formInputName="tag"/>
 		</jsp:attribute>
-						
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:popular />
+					<nav:crumb nameKey="navi.tags" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+				
 		<!--+
 			| page content
 			+-->
-		<jsp:attribute name="content">			
+		<jsp:attribute name="content">
 			<div style="text-align:center;padding:2em 5em 2em 5em;" class="tags_first">
- 			  <fmt:message var="posts" key="posts"/>
- 			  <c:forEach var="tag" items="${command.tags}">
-		         <a class="${mtl:getTagSize(tag.globalcount, command.maxTagCount)}" 
-		            style="font-size:${mtl:computeTagFontsize(tag.globalcount, command.minTagCount, command.maxTagCount, 'popular')}%; padding-left:0.3em; padding-right:0.3em;" 
-		            title="${tag.globalcount} ${posts}" 
-		            href="${relativeUrlGenerator.getTagUrlByTagName(fn:escapeXml(tag.name))}"><c:out value="${tag.name}"/></a><c:out value=" "/>
+ 				<fmt:message var="posts" key="posts"/>
+ 				<c:forEach var="tag" items="${command.tags}">
+					<a class="${mtl:getTagSize(tag.globalcount, command.maxTagCount)}"
+						style="font-size:${mtl:computeTagFontsize(tag.globalcount, command.minTagCount, command.maxTagCount, 'popular')}%; padding-left:0.3em; padding-right:0.3em;" 
+						title="${tag.globalcount} ${posts}" 
+						href="${relativeUrlGenerator.getTagUrlByTagName(fn:escapeXml(tag.name))}">
+						<c:out value="${tag.name}"/>
+					</a>
+					<c:out value=" "/>
 			  </c:forEach>
-			</div>			
+			</div>
 		</jsp:attribute>
-		
 	</layout:paneLayout>
-
 </jsp:root>

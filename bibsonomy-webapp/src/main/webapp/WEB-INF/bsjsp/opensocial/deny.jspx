@@ -8,7 +8,6 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/actions/user"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
@@ -37,43 +36,38 @@
 				.oauthDescription {
 					font-style: italic;
 				}
-			</style>			
-  		</jsp:attribute>
+			</style>
+		</jsp:attribute>
 
 		<!--+
 			| heading 
 			+-->
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.oauth.authorization" />
-    	</jsp:attribute>
-
-         
+		</jsp:attribute>
+		
 		<!--+
 			| content
 			+-->
-		<jsp:attribute name="content">				
-				
-				<bs:alert style="info">
-					<jsp:attribute name="alertBody">
-						<p>
-						<fmt:message key="oauth.denial.info">
+		<jsp:attribute name="content">
+			<bs:alert style="info">
+				<jsp:attribute name="alertBody">
+					<p>
+					<fmt:message key="oauth.denial.info">
+						<fmt:param value="${command.appTitle}" />
+						<fmt:param value="${properties['project.name']}" />
+					</fmt:message>
+					</p>
+					<br/>
+					<p>
+					<a href="${command.callBackUrl}" class="btn btn-sm btn-primary" name="goBack" >
+						<fmt:message key="oauth.denial.return">
 							<fmt:param value="${command.appTitle}" />
-							<fmt:param value="${properties['project.name']}" />
 						</fmt:message>
-						</p>
-						<br/>
-						<p>
-						<a href="${command.callBackUrl}" class="btn btn-sm btn-primary" name="goBack" >
-							<fmt:message key="oauth.denial.return">
-								<fmt:param value="${command.appTitle}" />
-							</fmt:message>
-						</a>
-						</p>
-					</jsp:attribute>
-				</bs:alert>
-
-      	</jsp:attribute>
-      	
-      	
+					</a>
+					</p>
+				</jsp:attribute>
+			</bs:alert>
+		</jsp:attribute>
 	</layout:paneLayout>
 </jsp:root>

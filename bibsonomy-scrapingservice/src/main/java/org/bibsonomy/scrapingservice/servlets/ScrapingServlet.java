@@ -70,6 +70,7 @@ import org.bibsonomy.scraper.exceptions.UsageFailureException;
 import org.bibsonomy.scrapingservice.beans.ScrapingResultBean;
 import org.bibsonomy.scrapingservice.writers.JSONWriter;
 import org.bibsonomy.scrapingservice.writers.RDFWriter;
+import org.bibsonomy.util.StringUtils;
 
 import bibtex.parser.ParseException;
 
@@ -84,7 +85,7 @@ public class ScrapingServlet extends HttpServlet {
 	private static final long serialVersionUID = -5145534846771334947L;
 	private static final Log log = LogFactory.getLog(ScrapingServlet.class);
 
-	private static final String RESPONSE_ENCODING = "UTF-8";
+	private static final String RESPONSE_ENCODING = StringUtils.CHARSET_UTF_8;
 	
 	private static final String FORMAT_RDF = "rdf+xml";
 	private static final String FORMAT_BIBTEX = "bibtex";

@@ -28,7 +28,7 @@ public class RelayStateSettingEntryPoint implements AuthenticationEntryPoint {
 	private SamlAuthenticationTool getSamlTool(HttpServletRequest request) {
 		RequestLogic reqLogic = new RequestLogic(request);
 		Collection<String> allowedParametersForRedirect;
-		if ("GET".equalsIgnoreCase(request.getMethod()) == true) {
+		if ("GET".equalsIgnoreCase(request.getMethod())) {
 			// keep all get parameters
 			allowedParametersForRedirect = null;
 		} else {

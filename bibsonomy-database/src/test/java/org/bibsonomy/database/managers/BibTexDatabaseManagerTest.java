@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -45,6 +46,7 @@ import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.DBTestUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
+import org.bibsonomy.testutil.TestUtils;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -746,10 +748,10 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		
 		final BibTex publication = new BibTex();
 		CommonModelUtils.setBeanPropertiesOn(publication);
-		publication.setCount(0);		
+		publication.setCount(0);
 		publication.setEntrytype("inproceedings");
 		publication.setAuthor(PersonNameUtils.discoverPersonNames("Testauthor, Hans and Testauthorin, Liese"));
-		publication.setEditor(PersonNameUtils.discoverPersonNames("Silie, Peter"));		
+		publication.setEditor(PersonNameUtils.discoverPersonNames("Silie, Peter"));
 		publication.setTitle("test friend title");
 		publication.setYear("test year");
 		publication.setJournal("test journal");
@@ -758,6 +760,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		publication.setNumber("test number");
 		publication.setType("2");
 		publication.recalculateHashes();
+		publication.setExtraUrls(Arrays.asList(new BibTexExtra(TestUtils.createURL("http://www.test1.de"), "test1", null)));
 		
 		post.setResource(publication);
 		return post;
@@ -771,7 +774,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	@Test
 	public void storePostBibTexUpdatePlugin() {
 		this.printMethod("storePostBibTexUpdatePlugin");
-		final String hash = "b77ddd8087ad8856d77c740c8dc2864a";		
+		final String hash = "b77ddd8087ad8856d77c740c8dc2864a";
 		final String loginUserName = "testuser1";
 
 		List<BibTexExtra> extras = bibTexExtraDb.getURL(hash, loginUserName, this.dbSession);
@@ -815,9 +818,13 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		assertEquals(1, posts.size());
 		CommonModelUtils.assertPropertyEquality(toInsert, posts.get(0), Integer.MAX_VALUE, null, new String[] { "resource", "tags", "user", "date", "changeDate"});
 		toInsert.getResource().setCount(1);
-		CommonModelUtils.assertPropertyEquality(toInsert.getResource(), posts.get(0).getResource(), Integer.MAX_VALUE, null, new String[] { "openURL", "numberOfRatings", "rating"});
+		CommonModelUtils.assertPropertyEquality(toInsert.getResource(), posts.get(0).getResource(), Integer.MAX_VALUE, null, new String[] { "openURL", "numberOfRatings", "rating", "extraUrls"});
 
-		// post a duplicate and check whether plugins are called		
+		// check extra urls 
+		final Post<BibTex> post = publicationDb.getPostDetails(loginUser.getName(), bibtexHashForUpdate, loginUser.getName(),  Collections.singletonList(PUBLIC_GROUP_ID), this.dbSession);
+		CommonModelUtils.assertPropertyEquality(toInsert.getResource().getExtraUrls(), post.getResource().getExtraUrls(), Integer.MAX_VALUE, Pattern.compile("date"), new String[]{});
+		
+		// post a duplicate and check whether plugins are called
 		assertFalse(this.pluginMock.isOnBibTexUpdate());
 		this.pluginMock.reset();
 		

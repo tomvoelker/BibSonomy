@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.SimHash;
@@ -38,6 +39,7 @@ import org.bibsonomy.model.util.SimHash;
  * BibTex fields like the author, publisher etc.
  * 
  * @author Christian Schenk
+ * @author jensi
  */
 public class BibTex extends Resource {
 	/** for persistence (Serializable) */
@@ -50,7 +52,7 @@ public class BibTex extends Resource {
 	private String bibtexKey;
 
 	/**
-	 * This key is used by bibtex on sorting purpose if there is neither an
+	 * This key is used by BibTeX on sorting purpose if there is neither an
 	 * {@link #author} nor an {@link #editor} defined.
 	 * TODO: rename to something like sortingKey ?
 	 */
@@ -193,7 +195,7 @@ public class BibTex extends Resource {
 	public void setAbstract(final String bibtexAbstract) {
 		this.bibtexAbstract = bibtexAbstract;
 	}
-
+	
 	/**
 	 * @return bibtexKey
 	 */
@@ -701,15 +703,16 @@ public class BibTex extends Resource {
 	
 	/**
 	 * Parses the 'misc'-field and stores the obtained key/valued pairs
-	 * in the internal miscFields-Hashmap.
+	 * in the internal miscFields map.
+	 * @throws InvalidModelException 
 	 */
-	public void parseMiscField() {
+	public void parseMiscField() throws InvalidModelException {
 		this.miscFields = BibTexUtils.parseMiscFieldString(this.getMisc());
 		this.miscFieldParsed = true;
 	}
 	
 	/**
-	 * Serializes the internal miscFields-Hashmap into the a string 
+	 * Serializes the internal miscFields map into the a string 
 	 * representation and stores it in the 'misc'-field.
 	 */
 	public void serializeMiscFields() {

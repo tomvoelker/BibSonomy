@@ -29,7 +29,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -79,14 +78,14 @@ public class SimpleBibTeXParser {
 	private ParseException[] caughtExceptions;
 
 	/**
-	 * Stores warnings occuring during parsing.
+	 * Stores warnings occurring during parsing.
 	 */
-	private final List<String> warnings;
+	private final List<ExpansionException> warnings;
 	/**
 	 * inits the warnings list
 	 */
 	public SimpleBibTeXParser() {
-		this.warnings = new LinkedList<String>();
+		this.warnings = new LinkedList<ExpansionException>();
 	}
 
 	/**
@@ -121,7 +120,7 @@ public class SimpleBibTeXParser {
 	/**
 	 * @return The warnings created during parsing.
 	 */
-	public List<String> getWarnings() {
+	public List<ExpansionException> getWarnings() {
 		return this.warnings;
 	}
 
@@ -251,14 +250,22 @@ public class SimpleBibTeXParser {
 			final MacroReferenceExpander macroReferenceExpander = new MacroReferenceExpander(true, false, false, false);
 			macroReferenceExpander.expand(bibtexFile);
 			addWarnings(macroReferenceExpander);
-		} catch (ExpansionException ee) {
-			warnings.add(ee.getMessage());
+		} catch (final ExpansionException ee) {
+			this.warnings.add(ee);
 		}
 
 		try {
-			new CrossReferenceExpander(true).expand(bibtexFile);
-		} catch (ExpansionException ee) {
-			warnings.add(ee.getMessage());
+			/*
+			 * rja, 2014-11-14; disabled immediate throwing of warnings such
+			 * that we can parse BibTeX lists where entries have crossref entries
+			 * which are missing (can happen when users import from DBLP, where
+			 * entries are complete but still refer to the crossref).
+			 */
+			final CrossReferenceExpander crossReferenceExpander = new CrossReferenceExpander(false);
+			crossReferenceExpander.expand(bibtexFile);
+			addWarnings(crossReferenceExpander);
+		} catch (final ExpansionException ee) {
+			this.warnings.add(ee);
 		}
 
 		try {
@@ -266,13 +273,13 @@ public class SimpleBibTeXParser {
 			personListExpander.expand(bibtexFile);
 			addWarnings(personListExpander);
 		} catch (ExpansionException ee) {
-			warnings.add(ee.getMessage());
+			this.warnings.add(ee);
 		}
 	}
 
 	private void addWarnings(final AbstractExpander abstractExpander) {
 		for (final ExpansionException expansionException : abstractExpander.getExceptions()) {
-			warnings.add(expansionException.getMessage());	
+			this.warnings.add(expansionException);	
 		}
 	}
 

@@ -19,6 +19,7 @@ public class AuthorsPageController implements MinimalisticController<AuthorsComm
 	
 	@Override
 	public View workOn(final AuthorsCommand command) {
+		// TODO: can't we use the PersonName instead of the author model?
 		command.setAuthorList(this.logic.getAuthors(GroupingEntity.ALL, null, null, null, null, null, 0, Integer.MAX_VALUE, null));
 		return Views.AUTHORSPAGE;
 	}

@@ -1,5 +1,7 @@
 package org.bibsonomy.database.params;
 
+import org.bibsonomy.model.enums.GoldStandardRelation;
+
 /**
  * @author dzo
  */
@@ -7,6 +9,7 @@ public class GoldStandardReferenceParam {
 	private String hash;
 	private String refHash;
 	private String username;
+	private GoldStandardRelation relation;
 	
 	/**
 	 * @return the hash
@@ -48,5 +51,19 @@ public class GoldStandardReferenceParam {
 	 */
 	public void setUsername(String username) {
 		this.username = username;
+	}
+	
+	/**
+	 * @return the relation
+	 */
+	public GoldStandardRelation getRelation() {
+		return this.relation;
+	}
+	
+	/**
+	 * @param relation the relation to set
+	 */
+	public void setRelation(GoldStandardRelation relation) {
+		this.relation = relation;
 	}
 }

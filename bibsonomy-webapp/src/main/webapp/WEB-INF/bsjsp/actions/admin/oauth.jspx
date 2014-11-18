@@ -129,7 +129,7 @@
 				<h3><fmt:message key="admin.actions.consumer.register"/></h3>
 				
         	    <form:form action="${relativeUrlGenerator.getAdminUrlByName('oauth')}" method="POST">
-		        	<errors:global errors="${errors}"/>             
+		        	<errors:global />
 
 						<fieldset class="fsInner">
 							<legend><fmt:message key="admin.oauth.consumer.details"/></legend>
@@ -233,7 +233,7 @@
                 // Ensure consumer is to be removed and delete it.
         		function deleteConsumer(consumerKey) {
         			var box = window.confirm(getString('admin.oauth.consumer.ensure_delete'));
-        			if (box == true) { 
+        			if (box) { 
         				document.getElementById("consumerKey").value = consumerKey;
         				document.getElementById("deleteConsumerForm").submit();
         			}
@@ -242,6 +242,6 @@
              //</mtl:cdata>
           </script>
 			
-		</jsp:attribute>				
+		</jsp:attribute>
 	</layout:layout>
 </jsp:root>

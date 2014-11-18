@@ -26,7 +26,7 @@
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="contentHeading" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>
-	<jsp:directive.attribute name="isBasket" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="isClipboard" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showPageOptions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
@@ -126,7 +126,7 @@
 					customPageOptions="${customPageOptions}"
 					showBookmark="${showBookmark}"
 					showPublication="${showPublication}"
-					isBasket="${isBasket}"
+					isClipboard="${isClipboard}"
 					disableListNavigation="${disableListNavigation}"
 					disableResourcetypeSelection="${disableResourcetypeSelection}"
 					disableSort="${disableSort}"
@@ -167,14 +167,11 @@
 			+ main content (resource lists)
 			+-->
 		<jsp:attribute name="content">
-		
-					<c:if test="${not empty content}">
-						<div id="innercontent" style="margin-left: 8px;">
-							<jsp:invoke fragment="content" />
-						</div>
-					</c:if>
-					
-		
+			<c:if test="${not empty content}">
+				<div id="innercontent" style="margin-left: 8px;">
+					<jsp:invoke fragment="content" />
+				</div>
+			</c:if>
 			<jsp:invoke fragment="discussion" />
 			<c:if test="${not empty discussion}">
 				<parts:postHeader 
@@ -185,7 +182,7 @@
 					customPageOptions="${customPageOptions}"
 					showBookmark="${showBookmark}"
 					showPublication="${showPublication}"
-					isBasket="${isBasket}"
+					isClipboard="${isClipboard}"
 					disableListNavigation="${disableListNavigation}"
 					disableResourcetypeSelection="${disableResourcetypeSelection}"
 					showInboxActions="${showInboxActions}"
@@ -205,7 +202,6 @@
 							<goldstandardpublication:detailsclean otherPosts="${command.bibtex.list}" post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
 						</c:when>
 						<c:otherwise>
-						
 							<goldstandardpublication:details otherPosts="${command.bibtex.list}" post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
 						</c:otherwise>
 					</c:choose>
