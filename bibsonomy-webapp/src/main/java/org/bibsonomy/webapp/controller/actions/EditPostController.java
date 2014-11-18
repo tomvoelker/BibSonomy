@@ -517,14 +517,14 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			
 			if(present(command.getDifferentEntryValues())){
 				List <String> diffEntryValList = new ArrayList<String>();//
-				Collections.addAll(diffEntryValList, command.getDifferentEntryValues().split("//,"));
+				Collections.addAll(diffEntryValList, command.getDifferentEntryValues().split("//"));
 				List <String> diffEntryKeyList = command.getDifferentEntryKeys();
-				final BibTex bibResource = (BibTex) post.getResource();
+				final BibTex bibResource = (BibTex) dbPost.getResource();
 				for(int i =0;i<diffEntryKeyList.size();i++){
 					replaceResourceEntries(bibResource,diffEntryKeyList.get(i), diffEntryValList.get(i));
 				}
 			//	bibResource.set.... switch case
-				post.setResource((RESOURCE) bibResource);
+				dbPost.setResource((RESOURCE) bibResource);
 			}
 
 			/*
@@ -766,7 +766,8 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * FIXME: if we are coming from /bibtex/HASH* or /url/HASH* and the hash
 		 * has changed, we should redirect to the corresponding new page
 		 */
-		if (!present(referer) || referer.matches(".*/postPublication$") || referer.matches(".*/postBookmark$")) {
+		if (!present(referer) || referer.matches(".*/postPublication$") ||
+				referer.matches(".*/postBookmark$") || referer.contains("/history/")) {
 			return new ExtendedRedirectView(this.urlGenerator.getUserUrlByUserName(userName));
 		}
 		/*

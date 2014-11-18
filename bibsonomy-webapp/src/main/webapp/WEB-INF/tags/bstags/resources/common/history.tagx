@@ -139,8 +139,7 @@
 								</a>
 							</td> --> 
 							<!-- -->
-							<td>
-								
+							<td>	
 								Compare to <span id="pre" class="mark">previous <span data-toggle="tooltip" 
 									title="${diffNumPre} ${diffNumPreMsg}" class="badge">${diffNumPre}</span></span>
 								<c:if test = "${diffNumCurr ne 0}">
@@ -150,15 +149,10 @@
 								version
 							</td>	
 							<td>					
-									
-								<!--<c:url var="diffLink" value="/editPublication">
-									<c:param name="intraHashToUpdate" value="${listView.list[(fieldlength-index+1)].resource.intraHash}" />
-									<c:param name="user" value="${listView.list[(fieldlength-index+1)].user.name}" />
-								</c:url>-->
-								<a id="restoreBtn" class="${buttonClasses}" title="restore to this version">
+								<a id="restoreBtn" class="${buttonClasses} invisible" title="restore to this version">
 									<span class="fa fa-undo"><!--  --></span>
 								</a>
-								</td>
+							</td>
 							
 							</tr>
 							<tr >
@@ -180,29 +174,26 @@
 							<td colspan="3" id="postDiffCurr" class="postDiffCurr">	
 											
 								<c:forEach var="diffEntry" items="${diffArrayCurr}">
-									<input type="checkbox" id="CurrEntryCheckbox" class="invisible" checked="checked/>
+									<input type="checkbox" id="CurrEntryCheckbox" class="invisible" checked="checked"/>
 									<strong>${diffEntry.key}</strong>
 									<c:out value=": "/>
 									${diffEntry.value}
 									<br/>
-									
-									<!-- ${mtl:BibDiff(diffEntry,listView.list[(fieldlength)].resource,listView.list[(fieldlength-index+1)].resource)} -->
-									<!--  -->
+							
 									<div>
-									<input type="hidden" name="diffEntryKey" value="${diffEntry.key}"/>
-									<input type="hidden" name="diffEntryValue" 
-										value="${mtl:getEntryValue(diffEntry.key,listView.list[(fieldlength-index+1)].resource)}"/>
-										</div>
+										<input type="hidden" name="diffEntryKey" value="${diffEntry.key}"/>
+										<input type="hidden" name="diffEntryValue" 
+											value="${mtl:getEntryValue(diffEntry.key,listView.list[(fieldlength-index+1)].resource)}"/>
+									</div>
 								</c:forEach>
-								<!-- <input type="hidden" name="HistoryPostTMP" value="${listView.list[(fieldlength-index+1)]}" /> -->
-								<div class="alert col-sm-10 alert-warning" role="alert">
-									<fmt:message key="history.restore.confirm" />
+								<div id="restore_alert_btn" class="invisible hidden">
+									<div class="alert col-sm-10 alert-warning" style="margin-bottom:0px;" role="alert">
+										<fmt:message key="history.restore.confirm" />
+									</div>
+									<button class="btn btn-primary submitBtn" style="float:right">restore</button>
 								</div>
-								<button class="btn btn-primary restoreButton" style="float:right">restore</button>
-								
 							</td>
 							</c:if>						
-							<!-- <li id="restoreConfirm" class="Hint red invisible"><fmt:message key="history.restoreConfirm" /></li> -->
 						</tr>	
 						
 					</c:forEach>
@@ -256,7 +247,6 @@
 		</c:otherwise>
 	</c:choose>
 		
-	<!-- <input type="hidden" name="diffEntryKey" value="${diffArrayCurr}" /> -->
 		
 </form>
 
