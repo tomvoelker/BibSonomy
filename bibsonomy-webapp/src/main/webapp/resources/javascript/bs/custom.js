@@ -86,6 +86,25 @@ $(function() {
 
     });
     
+    /**
+     * SYSTEM TAGS HANDLING
+	 */
+    var isSystemTag = function(item) {
+		pattern = new RegExp('.+:.+');
+		return pattern.test(item);
+    };
+
+    $('input[data-role=tagsinput]').tagsinput({
+    	confirmKeys: [32,13], //space and return
+    	trimValue: true,
+    	freeInput: true,
+    	tagClass: function(item) {
+    		return isSystemTag(item) ? 'label label-warning' : 'label label-primary';
+    	}
+    });
+    
+    
+    
     $('.rename-tags-btn').click(function(){
     	$(this).parent().prev().focus().next().show().hide();
     }); 
