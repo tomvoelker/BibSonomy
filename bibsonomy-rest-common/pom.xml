@@ -13,6 +13,12 @@
 		<artifactId>bibsonomy</artifactId>
 		<version>3.0.0-SNAPSHOT</version>
 	</parent>
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License, Version 3 or later</name>
+			<url>http://www.gnu.org/licenses/lgpl.html</url>
+		</license>
+	</licenses>
 	<dependencies>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -60,19 +66,4 @@
 			<version>2.2.8-b01</version>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>com.mycila.maven-license-plugin</groupId>
-				<artifactId>maven-license-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>**/src/test/resources/**</exclude>
-						<exclude>**/*.txt</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>

@@ -6,8 +6,15 @@
 		<groupId>org.bibsonomy</groupId>
 		<version>3.0.0-SNAPSHOT</version>
 	</parent>
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License, Version 3 or later</name>
+			<url>http://www.gnu.org/licenses/lgpl.html</url>
+		</license>
+	</licenses>
 	<artifactId>bibsonomy-web-common</artifactId>
 	<name>BibSonomy-Web-Common</name>
+	<description>Common things for web</description>
 	<dependencies>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -77,5 +84,4 @@
 			<version>2.3</version>
 		</dependency>
 	</dependencies>
-	<description>Common things for web</description>
 </project>

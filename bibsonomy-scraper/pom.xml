@@ -13,6 +13,12 @@
 		<groupId>org.bibsonomy</groupId>
 		<version>3.0.0-SNAPSHOT</version>
 	</parent>
+	<licenses>
+		<license>
+			<name>GNU General Public License, Version 3 or later</name>
+			<url>http://www.gnu.org/licenses/gpl.html</url>
+		</license>
+	</licenses>
 	<dependencies>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
