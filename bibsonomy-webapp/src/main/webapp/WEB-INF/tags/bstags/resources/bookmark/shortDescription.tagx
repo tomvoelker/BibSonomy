@@ -9,22 +9,15 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
 	
     <!-- shows a short description of a post - only the title - the complete data in a hover-box -->
+   
     
-    <c:set var="bookUrl"><c:out value="${mtl:cleanUrl(post.resource.url)}" escapeXml="true"/></c:set>
-    <a href="${bookUrl}">
-      <c:out value='${mtl:shorten(post.resource.title, 80)}'/>
-    </a>
     
-    <c:out value=" "/>
-    <span class="info hidden">...
-      <div>
+    <span class="truncatedDesc batchInfo">
+   		${post.resource.title} 
+   		<div>
         <div class="ptitle"><bm:title post="${post}"/></div>
-        <div class="pdesc"> <bm:desc post="${post}"/></div>
-        <span>
-          <rc:meta post="${post}" otherPostsUrlPrefix="/url/"/>
-        </span>
-      </div>
-    </span>
-    
+        <div class="pdesc"><bm:desc post="${post}"/></div>
+        </div>  		
+   	</span>	
 	
 </jsp:root>
