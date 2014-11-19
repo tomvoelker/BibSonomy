@@ -100,7 +100,8 @@ $(function() {
     	freeInput: true,
     	tagClass: function(item) {
     		return isSystemTag(item) ? 'label label-warning' : 'label label-primary';
-    	}
+    	},
+    	delimiter: ' '
     });
     
     
