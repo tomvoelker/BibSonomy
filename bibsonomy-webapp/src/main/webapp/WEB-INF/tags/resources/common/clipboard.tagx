@@ -5,13 +5,13 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
-	<jsp:directive.attribute name="isBasket" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="isClipboard" type="java.lang.Boolean" required="true" />
 	
 	<!--+
 		+ basket actions (pick all, unpick all, clear basket)
 		+-->	
 	<c:choose>
-		<c:when test="${isBasket}">
+		<c:when test="${isClipboard}">
 			<fmt:message key="basket.removeAllVerbose" var="removeAllVerbose"/>
 			<a href="/ajax/pickUnpickPost?action=clearAll&amp;ckey=${mtl:encodeURI(command.context.ckey)}">
 				<fmt:message key="basket.removeAll"/>

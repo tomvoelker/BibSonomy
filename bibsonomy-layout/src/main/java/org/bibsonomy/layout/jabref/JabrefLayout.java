@@ -31,6 +31,7 @@ import net.sf.jabref.export.layout.Layout;
 
 import org.bibsonomy.common.enums.LayoutPart;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
+import org.bibsonomy.util.StringUtils;
 
 
 /**
@@ -97,7 +98,7 @@ public class JabrefLayout extends AbstractJabRefLayout {
 		 * third: render, if layout found
 		 */
 		if (beginLayout != null) {
-			output.append(beginLayout.doLayout(database, "UTF-8"));
+			output.append(beginLayout.doLayout(database, StringUtils.CHARSET_UTF_8));
 		}
 		
 		/* 
@@ -160,7 +161,7 @@ public class JabrefLayout extends AbstractJabRefLayout {
 		 * third: render, if layout found
 		 */
 		if (endLayout != null) {
-			output.append(endLayout.doLayout(database, "UTF-8"));
+			output.append(endLayout.doLayout(database, StringUtils.CHARSET_UTF_8));
 		}
 
 		return output;

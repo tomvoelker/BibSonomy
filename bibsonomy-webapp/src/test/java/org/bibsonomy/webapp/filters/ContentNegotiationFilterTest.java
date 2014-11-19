@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.bibsonomy.util.StringUtils;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.junit.After;
@@ -168,7 +169,7 @@ public class ContentNegotiationFilterTest {
 
 		@Override
 		protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
-			new BufferedWriter(new OutputStreamWriter(resp.getOutputStream(), "UTF-8")).write("Hello World!");
+			new BufferedWriter(new OutputStreamWriter(resp.getOutputStream(), StringUtils.CHARSET_UTF_8)).write("Hello World!");
 		}
 	}
 

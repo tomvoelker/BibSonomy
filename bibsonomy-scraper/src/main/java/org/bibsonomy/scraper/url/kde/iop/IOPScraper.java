@@ -26,7 +26,6 @@ package org.bibsonomy.scraper.url.kde.iop;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -35,10 +34,9 @@ import java.util.regex.Pattern;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.WebUtils;
 
 
@@ -48,10 +46,7 @@ import org.bibsonomy.util.WebUtils;
  */
 public class IOPScraper extends AbstractUrlScraper {
 
-	/*
-	 * URL parts
-	 */
-
+	/* URL parts */
 	private static final String IOP_URL_PATH_START = "/EJ";
 	private static final String IOP_EJ_URL_BASE    = "http://www.iop.org";
 	private static final String SITE_NAME = "IOP";
@@ -59,79 +54,73 @@ public class IOPScraper extends AbstractUrlScraper {
 
 	private static final String INFO = "Scraper for electronic journals from " + href(SITE_URL, SITE_NAME);
 
-	private static final String IOP_HOST           = "iop.org";
-	private static final String NEW_IOP_HOST       = "iopscience.iop.org";
+	private static final String IOP_HOST = "iop.org";
+	private static final String NEW_IOP_HOST = "iopscience.iop.org";
 	
 
 	/*
 	 * needed regular expressions to extract download citation link
 	 */
-	private static final Pattern linkPattern = Pattern.compile("<a\\b[^<]*</a>");
-	private static final Pattern linkValuePattern = Pattern.compile(">(.*)<");
-	private static final Pattern hrefPattern = Pattern.compile("href=\"[^\"]*\"");
 	private static final Pattern formPublicationIdPattern = Pattern.compile("<input.*type=\"hidden\".*name=\"articleId\".*value=\"(.*)\".*>");
 	
-	
-	
-	/*
-	 * value of citation download link
-	 */
-	private static final String DOWNLOAD_LINK_VALUE = "Download citation";
-
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 	static{
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + IOP_HOST), Pattern.compile(IOP_URL_PATH_START + ".*")));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + NEW_IOP_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}
-		
-		
 	
+	@Override
 	public String getInfo(){
 		return INFO;
 	}
+	
 	/**
 	 * This scraper extract the citation download link and builds the direct link to the bibtex reference.
 	 * It supports only http://www.iop.org sides which starts in the path with "/EJ". EJ stands for electrionic journals.
 	 */
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
-
+		
 		// download article page
-		String articlePageContent = sc.getPageContent();
-
-		// the link to the citation
-		String citationLink = null;
-
+		final String articlePageContent = sc.getPageContent();
+		
 		final Matcher publicationIdMatcher = formPublicationIdPattern.matcher(articlePageContent);
 		String pubId = "";
-		while(publicationIdMatcher.find())
+		while (publicationIdMatcher.find()) {
 			pubId = publicationIdMatcher.group(1);
+		}
 		
-		String postArgs = "articleId="+pubId +
+		final String postArgs = "articleId=" + pubId +
 						  "&exportType=abs" +
 						  "&exportFormat=iopexport_bib";
 		
 		String bibtex = "";
 		try {
-			bibtex = WebUtils.getPostContentAsString(new URL("http://iopscience.iop.org/export"), postArgs, "utf8");
+			bibtex = WebUtils.getPostContentAsString(new URL("http://iopscience.iop.org/export"), postArgs, StringUtils.CHARSET_UTF_8);
 		} catch (MalformedURLException ex) {
 			throw new ScrapingFailureException("URL to scrape does not exist. It maybe malformed.");
 		} catch (IOException ex) {
 			throw new ScrapingFailureException("An unexpected IO error has occurred. Maybe IOP is down.");
 		}
-		if(bibtex != null){
+		if (bibtex != null) {
 			sc.setBibtexResult(bibtex.trim());
 			return true;
 		}
 		return false;
 	}
-
+	
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
+	
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
+	
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}

@@ -42,6 +42,7 @@ import org.apache.commons.httpclient.util.EncodingUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.rest.auth.AuthenticationAccessor;
+import org.bibsonomy.rest.client.util.RestClientUtils;
 import org.bibsonomy.rest.client.worker.HttpWorker;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.rest.utils.HeaderUtils;
@@ -142,7 +143,7 @@ public final class PostWorker extends HttpWorker<PostMethod> {
 		post.setFollowRedirects(false);
 
 		try {
-			post.setRequestEntity(new StringRequestEntity(requestBody, CONTENT_TYPE, "UTF-8"));
+			post.setRequestEntity(new StringRequestEntity(requestBody, CONTENT_TYPE, RestClientUtils.CONTENT_CHARSET));
 		} catch (final UnsupportedEncodingException ex) {
 			LOGGER.fatal("Could not encode request entity to UTF-8", ex);
 			throw new RuntimeException(ex);

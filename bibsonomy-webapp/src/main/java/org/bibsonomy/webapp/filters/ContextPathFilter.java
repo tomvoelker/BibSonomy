@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -29,18 +30,21 @@ import org.apache.commons.logging.LogFactory;
 public class ContextPathFilter implements Filter {
 	private static final Log log = LogFactory.getLog(ContextPathFilter.class);
 	
-    /**
-     * Instances of this class ignore the context path of the application. I.e., 
-     * calls to getRequestURL() & Co. return the URL without the context path.
-     * 
-     * This is necessary for our setting where we have the Tomcat running behind
-     * an Apache Proxy where the application does not have a context path. 
-     * 
-     * @author rja
-     *
-     */
-    protected static final class ContextPathFreeRequest extends HttpServletRequestWrapper {
-    	
+	/** later initialized by spring */
+	private static String projectHomeUrl;
+	
+	/**
+	 * Instances of this class ignore the context path of the application. I.e.,
+	 * calls to getRequestURL() & Co. return the URL without the context path.
+	 * 
+	 * This is necessary for our setting where we have the Tomcat running behind
+	 * an Apache Proxy where the application does not have a context path.
+	 * 
+	 * @author rja
+	 * 
+	 */
+	protected static final class ContextPathFreeRequest extends HttpServletRequestWrapper {
+
 		private static final String AUTH_HEADER = "authorization";
 		private static final String USER_AGENT_HEADER = "user-agent";
 		private static final Pattern TYPO3_USER_AGENT_REGEX = Pattern.compile("HTTP_Request2\\/0\\.5\\.1");
@@ -125,17 +129,17 @@ public class ContextPathFilter implements Filter {
 			return super.getHeader(AUTH_HEADER);
 		}
 				
-    }
-	
-    /**
-     * Can be used to log calls to the response.
-     * 
-     * @author rja
-     *
-     */
-    protected static final class LoggingResponse extends HttpServletResponseWrapper {
-    	private static final Log LOG = LogFactory.getLog(LoggingResponse.class);
-    	
+	}
+
+	/**
+	 * Can be used to log calls to the response.
+	 * 
+	 * @author rja
+	 * 
+	 */
+	protected static final class LoggingResponse extends HttpServletResponseWrapper {
+		private static final Log LOG = LogFactory.getLog(LoggingResponse.class);
+
 		public LoggingResponse(final HttpServletResponse response) {
 			super(response);
 		}
@@ -145,8 +149,36 @@ public class ContextPathFilter implements Filter {
 			LOG.debug("adding cookie " + cookie.getName() + ": " + cookie.getValue() + " with path " + cookie.getPath());
 			super.addCookie(cookie);
 		}
-    }
-    
+	}
+	
+	/**
+	 * sends redirects to the the ${project.home} url. (as configured in project.properties)
+	 * 
+	 * @author jil
+	 * 
+	 */
+	protected static final class RedirectResolvingResponseWrapper extends HttpServletResponseWrapper {
+
+		public RedirectResolvingResponseWrapper(final HttpServletResponse response) {
+			super(response);
+		}
+		
+		/* (non-Javadoc)
+		 * @see javax.servlet.http.HttpServletResponseWrapper#sendRedirect(java.lang.String)
+		 */
+		@Override
+		public void sendRedirect(String location) throws IOException {
+			if ((projectHomeUrl != null) && StringUtils.startsWith(location, "/") && !StringUtils.startsWith(location, "//")) {
+				super.sendRedirect(projectHomeUrl + location);
+			} else {
+				// TODO: non-absolute paths should be captured as well
+				super.sendRedirect(location);
+			}
+		}
+	}
+	
+	
+
 	@Override
 	public void destroy() {
 	}
@@ -159,9 +191,9 @@ public class ContextPathFilter implements Filter {
 		 */
 		try {
 			if (request instanceof HttpServletRequest) {
-				chain.doFilter(new ContextPathFreeRequest((HttpServletRequest) request), response);	
+				chain.doFilter(new ContextPathFreeRequest((HttpServletRequest) request), wrapResponse(response));	
 			} else {
-				chain.doFilter(request, response);
+				chain.doFilter(request, wrapResponse(response));
 			}
 		} catch (final Exception ex) {
 			final HttpServletRequest castedRequest = (HttpServletRequest)request;
@@ -178,7 +210,29 @@ public class ContextPathFilter implements Filter {
 		}
 	}
 
+	/**
+	 * @param response
+	 * @return
+	 */
+	private ServletResponse wrapResponse(ServletResponse response) {
+		if (response instanceof HttpServletResponse) {
+			return new RedirectResolvingResponseWrapper((HttpServletResponse) response);
+		}
+		return response; 
+	}
+
 	@Override
 	public void init(final FilterConfig filterConfig) throws ServletException {
+	}
+
+	/**
+	 * called by spring on another object, but sets a static field so that the value will be available in a web.xml filter lining outside the spring-managed world
+	 * @param projectHomeUrl
+	 */
+	public void setProjectHomeUrl(String projectHomeUrl) {
+		if (projectHomeUrl.endsWith("/")) {
+			projectHomeUrl = projectHomeUrl.substring(0, projectHomeUrl.length() - 1);
+		}
+		ContextPathFilter.projectHomeUrl = projectHomeUrl;
 	}
 }

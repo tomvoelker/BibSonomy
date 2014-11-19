@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.actions.DownloadCommand;
 import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.view.AbstractView;
@@ -48,7 +49,7 @@ public class DownloadView extends AbstractView {
 			/*
 			 * set HTTP headers
 			 */
-			response.setHeader("Content-Disposition","inline; filename*='utf-8'" + URLEncoder.encode(command.getFilename(), "UTF-8"));
+			response.setHeader("Content-Disposition","inline; filename*='" + StringUtils.CHARSET_UTF_8.toLowerCase() + "'" + URLEncoder.encode(command.getFilename(), StringUtils.CHARSET_UTF_8));
 			response.setContentType(command.getContentType());
 			response.setContentLength((int) document.length());
 			

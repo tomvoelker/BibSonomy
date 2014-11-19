@@ -8,6 +8,5 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
 	
 	<c:set var="bookUrl"><c:out value="${mtl:cleanUrl(post.resource.url)}" escapeXml="true"/></c:set>
-	<a href="${bookUrl}" rel="nofollow" title="${fn:escapeXml(post.resource.title)}"
-data-versiondate="${mtl:formatDateW3CDTF(post.date)}"><c:out value='${post.resource.title}'/></a>
+	<a href="${bookUrl}" rel="nofollow" title="${fn:escapeXml(post.resource.title)}" data-versiondate="${mtl:formatDateW3CDTF(post.date)}"><c:out value='${post.resource.title}'/></a>
 </jsp:root>
