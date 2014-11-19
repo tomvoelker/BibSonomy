@@ -45,10 +45,16 @@ import bibtex.parser.ParseException;
 /**
  * 
  * @author ema
+ * @author rja
  */
 public class PostPublicationController extends AbstractEditPublicationController<PostPublicationCommand> {
 	private static final Log log = LogFactory.getLog(PostPublicationController.class);
 
+	/**
+	 * if the user tries to import more than MAXCOUNT_ERRORHANDLING posts AND an error exists 
+	 * in one or more of the posts, the correct posts will be saved no matter what.
+	 */
+	private static final Integer MAXCOUNT_ERRORHANDLING = 1000;
 	/**
 	 * The session dictionary name for temporarily stored publications.
 	 * Will be used when PostPublicationCommand.editBeforeImport is true.
@@ -78,11 +84,21 @@ public class PostPublicationController extends AbstractEditPublicationController
 		return command;
 	}
 
+	/**
+	 * Handles posting of several posts, e.g., parsed from a BibTeX file.
+	 * 
+	 * TODO: We need to integrate a mechanism into the view to show warnings for
+	 * posts we could import (currently, only errors are shown and then those 
+	 * posts are also not imported).  
+	 * 
+	 * 
+	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#workOn(org.bibsonomy.webapp.command.actions.EditPostCommand)
+	 */
 	@Override
 	public View workOn(final PostPublicationCommand command) {
 		log.debug("workOn started");
 
-		this.initializeDidYouKnowMessageCommand(command);
+		initializeDidYouKnowMessageCommand(command);
 
 		final RequestWrapperContext context = command.getContext();
 
@@ -96,8 +112,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		}
 
 		/*
-		 * If the user entered the post data manually, the
-		 * EditPublicationController
+		 * If the user entered the post data manually, the EditPublicationController 
 		 * will handle the remaining work.
 		 * 
 		 * To find out, if the data was entered manually, a good heuristic is to
@@ -115,7 +130,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * check for valid ckey
 		 */
 		if ((hasFile || hasSelection) && !context.isValidCkey()) {
-			this.errors.reject("error.field.valid.ckey");
+			errors.reject("error.field.valid.ckey");
 			return Views.ERROR;
 		}
 
@@ -127,14 +142,12 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * DOI/ISBN or manual input are handled in EditPostController
 		 */
 		/*
-		 * This variable will hold the information contained in the
-		 * bibtex/endnote-file or selection field
+		 * This variable will hold the information contained in the bibtex/endnote-file or selection field
 		 */
 		String snippet = null;
 		if (hasSelection) {
 			/*
-			 * The user has entered text into the snippet selection - we use
-			 * that
+			 * The user has entered text into the snippet selection - we use that
 			 */
 			log.debug("user has filled selection");
 			snippet = this.publicationImporter.handleSelection(selection);
@@ -150,8 +163,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * nothing given ->
 			 * user just opened the postPublication Dialogue OR
 			 * user send empty snippet or "nonexisting" file
-			 * FIXME: that second case should result in some error and hint for
-			 * the user
+			 * FIXME: that second case should result in some error and hint for the user
 			 */
 			return Views.POST_PUBLICATION;
 		}
@@ -166,10 +178,10 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * it's content is now stored in snippet
 		 * -> check if valid
 		 */
-		if (this.errors.hasErrors()) {
+		if (errors.hasErrors()) {
 			log.debug("errors found, returning to view");
 			if (log.isDebugEnabled()) {
-				log.debug(this.errors);
+				log.debug(errors);
 			}
 			return Views.POST_PUBLICATION;
 		}
@@ -204,11 +216,9 @@ public class PostPublicationController extends AbstractEditPublicationController
 		PublicationValidator.handleParserWarnings(this.errors, parser, snippet, null);
 
 		/*
-		 * The errors we have collected until now should be fixed before we
-		 * proceed.
+		 * The errors we have collected until now should be fixed before we proceed.
 		 * 
-		 * (We did not collect errors due to individual broken BibTeX lines,
-		 * yet!)
+		 * (We did not collect errors due to individual broken BibTeX lines, yet!)
 		 */
 		if (this.errors.hasErrors()) {
 			return Views.POST_PUBLICATION;
@@ -217,37 +227,33 @@ public class PostPublicationController extends AbstractEditPublicationController
 		/*
 		 * turn parse exceptions into error messages ...
 		 */
-		this.handleParseExceptions(parser.getCaughtExceptions());
+		handleParseExceptions(parser.getCaughtExceptions());
 
 		if (!this.errors.hasErrors() && !present(posts)) {
 			/*
 			 * no errors ... but also no posts ... Ooops!
-			 * the parser was not able to produce posts but did not add errors
-			 * nor throw exceptions
+			 * the parser was not able to produce posts but did not add errors nor throw exceptions
 			 */
 			this.errors.reject("error.upload.failed.parse", "Upload failed because of parser errors.");
 			return Views.POST_PUBLICATION;
 		}
 
 		/*
-		 * If exactly one post has been extracted, and there were no parse
-		 * exceptions,
+		 * If exactly one post has been extracted, and there were no parse exceptions, 
 		 * the edit post controller can handle the remaining work.
 		 */
-		if ((posts.size() == 1) && !this.errors.hasErrors()) {
+		if (posts.size() == 1 && !this.errors.hasErrors()) {
 			final Post<BibTex> post = posts.get(0);
 			if (present(post)) {
 				/*
-				 * Delete the selection, otherwise the
-				 * AbstractEditPublicationControllers
+				 * Delete the selection, otherwise the AbstractEditPublicationControllers 
 				 * workOnCommand() method would try to scrape it.
 				 */
 				command.setSelection(null);
 				command.setPost(post);
 				/*
 				 * When exactly one post is imported, its tags are not put into
-				 * the tag field. Instead, we show them here as
-				 * "tags of copied post".
+				 * the tag field. Instead, we show them here as "tags of copied post".
 				 */
 				command.setCopytags(new LinkedList<Tag>(post.getTags()));
 				return super.workOn(command);
@@ -301,10 +307,8 @@ public class PostPublicationController extends AbstractEditPublicationController
 		/*
 		 * FIXME: rename the "bibtex" attribute of the command (hint: we try
 		 * to avoid the name "bibtex" wherever possible)
-		 * (hint: errors.pushNestedPath("bibtex"); in the
-		 * PostPublicationCommandValidator
-		 * then has to be adapted, too. As does the code in the JSPs, of
-		 * course.)
+		 * (hint: errors.pushNestedPath("bibtex"); in the PostPublicationCommandValidator 
+		 * then has to be adapted, too. As does the code in the JSPs, of course.) 
 		 */
 		command.setBibtex(postListCommand);
 
@@ -343,14 +347,13 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 		/*
 		 * If there are errors now or not - we return to the post
-		 * publication view to let the user edit his posts.
+		 * publication view to let the user edit his/her posts. 
 		 */
 		return Views.POST_PUBLICATION;
 	}
 
 	/**
-	 * Checks each post for validation errors and being already stored in DB,
-	 * and returns only those posts,
+	 * Checks each post for validation errors and returns only those posts, 
 	 * that don't have any errors. The posts are returned in a hashmap, where
 	 * each post points to its position in the original list such that we can
 	 * later add errors (from the database) at the correct position.

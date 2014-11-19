@@ -33,7 +33,9 @@ package bibtex.expansions;
 import java.util.LinkedList;
 import java.util.List;
 
-import bibtex.dom.*;
+import bibtex.dom.BibtexFile;
+import bibtex.dom.BibtexPerson;
+import bibtex.dom.BibtexPersonList;
 import bibtex.dom.BibtexString;
 
 /**
@@ -74,12 +76,12 @@ final class BibtexPersonListParser {
         }
     }
 
-    public static BibtexPersonList parse(BibtexString personList,String entryKey) throws PersonListParserException {
+    public static BibtexPersonList parse(final BibtexString personList, final String entryKey) throws PersonListParserException {
 
-        String content = personList.getContent();
-        String[] tokens = tokenize(content);
+    	final String content = personList.getContent();
+    	final String[] tokens = tokenize(content);
 
-        BibtexPersonList result = personList.getOwnerFile().makePersonList();
+    	final BibtexPersonList result = personList.getOwnerFile().makePersonList();
         if (tokens.length == 0) {
             return result;
         }
@@ -184,12 +186,11 @@ final class BibtexPersonListParser {
         return result.toString();
     }
 
-    private static BibtexPerson makePerson(String[] tokens, int begin, int end, String fullEntry, String entryKey, BibtexFile factory)
-            throws PersonListParserException {
+    private static BibtexPerson makePerson(final String[] tokens, final int begin, final int end, final String fullEntry, final String entryKey, final BibtexFile factory) throws PersonListParserException {
         if (tokens[begin].equals("others")) {
             return factory.makePerson(null, null, null, null, true);
         } else if (tokens[end - 1] == COMMA)
-            throw new PersonListParserException("Name ends with comma: '" + fullEntry + "' - in '"+entryKey+"'");
+            throw new PersonListParserException("Name ends with comma: '" + fullEntry + "' - in '"+entryKey+"'", entryKey);
         else {
             int numberOfCommas = 0;
             for (int i = begin; i < end; i++) {
@@ -235,7 +236,7 @@ final class BibtexPersonListParser {
                     preLast = getString(tokens, firstLowerCase, lastNameBegin);
                 }
                 if (last == null)
-                    throw new PersonListParserException("Found an empty last name in '" + fullEntry + "' in '"+entryKey+"'.");
+                    throw new PersonListParserException("Found an empty last name in '" + fullEntry + "' in '"+entryKey+"'.", entryKey);
                 return factory.makePerson(first, preLast, last, lineage, false);
             } else if (numberOfCommas == 1 || numberOfCommas == 2) {
 
@@ -263,7 +264,7 @@ final class BibtexPersonListParser {
                     final String last = getString(tokens, preLastEnd, commaIndex);
                     final String first = getString(tokens, commaIndex + 1, end);
                     if (last == null)
-                        throw new PersonListParserException("Found an empty last name in '" + fullEntry + "' in '"+entryKey+"'.");
+                        throw new PersonListParserException("Found an empty last name in '" + fullEntry + "' in '"+entryKey+"'.", entryKey);
                     return factory.makePerson(first, preLast, last, null, false);
                 } else { // 2 commas ...
                     int firstComma = -1;
@@ -300,11 +301,11 @@ final class BibtexPersonListParser {
                         first = tmp;
                     }
                     if (last == null)
-                        throw new PersonListParserException("Found an empty last name in '" + fullEntry + "' in '"+entryKey+"'.");
+                        throw new PersonListParserException("Found an empty last name in '" + fullEntry + "' in '"+entryKey+"'.", entryKey);
                     return factory.makePerson(first, preLast, last, lineage, false);
                 }
             } else {
-                throw new PersonListParserException("Too many commas in '" + fullEntry + "' in '"+entryKey+"'.");
+                throw new PersonListParserException("Too many commas in '" + fullEntry + "' in '"+entryKey+"'.", entryKey);
             }
         }
     }
