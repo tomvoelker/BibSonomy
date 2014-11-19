@@ -421,7 +421,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			Group group = this.getPendingGroup(groupName, session);
 			GroupRequest groupRequest = group.getGroupRequest();
 						
-			this.userDb.activateUser(new User(groupName), session);
+			this.userDb.performActivationSteps(new User(groupName), session);
 			// "move" the pending group row to the normal group table
 			this.insert("activateGroup", groupName, session);
 			// clear the pending group table

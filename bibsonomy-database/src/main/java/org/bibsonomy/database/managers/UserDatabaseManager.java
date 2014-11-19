@@ -73,7 +73,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.adminDBManager = AdminDatabaseManager.getInstance();
 	}
-
+	
 	/**
 	 * Returns all users.
 	 * 
@@ -1131,17 +1131,26 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
      * @return name of created user
      */
     public String activateUser(final User user, final DBSession session) {
-    	session.beginTransaction();
     	try {
-	        this.insert("activateUser", user.getName(), session);
-	        this.deletePendingUser(user.getName(), session);
-	        this.insertDefaultWiki(user, session);
-	        session.commitTransaction();
+	    	session.beginTransaction();
+	        this.performActivationSteps(user, session);
+			session.commitTransaction();
     	} finally {
     		session.endTransaction();
     	}
         return user.getName();
     }
+	
+	/**
+	 * Small wrapper to make these steps usable in GroupDatabaseManager.
+	 * @param user
+	 * @param session 
+	 */
+	protected void performActivationSteps(final User user, final DBSession session) {
+		this.insert("activateUser", user.getName(), session);
+		this.deletePendingUser(user.getName(), session);
+		this.insertDefaultWiki(user, session);
+	}
 
     /**
      * Inserts a default wiki for a newly activated user or for a newly
@@ -1187,13 +1196,13 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
      * @return a list of users with the specified activation code (search)
      */
     public List<User> getPendingUserByActivationCode(final String search, final int start, final int end,  final DBSession session) {
-	if (search == null) {
-	    ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Cannot execute query getPendingUserByActivationCode without activation code given!");
-	}
-	final UserParam param = new UserParam();
-	param.setOffset(start);
-	param.setLimit(end);
-	param.setSearch(search);
+		if (search == null) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Cannot execute query getPendingUserByActivationCode without activation code given!");
+		}
+		final UserParam param = new UserParam();
+		param.setOffset(start);
+		param.setLimit(end);
+		param.setSearch(search);
         return this.queryForList("getPendingUserByActivationCode", param, User.class, session);
     }
 
@@ -1207,10 +1216,10 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
      * @return  a list of users with the username
      */
     public List<User> getPendingUserByUsername(final String username, final int start, final int end,  final DBSession session) {
-	final UserParam param = new UserParam();
-	param.setOffset(start);
-	param.setLimit(end);
-	param.setRequestedGroupName(username);
+		final UserParam param = new UserParam();
+		param.setOffset(start);
+		param.setLimit(end);
+		param.setRequestedGroupName(username);
         return this.queryForList("getPendingUserByUsername", param, User.class, session);
     }	
     
