@@ -101,7 +101,7 @@
 									<h4 class="modal-title"><c:out value="${editTags}" /></h4>
 								</div>
 								<div class="modal-body">
-									
+									<div class="response-msg"><!--  --></div>
 									<div class="form-group">
 										<label class="col-sm-3"><fmt:message key="tags" /></label>
 										<div class="col-sm-9">

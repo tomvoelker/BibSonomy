@@ -24,38 +24,38 @@
 		+ -->
 
 	<!-- HIDDEN SYSTEM TAGS -->
-	<c:if test="${not empty post.hiddenSystemTags}">
-		<fmt:message var="systemTagsTitle" key="tag.systemTag.hidden.title" />
-		<div class="extend hiddenSystemTag pull-left">
-			<a id="system-tags-link-${post.resource.intraHash}" href="#"
-				class="system-tags-link"><span
-				class="glyphicon glyphicon-asterisk">
-					<!-- KEEP ME -->
-			</span></a>&amp;nbsp;
-			<div class="popover popover-dismiss system-tags hide"
-				id="system-tags-${post.resource.intraHash}">
-				<div class="help popover-title">
-					<!--  -->
-				</div>
-				<div class="help popover-content popover-dismissible" href="#">
-					<button style="margin-top: -3px;" type="button" class="close"
-						onclick="javascript:$(this).parent().parent().prev().popover('hide');">
-						&amp;nbsp;<span aria-hidden="true">&amp;times;</span><span
-							class="sr-only">Close</span>
-					</button>
-					<div style="margin-right: 15px;">
-						<ul class="tags list-inline">
-							<c:forEach var="systag" items="${post.hiddenSystemTags}">
-								<li><span class="label label-primary"><a
-										href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, systag.name)}"><c:out
-												value="${systag.name}" /></a></span></li>
-							</c:forEach>
-						</ul>
-					</div>
+	
+	<fmt:message var="systemTagsTitle" key="tag.systemTag.hidden.title" />
+	<div class="extend hiddenSystemTag pull-left">
+		<a id="system-tags-link-${post.resource.intraHash}" href="#"
+			class="system-tags-link" style="${empty post.hiddenSystemTags ? 'display: none;' : ''}"><span
+			class="glyphicon glyphicon-asterisk">
+				<!-- KEEP ME -->
+		</span></a>&amp;nbsp;
+		<div class="popover popover-dismiss system-tags hide"
+			id="system-tags-${post.resource.intraHash}">
+			<div class="help popover-title">
+				<!--  -->
+			</div>
+			<div class="help popover-content popover-dismissible" href="#">
+				<button style="margin-top: -3px;" type="button" class="close"
+					onclick="javascript:$(this).parent().parent().prev().popover('hide');">
+					&amp;nbsp;<span aria-hidden="true">&amp;times;</span><span
+						class="sr-only">Close</span>
+				</button>
+				<div style="margin-right: 15px;">
+					<ul class="tags list-inline">
+						<c:forEach var="systag" items="${post.hiddenSystemTags}">
+							<li><span class="label label-warning"><a
+									href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, systag.name)}"><c:out
+											value="${systag.name}" /></a></span></li>
+						</c:forEach>
+					</ul>
 				</div>
 			</div>
 		</div>
-	</c:if>
+	</div>
+	
 
 	<!-- ALL REGULAR TAGS -->
 	<!-- FIXME: Remove this, as soon as we have a "real" post preview instead of only full lines of tags and meta data -->
