@@ -134,30 +134,58 @@ $(function() {
 
 	$('.edit-tags-form').submit(function(e) {
 		e.preventDefault();
+		var submitButton = $(this).find('button[type=submit]');
 		var url = $(this).attr('action');
 		var data = $(this).serialize();
 		var resourceHash = $(this).attr('data-resource-hash');
 		var tagField = $(this).find('input[data-role=tagsinput]');
 		var tags = $(tagField).tagsinput('items');
-		
+		var responseMsg = $(this).find('.response-msg');
+		$(responseMsg).empty(); //clear output
+		$(submitButton).attr("disabled", "disabled"); //disable submit button
+
 		$.ajax({
 			url : url,
 			type : 'POST',
 			data : data,
-			success : function() { //on success
-				//remove tags
-				$('#list-item-' + resourceHash + ' .ptags span.label').remove();
-				//append current tags
-				$(tags).each(function(i, v) {
-					if(!isSystemTag(v)) {
-						var item = '<span class="label label-grey"><a href="/user/' + encodeURIComponent(currUser) + '/' + encodeURIComponent(tags[i]) + '">' + tags[i] + '</a></span> ';
-						$('#list-item-' + resourceHash + ' .ptags').append(item);
-					} else {
-						//TODO: add system tags
-					}
-				});
+			
+		}).done(function(result) { //on success
+			
+			//remove tags
+			$('#list-item-' + resourceHash + ' .ptags span.label').remove();
+			
+			//remove system tags
+			$('#list-item-' + resourceHash + ' .hiddenSystemTag ul.tags li').remove();
+			
+			//append current tags
+			$(tags).each(function(i, v) {
+				if(!isSystemTag(v)) {
+					var item = '<span class="label label-grey"><a href="/user/' + encodeURIComponent(currUser) + '/' + encodeURIComponent(tags[i]) + '">' + tags[i] + '</a></span> ';
+					$('#list-item-' + resourceHash + ' .ptags').append(item);
+				} else {
+					
+					var item = '<li><span class="label label-warning"><a href="/user/' + encodeURIComponent(currUser) + '/' + encodeURIComponent(tags[i]) + '">' + tags[i] + '</a></span></li>';
+					$('#list-item-' + resourceHash + ' .hiddenSystemTag ul.tags').append(item);
+					$('#system-tags-link-' + resourceHash).show();
+				}
+			});
+			
+			
+			var systags = $('#list-item-' + resourceHash + ' .hiddenSystemTag ul.tags li');
+			//if there are no systags, hide systag button
+			if($(systags).size() <= 0) {
+				$('#system-tags-link-' + resourceHash).hide();
 			}
-		});
+			
+			//success message
+			$(responseMsg).append('<div class="alert alert-success" role="alert">' + getString('edittags.update.success') + '</div>');
+			$(submitButton).removeAttr("disabled");
+		}).fail(function(result) { //on fail
+			//fail message
+			$(responseMsg).append('<div class="alert alert-danger" role="alert">' + getString('edittags.update.error') + '</div>');
+			$(submitButton).removeAttr("disabled");
+		})
+			
 		return false;
 	});
 
