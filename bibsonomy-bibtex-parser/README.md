@@ -2,12 +2,13 @@
 
 ## What is it?
 
-The parser is a slightly modified version of Johannes Henkel's BibTeX parser which is GPL and can be obtained from 
+The parser is a slightly modified version of Johannes Henkel's BibTeX parser which is GPL2 and can be obtained from 
   
 http://www-plan.cs.colorado.edu/henkel/stuff/javabib/
   
+We relicense the modified parser with permission of Johannes Henkel under GPLv3+.
 Thanks to Johannes for his efforts!
-  
+
 The parser itself is used to parse BibTeX files which users upload to 
 BibSonomy to extract the metadata and put it in our Java model. We also
 use it at various input stages to ensure consistency of our data, e.g., 
