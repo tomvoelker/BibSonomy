@@ -26,8 +26,6 @@
  */
 package org.bibsonomy.scraper.url.kde.karlsruhe;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
@@ -42,27 +40,25 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.BibtexScraper;
-
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author sre
- *
+ * 
  */
 public class UBKAScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "University Library (UB) Karlsruhe";
 	private static final String UBKA_HOST_NAME = "http://primo.bibliothek.kit.edu";
-	private static final String SITE_URL = UBKA_HOST_NAME+"/";
-	private static final String info = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME)+".";
+	private static final String SITE_URL = UBKA_HOST_NAME + "/";
+	private static final String info = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME) + ".";
 
 	private static final String UBKA_HOST = "primo.bibliothek.kit.edu";
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + UBKA_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
-
 	private static final Pattern UBKA_ID_PATTERN = Pattern.compile("doc=KITSRC(.*?)&");
 	private static final String UBKA_BIBTEX_URL = "http://swb.bsz-bw.de/DB=2.1/PPNSET?PPN=";
-
 
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
@@ -74,13 +70,17 @@ public class UBKAScraper extends AbstractUrlScraper {
 			final BibtexScraper bibtexScraper = new BibtexScraper();
 			bibtexScraper.scrape(scrapingContext);
 			final String bibtex = scrapingContext.getBibtexResult();
-			if(present(bibtex)) {
+			if (ValidationUtils.present(bibtex)) {
 				sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString()));
 				return true;
 			}
 		} catch (final IOException me) {
 			throw new InternalFailureException(me);
 		}
+		/**
+		 * Provisionally fixed broken scraper. Please check
+		 */
+		throw new ScrapingException("Can't find bibtex in scraped page.");
 	}
 
 	@Override
@@ -105,8 +105,9 @@ public class UBKAScraper extends AbstractUrlScraper {
 
 	private static String extractId(final String url) {
 		final Matcher m = UBKA_ID_PATTERN.matcher(url);
-		if(m.find())
+		if (m.find()) {
 			return m.group(1);
+		}
 		return null;
 	}
 }

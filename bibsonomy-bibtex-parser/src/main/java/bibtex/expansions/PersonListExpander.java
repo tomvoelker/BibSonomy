@@ -30,8 +30,7 @@
  */
 package bibtex.expansions;
 
-import java.util.Iterator;
-
+import bibtex.dom.BibtexAbstractEntry;
 import bibtex.dom.BibtexEntry;
 import bibtex.dom.BibtexFile;
 import bibtex.dom.BibtexString;
@@ -73,7 +72,7 @@ public class PersonListExpander extends AbstractExpander implements Expander {
 		this.expandEditors = expandEditors;
 	}
 
-	private boolean expandAuthors, expandEditors;
+	private final boolean expandAuthors, expandEditors;
 
 	/**
 	 * This method will expand all author and editor fields (if configured in
@@ -85,18 +84,17 @@ public class PersonListExpander extends AbstractExpander implements Expander {
 	 * 
 	 * @param file
 	 */
-	public void expand(BibtexFile file) throws ExpansionException {
-		for (Iterator entryIt = file.getEntries().iterator(); entryIt.hasNext();) {
-			Object next = entryIt.next();
-			if (!(next instanceof BibtexEntry))
+	public void expand(final BibtexFile file) throws ExpansionException {
+		for (final BibtexAbstractEntry bibtexAbstractEntry : file.getEntries()) {
+			if (!(bibtexAbstractEntry instanceof BibtexEntry))
 				continue;
-			BibtexEntry entry = (BibtexEntry) next;
+			final BibtexEntry entry = (BibtexEntry) bibtexAbstractEntry;
 			if (expandAuthors && entry.getFieldValue("author") != null) {
 				try {
 					entry.setField(
 						"author",
 						BibtexPersonListParser.parse((BibtexString) entry.getFieldValue("author"),""+entry.getEntryKey()));
-				} catch (PersonListParserException e) {
+				} catch (final PersonListParserException e) {
 					throwExpansionException(e);
 				}
 			}
@@ -105,7 +103,7 @@ public class PersonListExpander extends AbstractExpander implements Expander {
 					entry.setField(
 						"editor",
 						BibtexPersonListParser.parse((BibtexString) entry.getFieldValue("editor"),""+entry.getEntryKey()));
-				} catch (PersonListParserException e) {
+				} catch (final PersonListParserException e) {
 					throwExpansionException(e);
 				}
 			}

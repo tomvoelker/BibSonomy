@@ -961,6 +961,10 @@
 		<property name="view" value="LINK_CLOUD"/>
 	</bean>
 	
+	<bean id="contextPathFilter" class="org.bibsonomy.webapp.filters.ContextPathFilter">
+		<property name="projectHomeUrl" value="${project.home}"/>
+	</bean>
+	
 	<!--  #################### imports #################### -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-model-context.xml" />
 	
