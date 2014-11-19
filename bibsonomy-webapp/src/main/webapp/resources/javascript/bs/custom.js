@@ -115,6 +115,7 @@ $(function() {
 	 * SYSTEM TAGS HANDLING
 	 */
 	var isSystemTag = function(item) {
+		//TODO: identify system tags by system tag config
 		pattern = new RegExp('.+:.+');
 		return pattern.test(item);
 	};
@@ -143,15 +144,18 @@ $(function() {
 			url : url,
 			type : 'POST',
 			data : data,
-			success : function() {
+			success : function() { //on success
+				//remove tags
 				$('#list-item-' + resourceHash + ' .ptags span.label').remove();
+				//append current tags
 				$(tags).each(function(i, v) {
 					if(!isSystemTag(v)) {
 						var item = '<span class="label label-grey"><a href="/user/' + encodeURIComponent(currUser) + '/' + encodeURIComponent(tags[i]) + '">' + tags[i] + '</a></span> ';
 						$('#list-item-' + resourceHash + ' .ptags').append(item);
+					} else {
+						//TODO: add system tags
 					}
 				});
-				
 			}
 		});
 		return false;

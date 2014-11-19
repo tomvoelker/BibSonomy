@@ -202,8 +202,6 @@ public class SimpleBibTeXParserTest {
 		assertEquals("Name ends with comma: 'Foo, Bar,' - in 'foo'", warning.getMessage());
 		
 
-//		System.out.println(BibTexUtils.toBibtexString(parsedBibTeX));
-//		System.out.println(PersonNameUtils.discoverPersonNames(author));
 	}
 	
 	/**

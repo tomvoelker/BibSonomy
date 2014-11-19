@@ -81,8 +81,9 @@ public final class CrossReferenceExpander extends AbstractExpander implements Ex
 		final Map<String, BibtexAbstractEntry> entryKey2Entry = new HashMap<String, BibtexAbstractEntry>();
 		final List<BibtexEntry> entriesWithCrossReference = new ArrayList<BibtexEntry>();
 		for (final BibtexAbstractEntry abstractEntry : bibtexFile.getEntries()) {
-			if (!(abstractEntry instanceof BibtexEntry))
+			if (!(abstractEntry instanceof BibtexEntry)) {
 				continue;
+			}
 			final BibtexEntry entry = (BibtexEntry) abstractEntry;
 			entryKey2Entry.put(entry.getEntryKey().toLowerCase(), abstractEntry);
 			if (entry.getFields().containsKey("crossref")) {
@@ -114,6 +115,7 @@ public final class CrossReferenceExpander extends AbstractExpander implements Ex
 				// copy fields
 				final Map<String, BibtexAbstractValue> entryFields = entry.getFields();
 				final Map<String, BibtexAbstractValue> crossrefFields = crossrefEntry.getFields();
+				// TODO: Iterate over key/value pairs instead of only keys
 				for (final String key : crossrefFields.keySet()) {
 					if (!entryFields.containsKey(key)) {
 						entry.setField(key, crossrefFields.get(key));
