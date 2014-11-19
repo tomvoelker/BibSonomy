@@ -306,7 +306,7 @@ function uploadRequestSuccessful(data) {
 		var params = [projectName];
 		var documentQRHelp = getString("qrcode.info.embedderInfoMessage", params);
 		var form = inputGroup.parent();
-		var downloadForm = inputGroup.children(".download-btn").filter(":first").data("filename", encodedFileName).attr("href", documentUri + "?qrcode=false").attr("title", documentHelp);
+		var downloadForm = inputGroupButtons.children(".download-btn").filter(":first").data("filename", encodedFileName).attr("href", documentUri + "?qrcode=false").attr("title", documentHelp);
 		var qrForm = inputGroupButtons.children(".qrcode-btn").data("filename", encodedFileName).data("filename", encodedFileName).attr("href", documentUri + "?qrcode=true").attr("title", documentHelp);
 		var renameInput = inputGroup.children(".renameDocInput").val(fileName).data("filename", fileName);
 		var renameButton = inputGroupButtons.children(".rename-btn");
