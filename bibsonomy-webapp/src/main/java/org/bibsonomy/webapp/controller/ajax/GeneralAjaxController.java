@@ -33,12 +33,12 @@ public class GeneralAjaxController extends AjaxController implements Minimalisti
 		final String action = command.getAction();
 
 		if ("getTitleForUrl".equals(action)) {
-			this.getDetailsForUrl(command);
+			getDetailsForUrl(command);
 			return Views.AJAX_GET_TITLE_FOR_URL;
 		} else if ("getBibtexKeysForUser".equals(action)) {
 			this.getBibtexKeysForUser(command);
 			return Views.AJAX_GET_BIBTEXKEYS_FOR_USER;
-		}		
+		}
 		return Views.AJAX_TEXT;
 	}
 
@@ -73,8 +73,7 @@ public class GeneralAjaxController extends AjaxController implements Minimalisti
 	 * 
 	 * @param command - the command containing the page URL
 	 */
-	private void getDetailsForUrl(final GeneralAjaxCommand command) {
-
+	private static void getDetailsForUrl(final GeneralAjaxCommand command) {
 		final String pageURL = command.getPageURL();
 		
 		if (!present(pageURL)) return;

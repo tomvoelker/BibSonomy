@@ -498,7 +498,7 @@
 				</entry>
 				<entry key="/clipboard">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="basketPageController"/>
+						<property name="controllerBeanName" value="clipboardPageController"/>
 					</bean>
 				</entry>
 				<entry key="/inbox">
@@ -840,7 +840,7 @@
 		</property>
 	</bean>
 
-	<bean id="basketPageController" class="org.bibsonomy.webapp.controller.BasketPageController" scope="request" parent="multiResourceListController">
+	<bean id="clipboardPageController" class="org.bibsonomy.webapp.controller.ClipboardPageController" scope="request" parent="multiResourceListController">
 		<property name="supportedResources">
 			<set>
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
@@ -877,6 +877,7 @@
 	 -->
 	<bean id="redirectController" class="org.bibsonomy.webapp.controller.special.RedirectController" scope="request">
 		<property name="requestLogic" ref="requestLogic"/>
+		<property name="urlGenerator" ref="relativeUrlGenerator" />
 	</bean>
 
 	<bean id="bibtexkeyPageController" class="org.bibsonomy.webapp.controller.BibtexkeyPageController" scope="request" parent="multiResourceListController">
@@ -958,6 +959,10 @@
 	<!-- linkcloud TODO: in development TODODZO -->
 	<bean id="linkCloudPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="LINK_CLOUD"/>
+	</bean>
+	
+	<bean id="contextPathFilter" class="org.bibsonomy.webapp.filters.ContextPathFilter">
+		<property name="projectHomeUrl" value="${project.home}"/>
 	</bean>
 	
 	<!--  #################### imports #################### -->

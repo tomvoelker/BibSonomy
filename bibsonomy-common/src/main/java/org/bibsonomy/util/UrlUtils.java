@@ -207,7 +207,7 @@ public class UrlUtils {
 	 */
 	public static String encodeURLExceptReservedChars(final String url) {
 		try {
-			final String encodedURL = URLEncoder.encode(url, "UTF-8");
+			final String encodedURL = URLEncoder.encode(url, StringUtils.CHARSET_UTF_8);
 			return encodedURL.replaceAll("\\%24", "\\$").
 							  replaceAll("\\%26", "\\&").
 							  replaceAll("\\%2B", "\\+").
@@ -235,7 +235,7 @@ public class UrlUtils {
 		}
 		
 		try {
-			return URLEncoder.encode(s, "UTF-8");
+			return URLEncoder.encode(s, StringUtils.CHARSET_UTF_8);
 		} catch (UnsupportedEncodingException ex) {
 			return s;
 		}
@@ -256,7 +256,7 @@ public class UrlUtils {
 		}
 		
 		try {
-			return URLDecoder.decode(s, "UTF-8");
+			return URLDecoder.decode(s, StringUtils.CHARSET_UTF_8);
 		} catch (UnsupportedEncodingException ex) {
 			return s;
 		} 

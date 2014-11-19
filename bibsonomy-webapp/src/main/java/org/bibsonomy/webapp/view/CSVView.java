@@ -21,6 +21,7 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.services.renderer.LayoutRenderer;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.BaseCommandController;
@@ -52,9 +53,9 @@ public class CSVView extends AbstractView {
 
 			/*
 			 * set the content type headers
-			 */				
+			 */
 			response.setContentType("text/csv");
-			response.setCharacterEncoding("UTF-8");
+			response.setCharacterEncoding(StringUtils.CHARSET_UTF_8);
 
 			/*
 			 * get the requested path
@@ -70,7 +71,7 @@ public class CSVView extends AbstractView {
 				 * write the buffer to the response
 				 */
 				final ServletOutputStream outputStream = response.getOutputStream();
-				final CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+				final CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(outputStream, StringUtils.CHARSET_UTF_8));
 				/*
 				 * write header
 				 */
@@ -147,7 +148,6 @@ public class CSVView extends AbstractView {
 						csvWriter.writeNext(getArray(post, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null));
 					}
 				}
-
 				csvWriter.close();
 
 			} catch (final IOException e) {

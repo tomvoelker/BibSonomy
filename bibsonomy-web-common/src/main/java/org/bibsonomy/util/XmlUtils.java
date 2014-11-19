@@ -113,10 +113,12 @@ public class XmlUtils {
 	 */
 	public static Document getDOM(final URL inputURL, final boolean xmlTags) throws IOException {
 		final Tidy tidy = getTidy(xmlTags);
-
-		final String encodingName = WebUtils.extractCharset(((HttpURLConnection) inputURL.openConnection()).getContentType());
+		final HttpURLConnection connection = (HttpURLConnection) inputURL.openConnection();
+		connection.setConnectTimeout(WebUtils.CONNECTION_TIMEOUT);
+		connection.setReadTimeout(WebUtils.READ_TIMEOUT);
+		final String encodingName = WebUtils.extractCharset(connection.getContentType());
 		tidy.setInputEncoding(encodingName);
-		return tidy.parseDOM(inputURL.openConnection().getInputStream(), null);
+		return tidy.parseDOM(connection.getInputStream(), null);
 	}
 
 	/**
@@ -140,7 +142,7 @@ public class XmlUtils {
 		final Tidy tidy = getTidy(xmlTags);
 
 		// we don't know the encoding now ... so we assume utf8
-		tidy.setInputEncoding("UTF-8");
+		tidy.setInputEncoding(StringUtils.CHARSET_UTF_8);
 
 		return tidy.parseDOM(inputStream, null);
 	}

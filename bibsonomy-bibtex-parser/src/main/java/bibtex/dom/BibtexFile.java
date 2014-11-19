@@ -33,7 +33,6 @@ package bibtex.dom;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import bibtex.Assertions;
@@ -47,7 +46,7 @@ import bibtex.Assertions;
  */
 public final class BibtexFile extends BibtexNode {
 
-    private final ArrayList entries = new ArrayList();
+    private final List<BibtexAbstractEntry> entries = new ArrayList<BibtexAbstractEntry>();
 
     public BibtexFile() {
         super(null);
@@ -74,7 +73,7 @@ public final class BibtexFile extends BibtexNode {
      * 
      * @return List
      */
-    public List getEntries() {
+    public List<BibtexAbstractEntry> getEntries() {
         return Collections.unmodifiableList(entries);
     }
 
@@ -151,12 +150,12 @@ public final class BibtexFile extends BibtexNode {
         return new BibtexToplevelComment(this, content);
     }
 
-    public void printBibtex(PrintWriter writer) {
+    @Override
+	public void printBibtex(PrintWriter writer) {
         assert writer != null : "writer parameter may not be null.";
 
-        for (Iterator iter = this.entries.iterator(); iter.hasNext();) {
-            BibtexNode node = (BibtexNode) iter.next();
-            node.printBibtex(writer);
+        for (final BibtexAbstractEntry entry : this.entries) {
+        	entry.printBibtex(writer);
         }
         writer.flush();
     }

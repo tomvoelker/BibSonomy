@@ -62,24 +62,25 @@ import org.apache.commons.logging.LogFactory;
 public class WebUtils {
 	private static final Log log = LogFactory.getLog(WebUtils.class);
 
-	/**
-	 * maximal number of redirects to follow in {@link #getRedirectUrl(URL)}
-	 */
+	/** maximal number of redirects to follow in {@link #getRedirectUrl(URL)} */
 	private static final int MAX_REDIRECT_COUNT = 10;
+	
+	/** the connection timeout */
+	protected static final int CONNECTION_TIMEOUT = 30 * 1000;
+	
+	/** the read timeout */
+	protected static final int READ_TIMEOUT = 30 * 1000;
 
-	/**
-	 * The user agent used for all requests with {@link HttpURLConnection}.
-	 */
+	/** The user agent used for all requests with {@link HttpURLConnection}. */
 	private static final String USER_AGENT_PROPERTY_VALUE = "BibSonomy/2.0.32 (Linux x86_64; en) Gecko/20120714 Iceweasel/3.5.16 (like Firefox/3.5.16)";
 
-	private static final String CHARSET			= "charset=";
-	private static final String DEFAULT_CHARSET	= "UTF-8";
-	private static final String EQUAL_SIGN		= "=";
-	private static final String AMP_SIGN		= "&";
-	private static final String NEWLINE			= "\n";
-	private static final String SEMICOLON		= ";";
-	private static final String USER_AGENT_HEADER_NAME   = "User-Agent";
-	private static final String COOKIE_HEADER_NAME  	 = "Cookie";
+	private static final String CHARSET = "charset=";
+	private static final String EQUAL_SIGN = "=";
+	private static final String AMP_SIGN = "&";
+	private static final String NEWLINE = "\n";
+	private static final String SEMICOLON = ";";
+	private static final String USER_AGENT_HEADER_NAME = "User-Agent";
+	private static final String COOKIE_HEADER_NAME = "Cookie";
 	private static final String CONTENT_TYPE_HEADER_NAME = "Content-Type";
 
 	/**
@@ -94,30 +95,31 @@ public class WebUtils {
 	 * according to http://hc.apache.org/httpclient-3.x/threading.html
 	 * HttpClient is thread safe and we can use one instance for several requests.
 	 */
-  	private static final MultiThreadedHttpConnectionManager connectionManager =	new MultiThreadedHttpConnectionManager();
-  	private static final HttpClient client = getHttpClient();
+	private static final MultiThreadedHttpConnectionManager connectionManager =	new MultiThreadedHttpConnectionManager();
+	private static final HttpClient CLIENT = getHttpClient();
 
-  	
-  	/**
-  	 * This method returns an instance of the HttpClient and should only be used
-  	 * if the other methods that deliver direct results can not be used. Each 
-  	 * call to this method should be documented with an explanation why it is 
-  	 * necessary.
-  	 * 
-  	 * @return
-  	 */
-  	public static HttpClient getHttpClient() {
-  		final HttpClient client = new HttpClient(connectionManager);
-  		/*
-  		 * configure client
-  		 */
-  	  	client.getParams().setParameter(HttpMethodParams.USER_AGENT, USER_AGENT_PROPERTY_VALUE);
-  	  	client.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
-		client.getParams().setBooleanParameter(HttpMethodParams.SINGLE_COOKIE_HEADER, true);
-		client.getParams().setIntParameter(HttpClientParams.MAX_REDIRECTS, MAX_REDIRECT_COUNT);
-  	  	return client;
-  	}
-  	
+	
+	/**
+	 * This method returns an instance of the HttpClient and should only be used
+	 * if the other methods that deliver direct results can not be used. Each 
+	 * call to this method should be documented with an explanation why it is 
+	 * necessary.
+	 * 
+	 * @return
+	 */
+	public static HttpClient getHttpClient() {
+		final HttpClient client = new HttpClient(connectionManager);
+		final HttpClientParams params = client.getParams();
+		/*
+		 * configure client
+		 */
+		params.setParameter(HttpMethodParams.USER_AGENT, USER_AGENT_PROPERTY_VALUE);
+		params.setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
+		params.setBooleanParameter(HttpMethodParams.SINGLE_COOKIE_HEADER, true);
+		params.setIntParameter(HttpClientParams.MAX_REDIRECTS, MAX_REDIRECT_COUNT);
+		return client;
+	}
+	
 	/**
 	 * Do a POST request to the given URL with the given content. Assume the charset of the result to be charset.
 	 * 
@@ -340,7 +342,7 @@ public class WebUtils {
 			/*
 			 * visit URL to get cookies if needed
 			 */
-			client.executeMethod(new GetMethod(visitBefore));
+			CLIENT.executeMethod(new GetMethod(visitBefore));
 		}
 		
 		final HttpMethod method;
@@ -355,7 +357,7 @@ public class WebUtils {
 				
 				if (p.length != 2) {
 					continue;
-				} 
+				}
 				
 				data.add(new NameValuePair(p[0], p[1]));
 			}
@@ -380,7 +382,7 @@ public class WebUtils {
 		/*
 		 * do request
 		 */
-		final int status = client.executeMethod(method);
+		final int status = CLIENT.executeMethod(method);
 		if (status != HttpStatus.SC_OK) {
 			throw new IOException(url + " returns: " + status);
 		}
@@ -461,7 +463,7 @@ public class WebUtils {
 	 * @throws IOException
 	 */
 	public static String getContentAsString(HttpMethod method) throws HttpException, IOException {
-		return getContentAsString(client, method);
+		return getContentAsString(CLIENT, method);
 	}
 	/**
 	 * Convenience method for getting the page content by passing the {@link HttpClient} and the
@@ -636,7 +638,7 @@ public class WebUtils {
 		/*
 		 * default charset
 		 */
-		return DEFAULT_CHARSET;
+		return StringUtils.CHARSET_UTF_8;
 	}
 
 	/**

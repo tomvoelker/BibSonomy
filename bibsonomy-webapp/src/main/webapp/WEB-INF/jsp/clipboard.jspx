@@ -19,7 +19,7 @@
 	<layout:resourceLayout pageTitle="${pageTitle}" 
 			command="${command}" 
 			requPath="${requPath}" 
-			isBasket="${true}" 
+			isClipboard="${true}" 
 			disableListNavigation="${true}"
 			disableResourcetypeSelection="${true}"
 			minimizedContentWidth="${true}">
@@ -66,7 +66,7 @@
 		<jsp:attribute name="infobox">
 			<parts:infobox>
 				<jsp:attribute name="infoTextBody">
-		        	<!-- short info, what the basket is -->
+		        	<!-- short info, what the clipboard is -->
 		            <fmt:message key="basket.info"/>                 
 		
 					<!-- quick links on what you can do -->

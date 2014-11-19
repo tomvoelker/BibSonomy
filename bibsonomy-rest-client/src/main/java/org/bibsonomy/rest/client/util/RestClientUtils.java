@@ -36,6 +36,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.utils.HeaderUtils;
+import org.bibsonomy.util.StringUtils;
 
 /**
  * @author dzo
@@ -43,11 +44,8 @@ import org.bibsonomy.rest.utils.HeaderUtils;
 public class RestClientUtils {
 	private static final Log log = LogFactory.getLog(RestClientUtils.class);
 	
-	
-	/**
-	 * the content charset used by the rest client
-	 */
-	public static final String CONTENT_CHARSET = "UTF-8";
+	/** the content charset used by the rest client */
+	public static final String CONTENT_CHARSET = StringUtils.CHARSET_UTF_8;
 	
 	private static final String PROPERTIES_FILE_NAME = "bibsonomy-rest-client.properties";
 	private static final String PROPERTIES_VERSION_KEY = "version";

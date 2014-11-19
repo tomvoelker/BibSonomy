@@ -15,7 +15,7 @@ import org.bibsonomy.rest.strategy.Context;
  */
 public class PutUserConceptStrategy extends AbstractUpdateStrategy {
 
-	private final String userName; 
+	private final String userName;
 	
 	/**
 	 * @param context - the context
@@ -34,6 +34,6 @@ public class PutUserConceptStrategy extends AbstractUpdateStrategy {
 
 	@Override
 	protected void render(Writer writer, String resourceID) {
-		this.getRenderer().serializeResourceHash(writer, resourceID);		
+		this.getRenderer().serializeResourceHash(writer, resourceID);
 	}
 }

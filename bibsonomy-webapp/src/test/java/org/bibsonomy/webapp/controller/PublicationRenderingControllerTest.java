@@ -18,6 +18,7 @@ import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.util.BibTexReader;
 import org.bibsonomy.testutil.CommonModelUtils;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.actions.PublicationRendererCommand;
 import org.bibsonomy.webapp.view.Views;
 import org.junit.Test;
@@ -68,7 +69,7 @@ public class PublicationRenderingControllerTest {
 	protected List<ImportResource> getBibtexFromFile() {
 		SimpleBibTeXParser parser = new SimpleBibTeXParser();
 		try {
-			BufferedReader sr = new BufferedReader(new InputStreamReader(getTestBibFileStream(), "UTF-8"));
+			BufferedReader sr = new BufferedReader(new InputStreamReader(getTestBibFileStream(), StringUtils.CHARSET_UTF_8));
 			// actually not 100% ok but easier
 			return (List) parser.parseInternal(sr, true);
 		} catch (Exception e) {

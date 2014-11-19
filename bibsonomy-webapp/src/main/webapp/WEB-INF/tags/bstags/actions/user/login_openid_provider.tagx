@@ -11,11 +11,14 @@
 	
 	<jsp:directive.attribute name="name" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="url" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="selectedTab" type="java.lang.Integer" required="true"/>
+	
 	
 	<form action="/login_openid">
 		<input type="hidden" name="openID" id="openID" value="${url}"/>
+		<input type="hidden" name="selTab" value="${selectedTab}"></input>
 		<!-- TODO: think about it -->
 		<input type="hidden" name="rememberMe" id="rememberMe" value="on"/>
-		<bsform:button type="submit" style="link" value="${name}" size="defaultSize" />
+		<bsform:button type="submit" style="defaultStyle" value="${name}" size="defaultSize" />
 	</form>
 </jsp:root>

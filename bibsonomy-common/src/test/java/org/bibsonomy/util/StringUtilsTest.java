@@ -50,7 +50,7 @@ public class StringUtilsTest {
 	 * java standard charsets; see 
 	 * http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html
 	 */	
-	private static final String [] JAVA_STANDARD_CHARSETS = {"ISO-8859-1", "UTF-16BE", "UTF-16LE", "UTF-16", "UTF-8"};
+	private static final String [] JAVA_STANDARD_CHARSETS = {"ISO-8859-1", "UTF-16BE", "UTF-16LE", "UTF-16", StringUtils.CHARSET_UTF_8};
 
 	/**
 	 * tests getMD5Hash
