@@ -125,7 +125,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			return GroupUtils.getFriendsGroup();
 		}
 
-		return this.queryForObject("getGroupMemberships", normedGroupName, Group.class, session);
+		return this.queryForObject("getGroupWithMemberships", normedGroupName, Group.class, session);
 	}
 
 	/**
@@ -216,12 +216,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		return group;
 	}
 	
-	public Group getGroupsWithpMemberships(final String groupName, final DBSession session) {
-		Group g = this.queryForObject("getGroupMemberships", Group.class, session);
-		
-		return g;
-	}
-
 	/**
 	 * Returns the privlevel for a group.
 	 */
@@ -415,22 +409,30 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @param session 
 	 */
 	public void activateGroup(final String groupName, final DBSession session) {
+		// get the group 
+		Group group = this.getPendingGroup(groupName, session);
+		GroupRequest groupRequest = group.getGroupRequest();
+
 		try {
 			session.beginTransaction();
-			// get the group 
-			Group group = this.getPendingGroup(groupName, session);
-			GroupRequest groupRequest = group.getGroupRequest();
-						
+			// activate the user
 			this.userDb.performActivationSteps(new User(groupName), session);
 			// "move" the pending group row to the normal group table
 			this.insert("activateGroup", groupName, session);
 			// clear the pending group table
 			this.deletePendingGroup(groupName, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+
+		try {
+			session.beginTransaction();
 			// add the group user to the group
 			this.addUserToGroup(groupName, groupName, GroupRole.DUMMY, session);
 			// add the requesting user to the group with level ADMINISTRATOR
 			this.addUserToGroup(groupName, groupRequest.getUserName(), GroupRole.ADMINISTRATOR, session);
-	        session.commitTransaction();
+			session.commitTransaction();
 		} finally {
 			session.endTransaction();
 		}

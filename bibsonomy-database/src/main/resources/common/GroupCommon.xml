@@ -16,12 +16,6 @@
 		<result property="publicationReportingSettings" resultMap="GroupCommon.publReportingSettings" />
 	</resultMap>
 	
-	<resultMap id="groupMembership" class="groupMembership">
-		<result property="userSharedDocuments" 	column="user_shared_documents" javaType="boolean" />
-		<result property="groupRole" 	column="group_role" javaType="GroupRole" />
-		<result property="user"    resultMap="Common.user" />
-	</resultMap>
-	
 	<resultMap id="publReportingSettings" class="publicationReportingSettings">
 		<result property="reportingMailAddress" column="publ_reporting_mail" javaType="string" />
 		<result property="reportingMailTemplate" column="publ_reporting_mail_template" javaType="string"/>
@@ -48,6 +42,12 @@
 	
 	<resultMap id="groupWithMemberships" class="group" extends="group_basic" groupBy="name" >
 		<result property="memberships" resultMap="GroupCommon.groupMembership" />
+	</resultMap>
+	
+	<resultMap id="groupMembership" class="groupMembership">
+		<result property="userSharedDocuments" 	column="user_shared_documents" javaType="boolean" />
+		<result property="groupRole" 	column="group_role" javaType="GroupRole" />
+		<result property="user"    resultMap="Common.userForGroup" />
 	</resultMap>
 	
 	<resultMap id="tagsets" class="tagset" groupBy="setName">
