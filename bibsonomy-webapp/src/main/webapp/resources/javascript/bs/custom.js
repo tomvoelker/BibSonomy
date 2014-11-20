@@ -91,10 +91,32 @@ $(function() {
 	/**
 	 * SYSTEM TAGS HANDLING
 	 */
+
 	var isSystemTag = function(item) {
-		//TODO: identify system tags by system tag config
-		pattern = new RegExp('.+:.+');
-		return pattern.test(item);
+		var systemTags = [
+			//TODO: check whether this list is complete.
+      		'sys:relevantfor:.+',
+      		'relevantfor:.+',
+      		'sent:.+',
+      		'myown',
+      		'unfiled',
+      		'jabref',
+      		'sys:hidden:.+',
+      		'hidden:.+',
+      		'sys:external:.+',
+      		'external',
+      		'sys:reported:.+',
+      		'reported:.+'
+      	];
+
+		for(var i = 0; i < systemTags.length; ++i) {
+			pattern = new RegExp(systemTags[i]);
+			if(!pattern.test(item)) {
+				continue;
+			}
+			return true;
+		}
+		
 	};
 
 	$('input[data-role=tagsinput]').tagsinput(
