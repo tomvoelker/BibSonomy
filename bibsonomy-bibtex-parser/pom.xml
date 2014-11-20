@@ -61,7 +61,8 @@
 				<configuration>
 					<excludes>
 						<exclude>src/main/java/bibtex/**</exclude>
-						<exclude>src/main/resources/bibtex/**</exclude>
+						<exclude>src/test/resources/**</exclude>
+						<exclude>src/main/resources/**</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
