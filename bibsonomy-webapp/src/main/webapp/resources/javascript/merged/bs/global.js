@@ -31,4 +31,6 @@ includeJavaScript("/resources/javascript/bs/jquery.fadebox.js");
 includeJavaScript("/resources/javascript/bs/userRelation.js");
 includeJavaScript("/resources/javascript/bs/addToSpheres.js");
 
+includeJavaScript("/resources/javascript/bs/bootstrap-tagsinput.js");
+
 includeJavaScript("/resources/javascript/less/less.js");
