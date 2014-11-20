@@ -6,6 +6,12 @@
 		<groupId>org.bibsonomy</groupId>
 		<version>3.0.0-SNAPSHOT</version>
 	</parent>
+	<licenses>
+		<license>
+			<name>GNU Affero General Public License, Version 3 or later</name>
+			<url>http://www.gnu.org/licenses/agpl.html</url>
+		</license>
+	</licenses>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>bibsonomy-webapp</artifactId>
 	<packaging>war</packaging>
