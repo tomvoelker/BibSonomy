@@ -11,6 +11,12 @@
 		<artifactId>bibsonomy</artifactId>
 		<version>3.0.0-SNAPSHOT</version>
 	</parent>
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License, Version 3 or later</name>
+			<url>http://www.gnu.org/licenses/lgpl.html</url>
+		</license>
+	</licenses>
 	<dependencies>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
