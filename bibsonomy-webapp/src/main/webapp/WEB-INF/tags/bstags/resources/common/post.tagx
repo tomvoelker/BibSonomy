@@ -30,7 +30,7 @@
        | Since they also dont have several other properties, we dont show those.
        +-->
 
-	<li class="media post ${additionalItemClasses}" id="list-item-${post.resource.intraHash}">
+	<li class="media post ${additionalItemClasses}" id="list-item-${post.resource.intraHash}${post.user.name}">
 		<div class="clearline">&#160;</div>
 		<h4 class="media-heading" data-ident="${post.resource.intraHash}">
 			<div>
@@ -72,12 +72,20 @@
 			<div class="pdesc ellipsis">
 				<div class="ellipsis-content"><jsp:invoke fragment="desc"/></div>
 			</div>
-			<div class="pmeta"><rc:metaDate post="${post}"/><rc:metaUsername post="${post}" /><rc:metaGroups post="${post}" loginUserName="${loginUserName}" /></div>
+			<div class="pmeta">
+				<rc:metaDate post="${post}"/><rc:metaUsername post="${post}" /><rc:metaGroups post="${post}" loginUserName="${loginUserName}" />
+			</div>
 			<div class="ptags">
 				<!-- Edit tags link -->
 				<c:if test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name)}">
 					<fmt:message key="navi.editTags" var="editTags" />
-					<a class="tags-edit-link" data-toggle="modal" data-target="#tag-modal-${post.resource.intraHash}" title="${editTags}" href="#"><span class="fa fa-pencil"><!--  --></span><span class="sr-only"><c:out value="${editTags}" /></span></a>&amp;nbsp;
+					<a class="tags-edit-link" 
+						data-toggle="modal" 
+						data-target="#tag-modal-${post.resource.intraHash}${post.user.name}" 
+						title="${editTags}" href="#">
+							<span class="fa fa-pencil"><!--  --></span>
+							<span class="sr-only"><c:out value="${editTags}" /></span>
+					</a>&amp;nbsp;
 				</c:if>
 				<rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/>
 			</div>
@@ -90,9 +98,9 @@
 			<!-- EDIT TAGS MODAL POPUP-->
 			<c:if test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name)}">
 			
-				<div id="tag-modal-${post.resource.intraHash}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div id="tag-modal-${post.resource.intraHash}${post.user.name}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 					<div class="modal-dialog">
-						<form data-resource-hash="${post.resource.intraHash}" class="form-horizontal edit-tags-form" method="post" action="/batchEdit?deleteCheckedPosts=true&amp;format=ajax&amp;resourcetype=${resourceType}&amp;action=1">
+						<form data-resource-hash="${post.resource.intraHash}${post.user.name}" class="form-horizontal edit-tags-form" method="post" action="/batchEdit?deleteCheckedPosts=true&amp;format=ajax&amp;resourcetype=${resourceType}&amp;action=1">
 							<div class="modal-content">
 								<div class="modal-header">
 									<button type="button" class="close" data-dismiss="modal">
