@@ -107,7 +107,7 @@
 								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-tagsinput.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-dialog.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/holder.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/custom.js</include>å
+								<include>${project.build.webapp.resourcedir}/javascript/bs/custom.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/friendoverview.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/functions.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/actions/clipboard.js</include>
