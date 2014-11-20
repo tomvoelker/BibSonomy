@@ -91,7 +91,9 @@ $(function() {
 	/**
 	 * SYSTEM TAGS HANDLING
 	 */
-
+	// FIXME: this duplicates code from the context definition
+	// maybe the info should be returned by the controller, or extra info in the
+	// view
 	var isSystemTag = function(item) {
 		var systemTags = [
 			//TODO: check whether this list is complete.
