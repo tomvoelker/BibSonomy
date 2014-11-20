@@ -349,13 +349,6 @@
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.2</version>
 			</plugin>
-			<!-- TODO remove tomcat6 plugin as soon as we have migrated all systems 
-				to tomcat 7 -->
-			<plugin>
-				<groupId>org.apache.tomcat.maven</groupId>
-				<artifactId>tomcat6-maven-plugin</artifactId>
-				<version>2.2</version>
-			</plugin>
 		</plugins>
 		<extensions>
 			<extension>
