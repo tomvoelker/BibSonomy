@@ -181,7 +181,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			return group;
 		}
 
-		group = this.queryForObject("getGroupMembers", groupname, Group.class, session);
+		group = this.queryForObject("getGroupWithMemberships", groupname, Group.class, session);
 		// the group has no members.
 		if (group == null) {
 			// check if the group exists

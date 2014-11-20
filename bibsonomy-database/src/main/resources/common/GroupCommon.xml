@@ -47,7 +47,7 @@
 	<resultMap id="groupMembership" class="groupMembership">
 		<result property="userSharedDocuments" 	column="user_shared_documents" javaType="boolean" />
 		<result property="groupRole" 	column="group_role" javaType="GroupRole" />
-		<result property="user"    resultMap="Common.userForGroup" />
+		<result property="user"    resultMap="UserCommon.userForGroup" />
 	</resultMap>
 	
 	<resultMap id="tagsets" class="tagset" groupBy="setName">
