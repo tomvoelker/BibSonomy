@@ -52,64 +52,41 @@ $(function() {
 	moretext = "";
 	lesstext = "";
 
-	$('.show-more')
-			.each(
-					function() {
+	$('.show-more').each(function() {
 
-						var moreLink = $(document.createElement("a"));
-						var contentContainer = $(this).children(
-								".contentContainer")[0];
+		var moreLink = $(document.createElement("a"));
+		var contentContainer = $(this).children(".contentContainer")[0];
 
-						if (contentContainer) {
+		if (contentContainer) {
 
-							moreLink
-									.data("text", contentContainer.innerHTML)
-									.html("(" + getString("more") + ")")
-									.addClass("moreLink")
-									.click(
-											function(event) {
-												event.preventDefault();
-												var contentContainer = $(
-														this.parentNode)
-														.children(
-																".contentContainer")[0];
+			moreLink.data("text", contentContainer.innerHTML)
+					.html("(" + getString("more") + ")")
+					.addClass("moreLink")
+					.click(function(event) {
+						event.preventDefault();
+						var contentContainer = $(this.parentNode).children(".contentContainer")[0];
 
-												if ($(this).hasClass(
-														'show-less')) {
-													$(this)
-															.html(
-																	"("
-																			+ getString("more")
-																			+ ")")
-															.removeClass(
-																	"show-less")
-															.addClass(
-																	"show-more");
-												} else {
-													$(this)
-															.html(
-																	"("
-																			+ getString("less")
-																			+ ")")
-															.removeClass(
-																	"show-more")
-															.addClass(
-																	"show-less");
-												}
-												shortenContent(
-														contentContainer,
-														moreLink.data("text"));
-												return false;
-											});
-
-							this.appendChild(moreLink[0]);
-							if (!shortenContent(contentContainer, moreLink
-									.data("text"))) {
-								moreLink.hide();
-							}
+						if ($(this).hasClass('show-less')) {
+							$(this).html("(" + getString("more") + ")")
+								   .removeClass("show-less")
+								   .addClass("show-more");
+							
+						} else {
+							$(this).html("(" + getString("less") + ")")
+								   .removeClass("show-more")
+								   .addClass("show-less");
 						}
-
+						shortenContent(contentContainer, moreLink.data("text"));
+						return false;
 					});
+
+			this.appendChild(moreLink[0]);
+			if (!shortenContent(contentContainer, moreLink.data("text"))) {
+				moreLink.hide();
+			}
+		} //if (contentContainer)
+
+	});
 
 	/**
 	 * SYSTEM TAGS HANDLING
@@ -121,16 +98,15 @@ $(function() {
 	};
 
 	$('input[data-role=tagsinput]').tagsinput(
-			{
-				confirmKeys : [ 32, 13 ], // space and return
-				trimValue : true,
-				freeInput : true,
-				tagClass : function(item) {
-					return isSystemTag(item) ? 'label label-warning'
-							: 'label label-primary';
-				},
-				delimiter : ' '
-			});
+		{
+			confirmKeys : [ 32, 13 ], // space and return
+			trimValue : true,
+			freeInput : true,
+			tagClass : function(item) {
+				return isSystemTag(item) ? 'label label-warning' : 'label label-primary';
+			},
+			delimiter : ' '
+		});
 
 	$('.edit-tags-form').submit(function(e) {
 		e.preventDefault();
@@ -141,7 +117,8 @@ $(function() {
 		var tagField = $(this).find('input[data-role=tagsinput]');
 		var tags = $(tagField).tagsinput('items');
 		var responseMsg = $(this).find('.response-msg');
-		$(responseMsg).empty(); //clear output
+		
+		$(responseMsg).empty(); //clear previous response message
 		$(submitButton).attr("disabled", "disabled"); //disable submit button
 
 		$.ajax({
@@ -180,11 +157,11 @@ $(function() {
 			//success message
 			$(responseMsg).append('<div class="alert alert-success" role="alert">' + getString('edittags.update.success') + '</div>');
 			$(submitButton).removeAttr("disabled");
-		}).fail(function(result) { //on fail
+		}).fail(function(result) { //on fail
 			//fail message
 			$(responseMsg).append('<div class="alert alert-danger" role="alert">' + getString('edittags.update.error') + '</div>');
 			$(submitButton).removeAttr("disabled");
-		})
+		});
 			
 		return false;
 	});
@@ -204,7 +181,7 @@ $(function() {
 				$('#sidebar').css('height', contentHeight + 20);
 			}
 		}
-	}
+	};
 
 	sidebarAdjustments();
 
@@ -305,8 +282,7 @@ function findBootstrapEnvironment() {
 		$el.addClass('hidden-' + env);
 		if ($el.is(':hidden')) {
 			$el.remove();
-			return env
+			return env;
 		}
 	}
-	;
 }
