@@ -30,8 +30,8 @@ import org.apache.commons.logging.LogFactory;
 public class ContextPathFilter implements Filter {
 	private static final Log log = LogFactory.getLog(ContextPathFilter.class);
 	
-	/** later initialized by spring */
-	private static String projectHomeUrl;
+	/** the project home */
+	private String projectHomeUrl;
 	
 	/**
 	 * Instances of this class ignore the context path of the application. I.e.,
@@ -139,7 +139,10 @@ public class ContextPathFilter implements Filter {
 	 */
 	protected static final class LoggingResponse extends HttpServletResponseWrapper {
 		private static final Log LOG = LogFactory.getLog(LoggingResponse.class);
-
+		
+		/**
+		 * @param response
+		 */
 		public LoggingResponse(final HttpServletResponse response) {
 			super(response);
 		}
@@ -158,9 +161,16 @@ public class ContextPathFilter implements Filter {
 	 * 
 	 */
 	protected static final class RedirectResolvingResponseWrapper extends HttpServletResponseWrapper {
-
-		public RedirectResolvingResponseWrapper(final HttpServletResponse response) {
+		
+		private final String projectHomeUrl;
+		
+		/**
+		 * @param response
+		 * @param projectHomeUrl
+		 */
+		public RedirectResolvingResponseWrapper(HttpServletResponse response, String projectHomeUrl) {
 			super(response);
+			this.projectHomeUrl = projectHomeUrl;
 		}
 		
 		/* (non-Javadoc)
@@ -177,10 +187,9 @@ public class ContextPathFilter implements Filter {
 		}
 	}
 	
-	
-
 	@Override
 	public void destroy() {
+		// noop
 	}
 
 	@Override
@@ -216,13 +225,14 @@ public class ContextPathFilter implements Filter {
 	 */
 	private ServletResponse wrapResponse(ServletResponse response) {
 		if (response instanceof HttpServletResponse) {
-			return new RedirectResolvingResponseWrapper((HttpServletResponse) response);
+			return new RedirectResolvingResponseWrapper((HttpServletResponse) response, this.projectHomeUrl);
 		}
 		return response; 
 	}
 
 	@Override
 	public void init(final FilterConfig filterConfig) throws ServletException {
+		// noop
 	}
 
 	/**
@@ -233,6 +243,6 @@ public class ContextPathFilter implements Filter {
 		if (projectHomeUrl.endsWith("/")) {
 			projectHomeUrl = projectHomeUrl.substring(0, projectHomeUrl.length() - 1);
 		}
-		ContextPathFilter.projectHomeUrl = projectHomeUrl;
+		this.projectHomeUrl = projectHomeUrl;
 	}
 }
