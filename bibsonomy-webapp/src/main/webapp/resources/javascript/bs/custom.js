@@ -68,13 +68,13 @@ $(function() {
 
 						if ($(this).hasClass('show-less')) {
 							$(this).html("(" + getString("more") + ")")
-								   .removeClass("show-less")
-								   .addClass("show-more");
+									.removeClass("show-less")
+									.addClass("show-more");
 							
 						} else {
 							$(this).html("(" + getString("less") + ")")
-								   .removeClass("show-more")
-								   .addClass("show-less");
+									.removeClass("show-more")
+									.addClass("show-less");
 						}
 						shortenContent(contentContainer, moreLink.data("text"));
 						return false;
@@ -97,19 +97,19 @@ $(function() {
 	var isSystemTag = function(item) {
 		var systemTags = [
 			//TODO: check whether this list is complete.
-      		'sys:relevantfor:.+',
-      		'relevantfor:.+',
-      		'sent:.+',
-      		'myown',
-      		'unfiled',
-      		'jabref',
-      		'sys:hidden:.+',
-      		'hidden:.+',
-      		'sys:external:.+',
-      		'external',
-      		'sys:reported:.+',
-      		'reported:.+'
-      	];
+			'sys:relevantfor:.+',
+			'relevantfor:.+',
+			'sent:.+',
+			'myown',
+			'unfiled',
+			'jabref',
+			'sys:hidden:.+',
+			'hidden:.+',
+			'sys:external:.+',
+			'external',
+			'sys:reported:.+',
+			'reported:.+'
+		];
 
 		for(var i = 0; i < systemTags.length; ++i) {
 			pattern = new RegExp(systemTags[i]);
@@ -273,17 +273,13 @@ function dummyDownHandler(e) {
 }
 
 function dummyHandler(e) {
-
 	e.preventDefault();
-
 	e.stopPropagation();
 	return false;
 }
 
 function dummyUpHandler(e) {
-
 	e.preventDefault();
-
 	e.stopPropagation();
 	return false;
 }
