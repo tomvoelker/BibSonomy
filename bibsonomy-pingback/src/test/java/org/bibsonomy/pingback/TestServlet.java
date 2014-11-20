@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.bibsonomy.util.StringUtils;
 import org.junit.Ignore;
 
 /**
@@ -21,7 +22,7 @@ import org.junit.Ignore;
 public class TestServlet extends HttpServlet {
 	private static final String TRACKBACK_ARTICLE_PATH = "/article";
 	private static final String CONTENT_TYPE_HTML = "text/html";
-	private static final String CHAR_ENCODING = "UTF-8";
+	private static final String CHAR_ENCODING = StringUtils.CHARSET_UTF_8;
 	public static final String URLHERE = "URLHERE";
 
 	private static final String PINGBACK_HEADER = "X-Pingback";

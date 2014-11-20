@@ -36,11 +36,16 @@ package bibtex.expansions;
  * @author henkel
  */
 public class ExpansionException extends Exception {
-	ExpansionException(Throwable cause){
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5255662562139124653L;
+
+	ExpansionException(final Throwable cause){
 		super(cause);
 	}
 	
-	ExpansionException(String message) {
+	ExpansionException(final String message) {
 		super(message);
 	}
 }

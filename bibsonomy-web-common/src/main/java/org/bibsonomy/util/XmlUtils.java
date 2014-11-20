@@ -140,7 +140,7 @@ public class XmlUtils {
 		final Tidy tidy = getTidy(xmlTags);
 
 		// we don't know the encoding now ... so we assume utf8
-		tidy.setInputEncoding("UTF-8");
+		tidy.setInputEncoding(StringUtils.CHARSET_UTF_8);
 
 		return tidy.parseDOM(inputStream, null);
 	}

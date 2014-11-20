@@ -15,6 +15,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.User;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.spring.security.AuthenticationUtils;
 
 
@@ -69,7 +70,7 @@ public class AdminHandler extends HttpServlet {
 					/*
 					 * write result
 					 */
-					final OutputStreamWriter writer = new OutputStreamWriter(response.getOutputStream(), "UTF-8");
+					final OutputStreamWriter writer = new OutputStreamWriter(response.getOutputStream(), StringUtils.CHARSET_UTF_8);
 					writer.write(result.toString());
 					writer.close();
 				} catch (Exception e) {

@@ -31,11 +31,5 @@
 			<artifactId>jPodRenderer</artifactId>
 			<version>5.3</version>
 		</dependency>
-		<!-- TODO: do we need this dependency? GPL incompatible -->
-		<dependency>
-			<groupId>de.intarsys.jpod</groupId>
-			<artifactId>jai-imageio</artifactId>
-			<version>${jpod.version}</version>
-		</dependency>
 	</dependencies>
 </project>

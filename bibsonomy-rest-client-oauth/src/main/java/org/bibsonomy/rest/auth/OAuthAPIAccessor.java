@@ -50,6 +50,7 @@ import net.oauth.http.HttpMessageDecoder;
 
 import org.apache.commons.httpclient.HttpMethod;
 import org.bibsonomy.rest.client.RestLogicFactory;
+import org.bibsonomy.rest.client.util.RestClientUtils;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 
@@ -209,7 +210,7 @@ public class OAuthAPIAccessor implements AuthenticationAccessor {
 		try {
 			OAuthMessage request;
 			if (present(requestBody)) {
-				request = this.accessor.newRequestMessage(method.getName(), url, params, new ByteArrayInputStream(requestBody.getBytes("UTF-8")));
+				request = this.accessor.newRequestMessage(method.getName(), url, params, new ByteArrayInputStream(requestBody.getBytes(RestClientUtils.CONTENT_CHARSET)));
 			} else {
 				request = this.accessor.newRequestMessage(method.getName(), url, params);
 			}

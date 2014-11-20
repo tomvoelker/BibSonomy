@@ -22,7 +22,7 @@
 
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 
-	<jsp:directive.attribute name="isBasket" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="isClipboard" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showPageOptions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
@@ -121,7 +121,7 @@
 					customPageOptions="${customPageOptions}"
 					showBookmark="${showBookmark}"
 					showPublication="${showPublication}"
-					isBasket="${isBasket}"
+					isClipboard="${isClipboard}"
 					disableListNavigation="${disableListNavigation}"
 					disableResourcetypeSelection="${disableResourcetypeSelection}"
 					showInboxActions="${showInboxActions}"
@@ -170,7 +170,7 @@
 								disableListNavigation="${disableListNavigation}"
 								requPath="${excapedRequestPath}" 
 								widthClassName="${bookmarksWidthClass}"
-								isBasket="${isBasket}"
+								isClipboard="${isClipboard}"
 								showBookmark="${showBookmark}"
 								showPublication="${showPublication}">
 							
@@ -189,7 +189,7 @@
 									disableListNavigation="${disableListNavigation}" 
 									requPath="${excapedRequestPath}" 
 									widthClassName="${publicationsWidthClass}"
-									isBasket="${isBasket}"
+									isClipboard="${isClipboard}"
 									showBookmark="${showBookmark}"
 									showPublication="${showPublication}">
 								<jsp:attribute name="addAsLastItem">

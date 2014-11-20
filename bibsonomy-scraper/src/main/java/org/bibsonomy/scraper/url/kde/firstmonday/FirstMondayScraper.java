@@ -25,6 +25,7 @@ package org.bibsonomy.scraper.url.kde.firstmonday;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +40,9 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.WebUtils;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.tidy.Tidy;
@@ -68,19 +71,20 @@ public class FirstMondayScraper extends AbstractUrlScraper{
 			return false;
 		}
 		try {
-			 Tidy tidy = new Tidy();
-		     final ByteArrayInputStream inputStream = new ByteArrayInputStream(WebUtils.getContentAsString(bibTexUrl).getBytes("UTF-8"));
-		     final Document doc = tidy.parseDOM(inputStream, null);  
-		     final Node title = doc.getElementsByTagName("pre").item(0);
-		     final String bibTex = title.getFirstChild().getNodeValue();
-		     
+			// TODO: why do not use the DomUtils method to get the DOM?
+			Tidy tidy = new Tidy();
+			final ByteArrayInputStream inputStream = new ByteArrayInputStream(WebUtils.getContentAsString(bibTexUrl).getBytes(StringUtils.CHARSET_UTF_8));
+			final Document doc = tidy.parseDOM(inputStream, null);  
+			final Node title = doc.getElementsByTagName("pre").item(0);
+			final String bibTex = title.getFirstChild().getNodeValue();
+			
 			if (present(bibTex)) {
 				scrapingContext.setBibtexResult(bibTex);
 				return true;
-			} else {
-				throw new ScrapingFailureException("getting bibtex failed");
 			}
-		} catch (final Exception e) {
+			
+			throw new ScrapingFailureException("getting bibtex failed");
+		} catch (final IOException | DOMException e) {
 			throw new InternalFailureException(e);
 		}
 	}
@@ -90,15 +94,15 @@ public class FirstMondayScraper extends AbstractUrlScraper{
 	 * @param url
 	 * @return publication id
 	 */
-	private String getBibTexURL(final URL url) {
+	private static String getBibTexURL(final URL url) {
 		final String host = url.getHost();
-		final Matcher match = ID_PATTERN.matcher(url.toString());		
+		final Matcher match = ID_PATTERN.matcher(url.toString());
 		if (match.find()) {
 			String id = match.group(0);
 			if (match.groupCount() == 1) id = id +"/0";
 			return  "http://" + host + BIBTEX_PATH + id + "/BibtexCitationPlugin";
-		}else
-			return null;
+		}
+		return null;
 	}
 	/*
 	 * (non-Javadoc)

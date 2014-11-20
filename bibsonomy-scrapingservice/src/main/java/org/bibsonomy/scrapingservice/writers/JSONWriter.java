@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.util.JSONUtils;
+import org.bibsonomy.util.StringUtils;
 
 /**
  * Writes given lists in JSON format.
@@ -105,11 +106,11 @@ public class JSONWriter {
 	}
 
 	public void write(final String s) throws UnsupportedEncodingException, IOException {
-		outputStream.write(s.getBytes("UTF-8"));
+		outputStream.write(s.getBytes(StringUtils.CHARSET_UTF_8));
 	}
 	
 	public void write(final int depth, final String s) throws UnsupportedEncodingException, IOException {
-		outputStream.write((getDepth(depth) + s).getBytes("UTF-8"));
+		outputStream.write((getDepth(depth) + s).getBytes(StringUtils.CHARSET_UTF_8));
 	}
 	
 	private static String getDepth(final int depth) {
