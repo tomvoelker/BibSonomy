@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Person">
+
+	<select id="getPersonById" resultMap="PersonCommon.person" parameterClass="int">
+		SELECT <include refid="commonPersonAttributes"/> FROM person
+			WHERE id = #id#
+	</select>	
+	
+	<insert id="insertPerson" parameterClass="org.bibsonomy.model.Person">
+		INSERT INTO user (<include refid="commonPersonAttributes"/>)
+			VALUES (<include refid="insertPersonAttributes"/>)
+	</insert>
+	
+</sqlMap>
