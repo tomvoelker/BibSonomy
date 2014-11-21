@@ -105,7 +105,7 @@
 				<a title="${tagsTitle}" href="${tagsUrl}">
 					<fmt:message key="tag.addRelatedTag"/>
 				</a>
-				<c:out value=" "/>
+				<c:out value=" | "/>
 			</c:if>
 			<a title="${tagTitle}" href="${tagUrl}">
 				<c:out value="${tag.name}" />
