@@ -3,7 +3,7 @@
 \format[AntiScriptInjection]{\title}\begin{journal}, in: 
 \format[AntiScriptInjection]{\journal}\end{journal}\begin{volume} 
 \format[AntiScriptInjection]{\volume}\end{volume}\begin{number} 
-\format[AntiScriptInjection]<em>{\number}</em>\end{number}\begin{year} 
+\format[AntiScriptInjection,MittelalterEmphasis]{\number}\end{number}\begin{year} 
 (\format[AntiScriptInjection]{\year})\end{year}\begin{pages}, 
 S. \format[AntiScriptInjection]{\pages}\end{pages}.
 </div>
