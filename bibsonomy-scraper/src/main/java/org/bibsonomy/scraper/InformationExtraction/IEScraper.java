@@ -65,7 +65,7 @@ public class IEScraper implements Scraper {
 		//we need to convert this, because the mallet function removes erroneous signs, that get created
 		//when formatting a UTF-8 String in ISO format.
 		//A proper fix would be to make the getSelectedText function return UTF-8 only.
-		final String selectedText = StringUtils.convertString(sc.getSelectedText(), "ISO-8859-1", "UTF-8");
+		final String selectedText = StringUtils.convertString(sc.getSelectedText(), "ISO-8859-1", StringUtils.CHARSET_UTF_8);
 		
 		/*
 		 * don't scrape, if there is nothing selected

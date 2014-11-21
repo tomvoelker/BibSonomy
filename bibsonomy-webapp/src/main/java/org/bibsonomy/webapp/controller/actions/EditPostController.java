@@ -1000,13 +1000,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	}
 
 	/**
-	 * @return The URLGenerator to be used to generate (redirect) URLs.
-	 */
-	public URLGenerator getUrlGenerator() {
-		return this.urlGenerator;
-	}
-
-	/**
 	 * Set the URLGenerator to be used to generate (redirect) URLs.
 	 * 
 	 * @param urlGenerator

@@ -39,7 +39,7 @@ import org.springframework.validation.Errors;
  */
 public class RedirectController implements MinimalisticController<RedirectCommand>, RequestAware, ErrorAware {
 	private static final Log log = LogFactory.getLog(RedirectController.class);
-  
+
 	private RequestLogic requestLogic;
 	private Errors errors;
 	private URLGenerator urlGenerator;
@@ -236,5 +236,12 @@ public class RedirectController implements MinimalisticController<RedirectComman
 	@Override
 	public void setErrors(final Errors errors) {
 		this.errors = errors;
+	}
+	
+	/**
+	 * @param urlGenerator the urlGenerator to set
+	 */
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
 	}
 }

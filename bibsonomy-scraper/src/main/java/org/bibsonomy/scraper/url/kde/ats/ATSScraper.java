@@ -52,7 +52,7 @@ public class ATSScraper extends GenericRISURLScraper {
 	private static final Pattern ID_PATTERN = Pattern.compile("\\d+.*");
 	private static final int ID_GROUP = 0;
 	
-	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<div class=\"abstractSection\">(.*)</div>");
+	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<div class=\"abstractSection\">(.*?)</div>");
 	
 	private static String extractId(final String url) {
 		final Matcher matcher = ID_PATTERN.matcher(url);

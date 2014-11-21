@@ -31,10 +31,10 @@ import org.apache.shindig.common.util.ResourceLoader;
 import org.apache.shindig.gadgets.http.HttpFetcher;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStore;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret;
+import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret.KeyType;
 import org.apache.shindig.gadgets.oauth.OAuthFetcherConfig;
 import org.apache.shindig.gadgets.oauth.OAuthRequest;
 import org.apache.shindig.gadgets.oauth.OAuthStore;
-import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret.KeyType;
 import org.bibsonomy.opensocial.oauth.database.BibSonomyOAuthStore;
 
 import com.google.inject.AbstractModule;
@@ -129,7 +129,7 @@ public class OAuthModule extends AbstractModule {
       if (!StringUtils.isBlank(signingKeyFile)) {
         try {
           LOG.info("Loading OAuth signing key from " + signingKeyFile);
-          String privateKey = IOUtils.toString(ResourceLoader.open(signingKeyFile), "UTF-8");
+          String privateKey = IOUtils.toString(ResourceLoader.open(signingKeyFile), org.bibsonomy.util.StringUtils.CHARSET_UTF_8);
           privateKey = BasicOAuthStore.convertFromOpenSsl(privateKey);
           key = new BasicOAuthStoreConsumerKeyAndSecret(null, privateKey, KeyType.RSA_PRIVATE,
               signingKeyName, null);

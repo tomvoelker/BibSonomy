@@ -14,6 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.PublicationViewCommand;
 import org.springframework.validation.BindingResult;
@@ -47,7 +48,7 @@ public abstract class AbstractPublicationView<CMD extends PublicationViewCommand
 		if (command != null) {
 			try {
 				response.setContentType("text/plain; charset=UTF-8");
-				response.setCharacterEncoding("UTF-8");
+				response.setCharacterEncoding(StringUtils.CHARSET_UTF_8);
 
 				if (command.isDownload()) { // FIXME: add to command/allowed fields - do we want to use a string or is a boolean sufficient? 
 					/*
@@ -60,7 +61,7 @@ public abstract class AbstractPublicationView<CMD extends PublicationViewCommand
 				 * output stream
 				 */
 				final ServletOutputStream outputStream = response.getOutputStream();
-				final OutputStreamWriter writer = new OutputStreamWriter(outputStream, "UTF-8");
+				final OutputStreamWriter writer = new OutputStreamWriter(outputStream, StringUtils.CHARSET_UTF_8);
 
 				render(command, writer);
 				

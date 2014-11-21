@@ -19,6 +19,7 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.renderer.UrlRenderer;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.io.xml.FilterInvalidXMLCharsWriter;
 
 import de.unikassel.puma.openaccess.sword.renderer.xml.DivType;
@@ -124,7 +125,7 @@ public class MetsBibTexMLGenerator {
 		/*
 		 * helper
 		 */
-		final Writer writer = new FilterInvalidXMLCharsWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+		final Writer writer = new FilterInvalidXMLCharsWriter(new OutputStreamWriter(outputStream, StringUtils.CHARSET_UTF_8));
 		final ObjectFactory objectFactory = new ObjectFactory();
 		
 		/*
@@ -241,6 +242,7 @@ public class MetsBibTexMLGenerator {
 		final PumaPost pumaPost = this.xmlRenderer.createPumaPost(this.post, this.user);
 		xmlData.getAny().add(pumaPost);
 		this.xmlRenderer.serializeMets(writer, mets);
+		writer.close();
 	}
 
 }

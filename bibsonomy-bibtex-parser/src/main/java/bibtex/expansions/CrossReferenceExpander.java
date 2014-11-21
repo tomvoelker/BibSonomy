@@ -32,7 +32,7 @@ package bibtex.expansions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import bibtex.dom.BibtexAbstractEntry;
@@ -53,7 +53,7 @@ public final class CrossReferenceExpander extends AbstractExpander implements Ex
 	public CrossReferenceExpander() {
 		this(true);
 	}
-	
+
 	/**
 	 * @param throwAllExpansionExceptions
 	 *            Setting this to true means that all exceptions will be thrown
@@ -74,39 +74,52 @@ public final class CrossReferenceExpander extends AbstractExpander implements Ex
 	 * 
 	 * @param bibtexFile
 	 */
-	public void expand(BibtexFile bibtexFile) throws ExpansionException {
-		HashMap entryKey2Entry = new HashMap();
-		ArrayList entriesWithCrossReference = new ArrayList();
-		for (Iterator entryIt = bibtexFile.getEntries().iterator(); entryIt.hasNext();) {
-			BibtexAbstractEntry abstractEntry = (BibtexAbstractEntry) entryIt.next();
-			if (!(abstractEntry instanceof BibtexEntry))
+	public void expand(final BibtexFile bibtexFile) throws ExpansionException {
+		/*
+		 * build map of bibtex entry keys
+		 */
+		final Map<String, BibtexAbstractEntry> entryKey2Entry = new HashMap<String, BibtexAbstractEntry>();
+		final List<BibtexEntry> entriesWithCrossReference = new ArrayList<BibtexEntry>();
+		for (final BibtexAbstractEntry abstractEntry : bibtexFile.getEntries()) {
+			if (!(abstractEntry instanceof BibtexEntry)) {
 				continue;
-			BibtexEntry entry = (BibtexEntry) abstractEntry;
+			}
+			final BibtexEntry entry = (BibtexEntry) abstractEntry;
 			entryKey2Entry.put(entry.getEntryKey().toLowerCase(), abstractEntry);
 			if (entry.getFields().containsKey("crossref")) {
 				entriesWithCrossReference.add(entry);
 			}
 		}
-		for (Iterator entryIt = entriesWithCrossReference.iterator(); entryIt.hasNext();) {
-			BibtexEntry entry = (BibtexEntry) entryIt.next();
-			String crossrefKey = ((BibtexString) entry.getFields().get("crossref")).getContent().toLowerCase();
-			//entry.undefineField("crossref"); habe diese Zeile rausgenommen, damit wir an das Feld noch drankommen, falls es 
-			BibtexEntry crossrefEntry = (BibtexEntry) entryKey2Entry.get(crossrefKey);
-			if (crossrefEntry == null)
-				throwExpansionException("Crossref key not found: \"" + crossrefKey + "\"");
-			if (crossrefEntry.getFields().containsKey("crossref"))
-				throwExpansionException(
-					"Nested crossref: \""
-						+ crossrefKey
-						+ "\" is crossreferenced but crossreferences itself \""
-						+ ((BibtexString) crossrefEntry.getFields().get("crossref")).getContent()
-						+ "\"");
-			Map entryFields = entry.getFields();
-			Map crossrefFields = crossrefEntry.getFields();
-			for (Iterator fieldIt = crossrefFields.keySet().iterator(); fieldIt.hasNext();) {
-				String key = (String) fieldIt.next();
-				if (!entryFields.containsKey(key)) {
-					entry.setField(key, (BibtexAbstractValue) crossrefFields.get(key));
+		/*
+		 * search for cross references
+		 */
+		for (final BibtexEntry entry : entriesWithCrossReference) {
+			final String crossrefKey = ((BibtexString) entry.getFields().get("crossref")).getContent().toLowerCase();
+			/*
+			 * line uncommented, such that we can get the crossref data
+			 */
+			// entry.undefineField("crossref");  
+			final BibtexEntry crossrefEntry = (BibtexEntry) entryKey2Entry.get(crossrefKey);
+			// check if the referenced entry is available
+			if (crossrefEntry == null) {
+				throwExpansionException(new CrossReferenceExpansionException("crossref key not found", entry.getEntryKey(), crossrefKey));
+			} else {
+				// it is available - check if contains another (nested) crossref
+				if (crossrefEntry.getFields().containsKey("crossref"))
+					throwExpansionException(new CrossReferenceExpansionException(
+							"Nested crossref: \""
+									+ crossrefKey
+									+ "\" is crossreferenced but crossreferences itself \""
+									+ ((BibtexString) crossrefEntry.getFields().get("crossref")).getContent()
+									+ "\"", entry.getEntryKey(), crossrefKey));
+				// copy fields
+				final Map<String, BibtexAbstractValue> entryFields = entry.getFields();
+				final Map<String, BibtexAbstractValue> crossrefFields = crossrefEntry.getFields();
+				// TODO: Iterate over key/value pairs instead of only keys
+				for (final String key : crossrefFields.keySet()) {
+					if (!entryFields.containsKey(key)) {
+						entry.setField(key, crossrefFields.get(key));
+					}
 				}
 			}
 		}

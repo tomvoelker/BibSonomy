@@ -50,7 +50,7 @@
 						</c:otherwise>
 					</c:choose>
 				</c:when>
-				<c:when test="${command.context.userLoggedIn and not (properties['project.theme'] eq 'puma')}">
+				<c:when test="${command.context.userLoggedIn and properties['project.theme'] ne 'puma'}">
 					<div id="overlayInfobox">
 						<!-- FIXME: add theme! ??-->
 						<div class="close"><a onclick="$('#overlayInfobox').hide();"><fmt:message key="box.close"/></a></div>
@@ -74,7 +74,7 @@
 							</div>
 							
 							<!-- switch -->
-							<div class="systemRegister">	
+							<div class="systemRegister">
 								<h2>
 									<a href="/bibsonomy3">
 										<fmt:message key="system.bib3.switch.now">
