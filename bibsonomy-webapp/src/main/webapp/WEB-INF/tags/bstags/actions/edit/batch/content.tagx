@@ -252,7 +252,7 @@
 				<c:forEach var="post" items="${listView.list}">
 					<c:if test="${post.user.name ne command.context.loginUser.name}">
 						<!-- show one post -->
-						<rc:post post="${post}"	otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${command.context.loginUser.name}">
+						<rc:post post="${post}"	otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${command.context.loginUser.name}" resourceType="${resourceType}">
 							<jsp:attribute name="title">
 							     <jsp:invoke fragment="title" />    
 							</jsp:attribute>
