@@ -1,193 +1,270 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 						http://www.springframework.org/schema/beans/spring-beans.xsd
 						http://www.springframework.org/schema/util
 						http://www.springframework.org/schema/util/spring-util-3.0.xsd">
-	
+
+
 	<bean id="luceneResourceFactory" class="org.bibsonomy.model.factories.ResourceFactory" />
-		
-	<bean id="luceneBookmarkClass" class="java.lang.Class" factory-method="forName">
+
+	<bean id="luceneBookmarkClass" class="java.lang.Class"
+		factory-method="forName">
 		<constructor-arg value="org.bibsonomy.model.Bookmark" />
 	</bean>
-	
-	<bean id="lucenePublicationClass" class="java.lang.Class" factory-method="forName">
+
+	<bean id="lucenePublicationClass" class="java.lang.Class"
+		factory-method="forName">
 		<constructor-arg value="org.bibsonomy.model.BibTex" />
 	</bean>
-	
-	<bean id="luceneGoldStandardPublicationClass" class="java.lang.Class" factory-method="forName">
+
+	<bean id="luceneGoldStandardPublicationClass" class="java.lang.Class"
+		factory-method="forName">
 		<constructor-arg value="org.bibsonomy.model.GoldStandardPublication" />
 	</bean>
 	
-	<!-- <bean id= "ESNodeClient" class= "org.bibsonomy.es.ESNodeClient"/> -->
-	<bean id= "ESTransportClient" class= "org.bibsonomy.es.ESTransportClient"/>
-	<!--+
-	    | lucene post converter
-	    +-->
-	<!-- abstract converter -->
-	<bean id="lucenePostConverter" class="org.bibsonomy.lucene.index.converter.LuceneResourceConverter" abstract="true">
-		<property name="resourceFactory" ref="luceneResourceFactory" />
-	</bean>    
+	<bean id ="sharedIndexUpdatePlugin" class = "org.bibsonomy.es.SharedIndexUpdatePlugin"/>
+
+	<bean id="initiateIndexUpdater" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition" ref= "esClusterNamePresent"/>
+		<lookup-method name="produceSucessBean" bean="initiateIndexUpdatePlugin" />
+		<lookup-method name="produceFailureBean" bean="dummySamlEntryPoint" />
+	</bean>
 	
-	<bean id="lucenePublicationConverter" class="org.bibsonomy.lucene.index.converter.LuceneResourceConverter" parent="lucenePostConverter">
-		<property name="postPropertyMap" ref="publicationPropertyMap"/>
+	<bean id="initiateESClient" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition" ref= "esClusterNamePresent"/>
+		<lookup-method name="produceSucessBean" bean="esTransportClient" />
+		<lookup-method name="produceFailureBean" bean="dummySamlEntryPoint" />
+	</bean>
+	<bean id="initiateEsResourceSearch" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition" ref= "esClusterNamePresent"/>
+		<lookup-method name="produceSucessBean" bean="esResourceSearch" />
+		<lookup-method name="produceFailureBean" bean="dummySamlEntryPoint" />
+	</bean>
+	<bean id="initiateSharedResourceIndexGenerator" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition" ref= "esClusterNamePresent"/>
+		<lookup-method name="produceSucessBean" bean="sharedResourceIndexGenerator" />
+		<lookup-method name="produceFailureBean" bean="dummySamlEntryPoint" />
+	</bean>
+	<bean id="initiateSharedResourceIndexUpdater" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition" ref= "esClusterNamePresent"/>
+		<lookup-method name="produceSucessBean" bean="sharedResourceIndexUpdater" />
+		<lookup-method name="produceFailureBean" bean="dummySamlEntryPoint" />
+	</bean>
+	
+	<bean id="esClusterNamePresent" class="org.bibsonomy.webapp.util.spring.condition.NonEmptyStringCondition">
+		<property name="value" value="${es.cluster.name}" />
+	</bean>
+	
+	<bean id="initiateIndexUpdatePlugin" class="org.bibsonomy.lucene.index.manager.LuceneResourceManager">
+		<property name="plugin" ref="sharedIndexUpdatePlugin"/>
+	</bean>
+	
+	<!-- <bean id= "ESNodeClient" class= "org.bibsonomy.es.ESNodeClient"/> -->
+
+	<bean id="esTransportClient" class="org.bibsonomy.es.ESTransportClient" />
+
+	<bean id="esResourceSearch" class="org.bibsonomy.es.EsResourceSearch">
+		<property name="esClient" ref="esTransportClient" />
+	</bean>
+	<bean id="sharedResourceIndexGenerator" class="org.bibsonomy.es.GenerateSharedResourceIndex">
+		<property name="esClient" ref="esTransportClient" />
+	</bean>
+	<bean id="sharedResourceIndexUpdater" class="org.bibsonomy.es.SharedResourceIndexUpdater">
+		<property name="esClient" ref="esTransportClient" />
+	</bean>
+
+	
+	
+	<!--+ | lucene post converter + -->
+	<!-- abstract converter -->
+	<bean id="lucenePostConverter"
+		class="org.bibsonomy.lucene.index.converter.LuceneResourceConverter"
+		abstract="true">
+		<property name="resourceFactory" ref="luceneResourceFactory" />
+	</bean>
+
+	<bean id="lucenePublicationConverter"
+		class="org.bibsonomy.lucene.index.converter.LuceneResourceConverter"
+		parent="lucenePostConverter">
+		<property name="postPropertyMap" ref="publicationPropertyMap" />
 		<property name="resourceClass" ref="lucenePublicationClass" />
 	</bean>
-	
-	<bean id="luceneBookmarkConverter" class="org.bibsonomy.lucene.index.converter.LuceneResourceConverter" parent="lucenePostConverter">
-		<property name="postPropertyMap" ref="bookmarkPropertyMap"/>
+
+	<bean id="luceneBookmarkConverter"
+		class="org.bibsonomy.lucene.index.converter.LuceneResourceConverter"
+		parent="lucenePostConverter">
+		<property name="postPropertyMap" ref="bookmarkPropertyMap" />
 		<property name="resourceClass" ref="luceneBookmarkClass" />
 	</bean>
-	
-	<bean id="luceneGoldStandardPublicationConverter" class="org.bibsonomy.lucene.index.converter.LuceneResourceConverter" parent="lucenePostConverter">
-		<property name="postPropertyMap" ref="publicationPropertyMap"/>
+
+	<bean id="luceneGoldStandardPublicationConverter"
+		class="org.bibsonomy.lucene.index.converter.LuceneResourceConverter"
+		parent="lucenePostConverter">
+		<property name="postPropertyMap" ref="publicationPropertyMap" />
 		<property name="resourceClass" ref="luceneGoldStandardPublicationClass" />
 	</bean>
-	
-	
+
+
 	<!-- abstract resource index -->
-	<bean id="luceneResourceIndex" class="org.bibsonomy.lucene.index.LuceneResourceIndex" abstract="true">
+	<bean id="luceneResourceIndex" class="org.bibsonomy.lucene.index.LuceneResourceIndex"
+		abstract="true">
 		<property name="baseIndexPath" value="${lucene.index.basePath}" />
 	</bean>
-	
+
 	<util:list id="bookmarkIndeces">
-		<bean id="luceneBookmarkIndex0" class="org.bibsonomy.lucene.index.LuceneResourceIndex" init-method="init" parent="luceneResourceIndex">
-			<property name="indexId" value="0"/>
-			<property name="analyzer" ref="luceneBookmarkFieldWrapperAnalyzer"/>
+		<bean id="luceneBookmarkIndex0" class="org.bibsonomy.lucene.index.LuceneResourceIndex"
+			init-method="init" parent="luceneResourceIndex">
+			<property name="indexId" value="0" />
+			<property name="analyzer" ref="luceneBookmarkFieldWrapperAnalyzer" />
 			<property name="resourceClass" ref="luceneBookmarkClass" />
 		</bean>
-		<bean id="luceneBookmarkIndex1" class="org.bibsonomy.lucene.index.LuceneResourceIndex" init-method="init" parent="luceneResourceIndex">
-			<property name="indexId" value="1"/>
+		<bean id="luceneBookmarkIndex1" class="org.bibsonomy.lucene.index.LuceneResourceIndex"
+			init-method="init" parent="luceneResourceIndex">
+			<property name="indexId" value="1" />
 			<property name="analyzer" ref="luceneBookmarkFieldWrapperAnalyzer" />
 			<property name="resourceClass" ref="luceneBookmarkClass" />
 		</bean>
 	</util:list>
-	
+
 	<util:list id="publicationIndeces">
-		<bean id="lucenePublicationIndex0" class="org.bibsonomy.lucene.index.LuceneResourceIndex" init-method="init" parent="luceneResourceIndex">
-			<property name="indexId" value="0"/>
-			<property name="analyzer" ref="lucenePublicationFieldWrapperAnalyzer"/>
+		<bean id="lucenePublicationIndex0" class="org.bibsonomy.lucene.index.LuceneResourceIndex"
+			init-method="init" parent="luceneResourceIndex">
+			<property name="indexId" value="0" />
+			<property name="analyzer" ref="lucenePublicationFieldWrapperAnalyzer" />
 			<property name="resourceClass" ref="lucenePublicationClass" />
 		</bean>
-		<bean id="lucenePublicationIndex1" class="org.bibsonomy.lucene.index.LuceneResourceIndex" init-method="init" parent="luceneResourceIndex">
-			<property name="indexId" value="1"/>
-			<property name="analyzer" ref="lucenePublicationFieldWrapperAnalyzer"/>
+		<bean id="lucenePublicationIndex1" class="org.bibsonomy.lucene.index.LuceneResourceIndex"
+			init-method="init" parent="luceneResourceIndex">
+			<property name="indexId" value="1" />
+			<property name="analyzer" ref="lucenePublicationFieldWrapperAnalyzer" />
 			<property name="resourceClass" ref="lucenePublicationClass" />
 		</bean>
 	</util:list>
-	
+
 	<util:list id="goldStandardPublicationIndeces">
-		<bean id="goldStandardPublicationIndex0" class="org.bibsonomy.lucene.index.LuceneResourceIndex" init-method="init" parent="luceneResourceIndex">
-			<property name="indexId" value="0"/>
+		<bean id="goldStandardPublicationIndex0" class="org.bibsonomy.lucene.index.LuceneResourceIndex"
+			init-method="init" parent="luceneResourceIndex">
+			<property name="indexId" value="0" />
 			<property name="analyzer" ref="lucenePublicationFieldWrapperAnalyzer" />
 			<property name="resourceClass" ref="luceneGoldStandardPublicationClass" />
 		</bean>
-		<bean id="goldStandardPublicationIndex1" class="org.bibsonomy.lucene.index.LuceneResourceIndex" init-method="init" parent="luceneResourceIndex">
-			<property name="indexId" value="1"/>
+		<bean id="goldStandardPublicationIndex1" class="org.bibsonomy.lucene.index.LuceneResourceIndex"
+			init-method="init" parent="luceneResourceIndex">
+			<property name="indexId" value="1" />
 			<property name="analyzer" ref="lucenePublicationFieldWrapperAnalyzer" />
 			<property name="resourceClass" ref="luceneGoldStandardPublicationClass" />
 		</bean>
 	</util:list>
-	
-	<!--+
-	    | lucene database access logics 
-	    +-->
+
+	<!--+ | lucene database access logics + -->
 	<bean id="luceneSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
 		<!-- currently configurated using jndi in bibsonomy-webapp -->
 		<property name="dataSource" ref="luceneDataSource" />
 		<property name="configLocation" value="classpath:SqlMapConfig_lucene.xml" />
-        <property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+		<property name="transactionConfigClass"
+			value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
 	</bean>
-	
-	<bean id="luceneSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+
+	<bean id="luceneSessionFactory"
+		class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
 		<property name="client" ref="luceneSqlMapClient" />
 	</bean>
-	
-	<bean id="luceneDBLogic" class="org.bibsonomy.lucene.database.LuceneDBLogic" abstract="true">
+
+	<bean id="luceneDBLogic" class="org.bibsonomy.lucene.database.LuceneDBLogic"
+		abstract="true">
 		<property name="sessionFactory" ref="luceneSessionFactory" />
 	</bean>
-	
-	<bean id="lucenePublicationLogic" class="org.bibsonomy.lucene.database.LuceneDBLogic" parent="luceneDBLogic">
+
+	<bean id="lucenePublicationLogic" class="org.bibsonomy.lucene.database.LuceneDBLogic"
+		parent="luceneDBLogic">
 		<property name="resourceClass" ref="lucenePublicationClass" />
 	</bean>
-	<bean id="luceneBookmarkLogic" class="org.bibsonomy.lucene.database.LuceneDBLogic" parent="luceneDBLogic">
-		<property name="resourceClass" ref="luceneBookmarkClass" /> 
+	<bean id="luceneBookmarkLogic" class="org.bibsonomy.lucene.database.LuceneDBLogic"
+		parent="luceneDBLogic">
+		<property name="resourceClass" ref="luceneBookmarkClass" />
 	</bean>
-	<bean id="luceneGoldStandardPublicationLogic" class="org.bibsonomy.lucene.database.LuceneGoldStandardLogic" parent="luceneDBLogic">
+	<bean id="luceneGoldStandardPublicationLogic" class="org.bibsonomy.lucene.database.LuceneGoldStandardLogic"
+		parent="luceneDBLogic">
 		<property name="resourceClass" ref="luceneGoldStandardPublicationClass" />
 	</bean>
 
-	<!--+
-	    | lucene index searcher 
-	    +-->	
+	<!--+ | lucene index searcher + -->
 	<bean id="luceneInfoDBLogic" class="org.bibsonomy.lucene.database.LuceneInfoDBLogic">
 		<property name="sessionFactory" ref="luceneSessionFactory" />
 	</bean>
-	    
-	<bean id="luceneResourceSearch" class="org.bibsonomy.lucene.search.LuceneResourceSearch" abstract="true">
+
+	<bean id="luceneResourceSearch" class="org.bibsonomy.lucene.search.LuceneResourceSearch"
+		abstract="true">
 		<property name="tagCloudLimit" value="${lucene.tagCloud.limit}" />
 		<property name="tagCloudEnabled" value="${lucene.tagCloud.enabled}" />
 		<property name="dbLogic" ref="luceneInfoDBLogic" />
 	</bean>
-	
-	<bean id="lucenePublicationSearch" class="org.bibsonomy.lucene.search.LucenePublicationSearch" parent="luceneResourceSearch">
+
+	<bean id="lucenePublicationSearch" class="org.bibsonomy.lucene.search.LucenePublicationSearch"
+		parent="luceneResourceSearch">
 		<property name="analyzer" ref="lucenePublicationFieldWrapperAnalyzer" />
 		<property name="resourceConverter" ref="lucenePublicationConverter" />
 	</bean>
-	
-	<bean id="luceneBookmarkSearch" class="org.bibsonomy.lucene.search.LuceneResourceSearch" parent="luceneResourceSearch">
-		<property name="analyzer" ref="luceneBookmarkFieldWrapperAnalyzer"/>
-		<property name="resourceConverter" ref="luceneBookmarkConverter"/>
+
+	<bean id="luceneBookmarkSearch" class="org.bibsonomy.lucene.search.LuceneResourceSearch"
+		parent="luceneResourceSearch">
+		<property name="analyzer" ref="luceneBookmarkFieldWrapperAnalyzer" />
+		<property name="resourceConverter" ref="luceneBookmarkConverter" />
 	</bean>
-	
-	<bean id="luceneGoldStandardPublicationSearch" class="org.bibsonomy.lucene.search.LucenePublicationSearch" parent="luceneResourceSearch">
-		<property name="analyzer" ref="lucenePublicationFieldWrapperAnalyzer"/>
-		<property name="resourceConverter" ref="luceneGoldStandardPublicationConverter"/>
+
+	<bean id="luceneGoldStandardPublicationSearch" class="org.bibsonomy.lucene.search.LucenePublicationSearch"
+		parent="luceneResourceSearch">
+		<property name="analyzer" ref="lucenePublicationFieldWrapperAnalyzer" />
+		<property name="resourceConverter" ref="luceneGoldStandardPublicationConverter" />
 	</bean>
-	
-	<!--+
-	    | lucene index manager 
-	    +-->
-	<bean id="luceneResourceManager" class="org.bibsonomy.lucene.index.manager.LuceneResourceManager" abstract="true">
-		<property name="luceneUpdaterEnabled" value="${lucene.enableUpdater}"/>
+
+	<!--+ | lucene index manager + -->
+	<bean id="luceneResourceManager"
+		class="org.bibsonomy.lucene.index.manager.LuceneResourceManager"
+		abstract="true">
+		<property name="luceneUpdaterEnabled" value="${lucene.enableUpdater}" />
 	</bean>
-	
-	<bean id="lucenePublicationManager" class="org.bibsonomy.lucene.index.manager.LuceneResourceManager" init-method="init" parent="luceneResourceManager">
+
+	<bean id="lucenePublicationManager"
+		class="org.bibsonomy.lucene.index.manager.LuceneResourceManager"
+		init-method="init" parent="luceneResourceManager">
 		<property name="resourceIndices" ref="publicationIndeces" />
 		<property name="dbLogic" ref="lucenePublicationLogic" />
 		<property name="searcher" ref="lucenePublicationSearch" />
 		<property name="resourceConverter" ref="lucenePublicationConverter" />
 	</bean>
-	
-	<bean id="luceneBookmarkManager" class="org.bibsonomy.lucene.index.manager.LuceneResourceManager" init-method="init" parent="luceneResourceManager">
+
+	<bean id="luceneBookmarkManager"
+		class="org.bibsonomy.lucene.index.manager.LuceneResourceManager"
+		init-method="init" parent="luceneResourceManager">
 		<property name="resourceIndices" ref="bookmarkIndeces" />
 		<property name="dbLogic" ref="luceneBookmarkLogic" />
 		<property name="searcher" ref="luceneBookmarkSearch" />
 		<property name="resourceConverter" ref="luceneBookmarkConverter" />
 	</bean>
-	
-	<bean id="luceneGoldStandardPublicationManager" class="org.bibsonomy.lucene.index.manager.LuceneGoldStandardManager" init-method="init" parent="luceneResourceManager">
+
+	<bean id="luceneGoldStandardPublicationManager"
+		class="org.bibsonomy.lucene.index.manager.LuceneGoldStandardManager"
+		init-method="init" parent="luceneResourceManager">
 		<property name="resourceIndices" ref="goldStandardPublicationIndeces" />
 		<property name="dbLogic" ref="luceneGoldStandardPublicationLogic" />
 		<property name="searcher" ref="luceneGoldStandardPublicationSearch" />
 		<property name="resourceConverter" ref="luceneGoldStandardPublicationConverter" />
 	</bean>
-	
+
 	<util:map id="allLuceneResourceManagers" key-type="java.lang.Class">
 		<entry key-ref="luceneBookmarkClass" value-ref="luceneBookmarkManager" />
 		<entry key-ref="lucenePublicationClass" value-ref="lucenePublicationManager" />
 		<entry key-ref="luceneGoldStandardPublicationClass" value-ref="luceneGoldStandardPublicationManager" />
 	</util:map>
-	
-	<!--  #################### imports #################### -->
+
+	<!-- #################### imports #################### -->
 	<import resource="bibsonomy-lucene-index-config.xml" />
-	
-	<!--+
-	    | import resource field configurations 
-	    +-->
-    <import resource="bibsonomy-lucene-post-fields.xml" />
-    <import resource="bibsonomy-lucene-publication-fields.xml" />
-    <import resource="bibsonomy-lucene-bookmark-fields.xml" />
+
+	<!--+ | import resource field configurations + -->
+	<import resource="bibsonomy-lucene-post-fields.xml" />
+	<import resource="bibsonomy-lucene-publication-fields.xml" />
+	<import resource="bibsonomy-lucene-bookmark-fields.xml" />
 </beans>

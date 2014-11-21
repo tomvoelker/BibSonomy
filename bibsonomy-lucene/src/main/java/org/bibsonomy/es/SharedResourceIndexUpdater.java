@@ -9,10 +9,10 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.document.Document;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
-import org.bibsonomy.lucene.param.comparator.DocumentCacheComparator;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.es.ESClient;
+import org.bibsonomy.model.es.IndexUpdater;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.deletebyquery.DeleteByQueryResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -31,7 +31,7 @@ import org.elasticsearch.search.sort.SortOrder;
  * @param <R>
  *            the resource of the index
  */
-public class SharedResourceIndexUpdater<R extends Resource> {
+public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpdater{
 	private static final Log log = LogFactory
 			.getLog(SharedResourceIndexUpdater.class);
 
@@ -44,8 +44,8 @@ public class SharedResourceIndexUpdater<R extends Resource> {
 	/** the node client */
 //	private final ESNodeClient esClient = new ESNodeClient();
 	/** the transport client */
-	private final ESTransportClient esClient = new ESTransportClient();
-	
+	private static ESClient esClient;
+
 	/** keeps track of the newest log_date during last index update */
 	private Long lastLogDate;
 
@@ -70,6 +70,7 @@ public class SharedResourceIndexUpdater<R extends Resource> {
 	/**
 	 * @return lastLogDate
 	 */
+	@Override
 	@SuppressWarnings("boxing")
 	public long getLastLogDate() {
 		synchronized (this) {
@@ -116,6 +117,7 @@ public class SharedResourceIndexUpdater<R extends Resource> {
 	/**
 	 * @return lastTasId
 	 */
+	@Override
 	@SuppressWarnings("boxing")
 	public Integer getLastTasId() {
 		synchronized (this) {
@@ -181,7 +183,7 @@ public class SharedResourceIndexUpdater<R extends Resource> {
 	 * @return the nodeClient
 	 */
 	public Client getClient() {
-		return this.esClient.getClient();
+		return SharedResourceIndexUpdater.esClient.getClient();
 	}
 
 	/**
@@ -256,9 +258,10 @@ public class SharedResourceIndexUpdater<R extends Resource> {
 	/**
 	 * @param esPostsToInsert2
 	 */
-	private void insertNewPosts(ArrayList<Map<String, Object>> esPostsToInsert2) {
+	@Override
+	public void insertNewPosts(ArrayList<Map<String, Object>> esPostsToInsert2) {
 		for (Map<String, Object> jsonDocument : esPostsToInsert2) {
-			this.esClient
+			SharedResourceIndexUpdater.esClient
 					.getClient()
 					.prepareIndex(
 							INDEX_NAME,
@@ -274,10 +277,11 @@ public class SharedResourceIndexUpdater<R extends Resource> {
 	/**
 	 * @param userName
 	 */
-	private void deleteIndexForForUser(String userName) {
+	@Override
+	public void deleteIndexForForUser(String userName) {
 
 		@SuppressWarnings("unused")
-		DeleteByQueryResponse response = this.esClient.getClient().prepareDeleteByQuery(INDEX_NAME)
+		DeleteByQueryResponse response = SharedResourceIndexUpdater.esClient.getClient().prepareDeleteByQuery(INDEX_NAME)
 				.setTypes(INDEX_TYPE).setQuery(QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, userName))
 				.execute()
 				.actionGet();
@@ -287,9 +291,11 @@ public class SharedResourceIndexUpdater<R extends Resource> {
 	/**
 	 * @param contentId
 	 */
-	@SuppressWarnings("unused")
-	private void deleteIndexForContentId(Integer contentId) {
-		DeleteResponse response = this.esClient
+
+	@Override
+	public void deleteIndexForContentId(Integer contentId) {
+		@SuppressWarnings("unused")
+		DeleteResponse response = esClient
 				.getClient()
 				.prepareDelete(INDEX_NAME, INDEX_TYPE, String.valueOf(contentId))
 				.setRefresh(true).execute().actionGet();
@@ -319,6 +325,7 @@ public class SharedResourceIndexUpdater<R extends Resource> {
 	/**
 	 * @param contentId
 	 */
+	@Override
 	public void deleteDocumentForContentId(Integer contentId) {
 		synchronized (this) {
 			this.contentIdsToDelete.add(contentId);
@@ -346,6 +353,20 @@ public class SharedResourceIndexUpdater<R extends Resource> {
 		synchronized (this) {
 			this.usersToFlag.remove(userName);
 		}
+	}
+	
+	/**
+	 * @param esClient the esClient to set
+	 */
+	public void setEsClient(ESClient esClient) {
+		SharedResourceIndexUpdater.esClient = esClient;
+	}
+
+	/**
+	 * @return the esClient
+	 */
+	public ESClient getEsClient() {
+		return SharedResourceIndexUpdater.esClient;
 	}
 
 }

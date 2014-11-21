@@ -29,7 +29,7 @@ public class GenerateSharedResourceIndex extends LuceneGenerateResourceIndex<Res
 	// ElasticSearch Node client
 //	private final ESClient esClient = new ESNodeClient();
 	// ElasticSearch Transport client
-	private final ESClient esClient = new ESTransportClient();
+	private static ESClient esClient;
 		
 	/**
 	 * creates index of resource entries
@@ -146,6 +146,20 @@ public class GenerateSharedResourceIndex extends LuceneGenerateResourceIndex<Res
 	 */
 	public void setINDEX_TYPE(String INDEX_TYPE) {
 		this.INDEX_TYPE = INDEX_TYPE;
+	}
+
+	/**
+	 * @return the esClient
+	 */
+	public ESClient getEsClient() {
+		return GenerateSharedResourceIndex.esClient;
+	}
+
+	/**
+	 * @param esClient the esClient to set
+	 */
+	public void setEsClient(ESClient esClient) {
+		GenerateSharedResourceIndex.esClient = esClient;
 	}
 
 }

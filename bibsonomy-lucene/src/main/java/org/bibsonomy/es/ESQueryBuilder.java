@@ -41,7 +41,7 @@ public abstract class ESQueryBuilder {
     private Log log = LogFactory.getLog(ESQueryBuilder.class);
 
     /** The s esclient. */
-    private static Client esClient;
+    private Client esClient;
 
 
 	/**

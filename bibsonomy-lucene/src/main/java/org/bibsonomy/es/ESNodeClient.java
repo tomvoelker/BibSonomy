@@ -14,7 +14,7 @@ import org.elasticsearch.node.NodeBuilder;
  */
 public class ESNodeClient implements ESClient {
 
-    private static Node node = null;
+    private Node node = null;
 
     /**
      * Default constructor, initializing the client node.

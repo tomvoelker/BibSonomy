@@ -28,6 +28,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.es.SearchType;
+import org.bibsonomy.model.es.UpdatePlugin;
 
 /**
  * class for maintaining the lucene index
@@ -77,6 +78,10 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * for shared resources index
 	 */
 	protected SharedResourceIndexUpdater<R> sharedIndexUpdater;
+	/**
+	 * The plugin for indexUpdater
+	 */
+	protected UpdatePlugin plugin;
 
 	/** the queue containing the next indices to be updated */
 	private final Queue<LuceneResourceIndex<R>> updateQueue = new LinkedList<LuceneResourceIndex<R>>();
@@ -137,15 +142,11 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * t-epsilon. These posts are removed from the index together with the
 	 * updated posts.
 	 */
-	@SuppressWarnings("boxing")
+	@SuppressWarnings({ "boxing", "unchecked" })
 	protected void updateIndexes() {
 		synchronized (this) {
 			
-			//Shared index update
-			String indexType = this.getResourceName();
-			this.sharedIndexUpdater =  new SharedResourceIndexUpdater<R>();
-			this.sharedIndexUpdater.setINDEX_TYPE(indexType);
-			/*
+						/*
 			 * get next index to update
 			 */
 			this.updatingIndex = this.updateQueue.poll();
@@ -158,35 +159,50 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			// FIXME: get this date from the log_table via
 			// 'getContentIdsToDelete'
 			final long currentLogDate = System.currentTimeMillis();
-
 			// FIXME: this should be done in the constructor
 			// keeps track of the newest tas_id during last index update
 			Integer lastTasId = this.updatingIndex.getLastTasId();
-			Integer lastTasIdSharedIndex = this.sharedIndexUpdater.getLastTasId();
 			log.debug("lastTasId: " + lastTasId);
 
 			// keeps track of the newest log_date during last index update
 			final long lastLogDate = this.updatingIndex.getLastLogDate();
-			final long lastLogDateSharedIndex =  this.sharedIndexUpdater.getLastLogDate();
 			
-			if((lastLogDate == lastLogDateSharedIndex) && (lastTasId == lastTasIdSharedIndex)){
-				lastTasId = lastTasIdSharedIndex = this.updateIndex(currentLogDate, lastTasId, lastLogDateSharedIndex, SearchType.BOTH);
+			if(plugin!=null){
+				//Shared index updater
+				this.sharedIndexUpdater =  (SharedResourceIndexUpdater<R>) plugin.createUpdater(this.getResourceName());
+				Integer lastTasIdSharedIndex = this.sharedIndexUpdater.getLastTasId();
+				final long lastLogDateSharedIndex =  this.sharedIndexUpdater.getLastLogDate();
+				
+				if((lastLogDate == lastLogDateSharedIndex) && (lastTasId == lastTasIdSharedIndex)){
+					lastTasId = lastTasIdSharedIndex = this.updateIndex(currentLogDate, lastTasId, lastLogDateSharedIndex, SearchType.BOTH);
+				}else{
+					lastTasId = this.updateIndex(currentLogDate, lastTasId, lastLogDate, SearchType.LUCENESEARCH);
+					lastTasIdSharedIndex =  this.updateIndex(currentLogDate, lastTasIdSharedIndex, lastLogDateSharedIndex, SearchType.ELASTICSEARCH);
+				}
+				/*
+				 * commit changes
+				 */
+				this.updatingIndex.flush();
+				this.sharedIndexUpdater.flush();
+				/*
+				 * update variables
+				 */
+				this.updatingIndex.setLastLogDate(currentLogDate);
+				this.updatingIndex.setLastTasId(lastTasId);
+				this.sharedIndexUpdater.setLastLogDate(currentLogDate);
+				this.sharedIndexUpdater.setLastTasId(lastTasId);
 			}else{
 				lastTasId = this.updateIndex(currentLogDate, lastTasId, lastLogDate, SearchType.LUCENESEARCH);
-				lastTasIdSharedIndex =  this.updateIndex(currentLogDate, lastTasIdSharedIndex, lastLogDateSharedIndex, SearchType.ELASTICSEARCH);
+				/*
+				 * commit changes
+				 */
+				this.updatingIndex.flush();
+				/*
+				 * update variables
+				 */
+				this.updatingIndex.setLastLogDate(currentLogDate);
+				this.updatingIndex.setLastTasId(lastTasId);
 			}
-			/*
-			 * commit changes
-			 */
-			this.updatingIndex.flush();
-			this.sharedIndexUpdater.flush();
-			/*
-			 * update variables
-			 */
-			this.updatingIndex.setLastLogDate(currentLogDate);
-			this.updatingIndex.setLastTasId(lastTasId);
-			this.sharedIndexUpdater.setLastLogDate(currentLogDate);
-			this.sharedIndexUpdater.setLastTasId(lastTasId);
 		}
 
 		this.alreadyRunning = 0;
@@ -706,6 +722,20 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			// add old active index to the update queue
 			this.updateQueue.add(oldIndex);
 		}
+	}
+
+	/**
+	 * @return the plugin
+	 */
+	public UpdatePlugin getPlugin() {
+		return this.plugin;
+	}
+
+	/**
+	 * @param plugin the plugin to set
+	 */
+	public void setPlugin(UpdatePlugin plugin) {
+		this.plugin = plugin;
 	}
 
 	/**

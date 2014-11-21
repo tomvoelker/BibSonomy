@@ -41,14 +41,21 @@ public class EsResourceSearch<R extends Resource>{
 	// ElasticSearch node client
 //	private ESClient esClient = new ESNodeClient();
 	// ElasticSearch Transport client
-	private ESClient esClient = new ESTransportClient();
+	private static ESClient esClient;
+
+	/**
+	 * @param esClient the esClient to set
+	 */
+	public void setEsClient(ESClient esClient) {
+		EsResourceSearch.esClient = esClient;
+	}
 
 	private String searchTerms;
 	/**
 	 * @return the ElasticSearch Client
 	 */
 	public ESClient getEsClient() {
-		return this.esClient;
+		return EsResourceSearch.esClient;
 	}
 
 	/**
