@@ -81,7 +81,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	/**
 	 * The plugin for indexUpdater
 	 */
-	protected UpdatePlugin plugin;
+	protected static UpdatePlugin plugin;
 
 	/** the queue containing the next indices to be updated */
 	private final Queue<LuceneResourceIndex<R>> updateQueue = new LinkedList<LuceneResourceIndex<R>>();
