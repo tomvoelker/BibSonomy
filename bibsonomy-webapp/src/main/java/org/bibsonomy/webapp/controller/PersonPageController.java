@@ -2,30 +2,14 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.ConceptStatus;
-import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.PersonResourceRelation;
-import org.bibsonomy.model.util.PersonNameUtils;
-import org.bibsonomy.webapp.command.ListCommand;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.PersonPageCommand;
-import org.bibsonomy.webapp.config.Parameters;
-import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.PersonLogic;
 import org.bibsonomy.webapp.util.View;
@@ -36,8 +20,6 @@ import org.bibsonomy.webapp.view.Views;
  * @author Christian Pfeiffer
  */
 public class PersonPageController extends SingleResourceListController implements MinimalisticController<PersonPageCommand> {
-	private static final Log log = LogFactory.getLog(PersonPageController.class);
-	
 	private PersonLogic personLogic = new PersonLogic();
 	
 	@Override
@@ -56,13 +38,16 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		if(present(command.getFormAction())) {
 			switch(command.getFormAction()) {
-				case "Save": return this.updateAction(command);
-				case "Add name": return this.addNameAction(command);
-				case "Change role": return this.editRoleAction(command);
+				case "update": return this.updateAction(command);
+				case "addName": return this.addNameAction(command);
+				case "deleteName": return this.deleteNameAction(command);
+				case "addRole": return this.addRoleAction(command);
+				case "editRole": return this.editRoleAction(command);
+				case "deleteRole": return this.deleteRoleAction(command);
 				case "unlink": return this.unlinkAction(command);
-				case "New person": return this.newAction(command);
-				case "Thats me": return this.assignAction(command);
-				case "Search": return this.indexAction(command);
+				case "newPerson": return this.newAction(command);
+				case "link": return this.assignAction(command);
+				case "search": return this.indexAction(command);
 				default: return this.indexAction(command);
 			}
 		} else if(present(command.getRequestedPersonId())) {
@@ -77,35 +62,36 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 * @return
 	 */
-	@SuppressWarnings("boxing")
 	private View assignAction(PersonPageCommand command) {
 		
-//		Person p = this.personLogic.getPersonById(Integer.valueOf(command.getRequestedPersonId()));
-//		p.setUser(this.logic.getAuthenticatedUser());
-//		this.personLogic.createOrUpdatePerson(p);
+		command.setPerson(this.personLogic.getPersonById(Integer.parseInt(command.getRequestedPersonId())));
+		command.getPerson().setUser(this.logic.getAuthenticatedUser());
+		this.personLogic.createOrUpdatePerson(command.getPerson());
 		
-		return new ExtendedRedirectView("/person/" +command.getRequestedPersonId() + "/" + command.getRequestedPersonName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/AUTHOR");
+		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getId().intValue(), command.getPerson().getMainName().toString(), command.getPost().getResource().getInterHash(), command.getPost().getUser().getName(), command.getRequestedRole()));
 	}
 	
+	@SuppressWarnings({ "static-method", "unused" })
 	private View indexAction(PersonPageCommand command) {	
 		return Views.PERSON;
 	}
 
 
 	/**
+	 * Action which is called a new person button somewhere in an modal dialog
 	 * @param command
 	 * @return
 	 */
 	private View newAction(PersonPageCommand command) {
 		
 		command.setPost(this.logic.getPostDetails(command.getRequestedHash(), command.getRequestedUser()));
-		if(present(command.getFormFirstName()) || present(command.getFormLastName())) {
+		if(present(command.getFormLastName())) {
 			Person person = new Person();
 			person.setMainName(new PersonName(command.getFormFirstName(), command.getFormLastName()));
 			person.setAcademicDegree(command.getFormAcademicDegree());
 			this.personLogic.createOrUpdatePerson(person);
 			
-			return new ExtendedRedirectView("/person/" +command.getRequestedPersonId() + "/" + command.getRequestedPersonName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/AUTHOR");
+			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getId().intValue(), command.getPerson().getMainName().toString(), command.getPost().getResource().getInterHash(), command.getPost().getUser().getName(), command.getRequestedRole()));
 		}
 		
 		return Views.PERSON_NEW;
@@ -113,32 +99,51 @@ public class PersonPageController extends SingleResourceListController implement
 
 
 	/**
+	 * Action called when a user want to unlink an author from a publication
 	 * @param command
 	 * @return
 	 */
 	private View unlinkAction(PersonPageCommand command) {
 		
 		this.personLogic.removePersonRelation(command.getRequestedHash(), command.getRequestedUser(), command.getRequestedPersonId(), PersonResourceRelation.valueOf(command.getRequestedRole()));
-		return new ExtendedRedirectView("/person/" + command.getRequestedPersonId() + "/" + command.getRequestedPersonName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/AUTHOR");
+		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getId().intValue(), command.getPerson().getMainName().toString(), command.getPost().getResource().getInterHash(), command.getPost().getUser().getName(), command.getRequestedRole()));
 		
 	}
-
+	
+	/**
+	 * Action called when a user wants to add a person role to a thesis
+	 * @param command
+	 * @return
+	 */
+	private View addRoleAction(PersonPageCommand command) {
+		
+		this.personLogic.addPersonRelation(command.getRequestedHash(), command.getRequestedUser(), command.getRequestedPersonId(), PersonResourceRelation.valueOf(command.getRequestedRole()));
+		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getId().intValue(), command.getPerson().getMainName().toString(), command.getPost().getResource().getInterHash(), command.getPost().getUser().getName(), command.getRequestedRole()));	
+	}
 
 	/**
+	 * Action called when a user wants to edit the role of a person in a thesis
 	 * @param command
 	 * @return
 	 */
 	private View editRoleAction(PersonPageCommand command) {
-		
-		for(String role : command.getFormRoles()) {
+		//TODO add new role types to view
+		for(String role : command.getFormPersonRoles()) {
 			this.personLogic.addPersonRelation(command.getRequestedHash(), command.getRequestedUser(), command.getRequestedPersonId(), PersonResourceRelation.valueOf(role));
 		}
 				
-		return new ExtendedRedirectView("/person/" + command.getRequestedPersonId() + "/" + command.getRequestedPersonName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/AUTHOR");	
+		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getId().intValue(), command.getPerson().getMainName().toString(), command.getPost().getResource().getInterHash(), command.getPost().getUser().getName(), command.getRequestedRole()));	
+	}
+	
+	private View deleteRoleAction(PersonPageCommand command) {
+		
+		this.personLogic.removePersonRelation(command.getFormResourceHash(), command.getFormUser(), command.getFormPersonId(), PersonResourceRelation.valueOf(command.getFormPersonRole().toUpperCase()));
+				
+		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getId().intValue(), command.getPerson().getMainName().toString(), command.getPost().getResource().getInterHash(), command.getPost().getUser().getName(), command.getRequestedRole()));	
 	}
 
-
 	/**
+	 * Action called when a user updates preferences of a person
 	 * @param command
 	 */
 	private View updateAction(PersonPageCommand command) {
@@ -150,35 +155,45 @@ public class PersonPageController extends SingleResourceListController implement
 		command.getPerson().setMainName(pn);
 		this.personLogic.createOrUpdatePerson(command.getPerson());
 		
-		
-		return new ExtendedRedirectView("/person/" + command.getRequestedPersonId() + "/" + command.getRequestedPersonName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/AUTHOR");
+		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getId().intValue(), command.getPerson().getMainName().toString(), command.getPost().getResource().getInterHash(), command.getPost().getUser().getName(), command.getRequestedRole()));
 	}
 
 	/**
-	 * 
+	 * Action called when a user adds an alternative name to a person
 	 * @param command
 	 */
 	private View addNameAction(PersonPageCommand command) {
-		
 		command.getPerson().getAlternateNames().add(new PersonName(command.getFormFirstName(), command.getFormLastName()));
 		this.personLogic.createOrUpdatePerson(command.getPerson());
 		
-		return new ExtendedRedirectView("/person/" +command.getRequestedPersonId() + "/" + command.getRequestedPersonName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/AUTHOR");
+		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getId().intValue(), command.getPerson().getMainName().toString(), command.getPost().getResource().getInterHash(), command.getPost().getUser().getName(), command.getRequestedRole()));
+	}
 
+	/**
+	 * Action called when a user removes an alternative name from a person
+	 * @param command
+	 * @return
+	 */
+	private View deleteNameAction(PersonPageCommand command) {
+		
+		for(PersonName name : command.getPerson().getAlternateNames()) {
+			if(name.getFirstName().equals(command.getFormFirstName()) && name.getLastName().equals(command.getFormLastName())) {
+				command.getPerson().getAlternateNames().remove(name);
+				break;
+			}
+		}
+		this.personLogic.createOrUpdatePerson(command.getPerson());
+		
+		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getId().intValue(), command.getPerson().getMainName().toString(), command.getPost().getResource().getInterHash(), command.getPost().getUser().getName(), command.getRequestedRole()));
 	}
 	
 	/**
-	 * TODO
-	 * remove/edit alternative names
-	 * select name fpr logged in person
-	 * add person to thesis
-	 */
-
-	/**
+	 * Default action called when a user url is called
 	 * @param command
 	 * @return
 	 */
 	private View showAction(PersonPageCommand command) {
+		//TODO command.setAuthorOf
 		command.setThesis(this.logic.getPosts(BibTex.class, GroupingEntity.PERSON_GRADUTED, null, null, null, command.getRequestedPersonId(), null, null, null, null, 0, 3));
 		command.setAdvisedThesis(this.logic.getPosts(BibTex.class, GroupingEntity.PERSON_ADVISOR, null, null, null, command.getRequestedPersonId(), null, null, null, null, 0, 3));
 		command.setAllPosts(this.logic.getPosts(BibTex.class, GroupingEntity.USER, command.getRequestedPersonId(), null, null, null, null, null, null, null, 0, 3));

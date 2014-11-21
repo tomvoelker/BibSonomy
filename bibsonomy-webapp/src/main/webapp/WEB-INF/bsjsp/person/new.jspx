@@ -28,6 +28,14 @@
 	<c:set var="publication" value="${post.resource}" />
 	
 	<fmt:message key="navi.person" var="PersonPageTitle" />
+	<fmt:message key="person.new.header" var="textHeader"/>
+	<fmt:message key="person.new.subHeader" var="textSubHeader"/>
+	<fmt:message key="person.new.postPanelHeader" var="textPostPanelHeader"/>
+	<fmt:message key="person.new.personPanelHeader" var="textPersonPanelHeader"/>
+	<fmt:message key="person.new.formInfo" var="textFormInfo"/>
+	<fmt:message key="person.new.formFirstName" var="textFormFirstName"/>
+	<fmt:message key="person.new.formLastName" var="textFormLastName"/>
+	<fmt:message key="person.new.newPersonButton" var="textNewPersonButton"/>
 	
 	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" 
 		headerLogoClass="publications" 
@@ -49,13 +57,13 @@
 		<jsp:attribute name="content">
 		
 			<div class="page-header">
-				<h1>New Person <SMALL>for Post</SMALL></h1>
+				<h1>${textHeader} <SMALL>${textSubHeader}</SMALL></h1>
 			</div>
 		
 			<c:if test="${not empty command.post}">
 				<div class='panel panel-default'>
 					<div class='panel-heading'>
-						<h4>Selected Post</h4>
+						<h4>${textPostPanelHeader}</h4>
 					</div>
 					<div class='panel-body'>
 						<div class="title">
@@ -73,29 +81,30 @@
 			<br/>
 			<div class='panel panel-default'>
 				<div class='panel-heading'>
-					<h4>About the person</h4>
+					<h4>${textPersonPanelHeader}</h4>
 				</div>
 				
 				<div class='panel-body'>
-					<div class='col-xs-4'><span></span></div>
-					<div class="col-xs-6"><SPAN class='text-info'>In case of unsureness, insert everything in last name</SPAN></div>
+					<div class='col-md-4'><span></span></div>
+					<div class="col-md-6"><span class='text-info'>${textFormInfo}</span></div>
 					<br/><br/>
 					<form method='post' name='newPersonForm' action="" class='form-horizontal'>
 						<div class='form-group'>
-							<label class="control-label col-xs-4" for='formFirstName'>First name</label>
-							<div class="col-xs-6">
-								<input class='form-control' type="text" name='formFirstName' id='formFirstName' placeholder="First name" value="${command.person.mainName.firstName}"/>
+							<label class="control-label col-md-4" for='formFirstName'>${textFormFirstName}</label>
+							<div class="col-md-6">
+								<input class='form-control' type="text" name='formFirstName' id='formFirstName' placeholder="${textFormFirstName}" value=""/>
 							</div>
-							<label class="control-label col-xs-4" for='formLastName'>Last name</label>
-							<div class="col-xs-6">
-								<input class='form-control' type="text" name='formLastName' id='formLastName' placeholder="Last name" value="${command.person.mainName.lastName }"/>
+							<label class="control-label col-md-4" for='formLastName'>${textFormLastName}</label>
+							<div class="col-md-6">
+								<input class='form-control' type="text" name='formLastName' id='formLastName' placeholder="${textFormLastName}" value="${command.requestedPersonName}"/>
 							</div>
 						</div>
 						<br/>
-						<div class='col-xs-4'><span></span></div>
-						<div class="col-xs-6">
+						<div class='col-md-4'><span></span></div>
+						<div class="col-md-6">
 							<div class='btn-group'>
-								<input type='submit' name='formAction' value='New person' class='btn btn-primary'/>
+								<input type="hidden" name='formAction' value='new' />
+								<input type='submit' name='submit' value='${textNewPersonButton}' class='btn btn-primary'/>
 							</div>
 						</div>
 					</form>

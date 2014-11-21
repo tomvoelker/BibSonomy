@@ -24,17 +24,22 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	private String formFirstName;
 	private String formMiddleName;
 	private String formLastName;
-	private List<String> formRoles;
+	private String formResourceHash;
+	private String formPersonId;
+	private String formPersonRole;
+	private String formThesisId;
+	private String formUser;
+	private List<String> formPersonRoles;
 	
 	private String formAction;
 	
 	private Person person;
 	private Post<? extends Resource> post;
 	
-	private String myUrl;
 	private List<Post<BibTex>> thesis;
 	private List<Post<BibTex>> advisedThesis;
 	private List<Post<BibTex>> allPosts;
+	
 
 	/**
 	 * @return the formSelectedName
@@ -107,7 +112,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	}
 
 	/**
-	 * @return
+	 * @return String
 	 */
 	public String getRequestedPersonId() {
 		return this.requestedPersonId;
@@ -128,7 +133,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	}
 	
 	/**
-	 * @param person
+	 * @param personId String
 	 */
 	public void setRequestedPersonId(String personId) {
 		this.requestedPersonId = personId;
@@ -149,18 +154,18 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	}
 
 	/**
-	 * @return the formRole
+	 * @return the formPersonRole
 	 */
-	public List<String> getFormRoles() {
-		return this.formRoles;
+	public List<String> getFormPersonRoles() {
+		return this.formPersonRoles;
 	}
 
 	/**
-	 * @param formRoles 
-	 * @param formRole the formRole to set
+	 * @param formPersonRoles 
+	 * @param formPersonRole the formPersonRole to set
 	 */
-	public void setFormRoles(List<String> formRoles) {
-		this.formRoles = formRoles;
+	public void setformPersonRoles(List<String> formPersonRoles) {
+		this.formPersonRoles = formPersonRoles;
 	}
 
 	/**
@@ -175,21 +180,6 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	 */
 	public void setPost(Post<? extends Resource> post) {
 		this.post = post;
-	}
-	
-	public String getMyUrl() {
-		if(this.myUrl == null) {
-			this.myUrl = "";
-			this.myUrl += this.getRequestedPersonId();
-			if(!this.getRequestedHash().equals("")) {
-				this.myUrl += "/" + this.getRequestedHash();
-				
-				if(!this.getRequestedUser().equals("")) {
-					this.myUrl += "/" + this.getRequestedUser();
-				}
-			}
-		}
-		return this.myUrl;
 	}
 
 	/**
@@ -288,5 +278,75 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	 */
 	public void setFormAction(String formAction) {
 		this.formAction = formAction;
+	}
+
+	/**
+	 * @return String
+	 */
+	public String getFormResourceHash() {
+		return this.formResourceHash;
+	}
+
+	/**
+	 * @return the formPersonId
+	 */
+	public String getFormPersonId() {
+		return this.formPersonId;
+	}
+
+	/**
+	 * @param formPersonId the formPersonId to set
+	 */
+	public void setFormPersonId(String formPersonId) {
+		this.formPersonId = formPersonId;
+	}
+
+	/**
+	 * @return the formPersonRole
+	 */
+	public String getFormPersonRole() {
+		return this.formPersonRole;
+	}
+
+	/**
+	 * @param formPersonRole the formPersonRole to set
+	 */
+	public void setFormPersonRole(String formPersonRole) {
+		this.formPersonRole = formPersonRole;
+	}
+
+	/**
+	 * @return the formThesisId
+	 */
+	public String getFormThesisId() {
+		return this.formThesisId;
+	}
+
+	/**
+	 * @param formThesisId the formThesisId to set
+	 */
+	public void setFormThesisId(String formThesisId) {
+		this.formThesisId = formThesisId;
+	}
+
+	/**
+	 * @return the formUser
+	 */
+	public String getFormUser() {
+		return this.formUser;
+	}
+
+	/**
+	 * @param formUser the formUser to set
+	 */
+	public void setFormUser(String formUser) {
+		this.formUser = formUser;
+	}
+
+	/**
+	 * @param formResourceHash the formResourceHash to set
+	 */
+	public void setFormResourceHash(String formResourceHash) {
+		this.formResourceHash = formResourceHash;
 	}
 }

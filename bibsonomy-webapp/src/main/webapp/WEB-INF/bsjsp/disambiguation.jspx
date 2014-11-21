@@ -28,6 +28,20 @@
 	<c:set var="publication" value="${post.resource}" />
 	
 	<fmt:message key="navi.person" var="PersonPageTitle" />
+	<fmt:message key="disambiguation.addPersonButton" var="textAddPersonButton"/>
+	<fmt:message key="disambiguation.header" var="textHeader"/>
+	<fmt:message key="disambiguation.modalNewPersonClose" var="textModalNewPersonClose"/>
+	<fmt:message key="disambiguation.modalNewPersonHeader" var="textModalnewPersonHeader"/>
+	<fmt:message key="disambiguation.modalNewPersonContent" var="textModalNewPersonContent"/>
+	<fmt:message key="disambiguation.modalSearchPersonHeader" var="textModalSerachPersonHeader"/>
+	<fmt:message key="disambiguation.newPersonButton" var="textNewPersonButton"/>
+	<fmt:message key="disambiguation.noFound" var="textNoFound"/>
+	<fmt:message key="disambiguation.otherPersonButton" var="textOtherPersonButton"/>
+	<fmt:message key="disambiguation.personsPanelHeader" var="textPersonsPanelHeader"/>
+	<fmt:message key="disambiguation.person" var="textPerson" />
+	<fmt:message key="disambiguation.searchPersonButton" var="textSearchPersonButton"/>
+	<fmt:message key="disambiguation.postPanelHeader" var="textPostPanelHeader"/>
+	<fmt:message key="disambiguation.close" var="textClose"/>
 	
 	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" 
 		headerLogoClass="publications" 
@@ -53,13 +67,13 @@
 
 		<jsp:attribute name="content">
 			<div class="page-header">
-				<h1>Disambiguation <small>${command.requestedAuthorName}</small></h1>
+				<h1>${textHeader} <small>${command.requestedAuthorName}</small></h1>
 			</div>
 		
 			<c:if test="${not empty command.post}">
 				<div class='panel panel-default'>
 					<div class='panel-heading'>
-						<h4>Related Post</h4>
+						<h4>${textPostPanelHeader}</h4>
 					</div>
 					<div class='panel-body'>
 						<div class="title">
@@ -77,7 +91,7 @@
 			
 			<div class='panel panel-default'>
 				<div class='panel-heading'>
-					<h4>Persons with the name '${command.requestedAuthorName}'</h4>
+					<h4>${textPersonsPanelHeader} '${command.requestedAuthorName}'</h4>
 				</div>
 				<div class='panel-body'>
 					<div class="list-group">
@@ -92,16 +106,15 @@
 							</c:when>
 							<c:otherwise>
 								<div class="list-group-item">
-									<span>No persons found for authorname '${command.requestedAuthorName}'</span>
+									<span>${textNoFound} '${command.requestedAuthorName}'</span>
 								</div>
 							</c:otherwise>
 						</c:choose>
 					</div>
-					<p>Is there no person for the searched name?</p>
-					<form action="/person/null/${command.requestedAuthorName}/${command.requestedHash}/${command.requestedUser}/${command.requestedRole}" method="post">
-						<input type="submit" class="btn btn-primary pull-left" name='formAction' value='New person' />
-					</form>
-					<button class='btn btn-primary pull-right' data-toggle="modal" data-target="#otherPerson">Search other name</button>
+					<div class='btn-group pull-right'>
+						<button class='btn btn-primary' data-toggle="modal" data-target="#newPerson">${textNewPersonButton}</button>
+						<button class='btn btn-primary' data-toggle="modal" data-target="#otherPerson">${textSearchPersonButton}</button>
+					</div>	
 				</div>
 			</div>
 		</jsp:attribute>
@@ -115,14 +128,14 @@
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal"
 							aria-hidden="true">&amp;times;</button>
-						<h4 class="modal-title">Add Person to thesis</h4>
+						<h4 class="modal-title">${textModalSearchPersonHeader}</h4>
 					</div>
 					
 					<div class="modal-body">
           				<fieldset>
           					<div class="form-group">
-								<label for='addPersonAuto' class="control-label col-xs-3">Person</label>
-        						<div class="col-xs-7">
+								<label for='addPersonAuto' class="control-label col-md-3">${textPerson}</label>
+        						<div class="col-md-7">
         							<div class='input-group'>
 										<input class='form-control typeahead' id='addPersonAuto' type='text' name='addPersonAuto' autocomplete="off"/>
 									</div>
@@ -131,10 +144,35 @@
 						</fieldset>
 					</div>
 					<div class="modal-footer">
-						<form action="/persondisambiguation/link/${command.requestedAuthorName}/${command.requestedHash}/${command.requestedUser}/${command.requestedRole}" method="post" name='editRoleForm' class='form-horizontal'>
-							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>&#160;
-							<input type='hidden' id='formAddPersonId' name='formAddPersonId' value='0'/>
-							<input type="submit" class="btn btn-primary" name='formAction' value='Add person' />
+						<form action="/persondisambiguation/link/${command.requestedAuthorName}/${command.requestedHash}/${command.requestedUser}/${command.requestedRole}" method="post" class='form-horizontal'>
+							<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
+							<input type='hidden' id='formPersonId' name='formPersonId' value=''/>
+							<input type="hidden" name='addPerson' value='update' />
+							<input type="submit" class="btn btn-primary" name='submit' value='${textAddPersonButton}' />
+						</form>
+					</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="newPerson" tabindex="-1" role="dialog"
+		aria-labelledby="newPersonLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&amp;times;</button>
+						<h4 class="modal-title">${textModalNewPersonHeader}</h4>
+					</div>
+					
+					<div class="modal-body">
+          				<p>${textModalNewPersonContent}</p>
+					</div>
+					<div class="modal-footer">
+						<form action="/person/0/${command.requestedAuthorName}/${command.requestedHash}/${command.requestedUser}/${command.requestedRole}" method="post" class='form-horizontal'>
+							<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
+							<input type="hidden" name='formAction' value='new' />
+							<input type="submit" class="btn btn-primary" name='submit' value='${textNewPersonButton}' />
 						</form>
 					</div>
 			</div>

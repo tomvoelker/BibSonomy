@@ -29,6 +29,49 @@
 	<c:set var="publication" value="${post.resource}" />
 	
 	<fmt:message key="navi.person" var="PersonPageTitle" />
+	<fmt:message key="person.show.academicDegree" var="textAcademicDegree" />
+	<fmt:message key="person.show.addAlternateNameButton" var="textAddAlternateNameButton" />
+	<fmt:message key="person.show.addNameButton" var="textAddNameButton" />
+	<fmt:message key="person.show.addRoleButton" var="textAddRoleButton" />
+	<fmt:message key="person.show.addThesisButton" var="textAddThesisButton" />
+	<fmt:message key="person.show.advisor" var="textAdvisor" />
+	<fmt:message key="person.show.authorOf" var="textAuthorOf" />
+	<fmt:message key="person.show.close" var="textClose" />
+	<fmt:message key="person.show.deleteRoleButton" var="textDeleteRoleButton" />
+	<fmt:message key="person.show.editRoleButton" var="textEditRoleButton" />
+	<fmt:message key="person.show.firstReviewer" var="textFirstReviewer" />
+	<fmt:message key="person.show.formFirstName" var="textFormFirstName" />
+	<fmt:message key="person.show.formLastName" var="textFormLastName" />
+	<fmt:message key="person.show.header" var="textHeader" />
+	<fmt:message key="person.show.modalAddNameHeader" var="textModalAddNameHeader" />
+	<fmt:message key="person.show.modalAddRoleHeader" var="textModalAddRoleHeader" />
+	<fmt:message key="person.show.modalAddThesisHeader" var="textModalAddThesisHeader" />
+	<fmt:message key="person.show.modalDeleteNameHeader" var="textModalDeleteNameHeader" />
+	<fmt:message key="person.show.modalDeleteRoleHeader" var="textModalDeleteRoleHeader" />
+	<fmt:message key="person.show.modalDeleteNameContent" var="textModalDeleteNameContent" />
+	<fmt:message key="person.show.modalDeleteRoleContent" var="textModalDeleteRoleContent" />
+	<fmt:message key="person.show.modalEditRoleHeader" var="textModalEditRoleHeader" />
+	<fmt:message key="person.show.modalLinkPersonHeader" var="textModalLinkPersonHeader" />
+	<fmt:message key="person.show.modalLinkPersonContent" var="textModalLinkPersonContent" />
+	<fmt:message key="person.show.newThesisButton" var="textNewThesisButton" />
+	<fmt:message key="person.show.noNamesFound" var="textNoNamesFound"/>
+	<fmt:message key="person.show.noResourcesFound" var="textNoResourcesFound" />
+	<fmt:message key="person.show.orcidId" var="textOrcidId" />
+	<fmt:message key="person.show.other" var="textOther" />
+	<fmt:message key="person.show.otherReviewer" var="textOtherReviewer" />
+	<fmt:message key="person.show.ownPubTab" var="textOwnPubTab" />
+	<fmt:message key="person.show.person" var="textPerson"/>
+	<fmt:message key="person.show.personPanelHeader" var="textPersonPanelHeader" />
+	<fmt:message key="person.show.personAlternateNames" var="textPersonAlternateNames" />
+	<fmt:message key="person.show.personAlternateNamesSelect" var="textPersonAlternateNamesSelect" />
+	<fmt:message key="person.show.deleteNameButton" var="textDeleteNameButton" />
+	<fmt:message key="person.show.resourcesPanelHeader" var="textResourcePanelHeader" />
+	<fmt:message key="person.show.role" var="textRole" />
+	<fmt:message key="person.show.rolePubTab" var="textRolePubTab" />
+	<fmt:message key="person.show.saveButton" var="textSaveButton" />
+	<fmt:message key="person.show.supervisor" var="textSupervisor" />
+	<fmt:message key="person.show.thatsMeButton" var="textThatsMeButton" />
+	<fmt:message key="person.show.thesis" var="textThesis" />
 	
 	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" 
 		headerLogoClass="publications" 
@@ -39,9 +82,10 @@
 		minimizedContentWidth="${true}" >
 
 		<jsp:attribute name="headerExt">
-			<script type='text/javascript' src='/resources/javascript/person/addName.js'><!-- keep me --></script>
-			<script type='text/javascript' src='/resources/javascript/person/update.js'><!-- keep me --></script>
-			<script type='text/javascript' src='/resources/javascript/person/unlink.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/removeName.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/addRole.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/editRole.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/deleteRole.js'><!-- keep me --></script>
 			<style type='text/css'>
 				#personInfo .panel-heading a:after {
 				    font-family: 'Glyphicons Halflings';
@@ -52,7 +96,10 @@
 				#personInfo .panel-heading a.collapsed:after {
 				    content: "\e080";
 				}
-				.title > li {
+				.row ul {
+					-webkit-padding-start: 10px;
+				}
+				.row  li {
 					list-style-type: none;
 				}
 			</style>
@@ -67,62 +114,63 @@
 		<jsp:attribute name="content">
 		
 			<div class="page-header">
-				<h1>Person <small>${command.person.mainName.firstName} ${command.person.mainName.lastName}</small></h1>
+				<h1>${textHeader} <small>${command.person.mainName.firstName} ${command.person.mainName.lastName}</small></h1>
 			</div>
 			<div id='personInfo' class='panel panel-default'>
 				<div class='panel-heading'>
-					<a data-toggle="collapse" data-target="#aboutThisPerson" href='#person'><strong>About</strong></a>
+					<a data-toggle="collapse" data-target="#aboutThisPerson" href='#person'><strong>${textPersonPanelHeader}</strong></a>
 				</div>
 				<div  id='aboutThisPerson' class='panel-collapse collapse'>
 					<form method='post' name='personForm' action="" class='form-horizontal'>
 					<div class='panel-body'>
 						<div class='form-group'>
-							<label class="control-label col-xs-4">Author of</label>
-							<div class="col-xs-6">
+							<label class="control-label col-md-4">${textAuthorOf}</label>
+							<div class="col-md-6">
 								<p class='form-control-static'></p>
 							</div>
 						</div>
 						<div class='form-group'>
-							<label class="control-label col-xs-4" for='formAcademicDegree'>Academic Degree</label>
-							<div class="col-xs-6">
-								<input class='form-control' type="text" name='formAcademicDegree' id='formAcademicDegree' placeholder="Academic degree" value="${command.person.academicDegree }"/>
+							<label class="control-label col-md-4" for='formAcademicDegree'>${textAcademicDegree}</label>
+							<div class="col-md-6">
+								<input class='form-control' type="text" name='formAcademicDegree' id='formAcademicDegree' placeholder="${textAcademicDegree}" value="${command.person.academicDegree }"/>
 							</div>
 						</div>
 						<br/>
 						<div class='form-group'>
-							<label class="control-label col-xs-4">Person's alternate names<br/>(Select main name)</label>
-							<div class="col-xs-6">
+							<label class="control-label col-md-4">${textPersonAlternateNames}<br/>${textPersonAlternateNamesSelect}</label>
+							<div class="col-md-6">
 								<c:choose>
 									<c:when test="${fn:length(command.person.alternateNames) gt 0}">
 										<c:forEach var='name' items="${command.person.alternateNames}">
 											<c:choose>
 												<c:when test="${name.firstName eq command.person.mainName.firstName and name.lastName eq command.person.mainName.lastName}">
-													<div class="checkbox"><label><input type='radio' name='formSelectedName' value='${name.lastName}, ${name.firstName}' checked='checked' /> ${name.firstName} ${name.lastName} </label> &#160;<span onclick='' style='color:darkred;cursor:pointer' href="#" class='glyphicon glyphicon-remove'></span></div>
+													<div class="checkbox"><label><input type='radio' name='formSelectedName' value='${name.lastName}, ${name.firstName}' checked='checked' /> ${name.firstName} ${name.lastName} </label> &#160;</div>
 												</c:when>
 												<c:otherwise>
-													<div class="checkbox"><label><input type='radio' name='formSelectedName' value='${name.lastName}, ${name.firstName}' /> ${name.firstName} ${name.lastName} </label> &#160;<span onclick='' style='color:darkred;cursor:pointer' href="#" class='glyphicon glyphicon-remove'></span></div>
+													<div class="checkbox"><label><input type='radio' name='formSelectedName' value='${name.lastName}, ${name.firstName}' /> ${name.firstName} ${name.lastName} </label> &#160;<span data-firstName="${name.firstName}" data-lastName="${name.lastName}" data-toggle='modal' data-target='#removeName' style='color:darkred;cursor:pointer' href="#" class='removeName glyphicon glyphicon-remove'></span></div>
 												</c:otherwise>
 											</c:choose>
 										</c:forEach>
 									</c:when>
 									<c:otherwise>
-										<p class='form-control-static'>No alternate names</p>
+										<p class='form-control-static'>${textNoNamesFound}</p>
 									</c:otherwise>
 								</c:choose>
-								<br/><button type='button' class='btn btn-default' data-toggle="modal" data-target="#addName" href='#addPerson'>Add alternate name</button>
+								<br/><button type='button' class='btn btn-default' data-toggle="modal" data-target="#addName" href='#addPerson'>${textAddAlternateNameButton}</button>
 							</div>
 						</div>
 						<div class='form-group'>
-								<label class="control-label col-xs-4" for='formOrcidID'>OrcidID</label>
-								<div class="col-xs-6">
-									<input class='form-control' type="text" name='formOrcidID' id='formOrcidID' placeholder="Orcid ID" value="${command.person.orcid}"/>
+								<label class="control-label col-md-4" for='formOrcidID'>${textOrcidId}</label>
+								<div class="col-md-6">
+									<input class='form-control' type="text" name='formOrcidID' id='formOrcidID' placeholder="${textOrcidId}" value="${command.person.orcid}"/>
 								</div>
 							</div>
 						<br/>
-						<div class='col-xs-4'>&#160;</div>
-						<div class="col-xs-6">
-							<input type='submit' name='formAction' class='btn btn-default pull-left' value='Thats me'/>
-							<input type='submit' name='formAction' class='btn btn-primary pull-right' value='Save'/>
+						<div class='col-md-4'>&#160;</div>
+						<div class="col-md-6">
+							<button type='button' class='btn btn-default linkPerson' data-toggle="modal" data-target="#linkPerson">${textThatsMeButton}</button>
+							<input type="hidden" name='formAction' value='update' />
+							<input type='submit' name='submit' class='btn btn-primary pull-right' value='${textSaveButton}'/>
 						</div>
 					</div>
 					</form>
@@ -131,14 +179,13 @@
 			
 			<div class='panel panel-default'>
 				<div class='panel-heading'>
-					<strong>Found Resources</strong>
+					<strong>${textResourcePanelHeader}</strong>
 				</div>
 				
 				<div class='panel-body'>
 					<ul id='resourcesTabList' class="nav nav-tabs" role="tablist">
-						<li><a href="#ownThesis" role="tab" data-toggle="tab"><strong>Own Thesis</strong></a></li>
-						<li><a href="#advisedThesis" role="tab" data-toggle="tab"><strong>Advised Thesis</strong></a></li>
-						<li><a href="#ownPublications" role="tab" data-toggle="tab"><strong>Own Puplications</strong></a></li>
+						<li><a href="#ownThesis" role="tab" data-toggle="tab"><strong>${textOwnPubTab}</strong></a></li>
+						<li><a href="#ownPublications" role="tab" data-toggle="tab"><strong>${textRolePubTab}</strong></a></li>
 					</ul>
 					<div class='tab-content'>
 						<div id='ownThesis' class='tab-pane'>
@@ -153,8 +200,8 @@
 											<div>
 												<c:forEach var="author" items="${post.resource.author}">
 													<a href="/person/show/${author.lastName}">${author.firstName} ${author.lastName} </a>
-													<a data-toggle='modal' href="#editRole" onclick="editRole('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')">(Betreuer) </a>
-													<a data-toggle='modal' href='#unlink' onclick="unlink('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')" style='color:darkred'>x</a>
+													<a data-toggle='modal' data-target="#editRole" data-formRole="${post.resource.intraHash}" data-formHash="" data-formPersonId="" href="#">(Betreuer) </a>
+													<a data-toggle='modal' data-target="#unlink" href='#' onclick="unlink('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')" style='color:darkred'>x</a>
 													, 
 												</c:forEach>
 											</div>
@@ -163,72 +210,53 @@
 									</c:forEach>
 								</c:when>
 								<c:otherwise>
-									<p class="text-info"><STRONG>No resources found</STRONG></p>
-								</c:otherwise>
-							</c:choose>
-						</div>
-						<div id='advisedThesis' class='tab-pane'>
-							<br/>
-							<c:choose>
-								<c:when test="${fn:length(command.advisedThesis) gt 0}">
-									<c:forEach var="post" items="${command.advisedThesis}">
-										<div>
-											<div>
-												<a href='/person/details/${command.requestedPersonId}/${command.requestedPersonName}/${post.resource.intraHash}/${command.requestedPersonId}/AUTHOR'>${post.resource.title}</a>
-											</div>
-											<div>
-												<c:forEach var="author" items="${post.resource.author}">
-													<a href="/person/show/${author.lastName}">${author.firstName} ${author.lastName} </a>
-													<a data-toggle='modal' href="#editRole" onclick="editRole('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')">(Betreuer) </a>
-													<a data-toggle='modal' href='#unlink' onclick="unlink('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')" style='color:darkred'>x</a>
-													, 
-												</c:forEach>
-											</div>
-										</div>
-										<HR />
-									</c:forEach>
-								</c:when>
-								<c:otherwise>
-									<p class="text-info"><STRONG>No resources found</STRONG></p>
+									<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
 								</c:otherwise>
 							</c:choose>
 						</div>
 						<div id='ownPublications' class='tab-pane'>
 							<br/>
-							<button style='width: 100%;' class='btn btn-primary'>Add Thesis</button>
+							<button style='width: 100%;' class='btn btn-default' data-toggle='modal' data-target='#addThesis'>${textAddThesisButton}</button>
 							<hr/>
 							<c:choose>
 								<c:when test="${fn:length(command.allPosts) gt 0}">
 									<c:forEach var="post" items="${command.allPosts}">
-										<div class="title">
-											<!-- show one post -->
-											<rc:post post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}">
-												<jsp:attribute name="title">    <bib:title post="${post}"/>    </jsp:attribute>
-												<jsp:attribute name="actions">  <bib:desc publication="${post.resource}"/>  </jsp:attribute>
-												<jsp:attribute name="desc">     <bib:actions loginUserName="${loginUserName}" post="${post}" disableResourceLinks="${false}"/>     </jsp:attribute>
-												<jsp:attribute name="documents"><bib:documents post="${post}"/></jsp:attribute>
-											</rc:post>
-											<ul>
-												<li>Doktorvater: <span onclick='' style='color:green;cursor:pointer' href="#" class='glyphicon glyphicon-plus'></span></li>
-												<li>Betreuer: <span onclick='' style='color:green;cursor:pointer' href="#" class='glyphicon glyphicon-plus'></span></li>
-												<li>Erstgutachter: <span onclick='' style='color:green;cursor:pointer' href="#" class='glyphicon glyphicon-plus'></span></li>
-												<li>Weitere Gutachter: <span onclick='' style='color:green;cursor:pointer' href="#" class='glyphicon glyphicon-plus'></span></li>
-												<li>Sonstige Beteiligte:
-													<c:forEach var="author" items="${post.resource.author}">
-														<a href="/person/show/${author.lastName}">${author.firstName} ${author.lastName} </a>
-														<a data-toggle='modal' href="#editRole" onclick="editRole('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')"><span style='color:orange;cursor:pointer' class='glyphicon glyphicon-pencil'></span></a>
-														<a data-toggle='modal' href='#unlink' onclick="unlink('${post.resource.intraHash}', '${author.firstName}.${author.lastName}')"><span style='color:darkred;cursor:pointer' class='glyphicon glyphicon-remove'></span></a>
-														&#160;
-													</c:forEach> 
-													<span onclick='' style='color:green;cursor:pointer' href="#" class='glyphicon glyphicon-plus'></span>
-												</li>
-											</ul>
+										<div class='row'>
+											<div style='border-right:1px solid lightgrey' class='col-md-6 publication-list'>
+												<div class="title">
+													<!-- show one post -->
+													<rc:post post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}">
+														<jsp:attribute name="title">    <bib:title post="${post}"/>    </jsp:attribute>
+														<jsp:attribute name="actions">  <bib:actions loginUserName="${loginUserName}" post="${post}" disableResourceLinks="${false}"/></jsp:attribute>
+														<jsp:attribute name="desc">     <bib:desc publication="${post.resource}"/></jsp:attribute>
+														<jsp:attribute name="documents"><bib:documents post="${post}"/></jsp:attribute>
+													</rc:post>
+												</div>
+											</div>
+											<div class='col-md-6'>
+												<br/>
+												<ul>
+													<li>${textSupervisor}: <span data-toggle='modal' data-target="#addRole" data-resourceTitle="${post.resource.title}" data-formResourceHash="${post.resource.intraHash}" data-formPersonRole="Doktorvater" style='color:green;cursor:pointer' href="#" class='addRole glyphicon glyphicon-plus'>&#160;</span></li>
+													<li>${textAdvisor}: <span data-toggle='modal' data-target="#addRole" data-resourceTitle="${post.resource.title}" data-formResourceHash="${post.resource.intraHash}" data-formPersonRole="Betreuer" style='color:green;cursor:pointer' href="#" class='addRole glyphicon glyphicon-plus'>&#160;</span></li>
+													<li>${textFirstReviewer}: <span data-toggle='modal' data-target="#addRole" data-resourceTitle="${post.resource.title}" data-formResourceHash="${post.resource.intraHash}" data-formPersonRole="ersterGutachter" style='color:green;cursor:pointer' href="#" class='addRole glyphicon glyphicon-plus'>&#160;</span></li>
+													<li>${textOtherReviewer}: <span data-toggle='modal' data-target="#addRole" data-resourceTitle="${post.resource.title}" data-formResourceHash="${post.resource.intraHash}" data-formPersonRole="weitererGutachter" style='color:green;cursor:pointer' href="#" class='addRole glyphicon glyphicon-plus'>&#160;</span></li>
+													<li>${textOther}:
+														<c:forEach var="author" items="${post.resource.author}">
+															<a href="/person/show/${author.lastName}">${author.firstName} ${author.lastName} </a>
+															<span data-toggle='modal' data-target="#editRole" data-resourceTitle="${post.resource.title}" data-personName="${author.firstName} ${author.lastName}" data-formResourceHash="${post.resource.intraHash}" data-formPersonId="${author.firstName} ${author.lastName}" data-formPersonRole="Sonstige" style='color:orange;cursor:pointer' href="#" class='editRole glyphicon glyphicon-pencil'>&#160;</span>
+															<span data-toggle='modal' data-target="#deleteRole" data-resourceTitle="${post.resource.title}" data-personName="${author.firstName} ${author.lastName}" data-formResourceHash="${post.resource.intraHash}" data-formPersonId="${author.firstName} ${author.lastName}" data-formPersonRole="Sonstige" style='color:darkred;cursor:pointer' href="#" class='deleteRole glyphicon glyphicon-remove'>&#160;</span>
+															&#160;
+														</c:forEach> 
+														<span data-toggle='modal' data-target="#addRole" data-resourceTitle="${post.resource.title}" data-formResourceHash="${post.resource.intraHash}" data-formPersonRole="Sonstige" style='color:green;cursor:pointer' href="#" class='addRole glyphicon glyphicon-plus'>&#160;</span>
+													</li>
+												</ul>
+											</div>
 										</div>
 										<hr />
 									</c:forEach>
 								</c:when>
 								<c:otherwise>
-									<p class="text-info"><STRONG>No resources found</STRONG></p>
+									<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
 								</c:otherwise>
 							</c:choose>
 						</div>
@@ -248,113 +276,76 @@
       <form action="" method="post" id='addNameForm' name="addNameForm" class='form-horizontal'>
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
-          <h4 class="modal-title">Add new Name to Person</h4>
+          <h4 class="modal-title">${textModalAddNameHeader}</h4>
         </div>
         <div class="modal-body">
 				<fieldset>
 					<div class="form-group">
-						<label class="control-label col-xs-3" for='formGivenName'>Givenname</label>
-						<div class="col-xs-7">
-					  		<input type="text" class="form-control" placeholder="Givenname" name='formGivenName' id='formGivenName'/>
+						<label class="control-label col-md-3" for='addNameFirstName'>${textFormFirstName}</label>
+						<div class="col-md-7">
+					  		<input type="text" class="form-control" placeholder="${textFormFirstName}" name='formFirstName' id='addNameFirstName'/>
 					  	</div>
 
-						<label class="control-label col-xs-3" for='formSurName'>Surname</label>
-						<div class="col-xs-7">
-					  		<input type="text" class="form-control" placeholder="Surname" name='formSurName' id='formSurName'/>
+						<label class="control-label col-md-3" for='addNameLastName'>${textFormLastName}</label>
+						<div class="col-md-7">
+					  		<input type="text" class="form-control" placeholder="${textFormLastName}" name='formLastName' id='addNameLastName'/>
 					  	</div>
 					</div>
 				</fieldset>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <input type="submit" class="btn btn-primary" name='formAction' value='Add name'/>
+          <button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
+          <input type="hidden" name='formAction' value='addName' />&#160;
+          <input type="submit" class="btn btn-primary" name='submit' value='${textAddNameButton}'/>
         </div>
-        			</form>
+        </form>
       </div>
     </div>
   </div>
   
- <div class="modal fade" id="editRole" tabindex="-1" role="dialog" aria-labelledby="editRoleLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <form  action="" method="post" name='editRoleForm' class='form-horizontal'>
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
-          <h4 class="modal-title">Change role of Person</h4>
-        </div>
-        <div class="modal-body">
-          		<FIELDSET>
-          			<div class="form-group">
-          				<label class="control-label col-xs-3">Role</label>
-          				
-          				<div class="col-xs-7">
-          					<div class='input-group'>
-								<span class="input-group-addon">
-									<input id='roleBetreuer' type='checkbox' name='formRoles' value='THESIS_ADVISOR'/>
-								</span>
-								<p class="form-control">Betreuer</p>
-							</div>
-							<div class='input-group'>
-								<span class="input-group-addon">
-									<input id='roleGutachter' type='checkbox' name='formRoles' value='THESIS_REVIEWER'/>
-								</span>
-								<p class="form-control">Gutachter</p>
-							</div>
-							<div class='input-group'>
-								<span class="input-group-addon">
-									<input id='roleSonstiges' type='checkbox' name='formRoles' value='OTHER'/>
-								</span>
-								<p class="form-control">Sonstiges</p>
-							</div>
-						</div>
-					</div>
-				</FIELDSET>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <input type="submit" class="btn btn-primary" name='formAction' value='Change role'/>
-        </div>
-              </form>
-      </div>
-    </div>
-  </div>
-  
-    <div class="modal fade" id="unlink" tabindex="-1" role="dialog" aria-labelledby="unlinkLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
-          <h4 class="modal-title">Unlink person from Resource</h4>
-        </div>
-        <div class="modal-body">
-        	<p>Do you really want to unlink the Person?</p>
-          	<form  action="" method="post" name='unlinkForm'><input type='hidden'/></form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-          <button type="button" class="btn btn-primary" id='unlinkSubmit'>Yes</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <div class="modal fade" id="linkPerson" tabindex="-1" role="dialog"
-		aria-labelledby="linkPersonLabel" aria-hidden="true">
+  <div class="modal fade" id="removeName" tabindex="-1" role="dialog"
+		aria-labelledby="removeNameLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal"
 							aria-hidden="true">&amp;times;</button>
-						<h4 class="modal-title">Add Person to thesis</h4>
+						<h4 class="modal-title">${textModalDeleteNameHeader}</h4>
+					</div>
+					
+					<div class="modal-body">
+						<p>${textModalDeleteNameContent} <strong id='modalRemoveNameText'>&#160;</strong></p>
+					</div>
+					<div class="modal-footer">
+						<form action="" method="post" class='form-inline' id='removeNameForm'>
+							<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
+							<input type='hidden' name='formFirstName' value=''/>
+							<input type='hidden' name='formLastName' value=''/>&#160;
+							<input type="hidden" name='formAction' value='deleteName' />
+							<input type="submit" class="btn btn-primary" name='submit' value='${textDeleteNameButton}' />
+						</form>
+					</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="addThesis" tabindex="-1" role="dialog"
+		aria-labelledby="addThesisLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&amp;times;</button>
+						<h4 class="modal-title">${textModalAddThesisHeader}</h4>
 					</div>
 					
 					<div class="modal-body">
 						<fieldset>
           					<div class="form-group">
-								<label for='addPersonAuto' class="control-label col-xs-3">Person</label>
-        						<div class="col-xs-7">
+								<label for='addThesisAuto' class="control-label col-md-3">${textThesis}</label>
+        						<div class="col-md-7">
         							<div class='input-group'>
-										<input class='form-control' id='addPersonAuto' type='text' name='addPersonAuto' autocomplete="off"/>
+										<input class='form-control' id='addThesisAuto' type='text' name='addThesisAuto' autocomplete="off"/>
 									</div>
 								</div>
 							</div>
@@ -362,14 +353,152 @@
 					</div>
 					<div class="modal-footer">
 						<form action="" method="post">
-							<input type="submit" class="btn btn-primary pull-left" name='formAction' value='New person' />
+							<input type="hidden" name='formAction' value='newThesis'/>
+							<input type="submit" class="btn btn-primary pull-left" name='submit' value='${textNewThesisButton}' />
 						</form>
 						<form action="" method="post" class='form-inline'>
-							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-							<input type='hidden' id='formPersonId' name='formPersonId' value='0'/>&#160;
-							<input type='hidden' id='formResourceHash' name='formResourceHash' value=''/>
-							<input type='hidden' id='formResourceUser' name='formResourceUser' value=''/>
-							<input type="submit" class="btn btn-primary" name='formAction' value='Add person' />
+							<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
+							<input type='hidden' name='formThesisId' value=''/>&#160;
+							<input type="hidden" name='formAction' value='addThesis' />
+							<input type="submit" class="btn btn-primary" name='submit' value='${textAddThesisButton}' />
+						</form>
+					</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="addRole" tabindex="-1" role="dialog"
+		aria-labelledby="addRoleLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&amp;times;</button>
+						<h4 class="modal-title">${textModalAddRoleHeader}</h4>
+					</div>
+					<div class="modal-body">
+          				<fieldset>
+          					<div class="form-group">
+								<label for='addRoleAuto' class="control-label col-md-3">${textPerson}</label>
+        						<div class="col-md-7">
+        							<div class='input-group'>
+										<input class='form-control typeahead' id='addRoleAuto' type='text' name='addRoleAuto' autocomplete="off"/>
+									</div>
+								</div>
+							</div>
+						</fieldset>
+					</div>
+					<div class="modal-footer">
+						<form action="" method="post" id='addRoleForm' class='form-horizontal'>
+							<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
+							<input type='hidden' name='formPersonId' value=''/>
+							<input type='hidden' name='formPersonRole' value=''/>
+							<input type='hidden' name='formResouceHash' value=''/>
+							<input type='hidden' name='formUser' value=''/>
+							<input type="hidden" name='formAction' value='addRole' />
+							<input type="submit" class="btn btn-primary" name='submit' value='${textAddRoleButton}' />
+						</form>
+					</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="editRole" tabindex="-1" role="dialog" aria-labelledby="editRoleLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form  action="" method="post" name='editRoleForm' class='form-horizontal'>
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
+          <h4 class="modal-title">${textModalEditRoleHeader} <strong id='modalEditRoleHeaderText'>&#160;</strong></h4>
+        </div>
+        <div class="modal-body">
+          		<FIELDSET>
+          			<div class="form-group">
+          				<label class="control-label col-md-3">${textRole}</label>
+          				
+          				<div class="col-md-7">
+          					<div class='input-group'>
+								<span class="input-group-addon">
+									<input id='roleBetreuer' type='checkbox' name='formPersonRoles' value='THESIS_ADVISOR'/>
+								</span>
+								<p class="form-control">${textAdvisor}</p>
+							</div>
+							<div class='input-group'>
+								<span class="input-group-addon">
+									<input id='roleGutachter' type='checkbox' name='formPersonRoles' value='THESIS_REVIEWER'/>
+								</span>
+								<p class="form-control">${textOtherReviewer}</p>
+							</div>
+							<div class='input-group'>
+								<span class="input-group-addon">
+									<input id='roleSonstiges' type='checkbox' name='formPersonRoles' value='OTHER'/>
+								</span>
+								<p class="form-control">${textOther}</p>
+							</div>
+						</div>
+					</div>
+				</FIELDSET>
+        </div>
+        <div class="modal-footer">
+        	<input type='hidden' name='formPersonId' value=''/>
+			<input type='hidden' name='formPersonRole' value=''/>
+			<input type='hidden' name='formResouceHash' value=''/>
+			<input type='hidden' name='formUser' value=''/>
+          <button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
+          <input type="hidden" name='formAction' value='editRole' />&#160;
+          <input type="submit" class="btn btn-primary" name='submit' value='${textEditRoleButton}'/>
+        </div>
+              </form>
+      </div>
+    </div>
+  </div>
+	
+	<div class="modal fade" id="deleteRole" tabindex="-1" role="dialog"
+		aria-labelledby="deleteRoleLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&amp;times;</button>
+						<h4 class="modal-title">${textModalDeleteRoleHeader} <strong id='modalDeleteRoleHeaderText'>&#160;</strong></h4>
+					</div>
+					
+					<div class="modal-body">
+						<p>${textModalDeleteRoleContent} <strong id='modalDeleteRoleContentText'>&#160;</strong></p>
+					</div>
+					<div class="modal-footer">
+						<form action="" method="post" class='form-inline' id='deleteRoleForm'>
+							<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
+							<input type='hidden' name='formResourceHash' value=''/>
+							<input type='hidden' name='formPersonRole' value=''/>
+							<input type='hidden' name='formPersonId' value=''/>
+							<input type='hidden' name='formUser' value=''/>
+							<input type="hidden" name='formAction' value='deleteRole' />&#160;
+							<input type="submit" class="btn btn-primary" name='submit' value='${textDeleteRoleButton}' />
+						</form>
+					</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="linkPerson" tabindex="-1" role="dialog"
+		aria-labelledby="linkPersonLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&amp;times;</button>
+						<h4 class="modal-title">${textModalLinkPersonHeader}</h4>
+					</div>
+					
+					<div class="modal-body">
+						<p>${textModalLinkPersonContent} <strong id='modalLinkPersonContentText'>&#160;</strong></p>
+					</div>
+					<div class="modal-footer">
+						<form action="" method="post" class='form-inline' id='linkPersonForm'>
+							<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
+							<input type="hidden" name='formAction' value='link' />&#160;
+							<input type="submit" class="btn btn-primary" name='submit' value='${textThatsMeButton}' />
 						</form>
 					</div>
 			</div>

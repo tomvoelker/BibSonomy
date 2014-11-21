@@ -28,6 +28,9 @@
 	<c:set var="publication" value="${post.resource}" />
 	
 	<fmt:message key="navi.person" var="PersonPageTitle" />
+	<fmt:message key="person.index.header" var="searchHeader" />
+	<fmt:message key="person.index.placeholder" var="placeholderText"/>
+	<fmt:message key="person.index.info" var="infoText"/>
 	
 	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" 
 		headerLogoClass="publications" 
@@ -53,16 +56,17 @@
 		<jsp:attribute name="content">
 		
 			<div class="page-header">
-				<h1>Person Search</h1>
+				<h1><c:out value="${searchHeader}"></c:out></h1>
 			</div>
 			<div class='page-content'>
 				<div class="panel panel-default">
 				  <div class="panel-body">
+				  	<p><c:out value="${infoText}"></c:out></p>
 				    <div class='input-group'>
 				    	<span class="input-group-btn">
-					        <button class="btn btn-primary" type="button">Search Person</button>
+					        <button class="btn btn-primary" type="button"><c:out value="${searchHeader}"></c:out></button>
 					      </span>
-						<input class='form-control typeahead' id='searchPersonAutocomplete' type='text' name='searchPersonAutocomplete' autocomplete="off" placeholder='Enter person name here'/>
+						<input class='form-control typeahead' id='searchPersonAutocomplete' type='text' name='searchPersonAutocomplete' autocomplete="off" placeholder='${placeholderText}'/>
 					</div>
 				  </div>
 				</div>

@@ -82,6 +82,7 @@ public class URLGenerator {
     private static final String BOOKMARK_PREFIX = "url";
     private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
     private static final String PUBLICATION_INTER_HASH_ID = String.valueOf(HashID.INTER_HASH.getId());
+	private static final String PERSON_PREFIX = "person";
 
     /**
      * The default gives relative URLs.
@@ -381,5 +382,16 @@ public class URLGenerator {
     public String getBookmarkRatingUrl(final String interHash, final String userName, final String intraHash) {
         final String url = this.projectHome + BOOKMARK_PREFIX + "/" + interHash + "?postOwner=" + UrlUtils.safeURIEncode(userName) + "&amp;intraHash=" + intraHash + "#discussionbox";       
         return this.getUrl(url);
+    }
+    
+    public String getPersonUrl(final int personId, final String personName, final String resourceHash, final String user, final String role) {
+    	String url = this.projectHome + URLGenerator.PERSON_PREFIX + "/" + personId + "/" + personName;
+    	if(present(resourceHash) && present(user)) {
+    		url = url + "/" + resourceHash + "/" + user;
+    		if(present(role)) {
+    			url = url + "/" + role;
+    		}
+    	}
+    	return this.getUrl(url);
     }
 }
