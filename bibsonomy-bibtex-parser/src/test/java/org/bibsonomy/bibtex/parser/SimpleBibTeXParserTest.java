@@ -39,6 +39,10 @@ import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.util.StringUtils;
 import org.junit.Test;
 
+import bibtex.expansions.CrossReferenceExpansionException;
+import bibtex.expansions.ExpansionException;
+import bibtex.expansions.PersonListParserException;
+
 /**
  * @author rja
  */
@@ -192,11 +196,12 @@ public class SimpleBibTeXParserTest {
 				"  author = {" + author + "}\n" + 
 				"}"
 		);
-		assertEquals("bibtex.expansions.PersonListParserException: Name ends with comma: 'Foo, Bar,' - in 'foo'", parser.getWarnings().get(0));
+		
+		final ExpansionException warning = parser.getWarnings().get(0);
+		assertEquals(PersonListParserException.class, warning.getClass());
+		assertEquals("Name ends with comma: 'Foo, Bar,' - in 'foo'", warning.getMessage());
 		
 
-//		System.out.println(BibTexUtils.toBibtexString(parsedBibTeX));
-//		System.out.println(PersonNameUtils.discoverPersonNames(author));
 	}
 	
 	/**
@@ -245,6 +250,85 @@ public class SimpleBibTeXParserTest {
 		assertEquals("Journal of the ACM", parsedBibTeX.getJournal());
 	}
 
+	/**
+	 * Test if crossref expansion works
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testCrossrefExpansion() throws Exception {
+		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+
+		final List<BibTex> parsedBibTeX = parser.parseBibTeXs(
+				"@proceedings{iswc,\n" +
+				"   booktitle = \"ISWC\",\n" +
+				"   editor = \"John Doe\",\n" +
+				"   year = 2222,\n" +
+				" }\n" +
+				"@inproceedings{foo,\n" +
+				"  month = jun,\n" + 
+				"  crossref = iswc,\n" +
+				"  title = \"Cool paper\",\n" +
+				"  author = \"Bit Bucket\"\n" + 
+				"}"
+		);
+		assertEquals(Arrays.asList(new PersonName("John", "Doe")), parsedBibTeX.get(0).getEditor());
+		assertEquals("2222", parsedBibTeX.get(0).getYear());
+		assertEquals(Arrays.asList(new PersonName("Bit", "Bucket")), parsedBibTeX.get(1).getAuthor());
+	}
+
+	/**
+	 * Test if one entry is parsed even when crossref entry is missing. 
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testCrossrefExpansionMissingCrossref() throws Exception {
+		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+
+		final BibTex parsedBibTeX = parser.parseBibTeX(
+				"@inproceedings{foo,\n" +
+				"  month = jun,\n" + 
+				"  crossref = iswc,\n" +
+				"  title = \"Cool paper\",\n" +
+				"  author = \"Bit Bucket\",\n" + 
+				"}"
+		);
+		assertEquals(Arrays.asList(new PersonName("Bit", "Bucket")), parsedBibTeX.getAuthor());
+	}
+	
+	/**
+	 * Test if several entries are parsed and warnings are added.  
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testCrossrefExpansionMissingCrossref2() throws Exception {
+		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+
+		final List<BibTex> parsedBibTeX = parser.parseBibTeXs(getTestFile("test2.bib"));
+		
+		assertEquals(2, parsedBibTeX.size());
+		
+		assertEquals("2014", parsedBibTeX.get(0).getYear());
+		assertEquals("1145--1154", parsedBibTeX.get(0).getPages());
+		
+		assertEquals("2014", parsedBibTeX.get(1).getYear());
+		assertEquals("2065--2074", parsedBibTeX.get(1).getPages());
+		
+		// We have two entries, both with missing crossrefs.
+		assertEquals(2, parser.getWarnings().size());
+		
+		assertEquals(CrossReferenceExpansionException.class, parser.getWarnings().get(0).getClass());
+		
+		final CrossReferenceExpansionException firstWarning = (CrossReferenceExpansionException) parser.getWarnings().get(0); 
+		
+		assertEquals("crossref key not found", firstWarning.getMessage());
+		assertEquals("DBLP:conf/acl/PickhardtGKWSS14",  firstWarning.getEntryKey());
+		assertEquals("dblp:conf/acl/2014-1",  firstWarning.getCrossrefKey());
+	}	
+
+	
 	@Test
 	public void testFile1() throws Exception {
 		final SimpleBibTeXParser parser = new SimpleBibTeXParser();

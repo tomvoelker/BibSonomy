@@ -25,9 +25,7 @@ package org.bibsonomy.model.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
-import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,6 +50,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
+import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
@@ -59,6 +58,7 @@ import org.bibsonomy.model.comparators.BibTexPostComparator;
 import org.bibsonomy.model.comparators.BibTexPostInterhashComparator;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.tex.TexDecode;
 
 /**
@@ -319,7 +319,7 @@ public class BibTexUtils {
 		if (!present(author)) {
 			author = bib.getEditor();
 		}
-		final PersonName personName; 
+		final PersonName personName;
 		if (present(author)) {
 			personName = author.get(0);
 		} else {
@@ -334,71 +334,76 @@ public class BibTexUtils {
 		} else {
 			auinit1 = null;
 		}
-
-		// parse misc fields
-		bib.parseMiscField();
-		// extract DOI
-		String doi = bib.getMiscField("doi");
-		if (doi != null) {
-			// TODO: urls rausfiltern testen
-			final Matcher m = DOI_PATTERN.matcher(doi);
-			if (m.find()) {
-				doi = m.group(1);
-			}
-		}
-
+		
+		/*
+		 * The doi maybe in the misc fields. To be on the safe side we catch the
+		 * InvalidModelException (the misc field maybe invalid)
+		 */
+		String doi = null;
 		try {
-			// append year (due to inconsistent database not always given!)
-			if (present(bib.getYear())) {
-				openurl.append("date=" + bib.getYear().trim());
+			// parse misc fields
+			bib.parseMiscField();
+			// extract DOI
+			doi = bib.getMiscField("doi");
+			if (doi != null) {
+				// TODO: urls rausfiltern testen
+				final Matcher m = DOI_PATTERN.matcher(doi);
+				if (m.find()) {
+					doi = m.group(1);
+				}
 			}
-			// append doi
-			if (present(doi)) {
-				appendOpenURL(openurl,"id", "doi:" + doi.trim());
-			}
-			// append isbn + issn
-			appendOpenURL(openurl,"isbn", bib.getMiscField("isbn"));
-			appendOpenURL(openurl,"issn", bib.getMiscField("issn"));
-			// append name information for first author
-			appendOpenURL(openurl, "aulast", personName.getLastName());
-			appendOpenURL(openurl, "aufirst", firstName);
-			appendOpenURL(openurl, "auinit1", auinit1);
-			// genres == entrytypes
-			final String entryType = bib.getEntrytype().toLowerCase();
-			if (entryType.equals("journal")) {
-				appendOpenURL(openurl, "genre", "journal");
-				appendOpenURL(openurl, "title", bib.getTitle());
-			} else if (entryType.equals(BOOK)) {
-				appendOpenURL(openurl, "genre", BOOK);
-				appendOpenURL(openurl, "title", bib.getTitle());
-			} else if (entryType.equals(ARTICLE)) {
-				appendOpenURL(openurl, "genre", ARTICLE);
-				appendOpenURL(openurl, "title", bib.getJournal());
-				appendOpenURL(openurl, "atitle", bib.getTitle());
-			} else if (entryType.equals(INBOOK)) {
-				appendOpenURL(openurl, "genre", "bookitem");
-				appendOpenURL(openurl, "title", bib.getBooktitle());
-				appendOpenURL(openurl, "atitle", bib.getTitle());
-			} else if (entryType.equals(PROCEEDINGS)) {
-				appendOpenURL(openurl, "genre", "proceeding");
-				appendOpenURL(openurl, "title", bib.getBooktitle());
-				appendOpenURL(openurl, "atitle", bib.getTitle());
-			} else {
-				appendOpenURL(openurl, "title", bib.getBooktitle());
-				appendOpenURL(openurl, "atitle", bib.getTitle());
-			}
-			appendOpenURL(openurl, "volume", bib.getVolume());
-			appendOpenURL(openurl, "issue", bib.getNumber());
-		} catch (final UnsupportedEncodingException ex) {
-			log.error("error while generating openURL", ex);
+		} catch (final InvalidModelException e) {
+			// ignore invalid misc fields
 		}
+		
+		// append year (due to inconsistent database not always given!)
+		if (present(bib.getYear())) {
+			openurl.append("date=" + bib.getYear().trim());
+		}
+		// append doi
+		if (present(doi)) {
+			appendOpenURL(openurl,"id", "doi:" + doi.trim());
+		}
+		// append isbn + issn
+		appendOpenURL(openurl,"isbn", bib.getMiscField("isbn"));
+		appendOpenURL(openurl,"issn", bib.getMiscField("issn"));
+		// append name information for first author
+		appendOpenURL(openurl, "aulast", personName.getLastName());
+		appendOpenURL(openurl, "aufirst", firstName);
+		appendOpenURL(openurl, "auinit1", auinit1);
+		// genres == entrytypes
+		final String entryType = bib.getEntrytype().toLowerCase();
+		if (entryType.equals("journal")) {
+			appendOpenURL(openurl, "genre", "journal");
+			appendOpenURL(openurl, "title", bib.getTitle());
+		} else if (entryType.equals(BOOK)) {
+			appendOpenURL(openurl, "genre", BOOK);
+			appendOpenURL(openurl, "title", bib.getTitle());
+		} else if (entryType.equals(ARTICLE)) {
+			appendOpenURL(openurl, "genre", ARTICLE);
+			appendOpenURL(openurl, "title", bib.getJournal());
+			appendOpenURL(openurl, "atitle", bib.getTitle());
+		} else if (entryType.equals(INBOOK)) {
+			appendOpenURL(openurl, "genre", "bookitem");
+			appendOpenURL(openurl, "title", bib.getBooktitle());
+			appendOpenURL(openurl, "atitle", bib.getTitle());
+		} else if (entryType.equals(PROCEEDINGS)) {
+			appendOpenURL(openurl, "genre", "proceeding");
+			appendOpenURL(openurl, "title", bib.getBooktitle());
+			appendOpenURL(openurl, "atitle", bib.getTitle());
+		} else {
+			appendOpenURL(openurl, "title", bib.getBooktitle());
+			appendOpenURL(openurl, "atitle", bib.getTitle());
+		}
+		appendOpenURL(openurl, "volume", bib.getVolume());
+		appendOpenURL(openurl, "issue", bib.getNumber());
 
 		return openurl.toString();
 	}
 
-	private static void appendOpenURL(final StringBuilder buffer, final String name, final String value) throws UnsupportedEncodingException {
+	private static void appendOpenURL(final StringBuilder buffer, final String name, final String value) {
 		if (present(value)) {
-			buffer.append("&" + name + "=" + URLEncoder.encode(value.trim(), StringUtils.CHARSET_UTF_8));
+			buffer.append("&" + name + "=" + UrlUtils.safeURIEncode(value.trim()));
 		}
 	}
 
@@ -1003,8 +1008,9 @@ public class BibTexUtils {
 	 * 
 	 * @param miscFieldString - the misc field string
 	 * @return a hashmap containg the parsed key/value pairs.
+	 * @throws InvalidModelException e.g. iff the number of opening brackets != number of closing brackets
 	 */
-	public static Map<String,String> parseMiscFieldString(final String miscFieldString) {
+	public static Map<String,String> parseMiscFieldString(final String miscFieldString) throws InvalidModelException {
 		return StringUtils.parseBracketedKeyValuePairs(miscFieldString, ASSIGNMENT_OPERATOR, KEYVALUE_SEPARATOR, DEFAULT_OPENING_BRACKET, DEFAULT_CLOSING_BRACKET);
 	}
 

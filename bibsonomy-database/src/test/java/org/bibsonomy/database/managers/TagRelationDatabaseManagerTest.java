@@ -104,9 +104,9 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	 */
 	@Test
 	public void getConceptForUser() {
-		final Tag concept = tagRelDb.getConceptForUser("Programming", "testuser3", this.dbSession);
-		// testuser3 has both "programming" and "Programming" as concepts, and as the tag's case is ignored, 
-		//we retrieve all subtags (again, case-ignored) of either of them (i.e. "c++" and "java")
+		Tag concept = tagRelDb.getConceptForUser("Programming", "testuser3", this.dbSession);
+		assertEquals(1, concept.getSubTags().size());
+		concept = tagRelDb.getConceptForUser("programming", "testuser3", this.dbSession);
 		assertEquals(2, concept.getSubTags().size());
 	}
 	

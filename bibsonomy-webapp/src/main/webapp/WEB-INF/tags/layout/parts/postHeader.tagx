@@ -106,7 +106,7 @@
 								showBookmark="${showBookmark}" 
 								showPublication="${showPublication}" 
 								showInboxActions="${showInboxActions}" 
-								isBasket="${isBasket}"
+								isClipboard="${isClipboard}"
 								disableListNavigation="${disableListNavigation}"
 								disableResourcetypeSelection="${disableResourcetypeSelection}"
 								disableSort="${disableSort}" />
