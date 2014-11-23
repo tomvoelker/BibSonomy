@@ -29,6 +29,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
@@ -264,7 +265,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		log.debug("no intra hash given -> new post");
 		return this.handleCreatePost(command, context, loginUser, post);
 	}
-	protected void replaceResourceEntries(BibTex bibResource, String key, String value){
+	protected void replaceResourceFields(BibTex bibResource, String key, String value){
 		switch(key){
 			case "entrytype":
 				bibResource.setEntrytype(value);
@@ -273,11 +274,32 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				bibResource.setTitle(value);
 				break;
 			case "author":
-			//	List <String> authors = new ArrayList<String>();//
-				//Collections.addAll(authors, value.split(","));
-				//bibResource.setAuthor(authors);
+				List <String> authors = new ArrayList<String>();//
+				Collections.addAll(authors, value.split("; "));
+				
+				List <PersonName> authors_list = new ArrayList<PersonName>();//
+				PersonName a;
+				String[] first_last_name;
+				for(int i=0;i<authors.size();i++){
+					first_last_name = authors.get(i).split(",");
+					a = new PersonName(first_last_name[0],first_last_name[1]);
+					authors_list.add(a);
+				}
+				bibResource.setAuthor(authors_list);
 				break;
 			case "editor":
+				List <String> editors = new ArrayList<String>();//
+				Collections.addAll(editors, value.split("; "));
+				
+				List <PersonName> editors_list = new ArrayList<PersonName>();//
+				PersonName b;
+				String[] first_last_Name;
+				for(int i=0;i<editors.size();i++){
+					first_last_Name = editors.get(i).split(",");
+					b = new PersonName(first_last_Name[0],first_last_Name[1]);
+					editors_list.add(b);
+				}
+				bibResource.setAuthor(editors_list);
 				break;
 			case "year":
 				bibResource.setYear(value);
@@ -521,7 +543,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				List <String> diffEntryKeyList = command.getDifferentEntryKeys();
 				final BibTex bibResource = (BibTex) dbPost.getResource();
 				for(int i =0;i<diffEntryKeyList.size();i++){
-					replaceResourceEntries(bibResource,diffEntryKeyList.get(i), diffEntryValList.get(i));
+					replaceResourceFields(bibResource,diffEntryKeyList.get(i), diffEntryValList.get(i));
 				}
 			//	bibResource.set.... switch case
 				dbPost.setResource((RESOURCE) bibResource);

@@ -32,15 +32,20 @@
 	
 	
 	<form id="history" action="/editPublication" method="POST">
+	
 		<c:set var="buttonClasses" value="btn btn-primary btn-xs"/>
-		<!--<c:set var="post" scope="request" value="${listView.list[0]}"/>-->
 		<c:set var="fieldlength" value="${fn:length(listView.list)-1}" />
 		<c:set var="newestPost" value="${listView.list[fieldlength]}" />		
+	
 		<input type="hidden" name="newestPost" value="${newestPost}" />
 		<input type="hidden" name="differentEntryKeys" />
 		<input type="hidden" name="differentEntryValues" />
 		<input type="hidden" name="historyPost" />			
 		<input type="hidden" name="intraHashToUpdate" value="${newestPost.resource.intraHash}"/>
+	
+		<fmt:message key="history.restoreBtn.disabled" var="restoreBtnDisabledMsg" />
+		<fmt:message key="history.restoreBtn.enabled" var="restoreBtnEnabledMsg" />
+	
 				<!--+
 					| complete Post
 					+-->
@@ -79,106 +84,86 @@
 				+-->
 				<table class="table table-striped">
 				
-				
-				<!-- <div id="historylist"> -->
-					
 					<!-- newest post is index 0 and do not contain to history list -->
 					<c:forEach var="index" begin="1" end="${fieldlength}" varStatus="loopStatus" step="1">
 						<c:set var="additionalItemClasses"
 							value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}" />	
 						
-						<tr class="HistTable no-bullet"><!-- ul -->
-							<td id="versionNum"><!-- li -->
+						<tr >
+							<td class="col-sm-1"  id="versionNum" style="border-right:1px solid #eee">
 								<span class="label label-default diffNumText">
 								Ver. ${fieldlength-index+1}
 								</span>
 							</td>
-							<td>
-							<!-- check the input to change data -->
+							<td class="col-sm-3" style="border-right:1px solid #eee">
 								<c:set var="changeDate" value="${mtl:cleanBibtex(listView.list[(fieldlength-index+1)].changeDate)}"/>
 								<span class="label label-primary diffNumText">${changeDate}</span>
-								<!-- 
-								<rc:changeDate post="${listView.list[(fieldlength-index)]}"
-									newestPost="${listView.list[(fieldlength)]}" />
-								-->
 							</td>
-							<!--  -->
+							
 							<c:set var="diffArrayPre" value="${mtl:DiffEntries(listView.list[(fieldlength-index)].resource,listView.list[(fieldlength-index+1)].resource)}"/>
 							<c:set var="diffNumPre" value="${fn:length(diffArrayPre)}"/>
-							<c:choose>
-		      					<c:when test="${diffNumPre > 1}">
-		      						<c:set var="diffNumPreMsg" value=" entries are changed"/>
-		      					</c:when>
-						      	<c:otherwise>
-		 							<c:set var="diffNumPreMsg" value=" entry is changed   "/>
-		 					    </c:otherwise>
-							</c:choose>
-							 
-							<!-- <td id="postDiffNumPre">
-								<a href="#" class="label label-primary diffNumText">
-								${diffNumPre} ${diffNumPreMsg}
-								</a>
-							</td> --> 
-							<!--  -->
 							
 							<c:set var="diffArrayCurr" value="${mtl:DiffEntries(listView.list[(fieldlength)].resource,listView.list[(fieldlength-index+1)].resource)}"/>
 							
 							<c:set var="diffNumCurr" value="${fn:length(diffArrayCurr)}"/>
-							<c:choose>
-		      					<c:when test="${diffNumCurr > 1}">
-		      						<c:set var="diffNumCurrMsg" value=" entries are changed"/>
-		      					</c:when>
-						      	<c:otherwise>
-		 							<c:set var="diffNumCurrMsg" value=" entry is changed   "/>
-		 					    </c:otherwise>
-							</c:choose>
-							 
-							<!-- <td id="postDiffNumCurr">
-								<a href="#" class="label label-primary diffNumText">
-								${diffNumCurr} ${diffNumCurrMsg}
-								</a>
-							</td> --> 
-							<!-- -->
-							<td>	
-								Compare to <span id="pre" class="mark">previous <span data-toggle="tooltip" 
-									title="${diffNumPre} ${diffNumPreMsg}" class="badge">${diffNumPre}</span></span>
-								<c:if test = "${diffNumCurr ne 0}">
-									/<span id="curr" class="underline">current <span data-toggle="tooltip" 
-									title="${diffNumCurr} ${diffNumCurrMsg}" class="badge">${diffNumCurr}</span></span>
-								</c:if>
-								version
+							
+							<td class="col-sm-7">
+								
+								<div class="row">
+  									<div class="col-xs-3">
+									    <label class="control-label" style="white-space:nowrap;padding:0px">
+																			Compare to </label>
+																			 </div>
+									 <div class="col-xs-5" style="padding:0px">
+									    <select id="preCurrSelector" class="form-control help-popover">
+											<option value="0">previous version (${diffNumPre} different fields)</option>
+											<option value="1">current version (${diffNumCurr} different fields)</option>
+										</select>
+										<div class="help help-header hide"><!--  --></div>
+										<div class="help help-content hide"><fmt:message key="history.selection.help" /></div>
+									</div>
+								</div>
 							</td>	
-							<td>					
-								<a id="restoreBtn" class="${buttonClasses} invisible" title="restore to this version">
+							<td class="col-sm-1">					
+								<a id="restoreBtnDisabled" class="${buttonClasses}" 
+									title="${restoreBtnDisabledMsg}" disabled="disabled">
 									<span class="fa fa-undo"><!--  --></span>
 								</a>
+								<c:if test = "${diffNumCurr ne 0}">					
+									<a id="restoreBtnEnabled" class="${buttonClasses} invisible" 
+									title="${restoreBtnEnabledMsg}">
+										<span class="fa fa-undo"><!--  --></span>
+									</a>
+								</c:if>
 							</td>
 							
 							</tr>
 							<tr >
 							<td colspan="3" id="postDiffPre" class="postDiffPre">				
 								<c:forEach var="diffEntry" items="${diffArrayPre}">
-									<input type="checkbox" id="preEntryCheckbox" class="invisible"/>
-										<strong>${diffEntry.key}</strong>
-										<c:out value=": "/>
-										${diffEntry.value}
-										<br/>
-<!--  							${mtl:BibDiff(diffEntry,listView.list[(fieldlength-index)].resource,listView.list[(fieldlength-index+1)].resource)}-->
+									<div class="checkbox">
+    									<label>
+      										<input type="checkbox" class="invisible"/> <strong>${diffEntry.key}</strong>
+																	<c:out value=": "/>
+																	${diffEntry.value}
+																	<br/>
+    									</label>
+  									</div>
 								</c:forEach>
-								<!--<rc:postDescDiff
-									publication="${listView.list[(fieldlength-index)].resource}"
-									newestPub="${listView.list[(fieldlength-index+1)].resource}" isPub="${isPub}"/>-->
 							</td>
 							
-							<c:if test = "${diffNumCurr ne 0}">
 							<td colspan="3" id="postDiffCurr" class="postDiffCurr">	
 											
 								<c:forEach var="diffEntry" items="${diffArrayCurr}">
-									<input type="checkbox" id="CurrEntryCheckbox" class="invisible" checked="checked"/>
-									<strong>${diffEntry.key}</strong>
-									<c:out value=": "/>
-									${diffEntry.value}
-									<br/>
+									<div class="checkbox">
+    									<label>
+      										<input type="checkbox" id="CurrEntryCheckbox" class="invisible" checked="checked"/> 
+      											<strong>${diffEntry.key}</strong>
+												<c:out value=": "/>
+												${diffEntry.value}
+												<br/>
+    									</label>
+  									</div>
 							
 									<div>
 										<input type="hidden" name="diffEntryKey" value="${diffEntry.key}"/>
@@ -186,14 +171,15 @@
 											value="${mtl:getEntryValue(diffEntry.key,listView.list[(fieldlength-index+1)].resource)}"/>
 									</div>
 								</c:forEach>
+								<c:if test = "${diffNumCurr ne 0}">
 								<div id="restore_alert_btn" class="invisible hidden">
 									<div class="alert col-sm-10 alert-warning" style="margin-bottom:0px;" role="alert">
 										<fmt:message key="history.restore.confirm" />
 									</div>
 									<button class="btn btn-primary submitBtn" style="float:right">restore</button>
 								</div>
-							</td>
-							</c:if>						
+								</c:if>
+							</td>				
 						</tr>	
 						
 					</c:forEach>
@@ -235,14 +221,15 @@
 				
 				</td>	
 			</tr>	
-				
-				
+			
 			</table>
 		</c:when>
 		<c:otherwise>
 			<!-- only show message "no posts available" when no artificial list items (e.g. discussions) are present -->
 			<c:if test="${empty addAsFirstItem}">
-				<div class="red_background" > <fmt:message key="History.empty" /></div>
+				<div class="alert alert-info" style="margin:10px;" role="alert">
+					<fmt:message key="History.empty" />
+				</div>
 			</c:if>
 		</c:otherwise>
 	</c:choose>
