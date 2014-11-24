@@ -30,95 +30,35 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.UrlUtils;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.WebUtils;
-import org.bibsonomy.util.id.DOIUtils;
 
 /**
  * Scraper for csdl2.computer.org
  * @author tst
  */ 
-public class IEEEComputerSocietyScraper extends AbstractUrlScraper {
-
+public class IEEEComputerSocietyScraper extends GenericBibTeXURLScraper {
+	private static final Log log = LogFactory.getLog(IEEEComputerSocietyScraper.class);
 	private static final String SITE_NAME = "IEEE Computer Society";
 	private static final String SITE_URL = "http://www.computer.org/portal/web/guest/home";
 	private static final String INFO = "Scraper for publications from " + href(SITE_URL, SITE_NAME);
 	private static final String HOST_OLD= "csdl2.computer.org";
 	private static final String HOST_NEW = "computer.org";
 	
-	private static final String DOWNLOAD_URL = "http://www.computer.org/plugins/dl/doi/";
-	
-	private static final Pattern bibtexPattern = Pattern.compile("<div id=\"bibText-content\">(.*})</div>", Pattern.DOTALL);
-	
-	private static final Pattern doiPattern1 = Pattern.compile("doi/(.*)");
-	private static final Pattern doiPattern2 = Pattern.compile("\\&DOI=([^\\&]*)");
+	private static final Pattern abstractPattern = Pattern.compile("<meta property=\"og:description\" content=\"(.*)\" />");
 	
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 	
 	static{
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST_OLD), AbstractUrlScraper.EMPTY_PATTERN));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST_NEW), AbstractUrlScraper.EMPTY_PATTERN));
-	}
-	
-	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		sc.setScraper(this);
-
-		String doi = null;
-		Matcher doi1Matcher = doiPattern1.matcher(sc.getUrl().toString());
-		Matcher doi2Matcher = doiPattern2.matcher(sc.getUrl().toString());
-		if (doi1Matcher.find()) {
-			doi = doi1Matcher.group(1);
-		} else if (doi2Matcher.find()) {
-			doi = doi2Matcher.group(1);
-		}
-		if (doi != null){
-			try {
-				if (doi.contains("#")) {
-					doi = doi.substring(0, doi.indexOf("#"));
-				}
-				
-				final String page = WebUtils.getContentAsString(new URL(DOWNLOAD_URL + doi));
-
-				String bibtex = null;
-				Matcher bibtexMatcher = bibtexPattern.matcher(page);
-				if (bibtexMatcher.find()) {
-					bibtex = bibtexMatcher.group(1).trim();
-				}
-				if (bibtex != null) {
-					bibtex = bibtex.replace("<br>", "\n");
-					bibtex = bibtex.replace("<xsl:text>", "");
-					bibtex = bibtex.replace("</xsl:text>", "");
-					bibtex = bibtex.replace("&nbsp;", " ");
-	
-					bibtex = UrlUtils.safeURIDecode(bibtex);
-	
-					// append url
-					bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
-					
-					// clean doi
-					bibtex = DOIUtils.cleanDOI(bibtex);
-					
-					// add downloaded bibtex to result 
-					sc.setBibtexResult(bibtex);
-					sc.setScraper(this);
-					return true;
-				}
-				
-				throw new ScrapingFailureException("Cannot download bibtex.");
-			} catch (IOException ex) {
-				throw new InternalFailureException(ex);
-			}
-
-		}
-		return false;
 	}
 	
 	@Override
@@ -139,5 +79,25 @@ public class IEEEComputerSocietyScraper extends AbstractUrlScraper {
 	@Override
 	public String getInfo() {
 		return INFO;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
+	 */
+	@Override
+	protected String getDownloadURL(URL url) throws ScrapingException {
+		return  url.toString().replaceAll("-.*", "-reference.bib");
+	}
+	
+	@Override
+	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
+		try {
+			final Matcher m = abstractPattern.matcher(WebUtils.getContentAsString(scrapingContext.getUrl().toString()));
+			if (m.find())
+				return BibTexUtils.addFieldIfNotContained(bibtex, "abstract", m.group(1));
+		} catch(IOException e) {
+			log.debug("Abstract is not found" + e.getMessage());
+		}
+		return bibtex;
 	}
 }

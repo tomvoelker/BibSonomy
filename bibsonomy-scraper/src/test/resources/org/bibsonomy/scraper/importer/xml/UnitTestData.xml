@@ -261,7 +261,7 @@
 	</URLTest>
 	<URLTest id="url_40">
 		<TestDescription>Scraping test for IEEE computer society scraper</TestDescription>
-		<URL>http://www.computer.org/portal/web/csdl/doi/10.1109/DEXA.2006.148</URL>
+		<URL>http://www.computer.org/csdl/proceedings/dexa/2006/2641/00/26410603-abs.html</URL>
 		<BibFile>IEEEComputerSocietyScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper</Scraper>
 	</URLTest>
@@ -823,8 +823,8 @@
 	</URLTest>
 	<URLTest id="url_137">
 		<TestDescription>Scraping test for IEEE computer society scraper (new url schema)</TestDescription>
-		<URL>http://www.computer.org/portal/web/csdl/doi/10.1109/DEXA.2006.148</URL>
-		<BibFile>IEEEComputerSocietyScraperUnitURLTest2.bib</BibFile>
+		<URL>http://www.computer.org/csdl/proceedings/dexa/2006/2641/00/26410603-reference.bib</URL>
+		<BibFile>IEEEComputerSocietyScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_138">
