@@ -13,14 +13,11 @@
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
-
-
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true" />
 	<jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="deleteCheckedPosts" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="overwrite" type="java.lang.Boolean" required="false" />
-	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" description="The type of resource that are edited (bookmark or bibtex)." />
 
 	<jsp:directive.attribute name="shortPostDescription" fragment="true" required="true" description="A one line description of a post" />
 	<jsp:directive.attribute name="title" fragment="true" required="true" />
@@ -49,9 +46,11 @@
 	<!--=======================-->
 	<!-- VARIABLEN DEKLARATION -->
 	<!--=======================-->
-
+	
+	
+	<c:set var="resourceType" value="${listView.resourcetype}" />
 	<jsp:directive.variable name-given="post" scope="NESTED" />
-
+	
 	<c:if test="${not empty listView.list}">
 
 		<form id="batchedit" action="/batchEdit" class="form-horizontal" method="POST">
@@ -144,7 +143,7 @@
 														<ul>
 															<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].resource.*">
 												            	<c:forEach var="errorMessage" items="${status.errorMessages}">
-												   			   		<li class="info_bold">${errorMessage}</li>
+																	<li class="info_bold">${errorMessage}</li>
 												               	</c:forEach>
 											               	</spring:bind>
 											               
@@ -239,7 +238,7 @@
 		</form>
 
 		<c:if test="${not empty otherPosts}">
-			<h2 style="margin-top: 2em;">
+			<h2 style="margin-top: 2em;"> <!-- TODO: (Bootstrap) remove inline css -->
 				<fmt:message key="batchedit.disregardedPosts" />
 			</h2>
 			
@@ -248,24 +247,24 @@
 			</p>
 
 			<!-- iterate over a list of resources and create the list -->
-			<ul id="${listView.resourcetype}">
+			<ul id="${resourceType}">
 				<c:forEach var="post" items="${listView.list}">
 					<c:if test="${post.user.name ne command.context.loginUser.name}">
 						<!-- show one post -->
-						<rc:post post="${post}"	otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${command.context.loginUser.name}" resourceType="${resourceType}">
+						<rc:post post="${post}" resourceType="${resourceType}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${command.context.loginUser.name}">
 							<jsp:attribute name="title">
-							     <jsp:invoke fragment="title" />    
+								<jsp:invoke fragment="title" />
 							</jsp:attribute>
 							
-							<jsp:attribute name="actions">   
-								<jsp:invoke	fragment="actions" />  
+							<jsp:attribute name="actions">
+								<jsp:invoke	fragment="actions" />
 							</jsp:attribute>
 							
-							<jsp:attribute name="desc">      
-								<jsp:invoke	fragment="desc" />     
+							<jsp:attribute name="desc">
+								<jsp:invoke	fragment="desc" />
 							</jsp:attribute>
 							
-							<jsp:attribute name="documents"> 
+							<jsp:attribute name="documents">
 								<jsp:invoke	fragment="documents" />
 							</jsp:attribute>
 						</rc:post>
