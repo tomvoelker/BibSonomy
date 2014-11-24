@@ -80,7 +80,7 @@ public abstract class AbstractExpander {
 	 * Call this whenever you want to throw an ExpansionException. This method may or may not throw
 	 * the exception, depending on the throwAllExpansionExceptions flag.
 	 * 
-	 * @param message
+	 * @param ex
 	 * @throws ExpansionException
 	 */
 	protected void throwExpansionException(final ExpansionException ex) throws ExpansionException {
