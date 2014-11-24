@@ -62,8 +62,6 @@ function compare_to_current(element){
 	element.parents('td').next().find('a[id=restoreBtnDisabled]').toggleClass('invisible', true);
 	element.parents('td').next().find('a[id=restoreBtnDisabled]').hide();
 
-	//element.parents('td').next().find('a[id=restoreBtnEnabled]').toggleClass('invisible', false);
-
 	show_hide_Checkboxes(element.parents('tr').next().find('.postDiffCurr'),true);//invisible:false
 
 }
@@ -94,9 +92,7 @@ function submitForm(element){
 		if(b){
 			diffEntryKey[i] = $(this).val();
 			entryValue = $(this).siblings('input[name=diffEntryValue]').val();
-			alert('entryValue'+entryValue+'something');
 			if(entryValue==""){
-				alert('here');
 				entryValue=" ";
 			}
 			diffEntryValue +=(entryValue+"//");

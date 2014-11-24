@@ -99,12 +99,18 @@
 								<c:set var="changeDate" value="${mtl:cleanBibtex(listView.list[(fieldlength-index+1)].changeDate)}"/>
 								<span class="label label-primary diffNumText">${changeDate}</span>
 							</td>
+							<c:choose>
+								<c:when test="${isPub}">
+									<c:set var="diffArrayPre" value="${mtl:DiffEntriesPub(listView.list[(fieldlength-index)].resource,listView.list[(fieldlength-index+1)].resource)}"/>		
+									<c:set var="diffArrayCurr" value="${mtl:DiffEntriesPub(listView.list[(fieldlength)].resource,listView.list[(fieldlength-index+1)].resource)}"/>									
+								</c:when>
+								<c:otherwise>
+									<c:set var="diffArrayPre" value="${mtl:DiffEntriesBm(listView.list[(fieldlength-index)],listView.list[(fieldlength-index+1)])}"/>		
+									<c:set var="diffArrayCurr" value="${mtl:DiffEntriesBm(listView.list[(fieldlength)],listView.list[(fieldlength-index+1)])}"/>									
+								</c:otherwise>
+							</c:choose>
 							
-							<c:set var="diffArrayPre" value="${mtl:DiffEntries(listView.list[(fieldlength-index)].resource,listView.list[(fieldlength-index+1)].resource)}"/>
 							<c:set var="diffNumPre" value="${fn:length(diffArrayPre)}"/>
-							
-							<c:set var="diffArrayCurr" value="${mtl:DiffEntries(listView.list[(fieldlength)].resource,listView.list[(fieldlength-index+1)].resource)}"/>
-							
 							<c:set var="diffNumCurr" value="${fn:length(diffArrayCurr)}"/>
 							
 							<td class="col-sm-7">
@@ -143,10 +149,11 @@
 								<c:forEach var="diffEntry" items="${diffArrayPre}">
 									<div class="checkbox">
     									<label>
-      										<input type="checkbox" class="invisible"/> <strong>${diffEntry.key}</strong>
-																	<c:out value=": "/>
-																	${diffEntry.value}
-																	<br/>
+      										<input type="checkbox" class="invisible"/> 
+      											<strong>${diffEntry.key}</strong>
+												<c:out value=": "/>
+												${diffEntry.value}
+											<br/>
     									</label>
   									</div>
 								</c:forEach>
@@ -167,8 +174,18 @@
 							
 									<div>
 										<input type="hidden" name="diffEntryKey" value="${diffEntry.key}"/>
-										<input type="hidden" name="diffEntryValue" 
-											value="${mtl:getEntryValue(diffEntry.key,listView.list[(fieldlength-index+1)].resource)}"/>
+										<c:choose>
+											<c:when test="${isPub}">
+												<input type="hidden" name="diffEntryValue" 
+													value="${mtl:getEntryValuePub(diffEntry.key,listView.list[(fieldlength-index+1)].resource)}"/>
+											</c:when>
+											<c:otherwise>
+												<input type="hidden" name="diffEntryValue" 
+													value="${mtl:getEntryValueBm(diffEntry.key,listView.list[(fieldlength-index+1)])}"/>									
+											</c:otherwise>
+										</c:choose>
+										
+										
 									</div>
 								</c:forEach>
 								<c:if test = "${diffNumCurr ne 0}">

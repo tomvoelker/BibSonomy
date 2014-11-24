@@ -37,7 +37,7 @@
 				<jsp:attribute name="infoTextBody">
 					<!-- short info about historyPage -->
 					<ul>
-						<fmt:message key="hidtory.info1"/>
+						<fmt:message key="hidtory.info"/>
 						<li><fmt:message key="batchedit.option1"/></li>                
 						<li><fmt:message key="batchedit.option2"/></li>
 						<li><fmt:message key="batchedit.option3"/></li>

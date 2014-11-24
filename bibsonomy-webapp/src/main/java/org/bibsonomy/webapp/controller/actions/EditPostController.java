@@ -210,62 +210,17 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		final String intraHashToUpdate = command.getIntraHashToUpdate();
 
-		/*
-		 * TODO: Please refactor: first check if interhashToUpdate is present =>
-		 * update if so, check for the compareVersion => update using a diff to
-		 * another post, else regular update Please comment on the use of
-		 * compareVersion
-		 */
-		/*
-		 * compareVersion-1 to change index begin from 1 to 0
-		 */
-		
-		//final int compareVersion = 0;//(command.getCompareVersion()-1);
-		//results: intrahash to update: 652fd80d60a15b8e38da88ed8892ad69, 652fd80d60a15b8e38da88ed8892ad69
-		 // compare version = 2,1 ---> empty list
-		 /*if (present(compareVersion) && (compareVersion!=-1) &&
-		 present(intraHashToUpdate)) {
-		 log.debug("intra hash to diff found -> handling diff of existing post");
-		 final List<?> dbPosts = logic.getPosts(post.getResource().getClass(),
-		 GroupingEntity.ALL, user, null, intraHashToUpdate, null,
-		 FilterEntity.POSTS_HISTORY, null, null, null, compareVersion,
-		 compareVersion+1);*/
-		// command.setPostDiff((Post<RESOURCE>) dbPosts.get(0));
-		// command.setPost((Post<RESOURCE>) dbPosts.get(0));
-		 //command.setPost(getPostDetails(intraHashToUpdate, user));
-		 //return Views.DIFFPUBLICATIONPAGE;
-		 //}
-
+	
 		if (present(intraHashToUpdate)) {
-			
-			/*
-			 * compareVersion-1 to change index begin from 1 to 0
-			 */
-		//	 final int compareVersion = (command.getCompareVersion()-1);
-			
-			// if (present(compareVersion) && (compareVersion!=-1)) {
-
-		//		 log.debug("intra hash to compare post found -> handling diff of existing post");
-			//	 final List<?> dbPosts = logic.getPosts(post.getResource().getClass(),
-				//		 GroupingEntity.ALL, user, null, intraHashToUpdate, null,
-					//	 FilterEntity.POSTS_HISTORY, null, null, null, compareVersion,
-						// compareVersion+1);
-//				 command.setComparePost((Post<RESOURCE>) dbPosts.get(0));
-				 // TODO: check dbPosts.get(1)
-	//			 command.setPost((Post<RESOURCE>) dbPosts.get(1)/*getPostDetails(intraHashToUpdate, user)*/);
-				// this.handleUpdatePost(command, context, loginUser, post, intraHashToUpdate);
-				 //return Views.DIFFPUBLICATIONPAGE;
-			 //} else {
-			
+				
 			log.debug("intra hash to update found -> handling update of existing post");
 			return this.handleUpdatePost(command, context, loginUser, post, intraHashToUpdate);
-		//	}
 		}
 
 		log.debug("no intra hash given -> new post");
 		return this.handleCreatePost(command, context, loginUser, post);
 	}
-	protected void replaceResourceFields(BibTex bibResource, String key, String value){
+	protected void replaceResourceFieldsPub(BibTex bibResource, String key, String value){
 		switch(key){
 			case "entrytype":
 				bibResource.setEntrytype(value);
@@ -379,6 +334,18 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			}
 	}
 	
+	protected void replaceResourceFieldsBm(final Post post, String key, String value){
+		switch(key){
+			case "title":
+				post.getResource().setTitle(value);
+				break;
+			case "url":
+				((Bookmark)post.getResource()).setUrl(value);
+				break;
+			case "description":
+				post.setDescription(value);
+			}
+	}
 	
 	
 	protected boolean canEditPost(final RequestWrapperContext context) {
@@ -541,12 +508,22 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				List <String> diffEntryValList = new ArrayList<String>();//
 				Collections.addAll(diffEntryValList, command.getDifferentEntryValues().split("//"));
 				List <String> diffEntryKeyList = command.getDifferentEntryKeys();
-				final BibTex bibResource = (BibTex) dbPost.getResource();
-				for(int i =0;i<diffEntryKeyList.size();i++){
-					replaceResourceFields(bibResource,diffEntryKeyList.get(i), diffEntryValList.get(i));
+				Class<? extends Resource> resourceType = dbPost.getResource().getClass();
+				if(BibTex.class.equals(resourceType)){
+					final BibTex bibResource = (BibTex) dbPost.getResource();
+					for(int i =0;i<diffEntryKeyList.size();i++){
+						replaceResourceFieldsPub(bibResource,diffEntryKeyList.get(i), diffEntryValList.get(i));
+					}
+				
+					dbPost.setResource((RESOURCE) bibResource);
 				}
-			//	bibResource.set.... switch case
-				dbPost.setResource((RESOURCE) bibResource);
+				else{
+					for(int i =0;i<diffEntryKeyList.size();i++){
+						replaceResourceFieldsBm(dbPost,diffEntryKeyList.get(i), diffEntryValList.get(i));
+					}
+				}
+				
+				
 			}
 
 			/*

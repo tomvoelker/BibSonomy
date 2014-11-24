@@ -29,6 +29,7 @@ import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.database.systemstags.markup.ReportedSystemTag;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
@@ -394,7 +395,7 @@ public class Functions {
 	}
 	/**
 	 * returns the number of different entries*/
-	public static Map<String,String> DiffEntries(BibTex newBib, BibTex oldBib) {
+	public static Map<String,String> DiffEntriesPub(BibTex newBib, BibTex oldBib) {
 		Map<String,String> DiffArray = new LinkedHashMap<String,String>();
 		String tmp;		
 		if (!cleanBibtex(newBib.getEntrytype()).equals(cleanBibtex(oldBib.getEntrytype()))){
@@ -572,7 +573,7 @@ public class Functions {
 		}
 		return DiffArray;
 	}
-	public static String getEntryValue(String key,BibTex Bib){
+	public static String getEntryValuePub(String key,BibTex Bib){
 		String val="";
 		switch(key){
 			case "entrytype":
@@ -677,6 +678,42 @@ public class Functions {
 		return val;
 	}
 
+	public static Map<String,String> DiffEntriesBm(Post newBmPost, Post oldBmPost) {
+		Map<String,String> DiffArray = new LinkedHashMap<String,String>();
+		String tmp;		
+		if (!cleanBibtex(newBmPost.getResource().getTitle()).equals(cleanBibtex(oldBmPost.getResource().getTitle()))){
+			tmp = compareString(newBmPost.getResource().getTitle(),oldBmPost.getResource().getTitle());
+			DiffArray.put("title",tmp);
+		}
+
+		if (!cleanBibtex(((Bookmark)newBmPost.getResource()).getUrl()).equals(cleanBibtex(((Bookmark)oldBmPost.getResource()).getUrl()))){
+			tmp = compareString(((Bookmark)newBmPost.getResource()).getUrl(),((Bookmark)oldBmPost.getResource()).getUrl());
+			DiffArray.put("url",tmp);
+		}
+		
+		if (!cleanBibtex(newBmPost.getDescription()).equals(cleanBibtex(oldBmPost.getDescription()))){
+			tmp = compareString(newBmPost.getDescription(),oldBmPost.getDescription());
+			DiffArray.put("url",tmp);
+		}
+		return DiffArray;
+	}
+
+	public static String getEntryValueBm(String key,Post bmPost){
+		String val="";
+		switch(key){
+			case "title":
+				val = bmPost.getResource().getTitle();
+				break;
+			case "url":
+				val = ((Bookmark)bmPost.getResource()).getUrl();
+				break;
+			case "description":
+				val = bmPost.getDescription();
+			}
+		return val;
+	}
+
+	
 	/**
 	 * Compares two strings character-based. 
 	 * @param newValue and oldValue
