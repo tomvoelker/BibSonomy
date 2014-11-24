@@ -8,8 +8,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/bstags/post"
-	xmlns:form="http://www.springframework.org/tags/form"
-	>
+	xmlns:form="http://www.springframework.org/tags/form">
 	
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
@@ -21,7 +20,6 @@
 	<jsp:directive.attribute name="desc" fragment="true" required="true"/>
 	<jsp:directive.attribute name="actions" fragment="true" required="true"/>
 	<jsp:directive.attribute name="documents" fragment="true" required="true"/>
-	
 	
 	
    <!--+ 
@@ -100,7 +98,14 @@
 			
 				<div id="tag-modal-${post.resource.intraHash}${post.user.name}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 					<div class="modal-dialog">
-						<form data-resource-hash="${post.resource.intraHash}${post.user.name}" class="form-horizontal edit-tags-form" method="post" action="/batchEdit?deleteCheckedPosts=true&amp;format=ajax&amp;resourcetype=${resourceType}&amp;action=1">
+						<c:url var="batchEditUrl" value="/batchEdit">
+							<c:param name="deleteCheckedPosts" value="true" />
+							<c:param name="format" value="action" />
+							<c:param name="resourcetype" value="${resourceType}" />
+							<c:param name="action" value="1" />
+						</c:url>
+						
+						<form data-resource-hash="${post.resource.intraHash}${post.user.name}" class="form-horizontal edit-tags-form" method="post" action="${batchEditUrl}">
 							<div class="modal-content">
 								<div class="modal-header">
 									<button type="button" class="close" data-dismiss="modal">
