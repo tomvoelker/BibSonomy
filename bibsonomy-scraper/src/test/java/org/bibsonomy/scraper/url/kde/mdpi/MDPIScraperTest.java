@@ -59,7 +59,7 @@ public class MDPIScraperTest {
 		final String cby = sc.getCitedBy();
 		assertNotNull(cby);
 		assertTrue(cby.length() > 100);
-		assertEquals("<em>Citations registered in CrossRef as of 4 November 2014. The citation count might be different from".trim(), cby.substring(0, 103).trim());
+		assertEquals("<em>Citations registered in CrossRef as of 24 November 2014. The citation count might be different from".trim(), cby.substring(0, 103).trim());
 		assertTrue(cby.contains("Zhang, L."));
 	}
 }

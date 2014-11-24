@@ -284,6 +284,7 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 			final String reference = WebUtils.getContentAsString(client, url);
 			if(present(reference)){
 				scrapingContext.setReferences(reference);
+				scrapingContext.setCitedBy(reference);
 				return true;
 			}
 		} catch(Exception e) {

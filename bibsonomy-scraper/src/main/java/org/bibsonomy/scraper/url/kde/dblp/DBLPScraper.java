@@ -65,8 +65,7 @@ public class DBLPScraper extends GenericBibTeXURLScraper {
 	private static final String DBLP_HOST_NAME4  = "http://www.vldb.org/dblp/";
 	private static final String DBLP_HOST_NAME5  = "http://sunsite.informatik.rwth-aachen.de/dblp/";
 	 */
-	private static final Pattern DBLP_PATTERN = Pattern.compile("(<pre>\\s*(@[A-Za-z]+\\s*\\{.+?\\})\\s*</pre>)+", Pattern.MULTILINE | Pattern.DOTALL);
-
+	
 	@Override
 	public String getInfo() {
 		return info;
@@ -98,5 +97,10 @@ public class DBLPScraper extends GenericBibTeXURLScraper {
 	@Override
 	protected String getDownloadURL(URL url) throws ScrapingException {
 		return url.toString().replace("bibtex", "bib") + ".bib";
+	}
+	
+	@Override
+	protected String convert(String downloadResult) {
+		return downloadResult.replaceAll("timesta.*\\n", "");
 	}
 }

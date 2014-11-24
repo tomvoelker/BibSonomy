@@ -716,7 +716,8 @@
 		<URL>http://arrts.gtcni.org.uk/gtcni/handle/2428/8327</URL>
 		<BibFile>OpenrepositoryScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.openrepository.OpenrepositoryScraper</Scraper>
-		<Enabled>true</Enabled>
+		<!-- getting 404 -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_120">
 		<TestDescription>Test for eric.exeter.ac.uk/exeter (openrepository)</TestDescription>
@@ -1037,7 +1038,7 @@
 	</URLTest>
 	<URLTest id="url_169">
 		<TestDescription>Scraping test for publications from ingentaconnect.com</TestDescription>
-		<URL>http://www.ingentaconnect.com/content/ind/ijtmkt/2010/00000005/00000001/art00004</URL>
+		<URL>http://www.ingentaconnect.com/content/mcb/026/2007/00000026/00000004/art00005</URL>
 		<BibFile>IngentaconnectScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper</Scraper>
 	</URLTest>
@@ -1341,7 +1342,7 @@
 	</URLTest>
 	<URLTest id="url_218">
 		<TestDescription>test for pages with coins (multiple authors)</TestDescription>
-		<URL>http://www.mendeley.com/research/sentiment-analysis-twitter-data-1/</URL>
+		<URL>http://www.mendeley.com/research/active-learning-overcome-sample-selection-bias-application-photometric-variable-star-classification/</URL>
 		<BibFile>CoinsScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.CoinsScraper</Scraper>
 	</URLTest>
@@ -1621,7 +1622,7 @@
 	</URLTest>
 	<URLTest id="url_264">
 		<TestDescription>HematologyLibraryScraper Test</TestDescription>
-		<URL>http://bloodjournal.hematologylibrary.org/content/113/23/5703</URL>
+		<URL>http://asheducationbook.hematologylibrary.org/content/2013/1/1.full</URL>
 		<BibFile>HematologyLibraryScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.hematologylibrary.HematologyLibraryScraper</Scraper>
 	</URLTest>
