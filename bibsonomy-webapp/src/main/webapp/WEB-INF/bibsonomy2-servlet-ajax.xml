@@ -194,7 +194,7 @@
 								<value>discussionItem.anonymous</value>
 								<value>discussionItem.parentHash</value>
 								<value>abstractGrouping</value>
-	  							<value>groups</value>
+								<value>groups</value>
 							</list>
 						</property>
 					</bean>
@@ -212,7 +212,7 @@
 								<value>discussionItem.hash</value>
 								<value>discussionItem.anonymous</value>
 								<value>abstractGrouping</value>
-	  							<value>groups</value>
+								<value>groups</value>
 							</list>
 						</property>
 					</bean>
@@ -245,7 +245,7 @@
 	</bean>
 
 	<bean id="generalAjaxController" class="org.bibsonomy.webapp.controller.ajax.GeneralAjaxController" scope="request" parent="ajaxController" />	
-	<bean id="editGoldstandardRelationController" class="org.bibsonomy.webapp.controller.ajax.EditGoldstandardRelationController" parent="ajaxController" scope="request" />å
+	<bean id="editGoldstandardRelationController" class="org.bibsonomy.webapp.controller.ajax.EditGoldstandardRelationController" parent="ajaxController" scope="request" />
 	<bean id="commentController" class="org.bibsonomy.webapp.controller.ajax.CommentAjaxController" parent="ajaxController" scope="request" />
 	
 	
@@ -266,7 +266,7 @@
 	<!-- controller for handling recommendation requests -->
 	<bean id="ajaxTagsRecommendationsController" class="org.bibsonomy.webapp.controller.ajax.RecommendationsAjaxController" abstract="true" parent="ajaxController">
 		<!-- used for accessing spam informations -->
-		<property name="adminLogic" ref="adminLogic"/>  
+		<property name="adminLogic" ref="adminLogic"/>
 		<property name="recommender"	ref="multiplexingTagRecommender" />
 		<!-- tag recommender used for spammer -->
 		<property name="spamTagRecommender" ref="spamTagRecommender" />

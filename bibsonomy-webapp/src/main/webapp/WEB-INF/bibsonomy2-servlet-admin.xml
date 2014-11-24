@@ -174,14 +174,14 @@
 	<bean id="adminRecommenderController" class="org.bibsonomy.webapp.controller.admin.AdminRecommenderController" scope="request">
 		<property name="recommenderMap">
 			<util:map key-type="java.lang.Class">
-				<entry key="recommender.impl.model.RecommendedTag" value-ref="multiplexingTagRecommender" />
-				<entry key="recommender.impl.model.RecommendedItem" value-ref="multiplexingBibTexRecommender" />
+				<entry key="org.bibsonomy.recommender.tag.model.RecommendedTag" value-ref="multiplexingTagRecommender" />
+				<entry key="org.bibsonomy.recommender.item.model.RecommendedPost" value-ref="multiplexingBibTexRecommender" />
 			</util:map>
 		</property>
 		<property name="recommenderLogicMap">
 			<util:map key-type="java.lang.Class">
-				<entry key="recommender.impl.model.RecommendedTag" value-ref="tagRecommenderLogic" />
-				<entry key="recommender.impl.model.RecommendedItem" value-ref="bibtexRecommenderLogic" />
+				<entry key="org.bibsonomy.recommender.tag.model.RecommendedTag" value-ref="tagRecommenderLogic" />
+				<entry key="org.bibsonomy.recommender.item.model.RecommendedPost" value-ref="bibtexRecommenderLogic" />
 			</util:map>
 		</property>
 	</bean>
