@@ -123,6 +123,7 @@ public class Logging extends AbstractDatabasePlugin {
     @Override
     public void onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session) {
         final BookmarkParam param = new BookmarkParam();
+        param.setNewContentId(newContentId);
         param.setRequestedContentId(contentId);
         this.insert("logBookmark", param, session);
 

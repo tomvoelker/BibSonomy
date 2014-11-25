@@ -693,7 +693,7 @@ public class Functions {
 		
 		if (!cleanBibtex(newBmPost.getDescription()).equals(cleanBibtex(oldBmPost.getDescription()))){
 			tmp = compareString(newBmPost.getDescription(),oldBmPost.getDescription());
-			DiffArray.put("url",tmp);
+			DiffArray.put("description",tmp);
 		}
 		return DiffArray;
 	}

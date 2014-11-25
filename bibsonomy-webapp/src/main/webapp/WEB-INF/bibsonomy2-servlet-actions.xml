@@ -463,7 +463,7 @@
 								<value>compareVersion</value>
 								<value>differentEntryKeys</value>
 								<value>differentEntryValues</value>
-								<value>historyPost</value>
+								
 								
 								<!-- used for fileHandling -->
 								<value>fileName</value>
@@ -722,8 +722,10 @@
 		<value>recaptcha_response_field</value>
 		<value>recaptcha_challenge_field</value>
 		<value>editBeforeSaving</value>
-		
 		<value>saveAndRate</value>
+		
+		<value>differentEntryKeys</value>
+		<value>differentEntryValues</value>
 	</util:list>
 
 	<!-- publication request parameters -->

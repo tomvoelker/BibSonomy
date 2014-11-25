@@ -468,6 +468,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		/*
 		 * return the view
 		 */
+		
 		return this.getPostView();
 	}
 
@@ -506,7 +507,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			
 			if(present(command.getDifferentEntryValues())){
 				List <String> diffEntryValList = new ArrayList<String>();//
-				Collections.addAll(diffEntryValList, command.getDifferentEntryValues().split("//"));
+				Collections.addAll(diffEntryValList, command.getDifferentEntryValues().split("<8>"));
 				List <String> diffEntryKeyList = command.getDifferentEntryKeys();
 				Class<? extends Resource> resourceType = dbPost.getResource().getClass();
 				if(BibTex.class.equals(resourceType)){

@@ -63,7 +63,7 @@
 		</c:url>
 		<fmt:message key="bookmark.actions.memento" var="mementoTitle" />
 		<a class="${buttonClasses}" href="${mementoLink}" rel="nofollow" title="${mementoTitle}">
-			<span class="fa fa-history"><!--  --></span>
+			<span class="glyphicon glyphicon-time"><!--  --></span><!-- fa fa-history is already used as history image. please choose another image-->
 		</a>
 		
 
@@ -115,7 +115,7 @@
 				<fmt:message key="bookmark.actions.posthistory.title" var="postHistoryTitle" />
 				<!-- we need to send the resource type, in order to call the appropriate view later (HistoryBM or HistoryBib) -->
 				<a class="${buttonClasses}" href="/history/${rscType}/${post.resource.intraHash}/${post.user.name}" title="${postHistoryTitle}">
-					<span class="glyphicon glyphicon-time"><!--  --></span>
+					<span class="fa fa-history"><!--  --></span>
 				</a>
 			</c:when>
 			<c:otherwise>

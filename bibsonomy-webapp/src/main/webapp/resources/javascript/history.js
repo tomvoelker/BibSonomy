@@ -22,12 +22,27 @@ $(document).ready(function () {
 			$(this).parents('tr').next().find('div[id=restore_alert_btn]').toggleClass('hidden', false);
 	});
 
+	
+	function submitAsPublication(){
+		document.getElementById("history").action="/editPublication";
+		submitForm($(this).parents('td'));
+	}
+
 	$('.submitBtn').click(function() {
+		var isPub = $('input[name = isPub]').val();
+
+		if(isPub=="true"){
+			document.getElementById("history").action="/editPublication";
+		}
+		else{
+			document.getElementById("history").action="/editBookmark";
+		}
 		submitForm($(this).parents('td'));
 	});
 
 
 });
+
 
 function compare_to_previous(element){
 	
@@ -69,6 +84,8 @@ function compare_to_current(element){
 function show_hide_Checkboxes(element,invisible){
 	element.find('input[id=CurrEntryCheckbox]').toggleClass('invisible', invisible);
 }  
+
+
 function submitForm(element){
 	var a=[];
 
@@ -90,14 +107,14 @@ function submitForm(element){
 	$(element).find('input[name=diffEntryKey]').each(function() {
 		var b = a.pop();
 		if(b){
+			
 			diffEntryKey[i] = $(this).val();
 			entryValue = $(this).siblings('input[name=diffEntryValue]').val();
 			if(entryValue==""){
 				entryValue=" ";
 			}
-			diffEntryValue +=(entryValue+"//");
+			diffEntryValue +=(entryValue+"<8>");
 			i++;
-			alert(diffEntryValue);
 		}
 	});
 	$('input[name=differentEntryKeys]').val(diffEntryKey);
