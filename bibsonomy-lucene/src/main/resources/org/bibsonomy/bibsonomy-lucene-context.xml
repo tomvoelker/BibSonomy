@@ -23,60 +23,75 @@
 		factory-method="forName">
 		<constructor-arg value="org.bibsonomy.model.GoldStandardPublication" />
 	</bean>
-	
-	<bean id ="sharedIndexUpdatePlugin" class = "org.bibsonomy.es.SharedIndexUpdatePlugin"/>
 
-	<bean id="initiateIndexUpdater" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
-		<property name="condition" ref= "esClusterNamePresent"/>
+
+	<bean id="initiateIndexUpdater"
+		class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition" ref="esClusterNamePresent" />
 		<lookup-method name="produceSucessBean" bean="initiateIndexUpdatePlugin" />
 		<lookup-method name="produceFailureBean" bean="dummySamlEntryPoint" />
 	</bean>
-	
-	<bean id="initiateESClient" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
-		<property name="condition" ref= "esClusterNamePresent"/>
+
+	<bean id="initiateESClient"
+		class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition" ref="esClusterNamePresent" />
 		<lookup-method name="produceSucessBean" bean="esTransportClient" />
 		<lookup-method name="produceFailureBean" bean="dummySamlEntryPoint" />
 	</bean>
-	<bean id="initiateEsResourceSearch" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
-		<property name="condition" ref= "esClusterNamePresent"/>
+	<bean id="initiateEsResourceSearch"
+		class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition" ref="esClusterNamePresent" />
 		<lookup-method name="produceSucessBean" bean="esResourceSearch" />
 		<lookup-method name="produceFailureBean" bean="dummySamlEntryPoint" />
 	</bean>
-	<bean id="initiateSharedResourceIndexGenerator" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
-		<property name="condition" ref= "esClusterNamePresent"/>
+	<bean id="initiateSharedResourceIndexGenerator"
+		class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition" ref="esClusterNamePresent" />
 		<lookup-method name="produceSucessBean" bean="sharedResourceIndexGenerator" />
 		<lookup-method name="produceFailureBean" bean="dummySamlEntryPoint" />
 	</bean>
-	<bean id="initiateSharedResourceIndexUpdater" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
-		<property name="condition" ref= "esClusterNamePresent"/>
+	<bean id="initiateSharedResourceIndexUpdater"
+		class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition" ref="esClusterNamePresent" />
 		<lookup-method name="produceSucessBean" bean="sharedResourceIndexUpdater" />
 		<lookup-method name="produceFailureBean" bean="dummySamlEntryPoint" />
 	</bean>
-	
-	<bean id="esClusterNamePresent" class="org.bibsonomy.webapp.util.spring.condition.NonEmptyStringCondition">
+
+	<bean id="esClusterNamePresent"
+		class="org.bibsonomy.webapp.util.spring.condition.NonEmptyStringCondition">
 		<property name="value" value="${es.cluster.name}" />
 	</bean>
-	
-	<bean id="initiateIndexUpdatePlugin" class="org.bibsonomy.lucene.index.manager.LuceneResourceManager">
-		<property name="plugin" ref="sharedIndexUpdatePlugin"/>
+
+	<bean id="initiateIndexUpdatePlugin"
+		class="org.bibsonomy.lucene.index.manager.LuceneResourceManager"
+		lazy-init="true">
+		<property name="plugin" ref="sharedIndexUpdatePlugin" />
 	</bean>
-	
+
+	<bean id="sharedIndexUpdatePlugin" class="org.bibsonomy.es.SharedIndexUpdatePlugin"
+		lazy-init="true" />
+
+
 	<!-- <bean id= "ESNodeClient" class= "org.bibsonomy.es.ESNodeClient"/> -->
 
-	<bean id="esTransportClient" class="org.bibsonomy.es.ESTransportClient" />
+	<bean id="esTransportClient" class="org.bibsonomy.es.ESTransportClient"
+		lazy-init="true" />
 
-	<bean id="esResourceSearch" class="org.bibsonomy.es.EsResourceSearch">
+	<bean id="esResourceSearch" class="org.bibsonomy.es.EsResourceSearch"
+		lazy-init="true">
 		<property name="esClient" ref="esTransportClient" />
 	</bean>
-	<bean id="sharedResourceIndexGenerator" class="org.bibsonomy.es.GenerateSharedResourceIndex">
+	<bean id="sharedResourceIndexGenerator" class="org.bibsonomy.es.GenerateSharedResourceIndex"
+		lazy-init="true">
 		<property name="esClient" ref="esTransportClient" />
 	</bean>
-	<bean id="sharedResourceIndexUpdater" class="org.bibsonomy.es.SharedResourceIndexUpdater">
+	<bean id="sharedResourceIndexUpdater" class="org.bibsonomy.es.SharedResourceIndexUpdater"
+		lazy-init="true">
 		<property name="esClient" ref="esTransportClient" />
 	</bean>
 
-	
-	
+
+
 	<!--+ | lucene post converter + -->
 	<!-- abstract converter -->
 	<bean id="lucenePostConverter"
