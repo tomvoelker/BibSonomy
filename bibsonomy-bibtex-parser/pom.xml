@@ -15,7 +15,12 @@
 		<artifactId>bibsonomy</artifactId>
 		<version>3.0.0</version>
 	</parent>
-
+	<licenses>
+		<license>
+			<name>GNU General Public License, Version 3 or later</name>
+			<url>http://www.gnu.org/licenses/gpl.html</url>
+		</license>
+	</licenses>
 	<dependencies>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -56,7 +61,8 @@
 				<configuration>
 					<excludes>
 						<exclude>src/main/java/bibtex/**</exclude>
-						<exclude>src/main/resources/bibtex/**</exclude>
+						<exclude>src/test/resources/**</exclude>
+						<exclude>src/main/resources/**</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

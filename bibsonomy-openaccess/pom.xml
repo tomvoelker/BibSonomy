@@ -14,7 +14,12 @@
 		<artifactId>bibsonomy</artifactId>
 		<version>3.0.0</version>
 	</parent>
-
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License, Version 3 or later</name>
+			<url>http://www.gnu.org/licenses/lgpl.html</url>
+		</license>
+	</licenses>
 	<dependencies>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -91,9 +96,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<generatePackage>
-						de.unikassel.puma.openaccess.sword.renderer.xml
-					</generatePackage>
+					<generatePackage>de.unikassel.puma.openaccess.sword.renderer.xml</generatePackage>
 					<extension>true</extension>
 					<episodes>
 						<episode>

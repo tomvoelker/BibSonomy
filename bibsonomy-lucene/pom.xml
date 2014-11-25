@@ -10,11 +10,15 @@
 		<artifactId>bibsonomy</artifactId>
 		<version>3.0.0</version>
 	</parent>
-	
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License, Version 3 or later</name>
+			<url>http://www.gnu.org/licenses/lgpl.html</url>
+		</license>
+	</licenses>
 	<properties>
 		<lucene.version>3.4.0</lucene.version>
 	</properties>
-	
 	<dependencies>
 		<dependency>
 			<groupId>commons-lang</groupId>
