@@ -47,7 +47,7 @@
 			<div id="citation-styles" class="tab-content">
 				<div class="tab-pane ${command.selTab == 0 ? 'active' : ''}" id="selTab0">
 					<!-- manual posting -->
-					<div id="suggestionBox" style="position:absolute; display:none;"><!--  --></div>
+					<div id="suggestionBox"><!--  --></div>
 					<form:form cssClass="form-horizontal" id="postForm" action="/editPublication" method="post">
 						<fieldset>
 							<legend><fmt:message key="post_bibtex.manual.heading"/></legend>
