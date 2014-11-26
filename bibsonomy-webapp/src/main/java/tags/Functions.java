@@ -617,7 +617,7 @@ public class Functions {
 					a= Bib.getEditor();
 					for(PersonName pn:a){
 						val+=(present(pn.getFirstName())? pn.getFirstName() : "")+
-							(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
+							(present(pn.getLastName())? pn.getLastName() : "")+"; ";
 					}
 					//val = Bib.getEditor().toString();
 				}
