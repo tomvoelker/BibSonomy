@@ -32,9 +32,10 @@
 		| bookmark posts
 		|
 		+-->
-	<c:if test="${not empty command.bookmark.list}">
+	<c:set var="bookmarkList" value="${command.bookmark.list}" />
+	<c:if test="${not empty bookmarkList}">
 	
-		<c:forEach var="post" items="${command.bookmark.list}">
+		<c:forEach var="post" items="${bookmarkList}">
 			<!--+
 				| alternating background color
 			 	+-->
@@ -43,7 +44,7 @@
 			<!--+
 				| render one post 
 				+-->
-			<rc:post post="${post}" otherPostsUrlPrefix="/url/" loginUserName="${command.context.loginUser.name}" additionalItemClasses="${additionalItemClasses}">
+			<rc:post post="${post}" resourceType="${command.bookmark.resourcetype}" otherPostsUrlPrefix="/url/" loginUserName="${command.context.loginUser.name}" additionalItemClasses="${additionalItemClasses}">
 				<jsp:attribute name="title">     <bm:title      post="${post}"/></jsp:attribute>
 				<jsp:attribute name="desc">	     <bm:desc       post="${post}"/></jsp:attribute>
 				<jsp:attribute name="actions">   <bm:actions    post="${post}" loginUserName="${command.context.loginUser.name}"/></jsp:attribute>
@@ -68,7 +69,7 @@
 			<!--+
 				| render one post 
 				+-->
-			<rc:post post="${post}" otherPostsUrlPrefix="/bibtex/" loginUserName="${command.context.loginUser.name}" additionalItemClasses="${additionalItemClasses}">
+			<rc:post post="${post}" resourceType="${command.bibtex.resourcetype}" otherPostsUrlPrefix="/bibtex/" loginUserName="${command.context.loginUser.name}" additionalItemClasses="${additionalItemClasses}">
 				<jsp:attribute name="title">
 					<c:choose>
 						<c:when test="${empty post.user.name}"><bibgs:title post="${post}"/></c:when>
