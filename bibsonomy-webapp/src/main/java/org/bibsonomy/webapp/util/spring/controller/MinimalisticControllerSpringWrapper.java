@@ -158,6 +158,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 	@SuppressWarnings("unchecked")
 	@Override
 	protected ModelAndView handleRequestInternal(final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+		log.debug("Processing /" + request.getRequestURI() + "?" + request.getQueryString());
 		final ApplicationContext applicationContext = this.getApplicationContext();
 		applicationContext.getBean("requestLogic", RequestLogic.class).setRequest(request); // hack but thats springs fault
 		applicationContext.getBean("responseLogic", ResponseLogic.class).setResponse(response); // hack but thats springs fault
@@ -277,7 +278,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		 */
 		model.putAll(errors.getModel());
 		
-		log.debug("Returning model and view.");
+		log.debug("Returning model and view for /" + request.getRequestURI() + "?" + request.getQueryString());
 		
 		/*
 		 * If the view is already a Spring view, use it directly.
