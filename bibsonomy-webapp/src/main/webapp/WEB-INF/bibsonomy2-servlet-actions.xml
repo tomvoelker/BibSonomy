@@ -516,12 +516,6 @@
 						</property>
 					</bean>
 				</entry>
-<!-- 				<entry key="/diffBookmark"> -->
-<!-- 					<bean parent="controllerBase"> -->
-<!-- 						<property name="controllerBeanName" value="diffBookmarkController"/> -->
-<!-- 						<property name="allowedFields" ref="bookmarkRequestParameters"/> -->
-<!-- 					</bean> -->
-<!-- 				</entry> -->
 
 				<!-- 
 					 | ############################### edit tags
@@ -799,6 +793,9 @@
 		<value>skipDummyValues</value>
 		
 		<value>saveAndRate</value>
+		
+		<value>differentEntryKeys</value>
+		<value>differentEntryValues</value>
 	</util:list>
 
 	<!--  #################### controller #################### -->
@@ -824,10 +821,6 @@
 		</property>
 	</bean>
 	
-	
-<!-- 	<bean id="diffBookmarkController" class="org.bibsonomy.webapp.controller.actions.DiffBookmarkMockupController" scope="request" parent="editPostController" /> -->
-
-<!-- 	<bean id="diffPublicationController" class="org.bibsonomy.webapp.controller.actions.DiffPublicationController"	scope="request" parent="resourceController" />	 -->
 	
 	<!-- Handles the edit publication process -->
 	<bean id="editPublicationController" class="org.bibsonomy.webapp.controller.actions.EditPublicationController" scope="request" parent="editPostController">

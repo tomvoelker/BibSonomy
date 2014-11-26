@@ -105,15 +105,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		command.setPost(new Post<RESOURCE>());
 		command.getPost().setResource(this.instantiateResource());
-
-		// initalize comparePost & resource for diff
-		 
-		 command.setNewestPost(new Post<RESOURCE>());
-		 command.getNewestPost().setResource(this.instantiateResource());
-		 
-		 command.setDifferentEntryKeys(new ArrayList<String>());
-	//	 command.setDifferentEntryValues(new ArrayList<Object>());
-		 
+		
+		// history
+		command.setDifferentEntryKeys(new ArrayList<String>());
 		 
 		/*
 		 * set default values.
@@ -205,146 +199,15 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		this.initPost(command, post, loginUser);
 
-		/*
-		 * decide, what to do
-		 */
 		final String intraHashToUpdate = command.getIntraHashToUpdate();
 
-	
-		if (present(intraHashToUpdate)) {
-				
+		if (present(intraHashToUpdate)) {	
 			log.debug("intra hash to update found -> handling update of existing post");
 			return this.handleUpdatePost(command, context, loginUser, post, intraHashToUpdate);
 		}
 
 		log.debug("no intra hash given -> new post");
 		return this.handleCreatePost(command, context, loginUser, post);
-	}
-	protected void replaceResourceFieldsPub(BibTex bibResource, String key, String value){
-		switch(key){
-			case "entrytype":
-				bibResource.setEntrytype(value);
-				break;
-			case "title":
-				bibResource.setTitle(value);
-				break;
-			case "author":
-				List <String> authors = new ArrayList<String>();//
-				Collections.addAll(authors, value.split("; "));
-				
-				List <PersonName> authors_list = new ArrayList<PersonName>();//
-				PersonName a;
-				String[] first_last_name;
-				for(int i=0;i<authors.size();i++){
-					first_last_name = authors.get(i).split(",");
-					a = new PersonName(first_last_name[0],first_last_name[1]);
-					authors_list.add(a);
-				}
-				bibResource.setAuthor(authors_list);
-				break;
-			case "editor":
-				List <String> editors = new ArrayList<String>();//
-				Collections.addAll(editors, value.split("; "));
-				
-				List <PersonName> editors_list = new ArrayList<PersonName>();//
-				PersonName b;
-				String[] first_last_Name;
-				for(int i=0;i<editors.size();i++){
-					first_last_Name = editors.get(i).split(",");
-					b = new PersonName(first_last_Name[0],first_last_Name[1]);
-					editors_list.add(b);
-				}
-				bibResource.setAuthor(editors_list);
-				break;
-			case "year":
-				bibResource.setYear(value);
-				break;
-			case "booktitle":
-				bibResource.setBooktitle(value);
-				break;
-			case "journal":
-				bibResource.setJournal(value);
-				break;
-			case "volume":
-				bibResource.setVolume(value);
-				break;
-			case "number":
-				bibResource.setNumber(value);
-				break;
-			case "pages":
-				bibResource.setPages(value);
-				break;
-			case "month":
-				bibResource.setMonth(value);
-				break;
-			case "day":
-				bibResource.setDay(value);
-				break;
-			case "publisher":
-				bibResource.setPublisher(value);
-				break;
-			case "address":
-				bibResource.setAddress(value);
-				break;
-			case "edition":
-				bibResource.setEdition(value);
-				break;
-			case "chapter":
-				bibResource.setChapter(value);
-				break;
-			case "url":
-				bibResource.setUrl(value);
-				break;
-			case "key":
-				bibResource.setKey(value);
-				break;
-			case "howpublished":
-				bibResource.setHowpublished(value);
-				break;
-			case "institution":
-				bibResource.setInstitution(value);
-				break;
-			case "organization":
-				bibResource.setOrganization(value);
-				break;
-			case "school":
-				bibResource.setSchool(value);
-				break;
-			case "series":
-				bibResource.setSeries(value);
-				break;
-			case "crossref":
-				bibResource.setCrossref(value);
-				break;
-			case "misc":
-				bibResource.setMisc(value);
-				break;
-			case "bibtexAbstract":
-				bibResource.setAbstract(value);
-				break;
-			case "privnote":
-				bibResource.setPrivnote(value);
-				break;
-			case "annote":
-				bibResource.setAnnote(value);
-				break;
-			case "note":
-				bibResource.setNote(value);
-				break;
-			}
-	}
-	
-	protected void replaceResourceFieldsBm(final Post post, String key, String value){
-		switch(key){
-			case "title":
-				post.getResource().setTitle(value);
-				break;
-			case "url":
-				((Bookmark)post.getResource()).setUrl(value);
-				break;
-			case "description":
-				post.setDescription(value);
-			}
 	}
 	
 	
@@ -504,11 +367,19 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				this.errors.reject("error.post.notfound", "The post with the given intra hash could not be found.");
 				return Views.ERROR;
 			}
-			
+			/**
+			 * if the controller is called from history page*/
 			if(present(command.getDifferentEntryValues())){
-				List <String> diffEntryValList = new ArrayList<String>();//
+				
+				List <String> diffEntryValList = new ArrayList<String>();
+				/**
+				 * values which should be restored are stored in a single string and are delimited by
+				 * <8>. for more information ref. History.js */
 				Collections.addAll(diffEntryValList, command.getDifferentEntryValues().split("<8>"));
+				
 				List <String> diffEntryKeyList = command.getDifferentEntryKeys();
+				/**
+				 * which resource type are we dealing with?*/
 				Class<? extends Resource> resourceType = dbPost.getResource().getClass();
 				if(BibTex.class.equals(resourceType)){
 					final BibTex bibResource = (BibTex) dbPost.getResource();
@@ -523,8 +394,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 						replaceResourceFieldsBm(dbPost,diffEntryKeyList.get(i), diffEntryValList.get(i));
 					}
 				}
-				
-				
 			}
 
 			/*
@@ -597,6 +466,155 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * send final redirect
 		 */
 		return this.finalRedirect(command, post, loginUserName);
+	}
+	/** this function changes the resource fields according to key-value.
+	 * key decides for the field and value decides for the new value of the field
+	 * @param bibResource
+	 * @param key
+	 * @param value
+	 */
+	protected void replaceResourceFieldsPub(BibTex bibResource, String key, String value){
+		switch(key){
+			case "entrytype":
+				bibResource.setEntrytype(value);
+				break;
+			case "title":
+				bibResource.setTitle(value);
+				break;
+			case "author":
+				/**
+				 * if key is author, value contains several authors 'name,lastname' delimited by ";" 
+				 * */
+				List <String> authors = new ArrayList<String>();
+				Collections.addAll(authors, value.split("; "));
+				
+				/**
+				 * convert string to PersonName object*/
+				List <PersonName> authors_list = new ArrayList<PersonName>();
+				PersonName a;
+				String[] first_last_name;
+				for(int i=0;i<authors.size();i++){
+					first_last_name = authors.get(i).split(" ");
+					a = new PersonName(first_last_name[0],first_last_name[1]);
+					authors_list.add(a);
+				}
+				bibResource.setAuthor(authors_list);
+				break;
+			case "editor":
+				/**
+				 * if key is author, value contains several authors names, delimited by ";" 
+				 * */
+				List <String> editors = new ArrayList<String>();
+				Collections.addAll(editors, value.split("; "));
+
+				/**
+				 * convert string to PersonName object*/
+				List <PersonName> editors_list = new ArrayList<PersonName>();
+				PersonName b;
+				String[] first_last_Name;
+				for(int i=0;i<editors.size();i++){
+					first_last_Name = editors.get(i).split(" ");
+					b = new PersonName(first_last_Name[0],first_last_Name[1]);
+					editors_list.add(b);
+				}
+				bibResource.setEditor(editors_list);
+				//bibResource.setAuthor(editors_list);
+				break;
+			case "year":
+				bibResource.setYear(value);
+				break;
+			case "booktitle":
+				bibResource.setBooktitle(value);
+				break;
+			case "journal":
+				bibResource.setJournal(value);
+				break;
+			case "volume":
+				bibResource.setVolume(value);
+				break;
+			case "number":
+				bibResource.setNumber(value);
+				break;
+			case "pages":
+				bibResource.setPages(value);
+				break;
+			case "month":
+				bibResource.setMonth(value);
+				break;
+			case "day":
+				bibResource.setDay(value);
+				break;
+			case "publisher":
+				bibResource.setPublisher(value);
+				break;
+			case "address":
+				bibResource.setAddress(value);
+				break;
+			case "edition":
+				bibResource.setEdition(value);
+				break;
+			case "chapter":
+				bibResource.setChapter(value);
+				break;
+			case "url":
+				bibResource.setUrl(value);
+				break;
+			case "key":
+				bibResource.setKey(value);
+				break;
+			case "howpublished":
+				bibResource.setHowpublished(value);
+				break;
+			case "institution":
+				bibResource.setInstitution(value);
+				break;
+			case "organization":
+				bibResource.setOrganization(value);
+				break;
+			case "school":
+				bibResource.setSchool(value);
+				break;
+			case "series":
+				bibResource.setSeries(value);
+				break;
+			case "crossref":
+				bibResource.setCrossref(value);
+				break;
+			case "misc":
+				bibResource.setMisc(value);
+				break;
+			case "bibtexAbstract":
+				bibResource.setAbstract(value);
+				break;
+			case "privnote":
+				bibResource.setPrivnote(value);
+				break;
+			case "annote":
+				bibResource.setAnnote(value);
+				break;
+			case "note":
+				bibResource.setNote(value);
+				break;
+			}
+	}
+	
+	/** this function changes the resource/post fields according to key-value.
+	 * key decides for the field and value decides for the new value of the field
+	 * @param post
+	 * @param key
+	 * @param value
+	 */
+	protected void replaceResourceFieldsBm(final Post post, String key, String value){
+		switch(key){
+			case "title":
+				post.getResource().setTitle(value);
+				break;
+			case "url":
+				((Bookmark)post.getResource()).setUrl(value);
+				break;
+			case "description":
+				post.setDescription(value);
+			}
 	}
 
 	/**

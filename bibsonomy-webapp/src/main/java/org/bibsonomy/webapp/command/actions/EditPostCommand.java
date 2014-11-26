@@ -117,10 +117,8 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 */
 	private String saveAndRate;
 	
-	private Post<RESOURCE> newestPost;
 	private List<String> differentEntryKeys;
 	private String differentEntryValues;
-	
 
 
 	/**
@@ -494,20 +492,6 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
     public void setComparePost(final Post<RESOURCE> postDiff) {
         this.comparePost = postDiff;
     }
-
-	/**
-	 * @return the newestPost
-	 */
-	public Post<RESOURCE> getNewestPost() {
-		return this.newestPost;
-	}
-
-	/**
-	 * @param newestPost the newestPost to set
-	 */
-	public void setNewestPost(Post<RESOURCE> newestPost) {
-		this.newestPost = newestPost;
-	}
 
 	/**
 	 * @return the differentEntryKeys

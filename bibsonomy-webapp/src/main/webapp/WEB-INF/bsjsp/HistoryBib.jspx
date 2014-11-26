@@ -60,7 +60,7 @@
 				<rc:history listView="${command.bibtex}"
 						loginUserName="${command.context.loginUser.name}"
 						disableListNavigation="${disableListNavigation}"
-						requPath="${requPath}" isPub="${true}">				
+						requPath="${requPath}" isPub="true">				
 				</rc:history>
 			</div>
 		</div>

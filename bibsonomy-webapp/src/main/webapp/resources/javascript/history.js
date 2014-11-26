@@ -1,10 +1,17 @@
 var diffMap;
 $(document).ready(function () {
-	//$('td[id = postDiffNumCurr]').hide();
+	
+	/**
+	 * comparison to the current version is by default hidden, 
+	 * it will be visible on user select. */
 	$('td[id = postDiffCurr]').hide();
 	
+	/**
+	 * Select option is by default: 'previous version'*/
 	$('select[id = preCurrSelector]').find('option:eq(0)').prop("selected", true);
 
+	/**
+	 * if selector's value changes*/
 	$('select[id = preCurrSelector]').change(function() {
 		if($(this).val() == 0) {
 			compare_to_previous($(this));
@@ -14,33 +21,48 @@ $(document).ready(function () {
 		}
 	});
 
-	/*
-	 * if it is a button, this function should be changed to onclick()**/
+	/**
+	 * if restore button is clicked:*/
 	$('a[id = restoreBtnEnabled]').click(function() {	
-			show_hide_Checkboxes($(this).parents('tr').next().find('.postDiffCurr'),false);//invisible:false
-			$(this).parents('tr').next().find('div[id=restore_alert_btn]').toggleClass('invisible', false);
-			$(this).parents('tr').next().find('div[id=restore_alert_btn]').toggleClass('hidden', false);
+		show_hide_Checkboxes($(this).parents('tr').next().find('.postDiffCurr'),false);
+		$(this).parents('tr').next().find('div[id=restore_alert_btn]').toggleClass('invisible', false);
+		$(this).parents('tr').next().find('div[id=restore_alert_btn]').toggleClass('hidden', false);
 	});
-
-	
-	function submitAsPublication(){
-		document.getElementById("history").action="/editPublication";
-		submitForm($(this).parents('td'));
-	}
 
 	$('.submitBtn').click(function() {
 		var isPub = $('input[name = isPub]').val();
-
+		var isCommunityPost = $('input[name = isCommunityPost]').val();
+		//alert("isPub: "+isPub+" isCP: "+isCommunityPost);
+		/**
+		 * Here we have four cases:
+		 * publication and community post, we should call editGoldstandardPublicationController
+		 * publication, we should call editPublicationController
+		 * bookmark and community post, we should call editGoldstandardBookmarkController
+		 * bookmark, we should call editBookmarkController
+		 */
 		if(isPub=="true"){
-			document.getElementById("history").action="/editPublication";
+			if(isCommunityPost=="true"){
+				//alert('bib+gs');
+				document.getElementById("history").action="/editGoldStandardPublication";
+			}
+			else{
+				//alert('bib');
+				document.getElementById("history").action="/editPublication";
+			}
 		}
 		else{
-			document.getElementById("history").action="/editBookmark";
+			if(isCommunityPost=="true"){
+				//alert('bm+gs');
+				document.getElementById("history").action="/editGoldStandardBookmark";
+			}
+			else{
+				//alert('bm');
+				document.getElementById("history").action="/editBookmark";
+			}
 		}
+		
 		submitForm($(this).parents('td'));
 	});
-
-
 });
 
 
@@ -81,6 +103,8 @@ function compare_to_current(element){
 
 }
 
+/**
+ * show or hides checkboxes if restore button is clicked or not.*/
 function show_hide_Checkboxes(element,invisible){
 	element.find('input[id=CurrEntryCheckbox]').toggleClass('invisible', invisible);
 }  
@@ -89,6 +113,8 @@ function show_hide_Checkboxes(element,invisible){
 function submitForm(element){
 	var a=[];
 
+	/**
+	 * finds checked check boxes*/
 	$(element).find('input[id=CurrEntryCheckbox]').each(function() {
 		var checked = $(this).is(':checked');
 		if(checked){
@@ -104,15 +130,25 @@ function submitForm(element){
 	var diffEntryValue="";
 	var i=0;
 	var entryValue="";
+	
+	/**
+	 * for each changed field:*/
 	$(element).find('input[name=diffEntryKey]').each(function() {
 		var b = a.pop();
 		if(b){
-			
 			diffEntryKey[i] = $(this).val();
 			entryValue = $(this).siblings('input[name=diffEntryValue]').val();
+			/**
+			 * in some cases, user wants to restore an empty field, 
+			 * eg. current_year: 2014, revision_year(which is going to be restored):-- 
+			 * in such a case, we send a " " as value of the field to avoid nullPointerException*/
 			if(entryValue==""){
 				entryValue=" ";
 			}
+			/**
+			 * for some 'split(delimiter)' reason (eg. in author case), we cannot send an array of strings 
+			 * to the controller. A string of field values delimited by '<8>' will be 
+			 * sent to the controller and values will be splited there*/
 			diffEntryValue +=(entryValue+"<8>");
 			i++;
 		}

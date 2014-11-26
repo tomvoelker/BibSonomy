@@ -50,7 +50,7 @@ public class PostHistoryController <R extends Resource> extends SingleResourceLi
 		} else {
 			resourceType = Bookmark.class;
 		}
-		
+	
 		this.setList(command, resourceType, groupingEntity, requUser, null, longHash, null, filter, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
 		this.postProcessAndSortList(command, resourceType);
 

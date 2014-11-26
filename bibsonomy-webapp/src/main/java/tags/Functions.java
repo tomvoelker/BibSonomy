@@ -393,8 +393,11 @@ public class Functions {
 		final SpamStatus status = SpamStatus.getStatus(id);
 		return SpamStatus.isSpammer(status);
 	}
+	
 	/**
-	 * returns the number of different entries*/
+	 * returns a map of key-value:
+	 * new bibTex and the old one are compared according to each field,
+	 * keys are the fields which have different values*/
 	public static Map<String,String> DiffEntriesPub(BibTex newBib, BibTex oldBib) {
 		Map<String,String> DiffArray = new LinkedHashMap<String,String>();
 		String tmp;		
@@ -410,6 +413,9 @@ public class Functions {
 			String val1="";
 			List<PersonName> a= newBib.getAuthor();
 			
+			/**
+			 * the following loop, converts author's 'name,last name' to string
+			 * PersonName.toString()*/
 			for(PersonName pn:a){
 				val1+=(present(pn.getFirstName())? pn.getFirstName() : "")+
 					(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
@@ -573,6 +579,14 @@ public class Functions {
 		}
 		return DiffArray;
 	}
+	
+	
+	/** 
+	 * this function gets the field name (key) and returns the corresponding value.
+	 * @param key
+	 * @param Bib
+	 * @return value
+	 */
 	public static String getEntryValuePub(String key,BibTex Bib){
 		String val="";
 		switch(key){
@@ -584,9 +598,14 @@ public class Functions {
 				break;
 			case "author":
 				List<PersonName> a= Bib.getAuthor();
-				for(int i=0; i<a.size();i++){
-					val+=a.get(i).toString()+"; ";
+				for(PersonName pn:a){
+					val+=(present(pn.getFirstName())? pn.getFirstName() : "")+
+						(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
 				}
+
+	//			for(int i=0; i<a.size();i++){
+	//				val+=a.get(i).toString()+"; ";
+		//		}
 				break;
 			case "editor":
 				/*Nasim's comment:
@@ -595,9 +614,14 @@ public class Functions {
 				 * input check is added to post creating procedure, the following check can be removed.
 				 * **/
 				if(Bib.getEditor()!=null){
-					val = Bib.getEditor().toString();
-					
+					a= Bib.getEditor();
+					for(PersonName pn:a){
+						val+=(present(pn.getFirstName())? pn.getFirstName() : "")+
+							(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
+					}
+					//val = Bib.getEditor().toString();
 				}
+				
 				break;
 			case "year":
 				val = Bib.getYear();
@@ -678,6 +702,15 @@ public class Functions {
 		return val;
 	}
 
+	
+	/**
+	 * returns a map of key-value:
+	 * new post and the old one are compared according to each field,
+	 * keys are the fields which have different values
+	 * @param newBmPost
+	 * @param oldBmPost
+	 * @return key-value
+	 */
 	public static Map<String,String> DiffEntriesBm(Post newBmPost, Post oldBmPost) {
 		Map<String,String> DiffArray = new LinkedHashMap<String,String>();
 		String tmp;		
@@ -698,6 +731,11 @@ public class Functions {
 		return DiffArray;
 	}
 
+	/** this function gets the field name (key) and returns the corresponding value.
+	 * @param key
+	 * @param bmPost
+	 * @return value
+	 */
 	public static String getEntryValueBm(String key,Post bmPost){
 		String val="";
 		switch(key){
@@ -717,7 +755,7 @@ public class Functions {
 	/**
 	 * Compares two strings character-based. 
 	 * @param newValue and oldValue
-	 * @return The difference between two strings. (inserted: green, deleted: red, not_changed)
+	 * @return The difference between two strings. (inserted: green, deleted: red, not_changed: black)
 	 */
 	public static String compareString(String newValue, String oldValue) {
 		

@@ -59,7 +59,7 @@
 				<rc:history listView="${command.bookmark}"
 						loginUserName="${command.context.loginUser.name}"
 						disableListNavigation="${disableListNavigation}"
-						requPath="${requPath}" isPub="${false}">
+						requPath="${requPath}" isPub="false">
 				</rc:history>
 			</div>
 		</div>
