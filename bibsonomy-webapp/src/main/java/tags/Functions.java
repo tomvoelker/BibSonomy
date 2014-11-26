@@ -418,14 +418,14 @@ public class Functions {
 			 * PersonName.toString()*/
 			for(PersonName pn:a){
 				val1+=(present(pn.getFirstName())? pn.getFirstName() : "")+
-					(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
+					(present(pn.getLastName())? ", "+pn.getLastName() : "")+"; ";
 			}
 			
 			String val2="";
 			a= oldBib.getAuthor();
 			for(PersonName pn:a){
 				val2+=(present(pn.getFirstName())? pn.getFirstName() : "")+
-					(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
+					(present(pn.getLastName())? ", "+pn.getLastName() : "")+"; ";
 			}
 			
 			tmp = compareString(val1,val2);
@@ -600,7 +600,7 @@ public class Functions {
 				List<PersonName> a= Bib.getAuthor();
 				for(PersonName pn:a){
 					val+=(present(pn.getFirstName())? pn.getFirstName() : "")+
-						(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
+						(present(pn.getLastName())? ", "+pn.getLastName() : "")+"; ";
 				}
 
 	//			for(int i=0; i<a.size();i++){
