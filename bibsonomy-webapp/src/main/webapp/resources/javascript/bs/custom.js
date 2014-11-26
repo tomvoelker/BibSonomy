@@ -121,24 +121,23 @@ $(function() {
 		
 	};
 
-	$('input[data-role=tagsinput]').tagsinput(
-		{
-			confirmKeys : [ 32, 13 ], // space and return
-			trimValue : true,
-			freeInput : true,
-			tagClass : function(item) {
-				return isSystemTag(item) ? 'label label-warning' : 'label label-primary';
-			},
-			delimiter : ' '
-		});
+	$('.edit-tagsinput').tagsinput({
+		confirmKeys : [ 32, 13 ], // space and return
+		trimValue : true,
+		freeInput : true,
+		tagClass : function(item) {
+			return isSystemTag(item) ? 'label label-warning' : 'label label-primary';
+		},
+		delimiter : ' '
+	});
 
 	$('.edit-tags-form').submit(function(e) {
 		e.preventDefault();
 		var submitButton = $(this).find('button[type=submit]');
 		var url = $(this).attr('action');
 		var data = $(this).serialize();
-		var resourceHash = $(this).attr('data-resource-hash');
-		var tagField = $(this).find('input[data-role=tagsinput]');
+		var resourceHash = $(this).data('resource-hash');
+		var tagField = $(this).find('input.edit-tagsinput');
 		var tags = $(tagField).tagsinput('items');
 		var responseMsg = $(this).find('.response-msg');
 		
@@ -152,13 +151,13 @@ $(function() {
 			
 		}).done(function(result) { //on success
 			
-			//remove tags
+			// remove tags
 			$('#list-item-' + resourceHash + ' .ptags span.label').remove();
 			
-			//remove system tags
+			// remove system tags
 			$('#list-item-' + resourceHash + ' .hiddenSystemTag ul.tags li').remove();
 			
-			//append current tags
+			// append current tags
 			$(tags).each(function(i, v) {
 				if(!isSystemTag(v)) {
 					var item = '<span class="label label-grey"><a href="/user/' + encodeURIComponent(currUser) + '/' + encodeURIComponent(tags[i]) + '">' + tags[i] + '</a></span> ';
