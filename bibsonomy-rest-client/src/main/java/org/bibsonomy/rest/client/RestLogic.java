@@ -107,6 +107,7 @@ import org.bibsonomy.rest.client.queries.post.CreateSyncPlanQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserRelationshipQuery;
 import org.bibsonomy.rest.client.queries.post.PickPostQuery;
+import org.bibsonomy.rest.client.queries.put.ChangeConceptQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeDocumentNameQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeGroupQuery;
 import org.bibsonomy.rest.client.queries.put.ChangePostQuery;
@@ -406,7 +407,21 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public String updateConcept(final Tag concept, final GroupingEntity grouping, final String groupingName, final ConceptUpdateOperation operation) {
-		throw new UnsupportedOperationException();
+		switch(operation) {
+		case PICK: 
+			throw new UnsupportedOperationException();
+		case PICK_ALL: 
+			throw new UnsupportedOperationException();
+		case UNPICK: 
+			throw new UnsupportedOperationException();
+		case UNPICK_ALL: 
+			throw new UnsupportedOperationException();
+		case UPDATE: 
+			return execute(new ChangeConceptQuery(concept, concept.getName(), grouping, groupingName));
+		default: 
+			throw new UnsupportedOperationException();
+		}
+		
 	}
 
 	@Override

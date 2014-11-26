@@ -191,9 +191,9 @@ public class ContextPathFilter implements Filter {
 		 */
 		try {
 			if (request instanceof HttpServletRequest) {
-				chain.doFilter(new ContextPathFreeRequest((HttpServletRequest) request), wrap(response));	
+				chain.doFilter(new ContextPathFreeRequest((HttpServletRequest) request), wrapResponse(response));	
 			} else {
-				chain.doFilter(request, wrap(response));
+				chain.doFilter(request, wrapResponse(response));
 			}
 		} catch (final Exception ex) {
 			final HttpServletRequest castedRequest = (HttpServletRequest)request;
@@ -214,7 +214,7 @@ public class ContextPathFilter implements Filter {
 	 * @param response
 	 * @return
 	 */
-	private ServletResponse wrap(ServletResponse response) {
+	private ServletResponse wrapResponse(ServletResponse response) {
 		if (response instanceof HttpServletResponse) {
 			return new RedirectResolvingResponseWrapper((HttpServletResponse) response);
 		}
@@ -230,7 +230,7 @@ public class ContextPathFilter implements Filter {
 	 * @param projectHomeUrl
 	 */
 	public void setProjectHomeUrl(String projectHomeUrl) {
-		if (projectHomeUrl.endsWith("/") == true) {
+		if (projectHomeUrl.endsWith("/")) {
 			projectHomeUrl = projectHomeUrl.substring(0, projectHomeUrl.length() - 1);
 		}
 		ContextPathFilter.projectHomeUrl = projectHomeUrl;
