@@ -513,7 +513,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				PersonName b;
 				String[] first_last_Name;
 				for(int i=0;i<editors.size();i++){
-					first_last_Name = editors.get(i).split(", ");
+					first_last_Name = editors.get(i).split(" ");
 					b = new PersonName(first_last_Name[0],first_last_Name[1]);
 					editors_list.add(b);
 				}
