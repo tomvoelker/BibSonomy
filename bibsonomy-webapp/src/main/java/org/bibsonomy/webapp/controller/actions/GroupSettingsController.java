@@ -129,7 +129,7 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 		groupToUpdate.setSharedDocuments(sharedDocs);
 		
 		// do ADD_NEW_USER on addUserToGroup != null
-		final String username = command.getAddUserToGroup();
+		final String username = command.getUsername();
 		if (present(username)) {
 			try {
 				// since now only one user can be added to a group at once
