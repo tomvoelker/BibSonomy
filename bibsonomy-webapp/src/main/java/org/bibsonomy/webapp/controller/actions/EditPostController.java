@@ -518,7 +518,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 					editors_list.add(b);
 				}
 				bibResource.setEditor(editors_list);
-				//bibResource.setAuthor(editors_list);
 				break;
 			case "year":
 				bibResource.setYear(value);

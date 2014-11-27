@@ -160,15 +160,6 @@ public enum Views implements View {
 	 */
 	BIBTEXDETAILS("bibtexdetails"),
 	
-	/**
-	 * DiffBookmark-Page. page with diff of two post
-	 */
-	DIFFBOOKMARKPAGE("actions/post/diffBookmark"),
-	
-	/**
-	 * DiffPublication-Page. page with diff of two post
-	 */
-	DIFFPUBLICATIONPAGE("actions/post/diffPublication"),
 	
 	/**
 	 * PostHistory-Page. page with post history

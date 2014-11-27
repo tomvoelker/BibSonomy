@@ -602,10 +602,6 @@ public class Functions {
 					val+=(present(pn.getFirstName())? pn.getFirstName() : "")+
 						(present(pn.getLastName())? ", "+pn.getLastName() : "")+"; ";
 				}
-
-	//			for(int i=0; i<a.size();i++){
-	//				val+=a.get(i).toString()+"; ";
-		//		}
 				break;
 			case "editor":
 				/*Nasim's comment:
@@ -617,9 +613,8 @@ public class Functions {
 					a= Bib.getEditor();
 					for(PersonName pn:a){
 						val+=(present(pn.getFirstName())? pn.getFirstName() : "")+
-							(present(pn.getLastName())? pn.getLastName() : "")+"; ";
+							(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
 					}
-					//val = Bib.getEditor().toString();
 				}
 				
 				break;
