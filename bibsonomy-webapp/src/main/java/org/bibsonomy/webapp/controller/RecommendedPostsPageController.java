@@ -152,7 +152,6 @@ public class RecommendedPostsPageController extends SingleResourceListController
 	 * @param resourceType the resourcetype to get recommendations for
 	 */
 	private <T extends Resource> void setList(SimpleResourceViewCommand cmd, User user, Class<T> resourceType) {
-		
 		final RecommendationUser recommendationUser = new RecommendationUser();
 		recommendationUser.setUserName(user.getName());
 		

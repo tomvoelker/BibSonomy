@@ -248,7 +248,6 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 	@Override
 	public void setErrors(final Errors errors) {
 		this.errors = errors;
-		
 	}
 
 	@Override
@@ -260,5 +259,4 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 	public boolean isValidationRequired(final AdminAjaxCommand command) {
 		return false;
 	}
-	
 }

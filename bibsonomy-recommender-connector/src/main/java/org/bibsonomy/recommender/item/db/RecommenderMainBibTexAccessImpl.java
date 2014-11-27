@@ -140,26 +140,26 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.recommender.connector.database.AbstractRecommenderMainItemAccessImpl#getTaggedItems(int, java.util.Set)
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Post<BibTex>> getTaggedItems(final int maxItemsToEvaluate, final Set<String> tags) {
 		final DBSession mainSession = this.openMainSession();
 		final List<Post<BibTex>> items = new ArrayList<Post<BibTex>>();
 		try {
 			final BibTexParam param = new BibTexParam();
-			param.setLimit(maxItemsToEvaluate/tags.size());
+			param.setLimit(maxItemsToEvaluate / tags.size());
 			param.setOffset(0);
 			param.setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
 			param.setGroupId(GroupID.PUBLIC.getId());
 			param.setCaseSensitiveTagNames(false);
 			final List<TagIndex> tagIndeces = new ArrayList<TagIndex>();
 			TagIndex index;
-			for(String tag : tags) {
+			for (String tag : tags) {
 				tagIndeces.clear();
 				index = new TagIndex(tag, 1);
 				tagIndeces.add(index);
 				param.setTagIndex(tagIndeces);
-				List<Post<BibTex>> bibtexs = (List<Post<BibTex>>) this.queryForList("getBibTexByTagNames", param, mainSession);
+				final List<Post<BibTex>> bibtexs = (List<Post<BibTex>>) this.queryForList("getBibTexByTagNames", param, mainSession);
 				items.addAll(bibtexs);
 			}
 			return items;

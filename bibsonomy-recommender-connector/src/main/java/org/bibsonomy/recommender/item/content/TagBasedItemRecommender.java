@@ -43,7 +43,8 @@ public class TagBasedItemRecommender<R extends Resource> extends ContentBasedIte
 	 */
 	@Override
 	protected void addRecommendedItemsInternal(Collection<RecommendedPost<R>> recommendations, RecommendationUser entity) {
-		final List<Post<? extends Resource>> requestingUserItems = this.dbAccess.getItemsForUser(maxItemsToEvaluate, entity.getUserName());
+		String userName = entity.getUserName();
+		final List<Post<? extends Resource>> requestingUserItems = this.dbAccess.getItemsForUser(maxItemsToEvaluate, userName);
 		
 		final Set<String> requestingUserTitles = this.calculateRequestingUserTitleSet(requestingUserItems);
 		
@@ -59,10 +60,10 @@ public class TagBasedItemRecommender<R extends Resource> extends ContentBasedIte
 			userItems.addAll(this.dbAccess.getTaggedItems(maxItemsToEvaluate, tagsToUse));
 		} else {
 			final int halfSize = sortedExtractedTags.size()/2;
-			for(int i = halfSize; (i-halfSize) < maxTagsToEvaluate && i < sortedExtractedTags.size(); i++) {
+			for (int i = halfSize; (i-halfSize) < maxTagsToEvaluate && i < sortedExtractedTags.size(); i++) {
 				tagsToUse.add(sortedExtractedTags.get(i).getName());
 			}
-			if(tagsToUse.size() > 0) {
+			if (tagsToUse.size() > 0) {
 				userItems.addAll(this.dbAccess.getTaggedItems(maxItemsToEvaluate, tagsToUse));
 			} else {
 				return;

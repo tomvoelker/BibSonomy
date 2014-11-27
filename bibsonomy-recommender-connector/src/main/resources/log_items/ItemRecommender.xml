@@ -16,4 +16,8 @@
 		VALUES (#requestId#, #entity.userName#, #type#, #userName#)
 	</insert>
 	
+	<insert id="insertRecommenderFeedback"><!-- no parametertype because generic entry in param class -->
+		INSERT INTO recommender_feedback (entity_id, result_id, user_name, date )
+		VALUES ( #entity.userName#, #resultId#, #userName#, #date# )
+	</insert>
 </sqlMap>

@@ -1,5 +1,7 @@
 package org.bibsonomy.recommender.item.content;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -31,10 +33,11 @@ public class AdaptedTagBasedItemRecommender<R extends Resource> extends TagBased
 		final List<Post<? extends Resource>> requestingUserItems = new ArrayList<Post<? extends Resource>>();
 		
 		//take bibtex and bookmark resources of requesting user to generate a more significant description of the user preferences
+		final String userName = entity.getUserName();
 		if (dbAccess instanceof ExtendedMainAccess) {
-			requestingUserItems.addAll(((ExtendedMainAccess) this.dbAccess).getAllItemsOfQueryingUser(maxItemsToEvaluate, null)); // FIXME (refactor) entity.getUserName()
+			requestingUserItems.addAll(((ExtendedMainAccess) this.dbAccess).getAllItemsOfQueryingUser(maxItemsToEvaluate, userName));
 		} else {
-			requestingUserItems.addAll(this.dbAccess.getItemsForUser(maxItemsToEvaluate, null)); // FIXME (refactor) entity.getUserName()
+			requestingUserItems.addAll(this.dbAccess.getItemsForUser(maxItemsToEvaluate, userName));
 		}
 		
 		final Set<String> requestingUserTitles = this.calculateRequestingUserTitleSet(requestingUserItems);
@@ -74,19 +77,26 @@ public class AdaptedTagBasedItemRecommender<R extends Resource> extends TagBased
 	protected List<String> calculateTokens(Post<? extends Resource> item) {
 		final ArrayList<String> tokens = new ArrayList<String>();
 		//add tags to tokens
-		for (Tag tag : item.getTags()) {
+		for (final Tag tag : item.getTags()) {
 			tokens.add(tag.getName().toLowerCase());
 		}
 		final Resource resource = item.getResource();
 		
 		// add title terms to tokens
-		for (String titleToken : resource.getTitle().split(TOKEN_DELIMITER)) {
-			tokens.add(titleToken.toLowerCase());
+		
+		final String title = resource.getTitle();
+		if (present(title)) {
+			for (String titleToken : title.split(TOKEN_DELIMITER)) {
+				tokens.add(titleToken.toLowerCase());
+			}
 		}
 		
 		//add description and abstract terms to tokens
-		for (String token : item.getDescription().split(TOKEN_DELIMITER)) {
-			tokens.add(token.toLowerCase());
+		final String description = item.getDescription();
+		if (present(description)) {
+			for (String token : description.split(TOKEN_DELIMITER)) {
+				tokens.add(token.toLowerCase());
+			}
 		}
 		
 		if (resource instanceof BibTex) {
@@ -101,5 +111,4 @@ public class AdaptedTagBasedItemRecommender<R extends Resource> extends TagBased
 		}
 		return tokens;
 	}
-	
 }

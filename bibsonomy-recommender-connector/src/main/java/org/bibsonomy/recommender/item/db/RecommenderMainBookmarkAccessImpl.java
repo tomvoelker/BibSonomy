@@ -158,6 +158,7 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 				index = new TagIndex(tag, 1);
 				tagIndeces.add(index);
 				param.setTagIndex(tagIndeces);
+				// FIXME getBookmarkByTagNames also returns posts of the logged in user
 				final List<Post<Bookmark>> queryForList = (List<Post<Bookmark>>) this.queryForList("getBookmarkByTagNames", param, mainSession);
 				items.addAll(queryForList);
 			}
