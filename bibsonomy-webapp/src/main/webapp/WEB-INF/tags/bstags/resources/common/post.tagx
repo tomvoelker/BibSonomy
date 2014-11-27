@@ -8,8 +8,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/bstags/post"
-	xmlns:form="http://www.springframework.org/tags/form"
-	>
+	xmlns:form="http://www.springframework.org/tags/form">
 	
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
@@ -23,14 +22,13 @@
 	<jsp:directive.attribute name="documents" fragment="true" required="true"/>
 	
 	
-	
    <!--+ 
        | TODO: Several tests (not empty post.user.name) are here to test for community posts. 
        | They never have a userName. 
        | Since they also dont have several other properties, we dont show those.
        +-->
 
-	<li class="media post ${additionalItemClasses}" id="list-item-${post.resource.intraHash}">
+	<li class="media post ${additionalItemClasses}" id="list-item-${post.resource.intraHash}${post.user.name}">
 		<div class="clearline">&#160;</div>
 		<h4 class="media-heading" data-ident="${post.resource.intraHash}">
 			<div>
@@ -72,12 +70,20 @@
 			<div class="pdesc ellipsis">
 				<div class="ellipsis-content"><jsp:invoke fragment="desc"/></div>
 			</div>
-			<div class="pmeta"><rc:metaDate post="${post}"/><rc:metaUsername post="${post}" /><rc:metaGroups post="${post}" loginUserName="${loginUserName}" /></div>
+			<div class="pmeta">
+				<rc:metaDate post="${post}"/><rc:metaUsername post="${post}" /><rc:metaGroups post="${post}" loginUserName="${loginUserName}" />
+			</div>
 			<div class="ptags">
 				<!-- Edit tags link -->
 				<c:if test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name)}">
 					<fmt:message key="navi.editTags" var="editTags" />
-					<a class="tags-edit-link" data-toggle="modal" data-target="#tag-modal-${post.resource.intraHash}" title="${editTags}" href="#"><span class="fa fa-pencil"><!--  --></span><span class="sr-only"><c:out value="${editTags}" /></span></a>&amp;nbsp;
+					<a class="tags-edit-link" 
+						data-toggle="modal" 
+						data-target="#tag-modal-${post.resource.intraHash}${post.user.name}" 
+						title="${editTags}" href="#">
+							<span class="fa fa-pencil"><!--  --></span>
+							<span class="sr-only"><c:out value="${editTags}" /></span>
+					</a>&amp;nbsp;
 				</c:if>
 				<rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/>
 			</div>
@@ -90,9 +96,16 @@
 			<!-- EDIT TAGS MODAL POPUP-->
 			<c:if test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name)}">
 			
-				<div id="tag-modal-${post.resource.intraHash}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div id="tag-modal-${post.resource.intraHash}${post.user.name}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 					<div class="modal-dialog">
-						<form data-resource-hash="${post.resource.intraHash}" class="form-horizontal edit-tags-form" method="post" action="/batchEdit?deleteCheckedPosts=true&amp;format=ajax&amp;resourcetype=${resourceType}&amp;action=1">
+						<c:url var="batchEditUrl" value="/batchEdit">
+							<c:param name="deleteCheckedPosts" value="true" />
+							<c:param name="format" value="action" />
+							<c:param name="resourcetype" value="${resourceType}" />
+							<c:param name="action" value="1" />
+						</c:url>
+						
+						<form data-resource-hash="${post.resource.intraHash}${post.user.name}" class="form-horizontal edit-tags-form" method="post" action="${batchEditUrl}">
 							<div class="modal-content">
 								<div class="modal-header">
 									<button type="button" class="close" data-dismiss="modal">
@@ -112,7 +125,7 @@
 											<input type="hidden" name="ckey" value="${command.context.ckey }"/>
 											<input type="hidden" name="oldTags['${post.resource.intraHash}']" value="${fn:trim(tagString)}" />
 											<input type="hidden" name="posts['${post.resource.intraHash}']" value="true" checked="checked" /> 
-											<input class="edit-tagsinput form-control" name="newTags['${post.resource.intraHash}']" type="text" data-role="tagsinput" value="${fn:trim(tagString)}"/>
+											<input class="edit-tagsinput form-control" name="newTags['${post.resource.intraHash}']" type="text" value="${fn:trim(tagString)}"/>
 										</div>
 									</div>
 									

@@ -2,12 +2,13 @@
 
 ## What is it?
 
-The parser is a slightly modified version of Johannes Henkel's BibTeX parser which is GPL and can be obtained from 
+The parser is a slightly modified version of Johannes Henkel's BibTeX parser which is GPL2 and can be obtained from 
   
 http://www-plan.cs.colorado.edu/henkel/stuff/javabib/
   
+We relicense the modified parser with permission of Johannes Henkel under GPLv3+.
 Thanks to Johannes for his efforts!
-  
+
 The parser itself is used to parse BibTeX files which users upload to 
 BibSonomy to extract the metadata and put it in our Java model. We also
 use it at various input stages to ensure consistency of our data, e.g., 
@@ -16,7 +17,11 @@ all screen scrapers produce BibTeX which is then feed to the parser.
 The module is part of the [BibSonomy](http://www.bibsonomy.org) social
 bookmarking system and is maintained by the
 [Knowledge & Data Engineering Group](http://www.kde.cs.uni-kassel.de/)
-at the University of Kassel, Germany.
+at the University of Kassel, Germany,
+the [Data Mining and Information Retrieval Group](http://www.is.informatik.uni-wuerzburg.de/en/dmir/)
+at the University of Würzburg, Germany, and
+the [L3S Research Center](http://www.l3s.de/)
+at Leibniz University Hannover, Germany.
 
 ## Documentation
 
