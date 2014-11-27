@@ -36,6 +36,7 @@
 								<value>acceptPrivacy</value>
 							</list>
 						</property>
+						<property name="defaultToClassify" value="${user.defaultToClassify}"></property>
 					</bean>
 				</entry>
 				<entry key="/activate">
@@ -1253,6 +1254,7 @@
 		<property name="adminLogic" ref="adminLogic"/>
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="authenticationManager" ref="samlAuthenticationManager"/>
+		<property name="defaultToClassify" value="${user.defaultToClassify}"/>
 	</bean>	
 	
 </beans>

@@ -79,6 +79,7 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 	private RequestLogic requestLogic;
 	private CookieLogic cookieLogic;
 	private MailUtils mailUtils;
+	private String defaultToClassify;
 
 	/**
 	 * @param logic - an instance of the logic interface.
@@ -249,7 +250,13 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 		 */
 		registerUser.setIPAddress(inetAddress);
 		UserUtils.setupPassword(registerUser, registerUser.getPassword());
-
+		
+		//#1970:  Implement property that controls a user's to_classify default value [Probeaufgabe]
+		if (defaultToClassify.equals("0")) {
+			user.setToClassify(0);
+		}else {
+			user.setToClassify(1);
+		}
 		/*
 		 * create user in DB - he still needs to be activated
 		 */
