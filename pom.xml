@@ -346,6 +346,9 @@
 						<exclude>src/test/resources/**</exclude>
 						<exclude>src/main/resources/**</exclude>
 						<exclude>src/main/webapp/**</exclude>
+						<exclude>src/main/assembly/**</exclude>
+						<exclude>src/site/**</exclude>
+						<exclude>misc/**</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
