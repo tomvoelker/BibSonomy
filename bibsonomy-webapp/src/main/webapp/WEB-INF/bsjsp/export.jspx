@@ -13,8 +13,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 
-	<jsp:directive.page contentType="text/html; charset=UTF-8"
-		language="java" pageEncoding="UTF-8" session="true" />
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<!--Note: requPath: the rewrite rule sets the url without export as requPath so we add export here again-->
 	<layout:paneLayout headerMessageKey="export.header"
@@ -24,11 +23,11 @@
 		minimizedContentWidth="${true}">
 
 		<jsp:attribute name="heading">
-	      	<parts:search pathMessageKey="navi.export" />
+			<parts:search pathMessageKey="navi.export" />
 		</jsp:attribute>
 
 
-	  	<jsp:attribute name="headerExt">
+		<jsp:attribute name="headerExt">
 			<!-- start and setup the logic behind the export size radio buttons (setupPostExportSize in functions.js)-->
 			<script type="text/javascript">
 				<![CDATA[
@@ -48,53 +47,48 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">
-        <c:set var="pathAndQueryString"
-				value="${requPath}${requQueryString}" />
-        
-        <div>
-        
-        <form class="form-horizontal" role="form"  method='POST'>
-			
-			<div class="form-group" id="selectlink">
-				<label for="selectlink" class="col-sm-3 control-label"><fmt:message key="export.format" /></label>	
-	          	<export:formats />
-          	</div>
-        
-	        <div class="form-group" id="exportOptions">
-	        	<label for="exportOptions" class="col-sm-3 control-label"><fmt:message key="posts" /></label>	
-	        	<div class="col-sm-9">
-					<div class="radio">
-						<label class="radio-inline">
-			 				<input type="radio" name="items" id="inlineRadio1" value="5"/> 5
-						</label>
-						<label class="radio-inline">
-			 				<input type="radio" name="items" id="inlineRadio2" value="10"/> 10
-						</label>
-						<label class="radio-inline">
-			 				<input type="radio" name="items" id="inlineRadio3" value="20"/> 20
-						</label>
-						<label class="radio-inline">
-			 				<input type="radio" name="items" id="inlineRadio4" value="100" checked="checked"/> 100
-						</label>
-						<label class="radio-inline">
-			 				<input type="radio" name="items" id="inlineRadio5" value="1000"/> 1000
-						</label>
+			<c:set var="pathAndQueryString" value="${requPath}${requQueryString}" />
+			<div>
+				<form class="form-horizontal" role="form"  method='POST'>
+					<div class="form-group" id="selectlink">
+						<label for="selectlink" class="col-sm-3 control-label"><fmt:message key="export.format" /></label>	
+						<export:formats />
 					</div>
-				</div>
-			</div>
-		</form>
-          
-          <c:url var="currURL" value="/${pathAndQueryString}" />
-          <p>
+				
+					<div class="form-group" id="exportOptions">
+						<label for="exportOptions" class="col-sm-3 control-label"><fmt:message key="posts" /></label>	
+						<div class="col-sm-9">
+							<div class="radio">
+								<label class="radio-inline">
+									<input type="radio" name="items" id="inlineRadio1" value="5"/> 5
+								</label>
+								<label class="radio-inline">
+									<input type="radio" name="items" id="inlineRadio2" value="10"/> 10
+								</label>
+								<label class="radio-inline">
+									<input type="radio" name="items" id="inlineRadio3" value="20"/> 20
+								</label>
+								<label class="radio-inline">
+									<input type="radio" name="items" id="inlineRadio4" value="100" checked="checked"/> 100
+								</label>
+								<label class="radio-inline">
+									<input type="radio" name="items" id="inlineRadio5" value="1000"/> 1000
+								</label>
+							</div>
+						</div>
+					</div>
+				</form>
+				<c:url var="currURL" value="/${pathAndQueryString}" />
+				<p>
 					<fmt:message key="export.info">
 						<fmt:param>
 							<a href="${fn:escapeXml(currURL)}">${fn:escapeXml(currURL)}</a>
 						</fmt:param>
 					</fmt:message>
 				</p>
-        </div>
-        
-        <hr />  								
+			</div>
+			
+			<hr />
   		
   		<table class="table table-striped" id="favoriteformats"
 				style="font-size: 85%;">

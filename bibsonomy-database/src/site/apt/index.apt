@@ -1,4 +1,0 @@
-BibSonomy Database Module
-
-  This is the database module of BibSonomy. It encapsulates all database functionality,
-  building on the {{{http://ibatis.apache.org/}Ibatis Data Mapper Framework}} and MySQL.

@@ -72,8 +72,15 @@
 							<select name="post.resource.entrytype" id="post.resource.entrytype" class="form-control">
 								<c:set var="items" value="${mtl:getBibTeXEntryTypes()}" />
 								<c:forEach items="${items}" var="optionLabel" varStatus="cnt">
-			-							<option value="${items[cnt.index]}"><c:out value="${optionLabel}" /></option>
-			-						</c:forEach>
+									<c:choose>
+										<c:when test="${items[cnt.index] eq post.resource.entrytype}">
+											<option value="${items[cnt.index]}" selected="selected"><c:out value="${optionLabel}" /></option>
+										</c:when>
+										<c:otherwise>
+											<option value="${items[cnt.index]}"><c:out value="${optionLabel}" /></option>
+										</c:otherwise>
+									</c:choose>
+								</c:forEach>
 							</select>
 						</div>
 						
