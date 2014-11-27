@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -53,7 +54,7 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
-import recommender.core.Recommender;
+import recommender.impl.multiplexer.MultiplexingRecommender;
 
 /**
  * Controller for triggering a post recommendation and return the sorted list of recommended posts
@@ -61,11 +62,9 @@ import recommender.core.Recommender;
  * @author Lukas
  */
 public class RecommendedPostsPageController extends SingleResourceListController implements MinimalisticController<TagResourceViewCommand> {
-
-	private Recommender<RecommendationUser, RecommendedPost<BibTex>> bibtexRecommender;
-	private Recommender<RecommendationUser, RecommendedPost<Bookmark>> bookmarkRecommender;
-	
 	private static final int TAGS_ON_SITE = 20;
+	
+	private Map<Class<? extends Resource>, MultiplexingRecommender<RecommendationUser, RecommendedPost<? extends Resource>>> recommenderMap;
 	
 	@Override
 	public TagResourceViewCommand instantiateCommand() {
@@ -74,21 +73,19 @@ public class RecommendedPostsPageController extends SingleResourceListController
 
 	@Override
 	public View workOn(TagResourceViewCommand command) {
-		
 		// check the user logged in, only logged in users can receive recommendations
-		if(!command.getContext().isUserLoggedIn()) {
+		if (!command.getContext().isUserLoggedIn()) {
 			throw new org.springframework.security.access.AccessDeniedException("please log in");
 		}
 		
 		final String format = command.getFormat();
-		// no sorting, recommender gives sorted results
+		// sorting by user not allowed, recommender gives sorted results
 		command.setSortPage(null);
 		
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			listCommand.setStart(0);
-			
 			
 			setList(command, command.getContext().getLoginUser(), resourceType);
 			this.postProcessAndSortList(command, resourceType);
@@ -104,18 +101,18 @@ public class RecommendedPostsPageController extends SingleResourceListController
 	
 	/**
 	 * private helper calculates a cloud with size scaled by the number of
-	 * occurences of a tag in the recommended posts
+	 * occurrences of a tag in the recommended posts
 	 * 
 	 * @param command
 	 */
 	private void getTagCloud(final TagResourceViewCommand command) {
-		
 		final TagCloudCommand tagCloudCommand = command.getTagcloud();
 		
-		//count the number of occurences
 		final List<Tag> tags = new ArrayList<Tag>();
-		for(Post<BibTex> post : command.getBibtex().getList()) {
-			for(Tag tag : post.getTags()) {
+		
+		// count the number of occurences
+		for (Post<BibTex> post : command.getBibtex().getList()) {
+			for (Tag tag : post.getTags()) {
 				if(!tags.contains(tag)) {
 					final Tag copy = new Tag(tag);
 					copy.setUsercount(1);
@@ -126,9 +123,9 @@ public class RecommendedPostsPageController extends SingleResourceListController
 				}
 			}
 		}
-		for(Post<Bookmark> post : command.getBookmark().getList()) {
-			for(Tag tag : post.getTags()) {
-				if(!tags.contains(tag)) {
+		for (Post<Bookmark> post : command.getBookmark().getList()) {
+			for (Tag tag : post.getTags()) {
+				if (!tags.contains(tag)) {
 					tags.add(tag);
 				} else {
 					final Tag temp = tags.get(tags.indexOf(tag));
@@ -154,25 +151,23 @@ public class RecommendedPostsPageController extends SingleResourceListController
 	 * @param user the requesting user
 	 * @param resourceType the resourcetype to get recommendations for
 	 */
-	private <T extends Resource> void setList(SimpleResourceViewCommand cmd, User user, Class<? extends Resource> resourceType) {
+	private <T extends Resource> void setList(SimpleResourceViewCommand cmd, User user, Class<T> resourceType) {
 		
 		final RecommendationUser recommendationUser = new RecommendationUser();
 		recommendationUser.setUserName(user.getName());
 		
-		if (resourceType == BibTex.class) {
-			/** get publication recommendations */
-			final ListCommand<Post<BibTex>> listCommand = cmd.getBibtex();
-			List<Post<BibTex>> posts = unwrapRecommendedItems(this.bibtexRecommender.getRecommendation(recommendationUser));
-			this.cleanVisibleTags(posts);
-			listCommand.setList(posts);
-		} else if(resourceType == Bookmark.class) { 
-			/** get bookmark recommendations */
-			final ListCommand<Post<Bookmark>> bookmarkListCmd = cmd.getBookmark();
-			List<Post<Bookmark>> posts = unwrapRecommendedItems(this.bookmarkRecommender.getRecommendation(recommendationUser));
-			this.cleanVisibleTags(posts);
-			bookmarkListCmd.setList(posts);
-		}
-
+		final MultiplexingRecommender<RecommendationUser, RecommendedPost<T>> recommender = getRecommenderForResourceType(resourceType);
+		final SortedSet<RecommendedPost<T>> recommendationsForUser = recommender.getRecommendationsForUser(user.getName(), recommendationUser);
+		final ListCommand<Post<T>> listCommand = cmd.getListCommand(resourceType);
+		final List<Post<T>> posts = unwrapRecommendedItems(recommendationsForUser);
+		cleanVisibleTags(posts);
+		listCommand.setList(posts);
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private <T extends Resource> MultiplexingRecommender<RecommendationUser, RecommendedPost<T>> getRecommenderForResourceType(final Class<T> resourceType) {
+		final MultiplexingRecommender<RecommendationUser, RecommendedPost<? extends Resource>> multiplexingRecommender = this.recommenderMap.get(resourceType);
+		return (MultiplexingRecommender) multiplexingRecommender;
 	}
 	
 	/**
@@ -180,9 +175,9 @@ public class RecommendedPostsPageController extends SingleResourceListController
 	 * @param recommendation
 	 * @return
 	 */
-	private <T extends Resource> List<Post<T>> unwrapRecommendedItems(SortedSet<RecommendedPost<T>> recommendation) {
+	private static <T extends Resource> List<Post<T>> unwrapRecommendedItems(SortedSet<RecommendedPost<T>> recommendation) {
 		final List<Post<T>> linkedList = new LinkedList<Post<T>>();
-		for (RecommendedPost<T> recommendedPost : recommendation) {
+		for (final RecommendedPost<T> recommendedPost : recommendation) {
 			linkedList.add(recommendedPost.getPost());
 		}
 		return linkedList;
@@ -194,11 +189,18 @@ public class RecommendedPostsPageController extends SingleResourceListController
 	 * 
 	 * @param posts the posts to set the cleaned visible tags for
 	 */
-	private <T extends Resource> void cleanVisibleTags(Collection<Post<T>> posts) {
-		for(Post<T> post : posts) {
+	private static <T extends Resource> void cleanVisibleTags(Collection<Post<T>> posts) {
+		for (Post<T> post : posts) {
 			final Set<Tag> tags = post.getTags();
 			SystemTagsExtractor.removeHiddenSystemTags(tags);
 			post.setVisibleTags(tags);
 		}
+	}
+
+	/**
+	 * @param recommenderMap the recommenderMap to set
+	 */
+	public void setRecommenderMap(Map<Class<? extends Resource>, MultiplexingRecommender<RecommendationUser, RecommendedPost<? extends Resource>>> recommenderMap) {
+		this.recommenderMap = recommenderMap;
 	}
 }
