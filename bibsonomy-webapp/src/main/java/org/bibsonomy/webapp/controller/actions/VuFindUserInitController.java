@@ -265,4 +265,18 @@ public class VuFindUserInitController implements MinimalisticController<OAuthCom
 	public RequestLogic getRequestLogic() {
 		return this.requestLogic;
 	}
+
+	/**
+	 * @param defaultToClassify the defaultToClassify to set
+	 */
+	public void setDefaultToClassify(String defaultToClassify) {
+		this.defaultToClassify = defaultToClassify;
+	}
+
+	/**
+	 * @return the defaultToClassify
+	 */
+	public String getDefaultToClassify() {
+		return this.defaultToClassify;
+	}
 }

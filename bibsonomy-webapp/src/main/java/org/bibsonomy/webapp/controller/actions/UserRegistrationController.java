@@ -253,9 +253,9 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 		
 		//#1970:  Implement property that controls a user's to_classify default value [Probeaufgabe]
 		if (defaultToClassify.equals("0")) {
-			user.setToClassify(0);
+			registerUser.setToClassify(0);
 		}else {
-			user.setToClassify(1);
+			registerUser.setToClassify(1);
 		}
 		/*
 		 * create user in DB - he still needs to be activated
@@ -380,5 +380,20 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
 	}
+
+	/**
+	 * @param defaultToClassify the defaultToClassify to set
+	 */
+	public void setDefaultToClassify(String defaultToClassify) {
+		this.defaultToClassify = defaultToClassify;
+	}
+
+	/**
+	 * @return the defaultToClassify
+	 */
+	public String getDefaultToClassify() {
+		return this.defaultToClassify;
+	}
+	
 
 }
