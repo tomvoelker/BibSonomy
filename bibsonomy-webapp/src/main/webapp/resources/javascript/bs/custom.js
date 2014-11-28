@@ -52,96 +52,96 @@ $(function() {
 	moretext = "";
 	lesstext = "";
 
-	$('.show-more')
-			.each(
-					function() {
+	$('.show-more').each(function() {
 
-						var moreLink = $(document.createElement("a"));
-						var contentContainer = $(this).children(
-								".contentContainer")[0];
+		var moreLink = $(document.createElement("a"));
+		var contentContainer = $(this).children(".contentContainer")[0];
 
-						if (contentContainer) {
+		if (contentContainer) {
 
-							moreLink
-									.data("text", contentContainer.innerHTML)
-									.html("(" + getString("more") + ")")
-									.addClass("moreLink")
-									.click(
-											function(event) {
-												event.preventDefault();
-												var contentContainer = $(
-														this.parentNode)
-														.children(
-																".contentContainer")[0];
+			moreLink.data("text", contentContainer.innerHTML)
+					.html("(" + getString("more") + ")")
+					.addClass("moreLink")
+					.click(function(event) {
+						event.preventDefault();
+						var contentContainer = $(this.parentNode).children(".contentContainer")[0];
 
-												if ($(this).hasClass(
-														'show-less')) {
-													$(this)
-															.html(
-																	"("
-																			+ getString("more")
-																			+ ")")
-															.removeClass(
-																	"show-less")
-															.addClass(
-																	"show-more");
-												} else {
-													$(this)
-															.html(
-																	"("
-																			+ getString("less")
-																			+ ")")
-															.removeClass(
-																	"show-more")
-															.addClass(
-																	"show-less");
-												}
-												shortenContent(
-														contentContainer,
-														moreLink.data("text"));
-												return false;
-											});
-
-							this.appendChild(moreLink[0]);
-							if (!shortenContent(contentContainer, moreLink
-									.data("text"))) {
-								moreLink.hide();
-							}
+						if ($(this).hasClass('show-less')) {
+							$(this).html("(" + getString("more") + ")")
+									.removeClass("show-less")
+									.addClass("show-more");
+							
+						} else {
+							$(this).html("(" + getString("less") + ")")
+									.removeClass("show-more")
+									.addClass("show-less");
 						}
-
+						shortenContent(contentContainer, moreLink.data("text"));
+						return false;
 					});
+
+			this.appendChild(moreLink[0]);
+			if (!shortenContent(contentContainer, moreLink.data("text"))) {
+				moreLink.hide();
+			}
+		} //if (contentContainer)
+
+	});
 
 	/**
 	 * SYSTEM TAGS HANDLING
 	 */
+	// FIXME: this duplicates code from the context definition
+	// maybe the info should be returned by the controller, or extra info in the
+	// view
 	var isSystemTag = function(item) {
-		//TODO: identify system tags by system tag config
-		pattern = new RegExp('.+:.+');
-		return pattern.test(item);
+		var systemTags = [
+			//TODO: check whether this list is complete.
+			'sys:relevantfor:.+',
+			'relevantfor:.+',
+			'sent:.+',
+			'myown',
+			'unfiled',
+			'jabref',
+			'sys:hidden:.+',
+			'hidden:.+',
+			'sys:external:.+',
+			'external',
+			'sys:reported:.+',
+			'reported:.+'
+		];
+
+		for(var i = 0; i < systemTags.length; ++i) {
+			pattern = new RegExp(systemTags[i]);
+			if(!pattern.test(item)) {
+				continue;
+			}
+			return true;
+		}
+		
 	};
 
-	$('input[data-role=tagsinput]').tagsinput(
-			{
-				confirmKeys : [ 32, 13 ], // space and return
-				trimValue : true,
-				freeInput : true,
-				tagClass : function(item) {
-					return isSystemTag(item) ? 'label label-warning'
-							: 'label label-primary';
-				},
-				delimiter : ' '
-			});
+	$('.edit-tagsinput').tagsinput({
+		confirmKeys : [ 32, 13 ], // space and return
+		trimValue : true,
+		freeInput : true,
+		tagClass : function(item) {
+			return isSystemTag(item) ? 'label label-warning' : 'label label-primary';
+		},
+		delimiter : ' '
+	});
 
 	$('.edit-tags-form').submit(function(e) {
 		e.preventDefault();
 		var submitButton = $(this).find('button[type=submit]');
 		var url = $(this).attr('action');
 		var data = $(this).serialize();
-		var resourceHash = $(this).attr('data-resource-hash');
-		var tagField = $(this).find('input[data-role=tagsinput]');
+		var resourceHash = $(this).data('resource-hash');
+		var tagField = $(this).find('input.edit-tagsinput');
 		var tags = $(tagField).tagsinput('items');
 		var responseMsg = $(this).find('.response-msg');
-		$(responseMsg).empty(); //clear output
+		
+		$(responseMsg).empty(); //clear previous response message
 		$(submitButton).attr("disabled", "disabled"); //disable submit button
 
 		$.ajax({
@@ -151,13 +151,13 @@ $(function() {
 			
 		}).done(function(result) { //on success
 			
-			//remove tags
+			// remove tags
 			$('#list-item-' + resourceHash + ' .ptags span.label').remove();
 			
-			//remove system tags
+			// remove system tags
 			$('#list-item-' + resourceHash + ' .hiddenSystemTag ul.tags li').remove();
 			
-			//append current tags
+			// append current tags
 			$(tags).each(function(i, v) {
 				if(!isSystemTag(v)) {
 					var item = '<span class="label label-grey"><a href="/user/' + encodeURIComponent(currUser) + '/' + encodeURIComponent(tags[i]) + '">' + tags[i] + '</a></span> ';
@@ -180,11 +180,11 @@ $(function() {
 			//success message
 			$(responseMsg).append('<div class="alert alert-success" role="alert">' + getString('edittags.update.success') + '</div>');
 			$(submitButton).removeAttr("disabled");
-		}).fail(function(result) { //on fail
+		}).fail(function(result) { //on fail
 			//fail message
 			$(responseMsg).append('<div class="alert alert-danger" role="alert">' + getString('edittags.update.error') + '</div>');
 			$(submitButton).removeAttr("disabled");
-		})
+		});
 			
 		return false;
 	});
@@ -204,7 +204,7 @@ $(function() {
 				$('#sidebar').css('height', contentHeight + 20);
 			}
 		}
-	}
+	};
 
 	sidebarAdjustments();
 
@@ -272,17 +272,13 @@ function dummyDownHandler(e) {
 }
 
 function dummyHandler(e) {
-
 	e.preventDefault();
-
 	e.stopPropagation();
 	return false;
 }
 
 function dummyUpHandler(e) {
-
 	e.preventDefault();
-
 	e.stopPropagation();
 	return false;
 }
@@ -305,8 +301,7 @@ function findBootstrapEnvironment() {
 		$el.addClass('hidden-' + env);
 		if ($el.is(':hidden')) {
 			$el.remove();
-			return env
+			return env;
 		}
 	}
-	;
 }
