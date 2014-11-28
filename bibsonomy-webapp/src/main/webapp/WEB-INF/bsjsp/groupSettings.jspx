@@ -77,7 +77,7 @@
 
 										<!-- Invited users -->
 										<!-- TODO: Fix this -->
-										<c:forEach items="${group.users}" var="member" varStatus="status">
+										<c:forEach items="${group.memberships}" var="member" varStatus="status">
 											<c:if test="${member.groupRole eq 'INVITED'}">
 												<c:set var="hasPendingInvites" value="${true}" />
 											</c:if>
@@ -89,16 +89,16 @@
 													<fmt:message var="revuserTitle" key="settings.group.revUser.button.title"/>
 													TODO: Beautify this!<br />
 													<dl class="dl-horizontal dt-thumbnail-items group-list">
-													<c:forEach items="${group.users}" var="member">
+													<c:forEach items="${group.memberships}" var="member">
 														<c:if test="${member.groupRole eq 'INVITED'}">
 															<dt>
-																<user:thumbnail user="${member}" />
+																<user:thumbnail user="${member.user}" />
 															</dt>
 															<dd>
 																<div class="row">
-																	<div class="col-md-4"><user:username user="${member}" /></div>
+																	<div class="col-md-4"><user:username user="${member.user}" /></div>
 																	<div class="col-md-8">
-																		<a href="/updateGroup?operation=remove_invited&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${revuserTitle}" class="btn btn-danger">${revuser}</a>
+																		<a href="/updateGroup?operation=remove_invited&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${revuserTitle}" class="btn btn-danger">${revuser}</a>
 																	</div>
 																</div>
 															</dd>
@@ -109,7 +109,7 @@
 											</bsform:fieldset>
 										</c:if>
 										<!-- Join requests -->
-										<c:forEach items="${group.users}" var="member" varStatus="status">
+										<c:forEach items="${group.memberships}" var="member" varStatus="status">
 											<c:if test="${member.groupRole eq 'REQUESTED'}">
 												<c:set var="hasJoinRequests" value="${true}" />
 											</c:if>
@@ -123,11 +123,11 @@
 													<fmt:message var="accuser" key="settings.group.accUser.button"/>
 													<fmt:message var="accuserTitle" key="settings.group.accUser.button.title"/>
 
-													<c:forEach items="${group.users}" var="member" varStatus="status">
+													<c:forEach items="${group.memberships}" var="member" varStatus="status">
 														<c:if test="${member.groupRole eq 'REQUESTED'}">
 															<div style="float: left; width: 130px; padding-bottom: 10px;">
-																<user:thumbnail user="${member}" /><br />
-																<a class="btn btn-success" href="/updateGroup?operation=accept_join_request&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${accuserTitle}">${accuser}</a> <a class="btn btn-danger" href="/updateGroup?operation=decline_join_request&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${decuserTitle}">${decuser}</a>
+																<user:thumbnail user="${member.user}" /><br />
+																<a class="btn btn-success" href="/updateGroup?operation=accept_join_request&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${accuserTitle}">${accuser}</a> <a class="btn btn-danger" href="/updateGroup?operation=decline_join_request&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${decuserTitle}">${decuser}</a>
 															</div>
 														</c:if>
 													</c:forEach>
@@ -136,7 +136,7 @@
 										</c:if>
 									</c:if>
 
-									<c:forEach items="${group.users}" var="member">
+									<c:forEach items="${group.memberships}" var="member">
 										<c:if test="${member.groupRole ne 'DUMMY' and member.groupRole ne 'REQUESTED' and member.groupRole ne 'INVITED'}">
 											<c:set var="groupHasMembers" value="${true}" />
 										</c:if>
@@ -151,10 +151,10 @@
 
 													<!-- show group member list -->
 													<dl class="dl-horizontal dt-thumbnail-items group-list">
-														<c:forEach items="${group.users}" var="member" varStatus="status">
+														<c:forEach items="${group.memberships}" var="member" varStatus="status">
 															<c:if test="${member.groupRole ne 'DUMMY' and member.groupRole ne 'REQUESTED' and member.groupRole ne 'INVITED'}">
 																<dt>
-																<user:thumbnail user="${member}" /><br />
+																	<user:thumbnail user="${member.user}" /><br />
 																</dt>
 																<dd>
 																	<div class="row">
@@ -167,20 +167,20 @@
 																				<c:if test="${groupRole eq 'ADMINISTRATOR'}">
 																					<c:choose>
 																						<c:when test="${member.groupRole eq 'USER'}">
-																							<a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;group.groupRole=moderator&amp;ckey=${ckey}">&#8593;</a>
+																							<a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;group.groupRole=moderator&amp;ckey=${ckey}">&#8593;</a>
 																							| <a class="btn btn-default disabled">&#8595;</a>
 																						</c:when>
 																						<c:when test="${member.groupRole eq 'MODERATOR'}">
-																							<a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;group.groupRole=administrator&amp;ckey=${ckey}">&#8593;</a>
-																							| <a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;group.groupRole=user&amp;ckey=${ckey}">&#8595;</a>
+																							<a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;group.groupRole=administrator&amp;ckey=${ckey}">&#8593;</a>
+																							| <a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;group.groupRole=user&amp;ckey=${ckey}">&#8595;</a>
 																						</c:when>
 																						<c:when test="${member.groupRole eq 'ADMINISTRATOR'}">
 																							<a class="btn btn-default disabled">&#8593;</a>
-																							| <a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;group.groupRole=moderator&amp;ckey=${ckey}">&#8595;</a>
+																							| <a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;group.groupRole=moderator&amp;ckey=${ckey}">&#8595;</a>
 																						</c:when>
 																					</c:choose>
 																				</c:if>
-																				| <a class="btn btn-danger" href="/updateGroup?operation=remove_user&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>
+																				| <a class="btn btn-danger" href="/updateGroup?operation=remove_user&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>
 																			</c:if>
 																		</div>
 																	</div>
