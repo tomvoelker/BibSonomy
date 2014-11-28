@@ -1,27 +1,3 @@
-/**
- *  
- *  BibSonomy-BibTeX-Parser - BibTeX Parser from
- * 		http://www-plan.cs.colorado.edu/henkel/stuff/javabib/
- *   
- *  Copyright (C) 2006 - 2010 Knowledge & Data Engineering Group, 
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
- *  
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
- * 
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *  
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
-
 /*
  * Created on Mar 29, 2003
  * 
@@ -30,8 +6,7 @@
  */
 package bibtex.expansions;
 
-import java.util.Iterator;
-
+import bibtex.dom.BibtexAbstractEntry;
 import bibtex.dom.BibtexEntry;
 import bibtex.dom.BibtexFile;
 import bibtex.dom.BibtexString;
@@ -73,7 +48,7 @@ public class PersonListExpander extends AbstractExpander implements Expander {
 		this.expandEditors = expandEditors;
 	}
 
-	private boolean expandAuthors, expandEditors;
+	private final boolean expandAuthors, expandEditors;
 
 	/**
 	 * This method will expand all author and editor fields (if configured in
@@ -85,18 +60,17 @@ public class PersonListExpander extends AbstractExpander implements Expander {
 	 * 
 	 * @param file
 	 */
-	public void expand(BibtexFile file) throws ExpansionException {
-		for (Iterator entryIt = file.getEntries().iterator(); entryIt.hasNext();) {
-			Object next = entryIt.next();
-			if (!(next instanceof BibtexEntry))
+	public void expand(final BibtexFile file) throws ExpansionException {
+		for (final BibtexAbstractEntry bibtexAbstractEntry : file.getEntries()) {
+			if (!(bibtexAbstractEntry instanceof BibtexEntry))
 				continue;
-			BibtexEntry entry = (BibtexEntry) next;
+			final BibtexEntry entry = (BibtexEntry) bibtexAbstractEntry;
 			if (expandAuthors && entry.getFieldValue("author") != null) {
 				try {
 					entry.setField(
 						"author",
 						BibtexPersonListParser.parse((BibtexString) entry.getFieldValue("author"),""+entry.getEntryKey()));
-				} catch (PersonListParserException e) {
+				} catch (final PersonListParserException e) {
 					throwExpansionException(e);
 				}
 			}
@@ -105,7 +79,7 @@ public class PersonListExpander extends AbstractExpander implements Expander {
 					entry.setField(
 						"editor",
 						BibtexPersonListParser.parse((BibtexString) entry.getFieldValue("editor"),""+entry.getEntryKey()));
-				} catch (PersonListParserException e) {
+				} catch (final PersonListParserException e) {
 					throwExpansionException(e);
 				}
 			}

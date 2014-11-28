@@ -57,7 +57,7 @@
 									widthClassName="${bookmarksWidthClass}"
 									showBookmark="${showBookmark}"
 									showPublication="${showPublication}"
-									isBasket="false"
+									isClipboard="false"
 									showPageOptions="false"
 					/>
 				</c:if>
@@ -71,7 +71,7 @@
 									widthClassName="${publicationsWidthClass}"
 									showBookmark="${showBookmark}"
 									showPublication="${showPublication}"
-									isBasket="false"
+									isClipboard="false"
 									showPageOptions="false"
 					/>
 				</c:if>

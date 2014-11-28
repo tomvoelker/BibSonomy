@@ -32,7 +32,7 @@
 						<bsform:input labelColSpan="3" path="registerUser.email" labelKey="user.settings.email" noHelp="${true}"/>
 	
 						<div class="form-group">
-							<form:label cssClass="control-label col-sm-3" path="registerUser.openID" ><fmt:message key="user.settings.openid"/>*</form:label>
+							<form:label cssClass="control-label col-sm-3" path="registerUser.openID" ><fmt:message key="user.settings.openid"/></form:label>
 							<div class="col-sm-9">
 								<p class="form-control-static"><c:out value="${command.registerUser.openID}" /></p>
 							</div>

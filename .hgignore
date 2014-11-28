@@ -4,9 +4,12 @@ work
 .classpath
 .project
 .settings
+.externalToolBuilders
 .tomcatplugin
 .springBeans
 src/main/webapp/WEB-INF/lib
 src/main/webapp/WEB-INF/classes
 src/main/webapp/META-INF
 bibsonomy-lucene/src/test/resources/lucene_*
+nbactions.xml
+nb-configuration.xml

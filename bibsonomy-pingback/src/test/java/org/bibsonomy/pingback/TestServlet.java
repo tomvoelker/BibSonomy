@@ -1,3 +1,29 @@
+/**
+ * BibSonomy Pingback - Pingback/Trackback for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.pingback;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -12,6 +38,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.bibsonomy.util.StringUtils;
 import org.junit.Ignore;
 
 /**
@@ -21,7 +48,7 @@ import org.junit.Ignore;
 public class TestServlet extends HttpServlet {
 	private static final String TRACKBACK_ARTICLE_PATH = "/article";
 	private static final String CONTENT_TYPE_HTML = "text/html";
-	private static final String CHAR_ENCODING = "UTF-8";
+	private static final String CHAR_ENCODING = StringUtils.CHARSET_UTF_8;
 	public static final String URLHERE = "URLHERE";
 
 	private static final String PINGBACK_HEADER = "X-Pingback";
