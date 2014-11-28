@@ -106,7 +106,7 @@
 									<fmt:param><a href="${relativeUrlGenerator.getUserUrlByUserName(param.user)}"><c:out value="${param.user}"/></a></fmt:param>
 								</fmt:message>
 							</h2>
-							<form:form id="groupAddDenyUser" method="post" action="/join_group">
+							<form:form id="groupAddDenyUser" method="post" action="/joinGroup">
 								<div id="fsform">
 									<fieldset class="fsInner">
 										<div class="fsRow">

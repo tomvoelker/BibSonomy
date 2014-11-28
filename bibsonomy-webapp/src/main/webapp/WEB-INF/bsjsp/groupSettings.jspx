@@ -61,13 +61,16 @@
 										<!-- Invite users -->
 										<bsform:fieldset legendKey="user.name">
 											<jsp:attribute name="content">
-												<form:form cssClass="form-inline" name="groupusers" method="post" action="/updateGroup?ckey=${ckey}">
+												<form:form cssClass="form-horizontal" name="groupusers" method="post" action="/updateGroup?ckey=${ckey}">
 													<bsform:input path="username" helpKey="settings.group.inviteUser.help"
-																  labelKey="user.name" autocomplete="${true}" />
+																  labelKey="user.name" autocomplete="${true}"
+																  labelColSpan="3"/>
 													<input type="hidden" name="groupName" value="${group.name}"/>
 													<input type="hidden" name="operation" value="ADD_INVITED" />
 													<fmt:message var="inviteuser" key="settings.group.inviteUser.button"/>
-													<bsform:button type="submit" size="defaultSize" style="success" value="${inviteuser}" />
+													<div class="col-sm-offset-3 col-sm-9">
+														<bsform:button type="submit" size="defaultSize" style="success" value="${inviteuser}" />
+													</div>
 												</form:form>
 											</jsp:attribute>
 										</bsform:fieldset>

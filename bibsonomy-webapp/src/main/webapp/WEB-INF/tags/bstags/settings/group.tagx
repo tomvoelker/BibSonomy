@@ -131,7 +131,7 @@
 																<bsform:button style="defaultStyle" size="defaultSize" type="button" value="${disabled}" className="disabled btn-block" />
 															</c:otherwise>
 														</c:choose>
-														<c:url var="joinLink" value="/join_group">
+														<c:url var="joinLink" value="/joinGroup">
 															<c:param name="group" value="${group.name}" />
 														</c:url>
 														<a href="${relativeUrlGenerator.prefix('settings').getGroupUrlByGroupName(group.name)}" class="btn btn-default btn-block btn-sm"><fmt:message key="settings.group.editSettings"/></a>	

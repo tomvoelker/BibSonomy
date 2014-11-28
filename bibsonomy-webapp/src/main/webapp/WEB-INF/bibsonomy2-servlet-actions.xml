@@ -64,7 +64,7 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/join_group">
+				<entry key="/joinGroup">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="joinGroupController"/>
 						<property name="allowedFields">
@@ -655,7 +655,6 @@
 						<property name="allowedFields">
 							<list>
 								<value>ckey</value>
-								<value>userGroup.*</value>
 								<value>privlevel</value>
 								<value>groupName</value>
 								<value>sharedDocuments</value>

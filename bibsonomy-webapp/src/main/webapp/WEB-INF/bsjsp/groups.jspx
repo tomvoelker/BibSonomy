@@ -123,7 +123,7 @@
 										<!-- TODO: add link to leave group, if user is already member -->
 									</c:when>
 									<c:otherwise>
-										<c:url var="joinLink" value="/join_group">
+										<c:url var="joinLink" value="/joinGroup">
 											<c:param name="group" value="${group.name}" />
 										</c:url>
 										<a href="${joinLink}" class="btn btn-primary btn-sm"><span class="fa fa-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>	

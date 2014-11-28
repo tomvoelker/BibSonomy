@@ -46,7 +46,7 @@
 							</fmt:message>
 							<button:linkButton
 					   			title="${joinGroup}"
-					   			href="/join_group?group=${fn:escapeXml(command.group.name)}"
+					   			href="/joinGroup?group=${fn:escapeXml(command.group.name)}"
 					   			image="${resdir}/image/starblue_unselected.png"
 					   		>
 								<jsp:attribute name="text">
