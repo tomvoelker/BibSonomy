@@ -79,7 +79,7 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 	private RequestLogic requestLogic;
 	private CookieLogic cookieLogic;
 	private MailUtils mailUtils;
-	private String defaultToClassify;
+	private boolean defaultToClassify;
 
 	/**
 	 * @param logic - an instance of the logic interface.
@@ -252,11 +252,8 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 		UserUtils.setupPassword(registerUser, registerUser.getPassword());
 		
 		//#1970:  Implement property that controls a user's to_classify default value [Probeaufgabe]
-		if (defaultToClassify.equals("0")) {
-			registerUser.setToClassify(0);
-		}else {
-			registerUser.setToClassify(1);
-		}
+		registerUser.setToClassify( (defaultToClassify) ? 1 : 0 );
+		
 		/*
 		 * create user in DB - he still needs to be activated
 		 */
@@ -382,18 +379,20 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 	}
 
 	/**
-	 * @param defaultToClassify the defaultToClassify to set
+	 * @return the defaultToClassify
 	 */
-	public void setDefaultToClassify(String defaultToClassify) {
-		this.defaultToClassify = defaultToClassify;
+	public boolean isDefaultToClassify() {
+		return this.defaultToClassify;
 	}
 
 	/**
-	 * @return the defaultToClassify
+	 * @param defaultToClassify the defaultToClassify to set
 	 */
-	public String getDefaultToClassify() {
-		return this.defaultToClassify;
+	public void setDefaultToClassify(boolean defaultToClassify) {
+		this.defaultToClassify = defaultToClassify;
 	}
+
+	
 	
 
 }
