@@ -10,31 +10,33 @@ import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
-import org.bibsonomy.webapp.command.SettingsViewCommand;
-import org.bibsonomy.webapp.controller.SettingsPageController;
+import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.webapp.command.actions.UpdateGroupCommand;
+import org.bibsonomy.webapp.util.ErrorAware;
+import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.validation.Errors;
 
 /**
  *
  * @author ema
  */
-public class UpdateGroupController extends SettingsPageController {
+public class UpdateGroupController implements MinimalisticController<UpdateGroupCommand>, ErrorAware {
 
 	private static final Log log = LogFactory.getLog(UpdateGroupController.class);
+	private Errors errors = null;
+	private LogicInterface logic;
 
 	@Override
-	public SettingsViewCommand instantiateCommand() {
-		final SettingsViewCommand command = new SettingsViewCommand();
-		command.setUser(new User());
-		return command;
+	public UpdateGroupCommand instantiateCommand() {
+		return new UpdateGroupCommand();
 	}
 
 	@Override
-	public View workOn(final SettingsViewCommand command) {
+	public View workOn(final UpdateGroupCommand command) {
 		final RequestWrapperContext context = command.getContext();
 
 		/*
@@ -242,12 +244,22 @@ public class UpdateGroupController extends SettingsPageController {
 		}
 
 		if (errors.hasErrors()) {
-			command.setSelTab(SettingsViewCommand.GROUP_IDX);
-			return super.workOn(command);
+//			command.setSelTab(SettingsViewCommand.GROUP_IDX);
+//			return super.workOn(command);
 		}
 
 		// success: go back where you've come from
 		// TODO: inform the user about the success!
 		return Views.GROUPSETTINGSPAGE;
+	}
+
+	@Override
+	public Errors getErrors() {
+		return this.errors;
+	}
+
+	@Override
+	public void setErrors(Errors errors) {
+		this.errors = errors;
 	}
 }
