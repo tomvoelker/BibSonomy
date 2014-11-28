@@ -1109,7 +1109,9 @@
 	<bean id="updateUserSettingsController" class="org.bibsonomy.webapp.controller.actions.UpdateUserSettingsController" scope="request" parent="settingsPageController" />
 	
 	<!-- Handles the settings update of a group -->
-	<bean id="updateGroupController" class="org.bibsonomy.webapp.controller.actions.UpdateGroupController" scope="request" parent="settingsPageController" />
+	<bean id="updateGroupController" class="org.bibsonomy.webapp.controller.actions.UpdateGroupController" scope="request">
+		<property name="logic" ref="logic" />
+	</bean>
 	
 	<!-- Handles the profile update of a user -->
 	<bean id="updateUserController" class="org.bibsonomy.webapp.controller.actions.UpdateUserController" scope="request" parent="settingsPageController" />

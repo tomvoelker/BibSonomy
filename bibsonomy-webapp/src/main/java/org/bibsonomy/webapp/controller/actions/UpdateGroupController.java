@@ -17,6 +17,7 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
@@ -250,7 +251,7 @@ public class UpdateGroupController implements MinimalisticController<UpdateGroup
 
 		// success: go back where you've come from
 		// TODO: inform the user about the success!
-		return Views.GROUPSETTINGSPAGE;
+		return new ExtendedRedirectView("/settings/group/" + groupName);
 	}
 
 	@Override

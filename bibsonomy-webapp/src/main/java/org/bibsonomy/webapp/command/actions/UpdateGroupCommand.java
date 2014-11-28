@@ -11,6 +11,9 @@ import org.bibsonomy.webapp.command.BaseCommand;
  */
 public class UpdateGroupCommand extends BaseCommand implements Serializable {
 	
+	// TODO: Find out why on earth spring needs this and remove it again!
+	private String requestedGroup;
+	
 	private Group group;
 	private String groupName;
 	private GroupUpdateOperation operation;
@@ -66,5 +69,11 @@ public class UpdateGroupCommand extends BaseCommand implements Serializable {
 		this.username = username;
 	}
 
-	
+	public String getRequestedGroup() {
+		return requestedGroup;
+	}
+
+	public void setRequestedGroup(String requestedGroup) {
+		this.requestedGroup = requestedGroup;
+	}
 }

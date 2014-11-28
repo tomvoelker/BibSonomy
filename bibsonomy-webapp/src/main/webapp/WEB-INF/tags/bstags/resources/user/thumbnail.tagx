@@ -18,7 +18,7 @@
 	</c:if>
 	
 	<a class="pull-left img-thumbnail img-responsive" href="${relativeUrlGenerator.getUserUrlByUserName(user)}" title="${username}">
-		<img alt="${username}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(user)}" style="height: ${size}px; width: ${size}px"  class="img-thumbnail img-responsive user-avatar"/>
+		<img alt="${username}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(user)}" style="height: ${size}px; width: ${size}px"  class="user-avatar img-responsive"/>
 		<c:if test="${empty noname or not noname}">
 			<span><c:out value="${username}" /></span>
 		</c:if>
