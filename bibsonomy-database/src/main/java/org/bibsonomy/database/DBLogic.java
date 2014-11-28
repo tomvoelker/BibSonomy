@@ -1159,7 +1159,10 @@ public class DBLogic implements LogicInterface {
 			}
 		}
 		
-		if (!isPageAdmin && !isGroupAdmin && !isGroupModerator) {
+		// TODO: Add blacklisting users!
+		// TODO: WHAT APOUT SPAM??? Does this work?
+		if (!(operation == GroupUpdateOperation.ADD_REQUESTED && !loginUser.getSpammer())
+				&& !isPageAdmin && !isGroupAdmin && !isGroupModerator) {
 			throw new ValidationException("No rights.");
 		}
 
@@ -1221,6 +1224,8 @@ public class DBLogic implements LogicInterface {
 					this.groupDBManager.addUserToGroup(groupName, user.getName(), GroupRole.INVITED, session);
 				}
 				break;
+			// NOTE: This is the only case where we do not need a user to be a
+			// moderator or admin to perform a group join request!
 			case ADD_REQUESTED:
 				for (final User user: group.getUsers()) {
 					this.groupDBManager.addUserToGroup(groupName, user.getName(), GroupRole.REQUESTED, session);
