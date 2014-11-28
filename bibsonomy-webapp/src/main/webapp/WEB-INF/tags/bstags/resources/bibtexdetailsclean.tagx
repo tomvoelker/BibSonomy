@@ -44,7 +44,6 @@
 		<span> </span>
 	</div> <!-- border -->
 	
-	
 	<c:choose>
 	
 		<!--+
@@ -52,7 +51,8 @@
 			| if own entry, render a two column layout to display documents on the right side
 			| 
 		   	+-->	
-		<c:when test="${isOwnEntry}">
+
+		<c:when test="${isOwnEntry or not empty publication.documents}">
 			
 			<bs:twoColumns columnSizeLeft="8" columnSizeRight="4">
 				<jsp:attribute name="columnLeft">

@@ -22,7 +22,7 @@
 	<jsp:directive.attribute name="showPageOptions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showBookmark" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="showPublication" type="java.lang.Boolean" required="true"/>
-	<jsp:directive.attribute name="isBasket" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="isClipboard" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
 	
 	<!-- fragments -->
@@ -78,7 +78,7 @@
 										showBookmark="${showBookmark}" 
 										showPublication="${showPublication}" 
 										showInboxActions="${showInboxActions}" 
-										isBasket="${isBasket}"
+										isClipboard="${isClipboard}"
 										disableListNavigation="${disableListNavigation}"
 										disableResourcetypeSelection="${disableResourcetypeSelection}"/>
 								</ul>

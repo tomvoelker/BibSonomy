@@ -11,7 +11,7 @@
 	<jsp:directive.attribute name="sortPageOrder" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="showBookmark" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="showPublication" type="java.lang.Boolean" required="true"/>
-	<jsp:directive.attribute name="isBasket" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="isClipboard" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
@@ -74,7 +74,7 @@
 		<div class="listOptionHeading"><fmt:message key="navi.basket"/>:</div>
 		<ul>	
 			<li>
-				<rc:basket isBasket="${isBasket}" />
+				<rc:clipboard isClipboard="${isClipboard}" />
 			</li>
 		</ul>
 	</c:if>

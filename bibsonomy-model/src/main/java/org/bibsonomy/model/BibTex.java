@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Model - Java- and JAXB-Model.
  *
- *  BibSonomy-Model - Java- and JAXB-Model.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.model;
 
 import java.util.HashMap;
@@ -28,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.SimHash;
@@ -51,7 +55,7 @@ public class BibTex extends Resource {
 	private String bibtexKey;
 
 	/**
-	 * This key is used by bibtex on sorting purpose if there is neither an
+	 * This key is used by BibTeX on sorting purpose if there is neither an
 	 * {@link #author} nor an {@link #editor} defined.
 	 * TODO: rename to something like sortingKey ?
 	 */
@@ -695,15 +699,16 @@ public class BibTex extends Resource {
 	
 	/**
 	 * Parses the 'misc'-field and stores the obtained key/valued pairs
-	 * in the internal miscFields-Hashmap.
+	 * in the internal miscFields map.
+	 * @throws InvalidModelException 
 	 */
-	public void parseMiscField() {
+	public void parseMiscField() throws InvalidModelException {
 		this.miscFields = BibTexUtils.parseMiscFieldString(this.getMisc());
 		this.miscFieldParsed = true;
 	}
 	
 	/**
-	 * Serializes the internal miscFields-Hashmap into the a string 
+	 * Serializes the internal miscFields map into the a string 
 	 * representation and stores it in the 'misc'-field.
 	 */
 	public void serializeMiscFields() {

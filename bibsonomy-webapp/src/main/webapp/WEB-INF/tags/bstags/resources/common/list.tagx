@@ -46,7 +46,7 @@
 						<c:set var="additionalItemClasses" value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}"/>
 						
 						<!-- show one post -->
-						<rc:post post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" additionalItemClasses="${additionalItemClasses}">
+						<rc:post post="${post}" resourceType="${listView.resourcetype}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" additionalItemClasses="${additionalItemClasses}">
 							<jsp:attribute name="title">    <jsp:invoke fragment="title"/>    </jsp:attribute>
 							<jsp:attribute name="actions">  <jsp:invoke fragment="actions"/>  </jsp:attribute>
 							<jsp:attribute name="desc">     <jsp:invoke fragment="desc"/>     </jsp:attribute>
