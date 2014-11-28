@@ -8,7 +8,6 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/actions/user"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
@@ -23,7 +22,7 @@
 			+-->
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.oauth.authorization" />
-    	</jsp:attribute>
+		</jsp:attribute>
 
 		<!--+
 			| content
@@ -41,7 +40,7 @@
 			</p>
 
 			<p>
-				<!-- keep me -->			
+				<!-- keep me -->
 				<c:if test="${command.entry.callbackToken != null}">
 					<fmt:message key="oauth.authorization.callback.token">
 						<fmt:param>
@@ -50,8 +49,6 @@
 					</fmt:message>
 				</c:if>
 			</p>
-      	</jsp:attribute>
-      	
-      	
+		</jsp:attribute>
 	</layout:paneLayout>
 </jsp:root>

@@ -73,7 +73,7 @@ public final class BibtexEntry extends BibtexAbstractEntry {
 
     private String entryKey;
 
-    private HashMap fields = new HashMap();
+    private final Map<String, BibtexAbstractValue> fields = new HashMap<String, BibtexAbstractValue>();
 
     /**
      * @return String
@@ -85,7 +85,7 @@ public final class BibtexEntry extends BibtexAbstractEntry {
     public BibtexAbstractValue getFieldValue(String name) {
         assert name != null : "name parameter has to be non null.";
 
-        return (BibtexAbstractValue) fields.get(name);
+        return fields.get(name);
     }
     
     /**
@@ -94,13 +94,13 @@ public final class BibtexEntry extends BibtexAbstractEntry {
      * @return an immutable list containing instances of BibtexAbstractValue
      * @see BibtexMultipleValues
      */
-    public List getFieldValuesAsList(String fieldName){
+    public List<BibtexAbstractValue> getFieldValuesAsList(final String fieldName){
         
         assert fieldName!=null: "fieldName parameter may not be null.";
         
-        Object value = this.fields.get(fieldName);
-        if(value==null) return Collections.EMPTY_LIST;
-        if(value instanceof BibtexMultipleValues){
+        final BibtexAbstractValue value = this.fields.get(fieldName);
+        if (value == null) return Collections.emptyList();
+        if (value instanceof BibtexMultipleValues){
             return ((BibtexMultipleValues)value).getValues();
         } else {
             return Collections.singletonList(value);
@@ -148,11 +148,11 @@ public final class BibtexEntry extends BibtexAbstractEntry {
      * 
      * @return HashMap
      */
-    public Map getFields() {
+    public Map<String, BibtexAbstractValue> getFields() {
         return Collections.unmodifiableMap(fields);
     }
 
-    public void setField(String fieldName, BibtexAbstractValue fieldValue) {
+    public void setField(final String fieldName, final BibtexAbstractValue fieldValue) {
         assert fieldName != null : "fieldName parameter has to be non null.";
         assert fieldValue != null : "fieldValue parameter has to be non null.";
 
@@ -187,7 +187,8 @@ public final class BibtexEntry extends BibtexAbstractEntry {
      * 
      * @see bibtex.dom.BibtexNode#printBibtex(java.io.PrintWriter)
      */
-    public void printBibtex(PrintWriter writer) {
+    @Override
+	public void printBibtex(PrintWriter writer) {
 
         assert writer != null : "writer parameter has to be !=null.";
 
@@ -201,7 +202,7 @@ public final class BibtexEntry extends BibtexAbstractEntry {
         Arrays.sort(keys);
         for (int i = 0; i < keys.length; i++) {
             String key = keys[i];
-            BibtexNode value = (BibtexNode) this.fields.get(key);
+            BibtexNode value = this.fields.get(key);
             if (value instanceof BibtexMultipleValues) {
                 BibtexMultipleValues values = (BibtexMultipleValues) value;
                 for (Iterator valuesIt = values.getValues().iterator(); valuesIt.hasNext();) {

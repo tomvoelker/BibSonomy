@@ -7,7 +7,6 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/actions/user"
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
@@ -20,11 +19,11 @@
 	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${importTitle}" requPath="${requPath}">
 
 		<jsp:attribute name="headerExt">
-  		</jsp:attribute>
+		</jsp:attribute>
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.import.facebook"/>
-    	</jsp:attribute>
+		</jsp:attribute>
 		
 		
 		<jsp:attribute name="content">
@@ -122,7 +121,7 @@
 				}	
 			</style>
 			
-			<script type="text/javascript">				
+			<script type="text/javascript">
 				function getUserSelection(id) {
 					var selector = document.getElementById('fbUserSelect'+id);
 					try {

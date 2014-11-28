@@ -75,11 +75,10 @@
 		user cannot	have the same relation twice -->
 	<select id="getConceptForUser" parameterClass="tagRelationParam"
 		resultMap="TagCommon.tagWithSubtags">
-		SELECT upper_lcase AS tag_name, lower_lcase AS subTag, '1' as subTagCount
+		SELECT upper AS tag_name, lower AS subTag, '1' as subTagCount
 		  FROM tagtagrelations
-		  WHERE user_name=#ownerUserName#
-			AND upper_lcase=LCASE(#upperTagName#)
-		  GROUP BY upper_lcase, lower_lcase
+		  WHERE user_name = #ownerUserName#
+			AND upper = #upperTagName#
 		  ORDER BY LCASE(subTag)
 	</select>
 

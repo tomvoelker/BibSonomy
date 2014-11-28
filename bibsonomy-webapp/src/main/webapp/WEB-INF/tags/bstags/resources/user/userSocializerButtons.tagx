@@ -14,6 +14,7 @@
 
 	
 	<jsp:directive.attribute name="user" type="org.bibsonomy.model.User" required="true" />
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
 	
 	<!-- <script type="text/javascript" src="${resdir}/javascript/userRelation.js"> -->
 	<c:set var="friendName" value="${user.name}" />
@@ -21,33 +22,21 @@
     	<fmt:message key="cv.title" var="cvtitle">
     		<fmt:param value="${user.name}"/>
     	</fmt:message>
-		<c:set var="loginUserFriends" value="${command.context.loginUser.friends}" />
-		<c:choose>
-			<c:when test="${not mtl:contains(loginUserFriends, user)}">
-				<c:set var="removeStyle" value=""/>
-				<c:set var="addStyle" value="display: none;"/>
-			</c:when>
-			<c:otherwise>
-				<c:set var="removeStyle" value="display: none;"/>
-				<c:set var="addStyle" value=""/>
-			</c:otherwise>
-		</c:choose>
 
 		<form action="/ajax/handleUserRelation">
 			<input type="hidden" name="requestedUserName" value="${fn:escapeXml(friendName)}" />
 			<input type="hidden" name="action" value="none" />
 			<input type="hidden" name="ckey" value="${ckey}" />
-			
-			<button type="submit" class="btn btn-sm btn-success removeFriend" style="${removeStyle}">
+			<button type="submit" class="btn btn-sm btn-success removeFriend" style="${command.ofFriendUser ? '' : 'display:none'}" >
 				<span class="fa fa-check"><!--  --></span>
 				<c:out value=" "/>
 				<span class="infotext"><fmt:message key="friendoverview.friend" /></span>
 			</button>		
-			<button type="submit" class="btn btn-sm btn-default addFriend" style="${addStyle}">
+			<button type="submit" class="btn btn-sm btn-default addFriend" style="${command.ofFriendUser ? 'display:none' : ''}">
 				<fmt:message key="friend.add" />
 			</button>
 		</form>
-		
+
 		<br />
 			
 		<div class="btn-group btn-group-xs">

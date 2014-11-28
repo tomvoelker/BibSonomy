@@ -20,12 +20,20 @@
 		</c:when>
 		
 		<c:otherwise>
+			<!-- FIXME: quick fix for a meaningful link. Please clean up. Please use url generator -->
+			<c:set var="bibUrlTemplate" value="/bibtex/${hash.inter.id}${post.resource.interHash}"/>
+			<c:set var="bibTitle" value="${mtl:cleanBibtex(post.resource.title)}"/>
+		
+			<c:if test="${not empty post.user.name}">
+				<c:set var="bibUrlTemplate" value="/bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}"/>
+			</c:if>
+		
 			<!--+
 				| post has no documents => show entrytype + if user logged in link for upload
 				+-->
-				<a href="" class="preview bibtex thumbnail">
-					<span class="entrytype ${post.resource.entrytype}"><!-- Keep ME--></span>
-				</a>
+			<a href="${bibUrlTemplate}" title="${fn:escapeXml(bibTitle)}" class="preview bibtex thumbnail">
+				<span class="entrytype ${post.resource.entrytype}"><!-- Keep ME--></span>
+			</a>
 			<!-- 
 			<c:choose>
 				<c:when test="${not empty post.user.name and post.user.name eq command.context.loginUser.name}">
@@ -35,9 +43,7 @@
 					<span class="entrytype ${post.resource.entrytype}"> </span>
 				</c:otherwise>
 			</c:choose>	
-			-->		
+			-->
 		</c:otherwise>
-		
 	</c:choose>
-
 </jsp:root>

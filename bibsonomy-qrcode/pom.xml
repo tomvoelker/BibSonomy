@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>2.0.47-SNAPSHOT</version>
+		<version>3.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>bibsonomy-qrcode</artifactId>
 	<name>BibSonomy-QRCode</name>
@@ -27,64 +27,9 @@
 			<version>${zxing.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>de.intarsys.jpod</groupId>
-			<artifactId>iscwt</artifactId>
-			<version>${jpod.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.intarsys.jpod</groupId>
-			<artifactId>isfreetype</artifactId>
-			<version>${jpod.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.intarsys.jpod</groupId>
-			<artifactId>isnativec</artifactId>
-			<version>${jpod.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.intarsys.jpod</groupId>
-			<artifactId>isrt</artifactId>
-			<version>${jpod.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.intarsys.jpod</groupId>
-			<artifactId>jai-codec</artifactId>
-			<version>${jpod.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.intarsys.jpod</groupId>
-			<artifactId>jai-core</artifactId>
-			<version>${jpod.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.intarsys.jpod</groupId>
-			<artifactId>jbig2</artifactId>
-			<version>${jpod.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.intarsys.jpod</groupId>
-			<artifactId>jna</artifactId>
-			<version>${jpod.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.intarsys.jpod</groupId>
-			<artifactId>jpod</artifactId>
-			<version>${jpod.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.intarsys.jpod</groupId>
-			<artifactId>jpodfonts</artifactId>
-			<version>${jpod.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.intarsys.jpod</groupId>
-			<artifactId>jpodrenderer</artifactId>
-			<version>${jpod.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.intarsys.jpod</groupId>
-			<artifactId>jai-imageio</artifactId>
-			<version>${jpod.version}</version>
+			<groupId>de.intarsys.opensource</groupId>
+			<artifactId>jPodRenderer</artifactId>
+			<version>5.3</version>
 		</dependency>
 	</dependencies>
 </project>

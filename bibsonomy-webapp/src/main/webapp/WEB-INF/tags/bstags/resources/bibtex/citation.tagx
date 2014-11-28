@@ -18,7 +18,7 @@
 		| from bibtexdetails.js) or ensure that bibtexdetails.js is loaded. 
 		| 
 		+-->
-	
+	<!-- TODO: (Bootstrap) remove! -->
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 
 	<div id="citation" class="tabs">
@@ -46,7 +46,7 @@
 					| title of the publication 
 					+-->
 				<h3 style="margin-top: 0;">
-					<a href="/bibtex/${post.resource.interHash}"><c:out value="${mtl:cleanBibtex(post.resource.title)}" /></a>
+					<a href="${relativeUrlGenerator.getGoldstandardUrlByInterHash(post.resource.interHash)}"><c:out value="${mtl:cleanBibtex(post.resource.title)}" /></a>
 				</h3>
 				<bib:desc publication="${post.resource}"/>
 			</div>

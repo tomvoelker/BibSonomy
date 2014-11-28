@@ -23,31 +23,23 @@
 
 package org.bibsonomy.scraper.url.kde.dblp;
 
-import java.io.IOException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Scraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-
-import bibtex.parser.ParseException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
  * @author wbi
  */
-public class DBLPScraper extends AbstractUrlScraper {
+public class DBLPScraper extends GenericBibTeXURLScraper {
 	private static final String SITE_NAME = "University of Trier Digital Bibliography & Library Project";
 	private static final String DBLP_HOST_NAME1  = "http://dblp.uni-trier.de";
 	private static final String SITE_URL  = DBLP_HOST_NAME1+"/";
@@ -73,70 +65,42 @@ public class DBLPScraper extends AbstractUrlScraper {
 	private static final String DBLP_HOST_NAME4  = "http://www.vldb.org/dblp/";
 	private static final String DBLP_HOST_NAME5  = "http://sunsite.informatik.rwth-aachen.de/dblp/";
 	 */
-	private static final Pattern DBLP_PATTERN = Pattern.compile("(<pre>\\s*(@[A-Za-z]+\\s*\\{.+?\\})\\s*</pre>)+", Pattern.MULTILINE | Pattern.DOTALL);
-
-
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		sc.setScraper(this);
-		
-		String bibtexContent = "";
-
-		final Matcher m = DBLP_PATTERN.matcher(sc.getPageContent());
-		while(m.find()) {
-			// get the bibtex entry out of the <pre> blocks
-			String bibtexResult = m.group(2);
-			
-			// append url
-			BibTexUtils.addFieldIfNotContained(bibtexResult, "url", sc.getUrl().toString());
-			
-			// add them to the final bibtex list
-			bibtexContent += bibtexResult.replaceFirst("<a href=\".*?\">(.*)</a>", "$1");
-		}
-
-		// if there are any bibtex entries
-		if (!"".equals(bibtexContent)){
-			try {
-				SimpleBibTeXParser parser = new SimpleBibTeXParser();
-				// parse and get them as string
-				BibTex bibtex = parser.parseBibTeX(bibtexContent);
-				
-				// if there are no exception and bibtex is not null
-				if (bibtex != null && parser.getCaughtExceptions() == null){
-					// ... set the result and return true
-					sc.setBibtexResult(BibTexUtils.toBibtexString(bibtex));
-					return true;
-				} else {
-					return false;
-				}
-			} catch (ParseException ex) {
-				throw new InternalFailureException(ex);
-			} catch (IOException ex) {
-				throw new InternalFailureException(ex);
-			} 
-		} else {
-			throw new ScrapingFailureException("failure during download");
-		}
-	}
-
+	
+	@Override
 	public String getInfo() {
 		return info;
 	}
 
+	@Override
 	public Collection<Scraper> getScraper() {
 		return Collections.singletonList((Scraper) this);
 	}
 
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
+	 */
+	@Override
+	protected String getDownloadURL(URL url) throws ScrapingException {
+		return url.toString().replace("bibtex", "bib") + ".bib";
+	}
+	
+	@Override
+	protected String convert(String downloadResult) {
+		return downloadResult.replaceAll("timesta.*\\n", "");
+	}
 }
-
-

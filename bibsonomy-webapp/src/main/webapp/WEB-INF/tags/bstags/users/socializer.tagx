@@ -24,48 +24,46 @@
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.UserResourceViewCommand" required="true"/>
 	<c:set var="username"><user:username username="${command.requestedUser}" noLink="${true}"/></c:set>
 	<div class="socializer">
+		<!-- sidebar headline -->
 		<h4 class="media-heading">
-		<c:choose>
-			<c:when test="${command.context.userLoggedIn}">
-				<user:name user="${command.user}"/>
-				<c:if test="${not empty command.user.homepage}">
-					<c:out value=" " /><small><a href="${fn:escapeXml(command.user.homepage)}"><span class="fa fa-external-link"><!--  --></span></a></small>
-				</c:if>
-			</c:when>
-			<c:otherwise>
-				<span><c:out value="${username}" /></span>
-				<c:if test="${not empty command.user.homepage}">
-					<c:out value=" " /><small><a href="${fn:escapeXml(command.user.homepage)}"><span class="fa fa-external-link"><!--  --></span></a></small>
-				</c:if>
-			</c:otherwise>
-		</c:choose>
+			<user:name user="${command.user}"/>
+			<c:if test="${not empty command.user.homepage}">
+				<c:out value=" " /><small><a href="${fn:escapeXml(command.user.homepage)}"><span class="fa fa-external-link"><!--  --></span></a></small>
+			</c:if>
 		</h4>
-		<div class="media">
-			<a class="pull-left img-thumbnail img-responsive" href="/user/${mtl:encodeURI(command.requestedUser)}" title="${mtl:encodeURI(username)}">
-				<img alt="${fn:escapeXml(username)}" src="/picture/user/${fn:escapeXml(command.requestedUser)}" class="user-avatar"/>
+		
+		<div class="media" style="border:none;">
+			<!-- user thumbnail -->
+			<a class="pull-left img-thumbnail img-responsive" href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}" title="${username}">
+				<img alt="${username}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(command.requestedUser)}" class="user-avatar"/>
 				<span><c:out value="${username}" /></span>
 			</a>
+			
 			<div class="media-body" id="titletext">
 
 				<!--+
 					| only for logged in users: followers, friends, groups, etc.
-			 		+-->
-			 	<c:choose>
+					+-->
+				<c:choose>
 					<c:when test="${command.context.userLoggedIn and command.context.loginUser.name ne command.requestedUser}">
-						<p><user:userSocializerButtons user="${command.user}"/></p>
+						<p><user:userSocializerButtons user="${command.user}" command="${command}" /></p>
 					</c:when>
 					
 					<c:when test="${not command.context.userLoggedIn}">
 						<p class="small-font"><fmt:message key="friends.addfriend.login" /></p>
-						<a class="btn btn-success bnt-xs" href="/login"><fmt:message key="navi.login" /></a>
+						<a class="btn btn-success btn-xs" href="${relativeUrlGenerator.getLoginUrl()}"><fmt:message key="navi.login" /></a>
 					</c:when>
 					<c:when test="${command.context.userLoggedIn and command.context.loginUser.name eq command.requestedUser}">
 						<p class="small-font"><fmt:message key="friends.addfriend.you" /></p>
+						<!-- button for CV link -->
+						<a class="btn btn-default btn-sm" href="/cv/user/${fn:escapeXml(user.name)}" title="${cvtitle}"><span class="glyphicon glyphicon-user"><!-- --></span><fmt:message key="navi.cv.abbrev"/></a>
 					</c:when>
 				</c:choose>
 			</div>
 		</div>
-		<div class="clearfix"><!--  --> <!--  --></div>
+		
+		<p class="clearfix"><!--  --></p>
 
 	</div>
+	
 </jsp:root>

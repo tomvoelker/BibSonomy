@@ -36,11 +36,11 @@
 		<foaf:mbox_sha1sum><c:out value="${command.user.email}"/></foaf:mbox_sha1sum> <!-- controller calculates sha1sum of email and stores it in the email field -->
 		<foaf:homepage rdf:resource="${command.user.homepage}" />
 		<foaf:interest dc:title="${command.user.interests}" /> 
-        <foaf:based_near dc:title="${command.user.place}" />
+		<foaf:based_near dc:title="${command.user.place}" />
 		
 		<c:forEach var="friend" items="${command.user.friends}">
 			<foaf:knows>
-				<foaf:Person rdf:about="${properties['project.home']}foaf/user/${mtl:encodeURI(friend.name)}">
+				<foaf:Person rdf:about="${absoluteUrlGenerator.prefix('foaf').getUserUrlByUserName(friend.name)}">
 					<foaf:nick><c:out value="${friend.name}"/></foaf:nick>
 				</foaf:Person>
 			</foaf:knows>

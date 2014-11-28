@@ -43,7 +43,11 @@
       
 		<jsp:attribute name="content">
             <h2><fmt:message key="scraper_info.link_header" /></h2>
-            <p><fmt:message key="scraper_info.scraper_link_description" /></p>
+            <p>
+            	<fmt:message key="scraper_info.scraper_link_description">
+            		<fmt:param value="${properties['project.name']}" />
+            	</fmt:message>
+            </p>
           
             <ul class="scraperList">
             	<!-- FIXME: assumes that every Scraper has a SiteURL method
@@ -68,7 +72,7 @@
             <dl class="scraperList">
               <c:forEach var="scraper" items="${command.scraperList}">
               	<c:if test="${(scraper.supportedSiteURL ne null) and (scraper.supportedSiteName ne null)}">
-              		<dt><a name="${scraper.class.simpleName}">${scraper.class.simpleName}</a>:</dt> 
+              		<dt><a name="${scraper['class'].simpleName}">${scraper['class'].simpleName}</a>:</dt> 
     				<dd>${scraper.info}</dd>
               	</c:if>
               </c:forEach>

@@ -51,10 +51,10 @@
 				<!--+
 					| abstract
 					+-->
-				<c:if test="${not empty goldstandard.abstract}"> 
+				<c:if test="${not empty goldstandard['abstract']}"> 
 					<h4><fmt:message key="publications.abstract.headline"/></h4>
 					<div id="abstract" class="more">
-						<c:out value="${mtl:cleanBibtex(goldstandard.abstract)}" />
+						<c:out value="${mtl:cleanBibtex(goldstandard['abstract'])}" />
 					</div>
 				</c:if>
 				<c:choose>
@@ -104,7 +104,7 @@
 				<div class="taglist" style="clear:both; margin-top: 1em;">
 					<ul>
 						<c:forEach var="tag" items="${command.tagcloud.tags}">
-							<li style="display:list-item;"><span class="tagitem_rightborder"><a class="tagitem" href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}" rel="nofollow" title=""><nobr><c:out value="${tag.name}"/></nobr></a></span></li>
+							<li style="display:list-item;"><span class="tagitem_rightborder"><a class="tagitem" href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}" rel="nofollow" title=""><nobr><c:out value="${tag.name}"/></nobr></a></span></li>
 						</c:forEach>
 					</ul>
 					<br style="clear:left" />
@@ -121,8 +121,8 @@
 							<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
 								<div class="ownerAvatar" >
 									<span>@${fn:escapeXml(user.name)}</span>
-									<a class="profilepic" href="/bibtex/1${publication.interHash}/${fn:escapeXml(user.name)}" title="@${fn:escapeXml(user.name)}">
-										<img alt="@${fn:escapeXml(user.name)}" src="/picture/user/${fn:escapeXml(user.name)}" />
+									<a class="profilepic" href="${relativeUrlGenerator.getPublicationUrlByInterHashAndUsername(publication.interHash, fn:escapeXml(user.name))}" title="@${fn:escapeXml(user.name)}">
+										<img alt="@${fn:escapeXml(user.name)}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(user.name))}" />
 									</a>
 								</div>
 								<c:out value=" "/>
@@ -136,8 +136,8 @@
 									<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}" begin="0" end="6" varStatus="count">
 										<div class="ownerAvatar">
 											<span>@${fn:escapeXml(user.name)}</span>
-											<a class="profilepic" href="/bibtex/1${publication.interHash}/${fn:escapeXml(user.name)}" title="@${fn:escapeXml(user.name)}">
-												<img alt="@${fn:escapeXml(user.name)}" src="/picture/user/${fn:escapeXml(user.name)}" />
+											<a class="profilepic" href="${relativeUrlGenerator.getPublicationUrlByInterHashAndUsername(publication.interHash, fn:escapeXml(user.name))}" title="@${fn:escapeXml(user.name)}">
+												<img alt="@${fn:escapeXml(user.name)}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(user.name))}" />
 											</a>
 										</div>
 									</c:forEach>
@@ -148,8 +148,8 @@
 									<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}" begin="7" varStatus="count">
 										<div class="ownerAvatar">
 											<span>@${fn:escapeXml(user.name)}</span>
-											<a class="profilepic" href="/bibtex/1${publication.interHash}/${fn:escapeXml(user.name)}" title="@${fn:escapeXml(user.name)}">
-												<img alt="@${fn:escapeXml(user.name)}" src="/picture/user/${fn:escapeXml(user.name)}" />
+											<a class="profilepic" href="${relativeUrlGenerator.getPublicationUrlByInterHashAndUsername(publication.interHash, fn:escapeXml(user.name))}" title="@${fn:escapeXml(user.name)}">
+												<img alt="@${fn:escapeXml(user.name)}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(user.name))}" />
 											</a>
 										</div>
 									</c:forEach>

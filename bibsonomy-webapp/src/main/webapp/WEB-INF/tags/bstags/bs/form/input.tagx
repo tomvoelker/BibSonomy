@@ -21,6 +21,9 @@
 	<jsp:directive.attribute name="helpText" type="java.lang.String" required="false" description="Alternativly to path.help, you can define the content for popover help"/>
 	<jsp:directive.attribute name="helpKey" type="java.lang.String" required="false" description="Alternativly to path.help, you can define the message key for popover help"/>
 	<jsp:directive.attribute name="small" type="java.lang.Boolean" required="false" description="Reduces the element width to 33 percent" />
+	<jsp:directive.attribute name="placeholderLikeLabel" type="java.lang.Boolean" required="false" description="Use label key for placeholder" />
+	<jsp:directive.attribute name="inputGroupSymbol" type="java.lang.String" required="false" description="Render input field as group with Symbol" />
+	<jsp:directive.attribute name="inputGroupFaIcon" type="java.lang.String" required="false" description="Render input field as group with font awesome icon" />
 	
 	<!-- HTML attributes -->
 	<jsp:directive.attribute name="id" 				type="java.lang.String" 	required="false"  description="Id for input field"/>
@@ -33,6 +36,7 @@
 	<jsp:directive.attribute name="onclick" type="java.lang.String" required="false" description="" />
 	<jsp:directive.attribute name="onfocus" type="java.lang.String" required="false" description="" />
 	<jsp:directive.attribute name="onblur" type="java.lang.String" required="false" description="" />	
+	
 	
 	
 	<jsp:directive.attribute name="appendix" fragment="true" required="false" description="Additional items for input field"/>
@@ -83,11 +87,26 @@
 		<c:set var="id" value="${path}" />
 	</c:if>
 
+	<c:if test="${placeholderLikeLabel}">
+		<c:set var="placeholder"><fmt:message key="${labelKey}" /></c:set>
+	</c:if>
+	
+	<c:if test="${not empty inputGroupFaIcon}">
+		<c:set var="inputGroup">
+			<span class="input-group-addon"><span class="fa ${inputGroupFaIcon}"><!--  --></span></span>
+		</c:set>
+	</c:if>
+	
+	<c:if test="${not empty inputGroupSymbol}">
+		<c:set var="inputGroup">
+			<span class="input-group-addon"><c:out value="${inputGroupSymbol}" /></span>
+		</c:set>
+	</c:if>
 	
 	<!-- errors -->
 	<c:set var="formErrors"><form:errors path="${path}" /></c:set>
 
-	
+
 
 	<!--+
 		| bootstrap 3 form-group 
@@ -118,7 +137,30 @@
 			| followed by input field surrounded by div column container with width inputColSpan
 			+-->
 		<div class="col-sm-${inputColSpan}">
-			<form:input cssClass="fsInput${small ? smallField : ''}${required ? ' reqinput' : ''} ${fn:escapeXml(cssClass)} form-control ${helpPopover}" 
+			<c:choose>
+				<c:when test="${not empty inputGroup}">
+					<div class="input-group">
+						<c:out escapeXml="false" value="${inputGroup }" />
+						<form:input cssClass="${small ? smallField : ''}${required ? ' reqinput' : ''} ${fn:escapeXml(cssClass)} form-control ${helpPopover}" 
+							path="${path}" 
+							placeholder="${placeholder}" 
+							autocomplete="${autocomplete}" 
+							onclick="${onclick}"
+							onfocus="${onfocus}"
+							onblur="${onblur}"
+							tabindex="${tabindex}"
+							id="${fn:escapeXml(id)}"
+							disabled="${ not empty disabled ? disabled : 'false' }"
+							data-role="${ not empty tagsinput and tagsinput eq true ? 'tagsinput' : 'false'}"/>
+						<!-- help -->
+						<c:if test="${empty noHelp or not noHelp}">
+							<div class="help help-header hide"><c:out value="${labelText}" /></div>
+							<div class="help help-content hide">${helpText}</div>
+						</c:if>
+					</div>
+				</c:when>
+				<c:otherwise>
+					<form:input cssClass="${small ? smallField : ''}${required ? ' reqinput' : ''} ${fn:escapeXml(cssClass)} form-control ${helpPopover}" 
 						path="${path}" 
 						placeholder="${placeholder}" 
 						autocomplete="${autocomplete}" 
@@ -129,13 +171,15 @@
 						id="${fn:escapeXml(id)}"
 						disabled="${ not empty disabled ? disabled : 'false' }"
 						data-role="${ not empty tagsinput and tagsinput eq true ? 'tagsinput' : 'false'}"/>
-							<!-- help -->
-			<c:if test="${empty noHelp or not noHelp}">
-				<div class="help help-header hide"><c:out value="${labelText}" /></div>
-				<div class="help help-content hide">${helpText}</div>
-			</c:if>
+					<!-- help -->
+					<c:if test="${empty noHelp or not noHelp}">
+						<div class="help help-header hide"><c:out value="${labelText}" /></div>
+						<div class="help help-content hide">${helpText}</div>
+					</c:if>
+				</c:otherwise>
+			</c:choose>
+
 			<jsp:invoke fragment="appendix" />
-			
 		</div>
 	</div>
 </jsp:root>

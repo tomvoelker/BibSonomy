@@ -42,7 +42,7 @@
 	    
 		<jsp:attribute name="tabcontent">
       <c:set var="post" value="${command.post}"/>
-		<div style="float left;width:97%;margin-left:10px; padding-bottom: 13px;">
+		<div style="float: left;width:97%;margin-left:10px; padding-bottom: 13px;">
 			<c:choose>
 				<c:when test="${command.selTab == 0}">
 					<!-- 

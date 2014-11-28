@@ -17,8 +17,8 @@
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.relevantFor" formAction="/relevantfor/group/${mtl:encodeURI(command.requestedGroup)}" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="pathPart">
-					<li>
-						:: <a href="/relevantfor/group/${mtl:encodeURI(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
+					<li>						
+						:: <a href="${relativeUrlGenerator.getRelevantForUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
 					</li>
 				</jsp:attribute>
 			</parts:search>

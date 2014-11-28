@@ -47,7 +47,7 @@
 						<c:forEach var="group" items="${command.context.loginUser.groups}">
 							<c:set var="reportingUrl" value="${group.publicationReportingSettings.externalReportingUrl}" />
 							<c:if test="${not empty reportingUrl and group.name eq command.context.loginUser.name}">
-								<a class="item editqa" href="${reportingUrl}/edit?intraHash=${post.resource.intraHash}&amp;referer=${properties['project.home']}${fn:escapeXml(requPath)}"><!-- keep me --></a>
+								<a class="item editqa" href="${reportingUrl}/edit?intraHash=${post.resource.intraHash}&amp;referer=${relativeUrlGenerator.getProjectHome()}${fn:escapeXml(requPath)}"><!-- keep me --></a>
 							</c:if>
 						</c:forEach>
 					</c:if>
@@ -58,7 +58,7 @@
 								<fmt:message key="group.reporting" var="reportDesc">
 									<fmt:param value="${group.name}" />
 								</fmt:message>
-								<a class="item report" href="${reportingUrl}/report?intraHash=${post.resource.intraHash}&amp;user=${post.user.name}&amp;referer=${properties['project.home']}${fn:escapeXml(requPath)}" title="${reportDesc}"><!-- keep me --></a>
+								<a class="item report" href="${reportingUrl}/report?intraHash=${post.resource.intraHash}&amp;user=${post.user.name}&amp;referer=${relativeUrlGenerator.getProjectHome()}${fn:escapeXml(requPath)}" title="${reportDesc}"><!-- keep me --></a>
 							</c:if>
 						</c:forEach>
 					</c:if>
@@ -116,7 +116,7 @@
 		+-->
 	<fmt:message key="bibtex.actions.community_post" var="communityPost" />
 	
-	<a href="/bibtex/${post.resource.interHash}" class="item communitypost" title="${fn:escapeXml(communityPost)}">
+	<a href="${relativeUrlGenerator.getGoldstandardUrlByInterHash(post.resource.interHash)}" class="item communitypost" title="${fn:escapeXml(communityPost)}">
 		<!-- Keep Me -->
 	</a>
 	<!--+
@@ -224,8 +224,8 @@
 		</c:choose>
 		
 		<!-- BIBTEX -->
-		<fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />
-		<a class="litem" href="/bib/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}" title="${bibtexTitle}"><fmt:message key="bibtex.actions.bibtex.short"/></a>
+		<fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />		
+		<a class="litem" href="${relativeUrlGenerator.prefix('bib').getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, fn:escapeXml(post.user.name))}" title="${bibtexTitle}"><fmt:message key="bibtex.actions.bibtex.short"/></a>
 	
 		<!-- OPENURL -->
 		<c:if test="${command.context.userLoggedIn and not command.context.loginUser.settings.layoutSettings.simpleInterface}">

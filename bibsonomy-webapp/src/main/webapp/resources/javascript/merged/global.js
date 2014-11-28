@@ -21,8 +21,8 @@ includeJavaScript("/resources/javascript/fileUpload.js");
 includeJavaScript("/resources/javascript/style.js");
 includeJavaScript("/resources/jquery/plugins/corner/jquery.corner.js");
 includeJavaScript("/resources/jquery/plugins/hoverIntent/jquery.hoverIntent.js");
-includeJavaScript("/resources/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js");
+includeJavaScript("/resources/jquery/plugins/ui/jquery-ui.js");
 includeJavaScript("/resources/javascript/jquery.fadebox.js");
 includeJavaScript("/resources/javascript/userRelation.js");
 includeJavaScript("/resources/javascript/addToSpheres.js");
-includeJavaScript("/resources/javascript/less/less.js");
+includeJavaScript("/resources/javascript/less/less.js"); /* not included in pom, only for development */

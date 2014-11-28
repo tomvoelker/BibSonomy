@@ -39,7 +39,7 @@ import org.springframework.beans.factory.annotation.Required;
 
 /**
  * controller for retrieving multiple windowed lists with resources. 
- * These are currently the bookmark an the bibtex list
+ * These are currently the bookmark and the bibtex list
  * 
  * @author Jens Illig
  */

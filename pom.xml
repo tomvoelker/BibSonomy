@@ -6,7 +6,7 @@
 	<groupId>org.bibsonomy</groupId>
 	<artifactId>bibsonomy</artifactId>
 	<packaging>pom</packaging>
-	<version>2.0.47-SNAPSHOT</version>
+	<version>3.0.0-SNAPSHOT</version>
 	<description>
 		A blue social bookmark and publication sharing system.
 	</description>
@@ -382,21 +382,6 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>deploy-to-puma-sandbox</id>
-			<!-- change tomcat deploy destination when -Ddeploy-to=puma_sandbox is 
-				given as parameter. -->
-			<activation>
-				<property>
-					<name>deploy-to</name>
-					<value>puma_sandbox</value>
-				</property>
-			</activation>
-			<properties>
-				<maven.tomcat.server>tomcat_puma_sandbox</maven.tomcat.server>
-				<maven.tomcat.url>http://sandbox.puma.bibliothek.uni-kassel.de:8080/manager</maven.tomcat.url>
-			</properties>
-		</profile>
-		<profile>
 			<id>deploy-to-puma-ks-dev</id>
 			<!-- change tomcat deploy destination when -Ddeploy-to=puma_ks_dev is 
 				given as parameter. -->
@@ -408,7 +393,7 @@
 			</activation>
 			<properties>
 				<maven.tomcat.server>tomcat_puma_ks_dev</maven.tomcat.server>
-				<maven.tomcat.url>http://ks-dev.puma.bibliothek.uni-kassel.de:8080/manager</maven.tomcat.url>
+				<maven.tomcat.url>http://ks-dev.puma.bibliothek.uni-kassel.de:8080/manager/text</maven.tomcat.url>
 			</properties>
 		</profile>
 	</profiles>
@@ -720,7 +705,7 @@
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>jstl</artifactId>
-				<version>1.1.2</version>
+				<version>1.2</version>
 			</dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>

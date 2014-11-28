@@ -80,8 +80,6 @@ public class BaseCommand implements ContextCommand, DidYouKnowMessageCommand {
 		return messageKey;
 	}
 	
-	
-	
 	/**
 	 * @return Message Params
 	 */
@@ -108,13 +106,11 @@ public class BaseCommand implements ContextCommand, DidYouKnowMessageCommand {
 	
 	@Override
 	public DidYouKnowMessage getDidYouKnowMessage() {
-		
 		return this.didYouKnowMessage;
 	}
 
 	@Override
 	public void setDidYouKnowMessage(DidYouKnowMessage didYouKnowMessage) {
-		
 		this.didYouKnowMessage = didYouKnowMessage;
 	}
 }

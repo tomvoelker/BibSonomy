@@ -12,7 +12,7 @@
     <table class="${cssClass} sidebar_collapse_content">
     
       <tr><th colspan="2">registration form data</th></tr>
-      <tr><th>name</th><td><a href="/admin?aclUserInfo=${fn:escapeXml(user.name)}"><c:out value="${user.name}"/></a></td></tr>
+      <tr><th>name</th><td><a href="${relativeUrlGenerator.getAdminUrlByName(null)}?aclUserInfo=${fn:escapeXml(user.name)}"><c:out value="${user.name}"/></a></td></tr>
       <tr><th>email</th><td><a href="mailto:${fn:escapeXml(user.email)}"><c:out value="${user.email}"/></a></td></tr>
       <tr><th>real name</th><td><c:out value="${user.realname}"/></td></tr>
       <tr><th>homepage</th><td><a href="${fn:escapeXml(user.homepage)}"><c:out value="${user.homepage}"/></a></td></tr>
@@ -24,7 +24,7 @@
         <th>groups</th>
         <td>
           <c:forEach items="${user.groups}" var="group">
-            <a href="/group/${fn:escapeXml(group.name)}"><c:out value="${group.name}"/></a>(<c:out value="${group.groupId}"/>), 
+            <a href="${relativeUrlGenerator.getGroupUrlByGroupName(fn:escapeXml(group.name))}"><c:out value="${group.name}"/></a>(<c:out value="${group.groupId}"/>), 
           </c:forEach>
         </td>
       </tr>

@@ -9,6 +9,7 @@ import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /**
  * Used to create, read, update and delete gold standard publications from the database.
@@ -42,8 +43,8 @@ public final class GoldStandardPublicationDatabaseManager extends GoldStandardDa
 	}
 	
 	@Override
-	protected void onGoldStandardReferenceDelete(final String userName, final String interHash, final String interHashRef, final DBSession session) {
-		this.plugins.onGoldStandardPublicationReferenceDelete(userName, interHash, interHashRef, session);		
+	protected void onGoldStandardRelationDelete(final String userName, final String interHash, final String interHashRef, final GoldStandardRelation interHashRelation, final DBSession session) {
+		this.plugins.onGoldStandardRelationDelete(userName, interHash, interHashRef, interHashRelation, session);
 	}
 
 	@Override

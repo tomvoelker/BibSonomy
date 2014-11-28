@@ -34,7 +34,7 @@
             	<span class="expl_s">
               		<fmt:message key="post.resource.relevant"/>
             	</span>
-			</jsp:attribute>	
+			</jsp:attribute>
 		</bform:fieldset>
 	</div>
 </jsp:root>

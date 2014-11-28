@@ -29,7 +29,7 @@
 		         <a class="${mtl:getTagSize(tag.globalcount, command.maxTagCount)}" 
 		            style="font-size:${mtl:computeTagFontsize(tag.globalcount, command.minTagCount, command.maxTagCount, 'popular')}%; padding-left:0.3em; padding-right:0.3em;" 
 		            title="${tag.globalcount} ${posts}" 
-		            href="/tag/${fn:escapeXml(tag.name)}"><c:out value="${tag.name}"/></a><c:out value=" "/>
+		            href="${relativeUrlGenerator.getTagUrlByTagName(fn:escapeXml(tag.name))}"><c:out value="${tag.name}"/></a><c:out value=" "/>
 			  </c:forEach>
 			</div>			
 		</jsp:attribute>

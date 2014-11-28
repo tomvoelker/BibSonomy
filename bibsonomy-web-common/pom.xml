@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>2.0.47-SNAPSHOT</version>
+		<version>3.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>bibsonomy-web-common</artifactId>
 	<name>BibSonomy-Web-Common</name>
@@ -18,8 +18,9 @@
 			<artifactId>bibsonomy-model</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-layout</artifactId>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
@@ -28,7 +29,7 @@
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
-			<version>1.4</version>
+			<version>1.4.7</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>

@@ -30,7 +30,7 @@
     <jsp:directive.attribute name="tags" fragment="true" required="false" />
     <jsp:directive.attribute name="groups" fragment="true" required="false" />
     <jsp:directive.attribute name="extraInformation" fragment="true" required="false" description="Extra information which shall be displayed outside the form."/>
-    <jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
+    <jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
     
 	
 	<fmt:message key="navi.edit${resourceType}" var="editPageTitle" />
@@ -108,7 +108,7 @@
 					<!--+ 
 		  	          	| show global errors
 		    		  	+ -->
-					<errors:global errors="${errors}"/>
+					<errors:global />
 		            
 		            <!--+
 		                | form starts here
@@ -121,13 +121,13 @@
 						    +-->
 						<c:if test="${not empty command.diffPost}">
 		                 	
-							<fmt:message key="note"/>
-		                 		
-							<span style="float:left; font-weight: bold; margin-left: 1em;">
-								<fmt:message key="post.edit.existent" />
-							</span>
-							<buttons:help message="post.edit.existent.help"/>
-		                   	
+		                 	<bs:alert style="warning" dismissable="true">
+		                 		<jsp:attribute name="alertBody">
+		                 			<h4><fmt:message key="note"/>: <fmt:message key="post.edit.existent" /></h4>
+		                 			<p><fmt:message key="post.edit.existent.help" /></p>
+		                 		</jsp:attribute>
+		                 	</bs:alert>
+
 						</c:if>
 						<!--+
 		                    | general information 
@@ -170,7 +170,7 @@
 							</bsform:fieldset>
 						</c:if>
 										
-												
+													
 		                <!--+
 		               		| buttons 
 		                    +-->
@@ -184,7 +184,9 @@
 								<form:hidden path="intraHashToUpdate" />
 								<div class="col-sm-offset-3 col-sm-9">
 									<fmt:message key="save" var="save" />
-									<input class="btn btn-primary" type="submit" value="${save}" onclick="clear_tags();" tabindex="2"/>
+									<fmt:message key="save.and.rate" var="saveAndRate" />
+									<input class="btn btn-primary" id="save-post-button" style="margin-right:5px" type="submit" value="${save}" onclick="clear_tags();" tabindex="2"/> 
+									<input class="btn btn-primary" id="save-rate-post-button" type="submit" value="${saveAndRate}" name="saveAndRate" onclick="clear_tags();" tabindex="2"/>
 								</div>
 							</div>
 						</div>	
@@ -200,29 +202,29 @@
 				</div>
 				
 				<div class="col-md-3 hidden-xs hidden-sm">
-					<div data-spy="affix" data-offset-top="30" data-offset-bottom="200">
+					<div data-spy="affix" data-offset-top="0" data-offset-bottom="500">
  						<div class="list-group">
- 							<a class="list-group-item active" href="#generalInformation"><fmt:message key="post.resource.fields.general" /></a>
- 							
- 							
+ 							<a class="list-group-item active" onclick="javascript: activateAffixEntry(this)" href="#generalInformation"><fmt:message key="post.resource.fields.general" /></a>
  							<c:if test="${not empty tagsAndGroups}">
- 								<a class="list-group-item" href="#tags"><fmt:message key="post.resource.tags"/></a>
- 								<a class="list-group-item" href="#groups"><fmt:message key="post.resource.groups"/></a>
+ 								<a class="list-group-item" onclick="javascript: activateAffixEntry(this)" href="#tags"><fmt:message key="post.resource.tags"/></a>
+ 								<a class="list-group-item" onclick="javascript: activateAffixEntry(this)" href="#groups"><fmt:message key="post.resource.groups"/></a>
  							</c:if>
  							<c:if test="${not empty detailedInformation}">
-	 							<a class="list-group-item" href="#uploadedFiles"><fmt:message key="post.bibtex.files" /></a>
- 								<a class="list-group-item" href="#detailedInformation"><fmt:message key="post.resource.fields.detailed"/></a>
- 								<a class="list-group-item" href="#comments"><fmt:message key="post.resource.fields.comments"/></a>
+	 							<a class="list-group-item" onclick="javascript: activateAffixEntry(this)" href="#uploadedFiles"><fmt:message key="post.bibtex.files" /></a>
+ 								<a class="list-group-item" onclick="javascript: activateAffixEntry(this)" href="#detailedInformation"><fmt:message key="post.resource.fields.detailed"/></a>
+ 								<a class="list-group-item" onclick="javascript: activateAffixEntry(this)" href="#comments"><fmt:message key="post.resource.fields.comments"/></a>
  							</c:if>
- 						
-  							
-  							
+						</div>
+						<div class="btn-group">
+							<a class="btn btn-primary btn-sm save-post-item" onclick="javascript: activateAffixEntry(this); $('#save-post-button').trigger('click');" href="#save-post-button"><fmt:message key="save"/></a>
+							<a class="btn btn-primary btn-sm save-rate-post-item" onclick="javascript: activateAffixEntry(this); $('#save-post-button').trigger('click');" href="#save-rate-post-button"><fmt:message key="save.and.rate" /></a>
 						</div>
 					</div>
 				</div>
 				
 			</div>
-
+			<!-- margins -->
+			<p>&amp;nbsp;<c:out value=" " /></p>
 		</jsp:attribute>
 		
 	</layout:layout>

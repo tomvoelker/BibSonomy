@@ -54,40 +54,45 @@
 		<!-- UPDATE SERVER -->
 		<c:if test="${not empty command.syncServer}">
 			<h2><fmt:message key="synchronization.server.update"/></h2>
-		</c:if>
-		<c:forEach varStatus="status" var="syncService" items="${command.syncServer}">
-			<fieldset class="fsInner">
-				<p><fmt:message key="synchronization.server.update.intro"/></p>
-				<form:form method="post" action="/updateSyncSettings" modelAttribute="command.syncServer[${status.index}]">
-					<div class="fsRow">
-						<form:label cssClass="fsLabel" path="service"><fmt:message key="synchronization.server" /></form:label>
-						<buttons:help message="synchronization.help.server"/>
-						<form:input cssClass="fsInput serviceName" path="service" disabled="true"/>
-						<div class="dissError"><form:errors path="service" /></div>
-					</div>
-	
-					<settings:syncFormFields/>
-	
-	        		<div class="fsRow">
+		
+			<c:forEach varStatus="status" var="syncService" items="${command.syncServer}">
+				<fieldset>
+					<p><fmt:message key="synchronization.server.update.intro"/></p>
+					<form:form cssClass="form-horizontal" method="post" action="/updateSyncSettings#selTab4" modelAttribute="command.syncServer[${status.index}]">
+							
+						<bsform:input labelColSpan="4" inputColSpan="8" path="service" noHelp="true" labelKey="synchronization.server" disabled="true"></bsform:input>
+						
+						<settings:syncFormFields/>
+
 						<form:hidden path="service"/>
-						<input type="submit" value="${save}" />
-						<input type="submit" value="${removeService}" onclick="return confirmDelete(this)"/>
 						<input type="hidden" name="ckey" value="${ckey}"/>
 						<input type="hidden" name="_method" value="PUT"/>
 						<input type="hidden" name="selTab" value="${command.selTab}"/>
-					</div>
-				</form:form>
-			</fieldset>
-		</c:forEach>
-		
+					
+						<div class="form-group">
+							<div class="col-sm-offset-4 col-sm-8">
+								<input type="submit" class="btn btn-default btn-primary" value="${save}" />&amp;nbsp;
+								<input type="submit" class="btn btn-default btn-primary" value="${removeService}" onclick="return confirmDelete(this)"/>
+							</div>
+						</div>
+					</form:form>
+				</fieldset>
+			</c:forEach>
+		</c:if>
 		<!-- CREATE SERVER -->
 		<c:if test="${not empty command.availableSyncServers}">
 			<legend><fmt:message key="synchronization.server.add"/></legend>
 			<p><fmt:message key="synchronization.server.add.intro"/></p>
-			<form:form method="POST" action="/updateSyncSettings" modelAttribute="command.newSyncServer" cssClass="form-horizontal"> 
+			<form:form method="POST" action="/updateSyncSettings#selTab4" modelAttribute="command.newSyncServer" cssClass="form-horizontal"> 
 				
-				<bsform:select path="service" items="${command.availableSyncServers}" labelKey="synchronization.server" labelColSpan="4" helpKey="synchronization.help.server" />
-				
+				<div class="form-group">
+					<form:label cssClass="col-sm-4 control-label" path="resourceType" ><fmt:message key="synchronization.server"/></form:label>
+					<div class="col-sm-8">
+						<form:select cssClass="form-control" path="service" items="${command.availableSyncServers}" />
+						<div class="help help-header hide"><!--  --></div>
+						<div class="help help-content hide"><fmt:message key="synchronization.help.server" /></div>
+					</div>
+				</div>
 				<settings:syncFormFields />
 				
 				<input type="hidden" name="ckey" value="${command.context.ckey}"/>
@@ -147,7 +152,7 @@
 				<input type="hidden" name="_method" value="POST"/>
 				<input type="hidden" name="selTab" value="${command.selTab}"/>
 				
-				<div class="col-sm-offset-4 col-sm-9">
+				<div class="col-sm-offset-4 col-sm-8">
 					<input type="submit" value="${save}" class="btn btn-primary" />
 				</div>
 				

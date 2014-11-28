@@ -32,6 +32,7 @@ import org.bibsonomy.scraper.ScraperTestData;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.importer.IUnitTestImporter;
 import org.bibsonomy.scraper.importer.xml.XMLUnitTestImporter;
+import org.bibsonomy.util.StringUtils;
 
 /**
  * Replace bibtex file with a scraped bibtex entry.
@@ -71,7 +72,7 @@ public class ReplaceBibtexFile {
 			System.out.println(scrapedBibtex);
 			if ((bibFile != null) && (scrapedBibtex != null)) {
 				// override bibtex file
-				final OutputStreamWriter os = new OutputStreamWriter(new FileOutputStream(PATH_TO_BIBS + bibFile), "UTF-8");
+				final OutputStreamWriter os = new OutputStreamWriter(new FileOutputStream(PATH_TO_BIBS + bibFile), StringUtils.CHARSET_UTF_8);
 				final StringReader reader = new StringReader(scrapedBibtex);
 					
 				int read = reader.read();

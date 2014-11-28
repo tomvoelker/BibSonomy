@@ -9,7 +9,7 @@
 	<jsp:directive.attribute name="name" fragment="false" required="false" />
 	<jsp:directive.attribute name="text" fragment="true" required="true" />
 
-	<a class="btn btn-primary btn-sm" href="${href}" title="${title}"> 
+	<a class="btn btn-primary btn-sm btn-block" href="${href}" title="${title}"> 
 		<c:choose>
 			<c:when test='${image != null}'>
 				<span class="glyphicon ${image}"><!-- --></span>&amp;nbsp;<jsp:invoke fragment="text" />

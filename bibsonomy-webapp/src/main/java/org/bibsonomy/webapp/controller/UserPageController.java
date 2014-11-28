@@ -11,6 +11,7 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.TagsType;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
@@ -38,11 +39,10 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 	
 	@Override
 	public View workOn(final UserResourceViewCommand command) {
-		
-		initializeDidYouKnowMessageCommand(command);
-		
 		final String format = command.getFormat();
 		this.startTiming(format);
+		
+		initializeDidYouKnowMessageCommand(command);
 
 		final String groupingName = command.getRequestedUser();
 		
@@ -59,7 +59,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		
 		// wrong user similarity requested -> error
 		if (!present(userRelation)) {
-			throw new MalformedURLSchemeException("error.user_page_with_wrong_user_similarity");			
+			throw new MalformedURLSchemeException("error.user_page_with_wrong_user_similarity");
 		}
 		
 		/*
@@ -89,7 +89,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			uupc.logic = this.logic;
 			uupc.userSettings = this.userSettings;
 			return uupc.workOn(command);
-		}		
+		}
 
 		int totalNumPosts = 1;
 
@@ -161,18 +161,18 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			 * with the requested user. 
 			 */
 			final String loginUserName = context.getLoginUser().getName();
+			
+			/*
+			 * Put the user into command to be able to show some details.
+			 * 
+			 * The DBLogic checks, if the login user may see the user's 
+			 * details. 
+			 */
+			final User requestedUser = this.logic.getUserDetails(groupingName);
+			command.setUser(requestedUser);
 			if (context.isUserLoggedIn()) {
-				
 				/*
-				 * Put the user into command to be able to show some details.
-				 * 
-				 * The DBLogic checks, if the login user may see the user's 
-				 * details. 
-				 */
-				final User requestedUser = this.logic.getUserDetails(groupingName);
-				command.setUser(requestedUser);
-				/*
-				 * Has loginUser this user set as friend?
+				 * has loginUser this user set as friend?
 				 */
 				command.setOfFriendUser(this.logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag).contains(requestedUser));
 				command.setFriendOfUser(this.logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag).contains(requestedUser));
@@ -193,11 +193,16 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			}
 			
 			this.endTiming();
-
+			
 			// forward to bibtex page if filter is set
 			if (publicationFilter) {
 				return Views.USERDOCUMENTPAGE;
-			} 
+			}
+			
+			// if user does not exist, trigger 404
+			if (!present(requestedUser.getName())) {
+				throw new ObjectNotFoundException(groupingName);
+			}
 			
 			return Views.USERPAGE;
 		}

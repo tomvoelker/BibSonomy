@@ -53,7 +53,7 @@ public class EditBookmarkController extends EditPostController<Bookmark, EditBoo
 		 * if URL of resource null show POST_BOOKMARK view and 
 		 * initialize didYouKnowMessageCommand  
 		 */
-		if (!present(command.getPost().getResource().getUrl()) && !present(command.getIntraHashToUpdate())) {
+		if (!present(command.getPost().getResource().getUrl()) && !present(command.getIntraHashToUpdate()) && !present(command.getHash())) {
 			initializeDidYouKnowMessageCommand(command);
 			command.getPost().getResource().setUrl("http://");
 			return Views.POST_BOOKMARK;

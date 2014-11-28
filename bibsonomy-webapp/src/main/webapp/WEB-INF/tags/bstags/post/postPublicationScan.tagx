@@ -10,19 +10,7 @@
 	<fieldset>
 		<legend><fmt:message key="post_bibtex.scan.title" /></legend>
 		<div style="max-width:35%;">
-			<parts:qrcode>
-				<jsp:attribute name="errorHeader">
-					<fmt:message key="qrcode.error.errorHeader" />
-				</jsp:attribute>
-						
-				<jsp:attribute name="errorMessage">
-					<fmt:message key="qrcode.error.errorMessage" />
-				</jsp:attribute>
-						
-				<jsp:attribute name="infoMessage">
-					<fmt:message key="qrcode.info.postPublication.readerInfoMessage" />
-				</jsp:attribute>
-			</parts:qrcode>
+			<parts:qrcode infoMessageKey="qrcode.info.postPublication.readerInfoMessage" />
 		</div>
 	</fieldset>
 	

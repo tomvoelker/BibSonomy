@@ -748,6 +748,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		// parse search terms for handling phrase search
 		final QueryParser searchTermParser = new QueryParser(LUCENE_24, fieldName, this.analyzer);
 		searchTermParser.setDefaultOperator(this.defaultSearchTermJunctor);
+		searchTermParser.setAllowLeadingWildcard(true);
 		try {
 			// disallow field specification in search query
 			searchTerms = searchTerms.replace(CFG_LUCENE_FIELD_SPECIFIER, "\\" + CFG_LUCENE_FIELD_SPECIFIER);

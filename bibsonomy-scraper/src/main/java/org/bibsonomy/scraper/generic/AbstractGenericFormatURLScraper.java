@@ -35,6 +35,10 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
 
 /**
+ * Note: do not use this class directly when implementing scrapers, use the
+ * "implemented" specialized format scrapers {@link GenericBibTeXURLScraper},
+ * {@link GenericEndnoteURLScraper} and {@link GenericRISURLScraper}
+ * 
  * @author dzo
  */
 public abstract class AbstractGenericFormatURLScraper extends AbstractUrlScraper {

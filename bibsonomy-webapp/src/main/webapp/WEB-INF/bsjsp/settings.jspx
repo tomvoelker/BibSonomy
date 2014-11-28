@@ -15,7 +15,8 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/bstags/spheres"
 	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs">
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
@@ -26,15 +27,26 @@
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/cv_page.css" />
 			<script type="text/javascript" src="${resdir}/javascript/cv/handlers.js"><!--  --></script>
 			<script type="text/javascript" src="${resdir}/javascript/profile/handlers.js"><!-- --></script>
+			<script type="text/javascript" src="${resdir}/javascript/bs/settings.js"><!-- keep me --></script>
 		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:account />
+					<nav:crumb nameKey="navi.settings" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		
 		<!--+
 			| page content
 			+-->
 		<jsp:attribute name="tabcontent">
-				
 			<!-- display potential errors -->
-			<errors:global errors="${errors}"/>	
+			<errors:global />
 			
+			<settings:group command="${command}"/>
 			
 			<settings:profile command="${command}"/>
 			
@@ -42,19 +54,15 @@
 			
 			<settings:import command="${command}"/>
 			
-			<c:if test="${(command.hasOwnGroup or not (empty param.user or empty param.requGroup or param.requGroup eq command.context.loginUser.name))}">
-				<settings:group command="${command}"/>
-			</c:if>
 			<settings:cv command="${command}"/>
 			
 			<settings:oauth command="${command}"/>
 			
 			<settings:sync command="${command}"/>
-
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.settings"/>
+			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
 	
 		<!--+
@@ -77,44 +85,12 @@
 			+-->
 		<jsp:attribute name="sidebar">
 			<ul>
-				<!-- loginUser.groups -->
-				<li>
-					<h4 class="sidebar"><fmt:message key="groups"/><c:out value=" "/><small>(<a href="/groups"><fmt:message key="overview"/></a>)</small></h4>
-					<ul>
-					<c:forEach var="group" items="${command.context.loginUser.groups}">
-						<li>
-						<a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}'/>&amp;nbsp;</a> 
-							<c:if test="${group.sharedDocuments}">
-								<c:choose>
-									<c:when test="${not group.userSharedDocuments}">
-										<fmt:message var="shareDocumentsTitle" key="groups.actions.shareDocuments.title"></fmt:message>
-										<a class="action btn btn-default btn-xs" 
-											href="/ajax/handleGroupShare?requestedGroup=${fn:escapeXml(group.name)}&amp;action=shareDocuments&amp;ckey=${ckey}&amp;forward=settings"
-											title="${shareDocumentsTitle}">
-											<fmt:message key="groups.actions.shareDocuments"/>
-										</a>
-									</c:when>
-									<c:otherwise>
-										<fmt:message var="unshareDocumentsTitle" key="groups.actions.unshareDocuments.title"></fmt:message>
-											<a class="action btn btn-default btn-xs" 
-												href="/ajax/handleGroupShare?requestedGroup=${fn:escapeXml(group.name)}&amp;action=unshareDocuments&amp;ckey=${ckey}&amp;forward=settings"
-												title="${unshareDocumentsTitle}">
-												<fmt:message key="groups.actions.unshareDocuments"/>
-											</a>
-									</c:otherwise>
-								</c:choose>
-							</c:if>
-						</li>
-					</c:forEach>
-					</ul>
-				</li>
-
 				<!-- loginUser.friends -->
 				<li class="user-friends">
 					<h4 class="sidebar"><fmt:message key="friends.friendof"/></h4> 
 					<ul>
 						<c:forEach var="user" items="${command.userFriends}" begin="0" end="4">
-							<li><a href="/friend/${mtl:encodeURI(user.name)}"><c:out value="${user.name}"/></a><c:out value=" "/></li>
+							<li><a href="${relativeUrlGenerator.getFriendUrlByUserName(user.name)}"><user:username user="${user}" noLink="${true}" /></a><c:out value=" "/></li>
 						</c:forEach>
 						<c:if test="${fn:length(command.userFriends) gt 4}">
 							<li class="more-link-item"><a class="more" onclick="$('.user-friends #user-friends-list-more').show();$(this).parent().hide();"><fmt:message key="more" />...</a></li>
@@ -125,7 +101,7 @@
 						<div id="user-friends-list-more" style="display:none;">
 							<ul>
 								<c:forEach var="user" items="${command.userFriends}" begin="5">
-									<li><a href="/friend/${mtl:encodeURI(user.name)}"><c:out value="${user.name}"/></a><c:out value=" "/></li>
+									<li><a href="${relativeUrlGenerator.getFriendUrlByUserName(user.name)}"><user:username user="${user}" noLink="${true}" /></a><c:out value=" "/></li>
 								</c:forEach>
 								<li><a class="less" onclick="$('.user-friends #user-friends-list-more').hide();$('.user-friends .more-link-item').show();"><fmt:message key="less" />...</a></li>
 							</ul>
@@ -137,10 +113,13 @@
 				<li class="friends-of-user">
 					<h4 class="sidebar"><fmt:message key="friends.yourfriends"/></h4>
 					<ul>
+						<!-- FIXME: remove copy paste code, create a tagx file and pass begin and end to it or just render all items and
+							use a javascript script to do the more/less thing -->
 						<c:forEach var="user" items="${command.friendsOfUser}" begin="0" end="4">
 						<li>
-							<a href="/user/${mtl:encodeURI(user.name)}"><c:out value='${user.name}'/>&amp;nbsp;</a> 
-								<fmt:message var="deleteFriendTitle" key="friends.actions.delete.title"><fmt:param value="${fn:escapeXml(user.name)}"/></fmt:message>
+							<user:username user="${user}" />
+							<fmt:message var="deleteFriendTitle" key="friends.actions.delete.title"><fmt:param value="${fn:escapeXml(user.name)}"/></fmt:message>
+							&amp;nbsp;
 							<a class="action" href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(user.name)}&amp;action=removeFriend&amp;ckey=${ckey}&amp;forward=settings" title="${deleteFriendTitle}">
 								<fmt:message key="friends.actions.delete"/>
 							</a>
@@ -155,8 +134,9 @@
 							<ul>
 								<c:forEach var="user" items="${command.friendsOfUser}" begin="5">
 								<li>
-									<a href="/user/${mtl:encodeURI(user.name)}"><c:out value='${user.name}'/>&amp;nbsp;</a> 
-										<fmt:message var="deleteFriendTitle" key="friends.actions.delete.title"><fmt:param value="${fn:escapeXml(user.name)}"/></fmt:message>
+									<user:username user="${user}" />
+									<fmt:message var="deleteFriendTitle" key="friends.actions.delete.title"><fmt:param value="${fn:escapeXml(user.name)}"/></fmt:message>
+									&amp;nbsp;
 									<a class="action" href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(user.name)}&amp;action=removeFriend&amp;ckey=${ckey}&amp;forward=settings" title="${deleteFriendTitle}">
 										<fmt:message key="friends.actions.delete"/>
 									</a>

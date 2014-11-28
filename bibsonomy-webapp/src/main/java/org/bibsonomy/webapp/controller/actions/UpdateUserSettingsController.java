@@ -8,6 +8,7 @@ import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
+import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.controller.SettingsPageController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -106,8 +107,8 @@ public class UpdateUserSettingsController extends SettingsPageController {
 			return;
 		}
 		
-		if (commandSettings.getListItemcount() > PermissionDatabaseManager.END_MAX) {
-			errors.rejectValue("user.settings.listItemcount", "error.settings.list_item_count.size", new String[]{Integer.toString(PermissionDatabaseManager.END_MAX)}, "");
+		if (commandSettings.getListItemcount() > PostLogicInterface.MAX_QUERY_SIZE) {
+			errors.rejectValue("user.settings.listItemcount", "error.settings.list_item_count.size", new String[]{Integer.toString(PostLogicInterface.MAX_QUERY_SIZE)}, "");
 			return;
 		}
 		
