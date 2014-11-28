@@ -53,10 +53,11 @@
 				</c:when>
 				<c:when test="${not empty group}">
 					<fieldset class="fsOuter">
-						<label><h2><c:out value="${group}" /></h2></label>
+						<label><h2><c:out value="${group.name}" /></h2></label>
+						<c:set var="groupRole" value="${command.groupMembership.groupRole}" />
 						<c:choose>
-							<c:when test="${group.groupRole eq 'USER' || group.groupRole eq 'MODERATOR' || group.groupRole eq 'ADMINISTRATOR' }">
-									<c:if test="${group.groupRole eq 'ADMINISTRATOR' || group.groupRole eq 'MODERATOR'}">
+							<c:when test="${groupRole eq 'USER' || groupRole eq 'MODERATOR' || groupRole eq 'ADMINISTRATOR' }">
+									<c:if test="${groupRole eq 'ADMINISTRATOR' || groupRole eq 'MODERATOR'}">
 										<!-- Invite users -->
 										<bsform:fieldset legendKey="user.name">
 											<jsp:attribute name="content">
@@ -72,6 +73,7 @@
 										</bsform:fieldset>
 
 										<!-- Invited users -->
+										<!-- TODO: Fix this -->
 										<c:forEach items="${group.users}" var="member" varStatus="status">
 											<c:if test="${member.groupRole eq 'INVITED'}">
 												<c:set var="hasPendingInvites" value="${true}" />
@@ -157,8 +159,9 @@
 																			<i><c:out value="${member.groupRole}" /></i>
 																		</div>
 																		<div class="col-md-10" style="text-align:right">
-																			<c:if test="${group.groupRole eq 'MODERATOR' || group.groupRole eq 'ADMINISTRATOR'}">
-																				<c:if test="${group.groupRole eq 'ADMINISTRATOR'}">
+																			TODO: Adapt this to maybe forms? The page will be reloaded, no matter what.<BR />
+																			<c:if test="${groupRole eq 'MODERATOR' || groupRole eq 'ADMINISTRATOR'}">
+																				<c:if test="${groupRole eq 'ADMINISTRATOR'}">
 																					<c:choose>
 																						<c:when test="${member.groupRole eq 'USER'}">
 																							<a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;group.groupRole=moderator&amp;ckey=${ckey}">&#8593;</a>
@@ -190,7 +193,7 @@
 										</jsp:attribute>
 									</bsform:fieldset>
 
-									<c:if test="${group.groupRole == 'ADMINISTRATOR'}">
+									<c:if test="${groupRole == 'ADMINISTRATOR'}">
 										<!-- Basic Group Settings -->
 										<bsform:fieldset legendKey="settings.group.settings">
 											<jsp:attribute name="content">

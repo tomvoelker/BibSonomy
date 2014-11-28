@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.command;
 
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
 
 /**
@@ -12,6 +13,7 @@ public class GroupSettingsPageCommand extends BaseCommand {
 	private Group group;
 	private User loggedinUser;
 	private String requestedGroup;
+	private GroupMembership groupMembership;
 	
 	private String username;
 	private int privlevel;
@@ -65,4 +67,11 @@ public class GroupSettingsPageCommand extends BaseCommand {
 		this.sharedDocuments = sharedDocuments;
 	}
 	
+	public GroupMembership getGroupMembership() {
+		return groupMembership;
+	}
+
+	public void setGroupMembership(GroupMembership groupMembership) {
+		this.groupMembership = groupMembership;
+	}
 }

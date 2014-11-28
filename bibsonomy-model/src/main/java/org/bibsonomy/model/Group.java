@@ -458,11 +458,21 @@ public class Group implements Serializable{
 
 	public List<GroupMembership> getMemberships() {
 		if (this.memberships == null)
-			return new LinkedList<>();
+			this.memberships = new LinkedList<>();
 		return memberships;
 	}
 
 	public void setMemberships(List<GroupMembership> memberships) {
 		this.memberships = memberships;
+	}
+	
+	public GroupMembership getGroupMembershipForUser(User user) {
+		for (GroupMembership g : this.getMemberships()) {
+			if (g.getUser().equals(user)) {
+				return g;
+			}
+		}
+		
+		return null;
 	}
 }

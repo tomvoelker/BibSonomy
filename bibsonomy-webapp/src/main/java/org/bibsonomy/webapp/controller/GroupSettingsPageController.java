@@ -1,7 +1,5 @@
 package org.bibsonomy.webapp.controller;
 
-import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.model.Group;
 import org.bibsonomy.model.logic.LogicInterface;
 import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.webapp.command.GroupSettingsPageCommand;
@@ -30,16 +28,13 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 			
 			command.setLoggedinUser(command.getContext().getLoginUser());
 			
-//			for (Group g : command.getLoggedinUser().getGroups())
-//				if (g.getName().equals(command.getRequestedGroup()))
-//					command.setGroup(g);
-			
 			command.setGroup(logic.getGroupDetails(command.getRequestedGroup()));
 			
-			// refresh the requested group
-			if (present(command.getGroup()))
-				command.getGroup().setUsers(this.logic.getUsers(null, GroupingEntity.GROUP,
-						command.getGroup().getName(), null, null, null, null, null, 0, Integer.MAX_VALUE));
+			// set the GroupMembership of the logged in user.
+			if (present(command.getGroup())) {
+				command.setGroupMembership(command.getGroup()
+						.getGroupMembershipForUser(command.getLoggedinUser()));
+			}
 		}
 		
 		return Views.GROUPSETTINGSPAGE;
