@@ -262,4 +262,12 @@ public class UpdateGroupController implements MinimalisticController<UpdateGroup
 	public void setErrors(Errors errors) {
 		this.errors = errors;
 	}
+
+	public LogicInterface getLogic() {
+		return logic;
+	}
+
+	public void setLogic(LogicInterface logic) {
+		this.logic = logic;
+	}
 }
