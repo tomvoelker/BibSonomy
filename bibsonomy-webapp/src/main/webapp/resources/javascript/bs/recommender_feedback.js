@@ -7,24 +7,17 @@ $(function() {
 	var publicationRegex = /[^\/]+\/([^\/]+)\/([^\/]+)/;
 	
 	$(".bookmarksContainer .ptitle").click(function() {
-		sendAjaxRecommenderFeedback(bookmarkRegex, 
-				$(this).parent().find(".action a.copy").attr("href"),
-				"bookmark");
+		sendAjaxRecommenderFeedback(bookmarkRegex, $(this).closest('.bookmarksContainer').find("a.copy").attr("href"), "bookmark");
 	});
-	$(".bookmarksContainer .action a.copy").click(function() {
-		sendAjaxRecommenderFeedback(bookmarkRegex, 
-				$(this).attr("href"),
-				"bookmark");
+	$(".bookmarksContainer a.copy").click(function() {
+		sendAjaxRecommenderFeedback(bookmarkRegex, $(this).attr("href"), "bookmark");
 	});
 	$(".publicationsContainer .ptitle").click(function() {
-		sendAjaxRecommenderFeedback(publicationRegex, 
-				$(this).children("a").attr("href"),
-				"bibtex");
+		sendAjaxRecommenderFeedback(publicationRegex, $(this).children("a").attr("href"), "bibtex");
 	});
-	$(".publicationsContainer .action .copy, .publicationsContainer .action .pick").click(function() {
-		sendAjaxRecommenderFeedback(publicationRegex, 
-				$(this).parent().parent().find(".ptitle a").attr("href"),
-				"bibtex");
+	$(".publicationsContainer a.copy, .publicationsContainer a.pick").click(function() {
+		var publicationUrl = $(this).closest('.publicationsContainer').find(".ptitle a").attr("href");
+		sendAjaxRecommenderFeedback(publicationRegex, publicationUrl, "bibtex");
 	});
 });
 

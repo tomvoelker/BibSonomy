@@ -28,7 +28,7 @@
 						</c:url>
 						
 						<fmt:message key="bibtex.actions.copy.title" var="copyTitle"/>
-						<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
+						<a class="${buttonClasses} copy" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
 							<span class="fa fa-copy"><!--  --></span>
 						</a>
 					
@@ -144,7 +144,7 @@
 					<c:param name="action" value="${pickUnpick}"/>
 				</c:url>
 				<fmt:message key="bibtex.actions.${pickUnpick}.title" var="pickUnpickTitle"/>
-				<a class="${buttonClasses}" onclick="return pickUnpickPublication(this);" title="${pickUnpickTitle}" href="${fn:escapeXml(pickUnpick_url)}">
+				<a class="${buttonClasses} pick" onclick="return pickUnpickPublication(this);" title="${pickUnpickTitle}" href="${fn:escapeXml(pickUnpick_url)}">
 					<span class="glyphicon glyphicon-folder-open"><!--  --></span>
 				</a>
 			</c:when>

@@ -30,7 +30,7 @@
 							<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
 						</c:url>		
 						<fmt:message key="bookmark.actions.copy.title" var="copyTitle"/>
-						<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
+						<a class="${buttonClasses} copy" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
 							<span class="glyphicon glyphicon glyphicon-floppy-disk"><!--  --></span>
 						</a>
 					</c:when>

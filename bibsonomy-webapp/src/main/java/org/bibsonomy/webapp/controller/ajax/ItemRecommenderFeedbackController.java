@@ -50,10 +50,9 @@ import recommender.impl.multiplexer.MultiplexingRecommender;
  * @author lukas
  */
 public class ItemRecommenderFeedbackController extends AjaxController implements MinimalisticController<AjaxItemRecommenderFeedbackCommand>{
-
 	private static final String ACTION_BOOKMARK = "bookmark";
-
 	private static final String ACTION_BIBTEX = "bibtex";
+	
 	
 	private MultiplexingRecommender<RecommendationUser, RecommendedPost<BibTex>> multiplexingBibTexRecommender;
 	private MultiplexingRecommender<RecommendationUser, RecommendedPost<Bookmark>> multiplexingBookmarkRecommender;
@@ -64,7 +63,7 @@ public class ItemRecommenderFeedbackController extends AjaxController implements
 	}
 
 	@Override
-	public View workOn(AjaxItemRecommenderFeedbackCommand command) {
+	public View workOn(final AjaxItemRecommenderFeedbackCommand command) {
 		final String loggedInUserName = command.getContext().getLoginUser().getName();
 		final RecommendationUser recommendationUser = new RecommendationUser();
 		recommendationUser.setUserName(loggedInUserName);
@@ -90,16 +89,14 @@ public class ItemRecommenderFeedbackController extends AjaxController implements
 	/**
 	 * @param multiplexingBibTexRecommender the multiplexingBibTexRecommender to set
 	 */
-	public void setMultiplexingBibTexRecommender(
-			MultiplexingRecommender<RecommendationUser, RecommendedPost<BibTex>> multiplexingBibTexRecommender) {
+	public void setMultiplexingBibTexRecommender(MultiplexingRecommender<RecommendationUser, RecommendedPost<BibTex>> multiplexingBibTexRecommender) {
 		this.multiplexingBibTexRecommender = multiplexingBibTexRecommender;
 	}
 
 	/**
 	 * @param multiplexingBookmarkRecommender the multiplexingBookmarkRecommender to set
 	 */
-	public void setMultiplexingBookmarkRecommender(
-			MultiplexingRecommender<RecommendationUser, RecommendedPost<Bookmark>> multiplexingBookmarkRecommender) {
+	public void setMultiplexingBookmarkRecommender(MultiplexingRecommender<RecommendationUser, RecommendedPost<Bookmark>> multiplexingBookmarkRecommender) {
 		this.multiplexingBookmarkRecommender = multiplexingBookmarkRecommender;
 	}
 }
