@@ -2,6 +2,7 @@ $(document).ready(function () {
 	var URI_PREFIX = "/resources/javascript/pdf.js/web/viewer.html?file=";
 	var PDFJS_FRAME_ID = "#pdfViewer";	
 	
+	/*
 	$(".pdfFile").each(function(i, l) {
 		
 		$(l).click(function (e) {
@@ -10,6 +11,7 @@ $(document).ready(function () {
 			return false;
 		});
 	});
+	*/
 	
 	$('.edit-document-forms .bibtexpreviewimage').first().show();
 

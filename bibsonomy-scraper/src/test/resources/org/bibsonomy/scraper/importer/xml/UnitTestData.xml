@@ -202,7 +202,7 @@
 	</URLTest>
 	<URLTest id="url_31">
 		<TestDescription>URL scraping test with a publication page from Universitätsbibliothek Karlsruhe</TestDescription>
-		<URL>http://www.ubka.uni-karlsruhe.de/hylib-bin/suche.cgi?opacdb=UBKA_OPAC&amp;nd=256943346&amp;session=1147556008&amp;use_cookie_session=1&amp;returnTo=http%3A%2F%2Fwww.ubka.uni-karlsruhe.de%2Fhylib%2Fka_opac.html</URL>
+		<URL>http://primo.bibliothek.kit.edu/primo_library/libweb/action/display.do?tabs=detailsTab&amp;ct=display&amp;fn=search&amp;doc=KITSRC256943346&amp;indx=1&amp;recIds=KITSRC256943346&amp;recIdxs=0&amp;elementId=0&amp;renderMode=poppedOut&amp;displayMode=full&amp;frbrVersion=&amp;dscnt=1&amp;scp.scps=scope%3A%28%22KIT%22%29&amp;frbg=&amp;tab=kit&amp;vl%2836718850UI0%29=any&amp;dstmp=1415546537258&amp;srt=date&amp;mode=Basic&amp;dum=true&amp;tb=t&amp;vl%281UIStartWith0%29=contains&amp;vl%28freeText0%29=Abschlusspodium%20%22Nanotechnologie%20zwischen%20Nutzen%20und%20Risiken&amp;vid=KIT&amp;vl%2836718849UI1%29=all_items</URL>
 		<BibFile>UBKAScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.UBKAScraper</Scraper>
 		<Enabled>true</Enabled>
@@ -261,7 +261,7 @@
 	</URLTest>
 	<URLTest id="url_40">
 		<TestDescription>Scraping test for IEEE computer society scraper</TestDescription>
-		<URL>http://www.computer.org/portal/web/csdl/doi/10.1109/DEXA.2006.148</URL>
+		<URL>http://www.computer.org/csdl/proceedings/dexa/2006/2641/00/26410603-abs.html</URL>
 		<BibFile>IEEEComputerSocietyScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper</Scraper>
 	</URLTest>
@@ -716,7 +716,8 @@
 		<URL>http://arrts.gtcni.org.uk/gtcni/handle/2428/8327</URL>
 		<BibFile>OpenrepositoryScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.openrepository.OpenrepositoryScraper</Scraper>
-		<Enabled>true</Enabled>
+		<!-- getting 404 -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_120">
 		<TestDescription>Test for eric.exeter.ac.uk/exeter (openrepository)</TestDescription>
@@ -823,8 +824,8 @@
 	</URLTest>
 	<URLTest id="url_137">
 		<TestDescription>Scraping test for IEEE computer society scraper (new url schema)</TestDescription>
-		<URL>http://www.computer.org/portal/web/csdl/doi/10.1109/DEXA.2006.148</URL>
-		<BibFile>IEEEComputerSocietyScraperUnitURLTest2.bib</BibFile>
+		<URL>http://www.computer.org/csdl/proceedings/dexa/2006/2641/00/26410603-reference.bib</URL>
+		<BibFile>IEEEComputerSocietyScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_138">
@@ -1037,7 +1038,7 @@
 	</URLTest>
 	<URLTest id="url_169">
 		<TestDescription>Scraping test for publications from ingentaconnect.com</TestDescription>
-		<URL>http://www.ingentaconnect.com/content/ind/ijtmkt/2010/00000005/00000001/art00004</URL>
+		<URL>http://www.ingentaconnect.com/content/mcb/026/2007/00000026/00000004/art00005</URL>
 		<BibFile>IngentaconnectScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper</Scraper>
 	</URLTest>
@@ -1341,7 +1342,7 @@
 	</URLTest>
 	<URLTest id="url_218">
 		<TestDescription>test for pages with coins (multiple authors)</TestDescription>
-		<URL>http://www.mendeley.com/research/sentiment-analysis-twitter-data-1/</URL>
+		<URL>http://www.mendeley.com/research/active-learning-overcome-sample-selection-bias-application-photometric-variable-star-classification/</URL>
 		<BibFile>CoinsScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.CoinsScraper</Scraper>
 	</URLTest>
@@ -1621,7 +1622,7 @@
 	</URLTest>
 	<URLTest id="url_264">
 		<TestDescription>HematologyLibraryScraper Test</TestDescription>
-		<URL>http://bloodjournal.hematologylibrary.org/content/113/23/5703</URL>
+		<URL>http://asheducationbook.hematologylibrary.org/content/2013/1/1.full</URL>
 		<BibFile>HematologyLibraryScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.hematologylibrary.HematologyLibraryScraper</Scraper>
 	</URLTest>
@@ -1726,5 +1727,11 @@
 		<URL>http://www.akademiai.com/content/y5t2lbg5nn3hxa0y/</URL>
 		<BibFile>AkademiaiScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.akademiai.AkademiaiScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_282">
+		<TestDescription>test for nature.com</TestDescription>
+		<URL>http://www.nature.com/news/images-of-the-month-october-2014-1.16228</URL>
+		<BibFile>NatureScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.nature.NatureScraper</Scraper>
 	</URLTest>
 </test:Tests>

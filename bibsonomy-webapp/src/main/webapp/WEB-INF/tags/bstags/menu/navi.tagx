@@ -237,36 +237,47 @@
 										</a>
 									</li>
 									<li class="divider"><!--  --></li>
-										<c:choose>
-											<c:when test="${mtl:contains(authConfig, mtl:convertToEnum('org.bibsonomy.common.enums.AuthMethod', 'SAML'))}">
-												<li>
-													<a href="/login_saml">
-														<span class="fa fa-sign-in"><!-- KEEP ME --></span>
-														<fmt:message key="navi.login" />
-													</a>
-												</li>
-												<li>
-													<a href="/login_saml?rememberMe=true">
-														<span class="fa fa-sign-in"><!-- KEEP ME --></span>
-														<fmt:message key="navi.login.permanent" />
-													</a>
-												</li>
-											</c:when>
-											<c:otherwise>
-												<li>
-													<a href="${relativeUrlGenerator.getLoginUrl()}">
-														<span class="fa fa-sign-in"><!-- KEEP ME --></span>
-														<fmt:message key="navi.login" />
-													</a>
-												</li>
-											</c:otherwise>
-										</c:choose>
-									<li> 
-										<a href="${relativeUrlGenerator.getRegisterUrl()}" title="${titleSpheres}">
-											<span class="fa fa-pencil-square-o"><!-- KEEP ME --></span>
-											<fmt:message key="navi.register" />
-										</a>
-									</li>
+									<c:choose>
+										<c:when test="${mtl:contains(authConfig, mtl:convertToEnum('org.bibsonomy.common.enums.AuthMethod', 'SAML'))}">
+											<li>
+												<a href="/login_saml">
+													<span class="fa fa-sign-in"><!-- KEEP ME --></span>
+													<fmt:message key="navi.login" />
+												</a>
+											</li>
+											<li>
+												<a href="/login_saml?rememberMe=true">
+													<span class="fa fa-sign-in"><!-- KEEP ME --></span>
+													<fmt:message key="navi.login.permanent" />
+												</a>
+											</li>
+											<li>
+												<a href="/login?selTab=1">
+													<span class="fa fa-sign-in"><!-- KEEP ME --></span>
+													<fmt:message key="navi.login.group" />
+												</a>
+											</li>
+											
+										</c:when>
+										<c:otherwise>
+											<li>
+												<a href="${relativeUrlGenerator.getLoginUrl()}">
+													<span class="fa fa-sign-in"><!-- KEEP ME --></span>
+													<fmt:message key="navi.login" />
+												</a>
+											</li>
+										</c:otherwise>
+									</c:choose>
+									
+									<c:if test="${mtl:contains(authConfig, mtl:convertToEnum('org.bibsonomy.common.enums.AuthMethod', 'INTERNAL')) and not properties['auth.register.disabled'] eq 'true'}">
+										<li> 
+											<a href="${relativeUrlGenerator.getRegisterUrl()}">
+												<span class="fa fa-pencil-square-o"><!-- KEEP ME --></span>
+												<fmt:message key="navi.register" />
+											</a>
+										</li>
+									</c:if>
+									
 								</c:otherwise>
 							</c:choose>
 						</ul>
