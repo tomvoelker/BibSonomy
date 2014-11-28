@@ -8,7 +8,11 @@ all sub-modules of BibSonomy, e.g., exceptions, enums, utils, etc.
 The module is part of the [BibSonomy](http://www.bibsonomy.org) social
 bookmarking system and is maintained by the
 [Knowledge & Data Engineering Group](http://www.kde.cs.uni-kassel.de/)
-at the University of Kassel, Germany.
+at the University of Kassel, Germany,
+the [Data Mining and Information Retrieval Group](http://www.is.informatik.uni-wuerzburg.de/en/dmir/)
+at the University of Würzburg, Germany, and
+the [L3S Research Center](http://www.l3s.de/)
+at Leibniz University Hannover, Germany.
 
 ## Documentation
 
@@ -32,7 +36,7 @@ Please see the [release log](https://bitbucket.org/bibsonomy/bibsonomy/wiki/docu
 * Please see the file [LICENSE.txt](https://bitbucket.org/bibsonomy/bibsonomy/src/tip/bibsonomy-common/LICENSE.txt?at=stable)
 
 
-## Maven URLS
+## URLs
 
 * [Home Page](https://bitbucket.org/bibsonomy/bibsonomy)
 * [Maven Repository](http://dev.bibsonomy.org/maven2/)

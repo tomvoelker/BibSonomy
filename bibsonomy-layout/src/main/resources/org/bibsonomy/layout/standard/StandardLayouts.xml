@@ -135,5 +135,6 @@
 		</description>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
-	</layout>	
+		<isFavorite>true</isFavorite>
+	</layout>
 </layouts>

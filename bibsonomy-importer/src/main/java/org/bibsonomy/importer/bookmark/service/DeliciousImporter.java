@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Importer - Various importers for bookmarks and publications.
  *
- *  BibSonomy-Importer - Various importers for bookmarks and publications.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.importer.bookmark.service;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -31,7 +34,6 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.ParseException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
@@ -51,6 +53,7 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.services.importer.RelationImporter;
 import org.bibsonomy.services.importer.RemoteServiceBookmarkImporter;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.io.xml.FilterInvalidXMLCharsReader;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -77,7 +80,7 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 
 	private static final Log log = LogFactory.getLog(DeliciousImporter.class);
 	
-	private static final String DELICIOUS_DEFAULT_ENCODING = "UTF-8";
+	private static final String DELICIOUS_DEFAULT_ENCODING = StringUtils.CHARSET_UTF_8;
 	private static final String HEADER_USER_AGENT = "User-Agent";
 	private static final String HEADER_AUTHORIZATION = "Authorization";
 	private static final String HEADER_AUTH_BASIC = "Basic ";

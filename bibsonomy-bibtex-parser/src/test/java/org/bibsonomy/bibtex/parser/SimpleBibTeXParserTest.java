@@ -1,27 +1,29 @@
 /**
+ * BibSonomy-BibTeX-Parser - BibTeX Parser from http://www-plan.cs.colorado.edu/henkel/stuff/javabib/
  *
- *  BibSonomy-BibTeX-Parser - BibTeX Parser from
- * 		http://www-plan.cs.colorado.edu/henkel/stuff/javabib/
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.bibtex.parser;
 
 import static org.junit.Assert.assertEquals;
@@ -36,7 +38,12 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.util.StringUtils;
 import org.junit.Test;
+
+import bibtex.expansions.CrossReferenceExpansionException;
+import bibtex.expansions.ExpansionException;
+import bibtex.expansions.PersonListParserException;
 
 /**
  * @author rja
@@ -191,11 +198,12 @@ public class SimpleBibTeXParserTest {
 				"  author = {" + author + "}\n" + 
 				"}"
 		);
-		assertEquals("bibtex.expansions.PersonListParserException: Name ends with comma: 'Foo, Bar,' - in 'foo'", parser.getWarnings().get(0));
+		
+		final ExpansionException warning = parser.getWarnings().get(0);
+		assertEquals(PersonListParserException.class, warning.getClass());
+		assertEquals("Name ends with comma: 'Foo, Bar,' - in 'foo'", warning.getMessage());
 		
 
-//		System.out.println(BibTexUtils.toBibtexString(parsedBibTeX));
-//		System.out.println(PersonNameUtils.discoverPersonNames(author));
 	}
 	
 	/**
@@ -244,6 +252,85 @@ public class SimpleBibTeXParserTest {
 		assertEquals("Journal of the ACM", parsedBibTeX.getJournal());
 	}
 
+	/**
+	 * Test if crossref expansion works
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testCrossrefExpansion() throws Exception {
+		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+
+		final List<BibTex> parsedBibTeX = parser.parseBibTeXs(
+				"@proceedings{iswc,\n" +
+				"   booktitle = \"ISWC\",\n" +
+				"   editor = \"John Doe\",\n" +
+				"   year = 2222,\n" +
+				" }\n" +
+				"@inproceedings{foo,\n" +
+				"  month = jun,\n" + 
+				"  crossref = iswc,\n" +
+				"  title = \"Cool paper\",\n" +
+				"  author = \"Bit Bucket\"\n" + 
+				"}"
+		);
+		assertEquals(Arrays.asList(new PersonName("John", "Doe")), parsedBibTeX.get(0).getEditor());
+		assertEquals("2222", parsedBibTeX.get(0).getYear());
+		assertEquals(Arrays.asList(new PersonName("Bit", "Bucket")), parsedBibTeX.get(1).getAuthor());
+	}
+
+	/**
+	 * Test if one entry is parsed even when crossref entry is missing. 
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testCrossrefExpansionMissingCrossref() throws Exception {
+		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+
+		final BibTex parsedBibTeX = parser.parseBibTeX(
+				"@inproceedings{foo,\n" +
+				"  month = jun,\n" + 
+				"  crossref = iswc,\n" +
+				"  title = \"Cool paper\",\n" +
+				"  author = \"Bit Bucket\",\n" + 
+				"}"
+		);
+		assertEquals(Arrays.asList(new PersonName("Bit", "Bucket")), parsedBibTeX.getAuthor());
+	}
+	
+	/**
+	 * Test if several entries are parsed and warnings are added.  
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testCrossrefExpansionMissingCrossref2() throws Exception {
+		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+
+		final List<BibTex> parsedBibTeX = parser.parseBibTeXs(getTestFile("test2.bib"));
+		
+		assertEquals(2, parsedBibTeX.size());
+		
+		assertEquals("2014", parsedBibTeX.get(0).getYear());
+		assertEquals("1145--1154", parsedBibTeX.get(0).getPages());
+		
+		assertEquals("2014", parsedBibTeX.get(1).getYear());
+		assertEquals("2065--2074", parsedBibTeX.get(1).getPages());
+		
+		// We have two entries, both with missing crossrefs.
+		assertEquals(2, parser.getWarnings().size());
+		
+		assertEquals(CrossReferenceExpansionException.class, parser.getWarnings().get(0).getClass());
+		
+		final CrossReferenceExpansionException firstWarning = (CrossReferenceExpansionException) parser.getWarnings().get(0); 
+		
+		assertEquals("crossref key not found", firstWarning.getMessage());
+		assertEquals("DBLP:conf/acl/PickhardtGKWSS14",  firstWarning.getEntryKey());
+		assertEquals("dblp:conf/acl/2014-1",  firstWarning.getCrossrefKey());
+	}	
+
+	
 	@Test
 	public void testFile1() throws Exception {
 		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
@@ -270,7 +357,7 @@ public class SimpleBibTeXParserTest {
 	}
 
 	private static String getTestFile(final String filename) throws IOException {
-		final BufferedReader stream = new BufferedReader(new InputStreamReader(SimpleBibTeXParserTest.class.getClassLoader().getResourceAsStream(filename), "UTF-8"));
+		final BufferedReader stream = new BufferedReader(new InputStreamReader(SimpleBibTeXParserTest.class.getClassLoader().getResourceAsStream(filename), StringUtils.CHARSET_UTF_8));
 		final StringBuilder buf = new StringBuilder();
 		String line;
 		while ((line = stream.readLine()) != null) {

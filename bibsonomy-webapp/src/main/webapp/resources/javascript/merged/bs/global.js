@@ -21,6 +21,7 @@ includeJavaScript("/resources/javascript/bs/bootstrap-dialog.js");
 includeJavaScript("/resources/javascript/bs/custom.js");
 includeJavaScript("/resources/javascript/bs/bootstrap-datepicker.js");
 includeJavaScript("/resources/javascript/bs/bootstrap-carousel.js");
+includeJavaScript("/resources/javascript/bs/bootstrap-tagsinput.js");
 includeJavaScript("/resources/javascript/bs/friendoverview.js");
 includeJavaScript("/resources/javascript/bs/functions.js");
 includeJavaScript("/resources/javascript/bs/actions/clipboard.js");
