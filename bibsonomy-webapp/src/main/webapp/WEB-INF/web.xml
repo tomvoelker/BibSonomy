@@ -160,16 +160,6 @@
 		<servlet-name>SettingsHandler</servlet-name>
 		<servlet-class>servlets.SettingsHandler</servlet-class>
 	</servlet>
-	
-	<!-- events -->
-	<servlet>
-		<servlet-name>events_statphys23</servlet-name>
-		<jsp-file>/events/statphys23/index.jsp</jsp-file>
-	</servlet>
-	<servlet>
-		<servlet-name>events_iswc2007</servlet-name>
-		<jsp-file>/events/iswc2007/index.jsp</jsp-file>
-	</servlet>
 
 	<!-- spring MVC servlet -->
 	<servlet>
@@ -204,17 +194,6 @@
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>/brokenurl.html</url-pattern>
-	</servlet-mapping>
-	
-	<!-- events -->
-	<servlet-mapping>
-		<servlet-name>events_statphys23</servlet-name>
-		<url-pattern>/events/statphys23</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>events_iswc2007</servlet-name>
-		<url-pattern>/events/iswc2007</url-pattern>
 	</servlet-mapping>
 
 	<!-- TODO: remove -->
