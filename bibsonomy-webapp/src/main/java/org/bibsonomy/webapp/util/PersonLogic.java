@@ -6,11 +6,15 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.database.common.DBSessionFactory;
+import org.bibsonomy.database.managers.PersonDatabaseManager;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelation;
 import org.bibsonomy.model.logic.PersonLogicInterface;
+import org.bibsonomy.model.util.BibTexReader;
 
 /**
  * Some methods to help handling Persons.
@@ -18,7 +22,15 @@ import org.bibsonomy.model.logic.PersonLogicInterface;
  */
 public class PersonLogic implements PersonLogicInterface {
 	private static final Log log = LogFactory.getLog(PersonLogic.class);
-
+	private PersonDatabaseManager personDatabaseManager;
+	private DBSessionFactory dbSessionFactory;
+	private User loginUser;
+	
+	public PersonLogic(final User loginUser, final DBSessionFactory dbSessionFactory) {
+		this.loginUser = loginUser;
+		this.dbSessionFactory = dbSessionFactory;
+		this.personDatabaseManager = PersonDatabaseManager.getInstance();
+	}
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String)
 	 */
@@ -41,7 +53,7 @@ public class PersonLogic implements PersonLogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#addPersonRelation(java.lang.String, java.lang.String, org.bibsonomy.model.Person, org.bibsonomy.model.enums.PersonResourceRelation)
 	 */
 	@Override
-	public void addPersonRelation(String longHash, String publicationOwner, String personID, PersonResourceRelation rel) {
+	public void addPersonRelation(String longHash, String publicationOwner, int personID, PersonResourceRelation rel) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -50,7 +62,7 @@ public class PersonLogic implements PersonLogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonRelation(java.lang.String, java.lang.String, org.bibsonomy.model.Person, org.bibsonomy.model.enums.PersonResourceRelation)
 	 */
 	@Override
-	public void removePersonRelation(String longHash, String publicationOwner, String person_ID, PersonResourceRelation rel) {
+	public void removePersonRelation(String longHash, String publicationOwner, int person_ID, PersonResourceRelation rel) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -60,8 +72,8 @@ public class PersonLogic implements PersonLogicInterface {
 	 */
 	@Override
 	public void createOrUpdatePerson(Person person) {
-		// TODO Auto-generated method stub
-		
+		this.personDatabaseManager.createPerson(person, 
+				this.dbSessionFactory.getDatabaseSession());
 	}
 
 	/* (non-Javadoc)

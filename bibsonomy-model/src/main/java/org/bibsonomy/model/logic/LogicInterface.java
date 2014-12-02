@@ -47,12 +47,14 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.enums.PersonResourceRelation;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 
@@ -76,7 +78,7 @@ import org.bibsonomy.model.user.remote.RemoteUserId;
  * @author Jens Illig <illig@innofinity.de>
  * @author Christian Kramer
  */
-public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogicInterface, DiscussionLogicInterface, SyncLogicInterface, PersonLogicInterface {
+public interface LogicInterface extends PersonLogicInterface, PostLogicInterface, GoldStandardPostLogicInterface, DiscussionLogicInterface, SyncLogicInterface {
 
 	/**
 	 * @return the name of the authenticated user
@@ -682,5 +684,6 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @param clearInbox 
 	 * @return the new size of the inbox
 	 */
-	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox);	
+	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox);
+
 }

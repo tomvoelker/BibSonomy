@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.params.PersonParam;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.User;
 
@@ -11,6 +12,7 @@ import org.bibsonomy.model.User;
  * TODO: add documentation to this class
  *
  * @author jensi
+ * @author Christian Pfeiffer / eisfair
  */
 public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(PersonDatabaseManager.class);
@@ -32,6 +34,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		session.beginTransaction();
 		try {
 			// TODO: this.insertPerson(person, session);
+			this.insert("insertPerson", person, session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();

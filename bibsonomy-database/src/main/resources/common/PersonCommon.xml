@@ -1,18 +1,18 @@
-PersonDatabaseManager<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="PersonCommon">
-	<resultMap id="person" class="person">
-		<result property="id"          column="id"           javaType="java.lang.Integer" />
+	<resultMap id="person" class="org.bibsonomy.model.Person">
+		<result property="id"          column="person_id"           javaType="java.lang.Integer" />
 		<result property="orcid"       column="orcid"        javaType="string" />
 		<result property="postCounter" column="post_ctr"     javaType="int" />
-		<result property="changedBy"   column="changed_by"   javaType="java.lang.String" />
-		<result property="changeDate"  column="change_date"  javaType="java.util.Date" />
+		<result property="changedBy"   column="log_modified_by"   javaType="java.lang.String" />
+		<result property="changeDate"  column="log_modified_at"  javaType="java.util.Date" />
 		<result property="user"        column="user_name"    javaType="java.lang.String" />
 	</resultMap>
 	
-	<sql id="personAttributes">
-		id, orcid, post_ctr, changed_by, change_date
+	<sql id="commonPersonAttributes">
+		person_id, orcid, post_ctr, log_modified_by, log_modified_at, user_name
 	</sql>
 	
 	<sql id="insertPersonAttributes">

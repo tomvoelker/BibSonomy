@@ -104,6 +104,9 @@
 						<div class="col-md-6">
 							<div class='btn-group'>
 								<input type="hidden" name='formAction' value='new' />
+								<input type='hidden' name='formUser' value='${command.formUser}' />
+								<input type='hidden' name='formResourceHash' value='${command.formResourceHash}' />
+								<input type='hidden' name='formPersonRole' value='${command.formPersonRole}' />
 								<input type='submit' name='submit' value='${textNewPersonButton}' class='btn btn-primary'/>
 							</div>
 						</div>

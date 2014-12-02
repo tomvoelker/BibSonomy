@@ -1148,14 +1148,14 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		Assert.assertEquals(2, max.getAlternateNames().size());
 		Assert.assertEquals("0000-0002-9056-5667", max.getOrcid());
 		Assert.assertEquals(new GregorianCalendar(2014, 8, 13, 19, 21, 10).getTime(), max.getChangeDate());
-		Assert.assertEquals(new User("jil"), max.getChangeBy());
+		Assert.assertEquals(new User("jil"), max.getChangedBy());
 		Assert.assertEquals(new User("hansii"), max.getUser());
 	}
 	
 	private static void assertEqual(final Person expected, Person actual) {
 		CommonModelUtils.assertPropertyEquality(expected, actual, Integer.MAX_VALUE, null, "user", "modifiedBy");
 		Assert.assertEquals(expected.getUser(), actual.getUser());
-		Assert.assertEquals(expected.getChangeBy(), actual.getChangeBy());
+		Assert.assertEquals(expected.getChangedBy(), actual.getChangedBy());
 	}
 	
 	@Test
@@ -1177,7 +1177,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		// create Person
 		logic1.createOrUpdatePerson(dummyPerson);
 		Assert.assertNotNull(dummyPerson.getId());
-		Assert.assertEquals(new User(TEST_USER_1), dummyPerson.getChangeBy());
+		Assert.assertEquals(new User(TEST_USER_1), dummyPerson.getChangedBy());
 		Assert.assertTrue(System.currentTimeMillis() - dummyPerson.getChangeDate().getTime() < 100);
 		
 		// assert person exists
@@ -1190,7 +1190,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		setToHenner(resultPerson);
 		final Person henner = resultPerson;
 		logic2.createOrUpdatePerson(henner);
-		Assert.assertEquals(new User(TEST_USER_2), henner.getChangeBy());
+		Assert.assertEquals(new User(TEST_USER_2), henner.getChangedBy());
 		
 		// assert two persons are found
 		final List<Person> hennerList = logic2.getPersons(null, null, henner.getMainName(), null);

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.enums.PersonResourceRelation;
@@ -23,7 +24,8 @@ import org.bibsonomy.webapp.view.Views;
 public class DisambiguationPageController extends SingleResourceListController implements MinimalisticController<DisambiguationPageCommand> {
 	private static final Log log = LogFactory.getLog(DisambiguationPageController.class);
 	
-	private PersonLogic personLogic = new PersonLogic();
+	private DBSessionFactory dbSessionFactory;
+	private PersonLogic personLogic = new PersonLogic(null, null);
 	
 	@Override
 	public DisambiguationPageCommand instantiateCommand() {
@@ -49,7 +51,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 
 		command.setPost(this.logic.getPostDetails(command.getRequestedHash(), command.getRequestedUser()));
 		PersonName pn = new PersonName(command.getRequestedAuthorName().split(",")[1], command.getRequestedAuthorName().split(",")[0]);
-		command.setSuggestedPersons(this.logic.getPersons(null, null, pn, PersonResourceRelation.valueOf(command.getRequestedRole())));
+		command.setSuggestedPersons(this.personLogic.getPersons(null, null, pn, PersonResourceRelation.valueOf(command.getRequestedRole())));
 		
 		return Views.DISAMBIGUATION;
 	}
@@ -70,9 +72,23 @@ public class DisambiguationPageController extends SingleResourceListController i
 	
 	private View linkAction(DisambiguationPageCommand command) {
 		
-		this.personLogic.addPersonRelation(command.getRequestedHash(), command.getRequestedUser(), command.getFormAddPersonId(), PersonResourceRelation.valueOf(command.getRequestedRole()));	
+		this.personLogic.addPersonRelation(command.getRequestedHash(), command.getRequestedUser(), Integer.parseInt(command.getFormAddPersonId()), PersonResourceRelation.valueOf(command.getRequestedRole()));	
 		
 		return new ExtendedRedirectView("/person/"+command.getFormAddPersonId()+"/"+ command.getRequestedAuthorName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/" + command.getRequestedRole());
+	}
+
+	/**
+	 * @return the dbSessionFactory
+	 */
+	public DBSessionFactory getDbSessionFactory() {
+		return this.dbSessionFactory;
+	}
+
+	/**
+	 * @param dbSessionFactory the dbSessionFactory to set
+	 */
+	public void setDbSessionFactory(DBSessionFactory dbSessionFactory) {
+		this.dbSessionFactory = dbSessionFactory;
 	}
 }
 

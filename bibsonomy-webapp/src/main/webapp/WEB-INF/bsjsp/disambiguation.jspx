@@ -169,9 +169,12 @@
           				<p>${textModalNewPersonContent}</p>
 					</div>
 					<div class="modal-footer">
-						<form action="/person/0/${command.requestedAuthorName}/${command.requestedHash}/${command.requestedUser}/${command.requestedRole}" method="post" class='form-horizontal'>
+						<form action="/person/0/${command.requestedAuthorName}" method="post" class='form-horizontal'>
 							<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
 							<input type="hidden" name='formAction' value='new' />
+							<input type='hidden' name='formResourceHash' value='${command.requestedHash}'/>
+							<input type='hidden' name='formUser' value='${command.requestedUser}'/>
+							<input type='hidden' name='formPersonRole' value='${command.requestedRole}'/>
 							<input type="submit" class="btn btn-primary" name='submit' value='${textNewPersonButton}' />
 						</form>
 					</div>

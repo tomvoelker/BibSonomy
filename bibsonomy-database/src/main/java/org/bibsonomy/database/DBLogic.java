@@ -2871,6 +2871,87 @@ public class DBLogic implements LogicInterface {
 			this.loginUser.addGroup(new Group(GroupID.PUBLIC_SPAM));
 		}
 	}
+//
+//	@Override
+//	public List<Person> getPersonSuggestion(String searchString) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	
+//	private static final List<Person> personsHack = new ArrayList<Person>();
+//	private static int personIds = 4712;
+//	
+//	static {
+//		Person p = new Person();
+//		p.setId(4711);
+//		p.setAcademicDegree("Dr. rer. nat.");
+//		p.setMainName(new PersonName("Gerd", "Stumme"));
+//		BibTex pub = new BibTex();
+//		pub.setEntrytype("phdthesis");
+//		p.setDisambiguatingPublication(pub);
+//		personsHack.add(p);
+//		Person p2 = new Person();
+//		p.setId(4712);
+//		p.setAcademicDegree("M.Sc.");
+//		p.setMainName(new PersonName("Gerd", "Stumme"));
+//		personsHack.add(p);
+//	}
+//	
+//	@Override
+//	public List<Person> getPersons(String longHash, String publicationOwner, PersonName personName, PersonResourceRelation rel) {
+//		List<Person> rVal =  new ArrayList<>();
+//		for (Person p : personsHack) {
+//			//if ((longhash != null) && (longHash.startsWith("1"))
+//			rVal.add(p);
+//		}
+//		return rVal;
+//	}
+//
+//	@Override
+//	public void addPersonRelation(String longHash, String publicationOwner, String personId, PersonResourceRelation rel) {
+//		// TODO Auto-generated method stub
+//		throw new UnsupportedOperationException();
+//	}
+//
+//	@Override
+//	public void removePersonRelation(String longHash, String publicationOwner, String personId, PersonResourceRelation rel) {
+//		// TODO Auto-generated method stub
+//		throw new UnsupportedOperationException();
+//	}
+//
+//	@Override
+//	public void createOrUpdatePerson(Person person) {
+//		Person p = null;
+//		if (person.getId() != null) {
+//			p = getPersonById(person.getId());
+//		}
+//		if (p == null) {
+//			if (person.getId() == null) {
+//				person.setId(++personIds);
+//			}
+//			personsHack.add(person);
+//		}
+//		throw new UnsupportedOperationException();
+//	}
+//	
+//	@Override
+//	public Person getPersonById(int id) {
+//		for (Person p : personsHack) {
+//			if ((p.getId() != null) && (p.getId() == id)) {
+//				return p;
+//			}
+//		}
+//		return null;
+//	}
+//
+//	/* (non-Javadoc)
+//	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getQualifyingPublications(java.lang.String)
+//	 */
+//	@Override
+//	public Map<Person, BibTex> getQualifyingPublications(String personName) {
+//		throw new UnsupportedOperationException();
+//	}
 
 	@Override
 	public List<Person> getPersonSuggestion(String searchString) {
@@ -2878,78 +2959,42 @@ public class DBLogic implements LogicInterface {
 		return null;
 	}
 
-	
-	private static final List<Person> personsHack = new ArrayList<Person>();
-	private static int personIds = 4712;
-	
-	static {
-		Person p = new Person();
-		p.setId(4711);
-		p.setAcademicDegree("Dr. rer. nat.");
-		p.setMainName(new PersonName("Gerd", "Stumme"));
-		BibTex pub = new BibTex();
-		pub.setEntrytype("phdthesis");
-		p.setDisambiguatingPublication(pub);
-		personsHack.add(p);
-		Person p2 = new Person();
-		p.setId(4712);
-		p.setAcademicDegree("M.Sc.");
-		p.setMainName(new PersonName("Gerd", "Stumme"));
-		personsHack.add(p);
-	}
-	
 	@Override
-	public List<Person> getPersons(String longHash, String publicationOwner, PersonName personName, PersonResourceRelation rel) {
-		List<Person> rVal =  new ArrayList<>();
-		for (Person p : personsHack) {
-			//if ((longhash != null) && (longHash.startsWith("1"))
-			rVal.add(p);
-		}
-		return rVal;
+	public List<Person> getPersons(String longHash, String publicationOwner,
+			PersonName personName, PersonResourceRelation rel) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	public void addPersonRelation(String longHash, String publicationOwner, String personId, PersonResourceRelation rel) {
+	public void addPersonRelation(String longHash, String publicationOwner,
+			int personId, PersonResourceRelation rel) {
 		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		
 	}
 
 	@Override
-	public void removePersonRelation(String longHash, String publicationOwner, String personId, PersonResourceRelation rel) {
+	public void removePersonRelation(String longHash, String publicationOwner,
+			int personId, PersonResourceRelation rel) {
 		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		
 	}
 
 	@Override
 	public void createOrUpdatePerson(Person person) {
-		Person p = null;
-		if (person.getId() != null) {
-			p = getPersonById(person.getId());
-		}
-		if (p == null) {
-			if (person.getId() == null) {
-				person.setId(++personIds);
-			}
-			personsHack.add(person);
-		}
-		throw new UnsupportedOperationException();
+		// TODO Auto-generated method stub
+		
 	}
-	
+
 	@Override
 	public Person getPersonById(int id) {
-		for (Person p : personsHack) {
-			if ((p.getId() != null) && (p.getId() == id)) {
-				return p;
-			}
-		}
+		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getQualifyingPublications(java.lang.String)
-	 */
 	@Override
 	public Map<Person, BibTex> getQualifyingPublications(String personName) {
-		throw new UnsupportedOperationException();
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

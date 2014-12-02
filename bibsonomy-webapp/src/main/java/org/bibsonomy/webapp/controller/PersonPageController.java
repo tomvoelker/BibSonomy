@@ -3,7 +3,9 @@ package org.bibsonomy.webapp.controller;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.HashSet;
+
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
@@ -20,21 +22,12 @@ import org.bibsonomy.webapp.view.Views;
  * @author Christian Pfeiffer
  */
 public class PersonPageController extends SingleResourceListController implements MinimalisticController<PersonPageCommand> {
-	private PersonLogic personLogic = new PersonLogic();
+	private PersonLogic personLogic;
+	private DBSessionFactory dbSessionFactory;
 	
 	@Override
 	public View workOn(final PersonPageCommand command) {
-		
-		/**
-		 * PreDefinitions (for presentation)
-		 */
-		
-		Person p = new Person();
-		p.setMainName(new PersonName("Max", "Musterman"));
-		p.setAlternateNames(new HashSet<PersonName>());
-		p.getAlternateNames().add(new PersonName("Viktor", "Hemsen"));
-		p.getAlternateNames().add(new PersonName("Max", "Musterman"));
-		command.setPerson(p);
+		this.personLogic = new PersonLogic(null, this.dbSessionFactory);
 		
 		if(present(command.getFormAction())) {
 			switch(command.getFormAction()) {
@@ -45,7 +38,7 @@ public class PersonPageController extends SingleResourceListController implement
 				case "editRole": return this.editRoleAction(command);
 				case "deleteRole": return this.deleteRoleAction(command);
 				case "unlink": return this.unlinkAction(command);
-				case "newPerson": return this.newAction(command);
+				case "new": return this.newAction(command);
 				case "link": return this.assignAction(command);
 				case "search": return this.indexAction(command);
 				default: return this.indexAction(command);
@@ -57,7 +50,6 @@ public class PersonPageController extends SingleResourceListController implement
 		
 	}
 
-
 	/**
 	 * @param command
 	 * @return
@@ -65,7 +57,7 @@ public class PersonPageController extends SingleResourceListController implement
 	private View assignAction(PersonPageCommand command) {
 		
 		command.setPerson(this.personLogic.getPersonById(Integer.parseInt(command.getRequestedPersonId())));
-		command.getPerson().setUser(this.logic.getAuthenticatedUser());
+		command.getPerson().setUser(this.logic.getAuthenticatedUser().getName());
 		this.personLogic.createOrUpdatePerson(command.getPerson());
 		
 		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getId().intValue(), command.getPerson().getMainName().toString(), command.getPost().getResource().getInterHash(), command.getPost().getUser().getName(), command.getRequestedRole()));
@@ -84,13 +76,24 @@ public class PersonPageController extends SingleResourceListController implement
 	 */
 	private View newAction(PersonPageCommand command) {
 		
-		command.setPost(this.logic.getPostDetails(command.getRequestedHash(), command.getRequestedUser()));
+		command.setPost(this.logic.getPostDetails(command.getFormResourceHash(), command.getFormUser()));
 		if(present(command.getFormLastName())) {
 			Person person = new Person();
 			person.setMainName(new PersonName(command.getFormFirstName(), command.getFormLastName()));
 			person.setAcademicDegree(command.getFormAcademicDegree());
-			this.personLogic.createOrUpdatePerson(person);
+			person.setUser(command.getFormUser());
+			System.out.println("halo");
 			
+			System.out.println("halo");
+			System.out.println("halo");
+			System.out.println("halo");
+			
+			this.personLogic.createOrUpdatePerson(person);		
+			this.personLogic.addPersonRelation(
+					command.getFormResourceHash(), 
+					command.getFormUser(), 
+					person.getId(), 
+					PersonResourceRelation.AUTHOR);
 			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getId().intValue(), command.getPerson().getMainName().toString(), command.getPost().getResource().getInterHash(), command.getPost().getUser().getName(), command.getRequestedRole()));
 		}
 		
@@ -105,7 +108,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 */
 	private View unlinkAction(PersonPageCommand command) {
 		
-		this.personLogic.removePersonRelation(command.getRequestedHash(), command.getRequestedUser(), command.getRequestedPersonId(), PersonResourceRelation.valueOf(command.getRequestedRole()));
+		this.personLogic.removePersonRelation(command.getRequestedHash(), command.getRequestedUser(), Integer.parseInt(command.getRequestedPersonId()), PersonResourceRelation.valueOf(command.getRequestedRole()));
 		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getId().intValue(), command.getPerson().getMainName().toString(), command.getPost().getResource().getInterHash(), command.getPost().getUser().getName(), command.getRequestedRole()));
 		
 	}
@@ -117,7 +120,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 */
 	private View addRoleAction(PersonPageCommand command) {
 		
-		this.personLogic.addPersonRelation(command.getRequestedHash(), command.getRequestedUser(), command.getRequestedPersonId(), PersonResourceRelation.valueOf(command.getRequestedRole()));
+		this.personLogic.addPersonRelation(command.getRequestedHash(), command.getRequestedUser(), Integer.parseInt(command.getRequestedPersonId()), PersonResourceRelation.valueOf(command.getRequestedRole()));
 		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getId().intValue(), command.getPerson().getMainName().toString(), command.getPost().getResource().getInterHash(), command.getPost().getUser().getName(), command.getRequestedRole()));	
 	}
 
@@ -129,7 +132,7 @@ public class PersonPageController extends SingleResourceListController implement
 	private View editRoleAction(PersonPageCommand command) {
 		//TODO add new role types to view
 		for(String role : command.getFormPersonRoles()) {
-			this.personLogic.addPersonRelation(command.getRequestedHash(), command.getRequestedUser(), command.getRequestedPersonId(), PersonResourceRelation.valueOf(role));
+			this.personLogic.addPersonRelation(command.getRequestedHash(), command.getRequestedUser(), Integer.parseInt(command.getRequestedPersonId()), PersonResourceRelation.valueOf(role));
 		}
 				
 		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getId().intValue(), command.getPerson().getMainName().toString(), command.getPost().getResource().getInterHash(), command.getPost().getUser().getName(), command.getRequestedRole()));	
@@ -137,7 +140,7 @@ public class PersonPageController extends SingleResourceListController implement
 	
 	private View deleteRoleAction(PersonPageCommand command) {
 		
-		this.personLogic.removePersonRelation(command.getFormResourceHash(), command.getFormUser(), command.getFormPersonId(), PersonResourceRelation.valueOf(command.getFormPersonRole().toUpperCase()));
+		this.personLogic.removePersonRelation(command.getFormResourceHash(), command.getFormUser(), Integer.parseInt(command.getRequestedPersonId()), PersonResourceRelation.valueOf(command.getFormPersonRole().toUpperCase()));
 				
 		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getId().intValue(), command.getPerson().getMainName().toString(), command.getPost().getResource().getInterHash(), command.getPost().getUser().getName(), command.getRequestedRole()));	
 	}
@@ -204,6 +207,34 @@ public class PersonPageController extends SingleResourceListController implement
 	@Override
 	public PersonPageCommand instantiateCommand() {
 		return new PersonPageCommand();
+	}
+
+	/**
+	 * @return the personLogic
+	 */
+	public PersonLogic getPersonLogic() {
+		return this.personLogic;
+	}
+
+	/**
+	 * @param personLogic the personLogic to set
+	 */
+	public void setPersonLogic(PersonLogic personLogic) {
+		this.personLogic = personLogic;
+	}
+
+	/**
+	 * @return the dbSessionFactory
+	 */
+	public DBSessionFactory getDbSessionFactory() {
+		return this.dbSessionFactory;
+	}
+
+	/**
+	 * @param dbSessionFactory the dbSessionFactory to set
+	 */
+	public void setDbSessionFactory(DBSessionFactory dbSessionFactory) {
+		this.dbSessionFactory = dbSessionFactory;
 	}
 }
 

@@ -30,9 +30,9 @@ public interface PersonLogicInterface {
 	 */
 	public List<Person> getPersons(String longHash, String publicationOwner, PersonName personName, PersonResourceRelation rel);
 
-	public void addPersonRelation(String longHash, String publicationOwner, String personId, PersonResourceRelation rel);
+	public void addPersonRelation(String longHash, String publicationOwner, int personId, PersonResourceRelation rel);
 
-	public void removePersonRelation(String longHash, String publicationOwner, String personId, PersonResourceRelation rel);
+	public void removePersonRelation(String longHash, String publicationOwner, int personId, PersonResourceRelation rel);
 
 	/**
 	 * sets id for new persons

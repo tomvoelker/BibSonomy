@@ -9,7 +9,7 @@
 	</select>	
 	
 	<insert id="insertPerson" parameterClass="org.bibsonomy.model.Person">
-		INSERT INTO user (<include refid="commonPersonAttributes"/>)
+		INSERT INTO person (<include refid="commonPersonAttributes"/>)
 			VALUES (<include refid="insertPersonAttributes"/>)
 	</insert>
 	

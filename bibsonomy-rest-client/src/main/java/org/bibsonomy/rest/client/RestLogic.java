@@ -729,61 +729,48 @@ public class RestLogic implements LogicInterface {
 		throw new UnsupportedOperationException(); // TODO: implement me
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String)
-	 */
 	@Override
 	public List<Person> getPersonSuggestion(String searchString) {
-		throw new UnsupportedOperationException();
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersons(java.lang.String, java.lang.String, org.bibsonomy.model.PersonName, org.bibsonomy.model.enums.PersonResourceRelation)
-	 */
 	@Override
-	public List<Person> getPersons(String longHash, String publicationOwner, PersonName personName, PersonResourceRelation rel) {
-		throw new UnsupportedOperationException();
+	public List<Person> getPersons(String longHash, String publicationOwner,
+			PersonName personName, PersonResourceRelation rel) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#addPersonRelation(java.lang.String, java.lang.String, org.bibsonomy.model.Person, org.bibsonomy.model.enums.PersonResourceRelation)
-	 */
 	@Override
-	public void addPersonRelation(String longHash, String publicationOwner, String personId, PersonResourceRelation rel) {
-		throw new UnsupportedOperationException();
+	public void addPersonRelation(String longHash, String publicationOwner,
+			int personId, PersonResourceRelation rel) {
+		// TODO Auto-generated method stub
+		
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonRelation(java.lang.String, java.lang.String, org.bibsonomy.model.Person, org.bibsonomy.model.enums.PersonResourceRelation)
-	 */
 	@Override
-	public void removePersonRelation(String longHash, String publicationOwner, String person, PersonResourceRelation rel) {
-		throw new UnsupportedOperationException();
+	public void removePersonRelation(String longHash, String publicationOwner,
+			int personId, PersonResourceRelation rel) {
+		// TODO Auto-generated method stub
+		
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePerson(org.bibsonomy.model.Person)
-	 */
 	@Override
 	public void createOrUpdatePerson(Person person) {
-		throw new UnsupportedOperationException();
+		// TODO Auto-generated method stub
+		
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonById(int)
-	 */
 	@Override
 	public Person getPersonById(int id) {
-		throw new UnsupportedOperationException();
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getQualifyingPublications(java.lang.String)
-	 */
 	@Override
 	public Map<Person, BibTex> getQualifyingPublications(String personName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }
