@@ -17,23 +17,21 @@
 	<jsp:directive.attribute name="name" type="java.lang.String" required="false" description="name attribute for input field"/>
 	<jsp:directive.attribute name="value" type="java.lang.String" required="false" description="value attribute for input field"/>
 	
-			
 	<div class="radio">
-	
 		<c:if test="${empty labelText}">
 			<fmt:message var="labelText" key="${path}" /> 
 		</c:if>
 		
 		<label>
-		  	<c:choose>
-		  		<c:when test="${checked}">
-		  			<form:radiobutton title="${fn:escapeXml(labelText)}" path="${path}" value="${value}" checked="checked"/>
-		  		</c:when>
-		  		<c:otherwise>
-		  			<form:radiobutton path="${fn:escapeXml(path)}" title="${fn:escapeXml(labelText)}" value="${value}"/>
-		  		</c:otherwise>
-		  	</c:choose>
-		  	<c:out value="${labelText}" />
+			<c:choose>
+				<c:when test="${checked}">
+					<form:radiobutton title="${fn:escapeXml(labelText)}" path="${path}" value="${value}" checked="checked"/>
+				</c:when>
+				<c:otherwise>
+					<form:radiobutton path="${fn:escapeXml(path)}" title="${fn:escapeXml(labelText)}" value="${value}"/>
+				</c:otherwise>
+			</c:choose>
+			<c:out value="${labelText}" />
 		</label>
 	</div>
 </jsp:root>
