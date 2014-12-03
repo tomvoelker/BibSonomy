@@ -26,15 +26,19 @@
  */
 package org.bibsonomy.layout.standard;
 
+import org.bibsonomy.model.Layout;
+
 /**
  * Represents an entry of a standard (non jabref) layout definition 
  * 
  * @author: lsc
- * 
  */
-public class StandardLayout extends org.bibsonomy.model.Layout {
+public class StandardLayout extends Layout {
 	
-	
+	/**
+	 * default constructor
+	 * @param name
+	 */
 	public StandardLayout(final String name) {
 		super(name);
 	}
@@ -43,6 +47,4 @@ public class StandardLayout extends org.bibsonomy.model.Layout {
 	public boolean hasEmbeddedLayout() {
 		return false;
 	}
-
 }
-
