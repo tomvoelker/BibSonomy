@@ -375,6 +375,7 @@
 						<property name="allowedFields">
 							<list>
 								<value>post.description</value>
+								<value>post.tags</value>
 								<value>post.date</value> <!-- only allowed for DBLP and used by DBLP updater -->
 								<value>post.changeDate</value>
 								<value>post.resource.url</value>
@@ -660,6 +661,7 @@
 	<!-- bookmark request parameters -->
 	<util:list id="bookmarkRequestParameters">
 		<value>post.resource.url</value>
+		<value>post.tags</value>
 		<value>post.resource.title</value>
 		<value>post.description</value>
 		<value>post.date</value> <!-- only allowed for DBLP and used by DBLP updater -->
@@ -690,6 +692,7 @@
 	<!-- publication request parameters -->
 	<util:list id="publicationRequestParameters">
 	  <value>post.description</value>
+	  <value>post.tags</value>
 		<value>post.date</value> <!-- only allowed for DBLP and used by DBLP updater -->
 		<value>post.resource.url</value>
 		<value>post.resource.title</value>

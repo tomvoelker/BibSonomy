@@ -31,6 +31,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,6 +39,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.antlr.runtime.RecognitionException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -408,12 +410,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				 * which resource type are we dealing with?*/
 				Class<? extends Resource> resourceType = dbPost.getResource().getClass();
 				if(BibTex.class.equals(resourceType)){
-					final BibTex bibResource = (BibTex) dbPost.getResource();
+					
 					for(int i =0;i<diffEntryKeyList.size();i++){
-						replaceResourceFieldsPub(bibResource,diffEntryKeyList.get(i), diffEntryValList.get(i));
+						replaceResourceFieldsPub(dbPost,diffEntryKeyList.get(i), diffEntryValList.get(i));
 					}
 				
-					dbPost.setResource((RESOURCE) bibResource);
 				}
 				else{
 					for(int i =0;i<diffEntryKeyList.size();i++){
@@ -499,7 +500,8 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param key
 	 * @param value
 	 */
-	protected void replaceResourceFieldsPub(BibTex bibResource, String key, String value){
+	protected void replaceResourceFieldsPub(final Post post, String key, String value){
+		final BibTex bibResource = (BibTex) post.getResource();
 		switch(key){
 			case "entrytype":
 				bibResource.setEntrytype(value);
@@ -620,7 +622,15 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			case "note":
 				bibResource.setNote(value);
 				break;
+			case "tags"://check comma separated tags
+				try {
+					Set<Tag> tagSet = TagUtils.parse(value);
+					post.setTags(tagSet);
+				} catch (RecognitionException e) {
+					log.error("Couldn't parse tag's string and couldn't convert it to Set(collection)", e);
+				}	
 			}
+		post.setResource((RESOURCE) bibResource);
 	}
 	
 	/** this function changes the resource/post fields according to key-value.
@@ -639,6 +649,14 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				break;
 			case "description":
 				post.setDescription(value);
+				break;
+			case "tags":
+				try {
+					Set<Tag> tagSet = TagUtils.parse(value);
+					post.setTags(tagSet);
+				} catch (RecognitionException e) {
+					log.error("Couldn't parse tag's string and couldn't convert it to Set(collection)", e);
+				}
 			}
 	}
 

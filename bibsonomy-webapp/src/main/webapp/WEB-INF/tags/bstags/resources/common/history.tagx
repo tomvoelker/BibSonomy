@@ -56,7 +56,7 @@
 		<div class="panel panel-primary">
 		
 			<div class="panel-heading">		
-				<h3 class="panel-title"> <!-- post's title -->			
+				<h4 class="panel-title"> <!-- post's title -->			
 					<c:choose>
 						<!-- if we are dealing with a publication -->
 						<c:when test="${isPub}">
@@ -67,7 +67,7 @@
 									<bibgs:title post="${newestPost}"/>
 								</c:when>
 								<c:otherwise>
-								<c:set var="isCommunityPost" value="false" />
+									<c:set var="isCommunityPost" value="false" />
 									<bib:title post="${newestPost}" />
 								</c:otherwise>
 							</c:choose>
@@ -88,7 +88,7 @@
 							</c:choose>
 						</c:otherwise>
 					</c:choose>
-				</h3>
+				</h4>
 			</div>
 		
 				
@@ -135,8 +135,8 @@
 								</td>
 								<c:choose>
 									<c:when test="${isPub}">
-										<c:set var="diffArrayPre" value="${mtl:DiffEntriesPub(listView.list[(fieldlength-index)].resource,listView.list[(fieldlength-index+1)].resource)}"/>		
-										<c:set var="diffArrayCurr" value="${mtl:DiffEntriesPub(listView.list[(fieldlength)].resource,listView.list[(fieldlength-index+1)].resource)}"/>									
+										<c:set var="diffArrayPre" value="${mtl:DiffEntriesPub(listView.list[(fieldlength-index)],listView.list[(fieldlength-index+1)])}"/>		
+										<c:set var="diffArrayCurr" value="${mtl:DiffEntriesPub(listView.list[(fieldlength)],listView.list[(fieldlength-index+1)])}"/>									
 									</c:when>
 									<c:otherwise>
 										<c:set var="diffArrayPre" value="${mtl:DiffEntriesBm(listView.list[(fieldlength-index)],listView.list[(fieldlength-index+1)])}"/>		
@@ -220,7 +220,7 @@
 											<c:choose>
 												<c:when test="${isPub}">
 													<input type="hidden" name="diffEntryValue" 
-														value="${mtl:getEntryValuePub(diffEntry.key,listView.list[(fieldlength-index+1)].resource)}"/>
+														value="${mtl:getEntryValuePub(diffEntry.key,listView.list[(fieldlength-index+1)])}"/>
 												</c:when>
 												<c:otherwise>
 													<input type="hidden" name="diffEntryValue" 
@@ -277,10 +277,12 @@
 											<c:set var="isCommunityPost" value="${true}" />
 											<!-- currently there is no specific method for gsBookmark title -->
 											<strong><bm:title post="${listView.list[(0)]}"/></strong>
+											<br/>
 											<bm:desc post="${listView.list[(0)]}"/>
 										</c:when>
 										<c:otherwise>
 											<strong><bm:title post="${listView.list[(0)]}"/></strong>
+											<br/>
 											<bm:desc post="${listView.list[(0)]}"/>
 										</c:otherwise>
 									</c:choose>

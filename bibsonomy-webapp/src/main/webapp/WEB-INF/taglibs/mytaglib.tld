@@ -258,7 +258,7 @@
 	<function>
 		<name>DiffEntriesPub</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>java.util.Map DiffEntriesPub(org.bibsonomy.model.BibTex, org.bibsonomy.model.BibTex)</function-signature>
+		<function-signature>java.util.Map DiffEntriesPub(org.bibsonomy.model.Post, org.bibsonomy.model.Post)</function-signature>
 	</function>
 	
 	<function>
@@ -270,7 +270,7 @@
 	<function>
 		<name>getEntryValuePub</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String getEntryValuePub(java.lang.String,org.bibsonomy.model.BibTex)</function-signature>
+		<function-signature>String getEntryValuePub(java.lang.String,org.bibsonomy.model.Post)</function-signature>
 	</function>
 	
 	<function>

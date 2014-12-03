@@ -424,7 +424,9 @@ public class Functions {
 	 * returns a map of key-value:
 	 * new bibTex and the old one are compared according to each field,
 	 * keys are the fields which have different values*/
-	public static Map<String,String> DiffEntriesPub(BibTex newBib, BibTex oldBib) {
+	public static Map<String,String> DiffEntriesPub(Post newPost, Post oldPost) {
+		final BibTex newBib = (BibTex) newPost.getResource();
+		final BibTex oldBib = (BibTex) oldPost.getResource();
 		Map<String,String> DiffArray = new LinkedHashMap<String,String>();
 		String tmp;		
 		if (!cleanBibtex(newBib.getEntrytype()).equals(cleanBibtex(oldBib.getEntrytype()))){
@@ -603,6 +605,11 @@ public class Functions {
 			tmp = compareString(newBib.getNote(),oldBib.getNote());
 			DiffArray.put("note",tmp);
 		}
+		if (!cleanBibtex(toTagString(newPost.getTags())).equals(cleanBibtex(toTagString(oldPost.getTags())))){
+			tmp = compareString(toTagString(newPost.getTags()),toTagString(oldPost.getTags()));
+			DiffArray.put("tags",tmp);
+		}
+
 		return DiffArray;
 	}
 	
@@ -613,7 +620,9 @@ public class Functions {
 	 * @param Bib
 	 * @return value
 	 */
-	public static String getEntryValuePub(String key,BibTex Bib){
+	public static String getEntryValuePub(String key,Post post){
+		final BibTex Bib = (BibTex) post.getResource();
+	
 		String val="";
 		switch(key){
 			case "entrytype":
@@ -719,6 +728,8 @@ public class Functions {
 			case "note":
 				val = Bib.getNote();
 				break;
+			case "tags":
+				val = toTagString(post.getTags());
 			}
 		return val;
 	}
@@ -733,6 +744,7 @@ public class Functions {
 	 * @return key-value
 	 */
 	public static Map<String,String> DiffEntriesBm(Post newBmPost, Post oldBmPost) {
+		
 		Map<String,String> DiffArray = new LinkedHashMap<String,String>();
 		String tmp;		
 		if (!cleanBibtex(newBmPost.getResource().getTitle()).equals(cleanBibtex(oldBmPost.getResource().getTitle()))){
@@ -748,6 +760,11 @@ public class Functions {
 		if (!cleanBibtex(newBmPost.getDescription()).equals(cleanBibtex(oldBmPost.getDescription()))){
 			tmp = compareString(newBmPost.getDescription(),oldBmPost.getDescription());
 			DiffArray.put("description",tmp);
+		}
+	
+		if (!cleanBibtex(toTagString(newBmPost.getTags())).equals(cleanBibtex(toTagString(oldBmPost.getTags())))){
+			tmp = compareString(toTagString(newBmPost.getTags()),toTagString(oldBmPost.getTags()));
+			DiffArray.put("tags",tmp);
 		}
 		return DiffArray;
 	}
@@ -768,7 +785,11 @@ public class Functions {
 				break;
 			case "description":
 				val = bmPost.getDescription();
+				break;
+			case "tags":
+				val = toTagString(bmPost.getTags());
 			}
+		
 		return val;
 	}
 
