@@ -1162,6 +1162,8 @@ public class DBLogic implements LogicInterface {
 		// TODO: Add blacklisting users!
 		// TODO: WHAT APOUT SPAM??? Does this work?
 		if (!(operation == GroupUpdateOperation.ADD_REQUESTED && !loginUser.getSpammer())
+				&& !(operation == GroupUpdateOperation.ACCEPT_JOIN_REQUEST && !loginUser.getSpammer()
+				&& group.getGroupMembershipForUser(loginUser).getGroupRole().equals(GroupRole.INVITED))
 				&& !isPageAdmin && !isGroupAdmin && !isGroupModerator) {
 			throw new ValidationException("No rights.");
 		}
