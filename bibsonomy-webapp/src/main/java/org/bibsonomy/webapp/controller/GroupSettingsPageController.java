@@ -30,11 +30,24 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 			
 			command.setGroup(logic.getGroupDetails(command.getRequestedGroup()));
 			
+			command.setUser(logic.getUserDetails(command.getRequestedGroup()));
+			
 			// set the GroupMembership of the logged in user.
 			if (present(command.getGroup())) {
 				command.setGroupMembership(command.getGroup()
 						.getGroupMembershipForUser(command.getLoggedinUser()));
 			}
+		}
+		
+		switch(command.getSelTab()) {
+			case 0:
+				break;
+			case 1:
+				break;
+			case 5:
+				break;
+			default:
+				break;
 		}
 		
 		return Views.GROUPSETTINGSPAGE;
