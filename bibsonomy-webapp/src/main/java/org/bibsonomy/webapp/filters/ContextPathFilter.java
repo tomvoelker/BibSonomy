@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.filters;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -30,8 +56,8 @@ import org.apache.commons.logging.LogFactory;
 public class ContextPathFilter implements Filter {
 	private static final Log log = LogFactory.getLog(ContextPathFilter.class);
 	
-	/** later initialized by spring */
-	private static String projectHomeUrl;
+	/** the project home */
+	private String projectHomeUrl;
 	
 	/**
 	 * Instances of this class ignore the context path of the application. I.e.,
@@ -139,7 +165,10 @@ public class ContextPathFilter implements Filter {
 	 */
 	protected static final class LoggingResponse extends HttpServletResponseWrapper {
 		private static final Log LOG = LogFactory.getLog(LoggingResponse.class);
-
+		
+		/**
+		 * @param response
+		 */
 		public LoggingResponse(final HttpServletResponse response) {
 			super(response);
 		}
@@ -158,9 +187,16 @@ public class ContextPathFilter implements Filter {
 	 * 
 	 */
 	protected static final class RedirectResolvingResponseWrapper extends HttpServletResponseWrapper {
-
-		public RedirectResolvingResponseWrapper(final HttpServletResponse response) {
+		
+		private final String projectHomeUrl;
+		
+		/**
+		 * @param response
+		 * @param projectHomeUrl
+		 */
+		public RedirectResolvingResponseWrapper(HttpServletResponse response, String projectHomeUrl) {
 			super(response);
+			this.projectHomeUrl = projectHomeUrl;
 		}
 		
 		/* (non-Javadoc)
@@ -177,10 +213,9 @@ public class ContextPathFilter implements Filter {
 		}
 	}
 	
-	
-
 	@Override
 	public void destroy() {
+		// noop
 	}
 
 	@Override
@@ -191,9 +226,9 @@ public class ContextPathFilter implements Filter {
 		 */
 		try {
 			if (request instanceof HttpServletRequest) {
-				chain.doFilter(new ContextPathFreeRequest((HttpServletRequest) request), wrap(response));	
+				chain.doFilter(new ContextPathFreeRequest((HttpServletRequest) request), wrapResponse(response));	
 			} else {
-				chain.doFilter(request, wrap(response));
+				chain.doFilter(request, wrapResponse(response));
 			}
 		} catch (final Exception ex) {
 			final HttpServletRequest castedRequest = (HttpServletRequest)request;
@@ -214,15 +249,16 @@ public class ContextPathFilter implements Filter {
 	 * @param response
 	 * @return
 	 */
-	private ServletResponse wrap(ServletResponse response) {
+	private ServletResponse wrapResponse(ServletResponse response) {
 		if (response instanceof HttpServletResponse) {
-			return new RedirectResolvingResponseWrapper((HttpServletResponse) response);
+			return new RedirectResolvingResponseWrapper((HttpServletResponse) response, this.projectHomeUrl);
 		}
 		return response; 
 	}
 
 	@Override
 	public void init(final FilterConfig filterConfig) throws ServletException {
+		// noop
 	}
 
 	/**
@@ -230,9 +266,9 @@ public class ContextPathFilter implements Filter {
 	 * @param projectHomeUrl
 	 */
 	public void setProjectHomeUrl(String projectHomeUrl) {
-		if (projectHomeUrl.endsWith("/") == true) {
+		if (projectHomeUrl.endsWith("/")) {
 			projectHomeUrl = projectHomeUrl.substring(0, projectHomeUrl.length() - 1);
 		}
-		ContextPathFilter.projectHomeUrl = projectHomeUrl;
+		this.projectHomeUrl = projectHomeUrl;
 	}
 }

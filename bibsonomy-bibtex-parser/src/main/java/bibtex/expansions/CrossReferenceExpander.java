@@ -1,27 +1,3 @@
-/**
- *  
- *  BibSonomy-BibTeX-Parser - BibTeX Parser from
- * 		http://www-plan.cs.colorado.edu/henkel/stuff/javabib/
- *   
- *  Copyright (C) 2006 - 2010 Knowledge & Data Engineering Group, 
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
- *  
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
- * 
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *  
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
-
 /*
  * Created on Mar 29, 2003
  * 
@@ -81,8 +57,9 @@ public final class CrossReferenceExpander extends AbstractExpander implements Ex
 		final Map<String, BibtexAbstractEntry> entryKey2Entry = new HashMap<String, BibtexAbstractEntry>();
 		final List<BibtexEntry> entriesWithCrossReference = new ArrayList<BibtexEntry>();
 		for (final BibtexAbstractEntry abstractEntry : bibtexFile.getEntries()) {
-			if (!(abstractEntry instanceof BibtexEntry))
+			if (!(abstractEntry instanceof BibtexEntry)) {
 				continue;
+			}
 			final BibtexEntry entry = (BibtexEntry) abstractEntry;
 			entryKey2Entry.put(entry.getEntryKey().toLowerCase(), abstractEntry);
 			if (entry.getFields().containsKey("crossref")) {
@@ -114,6 +91,7 @@ public final class CrossReferenceExpander extends AbstractExpander implements Ex
 				// copy fields
 				final Map<String, BibtexAbstractValue> entryFields = entry.getFields();
 				final Map<String, BibtexAbstractValue> crossrefFields = crossrefEntry.getFields();
+				// TODO: Iterate over key/value pairs instead of only keys
 				for (final String key : crossrefFields.keySet()) {
 					if (!entryFields.containsKey(key)) {
 						entry.setField(key, crossrefFields.get(key));
