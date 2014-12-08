@@ -36,7 +36,7 @@ public class SharedResourceManager<R extends Resource> extends LuceneResourceMan
 		// prepare index generation
 		synchronized (this) {
 			this.generatingIndex = true;
-			GenerateSharedResourceIndex generator = new GenerateSharedResourceIndex();
+			SharedResourceIndexGenerator generator = new SharedResourceIndexGenerator();
 			generator.setSearchType(SearchType.ELASTICSEARCH);
 			for(LuceneResourceManager<? extends Resource> manager: luceneResourceManagers){
 				generator.setLogic((LuceneDBInterface<Resource>) manager.getDbLogic());

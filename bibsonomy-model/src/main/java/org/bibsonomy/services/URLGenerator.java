@@ -506,7 +506,7 @@ public class URLGenerator {
      * Constructs a URL for the given resource and user. If no user
      * is given, the URL points to all posts for that resource.
      * 
-     * @param publication
+     * @param resource
      *            - must have proper inter and intra hashes
      *            (a call to {@link Resource#recalculateHashes()} might be necessary
      *            but is not done by this method)
@@ -516,18 +516,18 @@ public class URLGenerator {
      *            is returned.
      * @return - The URL which represents the given publication.
      */
-    public String getPublicationUrl(final BibTex publication, final User user) {
+    public String getPublicationUrl(final Resource resource, final User user) {
         if (!present(user) || !present(user.getName())) {
             /*
              * If a user name is given, return the url to that users post (intrahash + username)
              * otherwise return the URL to the resources page (interhash)
              */
         	String url = this.projectHome + PUBLICATION_PREFIX + "/" + 
-        				 PUBLICATION_INTER_HASH_ID + publication.getInterHash();
+        				 PUBLICATION_INTER_HASH_ID + resource.getInterHash();
             return this.getUrl(url);
         }
         String url = this.projectHome + prefix + PUBLICATION_PREFIX + "/" + 
-        			 PUBLICATION_INTRA_HASH_ID + publication.getIntraHash() + 
+        			 PUBLICATION_INTRA_HASH_ID + resource.getIntraHash() + 
         			 "/" + UrlUtils.safeURIEncode(user.getName());
         return this.getUrl(url);
     }

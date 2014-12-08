@@ -1,6 +1,11 @@
 package org.bibsonomy.es;
 
 
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.es.ESClient;
@@ -41,6 +46,7 @@ public class ESTransportClient implements ESClient {
 			log.info("EsHostss value in Properties:" + esHosts);
 			// Setting cluster name of ES Server
 			final Builder settings = ImmutableSettings.settingsBuilder().put("cluster.name",ESConstants.ES_CLUSTERNAME_VALUE);
+//			final Builder settings = ImmutableSettings.settingsBuilder().put("cluster.name",esProperties.get(ESConstants.ES_CLUSTERNAME));
 //			settings.put(ESConstants.PATH_CONF, ESConstants.NAMES_TXT);
 			settings.put(ESConstants.SNIFF, true);
 			final TransportClient transportClient = new TransportClient(
@@ -69,6 +75,27 @@ public class ESTransportClient implements ESClient {
 		}
 	}
 
+	
+	/**
+	 * Gets the eS host value.
+	 *
+	 * @return the eS host value
+	 */
+	private Map<String, String> getESHostValue() {
+		Map<String, String> esProperties= new HashMap<String,String>();
+		try {
+			Properties props = new Properties();
+			props.load(ESTransportClient.class.getClassLoader().getResourceAsStream("project.properties"));
+
+			esProperties.put(ESConstants.ES_ADDRESSS,props.getProperty(ESConstants.ES_ADDRESSS));
+			esProperties.put(ESConstants.ES_CLUSTERNAME,props.getProperty(ESConstants.ES_CLUSTERNAME));
+	        return esProperties;
+		} catch (Exception e) {
+			log.error("Error while accessing ES propertyFile",e);
+		} 
+		return null;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

@@ -1,20 +1,14 @@
 package org.bibsonomy.webapp.controller.admin;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.es.GenerateSharedResourceIndex;
 import org.bibsonomy.es.SharedResourceManager;
-import org.bibsonomy.lucene.database.LuceneDBInterface;
-import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.webapp.command.admin.AdminLuceneViewCommand;
 import org.bibsonomy.webapp.command.admin.LuceneResourceIndicesInfoContainer;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -26,6 +20,7 @@ import org.springframework.security.access.AccessDeniedException;
 
 /**
  * Controller for lucene admin page
+ * controller for /admin/generateSharedIndex page
  * 
  * @author Sven Stefani
  */

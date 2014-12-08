@@ -9,7 +9,14 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
 
 	<!--  display title -->
-	<c:set var="bibUrlTemplate">${relativeUrlGenerator.getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, post.user.name)}</c:set>
+	<c:choose>
+		<c:when test="${not empty post.pumaurl}">
+			<c:set var="bibUrlTemplate" value="${post.pumaurl}"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var="bibUrlTemplate">${relativeUrlGenerator.getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, post.user.name)}</c:set>
+		</c:otherwise>
+	</c:choose>
 	<c:set var="bibTitle" value="${mtl:cleanBibtex(post.resource.title)}"/>
 
 

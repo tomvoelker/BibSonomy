@@ -287,17 +287,20 @@ public class LuceneResourceConverter<R extends Resource> {
 			// get index properties
 			final String fieldName = this.getFieldName(propertyName);
 			final String propertyStr = (String) result.get(fieldName); 
-				if (!present(propertyStr)) {
-					continue;
+			if (!present(propertyStr)) {
+				continue;
 				}
 			final Object propertyValue = this.getPropertyValue(propertyName, propertyStr);			
 			try {
 				PropertyUtils.setNestedProperty(post, propertyName, propertyValue);
 				} catch (final Exception e) {
 					log.error("Error setting property " + propertyName + " to " + propertyValue.toString(), e);
-					}
 				}
-				
-				return post;
+		}
+		if(result.get("pumaurl")!=null){
+			String pumaurl = result.get("pumaurl").toString();
+			post.setPumaurl(pumaurl);		
+		}
+		return post;
 	}
 }

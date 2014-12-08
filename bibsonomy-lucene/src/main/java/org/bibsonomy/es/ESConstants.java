@@ -36,7 +36,7 @@ public final class ESConstants {
 	/**
 	 * ES.properties filename
 	 */
-	public static final String ES_PROPERTIES = "ES.properties";
+	public static final String ES_PROPERTIES = "project.properties";
 	/**
 	 * Elasticsearch Node name
 	 */
@@ -44,7 +44,7 @@ public final class ESConstants {
 	/**
 	 * Elasticsearch IP and port.
 	 */
-	public static final String ES_ADDRESSS = "ELASSTICSEARCH_ADDRESS";
+	public static final String ES_ADDRESSS = "es.address";
 	/**
 	 * Elasticsearch IP and port values, if we have multiple addresses, they
 	 * will be separated by "," and port and ip are separated by ":"
@@ -54,7 +54,7 @@ public final class ESConstants {
 	/**
 	 * Elasticsearch CLustername
 	 */
-	public static final String ES_CLUSTERNAME = "ELASSTICSEARCH_CLUSTERNAME";
+	public static final String ES_CLUSTERNAME = "es.cluster.name";
 	/**
 	 * Elasticsearch clustername value
 	 */

@@ -14,36 +14,50 @@
 		+-->
 	<c:choose>
 		<c:when test="${command.context.userLoggedIn}">
-			<c:choose>
-				<!-- COPY -->
-				<c:when test="${loginUserName ne post.user.name}"><!-- user is not post's owner -->
-					<c:url var="copyLink" value="/editBookmark">
-						<c:param name="hash">
-							<c:choose>
-								<c:when test="${not empty post.user.name}">
-									<!-- non-community post: use intra-hash -->
-									<c:out value="${post.resource.intraHash}" />
-								</c:when>
-								<c:otherwise>
-									<!-- community post: use inter-hash -->
-									<c:out value="${post.resource.interHash}" />
-								</c:otherwise>
-							</c:choose>
-						</c:param>
-						<c:param name="user" value="${post.user.name}" />
-						<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
-					</c:url>	
-					
-					<fmt:message key="bookmark.actions.copy.title" var="copyTitle"/>
-					<a class="item copy" href="${copyLink}" title="${fn:escapeXml(copyTitle)}"><!-- Keep Me --></a>
-				</c:when>
-			
-				<!-- EDIT -->
-				<c:otherwise><!-- user is post's owner -->
-					<fmt:message key="bookmark.actions.edit.title" var="editTitle" />
-					<a class="item edit" href="/editBookmark?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}"><!-- Keep Me--></a>
-				</c:otherwise>
-			</c:choose>
+		<c:choose>
+			<!-- COPY -->		
+			<c:when test="${post.isSharedResourcePost}">
+				<c:url var="copyLink" value="/ShowBookmarkEntry">
+					<c:param name="url" value="${mtl:cleanUrl(post.resource.url)}"/>
+					<c:param name="description" value="${post.description}"/>
+					<c:param name="extended"/>
+					<c:param name="referer" value="${mtl:cleanUrl(post.resource.url)}"/>
+				</c:url>
+				<fmt:message key="bookmark.actions.copy.title" var="copyTitle"/>
+				<a class="item copy" href="${copyLink}" title="${fn:escapeXml(copyTitle)}"><!-- Keep Me --></a>			
+			</c:when>
+			<c:otherwise>
+				<c:choose>
+					<c:when test="${loginUserName ne post.user.name}"><!-- user is not post's owner -->
+						<c:url var="copyLink" value="/editBookmark">
+							<c:param name="hash">
+								<c:choose>
+									<c:when test="${not empty post.user.name}">
+										<!-- non-community post: use intra-hash -->
+										<c:out value="${post.resource.intraHash}" />
+									</c:when>
+									<c:otherwise>
+										<!-- community post: use inter-hash -->
+										<c:out value="${post.resource.interHash}" />
+									</c:otherwise>
+								</c:choose>
+							</c:param>
+							<c:param name="user" value="${post.user.name}" />
+							<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
+						</c:url>	
+						
+						<fmt:message key="bookmark.actions.copy.title" var="copyTitle"/>
+						<a class="item copy" href="${copyLink}" title="${fn:escapeXml(copyTitle)}"><!-- Keep Me --></a>
+					</c:when>
+				
+					<!-- EDIT -->
+					<c:otherwise><!-- user is post's owner -->
+						<fmt:message key="bookmark.actions.edit.title" var="editTitle" />
+						<a class="item edit" href="/editBookmark?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}"><!-- Keep Me--></a>
+					</c:otherwise>
+				</c:choose>
+			</c:otherwise>
+		</c:choose>
 		</c:when>
 		<c:otherwise>
 			<!-- For signed out users we always show the inactive copy button -->
@@ -73,7 +87,7 @@
 		<c:otherwise>
 			<!-- REGULAR POST DELETE -->
 			<c:choose>
-				<c:when test="${command.context.userLoggedIn and loginUserName eq post.user.name}">
+				<c:when test="${command.context.userLoggedIn and loginUserName eq post.user.name and not post.isSharedResourcePost}">
 					<fmt:message key="bookmark.actions.delete.title" var="deleteTitle" />
 					<c:url var="deleteUrl" value="/deletePost">
 						<c:param name="resourceHash" value="${post.resource.intraHash}" />

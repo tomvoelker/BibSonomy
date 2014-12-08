@@ -12,21 +12,22 @@ import java.util.concurrent.TimeUnit;
 import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.util.generator.LuceneGenerateResourceIndex;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.es.ESClient;
+import org.bibsonomy.services.URLGenerator;
 
 /**
  * TODO: add documentation to this class
  *
  * @author lka
  */
-public class GenerateSharedResourceIndex extends LuceneGenerateResourceIndex<Resource>{
+public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Resource>{
 	
 	private final String INDEX_NAME = ESConstants.INDEX_NAME;
 	private String INDEX_TYPE;
-
-
-	// ElasticSearch Node client
+	private final String pumaUrlMiscFieldName = "pumaurl";
+	private URLGenerator urlGenerator =  new URLGenerator();
 //	private final ESClient esClient = new ESNodeClient();
 	// ElasticSearch Transport client
 	private static ESClient esClient;
@@ -77,9 +78,11 @@ public class GenerateSharedResourceIndex extends LuceneGenerateResourceIndex<Res
 				post.setLastLogDate(lastLogDate);
 				post.setLastTasId(lastTasId);
 				if (this.isNotSpammer(post)) {
-					
 					Map<String, Object> jsonDocument = new HashMap<String, Object>();
 					jsonDocument = (Map<String, Object>) this.resourceConverter.readPost(post, this.searchType);
+					if(INDEX_TYPE.equalsIgnoreCase("BibTex")){
+						jsonDocument.put(this.pumaUrlMiscFieldName, (urlGenerator.getPublicationUrl(post.getResource(), post.getUser())).toString());
+					}
 					esClient.getClient()
 							.prepareIndex(INDEX_NAME, INDEX_TYPE, post.getContentId().toString())
 							.setSource(jsonDocument).execute().actionGet();
@@ -117,7 +120,7 @@ public class GenerateSharedResourceIndex extends LuceneGenerateResourceIndex<Res
 
 			log.warn("Generating index for "+ this.INDEX_TYPE+"...");
 			// generate index
-			GenerateSharedResourceIndex.this.createIndexFromDatabase();
+			SharedResourceIndexGenerator.this.createIndexFromDatabase();
 
 			this.isRunning = false;
 		} catch (final Exception e) {
@@ -152,14 +155,14 @@ public class GenerateSharedResourceIndex extends LuceneGenerateResourceIndex<Res
 	 * @return the esClient
 	 */
 	public ESClient getEsClient() {
-		return GenerateSharedResourceIndex.esClient;
+		return SharedResourceIndexGenerator.esClient;
 	}
 
 	/**
 	 * @param esClient the esClient to set
 	 */
 	public void setEsClient(ESClient esClient) {
-		GenerateSharedResourceIndex.esClient = esClient;
+		SharedResourceIndexGenerator.esClient = esClient;
 	}
 
 }

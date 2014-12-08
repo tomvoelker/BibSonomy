@@ -81,7 +81,7 @@
 		lazy-init="true">
 		<property name="esClient" ref="esTransportClient" />
 	</bean>
-	<bean id="sharedResourceIndexGenerator" class="org.bibsonomy.es.GenerateSharedResourceIndex"
+	<bean id="sharedResourceIndexGenerator" class="org.bibsonomy.es.SharedResourceIndexGenerator"
 		lazy-init="true">
 		<property name="esClient" ref="esTransportClient" />
 	</bean>

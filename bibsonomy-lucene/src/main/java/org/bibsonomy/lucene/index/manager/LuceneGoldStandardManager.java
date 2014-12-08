@@ -2,6 +2,7 @@ package org.bibsonomy.lucene.index.manager;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.lucene.document.Document;
 import org.bibsonomy.lucene.database.LuceneDBLogic;
@@ -26,6 +27,7 @@ import org.bibsonomy.model.es.SearchType;
  */
 public class LuceneGoldStandardManager<R extends Resource & GoldStandard<?>> extends LuceneResourceManager<GoldStandardPublication> {
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected int updateIndex(final long currentLogDate, int lastId, final long lastLogDate, final SearchType searchType) {
 	    /*
@@ -48,18 +50,41 @@ public class LuceneGoldStandardManager<R extends Resource & GoldStandard<?>> ext
 	    	lastId = Math.max(contentId, lastId);
 	    }
 	    
-	    this.updatingIndex.deleteDocumentsInIndex(contentIdsToDelete);
 
 	    final Date currentDate = new Date(currentLogDate);
 	    
 	    /*
 	     * add all new posts to the index 
 	     */
-	    for (final LucenePost<GoldStandardPublication> post : newPosts) {
-	    	post.setLastLogDate(currentDate);
-	    	post.setLastTasId(lastId);
-	    	final Document postDoc = (Document) this.resourceConverter.readPost(post, searchType);
-	    	this.updatingIndex.insertDocument(postDoc);
+	    if(SearchType.LUCENESEARCH==searchType){
+		    this.updatingIndex.deleteDocumentsInIndex(contentIdsToDelete);
+		    for (final LucenePost<GoldStandardPublication> post : newPosts) {
+		    	post.setLastLogDate(currentDate);
+		    	post.setLastTasId(lastId);
+		    	final Document postDoc = (Document) this.resourceConverter.readPost(post, searchType);
+		    	this.updatingIndex.insertDocument(postDoc);
+		    }
+	    }else if (SearchType.ELASTICSEARCH == searchType){
+	    	this.sharedIndexUpdater.setContentIdsToDelete(contentIdsToDelete);
+
+			for (final LucenePost<GoldStandardPublication> post : newPosts) {
+				post.setLastLogDate(currentDate);
+		    	post.setLastTasId(lastId);
+				final Map<String, Object> postDoc = (Map<String, Object>)this.resourceConverter.readPost(post, searchType);
+				this.sharedIndexUpdater.insertDocument(postDoc);
+			}			
+	    }else if(SearchType.BOTH == searchType){
+		    this.updatingIndex.deleteDocumentsInIndex(contentIdsToDelete);
+	    	this.sharedIndexUpdater.setContentIdsToDelete(contentIdsToDelete);
+			for (final LucenePost<GoldStandardPublication> post : newPosts) {
+		    	post.setLastTasId(lastId);
+				post.setLastLogDate(currentDate);
+				final Document postDoc = (Document)this.resourceConverter.readPost(post, SearchType.LUCENESEARCH);
+				final Map<String, Object> postJsonDoc = (Map<String, Object>)this.resourceConverter.readPost(post, SearchType.ELASTICSEARCH);
+				this.sharedIndexUpdater.insertDocument(postJsonDoc);
+				this.updatingIndex.insertDocument(postDoc);
+			}
+				
 	    }
 	    
 	    return lastId;
