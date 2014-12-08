@@ -21,7 +21,7 @@
 	</session-config>
 	<context-param>
 		<param-name>config.location</param-name>
-		<param-value>${user.home}/bibsonomy-lucene-migration.properties</param-value>
+		<param-value>${user.home}/bibsonomy.properties</param-value>
 	</context-param>
 
 	<!-- error pages -->

@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -83,6 +84,7 @@ import org.bibsonomy.services.searcher.ResourceSearch;
  */
 public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<R> {
 	private static final Log log = LogFactory.getLog(LuceneResourceSearch.class);
+	private static final Pattern NON_DIGIT_PATTERN = Pattern.compile("\\D");
 
 	/**
 	 * logic interface for retrieving data from bibsonomy (friends, groups
@@ -372,6 +374,10 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		return groupMemberQuery;
 	}
 
+	private static String removeNonDigits(String s) {
+		return NON_DIGIT_PATTERN.matcher(s).replaceAll("");
+	}
+	
 	/**
 	 * restrict given query to posts belonging to a given time range
 	 * 
@@ -382,9 +388,10 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * @return time range query
 	 */
 	protected Query makeTimeRangeQuery(final BooleanQuery mainQuery, final String year, String firstYear, String lastYear) {
+		
 		//exact year query
 		if (present(year)) {
-			mainQuery.add(new TermQuery(new Term(LuceneFieldNames.YEAR, year.replaceAll("\\D", ""))), Occur.MUST);
+			mainQuery.add(new TermQuery(new Term(LuceneFieldNames.YEAR, removeNonDigits(year))), Occur.MUST);
 			return mainQuery;
 		}
 		
@@ -395,12 +402,12 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		BytesRef lastYearBR = null;
 		
 		if (present(firstYear)) {
-				firstYear = firstYear.replaceAll("\\D", "");
+				firstYear = removeNonDigits(firstYear);
 				firstYearBR = new BytesRef(firstYear);
 				includeLowerBound = true;
 		}
 		if (present(lastYear)) {
-				lastYear = lastYear.replaceAll("\\D", "");
+				lastYear = removeNonDigits(lastYear);
 				lastYearBR = new BytesRef(lastYear);
 				includeUpperBound = true;
 		}
@@ -692,10 +699,6 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 */
 	protected Query parseSearchQuery(final String fieldName, String searchTerms) {
 		// parse search terms for handling phrase search
-		/*
-		 * FIXME - !!!
-		 */
-		//final QueryParser searchTermParser = new QueryParser(Version.LUCENE_24, fieldName, this.analyzer);
 		final QueryParser searchTermParser = new QueryParser(Version.LUCENE_48, fieldName, this.analyzer);
 		searchTermParser.setDefaultOperator(this.defaultSearchTermJunctor);
 		searchTermParser.setAllowLeadingWildcard(true);

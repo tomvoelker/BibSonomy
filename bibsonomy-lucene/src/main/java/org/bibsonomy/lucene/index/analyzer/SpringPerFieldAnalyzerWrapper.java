@@ -37,17 +37,15 @@ import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.util.LuceneBase;
 
 /**
- * this field wrapps lucene's PerFieldAnalyzerWrapper for making it
+ * this field wraps lucene's PerFieldAnalyzerWrapper for making it
  * configurable via spring
  * 
  * @author fei
  */
 public final class SpringPerFieldAnalyzerWrapper extends AnalyzerWrapper {	
-	/** map configuring the index */
-	private Map<String,Map<String,Object>> propertyMap;
 
 	/** map configuring the fieldwrapper */
-	private Map<String, Object> fieldMap;
+	private Map<String, Analyzer> fieldMap;
 	
 	/** default analyzer */
 	private Analyzer defaultAnalyzer;
@@ -64,7 +62,7 @@ public final class SpringPerFieldAnalyzerWrapper extends AnalyzerWrapper {
 	 */
 	@Override
 	protected Analyzer getWrappedAnalyzer(String fieldName) {
-		Analyzer analyzer = (Analyzer) fieldMap.get(fieldName);
+		Analyzer analyzer = fieldMap.get(fieldName);
 		if (analyzer != null) {
 			return analyzer;
 		}
@@ -74,14 +72,14 @@ public final class SpringPerFieldAnalyzerWrapper extends AnalyzerWrapper {
 	/**
 	 * @param fieldMap the fieldMap to set
 	 */
-	public void setFieldMap(final Map<String, Object> fieldMap) {
+	public void setFieldMap(final Map<String, Analyzer> fieldMap) {
 		this.fieldMap = fieldMap;
 	}
 
 	/**
 	 * @return the fieldMap
 	 */
-	public Map<String, Object> getFieldMap() {
+	public Map<String, Analyzer> getFieldMap() {
 		return fieldMap;
 	}
 
@@ -103,15 +101,12 @@ public final class SpringPerFieldAnalyzerWrapper extends AnalyzerWrapper {
 	 * @param propertyMap the propertyMap to set
 	 */
 	public void setPropertyMap(final Map<String,Map<String,Object>> propertyMap) {
-		this.propertyMap = propertyMap;
-		
 		// update the fieldmap
-		this.fieldMap = new HashMap<String, Object>();
+		this.fieldMap = new HashMap<String, Analyzer>();
 		
-		// TODO: use value entrySet iterator
-		for (final String propertyName : propertyMap.keySet()) {
-			final String fieldName = (String) propertyMap.get(propertyName).get(LuceneBase.CFG_LUCENENAME);
-			final Analyzer fieldAnalyzer = (Analyzer) propertyMap.get(propertyName).get(LuceneBase.CFG_ANALYZER);
+		for (final Map<String,Object> fieldProps : propertyMap.values()) {
+			final String fieldName = (String) fieldProps.get(LuceneBase.CFG_LUCENENAME);
+			final Analyzer fieldAnalyzer = (Analyzer) fieldProps.get(LuceneBase.CFG_ANALYZER);
 			if (present(fieldAnalyzer)) {
 				this.fieldMap.put(fieldName, fieldAnalyzer);
 			}
@@ -121,13 +116,6 @@ public final class SpringPerFieldAnalyzerWrapper extends AnalyzerWrapper {
 		if (this.fullTextSearchAnalyzer != null) {
 			fieldMap.put(LuceneFieldNames.MERGED_FIELDS, this.fullTextSearchAnalyzer);
 		}
-	}
-
-	/**
-	 * @return the propertyMap
-	 */
-	public Map<String,Map<String,Object>> getPropertyMap() {
-		return propertyMap;
 	}
 
 	/**

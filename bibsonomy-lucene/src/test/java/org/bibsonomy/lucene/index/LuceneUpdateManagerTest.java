@@ -191,7 +191,6 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * @throws PersonListParserException 
 	 */
 	@Test
-	//@Ignore
 	public void updateIndices() throws IOException, ClassNotFoundException, SQLException, PersonListParserException {
 		// set up data structures
 		final Set<String> allowedGroups = new TreeSet<String>();
@@ -290,7 +289,6 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * tests handling of spam posts
 	 */
 	@Test
-	//@Ignore // TODO: fails on hudson
 	public void spamPosts() {
 		// set up data structures
 		final Set<String> allowedGroups = new TreeSet<String>();
@@ -338,7 +336,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		
 		bibResultList = bibtexSearcher.getPosts(userName, null, null, null, allowedGroups, userName, null, null, null, null, null, null, null, null, 1000, 0);
 		bibRefList    = publicationDb.getPostsForUser(userName, userName, HashID.INTER_HASH, groupId, groups, PostAccess.FULL, null, 1000, 0, null, this.dbSession);
-		assertEquals(bibRefList.size() - 1, bibResultList.size()); // db list contains one interhash duplicate!
+		assertEquals(bibRefList.size(), bibResultList.size());
 
 		// FIXME: this test is broken - we only get public posts from the db logic
 		/*
@@ -394,7 +392,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		// search
 		bibResultList = bibtexSearcher.getPosts(userName, null, null, null, allowedGroups, userName, null, null, null, null, null, null, null, null, 1000, 0);
 		bibRefList    = publicationDb.getPostsForUser(userName, userName, HashID.INTER_HASH, groupId, groups, PostAccess.FULL, null, 1000, 0, null, this.dbSession);
-		assertEquals(bibRefList.size() - 1, bibResultList.size()); // db list contains one interhash duplicate
+		assertEquals(bibRefList.size(), bibResultList.size());
 }
 
 	private void waitForDB() {

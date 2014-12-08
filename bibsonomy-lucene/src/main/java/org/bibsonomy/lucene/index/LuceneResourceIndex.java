@@ -143,40 +143,35 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * @return LuceneIndexStatistics for this index
 	 */
 	public LuceneIndexStatistics getStatistics() {
-        final LuceneIndexStatistics statistics = new LuceneIndexStatistics();
-        if (!this.isIndexEnabled()) {
-        	return statistics;
-        }
-        
-        try {
-        	this.searcherManager.maybeRefreshBlocking();
-        	IndexSearcher searcher = this.aquireIndexSearcher();
-        	final DirectoryReader indexReader;
-        	try {
-        		indexReader = (DirectoryReader) searcher.getIndexReader();
-        	} finally {
-        		this.searcherManager.release(searcher);
-        		searcher = null;
-        	}
-        	
-        	// Get the ID of this index 
-        	statistics.setIndexId(this.indexId);
+		final LuceneIndexStatistics statistics = new LuceneIndexStatistics();
+		if (!this.isIndexEnabled()) {
+			return statistics;
+		}
 
-        	statistics.setNumDocs(indexReader.numDocs());
-        	statistics.setNumDeletedDocs(indexReader.numDeletedDocs());
-        	statistics.setCurrentVersion(indexReader.getVersion());
-        	statistics.setCurrent(indexReader.isCurrent());
-        	/*
-        	 * FIXME - For Lucene 4.9 we have to use IndexVersion Number here, instead of Date
-        	 */
-        	//statistics.setLastModified(new Date(IndexReader.lastModified(ir.directory())));
-        } catch (IOException e1) {
-        	log.error(e1);
-        }
+		try {
+			this.searcherManager.maybeRefreshBlocking();
+			IndexSearcher searcher = this.aquireIndexSearcher();
+			
+			try {
+				final DirectoryReader indexReader = (DirectoryReader) searcher.getIndexReader();
+				
+				// Get the ID of this index
+				statistics.setIndexId(this.indexId);
+				statistics.setNumDocs(indexReader.numDocs());
+				statistics.setNumDeletedDocs(indexReader.numDeletedDocs());
+				statistics.setCurrentVersion(indexReader.getVersion());
+				statistics.setCurrent(indexReader.isCurrent());
+				
+			} finally {
+				this.searcherManager.release(searcher);
+				searcher = null;
+			}
+		} catch (IOException e1) {
+			log.error(e1);
+		}
+		statistics.setNewestRecordDate(new Date(this.getLastLogDate()));
 
-	    statistics.setNewestRecordDate(new Date(this.getLastLogDate()));
-	    
-	    return statistics;
+		return statistics;
 	}
 
 	/** 
@@ -201,9 +196,9 @@ public class LuceneResourceIndex<R extends Resource> {
 			
 			try {
 				if (IndexWriter.isLocked(this.indexDirectory)) {
-					log.error("WARNING: Index " + indexPath + " is locked - forcibly unlock the index.");
+					log.warn("WARNING: Index " + indexPath + " is locked - forcibly unlock the index.");
 					IndexWriter.unlock(this.indexDirectory);
-					log.error("OK. Index unlocked.");
+					log.warn("OK. Index unlocked.");
 				}
 			} catch (final IOException e) {
 				log.fatal("Failed to unlock the index - dying.");
@@ -413,8 +408,6 @@ public class LuceneResourceIndex<R extends Resource> {
 				// remove spam posts from index
 				for (final String userName : this.usersToFlag) {
 					try {
-						//final int cnt = purgeDocumentsForUser(userName);
-						//log.debug("Purged " + cnt + " posts for user " + userName);
 						purgeDocumentsForUser(userName);
 						log.debug("Purged posts for user " + userName);
 					} catch (final IOException e) {

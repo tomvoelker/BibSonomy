@@ -43,8 +43,6 @@ import org.apache.lucene.util.Version;
 /**
  * analyzer for normalizing diacritics (e.g. &auml; to a)
  * 
- * TODO: implement stopwords
- * 
  * @author fei
  */
 public final class DiacriticsLowerCaseFilteringAnalyzer extends Analyzer {
