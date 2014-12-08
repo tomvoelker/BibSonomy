@@ -18,16 +18,16 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
-import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
 /**
- *
- * @author ema
+ * TODO: add documentation
+ * 
+ * @author tni
  */
 public class UpdateGroupController implements MinimalisticController<UpdateGroupCommand>, ErrorAware {
-
 	private static final Log log = LogFactory.getLog(UpdateGroupController.class);
+	
 	private Errors errors = null;
 	private LogicInterface logic;
 
@@ -56,21 +56,35 @@ public class UpdateGroupController implements MinimalisticController<UpdateGroup
 
 		final String groupName = command.getGroupName();
 
-		if (present(command.getOperation())) {
-			switch (command.getOperation()) {
+		final GroupUpdateOperation operation = command.getOperation();
+		if (present(operation)) {
+			switch (operation) {
 				case REQUEST: {
 					// get the request
 					final Group requestedGroup = command.getGroup();
 					if (present(requestedGroup)) {
 						if (!present(requestedGroup.getName())) {
+							// TODO: add form error for field (rejectValue)
 							this.errors.reject("settings.group.error.requestGroupFailed");
 						}
+						
+						// TODO: add valid username check here
+						
 						if (!present(requestedGroup.getDescription())) {
+							// TODO: add form error for field
 							this.errors.reject("settings.group.error.requestGroupFailed");
 						}
 						if (!present(requestedGroup.getGroupRequest().getReason())) {
+							// TODO: add form error for field
 							this.errors.reject("settings.group.error.requestGroupFailed");
 						}
+						
+						// TODO: add field for email?
+						
+						// TODO: add spammer check here
+						
+						// TODO: add check if username is already in the system
+						
 						if (!this.errors.hasErrors()) {
 							// set the username and create the request
 							requestedGroup.getGroupRequest().setUserName(command.getContext().getLoginUser().getName());
@@ -84,7 +98,9 @@ public class UpdateGroupController implements MinimalisticController<UpdateGroup
 					// sent an invite
 					final String username = command.getUsername();
 					if (present(username) && !username.equals(groupName)) {
-						// the group
+						
+						// TODO: inform the user about the invite
+						
 						final Group groupToUpdate = this.logic.getGroupDetails(groupName);
 						try {
 							// since now only one user can be invited to a group at once
@@ -102,6 +118,7 @@ public class UpdateGroupController implements MinimalisticController<UpdateGroup
 				case ADD_NEW_USER: {
 					/*
 					 * add a new user to the group
+					 * this handles a join request by the user
 					 */
 					final String username = command.getUsername();
 					if (present(username) && !username.equals(groupName)) {
@@ -124,7 +141,7 @@ public class UpdateGroupController implements MinimalisticController<UpdateGroup
 					/*
 					 * remove the user from the group
 					 *
-					 * TODO: not fully migrated yet, see {@link SettingsHandler}
+					 * FIXME: not fully migrated yet, see {@link SettingsHandler} and GroupsDatabaseManager
 					 */
 					final String username = command.getUsername();
 					if (present(username) && !username.equals(groupName)) {
@@ -206,7 +223,7 @@ public class UpdateGroupController implements MinimalisticController<UpdateGroup
 				case UPDATE_GROUPROLE: {
 					final String username = command.getUsername();
 					if (!present(command.getGroup()) || !present(command.getGroup().getGroupRole())) {
-						this.errors.reject("settings.group.error.changeGroupRoleFailed", username);						
+						this.errors.reject("settings.group.error.changeGroupRoleFailed", username);
 					}
 					if (!this.errors.hasErrors()) {
 						final Group groupToUpdate = this.logic.getGroupDetails(groupName);
@@ -217,7 +234,7 @@ public class UpdateGroupController implements MinimalisticController<UpdateGroup
 						} catch (final Exception ex) {
 							log.error("error while changing the the role of user '" + username + "' from group '" + groupName + "'", ex);
 						}
-					}					
+					}
 					break;
 				}
 				case REMOVE_INVITED: {
@@ -251,6 +268,7 @@ public class UpdateGroupController implements MinimalisticController<UpdateGroup
 
 		// success: go back where you've come from
 		// TODO: inform the user about the success!
+		// TODO: use url generator
 		return new ExtendedRedirectView("/settings/group/" + groupName);
 	}
 
@@ -262,10 +280,6 @@ public class UpdateGroupController implements MinimalisticController<UpdateGroup
 	@Override
 	public void setErrors(Errors errors) {
 		this.errors = errors;
-	}
-
-	public LogicInterface getLogic() {
-		return logic;
 	}
 
 	public void setLogic(LogicInterface logic) {

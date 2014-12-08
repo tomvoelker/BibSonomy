@@ -58,22 +58,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * @return the userDb
-	 */
-	public UserDatabaseManager getUserDb() {
-		return this.userDb;
-	}
-
-
-	/**
-	 * @param userDb the userDb to set
-	 */
-	public void setUserDb(UserDatabaseManager userDb) {
-		this.userDb = userDb;
-	}
-
-
-	/**
 	 * Returns a list of all groups
 	 * @param start 
 	 * @param end 
@@ -167,7 +151,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		Group group;
 		if ("friends".equals(groupname)) {
 			group = GroupUtils.getFriendsGroup();
-			group.setUsers(this.getUserDb().getUserRelation(authUser, UserRelation.OF_FRIEND, null, session));
+			group.setUsers(this.userDb.getUserRelation(authUser, UserRelation.OF_FRIEND, null, session));
 			return group;
 		}
 		if ("public".equals(groupname)) {
@@ -236,8 +220,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * Returns true if there's only one admin for the group.
 	 */
 	private boolean hasOneAdmin(final Group g, final DBSession session) {
+		// TODO: check twice, you are modifying the group here
 		g.setGroupRole(GroupRole.ADMINISTRATOR);
-		return new Integer(1).equals(this.queryForObject("countPerRole", g, Integer.class, session));
+		final Integer count = this.queryForObject("countPerRole", g, Integer.class, session);
+		return count != null && count.intValue() == 1;
 	}
 
 	/**
@@ -259,6 +245,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @return a list of groups
 	 */
 	public List<Group> getGroupsForUser(final String username, final DBSession session) {
+		// FIXME: what about dummy, invited and join requests?
 		return this.queryForList("getGroupsForUser", username, Group.class, session);
 	}
 
@@ -386,7 +373,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		final Group group = new Group();
 		group.setName(groupname);
 		if (present(username)) group.setUsers(Arrays.asList(new User(username)));
-
+		// FIXME: what about dummy, join request and invited users?
 		final Integer rVal = this.queryForObject("getGroupIdByGroupNameAndUserName", group, Integer.class, session);
 		if (rVal == null) return GroupID.INVALID.getId();
 		return rVal;
@@ -473,20 +460,24 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		 * check if a user or a pending user exists with that name
 		 * currently every group also has a corresponding user in the system
 		 */
-//		User u = new User(normedGroupName);
-		final User groupUser = this.getUserDb().getUserDetails(normedGroupName, session);
-		final List<User> pendingUserList = this.getUserDb().getPendingUserByUsername(normedGroupName, 0, Integer.MAX_VALUE, session);
+		final User exisitingGroupUser = this.userDb.getUserDetails(normedGroupName, session);
+		final List<User> pendingUserList = this.userDb.getPendingUserByUsername(normedGroupName, 0, Integer.MAX_VALUE, session);
 		
-		if (present(groupUser.getName()) || present(pendingUserList)) {
+		if (present(exisitingGroupUser.getName()) || present(pendingUserList)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There is a user with this name - cannot create the group.");
 		}
 		
+		/* 
+		 * TODO: add check for existing pending group, if present don't add another
+		 * pending group
+		 */
+		
 		// create the user
-		User u = UserUtils.getDummyUser(normedGroupName);
+		final User groupUser = UserUtils.getDummyUser(normedGroupName);
 		
 		try {
 			session.beginTransaction();
-			this.userDb.createUser(u, session);
+			this.userDb.createUser(groupUser, session);
 			this.insertGroup(group, session);
 			session.commitTransaction();
 		} finally {
@@ -652,7 +643,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void addUserToGroup(final String groupname, final String username, final GroupRole role, final DBSession session) {
 		// check if a user exists with that name
-		final User user = this.getUserDb().getUserDetails(username, session);
+		final User user = this.userDb.getUserDetails(username, session);
 		if (user.getName() == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There's no user with this name ('" + username + "')");
 		}
@@ -688,7 +679,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		final Group group = this.getGroupByName(groupname, session);
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't remove user from nonexistent group");
-			throw new RuntimeException(); // never happens but calms down eclipse 
 		}
 		// make sure that the user is a member of the group
 		if (!this.isUserInGroup(username, groupname, session)) {
@@ -707,7 +697,13 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		
 		// XXX: the next line is semantically incorrect
 		group.setName(username);
-
+		
+		/*
+		 * FIXME: What happens to posts that are only visible for the deleted group?
+		 * We need to set them to private else the user can't see the posts anymore
+		 * be careful: this method is also called by the delete user method.
+		 */
+		
 		this.plugins.onRemoveUserFromGroup(username, group.getGroupId(), session);
 		this.delete("removeUserFromGroup", group, session);
 	}
@@ -725,14 +721,13 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		final Group group = this.getGroupByName(groupname, session);
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't update the grouprole");
-			throw new RuntimeException();
 		}
 		if (!this.isUserInGroup(username, groupname, session)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') isn't a member of this group ('" + groupname + "')");
 		}
 		// check the old user role
 		GroupRole oldRole = this.getGroupRoleForUser(username, group, session);
-		// only perform action if they differ
+		// only perform action if they differ XXX: exception for this case?
 		if (oldRole.equals(role)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') already has this role in this group ('" + groupname + "')");
 		}
@@ -745,7 +740,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		// XXX: the next line is semantically incorrect
 		group.setName(username);
 		group.setGroupRole(role);
-		this.update("updateGroupRole", group, session);		
+		this.update("updateGroupRole", group, session);
 	}
 	
 	/**
@@ -768,7 +763,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		// XXX: the next line is semantically incorrect
 		group.setName(username);
 		// we can use the removeUserFromGroup statement
-		this.delete("removeUserFromGroup", group, session);		
+		this.delete("removeUserFromGroup", group, session);
 	}
 
 	/**
@@ -810,5 +805,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	public void updateGroupPublicationReportingSettings(final Group group, final DBSession session) {
 		this.update("updateGroupPublicationReportingSettings", group, session);
 	}
-
+	
+	/**
+	 * @param userDb the userDb to set
+	 */
+	public void setUserDb(UserDatabaseManager userDb) {
+		this.userDb = userDb;
+	}
 }

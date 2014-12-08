@@ -597,11 +597,12 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = this.openSession();
 		try {
 			if (Resource.class.equals(resourceType)) {
+				// XXX: more generic
 				syncDBManager.deleteSyncData(userName, service, Bookmark.class, syncDate, session);
 				syncDBManager.deleteSyncData(userName, service, BibTex.class, syncDate, session);
 			} else {
 				syncDBManager.deleteSyncData(userName, service, resourceType, syncDate, session);
-			}			
+			}
 		} finally {
 			session.close();
 		}
@@ -1122,7 +1123,6 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = this.openSession();
 		try {
 			this.groupDBManager.createGroup(group, session);
-
 			return group.getName();
 		} finally {
 			session.close();
@@ -1147,6 +1147,7 @@ public class DBLogic implements LogicInterface {
 		 */
 		this.ensureLoggedIn();
 		boolean isPageAdmin = this.permissionDBManager.isAdmin(loginUser);
+		/// TODO: get all group roles of the logged in user here and check if the user has this role
 		boolean isGroupAdmin = this.permissionDBManager.userHasGroupRole(loginUser, groupName, GroupRole.ADMINISTRATOR);
 		boolean isGroupModerator = this.permissionDBManager.userHasGroupRole(loginUser, groupName, GroupRole.MODERATOR);
 		// we want to allow a user to remove his own invite without being a pageadmin/admin/mod.
@@ -1159,7 +1160,7 @@ public class DBLogic implements LogicInterface {
 			}
 		}
 		
-		// TODO: Add blacklisting users!
+		// TODO: Add blacklisting users! (as a group role?!)
 		// TODO: WHAT APOUT SPAM??? Does this work?
 		if (!(operation == GroupUpdateOperation.ADD_REQUESTED && !loginUser.getSpammer())
 				&& !(operation == GroupUpdateOperation.ACCEPT_JOIN_REQUEST && !loginUser.getSpammer()
@@ -1199,12 +1200,14 @@ public class DBLogic implements LogicInterface {
 				}
 				break;
 			case REMOVE_USER:
-				if (isGroupAdmin || isPageAdmin) {
+				// FIXME: migrate settings handler before activation this method
+				throw new UnsupportedOperationException("currently not supported");
+				/*if (isGroupAdmin || isPageAdmin) {
 					for (final User user: group.getUsers()) {
 						this.groupDBManager.removeUserFromGroup(groupName, user.getName(), session);
 					}
 				}
-				break;
+				break;*/
 			case UPDATE_USER_SHARED_DOCUMENTS:
 				this.groupDBManager.updateUserSharedDocuments(group, session);
 				break;
@@ -1233,6 +1236,7 @@ public class DBLogic implements LogicInterface {
 					this.groupDBManager.addUserToGroup(groupName, user.getName(), GroupRole.REQUESTED, session);
 				}
 				break;
+			// TODO: why do we not merge this with ADD_NEW_USER?
 			case ACCEPT_JOIN_REQUEST:
 				for (final User user: group.getUsers()) {
 					this.groupDBManager.updateGroupRole(groupName, user.getName(), GroupRole.USER, session);

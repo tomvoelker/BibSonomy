@@ -10,6 +10,7 @@ import java.util.Date;
 public class GroupRequest {
 
 	/**
+	 * TODO: use user object
 	 * The username used for the request.
 	 */
 	private String userName;

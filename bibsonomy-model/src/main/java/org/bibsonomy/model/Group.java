@@ -98,6 +98,7 @@ public class Group implements Serializable{
 	 * TODO: this attribute has nothing to do with a group
 	 * it is specific to one member of the group
 	 */
+	@Deprecated
 	private boolean userSharedDocuments;
 	
 	/**
@@ -105,6 +106,7 @@ public class Group implements Serializable{
 	 * TODO: this attribute has nothing to do with a group
 	 * it is specific to one member of the group
 	 */
+	@Deprecated // TODO: remove
 	private GroupRole groupRole;
 	
 	/**
@@ -338,6 +340,7 @@ public class Group implements Serializable{
 	/**
 	 * @return the userSharedDocuments
 	 */
+	@Deprecated
 	public boolean isUserSharedDocuments() {
 		return this.userSharedDocuments;
 	}
@@ -345,6 +348,7 @@ public class Group implements Serializable{
 	/**
 	 * @param userSharedDocuments the userSharedDocuments to set
 	 */
+	@Deprecated
 	public void setUserSharedDocuments(boolean userSharedDocuments) {
 		this.userSharedDocuments = userSharedDocuments;
 	}
@@ -445,6 +449,7 @@ public class Group implements Serializable{
 	/**
 	 * @return the groupRole
 	 */
+	@Deprecated
 	public GroupRole getGroupRole() {
 		return this.groupRole;
 	}
@@ -452,20 +457,29 @@ public class Group implements Serializable{
 	/**
 	 * @param groupRole the groupRole to set
 	 */
+	@Deprecated
 	public void setGroupRole(GroupRole groupRole) {
 		this.groupRole = groupRole;
 	}
-
+	
+	/**
+	 * @return the memberships
+	 */
 	public List<GroupMembership> getMemberships() {
-		if (this.memberships == null)
+		if (this.memberships == null) {
 			this.memberships = new LinkedList<>();
-		return memberships;
+		}
+		return this.memberships;
 	}
 
+	/**
+	 * @param memberships the memberships to set
+	 */
 	public void setMemberships(List<GroupMembership> memberships) {
 		this.memberships = memberships;
 	}
 	
+	// TODO: move to utils class
 	public GroupMembership getGroupMembershipForUser(User user) {
 		for (GroupMembership g : this.getMemberships()) {
 			if (g.getUser().equals(user)) {
