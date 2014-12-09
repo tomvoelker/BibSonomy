@@ -5,6 +5,7 @@ $(document).ready(function () {
 	 * comparison to the current version is by default hidden, 
 	 * it will be visible on user select. */
 	$('td[id = postDiffCurr]').hide();
+	$('a[id=restoreBtnEnabled]').hide();
 	
 	/**
 	 * Select option is by default: 'previous version'*/
@@ -32,7 +33,6 @@ $(document).ready(function () {
 	$('.submitBtn').click(function() {
 		var isPub = $('input[name = isPub]').val();
 		var isCommunityPost = $('input[name = isCommunityPost]').val();
-		//alert("isPub: "+isPub+" isCP: "+isCommunityPost);
 		/**
 		 * Here we have four cases:
 		 * publication and community post, we should call editGoldstandardPublicationController
@@ -42,21 +42,17 @@ $(document).ready(function () {
 		 */
 		if(isPub=="true"){
 			if(isCommunityPost=="true"){
-				//alert('bib+gs');
 				document.getElementById("history").action="/editGoldStandardPublication";
 			}
 			else{
-				//alert('bib');
 				document.getElementById("history").action="/editPublication";
 			}
 		}
 		else{
 			if(isCommunityPost=="true"){
-				//alert('bm+gs');
 				document.getElementById("history").action="/editGoldStandardBookmark";
 			}
 			else{
-				//alert('bm');
 				document.getElementById("history").action="/editBookmark";
 			}
 		}
@@ -92,15 +88,20 @@ function compare_to_current(element){
 
 	element.parents('tr').next().find('.postDiffCurr').toggleClass('invisible', false);
 	element.parents('tr').next().find('.postDiffCurr').show();
+	
+	/**
+	 * if we are not dealing with a post which is not identical to the current post,
+	 * we should enable restore button*/
+	if(element.parents('tr').next().find('div[id=currentVer]').length==0){
+		
+		element.parents('td').next().find('a[id=restoreBtnEnabled]').toggleClass('invisible', false);
+		element.parents('td').next().find('a[id=restoreBtnEnabled]').show();
 
-	element.parents('td').next().find('a[id=restoreBtnEnabled]').toggleClass('invisible', false);
-	element.parents('td').next().find('a[id=restoreBtnEnabled]').show();
+		element.parents('td').next().find('a[id=restoreBtnDisabled]').toggleClass('invisible', true);
+		element.parents('td').next().find('a[id=restoreBtnDisabled]').hide();
 
-	element.parents('td').next().find('a[id=restoreBtnDisabled]').toggleClass('invisible', true);
-	element.parents('td').next().find('a[id=restoreBtnDisabled]').hide();
-
-	show_hide_Checkboxes(element.parents('tr').next().find('.postDiffCurr'),true);//invisible:false
-
+		show_hide_Checkboxes(element.parents('tr').next().find('.postDiffCurr'),true);//invisible:false		
+	}
 }
 
 /**

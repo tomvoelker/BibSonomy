@@ -118,33 +118,52 @@
 							</th></tr>
 					</thead>
 					<tbody>
-						<c:forEach var="index" begin="1" end="${fieldlength}" varStatus="loopStatus" step="1">
+						<c:forEach var="index" begin="0" end="${fieldlength}" varStatus="loopStatus" step="1">
 							<c:set var="additionalItemClasses"
 								value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}" />	
 							<tr> 
 								<!-- version number -->
 								<td class="col-sm-1"  id="versionNum" style="border-right:1px solid #eee">
-									<span class="label label-default diffNumText">
-									Ver. ${fieldlength-index+1}
+									<span class="label label-default diffNumText" style="vertical-align:bottom;padding:8px;">
+									Ver. ${fieldlength-index}
 									</span>
 								</td>
 								<!-- change date -->
 								<td class="col-sm-3" style="border-right:1px solid #eee">
-									<c:set var="changeDate" value="${mtl:cleanBibtex(listView.list[(fieldlength-index+1)].changeDate)}"/>
-									<span class="label label-primary diffNumText">${changeDate}</span>
+									<c:set var="changeDate" value="${mtl:cleanBibtex(listView.list[(fieldlength-index)].changeDate)}"/>
+									<span class="label label-primary diffNumText" style="vertical-align:bottom;padding:8px;" title="edited on ${changeDate}">${changeDate}</span>
 								</td>
 								<c:choose>
 									<c:when test="${isPub}">
-										<c:set var="diffArrayPre" value="${mtl:DiffEntriesPub(listView.list[(fieldlength-index)],listView.list[(fieldlength-index+1)])}"/>		
-										<c:set var="diffArrayCurr" value="${mtl:DiffEntriesPub(listView.list[(fieldlength)],listView.list[(fieldlength-index+1)])}"/>									
+										<!-- constraint on version 0  -->
+										<c:choose>
+											<!-- if version 0  -->
+											<c:when test="${index eq fieldlength }">
+												<c:set var="diffArrayPre" value="${mtl:DiffEntriesPub(listView.list[(fieldlength-index)],listView.list[(fieldlength-index)])}"/>
+											</c:when>
+											<c:otherwise>
+												<c:set var="diffArrayPre" value="${mtl:DiffEntriesPub(listView.list[(fieldlength-index-1)],listView.list[(fieldlength-index)])}"/>
+											</c:otherwise>
+										</c:choose>		
+										<c:set var="diffArrayCurr" value="${mtl:DiffEntriesPub(listView.list[(fieldlength)],listView.list[(fieldlength-index)])}"/>									
 									</c:when>
 									<c:otherwise>
-										<c:set var="diffArrayPre" value="${mtl:DiffEntriesBm(listView.list[(fieldlength-index)],listView.list[(fieldlength-index+1)])}"/>		
-										<c:set var="diffArrayCurr" value="${mtl:DiffEntriesBm(listView.list[(fieldlength)],listView.list[(fieldlength-index+1)])}"/>									
+										<!-- constraint on version 0  -->
+										<c:choose>
+											<!-- if version 0  -->
+											<c:when test="${index eq fieldlength }">
+												<c:set var="diffArrayPre" value="${mtl:DiffEntriesBm(listView.list[(fieldlength-index)],listView.list[(fieldlength-index)])}"/>
+											</c:when>
+											<c:otherwise>
+												<c:set var="diffArrayPre" value="${mtl:DiffEntriesBm(listView.list[(fieldlength-index-1)],listView.list[(fieldlength-index)])}"/>
+											</c:otherwise>
+										</c:choose>	
+										
+										<c:set var="diffArrayCurr" value="${mtl:DiffEntriesBm(listView.list[(fieldlength)],listView.list[(fieldlength-index)])}"/>									
 									</c:otherwise>
 								</c:choose>
 								
-								<!-- number of changed fields, in comparison to the previous version -->									
+								<!-- number of changed fields, in comparison to the previous version -->
 								<c:set var="diffNumPre" value="${fn:length(diffArrayPre)}"/>
 								
 								<!-- number of changed fields, in comparison to the current version -->
@@ -152,42 +171,47 @@
 								
 								<!-- select revision to compare -->
 								<td class="col-sm-7">	
-									<div class="row">
-	  									<div class="col-xs-3">
-										    <label class="control-label" style="white-space:nowrap;padding:0px">
+								<div class="col-sm-2" style="float:left">
+										    <h6> <label class="control-label" style="white-space:nowrap;">
 												<fmt:message key="history.historySelect.compareTo" />
-											</label>
-										</div>
-										<div class="col-xs-5" style="padding:0px">
-										    <select id="preCurrSelector" class="form-control help-popover">
-												<option value="0">previous version (${diffNumPre} different fields)</option>
+											 </label> </h6>
+														</div>
+														<div class="col-sm-6" style="float:left">	
+										    <select id="preCurrSelector" class="form-control input-sm help-popover">
+										    	<option value="0">previous version (${diffNumPre} different fields)</option>
 												<option value="1">current version (${diffNumCurr} different fields)</option>
 											</select>
 											<div class="help help-header hide"><!--  --></div>
 											<div class="help help-content hide"><fmt:message key="history.selection.help" /></div>
 										</div>
-									</div>
+									
 								</td>	
 								
 								<!-- restore button -->
 								<td class="col-sm-1">					
-									<a id="restoreBtnDisabled" class="${buttonClasses}" 
+									<a id="restoreBtnDisabled" class="${buttonClasses}" style="vertical-align:bottom;padding:4px;" 
 										title="${restoreBtnDisabledMsg}" disabled="disabled">
-										<span class="fa fa-undo"><!--  --></span>
+										restore
 									</a>
-									<c:if test = "${diffNumCurr ne 0}">					
-										<a id="restoreBtnEnabled" class="${buttonClasses} invisible" 
-										title="${restoreBtnEnabledMsg}">
-											<span class="fa fa-undo"><!--  --></span>
-										</a>
-									</c:if>
+									<a id="restoreBtnEnabled" class="${buttonClasses} invisible"  style="vertical-align:bottom;padding:4px;" 
+									title="${restoreBtnEnabledMsg}">
+									restore
+										<!-- <span class="fa fa-undo"> --><!--  --><!-- </span> -->
+									</a>
+								
 								</td>
 							</tr>
 							
 							<!-- second row -->
 							<tr>
 								<!-- comparison to the previous version -->
-								<td colspan="3" id="postDiffPre" class="postDiffPre">				
+								
+								<td colspan="4" id="postDiffPre" class="postDiffPre">		
+									<c:if test="${index eq fieldlength }">
+										<div class="alert alert-info" style="margin-bottom:0px;" role="alert">
+											<fmt:message key="history.firstVersion" />
+										</div>										
+									</c:if>
 									<c:forEach var="diffEntry" items="${diffArrayPre}">
 										<div class="checkbox">
 	    									<label>
@@ -199,10 +223,16 @@
 	    									</label>
 	  									</div>
 									</c:forEach>
+									
 								</td>
-								
 								<!-- comparison to the current version -->
-								<td colspan="3" id="postDiffCurr" class="postDiffCurr">	
+								<td colspan="4" id="postDiffCurr" class="postDiffCurr invisible">
+									<c:if test="${fn:length(diffArrayCurr) eq 0}">
+										<!-- we are dealing with a post which is identical to the latest version (current post) -->
+										<div id = "currentVer" class="alert alert-info " style="margin-bottom:0px;" role="alert">
+											<fmt:message key="history.currentVersion" />
+										</div>
+									</c:if>	
 									<c:forEach var="diffEntry" items="${diffArrayCurr}">
 										<div class="checkbox">
 	    									<label>
@@ -220,76 +250,26 @@
 											<c:choose>
 												<c:when test="${isPub}">
 													<input type="hidden" name="diffEntryValue" 
-														value="${mtl:getEntryValuePub(diffEntry.key,listView.list[(fieldlength-index+1)])}"/>
+														value="${mtl:getEntryValuePub(diffEntry.key,listView.list[(fieldlength-index)])}"/>
 												</c:when>
 												<c:otherwise>
 													<input type="hidden" name="diffEntryValue" 
-														value="${mtl:getEntryValueBm(diffEntry.key,listView.list[(fieldlength-index+1)])}"/>									
+														value="${mtl:getEntryValueBm(diffEntry.key,listView.list[(fieldlength-index)])}"/>									
 												</c:otherwise>
 											</c:choose>											
 										</div>
 									</c:forEach>
 									<!-- restore confirm (alert) question -->
-									<c:if test = "${diffNumCurr ne 0}">
-										<div id="restore_alert_btn" class="invisible hidden">
-											<div class="alert col-sm-10 alert-warning" style="margin-bottom:0px;" role="alert">
-												<fmt:message key="history.restore.confirm" />
-											</div>
-											<!-- submit restore -->
-											<button class="btn btn-primary submitBtn" style="float:right">restore</button>
+									<div id="restore_alert_btn" class="invisible hidden">
+										<div class="alert col-sm-10 alert-warning" style="margin-bottom:0px;padding:6px 12px;" role="alert">
+											<fmt:message key="history.restore.confirm" />
 										</div>
-									</c:if>
+										<!-- submit restore -->
+										<button class="btn btn-primary submitBtn" style="float:right">restore</button>
+									</div>
 								</td>				
 							</tr>	
-						</c:forEach>
-					<!-- original post -->
-					<tr>
-						<td colspan="4" id="versionNum">
-							<span class="label label-default">Ver.0 (before editing)</span>
-						</td>
-					</tr>
-					<tr>
-						<td colspan="4">
-							
-							<c:choose>
-								<!-- if we are dealing with a publication -->
-								<c:when test="${isPub}">
-									<c:choose>
-										<!-- if it is a community post -->
-										<c:when test="${empty listView.list[(0)].user.name}">
-											<c:set var="isCommunityPost" value="${true}" />
-											<strong><bibgs:title post="${listView.list[(0)]}"/></strong>
-											<br/>
-											<bib:fullDescription publication="${listView.list[(0)].resource}"/>
-										</c:when>
-										<c:otherwise>
-											<strong><bib:title post="${listView.list[(0)]}" /></strong>
-											<br/>
-											<bib:fullDescription publication="${listView.list[(0)].resource}"/>
-										</c:otherwise>
-									</c:choose>
-								</c:when>
-								<!-- if we are dealing with a bookmark -->
-								<c:otherwise>
-									<c:choose>
-										<!-- if it is a community post -->
-										<c:when test="${empty newestPost.user.name}">
-											<c:set var="isCommunityPost" value="${true}" />
-											<!-- currently there is no specific method for gsBookmark title -->
-											<strong><bm:title post="${listView.list[(0)]}"/></strong>
-											<br/>
-											<bm:desc post="${listView.list[(0)]}"/>
-										</c:when>
-										<c:otherwise>
-											<strong><bm:title post="${listView.list[(0)]}"/></strong>
-											<br/>
-											<bm:desc post="${listView.list[(0)]}"/>
-										</c:otherwise>
-									</c:choose>
-								</c:otherwise>
-							</c:choose>
-						</td>	
-					</tr>	
+						</c:forEach>	
 				</tbody>
 			</table>
 		</c:when>

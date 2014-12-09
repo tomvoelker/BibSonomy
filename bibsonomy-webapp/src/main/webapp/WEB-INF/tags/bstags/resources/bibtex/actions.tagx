@@ -119,7 +119,7 @@
 					<fmt:message key="bibtex.actions.posthistory.title" var="postHistoryTitle" />
 					<!-- we need to send the resource type, in order to call the appropriate view later (HistoryBM or HistoryBib) -->
 				 	<a class="${buttonClasses}" href="/history/${rscType}/${post.resource.intraHash}/${post.user.name}" title="${postHistoryTitle}">
-						<span class="fa fa-history"><!--  --></span>
+						<span class="fa fa-list-ol"><!--  --></span>
 				  	</a>
 				</c:when>
 				<c:otherwise>
