@@ -64,12 +64,6 @@
 			<groupId>de.intarsys.opensource</groupId>
 			<artifactId>jPodRenderer</artifactId>
 			<version>5.3</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>jai-codec</artifactId>
-					<groupId>com.sun.media</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 	</dependencies>
 </project>
