@@ -2,14 +2,14 @@
  * BibSonomy-Layout - Layout engine for the webapp.
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
- * University of Kassel, Germany
- * http://www.kde.cs.uni-kassel.de/
- *  Data Mining and Information Retrieval Group,
- * University of Würzburg, Germany
- * http://www.is.informatik.uni-wuerzburg.de/en/dmir/
- *  L3S Research Center,
- * Leibniz University Hannover, Germany
- * http://www.l3s.de/
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
