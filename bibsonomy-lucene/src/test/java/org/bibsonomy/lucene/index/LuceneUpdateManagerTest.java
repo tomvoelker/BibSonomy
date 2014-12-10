@@ -214,7 +214,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		for( final String term : this.bibtexSearchTerms ) {
 			log.info("Searching for " + term);
 			final ResultList<Post<BibTex>> resultList = 
-				bibtexSearcher.getPosts(BM_RESOURCE_TYPE,bibtexPost.getUser().getName(), null, null, null, allowedGroups, SearchType.LUCENESEARCH,term, null, null, null, null, null, null, null, null, 10, 0);
+				(ResultList<Post<BibTex>>) bibtexSearcher.getPosts(BM_RESOURCE_TYPE,bibtexPost.getUser().getName(), null, null, null, allowedGroups, SearchType.LUCENESEARCH,term, null, null, null, null, null, null, null, null, 10, 0);
 			
 			assertEquals(1, resultList.size());
 		}
@@ -237,7 +237,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		for( final String term : this.bibtexSearchTerms ) {
 			log.info("Searching for " + term);
 			final ResultList<Post<BibTex>> resultList = 
-				bibtexSearcher.getPosts(BM_RESOURCE_TYPE, bibtexPost.getUser().getName(), null, null, null, allowedGroups,SearchType.LUCENESEARCH, term, null, null, null, null, null, null, null, null, 1000, 0);
+				(ResultList<Post<BibTex>>) bibtexSearcher.getPosts(BM_RESOURCE_TYPE, bibtexPost.getUser().getName(), null, null, null, allowedGroups,SearchType.LUCENESEARCH, term, null, null, null, null, null, null, null, null, 1000, 0);
 			
 			for( final Post<BibTex> post : resultList ) {
 				log.info("Got post: " + post.getDate()+ "("+post.getResource().getTitle()+")");

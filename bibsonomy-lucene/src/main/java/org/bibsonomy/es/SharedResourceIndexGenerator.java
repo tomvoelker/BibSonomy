@@ -9,6 +9,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.util.generator.LuceneGenerateResourceIndex;
@@ -31,6 +33,7 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 //	private final ESClient esClient = new ESNodeClient();
 	// ElasticSearch Transport client
 	private static ESClient esClient;
+	private static final Log log = LogFactory.getLog(SharedResourceIndexGenerator.class);
 		
 	/**
 	 * creates index of resource entries
