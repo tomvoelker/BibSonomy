@@ -37,13 +37,6 @@ import java.util.List;
  */
 public class Date {
 	
-	/**
-	 * Constructor
-	 */
-	public Date() {
-		this.date_parts = new ArrayList<DateParts>();
-	}
-	
 	// a list of date parts
 	private List<DateParts> date_parts;
 	
@@ -53,6 +46,15 @@ public class Date {
 	private String circa;
 	// season
 	private String season;
+	
+	private String raw;
+	
+	/**
+	 * Constructor
+	 */
+	public Date() {
+		this.date_parts = new ArrayList<DateParts>();
+	}
 	
 	/**
 	 * @return the date_parts
@@ -108,5 +110,19 @@ public class Date {
 	 */
 	public void setSeason(String season) {
 		this.season = season;
+	}
+
+	/**
+	 * @return the raw
+	 */
+	public String getRaw() {
+		return this.raw;
+	}
+
+	/**
+	 * @param raw the raw to set
+	 */
+	public void setRaw(String raw) {
+		this.raw = raw;
 	}
 }

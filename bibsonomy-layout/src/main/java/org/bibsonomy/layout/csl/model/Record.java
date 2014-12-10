@@ -50,6 +50,10 @@ public class Record {
 	private List<Person> author = new ArrayList<Person>();
 	// editor(s)
 	private List<Person> editor = new ArrayList<Person>();
+	
+	private List<Person> collection_editor = new ArrayList<Person>();
+	
+	private List<Person> container_author = new ArrayList<Person>();
 
 	//*************************************************
 	// dates
@@ -58,6 +62,8 @@ public class Record {
 	
 	// date
 	private Date issued;
+	
+	private Date accessed;
 	
 	//*************************************************
 	// variables
@@ -119,6 +125,8 @@ public class Record {
 
 	// the location or place for the related event
 	private String event_place;
+	
+	private Date event_date;
 
 	// The number of a preceding note containing the first reference to this
 	// item. Relevant only for note_based styles, and null for first references.
@@ -129,6 +137,8 @@ public class Record {
 
 	//
 	private String ISBN;
+	
+	private String ISSN;
 
 	// the issue number for the container publication
 	private String issue;
@@ -252,6 +262,34 @@ public class Record {
 	}
 
 	/**
+	 * @return the collection_editor
+	 */
+	public List<Person> getCollection_editor() {
+		return this.collection_editor;
+	}
+
+	/**
+	 * @param collection_editor the collection_editor to set
+	 */
+	public void setCollection_editor(List<Person> collection_editor) {
+		this.collection_editor = collection_editor;
+	}
+
+	/**
+	 * @return the container_author
+	 */
+	public List<Person> getContainer_author() {
+		return this.container_author;
+	}
+
+	/**
+	 * @param container_author the container_author to set
+	 */
+	public void setContainer_author(List<Person> container_author) {
+		this.container_author = container_author;
+	}
+
+	/**
 	 * @return the issued
 	 */
 	public Date getIssued() {
@@ -263,6 +301,20 @@ public class Record {
 	 */
 	public void setIssued(Date issued) {
 		this.issued = issued;
+	}
+
+	/**
+	 * @return the accessed
+	 */
+	public Date getAccessed() {
+		return this.accessed;
+	}
+
+	/**
+	 * @param accessed the accessed to set
+	 */
+	public void setAccessed(Date accessed) {
+		this.accessed = accessed;
 	}
 
 	/**
@@ -518,6 +570,20 @@ public class Record {
 	}
 
 	/**
+	 * @return the event_date
+	 */
+	public Date getEvent_date() {
+		return this.event_date;
+	}
+
+	/**
+	 * @param event_date the event_date to set
+	 */
+	public void setEvent_date(Date event_date) {
+		this.event_date = event_date;
+	}
+
+	/**
 	 * @return the first_reference_note_number
 	 */
 	public String getFirst_reference_note_number() {
@@ -557,6 +623,20 @@ public class Record {
 	 */
 	public void setISBN(String iSBN) {
 		ISBN = iSBN;
+	}
+
+	/**
+	 * @return the iSSN
+	 */
+	public String getISSN() {
+		return this.ISSN;
+	}
+
+	/**
+	 * @param iSSN the iSSN to set
+	 */
+	public void setISSN(String iSSN) {
+		ISSN = iSSN;
 	}
 
 	/**
