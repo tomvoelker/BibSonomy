@@ -2,14 +2,14 @@
  * BibSonomy-Layout - Layout engine for the webapp.
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
- *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
- *                           L3S Research Center,
- *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *						 University of Kassel, Germany
+ *						 http://www.kde.cs.uni-kassel.de/
+ *					  Data Mining and Information Retrieval Group,
+ *						 University of Würzburg, Germany
+ *						 http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *					  L3S Research Center,
+ *						 Leibniz University Hannover, Germany
+ *						 http://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,43 +34,41 @@ import java.util.ArrayList;
  * @author Dominik Benz, benz@cs.uni-kassel.de
  */
 public class DateParts extends ArrayList<String> {
+	private static final long serialVersionUID = 4578145208925557829L;
 
-    /**
-     * Constructor
-     * 
-     * @param year
-     * @param month
-     * @param day
-     */
-    public DateParts(String year, String month, String day) {
-	super();
-	this.add(year);
-	this.add(month);
-	this.add(day);
-    }
+	/**
+	* Constructor
+	* 
+	* @param year
+	* @param month
+	* @param day
+	*/
+	public DateParts(String year, String month, String day) {
+		super();
+		this.add(year);
+		this.add(month);
+		this.add(day);
+	}
 
-    /**
-     * Constructor 
-     * 
-     * @param year
-     * @param month
-     */
-    public DateParts(String year, String month) {
-	super();
-	this.add(year);
-	this.add(month);
-    }
+	/**
+	* Constructor 
+	* 
+	* @param year
+	* @param month
+	*/
+	public DateParts(String year, String month) {
+		super();
+		this.add(year);
+		this.add(month);
+	}
 
-    
-    /**
-     * Constructor 
-     * 
-     * @param year
-     */
-    public DateParts(String year) {
-	super();
-	this.add(year);
-    }
-    
-    
+	/**
+	* Constructor 
+	* 
+	* @param year
+	*/
+	public DateParts(String year) {
+		super();
+		this.add(year);
+	}
 }

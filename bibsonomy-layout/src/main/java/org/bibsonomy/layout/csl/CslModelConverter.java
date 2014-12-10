@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.layout.csl;
 
-import static org.bibsonomy.model.util.BibTexUtils.cleanBibTex;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collections;
@@ -50,6 +49,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.TagUtils;
 
 /**
  * TENTATIVE implementation of a mapping of our publication model to the CSL model,
@@ -61,18 +61,11 @@ public class CslModelConverter {
 
 	/**
 	 * BibTeX entry types -> csl types
-	 * see http://xbiblio-devel.2463403.n2.nabble.com/Citeproc-json-data-input-specs-td5135372.html
-	 * FIXME: this is incomplete!
+	 * XXX: mapping is incomplete
 	 */
 	private static Map<String, String> typemap;
 
 	static {
-		
-		/*
-		 * This mapping based on 
-		 * http://www.docear.org/2012/08/08/docear4word-mapping-bibtex-fields-and-types-with-the-citation-style-language/
-		 * (sbo 2013-10-16)
-		 */
 		typemap = new HashMap<String, String>();
 		
 		typemap.put(BibTexUtils.ARTICLE, "article-journal");
@@ -108,7 +101,8 @@ public class CslModelConverter {
 	}
 
 	/**
-	 * Convert a bibtex post into a CSL record.
+	 * Convert a publication post into a CSL record.
+	 * This mapping is based on http://www.docear.org/2012/08/08/docear4word-mapping-bibtex-fields-and-types-with-the-citation-style-language/
 	 * 
 	 * @param post
 	 *            - the bibtex post
@@ -118,21 +112,21 @@ public class CslModelConverter {
 		final Record rec = new Record();
 		final BibTex publication = (BibTex) post.getResource();
 		
-		/*
-		 * This mapping based on 
-		 * http://www.docear.org/2012/08/08/docear4word-mapping-bibtex-fields-and-types-with-the-citation-style-language/
-		 * (sbo 2013-10-16)
-		 */
-		
 		// id
 		rec.setId(createId(post));
+		
 		// type
 		rec.setType(mapToCslType(publication.getEntrytype()));
 
-		// mapping address
-		final String cleanedAddress = cleanBibTex(publication.getAddress());
-		rec.setEvent_place(cleanedAddress);
-		rec.setPublisher_place(cleanedAddress);
+		final String cleanedLocation = BibTexUtils.cleanBibTex(publication.getMiscField("location"));
+		if (present(cleanedLocation)) {
+			rec.setEvent_place(cleanedLocation);
+			rec.setPublisher_place(cleanedLocation);
+		} else {
+			final String cleanedAddress = BibTexUtils.cleanBibTex(publication.getAddress());
+			rec.setEvent_place(cleanedAddress);
+			rec.setPublisher_place(cleanedAddress);
+		}
 		
 		// mapping authors, editors
 		if (present(publication.getAuthor())) {
@@ -141,89 +135,140 @@ public class CslModelConverter {
 				rec.getAuthor().add(person);
 			}
 		}
+		
 		if (present(publication.getEditor())) {
 			for (final PersonName editor : publication.getEditor()) {
 				final Person person = convertToPerson(editor);
 				rec.getEditor().add(person);
+				rec.getCollection_editor().add(person);
+				rec.getContainer_author().add(person);
 			}
 		}
-
-		// date mapping
-		final Date date = new Date();
-		date.setDate_parts(Collections.singletonList(new DateParts(publication.getYear())));
-		date.setLiteral(publication.getYear());
-		rec.setIssued(date);
-		
-		// mapping abstract
-		rec.setAbstractt(cleanBibTex(publication.getAbstract()));
 		
 		// mapping bibtexkey
-		rec.setCitation_label(cleanBibTex(publication.getBibtexKey()));
+		rec.setCitation_label(BibTexUtils.cleanBibTex(publication.getBibtexKey()));
 		
-		/* 
-		 * collection-title
-		 * title of the collection holding the item (e.g. the series title for a book)
-		 */
-		final String series = publication.getSeries();
-		if (present(series)) {
-			rec.setCollection_title(cleanBibTex(series));
-		}
-		
-		/*
-		 * container-title
-		 * title of the container holding the item (e.g. the book title for a book chapter, the journal title for a journal article)
-		 */
-		if (BibTexUtils.ARTICLE.equals(publication.getEntrytype()) && present(publication.getJournal())) {
-			rec.setContainer_title(cleanBibTex(publication.getJournal()));
+		// mapping journal, booktitle and series
+		final String cleanedJournal = BibTexUtils.cleanBibTex(publication.getJournal());
+		final String cleanedBooktitle = BibTexUtils.cleanBibTex(publication.getBooktitle());
+		final String cleanedSeries = BibTexUtils.cleanBibTex(publication.getSeries());
+		final String colTitleToUse;
+		if (present(cleanedJournal)) {
+			colTitleToUse = cleanedJournal;
+		} else if (present(cleanedBooktitle)) {
+			colTitleToUse = cleanedBooktitle;
 		} else {
-			rec.setContainer_title(cleanBibTex(publication.getBooktitle()));
+			colTitleToUse = cleanedSeries;
 		}
 		
-		
-		// mapping edition
-		rec.setEdition(cleanBibTex(publication.getEdition()));
+		rec.setContainer_title(colTitleToUse);
+		rec.setCollection_title(colTitleToUse);
 		
 		// mapping publisher, techreport, thesis, organization
 		if (present(publication.getPublisher())) {
-			rec.setPublisher(cleanBibTex(publication.getPublisher()));
+			rec.setPublisher(BibTexUtils.cleanBibTex(publication.getPublisher()));
 		} else if (BibTexUtils.TECH_REPORT.equals(publication.getEntrytype())) {
-			rec.setPublisher(cleanBibTex(publication.getInstitution()));
+			rec.setPublisher(BibTexUtils.cleanBibTex(publication.getInstitution()));
 		} else if (BibTexUtils.PHD_THESIS.equals(publication.getEntrytype())) {
-			rec.setPublisher(cleanBibTex(publication.getSchool()));
+			rec.setPublisher(BibTexUtils.cleanBibTex(publication.getSchool()));
 			rec.setGenre("PhD dissertation");
 		} else if (BibTexUtils.MASTERS_THESIS.equals(publication.getEntrytype())) {
-			rec.setPublisher(cleanBibTex(publication.getSchool()));
+			rec.setPublisher(BibTexUtils.cleanBibTex(publication.getSchool()));
 			rec.setGenre("Master thesis");
 		} else {
-			rec.setPublisher(cleanBibTex(publication.getOrganization()));
+			rec.setPublisher(BibTexUtils.cleanBibTex(publication.getOrganization()));
 		}
 		
-		// mapping chapter, title
-		if (present(publication.getChapter())) {
-			rec.setTitle(cleanBibTex(publication.getChapter()));
-		} else {
-			rec.setTitle(cleanBibTex(publication.getTitle()));
-		}
+		// mapping title
+		rec.setTitle(BibTexUtils.cleanBibTex(publication.getTitle()));
 		
-		// mapping note
-		rec.setNote(cleanBibTex(publication.getNote()));
+		final String chapter = publication.getChapter();
+		if (present(chapter)) {
+			rec.setChapter_number(chapter);
+		}
 		
 		// mapping number
-		rec.setNumber(cleanBibTex(publication.getNumber()));
-		rec.setIssue(cleanBibTex(publication.getNumber()));
+		final String cleanedNumber = BibTexUtils.cleanBibTex(publication.getNumber());
+		rec.setNumber(cleanedNumber);
+		
+		final String cleanedIssue = BibTexUtils.cleanBibTex(publication.getMiscField("issue"));
+		final String issueToUse;
+		if (present(cleanedIssue)) {
+			issueToUse = cleanedIssue;
+		} else {
+			issueToUse = cleanedNumber;
+		}
+		rec.setIssue(issueToUse);
+		
+		final String accessed = BibTexUtils.cleanBibTex(publication.getMiscField("accessed"));
+		if (present(accessed)) {
+			final Date accessedDate = new Date();
+			accessedDate.setLiteral(accessed);
+			rec.setAccessed(accessedDate);
+		}
+		
+		// date mapping
+		final String urlDate = BibTexUtils.cleanBibTex(publication.getMiscField("urldate"));
+		final String cleanedDate = BibTexUtils.cleanBibTex(publication.getMiscField("date"));
+		final Date date = new Date();
+		if (BibTexUtils.ELECTRONIC.equals(publication.getEntrytype()) && present(urlDate)) {
+			date.setRaw(urlDate);
+		} else if (present(cleanedDate)) {
+			date.setRaw(cleanedDate);
+			rec.setEvent_date(date);
+		} else {
+			final DateParts dateParts = new DateParts(publication.getYear());
+			final String cleanedMonth = BibTexUtils.cleanBibTex(publication.getMonth());
+			final String cleanedDay = BibTexUtils.cleanBibTex(publication.getDay());
+			
+			if (present(cleanedMonth)) {
+				dateParts.add(cleanedMonth);
+			}
+			if (present(cleanedDay)) {
+				if (!present(cleanedMonth)) {
+					dateParts.add("");
+				}
+				dateParts.add(cleanedDay);
+			}
+			date.setDate_parts(Collections.singletonList(dateParts));
+			
+			date.setLiteral(publication.getYear()); // FIXME: wrong remove after updating typo3 plugin
+			rec.setEvent_date(date);
+		}
+		rec.setIssued(date);
 		
 		// mapping pages
-		rec.setPage(cleanBibTex(publication.getPages()));
-		rec.setNumber_of_pages(publication.getPages());
-		rec.setPage_first(publication.getPages());
+		final String cleanedPages = BibTexUtils.cleanBibTex(publication.getPages());
+		rec.setPage(cleanedPages);
 		
-		rec.setVolume(cleanBibTex(publication.getVolume()));
-
-		rec.setURL(cleanBibTex(publication.getUrl()));
+		final String firstPage = BibTexUtils.extractFirstPage(cleanedPages);
+		final String lastPage = BibTexUtils.extractLastPage(cleanedPages);
+		rec.setPage_first(firstPage);
+		try {
+			final int lastPageAsInteger = Integer.parseInt(lastPage);
+			final int firstPageAsInteger = Integer.parseInt(firstPage);
+			
+			final int numberOfPages = lastPageAsInteger - firstPageAsInteger;
+			if (numberOfPages > 0) {
+				rec.setNumber_of_pages(String.valueOf(numberOfPages));
+			}
+		} catch (final NumberFormatException e) {
+			// ignore
+		}
 		
-		rec.setDOI(cleanBibTex(publication.getMiscField("doi")));
-		rec.setISBN(cleanBibTex(publication.getMiscField("isbn")));
-
+		rec.setVolume(BibTexUtils.cleanBibTex(publication.getVolume()));
+		rec.setKeyword(TagUtils.toTagString(post.getTags(), " "));
+		rec.setURL(BibTexUtils.cleanBibTex(publication.getUrl()));
+		rec.setStatus(BibTexUtils.cleanBibTex(publication.getMiscField("status")));
+		rec.setISBN(BibTexUtils.cleanBibTex(publication.getMiscField("isbn")));
+		rec.setISSN(BibTexUtils.cleanBibTex(publication.getMiscField("issn")));
+		rec.setVersion(BibTexUtils.cleanBibTex(publication.getMiscField("revision")));
+		rec.setAnnote(BibTexUtils.cleanBibTex(publication.getAnnote()));
+		rec.setEdition(BibTexUtils.cleanBibTex(publication.getEdition()));
+		rec.setAbstractt(BibTexUtils.cleanBibTex(publication.getAbstract()));
+		rec.setDOI(BibTexUtils.cleanBibTex(publication.getMiscField("doi")));
+		rec.setNote(BibTexUtils.cleanBibTex(publication.getNote()));
+		
 		rec.setDocuments(convertList(publication.getDocuments()));
 		
 		return rec;
@@ -241,8 +286,8 @@ public class CslModelConverter {
 
 	private static Person convertToPerson(final PersonName personName) {
 		final Person person = new Person();
-		person.setGiven(cleanBibTex(personName.getFirstName()));
-		person.setFamily(cleanBibTex(personName.getLastName()));
+		person.setGiven(BibTexUtils.cleanBibTex(personName.getFirstName()));
+		person.setFamily(BibTexUtils.cleanBibTex(personName.getLastName()));
 		return person;
 	}
 
