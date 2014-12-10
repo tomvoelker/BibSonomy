@@ -2,14 +2,14 @@
  * BibSonomy-Layout - Layout engine for the webapp.
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
- *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
- *                           L3S Research Center,
- *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *							   University of Kassel, Germany
+ *							   http://www.kde.cs.uni-kassel.de/
+ *						   Data Mining and Information Retrieval Group,
+ *							   University of Würzburg, Germany
+ *							   http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *						   L3S Research Center,
+ *							   Leibniz University Hannover, Germany
+ *							   http://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@ package org.bibsonomy.layout.csl.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.bibsonomy.model.Document;
 
 /**
  * Models an entry. See the file 'csl-variables' at
@@ -38,590 +37,875 @@ import org.bibsonomy.model.Document;
  * @author Dominik Benz, benz@cs.uni-kassel.de
  */
 public class Record {
+	
+	// id of the entry
+	private String id;
+	
+	//*************************************************
+	// persons / names
+	// FIXME: more available, see http://citationstyles.org/downloads/specification.html#name-variables
+	//*************************************************
+	
+	// author(s)
+	private List<Person> author = new ArrayList<Person>();
+	// editor(s)
+	private List<Person> editor = new ArrayList<Person>();
+
+	//*************************************************
+	// dates
+	// FIXME: there are some more dates available, see http://citationstyles.org/downloads/specification.html#date-variables
+	//*************************************************	
+	
+	// date
+	private Date issued;
+	
+	//*************************************************
+	// variables
+	// see http://citationstyles.org/downloads/specification.html#standard-variables
+	//*************************************************	
+	
+	// abstract
+	private String abstractt;
+
+	// notes made by a reader about the content of the resource
+	private String annote;
 
-    /**
-     * Constructor
-     */
-    public Record() {
-	super();
-    }    
-    
-    // id of the entry
-    private String id;
-    
-    //*************************************************
-    // persons / names
-    // FIXME: more available, see http://citationstyles.org/downloads/specification.html#name-variables
-    //*************************************************
-    
-    // author(s)
-    private List<Person> author = new ArrayList<Person>();
-    // editor(s)
-    private List<Person> editor = new ArrayList<Person>();
-
-    //*************************************************
-    // dates
-    // FIXME: there are some more dates available, see http://citationstyles.org/downloads/specification.html#date-variables
-    //*************************************************    
-    
-    // date
-    private Date issued;
-    
-    //*************************************************
-    // variables
-    // see http://citationstyles.org/downloads/specification.html#standard-variables
-    //*************************************************    
-    
-    // abstract
-    private String abstractt;
-
-    // notes made by a reader about the content of the resource
-    private String annote;
-
-    // the name of the archive
-    private String archive;
-
-    // the location within an archival collection (for example, box and folder)
-    private String archive_location;
-
-    // the place of the archive
-    private String archive_place;
+	// the name of the archive
+	private String archive;
 
-    // issuing authority (for patents) or judicial authority (such as court
-    // for legal cases)
-    private String authority;
+	// the location within an archival collection (for example, box and folder)
+	private String archive_location;
 
-    // ?
-    private String call_number;
+	// the place of the archive
+	private String archive_place;
 
-    // ?
-    private String chapter_number;
+	// issuing authority (for patents) or judicial authority (such as court
+	// for legal cases)
+	private String authority;
 
-    // the number used for the in_text citation mark in numeric styles
-    private String citation_number;
+	// ?
+	private String call_number;
 
-    // the label used for the in_text citation mark in label styles
-    private String citation_label;
+	// ?
+	private String chapter_number;
 
-    // collection number; for example, series number
-    private String collection_number;
+	// the number used for the in_text citation mark in numeric styles
+	private String citation_number;
 
-    // the tertiary title for the cited item; for example, a series title
-    private String collection_title;
+	// the label used for the in_text citation mark in label styles
+	private String citation_label;
 
-    // the secondary title for the cited item (book title for book chapters,
-    // journal title for articles, etc.).
-    private String container_title;
+	// collection number; for example, series number
+	private String collection_number;
 
-    /** documents of this bibsonomy post. not official part of csl */
-    private List<DocumentCslWrapper> documents = new ArrayList<DocumentCslWrapper>();
-    
-    // doi identifier
-    private String DOI;
+	// the tertiary title for the cited item; for example, a series title
+	private String collection_title;
 
-    // an edition description
-    private String edition;
+	// the secondary title for the cited item (book title for book chapters,
+	// journal title for articles, etc.).
+	private String container_title;
 
-    // the name or title of a related event such as a conference or hearing
-    private String event;
-
-    // the location or place for the related event
-    private String event_place;
-
-    // The number of a preceding note containing the first reference to this
-    // item. Relevant only for note_based styles, and null for first references.
-    private String first_reference_note_number;
-
-    //
-    private String genre;
+	/** documents of this bibsonomy post. not official part of csl */
+	private List<DocumentCslWrapper> documents = new ArrayList<DocumentCslWrapper>();
+	
+	// doi identifier
+	private String DOI;
 
-    //
-    private String ISBN;
-
-    // the issue number for the container publication
-    private String issue;
+	// an edition description
+	private String edition;
 
-    // For legislation and patents; scope of geographic relevance for a
-    // document.
-    private String jurisdiction;
+	// the name or title of a related event such as a conference or hearing
+	private String event;
 
-    // keyword(s)
-    private String keyword;
+	// the location or place for the related event
+	private String event_place;
 
-    // a description to locate an item within some larger container or
-    // collection; a volume or issue number is a kind of locator, for example.
-    private String locator;
+	// The number of a preceding note containing the first reference to this
+	// item. Relevant only for note_based styles, and null for first references.
+	private String first_reference_note_number;
 
-    // medium description (DVD, CD, etc.)
-    private String medium;
+	//
+	private String genre;
 
-    // a short inline note, often used to refer to additional details of the
-    // resource
-    private String note;
+	//
+	private String ISBN;
 
-    // a document number; useful for reports and such
-    private String number;
+	// the issue number for the container publication
+	private String issue;
 
-    // refers to the number of pages in a book or other document
-    private String number_of_pages;
+	// For legislation and patents; scope of geographic relevance for a
+	// document.
+	private String jurisdiction;
 
-    // refers to the number of items in multi_volume books and such
-    private String number_of_volumes;
+	// keyword(s)
+	private String keyword;
 
-    // the name of the original publisher
-    private String original_publisher;
+	// a description to locate an item within some larger container or
+	// collection; a volume or issue number is a kind of locator, for example.
+	private String locator;
 
-    // the place of the original publisher
-    private String original_publisher_place;
+	// medium description (DVD, CD, etc.)
+	private String medium;
 
-    // title of a related original version; often useful in cases of translation
-    private String original_title;
+	// a short inline note, often used to refer to additional details of the
+	// resource
+	private String note;
 
-    // the range of pages an item covers in a containing item
-    private String page;
+	// a document number; useful for reports and such
+	private String number;
 
-    // the first page of an item within a containing item
-    private String page_first;
+	// refers to the number of pages in a book or other document
+	private String number_of_pages;
 
-    // the name of the publisher
-    private String publisher;
+	// refers to the number of items in multi_volume books and such
+	private String number_of_volumes;
 
-    // the place of the publisher
-    private String publisher_place;
+	// the name of the original publisher
+	private String original_publisher;
 
-    // for related referenced resources; used for legal case histories, but
-    // may be relevant for other contexts.
-    private String references;
+	// the place of the original publisher
+	private String original_publisher_place;
 
-    // a section description (for newspapers, etc.)
-    private String section;
+	// title of a related original version; often useful in cases of translation
+	private String original_title;
 
-    // the (typically publication) status of an item; for example ;forthcoming;
-    private String status;
+	// the range of pages an item covers in a containing item
+	private String page;
 
-    // the primary title for the cited item
-    private String title;
+	// the first page of an item within a containing item
+	private String page_first;
 
-    // url
-    private String URL;
+	// the name of the publisher
+	private String publisher;
 
-    // version
-    private String version;
+	// the place of the publisher
+	private String publisher_place;
 
-    // volume number for the container periodical
-    private String volume;
+	// for related referenced resources; used for legal case histories, but
+	// may be relevant for other contexts.
+	private String references;
 
-    // The year suffix for author_date styles; e.g. the 'a' in '1999a'.
-    private String year_suffix;
+	// a section description (for newspapers, etc.)
+	private String section;
 
-    // Type
-    private String type;
-    
-    
-    //*************************************************
-    // getter / setter
-    //*************************************************    
-    
-    public String getAbstractt() {
-        return abstractt;
-    }
+	// the (typically publication) status of an item; for example ;forthcoming;
+	private String status;
 
-    public void setAbstractt(String abstractt) {
-        this.abstractt = abstractt;
-    }
+	// the primary title for the cited item
+	private String title;
 
-    public String getAnnote() {
-        return annote;
-    }
+	// url
+	private String URL;
 
-    public void setAnnote(String annote) {
-        this.annote = annote;
-    }
+	// version
+	private String version;
 
-    public String getArchive() {
-        return archive;
-    }
+	// volume number for the container periodical
+	private String volume;
 
-    public void setArchive(String archive) {
-        this.archive = archive;
-    }
+	// The year suffix for author_date styles; e.g. the 'a' in '1999a'.
+	private String year_suffix;
 
-    public String getArchive_location() {
-        return archive_location;
-    }
+	// Type
+	private String type;
 
-    public void setArchive_location(String archive_location) {
-        this.archive_location = archive_location;
-    }
-
-    public String getArchive_place() {
-        return archive_place;
-    }
-
-    public void setArchive_place(String archive_place) {
-        this.archive_place = archive_place;
-    }
-
-    public String getAuthority() {
-        return authority;
-    }
-
-    public void setAuthority(String authority) {
-        this.authority = authority;
-    }
-
-    public String getCall_number() {
-        return call_number;
-    }
-
-    public void setCall_number(String call_number) {
-        this.call_number = call_number;
-    }
-
-    public String getChapter_number() {
-        return chapter_number;
-    }
-
-    public void setChapter_number(String chapter_number) {
-        this.chapter_number = chapter_number;
-    }
-
-    public String getCitation_number() {
-        return citation_number;
-    }
-
-    public void setCitation_number(String citation_number) {
-        this.citation_number = citation_number;
-    }
-
-    public String getCitation_label() {
-        return citation_label;
-    }
-
-    public void setCitation_label(String citation_label) {
-        this.citation_label = citation_label;
-    }
-
-    public String getCollection_number() {
-        return collection_number;
-    }
-
-    public void setCollection_number(String collection_number) {
-        this.collection_number = collection_number;
-    }
-
-    public String getCollection_title() {
-        return collection_title;
-    }
-
-    public void setCollection_title(String collection_title) {
-        this.collection_title = collection_title;
-    }
-
-    public String getContainer_title() {
-        return container_title;
-    }
-
-    public void setContainer_title(String container_title) {
-        this.container_title = container_title;
-    }
-
-    public String getDOI() {
-        return DOI;
-    }
-
-    public void setDOI(String dOI) {
-        DOI = dOI;
-    }
-
-    public String getEdition() {
-        return edition;
-    }
-
-    public void setEdition(String edition) {
-        this.edition = edition;
-    }
-
-    public String getEvent() {
-        return event;
-    }
-
-    public void setEvent(String event) {
-        this.event = event;
-    }
-
-    public String getEvent_place() {
-        return event_place;
-    }
-
-    public void setEvent_place(String event_place) {
-        this.event_place = event_place;
-    }
-
-    public String getFirst_reference_note_number() {
-        return first_reference_note_number;
-    }
-
-    public void setFirst_reference_note_number(String first_reference_note_number) {
-        this.first_reference_note_number = first_reference_note_number;
-    }
-
-    public String getGenre() {
-        return genre;
-    }
-
-    public void setGenre(String genre) {
-        this.genre = genre;
-    }
-
-    public String getISBN() {
-        return ISBN;
-    }
-
-    public void setISBN(String iSBN) {
-        ISBN = iSBN;
-    }
-
-    public String getIssue() {
-        return issue;
-    }
-
-    public void setIssue(String issue) {
-        this.issue = issue;
-    }
-
-    public String getJurisdiction() {
-        return jurisdiction;
-    }
-
-    public void setJurisdiction(String jurisdiction) {
-        this.jurisdiction = jurisdiction;
-    }
-
-    public String getKeyword() {
-        return keyword;
-    }
-
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
-    }
-
-    public String getLocator() {
-        return locator;
-    }
-
-    public void setLocator(String locator) {
-        this.locator = locator;
-    }
-
-    public String getMedium() {
-        return medium;
-    }
-
-    public void setMedium(String medium) {
-        this.medium = medium;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    public String getNumber_of_pages() {
-        return number_of_pages;
-    }
-
-    public void setNumber_of_pages(String number_of_pages) {
-        this.number_of_pages = number_of_pages;
-    }
-
-    public String getNumber_of_volumes() {
-        return number_of_volumes;
-    }
-
-    public void setNumber_of_volumes(String number_of_volumes) {
-        this.number_of_volumes = number_of_volumes;
-    }
-
-    public String getOriginal_publisher() {
-        return original_publisher;
-    }
-
-    public void setOriginal_publisher(String original_publisher) {
-        this.original_publisher = original_publisher;
-    }
-
-    public String getOriginal_publisher_place() {
-        return original_publisher_place;
-    }
-
-    public void setOriginal_publisher_place(String original_publisher_place) {
-        this.original_publisher_place = original_publisher_place;
-    }
-
-    public String getOriginal_title() {
-        return original_title;
-    }
-
-    public void setOriginal_title(String original_title) {
-        this.original_title = original_title;
-    }
-
-    public String getPage() {
-        return page;
-    }
-
-    public void setPage(String page) {
-        this.page = page;
-    }
-
-    public String getPage_first() {
-        return page_first;
-    }
-
-    public void setPage_first(String page_first) {
-        this.page_first = page_first;
-    }
-
-    public String getPublisher() {
-        return publisher;
-    }
-
-    public void setPublisher(String publisher) {
-        this.publisher = publisher;
-    }
-
-    public String getPublisher_place() {
-        return publisher_place;
-    }
-
-    public void setPublisher_place(String publisher_place) {
-        this.publisher_place = publisher_place;
-    }
-
-    public String getReferences() {
-        return references;
-    }
-
-    public void setReferences(String references) {
-        this.references = references;
-    }
-
-    public String getSection() {
-        return section;
-    }
-
-    public void setSection(String section) {
-        this.section = section;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getURL() {
-        return URL;
-    }
-
-    public void setURL(String uRL) {
-        URL = uRL;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public String getVolume() {
-        return volume;
-    }
-
-    public void setVolume(String volume) {
-        this.volume = volume;
-    }
-
-    public String getYear_suffix() {
-        return year_suffix;
-    }
-
-    public void setYear_suffix(String year_suffix) {
-        this.year_suffix = year_suffix;
-    }
-
-    public void setAuthor(List<Person> authors) {
-	this.author = authors;
-    }
-
-    public List<Person> getAuthor() {
-	return author;
-    }
-
-    public List<DocumentCslWrapper> getDocuments() {
-		return documents;
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return this.id;
 	}
 
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	/**
+	 * @return the author
+	 */
+	public List<Person> getAuthor() {
+		return this.author;
+	}
+
+	/**
+	 * @param author the author to set
+	 */
+	public void setAuthor(List<Person> author) {
+		this.author = author;
+	}
+
+	/**
+	 * @return the editor
+	 */
+	public List<Person> getEditor() {
+		return this.editor;
+	}
+
+	/**
+	 * @param editor the editor to set
+	 */
+	public void setEditor(List<Person> editor) {
+		this.editor = editor;
+	}
+
+	/**
+	 * @return the issued
+	 */
+	public Date getIssued() {
+		return this.issued;
+	}
+
+	/**
+	 * @param issued the issued to set
+	 */
+	public void setIssued(Date issued) {
+		this.issued = issued;
+	}
+
+	/**
+	 * @return the abstractt
+	 */
+	public String getAbstractt() {
+		return this.abstractt;
+	}
+
+	/**
+	 * @param abstractt the abstractt to set
+	 */
+	public void setAbstractt(String abstractt) {
+		this.abstractt = abstractt;
+	}
+
+	/**
+	 * @return the annote
+	 */
+	public String getAnnote() {
+		return this.annote;
+	}
+
+	/**
+	 * @param annote the annote to set
+	 */
+	public void setAnnote(String annote) {
+		this.annote = annote;
+	}
+
+	/**
+	 * @return the archive
+	 */
+	public String getArchive() {
+		return this.archive;
+	}
+
+	/**
+	 * @param archive the archive to set
+	 */
+	public void setArchive(String archive) {
+		this.archive = archive;
+	}
+
+	/**
+	 * @return the archive_location
+	 */
+	public String getArchive_location() {
+		return this.archive_location;
+	}
+
+	/**
+	 * @param archive_location the archive_location to set
+	 */
+	public void setArchive_location(String archive_location) {
+		this.archive_location = archive_location;
+	}
+
+	/**
+	 * @return the archive_place
+	 */
+	public String getArchive_place() {
+		return this.archive_place;
+	}
+
+	/**
+	 * @param archive_place the archive_place to set
+	 */
+	public void setArchive_place(String archive_place) {
+		this.archive_place = archive_place;
+	}
+
+	/**
+	 * @return the authority
+	 */
+	public String getAuthority() {
+		return this.authority;
+	}
+
+	/**
+	 * @param authority the authority to set
+	 */
+	public void setAuthority(String authority) {
+		this.authority = authority;
+	}
+
+	/**
+	 * @return the call_number
+	 */
+	public String getCall_number() {
+		return this.call_number;
+	}
+
+	/**
+	 * @param call_number the call_number to set
+	 */
+	public void setCall_number(String call_number) {
+		this.call_number = call_number;
+	}
+
+	/**
+	 * @return the chapter_number
+	 */
+	public String getChapter_number() {
+		return this.chapter_number;
+	}
+
+	/**
+	 * @param chapter_number the chapter_number to set
+	 */
+	public void setChapter_number(String chapter_number) {
+		this.chapter_number = chapter_number;
+	}
+
+	/**
+	 * @return the citation_number
+	 */
+	public String getCitation_number() {
+		return this.citation_number;
+	}
+
+	/**
+	 * @param citation_number the citation_number to set
+	 */
+	public void setCitation_number(String citation_number) {
+		this.citation_number = citation_number;
+	}
+
+	/**
+	 * @return the citation_label
+	 */
+	public String getCitation_label() {
+		return this.citation_label;
+	}
+
+	/**
+	 * @param citation_label the citation_label to set
+	 */
+	public void setCitation_label(String citation_label) {
+		this.citation_label = citation_label;
+	}
+
+	/**
+	 * @return the collection_number
+	 */
+	public String getCollection_number() {
+		return this.collection_number;
+	}
+
+	/**
+	 * @param collection_number the collection_number to set
+	 */
+	public void setCollection_number(String collection_number) {
+		this.collection_number = collection_number;
+	}
+
+	/**
+	 * @return the collection_title
+	 */
+	public String getCollection_title() {
+		return this.collection_title;
+	}
+
+	/**
+	 * @param collection_title the collection_title to set
+	 */
+	public void setCollection_title(String collection_title) {
+		this.collection_title = collection_title;
+	}
+
+	/**
+	 * @return the container_title
+	 */
+	public String getContainer_title() {
+		return this.container_title;
+	}
+
+	/**
+	 * @param container_title the container_title to set
+	 */
+	public void setContainer_title(String container_title) {
+		this.container_title = container_title;
+	}
+
+	/**
+	 * @return the documents
+	 */
+	public List<DocumentCslWrapper> getDocuments() {
+		return this.documents;
+	}
+
+	/**
+	 * @param documents the documents to set
+	 */
 	public void setDocuments(List<DocumentCslWrapper> documents) {
 		this.documents = documents;
 	}
 
-	public void setIssued(Date issued) {
-	this.issued = issued;
-    }
+	/**
+	 * @return the dOI
+	 */
+	public String getDOI() {
+		return this.DOI;
+	}
 
-    public Date getIssued() {
-	return issued;
-    }
+	/**
+	 * @param dOI the dOI to set
+	 */
+	public void setDOI(String dOI) {
+		DOI = dOI;
+	}
 
-    public void setEditor(List<Person> editor) {
-	this.editor = editor;
-    }
+	/**
+	 * @return the edition
+	 */
+	public String getEdition() {
+		return this.edition;
+	}
 
-    public List<Person> getEditor() {
-	return editor;
-    }
+	/**
+	 * @param edition the edition to set
+	 */
+	public void setEdition(String edition) {
+		this.edition = edition;
+	}
 
-    public void setId(String id) {
-	this.id = id;
-    }
+	/**
+	 * @return the event
+	 */
+	public String getEvent() {
+		return this.event;
+	}
 
-    public String getId() {
-	return id;
-    }
+	/**
+	 * @param event the event to set
+	 */
+	public void setEvent(String event) {
+		this.event = event;
+	}
 
-    public void setType(String type) {
-	this.type = type;
-    }
+	/**
+	 * @return the event_place
+	 */
+	public String getEvent_place() {
+		return this.event_place;
+	}
 
-    public String getType() {
-	return type;
-    }
+	/**
+	 * @param event_place the event_place to set
+	 */
+	public void setEvent_place(String event_place) {
+		this.event_place = event_place;
+	}
 
-    
-    
+	/**
+	 * @return the first_reference_note_number
+	 */
+	public String getFirst_reference_note_number() {
+		return this.first_reference_note_number;
+	}
+
+	/**
+	 * @param first_reference_note_number the first_reference_note_number to set
+	 */
+	public void setFirst_reference_note_number(String first_reference_note_number) {
+		this.first_reference_note_number = first_reference_note_number;
+	}
+
+	/**
+	 * @return the genre
+	 */
+	public String getGenre() {
+		return this.genre;
+	}
+
+	/**
+	 * @param genre the genre to set
+	 */
+	public void setGenre(String genre) {
+		this.genre = genre;
+	}
+
+	/**
+	 * @return the iSBN
+	 */
+	public String getISBN() {
+		return this.ISBN;
+	}
+
+	/**
+	 * @param iSBN the iSBN to set
+	 */
+	public void setISBN(String iSBN) {
+		ISBN = iSBN;
+	}
+
+	/**
+	 * @return the issue
+	 */
+	public String getIssue() {
+		return this.issue;
+	}
+
+	/**
+	 * @param issue the issue to set
+	 */
+	public void setIssue(String issue) {
+		this.issue = issue;
+	}
+
+	/**
+	 * @return the jurisdiction
+	 */
+	public String getJurisdiction() {
+		return this.jurisdiction;
+	}
+
+	/**
+	 * @param jurisdiction the jurisdiction to set
+	 */
+	public void setJurisdiction(String jurisdiction) {
+		this.jurisdiction = jurisdiction;
+	}
+
+	/**
+	 * @return the keyword
+	 */
+	public String getKeyword() {
+		return this.keyword;
+	}
+
+	/**
+	 * @param keyword the keyword to set
+	 */
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
+	}
+
+	/**
+	 * @return the locator
+	 */
+	public String getLocator() {
+		return this.locator;
+	}
+
+	/**
+	 * @param locator the locator to set
+	 */
+	public void setLocator(String locator) {
+		this.locator = locator;
+	}
+
+	/**
+	 * @return the medium
+	 */
+	public String getMedium() {
+		return this.medium;
+	}
+
+	/**
+	 * @param medium the medium to set
+	 */
+	public void setMedium(String medium) {
+		this.medium = medium;
+	}
+
+	/**
+	 * @return the note
+	 */
+	public String getNote() {
+		return this.note;
+	}
+
+	/**
+	 * @param note the note to set
+	 */
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	/**
+	 * @return the number
+	 */
+	public String getNumber() {
+		return this.number;
+	}
+
+	/**
+	 * @param number the number to set
+	 */
+	public void setNumber(String number) {
+		this.number = number;
+	}
+
+	/**
+	 * @return the number_of_pages
+	 */
+	public String getNumber_of_pages() {
+		return this.number_of_pages;
+	}
+
+	/**
+	 * @param number_of_pages the number_of_pages to set
+	 */
+	public void setNumber_of_pages(String number_of_pages) {
+		this.number_of_pages = number_of_pages;
+	}
+
+	/**
+	 * @return the number_of_volumes
+	 */
+	public String getNumber_of_volumes() {
+		return this.number_of_volumes;
+	}
+
+	/**
+	 * @param number_of_volumes the number_of_volumes to set
+	 */
+	public void setNumber_of_volumes(String number_of_volumes) {
+		this.number_of_volumes = number_of_volumes;
+	}
+
+	/**
+	 * @return the original_publisher
+	 */
+	public String getOriginal_publisher() {
+		return this.original_publisher;
+	}
+
+	/**
+	 * @param original_publisher the original_publisher to set
+	 */
+	public void setOriginal_publisher(String original_publisher) {
+		this.original_publisher = original_publisher;
+	}
+
+	/**
+	 * @return the original_publisher_place
+	 */
+	public String getOriginal_publisher_place() {
+		return this.original_publisher_place;
+	}
+
+	/**
+	 * @param original_publisher_place the original_publisher_place to set
+	 */
+	public void setOriginal_publisher_place(String original_publisher_place) {
+		this.original_publisher_place = original_publisher_place;
+	}
+
+	/**
+	 * @return the original_title
+	 */
+	public String getOriginal_title() {
+		return this.original_title;
+	}
+
+	/**
+	 * @param original_title the original_title to set
+	 */
+	public void setOriginal_title(String original_title) {
+		this.original_title = original_title;
+	}
+
+	/**
+	 * @return the page
+	 */
+	public String getPage() {
+		return this.page;
+	}
+
+	/**
+	 * @param page the page to set
+	 */
+	public void setPage(String page) {
+		this.page = page;
+	}
+
+	/**
+	 * @return the page_first
+	 */
+	public String getPage_first() {
+		return this.page_first;
+	}
+
+	/**
+	 * @param page_first the page_first to set
+	 */
+	public void setPage_first(String page_first) {
+		this.page_first = page_first;
+	}
+
+	/**
+	 * @return the publisher
+	 */
+	public String getPublisher() {
+		return this.publisher;
+	}
+
+	/**
+	 * @param publisher the publisher to set
+	 */
+	public void setPublisher(String publisher) {
+		this.publisher = publisher;
+	}
+
+	/**
+	 * @return the publisher_place
+	 */
+	public String getPublisher_place() {
+		return this.publisher_place;
+	}
+
+	/**
+	 * @param publisher_place the publisher_place to set
+	 */
+	public void setPublisher_place(String publisher_place) {
+		this.publisher_place = publisher_place;
+	}
+
+	/**
+	 * @return the references
+	 */
+	public String getReferences() {
+		return this.references;
+	}
+
+	/**
+	 * @param references the references to set
+	 */
+	public void setReferences(String references) {
+		this.references = references;
+	}
+
+	/**
+	 * @return the section
+	 */
+	public String getSection() {
+		return this.section;
+	}
+
+	/**
+	 * @param section the section to set
+	 */
+	public void setSection(String section) {
+		this.section = section;
+	}
+
+	/**
+	 * @return the status
+	 */
+	public String getStatus() {
+		return this.status;
+	}
+
+	/**
+	 * @param status the status to set
+	 */
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	/**
+	 * @return the title
+	 */
+	public String getTitle() {
+		return this.title;
+	}
+
+	/**
+	 * @param title the title to set
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	/**
+	 * @return the uRL
+	 */
+	public String getURL() {
+		return this.URL;
+	}
+
+	/**
+	 * @param uRL the uRL to set
+	 */
+	public void setURL(String uRL) {
+		URL = uRL;
+	}
+
+	/**
+	 * @return the version
+	 */
+	public String getVersion() {
+		return this.version;
+	}
+
+	/**
+	 * @param version the version to set
+	 */
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	/**
+	 * @return the volume
+	 */
+	public String getVolume() {
+		return this.volume;
+	}
+
+	/**
+	 * @param volume the volume to set
+	 */
+	public void setVolume(String volume) {
+		this.volume = volume;
+	}
+
+	/**
+	 * @return the year_suffix
+	 */
+	public String getYear_suffix() {
+		return this.year_suffix;
+	}
+
+	/**
+	 * @param year_suffix the year_suffix to set
+	 */
+	public void setYear_suffix(String year_suffix) {
+		this.year_suffix = year_suffix;
+	}
+
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return this.type;
+	}
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
 }
