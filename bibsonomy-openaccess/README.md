@@ -4,11 +4,14 @@
 
 BibSonomy OpenAccess contains the SWORD connection for PUMA.
 
-
 The module is part of the [BibSonomy](http://www.bibsonomy.org) social
 bookmarking system and is maintained by the
 [Knowledge & Data Engineering Group](http://www.kde.cs.uni-kassel.de/)
-at the University of Kassel, Germany.
+at the University of Kassel, Germany,
+the [Data Mining and Information Retrieval Group](http://www.is.informatik.uni-wuerzburg.de/en/dmir/)
+at the University of Würzburg, Germany, and
+the [L3S Research Center](http://www.l3s.de/)
+at Leibniz University Hannover, Germany.
 
 ## Documentation
 

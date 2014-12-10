@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-MARC-Parser - Marc Parser for BibSonomy
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.marc;
 
 import static org.junit.Assert.assertEquals;
@@ -71,11 +97,11 @@ public abstract class AbstractDataDownloadingTestCase {
 
 	private InputStream readCached(final String hebisId, final boolean overwriteWithAlternative) throws MalformedURLException, IOException {
 		final String fileName = hebisId + ".xml";
-		InputStream rVal = (overwriteWithAlternative == true) ? null : this.getClass().getResourceAsStream(fileName);
+		InputStream rVal = (overwriteWithAlternative) ? null : this.getClass().getResourceAsStream(fileName);
 		if (rVal == null) {
 			final String absoluteFileName = "src/test/resources/" + getClass().getPackage().getName().replace('.','/') + "/"  + fileName;
 			InputStream is;
-			if (overwriteWithAlternative == true) {
+			if (overwriteWithAlternative) {
 				is = new URL("http://solr.hebis.de/solr/hebis/select?q=id%3A" + hebisId + "&wt=xml&indent=true").openStream();
 			} else {
 				//new URL("http://wastl.hebis.uni-frankfurt.de:8983/solr/hebis_neu/select?q=id%3A" + hebisId + "&wt=xml&indent=true"));

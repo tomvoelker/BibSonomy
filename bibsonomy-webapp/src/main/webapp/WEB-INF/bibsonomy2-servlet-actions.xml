@@ -478,8 +478,7 @@
 								<value>firstLastNames</value>
 								<value>generatedBibtexKeys</value>
 								<value>download</value>
-								<value>absoluteUrlGenerator</value>
-								<value>relativeUrlGenerator</value>
+								<value>urlGenerator</value>
 								<value>skipDummyValues</value>
 								
 								<value>saveAndRate</value>
@@ -791,8 +790,7 @@
 		<value>firstLastNames</value>
 		<value>generatedBibtexKeys</value>
 		<value>download</value>
-		<value>absoluteUrlGenerator</value>
-		<value>relativeUrlGenerator</value>
+		<value>urlGenerator</value>
 		<value>skipDummyValues</value>
 		
 		<value>saveAndRate</value>
@@ -1167,11 +1165,11 @@
 		<property name="allowedExtensions" value="${project.document.allowedExtensions}" />
 	</bean>
 	
-	<bean id="tempFileLogic" class="org.bibsonomy.util.file.temp.ServerTempFileLogic">
+	<bean id="tempFileLogic" class="org.bibsonomy.webapp.util.file.temp.ServerTempFileLogic">
 		<constructor-arg value="${project.document.temp}" />
 	</bean>
 	
-	<bean id="profileFileLogic" class="org.bibsonomy.util.file.profilepicture.ServerProfilePictureLogic">
+	<bean id="profileFileLogic" class="org.bibsonomy.webapp.util.file.profilepicture.ServerProfilePictureLogic">
 		<constructor-arg value="${project.picture.path}" />
 		<property name="defaultFileName" value="no_picture.png" />
 		<property name="pictureScaler">
@@ -1183,11 +1181,11 @@
 		<property name="adminLogic" ref="adminLogic" />
 	</bean>
 	
-	<bean id="jabRefFileLogic" class="org.bibsonomy.util.file.jabref.ServerJabRefFileLogic">
+	<bean id="jabRefFileLogic" class="org.bibsonomy.webapp.util.file.jabref.ServerJabRefFileLogic">
 		<constructor-arg value="${project.document.path}" />
 	</bean>
 	
-	<bean id="documentFileLogic" class="org.bibsonomy.util.file.document.ServerDocumentFileLogic">
+	<bean id="documentFileLogic" class="org.bibsonomy.webapp.util.file.document.ServerDocumentFileLogic">
 		<constructor-arg value="${project.document.path}" />
 		<property name="extensionChecker" ref="extensionChecker" />
 	</bean>

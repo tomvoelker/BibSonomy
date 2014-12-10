@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- *  BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.scraper.url.kde.dlib;
 
 import java.io.IOException;
@@ -37,6 +40,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
@@ -49,7 +53,7 @@ import org.bibsonomy.util.WebUtils;
  * Scraper for www.dlib.org
  * @author tst
  */
-public class DLibScraper extends AbstractUrlScraper {
+public class DLibScraper extends AbstractUrlScraper implements ReferencesScraper {
 	private static final Log log = LogFactory.getLog(DLibScraper.class);
 	
 	private static final String SITE_URL = "http://www.dlib.org/";
@@ -137,7 +141,9 @@ public class DLibScraper extends AbstractUrlScraper {
 	 */
 	private static final String PATTERN_BIBTEX_KEY = "dlib/(.*)/(.*)/";
 	private static final Pattern PATTERN_ABSTRACT = Pattern.compile("<H3 class=\"blue\">Abstract</H3>\\s+<p class=\"blue\">\\s+(.*)\\s+</p>");
-
+	
+	//Pattern for references
+	private static final Pattern REFERENCES = Pattern.compile("(?s)<h3>Notes.*</h3>(.*)<center><h6>Copyright");
 	
 	@Override
 	public String getInfo() {
@@ -326,6 +332,23 @@ public class DLibScraper extends AbstractUrlScraper {
 	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
+	 */
+	@Override
+	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
+		try {
+			final Matcher m = REFERENCES.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
+			if (m.find()) {
+				scrapingContext.setReferences(m.group(1));
+				return true;
+			}	
+		} catch (IOException ex) {
+			throw new ScrapingException(ex);
+		}
+		return false;
 	}
 	
 }

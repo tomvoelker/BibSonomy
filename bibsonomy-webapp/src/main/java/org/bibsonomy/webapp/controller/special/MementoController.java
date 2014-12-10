@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.controller.special;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -8,13 +34,15 @@ import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.services.memento.MementoService;
 import org.bibsonomy.webapp.command.special.RedirectCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
+import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.view.Views;
+import org.springframework.validation.Errors;
 
 /**
  * Interaction with Memento TimeGates, cf. http://www.mementoweb.org/
@@ -34,10 +62,12 @@ import org.bibsonomy.webapp.view.ExtendedRedirectView;
  * 
  * @author rja
  */
-public class MementoController implements MinimalisticController<RedirectCommand> {
+public class MementoController implements MinimalisticController<RedirectCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(MementoController.class);
-  
+
 	private MementoService mementoService;
+	
+	private Errors errors;
 
 	/**
 	 * We need two parameters:
@@ -54,10 +84,11 @@ public class MementoController implements MinimalisticController<RedirectCommand
 		final String url = command.getUrl();
 		final Date datetime = command.getDatetime();
 		// check for valid parameters
-		if (!present(url)) { 
+		if (!present(url)) {
 			throw new MalformedURLSchemeException("parameter 'url' missing");
 		}
-		if (!present(datetime)) { 
+		
+		if (!present(datetime)) {
 			throw new MalformedURLSchemeException("parameter 'datetime' missing");
 		}
 		// query timegate
@@ -70,12 +101,31 @@ public class MementoController implements MinimalisticController<RedirectCommand
 		// check result
 		// TODO: handle case when timegate works well but there exists no archived version
 		if (!present(redirectUrl)) {
-			throw new InternServerException("Could not retrieve archived version for " + url + ".");
+			errors.reject("error.memento.notfound");
+			return Views.ERROR;
 		}
 		// send redirect
 		log.debug("finally redirecting to " + redirectUrl);
 		return new ExtendedRedirectView(redirectUrl.toExternalForm());
 	}
+
+	/**
+	 * @return the errors
+	 */
+	@Override
+	public Errors getErrors() {
+		return this.errors;
+	}
+	
+	/**
+	 * @param errors the errors to set
+	 */
+	@Override
+	public void setErrors(Errors errors) {
+		this.errors = errors;
+	}
+
+
 
 	@Override
 	public RedirectCommand instantiateCommand() {

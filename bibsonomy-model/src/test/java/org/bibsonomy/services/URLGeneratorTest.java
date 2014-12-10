@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Model - Java- and JAXB-Model.
  *
- *  BibSonomy-Model - Java- and JAXB-Model.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.services;
 
 import static org.junit.Assert.assertEquals;
@@ -71,7 +74,7 @@ public class URLGeneratorTest {
 	
 	@Test
 	public void testGetBasketUrl() throws Exception{
-		final String expected = projectHome + "basket";
+		final String expected = projectHome + "clipboard";
 		assertEquals(expected, ug.getBasketUrl());
 	}
 	
@@ -86,15 +89,20 @@ public class URLGeneratorTest {
 		assertEquals(expected, ug.getBookmarkUrl(bm, null));
 		
 		//Test with user
-		expected = projectHome + "url/" + bm.getIntraHash() + "/" +
-				   UrlUtils.safeURIEncode(user.getName());
-		assertEquals(expected, ug.getBookmarkUrl(bm, user));		
+		expected = projectHome + "url/" + bm.getIntraHash() + "/" + UrlUtils.safeURIEncode(user.getName());
+		assertEquals(expected, ug.getBookmarkUrl(bm, user));
 		
 	}
 	
 	@Test
+	public void testGetPublicationCommunityUrlByInterHash() {
+		String publicationCommunityUrlByInterHash = ug.getPublicationCommunityUrlByInterHash("testinterhash");
+		assertEquals(projectHome + "bibtex/testinterhash", publicationCommunityUrlByInterHash);
+	}
+	
+	@Test
 	public void testGetBookmarkUrlByIntraHash() throws Exception{
-		final Bookmark bm = ModelUtils.generatePost(Bookmark.class).getResource();		
+		final Bookmark bm = ModelUtils.generatePost(Bookmark.class).getResource();
 		
 		final String expected = projectHome + "url/" + bm.getIntraHash();
 		assertEquals(expected, ug.getBookmarkUrlByIntraHash(bm.getIntraHash()));
@@ -396,12 +404,12 @@ public class URLGeneratorTest {
 	@Test
 	public void testMatch() {
 		assertTrue(ug.matchesPage(projectHome + "inbox", URLGenerator.Page.INBOX));
-		assertTrue(ug.matchesPage(projectHome + "basket", URLGenerator.Page.BASKET));
-		assertTrue(ug.matchesPage(projectHome + "basket?start=0", URLGenerator.Page.BASKET));
+		assertTrue(ug.matchesPage(projectHome + "clipboard", URLGenerator.Page.BASKET));
+		assertTrue(ug.matchesPage(projectHome + "clipboard?start=0", URLGenerator.Page.BASKET));
 		
-		assertFalse(ug.matchesPage(projectHome + "basket", URLGenerator.Page.INBOX));
-		assertFalse(ug.matchesPage(projectHome + "foo/basket", URLGenerator.Page.BASKET));
-		assertFalse(ug.matchesPage("/basket", URLGenerator.Page.BASKET));
+		assertFalse(ug.matchesPage(projectHome + "clipboard", URLGenerator.Page.INBOX));
+		assertFalse(ug.matchesPage(projectHome + "foo/clipboard", URLGenerator.Page.BASKET));
+		assertFalse(ug.matchesPage("/clipboard", URLGenerator.Page.BASKET));
 	}
 
 	@Test

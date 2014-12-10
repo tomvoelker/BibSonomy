@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Lucene - Fulltext search facility of BibSonomy
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.lucene.index;
 
 import java.io.File;
@@ -15,6 +41,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexNotFoundException;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
@@ -116,33 +143,35 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * @return LuceneIndexStatistics for this index
 	 */
 	public LuceneIndexStatistics getStatistics() {
-        final LuceneIndexStatistics statistics = new LuceneIndexStatistics();
-        if (!this.isIndexEnabled()) {
-        	return statistics;
-        }
-        
-        try {
-        	this.searcherManager.maybeRefreshBlocking();
-        	DirectoryReader indexReader = (DirectoryReader) this.aquireIndexSearcher().getIndexReader();
-        	
-        	// Get the ID of this index 
-        	statistics.setIndexId(this.indexId);
+		final LuceneIndexStatistics statistics = new LuceneIndexStatistics();
+		if (!this.isIndexEnabled()) {
+			return statistics;
+		}
 
-        	statistics.setNumDocs(indexReader.numDocs());
-        	statistics.setNumDeletedDocs(indexReader.numDeletedDocs());
-        	statistics.setCurrentVersion(indexReader.getVersion());
-        	statistics.setCurrent(indexReader.isCurrent());
-        	/*
-        	 * FIXME - For Lucene 4.9 we have to use IndexVersion Number here, instead of Date
-        	 */
-        	//statistics.setLastModified(new Date(IndexReader.lastModified(ir.directory())));
-        } catch (IOException e1) {
-        	log.error(e1);
-        }
+		try {
+			this.searcherManager.maybeRefreshBlocking();
+			IndexSearcher searcher = this.aquireIndexSearcher();
+			
+			try {
+				final DirectoryReader indexReader = (DirectoryReader) searcher.getIndexReader();
+				
+				// Get the ID of this index
+				statistics.setIndexId(this.indexId);
+				statistics.setNumDocs(indexReader.numDocs());
+				statistics.setNumDeletedDocs(indexReader.numDeletedDocs());
+				statistics.setCurrentVersion(indexReader.getVersion());
+				statistics.setCurrent(indexReader.isCurrent());
+				
+			} finally {
+				this.searcherManager.release(searcher);
+				searcher = null;
+			}
+		} catch (IOException e1) {
+			log.error(e1);
+		}
+		statistics.setNewestRecordDate(new Date(this.getLastLogDate()));
 
-	    statistics.setNewestRecordDate(new Date(this.getLastLogDate()));
-	    
-	    return statistics;
+		return statistics;
 	}
 
 	/** 
@@ -167,9 +196,9 @@ public class LuceneResourceIndex<R extends Resource> {
 			
 			try {
 				if (IndexWriter.isLocked(this.indexDirectory)) {
-					log.error("WARNING: Index " + indexPath + " is locked - forcibly unlock the index.");
+					log.warn("WARNING: Index " + indexPath + " is locked - forcibly unlock the index.");
 					IndexWriter.unlock(this.indexDirectory);
-					log.error("OK. Index unlocked.");
+					log.warn("OK. Index unlocked.");
 				}
 			} catch (final IOException e) {
 				log.fatal("Failed to unlock the index - dying.");
@@ -379,8 +408,6 @@ public class LuceneResourceIndex<R extends Resource> {
 				// remove spam posts from index
 				for (final String userName : this.usersToFlag) {
 					try {
-						//final int cnt = purgeDocumentsForUser(userName);
-						//log.debug("Purged " + cnt + " posts for user " + userName);
 						purgeDocumentsForUser(userName);
 						log.debug("Purged posts for user " + userName);
 					} catch (final IOException e) {
@@ -433,16 +460,18 @@ public class LuceneResourceIndex<R extends Resource> {
 					return;
 				}
 			}
-
+			
 			try {
 				openIndexWriter();
+				try {
+					openSearcherManager();
+				} catch (final IOException e) {
+					log.error("Error opening SearcherManager", e);
+				}
+			} catch(final IndexNotFoundException e) {
+				log.error("Error opening IndexWriter (" + e.getMessage() + ") - This is ok while creating a new index.");
 			} catch (final IOException e) {
-				log.error("Error opening index writer", e);
-			}
-			try {
-				openSearcherManager();
-			} catch (final IOException e) {
-				log.error("Error opening SearcherManager", e);
+				log.error("Error opening IndexWriter", e);
 			}
 
 			// delete the lists
@@ -560,7 +589,7 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * @throws LockObtainFailedException
 	 * @throws IOException
 	 */
-	private void openIndexWriter() throws CorruptIndexException, LockObtainFailedException, IOException {
+	private void openIndexWriter() throws CorruptIndexException, LockObtainFailedException, IndexNotFoundException, IOException  {
 		closeIndexWriter();
 		//open new indexWriter
 		log.debug("Opening indexWriter " + this.indexPath);

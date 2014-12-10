@@ -38,12 +38,11 @@
 		</menu>
 
 		<menu name="REST API">
-			<item name="URL Schema" href="/api.html" />
 			<item name="Getting access" href="/gettingaccess.html" />
 			<item name="Java client library" href="/javaclient.html" />
-			<item name="Client JavaDoc" href="./rest-client-javadoc/index.html" />			
-			<item name="Generic client" href="/genericclient.html" />			
-			<item name="XML Schema" href="/xmlschema.html" />			
+			<item name="Client JavaDoc" href="./rest-client-javadoc/index.html" />
+			<item name="Generic client" href="/genericclient.html" />
+			<item name="XML Schema" href="/xmlschema.html" />
 		</menu>
 				
 		<menu name="Integration">

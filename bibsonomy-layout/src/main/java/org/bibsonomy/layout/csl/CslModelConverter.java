@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Layout - Layout engine for the webapp.
  *
- *  BibSonomy-Layout - Layout engine for the webapp.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.layout.csl;
 
 import static org.bibsonomy.model.util.BibTexUtils.cleanBibTex;
@@ -113,7 +116,7 @@ public class CslModelConverter {
 	 */
 	public static Record convertPost(final Post<? extends Resource> post) {
 		final Record rec = new Record();
-		final BibTex bib = (BibTex) post.getResource();
+		final BibTex publication = (BibTex) post.getResource();
 		
 		/*
 		 * This mapping based on 
@@ -124,21 +127,22 @@ public class CslModelConverter {
 		// id
 		rec.setId(createId(post));
 		// type
-		rec.setType(mapToCslType(bib.getEntrytype()));
+		rec.setType(mapToCslType(publication.getEntrytype()));
 
 		// mapping address
-		rec.setEvent_place(cleanBibTex(bib.getAddress()));
-		rec.setPublisher_place(cleanBibTex(bib.getAddress()));
+		final String cleanedAddress = cleanBibTex(publication.getAddress());
+		rec.setEvent_place(cleanedAddress);
+		rec.setPublisher_place(cleanedAddress);
 		
 		// mapping authors, editors
-		if (present(bib.getAuthor())) {
-			for (final PersonName author : bib.getAuthor()) {
+		if (present(publication.getAuthor())) {
+			for (final PersonName author : publication.getAuthor()) {
 				final Person person = convertToPerson(author);
 				rec.getAuthor().add(person);
 			}
 		}
-		if (present(bib.getEditor())) {
-			for (final PersonName editor : bib.getEditor()) {
+		if (present(publication.getEditor())) {
+			for (final PersonName editor : publication.getEditor()) {
 				final Person person = convertToPerson(editor);
 				rec.getEditor().add(person);
 			}
@@ -146,90 +150,81 @@ public class CslModelConverter {
 
 		// date mapping
 		final Date date = new Date();
-		date.setDate_parts(Collections.singletonList(new DateParts(bib.getYear())));
+		date.setDate_parts(Collections.singletonList(new DateParts(publication.getYear())));
+		date.setLiteral(publication.getYear());
 		rec.setIssued(date);
 		
 		// mapping abstract
-		rec.setAbstractt(cleanBibTex(bib.getAbstract()));
+		rec.setAbstractt(cleanBibTex(publication.getAbstract()));
 		
 		// mapping bibtexkey
-		rec.setCitation_label(cleanBibTex(bib.getBibtexKey()));
+		rec.setCitation_label(cleanBibTex(publication.getBibtexKey()));
 		
-		
-		/***************************
-		 *** COLLECTION TITLE    ***
-		 ***************************/
-
-//		collection-title
-//		title of the collection holding the item (e.g. the series title for a book)
-		
-		if(present(bib.getSeries())) {
-			rec.setCollection_title(cleanBibTex(bib.getSeries()));
+		/* 
+		 * collection-title
+		 * title of the collection holding the item (e.g. the series title for a book)
+		 */
+		final String series = publication.getSeries();
+		if (present(series)) {
+			rec.setCollection_title(cleanBibTex(series));
 		}
 		
-		/***************************
-		 *** CONTAINER TITLE     *** 
-		 ***************************/
-		
-//		container-title
-//		title of the container holding the item (e.g. the book title for a book chapter, the journal title for a journal article)
-		
-		if (BibTexUtils.ARTICLE.equals(bib.getEntrytype()) &&
-			present(bib.getJournal())) {
-				
-				rec.setContainer_title(cleanBibTex(bib.getJournal()));
-				
+		/*
+		 * container-title
+		 * title of the container holding the item (e.g. the book title for a book chapter, the journal title for a journal article)
+		 */
+		if (BibTexUtils.ARTICLE.equals(publication.getEntrytype()) && present(publication.getJournal())) {
+			rec.setContainer_title(cleanBibTex(publication.getJournal()));
 		} else {
-			
-			rec.setContainer_title(cleanBibTex(bib.getBooktitle()));
+			rec.setContainer_title(cleanBibTex(publication.getBooktitle()));
 		}
 		
 		
 		// mapping edition
-		rec.setEdition(cleanBibTex(bib.getEdition()));
+		rec.setEdition(cleanBibTex(publication.getEdition()));
 		
 		// mapping publisher, techreport, thesis, organization
-		if (present(bib.getPublisher())) {
-			rec.setPublisher(cleanBibTex(bib.getPublisher()));
-		} else if (BibTexUtils.TECH_REPORT.equals(bib.getEntrytype())) {
-			rec.setPublisher(cleanBibTex(bib.getInstitution()));
-		} else if (BibTexUtils.PHD_THESIS.equals(bib.getEntrytype())) {
-			rec.setPublisher(cleanBibTex(bib.getSchool()));
+		if (present(publication.getPublisher())) {
+			rec.setPublisher(cleanBibTex(publication.getPublisher()));
+		} else if (BibTexUtils.TECH_REPORT.equals(publication.getEntrytype())) {
+			rec.setPublisher(cleanBibTex(publication.getInstitution()));
+		} else if (BibTexUtils.PHD_THESIS.equals(publication.getEntrytype())) {
+			rec.setPublisher(cleanBibTex(publication.getSchool()));
 			rec.setGenre("PhD dissertation");
-		} else if (BibTexUtils.MASTERS_THESIS.equals(bib.getEntrytype())) {
-			rec.setPublisher(cleanBibTex(bib.getSchool()));
+		} else if (BibTexUtils.MASTERS_THESIS.equals(publication.getEntrytype())) {
+			rec.setPublisher(cleanBibTex(publication.getSchool()));
 			rec.setGenre("Master thesis");
 		} else {
-			rec.setPublisher(cleanBibTex(bib.getOrganization()));
+			rec.setPublisher(cleanBibTex(publication.getOrganization()));
 		}
 		
 		// mapping chapter, title
-		if (present(bib.getChapter())) {
-			rec.setTitle(cleanBibTex(bib.getChapter()));
+		if (present(publication.getChapter())) {
+			rec.setTitle(cleanBibTex(publication.getChapter()));
 		} else {
-			rec.setTitle(cleanBibTex(bib.getTitle()));
+			rec.setTitle(cleanBibTex(publication.getTitle()));
 		}
 		
 		// mapping note
-		rec.setNote(cleanBibTex(bib.getNote()));
+		rec.setNote(cleanBibTex(publication.getNote()));
 		
 		// mapping number
-		rec.setNumber(cleanBibTex(bib.getNumber()));
-		rec.setIssue(cleanBibTex(bib.getNumber()));
+		rec.setNumber(cleanBibTex(publication.getNumber()));
+		rec.setIssue(cleanBibTex(publication.getNumber()));
 		
 		// mapping pages
-		rec.setPage(cleanBibTex(bib.getPages()));
-		rec.setNumber_of_pages(bib.getPages());
-		rec.setPage_first(bib.getPages());
+		rec.setPage(cleanBibTex(publication.getPages()));
+		rec.setNumber_of_pages(publication.getPages());
+		rec.setPage_first(publication.getPages());
 		
-		rec.setVolume(cleanBibTex(bib.getVolume()));
+		rec.setVolume(cleanBibTex(publication.getVolume()));
 
-		rec.setURL(cleanBibTex(bib.getUrl()));
+		rec.setURL(cleanBibTex(publication.getUrl()));
 		
-		rec.setDOI(cleanBibTex(bib.getMiscField("doi")));
-		rec.setISBN(cleanBibTex(bib.getMiscField("isbn")));
+		rec.setDOI(cleanBibTex(publication.getMiscField("doi")));
+		rec.setISBN(cleanBibTex(publication.getMiscField("isbn")));
 
-		rec.setDocuments(convertList(bib.getDocuments()));
+		rec.setDocuments(convertList(publication.getDocuments()));
 		
 		return rec;
 	}

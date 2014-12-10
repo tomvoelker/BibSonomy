@@ -9,11 +9,6 @@ var userMinFreq = 1;
  */
 var currentSortStyle = null;
 
-$(function() {
-	/* Function, to fix the functionality of the  menubar if the user is a touchable device */
-	touchableMenubar();
-});
-
 /**
  * XXX: variable "tagbox_minfreq_style" is defined in cloud.tagx!
  * 
@@ -35,10 +30,8 @@ function init_tagbox(tagbox, show, sort, minfreq) {
 			styleList.append(getUserMinfreq(tagbox, styleList, minfreq));
 		} else if (tagbox_minfreq_style == "default") {
 			styleList.append(getUserMinfreq(tagbox, styleList, -1));  
-		} 
+		}
 	}
-	
-	
 	
 	changeTagBox(tagbox, styleList, style_show[show]);
 	changeTagBox(tagbox, styleList, style_sort[sort]);
@@ -185,7 +178,7 @@ function setTagBoxFreq(tagbox) {
 	/* store tagbox */
 	var litags = tagbox.getElementsByTagName("li");
 	for (var x = 0; x < litags.length; x++) {
-		var tags = litags[x].getElementsByTagName("a");		
+		var tags = litags[x].getElementsByTagName("a");
 		var tagname = tags[0].firstChild.nodeValue;
 		collection_tagname.push(tagname);
 		collection_li[tagname] = litags[x];//.cloneNode(true); //NOTE: does new code work in all browsers?
@@ -197,7 +190,7 @@ function setTagBoxFreq(tagbox) {
 		for (y = 0; y < collection_numberofposts.length; y++) {
 			if (collection_numberofposts[y] == numberofpost) {
 				newnumberofposts = false;
-			}					
+			}
 		}
 		// remember post count
 		if (newnumberofposts) {
@@ -227,12 +220,11 @@ function setTagBoxFreq(tagbox) {
 		delete tags;
 	}
 
-	/* clean up */	
+	/* clean up */
 	delete collection_tagname;
 	delete collection_li;
 	delete collection_tagposts;
 	delete collection_numberofposts;
-
 }
 
 
@@ -285,14 +277,14 @@ function switchNavi(scope, element) {
 	 * some time until we make the list visible again (though it's then 
 	 * otherwise hidden by CSS).
 	 */
-	var ul = element.parents("ul");
-	ul.css("visibility", "hidden");
-	window.setTimeout(function() {ul.css("visibility", "visible");}, 10);
 
 	/*
 	 * remove old scope inputs
 	 */
 	$("input[name='scope']").remove();
+	
+	/* if exist, remove #pathPart */
+	$("#pathPart").remove();
 	
 	/*
 	 * change form action to redirect with the given scope
@@ -306,13 +298,7 @@ function switchNavi(scope, element) {
 	if (text.search(/- /) != -1) { // search in a group
 		text = getString("navi.group") + ":" + text.substr(2); 
 	}
-	$("#search a:first").html(text);
-	/*
-	 * remove all remaining list elements 
-	 */
-	$("#search > ul > li").each(function(){
-		if (!$(this).find("form, ul").length) $(this).remove(); 
-	});
+	$("#search a:first .search-scope").html(text);
 
 	/*
 	 * heuristic to get the hint for the input field  
@@ -327,9 +313,12 @@ function switchNavi(scope, element) {
 	 */
 	$("#inpf")
 	.attr("name", "search") // always do a search
-	.val(hint) // set hint as value
+	//.val(hint) // set hint as value
 	.addClass('descriptiveLabel') // add class
-	.descrInputLabel({}); // make the label disappear on click/submit
+	.descrInputLabel({}) // make the label disappear on click/submit
+	.attr('placeholder', hint); // set hint as placeholder
+	
+	//TODO: WHAT DOES THIS DO????
 	$("#inpf").parents("li").removeClass("hidden"); // show form
 	
 	/*
@@ -348,92 +337,4 @@ function switchNavi(scope, element) {
 	}*/
 	
 	return false;
-}
-
-
-// TODO: cleanup functions below; check for unused methods
-$(function() { 
-	//initSidebarHeader();
-	// FIXME: to ensure that the method is called after "most" other methods, we add a timeout ...
-	window.setTimeout("initBookmarksPublicationsListsLast()", 500);
-});
-function initBookmarksPublicationsListsLast() {
-	
-	numberOfBookmarkLists = $(".bookmarksContainer").size(); // every id bookmarks_* must have a class bookmarksContainer
-	numberOfPublicationLists = $(".publicationsContainer").size(); // every id publications_* must have a class publicationsContainer
-	if ( ($("#sidebar").length != 0) ) { 
-		maxheight = 0;
-		// set heigth of fullscreen area above post lists, if available
-		fullscreenHeight = 0;
-		//if ($("#fullscreen").length != 0) fullscreenHeight = $("#fullscreen").height(); 
-		if ($("#postcontainer").length != 0) {
-			maxheight = $("#postcontainer").height();
-		}
-
-		// get heights
-		bookmarksHeight = fullscreenHeight; 
-		$('.bookmarksContainer').each(function(index) {
-			bookmarksHeight += $(this).height();
-		});
-			
-		publicationsHeight = fullscreenHeight; 
-		$('.publicationsContainer').each(function() {
-			publicationsHeight += $(this).height();
-		});
-
-		sidebarHeight = $("#sidebar").height();
-
-		// calculate maximum height
-//		maxheight = (bookmarksHeight > publicationsHeight ) ? bookmarksHeight : publicationsHeight;
-		maxheight = (maxheight > sidebarHeight) ? maxheight : sidebarHeight;
-		// set heights to maximum_heights
-		// only every last list will adjusted in height 
-//		if (numberOfBookmarkLists != 0) {
-//			//$("#bookmarks_"+(numberOfBookmarkLists-1)).height(maxheight-bookmarksHeight+$("#bookmarks_"+(numberOfBookmarkLists-1)).height());
-//			$("#bookmarks_"+(numberOfBookmarkLists-1)+">ul.posts").height(maxheight-bookmarksHeight+$("#bookmarks_"+(numberOfBookmarkLists-1)).height());
-//		}
-//		
-//		if (numberOfBookmarkLists != 0) {
-//			//$("#publications_"+(numberOfPublicationLists-1)).height(maxheight-publicationsHeight+$("#publications_"+(numberOfPublicationLists-1)).height());
-//			$("#publications_"+(numberOfPublicationLists-1)+">ul.posts").height(maxheight-publicationsHeight+$("#publications_"+(numberOfPublicationLists-1)).height());
-//		}
-//		
-//		
-//		// if there are no post lists and the only content is within element with id fullscreen, adjust length of this element
-//		// (if it is smaller than sidebar, otherwise new height is already maxheight)
-//		if (numberOfBookmarkLists==0 && numberOfPublicationLists==0 && fullscreenHeight>0) {
-//			fullscreenHeight = maxheight;
-//		}
-
-		$("#sidebar").css({"min-height": maxheight});
-	}
-	
-}
-
-
-/**
- * Function to check if the user is a touchable device.
- * If the user is a touchable device, we fix the functionality of the menubar for the touchable device. 
- */
-function touchableMenubar() {
-	var touchOS = ('ontouchstart' in document.documentElement) ? true : false;
-		if (touchOS) {
-			$("#mySystem").click(function() {
-				var touch = $("#mySystem").data('touch');
-				if (touch == "true") {
-					return true;
-				} else {
-					$("#mySystem").data("touch", "true");
-					return false;
-				}
-			});
-			
-			$("#addPost").click(function(){
-				$("#mySystem").data("touch", "false");
-			});
-	
-			$("#popular").click(function(){
-				$("#mySystem").data("touch", "false");
-			});
-		}
 }

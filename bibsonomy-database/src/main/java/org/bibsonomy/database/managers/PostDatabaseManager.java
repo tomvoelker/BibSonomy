@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Database - Database for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -117,7 +143,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 	/** instance of the lucene searcher */
 	private ResourceSearch<R> resourceSearch;
-
+	
+	/** the validator for the posts*/
 	protected DatabaseModelValidator<R> validator;
 
 	private Chain<List<Post<R>>, P> chain;
@@ -565,6 +592,36 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		return this.postList("get" + this.resourceClassName + "ByHashForUser", param, session);
+	}
+	
+	/**
+	 * get list of posts from resource searcher
+	 * 
+	 * @param userName
+	 * @param requestedUserName
+	 * @param requestedGroupName
+	 * @param requestedRelationName
+	 * @param allowedGroups
+	 * @param searchTerms
+	 * @param titleSearchTerms
+	 * @param authorSearchTerms
+	 * @param tagIndex
+	 * @param year
+	 * @param firstYear
+	 * @param lastYear
+	 * @param negatedTags 
+	 * @param order
+	 * @param limit
+	 * @param offset
+	 * @return a list of posts
+	 */
+	public List<Post<R>> getPostsByResourceSearch(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {
+		if (present(this.resourceSearch)) {
+			return this.resourceSearch.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
+		}
+
+		log.error("no resource searcher is set");
+		return new LinkedList<Post<R>>();
 	}
 
 	/**

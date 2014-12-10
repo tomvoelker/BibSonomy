@@ -40,7 +40,7 @@
 				<c:when test="${schemaOrgMarkUp}">
 					<span itemprop="${authorEditor}" itemscope="itemscope" itemtype="http://schema.org/Person">
 						<c:choose>
-							<c:when test="${useAbsoluteUrl == true}">
+							<c:when test="${useAbsoluteUrl}">
 								<a href="${absoluteUrlGenerator.getAuthorUrlByName(person.lastName)}" itemprop="name">
 									<c:out value="${personName}"/>
 								</a>
@@ -49,13 +49,13 @@
 								<a href="${relativeUrlGenerator.getAuthorUrlByName(person.lastName)}" itemprop="name">
 									<c:out value="${personName}"/>
 								</a>
-							</c:otherwise>							
+							</c:otherwise>
 						</c:choose>
 					</span>
 				</c:when>
 				<c:otherwise>
 				 	<c:choose>
-							<c:when test="${useAbsoluteUrl == true}">
+							<c:when test="${useAbsoluteUrl}">
 								<a href="${absoluteUrlGenerator.getAuthorUrlByName(person.lastName)}" itemprop="name">
 									<c:out value="${personName}"/>
 								</a>
@@ -64,7 +64,7 @@
 								<a href="${relativeUrlGenerator.getAuthorUrlByName(person.lastName)}" itemprop="name">
 									<c:out value="${personName}"/>
 								</a>
-							</c:otherwise>							
+							</c:otherwise>
 						</c:choose>
 				</c:otherwise>
 			</c:choose>

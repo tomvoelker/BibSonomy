@@ -52,7 +52,20 @@
  				</a>
 			</c:otherwise>
 		</c:choose>
-
+	
+		<!--+
+			| link for the memento timegate to the archived version of the page
+			+-->
+			
+		<c:url var="mementoLink" value="/memento">
+			<c:param name="url" value="${post.resource.url}"/>
+			<c:param name="datetime" value="${mtl:formatDateW3CDTF(post.date)}"/>
+		</c:url>
+		<fmt:message key="bookmark.actions.memento" var="mementoTitle" />
+		<a class="${buttonClasses}" href="${mementoLink}" rel="nofollow" title="${mementoTitle}">
+			<span class="fa fa-history"><!--  --></span>
+		</a>
+		
 
 		<!--+
 			| REMOVE/DELETE
@@ -68,7 +81,7 @@
 					<c:param name="clear" value="false" />
 				</c:url>
 				<fmt:message key="bookmark.actions.removeMessage.title" var="removeTitle" />
-				<a class="${buttonClasses}" href="${fn:escapeXml(message_remove)}" title="${removeTitle}" data-type="inboxpost">
+				<a class="${buttonClasses}" href="${message_remove}" title="${removeTitle}" data-type="inboxpost">
 					<span class="glyphicon glyphicon-remove"><!--  --></span>
 				</a>
 			</c:when>
@@ -81,7 +94,7 @@
 							<c:param name="resourceHash" value="${post.resource.intraHash}" />
 							<c:param name="ckey" value="${ckey}" />
 						</c:url>
-						<a class="${buttonClasses}" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" data-type="post">
+						<a class="${buttonClasses} confirmdelete" href="${deleteUrl}" title="${deleteTitle}" data-type="post">
 							<span class="glyphicon glyphicon-remove"><!--  --></span>
 						</a>
 					</c:when>

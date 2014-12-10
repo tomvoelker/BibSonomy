@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Model - Java- and JAXB-Model.
  *
- *  BibSonomy-Model - Java- and JAXB-Model.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.model;
 
 import java.util.Collections;
@@ -40,6 +43,9 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	
 	private Set<BibTex> references;
 	private Set<BibTex> referencedBy;
+	private Set<BibTex> referencePartOfThisPublication;
+	private Set<BibTex> referenceThisPublicationIsPublishedIn;
+
 	
 	private void lacyLoadReferences() {
 		if (this.references == null) {
@@ -51,6 +57,114 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 		if (this.referencedBy == null) {
 			this.referencedBy = new HashSet<BibTex>();
 		}
+	}
+	
+	private void lacyLoadreferencePartOfThisPublication() {
+		if (this.referencePartOfThisPublication == null) {
+			this.referencePartOfThisPublication = new HashSet<BibTex>();
+		}
+	}
+	
+	private void lacyLoadReferenceThisPublicationIsPublishedIn() {
+		if (this.referenceThisPublicationIsPublishedIn == null) {
+			this.referenceThisPublicationIsPublishedIn = new HashSet<BibTex>();
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#getReferenceThisPublicationIsPublishedIn()
+	 */
+	@Override
+	public Set<BibTex> getReferenceThisPublicationIsPublishedIn() {
+		this.lacyLoadReferenceThisPublicationIsPublishedIn();
+		return Collections.unmodifiableSet(this.referenceThisPublicationIsPublishedIn);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#addToReferenceThisPublicationIsPublishedIn(org.bibsonomy.model.GoldStandardPublication)
+	 */
+	@Override
+	public boolean addToReferenceThisPublicationIsPublishedIn(final BibTex publication) {
+		this.lacyLoadReferenceThisPublicationIsPublishedIn();
+		return this.referenceThisPublicationIsPublishedIn.add(publication);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#addAllToReferenceThisPublicationIsPublishedIn(java.util.Set)
+	 */
+	@Override
+	public boolean addAllToReferenceThisPublicationIsPublishedIn(final Set<? extends BibTex> publications) {
+		this.lacyLoadReferenceThisPublicationIsPublishedIn();
+		if (publications != null) {
+			return this.referenceThisPublicationIsPublishedIn.addAll(publications);
+		}
+		
+		return false;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#removeFromReferenceThisPublicationIsPublishedIn(org.bibsonomy.model.GoldStandard)
+	 */
+	@Override
+	public boolean removeFromReferenceThisPublicationIsPublishedIn(final BibTex publication) {
+		return this.referenceThisPublicationIsPublishedIn == null ? false : this.referenceThisPublicationIsPublishedIn.remove(publication);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#removeAllFromReferenceThisPublicationIsPublishedIn(java.util.Set)
+	 */
+	@Override
+	public boolean removeAllFromReferenceThisPublicationIsPublishedIn(final Set<? extends BibTex> publications) {
+		return this.referenceThisPublicationIsPublishedIn == null ? false : this.referenceThisPublicationIsPublishedIn.removeAll(publications);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#getReferencePartOfThisPublication()
+	 */
+	@Override
+	public Set<BibTex> getSubGoldStandards() {
+		this.lacyLoadreferencePartOfThisPublication();
+		return Collections.unmodifiableSet(this.referencePartOfThisPublication);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#addToReferencePartOfThisPublication(org.bibsonomy.model.GoldStandardPublication)
+	 */
+	@Override
+	public boolean addToReferencePartOfThisPublication(final BibTex publication) {
+		this.lacyLoadreferencePartOfThisPublication();
+		return this.referencePartOfThisPublication.add(publication);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#addAllToReferencePartOfThisPublication(java.util.Set)
+	 */
+	@Override
+	public boolean addAllToReferencePartOfThisPublication(final Set<? extends BibTex> publications) {
+		this.lacyLoadreferencePartOfThisPublication();
+		if (publications != null) {
+			return this.referencePartOfThisPublication.addAll(publications);
+		}
+		
+		return false;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#removeFromReferencePartOfThisPublication(org.bibsonomy.model.GoldStandard)
+	 */
+	@Override
+	public boolean removeFromReferencePartOfThisPublication(final BibTex publication) {
+		return this.referencePartOfThisPublication == null ? false : this.referencePartOfThisPublication.remove(publication);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#removeAllFromReferencePartOfThisPublication(java.util.Set)
+	 */
+	@Override
+	public boolean removeAllFromReferencePartOfThisPublication(final Set<? extends BibTex> publications) {
+		return this.referencePartOfThisPublication == null ? false : this.referencePartOfThisPublication.removeAll(publications);
 	}
 	
 	/* (non-Javadoc)

@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Database - Database for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.database;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -96,6 +122,7 @@ import org.bibsonomy.model.Review;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.extra.BibTexExtra;
@@ -614,19 +641,21 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, java.lang.String, org.bibsonomy.common.enums.FilterEntity, org.bibsonomy.model.enums.Order, java.util.Date, java.util.Date, int, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class,
+	 * org.bibsonomy.common.enums.GroupingEntity, java.lang.String,
+	 * java.util.List, java.lang.String, org.bibsonomy.model.enums.Order,
+	 * org.bibsonomy.common.enums.FilterEntity, int, int, java.lang.String)
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public <T extends Resource> List<Post<T>> getPosts(
-			Class<T> resourceType, GroupingEntity grouping,
-			String groupingName, List<String> tags, String hash, String search,
-			SearchType searchType, FilterEntity filter, Order order,
-			Date startDate, Date endDate, int start, int end) {
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType,final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		// check allowed start-/end-values
-				if (GroupingEntity.ALL.equals(grouping) && !present(tags) && !present(search)) {
-					this.permissionDBManager.checkStartEnd(loginUser, start, end, "post");
-				}
+		this.permissionDBManager.checkStartEnd(loginUser, start, end, "post");
+		
 				
 				this.handleAdminFilters(filter);
 				
@@ -673,12 +702,12 @@ public class DBLogic implements LogicInterface {
 						//sets the resource type to later use it as the Type name to search in the index
 						param.setResourceType(resourceType.getSimpleName());
 
-					 	// this is save because of RTTI-check of resourceType argument
-						// which is of class T
-						final List<Post<T>> publications = (List) this.publicationDBManager.getPosts(param, session);
-						SystemTagsExtractor.handleHiddenSystemTags(publications, loginUser.getName());
-						return publications;
-					} 
+			 	// this is save because of RTTI-check of resourceType argument
+				// which is of class T
+				final List<Post<T>> publications = (List) this.publicationDBManager.getPosts(param, session);
+				SystemTagsExtractor.handleHiddenSystemTags(publications, loginUser.getName());
+				return publications;
+			} 
 
 					if (resourceType == Bookmark.class) {
 						final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
@@ -712,15 +741,15 @@ public class DBLogic implements LogicInterface {
 						return (List) this.goldStandardBookmarkDBManager.getPosts(param, session);
 					}
 
-					throw new UnsupportedResourceTypeException();
-				} catch (final QueryTimeoutException ex) {
-					// if a query times out, we return an empty list
-					return new ArrayList<Post<T>>();
-				} finally {
-					session.close();
-				}
+			throw new UnsupportedResourceTypeException();
+		} catch (final QueryTimeoutException ex) {
+			// if a query times out, we return an empty list
+			return new ArrayList<Post<T>>();
+		} finally {
+			session.close();
+		}
 	}
-	
+
 	private boolean systemTagsAllowResourceType(final Collection<String> tags, final Class<? extends Resource> resourceType) {
 		if (present(tags)) {
 			for (final String tagName : tags) {
@@ -2537,18 +2566,18 @@ public class DBLogic implements LogicInterface {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.GoldStandardPostLogicInterface#createReferences(java.lang.String, java.util.Set)
+	 * @see org.bibsonomy.model.logic.GoldStandardPostLogicInterface#createRelation(java.lang.String, java.util.Set)
 	 */
 	@Override
-	public void createReferences(final String postHash, final Set<String> references) {
+	public void createRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
 		this.permissionDBManager.ensureAdminAccess(loginUser); // only admins can create references
 
 		final DBSession session = this.openSession();
 		try {
-			this.goldStandardPublicationDBManager.addReferencesToPost(this.loginUser.getName(), postHash, references, session);
+			this.goldStandardPublicationDBManager.addRelationsToPost(this.loginUser.getName(), postHash, references, relation, session);
 		} finally {
 			session.close();
-		}	
+		}
 	}
 
 	/*
@@ -2556,12 +2585,12 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.GoldStandardPostLogicInterface#deleteReferences(java.lang.String, java.util.Set)
 	 */
 	@Override
-	public void deleteReferences(final String postHash, final Set<String> references) {
+	public void deleteRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
 		this.permissionDBManager.ensureAdminAccess(loginUser); // only admins can delete references
 
 		final DBSession session = this.openSession();
 		try {
-			this.goldStandardPublicationDBManager.removeReferencesFromPost(this.loginUser.getName(), postHash, references, session);
+			this.goldStandardPublicationDBManager.removeRelationsFromPost(this.loginUser.getName(), postHash, references, relation, session);
 		} finally {
 			session.close();
 		}	
@@ -2779,7 +2808,7 @@ public class DBLogic implements LogicInterface {
 			// verify that there exists a gold standard
 			final Post<? extends Resource> goldStandardPost = this.getPostDetails(interHash, GoldStandardPostLogicInterface.GOLD_STANDARD_USER_NAME);
 			if (!present(goldStandardPost)) {
-				throw new ObjectNotFoundException("To the discussion item no post could be found for interHash "+interHash+" and user "+username+".");
+				throw new ObjectNotFoundException(interHash);
 			}
 			/*
 			 * create the discussion item

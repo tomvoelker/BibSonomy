@@ -30,9 +30,6 @@ $(function(){
                         wikiArea.empty();
                         wikiArea.append(renderedWikiText);
                         handleSuccessStatus("changing layout to " + $(this).find("option:selected").text());
-                    } else {
-                        wikiTextArea.val(wikiText);
-                        handleError("We do not want empty CVses! No, my preciousssss")
                     }
                 }
                 // status is not ok.
@@ -92,8 +89,8 @@ function handleError(e){
 }
 
 function handleSuccessStatus(e) {
-//	$('#statusText').text("Success: " + e);
-    $('#statusField').removeClass('error success').addClass('success');
+	$('#statusText').text("");
+	$('#statusField').removeClass('error success').addClass('success');
 }
 
 /**

@@ -26,7 +26,6 @@
 							<spring:message code="${error.code}" text="${error.defaultMessage}" arguments="${error.arguments}" htmlEscape="true"/>
 						</pre>
 				</c:forEach>
-           
 			</div>
 		</c:if>
 

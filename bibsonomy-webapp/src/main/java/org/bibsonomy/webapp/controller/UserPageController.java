@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -11,6 +37,7 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.TagsType;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
@@ -26,7 +53,6 @@ import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 
 /**
@@ -39,11 +65,10 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 	
 	@Override
 	public View workOn(final UserResourceViewCommand command) {
-		
-		initializeDidYouKnowMessageCommand(command);
-		
 		final String format = command.getFormat();
 		this.startTiming(format);
+		
+		initializeDidYouKnowMessageCommand(command);
 
 		final String groupingName = command.getRequestedUser();
 		
@@ -60,7 +85,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		
 		// wrong user similarity requested -> error
 		if (!present(userRelation)) {
-			throw new MalformedURLSchemeException("error.user_page_with_wrong_user_similarity");			
+			throw new MalformedURLSchemeException("error.user_page_with_wrong_user_similarity");
 		}
 		
 		/*
@@ -90,7 +115,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			uupc.logic = this.logic;
 			uupc.userSettings = this.userSettings;
 			return uupc.workOn(command);
-		}		
+		}
 
 		int totalNumPosts = 1;
 
@@ -162,18 +187,18 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			 * with the requested user. 
 			 */
 			final String loginUserName = context.getLoginUser().getName();
+			
+			/*
+			 * Put the user into command to be able to show some details.
+			 * 
+			 * The DBLogic checks, if the login user may see the user's 
+			 * details. 
+			 */
+			final User requestedUser = this.logic.getUserDetails(groupingName);
+			command.setUser(requestedUser);
 			if (context.isUserLoggedIn()) {
-				
 				/*
-				 * Put the user into command to be able to show some details.
-				 * 
-				 * The DBLogic checks, if the login user may see the user's 
-				 * details. 
-				 */
-				final User requestedUser = this.logic.getUserDetails(groupingName);
-				command.setUser(requestedUser);
-				/*
-				 * Has loginUser this user set as friend?
+				 * has loginUser this user set as friend?
 				 */
 				command.setOfFriendUser(this.logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag).contains(requestedUser));
 				command.setFriendOfUser(this.logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag).contains(requestedUser));
@@ -198,11 +223,11 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			// forward to bibtex page if filter is set
 			if (publicationFilter) {
 				return Views.USERDOCUMENTPAGE;
-			} 
+			}
 			
-			//if user does not exist, trigger 404
-			if (!present(command.getUser().getName())) {
-				return Views.ERROR404;
+			// if user does not exist, trigger 404
+			if (!present(requestedUser.getName())) {
+				throw new ObjectNotFoundException(groupingName);
 			}
 			
 			return Views.USERPAGE;

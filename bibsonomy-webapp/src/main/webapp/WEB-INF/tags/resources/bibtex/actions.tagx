@@ -243,7 +243,7 @@
 		
 		<!-- BIBTEX -->
 		<fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />		
-		<a class="litem" href="${relativeUrlGenerator.prefix('bib/').getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, fn:escapeXml(post.user.name))}" title="${bibtexTitle}"><fmt:message key="bibtex.actions.bibtex.short"/></a>
+		<a class="litem" href="${relativeUrlGenerator.prefix('bib').getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, fn:escapeXml(post.user.name))}" title="${bibtexTitle}"><fmt:message key="bibtex.actions.bibtex.short"/></a>
 	
 		<!-- OPENURL -->
 		<c:if test="${command.context.userLoggedIn and not command.context.loginUser.settings.layoutSettings.simpleInterface}">

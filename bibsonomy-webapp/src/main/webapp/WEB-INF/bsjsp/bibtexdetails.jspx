@@ -9,28 +9,45 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
 	xmlns:users="urn:jsptagdir:/WEB-INF/tags/bstags/users"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
 	xmlns:common="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common">
-		
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
+	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication">
+	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<!--+
 		| variables, messages
 		+-->
 	<c:set var="post" value="${command.bibtex.list[0]}" />
-	<c:set var="publication" value="${post.resource}" />	
+	<c:set var="publication" value="${post.resource}" />
 	<c:set var="title" value="${mtl:cleanBibtex(publication.title)}" />
 	<c:set var="isOwnPost" value="${post.user.name eq command.context.loginUser.name}"/>
-	<fmt:message key="navi.publication" var="pageTitle" />	
-	
+	<fmt:message key="navi.publication" var="pageTitle" />
 	
 	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}" showPageOptions="${true}" minimizedContentWidth="${true}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
+		</jsp:attribute>
+		
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/javascript/bs/publicationdetails.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/bs/publication.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/bs/additionalUrl.js"><!-- keep me --></script>
+		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:usercrumb requestedUser="${command.requestedUser}" loginUser="${command.context.loginUser}" />
+					<nav:crumb name="${mtl:shorten(title, 25)}" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
 		</jsp:attribute>
 		
 		<!--+
@@ -42,21 +59,7 @@
 				<li><h4 class="sidebar"><fmt:message key="bibtex.details.meta"/></h4>
 					<ul>
 						<li><fmt:message key="post.change_date" /> <rc:metaChangeDate post="${post}"/><br /></li>
-						<li><fmt:message key="post.date" /> <rc:metaDate post="${post}"/><br /></li>
-						
-						<c:if test="${fn:length(command.relatedUserCommand.relatedUsers) gt 1}">
-							<li>
-								<h5><fmt:message key="bibtex.details.related_users"/></h5>
-								<ul style="margin-left: 1em; list-style:disc;">
-									<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
-										<li class="${userclass}">
-											<a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(user.name))}"><c:out value="${user.name}"/></a>
-											<c:out value=" "/>
-										</li>
-									</c:forEach>
-								</ul>
-							</li>
-						</c:if>
+						<li><fmt:message key="post.date" /> <rc:metaDate post="${post}" withoutClock="${true}"/><br /></li>
 					</ul>
 				</li>
 				<c:set var="tagsString" value="${mtl:toTagString(post.tags)}" />
@@ -74,7 +77,7 @@
 							</div>
 							<input type="hidden" name="oldTags['${fn:escapeXml(publication.intraHash)}']" value="${fn:escapeXml(tagsString)}"/>
 							<input type="hidden" name="posts['${fn:escapeXml(publication.intraHash)}']" value="true" checked="checked" />
-							<input type="hidden" name="referer" value="${relativeUrlGenerator.getPublicationUrlByIntraHashAndUsername(publication.intraHash, post.user.name)}"/>
+							<input type="hidden" name="referer" value="/bibtex/2${publication.intraHash}/${mtl:encodeURI(post.user.name)}"/>
 							<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
 							<input type="hidden" name="resourcetype" value="bibtex"/>
 							<input type="hidden" name="deleteCheckedPosts" value="true"/>
@@ -89,28 +92,28 @@
 								<ul style="margin-left: 1em; list-style:disc;">
 									<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
 										<li class="${userclass}">
-											<a href="/user/${fn:escapeXml(user.name)}"><c:out value="${user.name}"/></a>
-											<c:out value=" "/>
+											<user:username user="${user}" />
 										</li>
 									</c:forEach>
 								</ul>
 							</li>
 						</c:if>
 
-				<!--+
-					| 
-					| tags
-					|
-					+-->
+							
+						<!--+
+							| 
+							| tags
+							|
+							+-->
 						<li><h5><fmt:message key="tags"/>
-						
+								
 								<small style="font-size:80%;">
-									(<a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(post.user.name))}"><c:out value="${post.user.name}" /></a>
+									(<user:username user="${post.user}" />
 									<fmt:message key="tags.highlighted.by_user"/>)
 								</small>
 							</h5>
-					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagSizeMode="detail" tagboxMinfreqStyle="none" highlightTags="${tagsString}"/>
-				</li>
+							<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagSizeMode="detail" tagboxMinfreqStyle="none" highlightTags="${tagsString}"/>
+						</li>
 					</ul>
 				</li>
 				

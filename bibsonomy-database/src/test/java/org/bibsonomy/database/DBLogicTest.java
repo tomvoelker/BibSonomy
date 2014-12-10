@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Database - Database for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.database;
 
 import static org.bibsonomy.testutil.Assert.assertTagsByName;
@@ -50,7 +76,6 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
-import org.bibsonomy.testutil.DummyFileLogic;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -932,8 +957,8 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	public void testUpdateLimitedUser() throws Exception {
 		final LogicInterface logic = getAdminDbLogic(TEST_USER_1);
 		User user = logic.getUserDetails(TEST_LIMITED_USER_NAME);
-		Assert.assertNotNull(user);
-		Assert.assertEquals(Role.LIMITED, user.getRole());
+		assertNotNull(user);
+		assertEquals(Role.LIMITED, user.getRole());
 		user.setRole(Role.DEFAULT);
 		final String oldRealName = user.getRealname();
 		final String oldEmail = user.getRealname();
@@ -950,11 +975,11 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		user.setEmail("quatsch@biblicious.org");
 		user.setPassword("quatsch");
 		user = logic.getUserDetails(TEST_LIMITED_USER_NAME);
-		Assert.assertEquals(Role.DEFAULT, user.getRole());
-		Assert.assertEquals("testUpdateUserRole", user.getRealname());
-		Assert.assertEquals(new URL("http://www.biblicious.org/testUpdateUserRole"), user.getHomepage());
-		Assert.assertEquals("testUpdateUserRole@biblicious.org", user.getEmail());
-		Assert.assertEquals(oldPw, user.getPassword());
+		assertEquals(Role.DEFAULT, user.getRole());
+		assertEquals("testUpdateUserRole", user.getRealname());
+		assertEquals(new URL("http://www.biblicious.org/testUpdateUserRole"), user.getHomepage());
+		assertEquals("testUpdateUserRole@biblicious.org", user.getEmail());
+		assertEquals(oldPw, user.getPassword());
 		
 		user.setRole(Role.LIMITED);
 		user.setRealname(oldRealName);
@@ -962,7 +987,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		user.setEmail(oldEmail);
 		logic.updateUser(user, UserUpdateOperation.UPDATE_LIMITED_USER);
 		user = logic.getUserDetails(TEST_LIMITED_USER_NAME);
-		Assert.assertEquals(Role.LIMITED, user.getRole());
+		assertEquals(Role.LIMITED, user.getRole());
 	}
 	
 	/**

@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.controller.resource;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -10,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.Post;
@@ -18,6 +43,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
+import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListControllerWithTags;
@@ -124,7 +150,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 		 * know the type of the requested hash. The getPosts() method of the 
 		 * LogicInterface checks for the type and returns the corresponding post(s). 
 		 */
-		final int entriesPerPage = command.getListCommand(this.getResourceClass()).getEntriesPerPage();		
+		final int entriesPerPage = command.getListCommand(this.getResourceClass()).getEntriesPerPage();
 		final Date startDate = command.getStartDate();
 		final Date endDate = command.getEndDate();
 		this.setList(command, this.getResourceClass(), groupingEntity, requUser, null, longHash, null, command.getFilter(), null, startDate, endDate, entriesPerPage);
@@ -246,9 +272,9 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			if (GroupingEntity.USER.equals(groupingEntity) || present(goldStandard)) {
 				/*
 				 * fetch posts of all users with the given hash, add users to related
-				 * users list				
+				 * users list
 				 */
-				final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null,SearchType.LUCENESEARCH, null, null, null, null, 0, 1000);
+				final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null,SearchType.LUCENESEARCH, null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
 				for (final Post<R> post : allPosts) {
 					command.getRelatedUserCommand().getRelatedUsers().add(post.getUser());
 				}

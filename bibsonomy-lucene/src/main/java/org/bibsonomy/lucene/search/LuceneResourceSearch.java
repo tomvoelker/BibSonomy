@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Lucene - Fulltext search facility of BibSonomy
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.lucene.search;
 
 import static org.bibsonomy.lucene.util.LuceneBase.CFG_LUCENE_FIELD_SPECIFIER;
@@ -9,6 +35,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -60,6 +87,7 @@ import org.bibsonomy.services.searcher.ResourceSearch;
  */
 public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<R> {
 	private static final Log log = LogFactory.getLog(LuceneResourceSearch.class);
+	private static final Pattern NON_DIGIT_PATTERN = Pattern.compile("\\D");
 
 	/**
 	 * logic interface for retrieving data from bibsonomy (friends, groups
@@ -92,6 +120,24 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		this.defaultSearchTermJunctor = Operator.AND;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.bibsonomy.services.searcher.ResourceSearch#getPosts(java.lang.String,
+	 * java.lang.String, java.lang.String, java.util.Collection,
+	 * java.lang.String, java.lang.String, java.lang.String,
+	 * java.util.Collection, java.lang.String, java.lang.String,
+	 * java.lang.String, int, int)
+	 */
+	@Override
+	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {
+		// build query
+		final QuerySortContainer query = this.buildQuery(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, order);
+		// perform search query
+		return this.searchLucene(query, limit, offset);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 *  
@@ -154,7 +200,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 				}
 			}
 		} catch (final IOException e) {
-			log.error("Error building full text tag cloud for query " + qf.getQuery().toString());
+			log.error("Error building full text tag cloud for query " + qf.getQuery().toString(), e);
 		} finally {
 			this.index.releaseIndexSearcher(searcher);
 		}
@@ -331,6 +377,10 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		return groupMemberQuery;
 	}
 
+	private static String removeNonDigits(String s) {
+		return NON_DIGIT_PATTERN.matcher(s).replaceAll("");
+	}
+	
 	/**
 	 * restrict given query to posts belonging to a given time range
 	 * 
@@ -341,9 +391,10 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * @return time range query
 	 */
 	protected Query makeTimeRangeQuery(final BooleanQuery mainQuery, final String year, String firstYear, String lastYear) {
+		
 		//exact year query
 		if (present(year)) {
-			mainQuery.add(new TermQuery(new Term(LuceneFieldNames.YEAR, year.replaceAll("\\D", ""))), Occur.MUST);
+			mainQuery.add(new TermQuery(new Term(LuceneFieldNames.YEAR, removeNonDigits(year))), Occur.MUST);
 			return mainQuery;
 		}
 		
@@ -354,12 +405,12 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		BytesRef lastYearBR = null;
 		
 		if (present(firstYear)) {
-				firstYear = firstYear.replaceAll("\\D", "");
+				firstYear = removeNonDigits(firstYear);
 				firstYearBR = new BytesRef(firstYear);
 				includeLowerBound = true;
 		}
 		if (present(lastYear)) {
-				lastYear = lastYear.replaceAll("\\D", "");
+				lastYear = removeNonDigits(lastYear);
 				lastYearBR = new BytesRef(lastYear);
 				includeUpperBound = true;
 		}
@@ -651,12 +702,9 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 */
 	protected Query parseSearchQuery(final String fieldName, String searchTerms) {
 		// parse search terms for handling phrase search
-		/*
-		 * FIXME - !!!
-		 */
-		//final QueryParser searchTermParser = new QueryParser(Version.LUCENE_24, fieldName, this.analyzer);
 		final QueryParser searchTermParser = new QueryParser(Version.LUCENE_48, fieldName, this.analyzer);
 		searchTermParser.setDefaultOperator(this.defaultSearchTermJunctor);
+		searchTermParser.setAllowLeadingWildcard(true);
 		try {
 			// disallow field specification in search query
 			searchTerms = searchTerms.replace(CFG_LUCENE_FIELD_SPECIFIER, "\\" + CFG_LUCENE_FIELD_SPECIFIER);

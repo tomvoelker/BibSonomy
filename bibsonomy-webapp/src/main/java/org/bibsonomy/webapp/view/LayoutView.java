@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.view;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -19,6 +45,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.services.renderer.LayoutRenderer;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.LayoutViewCommand;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.BindingResult;
@@ -141,6 +168,9 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 	 * @throws IOException
 	 */
 	private <T extends Resource> void renderResponse(final String layoutName, final String requPath, final List<Post<BibTex>> publicationPosts, final String loginUserName, final HttpServletResponse response, final boolean formatEmbedded, LayoutViewCommand command) throws LayoutRenderingException, IOException {
+		if (!present(publicationPosts)) {
+			return;
+		}
 		final LAYOUT layout = layoutRenderer.getLayout(layoutName, loginUserName);
 
 		log.info("got layout " + layout);
@@ -153,7 +183,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 		 * set the content type headers
 		 */
 		response.setContentType(layout.getMimeType());
-		response.setCharacterEncoding("UTF-8");
+		response.setCharacterEncoding(StringUtils.CHARSET_UTF_8);
 		String extension = layout.getExtension();
 		/*
 		 * If an extension is given, which is differrent from ".html", this suggests to the 
@@ -168,7 +198,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 		/*
 		 * write the buffer to the response
 		 */
-		response.getOutputStream().write(buf.toString().getBytes("UTF-8"));
+		response.getOutputStream().write(buf.toString().getBytes(StringUtils.CHARSET_UTF_8));
 	}
 	
 	/**

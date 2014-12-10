@@ -7,263 +7,109 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
-	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/actions/user"
+	>
 
-	<jsp:directive.page contentType="text/html; charset=UTF-8"
-		language="java" pageEncoding="UTF-8" session="true" />
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<fmt:message key="navi.register" var="pageTitle" />
 	
-	<layout:singleContainerLayout 
-		requPath="${requPath}"
-		command="${command}" 
-		pageTitle="${pageTitle}" 
-		loginUser="${command.context.loginUser}"
-		smallBox="true">
-		
-		
-		<jsp:attribute name="headerExt">
-			<!--  -->
-  		</jsp:attribute>
-
-		<jsp:attribute name="heading">
-			<!--  -->
-    	</jsp:attribute>
-		
+	<layout:singleContainerLayout requPath="${requPath}" command="${command}" pageTitle="${pageTitle}" loginUser="${command.context.loginUser}" smallBox="${true}">
 		<jsp:attribute name="content">
-			<form action="/register" method="POST">
-		        <!-- <errors:global errors="${errors}" /> -->
-		        
-		        <bsform:fieldset legendKey="register.personal">
-		        
-		        	<jsp:attribute name="content"> -->
-		        	
-			        	<fmt:message key="navi.username" var="username"/>
-	       				<bsform:input required="true" path="registerUser.name" labelText="${username}" inputColSpan="9" labelColSpan="3"/>
-	        		
-	        			<bsform:input path="registerUser.name" tabindex="2" labelColSpan="2" inputColSpan="8"/>
-			        		
-		        		<bsform:password tabindex="2" labelColSpan="2" inputColSpan="8" path="registerUser.password" />
-			        		
-		        		<bsform:password  labelColSpan="2" inputColSpan="8" path="passwordCheck" tabindex="2" />
-			        		
-		        		<fmt:message var="email" key="user.settings.email"></fmt:message>
-	           			<bsform:input labelColSpan="2" inputColSpan="8" path="registerUser.email" labelText="${email}" noHelp="${true}" required="${true}" />
-	
-		        		<hr />
-	 
-		        		<fmt:message key="user.settings.homepage" var="homepage"></fmt:message>
-		        		<bsform:input labelColSpan="2" inputColSpan="8" path="registerUser.homepage" labelText="${homepage}" noHelp="${true}" />
-			        		
-		        		<fmt:message key="user.settings.realname" var="realname" />
-		        		<bsform:input labelColSpan="2" inputColSpan="8" path="registerUser.realname" labelText="${realname}" noHelp="${true}" />
-			        		
-		        		<hr />
-			        		
-		        		<bsform:fieldset legendKey="register.captchaAndPrivacy">
-		        			<jsp:attribute name="content">
-		        				<bform:captcha />
-		        				
-				  				<form:label cssClass="fsLabel" path="acceptPrivacy">
-				  					<fmt:message key="register.acceptPrivacy">
-				  						<fmt:param value="${properties['project.name']}" />
-				  					</fmt:message>*
-				  				</form:label>
-				  				<form:checkbox path="acceptPrivacy" value="yes" />
-				  				<div class="dissError">
-									<form:errors path="acceptPrivacy" />
-								</div>
-			        				
-		        			</jsp:attribute>
-	        			</bsform:fieldset>
-		        		
-	        			<fmt:message key="register.send" var="submit" />
-	        			<bsform:button type="submit" style="success" size="defaultSize" value="${submit}" />		        	 	
-	        		</jsp:attribute>
-		        
-	        	</bsform:fieldset>
-		                
-			</form>
-		</jsp:attribute>
-	</layout:singleContainerLayout>
-	
-	-->
-	
-	<!-- 	
-		<jsp:attribute name="headerExt">
-
-  		</jsp:attribute>
-
-		<jsp:attribute name="heading">
 		
-    	</jsp:attribute>	
-
-		<jsp:attribute name="content">
-			<form action="/register" method="POST">
-		        <errors:global errors="${errors}" />
-		        
-		        <bsform:fieldset legendKey="register.personal">
-		        
-		        	<jsp:attribute name="content">
-		        		<bsform:input path="registerUser.name" tabindex="2" labelColSpan="2" inputColSpan="8"/>
-		        		
-		        		<bsform:password tabindex="2" labelColSpan="2" inputColSpan="8" path="registerUser.password" />
-		        		
-		        		<bsform:password  labelColSpan="2" inputColSpan="8" path="passwordCheck" tabindex="2" />
-		        		
-		        		<fmt:message var="email" key="user.settings.email"></fmt:message>
-            			<bsform:input labelColSpan="2" inputColSpan="8" path="registerUser.email" labelText="${email}" noHelp="${true}" required="${true}" />
-		        		
-		        		<hr />
-		        		
-		        		<fmt:message key="user.settings.homepage" var="homepage"></fmt:message>
-		        		<bsform:input labelColSpan="2" inputColSpan="8" path="registerUser.homepage" labelText="${homepage}" noHelp="${true}" />
-		        		
-		        		<fmt:message key="user.settings.realname" var="realname" />
-		        		<bsform:input labelColSpan="2" inputColSpan="8" path="registerUser.realname" labelText="${realname}" noHelp="${true}" />
-		        		
-		        		<hr />
-		        		
-		        		<bsform:fieldset legendKey="register.captchaAndPrivacy">
-		        			<jsp:attribute name="content">
-		        				<bform:captcha />
-		        				
-				  				<form:label cssClass="fsLabel" path="acceptPrivacy">
-				  					<fmt:message key="register.acceptPrivacy">
-				  						<fmt:param value="${properties['project.name']}" />
-				  					</fmt:message>*
-				  				</form:label>
-				  				<form:checkbox path="acceptPrivacy" value="yes" />
-				  				<div class="dissError">
-									<form:errors path="acceptPrivacy" />
-								</div>
-		        				
-		        			</jsp:attribute>
-		        		</bsform:fieldset>
-		        		
-		        		<fmt:message key="register.send" var="submit" />
-		        		
-		        		<bsform:button type="submit" style="success" size="defaultSize" value="${submit}" />
-		        		
-		        	</jsp:attribute>
-		        
-		        </bsform:fieldset>
-		                     
-			</form>
-		</jsp:attribute>
-
-
-	</layout:singleContainerLayout>
-	-->
-	<!-- 
-	<layout:paneLayout command="${command}" pageTitle="${pageTitle}"
-		requPath="${requPath}" headerMessageKey="register.heading"
-		minimizedContentWidth="${true}">
-
-		<jsp:attribute name="heading">
-          	<parts:search pathMessageKey="navi.register" />
-        </jsp:attribute>
-
-		<jsp:attribute name="infobox">
-        	<parts:infobox>
-        		<jsp:attribute name="infoTextBody">
-        			<fmt:message key="register.openid.hint">
-        				<fmt:param value="/registerOpenID" />
-        			</fmt:message>
-        		</jsp:attribute>
-        	</parts:infobox>
-        </jsp:attribute>
-
-
-
-		<jsp:attribute name="content">
-
-            <form:form action="/register" method="POST">
-		        <errors:global errors="${errors}" />             
-
-				<fieldset class="fsOuter">
-				
-					<bform:fieldset maximized="${true}" legendKey="register.personal">
-						<jsp:attribute name="content">
+			<h1 class="text-center">
+				<fmt:message key="register.heading1">
+					<fmt:param value="${properties['project.name']}"></fmt:param>
+				</fmt:message>
+			</h1>
+			<div class="lead text-center">
+				<p>
+					<fmt:message key="register.description">
+						<fmt:param value="${properties['project.name']}"></fmt:param>
+					</fmt:message>
+				</p>
+			</div>
+			
+			
+			<ul class="nav nav-tabs" role="tablist">
+				<li class="active"><a href="#local" role="tab" data-toggle="tab"><fmt:message key="login.method.internal" /></a></li>
+				<li><a href="#openid" role="tab" data-toggle="tab"><fmt:message key="login.method.openid"/></a></li>
+			</ul>
+			
+			<div class="tab-content">
+				<br />
+				<div class="tab-pane active" id="local">
+					<form:form action="/register" method="POST" class="form-horizontal">
+						<errors:global />
+		
+						<bsform:fieldset legendKey="register.personal">
+							<jsp:attribute name="content">
+								<bsform:input labelColSpan="3" path="registerUser.name" labelKey="navi.username" placeholderLikeLabel="true" inputGroupSymbol="@" noHelp="true" />
+								
+								<bsform:password labelColSpan="3" path="registerUser.password" labelKey="navi.password" placeholderLikeLabel="true" inputGroupFaIcon="fa-key" noHelp="true" />
+								
+								<bsform:password labelColSpan="3" path="passwordCheck" labelKey="user.settings.passwordCheck" placeholderLikeLabel="true" inputGroupFaIcon="fa-key" noHelp="true" />
+								
+								<bsform:input labelColSpan="3" path="registerUser.email" labelKey="user.settings.email" placeholderLikeLabel="true" inputGroupFaIcon="fa-envelope" noHelp="true" />
+								
+								<hr />
+								
+								<bsform:input labelColSpan="3" path="registerUser.homepage" labelKey="user.settings.homepage" placeholderLikeLabel="true" inputGroupFaIcon="fa-globe" noHelp="true" />
+								
+								<bsform:input labelColSpan="3" path="registerUser.realname" labelKey="user.settings.realname" placeholderLikeLabel="true" inputGroupFaIcon="fa-user" noHelp="true" /> 
+							</jsp:attribute>
+						</bsform:fieldset>
 						
-							<div class="fsRow">
-				  				<form:label cssClass="fsLabel" path="registerUser.name">
-									<fmt:message key="navi.username" />*</form:label>
-				  				<form:input maxlength="15" cssClass="fsInput reqinput"
-									path="registerUser.name" tabindex="2" />
-				  				<div class="dissError">
-									<form:errors path="registerUser.name" />
+						<bsform:fieldset legendKey="register.captchaAndPrivacy">
+							<jsp:attribute name="content">
+								<bsform:captcha labelColSpan="3" inputColSpan="9" />
+								
+								<c:set var="formErrors"><form:errors path="acceptPrivacy"/></c:set>
+								<div class="form-group${not empty formErrors ? ' has-error' : ''}">
+									<c:if test="${not empty formErrors}">
+										<div class="col-sm-offset-3 col-sm-9">
+											<bs:feedback style="danger" size="defaultSize" >
+												<jsp:attribute name="feedbackBody">
+													<form:errors path="acceptPrivacy" />
+												</jsp:attribute>
+											</bs:feedback>
+										</div>
+									</c:if>
+									<div class="col-sm-offset-3 col-sm-9">
+										<div class="checkbox">
+											<label>
+												<input type="checkbox" name="acceptPrivacy" id="acceptPrivacy" value="yes" />
+												<fmt:message key="register.acceptPrivacy">
+													<fmt:param value="${properties['project.name']}" />
+												</fmt:message>
+											</label>
+										</div>
+									</div>
 								</div>
-	            			</div>
-	            			
-	            			<div class="fsRow">
-				  				<form:label cssClass="fsLabel" path="registerUser.password">
-									<fmt:message key="navi.password" />*</form:label>
-				  				<form:password cssClass="fsInput reqinput"
-									path="registerUser.password" tabindex="2" />
-				  				<div class="dissError">
-									<form:errors path="registerUser.password" />
+								<br />
+								<div class="form-group">
+									<div class="col-sm-offset-3 col-sm-9">
+										<fmt:message key="register.send" var="submit" />
+										<bsform:button type="submit" style="success" size="defaultSize" value="${submit}" />
+									</div>
 								</div>
-	            			</div>
-	            	
-	            			<div class="fsRow">
-				  				<form:label cssClass="fsLabel" path="passwordCheck">
-									<fmt:message key="user.settings.passwordCheck" />*</form:label>
-				  				<form:password cssClass="fsInput reqinput"
-									path="passwordCheck" tabindex="2" />
-				  				<div class="dissError">
-									<form:errors path="passwordCheck" />
-								</div>
-	            			</div>
-	            		
-	            			<bform:input path="registerUser.email"
-								labelMessageKey="user.settings.email" noHelp="${true}"
-								required="${true}" />
-            			</jsp:attribute>
-            		</bform:fieldset>
-            		
-            		
-            		<bform:fieldset maximized="${true}"
-						legendKey="register.additional">
-              			<jsp:attribute name="content">  
-              				<bform:input path="registerUser.homepage"
-								labelMessageKey="user.settings.homepage" noHelp="${true}" />
-   	          				<bform:input path="registerUser.realname"
-								labelMessageKey="user.settings.realname" noHelp="${true}" />
-	            		</jsp:attribute>
-            		</bform:fieldset>
-            		
-            		<bform:fieldset maximized="${true}"
-						legendKey="register.captchaAndPrivacy">
-						<jsp:attribute name="content">
-              
-							<bform:captcha />
-	             		
-	             			<div class="fsRow">
-				  				<form:label cssClass="fsLabel" path="acceptPrivacy">
-				  					<fmt:message key="register.acceptPrivacy">
-				  						<fmt:param value="${properties['project.name']}" />
-				  					</fmt:message>*
-				  				</form:label>
-				  				<form:checkbox path="acceptPrivacy" value="yes" />
-				  				<div class="dissError">
-									<form:errors path="acceptPrivacy" />
-								</div>
-	            			</div>
-	            		</jsp:attribute>
-	            	</bform:fieldset>
-             
-             		<bform:submit messageKey="register.send" />
-             		
-	             </fieldset>	
-            </form:form>
-
-      </jsp:attribute>
-
-	</layout:paneLayout>
-	-->
+								
+							</jsp:attribute>
+						</bsform:fieldset>
+						
+					</form:form>
+				</div>
+				<div class="tab-pane" id="openid">
+					<user:login_openid/>
+				</div>
+			</div>
+			<br />
+		</jsp:attribute>
+	</layout:singleContainerLayout>
 </jsp:root>

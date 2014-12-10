@@ -1,10 +1,10 @@
 <div style="margin-bottom:1em">
-\begin{author}\format[AuthorLastFirst,HTMLChars2,AntiScriptInjection,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}\end{author}\begin{title},
-Art. &bdquo;\format[AntiScriptInjection]{\title}&ldquo;\end{title}\begin{booktitle}, in: 
+\begin{author}\format[AuthorLastFirst,HTMLChars2,AntiScriptInjection,MittelalterPersonNamesFormatter,MittelalterAndsReplacer]{\author}\end{author}\begin{title},
+Art. \format[AntiScriptInjection]{\title}\end{title}\begin{booktitle}, in: 
 \format[AntiScriptInjection]{\booktitle}\end{booktitle}\begin{volume}, 
 Bd. \format[AntiScriptInjection]{\volume}\end{volume}\begin{editor}, 
 \format[AntiScriptInjection,MittelalterEditorLastFirst]{\editor}\end{editor}\begin{edition}, 
-\format[AntiScriptInjection]{\edition}. Aufl.\end{edition}\begin{year},
-\begin{address}\format[AntiScriptInjection] {\address}\end{address} \format[AntiScriptInjection]{\year}\end{year}\begin{pages}, 
+\format[AntiScriptInjection]{\edition}. Aufl.\end{edition}\begin{year}, 
+\begin{address}, \format[AntiScriptInjection]{\address}\end{address} \format[AntiScriptInjection]{\year}\end{year}\begin{pages}, 
 S. \format[AntiScriptInjection]{\pages}\end{pages}.
 </div>

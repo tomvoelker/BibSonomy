@@ -222,7 +222,7 @@
 								<c:choose>
 									<c:when test="${command.selTab == 1 or command.selTab == 3}">
 										<c:choose>
-											<c:when test="${user.spammer == true}">
+											<c:when test="${user.spammer}">
 												<c:set var="Unflag" value="true" />
 												<c:set var="Uncertain" value="true" />
 												<c:set var="Flag" value="false" />
@@ -291,7 +291,10 @@
 					<tr>
 						<td>
 						    <!-- show info boxes of users -->
-							<a href="${relativeUrlGenerator.getUserUrlByUserName(user.name)}"><c:out value="${user.name}" /></a>
+							<c:url value="${relativeUrlGenerator.getUserUrlByUserName(user.name)}" var="userUrl">
+								<c:param name="filter" value="ADMIN_SPAM_POSTS"></c:param>
+							</c:url>
+							<a href="${userUrl}"><c:out value="${user.name}" /></a>
 							<a
 										onclick="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${user.name}',this);return false;"
 										style="cursor: pointer" title="show latest posts">
@@ -307,26 +310,25 @@
 							<td><c:out value="${fn:substring(user.confidence, 0,5)}" /></td>
 							<c:choose>
 								<c:when test="${user.prediction == 8}">
-									<td class="uncertainUser"></td>					
+									<td class="uncertainUser"></td>
 								</c:when>
 								<c:otherwise>
 								<c:choose>
 								<c:when test="${user.spammer == mtl:isSpammer(user.prediction)}">
-									<td style="background: green"></td>					
+									<td style="background: green"></td>
 								</c:when>
 								<c:otherwise>
-									<td style="background: red"></td>	
+									<td style="background: red"></td>
 								</c:otherwise>
 								</c:choose>
 								</c:otherwise>
 							</c:choose>
-						</tr>				
-					</c:forEach>	
-				</table>			
-			</c:otherwise>				
-		</c:choose>				
-	</c:if>		
-			
+						</tr>
+					</c:forEach>
+				</table>
+			</c:otherwise>
+		</c:choose>
+	</c:if>
 		<script type="text/javascript">
 			<![CDATA[
 			ms_init("spammers", 4);
@@ -347,8 +349,8 @@
 								<c:forEach var="entry" items="${settingsCommand.modeOptions}">
 									<form:option id="${entry.value}" value="${entry.value}"
 													label="${entry.key}" />
-								</c:forEach>					
-								</form:select>				
+								</c:forEach>
+								</form:select>
 							</td>
 							<td><input type="button" value="los"
 										onclick="javascript:updateSettings('mode', document.getElementById('mode').value)" /></td>

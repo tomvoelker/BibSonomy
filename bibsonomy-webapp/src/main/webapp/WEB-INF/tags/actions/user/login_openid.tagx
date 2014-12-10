@@ -16,7 +16,7 @@
 		<div class="fsRow">
 			<span class="fsLabel"><fmt:message key="login.openid.provider"/></span>
 			<a class="provider" href="https://www.google.com/accounts/o8/id">Google</a> &amp;middot; 
-			<a class="provider" href="http://yahoo.com/">Yahoo!</a> &amp;middot;
+			<a class="provider" href="http://me.yahoo.com/">Yahoo!</a> &amp;middot;
 			<a class="provider" href="http://myopenid.com/">myOpenID</a> 
 		</div>
 		
