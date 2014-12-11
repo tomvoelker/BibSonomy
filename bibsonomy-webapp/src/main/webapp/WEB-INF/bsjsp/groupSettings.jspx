@@ -31,6 +31,13 @@
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
 
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/cv_page.css" />
+			<script type="text/javascript" src="${resdir}/javascript/cv/handlers.js"><!--  --></script>
+			<script type="text/javascript" src="${resdir}/javascript/profile/handlers.js"><!-- --></script>
+			<script type="text/javascript" src="${resdir}/javascript/bs/settings.js"><!-- keep me --></script>
+		</jsp:attribute>
+
 		<jsp:attribute name="breadcrumbs">	
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
@@ -46,7 +53,7 @@
 			<errors:global />
 			
 			<groupsettings:userlists group="${group}" />
-			<settings:profile command="${command}"/>
+			<settings:profile command="${command}" isGroup="${true}"/>
 			<settings:cv command="${command}" isGroup="${true}"/>
 		</jsp:attribute>
 
