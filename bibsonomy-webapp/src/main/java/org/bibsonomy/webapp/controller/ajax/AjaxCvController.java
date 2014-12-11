@@ -55,8 +55,8 @@ import org.springframework.validation.Errors;
  * 
  * @author Bernd Terbrack
  */
-public class CvAjaxController extends AjaxController implements MinimalisticController<AjaxCvCommand>, ErrorAware {
-	private static final Log log = LogFactory.getLog(CvAjaxController.class);
+public class AjaxCvController extends AjaxController implements MinimalisticController<AjaxCvCommand>, ErrorAware {
+	private static final Log log = LogFactory.getLog(AjaxCvController.class);
 
 	private static final String SAVE_OPTION = "save";
 	private static final String PUBLIC_PREVIEW = "publicPreview";
@@ -73,7 +73,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 
 	@Override
 	public View workOn(final AjaxCvCommand command) {
-		log.debug("workOn CvAjaxController");
+		log.debug("workOn AjaxCvController");
 
 		// -- Validating the request --
 		/*
