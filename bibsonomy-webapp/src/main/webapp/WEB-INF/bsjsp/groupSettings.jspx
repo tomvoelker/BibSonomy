@@ -53,8 +53,10 @@
 			<errors:global />
 			
 			<groupsettings:userlists group="${group}" />
-			<settings:profile command="${command}" isGroup="${true}"/>
-			<settings:cv command="${command}" isGroup="${true}"/>
+			<groupsettings:profile command="${command}" />
+			
+<!-- TODO: Adapt AjaxCvController to CV modification by other users (e.g. admin - - > group) -->			
+<!--			<settings:cv command="${command}" isGroup="${true}"/> -->
 		</jsp:attribute>
 
 	</layout:tabLayout>
