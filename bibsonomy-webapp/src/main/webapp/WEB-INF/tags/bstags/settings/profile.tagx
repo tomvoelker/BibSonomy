@@ -15,10 +15,6 @@
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons">
 	
 	<jsp:directive.attribute name="command"  type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
-	<jsp:directive.attribute name="isGroup" required="false" />
-	<c:if test="${empty isGroup}">
-		<c:set var="isGroup" value="${command.isGroup}" />
-	</c:if>
 
 	<!-- ############################################# profile tab ############################################# -->
 	<c:set var="user" value="${command.user}" />
@@ -39,23 +35,11 @@
 				
 					<!-- Der Text der oben steht -->
 					<p>
-						<!-- TODO: Use URLGenerator here -->
-						<c:choose>
-							<c:when test="${isGroup}">
-								<fmt:message key="settings.profileInfo">
-									<fmt:param><a href="${relativeUrlGenerator.prefix('foaf').getGroupUrlByGroupName(command.group)}">/foaf/group/<c:out value="${user.name}"/></a></fmt:param>
-									<fmt:param><fmt:message key="settings.profileViewableFor"/></fmt:param>
-									<fmt:param value="${relativeUrlGenerator.prefix('cv').getGroupUrlByGroupName(command.group)}"/>
-								</fmt:message>
-							</c:when>
-							<c:otherwise>
-								<fmt:message key="settings.profileInfo">
-									<fmt:param><a href="${relativeUrlGenerator.prefix('foaf').getUserUrl(user)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param>
-									<fmt:param><fmt:message key="settings.profileViewableFor"/></fmt:param>
-									<fmt:param value="${relativeUrlGenerator.prefix('cv').getUserUrl(user)}"/>
-								</fmt:message>
-							</c:otherwise>
-						</c:choose>
+						<fmt:message key="settings.profileInfo">
+							<fmt:param><a href="${relativeUrlGenerator.prefix('foaf').getUserUrl(user)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param>
+							<fmt:param><fmt:message key="settings.profileViewableFor"/></fmt:param>
+							<fmt:param value="/cv/user/${mtl:encodeURI(user.name)}"/>
+						</fmt:message>
 					</p>
 				</fieldset>
 
@@ -77,35 +61,33 @@
 						<bsform:input path="user.realname" labelColSpan="3" inputColSpan="9" />
 						
 						<!-- GENDER -->
-						<c:if test="${not isGroup}">
-							<div class="form-group clearfix">
-								<form:label cssClass="col-sm-3 control-label" path="user.gender"><fmt:message key="user.gender"/></form:label>
-
-								<fmt:message var="male" key="settings.male"/>
-								<fmt:message var="female" key="settings.female"/>
-								<div class="col-sm-9">
-									<form:select cssClass="form-control" path="user.gender">
-										<form:option label="${male}" value="m"/>
-										<form:option label="${female}" value="f"/>
-									</form:select>
-								</div>
-
-								<div class="dissError"><form:errors path="user.gender" /></div>
+						<div class="form-group clearfix">
+							<form:label cssClass="col-sm-3 control-label" path="user.gender"><fmt:message key="user.gender"/></form:label>
+							
+							<fmt:message var="male" key="settings.male"/>
+							<fmt:message var="female" key="settings.female"/>
+							<div class="col-sm-9">
+								<form:select cssClass="form-control" path="user.gender">
+									<form:option label="${male}" value="m"/>
+									<form:option label="${female}" value="f"/>
+								</form:select>
 							</div>
+							
+							<div class="dissError"><form:errors path="user.gender" /></div>
+						</div>
 						
 						<!-- BIRTHDAY -->
 						
-							<div class="form-group clearfix">
-							 <label class="col-sm-3 control-label"><fmt:message key="user.birthday"/></label>
-							  <div class="col-sm-9">
-								<fmt:formatDate value="${command.user.birthday}" pattern="yyyy-MM-dd" var="userBirthday" />
-								<div class="input-group date" id="dp3" data-date="${empty userBirthday ? '1989-01-01' : userBirthday }" data-date-format="yyyy-mm-dd" data-date-viewmode="years">
-								  <input class="form-control" type="text" name="user.birthday" value="${userBirthday }"/>
-								  <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"><!--  --></i></span>
-								</div>
-							  </div>
-							</div>
-						</c:if>
+						<div class="form-group clearfix">
+						 <label class="col-sm-3 control-label"><fmt:message key="user.birthday"/></label>
+						  <div class="col-sm-9">
+						   	<fmt:formatDate value="${command.user.birthday}" pattern="yyyy-MM-dd" var="userBirthday" />
+						    <div class="input-group date" id="dp3" data-date="${empty userBirthday ? '1989-01-01' : userBirthday }" data-date-format="yyyy-mm-dd" data-date-viewmode="years">
+						      <input class="form-control" type="text" name="user.birthday" value="${userBirthday }"/>
+						      <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"><!--  --></i></span>
+						    </div>
+						  </div>
+						</div>
 						
 						<!-- PLACE -->
 						<bsform:input path="user.place" labelColSpan="3" inputColSpan="9"  noHelp="true"/>
@@ -162,7 +144,7 @@
 							<div class ="form-group clearfix">
 								<form:label cssClass="col-sm-3 control-label" path="file"><fmt:message key="settings.picture.current"/></form:label>
 								<div class="col-sm-9">
-									<a title="${mtl:encodeURI(user.name)}" href="${relativeUrlGenerator.getUserUrl(user)}" class="img-thumbnail img-responsive">
+									<a title="${mtl:encodeURI(user.name)}" href="/user/${mtl:encodeURI(user.name)}" class="img-thumbnail img-responsive">
 										<img class="user-avatar" src="${relativeUrlGenerator.getUserPictureUrlByUsername(user.name)}" />
 										<span><user:username user="${user}" noLink="${true}"/></span>
 									</a>
