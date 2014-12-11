@@ -460,10 +460,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		 * check if a user or a pending user exists with that name
 		 * currently every group also has a corresponding user in the system
 		 */
-		final User exisitingGroupUser = this.userDb.getUserDetails(normedGroupName, session);
+		final User existingGroupUser = this.userDb.getUserDetails(normedGroupName, session);
 		final List<User> pendingUserList = this.userDb.getPendingUserByUsername(normedGroupName, 0, Integer.MAX_VALUE, session);
 		
-		if (present(exisitingGroupUser.getName()) || present(pendingUserList)) {
+		if (present(existingGroupUser.getName()) || present(pendingUserList)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There is a user with this name - cannot create the group.");
 		}
 		
