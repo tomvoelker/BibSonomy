@@ -542,13 +542,13 @@ CREATE TABLE `groupids` (
 SET character_set_client = @saved_cs_client;
 
 --
--- Table structure for table `groups`
+-- Table structure for table `group_memberships`
 --
 
-DROP TABLE IF EXISTS `groups`;
+DROP TABLE IF EXISTS `group_memberships`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-CREATE TABLE `groups` (
+CREATE TABLE `group_memberships` (
   `user_name` varchar(30) NOT NULL default '',
   `group` int(10) default '0',
   `defaultgroup` int(10) default '0',
@@ -1044,13 +1044,13 @@ CREATE TABLE `openIDUser` (
 SET character_set_client = @saved_cs_client;
 
 --
--- Table structure for table `pendingGroupids
+-- Table structure for table `pending_groupids`
 --
 
-DROP TABLE IF EXISTS `pendingGroupids`;
+DROP TABLE IF EXISTS `pending_groupids`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-CREATE TABLE `pendingGroupids` (
+CREATE TABLE `pending_groupids` (
   `group_name` varchar(30) NOT NULL default '',
   `request_user_name` varchar(30) NOT NULL,
   `request_reason` text NOT NULL,
@@ -1065,6 +1065,22 @@ CREATE TABLE `pendingGroupids` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
+--
+-- Table structure for table `pending_group_memberships`
+--
+
+DROP TABLE IF EXISTS `pending_group_memberships`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `pending_group_memberships` (
+	`user_name` VARCHAR(30) NOT NULL DEFAULT '',
+	`group` INT(10) NULL DEFAULT '0',
+	`defaultgroup` INT(10) NULL DEFAULT '0',
+	`start_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`group_role` INT(10) NOT NULL DEFAULT '7',
+	`user_shared_documents` TINYINT(1) NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `pendingUser`
