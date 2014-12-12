@@ -59,137 +59,128 @@
 		<div class="adminResponse"><c:out value="${command.adminResponse}"/></div>
 	</c:if>
 	  
-    <c:forEach var="resourceIndexInfo" items="${command.indicesInfos}">
-	    <div class="indexProperties">
-		<h3>
-		<c:out value="${resourceIndexInfo.resourceName}" /> Index</h3>
-		<c:choose>
-			<!--<c:when test="${!index.generatingIndex}">-->
-			<c:when test="TRUE">
+<c:forEach var="resourceIndexInfo" items="${command.indicesInfos}">
+<div class="indexProperties">
+<h3><c:out value="${resourceIndexInfo.resourceName}" /> Index</h3>
+<c:choose>
+	<!--<c:when test="${!index.generatingIndex}">-->
+	<c:when test="TRUE">
 				
-				<c:choose>
+		<c:choose>
 				<!-- Do we have indices for that resource type? -->
-			    <c:when test="${fn:length(resourceIndexInfo.luceneResoruceIndicesInfos) > 0}">
-			    	<!-- the old regeneration method 
-			    	<a onclick="javascript:generateIndex('${index.resourceName}')" href="#generateIndex">
+			<c:when test="${fn:length(resourceIndexInfo.luceneResoruceIndicesInfos) > 0}">
+					<!-- the old regeneration method 
+					<a onclick="javascript:generateIndex('${index.resourceName}')" href="#generateIndex">
 						<span style="width: 200px; height: 10px; border: 1px;">re-generate index</span>
-			  		</a>
-			  		--> 
-			    	<table>
-			    		<tr>
-			    			<th>Index</th>
-			    			<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
-			    				<c:choose>
-			    					<c:when test="${resIndex.active}" >
-										<c:if test="${resIndex.id != index.generator.generatingIndexId}">
+					</a>
+					--> 
+				<table>
+					<tr>
+						<th>Index</th>
+						<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
+							<c:choose>
+								<c:when test="${resIndex.active}" >
+									<c:if test="${resIndex.id != index.generator.generatingIndexId}">
 										<th><emph>ACTIVE</emph> index [ID: ${resIndex.id}]
-										<a onclick="javascript:generateOneIndex('${resourceIndexInfo.resourceName}', '${resIndex.id}')" href="#generateIndex">
-										<span style="width: 200px; height: 10px; border: 1px; color: grey;">re-generate</span>
-			  							</a>
+											<a onclick="javascript:generateOneIndex('${resourceIndexInfo.resourceName}', '${resIndex.id}')" href="#generateIndex">
+												<span style="width: 200px; height: 10px; border: 1px; color: grey;">re-generate</span>
+											</a>
 										</th>
-										</c:if>
+									</c:if>
+								</c:when>
+								<c:otherwise>
+									<c:if test="${resIndex.id != index.generator.generatingIndexId}">
+										<th>index [ID: ${resIndex.id}]
+											<a onclick="javascript:generateOneIndex('${resourceIndexInfo.resourceName}', '${resIndex.id}')" href="#generateIndex">
+												<span style="width: 200px; height: 10px; border: 1px; color: grey;">re-generate</span>
+											</a>
+										</th>
+									</c:if>
+								</c:otherwise>
+							</c:choose>
+						</c:forEach>
+					</tr>
+					<tr>
+						<td>Path:</td>
+						<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
+							<td>"${resIndex.basePath}"</td>
+						</c:forEach>	
+					</tr>
+					<tr>
+						<td>correct?</td>
+						<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
+							<td>
+								<c:choose>
+									<c:when test="${resIndex.correct}">
+									Yes
 									</c:when>
 									<c:otherwise>
-										<c:if test="${resIndex.id != index.generator.generatingIndexId}">
-										<th>index [ID: ${resIndex.id}]
-										<a onclick="javascript:generateOneIndex('${resourceIndexInfo.resourceName}', '${resIndex.id}')" href="#generateIndex">
-										<span style="width: 200px; height: 10px; border: 1px; color: grey;">re-generate</span>
-			  							</a>
-										</th>
-										</c:if>
+									No
 									</c:otherwise>
 								</c:choose>
-			    			</c:forEach>		    						    						    			
-			    		</tr>
-			    			<tr>
-			    			<td>Path:</td>
-			    			<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
-			    			<td>"${resIndex.basePath}"</td>
-			    			</c:forEach>	
-			    		</tr>
-			    		<tr>
-			    			<td>correct?</td>
-			    			<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
-			    			<td>
-			    				<c:choose>
-			    					<c:when test="${resIndex.correct}">
-			    					Yes
-			    					</c:when>
-			    					<c:otherwise>
-			    					No
-			    					</c:otherwise>
-			    				</c:choose>
-			    			</td>
-			    			</c:forEach>	
-			    		</tr>
-			    		<tr>
-			    			<td>containing docs</td>
-			    			<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
-			    				<c:if test="${resIndex.id != index.generator.generatingIndexId}">
-			    					<td>${resIndex.indexStatistics.numDocs}</td>
-			    				</c:if>
-			    			</c:forEach>
-			    		</tr>
-			    		<tr>
-			    			<td>deleted docs</td>
-			    			<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
-			    				<c:if test="${resIndex.id != index.generator.generatingIndexId}">
-			    					<td>${resIndex.indexStatistics.numDeletedDocs}</td>
-			    					</c:if>
-			    			</c:forEach>
-			    		</tr>
-			    		<tr>
-			    			<td>newest date</td>
-			    			<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
-			    				<c:if test="${resIndex.id != index.generator.generatingIndexId}">
-			    					<td><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${resIndex.indexStatistics.newestRecordDate}" /></td>
-			    				</c:if>
-			    			</c:forEach>
-			    		</tr>
-			    		<tr>
-			    			<td>last modified date</td>
-			    			<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
-			    				<c:if test="${resIndex.id != index.generator.generatingIndexId}">
-			    					<td><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${resIndex.indexStatistics.lastModified}" /></td>
-			    				</c:if>
-			    			</c:forEach>
-			    		</tr>
-			    		<tr>
-			    			<td>current version</td>
-			    			<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
-			    				<c:if test="${resIndex.id != index.generator.generatingIndexId}">
-			    					<td>${resIndex.indexStatistics.currentVersion}</td>
-			    				</c:if>
-			    			</c:forEach>
-			    		</tr>
-			    		<tr>
-			    			<td>isCurrent</td>
-							<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
-			    				<c:if test="${resIndex.id != index.generator.generatingIndexId}">
-			    					<td>${resIndex.indexStatistics.current}</td>
-			    				</c:if>
-			    			</c:forEach>
-			    		</tr>
-			    	</table>
-			   		<c:set var="generatingIndex" value="${resourceIndexInfo.generatingIndex}" />
-			    	<c:if test="${not empty (generatingIndex)}">
-			    		<p>Currently index[${generatingIndex.id}] is regenerating:</p>
-			    		<div style="width: 202px; height: 12px; border: 1px solid #999999; background-color: #CCCCCC">
-  							<div style="width: ${generatingIndex.indexGenerationProgress * 2}px; height:10px; border: 1px solid #CCCCCC; background-color: #002244">
-								<!-- placeholder -->
-							</div>
+							</td>
+						</c:forEach>	
+					</tr>
+					<tr>
+						<td>containing docs</td>
+						<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
+							<c:if test="${resIndex.id != index.generator.generatingIndexId}">
+								<td>${resIndex.indexStatistics.numDocs}</td>
+							</c:if>
+						</c:forEach>
+					</tr>
+					<tr>
+						<td>deleted docs</td>
+						<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
+							<c:if test="${resIndex.id != index.generator.generatingIndexId}">
+								<td>${resIndex.indexStatistics.numDeletedDocs}</td>
+								</c:if>
+						</c:forEach>
+					</tr>
+					<tr>
+						<td>newest date</td>
+						<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
+							<c:if test="${resIndex.id != index.generator.generatingIndexId}">
+								<td><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${resIndex.indexStatistics.newestRecordDate}" /></td>
+							</c:if>
+						</c:forEach>
+					</tr>
+					<tr>
+						<td>current version</td>
+						<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
+							<c:if test="${resIndex.id != index.generator.generatingIndexId}">
+								<td>${resIndex.indexStatistics.currentVersion}</td>
+							</c:if>
+						</c:forEach>
+					</tr>
+					<tr>
+						<td>isCurrent</td>
+						<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
+							<c:if test="${resIndex.id != index.generator.generatingIndexId}">
+								<td>${resIndex.indexStatistics.current}</td>
+							</c:if>
+						</c:forEach>
+					</tr>
+				</table>
+				<c:set var="generatingIndex" value="${resourceIndexInfo.generatingIndex}" />
+				<c:if test="${not empty (generatingIndex)}">
+					<p>Currently index[${generatingIndex.id}] is regenerating:</p>
+					<div style="width: 202px; height: 12px; border: 1px solid #999999; background-color: #CCCCCC">
+  					<div style="width: ${generatingIndex.indexGenerationProgress * 2}px; height:10px; border: 1px solid #CCCCCC; background-color: #002244">
+							<!-- placeholder -->
 						</div>
-						<div>
-								<span>${generatingIndex.indexGenerationProgress} % done.</span>
-						</div>
-			    	</c:if>
-			    </c:when>
-		 		<c:otherwise>
-		       		Seems to be properly configured but could not physically be found. <br />
-		       		<a href="?action=generateIndex&amp;resource=${index.resourceName}">Generate a new <c:out value="${index.resourceName}" /> Index</a>
-			   	</c:otherwise>
-			</c:choose>
-		</c:when>				
+					</div>
+					<div>
+						<span>${generatingIndex.indexGenerationProgress} % done.</span>
+					</div>
+				</c:if>
+			</c:when>
+			<c:otherwise>
+				Seems to be properly configured but could not physically be found. <br />
+				<a href="?action=generateIndex&amp;resource=${index.resourceName}">Generate a new <c:out value="${index.resourceName}" /> Index</a>
+			</c:otherwise>
+		</c:choose>
+	</c:when>
 		<!-- <c:otherwise>
 			<div>
 				Currently generating new index.
@@ -203,11 +194,11 @@
 				<span>${index.indexGenerationProgress} % done.</span>
 			</div>
 		</c:otherwise> -->
-   	</c:choose>
-	</div>
-   </c:forEach>
-</div>    
-            
+</c:choose>
+</div>
+</c:forEach>
+</div>
+
 		</jsp:attribute>
 	</layout:layout>
 </jsp:root>

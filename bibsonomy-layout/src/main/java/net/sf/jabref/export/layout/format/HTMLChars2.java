@@ -32,8 +32,6 @@ import net.sf.jabref.export.layout.LayoutFormatter;
 /**
  * TODO: document the difference between this class and {@link HTMLChars}
  * This formatter escapes characters so they are suitable for HTML.
- * 
- * @version $Revision$ ($Date$)
  */
 public class HTMLChars2 implements LayoutFormatter {
 
@@ -99,10 +97,10 @@ public class HTMLChars2 implements LayoutFormatter {
 							combody = field.substring(i, i + 1);
 							// System.out.println("... "+combody);
 						}
-						final Object result = GlobalsSuper.HTMLCHARS.get(command + combody);
+						final String result = GlobalsSuper.HTMLCHARS.get(command + combody);
 
 						if (result != null)
-							sb.append((String) result);
+							sb.append(result);
 
 						incommand = false;
 						escaped = false;
@@ -110,13 +108,13 @@ public class HTMLChars2 implements LayoutFormatter {
 						//	Are we already at the end of the string?
 						if (i + 1 == field.length()){
 							final String command = currentCommand.toString();
-                            final Object result = GlobalsSuper.HTMLCHARS.get(command);
+                            final String result = GlobalsSuper.HTMLCHARS.get(command);
 							/* If found, then use translated version. If not,
 							 * then keep
 							 * the text of the parameter intact.
 							 */
 							if (result != null) {
-								sb.append((String) result);
+								sb.append(result);
 							} else {
 								sb.append(command);
 							}

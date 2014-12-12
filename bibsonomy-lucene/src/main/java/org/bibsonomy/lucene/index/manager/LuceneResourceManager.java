@@ -111,16 +111,6 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	private LuceneGenerateResourceIndex<R> generator;
 
 	/**
-	 * triggers index optimization during next update
-	 */
-	public void optimizeIndex() {
-		final LuceneResourceIndex<R> nextIndex = this.updateQueue.peek();
-		if (nextIndex != null) {
-			nextIndex.optimizeIndex();
-		}
-	}
-
-	/**
 	 * Get statistics for the active index
 	 * 
 	 * @return LuceneIndexStatistics for the active index

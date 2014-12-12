@@ -262,12 +262,12 @@ public class BibTexUtils {
 		MANUAL, MASTERS_THESIS, MISC, PATENT, PERIODICAL, PHD_THESIS, PREAMBLE, PRESENTATION, PROCEEDINGS, STANDARD, TECH_REPORT, UNPUBLISHED,
 		PREPRINT
 	};
-	
 
 	/*
 	 * patterns used for matching
 	 */
 	private static final Pattern YEAR_PATTERN = Pattern.compile("\\d{4}");
+	private static final Pattern PAGE_PATTERN = Pattern.compile("\\s*([0-9]+)");
 	private static final Pattern DOI_PATTERN = Pattern.compile("http://.+/(.+?/.+?$)");
 	private static final Pattern LAST_COMMA_PATTERN = Pattern.compile(".+\\}?\\s*,\\s*\\}\\s*$", Pattern.MULTILINE | Pattern.DOTALL);
 	private static final Pattern NUMERIC_PATTERN = Pattern.compile("^\\d+$");
@@ -1140,5 +1140,49 @@ public class BibTexUtils {
 			}
 		}
 		return rVal;
+	}
+	
+	/**
+	 * extracts the first page of the publication
+	 * 
+	 * @param pagesString
+	 * @return the first page of the publication
+	 */
+	public static String extractFirstPage(final String pagesString) {
+		if (!present(pagesString)) {
+			return pagesString;
+		}
+		
+		final Matcher matcher = PAGE_PATTERN.matcher(pagesString);
+		if (matcher.find()) {
+			return matcher.group(1);
+		}
+		
+		return "";
+	}
+	
+	/**
+	 * extracts the last page of the publication
+	 * 
+	 * @param pagesString
+	 * @return the last page of the publication
+	 */
+	public static String extractLastPage(final String pagesString) {
+		if (!present(pagesString)) {
+			return pagesString;
+		}
+		
+		final Matcher matcher = PAGE_PATTERN.matcher(pagesString);
+		
+		if (matcher.find()) {
+			final String firstMatch = matcher.group(1);
+			if (matcher.find()) {
+				return matcher.group(1);
+			}
+			
+			return firstMatch;
+		}
+		
+		return "";
 	}
 }

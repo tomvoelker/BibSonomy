@@ -825,7 +825,7 @@
 	<URLTest id="url_137">
 		<TestDescription>Scraping test for IEEE computer society scraper (new url schema)</TestDescription>
 		<URL>http://www.computer.org/csdl/proceedings/dexa/2006/2641/00/26410603-reference.bib</URL>
-		<BibFile>IEEEComputerSocietyScraperUnitURLTest1.bib</BibFile>
+		<BibFile>IEEEComputerSocietyScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_138">
