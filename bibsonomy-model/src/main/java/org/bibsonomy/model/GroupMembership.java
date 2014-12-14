@@ -12,6 +12,16 @@ public class GroupMembership {
 	private User user;
 	private GroupRole groupRole;
 	private boolean userSharedDocuments;
+	
+	public GroupMembership() {
+		
+	}
+	
+	public GroupMembership(User user, GroupRole groupRole, boolean userSharedDocuments) {
+		this.user = user;
+		this.groupRole = groupRole;
+		this.userSharedDocuments = userSharedDocuments;
+	}
 
 	public User getUser() {
 		return user;

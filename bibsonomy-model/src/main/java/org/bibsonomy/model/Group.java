@@ -85,7 +85,7 @@ public class Group implements Serializable{
 	 * The privacy level of this group.
 	 */
 	private Privlevel privlevel;
-
+	
 	/**
 	 * If <code>true</code>, other group members can access documents
 	 * attached to BibTeX posts, if the post is viewable for the group or
