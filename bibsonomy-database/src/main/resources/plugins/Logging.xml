@@ -69,7 +69,7 @@
 	<insert id="logRemoveUserFromGroup" parameterClass="groupParam">
 		INSERT INTO log_groups (`user_name`, `group`, `defaultgroup`, `start_date`)
 		SELECT g.user_name, g.group, g.defaultgroup, g.start_date
-		FROM groups g WHERE g.user_name = #userName# AND g.group = #groupId#
+		FROM group_memberships g WHERE g.user_name = #userName# AND g.group = #groupId#
 	</insert>
 	
 	<insert id="logBasketItemDelete" parameterClass="basketParam">

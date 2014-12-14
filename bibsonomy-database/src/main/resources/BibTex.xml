@@ -522,20 +522,20 @@
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.change_date, t.tag_name, g.group_name, h.ctr as count, g.group, <include refid="reviewRatingsRows" />
 		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, bibhash h,
 		     ((SELECT content_id, date                <!-- publications from users of group which currUser may see -->
-		       FROM bibtex t1, groups g
+		       FROM bibtex t1, group_memberships g
 		       WHERE g.group = #groupId#
 		             AND g.user_name = t1.user_name    <!-- user owns this publication -->
 		             <include refid="inGroups"/>
 		      )UNION(
 		       SELECT content_id, date                <!-- publications from users of group which have currUser as friend -->
-		       FROM bibtex b, groups g, friends f
+		       FROM bibtex b, group_memberships g, friends f
 		       WHERE <include refid="matchGroupMemberTrust"/>    <!-- currUser is friend of a group member (user) -->
 		             AND b.user_name = f.user_name    <!-- user owns this publication -->
 		             AND g.group = #groupId#
 		             AND b.group = #groupTypeFriends# <!-- publication is only for friends -->
 		      )UNION(
 		       SELECT content_id, date                <!-- currUsers publications, ... -->
-		       FROM bibtex b, groups g
+		       FROM bibtex b, group_memberships g
 		       WHERE b.user_name = #userName#
 		             AND g.user_name = b.user_name    <!-- only, if currUser ... -->
 		             AND g.group = #groupId#          <!-- is in this group       -->
@@ -557,20 +557,20 @@
 		     (
 		     SELECT ids.content_id, ids.date, ids.user_shared_documents FROM  
 		     ((SELECT content_id, date, g.user_shared_documents               <!-- publications from users of group which currUser may see -->
-		       FROM bibtex t1, groups g
+		       FROM bibtex t1, group_memberships g
 		       WHERE g.group = #groupId#
 		             AND g.user_name = t1.user_name    <!-- user owns this publication -->
 		             <include refid="inGroups"/>
 		      )UNION(
 		       SELECT content_id, date, g.user_shared_documents                <!-- publications from users of group which have currUser as friend -->
-		       FROM bibtex b, groups g, friends f
+		       FROM bibtex b, group_memberships g, friends f
 		       WHERE <include refid="matchGroupMemberTrust"/>    <!-- currUser is friend of a group member (user) -->
 		             AND b.user_name = f.user_name    <!-- user owns this publication -->
 		             AND g.group = #groupId#
 		             AND b.group = #groupTypeFriends# <!-- publication is only for friends -->
 		      )UNION(
 		       SELECT content_id, date, TRUE AS user_shared_documents             <!-- currUsers publications, ... -->
-		       FROM bibtex b, groups g
+		       FROM bibtex b, group_memberships g
 		       WHERE b.user_name = #userName#
 		             AND g.user_name = b.user_name    <!-- only, if currUser ... -->
 		             AND g.group = #groupId#          <!-- is in this group       -->
@@ -593,20 +593,20 @@
 		     (
 		     SELECT ids.content_id, ids.date, ids.user_shared_documents, <include refid="allDocumentAttributes"/> FROM  
 		     ((SELECT content_id, date, g.user_shared_documents         <!-- publications from users of group which currUser may see -->
-		       FROM bibtex t1, groups g
+		       FROM bibtex t1, group_memberships g
 		       WHERE g.group = #groupId#
 		             AND g.user_name = t1.user_name    <!-- user owns this publication -->
 		             <include refid="inGroups"/>
 		      )UNION(
 		       SELECT content_id, date, g.user_shared_documents                <!-- publications from users of group which have currUser as friend -->
-		       FROM bibtex b, groups g, friends f
+		       FROM bibtex b, group_memberships g, friends f
 		       WHERE <include refid="matchGroupMemberTrust"/>    <!-- currUser is friend of a group member (user) -->
 		             AND b.user_name = f.user_name    <!-- user owns this publication -->
 		             AND g.group = #groupId#
 		             AND b.group = #groupTypeFriends# <!-- publication is only for friends -->
 		      )UNION(
 		       SELECT content_id, date, TRUE AS user_shared_documents               <!-- currUsers publications, ... -->
-		       FROM bibtex b, groups g
+		       FROM bibtex b, group_memberships g
 		       WHERE b.user_name = #userName#
 		             AND g.user_name = b.user_name    <!-- only, if currUser ... -->
 		             AND g.group = #groupId#          <!-- is in this group       -->
@@ -625,7 +625,7 @@
 
 	<select id="getBibTexForGroupCount" resultClass="int" parameterClass="bibtexParam" timeout="1">
 		SELECT count(*)
-		FROM bibtex t1, groups g
+		FROM bibtex t1, group_memberships g
 		WHERE g.group = #groupId#
 		      AND t1.user_name = g.user_name
 		      <include refid="inGroups"/>
@@ -759,7 +759,7 @@
 			<include refid="allGoldStandardPublicationAttributesAnonym" />, b.simhash2 as intraHash, b.simhash1 as interHash, 0 as count, <include refid="reviewRatingsRows" /> 
 		FROM (
 				SELECT interHash, MAX(date) AS date
-				FROM groups g, discussion d
+				FROM group_memberships g, discussion d
  				WHERE <include refid="discussionVisibleForGroup"/>
  				  AND g.group = #groupId#
  				  AND g.user_name = d.user_name
@@ -776,7 +776,7 @@
 	
 	<select id="getBibTexWithDiscussionsCountForGroup" resultClass="int" parameterClass="bibtexParam">
 		SELECT COUNT(DISTINCT interHash)
-		FROM groups g, discussion d
+		FROM group_memberships g, discussion d
 		WHERE <include refid="discussionVisibleForGroup"/>
 		  AND g.group = #groupId#
 		  AND g.user_name = d.user_name

@@ -56,7 +56,7 @@
 
 	<select id="getUserNamesByGroupId" resultClass="string" parameterClass="int">
 		SELECT user_name 
-		FROM groups 
+		FROM group_memberships 
 		WHERE `group` = #groupId#
 	</select>
 
@@ -182,7 +182,7 @@
 	</select>
 	
 	<update id="updateUserSharedDocuments" parameterClass="group">
-		UPDATE groups
+		UPDATE group_memberships
 		SET user_shared_documents = #userSharedDocuments#
 		WHERE `group` = #groupId#
 		AND user_name = #name#
