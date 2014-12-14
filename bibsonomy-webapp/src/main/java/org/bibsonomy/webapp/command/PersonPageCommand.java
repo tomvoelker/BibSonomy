@@ -27,8 +27,10 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	private String formResourceHash;
 	private String formPersonId;
 	private String formPersonRole;
+	private String formOrcid;
 	private String formThesisId;
 	private String formUser;
+	private int formNameId;
 	private List<String> formPersonRoles;
 	
 	private String formAction;
@@ -348,5 +350,40 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	 */
 	public void setFormResourceHash(String formResourceHash) {
 		this.formResourceHash = formResourceHash;
+	}
+
+	/**
+	 * @param formPersonRoles the formPersonRoles to set
+	 */
+	public void setFormPersonRoles(List<String> formPersonRoles) {
+		this.formPersonRoles = formPersonRoles;
+	}
+
+	/**
+	 * @return int
+	 */
+	public int getFormNameId() {
+		return this.formNameId;
+	}
+
+	/**
+	 * @param nameId the nameId to set
+	 */
+	public void setFormNameId(int nameId) {
+		this.formNameId = nameId;
+	}
+
+	/**
+	 * @return the formOrcid
+	 */
+	public String getFormOrcid() {
+		return this.formOrcid;
+	}
+
+	/**
+	 * @param formOrcid the formOrcid to set
+	 */
+	public void setFormOrcid(String formOrcid) {
+		this.formOrcid = formOrcid;
 	}
 }

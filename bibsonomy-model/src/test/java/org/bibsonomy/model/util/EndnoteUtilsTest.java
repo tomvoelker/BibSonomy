@@ -83,7 +83,7 @@ public class EndnoteUtilsTest {
 		// TODO: what about this?: b.setTitle("Newcastle working papers in linguistics \\& stuff");
 		b.getAuthor().add(new PersonName("", "{School of English Literature, Language and Linguistics}"));
 		b.setEditor(new ArrayList<PersonName>());
-		b.getEditor().add(new PersonName("G\"unter", "Günter"));
+		b.getEditor().add(new PersonName("Günter").withFirstName("G\"unter"));
 		b.setYear("{2009}");
 		b.setBibtexKey("schoolofenglishliterature2009newcastle");
 		Post<BibTex> post = new Post<BibTex>();

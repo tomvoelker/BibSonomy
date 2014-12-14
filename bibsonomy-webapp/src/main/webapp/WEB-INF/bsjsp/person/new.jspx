@@ -92,11 +92,11 @@
 						<div class='form-group'>
 							<label class="control-label col-md-4" for='formFirstName'>${textFormFirstName}</label>
 							<div class="col-md-6">
-								<input class='form-control' type="text" name='formFirstName' id='formFirstName' placeholder="${textFormFirstName}" value=""/>
+								<input class='form-control' type="text" name='formFirstName' id='formFirstName' placeholder="${textFormFirstName}" value="${command.formFirstName}"/>
 							</div>
 							<label class="control-label col-md-4" for='formLastName'>${textFormLastName}</label>
 							<div class="col-md-6">
-								<input class='form-control' type="text" name='formLastName' id='formLastName' placeholder="${textFormLastName}" value="${command.requestedPersonName}"/>
+								<input class='form-control' type="text" name='formLastName' id='formLastName' placeholder="${textFormLastName}" value="${command.formLastName}"/>
 							</div>
 						</div>
 						<br/>

@@ -45,23 +45,11 @@ public class PersonName implements Serializable {
 	 */
 	public static final String LAST_FIRST_DELIMITER = ",";
 
+	private int id;
 	private String firstName;
 	private String lastName;
-	private Person person;
-
-	/**
-	 * @return the person
-	 */
-	public Person getPerson() {
-		return this.person;
-	}
-
-	/**
-	 * @param person the person to set
-	 */
-	public void setPerson(Person person) {
-		this.person = person;
-	}
+	private int personId;
+	private boolean isMain;
 
 	/**
 	 * Default constructor
@@ -74,6 +62,14 @@ public class PersonName implements Serializable {
 	 * Sets name and extracts first and last name.
 	 * @param firstName 
 	 * @param lastName 
+	 */
+	public PersonName(final String lastName) {
+		this.setLastName(lastName);
+	}
+	
+	/**
+	 * @param firstName
+	 * @param lastName
 	 */
 	public PersonName(final String firstName, final String lastName) {
 		this.setFirstName(firstName);
@@ -158,6 +154,57 @@ public class PersonName implements Serializable {
 	 */
 	public PersonName withLastName(String lastName) {
 		this.setLastName(lastName);
+		return this;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public int getId() {
+		return this.id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	/**
+	 * @return the personId
+	 */
+	public int getPersonId() {
+		return this.personId;
+	}
+
+	/**
+	 * @param personId the personId to set
+	 */
+	public void setPersonId(int personId) {
+		this.personId = personId;
+	}
+
+	/**
+	 * @return the isMain
+	 */
+	public boolean isMain() {
+		return this.isMain;
+	}
+
+	/**
+	 * @param isMain the isMain to set
+	 */
+	public void setMain(boolean isMain) {
+		this.isMain = isMain;
+	}
+
+	/**
+	 * @param b
+	 * @return PersonName
+	 */
+	public PersonName withMain(boolean b) {
+		this.setMain(b);
 		return this;
 	}
 

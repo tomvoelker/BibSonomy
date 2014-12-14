@@ -140,14 +140,14 @@
 							<label class="control-label col-md-4">${textPersonAlternateNames}<br/>${textPersonAlternateNamesSelect}</label>
 							<div class="col-md-6">
 								<c:choose>
-									<c:when test="${fn:length(command.person.alternateNames) gt 0}">
-										<c:forEach var='name' items="${command.person.alternateNames}">
+									<c:when test="${fn:length(command.person.names) gt 0}">
+										<c:forEach var='name' items="${command.person.names}">
 											<c:choose>
-												<c:when test="${name.firstName eq command.person.mainName.firstName and name.lastName eq command.person.mainName.lastName}">
-													<div class="checkbox"><label><input type='radio' name='formSelectedName' value='${name.lastName}, ${name.firstName}' checked='checked' /> ${name.firstName} ${name.lastName} </label> &#160;</div>
+												<c:when test="${name.id eq command.person.mainName.id}">
+													<div class="checkbox"><label><input type='radio' name='formSelectedName' value='${name.id}' checked='checked' /> ${name.firstName} ${name.lastName} </label> &#160;</div>
 												</c:when>
 												<c:otherwise>
-													<div class="checkbox"><label><input type='radio' name='formSelectedName' value='${name.lastName}, ${name.firstName}' /> ${name.firstName} ${name.lastName} </label> &#160;<span data-firstName="${name.firstName}" data-lastName="${name.lastName}" data-toggle='modal' data-target='#removeName' style='color:darkred;cursor:pointer' href="#" class='removeName glyphicon glyphicon-remove'></span></div>
+													<div class="checkbox"><label><input type='radio' name='formSelectedName' value='${name.id}' /> ${name.firstName} ${name.lastName} </label> &#160;<span data-nameId="${name.id}" data-firstName="${name.firstName}" data-lastName="${name.lastName}" data-toggle='modal' data-target='#removeName' style='color:darkred;cursor:pointer' href="#" class='removeName glyphicon glyphicon-remove'></span></div>
 												</c:otherwise>
 											</c:choose>
 										</c:forEach>
@@ -160,9 +160,9 @@
 							</div>
 						</div>
 						<div class='form-group'>
-								<label class="control-label col-md-4" for='formOrcidID'>${textOrcidId}</label>
+								<label class="control-label col-md-4" for='formOrcid'>${textOrcidId}</label>
 								<div class="col-md-6">
-									<input class='form-control' type="text" name='formOrcidID' id='formOrcidID' placeholder="${textOrcidId}" value="${command.person.orcid}"/>
+									<input class='form-control' type="text" name='formOrcid' id='formOrcid' placeholder="${textOrcidId}" value="${command.person.orcid}"/>
 								</div>
 							</div>
 						<br/>

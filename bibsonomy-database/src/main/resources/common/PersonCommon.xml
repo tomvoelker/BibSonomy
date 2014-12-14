@@ -3,20 +3,52 @@
 
 <sqlMap namespace="PersonCommon">
 	<resultMap id="person" class="org.bibsonomy.model.Person">
-		<result property="id"          column="person_id"           javaType="java.lang.Integer" />
-		<result property="orcid"       column="orcid"        javaType="string" />
-		<result property="postCounter" column="post_ctr"     javaType="int" />
-		<result property="changedBy"   column="log_modified_by"   javaType="java.lang.String" />
-		<result property="changeDate"  column="log_modified_at"  javaType="java.util.Date" />
-		<result property="user"        column="user_name"    javaType="java.lang.String" />
+		<result property="id"          		column="person_id"          javaType="integer" />
+		<result property="names" 			column="person_id"	 		javaType='java.util.ArrayList' select='getNames' />
+		<result property="orcid"       		column="orcid"        		javaType="java.lang.String" />
+		<result property='academicDegree' 	column='academic_degree'	javaType='java.lang.String' />
+		<result property="postCounter" 		column="post_ctr"     		javaType="integer" />
+		<result property="changedBy"   		column="log_modified_by"   	javaType="java.lang.String" />
+		<result property="changeDate"  		column="log_modified_at"  	javaType="java.util.Date" />
+		<result property="user"        		column="user_name"    		javaType="java.lang.String" />
 	</resultMap>
 	
-	<sql id="commonPersonAttributes">
-		person_id, orcid, post_ctr, log_modified_by, log_modified_at, user_name
+	<resultMap id="personName" class="org.bibsonomy.model.PersonName">
+		<result property="id" 			column="id" 		javaType="integer" />
+		<result property="firstName" 	column="first_name"	javaType="java.lang.String" />
+		<result property="lastName" 	column="last_name" 	javaType="java.lang.String" />
+		<result property="personId" 	column="person_id" 	javaType="integer" />
+		<result property='isMain'		column='is_main'	javaType='boolean' />
+	</resultMap>
+	
+	<resultMap id='personResourceRelation' class='org.bibsonomy.model.PersonResourceRelation'>
+		<result property='id' 			column='id' javaType='int' />
+		<result property='simhash1' 	column='simhash1' javaType='java.lang.String' />
+		<result property='simhash2' 	column='simhash2' javaType='java.lang.String' />
+		<result property='qualifying' 	column='qualifying' javaType='int' />
+		<result property='personNameId' column='person_name_id' javaType='int' />
+		<result property='relatorCode' 	column='relator_code' javaType='java.lang.String' />
+		<result property='personId' 	column='person_id' javaType='int' />
+	</resultMap>
+	
+	<sql id="commonPersonColumns">
+		person.person_id, person.academic_degree, person.orcid, person.post_ctr, person.log_modified_by, person.log_modified_at, person.user_name
+	</sql>
+	
+	<sql id="commonPubPersonColumns">
+		id, simhash1, simhash2, qualifying, person_name_id, relator_code, person_id
+	</sql>
+	
+	<sql id='commonPersonNameColumns'>
+		person_name.id, person_name.first_name, person_name.last_name, person_name.person_id, person_name.is_main
 	</sql>
 	
 	<sql id="insertPersonAttributes">
-		#id#, #orcid#, #postCounter#, #changedBy#, #changeDate#, #user#
+		#id#, #orcid#, #academicDegree#, #postCounter#, #changedBy#, #changeDate#, #user#
+	</sql>
+	
+	<sql id="commonPubPersonAttributes">
+		#id#, #simhash1#, #simhash2#, #qualifying#, #personNameId#, #relatorCode#, #personId# 
 	</sql>
 	
 </sqlMap>

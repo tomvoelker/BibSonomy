@@ -3,7 +3,6 @@ package org.bibsonomy.webapp.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.common.DBSessionFactory;
@@ -14,7 +13,6 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelation;
 import org.bibsonomy.model.logic.PersonLogicInterface;
-import org.bibsonomy.model.util.BibTexReader;
 
 /**
  * Some methods to help handling Persons.
@@ -54,7 +52,9 @@ public class PersonLogic implements PersonLogicInterface {
 	 */
 	@Override
 	public void addPersonRelation(String longHash, String publicationOwner, int personID, PersonResourceRelation rel) {
-		// TODO Auto-generated method stub
+		org.bibsonomy.model.PersonResourceRelation pRR = new org.bibsonomy.model.PersonResourceRelation();
+		pRR.setPersonId(personID);
+		pRR.setSimhash1(longHash);
 		
 	}
 
@@ -72,8 +72,14 @@ public class PersonLogic implements PersonLogicInterface {
 	 */
 	@Override
 	public void createOrUpdatePerson(Person person) {
-		this.personDatabaseManager.createPerson(person, 
-				this.dbSessionFactory.getDatabaseSession());
+		if(person.getId() > 0) {
+			this.personDatabaseManager.updatePerson(person, this.dbSessionFactory.getDatabaseSession());
+			this.personDatabaseManager.updatePersonName(person.getMainName(), this.dbSessionFactory.getDatabaseSession());
+		} else {
+			this.personDatabaseManager.createPerson(person, this.dbSessionFactory.getDatabaseSession());
+			if(person.getMainName().getId() == 0 )
+				this.personDatabaseManager.createPersonName(person.getMainName(), this.dbSessionFactory.getDatabaseSession());
+		}
 	}
 
 	/* (non-Javadoc)
@@ -81,12 +87,25 @@ public class PersonLogic implements PersonLogicInterface {
 	 */
 	@Override
 	public Person getPersonById(int id) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.personDatabaseManager.getPersonById(id, this.dbSessionFactory.getDatabaseSession());
 	}
 	
 	@Override
 	public Map<Person, BibTex> getQualifyingPublications(String personName) {
 		return null;
+	}
+	/**
+	 * @param id
+	 * @return Set<PersonName>
+	 */
+	public List<?> getAlternateNames(int id) {
+		return this.personDatabaseManager.getAlternateNames(id, this.dbSessionFactory.getDatabaseSession());
+	}
+	/**
+	 * @param parseInt
+	 * @return
+	 */
+	public PersonName getPersonNameById(int id) {
+		return this.personDatabaseManager.getPersonNameById(id, this.dbSessionFactory.getDatabaseSession());
 	}
 }

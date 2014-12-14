@@ -50,7 +50,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 	private View indexAction(DisambiguationPageCommand command) {
 
 		command.setPost(this.logic.getPostDetails(command.getRequestedHash(), command.getRequestedUser()));
-		PersonName pn = new PersonName(command.getRequestedAuthorName().split(",")[1], command.getRequestedAuthorName().split(",")[0]);
+		PersonName pn = new PersonName(command.getRequestedAuthorName().split(",")[0]).withFirstName(command.getRequestedAuthorName().split(",")[1]);
 		command.setSuggestedPersons(this.personLogic.getPersons(null, null, pn, PersonResourceRelation.valueOf(command.getRequestedRole())));
 		
 		return Views.DISAMBIGUATION;
@@ -58,7 +58,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 	
 	private View redirectAction(DisambiguationPageCommand command) {
 
-		PersonName pn = new PersonName(command.getRequestedAuthorName().split(",")[1],command.getRequestedAuthorName().split(",")[0]);
+		PersonName pn = new PersonName(command.getRequestedAuthorName().split(",")[0]).withFirstName(command.getRequestedAuthorName().split(",")[1]);
 		List<Person> matchingPersons = this.personLogic.getPersons(command.getRequestedHash(), command.getRequestedUser(), pn, PersonResourceRelation.valueOf(command.getRequestedRole()));
 		
 		if(matchingPersons.size() > 0 ) {

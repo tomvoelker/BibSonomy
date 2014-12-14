@@ -359,12 +359,15 @@
 								<value>requestedAction</value>
 								<value>requestedHash</value>
 								<value>requestedUser</value>
+								<value>requestedRole</value>
 								<value>formAction</value>
 								<value>formPersonRoles</value>
 								<value>formPersonRole</value>
 								<value>formPersonId</value>
 								<value>formResourceHash</value>
 								<value>formUser</value>
+								<value>formOrcid</value>
+								<value>formNameId</value>
 								<value>formFirstName</value>
 								<value>formMiddleName</value>
 								<value>formLastName</value>

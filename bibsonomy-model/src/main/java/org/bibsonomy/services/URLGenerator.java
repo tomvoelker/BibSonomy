@@ -384,12 +384,22 @@ public class URLGenerator {
         return this.getUrl(url);
     }
     
+    /**
+     * @param personId
+     * @param personName
+     * @param resourceHash
+     * @param user
+     * @param role
+     * @return String
+     */
     public String getPersonUrl(final int personId, final String personName, final String resourceHash, final String user, final String role) {
     	String url = this.projectHome + URLGenerator.PERSON_PREFIX + "/" + personId + "/" + personName;
     	if(present(resourceHash) && present(user)) {
     		url = url + "/" + resourceHash + "/" + user;
     		if(present(role)) {
     			url = url + "/" + role;
+    		} else {
+    			url = url + "/AUTHOR";
     		}
     	}
     	return this.getUrl(url);

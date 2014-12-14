@@ -24,9 +24,9 @@
 package org.bibsonomy.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Entity class of a real person. Note that {@link User} and {@link Author} are
@@ -40,11 +40,11 @@ public class Person implements Serializable {
 	private static final long serialVersionUID = 4578956154246424767L;
 	
 	/** null means new non-persistent object */
-	private Integer id;
+	private int id;
 	/** usually current real name */
 	private PersonName mainName;
 	/** other names like former names or pseudonyms */
-	private Set<PersonName> alternateNames = new HashSet<PersonName>();
+	private List<PersonName> names;
 	/** something like "Dr. rer. nat." */
 	private String academicDegree;
 	/** researcher id on http://orcid.org/ */
@@ -61,31 +61,91 @@ public class Person implements Serializable {
 	private int postCounter;
 	
 	/**
+	 * 
+	 */
+	public Person() {
+		this.names = new ArrayList<PersonName>();
+	}
+	
+	/**
 	 * @return synthetic id. null means new non-persistent object
 	 */
-	public Integer getId() {
+	public int getId() {
 		return this.id;
 	}
 
 	/**
 	 * @param id synthetic id. null means new non-persistent object
 	 */
-	public void setId(Integer id) {
+	public void setId(int id) {
 		this.id = id;
+		for(PersonName name : this.names)
+			name.setPersonId(this.id);
 	}
 
 	/**
 	 * @return usually current real name
 	 */
 	public PersonName getMainName() {
+		if(this.mainName == null) {
+			for(PersonName name : this.names) {
+				if(name.isMain())
+					this.mainName = name;
+			}
+		}
 		return this.mainName;
 	}
 
 	/**
-	 * @param name usually current real name
+	 * @param int usually current real name
+	 */
+	public void setMainName(int id) {
+		for(PersonName name : this.names) {
+			if(name.getId() == id) {
+				name.setMain(true);
+				this.mainName = name;
+			} else {
+				name.setMain(false);
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param PersonName name
 	 */
 	public void setMainName(PersonName name) {
+		if(!this.names.contains(name)) {
+			name.setPersonId(this.getId());
+			this.names.add(name);
+		}
 		this.mainName = name;
+	}
+	/**
+	 * 
+	 * @param PersonName name
+	 */
+	public void addName(PersonName name) {
+		if(this.getNames().contains(name))
+			return;
+		
+		if(name != null)  {
+			name.setPersonId(this.getId());
+			name.setMain(false);
+			this.getNames().add(name);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param PersonName name
+	 */
+	public void removeName(PersonName name) {
+		if(!this.getNames().contains(name))
+			return;
+		if(name != null) {
+			this.names.remove(name);
+		}
 	}
 
 	/**
@@ -132,20 +192,20 @@ public class Person implements Serializable {
 	/**
 	 * @return the names
 	 */
-	public Set<PersonName> getAlternateNames() {
-		return this.alternateNames;
+	public List<PersonName> getNames() {
+		return this.names;
 	}
 
 	/**
 	 * @param names the names to set
 	 */
-	public void setAlternateNames(Set<PersonName> names) {
-		this.alternateNames = names;
+	public void setNames(List<PersonName> names) {
+		this.names = names;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (id == null) {
+		if (id == 0) {
 			return obj == this;
 		}
 		return ((obj instanceof Person) && (this.getId() == ((Person)obj).getId()));
@@ -153,7 +213,7 @@ public class Person implements Serializable {
 	
 	@Override
 	public int hashCode() {
-		if (id == null) {
+		if (id == 0) {
 			return System.identityHashCode(this);
 		}
 		return id;
@@ -213,6 +273,34 @@ public class Person implements Serializable {
 	 */
 	public void setPostCounter(int postCounter) {
 		this.postCounter = postCounter;
+	}
+	
+	/**
+	 * 
+	 * @param academicDegree
+	 * @return Person
+	 */
+	public Person withAcademicDegree(String academicDegree) {
+		this.setAcademicDegree(academicDegree);
+		return this;	
+	}
+
+	/**
+	 * @param formUser
+	 * @return Person
+	 */
+	public Person withUser(String user) {
+		this.setUser(user);
+		return this;
+	}
+
+	/**
+	 * @param withMain
+	 * @return Person
+	 */
+	public Person withMainName(PersonName withMain) {
+		this.setMainName(withMain);
+		return this;
 	}
 
 }
