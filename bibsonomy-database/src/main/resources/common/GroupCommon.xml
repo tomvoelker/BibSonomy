@@ -10,12 +10,6 @@
 		<result property="sharedDocuments"  	column="sharedDocuments"   javaType="boolean"/>
 	</resultMap>
 
-	<resultMap id="groupWithUserSharedDocumentsAndRole" extends="group_basic" class="group">
-		<result property="userSharedDocuments" 	column="user_shared_documents" javaType="boolean" />
-		<result property="groupRole" 	column="group_role" javaType="GroupRole" />
-		<result property="publicationReportingSettings" resultMap="GroupCommon.publReportingSettings" />
-	</resultMap>
-	
 	<resultMap id="publReportingSettings" class="publicationReportingSettings">
 		<result property="reportingMailAddress" column="publ_reporting_mail" javaType="string" />
 		<result property="reportingMailTemplate" column="publ_reporting_mail_template" javaType="string"/>
@@ -29,15 +23,13 @@
 	</resultMap>
 	
 	<resultMap id="group" class="group" extends="group_basic" groupBy="name">
-		<result property="realname"         column="realname"          javaType="string" />
-		<result property="homepage"         column="homepage"          javaType="url" />
 		<result property="publicationReportingSettings" resultMap="GroupCommon.publReportingSettings" />
 		<result property="groupRequest" resultMap="GroupCommon.groupRequest" />
 	</resultMap>
 	
-	<resultMap id="groupWithMembers" class="group" extends="group_basic" groupBy="name">
-		<result property="users"    resultMap="UserCommon.userForGroupWithRole" />
-		<result property="userSharedDocuments" 	column="user_shared_documents" javaType="boolean"/>
+	<resultMap id="groupWithMembershipsAndReportings" class="group" extends="group_basic" groupBy="name" >
+		<result property="memberships" resultMap="GroupCommon.groupMembership" />
+		<result property="publicationReportingSettings" resultMap="GroupCommon.publReportingSettings" />
 	</resultMap>
 	
 	<resultMap id="groupWithMemberships" class="group" extends="group_basic" groupBy="name" >

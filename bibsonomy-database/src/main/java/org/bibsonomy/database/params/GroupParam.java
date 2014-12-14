@@ -26,11 +26,27 @@
  */
 package org.bibsonomy.database.params;
 
+import org.bibsonomy.model.GroupMembership;
+
 /**
  * Parameters that are specific for groups.
  *
  * @author Christian Schenk
  */
 public class GroupParam extends GenericParam {
+	
+	private GroupMembership membership;
+	
+	public GroupParam() {
+		
+	}
+
+	public GroupMembership getMembership() {
+		return membership;
+	}
+
+	public void setMembership(GroupMembership membership) {
+		this.membership = membership;
+	}
 	
 }

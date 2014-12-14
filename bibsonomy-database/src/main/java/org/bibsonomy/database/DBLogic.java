@@ -116,6 +116,7 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -1142,11 +1143,13 @@ public class DBLogic implements LogicInterface {
 		if (!present(groupName)) {
 			throw new ValidationException("No group name given.");
 		}
+		final DBSession session = this.openSession();
 		/*
 		 * only logged-in group admins and admins are allowed to perform update operations 
 		 */
 		this.ensureLoggedIn();
 		boolean isPageAdmin = this.permissionDBManager.isAdmin(loginUser);
+		
 		/// TODO: get all group roles of the logged in user here and check if the user has this role
 		boolean isGroupAdmin = this.permissionDBManager.userHasGroupRole(loginUser, groupName, GroupRole.ADMINISTRATOR);
 		boolean isGroupModerator = this.permissionDBManager.userHasGroupRole(loginUser, groupName, GroupRole.MODERATOR);
@@ -1161,41 +1164,51 @@ public class DBLogic implements LogicInterface {
 		}
 		
 		// TODO: Add blacklisting users! (as a group role?!)
+		// Yes, maybe, why not as a group role :)
 		// TODO: WHAT APOUT SPAM??? Does this work?
 		if (!(operation == GroupUpdateOperation.ADD_REQUESTED && !loginUser.getSpammer())
 				&& !(operation == GroupUpdateOperation.ACCEPT_JOIN_REQUEST && !loginUser.getSpammer()
 				&& group.getGroupMembershipForUser(loginUser).getGroupRole().equals(GroupRole.INVITED))
 				&& !isPageAdmin && !isGroupAdmin && !isGroupModerator) {
+			session.close();
 			throw new ValidationException("No rights.");
 		}
 
 		/*
 		 * perform operations
 		 */
-		final DBSession session = this.openSession();
 		try	{
 			switch(operation) {
 			case UPDATE_ALL:
 				throw new UnsupportedOperationException("The method " + GroupUpdateOperation.UPDATE_ALL + " is not yet implemented.");
 			case UPDATE_SETTINGS:
+				User groupUser = new User(group.getName());
+				if (present(group.getRealname()))
+					groupUser.setRealname(group.getRealname());
+				if (present(group.getHomepage()))
+					groupUser.setHomepage(group.getHomepage());
+				
+				this.userDBManager.updateUser(groupUser, session);
 				this.groupDBManager.updateGroupSettings(group, session);
 				break;
 			case UPDATE_GROUPROLE:
 				if (isGroupAdmin) {
-					for (final User user: group.getUsers()) {
+					for (final GroupMembership membership: group.getMemberships()) {
 						// only allow the roles user, moderator and administrator.
-						if (GroupRole.ADMINISTRATOR.equals(group.getGroupRole()) || 
-							GroupRole.MODERATOR.equals(group.getGroupRole()) || 
-							GroupRole.USER.equals(group.getGroupRole())) {
-							this.groupDBManager.updateGroupRole(groupName, user.getName(), group.getGroupRole(), session);
+						if (GroupRole.ADMINISTRATOR.equals(membership.getGroupRole()) || 
+							GroupRole.MODERATOR.equals(membership.getGroupRole()) || 
+							GroupRole.USER.equals(membership.getGroupRole())) {
+							this.groupDBManager.updateGroupRole(groupName, membership.getUser().getName(), membership.getGroupRole(), session);
 						}
 					}
 				}
 				break;
+			// FALLTHROUGH
+			case ACCEPT_JOIN_REQUEST:
 			case ADD_NEW_USER:
 				if (isGroupAdmin || isPageAdmin) {
-					for (final User user: group.getUsers()) {
-						this.groupDBManager.addUserToGroup(groupName, user.getName(), GroupRole.USER, session);
+					for (final GroupMembership ms : group.getMemberships()) {
+						this.groupDBManager.addUserToGroup(groupName, ms.getUser().getName(), GroupRole.USER, session);
 					}
 				}
 				break;
@@ -1225,27 +1238,24 @@ public class DBLogic implements LogicInterface {
 				}
 				break;
 			case ADD_INVITED:
-				for (final User user: group.getUsers()) {
-					this.groupDBManager.addUserToGroup(groupName, user.getName(), GroupRole.INVITED, session);
+				for (final GroupMembership ms : group.getMemberships()) {
+					if (ms.getGroupRole().equals(GroupRole.INVITED))
+						this.groupDBManager.addPendingMembership(groupName, ms, session);
 				}
 				break;
 			// NOTE: This is the only case where we do not need a user to be a
 			// moderator or admin to perform a group join request!
 			case ADD_REQUESTED:
-				for (final User user: group.getUsers()) {
-					this.groupDBManager.addUserToGroup(groupName, user.getName(), GroupRole.REQUESTED, session);
+				for (final GroupMembership ms : group.getMemberships()) {
+					if (ms.getGroupRole().equals(GroupRole.REQUESTED))
+						this.groupDBManager.addPendingMembership(groupName, ms, session);
 				}
 				break;
-			// TODO: why do we not merge this with ADD_NEW_USER?
-			case ACCEPT_JOIN_REQUEST:
-				for (final User user: group.getUsers()) {
-					this.groupDBManager.updateGroupRole(groupName, user.getName(), GroupRole.USER, session);
-				}
-				break;
+			// FALLTHROUGH
 			case REMOVE_INVITED:
 			case DECLINE_JOIN_REQUEST:
-				for (final User user: group.getUsers()) {
-					this.groupDBManager.removeRequestOrInviteFromGroup(groupName, user.getName(), session);
+				for (final GroupMembership ms : group.getMemberships()) {
+					this.groupDBManager.removePendingMembership(groupName, ms.getUser().getName(), session);
 				}
 				break;
 			default:
