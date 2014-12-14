@@ -658,9 +658,11 @@
 								<value>privlevel</value>
 								<value>groupName</value>
 								<value>sharedDocuments</value>
+								<value>groupname</value>
 								<value>username</value>
 								<value>operation</value>
 								<value>group.name</value>
+								<value>group.realname</value>
 								<value>group.description</value>
 								<value>group.groupRole</value>
 								<value>group.groupRequest.reason</value>

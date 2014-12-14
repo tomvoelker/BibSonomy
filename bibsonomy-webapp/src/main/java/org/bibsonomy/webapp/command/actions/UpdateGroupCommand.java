@@ -15,11 +15,15 @@ public class UpdateGroupCommand extends BaseCommand implements Serializable {
 	private String requestedGroup;
 	
 	private Group group;
-	private String groupName;
+	private String groupname;
 	private GroupUpdateOperation operation;
 	private int privlevel;
 	private int sharedDocuments;
 	private String username;
+	
+	private String realname;
+	private String homepage;
+	private String description;
 
 	public Group getGroup() {
 		return group;
@@ -29,12 +33,12 @@ public class UpdateGroupCommand extends BaseCommand implements Serializable {
 		this.group = group;
 	}
 
-	public String getGroupName() {
-		return groupName;
+	public String getGroupname() {
+		return groupname;
 	}
 
-	public void setGroupName(String groupName) {
-		this.groupName = groupName;
+	public void setGroupname(String groupName) {
+		this.groupname = groupName;
 	}
 
 	public GroupUpdateOperation getOperation() {
@@ -75,5 +79,29 @@ public class UpdateGroupCommand extends BaseCommand implements Serializable {
 
 	public void setRequestedGroup(String requestedGroup) {
 		this.requestedGroup = requestedGroup;
+	}
+
+	public String getRealname() {
+		return realname;
+	}
+
+	public void setRealname(String realname) {
+		this.realname = realname;
+	}
+
+	public String getHomepage() {
+		return homepage;
+	}
+
+	public void setHomepage(String homepage) {
+		this.homepage = homepage;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }

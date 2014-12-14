@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import java.net.URL;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collections;
@@ -11,7 +12,9 @@ import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.webapp.command.GroupSettingsPageCommand;
 import org.bibsonomy.webapp.command.actions.UpdateGroupCommand;
+import org.bibsonomy.webapp.controller.GroupSettingsPageController;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -25,19 +28,22 @@ import org.springframework.validation.Errors;
  * 
  * @author tni
  */
-public class UpdateGroupController implements MinimalisticController<UpdateGroupCommand>, ErrorAware {
+public class UpdateGroupController extends GroupSettingsPageController implements ErrorAware {
 	private static final Log log = LogFactory.getLog(UpdateGroupController.class);
 	
 	private Errors errors = null;
 	private LogicInterface logic;
 
 	@Override
-	public UpdateGroupCommand instantiateCommand() {
-		return new UpdateGroupCommand();
+	public GroupSettingsPageCommand instantiateCommand() {
+		GroupSettingsPageCommand c = new GroupSettingsPageCommand();
+		c.setGroup(new Group());
+		return c;
 	}
 
 	@Override
-	public View workOn(final UpdateGroupCommand command) {
+	public View workOn(final GroupSettingsPageCommand command) {
+		super.workOn(command);
 		final RequestWrapperContext context = command.getContext();
 
 		/*
@@ -54,7 +60,7 @@ public class UpdateGroupController implements MinimalisticController<UpdateGroup
 			errors.reject("error.field.valid.ckey");
 		}
 
-		final String groupName = command.getGroupName();
+		final String groupName = command.getGroupname();
 
 		final GroupUpdateOperation operation = command.getOperation();
 		if (present(operation)) {
@@ -176,11 +182,20 @@ public class UpdateGroupController implements MinimalisticController<UpdateGroup
 					 */
 					final Privlevel priv = Privlevel.getPrivlevel(command.getPrivlevel());
 					final boolean sharedDocs = command.getSharedDocuments() == 1;
+					final String realname = command.getRealname();
+					final String homepage = command.getHomepage();
+					final String description = command.getDescription();
 					// the group to update
+					Group group = command.getGroup();
 					final Group groupToUpdate = this.logic.getGroupDetails(groupName);
-					groupToUpdate.setPrivlevel(priv);
-					groupToUpdate.setSharedDocuments(sharedDocs);
 					try {
+						groupToUpdate.setPrivlevel(priv);
+						groupToUpdate.setSharedDocuments(sharedDocs);
+						groupToUpdate.setRealname(realname);
+						groupToUpdate.setRealname(group.getRealname());
+						if (present(homepage))
+							groupToUpdate.setHomepage(new URL(homepage));
+						groupToUpdate.setDescription(description);
 						this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_SETTINGS);
 					} catch (final Exception ex) {
 						log.error("error while updating settings for group '" + groupName + "'", ex);

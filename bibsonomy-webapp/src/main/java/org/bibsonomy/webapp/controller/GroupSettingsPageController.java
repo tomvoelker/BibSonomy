@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.controller;
 
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.logic.LogicInterface;
 import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.webapp.command.GroupSettingsPageCommand;
@@ -17,7 +18,9 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 
 	@Override
 	public GroupSettingsPageCommand instantiateCommand() {
-		return new GroupSettingsPageCommand();
+		GroupSettingsPageCommand c = new GroupSettingsPageCommand();
+		c.setGroup(new Group());
+		return c;
 	}
 
 	@Override
@@ -37,17 +40,6 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 				command.setGroupMembership(command.getGroup()
 						.getGroupMembershipForUser(command.getLoggedinUser()));
 			}
-		}
-		
-		switch(command.getSelTab()) {
-			case 0:
-				break;
-			case 1:
-				break;
-			case 5:
-				break;
-			default:
-				break;
 		}
 		
 		return Views.GROUPSETTINGSPAGE;

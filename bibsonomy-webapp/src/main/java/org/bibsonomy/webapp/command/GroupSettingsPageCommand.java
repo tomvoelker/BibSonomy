@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.command;
 
+import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
@@ -18,14 +19,19 @@ public class GroupSettingsPageCommand extends TabsCommand<Object>  {
 	
 	// general attributes
 	private Group group;
-	// this is the hidden group user!
 	private User user;
 	private User loggedinUser;
 	private String requestedGroup;
 	private GroupMembership groupMembership;
+
+	private String username;
+	// TODO: WHat's this for?
+	private String groupname;
 	
 	// group specific settings. maybe move them to another page?
-	private String username;
+	private String realname;
+	private String homepage;
+	private String description;
 	private int privlevel;
 	private int sharedDocuments;
 	
@@ -35,6 +41,9 @@ public class GroupSettingsPageCommand extends TabsCommand<Object>  {
 	// cv settings
 	private String wikiText;
 	private String renderedWikiText;
+	
+	// bla
+	private GroupUpdateOperation operation;
 	
 	public GroupSettingsPageCommand() {
 		this.addTab(MY_PROFILE_IDX, "navi.groupsettings");
@@ -66,14 +75,6 @@ public class GroupSettingsPageCommand extends TabsCommand<Object>  {
 		this.requestedGroup = requestedGroup;
 	}
 
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
 	public int getPrivlevel() {
 		return privlevel;
 	}
@@ -98,14 +99,6 @@ public class GroupSettingsPageCommand extends TabsCommand<Object>  {
 		this.groupMembership = groupMembership;
 	}
 
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
 	public String getWikiText() {
 		return wikiText;
 	}
@@ -128,5 +121,61 @@ public class GroupSettingsPageCommand extends TabsCommand<Object>  {
 
 	public void setFile(CommonsMultipartFile file) {
 		this.file = file;
+	}
+
+	public GroupUpdateOperation getOperation() {
+		return operation;
+	}
+
+	public void setOperation(GroupUpdateOperation operation) {
+		this.operation = operation;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public String getRealname() {
+		return realname;
+	}
+
+	public void setRealname(String realname) {
+		this.realname = realname;
+	}
+
+	public String getHomepage() {
+		return homepage;
+	}
+
+	public void setHomepage(String homepage) {
+		this.homepage = homepage;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getGroupname() {
+		return groupname;
+	}
+
+	public void setGroupname(String groupname) {
+		this.groupname = groupname;
 	}
 }
