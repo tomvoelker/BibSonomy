@@ -493,8 +493,12 @@ public class BibTexUtils {
 		 */
 		if (present(bib.getMiscFields())) {
 			if (!hasFlag(flags, SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD) && !bib.isMiscFieldParsed()) {
-				// parse misc field, if not yet done
-				bib.parseMiscField();
+				try {
+					// parse misc field, if not yet done
+					bib.parseMiscField();
+				} catch (final InvalidModelException e) {
+					// ignore
+				}
 			}
 			
 			for (final Entry<String, String> miscField : bib.getMiscFields().entrySet()) {
@@ -681,7 +685,7 @@ public class BibTexUtils {
 			bib.addMiscField(ADDITIONAL_MISC_FIELD_ADDED_AT, fmt.format(post.getDate()));
 		}
 		if (present(post.getChangeDate())) {
-			bib.addMiscField(ADDITIONAL_MISC_FIELD_TIMESTAMP, fmt.format(post.getDate()));
+			bib.addMiscField(ADDITIONAL_MISC_FIELD_TIMESTAMP, fmt.format(post.getChangeDate()));
 		}
 		return toBibtexString(bib, flags);
 	}
