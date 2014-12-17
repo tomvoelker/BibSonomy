@@ -114,7 +114,7 @@
 		<!-- TODO: When this icon is made visible for non admins, change c:if userLoggedIn to c:choose and display inactive icon for signed out users -->
 		<c:if test="${command.context.userLoggedIn}">
 			<!-- COMMUNITY POST -->
-			<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
+			<!--<c:if test="${command.context.loginUser.role eq 'ADMIN'}">-->
 				<c:url var="editGoldStandardLink" value="/editGoldStandardBookmark">
 					<c:param name="hash" value="${post.resource.intraHash}" />
 					<c:param name="user" value="${post.user.name}" />
@@ -126,7 +126,7 @@
 					<span style="font-size:90%;" class="glyphicon glyphicon-user"><!--  --></span>
 					<span class="glyphicon glyphicon-user" style="margin-left:-4px; font-size: 70%;"><!--  --></span>
 				</a>
-			</c:if>
+			<!--</c:if>-->
 		</c:if>	
 	</div>
 </jsp:root>

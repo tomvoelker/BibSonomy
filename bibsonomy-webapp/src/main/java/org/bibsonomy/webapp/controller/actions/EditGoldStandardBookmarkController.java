@@ -37,102 +37,90 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ObjectUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
+import org.bibsonomy.webapp.command.actions.EditGoldStandardBookmarkCommand;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.GoldStandardPostValidator;
 import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.validation.Errors;
 
 import recommender.core.interfaces.model.TagRecommendationEntity;
 
 /**
  * @author dzo
  */
-public class EditGoldStandardBookmarkController extends EditBookmarkController {
-	
+public class EditGoldStandardBookmarkController extends EditPostController<GoldStandardBookmark, EditGoldStandardBookmarkCommand>{
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#instantiateEditPostCommand()
+	 */
+	@Override
+	protected EditGoldStandardBookmarkCommand instantiateEditPostCommand() {
+		return new EditGoldStandardBookmarkCommand();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#instantiateResource()
+	 */
+	@Override
+	protected GoldStandardBookmark instantiateResource() {
+		return new GoldStandardBookmark();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#workOnCommand(org.bibsonomy.webapp.command.actions.EditPostCommand, org.bibsonomy.model.User)
+	 */
+	@Override
+	protected void workOnCommand(EditGoldStandardBookmarkCommand command,
+			User loginUser) {
+		// noop
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#getPostView()
+	 */
 	@Override
 	protected View getPostView() {
 		return Views.EDIT_GOLD_STANDARD_BOOKMARK;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#getPostDetails(java.lang.String, java.lang.String)
+	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#setDuplicateErrorMessage(org.bibsonomy.model.Post, org.springframework.validation.Errors)
 	 */
 	@Override
-	protected Post<Bookmark> getPostDetails(final String intraHash, final String userName) {
-		return super.getPostDetails(intraHash, "");
-	}
-	
-	@Override
-	protected void prepareResourceForDatabase(final Bookmark resource) {
-		// noop
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	protected Post<Bookmark> getCopyPost(final User loginUser, final String hash, final String user) {
-		Post<Bookmark> post = null;
-		try {
-			post = (Post<Bookmark>) this.logic.getPostDetails(hash, user);
-		} catch (final ObjectNotFoundException ex) {
-			// ignore
-		} catch (final ResourceMovedException ex) {
-			// ignore		
-		}
-
-		if (post == null) {
-			return null;
-		}
+	protected void setDuplicateErrorMessage(Post<GoldStandardBookmark> post,
+			Errors errors) {
+		errors.rejectValue("post.resource.url", "error.field.valid.url.alreadybookmarked");
 		
-		return this.convertToGoldStandard(post);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#getValidator()
+	 */
 	@Override
-	protected boolean canEditPost(final RequestWrapperContext context) {
-		return super.canEditPost(context) && Role.ADMIN.equals(context.getLoginUser().getRole());
+	protected PostValidator<GoldStandardBookmark> getValidator() {
+		return new GoldStandardPostValidator<GoldStandardBookmark>();
 	}
-
+	
 	@Override
-	protected View finalRedirect(final String userName, final Post<Bookmark> post, final String referer) {
-		if (referer == null || referer.matches(".*/editGoldStandardBookmark.*")) {
-			return new ExtendedRedirectView(this.urlGenerator.getBookmarkUrl(post.getResource(), null));
+	public View workOn(final EditGoldStandardBookmarkCommand command) {
+		/* 
+		 * if URL of resource null show POST_BOOKMARK view and 
+		 * initialize didYouKnowMessageCommand  
+		 */
+	/*	if (!present(command.getPost().getResource().getUrl()) && !present(command.getIntraHashToUpdate()) && !present(command.getHash())) {
+			initializeDidYouKnowMessageCommand(command);
+			command.getPost().getResource().setUrl("http://");
+			return Views.POST_BOOKMARK;
 		}
-
-		return super.finalRedirect(userName, post, referer);
+		*/
+		/*
+		 * otherwise use editPost workflow
+		 */
+		return super.workOn(command);
 	}
-
-	private Post<Bookmark> convertToGoldStandard(final Post<Bookmark> post) {
-		if (!present(post)) {
-			return null;
-		}
-
-		final Post<Bookmark> gold = new Post<Bookmark>();
-
-		final GoldStandardBookmark goldResource = new GoldStandardBookmark();
-		ObjectUtils.copyPropertyValues(post.getResource(), goldResource);
-		gold.setResource(goldResource);
-
-		return gold;
-	}
-
-	@Override
-	protected EditBookmarkCommand instantiateEditPostCommand() {
-		return new EditBookmarkCommand();
-	}
-
-	@Override
-	protected Bookmark instantiateResource() {
-		return new GoldStandardBookmark();
-	}
-
-	@Override
-	protected PostValidator<Bookmark> getValidator() {
-		return new GoldStandardPostValidator<Bookmark>();
-	}
-
-	@Override
-	protected void setRecommendationFeedback(final TagRecommendationEntity post, final int postID) {
-		// noop gold standards have no tags
-	}
+	
+	
 }

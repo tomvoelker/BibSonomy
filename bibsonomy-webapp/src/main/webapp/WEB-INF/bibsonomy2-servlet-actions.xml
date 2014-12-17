@@ -700,6 +700,8 @@
 		<value>post.resource.url</value>
 		<value>post.resource.title</value>
 		<value>post.description</value>
+		<value>approved</value>
+		<value>post.resource.approved</value>
 		<value>post.date</value> <!-- only allowed for DBLP and used by DBLP updater -->
 		<value>tags</value>
 		<value>url</value>

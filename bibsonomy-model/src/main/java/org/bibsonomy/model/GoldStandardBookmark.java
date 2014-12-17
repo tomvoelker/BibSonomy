@@ -46,6 +46,8 @@ public class GoldStandardBookmark extends Bookmark implements GoldStandard<Bookm
 	private Set<Bookmark> references;
 	private Set<Bookmark> referencedBy;
 	
+	private int approved = 0;
+	
 	private void lacyLoadReferences() {
 		if (this.references == null) {
 			this.references = new HashSet<Bookmark>();
@@ -213,6 +215,20 @@ public class GoldStandardBookmark extends Bookmark implements GoldStandard<Bookm
 	@Override
 	public boolean removeAllFromReferenceThisPublicationIsPublishedIn(Set<? extends Bookmark> resources) {
 		return false;
+	}
+
+	/**
+	 * @return the approved
+	 */
+	public int getApproved() {
+		return this.approved;
+	}
+
+	/**
+	 * @param approved the approved to set
+	 */
+	public void setApproved(int approved) {
+		this.approved = approved;
 	}
 
 }
