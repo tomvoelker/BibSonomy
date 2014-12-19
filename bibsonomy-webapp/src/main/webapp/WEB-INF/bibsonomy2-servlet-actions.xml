@@ -36,6 +36,7 @@
 								<value>acceptPrivacy</value>
 							</list>
 						</property>
+						<property name="defaultToClassify" value="${user.defaultToClassify}"></property>
 					</bean>
 				</entry>
 				<entry key="/activate">
@@ -921,8 +922,6 @@
 		
 		<!-- After successful registration, the user is redirected to this page.  -->
 		<property name="successRedirect" value="/register_success"/>
-		
-		<property name="defaultToClassify" value="${user.defaultToClassify}"/>
 	</bean>
 	
 	<!-- Handles registration of users. -->
