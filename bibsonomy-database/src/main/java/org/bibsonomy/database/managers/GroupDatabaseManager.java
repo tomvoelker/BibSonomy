@@ -250,8 +250,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @return a list of groups
 	 */
 	public List<Group> getGroupsForUser(final String username, final DBSession session) {
-		// FIXME: what about dummy?
-		return this.queryForList("getGroupsForUser", username, Group.class, session);
+		return this.getGroupsForUser(username, false, session);
 	}
 
 	/**
@@ -263,9 +262,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @return a list of groups the user is member of
 	 */
 	public List<Group> getGroupsForUser(final String userName, final boolean removeSpecialGroups, final DBSession session) {
-		final List<Group> groupsForUser = this.getGroupsForUser(userName, session);
-		if (removeSpecialGroups) {
-			return this.removeSpecialGroups(groupsForUser);
+		// FIXME: what about dummy?
+		final List<Group> groupsForUser = this.queryForList("getGroupsForUser", userName, Group.class, session);
+		if (!removeSpecialGroups) {
+			groupsForUser.addAll(this.queryForList("getSpecialGroupsForUser", userName, Group.class, session));
 		}
 		return groupsForUser;
 	}

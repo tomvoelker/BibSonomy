@@ -27,19 +27,18 @@
 		<result property="groupRequest" resultMap="GroupCommon.groupRequest" />
 	</resultMap>
 	
-	<resultMap id="groupWithMembershipsAndReportings" class="group" extends="group_basic" groupBy="name" >
-		<result property="memberships" resultMap="GroupCommon.groupMembership" />
-		<result property="publicationReportingSettings" resultMap="GroupCommon.publReportingSettings" />
+	<resultMap id="groupMembership" class="groupMembership">
+		<result property="userSharedDocuments" 	column="user_shared_documents" javaType="boolean" />
+		<result property="groupRole" 	column="group_role" javaType="GroupRole" />
+		<result property="user"    resultMap="UserCommon.userForGroup" />
 	</resultMap>
 	
 	<resultMap id="groupWithMemberships" class="group" extends="group_basic" groupBy="name" >
 		<result property="memberships" resultMap="GroupCommon.groupMembership" />
 	</resultMap>
 	
-	<resultMap id="groupMembership" class="groupMembership">
-		<result property="userSharedDocuments" 	column="user_shared_documents" javaType="boolean" />
-		<result property="groupRole" 	column="group_role" javaType="GroupRole" />
-		<result property="user"    resultMap="UserCommon.userForGroup" />
+	<resultMap id="groupWithMembershipsAndReportings" class="group" extends="groupWithMemberships" groupBy="name" >
+		<result property="publicationReportingSettings" resultMap="GroupCommon.publReportingSettings" />
 	</resultMap>
 	
 	<resultMap id="tagsets" class="tagset" groupBy="setName">

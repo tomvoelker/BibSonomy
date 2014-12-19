@@ -42,7 +42,7 @@
 			<!-- Pending invites for the user -->
 			<c:set var="showPendingInvites" value="false" />
 			<c:forEach items="${command.user.groups}" var="group" varStatus="status">
-				<c:if test="${group.groupRole eq 'INVITED' }">
+				<c:if test="${group.getGroupMembershipForUser(loginUser).groupRole eq 'INVITED' }">
 					<c:set var="showPendingInvites" value="true" />
 				</c:if>
 			</c:forEach>
@@ -54,7 +54,7 @@
 						<fmt:message var="revuser" key="settings.group.remInvite.button"/>
 						<fmt:message var="revuserTitle" key="settings.group.remInvite.button.title"/>
 						<c:forEach items="${command.user.groups}" var="group">
-							<c:if test="${group.groupRole eq 'INVITED' }">
+							<c:if test="${group.getGroupMembershipForUser(loginUser).groupRole eq 'INVITED' }">
 								<div style="float: left; width: 130px; padding-bottom: 10px;">
 									<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"><c:out value='${group.name}'/></a><br />
 									<span class="smalltext">(<a href="/updateGroup?operation=remove_invited&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}" title="${revuserTitle}">${revuser}</a>)</span>
@@ -69,7 +69,9 @@
 			<bsform:fieldset legendKey="settings.groups">
 				<jsp:attribute name="content">
 					<c:forEach var="group" items="${command.user.groups}" >
-						<c:if test="${group.groupRole eq 'USER' || group.groupRole eq 'MODERATOR' || group.groupRole eq 'ADMINISTRATOR'}">
+						<c:if test="${group.getGroupMembershipForUser(loginUser).groupRole eq 'USER'
+									  || group.getGroupMembershipForUser(loginUser).groupRole eq 'MODERATOR'
+									  || group.getGroupMembershipForUser(loginUser).groupRole eq 'ADMINISTRATOR'}">
 							<c:set var="userMemberOfGroups" value="${true}" />
 						</c:if>
 					</c:forEach>
@@ -81,7 +83,9 @@
 						<c:otherwise>
 							<dl class="dl-horizontal dt-thumbnail-items group-list">
 								<c:forEach var="group" items="${command.user.groups}">
-									<c:if test="${group.groupRole eq 'USER' || group.groupRole eq 'MODERATOR' || group.groupRole eq 'ADMINISTRATOR'}">
+									<c:if test="${group.getGroupMembershipForUser(loginUser).groupRole eq 'USER'
+												  || group.getGroupMembershipForUser(loginUser).groupRole eq 'MODERATOR'
+												  || group.getGroupMembershipForUser(loginUser).groupRole eq 'ADMINISTRATOR'}">
 										
 										<form:form cssClass="form-horizontal" class="groupShareSettings"  method="POST" action="/ajax/handleGroupShare">
 											<dt><span class="sr-only"><c:out value="${group.name}" /></span><img class="img-thumbnail img-resposive user-avatar" src="${relativeUrlGenerator.getUserPictureUrlByUsername(group.name)}"/></dt>

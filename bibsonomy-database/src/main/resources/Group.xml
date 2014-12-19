@@ -42,18 +42,19 @@
 	</select>
 
 	<select id="getGroupsForUser" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="string">
-		(SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, u.user_name, g.user_shared_documents, g.group_role
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, u.user_name, g.user_shared_documents, g.group_role
 		 FROM groupids i
 		   LEFT JOIN group_memberships g USING (`group`)
 		   LEFT JOIN user u ON (u.user_name = g.user_name)
 		 WHERE g.user_name = #userName# AND g.group_role != 2
-		)
-		UNION
-		(SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, NULL AS publ_reporting_mail, NULL AS publ_reporting_mail_template, NULL AS publ_reporting_external_url, NULL AS user_realname, NULL AS user_homepage, #userName# AS user_name, FALSE AS user_shared_documents, 7 AS group_role
-		 FROM groupids i
-		 WHERE i.group BETWEEN 0 AND 2)
-		ORDER BY `group`
 	</select>
+	
+	<select id="getSpecialGroupsForUser" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="string">
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, "" AS user_realname, NULL AS user_homepage, #userName# AS user_name, FALSE AS user_shared_documents, 7 AS group_role
+		 FROM groupids i
+		 WHERE i.group BETWEEN 0 AND 2
+	</select>
+	
 
 	<select id="getGroupsForContentId" resultMap="GroupCommon.group_basic" parameterClass="int">
 		SELECT DISTINCT i.group, i.group_name, i.privlevel, i.sharedDocuments, FALSE as user_shared_documents 
