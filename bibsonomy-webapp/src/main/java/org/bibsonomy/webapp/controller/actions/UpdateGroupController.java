@@ -96,6 +96,9 @@ public class UpdateGroupController extends GroupSettingsPageController implement
 							requestedGroup.getGroupRequest().setUserName(command.getContext().getLoginUser().getName());
 							this.logic.createGroup(requestedGroup);
 						}
+						
+						// TODO: Return to the correct tab. How do I do that?
+						return new ExtendedRedirectView("/settings");
 					}
 					// do set new settings here
 					break;
