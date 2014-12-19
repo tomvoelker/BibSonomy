@@ -174,7 +174,7 @@
 		SELECT t1.tag_lower AS tag_name, COUNT(t1.tag_lower) AS tag_ctr
 		  FROM tas t 
 		    JOIN tas t1 USING (content_id)
-		    JOIN groups g ON g.user_name = t.user_name
+		    JOIN group_memberships g ON g.user_name = t.user_name
 		    JOIN groupids i ON i.group = g.group
 		  WHERE i.group_name = #requestedGroupName#
 		    <include refid="restrictToGroups"/>
