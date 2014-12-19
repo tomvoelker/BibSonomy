@@ -79,7 +79,7 @@ public class VuFindUserInitController implements MinimalisticController<OAuthCom
 
 	private SamlAuthenticationTool samlAuthTool;
 	
-	private boolean defaultToClassify;
+	private String defaultToClassify;
 
 	
 	@Override
@@ -143,8 +143,11 @@ public class VuFindUserInitController implements MinimalisticController<OAuthCom
 		user.setRole(Role.DEFAULT);
 		
 		//#1970: Implement property that controls a user's to_classify default value [Probeaufgabe]
-		user.setToClassify( (defaultToClassify) ? 1 : 0 );
-		
+		if (defaultToClassify.equals("0")) {
+			user.setToClassify(0);
+		}else {
+			user.setToClassify(1);
+		}
 
 		this.adminLogic.createUser(user);
 		authToken = new SamlCredAuthToken(samlCreds);
@@ -264,17 +267,16 @@ public class VuFindUserInitController implements MinimalisticController<OAuthCom
 	}
 
 	/**
-	 * @return the defaultToClassify
-	 */
-	public boolean isDefaultToClassify() {
-		return this.defaultToClassify;
-	}
-
-	/**
 	 * @param defaultToClassify the defaultToClassify to set
 	 */
-	public void setDefaultToClassify(boolean defaultToClassify) {
+	public void setDefaultToClassify(String defaultToClassify) {
 		this.defaultToClassify = defaultToClassify;
 	}
 
+	/**
+	 * @return the defaultToClassify
+	 */
+	public String getDefaultToClassify() {
+		return this.defaultToClassify;
+	}
 }
