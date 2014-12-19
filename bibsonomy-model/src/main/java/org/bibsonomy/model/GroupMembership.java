@@ -46,5 +46,10 @@ public class GroupMembership {
 	public void setUserSharedDocuments(boolean userSharedDocuments) {
 		this.userSharedDocuments = userSharedDocuments;
 	}
+
+	@Override
+	public String toString() {
+		return this.user + " " + this.groupRole + " " + this.userSharedDocuments;
+	}
 	
 }
