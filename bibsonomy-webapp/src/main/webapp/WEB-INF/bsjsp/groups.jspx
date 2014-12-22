@@ -115,6 +115,9 @@
 									TODO: Check if this is possible!<br />
 									<small><a href="${fn:escapeXml(group.homepage)}">Homepage</a></small>
 								</c:if>
+								
+								<small><a href="/cv/group/${fn:escapeXml(group.name)}">CV</a></small>
+								
 							</div>
 							<div class="col-xs-3">
 								<c:choose>
