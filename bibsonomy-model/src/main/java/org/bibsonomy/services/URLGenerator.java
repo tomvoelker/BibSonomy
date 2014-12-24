@@ -28,9 +28,13 @@ package org.bibsonomy.services;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Properties;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.Author;
@@ -115,6 +119,8 @@ public class URLGenerator {
 	private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
 	private static final String PUBLICATION_INTER_HASH_ID = String.valueOf(HashID.INTER_HASH.getId());
 
+	
+	private static final Log log =  LogFactory.getLog(URLGenerator.class);
 	/**
 	 * The default gives relative URLs.
 	 */
@@ -560,6 +566,38 @@ public class URLGenerator {
 		return this.getUrl(url);
 	}
 	
+	/** Get the url for publications from the Shared Resource
+	 * 
+	 * @param systemHome  
+	 * @param resourceType
+	 * @param publication
+	 * @param user
+	 * @return the url 
+	 */
+	public String getPublicationUrlForSR(final String systemHome,final String resourceType, final Resource publication, final User user) {
+		if(resourceType.equalsIgnoreCase("bibtex")){
+			if (!present(user) || !present(user.getName())) {
+				/*
+				 * If a user name is given, return the url to that users post (intrahash + username)
+				 * otherwise return the URL to the resources page (interhash)
+				 */
+				String url = systemHome + resourceType + "/" + 
+							 PUBLICATION_INTER_HASH_ID + publication.getInterHash();
+				return this.getUrl(url);
+			}
+			String url = systemHome + prefix + resourceType + "/" + 
+						 PUBLICATION_INTRA_HASH_ID + publication.getIntraHash() + 
+						 "/" + UrlUtils.safeURIEncode(user.getName());
+			return this.getUrl(url);
+		}else if(resourceType.equalsIgnoreCase("bookmark")){
+			return systemHome;
+		}else if(resourceType.equalsIgnoreCase("GoldStandardPublication")){
+			String url = systemHome+ prefix + PUBLICATION_PREFIX + "/" + publication.getInterHash();
+			return this.getUrl(url);
+		}
+		return null;
+	}
+	
 	/**
 	 * Constructs a URL for the given resource and user. If no user
 	 * is given, the URL points to all posts for that resource.
@@ -574,7 +612,7 @@ public class URLGenerator {
 	 *			is returned.
 	 * @return - The URL which represents the given publication.
 	 */
-	public String getPublicationUrl(final Resource publication, final User user) {
+	public String getPublicationUrl(final BibTex publication, final User user) {
 		if (!present(user) || !present(user.getName())) {
 			/*
 			 * If a user name is given, return the url to that users post (intrahash + username)

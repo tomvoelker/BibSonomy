@@ -99,7 +99,6 @@ public class EsResourceSearch<R extends Resource>{
 				for (SearchHit hit : response.getHits()) {
 						Map<String, Object> result = hit.getSource();					
 						final Post<R> post = this.resourceConverter.writePost(result);
-						post.setIsSharedResourcePost(true);
 						postList.add(post);
 					}
 				}

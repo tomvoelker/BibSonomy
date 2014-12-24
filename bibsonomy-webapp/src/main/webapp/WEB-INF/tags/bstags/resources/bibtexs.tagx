@@ -91,11 +91,19 @@
 	
 		<jsp:attribute name="title">
 			<c:choose>
-				<c:when test="${empty post.user.name}">
-					<bibgs:title post="${post}"/>
+				<c:when test="${not empty post.systemUrl }">
+					<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
 				</c:when>
 				<c:otherwise>
-					<bib:title post="${post}"/>
+					<c:set var ="isRemotePost" value="false"/>
+				</c:otherwise>
+			</c:choose>
+			<c:choose>
+				<c:when test="${empty post.user.name}">
+					<bibgs:title post="${post}" isRemotePost="isRemotePost"/>
+				</c:when>
+				<c:otherwise>
+					<bib:title post="${post}" isRemotePost="isRemotePost"/>
 				</c:otherwise>
 			</c:choose>
 		</jsp:attribute>
@@ -107,7 +115,7 @@
 		
 		<!-- BibTeX action -->
 		<jsp:attribute name="actions">
-			<bib:actions loginUserName="${loginUserName}" post="${post}" disableResourceLinks="${false}"/>
+			<bib:actions loginUserName="${loginUserName}" post="${post}" disableResourceLinks="${false}" isRemotePost="${isRemotePost}"/>
 		</jsp:attribute>
 
 		<!-- BibTeX preview + document upload -->

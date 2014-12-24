@@ -39,6 +39,10 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 
 	private String INDEX_TYPE;
 
+	/**The Url of the project home */
+	private static String systemtHome;
+	private final String systemUrlFieldName = "systemUrl";
+	
 	/** list posts to insert into index */
 	private ArrayList<Map<String, Object>> esPostsToInsert;
 	/** the node client */
@@ -163,13 +167,6 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	}
 
 	/**
-	 * @return the contentIdsToDelete
-	 */
-	public List<Integer> getContentIdsToDelete() {
-		return this.contentIdsToDelete;
-	}
-
-	/**
 	 * @param contentIdsToDelete
 	 *            the contentIdsToDelete to set
 	 */
@@ -212,6 +209,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * perform all cached operations to index
 	 */
 
+	@SuppressWarnings("boxing")
 	public void flush() {
 		synchronized (this) {
 			// ----------------------------------------------------------------
@@ -222,7 +220,8 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 			if ((contentIdsToDelete.size() > 0) || (usersToFlag.size() > 0)) {
 				// remove each cached post from index
 				for (final Integer contentId : this.contentIdsToDelete) {
-					this.deleteIndexForContentId(contentId);
+					long indexID = (systemtHome.hashCode() << 32) + Long.parseLong(contentId.toString());
+					this.deleteIndexForIndexId(indexID);
 					log.debug("deleted post " + contentId);
 				}
 
@@ -260,14 +259,16 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 */
 	@Override
 	public void insertNewPosts(ArrayList<Map<String, Object>> esPostsToInsert2) {
+		//TODO add systemUrl
 		for (Map<String, Object> jsonDocument : esPostsToInsert2) {
+			jsonDocument.put(this.systemUrlFieldName, systemtHome);
+			long indexId = (systemtHome.hashCode()<<32)+Long.parseLong(jsonDocument.get(LuceneFieldNames.CONTENT_ID).toString());
 			SharedResourceIndexUpdater.esClient
 					.getClient()
 					.prepareIndex(
 							INDEX_NAME,
 							INDEX_TYPE,
-							jsonDocument.get(LuceneFieldNames.CONTENT_ID)
-									.toString()).setSource(jsonDocument)
+							String.valueOf(indexId)).setSource(jsonDocument)
 					.setRefresh(true).execute().actionGet();
 		}
 
@@ -289,15 +290,15 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	}
 
 	/**
-	 * @param contentId
+	 * @param indexId
 	 */
 
 	@Override
-	public void deleteIndexForContentId(Integer contentId) {
+	public void deleteIndexForIndexId(long indexId) {
 		@SuppressWarnings("unused")
 		DeleteResponse response = esClient
 				.getClient()
-				.prepareDelete(INDEX_NAME, INDEX_TYPE, String.valueOf(contentId))
+				.prepareDelete(INDEX_NAME, INDEX_TYPE, String.valueOf(indexId))
 				.setRefresh(true).execute().actionGet();
 	}
 
@@ -367,6 +368,20 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 */
 	public ESClient getEsClient() {
 		return SharedResourceIndexUpdater.esClient;
+	}
+
+	/**
+	 * @return the systemtHome
+	 */
+	public static String getSystemtHome() {
+		return systemtHome;
+	}
+
+	/**
+	 * @param systemtHome the systemtHome to set
+	 */
+	public static void setSystemtHome(String systemtHome) {
+		SharedResourceIndexUpdater.systemtHome = systemtHome;
 	}
 
 }

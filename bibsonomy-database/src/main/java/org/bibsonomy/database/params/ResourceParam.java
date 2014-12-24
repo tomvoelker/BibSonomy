@@ -42,24 +42,7 @@ public class ResourceParam<T extends Resource> extends GenericParam {
 	private RatingAverage ratingAverage = RatingAverage.ARITHMETIC_MEAN;
 
 	protected T resource;
-	
-	protected String resourceType;
 	protected GoldStandardRelation relation;
-
-	
-	/**
-	 * @return the resourceType
-	 */
-	public String getResourceType() {
-		return this.resourceType;
-	}
-
-	/**
-	 * @param resourceType the resourceType to set
-	 */
-	public void setResourceType(String resourceType) {
-		this.resourceType = resourceType;
-	}
 
 	/**
 	 * @return the relation between the posts

@@ -9,7 +9,7 @@
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="disableResourceLinks" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="enableHistory" type="java.lang.Boolean" required="false" />	
-
+	<jsp:directive.attribute name="isRemotePost" type="java.lang.Boolean" required="true" />
 	<div class="edit-media-buttons btn-group btn-group-xs dropdown dropdown-align-right">
 	
 	<c:set var="buttonClasses" value="btn btn-default btn-xsmall"/>
@@ -20,28 +20,45 @@
 			<c:when test="${command.context.userLoggedIn}">
 				<c:choose>
 					<!-- COPY -->
-					<c:when test="${loginUserName ne post.user.name}"><!-- user is not post's owner -->
-						<c:url var="copyLink" value="/editPublication">
-							<c:param name="hash" value="${post.resource.intraHash}" />
-							<c:param name="user" value="${post.user.name}" />
-							<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
+					<c:when test="${isRemotePost}">
+						<c:url var="copyLink" value="/BibtexHandler">
+						<c:param name="requTask" value="upload"/>
+						<c:param name="url" value="${post.systemUrl}"/>
+						<c:param name="description" value="${post.description}"/>
+						<c:param name="selection"/>
+						<c:param name= "referer" value="${mtl:cleanUrl(post.resource.url)}"/>
 						</c:url>
-						
-						<fmt:message key="bibtex.actions.copy.title" var="copyTitle"/>
-						<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
-							<span class="fa fa-copy"><!--  --></span>
-						</a>
-					
+							<fmt:message key="bibtex.actions.copy.title" var="copyTitle"/>
+							<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
+								<span class="fa fa-copy"><!--  --></span>
+							</a>
 					</c:when>
-				
-					<!-- EDIT other actions -->
-					<c:otherwise><!-- user is post's owner -->
-						
-						<fmt:message key="bibtex.actions.edit.title" var="editTitle"/>
-						<a class="${buttonClasses}" href="/editPublication?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
-							<span class="fa fa-pencil ${post.user.name ne loginUserName ? 'btn-disabled' : ''}"><!--  --></span>
-						</a>
-
+					<c:otherwise>
+						<c:choose>
+							<c:when test="${loginUserName ne post.user.name}"><!-- user is not post's owner -->
+								<c:url var="copyLink" value="/editPublication">
+									<c:param name="hash" value="${post.resource.intraHash}" />
+									<c:param name="user" value="${post.user.name}" />
+									<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
+								</c:url>
+								
+								<fmt:message key="bibtex.actions.copy.title" var="copyTitle"/>
+								<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
+									<span class="fa fa-copy"><!--  --></span>
+								</a>
+							
+							</c:when>
+					
+							<!-- EDIT other actions -->
+							<c:otherwise><!-- user is post's owner -->
+							
+								<fmt:message key="bibtex.actions.edit.title" var="editTitle"/>
+								<a class="${buttonClasses}" href="/editPublication?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
+									<span class="fa fa-pencil ${post.user.name ne loginUserName ? 'btn-disabled' : ''}"><!--  --></span>
+								</a>
+	
+							</c:otherwise>
+						</c:choose>
 					</c:otherwise>
 				</c:choose>
 			</c:when>
@@ -76,7 +93,7 @@
 			<c:otherwise>
 				<!-- POST DELETE -->
 				<c:choose>
-					<c:when test="${command.context.userLoggedIn and loginUserName eq post.user.name}">
+					<c:when test="${command.context.userLoggedIn and loginUserName eq post.user.name and not isRemotePost}">
 						<fmt:message key="bibtex.actions.delete.title" var="deleteTitle"/>
 						<c:url var="deleteUrl" value="/deletePost">
 							<c:param name="resourceHash" value="${post.resource.intraHash}" />
@@ -101,10 +118,21 @@
 			| TODO: check if community post exists
 			+-->
 		<fmt:message key="bibtex.actions.communityPost" var="communityPost" />
-		<a href="${relativeUrlGenerator.getGoldstandardUrlByInterHash(post.resource.interHash)}" class="${buttonClasses}" title="${fn:escapeXml(communityPost)}">
-			<span style="font-size:90%;" class="glyphicon glyphicon-user"><!--  --></span>
-			<span class="glyphicon glyphicon-user" style="margin-left:-4px; font-size: 70%;"><!--  --></span>
-		</a>
+		<c:choose>
+			<c:when test="${isRemotePost}">
+				<a href="${post.systemUrl}/bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}" class="${buttonClasses}" title="${fn:escapeXml(communityPost)}">
+					<span style="font-size:90%;" class="glyphicon glyphicon-user"><!--  --></span>
+					<span class="glyphicon glyphicon-user" style="margin-left:-4px; font-size: 70%;"><!--  --></span>
+				</a>
+			</c:when>
+			<c:otherwise>
+				<a href="${relativeUrlGenerator.getGoldstandardUrlByInterHash(post.resource.interHash)}" class="${buttonClasses}" title="${fn:escapeXml(communityPost)}">
+					<span style="font-size:90%;" class="glyphicon glyphicon-user"><!--  --></span>
+					<span class="glyphicon glyphicon-user" style="margin-left:-4px; font-size: 70%;"><!--  --></span>
+				</a>
+			</c:otherwise>
+		</c:choose>
+	
 		<!--+
 			| HISTORY
 			+-->
@@ -136,7 +164,7 @@
 		</c:if>
 	
 		<c:choose>
-			<c:when test="${command.context.userLoggedIn}">
+			<c:when test="${command.context.userLoggedIn and not isRemotePost}">
 				<c:url var="pickUnpick_url" value="/ajax/pickUnpickPost">
 					<c:param name="hash" value="${post.resource.intraHash}" />
 					<c:param name="user" value="${post.user.name}" />

@@ -36,7 +36,7 @@ public interface IndexUpdater {
 	void deleteIndexForForUser(String userName);
 
 	/**
-	 * @param contentId
+	 * @param indexId
 	 */
-	void deleteIndexForContentId(Integer contentId);
+	void deleteIndexForIndexId(long indexId);
 }

@@ -84,10 +84,12 @@
 	<bean id="sharedResourceIndexGenerator" class="org.bibsonomy.es.SharedResourceIndexGenerator"
 		lazy-init="true">
 		<property name="esClient" ref="esTransportClient" />
+		<property name="systemtHome" value="${project.home}"/>
 	</bean>
 	<bean id="sharedResourceIndexUpdater" class="org.bibsonomy.es.SharedResourceIndexUpdater"
 		lazy-init="true">
 		<property name="esClient" ref="esTransportClient" />
+		<property name="systemtHome" value="${project.home}"/>
 	</bean>
 
 

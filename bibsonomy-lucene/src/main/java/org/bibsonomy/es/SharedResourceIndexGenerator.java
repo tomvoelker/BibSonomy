@@ -14,10 +14,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.util.generator.LuceneGenerateResourceIndex;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.es.ESClient;
-import org.bibsonomy.services.URLGenerator;
 
 /**
  * TODO: add documentation to this class
@@ -28,11 +26,11 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 	
 	private final String INDEX_NAME = ESConstants.INDEX_NAME;
 	private String INDEX_TYPE;
-	private final String pumaUrlMiscFieldName = "pumaurl";
-	private URLGenerator urlGenerator =  new URLGenerator();
-//	private final ESClient esClient = new ESNodeClient();
+	private final String systemUrlFieldName = "systemUrl";
+	//	private final ESClient esClient = new ESNodeClient();
 	// ElasticSearch Transport client
 	private static ESClient esClient;
+	private static String systemtHome;
 	private static final Log log = LogFactory.getLog(SharedResourceIndexGenerator.class);
 		
 	/**
@@ -83,11 +81,10 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 				if (this.isNotSpammer(post)) {
 					Map<String, Object> jsonDocument = new HashMap<String, Object>();
 					jsonDocument = (Map<String, Object>) this.resourceConverter.readPost(post, this.searchType);
-					if(INDEX_TYPE.equalsIgnoreCase("BibTex")){
-						jsonDocument.put(this.pumaUrlMiscFieldName, (urlGenerator.getPublicationUrl(post.getResource(), post.getUser())).toString());
-					}
+					jsonDocument.put(this.systemUrlFieldName, systemtHome);
+					long indexID = (systemtHome.hashCode() << 32) + Long.parseLong(post.getContentId().toString());
 					esClient.getClient()
-							.prepareIndex(INDEX_NAME, INDEX_TYPE, post.getContentId().toString())
+							.prepareIndex(INDEX_NAME, INDEX_TYPE, String.valueOf(indexID))
 							.setSource(jsonDocument).execute().actionGet();
 					log.info("post has been indexed.");
 					
@@ -166,6 +163,20 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 	 */
 	public void setEsClient(ESClient esClient) {
 		SharedResourceIndexGenerator.esClient = esClient;
+	}
+
+	/**
+	 * @return the systemtHome
+	 */
+	public String getSystemtHome() {
+		return systemtHome;
+	}
+
+	/**
+	 * @param systemtHome the systemtHome to set
+	 */
+	public void setSystemtHome(String systemtHome) {
+		SharedResourceIndexGenerator.systemtHome = systemtHome;
 	}
 
 }

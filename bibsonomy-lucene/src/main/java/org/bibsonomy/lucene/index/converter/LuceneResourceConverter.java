@@ -323,9 +323,9 @@ public class LuceneResourceConverter<R extends Resource> {
 					log.error("Error setting property " + propertyName + " to " + propertyValue.toString(), e);
 				}
 		}
-		if(result.get("pumaurl")!=null){
-			String pumaurl = result.get("pumaurl").toString();
-			post.setPumaurl(pumaurl);		
+		if(result.get("systemUrl")!=null){
+			String systemUrl = result.get("systemUrl").toString();
+			post.setSystemUrl(systemUrl);		
 		}
 		return post;
 	}

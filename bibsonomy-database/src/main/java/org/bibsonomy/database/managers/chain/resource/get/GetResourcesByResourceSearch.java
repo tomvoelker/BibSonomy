@@ -83,7 +83,9 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 			}
 		}
 		
+		R resource  = param.getResource();
+		String resourceType = resource.getClass().getSimpleName();
 		// query the resource searcher
-		return this.databaseManager.getPostsByResourceSearch(param.getResourceType(), param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getRelationTags(), param.getGroupNames(),param.getSearchType(), param.getRawSearch(), param.getTitle(), param.getAuthor(), tagIndex, year, firstYear, lastYear, negatedTags, param.getOrder(), param.getLimit(), param.getOffset());
+		return this.databaseManager.getPostsByResourceSearch(resourceType, param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getRelationTags(), param.getGroupNames(),param.getSearchType(), param.getRawSearch(), param.getTitle(), param.getAuthor(), tagIndex, year, firstYear, lastYear, negatedTags, param.getOrder(), param.getLimit(), param.getOffset());
 	}
 }

@@ -10,8 +10,8 @@
 
 	<!--  display title -->
 	<c:choose>
-		<c:when test="${not empty post.pumaurl}">
-			<c:set var="bibUrlTemplate" value="${post.pumaurl}"/>
+		<c:when test="${not empty post.systemUrl}">
+			<c:set var="bibUrlTemplate" value="${post.systemUrl}"/>
 		</c:when>
 		<c:otherwise>
 			<c:set var="bibUrlTemplate">${relativeUrlGenerator.getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, post.user.name)}</c:set>

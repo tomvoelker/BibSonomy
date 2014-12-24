@@ -16,7 +16,7 @@
 		<c:when test="${command.context.userLoggedIn}">
 		<c:choose>
 			<!-- COPY -->		
-			<c:when test="${post.isSharedResourcePost}">
+			<c:when test="${not empty post.systemUrl}">
 				<c:url var="copyLink" value="/ShowBookmarkEntry">
 					<c:param name="url" value="${mtl:cleanUrl(post.resource.url)}"/>
 					<c:param name="description" value="${post.description}"/>
@@ -87,7 +87,7 @@
 		<c:otherwise>
 			<!-- REGULAR POST DELETE -->
 			<c:choose>
-				<c:when test="${command.context.userLoggedIn and loginUserName eq post.user.name and not post.isSharedResourcePost}">
+				<c:when test="${command.context.userLoggedIn and loginUserName eq post.user.name and empty post.systemUrl}">
 					<fmt:message key="bookmark.actions.delete.title" var="deleteTitle" />
 					<c:url var="deleteUrl" value="/deletePost">
 						<c:param name="resourceHash" value="${post.resource.intraHash}" />

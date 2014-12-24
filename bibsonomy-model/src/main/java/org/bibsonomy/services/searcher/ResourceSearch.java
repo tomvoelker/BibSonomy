@@ -75,7 +75,7 @@ public interface ResourceSearch<R extends Resource> {
 
 	/**
 	 * search for posts using the ES / lucene index
-	 * @param resourceType resourceType of the posts to set the type in ES node 
+	 * @param resourceType resourceType of the posts to set the index type in ES node 
 	 * @param userName
 	 * @param requestedUserName
 	 * @param requestedGroupName

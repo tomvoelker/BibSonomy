@@ -75,7 +75,7 @@
 			</div>
 			<div class="ptags">
 				<!-- Edit tags link -->
-				<c:if test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name)}">
+				<c:if test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name) and empty post.systemUrl }">
 					<fmt:message key="navi.editTags" var="editTags" />
 					<a class="tags-edit-link" 
 						data-toggle="modal" 

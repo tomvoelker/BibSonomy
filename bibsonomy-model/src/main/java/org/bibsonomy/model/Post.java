@@ -55,14 +55,9 @@ public class Post<T extends Resource> implements Serializable {
 	private T resource;
 	
 	/**
-	 * if the post is a Shared Resource Post
-	 */
-	private boolean isSharedResourcePost = false;
-	
-	/**
 	 * for shared resource posts this contains the url of the post
 	 */
-	private String systemurl;
+	private String systemUrl;
 
 	/**
 	 * We need this here if we want to use groupBy in iBatis
@@ -448,34 +443,18 @@ public class Post<T extends Resource> implements Serializable {
 		this.visibleTags.add(tag);
 	}
 
-
 	/**
-	 * @return the isSharedResourcePost
+	 * @return the systemUrl
 	 */
-	public boolean getIsSharedResourcePost() {
-		return this.isSharedResourcePost;
-	}
-
-	/**	 
-	 * set true if the post comes from the Shared Resources
-	 * @param isSharedResourcePost the isSharedResourcePost to set
-	 */
-	public void setIsSharedResourcePost(boolean isSharedResourcePost) {
-		this.isSharedResourcePost = isSharedResourcePost;
+	public String getSystemUrl() {
+		return this.systemUrl;
 	}
 
 	/**
-	 * @return the pumaurl
+	 * @param systemUrl the systemUrl to set
 	 */
-	public String getPumaurl() {
-		return this.systemurl;
-	}
-
-	/**
-	 * @param pumaurl the pumaurl to set
-	 */
-	public void setPumaurl(String pumaurl) {
-		this.systemurl = pumaurl;
+	public void setSystemUrl(String systemUrl) {
+		this.systemUrl = systemUrl;
 	}
 
 }

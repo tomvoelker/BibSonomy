@@ -619,14 +619,13 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		if (present(this.resourceSearch)) {
 			return this.resourceSearch.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
 		}
-
 		log.error("no resource searcher is set");
 		return new LinkedList<Post<R>>();
 	}
 
 	/**
 	 * get list of posts from resource searcher
-	 * 
+	 * @param resourceType 
 	 * @param userName
 	 * @param requestedUserName
 	 * @param requestedGroupName
