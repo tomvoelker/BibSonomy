@@ -17,6 +17,8 @@ import org.bibsonomy.lucene.util.generator.LuceneGenerateResourceIndex;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.es.ESClient;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * TODO: add documentation to this class
  *
@@ -62,6 +64,18 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 
 		log.info("Start writing data to shared index");
 
+		//Indexing system information for the specific index type
+		SystemInformation systemInfo =  new SystemInformation();
+		systemInfo.setPostType(INDEX_TYPE);
+		systemInfo.setLast_log_date(lastLogDate);
+		systemInfo.setLast_tas_id(lastTasId);
+		systemInfo.setSystemUrl(systemtHome);
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonDocumentForSystemInfo = mapper.writeValueAsString(systemInfo);
+		esClient.getClient()
+		.prepareIndex(INDEX_NAME, ESConstants.SYSTEM_INFO_INDEX_TYPE, systemtHome+INDEX_TYPE)
+		.setSource(jsonDocumentForSystemInfo).execute().actionGet();
+		
 		// read block wise all posts
 		List<LucenePost<Resource>> postList = null;
 		int skip = 0;
@@ -178,5 +192,19 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 	public void setSystemtHome(String systemtHome) {
 		SharedResourceIndexGenerator.systemtHome = systemtHome;
 	}
+	
+//	public static Map<String, Object> createJsonDocumentForSystemInfo(String systemUrl,
+//			String postType, Date lastLogDate, Integer lastTasId) {
+//
+//		Map<String, Object> jsonDocument = new HashMap<String, Object>();
+//
+//		jsonDocument.put("title", title);
+//		jsonDocument.put("content", content);
+//		jsonDocument.put("postDate", postDate);
+//		jsonDocument.put("tags", tags);
+//		jsonDocument.put("author", author);
+//
+//		return jsonDocument;
+//	}
 
 }

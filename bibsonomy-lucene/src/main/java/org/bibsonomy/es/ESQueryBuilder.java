@@ -1,11 +1,9 @@
 package org.bibsonomy.es;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,10 +11,6 @@ import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.ImmutableSettings;
-import org.elasticsearch.common.settings.ImmutableSettings.Builder;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.FilteredQueryBuilder;
 import org.elasticsearch.search.SearchHit;
@@ -114,8 +108,7 @@ public abstract class ESQueryBuilder {
 	
 	/**
 	 * Fetchfields from es.
-	 *
-	 * @param FilteredQueryBuilder the builder
+	 * @param builder FilteredQueryBuilder
 	 * @param fields to be featched the fields
 	 * @param from the from
 	 * @param size the size
@@ -165,8 +158,7 @@ public abstract class ESQueryBuilder {
 
 	/**
 	 * Fetch documents es.
-	 *
-	 * @param FilteredQueryBuilder the builder
+	 * @param builder the FilteredQueryBuilder
 	 * @param from the from
 	 * @param size the size
 	 * @param sortBuildList the sort build list

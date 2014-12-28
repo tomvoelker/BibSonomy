@@ -59,4 +59,9 @@ public final class ESConstants {
 	 * Elasticsearch clustername value
 	 */
 	public static final String ES_CLUSTERNAME_VALUE = "elasticsearch";
+	
+	/**
+	 * Index type for the system information
+	 */
+	public static final String SYSTEM_INFO_INDEX_TYPE = "SystemInformation";
 }

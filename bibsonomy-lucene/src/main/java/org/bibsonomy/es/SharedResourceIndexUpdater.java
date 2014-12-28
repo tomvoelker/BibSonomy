@@ -1,6 +1,7 @@
 package org.bibsonomy.es;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.search.TermQuery;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.es.ESClient;
@@ -19,10 +21,15 @@ import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.index.query.IdsQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.search.MultiMatchQuery.QueryBuilder;
 import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * TODO: add documentation to this class
@@ -39,8 +46,10 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 
 	private String INDEX_TYPE;
 
+	private SystemInformation systemInfo =  new SystemInformation();
 	/**The Url of the project home */
 	private static String systemtHome;
+	
 	private final String systemUrlFieldName = "systemUrl";
 	
 	/** list posts to insert into index */
@@ -83,14 +92,13 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 				return this.lastLogDate;
 			}
 			try {
+				IdsQueryBuilder query = QueryBuilders.idsQuery().ids(systemtHome+INDEX_TYPE);
 				SearchRequestBuilder searchRequestBuilder = esClient
 						.getClient().prepareSearch(INDEX_NAME);
-				searchRequestBuilder.setTypes(INDEX_TYPE);
+				searchRequestBuilder.setTypes(ESConstants.SYSTEM_INFO_INDEX_TYPE);
 				searchRequestBuilder.setSearchType(SearchType.DEFAULT);
-				searchRequestBuilder.setQuery(QueryBuilders.matchAllQuery());
-				searchRequestBuilder.setSize(1).setExplain(true);
-				searchRequestBuilder.addSort(LuceneFieldNames.LAST_LOG_DATE,
-						SortOrder.DESC);
+				searchRequestBuilder.setQuery(query);
+				searchRequestBuilder.setFrom(0).setSize(1).setExplain(true);
 
 				SearchResponse response = searchRequestBuilder.execute()
 						.actionGet();
@@ -130,14 +138,15 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 				return this.lastTasId;
 			}
 			try {
+				IdsQueryBuilder query = QueryBuilders.idsQuery().ids(systemtHome+INDEX_TYPE);
 				SearchRequestBuilder searchRequestBuilder = esClient
 						.getClient().prepareSearch(INDEX_NAME);
-				searchRequestBuilder.setTypes(INDEX_TYPE);
+				searchRequestBuilder.setTypes(ESConstants.SYSTEM_INFO_INDEX_TYPE);
 				searchRequestBuilder.setSearchType(SearchType.DEFAULT);
-				searchRequestBuilder.setQuery(QueryBuilders.matchAllQuery());
-				searchRequestBuilder.setSize(1).setExplain(true);
-				searchRequestBuilder.addSort(LuceneFieldNames.LAST_TAS_ID,
-						SortOrder.DESC);
+				searchRequestBuilder.setQuery(query);
+				searchRequestBuilder.setFrom(0).setSize(1).setExplain(true);
+//				searchRequestBuilder.addSort(LuceneFieldNames.LAST_TAS_ID,
+//						SortOrder.DESC);
 
 				SearchResponse response = searchRequestBuilder.execute()
 						.actionGet();
@@ -245,6 +254,11 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 			}
 
 			// ----------------------------------------------------------------
+			// Update system informations
+			// ----------------------------------------------------------------
+			this.updateSystemInformation();
+			
+			// ----------------------------------------------------------------
 			// clear all cached data
 			// ----------------------------------------------------------------
 			this.esPostsToInsert.clear();
@@ -252,6 +266,22 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 			this.usersToFlag.clear();
 
 		}
+	}
+
+	/**
+	 * updates the system information for lastLogDate, lastTasId
+	 */
+	private void updateSystemInformation() {
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonDocumentForSystemInfo;
+		try {
+			jsonDocumentForSystemInfo = mapper.writeValueAsString(systemInfo);
+			esClient.getClient()
+			.prepareIndex(INDEX_NAME, ESConstants.SYSTEM_INFO_INDEX_TYPE, systemtHome+INDEX_TYPE)
+			.setSource(jsonDocumentForSystemInfo).execute().actionGet();
+		} catch (JsonProcessingException e) {
+			log.error("Failed to convert SystemInformation into a JSON", e);
+		}		
 	}
 
 	/**
@@ -382,6 +412,18 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 */
 	public static void setSystemtHome(String systemtHome) {
 		SharedResourceIndexUpdater.systemtHome = systemtHome;
+	}
+	
+	/**
+	 * sets the system informations to update
+	 * @param lastTasId
+	 * @param lastLogDate
+	 */
+	public void setSystemInformation(Integer lastTasId, Date lastLogDate){
+		this.systemInfo.setLast_log_date(lastLogDate);
+		this.systemInfo.setLast_tas_id(lastTasId);
+		this.systemInfo.setPostType(INDEX_TYPE);
+		this.systemInfo.setSystemUrl(systemtHome);
 	}
 
 }

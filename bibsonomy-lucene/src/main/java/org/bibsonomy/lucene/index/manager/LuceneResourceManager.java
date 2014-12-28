@@ -208,6 +208,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 				/*
 				 * commit changes
 				 */
+				this.sharedIndexUpdater.setSystemInformation(lastTasId, new Date(currentLogDate));
 				this.updatingIndex.flush();
 				this.sharedIndexUpdater.flush();
 				/*
@@ -293,6 +294,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 
 			for (final LucenePost<R> post : newPosts) {
 				post.setLastLogDate(new Date(currentLogDate));
+				//sets the system informations for update
 				final Document postDoc = (Document)this.resourceConverter.readPost(post, SearchType.LUCENESEARCH);
 				final Map<String, Object> postJsonDoc = (Map<String, Object>)this.resourceConverter.readPost(post, SearchType.ELASTICSEARCH);
 				this.sharedIndexUpdater.insertDocument(postJsonDoc);
