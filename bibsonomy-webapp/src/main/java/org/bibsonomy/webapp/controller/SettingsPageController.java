@@ -231,10 +231,13 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 
 	private void workOnGroupTab(final SettingsViewCommand command) {
 		// refresh the groups
-		for (Group group : command.getUser().getGroups()) {
-			// get the details and members
-			group.setUsers(this.logic.getUsers(null, GroupingEntity.GROUP, group.getName(), null, null, null, null, null, 0, Integer.MAX_VALUE));
-		}
+//		Group tmpGroup;
+//		for (Group group : command.getUser().getGroups()) {
+//			// get the details and members
+//			tmpGroup = this.logic.getGroupDetails(group.getName());
+//			group.setMemberships(tmpGroup.getMemberships());
+//			group.setPendingMemberships(tmpGroup.getPendingMemberships());
+//		}
 	}
 
 	/**

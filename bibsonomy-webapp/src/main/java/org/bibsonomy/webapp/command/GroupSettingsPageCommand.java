@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.command;
 
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
@@ -22,7 +23,25 @@ public class GroupSettingsPageCommand extends TabsCommand<Object>  {
 	private User user;
 	private User loggedinUser;
 	private String requestedGroup;
+	private boolean userSharedDocuments;
+	private GroupRole groupRole;
 	private GroupMembership groupMembership;
+
+	public boolean isUserSharedDocuments() {
+		return userSharedDocuments;
+	}
+
+	public void setUserSharedDocuments(boolean userSharedDocuments) {
+		this.userSharedDocuments = userSharedDocuments;
+	}
+
+	public GroupRole getGroupRole() {
+		return groupRole;
+	}
+
+	public void setGroupRole(GroupRole groupRole) {
+		this.groupRole = groupRole;
+	}
 
 	private String username;
 	// TODO: WHat's this for?

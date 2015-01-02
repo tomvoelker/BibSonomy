@@ -123,6 +123,7 @@ public class Group implements Serializable{
 	private GroupRequest groupRequest;
 	
 	private List<GroupMembership> memberships;
+	private List<GroupMembership> pendingMemberships;
 	
 	/**
 	 * constructor
@@ -478,10 +479,27 @@ public class Group implements Serializable{
 	public void setMemberships(List<GroupMembership> memberships) {
 		this.memberships = memberships;
 	}
+
+	public List<GroupMembership> getPendingMemberships() {
+		if (this.pendingMemberships == null)
+			this.pendingMemberships = new LinkedList<>();
+		
+		return pendingMemberships;
+	}
+
+	public void setPendingMemberships(List<GroupMembership> pendingMemberships) {
+		this.pendingMemberships = pendingMemberships;
+	}
 	
 	// TODO: move to utils class
 	public GroupMembership getGroupMembershipForUser(User user) {
 		for (GroupMembership g : this.getMemberships()) {
+			if (g.getUser().equals(user)) {
+				return g;
+			}
+		}
+		// look in pending memberships
+		for (GroupMembership g : this.getPendingMemberships()) {
 			if (g.getUser().equals(user)) {
 				return g;
 			}

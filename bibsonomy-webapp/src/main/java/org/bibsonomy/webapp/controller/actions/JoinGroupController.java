@@ -39,6 +39,7 @@ import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.MailUtils;
@@ -143,7 +144,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		// check if user is already in this group or has an open request
 		for (Group g : loginUser.getGroups()) {
 			if(g.getName().equals(groupName)) {
-				if (g.getGroupRole().equals(GroupRole.REQUESTED)) {
+				if (g.getGroupMembershipForUser(loginUser).getGroupRole().equals(GroupRole.REQUESTED)) {
 					errors.reject("joinGroup.already.request.error");
 					return Views.ERROR;
 				}
@@ -187,12 +188,10 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		final User groupUser = adminLogic.getUserDetails(groupName);
 		mailUtils.sendJoinGroupRequest(group.getName(), groupUser.getEmail(), loginUser, command.getReason(), requestLogic.getLocale());
 		
-		// we use the group.users property for the following operation
-		group.setUsers(Collections.singletonList(loginUser));
 		// insert the request
-		this.logic.updateGroup(group, GroupUpdateOperation.ADD_REQUESTED);
+		this.logic.updateGroup(group.getName(), GroupUpdateOperation.ADD_REQUESTED, new GroupMembership(loginUser, GroupRole.USER, false));
 		
-		final List<String> params = new LinkedList<String>();
+		final List<String> params = new LinkedList<>();
 		params.add(groupName);
 		command.setMessage("success.joinGroupRequest.sent", params);
 		return Views.SUCCESS;
@@ -276,7 +275,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 	}
 
 	/**
-	 * @param denieUserRedirectURI the denieUserRedirectURI to set
+	 * @param denyUserRedirectURI the denieUserRedirectURI to set
 	 */
 	public void setDenyUserRedirectURI(final String denyUserRedirectURI) {
 		this.denyUserRedirectURI = denyUserRedirectURI;

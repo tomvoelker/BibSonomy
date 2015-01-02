@@ -50,10 +50,12 @@
 									</bsform:fieldset>
 
 									<!-- Invited users -->
-									<!-- TODO: Fix this -->
-									<c:forEach items="${group.memberships}" var="member" varStatus="status">
+									<c:forEach items="${group.pendingMemberships}" var="member" varStatus="status">
 										<c:if test="${member.groupRole eq 'INVITED'}">
 											<c:set var="hasPendingInvites" value="${true}" />
+										</c:if>
+										<c:if test="${member.groupRole eq 'REQUESTED'}">
+											<c:set var="hasJoinRequests" value="${true}" />
 										</c:if>
 									</c:forEach>
 									<c:if test="${hasPendingInvites}">
@@ -62,7 +64,7 @@
 												<fmt:message var="revuser" key="settings.group.remInvite.button"/>
 												<fmt:message var="revuserTitle" key="settings.group.remInvite.button.title"/>
 												<table class="table table-striped table-condensed">
-													<c:forEach items="${group.memberships}" var="member">
+													<c:forEach items="${group.pendingMemberships}" var="member">
 														<c:if test="${member.groupRole eq 'INVITED'}">
 															<tr>
 																<td class="col-md-1"><user:thumbnail user="${member.user}" size="16" noname="${true}" /></td>
@@ -76,11 +78,6 @@
 										</bsform:fieldset>
 									</c:if>
 									<!-- Join requests -->
-									<c:forEach items="${group.memberships}" var="member" varStatus="status">
-										<c:if test="${member.groupRole eq 'REQUESTED'}">
-											<c:set var="hasJoinRequests" value="${true}" />
-										</c:if>
-									</c:forEach>
 									<c:if test="${hasJoinRequests}">
 										<bsform:fieldset legendKey="settings.group.joinRequests">
 											<jsp:attribute name="content">
@@ -90,7 +87,7 @@
 												<fmt:message var="accuserTitle" key="settings.group.accUser.button.title"/>
 
 												<table class="table table-striped table-condensed">
-													<c:forEach items="${group.memberships}" var="member">
+													<c:forEach items="${group.pendingMemberships}" var="member">
 														<c:if test="${member.groupRole eq 'REQUESTED'}">
 															<tr>
 																<td class="col-md-1"><user:thumbnail user="${member.user}" size="16" noname="${true}" /></td>
@@ -106,7 +103,7 @@
 								</c:if>
 
 								<c:forEach items="${group.memberships}" var="member">
-									<c:if test="${member.groupRole ne 'DUMMY' and member.groupRole ne 'REQUESTED' and member.groupRole ne 'INVITED'}">
+									<c:if test="${member.groupRole ne 'DUMMY'}">
 										<c:set var="groupHasMembers" value="${true}" />
 									</c:if>
 								</c:forEach>
@@ -121,7 +118,7 @@
 												<!-- TODO: Adapt this to maybe forms? The page will be reloaded, no matter what. -->
 												<table class="table table-striped table-condensed">
 													<c:forEach items="${group.memberships}" var="member">
-														<c:if test="${member.groupRole ne 'DUMMY' and member.groupRole ne 'REQUESTED' and member.groupRole ne 'INVITED'}">
+														<c:if test="${member.groupRole ne 'DUMMY'}">
 															<tr>
 																<td class="col-md-1"><user:thumbnail user="${member.user}" size="16" noname="${true}" /></td>
 																<td class="col-md-3"><user:username user="${member.user}" /></td>
@@ -131,16 +128,16 @@
 																		<c:if test="${groupRole eq 'ADMINISTRATOR'}">
 																			<c:choose>
 																				<c:when test="${member.groupRole eq 'USER'}">
-																					<a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;group.groupRole=moderator&amp;ckey=${ckey}">&#8593;</a>
+																					<a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=moderator&amp;ckey=${ckey}">&#8593;</a>
 																					| <a class="btn btn-default disabled">&#8595;</a>
 																				</c:when>
 																				<c:when test="${member.groupRole eq 'MODERATOR'}">
-																					<a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;group.groupRole=administrator&amp;ckey=${ckey}">&#8593;</a>
-																					| <a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;group.groupRole=user&amp;ckey=${ckey}">&#8595;</a>
+																					<a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=administrator&amp;ckey=${ckey}">&#8593;</a>
+																					| <a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=user&amp;ckey=${ckey}">&#8595;</a>
 																				</c:when>
 																				<c:when test="${member.groupRole eq 'ADMINISTRATOR'}">
 																					<a class="btn btn-default disabled">&#8593;</a>
-																					| <a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;group.groupRole=moderator&amp;ckey=${ckey}">&#8595;</a>
+																					| <a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=moderator&amp;ckey=${ckey}">&#8595;</a>
 																				</c:when>
 																			</c:choose>
 																		</c:if>

@@ -55,6 +55,7 @@ import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.ConceptUpdateOperation;
 import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
@@ -74,6 +75,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -775,7 +777,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */	
 	@Test
 	public void updateGroupTest() {
-		updateGroup(ModelUtils.getGroup(), GroupUpdateOperation.UPDATE_ALL);
+		updateGroup(ModelUtils.getGroup().getName(), GroupUpdateOperation.UPDATE_ALL, null);
 	}
 	
 	/**
@@ -784,19 +786,20 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	@Test
 	public void addUserToGroupTest() {
 		final Group group = new Group("groupName");
-		group.setUsers(Collections.singletonList(new User("testUser1")));
-		this.updateGroup(group, GroupUpdateOperation.ADD_NEW_USER);
+		final GroupMembership membership = new GroupMembership(new User("testUser1"), GroupRole.USER, false);
+		this.updateGroup(group.getName(), GroupUpdateOperation.ADD_NEW_USER, membership);
 	}
 	
 	@Override
-	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
+	public String updateGroup(final String groupname, final GroupUpdateOperation operation, GroupMembership membership) {
+		final Group group = this.getGroupDetails(groupname);
 		
 		switch (operation) {
 		case ADD_NEW_USER:
 
-			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"), PropertyEqualityArgumentMatcher.eq(operation, ""))).andReturn("OK");
+			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId").getName(), PropertyEqualityArgumentMatcher.eq(operation, ""), membership)).andReturn("OK");
 			EasyMock.replay(serverLogic);
-			assertEquals("OK", clientLogic.updateGroup(group, operation));
+			assertEquals("OK", clientLogic.updateGroup(group.getName(), operation, membership));
 			EasyMock.verify(serverLogic);
 			assertLogin();
 			break;
@@ -808,9 +811,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			 */
 			group.setPrivlevel(null); 
 			
-			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"), PropertyEqualityArgumentMatcher.eq(operation, ""))).andReturn(group.getName() + "-new");
+			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId").getName(), PropertyEqualityArgumentMatcher.eq(operation, ""), null)).andReturn(group.getName() + "-new");
 			EasyMock.replay(serverLogic);
-			assertEquals(group.getName() + "-new", clientLogic.updateGroup(group, operation));
+			assertEquals(group.getName() + "-new", clientLogic.updateGroup(group.getName(), operation, null));
 			EasyMock.verify(serverLogic);
 			assertLogin();
 			break;

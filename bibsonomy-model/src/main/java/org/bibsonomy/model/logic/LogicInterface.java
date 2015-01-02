@@ -50,6 +50,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -342,7 +343,7 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @param operation the operation which should be performed
 	 * @return groupID the group id of the updated group
 	 */
-	public String updateGroup(Group group, final GroupUpdateOperation operation);
+	public String updateGroup(String groupName, final GroupUpdateOperation operation, GroupMembership membership);
 
 	/**
 	 * Adds a document. If the resourceHash is given, the document is connected

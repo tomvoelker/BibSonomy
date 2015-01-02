@@ -41,10 +41,15 @@
 				
 			<!-- Pending invites for the user -->
 			<c:set var="showPendingInvites" value="false" />
-			<c:forEach items="${command.user.groups}" var="group" varStatus="status">
-				<c:if test="${group.getGroupMembershipForUser(loginUser).groupRole eq 'INVITED' }">
-					<c:set var="showPendingInvites" value="true" />
-				</c:if>
+			<c:forEach items="${command.user.pendingGroups}" var="group" varStatus="status">
+				<!-- TODO: Implement this correctly -->
+				<c:out value="${group}" />
+				<c:forEach items="${group.memberships}" var="membership">
+					<c:out value="${membership}" />
+					<c:if test="${membership.groupRole eq 'INVITED' }">
+						<c:set var="showPendingInvites" value="true" />
+					</c:if>
+				</c:forEach>
 			</c:forEach>
 			<c:if test="${showPendingInvites}">
 				<bsform:fieldset legendKey="settings.group.pendingInvites">
@@ -53,12 +58,12 @@
 						<fmt:message var="accinviteTitle" key="settings.group.accInvite.button.title" />
 						<fmt:message var="revuser" key="settings.group.remInvite.button"/>
 						<fmt:message var="revuserTitle" key="settings.group.remInvite.button.title"/>
-						<c:forEach items="${command.user.groups}" var="group">
+						<c:forEach items="${command.user.pendingGroups}" var="group">
 							<c:if test="${group.getGroupMembershipForUser(loginUser).groupRole eq 'INVITED' }">
 								<div style="float: left; width: 130px; padding-bottom: 10px;">
 									<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"><c:out value='${group.name}'/></a><br />
-									<span class="smalltext">(<a href="/updateGroup?operation=remove_invited&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}" title="${revuserTitle}">${revuser}</a>)</span>
-									<span class="smalltext">(<a href="/updateGroup?operation=accept_join_request&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}" title="${accuserTitle}">sdfg${accuser}</a>)</span>
+									<span class="smalltext">(<a href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}" title="${revuserTitle}">${revuser}</a>)</span>
+									<span class="smalltext">(<a href="/updateGroup?operation=accept_join_request&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}" title="${accuserTitle}">sdfg${accuser}</a>)</span>
 								</div>
 							</c:if>
 						</c:forEach>

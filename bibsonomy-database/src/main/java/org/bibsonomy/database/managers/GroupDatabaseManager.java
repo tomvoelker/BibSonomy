@@ -1,6 +1,5 @@
 package org.bibsonomy.database.managers;
 
-import com.sun.org.apache.bcel.internal.generic.InstructionConstants;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
@@ -225,10 +224,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * Returns true if there's only one admin for the group.
 	 */
 	private boolean hasOneAdmin(final Group g, final DBSession session) {
-		// TODO: check twice, you are modifying the group here
-		g.setGroupRole(GroupRole.ADMINISTRATOR);
-		final Integer count = this.queryForObject("countPerRole", g, Integer.class, session);
-		return count != null && count.intValue() == 1;
+		GroupParam p = new GroupParam();
+		p.setMembership(new GroupMembership(null, GroupRole.ADMINISTRATOR, true));
+		final Integer count = this.queryForObject("countPerRole", p, Integer.class, session);
+		return count != null && count == 1;
 	}
 
 	/**
@@ -669,7 +668,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		}
 		
 		// this check should actually always be true
-		for (GroupMembership ms : this.getPendingMembershipsforGroup(groupname, session).getMemberships()) {
+		for (GroupMembership ms : this.getGroupWithPendingMemberships(groupname, session).getMemberships()) {
 			if (ms.getUser().equals(user)) {
 				this.removePendingMembership(groupname, username, session);
 				break;
@@ -757,6 +756,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		if (GroupRole.ADMINISTRATOR.equals(oldRole) && this.hasOneAdmin(group, session)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') is the last administrator of this group ('" + groupname + "')");
 		}
+		log.error(oldRole + " " + role);
 		
 		GroupParam param = new GroupParam();
 		param.setUserName(username);
@@ -780,9 +780,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't remove join request/invite from nonexistent group");
 			throw new RuntimeException();
 		}
-		if (!this.isUserInGroup(username, groupname, session)) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') isn't a member of this group ('" + groupname + "')");
-		}
 		
 		GroupParam param = new GroupParam();
 		param.setMembership(new GroupMembership(new User(username), GroupRole.DUMMY, true));
@@ -795,8 +792,9 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForList("getPendingMembershipsForUser", username, Group.class, session);
 	}
 	
-	public Group getPendingMembershipsforGroup(final String groupname, final DBSession session) {
-		return this.queryForObject("getPendingMembershipsforGroup", groupname, Group.class, session);
+	public Group getGroupWithPendingMemberships(final String groupname, final DBSession session) {
+		this.queryForObject("getPendingMembershipsForUser", groupname, Group.class, session);
+		return this.queryForObject("getPendingMembershipsForGroup", groupname, Group.class, session);
 	}
 	
 	public void addPendingMembership(final String groupname, final GroupMembership membership, final DBSession session) {

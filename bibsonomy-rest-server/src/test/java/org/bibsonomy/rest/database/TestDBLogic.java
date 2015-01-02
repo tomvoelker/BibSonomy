@@ -63,6 +63,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -749,7 +750,7 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
+	public String updateGroup(final String groupname, final GroupUpdateOperation operation, GroupMembership ms) {
 		// TODO Auto-generated method stub
 		return null;
 	}

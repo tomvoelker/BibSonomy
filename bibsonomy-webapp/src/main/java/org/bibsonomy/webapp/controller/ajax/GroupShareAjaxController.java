@@ -29,10 +29,12 @@ package org.bibsonomy.webapp.controller.ajax;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
+import org.bibsonomy.common.enums.GroupRole;
 
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.webapp.command.ajax.GroupShareAjaxCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -83,16 +85,19 @@ public class GroupShareAjaxController extends AjaxController implements Minimali
 			return this.getErrorView();
 		}
 
-		// set the user name 
-		g.setName(command.getContext().getLoginUser().getName());
+		final GroupMembership ms = new GroupMembership(command.getContext().getLoginUser(), GroupRole.USER, false);
 
-		if (SHARE_DOCUMENTS.equals(command.getAction())) {
-			g.setUserSharedDocuments(true);
-			this.logic.updateGroup(g, GroupUpdateOperation.UPDATE_USER_SHARED_DOCUMENTS);
-		} else if (UNSHARE_DOCUMENTS.equals(command.getAction())) {
-			g.setUserSharedDocuments(false);
-			this.logic.updateGroup(g, GroupUpdateOperation.UPDATE_USER_SHARED_DOCUMENTS);
-		}
+		 // TODO: Clean up
+		if (null != command.getAction())
+			switch (command.getAction()) {
+				case SHARE_DOCUMENTS:
+					ms.setUserSharedDocuments(true);
+					break;
+				case UNSHARE_DOCUMENTS:
+					ms.setUserSharedDocuments(false);
+					break;
+			}
+		this.logic.updateGroup(g.getName(), GroupUpdateOperation.UPDATE_USER_SHARED_DOCUMENTS, ms);
 
 		// forward to a certain page, if requested
 		if (present(command.getForward())) {

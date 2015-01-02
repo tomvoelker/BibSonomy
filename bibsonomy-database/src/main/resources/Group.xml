@@ -195,21 +195,21 @@
 		WHERE `group` = #groupId# AND user_name = #membership.user.name#
 	</delete>
 	
-	<select id="getPendingMembershipsForUser" resultMap="GroupCommon.groupMembership" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, u.user_name, g.user_shared_documents, g.group_role
+	<select id="getPendingMembershipsForGroup" resultMap="GroupCommon.groupWithMemberships" parameterClass="string">
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, u.user_name, g.group_role, g.user_shared_documents
+		FROM groupids i 
+		  JOIN pending_group_memberships g USING (`group`) 
+		  LEFT JOIN user u ON (u.user_name = g.user_name) 
+		WHERE group_name = #groupname#
+		  AND i.group > 2
+	</select>
+	
+	<select id="getPendingMembershipsForUser" resultMap="GroupCommon.groupWithMemberships" parameterClass="string">
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, u.user_name, g.user_shared_documents, g.group_role
 		 FROM groupids i
 		   LEFT JOIN pending_group_memberships g USING (`group`)
 		   LEFT JOIN user u ON (u.user_name = g.user_name)
 		 WHERE g.user_name = #userName# AND g.group_role != 2
 	</select>
 	
-	<select id="getPendingMembershipsForGroup" resultMap="GroupCommon.groupWithMemberships" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, u.user_name, g.group_role, g.user_shared_documents
-		FROM groupids i 
-		<!-- LEFT JOIN is necessary because groups are empty at the point of creation. -->
-		  LEFT JOIN pending_group_memberships g USING (`group`) 
-		  LEFT JOIN user u ON (u.user_name = g.user_name) 
-		WHERE group_name = #groupname#
-		  AND i.group > 2
-	</select>
 </sqlMap>

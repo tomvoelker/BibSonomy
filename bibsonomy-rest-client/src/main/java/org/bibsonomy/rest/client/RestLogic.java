@@ -60,6 +60,7 @@ import org.bibsonomy.model.Author;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -314,13 +315,15 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
+	@Deprecated
+	// TODO: Establish new group concept in here.
+	public String updateGroup(final String groupname, final GroupUpdateOperation operation, GroupMembership ms) {
+		final Group group = this.getGroupDetails(groupname);
 		switch (operation) {
-		case ADD_NEW_USER:
-			return execute(new AddUsersToGroupQuery(group.getName(), group.getUsers()));
-		default:
-			// groups cannot be renamed
-			return execute(new ChangeGroupQuery(group.getName(), group));
+			case ADD_NEW_USER:
+				return execute(new AddUsersToGroupQuery(group.getName(), group.getUsers()));
+			default:
+				return execute(new ChangeGroupQuery(group.getName(), group));
 		}
 	}
 

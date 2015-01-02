@@ -148,6 +148,7 @@ public class User implements Serializable {
 	/**
 	 * holds the users group role.
 	 */
+	@Deprecated
 	private GroupRole groupRole;
 
 	/* ****************************** system properties ****************************** */
@@ -155,6 +156,11 @@ public class User implements Serializable {
 	 * The user belongs to these groups.
 	 */
 	private List<Group> groups;
+	/**
+	 * 
+	 */
+	private List<Group> pendingGroups;
+	
 	/**
 	 * Holds the friends of this user
 	 */
@@ -354,6 +360,16 @@ public class User implements Serializable {
 	 */
 	public void setGroups(final List<Group> groups) {
 		this.groups = groups;
+	}
+
+	public List<Group> getPendingGroups() {
+		if (this.pendingGroups == null)
+			this.pendingGroups = new LinkedList<>();
+		return pendingGroups;
+	}
+
+	public void setPendingGroups(List<Group> pendingGroups) {
+		this.pendingGroups = pendingGroups;
 	}
 
 	/**
