@@ -226,6 +226,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	private boolean hasOneAdmin(final Group g, final DBSession session) {
 		GroupParam p = new GroupParam();
 		p.setMembership(new GroupMembership(null, GroupRole.ADMINISTRATOR, true));
+		p.setGroupId(g.getGroupId());
 		final Integer count = this.queryForObject("countPerRole", p, Integer.class, session);
 		return count != null && count == 1;
 	}
