@@ -140,8 +140,16 @@
 																					| <a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=moderator&amp;ckey=${ckey}">&#8595;</a>
 																				</c:when>
 																			</c:choose>
+																			| 
 																		</c:if>
-																		| <a class="btn btn-danger" href="/updateGroup?operation=remove_user&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>
+																		<c:if test="${groupRole eq 'ADMINISTRATOR'}">
+																			<a class="btn btn-danger" href="/updateGroup?operation=remove_user&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>
+																		</c:if>
+																		<c:if test="${groupRole eq 'MODERATOR'}">
+																			<c:if test="${member.groupRole ne 'ADMINISTRATOR'}">
+																				<a class="btn btn-danger" href="/updateGroup?operation=remove_user&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>
+																			</c:if>
+																		</c:if>
 																	</c:if>
 																</td>
 														</tr>
