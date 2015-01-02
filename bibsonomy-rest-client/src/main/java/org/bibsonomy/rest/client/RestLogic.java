@@ -317,8 +317,7 @@ public class RestLogic implements LogicInterface {
 	@Override
 	@Deprecated
 	// TODO: Establish new group concept in here.
-	public String updateGroup(final String groupname, final GroupUpdateOperation operation, GroupMembership ms) {
-		final Group group = this.getGroupDetails(groupname);
+	public String updateGroup(final Group group, final GroupUpdateOperation operation, GroupMembership ms) {
 		switch (operation) {
 			case ADD_NEW_USER:
 				return execute(new AddUsersToGroupQuery(group.getName(), group.getUsers()));

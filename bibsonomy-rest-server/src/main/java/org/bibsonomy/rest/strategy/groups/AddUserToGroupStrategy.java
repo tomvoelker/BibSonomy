@@ -29,13 +29,9 @@ package org.bibsonomy.rest.strategy.groups;
 import java.io.ByteArrayOutputStream;
 import java.io.Reader;
 import java.util.List;
-import org.bibsonomy.common.enums.GroupRole;
-
-import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.Context;

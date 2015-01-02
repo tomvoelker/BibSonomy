@@ -60,6 +60,6 @@ public class UpdateGroupDetailsStrategy extends AbstractUpdateStrategy {
 		final Group group = this.getRenderer().parseGroup(this.doc);
 		group.setName(this.groupName);
 		// FIXME: Not yet implemented in DBLogic
-		return this.getLogic().updateGroup(group.getName(), GroupUpdateOperation.UPDATE_ALL, null);
+		return this.getLogic().updateGroup(group, GroupUpdateOperation.UPDATE_ALL, null);
 	}
 }

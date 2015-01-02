@@ -62,7 +62,7 @@ public class UpdateGroupController extends GroupSettingsPageController implement
 			errors.reject("error.field.valid.ckey");
 		}
 
-		final String groupname = command.getGroupname();
+		final Group groupToUpdate = this.logic.getGroupDetails(command.getGroupname());
 
 		// TODO: Clean this up.
 		final GroupUpdateOperation operation = command.getOperation();
@@ -109,18 +109,18 @@ public class UpdateGroupController extends GroupSettingsPageController implement
 				case ADD_INVITED: {
 					// sent an invite
 					final String username = command.getUsername();
-					if (present(username) && !username.equals(groupname)) {
+					if (present(username) && !username.equals(groupToUpdate)) {
 						
 						// TODO: inform the user about the invite
 
 						final GroupMembership ms = new GroupMembership(new User(username), null, false);
 						try {
 							// since now only one user can be invited to a group at once
-							this.logic.updateGroup(groupname, GroupUpdateOperation.ADD_INVITED, ms);
+							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_INVITED, ms);
 						} catch (final Exception ex) {
-							log.error("error while inviting user '" + username + "' to group '" + groupname + "'", ex);
+							log.error("error while inviting user '" + username + "' to group '" + groupToUpdate + "'", ex);
 							// if a user can't be added to a group, this exception is thrown
-							this.errors.rejectValue("username", "settings.group.error.inviteUserToGroupFailed", new Object[]{username, groupname},
+							this.errors.rejectValue("username", "settings.group.error.inviteUserToGroupFailed", new Object[]{username, groupToUpdate},
 									"The User {0} couldn't be invited to the Group {1}.");
 						}
 					}
@@ -132,15 +132,15 @@ public class UpdateGroupController extends GroupSettingsPageController implement
 					 * this handles a join request by the user
 					 */
 					final String username = command.getUsername();
-					if (present(username) && !username.equals(groupname)) {
+					if (present(username) && !username.equals(groupToUpdate)) {
 						final GroupMembership ms = new GroupMembership(new User(username), null, false);
 						try {
 							// since now only one user can be added to a group at once
-							this.logic.updateGroup(groupname, GroupUpdateOperation.ADD_NEW_USER, ms);
+							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_NEW_USER, ms);
 						} catch (final Exception ex) {
-							log.error("error while adding user '" + username + "' to group '" + groupname + "'", ex);
+							log.error("error while adding user '" + username + "' to group '" + groupToUpdate + "'", ex);
 							// if a user can't be added to a group, this exception is thrown
-							this.errors.rejectValue("username", "settings.group.error.addUserToGroupFailed", new Object[]{username, groupname},
+							this.errors.rejectValue("username", "settings.group.error.addUserToGroupFailed", new Object[]{username, groupToUpdate},
 									"The User {0} couldn't be added to the Group {1}.");
 						}
 					}
@@ -153,14 +153,14 @@ public class UpdateGroupController extends GroupSettingsPageController implement
 					 * FIXME: not fully migrated yet, see {@link SettingsHandler} and GroupsDatabaseManager
 					 */
 					final String username = command.getUsername();
-					if (present(username) && !username.equals(groupname)) {
+					if (present(username) && !username.equals(groupToUpdate)) {
 						final GroupMembership ms = new GroupMembership(new User(username), null, false);
 						try {
-							this.logic.updateGroup(groupname, GroupUpdateOperation.REMOVE_USER, ms);
+							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.REMOVE_USER, ms);
 						} catch (final Exception ex) {
-							log.error("error while removing user '" + username + "' from group '" + groupname + "'", ex);
+							log.error("error while removing user '" + username + "' from group '" + groupToUpdate + "'", ex);
 							// if a user can't be added to a group, this exception is thrown
-							this.errors.reject("settings.group.error.removeUserFromGroupFailed", new Object[]{username, groupname},
+							this.errors.reject("settings.group.error.removeUserFromGroupFailed", new Object[]{username, groupToUpdate},
 									"The User {0} couldn't be removed from the Group {1}.");
 						}
 					}
@@ -182,29 +182,26 @@ public class UpdateGroupController extends GroupSettingsPageController implement
 					/*
 					 *  the group properties to update
 					 */
-					throw new UnsupportedOperationException("not yet implemented");
-//					final Privlevel priv = Privlevel.getPrivlevel(command.getPrivlevel());
-//					final boolean sharedDocs = command.getSharedDocuments() == 1;
-//					final String realname = command.getRealname();
-//					final String homepage = command.getHomepage();
-//					final String description = command.getDescription();
-//					// the group to update
-//					Group group = command.getGroup();
-//					final Group groupToUpdate = this.logic.getGroupDetails(groupname);
-//					try {
-//						groupToUpdate.setPrivlevel(priv);
-//						groupToUpdate.setSharedDocuments(sharedDocs);
-//						groupToUpdate.setRealname(realname);
-//						groupToUpdate.setRealname(group.getRealname());
-//						if (present(homepage))
-//							groupToUpdate.setHomepage(new URL(homepage));
-//						groupToUpdate.setDescription(description);
-//						this.logic.updateGroup(groupname, GroupUpdateOperation.UPDATE_SETTINGS, null);
-//					} catch (final Exception ex) {
-//						log.error("error while updating settings for group '" + groupname + "'", ex);
-//						// TODO: what exceptions can be thrown?!
-//					}
-//					break;
+//					throw new UnsupportedOperationException("not yet implemented");
+					final Privlevel priv = Privlevel.getPrivlevel(command.getPrivlevel());
+					final boolean sharedDocs = command.getSharedDocuments() == 1;
+					final String realname = command.getRealname();
+					final String homepage = command.getHomepage();
+					final String description = command.getDescription();
+					// the group to update
+					try {
+						groupToUpdate.setPrivlevel(priv);
+						groupToUpdate.setSharedDocuments(sharedDocs);
+						groupToUpdate.setRealname(realname);
+						if (present(homepage))
+							groupToUpdate.setHomepage(new URL(homepage));
+						groupToUpdate.setDescription(description);
+						this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_SETTINGS, null);
+					} catch (final Exception ex) {
+						log.error("error while updating settings for group '" + groupToUpdate + "'", ex);
+						// TODO: what exceptions can be thrown?!
+					}
+					break;
 				}
 				case ACCEPT_JOIN_REQUEST: {
 					final String username = command.getUsername();
@@ -212,10 +209,10 @@ public class UpdateGroupController extends GroupSettingsPageController implement
 						// the group to update
 						final GroupMembership ms = new GroupMembership(new User(username), null, false);
 						try {
-							this.logic.updateGroup(groupname, GroupUpdateOperation.ACCEPT_JOIN_REQUEST, ms);
+							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ACCEPT_JOIN_REQUEST, ms);
 						} catch (final Exception ex) {
-							log.error("error while accepting the join request of user '" + username + "' from group '" + groupname + "'", ex);
-							this.errors.rejectValue("username", "settings.group.error.acceptJoinRequestFailed", new Object[]{username, groupname},
+							log.error("error while accepting the join request of user '" + username + "' from group '" + groupToUpdate + "'", ex);
+							this.errors.rejectValue("username", "settings.group.error.acceptJoinRequestFailed", new Object[]{username, groupToUpdate},
 									"The User {0} couldn't be added to the Group {1}.");
 						}
 					}
@@ -227,9 +224,9 @@ public class UpdateGroupController extends GroupSettingsPageController implement
 						// the group to update
 						final GroupMembership ms = new GroupMembership(new User(username), null, false);
 						try {
-							this.logic.updateGroup(groupname, GroupUpdateOperation.DECLINE_JOIN_REQUEST, ms);
+							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.DECLINE_JOIN_REQUEST, ms);
 						} catch (final Exception ex) {
-							log.error("error while declining the join request of user '" + username + "' from group '" + groupname + "'", ex);
+							log.error("error while declining the join request of user '" + username + "' from group '" + groupToUpdate + "'", ex);
 							this.errors.rejectValue("username", "settings.group.error.declineJoinRequestFailed", new Object[]{username},
 									"The request of User {0} couldn't be removed.");
 						}
@@ -241,9 +238,9 @@ public class UpdateGroupController extends GroupSettingsPageController implement
 					if (present(username)) {
 						final GroupMembership ms = new GroupMembership(new User(username), null, false);
 						try {
-							this.logic.updateGroup(groupname, GroupUpdateOperation.REMOVE_INVITED, ms);
+							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.REMOVE_INVITED, ms);
 						} catch (final Exception ex) {
-							log.error("error while removing the invite of user '" + username + "' from group '" + groupname + "'", ex);
+							log.error("error while removing the invite of user '" + username + "' from group '" + groupToUpdate + "'", ex);
 							this.errors.rejectValue("username", "settings.group.error.removeInviteFailed", new Object[]{username},
 									"The invite of User {0} couldn't be removed.");
 						}
@@ -258,9 +255,9 @@ public class UpdateGroupController extends GroupSettingsPageController implement
 					if (!this.errors.hasErrors()) {
 						final GroupMembership ms = new GroupMembership(new User(username), command.getGroupRole(), false);
 						try {
-							this.logic.updateGroup(groupname, GroupUpdateOperation.UPDATE_GROUPROLE, ms);
+							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_GROUPROLE, ms);
 						} catch (final Exception ex) {
-							log.error("error while changing the the role of user '" + username + "' from group '" + groupname + "'", ex);
+							log.error("error while changing the the role of user '" + username + "' from group '" + groupToUpdate + "'", ex);
 						}
 					}
 					break;
@@ -281,7 +278,7 @@ public class UpdateGroupController extends GroupSettingsPageController implement
 		// success: go back where you've come from
 		// TODO: inform the user about the success!
 		// TODO: use url generator
-		return new ExtendedRedirectView("/settings/group/" + groupname);
+		return new ExtendedRedirectView("/settings/group/" + groupToUpdate);
 	}
 
 	@Override

@@ -91,11 +91,11 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		} else if (ACCEPT_GROUP.equals(action)) {
 			final String groupName = command.getGroup().getName();
 			log.debug("accepting group \""+groupName+"\"");
-			this.logic.updateGroup(command.getGroup().getName(), GroupUpdateOperation.ACTIVATE, null);
+			this.logic.updateGroup(command.getGroup(), GroupUpdateOperation.ACTIVATE, null);
 		} else if (DECLINE_GROUP.equals(action)) {
 			final String groupName = command.getGroup().getName();
 			log.debug("grouprequest for group \""+groupName+"\" declined");
-			this.logic.updateGroup(command.getGroup().getName(), GroupUpdateOperation.DELETE, null);
+			this.logic.updateGroup(command.getGroup(), GroupUpdateOperation.DELETE, null);
 		}
 		
 		// load the pending groups
@@ -129,7 +129,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		// Create the group ...
 		logic.createGroup(group);
 		// ... and activate it
-		logic.updateGroup(group.getName(), GroupUpdateOperation.ACTIVATE, null);
+		logic.updateGroup(group, GroupUpdateOperation.ACTIVATE, null);
 		return "Successfully created new group!";
 	}
 
@@ -143,7 +143,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		dbGroup.setPrivlevel(commandGroup.getPrivlevel());
 		dbGroup.setSharedDocuments(commandGroup.isSharedDocuments());
 
-		logic.updateGroup(dbGroup.getName(), GroupUpdateOperation.UPDATE_SETTINGS, null);
+		logic.updateGroup(dbGroup, GroupUpdateOperation.UPDATE_SETTINGS, null);
 		return "Group updated successfully!";
 	}
 

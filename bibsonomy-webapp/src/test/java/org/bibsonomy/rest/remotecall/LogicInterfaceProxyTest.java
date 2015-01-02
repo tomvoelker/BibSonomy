@@ -777,7 +777,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */	
 	@Test
 	public void updateGroupTest() {
-		updateGroup(ModelUtils.getGroup().getName(), GroupUpdateOperation.UPDATE_ALL, null);
+		updateGroup(ModelUtils.getGroup(), GroupUpdateOperation.UPDATE_ALL, null);
 	}
 	
 	/**
@@ -787,19 +787,17 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public void addUserToGroupTest() {
 		final Group group = new Group("groupName");
 		final GroupMembership membership = new GroupMembership(new User("testUser1"), GroupRole.USER, false);
-		this.updateGroup(group.getName(), GroupUpdateOperation.ADD_NEW_USER, membership);
+		this.updateGroup(group, GroupUpdateOperation.ADD_NEW_USER, membership);
 	}
 	
 	@Override
-	public String updateGroup(final String groupname, final GroupUpdateOperation operation, GroupMembership membership) {
-		final Group group = this.getGroupDetails(groupname);
-		
+	public String updateGroup(final Group group, final GroupUpdateOperation operation, GroupMembership membership) {
 		switch (operation) {
 		case ADD_NEW_USER:
 
-			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId").getName(), PropertyEqualityArgumentMatcher.eq(operation, ""), membership)).andReturn("OK");
+			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"), PropertyEqualityArgumentMatcher.eq(operation, ""), membership)).andReturn("OK");
 			EasyMock.replay(serverLogic);
-			assertEquals("OK", clientLogic.updateGroup(group.getName(), operation, membership));
+			assertEquals("OK", clientLogic.updateGroup(group, operation, membership));
 			EasyMock.verify(serverLogic);
 			assertLogin();
 			break;
@@ -811,9 +809,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			 */
 			group.setPrivlevel(null); 
 			
-			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId").getName(), PropertyEqualityArgumentMatcher.eq(operation, ""), null)).andReturn(group.getName() + "-new");
+			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"), PropertyEqualityArgumentMatcher.eq(operation, ""), null)).andReturn(group.getName() + "-new");
 			EasyMock.replay(serverLogic);
-			assertEquals(group.getName() + "-new", clientLogic.updateGroup(group.getName(), operation, null));
+			assertEquals(group.getName() + "-new", clientLogic.updateGroup(group, operation, null));
 			EasyMock.verify(serverLogic);
 			assertLogin();
 			break;

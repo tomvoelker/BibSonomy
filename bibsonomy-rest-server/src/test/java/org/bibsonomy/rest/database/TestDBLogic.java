@@ -750,7 +750,7 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public String updateGroup(final String groupname, final GroupUpdateOperation operation, GroupMembership ms) {
+	public String updateGroup(final Group group, final GroupUpdateOperation operation, GroupMembership ms) {
 		// TODO Auto-generated method stub
 		return null;
 	}

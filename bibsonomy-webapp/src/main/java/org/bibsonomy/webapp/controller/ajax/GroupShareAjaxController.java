@@ -97,7 +97,7 @@ public class GroupShareAjaxController extends AjaxController implements Minimali
 					ms.setUserSharedDocuments(false);
 					break;
 			}
-		this.logic.updateGroup(g.getName(), GroupUpdateOperation.UPDATE_USER_SHARED_DOCUMENTS, ms);
+		this.logic.updateGroup(g, GroupUpdateOperation.UPDATE_USER_SHARED_DOCUMENTS, ms);
 
 		// forward to a certain page, if requested
 		if (present(command.getForward())) {

@@ -343,7 +343,7 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @param operation the operation which should be performed
 	 * @return groupID the group id of the updated group
 	 */
-	public String updateGroup(String groupName, final GroupUpdateOperation operation, GroupMembership membership);
+	public String updateGroup(Group group, final GroupUpdateOperation operation, GroupMembership membership);
 
 	/**
 	 * Adds a document. If the resourceHash is given, the document is connected
