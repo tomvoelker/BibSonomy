@@ -89,14 +89,8 @@ public class GroupShareAjaxController extends AjaxController implements Minimali
 
 		 // TODO: Clean up
 		if (null != command.getAction())
-			switch (command.getAction()) {
-				case SHARE_DOCUMENTS:
-					ms.setUserSharedDocuments(true);
-					break;
-				case UNSHARE_DOCUMENTS:
-					ms.setUserSharedDocuments(false);
-					break;
-			}
+			ms.setUserSharedDocuments(command.getAction().equals(SHARE_DOCUMENTS));
+		
 		this.logic.updateGroup(g, GroupUpdateOperation.UPDATE_USER_SHARED_DOCUMENTS, ms);
 
 		// forward to a certain page, if requested

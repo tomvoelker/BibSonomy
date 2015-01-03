@@ -181,11 +181,11 @@
 		WHERE user_name = #userName#
 	</select>
 	
-	<update id="updateUserSharedDocuments" parameterClass="group">
+	<update id="updateUserSharedDocuments" parameterClass="groupParam">
 		UPDATE group_memberships
-		SET user_shared_documents = #userSharedDocuments#
+		SET user_shared_documents = #membership.userSharedDocuments#
 		WHERE `group` = #groupId#
-		AND user_name = #name#
+		AND user_name = #membership.user.name#
 	</update>
 
 	<update id="updateApiKeyForUser" parameterClass="user">

@@ -14,6 +14,7 @@ import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
@@ -364,9 +365,10 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void updateUserSharedDocuments() {
 		final Group g1 = new Group(TESTGROUP1_ID);
-		g1.setUserSharedDocuments(true);
-		g1.setName("testuser1");
-		groupDb.updateUserSharedDocuments(g1, this.dbSession);
+		final GroupMembership gm = new GroupMembership();
+		gm.setUserSharedDocuments(true);
+		gm.setUser(new User("testuser1"));
+		groupDb.updateUserSharedDocuments(g1, gm, this.dbSession);
 		
 		List<Group> groups = groupDb.getGroupsForUser("testuser1", this.dbSession);
 		Group group = null;

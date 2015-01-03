@@ -52,8 +52,8 @@
 			<!-- display potential errors -->
 			<errors:global />
 			
-			<groupsettings:userlists group="${group}" />
 			<groupsettings:profile command="${command}" />
+			<groupsettings:userlists group="${group}" />
 			
 <!-- TODO: Adapt AjaxCvController to CV modification by other users (e.g. admin - - > group) -->			
 <!--			<settings:cv command="${command}" isGroup="${true}"/> -->

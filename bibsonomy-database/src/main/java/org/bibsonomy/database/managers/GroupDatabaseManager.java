@@ -839,7 +839,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @param group
 	 * @param session
 	 */
-	public void updateUserSharedDocuments(final Group group, final DBSession session) {
+	public void updateUserSharedDocuments(final Group group, GroupMembership membership, final DBSession session) {
+		GroupParam p = new GroupParam();
+		p.setMembership(membership);
+		p.setGroupId(group.getGroupId());
 		this.update("updateUserSharedDocuments", group, session);
 	}
 	

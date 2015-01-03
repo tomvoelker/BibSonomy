@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.Privlevel;
+import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
@@ -171,12 +172,9 @@ public class UpdateGroupController extends GroupSettingsPageController implement
 					 * update the reporting settings
 					 */
 					// the group to update
-					throw new UnsupportedOperationException("not yet implemented");
-//					final Group groupToUpdate = this.logic.getGroupDetails(groupname);
-//					final GroupMembership ms = new GroupMembership(new User(username), null, false);
-//					groupToUpdate.setPublicationReportingSettings(command.getGroup().getPublicationReportingSettings());
-//					this.logic.updateGroup(groupname, GroupUpdateOperation.UPDATE_GROUP_REPORTING_SETTINGS, ms);
-//					break;
+					groupToUpdate.setPublicationReportingSettings(command.getGroup().getPublicationReportingSettings());
+					this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_GROUP_REPORTING_SETTINGS, null);
+					break;
 				}
 				case UPDATE_SETTINGS: {
 					/*
@@ -186,16 +184,24 @@ public class UpdateGroupController extends GroupSettingsPageController implement
 					final Privlevel priv = Privlevel.getPrivlevel(command.getPrivlevel());
 					final boolean sharedDocs = command.getSharedDocuments() == 1;
 					final String realname = command.getRealname();
-					final String homepage = command.getHomepage();
-					final String description = command.getDescription();
+					final URL homepage = command.getHomepage();
+//					final String description = command.getDescription();
+//					log.error(realname + " " + description);
+					
+					User groupUserToUpdate = this.logic.getUserDetails(groupToUpdate.getName());
+					groupUserToUpdate.setEmail("nomail");
 					// the group to update
 					try {
 						groupToUpdate.setPrivlevel(priv);
 						groupToUpdate.setSharedDocuments(sharedDocs);
-						groupToUpdate.setRealname(realname);
+						
+						if (present(realname))
+							groupUserToUpdate.setRealname(realname);
 						if (present(homepage))
-							groupToUpdate.setHomepage(new URL(homepage));
-						groupToUpdate.setDescription(description);
+							groupUserToUpdate.setHomepage(homepage);
+//						groupToUpdate.setDescription(description);
+						
+						this.logic.updateUser(groupUserToUpdate, UserUpdateOperation.UPDATE_CORE);
 						this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_SETTINGS, null);
 					} catch (final Exception ex) {
 						log.error("error while updating settings for group '" + groupToUpdate + "'", ex);
@@ -278,7 +284,7 @@ public class UpdateGroupController extends GroupSettingsPageController implement
 		// success: go back where you've come from
 		// TODO: inform the user about the success!
 		// TODO: use url generator
-		return new ExtendedRedirectView("/settings/group/" + groupToUpdate);
+		return new ExtendedRedirectView("/settings/group/" + groupToUpdate.getName());
 	}
 
 	@Override

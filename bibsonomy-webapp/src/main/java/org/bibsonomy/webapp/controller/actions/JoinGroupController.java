@@ -189,7 +189,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		mailUtils.sendJoinGroupRequest(group.getName(), groupUser.getEmail(), loginUser, command.getReason(), requestLogic.getLocale());
 		
 		// insert the request
-		this.logic.updateGroup(group.getName(), GroupUpdateOperation.ADD_REQUESTED, new GroupMembership(loginUser, GroupRole.USER, false));
+		this.logic.updateGroup(group, GroupUpdateOperation.ADD_REQUESTED, new GroupMembership(loginUser, GroupRole.USER, false));
 		
 		final List<String> params = new LinkedList<>();
 		params.add(groupName);

@@ -123,7 +123,7 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 
 		if ("updateGroupReportingSettings".equals(command.getAction())) {
 			groupToUpdate.setPublicationReportingSettings(command.getGroup().getPublicationReportingSettings());
-			this.logic.updateGroup(groupToUpdate.getName(), GroupUpdateOperation.UPDATE_GROUP_REPORTING_SETTINGS, null);
+			this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_GROUP_REPORTING_SETTINGS, null);
 			return returnSettingsView(command, groupToUpdate, groupName);
 		}
 		
@@ -138,7 +138,7 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 				// since now only one user can be added to a group at once
 				// TODO: When are we getting here?
 				final GroupMembership ms = new GroupMembership(new User(username), GroupRole.USER, false);
-				this.logic.updateGroup(groupToUpdate.getName(), GroupUpdateOperation.ADD_NEW_USER, ms);
+				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_NEW_USER, ms);
 			} catch (final Exception ex) {
 				log.error("error while adding user '" + username + "' to group '" + groupName + "'", ex);
 				// if a user can't be added to a group, this exception is thrown
@@ -147,7 +147,7 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 			}
 		} else {
 			try {
-				this.logic.updateGroup(groupToUpdate.getName(), GroupUpdateOperation.UPDATE_SETTINGS, null);
+				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_SETTINGS, null);
 			} catch (final Exception ex) {
 				log.error("error while updating settings for group '" + groupName + "'", ex);
 				// TODO: what exceptions can be thrown?!

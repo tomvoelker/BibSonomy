@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.command.actions;
 
 import java.io.Serializable;
+import java.net.URL;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.webapp.command.BaseCommand;
@@ -22,7 +23,7 @@ public class UpdateGroupCommand extends BaseCommand implements Serializable {
 	private String username;
 	
 	private String realname;
-	private String homepage;
+	private URL homepage;
 	private String description;
 
 	public Group getGroup() {
@@ -89,11 +90,11 @@ public class UpdateGroupCommand extends BaseCommand implements Serializable {
 		this.realname = realname;
 	}
 
-	public String getHomepage() {
+	public URL getHomepage() {
 		return homepage;
 	}
 
-	public void setHomepage(String homepage) {
+	public void setHomepage(URL homepage) {
 		this.homepage = homepage;
 	}
 

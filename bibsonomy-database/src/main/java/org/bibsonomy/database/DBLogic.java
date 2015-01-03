@@ -1215,13 +1215,6 @@ public class DBLogic implements LogicInterface {
 			case UPDATE_ALL:
 				throw new UnsupportedOperationException("The method " + GroupUpdateOperation.UPDATE_ALL + " is not yet implemented.");
 			case UPDATE_SETTINGS:
-				User groupUser = new User(group.getName());
-				if (present(group.getRealname()))
-					groupUser.setRealname(group.getRealname());
-				if (present(group.getHomepage()))
-					groupUser.setHomepage(group.getHomepage());
-				
-				this.userDBManager.updateUser(groupUser, session);
 				this.groupDBManager.updateGroupSettings(group, session);
 				break;
 			case UPDATE_GROUPROLE:
@@ -1257,10 +1250,8 @@ public class DBLogic implements LogicInterface {
 				}
 				break;
 			case UPDATE_USER_SHARED_DOCUMENTS:
-				// TODO: Adapt to membership model!
-				throw new UnsupportedOperationException("UPDATE_USER_SHARED_DOCUMENTS not yet properly implemented");
-//				this.groupDBManager.updateUserSharedDocuments(group, session);
-//				break;
+				this.groupDBManager.updateUserSharedDocuments(group, membership, session);
+				break;
 			case UPDATE_GROUP_REPORTING_SETTINGS:
 				this.groupDBManager.updateGroupPublicationReportingSettings(group, session);
 				break;
