@@ -45,6 +45,8 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 			command.setRealname(groupUser.getRealname());
 			command.setHomepage(groupUser.getHomepage());
 			command.setDescription(command.getGroup().getDescription());
+			command.setPrivlevel(command.getGroup().getPrivlevel().getPrivlevel());
+			command.setSharedDocuments(command.getGroup().isSharedDocuments() ? 1 : 0);
 			
 			command.setUser(groupUser);
 			

@@ -656,7 +656,7 @@
 							<list>
 								<value>ckey</value>
 								<value>privlevel</value>
-								<value>groupName</value>
+								<value>realname</value>
 								<value>sharedDocuments</value>
 								<value>groupname</value>
 								<value>username</value>

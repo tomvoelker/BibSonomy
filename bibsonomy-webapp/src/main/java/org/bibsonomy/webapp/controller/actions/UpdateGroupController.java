@@ -187,6 +187,7 @@ public class UpdateGroupController extends GroupSettingsPageController implement
 					final URL homepage = command.getHomepage();
 //					final String description = command.getDescription();
 //					log.error(realname + " " + description);
+					log.error(priv + " " + sharedDocs);
 					
 					User groupUserToUpdate = this.logic.getUserDetails(groupToUpdate.getName());
 					groupUserToUpdate.setEmail("nomail");

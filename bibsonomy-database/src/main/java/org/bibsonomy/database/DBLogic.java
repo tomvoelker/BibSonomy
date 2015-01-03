@@ -1215,7 +1215,7 @@ public class DBLogic implements LogicInterface {
 			case UPDATE_ALL:
 				throw new UnsupportedOperationException("The method " + GroupUpdateOperation.UPDATE_ALL + " is not yet implemented.");
 			case UPDATE_SETTINGS:
-				this.groupDBManager.updateGroupSettings(group, session);
+				this.groupDBManager.updateGroupSettings(paramGroup, session);
 				break;
 			case UPDATE_GROUPROLE:
 				if (loginUserisGroupAdmin && this.userIsInGroup(membership.getUser(), group)) {
