@@ -63,7 +63,10 @@ public class UpdateGroupController extends GroupSettingsPageController implement
 			errors.reject("error.field.valid.ckey");
 		}
 
-		final Group groupToUpdate = this.logic.getGroupDetails(command.getGroupname());
+		Group groupToUpdate = null;
+		// since before requesting a group, it must not exist, we cannot check for it, either.
+		if (!GroupUpdateOperation.REQUEST.equals(command.getOperation()))
+			 groupToUpdate = this.logic.getGroupDetails(command.getGroupname());
 
 		// TODO: Clean this up.
 		final GroupUpdateOperation operation = command.getOperation();
