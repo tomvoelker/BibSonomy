@@ -1616,7 +1616,14 @@ public class DBLogic implements LogicInterface {
 			/*
 			 * only admins can change settings of /other/ users
 			 */
-			this.permissionDBManager.ensureIsAdminOrSelf(loginUser, username);
+			Group g = this.getGroupDetails(username);
+			if (present(g) && present(g.getGroupMembershipForUser(loginUser))) {
+				if (!GroupRole.ADMINISTRATOR.equals(g.getGroupMembershipForUser(loginUser).getGroupRole())) {
+					throw new AccessDeniedException();
+				}
+			} else {
+				this.permissionDBManager.ensureIsAdminOrSelf(loginUser, username);
+			}
 		}
 		final DBSession session = openSession();
 
