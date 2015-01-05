@@ -1172,41 +1172,48 @@ public class DBLogic implements LogicInterface {
 		 * only logged-in group admins and admins are allowed to perform update operations 
 		 */
 		this.ensureLoggedIn();
-		boolean isPageAdmin = this.permissionDBManager.isAdmin(loginUser);
 		
-		/// TODO: get all group roles of the logged in user here and check if the user has this role
-		// Default to USER as role
 		GroupRole loginUserRole;
-		if (group.getGroupMembershipForUser(loginUser) != null) {
-			loginUserRole = group.getGroupMembershipForUser(loginUser).getGroupRole();
-		} else {
-			throw new RuntimeException("User is not a member of this group.");
-		}
-		boolean loginUserisGroupAdmin = GroupRole.ADMINISTRATOR.equals(loginUserRole);
-		boolean loginUserisGroupModerator = GroupRole.ADMINISTRATOR.equals(GroupRole.MODERATOR);
-		
-		// we want to allow a user to remove his own invite without being a pageadmin/admin/mod.
-		for(GroupMembership ms : group.getPendingMemberships()) {
-			if (loginUser.getName().equals(ms.getUser().getName())
-					&& GroupUpdateOperation.REMOVE_INVITED.equals(operation)) {
-					// in this case we set the moderator state to true
-					loginUserisGroupModerator = true;
-			}
-		}
-		
-		// TODO: Add blacklisting users! (as a group role?!)
-		// Yes, maybe, why not as a group role :)
-		// TODO: WHAT APOUT SPAM??? Does this work?
-		if (
-				!(operation == GroupUpdateOperation.ADD_REQUESTED && !loginUser.getSpammer())
-				&&
-				!(operation == GroupUpdateOperation.ACCEPT_JOIN_REQUEST && !loginUser.getSpammer()
-					&& group.getGroupMembershipForUser(loginUser).getGroupRole().equals(GroupRole.INVITED))
-				&& !isPageAdmin && !loginUserisGroupAdmin && !loginUserisGroupModerator) {
-			session.close();
-			throw new ValidationException("No rights.");
-		}
+		boolean isPageAdmin = this.permissionDBManager.isAdmin(loginUser);
+		boolean loginUserisGroupAdmin = false;
+		//TODO: Use this somewhere!
+		boolean loginUserisGroupModerator = false;
 
+		if (present(group)) {
+			// We do not need a GroupRole for requesting access, in fact we don't even have one.
+			if (GroupUpdateOperation.ADD_REQUESTED.equals(operation)) {
+				loginUserRole = GroupRole.REQUESTED;
+			} else if (group.getGroupMembershipForUser(loginUser) != null) {
+				loginUserRole = group.getGroupMembershipForUser(loginUser).getGroupRole();
+			} else {
+				throw new RuntimeException("User is not a member of this group!");
+			}
+			loginUserisGroupAdmin = GroupRole.ADMINISTRATOR.equals(loginUserRole);
+			loginUserisGroupModerator = GroupRole.MODERATOR.equals(loginUserRole);
+			
+			// we want to allow a user to remove his own invite without being a pageadmin/admin/mod.
+			for(GroupMembership ms : group.getPendingMemberships()) {
+				if (loginUser.getName().equals(ms.getUser().getName())
+						&& GroupUpdateOperation.REMOVE_INVITED.equals(operation)) {
+						// in this case we set the moderator state to true
+						loginUserisGroupModerator = true;
+				}
+			}
+
+			// TODO: Add blacklisting users! (as a group role?!)
+			// Yes, maybe, why not as a group role :)
+			// TODO: WHAT APOUT SPAM??? Does this work?
+			if (
+					!(operation == GroupUpdateOperation.ADD_REQUESTED && !loginUser.getSpammer())
+					&&
+					!(operation == GroupUpdateOperation.ACCEPT_JOIN_REQUEST && !loginUser.getSpammer()
+						&& group.getGroupMembershipForUser(loginUser).getGroupRole().equals(GroupRole.INVITED))
+					&& !isPageAdmin && !loginUserisGroupAdmin && !loginUserisGroupModerator) {
+				session.close();
+				throw new ValidationException("No rights.");
+			}
+
+		}
 		/*
 		 * perform operations
 		 */
@@ -1257,12 +1264,12 @@ public class DBLogic implements LogicInterface {
 				break;
 			case ACTIVATE:
 				if (isPageAdmin) {
-					this.groupDBManager.activateGroup(group.getName(), session);
+					this.groupDBManager.activateGroup(paramGroup.getName(), session);
 				}
 				break;
 			case DELETE:
 				if (isPageAdmin) {
-					this.groupDBManager.deletePendingGroup(group.getName(), session);
+					this.groupDBManager.deletePendingGroup(paramGroup.getName(), session);
 				}
 				break;
 			// NOTE: This is the only case where we do not need a user to be a
@@ -1303,13 +1310,13 @@ public class DBLogic implements LogicInterface {
 					this.groupDBManager.removePendingMembership(group.getName(), membership.getUser().getName(), session);
 				break;
 			default:
-				throw new UnsupportedOperationException("The given method is not yet implemented.");
+				throw new UnsupportedOperationException("The requested method is not yet implemented.");
 			}
 		} 
 		finally	{
 			session.close();
 		}
-		return group.getName();
+		return paramGroup.getName();
 	}
 	
 	/*

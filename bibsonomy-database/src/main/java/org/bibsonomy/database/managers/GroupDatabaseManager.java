@@ -267,6 +267,12 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		if (!removeSpecialGroups) {
 			groupsForUser.addAll(this.queryForList("getSpecialGroupsForUser", userName, Group.class, session));
 		}
+		// FIXME: For whatever reasons, ibatis won't set the user after the first group.
+		for (Group g : groupsForUser) {
+			for (GroupMembership ms : g.getMemberships()) {
+				ms.setUser(new User(userName));
+			}
+		}
 		return groupsForUser;
 	}
 
@@ -668,11 +674,13 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') is already a member of this group ('" + groupname + "')");
 		}
 		
-		// this check should actually always be true
-		for (GroupMembership ms : this.getGroupWithPendingMemberships(groupname, session).getMemberships()) {
-			if (ms.getUser().equals(user)) {
-				this.removePendingMembership(groupname, username, session);
-				break;
+		// we only need to check for pending GMS, if we add a users AFTER finishing group creation
+		if (GroupRole.USER.equals(role)) {
+			for (GroupMembership ms : this.getGroupWithPendingMemberships(groupname, session).getMemberships()) {
+				if (ms.getUser().equals(user)) {
+					this.removePendingMembership(groupname, username, session);
+					break;
+				}
 			}
 		}
 
@@ -794,7 +802,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	public Group getGroupWithPendingMemberships(final String groupname, final DBSession session) {
-		this.queryForObject("getPendingMembershipsForUser", groupname, Group.class, session);
 		return this.queryForObject("getPendingMembershipsForGroup", groupname, Group.class, session);
 	}
 	

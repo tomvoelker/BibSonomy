@@ -107,7 +107,8 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		
 		// get group details and check if present
 		final String groupName = command.getGroup();
-		final Group group = logic.getGroupDetails(command.getGroup());
+		log.error(groupName + "");
+		final Group group = logic.getGroupDetails(groupName);
 		if (!present(group)) {
 			// no group given => user did not click join on the group page
 			errors.reject("error.field.valid.groupName");
