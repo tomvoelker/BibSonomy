@@ -86,10 +86,10 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 		/*
 		 * clear the input fields
 		 */
-		command.getEditTags().setAddTags("");
-		command.getEditTags().setDelTags("");
-		command.getRelationsEdit().setLower("");
-		command.getRelationsEdit().setUpper("");
+		//command.getEditTags().setAddTags("");
+		//command.getEditTags().setDelTags("");
+		//command.getRelationsEdit().setLower("");
+		//command.getRelationsEdit().setUpper("");
 		command.setUpdatedTagsCount(changedResources);
 
 		/*
