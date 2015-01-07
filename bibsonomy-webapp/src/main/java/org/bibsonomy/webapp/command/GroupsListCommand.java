@@ -39,6 +39,7 @@ import org.bibsonomy.model.Group;
 public class GroupsListCommand extends BaseCommand {
 	private List<Group> list;
 	
+	// TODO: (bootstrap) remove strAlphabet and alphabet (only used in old layout)
 	// dirty hack: alphabet for direct access in group list
 	private String strAlphabet = "#ABCDEFGHIJKLMNOPQRSTUVWXYZα"; 
 	private char[] alphabet = strAlphabet.toCharArray();
