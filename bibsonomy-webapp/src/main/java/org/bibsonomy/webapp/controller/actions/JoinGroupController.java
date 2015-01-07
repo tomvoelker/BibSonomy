@@ -59,10 +59,7 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.Errors;
 
 /**
- * Handles 
- * * a user's request to join a group
- * * a group's response to deny the user membership
- * TODO: should also handle accept user and probably delete user too 
+ * Handles a user's request to join a group
  * 
  * @author schwass
  */
@@ -107,7 +104,6 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		
 		// get group details and check if present
 		final String groupName = command.getGroup();
-		log.error(groupName + "");
 		final Group group = logic.getGroupDetails(groupName);
 		if (!present(group)) {
 			// no group given => user did not click join on the group page
@@ -143,16 +139,14 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		final boolean joinRequest = command.isJoinRequest();
 		
 		// check if user is already in this group or has an open request
-		for (Group g : loginUser.getGroups()) {
-			if(g.getName().equals(groupName)) {
-				if (g.getGroupMembershipForUser(loginUser).getGroupRole().equals(GroupRole.REQUESTED)) {
-					errors.reject("joinGroup.already.request.error");
-					return Views.ERROR;
-				}
+		if (group.getGroupMembershipForUser(loginUser) != null) {
+			if (group.getGroupMembershipForUser(loginUser).getGroupRole().equals(GroupRole.REQUESTED)) {
+				errors.reject("joinGroup.already.request.error");
+			} else {
 				// user wants to join a group that he's already a member of => error since he cannot use the join_group page
 				errors.reject("joinGroup.already.member.error");
-				return Views.ERROR;		
 			}
+			return Views.ERROR;		
 		}
 		
 		if (!present(reason)) {
@@ -185,9 +179,19 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		
 		// user is allowed to state join request and group exists => execute request
 		
-		// we need the user details (eMail) of the user that is the group
-		final User groupUser = adminLogic.getUserDetails(groupName);
-		mailUtils.sendJoinGroupRequest(group.getName(), groupUser.getEmail(), loginUser, command.getReason(), requestLogic.getLocale());
+		// we need the user details (eMail) of the admin users
+		final List<User> groupAdmins = new LinkedList<>();
+		for (GroupMembership ms : group.getMemberships()) {
+			if (ms.getGroupRole().equals(GroupRole.ADMINISTRATOR)) {
+				groupAdmins.add(ms.getUser());
+			}
+		}
+		
+		// Send a mail to all administrators of the group
+		for (User groupAdminUser : groupAdmins) {
+			String groudAdminUserMail = adminLogic.getUserDetails(groupAdminUser.getName()).getEmail();
+			mailUtils.sendJoinGroupRequest(group.getName(), groudAdminUserMail, loginUser, command.getReason(), requestLogic.getLocale());
+		}
 		
 		// insert the request
 		this.logic.updateGroup(group, GroupUpdateOperation.ADD_REQUESTED, new GroupMembership(loginUser, GroupRole.USER, false));

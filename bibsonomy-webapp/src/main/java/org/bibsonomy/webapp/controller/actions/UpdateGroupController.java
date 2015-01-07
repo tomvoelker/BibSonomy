@@ -7,7 +7,6 @@ import java.util.Collections;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.UserUpdateOperation;
@@ -15,16 +14,18 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.GroupSettingsPageCommand;
-import org.bibsonomy.webapp.command.actions.UpdateGroupCommand;
 import org.bibsonomy.webapp.controller.GroupSettingsPageController;
 import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
+import org.springframework.web.servlet.view.RedirectView;
 
 /**
  * TODO: add documentation
@@ -36,6 +37,8 @@ public class UpdateGroupController extends GroupSettingsPageController implement
 	
 	private Errors errors = null;
 	private LogicInterface logic;
+	private RequestLogic requestLogic;
+	private MailUtils mailUtils;
 
 	@Override
 	public GroupSettingsPageCommand instantiateCommand() {
@@ -113,14 +116,15 @@ public class UpdateGroupController extends GroupSettingsPageController implement
 				case ADD_INVITED: {
 					// sent an invite
 					final String username = command.getUsername();
-					if (present(username) && !username.equals(groupToUpdate)) {
+					if (present(username) && !username.equals(groupToUpdate.getName())) {
 						
 						// TODO: inform the user about the invite
-
-						final GroupMembership ms = new GroupMembership(new User(username), null, false);
+						final User invitedUser = this.logic.getUserDetails(username);
+						final GroupMembership ms = new GroupMembership(invitedUser, null, false);
 						try {
 							// since now only one user can be invited to a group at once
 							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_INVITED, ms);
+//							mailUtils.sendGroupInvite(groupToUpdate.getName(), command.getLoggedinUser(), invitedUser, requestLogic.getLocale());
 						} catch (final Exception ex) {
 							log.error("error while inviting user '" + username + "' to group '" + groupToUpdate + "'", ex);
 							// if a user can't be added to a group, this exception is thrown
@@ -136,10 +140,9 @@ public class UpdateGroupController extends GroupSettingsPageController implement
 					 * this handles a join request by the user
 					 */
 					final String username = command.getUsername();
-					if (present(username) && !username.equals(groupToUpdate)) {
+					if (present(username) && !username.equals(groupToUpdate.getName())) {
 						final GroupMembership ms = new GroupMembership(new User(username), null, false);
 						try {
-							// since now only one user can be added to a group at once
 							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_NEW_USER, ms);
 						} catch (final Exception ex) {
 							log.error("error while adding user '" + username + "' to group '" + groupToUpdate + "'", ex);
@@ -161,6 +164,12 @@ public class UpdateGroupController extends GroupSettingsPageController implement
 						final GroupMembership ms = new GroupMembership(new User(username), null, false);
 						try {
 							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.REMOVE_USER, ms);
+							log.error("trolol");
+							
+							// if we removed ourselves from the group, return the homepage.
+							if (command.getContext().getLoginUser().getName().equals(username)) {
+								return new ExtendedRedirectView("/settings");
+							}
 						} catch (final Exception ex) {
 							log.error("error while removing user '" + username + "' from group '" + groupToUpdate + "'", ex);
 							// if a user can't be added to a group, this exception is thrown
@@ -232,9 +241,12 @@ public class UpdateGroupController extends GroupSettingsPageController implement
 					final String username = command.getUsername();
 					if (present(username)) {
 						// the group to update
-						final GroupMembership ms = new GroupMembership(new User(username), null, false);
+						final User declineUser = this.logic.getUserDetails(username);
+						final GroupMembership ms = new GroupMembership(declineUser, null, false);
 						try {
 							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.DECLINE_JOIN_REQUEST, ms);
+							// TODO: I18N
+							mailUtils.sendJoinGroupDenied(groupToUpdate.getName(), username, declineUser.getEmail(), "Your group join request was denied.", requestLogic.getLocale());
 						} catch (final Exception ex) {
 							log.error("error while declining the join request of user '" + username + "' from group '" + groupToUpdate + "'", ex);
 							this.errors.rejectValue("username", "settings.group.error.declineJoinRequestFailed", new Object[]{username},
@@ -301,7 +313,24 @@ public class UpdateGroupController extends GroupSettingsPageController implement
 		this.errors = errors;
 	}
 
+	@Override
 	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
+	}
+
+	public MailUtils getMailUtils() {
+		return mailUtils;
+	}
+
+	public void setMailUtils(MailUtils mailUtils) {
+		this.mailUtils = mailUtils;
+	}
+
+	public RequestLogic getRequestLogic() {
+		return requestLogic;
+	}
+
+	public void setRequestLogic(RequestLogic requestLogic) {
+		this.requestLogic = requestLogic;
 	}
 }

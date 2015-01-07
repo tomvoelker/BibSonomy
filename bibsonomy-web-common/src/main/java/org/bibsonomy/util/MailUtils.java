@@ -205,6 +205,35 @@ public class MailUtils {
 		return false;
 	}
 	
+	public boolean sendGroupInvite(final String groupName, final User loginUser, final User invitedUser, final Locale locale) {
+		final Object[] messagesParameters = new Object[]{
+				groupName,
+				loginUser.getName(),
+				projectHome,
+				// TODO: why toLowerCase?
+				UrlUtils.safeURIEncode(groupName).toLowerCase(),
+				UrlUtils.safeURIEncode(loginUser.getName()).toLowerCase(),
+				projectName.toLowerCase(),
+				projectEmail
+		};
+		
+		/*
+		 * Format the message "mail.groupInvite.body" with the given parameters.
+		 */
+		final String messageBody    = messageSource.getMessage("mail.groupInvite.body", messagesParameters, locale);
+		final String messageSubject = messageSource.getMessage("mail.groupInvite.subject", messagesParameters, locale);
+
+		/*
+		 * send an e-Mail to the group (from our registration Adress)
+		 */
+		try {
+			sendMail(new String[] {invitedUser.getEmail()},  messageSubject, messageBody, projectJoinGroupRequestFromAddress);
+			return true;
+		} catch (final MessagingException e) {
+			log.fatal("Could not send join group request mail: " + e.getMessage());
+		}
+		return false;
+	}
 	
 	/**
 	 * Method to send the password reminder mail

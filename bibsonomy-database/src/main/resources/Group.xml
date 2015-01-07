@@ -3,10 +3,11 @@
 
 <sqlMap namespace="Group">
 
-	<select id="getAllGroups" resultMap="GroupCommon.group" parameterClass="groupParam">
-		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname AS realname, u.user_homepage AS homepage
+	<select id="getAllGroups" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="groupParam">
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, u.user_name, g.group_role, g.user_shared_documents
 		FROM groupids i 
-		  JOIN user u ON (i.group_name = u.user_name)
+		  JOIN group_memberships g USING (`group`)
+		  JOIN user u ON (g.user_name = u.user_name)
 		WHERE i.group > 2
 		ORDER BY i.group_name
 		LIMIT #limit# OFFSET #offset#

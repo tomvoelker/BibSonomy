@@ -1114,6 +1114,9 @@
 	<!-- Handles the settings update of a group -->
 	<bean id="updateGroupController" class="org.bibsonomy.webapp.controller.actions.UpdateGroupController" scope="request">
 		<property name="logic" ref="logic" />
+		<property name="requestLogic" ref="requestLogic" />
+		<!-- to send registration mails -->
+		<property name="mailUtils" ref="mailUtils"/>
 	</bean>
 	
 	<!-- Handles the profile update of a user -->

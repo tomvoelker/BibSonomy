@@ -68,8 +68,19 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<Group> getAllGroups(final int start, final int end, final DBSession session) {
 		final GroupParam param = LogicInterfaceHelper.buildParam(GroupParam.class, Order.ALPH, start, end);
-
-		return this.queryForList("getAllGroups", param, Group.class, session);
+		
+		List<Group> groupList = this.queryForList("getAllGroups", param, Group.class, session);
+		User dummyUser;
+		for (Group g : groupList) {
+			// exclude the special groups
+			if (g.getGroupId() < 3)
+				continue;
+			dummyUser = GroupUtils.getDummyUser(g);
+			g.setRealname(dummyUser.getRealname());
+			g.setHomepage(dummyUser.getHomepage());
+		}
+		
+		return groupList;
 	}
 	
 	/**
@@ -110,8 +121,17 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		if ("friends".equals(normedGroupName)) {
 			return GroupUtils.getFriendsGroup();
 		}
+		
+		// TODO: Accomplish that somehow directly from SQL (probably impossible)
+		final Group group =  this.queryForObject("getGroupWithMemberships", normedGroupName, Group.class, session);
+		if (present(group)) {
+			final User groupUser = GroupUtils.getDummyUser(group);
 
-		return this.queryForObject("getGroupWithMemberships", normedGroupName, Group.class, session);
+			group.setRealname(groupUser.getRealname());
+			group.setHomepage(groupUser.getHomepage());
+		}
+		
+		return group;
 	}
 
 	/**
@@ -153,17 +173,21 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		Group group;
 		if ("friends".equals(groupname)) {
 			group = GroupUtils.getFriendsGroup();
-			group.setUsers(this.userDb.getUserRelation(authUser, UserRelation.OF_FRIEND, null, session));
+			List<GroupMembership> mss = new LinkedList<>();
+			for (User u : this.userDb.getUserRelation(authUser, UserRelation.OF_FRIEND, null, session)) {
+				mss.add(new GroupMembership(u, GroupRole.USER, true));
+			}
+			group.setMemberships(mss);
 			return group;
 		}
 		if ("public".equals(groupname)) {
 			group = GroupUtils.getPublicGroup();
-			group.setUsers(Collections.<User> emptyList());
+			group.setMemberships(Collections.<GroupMembership> emptyList());
 			return group;
 		}
 		if ("private".equals(groupname)) {
 			group = GroupUtils.getPrivateGroup();
-			group.setUsers(Collections.<User> emptyList());
+			group.setMemberships(Collections.<GroupMembership> emptyList());
 			return group;
 		}
 
@@ -171,10 +195,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		// the group has no members.
 		if (group == null) {
 			// check if the group exists
-			if (this.getGroupByName(groupname, session) == null) {
+			if (!present(this.getGroupByName(groupname, session))) {
 				log.debug("group " + groupname + " does not exist");
 				group = GroupUtils.getInvalidGroup();
-				group.setUsers(Collections.<User> emptyList());
+				group.setMemberships(Collections.<GroupMembership> emptyList());
 				return group;
 			}
 		}
@@ -190,8 +214,9 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			//$FALL-THROUGH$
 		case HIDDEN:
 			// only a group admin may always see the group members
-			if (!GroupRole.ADMINISTRATOR.equals(this.getGroupMembershipForUser(authUser, group, session))) {
-				group.setUsers(Collections.<User>emptyList());
+			if (!present(this.getGroupMembershipForUser(authUser, group, session))
+					|| !GroupRole.ADMINISTRATOR.equals(this.getGroupMembershipForUser(authUser, group, session).getGroupRole())) {
+				group.setMemberships(Collections.<GroupMembership>emptyList());
 			}
 			break;
 		case PUBLIC:
@@ -841,7 +866,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * updates the user shared documents field for the given user. UserName is group.name.
+	 * updates the user shared documents field for the given user.
 	 * 
 	 * @param group
 	 * @param session
@@ -850,7 +875,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		GroupParam p = new GroupParam();
 		p.setMembership(membership);
 		p.setGroupId(group.getGroupId());
-		this.update("updateUserSharedDocuments", group, session);
+		this.update("updateUserSharedDocuments", p, session);
 	}
 	
 	/**

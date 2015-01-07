@@ -62,4 +62,12 @@ public enum GroupRole {
 		}
 		throw new IllegalArgumentException("unknown group role id " + level);
 	}
+	
+	public boolean isMemberRole() {
+		return this.role == 0 || this.role == 1 || this.role == 7;
+	}
+	
+	public boolean isPendingRole() {
+		return this.role == 3 || this.role == 4;
+	}
 }

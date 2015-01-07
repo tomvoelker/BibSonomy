@@ -128,27 +128,31 @@
 																		<c:if test="${groupRole eq 'ADMINISTRATOR'}">
 																			<c:choose>
 																				<c:when test="${member.groupRole eq 'USER'}">
-																					<a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=moderator&amp;ckey=${ckey}">&#8593;</a>
-																					| <a class="btn btn-default disabled">&#8595;</a>
+																					<a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=moderator&amp;ckey=${ckey}"><span class="fa fa-caret-up"><!-- Keep me --></span></a>
+																					<a class="btn btn-default disabled"><span class="fa fa-caret-down"><!-- Keep me --></span></a>
 																				</c:when>
 																				<c:when test="${member.groupRole eq 'MODERATOR'}">
-																					<a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=administrator&amp;ckey=${ckey}">&#8593;</a>
-																					| <a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=user&amp;ckey=${ckey}">&#8595;</a>
+																					<a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=administrator&amp;ckey=${ckey}"><span class="fa fa-caret-up"><!-- Keep me --></span></a>
+																					<a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=user&amp;ckey=${ckey}"><span class="fa fa-caret-down"><!-- Keep me --></span></a>
 																				</c:when>
 																				<c:when test="${member.groupRole eq 'ADMINISTRATOR'}">
-																					<a class="btn btn-default disabled">&#8593;</a>
-																					| <a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=moderator&amp;ckey=${ckey}">&#8595;</a>
+																					<a class="btn btn-default disabled"><span class="fa fa-caret-up"><!-- Keep me --></span></a>
+																					<a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=moderator&amp;ckey=${ckey}"><span class="fa fa-caret-down"><!-- Keep me --></span></a>
 																				</c:when>
 																			</c:choose>
-																			| 
 																		</c:if>
 																		<c:if test="${groupRole eq 'ADMINISTRATOR'}">
-																			<a class="btn btn-danger" href="/updateGroup?operation=remove_user&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>
+																			<a class="btn btn-danger" href="/updateGroup?operation=remove_user&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${deluserTitle}"><span class="fa fa-times"><!-- Keep me --></span>&amp;nbsp;${deluser}</a>
 																		</c:if>
 																		<c:if test="${groupRole eq 'MODERATOR'}">
-																			<c:if test="${member.groupRole ne 'ADMINISTRATOR'}">
-																				<a class="btn btn-danger" href="/updateGroup?operation=remove_user&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>
-																			</c:if>
+																			<c:choose>
+																				<c:when test="${member.groupRole ne 'ADMINISTRATOR'}">
+																					<a class="btn btn-danger" href="/updateGroup?operation=remove_user&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${deluserTitle}"><span class="fa fa-times"><!-- Keep me --></span>&amp;nbsp;${deluser}</a>
+																				</c:when>
+																				<c:otherwise>
+																					<a class="btn btn-danger disabled" title="${deluserTitle}"><span class="fa fa-times"><!-- Keep me --></span>&amp;nbsp;${deluser}</a>
+																				</c:otherwise>
+																			</c:choose>
 																		</c:if>
 																	</c:if>
 																</td>

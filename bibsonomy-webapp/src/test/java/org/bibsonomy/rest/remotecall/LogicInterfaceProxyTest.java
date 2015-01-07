@@ -522,6 +522,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		 */
 		returnedGroupExpectation.setPrivlevel(null); 
 		
+		// TODO: FIX THIS
 		returnedGroupExpectation.setUsers(new ArrayList<User>());
 		returnedGroupExpectation.getUsers().add(ModelUtils.getUser());
 		returnedGroupExpectation.getUsers().get(0).setName("Nr1");

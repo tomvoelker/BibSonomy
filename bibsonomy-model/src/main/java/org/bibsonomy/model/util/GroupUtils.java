@@ -29,8 +29,11 @@ package org.bibsonomy.model.util;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.User;
 
 /**
  * @author Christian Schenk
@@ -222,5 +225,14 @@ public class GroupUtils {
 		group.setGroupId(groupId.getId());
 		group.setPrivlevel(privlevel);
 		return group;
+	}
+	
+	public static User getDummyUser(Group group) {
+		for (GroupMembership ms : group.getMemberships()) {
+			if (ms.getGroupRole().equals(GroupRole.DUMMY)) {
+				return ms.getUser();
+			}
+		}
+		throw new IllegalArgumentException("The group " + group.getName()+ " has no dummy user!");
 	}
 }

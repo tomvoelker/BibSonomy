@@ -110,12 +110,6 @@ public class AjaxCvController extends AjaxController implements MinimalisticCont
 		 * Determine if the requested page is a group cv or a user cv
 		 */
 		if (present(requestedGroup)) {
-			/*
-			 * get all members of the group
-			 */
-			final List<User> groupUsers = interfaceToUse.getUsers(null, GroupingEntity.GROUP, requestedGroup.getName(), null, null, null, null, null, 0, 1000);
-			requestedGroup.setUsers(groupUsers);
-
 			this.wikiRenderer.setRequestedGroup(requestedGroup);
 		} else {
 			this.wikiRenderer.setRequestedUser(interfaceToUse.getUserDetails(authUser));

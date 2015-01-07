@@ -79,6 +79,7 @@ public class Group implements Serializable{
 	/**
 	 * These {@link User}s belong to this group.
 	 */
+	@Deprecated
 	private List<User> users;
 
 	/**
@@ -506,5 +507,10 @@ public class Group implements Serializable{
 		}
 		
 		return null;
+	}
+	
+	// TODO: move to utils class
+	public GroupMembership getGroupMembershipForUser(String username) {
+		return this.getGroupMembershipForUser(new User(username));
 	}
 }

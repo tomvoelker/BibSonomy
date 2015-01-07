@@ -65,9 +65,6 @@ public class GroupSettingsPageCommand extends TabsCommand<Object> {
 		this.groupRole = groupRole;
 	}
 
-	public GroupSettingsPageCommand() {
-	}
-
 	public Group getGroup() {
 		return group;
 	}

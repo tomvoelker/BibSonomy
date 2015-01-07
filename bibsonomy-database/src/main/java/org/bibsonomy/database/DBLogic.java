@@ -1189,7 +1189,7 @@ public class DBLogic implements LogicInterface {
 				throw new RuntimeException("User is not a member of this group!");
 			}
 			loginUserisGroupAdmin = GroupRole.ADMINISTRATOR.equals(loginUserRole);
-			loginUserisGroupModerator = GroupRole.MODERATOR.equals(loginUserRole);
+			loginUserisGroupModerator = GroupRole.MODERATOR.equals(loginUserRole) || loginUserisGroupAdmin;
 			
 			// we want to allow a user to remove his own invite without being a pageadmin/admin/mod.
 			for(GroupMembership ms : group.getPendingMemberships()) {
@@ -1250,7 +1250,7 @@ public class DBLogic implements LogicInterface {
 				break;
 			case REMOVE_USER:
 				// FIXME: migrate settings handler before activation this method
-				if (loginUserisGroupAdmin || isPageAdmin) {
+				if (loginUserisGroupModerator || isPageAdmin) {
 					if (this.userIsInGroup(membership.getUser(), group)) {
 						this.groupDBManager.removeUserFromGroup(group.getName(), membership.getUser().getName(), session);
 					}
@@ -1306,8 +1306,9 @@ public class DBLogic implements LogicInterface {
 			case REMOVE_INVITED:
 			case DECLINE_JOIN_REQUEST:
 				if (!this.userIsInGroup(membership.getUser(), group)
-						&& this.userIsPendingInGroup(membership.getUser(), group))
+						&& this.userIsPendingInGroup(membership.getUser(), group)) {
 					this.groupDBManager.removePendingMembership(group.getName(), membership.getUser().getName(), session);
+				}
 				break;
 			default:
 				throw new UnsupportedOperationException("The requested method is not yet implemented.");

@@ -349,9 +349,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		final String groupName = requestedGroup.getName();
 		command.setIsGroup(true);
 
-		final List<User> groupUsers = this.logic.getUsers(null, GroupingEntity.GROUP, groupName, null, null, null, null, null, 0, 1000);
-		requestedGroup.setUsers(groupUsers);
-
 		// TODO: Implement date selection on the editing page
 		final Wiki wiki = this.logic.getWiki(groupName, null);
 		final String wikiText;

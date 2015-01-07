@@ -14,6 +14,7 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.security.access.AccessDeniedException;
 
 /**
  *
@@ -41,12 +42,22 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 			command.setLoggedinUser(command.getContext().getLoginUser());
 			
 			command.setGroup(logic.getGroupDetails(command.getRequestedGroup()));
+			if (!present(command.getGroup())) {
+				throw new AccessDeniedException("You are not a member of this group.");
+			}
+			GroupMembership ms = command.getGroup().getGroupMembershipForUser(command.getContext().getLoginUser());
+			if (ms.getGroupRole().isPendingRole()) {
+				throw new AccessDeniedException("You are not a member of this group.");
+			}	
+			
 			User groupUser = logic.getUserDetails(command.getRequestedGroup());
 			command.setRealname(groupUser.getRealname());
 			command.setHomepage(groupUser.getHomepage());
-			command.setDescription(command.getGroup().getDescription());
-			command.setPrivlevel(command.getGroup().getPrivlevel().getPrivlevel());
-			command.setSharedDocuments(command.getGroup().isSharedDocuments() ? 1 : 0);
+			if (present(command.getGroup())) {
+				command.setDescription(command.getGroup().getDescription());
+				command.setPrivlevel(command.getGroup().getPrivlevel().getPrivlevel());
+				command.setSharedDocuments(command.getGroup().isSharedDocuments() ? 1 : 0);
+			}
 			
 			command.setUser(groupUser);
 			

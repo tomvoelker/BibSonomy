@@ -176,9 +176,6 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 	 */
 	private void setGroupDetails(final GroupResourceViewCommand cmd, final String groupName) {
 		final Group group = this.logic.getGroupDetails(groupName);
-		if (present(group)) {
-			group.setUsers(this.logic.getUsers(null, GroupingEntity.GROUP, groupName, null, null, null, null, null, 0, 1000));
-		}
 		cmd.setGroup(group);
 	}
 
