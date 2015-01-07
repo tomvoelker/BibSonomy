@@ -243,9 +243,9 @@ INSERT INTO `groupids` (`group_name`, `group`, `privlevel`, `sharedDocuments`) V
 ('testgroup4', 6,           2, 1);
 
 -- 
--- Data for table `pendingGroupids`
+-- Data for table `pending_groupids`
 -- 
-INSERT INTO `pendingGroupids` (`group_name`, `request_user_name`, `request_reason`, `group`, `privlevel`, `sharedDocuments`) VALUES 
+INSERT INTO `pending_groupids` (`group_name`, `request_user_name`, `request_reason`, `group`, `privlevel`, `sharedDocuments`) VALUES 
 ('testpendinggroup1', 'testrequestuser1', 'my new reason1', 7,           0, 1),
 ('testpendinggroup2', 'testrequestuser2', 'my new reason2', 8,           1, 0);
  
@@ -253,7 +253,7 @@ INSERT INTO `pendingGroupids` (`group_name`, `request_user_name`, `request_reaso
 -- Data for table `groups`
 -- 
 
-INSERT INTO `groups` VALUES 
+INSERT INTO `group_memberships` VALUES 
 ('testuser1', 3, 3, '2007-01-01 01:01:01', 7, 1),
 ('testuser2', 3, 3, '2007-01-01 01:01:01', 7, 0),
 ('testuser1', 4, 3, '2007-01-01 01:01:01', 7, 1),
