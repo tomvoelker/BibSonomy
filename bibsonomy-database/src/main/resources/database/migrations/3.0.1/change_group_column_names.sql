@@ -25,3 +25,9 @@ CREATE TABLE `pending_group_memberships` (
   `user_shared_documents` TINYINT(1) NULL DEFAULT '0',
   PRIMARY KEY (`group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- set the dummy user role
+UPDATE groupids
+  JOIN user ON group_name = user_name
+  JOIN group_memberships on groupids.`group` = group_memberships.`group` AND group_memberships.`user_name` = group_name
+SET group_role = 2;
