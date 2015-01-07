@@ -734,12 +734,6 @@ public enum Views implements View {
 	 * Discussions-Page. Posts with Discussions
 	 */
 	DISCUSSEDPAGE("discussions"),
-	
-	/**
-	 * for the link cloud demo
-	 * TODO: in deveplopment TODODZO
-	 */
-	LINK_CLOUD("linkcloud"),
 
 	/**
 	 * Recommended posts page. Showing recommendations for bibtexs and bookmarks.

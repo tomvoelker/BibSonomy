@@ -26,6 +26,13 @@
  */
 package org.bibsonomy.scraper.url.kde.nature;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.net.URL;
+
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -68,5 +75,17 @@ public class NatureScraperTest {
 	public void urlTest4Run(){
 		UnitTestRunner.runSingleTest("url_282");
 	}
+	@Test
+	public void testReferences() throws Exception{
+		final ScrapingContext sc = new ScrapingContext(new URL("http://www.nature.com/ncomms/2014/141215/ncomms6341/full/ncomms6341.html"));
+		NatureScraper ns = new NatureScraper();
+		assertTrue(ns.scrape(sc));
+		assertTrue(ns.scrapeReferences(sc));
 		
+		final String reference = sc.getReferences();
+		assertNotNull(reference);
+		assertTrue(reference.length() > 100);
+		assertEquals("TY  - JOUR\nAU  - de Boer, P. A.".trim(), reference.substring(0, 31).trim());
+		assertTrue(reference.contains("Crossley, R. E."));
+	}	
 }

@@ -26,18 +26,23 @@
  */
 package org.bibsonomy.scraper.url.kde.rsoc;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.generic.CitationManagerScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
  */
-public class RSOCScraper extends CitationManagerScraper {
-	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\\\"([^\\\"]*)\\\">Download to citation manager</a>");
+public class RSOCScraper extends GenericBibTeXURLScraper {
+	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<a href=\"(.*?)\" .* title=\"Citation tools\">");
 	private static final String SITE_NAME = "Royal Society Publishing";
 	private static final String SITE_URL = "http://royalsocietypublishing.org/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
@@ -46,25 +51,46 @@ public class RSOCScraper extends CitationManagerScraper {
 			Pattern.compile("/content" + ".*")
 		));
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
 
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
 
 	@Override
-	public Pattern getDownloadLinkPattern() {
-		return DOWNLOAD_LINK_PATTERN;
-	}
-
-	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return URL_PATTERNS;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
+	 */
+	@Override
+	protected String getDownloadURL(URL url) throws ScrapingException {
+		try {
+			final Matcher m = BIBTEX_PATTERN.matcher(WebUtils.getContentAsString(url));
+			if(m.find()) {
+				return "http://" + url.getHost().toString() + m.group(1).replace("download", "bibtex");
+			}
+		} catch (IOException e) {
+			throw new ScrapingException(e);
+		}
+		return null;
+	}
+	@Override
+	protected String convert(String downloadResult) {
+		final String firstLine = downloadResult.split("\n")[0].trim();
+		if(firstLine.split("\\{").length == 1)
+			return downloadResult.replace(firstLine, firstLine + "nokey,");
+		return downloadResult;
 	}
 }

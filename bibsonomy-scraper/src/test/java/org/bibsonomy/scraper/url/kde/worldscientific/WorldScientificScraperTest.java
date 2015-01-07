@@ -63,7 +63,7 @@ public class WorldScientificScraperTest {
 		assertNotNull(cby);
 		assertTrue(cby.length() > 100);
 		
-		assertEquals("<a class=\"entryAuthor\" href=\"/action/doSearch?Contrib=LIU%2C+RONG\">RONG LIU</a>".trim(), cby.substring(0, 79).trim());
+		assertEquals("<span class=\"hlFld-ContribAuthor\"><a class=\"entryAuthor\" href=\"/action/doSearch".trim(), cby.substring(0, 79).trim());
 		
 		assertTrue(cby.contains("XIANYONG FANG"));
 	}

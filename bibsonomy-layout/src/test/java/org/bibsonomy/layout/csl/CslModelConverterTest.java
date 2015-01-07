@@ -26,9 +26,7 @@
  */
 package org.bibsonomy.layout.csl;
 
-import static org.bibsonomy.model.util.BibTexUtils.cleanBibTex;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,23 +37,15 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.BibTexUtils;
-import org.junit.Before;
 import org.junit.Test;
 
-
+/**
+ * @author sbo
+ */
 public class CslModelConverterTest {
-	final private Post<BibTex> inproceedingsPost = new Post<BibTex>();
-	final private BibTex inproceedings = new BibTex();
 	
-	final private Post<BibTex> bookPost = new Post<BibTex>();
-	final private BibTex book = new BibTex();
-	
-	final private Post<BibTex> articlePost = new Post<BibTex>();
-	final private BibTex article = new BibTex();
-	
-	
-	private List<PersonName> setAuthors() {
-		List<PersonName> authors = new ArrayList<PersonName>();
+	private static List<PersonName> generateAuthors() {
+		final List<PersonName> authors = new ArrayList<PersonName>();
 		authors.add(new PersonName("Folke", "Mitzlaff"));
 		authors.add(new PersonName("Martin", "Atzmueller"));
 		authors.add(new PersonName("Gerd", "Stumme"));
@@ -63,15 +53,14 @@ public class CslModelConverterTest {
 		return authors;
 	}
 	
-
-	@Before
-	public void setUpInproceedings() {
-		
-		inproceedings.setAuthor(setAuthors());
+	private static Post<BibTex> generateInproceedings() {
+		final Post<BibTex> inproceedingsPost = new Post<BibTex>();
+		final BibTex inproceedings = new BibTex();
+		inproceedings.setAuthor(generateAuthors());
 		
 		inproceedings.setAddress("Bamberg, Germany");
 		inproceedings.setBooktitle("Proc. LWA 2013 (KDML Special Track)");
-		inproceedings.setEntrytype("inproceedings");
+		inproceedings.setEntrytype(BibTexUtils.INPROCEEDINGS);
 		inproceedings.setInterHash("73088600a500f7d06768615d6e1c2b3d");
 		inproceedings.setIntraHash("820ffb2166b330bf60bb30b16e426553");
 		inproceedings.setKey("MASH:13b");
@@ -82,14 +71,39 @@ public class CslModelConverterTest {
 		
 		inproceedingsPost.setResource(inproceedings);
 		inproceedingsPost.setUser(new User("test"));
+		
+		return inproceedingsPost;
 	}
 
-	@Before
-	public void setUpBook() {
+	private static Post<BibTex> generateInCollection() {
+		final Post<BibTex> inproceedingsPost = new Post<BibTex>();
+		final BibTex incollection = new BibTex();
+		incollection.setAuthor(generateAuthors());
+		incollection.setEditor(generateAuthors());
+		incollection.setAddress("Cambridge, MA");
+		incollection.setBooktitle("Mind: {I}ntroduction to Cognitive Science");
+		incollection.setEntrytype(BibTexUtils.INCOLLECTION);
+		incollection.setInterHash("73088600a500f7d06768615d6e1c2b3d");
+		incollection.setIntraHash("820ffb2166b330bf60bb30b16e426553");
+		incollection.setKey("MASH:13b");
+		incollection.setPublisher("University of Bamberg");
+		incollection.setSeries("Lecture Notes in Computer Science");
+		incollection.setTitle("{Connections}");
+		incollection.setChapter("2");
+		incollection.setYear("2011");
 		
+		inproceedingsPost.setResource(incollection);
+		inproceedingsPost.setUser(new User("test"));
+		
+		return inproceedingsPost;
+	}
+	
+	private static Post<BibTex> generateBook() {
+		final Post<BibTex> bookPost = new Post<BibTex>();
+		final BibTex book = new BibTex();
 		book.setAddress("Berlin [u.a.]");
-		book.setAuthor(setAuthors());
-		book.setEntrytype("book");
+		book.setAuthor(generateAuthors());
+		book.setEntrytype(BibTexUtils.BOOK);
 		book.setMisc("ISBN = {3642380557}");
 		book.setPublisher("Springer-Vieweg");
 		book.setSeries("Xpert.press");
@@ -100,13 +114,14 @@ public class CslModelConverterTest {
 		
 		bookPost.setResource(book);
 		bookPost.setUser(new User("test"));
-		
+		return bookPost;
 	}
 	
-	@Before
-	public void setUpArticle() {
+	private static Post<BibTex> generateArticle() {
+		final Post<BibTex> articlePost = new Post<BibTex>();
+		final BibTex article = new BibTex();
 		
-		List<PersonName> authors = new ArrayList<PersonName>();
+		final List<PersonName> authors = new ArrayList<PersonName>();
 		authors.add(new PersonName("Jeffrey", "Dean"));
 		authors.add(new PersonName("Ghemawat", "Sanjay"));
 		
@@ -130,38 +145,50 @@ public class CslModelConverterTest {
 		articlePost.setResource(article);
 		articlePost.setUser(new User("test"));
 		
+		return articlePost;
 	}
 	
 	@Test
 	public void testConvertPostInproceedings() {
-		final Record inproceedingsRec = CslModelConverter.convertPost(inproceedingsPost);
-		//test series => collection title
-		assertTrue(inproceedingsRec.getCollection_title().equals(cleanBibTex(inproceedings.getSeries())));
-		//test booktitle => container title
-		assertTrue(inproceedingsRec.getContainer_title().equals(cleanBibTex(inproceedings.getBooktitle())));
-		//test inproceedings => paper-conference
-		assertEquals(cleanBibTex(inproceedingsRec.getType()), "paper-conference");
+		final Post<BibTex> inproceedingPost = generateInproceedings();
+		final BibTex inproceedings = inproceedingPost.getResource();
+		final Record inproceedingsRec = CslModelConverter.convertPost(inproceedingPost);
+		// test series => collection title
+		assertEquals(BibTexUtils.cleanBibTex(inproceedings.getBooktitle()), inproceedingsRec.getCollection_title());
+		// test booktitle => container title
+		assertEquals(BibTexUtils.cleanBibTex(inproceedings.getBooktitle()), inproceedingsRec.getContainer_title());
+		// test inproceedings => paper-conference
+		assertEquals(BibTexUtils.cleanBibTex(inproceedingsRec.getType()), "paper-conference");
 	}
 	
 	@Test
 	public void testConvertPostBook() {
+		final Post<BibTex> bookPost = generateBook();
+		final BibTex book = bookPost.getResource();
 		final Record bookRec = CslModelConverter.convertPost(bookPost);
 		
-		assertEquals(cleanBibTex(book.getTitle()), bookRec.getTitle());
-		// TODO: @sbo: after fix for ordering in php-citeproc&co re-enable assertEquals(cleanBibTex(book.getYear()), bookRec.getIssued().getDate_parts().get(0).get(0));
+		assertEquals(BibTexUtils.cleanBibTex(book.getTitle()), bookRec.getTitle());
+		// TODO: @sbo: after fix for ordering in php-citeproc&co re-enable assertEquals(BibTexUtils.cleanBibTex(book.getYear()), bookRec.getIssued().getDate_parts().get(0).get(0));
 	}
 	
 	@Test
 	public void testConvertPostArticle() {
-		//the journal entry of articles must be mapped to the container title
+		// the journal entry of articles must be mapped to the container title
+		final Post<BibTex> articlePost = generateArticle();
+		final BibTex article = articlePost.getResource();
+		final Record articleRec = CslModelConverter.convertPost(articlePost);
+		assertEquals(article.getTitle(), articleRec.getTitle());
+		assertEquals(article.getJournal(), articleRec.getContainer_title()); //Journal?
+	}
+	
+	@Test
+	public void testConvertPostIncollection() {
+		final Post<BibTex> incollectionPost = generateInCollection();
+		final Record record = CslModelConverter.convertPost(incollectionPost);
 		
-		Record articleRec = CslModelConverter.convertPost(articlePost);
-		System.out.println(articleRec.getTitle());
-		System.out.println(article.getTitle());
-		System.out.println(articleRec.getContainer_title());  //Journal?
-		System.out.println(article.getJournal());
-		
-		assertEquals(articleRec.getContainer_title(), article.getJournal());
+		final BibTex incollection = incollectionPost.getResource();
+		assertEquals(BibTexUtils.cleanBibTex(incollection.getTitle()), record.getTitle());
+		assertEquals(incollection.getChapter(), record.getChapter_number());
 	}
 
 }
