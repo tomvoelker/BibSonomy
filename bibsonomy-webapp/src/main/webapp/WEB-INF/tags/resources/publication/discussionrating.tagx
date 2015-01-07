@@ -14,7 +14,7 @@
 		<span style="display:block; float:left"><fmt:message key="publications.discussion.headline"/>&amp;nbsp;&amp;nbsp;</span>
 		<div style="float:left;" class="rating">
 			<c:if test="${not empty post.resource.rating}">
-				<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource.class.simpleName)}" />
+				<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource['class'].simpleName)}" />
 				
 				<!--+
 					|TODO: Once we know for each post whether a goldstandard exists,
@@ -67,7 +67,7 @@
 										<fmt:param><fmt:message key="post.resource.discussionItem.anonymous"/></fmt:param>					
 									</c:when>
 									<c:otherwise>
-										<fmt:param><a href="/user/${mtl:encodeURI(discussionUser)}">@${mtl:encodeURI(discussionUser)}</a></fmt:param>
+										<fmt:param><a href="${relativeUrlGenerator.getUserUrlByUserName(discussionUser)}">@${mtl:encodeURI(discussionUser)}</a></fmt:param>
 									</c:otherwise>
 								</c:choose>
 							</c:forEach>
@@ -83,7 +83,7 @@
 											<fmt:param><fmt:message key="post.resource.discussionItem.anonymous"/></fmt:param>					
 										</c:when>
 										<c:otherwise>
-											<fmt:param><a href="/user/${mtl:encodeURI(discussionUser)}">@${mtl:encodeURI(discussionUser)}</a></fmt:param>
+											<fmt:param><a href="${relativeUrlGenerator.getUserUrlByUserName(discussionUser)}">@${mtl:encodeURI(discussionUser)}</a></fmt:param>
 										</c:otherwise>
 									</c:choose>
 								</c:if>
@@ -94,7 +94,7 @@
 						</fmt:message>
 					</c:otherwise>
 				</c:choose>
-				&amp;nbsp;<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource.class.simpleName)}" />
+				&amp;nbsp;<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource['class'].simpleName)}" />
 				<a href="${href}" title="${title}"><!-- href -->
 					<fmt:message key="post.resource.discussion.discussionUser.join" />
 				</a>

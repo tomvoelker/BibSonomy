@@ -145,7 +145,6 @@
 		<function-class>org.bibsonomy.webapp.util.tags.BibTexListTitleHoverFormatter</function-class>
 		<function-signature>String renderHover(org.bibsonomy.model.Post, java.util.Locale)</function-signature>
 	</function>
-	<!-- <function-signature>String renderHover(org.bibsonomy.model.Resource, java.util.Locale, java.lang.Boolean)</function-signature> -->
 	
 	<function>
 		<name>normalize</name>

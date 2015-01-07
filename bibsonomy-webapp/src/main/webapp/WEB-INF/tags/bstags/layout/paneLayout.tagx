@@ -35,7 +35,11 @@
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>	
 	<jsp:directive.attribute name="noLoginBox" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
+	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
+		
+	<jsp:directive.attribute name="noSidebar" type="java.lang.Boolean" required="false"/>	
+	
+	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 
 	<layout:layout 
 		loginUser="${command.context.loginUser}" 
@@ -49,7 +53,9 @@
 		noLoginBox="${noLoginBox}"
 		hideFooterContainer="true"
 		activeTab="${activeTab}"
-		minimizedContentWidth="${minimizedContentWidth}">
+		minimizedContentWidth="${minimizedContentWidth}"
+		noSidebar="${noSidebar }"
+		breadcrumbs="${breadcrumbs}">
 	
 			
 		<!--+

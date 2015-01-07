@@ -1,0 +1,37 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<jsp:directive.attribute name="href" type="java.lang.String" required="false" description="link"/>
+	<jsp:directive.attribute name="name" type="java.lang.String" required="false" description="name" />
+	<jsp:directive.attribute name="nameKey" type="java.lang.String" required="false" description="name" />
+	<jsp:directive.attribute name="active" type="java.lang.Boolean" required="false" description="active crumb" />
+	<jsp:directive.attribute name="leadingIcon" type="java.lang.String" required="false" description="Insert a leading font awesome icon." />
+	
+	<c:if test="${empty name and not empty nameKey}">
+		<fmt:message var="name" key="${nameKey}"/>
+	</c:if>
+	<li class="${ (not empty active and active) ? 'active' : ''}">
+		<c:if test="${empty href and not empty leadingIcon}">
+			<span class="fa ${leadingIcon}"><!--  --></span><c:out value=" " />
+		</c:if>
+		<c:choose>
+			<c:when test="${not empty href}">
+				<a href="${href}">
+					<c:if test="${not empty leadingIcon}">
+						<span class="fa ${leadingIcon}"><!--  --></span><c:out value=" " />
+					</c:if>
+					<c:out value="${name}" />
+				</a>
+			</c:when>
+			<c:otherwise>
+				<c:out value="${name}" />
+			</c:otherwise>
+		</c:choose>
+	</li>
+</jsp:root>

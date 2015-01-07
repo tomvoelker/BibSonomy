@@ -84,8 +84,6 @@
 		<c:set var="id" value="${path}" />
 	</c:if>
 
-
-
 	<!-- errors -->
 	<c:set var="formErrors"><form:errors path="${path}" /></c:set>
 
@@ -94,18 +92,9 @@
 		| bootstrap 3 form-group 
 		+-->
 	<div class="form-group${not empty formErrors ? ' has-error' : ''}">
-	
-		<!-- error feedback -->
-		<c:if test="${not empty formErrors}">
-			<div class="col-sm-offset-${labelColSpan} col-sm-${inputColSpan}">
-				<bs:feedback style="danger" size="defaultSize" >
-					<jsp:attribute name="feedbackBody">
-						<form:errors path="${path}" />
-					</jsp:attribute>
-				</bs:feedback>
-			</div>
-		</c:if>
-	
+		
+		<bsform:errors path="${path}" colSpan="${inputColSpan}"/>
+		
 		<!--+
 			| followed by output label 
 			+-->
@@ -116,24 +105,22 @@
 		<div class="col-sm-${inputColSpan}">
 			<c:choose>
 				<c:when test="${ not empty itemLabels}">
--					<form:select multiple="${multiple ? 'multiple' : 'false'}" path="${path}" cssClass="form-control ${helpPopover} ${ small ? classSmallField : ''}" onchange="${onchange}"> 
--						<c:forEach items="${itemLabels}" var="optionLabel" varStatus="cnt">
--							<form:option value="${items[cnt.index]}"><c:out value="${optionLabel}" /></form:option>
--						</c:forEach>
--					</form:select>
+					<form:select multiple="${multiple ? 'multiple' : 'false'}" path="${path}" cssClass="form-control ${helpPopover} ${ small ? classSmallField : ''}" onchange="${onchange}"> 
+						<c:forEach items="${itemLabels}" var="optionLabel" varStatus="cnt">
+							<form:option value="${items[cnt.index]}"><c:out value="${optionLabel}" /></form:option>
+						</c:forEach>
+					</form:select>
 				</c:when>
-			
+				
 				<c:otherwise>
 					<form:select multiple="${multiple ? 'multiple' : 'false'}" path="${path}" cssClass="form-control ${helpPopover} ${ small ? classSmallField : ''}" onchange="${onchange}" items="${items}" />
 				</c:otherwise>
 			</c:choose>
-				
+			
 			<c:if test="${empty noHelp or not noHelp}">
 				<div class="help help-header hide"><c:out value="${labelText}" /></div>
 				<div class="help help-content hide">${helpText}</div>
 			</c:if>
-			
-			
 		</div>
 	</div>
 </jsp:root>

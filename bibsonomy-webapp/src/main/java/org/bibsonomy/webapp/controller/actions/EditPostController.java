@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -6,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -265,6 +292,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @return The post from the inbox.
 	 * @throws ObjectNotFoundException
 	 */
+	
 	@SuppressWarnings("unchecked")
 	private Post<RESOURCE> getInboxPost(final String loginUserName, final String hash, final String user) throws ObjectNotFoundException {
 		/*
@@ -274,16 +302,26 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * has several posts with the same hash in his inbox, we get them all
 		 * and must compare each post against the given user name.
 		 */
-		final List<?> dbPosts = this.logic.getPosts((Class<? extends Resource>) this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, null, null, null, null, 0, Integer.MAX_VALUE);
+		
+		final List<Post<RESOURCE>> dbPosts = new LinkedList<Post<RESOURCE>>();
+		List<Post<RESOURCE>> tmp;
+		int startCount = 0;
+		final int step = PostLogicInterface.MAX_QUERY_SIZE;
+		
+		do {
+			tmp = this.logic.getPosts((Class<RESOURCE>)this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, null, null, null, null, startCount, startCount + step);
+			dbPosts.addAll(tmp);
+			startCount += step;
+		} while (tmp.size() == step);
+		
 		if (present(dbPosts)) {
-			for (final Object dbPost : dbPosts) {
-				final Post<RESOURCE> castedDbPost = (Post<RESOURCE>) dbPost;
+			for (final Post<RESOURCE> dbPost : dbPosts) {
 				/*
 				 * check, if the post is owned by the user whose post we want to
 				 * copy.
 				 */
-				if (user.equals(castedDbPost.getUser().getName())) {
-					return castedDbPost;
+				if (user.equals(dbPost.getUser().getName())) {
+					return dbPost;
 				}
 			}
 		}
@@ -614,7 +652,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * has changed, we should redirect to the corresponding new page
 		 */
 		if (!present(referer) || referer.matches(".*/postPublication$") || referer.matches(".*/postBookmark$")) {
-			return new ExtendedRedirectView(this.urlGenerator.getUserUrl(userName));
+			return new ExtendedRedirectView(this.urlGenerator.getUserUrlByUserName(userName));
 		}
 		/*
 		 * redirect to referer URL
@@ -997,13 +1035,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 */
 	protected Object getSessionAttribute(final String key) {
 		return this.requestLogic.getSessionAttribute(key);
-	}
-
-	/**
-	 * @return The URLGenerator to be used to generate (redirect) URLs.
-	 */
-	public URLGenerator getUrlGenerator() {
-		return this.urlGenerator;
 	}
 
 	/**

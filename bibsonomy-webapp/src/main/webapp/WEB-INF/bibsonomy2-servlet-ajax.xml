@@ -157,7 +157,7 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/ajax/goldstandards/references">
+				<entry key="/ajax/goldstandards/relation">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="editGoldstandardReferencesController"/>
 						 <property name="allowedFields">

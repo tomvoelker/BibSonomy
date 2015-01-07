@@ -36,7 +36,7 @@
 					<!-- Der Text der oben steht -->
 					<p>
 						<fmt:message key="settings.profileInfo">
-							<fmt:param><a href="/foaf/user/${mtl:encodeURI(user.name)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param>
+							<fmt:param><a href="${relativeUrlGenerator.prefix('foaf').getUserUrl(user)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param>
 							<fmt:param><fmt:message key="settings.profileViewableFor"/></fmt:param>
 							<fmt:param value="/cv/user/${mtl:encodeURI(user.name)}"/>
 						</fmt:message>
@@ -60,7 +60,7 @@
 						<!-- REAL NAME -->
 						<bsform:input path="user.realname" labelColSpan="3" inputColSpan="9" />
 						
-						<!-- GENDER -->	
+						<!-- GENDER -->
 						<div class="form-group clearfix">
 							<form:label cssClass="col-sm-3 control-label" path="user.gender"><fmt:message key="user.gender"/></form:label>
 							
@@ -145,7 +145,7 @@
 								<form:label cssClass="col-sm-3 control-label" path="file"><fmt:message key="settings.picture.current"/></form:label>
 								<div class="col-sm-9">
 									<a title="${mtl:encodeURI(user.name)}" href="/user/${mtl:encodeURI(user.name)}" class="img-thumbnail img-responsive">
-										<img class="user-avatar" src="/picture/user/${mtl:encodeURI(user.name)}" />
+										<img class="user-avatar" src="${relativeUrlGenerator.getUserPictureUrlByUsername(user.name)}" />
 										<span><user:username user="${user}" noLink="${true}"/></span>
 									</a>
 								</div>

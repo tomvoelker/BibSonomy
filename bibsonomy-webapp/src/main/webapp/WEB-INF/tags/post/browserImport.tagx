@@ -8,8 +8,8 @@
 	xmlns:form="http://www.springframework.org/tags/form">
 	
 	<!-- This tag can be used to support the bookmark import from a browser bookmark export file -->
-	<fmt:message var="private" key="post.resource.private"/>
-	<fmt:message var="public" key="post.resource.public"/>
+	<fmt:message var="privateMsg" key="post.resource.private"/>
+	<fmt:message var="publicMsg" key="post.resource.public"/>
 	<fmt:message var="valueButton" key="settings.import.button"/>
 	
 	<h2><fmt:message key="settings.browser.header"/></h2>
@@ -25,8 +25,8 @@
 				<form:label cssClass="fsLabel" path="group"><fmt:message key="settings.browser.viewable"/></form:label>
 				<buttons:help message="settings.browser.viewable.help"/>
 					<form:select path="group" id="viewablebox" cssClass="fsInput fsSmall">
-					<form:option label="${public}" value="public"/>
-					<form:option label="${private}" value="private"/>
+					<form:option label="${publicMsg}" value="public"/>
+					<form:option label="${privateMsg}" value="private"/>
 				</form:select>
 			</div>
 

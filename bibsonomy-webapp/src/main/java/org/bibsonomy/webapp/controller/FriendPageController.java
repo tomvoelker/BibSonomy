@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -14,8 +40,8 @@ import org.bibsonomy.webapp.config.Parameters;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.security.access.AccessDeniedException;
 
 /**
  * @author Steffen Kress
@@ -29,7 +55,7 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 		
 		if (!command.getContext().isUserLoggedIn()){
 			log.info("Trying to access a friendpage without being logged in");
-			return new ExtendedRedirectView("/login");
+			throw new AccessDeniedException("please log in");
 		}
 		
 		final String format = command.getFormat();
@@ -38,7 +64,7 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 		final String groupingName = command.getRequestedUser();
 
 		// no user given -> error
-		if (!present(groupingName)) {
+		if (!present(groupingName)) {	
 			throw new MalformedURLSchemeException("error.friend_page_without_friendname");
 		}
 
@@ -47,7 +73,7 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 		final List<String> requTags = command.getRequestedTagsList();
 
 		// handle the case when tags only are requested
-		this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags, null, Integer.MAX_VALUE, null);	
+		this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags, null, Integer.MAX_VALUE, null);
 
 		// retrieve and set the requested resource lists, along with total
 		// counts
@@ -75,7 +101,7 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 			}
 
 			this.endTiming();
-			return Views.FRIENDPAGE; 
+			return Views.FRIENDPAGE;
 		}
 		
 		this.endTiming();

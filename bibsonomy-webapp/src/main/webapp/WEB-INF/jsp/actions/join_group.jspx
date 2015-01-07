@@ -31,7 +31,7 @@
 			<parts:search pathMessageKey="joinGroup">
 				<jsp:attribute name="pathPart">
 					<li>
-						:: <a href="/group/${mtl:encodeURI(command.group)}" itemprop="name"><c:out value='${command.group}'/></a>
+						:: <a href="${relativeUrlGenerator.getGroupUrlByGroupName(command.group)}" itemprop="name"><c:out value='${command.group}'/></a>
 					</li>
 				</jsp:attribute>
 			</parts:search>
@@ -77,10 +77,10 @@
 			<ul>
 				<!-- loginUser.groups -->
 				<li>
-					<span class="sidebar_h"><a href="/groups"><fmt:message key="groups"/></a></span>
+					<span class="sidebar_h"><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="groups"/></a></span>
 					<ul class="sidebar_collapse_content">
 						<c:forEach var="group" items="${command.context.loginUser.groups}">
-							<li><a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}'/></a></li>
+							<li><a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"><c:out value='${group.name}'/></a></li>
 						</c:forEach>
 					</ul>
 				</li>

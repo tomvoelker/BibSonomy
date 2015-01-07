@@ -45,8 +45,8 @@
 		
 			<bsform:fieldset legendKey="cv.admin.show">
 				<jsp:attribute name="content">
-					<form:form>
-						<div class="form-group clearfix">
+					<form:form class="form-horizontal">
+						<div class="form-group">
 							<label class="col-sm-3 control-label">choose a layout</label>
 							<div class="col-sm-9">
 								<c:choose>
@@ -72,30 +72,15 @@
 						</div>
 						<input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}" />
 
-						<!-- Text edit area -->
-						<div style="display: none" id="wikiEditArea">
-							<bsform:textarea labelColSpan="3" inputColSpan="9" id="wikiTextArea" path="wikiText" labelKey="cv.editCV" noHelp="true" />
 
-							<div id="editButtons" class="col-md-offset-3">
-								<button type="button" href='#' onclick="return submitWiki('preview');" class="btn btn-default">
-									<c:out value="${preview}" />
-								</button>
-								<button type="button" href='#' onclick="return submitWiki('publicPreview');" class="btn btn-default">
-									<c:out value="${pPrev}" />
-								</button>
-								<button type="button" onclick="return clearCVTextField();" class="btn btn-danger">
-									<c:out value="${clear}" />
-								</button>
-							</div>
-						</div>
-
-						<!-- save buttons -->
-						<p class="clearfix"><!-- --></p>
-						<div id="saveBar">
-							<div class="col-md-offset-3 col-md-5" id="saveButtons">
-								<button type="button" id="saveButton" href='#' onclick="return submitWiki('save');" class="btn btn-primary"><c:out value="${save}" /></button>
-								<button type="button" id="showAdmin" class="btn btn-default"><c:out value="${show}" /></button>
-								<button type="button" id="hideAdmin" class="btn btn-default" style="display:none"><c:out value="${hide}" /></button>
+						<div class="form-group">
+							
+							<div class="col-sm-offset-3 col-sm-9" id="saveButtons">
+								<div class="btn-group btn-group-sm">
+									<button type="button" id="saveButton" href='#' onclick="return submitWiki('save');" class="btn btn-primary"><c:out value="${save}" /></button>
+									<button type="button" id="showAdmin" class="btn btn-default"><c:out value="${show}" /></button>
+									<button type="button" id="hideAdmin" class="btn btn-default" style="display:none"><c:out value="${hide}" /></button>
+								</div>
 							</div>
 							<div class="col-md-4" id="statusField">
 								<div style="float:right; display: none" class="col-md-2"> 
@@ -105,6 +90,26 @@
 							</div>
 						</div>
 
+						
+						<!-- Text edit area -->
+						<div style="display: none" id="wikiEditArea">
+							<bsform:textarea labelColSpan="3" inputColSpan="9" id="wikiTextArea" path="wikiText" labelKey="cv.editCV" noHelp="true" rows="10" />
+							<div class="form-group">
+								<div id="editButtons" class="col-sm-offset-3 col-sm-9 btn-group btn-group-sm">
+									<button type="button" onclick="return submitWiki('preview');" class="btn btn-default">
+										<c:out value="${preview}" />
+									</button>
+									<button type="button" onclick="return submitWiki('publicPreview');" class="btn btn-default">
+										<c:out value="${pPrev}" />
+									</button>
+									<button type="button" onclick="return clearCVTextField();" class="btn btn-sm btn-danger">
+										<c:out value="${clear}" />
+									</button>
+								</div>
+								
+							</div>
+						</div>
+						
 					</form:form>
 				</jsp:attribute>
 			</bsform:fieldset>

@@ -1,165 +1,358 @@
 <?xml version="1.0" ?>
-<jsp:root version="2.0"
-	xmlns="http://www.w3.org/1999/xhtml"
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
-	
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs">
+
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
 	<fmt:message var="exampleString" key="example" />
-	<fmt:message key="navi.buttons" var="buttonsPageTitle"/>
-	<layout:paneLayout 
-		pageTitle="${buttonsPageTitle}" 
-		headerMessageKey="buttons.bookmarklet"  
-		command="${command}" requPath="${requPath}"
-		minimizedContentWidth="${true}" >
-		
+	<fmt:message var="buttonsPageTitle" key="navi.buttons" />
+
+	<layout:paneLayout pageTitle="${buttonsPageTitle}"
+		headerMessageKey="buttons.bookmarklet" command="${command}"
+		requPath="${requPath}" minimizedContentWidth="${true}"
+		noSidebar="${true}">
+
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.buttons"/>
+			<parts:search pathMessageKey="navi.buttoSchaltflächenns" />
 		</jsp:attribute>
-	
+
+
 		<jsp:attribute name="content">
-		    <script type="text/javascript" src="/resources/javascript/bookmarklets_misc.js"><!-- keep me !--></script>
-            <script type="text/javascript">
-            <![CDATA[
-		    	$(document).ready(function(){
-					var availableAddons = "${properties['project.addons.available']}".split(",");
-		    		if(!availableAddons.length) return;
-		    		var index=-1;
-		    		var url = window.location.href;
-		    		var browser = BookmarkletButton.getButtonForAgent();
-		    		var addonSection = $("#buttons\\.Addon");
-		    		var bookmarkletSection = $("#buttons\\.Bookmarklets");
-		    		var callback = function(e){
-		    			var status = "collapse"; 
-		    			var target = $(this).next("div");
+		<div class="row">
+			<div class="col-md-offset-1 col-md-10">
+			
+				<div class="text-center">
+					<!-- HEADING OF THE PAGE -->
+					<h2 class="featurette-heading">
+						<fmt:message key="buttons.bookmarklet" />
+					</h2>
 
-		    			if(target.css("display")!='none') { 
-		    				target.hide();
-		    				status = "expand";
-		    			} else 
-		    				target.show(); 
-		    			$(this).children("img")[0].src="${resdir}/image/icon_"+status+".png";
-		    		};
-		    		var sections=$(".expandableSection").click(callback);
-		    		if((index=window.location.href.indexOf("#buttons"))>-1)
-		    			$(window.location.href.substring(index,window.location.href.length).replace(".","\\.")).trigger("click");
-		    		else if(browser)
-						addonSection.trigger("click");
-		    		else
-		    			bookmarkletSection.trigger("click");
-		    		if(browser.name=="Chrome") 
-						index=1;
-					else if(browser.name=="Firefox"&&browser.version>=4)
-						index=0;
-					$(sections[index+1]).trigger("click");
-		    	});
-		    ]]>
-		    </script>
-			<!--+ 
-                |              Chrome / Firefox Bookmarklet Addon 
-                +-->
-		    <ul>
-	           	<li>
-	           		<p><fmt:message key="buttons.page.introduction"><fmt:param value="${properties['project.name']}"/></fmt:message></p>
-	           		<h2 id="buttons.Addon" class="expandableSection" style="cursor:pointer"><img src="${resdir}/image/icon_expand.png"/><![CDATA[&nbsp;]]><fmt:message key="bookmarklet.addon.headline"><fmt:param value="${properties['project.name']}"/></fmt:message></h2>
-	           		<div style="display:none;margin-left:20px;">
-		           		<p><fmt:message key="bookmarklet.addon.text1"><fmt:param value="${properties['project.name']}"/></fmt:message></p>
-		           		<h3 class="expandableSection"><img src="${resdir}/image/icon_expand.png"/>Firefox</h3>
-		           		<div style="margin-left:15px;display:none">
-			           		<p><img src="/resources/image/bookmarklet_screenshot_firefox_${fn:toLowerCase(exampleString)}.png"/></p>
-			           		<p><fmt:message key="bookmarklet.addon.text2"/></p>
-			           		<p><a href="${properties['project.addons.firefox.url']}" class="post.resource.firefox.installButton"><fmt:message key="bookmarklet.buttonTextFirefox"/></a></p>
-		           		</div>
-		           		<h3 class="expandableSection"><img src="${resdir}/image/icon_expand.png"/>Chrome</h3>
-		           		<div style="margin-left:15px;display:none">
-			           		<p><img src="/resources/image/bookmarklet_screenshot_chrome_${fn:toLowerCase(exampleString)}.png"/></p>
-			           		<p><fmt:message key="bookmarklet.addon.text3"><fmt:param value="${properties['project.name']}"/></fmt:message></p>
-
-			           		<p><a href="${properties['project.addons.chrome.url']}" class="post.resource.chrome.installButton"><fmt:message key="bookmarklet.buttonTextChrome"/></a></p>
-		           		</div>
-		           		<p><i><fmt:message key="note"/>: <fmt:message key="bookmarklet.legacyNotice"/>&amp;nbsp;<fmt:message key="bookmarklet.legacyNotice.further1"/></i></p>
-	           		</div>
-					<c:set var="userName" value="${mtl:encodeURI(command.context.loginUser.name)}" />		
-	    			<h2 id="buttons.Bookmarklets" class="expandableSection" style="cursor:pointer"><img src="${resdir}/image/icon_expand.png"/><![CDATA[&nbsp;]]><fmt:message key="buttons.bookmarklet1"/></h2>
-	    			<div style="display:none;margin-left:20px;">
-			            <!--+ 
-			                | myBibSonomy 
-			                +-->	
-			         	<c:if test="${command.context.userLoggedIn}">
-							<p>
-								<fmt:message key="buttons.mybibsonomy_part_one"/><buttons:myBibSonomy username="${userName}"/><fmt:message key="buttons.mybibsonomy_part_two"><fmt:param value="${properties['project.name']}"></fmt:param></fmt:message>
-							</p>
-							<p>
-								<fmt:message key="buttons.mybibsonomy_part_three"/>
-								<a href="/user/${userName}">
-									<fmt:message key="buttons.mybibsonomy_part_four"/>
-								</a>
-								<fmt:message key="buttons.mybibsonomy_part_five"/>
-								<a href="/user/${userName}">
-									<fmt:message key="buttons.mybibsonomy"><fmt:param value="${properties['project.name']}"></fmt:param></fmt:message>
-								</a>
-			                    <c:out value=" "/>
-								<fmt:message key="buttons.mybibsonomy_part_six"/>
-							</p>
-						</c:if>
-
-
-			            <!-- 
-			               |              postBookmark 
-			               -->  
-						<h3><fmt:message key="buttons.shortcut_bookmarks"/></h3>
-						<c:choose>
-							<c:when test="${command.context.userLoggedIn}">
+			   		<!-- INTRODUCTION -->
+			   		<p class="lead">
+			   			<fmt:message key="buttons.page.introduction.short" />
+			   		</p>
+		        </div>
+			   		<!-- =========================== -->
+			   		<!-- BROWSER ADDONS (first part) -->
+			   		<!-- =========================== -->
+			   	<div id="browser-addon">
+			   		<hr class="featurette-divider" />
+			   		
+		    		<!-- Heading -->
+					<h2 class="featurette-heading">
+		           		<fmt:message key="bookmarklet.addon.headline">
+		           			<fmt:param value="${properties['project.name']}" />
+		           		</fmt:message>
+					</h2>
+					
+					<div class="row">
+		      		
+						<div class="col-md-7">
+			
+							<!-- Text -->
+							<div class="lead">
+							
 								<p>
-									<fmt:message key="buttons.shortcut_one"/>
-									<buttons:postBookmark/><fmt:message key="buttons.shortcut_two"/><buttons:postBookmarkPopUp/>
-									<fmt:message key="buttons.shortcut_three"/>
+									<fmt:message key="bookmarklet.addon.text1.short">
+				           				<fmt:param value="${properties['project.name']}" />
+				           			</fmt:message>
 								</p>
-							</c:when>
-							<c:otherwise>
+								
+				           		<ul class="checklist">
+				           			<li><span class="fa fa-check" style="color: #0b0;"><!--  --></span>&amp;nbsp
+										<fmt:message key="bookmarklet.addon.text1.check1">
+											<fmt:param value="${properties['project.name']}" />
+										</fmt:message>
+									</li>
+				           			<li><span class="fa fa-check"
+										style="color: #0b0;">
+											<!--  -->
+									</span>&amp;nbsp <fmt:message key="bookmarklet.addon.text1.check2" /></li>
+				           			<li><span class="fa fa-check"
+										style="color: #0b0;">
+											<!--  -->
+									</span>&amp;nbsp <fmt:message key="bookmarklet.addon.text1.check3" /></li>
+			           			</ul>
+
+		           			</div>
+			           		
+			           		<!-- Firefox button -->
+			           		<div id="firefoxButton">
 								<p>
-									<fmt:message key="buttons.shortcut_login_one"/>
-									<a href="/login"><fmt:message key="buttons.shortcut_login_two"/></a>
-									<fmt:message key="buttons.shortcut_login_three"/>
+									<!-- Vorübergehend entfernt-> margin: 0 auto -->
+				           			<a href="${properties['project.addons.firefox.url']}"
+										class="btn btn-success btn-lg btn-block">
+										
+				           				<fmt:message key="bookmarklet.buttonTextFirefox" />
+				           			</a>
+					           	</p>
+							</div>
+			           		
+			           		<!-- Chrome button -->
+			           		<div id="chromeButton">
+								<p>
+									<!-- Vorübergehend entfernt-> margin: 0 auto -->
+				           			<a href="${properties['project.addons.chrome.url']}"
+										class="btn btn-success btn-lg btn-block">
+				           				<fmt:message key="bookmarklet.buttonTextChrome" />
+				           			</a>
 								</p>
-							</c:otherwise>
-						</c:choose>
-						<p><fmt:message key="buttons.shortcut_bookmarks_end"/></p>
+			           		</div>
+			           		
+			           		<!-- Safari button -->
+							<!-- TODO: check when this is used! -->
+			           		<div id="safariButton">
+							<p>
+								<fmt:message key="buttons.mybibsonomy_part_three" />
+								<a href="${absoluteUrlGenerator.getUserUrlByUserName(userName)}">
+									<fmt:message key="buttons.mybibsonomy_part_four" />
+								</a>
+								<fmt:message key="buttons.mybibsonomy_part_five" />
+								<a href="${absoluteUrlGenerator.getUserUrlByUserName(userName)}">
+									<fmt:message key="buttons.mybibsonomy">
+											<fmt:param value="${properties['project.name']}"></fmt:param>
+										</fmt:message>
+								</a>
+			                    <c:out value=" " />
+								<fmt:message key="buttons.mybibsonomy_part_six" />
+							</p>
+			           		</div>
+			           		
+						</div>
+
 						
-			      
-			            <!-- 
-			               |              postPublication 
-			               -->
-						<c:if test="${command.context.userLoggedIn}">
-			                <h3><fmt:message key="buttons.shortcut_bibtex"/></h3>
-			           		<p>
-								<fmt:message key="buttons.shortcut_one"/>
-								<buttons:postPublication/><fmt:message key="buttons.shortcut_two"/><buttons:postPublicationPopUp/>
-								<fmt:message key="buttons.shortcut_three"/>
-								<fmt:message key="buttons.shortcut_bibtex_end"><fmt:param value="${properties['project.name']}"></fmt:param></fmt:message>
-							</p>
-						</c:if>
+						<div class="col-md-5">
+							
+							<!-- FIREFOX -->
+							<div id="firefox">
+								<!-- Screenshot -->
+								<span class="img-thumbnail img-responsive">
+									<img class="featurette-image img-responsive"
+											src="/resources/image/bookmarklet_screenshot_firefox_${fn:toLowerCase(exampleString)}.png" />
+									<br />
+									<fmt:message key="bookmarklet.addon.text2">
+										<fmt:param value="${properties['project.name']}" />
+									</fmt:message>
+									
+								</span>
+					        </div>
+			
+							<!-- Chrome -->
+							<div id="chrome">
+								<span class="img-thumbnail img-responsive">
+									<img class="featurette-image img-responsive"
+											src="/resources/image/bookmarklet_screenshot_chrome_${fn:toLowerCase(exampleString)}.png" />
+									<br />
+				           			<fmt:message key="bookmarklet.addon.text3">
+				           				<fmt:param value="${properties['project.name']}" />
+				           			</fmt:message>
+				           		</span>
+								
+							</div>
+						
+							<!-- Safari -->
+							<div id="safari">
+								<span class="img-thumbnail img-responsive">
+									<img class="featurette-image img-responsive"
+											src="/resources/image/bookmarklet_screenshot_safari_${fn:toLowerCase(exampleString)}.png" />
+				           			<br />
+				           			<fmt:message key="bookmarklet.addon.text3">
+				           				<fmt:param value="${properties['project.name']}" />
+				           			</fmt:message>
+				           		</span>
+							</div>
+							
+						</div>
 					</div>
-	           	</li>
-	            <!-- 
-	               |              JavaScript code snippets 
-	               -->  
-	            <li style="margin-left:15px;">
-	            	<h2 id="buttons.Snippets"><fmt:message key="buttons.javascript_snippets"/></h2>
-	            	<div style="margin-left:5px;">
-						<p><fmt:message key="buttons.javascript_snippets_text"><fmt:param value="${properties['project.name']}"></fmt:param></fmt:message></p>
-						<buttons:snippets/>
-					</div>
-				</li>
-			</ul>
-	</jsp:attribute>
+				</div>		
+					<hr class="featurette-divider" />
+		          		         		
+					<c:set var="userName"
+						value="${mtl:encodeURI(command.context.loginUser.name)}" />
+						
+					<!-- ======================================================== -->
+					<!-- SECOND PART: (Bookmarklet buttons on your bookmarks bar) -->
+					<!-- ======================================================== -->
+		           		
+					<!-- Heading -->
+					<h2 class="featurette-heading">
+		           		<fmt:message key="buttons.bookmarklet1" />
+		           	</h2>
+		           	
+		           	<!-- Subheading -->
+		           	<div class="lead" id="allBrowsers">
+			           	<p>
+							<fmt:message key="buttons.mybibsonomy_intro" />
+						</p>
+		           	</div>
+		           	<div id="internetExplorer">
+			          	<p>
+							<fmt:message key="buttons.mybibsonomy_internetExplorer" />
+						</p>
+		           	</div>
+				           	
+					<c:if test="${command.context.userLoggedIn}">
+				           		
+				           	<!-- my bibsonomy -->	
+				           	<div class="row featurette">
+				           	
+				           		<div class="col-xs-5 col-lg-4 text-right">
+					           		
+					           			<buttons:myBibSonomy username="${userName}" />&amp;nbsp
+					           		
+				           		</div>
+				           		<div class="col-xs-7 col-lg-8">
+				           			<p class="lead">
+				           				<span class="fa fa-arrow-left" style="color: #0b0;">
+										<!--  -->
+									</span>&amp;nbsp
+				           				<fmt:message key="buttons.mybibsonomy_mybibsonomy" />
+				           			</p>
+				           		</div>
+				           		
+				           	</div>
+				           		
+							<!-- bookmark in this window -->
+							<div class="row featurette">
+							
+				           		<div class="col-xs-5 col-lg-4 text-right">
+					           		<p class="lead">
+					           			<buttons:postBookmark />&amp;nbsp
+					           		</p>
+				           		</div>
+				           		<div class="col-xs-7 col-lg-8">
+				           			<p class="lead">
+				           				<span class="fa fa-arrow-left" style="color: #0b0;">
+										<!--  -->
+									</span>&amp;nbsp
+				           				<fmt:message key="buttons.mybibsonomy_bookmark_here" />
+				           			</p>
+				           		</div>
+				           		
+				           	</div>
+				           		
+							<!-- bookmark in a new window -->
+							<div class="row featurette">
+							
+				           		<div class="col-xs-5 col-lg-4 text-right">
+					           		
+					           		<buttons:postBookmarkPopUp />&amp;nbsp
+					           		
+				           		</div>
+				           		<div class="col-xs-7 col-lg-8">
+				           			<p class="lead">
+				           				<span class="fa fa-arrow-left" style="color: #0b0;">
+										<!--  -->
+									</span>&amp;nbsp
+				           				<fmt:message key="buttons.mybibsonomy_bookmark_neww" />
+				           			</p>
+				           		</div>
+				           		
+				           	</div>
+				           		
+							<!-- publication in this window -->
+							<div class="row featurette">
+							
+				           		<div class="col-xs-5 col-lg-4 text-right">
+					           		<buttons:postPublication />&amp;nbsp
+				           		</div>
+				           		
+				           		<div class="col-xs-7 col-lg-8">
+				           			<p class="lead">
+				           				<span class="fa fa-arrow-left" style="color: #0b0;">
+										<!--  -->
+									</span>&amp;nbsp
+				           				<fmt:message
+										key="buttons.mybibsonomy_publication_here" />
+				           			</p>
+				           		</div>
+				           		
+				           	</div>
+				           		
+							<!-- publication in a new window -->
+							<div class="row featurette">
+							
+				           		<div class="col-xs-5 col-lg-4 text-right">
+					           		<buttons:postPublicationPopUp />&amp;nbsp
+				           		</div>
+				           		
+				           		<div class="col-xs-7 col-lg-8">
+				           			<p class="lead">
+				           				<span class="fa fa-arrow-left" style="color: #0b0;">
+										<!--  -->
+									</span>&amp;nbsp
+				           				<fmt:message
+										key="buttons.mybibsonomy_publication_neww" />
+				           			</p>
+				           		</div>
 
-</layout:paneLayout>
+				           	</div>			           		
+					</c:if>
+					
+					<hr class="featurette-divider" />
+		
+		            <!-- 
+		               |              JavaScript code snippets 
+		               -->
+		           	<h2 class="featurette-heading" id="buttons.Snippets">
+		           		<fmt:message key="buttons.javascript_snippets" />
+		           	</h2>
+		           	
+					<p class="lead">
+						<fmt:message key="buttons.javascript_snippets_text">
+							<fmt:param value="${properties['project.name']}" />
+						</fmt:message>
+					</p>
+						
+					<buttons:snippets />
+					
+					<!-- Browser detection -->
+					<script type="text/javascript">
+						var ua = navigator.userAgent.toLowerCase();
 
+						console.log("Browser: " + ua);
+						$("#browser-addon").hide();
+						
+						$("#firefox").hide();
+						$("#firefoxButton").hide();
+
+						$("#chrome").hide();
+						$("#chromeButton").hide();
+
+						$("#safari").hide();
+						$("#safariButton").hide();
+
+						$("#internetExplorer").hide();
+
+						if (ua.indexOf("firefox") > -1) { //this is firefox
+							$("#browser-addon").show();
+							$("#firefox").show();
+							$("#firefoxButton").show();
+						} else if (ua.indexOf("chrome") > -1) { //this is chrome
+							$("#browser-addon").show();
+							$("#chrome").show();
+							$("#chromeButton").show();
+						} /* else if (ua.indexOf("safari") > -1) { //this is safari
+							$("#safari").show();
+							$("#safariButton").show();
+						} */ else {
+							$("#allBrowsers").hide();
+							$("#internetExplorer").show();
+						}
+					</script>
+				</div>
+			</div>
+			<br />
+		</jsp:attribute>
+	</layout:paneLayout>
 </jsp:root>

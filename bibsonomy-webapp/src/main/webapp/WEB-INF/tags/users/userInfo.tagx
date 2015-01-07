@@ -12,7 +12,7 @@
 	<jsp:directive.attribute name="moveFromTabUncertain" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="selTab" type="java.lang.String" required="true" />
 		
-	<c:url var="adminUrl" value="/admin" />
+	<c:url var="adminUrl" value="${relativeUrlGenerator.getAdminUrlByName(null)}" />
 
 	<tr id="sl${rowNumber}"
 		class="${spamUser.prediction == 9 ? 'spamflag uncertainUser' : ((spamUser.spammer==true) ? 'spammer' : none)}">
@@ -48,7 +48,7 @@
 		name of the user
 	-->
 	<td>
-	<c:url value="/user/${fn:escapeXml(spamUser.name)}" var="userUrl">
+	<c:url value="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(spamUser.name))}" var="userUrl">
 		<c:param name="filter" value="ADMIN_SPAM_POSTS" />
 	</c:url>
 	<a href="${userUrl}">

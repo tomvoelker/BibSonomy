@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.rest.remotecall;
 
 import static org.junit.Assert.assertEquals;
@@ -54,8 +80,10 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
+import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
@@ -77,7 +105,7 @@ import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.util.HashUtils;
 import org.bibsonomy.util.file.ServerFileLogic;
-import org.bibsonomy.util.file.document.ServerDocumentFileLogic;
+import org.bibsonomy.webapp.util.file.document.ServerDocumentFileLogic;
 import org.easymock.EasyMock;
 import org.easymock.IArgumentMatcher;
 import org.eclipse.jetty.server.AbstractConnector;
@@ -605,7 +633,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */
 	@Test
 	public void getPostsTestBookmarkByTag() {
-		getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null, null,  null /* must be null because order is inferred and not transmitted */, null, null, 7, 1264);
+		getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null, null,  null /* must be null because order is inferred and not transmitted */, null, null, 7, PostLogicInterface.MAX_QUERY_SIZE + 7);
 	}
 	
 	/**
@@ -1150,12 +1178,12 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	@Override
-	public void createReferences(final String postHash, final Set<String> references) {
+	public void createRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void deleteReferences(final String postHash, final Set<String> references) {
+	public void deleteRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
 		// TODO Auto-generated method stub
 	}
 

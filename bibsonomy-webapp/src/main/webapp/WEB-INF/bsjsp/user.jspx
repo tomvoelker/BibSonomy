@@ -13,99 +13,97 @@
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/bstags/spheres"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"	
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}">
 	
+	<fmt:message var="headline" key="page.user.headline" />
+	
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}" headline="${headline}${command.requestedUser}">
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.user" formAction="/user/${fn:escapeXml(command.requestedUser)}" formInputName="tag" requestedUser="${command.requestedUser}">
+			<parts:search pathMessageKey="navi.user" formAction="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}" formInputName="tag" requestedUser="${command.requestedUser}">
 				<jsp:attribute name="pathPart">
-					<li>
-						:: <a href="/user/${mtl:encodeURI(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> 
-					</li>
+					<a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"><user:username username="${command.requestedUser}" /></a> 
 				</jsp:attribute>
-				<!-- 
-				<jsp:attribute name="afterInput">
-					<user:name user="${command.user}"/>
-					<user:cv user="${command.user}"/>
-				</jsp:attribute>
-				-->
 			</parts:search>
+		</jsp:attribute>
+
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:usercrumb requestedUser="${command.requestedUser}" loginUser="${command.context.loginUser}" active="${true}" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-		<ul>
-
-			<li><users:socializer command="${command}" /></li>
-			
-			<!-- Did you know? -->
-			<c:if test="${	command.context.userLoggedIn and 
-							command.context.loginUser.name eq command.requestedUser and 
-							mtl:hasDidYouKnowMessage(command) and
-							command.context.loginUser.settings.simpleInterface}">
-				<li><bs:didYouKnow command="${command}"/></li>
-			</c:if>
-			
-			<!-- link to discussed user page -->
-			<c:if test="${not command.context.userLoggedIn or command.context.loginUser.name ne command.requestedUser}">
-			<li>
-				<h4><fmt:message key="post.resource.discussion.headline"/></h4>
-				<ul class="discussionSidebarContent sidebar_collapse_content">
-					<li>
-						<h5 class="discussion-headline sidebar-headline">
-								<fmt:message key="discussion.byUser.help" var="title">
-									<fmt:param value="${fn:escapeXml(command.requestedUser)}"/>
-								</fmt:message>
-						</h5>
-						<a href="/discussed/user/${fn:escapeXml(command.requestedUser)}" title="${title}">
-							<fmt:message key="discussion.byUser"><fmt:param value="${fn:escapeXml(command.requestedUser)}"/></fmt:message>
-						</a>
-					</li>
-				</ul>
-			</li>
-			</c:if>
-			
-			<!-- display user's tag relations -->
-			<li>
-				<fmt:message key="tagrelations.title" var="tagRelationsTitle" />
-				<h4 class="concepts-headline sidebar-headline"><fmt:message key="tagrelations"/>
-				</h4>	
-				<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
-			</li>
-
-			<!-- display similar users -->
-			<li>
-				<h4 class="sidebar similar-users-headline sidebar-headline">
-					
-					<!-- requPath + query -->
-					<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
-					<fmt:message key="users.similar"/>
-					
-				</h4>
-				<ul class="list-inline sidebar-setting-box clearfix">
-					<li>(<a href="${mtl:setParam(requPathAndQuery, 'userSimilarity', mtl:toggleUserSimilarity(command.userSimilarity)) }"><fmt:message key="more"/>...</a>)</li>
-				</ul>
-				
-				<users:related cmd="${command.relatedUserCommand}" displayFollowLink="${false}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
-			</li>
+			<ul>
 	
-			<!-- display tags -->
-			<li>
-				<h4 class="tagcloud-headline sidebar-headline sidebar"><fmt:message key="tags"/></h4>
-				<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-			</li>
-			
-			<c:if test="${command.context.loginUser.role == 'ADMIN' and not empty command.user}">
+				<li><users:socializer command="${command}" /></li>
+				
+				<!-- Did you know? -->
+				<c:if test="${	command.context.userLoggedIn and 
+								command.context.loginUser.name eq command.requestedUser and 
+								mtl:hasDidYouKnowMessage(command) and
+								command.context.loginUser.settings.layoutSettings.simpleInterface}">
+					<li><bs:didYouKnow command="${command}"/></li>
+				</c:if>
+				
+				<!-- link to discussed user page -->
+				<c:if test="${not command.context.userLoggedIn or command.context.loginUser.name ne command.requestedUser}">
 				<li>
-					<h4 class="admininfo-headline sidebar-headline">user details</h4>
-					<user:details user="${command.user}"/>
+					<h4 class="sidebar"><fmt:message key="post.resource.discussion.headline"/></h4>
+					<ul class="discussionSidebarContent sidebar_collapse_content">
+						<li>
+							<h5 class="discussion-headline sidebar-headline">
+									<fmt:message key="discussion.byUser.help" var="title">
+										<fmt:param value="${fn:escapeXml(command.requestedUser)}"/>
+									</fmt:message>
+							</h5>
+							<a href="${relativeUrlGenerator.prefix('discussed').getUserUrlByUserName(fn:escapeXml(command.requestedUser))}" title="${title}">
+								<fmt:message key="discussion.byUser"><fmt:param value="${fn:escapeXml(command.requestedUser)}"/></fmt:message>
+							</a>
+						</li>
+					</ul>
 				</li>
-			</c:if>
-		</ul>
-		</jsp:attribute> <!-- sidebar -->
+				</c:if>
+				
+				<!-- display user's tag relations -->
+				<li>
+					<h4 class="sidebar concepts-headline sidebar-headline">
+						<fmt:message key="tagrelations"/>
+					</h4>
+					<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
+				</li>
+	
+				<!-- display similar users -->
+				<li>
+					<h4 class="sidebar similar-users-headline sidebar-headline">
+						<!-- requPath + query -->
+						<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
+						<fmt:message key="users.similar"/>
+					</h4>
+					<ul class="list-inline sidebar-setting-box clearfix">
+						<li>(<a href="${mtl:setParam(requPathAndQuery, 'userSimilarity', mtl:toggleUserSimilarity(command.userSimilarity)) }"><fmt:message key="more"/>...</a>)</li>
+					</ul>
+					
+					<users:related cmd="${command.relatedUserCommand}" displayFollowLink="${false}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
+				</li>
 		
+				<!-- display tags -->
+				<li>
+					<h4 class="tagcloud-headline sidebar-headline sidebar"><fmt:message key="tags"/></h4>
+					<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
+				</li>
+				
+				<c:if test="${command.context.loginUser.role == 'ADMIN' and not empty command.user}">
+					<li>
+						<h4 class="sidebar admininfo-headline sidebar-headline">user details</h4>
+						<user:details user="${command.user}"/>
+					</li>
+				</c:if>
+			</ul>
+		</jsp:attribute> <!-- sidebar -->
 	</layout:resourceLayout>
-
 </jsp:root>

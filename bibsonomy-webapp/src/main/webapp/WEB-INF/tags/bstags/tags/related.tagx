@@ -7,10 +7,14 @@
 	<jsp:directive.attribute name="cmd" type="org.bibsonomy.webapp.command.RelatedTagCommand" required="true" />
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="order" type="java.lang.String" required="true" />
-
-	<ul class="taglist sidebar_collapse_content">
+	<jsp:directive.attribute name="relevantfor" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="tagsRequested" type="java.lang.Boolean" required="false" />
+	
+	<!-- show '+' sign only when tag is selected for /relevantfor/group/ -->
+	<c:set var="showRelatedTagsURL" value="${relevantfor and tagsRequested}"/>
+	
+	<ul class="taglist">
 		<c:forEach var="tag" items="${cmd.relatedTags}">
-
 			<!-- determine css depending on folkrank weights -->
 			<c:if test="${order eq 'folkrank'}">
 				<c:choose>
@@ -48,14 +52,25 @@
 				<fmt:message key="post" var="posts" /><!-- singular -->
 			</c:if>
 			
-			<!-- construct url to single tag -->
-			<c:url var="tagUrl"
-				   value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
-			
-			<!-- construct url to several tags -->
-			<c:url var="tagsUrl"
-				   value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
-			
+			<!-- construct url to single tag and several tags -->
+			<c:choose>
+				<c:when test="${!relevantfor}">
+					<c:url var="tagUrl"
+					   value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
+					<c:url var="tagsUrl"
+						value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
+				</c:when>
+				<!-- construct relevantfor/group url -->
+				<c:otherwise>
+						<c:url var="tagUrl"
+								value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${command.requestedGroup}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
+						<c:if test="${showRelatedTagsURL}">
+							<c:url var="tagsUrl"
+								value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${command.requestedGroup}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
+						</c:if>
+				</c:otherwise>
+			</c:choose>
+		
 			<!-- set titles -->
 			<c:set var="tagTitle">
 				<c:choose>
@@ -73,24 +88,28 @@
 					<c:otherwise>${fn:escapeXml(tag.name)}</c:otherwise>
 				</c:choose>
 			</c:set>
-			<c:set var="tagsTitle">
-				${fn:escapeXml(cmd.requestedTags)}
-				<c:out value=" "/>
-				${fn:escapeXml(tag.name)} 
-				<c:if test="${order ne 'folkrank'}">
-					(${tag.usercount}<c:out value=" "/>${posts})
-				</c:if>
-			</c:set>
+			<c:if test="${!relevantfor or showRelatedTagsURL}">
+				<c:set var="tagsTitle">
+					${fn:escapeXml(cmd.requestedTags)}
+					<c:out value=" "/>
+					${fn:escapeXml(tag.name)}
+					<c:if test="${order ne 'folkrank'}">
+						(${tag.usercount}<c:out value=" "/>${posts})
+					</c:if>
+				</c:set>
+			</c:if>
 			
 			<!-- display link -->
 			<li class="${tagclass}">
+			<c:if test="${!relevantfor or showRelatedTagsURL}">
 				<a title="${tagsTitle}" href="${tagsUrl}">
-					<fmt:message key="tag.addRelatedTag"/>${mtl:ch('nbsp')}
+					<fmt:message key="tag.addRelatedTag"/>
 				</a>
-				<a title="${tagTitle}" href="${tagUrl}">
-					<c:out value="${tag.name}" />
-				</a>
-				<c:out value=" "/>
+				<c:out value=" | "/>
+			</c:if>
+			<a title="${tagTitle}" href="${tagUrl}">
+				<c:out value="${tag.name}" />
+			</a>
 			</li>
 		</c:forEach>
 	</ul>

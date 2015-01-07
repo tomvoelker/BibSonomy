@@ -36,7 +36,7 @@
 			<li><a href="#citation_bibtex">BibTeX</a></li>
 			<li><a href="#citation_endnote">EndNote</a></li>
 			<li>
-				<a href="/export/bibtex/2${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}?formatEmbedded=true"><fmt:message key="bibtex.all_exports" /></a>
+				<a href="${relativeUrlGenerator.prefix('export').getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, post.user.name)}?formatEmbedded=true"><fmt:message key="bibtex.all_exports" /></a>
 			</li>
 		</ul>
 		<div class="tab_content">
@@ -46,7 +46,7 @@
 					| title of the publication 
 					+-->
 				<h3 style="margin-top: 0;">
-					<a href="/bibtex/${post.resource.interHash}"><c:out value="${mtl:cleanBibtex(post.resource.title)}" /></a>
+					<a href="${relativeUrlGenerator.getGoldstandardUrlByInterHash(post.resource.interHash)}"><c:out value="${mtl:cleanBibtex(post.resource.title)}" /></a>
 				</h3>
 				<bib:desc publication="${post.resource}"/>
 			</div>

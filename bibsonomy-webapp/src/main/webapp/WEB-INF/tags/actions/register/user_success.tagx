@@ -34,7 +34,7 @@
 			
 			
 		<!-- 
-				<p><fmt:message key="register.welcome"/> <a href="/">${properties['project.name']}</a>! <fmt:message key="register.signedIn"/></p>
+				<p><fmt:message key="register.welcome"/> <a href="${relativeUrlGenerator.getProjectHome()}">${properties['project.name']}</a>! <fmt:message key="register.signedIn"/></p>
 		 -->
 		
 				<c:if test="${not empty confirmationMailFragment}">

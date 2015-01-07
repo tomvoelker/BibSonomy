@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -20,6 +46,8 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.entity.UserRealnameResolver;
 import org.bibsonomy.model.User;
+import org.bibsonomy.services.URLGenerator;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.webapp.command.actions.FacebookAccessCommand;
@@ -65,8 +93,7 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 	/** facebook's api secret */
 	private String fbSecret;
 
-	/** project for call back requests */
-	private String projectHome;
+	private URLGenerator urlGenerator;
 	
 	/** resolves imported facebook user to BibSonomy users */
 	private UserRealnameResolver friendsResolver;
@@ -114,7 +141,7 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 		log.debug("obtaining a request token for user '"+user.getName()+"' from facebook");
 
 		// url to call when authorization dialog finished
-		final String callbackURI = this.projectHome + CALL_BACK + "/" + UrlUtils.safeURIEncode(State.ACCESS.name());
+		final String callbackURI = this.urlGenerator.getProjectHome() + CALL_BACK + "/" + UrlUtils.safeURIEncode(State.ACCESS.name());
 		
 		// TODO use URLBuilder
 		// url for obtaining the request token
@@ -139,7 +166,7 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 		}
 
 		// url to call when authorization dialog finished
-		final String callbackURI = this.projectHome + CALL_BACK + "/" + UrlUtils.safeURIEncode(State.ACCESS.name());
+		final String callbackURI = this.urlGenerator.getProjectHome() + CALL_BACK + "/" + UrlUtils.safeURIEncode(State.ACCESS.name());
 
 		// url for authorizing the request token
 		String redirectURI =  UrlUtils.setParam(FB_OAUTH_ACCESSS_URL, "client_id", UrlUtils.safeURIEncode(this.fbApiKey));
@@ -217,7 +244,7 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 			
 			// the raw response string
 			
-			responseString = WebUtils.inputStreamToStringBuilder(method.getResponseBodyAsStream(), "UTF-8").toString();
+			responseString = WebUtils.inputStreamToStringBuilder(method.getResponseBodyAsStream(), StringUtils.CHARSET_UTF_8).toString();
 			
 			if (present(responseString) && responseString.startsWith(OAUTH_ACCESS_TOKEN)) {
 				// accessToken = responseString.split("=", 2)[1];
@@ -340,12 +367,13 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 	public void setFbSecret(final String fbSecret) {
 		this.fbSecret = fbSecret;
 	} 
-
+	
 	/**
-	 * @param projectHome
+	 * 
+	 * @param urlGenerator
 	 */
-	public void setProjectHome(final String projectHome) {
-		this.projectHome = projectHome;
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
 	}
 
 	/**

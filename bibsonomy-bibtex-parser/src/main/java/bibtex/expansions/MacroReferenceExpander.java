@@ -1,27 +1,3 @@
-/**
- *  
- *  BibSonomy-BibTeX-Parser - BibTeX Parser from
- * 		http://www-plan.cs.colorado.edu/henkel/stuff/javabib/
- *   
- *  Copyright (C) 2006 - 2010 Knowledge & Data Engineering Group, 
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
- *  
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
- * 
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *  
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
-
 /*
  * Created on Mar 29, 2003
  * 
@@ -142,10 +118,10 @@ public final class MacroReferenceExpander extends AbstractExpander implements Ex
 			} else if (abstractEntry instanceof BibtexToplevelComment) {
 				// don't do anything here ...
 			} else {
-				throwExpansionException(
+				throwExpansionException(new MacroReferenceExpansionException(
 					"MacroReferenceExpander.expand(): I don't support \""
 						+ abstractEntry.getClass().getName()
-						+ "\". Use the force, read the source!");
+						+ "\". Use the force, read the source!"));
 			}
 		}
 		finishExpansion();
@@ -157,7 +133,7 @@ public final class MacroReferenceExpander extends AbstractExpander implements Ex
 		HashMap stringKey2StringValue)
 		throws ExpansionException {
 		if (compositeValue instanceof BibtexString)
-			return (BibtexString) compositeValue;
+			return compositeValue;
 		if (compositeValue instanceof BibtexMacroReference) {
 			BibtexMacroReference reference = (BibtexMacroReference) compositeValue;
 			String key = reference.getKey();
@@ -173,8 +149,8 @@ public final class MacroReferenceExpander extends AbstractExpander implements Ex
 				if (BibtexStandardMacros.isStandardMacro(key)) {
 					return factory.makeString(BibtexStandardMacros.resolveStandardMacro(key));
 				} else {
-					throwExpansionException(
-						"Invalid macro reference (target does not exist): \"" + reference.getKey() + "\"");
+					throwExpansionException(new MacroReferenceExpansionException(
+						"Invalid macro reference (target does not exist): \"" + reference.getKey() + "\""));
 					return factory.makeString(""); // if target does not exist:
 					// resolve to empty string.
 				}
@@ -191,10 +167,10 @@ public final class MacroReferenceExpander extends AbstractExpander implements Ex
 			else
 				return factory.makeConcatenatedValue(left, right);
 		}
-		throwExpansionException(
+		throwExpansionException(new MacroReferenceExpansionException(
 			"MacroReferenceExpander.simplify(): I don't support \""
 				+ compositeValue.getClass().getName()
-				+ "\". Use the force, read the source!");
+				+ "\". Use the force, read the source!"));
 		return factory.makeString(""); // so we don't know what to do, let's
 		// use the empty string
 	}

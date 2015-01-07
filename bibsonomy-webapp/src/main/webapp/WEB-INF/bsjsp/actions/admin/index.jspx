@@ -83,12 +83,12 @@
 			<h2><fmt:message key="admin.actions.general"/></h2>
 			
 			<ul>
-				<li><a href="/admin/spam">Spam</a></li>
-				<li><a href="/admin/group">Groups</a></li>
-				<li><a href="/admin/lucene">Lucene</a></li>
-				<li><a href="/admin/recommender">Recommender</a></li>
-				<li><a href="/admin/oauth">OAuth Consumer</a></li>
-				<li><a href="/admin/sync">Synchronization</a></li>
+				<li><a href="${relativeUrlGenerator.getAdminUrlByName('spam')}">Spam</a></li>
+				<li><a href="${relativeUrlGenerator.getAdminUrlByName('group')}">Groups</a></li>
+				<li><a href="${relativeUrlGenerator.getAdminUrlByName('lucene')}">Lucene</a></li>
+				<li><a href="${relativeUrlGenerator.getAdminUrlByName('recommender')}">Recommender</a></li>
+				<li><a href="${relativeUrlGenerator.getAdminUrlByName('oauth')}">OAuth Consumer</a></li>
+				<li><a href="${relativeUrlGenerator.getAdminUrlByName('sync')}">Synchronization</a></li>
 			</ul>
 		</div>	
 		
@@ -133,7 +133,7 @@
 			<h2><fmt:message key="admin.actions.user"/></h2>
 			
 			<table>	
-				<form:form name="userinfo" action="/admin">
+				<form:form name="userinfo" action="${relativeUrlGenerator.getAdminUrlByName('')}">
 				<tr>
 				<td width="180px"><form:label path="aclUserInfo">User name</form:label></td> 
   				<td width="220px"><form:input path="aclUserInfo" /></td>

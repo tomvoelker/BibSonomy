@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Database - Database for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -26,6 +52,7 @@ import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.util.ReflectionUtils;
 
@@ -94,15 +121,15 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			 * set citation graph
 			 */
 			goldStandard.addAllToReferences(this.getReferencesForPost(resourceHash, session));
+			goldStandard.addAllToReferenceThisPublicationIsPublishedIn(this.getReferenceThisPublicationIsPublishedIn(resourceHash, session));
 			goldStandard.addAllToReferencedBy(this.getRefencedByForPost(resourceHash, session));
+			goldStandard.addAllToReferencePartOfThisPublication(this.getReferencePartOfThisPublication(resourceHash, session));
 		} else {
 			log.debug("gold standard post with interhash '" + resourceHash + "' not found.");
 		}
 		
 		return post;
 	}
-	
-	
 
 	@SuppressWarnings("unchecked")
 	protected Post<R> getGoldStandardPostByHash(final String resourceHash, final DBSession session) {
@@ -119,13 +146,29 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	@SuppressWarnings("unchecked")
 	protected Set<RR> getRefencedByForPost(final String resourceHash, final DBSession session) {
 		final P param = createResourceParam(resourceHash);
-		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRefercencedBy", param, session));
+		param.setRelation(GoldStandardRelation.REFERENCE);
+		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRelatedBy", param, session));
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected Set<RR> getReferencePartOfThisPublication(final String resourceHash, final DBSession session) {
+		final P param = createResourceParam(resourceHash);
+		param.setRelation(GoldStandardRelation.PART_OF);
+		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRelatedBy", param, session));
+	}
+
+	@SuppressWarnings("unchecked")
+	private Set<RR> getReferenceThisPublicationIsPublishedIn(String resourceHash, DBSession session) {
+		final P param = createResourceParam(resourceHash);
+		param.setRelation(GoldStandardRelation.PART_OF);
+		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRelated", param, session));
 	}
 	
 	@SuppressWarnings("unchecked")
 	protected Set<RR> getReferencesForPost(final String interHash, final DBSession session) {
 		final P param = createResourceParam(interHash);
-		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRefercences", param, session));
+		param.setRelation(GoldStandardRelation.REFERENCE);
+		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRelated", param, session));
 	}
 	
 	@Override
@@ -310,9 +353,10 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	 * @param userName TODO: currently unused
 	 * @param interHash
 	 * @param references
+	 * @param relation 
 	 * @param session
 	 */
-	public void addReferencesToPost(final String userName, final String interHash, final Set<String> references, final DBSession session) {
+	public void addRelationsToPost(final String userName, final String interHash, final Set<String> references, final GoldStandardRelation relation, final DBSession session) {
 		session.beginTransaction();
 		try {
 			final Post<R> post = this.getGoldStandardPostByHash(interHash, session);
@@ -328,7 +372,8 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 					final Post<R> refPost = this.getGoldStandardPostByHash(referenceHash, session);
 					if (present(refPost)) {
 						param.setRefHash(referenceHash);
-						this.insert("insert" + this.resourceClassName + "Reference", param, session);
+						param.setRelation(relation);
+						this.insert("insertGoldStandardRelation", param, session);
 					} else {
 						log.info("Can't add reference. Gold standard " + this.resourceClassName +  " reference with resourceHash " + referenceHash + " not found.");
 					}
@@ -347,9 +392,10 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	 * @param userName
 	 * @param interHash
 	 * @param references
+	 * @param relation 
 	 * @param session
 	 */
-	public void removeReferencesFromPost(final String userName, final String interHash, final Set<String> references, final DBSession session) {
+	public void removeRelationsFromPost(final String userName, final String interHash, final Set<String> references, final GoldStandardRelation relation, final DBSession session) {
 		session.beginTransaction();
 		try {
 			final Post<R> post = this.getGoldStandardPostByHash(interHash, session);
@@ -364,7 +410,9 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 					final Post<R> refPost = this.getGoldStandardPostByHash(referenceHash, session);
 					if (present(refPost)) {
 						param.setRefHash(referenceHash);
-						this.delete("delete" + this.resourceClassName + "Reference", param, session);
+						param.setRelation(relation);
+						this.onGoldStandardRelationDelete(userName, interHash, referenceHash, relation, session);
+						this.delete("deleteGoldStandardRelation", param, session);
 					} else {
 						log.info("Can't remove reference. Gold standard " + this.resourceClassName +  " reference with resourceHash " + referenceHash + " not found.");
 					}
@@ -389,5 +437,13 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		this.plugins.onGoldStandardDelete(resourceHash, session);
 	}
 	
-	protected abstract void onGoldStandardReferenceDelete(final String userName, final String interHash, final String interHashRef, final DBSession session);
+	/**
+	 * 
+	 * @param userName
+	 * @param interHash
+	 * @param interHashRef
+	 * @param interHashRelation
+	 * @param session
+	 */
+	protected abstract void onGoldStandardRelationDelete(final String userName, final String interHash, final String interHashRef, final GoldStandardRelation interHashRelation, final DBSession session);
 }

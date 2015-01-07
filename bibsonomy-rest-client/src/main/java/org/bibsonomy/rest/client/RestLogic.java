@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Rest-Client - The REST-client.
  *
- *  BibSonomy-Rest-Client - The REST-client.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.rest.client;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -63,6 +66,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
@@ -101,11 +105,12 @@ import org.bibsonomy.rest.client.queries.post.CreateConceptQuery;
 import org.bibsonomy.rest.client.queries.post.CreateGroupQuery;
 import org.bibsonomy.rest.client.queries.post.CreatePostDocumentQuery;
 import org.bibsonomy.rest.client.queries.post.CreatePostQuery;
-import org.bibsonomy.rest.client.queries.post.CreateReferenceQuery;
+import org.bibsonomy.rest.client.queries.post.CreateRelationQuery;
 import org.bibsonomy.rest.client.queries.post.CreateSyncPlanQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserRelationshipQuery;
 import org.bibsonomy.rest.client.queries.post.PickPostQuery;
+import org.bibsonomy.rest.client.queries.put.ChangeConceptQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeDocumentNameQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeGroupQuery;
 import org.bibsonomy.rest.client.queries.put.ChangePostQuery;
@@ -405,7 +410,21 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public String updateConcept(final Tag concept, final GroupingEntity grouping, final String groupingName, final ConceptUpdateOperation operation) {
-		throw new UnsupportedOperationException();
+		switch(operation) {
+		case PICK: 
+			throw new UnsupportedOperationException();
+		case PICK_ALL: 
+			throw new UnsupportedOperationException();
+		case UNPICK: 
+			throw new UnsupportedOperationException();
+		case UNPICK_ALL: 
+			throw new UnsupportedOperationException();
+		case UPDATE: 
+			return execute(new ChangeConceptQuery(concept, concept.getName(), grouping, groupingName));
+		default: 
+			throw new UnsupportedOperationException();
+		}
+		
 	}
 
 	@Override
@@ -570,20 +589,20 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public void createReferences(final String postHash, final Set<String> references) {
-		if (!present(postHash) || !present(references)) {
+	public void createRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
+		if (!present(postHash) || !present(references) || !present(relation)) {
 			// FIXME: who needs/reads this warning? 
-			log.warn("can't create references because no post hash or no references given");
+			log.warn("can't create references because no post hash/ no references/ no relation given");
 			return;
 		}
 		for (final String referenceHash : references) {
-			final CreateReferenceQuery query = new CreateReferenceQuery(postHash, referenceHash);
+			final CreateRelationQuery query = new CreateRelationQuery(postHash, referenceHash, relation);
 			execute(query);
 		}
 	}
 
 	@Override
-	public void deleteReferences(final String postHash, final Set<String> references) {
+	public void deleteRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
 		throw new UnsupportedOperationException();
 	}
 

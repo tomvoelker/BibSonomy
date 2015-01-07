@@ -26,8 +26,7 @@
 	<!--+
 		| setting theme variables
 		+-->
-	<spring:theme code="stylesheet.additional" var="additionalCSS" text="" /> 
-	<spring:theme code="stylesheet.additional.print" var="additionalPrintCSS" text="" />
+	<!-- 	<spring:theme code="stylesheet.additional.print" var="additionalPrintCSS" text="" /> -->
 	<spring:theme code="javascript.additional" var="additionalJS" text="" />
 	
 	<!--+ 
@@ -46,7 +45,7 @@
 		|
 		+-->
 	<head>
-		<meta http-equiv="X-UA-Compatible" content="IE=8" />
+		<!--  <meta http-equiv="X-UA-Compatible" content="IE=8" /> -->
 		<meta charset="UTF-8" />
 		
 		<!--+
@@ -56,7 +55,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />  
 		
 		<!-- Latest compiled and minified CSS -->
-		<link rel="stylesheet" href="/resources/bootstrap/css/bootstrap.min.css"  />
+		<mtl:styleSheet path="${resdir}/css/bootstrap.css"  />
 
 		<!-- font awesome icon set -->
 		<mtl:styleSheet path="${resdir}/fonts/font-awesome/css/font-awesome.min.css" />
@@ -74,7 +73,7 @@
 		<!-- 
 		<mtl:styleSheet path="${resdir}/css/style.css" />
 		-->
-		<c:if test="${not empty personalized and personalized == true}">
+		<c:if test="${not empty personalized and personalized}">
 			<!-- <link rel="stylesheet" type="text/css" href="${resdir}/css/personalized.css" /> -->
 		</c:if>
 		
@@ -102,7 +101,7 @@
 					var ckey = "${command.context.ckey}";
 					var currUser = "${loginUser.name}";
 					var requUser = ${(requestedUser ne '') ? requestedUserString : "null"};
-					var confirmDelete = "${loginUser.settings.confirmDelete}";
+					var confirmDelete = ${loginUser.settings.confirmDelete};
 					
 					$(function() {
 						init("${loginUser.settings.tagboxStyle}", "${loginUser.settings.tagboxSort}", "${loginUser.settings.tagboxMinfreq}");
@@ -154,12 +153,10 @@
 		<link rel="alternate" type="application/rss+xml"  title="${properties['project.name']} Blog - RSS"  href="http://blog.bibsonomy.org/feeds/posts/default?alt=rss" />
 		<title>${properties['project.name']} <c:if test="${not empty pageTitle}"> :: <c:out value="${pageTitle}"/></c:if></title>
 		<jsp:invoke fragment="headerExt"/>
-
-		<c:if test="${not empty additionalCSS}">
-			<link rel="stylesheet" type="text/css" href="${additionalCSS}" />
-		</c:if>
-		<c:if test="${not empty additionalPrintCSS}">
-			<link rel="stylesheet" type="text/css" media="print" href="${additionalPrintCSS}" />
-		</c:if>
+		
+<!-- 		<c:if test="${not empty additionalPrintCSS}"> -->
+<!-- 			<link rel="stylesheet" type="text/css" media="print" href="${additionalPrintCSS}" /> -->
+<!-- 		</c:if> -->
+		
 	</head>
 </jsp:root>

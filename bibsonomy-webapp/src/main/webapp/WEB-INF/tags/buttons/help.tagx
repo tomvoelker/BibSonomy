@@ -24,7 +24,7 @@
         <c:choose>
           <c:when test="${not empty helpPage}">
             <!-- the given path is relative to project.home/help -->
-            <a class="smalltext" style="${iconTextStyle}" href="${properties['project.home']}help_${locale.language}${helpPage}"><c:out value="${iconText}"/></a>
+            <a class="smalltext" style="${iconTextStyle}" href="${relativeUrlGenerator.getProjectHome()}help_${locale.language}${helpPage}"><c:out value="${iconText}"/></a>
           </c:when>
           <c:otherwise>
               <span class="smalltext" style="${iconTextStyle}"><c:out value="${iconText}"/></span>

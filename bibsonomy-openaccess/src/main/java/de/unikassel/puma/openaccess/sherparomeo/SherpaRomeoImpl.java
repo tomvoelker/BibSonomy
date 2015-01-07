@@ -1,9 +1,34 @@
+/**
+ * BibSonomy-OpenAccess - Check Open Access Policies for Publications
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package de.unikassel.puma.openaccess.sherparomeo;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -31,81 +56,81 @@ public class SherpaRomeoImpl implements SherpaRomeoInterface {
 	private static final Log log = LogFactory.getLog(SherpaRomeoImpl.class);
 
 	private static final String SHERPA_API_URL = "http://www.sherpa.ac.uk/romeo/api24.php";
-    
-    private JAXBContext context;
-    
-    /**
-     * default constructor
-     * loads the jaxb context
-     */
-    public SherpaRomeoImpl() {
-        try {
-            this.context = JAXBContext.newInstance(Condition.class.getPackage().getName());
-        } catch (final JAXBException e) {
-           	log.error("error while loading JAXB context", e);
-        }
-    }
+	
+	private JAXBContext context;
+	
+	/**
+	 * default constructor
+	 * loads the jaxb context
+	 */
+	public SherpaRomeoImpl() {
+		try {
+			this.context = JAXBContext.newInstance(Condition.class.getPackage().getName());
+		} catch (final JAXBException e) {
+			log.error("error while loading JAXB context", e);
+		}
+	}
 
-    @Override
-    public String getPolicyForPublisher(final String publisher, final String qtype) {
-        try {
-            String url = SHERPA_API_URL + "?pub=" + UrlUtils.safeURIEncode(publisher);
-            if (present(qtype)) {
+	@Override
+	public String getPolicyForPublisher(final String publisher, final String qtype) {
+		try {
+			String url = SHERPA_API_URL + "?pub=" + UrlUtils.safeURIEncode(publisher);
+			if (present(qtype)) {
 				url += "&qtype=" + UrlUtils.safeURIEncode(qtype);
 			}
 
-            return this.doRequest(new URL(url));
-        } catch (final Exception e) {
-            log.error("error while getting policy for publisher", e);
-        }
-        return null;
-    }
+			return this.doRequest(new URL(url));
+		} catch (final Exception e) {
+			log.error("error while getting policy for publisher", e);
+		}
+		return null;
+	}
 
-    @Override
-    public String getPolicyForJournal(final String jtitle, final String qtype) {
-        try {
-            String url = SHERPA_API_URL + "?jtitle=" + UrlUtils.safeURIEncode(jtitle);
-            if (present(qtype)) {
-				url += "&qtype=" + URLEncoder.encode(qtype, "UTF-8");
+	@Override
+	public String getPolicyForJournal(final String jtitle, final String qtype) {
+		try {
+			String url = SHERPA_API_URL + "?jtitle=" + UrlUtils.safeURIEncode(jtitle);
+			if (present(qtype)) {
+				url += "&qtype=" + UrlUtils.safeURIEncode(qtype);
 			}
 
-            return this.doRequest(new URL(url));
-        } catch (final Exception e) {
-            log.error("error while getting policy for journal", e);
-        }
-        return null;
-    }
+			return this.doRequest(new URL(url));
+		} catch (final Exception e) {
+			log.error("error while getting policy for journal", e);
+		}
+		return null;
+	}
 
-    /**
-     * Sending request to sherparomeo.
-     * 
-     * FIXME: conditions for pre-/postprints missing
-     * FIXME: shouldn't the webapp convert the model into json?
-     * @param url
-     * @return json formated publishers
-     */
-    private String doRequest(final URL url) {
-        try {
-            final Unmarshaller unmarshaller = this.context.createUnmarshaller();
-            final Romeoapi rp = (Romeoapi) unmarshaller.unmarshal(url);
-            return this.extractInformations(rp);
-        } catch (final JAXBException e) {
-            log.error("error unmarshalling response", e);
-        }
-        return "";
-    }
+	/**
+	 * Sending request to sherparomeo.
+	 * 
+	 * FIXME: conditions for pre-/postprints missing
+	 * FIXME: shouldn't the webapp convert the model into json?
+	 * @param url
+	 * @return json formated publishers
+	 */
+	private String doRequest(final URL url) {
+		try {
+			final Unmarshaller unmarshaller = this.context.createUnmarshaller();
+			final Romeoapi rp = (Romeoapi) unmarshaller.unmarshal(url);
+			return this.extractInformations(rp);
+		} catch (final JAXBException e) {
+			log.error("error unmarshalling response", e);
+		}
+		return "";
+	}
 
 	protected String extractInformations(final Romeoapi rp) {
 		final List<Publisher> publishers = rp.getPublishers().getPublisher();
 		final JSONObject result = new JSONObject();
 		final JSONArray publishersJson = new JSONArray();
 		for (final Publisher publisher : publishers) {
-		    final JSONObject publisherJson = new JSONObject();
-		    publisherJson.put("name", publisher.getName());
-		    publisherJson.put("colour", publisher.getRomeocolour());
-		    
-		    publisherJson.put("conditions", renderConditions(publisher.getConditions().getCondition()));
-		    publishersJson.add(publisherJson);
+			final JSONObject publisherJson = new JSONObject();
+			publisherJson.put("name", publisher.getName());
+			publisherJson.put("colour", publisher.getRomeocolour());
+			
+			publisherJson.put("conditions", renderConditions(publisher.getConditions().getCondition()));
+			publishersJson.add(publisherJson);
 		}
 		result.put("publishers", publishersJson);
 		return result.toString();
