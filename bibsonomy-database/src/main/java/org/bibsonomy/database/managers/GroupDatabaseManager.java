@@ -68,14 +68,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<Group> getAllGroups(final int start, final int end, final DBSession session) {
 		final GroupParam param = LogicInterfaceHelper.buildParam(GroupParam.class, Order.ALPH, start, end);
+		final List<Group> groupList = this.queryForList("getAllGroups", param, Group.class, session);
 		
-		List<Group> groupList = this.queryForList("getAllGroups", param, Group.class, session);
-		User dummyUser;
-		for (Group g : groupList) {
-			// exclude the special groups
-			if (g.getGroupId() < 3)
-				continue;
-			dummyUser = GroupUtils.getDummyUser(g);
+		for (final Group g : groupList) {
+			final User dummyUser = GroupUtils.getDummyUser(g);
 			g.setRealname(dummyUser.getRealname());
 			g.setHomepage(dummyUser.getHomepage());
 		}

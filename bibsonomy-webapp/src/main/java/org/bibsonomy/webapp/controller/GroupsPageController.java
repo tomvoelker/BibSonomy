@@ -29,14 +29,10 @@
  */
 package org.bibsonomy.webapp.controller;
 
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.webapp.command.GroupsListCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * Controller for group overview:
