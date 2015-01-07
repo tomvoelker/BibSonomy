@@ -3,7 +3,8 @@
 
 <sqlMap namespace="UserCommon">
 
-	<resultMap id="userForGroup" extends="Common.user" class="user">
+	<resultMap id="userForGroup" class="user">
+		<result property="name" column="user_name" javaType="string" />
 		<result property="homepage"   column="user_homepage"  javaType="url"  />
 		<result property="realname"   column="user_realname"  javaType="string" />
 	</resultMap>
