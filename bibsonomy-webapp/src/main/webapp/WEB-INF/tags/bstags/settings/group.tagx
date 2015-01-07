@@ -53,19 +53,51 @@
 				</c:forEach>
 			</c:forEach>
 			<c:if test="${showPendingInvites}">
-				<bsform:fieldset legendKey="settings.group.pendingInvites">
+				<bsform:fieldset legendKey="settings.group.pendingInvites.headline">
 					<jsp:attribute name="content">
 						<fmt:message var="accinvite" key="settings.group.accInvite.button" />
-						<fmt:message var="accinviteTitle" key="settings.group.accInvite.button.title" />
 						<fmt:message var="revuser" key="settings.group.remInvite.button"/>
 						<fmt:message var="revuserTitle" key="settings.group.remInvite.button.title"/>
+						<fmt:message var="accinviteTitle" key="settings.group.accInvite.button.title"/>
+								
 						<c:forEach items="${command.user.pendingGroups}" var="group">
-							<c:if test="${group.getGroupMembershipForUser(loginUser).groupRole eq 'INVITED' }">
-								<div style="float: left; width: 130px; padding-bottom: 10px;">
-									<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"><c:out value='${group.name}'/></a><br />
-									<span class="smalltext">(<a href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}" title="${revuserTitle}">${revuser}</a>)</span>
-									<span class="smalltext">(<a href="/updateGroup?operation=accept_join_request&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}" title="${accuserTitle}">sdfg${accuser}</a>)</span>
-								</div>
+							<c:if test="${group.getGroupMembershipForUser(loginUser).groupRole eq 'INVITED' }">		
+								
+					
+								<dl class="dl-horizontal dt-thumbnail-items group-list">
+									<dt>
+									<span class="sr-only">
+									<c:out value="${group.name}" />
+									</span>
+									<img class="img-thumbnail img-resposive user-avatar" src="${relativeUrlGenerator.getUserPictureUrlByUsername(group.name)}"/>
+									</dt>
+									
+									<dd>
+										<div class="row">
+											<div class="col-xs-9">
+												<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}">
+													<c:out value="${group.name}"/>
+												</a>
+												<c:if test="${not empty group.realname}">
+													(<c:out value="${group.realname}" />)
+												</c:if>
+												<br />
+												
+												<c:if test="${not empty group.homepage}">
+													TODO: Check if this is possible!<br />
+													<small><a href="${mtl:encodeURI(group.homepage)}">Homepage</a></small>
+												</c:if>
+											</div>
+														
+											<div class="col-xs-3">
+												<a class="btn btn-default btn-block btn-sm" title="${revuserTitle}" href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}">${revuser}</a>
+												<a class="btn btn-default btn-block btn-sm" title="${accinviteTitle}" href="/updateGroup?operation=accept_join_request&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}">${accinvite}</a>
+											</div>
+										</div>
+									</dd>
+								</dl>
+								
+								
 							</c:if>
 						</c:forEach>
 					</jsp:attribute>

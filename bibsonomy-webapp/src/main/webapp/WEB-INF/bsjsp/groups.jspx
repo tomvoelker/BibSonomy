@@ -46,12 +46,7 @@
 				+-->
 			<bs:alert style="info" dismissable="${true}">
 				<jsp:attribute name="alertBody">
-					TODO: Replace this message with something like <b>you can create a new
-						group on the settings page</b> or whatever!!!<br />
-						Also, make this closeable<br/><br />
-					<fmt:message key="system.groups">
-						<fmt:param value="${properties['project.email']}" />
-					</fmt:message>
+					<fmt:message key="system.groups" />
 				</jsp:attribute>
 			</bs:alert>
 			
