@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.command;
 
 import java.net.URL;
+
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.model.Group;
