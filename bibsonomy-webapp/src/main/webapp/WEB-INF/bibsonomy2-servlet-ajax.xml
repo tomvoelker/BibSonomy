@@ -133,7 +133,7 @@
 				</entry>
 				<entry key="/ajax/pickUnpickPost">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName"	value="basketController" />
+						<property name="controllerBeanName"	value="clipboardController" />
 						<property name="allowedFields" >
 							<list>
 								<value>hash</value>
@@ -159,12 +159,13 @@
 				</entry>
 				<entry key="/ajax/goldstandards/relation">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="editGoldstandardReferencesController"/>
+						<property name="controllerBeanName" value="editGoldstandardRelationController"/>
 						 <property name="allowedFields">
 							<list>
 								<value>action</value>
 								<value>hash</value>
 								<value>references</value>
+								<value>relation</value>
 							</list>
 						</property>
 					</bean>
@@ -180,6 +181,7 @@
 						</property>
 					</bean>
 				</entry>
+				
 				<entry key="/ajax/comments">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="commentController"/>
@@ -198,6 +200,7 @@
 						</property>
 					</bean>
 				</entry>
+				
 				<entry key="/ajax/reviews">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="reviewController"/>
@@ -216,6 +219,7 @@
 						</property>
 					</bean>
 				</entry>
+				
 				<entry key="/ajax/updateprivatenote">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="privatenoteController" />
@@ -228,6 +232,7 @@
 						</property>
 					</bean>
 				</entry>
+				
 			</map>
 		</property>
 	</bean>
@@ -248,14 +253,14 @@
 	</bean>
 	
 	<bean id="generalAjaxController" class="org.bibsonomy.webapp.controller.ajax.GeneralAjaxController" scope="request" parent="ajaxController" />	
+	<bean id="editGoldstandardRelationController" class="org.bibsonomy.webapp.controller.ajax.EditGoldstandardRelationController" parent="ajaxController" scope="request" />
 	
-	<bean id="editGoldstandardReferencesController" class="org.bibsonomy.webapp.controller.ajax.EditGoldstandardReferencesController" scope="request" parent="ajaxController" />
-	
-	<bean id="commentController" class="org.bibsonomy.webapp.controller.ajax.CommentAjaxController" parent="discussionItemAjaxController" scope="request" />
-	
+	<bean id="commentController" class="org.bibsonomy.webapp.controller.ajax.CommentAjaxController" parent="discussionItemAjaxController" scope="request" />	
 	<bean id="reviewController" class="org.bibsonomy.webapp.controller.ajax.ReviewAjaxController" parent="discussionItemAjaxController" scope="request" />
 	
+	
 	<bean id="additionalURLController" class="org.bibsonomy.webapp.controller.ajax.AdditionalURLController" scope="request" parent="ajaxController" />
+	
 	
 	<bean id="cvController" class="org.bibsonomy.webapp.controller.ajax.CvAjaxController" scope="request" parent="ajaxController">
 		<property name="wikiRenderer" ref="wikiRenderer"/>
@@ -263,12 +268,14 @@
 	</bean>
 
 
+	
 	<bean id="documentsController" class="org.bibsonomy.webapp.controller.ajax.DocumentsController" scope="request" parent="ajaxController">
 		<property name="fileLogic" ref="fileLogic" />
 		<property name="messageSource" ref="messageSource"/>
 	</bean>	
 		
 	<!-- controller for handling recommendation requests -->
+	
 	<bean id="ajaxTagsRecommendationsController" class="org.bibsonomy.webapp.controller.ajax.RecommendationsAjaxController" abstract="true" parent="ajaxController">
 		<!-- used for accessing spam informations -->
 		<property name="adminLogic" ref="adminLogic"/>  
@@ -277,38 +284,27 @@
 		<property name="spamTagRecommender" ref="jensRecommender"/>
 	</bean>
 	
+	
 	<bean id="ajaxItemRecommenderFeedbackController" class="org.bibsonomy.webapp.controller.ajax.ItemRecommenderFeedbackController" scope="request" parent="ajaxController">
 		<property name="multiplexingBibTexRecommender" ref="multiplexingBibTexRecommender" />
 		<property name="multiplexingBookmarkRecommender" ref="multiplexingBookmarkRecommender" />
 	</bean>
 	
+	
 	<bean id="userSearchController" class="org.bibsonomy.webapp.controller.ajax.UserSearchController" scope="request" parent="ajaxController" />
+	
 	<bean id="ajaxGetBookmarkRecommendedTagsController" class="org.bibsonomy.webapp.controller.ajax.GetBookmarkRecommendedTagsController" scope="request" parent="ajaxTagsRecommendationsController" />
+	
 	<bean id="ajaxGetPublicationRecommendedTagsController" class="org.bibsonomy.webapp.controller.ajax.GetPublicationRecommendedTagsController" scope="request" parent="ajaxTagsRecommendationsController" />
+	
 	<bean id="userRelationAjaxController" class="org.bibsonomy.webapp.controller.ajax.UserRelationAjaxController" scope="request" parent="ajaxController" />
+	
 	<bean id="groupShareAjaxController" class="org.bibsonomy.webapp.controller.ajax.GroupShareAjaxController" scope="request" parent="ajaxController" />
-	<bean id="basketController" class="org.bibsonomy.webapp.controller.ajax.BasketController" scope="request" parent="ajaxController" />
+	
+	<bean id="clipboardController" class="org.bibsonomy.webapp.controller.ajax.ClipboardController" scope="request" parent="ajaxController" />
+	
 	<bean id="conceptController" class="org.bibsonomy.webapp.controller.ajax.ConceptController" scope="request" parent="ajaxController" />
+	
 	<bean id="privatenoteController" class="org.bibsonomy.webapp.controller.ajax.PrivateNoteAjaxController" scope="request" parent="ajaxController" />
 	
-	<!--+ 
-	 	|
-	 	| Pingback/Trackback sends a "PING" to a bookmarked URL.
-	 	|
-	 	| The corresponding cron trigger is defined in bibsonomy2-servlet-cronjobs.xml.
-	 	| The used pingback implementation can be chosen with the "project.bean.pingback" property.
-	 	+-->	
-	<bean id="pingbackClient" class="com.malethan.pingback.impl.ApachePingbackClient" />
-	<bean id="trackbackClient" class="org.bibsonomy.pingback.TrackbackClient" />
-
-	<bean id="linkLoader" class="org.bibsonomy.pingback.HttpClientLinkLoader" />
-
-	<bean id="realPingback" class="org.bibsonomy.pingback.ThreadedPingbackImpl">
-		<property name="urlGenerator" ref="urlGenerator" />
-		<property name="pingbackClient" ref="pingbackClient" />
-		<property name="trackbackClient" ref="trackbackClient" />
-		<property name="linkLoader" ref="linkLoader" />
-	</bean>
-	<bean id="mockPingback" class="org.bibsonomy.pingback.MockPingback"/>
-	<alias name="${project.bean.pingback}" alias="pingback"/>
 </beans>
