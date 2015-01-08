@@ -34,13 +34,14 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 			throw new AccessDeniedNoticeException("please log in", "error.general.login");
 		}
 		
-		if (!present(command.getRequestedGroup())) {
+		final String requestedGroup = command.getRequestedGroup();
+		if (!present(requestedGroup)) {
 			throw new MalformedURLSchemeException("group settings without requested group");
 		}
 		
 		final User loginUser = command.getContext().getLoginUser();
 		command.setLoggedinUser(loginUser);
-		final Group group = logic.getGroupDetails(command.getRequestedGroup());
+		final Group group = this.logic.getGroupDetails(requestedGroup);
 		if (!present(group)) {
 			throw new AccessDeniedException("You are not a member of this group.");
 		}
@@ -55,7 +56,7 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 		command.setGroupMembership(groupMembership);
 		
 		// TODO: should only the admin get this information?
-		final User groupUser = this.logic.getUserDetails(command.getRequestedGroup());
+		final User groupUser = this.logic.getUserDetails(requestedGroup);
 		command.setRealname(groupUser.getRealname());
 		command.setHomepage(groupUser.getHomepage());
 		if (present(command.getGroup())) {
@@ -67,12 +68,13 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 		
 		switch (roleOfLoggedinUser) {
 		case ADMINISTRATOR:
-			command.addTab(GroupSettingsPageCommand.USERS_IDX, "navi.groupsettings");
-			//$FALL-THROUGH$ admin should also be able to config profile
-		case MODERATOR:
 			command.addTab(GroupSettingsPageCommand.MY_PROFILE_IDX, "navi.myprofile");
+			command.addTab(GroupSettingsPageCommand.USERS_IDX, "navi.groupsettings");
 			// TODO: adapt cv wiki handling
 			// command.addTab(CV_IDX, "navi.cvedit");
+			//$FALL-THROUGH$ admin should also be able to see all tabs
+		case MODERATOR:
+			
 			//$FALL-THROUGH$ all users should see the member list
 		default:
 			command.addTab(GroupSettingsPageCommand.MEMBER_LIST_IDX, "settings.group.memberList");

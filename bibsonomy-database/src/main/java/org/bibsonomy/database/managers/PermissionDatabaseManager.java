@@ -46,6 +46,7 @@ import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -184,7 +185,10 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 				// both users are in a group which allows to share documents
 				if (postGroups.contains(publicGroup) || postGroups.contains(group)) {
 					// check if postUserName allows to share documents
-					if (group.isUserSharedDocuments()) return true;
+					final GroupMembership memberShip = group.getGroupMembershipForUser(postUserName);
+					if (memberShip.isUserSharedDocuments()) {
+						return true;
+					}
 				}
 			}
 		}
@@ -222,8 +226,9 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 			case USER:
 				final String loggedinUserName = loginUser.getName();
 				if (loggedinUserName != null) {
-					if (loggedinUserName.equals(groupingName))
+					if (loggedinUserName.equals(groupingName)) {
 						return true;
+					}
 				}
 				
 				final List<Group> commonGroups = this.groupDb.getCommonGroups(loginUser.getName(), groupingName, session);
@@ -232,7 +237,10 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 				 */
 				for (final Group group : commonGroups) {
 					if (group.isSharedDocuments()) {
-						if (group.isUserSharedDocuments()) return true;
+						final GroupMembership memberShip = group.getGroupMembershipForUser(groupingName);
+						if (memberShip.isUserSharedDocuments()) {
+							return true;
+						}
 					}
 				}
 				return false;
@@ -383,6 +391,45 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		|| this.isAdmin(loginUser) // loginUser is admin
 		);
 	}
+	
+	/**
+	 * @param loginUser
+	 * @param userName
+	 * @return <code>true</code> if loginUser is an admin or userName or at least an admin of the group
+	 */
+	public boolean isAdminOrGroupAdminOrSelf(User loginUser, String userName) {
+		return isGroupAdmin(loginUser, userName) || isAdminOrSelf(loginUser, userName);
+	}
+	
+	/**
+	 * Checks, if the given login user is either an admin, or the user requested
+	 * by user name or at least a moderator of the group if userName is a group
+	 * 
+	 * @param loginUser
+	 * @param userName
+	 * @return <code>true</code> if loginUser is an admin or userName or at least a moderator of the group
+	 */
+	public boolean isAdminOrGroupModeratorOrSelf(final User loginUser, final String userName) {
+		return isAdminOrGroupAdminOrSelf(loginUser, userName) || isGroupModerator(loginUser, userName);
+	}
+
+	/**
+	 * @param loginUser
+	 * @param userName
+	 * @return
+	 */
+	private boolean isGroupModerator(User loginUser, String userName) {
+		return this.userHasGroupRole(loginUser, userName, GroupRole.MODERATOR);
+	}
+
+	/**
+	 * @param loginUser
+	 * @param userName
+	 * @return
+	 */
+	private boolean isGroupAdmin(User loginUser, String userName) {
+		return this.userHasGroupRole(loginUser, userName, GroupRole.ADMINISTRATOR);
+	}
 
 	/**
 	 * Checks if the given user is an admin.
@@ -403,6 +450,16 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void ensureIsAdminOrSelf(final User loginUser, final String userName) {
 		if (!this.isAdminOrSelf(loginUser, userName)) {
+			throw new AccessDeniedException();
+		}
+	}
+	
+	/**
+	 * @param loginUser
+	 * @param username
+	 */
+	public void ensureIsAdminOrGroupAdminOrSelf(User loginUser, String username) {
+		if (!this.isAdminOrGroupAdminOrSelf(loginUser, username)) {
 			throw new AccessDeniedException();
 		}
 	}

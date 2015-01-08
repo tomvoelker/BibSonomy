@@ -157,16 +157,16 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 
 			@Override
 			protected File requestFile() {
-				return fileLogic.getProfilePictureForUser( user.getName() );
+				return fileLogic.getProfilePictureForUser(user.getName());
 			}
 		});
 		
 		/*
-		 * ToDo - Replace this with a more Generic Version
+		 * TODO: Replace this with a more Generic Version
 		 * This fetches all SamlRemoteUserIds (LDAP and OpenId are already fetched through a join with the respective tables in "getUserDetails")
 		 * FIXME: Use another join in getUserDetails (or enable this query only if Saml Authentification is active) 
 		 */
-		for(final SamlRemoteUserId samlRemoteUserId : this.getSamlRemoteUserIds(user.getName(), session)) {
+		for (final SamlRemoteUserId samlRemoteUserId : this.getSamlRemoteUserIds(user.getName(), session)) {
 			user.setRemoteUserId(samlRemoteUserId);
 		}
 		

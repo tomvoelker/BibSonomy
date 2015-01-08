@@ -281,7 +281,7 @@ public class DBLogic implements LogicInterface {
 			/*
 			 * only admin and myself may see which group I'm a member of
 			 */
-			if (this.permissionDBManager.isAdminOrSelf(this.loginUser, user.getName())) {
+			if (this.permissionDBManager.isAdminOrGroupAdminOrSelf(this.loginUser, user.getName())) {
 				user.setGroups(this.groupDBManager.getGroupsForUser(user.getName(), true, session));
 				user.setPendingGroups(this.groupDBManager.getPendingMembershipsForUser(userName, session));
 				// fill user's spam informations
@@ -292,7 +292,7 @@ public class DBLogic implements LogicInterface {
 			/*
 			 * return a complete empty user, in case of a deleted user
 			 */
-			if(user.getRole() == Role.DELETED) {
+			if (user.getRole() == Role.DELETED) {
 				return new User();
 			}
 			
@@ -1610,17 +1610,11 @@ public class DBLogic implements LogicInterface {
 		final String username = user.getName();
 		if (!UserUpdateOperation.ACTIVATE.equals(operation)) {
 			this.ensureLoggedIn();
+			
 			/*
 			 * only admins can change settings of /other/ users
 			 */
-			Group g = this.getGroupDetails(username);
-			if (present(g) && present(g.getGroupMembershipForUser(loginUser))) {
-				if (!GroupRole.ADMINISTRATOR.equals(g.getGroupMembershipForUser(loginUser).getGroupRole())) {
-					throw new AccessDeniedException();
-				}
-			} else {
-				this.permissionDBManager.ensureIsAdminOrSelf(loginUser, username);
-			}
+			this.permissionDBManager.ensureIsAdminOrGroupAdminOrSelf(this.loginUser, username);
 		}
 		final DBSession session = openSession();
 

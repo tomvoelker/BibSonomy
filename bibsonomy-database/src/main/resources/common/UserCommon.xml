@@ -18,7 +18,9 @@
 		<result property="prediction" column="weight"         javaType="integer"/>
 	</resultMap>
 	
-	<resultMap id="user" class="user" extends="userForGroup">
+	<resultMap id="user" class="user" extends="Common.user">
+		<result property="homepage"         column="user_homepage" javaType="url"  />
+		<result property="realname"         column="user_realname" javaType="string" />
 		<result property="apiKey"           column="api_key"       javaType="string"  />
 		<result property="birthday"         column="birthday"      javaType="date" />
 		<result property="email"            column="user_email"    javaType="string" />

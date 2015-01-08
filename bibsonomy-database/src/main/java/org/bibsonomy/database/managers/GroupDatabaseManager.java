@@ -239,12 +239,12 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * Returns true if the user is in the group otherwise false.
 	 */
 	private boolean isUserInGroup(final String username, final String groupname, final DBSession session) {
-		// catch dummy user
-		if (username != null && username.equals(groupname)) return true;
-
+		// TODO: just query for the membership
 		final List<Group> userGroups = this.getGroupsForUser(username, session);
 		for (final Group group : userGroups) {
-			if (groupname.equals(group.getName())) return true;
+			if (groupname.equals(group.getName())) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -269,17 +269,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @return a list of groups the user is member of
 	 */
 	public List<Group> getGroupsForUser(final String userName, final boolean removeSpecialGroups, final DBSession session) {
-		// FIXME: what about dummy?
 		final List<Group> groupsForUser = this.queryForList("getGroupsForUser", userName, Group.class, session);
 		if (!removeSpecialGroups) {
 			groupsForUser.addAll(this.queryForList("getSpecialGroupsForUser", userName, Group.class, session));
 		}
-		// FIXME: For whatever reasons, ibatis won't set the user after the first group.
-		for (Group g : groupsForUser) {
-			for (GroupMembership ms : g.getMemberships()) {
-				ms.setUser(new User(userName));
-			}
-		}
+		
 		return groupsForUser;
 	}
 
@@ -417,28 +411,28 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void activateGroup(final String groupName, final DBSession session) {
 		// get the group 
-		Group group = this.getPendingGroup(groupName, session);
-		GroupRequest groupRequest = group.getGroupRequest();
+		final Group group = this.getPendingGroup(groupName, session);
+		
+		// TODO: check if group exists
+		final GroupRequest groupRequest = group.getGroupRequest();
 
 		try {
 			session.beginTransaction();
 			// activate the user
 			this.userDb.performActivationSteps(new User(groupName), session);
+			
 			// "move" the pending group row to the normal group table
 			this.insert("activateGroup", groupName, session);
+			
 			// clear the pending group table
 			this.deletePendingGroup(groupName, session);
-			session.commitTransaction();
-		} finally {
-			session.endTransaction();
-		}
-
-		try {
-			session.beginTransaction();
+			
 			// add the group user to the group
 			this.addUserToGroup(groupName, groupName, GroupRole.DUMMY, session);
+			
 			// add the requesting user to the group with level ADMINISTRATOR
 			this.addUserToGroup(groupName, groupRequest.getUserName(), GroupRole.ADMINISTRATOR, session);
+			
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -474,7 +468,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		
 		// make sure the group name differs from the special groups
 		if (!GroupUtils.isValidGroupName(normedGroupName)) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "The name \""+normedGroupName+"\" is reserved.");
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "The name \"" + normedGroupName + "\" is reserved.");
 		}
 		/*
 		 * check if a user or a pending user exists with that name
