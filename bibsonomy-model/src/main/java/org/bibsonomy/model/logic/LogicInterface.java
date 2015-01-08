@@ -156,22 +156,13 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 
 	/**
 	 * Returns all groups of the system.
-	 * 
-	 * @param end
+	 * @param pending
 	 * @param start
+	 * @param end
+	 * 
 	 * @return a set of groups, an empty set else
 	 */
-	public List<Group> getGroups(int start, int end);
-
-
-	/**
-	 * Returns all pending groups of the system.
-	 * 
-	 * @param end
-	 * @param start
-	 * @return a set of pending groups, an empty set else
-	 */
-	public List<Group> getPendingGroups(int start, int end);
+	public List<Group> getGroups(boolean pending, int start, int end);
 	
 	/**
 	 * Returns details of one group.

@@ -234,7 +234,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * Returns the membership for the given user in a given group.
 	 */
 	private GroupMembership getGroupMembershipForUser(final String userName, final Group group, final DBSession session) {
-		GroupParam param = new GroupParam();
+		final GroupParam param = new GroupParam();
 		param.setUserName(userName);
 		param.setGroupId(group.getGroupId());
 		
@@ -245,11 +245,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * Returns true if there's only one admin for the group.
 	 */
 	private boolean hasOneAdmin(final Group g, final DBSession session) {
-		GroupParam p = new GroupParam();
+		final GroupParam p = new GroupParam();
 		p.setMembership(new GroupMembership(null, GroupRole.ADMINISTRATOR, true));
 		p.setGroupId(g.getGroupId());
 		final Integer count = this.queryForObject("countPerRole", p, Integer.class, session);
-		return count != null && count == 1;
+		return count != null && count.intValue() == 1;
 	}
 
 	/**

@@ -99,7 +99,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		}
 		
 		// load the pending groups
-		command.setPendingGroups(logic.getPendingGroups(0, Integer.MAX_VALUE));
+		command.setPendingGroups(logic.getGroups(true, 0, Integer.MAX_VALUE));
 	
 		return Views.ADMIN_GROUP;
 	}
@@ -124,7 +124,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		 */
 		if (present(logic.getGroupDetails(groupName))) {
 			return "Group already exists!";
-		} 
+		}
 		
 		// Create the group ...
 		logic.createGroup(group);

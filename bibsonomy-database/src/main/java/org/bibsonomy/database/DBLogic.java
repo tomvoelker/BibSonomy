@@ -99,7 +99,6 @@ import org.bibsonomy.database.managers.discussion.ReviewDatabaseManager;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
-import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
@@ -793,9 +792,13 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#getGroups(int, int)
 	 */
 	@Override
-	public List<Group> getGroups(final int start, final int end) {
+	public List<Group> getGroups(boolean pending, final int start, final int end) {
 		final DBSession session = this.openSession();
 		try {
+			if (pending) {
+				this.permissionDBManager.ensureAdminAccess(loginUser);
+				return this.groupDBManager.getPendingGroups(start, end, session);
+			}
 			return this.groupDBManager.getAllGroups(start, end, session);
 		} finally {
 			session.close();
@@ -922,16 +925,6 @@ public class DBLogic implements LogicInterface {
 		// } finally {
 		// session.close();
 		// }
-	}
-	
-	@Override
-	public List<Group> getPendingGroups(final int start, final int end) {
-		final DBSession session = openSession();
-		try {
-			return this.groupDBManager.getPendingGroups(start, end, session);
-		} finally {
-			session.close();
-		}
 	}
 
 	/*
