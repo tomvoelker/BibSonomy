@@ -27,6 +27,7 @@
 package org.bibsonomy.model.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -578,5 +579,45 @@ public class BibtexUtilsTest {
 		final List<PersonName> rVal = new ArrayList<PersonName>();
 		rVal.add(new PersonName(fname, lname));
 		return rVal;
+	}
+	
+	/**
+	 * tests for {@link BibTexUtils#extractFirstPage(BibTex)}
+	 */
+	@Test
+	public void testExtractFirstPage() {
+		assertNull(BibTexUtils.extractFirstPage(null));
+		
+		assertEquals("", BibTexUtils.extractFirstPage(""));
+		
+		assertEquals("12", BibTexUtils.extractFirstPage("12"));
+		
+		assertEquals("12123", BibTexUtils.extractFirstPage("  12123"));
+		
+		assertEquals("21", BibTexUtils.extractFirstPage("21-34"));
+		
+		assertEquals("234", BibTexUtils.extractFirstPage("234 -- 340"));
+		
+		assertEquals("12123", BibTexUtils.extractFirstPage("  12123-  232434"));
+	}
+	
+	/**
+	 * tests for {@link BibTexUtils#extractLastPage(BibTex)}
+	 */
+	@Test
+	public void testExtractLastPage() {
+		assertNull(BibTexUtils.extractLastPage(null));
+		
+		assertEquals("", BibTexUtils.extractLastPage(""));
+		
+		assertEquals("12", BibTexUtils.extractLastPage("12"));
+		
+		assertEquals("12123", BibTexUtils.extractLastPage("  12123"));
+		
+		assertEquals("34", BibTexUtils.extractLastPage("21-34"));
+		
+		assertEquals("340", BibTexUtils.extractLastPage("234 -- 340"));
+		
+		assertEquals("232434", BibTexUtils.extractLastPage("  12123-  232434"));
 	}
 }

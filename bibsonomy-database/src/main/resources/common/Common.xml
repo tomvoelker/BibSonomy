@@ -3,7 +3,7 @@
 <sqlMap namespace="Common">
 	<resultMap id="resource" class="resource" groupBy="intraHash">
 		<result property="interHash"   		column="interHash"       	javaType="string" />
-		<result property="intraHash"   		column="intraHash"       	javaType="string" />     	
+		<result property="intraHash"   		column="intraHash"       	javaType="string" />
 		<result property="count"       		column="count"           	javaType="int" />
 		<result property="title"       		column="title"           	javaType="string" />
 		<result property="rating"	   		column="rating"		   		javaType="double" nullValue="0.0"/>

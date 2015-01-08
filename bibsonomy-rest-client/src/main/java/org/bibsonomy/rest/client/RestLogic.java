@@ -66,8 +66,8 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.GoldStandardRelation;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
@@ -236,7 +236,10 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<Group> getGroups(final int start, final int end) {
+	public List<Group> getGroups(boolean pending, final int start, final int end) {
+		if (pending) {
+			throw new UnsupportedOperationException("quering for pending groups not supported");
+		}
 		return execute(new GetGroupListQuery(start, end));
 	}
 
@@ -744,10 +747,5 @@ public class RestLogic implements LogicInterface {
 	@Override
 	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey) {
 		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<Group> getPendingGroups(int start, int end) {
-		throw new UnsupportedOperationException("Not supported yet.");
 	}
 }

@@ -81,8 +81,8 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.GoldStandardRelation;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.logic.PostLogicInterface;
@@ -542,15 +542,15 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 	
 	/**
-	 * runs the test defined by {@link #getGroups(int, int)} with certain arguments
+	 * runs the test defined by {@link #getGroups(boolean, int, int)} with certain arguments
 	 */
 	@Test
 	public void getGroupsTest() {
-		getGroups(64, 129);
+		getGroups(false, 64, 129);
 	}
 	
 	@Override
-	public List<Group> getGroups(final int start, final int end) {
+	public List<Group> getGroups(boolean pending, final int start, final int end) {
 		final List<Group> expectedList = new ArrayList<Group>();
 		expectedList.add(ModelUtils.getGroup());
 		expectedList.get(0).setName("Group1");
@@ -569,9 +569,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		 */
 		expectedList.get(1).setPrivlevel(null);
 		
-		EasyMock.expect(serverLogic.getGroups(start, end)).andReturn(expectedList);
+		EasyMock.expect(serverLogic.getGroups(false, start, end)).andReturn(expectedList);
 		EasyMock.replay(serverLogic);
-		final List<Group> returnedGroups = clientLogic.getGroups(start,end);
+		final List<Group> returnedGroups = clientLogic.getGroups(false,start, end);
 		CommonModelUtils.assertPropertyEquality(expectedList, returnedGroups, 3, Pattern.compile(".*\\.groupId"));
 		EasyMock.verify(serverLogic);
 		assertLogin();
@@ -1337,12 +1337,6 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	
 	@Override
 	public List<PostMetaData> getPostMetaData(HashID hashType, String resourceHash, String userName, String metaDataPluginKey) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Group> getPendingGroups(int start, int end) {
 		// TODO Auto-generated method stub
 		return null;
 	}

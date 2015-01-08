@@ -197,8 +197,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			final String accessTokenDelete = command.getAccessTokenDelete();
 			if (present(this.invisibleOAuthConsumers) && present(accessTokenDelete)) {
 				final List<OAuthUserInfo> oauthUserInfos = this.oauthLogic.getOAuthUserApplication(command.getContext().getLoginUser().getName());
-				for (final Iterator<OAuthUserInfo> iterator = oauthUserInfos.iterator(); iterator.hasNext();) {
-					final OAuthUserInfo oAuthUserInfo = iterator.next();
+				for (final OAuthUserInfo oAuthUserInfo : oauthUserInfos) {
 					if (accessTokenDelete.equals(oAuthUserInfo.getAccessToken()) && this.invisibleOAuthConsumers.contains(oAuthUserInfo.getConsumerKey())) {
 						throw new IllegalArgumentException("The access token " + accessTokenDelete + " can not be deleted.");
 					}

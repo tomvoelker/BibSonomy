@@ -31,6 +31,7 @@ import org.junit.Test;
 public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	private static GroupDatabaseManager groupDb;
+	private static UserDatabaseManager userDb;
 	
 	/**
 	 * sets up the manager
@@ -38,6 +39,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@BeforeClass
 	public static void setupManager() {
 		groupDb = GroupDatabaseManager.getInstance();
+		userDb = UserDatabaseManager.getInstance();
 	}
 	
 	/**
@@ -202,6 +204,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		groupRequest.setUserName("testrequestuser1");
 		groupRequest.setReason("testrequestreason1");
 		newGroup.setGroupRequest(groupRequest);
+		
 		groupDb.createGroup(newGroup, this.dbSession);
 		groupDb.activateGroup(newGroup.getName(), this.dbSession);
 		final Group newGroupTest = groupDb.getGroupMembers("testgroupnew", "testgroupnew", this.dbSession);

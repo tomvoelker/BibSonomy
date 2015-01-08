@@ -123,6 +123,6 @@ public class AipScitationScraper extends GenericBibTeXURLScraper {
 		String bibtex = BibTexUtils.addFieldIfNotContained(result, "abstract", abstractParser(sc.getUrl()));
 		// fix the eid
 		bibtex = bibtex.replace("eid = ,", "eid = " + firstPageParser(sc.getUrl()) + ",");
-		return bibtex;
+		return bibtex.replaceAll(";jsessionid.*\"$?", "\"");
 	}
 }

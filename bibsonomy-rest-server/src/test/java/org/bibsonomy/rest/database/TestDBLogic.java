@@ -70,8 +70,8 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.GoldStandardRelation;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.metadata.PostMetaData;
@@ -162,7 +162,7 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<Group> getGroups(final int start, final int end) {
+	public List<Group> getGroups(boolean pending, final int start, final int end) {
 		final List<Group> groups = new LinkedList<Group>();
 		groups.addAll(this.dbGroups.values());
 		return groups;
@@ -1125,11 +1125,6 @@ public class TestDBLogic implements LogicInterface {
 
 	@Override
 	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public List<Group> getPendingGroups(int start, int end) {
 		// TODO Auto-generated method stub
 		return null;
 	}

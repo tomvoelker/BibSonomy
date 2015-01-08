@@ -4,7 +4,7 @@
 <sqlMap namespace="Group">
 
 	<select id="getAllGroups" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="groupParam">
-		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, u.user_name, g.group_role, g.user_shared_documents
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, u.user_name, g.group_role, g.user_shared_documents
 		FROM groupids i 
 		  JOIN group_memberships g USING (`group`)
 		  JOIN user u ON (g.user_name = u.user_name)
@@ -29,7 +29,7 @@
 	</select>
 
 	<select id="getGroupWithMemberships" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, u.user_name, g.group_role, g.user_shared_documents
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, u.user_name, g.group_role, g.user_shared_documents
 		FROM groupids i 
 		<!-- LEFT JOIN is necessary because groups are empty at the point of creation. -->
 		  LEFT JOIN group_memberships g USING (`group`) 

@@ -34,43 +34,41 @@ import java.util.ArrayList;
  * @author Dominik Benz, benz@cs.uni-kassel.de
  */
 public class DateParts extends ArrayList<String> {
+	private static final long serialVersionUID = 4578145208925557829L;
 
-    /**
-     * Constructor
-     * 
-     * @param year
-     * @param month
-     * @param day
-     */
-    public DateParts(String year, String month, String day) {
-	super();
-	this.add(year);
-	this.add(month);
-	this.add(day);
-    }
+	/**
+	* Constructor
+	* 
+	* @param year
+	* @param month
+	* @param day
+	*/
+	public DateParts(String year, String month, String day) {
+		super();
+		this.add(year);
+		this.add(month);
+		this.add(day);
+	}
 
-    /**
-     * Constructor 
-     * 
-     * @param year
-     * @param month
-     */
-    public DateParts(String year, String month) {
-	super();
-	this.add(year);
-	this.add(month);
-    }
+	/**
+	* Constructor 
+	* 
+	* @param year
+	* @param month
+	*/
+	public DateParts(String year, String month) {
+		super();
+		this.add(year);
+		this.add(month);
+	}
 
-    
-    /**
-     * Constructor 
-     * 
-     * @param year
-     */
-    public DateParts(String year) {
-	super();
-	this.add(year);
-    }
-    
-    
+	/**
+	* Constructor 
+	* 
+	* @param year
+	*/
+	public DateParts(String year) {
+		super();
+		this.add(year);
+	}
 }

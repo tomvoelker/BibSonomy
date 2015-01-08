@@ -26,8 +26,6 @@
  */
 package org.bibsonomy.lucene.search;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,6 +35,8 @@ import org.bibsonomy.model.BibTex;
 import org.junit.Test;
 
 /**
+ * FIXME
+ * 
  * @author mba
  */
 public class LuceneResourceSearchTest {

@@ -26,6 +26,13 @@
  */
 package org.bibsonomy.scraper.url.kde.prola;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.net.URL;
+
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -76,5 +83,30 @@ public class ProlaScraperTest {
 	public void url5TestRun(){
 		UnitTestRunner.runSingleTest("url_271");
 	}
-
+	@Test
+	public void testReferences() throws Exception {
+		final ScrapingContext sc = new ScrapingContext(new URL("http://journals.aps.org/pre/abstract/10.1103/PhysRevE.64.016131"));
+		ProlaScraper ps = new ProlaScraper();
+		assertTrue(ps.scrape(sc));
+		assertTrue(ps.scrapeReferences(sc));
+		
+		final String reference = sc.getReferences();
+		assertNotNull(reference);
+		assertTrue(reference.length() > 100);
+		assertEquals("<ol class=\"references\"><li id=\"c1\">S. Wasserman and K. Faust, <span style=\"font-style:".trim(), reference.substring(0, 86).trim());
+		assertTrue(reference.contains("M.E.J. Newman"));
+	}
+	@Test
+	public void testCitedby() throws Exception {
+		final ScrapingContext sc = new ScrapingContext(new URL("http://journals.aps.org/pre/abstract/10.1103/PhysRevE.64.016131"));
+		ProlaScraper ps = new ProlaScraper();
+		assertTrue(ps.scrape(sc));
+		assertTrue(ps.scrapeCitedby(sc));
+		
+		final String cby = sc.getCitedBy();
+		assertNotNull(cby);
+		assertTrue(cby.length() > 100);
+		assertEquals("<h1>Citing Articles (512)</h1><div class=\"article panel\">".trim(), cby.substring(0, 57).trim());
+		assertTrue(cby.contains("Rehan Sadiq"));
+	}
 }

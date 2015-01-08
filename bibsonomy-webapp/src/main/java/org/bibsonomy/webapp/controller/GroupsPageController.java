@@ -29,14 +29,10 @@
  */
 package org.bibsonomy.webapp.controller;
 
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.webapp.command.GroupsListCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * Controller for group overview:
@@ -54,7 +50,7 @@ public class GroupsPageController extends SingleResourceListController implement
 		/*
 		 * get all groups from db; Integer#MAX_VALUE should be enough
 		 */
-		command.setList(logic.getGroups(0, Integer.MAX_VALUE));
+		command.setList(logic.getGroups(false, 0, Integer.MAX_VALUE));
 		
 		return Views.GROUPSPAGE;
 	}

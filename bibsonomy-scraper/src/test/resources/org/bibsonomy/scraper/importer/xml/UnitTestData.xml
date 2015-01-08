@@ -202,14 +202,14 @@
 	</URLTest>
 	<URLTest id="url_31">
 		<TestDescription>URL scraping test with a publication page from Universitätsbibliothek Karlsruhe</TestDescription>
-		<URL>http://primo.bibliothek.kit.edu/primo_library/libweb/action/display.do?tabs=detailsTab&amp;ct=display&amp;fn=search&amp;doc=KITSRC256943346&amp;indx=1&amp;recIds=KITSRC256943346&amp;recIdxs=0&amp;elementId=0&amp;renderMode=poppedOut&amp;displayMode=full&amp;frbrVersion=&amp;dscnt=1&amp;scp.scps=scope%3A%28%22KIT%22%29&amp;frbg=&amp;tab=kit&amp;vl%2836718850UI0%29=any&amp;dstmp=1415546537258&amp;srt=date&amp;mode=Basic&amp;dum=true&amp;tb=t&amp;vl%281UIStartWith0%29=contains&amp;vl%28freeText0%29=Abschlusspodium%20%22Nanotechnologie%20zwischen%20Nutzen%20und%20Risiken&amp;vid=KIT&amp;vl%2836718849UI1%29=all_items</URL>
+		<URL>http://primo.bibliothek.kit.edu/primo_library/libweb/action/display.do?tabs=detailsTab&amp;ct=display&amp;fn=search&amp;doc=KITSRC087550059&amp;indx=3&amp;recIds=KITSRC087550059&amp;recIdxs=2&amp;elementId=&amp;renderMode=poppedOut&amp;displayMode=full</URL>
 		<BibFile>UBKAScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.UBKAScraper</Scraper>
 		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_32">
 		<TestDescription>URL scraping test with a publication page from Universitätsbibliothek Karlsruhe</TestDescription>
-		<URL>http://www.ubka.uni-karlsruhe.de/hylib-bin/suche.cgi?opacdb=UBKA_OPAC&amp;session=1147556008&amp;use_cookie_session=1&amp;returnTo=http%3A%2F%2Fwww.ubka.uni-karlsruhe.de%2Fhylib%2Fka_opac.html&amp;nd=256943346&amp;printMAB=256943346&amp;bibtex=1</URL>
+		<URL>http://primo.bibliothek.kit.edu/primo_library/libweb/action/display.do?tabs=detailsTab&amp;ct=display&amp;fn=search&amp;doc=KITSRC349648727&amp;indx=5&amp;recIds=KITSRC349648727&amp;recIdxs=4&amp;elementId=&amp;renderMode=poppedOut&amp;displayMode=full</URL>
 		<BibFile>UBKAScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.UBKAScraper</Scraper>
 	</URLTest>
@@ -825,7 +825,7 @@
 	<URLTest id="url_137">
 		<TestDescription>Scraping test for IEEE computer society scraper (new url schema)</TestDescription>
 		<URL>http://www.computer.org/csdl/proceedings/dexa/2006/2641/00/26410603-reference.bib</URL>
-		<BibFile>IEEEComputerSocietyScraperUnitURLTest1.bib</BibFile>
+		<BibFile>IEEEComputerSocietyScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_138">

@@ -68,14 +68,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<Group> getAllGroups(final int start, final int end, final DBSession session) {
 		final GroupParam param = LogicInterfaceHelper.buildParam(GroupParam.class, Order.ALPH, start, end);
+		final List<Group> groupList = this.queryForList("getAllGroups", param, Group.class, session);
 		
-		List<Group> groupList = this.queryForList("getAllGroups", param, Group.class, session);
-		User dummyUser;
-		for (Group g : groupList) {
-			// exclude the special groups
-			if (g.getGroupId() < 3)
-				continue;
-			dummyUser = GroupUtils.getDummyUser(g);
+		for (final Group g : groupList) {
+			final User dummyUser = GroupUtils.getDummyUser(g);
 			g.setRealname(dummyUser.getRealname());
 			g.setHomepage(dummyUser.getHomepage());
 		}
@@ -124,7 +120,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		
 		// TODO: Accomplish that somehow directly from SQL (probably impossible)
 		final Group group =  this.queryForObject("getGroupWithMemberships", normedGroupName, Group.class, session);
-		if (present(group)) {
+		if (present(group) && !group.getMemberships().isEmpty()) {
 			final User groupUser = GroupUtils.getDummyUser(group);
 
 			group.setRealname(groupUser.getRealname());
@@ -238,7 +234,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * Returns the membership for the given user in a given group.
 	 */
 	private GroupMembership getGroupMembershipForUser(final String userName, final Group group, final DBSession session) {
-		GroupParam param = new GroupParam();
+		final GroupParam param = new GroupParam();
 		param.setUserName(userName);
 		param.setGroupId(group.getGroupId());
 		
@@ -249,17 +245,20 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * Returns true if there's only one admin for the group.
 	 */
 	private boolean hasOneAdmin(final Group g, final DBSession session) {
-		GroupParam p = new GroupParam();
+		final GroupParam p = new GroupParam();
 		p.setMembership(new GroupMembership(null, GroupRole.ADMINISTRATOR, true));
 		p.setGroupId(g.getGroupId());
 		final Integer count = this.queryForObject("countPerRole", p, Integer.class, session);
-		return count != null && count == 1;
+		return count != null && count.intValue() == 1;
 	}
 
 	/**
 	 * Returns true if the user is in the group otherwise false.
 	 */
 	private boolean isUserInGroup(final String username, final String groupname, final DBSession session) {
+		// catch dummy user
+		if (username != null && username.equals(groupname)) return true;
+
 		final List<Group> userGroups = this.getGroupsForUser(username, session);
 		for (final Group group : userGroups) {
 			if (groupname.equals(group.getName())) return true;

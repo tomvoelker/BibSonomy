@@ -99,7 +99,6 @@ import org.bibsonomy.database.managers.discussion.ReviewDatabaseManager;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
-import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
@@ -793,9 +792,13 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#getGroups(int, int)
 	 */
 	@Override
-	public List<Group> getGroups(final int start, final int end) {
+	public List<Group> getGroups(boolean pending, final int start, final int end) {
 		final DBSession session = this.openSession();
 		try {
+			if (pending) {
+				this.permissionDBManager.ensureAdminAccess(loginUser);
+				return this.groupDBManager.getPendingGroups(start, end, session);
+			}
 			return this.groupDBManager.getAllGroups(start, end, session);
 		} finally {
 			session.close();
@@ -922,16 +925,6 @@ public class DBLogic implements LogicInterface {
 		// } finally {
 		// session.close();
 		// }
-	}
-	
-	@Override
-	public List<Group> getPendingGroups(final int start, final int end) {
-		final DBSession session = openSession();
-		try {
-			return this.groupDBManager.getPendingGroups(start, end, session);
-		} finally {
-			session.close();
-		}
 	}
 
 	/*
@@ -1173,7 +1166,7 @@ public class DBLogic implements LogicInterface {
 		 */
 		this.ensureLoggedIn();
 		
-		GroupRole loginUserRole;
+		GroupRole loginUserRole = null;
 		boolean isPageAdmin = this.permissionDBManager.isAdmin(loginUser);
 		boolean loginUserisGroupAdmin = false;
 		//TODO: Use this somewhere!
@@ -1250,6 +1243,9 @@ public class DBLogic implements LogicInterface {
 				break;
 			case REMOVE_USER:
 				// FIXME: migrate settings handler before activation this method
+				log.error(loginUserisGroupModerator);
+				log.error(isPageAdmin);
+				log.error(loginUserRole);
 				if (loginUserisGroupModerator || isPageAdmin) {
 					if (this.userIsInGroup(membership.getUser(), group)) {
 						this.groupDBManager.removeUserFromGroup(group.getName(), membership.getUser().getName(), session);

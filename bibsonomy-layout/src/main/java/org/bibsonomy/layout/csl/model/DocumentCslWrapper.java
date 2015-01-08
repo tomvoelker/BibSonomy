@@ -110,5 +110,4 @@ public class DocumentCslWrapper {
 	public boolean equals(Object obj) {
 		return ((obj == this) || ((obj instanceof DocumentCslWrapper) && (((DocumentCslWrapper) obj).document.equals(this.document))));
 	}
-
 }
