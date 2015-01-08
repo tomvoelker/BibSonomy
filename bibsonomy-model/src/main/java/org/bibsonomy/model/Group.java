@@ -93,14 +93,6 @@ public class Group implements Serializable{
 	 * public.
 	 */
 	private boolean sharedDocuments;
-
-	/**
-	 * stores documents sharing setting for the current user.
-	 * TODO: this attribute has nothing to do with a group
-	 * it is specific to one member of the group
-	 */
-	@Deprecated
-	private boolean userSharedDocuments;
 	
 	/**
 	 * stores the group role for the current user. 
@@ -337,22 +329,6 @@ public class Group implements Serializable{
 	 */
 	public void setHomepage(URL homepage) {
 		this.homepage = homepage;
-	}
-
-	/**
-	 * @return the userSharedDocuments
-	 */
-	@Deprecated
-	public boolean isUserSharedDocuments() {
-		return this.userSharedDocuments;
-	}
-
-	/**
-	 * @param userSharedDocuments the userSharedDocuments to set
-	 */
-	@Deprecated
-	public void setUserSharedDocuments(boolean userSharedDocuments) {
-		this.userSharedDocuments = userSharedDocuments;
 	}
 
 	/**
