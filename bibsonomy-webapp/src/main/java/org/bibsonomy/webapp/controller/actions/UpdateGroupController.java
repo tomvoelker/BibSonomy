@@ -1,9 +1,8 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import java.net.URL;
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.Collections;
+import java.net.URL;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,23 +15,22 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.GroupSettingsPageCommand;
-import org.bibsonomy.webapp.controller.GroupSettingsPageController;
 import org.bibsonomy.webapp.util.ErrorAware;
+import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
-import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
-import org.springframework.web.servlet.view.RedirectView;
 
 /**
  * TODO: add documentation
  * 
  * @author tni
  */
-public class UpdateGroupController extends GroupSettingsPageController implements ErrorAware {
+public class UpdateGroupController implements MinimalisticController<GroupSettingsPageCommand>, ErrorAware, RequestAware {
 	private static final Log log = LogFactory.getLog(UpdateGroupController.class);
 	
 	private Errors errors = null;
@@ -42,14 +40,13 @@ public class UpdateGroupController extends GroupSettingsPageController implement
 
 	@Override
 	public GroupSettingsPageCommand instantiateCommand() {
-		GroupSettingsPageCommand c = new GroupSettingsPageCommand();
-		c.setGroup(new Group());
-		return c;
+		final GroupSettingsPageCommand command = new GroupSettingsPageCommand();
+		command.setGroup(new Group());
+		return command;
 	}
 
 	@Override
 	public View workOn(final GroupSettingsPageCommand command) {
-		super.workOn(command);
 		final RequestWrapperContext context = command.getContext();
 
 		/*
@@ -313,21 +310,12 @@ public class UpdateGroupController extends GroupSettingsPageController implement
 		this.errors = errors;
 	}
 
-	@Override
 	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
 	}
-
-	public MailUtils getMailUtils() {
-		return mailUtils;
-	}
-
+	
 	public void setMailUtils(MailUtils mailUtils) {
 		this.mailUtils = mailUtils;
-	}
-
-	public RequestLogic getRequestLogic() {
-		return requestLogic;
 	}
 
 	public void setRequestLogic(RequestLogic requestLogic) {

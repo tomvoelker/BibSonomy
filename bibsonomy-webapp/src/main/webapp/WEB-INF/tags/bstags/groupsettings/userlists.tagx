@@ -19,7 +19,6 @@
 
 	<div id="selTab1" class="tab-pane ${(command.selTab eq 1) ? 'active' : ''}">
 		<fieldset class="fsOuter">
-			
 			<c:set var="groupRole" value="${command.groupMembership.groupRole}" />
 			<c:choose>
 				<c:when test="${groupRole eq 'USER' || groupRole eq 'MODERATOR' || groupRole eq 'ADMINISTRATOR' }">
@@ -105,49 +104,58 @@
 									<c:when test="${groupHasMembers}">
 										<fmt:message var="deluser" key="settings.group.delUser.button"/>
 										<fmt:message var="deluserTitle" key="settings.group.delUser.button.title"/>
-
+										
 										<!-- show group member list -->
 										<!-- TODO: Adapt this to maybe forms? The page will be reloaded, no matter what. -->
 										<table class="table table-striped table-condensed">
 											<c:forEach items="${group.memberships}" var="member">
 												<c:if test="${member.groupRole ne 'DUMMY'}">
 													<tr>
+														<c:set var="isAdmin" value="${member.groupRole eq 'ADMINISTRATOR'}" />
+														<c:set var="isModerator" value="${member.groupRole eq 'MODERATOR'}" />
+														<c:set var="isUser" value="${member.groupRole eq 'USER'}" />
+														
 														<td class="col-md-1"><user:thumbnail user="${member.user}" size="16" noname="${true}" /></td>
 														<td class="col-md-3"><user:username user="${member.user}" /></td>
-														<td class="col-md-2"><i><c:out value="${member.groupRole}" /></i></td>
-														<td class="col-md6" style="text-align:right">
-															<c:if test="${groupRole eq 'MODERATOR' || groupRole eq 'ADMINISTRATOR'}">
-																<c:if test="${groupRole eq 'ADMINISTRATOR'}">
-																	<c:choose>
-																		<c:when test="${member.groupRole eq 'USER'}">
-																			<a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=moderator&amp;ckey=${ckey}"><span class="fa fa-caret-up"><!-- Keep me --></span></a>
-																			<a class="btn btn-default disabled"><span class="fa fa-caret-down"><!-- Keep me --></span></a>
-																		</c:when>
-																		<c:when test="${member.groupRole eq 'MODERATOR'}">
-																			<a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=administrator&amp;ckey=${ckey}"><span class="fa fa-caret-up"><!-- Keep me --></span></a>
-																			<a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=user&amp;ckey=${ckey}"><span class="fa fa-caret-down"><!-- Keep me --></span></a>
-																		</c:when>
-																		<c:when test="${member.groupRole eq 'ADMINISTRATOR'}">
-																			<a class="btn btn-default disabled"><span class="fa fa-caret-up"><!-- Keep me --></span></a>
-																			<a class="btn btn-default" href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=moderator&amp;ckey=${ckey}"><span class="fa fa-caret-down"><!-- Keep me --></span></a>
-																		</c:when>
-																	</c:choose>
-																</c:if>
-																<c:if test="${groupRole eq 'ADMINISTRATOR'}">
-																	<a class="btn btn-danger" href="/updateGroup?operation=remove_user&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${deluserTitle}"><span class="fa fa-times"><!-- Keep me --></span>&amp;nbsp;${deluser}</a>
-																</c:if>
-																<c:if test="${groupRole eq 'MODERATOR'}">
-																	<c:choose>
-																		<c:when test="${member.groupRole ne 'ADMINISTRATOR'}">
-																			<a class="btn btn-danger" href="/updateGroup?operation=remove_user&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${deluserTitle}"><span class="fa fa-times"><!-- Keep me --></span>&amp;nbsp;${deluser}</a>
-																		</c:when>
-																		<c:otherwise>
-																			<a class="btn btn-danger disabled" title="${deluserTitle}"><span class="fa fa-times"><!-- Keep me --></span>&amp;nbsp;${deluser}</a>
-																		</c:otherwise>
-																	</c:choose>
-																</c:if>
-															</c:if>
+														<c:if test="${groupRole eq 'ADMINISTRATOR' or groupRole eq 'MODERATOR'}">
+														<td class="col-md-4">
+															<c:choose>
+																<c:when test="${isAdmin}">
+																	<span class="label label-primary">ADMINISTRATOR</span>
+																</c:when>
+																<c:otherwise>
+																	<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=ADMINISTRATOR&amp;ckey=${ckey}">
+																		<span class="label label-default">ADMINISTRATOR</span>
+																	</a>
+																</c:otherwise>
+															</c:choose>
+															<c:out value=" " />
+															<c:choose>
+																<c:when test="${isModerator}">
+																	<span class="label label-primary">MODERATOR</span>
+																</c:when>
+																<c:otherwise>
+																	<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=MODERATOR&amp;ckey=${ckey}">
+																		<span class="label label-default">MODERATOR</span>
+																	</a>
+																</c:otherwise>
+															</c:choose>
+															<c:out value=" " />
+															<c:choose>
+																<c:when test="${isUser}">
+																	<span class="label label-primary">USER</span>
+																</c:when>
+																<c:otherwise>
+																	<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=USER&amp;ckey=${ckey}">
+																		<span class="label label-default">USER</span>
+																	</a>
+																</c:otherwise>
+															</c:choose>
 														</td>
+														<td class="col-md-1 col-md-offset-1">
+															<a href="/updateGroup?operation=remove_user&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${deluserTitle}"><span class="fa fa-times"><!-- Keep me --></span><!-- keep me --></a>
+														</td>
+														</c:if>
 												</tr>
 												</c:if>
 											</c:forEach>

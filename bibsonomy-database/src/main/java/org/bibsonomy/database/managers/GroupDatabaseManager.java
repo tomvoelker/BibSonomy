@@ -761,20 +761,22 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		if (!this.isUserInGroup(username, groupname, session)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') isn't a member of this group ('" + groupname + "')");
 		}
+		
 		// check the old user role
-		GroupMembership oldMembership = this.getGroupMembershipForUser(username, group, session);
-		GroupRole oldRole = oldMembership.getGroupRole();
+		final GroupMembership oldMembership = this.getGroupMembershipForUser(username, group, session);
+		final GroupRole oldRole = oldMembership.getGroupRole();
+		
 		// only perform action if they differ XXX: exception for this case?
 		if (oldRole.equals(role)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') already has this role in this group ('" + groupname + "')");
 		}
+		
 		// make sure that we keep at least one admin
 		if (GroupRole.ADMINISTRATOR.equals(oldRole) && this.hasOneAdmin(group, session)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') is the last administrator of this group ('" + groupname + "')");
 		}
-		log.error(oldRole + " " + role);
 		
-		GroupParam param = new GroupParam();
+		final GroupParam param = new GroupParam();
 		param.setUserName(username);
 		param.setGroupId(group.getGroupId());
 		oldMembership.setGroupRole(role);
