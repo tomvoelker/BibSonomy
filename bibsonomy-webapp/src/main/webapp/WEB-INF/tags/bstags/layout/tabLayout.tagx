@@ -48,14 +48,11 @@
 			<!-- 
 			<parts:panelheader headerLogoClass="${not empty headerLogoClass ? 'image' : ''} ${headerLogoClass}">
 				<jsp:attribute name="headerContent">
-					<fmt:message key="${headerMessageKey}" />				
+					<fmt:message key="${headerMessageKey}" />
 				</jsp:attribute>
 			</parts:panelheader>
 			-->
 		</jsp:attribute>
-	
-	
-	
 		<jsp:attribute name="content">
 			
 			<c:if test="${not empty pageTitle}">
@@ -64,16 +61,16 @@
 			
 			<!-- Top Content if available -->
 			<c:if test="${not empty topcontent}">
-				<jsp:invoke fragment="topcontent"/>				
+				<jsp:invoke fragment="topcontent"/>
 			</c:if>	
-									
-			<!-- Tabs -->			
+			
+			<!-- Tabs -->
 			<parts:tabheader tabView="${command}" tabURL="${command.tabURL}"/>
 			<br />
-			<div class="tab-content" id="citation-styles">				
+			<div class="tab-content" id="citation-styles">
 						
 				<c:if test="${not empty tabcontent}">
-					<jsp:invoke fragment="tabcontent"/>				
+					<jsp:invoke fragment="tabcontent"/>
 				</c:if>	
 			</div>
 
