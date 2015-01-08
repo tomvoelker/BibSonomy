@@ -469,13 +469,17 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * @param loginUser
 	 * @param groupName
+	 * @param role 
 	 * @return if role equals the users role
 	 */
 	public boolean userHasGroupRole(final User loginUser, final String groupName, GroupRole role) {
-		for (Group g : loginUser.getGroups()) {
-			if (g.getName().equals(groupName))
-				if (role.equals(g.getGroupRole()))
+		for (final Group g : loginUser.getGroups()) {
+			if (g.getName().equals(groupName)) {
+				final GroupMembership membership = g.getGroupMembershipForUser(loginUser.getName());
+				if (role.equals(membership.getGroupRole())) {
 					return true;
+				}
+			}
 		}
 		return false;
 	}

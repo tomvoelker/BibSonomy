@@ -32,18 +32,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
-import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Privlevel;
 
 /**
  * A group groups users.
- * 
  */
-public class Group implements Serializable{
-
-	/**
-	 * For persistency (Serializable)
-	 */
+public class Group implements Serializable {
 	private static final long serialVersionUID = -4364391580208670647L;
 
 	/**
@@ -95,14 +89,6 @@ public class Group implements Serializable{
 	private boolean sharedDocuments;
 	
 	/**
-	 * stores the group role for the current user. 
-	 * TODO: this attribute has nothing to do with a group
-	 * it is specific to one member of the group
-	 */
-	@Deprecated // TODO: remove
-	private GroupRole groupRole;
-	
-	/**
 	 * If you add a tagset to a group and a user marks this group as 
 	 * 'relevent for' a post, then the user has to tag one entry of this set
 	 * to his post. A tagset has the following form: Map<SetName,Tags>.
@@ -119,9 +105,10 @@ public class Group implements Serializable{
 	private List<GroupMembership> pendingMemberships;
 	
 	/**
-	 * constructor
+	 * default constructor
 	 */
 	public Group() {
+		// noop
 	}
 
 	/**
@@ -422,22 +409,6 @@ public class Group implements Serializable{
 	 */
 	public void setGroupRequest(GroupRequest groupRequest) {
 		this.groupRequest = groupRequest;
-	}
-
-	/**
-	 * @return the groupRole
-	 */
-	@Deprecated
-	public GroupRole getGroupRole() {
-		return this.groupRole;
-	}
-
-	/**
-	 * @param groupRole the groupRole to set
-	 */
-	@Deprecated
-	public void setGroupRole(GroupRole groupRole) {
-		this.groupRole = groupRole;
 	}
 	
 	/**
