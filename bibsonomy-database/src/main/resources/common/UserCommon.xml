@@ -2,11 +2,10 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="UserCommon">
-
+	
+	<!-- XXX: we can not use Common.user because the resultmap has a groupBy setting -->
 	<resultMap id="userForGroup" class="user">
 		<result property="name" column="user_name" javaType="string" />
-		<result property="homepage"   column="user_homepage"  javaType="url"  />
-		<result property="realname"   column="user_realname"  javaType="string" />
 	</resultMap>
 	
 	<resultMap id="userForGroupWithRole" extends="userForGroup" class="user">

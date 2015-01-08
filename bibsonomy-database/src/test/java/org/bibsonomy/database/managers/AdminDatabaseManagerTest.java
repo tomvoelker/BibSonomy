@@ -248,7 +248,7 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		review.setUser(spammer);
 		review.setRating(rating);
 		review.setResourceType(GoldStandardPublication.class);
-		review.setGroups(Collections.singleton(GroupUtils.getPublicSpamGroup()));
+		review.setGroups(Collections.singleton(GroupUtils.buildPublicSpamGroup()));
 		assertTrue(reviewDatabaseManager.createDiscussionItemForResource(newHash, review, this.dbSession));
 		assertEquals(0.0, testDatabaseManager.getReviewRatingsArithmeticMean(newHash), 0);
 		

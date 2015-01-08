@@ -641,7 +641,7 @@ public class DBLogic implements LogicInterface {
 		 * if post has group make it private
 		 */
 		if (!GroupUtils.containsExclusiveGroup(post.getGroups())) {
-			post.setGroups(Collections.singleton(GroupUtils.getPrivateGroup()));
+			post.setGroups(Collections.singleton(GroupUtils.buildPrivateGroup()));
 		}
 	}
 
@@ -1026,8 +1026,8 @@ public class DBLogic implements LogicInterface {
 			 * and return post
 			 */
 			final Group group = groups.iterator().next();
-			if (group.equals(GroupUtils.getPrivateGroup())) {
-				group.setGroupId(GroupUtils.getPrivateGroup().getGroupId());
+			if (group.equals(GroupUtils.buildPrivateGroup())) {
+				group.setGroupId(GroupUtils.buildPrivateGroup().getGroupId());
 			} else {
 				group.setGroupId(GroupUtils.getPublicGroup().getGroupId());
 			}

@@ -8,6 +8,8 @@
 		<result property="name"             	column="group_name"        javaType="string" />
 		<result property="privlevel"        	column="privlevel"         javaType="Privlevel"/>
 		<result property="sharedDocuments"  	column="sharedDocuments"   javaType="boolean"/>
+		<result property="realname"             column="user_realname"     javaType="string"/>
+		<result property="homepage"             column="user_homepage"     javaType="url"  />
 	</resultMap>
 
 	<resultMap id="publReportingSettings" class="publicationReportingSettings">

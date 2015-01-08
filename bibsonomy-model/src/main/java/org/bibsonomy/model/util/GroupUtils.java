@@ -29,11 +29,8 @@ package org.bibsonomy.model.util;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
-import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.GroupMembership;
-import org.bibsonomy.model.User;
 
 /**
  * @author Christian Schenk
@@ -70,7 +67,7 @@ public class GroupUtils {
 	 * 
 	 * @return private group
 	 */
-	public static Group getPrivateGroup() {
+	public static Group buildPrivateGroup() {
 		return getGroup(PRIVATE_GROUP_NAME, "private group", GroupID.PRIVATE, Privlevel.HIDDEN);
 	}
 
@@ -79,7 +76,7 @@ public class GroupUtils {
 	 * 
 	 * @return friends group
 	 */
-	public static Group getFriendsGroup() {
+	public static Group buildFriendsGroup() {
 		return getGroup(FRIENDS_GROUP_NAME, "friends group", GroupID.FRIENDS, Privlevel.HIDDEN);
 	}
 
@@ -89,7 +86,7 @@ public class GroupUtils {
 	 * 
 	 * @return public group
 	 */
-	public static Group getPublicSpamGroup() {
+	public static Group buildPublicSpamGroup() {
 		return getGroup(PUBLIC_GROUP_NAME,  "public group",  GroupID.PUBLIC_SPAM,  Privlevel.PUBLIC);
 	}
 
@@ -98,7 +95,7 @@ public class GroupUtils {
 	 * 
 	 * @return private group
 	 */
-	public static Group getPrivateSpamGroup() {
+	public static Group buildPrivateSpamGroup() {
 		return getGroup(PRIVATE_GROUP_NAME, "private group", GroupID.PRIVATE_SPAM, Privlevel.HIDDEN);
 	}
 
@@ -107,7 +104,7 @@ public class GroupUtils {
 	 * 
 	 * @return friends group
 	 */
-	public static Group getFriendsSpamGroup() {
+	public static Group buildFriendsSpamGroup() {
 		return getGroup(FRIENDS_GROUP_NAME, "friends group", GroupID.FRIENDS_SPAM, Privlevel.HIDDEN);
 	}
 
@@ -116,7 +113,7 @@ public class GroupUtils {
 	 * 
 	 * @return invalid group
 	 */
-	public static Group getInvalidGroup() {
+	public static Group buildInvalidGroup() {
 		return getGroup("invalid", "invalid group", GroupID.INVALID, Privlevel.HIDDEN);
 	}
 
@@ -131,7 +128,7 @@ public class GroupUtils {
 	 */
 	public static boolean isExclusiveGroup(final Group group) {
 		return (
-				getPrivateGroup().equals(group) || 
+				buildPrivateGroup().equals(group) || 
 				getPublicGroup().equals(group)
 		);
 	}
@@ -147,7 +144,7 @@ public class GroupUtils {
 	 */
 	public static boolean isExclusiveGroup(final int groupId) {
 		return (
-				GroupID.equalsIgnoreSpam(getPrivateGroup().getGroupId(), groupId) || 
+				GroupID.equalsIgnoreSpam(buildPrivateGroup().getGroupId(), groupId) || 
 				GroupID.equalsIgnoreSpam(getPublicGroup().getGroupId(), groupId)
 		);
 	}
@@ -179,7 +176,7 @@ public class GroupUtils {
 		/*
 		 * at least one of the groups is public or private
 		 */
-		return groups.contains(getPublicGroup()) || groups.contains(getPrivateGroup());
+		return groups.contains(getPublicGroup()) || groups.contains(buildPrivateGroup());
 	}
 	
 	/**
@@ -197,7 +194,7 @@ public class GroupUtils {
 	 * @return <code>true</code> if the set of groups contains only the private group.
 	 */
 	public static boolean isPrivateGroup(final Set<Group> groups) {
-		return groups.size() == 1 && groups.contains(getPrivateGroup());
+		return groups.size() == 1 && groups.contains(buildPrivateGroup());
 	}
 	
 	/**
@@ -225,14 +222,5 @@ public class GroupUtils {
 		group.setGroupId(groupId.getId());
 		group.setPrivlevel(privlevel);
 		return group;
-	}
-	
-	public static User getDummyUser(Group group) {
-		for (GroupMembership ms : group.getMemberships()) {
-			if (ms.getGroupRole().equals(GroupRole.DUMMY)) {
-				return ms.getUser();
-			}
-		}
-		throw new IllegalArgumentException("The group " + group.getName()+ " has no dummy user!");
 	}
 }

@@ -68,30 +68,22 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<Group> getAllGroups(final int start, final int end, final DBSession session) {
 		final GroupParam param = LogicInterfaceHelper.buildParam(GroupParam.class, Order.ALPH, start, end);
-		final List<Group> groupList = this.queryForList("getAllGroups", param, Group.class, session);
-		
-		for (final Group g : groupList) {
-			final User dummyUser = GroupUtils.getDummyUser(g);
-			g.setRealname(dummyUser.getRealname());
-			g.setHomepage(dummyUser.getHomepage());
-		}
-		
-		return groupList;
+		return this.queryForList("getAllGroups", param, Group.class, session);
 	}
 	
 	/**
-     * Returns pending groups.
-     * 
-     * @param start 
-     * @param end 
-     * @param session 
-     * @return list of all pending groups
-     */
-    public List<Group> getPendingGroups(final int start, final int end,  final DBSession session) {
+	 * Returns pending groups.
+	 * 
+	 * @param start 
+	 * @param end 
+	 * @param session 
+	 * @return list of all pending groups
+	 */
+	public List<Group> getPendingGroups(final int start, final int end,  final DBSession session) {
 		final GroupParam param = new GroupParam();
 		param.setOffset(start);
 		param.setLimit(end);
-        return this.queryForList("getPendingGroups", param, Group.class, session);
+		return this.queryForList("getPendingGroups", param, Group.class, session);
     }
 
 	/**
@@ -111,23 +103,14 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		}
 
 		if ("private".equals(normedGroupName)) {
-			return GroupUtils.getPrivateGroup();
+			return GroupUtils.buildPrivateGroup();
 		}
 
 		if ("friends".equals(normedGroupName)) {
-			return GroupUtils.getFriendsGroup();
+			return GroupUtils.buildFriendsGroup();
 		}
 		
-		// TODO: Accomplish that somehow directly from SQL (probably impossible)
-		final Group group =  this.queryForObject("getGroupWithMemberships", normedGroupName, Group.class, session);
-		if (present(group) && !group.getMemberships().isEmpty()) {
-			final User groupUser = GroupUtils.getDummyUser(group);
-
-			group.setRealname(groupUser.getRealname());
-			group.setHomepage(groupUser.getHomepage());
-		}
-		
-		return group;
+		return this.queryForObject("getGroupWithMemberships", normedGroupName, Group.class, session);
 	}
 
 	/**
@@ -168,8 +151,8 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		log.debug("getGroupMembers " + groupname);
 		Group group;
 		if ("friends".equals(groupname)) {
-			group = GroupUtils.getFriendsGroup();
-			List<GroupMembership> mss = new LinkedList<>();
+			group = GroupUtils.buildFriendsGroup();
+			final List<GroupMembership> mss = new LinkedList<>();
 			for (User u : this.userDb.getUserRelation(authUser, UserRelation.OF_FRIEND, null, session)) {
 				mss.add(new GroupMembership(u, GroupRole.USER, true));
 			}
@@ -182,7 +165,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			return group;
 		}
 		if ("private".equals(groupname)) {
-			group = GroupUtils.getPrivateGroup();
+			group = GroupUtils.buildPrivateGroup();
 			group.setMemberships(Collections.<GroupMembership> emptyList());
 			return group;
 		}
@@ -193,7 +176,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			// check if the group exists
 			if (!present(this.getGroupByName(groupname, session))) {
 				log.debug("group " + groupname + " does not exist");
-				group = GroupUtils.getInvalidGroup();
+				group = GroupUtils.buildInvalidGroup();
 				group.setMemberships(Collections.<GroupMembership> emptyList());
 				return group;
 			}

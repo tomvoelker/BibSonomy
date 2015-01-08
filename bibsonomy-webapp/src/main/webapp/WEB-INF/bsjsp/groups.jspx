@@ -97,10 +97,9 @@
 					</c:if>
 					<dt><span class="sr-only"><c:out value="${group.name}" /></span><img class="img-thumbnail img-responsive user-avatar" src="${relativeUrlGenerator.getUserPictureUrlByUsername(group.name)}"/></dt>
 					<dd>
-						<c:set var="dummyUser" value="${group.getGroupMembershipForUser(group.name).user}" />
-						<c:set var="displayName" value="${dummyUser.name}" />
-						<c:if test="${not empty dummyUser.realname}">
-							<c:set var="displayName" value="${dummyUser.realname}" />
+						<c:set var="displayName" value="${group.name}" />
+						<c:if test="${not empty group.realname}">
+							<c:set var="displayName" value="${group.realname}" />
 						</c:if>
 						<div class="row">
 							<div class="col-xs-9">
@@ -108,10 +107,10 @@
 									<c:out value="${displayName}"/>
 								</a>
 								<br />
-								<c:if test="${not empty dummyUser.homepage}">
-									<small><a href="${fn:escapeXml(dummyUser.homepage)}">Homepage</a></small><br />
+								<c:if test="${not empty group.homepage}">
+									<small><a href="${fn:escapeXml(group.homepage)}">Homepage</a></small><br />
 								</c:if>
-								
+								<!-- TODO: use url generator -->
 								<small><a href="/cv/group/${fn:escapeXml(group.name)}">CV</a></small>
 								
 							</div>

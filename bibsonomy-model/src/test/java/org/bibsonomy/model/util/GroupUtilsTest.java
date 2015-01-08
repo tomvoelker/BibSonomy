@@ -46,7 +46,7 @@ public class GroupUtilsTest {
 	 */
 	@Test
 	public void getGroup() {
-		for (final Group group : new Group[] { GroupUtils.getPublicGroup(), GroupUtils.getPrivateGroup(), GroupUtils.getFriendsGroup(), GroupUtils.getInvalidGroup() }) {
+		for (final Group group : new Group[] { GroupUtils.getPublicGroup(), GroupUtils.buildPrivateGroup(), GroupUtils.buildFriendsGroup(), GroupUtils.buildInvalidGroup() }) {
 			assertNotNull(group);
 			assertTrue(present(group.getName()));
 			assertTrue(present(group.getDescription()));
@@ -65,12 +65,12 @@ public class GroupUtilsTest {
 	 */
 	@Test
 	public void testIsExclusiveGroupGroup() {
-		assertTrue(GroupUtils.isExclusiveGroup(GroupUtils.getPrivateGroup()));
-		assertTrue(GroupUtils.isExclusiveGroup(GroupUtils.getPrivateSpamGroup()));
+		assertTrue(GroupUtils.isExclusiveGroup(GroupUtils.buildPrivateGroup()));
+		assertTrue(GroupUtils.isExclusiveGroup(GroupUtils.buildPrivateSpamGroup()));
 		assertTrue(GroupUtils.isExclusiveGroup(GroupUtils.getPublicGroup()));
-		assertTrue(GroupUtils.isExclusiveGroup(GroupUtils.getPublicSpamGroup()));
-		assertFalse(GroupUtils.isExclusiveGroup(GroupUtils.getFriendsGroup()));
-		assertFalse(GroupUtils.isExclusiveGroup(GroupUtils.getFriendsSpamGroup()));
+		assertTrue(GroupUtils.isExclusiveGroup(GroupUtils.buildPublicSpamGroup()));
+		assertFalse(GroupUtils.isExclusiveGroup(GroupUtils.buildFriendsGroup()));
+		assertFalse(GroupUtils.isExclusiveGroup(GroupUtils.buildFriendsSpamGroup()));
 	}
 	
 	/**
