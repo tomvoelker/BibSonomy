@@ -61,7 +61,7 @@
 						<fmt:message var="accinviteTitle" key="settings.group.accInvite.button.title"/>
 								
 						<c:forEach items="${command.user.pendingGroups}" var="group">
-							<c:if test="${group.getGroupMembershipForUser(loginUser).groupRole eq 'INVITED' }">		
+							<c:if test="${group.getGroupMembershipForUser(loginUser).groupRole eq 'INVITED' }">
 								
 					
 								<dl class="dl-horizontal dt-thumbnail-items group-list">
@@ -135,8 +135,8 @@
 						<c:otherwise>
 							<dl class="dl-horizontal dt-thumbnail-items group-list">
 								<c:forEach var="group" items="${command.user.groups}">
-									<c:if test="${group.getGroupMembershipForUser(loginUser).groupRole ne 'DUMMY'}">
-										
+									<c:set var="groupMembership" value="${group.getGroupMembershipForUser(loginUser)}" />
+									<c:if test="${groupMembership.groupRole ne 'DUMMY'}">
 										<form:form cssClass="form-horizontal" class="groupShareSettings"  method="POST" action="/ajax/handleGroupShare">
 											<dt><span class="sr-only"><c:out value="${group.name}" /></span><img class="img-thumbnail img-resposive user-avatar" src="${relativeUrlGenerator.getUserPictureUrlByUsername(group.name)}"/></dt>
 											<dd>
@@ -150,7 +150,6 @@
 														</c:if>
 														<br />
 														<c:if test="${not empty group.homepage}">
-															TODO: Check if this is possible!<br />
 															<small><a href="${mtl:encodeURI(group.homepage)}">Homepage</a></small>
 														</c:if>
 													</div>
@@ -161,7 +160,7 @@
 																<input type="hidden" name="ckey" value="${command.context.ckey}" />
 																<input type="hidden" name="forward" value="settings?selTab=3" />
 																<c:choose>
-																	<c:when test="${group.userSharedDocuments}">
+																	<c:when test="${groupMembership.userSharedDocuments}">
 																		<fmt:message var="buttonTitle" key="settings.groups.documentsharing.shared.title" />
 																		<fmt:message var="buttonValue" key="settings.groups.documentsharing.shared" />
 																		<input type="hidden" name="action" value="unshareDocuments" />

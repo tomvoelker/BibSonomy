@@ -46,7 +46,6 @@
 			<!-- display potential errors -->
 			<errors:global />
 			
-			
 			<settings:profile command="${command}"/>
 			
 			<settings:settings command="${command}"/>
@@ -58,6 +57,7 @@
 			<settings:oauth command="${command}"/>
 			
 			<settings:sync command="${command}"/>
+			
 			<settings:group command="${command}"/>
 		</jsp:attribute>
 		

@@ -127,13 +127,12 @@
 							</form:form>
 						</c:if>
 					</div>
-								
+					
 					<!-- GROUP SETTINGS -->
 					<h2>
 						<fmt:message key="settings.group.settings" />
 					</h2>
-					<form:form id="groupSettings" method="post"
-							   action="/updateGroupSettings">
+					<form:form id="groupSettings" method="post" action="/updateGroupSettings">
 						<div id="fsform">
 							<fieldset class="fsInner">
 								<div class="fsRow">
@@ -183,31 +182,21 @@
 							<fmt:message key="settings.group.reporting" />
 						</h2>
 						<fieldset class="fsOuter">
-							<form:form id="groupSettings" method="post"
-									   action="/updateGroupSettings">
-								<bform:fieldset maximized="${true}"
-												legendKey="settings.group.reporting.mail">
+							<form:form id="groupSettings" method="POST" action="/updateGroupSettings">
+								<bform:fieldset maximized="${true}" legendKey="settings.group.reporting.mail">
 									<jsp:attribute name="content">
-										<bform:input
-											path="group.publicationReportingSettings.reportingMailAddress"
-											noHelp="${true}" />
-										<bform:textarea
-											path="group.publicationReportingSettings.reportingMailTemplate"
-											noHelp="${true}" rows="10" />
+										<bform:input path="group.publicationReportingSettings.reportingMailAddress" noHelp="${true}" />
+										<bform:textarea path="group.publicationReportingSettings.reportingMailTemplate" noHelp="${true}" rows="10" />
 									</jsp:attribute>
 								</bform:fieldset>
 
-								<bform:fieldset maximized="${true}"
-												legendKey="settings.group.reporting.address">
+								<bform:fieldset maximized="${true}" legendKey="settings.group.reporting.address">
 									<jsp:attribute name="content">
-										<bform:input
-											path="group.publicationReportingSettings.externalReportingUrl"
-											noHelp="${true}" />
+										<bform:input path="group.publicationReportingSettings.externalReportingUrl" noHelp="${true}" />
 									</jsp:attribute>
 								</bform:fieldset>
 								<bform:submit messageKey="settings.group.reporting.update" />
-								<input type="hidden" name="action"
-									   value="updateGroupReportingSettings" />
+								<input type="hidden" name="action" value="updateGroupReportingSettings" />
 							</form:form>
 						</fieldset>
 					</c:if>
