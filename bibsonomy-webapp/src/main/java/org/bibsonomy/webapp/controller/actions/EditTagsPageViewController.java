@@ -83,13 +83,6 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 			break;
 		}
 
-		/*
-		 * clear the input fields
-		 */
-		//command.getEditTags().setAddTags("");
-		//command.getEditTags().setDelTags("");
-		//command.getRelationsEdit().setLower("");
-		//command.getRelationsEdit().setUpper("");
 		command.setUpdatedTagsCount(changedResources);
 
 		/*
@@ -170,7 +163,15 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 		} catch (final RecognitionException ex) {
 			// TODO How can i handle this
 		}
-
+		
+		/*
+		 * clear the input fields
+		 */
+		cmd.getEditTags().setAddTags("");
+		cmd.getEditTags().setDelTags("");
+		cmd.getRelationsEdit().setLower("");
+		cmd.getRelationsEdit().setUpper("");
+		
 		return updatedTags;
 	}
 
