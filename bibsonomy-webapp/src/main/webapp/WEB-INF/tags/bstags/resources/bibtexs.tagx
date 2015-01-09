@@ -28,8 +28,8 @@
 	<!-- fragments -->
 	<jsp:directive.attribute name="addAsFirstItem" fragment="true" required="false" />
 	<jsp:directive.attribute name="addAsLastItem" fragment="true" required="false" />
-	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
-
+	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>		
+		
 	<c:if test="${empty listIndex}">
 		<c:set var="listIndex" value="0"/>
 	</c:if>
@@ -102,7 +102,7 @@
 		
 		<!-- Bibtex description -->
 		<jsp:attribute name="desc">
-			<bib:desc publication="${post.resource}"/>
+			<bib:desc publication="${post.resource}" post="${post}"/>
 		</jsp:attribute>
 		
 		<!-- BibTeX action -->

@@ -9,8 +9,17 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<!-- Decide wether or not to display "Tags: " before listing all tags -->
 	<jsp:directive.attribute name="showTagsLabel" type="java.lang.Boolean" required="false"/>
-
-
+	<jsp:directive.attribute name="isRemotePost" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="false" />
+	<c:set var="resourceType" value="${post.resource.getClass().getSimpleName()}"/>
+	<c:choose>
+		<c:when test="${not empty post.systemUrl }">
+			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var ="isRemotePost" value="false"/>
+		</c:otherwise>
+	</c:choose>
 	<!--+
 		| Display all tags of a post. 
 		| If there are hidden systemtags (that are visible for the logginUser) display the small icon. 
@@ -24,7 +33,22 @@
 			<img class="" alt="systemTagsTitle" src="${resdir}/image/cog_wheel.png"/>
 			<div>
 				<c:forEach var="systag" items="${post.hiddenSystemTags}">
-					<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, systag.name)}"><c:out value="${systag.name}"/></a><c:out value=" "/>
+					<c:choose>
+						<c:when test="${isRemotePost}">
+						<c:choose>
+							<c:when test="${resourceType eq 'Bookmark'}">
+								<a href="${mtl:cleanUrl(post.resource.url)}"><c:out value="${systag.name}"/></a>
+							</c:when>
+							<c:otherwise>
+								<a href="${post.systemUrl}/bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}"><c:out value="${systag.name}" /></a>
+							</c:otherwise>
+						</c:choose>
+						</c:when>
+						<c:otherwise>
+							<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, systag.name)}"><c:out value="${systag.name}"/></a>
+						</c:otherwise>
+					</c:choose>
+					<c:out value=" "/>
 				</c:forEach>
 			</div>
 		</div>
@@ -39,7 +63,23 @@
 		<div class="extend">
 			<ul class="tags">
 				<c:forEach var="tag" items="${post.visibleTags}">
-					<li><a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}"><c:out value="${tag.name}"/></a></li>
+					<li>
+						<c:choose>
+							<c:when test="${isRemotePost}">
+							<c:choose>
+								<c:when test="${resourceType eq 'Bookmark'}">
+									<a href="${mtl:cleanUrl(post.resource.url)}"><c:out value="${tag.name}"/></a>
+								</c:when>
+								<c:otherwise>
+									<a href="${post.systemUrl}/bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}"><c:out value="${tag.name}" /></a>
+								</c:otherwise>
+							</c:choose>
+							</c:when>
+							<c:otherwise>
+								<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}"><c:out value="${tag.name}"/></a>
+							</c:otherwise>
+						</c:choose>		
+					</li>
 				</c:forEach>
 			</ul>
 <!-- 				<div>

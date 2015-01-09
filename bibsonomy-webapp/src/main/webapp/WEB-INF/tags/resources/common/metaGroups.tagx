@@ -8,6 +8,18 @@
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="isRemotePost" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="false" />
+	
+	<c:set var="resourceType" value="${post.resource.getClass().getSimpleName()}"/>
+	<c:choose>
+		<c:when test="${not empty post.systemUrl }">
+			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var ="isRemotePost" value="false"/>
+		</c:otherwise>
+	</c:choose>
 	<!-- Groups of a post -->
 	
 	<!-- TODO: Localize group names private and friends. This would have to be done at very many places... -->
@@ -19,24 +31,66 @@
 					<fmt:message key="post.meta.asGroup"/> 
 					<c:out value=" "/>
 					<c:choose>
-						<c:when test="${loginUserName eq post.user.name}">
-							<a class="friends" href="${relativeUrlGenerator.getViewableUrlByGroupName(fn:escapeXml(group.name))}"><c:out value="${group.name}" /></a>
+						<c:when test="${isRemotePost}">
+						<c:choose>
+							<c:when test="${resourceType eq 'Bookmark'}">
+								<a href="${mtl:cleanUrl(post.resource.url)}"><c:out value="${group.name}" /></a>
+							</c:when>
+							<c:otherwise>
+								<a href="${post.systemUrl}/bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}"><c:out value="${group.name}" /></a>
+							</c:otherwise>
+						</c:choose>
 						</c:when>
 						<c:otherwise>
-							<a class="friends" href="${relativeUrlGenerator.getFriendUrlByUserName(fn:escapeXml(post.user.name))}"><c:out value="${group.name}" /></a>
+							<c:choose>
+								<c:when test="${loginUserName eq post.user.name}">
+									<a class="friends" href="${relativeUrlGenerator.getViewableUrlByGroupName(fn:escapeXml(group.name))}"><c:out value="${group.name}" /></a>
+								</c:when>
+								<c:otherwise>
+									<a class="friends" href="${relativeUrlGenerator.getFriendUrlByUserName(fn:escapeXml(post.user.name))}"><c:out value="${group.name}" /></a>
+								</c:otherwise>
+							</c:choose>
 						</c:otherwise>
 					</c:choose>
 				</c:when>
 				<c:when test="${group.name eq 'private'}">
 					<fmt:message key="post.meta.asPrivate"/> 
 					<c:out value=" "/>
-					<a class="private" href="${relativeUrlGenerator.getViewableUrlByGroupName(fn:escapeXml(group.name))}"><c:out value="${group.name}" /></a>
+					<c:choose>
+						<c:when test="${isRemotePost}">
+						<c:choose>
+							<c:when test="${resourceType eq 'Bookmark'}">
+								<a href="${mtl:cleanUrl(post.resource.url)}"><c:out value="${group.name}" /></a>
+							</c:when>
+							<c:otherwise>
+								<a href="${post.systemUrl}/bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}"><c:out value="${group.name}" /></a>
+							</c:otherwise>
+						</c:choose>
+						</c:when>
+						<c:otherwise>
+							<a class="private" href="${relativeUrlGenerator.getViewableUrlByGroupName(fn:escapeXml(group.name))}"><c:out value="${group.name}" /></a>
+						</c:otherwise>
+					</c:choose>
 				</c:when>
 				<c:otherwise>
 					<!-- Some regular (other) group -->
 					<fmt:message key="post.meta.asGroup"/> 
 					<c:out value=" "/>
-					<a class="other" href="${relativeUrlGenerator.getViewableUrlByGroupName(fn:escapeXml(group.name))}"><c:out value="${group.name}" /></a>
+					<c:choose>
+						<c:when test="${isRemotePost}">
+						<c:choose>
+							<c:when test="${resourceType eq 'Bookmark'}">
+								<a href="${mtl:cleanUrl(post.resource.url)}"><c:out value="${group.name}" /></a>
+							</c:when>
+							<c:otherwise>
+								<a href="${post.systemUrl}/bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}"><c:out value="${group.name}" /></a>
+							</c:otherwise>
+						</c:choose>
+						</c:when>
+						<c:otherwise>
+							<a class="other" href="${relativeUrlGenerator.getViewableUrlByGroupName(fn:escapeXml(group.name))}"><c:out value="${group.name}" /></a>
+						</c:otherwise>
+					</c:choose>
 				</c:otherwise>
 			</c:choose>
 		</c:if>	

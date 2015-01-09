@@ -8,6 +8,25 @@
 	<jsp:directive.attribute name="user" type="org.bibsonomy.model.User" required="false" />
 	<jsp:directive.attribute name="username" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="noLink" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="flase"/>
+	<jsp:directive.attribute name="isRemotePost" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="false" />
+	<c:choose>
+		<c:when test="${not empty post}">
+			<c:set var="resourceType" value="${post.resource.getClass().getSimpleName()}"/>
+			<c:choose>
+				<c:when test="${not empty post.systemUrl }">
+					<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
+				</c:when>
+				<c:otherwise>
+					<c:set var ="isRemotePost" value="false"/>
+				</c:otherwise>
+			</c:choose>
+		</c:when>
+		<c:otherwise>
+			<c:set var ="isRemotePost" value="false"/>
+		</c:otherwise>
+	</c:choose>
 	
 	<c:if test="${empty username}">
 		<c:set var="username" value="${user.name}" />
@@ -18,7 +37,21 @@
 	</c:if>
 	<c:choose>
 		<c:when test="${not noLink}">
-			<a href="${relativeUrlGenerator.getUserUrlByUserName(username)}"><c:out value="@${username}" /></a>
+			<c:choose>
+				<c:when test="${isRemotePost}">
+				<c:choose>
+					<c:when test="${resourceType eq 'Bookmark'}">
+						<a href="${mtl:cleanUrl(post.resource.url)}"><c:out value="@${username}" /></a>
+					</c:when>
+					<c:otherwise>
+						<a href="${post.systemUrl}/bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}"><c:out value="@${username}" /></a>
+					</c:otherwise>
+				</c:choose>
+				</c:when>
+				<c:otherwise>
+					<a href="${relativeUrlGenerator.getUserUrlByUserName(username)}"><c:out value="@${username}" /></a>
+				</c:otherwise>
+			</c:choose>
 		</c:when>
 		<c:otherwise>
 			<c:out value="@${username}" />
