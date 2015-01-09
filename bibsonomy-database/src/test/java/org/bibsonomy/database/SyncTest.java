@@ -138,7 +138,7 @@ public class SyncTest extends AbstractDatabaseManagerTest {
     }
 
     @Test
-    public void getSynchronizationBibTexTest() {
+    public void getSynchronizationPublicationTest() {
         final Class<? extends Resource> resourceType = BibTex.class;
         final ConflictResolutionStrategy strategy = ConflictResolutionStrategy.LAST_WINS;
 

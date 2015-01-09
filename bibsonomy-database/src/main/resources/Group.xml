@@ -2,15 +2,17 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="Group">
-
+	<!-- TODO: do we need the memberships here? -->
 	<select id="getAllGroups" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="groupParam">
 		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents
-		FROM groupids i 
+		FROM
+			(SELECT * from groupids
+				WHERE `group` > 2
+					ORDER BY group_name
+					LIMIT #limit# OFFSET #offset#) i 
 		  JOIN group_memberships g USING (`group`)
 		  JOIN user u ON (i.group_name = u.user_name)
-		WHERE i.group > 2
 		ORDER BY i.group_name
-		LIMIT #limit# OFFSET #offset#
 	</select>
 	
 	<select id="getPendingGroup" resultMap="GroupCommon.group" parameterClass="String">
