@@ -153,7 +153,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		if ("friends".equals(groupname)) {
 			group = GroupUtils.buildFriendsGroup();
 			final List<GroupMembership> mss = new LinkedList<>();
-			for (User u : this.userDb.getUserRelation(authUser, UserRelation.OF_FRIEND, null, session)) {
+			for (final User u : this.userDb.getUserRelation(authUser, UserRelation.OF_FRIEND, null, session)) {
 				mss.add(new GroupMembership(u, GroupRole.USER, true));
 			}
 			group.setMemberships(mss);
@@ -193,8 +193,8 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			//$FALL-THROUGH$
 		case HIDDEN:
 			// only a group admin may always see the group members
-			if (!present(this.getGroupMembershipForUser(authUser, group, session))
-					|| !GroupRole.ADMINISTRATOR.equals(this.getGroupMembershipForUser(authUser, group, session).getGroupRole())) {
+			final GroupMembership groupMembershipForUser = this.getGroupMembershipForUser(authUser, group, session);
+			if (!present(groupMembershipForUser) || !GroupRole.ADMINISTRATOR.equals(groupMembershipForUser.getGroupRole())) {
 				group.setMemberships(Collections.<GroupMembership>emptyList());
 			}
 			break;
@@ -202,7 +202,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			// ignore
 			break;
 		}
-
+		
 		return group;
 	}
 	
@@ -392,19 +392,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * DEPRECATED 12/12/14
-	 * Returns group name for a given group id
-	 * 
-	 * @param groupID
-	 * @param session a db session
-	 * @return groupName if group exists, null otherwise
-	 */
-	@Deprecated
-	public String getGroupNameByGroupId(final int groupID, final DBSession session) {
-		return this.queryForObject("getGroupNameByGroupId", groupID, String.class, session);
-	}
-
-	/**
 	 * Activates a group.
 	 * @param groupName 
 	 * @param session 
@@ -483,7 +470,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		}
 		
 		// create the user
-		final User groupUser = UserUtils.getDummyUser(normedGroupName);
+		final User groupUser = UserUtils.buildGroupUser(normedGroupName);
 		
 		try {
 			session.beginTransaction();
@@ -625,7 +612,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * Returns a new groupId.
 	 */
 	private int getNewGroupId(final DBSession session) {
-		return this.queryForObject("getNewGroupId", null, Integer.class, session);
+		return this.queryForObject("getNewGroupId", null, Integer.class, session).intValue();
 	}
 
 	/**
@@ -641,8 +628,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
 			throw new RuntimeException(); // never happens but calms down eclipse 
 		}
-		this.delete("deleteGroup", group.getGroupId(), session);
-		this.delete("removeAllUserFromGroup", group.getGroupId(), session);
+		
+		final Integer groupId = Integer.valueOf(group.getGroupId());
+		this.delete("deleteGroup", groupId, session);
+		this.delete("removeAllUserFromGroup", groupId, session);
 	}
 
 
@@ -677,15 +666,16 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		
 		// we only need to check for pending GMS, if we add a users AFTER finishing group creation
 		if (GroupRole.USER.equals(role)) {
-			for (GroupMembership ms : this.getGroupWithPendingMemberships(groupname, session).getMemberships()) {
-				if (ms.getUser().equals(user)) {
+			// TODO: why not just call remove pending membership?
+			for (final GroupMembership membership : this.getGroupWithPendingMemberships(groupname, session).getMemberships()) {
+				if (membership.getUser().equals(user)) {
 					this.removePendingMembership(groupname, username, session);
 					break;
 				}
 			}
 		}
-
-		GroupParam param = new GroupParam();
+		
+		final GroupParam param = new GroupParam();
 		param.setGroupId(group.getGroupId());
 		param.setMembership(new GroupMembership(user, role, true));
 		
@@ -718,9 +708,9 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') is the last group admin and can't be deleted.");		
 			}
 		}
-
-
-		GroupParam param = new GroupParam();
+		
+		
+		final GroupParam param = new GroupParam();
 		param.setUserName(username);
 		param.setGroupId(group.getGroupId());
 
@@ -733,7 +723,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		 * Shouldn't we just mark the deleted user as spammer? Then no post should
 		 * be visible anymore.
 		 */
-
+		
 		this.plugins.onRemoveUserFromGroup(param.getUserName(), param.getGroupId(), session);
 		this.delete("removeUserFromGroup", param, session);
 	}
@@ -793,7 +783,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			throw new RuntimeException();
 		}
 		
-		GroupParam param = new GroupParam();
+		final GroupParam param = new GroupParam();
 		param.setMembership(new GroupMembership(new User(username), GroupRole.DUMMY, true));
 		param.setGroupId(group.getGroupId());
 		
@@ -815,7 +805,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			throw new RuntimeException();
 		}
 		
-		GroupParam param = new GroupParam();
+		final GroupParam param = new GroupParam();
 		param.setMembership(membership);
 		param.setGroupId(group.getGroupId());
 		
@@ -847,10 +837,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * updates the user shared documents field for the given user.
 	 * 
 	 * @param group
+	 * @param membership 
 	 * @param session
 	 */
 	public void updateUserSharedDocuments(final Group group, GroupMembership membership, final DBSession session) {
-		GroupParam p = new GroupParam();
+		final GroupParam p = new GroupParam();
 		p.setMembership(membership);
 		p.setGroupId(group.getGroupId());
 		this.update("updateUserSharedDocuments", p, session);

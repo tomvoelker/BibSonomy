@@ -3,13 +3,16 @@
 
 <sqlMap namespace="GroupCommon">
 
-	<resultMap id="group_basic"	class="group">
-		<result property="groupId"         	 	column="group"             javaType="int" />
-		<result property="name"             	column="group_name"        javaType="string" />
-		<result property="privlevel"        	column="privlevel"         javaType="Privlevel"/>
-		<result property="sharedDocuments"  	column="sharedDocuments"   javaType="boolean"/>
-		<result property="realname"             column="user_realname"     javaType="string"/>
-		<result property="homepage"             column="user_homepage"     javaType="url"  />
+	<resultMap id="group_basic" class="group">
+		<result property="groupId"            column="group"             javaType="int" />
+		<result property="name"               column="group_name"        javaType="string" />
+		<result property="privlevel"          column="privlevel"         javaType="Privlevel"/>
+		<result property="sharedDocuments"    column="sharedDocuments"   javaType="boolean"/>
+	</resultMap>
+	
+	<resultMap id="group_extended" extends="group_basic" class="group">
+		<result property="realname"           column="user_realname"     javaType="string"/>
+		<result property="homepage"           column="user_homepage"     javaType="url"  />
 	</resultMap>
 
 	<resultMap id="publReportingSettings" class="publicationReportingSettings">
@@ -19,23 +22,23 @@
 	</resultMap>
 	
 	<resultMap id="groupRequest" class="groupRequest">
-		<result property="userName" column="request_user_name" javaType="string" />
-		<result property="reason" column="request_reason" javaType="string"/>
-		<result property="submissionDate" column="request_submission_date" javaType="date" />
+		<result property="userName"         column="request_user_name"        javaType="string" />
+		<result property="reason"           column="request_reason"           javaType="string"/>
+		<result property="submissionDate"   column="request_submission_date"  javaType="date" />
 	</resultMap>
 	
-	<resultMap id="group" class="group" extends="group_basic" groupBy="name">
-		<result property="publicationReportingSettings" resultMap="GroupCommon.publReportingSettings" />
-		<result property="groupRequest" resultMap="GroupCommon.groupRequest" />
+	<resultMap id="group" class="group" extends="group_extended" groupBy="name">
+		<result property="publicationReportingSettings"  resultMap="GroupCommon.publReportingSettings" />
+		<result property="groupRequest"                  resultMap="GroupCommon.groupRequest" />
 	</resultMap>
 	
 	<resultMap id="groupMembership" class="groupMembership">
-		<result property="userSharedDocuments" 	column="user_shared_documents" javaType="boolean" />
-		<result property="groupRole" 	column="group_role" javaType="GroupRole" />
-		<result property="user"    resultMap="UserCommon.userForGroup" />
+		<result property="userSharedDocuments"  column="user_shared_documents"  javaType="boolean" />
+		<result property="groupRole"            column="group_role"             javaType="GroupRole" />
+		<result property="user"                 resultMap="UserCommon.userForGroup" />
 	</resultMap>
 	
-	<resultMap id="groupWithMemberships" class="group" extends="group_basic" groupBy="name" >
+	<resultMap id="groupWithMemberships" class="group" extends="group_extended" groupBy="name" >
 		<result property="memberships" resultMap="GroupCommon.groupMembership" />
 	</resultMap>
 	
@@ -44,7 +47,7 @@
 	</resultMap>
 	
 	<resultMap id="tagsets" class="tagset" groupBy="setName">
-		<result property="setName"   	column="set_name"  	javaType="string"  />
+		<result property="setName"      column="set_name"       javaType="string"  />
 		<result property="tags"         resultMap="Common.tag" />
 	</resultMap>
 	
