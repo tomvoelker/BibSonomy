@@ -69,21 +69,14 @@ public class ATSScraperTest {
 	@Test
 	public void testCitedby() throws Exception {
 		final ScrapingContext sc = new ScrapingContext(new URL("http://www.atsjournals.org/doi/abs/10.1513/pats.201101-004MW#.VK_cBnvveUk"));
-		
 		ATSScraper as = new ATSScraper();
-		
 		assertTrue(as.scrape(sc));
-		
 		assertTrue(as.scrapeCitedby(sc));
 		
 		final String cby = sc.getCitedBy();
-		
 		assertNotNull(cby);
-		
 		assertTrue(cby.length() > 100);
-		
 		assertEquals("<div> (2013) Stem Cells, Cell Therapies, and Bioengineering in Lung Biology and Diseases.".trim(), cby.substring(0, 90).trim());
-		
 		assertTrue(cby.contains(" Markers of Vascular Perturbation Correlate"));
 	}
 }
