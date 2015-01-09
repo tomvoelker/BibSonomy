@@ -53,6 +53,7 @@
 
 		<jsp:attribute name="headerExt">
 			<script type='text/javascript' src='/resources/javascript/disambiguation/linkPerson.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/disambiguation/newPerson.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/typeahead.js/js/typeahead.bundle.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/disambiguation/autocompleteOtherPerson.js'><!-- keep me --></script>
 			
@@ -96,11 +97,11 @@
 				<div class='panel-body'>
 					<div class="list-group">
 						<c:choose>
-							<c:when test="${fn:length(command.suggestedPersons) gt 0}">
-								<c:forEach var='person' items="${command.suggestedPersons}">
+							<c:when test="${fn:length(command.suggestedPersonNames) gt 0}">
+								<c:forEach var='personName' items="${command.suggestedPersonNames}">
 									<div class="list-group-item">
-										<span>${person.mainName.lastName}, ${person.mainName.firstName}, ${person.academicDegree}</span>
-										<a class='pull-right' href="#" data-toggle="modal" data-target='#linkPerson' onclick="linkPerson('${post.resource.intraHash}', '${person.id}')"><span class='glyphicon glyphicon-plus'></span></a>
+										<span>${personName.lastName}, ${personName.firstName}, ${personName.person.academicDegree}</span>
+										<a class='pull-right btnLinkPerson' href="#linkPerson" data-action="addRole" data-resource-simhash1='${command.post.resource.interHash}' data-resource-simhash2='${command.post.resource.intraHash}' data-pub-owner='${command.requestedUser}' data-person-name-id='${personName.id}' data-person-id='${personName.personId}'><span id='icon_${personName.id}' class='glyphicon glyphicon-plus'></span></a>
 									</div>
 								</c:forEach>
 							</c:when>
@@ -144,12 +145,8 @@
 						</fieldset>
 					</div>
 					<div class="modal-footer">
-						<form action="/persondisambiguation/link/${command.requestedAuthorName}/${command.requestedHash}/${command.requestedUser}/${command.requestedRole}" method="post" class='form-horizontal'>
-							<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
-							<input type='hidden' id='formPersonId' name='formPersonId' value=''/>
-							<input type="hidden" name='addPerson' value='update' />
-							<input type="submit" class="btn btn-primary" name='submit' value='${textAddPersonButton}' />
-						</form>
+						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
+						<button type="button" class="btn btn-primary" id='btnOtherPersonSubmit' data-person-firstName="${command.personName.firstName}" data-person-lastName="${command.personName.lastName}" data-resource-simhash1="${command.post.resource.interHash}" data-resource-simhash2="${command.post.resource.intraHash}" data-pubowner="${command.post.user.name}">${textAddPersonButton}</button>
 					</div>
 			</div>
 		</div>
@@ -169,14 +166,8 @@
           				<p>${textModalNewPersonContent}</p>
 					</div>
 					<div class="modal-footer">
-						<form action="/person/0/${command.requestedAuthorName}" method="post" class='form-horizontal'>
-							<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
-							<input type="hidden" name='formAction' value='new' />
-							<input type='hidden' name='formResourceHash' value='${command.requestedHash}'/>
-							<input type='hidden' name='formUser' value='${command.requestedUser}'/>
-							<input type='hidden' name='formPersonRole' value='${command.requestedRole}'/>
-							<input type="submit" class="btn btn-primary" name='submit' value='${textNewPersonButton}' />
-						</form>
+						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
+						<button type="button" class="btn btn-primary" id='btnNewPersonSubmit' data-person-firstName="${command.personName.firstName}" data-person-lastName="${command.personName.lastName}" data-resource-simhash1="${command.post.resource.interHash}" data-resource-simhash2="${command.post.resource.intraHash}" data-pubowner="${command.post.user.name}">${textNewPersonButton}</button>
 					</div>
 			</div>
 		</div>

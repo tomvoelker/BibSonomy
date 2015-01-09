@@ -1,29 +1,29 @@
 //instantiate the bloodhound suggestion engine
 $(document).ready(function() {
-	var persons = [{"value":"Max Mustermann","firstname":"Max","lastName":"Mustermann","id":"hansii"}];
 	// constructs the suggestion engine
-	var persons = new Bloodhound({
+	var personNames = new Bloodhound({
 		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
 		queryTokenizer: Bloodhound.tokenizers.whitespace,
-		 local: $.map(persons, function(person) { return person; })
+		remote: '/person?formAction=search&formSelectedName=%QUERY'
 	});
 
 	// kicks off the loading/processing of `local` and `prefetch`
-	persons.initialize();
+	personNames.initialize();
 
-	$('.typeahead').typeahead({
+	var personNameTypeahead = $('.typeahead').typeahead({
 		hint: true,
 		highlight: true,
 		minLength: 1
 	},
 	{
-		name: 'persons',
-		displayKey: 'value',
+		name: 'personNames',
+		displayKey: 'personName',
 		// `ttAdapter` wraps the suggestion engine in an adapter that
 		// is compatible with the typeahead jQuery plugin
-		source: persons.ttAdapter()
+		source: personNames.ttAdapter()
 	});
-	$('.typeahead').on("typeahead:selected", function(jobj, sobj, dataset) {
-		window.location.pathname = "/person/" + sobj.id + "/" + sobj.value;
-	})
+	
+	personNameTypeahead.on('typeahead:selected', function(evt, data) {
+		window.location.pathname = "/person/" + data.personId + "/" + data.personName;
+	});
 }); 

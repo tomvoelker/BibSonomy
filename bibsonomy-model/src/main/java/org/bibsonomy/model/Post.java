@@ -57,6 +57,8 @@ public class Post<T extends Resource> implements Serializable {
 	 * TODO: Is this field really part of the model?
 	 */
 	private Integer contentId;
+	
+	private List<ResourcePersonRelation> rprs;
 
 	/**
 	 * This post belongs to this {@link User}.
@@ -433,5 +435,19 @@ public class Post<T extends Resource> implements Serializable {
 			this.visibleTags = new HashSet<Tag>();
 		}
 		this.visibleTags.add(tag);
+	}
+
+	/**
+	 * @return the rprs
+	 */
+	public List<ResourcePersonRelation> getRprs() {
+		return this.rprs;
+	}
+
+	/**
+	 * @param rprs the rprs to set
+	 */
+	public void setRprs(List<ResourcePersonRelation> rprs) {
+		this.rprs = rprs;
 	}
 }

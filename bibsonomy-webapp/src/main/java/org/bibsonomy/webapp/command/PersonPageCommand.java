@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.command;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.model.BibTex;
@@ -30,17 +31,24 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	private String formOrcid;
 	private String formThesisId;
 	private String formUser;
-	private int formNameId;
+	private String formPersonNameId;
 	private List<String> formPersonRoles;
+	private String formRequestType;
+	private String formRPRId;
+	private String formInterHash;
+	private String formIntraHash;
 	
 	private String formAction;
 	
 	private Person person;
 	private Post<? extends Resource> post;
 	
-	private List<Post<BibTex>> thesis;
-	private List<Post<BibTex>> advisedThesis;
-	private List<Post<BibTex>> allPosts;
+	private List<Post<?>> thesis;
+	private List<Post<?>> advisedThesis;
+	private List<Post<?>> allPosts;
+	private List<String> availableRoles = new ArrayList<String>();
+	
+	private String responseString;
 	
 
 	/**
@@ -229,42 +237,42 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the thesis
 	 */
-	public List<Post<BibTex>> getThesis() {
+	public List<Post<?>> getThesis() {
 		return this.thesis;
 	}
 
 	/**
 	 * @param thesis the thesis to set
 	 */
-	public void setThesis(List<Post<BibTex>> thesis) {
+	public void setThesis(List<Post<?>> thesis) {
 		this.thesis = thesis;
 	}
 
 	/**
 	 * @return the advisedThesis
 	 */
-	public List<Post<BibTex>> getAdvisedThesis() {
+	public List<Post<?>> getAdvisedThesis() {
 		return this.advisedThesis;
 	}
 
 	/**
 	 * @param advisedThesis the advisedThesis to set
 	 */
-	public void setAdvisedThesis(List<Post<BibTex>> advisedThesis) {
+	public void setAdvisedThesis(List<Post<?>> advisedThesis) {
 		this.advisedThesis = advisedThesis;
 	}
 
 	/**
 	 * @return the allPosts
 	 */
-	public List<Post<BibTex>> getAllPosts() {
+	public List<Post<?>> getAllPosts() {
 		return this.allPosts;
 	}
 
 	/**
 	 * @param allPosts the allPosts to set
 	 */
-	public void setAllPosts(List<Post<BibTex>> allPosts) {
+	public void setAllPosts(List<Post<?>> allPosts) {
 		this.allPosts = allPosts;
 	}
 
@@ -360,17 +368,17 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	}
 
 	/**
-	 * @return int
+	 * @return String
 	 */
-	public int getFormNameId() {
-		return this.formNameId;
+	public String getFormPersonNameId() {
+		return this.formPersonNameId;
 	}
 
 	/**
 	 * @param nameId the nameId to set
 	 */
-	public void setFormNameId(int nameId) {
-		this.formNameId = nameId;
+	public void setFormPersonNameId(String personNameId2) {
+		this.formPersonNameId = personNameId2;
 	}
 
 	/**
@@ -385,5 +393,90 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	 */
 	public void setFormOrcid(String formOrcid) {
 		this.formOrcid = formOrcid;
+	}
+
+	/**
+	 * @param jsonString
+	 */
+	public void setResponseString(String jsonString) {
+		this.responseString = jsonString;
+		
+	}
+
+	/**
+	 * @return the responseString
+	 */
+	public String getResponseString() {
+		return this.responseString;
+	}
+
+	/**
+	 * @return the formRequestType
+	 */
+	public String getFormRequestType() {
+		return this.formRequestType;
+	}
+
+	/**
+	 * @param formRequestType the formRequestType to set
+	 */
+	public void setFormRequestType(String formRequestType) {
+		this.formRequestType = formRequestType;
+	}
+
+	/**
+	 * @return String
+	 */
+	public String getFormRPRId() {
+		return this.formRPRId;
+	}
+
+	/**
+	 * @param formRPRId the formRPRId to set
+	 */
+	public void setFormRPRId(String formRPRId) {
+		this.formRPRId = formRPRId;
+	}
+
+	/**
+	 * @return the formInterHash
+	 */
+	public String getFormInterHash() {
+		return this.formInterHash;
+	}
+
+	/**
+	 * @param formInterHash the formInterHash to set
+	 */
+	public void setFormInterHash(String formInterHash) {
+		this.formInterHash = formInterHash;
+	}
+
+	/**
+	 * @return the formIntraHash
+	 */
+	public String getFormIntraHash() {
+		return this.formIntraHash;
+	}
+
+	/**
+	 * @param formIntraHash the formIntraHash to set
+	 */
+	public void setFormIntraHash(String formIntraHash) {
+		this.formIntraHash = formIntraHash;
+	}
+
+	/**
+	 * @return the availableRoles
+	 */
+	public List<String> getAvailableRoles() {
+		return this.availableRoles;
+	}
+
+	/**
+	 * @param availableRoles the availableRoles to set
+	 */
+	public void setAvailableRoles(List<String> availableRoles) {
+		this.availableRoles = availableRoles;
 	}
 }

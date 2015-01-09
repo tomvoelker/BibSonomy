@@ -1,12 +1,16 @@
 package org.bibsonomy.database.managers;
 
 import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.enums.PersonResourceRelation;
+import org.springframework.orm.hibernate3.SessionFactoryUtils;
 
 /**
  * TODO: add documentation to this class
@@ -33,9 +37,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void createPerson(final Person person, final DBSession session) {
 		session.beginTransaction();
 		try {
-			// TODO: this.insertPerson(person, session);
 			this.insert("insertPerson", person, session);
-			person.setId((int) this.queryForObject("getMaxId", null, session));
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -71,7 +73,6 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		session.beginTransaction();
 		try {
 			this.insert("insertName", mainName, session);
-			mainName.setId((int) this.queryForObject("getMaxNameId", null, session));
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -122,6 +123,108 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		session.beginTransaction();
 		try {
 			this.insert("updatePersonName", mainName, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+
+	/**
+	 * @param name 
+	 * @param firstName 
+	 * @param session 
+	 * @return List<PersonName>
+	 * 
+	 */
+	public List<PersonName> findPersonNames(String lastName, String firstName, DBSession session) {
+		PersonName personName = new PersonName("%" + lastName + "%").withFirstName("%" + firstName + "%");
+		return (List<PersonName>) this.queryForList("findPersonNames", personName, session);
+	}
+
+
+	/**
+	 * @param rpr
+	 * @param session 
+	 */
+	public void addResourceRelation(ResourcePersonRelation rpr, DBSession session) {
+		session.beginTransaction();
+		try {
+			this.insert("addResourceRelation", rpr, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+		
+	}
+
+
+	/**
+	 * @param resourceRelationId
+	 * @param databaseSession
+	 */
+	public void removeResourceRelation(int resourceRelationId,
+			DBSession databaseSession) {
+		databaseSession.beginTransaction();
+		try {
+			this.delete("removeResourceRelation", resourceRelationId, databaseSession);
+			databaseSession.commitTransaction();
+		} finally {
+			databaseSession.endTransaction();
+		}
+		
+	}
+
+
+	/**
+	 * @param personNameId
+	 * @param databaseSession 
+	 */
+	public void removePersonName(Integer personNameId, DBSession databaseSession) {
+		databaseSession.beginTransaction();
+		try {
+			this.delete("removePersonName", personNameId, databaseSession);
+			databaseSession.commitTransaction();
+		} finally {
+			databaseSession.endTransaction();
+		}	
+	}
+
+
+	/**
+	 * @param personNameId
+	 * @param databaseSession
+	 * @return
+	 */
+	public List<ResourcePersonRelation> getResourceRelations(int personNameId,
+			DBSession databaseSession) {
+		return (List<ResourcePersonRelation>) this.queryForList("getResourceRelations", personNameId, databaseSession);
+	}
+	
+	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelation rpr,
+			DBSession databaseSession) {
+		return (List<ResourcePersonRelation>) this.queryForList("getResourceRelationsByRPR", rpr, databaseSession);
+	}
+
+
+	/**
+	 * @param longHash
+	 * @param publicationOwner
+	 * @param personNameId
+	 * @param rel
+	 * @return
+	 */
+	public String getLastResourceRelationId(ResourcePersonRelation rpr, DBSession session) {
+		return (String) this.queryForObject("getLastResourceRelationId", rpr, session);
+	}
+
+
+	/**
+	 * @param username
+	 */
+	public void unlinkUser(String username, DBSession session) {
+		session.beginTransaction();
+		try {
+			this.update("unlinkUser", username, session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();

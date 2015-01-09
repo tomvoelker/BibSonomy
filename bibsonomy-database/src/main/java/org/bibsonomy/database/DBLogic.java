@@ -95,6 +95,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Review;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
@@ -224,7 +225,6 @@ public class DBLogic implements LogicInterface {
 
 
 		this.bibTexExtraDBManager = BibTexExtraDatabaseManager.getInstance();
-
 
 		this.dbSessionFactory = dbSessionFactory;
 	}
@@ -2871,130 +2871,142 @@ public class DBLogic implements LogicInterface {
 			this.loginUser.addGroup(new Group(GroupID.PUBLIC_SPAM));
 		}
 	}
-//
-//	@Override
-//	public List<Person> getPersonSuggestion(String searchString) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	
-//	private static final List<Person> personsHack = new ArrayList<Person>();
-//	private static int personIds = 4712;
-//	
-//	static {
-//		Person p = new Person();
-//		p.setId(4711);
-//		p.setAcademicDegree("Dr. rer. nat.");
-//		p.setMainName(new PersonName("Gerd", "Stumme"));
-//		BibTex pub = new BibTex();
-//		pub.setEntrytype("phdthesis");
-//		p.setDisambiguatingPublication(pub);
-//		personsHack.add(p);
-//		Person p2 = new Person();
-//		p.setId(4712);
-//		p.setAcademicDegree("M.Sc.");
-//		p.setMainName(new PersonName("Gerd", "Stumme"));
-//		personsHack.add(p);
-//	}
-//	
-//	@Override
-//	public List<Person> getPersons(String longHash, String publicationOwner, PersonName personName, PersonResourceRelation rel) {
-//		List<Person> rVal =  new ArrayList<>();
-//		for (Person p : personsHack) {
-//			//if ((longhash != null) && (longHash.startsWith("1"))
-//			rVal.add(p);
-//		}
-//		return rVal;
-//	}
-//
-//	@Override
-//	public void addPersonRelation(String longHash, String publicationOwner, String personId, PersonResourceRelation rel) {
-//		// TODO Auto-generated method stub
-//		throw new UnsupportedOperationException();
-//	}
-//
-//	@Override
-//	public void removePersonRelation(String longHash, String publicationOwner, String personId, PersonResourceRelation rel) {
-//		// TODO Auto-generated method stub
-//		throw new UnsupportedOperationException();
-//	}
-//
-//	@Override
-//	public void createOrUpdatePerson(Person person) {
-//		Person p = null;
-//		if (person.getId() != null) {
-//			p = getPersonById(person.getId());
-//		}
-//		if (p == null) {
-//			if (person.getId() == null) {
-//				person.setId(++personIds);
-//			}
-//			personsHack.add(person);
-//		}
-//		throw new UnsupportedOperationException();
-//	}
-//	
-//	@Override
-//	public Person getPersonById(int id) {
-//		for (Person p : personsHack) {
-//			if ((p.getId() != null) && (p.getId() == id)) {
-//				return p;
-//			}
-//		}
-//		return null;
-//	}
-//
-//	/* (non-Javadoc)
-//	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getQualifyingPublications(java.lang.String)
-//	 */
-//	@Override
-//	public Map<Person, BibTex> getQualifyingPublications(String personName) {
-//		throw new UnsupportedOperationException();
-//	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<Person> getPersonSuggestion(String searchString) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<PersonName> getPersonSuggestion(String lastName, String firstName) {
+		return this.personDBManager.findPersonNames(lastName, firstName, this.dbSessionFactory.getDatabaseSession());
+	}
+	
+	@Override
+	public List<PersonName> getPersonSuggestion(PersonName personName) {
+		return this.personDBManager.findPersonNames(personName.getLastName(), personName.getFirstName(), this.dbSessionFactory.getDatabaseSession());
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersons(java.lang.String, java.lang.String, org.bibsonomy.model.PersonName, org.bibsonomy.model.enums.PersonResourceRelation)
+	 */
 	@Override
-	public List<Person> getPersons(String longHash, String publicationOwner,
-			PersonName personName, PersonResourceRelation rel) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Person> getPersons(String longHash, String publicationOwner, PersonName personName, PersonResourceRelation rel) {
+		// TODO
+		return new ArrayList<Person>();
 	}
 
-	@Override
-	public void addPersonRelation(String longHash, String publicationOwner,
-			int personId, PersonResourceRelation rel) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
-	public void removePersonRelation(String longHash, String publicationOwner,
-			int personId, PersonResourceRelation rel) {
-		// TODO Auto-generated method stub
-		
+	public void addResourceRelation(ResourcePersonRelation rpr) {
+		this.personDBManager.addResourceRelation(rpr, this.dbSessionFactory.getDatabaseSession());
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonRelation(java.lang.String, java.lang.String, org.bibsonomy.model.Person, org.bibsonomy.model.enums.PersonResourceRelation)
+	 */
+	@Override
+	public void removeResourceRelation(int resourceRelationId) {
+		this.personDBManager.removeResourceRelation(resourceRelationId, this.dbSessionFactory.getDatabaseSession());
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePerson(org.bibsonomy.model.Person)
+	 */
 	@Override
 	public void createOrUpdatePerson(Person person) {
-		// TODO Auto-generated method stub
-		
+		if(person.getId() > 0) {
+			this.personDBManager.updatePerson(person, this.dbSessionFactory.getDatabaseSession());
+			for(PersonName personName : person.getNames()) {
+				if(personName.getId() > 0) {
+					this.personDBManager.updatePersonName(person.getMainName(), this.dbSessionFactory.getDatabaseSession());
+				} else {
+					this.personDBManager.createPersonName(person.getMainName(), this.dbSessionFactory.getDatabaseSession());
+				}
+			}
+		} else {
+			this.personDBManager.createPerson(person, this.dbSessionFactory.getDatabaseSession());
+			for(PersonName personName : person.getNames()) {
+				if(personName.getId() > 0) {
+					this.personDBManager.updatePersonName(person.getMainName(), this.dbSessionFactory.getDatabaseSession());
+				} else {
+					this.personDBManager.createPersonName(person.getMainName(), this.dbSessionFactory.getDatabaseSession());
+				}
+			}
+		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonById(int)
+	 */
 	@Override
 	public Person getPersonById(int id) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.personDBManager.getPersonById(id, this.dbSessionFactory.getDatabaseSession());
 	}
-
+	
 	@Override
 	public Map<Person, BibTex> getQualifyingPublications(String personName) {
-		// TODO Auto-generated method stub
 		return null;
+	}
+	/**
+	 * @param id
+	 * @return Set<PersonName>
+	 */
+	public List<?> getAlternateNames(int id) {
+		return this.personDBManager.getAlternateNames(id, this.dbSessionFactory.getDatabaseSession());
+	}
+	/**
+	 * @param parseInt
+	 * @return
+	 */
+	public PersonName getPersonNameById(int id) {
+		return this.personDBManager.getPersonNameById(id, this.dbSessionFactory.getDatabaseSession());
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonName(int)
+	 */
+	@Override
+	public void removePersonName(Integer personNameId) {
+		this.personDBManager.removePersonName(personNameId, this.dbSessionFactory.getDatabaseSession());
+		
+	}
+	
+	public List<ResourcePersonRelation> getResourceRelations(Person person) {
+		List<ResourcePersonRelation> relations = new ArrayList<ResourcePersonRelation>();
+		for(PersonName personName: person.getNames()) {
+			relations.addAll(this.getResourceRelations(personName));
+		}
+		return relations;
+	}
+	
+	public List<ResourcePersonRelation> getResourceRelations(PersonName personName) {
+		return this.getResourceRelations(personName.getId());
+	}
+	
+	public List<ResourcePersonRelation> getResourceRelations(int personNameId) {
+		return this.personDBManager.getResourceRelations(personNameId, this.dbSessionFactory.getDatabaseSession());
+	}
+	
+	public List<ResourcePersonRelation> getResourceRelations(PersonName personName, String interHash, String intraHash, String user, PersonResourceRelation rel) {
+		ResourcePersonRelation rpr = new ResourcePersonRelation().withPubOwner(user).withRelatorCode(rel.getRelatorCode()).withSimhash1(interHash).withSimhash2(intraHash);
+		rpr.setPersonName(personName);
+		return this.personDBManager.getResourceRelations(rpr, this.dbSessionFactory.getDatabaseSession());
+	}
+	
+	public void createOrUpdatePersonName(PersonName personName) {
+		this.personDBManager.createPersonName(personName, this.dbSessionFactory.getDatabaseSession());
+	}
+	
+	public void linkUser(Integer personId) {
+		this.unlinkUser(this.getAuthenticatedUser().getName());
+		
+		Person person = this.personDBManager.getPersonById(personId.intValue(), this.dbSessionFactory.getDatabaseSession());
+		person.setUser(this.getAuthenticatedUser().getName());
+		this.createOrUpdatePerson(person);
+	}
+	
+	public void unlinkUser(String username) {
+		this.personDBManager.unlinkUser(username, this.dbSessionFactory.getDatabaseSession());
+	}
+	
+	public List<Post<BibTex>> searchPostsByTitle(String title) {
+		return new ArrayList<Post<BibTex>>();
 	}
 }

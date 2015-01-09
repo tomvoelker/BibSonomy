@@ -1,19 +1,18 @@
 package org.bibsonomy.webapp.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonResourceRelation;
 import org.bibsonomy.model.util.PersonNameUtils;
-import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.DisambiguationPageCommand;
-import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.PersonLogic;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
@@ -23,9 +22,6 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class DisambiguationPageController extends SingleResourceListController implements MinimalisticController<DisambiguationPageCommand> {
 	private static final Log log = LogFactory.getLog(DisambiguationPageController.class);
-	
-	private DBSessionFactory dbSessionFactory;
-	private PersonLogic personLogic = new PersonLogic(null, null);
 	
 	@Override
 	public DisambiguationPageCommand instantiateCommand() {
@@ -37,7 +33,6 @@ public class DisambiguationPageController extends SingleResourceListController i
 
 		switch(command.getRequestedAction()) {
 			case "redirected" : return this.redirectAction(command);
-			case "link" : return this.linkAction(command);
 			default: return this.indexAction(command);
 		}
 	}
@@ -50,45 +45,25 @@ public class DisambiguationPageController extends SingleResourceListController i
 	private View indexAction(DisambiguationPageCommand command) {
 
 		command.setPost(this.logic.getPostDetails(command.getRequestedHash(), command.getRequestedUser()));
-		PersonName pn = new PersonName(command.getRequestedAuthorName().split(",")[0]).withFirstName(command.getRequestedAuthorName().split(",")[1]);
-		command.setSuggestedPersons(this.personLogic.getPersons(null, null, pn, PersonResourceRelation.valueOf(command.getRequestedRole())));
+		PersonName pn = new PersonName(command.getRequestedAuthorName().split(",")[0].trim()).withFirstName(command.getRequestedAuthorName().split(",")[1].trim());
+		command.setPersonName(pn);
+		command.setSuggestedPersonNames(this.logic.getPersonSuggestion(pn.getLastName(), pn.getFirstName()));
 		
 		return Views.DISAMBIGUATION;
 	}
 	
 	private View redirectAction(DisambiguationPageCommand command) {
-
+		command.setPost(this.logic.getPostDetails(command.getRequestedHash(), command.getRequestedUser()));
 		PersonName pn = new PersonName(command.getRequestedAuthorName().split(",")[0]).withFirstName(command.getRequestedAuthorName().split(",")[1]);
-		List<Person> matchingPersons = this.personLogic.getPersons(command.getRequestedHash(), command.getRequestedUser(), pn, PersonResourceRelation.valueOf(command.getRequestedRole()));
+		List<ResourcePersonRelation> matchingPersons = this.logic.getResourceRelations(pn, command.getPost().getResource().getInterHash(),command.getPost().getResource().getIntraHash(), command.getRequestedUser(), PersonResourceRelation.AUTHOR);
 		
 		if(matchingPersons.size() > 0 ) {
 			log.warn("Too many persons for " + command.getRequestedHash());
-			return new ExtendedRedirectView("/person/" + matchingPersons.get(0).getId()  + "/" + PersonNameUtils.serializePersonName(matchingPersons.get(0).getMainName()) + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/" + command.getRequestedRole());	
+			return new ExtendedRedirectView("/person/" + matchingPersons.get(0).getPersonName().getPersonId()  + "/" + PersonNameUtils.serializePersonName(matchingPersons.get(0).getPersonName().getPerson().getMainName()) + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/" + command.getRequestedRole());	
 		}
-		
+
 		return new ExtendedRedirectView("/persondisambiguation/details/" + command.getRequestedAuthorName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/" + command.getRequestedRole());
 
-	}
-	
-	private View linkAction(DisambiguationPageCommand command) {
-		
-		this.personLogic.addPersonRelation(command.getRequestedHash(), command.getRequestedUser(), Integer.parseInt(command.getFormAddPersonId()), PersonResourceRelation.valueOf(command.getRequestedRole()));	
-		
-		return new ExtendedRedirectView("/person/"+command.getFormAddPersonId()+"/"+ command.getRequestedAuthorName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/" + command.getRequestedRole());
-	}
-
-	/**
-	 * @return the dbSessionFactory
-	 */
-	public DBSessionFactory getDbSessionFactory() {
-		return this.dbSessionFactory;
-	}
-
-	/**
-	 * @param dbSessionFactory the dbSessionFactory to set
-	 */
-	public void setDbSessionFactory(DBSessionFactory dbSessionFactory) {
-		this.dbSessionFactory = dbSessionFactory;
 	}
 }
 

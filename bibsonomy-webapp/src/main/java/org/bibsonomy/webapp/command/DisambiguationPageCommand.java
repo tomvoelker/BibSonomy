@@ -18,24 +18,26 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	private String requestedAction;
 	private String requestedRole;
 	
-	private String formAddPersonId;
+	private String formPersonId;
+	private String formPersonNameId;
 	
-	private List<Person> suggestedPersons;
+	private List<PersonName> suggestedPersonNames;
 	private Person person;
+	private PersonName personName;
 	private Post<? extends Resource> post;
 
 	/**
 	 * @return the suggestedPersons
 	 */
-	public List<Person> getSuggestedPersons() {
-		return this.suggestedPersons;
+	public List<PersonName> getSuggestedPersonNames() {
+		return this.suggestedPersonNames;
 	}
 
 	/**
 	 * @param suggestedPersons the suggestedPersons to set
 	 */
-	public void setSuggestedPersons(List<Person> suggestedPersons) {
-		this.suggestedPersons = suggestedPersons;
+	public void setSuggestedPersonNames(List<PersonName> suggestedPersonNames) {
+		this.suggestedPersonNames = suggestedPersonNames;
 	}
 
 	/**
@@ -125,14 +127,42 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the formAddPersonId
 	 */
-	public String getFormAddPersonId() {
-		return this.formAddPersonId;
+	public String getFormPersonId() {
+		return this.formPersonId;
 	}
 
 	/**
 	 * @param formAddPersonId the formAddPersonId to set
 	 */
-	public void setFormAddPersonId(String formAddPersonId) {
-		this.formAddPersonId = formAddPersonId;
+	public void setFormPersonId(String formPersonId) {
+		this.formPersonId = formPersonId;
+	}
+
+	/**
+	 * @return the formPersonNameId
+	 */
+	public String getFormPersonNameId() {
+		return this.formPersonNameId;
+	}
+
+	/**
+	 * @param formPersonNameId the formPersonNameId to set
+	 */
+	public void setFormPersonNameId(String formPersonNameId) {
+		this.formPersonNameId = formPersonNameId;
+	}
+
+	/**
+	 * @return the personName
+	 */
+	public PersonName getPersonName() {
+		return this.personName;
+	}
+
+	/**
+	 * @param personName the personName to set
+	 */
+	public void setPersonName(PersonName personName) {
+		this.personName = personName;
 	}
 }

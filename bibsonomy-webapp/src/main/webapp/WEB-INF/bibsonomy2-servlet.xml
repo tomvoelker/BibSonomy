@@ -364,16 +364,19 @@
 								<value>formPersonRoles</value>
 								<value>formPersonRole</value>
 								<value>formPersonId</value>
+								<value>formInterHash</value>
+								<value>formIntraHash</value>
 								<value>formResourceHash</value>
 								<value>formUser</value>
 								<value>formOrcid</value>
-								<value>formNameId</value>
+								<value>formPersonNameId</value>
 								<value>formFirstName</value>
 								<value>formMiddleName</value>
 								<value>formLastName</value>
 								<value>formSelectedName</value>
 								<value>formAcademicDegree</value>
 								<value>formThesisId</value>
+								<value>formRPRId</value>
 							</list>
 						</property>
 					</bean>
@@ -388,7 +391,8 @@
 								<value>requestedHash</value>
 								<value>requestedUser</value>
 								<value>requestedRole</value>
-								<value>formAddPersonId</value>
+								<value>formPersonId</value>
+								<value>formPersonNameId</value>
 							</list>
 						</property>
 					</bean>
@@ -764,12 +768,10 @@
 	
 	<bean id="personPageController" class="org.bibsonomy.webapp.controller.PersonPageController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>
-		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 	</bean>
 	
 	<bean id="disambiguationPageController" class="org.bibsonomy.webapp.controller.DisambiguationPageController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>
-		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 	</bean>
 	
 	<bean id="relationsController" class="org.bibsonomy.webapp.controller.RelationsController" scope="request">

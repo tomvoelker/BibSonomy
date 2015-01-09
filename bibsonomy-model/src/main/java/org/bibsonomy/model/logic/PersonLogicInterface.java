@@ -6,6 +6,7 @@ import java.util.Map;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonResourceRelation;
 
 /**
@@ -17,9 +18,11 @@ public interface PersonLogicInterface {
 
 	/**
 	 * @param searchString a serach string coming from an autocomplete field. May contain an incomplete word, which will be internally autocompleted before searching persons
+	 * @param string 
 	 * @return a list of Persons
 	 */
-	public List<Person> getPersonSuggestion(String searchString);
+	public List<PersonName> getPersonSuggestion(String lastName, String firstName);
+	public List<PersonName> getPersonSuggestion(PersonName personName);
 
 	/**
 	 * @param longHash publication hash with prefix 1 or 2. Can be null for instance when searching persons just by name.
@@ -30,9 +33,9 @@ public interface PersonLogicInterface {
 	 */
 	public List<Person> getPersons(String longHash, String publicationOwner, PersonName personName, PersonResourceRelation rel);
 
-	public void addPersonRelation(String longHash, String publicationOwner, int personId, PersonResourceRelation rel);
+	public void addResourceRelation(ResourcePersonRelation rpr);
 
-	public void removePersonRelation(String longHash, String publicationOwner, int personId, PersonResourceRelation rel);
+	public void removeResourceRelation(int resourceRelationId);
 
 	/**
 	 * sets id for new persons
@@ -42,12 +45,35 @@ public interface PersonLogicInterface {
 	public void createOrUpdatePerson(Person person);
 	
 	public Person getPersonById(int id);
+	
+	public void removePersonName(Integer personNameId);
 
 	/**
 	 * @param personName
 	 * @return
 	 */
 	public Map<Person, BibTex> getQualifyingPublications(String personName);
+	
+	public List<ResourcePersonRelation> getResourceRelations(int personNameId);
+	public List<ResourcePersonRelation> getResourceRelations(Person person);
+	public List<ResourcePersonRelation> getResourceRelations(PersonName person);
+	
+
+	/**
+	 * @param pn
+	 * @param requestedHash
+	 * @param requestedUser
+	 * @param relatorCode
+	 * @return
+	 */
+	public List<ResourcePersonRelation> getResourceRelations(PersonName pn,
+			String interHash, String intraHash, String requestedUser, PersonResourceRelation relatorCode);
+
+	/**
+	 * @param withPersonId
+	 */
+	public void createOrUpdatePersonName(PersonName withPersonId);
+
 
 
 }

@@ -28,9 +28,7 @@ public enum PersonResourceRelation {
 	/**
 	 * some non-specific relation influence
 	 */
-	OTHER("Moth"),
-	/** Main person (actually not a relation to a resource, but to a null-resource)  */
-	MAIN_PERSON_NAME("Bmnm");
+	OTHER("Moth");
 	
 	private final String relatorCode;
 	private static final Map<String, PersonResourceRelation> byRelatorCode = new HashMap<String, PersonResourceRelation>();
@@ -59,4 +57,5 @@ public enum PersonResourceRelation {
 		}
 		return rVal;
 	}
+
 }

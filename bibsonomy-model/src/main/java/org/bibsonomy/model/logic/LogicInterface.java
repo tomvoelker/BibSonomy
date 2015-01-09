@@ -48,8 +48,10 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
@@ -685,5 +687,21 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @return the new size of the inbox
 	 */
 	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox);
+
+	/**
+	 * @param personId
+	 */
+	public void linkUser(Integer personId);
+
+	/**
+	 * @param username
+	 */
+	public void unlinkUser(String username);
+
+	/**
+	 * @param formSelectedName
+	 * @return
+	 */
+	public List<Post<BibTex>> searchPostsByTitle(String title);
 
 }

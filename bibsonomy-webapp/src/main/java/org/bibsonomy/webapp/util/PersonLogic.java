@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.common.DBSessionFactory;
@@ -10,6 +11,7 @@ import org.bibsonomy.database.managers.PersonDatabaseManager;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelation;
 import org.bibsonomy.model.logic.PersonLogicInterface;
@@ -32,10 +34,10 @@ public class PersonLogic implements PersonLogicInterface {
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<Person> getPersonSuggestion(String searchString) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<PersonName> getPersonSuggestion(String name) {
+		return this.personDatabaseManager.findPersonNames(name, this.dbSessionFactory.getDatabaseSession());
 	}
 
 	/* (non-Javadoc)
@@ -47,14 +49,15 @@ public class PersonLogic implements PersonLogicInterface {
 		return new ArrayList<Person>();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#addPersonRelation(java.lang.String, java.lang.String, org.bibsonomy.model.Person, org.bibsonomy.model.enums.PersonResourceRelation)
-	 */
+
 	@Override
-	public void addPersonRelation(String longHash, String publicationOwner, int personID, PersonResourceRelation rel) {
-		org.bibsonomy.model.PersonResourceRelation pRR = new org.bibsonomy.model.PersonResourceRelation();
-		pRR.setPersonId(personID);
-		pRR.setSimhash1(longHash);
+	public void addResourceRelation(String longHash, String publicationOwner, int personNameId, PersonResourceRelation rel) {
+		ResourcePersonRelation rpr = new ResourcePersonRelation();
+		rpr.setSimhash1(longHash);
+		rpr.setRelatorCode(rel.getRelatorCode());
+		rpr.setPersonNameId(personNameId);
+		
+		this.personDatabaseManager.addResourceRelation(rpr, this.dbSessionFactory.getDatabaseSession());
 		
 	}
 

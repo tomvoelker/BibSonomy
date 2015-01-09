@@ -19,24 +19,23 @@
 		<result property="lastName" 	column="last_name" 	javaType="java.lang.String" />
 		<result property="personId" 	column="person_id" 	javaType="integer" />
 		<result property='isMain'		column='is_main'	javaType='boolean' />
+		<result property="person"		column="person_id"  javaType='org.bibsonomy.model.Person' select='getPersonById' />
 	</resultMap>
 	
-	<resultMap id='personResourceRelation' class='org.bibsonomy.model.PersonResourceRelation'>
+	<resultMap id='resourcePersonRelation' class='org.bibsonomy.model.ResourcePersonRelation'>
 		<result property='id' 			column='id' javaType='int' />
 		<result property='simhash1' 	column='simhash1' javaType='java.lang.String' />
 		<result property='simhash2' 	column='simhash2' javaType='java.lang.String' />
 		<result property='qualifying' 	column='qualifying' javaType='int' />
 		<result property='personNameId' column='person_name_id' javaType='int' />
 		<result property='relatorCode' 	column='relator_code' javaType='java.lang.String' />
-		<result property='personId' 	column='person_id' javaType='int' />
+		<result property='pubOwner'		column='pub_owner'	javaType='java.lang.String' />
+		<result property='personName'	column='person_name_id' javaType='org.bibsonomy.model.PersonName' select='getPersonNameById' />
+		<result property='post'			column='{pubOwner=pub_owner, simhash1=simhash1, simhash2=simhash1}' javaType='bibtex' select='getPosts'/>
 	</resultMap>
 	
 	<sql id="commonPersonColumns">
 		person.person_id, person.academic_degree, person.orcid, person.post_ctr, person.log_modified_by, person.log_modified_at, person.user_name
-	</sql>
-	
-	<sql id="commonPubPersonColumns">
-		id, simhash1, simhash2, qualifying, person_name_id, relator_code, person_id
 	</sql>
 	
 	<sql id='commonPersonNameColumns'>
@@ -47,8 +46,12 @@
 		#id#, #orcid#, #academicDegree#, #postCounter#, #changedBy#, #changeDate#, #user#
 	</sql>
 	
-	<sql id="commonPubPersonAttributes">
-		#id#, #simhash1#, #simhash2#, #qualifying#, #personNameId#, #relatorCode#, #personId# 
+	<sql id="commonResourcePersonRelationAttributes">
+		#id#, #simhash1#, #simhash2#, #qualifying#, #personNameId#, #relatorCode# , #pubOwner#
+	</sql>
+	
+	<sql id="commonResourcePersonRelationColumns">
+		pub_person.id, pub_person.simhash1, pub_person.simhash2, pub_person.qualifying, pub_person.person_name_id, pub_person.relator_code, pub_person.pub_owner
 	</sql>
 	
 </sqlMap>

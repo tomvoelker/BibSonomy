@@ -3,14 +3,6 @@
 
 <sqlMap namespace="Person">
 
-	<select id='getMaxId' resultClass='int'>
-		SELECT person_id FROM person ORDER BY person_id DESC LIMIT 0,1
-	</select>
-	
-	<select id='getMaxNameId' resultClass='int'>
-		SELECT id FROM person_name ORDER BY id DESC LIMIT 0,1
-	</select>
-
 	<select id="getPersonById" resultMap="PersonCommon.person" parameterClass="int">
 		SELECT <include refid="commonPersonColumns"/> FROM person 
 			WHERE person.person_id = #id#
@@ -24,21 +16,42 @@
 	<insert id="insertPerson" parameterClass="org.bibsonomy.model.Person">
 		INSERT INTO person (<include refid="commonPersonColumns"/>)
 			VALUES (<include refid="insertPersonAttributes"/>)
+			
+			<selectKey resultClass="int" keyProperty="id" >
+    		SELECT @@IDENTITY AS ID
+  		</selectKey>
 	</insert>
 	
 	<insert id='insertName' parameterClass="org.bibsonomy.model.PersonName">
 		INSERT INTO person_name(first_name, last_name, person_id, is_main)
 			VALUES (#firstName#, #lastName#, #personId#, #isMain#)
+			
+			<selectKey resultClass="int" keyProperty="id" >
+    		SELECT @@IDENTITY AS ID
+  		</selectKey>
 	</insert>
 	
-	<insert id='addResourceRelation' parameterClass='org.bibsonomy.model.PersonResourceRelation'>
-		INSERT INTO pub_person (<include refid="commonPubPersonColumns"/>)
-			VALUES (<include refid="commonPubPersonAttributes" />)
+	<insert id='addResourceRelation' parameterClass='org.bibsonomy.model.ResourcePersonRelation'>
+		INSERT INTO pub_person (<include refid="commonResourcePersonRelationColumns"/>)
+			VALUES (<include refid="commonResourcePersonRelationAttributes" />)
+			
+		<selectKey resultClass="int" keyProperty="id" >
+    		SELECT @@IDENTITY AS ID
+  		</selectKey>
 	</insert>
 	
 	<select id='getNames' resultMap='PersonCommon.personName' parameterClass='int'>
 		SELECT <include refid='commonPersonNameColumns'/> FROM person_name 
 			WHERE person_name.person_id = #id#
+	</select>
+	
+	<select id="findPersonNames" resultMap='PersonCommon.personName' parameterClass='org.bibsonomy.model.PersonName'>
+		SELECT <include refid='commonPersonNameColumns'/> FROM person_name
+			WHERE 
+				person_name.first_name LIKE #firstName# 
+			OR 	person_name.first_name LIKE #lastName#
+			OR 	person_name.last_name LIKE #firstName#
+			OR 	person_name.last_name LIKE #lastName#
 	</select>
 	
 	<update id='updatePerson' parameterClass='org.bibsonomy.model.Person'>
@@ -55,5 +68,66 @@
 		Update person_name SET is_main = 1 
 			WHERE person_name.id = #id#
 	</update>
+	
+	<delete id='removeResourceRelation' parameterClass='int'>
+		DELETE FROM pub_person WHERE id = #resourceRelationId#
+	</delete>
+	
+	<delete id="removePersonName" parameterClass="java.lang.Integer">
+		DELETE FROM person_name WHERE id = #personNameId#
+	</delete>
+	
+	<select id='getResourceRelations' resultMap="PersonCommon.resourcePersonRelation" parameterClass='int'>
+		SELECT <include refid="commonResourcePersonRelationColumns" /> FROM pub_person
+			WHERE pub_person.person_name_id = #personNameId# 
+	</select>
+	
+	<select id='getResourceRelationsByRPR' resultMap="PersonCommon.resourcePersonRelation" parameterClass='org.bibsonomy.model.ResourcePersonRelation'>
+		SELECT <include refid='commonResourcePersonRelationColumns' /> FROM pub_person LEFT JOIN person_name ON person_name.id = pub_person.person_name_id
+			WHERE 
+				person_name.first_name = #personName.firstName#
+					AND
+				person_name.last_name = #personName.lastName#
+					AND
+				pub_person.pub_owner = #pubOwner#
+					AND
+				pub_person.simhash1 = #simhash1#
+					AND
+				pub_person.relator_code = #relatorCode#
+	</select>
+	
+	<update id='unlinkUser' parameterClass="java.lang.String">
+		UPDATE person set user_name = null WHERE user_name = #username#
+	</update>
+	
+	<statement id="getPosts" resultMap="BibTexCommon.bibtexPost">
+		SELECT b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
+		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
+		b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
+		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, 
+		IF("hansii" = b.user_name, b.privnote, NULL) AS privnote , b.scraperid, t1.change_date, b.simhash1 AS interHash, b.simhash2 AS intraHash, t1.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, c.rating_arithmetic_mean AS rating, c.number_of_ratings
+		FROM tas t1, bibhash h, 
+			(SELECT * FROM bibtex
+			 WHERE bibtexKey LIKE "%"  
+			 AND user_name = #pubOwner#) b 
+			 LEFT JOIN review_ratings_cache c ON (c.interHash = b.simhash1)
+		WHERE b.content_id = t1.content_id
+		AND (
+			(b.simhash1 = h.hash
+			AND h.type=1
+			AND b.simhash1 = #simhash1#)
+        OR 
+			(b.simhash2 = h.hash
+			AND h.type=2
+			AND b.simhash2 = #simhash2#)
+		)
+		ORDER BY date DESC
+	</statement>
+	
+	<statement id="getResourcePersonRelationsByPost" resultMap="PersonCommon.resourcePersonRelation">
+		SELECT <include refid="commonResourcePersonRelationColumns" /> FROM pub_person
+			WHERE pub_person.pub_owner = #pubOwner#
+				AND (pub_person.simhash1 = #simhash1# OR pub_person.simhash2 = #simhash2#) 
+	</statement>
 	
 </sqlMap>

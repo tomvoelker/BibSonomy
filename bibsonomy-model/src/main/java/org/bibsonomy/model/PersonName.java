@@ -50,6 +50,7 @@ public class PersonName implements Serializable {
 	private String lastName;
 	private int personId;
 	private boolean isMain;
+	private Person person;
 
 	/**
 	 * Default constructor
@@ -106,7 +107,14 @@ public class PersonName implements Serializable {
 	
 	@Override
 	public String toString() {
-		return this.lastName + LAST_FIRST_DELIMITER + (present(this.firstName)? " " + this.firstName : "");
+		return this.lastName + LAST_FIRST_DELIMITER + (present(this.firstName)? this.firstName : "");
+	}
+	
+	/**
+	 * @return
+	 */
+	public String serialize() {
+		return this.lastName + LAST_FIRST_DELIMITER + (present(this.firstName)? this.firstName : "");
 	}
 
 	@Override
@@ -205,6 +213,28 @@ public class PersonName implements Serializable {
 	 */
 	public PersonName withMain(boolean b) {
 		this.setMain(b);
+		return this;
+	}
+
+	/**
+	 * @return the person
+	 */
+	public Person getPerson() {
+		return this.person;
+	}
+
+	/**
+	 * @param person the person to set
+	 */
+	public void setPerson(Person person) {
+		this.person = person;
+	}
+
+	/**
+	 * @return PersonName
+	 */
+	public PersonName withPersonId(int personId) {
+		this.setPersonId(personId);
 		return this;
 	}
 
