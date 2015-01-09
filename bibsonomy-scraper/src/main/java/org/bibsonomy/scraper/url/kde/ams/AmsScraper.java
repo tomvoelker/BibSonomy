@@ -50,15 +50,15 @@ public class AmsScraper extends GenericBibTeXURLScraper {
 	private static final Log log = LogFactory.getLog(AmsScraper.class);
 	
 	private static final String SITE_NAME = "American Meteorological Society";
-	private static final String SITE_URL = "http://ams.allenpress.com/";
+	private static final String SITE_URL = "http://journals.ametsoc.org";
 	private static final String INFO = "For references from the "+href(SITE_URL, SITE_NAME)+".";
 	
 	private static final String FORMAT_BIBTEX = "&format=bibtex";
 
 
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*ams.allenpress.com"), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*journals.ametsoc.org"), AbstractUrlScraper.EMPTY_PATTERN));
 	
-	private static final Pattern pattern = Pattern.compile("doi=([^&]*)[&]?");
+	private static final Pattern pattern = Pattern.compile("doi/\\w+/([^&]*)[&]?");
 	private static final Pattern abstractPattern = Pattern.compile("Abstract.*<p class=\"last\">(.*)</p>");
 	
 	@Override
