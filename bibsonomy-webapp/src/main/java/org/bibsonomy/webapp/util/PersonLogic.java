@@ -31,44 +31,6 @@ public class PersonLogic implements PersonLogicInterface {
 		this.dbSessionFactory = dbSessionFactory;
 		this.personDatabaseManager = PersonDatabaseManager.getInstance();
 	}
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String)
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<PersonName> getPersonSuggestion(String name) {
-		return this.personDatabaseManager.findPersonNames(name, this.dbSessionFactory.getDatabaseSession());
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersons(java.lang.String, java.lang.String, org.bibsonomy.model.PersonName, org.bibsonomy.model.enums.PersonResourceRelation)
-	 */
-	@Override
-	public List<Person> getPersons(String longHash, String publicationOwner, PersonName personName, PersonResourceRelation rel) {
-		// TODO Auto-generated method stub
-		return new ArrayList<Person>();
-	}
-
-
-	@Override
-	public void addResourceRelation(String longHash, String publicationOwner, int personNameId, PersonResourceRelation rel) {
-		ResourcePersonRelation rpr = new ResourcePersonRelation();
-		rpr.setSimhash1(longHash);
-		rpr.setRelatorCode(rel.getRelatorCode());
-		rpr.setPersonNameId(personNameId);
-		
-		this.personDatabaseManager.addResourceRelation(rpr, this.dbSessionFactory.getDatabaseSession());
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonRelation(java.lang.String, java.lang.String, org.bibsonomy.model.Person, org.bibsonomy.model.enums.PersonResourceRelation)
-	 */
-	@Override
-	public void removePersonRelation(String longHash, String publicationOwner, int person_ID, PersonResourceRelation rel) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePerson(org.bibsonomy.model.Person)
@@ -110,5 +72,98 @@ public class PersonLogic implements PersonLogicInterface {
 	 */
 	public PersonName getPersonNameById(int id) {
 		return this.personDatabaseManager.getPersonNameById(id, this.dbSessionFactory.getDatabaseSession());
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<PersonName> getPersonSuggestion(String lastName,
+			String firstName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(org.bibsonomy.model.PersonName)
+	 */
+	@Override
+	public List<PersonName> getPersonSuggestion(PersonName personName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#addResourceRelation(org.bibsonomy.model.ResourcePersonRelation)
+	 */
+	@Override
+	public void addResourceRelation(ResourcePersonRelation rpr) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removeResourceRelation(int)
+	 */
+	@Override
+	public void removeResourceRelation(int resourceRelationId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonName(java.lang.Integer)
+	 */
+	@Override
+	public void removePersonName(Integer personNameId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations(int)
+	 */
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(int personNameId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations(org.bibsonomy.model.Person)
+	 */
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(Person person) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations(org.bibsonomy.model.PersonName)
+	 */
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(PersonName person) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations(org.bibsonomy.model.PersonName, java.lang.String, java.lang.String, java.lang.String, org.bibsonomy.model.enums.PersonResourceRelation)
+	 */
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(PersonName pn,
+			String interHash, String intraHash, String requestedUser,
+			PersonResourceRelation relatorCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePersonName(org.bibsonomy.model.PersonName)
+	 */
+	@Override
+	public void createOrUpdatePersonName(PersonName withPersonId) {
+		// TODO Auto-generated method stub
+		
 	}
 }

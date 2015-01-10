@@ -41,6 +41,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
@@ -736,17 +737,6 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<String> createPosts(final List<Post<?>> posts) {
-		return null;
-	}
-
-	@Override
-	public List<String> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public String createDocument(final Document doc, final String resourceHash) {
 		// TODO Auto-generated method stub
 		return null;
@@ -1104,36 +1094,6 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 
-	@Override
-	public List<Person> getPersonSuggestion(String searchString) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public List<Person> getPersons(String longHash, String publicationOwner,
-			PersonName personName, PersonResourceRelation rel) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public void addPersonRelation(String longHash, String publicationOwner,
-			int personId, PersonResourceRelation rel) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public void removePersonRelation(String longHash, String publicationOwner,
-			int personId, PersonResourceRelation rel) {
-		// TODO Auto-generated method stub
-		
-	}
-
 
 	@Override
 	public void createOrUpdatePerson(Person person) {
@@ -1151,6 +1111,160 @@ public class TestDBLogic implements LogicInterface {
 
 	@Override
 	public Map<Person, BibTex> getQualifyingPublications(String personName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<PersonName> getPersonSuggestion(String lastName,
+			String firstName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(org.bibsonomy.model.PersonName)
+	 */
+	@Override
+	public List<PersonName> getPersonSuggestion(PersonName personName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#addResourceRelation(org.bibsonomy.model.ResourcePersonRelation)
+	 */
+	@Override
+	public void addResourceRelation(ResourcePersonRelation rpr) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removeResourceRelation(int)
+	 */
+	@Override
+	public void removeResourceRelation(int resourceRelationId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonName(java.lang.Integer)
+	 */
+	@Override
+	public void removePersonName(Integer personNameId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations(int)
+	 */
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(int personNameId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations(org.bibsonomy.model.Person)
+	 */
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(Person person) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations(org.bibsonomy.model.PersonName)
+	 */
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(PersonName person) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations(org.bibsonomy.model.PersonName, java.lang.String, java.lang.String, java.lang.String, org.bibsonomy.model.enums.PersonResourceRelation)
+	 */
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(PersonName pn,
+			String interHash, String intraHash, String requestedUser,
+			PersonResourceRelation relatorCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePersonName(org.bibsonomy.model.PersonName)
+	 */
+	@Override
+	public void createOrUpdatePersonName(PersonName withPersonId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PostLogicInterface#createPosts(java.util.List)
+	 */
+	@Override
+	public List<String> createPosts(List<Post<? extends Resource>> posts) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PostLogicInterface#updatePosts(java.util.List, org.bibsonomy.common.enums.PostUpdateOperation)
+	 */
+	@Override
+	public List<String> updatePosts(List<Post<? extends Resource>> posts,
+			PostUpdateOperation operation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#linkUser(java.lang.Integer)
+	 */
+	@Override
+	public void linkUser(Integer personId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#unlinkUser(java.lang.String)
+	 */
+	@Override
+	public void unlinkUser(String username) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#searchPostsByTitle(java.lang.String)
+	 */
+	@Override
+	public List<Post<BibTex>> searchPostsByTitle(String title) {
 		// TODO Auto-generated method stub
 		return null;
 	}
