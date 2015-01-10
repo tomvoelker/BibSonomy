@@ -31,7 +31,6 @@ public interface PersonLogicInterface {
 	 * @param rel type of relation. null means all 
 	 * @return non-null list of all persons matching all given non-null criteria
 	 */
-	public List<Person> getPersons(String longHash, String publicationOwner, PersonName personName, PersonResourceRelation rel);
 
 	public void addResourceRelation(ResourcePersonRelation rpr);
 

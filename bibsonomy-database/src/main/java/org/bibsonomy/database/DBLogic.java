@@ -2882,17 +2882,7 @@ public class DBLogic implements LogicInterface {
 	public List<PersonName> getPersonSuggestion(PersonName personName) {
 		return this.personDBManager.findPersonNames(personName.getLastName(), personName.getFirstName(), this.dbSessionFactory.getDatabaseSession());
 	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersons(java.lang.String, java.lang.String, org.bibsonomy.model.PersonName, org.bibsonomy.model.enums.PersonResourceRelation)
-	 */
-	@Override
-	public List<Person> getPersons(String longHash, String publicationOwner, PersonName personName, PersonResourceRelation rel) {
-		// TODO
-		return new ArrayList<Person>();
-	}
-
-
+	
 	@Override
 	public void addResourceRelation(ResourcePersonRelation rpr) {
 		this.personDBManager.addResourceRelation(rpr, this.dbSessionFactory.getDatabaseSession());
