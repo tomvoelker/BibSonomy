@@ -130,4 +130,9 @@
 				AND (pub_person.simhash1 = #simhash1# OR pub_person.simhash2 = #simhash2#) 
 	</statement>
 	
+	<statement id="getResourcePersonRelationsByNameId" resultMap="PersonCommon.resourcePersonRelation">
+		SELECT <include refid="commonResourcePersonRelationColumns" /> FROM pub_person
+			WHERE person_name_id = #personNameId# 
+	</statement>
+	
 </sqlMap>

@@ -155,7 +155,11 @@
 													<div class='checkbox' id='personName_${name.id}'><label><input type='radio' name='formSelectedName' value='${name.id}' checked='checked' /> ${name.firstName} ${name.lastName}</label>&#160;</div>
 												</c:when>
 												<c:otherwise>
-													<div class='checkbox' id='personName_${name.id}'><label><input type='radio' name='formSelectedName' value='${name.id}' /> ${name.firstName} ${name.lastName}</label>&#160;<span data-person-name-id='${name.id}' data-firstName='${name.firstName}' data-lastName='${name.lastName}' data-toggle='modal' data-target='#removeName' style='color:darkred;cursor:pointer' href='#remName' id='removeName_${name.id}' class='removeName glyphicon glyphicon-remove'></span></div>
+													<div class='checkbox' id='personName_${name.id}'><label><input type='radio' name='formSelectedName' value='${name.id}' /> ${name.firstName} ${name.lastName}</label>&#160;
+													<c:if test="${fn:length(name.rprs) eq 0}">
+														<span data-person-name-id='${name.id}' data-firstName='${name.firstName}' data-lastName='${name.lastName}' data-toggle='modal' data-target='#removeName' style='color:darkred;cursor:pointer' href='#remName' id='removeName_${name.id}' class='removeName glyphicon glyphicon-remove'></span>
+													</c:if>
+													</div>
 												</c:otherwise>
 											</c:choose>
 										</c:forEach>

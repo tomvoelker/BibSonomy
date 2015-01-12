@@ -20,6 +20,7 @@
 		<result property="personId" 	column="person_id" 	javaType="integer" />
 		<result property='isMain'		column='is_main'	javaType='boolean' />
 		<result property="person"		column="person_id"  javaType='org.bibsonomy.model.Person' select='getPersonById' />
+		<result property='rprs'			column='{personNameId=id}' javaType='org.bibsonomy.model.ResourcePersonRelation' select='getResourcePersonRelationsByNameId'/>
 	</resultMap>
 	
 	<resultMap id='resourcePersonRelation' class='org.bibsonomy.model.ResourcePersonRelation'>

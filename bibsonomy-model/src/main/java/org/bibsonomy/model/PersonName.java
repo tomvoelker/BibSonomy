@@ -26,6 +26,8 @@ package org.bibsonomy.model;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -51,12 +53,13 @@ public class PersonName implements Serializable {
 	private int personId;
 	private boolean isMain;
 	private Person person;
+	private List<ResourcePersonRelation> rprs;
 
 	/**
 	 * Default constructor
 	 */
 	public PersonName() {
-		// nothing to do
+		rprs = new ArrayList<ResourcePersonRelation>();
 	}
 	
 	/**
@@ -236,6 +239,20 @@ public class PersonName implements Serializable {
 	public PersonName withPersonId(int personId) {
 		this.setPersonId(personId);
 		return this;
+	}
+
+	/**
+	 * @return the rprs
+	 */
+	public List<ResourcePersonRelation> getRprs() {
+		return this.rprs;
+	}
+
+	/**
+	 * @param rprs the rprs to set
+	 */
+	public void setRprs(List<ResourcePersonRelation> rprs) {
+		this.rprs = rprs;
 	}
 
 }
