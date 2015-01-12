@@ -65,7 +65,7 @@
 	</select>
 	
 	<update id="updatePersonName" parameterClass='org.bibsonomy.model.PersonName'>
-		Update person_name SET is_main = 1 
+		Update person_name SET is_main = #isMain# 
 			WHERE person_name.id = #id#
 	</update>
 	
