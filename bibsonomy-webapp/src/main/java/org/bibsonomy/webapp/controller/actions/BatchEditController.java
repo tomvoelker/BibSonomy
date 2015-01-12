@@ -110,9 +110,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	
 	private static final int IGNORE_ACTION = 0;
 	private static final int UPDATE_ALLTAG_ACTION = 1;
-	/**
-* FIXME: rename EACH
-*/
 	private static final int UPDATE_EACHTAG_ACTION = 2;
 	private static final int NORMALIZE_ACTION = 3;
 	private static final int DELETE_ACTION = 4;
