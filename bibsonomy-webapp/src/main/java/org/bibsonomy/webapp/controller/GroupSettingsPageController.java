@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.GroupRole;
@@ -20,6 +22,7 @@ import org.springframework.security.access.AccessDeniedException;
  * @author niebler
  */
 public class GroupSettingsPageController implements MinimalisticController<GroupSettingsPageCommand> {
+	private static final Log log = LogFactory.getLog(GroupSettingsPageController.class);
 	
 	private LogicInterface logic;
 
