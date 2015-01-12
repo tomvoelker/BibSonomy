@@ -397,6 +397,11 @@ public class URLGenerator {
 		return this.getUrl(url);
 	}
 	
+	public String getGroupSettingsUrlByGroupName(final String groupName) {
+		String url = this.projectHome + prefix + "settings" + "/" + GROUP_PREFIX + "/" + UrlUtils.safeURIEncode(groupName);
+		return this.getUrl(url);
+	}
+	
 	
 	/**
 	 * Constructs the URL for the group's page for all posts tagged with tagName

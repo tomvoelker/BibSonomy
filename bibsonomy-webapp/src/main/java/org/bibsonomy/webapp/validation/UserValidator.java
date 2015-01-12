@@ -39,9 +39,8 @@ import org.springframework.validation.ValidationUtils;
  * @author rja
  */
 public class UserValidator implements Validator<User> {
-
 	
-	private static final int USERNAME_MAX_LENGTH = 15;
+	public static final int USERNAME_MAX_LENGTH = 15;
 	/**
 	 * We allow only a..z A..Z 0..9 - . _ 
 	 * (this covers more than 99% of all usernames before introducing this

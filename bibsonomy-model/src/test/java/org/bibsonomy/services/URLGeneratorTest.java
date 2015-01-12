@@ -427,5 +427,11 @@ public class URLGeneratorTest {
 		
 		assertEquals(expected, urlg.prefix("export/").getUserUrlByUserName("jaeschke"));
 	}
+	
+	@Test
+	public void testGetGroupSettingsUrlByGroupName() {
+		String expected = projectHome + "settings/group/schlüsselbund";
+		assertEquals(expected, ug.getGroupSettingsUrlByGroupName("schlüsselbund"));
+	}
 
 }

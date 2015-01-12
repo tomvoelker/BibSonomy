@@ -31,7 +31,7 @@
 	</select>
 
 	<select id="getGroupWithMemberships" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, u.user_name, g.group_role, g.user_shared_documents
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents
 		FROM groupids i 
 		<!-- LEFT JOIN is necessary because groups are empty at the point of creation. -->
 		  LEFT JOIN group_memberships g USING (`group`) 
@@ -174,7 +174,7 @@
 	</select>
 	
 	<select id="getGroupMembershipForUserInGroup" resultMap="GroupCommon.groupMembership" parameterClass="groupParam">
-		SELECT ms.group_role, u.user_name, u.user_realname, u.user_homepage, ms.user_shared_documents
+		SELECT ms.group_role, ms.user_name, u.user_realname, u.user_homepage, ms.user_shared_documents
 		FROM group_memberships ms
 		  JOIN user u ON (u.user_name = ms.user_name)
 		WHERE ms.user_name = #userName# AND ms.`group` = #groupId#;

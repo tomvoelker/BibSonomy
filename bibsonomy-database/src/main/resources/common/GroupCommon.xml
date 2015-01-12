@@ -38,7 +38,7 @@
 		<result property="user"                 resultMap="UserCommon.userForGroup" />
 	</resultMap>
 	
-	<resultMap id="groupWithMemberships" class="group" extends="group_extended" groupBy="name" >
+	<resultMap id="groupWithMemberships" class="group" extends="group_extended" groupBy="name">
 		<result property="memberships" resultMap="GroupCommon.groupMembership" />
 	</resultMap>
 	

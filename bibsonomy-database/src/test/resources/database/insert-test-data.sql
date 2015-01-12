@@ -47,6 +47,10 @@ INSERT INTO `bibhash` (`hash`, `ctr`, `type`) VALUES
 ('598347d95a3ef39a3987a39b40708f79', 2, 0),
 ('a5936835f9eeab91eb09d84948306178', 2, 1),
 ('15a1bdcbff44431651957f45097dc4f4', 2, 2),
+('319872adc49bfeae3f799d29a18b0634', 1, 1),
+('11db3d75b9e07960658984f9b012d6d7', 1, 2),
+('08cdf0d0dcce9d07fd8d41ac6267cadf', 1, 2),
+('564c7c31f6a34e5dc3a1b0c17fe68c13', 1, 1),
 ('b77ddd8087ad8856d77c740c8dc2864a', 1, 2);
 
 

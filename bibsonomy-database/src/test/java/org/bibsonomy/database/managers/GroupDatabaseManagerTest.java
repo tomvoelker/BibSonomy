@@ -19,6 +19,7 @@ import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.testutil.ParamUtils;
+import org.bibsonomy.util.Sets;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -104,13 +105,15 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * tests getGroupByName
 	 */
 	@Test
-	public void getGroupByName() {
+	public void testGetGroupByName() {
 		final Group testgroup1 = groupDb.getGroupByName("testgroup1", this.dbSession);
 		assertEquals("testgroup1", testgroup1.getName());
 		assertEquals(ParamUtils.TESTGROUP1, testgroup1.getGroupId());
 		assertEquals("Test Group 1", testgroup1.getRealname());
 		assertEquals("http://www.bibsonomy.org/group/testgroup1", testgroup1.getHomepage().toString());
 		assertEquals(true, testgroup1.isSharedDocuments());
+		
+		assertGroupContainsMembers(testgroup1, Sets.asSet("testuser1", "testuser2", "testgroup1"));
 
 		final Group testgroup2 = groupDb.getGroupByName("testgroup2", this.dbSession);
 		assertEquals(false, testgroup2.isSharedDocuments());
@@ -127,6 +130,19 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		}
 
 		assertNull(groupDb.getGroupByName(ParamUtils.NOGROUP_NAME, this.dbSession));
+	}
+	/**
+	 * @param testgroup1
+	 * @param string
+	 * @param string2
+	 */
+	private static void assertGroupContainsMembers(Group group, Set<String> members) {
+		final Set<String> actualMembers = new HashSet<String>();
+		for (GroupMembership membership : group.getMemberships()) {
+			actualMembers.add(membership.getUser().getName());
+		}
+		
+		assertEquals(members, actualMembers);
 	}
 
 	/**
@@ -200,21 +216,24 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void createGroup() {
 		final Group newGroup = new Group();
-		newGroup.setName("testgroupnew".toUpperCase());
+		String groupName = "testgroupnew";
+		newGroup.setName(groupName.toUpperCase());
 		final GroupRequest groupRequest = new GroupRequest();
-		groupRequest.setUserName("testrequestuser1");
+		String requestedUser = "testrequestuser1";
+		groupRequest.setUserName(requestedUser);
 		groupRequest.setReason("testrequestreason1");
 		newGroup.setGroupRequest(groupRequest);
 		
 		groupDb.createGroup(newGroup, this.dbSession);
 		groupDb.activateGroup(newGroup.getName(), this.dbSession);
-		final Group newGroupTest = groupDb.getGroupMembers("testgroupnew", "testgroupnew", this.dbSession);
-		assertEquals("testgroupnew", newGroupTest.getName());
-		assertEquals(2, newGroupTest.getMemberships().size());
-
+		final Group newGroupTest = groupDb.getGroupMembers(groupName, groupName, this.dbSession);
+		assertEquals(groupName, newGroupTest.getName());
+		assertGroupContainsMembers(newGroupTest, Sets.asSet(groupName, requestedUser));
+		
+		
 		// check that the group and all members are gone
-		groupDb.deleteGroup("testgroupnew", this.dbSession);
-		assertNull(groupDb.getGroupByName("testgroupnew", this.dbSession));
+		groupDb.deleteGroup(groupName, this.dbSession);
+		assertNull(groupDb.getGroupByName(groupName, this.dbSession));
 		for (final User user : newGroupTest.getUsers()) {
 			final List<Group> userGroups = groupDb.getGroupsForUser(user.getName(), this.dbSession);
 			for (final Group userGroup : userGroups) {

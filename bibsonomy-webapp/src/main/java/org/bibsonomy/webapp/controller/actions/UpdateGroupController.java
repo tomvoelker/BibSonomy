@@ -15,22 +15,28 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.GroupSettingsPageCommand;
+import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
+import org.bibsonomy.webapp.util.ValidationAwareController;
+import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
+import org.bibsonomy.webapp.validation.GroupValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
 
 /**
  * TODO: add documentation
  * 
  * @author tni
  */
-public class UpdateGroupController implements MinimalisticController<GroupSettingsPageCommand>, ErrorAware, RequestAware {
+public class UpdateGroupController implements ValidationAwareController<GroupSettingsPageCommand>, ErrorAware, RequestAware {
 	private static final Log log = LogFactory.getLog(UpdateGroupController.class);
 	
 	private Errors errors = null;
@@ -321,4 +327,30 @@ public class UpdateGroupController implements MinimalisticController<GroupSettin
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
+	
+	@Override
+	public boolean isValidationRequired(GroupSettingsPageCommand command) {
+		return command.getContext().getLoginUser().isSpammer()
+				&& command.getContext().getLoginUser().getToClassify() == 0;
+	}
+
+	@Override
+	public Validator<GroupSettingsPageCommand> getValidator() {
+		return new Validator<GroupSettingsPageCommand>() {
+
+			@Override
+			public boolean supports(Class<?> clazz) {
+				return SettingsViewCommand.class.equals(clazz);
+			}
+
+			@Override
+			public void validate(Object target, Errors errors) {
+				Assert.notNull(target);
+				final SettingsViewCommand command = (SettingsViewCommand) target;
+				
+				ValidationUtils.invokeValidator(new GroupValidator(), command.getGroup(), errors);
+			}
+		};
+	}
+
 }
