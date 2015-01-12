@@ -6,11 +6,11 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonResourceRelation;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.DisambiguationPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -59,10 +59,10 @@ public class DisambiguationPageController extends SingleResourceListController i
 		
 		if(matchingPersons.size() > 0 ) {
 			log.warn("Too many persons for " + command.getRequestedHash());
-			return new ExtendedRedirectView("/person/" + matchingPersons.get(0).getPersonName().getPersonId()  + "/" + PersonNameUtils.serializePersonName(matchingPersons.get(0).getPersonName().getPerson().getMainName()) + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/" + command.getRequestedRole());	
+			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(matchingPersons.get(0).getPersonName().getPersonId(), PersonNameUtils.serializePersonName(matchingPersons.get(0).getPersonName().getPerson().getMainName()), command.getRequestedHash(), command.getRequestedUser(), command.getRequestedRole()));	
 		}
 
-		return new ExtendedRedirectView("/persondisambiguation/details/" + command.getRequestedAuthorName() + "/" + command.getRequestedHash() + "/" + command.getRequestedUser() + "/" + command.getRequestedRole());
+		return new ExtendedRedirectView(new URLGenerator().getDisambiguationUrl("details", command.getRequestedAuthorName(), command.getRequestedHash(), command.getRequestedUser(), command.getRequestedRole()));
 
 	}
 }

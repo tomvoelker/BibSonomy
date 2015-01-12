@@ -11,7 +11,7 @@ $(document).ready(function() {
 	// kicks off the loading/processing of `local` and `prefetch`
 	personNames.initialize();
 
-	var personNameTypeahead = $('.typeahead').typeahead({
+	var personNameTypeahead = $('#addRoleAuto').typeahead({
 		hint: true,
 		highlight: true,
 		minLength: 1

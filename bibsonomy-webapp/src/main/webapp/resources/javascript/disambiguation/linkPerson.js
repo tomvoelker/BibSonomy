@@ -1,8 +1,23 @@
 
 $(document).ready(function() {
 	$(".btnLinkPerson").on("click", function() {
-		var e = $(this);
-		if(e.attr("data-action") == "addRole") {
+		var e = $(this); 	
+		$("#btnLinkPersonSubmit").attr("data-person-id", e.attr("data-person-id"));
+		$("#btnLinkPersonSubmit").attr("data-person-name-id", e.attr("data-person-name-id"));
+		$("#btnLinkPersonSubmit").attr("data-firstName", e.attr("data-firstName"));
+		$("#btnLinkPersonSubmit").attr("data-lastName", e.attr("data-lastName"));
+		
+		$("#linkShowPerson").attr("href", "/person/" + e.attr("data-person-id") + "/" + e.attr("data-lastName") + "," + e.attr("data-firstName"));
+	});
+	
+	$("#btnLinkPersonSubmit").on("click", function() {
+		var e = $(this); 
+		$.post("/person", {
+			formAction: "addName",
+			formPersonId: e.attr("data-person-id"),
+			formFirstName: e.attr("data-firstName"),
+			formLastName: e.attr("data-lastName")
+		}).done(function(data) {
 			$.post("/person",
 					{ 	formAction: "addRole",
 						formInterHash: e.attr("data-resource-simhash1"),
@@ -10,28 +25,11 @@ $(document).ready(function() {
 						formPersonId: e.attr("data-person-id") ,
 						formUser: e.attr("data-pub-owner"),
 						formPersonRole: "AUTHOR",
-						formPersonNameId: e.attr("data-person-name-id")
+						formPersonNameId: data
 					}
 			).done(function(data) {
-				e.attr("data-rpr-id", data);
-				e.attr("data-action", "deleteRole");
-				$("#icon_"+e.attr("data-person-name-id")).removeClass("glyphicon-plus");
-				$("#icon_"+e.attr("data-person-name-id")).addClass("glyphicon-remove");
-				$("#icon_"+e.attr("data-person-name-id")).attr("style", "color: darkred");
-			});	
-		} else if(e.attr("data-action") == "deleteRole") {
-			$.post("/person",
-					{ 	formAction: "deleteRole",
-						formRPRId: e.attr("data-rpr-id")
-					}
-			).done(function(data) {
-				e.attr("data-rpr-id", "");
-				e.attr("data-action", "addRole");
-				$("#icon_"+e.attr("data-person-name-id")).removeClass("glyphicon-remove");
-				$("#icon_"+e.attr("data-person-name-id")).addClass("glyphicon-plus");
-				$("#icon_"+e.attr("data-person-name-id")).attr("style", "");
+				window.location.href = "/person/" + e.attr("data-person-id") + "/" + e.attr("data-lastName") + "," + e.attr("data-firstName"); 
 			});
-		}
-		
+		});
 	});
 });

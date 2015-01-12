@@ -87,6 +87,7 @@
 		<jsp:attribute name="headerExt">
 			<script type='text/javascript' src='/resources/typeahead.js/js/typeahead.bundle.js'><!-- keep me --></script>
 			
+			<script type='text/javascript' src='/resources/javascript/person/autocompleteThesis.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/autocompleteLinkOtherPerson.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/names.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/linkUser.js'><!-- keep me --></script>
@@ -383,7 +384,7 @@
 								<label for='addThesisAuto' class="control-label col-md-3">${textThesis}</label>
         						<div class="col-md-7">
         							<div class='input-group'>
-										<input class='form-control' id='addThesisAuto' type='text' name='addThesisAuto' autocomplete="off"/>
+										<input class='typeahead form-control' id='addThesisAuto' type='text' name='addThesisAuto' autocomplete="off"/>
 									</div>
 								</div>
 							</div>

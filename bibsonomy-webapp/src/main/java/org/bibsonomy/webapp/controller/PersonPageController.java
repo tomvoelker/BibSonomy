@@ -205,7 +205,16 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 */
 	private View addNameAction(PersonPageCommand command) {
-		PersonName personName = new PersonName(command.getFormLastName()).withFirstName(command.getFormFirstName()).withPersonId(Integer.valueOf(command.getFormPersonId()));
+		Person person = logic.getPersonById(Integer.valueOf(command.getFormPersonId()).intValue());
+		PersonName personName = new PersonName(command.getFormLastName()).withFirstName(command.getFormFirstName()).withPersonId(Integer.valueOf(command.getFormPersonId()).intValue());
+		
+		for( PersonName otherName : person.getNames()) {
+			if(person.equals(otherName)) {
+				command.setResponseString(otherName.getId()+ "");
+				return Views.AJAX_TEXT;
+			}
+		}
+		
 		this.logic.createOrUpdatePersonName(personName);
 		command.setResponseString(personName.getId() + "");
 		return Views.AJAX_TEXT;
@@ -229,8 +238,6 @@ public class PersonPageController extends SingleResourceListController implement
 	private View showAction(PersonPageCommand command) {
 		
 		for(PersonResourceRelation prr : PersonResourceRelation.values()) {
-			if(prr.getRelatorCode().equals("Maut"))
-				continue;
 			command.getAvailableRoles().add(prr.getRelatorCode());
 		}
 		

@@ -30,11 +30,15 @@
 	<fmt:message key="navi.person" var="PersonPageTitle" />
 	<fmt:message key="disambiguation.addPersonButton" var="textAddPersonButton"/>
 	<fmt:message key="disambiguation.header" var="textHeader"/>
+	<fmt:message key="disambiguation.modalLinkPersonClose" var="textModalLinkPersonClose"/>
+	<fmt:message key="disambiguation.modalLinkPersonHeader" var="textModalLinkPersonHeader"/>
+	<fmt:message key="disambiguation.modalLinkPersonContent" var="textModalLinkPersonContent"/>
 	<fmt:message key="disambiguation.modalNewPersonClose" var="textModalNewPersonClose"/>
 	<fmt:message key="disambiguation.modalNewPersonHeader" var="textModalnewPersonHeader"/>
 	<fmt:message key="disambiguation.modalNewPersonContent" var="textModalNewPersonContent"/>
 	<fmt:message key="disambiguation.modalSearchPersonHeader" var="textModalSerachPersonHeader"/>
 	<fmt:message key="disambiguation.newPersonButton" var="textNewPersonButton"/>
+	<fmt:message key="disambiguation.linkPersonButton" var="textLinkPersonButton"/>
 	<fmt:message key="disambiguation.noFound" var="textNoFound"/>
 	<fmt:message key="disambiguation.otherPersonButton" var="textOtherPersonButton"/>
 	<fmt:message key="disambiguation.personsPanelHeader" var="textPersonsPanelHeader"/>
@@ -42,6 +46,7 @@
 	<fmt:message key="disambiguation.searchPersonButton" var="textSearchPersonButton"/>
 	<fmt:message key="disambiguation.postPanelHeader" var="textPostPanelHeader"/>
 	<fmt:message key="disambiguation.close" var="textClose"/>
+	<fmt:message key="disambiguation.linkJustShowPerson" var="textJustShowPerson"/>
 	
 	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" 
 		headerLogoClass="publications" 
@@ -100,8 +105,9 @@
 							<c:when test="${fn:length(command.suggestedPersonNames) gt 0}">
 								<c:forEach var='personName' items="${command.suggestedPersonNames}">
 									<div class="list-group-item">
-										<span>${personName.lastName}, ${personName.firstName}, ${personName.person.academicDegree}</span>
-										<a class='pull-right btnLinkPerson' href="#linkPerson" data-action="addRole" data-resource-simhash1='${command.post.resource.interHash}' data-resource-simhash2='${command.post.resource.intraHash}' data-pub-owner='${command.requestedUser}' data-person-name-id='${personName.id}' data-person-id='${personName.personId}'><span id='icon_${personName.id}' class='glyphicon glyphicon-plus'></span></a>
+										<a class='btnLinkPerson' data-toggle="modal"  data-target="#linkPerson" href="#linkPerson" data-firstName="${personName.firstName}" data-lastName="${personName.lastName}" data-person-name-id='${personName.id}' data-person-id='${personName.personId}'>
+											${personName.lastName}, ${personName.firstName}, ${personName.person.academicDegree}
+										</a>
 									</div>
 								</c:forEach>
 							</c:when>
@@ -168,6 +174,28 @@
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
 						<button type="button" class="btn btn-primary" id='btnNewPersonSubmit' data-person-firstName="${command.personName.firstName}" data-person-lastName="${command.personName.lastName}" data-resource-simhash1="${command.post.resource.interHash}" data-resource-simhash2="${command.post.resource.intraHash}" data-pubowner="${command.post.user.name}">${textNewPersonButton}</button>
+					</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="linkPerson" tabindex="-1" role="dialog"
+		aria-labelledby="linkPersonLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&amp;times;</button>
+						<h4 class="modal-title">${textModalLinkPersonHeader}</h4>
+					</div>
+					
+					<div class="modal-body">
+          				<p>${textModalLinkPersonContent}</p>
+					</div>
+					<div class="modal-footer">
+						<a href='#showPerson' id='linkShowPerson' type="button" class="pull-left btn btn-primary">${textJustShowPerson}</a> 
+						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
+						<button type="button" class="btn btn-primary" id='btnLinkPersonSubmit' data-resource-simhash1='${command.post.resource.interHash}' data-resource-simhash2='${command.post.resource.intraHash}' data-pub-owner='${command.requestedUser}'>${textLinkPersonButton}</button>
 					</div>
 			</div>
 		</div>

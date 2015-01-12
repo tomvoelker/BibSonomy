@@ -25,8 +25,10 @@ package org.bibsonomy.services;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
@@ -83,6 +85,7 @@ public class URLGenerator {
     private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
     private static final String PUBLICATION_INTER_HASH_ID = String.valueOf(HashID.INTER_HASH.getId());
 	private static final String PERSON_PREFIX = "person";
+	private static final String DISAMBIGUATION_PREFIX = "persondisambiguation";
 
     /**
      * The default gives relative URLs.
@@ -393,7 +396,13 @@ public class URLGenerator {
      * @return String
      */
     public String getPersonUrl(final int personId, final String personName, final String resourceHash, final String user, final String role) {
-    	String url = this.projectHome + URLGenerator.PERSON_PREFIX + "/" + personId + "/" + personName;
+    	String url;
+		try {
+			url = this.projectHome + URLGenerator.PERSON_PREFIX + "/" + personId + "/" + URLEncoder.encode(personName, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			url = this.projectHome + URLGenerator.PERSON_PREFIX + "/" + personId + "/" + personName;
+		}
+		
     	if(present(resourceHash) && present(user)) {
     		url = url + "/" + resourceHash + "/" + user;
     		if(present(role)) {
@@ -402,6 +411,24 @@ public class URLGenerator {
     			url = url + "/AUTHOR";
     		}
     	}
+    	return this.getUrl(url);
+    }
+    
+    /**
+     * @param action
+     * @param personName
+     * @param resourceHash
+     * @param user
+     * @param role
+     * @return String
+     */
+    public String getDisambiguationUrl(final String action, final String personName, final String resourceHash, final String user, final String role) {
+    	String url;
+		try {
+			url = this.projectHome + URLGenerator.DISAMBIGUATION_PREFIX + "/" + action + "/" + URLEncoder.encode(personName,"utf-8") + "/" + resourceHash + "/" + user + "/" + role;
+		} catch (UnsupportedEncodingException e) {
+			url = this.projectHome + URLGenerator.DISAMBIGUATION_PREFIX + "/" + action + "/" + personName + "/" + resourceHash + "/" + user + "/" + role;
+		}
     	return this.getUrl(url);
     }
 }

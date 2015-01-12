@@ -26,6 +26,14 @@ public enum PersonResourceRelation {
 	 */
 	THESIS_REVIEWER("Mrev"),
 	/**
+	 * first reviewer of thesis
+	 */
+	THESIS_FIRST_REVIEWER("B1st"),
+	/**
+	 * doctor vater
+	 */
+	THESIS_DOCTOR_VATER("Bdtv"),
+	/**
 	 * some non-specific relation influence
 	 */
 	OTHER("Moth");

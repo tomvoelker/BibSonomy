@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.command;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Set;
 
@@ -100,7 +102,7 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	 * @return the requestedAuthorName
 	 */
 	public String getRequestedAuthorName() {
-		return this.requestedAuthorName;
+			return this.requestedAuthorName;
 	}
 
 	/**

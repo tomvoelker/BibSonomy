@@ -30,7 +30,6 @@ $(document).ready(function() {
 	
 	$("#btnOtherPersonSubmit").on("click", function() {
 		var e = $(this);
-		alert();
 		$.post("/person",
 				{ 	formAction: "addName",
 					formFirstName: e.attr("data-person-firstName"),
@@ -38,7 +37,6 @@ $(document).ready(function() {
 					formPersonId: e.attr("data-person-id"),
 				}
 		).done(function(data) {
-			alert();
 			e.attr("data-person-name-id", data);
 			$.post("/person",
 					{ 	formAction: "addRole",
@@ -49,7 +47,6 @@ $(document).ready(function() {
 						formPersonNameId: e.attr("data-person-name-id")
 					}
 			).done(function(data) {
-				alert();
 				document.location.href = "/person/" +  e.attr("data-person-id") + "/" + e.attr("data-person-lastname" + "," + e.attr("data-person-firstName"));
 			});
 		});
