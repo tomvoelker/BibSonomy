@@ -16,7 +16,7 @@ public class CvPageViewCommand extends UserResourceViewCommand {
 		return this.wikiText.trim();
 	}
 
-	/**
+	/** 
 	 * @param wikiText the wikiText to set
 	 */
 	public void setWikiText(String wikiText) {
