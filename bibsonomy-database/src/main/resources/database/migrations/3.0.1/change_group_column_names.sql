@@ -31,3 +31,7 @@ UPDATE groupids
   JOIN user ON group_name = user.user_name
   JOIN group_memberships on groupids.`group` = group_memberships.`group` AND group_memberships.user_name = group_name
 SET group_role = 2;
+
+-- add description field for groups
+ALTER TABLE `groupids`
+	ADD COLUMN `description` VARCHAR(400) NULL AFTER `sharedDocuments`;
