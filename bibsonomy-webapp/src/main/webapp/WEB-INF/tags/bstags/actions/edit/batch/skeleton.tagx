@@ -72,7 +72,7 @@ xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
       
       <jsp:attribute name="pageOptions">
       	<ul>
-      		<li><a href="/editTags"><fmt:message key="edittags.main.Header"/>...</a></li>
+      		<li><a href="/editTags">WURST<fmt:message key="edittags.main.Header"/>...</a></li>
       	</ul>
       </jsp:attribute>
 

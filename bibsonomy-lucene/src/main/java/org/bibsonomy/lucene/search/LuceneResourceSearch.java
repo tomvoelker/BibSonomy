@@ -1,19 +1,41 @@
+/**
+ * BibSonomy-Lucene - Fulltext search facility of BibSonomy
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.lucene.search;
 
-import static org.apache.lucene.util.Version.LUCENE_24;
 import static org.bibsonomy.lucene.util.LuceneBase.CFG_LUCENE_FIELD_SPECIFIER;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,9 +44,9 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.queryParser.QueryParser.Operator;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.queryparser.classic.QueryParser.Operator;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Filter;
@@ -36,7 +58,10 @@ import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermRangeFilter;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.util.BytesRef;
+import org.apache.lucene.util.Version;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.lucene.database.LuceneInfoLogic;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
@@ -60,19 +85,7 @@ import org.bibsonomy.services.searcher.ResourceSearch;
  */
 public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<R> {
 	private static final Log log = LogFactory.getLog(LuceneResourceSearch.class);
-
-	/**
-	 * read/write lock, allowing multiple searcher or exclusive an index update
-	 * TODO: we should use an implementation, which prefers writers for
-	 * obtaining the lock
-	 */
-	private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
-
-	/** write lock, used for blocking index searcher */
-	private final Lock w = this.lock.writeLock();
-
-	/** read lock, used for blocking the index update */
-	private final Lock r = this.lock.readLock();
+	private static final Pattern NON_DIGIT_PATTERN = Pattern.compile("\\D");
 
 	/**
 	 * logic interface for retrieving data from bibsonomy (friends, groups
@@ -80,14 +93,8 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 */
 	private LuceneInfoLogic dbLogic;
 
-	/** global reference to the lucene searcher */
-	private IndexSearcher searcher;
-
 	/** default field analyzer */
 	private Analyzer analyzer;
-
-	/** flag indicating whether the index was loaded successfully */
-	private boolean isReady = false;
 
 	/** default junction of search terms */
 	private Operator defaultSearchTermJunctor = null;
@@ -141,17 +148,20 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 */
 	@Override
 	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
-		if (!this.isEnabled() || !this.tagCloudEnabled) {
+		if (!this.tagCloudEnabled) {
 			return new LinkedList<Tag>();
 		}
 		
 		// build query
 		final QuerySortContainer qf = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, null);
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
-		this.r.lock();
+		
+		IndexSearcher searcher = null;
 		try {
+			//Aquire searcher
+			searcher = this.index.aquireIndexSearcher();
 			log.debug("Starting tag collection");
-			final TopDocs topDocs = this.searcher.search(qf.getQuery(), null, this.tagCloudLimit, qf.getSort());
+			final TopDocs topDocs = searcher.search(qf.getQuery(), null, this.tagCloudLimit, qf.getSort());
 			log.debug("Done collecting tags");
 			/*
 			 * extract tags from top n documents
@@ -164,7 +174,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 				 * get document from index and
 				 * convert document to bibsonomy post model	
 				 */
-				final Document doc = this.searcher.doc(topDocs.scoreDocs[i].doc);
+				final Document doc = searcher.doc(topDocs.scoreDocs[i].doc);
 				final Post<R> post = this.resourceConverter.writePost(doc);
 		
 				// set tag count
@@ -188,9 +198,9 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 				}
 			}
 		} catch (final IOException e) {
-			log.error("Error building full text tag cloud for query " + qf.getQuery().toString());
+			log.error("Error building full text tag cloud for query " + qf.getQuery().toString(), e);
 		} finally {
-			this.r.unlock();
+			this.index.releaseIndexSearcher(searcher);
 		}
 		
 		final List<Tag> tags = new LinkedList<Tag>();
@@ -208,62 +218,22 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	}
 
 	/**
-	 * reload the index -- has to be called after each index change
-	 */
-	public void reloadIndex() {
-		/*
-		 * open new index searcher
-		 */
-		IndexSearcher newSearcher = null;
-		try {
-			// load and hold index on physical hard disk
-			log.debug("Opening index " + this.index);
-			newSearcher = this.index.createIndexSearcher();
-		} catch (final Exception e) {
-			log.error("Error reloading index, disabling searcher (" + e.getMessage() + ") - this should be the case while building a new index");
-		}
-
-		/*
-		 * switch searcher
-		 */
-		IndexSearcher oldSearcher = null;
-		this.w.lock();
-		try {
-			if (newSearcher == null) {
-				this.disableIndex();
-			} else {
-				oldSearcher = this.searcher;
-				this.searcher = newSearcher;
-				this.enableIndex();
-			}
-		} finally {
-			this.w.unlock();
-		}
-
-		/*
-		 * close old searcher
-		 */
-		try {
-			if (oldSearcher != null) {
-				oldSearcher.close();
-			}
-		} catch (final IOException e) {
-			log.debug("Error closing searcher.", e);
-		}
-	}
-
-	/**
 	 * query index for documents and create result list of post models
 	 */
 	private ResultList<Post<R>> searchLucene(final QuerySortContainer qf, final int limit, final int offset) {
-		if (!this.isEnabled() || limit == 0) {
+		if (limit == 0) {
 			return new ResultList<Post<R>>();
 		}
-
-		this.r.lock();
-
+		
+		IndexSearcher searcher = null;
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
 		try {
+			
+			try {
+				searcher = this.index.aquireIndexSearcher();
+			} catch (IllegalStateException e) {
+				throw new InternServerException(e);
+			}
 			// initialize data
 			final Query query = qf.getQuery();
 			final Sort sort = qf.getSort();
@@ -272,7 +242,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			 * querying the index
 			 */
 			long starttimeQuery = System.currentTimeMillis();
-			final TopDocs topDocs = this.searcher.search(query, null, offset + limit, sort);
+			final TopDocs topDocs = searcher.search(query, null, offset + limit, sort);
 
 			// determine number of posts to display
 			final int hitslimit = (((offset + limit) < topDocs.totalHits) ? (offset + limit) : topDocs.totalHits);
@@ -286,7 +256,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			 */
 			for (int i = offset; i < hitslimit; i++) {
 				// get document from index
-				final Document doc = this.searcher.doc(topDocs.scoreDocs[i].doc);
+				final Document doc = searcher.doc(topDocs.scoreDocs[i].doc);
 				// convert document to bibsonomy model
 				final Post<R> post = this.resourceConverter.writePost(doc);
 
@@ -295,7 +265,8 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 				int postFreq = 1;
 				final String interHash = doc.get(LuceneFieldNames.INTERHASH);
 				if (interHash != null) {
-					postFreq = this.searcher.docFreq(new Term(LuceneFieldNames.INTERHASH, interHash));
+					//Count documents for interHash
+					postFreq = searcher.getIndexReader().docFreq(new Term(LuceneFieldNames.INTERHASH, interHash));
 				}
 				log.debug("PostFreq query time: " + (System.currentTimeMillis() - starttimeQuery) + "ms");
 				post.getResource().setCount(postFreq);
@@ -306,31 +277,10 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		} catch (final IOException e) {
 			log.debug("LuceneResourceSearch: IOException: " + e.getMessage());
 		} finally {
-			this.r.unlock();
+			this.index.releaseIndexSearcher(searcher);
 		}
 
 		return postList;
-	}
-
-	/**
-	 * check whether index is ready for searching
-	 */
-	private boolean isEnabled() {
-		return this.isReady;
-	}
-
-	/**
-	 * disable search
-	 */
-	private void disableIndex() {
-		this.isReady = false;
-	}
-
-	/**
-	 * enable search
-	 */
-	private void enableIndex() {
-		this.isReady = true;
 	}
 
 	/**
@@ -429,6 +379,10 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		return groupMemberQuery;
 	}
 
+	private static String removeNonDigits(String s) {
+		return NON_DIGIT_PATTERN.matcher(s).replaceAll("");
+	}
+	
 	/**
 	 * restrict given query to posts belonging to a given time range
 	 * 
@@ -439,33 +393,33 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * @return time range query
 	 */
 	protected Query makeTimeRangeQuery(final BooleanQuery mainQuery, final String year, String firstYear, String lastYear) {
-		/*
-		 * exact year query
-		 */
+		
+		//exact year query
+		if (present(year)) {
+			mainQuery.add(new TermQuery(new Term(LuceneFieldNames.YEAR, removeNonDigits(year))), Occur.MUST);
+			return mainQuery;
+		}
+		
+		//range query
 		boolean includeLowerBound = false;
 		boolean includeUpperBound = false;
-
-		if (present(year)) {
-			mainQuery.add(new TermQuery(new Term(LuceneFieldNames.YEAR, year.replaceAll("\\D", ""))), Occur.MUST);
-		} else {
-			/*
-			 * range query
-			 */
-			// firstYear != null
-			if (present(firstYear)) {
-				firstYear = firstYear.replaceAll("\\D", "");
+		BytesRef firstYearBR = null;
+		BytesRef lastYearBR = null;
+		
+		if (present(firstYear)) {
+				firstYear = removeNonDigits(firstYear);
+				firstYearBR = new BytesRef(firstYear);
 				includeLowerBound = true;
-			}
-			// lastYear != null
-			if (present(lastYear)) {
-				lastYear = lastYear.replaceAll("\\D", "");
+		}
+		if (present(lastYear)) {
+				lastYear = removeNonDigits(lastYear);
+				lastYearBR = new BytesRef(lastYear);
 				includeUpperBound = true;
-			}
 		}
 
 		if (includeLowerBound || includeUpperBound) {
 			// if upper or lower bound is given, then use filter
-			final Filter rangeFilter = new TermRangeFilter(LuceneFieldNames.YEAR, firstYear, lastYear, includeLowerBound, includeUpperBound);
+			final Filter rangeFilter = new TermRangeFilter(LuceneFieldNames.YEAR, firstYearBR, lastYearBR, includeLowerBound, includeUpperBound);
 			return new FilteredQuery(mainQuery, rangeFilter);
 		}
 
@@ -608,9 +562,9 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		// set ordering
 		final Sort sort;
 		if (Order.RANK.equals(order)) {
-			sort = new Sort(SortField.FIELD_SCORE, new SortField(LuceneFieldNames.DATE, SortField.LONG, true));
+			sort = new Sort(SortField.FIELD_SCORE, new SortField(LuceneFieldNames.DATE, SortField.Type.LONG, true));
 		} else {
-			sort = new Sort(new SortField(LuceneFieldNames.DATE, SortField.LONG, true));
+			sort = new Sort(new SortField(LuceneFieldNames.DATE, SortField.Type.LONG, true));
 		}
 		// all done
 		log.debug("[Full text] Search query: " + mainQuery.toString());
@@ -717,7 +671,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		if (present(param)) {
 			// use lucene's new token stream api (see
 			// org.apache.lucene.analysis' javadoc at package level)
-			final TokenStream ts = this.analyzer.tokenStream(fieldName, new StringReader(param));
+			final TokenStream ts = this.analyzer.tokenStream(fieldName, param);
 			/* This CharTermAttribute was formally the deprecated TermAttribute interface 
 			 * The main difference in this case is that we now obtain a char[] buffer for 
 			 * every term instead of a String object */
@@ -728,9 +682,13 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			// tokens
 			final StringBuilder analyzedString = new StringBuilder();
 			while (ts.incrementToken()) {
-				analyzedString.append(" ").append(termAtt.buffer());
+				String term = new String(termAtt.buffer(),0,termAtt.length());
+				analyzedString.append(" ").append(term);
 			}
-
+			
+			ts.end();
+			ts.close();
+			
 			return analyzedString.toString().trim();
 		}
 
@@ -746,7 +704,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 */
 	protected Query parseSearchQuery(final String fieldName, String searchTerms) {
 		// parse search terms for handling phrase search
-		final QueryParser searchTermParser = new QueryParser(LUCENE_24, fieldName, this.analyzer);
+		final QueryParser searchTermParser = new QueryParser(Version.LUCENE_48, fieldName, this.analyzer);
 		searchTermParser.setDefaultOperator(this.defaultSearchTermJunctor);
 		searchTermParser.setAllowLeadingWildcard(true);
 		try {
@@ -772,7 +730,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 */
 	public void setIndex(final LuceneResourceIndex<R> index) {
 		this.index = index;
-		this.reloadIndex();
+		this.index.reset();
 	}
 
 	/**

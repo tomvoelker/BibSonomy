@@ -1,15 +1,12 @@
 package bibtex.expansions;
 
 /**
+ * 
  * @author rja
- * @version $Id:$
  */
 public class CrossReferenceExpansionException extends ExpansionException {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -797945153941147256L;
+	
 	private final String entryKey;
 	private final String crossrefKey;
 
@@ -19,12 +16,17 @@ public class CrossReferenceExpansionException extends ExpansionException {
 		this.crossrefKey = crossrefKey;
 	}
 
+	/**
+	 * @return the entryKey
+	 */
 	public String getEntryKey() {
-		return entryKey;
+		return this.entryKey;
 	}
 
+	/**
+	 * @return the crossrefKey
+	 */
 	public String getCrossrefKey() {
-		return crossrefKey;
+		return this.crossrefKey;
 	}
-	
 }
