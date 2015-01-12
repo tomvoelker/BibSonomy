@@ -180,7 +180,7 @@
 			<table class="table table-striped">
 				<thead>
 					<tr>
-						<th>
+						<th style="text-align: center;">
 							<input type="checkbox" id="selectAll" value="true" checked="checked" title="select all"/>	
 						</th>
 						<th>

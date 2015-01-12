@@ -11,7 +11,11 @@
     <!-- shows a short description of a post - only title, author, year - the complete data in a hover-box -->
   
    	<span class="truncatedDesc batchInfo">
-   		${post.resource.title}, ${post.resource.author}, ${post.resource.year} 
+   		${post.resource.title} 
+   		<br/>
+   		<bib:year publication="${post.resource}" braces="true"/>
+   		<c:out value=" "/>
+   		<bib:author publication="${post.resource}"/>
    		<div>
         <div class="ptitle"><bib:title post="${post}"/></div>
         <div class="pdesc"> <bib:desc publication="${post.resource}"/></div>
