@@ -49,10 +49,11 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 		command.setGroup(group);
 		
 		final GroupMembership groupMembership = group.getGroupMembershipForUser(loginUser);
-		GroupRole roleOfLoggedinUser = groupMembership.getGroupRole();
-		if (!present(groupMembership) || roleOfLoggedinUser.isPendingRole()) {
+		if (!present(groupMembership)|| groupMembership.getGroupRole().isPendingRole()) {
 			throw new AccessDeniedException("You are not a member of this group.");
 		}
+		
+		final GroupRole roleOfLoggedinUser = groupMembership.getGroupRole();
 		command.setGroupMembership(groupMembership);
 		
 		// TODO: should only the admin get this information?
