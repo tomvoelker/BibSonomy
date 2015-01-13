@@ -220,14 +220,6 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 				throw new IllegalStateException("A discussion item could not be created for hash "+interHash+" and username "+postUserName+" by user "+userName+" because no post was found that it could have been appended to.");
 			}
 			
-			
-			/*
-			 * Send a pingback/trackback for the public posted resource.
-			 */
-			if (present(this.pingback) && !this.logic.getUserDetails(userName).isSpammer() && GroupUtils.isPublicGroup(originalPost.getGroups())) {
-				this.pingback.sendPingback(originalPost);
-			}
-			
 			// we have found an original Post and now transform it into a goldstandard post
 			final Post<Resource> newGoldStandardPost = new Post<Resource>();
 			if (BibTex.class.isAssignableFrom(originalPost.getResource().getClass())) {
@@ -247,9 +239,19 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 				throw new IllegalStateException("A discussion item could not be created for hash "+interHash+" and username "+postUserName+" by user "+userName+" because no post was found that it could have been appended to.");
 			}
 			this.logic.createPosts(Collections.<Post<? extends Resource>>singletonList(newGoldStandardPost));
+			
+			// clear user for pingback
+			newGoldStandardPost.setUser(null);
+			
+			/*
+			 * Send a pingback/trackback for the public posted resource.
+			 */
+			if (present(this.pingback) && !this.logic.getUserDetails(userName).isSpammer() && GroupUtils.isPublicGroup(discussionItem.getGroups())) {
+				this.pingback.sendPingback(newGoldStandardPost);
+			}
 		} else {
 			reloadPage = this.firstCommentInPreprint(goldStandardPost, postUserName); 
-		}
+		}		
 		this.logic.createDiscussionItem(interHash, userName, discussionItem);
 		
 		return reloadPage;
