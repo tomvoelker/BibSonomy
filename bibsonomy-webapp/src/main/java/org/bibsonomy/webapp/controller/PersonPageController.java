@@ -211,7 +211,7 @@ public class PersonPageController extends SingleResourceListController implement
 		PersonName personName = new PersonName(command.getFormLastName()).withFirstName(command.getFormFirstName()).withPersonId(Integer.valueOf(command.getFormPersonId()).intValue());
 		
 		for( PersonName otherName : person.getNames()) {
-			if(person.equals(otherName)) {
+			if(personName.equals(otherName)) {
 				command.setResponseString(otherName.getId()+ "");
 				return Views.AJAX_TEXT;
 			}
