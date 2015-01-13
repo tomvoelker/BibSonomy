@@ -209,7 +209,6 @@ public class PersonPageController extends SingleResourceListController implement
 	private View addNameAction(PersonPageCommand command) {
 		Person person = logic.getPersonById(Integer.valueOf(command.getFormPersonId()).intValue());
 		PersonName personName = new PersonName(command.getFormLastName()).withFirstName(command.getFormFirstName()).withPersonId(Integer.valueOf(command.getFormPersonId()).intValue());
-		
 		for( PersonName otherName : person.getNames()) {
 			if(personName.equals(otherName)) {
 				command.setResponseString(otherName.getId()+ "");

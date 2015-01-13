@@ -132,12 +132,14 @@
 				<div  id='aboutThisPerson' class='panel-collapse collapse'>
 					<form method='post' name='personForm' action="" class='form-horizontal'>
 					<div class='panel-body'>
-						<div class='form-group'>
-							<label class="control-label col-md-4">${textAuthorOf}</label>
-							<div class="col-md-6">
-								<p class='form-control-static'></p>
+						<c:if test="${command.person.disambiguatingPublication.post ne null}">
+							<div class='form-group'>
+								<label class="control-label col-md-4">${textAuthorOf}</label>
+								<div class="col-md-6">
+									<p class='form-control-static'>${command.person.disambiguatingPublication.post.resource.title}</p>
+								</div>
 							</div>
-						</div>
+						</c:if>
 						<div class='form-group'>
 							<label class="control-label col-md-4" for='formAcademicDegree'>${textAcademicDegree}</label>
 							<div class="col-md-6">

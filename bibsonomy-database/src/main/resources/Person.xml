@@ -136,4 +136,11 @@
 			WHERE person_name_id = #personNameId# 
 	</statement>
 	
+	<statement id="getOneResourcePersonRelationsByPersonId" resultMap="PersonCommon.resourcePersonRelation">
+		SELECT <include refid="commonResourcePersonRelationColumns" /> FROM pub_person
+			WHERE pub_person.person_name_id IN (SELECT person_name.id FROM person_name WHERE person_id = #personId#) 
+			AND pub_person.relator_code = "Maut"
+			LIMIT 0,1
+	</statement>
+	
 </sqlMap>
