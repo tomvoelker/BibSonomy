@@ -34,21 +34,24 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ReferencesScraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
  */
-public class PsyContentScraper extends AbstractUrlScraper{
+public class PsyContentScraper extends AbstractUrlScraper implements ReferencesScraper{
 
 	private static final String SITE_NAME = "Psy CONTENT";
 	private static final String PSYCONTENT_HOST_NAME  = "http://psycontent.metapress.com";	
@@ -60,11 +63,13 @@ public class PsyContentScraper extends AbstractUrlScraper{
 	private static final String PSYCONTENT_RIS_PATH = "/export.mpx?mode=ris&code=";
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + PSYCONTENT_HOST), AbstractUrlScraper.EMPTY_PATTERN));
-	
+	private static final Pattern REFERENCES_PATTERNS = Pattern.compile("(?s)<h4>References</h4><table><!--reference c1-->(.*)</td></tr></table>");
+	@Override
 	public String getInfo() {
 		return info;
 	}
 
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
@@ -189,15 +194,35 @@ public class PsyContentScraper extends AbstractUrlScraper{
 		return cookieString.toString();
 	}
 
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
+	 */
+	@Override
+	public boolean scrapeReferences(ScrapingContext sc) throws ScrapingException {
+		try {
+			final Matcher m = REFERENCES_PATTERNS.matcher(WebUtils.getContentAsString(sc.getUrl().toString().replace('?' + sc.getUrl().getQuery(), "fulltext.html")));
+			if(m.find()) {
+				sc.setReferences(m.group(1));
+				return true;
+			}
+		} catch(IOException e) {
+			throw new ScrapingException(e);
+		}
+		return false;
 	}
 }

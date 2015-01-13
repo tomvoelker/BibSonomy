@@ -729,13 +729,13 @@
 	</URLTest>
 	<URLTest id="url_121">
 		<TestDescription>Scraper test for citation page from ams.allenpress.com</TestDescription>
-		<URL>http://ams.allenpress.com/perlserv/?request=get-abstract&amp;doi=10.1175%2F2008BAMS2375.1</URL>
+		<URL>http://journals.ametsoc.org/doi/abs/10.1175/2008BAMS2375.1</URL>
 		<BibFile>AmsScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ams.AmsScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_122">
 		<TestDescription>Scraper test for citation page from ams.allenpress.com</TestDescription>
-		<URL>http://ams.allenpress.com/perlserv/?request=cite-builder&amp;doi=10.1175%2F2008BAMS2375.1</URL>
+		<URL>http://journals.ametsoc.org/doi/abs/10.1175/2008BAMS2375.1</URL>
 		<BibFile>AmsScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ams.AmsScraper</Scraper>
 	</URLTest>
