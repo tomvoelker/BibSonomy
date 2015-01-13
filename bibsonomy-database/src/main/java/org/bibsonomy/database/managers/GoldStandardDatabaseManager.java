@@ -110,7 +110,8 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	@Override
 	public Post<R> getPostDetails(final String loginUserName, final String resourceHash, final String userName, final List<Integer> visibleGroupIDs, final DBSession session) {
 		if (present(userName)) {
-			return null; // TODO: think about this return
+//			return null; // TODO: think about this return
+			//all posts in goldstandard table are stored with their username. with this 'if(...)' we can not retrieve any post from DB!
 		}
 		
 		final Post<R> post = this.getGoldStandardPostByHash(resourceHash, session);

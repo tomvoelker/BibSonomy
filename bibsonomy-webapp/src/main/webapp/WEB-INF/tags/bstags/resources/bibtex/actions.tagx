@@ -19,6 +19,17 @@
 		<c:choose>
 			<c:when test="${command.context.userLoggedIn}">
 				<c:choose>
+					<!-- Community post -->
+					<c:when test="${empty post.user.name}">
+						<c:url var="copyLink" value="/editGoldStandardPublication">
+							<c:param name="hash" value="${post.resource.intraHash}" />
+						</c:url>
+						
+						<fmt:message key="bibtex.actions.copy.title" var="copyTitle"/>
+						<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
+							<span class="fa fa-history"><!--  --></span>
+						</a>
+					</c:when>
 					<!-- COPY -->
 					<c:when test="${loginUserName ne post.user.name}"><!-- user is not post's owner -->
 						<c:url var="copyLink" value="/editPublication">

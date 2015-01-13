@@ -32,6 +32,9 @@ import org.bibsonomy.model.GoldStandardBookmark;
  * @author fba
  */
 public class EditGoldStandardBookmarkCommand extends EditPostCommand<GoldStandardBookmark> {
+	
+	
+	
 	/**
 	 * Sets the URL of the post. 
 	 * Needed for the (old) postBookmark button and "copy" links. 
@@ -61,8 +64,12 @@ public class EditGoldStandardBookmarkCommand extends EditPostCommand<GoldStandar
 	public void setExtended(final String description){
 		getPost().setDescription(description);
 	}
+
+
 	
-	public void setApproved(final int approved){
+	
+/*	public void setApproved(final int approved){
 		getPost().getResource().setApproved(approved);
 	}
+	*/
 }

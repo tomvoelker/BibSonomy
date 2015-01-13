@@ -38,6 +38,8 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.util.ObjectUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
 import org.bibsonomy.webapp.command.actions.EditGoldStandardBookmarkCommand;
+import org.bibsonomy.webapp.command.actions.EditPostCommand;
+import org.bibsonomy.webapp.util.GroupingCommandUtils;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.GoldStandardPostValidator;
@@ -47,6 +49,7 @@ import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
 import recommender.core.interfaces.model.TagRecommendationEntity;
+import recommender.impl.database.RecommenderStatisticsManager;
 
 /**
  * @author dzo
@@ -122,5 +125,46 @@ public class EditGoldStandardBookmarkController extends EditPostController<GoldS
 		return super.workOn(command);
 	}
 	
+	@Override
+	protected void initPost(final EditPostCommand<GoldStandardBookmark> command, final Post<GoldStandardBookmark> post, final User loginUser) {
+		/*
+		 * set the user of the post to the loginUser (the recommender might need
+		 * the user name)
+		 */
+		post.setUser(loginUser);
+		post.getResource().setApproved(command.isApproved());
+		/*
+		 * initialize groups
+		 */
+		GroupingCommandUtils.initGroups(command, post.getGroups());
+		/*
+		 * initialize relevantFor-tags FIXME: candidate for system tags
+		 */
+		super.initRelevantForTags(command, post);
+		/*
+		 * For each post process an unique identifier is generated. This is used
+		 * for mapping posts to recommendations.
+		 */
+		if (command.getPostID() == RecommenderStatisticsManager.getUnknownEntityID()) {
+			command.setPostID(RecommenderStatisticsManager.getNewPID());
+		}
+	}
 	
+	@Override
+	protected Post<GoldStandardBookmark> getCopyPost(final User loginUser, final String hash, final String user) {
+		Post<GoldStandardBookmark> post = null;
+		try {
+			post = (Post<GoldStandardBookmark>) this.logic.getPostDetails(hash, user);
+		} catch (final ObjectNotFoundException ex) {
+			// ignore
+		} catch (final ResourceMovedException ex) {
+			// ignore		
+		}
+
+		if (post == null) {
+			return null;
+		}
+		return post;
+		//return this.convertToGoldStandard(post);
+	}
 }
