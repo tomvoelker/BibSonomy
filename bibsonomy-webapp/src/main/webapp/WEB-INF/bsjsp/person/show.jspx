@@ -88,7 +88,6 @@
 			<script type='text/javascript' src='/resources/typeahead.js/js/typeahead.bundle.js'><!-- keep me --></script>
 			
 			<script type='text/javascript' src='/resources/javascript/person/autocompleteThesis.js'><!-- keep me --></script>
-			<script type='text/javascript' src='/resources/javascript/person/autocompleteLinkOtherPerson.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/names.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/linkUser.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/roles.js'><!-- keep me --></script>
@@ -268,8 +267,8 @@
 						</div>
 						<div id='ownPublications' class='tab-pane'>
 							<br/>
-							 <!-- <button style='width: 100%;' class='btn btn-default' data-toggle='modal' data-target='#addThesis'>${textAddThesisButton}</button>
-							<hr/> -->
+							<button style='width: 100%;' class='btn btn-default' data-toggle='modal' data-target='#addThesis'>${textAddThesisButton}</button>
+							<hr/>
 							<c:choose>
 								<c:when test="${fn:length(command.advisedThesis) gt 0}">
 									<c:forEach var="post" items="${command.advisedThesis}">

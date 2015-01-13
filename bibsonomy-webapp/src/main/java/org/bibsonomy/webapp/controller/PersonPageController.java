@@ -104,16 +104,23 @@ public class PersonPageController extends SingleResourceListController implement
 		Person person = new Person().withMainName(new PersonName(command.getFormLastName()).withFirstName(command.getFormFirstName()).withMain(true)).withAcademicDegree(command.getFormAcademicDegree());
 		this.logic.createOrUpdatePerson(person);
 		command.setPerson(person);
-		this.logic.addResourceRelation(new ResourcePersonRelation()
-			.withSimhash1(command.getFormInterHash())
-			.withSimhash2(command.getFormIntraHash())
-			.withRelatorCode(PersonResourceRelation.valueOf(command.getFormPersonRole()).getRelatorCode())
-			.withPersonNameId(person.getMainName().getId())
-			.withPubOwner(command.getFormUser()));
+		String role = command.getFormPersonRole();
+		if(role.length() != 4) {
+			role = PersonResourceRelation.valueOf(command.getFormPersonRole()).getRelatorCode();
+		}
+		ResourcePersonRelation rpr = new ResourcePersonRelation()
+		.withSimhash1(command.getFormInterHash())
+		.withSimhash2(command.getFormIntraHash())
+		.withRelatorCode(role)
+		.withPersonNameId(person.getMainName().getId())
+		.withPubOwner(command.getFormUser());
+		this.logic.addResourceRelation(rpr);
 		
 		JSONObject jsonPerson = new JSONObject();
 		jsonPerson.put("personId", new Integer(person.getId()));
 		jsonPerson.put("personName", person.getMainName().toString());
+		jsonPerson.put("personNameId", new Integer(person.getMainName().getId()));
+		jsonPerson.put("rprid", new Integer(rpr.getId()));
 		
 		command.setResponseString(jsonPerson.toJSONString());
 		

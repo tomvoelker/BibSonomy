@@ -1,7 +1,5 @@
 package org.bibsonomy.webapp.controller;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
