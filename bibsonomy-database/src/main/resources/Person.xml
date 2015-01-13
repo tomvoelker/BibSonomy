@@ -52,6 +52,7 @@
 			OR 	person_name.first_name LIKE #lastName#
 			OR 	person_name.last_name LIKE #firstName#
 			OR 	person_name.last_name LIKE #lastName#
+			GROUP BY person_id
 	</select>
 	
 	<update id='updatePerson' parameterClass='org.bibsonomy.model.Person'>

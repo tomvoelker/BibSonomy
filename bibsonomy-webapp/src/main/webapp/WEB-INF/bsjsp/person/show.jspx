@@ -234,7 +234,7 @@
 												<ul>
 													<c:forEach var="role" items="${command.availableRoles}">
 														<fmt:message key="person.show.${role}" var="textRole" />
-														<li class='${role}'>${textRole}: 
+														<li class='${role}'><span class='glyphicon glyphicon-question-sign explainRole' data-toggle="tooltip" data-role='${role}'>&#160;</span>${textRole}: 
 															<c:forEach var="relation" items="${post.rprs}">
 																<c:if test="${relation.relatorCode eq role}">
 																	<span class='rpr_${relation.id}'>
