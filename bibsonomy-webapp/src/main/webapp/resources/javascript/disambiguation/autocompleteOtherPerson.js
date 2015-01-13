@@ -47,7 +47,7 @@ $(document).ready(function() {
 						formPersonNameId: e.attr("data-person-name-id")
 					}
 			).done(function(data) {
-				document.location.href = "/person/" +  e.attr("data-person-id") + "/" + e.attr("data-person-lastname" + "," + e.attr("data-person-firstName"));
+				document.location.href = "/person/" +  e.attr("data-person-id") + "/" + e.attr("data-person-lastname" + ", " + e.attr("data-person-firstName"));
 			});
 		});
 	});

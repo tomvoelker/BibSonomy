@@ -70,13 +70,14 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	private View searchAction(PersonPageCommand command) {
 		List<PersonName> personNames = this.logic.getPersonSuggestion(command.getFormSelectedName(), command.getFormSelectedName());
 		JSONArray array = new JSONArray();
 		for(PersonName personName : personNames) {
 			JSONObject jsonPersonName = new JSONObject();
-			jsonPersonName.put("personId", personName.getPersonId());
-			jsonPersonName.put("personNameId", personName.getId());
+			jsonPersonName.put("personId", new Integer(personName.getPersonId()));
+			jsonPersonName.put("personNameId", new Integer(personName.getId()));
 			jsonPersonName.put("personName", personName.toString());
 			
 			array.add(jsonPersonName);
@@ -97,6 +98,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	private View newAction(PersonPageCommand command) {
 		
 		Person person = new Person().withMainName(new PersonName(command.getFormLastName()).withFirstName(command.getFormFirstName()).withMain(true)).withAcademicDegree(command.getFormAcademicDegree());
@@ -110,7 +112,7 @@ public class PersonPageController extends SingleResourceListController implement
 			.withPubOwner(command.getFormUser()));
 		
 		JSONObject jsonPerson = new JSONObject();
-		jsonPerson.put("personId", person.getId());
+		jsonPerson.put("personId", new Integer(person.getId()));
 		jsonPerson.put("personName", person.getMainName().toString());
 		
 		command.setResponseString(jsonPerson.toJSONString());
@@ -150,7 +152,7 @@ public class PersonPageController extends SingleResourceListController implement
 			.withSimhash1(command.getFormInterHash())
 			.withSimhash2(command.getFormIntraHash())
 			.withRelatorCode(role)
-			.withPersonNameId(Integer.valueOf(command.getFormPersonNameId()))
+			.withPersonNameId(Integer.valueOf(command.getFormPersonNameId()).intValue())
 			.withPubOwner(command.getFormUser());
 		this.logic.addResourceRelation(rpr);
 		command.setResponseString(rpr.getId() + "");
@@ -169,7 +171,7 @@ public class PersonPageController extends SingleResourceListController implement
 			.withSimhash1(command.getFormInterHash())
 			.withSimhash2(command.getFormIntraHash())
 			.withRelatorCode(PersonResourceRelation.valueOf(role).getRelatorCode())
-			.withPersonNameId(Integer.valueOf(command.getFormPersonNameId()))
+			.withPersonNameId(Integer.valueOf(command.getFormPersonNameId()).intValue())
 			.withPubOwner(command.getRequestedUser());
 			this.logic.addResourceRelation(rpr);
 		}

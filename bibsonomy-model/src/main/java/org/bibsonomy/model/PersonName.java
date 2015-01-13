@@ -110,7 +110,7 @@ public class PersonName implements Serializable {
 	
 	@Override
 	public String toString() {
-		return this.lastName + LAST_FIRST_DELIMITER + (present(this.firstName)? this.firstName : "");
+		return this.lastName + LAST_FIRST_DELIMITER + (present(this.firstName)? " " + this.firstName : "");
 	}
 	
 	/**

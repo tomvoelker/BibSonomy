@@ -45,7 +45,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 	private View indexAction(DisambiguationPageCommand command) {
 
 		command.setPost(this.logic.getPostDetails(command.getRequestedHash(), command.getRequestedUser()));
-		PersonName pn = new PersonName(command.getRequestedAuthorName().split(",")[0].trim()).withFirstName(command.getRequestedAuthorName().split(",")[1].trim());
+		PersonName pn = new PersonName(command.getRequestedAuthorName().split(", ")[0].trim()).withFirstName(command.getRequestedAuthorName().split(", ")[1].trim());
 		command.setPersonName(pn);
 		command.setSuggestedPersonNames(this.logic.getPersonSuggestion(pn.getLastName(), pn.getFirstName()));
 		
@@ -54,7 +54,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 	
 	private View redirectAction(DisambiguationPageCommand command) {
 		command.setPost(this.logic.getPostDetails(command.getRequestedHash(), command.getRequestedUser()));
-		PersonName pn = new PersonName(command.getRequestedAuthorName().split(",")[0]).withFirstName(command.getRequestedAuthorName().split(",")[1]);
+		PersonName pn = new PersonName(command.getRequestedAuthorName().split(", ")[0]).withFirstName(command.getRequestedAuthorName().split(", ")[1]);
 		List<ResourcePersonRelation> matchingPersons = this.logic.getResourceRelations(pn, command.getPost().getResource().getInterHash(),command.getPost().getResource().getIntraHash(), command.getRequestedUser(), PersonResourceRelation.AUTHOR);
 		
 		if(matchingPersons.size() > 0 ) {
