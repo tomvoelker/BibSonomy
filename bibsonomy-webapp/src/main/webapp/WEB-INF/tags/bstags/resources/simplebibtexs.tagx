@@ -4,6 +4,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
+	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
@@ -12,8 +13,8 @@
 	
 	<jsp:directive.attribute name="disablePagination" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="paginationParameter" type="java.lang.String" required="false"/>
-	
-	<rc:simplelist listView="${listView}" otherPostsUrlPrefix="/bibtex/${hash.inter.id}" loginUserName="${loginUserName}" disablePagination="${disablePagination}" paginationParameter="${paginationParameter}">
+	<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
+	<rc:simplelist listView="${listView}" otherPostsUrlPrefix="/bibtex/${interHashId}" loginUserName="${loginUserName}" disablePagination="${disablePagination}" paginationParameter="${paginationParameter}">
 		<!-- BibTex title -->
 		<jsp:attribute name="title">
 			<bib:title post="${post}"/>
