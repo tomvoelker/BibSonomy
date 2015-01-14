@@ -34,6 +34,8 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandardBookmark;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
@@ -73,8 +75,14 @@ public class PostHistoryController <R extends Resource> extends SingleResourceLi
 		Class<? extends Resource> resourceType = null;
 		if (resourceClass.equals("bibtex")) {
 			resourceType = BibTex.class;
-		} else {
+		} else if(resourceClass.equals("bookmark")) {
 			resourceType = Bookmark.class;
+		}
+		else if(resourceClass.equals("goldstandardPub")){
+			resourceType = GoldStandardPublication.class;
+		}
+		else if(resourceClass.equals("goldstandardBM")){
+			resourceType = GoldStandardBookmark.class;
 		}
 	
 		this.setList(command, resourceType, groupingEntity, requUser, null, longHash, null, filter, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());

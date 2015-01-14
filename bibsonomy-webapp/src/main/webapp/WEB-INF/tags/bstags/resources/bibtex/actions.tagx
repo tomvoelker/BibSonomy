@@ -126,7 +126,7 @@
 					<!-- For signed out users and those who do not own the post we always show the inactive history button -->
 					<fmt:message key="bibtex.actions.posthistory.inactive" var="historyTitle" />
 					<a class="${buttonClasses}" title="${historyTitle}" disabled="disabled">
-						<span class="glyphicon glyphicon-floppy-disk"><!--  --></span>
+						<span class="fa fa-list-ol"><!--  --></span>
 					</a>
 				</c:otherwise>
 			</c:choose>

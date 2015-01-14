@@ -73,9 +73,6 @@ function compare_to_previous(element){
 	element.parents('td').next().find('a[id=restoreBtnEnabled]').toggleClass('invisible', true);
 	element.parents('td').next().find('a[id=restoreBtnEnabled]').hide();
 	
-	element.parents('td').next().find('a[id=restoreBtnDisabled]').toggleClass('invisible', false);
-	element.parents('td').next().find('a[id=restoreBtnDisabled]').show();
-
 	element.parents('tr').next().find('div[id=restore_alert_btn]').toggleClass('invisible', true);
 	element.parents('tr').next().find('div[id=restore_alert_btn]').toggleClass('hidden', true);
 
@@ -97,7 +94,6 @@ function compare_to_current(element){
 		element.parents('td').next().find('a[id=restoreBtnEnabled]').toggleClass('invisible', false);
 		element.parents('td').next().find('a[id=restoreBtnEnabled]').show();
 
-		element.parents('td').next().find('a[id=restoreBtnDisabled]').toggleClass('invisible', true);
 		element.parents('td').next().find('a[id=restoreBtnDisabled]').hide();
 
 		show_hide_Checkboxes(element.parents('tr').next().find('.postDiffCurr'),true);//invisible:false		

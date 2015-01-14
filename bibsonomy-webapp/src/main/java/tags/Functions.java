@@ -36,6 +36,7 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -437,38 +438,77 @@ public class Functions {
 			tmp = compareString(newBib.getTitle(),oldBib.getTitle());
 			DiffArray.put("title",tmp);
 		}
-		if (!cleanBibtex(newBib.getAuthor().toString()).equals(cleanBibtex(oldBib.getAuthor().toString()))){
-			String val1="";
-			List<PersonName> a= newBib.getAuthor();
-			
-			/**
-			 * the following loop, converts author's 'name,last name' to string
-			 * PersonName.toString()*/
-			for(PersonName pn:a){
-				val1+=(present(pn.getFirstName())? pn.getFirstName() : "")+
-					(present(pn.getLastName())? ", "+pn.getLastName() : "")+"; ";
-			}
-			
-			String val2="";
-			a= oldBib.getAuthor();
-			for(PersonName pn:a){
-				val2+=(present(pn.getFirstName())? pn.getFirstName() : "")+
-					(present(pn.getLastName())? ", "+pn.getLastName() : "")+"; ";
-			}
-			
-			tmp = compareString(val1,val2);
-			DiffArray.put("author",tmp);
-		}
-		/*Nasim's comment:
+		
+		/*Important comment:
 		 * Since there is no input check while creating a post, some "required" fields
 		 * might remain empty. So we have to check for the emptiness(null) here. When an 
 		 * input check is added to post creating procedure, the following check can be removed.
 		 * **/
+
+		if(newBib.getAuthor()!=null || oldBib.getAuthor()!=null){
+			String val1="";
+			String val2="";
+			
+			List<PersonName> a; 
+			List<PersonName> b;
+			
+			if(newBib.getAuthor()==null){
+				val1="";
+				
+				a= oldBib.getAuthor();
+				
+				for(PersonName pn:a){
+					val2+=(present(pn.getFirstName())? pn.getFirstName() : "")+
+						(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
+				}
+
+				tmp = compareString(val1,val2);
+				DiffArray.put("author",tmp);
+
+			} else if(oldBib.getAuthor()==null){
+				val2 = "";
+				
+				a= newBib.getAuthor();
+				
+				for(PersonName pn:a){
+					val1+=(present(pn.getFirstName())? pn.getFirstName() : "")+
+							(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
+				}
+				
+				tmp = compareString(val1,val2);
+				DiffArray.put("author",tmp);
+
+			} else{
+			
+				a = newBib.getAuthor();
+				Set<PersonName> aa = new HashSet<>(a);
+				for(PersonName pn:aa){
+					val1+=(present(pn.getFirstName())? pn.getFirstName() : "")+
+							(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
+				}
+	
+				b= oldBib.getAuthor();
+				Set<PersonName> bb = new HashSet<>(b);
+				for(PersonName pn:bb){
+					val2+=(present(pn.getFirstName())? pn.getFirstName() : "")+
+						(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
+				}
+			
+				if (!aa.equals(bb)){
+					tmp = compareString(val1,val2);
+					DiffArray.put("author",tmp);
+				}
+			}
+		}
+
+		
+		
 		if(newBib.getEditor()!=null || oldBib.getEditor()!=null){
 			String val1="";
 			String val2="";
 			List<PersonName> a;
-			
+			List<PersonName> b;
+
 			if(newBib.getEditor()==null){
 				val1="";
 				
@@ -477,6 +517,9 @@ public class Functions {
 					val2+=(present(pn.getFirstName())? pn.getFirstName() : "")+
 						(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
 				}
+				tmp = compareString(val1,val2);
+				DiffArray.put("editor",tmp);
+
 			} else if(oldBib.getEditor()==null){
 				val2 = "";
 				
@@ -485,23 +528,29 @@ public class Functions {
 					val1+=(present(pn.getFirstName())? pn.getFirstName() : "")+
 							(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
 				}
+				tmp = compareString(val1,val2);
+				DiffArray.put("editor",tmp);
+
 			} else{
 			
 				a = newBib.getEditor();
-				for(PersonName pn:a){
+				Set<PersonName> aa = new HashSet<>(a);
+				for(PersonName pn:aa){
 					val1+=(present(pn.getFirstName())? pn.getFirstName() : "")+
 							(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
 				}
 	
 				a= oldBib.getEditor();
-				for(PersonName pn:a){
+				Set<PersonName> bb = new HashSet<>(a);
+				for(PersonName pn:bb){
 					val2+=(present(pn.getFirstName())? pn.getFirstName() : "")+
 						(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
 				}
-			}
-			if (!cleanBibtex(val1).equals(cleanBibtex(val2))){
-				tmp = compareString(val1,val2);
-				DiffArray.put("editor",tmp);
+			
+				if (!aa.equals(bb)){
+					tmp = compareString(val1,val2);
+					DiffArray.put("editor",tmp);
+				}
 			}
 		}
 		
@@ -605,7 +654,7 @@ public class Functions {
 			tmp = compareString(newBib.getNote(),oldBib.getNote());
 			DiffArray.put("note",tmp);
 		}
-		if (!cleanBibtex(toTagString(newPost.getTags())).equals(cleanBibtex(toTagString(oldPost.getTags())))){
+		if (!newPost.getTags().equals(oldPost.getTags())){
 			tmp = compareString(toTagString(newPost.getTags()),toTagString(oldPost.getTags()));
 			DiffArray.put("tags",tmp);
 		}
@@ -631,19 +680,25 @@ public class Functions {
 			case "title":
 				val = Bib.getTitle();
 				break;
-			case "author":
-				List<PersonName> a= Bib.getAuthor();
-				for(PersonName pn:a){
-					val+=(present(pn.getFirstName())? pn.getFirstName() : "")+
-						(present(pn.getLastName())? ", "+pn.getLastName() : "")+"; ";
-				}
-				break;
-			case "editor":
-				/*Nasim's comment:
+				
+				/*Important comment:
 				 * Since there is no input check while creating a post, some "required" fields
 				 * might remain empty. So we have to check for the emptiness(null) here. When an 
 				 * input check is added to post creating procedure, the following check can be removed.
 				 * **/
+			case "author":
+				List<PersonName> a= Bib.getAuthor();
+				if(Bib.getAuthor()!=null){
+					a= Bib.getAuthor();
+					for(PersonName pn:a){
+						val+=(present(pn.getFirstName())? pn.getFirstName() : "")+
+							(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
+					}
+				}
+				
+				break;
+			case "editor":
+				
 				if(Bib.getEditor()!=null){
 					a= Bib.getEditor();
 					for(PersonName pn:a){
@@ -762,7 +817,7 @@ public class Functions {
 			DiffArray.put("description",tmp);
 		}
 	
-		if (!cleanBibtex(toTagString(newBmPost.getTags())).equals(cleanBibtex(toTagString(oldBmPost.getTags())))){
+		if (!newBmPost.getTags().equals(oldBmPost.getTags())){
 			tmp = compareString(toTagString(newBmPost.getTags()),toTagString(oldBmPost.getTags()));
 			DiffArray.put("tags",tmp);
 		}
@@ -816,11 +871,32 @@ public class Functions {
         dmp.diff_cleanupSemantic(d);
         
         //applies appropriate colors to the result. (red, green)
-        return dmp.diff_prettyHtml(d);
+        return customized_diff_prettyHtml(d);
     
 	}
 	
-	
+	public static String customized_diff_prettyHtml(LinkedList<Diff> diffs) {
+	    StringBuilder html = new StringBuilder();
+	    for (Diff aDiff : diffs) {
+	      String text = aDiff.text.replace("&", "&amp;").replace("<", "&lt;")
+	          .replace(">", "&gt;").replace("\n", "&para;<br>");
+	      switch (aDiff.operation) {
+	      case INSERT:
+		        html.append("<span style=\"background:#e6ffe6;\">").append(text)
+		            .append("</span>");
+		        break;
+	      case DELETE:
+	        html.append("<del style=\"background:#ffe6e6;\">").append(text)
+	            .append("</del>");
+	        break;
+	      case EQUAL:
+	        html.append("<span>").append(text).append("</span>");
+	        break;
+	      }
+	    }
+	    return html.toString();
+	  }
+
 	/**
 	 * Compares two strings word-based. (Maybe usefull in future!)
 	 * @param newValue and oldValue

@@ -3,10 +3,12 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
+	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
 	xmlns:bm="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bookmark"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
 	xmlns:bibgs="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
+	
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 <jsp:directive.attribute name="listView"
@@ -53,58 +55,20 @@
 					| complete Post
 					+-->
 			
-		<div class="panel panel-primary">
-		
-			<div class="panel-heading">		
-				<h4 class="panel-title"> <!-- post's title -->			
-					<c:choose>
-						<!-- if we are dealing with a publication -->
-						<c:when test="${isPub}">
-							<c:choose>
-								<!-- if it is a community post -->
-								<c:when test="${empty newestPost.user.name}">
-									<c:set var="isCommunityPost" value="true" />
-									<bibgs:title post="${newestPost}"/>
-								</c:when>
-								<c:otherwise>
-									<c:set var="isCommunityPost" value="false" />
-									<bib:title post="${newestPost}" />
-								</c:otherwise>
-							</c:choose>
-						</c:when>
-						<!-- if we are dealing with a bookmark -->
-						<c:otherwise>
-							<c:choose>
-								<!-- if it is a community post -->
-								<c:when test="${empty newestPost.user.name}">
-									<c:set var="isCommunityPost" value="true" />
-									<!-- currently there is no specific method for gsBookmark title -->
-									<bm:title post="${newestPost}"/>
-								</c:when>
-								<c:otherwise>
-								<c:set var="isCommunityPost" value="false" />
-									<bm:title post="${newestPost}"/>
-								</c:otherwise>
-							</c:choose>
-						</c:otherwise>
-					</c:choose>
-				</h4>
+			<div class="title">
+				<pub:title post="${newestPost}">
+					<jsp:attribute name="bibActionButtons">
+						<div class="pull-right">
+							<bib:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/>
+						</div>
+					</jsp:attribute>
+				</pub:title>
 			</div>
-		
-				
-			<div class="panel-body"> <!-- post's description -->
-  				<c:choose>
-					<c:when test="${isPub}">
-						<bib:fullDescription publication="${newestPost.resource}"/>
-					</c:when>
-					<c:otherwise>
-						<bm:desc post="${newestPost}"/>
-					</c:otherwise>	
-				</c:choose>
-			</div>
-		</div>
-	
-		<c:choose>
+			<div style="border-top: 1px #cbcbcb solid; clear:left">
+				<span> </span>
+			</div> <!-- border -->					
+			
+			<c:choose>
 			<c:when test="${fn:length(listView.list) gt 1}">
 				<!--+
 				| history list
@@ -189,7 +153,7 @@
 								
 								<!-- restore button -->
 								<td class="col-sm-1">					
-									<a id="restoreBtnDisabled" class="${buttonClasses}" style="vertical-align:bottom;padding:4px;" 
+									<a id="restoreBtnDisabled" class="${buttonClasses} invisible" style="vertical-align:bottom;padding:4px;" 
 										title="${restoreBtnDisabledMsg}" disabled="disabled">
 										restore
 									</a>
@@ -206,21 +170,27 @@
 							<tr>
 								<!-- comparison to the previous version -->
 								
-								<td colspan="4" id="postDiffPre" class="postDiffPre">		
-									<c:if test="${index eq fieldlength }">
-										<div class="alert alert-info" style="margin-bottom:0px;" role="alert">
-											<fmt:message key="history.firstVersion" />
-										</div>										
-									</c:if>
+								<td colspan="4" id="postDiffPre" class="postDiffPre">	
+									<c:choose>	
+										<c:when test="${index eq fieldlength }">
+											<div class="alert alert-info" style="margin-bottom:0px;" role="alert">
+												<fmt:message key="history.firstVersion" />
+											</div>										
+										</c:when>
+										<c:when test="${fn:length(diffArrayPre) eq 0}">
+											<!-- we are dealing with a post which is identical to the previous version -->
+											<div id = "preVer" class="alert alert-info " style="margin-bottom:0px;" role="alert">
+												<fmt:message key="history.identicalToPreVersion" />
+											</div>
+										</c:when>	
+									</c:choose>								
 									<c:forEach var="diffEntry" items="${diffArrayPre}">
 										<div class="checkbox">
-	    									<label>
-	      										<input type="checkbox" class="invisible"/> 
-	      										<strong>${diffEntry.key}</strong>
-												<c:out value=": "/>
-												${diffEntry.value}
-												<br/>
-	    									</label>
+      										<input type="checkbox" class="invisible"/> 
+      										<strong>${diffEntry.key}</strong>
+											<c:out value=": "/>
+											${diffEntry.value}
+											<br/>
 	  									</div>
 									</c:forEach>
 									
@@ -235,13 +205,11 @@
 									</c:if>	
 									<c:forEach var="diffEntry" items="${diffArrayCurr}">
 										<div class="checkbox">
-	    									<label>
-	      										<input type="checkbox" id="CurrEntryCheckbox" class="invisible" checked="checked"/> 
-	      										<strong>${diffEntry.key}</strong>
-												<c:out value=": "/>
-												${diffEntry.value}
-												<br/>
-	    									</label>
+      										<input type="checkbox" id="CurrEntryCheckbox" class="invisible" checked="checked"/> 
+      										<strong>${diffEntry.key}</strong>
+											<c:out value=": "/>
+											${diffEntry.value}
+											<br/>
 	  									</div>
 								
 										<div>
