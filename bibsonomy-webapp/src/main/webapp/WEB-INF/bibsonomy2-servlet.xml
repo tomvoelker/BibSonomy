@@ -151,7 +151,6 @@
 		<property name="adminUserName" value="admin"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 		<property name="bibtexReader" ref="bibtexReader"/>
-		<property name="usersDefaultToClassify" value="${user.defaultToClassify}"></property>
 	</bean>
 
 	<!-- provides access to the database for all controllers -->
@@ -159,7 +158,6 @@
 		<property name="user" ref="loginUser"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 		<property name="bibtexReader" ref="bibtexReader"/>
-		<property name="usersDefaultToClassify" value="${user.defaultToClassify}"></property>
 	</bean>
 	<bean id="notLoggedInUserLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean">
 		<property name="user" ref="notLoggedInUser"/>

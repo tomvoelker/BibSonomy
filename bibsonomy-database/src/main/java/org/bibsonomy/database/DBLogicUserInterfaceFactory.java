@@ -46,8 +46,6 @@ public class DBLogicUserInterfaceFactory extends AbstractDBLogicInterfaceFactory
 
 	protected final UserDatabaseManager userDBManager = UserDatabaseManager.getInstance();
 	protected final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
-	
-	private Integer usersDefaultToClassify;
 
 	/*
 	 * (non-Javadoc)
@@ -60,9 +58,7 @@ public class DBLogicUserInterfaceFactory extends AbstractDBLogicInterfaceFactory
 		if (loginName != null) {
 			final User loggedInUser = getLoggedInUser(loginName, password);
 			if (loggedInUser.getName() != null) {
-				DBLogic dbLogic = new DBLogic(loggedInUser, this.getDbSessionFactory(), this.bibtexReader);
-				dbLogic.setUsersDefaultToClassify(usersDefaultToClassify);
-				return dbLogic;
+				return new DBLogic(loggedInUser, this.getDbSessionFactory(), this.bibtexReader);
 			}
 			throw new AccessDeniedException("Wrong Authentication ('" + loginName + "'/'" + password + "')");
 		}
@@ -101,19 +97,5 @@ public class DBLogicUserInterfaceFactory extends AbstractDBLogicInterfaceFactory
 	 */
 	protected User getLoggedInUserAccess(final String loginName, final String password, final DBSession session) {
 		return this.userDBManager.validateUserAccessByPassword(loginName, password, session);
-	}
-
-	/**
-	 * @return the usersDefaultToClassify
-	 */
-	public int getUsersDefaultToClassify() {
-		return this.usersDefaultToClassify;
-	}
-
-	/**
-	 * @param usersDefaultToClassify the usersDefaultToClassify to set
-	 */
-	public void setUsersDefaultToClassify(int usersDefaultToClassify) {
-		this.usersDefaultToClassify = usersDefaultToClassify;
 	}
 }
