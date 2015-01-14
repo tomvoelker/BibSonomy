@@ -11,6 +11,7 @@
 		  xmlns:users="urn:jsptagdir:/WEB-INF/tags/bstags/users"
 		  xmlns:spring="http://www.springframework.org/tags"
 		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+		  xmlns:group="urn:jsptagdir:/WEB-INF/tags/bstags/resources/group"
 		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true" />
@@ -67,27 +68,13 @@
 
 									<dl class="dl-horizontal dt-thumbnail-items group-list">
 										<dt>
-										<span class="sr-only">
-										<c:out value="${group.name}" />
-										</span>
-										<img class="img-thumbnail img-resposive user-avatar" src="${relativeUrlGenerator.getUserPictureUrlByUsername(group.name)}"/>
+											<group:groupthumbnail group="${group}" noname="${true}" size="16" />
 										</dt>
 
 										<dd>
 											<div class="row">
 												<div class="col-xs-9">
-													<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}">
-														<c:out value="${group.name}"/>
-													</a>
-													<c:if test="${not empty group.realname}">
-														(<c:out value="${group.realname}" />)
-													</c:if>
-													<br />
-
-													<c:if test="${not empty group.homepage}">
-														TODO: Check if this is possible!<br />
-														<small><a href="${mtl:encodeURI(group.homepage)}">Homepage</a></small>
-													</c:if>
+													<group:groupinfo group="${group}" />
 												</div>
 
 												<div class="col-xs-3">
@@ -109,14 +96,27 @@
 						<jsp:attribute name="content">
 							<fmt:message var="revuser" key="settings.group.remRequest.button"/>
 							<fmt:message var="revuserTitle" key="settings.group.remRequest.button.title"/>
+							<dl class="dl-horizontal dt-thumbnail-items group-list">
 							<c:forEach items="${command.user.pendingGroups}" var="group">
 								<c:if test="${group.getGroupMembershipForUser(loginUser).groupRole eq 'REQUESTED' }">
-									<div style="float: left; width: 130px; padding-bottom: 10px;">
-										<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"><c:out value='${group.name}'/></a><br />
-										<span class="smalltext">(<a href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}" title="${revuserTitle}">${revuser}</a>)</span>
-									</div>
+									<dt>
+										<group:groupthumbnail group="${group}" noname="${true}" size="16" />
+									</dt>
+
+									<dd>
+										<div class="row">
+											<div class="col-xs-9">
+												<group:groupinfo group="${group}" />
+											</div>
+
+											<div class="col-xs-3">
+												<a class="btn btn-default btn-block btn-sm" href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}" title="${revuserTitle}">${revuser}</a>
+											</div>
+										</div>
+									</dd>
 								</c:if>
 							</c:forEach>
+							</dl>
 						</jsp:attribute>
 					</bsform:fieldset>
 				</c:if>
@@ -140,21 +140,16 @@
 									<c:set var="groupMembership" value="${group.getGroupMembershipForUser(loginUser)}" />
 									<c:if test="${groupMembership.groupRole ne 'DUMMY'}">
 										<form:form cssClass="form-horizontal" class="groupShareSettings"  method="POST" action="/ajax/handleGroupShare">
-											<dt><span class="sr-only"><c:out value="${group.name}" /></span><img class="img-thumbnail img-resposive user-avatar" src="${relativeUrlGenerator.getUserPictureUrlByUsername(group.name)}"/></dt>
+											<dt>
+												<group:groupthumbnail group="${group}" noname="${true}" size="16"  />
+											</dt>
+											
 											<dd>
 												<div class="row">
 													<div class="col-xs-9">
-														<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}">
-															<c:out value="${group.name}"/>
-														</a>
-														<c:if test="${not empty group.realname}">
-															(<c:out value="${group.realname}" />)
-														</c:if>
-														<br />
-														<c:if test="${not empty group.homepage}">
-															<small><a href="${mtl:encodeURI(group.homepage)}">Homepage</a></small>
-														</c:if>
+														<group:groupinfo group="${group}" />
 													</div>
+													
 													<div class="col-xs-3">
 														<c:choose>
 															<c:when test="${group.sharedDocuments}">
