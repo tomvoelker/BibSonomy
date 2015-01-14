@@ -11,11 +11,11 @@
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 
-	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	
+	<jsp:directive.page contentType="text/html; charset=UTF-8"
+		language="java" pageEncoding="UTF-8" session="true" />
+
 	<!--Note: requPath: the rewrite rule sets the url without export as requPath so we add export here again-->
 	<layout:paneLayout headerMessageKey="export.header"
 		headerLogoClass="publications" command="${command}"
@@ -24,11 +24,11 @@
 		minimizedContentWidth="${true}">
 
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.export" />
+	      	<parts:search pathMessageKey="navi.export" />
 		</jsp:attribute>
 
 
-		<jsp:attribute name="headerExt">
+	  	<jsp:attribute name="headerExt">
 			<!-- start and setup the logic behind the export size radio buttons (setupPostExportSize in functions.js)-->
 			<script type="text/javascript">
 				<![CDATA[
@@ -48,84 +48,90 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">
-			<c:set var="pathAndQueryString" value="${requPath}${requQueryString}" />
-			<div>
-				<form class="form-horizontal" role="form"  method='POST'>
-					<div class="form-group" id="selectlink">
-						<label for="selectlink" class="col-sm-3 control-label"><fmt:message key="export.format" /></label>	
-						<export:formats />
+        <c:set var="pathAndQueryString"
+				value="${requPath}${requQueryString}" />
+        
+        <div>
+        
+        <form class="form-horizontal" role="form" >
+			
+			<div class="form-group" id="selectlink" onchange="generateExportPostLink(this.value)" size="1">
+				<label for="selectlink" class="col-sm-3 control-label"><fmt:message key="export.format" /></label>	
+	          	<export:formats />
+          	</div>
+        
+	        <div class="form-group" id="exportOptions" method='POST'>
+	        	<label for="exportOptions" class="col-sm-3 control-label"><fmt:message key="posts" /></label>	
+	        	<div class="col-sm-9">
+					<div class="radio">
+						<label class="radio-inline">
+			 				<input type="radio" name="items" id="inlineRadio1" value="5"/> 5
+						</label>
+						<label class="radio-inline">
+			 				<input type="radio" name="items" id="inlineRadio2" value="10"/> 10
+						</label>
+						<label class="radio-inline">
+			 				<input type="radio" name="items" id="inlineRadio3" value="20"/> 20
+						</label>
+						<label class="radio-inline">
+			 				<input type="radio" name="items" id="inlineRadio4" value="100" checked="checked"/> 100
+						</label>
+						<label class="radio-inline">
+			 				<input type="radio" name="items" id="inlineRadio5" value="1000"/> 1000
+						</label>
 					</div>
-				
-					<div class="form-group" id="exportOptions">
-						<label for="exportOptions" class="col-sm-3 control-label"><fmt:message key="posts" /></label>	
-						<div class="col-sm-9">
-							<div class="radio">
-								<label class="radio-inline">
-									<input type="radio" name="items" id="inlineRadio1" value="5"/> 5
-								</label>
-								<label class="radio-inline">
-									<input type="radio" name="items" id="inlineRadio2" value="10"/> 10
-								</label>
-								<label class="radio-inline">
-									<input type="radio" name="items" id="inlineRadio3" value="20"/> 20
-								</label>
-								<label class="radio-inline">
-									<input type="radio" name="items" id="inlineRadio4" value="100" checked="checked"/> 100
-								</label>
-								<label class="radio-inline">
-									<input type="radio" name="items" id="inlineRadio5" value="1000"/> 1000
-								</label>
-							</div>
-						</div>
-					</div>
-				</form>
-				<c:url var="currURL" value="/${pathAndQueryString}" />
-				<p>
+				</div>
+			</div>
+		</form>
+          
+          <c:url var="currURL" value="/${pathAndQueryString}" />
+          <p>
 					<fmt:message key="export.info">
 						<fmt:param>
 							<a href="${fn:escapeXml(currURL)}">${fn:escapeXml(currURL)}</a>
 						</fmt:param>
 					</fmt:message>
 				</p>
-			</div>
-			
-			<hr />
-		<spring:eval var="abstractJabRefLayoutClass" expression="T(java.lang.Class).forName('org.bibsonomy.layout.jabref.AbstractJabRefLayout')" />
-		
-		<table class="table table-striped" id="favoriteformats"
+        </div>
+        
+        <hr />  								
+  		
+  		<table class="table table-striped" id="favoriteformats"
 				style="font-size: 85%;">
-			<caption>
+  			<caption>
 					<h3>Favorite layouts</h3>
-			</caption> 
+  			</caption> 
 
 			<c:forEach var="mapEntry" items="${command.layoutMap}">
-				<c:if test="${mapEntry.value.publicLayout and mapEntry.value.isFavorite}">
+		    	<c:if test="${mapEntry.value.publicLayout and mapEntry.value.isFavorite}">			
 					<tr>
 						<c:choose>
-							<!-- 
-							| JabRef layouts
-							 -->
-							<c:when test="${abstractJabRefLayoutClass.isInstance(mapEntry.value)}">
-								<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />
+				  			<!-- 
+			  				| JabRef layouts
+			  				 -->
+							<c:when test="${'JabrefLayout' eq mapEntry.value['class'].simpleName 
+								or 'MSOfficeXMLLayout' eq mapEntry.value['class'].simpleName}">							
+								<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />	
 								<td>
-									<a class="btn btn-primary btn-sm export-link" href="${fn:escapeXml(url)}">
-										<span class="fa fa-download" />
-									</a>
+									<a class="btn btn-primary btn-sm export-link" href="${fn:escapeXml(url)}" > 
+		  								<span class="fa fa-download" />
+									</a>	
 								</td>
 								<td>
                   					<c:out value="${mapEntry.value.extension}" />
-		               			</td>
+		               			</td> 
+				    			         
 								<td>
 									<!-- JabRef layouts are marked by a star -->
 		                  			<b><c:out value="${mapEntry.value.displayName}" /></b> * <br />
 		 			  				<c:out value="${mapEntry.value.description[locale.language]}" />
-								</td>
+								</td>		
 							</c:when>
 							<!-- 
 			  				| Standard layouts
 			  				 -->
 							<c:otherwise>
-								<c:url var="url" value="/${mapEntry.value.name}/${pathAndQueryString}" />
+								<c:url var="url" value="/${mapEntry.value.name}/${pathAndQueryString}" />	
 								<td>
 									<a class="btn btn-primary btn-sm export-link" href="${url}">
 		  								<span class="fa fa-external-link" />
@@ -146,67 +152,67 @@
 				</c:if>
 			</c:forEach>
 		</table>
-		
-		<table class="table table-striped" id="formats"
+  		
+  		
+  		<table class="table table-striped" id="formats"
 				style="font-size: 85%;">
   			<caption>
 					<h3>Layouts</h3>
-  			</caption>
+  			</caption> 
   			
   			<!-- 
   				| Custom 
   				-->
   			
   			<!-- If the user has not defined a custom jabref layout 
-  			the custom row is colored red and the description gives appropriate feedback -->
-			<c:if test="${command.context.userLoggedIn}">
-				<c:choose>
-					<c:when test="/layout/custom/${pathAndQueryString}">
-						<tr>
-	
-			  				<c:url var="url" value="/layout/custom/${pathAndQueryString}" />
-							<td>
-								<a class="btn btn-default btn-sm export-link" href="${url}">
-			  						<span class="glyphicon glyphicon-download-alt" />	
-								</a>
-							</td>
-							<td>
-			                  	
-			               	</td> 
-							<td>
-								<b><a href="${fn:escapeXml(custom)}">Custom</a></b><br />
-								<fmt:message key="export.custom.faq" />
-							</td>  
-	  					</tr>
-	  				</c:when>
-	  				<c:otherwise>
-	  					<tr class="danger">
-							<td>
-								<a class="btn btn-default btn-sm" disabled="disabled">
-			  						<span class="glyphicon glyphicon-download-alt" />
-								</a>
-							</td>
-							<td>
-			                  	
-			               	</td>
-							<td>
-								<b>Custom</b><br />
-								<fmt:message key="export.custom.faq" />
-							</td>  
-	 					</tr>
-	 				</c:otherwise>
-	 			</c:choose>	
-			</c:if>
+  			the custom row is colored red and the description gives appropriate feedback -->	
+  			<c:set var="customLayout" value="${false}" />
+  			<c:forEach var="mapEntry" items="${command.layoutMap}" >
+				<c:if test="${'custom' eq mapEntry.value.displayName}">
+ 					<tr>
+	  				<c:url var="url" value="/layout/custom/${pathAndQueryString}" />
+						<td>
+							<a class="btn btn-default btn-sm export-link" href="${url}">
+		  						<span class="glyphicon glyphicon-download-alt" />	
+							</a>
+						</td>
+						<td>
+		                  	
+		               	</td> 
+						<td>
+							<b><c:out value="${mapEntry.value.displayName}" /></b> <br />
+							<fmt:message key="export.custom.faq" />
+						</td>  
+ 					</tr>
+ 					<c:set var="customLayout" value="${true}" />
+ 				</c:if>
+			</c:forEach>
+			<c:if test="${not customLayout}">
+				<tr class="danger">
+					<td>
+						<a class="btn btn-default btn-sm" disabled="disabled">
+	  						<span class="glyphicon glyphicon-download-alt" />
+						</a>
+					</td>
+					<td>
+	                  	
+	               	</td> 
+					<td>
+						Custom <br />
+						<fmt:message key="export.custom.faq" />
+					</td>  
+				</tr>
+		  	</c:if>
 
 			<c:forEach var="mapEntry" items="${command.layoutMap}">
-		    	<c:if test="${mapEntry.value.publicLayout and not mapEntry.value.isFavorite}">
+		    	<c:if test="${mapEntry.value.publicLayout and not mapEntry.value.isFavorite}">			
 					<tr>
 						<c:choose>
 				  			<!-- 
 			  				| JabRef layouts
 			  				 -->
 							<c:when test="${'JabrefLayout' eq mapEntry.value['class'].simpleName}">
-								<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />
+								<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />	
 								<td>
 									<a href="${url}" class="btn btn-primary btn-sm export-link">
 		  								<span class="fa fa-download" />
