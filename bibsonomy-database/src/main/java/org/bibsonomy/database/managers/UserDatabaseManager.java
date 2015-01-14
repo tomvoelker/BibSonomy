@@ -92,6 +92,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	private Chain<List<User>, UserParam> chain;
 	
 	private FileLogic fileLogic;
+	
+	//this should be set through ${user.defaultToClassify}, if not: 1
+	private Integer usersDefaultToClassify = 1;
 
 	private UserDatabaseManager() {
 		this.inboxDBManager = InboxDatabaseManager.getInstance();
@@ -406,7 +409,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		 * See also <48BC063F.5030307@cs.uni-kassel.de>.
 		 * 
 		 */
-		user.setToClassify(user.getToClassify() == null ? 1 : user.getToClassify());
+		user.setToClassify(user.getToClassify() == null ? usersDefaultToClassify : user.getToClassify());
 		/*
 		 * if it is not a limited user that is to be inserted, set user's default role
 		 */
@@ -1268,5 +1271,19 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void setFileLogic(final FileLogic fileLogic) {
 		this.fileLogic = fileLogic;
+	}
+
+	/**
+	 * @return the usersDefaultToClassify
+	 */
+	public Integer getUsersDefaultToClassify() {
+		return this.usersDefaultToClassify;
+	}
+
+	/**
+	 * @param usersDefaultToClassify the usersDefaultToClassify to set
+	 */
+	public void setUsersDefaultToClassify(Integer usersDefaultToClassify) {
+		this.usersDefaultToClassify = usersDefaultToClassify;
 	}
 }
