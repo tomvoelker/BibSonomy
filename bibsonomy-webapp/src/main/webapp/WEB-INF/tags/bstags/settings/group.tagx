@@ -84,8 +84,10 @@
 													</c:if>
 													<br />
 
+													<small><a href="/cv/group/${fn:escapeXml(group.name)}">CV</a></small> 
+
 													<c:if test="${not empty group.homepage}">
-														TODO: Check if this is possible!<br />
+														<!-- TODO: Check if this is possible!<br /> -->
 														<small><a href="${mtl:encodeURI(group.homepage)}">Homepage</a></small>
 													</c:if>
 												</div>
