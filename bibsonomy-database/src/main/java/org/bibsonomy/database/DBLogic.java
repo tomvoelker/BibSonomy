@@ -190,6 +190,8 @@ public class DBLogic implements LogicInterface {
 	
 	private final BibTexReader bibtexReader;
 	private final User loginUser;
+	
+	private Integer usersDefaultToClassify;
 
 	/**
 	 * Returns an implementation of the DBLogic.
@@ -1442,7 +1444,8 @@ public class DBLogic implements LogicInterface {
 		 */
 		this.ensureLoggedIn();
 		this.permissionDBManager.ensureAdminAccess(loginUser);
-
+		
+		user.setToClassify(usersDefaultToClassify);
 		return this.storeUser(user, false);
 	}
 
@@ -2889,5 +2892,19 @@ public class DBLogic implements LogicInterface {
 			// add public spam group to the groups of the loggedin users
 			this.loginUser.addGroup(new Group(GroupID.PUBLIC_SPAM));
 		}
+	}
+
+	/**
+	 * @return the usersDefaultToClassify
+	 */
+	public Integer getUsersDefaultToClassify() {
+		return this.usersDefaultToClassify;
+	}
+
+	/**
+	 * @param usersDefaultToClassify the usersDefaultToClassify to set
+	 */
+	public void setUsersDefaultToClassify(Integer usersDefaultToClassify) {
+		this.usersDefaultToClassify = usersDefaultToClassify;
 	}
 }
