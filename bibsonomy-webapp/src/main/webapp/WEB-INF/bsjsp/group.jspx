@@ -70,7 +70,7 @@
 				</c:if>
 				
 				<!-- group members -->
-				<rc:members requPath="${requPath}" users="${command.group.users}"/>
+				<rc:members group="${command.group}"/>
 				
 				<!-- link to discussed posts of the group -->
 				<li>
