@@ -788,13 +788,13 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public void addUserToGroupTest() {
 		final Group group = new Group("groupName");
 		final GroupMembership membership = new GroupMembership(new User("testUser1"), GroupRole.USER, false);
-		this.updateGroup(group, GroupUpdateOperation.ADD_NEW_USER, membership);
+		this.updateGroup(group, GroupUpdateOperation.ADD_MEMBER, membership);
 	}
 	
 	@Override
 	public String updateGroup(final Group group, final GroupUpdateOperation operation, GroupMembership membership) {
 		switch (operation) {
-		case ADD_NEW_USER:
+		case ADD_MEMBER:
 
 			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"), PropertyEqualityArgumentMatcher.eq(operation, ""), membership)).andReturn("OK");
 			EasyMock.replay(serverLogic);

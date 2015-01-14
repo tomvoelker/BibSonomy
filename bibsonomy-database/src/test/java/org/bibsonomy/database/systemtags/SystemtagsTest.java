@@ -64,7 +64,6 @@ import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -315,18 +314,14 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		// create users
 		final User testUser1 = this.createTestUser("forgroupuser1");
 		final User testUser2 = this.createTestUser("forgroupuser2");
-		final GroupMembership ms1 = new GroupMembership(testUser1, GroupRole.INVITED, true);
-		final GroupMembership ms2 = new GroupMembership(testUser2, GroupRole.REQUESTED, true);
 		
 		// create groups 
-		//this.createTestUser("forgroup1");
-		//this.createTestUser("forgroup2");
 		final Group testGroup1 = this.createTestGroup("forgroup1");
 		final Group testGroup2 = this.createTestGroup("forgroup2");
 		
-		groupDb.addPendingMembership(testGroup1.getName(), ms1, dbSession);
-		groupDb.addPendingMembership(testGroup1.getName(), ms2, dbSession);
-		groupDb.addPendingMembership(testGroup2.getName(), ms2, dbSession);
+		groupDb.addPendingMembership(testGroup1.getName(), testUser1, GroupRole.INVITED, dbSession);
+		groupDb.addPendingMembership(testGroup1.getName(), testUser2, GroupRole.REQUESTED, dbSession);
+		groupDb.addPendingMembership(testGroup2.getName(), testUser2, GroupRole.REQUESTED, dbSession);
 		
 		// add users to groups
 		groupDb.addUserToGroup("forgroup1", "forgroupuser1", GroupRole.USER, this.dbSession);

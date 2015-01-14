@@ -1,24 +1,40 @@
 package org.bibsonomy.common.enums;
 
+import java.util.Set;
+
+import org.bibsonomy.util.Sets;
+
 /**
  * Enum for the different group roles.
  * 
  * @author clemensbaier
  */
 public enum GroupRole {
+	
 	/** administrator */
 	ADMINISTRATOR(0),
+	
 	/** user */
 	USER(7),
+	
 	/** moderator */
 	MODERATOR(1),
+	
 	/** dummy */
 	DUMMY(2),
+	
 	/** user invited by an admin or moderator */
 	INVITED(3),
+	
 	/** request to join the group */
 	REQUESTED(4);
 
+	/** all pending group roles */
+	public static final Set<GroupRole> PENDING_GROUP_ROLES = Sets.asSet(GroupRole.INVITED, GroupRole.REQUESTED);
+	
+	/** all non pending group roles */
+	public static final Set<GroupRole> GROUP_ROLES = Sets.asSet(GroupRole.ADMINISTRATOR, GroupRole.MODERATOR, GroupRole.USER);
+	
 	private final int role;
 
 	private GroupRole(final int role) {

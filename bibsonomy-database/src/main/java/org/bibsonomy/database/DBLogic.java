@@ -1129,84 +1129,24 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 	
-	private boolean userIsInGroup(User user, Group group) {
-		for (GroupMembership ms : group.getMemberships()) {
-			if (ms.getUser().equals(user))
-				return true;
-		}
-		
-		return false;
-	}
-	
-	private boolean userIsPendingInGroup(User user, Group group) {
-		for (GroupMembership ms : group.getPendingMemberships()) {
-			if (ms.getUser().equals(user))
-				return true;
-		}
-		
-		return false;
-	}
-
-	/** 
-	 *
-	 * New users can be added to a group by using 
-	 * {@link GroupUpdateOperation#ADD_NEW_USER} and putting the new users only (!) 
-	 * into {@link Group#setUsers(List)}.
-	 *
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#updateGroup(org.bibsonomy.model.Group, org.bibsonomy.common.enums.GroupUpdateOperation, org.bibsonomy.model.GroupMembership)
 	 */
 	@Override
 	public String updateGroup(final Group paramGroup, final GroupUpdateOperation operation, GroupMembership membership) {
-		final Group group = this.getGroupDetails(paramGroup.getName());
-		if (!present(paramGroup)) {
+		final String groupName = paramGroup.getName();
+		if (!present(groupName)) {
 			throw new ValidationException("No group name given.");
 		}
+		
 		final DBSession session = this.openSession();
+		
 		/*
-		 * only logged-in group admins and admins are allowed to perform update operations 
+		 * for every operation the user must at least be logged in
 		 */
 		this.ensureLoggedIn();
 		
-		GroupRole loginUserRole = null;
-		boolean isPageAdmin = this.permissionDBManager.isAdmin(loginUser);
-		boolean loginUserisGroupAdmin = false;
-		//TODO: Use this somewhere!
-		boolean loginUserisGroupModerator = false;
-
-		if (present(group)) {
-			// We do not need a GroupRole for requesting access, in fact we don't even have one.
-			if (GroupUpdateOperation.ADD_REQUESTED.equals(operation)) {
-				loginUserRole = GroupRole.REQUESTED;
-			} else if (group.getGroupMembershipForUser(loginUser) != null) {
-				loginUserRole = group.getGroupMembershipForUser(loginUser).getGroupRole();
-			} else {
-				throw new RuntimeException("User is not a member of this group!");
-			}
-			loginUserisGroupAdmin = GroupRole.ADMINISTRATOR.equals(loginUserRole);
-			loginUserisGroupModerator = GroupRole.MODERATOR.equals(loginUserRole) || loginUserisGroupAdmin;
-			
-			// we want to allow a user to remove his own invite without being a pageadmin/admin/mod.
-			for(GroupMembership ms : group.getPendingMemberships()) {
-				if (loginUser.getName().equals(ms.getUser().getName())
-						&& GroupUpdateOperation.REMOVE_INVITED.equals(operation)) {
-						// in this case we set the moderator state to true
-						loginUserisGroupModerator = true;
-				}
-			}
-
-			// TODO: Add blacklisting users! (as a group role?!)
-			// Yes, maybe, why not as a group role :)
-			// TODO: WHAT APOUT SPAM??? Does this work?
-			if (
-					!(operation == GroupUpdateOperation.ADD_REQUESTED && !loginUser.getSpammer())
-					&&
-					!(operation == GroupUpdateOperation.ACCEPT_JOIN_REQUEST && !loginUser.getSpammer()
-						&& group.getGroupMembershipForUser(loginUser).getGroupRole().equals(GroupRole.INVITED))
-					&& !isPageAdmin && !loginUserisGroupAdmin && !loginUserisGroupModerator) {
-				session.close();
-				throw new ValidationException("No rights.");
-			}
-
-		}
 		/*
 		 * perform operations
 		 */
@@ -1215,105 +1155,67 @@ public class DBLogic implements LogicInterface {
 			case UPDATE_ALL:
 				throw new UnsupportedOperationException("The method " + GroupUpdateOperation.UPDATE_ALL + " is not yet implemented.");
 			case UPDATE_SETTINGS:
+				this.permissionDBManager.ensureIsAdminOrGroupAdminOrSelf(this.loginUser, groupName);
 				this.groupDBManager.updateGroupSettings(paramGroup, session);
 				break;
 			case UPDATE_GROUPROLE:
-				if (loginUserisGroupAdmin && this.userIsInGroup(membership.getUser(), group)) {
-					if (GroupRole.ADMINISTRATOR.equals(membership.getGroupRole()) || 
-						GroupRole.MODERATOR.equals(membership.getGroupRole()) || 
-						GroupRole.USER.equals(membership.getGroupRole())) {
-						
-						this.groupDBManager.updateGroupRole(group.getName(), membership.getUser().getName(), membership.getGroupRole(), session);
-					}
-				}
+				this.permissionDBManager.ensureIsAdminOrGroupModeratorOrSelf(this.loginUser, groupName);
+				this.groupDBManager.updateGroupRole(groupName, membership.getUser().getName(), membership.getGroupRole(), session);
 				break;
-			case ACCEPT_JOIN_REQUEST:
-				// maybe check for correct role?
-				if (this.userIsPendingInGroup(membership.getUser(), group)
-						&& !this.userIsInGroup(membership.getUser(), group)) {
-					this.groupDBManager.addUserToGroup(group.getName(), membership.getUser().getName(), GroupRole.USER, session);
+			case ADD_MEMBER:
+				final GroupMembership groupMembership = this.groupDBManager.getPendingMembershipForUserAndGroup(this.loginUser, groupName, session);
+				final boolean invitedUser = groupMembership != null && GroupRole.INVITED.equals(groupMembership.getGroupRole());
+				if (!this.permissionDBManager.isAdminOrGroupModeratorOrSelf(this.loginUser, groupName) && !invitedUser) {
+					throw new AccessDeniedException("You are not allowed to add users to a group");
 				}
+				this.groupDBManager.addUserToGroup(groupName, membership.getUser().getName(), GroupRole.USER, session);
 				break;
-			case ADD_NEW_USER:
-				if (loginUserisGroupAdmin || isPageAdmin) {
-					if (this.userIsPendingInGroup(membership.getUser(), group)) {
-						this.groupDBManager.addUserToGroup(group.getName(), membership.getUser().getName(), GroupRole.USER, session);
-					}
+			case REMOVE_MEMBER:
+				throw new UnsupportedOperationException("unsupported operation");
+				/*if (this.userIsInGroup(membership.getUser(), group)) {
+					this.groupDBManager.removeUserFromGroup(group.getName(), membership.getUser().getName(), session);
 				}
-				break;
-			case REMOVE_USER:
-				// FIXME: migrate settings handler before activation this method
-				log.error(loginUserisGroupModerator);
-				log.error(isPageAdmin);
-				log.error(loginUserRole);
-				if (loginUserisGroupModerator || isPageAdmin) {
-					if (this.userIsInGroup(membership.getUser(), group)) {
-						this.groupDBManager.removeUserFromGroup(group.getName(), membership.getUser().getName(), session);
-					}
-				}
-				break;
+				break;*/
 			case UPDATE_USER_SHARED_DOCUMENTS:
-				this.groupDBManager.updateUserSharedDocuments(group, membership, session);
+				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, membership.getUser().getName());
+				this.groupDBManager.updateUserSharedDocuments(groupName, membership, session);
 				break;
 			case UPDATE_GROUP_REPORTING_SETTINGS:
-				this.groupDBManager.updateGroupPublicationReportingSettings(group, session);
+				this.permissionDBManager.ensureIsAdminOrGroupAdminOrSelf(this.loginUser, groupName);
+				this.groupDBManager.updateGroupPublicationReportingSettings(paramGroup, session);
 				break;
 			case ACTIVATE:
-				if (isPageAdmin) {
-					this.groupDBManager.activateGroup(paramGroup.getName(), session);
-				}
+				this.permissionDBManager.ensureAdminAccess(this.loginUser);
+				this.groupDBManager.activateGroup(groupName, session);
 				break;
-			case DELETE:
-				if (isPageAdmin) {
-					this.groupDBManager.deletePendingGroup(paramGroup.getName(), session);
-				}
+			case DELETE: // TODO: use deleteGroup
+				this.permissionDBManager.ensureAdminAccess(this.loginUser);
+				this.groupDBManager.deletePendingGroup(groupName, session);
 				break;
-			// NOTE: This is the only case where we do not need a user to be a
-			// moderator or admin to perform a group join request!
 			case ADD_INVITED:
-				if (!this.userIsInGroup(membership.getUser(), group)) {
-					if (this.userIsPendingInGroup(membership.getUser(), group)) {
-						// If the user already requested access, just add him to the group
-						if (GroupRole.REQUESTED.equals(group.getGroupMembershipForUser(membership.getUser()).getGroupRole())) {
-							this.groupDBManager.addUserToGroup(group.getName(), membership.getUser().getName(), GroupRole.USER, session);
-						}
-					} else {
-						membership.setGroupRole(GroupRole.INVITED);
-						membership.setUserSharedDocuments(false);
-						this.groupDBManager.addPendingMembership(group.getName(), membership, session);
-					}
-				}
+				this.permissionDBManager.ensureIsAdminOrGroupModeratorOrSelf(this.loginUser, groupName);
+				this.groupDBManager.addPendingMembership(groupName, membership.getUser(), GroupRole.INVITED, session);
 				break;
 			case ADD_REQUESTED:
-				if (!this.userIsInGroup(membership.getUser(), group)) {
-					if (this.userIsPendingInGroup(membership.getUser(), group)) {
-						// If the user was already invited, just add him to the group
-						if (GroupRole.INVITED.equals(group.getGroupMembershipForUser(membership.getUser()).getGroupRole())) {
-							this.groupDBManager.addUserToGroup(group.getName(), membership.getUser().getName(), GroupRole.USER, session);
-						}
-					} else {
-						membership.setGroupRole(GroupRole.REQUESTED);
-						membership.setUserSharedDocuments(false);
-						this.groupDBManager.addPendingMembership(group.getName(), membership, session);
-					}
-				}
+				// TODO: check for banned users in this group
+				this.groupDBManager.addPendingMembership(groupName, membership.getUser(), GroupRole.REQUESTED, session);
 				break;
-			// FALLTHROUGH
 			case REMOVE_INVITED:
 			case DECLINE_JOIN_REQUEST:
-				if (!this.userIsInGroup(membership.getUser(), group)
-						&& this.userIsPendingInGroup(membership.getUser(), group)) {
-					this.groupDBManager.removePendingMembership(group.getName(), membership.getUser().getName(), session);
+				final GroupMembership currentMembership = this.groupDBManager.getPendingMembershipForUserAndGroup(this.loginUser, groupName, session);
+				final boolean requestedMembership = currentMembership != null && GroupRole.REQUESTED.equals(currentMembership.getGroupRole());
+				if (!this.permissionDBManager.isAdminOrGroupModeratorOrSelf(this.loginUser, groupName) && !requestedMembership) {
+					throw new AccessDeniedException("You are not allowed to remove invites or join requests of a group");
 				}
+				this.groupDBManager.removePendingMembership(groupName, membership.getUser().getName(), session);
 				break;
 			default:
 				throw new UnsupportedOperationException("The requested method is not yet implemented.");
 			}
-		} 
-		finally	{
+		} finally {
 			session.close();
 		}
-		return paramGroup.getName();
+		return groupName;
 	}
 	
 	/*

@@ -17,7 +17,6 @@ import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.GroupSettingsPageCommand;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -40,6 +39,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 	private static final Log log = LogFactory.getLog(UpdateGroupController.class);
 	
 	private Errors errors = null;
+	
 	private LogicInterface logic;
 	private RequestLogic requestLogic;
 	private MailUtils mailUtils;
@@ -71,9 +71,9 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 
 		Group groupToUpdate = null;
 		// since before requesting a group, it must not exist, we cannot check for it, either.
-		if (!GroupUpdateOperation.REQUEST.equals(command.getOperation()))
+		if (!GroupUpdateOperation.REQUEST.equals(command.getOperation())) {
 			 groupToUpdate = this.logic.getGroupDetails(command.getGroupname());
-
+		}
 		// TODO: Clean this up.
 		final GroupUpdateOperation operation = command.getOperation();
 		if (present(operation)) {
@@ -137,7 +137,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 					}
 					break;
 				}
-				case ADD_NEW_USER: {
+				case ADD_MEMBER: {
 					/*
 					 * add a new user to the group
 					 * this handles a join request by the user
@@ -146,7 +146,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 					if (present(username) && !username.equals(groupToUpdate.getName())) {
 						final GroupMembership ms = new GroupMembership(new User(username), null, false);
 						try {
-							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_NEW_USER, ms);
+							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_MEMBER, ms);
 						} catch (final Exception ex) {
 							log.error("error while adding user '" + username + "' to group '" + groupToUpdate + "'", ex);
 							// if a user can't be added to a group, this exception is thrown
@@ -156,7 +156,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 					}
 					break;
 				}
-				case REMOVE_USER: {
+				case REMOVE_MEMBER: {
 					/*
 					 * remove the user from the group
 					 *
@@ -166,7 +166,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 					if (present(username) && !username.equals(groupToUpdate)) {
 						final GroupMembership ms = new GroupMembership(new User(username), null, false);
 						try {
-							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.REMOVE_USER, ms);
+							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.REMOVE_MEMBER, ms);
 							log.error("trolol");
 							
 							// if we removed ourselves from the group, return the homepage.
@@ -231,7 +231,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 						// the group to update
 						final GroupMembership ms = new GroupMembership(new User(username), null, false);
 						try {
-							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ACCEPT_JOIN_REQUEST, ms);
+							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_MEMBER, ms);
 						} catch (final Exception ex) {
 							log.error("error while accepting the join request of user '" + username + "' from group '" + groupToUpdate + "'", ex);
 							this.errors.rejectValue("username", "settings.group.error.acceptJoinRequestFailed", new Object[]{username, groupToUpdate},
@@ -324,12 +324,14 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 		this.mailUtils = mailUtils;
 	}
 
+	@Override
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
 	
 	@Override
 	public boolean isValidationRequired(GroupSettingsPageCommand command) {
+		// FIXME: why?
 		return command.getContext().getLoginUser().isSpammer()
 				&& command.getContext().getLoginUser().getToClassify() == 0;
 	}

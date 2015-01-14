@@ -301,8 +301,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(3, group.getMemberships().size());
 		// add user
 		final String userToAdd = "testuser3";
-		GroupMembership ms = new GroupMembership(new User(userToAdd), GroupRole.INVITED, false);
-		groupDb.addPendingMembership(testGroup, ms, dbSession);
+		groupDb.addPendingMembership(testGroup, new User(userToAdd), GroupRole.INVITED, dbSession);
 		groupDb.addUserToGroup(testGroup, userToAdd, GroupRole.USER, this.dbSession);
 		group = groupDb.getGroupMembers(userToAdd, testGroup, this.dbSession);
 		assertEquals(3 + 1, group.getMemberships().size());
@@ -393,11 +392,10 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void updateUserSharedDocuments() {
-		final Group g1 = new Group(TESTGROUP1_ID);
 		final GroupMembership gm = new GroupMembership();
 		gm.setUserSharedDocuments(true);
 		gm.setUser(new User("testuser1"));
-		groupDb.updateUserSharedDocuments(g1, gm, this.dbSession);
+		groupDb.updateUserSharedDocuments("testgroup1", gm, this.dbSession);
 		
 		List<Group> groups = groupDb.getGroupsForUser("testuser1", this.dbSession);
 		Group group = null;

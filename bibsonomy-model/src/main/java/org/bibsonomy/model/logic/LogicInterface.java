@@ -322,7 +322,7 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * 
 	 * Depending on the {@link GroupUpdateOperation}, different actions are done:
 	 * <dl>
-	 * <dt>{@link GroupUpdateOperation#ADD_NEW_USER}</dt><dd>Adds an existing user to an existing group.</dd>
+	 * <dt>{@link GroupUpdateOperation#ADD_MEMBER}</dt><dd>Adds an existing user to an existing group.</dd>
 	 * <dt>{@link GroupUpdateOperation#UPDATE_SETTINGS}</dt><dd>Updates the settings of the group.</dd>
 	 * <dt>{@link GroupUpdateOperation#UPDATE_ALL}</dt><dd>Updates the complete group.</dd>
 	 * <dt>{@link GroupUpdateOperation#ACTIVATE}</dt><dd>Activates the group.</dd>
