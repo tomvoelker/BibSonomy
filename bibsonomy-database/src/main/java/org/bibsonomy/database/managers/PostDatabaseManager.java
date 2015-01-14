@@ -593,35 +593,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		return this.postList("get" + this.resourceClassName + "ByHashForUser", param, session);
 	}
-	
-	/**
-	 * get list of posts from resource searcher
-	 * 
-	 * @param userName
-	 * @param requestedUserName
-	 * @param requestedGroupName
-	 * @param requestedRelationName
-	 * @param allowedGroups
-	 * @param searchTerms
-	 * @param titleSearchTerms
-	 * @param authorSearchTerms
-	 * @param tagIndex
-	 * @param year
-	 * @param firstYear
-	 * @param lastYear
-	 * @param negatedTags 
-	 * @param order
-	 * @param limit
-	 * @param offset
-	 * @return a list of posts
-	 */
-	public List<Post<R>> getPostsByResourceSearch(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {
-		if (present(this.resourceSearch)) {
-			return this.resourceSearch.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
-		}
-		log.error("no resource searcher is set");
-		return new LinkedList<Post<R>>();
-	}
 
 	/**
 	 * get list of posts from resource searcher
@@ -1781,13 +1752,13 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 */
 	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey, final DBSession session) {
 		final PostParam param = new PostParam();
-		if(hashType.equals(HashID.INTER_HASH)) {
+		if (hashType.equals(HashID.INTER_HASH)) {
 			param.setInterHash(resourceHash);
 		} else {
 			param.setIntraHash(resourceHash);
 		}
 		param.setUserName(userName);
-		if(present(metaDataPluginKey)) {
+		if (present(metaDataPluginKey)) {
 			param.setKey(MetaDataPluginKey.valueOf(metaDataPluginKey));
 		}
 		return this.queryForList("getPostMetaData", param, PostMetaData.class, session);
