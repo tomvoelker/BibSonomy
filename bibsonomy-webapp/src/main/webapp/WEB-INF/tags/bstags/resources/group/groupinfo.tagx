@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Document   : groupinfo
+    Created on : 14.01.2015, 18:10:06
+    Author     : niebler
+-->
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+    <jsp:directive.tag pageEncoding="UTF-8"/>
+	<jsp:directive.attribute name="group" type="org.bibsonomy.model.Group" required="true" />
+	
+	<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}">
+		<c:out value="${group.name}"/>
+	</a>
+	<c:if test="${not empty group.realname}">
+		(<c:out value="${group.realname}" />)
+	</c:if>
+	<br />
+	<c:if test="${not empty group.homepage}">
+		<small><a href="${mtl:encodeURI(group.homepage)}">Homepage</a></small>
+	</c:if>
+	<!-- TODO: use url generator -->
+	<small><a href="/cv/group/${fn:escapeXml(group.name)}">CV</a></small>
+
+</jsp:root>

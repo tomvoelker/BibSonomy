@@ -60,7 +60,8 @@
 													<tr>
 														<td class="col-md-1"><user:thumbnail user="${member.user}" size="16" noname="${true}" /></td>
 														<td class="col-md-3"><user:username user="${member.user}" /></td>
-														<td class="col-md-8" style="text-align: right"><a href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${revuserTitle}" class="btn btn-danger btn-sm">${revuser}</a></td>
+														<td class="col-md-6"><c:out value=" " /></td>
+														<td class="col-md-2" style="text-align: right"><a href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${revuserTitle}"><span class="fa fa-times"><!-- Keep me --></span></a></td>
 													</tr>
 												</c:if>
 											</c:forEach>
@@ -83,7 +84,8 @@
 													<tr>
 														<td class="col-md-1"><user:thumbnail user="${member.user}" size="16" noname="${true}" /></td>
 														<td class="col-md-3"><user:username user="${member.user}" /></td>
-														<td class="col-md-8" style="text-align: right"><a class="btn btn-success" href="/updateGroup?operation=accept_join_request&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${accuserTitle}">${accuser}</a> <a class="btn btn-danger" href="/updateGroup?operation=decline_join_request&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${decuserTitle}">${decuser}</a></td>
+														<td class="col-md-6"><c:out value=" " /></td>
+														<td class="col-md-2" style="text-align: right"><a href="/updateGroup?operation=accept_join_request&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${accuserTitle}"><span class="fa fa-check"><!-- Keep me --></span></a> <a href="/updateGroup?operation=decline_join_request&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${decuserTitle}"><span class="fa fa-times"><!-- Keep me --></span></a></td>
 													</tr>
 												</c:if>
 											</c:forEach>
@@ -118,45 +120,48 @@
 														<td class="col-md-1"><user:thumbnail user="${member.user}" size="16" noname="${true}" /></td>
 														<td class="col-md-3"><user:username user="${member.user}" /></td>
 														<c:if test="${groupRole eq 'ADMINISTRATOR' or groupRole eq 'MODERATOR'}">
-														<td class="col-md-4">
-															<c:choose>
-																<c:when test="${isAdmin}">
-																	<span class="label label-primary">ADMINISTRATOR</span>
-																</c:when>
-																<c:otherwise>
-																	<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=ADMINISTRATOR&amp;ckey=${ckey}">
-																		<span class="label label-default">ADMINISTRATOR</span>
-																	</a>
-																</c:otherwise>
-															</c:choose>
-															<c:out value=" " />
-															<c:choose>
-																<c:when test="${isModerator}">
-																	<span class="label label-primary">MODERATOR</span>
-																</c:when>
-																<c:otherwise>
-																	<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=MODERATOR&amp;ckey=${ckey}">
-																		<span class="label label-default">MODERATOR</span>
-																	</a>
-																</c:otherwise>
-															</c:choose>
-															<c:out value=" " />
-															<c:choose>
-																<c:when test="${isUser}">
-																	<span class="label label-primary">USER</span>
-																</c:when>
-																<c:otherwise>
-																	<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=USER&amp;ckey=${ckey}">
-																		<span class="label label-default">USER</span>
-																	</a>
-																</c:otherwise>
-															</c:choose>
-														</td>
-														<td class="col-md-1 col-md-offset-1">
-															<a href="/updateGroup?operation=remove_user&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${deluserTitle}"><span class="fa fa-times"><!-- Keep me --></span><!-- keep me --></a>
-														</td>
+															<td class="col-md-6">
+																<c:choose>
+																	<c:when test="${isAdmin}">
+																		<span class="label label-primary">ADMINISTRATOR</span>
+																	</c:when>
+																	<c:otherwise>
+																		<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=ADMINISTRATOR&amp;ckey=${ckey}">
+																			<span class="label label-default">ADMINISTRATOR</span>
+																		</a>
+																	</c:otherwise>
+																</c:choose>
+																<c:out value=" " />
+																<c:choose>
+																	<c:when test="${isModerator}">
+																		<span class="label label-primary">MODERATOR</span>
+																	</c:when>
+																	<c:otherwise>
+																		<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=MODERATOR&amp;ckey=${ckey}">
+																			<span class="label label-default">MODERATOR</span>
+																		</a>
+																	</c:otherwise>
+																</c:choose>
+																<c:out value=" " />
+																<c:choose>
+																	<c:when test="${isUser}">
+																		<span class="label label-primary">USER</span>
+																	</c:when>
+																	<c:otherwise>
+																		<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=USER&amp;ckey=${ckey}">
+																			<span class="label label-default">USER</span>
+																		</a>
+																	</c:otherwise>
+																</c:choose>
+															</td>
+															<td class="col-md-2" style="text-align: right">
+																<a href="/updateGroup?operation=remove_user&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${deluserTitle}"><span class="fa fa-times"><!-- Keep me --></span><!-- keep me --></a>
+															</td>
 														</c:if>
-												</tr>
+														<c:if test="${groupRole eq 'USER'}">
+															<td class="col-md-8"><c:out value=" " /></td>
+														</c:if>
+													</tr>
 												</c:if>
 											</c:forEach>
 										</table>
