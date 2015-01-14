@@ -30,7 +30,7 @@
 			<script type="text/javascript" src="${resdir}/javascript/bs/settings.js"><!-- keep me --></script>
 		</jsp:attribute>
 
-		<jsp:attribute name="breadcrumbs">	
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<nav:groupcrumb requestedGroup="${group.name}" />

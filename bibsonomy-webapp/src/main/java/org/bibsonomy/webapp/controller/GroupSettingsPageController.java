@@ -1,9 +1,9 @@
 package org.bibsonomy.webapp.controller;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
@@ -18,6 +18,7 @@ import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
 
 /**
+ * TODO: add documentation
  *
  * @author niebler
  */
@@ -72,8 +73,8 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 		
 		switch (roleOfLoggedinUser) {
 		case ADMINISTRATOR:
-			command.addTab(GroupSettingsPageCommand.MY_PROFILE_IDX, "navi.myprofile");
-			command.addTab(GroupSettingsPageCommand.USERS_IDX, "navi.groupsettings");
+			command.addTab(GroupSettingsPageCommand.GROUP_SETTINGS, "navi.groupsettings");
+			command.setSelTab(Integer.valueOf(GroupSettingsPageCommand.GROUP_SETTINGS));
 			// TODO: adapt cv wiki handling
 			// command.addTab(CV_IDX, "navi.cvedit");
 			//$FALL-THROUGH$ admin should also be able to see all tabs
@@ -82,8 +83,11 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 			//$FALL-THROUGH$ all users should see the member list
 		default:
 			command.addTab(GroupSettingsPageCommand.MEMBER_LIST_IDX, "settings.group.memberList");
+			command.setSelTab(Integer.valueOf(GroupSettingsPageCommand.MEMBER_LIST_IDX));
 			break;
 		}
+		
+		
 		
 		return Views.GROUPSETTINGSPAGE;
 	}
