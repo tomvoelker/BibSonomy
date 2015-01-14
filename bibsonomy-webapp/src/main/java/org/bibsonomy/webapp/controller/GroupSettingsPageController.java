@@ -71,22 +71,22 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 		}
 		command.setUser(groupUser);
 		
+		// determine which tabs to show based on the role of the logged in user
 		switch (roleOfLoggedinUser) {
 		case ADMINISTRATOR:
 			command.addTab(GroupSettingsPageCommand.GROUP_SETTINGS, "navi.groupsettings");
-			command.setSelTab(Integer.valueOf(GroupSettingsPageCommand.GROUP_SETTINGS));
+			command.addTab(GroupSettingsPageCommand.MEMBER_LIST_IDX, "settings.group.memberList");
 			// TODO: adapt cv wiki handling
 			// command.addTab(CV_IDX, "navi.cvedit");
-			//$FALL-THROUGH$ admin should also be able to see all tabs
+			command.setSelTab(Integer.valueOf(GroupSettingsPageCommand.GROUP_SETTINGS));
+			break;
 		case MODERATOR:
-			
 			//$FALL-THROUGH$ all users should see the member list
 		default:
 			command.addTab(GroupSettingsPageCommand.MEMBER_LIST_IDX, "settings.group.memberList");
 			command.setSelTab(Integer.valueOf(GroupSettingsPageCommand.MEMBER_LIST_IDX));
 			break;
 		}
-		
 		
 		
 		return Views.GROUPSETTINGSPAGE;
