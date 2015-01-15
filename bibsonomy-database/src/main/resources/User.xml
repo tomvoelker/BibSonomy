@@ -182,9 +182,9 @@
 	</select>
 	
 	<update id="updateUserSharedDocuments" parameterClass="groupParam">
-		UPDATE group_memberships
+		UPDATE group_memberships JOIN groupids USING(`group`)
 		SET user_shared_documents = #membership.userSharedDocuments#
-		WHERE `group` = #groupId#
+		WHERE group_name = #requestedGroupName#
 		AND user_name = #membership.user.name#
 	</update>
 

@@ -31,12 +31,10 @@
 				<input type="hidden" name="groupname" value="${command.group.name}"/>
 				<input type="hidden" name="operation" value="update_settings" />
 
-				<bsform:fieldset legendKey="navi.myprofile">
+				<bsform:fieldset legendKey="navi.groupsettings">
 					<jsp:attribute name="content">
 						<p>
-							<fmt:message key="settings.profileInfo">
-								<fmt:param><a href="${foafUrl}"><c:out value="${foafUrl}" /></a></fmt:param>
-								<fmt:param><fmt:message key="settings.profileViewableFor"/></fmt:param>
+							<fmt:message key="settings.group.profileInfo">
 								<fmt:param value="${cvUrl}"/>
 							</fmt:message>
 						</p>

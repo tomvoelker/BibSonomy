@@ -16,10 +16,9 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 public class GroupSettingsPageCommand extends TabsCommand<Object> {
 
 	// tabs
-	public final static int MY_PROFILE_IDX = 0;
-	public final static int USERS_IDX = 1;
-	public final static int MEMBER_LIST_IDX = 2;
-	public final static int CV_IDX = 5;
+	public final static int GROUP_SETTINGS = 0;
+	public final static int MEMBER_LIST_IDX = 1;
+	public final static int CV_IDX = 2;
 
 	// general attributes
 	private Group group;

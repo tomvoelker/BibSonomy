@@ -74,7 +74,7 @@
 			</div>
 			
 			<!-- group members -->
-			<rc:members requPath="${requPath}" users="${command.group.users}"/>
+			<rc:members group="${command.group}"/>
 			
 			<!-- related tags -->
 			<li>

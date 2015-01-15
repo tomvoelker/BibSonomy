@@ -322,7 +322,7 @@ public class RestLogic implements LogicInterface {
 	// TODO: Establish new group concept in here.
 	public String updateGroup(final Group group, final GroupUpdateOperation operation, GroupMembership ms) {
 		switch (operation) {
-			case ADD_NEW_USER:
+			case ADD_MEMBER:
 				return execute(new AddUsersToGroupQuery(group.getName(), group.getUsers()));
 			default:
 				return execute(new ChangeGroupQuery(group.getName(), group));

@@ -133,8 +133,8 @@
 	</delete>
 
 	<insert id="addUserToGroup" parameterClass="groupParam">
-		INSERT INTO group_memberships (user_name, `group`, defaultgroup, `group_role`)
-		VALUES (#membership.user.name#, #groupId#, #groupId#, #membership.groupRole.role#)
+		INSERT INTO group_memberships (user_name, `group`, defaultgroup, group_role, user_shared_documents)
+		VALUES (#membership.user.name#, #groupId#, #groupId#, #membership.groupRole#, #membership.userSharedDocuments#)
 	</insert>
 
 	<delete id="removeUserFromGroup" parameterClass="groupParam">
@@ -180,7 +180,14 @@
 		WHERE ms.user_name = #userName# AND ms.`group` = #groupId#;
 	</select>
 	
-<!-- PENDING MEMBERSHIPS -->	
+	<!-- PENDING MEMBERSHIPS -->
+	<select id="getPendingMembershipForUserInGroup" resultMap="GroupCommon.groupMembership" parameterClass="groupParam">
+		SELECT ms.group_role, ms.user_name, ms.user_shared_documents
+		FROM pending_group_memberships ms
+		  JOIN groupids g USING (`group`)
+		WHERE ms.user_name = #userName# AND g.group_name = #requestedGroupName#;
+	</select>
+	
 	<insert id="addPendingMembership" parameterClass="groupParam">
 		INSERT INTO pending_group_memberships (user_name, `group`, defaultgroup, `group_role`)
 		VALUES (#membership.user.name#, #groupId#, #groupId#, #membership.groupRole.role#)

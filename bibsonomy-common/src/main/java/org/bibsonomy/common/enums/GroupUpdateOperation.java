@@ -39,10 +39,10 @@ public enum GroupUpdateOperation {
 	UPDATE_GROUPROLE,
 	
 	/** Adds new user to a group. */
-	ADD_NEW_USER,
+	ADD_MEMBER,
 	
 	/** Removes a user from the group. */
-	REMOVE_USER,
+	REMOVE_MEMBER,
 	
 	/** Update the whole group */
 	UPDATE_ALL,
@@ -55,7 +55,9 @@ public enum GroupUpdateOperation {
 	
 	/** Activate the pending group */
 	ACTIVATE,
+	
 	/** deletes the pending group **/
+	@Deprecated
 	DELETE,
 	
 	/** Adds a join request */
@@ -67,11 +69,9 @@ public enum GroupUpdateOperation {
 	/** Remove an invited user */
 	REMOVE_INVITED,
 	
-	/** Request a new group. */
+	// FIXME: no group update operation
+	/** Request a new group.*/
 	REQUEST,
-	
-	/** Accept a join request */
-	ACCEPT_JOIN_REQUEST,
 	
 	/** Decline a join request */
 	DECLINE_JOIN_REQUEST;

@@ -223,6 +223,19 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		
 		return this.queryForObject("getGroupMembershipForUserInGroup", param, GroupMembership.class, session);
 	}
+	
+	/**
+	 * @param user
+	 * @param groupName
+	 * @param session
+	 * @return
+	 */
+	public GroupMembership getPendingMembershipForUserAndGroup(User user, String groupName, DBSession session) {
+		final GroupParam param = new GroupParam();
+		param.setUserName(user.getName());
+		param.setRequestedGroupName(groupName);
+		return this.queryForObject("getPendingMembershipForUserInGroup", param, GroupMembership.class, session);
+	}
 
 	/**
 	 * Returns true if there's only one admin for the group.
@@ -644,42 +657,42 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @param session 
 	 */
 	public void addUserToGroup(final String groupname, final String username, final GroupRole role, final DBSession session) {
-		// check if a user exists with that name
-		final User user = this.userDb.getUserDetails(username, session);
-		if (user.getName() == null) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There's no user with this name ('" + username + "')");
-		}
-		if (user.isSpammer()) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "The user '" + username + "' is a spammer");
-		}
-		
-		// make sure that the group exists
-		final Group group = this.getGroupByName(groupname, session);
-		if (group == null) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't add user to nonexistent group");
-			throw new RuntimeException(); // never happens but calms down eclipse 
-		}
-		// make sure that the user isn't a member of the group
-		if (this.isUserInGroup(username, group.getName(), session)) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') is already a member of this group ('" + groupname + "')");
-		}
-		
-		// we only need to check for pending GMS, if we add a users AFTER finishing group creation
-		if (GroupRole.USER.equals(role)) {
-			// TODO: why not just call remove pending membership?
-			for (final GroupMembership membership : this.getGroupWithPendingMemberships(groupname, session).getMemberships()) {
-				if (membership.getUser().equals(user)) {
-					this.removePendingMembership(groupname, username, session);
-					break;
-				}
+		try {
+			session.beginTransaction();
+			// check if a user exists with that name
+			final User user = this.userDb.getUserDetails(username, session);
+			if (user.getName() == null) {
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There's no user with this name ('" + username + "')");
 			}
+			if (user.isSpammer()) {
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "The user '" + username + "' is a spammer");
+			}
+			
+			// make sure that the group exists
+			final Group group = this.getGroupByName(groupname, session);
+			if (group == null) {
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't add user to nonexistent group");
+				throw new RuntimeException(); // never happens but calms down eclipse 
+			}
+			// make sure that the user isn't a member of the group
+			if (this.isUserInGroup(username, group.getName(), session)) {
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') is already a member of this group ('" + groupname + "')");
+			}
+			
+			// maybe there is a pending membership -> delete it
+			this.removePendingMembership(groupname, username, session);
+			
+			// add user to group
+			final GroupParam param = new GroupParam();
+			param.setGroupId(group.getGroupId());
+			// TODO: must be changed if we allow users to specify shared documents in the join request
+			param.setMembership(new GroupMembership(user, role, false));
+			
+			this.insert("addUserToGroup", param, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
 		}
-		
-		final GroupParam param = new GroupParam();
-		param.setGroupId(group.getGroupId());
-		param.setMembership(new GroupMembership(user, role, true));
-		
-		this.insert("addUserToGroup", param, session);
 	}
 
 	/**
@@ -746,6 +759,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') isn't a member of this group ('" + groupname + "')");
 		}
 		
+		if (!GroupRole.GROUP_ROLES.contains(role)) {
+			throw new IllegalArgumentException("group role '" + role + "' not supported");
+		}
+		
 		// check the old user role
 		final GroupMembership oldMembership = this.getGroupMembershipForUser(username, group, session);
 		final GroupRole oldRole = oldMembership.getGroupRole();
@@ -789,7 +806,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		
 		this.delete("removePendingMembership", param, session);
 	}
-
+	
 	public List<Group> getPendingMembershipsForUser(final String username, final DBSession session) {
 		return this.queryForList("getPendingMembershipsForUser", username, Group.class, session);
 	}
@@ -798,18 +815,48 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForObject("getPendingMembershipsForGroup", groupname, Group.class, session);
 	}
 	
-	public void addPendingMembership(final String groupname, final GroupMembership membership, final DBSession session) {
+	public void addPendingMembership(final String groupname, final User user, final GroupRole pendingGroupRole, final DBSession session) {
 		final Group group = this.getGroupByName(groupname, session);
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't remove join request/invite from nonexistent group");
 			throw new RuntimeException();
 		}
 		
-		final GroupParam param = new GroupParam();
-		param.setMembership(membership);
-		param.setGroupId(group.getGroupId());
-		
-		this.insert("addPendingMembership", param, session);
+		try {
+			session.beginTransaction();
+			final GroupMembership pendingMembership = this.getPendingMembershipForUserAndGroup(user, groupname, session);
+			
+			if (!present(pendingMembership)) {
+				final GroupMembership membership = new GroupMembership();
+				membership.setUser(user);
+				membership.setGroupRole(pendingGroupRole);
+				
+				final GroupParam param = new GroupParam();
+				param.setMembership(membership);
+				param.setGroupId(group.getGroupId());
+				
+				this.insert("addPendingMembership", param, session);
+			} else {
+				final String username = user.getName();
+				switch (pendingMembership.getGroupRole()) {
+				case INVITED:
+					if (GroupRole.REQUESTED.equals(pendingGroupRole)) {
+						this.addUserToGroup(groupname, username, GroupRole.USER, session);
+					}
+					break;
+				case REQUESTED:
+					if (GroupRole.INVITED.equals(pendingGroupRole)) {
+						this.addUserToGroup(groupname, username, GroupRole.USER, session);
+					}
+					break;
+				default:
+					break;
+				}
+			}
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
 	}
 	
 	/**
@@ -820,11 +867,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void updateGroupSettings(Group groupToUpdate, final DBSession session) {
-		if(!present(groupToUpdate)) {
+		if (!present(groupToUpdate)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "During updateGroupSettings: The parameter groupToUpdate was null. (required argument)");
 		}
 
-		if (! (present(groupToUpdate.getGroupId()) && present(groupToUpdate.getPrivlevel()) && present(groupToUpdate.isSharedDocuments())) )  {
+		if (!(present(groupToUpdate.getGroupId()) && present(groupToUpdate.getPrivlevel()) && present(groupToUpdate.isSharedDocuments())) )  {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "During updateGroupSettings: Incomplete group information: group ID, privlevel and shared documents are required.");
 		}
 		/*
@@ -836,14 +883,14 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * updates the user shared documents field for the given user.
 	 * 
-	 * @param group
+	 * @param groupName
 	 * @param membership 
 	 * @param session
 	 */
-	public void updateUserSharedDocuments(final Group group, GroupMembership membership, final DBSession session) {
+	public void updateUserSharedDocuments(final String groupName, GroupMembership membership, final DBSession session) {
 		final GroupParam p = new GroupParam();
 		p.setMembership(membership);
-		p.setGroupId(group.getGroupId());
+		p.setRequestedGroupName(groupName);
 		this.update("updateUserSharedDocuments", p, session);
 	}
 	

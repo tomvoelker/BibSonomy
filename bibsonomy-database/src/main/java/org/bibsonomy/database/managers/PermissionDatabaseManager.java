@@ -412,6 +412,19 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	public boolean isAdminOrGroupModeratorOrSelf(final User loginUser, final String userName) {
 		return isAdminOrGroupAdminOrSelf(loginUser, userName) || isGroupModerator(loginUser, userName);
 	}
+	
+	/**
+	 * @param loginUser
+	 * @param groupName
+	 * @return <code>true</code> if the loggedin user is admin, moderator or normal member of the group
+	 */
+	public boolean isGroupMember(User loginUser, String groupName) {
+		return isGroupAdmin(loginUser, groupName) || isGroupModerator(loginUser, groupName) || isGroupUser(loginUser, groupName);
+	}
+	
+	private boolean isGroupUser(User loginUser, String groupName) {
+		return this.userHasGroupRole(loginUser, groupName, GroupRole.USER);
+	}
 
 	/**
 	 * @param loginUser
@@ -460,6 +473,16 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void ensureIsAdminOrGroupAdminOrSelf(User loginUser, String username) {
 		if (!this.isAdminOrGroupAdminOrSelf(loginUser, username)) {
+			throw new AccessDeniedException();
+		}
+	}
+	
+	/**
+	 * @param loginUser
+	 * @param username
+	 */
+	public void ensureIsAdminOrGroupModeratorOrSelf(User loginUser, String username) {
+		if (!this.isAdminOrGroupModeratorOrSelf(loginUser, username)) {
 			throw new AccessDeniedException();
 		}
 	}
