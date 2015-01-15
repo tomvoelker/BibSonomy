@@ -88,11 +88,13 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Returns a specific group with memberships
+	 * DEPRECATED: Use getGroupMembers instead
 	 * 
 	 * @param groupname 
 	 * @param session 
 	 * @return Returns a {@link Group} object if the group exists otherwise null.
 	 */
+	@Deprecated
 	public Group getGroupByName(final String groupname, final DBSession session) {
 		if (!present(groupname)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Groupname isn't present");
@@ -171,25 +173,22 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		}
 
 		group = this.queryForObject("getGroupWithMemberships", groupname, Group.class, session);
-		// the group has no members.
+		// the group has no members. At least the dummy user should exist.
 		if (group == null) {
-			// check if the group exists
-			if (!present(this.getGroupByName(groupname, session))) {
-				log.debug("group " + groupname + " does not exist");
-				group = GroupUtils.buildInvalidGroup();
-				group.setMemberships(Collections.<GroupMembership> emptyList());
-				return group;
-			}
+			log.debug("group " + groupname + " does not exist");
+			group = GroupUtils.buildInvalidGroup();
+			group.setMemberships(Collections.<GroupMembership> emptyList());
+			return group;
 		}
 		
-		final int groupId = this.getGroupByName(groupname, session).getGroupId();
+		final int groupId = group.getGroupId();
 		final Privlevel privlevel = this.getPrivlevelForGroup(groupId, session);
 		// remove members as necessary
 		switch (privlevel) {
 		case MEMBERS:
 			// if the user isn't a member of the group he can't see other
 			// members -> and we'll fall through to HIDDEN
-			if (this.isUserInGroup(authUser, groupname, session)) break;
+			if (this.isUserInGroup(authUser, group)) break;
 			//$FALL-THROUGH$
 		case HIDDEN:
 			// only a group admin may always see the group members
@@ -251,11 +250,9 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Returns true if the user is in the group otherwise false.
 	 */
-	private boolean isUserInGroup(final String username, final String groupname, final DBSession session) {
-		// TODO: just query for the membership
-		final List<Group> userGroups = this.getGroupsForUser(username, session);
-		for (final Group group : userGroups) {
-			if (groupname.equals(group.getName())) {
+	private boolean isUserInGroup(final String username, final Group group) {
+		for (final GroupMembership ms : group.getMemberships()) {
+			if (ms.getUser().getName().equals(username)) {
 				return true;
 			}
 		}
@@ -587,7 +584,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	private void deleteTagSet(final String setName, final String groupname, final DBSession session){
-		Group group = this.getGroupByName(groupname, session);
+		final Group group = this.getGroupByName(groupname, session);
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
 			throw new RuntimeException(); // never happens but calms down eclipse 
@@ -675,7 +672,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 				throw new RuntimeException(); // never happens but calms down eclipse 
 			}
 			// make sure that the user isn't a member of the group
-			if (this.isUserInGroup(username, group.getName(), session)) {
+			if (this.isUserInGroup(username, group)) {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') is already a member of this group ('" + groupname + "')");
 			}
 			
@@ -709,7 +706,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't remove user from nonexistent group");
 		}
 		// make sure that the user is a member of the group
-		if (!this.isUserInGroup(username, groupname, session)) {
+		if (!this.isUserInGroup(username, group)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') isn't a member of this group ('" + groupname + "')");
 		}
 		// check if we have only one group admin
@@ -755,7 +752,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't update the grouprole");
 		}
-		if (!this.isUserInGroup(username, groupname, session)) {
+		if (!this.isUserInGroup(username, group)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') isn't a member of this group ('" + groupname + "')");
 		}
 		

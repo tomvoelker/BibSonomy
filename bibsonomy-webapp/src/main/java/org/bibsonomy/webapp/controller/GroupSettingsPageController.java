@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupRole;
+import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
@@ -52,9 +53,23 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 		
 		command.setGroup(group);
 		
-		final GroupMembership groupMembership = group.getGroupMembershipForUser(loginUser);
-		if (!present(groupMembership)|| groupMembership.getGroupRole().isPendingRole()) {
-			throw new AccessDeniedException("You are not a member of this group.");
+		GroupMembership groupMembership = group.getGroupMembershipForUser(loginUser);
+		switch (group.getPrivlevel()) {
+			case HIDDEN:
+				if (!present(groupMembership) || present(groupMembership) && !groupMembership.getGroupRole().equals(GroupRole.ADMINISTRATOR)) {
+					throw new AccessDeniedException("You are not allowed to view this page");
+				}
+				break;
+			case MEMBERS:
+				if (!present(groupMembership)) {
+					throw new AccessDeniedException("You are not a member of this group.");
+				}
+				break;
+			default:
+				if (!present(groupMembership)) {
+					// set non-privileged user
+					groupMembership = new GroupMembership(loginUser, GroupRole.USER, true);
+				}
 		}
 		
 		final GroupRole roleOfLoggedinUser = groupMembership.getGroupRole();

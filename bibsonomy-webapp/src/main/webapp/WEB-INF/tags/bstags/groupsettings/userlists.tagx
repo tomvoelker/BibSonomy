@@ -101,7 +101,6 @@
 								<c:set var="groupHasMembers" value="${true}" />
 							</c:if>
 						</c:forEach>
-						<c:set var="groupHasMembers" value="${groupHasMembers and (privlevel ne 'HIDDEN' or groupRole eq 'ADMINISTRATOR')}" />
 						<bsform:fieldset legendKey="settings.group.memberList">
 							<jsp:attribute name="content">
 								<c:choose>
