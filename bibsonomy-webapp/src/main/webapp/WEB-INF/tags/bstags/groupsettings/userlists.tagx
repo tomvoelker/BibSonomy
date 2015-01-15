@@ -20,6 +20,7 @@
 	<div id="selTab1" class="tab-pane ${(command.selTab eq 1) ? 'active' : ''}">
 		<fieldset class="fsOuter">
 			<c:set var="groupRole" value="${command.groupMembership.groupRole}" />
+			<c:set var="privlevel" value="${group.privlevel}" />
 			<c:choose>
 				<c:when test="${groupRole eq 'USER' || groupRole eq 'MODERATOR' || groupRole eq 'ADMINISTRATOR' }">
 						<c:if test="${groupRole eq 'ADMINISTRATOR' || groupRole eq 'MODERATOR'}">
@@ -85,7 +86,7 @@
 														<td class="col-md-1"><user:thumbnail user="${member.user}" size="16" noname="${true}" /></td>
 														<td class="col-md-3"><user:username user="${member.user}" /></td>
 														<td class="col-md-6"><c:out value=" " /></td>
-														<td class="col-md-2" style="text-align: right"><a href="/updateGroup?operation=accept_join_request&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${accuserTitle}"><span class="fa fa-check"><!-- Keep me --></span></a> <a href="/updateGroup?operation=decline_join_request&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${decuserTitle}"><span class="fa fa-times"><!-- Keep me --></span></a></td>
+														<td class="col-md-2" style="text-align: right"><a href="/updateGroup?operation=ADD_MEMBER&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${accuserTitle}"><span class="fa fa-check"><!-- Keep me --></span></a> <a href="/updateGroup?operation=decline_join_request&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${decuserTitle}"><span class="fa fa-times"><!-- Keep me --></span></a></td>
 													</tr>
 												</c:if>
 											</c:forEach>
@@ -100,6 +101,7 @@
 								<c:set var="groupHasMembers" value="${true}" />
 							</c:if>
 						</c:forEach>
+						<c:set var="groupHasMembers" value="${groupHasMembers and (privlevel ne 'HIDDEN' or groupRole eq 'ADMINISTRATOR')}" />
 						<bsform:fieldset legendKey="settings.group.memberList">
 							<jsp:attribute name="content">
 								<c:choose>
