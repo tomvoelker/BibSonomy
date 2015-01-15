@@ -759,7 +759,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') isn't a member of this group ('" + groupname + "')");
 		}
 		
-		if (GroupRole.GROUP_ROLES.contains(role)) {
+		if (!GroupRole.GROUP_ROLES.contains(role)) {
 			throw new IllegalArgumentException("group role '" + role + "' not supported");
 		}
 		

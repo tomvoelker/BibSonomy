@@ -26,8 +26,8 @@ CREATE TABLE `pending_group_memberships` (
   PRIMARY KEY (`group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- set the dummy user role
+-- set the admin user role
 UPDATE groupids
   JOIN user ON group_name = user.user_name
-  JOIN group_memberships on groupids.`group` = group_memberships.`group` AND group_memberships.user_name = group_name
-SET group_role = 2;
+  JOIN group_memberships ON groupids.`group` = group_memberships.`group` AND group_memberships.user_name = group_name
+SET group_role = 0;

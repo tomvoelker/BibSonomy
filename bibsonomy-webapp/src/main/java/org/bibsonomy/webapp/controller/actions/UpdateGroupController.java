@@ -225,21 +225,6 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 					}
 					break;
 				}
-				case ACCEPT_JOIN_REQUEST: {
-					final String username = command.getUsername();
-					if (present(username)) {
-						// the group to update
-						final GroupMembership ms = new GroupMembership(new User(username), null, false);
-						try {
-							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_MEMBER, ms);
-						} catch (final Exception ex) {
-							log.error("error while accepting the join request of user '" + username + "' from group '" + groupToUpdate + "'", ex);
-							this.errors.rejectValue("username", "settings.group.error.acceptJoinRequestFailed", new Object[]{username, groupToUpdate},
-									"The User {0} couldn't be added to the Group {1}.");
-						}
-					}
-					break;
-				}
 				case DECLINE_JOIN_REQUEST: {
 					final String username = command.getUsername();
 					if (present(username)) {

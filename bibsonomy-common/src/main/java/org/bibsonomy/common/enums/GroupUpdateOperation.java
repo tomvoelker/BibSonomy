@@ -69,12 +69,9 @@ public enum GroupUpdateOperation {
 	/** Remove an invited user */
 	REMOVE_INVITED,
 	
-	/** Request a new group. */
+	// FIXME: no group update operation
+	/** Request a new group.*/
 	REQUEST,
-	
-	@Deprecated
-	/** Accept a join request */
-	ACCEPT_JOIN_REQUEST,
 	
 	/** Decline a join request */
 	DECLINE_JOIN_REQUEST;

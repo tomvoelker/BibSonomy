@@ -83,7 +83,7 @@
 													<tr>
 														<td class="col-md-1"><user:thumbnail user="${member.user}" size="16" noname="${true}" /></td>
 														<td class="col-md-3"><user:username user="${member.user}" /></td>
-														<td class="col-md-8" style="text-align: right"><a class="btn btn-success" href="/updateGroup?operation=accept_join_request&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${accuserTitle}">${accuser}</a> <a class="btn btn-danger" href="/updateGroup?operation=decline_join_request&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${decuserTitle}">${decuser}</a></td>
+														<td class="col-md-8" style="text-align: right"><a class="btn btn-success" href="/updateGroup?operation=add_member&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${accuserTitle}">${accuser}</a> <a class="btn btn-danger" href="/updateGroup?operation=decline_join_request&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${decuserTitle}">${decuser}</a></td>
 													</tr>
 												</c:if>
 											</c:forEach>

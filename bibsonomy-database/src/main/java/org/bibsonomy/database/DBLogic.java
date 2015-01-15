@@ -1203,7 +1203,7 @@ public class DBLogic implements LogicInterface {
 			case REMOVE_INVITED:
 			case DECLINE_JOIN_REQUEST:
 				final GroupMembership currentMembership = this.groupDBManager.getPendingMembershipForUserAndGroup(this.loginUser, groupName, session);
-				final boolean requestedMembership = currentMembership != null && GroupRole.REQUESTED.equals(currentMembership.getGroupRole());
+				final boolean requestedMembership = currentMembership != null && (GroupRole.PENDING_GROUP_ROLES.contains(currentMembership.getGroupRole()));
 				if (!this.permissionDBManager.isAdminOrGroupModeratorOrSelf(this.loginUser, groupName) && !requestedMembership) {
 					throw new AccessDeniedException("You are not allowed to remove invites or join requests of a group");
 				}
