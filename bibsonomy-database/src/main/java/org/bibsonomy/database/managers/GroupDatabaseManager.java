@@ -817,11 +817,13 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	
 	public void addPendingMembership(final String groupname, final User user, final GroupRole pendingGroupRole, final DBSession session) {
 		final Group group = this.getGroupByName(groupname, session);
+		final GroupMembership alreadyExistingMembership = this.getGroupMembershipForUser(user.getName(), group, session);
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't remove join request/invite from nonexistent group");
-			throw new RuntimeException();
 		}
-		
+		if (present(alreadyExistingMembership)) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User " + user.getName() + " is already a member of group " + groupname);
+		}
 		try {
 			session.beginTransaction();
 			final GroupMembership pendingMembership = this.getPendingMembershipForUserAndGroup(user, groupname, session);
