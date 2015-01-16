@@ -33,6 +33,7 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
@@ -268,5 +269,12 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		
 		// group sharedDocuments = 1 && userSharedDocuments = 1 -> yes
 		assertTrue(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup1", null, this.dbSession));
+	}
+	
+	@Test
+	public void testHasGroupLevelPermission() {
+		assertTrue(permissionDb.hasGroupLevelPermission(new User("testuser1"), GroupLevelPermission.COMMUNITY_POST_INSPECTION, this.dbSession));
+		assertTrue(permissionDb.hasGroupLevelPermission(new User("testuser2"), GroupLevelPermission.COMMUNITY_POST_INSPECTION, this.dbSession));
+		assertFalse(permissionDb.hasGroupLevelPermission(new User("testuser3"), GroupLevelPermission.COMMUNITY_POST_INSPECTION, this.dbSession));
 	}
 }
