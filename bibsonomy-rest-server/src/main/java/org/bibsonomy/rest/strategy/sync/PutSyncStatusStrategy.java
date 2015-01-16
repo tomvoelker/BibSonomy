@@ -32,9 +32,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URI;
+import java.text.ParseException;
 import java.util.Date;
 
+import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SynchronizationStatus;
@@ -51,6 +55,7 @@ public class PutSyncStatusStrategy extends AbstractUpdateStrategy {
 	private final URI serviceURI;
 	private final Class<? extends Resource> resourceType;
 	private final String synchronizationStatus;
+	private final String date;
 	
 	/**
 	 * 
@@ -62,6 +67,7 @@ public class PutSyncStatusStrategy extends AbstractUpdateStrategy {
 		this.serviceURI = serviceURI;
 		this.resourceType = ResourceFactory.getResourceClass(context.getStringAttribute(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.RESOURCE_CLASS_NAME));
 		this.synchronizationStatus = context.getStringAttribute(RESTConfig.SYNC_STATUS, "");
+		this.date = context.getStringAttribute(RESTConfig.SYNC_DATE_PARAM, null);
 	}
 
 	@Override
@@ -88,9 +94,21 @@ public class PutSyncStatusStrategy extends AbstractUpdateStrategy {
 			throw new BadRequestOrResponseException("Could not read body of request.");
 		}
 		
-		final String userName = logic.getAuthenticatedUser().getName();
-
-		final Date lastSyncDate = logic.getLastSyncData(userName, this.serviceURI, this.resourceType).getLastSyncDate();
+		final User authenticatedUser = logic.getAuthenticatedUser();
+		final String userName = authenticatedUser.getName();
+		
+		final Date lastSyncDate;
+		
+		if (Role.SYNC.equals(authenticatedUser)) {
+			lastSyncDate = logic.getLastSyncData(userName, this.serviceURI, this.resourceType).getLastSyncDate();
+		} else {
+			try {
+				lastSyncDate = RESTConfig.parseDate(this.date);
+			} catch (ParseException e) {
+				throw new InvalidModelException("failed to parse date");
+			}
+		}
+		
 		logic.updateSyncData(userName, this.serviceURI, this.resourceType, lastSyncDate, status, info);
 		return null;
 	}

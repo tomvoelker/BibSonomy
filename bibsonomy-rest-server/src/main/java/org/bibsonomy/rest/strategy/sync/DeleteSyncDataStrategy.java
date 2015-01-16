@@ -37,7 +37,6 @@ import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.AbstractDeleteStrategy;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.rest.utils.RestSyncUtils;
 
 /**
  * @author wla
@@ -66,7 +65,7 @@ public class DeleteSyncDataStrategy extends AbstractDeleteStrategy {
 		try {
 			final LogicInterface logic = this.getLogic();
 			// we allow null dates; they are used to delete ALL entries
-			final Date parsedDate = (this.date == null ? null : RestSyncUtils.parseDate(this.date));
+			final Date parsedDate = (this.date == null ? null : RESTConfig.parseDate(this.date));
 			logic.deleteSyncData(logic.getAuthenticatedUser().getName(), this.serviceURI, this.resourceType, parsedDate);
 			return true;
 		} catch (ParseException ex) {
