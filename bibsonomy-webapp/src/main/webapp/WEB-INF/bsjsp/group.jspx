@@ -42,7 +42,7 @@
 					<div class="pull-right">
 						<group:groupcv group="${command.group}"/>
 					</div>
-					<group:name group="${command.group}"/>
+					<!--<group:name group="${command.group}"/>-->
 				</li>
 					
 				<!-- link to join group -->
