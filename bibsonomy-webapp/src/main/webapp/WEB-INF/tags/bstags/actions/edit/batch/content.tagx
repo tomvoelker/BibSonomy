@@ -110,6 +110,19 @@
 			</div>
 			</c:when>
 			<c:otherwise>
+				<c:choose>
+				<c:when test="${updateExistingPost}">
+					<div class="alert alert-info" style="margin-bottom:0px;" role="alert">
+						<fmt:message key="batchedit.hint.savedEdit"/>
+					</div>
+				</c:when>
+				<c:otherwise>
+					<div class="alert alert-warning" style="margin-bottom:0px;" role="alert">
+						<fmt:message key="batchedit.hint.notSavedEdit"/>
+					</div>
+				</c:otherwise>
+				</c:choose>
+				<br/>
 				<table class="table table-striped" style="margin-bottom:0px;">
 				<thead>
 					<th colspan="4">
