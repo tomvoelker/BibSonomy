@@ -534,7 +534,6 @@ CREATE TABLE `groupids` (
   `group` int(10) NOT NULL default '0',
   `privlevel` tinyint(3) unsigned default '1',
   `sharedDocuments` tinyint(1) default '0',
-  `description` VARCHAR(400) NULL DEFAULT NULL,
   `publ_reporting_mail` varchar(255) DEFAULT NULL,
   `publ_reporting_mail_template` text,
   `publ_reporting_external_url` varchar(255) DEFAULT NULL,
