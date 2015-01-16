@@ -56,10 +56,10 @@
 
 			<!--Render the publications !!-->
 			<div class="entry">
-				<rc:history listView="${command.bookmark}"
+				<rc:history listView="${command.goldStandardBookmarks}"
 						loginUserName="${command.context.loginUser.name}"
 						disableListNavigation="${disableListNavigation}"
-						requPath="${requPath}" isPub="false" isGoldStandard = "false">
+						requPath="${requPath}" isPub="false" isGoldStandard = "true">
 				</rc:history>
 			</div>
 		</div>

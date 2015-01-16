@@ -11,25 +11,26 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
-	xmlns:bm="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bookmark"
 	xmlns:bibgs="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
 	xmlns:form="http://www.springframework.org/tags/form">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8"
 		language="java" pageEncoding="UTF-8" session="true" />
-	<layout:paneLayout requPath="${requPath}" command="${command}"
-		pageTitle="${command.pageTitle}" headerMessageKey="post.resource.postHistory">
+	<layout:paneLayout 
+		requPath="${requPath}" 
+		command="${command}"
+		pageTitle="${command.pageTitle}" 
+		headerMessageKey="post.resource.postHistory">
 
 		<jsp:attribute name="headerExt">
-			<link rel="stylesheet" type="text/css"
-				href="${resdir}/css/cv_page.css" />
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/cv_page.css" />
 	    </jsp:attribute>
 
 		<!--+
     	 	| heading
     	 	+-->
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.postHistory" />
+			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
     	</jsp:attribute>
 
 		<jsp:attribute name="infobox">
@@ -56,10 +57,10 @@
 
 			<!--Render the publications !!-->
 			<div class="entry">
-				<rc:history listView="${command.bookmark}"
+				<rc:history listView="${command.goldStandardPublications}"
 						loginUserName="${command.context.loginUser.name}"
 						disableListNavigation="${disableListNavigation}"
-						requPath="${requPath}" isPub="false" isGoldStandard = "false">
+						requPath="${requPath}" isPub="true" isGoldStandard= "true">				
 				</rc:history>
 			</div>
 		</div>

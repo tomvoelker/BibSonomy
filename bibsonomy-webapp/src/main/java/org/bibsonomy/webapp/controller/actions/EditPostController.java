@@ -56,6 +56,8 @@ import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandard;
+import org.bibsonomy.model.GoldStandardBookmark;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
@@ -416,6 +418,19 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 					}
 				
 				}
+				else if(GoldStandardPublication.class.equals(resourceType)){
+					
+					for(int i =0;i<diffEntryKeyList.size();i++){
+						replaceResourceFieldsGoldStandardPub(dbPost,diffEntryKeyList.get(i), diffEntryValList.get(i));
+					}
+				
+				}
+				else if(GoldStandardBookmark.class.equals(resourceType)){
+					
+					for(int i =0;i<diffEntryKeyList.size();i++){
+						replaceResourceFieldsGoldStandardBm(dbPost,diffEntryKeyList.get(i), diffEntryValList.get(i));
+					}
+				}
 				else{
 					for(int i =0;i<diffEntryKeyList.size();i++){
 						replaceResourceFieldsBm(dbPost,diffEntryKeyList.get(i), diffEntryValList.get(i));
@@ -511,38 +526,55 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				break;
 			case "author":
 				/**
+				 * convert string to PersonName object*/
+				List <PersonName> authors_list = new ArrayList<PersonName>();
+				if(value.equals(" ")){
+					bibResource.setAuthor(authors_list);
+					break;					
+				}
+				if(value.contains("!")){
+					value=value.replace("!", "\"");
+				}
+				
+				/**
 				 * if key is author, value contains several authors 'name,lastname' delimited by ";" 
 				 * */
 				List <String> authors = new ArrayList<String>();
 				Collections.addAll(authors, value.split("; "));
 				
-				/**
-				 * convert string to PersonName object*/
-				List <PersonName> authors_list = new ArrayList<PersonName>();
 				PersonName a;
 				String[] first_last_name;
 				for(int i=0;i<authors.size();i++){
-					first_last_name = authors.get(i).split(", ");
-					a = new PersonName(first_last_name[0],first_last_name[1]);
+					first_last_name = authors.get(i).split(" ");
+					a = new PersonName(first_last_name[0],present(first_last_name[1])? first_last_name[1] : " ");
 					authors_list.add(a);
 				}
 				bibResource.setAuthor(authors_list);
 				break;
 			case "editor":
 				/**
+				 * convert string to PersonName object*/
+				List <PersonName> editors_list = new ArrayList<PersonName>();
+				
+				if(value.equals(" ")){
+					bibResource.setEditor(editors_list);
+					break;					
+				}
+				if(value.contains("!")){
+					value=value.replace("!", "\"");
+				}
+				
+				/**
 				 * if key is author, value contains several authors names, delimited by ";" 
 				 * */
 				List <String> editors = new ArrayList<String>();
 				Collections.addAll(editors, value.split("; "));
-
-				/**
-				 * convert string to PersonName object*/
-				List <PersonName> editors_list = new ArrayList<PersonName>();
+				
 				PersonName b;
 				String[] first_last_Name;
 				for(int i=0;i<editors.size();i++){
 					first_last_Name = editors.get(i).split(" ");
-					b = new PersonName(first_last_Name[0],first_last_Name[1]);
+					b = new PersonName(first_last_Name[0],present(first_last_Name[1])? first_last_Name[1] : " ");
 					editors_list.add(b);
 				}
 				bibResource.setEditor(editors_list);
@@ -632,7 +664,166 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			}
 		post.setResource((RESOURCE) bibResource);
 	}
-	
+
+	/** this function changes the resource fields according to key-value.
+	 * key decides for the field and value decides for the new value of the field
+	 * @param bibResource
+	 * @param key
+	 * @param value
+	 */
+	protected void replaceResourceFieldsGoldStandardPub(final Post post, String key, String value){
+		final GoldStandardPublication bibResource = (GoldStandardPublication) post.getResource();
+		switch(key){
+			case "entrytype":
+				bibResource.setEntrytype(value);
+				break;
+			case "title":
+				bibResource.setTitle(value);
+				break;
+			case "author":
+
+				/**
+				 * convert string to PersonName object*/
+				List <PersonName> authors_list = new ArrayList<PersonName>();
+				
+				if(value.equals(" ")){
+					bibResource.setAuthor(authors_list);
+					break;					
+				}
+				if(value.contains("!")){
+					value=value.replace("!", "\"");
+				}
+
+				/**
+				 * if key is author, value contains several authors 'name,lastname' delimited by ";" 
+				 * */
+				List <String> authors = new ArrayList<String>();
+				Collections.addAll(authors, value.split("; "));
+		
+				PersonName a;
+				String[] first_last_name;
+				for(int i=0;i<authors.size();i++){
+					first_last_name = authors.get(i).split(" ");
+					a = new PersonName(first_last_name[0],present(first_last_name[1])? first_last_name[1] : " ");
+					authors_list.add(a);
+				}
+				bibResource.setAuthor(authors_list);
+				break;
+			case "editor":
+
+				/**
+				 * convert string to PersonName object*/
+				List <PersonName> editors_list = new ArrayList<PersonName>();
+				
+				if(value.equals(" ")){
+					bibResource.setEditor(editors_list);
+					break;					
+				}
+				if(value.contains("!")){
+					value=value.replace("!", "\"");
+				}
+				/**
+				 * if key is author, value contains several authors names, delimited by ";" 
+				 * */
+				List <String> editors = new ArrayList<String>();
+				Collections.addAll(editors, value.split("; "));
+				
+				PersonName b;
+				String[] first_last_Name;
+				for(int i=0;i<editors.size();i++){
+					first_last_Name = editors.get(i).split(" ");
+					b = new PersonName(first_last_Name[0],present(first_last_Name[1])? first_last_Name[1] : " ");
+					editors_list.add(b);
+				}
+				bibResource.setEditor(editors_list);
+				break;
+			case "year":
+				bibResource.setYear(value);
+				break;
+			case "booktitle":
+				bibResource.setBooktitle(value);
+				break;
+			case "journal":
+				bibResource.setJournal(value);
+				break;
+			case "volume":
+				bibResource.setVolume(value);
+				break;
+			case "number":
+				bibResource.setNumber(value);
+				break;
+			case "pages":
+				bibResource.setPages(value);
+				break;
+			case "month":
+				bibResource.setMonth(value);
+				break;
+			case "day":
+				bibResource.setDay(value);
+				break;
+			case "publisher":
+				bibResource.setPublisher(value);
+				break;
+			case "address":
+				bibResource.setAddress(value);
+				break;
+			case "edition":
+				bibResource.setEdition(value);
+				break;
+			case "chapter":
+				bibResource.setChapter(value);
+				break;
+			case "url":
+				bibResource.setUrl(value);
+				break;
+			case "key":
+				bibResource.setKey(value);
+				break;
+			case "howpublished":
+				bibResource.setHowpublished(value);
+				break;
+			case "institution":
+				bibResource.setInstitution(value);
+				break;
+			case "organization":
+				bibResource.setOrganization(value);
+				break;
+			case "school":
+				bibResource.setSchool(value);
+				break;
+			case "series":
+				bibResource.setSeries(value);
+				break;
+			case "crossref":
+				bibResource.setCrossref(value);
+				break;
+			case "misc":
+				bibResource.setMisc(value);
+				break;
+			case "bibtexAbstract":
+				bibResource.setAbstract(value);
+				break;
+			case "privnote":
+				bibResource.setPrivnote(value);
+				break;
+			case "annote":
+				bibResource.setAnnote(value);
+				break;
+			case "note":
+				bibResource.setNote(value);
+				break;
+			case "tags"://check comma separated tags
+				try {
+					Set<Tag> tagSet = TagUtils.parse(value);
+					post.setTags(tagSet);
+				} catch (RecognitionException e) {
+					log.error("Couldn't parse tag's string and couldn't convert it to Set(collection)", e);
+				}	
+			}
+		post.setResource((RESOURCE) bibResource);
+	}
+
+		
 	/** this function changes the resource/post fields according to key-value.
 	 * key decides for the field and value decides for the new value of the field
 	 * @param post
@@ -659,7 +850,29 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				}
 			}
 	}
+	
+	protected void replaceResourceFieldsGoldStandardBm(final Post post, String key, String value){
+		switch(key){
+			case "title":
+				post.getResource().setTitle(value);
+				break;
+			case "url":
+				((GoldStandardBookmark)post.getResource()).setUrl(value);
+				break;
+			case "description":
+				post.setDescription(value);
+				break;
+			case "tags":
+				try {
+					Set<Tag> tagSet = TagUtils.parse(value);
+					post.setTags(tagSet);
+				} catch (RecognitionException e) {
+					log.error("Couldn't parse tag's string and couldn't convert it to Set(collection)", e);
+				}
+			}
+	}
 
+	
 	/**
 	 * @param command
 	 * @param loginUser

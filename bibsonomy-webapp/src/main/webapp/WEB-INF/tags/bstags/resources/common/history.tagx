@@ -8,6 +8,7 @@
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
 	xmlns:bibgs="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:gpub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
 	
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
@@ -28,6 +29,7 @@
 	<jsp:directive.attribute name="addAsLastItem" fragment="true"
 		required="false" />
 	<jsp:directive.attribute name="isPub" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="isGoldStandard" type="java.lang.Boolean" required="true" />
 
 	<script type="text/javascript" src="/resources/javascript/history.js"><!-- keep me --></script>
 	
@@ -44,7 +46,7 @@
 		<input type="hidden" name="newestPost" value="${newestPost}" />
 		<input type="hidden" name="differentEntryKeys" />
 		<input type="hidden" name="differentEntryValues" />			
-		<input type="hidden" name="intraHashToUpdate" value="${newestPost.resource.intraHash}"/>
+		
 		<input type="hidden" name="isPub" value="${isPub}" />
 		
 	
@@ -55,14 +57,85 @@
 					| complete Post
 					+-->
 			
-			<div class="title">
-				<pub:title post="${newestPost}">
-					<jsp:attribute name="bibActionButtons">
-						<div class="pull-right">
-							<bib:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/>
+		<div class="title">
+			<!-- if we are dealing with a publication -->
+			<c:choose>
+				<c:when test="${isPub}">
+					<c:choose>
+					<!-- if it is a community post -->
+						<c:when test="${isGoldStandard}">
+							<input type="hidden" name="intraHashToUpdate" value="${newestPost.resource.interHash}"/>
+							<div class="title">
+								<div class="media">									
+									<div class="media-body" id="titletext">
+										<div class="pull-right"><gpub:actions post="${newestPost}" /></div>
+										<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" /></h1>
+										<p><bib:desc publication="${newestPost.resource}"/></p>
+									</div>
+								</div>
+							</div>								
+						</c:when>
+
+						<c:otherwise>
+							<input type="hidden" name="intraHashToUpdate" value="${newestPost.resource.intraHash}"/>
+							<pub:title post="${newestPost}">
+								<jsp:attribute name="bibActionButtons">
+									<div class="pull-right">
+										<bib:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/>
+									</div>
+								</jsp:attribute>
+							</pub:title>
+						</c:otherwise>
+					</c:choose>
+				</c:when>
+
+						<!-- if we are dealing with a bookmark -->
+				<c:otherwise>
+				<c:choose>
+
+						<!-- if it is a community post -->
+
+						<c:when test="${isGoldStandard}">
+							<input type="hidden" name="intraHashToUpdate" value="${newestPost.resource.interHash}"/>
+							
+							<div class="title">
+							<div class="media">
+								
+								<div class="media-body" id="titletext">
+								<!-- currently there is no specific tagx file for gsBookmark actions -->
+								<!-- 	<div class="pull-right"><bm:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}"/></div> -->
+									<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" /></h1>
+									<c:set var="url" value="${newestPost.resource.url}" />
+									<p><a href="${url}"><c:out value="${url}" /></a></p>
+								</div>
+							</div>		
 						</div>
-					</jsp:attribute>
-				</pub:title>
+						</c:when>
+
+						<c:otherwise>
+						<input type="hidden" name="intraHashToUpdate" value="${newestPost.resource.intraHash}"/>
+						<div class="title">
+							<div class="media">
+								
+								<div class="media-body" id="titletext">
+									<div class="pull-right"><bm:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}"/></div>
+									<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" /></h1>
+									<c:set var="url" value="${newestPost.resource.url}" />
+									<p><a href="${url}"><c:out value="${url}" /></a></p>
+								</div>
+							</div>		
+						</div>
+							
+
+						</c:otherwise>
+
+					</c:choose>
+
+				</c:otherwise>
+
+			</c:choose>
+
+				
 			</div>
 			<div style="border-top: 1px #cbcbcb solid; clear:left">
 				<span> </span>
@@ -218,7 +291,7 @@
 											<c:choose>
 												<c:when test="${isPub}">
 													<input type="hidden" name="diffEntryValue" 
-														value="${mtl:getEntryValuePub(diffEntry.key,listView.list[(fieldlength-index)])}"/>
+														value="${mtl:getEntryValuePub(diffEntry.key,listView.list[(fieldlength-index)])}"/>	
 												</c:when>
 												<c:otherwise>
 													<input type="hidden" name="diffEntryValue" 

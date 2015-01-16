@@ -193,6 +193,16 @@ public enum Views implements View {
 	HISTORYBIB("HistoryBib"),
 
 	/**
+	 * History Page for GoldStandard BibTex. page with post history
+	 */
+	HISTORYGOLDBIB("HistoryGSBib"),
+	
+	/**
+	 * History Page for GoldStandard bookmark. page with post history
+	 */
+	HISTORYGOLDBM("HistoryGSBm"),
+	
+	/**
 	 * History Page for Bookmarks. page with post history
 	 */
 	HISTORYBM("HistoryBM"),

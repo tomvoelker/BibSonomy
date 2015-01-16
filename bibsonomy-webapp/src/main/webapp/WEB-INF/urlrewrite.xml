@@ -839,13 +839,13 @@
 	</rule> -->
 	
 	<!-- /[32] (arbitrary hash) defaults to simhash1 -->
- 	<!--<rule>
+ 	<rule>
  		<name>/history/RSCTYPE/HASH</name>
 		<from>^/+history/+(.+)/+([0-9a-fA-F]{32})$</from>
 		<set type="parameter" name="resourceClass">$1</set>
 		<set type="parameter" name="requestedHash">$2</set>
 		<to last="true">/history</to>
-	</rule>-->
+	</rule>
 	 
 	<!-- ############## search pages ############### -->
 	<!-- FIXME: disable for more infos see bug #1784

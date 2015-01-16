@@ -6,10 +6,11 @@
     
     <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
     
-	<c:set var="rscType" value="goldstandard" />
+	<c:set var="rscType" value="goldstandardpublication" />
 	
 	<c:if test="${command.context.userLoggedIn}">
 		<c:set var="goldstandard" value="${post.resource}" />
+		<c:set var="post_username" value="null" />
 	
 		<div class="btn-group btn-group-sm">
 		
@@ -30,7 +31,7 @@
 	
 					<fmt:message key="bibtex.actions.posthistory.title" var="postHistoryTitle" />
 					<!-- we need to send the resource type, in order to call the appropriate view later (HistoryBM or HistoryBib) -->
-				 	<a class="btn btn-default" href="/history/goldstandardPub/${goldstandard.interHash}/${post.user.name}" title="${postHistoryTitle}">
+				 	<a class="btn btn-default" href="/history/${rscType}/${goldstandard.interHash}" title="${postHistoryTitle}">
 						<span class="fa fa-list-ol"><!--  --></span>
 				  	</a>
 	

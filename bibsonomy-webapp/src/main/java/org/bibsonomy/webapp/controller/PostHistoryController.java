@@ -67,32 +67,38 @@ public class PostHistoryController <R extends Resource> extends SingleResourceLi
 		 */
 		final String longHash = command.getRequestedHash();
 		final String requUser = command.getRequestedUser();
-		final String resourceClass = command.getResourceClass();
+		final String resourceClassName = command.getResourceClass();
 		final GroupingEntity groupingEntity = present(requUser) ? GroupingEntity.USER : GroupingEntity.ALL;
 		
 
 		final FilterEntity filter = FilterEntity.POSTS_HISTORY;
-		Class<? extends Resource> resourceType = null;
-		if (resourceClass.equals("bibtex")) {
-			resourceType = BibTex.class;
-		} else if(resourceClass.equals("bookmark")) {
-			resourceType = Bookmark.class;
+		Class<? extends Resource> resourceClass = null;
+		if (resourceClassName.equals("bibtex")) {
+			resourceClass = BibTex.class;
+		} else if(resourceClassName.equals("bookmark")) {
+			resourceClass = Bookmark.class;
 		}
-		else if(resourceClass.equals("goldstandardPub")){
-			resourceType = GoldStandardPublication.class;
+		else if(resourceClassName.equals("goldstandardpublication")){
+			resourceClass = GoldStandardPublication.class;
 		}
-		else if(resourceClass.equals("goldstandardBM")){
-			resourceType = GoldStandardBookmark.class;
+		else if(resourceClassName.equals("goldstandardbookmark")){
+			resourceClass = GoldStandardBookmark.class;
 		}
 	
-		this.setList(command, resourceType, groupingEntity, requUser, null, longHash, null, filter, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
-		this.postProcessAndSortList(command, resourceType);
+		this.setList(command, resourceClass, groupingEntity, requUser, null, longHash, null, filter, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceClass).getEntriesPerPage());
+		this.postProcessAndSortList(command, resourceClass);
 
 		//redirect to HistoryBM.jspx or HistoryBib.jspx
 		if ("html".equals(format)) {
 			this.endTiming();	
-			if(BibTex.class.equals(resourceType)){
+			if(BibTex.class.equals(resourceClass)){
 				return Views.HISTORYBIB;
+			}
+			else if(GoldStandardPublication.class.equals(resourceClass)){
+				return Views.HISTORYGOLDBIB;
+			}
+			else if(GoldStandardBookmark.class.equals(resourceClass)){
+				return Views.HISTORYGOLDBM;
 			}
 			else{
 				return Views.HISTORYBM;

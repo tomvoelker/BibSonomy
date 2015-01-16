@@ -694,6 +694,7 @@ public class Functions {
 						val+=(present(pn.getFirstName())? pn.getFirstName() : "")+
 							(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
 					}
+					val = val.replace("\"", "!");
 				}
 				
 				break;
@@ -705,6 +706,7 @@ public class Functions {
 						val+=(present(pn.getFirstName())? pn.getFirstName() : "")+
 							(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
 					}
+					val = val.replace("\"", "!");
 				}
 				
 				break;
