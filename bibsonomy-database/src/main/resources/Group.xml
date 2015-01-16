@@ -44,13 +44,22 @@
 		SELECT privlevel FROM groupids WHERE `group` = #groupId#
 	</select>
 
-	<select id="getGroupsForUser" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, u.user_name, g.user_shared_documents, g.group_role
+	<select id="getGroupsForUser" resultMap="GroupCommon.groupWithMembershipsAndReportingsAndPermissions" parameterClass="string">
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, u.user_name, g.user_shared_documents, g.group_role, p.permission
 		 FROM groupids i
 		   LEFT JOIN group_memberships g USING (`group`)
 		   LEFT JOIN user u ON (u.user_name = g.user_name)
+		   LEFT JOIN group_level_permission p USING (`group`)
 		 WHERE g.user_name = #userName#
 	</select>
+
+<!-- 	<select id="getGroupsForUser" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="string"> -->
+<!-- 		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, u.user_name, g.user_shared_documents, g.group_role -->
+<!-- 		 FROM groupids i -->
+<!-- 		   LEFT JOIN group_memberships g USING (`group`) -->
+<!-- 		   LEFT JOIN user u ON (u.user_name = g.user_name) -->
+<!-- 		 WHERE g.user_name = #userName# -->
+<!-- 	</select> -->
 	
 	<select id="getSpecialGroupsForUser" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="string">
 		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, "" AS user_realname, NULL AS user_homepage, #userName# AS user_name, FALSE AS user_shared_documents, 7 AS group_role

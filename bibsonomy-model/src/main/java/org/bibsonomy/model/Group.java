@@ -28,8 +28,10 @@ package org.bibsonomy.model;
 
 import java.io.Serializable;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Privlevel;
@@ -69,6 +71,11 @@ public class Group implements Serializable {
 	 * These are the {@link Post}s of this group.
 	 */
 	private List<Post<? extends Resource>> posts;
+
+	/**
+	 * The permissions on group Level of this group
+	 */
+	private Set<GroupLevelPermissionWrapper> groupLevelPermissions;
 
 	/**
 	 * These {@link User}s belong to this group.
@@ -460,4 +467,31 @@ public class Group implements Serializable {
 	public GroupMembership getGroupMembershipForUser(String username) {
 		return this.getGroupMembershipForUser(new User(username));
 	}
+	
+	
+	public Set<GroupLevelPermissionWrapper> getGroupLevelPermissions() {
+		if (null == this.groupLevelPermissions) {
+			this.groupLevelPermissions = new HashSet<GroupLevelPermissionWrapper>();
+		}
+		return this.groupLevelPermissions;
+	}
+
+	public void setGroupLevelPermissions(Set<GroupLevelPermissionWrapper> groupLevelPermissions) {
+		this.groupLevelPermissions = groupLevelPermissions;
+	}
+
+//	public void setGroupLevelPermission(GroupLevelPermission groupLevelPermission) {
+//		if (null==this.groupLevelPermissions) {
+//			this.groupLevelPermissions = new HashSet<GroupLevelPermission>();
+//		}
+//		this.groupLevelPermissions.add(groupLevelPermission);
+//	}
+
+	public void addGroupLevelPermission(GroupLevelPermissionWrapper groupLevelPermission) {
+		if (null==this.groupLevelPermissions) {
+			this.groupLevelPermissions = new HashSet<GroupLevelPermissionWrapper>();
+		}
+		this.groupLevelPermissions.add(groupLevelPermission);
+	}
+
 }

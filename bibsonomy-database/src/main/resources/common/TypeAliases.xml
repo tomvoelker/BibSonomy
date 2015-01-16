@@ -33,6 +33,7 @@
 	<typeAlias alias="postMetaData"				type="org.bibsonomy.model.metadata.PostMetaData" />
 	<typeAlias alias="personNameList"				type="java.util.List" />
 	<typeAlias alias="samlRemoteUserId"    type="org.bibsonomy.model.user.remote.SamlRemoteUserId" />
+	<typeAlias alias="groupLevelPermissionWrapper"			type="org.bibsonomy.model.GroupLevelPermissionWrapper" />
 	
 	<typeAlias alias="goldStandardRelation" type="org.bibsonomy.model.enums.GoldStandardRelation"/>
 	
@@ -93,6 +94,7 @@
 	<typeAlias alias="PrivLevel"			type="org.bibsonomy.common.enums.Privlevel" />
 	<typeAlias alias="GroupRole"			type="org.bibsonomy.common.enums.GroupRole" />
 	<typeAlias alias="Role"              type="org.bibsonomy.common.enums.Role" />
+	<typeAlias alias="groupLevelPermission"			type="org.bibsonomy.common.enums.GroupLevelPermission" />
 	
 	<typeAlias alias="LayoutSettings"    type="org.bibsonomy.model.user.settings.LayoutSettings" />
 	

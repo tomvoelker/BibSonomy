@@ -45,7 +45,16 @@
 	<resultMap id="groupWithMembershipsAndReportings" class="group" extends="groupWithMemberships" groupBy="name" >
 		<result property="publicationReportingSettings" resultMap="GroupCommon.publReportingSettings" />
 	</resultMap>
-	
+
+	<resultMap id="groupLevelPermissionWrapper" class="groupLevelPermissionWrapper">
+		<result property="groupLevelPermission" column="permission" javaType="groupLevelPermission" />
+	</resultMap>
+
+	<resultMap id="groupWithMembershipsAndReportingsAndPermissions" class="group" extends="groupWithMembershipsAndReportings" groupBy="name" >
+		<result property="groupLevelPermissions" resultMap="GroupCommon.groupLevelPermissionWrapper" />
+	</resultMap>
+
+
 	<resultMap id="tagsets" class="tagset" groupBy="setName">
 		<result property="setName"      column="set_name"       javaType="string"  />
 		<result property="tags"         resultMap="Common.tag" />
