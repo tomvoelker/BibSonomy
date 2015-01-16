@@ -40,6 +40,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
+import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -48,8 +49,11 @@ import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.services.Pingback;
 import org.bibsonomy.util.ObjectUtils;
 import org.bibsonomy.webapp.command.ajax.DiscussionItemAjaxCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -69,6 +73,7 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 	private static final Log log = LogFactory.getLog(DiscussionItemAjaxController.class);
 	
 	private Errors errors;
+	private Pingback pingback;
 
 	@Override
 	public DiscussionItemAjaxCommand<D> instantiateCommand() {
@@ -102,7 +107,8 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 			return this.getErrorView();
 		}
 		
-		final String userName = command.getContext().getLoginUser().getName();
+		final User loginUser = command.getContext().getLoginUser();
+		final String userName = loginUser.getName();
 		
 		/*
 		 * don't call the validator
@@ -137,7 +143,7 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 		try {
 			switch(this.requestLogic.getHttpMethod()) {
 				case POST:
-					reloadPage = this.createDiscussionItem(interHash, userName, postUserName, intraHash, discussionItem);
+					reloadPage = this.createDiscussionItem(interHash, loginUser, postUserName, intraHash, discussionItem);
 					break;
 				case PUT:
 					this.logic.updateDiscussionItem(userName, interHash, discussionItem);
@@ -157,17 +163,17 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 		// TODO: send some error, if hash is null and show it to user
 		result.put("hash", discussionItem.getHash());
 		
-		//preprint handling
+		// preprint handling
 		if (reloadPage) {
 			result.put("reload", "true");
 		}
 		
-		command.setResponseString(result.toString());		
+		command.setResponseString(result.toString());
 		return Views.AJAX_JSON;
 	}
 	
 	@SuppressWarnings("null") // the originalPost could be null, but this is caught using present
-	private boolean createDiscussionItem(final String interHash, final String userName, final String postUserName, final String intraHash, final DiscussionItem discussionItem) {
+	private boolean createDiscussionItem(final String interHash, final User loggedinUser, final String postUserName, final String intraHash, final DiscussionItem discussionItem) {
 		boolean reloadPage = false;
 		
 		/*
@@ -177,7 +183,7 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 		 * If possible, we create it from the post, that the loginuser had clicked on to start the discussion
 		 */
 		// for goldstandardPosts intraHash=interHash => query with interHash, NOT with intraHash
-		final Post<? extends Resource> goldStandardPost = this.logic.getPostDetails(interHash, GoldStandardPostLogicInterface.GOLD_STANDARD_USER_NAME);
+		Post<? extends Resource> goldStandardPost = this.logic.getPostDetails(interHash, GoldStandardPostLogicInterface.GOLD_STANDARD_USER_NAME);
 		if (!present(goldStandardPost)) {
 			/*
 			 * No goldstandard post exists. The loginUser chose a regular (non Goldstandard) post to start a discussion.
@@ -193,7 +199,7 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 			if (present(postUserName) && !GoldStandardPostLogicInterface.GOLD_STANDARD_USER_NAME.equals(postUserName) && present(intraHash)) {
 				originalPost = this.logic.getPostDetails(intraHash, postUserName);
 				if (!present(originalPost)) {
-					log.warn("neither publications nor bookmarks found for intrahash '" + intraHash + "' when a postOwner was given: "+postUserName);
+					log.warn("neither publications nor bookmarks found for intrahash '" + intraHash + "' when a postOwner was given: " + postUserName);
 				}
 			}
 			
@@ -213,12 +219,13 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 			}
 
 			if (!present(originalPost)) {
-				throw new IllegalStateException("A discussion item could not be created for hash "+interHash+" and username "+postUserName+" by user "+userName+" because no post was found that it could have been appended to.");
+				throw new IllegalStateException("A discussion item could not be created for hash "+interHash+" and username " + postUserName + " by user " + postUserName + " because no post was found that it could have been appended to.");
 			}
-
+			
 			// we have found an original Post and now transform it into a goldstandard post
 			final Post<Resource> newGoldStandardPost = new Post<Resource>();
-			if (BibTex.class.isAssignableFrom(originalPost.getResource().getClass())) {
+			final Class<? extends Resource> resourceClass = originalPost.getResource().getClass();
+			if (BibTex.class.isAssignableFrom(resourceClass)) {
 				final GoldStandardPublication goldStandardPublication = new GoldStandardPublication();
 				ObjectUtils.copyPropertyValues(originalPost.getResource(), goldStandardPublication);
 				/*
@@ -232,13 +239,25 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 
 				newGoldStandardPost.setResource(goldStandardBookmark);
 			} else {
-				throw new IllegalStateException("A discussion item could not be created for hash "+interHash+" and username "+postUserName+" by user "+userName+" because no post was found that it could have been appended to.");
+				throw new UnsupportedResourceTypeException(resourceClass + " not supported.");
 			}
 			this.logic.createPosts(Collections.<Post<? extends Resource>>singletonList(newGoldStandardPost));
+			
+			goldStandardPost = newGoldStandardPost;
 		} else {
-			reloadPage = this.firstCommentInPreprint(goldStandardPost, postUserName); 
+			reloadPage = firstCommentInPreprint(goldStandardPost, postUserName); 
 		}
-		this.logic.createDiscussionItem(interHash, userName, discussionItem);
+		
+		/*
+		 * send a pingback/trackback for the public posted resource.
+		 */
+		if (present(this.pingback) && !loggedinUser.isSpammer() && GroupUtils.isPublicGroup(discussionItem.getGroups())) {
+			// clear user for pingback and set the goldstandardpost
+			goldStandardPost.setUser(null);
+			this.pingback.sendPingback(goldStandardPost);
+		}
+		
+		this.logic.createDiscussionItem(interHash, loggedinUser.getName(), discussionItem);
 		
 		return reloadPage;
 	}
@@ -249,12 +268,12 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 	 * @param userName
 	 * @return <code>true</code> if given post is a publication with entry type preprint <code>false</code> otherwise
 	 */
-	private boolean firstCommentInPreprint(final Post<? extends Resource> goldStandard, final String userName) {
+	private static boolean firstCommentInPreprint(final Post<? extends Resource> goldStandard, final String userName) {
 		final Resource res = goldStandard.getResource();
-		if(res.getClass().equals(BibTex.class)) {
-			if(((BibTex)res).getEntrytype().equals(PREPRINT)) {
+		if (res.getClass().equals(BibTex.class)) {
+			if (((BibTex)res).getEntrytype().equals(PREPRINT)) {
 				for (final DiscussionItem item : res.getDiscussionItems()) {
-					if(item.getUser().getName().equals(userName)) {
+					if (item.getUser().getName().equals(userName)) {
 						return false;
 					}
 				}
@@ -277,4 +296,14 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 	public boolean isValidationRequired(final DiscussionItemAjaxCommand<D> command) {
 		return false;
 	}
+	
+	/**
+	* A service that sends pingbacks / trackbacks to posted URLs.
+	* 
+	* @param pingback
+	*/
+	public void setPingback(final Pingback pingback) {
+		this.pingback = pingback;
+	}
+
 }

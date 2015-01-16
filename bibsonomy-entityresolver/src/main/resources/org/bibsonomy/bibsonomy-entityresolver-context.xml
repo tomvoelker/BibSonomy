@@ -4,44 +4,36 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 	                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 	
-	<bean id="entityJDBCDataSource" class="org.bibsonomy.entity.datasource.JDBCDataSource">
+	<bean id="entityJDBCDataSource" class="org.bibsonomy.entity.datasource.JDBCDataSource" init-method="init">
 		<property name="query" value="SELECT u.user_name, u.user_realname, u.place, u.user_homepage FROM user u WHERE u.spammer = 0 AND u.user_name != 'dblp'" />
 		<property name="dataSource" ref="entityDataSource" />
-		<property name="columns">
-			<map key-type="java.lang.String" value-type="no.priv.garshol.duke.Column">
-				<entry key="user_name">
-					<bean class="no.priv.garshol.duke.Column">
-						<constructor-arg value="user_name" />
-						<constructor-arg value="user_name" />
-						<constructor-arg><null /></constructor-arg>
-						<constructor-arg><null /></constructor-arg>
-					</bean>
-				</entry>
-				<entry key="user_realname">
-					<bean class="no.priv.garshol.duke.Column">
-						<constructor-arg value="user_realname" />
-						<constructor-arg value="user_realname" />
-						<constructor-arg><null /></constructor-arg>
-						<constructor-arg><null /></constructor-arg>
-					</bean>
-				</entry>
-				<entry key="user_homepage">
-					<bean class="no.priv.garshol.duke.Column">
-						<constructor-arg value="user_homepage" />
-						<constructor-arg value="user_homepage" />
-						<constructor-arg><null /></constructor-arg>
-						<constructor-arg><null /></constructor-arg>
-					</bean>
-				</entry>
-				<entry key="place">
-					<bean class="no.priv.garshol.duke.Column">
-						<constructor-arg value="place" />
-						<constructor-arg value="place" />
-						<constructor-arg><null /></constructor-arg>
-						<constructor-arg><null /></constructor-arg>
-					</bean>
-				</entry>
-			</map>
+		<property name="columnsSet">
+			<set value-type="no.priv.garshol.duke.Column">
+				<bean class="no.priv.garshol.duke.Column">
+					<constructor-arg value="user_name" />
+					<constructor-arg value="user_name" />
+					<constructor-arg><null /></constructor-arg>
+					<constructor-arg><null /></constructor-arg>
+				</bean>
+				<bean class="no.priv.garshol.duke.Column">
+					<constructor-arg value="user_realname" />
+					<constructor-arg value="user_realname" />
+					<constructor-arg><null /></constructor-arg>
+					<constructor-arg><null /></constructor-arg>
+				</bean>
+				<bean class="no.priv.garshol.duke.Column">
+					<constructor-arg value="user_homepage" />
+					<constructor-arg value="user_homepage" />
+					<constructor-arg><null /></constructor-arg>
+					<constructor-arg><null /></constructor-arg>
+				</bean>
+				<bean class="no.priv.garshol.duke.Column">
+					<constructor-arg value="place" />
+					<constructor-arg value="place" />
+					<constructor-arg><null /></constructor-arg>
+					<constructor-arg><null /></constructor-arg>
+				</bean>
+			</set>
 		</property>
 	</bean>
 	

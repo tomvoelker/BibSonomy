@@ -10,11 +10,12 @@
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="extTitle" fragment="true" required="false"/>
 	
-	<rc:simplelist listView="${listView}" titleKey="publications" otherPostsUrlPrefix="/bibtex/${hash.inter.id}" loginUserName="${loginUserName}">
-				
+	<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
+	<rc:simplelist listView="${listView}" titleKey="publications" otherPostsUrlPrefix="/bibtex/${interHashId}" loginUserName="${loginUserName}">
+		
 		<!-- BibTex title -->
 		<jsp:attribute name="title">
-				<bib:title post="${post}"/>
+			<bib:title post="${post}"/>
 		</jsp:attribute>
 			
 		<!-- BibTex description -->
@@ -36,6 +37,5 @@
 		<jsp:attribute name="extTitle">
 			<jsp:invoke fragment="extTitle"/>
 		</jsp:attribute>
-			
 	</rc:simplelist>
 </jsp:root>

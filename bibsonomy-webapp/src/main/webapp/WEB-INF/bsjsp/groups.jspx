@@ -109,7 +109,7 @@
 										<c:out value="${displayName}"/>
 										<br />
 										<c:if test="${not empty group.homepage}">
-											<small><a href="${mtl:encodeURI(group.homepage)}">Homepage</a></small>
+											<small><a href="${fn:escapeXml(group.homepage)}">Homepage</a></small>
 										</c:if>
 									</a>
 								</div>

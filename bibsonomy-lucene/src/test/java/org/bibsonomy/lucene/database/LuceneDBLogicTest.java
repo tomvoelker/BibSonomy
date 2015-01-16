@@ -58,7 +58,6 @@ import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -165,7 +164,6 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 	 * @throws PersonListParserException 
 	 */
 	@Test
-	@Ignore
 	public void getContentIdsToDelete() throws PersonListParserException {
 		final List<Post<? extends Resource>> refPosts = new LinkedList<Post<? extends Resource>>();
 

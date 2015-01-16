@@ -55,7 +55,7 @@ public class IEEEComputerSocietyScraper extends GenericBibTeXURLScraper {
 	private static final String HOST_OLD= "csdl2.computer.org";
 	private static final String HOST_NEW = "computer.org";
 	
-	private static final Pattern abstractPattern = Pattern.compile("<meta property=\"og:description\" content=\"(.*)\" />");
+	private static final Pattern abstractPattern = Pattern.compile("<meta property=\"og:description\" content=\"(.*?)\" />");
 	
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 	

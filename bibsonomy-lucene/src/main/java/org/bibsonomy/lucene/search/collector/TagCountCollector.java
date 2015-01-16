@@ -37,14 +37,14 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.FieldSelector;
-import org.apache.lucene.document.MapFieldSelector;
+import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Scorer;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.util.Sets;
 
 /**
  * experimental hits collector for calculating author tag cloud
@@ -72,8 +72,8 @@ public class TagCountCollector extends Collector {
 	}
 
 	@Override
-	public void setNextReader(final IndexReader reader, final int docBase) throws IOException {
-		this.lastReader  = reader;
+	public void setNextReader(AtomicReaderContext context) throws IOException {
+		this.lastReader = context.reader();
 	}
 
 	@Override
@@ -93,8 +93,7 @@ public class TagCountCollector extends Collector {
 		final List<Tag> tags = new LinkedList<Tag>();
 		for (final Integer docId : this.docToReaderMap.keySet()) {
 			try {
-				final FieldSelector tasSelector = new MapFieldSelector(LuceneFieldNames.TAS); 
-				final Document doc = this.docToReaderMap.get(docId).document(docId, tasSelector);
+				final Document doc = this.docToReaderMap.get(docId).document(docId, Sets.asSet(LuceneFieldNames.TAS));
 				final String tagsString = doc.get(LuceneFieldNames.TAS);
 				if (present(tagsString)) {
 					for (final String tag : tagsString.split(CFG_LIST_DELIMITER)) {
@@ -126,4 +125,5 @@ public class TagCountCollector extends Collector {
 		
 		return tags;
 	}
+	
 }
