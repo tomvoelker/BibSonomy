@@ -31,7 +31,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -265,7 +264,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 			post.setChangeDate(DATE_FORMAT.parseDateTime(changeDate).toDate());
 			post.setDate(DATE_FORMAT.parseDateTime(createDate).toDate());
 			if (resourceType == Bookmark.class) {
-				final Bookmark bookmark = (Bookmark)post.getResource();
+				final Bookmark bookmark = (Bookmark) post.getResource();
 				title = title.replace(" ", "-");
 				bookmark.setUrl("http://www." + title + ".com");
 			}
