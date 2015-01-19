@@ -9,24 +9,22 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
-    xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication"
-  >
-  
-  
-    <!--
-       | 
-       | TODO:
-       |   - Einblendung des existierenden Eintrages (bzw. des geposteten - der
-       |     existierende wird editiert, der gepostete ist in "diffPost") 
-       |   - JavaScript zur Ausblendung optionaler Felder (siehe edit_bibtex.jsp)
-       -->
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication">
 
-    <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
- 
+
+	<!--
+		| 
+		| TODO:
+		|   - Einblendung des existierenden Eintrages (bzw. des geposteten - der
+		|     existierende wird editiert, der gepostete ist in "diffPost") 
+		|   - JavaScript zur Ausblendung optionaler Felder (siehe edit_bibtex.jsp)
+	-->
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
 	<layout:editPostLayout command="${command}" requPath="${requPath}" resourceType="Publication" activeTab="post" minimizedContentWidth="${true}">
 
 		<jsp:attribute name="generalInformation">
@@ -34,23 +32,23 @@
 			<c:if test="${not empty command.scrapingContext}">
 				<c:if test="${not empty command.scrapingContext.selectedText}">
 					<div class="form-group">
-                    	<label class="col-sm-3 control-label"><fmt:message key="post.resource.fields.scraper.selectedText" /></label>
-                    	<div class="col-sm-9">
-                    		<textarea rows="2" class="form-control fsInput fsScraperSelectedText" readonly="readonly"><c:out value="${command.scrapingContext.selectedText}" /></textarea>
-                    		<p class="help-block"><fmt:message key="post.resource.fields.scraper.selectedText.help" /></p>
-                    	</div>
-                    </div>
-                    <hr />
+						<label class="col-sm-3 control-label"><fmt:message key="post.resource.fields.scraper.selectedText" /></label>
+						<div class="col-sm-9">
+							<textarea rows="2" class="form-control fsInput fsScraperSelectedText" readonly="readonly"><c:out value="${command.scrapingContext.selectedText}" /></textarea>
+							<p class="help-block"><fmt:message key="post.resource.fields.scraper.selectedText.help" /></p>
+						</div>
+					</div>
+					<hr />
 				</c:if>
 			</c:if>
-        	<editpub:required post="${post}" autocompletion="$(false)"/>
+			<editpub:required post="${command.post}" autocompletion="$(false)"/>
 		</jsp:attribute>
-				
-        <jsp:attribute name="detailedInformation">
-        
-			<editpub:files post="${post}" />
 		
-			<editpub:details post="${post}" />
+		<jsp:attribute name="detailedInformation">
+		
+			<editpub:files post="${command.post}" />
+		
+			<editpub:details post="${command.post}" />
 			
 			<c:if test="${not empty command.scrapingContext}">
 				<bsform:fieldset legendKey="post.resource.fields.scraper" >
@@ -80,7 +78,7 @@
 						<div class="form-group">
 							<label class="col-sm-3 control-label"><fmt:message key="post.resource.fields.scraper.scraper"/><!--  --></label>
 							<div class="col-sm-9">
-								<p class="form-control-static"><a href="${scraperinfourl}${fn:escapeXml(command.scrapingContext.scraper.class.simpleName)}"><c:out value="${command.scrapingContext.scraper.class.simpleName}"/></a>: ${command.scrapingContext.scraper.info}</p>
+								<p class="form-control-static"><a href="${scraperinfourl}${fn:escapeXml(command.scrapingContext.scraper['class'].simpleName)}"><c:out value="${command.scrapingContext.scraper['class'].simpleName}"/></a>: ${command.scrapingContext.scraper.info}</p>
 							</div>
 						</div>
 

@@ -6,6 +6,7 @@
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
 	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
 	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:export="urn:jsptagdir:/WEB-INF/tags/bstags/export/bibtex"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
@@ -25,20 +26,20 @@
 	<c:set var="isOwnEntry" value="${post.user.name eq command.context.loginUser.name}"/>
 	
 	<spring:theme code="javascript.openaccess" var="jsOpenAccess" text=""/>
-	<script type="text/javascript" src="${resdir}/javascript/bs/publicationdetails.js"><!-- keep me --></script>
 	
 	<c:if test="${not empty jsOpenAccess}"> 
 		<script type="text/javascript" src="${jsOpenAccess}"><!-- keep me --></script>
 	</c:if>
 	
+	<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
 	
 	<!--+
 		| abstract 
 		+-->
-	<c:if test="${not empty post.resource.abstract}"> 
+	<c:if test="${not empty post.resource['abstract']}"> 
 		<h4 class="pub-details"><span class="fa fa-align-justify"><!--  --></span><c:out value=" "/><fmt:message key="publications.abstract.headline"/></h4>
 		<div id="abstract" class="show-more">
-			<span class="contentContainer"><c:out value="${post.resource.abstract}" /></span>
+			<span class="contentContainer"><c:out value="${mtl:cleanBibtex(post.resource['abstract'])}" /></span>
 		</div>
 	</c:if>
 	
@@ -59,131 +60,120 @@
 		+-->
 	<h4 class="pub-details"><span class="fa fa-link" ><!--  --></span><c:out value=" "/><fmt:message key="publications.resource.headline" /></h4>
 	
-	<div class="form-horizontal" id="resources" style="font-size: 85%;" >
+	<dl class="dl-horizontal" id="resources">
 		<!--+
 			| DOI
 			+-->
-		<c:if test="${not empty publication.miscFields['doi']}">
-			<div class="form-group">
-				<label class="col-sm-3 control-label"><fmt:message key="bibtex.actions.doi"/>:</label>
-				<div class="col-sm-9">
-					<p class="form-control-static"><a href="http://dx.doi.org/${mtl:encodeURI(mtl:extractDOI(publication.miscFields['doi']))}"><c:out value="${mtl:extractDOI(publication.miscFields['doi'])}"/></a></p>
-				</div>
-			</div>
+		<c:set var="doi" value="${publication.miscFields['doi']}" />
+		<c:if test="${not empty doi}">
+			<dt><fmt:message key="bibtex.actions.doi"/>:</dt>
+			<dd>
+				<a href="http://dx.doi.org/${mtl:encodeURI(mtl:extractDOI(doi))}"><c:out value="${mtl:extractDOI(doi)}"/></a>
+			</dd>
 		</c:if>
 		
 		<!--+
 			| URL
 			+-->
-		<c:if test="${not empty publication.url}">
-			<div class="form-group">
-				<label class="col-sm-3 control-label"><fmt:message key="bibtex.url"/>:</label>
-				<div class="col-sm-9">
-					<p class="form-control-static"><a href="${fn:escapeXml(publication.url)}"><c:out value="${publication.url}"/></a></p>
-				</div>
-			</div>
+		<c:set var="publicationUrl" value="${publication.url}" />
+		<c:if test="${not empty publicationUrl}">
+			<dt><fmt:message key="bibtex.url"/>:</dt>
+			<dd>
+				<a href="${fn:escapeXml(publicationUrl)}"><c:out value="${publicationUrl}"/></a>
+			</dd>
 		</c:if>
 		
 		<!--+
 			| additional URLs
 			+-->
 		<c:if test="${not empty publication.extraUrls or isOwnEntry}">
-			<script type="text/javascript" src="${resdir}/javascript/additionalUrl.js"><!--  --></script>
-			<div class="form-group">
-				<label class="col-sm-3 control-label"><fmt:message key="bibtex.additional_urls"/>:</label>
-			
-				<div class="col-sm-9">
-					<c:forEach items="${publication.extraUrls}" var="url">
+			<dt><fmt:message key="bibtex.additional_urls"/>:</dt>
+			<dd>
+				<ul id="urlList">
+				<c:forEach items="${publication.extraUrls}" var="url">
+					<li>
 						<c:set var="escapedUrl" value="${fn:escapeXml(url.url)}" />
-						<p class="form-control-static">
-							<a href="${escapedUrl}"><c:out value="${url.text}"/></a>
-							
-							<c:if test="${isOwnEntry}">
-								<fmt:message var="deleteUrl" key="post.bibtex.remove"/>
-								<c:out value=" " /><a title="${deleteUrl}" style="cursor:pointer;" onclick="deleteUrl(this, '${escapedUrl}','${fn:escapeXml(publication.intraHash)}','${fn:escapeXml(command.context.ckey)}');return false;" ><span class="glyphicon glyphicon-remove"><!--  --></span></a>
-							</c:if>
-						</p>
-					</c:forEach>
-					<c:if test="${isOwnEntry}">
-						<fmt:message var="addAdditionalUrl" key="bibtex.actions.additional_url.add" />
-						<p class="form-control-static"><a type="button" class="btn btn-xs btn-primary" role="button" data-toggle="modal" href="#add-url-modal"><span class="glyphicon glyphicon-plus"><!-- KEEP ME --></span>&amp;nbsp;<c:out value="${addAdditionalUrl}" /></a></p>
-						
-						<fmt:message var="addAdditionalUrlTitle" key="bibtex.actions.additional_url.add.title" />
-						<!-- modal window -->
-						<bs:modal id="add-url-modal" modalTitle="${addAdditionalUrlTitle}">
-							<jsp:attribute name="modalBody">
-								<form role="form" method="POST" action="/ajax/additionalURLs" id="f_addURL" class="form-horizontal">
-									<!-- input fields -->
-									<div class="form-group">
-										<label for="url" class="col-sm-3 control-label"><fmt:message key="bibtex.url" /></label>
-										<div class="col-sm-9">
-											<input class="form-control" type="text" name="url" id="url"/>
-										</div>
+						<a href="${escapedUrl}"><c:out value="${url.text}"/></a>
+					
+						<c:if test="${isOwnEntry}">
+							<fmt:message var="deleteUrl" key="post.bibtex.remove"/>
+							<c:out value=" " /><a title="${deleteUrl}" style="cursor:pointer;" onclick="deleteUrl(this, '${escapedUrl}','${fn:escapeXml(publication.intraHash)}','${fn:escapeXml(command.context.ckey)}');return false;" ><span class="glyphicon glyphicon-remove"><!--  --></span></a>
+						</c:if>
+					</li>
+				</c:forEach>
+				</ul>
+				<c:if test="${isOwnEntry}">
+					<fmt:message var="addAdditionalUrl" key="bibtex.actions.additional_url.add" />
+					<a type="button" class="btn btn-xs btn-primary" role="button" data-toggle="modal" href="#add-url-modal"><span class="glyphicon glyphicon-plus"><!-- KEEP ME --></span>&amp;nbsp;<c:out value="${addAdditionalUrl}" /></a>
+					
+					<fmt:message var="addAdditionalUrlTitle" key="bibtex.actions.additional_url.add.title" />
+					
+					<!-- modal window for adding new extra urls -->
+					<bs:modal id="add-url-modal" modalTitle="${addAdditionalUrlTitle}">
+						<jsp:attribute name="modalBody">
+							<form role="form" method="POST" action="/ajax/additionalURLs" id="f_addURL" class="form-horizontal">
+								<!-- input fields -->
+								<div class="form-group">
+									<label for="url" class="col-sm-3 control-label"><fmt:message key="bibtex.url" /></label>
+									<div class="col-sm-9">
+										<input class="form-control" type="text" name="url" id="url"/>
 									</div>
-									<div class="form-group">
-										<label for="text" class="col-sm-3 control-label"><fmt:message key="text"/></label>
-										<div class="col-sm-9">
-											<input class="form-control" type="text" id="text" name="text"/>
-										</div>
+								</div>
+								<div class="form-group">
+									<label for="text" class="col-sm-3 control-label"><fmt:message key="text"/></label>
+									<div class="col-sm-9">
+										<input class="form-control" type="text" id="text" name="text"/>
 									</div>
-									<!-- hidden fields -->
-									<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
-									<input type="hidden" name="hash" value="${fn:escapeXml(publication.intraHash)}"/>
-									<input type="hidden" name="action" value="addUrl" id="submitAddUrl"/>
-									<!-- submit -->
-									<div class="col-sm-offset-3 col-sm-9">
-										<bsform:button style="primary" type="submit" size="defaultSize" value="${addAdditionalUrl}" />
-									</div>
-								</form>
-							</jsp:attribute>
-							<jsp:attribute name="modalFooter">
-								<fmt:message var="closeMessage" key="box.close" />
-								<bsform:button size="defaultSize" style="defaultStyle" dataDismiss="modal" value="${closeMessage}" />
-							</jsp:attribute>
-						</bs:modal>
-					</c:if>
-				</div>
-		</div>
+								</div>
+								<!-- hidden fields -->
+								<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
+								<input type="hidden" name="hash" value="${fn:escapeXml(publication.intraHash)}"/>
+								<input type="hidden" name="action" value="addUrl" id="submitAddUrl"/>
+								<!-- submit -->
+							</form>
+						</jsp:attribute>
+						<jsp:attribute name="modalFooter">
+							<bsform:button className="postUrl" type="submit" style="primary" size="defaultSize" value="${addAdditionalUrl}" />
+							<fmt:message var="closeMessage" key="box.close" />
+							<bsform:button size="defaultSize" style="defaultStyle" dataDismiss="modal" value="${closeMessage}" />
+						</jsp:attribute>
+					</bs:modal>
+				</c:if>
+			</dd>
 		</c:if>
 		
 		<!--+
 			| OpenURL
 			+-->
-		<c:if test="${not empty command.context.loginUser.openURL}">
+		<c:set var="userOpenURL" value="${command.context.loginUser.openURL}" />
+		<c:if test="${not empty userOpenURL}">
 			<fmt:message var="openurlTitle" key="bibtex.actions.openurl.title" />
-			<div class="form-group">
-				<label class="col-sm-3 control-label"><fmt:message key="bibtex.actions.openurl"/>:</label>
-				<div class="col-sm-9">
-					<a href="${fn:escapeXml(command.context.loginUser.openURL)}?${fn:escapeXml(publication.openURL)}" title="${openurlTitle}">
-						<c:out value="${command.context.loginUser.openURL}"/>?<c:out value="${mtl:shorten(publication.openURL, 30)}"/>
-					</a>
-				</div>
-			</div>
-			
+			<dt><fmt:message key="bibtex.actions.openurl"/>:</dt>
+			<dd>
+				<c:set var="publicationOpenURL" value="${publication.openURL}"/>
+				<a href="${fn:escapeXml(userOpenURL)}?${fn:escapeXml(publicationOpenURL)}" title="${openurlTitle}">
+					<c:out value="${userOpenURL}"/>?<c:out value="${mtl:shorten(publicationOpenURL, 30)}"/>
+				</a>
+			</dd>
 		</c:if>
 
 		<!--+
 			| BibTeX key
 			+-->
-		<div class="form-group">
-			<label class="col-sm-3 control-label"><fmt:message key="post.resource.bibtexKey"/>:</label>
-			<div class="col-sm-9">
-				<p class="form-control-static"><a href="/bibtexkey/${mtl:encodeURI(publication.bibtexKey)}/${mtl:encodeURI(post.user.name)}"><c:out value="${publication.bibtexKey}"/></a></p>
-			</div>
-		</div>
+		<dt><fmt:message key="post.resource.bibtexKey"/>:</dt>
+		<dd>
+			<a href="/bibtexkey/${mtl:encodeURI(publication.bibtexKey)}/${mtl:encodeURI(post.user.name)}"><c:out value="${publication.bibtexKey}"/></a>
+		</dd>
 		
 		<!--+ 
 			| internal resource link
 			+-->
-		<div class="form-group">
-			<label class="col-sm-3 control-label" for="resource-link"><fmt:message key="discussion.resourceLink.title"/><c:out value=": "/></label>
-			<div class="col-sm-9">
-				<fmt:message var="helpText" key="discussion.resourceLink.help"/>
-				<c:set var="linkText" value="[[publication/${hash.inter.id}${publication.interHash}/${mtl:encodeURI(post.user.name)}]]" />
-				<bsform:copyInput id="resource-link" value="${linkText}" onclick="$(this).focus().select();" helpText="${helpText}" noHelp="${false}" />
-			</div>
-		</div>
-		
+		<dt><fmt:message key="discussion.resourceLink.title"/><c:out value=": "/></dt>
+		<dd>
+			<fmt:message var="helpText" key="discussion.resourceLink.help"/>
+			<c:set var="linkText" value="[[publication/${interHashId}${publication.interHash}/${mtl:encodeURI(post.user.name)}]]" />
+			<bsform:copyInput id="resource-link" value="${linkText}" onclick="$(this).focus().select();" helpText="${helpText}" noHelp="${false}" />
+		</dd>
 		
 		<!--+ 
 			|
@@ -192,61 +182,54 @@
 			+-->
 			
 		<!-- the string you would usually enter in google scholar, world cat etc. -->
-		<c:set var="externalQueryString"
-			value="${fn:escapeXml(mtl:cleanBibtex(publication.title))}"></c:set>
-
-		
+		<c:set var="externalQueryString" value="${fn:escapeXml(mtl:cleanBibtex(publication.title))}" />
 		<!-- build the urls -->
 		<c:url var="googleScholarPostUrl"
 			value="http://scholar.google.com/scholar">
 			<c:param name="hl" value="${locale}" />
 			<c:param name="q" value="${externalQueryString}" />
 		</c:url>
-
+		
 		<c:url var="microsoftAcademicUrl"
 			value="http://academic.research.microsoft.com/Search">
 			<c:param name="query" value="${externalQueryString}" />
 		</c:url>
-
+		
 		<c:url var="worldCatUrl" value="http://www.worldcat.org/search">
 			<c:param name="qt" value="worldcat_org_all" />
 			<c:param name="q" value="${externalQueryString}" />
 		</c:url>
-			
+		
 		<c:url var="baseSearchUrl" value="http://www.base-search.net/Search/Results">
-			<c:param name="lookfor" value="${externalQueryString }" />
+			<c:param name="lookfor" value="${externalQueryString}" />
 			<c:param name="type" value="tit" />
 			<c:param name="ling" value="1" />
 			<c:param name="refid" value="dcbasde" />
 		</c:url>
 		
 		<!-- Go message -->
-		<div class="form-group">
-			<fmt:message key="resources.searchExternal.go" var="goMsg" />
-			<label for="dropDownExternal" class="col-sm-3 control-label"><fmt:message key="resources.searchExternal.dropDownLabel" />:</label>
-
-			<div class="col-sm-9">
-				<div class="btn-group">
-					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-						<fmt:message key="resources.searchExternal.dropDownTitle" /><c:out value=" " />
-						<span class="caret"><!-- keep me --></span>
-					</button>
-					<ul class="dropdown-menu" role="menu">
-						<li><a href="${googleScholarPostUrl}">Google Scholar</a></li>
-						<li><a href="${microsoftAcademicUrl}">Microsoft Academic Search</a></li>
-						<li><a href="${worldCatUrl}">WorldCat</a></li>
-						<li><a href="${baseSearchUrl}">BASE</a></li>
-					</ul>
-				</div>
+		<fmt:message key="resources.searchExternal.go" var="goMsg" />
+		<dt><fmt:message key="resources.searchExternal.dropDownLabel" />:</dt>
+		<dd>
+			<div class="btn-group">
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+					<fmt:message key="resources.searchExternal.dropDownTitle" /><c:out value=" " />
+					<span class="caret"><!-- keep me --></span>
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="${googleScholarPostUrl}">Google Scholar</a></li>
+					<li><a href="${microsoftAcademicUrl}">Microsoft Academic Search</a></li>
+					<li><a href="${worldCatUrl}">WorldCat</a></li>
+					<li><a href="${baseSearchUrl}">BASE</a></li>
+				</ul>
 			</div>
-		</div>
-
-	</div>
+		</dd>
+	</dl>
 	
 	<!--+
 		| discussion and rating
 		+-->
-	<pub:discussionrating post="${post}" otherPostsUrlPrefix="/bibtex/${hash.inter.id}"/>
+	<pub:discussionrating post="${post}" otherPostsUrlPrefix="/bibtex/${interHashId}"/>
 	
 	<!--+
 		| tag list

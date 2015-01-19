@@ -7,7 +7,7 @@
 						http://www.springframework.org/schema/util
 						http://www.springframework.org/schema/util/spring-util.xsd">
 	
-	<util:constant id="lucene24Compat" static-field="org.apache.lucene.util.Version.LUCENE_24" />
+	<util:constant id="luceneVersion" static-field="org.apache.lucene.util.Version.LUCENE_48" />
 	
 	<!--+
 	    | type handler 
@@ -32,11 +32,11 @@
 	    | analyzer (==tokenizer/normalizer)
 	    +-->
 	<bean id="luceneStandardAnalyzer" class="org.apache.lucene.analysis.standard.StandardAnalyzer">
-		<constructor-arg ref="lucene24Compat"/>
+		<constructor-arg ref="luceneVersion"/>
 	</bean>
 	
 	<bean id="luceneGermanAnalyzer" class="org.apache.lucene.analysis.de.GermanAnalyzer">
-		<constructor-arg ref="lucene24Compat"/>
+		<constructor-arg ref="luceneVersion"/>
 	</bean>
 	
 	<bean id="luceneWhitespaceAnalyzer" class="org.bibsonomy.lucene.index.analyzer.WhiteSpaceLowerCaseFilteringAnalyzer"/>

@@ -3,6 +3,7 @@
   xmlns:jsp="http://java.sun.com/JSP/Page"
   xmlns:c="http://java.sun.com/jsp/jstl/core"
   xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+  xmlns:spring="http://www.springframework.org/tags"
   xmlns:export="urn:jsptagdir:/WEB-INF/tags/bstags/export/bibtex"
   xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
   xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
@@ -16,15 +17,17 @@
     - HTML-encoded content is contained in <description>, not in <content:encoded> element
   -->
   
+  <spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
+  
   <export:rssSkeleton format="publrssN">
 
     <jsp:attribute name="additionalItemMetadata">
       <description>
       <c:set var="description">
         <bib:desc publication="${post.resource}"/>
-        <div class="abstract"><c:out value="${post.resource.abstract}"/></div>
+        <div class="abstract"><c:out value="${post.resource['abstract']}"/></div>
         <span>
-          <rc:meta post="${post}" otherPostsUrlPrefix="/bibtex/${hash.inter.id}" showTagsLabel="${true}"/>
+          <rc:meta post="${post}" otherPostsUrlPrefix="/bibtex/${interHashId}" showTagsLabel="${true}"/>
         </span>
       </c:set>
       <c:out value="${description}"/>

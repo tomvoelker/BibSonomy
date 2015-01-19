@@ -20,13 +20,13 @@
 		disableResourcetypeSelection="${true}"
 		minimizedContentWidth="${true}">	
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.documents" formAction="/user/${mtl:encodeURI(command.requestedUser)}" formInputName="tag" formInputValue="${command.requestedTags}">
+			<parts:search pathMessageKey="navi.documents" formAction="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="formExtra">
 					<input type="hidden" name="filter" value="JUST_PDF"/>
 				</jsp:attribute>
 				<jsp:attribute name="pathPart">
 					<li>
-						:: <a href="/user/${mtl:encodeURI(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
+						:: <a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
 					</li>
 				</jsp:attribute>
 			</parts:search>
@@ -42,7 +42,7 @@
 				<li>
 					<fmt:message key="tagrelations.title" var="tagRelationsTitle"/>
 					<span class="sidebar_h">
-						<a href="/concepts/${fn:escapeXml(command.requestedUser)}" title="${tagRelationsTitle}">
+						<a href="${relativeUrlGenerator.getConceptsUrlByString(fn:escapeXml(command.requestedUser))}" title="${tagRelationsTitle}">
 							<fmt:message key="tagrelations"/>
 						</a>
 					</span>	

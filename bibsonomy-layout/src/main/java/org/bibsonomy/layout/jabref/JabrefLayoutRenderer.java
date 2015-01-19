@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Layout - Layout engine for the webapp.
  *
- *  BibSonomy-Layout - Layout engine for the webapp.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.layout.jabref;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -47,6 +50,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.renderer.LayoutRenderer;
+import org.bibsonomy.util.StringUtils;
 
 /**
  * This renderer handles jabref layouts. 
@@ -68,16 +72,18 @@ public class JabrefLayoutRenderer implements LayoutRenderer<AbstractJabRefLayout
 	/**
 	 * constructs a new jabref layout renderer
 	 * @param config 
+	 * @throws Exception 
 	 */
-	public JabrefLayoutRenderer(final JabRefConfig config) {
+	public JabrefLayoutRenderer(final JabRefConfig config) throws Exception {
 		this.config = config;
 		this.init();
 	}
 
 	/**
 	 * Initializes the bean by loading default layouts.
+	 * @throws Exception 
 	 */
-	private void init() {
+	private void init() throws Exception {
 		/* 
 		 * initialize JabRef preferences. This is neccessary ... because they use global 
 		 * preferences and if we don't initialize them, we get NullPointerExceptions later 
@@ -85,11 +91,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<AbstractJabRefLayout
 		GlobalsSuper.prefs = JabRefPreferences.getInstance();
 
 		// load default filters 
-		try {
-			this.loadDefaultLayouts();
-		} catch (final Exception e) {
-			log.fatal("Could not load default layout filters.", e);
-		}
+		this.loadDefaultLayouts();
 	}
 	
 	/**
@@ -105,15 +107,19 @@ public class JabrefLayoutRenderer implements LayoutRenderer<AbstractJabRefLayout
 		/*
 		 * load layout definition from XML file
 		 */
-		final List<AbstractJabRefLayout> jabrefLayouts = new XMLJabrefLayoutReader(new BufferedReader(new InputStreamReader(JabrefLayoutUtils.getResourceAsStream(this.config.getDefaultLayoutFilePath() + "/" + "JabrefLayouts.xml"), "UTF-8"))).getJabrefLayoutsDefinitions();
+		final List<AbstractJabRefLayout> jabrefLayouts = new XMLJabrefLayoutReader(new BufferedReader(new InputStreamReader(JabrefLayoutUtils.getResourceAsStream(this.config.getDefaultLayoutFilePath() + "/" + "JabrefLayouts.xml"), StringUtils.CHARSET_UTF_8))).getJabrefLayoutsDefinitions();
 		log.info("found " + jabrefLayouts.size() + " layout definitions");
 		/*
 		 * iterate over all layout definitions
 		 */
 		for (final AbstractJabRefLayout jabrefLayout : jabrefLayouts) {
-			log.debug("loading layout " + jabrefLayout.getName());
+			final String layoutId = jabrefLayout.getName();
+			log.debug("loading layout " + layoutId);
 			jabrefLayout.init(this.config);
-			layouts.put(jabrefLayout.getName(), jabrefLayout);
+			if (this.layouts.containsKey(layoutId)) {
+				throw new IllegalStateException("layout '" + layoutId + "' already exists.");
+			}
+			this.layouts.put(layoutId, jabrefLayout);
 		}
 		log.info("loaded " + layouts.size() + " layouts");
 	}
@@ -160,11 +166,11 @@ public class JabrefLayoutRenderer implements LayoutRenderer<AbstractJabRefLayout
 		 * new code: duplicate removal in controller, no sorting by year - must be enforced 
 		 * by another parameter
 		 */
-		final BibtexDatabase database = JabRefModelConverter.bibtex2JabrefDB(posts,urlGenerator,false);
+		final BibtexDatabase database = JabRefModelConverter.bibtex2JabrefDB(posts, urlGenerator, false);
 		/*
 		 * render the database
 		 */
-		return layout.render(database, JabRefModelConverter.convertPosts(posts, urlGenerator,false), embeddedLayout);
+		return layout.render(database, JabRefModelConverter.convertPosts(posts, urlGenerator, false), embeddedLayout);
 	}
 
 	/**

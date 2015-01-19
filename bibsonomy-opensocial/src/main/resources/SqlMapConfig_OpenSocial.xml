@@ -11,8 +11,8 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
 	<typeAlias alias="tokenIndex"            type="org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenIndex"/>
 	<typeAlias alias="tokenInfo"             type="org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenInfo"/>
 	<typeAlias alias="tokenEntry"            type="org.apache.shindig.social.opensocial.oauth.OAuthEntry"/>
-	<typeAlias alias="userInfo"            	 type="org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo"/>
-	<typeAlias alias="oAuthParam" 		     type="org.bibsonomy.opensocial.oauth.database.beans.OAuthParam"/>
+	<typeAlias alias="userInfo"              type="org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo"/>
+	<typeAlias alias="oAuthParam"            type="org.bibsonomy.opensocial.oauth.database.beans.OAuthParam"/>
 	<!--+
 		| data source configuration
 		+-->

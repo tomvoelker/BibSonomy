@@ -31,7 +31,7 @@
 			<parts:search pathMessageKey="navi.admin">
 				<jsp:attribute name="pathPart">
 					<li>
-						::<a rel="path_menu" href="/admin/spam">Spam</a>
+						::<a rel="path_menu" href="${relativeUrlGenerator.getAdminUrlByName('spam')}">Spam</a>
 					</li>
 				</jsp:attribute>
 			</parts:search>
@@ -43,7 +43,7 @@
 			<h2><fmt:message key="admin.actions.user"/></h2>
 			
 			<table>	
-				<form:form name="userinfo" action="/admin/spam">
+				<form:form name="userinfo" action="${relativeUrlGenerator.getAdminUrlByName('spam')}">
 				<tr>
 				<td width="180px"><form:label path="aclUserInfo">User name</form:label></td>
 				<td width="220px"><form:input path="aclUserInfo" /></td>
@@ -217,7 +217,7 @@
 				<tr>
 					<td>
 					    <!-- show info boxes of users -->
-						<c:url value="/user/${user.name}" var="userUrl">
+						<c:url value="${relativeUrlGenerator.getUserUrlByUserName(user.name)}" var="userUrl">
 							<c:param name="filter" value="ADMIN_SPAM_POSTS"></c:param>
 						</c:url>
 						<a href="${userUrl}"><c:out value="${user.name}" /></a>

@@ -1,26 +1,29 @@
 /**
- * 
  * BibSonomy-Layout - Layout engine for the webapp.
- * 
- * Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- * University of Kassel, Germany
- * http://www.kde.cs.uni-kassel.de/
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package net.sf.jabref.export.layout.format;
 
 import net.sf.jabref.AuthorList;
@@ -28,10 +31,7 @@ import net.sf.jabref.AuthorList.Author;
 import net.sf.jabref.export.layout.LayoutFormatter;
 
 /**
- * 
- * 
  * @author Sebastian Böttger sbo@cs.uni-kassel.de
- * 
  */
 public abstract class MittelalterEditorNamesFormatter implements LayoutFormatter {
 
@@ -42,9 +42,8 @@ public abstract class MittelalterEditorNamesFormatter implements LayoutFormatter
 	 * @return formatted string
 	 */
 	public String getEditorsString(final String fieldText) {
-
 		final AuthorList authorlist = AuthorList.getAuthorList(fieldText);
-		final StringBuffer ret = new StringBuffer();
+		final StringBuilder ret = new StringBuilder();
 		/*
 		 * If the publication has more than three editors only the first is
 		 * displayed with (Hgg.) to hint at further editors.
@@ -64,10 +63,9 @@ public abstract class MittelalterEditorNamesFormatter implements LayoutFormatter
 	 * @return
 	 */
 	protected String getAllPersonsString(final AuthorList list) {
+		final StringBuilder ret = new StringBuilder();
 
-		final StringBuffer ret = new StringBuffer();
-
-		for (int i = 0; i < list.size(); ++i) {
+		for (int i = 0; i < list.size(); i++) {
 			String author = this.getPersonName(list.getAuthor(i));
 
 			// (Über.) for translator
@@ -97,7 +95,11 @@ public abstract class MittelalterEditorNamesFormatter implements LayoutFormatter
 	 * @return
 	 */
 	protected abstract String getPersonName(final Author a);
-
+	
+	/**
+	 * @param list
+	 * @return
+	 */
 	protected abstract String getPersonNames(final AuthorList list);
 
 }

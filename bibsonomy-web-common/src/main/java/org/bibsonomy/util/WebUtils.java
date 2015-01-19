@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Web-Common - Common things for web
  *
- *  BibSonomy-Web-Common - Common things for web
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -55,36 +58,32 @@ import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.Pair;
 
 /**
  * @author rja
- */
-/**
- * @author rja
- *
  */
 public class WebUtils {
 	private static final Log log = LogFactory.getLog(WebUtils.class);
 
-	/**
-	 * maximal number of redirects to follow in {@link #getRedirectUrl(URL)}
-	 */
+	/** maximal number of redirects to follow in {@link #getRedirectUrl(URL)} */
 	private static final int MAX_REDIRECT_COUNT = 10;
+	
+	/** the connection timeout */
+	protected static final int CONNECTION_TIMEOUT = 30 * 1000;
+	
+	/** the read timeout */
+	protected static final int READ_TIMEOUT = 30 * 1000;
 
-	/**
-	 * The user agent used for all requests with {@link HttpURLConnection}.
-	 */
+	/** The user agent used for all requests with {@link HttpURLConnection}. */
 	private static final String USER_AGENT_PROPERTY_VALUE = "BibSonomy/2.0.32 (Linux x86_64; en) Gecko/20120714 Iceweasel/3.5.16 (like Firefox/3.5.16)";
 
-	private static final String CHARSET			= "charset=";
-	private static final String DEFAULT_CHARSET	= "UTF-8";
-	private static final String EQUAL_SIGN		= "=";
-	private static final String AMP_SIGN		= "&";
-	private static final String NEWLINE			= "\n";
-	private static final String SEMICOLON		= ";";
-	private static final String USER_AGENT_HEADER_NAME   = "User-Agent";
-	private static final String COOKIE_HEADER_NAME  	 = "Cookie";
+	private static final String CHARSET = "charset=";
+	private static final String EQUAL_SIGN = "=";
+	private static final String AMP_SIGN = "&";
+	private static final String NEWLINE = "\n";
+	private static final String SEMICOLON = ";";
+	private static final String USER_AGENT_HEADER_NAME = "User-Agent";
+	private static final String COOKIE_HEADER_NAME = "Cookie";
 	private static final String CONTENT_TYPE_HEADER_NAME = "Content-Type";
 
 	/**
@@ -99,30 +98,31 @@ public class WebUtils {
 	 * according to http://hc.apache.org/httpclient-3.x/threading.html
 	 * HttpClient is thread safe and we can use one instance for several requests.
 	 */
-  	private static final MultiThreadedHttpConnectionManager connectionManager =	new MultiThreadedHttpConnectionManager();
-  	private static final HttpClient client = getHttpClient();
+	private static final MultiThreadedHttpConnectionManager connectionManager =	new MultiThreadedHttpConnectionManager();
+	private static final HttpClient CLIENT = getHttpClient();
 
-  	
-  	/**
-  	 * This method returns an instance of the HttpClient and should only be used
-  	 * if the other methods that deliver direct results can not be used. Each 
-  	 * call to this method should be documented with an explanation why it is 
-  	 * necessary.
-  	 * 
-  	 * @return
-  	 */
-  	public static HttpClient getHttpClient() {
-  		final HttpClient client = new HttpClient(connectionManager);
-  		/*
-  		 * configure client
-  		 */
-  	  	client.getParams().setParameter(HttpMethodParams.USER_AGENT, USER_AGENT_PROPERTY_VALUE);
-  	  	client.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
-		client.getParams().setBooleanParameter(HttpMethodParams.SINGLE_COOKIE_HEADER, true);
-		client.getParams().setIntParameter(HttpClientParams.MAX_REDIRECTS, MAX_REDIRECT_COUNT);
-  	  	return client;
-  	}
-  	
+	
+	/**
+	 * This method returns an instance of the HttpClient and should only be used
+	 * if the other methods that deliver direct results can not be used. Each 
+	 * call to this method should be documented with an explanation why it is 
+	 * necessary.
+	 * 
+	 * @return
+	 */
+	public static HttpClient getHttpClient() {
+		final HttpClient client = new HttpClient(connectionManager);
+		final HttpClientParams params = client.getParams();
+		/*
+		 * configure client
+		 */
+		params.setParameter(HttpMethodParams.USER_AGENT, USER_AGENT_PROPERTY_VALUE);
+		params.setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
+		params.setBooleanParameter(HttpMethodParams.SINGLE_COOKIE_HEADER, true);
+		params.setIntParameter(HttpClientParams.MAX_REDIRECTS, MAX_REDIRECT_COUNT);
+		return client;
+	}
+	
 	/**
 	 * Do a POST request to the given URL with the given content. Assume the charset of the result to be charset.
 	 * 
@@ -345,7 +345,7 @@ public class WebUtils {
 			/*
 			 * visit URL to get cookies if needed
 			 */
-			client.executeMethod(new GetMethod(visitBefore));
+			CLIENT.executeMethod(new GetMethod(visitBefore));
 		}
 		
 		final HttpMethod method;
@@ -360,7 +360,7 @@ public class WebUtils {
 				
 				if (p.length != 2) {
 					continue;
-				} 
+				}
 				
 				data.add(new NameValuePair(p[0], p[1]));
 			}
@@ -379,13 +379,13 @@ public class WebUtils {
 		 * set cookie
 		 */
 		if (present(cookie)) {
-			method.setRequestHeader(COOKIE_HEADER_NAME, cookie);
+			method.addRequestHeader(COOKIE_HEADER_NAME, cookie);
 		}
 		
 		/*
 		 * do request
 		 */
-		final int status = client.executeMethod(method);
+		final int status = CLIENT.executeMethod(method);
 		if (status != HttpStatus.SC_OK) {
 			throw new IOException(url + " returns: " + status);
 		}
@@ -466,7 +466,7 @@ public class WebUtils {
 	 * @throws IOException
 	 */
 	public static String getContentAsString(HttpMethod method) throws HttpException, IOException {
-		return getContentAsString(client, method);
+		return getContentAsString(CLIENT, method);
 	}
 	/**
 	 * Convenience method for getting the page content by passing the {@link HttpClient} and the
@@ -519,25 +519,26 @@ public class WebUtils {
 	public static URL getRedirectUrl(final URL url, final List<Header> headers) {
 		final HttpMethod method = new GetMethod(url.toExternalForm());
 		if (present(headers)) {
-			for (final Header header: headers) {
-				method.setRequestHeader(header);
+			for (final Header header : headers) {
+				method.addRequestHeader(header);
 			}
 		}
 		final HttpClient client = getHttpClient();
 		
 		try {
 			client.executeMethod(method);
-		} catch (HttpException e) {
 		} catch (IOException e) {
+			// ignore
 		} finally {
 			method.releaseConnection();
 		}
+		
 		if (method.getStatusCode() != HttpStatus.SC_OK) return null;
 		
 		try {
 			return new URL(method.getURI().getURI());
-		} catch (URIException e) {
-		} catch (MalformedURLException e) {
+		} catch (URIException | MalformedURLException e) {
+			// ignore, just return null
 		}
 		return null;
 	}
@@ -640,7 +641,7 @@ public class WebUtils {
 		/*
 		 * default charset
 		 */
-		return DEFAULT_CHARSET;
+		return StringUtils.CHARSET_UTF_8;
 	}
 
 	/**

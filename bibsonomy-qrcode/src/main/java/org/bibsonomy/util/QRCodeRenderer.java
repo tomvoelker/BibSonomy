@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-QRCode - Embbeding QR Codes in PDFs in Bibsonomy
  *
- *  BibSonomy-QRCode - Embbeding QR Codes in PDFs in Bibsonomy
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.util;
 
 import java.io.File;
@@ -39,7 +42,7 @@ public class QRCodeRenderer {
 	/**
 	 * project home. important for URL to encode
 	 */
-	private String projectHome = null; 
+	private String projectHome = null;
 
 	/**
 	 * method to manipulate pdf document. only return
@@ -51,43 +54,35 @@ public class QRCodeRenderer {
 	 * @return the path to the manipulated pdf file
 	 * @throws Exception if something goes wrong during process
 	 */
-	public String manipulate(String filePath, String requestedUser, String intraHash) throws Exception {		
+	public String manipulate(String filePath, String requestedUser, String intraHash) throws Exception {
 		/*
 		 * build URL: e.g. http://www.bibsonomy.org/bibtex/INTRAHASH/USERNAME
 		 */
 		final String encodee = projectHome + "bibtex/" + intraHash + "/" + requestedUser;
-
+		
 		/*
 		 * create executor service
 		 */
-		ExecutorService pool = Executors.newFixedThreadPool(1);
-
-		Future<String> embedderFuture = pool.submit(new QRCodeEmbedder(filePath, encodee));
-
-		/*
-		 * get result within 5 seconds or throw an exception
-		 */
-		String manipulatedFilePath = null;
+		final ExecutorService pool = Executors.newFixedThreadPool(1);
+		
+		final Future<String> embedderFuture = pool.submit(new QRCodeEmbedder(filePath, encodee));
 		
 		try {
-			manipulatedFilePath = embedderFuture.get(QRCodeEmbedder.WAIT_TIME, TimeUnit.MILLISECONDS);
+			/*
+			 * get result within 5 seconds or throw an exception
+			 */
+			return embedderFuture.get(QRCodeEmbedder.WAIT_TIME, TimeUnit.MILLISECONDS);
 		} catch (final Exception e) {
 			
 			/*
 			 * if embedding fails, safely shutdown executor and delete output file
 			 */
-			pool.shutdownNow();
 			new File(filePath.concat(".qr")).delete();
 			
 			throw new Exception(e);
+		} finally {
+			pool.shutdownNow();
 		}
-
-		pool.shutdownNow();
-		
-		/*
-		 * return the manipulated file path
-		 */
-		return manipulatedFilePath;
 	}
 
 	/**
@@ -96,7 +91,4 @@ public class QRCodeRenderer {
 	public void setProjectHome(String projectHome) {
 		this.projectHome = projectHome;
 	}
-
-	
-	
 }

@@ -14,17 +14,14 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
-	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
-	<layout:paneLayout 
-	pageTitle="${pageTitle} :: ${command.context.loginUser.name}" 
-	headerMessageKey="navi.editTags" 
-	headerLogoClass="editTags" 
-	command="${command}" 
-	requPath="${requPath}"
-	minimizedContentWidth="${true}">
+	<layout:paneLayout pageTitle="${pageTitle}" headerMessageKey="navi.editTags" 
+		headerLogoClass="editTags" command="${command}" requPath="${requPath}" minimizedContentWidth="${true}">
 		
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.editTags"/>
@@ -32,6 +29,16 @@
 		
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript" src="${resdir}/javascript/editPost.js"><!-- keep me --></script>
+		</jsp:attribute>
+
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:account />
+					<fmt:message key="navi.editTags" var="editTags"/>
+					<nav:crumb name="${editTags}" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
@@ -48,8 +55,8 @@
 						</div>
 					</div>
 						
-					<bsform:input path="editTags.delTags" labelColSpan="3" inputColSpan="9"/>		
-					<bsform:input path="editTags.addTags" labelColSpan="3" inputColSpan="9"/>
+					<bsform:input path="editTags.delTags" labelColSpan="3" inputColSpan="9" />
+					<bsform:input path="editTags.addTags" labelColSpan="3" inputColSpan="9" />
 					<bsform:checkbox path="editTags.updateRelations" inputColSpan="9">
 						<jsp:attribute name="labelText">
 							<fmt:message key="editTags.updateRelations"/>
@@ -135,19 +142,18 @@
 
 		</jsp:attribute>
 
-		<jsp:attribute name="sidebar">	
-			<ul>			
+		<jsp:attribute name="sidebar">
+			<ul>
 				<li>
-					<fmt:message key="tagrelations.title" var="tagRelationsTitle"/>
-					<span class="sidebar_h">
-						<a href="/concepts/${fn:escapeXml(command.context.loginUser.name)}" title="${tagRelationsTitle}">
-							<fmt:message key="tagrelations"/>
-						</a>
-					</span>	
-					<tags:concepts cmd="${command.concepts}" usersOwnRelations="${true}" requestedUserName="${command.context.loginUser.name}"/>
+					<!-- TODO: refactor and use it also in user.jspx -->
+					<fmt:message key="tagrelations.title" var="tagRelationsTitle" />
+					<h4 class="sidebar concepts-headline sidebar-headline">
+						<fmt:message key="tagrelations"/>
+					</h4>
+					<tags:concepts cmd="${command.concepts}" usersOwnRelations="${true}" requestedUserName="${command.context.loginUser.name}" disableEditLink="${true}"/>
 				</li>
 				<li>
-					<span class="sidebar_h"><fmt:message key="tags" /></span>
+					<sidebar:sidebarHeader textKey="tags" />
 					<tags:cloud requPath="user/${command.context.loginUser.name}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" />
 				</li>
 			</ul>
@@ -174,8 +180,6 @@
 	
 ]]>			
 			</script>
-
 		</jsp:attribute>
 	</layout:paneLayout>
-
 </jsp:root>

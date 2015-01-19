@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Lucene - Fulltext search facility of BibSonomy
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.lucene.index;
 
 import static org.junit.Assert.assertEquals;
@@ -36,7 +62,6 @@ import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -166,7 +191,6 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * @throws PersonListParserException 
 	 */
 	@Test
-	@Ignore
 	public void updateIndices() throws IOException, ClassNotFoundException, SQLException, PersonListParserException {
 		// set up data structures
 		final Set<String> allowedGroups = new TreeSet<String>();
@@ -265,7 +289,6 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * tests handling of spam posts
 	 */
 	@Test
-	@Ignore // TODO: fails on hudson
 	public void spamPosts() {
 		// set up data structures
 		final Set<String> allowedGroups = new TreeSet<String>();
@@ -313,7 +336,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		
 		bibResultList = bibtexSearcher.getPosts(userName, null, null, null, allowedGroups, userName, null, null, null, null, null, null, null, null, 1000, 0);
 		bibRefList    = publicationDb.getPostsForUser(userName, userName, HashID.INTER_HASH, groupId, groups, PostAccess.FULL, null, 1000, 0, null, this.dbSession);
-		assertEquals(bibRefList.size() - 1, bibResultList.size()); // db list contains one interhash duplicate!
+		assertEquals(bibRefList.size(), bibResultList.size());
 
 		// FIXME: this test is broken - we only get public posts from the db logic
 		/*
@@ -369,7 +392,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		// search
 		bibResultList = bibtexSearcher.getPosts(userName, null, null, null, allowedGroups, userName, null, null, null, null, null, null, null, null, 1000, 0);
 		bibRefList    = publicationDb.getPostsForUser(userName, userName, HashID.INTER_HASH, groupId, groups, PostAccess.FULL, null, 1000, 0, null, this.dbSession);
-		assertEquals(bibRefList.size() - 1, bibResultList.size()); // db list contains one interhash duplicate
+		assertEquals(bibRefList.size(), bibResultList.size());
 }
 
 	private void waitForDB() {

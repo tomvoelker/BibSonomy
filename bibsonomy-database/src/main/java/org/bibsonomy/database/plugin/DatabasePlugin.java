@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Database - Database for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.database.plugin;
 
 import org.bibsonomy.database.common.DBSession;
@@ -9,6 +35,7 @@ import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /**
  * This interface supplies hooks which can be implemented by plugins. This way
@@ -73,8 +100,9 @@ public interface DatabasePlugin {
 	 * @param userName
 	 * @param interHash_publication
 	 * @param interHash_reference
+	 * @param interHash_relation
 	 */
-	public void onGoldStandardPublicationReferenceCreate(String userName, String interHash_publication, String interHash_reference);
+	public void onGoldStandardPublicationReferenceCreate(String userName, String interHash_publication, String interHash_reference, String interHash_relation);
 	
 	/**
 	 * Called when a reference of a gold standard publication will be deleted
@@ -82,9 +110,10 @@ public interface DatabasePlugin {
 	 * @param userName
 	 * @param interHash_publication
 	 * @param interHash_reference
+	 * @param interHashRelation
 	 * @param session
 	 */
-	public void onGoldStandardPublicationReferenceDelete(String userName, String interHash_publication, String interHash_reference, DBSession session);
+	public void onGoldStandardRelationDelete(String userName, String interHash_publication, String interHash_reference, GoldStandardRelation interHashRelation, DBSession session);
 	
 	/**
 	 * Called when a gold standard publication is deleted.
@@ -262,5 +291,7 @@ public interface DatabasePlugin {
 	 * @param session
 	 * @author MarcelM
 	 */
-	public void onBibTexExtraDelete(final BibTexExtraParam deletedBibTexExtraParam, final DBSession session); 
+	public void onBibTexExtraDelete(final BibTexExtraParam deletedBibTexExtraParam, final DBSession session);
+
+
 }

@@ -9,19 +9,12 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:spring="http://www.springframework.org/tags">
 	
-	<jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
-	
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>	
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>	
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
-	<jsp:directive.attribute name="contentIntro" fragment="true" required="false"/>	
 	<jsp:directive.attribute name="headerExt" fragment="true" />
-	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
-	<jsp:directive.attribute name="beforeMainContainer" fragment="true" required="false"/>
-	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
-	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerContainer" fragment="true" required="false"/>
 	<!-- FIXME: footerContainer not used -->
 	<jsp:directive.attribute name="footerContainer" fragment="true" required="false"/>
@@ -31,6 +24,7 @@
 	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>	
 	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
 	
+	<jsp:directive.attribute name="contentIntro" fragment="true" required="false"/>	
 	<jsp:directive.attribute name="leftContent" fragment="true" required="true"/>
 	<jsp:directive.attribute name="rightContent" fragment="true" required="true"/>
 	
@@ -43,7 +37,7 @@
 		|
 		+-->
 		<layout:layout
-		content="${content}"
+
 		heading="${heading}"
 		loginUser="${command.context.loginUser}"
 		pageTitle="${editPageTitle}" 
@@ -52,27 +46,28 @@
 		minimizedContentWidth="${minimizedContentWidth}"
 		noSidebar="${true}"
 		>
-			<div class="container main">
-				<div class="row">
-				
-				  	<div class="col-md-6">
-	
-						<div id="intro">
-							<jsp:invoke fragment="contentIntro"/>
-						</div>
-				    	<jsp:invoke fragment="leftContent"/>
-					    	
-				  	</div>
-				  	<div class="col-md-6">
-	
-						<div id="intro">
-							<jsp:invoke fragment="contentIntro"/>
-						</div>
-				    	<jsp:invoke fragment="rightContent"/>
-					    	
-				  	</div>					  
+			<jsp:attribute name="content">
+				<c:if test="${not empty contentIntro}">
+					<div id="intro">
+						<jsp:invoke fragment="contentIntro"/>
+					</div>
+				</c:if>	
+				<div class="container main">
+					<div class="row">
+					
+					  	<div class="col-md-6">
+
+					    	<jsp:invoke fragment="leftContent"/>
+						    	
+					  	</div>
+					  	<div class="col-md-6">
+		
+					    	<jsp:invoke fragment="rightContent"/>
+						    	
+					  	</div>					  
+					</div>
 				</div>
-			</div>
+			</jsp:attribute>
 		</layout:layout>
 	
 </jsp:root>

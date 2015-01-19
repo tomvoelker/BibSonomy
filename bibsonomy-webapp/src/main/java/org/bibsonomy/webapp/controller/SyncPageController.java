@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -18,6 +44,7 @@ import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.util.ResourceUtils;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.synchronization.TwoStepSynchronizationClient;
 import org.bibsonomy.webapp.command.ajax.AjaxSynchronizationCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -43,7 +70,7 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 
 	private RequestLogic requestLogic;
 	private MessageSource messageSource;
-	private String projectHome;
+	private URLGenerator urlGenerator;
 
 	@Override
 	public AjaxSynchronizationCommand instantiateCommand() {
@@ -124,7 +151,7 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 				/*
 				 * plan found in session -> get summary and return last sync data
 				 */
-				syncService.setPlan(getPlanSummary(syncPlan, syncService.getService().toString(), requestLogic.getLocale(), messageSource, projectHome));
+				syncService.setPlan(getPlanSummary(syncPlan, syncService.getService().toString(), requestLogic.getLocale(), messageSource, urlGenerator.getProjectHome()));
 				return lastSyncData;
 			}
 			/*
@@ -181,11 +208,10 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 	}
 
 	/**
-	 * @param projectHome the projectHome to set
+	 * 
+	 * @param urlGenerator
 	 */
-	public void setProjectHome(final String projectHome) {
-		this.projectHome = projectHome;
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
 	}
-
-
 }

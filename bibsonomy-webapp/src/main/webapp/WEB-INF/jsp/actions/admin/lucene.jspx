@@ -26,7 +26,7 @@
 			<parts:search pathMessageKey="navi.admin">
 				<jsp:attribute name="pathPart">
 					<li>
-						:: <a rel="path_menu" href="/admin/lucene">Lucene</a>
+						:: <a rel="path_menu" href="${relativeUrlGenerator.getAdminUrlByName('lucene')}">Lucene</a>
 					</li>
 				</jsp:attribute>
 			</parts:search>
@@ -143,14 +143,6 @@
 			    			<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
 			    				<c:if test="${resIndex.id != index.generator.generatingIndexId}">
 			    					<td><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${resIndex.indexStatistics.newestRecordDate}" /></td>
-			    				</c:if>
-			    			</c:forEach>
-			    		</tr>
-			    		<tr>
-			    			<td>last modified date</td>
-			    			<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
-			    				<c:if test="${resIndex.id != index.generator.generatingIndexId}">
-			    					<td><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${resIndex.indexStatistics.lastModified}" /></td>
 			    				</c:if>
 			    			</c:forEach>
 			    		</tr>

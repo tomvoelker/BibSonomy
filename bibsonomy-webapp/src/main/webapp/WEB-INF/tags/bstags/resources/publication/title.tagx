@@ -21,7 +21,7 @@
 		<!-- TODO: (bootstrap) introduce tagx file for this -->
 		<c:set var="postUserName"><user:username noLink="${true}" user="${post.user}"/></c:set>
 		<a class="pull-left img-thumbnail img-responsive" href="/user/${mtl:encodeURI(post.user.name)}" title="${postUserName}">
-			<img alt="${postUserName}" src="/picture/user/${fn:escapeXml(post.user.name)}" class="user-avatar"/>
+			<img alt="${postUserName}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(post.user.name))}" class="user-avatar"/>
 			<span><c:out value="${postUserName}" /></span>
 		</a>
 

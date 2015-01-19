@@ -1,6 +1,6 @@
 {"server":[
 	{
-		"instanceName":"PUMA Uni-Kassel",
+		"instanceName":"Uni Kassel",
 		"instanceImageUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/puma_logo_large.png",
 		"instanceUrl":"http:\/\/puma.uni-kassel.de\/",
 		"homeButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma.png",
@@ -11,11 +11,11 @@
 		"publicationButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma_chrome.png",
 		"active":true,
 		"popUpIcon":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/popupicon.png",
-		"color":"f7efed",
+		"color":"df430d",
 		"frameColor":"df430d"
 	},
 	{
-		"instanceName":"PUMA Uni-Kassel Sandbox",
+		"instanceName":"Sandbox",
 		"instanceImageUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/puma_logo_large.png",
 		"instanceUrl":"http:\/\/sandbox.puma.bibliothek.uni-kassel.de\/",
 		"homeButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma.png",
@@ -26,13 +26,13 @@
 		"publicationButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma_chrome.png",
 		"active":true,
 		"popUpIcon":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/popupicon.png",
-		"color":"f7efed",
+		"color":"df430d",
 		"frameColor":"df430d"
 	},
 	{
-		"instanceName":"PUMA Frankfurt",
+		"instanceName":"Uni Frankfurt",
 		"instanceImageUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/puma_logo_large.png",
-		"instanceUrl":"http:\/\/frankfurt.puma.bibliothek.uni-kassel.de\/",
+		"instanceUrl":"http:\/\/puma-ubffm.hebis.de\/",
 		"homeButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma.png",
 		"bookmarkButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/bookmark_puma.png",
 		"publicationButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma.png",
@@ -42,12 +42,12 @@
 		"active":true,
 		"popUpIcon":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/popupicon.png",
 		"color":"005eaa",
-		"frameColor":"c6c6c6"
+		"frameColor":"005eaa"
 	},
 	{
-		"instanceName":"PUMA Mainz",
+		"instanceName":"UB Mainz",
 		"instanceImageUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/puma_logo_large.png",
-		"instanceUrl":"http:\/\/mainz.puma.bibliothek.uni-kassel.de\/",
+		"instanceUrl":"http:\/\/puma-ubmz.hebis.de\/",
 		"homeButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma.png",
 		"bookmarkButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/bookmark_puma.png",
 		"publicationButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma.png",
@@ -56,13 +56,103 @@
 		"publicationButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma_chrome.png",
 		"active":true,
 		"popUpIcon":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/popupicon.png",
-		"color":"c6c6c6",
-		"frameColor":"c91323"
+		"color":"c62f51",
+		"frameColor":"c62f51"
+	},
+	{
+		"instanceName":"UB Gießen",
+		"instanceImageUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/puma_logo_large.png",
+		"instanceUrl":"http:\/\/puma-ubgi.hebis.de\/",
+		"homeButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma.png",
+		"bookmarkButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/bookmark_puma.png",
+		"publicationButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma.png",
+		"homeButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma_chrome.png",
+		"bookmarkButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/bookmark_puma_chrome.png",
+		"publicationButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma_chrome.png",
+		"active":true,
+		"popUpIcon":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/popupicon.png",
+		"color":"df430d",
+		"frameColor":"df430d"
+	},
+	{
+		"instanceName":"ULB Darmstadt",
+		"instanceImageUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/puma_logo_large.png",
+		"instanceUrl":"http:\/\/puma-ulbda.hebis.de\/",
+		"homeButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma.png",
+		"bookmarkButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/bookmark_puma.png",
+		"publicationButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma.png",
+		"homeButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma_chrome.png",
+		"bookmarkButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/bookmark_puma_chrome.png",
+		"publicationButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma_chrome.png",
+		"active":true,
+		"popUpIcon":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/popupicon.png",
+		"color":"df430d",
+		"frameColor":"df430d"
+	},
+	{
+		"instanceName":"UB Stuttgart",
+		"instanceImageUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/puma_logo_large.png",
+		"instanceUrl":"http:\/\/puma.ub.uni-stuttgart.de\/",
+		"homeButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma.png",
+		"bookmarkButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/bookmark_puma.png",
+		"publicationButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma.png",
+		"homeButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma_chrome.png",
+		"bookmarkButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/bookmark_puma_chrome.png",
+		"publicationButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma_chrome.png",
+		"active":true,
+		"popUpIcon":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/popupicon.png",
+		"color":"df430d",
+		"frameColor":"df430d"
+	},
+	{
+		"instanceName":"TH Mittelhessen",
+		"instanceImageUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/puma_logo_large.png",
+		"instanceUrl":"http:\/\/puma-thm.hebis.de\/",
+		"homeButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma.png",
+		"bookmarkButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/bookmark_puma.png",
+		"publicationButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma.png",
+		"homeButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma_chrome.png",
+		"bookmarkButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/bookmark_puma_chrome.png",
+		"publicationButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma_chrome.png",
+		"active":true,
+		"popUpIcon":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/popupicon.png",
+		"color":"df430d",
+		"frameColor":"df430d"
+	},
+	{
+		"instanceName":"HLB Fulda",
+		"instanceImageUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/puma_logo_large.png",
+		"instanceUrl":"http:\/\/puma-hlbfu.hebis.de\/",
+		"homeButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma.png",
+		"bookmarkButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/bookmark_puma.png",
+		"publicationButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma.png",
+		"homeButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma_chrome.png",
+		"bookmarkButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/bookmark_puma_chrome.png",
+		"publicationButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma_chrome.png",
+		"active":true,
+		"popUpIcon":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/popupicon.png",
+		"color":"df430d",
+		"frameColor":"df430d"
+	},
+	{
+		"instanceName":"HS RheinMain",
+		"instanceImageUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/puma_logo_large.png",
+		"instanceUrl":"http:\/\/puma-hsrm.hebis.de\/",
+		"homeButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma.png",
+		"bookmarkButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/bookmark_puma.png",
+		"publicationButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma.png",
+		"homeButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma_chrome.png",
+		"bookmarkButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/bookmark_puma_chrome.png",
+		"publicationButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma_chrome.png",
+		"active":true,
+		"popUpIcon":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/popupicon.png",
+		"color":"df430d",
+		"frameColor":"df430d"
 	},
 	{
 		"instanceName":"PUMA Marburg",
 		"instanceImageUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/puma_logo_large.png",
-		"instanceUrl":"http:\/\/marburg.puma.bibliothek.uni-kassel.de\/",
+		"instanceUrl":"http:\/\/puma-ubmr.hebis.de\/",
 		"homeButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma.png",
 		"bookmarkButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/bookmark_puma.png",
 		"publicationButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma.png",
@@ -71,7 +161,7 @@
 		"publicationButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma_chrome.png",
 		"active":true,
 		"popUpIcon":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/popupicon.png",
-		"color":"3d6282",
-		"frameColor":"d26130"
+		"color":"005eaa",
+		"frameColor":"005eaa"
 	}
 ]}

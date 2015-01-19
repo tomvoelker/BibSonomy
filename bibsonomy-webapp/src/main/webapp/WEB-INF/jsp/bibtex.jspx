@@ -20,24 +20,22 @@
 	<c:set var="publication" value="${command.bibtex.list[0].resource}" />
 
 	<!-- FIXME: move into body element -->
-	<c:set var="public" value="${false}"/>
+	<c:set var="isPublic" value="${false}"/>
 	<c:choose>
 		<c:when test="${goldstandardPresent}">
-			<c:set var="public" value="${true }"/>
+			<c:set var="isPublic" value="${true }"/>
 		</c:when>
 		<c:otherwise>
-
-		
 			<!-- quick fix for discussion page -->
 			<c:set var="discussionBox" value="${true}"/>
 			<c:forEach var="group" items="${command.bibtex.list[0].groups}">
 				<c:if test="${group.name eq 'public'}">
-					<c:set var="public" value="${true}"/>
+					<c:set var="isPublic" value="${true}"/>
 				</c:if>
 			</c:forEach>
 		</c:otherwise>
 	</c:choose>
-	<input id="publicInput" name="publicInput" value="${public}" type="hidden" />
+	<input id="publicInput" name="publicInput" value="${isPublic}" type="hidden" />
 
 	<c:if test="${goldstandardPresent}">
 		<c:set var="publication" value="${command.goldStandardPublications.list[0].resource}" />
@@ -107,7 +105,7 @@
 						<ul class="tagcloud">
 							<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
 								<li class="${userclass}">
-									<a href="/bibtex/1${publication.interHash}/${fn:escapeXml(user.name)}"><c:out value="${user.name}"/></a>
+									<a href="${relativeUrlGenerator.getPublicationUrlByInterHashAndUsername(post.resource.interHash, fn:escapeXml(user.name))}"><c:out value="${user.name}"/></a>
 									<c:out value=" "/>
 								</li>
 							</c:forEach>

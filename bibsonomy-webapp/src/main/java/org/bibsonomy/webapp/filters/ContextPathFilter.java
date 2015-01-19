@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.filters;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -18,6 +44,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -29,18 +56,21 @@ import org.apache.commons.logging.LogFactory;
 public class ContextPathFilter implements Filter {
 	private static final Log log = LogFactory.getLog(ContextPathFilter.class);
 	
-    /**
-     * Instances of this class ignore the context path of the application. I.e., 
-     * calls to getRequestURL() & Co. return the URL without the context path.
-     * 
-     * This is necessary for our setting where we have the Tomcat running behind
-     * an Apache Proxy where the application does not have a context path. 
-     * 
-     * @author rja
-     *
-     */
-    protected static final class ContextPathFreeRequest extends HttpServletRequestWrapper {
-    	
+	/** the project home */
+	private String projectHomeUrl;
+	
+	/**
+	 * Instances of this class ignore the context path of the application. I.e.,
+	 * calls to getRequestURL() & Co. return the URL without the context path.
+	 * 
+	 * This is necessary for our setting where we have the Tomcat running behind
+	 * an Apache Proxy where the application does not have a context path.
+	 * 
+	 * @author rja
+	 * 
+	 */
+	protected static final class ContextPathFreeRequest extends HttpServletRequestWrapper {
+
 		private static final String AUTH_HEADER = "authorization";
 		private static final String USER_AGENT_HEADER = "user-agent";
 		private static final Pattern TYPO3_USER_AGENT_REGEX = Pattern.compile("HTTP_Request2\\/0\\.5\\.1");
@@ -125,17 +155,20 @@ public class ContextPathFilter implements Filter {
 			return super.getHeader(AUTH_HEADER);
 		}
 				
-    }
-	
-    /**
-     * Can be used to log calls to the response.
-     * 
-     * @author rja
-     *
-     */
-    protected static final class LoggingResponse extends HttpServletResponseWrapper {
-    	private static final Log LOG = LogFactory.getLog(LoggingResponse.class);
-    	
+	}
+
+	/**
+	 * Can be used to log calls to the response.
+	 * 
+	 * @author rja
+	 * 
+	 */
+	protected static final class LoggingResponse extends HttpServletResponseWrapper {
+		private static final Log LOG = LogFactory.getLog(LoggingResponse.class);
+		
+		/**
+		 * @param response
+		 */
 		public LoggingResponse(final HttpServletResponse response) {
 			super(response);
 		}
@@ -145,10 +178,44 @@ public class ContextPathFilter implements Filter {
 			LOG.debug("adding cookie " + cookie.getName() + ": " + cookie.getValue() + " with path " + cookie.getPath());
 			super.addCookie(cookie);
 		}
-    }
-    
+	}
+	
+	/**
+	 * sends redirects to the the ${project.home} url. (as configured in project.properties)
+	 * 
+	 * @author jil
+	 * 
+	 */
+	protected static final class RedirectResolvingResponseWrapper extends HttpServletResponseWrapper {
+		
+		private final String projectHomeUrl;
+		
+		/**
+		 * @param response
+		 * @param projectHomeUrl
+		 */
+		public RedirectResolvingResponseWrapper(HttpServletResponse response, String projectHomeUrl) {
+			super(response);
+			this.projectHomeUrl = projectHomeUrl;
+		}
+		
+		/* (non-Javadoc)
+		 * @see javax.servlet.http.HttpServletResponseWrapper#sendRedirect(java.lang.String)
+		 */
+		@Override
+		public void sendRedirect(String location) throws IOException {
+			if ((projectHomeUrl != null) && StringUtils.startsWith(location, "/") && !StringUtils.startsWith(location, "//")) {
+				super.sendRedirect(projectHomeUrl + location);
+			} else {
+				// TODO: non-absolute paths should be captured as well
+				super.sendRedirect(location);
+			}
+		}
+	}
+	
 	@Override
 	public void destroy() {
+		// noop
 	}
 
 	@Override
@@ -159,9 +226,9 @@ public class ContextPathFilter implements Filter {
 		 */
 		try {
 			if (request instanceof HttpServletRequest) {
-				chain.doFilter(new ContextPathFreeRequest((HttpServletRequest) request), response);	
+				chain.doFilter(new ContextPathFreeRequest((HttpServletRequest) request), wrapResponse(response));	
 			} else {
-				chain.doFilter(request, response);
+				chain.doFilter(request, wrapResponse(response));
 			}
 		} catch (final Exception ex) {
 			final HttpServletRequest castedRequest = (HttpServletRequest)request;
@@ -178,7 +245,30 @@ public class ContextPathFilter implements Filter {
 		}
 	}
 
+	/**
+	 * @param response
+	 * @return
+	 */
+	private ServletResponse wrapResponse(ServletResponse response) {
+		if (response instanceof HttpServletResponse) {
+			return new RedirectResolvingResponseWrapper((HttpServletResponse) response, this.projectHomeUrl);
+		}
+		return response; 
+	}
+
 	@Override
 	public void init(final FilterConfig filterConfig) throws ServletException {
+		// noop
+	}
+
+	/**
+	 * called by spring on another object, but sets a static field so that the value will be available in a web.xml filter lining outside the spring-managed world
+	 * @param projectHomeUrl
+	 */
+	public void setProjectHomeUrl(String projectHomeUrl) {
+		if (projectHomeUrl.endsWith("/")) {
+			projectHomeUrl = projectHomeUrl.substring(0, projectHomeUrl.length() - 1);
+		}
+		this.projectHomeUrl = projectHomeUrl;
 	}
 }

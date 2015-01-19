@@ -5,29 +5,38 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
-	xmlns:form="http://www.springframework.org/tags/form">
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.tag language="java" pageEncoding="UTF-8" display-name="Internal Login Form" description="Renders the login form for internal login. This includes links to the registration page and the password reminder page." />
-	<br /><br />
+	
+	<c:if test="${mtl:contains(authConfig, mtl:convertToEnum('org.bibsonomy.common.enums.AuthMethod', 'SAML'))}">
+		<small class="pull-right" style="margin-top: 5px;"><a href="${relativeUrlGenerator.getRegisterUrl()}"><fmt:message key="login.register.bs.group"/></a></small>
+	</c:if>	
+	<div class="clearline" style="margin-bottom: 15px;">&#160;</div>
+		
+		
 	<fieldset>
 		
-		<legend><fmt:message key="navi.login" /></legend>
-		
 		<fmt:message key="navi.username" var="username"/>
-		<bsform:input required="true" path="username" labelText="${username}" helpText="username" inputColSpan="8" labelColSpan="4"/>
+		<bsform:input required="true" path="username" labelText="${username}" helpText="username" inputColSpan="8" labelColSpan="4" noHelp="true"/>
 
 		<fmt:message key="navi.password" var="password"/>
-		<bsform:password required="true" path="password" labelText="${password}" inputColSpan="8" labelColSpan="4" noHelp="true" />
+		<bsform:password required="true" path="password" labelText="${password}" inputColSpan="8" labelColSpan="4" noHelp="true">
+			<jsp:attribute name="appendix">
+				<fmt:message key="login.rememberMe" var="rememberMe" />
+				<div class="pull-right">
+					<p><a href="/reminder"><small><fmt:message key="login.lostPassword_1" /></small></a></p>
+				</div>
+			</jsp:attribute>
+		</bsform:password>
 
-		<fmt:message key="login.rememberMe" var="rememberMe" />
+
 		
-		<div class="pull-right">
-			<p style="margin-right: 20px;"><a href="/reminder"><small><fmt:message key="login.lostPassword_1" /></small></a></p>
-		</div>
 		<div class="clearfix"><!-- KEEP ME --></div>
 		<fmt:message key="navi.login" var="submit" />
 		
-		<bsform:checkbox inputColSpan="8" path="rememberMe" labelText="${rememberMe}" />
+		<bsform:checkbox inputColSpan="8" path="rememberMe" labelText="${rememberMe}" noHelp="true"/>
 		
 		<div class="form-group">
 			<div class="col-sm-offset-4 col-sm-3 col-md-3 col-lg-3">

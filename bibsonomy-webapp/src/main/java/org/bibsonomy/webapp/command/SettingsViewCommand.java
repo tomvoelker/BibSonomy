@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.command;
 
 import java.io.Serializable;
@@ -32,11 +58,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public final static int OAUTH_IDX = 6;
 	
 	private static final String TAB_URL = "/settings";
-
-	/**
-	* will be set to "true" if /bibsonomy3demo is being called
-	*/
-	private String bibsonomy3preview = "false";
+	
 	
 	/**
 	 * action can be logging, api or layoutTagPost
@@ -198,21 +220,13 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		this.addTab(IMPORTS_IDX, "navi.imports");	
 		this.addTab(CV_IDX, "navi.cvedit");
 		this.addTab(OAUTH_IDX, "navi.oauth.consumers");
+		this.addTab(GROUP_IDX, "navi.groups");
 		//OAuth tab added in SettingsPageController.java
 		this.setSelTab(MY_PROFILE_IDX);
 		this.setTabURL(TAB_URL);
 	}
 	
-	/**
-	 * shows the group tab on the settings.settings site if the user is a group
-	 * @param show
-	 */
-	public void showGroupTab(boolean show) {
-		if (show) {
-			this.addTab(GROUP_IDX, "navi.groups");
-		}
-	}
-	
+
 	/**
 	 * shows the sync tab for admins
 	 * @param show
@@ -488,20 +502,6 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	public void setNewPasswordRetype(String newPasswordRetype) {
 		this.newPasswordRetype = newPasswordRetype;
-	}
-	
-	/**
-	 * @return string bibsonomy3demo true/false
-	 */
-	public String getBibsonomy3preview() {
-		return bibsonomy3preview;
-	}
-	
-	/**
-	 * @param set the bibsonomy3demo true/false
-	 */
-	public void setBibsonomy3preview(String bibsonomy3preview) {
-		this.bibsonomy3preview = bibsonomy3preview;
 	}
 	
 	/**

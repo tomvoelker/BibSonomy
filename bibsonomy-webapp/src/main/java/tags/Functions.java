@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package tags;
 
 import static org.bibsonomy.model.util.BibTexUtils.ENTRYTYPES;
@@ -37,6 +63,7 @@ import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.filesystem.FileLogic;
+import org.bibsonomy.util.DateTimeUtils;
 import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.util.JSONUtils;
 import org.bibsonomy.util.StringUtils;
@@ -68,9 +95,6 @@ public class Functions {
 
 	private static final DateTimeFormatter ISO8601_FORMAT_HELPER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ");
 
-	/** used to get RFC 1123 formatted date */
-	private static final DateTimeFormatter RFC1123_DATE_TIME_FORMATTER = DateTimeFormat.forPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'").withZoneUTC();
-	
 	private static final DateTimeFormatter myDateFormatter = DateTimeFormat.forPattern("MMMM yyyy");
 
 	private static final DateTimeFormatter myDateFormat = DateTimeFormat.forPattern("yyyy-MM");
@@ -622,10 +646,7 @@ public class Functions {
 	 * @return the formatted date
 	 */
 	public static String formatDateRFC1123(final Date date) {
-		if (present(date)) {
-			return RFC1123_DATE_TIME_FORMATTER.print(new DateTime(date));
-		}
-		return "";
+		return DateTimeUtils.formatDateRFC1123(date);
 	}
 
 
@@ -665,7 +686,7 @@ public class Functions {
 				final String monthAsNumber = BibTexUtils.getMonthAsNumber(cleanMonth);
 				if (present(day)) {
 					final String cleanDay = BibTexUtils.cleanBibTex(day.trim());
-					try {						
+					try {
 						DateTime dt = dmyDateFormat.parseDateTime(cleanYear + "-" + monthAsNumber + "-" + cleanDay);
 						return DateTimeFormat.mediumDate().withLocale(locale).print(dt);
 					} catch (final Exception ex) {

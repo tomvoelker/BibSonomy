@@ -20,10 +20,6 @@
       >
       
   <!-- skeleton for publication post RSS feeds --> 
-	
-
-  <!-- to get correct hash IDs for URLs  -->
-  <jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
 
   <!-- the current date -->
   <jsp:useBean id="now" class="java.util.Date"/>
@@ -59,10 +55,10 @@
 
     <jsp:body>
       <!-- an RSS feed first defines a channel with general metadata and an overview of the described items -->
-      <channel rdf:about="${properties['project.home']}${fn:escapeXml(requPath)}">
+      <channel rdf:about="${relativeUrlGenerator.getProjectHome()}${fn:escapeXml(requPath)}">
         <!-- title, link, description -->
         <title>${properties['project.name']} publications for /<c:out value="${requPath}"/></title>
-        <link>${properties['project.home']}<c:out value='${requPath}'/></link>
+        <link>${relativeUrlGenerator.getProjectHome()}<c:out value='${requPath}'/></link>
         <description>${properties['project.name']} RSS feed for /<c:out value='${requPath}'/></description>
         <dc:date>${mtl:formatDateW3CDTF(now)}</dc:date>
          
@@ -71,7 +67,7 @@
 	      <rdf:Seq>
 	        <c:forEach var="post" items="${command.bibtex.list}">
               <!-- one item ... is described in detail below and referenced by the URI defined here  -->
-	  	 	  <rdf:li rdf:resource="${properties['project.home']}bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"/>
+	  	 	  <rdf:li rdf:resource="${relativeUrlGenerator.getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, fn:escapeXml(post.user.name))}"/>
 	 	    </c:forEach>
 	      </rdf:Seq>
 	    </items>
@@ -79,11 +75,11 @@
 
       <c:forEach var="post" items="${command.bibtex.list}">
         <!-- one item ... use the URI referenced above to further describe it -->
-	    <item rdf:about="${properties['project.home']}bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}">
+	    <item rdf:about="${relativeUrlGenerator.getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, post.user.name)}">
           
           <!-- title, description, link, creator, date, subject -->
     	  <title><c:out value="${mtl:cleanBibtex(post.resource.title)}" /></title>
-  		  <link>${properties['project.home']}bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}</link>
+  		  <link>${relativeUrlGenerator.getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, post.user.name)}</link>
   		  <dc:creator><c:out value="${post.user.name}"/></dc:creator>
   		  <dc:date>${mtl:formatDateW3CDTF(post.date)}</dc:date>
   		  <dc:subject><c:forEach var="tag" items="${post.tags}"><c:out value="${fn:escapeXml(mtl:removeInvalidXmlChars(tag.name))}"/><c:out value=" "/></c:forEach></dc:subject>
@@ -95,7 +91,7 @@
   		  <taxo:topics>
 	        <rdf:Bag>
 	          <c:forEach var="tag" items="${post.tags}">
-	            <rdf:li rdf:resource="${properties['project.home']}tag/${fn:escapeXml(mtl:removeInvalidXmlChars(tag.name))}"/>
+	            <rdf:li rdf:resource="${relativeUrlGenerator.getTagUrlByTagName(fn:escapeXml(mtl:removeInvalidXmlChars(tag.name)))}"/>
 	          </c:forEach>  
 	        </rdf:Bag>
 	      </taxo:topics>

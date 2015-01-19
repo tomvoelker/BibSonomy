@@ -8,26 +8,26 @@
 	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 	<!--  #################### url mapping #################### -->
-    <bean id="synchronizationUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+	<bean id="synchronizationUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="urlMap">
 			<map merge="true">
-			    <!-- update synchronization settings -->
-			    <entry key="/updateSyncSettings">
-			    	<bean parent="controllerBase">
-			    		<property name="controllerBeanName" value="updateSyncSettingsController"/>
-			    		<property name="allowedFields">
-			    			<list>
-			    				<value>ckey</value>
-			    				<value>selTab</value>
-			    				<value>syncServer[*].*</value>
-			    				<value>newSyncServer.*</value>
-			    			</list>
-			    		</property>
-			    	</bean>
-			    </entry>
-			    <entry key="/sync">
+				<!-- update synchronization settings -->
+				<entry key="/updateSyncSettings">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="syncPageController"/>						
+						<property name="controllerBeanName" value="updateSyncSettingsController"/>
+						<property name="allowedFields">
+							<list>
+								<value>ckey</value>
+								<value>selTab</value>
+								<value>syncServer[*].*</value>
+								<value>newSyncServer.*</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/sync">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="syncPageController"/>
 					</bean>
 				</entry>
 				<entry key="/ajax/synchronize">
@@ -38,12 +38,12 @@
 							<value>serviceName</value>
 							<value>syncDate</value>
 						</list>
-					</property> 
+					</property>
 					</bean>
 				</entry>
-            </map>
-        </property>
-    </bean>
+			</map>
+		</property>
+	</bean>
 	
 	<!--  #################### controller #################### -->
 	
@@ -61,7 +61,7 @@
 		<property name="syncClient" ref="synchronizationClient" />
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="messageSource" ref="messageSource"/>
-		<property name="projectHome" value="${project.home}"/>
+		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
 	</bean>
 		
 	<!-- handles synchronization request -->
@@ -80,8 +80,8 @@
 	
 	<!-- Autosync -->
 	<bean id="autoSync" class="org.bibsonomy.synchronization.AutoSync">
-	 	<property name="adminLogic" ref="adminLogic" />
-	 	<property name="userLogicFactory" ref="restLogicFactory" />
-	 	<property name="syncClient" ref="synchronizationClient" />
-	 </bean>
+		<property name="adminLogic" ref="adminLogic" />
+		<property name="userLogicFactory" ref="restLogicFactory" />
+		<property name="syncClient" ref="synchronizationClient" />
+	</bean>
 </beans>

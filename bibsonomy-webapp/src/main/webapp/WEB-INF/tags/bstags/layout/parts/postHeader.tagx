@@ -1,4 +1,4 @@
-<jsp:root version="2.0" 	
+<jsp:root version="2.0" 
 	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
@@ -8,8 +8,9 @@
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
 	
+	<!-- TODO: (Bootstrap) remove? -->
 	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
-	<jsp:directive.attribute name="isBasket" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="isClipboard" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
@@ -23,7 +24,7 @@
 	<jsp:directive.attribute name="showBookmark" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="showPublication" type="java.lang.Boolean" required="true"/>
 	
-	<c:set var="pageOptionsClass" value="${empty showPageOptions or showPageOptions == true ? 'config' : 'config disabled'}"/>
+	<c:set var="pageOptionsClass" value="${empty showPageOptions or showPageOptions ? 'config' : 'config disabled'}"/>
 	
 	<!-- bookmarks -->
 	<div class="row">

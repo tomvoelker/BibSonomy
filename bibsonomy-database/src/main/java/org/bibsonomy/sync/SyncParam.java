@@ -1,6 +1,33 @@
+/**
+ * BibSonomy-Database - Database for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.sync;
 
 import java.net.URI;
+import java.util.Date;
 
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
@@ -11,12 +38,27 @@ import org.bibsonomy.model.sync.SynchronizationData;
 public class SyncParam {
 
 	private SynchronizationData data;
+	private Date newDate;
 	private SyncService syncService;
 
 	private String userName;
 	private URI service;
 	private int serviceId;
 	private boolean server;
+
+	/**
+	 * @return the newDate
+	 */
+	public Date getNewDate() {
+		return this.newDate;
+	}
+
+	/**
+	 * @param newDate the newDate to set
+	 */
+	public void setNewDate(Date newDate) {
+		this.newDate = newDate;
+	}
 
 	/**
 	 * @return the userName

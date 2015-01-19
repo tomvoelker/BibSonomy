@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- *  BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.util;
 
 import static org.junit.Assert.assertEquals;
@@ -50,7 +53,7 @@ public class StringUtilsTest {
 	 * java standard charsets; see 
 	 * http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html
 	 */	
-	private static final String [] JAVA_STANDARD_CHARSETS = {"ISO-8859-1", "UTF-16BE", "UTF-16LE", "UTF-16", "UTF-8"};
+	private static final String [] JAVA_STANDARD_CHARSETS = {"ISO-8859-1", "UTF-16BE", "UTF-16LE", "UTF-16", StringUtils.CHARSET_UTF_8};
 
 	/**
 	 * tests getMD5Hash

@@ -44,9 +44,9 @@ INSERT INTO `bibhash` (`hash`, `ctr`, `type`) VALUES
 ('522833042311cc30b8775772335424a7', 1, 2),
 ('65e49a5791c3dae2356d26fb9040fe29', 1, 2),
 ('b71d5283dc7f4f59f306810e73e9bc9a', 1, 2),
-('598347d95a3ef39a3987a39b40708f79', 1, 0),
-('a5936835f9eeab91eb09d84948306178', 1, 1),
-('15a1bdcbff44431651957f45097dc4f4', 1, 2),
+('598347d95a3ef39a3987a39b40708f79', 2, 0),
+('a5936835f9eeab91eb09d84948306178', 2, 1),
+('15a1bdcbff44431651957f45097dc4f4', 2, 2),
 ('b77ddd8087ad8856d77c740c8dc2864a', 1, 2);
 
 
@@ -61,7 +61,8 @@ INSERT INTO `bibtex` (`content_id`, `journal`, `volume`, `chapter`, `edition`, `
 (13, 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', 1, '1815-12-10 00:00:00', 'testuser2',   'http://private.bibtex.url.com', '2', 'test description', 'test annote', 'test note', 'test page',  'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', '8711751127efb070ee910a5d145a168b', 'ac6aa3ccb181e61801cefbc1401d409a', '1b298f199d487bc527a62326573892b8', '', 'test entrytype', 'test private title', 'test author',  'test editor', 'test year', 'test privnote', -1, '2008-05-19 14:34:29', 0),
 (14, 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', 2, '1815-12-10 00:00:00', 'testuser2',   'http://friend.bibtex.url.com',  '2', 'test description', 'test annote', 'test note', 'test page',  'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', '36a19ee7b7923b062a99a6065fe07792', 'e2fb0763068b21639c3e36101f64aefe', 'b71d5283dc7f4f59f306810e73e9bc9a', '', 'test entrytype', 'test friend title',  'test author',  'test editor', 'test year', 'test privnote', -1, '2008-05-19 14:34:29', 0),
 (20, 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', 0, '2009-10-08 14:35:01', 'testuser3',   'http://friend.bibtex.url.com',  '2', 'test description', 'test annote', 'test note', 'test page',  'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', '36a19ee7b7923b062a99a6065fe07792', 'e2fb0763068b21639c3e36101f64aefe', '891518b4900cd1832d77a0c8ae20dd14', '', 'inproceedings1', 'test friend title',  'test author',  'test editor', 'test year', 'test privnote', -1, '2009-10-08 14:35:01', 0),
-(100, NULL, '216', NULL, NULL, 'nov', NULL, 'Proceedings of the OWLED*06 Workshop on OWL: Experiences and Directions', NULL, NULL, NULL, NULL, NULL, NULL, 'CEUR-WS.org', 'elsenbroich2006abductive', 0, '2011-08-08 09:24:38', 'jaeschke', 'http://www.cs.man.ac.uk/~okutz/case-for-abduction.pdf', NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, '  issn = {1613-0073}', 'We argue for the usefulness of abductive reasoning in the context of ontologies. We discuss several applicaton scenarios in which various forms of abduction would be useful, introduce corresponding abductive reasoning tasks, give examples, and begin to develop the formal apparatus needed to employ abductive inference in expressive description logics.', '598347d95a3ef39a3987a39b40708f79', 'a5936835f9eeab91eb09d84948306178', '15a1bdcbff44431651957f45097dc4f4', '', 'inproceedings', 'A case for abductive reasoning over ontologies', 'Corinna Elsenbroich and Oliver Kutz and Ulrike Sattler', 'Bernardo Cuenca Grau and Pascal Hitzler and Conor Shankey and Evan Wallace', '2006', NULL, 0, '2011-08-08 09:24:38', 0);
+(100, NULL, '216', NULL, NULL, 'nov', NULL, 'Proceedings of the OWLED*06 Workshop on OWL: Experiences and Directions', NULL, NULL, NULL, NULL, NULL, NULL, 'CEUR-WS.org', 'elsenbroich2006abductive', 0, '2011-08-08 09:24:38', 'jaeschke', 'http://www.cs.man.ac.uk/~okutz/case-for-abduction.pdf', NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, '  issn = {1613-0073}', 'We argue for the usefulness of abductive reasoning in the context of ontologies. We discuss several applicaton scenarios in which various forms of abduction would be useful, introduce corresponding abductive reasoning tasks, give examples, and begin to develop the formal apparatus needed to employ abductive inference in expressive description logics.', '598347d95a3ef39a3987a39b40708f79', 'a5936835f9eeab91eb09d84948306178', '15a1bdcbff44431651957f45097dc4f4', '', 'inproceedings', 'A case for abductive reasoning over ontologies', 'Corinna Elsenbroich and Oliver Kutz and Ulrike Sattler', 'Bernardo Cuenca Grau and Pascal Hitzler and Conor Shankey and Evan Wallace', '2006', NULL, 0, '2011-08-08 09:24:38', 0),
+(201, NULL, '216', NULL, NULL, 'nov', NULL, 'Proceedings of the OWLED*06 Workshop on OWL: Experiences and Directions', NULL, NULL, NULL, NULL, NULL, NULL, 'CEUR-WS.org', 'elsenbroich2006abductive', -2147483648, '2011-08-08 09:24:38', 'testspammer', 'http://www.cs.man.ac.uk/~okutz/case-for-abduction.pdf', NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, '  issn = {1613-0073}', 'We argue for the usefulness of abductive reasoning in the context of ontologies. We discuss several applicaton scenarios in which various forms of abduction would be useful, introduce corresponding abductive reasoning tasks, give examples, and begin to develop the formal apparatus needed to employ abductive inference in expressive description logics.', '598347d95a3ef39a3987a39b40708f79', 'a5936835f9eeab91eb09d84948306178', '15a1bdcbff44431651957f45097dc4f4', '', 'inproceedings', 'A case for abductive reasoning over ontologies', 'Corinna Elsenbroich and Oliver Kutz and Ulrike Sattler', 'Bernardo Cuenca Grau and Pascal Hitzler and Conor Shankey and Evan Wallace', '2006', NULL, 0, '2011-08-08 09:24:38', 0);
 
 -- 
 -- Data for repository tests
@@ -150,11 +151,11 @@ INSERT INTO `gold_standard` (`content_id`, `title`, `url`, `description`, `date`
 (1025, 'Universität Kassel', 'http://www.uni-kassel.de', 'Nordhessen', '2011-01-01 00:00:00', 'testuser1', '20592a292e53843965c1bb42bfd51876', 1);
 
 -- 
--- Data for table `gold_standard_publication_references`
+-- Data for table `gold_standard_relations`
 -- 
-INSERT INTO `gold_standard_publication_references` (`publication`, `reference`, `user_name`, `date`) VALUES
-('097248439469d8f5a1e7fad6b02cbfcd', 'ac6aa3ccb181e61801cefbc1401d409a', 'testuser1', '2008-03-20 16:24:55'),
-('ac6aa3ccb181e61801cefbc1401d409a', '097248439469d8f5a1e7fad6b02cbfcd', 'testuser1', '2008-03-20 16:24:55');
+INSERT INTO `gold_standard_relations` (`publication`, `reference`, `user_name`, `date`, `relation_kind`) VALUES
+('097248439469d8f5a1e7fad6b02cbfcd', 'ac6aa3ccb181e61801cefbc1401d409a', 'testuser1', '2008-03-20 16:24:55', '0'),
+('ac6aa3ccb181e61801cefbc1401d409a', '097248439469d8f5a1e7fad6b02cbfcd', 'testuser1', '2008-03-20 16:24:55','0');
 
 
 -- 
@@ -528,8 +529,9 @@ INSERT INTO `tas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `content_typ
 (38, 'synchronization', 'synchronization', 113, 1, 'syncuser1', '2011-01-01 00:01:00', 0, '2011-01-04 13:30:00' ),
 (39, 'synchronization', 'synchronization', 114, 1, 'syncuser1', '2009-01-01 05:54:00', 0, '2011-03-18 11:54:00' ),
 (40, 'synchronization', 'synchronization', 115, 1, 'syncuser1', '2010-01-12 15:28:00', 0, '2010-11-01 18:44:00' ),
-(41, 'synchronization', 'synchronization', 116, 1, 'syncuser1', '2011-03-18 11:55:00', 0, '2011-03-18 11:55:00' );
-
+(41, 'synchronization', 'synchronization', 116, 1, 'syncuser1', '2011-03-18 11:55:00', 0, '2011-03-18 11:55:00' ),
+(42, 'tag', 'tag', 100, 2, 'jaeschke', '2011-08-08 09:24:38', 0, '2011-08-08 09:24:38' ),
+(43, 'spam', 'spam', 201, 2, 'testspammer', '2011-08-08 09:24:38', -2147483648, '2011-08-08 09:24:38' );
 
 
 -- 
