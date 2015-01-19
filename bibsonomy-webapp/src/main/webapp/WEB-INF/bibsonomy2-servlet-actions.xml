@@ -795,6 +795,7 @@
 		<value>urlGenerator</value>
 		<value>skipDummyValues</value>
 		
+		<value>approved</value>
 		<value>saveAndRate</value>
 	</util:list>
 

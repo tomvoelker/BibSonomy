@@ -3,7 +3,9 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
-    xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication">
+    xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication"
+    xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
   
     <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
  
@@ -20,7 +22,30 @@
 		<jsp:attribute name="headerExtResource">
 			<script type="text/javascript" src="${resdir}/javascript/bs/editPublication.js"><!-- keep me --></script>
 		</jsp:attribute>
+		
+		<jsp:attribute name="postApproval">
 
+			<!-- approval checkbox -->
+			<bsform:fieldset legendKey="goldStandard.edit.approval">
+
+				<jsp:attribute name="content">
+					<div class="form-group">
+				   		<div class="col-sm-offset-1 col-sm-9">
+							<div class="checkbox clearfix">
+								<label>
+					          		<input type="checkbox" class="help-popover" id="approveChkBox" tabindex="2" /> <fmt:message key="goldStandard.edit.approveMsg"/>
+					          		<div class="help-header hide"><fmt:message key="goldStandard.edit.approveMsg"/></div>
+					          		<div class="help-content hide"><fmt:message key="goldStandard.edit.approveMsg.help"/></div>
+					        	</label>
+							</div>
+						</div>
+					</div>
+				</jsp:attribute>
+			</bsform:fieldset>
+
+ 		</jsp:attribute>
+
+		
 	</layout:editGoldStandardPostLayout>
 
 </jsp:root>
