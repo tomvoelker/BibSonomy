@@ -106,10 +106,10 @@
 								<c:forEach var='personName' items="${command.suggestedPersonNames}">
 									<div class="list-group-item">
 										<a class='btnLinkPerson' data-toggle="modal"  data-target="#linkPerson" href="#linkPerson" data-firstName="${personName.firstName}" data-lastName="${personName.lastName}" data-person-name-id='${personName.id}' data-person-id='${personName.personId}'>
-											${personName.lastName}, ${personName.firstName}, ${personName.person.academicDegree} 
-											<c:if test="${personName.person.disambiguatingPublication.post ne null}">
-												, ${personName.person.disambiguatingPublication.post.resource.title}
-											</c:if>
+											${personName.lastName}, ${personName.firstName}
+											<c:if test="${personName.person.academicDegree ne null}">, ${personName.person.academicDegree}</c:if>	 
+											<c:if test="${personName.person.disambiguatingPublication.post ne null}">, ${personName.person.disambiguatingPublication.post.resource.title}</c:if>
+											<c:if test="${personName.person.disambiguatingPublication.post.resource.year ne null}">, (${personName.person.disambiguatingPublication.post.resource.year})</c:if>
 										</a>
 									</div>
 								</c:forEach>
