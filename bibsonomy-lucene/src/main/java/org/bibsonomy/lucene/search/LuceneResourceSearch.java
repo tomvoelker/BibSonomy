@@ -796,10 +796,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		
 			return null;
 		}else if(searchType==SearchType.LUCENESEARCH){
-			// build query
-			final QuerySortContainer query = this.buildQuery(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, order);
-			// perform search query
-			return this.searchLucene(query, limit, offset);
+			return this.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
 		}
 			return null;
 	}
