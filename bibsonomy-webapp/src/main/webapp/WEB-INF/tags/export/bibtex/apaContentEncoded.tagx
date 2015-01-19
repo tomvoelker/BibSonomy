@@ -1,14 +1,12 @@
 <jsp:root version="2.0" 
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"	
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:swrc="http://swrc.ontoware.org/ontology#"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:output="urn:jsptagdir:/WEB-INF/tags/export/bibtex">
-	
-	<jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	
@@ -19,7 +17,7 @@
 	<bib:year publication="${post.resource}" braces="true"/>
 	
 	<!-- title -->
-	<a href="${properties['project.home']}bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"><i><c:out value="${mtl:cleanBibtex(post.resource.title)}"/>.</i></a>
+	<a href="${relativeUrlGenerator.getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, fn:escapeXml(post.user.name))}"><i><c:out value="${mtl:cleanBibtex(post.resource.title)}"/>.</i></a>
 
 	<!-- inbook / incollection data -->
 	<c:choose>

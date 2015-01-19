@@ -1,17 +1,43 @@
+/**
+ * BibSonomy-MARC-Parser - Marc Parser for BibSonomy
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.marc;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
-
-import junit.framework.Assert;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.util.data.ClasspathResourceData;
 import org.bibsonomy.model.util.data.Data;
 import org.bibsonomy.model.util.data.DualDataWrapper;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -101,8 +127,8 @@ public class MarcToBibTexReaderTest extends AbstractDataDownloadingTestCase {
 		MarcToBibTexReader reader = new MarcToBibTexReader();
 		for (ImportResource bib : reader.read(new ImportResource(downloadMarcWithPica("HEB113338945")))) {
 			printIt(bib);
-			Assert.assertEquals("Jörg", bib.getAuthor().get(0).getFirstName());
-			Assert.assertEquals("HEB113338945", bib.getMiscField("uniqueid"));
+			assertEquals("Jörg", bib.getAuthor().get(0).getFirstName());
+			assertEquals("HEB113338945", bib.getMiscField("uniqueid"));
 		}
 	}
 	
@@ -111,9 +137,9 @@ public class MarcToBibTexReaderTest extends AbstractDataDownloadingTestCase {
 		MarcToBibTexReader reader = new MarcToBibTexReader();
 		for (ImportResource bib : reader.read(new ImportResource(downloadMarcWithPica("HEB107697521")))) {
 			printIt(bib);
-			Assert.assertTrue(bib.getTitle(), bib.getTitle().contains("Português"));
-			Assert.assertEquals("São Paulo", bib.getAddress());
-			Assert.assertEquals("HEB107697521", bib.getMiscField("uniqueid"));
+			assertTrue(bib.getTitle(), bib.getTitle().contains("Português"));
+			assertEquals("São Paulo", bib.getAddress());
+			assertEquals("HEB107697521", bib.getMiscField("uniqueid"));
 		}
 	}
 	
@@ -122,7 +148,7 @@ public class MarcToBibTexReaderTest extends AbstractDataDownloadingTestCase {
 		MarcToBibTexReader reader = new MarcToBibTexReader();
 		for (ImportResource bib : reader.read(new ImportResource(downloadMarcWithPica("HEBr846866323")))) {
 			printIt(bib);
-			Assert.assertEquals("HEBr846866323", bib.getMiscField("uniqueid"));
+			assertEquals("HEBr846866323", bib.getMiscField("uniqueid"));
 		}
 	}
 }

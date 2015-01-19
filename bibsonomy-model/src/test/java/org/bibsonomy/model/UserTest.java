@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Model - Java- and JAXB-Model.
  *
- *  BibSonomy-Model - Java- and JAXB-Model.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.model;
 
 import static org.junit.Assert.assertEquals;
@@ -30,8 +33,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.Assert;
 
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.bibsonomy.testutil.ModelUtils;
@@ -140,8 +141,8 @@ public class UserTest {
 	@Test
 	public void testRemoteIds() {
 		final User srcUser = ModelUtils.getUser();
-		Assert.assertEquals("preCondition1", "test-ldapId", srcUser.getLdapId());
-		Assert.assertEquals("preCondition2", "http://test-openid", srcUser.getOpenID());
+		assertEquals("preCondition1", "test-ldapId", srcUser.getLdapId());
+		assertEquals("preCondition2", "http://test-openid", srcUser.getOpenID());
 //		int openIdRIdFound = 0;
 //		int ldapRIdFound = 0;
 //		for (RemoteUserId rId : srcUser.getRemoteUserIds()) {
@@ -153,8 +154,8 @@ public class UserTest {
 //				openIdRIdFound++;
 //			}
 //		}
-//		Assert.assertEquals(ldapRIdFound, 1);
-//		Assert.assertEquals(openIdRIdFound, 1);
+//		assertEquals(ldapRIdFound, 1);
+//		assertEquals(openIdRIdFound, 1);
 		
 		srcUser.setLdapId(null);
 		
@@ -167,9 +168,9 @@ public class UserTest {
 //				openIdRIdFound++;
 //			}
 //		}
-//		Assert.assertEquals(ldapRIdFound, 0);
-//		Assert.assertEquals(openIdRIdFound, 1);
-		Assert.assertNull(srcUser.getLdapId());
+//		assertEquals(ldapRIdFound, 0);
+//		assertEquals(openIdRIdFound, 1);
+		assertNull(srcUser.getLdapId());
 		
 		srcUser.setOpenID("http://huhu");
 		
@@ -179,7 +180,7 @@ public class UserTest {
 //			if (rId instanceof LdapRemoteUserId) {
 //				ldapRIdFound++;
 //			} else if (rId instanceof OpenIdRemoteUserId) {
-//				Assert.assertEquals("http://huhu", ((OpenIdRemoteUserId) rId).getRemoteUserId());
+//				AassertEquals("http://huhu", ((OpenIdRemoteUserId) rId).getRemoteUserId());
 //				openIdRIdFound++;
 //			}
 //		}
@@ -187,7 +188,7 @@ public class UserTest {
 //		Assert.assertEquals(ldapRIdFound, 0);
 //		Assert.assertEquals(openIdRIdFound, 1);
 		
-		Assert.assertEquals("http://huhu", srcUser.getOpenID());
+		assertEquals("http://huhu", srcUser.getOpenID());
 	}
 	
 	/**

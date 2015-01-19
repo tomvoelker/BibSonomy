@@ -1,4 +1,33 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.controller;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,14 +38,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.Assert;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.util.BibTexReader;
 import org.bibsonomy.testutil.CommonModelUtils;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.actions.PublicationRendererCommand;
 import org.bibsonomy.webapp.view.Views;
 import org.junit.Test;
@@ -47,7 +75,7 @@ public class PublicationRenderingControllerTest {
 				} catch (IOException ex) {
 					throw new RuntimeException(ex);
 				}
-				Assert.assertTrue(ArrayUtils.isEquals(bytes, receivedBytes));
+				assertTrue(ArrayUtils.isEquals(bytes, receivedBytes));
 				return bib;
 			}
 		});
@@ -59,16 +87,15 @@ public class PublicationRenderingControllerTest {
 		cmd.setFormat(Views.FORMAT_STRING_BIBTEX);
 		cmd.setFile(new MockMultipartFile("test.bib", "test.bib", "bla", bytes));
 		
-		Assert.assertEquals(Views.BIBTEX, ctrl.workOn(cmd));
-		Assert.assertEquals(1, cmd.getBibtex().getList().size() );
+		assertEquals(Views.BIBTEX, ctrl.workOn(cmd));
+		assertEquals(1, cmd.getBibtex().getList().size() );
 		CommonModelUtils.assertPropertyEquality(bib.get(0), cmd.getBibtex().getList().get(0).getResource(), 5, null);
-		
 	}
 
 	protected List<ImportResource> getBibtexFromFile() {
 		SimpleBibTeXParser parser = new SimpleBibTeXParser();
 		try {
-			BufferedReader sr = new BufferedReader(new InputStreamReader(getTestBibFileStream(), "UTF-8"));
+			BufferedReader sr = new BufferedReader(new InputStreamReader(getTestBibFileStream(), StringUtils.CHARSET_UTF_8));
 			// actually not 100% ok but easier
 			return (List) parser.parseInternal(sr, true);
 		} catch (Exception e) {

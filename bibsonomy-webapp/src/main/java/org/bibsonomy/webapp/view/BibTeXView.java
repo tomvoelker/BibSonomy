@@ -1,7 +1,36 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.view;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.model.BibTex;
@@ -14,15 +43,11 @@ import org.bibsonomy.webapp.command.BibtexViewCommand;
 /**
  * Outputs posts in BibTeX format.
  * 
- * TODO: could as well be used to return EndNote?!
- * 
  * @author rja
  */
 public class BibTeXView extends AbstractPublicationView<BibtexViewCommand> {
-
-	/**
-	 * must be injected
-	 */
+	
+	/** a map of url generators */
 	private Map<String, URLGenerator> urlGenerators;
 	
 	@Override
@@ -33,7 +58,7 @@ public class BibTeXView extends AbstractPublicationView<BibtexViewCommand> {
 		return null;
 	}
 	
-	protected int getFlags(final BibtexViewCommand command) {
+	private static int getFlags(final BibtexViewCommand command) {
 		/*
 		 * configure BibTeX export
 		 * 
@@ -52,25 +77,20 @@ public class BibTeXView extends AbstractPublicationView<BibtexViewCommand> {
 		/*
 		 * write posts
 		 */
-		for (final Post<BibTex> post : command.getBibtex().getList()) {
-			writer.append(BibTexUtils.toBibtexString(post, flags, urlGenerator) + "\n\n");
+		final List<Post<BibTex>> publicationPosts = command.getBibtex().getList();
+		if (present(publicationPosts)) {
+			for (final Post<BibTex> post : publicationPosts) {
+				writer.append(BibTexUtils.toBibtexString(post, flags, urlGenerator) + "\n\n");
+			}
 		}
 	}
 	
-	protected URLGenerator getUrlGenerator(String urlGenerator) {
-		// hier könnte man auch direkt einen urlGenerator aus einer (parametrisierten und cachenden) factory ziehen
-		URLGenerator rVal = urlGenerators.get(urlGenerator);
+	private URLGenerator getUrlGenerator(String urlGenerator) {
+		final URLGenerator rVal = urlGenerators.get(urlGenerator);
 		if (rVal == null) {
-			rVal = urlGenerators.get("default");
+			return urlGenerators.get("default");
 		}
 		return rVal;
-	}
-
-	/**
-	 * @return the urlGenerators
-	 */
-	public Map<String, URLGenerator> getUrlGenerators() {
-		return this.urlGenerators;
 	}
 
 	/**

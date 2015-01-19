@@ -125,7 +125,7 @@
 			</div>
 			
 			<div class="fsRow">
-				<form:label cssClass="fsLabel" path="user.settings.simpleInterface"><fmt:message key="settings.editPublication.interFace"/></form:label>
+				<form:label cssClass="fsLabel" path="user.settings.layoutSettings.simpleInterface"><fmt:message key="settings.editPublication.interFace"/></form:label>
 				<buttons:help message="settings.editPublication.interFace.help">
 					<jsp:attribute name="helpText">
 						<ol>
@@ -140,12 +140,59 @@
 						</ol>
 					</jsp:attribute>
 				</buttons:help>
-				<form:select cssClass="fsInput fsSmall" path="user.settings.simpleInterface">
+				<form:select cssClass="fsInput fsSmall" path="user.settings.layoutSettings.simpleInterface">
 				  <form:option label="${advanced}" value="false" />
 				  <form:option label="${simple}" value="true" />
 				</form:select>
 			</div>
-			
+			<!-- LAYOUT SWITCH -->
+		
+			<div class="fsRow">
+				<form:label cssClass="fsLabel" path="user.settings.layoutSettings.viewLayout"><fmt:message key="settings.layout" /></form:label>
+				<buttons:help message="settings.layout.mainhelp">
+					<jsp:attribute name="helpText">
+						<c:choose>
+							<c:when test="${properties['project.theme'] eq 'puma'}">
+								<ol>
+									<li> <fmt:message key="settings.layout.help.classic">
+											<fmt:param>Classic</fmt:param>
+										</fmt:message>
+									</li>
+									<li> <fmt:message key="settings.layout.help.bootstrap">
+											<fmt:param>Bootstrap</fmt:param>
+										</fmt:message>
+									</li>
+								</ol>
+							</c:when>
+							<c:otherwise>
+								<ol>
+									<li> <fmt:message key="settings.layout.help.classic">
+											<fmt:param>BibSonomy 2</fmt:param>
+										</fmt:message>
+									</li>
+									<li> <fmt:message key="settings.layout.help.bootstrap">
+											<fmt:param>BibSonomy 3</fmt:param>
+										</fmt:message>
+									</li>
+								</ol>
+							</c:otherwise>
+						</c:choose>
+					</jsp:attribute>
+				</buttons:help>
+				<form:select cssClass="form-control help-popover" path="user.settings.layoutSettings.viewLayout" >
+					<c:choose>
+						<c:when test="${properties['project.theme'] eq 'puma'}">
+							<form:option label="Classic" value="CLASSIC"/>
+							<form:option label="Bootstrap" value="BOOTSTRAP"/>
+						</c:when>
+						<c:otherwise>
+							<form:option label="BibSonomy 2" value="CLASSIC"/>
+							<form:option label="BibSonomy 3" value="BOOTSTRAP"/>
+						</c:otherwise>
+					</c:choose>
+				</form:select >
+			</div>
+
 			<div class="fsRow">
 				<form:label cssClass="fsLabel" path="user.settings.defaultLanguage"><fmt:message key="settings.tag.defaultLanguage"/></form:label>
 				<buttons:help message="settings.tag.defaultLanguage.help"/>

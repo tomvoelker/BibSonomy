@@ -1,7 +1,35 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.command.actions;
 
+import java.util.List;
 import java.util.Map;
 
+import org.bibsonomy.webapp.command.GroupingCommand;
 import org.bibsonomy.webapp.command.TagResourceViewCommand;
 
 
@@ -9,7 +37,7 @@ import org.bibsonomy.webapp.command.TagResourceViewCommand;
  * @author pbu
  * @author dzo
  */
-public class BatchEditCommand extends TagResourceViewCommand {
+public class BatchEditCommand extends TagResourceViewCommand implements GroupingCommand {
 
 	/**
 	 * should publications be edited before they're stored? 
@@ -45,6 +73,47 @@ public class BatchEditCommand extends TagResourceViewCommand {
 	 * actions to apply to post
 	 */
 	private int action;
+	
+	private String abstractGrouping;
+
+    private List<String> groups;
+
+        
+    /**
+     * @return the groups
+     */
+    @Override
+    public List<String> getGroups() {
+        return this.groups;
+    }
+
+    /**
+     * @param groups
+     *            the groups to set
+     */
+    @Override
+    public void setGroups(final List<String> groups) {
+        this.groups = groups;
+    }
+    
+    /**
+     * @return the abstractGrouping
+     */
+    @Override
+    public String getAbstractGrouping() {
+        return this.abstractGrouping;
+    }
+
+    /**
+     * @param abstractGrouping
+     *            the abstractGrouping to set
+     */
+    @Override
+    public void setAbstractGrouping(final String abstractGrouping) {
+        this.abstractGrouping = abstractGrouping;
+    }
+	
+	
 	/**
 	 * @return the flag that determines, weather the dialogue called was configured to 
 	 * edit(delete) or edit(create) existing posts.

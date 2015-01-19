@@ -1,6 +1,33 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.rest.remotecall;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,8 +46,6 @@ import java.util.regex.Pattern;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServletRequest;
-
-import junit.framework.Assert;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
@@ -55,8 +80,10 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
+import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
@@ -78,7 +105,7 @@ import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.util.HashUtils;
 import org.bibsonomy.util.file.ServerFileLogic;
-import org.bibsonomy.util.file.document.ServerDocumentFileLogic;
+import org.bibsonomy.webapp.util.file.document.ServerDocumentFileLogic;
 import org.easymock.EasyMock;
 import org.easymock.IArgumentMatcher;
 import org.eclipse.jetty.server.AbstractConnector;
@@ -606,7 +633,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */
 	@Test
 	public void getPostsTestBookmarkByTag() {
-		getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null, null,  null /* must be null because order is inferred and not transmitted */, null, null, 7, 1264);
+		getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null, null,  null /* must be null because order is inferred and not transmitted */, null, null, 7, PostLogicInterface.MAX_QUERY_SIZE + 7);
 	}
 	
 	/**
@@ -881,8 +908,8 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.expect(serverLogic.createDocument(CheckerDelegatingMatcher.check(new Checker<Document>() {
 			@Override
 			public boolean check(Document obj) {
-				Assert.assertEquals(doc.getFileName(), obj.getFileName());
-				Assert.assertEquals(doc.getMd5hash(), obj.getMd5hash());
+				assertEquals(doc.getFileName(), obj.getFileName());
+				assertEquals(doc.getMd5hash(), obj.getMd5hash());
 				byte[] sent;
 				byte[] received;
 				try {
@@ -891,7 +918,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 				} catch (IOException ex) {
 					throw new RuntimeException(ex);
 				}
-				Assert.assertEquals(Arrays.toString(sent), Arrays.toString(received));
+				assertEquals(Arrays.toString(sent), Arrays.toString(received));
 				return true;
 			}
 			
@@ -952,29 +979,29 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.expect(serverLogic.createConcept(CheckerDelegatingMatcher.check(new Checker<Tag>() {
 			@Override
 			public boolean check(Tag obj) {
-				Assert.assertEquals(concept.getName(), obj.getName());
-				Assert.assertNotNull(obj.getSubTags());
-				Assert.assertEquals(concept.getSubTags().size(), obj.getSubTags().size());
+				assertEquals(concept.getName(), obj.getName());
+				assertNotNull(obj.getSubTags());
+				assertEquals(concept.getSubTags().size(), obj.getSubTags().size());
 				for (int i = 0; i < concept.getSubTags().size(); ++i) {
 					final Tag origSubTag = concept.getSubTags().get(i);
 					final Tag foundSubTag = obj.getSubTags().get(i);
-					Assert.assertEquals(origSubTag.getName(), foundSubTag.getName());
-					Assert.assertNotNull(foundSubTag.getSuperTags());
-					Assert.assertEquals(origSubTag.getSuperTags().size(), foundSubTag.getSuperTags().size());
+					assertEquals(origSubTag.getName(), foundSubTag.getName());
+					assertNotNull(foundSubTag.getSuperTags());
+					assertEquals(origSubTag.getSuperTags().size(), foundSubTag.getSuperTags().size());
 					for (int x = 0; x < origSubTag.getSuperTags().size(); ++x) {
-						Assert.assertEquals(origSubTag.getSuperTags().get(x).getName(), foundSubTag.getSuperTags().get(x).getName());
+						assertEquals(origSubTag.getSuperTags().get(x).getName(), foundSubTag.getSuperTags().get(x).getName());
 					}
 				}
-				Assert.assertNotNull(obj.getSuperTags());
-				Assert.assertEquals(concept.getSuperTags().size(), obj.getSuperTags().size());
+				assertNotNull(obj.getSuperTags());
+				assertEquals(concept.getSuperTags().size(), obj.getSuperTags().size());
 				for (int i = 0; i < concept.getSuperTags().size(); ++i) {
 					final Tag origSuperTag = concept.getSuperTags().get(i);
 					final Tag foundSuperTag = obj.getSuperTags().get(i);
-					Assert.assertEquals(origSuperTag.getName(), foundSuperTag.getName());
-					Assert.assertNotNull(foundSuperTag.getSubTags());
-					Assert.assertEquals(origSuperTag.getSubTags().size(), foundSuperTag.getSubTags().size());
+					assertEquals(origSuperTag.getName(), foundSuperTag.getName());
+					assertNotNull(foundSuperTag.getSubTags());
+					assertEquals(origSuperTag.getSubTags().size(), foundSuperTag.getSubTags().size());
 					for (int x = 0; x < origSuperTag.getSubTags().size(); ++x) {
-						Assert.assertEquals(origSuperTag.getSubTags().get(x).getName(), foundSuperTag.getSubTags().get(x).getName());
+						assertEquals(origSuperTag.getSubTags().get(x).getName(), foundSuperTag.getSubTags().get(x).getName());
 					}
 				}
 				return true;
@@ -1151,12 +1178,12 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	@Override
-	public void createReferences(final String postHash, final Set<String> references) {
+	public void createRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void deleteReferences(final String postHash, final Set<String> references) {
+	public void deleteRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
 		// TODO Auto-generated method stub
 	}
 

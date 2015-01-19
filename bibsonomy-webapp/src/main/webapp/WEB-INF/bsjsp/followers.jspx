@@ -1,0 +1,164 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
+	xmlns:users="urn:jsptagdir:/WEB-INF/tags/bstags/users"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<fmt:message var="headline" key="page.followers.headline" />
+	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
+
+	<layout:resourceLayout pageTitle="${command.pageTitle}"	command="${command}" requPath="${requPath}"	activeTab="${command.context.loginUser.name != null ? 'my' : ''}" headline="${headline}">
+
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.followees"/>
+		</jsp:attribute>
+
+
+
+		<jsp:attribute name="sidebar">
+		<ul>
+			<script type="text/javascript" src="${resdir}/javascript/userRelation.js"><!-- keep me --></script>
+			<li><span class="sidebar_h"><fmt:message
+				key="follow.followerof" /></span> 
+            <ul class="sidebar_collapse_content">
+              <c:forEach var="user" items="${command.userIsFollowing}">
+                <li><a href="${relativeUrlGenerator.prefix('personalized').getUserUrlByUserName(user.name)}"><c:out
+						value="${user.name}" /></a></li>
+              </c:forEach>
+            </ul>
+          </li>
+
+          <li><span class="sidebar_h"><fmt:message
+				key="follow.offollower" /></span>
+            <ul id="followedUsers" class="sidebar_collapse_content">
+              <c:forEach var="user" items="${command.followersOfUser}">
+                <li>
+                  <a href="${relativeUrlGenerator.prefix('personalized').getUserUrlByUserName(user.name)}"><c:out
+						value='${user.name}' />&amp;nbsp;</a> 
+	                <fmt:message var="deleteFriendTitle"
+						key="follow.actions.delete.title">
+						<fmt:param value="${fn:escapeXml(user.name)}" />
+					</fmt:message>
+                  <a class="action"
+						onclick="javascript:updateFollowerFollowerPage('remove','${user.name}', this, '${command.context.ckey}');return false;"
+						style="cursor: pointer;" title="${deleteFriendTitle}"
+						href="/ajax/handleUserRelation?requestedUserName=${user.name}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=followers">
+    		        <fmt:message key="follow.link.text.remove" />
+                  </a>
+                </li>
+              </c:forEach>
+            </ul>
+            <span id="posts.refresh" style="display:none;visibility:hidden;">
+            	<a style="margin:0.5em;color:#ff6600;" href="${requPathAndQuery}"><fmt:message key="posts.refresh"/></a>
+            </span>
+          </li>
+          
+			<!-- display similar users -->
+			<li>
+				<span class="sidebar_h">
+					<!-- requPath + query -->
+					<fmt:message key="users.similar.your"/>
+					<c:out value=" "/><a href="${mtl:setParam(requPathAndQuery, 'userSimilarity', mtl:toggleUserSimilarity(command.userSimilarity)) }"><fmt:message key="more"/>...</a>
+				</span>
+				<users:related cmd="${command.relatedUserCommand}" displayFollowLink="${true}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
+			</li>
+
+          <!-- add a follower -->
+          <li>
+          	<span class="sidebar_h"><fmt:message key="follow.addFollower"/></span>
+          	<form:form class="sidebar_collapse_content" action="/ajax/handleUserRelation" method="POST">
+          		<label for="requestedUserName"><fmt:message key="user"/>:</label><c:out value=" "/>
+            	<input size="20" type="text" name="requestedUserName" id="requestedUserName"/>
+            	<fmt:message var="addFollower" key="follow"/>
+            	<input type="hidden" name="forward" value="followers"/>
+            	<input type="hidden" name="ckey" value="${ckey}"/>
+            	<input type="hidden" name="action" value="addFollower"/>
+            	<input type="submit" name="submit" value="${addFollower}"/>
+            </form:form>
+          </li>
+          
+          
+          <!--  ranking settings -->
+          <li>
+          	<span class="sidebar_h"><fmt:message key="navi.settings"/></span>
+          	<form:form class="sidebar_collapse_content" method="GET" action="/followers">
+          		<fmt:message key="ranking.method"/>:<c:out value=" "/>
+          		<form:select path="ranking.method">          		
+          			<form:option value="tfidf"><fmt:message key="ranking.tfidf"/></form:option>
+          			<form:option value="tag_overlap"><fmt:message key="ranking.tag_overlap"/></form:option>
+          		</form:select>
+          		<br/>
+          		<fmt:message key="ranking.normalize"/>:<c:out value=" "/>
+          		<form:select path="ranking.normalize">
+          			<form:option value="true"><fmt:message key="yes"/></form:option>
+          			<form:option value="false"><fmt:message key="no"/></form:option>
+          		</form:select>
+          		<input type="hidden" name="requestedUser" value="${command.requestedUser}"/>
+          		<br/>          		
+          		<input type="submit" name="submit" value="${go}"/>
+          	</form:form>
+          </li>
+        </ul>
+		</jsp:attribute>
+		
+		<!-- content heading -->
+		<jsp:attribute name="infobox">
+			<parts:infobox>
+				<jsp:attribute name="infoTextBody">
+					<fmt:message key="followersPage.about">
+						<fmt:param>${properties['project.home']}help_${locale.language}/Followers</fmt:param>
+					</fmt:message>
+					<c:out value=" "/>
+					<c:set var="ofUsers">
+						<c:choose>
+							<c:when test="${empty command.requestedUser or command.requestedUser eq ''}">
+								<fmt:message key="followersPage.entries.ofAllFollowedUsers"/>
+							</c:when>
+						<c:otherwise>
+							<fmt:message key="followersPage.entries.ofUser">
+								<fmt:param><a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(command.requestedUser))}"><c:out value='${command.requestedUser}'/></a></fmt:param>
+							</fmt:message>
+						</c:otherwise>
+						</c:choose>
+					</c:set>
+					<c:choose>
+						<c:when test="${empty command.ranking.period or command.ranking.period == 0}">
+							<fmt:message key="followersPage.all.mostRecent.contentHeading">
+								<fmt:param>${command.ranking.periodEnd}</fmt:param>
+								<fmt:param>${ofUsers}</fmt:param>
+							</fmt:message>
+						</c:when>	
+						<c:otherwise>
+							<fmt:message key="followersPage.all.recent.contentHeading">
+								<fmt:param>${command.ranking.periodStart}</fmt:param>
+								<fmt:param>${command.ranking.periodEnd}</fmt:param>
+								<fmt:param>${ofUsers}</fmt:param>
+							</fmt:message>
+						</c:otherwise>
+					</c:choose>
+					<c:out value=" "/>
+					<fmt:message key="Show"/>
+					<c:out value=" "/>
+					<c:set var="requPathAndQuery" value="${requPath}${requQueryString}"/>
+					<c:if test="${not empty command.ranking.period and command.ranking.period > 0}">
+						<a href="${mtl:setParam(requPathAndQuery, 'ranking.period', command.ranking.prevPeriod)}" ><fmt:message key="younger"/></a>
+						${mtl:ch('nbsp')}<c:out value="|"/>${mtl:ch('nbsp')}
+					</c:if>			
+					<a href="${mtl:setParam(requPathAndQuery, 'ranking.period', command.ranking.nextPeriod)}" ><fmt:message key="older"/></a>
+					<c:out value=" "/>
+					<fmt:message key="posts"/>.
+				</jsp:attribute>
+			</parts:infobox>
+		</jsp:attribute>
+		
+	</layout:resourceLayout>
+</jsp:root>

@@ -1,4 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    BibSonomy - A blue social bookmark and publication sharing system.
+
+    Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+                                  University of Kassel, Germany
+                                  http://www.kde.cs.uni-kassel.de/
+                              Data Mining and Information Retrieval Group,
+                                  University of Würzburg, Germany
+                                  http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+                              L3S Research Center,
+                                  Leibniz University Hannover, Germany
+                                  http://www.l3s.de/
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -6,7 +34,7 @@
 	<groupId>org.bibsonomy</groupId>
 	<artifactId>bibsonomy</artifactId>
 	<packaging>pom</packaging>
-	<version>2.0.44-SNAPSHOT</version>
+	<version>3.0.1-SNAPSHOT</version>
 	<description>
 		A blue social bookmark and publication sharing system.
 	</description>
@@ -143,6 +171,14 @@
 				<role>Developer</role>
 			</roles>
 		</developer>
+		<developer>
+			<name>Sebastian Böttger</name>
+			<id>seboettg</id>
+			<email>boettger@cs.uni-kassel.de</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
 	</developers>
 	<mailingLists>
 		<mailingList>
@@ -221,27 +257,6 @@
 					<groupId>org.jvnet.jaxb2.maven2</groupId>
 					<artifactId>maven-jaxb2-plugin</artifactId>
 					<version>0.8.1</version>
-				</plugin>
-				<plugin>
-					<groupId>com.mycila.maven-license-plugin</groupId>
-					<artifactId>maven-license-plugin</artifactId>
-					<version>1.6.0</version>
-					<configuration>
-						<header>src/etc/header.txt</header>
-						<includes>
-							<include>src/**</include>
-							<include>**/test/**</include>
-						</includes>
-						<excludes>
-							<exclude>target/**</exclude>
-						</excludes>
-						<properties>
-							<year>${project.inceptionYear} - 2013</year>
-							<description>
-								${project.name} - ${project.description}
-							</description>
-						</properties>
-					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -341,12 +356,29 @@
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.2</version>
 			</plugin>
-			<!-- TODO remove tomcat6 plugin as soon as we have migrated all systems 
-				to tomcat 7 -->
 			<plugin>
-				<groupId>org.apache.tomcat.maven</groupId>
-				<artifactId>tomcat6-maven-plugin</artifactId>
-				<version>2.2</version>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<header>src/etc/header.txt</header>
+					<properties>
+						<year>${project.inceptionYear} - 2014</year>
+						<description>
+							${project.name} - ${project.description}
+						</description>
+					</properties>
+					<excludes>
+						<exclude>**/LICENSE*</exclude>
+						<exclude>**/README*</exclude>
+						<exclude>src/test/resources/**</exclude>
+						<exclude>src/main/resources/**</exclude>
+						<exclude>src/main/webapp/**</exclude>
+						<exclude>src/main/assembly/**</exclude>
+						<exclude>src/site/**</exclude>
+						<exclude>misc/**</exclude>
+					</excludes>
+				</configuration>
 			</plugin>
 		</plugins>
 		<extensions>
@@ -374,21 +406,6 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>deploy-to-puma-sandbox</id>
-			<!-- change tomcat deploy destination when -Ddeploy-to=puma_sandbox is 
-				given as parameter. -->
-			<activation>
-				<property>
-					<name>deploy-to</name>
-					<value>puma_sandbox</value>
-				</property>
-			</activation>
-			<properties>
-				<maven.tomcat.server>tomcat_puma_sandbox</maven.tomcat.server>
-				<maven.tomcat.url>http://sandbox.puma.bibliothek.uni-kassel.de:8080/manager</maven.tomcat.url>
-			</properties>
-		</profile>
-		<profile>
 			<id>deploy-to-puma-ks-dev</id>
 			<!-- change tomcat deploy destination when -Ddeploy-to=puma_ks_dev is 
 				given as parameter. -->
@@ -400,7 +417,7 @@
 			</activation>
 			<properties>
 				<maven.tomcat.server>tomcat_puma_ks_dev</maven.tomcat.server>
-				<maven.tomcat.url>http://ks-dev.puma.bibliothek.uni-kassel.de:8080/manager</maven.tomcat.url>
+				<maven.tomcat.url>http://ks-dev.puma.bibliothek.uni-kassel.de:8080/manager/text</maven.tomcat.url>
 			</properties>
 		</profile>
 	</profiles>
@@ -408,7 +425,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.10</version>
+			<version>4.11</version>
 			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
@@ -712,7 +729,7 @@
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>jstl</artifactId>
-				<version>1.1.2</version>
+				<version>1.2</version>
 			</dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>

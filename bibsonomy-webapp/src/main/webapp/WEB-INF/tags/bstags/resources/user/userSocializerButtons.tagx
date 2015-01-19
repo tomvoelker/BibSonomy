@@ -1,0 +1,65 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:button="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+
+	<!--+
+		| show link to CV page
+		+-->
+	<jsp:directive.attribute name="user" type="org.bibsonomy.model.User" required="true" />
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
+	
+	<!-- <script type="text/javascript" src="${resdir}/javascript/userRelation.js"> -->
+	<c:set var="friendName" value="${user.name}" />
+	
+		<fmt:message key="cv.title" var="cvtitle">
+			<fmt:param value="${user.name}"/>
+		</fmt:message>
+
+		<form action="/ajax/handleUserRelation">
+			<input type="hidden" name="requestedUserName" value="${fn:escapeXml(friendName)}" />
+			<input type="hidden" name="action" value="none" />
+			<input type="hidden" name="ckey" value="${ckey}" />
+			<button type="submit" class="btn btn-sm btn-success removeFriend" style="${command.ofFriendUser ? '' : 'display:none'}" >
+				<span class="fa fa-check"><!--  --></span>
+				<c:out value=" "/>
+				<span class="infotext"><fmt:message key="friendoverview.friend" /></span>
+			</button>
+			<button type="submit" class="btn btn-sm btn-default addFriend" style="${command.ofFriendUser ? 'display:none' : ''}">
+				<fmt:message key="friend.add" />
+			</button>
+		</form>
+
+		<br />
+			
+		<div class="btn-group btn-group-xs">
+			
+	 		<!-- button for CV link -->
+			<a class="btn btn-default btn-sm" href="/cv/user/${fn:escapeXml(user.name)}" title="${cvtitle}"><span class="glyphicon glyphicon-user"><!-- --></span><fmt:message key="navi.cv.abbrev"/></a>
+			
+			<!-- dropdown toggle button -->
+			<button data-toggle="dropdown" class="btn btn-default btn-small dropdown-toggle"><span class="caret"></span></button>
+			<ul class="dropdown-menu">
+			
+
+				<c:if test="${mtl:contains(loginUserFriends, user)}">
+					<li><a href="/friend/${mtl:encodeURI(user.name)}"><fmt:message key="friendoverview.offriend.usershared" /></a></li>
+				</c:if>
+				<!-- show posts of requested user in a personalized view -->
+				<fmt:message key="personalized.info" var="personalized"/>
+				<li><a href="/personalized/user/${fn:escapeXml(user.name)}" title="${personalized}"><fmt:message key="personalize"/></a></li>
+			</ul>
+		</div>
+	
+	<!-- 
+	<c:if test="${not empty user.profession}">
+		<p class="small-font"><em><fmt:message key="user.profession" />:</em>&amp;nbsp;<c:out value="${user.profession}" /></p>
+	</c:if>
+	<c:if test="${not empty user.interests}">
+ 		<p class="small-font"><em><fmt:message key="user.interests" />:</em>&amp;nbsp;<c:out value="${user.interests}" /></p>
+	</c:if>
+	-->
+</jsp:root>

@@ -1,7 +1,32 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.view;
 
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,7 +36,8 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.layout.jabref.JabrefLayout;
+import org.bibsonomy.model.Layout;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.ExportPageCommand;
 import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.view.AbstractView;
@@ -21,7 +47,7 @@ import org.springframework.web.servlet.view.AbstractView;
  * View which exports a JSON-Object that contains all available JabRef-layouts.
  * This view is used in conjunction with the BibSonomy Typo3-PlugIn.
  * 
- * @author mwa
+ * @author mwa, lsc
  */
 @SuppressWarnings("deprecation")
 public class ExportLayoutView extends AbstractView {
@@ -49,15 +75,14 @@ public class ExportLayoutView extends AbstractView {
 			/*
 			 * put each layout into a JSON-object and add it to the JSON-array
 			 */
-			final Map<String, JabrefLayout> layoutMap = command.getLayoutMap();
+			final Map<String, Layout> layoutMap = command.getLayoutMap();
 			
-			for (final Entry<String, JabrefLayout> layoutEntry : layoutMap.entrySet()) {
-				final JabrefLayout layout = layoutEntry.getValue();
+			for (final Layout layoutEntry : layoutMap.values()) {
 				/*
 				 * we return only public layouts
 				 */
-				if (layout.isPublicLayout()) {
-					jsonLayouts.add(JSONObject.fromObject(layout));
+				if (layoutEntry.isPublicLayout()) {
+					jsonLayouts.add(JSONObject.fromObject(layoutEntry));
 				}
 			}
 			
@@ -68,8 +93,8 @@ public class ExportLayoutView extends AbstractView {
 			 * write the output, it will show the JSON-object as a plaintext string
 			 */
 			response.setContentType("application/json");
-			response.setCharacterEncoding("UTF-8");
-			response.getOutputStream().write(json.toString().getBytes("UTF-8"));
+			response.setCharacterEncoding(StringUtils.CHARSET_UTF_8);
+			response.getOutputStream().write(json.toString().getBytes(StringUtils.CHARSET_UTF_8));
 		}
 	}
 

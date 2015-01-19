@@ -10,9 +10,9 @@
 	
 	<a href="/admin_spammertags.jsp"><fmt:message key="navi.spammertags"/></a><c:out value=" "/>
 	
-	<a class="spammerKillerButton" title="killSpammer" href="javascript:location.href='/admin/spam?action=flag_spammer&amp;aclUserInfo='+encodeURIComponent(location.href.replace(/.*\\//, '').replace(/\?.*/, ''))" onclick="return false;">SpammerKillerButton</a>
+	<a class="spammerKillerButton" title="killSpammer" href="javascript:location.href='${relativeUrlGenerator.getAdminUrlByName('spam')}?action=flag_spammer&amp;aclUserInfo='+encodeURIComponent(location.href.replace(/.*\\//, '').replace(/\\?.*/, ''))" onclick="return false;">SpammerKillerButton</a>
 
-	<a class="spammerKillerButton" title="killSpammerAJAX" href="javascript:location.href='/admin/ajax?action=flag_spammer&amp;userName='+encodeURIComponent(location.href.replace(/.*\\//, '').replace(/\?.*/, ''))" onclick="return false;">SpammerKillerButtonAJAX</a>
+	<a class="spammerKillerButton" title="killSpammerAJAX" href="javascript:location.href='${relativeUrlGenerator.getAdminUrlByName('ajax')}?action=flag_spammer&amp;userName='+encodeURIComponent(location.href.replace(/.*\\//, '').replace(/\\?.*/, ''))" onclick="return false;">SpammerKillerButtonAJAX</a>
 
 	
 	</p>

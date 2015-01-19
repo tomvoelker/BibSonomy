@@ -2,7 +2,7 @@
 </table>
 
 <p>
- <small>Created by <a href="http://jabref.sourceforge.net">JabRef</a> export filters on \format[CurrentDate]{dd/MM/yyyy} by the social publication management platform <a href="http://www.bibsonomy.org">BibSonomy</a></small>
+ <small>Created by <a href="http://jabref.sourceforge.net">JabRef</a> export filters on \format[CurrentDate]{dd/MM/yyyy} by the social publication management platform <a href="\format[InsertPropertyFormatter]{project.home,http://www.bibsonomy.org}">\format[InsertPropertyFormatter]{project.name,BibSonomy}</a></small>
 </p>
 
 </body>

@@ -29,7 +29,7 @@
 				<jsp:attribute name="pathPart">
 					<c:if test="${not empty command.requestedUser}">
 						<li>
-							:: <a href="/user/${mtl:encodeURI(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
+							:: <a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
 						</li>
 					</c:if>
 				</jsp:attribute>
@@ -80,7 +80,7 @@
 			<c:if test="${not empty command.requestedUser}">
 				<li>				
 					<span class="sidebar_h">
-						<a href="/user/${fn:escapeXml(command.requestedUser)}">
+						<a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(command.requestedUser)) }">
 							<fmt:message key="discussion.showUser">
 								<fmt:param value="${fn:escapeXml(command.requestedUser)}"/>
 							</fmt:message>
@@ -93,7 +93,7 @@
 			<c:if test="${not empty command.requestedGroup}">
 				<li>				
 					<span class="sidebar_h">
-						<a href="/group/${fn:escapeXml(command.requestedGroup)}">
+						<a href="${relativeUrlGenerator.getGroupUrlByGroupName(fn:escapeXml(command.requestedGroup))}">
 							<fmt:message key="discussion.showGroup">
 								<fmt:param value="${fn:escapeXml(command.requestedGroup)}"/>
 							</fmt:message>

@@ -1,4 +1,32 @@
+/**
+ * BibSonomy-Recommendation-Connector - Connector for the recommender framework for tag and resource recommendation
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.recommender.connector.test.renderer;
+
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -9,8 +37,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
-
-import junit.framework.Assert;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
@@ -87,14 +113,13 @@ public class RecommendationRendererTest {
 		final Post<BibTex> entity = (Post<BibTex>) bibsonomyRenderer.parsePost(new InputStreamReader(new ByteArrayInputStream(out.toByteArray())), NoDataAccessor.getInstance());
 		
 		// check correct deserialization of attributes
-		Assert.assertEquals(post.getResource().getTitle(), entity.getResource().getTitle());
-		Assert.assertEquals(post.getResource().getIntraHash(), entity.getResource().getIntraHash());
-		Assert.assertEquals(post.getUser().getName(), entity.getUser().getName());
-		Assert.assertEquals(post.getResource().getYear(), entity.getResource().getYear());
-		Assert.assertEquals(post.getResource().getBibtexKey(), entity.getResource().getBibtexKey());
-		Assert.assertEquals(post.getResource().getEntrytype(), entity.getResource().getEntrytype());
-		Assert.assertEquals(post.getResource().getAuthor(), entity.getResource().getAuthor());
-		
+		assertEquals(post.getResource().getTitle(), entity.getResource().getTitle());
+		assertEquals(post.getResource().getIntraHash(), entity.getResource().getIntraHash());
+		assertEquals(post.getUser().getName(), entity.getUser().getName());
+		assertEquals(post.getResource().getYear(), entity.getResource().getYear());
+		assertEquals(post.getResource().getBibtexKey(), entity.getResource().getBibtexKey());
+		assertEquals(post.getResource().getEntrytype(), entity.getResource().getEntrytype());
+		assertEquals(post.getResource().getAuthor(), entity.getResource().getAuthor());
 	}
 	
 	/**
@@ -124,14 +149,14 @@ public class RecommendationRendererTest {
 		
 		Iterator<RecommendedTag> it = results.iterator();
 		RecommendedTag firstResult = it.next();
-		Assert.assertEquals(firstTag.getName(), firstResult.getName());
-		Assert.assertEquals(firstTag.getScore(), firstResult.getScore());
-		Assert.assertEquals(firstTag.getConfidence(), firstResult.getConfidence());
+		assertEquals(firstTag.getName(), firstResult.getName());
+		assertEquals(firstTag.getScore(), firstResult.getScore(), 0.0);
+		assertEquals(firstTag.getConfidence(), firstResult.getConfidence(), 0.0);
 		
 		RecommendedTag secondResult = it.next();
-		Assert.assertEquals(secondTag.getName(), secondResult.getName());
-		Assert.assertEquals(secondTag.getScore(), secondResult.getScore());
-		Assert.assertEquals(secondTag.getConfidence(), secondResult.getConfidence());
+		assertEquals(secondTag.getName(), secondResult.getName());
+		assertEquals(secondTag.getScore(), secondResult.getScore(), 0.0);
+		assertEquals(secondTag.getConfidence(), secondResult.getConfidence(), 0.0);
 		
 		out = new ByteArrayOutputStream();
 		writer = new PrintWriter(out);
@@ -140,10 +165,9 @@ public class RecommendationRendererTest {
 		
 		final recommender.impl.model.RecommendedTag result = renderer.parseRecommendationResult(new InputStreamReader(new ByteArrayInputStream(out.toByteArray())));
 		
-		Assert.assertEquals(firstTag.getName(), result.getName());
-		Assert.assertEquals(firstTag.getScore(), result.getScore());
-		Assert.assertEquals(firstTag.getConfidence(), result.getConfidence());
-		
+		assertEquals(firstTag.getName(), result.getName());
+		assertEquals(firstTag.getScore(), result.getScore(), 0.0);
+		assertEquals(firstTag.getConfidence(), result.getConfidence(), 0.0);
 	}
 	
 	/**
@@ -164,7 +188,7 @@ public class RecommendationRendererTest {
 		final Renderer bibsonomyRenderer = factory.getRenderer(RenderingFormat.XML);
 		final User entity = bibsonomyRenderer.parseUser(new InputStreamReader(new ByteArrayInputStream(out.toByteArray())));
 		
-		Assert.assertEquals(user.getName(), entity.getName());
+		assertEquals(user.getName(), entity.getName());
 	}
 	
 	/**
@@ -206,9 +230,9 @@ public class RecommendationRendererTest {
 				
 		SortedSet<RecommendedItem> results = renderer.parseRecommendationResultList(new InputStreamReader(new ByteArrayInputStream(out.toByteArray())));
 		
-		Assert.assertEquals(bibtex.getTitle(), results.first().getTitle());
-		Assert.assertEquals(recommended.getScore(), results.first().getScore());
-		Assert.assertEquals(recommended.getConfidence(), results.first().getConfidence());
+		assertEquals(bibtex.getTitle(), results.first().getTitle());
+		assertEquals(recommended.getScore(), results.first().getScore(), 0.0);
+		assertEquals(recommended.getConfidence(), results.first().getConfidence(), 0.0);
 		
 		out = new ByteArrayOutputStream();
 		writer = new PrintWriter(out);
@@ -217,9 +241,9 @@ public class RecommendationRendererTest {
 		
 		final RecommendedItem result = renderer.parseRecommendationResult(new InputStreamReader(new ByteArrayInputStream(out.toByteArray())));
 		
-		Assert.assertEquals(bibtex.getTitle(), result.getTitle());
-		Assert.assertEquals(recommended.getScore(), result.getScore());
-		Assert.assertEquals(recommended.getConfidence(), result.getConfidence());
+		assertEquals(bibtex.getTitle(), result.getTitle());
+		assertEquals(recommended.getScore(), result.getScore(), 0.0);
+		assertEquals(recommended.getConfidence(), result.getConfidence(), 0.0);
 	}
 	
 }

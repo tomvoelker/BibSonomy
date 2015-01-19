@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -60,18 +86,16 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 		
 		// used to set the user specific value of maxCount/minFreq 
 		command.setChangeTo((loginUser.getSettings().getIsMaxCount() ? loginUser.getSettings().getTagboxMaxCount() : loginUser.getSettings().getTagboxMinfreq()));
+		// show sync tab only for non-spammers
+		command.showSyncTab(!loginUser.isSpammer());
 		
 		// check whether the user is a group
 		if (UserUtils.userIsGroup(loginUser)) {
 			command.setHasOwnGroup(true);
-			command.showGroupTab(true);
-			// show sync tab only for non-spammers
-			command.showSyncTab(!loginUser.isSpammer());
 		} else {
-			// if he is not, he will be forwarded to the first settings tab
-			command.showGroupTab(false);
-			command.showSyncTab(!loginUser.isSpammer());
-			command.setSelTab(SettingsViewCommand.MY_PROFILE_IDX);
+			// if he is not, an error message is shown, because this controller
+			// can only be called from a group admin page.
+			command.setSelTab(SettingsViewCommand.GROUP_IDX);
 			this.errors.reject("settings.group.error.groupDoesNotExist");
 			return Views.SETTINGSPAGE;
 		}
@@ -91,16 +115,9 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 		
 		// the group to update
 		final Group groupToUpdate = this.logic.getGroupDetails(loginUser.getName());
-		
-		if (!present(groupToUpdate)) {
-			// TODO: are these statements unreachable? @see if (UserUtils.userIsGroup())
-			command.showGroupTab(false);
-			command.setSelTab(SettingsViewCommand.MY_PROFILE_IDX);
-			this.errors.reject("settings.group.error.groupDoesNotExist");
-			return Views.SETTINGSPAGE;
-		}
-		
+		// this should be always the same as loginUser.getName()
 		final String groupName = groupToUpdate.getName();
+
 		if ("updateGroupReportingSettings".equals(command.getAction())) {
 			groupToUpdate.setPublicationReportingSettings(command.getGroup().getPublicationReportingSettings());
 			this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_GROUP_REPORTING_SETTINGS);

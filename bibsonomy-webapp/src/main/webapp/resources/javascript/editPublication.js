@@ -281,9 +281,10 @@ function buildGoodPostSuggestion(json) {
 			/*
 			 * loop over posts
 			 */
+			var fieldVal;
+			
 			for(var z = 0; json.items.length > z; z++) {
 				var post = json.items[z];
-				var fieldVal;
 				if(((fieldVal = post[inputFieldName.substring(postResource.length, inputFieldName.length)]) != undefined 
 						|| (fieldVal = post[inputFieldMap[inputFieldName]])) && fieldVal.length > 0) {
 					var name = "";
@@ -323,7 +324,7 @@ function buildGoodPostSuggestion(json) {
 			 * no suggestions or the suggestion count is 1 AND field value is the same as the suggestion value 
 			 * - skip in both cases 
 			 */
-			if (!suggestions.length || (suggestions.length == 1 
+			if (!suggestions.length || fieldVal === undefined || (suggestions.length == 1 
 			&& g == ((name.length)?name.replace(u, ""):fieldVal.replace(u, "")))) continue;
 			inputField.addClass("fsInputReco"); // show the user that suggestions are available
 			/* we have a bijective mapping therefore (f:suggestion->occurrence) we sort our indices by descending order */

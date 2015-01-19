@@ -9,9 +9,9 @@
 	
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
-    <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
-    <jsp:directive.attribute name="additionalItemClasses" type="java.lang.String" required="false"/>
-  
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="additionalItemClasses" type="java.lang.String" required="false"/>
+
 	<jsp:directive.attribute name="title" fragment="true" required="true"/>
 	<jsp:directive.attribute name="desc" fragment="true" required="true"/>
 	<jsp:directive.attribute name="actions" fragment="true" required="true"/>
@@ -33,10 +33,10 @@
 
 		<div class="metaContainer"> <!-- container class for all post information next to image  -->
 			<!-- IN MY COLLECTION: only display the in-my-collection-icon when the user is logged in -->
-	        <c:if test="${command.context.userLoggedIn}">
-	        	<!-- FIXME: user name for community posts not given - copying currently not possible -->
-	        	<c:if test="${not empty post.user.name}">	
-		        	<c:if test="${loginUserName eq post.user.name}">
+			<c:if test="${command.context.userLoggedIn}">
+				<!-- FIXME: user name for community posts not given - copying currently not possible -->
+				<c:if test="${not empty post.user.name}">	
+					<c:if test="${loginUserName eq post.user.name}">
 						<img class="overlay" src="/resources/image/inMyCollection.png" alt="inMyCollection"></img>
 					</c:if>
 				</c:if>

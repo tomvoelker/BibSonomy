@@ -1,6 +1,11 @@
+var ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR='input[name="abstractGrouping"]';
+var OTHER_GROUPING_CLASS_SELECTOR=".otherGroupsBox";
+
 $(document).ready(function () {
-	
-	/*
+	$(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
+	$.each($(".abstractGroupingGroup"),function(b,c){toggleGroupBox(c);});
+
+		/*
 	 * handler to change all sub checkboxes with the select all option
 	 */
 	$('#selectAll').change(function() {
@@ -48,10 +53,17 @@ $(document).ready(function () {
 			changeTagInputs('input[name^=posts]:checkbox:checked', true);
 			$('input[name=tags]').prop('disabled', true);
 			$('.batchUpdateButton').prop('disabled', true);
+			$('.batchUpdateButtonViewable').prop('disabled',true);
 		} else if($(this).val() == 1) {
 			changeTagInputs('input[name^=posts]:checkbox:checked', false);
 			$('input[name=tags]').prop('disabled', false);
 			$('.batchUpdateButton').prop('disabled', false);
+			$('.batchUpdateButtonViewable').prop('disabled',true);
+		} else if($(this).val() == 5) {
+			changeTagInputs('input[name^=posts]:checkbox:checked', true);
+			$('input[name=tags]').prop('disabled', true);
+			$('.batchUpdateButtonViewable').prop('disabled',false);
+			$('.batchUpdateButton').prop('disabled', true);
 		} else {
 			var value = true;
 			
@@ -70,6 +82,7 @@ $(document).ready(function () {
 				changeTagInputs('input[name^=posts]:checkbox:checked', true);
 				$('input[name=tags]').prop('disabled', true);
 				$('.batchUpdateButton').prop('disabled', false);
+				$('.batchUpdateButtonViewable').prop('disabled',true);
 			}
 		}
 	});
@@ -84,5 +97,11 @@ function changeTagInputs(selector, disabled) {
 		$('input[name=' + attr + ']:text').prop('disabled', disabled);
 	});
 }
-		           
+function onAbstractGroupingClick(){toggleGroupBox($(this).parent());
+}
+function toggleGroupBox(c){var a=$(c).children("input:checked");
+var b=$(c).siblings(OTHER_GROUPING_CLASS_SELECTOR);
+if(!a.hasClass("otherGroups")){b.attr("disabled","disabled");
+}else{b.removeAttr("disabled");
+}}		           
 maximizeById("general");

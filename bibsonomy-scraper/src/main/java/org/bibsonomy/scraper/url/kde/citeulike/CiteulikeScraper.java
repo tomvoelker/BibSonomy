@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- *  BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.scraper.url.kde.citeulike;
 
 import java.net.MalformedURLException;
@@ -32,14 +35,15 @@ import java.util.regex.Pattern;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for citeulike.org
  * @author tst
  */
-public class CiteulikeScraper extends SimpleGenericURLScraper {
+public class CiteulikeScraper extends GenericBibTeXURLScraper {
 
 	private static final String SITE_NAME = "CiteUlike";
 
@@ -78,7 +82,7 @@ public class CiteulikeScraper extends SimpleGenericURLScraper {
 	}
 
 	@Override
-	public String getBibTeXURL(URL url) {
+	public String getDownloadURL(URL url) throws ScrapingException {
 		String downloadUrl = url.toString();
 
 		// build bibtex download URL
@@ -86,16 +90,12 @@ public class CiteulikeScraper extends SimpleGenericURLScraper {
 			downloadUrl = downloadUrl.replace(ARTICLE_POSTS, ARTICLE);
 			try {
 				downloadUrl = WebUtils.getRedirectUrl(new URL(downloadUrl)).toString();
-			} catch (MalformedURLException ex) {
-				try {
-					throw new InternalFailureException(ex);
-				} catch (InternalFailureException e) {
-					e.printStackTrace();
-				}
+			} catch (final MalformedURLException ex) {
+				throw new InternalFailureException(ex);
 			}
 		}
 
-		return  downloadUrl.replace(HOST, HOST + BIBTEX);
+		return downloadUrl.replace(HOST, HOST + BIBTEX);
 	}
 
 }

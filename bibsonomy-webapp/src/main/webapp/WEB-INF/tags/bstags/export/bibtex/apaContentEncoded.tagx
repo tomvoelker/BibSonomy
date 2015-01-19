@@ -1,0 +1,49 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
+	xmlns:swrc="http://swrc.ontoware.org/ontology#"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:output="urn:jsptagdir:/WEB-INF/tags/bstags/export/bibtex">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	
+	<!-- authors -->
+	<bib:author publication="${post.resource}" useAbsoluteURL="${true}"/>
+
+	<!-- year -->
+	<bib:year publication="${post.resource}" braces="true"/>
+	
+	<!-- title -->
+	<!-- TODO: use url generator -->
+	<spring:eval var="intraHashId" expression="T(org.bibsonomy.common.enums.HashID).INTRA_HASH.id" />
+	<!-- TODO: use url generator -->
+	<a href="${properties['project.home']}bibtex/${intraHashId}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"><i><c:out value="${mtl:cleanBibtex(post.resource.title)}"/>.</i></a>
+
+	<!-- inbook / incollection data -->
+	<c:choose>
+		<c:when test="${not empty post.resource.journal}">
+			<bib:journal publication="${post.resource}"/>
+			<bib:volume publication="${post.resource}"/>
+			<bib:series publication="${post.resource}"/>
+		</c:when>
+		<c:otherwise>
+			<bib:booktitle publication="${post.resource}"/>
+		</c:otherwise>
+	</c:choose> 
+	
+	<!-- pages -->
+	<bib:page publication="${post.resource}"/>
+	
+	<!-- address -->
+	<bib:address publication="${post.resource}"/>
+	
+	<!-- publisher -->
+	<bib:publisher publication="${post.resource}"/>
+	
+	<!-- tags & url -->
+	<output:tagsUrl post="${post}"/>
+</jsp:root>

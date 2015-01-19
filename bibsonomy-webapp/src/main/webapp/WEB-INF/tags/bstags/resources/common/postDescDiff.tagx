@@ -1,0 +1,73 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"	
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+	
+	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.Post" required="true" />
+	<jsp:directive.attribute name="newestPub" type="org.bibsonomy.model.Post" required="true" />
+		
+	<c:if test="${mtl:cleanBibtex(publication.resource.author) != mtl:cleanBibtex(newestPub.resource.author)}">
+		<em><c:out value="author" />,<c:out value=" "/></em>
+	</c:if>
+	<c:if test="${mtl:cleanBibtex(publication.resource.journal) != mtl:cleanBibtex(newestPub.resource.journal)}">
+		<em><c:out value="journal" />,<c:out value=" "/></em>
+	</c:if>
+	<c:if test="${mtl:cleanBibtex(publication.resource.volume) != mtl:cleanBibtex(newestPub.resource.volume)}">
+		<em><c:out value="volume" />,<c:out value=" "/></em>
+	</c:if>
+	<c:if test="${mtl:cleanBibtex(publication.resource.number) != mtl:cleanBibtex(newestPub.resource.number)}">
+		<em><c:out value="number" />,<c:out value=" "/></em>
+	</c:if>
+	<c:if test="${mtl:cleanBibtex(publication.resource.pages) != mtl:cleanBibtex(newestPub.resource.pages)}">
+		<em><c:out value="pages" />,<c:out value=" "/></em>
+	</c:if>
+	<c:if test="${mtl:cleanBibtex(publication.resource.year) != mtl:cleanBibtex(newestPub.resource.year)}">
+		<em><c:out value="year" />,<c:out value=" "/></em>
+	</c:if>
+	<c:if test="${mtl:cleanBibtex(publication.resource.month) != mtl:cleanBibtex(newestPub.resource.month)}">
+		<em><c:out value="month" />,<c:out value=" "/></em>
+	</c:if>
+	<c:if test="${mtl:cleanBibtex(publication.resource.day) != mtl:cleanBibtex(newestPub.resource.day)}">
+		<em><c:out value="day" />,<c:out value=" "/></em>
+	</c:if>
+	<c:if test="${mtl:cleanBibtex(publication.resource.note) != mtl:cleanBibtex(newestPub.resource.note)}">
+		<em><c:out value="note" />,<c:out value=" "/></em>
+	</c:if>
+	<c:if test="${mtl:cleanBibtex(publication.resource.address) != mtl:cleanBibtex(newestPub.resource.address)}">
+		<em><c:out value="address" />,<c:out value=" "/></em>
+	</c:if>
+	<c:if test="${mtl:cleanBibtex(publication.resource.booktitle) != mtl:cleanBibtex(newestPub.resource.booktitle)}">
+		<em><c:out value="booktitle" />,<c:out value=" "/></em>
+	</c:if>
+	<c:if test="${mtl:cleanBibtex(publication.resource.organization) != mtl:cleanBibtex(newestPub.resource.organization)}">
+		<em><c:out value="organization" />,<c:out value=" "/></em>
+	</c:if>
+	<c:if test="${mtl:cleanBibtex(publication.resource.publisher) != mtl:cleanBibtex(newestPub.resource.publisher)}">
+		<em><c:out value="publisher" />,<c:out value=" "/></em>
+	</c:if>
+	<c:if test="${mtl:cleanBibtex(publication.resource.chapter) != mtl:cleanBibtex(newestPub.resource.chapter)}">
+		<em><c:out value="chapter" />,<c:out value=" "/></em>
+	</c:if>
+	<c:if test="${mtl:cleanBibtex(publication.resource.edition) != mtl:cleanBibtex(newestPub.resource.edition)}">
+		<em><c:out value="edition" />,<c:out value=" "/></em>
+	</c:if>
+	<c:if test="${mtl:cleanBibtex(publication.resource.howpublished) != mtl:cleanBibtex(newestPub.resource.howpublished)}">
+		<em><c:out value="howpublished" />,<c:out value=" "/></em>
+	</c:if>
+	<c:if test="${mtl:cleanBibtex(publication.resource.institution) != mtl:cleanBibtex(newestPub.resource.institution)}">
+		<em><c:out value="institution" />,<c:out value=" "/></em>
+	</c:if>
+	<c:if test="${mtl:cleanBibtex(publication.resource.school) != mtl:cleanBibtex(newestPub.resource.school)}">
+		<em><c:out value="school" />,<c:out value=" "/></em>
+	</c:if>
+	<c:if test="${mtl:cleanBibtex(publication.resource.series) != mtl:cleanBibtex(newestPub.resource.series)}">
+		<em><c:out value="series" />,<c:out value=" "/></em>
+	</c:if>
+	<c:if test="${mtl:cleanBibtex(publication.resource.type) != mtl:cleanBibtex(newestPub.resource.type)}">
+		<em><c:out value="type" />,<c:out value=" "/></em>
+	</c:if>
+	<!-- Missing: title, misc, bbitexAbstract, entryType, annote, crossref, editor, scraperid, url, privnote, miscFields, openURL, title-->
+	
+</jsp:root>

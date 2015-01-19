@@ -1,27 +1,3 @@
-/**
- *  
- *  BibSonomy-BibTeX-Parser - BibTeX Parser from
- * 		http://www-plan.cs.colorado.edu/henkel/stuff/javabib/
- *   
- *  Copyright (C) 2006 - 2010 Knowledge & Data Engineering Group, 
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
- *  
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
- * 
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *  
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
-
 /*
  * Created on Mar 17, 2003
  *
@@ -33,7 +9,6 @@ package bibtex.dom;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import bibtex.Assertions;
@@ -47,7 +22,7 @@ import bibtex.Assertions;
  */
 public final class BibtexFile extends BibtexNode {
 
-    private final ArrayList entries = new ArrayList();
+    private final List<BibtexAbstractEntry> entries = new ArrayList<BibtexAbstractEntry>();
 
     public BibtexFile() {
         super(null);
@@ -74,7 +49,7 @@ public final class BibtexFile extends BibtexNode {
      * 
      * @return List
      */
-    public List getEntries() {
+    public List<BibtexAbstractEntry> getEntries() {
         return Collections.unmodifiableList(entries);
     }
 
@@ -151,12 +126,12 @@ public final class BibtexFile extends BibtexNode {
         return new BibtexToplevelComment(this, content);
     }
 
-    public void printBibtex(PrintWriter writer) {
+    @Override
+	public void printBibtex(PrintWriter writer) {
         assert writer != null : "writer parameter may not be null.";
 
-        for (Iterator iter = this.entries.iterator(); iter.hasNext();) {
-            BibtexNode node = (BibtexNode) iter.next();
-            node.printBibtex(writer);
+        for (final BibtexAbstractEntry entry : this.entries) {
+        	entry.printBibtex(writer);
         }
         writer.flush();
     }

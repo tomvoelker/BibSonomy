@@ -1,28 +1,34 @@
 /**
+ * BibSonomy-Web-Common - Common things for web
  *
- *  BibSonomy-Web-Common - Common things for web
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.util.id;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.net.MalformedURLException;
@@ -30,8 +36,6 @@ import java.net.URL;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import junit.framework.Assert;
 
 import org.bibsonomy.util.WebUtils;
 import org.junit.Ignore;
@@ -149,7 +153,7 @@ public class DOIUtilsTest {
 	public void testIsDOIURL() {
 		for(final String doi: dois) {
 			try {
-				Assert.assertTrue(DOIUtils.isDOIURL(DOIUtils.getURL(doi)));
+				assertTrue(DOIUtils.isDOIURL(DOIUtils.getURL(doi)));
 			} catch (MalformedURLException ex) {
 				fail(ex.getMessage());
 			}
@@ -184,46 +188,46 @@ public class DOIUtilsTest {
 	public void testExtractDOI() {
 		for(final String doi: dois) {
 			final String fuzzyDoi = fuzzifyDOI(doi);
-			Assert.assertEquals(stripDOI(doi), DOIUtils.extractDOI(fuzzyDoi));
+			assertEquals(stripDOI(doi), DOIUtils.extractDOI(fuzzyDoi));
 		}
-		Assert.assertEquals(bibtexDoi, DOIUtils.extractDOI(bibtexWithDoi));
+		assertEquals(bibtexDoi, DOIUtils.extractDOI(bibtexWithDoi));
 	}
 
 	@Test
 	public void testContainsOnlyDOI() {
 		for(final String doi: dois) {
 			final String fuzzyDoi = fuzzifyDoiOnlyDOI(doi);
-			Assert.assertTrue(DOIUtils.containsOnlyDOI(doi));
-			Assert.assertTrue(DOIUtils.containsOnlyDOI(fuzzyDoi));
+			assertTrue(DOIUtils.containsOnlyDOI(doi));
+			assertTrue(DOIUtils.containsOnlyDOI(fuzzyDoi));
 		}
-		Assert.assertFalse(DOIUtils.containsOnlyDOI(bibtexWithDoi));
+		assertFalse(DOIUtils.containsOnlyDOI(bibtexWithDoi));
 	}
 
 	@Test
 	public void testContainsDOI() {
 		for(final String doi: dois) {
-			Assert.assertTrue(DOIUtils.containsDOI(doi));
-			Assert.assertTrue(DOIUtils.containsDOI(fuzzifyDOI(doi)));
+			assertTrue(DOIUtils.containsDOI(doi));
+			assertTrue(DOIUtils.containsDOI(fuzzifyDOI(doi)));
 		}
-		Assert.assertTrue(DOIUtils.containsDOI(bibtexWithDoi));
+		assertTrue(DOIUtils.containsDOI(bibtexWithDoi));
 	}
 
 
 	@Test
 	public void testIsDOI() {
-		for(final String doi: dois) {
-			Assert.assertTrue(DOIUtils.isDOI(doi));
+		for (final String doi: dois) {
+			assertTrue(DOIUtils.isDOI(doi));
 		}
-		Assert.assertFalse(DOIUtils.isDOI(bibtexWithDoi));
+		assertFalse(DOIUtils.isDOI(bibtexWithDoi));
 	}
 
 	@Test
 	public void testIsNonDOI() {
-		for(final String doi: nonDois) {
-			Assert.assertFalse(DOIUtils.isDOI(doi));
+		for (final String doi: nonDois) {
+			assertFalse(DOIUtils.isDOI(doi));
 		}
-		for(final String doi: dois) {
-			Assert.assertFalse(DOIUtils.isDOI(fuzzifyDOI(doi)));
+		for (final String doi: dois) {
+			assertFalse(DOIUtils.isDOI(fuzzifyDOI(doi)));
 		}
 	}
 	
@@ -231,27 +235,24 @@ public class DOIUtilsTest {
 	public void testCleanDOI() {
 		for (final String s : dois) {
 			if (s.contains("doi")) {
-				Assert.assertEquals(true, DOIUtils.cleanDOI(s).contains("doi"));
+				assertEquals(true, DOIUtils.cleanDOI(s).contains("doi"));
 			} else if (s.contains("DOI")) {
-				Assert.assertEquals(true, DOIUtils.cleanDOI(s).contains("DOI"));
+				assertEquals(true, DOIUtils.cleanDOI(s).contains("DOI"));
 			}
 		}
 
-		Assert.assertEquals(bibtexWithCleanDoi, DOIUtils.cleanDOI(bibtexWithDoi));
-		
-		Assert.assertEquals(urlWithDoi, DOIUtils.cleanDOI(urlWithDoi));
-		
-		Assert.assertEquals(cleanBibtexLineWithDoi, DOIUtils.cleanDOI(bibtexLineWithDoi));
-
+		assertEquals(bibtexWithCleanDoi, DOIUtils.cleanDOI(bibtexWithDoi));
+		assertEquals(urlWithDoi, DOIUtils.cleanDOI(urlWithDoi));
+		assertEquals(cleanBibtexLineWithDoi, DOIUtils.cleanDOI(bibtexLineWithDoi));
 	}
 	
 	@Test
 	public void testExtract2() throws Exception {
-		Assert.assertEquals("10.1109/ISSTA.2002.1048560", DOIUtils.extractDOI("doi = {doi:10.1109/ISSTA.2002.1048560}"));
-		Assert.assertEquals("10.1007/11762256_31", DOIUtils.extractDOI("doi={http://dx.doi.org/10.1007/11762256_31}"));
-		Assert.assertEquals("10.1007/11762256_31", DOIUtils.extractDOI("http://dx.doi.org/10.1007/11762256_31"));
-		Assert.assertEquals("10.1109/ISSTA.2002.1048560", DOIUtils.extractDOI("doi:10.1109/ISSTA.2002.1048560"));
-		Assert.assertEquals("10.1109/ISSTA.2002.1048560", DOIUtils.extractDOI("10.1109/ISSTA.2002.1048560"));		
+		assertEquals("10.1109/ISSTA.2002.1048560", DOIUtils.extractDOI("doi = {doi:10.1109/ISSTA.2002.1048560}"));
+		assertEquals("10.1007/11762256_31", DOIUtils.extractDOI("doi={http://dx.doi.org/10.1007/11762256_31}"));
+		assertEquals("10.1007/11762256_31", DOIUtils.extractDOI("http://dx.doi.org/10.1007/11762256_31"));
+		assertEquals("10.1109/ISSTA.2002.1048560", DOIUtils.extractDOI("doi:10.1109/ISSTA.2002.1048560"));
+		assertEquals("10.1109/ISSTA.2002.1048560", DOIUtils.extractDOI("10.1109/ISSTA.2002.1048560"));		
 	}
 
 
@@ -284,6 +285,6 @@ public class DOIUtilsTest {
 	@Test
 	@Ignore
 	public void getUrlForDoiTest(){
-		Assert.assertEquals("http://www.springerlink.com/link.asp?id=w425794t7433", DOIUtils.getUrlForDoi("10.1007/11922162").toString());
+		assertEquals("http://www.springerlink.com/link.asp?id=w425794t7433", DOIUtils.getUrlForDoi("10.1007/11922162").toString());
 	}
 }

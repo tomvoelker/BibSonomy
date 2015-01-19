@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Layout - Layout engine for the webapp.
  *
- *  BibSonomy-Layout - Layout engine for the webapp.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.layout.util;
 
 import java.io.File;
@@ -29,7 +32,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
-import org.bibsonomy.layout.jabref.JabrefLayout;
+import org.bibsonomy.layout.jabref.AbstractJabRefLayout;
+import org.bibsonomy.layout.jabref.JabRefConfig;
 import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
 import org.bibsonomy.layout.jabref.JabrefLayoutRendererTest;
 import org.bibsonomy.model.BibTex;
@@ -39,13 +43,25 @@ import org.bibsonomy.services.URLGenerator;
 import org.junit.Ignore;
 import org.junit.Test;
 
+/**
+ * 
+ * TODO: add documentation to this class
+ *
+ * @author mme
+ */
 @Ignore
 public class JabrefBasicLayoutTestBuilder {
 	
-	private static final JabrefLayoutRenderer RENDERER = new JabrefLayoutRenderer();
+	private static final JabrefLayoutRenderer RENDERER;
 	static {
-		RENDERER.setDefaultLayoutFilePath("src/main/resources/org/bibsonomy/layout/jabref");
-		RENDERER.setUrlGenerator(new URLGenerator("http://www.bibsonomy.org"));
+		final JabRefConfig config = new JabRefConfig();
+		config.setDefaultLayoutFilePath("src/main/resources/org/bibsonomy/layout/jabref");
+		try {
+			RENDERER = new JabrefLayoutRenderer(config);
+			RENDERER.setUrlGenerator(new URLGenerator("http://www.bibsonomy.org"));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	/*
@@ -75,7 +91,7 @@ public class JabrefBasicLayoutTestBuilder {
 	
 	@Test
 	public void createBasicResultLayout() throws LayoutRenderingException, IOException, PersonListParserException {
-		JabrefLayout layout = RENDERER.getLayout(layoutName, "foo");
+		AbstractJabRefLayout layout = RENDERER.getLayout(layoutName, "foo");
 		for (String entryType : entryTypes) {
 			/*
 			 * Here you can modify the post, from which the layoutTest should be build

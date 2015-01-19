@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.util.spring.controller;
 
 import java.util.Enumeration;
@@ -133,9 +159,11 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 	@Override
 	protected ModelAndView handleRequestInternal(final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 		final ApplicationContext applicationContext = this.getApplicationContext();
-		applicationContext.getBean("requestLogic", RequestLogic.class).setRequest(request); // hack but thats springs fault
+		final RequestLogic requestLogic = applicationContext.getBean("requestLogic", RequestLogic.class);
+		requestLogic.setRequest(request); // hack but thats springs fault
 		applicationContext.getBean("responseLogic", ResponseLogic.class).setResponse(response); // hack but thats springs fault
 		
+		log.debug("Processing " + request.getRequestURI() + "?" + request.getQueryString() + " from " + requestLogic.getInetAddress());
 		if ((presenceCondition!= null) && (presenceCondition.eval() == false)) {
 			 throw new NoSuchRequestHandlingMethodException(request);
 		}
@@ -238,7 +266,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		} catch (final Exception ex) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			errors.reject("error.internal", new Object[]{ex}, "Internal Server Error: " + ex.getMessage());
-			log.error("Could not complete controller (general exception) for request /" + request.getRequestURI() + "?" + request.getQueryString() + " with referer " + request.getHeader("Referer"), ex);
+			log.error("Could not complete controller (general exception) for request " + request.getRequestURI() + "?" + request.getQueryString() + " with referer " + request.getHeader("Referer"), ex);
 		}
 		
 		log.debug("Exception catching block passed, putting comand+errors into model.");
@@ -251,7 +279,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		 */
 		model.putAll(errors.getModel());
 		
-		log.debug("Returning model and view.");
+		log.debug("Returning model and view for " + request.getRequestURI() + "?" + request.getQueryString() + " from " + requestLogic.getInetAddress());
 		
 		/*
 		 * If the view is already a Spring view, use it directly.
@@ -265,7 +293,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 			return new ModelAndView((org.springframework.web.servlet.View) view, model);
 		}
 		
-		return new ModelAndView(view.getName(), model);			
+		return new ModelAndView(view.getName(), model);
 	}
 
 	@Override

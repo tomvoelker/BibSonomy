@@ -1,3 +1,29 @@
+/**
+ * BibSonomy Entity Resolver - Username/author identiy resolving for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.entity;
 
 import java.io.IOException;
@@ -31,7 +57,7 @@ import org.bibsonomy.model.User;
  * @author fei
  */
 public class UserRealnameResolver {
-	private final Log log = LogFactory.getLog(UserRealnameResolver.class);
+	private static final Log log = LogFactory.getLog(UserRealnameResolver.class);
 
 	/** number of entries to process per block while building the entity index */
 	private static final int INDEX_BLOCK_SIZE = 1000;
@@ -84,13 +110,11 @@ public class UserRealnameResolver {
 	public void init() {
 		try {
 			this.userIndex = this.config.createDatabase(false);
-			this.userIndex.openSearchers(); 
+			//this.userIndex.openSearchers();
 		} catch (final OverlappingFileLockException e) {
-			this.log.error("Error opening user name index for the Facebook importer: " + e.getMessage());
-		} catch (final IOException e) {
-			this.log.error("Error opening index", e);
+			log.error("Error opening user name index for the Facebook importer: " + e.getMessage());
 		} catch (final Exception e) {
-			this.log.warn("error while creating database, disabling index", e);
+			log.warn("error while creating database, disabling index", e);
 		}
 	}
 	
@@ -105,9 +129,9 @@ public class UserRealnameResolver {
 			final Processor proc = new Processor(this.config, this.userIndex);
 			proc.index(this.config.getDataSources(), INDEX_BLOCK_SIZE);
 		} catch (final CorruptIndexException e) {
-			this.log.error("Corrupt duke index.", e);
+			log.error("Corrupt duke index.", e);
 		} catch (final IOException e) {
-			this.log.error("Error accessing duke index.", e);
+			log.error("Error accessing duke index.", e);
 		}
 	}
 	
@@ -143,9 +167,9 @@ public class UserRealnameResolver {
 			final DataSource newEntries = createDataSource(others);
 			proc.linkRecords(Collections.singletonList(newEntries));
 		} catch (final CorruptIndexException e) {
-			this.log.error("Corrupt duke index.", e);
+			log.error("Corrupt duke index.", e);
 		} catch (final IOException e) {
-			this.log.error("Error accessing duke index.", e);
+			log.error("Error accessing duke index.", e);
 		}
 
 		//
@@ -165,6 +189,14 @@ public class UserRealnameResolver {
 		}
 		
 		return retVal;
+	}
+	
+	/**
+	 * called when the index should be closed
+	 * @throws IOException
+	 */
+	public void close() throws IOException {
+		this.userIndex.close();
 	}
 
 	/**

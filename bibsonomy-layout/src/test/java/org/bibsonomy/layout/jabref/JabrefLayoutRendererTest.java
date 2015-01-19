@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Layout - Layout engine for the webapp.
  *
- *  BibSonomy-Layout - Layout engine for the webapp.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.layout.jabref;
 
 import java.io.File;
@@ -67,13 +70,13 @@ public class JabrefLayoutRendererTest extends AbstractJabrefLayoutTest{
 	
 	@Override
 	@Test
-    public void testRender() throws Exception {
+	public void testRender() throws Exception {
 		testRender(getPosts(this.entryType));
 	}
 	
-    public static List<Post<BibTex>> getPosts(String entryType) throws PersonListParserException {
-    	final User u = new User();
-    	u.setName("Wiglaf Droste");
+	public static List<Post<BibTex>> getPosts(String entryType) throws PersonListParserException {
+		final User u = new User();
+		u.setName("Wiglaf Droste");
 
 		final BibTex publication = new BibTex(); 
 		publication.setEntrytype(entryType);
@@ -97,6 +100,5 @@ public class JabrefLayoutRendererTest extends AbstractJabrefLayoutTest{
 		post.setDescription("Our demo at HT 2009");
 		
 		return Collections.singletonList(post);
-    }
-    
+	}
 }

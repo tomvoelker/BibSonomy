@@ -1,40 +1,42 @@
-                           BibSonomy Webapp
+# BibSonomy Webapp
 
-What is it?
------------
+## What is it?
 
 This is the BibSonomy webapp.
-  
+
 The module is part of the [BibSonomy](http://www.bibsonomy.org) social
 bookmarking system and is maintained by the
 [Knowledge & Data Engineering Group](http://www.kde.cs.uni-kassel.de/)
-at the University of Kassel, Germany.
+at the University of Kassel, Germany,
+the [Data Mining and Information Retrieval Group](http://www.is.informatik.uni-wuerzburg.de/en/dmir/)
+at the University of Würzburg, Germany, and
+the [L3S Research Center](http://www.l3s.de/)
+at Leibniz University Hannover, Germany.
 
-Documentation
--------------
+## Documentation
 
 The documentation available as of the date of this release is included in
 the form of JavaDoc annotations in the source code.
 
-Release Notes
--------------
 
-System Requirements
--------------------
+## Release Notes
 
-- JDK: 1.6 or above.
-- Memory: No minimum requirement.
-- Disk: No minimum requirement.
-- Operating System: No minimum requirement.
+Please see the [release log](https://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/releases/Release%20Log).
 
-Licensing
----------
+## System Requirements
 
-Please see the file called LICENSE.txt
+* JDK: 1.7 or above.
+* Memory: No minimum requirement.
+* Disk: No minimum requirement.
+* Operating System: No minimum requirement.
 
-Maven URLS
-----------
+## Licensing
 
-- [Home Page](http://dev.bibsonomy.org/)
-- [Maven Repository](http://dev.bibsonomy.org/maven2/)
-- [Issue Tracking](https://bitbucket.org/bibsonomy/bibsonomy/issues?status=new&status=open)
+* Please see the file [LICENSE.txt](https://bitbucket.org/bibsonomy/bibsonomy/src/tip/bibsonomy-webapp/LICENSE.txt?at=stable)
+
+
+## Maven URLS
+
+* [Home Page](https://bitbucket.org/bibsonomy/bibsonomy)
+* [Maven Repository](http://dev.bibsonomy.org/maven2/)
+* [Issue Tracking](https://bitbucket.org/bibsonomy/bibsonomy/issues)

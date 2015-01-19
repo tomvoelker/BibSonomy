@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Rest-Server - The REST-server.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.rest.renderer.impl;
 
 import java.io.IOException;
@@ -13,7 +39,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
-import org.bibsonomy.layout.jabref.JabrefLayout;
+import org.bibsonomy.layout.jabref.AbstractJabRefLayout;
+import org.bibsonomy.layout.jabref.JabRefConfig;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -44,23 +71,23 @@ public class JabrefLayoutRenderer implements Renderer {
 	 */
 	private final org.bibsonomy.layout.jabref.JabrefLayoutRenderer renderer; 
 	
-	private final JabrefLayout layout;
+	private final AbstractJabRefLayout layout;
 	
 	/**
 	 * @param urlGenerator - the class to generate proper URLs
 	 * @param layout - the jabrefLayout used by the renderer
+	 * @throws Exception 
 	 */
-	public JabrefLayoutRenderer(final URLGenerator urlGenerator, final String layout) {
+	public JabrefLayoutRenderer(final URLGenerator urlGenerator, final String layout) throws Exception {
 		super();
-		this.renderer = new org.bibsonomy.layout.jabref.JabrefLayoutRenderer();
+		final JabRefConfig config = new JabRefConfig();
+		config.setDefaultLayoutFilePath("org/bibsonomy/layout/jabref");
+		this.renderer = new org.bibsonomy.layout.jabref.JabrefLayoutRenderer(config);
 		this.renderer.setUrlGenerator(urlGenerator);
 		
 		try {
 			this.layout = this.renderer.getLayout(layout, null);
-		} catch (LayoutRenderingException ex) {
-			log.error(ex);
-			throw new InternServerException(ex);
-		} catch (IOException ex) {
+		} catch (Exception ex) {
 			log.error(ex);
 			throw new InternServerException(ex);
 		}

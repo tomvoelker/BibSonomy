@@ -9,7 +9,10 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
 
 	<!--  display title -->
-	<c:set var="bibUrlTemplate">/bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}</c:set>
+	<c:set var="bibUrlTemplate">${relativeUrlGenerator.getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, post.user.name)}</c:set>
 	<c:set var="bibTitle" value="${mtl:cleanBibtex(post.resource.title)}"/>
-	<a href="${bibUrlTemplate}" title="${fn:escapeXml(bibTitle)}"><c:out value="${bibTitle}" /></a>
+
+
+	<a href="${bibUrlTemplate}" title="${mtl:renderHover(post,locale)}"><c:out value="${bibTitle}" /></a>
+
 </jsp:root>

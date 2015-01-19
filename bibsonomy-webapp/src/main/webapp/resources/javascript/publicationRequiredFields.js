@@ -52,20 +52,20 @@ $(function(){
 function initSuggestionForPartTitles(el) {
 	el.each(function(index){ $(this).autocomplete({
 		source: function( request, response ) {
-
 			$.ajax({
 				url: "/json/tag/" + createParameters(request.term),
 				data: {items: 10,resourcetype: 'publication', duplicates: 'no'},
 				dataType: "jsonp",
 				success: function( data ) {
-					response( $.map( data.items, function( item ) {
+					response( $.map( data.items, function( post ) {
+						var tags = concatArray(post.tags, null, ' ');
 						return {
-							label: (highlightMatches(item.label, request.term)+' ('+item.year+')'),
-							value: item.interHash,
-							url: 'hash='+item.intraHash+'&user='+item.user+'&copytag='+item.tags,
-							author: (concatArray(item.author, 40, ' '+getString('and')+' ')),
-							user: item.user,
-							tags: item.tags
+							label: (highlightMatches(post.label, request.term) + ' (' + post.year + ')'),
+							value: post.interHash,
+							url: 'hash=' + post.intraHash + '&user=' + post.user + '&copytag=' + tags,
+							author: (concatArray(post.author, 40, ' ' + getString('and') + ' ')),
+							user: post.user,
+							tags: tags
 						};
 					}));
 				}

@@ -57,7 +57,7 @@
   <head>
     <meta http-equiv="content-Type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" type="text/css" href="/resources/css/style_old.css">
-    <link rel="stylesheet" type="text/css" href="assets/eswc2008.css">
+    <link rel="stylesheet" type="text/css" href="/resources/events/eswc2008/eswc2008.css">
     <link rel="icon" href="/resources/image/favicon.png" type="image/png">
     <script type="text/javascript" src="/resources/javascript/functions.js"></script>
     <script type="text/javascript" src="/resources/javascript/tooltip.js"></script>

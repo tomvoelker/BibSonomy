@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- *  BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.scraper.url.kde.ssrn;
 
 import java.io.IOException;
@@ -31,6 +34,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -49,7 +54,8 @@ import org.w3c.dom.NodeList;
  * @author tst
  */
 public class SSRNScraper extends AbstractUrlScraper {
-
+	private static final Log log = LogFactory.getLog(SSRNScraper.class);
+	
 	private static final String SITE_NAME	   = "SSRN";
 	private static final String SSRN_HOST_NAME = "http://papers.ssrn.com";
 	private static final String SITE_URL	   = SSRN_HOST_NAME+"/";
@@ -135,17 +141,19 @@ public class SSRNScraper extends AbstractUrlScraper {
 
 		return false;
 	}
+	
 	private static String abstractParser(URL url){
 		try{
 			Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(url));
-			if(m.find())
+			if(m.find()) {
 				return m.group(1);
-		}catch(Exception e){
-			e.printStackTrace();
-			
+			}
+		} catch(Exception e) {
+			log.error("error while getting abstract for " + url, e);
 		}
 		return null;
 	}
+	
 	private String generateBibtexKey(String bibtex) {
 		String authors	 = null;
 		String editors	 = null;
@@ -180,7 +188,7 @@ public class SSRNScraper extends AbstractUrlScraper {
 	}
 
 	private String getCookies(URL queryURL) throws IOException {
-		StringBuffer cookieString = new StringBuffer(WebUtils.getCookies(queryURL));
+		final StringBuffer cookieString = new StringBuffer(WebUtils.getCookies(queryURL));
 		
 		cookieString.append(" ; CFCLIENT_SSRN=loginexpire%3D%7Bts%20%272009%2D12%2D12%2012%3A35%3A00%27%7D%23blnlogedin%3D1401777%23;domain=hq.ssrn.com;path=/; ");
 		//login: wbi@cs.uni-kassel.de

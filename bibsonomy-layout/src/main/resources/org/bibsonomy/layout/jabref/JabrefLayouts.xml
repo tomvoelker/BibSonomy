@@ -60,11 +60,11 @@
 		<extension>.html</extension>
 	</layout>
 	<layout name="simplehtmlyear">
-		<displayName>Simple HTML, grouped by year</displayName>
+		<displayName>Simple HTML, YEAR</displayName>
 		<description xml:lang="en">
 			An HTML layout without any header or footer but very nice
 			output. This is useful for integrating publication lists
-			into other HTML pages, grouped by year
+			into other HTML pages, grouped by year. 
 		</description>
 		<description xml:lang="de">
 			Ein HTML-Layout ohne Kopf- und Fußzeile, aber mit einer formatierten Ausgabe.
@@ -89,17 +89,18 @@
 		<extension>.html</extension>
 	</layout>
 	<layout name="plain">
-		<displayName>plain</displayName>
+		<displayName>CV BibSonomy</displayName>
 		<description xml:lang="en">
-			A simple layout for cvpage
+			A simple layout for cvpage. 
 		</description>
 		<description xml:lang="de">
-			Ausgabe für die CV-Seite
+			Ausgabe für die CV-Seite. 
 		</description>
 		<directory>plain</directory>
 		<baseFileName>plain</baseFileName>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
+		<isFavorite>true</isFavorite>
 	</layout>
 	<layout name="tablerefs">
 		<displayName>HTML table</displayName>
@@ -108,7 +109,7 @@
 			table and additional JavaScript search function.
 		</description>
 		<description xml:lang="de">
-			Erzeugt eine strukturierte HTML-Ausgabe, bei der jeder Eintrag in einer Reihe
+			Erzeugt eine strukturierte HTML-Ausgabe, bei der jeder Eintrag als Reihe
 			innerhalb einer Tabelle dargestellt wird. Die Ausgabe bietet weiterhin Suchfunktionen mittels JavaScript.
 		</description>
 		<directory>tablerefs</directory>
@@ -118,15 +119,15 @@
 	</layout>
 	<layout name="tablerefsabsbib">
 		<displayName>
-			HTML table (with Abstract &amp; BibTeX)
+			HTML table, ABSTRACT &amp; BibTeX
 		</displayName>
 		<description xml:lang="en">
-			Similar to tablerefs but additionally includes the BibTeX
+			HTML table that additionally includes the BibTeX
 			source and the abstract of the publication.
 		</description>
 		<description xml:lang="de">
-			Ähnlich wie TableRefs, beinhaltet aber zusätzlich den BibTeX Quelltext und
-			eine Zusammenfassung der jeweiligen Publikation.
+			HTML Tabelle, die zusätzlich den BibTeX Quelltext und
+			eine Zusammenfassung der jeweiligen Publikation beinhaltet.
 		</description>
 		<directory>tablerefsabsbib</directory>
 		<baseFileName>tablerefsabsbib</baseFileName>
@@ -135,14 +136,14 @@
 	</layout>
 	<layout name="tablerefsabsbibsort">
 		<displayName>
-			HTML table (with Abstract &amp; BibTeX, sortable)
+			HTML table, ABSTRACT &amp; BibTeX, sortable
 		</displayName>
 		<description xml:lang="en">
-			Similar to TableRefsAbsBib, but includes possibility to sort
+			HTML table, that includes the possibility to sort
 			the table by each column.
 		</description>
 		<description xml:lang="de">
-			Ähnlich wie TableRefsAbsBib, bietet aber zusätzlich die Möglichkeit,
+			HTML Tabelle, die zusätzlich die Möglichkeit bietet,
 			die Tabelle nach jeder Spalte zu sortieren.
 		</description>
 		<directory>tablerefsabsbibsort</directory>
@@ -177,16 +178,25 @@
 	</layout>
 	<layout name="bibtexml">
 		<displayName>BibTeXML</displayName>
-		<description xml:lang="en"></description>
-		<description xml:lang="de"></description>
+		<description xml:lang="en">
+			An export of your records to a BibTeX conformable XML
+			structure.
+		</description>
+		<description xml:lang="de">
+			Exportiert ihre Einträge in einer BibTeX-konformen XML-Struktur.
+		</description>
 		<baseFileName>bibtexml</baseFileName>
 		<mimeType>application/xml</mimeType>
 		<extension>.xml</extension>
 	</layout>
 	<layout name="bibordf">
 		<displayName>BibO RDF</displayName>
-		<description xml:lang="en"></description>
-		<description xml:lang="de"></description>
+		<description xml:lang="en">
+			Exports in the Bibliographic Ontology Specification format.
+		</description>
+		<description xml:lang="de">
+			Exportiert ihre Einträge im "Bibliographic Ontology Spedification" Format. 
+		</description>
 		<baseFileName>bibordf</baseFileName>
 		<mimeType>application/rdf+xml</mimeType>
 		<extension>.rdf</extension>
@@ -216,13 +226,14 @@
 			bibliography management tool.
 		</description>
 		<description xml:lang="de">
-			Es wird eine Ausgabe in EndNote Format erzeugt, das von EndNote verwendet wird.
+			Es wird eine Ausgabe im Format EndNote erzeugt.
 			EndNote ist ein weiteres Bibliographie-Werkzeug.
 		</description>
 		<directory>endnote</directory>
 		<baseFileName>EndNote</baseFileName>
 		<mimeType>text/plain</mimeType>
 		<extension>.txt</extension>
+		<isFavorite>true</isFavorite>
 	</layout>
 	<layout name="ris_endnote">
 		<displayName>RIS (EndNote)</displayName>
@@ -281,7 +292,6 @@
 	</layout>
 
 	<!-- additional layouts, installed by us -->
-	<!-- typemap.put("custom",              new OutputType(null, "text/html")); -->
 	<layout name="se" public="false">
 		<displayName>SE Kassel</displayName>
 		<description xml:lang="en">
@@ -297,10 +307,9 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
-	<!--
-	-->
-	<layout name="mms" public="false">
-		<displayName>HTML table (with Abstract &amp; BibTeX, sortable) for MDC</displayName>
+	<!-- -->
+	<layout name="mdc" public="false">
+		<displayName>HTML table, ABSTRACT &amp; BibTeX, sortable, MDC</displayName>
 		<description xml:lang="en">
 		  Custom output format provided by AONO MEDIA for
 		  Medical Device Certification.
@@ -308,7 +317,7 @@
 		<description xml:lang="de">
 		  Benutzerdefiniertes Ausgabeformat, das von der Firma
 		  AONO MEDIA für die Webseite der Medical Device
-		  Certification angeboten wird.
+		  Certification angeboten wird. 
 		</description>
 		<baseFileName>mdc</baseFileName>
 		<mimeType>text/html</mimeType>
@@ -318,7 +327,7 @@
 		<displayName>Electronic Business and Integration Engineering</displayName>
 		<description xml:lang="en">
 			Custom output format provided by the Research Group 
-                        Electronic Business and Integration Engineering, University of Leipzig
+            Electronic Business and Integration Engineering, University of Leipzig. 
 		</description>
 		<description xml:lang="de">
 			Benutzerdefiniertes Ausgabeformat, das von der Abteilung
@@ -373,24 +382,11 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
-	<layout name="mittelalter">
-		<displayName>Mittelalterliche Geschichte Universität Kassel</displayName>
-		<description xml:lang="en">
-			HTML output format according to the Chair of Mittelalterliche Geschichte of Kassel University
-		</description>
-		<description xml:lang="de">
-			HTML Ausgabeformat gemäß dem Lehrstuhl Mittelalterliche Geschichte der Universität Kassel
-		</description>
-		<directory>mittelalter</directory>
-		<baseFileName>mittelalter</baseFileName>
-		<mimeType>text/html</mimeType>
-		<extension>.html</extension>
-	</layout>
 	<layout name="din1505year">
-		<displayName>DIN 1505, grouped by year</displayName>
+		<displayName>DIN 1505, YEAR</displayName>
 		<description xml:lang="en">
 			HTML output format according to the German Institute for 
-			Standardization (DIN), grouped by year
+			Standardization (DIN), grouped by year. 
 		</description>
 		<description xml:lang="de">
 			HTML Ausgabeformat gemäß dem Deutschen Institut für Normung,
@@ -400,7 +396,7 @@
 		<baseFileName>din1505year</baseFileName>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
-	</layout>	
+	</layout>
 	<layout name="mms">
 		<displayName>DIN 1505 MMS</displayName>
 		<description xml:lang="en">
@@ -410,7 +406,7 @@
 		</description>
 		<description xml:lang="de">
 			HTML Ausgabe Format gemäß dem Deutschen Institut für Normung. 
-			Spezielle Version des Mensch-Maschine-Systemtechnik Instituts.
+			Spezielle Version des Instituts Mensch-Maschine-Systemtechnik.
 		</description>
 		<directory>mms</directory>
 		<baseFileName>mms</baseFileName>
@@ -418,7 +414,7 @@
 		<extension>.html</extension>
 	</layout>
 	<layout name="mmsyear">
-		<displayName>DIN 1505 MMS, grouped by year</displayName>
+		<displayName>DIN 1505 MMS, YEAR</displayName>
 		<description xml:lang="en">
 			HTML output format according to the German Institute for
 			Standardization (DIN). Special version of the
@@ -426,11 +422,61 @@
 		</description>
 		<description xml:lang="de">
 			HTML Ausgabe Format gemäß dem Deutschen Institut für Normung. 
-			Spezielle Version des Mensch-Maschine-Systemtechnik Instituts, gruppiert
-			nach Jahren.
+			Spezielle Version des Instituts Mensch-Maschine-Systemtechnik, gruppiert
+			nach Jahr.
 		</description>
 		<directory>mmsyear</directory>
 		<baseFileName>mmsyear</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>	
+	<layout name="winfoyear">
+		<displayName>DIN 1505 MMS, ENDNOTE, YEAR</displayName>
+		<description xml:lang="en">
+			HTML output format according to the German Institute for
+			Standardization (DIN). Special version of the
+			Mensch-Maschine-Systemtechnik Institute, grouped by year, 
+			and with an endnote export.
+		</description>
+		<description xml:lang="de">
+			HTML Ausgabe Format gemäß dem Deutschen Institut für Normung. 
+			Spezielle Version des Instituts Mensch-Maschine-Systemtechnik, gruppiert
+			nach Jahr und mit Endnote-Eintrag für jede Publikation.
+		</description>
+		<directory>winfoyear</directory>
+		<baseFileName>winfoyear</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="winfoyear_n" >
+		<displayName>DIN 1505 MMS, ENDNOTE, NOTE, YEAR</displayName>
+		<description xml:lang="en">
+			HTML output format according to the German Institute for
+			Standardization (DIN). Special version of the
+			Mensch-Maschine-Systemtechnik Institute, grouped by year, 
+			with an endnote export and display of the note.
+		</description>
+		<description xml:lang="de">
+			HTML Ausgabe Format gemäß dem Deutschen Institut für Normung. 
+			Spezielle Version des Instituts Mensch-Maschine-Systemtechnik, gruppiert
+			nach Jahr, mit Endnote-Eintrag für jede Publikation und Anzeige der
+			Notiz (note).
+		</description>
+		<directory>winfoyear_n</directory>
+		<baseFileName>winfoyear_n</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>	
+	<layout name="mittelalter" public="false">
+		<displayName>Mittelalterliche Geschichte Universität Kassel</displayName>
+		<description xml:lang="en">
+			HTML output format according to the Chair of Mittelalterliche Geschichte of Kassel University. 
+		</description>
+		<description xml:lang="de">
+			HTML Ausgabeformat gemäß dem Lehrstuhl für Mittelalterliche Geschichte der Universität Kassel. 
+		</description>
+		<directory>mittelalter</directory>
+		<baseFileName>mittelalter</baseFileName>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
@@ -450,7 +496,7 @@
 		<extension>.html</extension>
 	</layout>
 	<layout name="listrefs2" public="false">
-		<displayName>HTML list</displayName>
+		<displayName>HTML list (MF)</displayName>
 		<description xml:lang="en">
 			A more structured HTML output with each entry as an item in a
 			list and additional JavaScript search function. Adapted version for Manuel Franzmann.
@@ -458,7 +504,7 @@
 		<description xml:lang="de">
 			Erzeugt eine strukturierte HTML-Ausgabe, bei der jede Publikation als Eintrag 
 			in einer Liste dargestellt wird und bietet außerdem Suchfunktionen mittels JavaScript.
-			Angepasstte Version für Manuel Franzmann.
+			Angepasste Version für Manuel Franzmann.
 		</description>
 		<directory>listrefs2</directory>
 		<baseFileName>listrefs</baseFileName>
@@ -481,14 +527,14 @@
 		<extension>.html</extension>
 	</layout>
 	<layout name="harvardhtmlyear">
-		<displayName>Harvard (HTML version), grouped by year</displayName>
+		<displayName>Harvard (HTML version), YEAR</displayName>
 		<description xml:lang="en">
 			HTML output format formatted according to the Harvard bibliography
 			style guidelines and grouped by year
 		</description>
 		<description xml:lang="de">
 			HTML-Ausgabe Format gemäß den "Harvard bibliography
-			style" Richtlinien, gruppiert nach Jahren
+			style" Richtlinien, gruppiert nach Jahr. 
 		</description>
 		<directory>harvardhtmlyear</directory>
 		<baseFileName>harvard</baseFileName>
@@ -496,7 +542,7 @@
 		<extension>.html</extension>
 	</layout>
 	<layout name="harvardhtmlyear-linked">
-		<displayName>Harvard (HTML version), with abstract and export links, grouped by year</displayName>
+		<displayName>Harvard (HTML version), ABSTRACT, LINKS, YEAR</displayName>
 		<description xml:lang="en">
 			HTML output format formatted according to the Harvard bibliography
 			style guidelines and grouped by year. Includes Links to Abstract and
@@ -515,7 +561,7 @@
 		<extension>.html</extension>
 	</layout>	
 	<layout name="harvardhtmlyear-linked-full">
-		<displayName>Harvard (HTML version), with abstract, export links and fulltext, grouped by year</displayName>
+		<displayName>Harvard (HTML version), ABSTRACT, LINKS, FULLTEXT, YEAR</displayName>
 		<description xml:lang="en">
 			HTML output format formatted according to the Harvard bibliography
 			style guidelines and grouped by year. Includes Links to Abstract, 
@@ -532,27 +578,9 @@
 		<baseFileName>harvard</baseFileName>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
-	</layout>		
-	<layout name="winfoyear">
-		<displayName>DIN 1505 MMS, with endnote entry, grouped by year</displayName>
-		<description xml:lang="en">
-			HTML output format according to the German Institute for
-			Standardization (DIN). Special version of the
-			Mensch-Maschine-Systemtechnik Institute, grouped by year, 
-			and with an endnote export.		
-		</description>
-		<description xml:lang="de">
-			HTML Ausgabe Format gemäß dem Deutschen Institut für Normung. 
-			Spezielle Version des Mensch-Maschine-Systemtechnik Instituts, gruppiert
-			nach Jahren und mit Endnote-Eintrag für jede Publikation.		
-		</description>
-		<directory>winfoyear</directory>
-		<baseFileName>winfoyear</baseFileName>
-		<mimeType>text/html</mimeType>
-		<extension>.html</extension>
 	</layout>
 	<layout name="htmltype">
-		<displayName>htmltype</displayName>
+		<displayName>Htmltype</displayName>
 		<description xml:lang="en">
 			A simple layout with entrytype and number.
 		</description>
@@ -564,27 +592,8 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
-	<layout name="winfoyear_n" >
-		<displayName>DIN 1505 MMS, with endnote entry and display of note, grouped by year</displayName>
-		<description xml:lang="en">
-			HTML output format according to the German Institute for
-			Standardization (DIN). Special version of the
-			Mensch-Maschine-Systemtechnik Institute, grouped by year, 
-			with an endnote export and display of the note.		
-		</description>
-		<description xml:lang="de">
-			HTML Ausgabe Format gemäß dem Deutschen Institut für Normung. 
-			Spezielle Version des Mensch-Maschine-Systemtechnik Instituts, gruppiert
-			nach Jahren, mit Endnote-Eintrag für jede Publikation und Anzeige der
-			Notiz (note).		
-		</description>
-		<directory>winfoyear_n</directory>
-		<baseFileName>winfoyear_n</baseFileName>
-		<mimeType>text/html</mimeType>
-		<extension>.html</extension>
-	</layout>	
 	<layout name="publist-de" >
-		<displayName>Publication List in HTML Format similar to DIN1505 (German version)</displayName>
+		<displayName>HTML similar to DIN1505 (German version)</displayName>
 		<description xml:lang="en">
 			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
 			Standardization (DIN); German version.
@@ -603,7 +612,7 @@
 		<extension>.html</extension>
 	</layout>	
 	<layout name="publist-en" >
-		<displayName>Publication List in HTML Format similar to DIN1505 (English version)</displayName>
+		<displayName>HTML similar to DIN1505 (English version)</displayName>
 		<description xml:lang="en">
 			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
 			Standardization (DIN); English version.
@@ -622,7 +631,7 @@
 		<extension>.html</extension>
 	</layout>	
 	<layout name="publist-type-de" >
-		<displayName>Publication List in HTML Format similar to DIN1505, grouped by entrytype (German version)</displayName>
+		<displayName>HTML similar to DIN1505, ENTRYTYPE (German version)</displayName>
 		<description xml:lang="en">
 			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
 			Standardization (DIN), grouped by entrytype; German version.
@@ -641,7 +650,7 @@
 		<extension>.html</extension>
 	</layout>	
 	<layout name="publist-type-en" >
-		<displayName>Publication List in HTML Format similar to DIN1505, grouped by entrytype (English version)</displayName>
+		<displayName>HTML similar to DIN1505, ENTRYTYPE (English version)</displayName>
 		<description xml:lang="en">
 			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
 			Standardization (DIN), grouped by entrype; English version.
@@ -660,7 +669,7 @@
 		<extension>.html</extension>
 	</layout>		
 	<layout name="publist-year-de" >
-		<displayName>Publication List in HTML Format similar to DIN1505, grouped by year (German version)</displayName>
+		<displayName>HTML similar to DIN1505, YEAR (German version)</displayName>
 		<description xml:lang="en">
 			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
 			Standardization (DIN), grouped by year; German version.
@@ -679,7 +688,7 @@
 		<extension>.html</extension>
 	</layout>	
 	<layout name="publist-year-en" >
-		<displayName>Publication List in HTML Format similar to DIN1505, grouped by year (English version)</displayName>
+		<displayName>HTML similar to DIN1505, YEAR (English version)</displayName>
 		<description xml:lang="en">
 			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
 			Standardization (DIN), grouped by year; English version.
@@ -698,7 +707,7 @@
 		<extension>.html</extension>
 	</layout>	
 	<layout name="chicago" >
-		<displayName>Publication List in HTML Format according the Chicago Manual of Style</displayName>
+		<displayName>Chicago Manual of Style</displayName>
 		<description xml:lang="en">
 			The Chicago Manual considers three distinct formats – those appropriate for bibliographies,
 			notes, and shortened notes. This filter creates an HTML output of the bibliographies version.	
@@ -717,7 +726,7 @@
 		<extension>.html</extension>
 	</layout>
 	<layout name="apa_rtf" >
-		<displayName>Publication List in RTF Format according American Pychological Association (APA) guidelines</displayName>
+		<displayName>APA: RTF according American Pychological Association (APA) guidelines</displayName>
 		<description xml:lang="en">
 			Publication list formatted according to the guidelines of the American Psychological
 			Association (APA); output is created in Rich Text Format (.rtf).
@@ -736,11 +745,11 @@
 		<extension>.rtf</extension>
 	</layout>
 	<layout name="apa_html" >
-		<displayName>Publication List in HTML Format according American Pychological Association (APA) guidelines</displayName>
+		<displayName>APA: HTML according American Pychological Association (APA) guidelines</displayName>
 		<description xml:lang="en">
 			Publication list formatted according to the guidelines of the American Psychological
 			Association (APA); output is created in HTML format.
-			For further details, see http://ralmond.net/APAish/.	
+			For further details, see http://ralmond.net/APAish/.
 			This filter was originally created by Gottfried Vosgerau by adapting the Harvard RTF export filter.	
 		</description>
 		<description xml:lang="de">
@@ -754,4 +763,16 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
+	<selfrenderingLayout name="msofficexml" class="org.bibsonomy.layout.jabref.self.MSOfficeXMLLayout">
+		<displayName>MSOffice XML</displayName>
+		<description xml:lang="en">
+			A format to import into Microsoft Bibliography.
+		</description>
+		<description xml:lang="de">
+			Format zum Import in Microsoft Bibliography.
+		</description>
+		<mimeType>text/xml</mimeType>
+		<extension>.xml</extension>
+		<isFavorite>true</isFavorite>
+	</selfrenderingLayout>
 </layouts>

@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<jsp:root version="2.0"
+		  xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:swrctags="urn:jsptagdir:/WEB-INF/tags/bstags/export/bibtex"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+
+<!-- rdf output for publications -->
+
+<jsp:directive.page contentType="application/xml; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" isELIgnored="false"/>	
+<jsp:output omit-xml-declaration="false" />
+<rdf:RDF 
+		 xml:base="${properties['project.home']}${fn:escapeXml(requPath)}"
+		 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+		 xmlns="http://purl.org/rss/1.0/"
+		 xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+		 xmlns:swrc="http://swrc.ontoware.org/ontology#"
+		 xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+		 xmlns:cc="http://web.resource.org/cc/"
+		 xmlns:taxo="http://purl.org/rss/1.0/modules/taxonomy/"
+		 xmlns:dc="http://purl.org/dc/elements/1.1/"
+		 xmlns:syn="http://purl.org/rss/1.0/modules/syndication/"
+		 xmlns:content="http://purl.org/rss/1.0/modules/content/"
+		 xmlns:admin="http://webns.net/mvcb/"
+		 xmlns:owl="http://www.w3.org/2002/07/owl#"
+		 xmlns:foaf="http://xmlns.com/foaf/0.1/"
+		 xmlns:community="http://www.bibsonomy.org/ontologies/2008/05/community#"> 
+	 
+<owl:Ontology rdf:about="">
+  <rdfs:comment><c:out value="${properties['project.name']}"/> publications for /<c:out value='${requPath}'/></rdfs:comment>
+  <owl:imports rdf:resource="http://swrc.ontoware.org/ontology/portal"/>
+</owl:Ontology>
+
+<!-- Bookmarks -->
+<c:forEach var="post" items="${command.bibtex.list}" >
+    <swrctags:swrcOutput post="${post}"/>
+</c:forEach>
+
+<!-- the following test is kind of a hack - but currently we are displaying related users 
+     only on the tag page, which is based on the TagResourceViewCommand, which 
+     has the necessary attributes we access here. dbe, 20080509
+     still a hack. dzo 20110727 -->
+	<c:if test="${command['class'].simpleName == 'TagResourceViewCommand'}">
+		<swrctags:relatedUsers cmd="${command.relatedUserCommand}" tags="${command.requestedTags}"/>
+	</c:if>
+</rdf:RDF>
+</jsp:root>

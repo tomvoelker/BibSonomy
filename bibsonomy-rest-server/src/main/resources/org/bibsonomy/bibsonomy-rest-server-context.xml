@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	                    http://www.springframework.org/schema/util 
+	                    http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+	<!-- renders all API URLs -->
+	<bean id="restUrlRenderer" class="org.bibsonomy.rest.renderer.UrlRenderer">
+		<constructor-arg name="apiUrl" value="${project.home}api/" />
+	</bean>
+	
+	<bean id="modelRestValidator" class="org.bibsonomy.rest.validation.ServersideModelValidator" />
+
+	<bean id="abstractRenderer" class="org.bibsonomy.rest.renderer.AbstractRenderer" abstract="true">
+		<property name="modelValidator" ref="modelRestValidator" />
+	</bean>
+
+	<bean id="rendererFactory" class="org.bibsonomy.rest.renderer.RendererFactory">
+		<property name="urlRenderer" ref="restUrlRenderer" />
+		<property name="renderers">
+			<map merge="true">
+				<entry>
+					<key>
+						<util:constant static-field="org.bibsonomy.rest.renderer.RenderingFormat.JSON" />
+					</key>
+					<bean class="org.bibsonomy.rest.renderer.impl.json.JSONRenderer" parent="abstractRenderer">
+						<constructor-arg name="urlRenderer" ref="restUrlRenderer" />
+					</bean>
+				</entry>
+				<entry>
+					<key>
+						<util:constant static-field="org.bibsonomy.rest.renderer.RenderingFormat.XML" />
+					</key>
+					<bean class="org.bibsonomy.rest.renderer.impl.xml.XMLRenderer" parent="abstractRenderer">
+						<constructor-arg name="urlRenderer" ref="restUrlRenderer" />
+					</bean>
+				</entry>
+				<entry>
+					<key>
+						<util:constant static-field="org.bibsonomy.rest.renderer.RenderingFormat.CSL" />
+					</key>
+					<bean class="org.bibsonomy.rest.renderer.impl.CSLRenderer" />
+				</entry>
+				<entry>
+					<key>
+						<util:constant static-field="org.bibsonomy.rest.renderer.RenderingFormat.BIBTEX" />
+					</key>
+					<bean class="org.bibsonomy.rest.renderer.impl.BibTexRenderer" />
+				</entry>
+				<entry>
+					<key>
+						<util:constant static-field="org.bibsonomy.rest.renderer.RenderingFormat.ENDNOTE" />
+					</key>
+					<bean class="org.bibsonomy.rest.renderer.impl.EndnoteRenderer" />
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="restServletInstance" class="org.bibsonomy.rest.RestServlet">
+		<property name="projectHome" value="${project.home}" />
+		<property name="projectName" value="${project.name}" />
+		<property name="urlRenderer" ref="restUrlRenderer" />
+		<property name="rendererFactory" ref="rendererFactory" />
+		<property name="fileLogic" ref="fileLogic" />
+		<property name="authenticationHandlers" ref="authenticationHandlers" />
+	</bean>
+</beans>

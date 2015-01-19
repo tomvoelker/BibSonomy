@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Database - Database for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.testutil;
 
 import java.io.Closeable;
@@ -31,8 +57,6 @@ public class TestDatabaseLoader {
 	private static final String SCHEMA_FILENAME = "bibsonomy-db-schema.sql";
 	/** Holds the test data (script is found at /src/test/resources) */
 	private static final String DATA_FILENAME   = "database/insert-test-data.sql";
-	/** Holds the commands to empty all tables (script is found at /src/test/resources) */
-	private static final String DELETE_FILENAME   = "database/empty-tables.sql";
 	
 	private static final TestDatabaseLoader INSTANCE = new TestDatabaseLoader();
 
@@ -49,8 +73,6 @@ public class TestDatabaseLoader {
 	private final List<String> createStatements;
 	/** Stores the insert statements  */
 	private final List<String> insertStatements;
-	/** Stores the delete statements  */
-	private final List<String> deleteStatements;
 	
 	private final List<String> tableNames;
 
@@ -67,8 +89,6 @@ public class TestDatabaseLoader {
 		log.debug("parsing insert statements");
 		this.insertStatements = this.parseInputStream(TestDatabaseLoader.class.getClassLoader().getResourceAsStream(DATA_FILENAME));
 		
-		log.debug("parsing delete statements");
-		this.deleteStatements = this.parseInputStream(TestDatabaseLoader.class.getClassLoader().getResourceAsStream(DELETE_FILENAME));
 		final long elapsed = (System.currentTimeMillis() - start ) / 1000;
 		log.debug("Done; took " + elapsed + " seconds.");
 	}
@@ -100,16 +120,13 @@ public class TestDatabaseLoader {
 		final StringBuilder spanningLineBuf = new StringBuilder();
 		while (scan.hasNext()) {
 			final String currentLine = scan.nextLine();
-			if ("".equals(currentLine.trim()))
-			 {
+			if ("".equals(currentLine.trim())) {
 				continue;       // skip empty lines
 			}
-			if (currentLine.startsWith("--"))
-			 {
-				continue;        // skip comments				
+			if (currentLine.startsWith("--")) {
+				continue;        // skip comments
 			}
-			if (currentLine.startsWith("DELIMITER"))
-			 {
+			if (currentLine.startsWith("DELIMITER")) {
 				continue; // exclude trigger-related statements
 			}
 			if (currentLine.startsWith("/*!50003")) {
@@ -133,7 +150,8 @@ public class TestDatabaseLoader {
 			log.debug("Read: " + wholeLine);
 			statements.add(wholeLine);
 			spanningLineBuf.delete(0, spanningLineBuf.length());
-		}		
+		}
+		scan.close();
 		return statements;
 	}
 
@@ -174,7 +192,7 @@ public class TestDatabaseLoader {
 			/*
 			 * execute statements from script
 			 */
-			if (this.firstRun) {				
+			if (this.firstRun) {
 				final List<String> statements = new LinkedList<String>();
 				statements.addAll(this.createStatements);
 				
@@ -196,7 +214,6 @@ public class TestDatabaseLoader {
 				elapsed = (System.currentTimeMillis() - start );
 				log.debug("Done; took " + elapsed + " mseconds.");
 			}
-			
 			
 			start = System.currentTimeMillis();
 			for (final String statement : this.insertStatements) {

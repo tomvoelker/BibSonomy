@@ -1,4 +1,32 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.controller.actions;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -21,12 +49,7 @@ public class EditBookmarkController extends EditPostController<Bookmark, EditBoo
 
 	@Override
 	protected Bookmark instantiateResource() {
-		final Bookmark bookmark = new Bookmark();
-		/*
-		 * set default values.
-		 */
-		bookmark.setUrl("http://");
-		return bookmark;
+		return new Bookmark();
 	}
 
 	@Override
@@ -49,4 +72,23 @@ public class EditBookmarkController extends EditPostController<Bookmark, EditBoo
 		// noop
 	}
 
+	
+	@Override
+	public View workOn(final EditBookmarkCommand command) {
+		/* 
+		 * if URL of resource null show POST_BOOKMARK view and 
+		 * initialize didYouKnowMessageCommand  
+		 */
+		if (!present(command.getPost().getResource().getUrl()) && !present(command.getIntraHashToUpdate()) && !present(command.getHash())) {
+			initializeDidYouKnowMessageCommand(command);
+			command.getPost().getResource().setUrl("http://");
+			return Views.POST_BOOKMARK;
+		}
+		
+		/*
+		 * otherwise use editPost workflow
+		 */
+		return super.workOn(command);
+	}
+	
 }

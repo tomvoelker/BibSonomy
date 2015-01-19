@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-OpenSocial - Implementation of the Opensocial specification and OAuth Security Handling
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.opensocial.oauth.database;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -60,8 +86,16 @@ public class BibSonomyOAuthDataStore implements OAuthDataStore {
 	/** singleton pattern */
 	private static BibSonomyOAuthDataStore instance;
 	
-	@Inject
-	public BibSonomyOAuthDataStore(@Named("shindig.oauth.base-url") final String baseUrl) {
+	public static BibSonomyOAuthDataStore getInstance() {
+		if (instance == null) {
+			instance = new BibSonomyOAuthDataStore();
+		}
+		
+		return instance;
+	}
+	
+	
+	public BibSonomyOAuthDataStore(final String baseUrl) {
 		this.serviceProvider = new OAuthServiceProvider(baseUrl + "requestToken", baseUrl + "authorize", baseUrl + "accessToken");
 	}
 	
@@ -69,13 +103,7 @@ public class BibSonomyOAuthDataStore implements OAuthDataStore {
 		this.serviceProvider = new OAuthServiceProvider(OAUTH_BASEURL+ "requestToken", OAUTH_BASEURL + "authorize", OAUTH_BASEURL + "accessToken");
 	}
 
-	public static BibSonomyOAuthDataStore getInstance() {
-		if (instance==null) {
-			instance = new BibSonomyOAuthDataStore();
-		};
-		
-		return instance;
-	}
+	
 
 	//------------------------------------------------------------------------
 	// OAuthDataStore interface

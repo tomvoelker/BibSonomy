@@ -15,41 +15,41 @@
 		<!--+ 
 			| Home
 			+-->
-		<li class="${activeTab eq 'home' ? 'active' : ''}"><a href="/"><fmt:message key="navi.home"/></a></li>
+		<li class="${activeTab eq 'home' ? 'active' : ''}"><a href="${relativeUrlGenerator.getProjectHome()}"><fmt:message key="navi.home"/></a></li>
 		<!--+ 
 		 	| myProjectName
 		 	+-->
 		<c:if test="${not empty loginUserName}">
 			<li class="pulldown ${activeTab eq 'my' ? 'active' : ''}" id="mySystem" data-touch="false">
-				<a href="/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.my"/>${properties['project.name']}</a>
+				<a href="${relativeUrlGenerator.getUserUrlByUserName(loginUserName)}"><fmt:message key="navi.my"/>${properties['project.name']}</a>
 				<ul>
-					<li><a href="/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.posts"/></a></li>
+					<li><a href="${relativeUrlGenerator.getUserUrlByUserName(loginUserName)}"><fmt:message key="navi.posts"/></a></li>
 <!-- 					<li><a href="/recommended"><fmt:message key="navi.recommendedPosts"/></a></li> -->
-					<c:if test="${not command.context.loginUser.settings.simpleInterface}">
-						<li><a href="/viewable/private"><fmt:message key="navi.privatePosts"/></a></li>
-						<li><a href="/viewable/friends"><fmt:message key="navi.friendsPosts"/></a></li>
-						<li><a href="/user/${mtl:encodeURI(loginUserName)}?filter=JUST_PDF"><fmt:message key="navi.pdfs"/></a></li>
-						<li><a href="/user/${mtl:encodeURI(loginUserName)}?filter=DUPLICATES"><fmt:message key="navi.duplicates"/></a></li>
+					<c:if test="${not command.context.loginUser.settings.layoutSettings.simpleInterface}">
+						<li><a href="${relativeUrlGenerator.getViewablePrivateUrl()}"><fmt:message key="navi.privatePosts"/></a></li>
+						<li><a href="${relativeUrlGenerator.getViewableFriendsUrl()}"><fmt:message key="navi.friendsPosts"/></a></li>
+						<li><a href="${relativeUrlGenerator.getUserUrlByUserName(loginUserName)}?filter=JUST_PDF"><fmt:message key="navi.pdfs"/></a></li>
++						<li><a href="${relativeUrlGenerator.getUserUrlByUserName(loginUserName)}?filter=DUPLICATES"><fmt:message key="navi.duplicates"/></a></li>
 					</c:if>
 					<li class="separator">${mtl:ch('nbsp')}</li>
 					
 					<li><a href="/discussed/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.discussedPosts"/></a></li>
-					<li><a href="/basket"><fmt:message key="navi.basket"/></a></li>
+					<li><a href="${relativeUrlGenerator.getBasketUrl()}"><fmt:message key="navi.basket"/></a></li>
 					<li><a href="/inbox"><fmt:message key="navi.inbox"/></a></li>
 					<li class="separator">${mtl:ch('nbsp')}</li>
 					
 					<li><a href="/spheres"><fmt:message key="navi.spheres"/></a></li>
-					<c:if test="${not command.context.loginUser.settings.simpleInterface}">
+					<c:if test="${not command.context.loginUser.settings.layoutSettings.simpleInterface}">
 						<li><a href="/friends"><fmt:message key="navi.friends"/></a></li>
-						<li><a href="/followers"><fmt:message key="navi.followees"/></a></li>
+						<li><a href="${relativeUrlGenerator.getFollowersUrl()}"><fmt:message key="navi.followees"/></a></li>
 						<li class="separator">${mtl:ch('nbsp')}</li>
 					</c:if>
 					
-					<li><a href="/concepts/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.relations"/></a></li>
-					<c:if test="${not command.context.loginUser.settings.simpleInterface}">
+					<li><a href="${relativeUrlGenerator.getConceptsUrlByString(loginUserName)}"><fmt:message key="navi.relations"/></a></li>
+					<c:if test="${not command.context.loginUser.settings.layoutSettings.simpleInterface}">
 						<li><a href="/cv/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.cv"/></a></li>
-						<li><a href="/mySearch"><fmt:message key="navi.browse"/></a></li>
-						<li><a href="/bib/user/${mtl:encodeURI(loginUserName)}?items=1000"><fmt:message key="navi.bibtex"/></a></li>
+						<li><a href="${relativeUrlGenerator.getMySearchUrl()}"><fmt:message key="navi.browse"/></a></li>
+						<li><a href="${relativeUrlGenerator.getPublicationsAsBibtexUrlByUserName(loginUserName)}?items=1000"><fmt:message key="navi.bibtex"/></a></li>
 						<li class="separator">${mtl:ch('nbsp')}</li>
 					</c:if>
 					<li><a href="/settings"><fmt:message key="navi.settings"/></a></li>
@@ -75,16 +75,16 @@
 					<span><fmt:message key="navi.groups"/></span>
 					<table>
 						<tr>
-							<td colspan="6"><a href="/groups"><fmt:message key="navi.groups.all"/></a></td>
+							<td colspan="6"><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups.all"/></a></td>
 						</tr>
 						<c:forEach var="grp" items="${loginUser.groups}">
 							<tr>
-								<td><a href="/group/${mtl:encodeURI(grp.name)}"><c:out value='${grp.name}'/></a></td>
-								<td><a href="/relevantfor/group/${mtl:encodeURI(grp.name)}"><fmt:message key="navi.relevantFor"/></a></td>
-								<td><a href="/viewable/${mtl:encodeURI(grp.name)}"><fmt:message key="navi.viewable"/></a></td>
+								<td><a href="${relativeUrlGenerator.getGroupUrlByGroupName(grp.name)}"><c:out value='${grp.name}'/></a></td>								
+								<td><a href="${relativeUrlGenerator.getRelevantForUrlByGroupName(grp.name)}"><fmt:message key="navi.relevantFor"/></a></td>
+								<td><a href="${relativeUrlGenerator.getViewableUrlByGroupName(grp.name)}"><fmt:message key="navi.viewable"/></a></td>
 								<td>
 									<c:if test="${grp.sharedDocuments}">
-										<a href="/group/${mtl:encodeURI(grp.name)}?filter=JUST_PDF">
+										<a href="${relativeUrlGenerator.getGroupUrlByGroupName(grp.name)}?filter=JUST_PDF">
 											<fmt:message key="navi.groups" /><fmt:message key="navi.pdfs" />
 										</a>
 									</c:if>
@@ -96,7 +96,7 @@
 				</li>
 			</c:when>
 			<c:otherwise>
-				<li class="${activeTab eq 'groups' ? 'active' : ''}"><a href="/groups"><fmt:message key="navi.groups"/></a></li>
+				<li class="${activeTab eq 'groups' ? 'active' : ''}"><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups"/></a></li>
 			</c:otherwise>
 		</c:choose>
 		<!--+
@@ -115,14 +115,14 @@
 		
 		<c:if test="${loginUser.role eq 'ADMIN' }">
 			<li class="pulldown ${activeTab eq 'admin' ? 'active' : ''}" id="systemAdmin" data-touch="false">
-				<a href="/admin">admin</a>
+				<a href="${relativeUrlGenerator.getAdminUrlByName(null)}">admin</a>
 				<ul>
-					<li><a href="/admin/spam">spam</a></li>
-					<li><a href="/admin/group">groups</a></li>
-					<li><a href="/admin/lucene">full text search</a></li>
-					<li><a href="/admin/recommender">recommenders</a></li>
-					<li><a href="/admin/oauth">OAuth consumers</a></li>
-					<li><a href="/admin/sync">synchronization</a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('spam')}">spam</a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('group')}">groups</a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('lucene')}">full text search</a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('recommender')}">recommenders</a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('oauth')}">OAuth consumers</a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('sync')}">synchronization</a></li>
 				</ul>
 			</li>
 		</c:if>

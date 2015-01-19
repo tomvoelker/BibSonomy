@@ -1,27 +1,29 @@
 /**
+ * BibSonomy-BibTeX-Parser - BibTeX Parser from http://www-plan.cs.colorado.edu/henkel/stuff/javabib/
  *
- *  BibSonomy-BibTeX-Parser - BibTeX Parser from
- * 		http://www-plan.cs.colorado.edu/henkel/stuff/javabib/
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.bibtex.parser;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -29,7 +31,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -79,14 +80,14 @@ public class SimpleBibTeXParser {
 	private ParseException[] caughtExceptions;
 
 	/**
-	 * Stores warnings occuring during parsing.
+	 * Stores warnings occurring during parsing.
 	 */
-	private final List<String> warnings;
+	private final List<ExpansionException> warnings;
 	/**
 	 * inits the warnings list
 	 */
 	public SimpleBibTeXParser() {
-		this.warnings = new LinkedList<String>();
+		this.warnings = new LinkedList<ExpansionException>();
 	}
 
 	/**
@@ -121,7 +122,7 @@ public class SimpleBibTeXParser {
 	/**
 	 * @return The warnings created during parsing.
 	 */
-	public List<String> getWarnings() {
+	public List<ExpansionException> getWarnings() {
 		return this.warnings;
 	}
 
@@ -251,14 +252,22 @@ public class SimpleBibTeXParser {
 			final MacroReferenceExpander macroReferenceExpander = new MacroReferenceExpander(true, false, false, false);
 			macroReferenceExpander.expand(bibtexFile);
 			addWarnings(macroReferenceExpander);
-		} catch (ExpansionException ee) {
-			warnings.add(ee.getMessage());
+		} catch (final ExpansionException ee) {
+			this.warnings.add(ee);
 		}
 
 		try {
-			new CrossReferenceExpander(true).expand(bibtexFile);
-		} catch (ExpansionException ee) {
-			warnings.add(ee.getMessage());
+			/*
+			 * rja, 2014-11-14; disabled immediate throwing of warnings such
+			 * that we can parse BibTeX lists where entries have crossref entries
+			 * which are missing (can happen when users import from DBLP, where
+			 * entries are complete but still refer to the crossref).
+			 */
+			final CrossReferenceExpander crossReferenceExpander = new CrossReferenceExpander(false);
+			crossReferenceExpander.expand(bibtexFile);
+			addWarnings(crossReferenceExpander);
+		} catch (final ExpansionException ee) {
+			this.warnings.add(ee);
 		}
 
 		try {
@@ -266,13 +275,13 @@ public class SimpleBibTeXParser {
 			personListExpander.expand(bibtexFile);
 			addWarnings(personListExpander);
 		} catch (ExpansionException ee) {
-			warnings.add(ee.getMessage());
+			this.warnings.add(ee);
 		}
 	}
 
 	private void addWarnings(final AbstractExpander abstractExpander) {
 		for (final ExpansionException expansionException : abstractExpander.getExceptions()) {
-			warnings.add(expansionException.getMessage());	
+			this.warnings.add(expansionException);	
 		}
 	}
 

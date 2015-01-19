@@ -1,9 +1,36 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.controller.actions;
 
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlBuilder;
 import org.bibsonomy.webapp.command.actions.LimitedAccountActivationCommand;
@@ -26,7 +53,7 @@ public class LimitedAccountActivationController implements ErrorAware, Validatio
 	/** after successful activation, the user is redirected to this page. */
 	private String successRedirect;
 	
-	private String projectHome;
+	private URLGenerator urlGenerator;
 
 	private Errors errors= null;
 	
@@ -87,7 +114,7 @@ public class LimitedAccountActivationController implements ErrorAware, Validatio
 		 * to the redirect
 		 * TODO: document why we add the hash here!
 		 */
-		final String hash = StringUtils.getMD5Hash(this.projectHome + "register_saml_success+" + loginUser.getName());
+		final String hash = StringUtils.getMD5Hash(this.urlGenerator.getProjectHome() + "register_saml_success+" + loginUser.getName());
 		final String redirectUrl = new UrlBuilder(this.successRedirect).addParameter("hash", hash).asString();
 		return new ExtendedRedirectView(redirectUrl);
 	}
@@ -120,10 +147,11 @@ public class LimitedAccountActivationController implements ErrorAware, Validatio
 	}
 
 	/**
-	 * @param projectHome the projectHome to set
+	 * 
+	 * @param urlGenerator
 	 */
-	public void setProjectHome(String projectHome) {
-		this.projectHome = projectHome;
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
 	}
 
 	/**

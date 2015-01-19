@@ -22,6 +22,7 @@
 	<c:set var="publication" value="${post.resource}"/>
 	<c:set var="isOwnEntry" value="${post.user.name eq command.context.loginUser.name}"/>
 	
+	<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
 	<spring:theme code="javascript.openaccess" var="jsOpenAccess" text=""/>
 
 	<c:if test="${not empty jsOpenAccess}"> 
@@ -53,10 +54,10 @@
 							| abstract 
 							+-->
 				
-						<c:if test="${not empty post.resource.abstract}"> 
+						<c:if test="${not empty publication['abstract']}"> 
 							<h4 style="clear:both;"><fmt:message key="publications.abstract.headline"/></h4>
 							<div id="abstract" class="more">
-								<c:out value="${post.resource.abstract}" />
+								<c:out value="${post.resource['abstract']}" />
 							</div>
 						</c:if>
 						
@@ -100,42 +101,42 @@
 									| additional URLs
 									+-->
 								<c:if test="${not empty publication.extraUrls or isOwnEntry}">
-									<tr>							
+									<tr>
 										<td>
 											<script type="text/javascript" src="${resdir}/javascript/additionalUrl.js"><!--  --></script>
 											<fmt:message key="bibtex.additional_urls"/>:
 										</td>
 										<td>
 											<!-- display extra URLs -->
-									      	<div id="urlList" class="allAddUrls">
-									      	<c:forEach items="${publication.extraUrls}" var="url">
-									      		<c:set var="escapedUrl" value="${fn:escapeXml(url.url)}" />
-									      		<div id="${escapedUrl}">
-									        	<a href="${escapedUrl}"><c:out value="${url.text}"/></a>
-									        	<c:if test="${isOwnEntry}">
-									        		<c:out value=" ("/>
-									          		<a href="#" onclick="deleteUrl(this, '${escapedUrl}','${fn:escapeXml(publication.intraHash)}','${fn:escapeXml(command.context.ckey)}');return false;" ><fmt:message key="post.bibtex.delete"/></a>
-									          		<c:out value=")"/><br/>
-									        	</c:if>
-									        	</div>
-									      	</c:forEach>
-									      	</div>
-									    	<form method="post" action="/ajax/additionalURLs" id="f_addURL" class="initiallyHidden">
-									          	<fmt:message key="bibtex.url"/><c:out value=":"/>
-									          	<input type="text" name="url"/><br />
-											  	<fmt:message key="text"/><c:out value=":"/>						          
-									          	<input type="text" name="text"/>
-									          	<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
-									          	<input type="hidden" name="hash" value="${fn:escapeXml(publication.intraHash)}"/>
-									          	<input type="hidden" name="action" value="addUrl" id="submitAddUrl"/>
-									          	<input class="postUrl" type="button" value="addURL" id="addURLButton"/>
-									        </form>					      						  							  						  	 
+											<div id="urlList" class="allAddUrls">
+											<c:forEach items="${publication.extraUrls}" var="url">
+												<c:set var="escapedUrl" value="${fn:escapeXml(url.url)}" />
+												<div id="${escapedUrl}">
+												<a href="${escapedUrl}"><c:out value="${url.text}"/></a>
+												<c:if test="${isOwnEntry}">
+													<c:out value=" ("/>
+													<a href="#" onclick="deleteUrl(this, '${escapedUrl}','${fn:escapeXml(publication.intraHash)}','${fn:escapeXml(command.context.ckey)}');return false;" ><fmt:message key="post.bibtex.delete"/></a>
+													<c:out value=")"/><br/>
+												</c:if>
+												</div>
+											</c:forEach>
+											</div>
+											<form method="post" action="/ajax/additionalURLs" id="f_addURL" class="initiallyHidden">
+												<fmt:message key="bibtex.url"/><c:out value=":"/>
+												<input type="text" name="url"/><br />
+												<fmt:message key="text"/><c:out value=":"/>
+												<input type="text" name="text"/>
+												<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
+												<input type="hidden" name="hash" value="${fn:escapeXml(publication.intraHash)}"/>
+												<input type="hidden" name="action" value="addUrl" id="submitAddUrl"/>
+												<input class="postUrl" type="button" value="addURL" id="addURLButton"/>
+											</form>
 				
-										  	<!--  add url -->						  	
-										    <c:if test="${isOwnEntry}">
-										        <fmt:message var="addAdditionalUrlTitle" key="bibtex.actions.additional_url.add.title" />
-										        <a class="addUrl" title="${addAdditionalUrlTitle}" href="javascript:addUrlForm()" id="l_addURL"><fmt:message key="bibtex.actions.additional_url.add"/></a>
-										    </c:if>								
+											<!--  add url -->
+											<c:if test="${isOwnEntry}">
+												<fmt:message var="addAdditionalUrlTitle" key="bibtex.actions.additional_url.add.title" />
+												<a class="addUrl" title="${addAdditionalUrlTitle}" href="javascript:addUrlForm()" id="l_addURL"><fmt:message key="bibtex.actions.additional_url.add"/></a>
+											</c:if>
 				
 										</td>
 									</tr>
@@ -145,39 +146,41 @@
 									| OpenURL 
 									+-->
 								<c:if test="${not empty command.context.loginUser.openURL}">
-									<tr>							
-								    	<fmt:message var="openurlTitle" key="bibtex.actions.openurl.title" />
-								    	<td><fmt:message key="bibtex.actions.openurl"/>:</td>
-								    	<td>
-									    	<a href="${fn:escapeXml(command.context.loginUser.openURL)}?${fn:escapeXml(publication.openURL)}" title="${openurlTitle}">
-									    		<c:out value="${command.context.loginUser.openURL}"/>?<c:out value="${mtl:shorten(publication.openURL, 30)}"/>
-									    	</a>
-								    	</td>
-								    </tr>
-								</c:if> 
+									<tr>
+										<fmt:message var="openurlTitle" key="bibtex.actions.openurl.title" />
+										<td><fmt:message key="bibtex.actions.openurl"/>:</td>
+										<td>
+											<a href="${fn:escapeXml(command.context.loginUser.openURL)}?${fn:escapeXml(publication.openURL)}" title="${openurlTitle}">
+												<c:out value="${command.context.loginUser.openURL}"/>?<c:out value="${mtl:shorten(publication.openURL, 30)}"/>
+											</a>
+										</td>
+									</tr>
+								</c:if>
 	
 								<!--+
 									| BibTeX key
 									+-->
 								<tr>
 									<td><fmt:message key="post.resource.bibtexKey"/>:</td>
-									<td><a href="/bibtexkey/${mtl:encodeURI(publication.bibtexKey)}/${mtl:encodeURI(post.user.name)}"><c:out value="${publication.bibtexKey}"/></a></td>
+									<td><a href="${relativeUrlGenerator.getPublicationUrlByBibTexKeyAndUserName(publication.bibtexKey, post.user.name)}"><c:out value="${publication.bibtexKey}"/></a></td>
 								</tr>
 								
 								<!--+ 
 								 	| internal link
 								 	+-->
 								<tr>
-								 	<td>
-								 		<fmt:message key="discussion.resourceLink.title"/><c:out value=": "/>
-								 		<buttons:help message="discussion.resourceLink.help" cssStyle="float:none"/>
-								 	</td>
-								 	<td>
-								 		<c:set var="linkText" value="[[publication/${hash.inter.id}${publication.interHash}/${mtl:encodeURI(post.user.name)}]]" />
-								 		<input id="linkBox" type="text" onclick="javascript:$(this).focus().select()" value="${linkText}" size="${fn:length(linkText)}" style="font-size:90%; border:0px;"/>
-								 	</td>
+									<td>
+										<fmt:message key="discussion.resourceLink.title"/><c:out value=": "/>
+										<buttons:help message="discussion.resourceLink.help" cssStyle="float:none"/>
+									</td>
+									<td>
+										
+										<!-- TODO: use urlgenerator? -->
+										<c:set var="linkText" value="[[publication/${interHashId}${publication.interHash}/${mtl:encodeURI(post.user.name)}]]" />
+										<input id="linkBox" type="text" onclick="javascript:$(this).focus().select()" value="${linkText}" size="${fn:length(linkText)}" style="font-size:90%; border:0px;"/>
+									</td>
 								</tr>
-														
+								
 						<!--+ 
 				 			|
 				 			| dropdown menu from which you can pick an external literature site and try to find the publication there
@@ -237,7 +240,7 @@
 							| discussion and rating
 							+-->
 	
-						<pub:discussionrating post="${post}" otherPostsUrlPrefix="/bibtex/${hash.inter.id}"/>
+						<pub:discussionrating post="${post}" otherPostsUrlPrefix="/bibtex/${interHashId}"/>
 						
 						<!--+
 							| tag list
@@ -252,7 +255,7 @@
 							<ul>
 							<c:forEach var="tag" items="${tags}" varStatus="status">
 								<!-- TODO: remove nobr and replace with CSS, it is deprecated! -->
-								<li style="display:list-item;"><span class="tagitem_rightborder"><a class="tagitem" href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}" rel="nofollow" title=""><nobr><c:out value="${tag.name}"/></nobr></a></span></li>
+								<li style="display:list-item;"><span class="tagitem_rightborder"><a class="tagitem" href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}" rel="nofollow" title=""><nobr><c:out value="${tag.name}"/></nobr></a></span></li>
 							</c:forEach>
 							</ul>
 						</div>
@@ -264,29 +267,20 @@
 					<!--+
 						| documents
 						+-->
-					<c:choose>
-						<c:when test="${isOwnEntry}">
-							<div class="documents">
-								<pub:doc post="${post}" />
-							</div>
-						</c:when>
-						<c:otherwise>
-							<c:if test="${empty command.context.loginUser}">
-								<div class="register">
-									<fmt:message key="system.about" />
-								</div>
-							</c:if>
-
-						</c:otherwise>
-					</c:choose>
+					<c:if test="${not empty publication.documents or isOwnEntry}">
+						<div class="documents">
+							<!-- FIXME: add isOwnEntry as tag attribute; do we need to pass the hole post to this tag? -->
+							<pub:doc post="${post}" />
+						</div>
+					</c:if>
 				</div>
 			</div>
-				
-				
+			
+			
 			<div class="clearfix"><!-- keep me --></div>
 			<ul class="pubmetainfo">
-				<li><fmt:message key="post.change_date" /> <rc:metaChangeDate post="${post}"/></li>
-				<li><fmt:message key="post.date" /> <rc:metaDate post="${post}"/></li>
+				<li><fmt:message key="post.change_date" /> <rc:metaChangeDate post="${post}"/>.</li>
+				<li><fmt:message key="post.date" /> <rc:metaDate post="${post}"/>.</li>
 			</ul>
 		</div> <!-- /.subcolumns -->
 
@@ -295,7 +289,7 @@
 			<!--+ 
 			 	| selection of citation format 
 			 	+-->
-		 	<h4 style="clear:both;"><fmt:message key="publications.citations.headline" /></h4>
+			<h4 style="clear:both;"><fmt:message key="publications.citations.headline" /></h4>
 			<div style="/*float:left;clear:right;*/width:100%">
 				<pub:citation post="${post}"/>
 			</div>
@@ -307,16 +301,16 @@
 				<h4><fmt:message key="post.resource.privnote"/></h4>
 				<div id="privnote">
 					<form method="post" id="note">
-				  		<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
-				  		<input type="hidden" name="intraHash" value="${fn:escapeXml(publication.intraHash)}"/>
-				  		<input type="hidden" name="oldprivatenote" value="${fn:escapeXml(publication.privnote)}"/>
-				  		<input type="hidden" name="action" value="updatePrivateNote"/>
-				  		<textarea style="width:82%;" name="privateNote" rows="5"><c:out value="${publication.privnote}"/></textarea>
-				  		<fmt:message key="save" var="save" />
-				  		<input style="float:right;" type="submit" value="${save}" id="makeP" onclick="javascript: return updatePrivNote($(this))"/>    
-				  	</form>
+						<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
+						<input type="hidden" name="intraHash" value="${fn:escapeXml(publication.intraHash)}"/>
+						<input type="hidden" name="oldprivatenote" value="${fn:escapeXml(publication.privnote)}"/>
+						<input type="hidden" name="action" value="updatePrivateNote"/>
+						<textarea style="width:82%;" name="privateNote" rows="5"><c:out value="${publication.privnote}"/></textarea>
+						<fmt:message key="save" var="save" />
+						<input style="float:right;" type="submit" value="${save}" id="makeP" onclick="javascript: return updatePrivNote($(this))"/>    
+					</form>
 				</div>
-			</c:if>		
+			</c:if>
 			
 			<!--+
 				| only shown on PUMA (transfer publication to OpenAccess repository) 
@@ -334,7 +328,7 @@
 								<fmt:message key="group.reporting" var="reportDesc">
 									<fmt:param value="${group.name}" />
 								</fmt:message>
-								<a href="${reportingUrl}?intraHash=${post.resource.intraHash}&amp;user=${post.user.name}&amp;referer=${properties['project.home']}${fn:escapeXml(requPath)}" title="${reportDesc}"><c:out value="${reportDesc} "/></a>
+								<a href="${reportingUrl}?intraHash=${post.resource.intraHash}&amp;user=${post.user.name}&amp;referer=${relativeUrlGenerator.getProjectHome()}${fn:escapeXml(requPath)}" title="${reportDesc}"><c:out value="${reportDesc} "/></a>
 							</c:if>
 						</c:forEach>
 					</c:if>
@@ -342,5 +336,5 @@
 			</c:if>
 		</div>
 	</div>
-	<div style="clear:both">&amp;nbsp;</div>	
+	<div style="clear:both">&amp;nbsp;</div>
 </jsp:root>

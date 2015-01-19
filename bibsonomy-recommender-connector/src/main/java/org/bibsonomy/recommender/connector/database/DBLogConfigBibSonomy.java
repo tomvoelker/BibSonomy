@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Recommendation-Connector - Connector for the recommender framework for tag and resource recommendation
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.recommender.connector.database;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -81,7 +107,7 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void addFeedback(TagRecommendationEntity entity, RecommendedTag result) {
-		if(entity instanceof PostWrapper) {
+		if (entity instanceof PostWrapper) {
 			Post post = ((PostWrapper) entity).getPost();
 			final PostRecParam postMap = new PostRecParam();
 			postMap.setUserName(entity.getUserName());
@@ -102,37 +128,36 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 	 */
 	@Override
 	public RecQueryParam getQuery(Long qid) {
-			BibRecQueryParam param = this.manager.processQueryForObject(BibRecQueryParam.class, "getQueryByID", qid);
-			RecQueryParam result = new RecQueryParam();
-			result.setEntity_id(""+param.getPost_id());
-			result.setContentType(""+param.getContentType());
-			result.setQid(param.getQid());
-			result.setQueryTimeout(param.getQueryTimeout());
-			result.setTimeStamp(param.getTimeStamp());
-			result.setUserName(param.getUserName());
-			
-			return result;
+		BibRecQueryParam param = this.manager.processQueryForObject(BibRecQueryParam.class, "getQueryByID", qid);
+		RecQueryParam result = new RecQueryParam();
+		result.setEntity_id(""+param.getPost_id());
+		result.setContentType(""+param.getContentType());
+		result.setQid(param.getQid());
+		result.setQueryTimeout(param.getQueryTimeout());
+		result.setTimeStamp(param.getTimeStamp());
+		result.setUserName(param.getUserName());
+		
+		return result;
 	}
 	
 	/*
 	 * (non-Javadoc)
 	 * @see recommender.impl.database.DBLogConfigAccess#storeRecommendationEntity(java.lang.String, java.lang.Long, recommender.core.interfaces.model.RecommendationEntity, boolean, recommender.core.database.RecommenderDBSession)
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	protected void storeRecommendationEntity(String userName, Long qid,
-			TagRecommendationEntity entity, boolean update) {
-		if(PostWrapper.class.isAssignableFrom(entity.getClass())) {
-			Post post = ((PostWrapper) entity).getPost();
-			if(post != null && Bookmark.class.isAssignableFrom(post.getResource().getClass())) {
-				Post<Bookmark> bookmarkPost = (Post<Bookmark>) post;
+	protected void storeRecommendationEntity(String userName, Long qid, TagRecommendationEntity entity, boolean update) {
+		if (PostWrapper.class.isAssignableFrom(entity.getClass())) {
+			final Post<?> post = ((PostWrapper<?>) entity).getPost();
+			if (post != null && Bookmark.class.isAssignableFrom(post.getResource().getClass())) {
+				@SuppressWarnings("unchecked")
+				final Post<Bookmark> bookmarkPost = (Post<Bookmark>) post;
 				storeBookmarkPost(userName, qid, bookmarkPost, "", update);
-			} else if(post != null && BibTex.class.isAssignableFrom(post.getResource().getClass())) {
-				Post<BibTex> bibtexPost = (Post<BibTex>) post;
+			} else if (post != null && BibTex.class.isAssignableFrom(post.getResource().getClass())) {
+				@SuppressWarnings("unchecked")
+				final Post<BibTex> bibtexPost = (Post<BibTex>) post;
 				storeBibTexPost(userName, qid, bibtexPost, "", update);
 			}
 		}
-		
 	}
 	
 	/**
@@ -186,8 +211,7 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 	 * @see recommender.impl.database.DBLogConfigAccess#logRecommendation(java.lang.Long, java.lang.Long, long, java.util.SortedSet, java.util.SortedSet)
 	 */
 	@Override
-	public boolean logRecommendation(Long qid, Long sid, long latency,
-		SortedSet<RecommendedTag> results, SortedSet<RecommendedTag> preset) {
+	public boolean logRecommendation(Long qid, Long sid, long latency, SortedSet<RecommendedTag> results, SortedSet<RecommendedTag> preset) {
 		// log each recommended tag
 		final RecommendedTagParam response = new RecommendedTagParam();
 		response.setQid(qid);

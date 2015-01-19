@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- *  BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.scraper.url.kde.aps;
 
 import java.io.IOException;
@@ -30,21 +33,22 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.bcel.generic.RETURN;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * @author Haile
  */
-public class ApsScraper extends SimpleGenericURLScraper{
+public class ApsScraper extends GenericBibTeXURLScraper{
 	private static final String SITE_NAME = "American Psychological Society";
 	private static final String SITE_URL = "http://the-aps.org";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	//private static final String BIBTEX_URL = "citmgr?type=bibtex&gca=";
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*.physiology.org"), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "physiology.org"), AbstractUrlScraper.EMPTY_PATTERN));
 
 	//private static final Pattern URL_PATTERN = Pattern.compile("(http://[^/]++)(\\W+)");
 	//private static final Pattern URL_START = Pattern.compile("/\\w+");
@@ -72,17 +76,25 @@ public class ApsScraper extends SimpleGenericURLScraper{
 	}
 
 	@Override
-	public String getBibTeXURL(final URL url) {
+	public String getDownloadURL(final URL url) throws ScrapingException {
 		try {
-			Matcher m = BIBTEX_PATTERN.matcher(WebUtils.getContentAsString(url));
+			final Matcher m = BIBTEX_PATTERN.matcher(WebUtils.getContentAsString(url));
 			String download_link = "";
-			if(m.find())
+			if (m.find()) {
 				download_link = m.group(1);
+			} else {
+				throw new ScrapingFailureException("failure getting bibtex url for " + url);
+			}
 			return "http://" + url.getHost().toString() + download_link;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ScrapingException(e);
 		}
-		return null;
+	}
+	@Override
+	protected String convert(String result){
+		final String firstLine = result.split("\n")[0].trim();
+		if(firstLine.split("\\{").length == 1)
+			result = result.replace(firstLine,firstLine.replace("{", "{nokey,"));
+		return result;
 	}
 }

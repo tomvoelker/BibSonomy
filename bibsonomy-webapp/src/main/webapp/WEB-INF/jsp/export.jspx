@@ -11,6 +11,7 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
     xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
     xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+    xmlns:spring="http://www.springframework.org/tags"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
   <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -97,23 +98,26 @@
           
     	  <dt><a href="${fn:escapeXml(custom)}">Custom</a></dt>	
     	  <dd><fmt:message key="export.custom.faq"/></dd>
-    											
+		
+		<spring:eval var="abstractJabRefLayoutClass" expression="T(java.lang.Class).forName('org.bibsonomy.layout.jabref.AbstractJabRefLayout')" />
 		  <c:forEach var="mapEntry" items="${command.layoutMap}">
-		    <c:if test="${mapEntry.value.publicLayout}">			
-			  <c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />
-			    <dt>
-                  <a href="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></a>&#160;<a href="#jabref">*</a>
-                </dt>
-				<dd>
-	 			  <c:out value="${mapEntry.value.description[locale.language]}"/>
-				</dd>
+		    <c:if test="${mapEntry.value.publicLayout}">
+			    <c:if test="${abstractJabRefLayoutClass.isInstance(mapEntry.value)}">
+				  <c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />
+				    <dt>
+	                  <a href="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></a>&#160;<a href="#jabref">*</a>
+	                </dt>
+					<dd>
+		 			  <c:out value="${mapEntry.value.description[locale.language]}"/>
+					</dd>
+				  </c:if>
 			  </c:if>
 			</c:forEach>
 		</dl>
 		
         <h3><a name="jabref">JabRef</a></h3>
  		<p>
-  		  <fmt:message key="export.jabref.explain">
+  		*  <fmt:message key="export.jabref.explain">
   			<fmt:param value="${properties['project.name']}" />
   		  </fmt:message>
  		</p>

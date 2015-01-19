@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- *  BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.scraper.url.kde.acm;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -39,12 +42,12 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.CitedbyScraper;
+import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.StringUtils;
-import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.util.id.DOIUtils;
@@ -53,17 +56,18 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-/** Scrapes the ACM digital library
+/**
+ * Scrapes the ACM digital library
  * @author rja
  *
  */
-public class ACMBasicScraper extends AbstractUrlScraper {
-
-	private final Log log = LogFactory.getLog(ACMBasicScraper.class);
-
+public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScraper, CitedbyScraper {
+	private static final Log log = LogFactory.getLog(ACMBasicScraper.class);
+	
+	private static final String ACM_BASE_TAB_URL = "http://dl.acm.org/tab_";
 	private static final String SITE_NAME = "ACM Digital Library";
-	private static final String SITE_URL  = "http://portal.acm.org/";
-	private static final String info      = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
+	private static final String SITE_URL = "http://portal.acm.org/";
+	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 
@@ -77,7 +81,8 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 				EMPTY_PATTERN
 		));
 	}
-
+	
+	
 	private static final String BROKEN_END = new String("},\n}");
 	//get the publication's id, take the part behind the dot if present
 	private static final Pattern URL_PARAM_ID_PATTERN = Pattern.compile("id=(\\d+(?:\\.(\\d+))?)");
@@ -110,12 +115,13 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			 */
 			if (matcher.find()) {
 				id = ((matcher.group(2) != null) ? matcher.group(2) : matcher.group(1));
+				sc.getTmpMetadata().setId(id);
 			} else {
 				return false;
 			}
 			
 			//pretty good idea to use an own client, since the session in the common client can become invalid
-			HttpClient client = WebUtils.getHttpClient();
+			final HttpClient client = WebUtils.getHttpClient();
 			
 			/*
 			 * Scrape entries from popup BibTeX site. BibTeX entry on these
@@ -159,15 +165,13 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			}
 
 			final String result = DOIUtils.cleanDOI(bibtexEntries.toString().trim());
-			//final String result = bibtexEntries.toString().trim();
-
 			if (present(result)) {
 				sc.setBibtexResult(result);
 				return true;
-			} else
-				throw new ScrapingFailureException("getting bibtex failed");
-
-		} catch (Exception e) {
+			}
+			
+			throw new ScrapingFailureException("getting bibtex failed");
+		} catch (final Exception e) {
 			throw new InternalFailureException(e);
 		}
 	}
@@ -191,7 +195,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 	 * @throws MalformedURLException
 	 * @throws IOException
 	 */
-	private StringBuffer extractBibtexEntries(HttpClient client, final String siteUrl, final String path) throws MalformedURLException, IOException{
+	private static StringBuffer extractBibtexEntries(HttpClient client, final String siteUrl, final String path) throws MalformedURLException, IOException{
 		final StringBuffer bibtexEntries = new StringBuffer();
 		
 		//get content for siteUrl
@@ -212,8 +216,9 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 		return bibtexEntries;
 	}
 
+	@Override
 	public String getInfo() {
-		return info;
+		return INFO;
 	}
 
 	@Override
@@ -222,15 +227,18 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 	}
 
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
 
+	// TODO create tests and remove main method
 	public static void main(String[] args) throws MalformedURLException, ScrapingException {
 		final String[] urls = new String[] {
 				"http://portal.acm.org/citation.cfm?id=1015428&amp;coll=Portal&amp;dl=ACM&amp;CFID=22531872&amp;CFTOKEN=18437036",
@@ -253,8 +261,38 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			System.out.println("----------------------------------------\n");
 
 		}
-
 	}
 
-}
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.CitedbyScraper#scrapeCitedby(org.bibsonomy.scraper.ScrapingContext)
+	 */
+	@Override
+	public boolean scrapeCitedby(ScrapingContext scrapingContext) throws ScrapingException {
+		return scrapeMetaData(scrapingContext, "citings");
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
+	 */
+	@Override
+	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
+		return scrapeMetaData(scrapingContext, "references");
+	}
 
+	private static boolean scrapeMetaData(ScrapingContext scrapingContext, final String kind) {
+		final HttpClient client = WebUtils.getHttpClient();
+		final String id = scrapingContext.getTmpMetadata().getId();
+		final String url = ACM_BASE_TAB_URL + kind +  ".cfm?id=" + id;
+		try{
+			final String reference = WebUtils.getContentAsString(client, url);
+			if(present(reference)){
+				scrapingContext.setReferences(reference);
+				scrapingContext.setCitedBy(reference);
+				return true;
+			}
+		} catch(Exception e) {
+			log.error("error while scraping references by for " + scrapingContext.getUrl(), e);
+		}
+		return false;
+	}
+}

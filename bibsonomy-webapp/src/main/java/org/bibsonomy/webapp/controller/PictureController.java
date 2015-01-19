@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -150,7 +176,13 @@ public class PictureController implements MinimalisticController<PictureCommand>
 		if (present(loginUserName) && loginUserName.equals(requestedUserName)) {
 			return true;
 		}
-
+		/*
+		 * check if requested user is spammer
+		 * prevents others to see the photo of a spammer
+		 */
+		if (requestedUser.isSpammer()) {
+			return false;
+		 }
 		/*
 		 * Check the visibility depending on the profile privacy level.
 		 */
@@ -159,8 +191,8 @@ public class PictureController implements MinimalisticController<PictureCommand>
 		case PUBLIC:
 			return true;
 		case FRIENDS:
-			if (present(loginUserName)) // TODO: why shouldn't it?!
-			{
+			// only a logged in user can be friend of somebody else
+			if (present(loginUserName)) {
 				final List<User> friends = this.logic.getUserRelationship(requestedUserName, UserRelation.OF_FRIEND, null);
 				for (final User friend : friends) {
 					if (loginUserName.equals(friend.getName())) {

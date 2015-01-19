@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -82,9 +108,8 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		// check whether the user is a group
 		if (UserUtils.userIsGroup(loginUser)) {
 			command.setHasOwnGroup(true);
-			command.showGroupTab(true);
 		}
-
+		
 		/*
 		 * get friends for sidebar
 		 */
@@ -95,31 +120,16 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		// show sync tab only for non-spammers
 		command.showSyncTab(!loginUser.isSpammer());
 
-		switch (command.getSelTab()) {
-		case 0: // profile tab
-			break;
-		case 1: // setting tab
-			break;
-		case 2: // import tab
-			this.checkInstalledJabrefLayout(command);
-			break;
-		case 3: // group tab
-			this.workOnGroupTab(command);
-			break;
-		case 4: // sync tab
-			this.workOnSyncSettingsTab(command);
-			break;
-		case 5: // cv tab
-			this.workOnCVTab(command);
-			break;
-		case 6: // OAuth tab
-			this.workOnOAuthTab(command);
-			break;
-		default:
+		if (command.getSelTab() < 0 || command.getSelTab() > 7) {
 			this.errors.reject("error.settings.tab");
-			break;
+		} else {
+			this.checkInstalledJabrefLayout(command);
+			this.workOnGroupTab(command);
+			this.workOnSyncSettingsTab(command);
+			this.workOnCVTab(command);
+			this.workOnOAuthTab(command);
 		}
-
+		
 		return Views.SETTINGSPAGE;
 	}
 
@@ -180,8 +190,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			final String accessTokenDelete = command.getAccessTokenDelete();
 			if (present(this.invisibleOAuthConsumers) && present(accessTokenDelete)) {
 				final List<OAuthUserInfo> oauthUserInfos = this.oauthLogic.getOAuthUserApplication(command.getContext().getLoginUser().getName());
-				for (final Iterator<OAuthUserInfo> iterator = oauthUserInfos.iterator(); iterator.hasNext();) {
-					final OAuthUserInfo oAuthUserInfo = iterator.next();
+				for (final OAuthUserInfo oAuthUserInfo : oauthUserInfos) {
 					if (accessTokenDelete.equals(oAuthUserInfo.getAccessToken()) && this.invisibleOAuthConsumers.contains(oAuthUserInfo.getConsumerKey())) {
 						throw new IllegalArgumentException("The access token " + accessTokenDelete + " can not be deleted.");
 					}

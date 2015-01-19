@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- *  BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.scraper.url.kde.amazon;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -94,32 +97,29 @@ public class AmazonScraper extends AbstractUrlScraper {
 	 * Scrapes a product from amazon
 	 */
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc)
-			throws ScrapingException {
-
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
-		String content = "";
-		String isbn = "";
-		try {
-			content = WebUtils.getContentAsString(sc.getUrl().toString());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		Matcher m = ISBN.matcher(content);
-		if (m.find())
-			isbn = m.group(1);
+		
 		// try to extract isbn and use the worldcat scraper
-		else
-			isbn = ISBNUtils.extractISBN(sc.getPageContent());
-
-		if (!present(isbn)) {
-			return false;
-		}
 		try {
-			String bibtex = WorldCatScraper.getBibtexByISBNAndReplaceURL(isbn,
-					sc.getUrl().toString());
-			if (!present(bibtex))
+			final String content = WebUtils.getContentAsString(sc.getUrl().toString());
+			final Matcher m = ISBN.matcher(content);
+			final String isbn;
+			if (m.find()) {
+				isbn = m.group(1);
+			} else {
+				isbn = ISBNUtils.extractISBN(sc.getPageContent());
+			}
+			
+			if (!present(isbn)) {
 				return false;
+			}
+			
+			final String bibtex = WorldCatScraper.getBibtexByISBNAndReplaceURL(isbn, sc.getUrl().toString());
+			if (!present(bibtex)) {
+				return false;
+			}
+			
 			sc.setBibtexResult(bibtex);
 			return true;
 		} catch (IOException ex) {

@@ -11,13 +11,11 @@
 
 <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	
-	<bform:fieldset maximized="${not command.context.loginUser.settings.simpleInterface or not empty command.fileName}" legendKey="post.bibtex.files">
+	<bform:fieldset maximized="${not command.context.loginUser.settings.layoutSettings.simpleInterface or not empty command.fileName}" legendKey="post.bibtex.files">
 		
 		<jsp:attribute name="content">
 			<fmt:message var="delete" key="post.bibtex.delete"/>
 			<script type="text/javascript" src="${resdir}/javascript/jquery.documentuploader.js"><!-- keep me --></script>
-				
-	
 			<!--+ 
 			 	|
 			 	| the documents of the post
@@ -81,10 +79,9 @@
 							<!-- increase temporary file counter -->
 							<script type="text/javascript">$(".counter").val(${status.count});</script>
 						</c:forEach>
-					</c:if>				
+					</c:if>
 				</ul>
 			</div>
-						
 		</jsp:attribute>
 	</bform:fieldset>
 	

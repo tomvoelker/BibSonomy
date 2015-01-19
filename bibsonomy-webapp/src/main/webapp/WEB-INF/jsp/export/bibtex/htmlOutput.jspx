@@ -11,9 +11,6 @@
 	xmlns:output="urn:jsptagdir:/WEB-INF/tags/export/bibtex"> 
 	
 <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
-<!-- to get correct hash IDs for URLs  -->
-<jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
   
 <html>
   <head>
@@ -43,7 +40,7 @@
 			</c:forEach>. 
         </span></c:if>
         <!-- title  -->
-        <span class="entry_title"><a href="${properties['project.home']}bibtex/${hash.intra.id}${bib.intraHash}/${fn:escapeXml(post.user.name)}">${mtl:cleanBibtex(bib.title)}</a>. </span>
+        <span class="entry_title"><a href="${relativeUrlGenerator.getPublicationUrlByIntraHashAndUsername(bib.intraHash, fn:escapeXml(post.user.name))}">${mtl:cleanBibtex(bib.title)}</a>. </span>
         <!-- editor -->
         <c:if test="${not empty bib.editor}"><span class="entry_editor">In 
         	<c:forEach var="person" items="${bib.editor}" varStatus="loopStatus">
@@ -74,8 +71,7 @@
         <!-- year      --><c:if test="${not empty bib.year}"><span class="entry_year"><c:out value="${mtl:getDate(bib.day, bib.month, bib.year, locale)}"/>. </span></c:if>
 
         <!-- tags & url -->
-        <output:tagsUrl post="${post}"/>      
-        
+        <output:tagsUrl post="${post}"/>
       </p>
     </c:forEach>
   

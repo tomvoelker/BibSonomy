@@ -1,0 +1,23 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	
+	<jsp:directive.tag description="Renders a alert for bootstrap 3."/>
+
+	<jsp:directive.attribute name="feedbackBody" fragment="true" required="true" description="The content of the feedback box."/>
+	<jsp:directive.attribute type="org.bibsonomy.webapp.view.constants.BootstrapFeedbackStyle" name="style" required="true" description="Button Style Type" />
+	<jsp:directive.attribute type="org.bibsonomy.webapp.view.constants.BootstrapFeedbackSize" name="size" required="true" description="Button Style Type" />
+<!-- 	<jsp:directive.attribute type="java.lang.Boolean" name="dismissable" required="false" description="Makes alert dismissable" /> -->
+	
+	<c:set var="dismissableClass" value="" />
+	<c:if test="${dismissable}">
+		<c:set var="dismissableClass" value="alert-dismissable" />
+	</c:if>
+	
+	<div class="alert alert-${fn:escapeXml(style.cssClassName)} alert-dismissable fb fb${fn:escapeXml(size.cssClassName)}">
+		<button aria-hidden="true" data-dismiss="alert" class="close" type="button" tabindex="-1">&amp;times;</button>
+		<jsp:invoke fragment="feedbackBody" />
+	</div>
+</jsp:root>

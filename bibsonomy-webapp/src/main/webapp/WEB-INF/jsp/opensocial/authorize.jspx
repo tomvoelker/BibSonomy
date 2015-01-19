@@ -78,6 +78,14 @@
 					<br/><br/>
 					<span class="oauthDescription"><c:out value="${command.appDescription}" default=""/></span>
 					<br/><br/>
+					
+					<c:set var="denyButtonMsg">
+						<fmt:message key="oauth.authorization.button.deny" />
+					</c:set>
+					<c:set var="authorizeButtonMsg">
+						<fmt:message key="oauth.authorization.button.authorize" />
+					</c:set>
+					
 					<form class="oauthActions" name="authZForm" action="authorize" method="POST">
 						<input type="hidden" name="oauth_callback" value="${command.callBackUrl}"><!-- keep me --></input>
 						<input type="hidden" name="oauth_token" value="${command.entry.token}"><!-- keep me --></input>

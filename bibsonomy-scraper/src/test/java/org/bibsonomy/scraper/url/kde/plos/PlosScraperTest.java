@@ -1,30 +1,38 @@
 /**
+ * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- *  BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.scraper.url.kde.plos;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URL;
+
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -49,7 +57,7 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest1Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_43"));
+		UnitTestRunner.runSingleTest("url_43");
 	}
 	
 	/**
@@ -57,7 +65,7 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest2Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_44"));
+		UnitTestRunner.runSingleTest("url_44");
 	}
 	
 	/**
@@ -65,7 +73,7 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest3Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_172"));
+		UnitTestRunner.runSingleTest("url_172");
 	}
 	
 	/**
@@ -73,7 +81,7 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest4Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_173"));
+		UnitTestRunner.runSingleTest("url_173");
 	}
 	
 	/**
@@ -81,7 +89,7 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest5Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_200"));
+		UnitTestRunner.runSingleTest("url_200");
 	}
 	
 	/**
@@ -89,7 +97,7 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest6Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_201"));
+		UnitTestRunner.runSingleTest("url_201");
 	}
 	
 	/**
@@ -97,7 +105,7 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest7Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_202"));
+		UnitTestRunner.runSingleTest("url_202");
 	}
 	
 	/**
@@ -105,7 +113,7 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest8Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_203"));
+		UnitTestRunner.runSingleTest("url_203");
 	}
 	
 	/**
@@ -113,7 +121,7 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest9Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_204"));
+		UnitTestRunner.runSingleTest("url_204");
 	}
 	
 	/**
@@ -121,7 +129,7 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest10Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_205"));
+		UnitTestRunner.runSingleTest("url_205");
 	}
 	
 	/**
@@ -129,7 +137,20 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest11Run(){
-		assertTrue(UnitTestRunner.runSingleTest("url_206"));
+		UnitTestRunner.runSingleTest("url_206");
+	}
+	@Test
+	public void testReferences() throws Exception{
+		final ScrapingContext sc = new ScrapingContext(new URL("http://www.plosntds.org/article/info%3Adoi%2F10.1371%2Fjournal.pntd.0001305"));
+		PlosScraper ps = new PlosScraper();
+		assertTrue(ps.scrape(sc));
+		assertTrue(ps.scrapeReferences(sc));
+	
+		final String reference = sc.getReferences();		
+		assertNotNull(reference);
+		assertTrue(reference.length() > 100);
+		assertEquals("<li><span class=\"label\">1.".trim(), reference.substring(0, 30).trim());
+		assertTrue(reference.contains("Portaels F"));
 	}
 
 }

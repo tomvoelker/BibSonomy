@@ -1,7 +1,34 @@
+/**
+ * BibSonomy-Rest-Server - The REST-server.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.rest.strategy;
 
 import java.util.StringTokenizer;
 
+import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
@@ -10,8 +37,8 @@ import org.bibsonomy.rest.strategy.posts.GetNewPostsStrategy;
 import org.bibsonomy.rest.strategy.posts.GetPopularPostsStrategy;
 import org.bibsonomy.rest.strategy.posts.community.PostCommunityPostStrategy;
 import org.bibsonomy.rest.strategy.posts.community.PutCommunityPostStrategy;
-import org.bibsonomy.rest.strategy.posts.community.references.DeleteReferencesStrategy;
-import org.bibsonomy.rest.strategy.posts.community.references.PostReferencesStrategy;
+import org.bibsonomy.rest.strategy.posts.community.references.DeleteRelationsStrategy;
+import org.bibsonomy.rest.strategy.posts.community.references.PostRelationsStrategy;
 import org.bibsonomy.rest.strategy.users.DeletePostStrategy;
 import org.bibsonomy.rest.strategy.users.GetPostDetailsStrategy;
 
@@ -76,22 +103,27 @@ public class PostsHandler implements ContextHandler {
 				break;
 			}
 		case 3: {
+				// /posts/community/[hash]/reference/ or /posts/community/[hash]/part_of/
 				final String path = urlTokens.nextToken();
-		
-				// /posts/community/[hash]/references/
 				final String hash = urlTokens.nextToken();
-				final String references = urlTokens.nextToken();
-				if (!RESTConfig.COMMUNITY_SUB_PATH.equalsIgnoreCase(path) || !RESTConfig.REFERENCES_SUB_PATH.equalsIgnoreCase(references)) {
+				
+				final String relationString = urlTokens.nextToken();
+				if (!RESTConfig.COMMUNITY_SUB_PATH.equalsIgnoreCase(path)) {
 					break;
-				}			
-			
-				switch (httpMethod) {
+				}
+				try {
+					final GoldStandardRelation relation = Enum.valueOf(GoldStandardRelation.class, relationString.toUpperCase());
+					switch (httpMethod) {
 					case POST:
-						return new PostReferencesStrategy(context, hash);
+						return new PostRelationsStrategy(context, hash, relation);
 					case DELETE:
-						return new DeleteReferencesStrategy(context, hash);
+						return new DeleteRelationsStrategy(context, hash, relation);
 					default:
 						break;
+					}
+				} catch (IllegalArgumentException e) {
+					// invalid relation
+					break;
 				}
 			}
 		}

@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- *  BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.scraper.url.kde.osa;
 
 import java.io.BufferedInputStream;
@@ -31,24 +34,28 @@ import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ReferencesScraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.UrlUtils;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
  */
-public class OSAScraper extends AbstractUrlScraper {
-
+public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
+	private static final Log log = LogFactory.getLog(OSAScraper.class);
 	
 	private static final String SITE_NAME = "Optical Society of America";
 	private static final String OSA_HOST_NAME  = "http://www.opticsinfobase.org";
@@ -65,15 +72,16 @@ public class OSAScraper extends AbstractUrlScraper {
 	private static final Pattern inputPattern = Pattern.compile("<input\\b[^>]*>");
 	private static final Pattern valuePattern = Pattern.compile("value=\"[^\"]*\"");
 
-	private static final Pattern selectPattern = Pattern.compile("<select\\b[^>]*>");
-	private static final Pattern namePattern = Pattern.compile("name=\"[^\"]*\"");
-
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + OSA_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
+	final static Pattern references_pattern = Pattern.compile("(?s)<h3>References</h3>\\s+<div .*>\\s+<ol>(.*)</ol>");
+	
+	@Override
 	public String getInfo() {
 		return info;
 	}
 
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
@@ -113,9 +121,8 @@ public class OSAScraper extends AbstractUrlScraper {
 		if(bibResult != null) {
 			sc.setBibtexResult(bibResult);
 			return true;
-		}else
-			throw new ScrapingFailureException("getting bibtex failed");
-
+		}
+		throw new ScrapingFailureException("getting bibtex failed");
 	}
 
 	/** FIXME: refactor
@@ -126,7 +133,7 @@ public class OSAScraper extends AbstractUrlScraper {
 	 * @return
 	 * @throws IOException
 	 */
-	private String getContent(URL queryURL, String cookie, String id, String actions) throws IOException {
+	private static String getContent(URL queryURL, String cookie, String id, String actions) throws IOException {
 		/*
 		 * get BibTex-File from ACS
 		 */
@@ -144,11 +151,11 @@ public class OSAScraper extends AbstractUrlScraper {
 		StringBuffer sbContent = new StringBuffer();
 
 		sbContent.append("Articles=");
-		sbContent.append(URLEncoder.encode(id,"UTF-8") + "&");
+		sbContent.append(UrlUtils.safeURIEncode(id) + "&");
 		sbContent.append("ArticleAction=");
-		sbContent.append(URLEncoder.encode("save_bibtex2","UTF-8") + "&");
+		sbContent.append(UrlUtils.safeURIEncode("save_bibtex2") + "&");
 		sbContent.append(actions + "=");
-		sbContent.append(URLEncoder.encode("save_bibtex2","UTF-8"));
+		sbContent.append(UrlUtils.safeURIEncode("save_bibtex2"));
 
 		urlConn.setRequestProperty("Content-Length", String.valueOf(sbContent.length()));
 
@@ -171,15 +178,14 @@ public class OSAScraper extends AbstractUrlScraper {
 		return out.toString();
 	}
 
-	/** FIXME: refactor
+	/**
+	 * FIXME: refactor
 	 * @param queryURL
 	 * @return
 	 * @throws IOException
 	 */
-	private String getCookies(URL queryURL) throws IOException {
-		HttpURLConnection urlConn = null;
-
-		urlConn = (HttpURLConnection) queryURL.openConnection();
+	private static String getCookies(URL queryURL) throws IOException {
+		final HttpURLConnection urlConn = (HttpURLConnection) queryURL.openConnection();
 
 		urlConn.setAllowUserInteraction(false);
 		urlConn.setDoInput(true);
@@ -196,11 +202,11 @@ public class OSAScraper extends AbstractUrlScraper {
 		/*
 		 * extract cookie from connection
 		 */
-		List<String> cookies = urlConn.getHeaderFields().get("Set-Cookie");
+		final List<String> cookies = urlConn.getHeaderFields().get("Set-Cookie");
 
-		StringBuffer cookieString = new StringBuffer();
+		final StringBuffer cookieString = new StringBuffer();
 
-		for(String cookie : cookies) {
+		for (final String cookie : cookies) {
 			cookieString.append(cookie.substring(0, cookie.indexOf(";") + 1) + " ");
 		}
 
@@ -209,16 +215,36 @@ public class OSAScraper extends AbstractUrlScraper {
 		return cookieString.toString();
 	}
 
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
+	 */
+	@Override
+	public boolean scrapeReferences(ScrapingContext scrapingContext)throws ScrapingException {
+		try{
+			Matcher m = references_pattern.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
+			if(m.find()){
+				scrapingContext.setReferences(m.group(1));
+				return true;
+			}
+		} catch(final Exception e) {
+			log.error("error while scraping references for " + scrapingContext.getUrl(), e);
+		}
+		return false;
 	}
 
 

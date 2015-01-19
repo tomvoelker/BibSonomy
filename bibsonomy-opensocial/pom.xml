@@ -1,16 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- TODO: cleanup pom and dependencies -->
+<!--
+
+    BibSonomy-OpenSocial - Implementation of the Opensocial specification and OAuth Security Handling
+
+    Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+                                  University of Kassel, Germany
+                                  http://www.kde.cs.uni-kassel.de/
+                              Data Mining and Information Retrieval Group,
+                                  University of Würzburg, Germany
+                                  http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+                              L3S Research Center,
+                                  Leibniz University Hannover, Germany
+                                  http://www.l3s.de/
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>bibsonomy-opensocial</artifactId>
 	<packaging>jar</packaging>
 	<name>BibSonomy-OpenSocial</name>
+	<description>Implementation of the Opensocial specification and OAuth Security Handling</description>
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
-		<version>2.0.44-SNAPSHOT</version>
+		<version>3.0.1-SNAPSHOT</version>
 	</parent>
-
+	
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License, Version 3 or later</name>
+			<url>http://www.gnu.org/licenses/lgpl.html</url>
+		</license>
+	</licenses>
+	
 	<repositories>
 		<repository>
 			<id>java.net.m2</id>
@@ -32,44 +67,9 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
-		<plugins>
-			<!-- TODO: why do we need a war plugin it is a jar ??! -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>maven-jetty-plugin</artifactId>
-				<configuration>
-					<webAppSourceDirectory>${basedir}/target/shindig-spring-example</webAppSourceDirectory>
-					<contextPath>/</contextPath>
-					<webXml>${basedir}/target/shindig-spring-example/WEB-INF/web.xml</webXml>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.4</version>
-			</plugin>
-		</plugins>
 	</build>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.tuckey</groupId>
-			<artifactId>urlrewritefilter</artifactId>
-			<version>3.2.0_jaeschke</version>
-		</dependency>
-
-		<!-- BibSonomy dependencies -->
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-common</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-model</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-database-common</artifactId>
@@ -77,10 +77,6 @@
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-database</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-web-common</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -114,125 +110,13 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.shindig</groupId>
-			<artifactId>shindig-features</artifactId>
-			<version>${shindig.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.shindig</groupId>
-			<artifactId>shindig-extras</artifactId>
-			<version>${shindig.version}</version>
-		</dependency>
-
-		<!-- Spring dependencies -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-		</dependency>
-
-		<!-- Spring security dependencies -->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-web</artifactId>
-			<version>${spring-security.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-openid</artifactId>
-			<version>${spring-security.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-config</artifactId>
-			<version>${spring-security.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-taglibs</artifactId>
-			<version>${spring-security.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-ldap</artifactId>
-			<version>${spring-security.version}</version>
-		</dependency>
-		
-		<!-- Servlet and JSP dependencies -->
-		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		
-		<!-- external dependencies -->
-		<dependency>
-			<groupId>org.apache.shiro</groupId>
-			<artifactId>shiro-web</artifactId>
-			<version>1.0.0-incubating</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.6.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20070829</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.1.1</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>el-api</artifactId>
-			<version>6.0.29</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.shindig</groupId>
-			<artifactId>shindig-common</artifactId>
-			<version>${shindig.version}</version>
-			<classifier>tests</classifier>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>${spring.version}</version>
-			<scope>test</scope>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
 	<properties>
-		<shindig.version>2.0.2</shindig.version>
-		<wtpversion>1.5</wtpversion>
+		<shindig.version>2.5.1</shindig.version>
 	</properties>
-
 </project>

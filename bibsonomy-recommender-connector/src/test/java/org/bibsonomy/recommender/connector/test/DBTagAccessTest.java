@@ -1,15 +1,40 @@
+/**
+ * BibSonomy-Recommendation-Connector - Connector for the recommender framework for tag and resource recommendation
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.recommender.connector.test;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import junit.framework.Assert;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
@@ -133,9 +158,9 @@ public class DBTagAccessTest {
 		sort.addAll(result);
 		final int i=0;
 		for( final RecommendedTag tag : sort ) {
-			Assert.assertEquals(tag.getName(), "Tag" + (new Integer(i)).toString());
-			Assert.assertEquals((1.0*i)/count, tag.getScore());
-			Assert.assertEquals(1.0/count, tag.getConfidence());
+			assertEquals(tag.getName(), "Tag" + (new Integer(i)).toString());
+			assertEquals((1.0*i)/count, tag.getScore(), 0.0);
+			assertEquals(1.0/count, tag.getConfidence(), 0.0);
 		}
 	}
 	
@@ -151,10 +176,10 @@ public class DBTagAccessTest {
 		final SortedSet<RecommendedTag> recommendations = new TreeSet<RecommendedTag>();
 		recommendations.add(new RecommendedTag((new Date() + "tag"+System.currentTimeMillis()).replaceAll(" ", ""), 0.0, 0.0));
 		
-		final int count = dbLogic.addRecommendation(qid, sid, recommendations, latency);
+		final int count = dbLogic.addRecommendation(qid, sid, recommendations, latency.longValue());
 		
-		Assert.assertEquals(count, recommendations.size());
-	}	
+		assertEquals(count, recommendations.size());
+	}
 	
 	/**
 	 * Test registering an already known recommender
@@ -186,11 +211,11 @@ public class DBTagAccessTest {
 	public void testGetRecommenderSid() {
 		dbLogic.insertRecommenderSetting("recommender.impl.tags.meta.TagsFromFirstWeightedBySecondTagRecommender", 
 				"foo", null);
-		Assert.assertTrue(dbLogic.getSettingIdForLocalRecommender("recommender.impl.tags.meta.TagsFromFirstWeightedBySecondTagRecommender") > -1);
-		Assert.assertTrue(dbLogic.getSettingIdForLocalRecommender("bar") == -1L);
+		assertTrue(dbLogic.getSettingIdForLocalRecommender("recommender.impl.tags.meta.TagsFromFirstWeightedBySecondTagRecommender") > -1);
+		assertTrue(dbLogic.getSettingIdForLocalRecommender("bar") == -1L);
 		dbLogic.insertRecommenderSetting("http://example.com", "foo", "abc".getBytes());
-		Assert.assertTrue(dbLogic.getSettingIdForDistantRecommender("http://example.com") > -1);
-		Assert.assertTrue(dbLogic.getSettingIdForDistantRecommender("bar") == -1L);
+		assertTrue(dbLogic.getSettingIdForDistantRecommender("http://example.com") > -1);
+		assertTrue(dbLogic.getSettingIdForDistantRecommender("bar") == -1L);
 		dbLogic.removeRecommender("http://example.com");
 	}
 	
