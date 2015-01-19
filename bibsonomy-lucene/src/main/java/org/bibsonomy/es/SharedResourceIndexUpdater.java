@@ -10,7 +10,6 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.search.TermQuery;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.es.ESClient;
@@ -23,10 +22,8 @@ import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.IdsQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.search.MultiMatchQuery.QueryBuilder;
 import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.sort.SortOrder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -218,7 +215,6 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * perform all cached operations to index
 	 */
 
-	@SuppressWarnings("boxing")
 	public void flush() {
 		synchronized (this) {
 			// ----------------------------------------------------------------
@@ -316,7 +312,6 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 				.setTypes(INDEX_TYPE).setQuery(QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, userName))
 				.execute()
 				.actionGet();
-//		log.warn(response);
 	}
 
 	/**

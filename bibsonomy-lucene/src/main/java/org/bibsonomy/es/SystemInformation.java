@@ -36,7 +36,7 @@ public class SystemInformation {
 	}
 
 	/**
-	 * @param postType the postType to set
+	 * @param postType the type of the post (Bookmark/Bibtex/GoldStandard)
 	 */
 	public void setPostType(String postType) {
 		this.postType = postType;

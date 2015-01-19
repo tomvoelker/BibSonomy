@@ -20,9 +20,9 @@ import org.bibsonomy.model.es.ESClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * TODO: add documentation to this class
+ * This class is responsible for generating the index for Shared Resources
  *
- * @author lka
+ * @author lutful
  */
 public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Resource>{
 	
@@ -192,19 +192,5 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 	public void setSystemtHome(String systemtHome) {
 		SharedResourceIndexGenerator.systemtHome = systemtHome;
 	}
-	
-//	public static Map<String, Object> createJsonDocumentForSystemInfo(String systemUrl,
-//			String postType, Date lastLogDate, Integer lastTasId) {
-//
-//		Map<String, Object> jsonDocument = new HashMap<String, Object>();
-//
-//		jsonDocument.put("title", title);
-//		jsonDocument.put("content", content);
-//		jsonDocument.put("postDate", postDate);
-//		jsonDocument.put("tags", tags);
-//		jsonDocument.put("author", author);
-//
-//		return jsonDocument;
-//	}
 
 }

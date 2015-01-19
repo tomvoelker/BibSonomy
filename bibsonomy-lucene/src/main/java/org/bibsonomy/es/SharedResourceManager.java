@@ -11,7 +11,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.es.SearchType;
 
 /**
- * TODO: add documentation to this class
+ * Class for managing the index generator for the Shared Resources
  * 
  * @author lutful
  * @param <R>

@@ -19,9 +19,9 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.search.SearchHit;
 /**
- * TODO: add documentation to this class
+ * This class performs a search in the Shared Resource Indices based on the search term 
  *
- * @author lka
+ * @author lutful
  * @param <R> 
  */
 public class EsResourceSearch<R extends Resource>{
@@ -40,6 +40,7 @@ public class EsResourceSearch<R extends Resource>{
 
 	// ElasticSearch node client
 //	private ESClient esClient = new ESNodeClient();
+	
 	// ElasticSearch Transport client
 	private static ESClient esClient;
 

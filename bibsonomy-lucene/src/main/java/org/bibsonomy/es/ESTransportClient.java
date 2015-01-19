@@ -1,11 +1,6 @@
 package org.bibsonomy.es;
 
 
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.es.ESClient;
@@ -24,6 +19,15 @@ import org.elasticsearch.node.Node;
 public class ESTransportClient implements ESClient {
 	private final Log log = LogFactory.getLog(ESTransportClient.class);
 	private Client client;
+	/**
+	 * Elasticsearch IP and port values, if we have multiple addresses, they
+	 * will be separated by "," and port and ip are separated by ":"
+	 */
+	private String esAddresses;
+	/**
+	 * Elasticsearch CLustername
+	 */
+	private String esClusterName;
 
 	/**
 	 * Default constructor, initializing the client.
@@ -40,13 +44,11 @@ public class ESTransportClient implements ESClient {
 	private Client initiateTransportClient() {
 		try {
 			log.info("Getting EsClient instance");
-//			final Map<String, String> esProperties = getESHostValue();
-//			String esHosts = esProperties.get(ESConstants.ES_ADDRESSS);
-			String esHosts = ESConstants.ES_ADDRESSS_VALUE;
+
+			String esHosts = this.esAddresses;
 			log.info("EsHostss value in Properties:" + esHosts);
 			// Setting cluster name of ES Server
-			final Builder settings = ImmutableSettings.settingsBuilder().put("cluster.name",ESConstants.ES_CLUSTERNAME_VALUE);
-//			final Builder settings = ImmutableSettings.settingsBuilder().put("cluster.name",esProperties.get(ESConstants.ES_CLUSTERNAME));
+			final Builder settings = ImmutableSettings.settingsBuilder().put("cluster.name",this.esClusterName);
 //			settings.put(ESConstants.PATH_CONF, ESConstants.NAMES_TXT);
 			settings.put(ESConstants.SNIFF, true);
 			final TransportClient transportClient = new TransportClient(
@@ -75,26 +77,6 @@ public class ESTransportClient implements ESClient {
 		}
 	}
 
-	
-	/**
-	 * Gets the eS host value.
-	 *
-	 * @return the eS host value
-	 */
-	private Map<String, String> getESHostValue() {
-		Map<String, String> esProperties= new HashMap<String,String>();
-		try {
-			Properties props = new Properties();
-			props.load(ESTransportClient.class.getClassLoader().getResourceAsStream("project.properties"));
-
-			esProperties.put(ESConstants.ES_ADDRESSS,props.getProperty(ESConstants.ES_ADDRESSS));
-			esProperties.put(ESConstants.ES_CLUSTERNAME,props.getProperty(ESConstants.ES_CLUSTERNAME));
-	        return esProperties;
-		} catch (Exception e) {
-			log.error("Error while accessing ES propertyFile",e);
-		} 
-		return null;
-	}
 	
 	/*
 	 * (non-Javadoc)
@@ -125,6 +107,35 @@ public class ESTransportClient implements ESClient {
 	public void shutdown() {
 		// TODO Auto-generated method stub
 
+	}
+
+
+	/**
+	 * @return the esClusterName
+	 */
+	public String getEsClusterName() {
+		return this.esClusterName;
+	}
+
+	/**
+	 * @param esClusterName the esClusterName to set
+	 */
+	public void setEsClusterName(String esClusterName) {
+		this.esClusterName = esClusterName;
+	}
+
+	/**
+	 * @return the esAddresses
+	 */
+	public String getEsAddresses() {
+		return this.esAddresses;
+	}
+
+	/**
+	 * @param esAddresses the esAddresses to set
+	 */
+	public void setEsAddresses(String esAddresses) {
+		this.esAddresses = esAddresses;
 	}
 
 }
