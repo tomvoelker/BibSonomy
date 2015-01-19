@@ -6,15 +6,15 @@
    <array>
      <dict>
        <key>CFBundleIdentifier</key>
-       <string>com.bibsonomy.safari.BibSonomyButtons</string>
+       <string>org.bibsonomy.buttons</string>
        <key>Developer Identifier</key>
-       <string>EQ8CG56FP3</string>
+       <string>TODO: replace</string>
        <key>CFBundleVersion</key>
-       <string>1.0</string>
+       <string>1</string>
        <key>CFBundleShortVersionString</key>
        <string>1.0</string>
        <key>URL</key>
-       <string>http://www.bibsonomy.org/resources/addons/safari/buttons.safariextz</string>
+       <string>http://www.bibsonomy.org/resources/addons/safari/bibsonomy-buttons-extension/buttons.safariextz</string>
      </dict>
    </array>
 </dict>
