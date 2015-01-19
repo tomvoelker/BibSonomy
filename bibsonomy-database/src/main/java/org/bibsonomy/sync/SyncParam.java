@@ -27,6 +27,7 @@
 package org.bibsonomy.sync;
 
 import java.net.URI;
+import java.util.Date;
 
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
@@ -37,12 +38,27 @@ import org.bibsonomy.model.sync.SynchronizationData;
 public class SyncParam {
 
 	private SynchronizationData data;
+	private Date newDate;
 	private SyncService syncService;
 
 	private String userName;
 	private URI service;
 	private int serviceId;
 	private boolean server;
+
+	/**
+	 * @return the newDate
+	 */
+	public Date getNewDate() {
+		return this.newDate;
+	}
+
+	/**
+	 * @param newDate the newDate to set
+	 */
+	public void setNewDate(Date newDate) {
+		this.newDate = newDate;
+	}
 
 	/**
 	 * @return the userName

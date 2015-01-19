@@ -117,6 +117,8 @@ public final class RESTConfig {
 	public static final String SYNC_DIRECTION_PARAM = "direction";
 
 	public static final String SYNC_DATE_PARAM = "date";
+	
+	public static final String SYNC_NEW_DATE_PARAM = "newDate";
 
 	public static final String SYNC_STATUS = "status";
 

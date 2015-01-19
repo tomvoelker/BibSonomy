@@ -576,11 +576,11 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.sync.SyncLogicInterface#setCurrentSyncDone(org.bibsonomy.model.sync.SynchronizationData)
 	 */
 	@Override
-	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info) {
+	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info, final Date newDate) {
 		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
 		final DBSession session = this.openSession();
 		try {
-			syncDBManager.updateSyncData(userName, service, resourceType, syncDate, status, info, session);
+			syncDBManager.updateSyncData(userName, service, resourceType, syncDate, status, info, newDate, session);
 		} finally {
 			session.close();
 		}
@@ -599,7 +599,7 @@ public class DBLogic implements LogicInterface {
 				syncDBManager.deleteSyncData(userName, service, BibTex.class, syncDate, session);
 			} else {
 				syncDBManager.deleteSyncData(userName, service, resourceType, syncDate, session);
-			}			
+			}
 		} finally {
 			session.close();
 		}
