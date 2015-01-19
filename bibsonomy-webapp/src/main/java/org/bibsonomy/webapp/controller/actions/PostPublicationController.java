@@ -301,6 +301,10 @@ public class PostPublicationController extends AbstractEditPublicationController
 			if (!present(post.getTags())) {
 				post.setTags(Collections.singleton(TagUtils.getImportedTag()));
 			}
+			 /* set visibility of this post for the groups, the user specified
+
+			 */
+			GroupingCommandUtils.initGroups(command, post.getGroups());
 			/*
 			 * hashes have to be set, in order to call the validator
 			 */

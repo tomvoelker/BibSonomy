@@ -7,8 +7,10 @@ var index;
 $(document).ready(function () {
 	$(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
 	$.each($(".abstractGroupingGroup"),function(b,c){toggleGroupBox(c);});
-	$('#selector').find('option:eq(0)').prop("selected", true);
-	$('input[name=abstractGrouping]').prop('disabled', true);
+	
+	$('#batchedit').children('input[name=abstractGrouping]').prop('disabled', true);
+	
+//	$('input[name=abstractGrouping]').prop('disabled', true);
 	
 	/**
 	 * If allNotChecked is true, edit options will not be activated.
@@ -224,12 +226,14 @@ function trigger_checkboxes(){
 function updatePrivacy(){
 	$('.batchUpdateButton').prop('disabled', false);
 	$('td[id=viewable]').css({'font-weight':'bold'});
-	$('input[name=abstractGrouping]').prop('disabled', false);
+	$('#batchedit').children('input[name=abstractGrouping]').prop('disabled', false);
+	//$('input[name=abstractGrouping]').prop('disabled', false);
 }
 
 function updatePrivacy_Uncheck(){
 	$('td[id=viewable]').css({'font-weight':'normal'});
-	$('input[name=abstractGrouping]').prop('disabled', true);
+	$('#batchedit').children('input[name=abstractGrouping]').prop('disabled', true);
+//	$('input[name=abstractGrouping]').prop('disabled', true);
 	
 	/**
 	 * var all_NotChecked_undirect is true if we are in indirect mode 
@@ -320,7 +324,8 @@ function resetSelection(){
 	changeTagInputs('input[name^=posts]:checkbox:checked', true);
 	$('input[name=tags]').prop('disabled', true);
 	$('.batchUpdateButton').prop('disabled', true);
-	$('input[name=abstractGrouping]').prop('disabled', true);
+	$('#batchedit').children('input[name=abstractGrouping]').prop('disabled', true);
+	//$('input[name=abstractGrouping]').prop('disabled', true);
 	$('.deleteAlert').toggleClass('invisible', true);
 	$('.deleteAlert').toggleClass('hidden', true);
 	$('.normalizeAlert').toggleClass('invisible', true);
