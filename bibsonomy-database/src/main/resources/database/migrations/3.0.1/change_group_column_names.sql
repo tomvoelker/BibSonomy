@@ -35,5 +35,7 @@ SET group_role = 0;
 CREATE TABLE `group_level_permission` (
   `group` int(10) DEFAULT NULL,
   `permission` tinyint(1) DEFAULT NULL,
-  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `granted_by` VARCHAR(30) NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`group`, permission)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8

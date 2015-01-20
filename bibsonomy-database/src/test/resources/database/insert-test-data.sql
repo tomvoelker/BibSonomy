@@ -273,9 +273,9 @@ INSERT INTO `group_memberships` VALUES
 -- Data for table `group_level_permissions`
 -- 
 
-INSERT INTO `group_level_permission` (`group`, `permission`) VALUES 
-(3,0),
-(3,1);
+INSERT INTO `group_level_permission` (`group`, `permission`, `granted_by`) VALUES 
+(3,0,'testuser1'),
+(3,1,'testuser1');
 
 
 
