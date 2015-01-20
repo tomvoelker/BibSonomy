@@ -483,4 +483,11 @@ public class Group implements Serializable {
 	public void setGroupLevelPermissions(Set<GroupLevelPermission> groupLevelPermissions) {
 		this.groupLevelPermissions = groupLevelPermissions;
 	}
+
+	/**
+	 * @param communityPostInspection
+	 */
+	public void addGroupLevelPermission(GroupLevelPermission groupLevelPermission) {
+		this.getGroupLevelPermissions().add(groupLevelPermission);
+	}
 }

@@ -411,26 +411,6 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertTrue(group.getGroupMembershipForUser("testuser1").isUserSharedDocuments());
 	}
 	
-	@Test
-	public void testUpdateGroupLevelPermissions() {
-		final Group group = new Group("testgroup1");
-		
-		final User adminUser = new User("testuser1");
-		groupDb.updateGroupLevelPermissions(adminUser, group, this.dbSession);
-		
-		final Group updatedGroup = groupDb.getGroupWithGroupLevelPermissions(group, this.dbSession);
-		
-		assertEquals(0, updatedGroup.getGroupLevelPermissions().size());
-		
-		updatedGroup.getGroupLevelPermissions().add(GroupLevelPermission.COMMUNITY_POST_INSPECTION);
-		updatedGroup.getGroupLevelPermissions().add(GroupLevelPermission.NOTHING);
-		
-		groupDb.updateGroupLevelPermissions(adminUser, updatedGroup, this.dbSession);
-		
-		final Group updatedGroup2 = groupDb.getGroupWithGroupLevelPermissions(updatedGroup, this.dbSession);
-		
-		assertEquals(2, updatedGroup2.getGroupLevelPermissions().size());
-	}
 	
 	/**
 	 * tests activateGroup
@@ -490,7 +470,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		Assert.assertTrue(foundTestGroup3.getGroupLevelPermissions().contains(GroupLevelPermission.COMMUNITY_POST_INSPECTION));
 		Assert.assertFalse(foundTestGroup3.getGroupLevelPermissions().contains(GroupLevelPermission.NOTHING));
 		
-		testGroup3.getGroupLevelPermissionWrappers().clear();
+		testGroup3.getGroupLevelPermissions().clear();
 		testGroup3.addGroupLevelPermission(GroupLevelPermission.NOTHING);
 		groupDb.updateGroupLevelPermissions(testUserName, testGroup3, this.dbSession);
 		foundTestGroup3 = getGroupOfUser(testUserName, testGroupName);
@@ -503,7 +483,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		Assert.assertTrue(foundTestGroup3.getGroupLevelPermissions().contains(GroupLevelPermission.COMMUNITY_POST_INSPECTION));
 		Assert.assertTrue(foundTestGroup3.getGroupLevelPermissions().contains(GroupLevelPermission.NOTHING));
 
-		testGroup3.getGroupLevelPermissionWrappers().clear();
+		testGroup3.getGroupLevelPermissions().clear();
 		groupDb.updateGroupLevelPermissions(testUserName, testGroup3, this.dbSession);
 		foundTestGroup3 = getGroupOfUser(testUserName, testGroupName);
 		Assert.assertFalse(foundTestGroup3.getGroupLevelPermissions().contains(GroupLevelPermission.COMMUNITY_POST_INSPECTION));
