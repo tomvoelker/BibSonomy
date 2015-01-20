@@ -64,7 +64,7 @@
 	</resultMap>
 
 	<resultMap id="groupWithMembershipsAndReportingsAndPermissions" class="group" extends="groupWithMembershipsAndReportings" groupBy="name" >
-		<result property="groupLevelPermissions" column="permission" javaType="GroupLevelPermission" />
+		<result property="groupLevelPermissions" resultMap="GroupCommon.groupLevelPermission" />
 	</resultMap>
 
 	<resultMap id="tagsets" class="tagset" groupBy="setName">
