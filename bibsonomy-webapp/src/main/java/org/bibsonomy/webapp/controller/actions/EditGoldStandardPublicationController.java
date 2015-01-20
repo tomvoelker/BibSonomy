@@ -98,7 +98,7 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 
 	@Override
 	protected View finalRedirect(final String userName, final Post<BibTex> post, final String referer) {
-		if (referer == null || referer.matches(".*/editGoldStandardPublication.*")) {
+		if (referer == null || referer.matches(".*/editGoldStandardPublication.*") || referer.contains("/history/")) {
 			return new ExtendedRedirectView(this.urlGenerator.getPublicationUrl(post.getResource(), null));
 		}
 
