@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.generic;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 
 /**
  * abstract class for sites that provide BibTeX export
@@ -40,7 +42,7 @@ public abstract class GenericBibTeXURLScraper extends AbstractGenericFormatURLSc
 	@Override
 	protected String convert(String downloadResult) {
 		// nothing to convert
-		return downloadResult;
+		return StringEscapeUtils.unescapeHtml(downloadResult);
 	}
 
 }

@@ -658,12 +658,6 @@
 						<property name="controllerBeanName" value="error503PageController"/>
 					</bean>
 				</entry>
-				<!-- linkcloud TODO: in development TODODZO -->
-				<entry key="/linkcloud">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="linkCloudPageController"/>
-					</bean>
-				</entry>
 				<!-- TODO: (bootstrap) remove -->
 				<entry key="/bibsonomy3">
 					<bean parent="controllerBase">
@@ -963,10 +957,6 @@
 	<!-- TOOD: remove -->
 	<bean id="bibsonomyPreview" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="BIBSONOMY3"/>
-	</bean>
-	<!-- linkcloud TODO: in development TODODZO -->
-	<bean id="linkCloudPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
-		<property name="view" value="LINK_CLOUD"/>
 	</bean>
 	
 	<bean id="contextPathFilter" class="org.bibsonomy.webapp.filters.ContextPathFilter">

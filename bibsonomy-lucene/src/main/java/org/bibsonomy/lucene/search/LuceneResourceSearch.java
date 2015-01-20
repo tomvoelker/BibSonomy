@@ -43,7 +43,6 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -63,6 +62,7 @@ import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.Version;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.es.EsResourceSearch;
+import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.lucene.database.LuceneInfoLogic;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
@@ -230,8 +230,12 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		IndexSearcher searcher = null;
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
 		try {
-			//Aquire searcher
-			searcher = this.index.aquireIndexSearcher();
+			
+			try {
+				searcher = this.index.aquireIndexSearcher();
+			} catch (IllegalStateException e) {
+				throw new InternServerException(e);
+			}
 			// initialize data
 			final Query query = qf.getQuery();
 			final Sort sort = qf.getSort();

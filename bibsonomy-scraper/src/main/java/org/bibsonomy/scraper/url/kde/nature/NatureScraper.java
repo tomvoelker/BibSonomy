@@ -44,6 +44,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -53,7 +54,7 @@ import org.bibsonomy.util.WebUtils;
  * Scraper for publication from nature.com
  * @author tst
  */
-public class NatureScraper extends AbstractUrlScraper {
+public class NatureScraper extends AbstractUrlScraper implements ReferencesScraper {
 	private static final Log log = LogFactory.getLog(NatureScraper.class);
 	
 	private static final String SITE_URL = "http://www.nature.com/";
@@ -83,7 +84,7 @@ public class NatureScraper extends AbstractUrlScraper {
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("(?s)Abstract.*\\s+<p>(.*)</p>\\s+<div class=\"article-keywords inline-list cleared\">");
-	
+	private static final Pattern REFERENCES_PATTERN = Pattern.compile("<a href=\"(.*)\">Download references</a>");
 	/** get INFO */
 	@Override
 	public String getInfo() {
@@ -252,5 +253,22 @@ public class NatureScraper extends AbstractUrlScraper {
 		bibtex.append("}");
 		
 		return bibtex.toString();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
+	 */
+	@Override
+	public boolean scrapeReferences(ScrapingContext sc) throws ScrapingException {
+		try {
+			final Matcher m = REFERENCES_PATTERN.matcher(WebUtils.getContentAsString(sc.getUrl()));
+			if(m.find()) {
+				sc.setReferences(WebUtils.getContentAsString(SITE_URL + m.group(1)).trim());
+				return true;
+			}
+		} catch (IOException e) {
+			log.error("References is not available " + sc.getUrl(), e);
+		}
+		return false;
 	}
 }

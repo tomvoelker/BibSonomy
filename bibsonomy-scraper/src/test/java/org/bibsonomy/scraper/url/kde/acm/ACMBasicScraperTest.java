@@ -153,7 +153,7 @@ public class ACMBasicScraperTest {
 		assertTrue(cby.contains("Margaret-Anne Storey"));
 	}
 	@Test
-	public void testReferences() throws Exception{
+	public void testReferences() throws Exception {
 		final ScrapingContext sc = new ScrapingContext(new URL("http://dl.acm.org/citation.cfm?doid=1105664.1105676"));
 		
 		ACMBasicScraper acm = new ACMBasicScraper();

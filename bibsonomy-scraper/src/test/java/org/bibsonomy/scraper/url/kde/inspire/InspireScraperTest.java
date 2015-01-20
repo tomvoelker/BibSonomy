@@ -26,6 +26,13 @@
  */
 package org.bibsonomy.scraper.url.kde.inspire;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.net.URL;
+
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -43,6 +50,19 @@ public class InspireScraperTest {
 	@Test
 	public void url1TestRun(){
 		UnitTestRunner.runSingleTest("url_196");
+	}
+	@Test
+	public void testReferences() throws Exception{
+		final ScrapingContext sc = new ScrapingContext(new URL("http://inspirehep.net/record/920296"));
+		InspireScraper is = new InspireScraper();
+		assertTrue(is.scrape(sc));
+		assertTrue(is.scrapeReferences(sc));
+		final String reference = sc.getReferences();
+
+		assertNotNull(reference);
+		assertTrue(reference.length() > 100);
+		assertEquals("<span id='referenceinp_link_span'>".trim(), reference.substring(0, 48).trim());
+		assertTrue(reference.contains("Bernui, Armando"));
 	}
 
 }

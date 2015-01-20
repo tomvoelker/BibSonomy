@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.rest.client.queries.put;
 
+import java.util.Date;
+
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationDirection;
@@ -42,6 +44,7 @@ public class ChangeSyncStatusQuery extends AbstractSyncQuery<Boolean> {
 
 	private final SynchronizationStatus status;
 	private final String info;
+	private final Date newDate;
 	
 	/**
 	 * 
@@ -51,16 +54,18 @@ public class ChangeSyncStatusQuery extends AbstractSyncQuery<Boolean> {
 	 * @param direction
 	 * @param status
 	 * @param info
+	 * @param newSyncDate
 	 */
-	public ChangeSyncStatusQuery(final String serviceURI, final Class<? extends Resource> resourceType, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction, final SynchronizationStatus status, final String info) {
+	public ChangeSyncStatusQuery(final String serviceURI, final Class<? extends Resource> resourceType, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction, final SynchronizationStatus status, final String info, Date newSyncDate) {
 		super(serviceURI, resourceType, strategy, direction);
 		this.status = status;
 		this.info = info;
+		this.newDate = newSyncDate;
 	}
 
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException {
-		final String url = this.getUrlRenderer().createHrefForSync(this.serviceURI, resourceType, strategy, direction, null, status);
+		final String url = this.getUrlRenderer().createHrefForSync(this.serviceURI, this.resourceType, this.strategy, this.direction, this.newDate, this.status);
 		this.downloadedDocument = performRequest(HttpMethod.PUT, url, info);
 	}
 	

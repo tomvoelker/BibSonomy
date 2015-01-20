@@ -134,8 +134,9 @@ public interface SyncLogicInterface {
 	 * @param syncDate - the sync date for which the sync status shall be updated
 	 * @param status - the new sync status 
 	 * @param info - some additional information, like how many posts were updated, etc.
+	 * @param newDate TODO
 	 */
-	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info);
+	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info, Date newDate);
 
 	/**
 	 * Deletes the specified synchronization status.
@@ -160,7 +161,7 @@ public interface SyncLogicInterface {
 	 * Calculates a new synchronization plan and inserts new synchronization data
 	 * with {@link SynchronizationStatus#PLANNED}. When clients are working on the
 	 * plan, they should update the status to {@link SynchronizationStatus#RUNNING}
-	 * using {@link #updateSyncData(String, URI, Class, Date, SynchronizationStatus, String)}. 
+	 * using {@link #updateSyncData(String, URI, Class, Date, SynchronizationStatus, String, Date)}. 
 	 * 
 	 * @param userName 
 	 * @param service 
