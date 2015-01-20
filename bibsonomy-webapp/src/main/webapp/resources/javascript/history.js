@@ -31,8 +31,10 @@ $(document).ready(function () {
 	});
 
 	$('.submitBtn').click(function() {
+		
 		var isPub = $('input[name = isPub]').val();
-		var isCommunityPost = $('input[name = isCommunityPost]').val();
+		var isGoldStandard = $('input[name = isGoldStandard]').val();
+		
 		/**
 		 * Here we have four cases:
 		 * publication and community post, we should call editGoldstandardPublicationController
@@ -41,7 +43,7 @@ $(document).ready(function () {
 		 * bookmark, we should call editBookmarkController
 		 */
 		if(isPub=="true"){
-			if(isCommunityPost=="true"){
+			if(isGoldStandard=="true"){
 				document.getElementById("history").action="/editGoldStandardPublication";
 			}
 			else{
@@ -49,7 +51,7 @@ $(document).ready(function () {
 			}
 		}
 		else{
-			if(isCommunityPost=="true"){
+			if(isGoldStandard=="true"){
 				document.getElementById("history").action="/editGoldStandardBookmark";
 			}
 			else{

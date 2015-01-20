@@ -528,10 +528,12 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				/**
 				 * convert string to PersonName object*/
 				List <PersonName> authors_list = new ArrayList<PersonName>();
+				/**when the author list is empty**/
 				if(value.equals(" ")){
 					bibResource.setAuthor(authors_list);
 					break;					
 				}
+				/**when the author name contains umlaut.**/
 				if(value.contains("!")){
 					value=value.replace("!", "\"");
 				}

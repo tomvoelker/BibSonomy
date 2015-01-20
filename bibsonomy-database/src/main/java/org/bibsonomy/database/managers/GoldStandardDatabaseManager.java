@@ -109,15 +109,11 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	
 	@Override
 	public Post<R> getPostDetails(final String loginUserName, final String resourceHash, final String userName, final List<Integer> visibleGroupIDs, final DBSession session) {
-		/**
-		 * A goldStandard publication always HAS a username. In fact the username is the name of login user or 
-		 * the one who has created the community post. So the following return is always true! and
-		 * a goldstandard post can never be retrieved. 
-		 * */
-		/*	if (present(userName)) {
+
+		if (present(userName)) {
 			return null; // TODO: think about this return
 		}
-		*/
+
 		final Post<R> post = this.getGoldStandardPostByHash(resourceHash, session);
 		
 		if (present(post)) {

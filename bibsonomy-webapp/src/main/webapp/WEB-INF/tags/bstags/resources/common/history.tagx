@@ -40,7 +40,7 @@
 		<c:set var="fieldlength" value="${fn:length(listView.list)-1}" />
 		<!-- this is the current version -->
 		<c:set var="newestPost" value="${listView.list[fieldlength]}" />		
-		<c:set var="isCommunityPost" value="false" />
+		<c:set var="isGoldStandard" value="${isGoldStandard}" />
 		
 		<!-- hidden variables are used to communicate with .js file or controllers -->
 		<input type="hidden" name="newestPost" value="${newestPost}" />
@@ -48,7 +48,7 @@
 		<input type="hidden" name="differentEntryValues" />			
 		
 		<input type="hidden" name="isPub" value="${isPub}" />
-		
+		<input type="hidden" name="isGoldStandard" value="${isGoldStandard}" />
 	
 		<fmt:message key="history.restoreBtn.disabled" var="restoreBtnDisabledMsg" />
 		<fmt:message key="history.restoreBtn.enabled" var="restoreBtnEnabledMsg" />
@@ -306,7 +306,7 @@
 											<fmt:message key="history.restore.confirm" />
 										</div>
 										<!-- submit restore -->
-										<button class="btn btn-primary submitBtn" style="float:right">restore</button>
+										<button class="btn btn-primary submitBtn" style="float:right">Restore</button>
 									</div>
 								</td>				
 							</tr>	
@@ -323,7 +323,6 @@
 			</c:if>
 		</c:otherwise>
 	</c:choose>		
-	<input type="hidden" name="isCommunityPost" value="${isCommunityPost}" />
 </form>
 
 </jsp:root>
