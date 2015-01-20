@@ -20,9 +20,10 @@
 				<c:set var="isLastPage" value="${listView.numCurrentItems != listView.entriesPerPage}" />
 			</c:when>
 			<c:otherwise>
-				<c:set var="isLastPage" value="${fn:length(listView.nextPages) == 0}" />
+				<c:set var="isLastPage" value="${(listView.totalCount - listView.curPage.start - listView.numCurrentItems) == 0}" />
 			</c:otherwise>
 		</c:choose>
+		
 		<!-- ********** FIRST ************** -->
 		<c:choose>
 			<c:when test="${not isFirstPage}">
