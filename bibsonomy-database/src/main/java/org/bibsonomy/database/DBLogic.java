@@ -1209,6 +1209,10 @@ public class DBLogic implements LogicInterface {
 				}
 				this.groupDBManager.removePendingMembership(groupName, membership.getUser().getName(), session);
 				break;
+			case UPDATE_PERMISSIONS:
+				this.permissionDBManager.ensureAdminAccess(loginUser);
+				this.groupDBManager.updateGroupLevelPermissions(loginUser, paramGroup, session);
+				break;
 			default:
 				throw new UnsupportedOperationException("The requested method is not yet implemented.");
 			}

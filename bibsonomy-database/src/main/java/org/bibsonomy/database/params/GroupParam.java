@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.database.params;
 
+import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.model.GroupMembership;
 
 /**
@@ -37,6 +38,10 @@ public class GroupParam extends GenericParam {
 	
 	private GroupMembership membership;
 	
+	private GroupLevelPermission groupLevelPermission;
+	
+	private String grantedByUser;
+	
 	public GroupParam() {
 		
 	}
@@ -47,6 +52,22 @@ public class GroupParam extends GenericParam {
 
 	public void setMembership(GroupMembership membership) {
 		this.membership = membership;
+	}
+
+	public GroupLevelPermission getGroupLevelPermission() {
+		return this.groupLevelPermission;
+	}
+
+	public void setGroupLevelPermission(GroupLevelPermission groupLevelPermission) {
+		this.groupLevelPermission = groupLevelPermission;
+	}
+
+	public String getGrantedByUser() {
+		return this.grantedByUser;
+	}
+
+	public void setGrantedByUser(String grantedByUser) {
+		this.grantedByUser = grantedByUser;
 	}
 	
 }

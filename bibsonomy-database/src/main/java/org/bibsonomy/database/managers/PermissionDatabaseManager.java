@@ -557,15 +557,15 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 //		return false;
 //	}
 
-	public boolean hasGroupLevelPermission(final User loginuser, final GroupLevelPermission groupLevelPermission, final DBSession session) {
+	public void ensureHasGroupLevelPermission(final User loginuser, final GroupLevelPermission groupLevelPermission, final DBSession session) {
 		for (Group group: loginuser.getGroups()) {
-			for (GroupLevelPermissionWrapper groupLevelPermissionWrapper : group.getGroupLevelPermissions()) {
-				if (groupLevelPermissionWrapper.getGroupLevelPermission().equals(groupLevelPermission)) {
-					return true;
+			for (GroupLevelPermission existingGroupLevelPermission : group.getGroupLevelPermissions()) {
+				if (existingGroupLevelPermission.equals(groupLevelPermission)) {
+					return;
 				}
 			}
 		}
-		return false;
+		throw new AccessDeniedException();
 	}
 	
 

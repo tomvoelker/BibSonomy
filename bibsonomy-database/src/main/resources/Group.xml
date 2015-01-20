@@ -40,6 +40,14 @@
 		  AND i.group > 2
 	</select>
 
+	<select id="getGroupWithPermissions" resultMap="GroupCommon.groupWithPermissions" parameterClass="string">
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocumentsreportingColumns", p.permission
+		FROM groupids i 
+		  LEFT JOIN group_level_permission p USING (`group`)
+		WHERE group_name = #groupname#
+		  AND i.group > 2
+	</select>
+
 	<select id="getPrivlevelForGroup" resultClass="Privlevel" parameterClass="int">
 		SELECT privlevel FROM groupids WHERE `group` = #groupId#
 	</select>
@@ -223,5 +231,16 @@
 		   LEFT JOIN user u ON (u.user_name = g.user_name)
 		 WHERE g.user_name = #userName# AND g.group_role != 2
 	</select>
+	
+	<insert id="insertGroupLevelPermission" parameterClass="groupParam">
+		INSERT INTO group_level_permission (`group`, permission, grantend_by)
+		VALUES (#groupId#, #groupLevelPermission.groupLevelPermissionId#, #grantedByUser#)
+	</insert>
+
+	<delete id="deleteGroupLevelPermission" parameterClass="groupParam">
+		DELETE FROM group_level_permission
+		WHERE `group` = #groupId#
+		  AND `permission` = #groupLevelPermission.groupLevelPermissionId#
+	</delete>
 	
 </sqlMap>

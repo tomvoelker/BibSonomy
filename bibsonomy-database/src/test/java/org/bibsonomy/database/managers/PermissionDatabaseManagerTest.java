@@ -39,7 +39,6 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.GroupLevelPermissionWrapper;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -84,6 +83,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 				permissionDb.checkStartEnd(new User(), 0, i, "test");
 				fail("expected exception");
 			} catch (final AccessDeniedException ignore) {
+				// ignore
 			}
 		}
 		// OK 
@@ -276,13 +276,15 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void testHasGroupLevelPermission() {
 		
 		final User testUser1 = new User("testuser1");
-		assertFalse(permissionDb.hasGroupLevelPermission(testUser1, GroupLevelPermission.COMMUNITY_POST_INSPECTION, this.dbSession));
-
+		try {
+		permissionDb.ensureHasGroupLevelPermission(testUser1, GroupLevelPermission.COMMUNITY_POST_INSPECTION, this.dbSession);
+		fail("Should yield AccessDeniedException");
+		} catch (AccessDeniedException e) {
+			// ignore
+		}
 		final Group group = new Group();
-		final GroupLevelPermissionWrapper groupLevelPermission = new GroupLevelPermissionWrapper();
-		groupLevelPermission.setGroupLevelPermission(GroupLevelPermission.COMMUNITY_POST_INSPECTION);
-		group.addGroupLevelPermission(groupLevelPermission);
+		group.addGroupLevelPermission(GroupLevelPermission.COMMUNITY_POST_INSPECTION);
 		testUser1.addGroup(group);
-		assertTrue(permissionDb.hasGroupLevelPermission(testUser1, GroupLevelPermission.COMMUNITY_POST_INSPECTION, this.dbSession));
+		permissionDb.ensureHasGroupLevelPermission(testUser1, GroupLevelPermission.COMMUNITY_POST_INSPECTION, this.dbSession);
 	}
 }
