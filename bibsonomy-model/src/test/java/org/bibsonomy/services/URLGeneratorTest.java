@@ -430,7 +430,7 @@ public class URLGeneratorTest {
 	
 	@Test
 	public void testGetGroupSettingsUrlByGroupName() {
-		String expected = projectHome + "settings/group/schlüsselbund";
+		String expected = projectHome + "settings/group/schl%C3%BCsselbund";
 		assertEquals(expected, ug.getGroupSettingsUrlByGroupName("schlüsselbund"));
 	}
 
