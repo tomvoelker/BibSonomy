@@ -39,6 +39,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
@@ -47,7 +48,7 @@ import org.bibsonomy.util.WebUtils;
 /**
  * @author Haile
  */
-public class JStageScraper extends GenericBibTeXURLScraper {
+public class JStageScraper extends GenericBibTeXURLScraper implements ReferencesScraper {
 	private static final Log log = LogFactory.getLog(JStageScraper.class);
 	
 	private static final String SITE_NAME = "J-Stage";
@@ -56,6 +57,7 @@ public class JStageScraper extends GenericBibTeXURLScraper {
 			". Publications can be entered as a selected BibTeX snippet or by posting the page of the reference.";
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "jstage.jst.go.jp"), AbstractUrlScraper.EMPTY_PATTERN));
 	private static final Pattern PATTERN_ABSTRACT = Pattern.compile("<p class=\"normal\"\\s*>\\s+<br>\\s+(.*)\\s+</p>");
+	private static final Pattern PATTERN_REFERENCES = Pattern.compile("(?s)<ul class=\"mod-list-citation\">(.*)</ul>");
 	
 	@Override
 	public String getSupportedSiteName() {
@@ -110,5 +112,22 @@ public class JStageScraper extends GenericBibTeXURLScraper {
 			log.error("error while getting bibtex url for " + url, e);
 		}
 		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
+	 */
+	@Override
+	public boolean scrapeReferences(ScrapingContext sc) throws ScrapingException {
+		try {
+			final Matcher m = PATTERN_REFERENCES.matcher(WebUtils.getContentAsString(sc.getUrl().toString() + "/references"));
+			if(m.find()) {
+				sc.setReferences(m.group(1));
+				return true;
+			}
+		} catch (IOException e) {
+			log.error("error while getting references " + sc.getUrl(), e);
+		}
+		return false;
 	}
 }
