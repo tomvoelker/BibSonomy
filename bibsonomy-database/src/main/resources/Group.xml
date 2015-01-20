@@ -41,7 +41,7 @@
 	</select>
 
 	<select id="getGroupWithPermissions" resultMap="GroupCommon.groupWithPermissions" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocumentsreportingColumns", p.permission
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, p.permission
 		FROM groupids i 
 		  LEFT JOIN group_level_permission p USING (`group`)
 		WHERE group_name = #groupname#
@@ -233,7 +233,7 @@
 	</select>
 	
 	<insert id="insertGroupLevelPermission" parameterClass="groupParam">
-		INSERT INTO group_level_permission (`group`, permission, grantend_by)
+		INSERT INTO group_level_permission (`group`, permission, granted_by)
 		VALUES (#groupId#, #groupLevelPermission.groupLevelPermissionId#, #grantedByUser#)
 	</insert>
 

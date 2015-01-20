@@ -918,7 +918,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @param loginUser
 	 * @param paramGroup
 	 */
-	public void updateGroupLevelPermissions(User loginUser, Group group, final DBSession session) {
+	public void updateGroupLevelPermissions(String loginUser, Group group, final DBSession session) {
 		try {
 		session.beginTransaction();
 		Group existinGroup = getGroupWithGroupLevelPermissions(group, session);
@@ -929,16 +929,16 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		Collection<GroupLevelPermission> permissionsToInsert = CollectionUtils.subtract(group.getGroupLevelPermissions(), existinGroup.getGroupLevelPermissions());
 		for (GroupLevelPermission permissionToInsert: permissionsToInsert) {
 			GroupParam groupParam = new GroupParam();
-			groupParam.setRequestedGroupName(group.getName());
-			groupParam.setGrantedByUser(loginUser.getName());
+			groupParam.setGroupId(existinGroup.getGroupId());
+			groupParam.setGrantedByUser(loginUser);
 			groupParam.setGroupLevelPermission(permissionToInsert);
-			this.delete("deleteGroupLevelPermission", groupParam, session);
+			this.delete("insertGroupLevelPermission", groupParam, session);
 		}
 		for (GroupLevelPermission permissionToDelete: permissionsToDelete) {
 			GroupParam groupParam = new GroupParam();
-			groupParam.setRequestedGroupName(group.getName());
+			groupParam.setGroupId(existinGroup.getGroupId());
 			groupParam.setGroupLevelPermission(permissionToDelete);
-			this.insert("insertGroupLevelPermission", groupParam, session);
+			this.insert("deleteGroupLevelPermission", groupParam, session);
 		}
 			session.commitTransaction();
 		} finally {

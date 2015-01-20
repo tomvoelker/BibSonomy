@@ -55,7 +55,7 @@
 		<result property="memberships" resultMap="GroupCommon.groupMembership" />
 	</resultMap>
 
-	<resultMap id="groupWithPermissions" class="group" extends="group_extended" groupBy="name">
+	<resultMap id="groupWithPermissions" class="group" extends="group_basic" groupBy="name">
 		<result property="groupLevelPermissionWrappers" resultMap="GroupCommon.groupLevelPermissionWrapper" />
 	</resultMap>
 	

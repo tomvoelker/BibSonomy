@@ -1211,7 +1211,7 @@ public class DBLogic implements LogicInterface {
 				break;
 			case UPDATE_PERMISSIONS:
 				this.permissionDBManager.ensureAdminAccess(loginUser);
-				this.groupDBManager.updateGroupLevelPermissions(loginUser, paramGroup, session);
+				this.groupDBManager.updateGroupLevelPermissions(loginUser.getName(), paramGroup, session);
 				break;
 			default:
 				throw new UnsupportedOperationException("The requested method is not yet implemented.");

@@ -274,8 +274,8 @@ INSERT INTO `group_memberships` VALUES
 -- 
 
 INSERT INTO `group_level_permission` (`group`, `permission`, `granted_by`) VALUES 
-(3,0,'testuser1'),
-(3,1,'testuser1');
+(4,0,'testuser1'),
+(4,1,'testuser1');
 
 
 
