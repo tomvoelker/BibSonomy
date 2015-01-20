@@ -411,29 +411,23 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				/**
 				 * which resource type are we dealing with?*/
 				Class<? extends Resource> resourceType = dbPost.getResource().getClass();
-				if(BibTex.class.equals(resourceType)){
-					
-					for(int i =0;i<diffEntryKeyList.size();i++){
-						replaceResourceFieldsPub(dbPost,diffEntryKeyList.get(i), diffEntryValList.get(i));
+				for(int i =0;i<diffEntryKeyList.size();i++){
+					final String key = diffEntryKeyList.get(i);
+					if ("tags".equals(key)) {
+						// do the the tag method
+					} else {
+					if(BibTex.class.equals(resourceType) || GoldStandardPublication.class.equals(resourceType)){
+						replaceResourceFieldsPub((BibTex)dbPost.getResource(),key, diffEntryValList.get(i));
 					}
-				
-				}
-				else if(GoldStandardPublication.class.equals(resourceType)){
-					
-					for(int i =0;i<diffEntryKeyList.size();i++){
-						replaceResourceFieldsGoldStandardPub(dbPost,diffEntryKeyList.get(i), diffEntryValList.get(i));
+					/*
+					 * FIXME: Do the same simplifications for bookmarks
+					 */
+					else if(GoldStandardBookmark.class.equals(resourceType)){
+						replaceResourceFieldsGoldStandardBm(dbPost,key, diffEntryValList.get(i));
 					}
-				
-				}
-				else if(GoldStandardBookmark.class.equals(resourceType)){
-					
-					for(int i =0;i<diffEntryKeyList.size();i++){
-						replaceResourceFieldsGoldStandardBm(dbPost,diffEntryKeyList.get(i), diffEntryValList.get(i));
+					else{
+						replaceResourceFieldsBm(dbPost,key, diffEntryValList.get(i));
 					}
-				}
-				else{
-					for(int i =0;i<diffEntryKeyList.size();i++){
-						replaceResourceFieldsBm(dbPost,diffEntryKeyList.get(i), diffEntryValList.get(i));
 					}
 				}
 			}
@@ -515,8 +509,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param key
 	 * @param value
 	 */
-	protected void replaceResourceFieldsPub(final Post post, String key, String value){
-		final BibTex bibResource = (BibTex) post.getResource();
+	protected void replaceResourceFieldsPub(final BibTex bibResource, String key, String value){
 		switch(key){
 			case "entrytype":
 				bibResource.setEntrytype(value);
@@ -525,6 +518,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				bibResource.setTitle(value);
 				break;
 			case "author":
+				/*
+				 * FIXME: use Personnameutils ...
+				 */
 				/**
 				 * convert string to PersonName object*/
 				List <PersonName> authors_list = new ArrayList<PersonName>();
@@ -656,174 +652,21 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			case "note":
 				bibResource.setNote(value);
 				break;
-			case "tags"://check comma separated tags
-				try {
-					Set<Tag> tagSet = TagUtils.parse(value);
-					post.setTags(tagSet);
-				} catch (RecognitionException e) {
-					log.error("Couldn't parse tag's string and couldn't convert it to Set(collection)", e);
-				}	
 			}
-		post.setResource((RESOURCE) bibResource);
+		/*
+		 * FIXME: add default Some Exception about unsupported Field
+		 */
 	}
 
-	/** this function changes the resource fields according to key-value.
-	 * key decides for the field and value decides for the new value of the field
-	 * @param bibResource
-	 * @param key
-	 * @param value
-	 */
-	protected void replaceResourceFieldsGoldStandardPub(final Post post, String key, String value){
-		final GoldStandardPublication bibResource = (GoldStandardPublication) post.getResource();
-		switch(key){
-			case "entrytype":
-				bibResource.setEntrytype(value);
-				break;
-			case "title":
-				bibResource.setTitle(value);
-				break;
-			case "author":
-
-				/**
-				 * convert string to PersonName object*/
-				List <PersonName> authors_list = new ArrayList<PersonName>();
-				
-				if(value.equals(" ")){
-					bibResource.setAuthor(authors_list);
-					break;					
-				}
-				if(value.contains("!")){
-					value=value.replace("!", "\"");
-				}
-
-				/**
-				 * if key is author, value contains several authors 'name,lastname' delimited by ";" 
-				 * */
-				List <String> authors = new ArrayList<String>();
-				Collections.addAll(authors, value.split("; "));
-		
-				PersonName a;
-				String[] first_last_name;
-				for(int i=0;i<authors.size();i++){
-					first_last_name = authors.get(i).split(" ");
-					a = new PersonName(first_last_name[0],present(first_last_name[1])? first_last_name[1] : " ");
-					authors_list.add(a);
-				}
-				bibResource.setAuthor(authors_list);
-				break;
-			case "editor":
-
-				/**
-				 * convert string to PersonName object*/
-				List <PersonName> editors_list = new ArrayList<PersonName>();
-				
-				if(value.equals(" ")){
-					bibResource.setEditor(editors_list);
-					break;					
-				}
-				if(value.contains("!")){
-					value=value.replace("!", "\"");
-				}
-				/**
-				 * if key is author, value contains several authors names, delimited by ";" 
-				 * */
-				List <String> editors = new ArrayList<String>();
-				Collections.addAll(editors, value.split("; "));
-				
-				PersonName b;
-				String[] first_last_Name;
-				for(int i=0;i<editors.size();i++){
-					first_last_Name = editors.get(i).split(" ");
-					b = new PersonName(first_last_Name[0],present(first_last_Name[1])? first_last_Name[1] : " ");
-					editors_list.add(b);
-				}
-				bibResource.setEditor(editors_list);
-				break;
-			case "year":
-				bibResource.setYear(value);
-				break;
-			case "booktitle":
-				bibResource.setBooktitle(value);
-				break;
-			case "journal":
-				bibResource.setJournal(value);
-				break;
-			case "volume":
-				bibResource.setVolume(value);
-				break;
-			case "number":
-				bibResource.setNumber(value);
-				break;
-			case "pages":
-				bibResource.setPages(value);
-				break;
-			case "month":
-				bibResource.setMonth(value);
-				break;
-			case "day":
-				bibResource.setDay(value);
-				break;
-			case "publisher":
-				bibResource.setPublisher(value);
-				break;
-			case "address":
-				bibResource.setAddress(value);
-				break;
-			case "edition":
-				bibResource.setEdition(value);
-				break;
-			case "chapter":
-				bibResource.setChapter(value);
-				break;
-			case "url":
-				bibResource.setUrl(value);
-				break;
-			case "key":
-				bibResource.setKey(value);
-				break;
-			case "howpublished":
-				bibResource.setHowpublished(value);
-				break;
-			case "institution":
-				bibResource.setInstitution(value);
-				break;
-			case "organization":
-				bibResource.setOrganization(value);
-				break;
-			case "school":
-				bibResource.setSchool(value);
-				break;
-			case "series":
-				bibResource.setSeries(value);
-				break;
-			case "crossref":
-				bibResource.setCrossref(value);
-				break;
-			case "misc":
-				bibResource.setMisc(value);
-				break;
-			case "bibtexAbstract":
-				bibResource.setAbstract(value);
-				break;
-			case "privnote":
-				bibResource.setPrivnote(value);
-				break;
-			case "annote":
-				bibResource.setAnnote(value);
-				break;
-			case "note":
-				bibResource.setNote(value);
-				break;
-			case "tags"://check comma separated tags
-				try {
-					Set<Tag> tagSet = TagUtils.parse(value);
-					post.setTags(tagSet);
-				} catch (RecognitionException e) {
-					log.error("Couldn't parse tag's string and couldn't convert it to Set(collection)", e);
-				}	
-			}
-		post.setResource((RESOURCE) bibResource);
+	private void replaceTags(String value, Post post) {
+		try {
+			Set<Tag> tagSet = TagUtils.parse(value);
+			post.setTags(tagSet);
+		} catch (RecognitionException e) {
+			log.error("Couldn't parse tag's string and couldn't convert it to Set(collection)", e);
+		}
 	}
+
 
 		
 	/** this function changes the resource/post fields according to key-value.
