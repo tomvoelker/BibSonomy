@@ -240,7 +240,7 @@
 	<delete id="deleteGroupLevelPermission" parameterClass="groupParam">
 		DELETE FROM group_level_permission
 		WHERE `group` = #groupId#
-		  AND `permission` = #groupLevelPermission.groupLevelPermissionId#
+		  AND `permission` = #groupLevelPermission#
 	</delete>
 	
 </sqlMap>

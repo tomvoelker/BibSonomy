@@ -47,7 +47,6 @@ import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.GroupLevelPermissionWrapper;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -546,26 +545,20 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		return true;
 	}
 	
-//	public boolean hasGroupLevelPermission(final User loginuser, final GroupLevelPermission groupLevelPermission, final DBSession session) {
-//		
-//		List<Integer> groupLevelPermissionIds = this.queryForList("getGroupLevelPermissionIdsForUser", loginuser.getName(), Integer.class, session);
-//		for (Integer groupLevelPermissionId: groupLevelPermissionIds) {
-//			if (groupLevelPermissionId.equals(groupLevelPermission.getGroupLevelPermissionId())) {
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
-
-	public void ensureHasGroupLevelPermission(final User loginuser, final GroupLevelPermission groupLevelPermission, final DBSession session) {
-		for (Group group: loginuser.getGroups()) {
-			for (GroupLevelPermission existingGroupLevelPermission : group.getGroupLevelPermissions()) {
-				if (existingGroupLevelPermission.equals(groupLevelPermission)) {
-					return;
-				}
+	public boolean hasGroupLevelPermission(final User loginuser, final GroupLevelPermission groupLevelPermission) {
+		for (final Group group: loginuser.getGroups()) {
+			if (group.getGroupLevelPermissions().contains(groupLevelPermission)) {
+				return true;
 			}
 		}
-		throw new AccessDeniedException();
+		return false;
+	}
+	
+
+	public void ensureHasGroupLevelPermission(final User loginuser, final GroupLevelPermission groupLevelPermission) {
+		if (!hasGroupLevelPermission(loginuser, groupLevelPermission)) {
+			throw new AccessDeniedException();
+		}
 	}
 	
 

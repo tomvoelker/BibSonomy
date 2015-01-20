@@ -19,7 +19,7 @@
   	<typeHandler javaType="ProfilePrivlevel"	callback="org.bibsonomy.database.common.typehandler.ProfilePrivlevelTypeHandlerCallback" />
   	<typeHandler javaType="Privlevel"			callback="org.bibsonomy.database.common.typehandler.PrivlevelTypeHandlerCallback" />
   	<typeHandler javaType="Role"				callback="org.bibsonomy.database.common.typehandler.RoleTypeHandlerCallback" />
-  	<typeHandler javaType="GroupLevelPermission"				callback="org.bibsonomy.database.common.typehandler.GroupLevelPermissionTypeHandlerCallback" />
+  	<typeHandler javaType="GroupLevelPermission" callback="org.bibsonomy.database.common.typehandler.GroupLevelPermissionTypeHandlerCallback" />
     <typeHandler javaType="GroupRole"			callback="org.bibsonomy.database.common.typehandler.GroupRoleTypeHandlerCallback" />
     <typeHandler javaType="syncStatus"			callback="org.bibsonomy.database.common.typehandler.SyncStatusTypeHandlerCallback" />
     <typeHandler javaType="syncDirection"		callback="org.bibsonomy.database.common.typehandler.SyncDirectionTypeHandlerCallback" />

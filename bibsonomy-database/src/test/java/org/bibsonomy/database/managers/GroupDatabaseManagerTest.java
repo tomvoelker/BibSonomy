@@ -410,8 +410,28 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertNotNull("no group found", group);
 		assertTrue(group.getGroupMembershipForUser("testuser1").isUserSharedDocuments());
 	}
-
-
+	
+	@Test
+	public void testUpdateGroupLevelPermissions() {
+		final Group group = new Group("testgroup1");
+		
+		final User adminUser = new User("testuser1");
+		groupDb.updateGroupLevelPermissions(adminUser, group, this.dbSession);
+		
+		final Group updatedGroup = groupDb.getGroupWithGroupLevelPermissions(group, this.dbSession);
+		
+		assertEquals(0, updatedGroup.getGroupLevelPermissions().size());
+		
+		updatedGroup.getGroupLevelPermissions().add(GroupLevelPermission.COMMUNITY_POST_INSPECTION);
+		updatedGroup.getGroupLevelPermissions().add(GroupLevelPermission.NOTHING);
+		
+		groupDb.updateGroupLevelPermissions(adminUser, updatedGroup, this.dbSession);
+		
+		final Group updatedGroup2 = groupDb.getGroupWithGroupLevelPermissions(updatedGroup, this.dbSession);
+		
+		assertEquals(2, updatedGroup2.getGroupLevelPermissions().size());
+	}
+	
 	/**
 	 * tests activateGroup
 	 */

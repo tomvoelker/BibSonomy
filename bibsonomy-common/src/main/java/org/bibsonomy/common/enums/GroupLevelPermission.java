@@ -10,6 +10,8 @@ package org.bibsonomy.common.enums;
 public enum GroupLevelPermission {
 	/** Is allowed to mark community posts as inspected */
 	COMMUNITY_POST_INSPECTION(0),
+	
+	// FIXME: document why we need this permission level
 	NOTHING(1);
 
 	/*
