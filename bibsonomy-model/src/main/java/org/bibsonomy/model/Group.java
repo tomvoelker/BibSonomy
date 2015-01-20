@@ -32,7 +32,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupLevelPermission;
@@ -77,7 +76,7 @@ public class Group implements Serializable {
 	/**
 	 * The permissions on group Level of this group
 	 */
-	private Set<GroupLevelPermissionWrapper> groupLevelPermissionsWrappers;
+	private Set<GroupLevelPermission> groupLevelPermissions;
 
 	/**
 	 * These {@link User}s belong to this group.
@@ -471,41 +470,17 @@ public class Group implements Serializable {
 	}
 	
 	
-	public Set<GroupLevelPermissionWrapper> getGroupLevelPermissionWrappers() {
-		if (null == this.groupLevelPermissionsWrappers) {
-			this.groupLevelPermissionsWrappers = new HashSet<GroupLevelPermissionWrapper>();
-		}
-		return this.groupLevelPermissionsWrappers;
-	}
-
-	public void setGroupLevelPermissionWrappers(Set<GroupLevelPermissionWrapper> groupLevelPermissionsWrappers) {
-		this.groupLevelPermissionsWrappers = groupLevelPermissionsWrappers;
-	}
-
-	/**
-	 * A convenience method to get the groupLevelPermissions directly 
-	 * instead of the wrappers 
-	 * which are just a means to allow retrieval from the database using ibatis.
-	 * @return all groupLevelPermissions of this group
-	 */
 	public Set<GroupLevelPermission> getGroupLevelPermissions() {
-		Set<GroupLevelPermission> groupLevelPermissions = new TreeSet<GroupLevelPermission>();
-		if (null != this.groupLevelPermissionsWrappers) {
-			for (GroupLevelPermissionWrapper glpw: this.groupLevelPermissionsWrappers) {
-				groupLevelPermissions.add(glpw.getGroupLevelPermission());
-			}
+		if (this.groupLevelPermissions == null) {
+			this.groupLevelPermissions = new HashSet<GroupLevelPermission>();
 		}
-		return groupLevelPermissions;
+		return this.groupLevelPermissions;
 	}
-
-
-	public void addGroupLevelPermission(GroupLevelPermission groupLevelPermission) {
-		if (null==this.groupLevelPermissionsWrappers) {
-			this.groupLevelPermissionsWrappers = new HashSet<GroupLevelPermissionWrapper>();
-		}
-		GroupLevelPermissionWrapper wrapper = new GroupLevelPermissionWrapper();
-		wrapper.setGroupLevelPermission(groupLevelPermission);
-		this.groupLevelPermissionsWrappers.add(wrapper);
+	
+	/**
+	 * @param groupLevelPermissions the groupLevelPermissions to set
+	 */
+	public void setGroupLevelPermissions(Set<GroupLevelPermission> groupLevelPermissions) {
+		this.groupLevelPermissions = groupLevelPermissions;
 	}
-
 }

@@ -41,9 +41,10 @@
 	</select>
 
 	<select id="getGroupWithPermissions" resultMap="GroupCommon.groupWithPermissions" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocumentsreportingColumns", p.permission
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, p.permission
 		FROM groupids i 
 		  LEFT JOIN group_level_permission p USING (`group`)
+		  LEFT JOIN user u ON (u.user_name = i.group_name) 
 		WHERE group_name = #groupname#
 		  AND i.group > 2
 	</select>
@@ -233,14 +234,14 @@
 	</select>
 	
 	<insert id="insertGroupLevelPermission" parameterClass="groupParam">
-		INSERT INTO group_level_permission (`group`, permission, grantend_by)
+		INSERT INTO group_level_permission (`group`, permission, granted_by)
 		VALUES (#groupId#, #groupLevelPermission.groupLevelPermissionId#, #grantedByUser#)
 	</insert>
 
 	<delete id="deleteGroupLevelPermission" parameterClass="groupParam">
 		DELETE FROM group_level_permission
 		WHERE `group` = #groupId#
-		  AND `permission` = #groupLevelPermission.groupLevelPermissionId#
+		  AND `permission` = #groupLevelPermission#
 	</delete>
 	
 </sqlMap>

@@ -274,17 +274,16 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	@Test
 	public void testHasGroupLevelPermission() {
-		
 		final User testUser1 = new User("testuser1");
 		try {
-		permissionDb.ensureHasGroupLevelPermission(testUser1, GroupLevelPermission.COMMUNITY_POST_INSPECTION, this.dbSession);
-		fail("Should yield AccessDeniedException");
+			permissionDb.ensureHasGroupLevelPermission(testUser1, GroupLevelPermission.COMMUNITY_POST_INSPECTION);
+			fail("Should yield AccessDeniedException");
 		} catch (AccessDeniedException e) {
 			// ignore
 		}
 		final Group group = new Group();
-		group.addGroupLevelPermission(GroupLevelPermission.COMMUNITY_POST_INSPECTION);
+		group.getGroupLevelPermissions().add(GroupLevelPermission.COMMUNITY_POST_INSPECTION);
 		testUser1.addGroup(group);
-		permissionDb.ensureHasGroupLevelPermission(testUser1, GroupLevelPermission.COMMUNITY_POST_INSPECTION, this.dbSession);
+		permissionDb.ensureHasGroupLevelPermission(testUser1, GroupLevelPermission.COMMUNITY_POST_INSPECTION);
 	}
 }

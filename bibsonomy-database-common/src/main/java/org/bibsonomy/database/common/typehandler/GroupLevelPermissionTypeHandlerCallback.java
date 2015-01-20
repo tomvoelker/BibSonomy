@@ -29,36 +29,31 @@ package org.bibsonomy.database.common.typehandler;
 import java.sql.SQLException;
 
 import org.bibsonomy.common.enums.GroupLevelPermission;
-import org.bibsonomy.common.enums.Role;
 
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 
 /**
- * An iBATIS type handler callback for {@link Role}es that are mapped to
- * Strings in the database. If a Role cannot be constructed based on the String,
- * then the Role will be set to <code>DEFAULT</code>.<br/>
+ * callback for {@link GroupLevelPermission}
  * 
- * Almost copied from <a
- * href="http://opensource.atlassian.com/confluence/oss/display/IBATIS/Type+Handler+Callbacks">Atlassian -
- * Type Handler Callbacks</a>
- * 
- * @author Ken Weiner
- * @author Christian Schenk
- * @author Robert Jaeschke
+ * @author sdo
  */
 public class GroupLevelPermissionTypeHandlerCallback extends AbstractTypeHandlerCallback {
 
-    @Override
-    public Object valueOf(final String str) {
-	    return GroupLevelPermission.getGroupLevelPermission(str);
-    }
+	@Override
+	public Object valueOf(final String str) {
+		return GroupLevelPermission.getGroupLevelPermission(str);
+	}
 
 	/* (non-Javadoc)
 	 * @see com.ibatis.sqlmap.client.extensions.TypeHandlerCallback#setParameter(com.ibatis.sqlmap.client.extensions.ParameterSetter, java.lang.Object)
 	 */
 	@Override
-	public void setParameter(ParameterSetter arg0, Object arg1) throws SQLException {
-		// TODO Auto-generated method stub
-		
+	public void setParameter(ParameterSetter setter, Object parameter) throws SQLException {
+		if (parameter == null) {
+			setter.setInt(GroupLevelPermission.NOTHING.getGroupLevelPermissionId());
+		} else {
+			final GroupLevelPermission permission = (GroupLevelPermission) parameter;
+			setter.setInt(permission.getGroupLevelPermissionId());
+		}
 	}
 }

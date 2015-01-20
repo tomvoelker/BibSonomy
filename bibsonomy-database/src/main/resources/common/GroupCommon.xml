@@ -33,10 +33,6 @@
 		<result property="user"                 resultMap="UserCommon.userForGroup" />
 	</resultMap>
 
-	<resultMap id="groupLevelPermissionWrapper" class="groupLevelPermissionWrapper">
-		<result property="groupLevelPermission" column="permission" javaType="groupLevelPermission" />
-	</resultMap>
-
 	<!--+
 	    | Groups with additional fields 
 	    +-->
@@ -54,9 +50,13 @@
 	<resultMap id="groupWithMemberships" class="group" extends="group_extended" groupBy="name">
 		<result property="memberships" resultMap="GroupCommon.groupMembership" />
 	</resultMap>
+	
+	<resultMap id="groupLevelPermission" class="GroupLevelPermission">
+		<result property="id" column="permission" />
+	</resultMap>
 
 	<resultMap id="groupWithPermissions" class="group" extends="group_extended" groupBy="name">
-		<result property="groupLevelPermissionWrappers" resultMap="GroupCommon.groupLevelPermissionWrapper" />
+		<result property="groupLevelPermissions" resultMap="GroupCommon.groupLevelPermission" />
 	</resultMap>
 	
 	<resultMap id="groupWithMembershipsAndReportings" class="group" extends="groupWithMemberships" groupBy="name" >
@@ -64,7 +64,7 @@
 	</resultMap>
 
 	<resultMap id="groupWithMembershipsAndReportingsAndPermissions" class="group" extends="groupWithMembershipsAndReportings" groupBy="name" >
-		<result property="groupLevelPermissionWrappers" resultMap="GroupCommon.groupLevelPermissionWrapper" />
+		<result property="groupLevelPermissions" column="permission" javaType="GroupLevelPermission" />
 	</resultMap>
 
 	<resultMap id="tagsets" class="tagset" groupBy="setName">
