@@ -7,7 +7,7 @@ var index;
 $(document).ready(function () {
 	$(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
 	$.each($(".abstractGroupingGroup"),function(b,c){toggleGroupBox(c);});
-	
+	$('#selector').find('option:eq(0)').prop("selected", true);
 	$('#batchedit').children('input[name=abstractGrouping]').prop('disabled', true);
 	
 //	$('input[name=abstractGrouping]').prop('disabled', true);

@@ -393,19 +393,19 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 */
 	private Map<Post<BibTex>, Integer> getPostsWithNoValidationErrors(final List<Post<BibTex>> posts, final Map<String, List<ErrorMessage>> errorMessages, final boolean isOverwrite) {
 		final Map<Post<BibTex>, Integer> storageList = new LinkedHashMap<Post<BibTex>, Integer>();
-		boolean test1;//true, if the post has an error in errors. ...
-		boolean test2 = false;//true, if the post is already in the collection.
-		boolean test3 = false;//true, if the post is already in the snippet.
 		/*
 		 * iterate over all posts
 		 */
 		ErrorMessage errorMessage;
 		for (int i = 0; i < posts.size(); i++) {
+			boolean hasValidationErrors;//true, if the post has an error in errors. ...
+			boolean isAlreadyInCollection = false;//true, if the post is already in the collection.
+			boolean isAlreadyInSnippet = false;//true, if the post is already in the snippet.
 			List<ErrorMessage> postErrorMessages = errorMessages.get(posts.get(i).getResource().getIntraHash());
 			/*
 			 * check, if this post has field errors
 			 */
-			test1 = present(this.errors.getFieldErrors("bibtex.list[" + i + "]*"));
+			hasValidationErrors = present(this.errors.getFieldErrors("bibtex.list[" + i + "]*"));
 
 			/*
 			 * check if this post is already stored in DB
@@ -415,14 +415,14 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * (if yes, postErrorMessages.size()>=1)
 			 */
 			if(present(postErrorMessages) && postErrorMessages.size()>1){ 
-				test3 = true;
+				isAlreadyInSnippet = true;
 			}
 			else{
 				if (present(postErrorMessages) && postErrorMessages.size()==1){
-					test3 = true;
+					isAlreadyInSnippet = true;
 				}
-				test2 = this.isPostDuplicate(posts.get(i), isOverwrite);
-				if(test2){
+				isAlreadyInCollection = this.isPostDuplicate(posts.get(i), isOverwrite);
+				if(isAlreadyInCollection){
 					errorMessage = new DuplicatePostErrorMessage("BibTex", posts.get(i).getResource().getIntraHash());
 					if(!present(postErrorMessages)){
 						postErrorMessages = new ArrayList<ErrorMessage>();			
@@ -431,7 +431,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 					errorMessages.put(posts.get(i).getResource().getIntraHash(), postErrorMessages);
 				}
 			}
-			if (!test1 && !test2 && !test3) {
+			if (!hasValidationErrors && !isAlreadyInCollection && !isAlreadyInSnippet) {
 				log.debug("post no. " + i + " has no field errors");
 				/*
 				 * post has no field errors & is not duplicate--> try to store
