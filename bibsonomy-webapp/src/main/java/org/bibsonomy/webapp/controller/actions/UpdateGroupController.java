@@ -202,7 +202,6 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 					final URL homepage = command.getHomepage();
 //					final String description = command.getDescription();
 //					log.error(realname + " " + description);
-					log.error(priv + " " + sharedDocs);
 					
 					User groupUserToUpdate = this.logic.getUserDetails(groupToUpdate.getName());
 					groupUserToUpdate.setEmail("nomail");
@@ -249,6 +248,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 						final GroupMembership ms = new GroupMembership(new User(username), null, false);
 						try {
 							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.REMOVE_INVITED, ms);
+							return new ExtendedRedirectView("/settings");
 						} catch (final Exception ex) {
 							log.error("error while removing the invite of user '" + username + "' from group '" + groupToUpdate + "'", ex);
 							this.errors.rejectValue("username", "settings.group.error.removeInviteFailed", new Object[]{username},
