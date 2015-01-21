@@ -151,10 +151,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * @param authUser 
 	 * @param groupname 
+	 * @param getPermissions TODO
 	 * @param session 
 	 * @return group 
 	 */
-	public Group getGroupMembers(final String authUser, final String groupname, final DBSession session) {
+	public Group getGroupMembers(final String authUser, final String groupname, final boolean getPermissions, final DBSession session) {
 		log.debug("getGroupMembers " + groupname);
 		Group group;
 		if ("friends".equals(groupname)) {
@@ -176,8 +177,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			group.setMemberships(Collections.<GroupMembership> emptyList());
 			return group;
 		}
-
-		group = this.queryForObject("getGroupWithMemberships", groupname, Group.class, session);
+		if (getPermissions) {
+			group = this.queryForObject("getGroupWithMembershipsAndPermissions", groupname, Group.class, session);
+		} else {
+			group = this.queryForObject("getGroupWithMemberships", groupname, Group.class, session);
+		}
 		// the group has no members. At least the dummy user should exist.
 		if (group == null) {
 			log.debug("group " + groupname + " does not exist");
