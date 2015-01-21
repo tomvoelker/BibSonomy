@@ -221,6 +221,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		command.setOauthUserInfo(oauthUserInfos);
 	}
 
+	@Deprecated
 	private void workOnGroupTab(final SettingsViewCommand command) {
 		// refresh the groups
 //		Group tmpGroup;
