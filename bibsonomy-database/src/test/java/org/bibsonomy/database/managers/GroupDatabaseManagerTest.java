@@ -1,5 +1,6 @@
 package org.bibsonomy.database.managers;
 
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -21,7 +22,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.testutil.ParamUtils;
 import org.bibsonomy.util.Sets;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -467,28 +467,27 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		testGroup3.addGroupLevelPermission(GroupLevelPermission.COMMUNITY_POST_INSPECTION);
 		groupDb.updateGroupLevelPermissions(testUserName, testGroup3, this.dbSession);
 		Group foundTestGroup3 = getGroupOfUser(testUserName, testGroupName);
-		Assert.assertTrue(foundTestGroup3.getGroupLevelPermissions().contains(GroupLevelPermission.COMMUNITY_POST_INSPECTION));
-		Assert.assertFalse(foundTestGroup3.getGroupLevelPermissions().contains(GroupLevelPermission.NOTHING));
+		
+		assertThat(foundTestGroup3.getGroupLevelPermissions(), equalTo(Sets.asSet(GroupLevelPermission.COMMUNITY_POST_INSPECTION)));
 		
 		testGroup3.getGroupLevelPermissions().clear();
 		testGroup3.addGroupLevelPermission(GroupLevelPermission.NOTHING);
 		groupDb.updateGroupLevelPermissions(testUserName, testGroup3, this.dbSession);
 		foundTestGroup3 = getGroupOfUser(testUserName, testGroupName);
-		Assert.assertFalse(foundTestGroup3.getGroupLevelPermissions().contains(GroupLevelPermission.COMMUNITY_POST_INSPECTION));
-		Assert.assertTrue(foundTestGroup3.getGroupLevelPermissions().contains(GroupLevelPermission.NOTHING));
+		
+		assertThat(foundTestGroup3.getGroupLevelPermissions(), equalTo(Sets.asSet(GroupLevelPermission.NOTHING)));
 		
 		testGroup3.addGroupLevelPermission(GroupLevelPermission.COMMUNITY_POST_INSPECTION);
 		groupDb.updateGroupLevelPermissions(testUserName, testGroup3, this.dbSession);
 		foundTestGroup3 = getGroupOfUser(testUserName, testGroupName);
-		Assert.assertTrue(foundTestGroup3.getGroupLevelPermissions().contains(GroupLevelPermission.COMMUNITY_POST_INSPECTION));
-		Assert.assertTrue(foundTestGroup3.getGroupLevelPermissions().contains(GroupLevelPermission.NOTHING));
+		
+		assertThat(foundTestGroup3.getGroupLevelPermissions(), equalTo(Sets.asSet(GroupLevelPermission.COMMUNITY_POST_INSPECTION, GroupLevelPermission.NOTHING)));
 
 		testGroup3.getGroupLevelPermissions().clear();
 		groupDb.updateGroupLevelPermissions(testUserName, testGroup3, this.dbSession);
 		foundTestGroup3 = getGroupOfUser(testUserName, testGroupName);
-		Assert.assertFalse(foundTestGroup3.getGroupLevelPermissions().contains(GroupLevelPermission.COMMUNITY_POST_INSPECTION));
-		Assert.assertFalse(foundTestGroup3.getGroupLevelPermissions().contains(GroupLevelPermission.NOTHING));
-	
+		
+		assertThat(foundTestGroup3.getGroupLevelPermissions(), empty());
 	}
 
 	private Group getGroupOfUser(String userName, String groupName) {

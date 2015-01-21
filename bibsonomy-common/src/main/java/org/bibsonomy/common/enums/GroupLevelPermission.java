@@ -15,6 +15,7 @@ public enum GroupLevelPermission {
 	 * A place holder for testing sets of such permissions. To be removed as
 	 * soon as we add real further group level permissions.
 	 **/
+	@Deprecated
 	NOTHING(1);
 
 	/*

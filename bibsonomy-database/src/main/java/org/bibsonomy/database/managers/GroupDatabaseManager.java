@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
@@ -37,7 +36,6 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.ExceptionUtils;
 import org.bibsonomy.wiki.TemplateManager;
-import org.joda.time.field.OffsetDateTimeField;
 
 /**
  * Used to retrieve groups from the database.
@@ -915,38 +913,38 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * @param loginUser
+	 * @param loginUserName
+	 * @param group 
+	 * @param session 
 	 * @param paramGroup
 	 */
-	public void updateGroupLevelPermissions(String loginUser, Group group, final DBSession session) {
+	public void updateGroupLevelPermissions(final String loginUserName, final Group group, final DBSession session) {
 		try {
-		session.beginTransaction();
-		Group existinGroup = getGroupWithGroupLevelPermissions(group, session);
-		if (!present(existinGroup)) {
-			throw new IllegalArgumentException("Permissions can only be added to existing groups");
-		}
-		Collection<GroupLevelPermission> permissionsToDelete = CollectionUtils.subtract(existinGroup.getGroupLevelPermissions(), group.getGroupLevelPermissions());
-		Collection<GroupLevelPermission> permissionsToInsert = CollectionUtils.subtract(group.getGroupLevelPermissions(), existinGroup.getGroupLevelPermissions());
-		for (GroupLevelPermission permissionToInsert: permissionsToInsert) {
-			GroupParam groupParam = new GroupParam();
-			groupParam.setGroupId(existinGroup.getGroupId());
-			groupParam.setGrantedByUser(loginUser);
-			groupParam.setGroupLevelPermission(permissionToInsert);
-			this.delete("insertGroupLevelPermission", groupParam, session);
-		}
-		for (GroupLevelPermission permissionToDelete: permissionsToDelete) {
-			GroupParam groupParam = new GroupParam();
-			groupParam.setGroupId(existinGroup.getGroupId());
-			groupParam.setGroupLevelPermission(permissionToDelete);
-			this.insert("deleteGroupLevelPermission", groupParam, session);
-		}
+			session.beginTransaction();
+			final Group existinGroup = getGroupWithGroupLevelPermissions(group, session);
+			if (!present(existinGroup)) {
+				throw new IllegalArgumentException("Permissions can only be added to existing groups");
+			}
+			final Collection<GroupLevelPermission> permissionsToDelete = CollectionUtils.subtract(existinGroup.getGroupLevelPermissions(), group.getGroupLevelPermissions());
+			final Collection<GroupLevelPermission> permissionsToInsert = CollectionUtils.subtract(group.getGroupLevelPermissions(), existinGroup.getGroupLevelPermissions());
+			for (final GroupLevelPermission permissionToInsert : permissionsToInsert) {
+				final GroupParam groupParam = new GroupParam();
+				groupParam.setGroupId(existinGroup.getGroupId());
+				groupParam.setGrantedByUser(loginUserName);
+				groupParam.setGroupLevelPermission(permissionToInsert);
+				this.insert("insertGroupLevelPermission", groupParam, session);
+			}
+			for (final GroupLevelPermission permissionToDelete : permissionsToDelete) {
+				final GroupParam groupParam = new GroupParam();
+				groupParam.setGroupId(existinGroup.getGroupId());
+				groupParam.setGroupLevelPermission(permissionToDelete);
+				this.delete("deleteGroupLevelPermission", groupParam, session);
+			}
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
 		}
 	}
-	
-	
 	
 	private Group getGroupWithGroupLevelPermissions(Group group, final DBSession session) {
 		return this.queryForObject("getGroupWithPermissions", group.getName(), Group.class, session);

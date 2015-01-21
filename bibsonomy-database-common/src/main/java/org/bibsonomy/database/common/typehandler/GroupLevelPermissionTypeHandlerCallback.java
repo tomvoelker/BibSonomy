@@ -50,13 +50,9 @@ public class GroupLevelPermissionTypeHandlerCallback extends AbstractTypeHandler
 	@Override
 	public void setParameter(ParameterSetter setter, Object parameter) throws SQLException {
 		if (parameter == null) {
-			/*
-			 * FIXME: Please document why we set a permission although none was stored?
-			 */
-			setter.setInt(GroupLevelPermission.NOTHING.getGroupLevelPermissionId());
-		} else {
-			final GroupLevelPermission permission = (GroupLevelPermission) parameter;
-			setter.setInt(permission.getGroupLevelPermissionId());
+			throw new IllegalStateException("no null representation for a " + GroupLevelPermission.class.getSimpleName());
 		}
+		final GroupLevelPermission permission = (GroupLevelPermission) parameter;
+		setter.setInt(permission.getGroupLevelPermissionId());
 	}
 }
