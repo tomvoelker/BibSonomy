@@ -552,7 +552,7 @@ CREATE TABLE `group_memberships` (
   `user_name` varchar(30) NOT NULL default '',
   `group` int(10) default '0',
   `defaultgroup` int(10) default '0',
-  `start_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `start_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `group_role` int(10) NOT NULL default '7',
   `user_shared_documents` tinyint(1) default '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
