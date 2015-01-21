@@ -48,6 +48,18 @@
 		  AND i.group > 2
 	</select>
 
+	<select id="getGroupWithMembershipsAndPermissions" resultMap="GroupCommon.groupWithMembershipsAndReportingsAndPermissions" parameterClass="string">
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, p.permission
+		FROM groupids i 
+		<!-- LEFT JOIN is necessary because groups are empty at the point of creation. -->
+		  LEFT JOIN group_memberships g USING (`group`) 
+		  LEFT JOIN user u ON (u.user_name = i.group_name) 
+		  LEFT JOIN group_level_permission p USING (`group`)
+		WHERE group_name = #groupname#
+		  AND i.group > 2
+	</select>
+
+
 	<select id="getPrivlevelForGroup" resultClass="Privlevel" parameterClass="int">
 		SELECT privlevel FROM groupids WHERE `group` = #groupId#
 	</select>

@@ -434,7 +434,7 @@ public class URLGeneratorTest {
 	 * TODO Fix this, fails on jenkins as well as locally
 	 */
 	public void testGetGroupSettingsUrlByGroupName() {
-		String expected = projectHome + "settings/group/schlüsselbund";
+		String expected = projectHome + "settings/group/schl%C3%BCsselbund";
 		assertEquals(expected, ug.getGroupSettingsUrlByGroupName("schlüsselbund"));
 	}
 
