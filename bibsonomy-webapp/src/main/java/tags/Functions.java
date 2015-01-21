@@ -51,6 +51,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.database.systemstags.markup.ReportedSystemTag;
@@ -445,113 +446,76 @@ public class Functions {
 		 * input check is added to post creating procedure, the following check can be removed.
 		 * **/
 
-		if(newBib.getAuthor()!=null || oldBib.getAuthor()!=null){
+		if(present(newBib.getAuthor()) || present(oldBib.getAuthor())){
 			String val1="";
 			String val2="";
 			
-			List<PersonName> a; 
-			List<PersonName> b;
 			
-			if(newBib.getAuthor()==null){
-				val1="";
+			if(present(newBib.getAuthor()) && present(oldBib.getAuthor())){
+				Set<PersonName> aa = new HashSet<>(newBib.getAuthor());
+				Set<PersonName> bb = new HashSet<>(oldBib.getAuthor());
 				
-				a= oldBib.getAuthor();
-				
-				for(PersonName pn:a){
-					val2+=(present(pn.getFirstName())? pn.getFirstName() : "")+
-						(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
-				}
-
-				tmp = compareString(val1,val2);
-				DiffArray.put("author",tmp);
-
-			} else if(oldBib.getAuthor()==null){
-				val2 = "";
-				
-				a= newBib.getAuthor();
-				
-				for(PersonName pn:a){
-					val1+=(present(pn.getFirstName())? pn.getFirstName() : "")+
-							(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
-				}
-				
-				tmp = compareString(val1,val2);
-				DiffArray.put("author",tmp);
-
-			} else{
-			
-				a = newBib.getAuthor();
-				Set<PersonName> aa = new HashSet<>(a);
-				for(PersonName pn:aa){
-					val1+=(present(pn.getFirstName())? pn.getFirstName() : "")+
-							(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
-				}
-	
-				b= oldBib.getAuthor();
-				Set<PersonName> bb = new HashSet<>(b);
-				for(PersonName pn:bb){
-					val2+=(present(pn.getFirstName())? pn.getFirstName() : "")+
-						(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
-				}
-			
 				if (!aa.equals(bb)){
+					val1 = PersonNameUtils.serializePersonNames(newBib.getAuthor(),false, ", ");
+					val2 = PersonNameUtils.serializePersonNames(oldBib.getAuthor(),false, ", ");
 					tmp = compareString(val1,val2);
 					DiffArray.put("author",tmp);
 				}
-			}
+
+			} 
+			else if (present(newBib.getAuthor()))
+			{
+				val2="";
+				val1 = PersonNameUtils.serializePersonNames(newBib.getAuthor(),false, ", ");
+				
+				tmp = compareString(val1,val2);
+				DiffArray.put("author",tmp);
+
+			} else if(present(oldBib.getAuthor())){
+				val1 = "";
+				val2 = PersonNameUtils.serializePersonNames(oldBib.getAuthor(),false, ", ");
+				
+				tmp = compareString(val1,val2);
+				DiffArray.put("author",tmp);
+
+			} 
 		}
 
 		
 		
-		if(newBib.getEditor()!=null || oldBib.getEditor()!=null){
+		if(present(newBib.getEditor())|| present(oldBib.getEditor())){
 			String val1="";
 			String val2="";
-			List<PersonName> a;
-			List<PersonName> b;
+		
+			if(present(newBib.getEditor()) && present(oldBib.getEditor())){
 
-			if(newBib.getEditor()==null){
-				val1="";
-				
-				a= oldBib.getEditor();
-				for(PersonName pn:a){
-					val2+=(present(pn.getFirstName())? pn.getFirstName() : "")+
-						(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
-				}
-				tmp = compareString(val1,val2);
-				DiffArray.put("editor",tmp);
+				Set<PersonName> aa = new HashSet<>(newBib.getEditor());
+				Set<PersonName> bb = new HashSet<>(oldBib.getEditor());
 
-			} else if(oldBib.getEditor()==null){
-				val2 = "";
-				
-				a= newBib.getEditor();
-				for(PersonName pn:a){
-					val1+=(present(pn.getFirstName())? pn.getFirstName() : "")+
-							(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
-				}
-				tmp = compareString(val1,val2);
-				DiffArray.put("editor",tmp);
-
-			} else{
-			
-				a = newBib.getEditor();
-				Set<PersonName> aa = new HashSet<>(a);
-				for(PersonName pn:aa){
-					val1+=(present(pn.getFirstName())? pn.getFirstName() : "")+
-							(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
-				}
-	
-				a= oldBib.getEditor();
-				Set<PersonName> bb = new HashSet<>(a);
-				for(PersonName pn:bb){
-					val2+=(present(pn.getFirstName())? pn.getFirstName() : "")+
-						(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
-				}
-			
-				if (!aa.equals(bb)){
+				if (!aa.equals(bb)){				
+					val1 = PersonNameUtils.serializePersonNames(newBib.getEditor(),false, ", ");
+					val2 = PersonNameUtils.serializePersonNames(oldBib.getEditor(),false, ", ");
 					tmp = compareString(val1,val2);
 					DiffArray.put("editor",tmp);
-				}
+
+				}			
+
 			}
+			else if(present(newBib.getEditor())){
+				val2="";
+				
+				val1 = PersonNameUtils.serializePersonNames(newBib.getEditor(),false, ", ");
+				tmp = compareString(val1,val2);
+				DiffArray.put("editor",tmp);
+
+			} else if(present(oldBib.getEditor())){
+				val1 = "";
+				
+				val2 = PersonNameUtils.serializePersonNames(oldBib.getEditor(),false, ", ");
+				tmp = compareString(val1,val2);
+				DiffArray.put("editor",tmp);
+
+			} 
 		}
 		
 		if (!cleanBibtex(newBib.getYear()).equals(cleanBibtex(oldBib.getYear()))){
@@ -688,25 +652,16 @@ public class Functions {
 				 * **/
 			case "author":
 				List<PersonName> a= Bib.getAuthor();
-				if(Bib.getAuthor()!=null){
-					a= Bib.getAuthor();
-					for(PersonName pn:a){
-						val+=(present(pn.getFirstName())? pn.getFirstName() : "")+
-							(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
-					}
-					val = val.replace("\"", "!");
+				if(present(Bib.getAuthor())){
+					val = PersonNameUtils.serializePersonNames(Bib.getAuthor(),true, " and ");
 				}
 				
 				break;
 			case "editor":
 				
-				if(Bib.getEditor()!=null){
-					a= Bib.getEditor();
-					for(PersonName pn:a){
-						val+=(present(pn.getFirstName())? pn.getFirstName() : "")+
-							(present(pn.getLastName())? " "+pn.getLastName() : "")+"; ";
-					}
-					val = val.replace("\"", "!");
+				if(present(Bib.getEditor())){
+					
+					val = PersonNameUtils.serializePersonNames(Bib.getEditor(),true, " and ");
 				}
 				
 				break;
@@ -787,6 +742,11 @@ public class Functions {
 				break;
 			case "tags":
 				val = toTagString(post.getTags());
+				//val = post.getTags();
+				break;
+			default:
+				throw new ValidationException("Couldn't find "+key+" among BibTex fields!");
+					
 			}
 		return val;
 	}
@@ -845,6 +805,9 @@ public class Functions {
 				break;
 			case "tags":
 				val = toTagString(bmPost.getTags());
+				break;	
+			default:
+				throw new ValidationException("Couldn't find "+key+" among Bookmark fields!");
 			}
 		
 		return val;

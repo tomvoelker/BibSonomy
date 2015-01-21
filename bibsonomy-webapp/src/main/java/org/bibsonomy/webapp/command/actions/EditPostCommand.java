@@ -500,5 +500,4 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 
 	
 
-	
-}
+	}

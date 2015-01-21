@@ -29,6 +29,7 @@ package org.bibsonomy.webapp.controller.actions;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,6 +52,7 @@ import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
 import org.bibsonomy.model.BibTex;
@@ -67,11 +69,13 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.bibsonomy.services.Pingback;
 import org.bibsonomy.services.URLGenerator;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.ContextCommand;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
@@ -405,8 +409,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				/**
 				 * values which should be restored are stored in a single string and are delimited by
 				 * <8>. for more information ref. History.js */
+				//String[]a = command.getDifferentEntryValues().split("<8>");
 				Collections.addAll(diffEntryValList, command.getDifferentEntryValues().split("<8>"));
-				
+				//List<Object> diffEntryValList = Arrays.asList(command.getDifferentEntryValues().toString().split(","));
 				List <String> diffEntryKeyList = command.getDifferentEntryKeys();
 				/**
 				 * which resource type are we dealing with?*/
@@ -414,20 +419,15 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				for(int i =0;i<diffEntryKeyList.size();i++){
 					final String key = diffEntryKeyList.get(i);
 					if ("tags".equals(key)) {
-						// do the the tag method
-					} else {
-					if(BibTex.class.equals(resourceType) || GoldStandardPublication.class.equals(resourceType)){
-						replaceResourceFieldsPub((BibTex)dbPost.getResource(),key, diffEntryValList.get(i));
-					}
-					/*
-					 * FIXME: Do the same simplifications for bookmarks
-					 */
-					else if(GoldStandardBookmark.class.equals(resourceType)){
-						replaceResourceFieldsGoldStandardBm(dbPost,key, diffEntryValList.get(i));
-					}
-					else{
-						replaceResourceFieldsBm(dbPost,key, diffEntryValList.get(i));
-					}
+						replaceTags(diffEntryValList.get(i), dbPost);
+					} 
+					else {
+						if(BibTex.class.equals(resourceType) || GoldStandardPublication.class.equals(resourceType)){
+							replaceResourceFieldsPub((BibTex)dbPost.getResource(),key, diffEntryValList.get(i));
+						}
+						else if(Bookmark.class.equals(resourceType) || GoldStandardBookmark.class.equals(resourceType)){
+							replaceResourceFieldsBm(dbPost,key, diffEntryValList.get(i));
+						}
 					}
 				}
 			}
@@ -518,9 +518,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				bibResource.setTitle(value);
 				break;
 			case "author":
-				/*
-				 * FIXME: use Personnameutils ...
-				 */
 				/**
 				 * convert string to PersonName object*/
 				List <PersonName> authors_list = new ArrayList<PersonName>();
@@ -529,15 +526,12 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 					bibResource.setAuthor(authors_list);
 					break;					
 				}
-				/**when the author name contains umlaut.**/
-				if(value.contains("!")){
-					value=value.replace("!", "\"");
-				}
-				
+								
 				/**
-				 * if key is author, value contains several authors 'name,lastname' delimited by ";" 
+				 * if key is author, value contains several authors 'name lastname' delimited by "," 
 				 * */
-				List <String> authors = new ArrayList<String>();
+				authors_list = PersonNameUtils.discoverPersonNamesIgnoreExceptions(value);
+				/*List <String> authors = new ArrayList<String>();
 				Collections.addAll(authors, value.split("; "));
 				
 				PersonName a;
@@ -546,7 +540,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 					first_last_name = authors.get(i).split(" ");
 					a = new PersonName(first_last_name[0],present(first_last_name[1])? first_last_name[1] : " ");
 					authors_list.add(a);
-				}
+				}*/
 				bibResource.setAuthor(authors_list);
 				break;
 			case "editor":
@@ -558,15 +552,13 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 					bibResource.setEditor(editors_list);
 					break;					
 				}
-				if(value.contains("!")){
-					value=value.replace("!", "\"");
-				}
-				
+			
 				/**
-				 * if key is author, value contains several authors names, delimited by ";" 
+				 * if key is author, value contains several authors names, delimited by "," 
 				 * */
-				List <String> editors = new ArrayList<String>();
-				Collections.addAll(editors, value.split("; "));
+				editors_list = PersonNameUtils.discoverPersonNamesIgnoreExceptions(value);
+				/*List <String> editors = new ArrayList<String>();
+				Collections.addAll(editors, value.split(", "));
 				
 				PersonName b;
 				String[] first_last_Name;
@@ -574,7 +566,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 					first_last_Name = editors.get(i).split(" ");
 					b = new PersonName(first_last_Name[0],present(first_last_Name[1])? first_last_Name[1] : " ");
 					editors_list.add(b);
-				}
+				}*/
 				bibResource.setEditor(editors_list);
 				break;
 			case "year":
@@ -652,6 +644,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			case "note":
 				bibResource.setNote(value);
 				break;
+			default:
+				throw new ValidationException("Couldn't find "+key+" among BibTex fields!");
+					
 			}
 		/*
 		 * FIXME: add default Some Exception about unsupported Field
@@ -686,37 +681,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			case "description":
 				post.setDescription(value);
 				break;
-			case "tags":
-				try {
-					Set<Tag> tagSet = TagUtils.parse(value);
-					post.setTags(tagSet);
-				} catch (RecognitionException e) {
-					log.error("Couldn't parse tag's string and couldn't convert it to Set(collection)", e);
-				}
-			}
+			default:
+				throw new ValidationException("Couldn't find "+key+" among Bookmark fields!");
+		}
 	}
-	
-	protected void replaceResourceFieldsGoldStandardBm(final Post post, String key, String value){
-		switch(key){
-			case "title":
-				post.getResource().setTitle(value);
-				break;
-			case "url":
-				((GoldStandardBookmark)post.getResource()).setUrl(value);
-				break;
-			case "description":
-				post.setDescription(value);
-				break;
-			case "tags":
-				try {
-					Set<Tag> tagSet = TagUtils.parse(value);
-					post.setTags(tagSet);
-				} catch (RecognitionException e) {
-					log.error("Couldn't parse tag's string and couldn't convert it to Set(collection)", e);
-				}
-			}
-	}
-
 	
 	/**
 	 * @param command

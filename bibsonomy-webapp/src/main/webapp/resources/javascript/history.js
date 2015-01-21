@@ -145,13 +145,18 @@ function submitForm(element){
 				entryValue=" ";
 			}
 			/**
-			 * for some 'split(delimiter)' reason (eg. in author case), we cannot send an array of strings 
+			 * we cannot send a list of values because values may contain 'comma' (e.g tags which have comma, abstracts, ...)
+			 * and jsp split a list based on 'comma' delimiter and then pass it to the controller. so a list of 5 values might 
+			 * be sent to controller as a list of 10 values (when there are 5 comma in a value)
+			 * 
+			 * therefore, we cannot send an array of strings 
 			 * to the controller. A string of field values delimited by '<8>' will be 
 			 * sent to the controller and values will be splited there*/
 			diffEntryValue +=(entryValue+"<8>");
 			i++;
 		}
 	});
+	
 	$('input[name=differentEntryKeys]').val(diffEntryKey);
 	$('input[name=differentEntryValues]').val(diffEntryValue);
 	
