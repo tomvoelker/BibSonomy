@@ -202,7 +202,7 @@
 		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents
 		FROM groupids i 
 		  JOIN pending_group_memberships g USING (`group`) 
-		  LEFT JOIN user u ON (u.user_name = g.user_name) 
+		  LEFT JOIN user u ON (u.user_name = i.group_name) 
 		WHERE group_name = #groupname#
 		  AND i.group > 2
 	</select>
