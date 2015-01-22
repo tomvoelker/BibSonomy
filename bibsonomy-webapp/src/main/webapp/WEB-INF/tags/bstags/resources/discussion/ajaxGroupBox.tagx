@@ -87,7 +87,7 @@
 		<div class="col-sm-8">
 		    <!-- select box for "other" groups -->
 		    <!-- TODO: allow multiple groups ( multiple="multiples") -->
-			<select name="groups" size="4" class="form-control otherGroupsBox" tabindex="2" >
+			<select name="groups" size="4" class="form-control otherGroupsBox" tabindex="2" disabled = "disabled">
 			<c:set var="friendsLabel" value="friends" /> <!-- TODO: i18n? -->
 				<c:choose>
 					<c:when test="${isFriend}">

@@ -31,10 +31,9 @@ function toggleGroupBox(radioButton) {
 	// find the checked abstract grouping
 	var selectedAbstractGrouping = $(radioButton).val();
 	if(selectedAbstractGrouping!='other'){
-		$('select[name=groups]').attr('disabled', 'disabled');
-		//clearSelected($('select[name=groups]'));
+		$(radioButton).parents('div').next().find('select[name=groups]').attr('disabled', 'disabled');
 	} else {
-		$('select[name=groups]').removeAttr('disabled');
+		$(radioButton).parents('div').next().find('select[name=groups]').removeAttr('disabled');
 	}
 }
 function clearSelected(element){

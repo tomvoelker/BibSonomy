@@ -1,16 +1,11 @@
-var ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR='input[name="abstractGrouping"]';
-var OTHER_GROUPING_CLASS_SELECTOR=".otherGroupsBox";
 var allNotChecked;
 var action=[];
 var index;
 
 $(document).ready(function () {
-	$(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
-	$.each($(".abstractGroupingGroup"),function(b,c){toggleGroupBox(c);});
+	alert('here in .js');
 	$('#selector').find('option:eq(0)').prop("selected", true);
-	$('#batchedit').children('input[name=abstractGrouping]').prop('disabled', true);
-	
-//	$('input[name=abstractGrouping]').prop('disabled', true);
+	$('#batchedit').find('input[name=abstractGrouping]').prop('disabled', true);
 	
 	/**
 	 * If allNotChecked is true, edit options will not be activated.
@@ -226,14 +221,12 @@ function trigger_checkboxes(){
 function updatePrivacy(){
 	$('.batchUpdateButton').prop('disabled', false);
 	$('td[id=viewable]').css({'font-weight':'bold'});
-	$('#batchedit').children('input[name=abstractGrouping]').prop('disabled', false);
-	//$('input[name=abstractGrouping]').prop('disabled', false);
+	$('#batchedit').find('input[name=abstractGrouping]').prop('disabled', false);
 }
 
 function updatePrivacy_Uncheck(){
 	$('td[id=viewable]').css({'font-weight':'normal'});
-	$('#batchedit').children('input[name=abstractGrouping]').prop('disabled', true);
-//	$('input[name=abstractGrouping]').prop('disabled', true);
+	$('#batchedit').find('input[name=abstractGrouping]').prop('disabled', true);
 	
 	/**
 	 * var all_NotChecked_undirect is true if we are in indirect mode 
@@ -324,8 +317,7 @@ function resetSelection(){
 	changeTagInputs('input[name^=posts]:checkbox:checked', true);
 	$('input[name=tags]').prop('disabled', true);
 	$('.batchUpdateButton').prop('disabled', true);
-	$('#batchedit').children('input[name=abstractGrouping]').prop('disabled', true);
-	//$('input[name=abstractGrouping]').prop('disabled', true);
+	$('#batchedit').find('input[name=abstractGrouping]').prop('disabled', true);
 	$('.deleteAlert').toggleClass('invisible', true);
 	$('.deleteAlert').toggleClass('hidden', true);
 	$('.normalizeAlert').toggleClass('invisible', true);
@@ -345,11 +337,4 @@ function changeTagInputs(selector, disabled) {
 		$('input[name=' + attr + ']:text').prop('disabled', disabled);
 	});
 }
-function onAbstractGroupingClick(){toggleGroupBox($(this).parent());
-}
-function toggleGroupBox(c){var a=$(c).children("input:checked");
-var b=$(c).siblings(OTHER_GROUPING_CLASS_SELECTOR);
-if(!a.hasClass("otherGroups")){b.attr("disabled","disabled");
-}else{b.removeAttr("disabled");
-}}		           
 maximizeById("general");
