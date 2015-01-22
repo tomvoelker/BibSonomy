@@ -24,7 +24,7 @@
 					</li>
 				</jsp:attribute>
 				<jsp:attribute name="afterInput">
-					<group:name group="${command.group}"/>
+					<group:groupname group="${command.group}"/>
 					<group:groupcv group="${command.group}"/>
 				</jsp:attribute>
 			</parts:search>	
