@@ -70,15 +70,8 @@
 					<!--+
 						| groups
 						+-->
-					<c:set var="userHasGroups" value="${false}" />
-					<c:forEach var="group" items="${loginUser.groups}">
-						<c:set var="role" value="${group.getGroupMembershipForUser(loginUser).groupRole}" />
-						<c:if test="${role ne 'DUMMY' and role ne 'REQUESTED' and role ne 'INVITED'}">
-							<c:set var="userHasGroups" value="${true}" />
-						</c:if>
-					</c:forEach>
 					<c:choose>
-						<c:when test="${userHasGroups}">
+						<c:when test="${not empty loginUser.groups}">
 							<li class="dropdown ${activeTab eq 'groups' ? 'active' : ''}">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.groups"/><b class="caret">&amp;nbsp;</b></a>
 								<ul class="dropdown-menu">

@@ -45,10 +45,10 @@
 	</select>
 
 	<select id="getGroupsForUser" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, u.user_name, g.user_shared_documents, g.group_role
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.user_shared_documents, g.group_role
 		 FROM groupids i
 		   LEFT JOIN group_memberships g USING (`group`)
-		   LEFT JOIN user u ON (u.user_name = g.user_name)
+		   LEFT JOIN user u ON (u.user_name = i.group_name)
 		 WHERE g.user_name = #userName#
 	</select>
 	
@@ -199,19 +199,19 @@
 	</delete>
 	
 	<select id="getPendingMembershipsForGroup" resultMap="GroupCommon.groupWithMemberships" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, u.user_name, g.group_role, g.user_shared_documents
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents
 		FROM groupids i 
 		  JOIN pending_group_memberships g USING (`group`) 
-		  LEFT JOIN user u ON (u.user_name = g.user_name) 
+		  LEFT JOIN user u ON (u.user_name = i.group_name) 
 		WHERE group_name = #groupname#
 		  AND i.group > 2
 	</select>
 	
 	<select id="getPendingMembershipsForUser" resultMap="GroupCommon.groupWithMemberships" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, u.user_name, g.user_shared_documents, g.group_role
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, g.user_name, g.user_shared_documents, g.group_role
 		 FROM groupids i
 		   LEFT JOIN pending_group_memberships g USING (`group`)
-		   LEFT JOIN user u ON (u.user_name = g.user_name)
+		   LEFT JOIN user u ON (u.user_name = i.group_name)
 		 WHERE g.user_name = #userName# AND g.group_role != 2
 	</select>
 	
