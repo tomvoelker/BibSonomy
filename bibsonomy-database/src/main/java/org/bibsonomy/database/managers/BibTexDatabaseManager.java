@@ -44,6 +44,7 @@ import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
+import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.RepositoryParam;
 import org.bibsonomy.database.params.ResourceParam;
@@ -51,8 +52,10 @@ import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ScraperMetadata;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.util.file.FileSystemFile;
 import org.bibsonomy.services.filesystem.FileLogic;
@@ -662,5 +665,14 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 */
 	public void setFileLogic(final FileLogic fileLogic) {
 		this.fileLogic = fileLogic;
+	}
+	
+	public void updateBibTexInGroupFromLeavingUser(User leavingUser, Group group, DBSession session) {
+		BibTexParam param = new BibTexParam();
+		param.setGroupId(group.getGroupId());
+		param.setUserName(leavingUser.getName());
+		// TODO: Logging
+		//this.plugins.onPublicationUpdate(000, 000, session);
+		this.update("updateBibTexInGroupFromLeavingUser", param, session);
 	}
 }

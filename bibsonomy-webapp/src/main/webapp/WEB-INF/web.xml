@@ -160,10 +160,10 @@
 		<servlet-name>AdminHandler</servlet-name>
 		<servlet-class>servlets.AdminHandler</servlet-class>
 	</servlet>
-	<servlet>
+<!--	<servlet>
 		<servlet-name>SettingsHandler</servlet-name>
 		<servlet-class>servlets.SettingsHandler</servlet-class>
-	</servlet>
+	</servlet>-->
 	
 	<!-- events -->
 	<servlet>

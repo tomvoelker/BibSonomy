@@ -729,11 +729,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		 * We need to set them to private else the user can't see the posts anymore
 		 * be careful: this method is also called by the delete user method.
 		 */
-		/*
-		 * Shouldn't we just mark the deleted user as spammer? Then no post should
-		 * be visible anymore.
-		 */
-		
+
 		this.plugins.onRemoveUserFromGroup(param.getUserName(), param.getGroupId(), session);
 		this.delete("removeUserFromGroup", param, session);
 	}

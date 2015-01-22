@@ -675,4 +675,8 @@
 		WHERE bb.group = g.group 
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
+	
+	<update id="updateBookmarksInGroupFromLeavingUser" parameterClass="bookmarkParam">
+		UPDATE bookmark b SET b.group = 1 WHERE b.user_name = #userName# AND b.group = #groupId#
+	</update>
 </sqlMap>

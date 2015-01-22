@@ -1032,4 +1032,11 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public void setChain(final Chain<List<Tag>, TagParam> chain) {
 		this.chain = chain;
 	}
+	
+	public void updateTasInGroupFromLeavingUser(User leavingUser, Group group, DBSession session) {
+		TagParam param = new TagParam();
+		param.setUserName(leavingUser.getName());
+		param.setGroupId(group.getGroupId());
+		this.update("updateTasInGroupFromLeavingUser", param, session);
+	}
 }

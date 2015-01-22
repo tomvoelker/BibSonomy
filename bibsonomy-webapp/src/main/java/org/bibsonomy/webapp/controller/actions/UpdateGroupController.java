@@ -162,8 +162,6 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 				case REMOVE_MEMBER: {
 					/*
 					 * remove the user from the group
-					 *
-					 * FIXME: not fully migrated yet, see {@link SettingsHandler} and GroupsDatabaseManager
 					 */
 					final String username = command.getUsername();
 					if (present(username) && !username.equals(groupToUpdate)) {
