@@ -971,7 +971,7 @@
 		ORDER BY b2.date DESC, b2.content_id DESC
 	</select>
 	
-	<update id="updateBibTexInGroupFromLeavingUser" param="bibtexparam">
+	<update id="updateBibTexInGroupFromLeavingUser" parameterClass="bibtexParam">
 		UPDATE bibtex b SET b.group = 1 WHERE b.user_name = #userName# AND b.group = #groupId#
 	</update>
 
