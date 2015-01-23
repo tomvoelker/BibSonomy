@@ -24,15 +24,47 @@ public class ESTransportClient implements ESClient {
 	 * will be separated by "," and port and ip are separated by ":"
 	 */
 	private String esAddresses;
+
 	/**
 	 * Elasticsearch CLustername
 	 */
 	private String esClusterName;
 
+	
+	
 	/**
-	 * Default constructor, initializing the client.
+	 * @return the esAddresses
 	 */
-	public ESTransportClient() {
+	public String getEsAddresses() {
+		return this.esAddresses;
+	}
+
+	/**
+	 * @param esAddresses the esAddresses to set
+	 */
+	public void setEsAddresses(String esAddresses) {
+		this.esAddresses = esAddresses;
+	}
+
+	/**
+	 * @return the esClusterName
+	 */
+	public String getEsClusterName() {
+		return this.esClusterName;
+	}
+
+	/**
+	 * @param esClusterName the esClusterName to set
+	 */
+	public void setEsClusterName(String esClusterName) {
+		this.esClusterName = esClusterName;
+	}
+
+	/**
+	 *  initializing the client.
+	 *  
+	 */
+	public void init() {
 		if (client == null) {
 			client = initiateTransportClient();
 		}
@@ -107,35 +139,6 @@ public class ESTransportClient implements ESClient {
 	public void shutdown() {
 		// TODO Auto-generated method stub
 
-	}
-
-
-	/**
-	 * @return the esClusterName
-	 */
-	public String getEsClusterName() {
-		return this.esClusterName;
-	}
-
-	/**
-	 * @param esClusterName the esClusterName to set
-	 */
-	public void setEsClusterName(String esClusterName) {
-		this.esClusterName = esClusterName;
-	}
-
-	/**
-	 * @return the esAddresses
-	 */
-	public String getEsAddresses() {
-		return this.esAddresses;
-	}
-
-	/**
-	 * @param esAddresses the esAddresses to set
-	 */
-	public void setEsAddresses(String esAddresses) {
-		this.esAddresses = esAddresses;
 	}
 
 }

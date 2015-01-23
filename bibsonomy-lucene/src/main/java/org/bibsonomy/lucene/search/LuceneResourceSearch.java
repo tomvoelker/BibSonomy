@@ -778,7 +778,6 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPosts(java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.model.enums.Order, int, int)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Post<R>> getPosts(String resourceType, String userName,String requestedUserName, String requestedGroupName,List<String> requestedRelationNames,	Collection<String> allowedGroups,SearchType searchType,String searchTerms,String titleSearchTerms, String authorSearchTerms,
 			Collection<String> tagIndex, String year, String firstYear,
@@ -792,8 +791,6 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			try {
 				List<Post<R>> posts = searchResource.fullTextSearch();
 				return posts;
-			} catch (CorruptIndexException e) {
-				log.error("Failed to search post from shared resources", e);
 			} catch (IOException e) {
 				log.error("Failed to search post from shared resource", e);
 			}

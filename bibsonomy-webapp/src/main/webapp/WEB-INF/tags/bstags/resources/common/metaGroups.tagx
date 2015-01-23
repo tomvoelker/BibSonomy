@@ -33,14 +33,7 @@
 					<c:out value=" "/>
 					<c:choose>
 						<c:when test="${isRemotePost}">
-						<c:choose>
-							<c:when test="${resourceType eq 'Bookmark'}">
-								<a href="${mtl:cleanUrl(post.resource.url)}"><c:out value="${group.name}" /></a>
-							</c:when>
-							<c:otherwise>
-								<a href="${post.systemUrl}/bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}"><c:out value="${group.name}" /></a>
-							</c:otherwise>
-						</c:choose>
+							<a class="friends" href="${post.systemUrl}/friend/${fn:escapeXml(post.user.name)}"><c:out value="${group.name}" /></a>
 						</c:when>
 						<c:otherwise>
 							<c:choose>
@@ -59,14 +52,7 @@
 					<c:out value=" "/>
 					<c:choose>
 						<c:when test="${isRemotePost}">
-						<c:choose>
-							<c:when test="${resourceType eq 'Bookmark'}">
-								<a href="${mtl:cleanUrl(post.resource.url)}"><c:out value="${group.name}" /></a>
-							</c:when>
-							<c:otherwise>
-								<a href="${post.systemUrl}/bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}"><c:out value="${group.name}" /></a>
-							</c:otherwise>
-						</c:choose>
+							<a class="private" href="${post.systemUrl}/viewable/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
 						</c:when>
 						<c:otherwise>
 							<a class="private" href="/viewable/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
@@ -79,14 +65,7 @@
 					<c:out value=" "/>
 					<c:choose>
 						<c:when test="${isRemotePost}">
-						<c:choose>
-							<c:when test="${resourceType eq 'Bookmark'}">
-								<a href="${mtl:cleanUrl(post.resource.url)}"><c:out value="${group.name}" /></a>
-							</c:when>
-							<c:otherwise>
-								<a href="${post.systemUrl}/bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}"><c:out value="${group.name}" /></a>
-							</c:otherwise>
-						</c:choose>
+							<a class="other" href="${post.systemUrl}/viewable/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
 						</c:when>
 						<c:otherwise>
 							<a class="other" href="/viewable/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
