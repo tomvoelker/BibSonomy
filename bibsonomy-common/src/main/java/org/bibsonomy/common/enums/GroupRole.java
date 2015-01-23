@@ -5,6 +5,8 @@ import java.util.Set;
 import org.bibsonomy.util.Sets;
 
 /**
+ * TODO: move pending group roles to a separate enum?
+ * 
  * Enum for the different group roles.
  * 
  * @author clemensbaier
