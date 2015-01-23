@@ -180,6 +180,7 @@
 		<property name="projectJoinGroupRequestFromAddress" value="${project.joinGroupRequestFromAddress}" />
 		<property name="mailHost" value="${mail.smtp.host}" />
 		<property name="messageSource" ref="messageSource"/>
+		<property name="absoluteURLGenerator" ref="absoluteUrlGenerator" />
 	</bean>
 
 	<!--  #################### interceptors #################### -->

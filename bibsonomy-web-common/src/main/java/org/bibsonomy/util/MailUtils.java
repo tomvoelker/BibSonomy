@@ -39,6 +39,7 @@ import javax.mail.internet.MimeMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.User;
+import org.bibsonomy.services.URLGenerator;
 import org.springframework.context.MessageSource;
 
 
@@ -59,6 +60,8 @@ public class MailUtils {
 	private String projectJoinGroupRequestFromAddress;
 	
 	private MessageSource messageSource;
+	
+	private URLGenerator absoluteURLGenerator;
 
 	/** Stores the properties for mailing (mail host). */
 	private final Properties props = new Properties();
@@ -73,7 +76,12 @@ public class MailUtils {
 	 * @return <code>true</code>, if the email could be send without errors.
 	 */
 	public boolean sendActivationMail(final String userName, final String userEmail, final String inetAddress, final Locale locale) {
-		final Object[] messagesParameters = new Object[]{userName, projectName, projectHome, projectBlog, projectEmail};
+		final Object[] messagesParameters = new Object[]{userName,
+			projectName,
+			projectHome,
+			projectBlog,
+			projectEmail,
+			absoluteURLGenerator.getUserUrlByUserName(userName)};
 		/*
 		 * Format the message "mail.registration.body" with the given parameters.
 		 */
@@ -207,8 +215,9 @@ public class MailUtils {
 	
 	public boolean sendGroupInvite(final String groupName, final User loginUser, final User invitedUser, final Locale locale) {
 		final Object[] messagesParameters = new Object[]{
-				groupName,
+				invitedUser.getName(),
 				loginUser.getName(),
+				groupName,
 				projectHome,
 				// TODO: why toLowerCase?
 				UrlUtils.safeURIEncode(groupName).toLowerCase(),
@@ -365,6 +374,14 @@ public class MailUtils {
 	 */
 	public void setMessageSource(final MessageSource messageSource) {
 		this.messageSource = messageSource;
+	}
+
+	public URLGenerator getAbsoluteURLGenerator() {
+		return absoluteURLGenerator;
+	}
+
+	public void setAbsoluteURLGenerator(URLGenerator absoluteURLGenerator) {
+		this.absoluteURLGenerator = absoluteURLGenerator;
 	}
 
 }

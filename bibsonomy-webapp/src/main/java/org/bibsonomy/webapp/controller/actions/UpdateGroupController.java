@@ -130,7 +130,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 						try {
 							// since now only one user can be invited to a group at once
 							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_INVITED, ms);
-//							mailUtils.sendGroupInvite(groupToUpdate.getName(), command.getLoggedinUser(), invitedUser, requestLogic.getLocale());
+							mailUtils.sendGroupInvite(groupToUpdate.getName(), command.getLoggedinUser(), invitedUser, requestLogic.getLocale());
 						} catch (final Exception ex) {
 							log.error("error while inviting user '" + username + "' to group '" + groupToUpdate + "'", ex);
 							// if a user can't be added to a group, this exception is thrown
@@ -162,8 +162,6 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 				case REMOVE_MEMBER: {
 					/*
 					 * remove the user from the group
-					 *
-					 * FIXME: not fully migrated yet, see {@link SettingsHandler} and GroupsDatabaseManager
 					 */
 					final String username = command.getUsername();
 					if (present(username) && !username.equals(groupToUpdate)) {

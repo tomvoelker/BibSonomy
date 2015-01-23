@@ -46,7 +46,7 @@
 					<div class="pull-right">
 						<group:groupcv group="${command.group}"/>
 					</div>
-					<group:name group="${command.group}"/>
+					<group:groupname group="${command.group}"/>
 				</li>
 				<!-- link to join group -->
 				<c:if test="${command.context.userLoggedIn}">

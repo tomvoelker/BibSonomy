@@ -936,16 +936,9 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void deleteUserFromGroup(final String groupName, final String userName) {
-		// TODO: take care of toLowerCase()!
-		// FIXME: IMPORTANT: not everybody may do this!
-		// better do nothing than anything horribly wrong:
-		throw new UnsupportedOperationException("not yet available");
-		// final DBSession session = openSession();
-		// try {
-		// groupDBManager.removeUserFromGroup(groupName, userName, session);
-		// } finally {
-		// session.close();
-		// }
+		this.updateGroup(new Group(groupName),
+				GroupUpdateOperation.REMOVE_MEMBER, 
+				new GroupMembership(new User(userName), null, false));
 	}
 
 	/*
@@ -1171,11 +1164,22 @@ public class DBLogic implements LogicInterface {
 				this.groupDBManager.addUserToGroup(groupName, membership.getUser().getName(), GroupRole.USER, session);
 				break;
 			case REMOVE_MEMBER:
-				throw new UnsupportedOperationException("unsupported operation");
-				/*if (this.userIsInGroup(membership.getUser(), group)) {
-					this.groupDBManager.removeUserFromGroup(group.getName(), membership.getUser().getName(), session);
-				}
-				break;*/
+				this.groupDBManager.removeUserFromGroup(groupName, membership.getUser().getName(), session);
+				// set all tas shared with the group to private (groupID 1)
+				this.tagDBManager.updateTasInGroupFromLeavingUser(loginUser, paramGroup, session);
+				// set all bibtex shared with the group to private (groupID 1)
+				this.publicationDBManager.updateBibTexInGroupFromLeavingUser(loginUser, paramGroup, session);
+				// set all bookmarks shared with the group to private (groupID 1)
+				this.bookmarkDBManager.updateBookmarksInGroupFromLeavingUser(loginUser, paramGroup, session);
+				// set all discussions in the group to private (groupID 1)
+				this.discussionDatabaseManager.updateDiscussionsInGroupFromLeavingUser(loginUser, paramGroup, session);
+				
+				// TODOS:
+				// bibtexurls
+				// gold_standard?!
+				// grouptas
+				
+				break;
 			case UPDATE_USER_SHARED_DOCUMENTS:
 				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, membership.getUser().getName());
 				this.groupDBManager.updateUserSharedDocuments(groupName, membership, session);
