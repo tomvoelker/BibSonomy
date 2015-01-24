@@ -403,30 +403,38 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			}
 			/**
 			 * if the controller is called from history page*/
-			if(present(command.getDifferentEntryValues())){
+			if(present(command.getDifferentEntryKeys())){
 				
-				List <String> diffEntryValList = new ArrayList<String>();
+				Class<? extends Resource> resourceType = dbPost.getResource().getClass();				
+				int compareVersion = command.getCompareVersion();
+				
 				/**
-				 * values which should be restored are stored in a single string and are delimited by
-				 * <8>. for more information ref. History.js */
-				//String[]a = command.getDifferentEntryValues().split("<8>");
-				Collections.addAll(diffEntryValList, command.getDifferentEntryValues().split("<8>"));
-				//List<Object> diffEntryValList = Arrays.asList(command.getDifferentEntryValues().toString().split(","));
+				 * comparePost is the history revision which will be restored.*
+				 * */
+				Post<RESOURCE> comparePost = new <RESOURCE>Post();
+				
+				if(BibTex.class.equals(resourceType) || Bookmark.class.equals(resourceType)){
+					comparePost = (Post<RESOURCE>)this.logic.getPosts(resourceType, GroupingEntity.USER, loginUserName, null, intraHashToUpdate, null, FilterEntity.POSTS_HISTORY, null, null, null, compareVersion, compareVersion+1).get(0);
+				}
+				else if(GoldStandardPublication.class.equals(resourceType) || GoldStandardBookmark.class.equals(resourceType)){
+					comparePost = (Post<RESOURCE>)this.logic.getPosts(resourceType, GroupingEntity.ALL, null, null, intraHashToUpdate, null, FilterEntity.POSTS_HISTORY, null, null, null, compareVersion, compareVersion+1).get(0);
+				}
+				/**
+				 * In the following loop, the current post will be replaced 
+				 * by the history revision (comparePost)
+				 **/
 				List <String> diffEntryKeyList = command.getDifferentEntryKeys();
-				/**
-				 * which resource type are we dealing with?*/
-				Class<? extends Resource> resourceType = dbPost.getResource().getClass();
 				for(int i =0;i<diffEntryKeyList.size();i++){
 					final String key = diffEntryKeyList.get(i);
 					if ("tags".equals(key)) {
-						replaceTags(diffEntryValList.get(i), dbPost);
+						dbPost.setTags(comparePost.getTags());
 					} 
 					else {
 						if(BibTex.class.equals(resourceType) || GoldStandardPublication.class.equals(resourceType)){
-							replaceResourceFieldsPub((BibTex)dbPost.getResource(),key, diffEntryValList.get(i));
+							replaceResourceFieldsPub((BibTex)dbPost.getResource(),key, (BibTex)comparePost.getResource());
 						}
 						else if(Bookmark.class.equals(resourceType) || GoldStandardBookmark.class.equals(resourceType)){
-							replaceResourceFieldsBm(dbPost,key, diffEntryValList.get(i));
+							replaceResourceFieldsBm(dbPost,key, comparePost);
 						}
 					}
 				}
@@ -509,157 +517,98 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param key
 	 * @param value
 	 */
-	protected void replaceResourceFieldsPub(final BibTex bibResource, String key, String value){
+	protected void replaceResourceFieldsPub(final BibTex bibResource, String key, BibTex newResource){
 		switch(key){
 			case "entrytype":
-				bibResource.setEntrytype(value);
+				bibResource.setEntrytype(newResource.getEntrytype());
 				break;
 			case "title":
-				bibResource.setTitle(value);
+				bibResource.setTitle(newResource.getTitle());
 				break;
 			case "author":
-				/**
-				 * convert string to PersonName object*/
-				List <PersonName> authors_list = new ArrayList<PersonName>();
-				/**when the author list is empty**/
-				if(value.equals(" ")){
-					bibResource.setAuthor(authors_list);
-					break;					
-				}
-								
-				/**
-				 * if key is author, value contains several authors 'name lastname' delimited by "," 
-				 * */
-				authors_list = PersonNameUtils.discoverPersonNamesIgnoreExceptions(value);
-				/*List <String> authors = new ArrayList<String>();
-				Collections.addAll(authors, value.split("; "));
-				
-				PersonName a;
-				String[] first_last_name;
-				for(int i=0;i<authors.size();i++){
-					first_last_name = authors.get(i).split(" ");
-					a = new PersonName(first_last_name[0],present(first_last_name[1])? first_last_name[1] : " ");
-					authors_list.add(a);
-				}*/
-				bibResource.setAuthor(authors_list);
+				bibResource.setAuthor(newResource.getAuthor());
 				break;
 			case "editor":
-				/**
-				 * convert string to PersonName object*/
-				List <PersonName> editors_list = new ArrayList<PersonName>();
-				
-				if(value.equals(" ")){
-					bibResource.setEditor(editors_list);
-					break;					
-				}
-			
-				/**
-				 * if key is author, value contains several authors names, delimited by "," 
-				 * */
-				editors_list = PersonNameUtils.discoverPersonNamesIgnoreExceptions(value);
-				/*List <String> editors = new ArrayList<String>();
-				Collections.addAll(editors, value.split(", "));
-				
-				PersonName b;
-				String[] first_last_Name;
-				for(int i=0;i<editors.size();i++){
-					first_last_Name = editors.get(i).split(" ");
-					b = new PersonName(first_last_Name[0],present(first_last_Name[1])? first_last_Name[1] : " ");
-					editors_list.add(b);
-				}*/
-				bibResource.setEditor(editors_list);
+				bibResource.setEditor(newResource.getEditor());
 				break;
 			case "year":
-				bibResource.setYear(value);
+				bibResource.setYear(newResource.getYear());
 				break;
 			case "booktitle":
-				bibResource.setBooktitle(value);
+				bibResource.setBooktitle(newResource.getBooktitle());
 				break;
 			case "journal":
-				bibResource.setJournal(value);
+				bibResource.setJournal(newResource.getJournal());
 				break;
 			case "volume":
-				bibResource.setVolume(value);
+				bibResource.setVolume(newResource.getVolume());
 				break;
 			case "number":
-				bibResource.setNumber(value);
+				bibResource.setNumber(newResource.getNumber());
 				break;
 			case "pages":
-				bibResource.setPages(value);
+				bibResource.setPages(newResource.getPages());
 				break;
 			case "month":
-				bibResource.setMonth(value);
+				bibResource.setMonth(newResource.getMonth());
 				break;
 			case "day":
-				bibResource.setDay(value);
+				bibResource.setDay(newResource.getDay());
 				break;
 			case "publisher":
-				bibResource.setPublisher(value);
+				bibResource.setPublisher(newResource.getPublisher());
 				break;
 			case "address":
-				bibResource.setAddress(value);
+				bibResource.setAddress(newResource.getAddress());
 				break;
 			case "edition":
-				bibResource.setEdition(value);
+				bibResource.setEdition(newResource.getEdition());
 				break;
 			case "chapter":
-				bibResource.setChapter(value);
+				bibResource.setChapter(newResource.getChapter());
 				break;
 			case "url":
-				bibResource.setUrl(value);
+				bibResource.setUrl(newResource.getUrl());
 				break;
 			case "key":
-				bibResource.setKey(value);
+				bibResource.setKey(newResource.getKey());
 				break;
 			case "howpublished":
-				bibResource.setHowpublished(value);
+				bibResource.setHowpublished(newResource.getHowpublished());
 				break;
 			case "institution":
-				bibResource.setInstitution(value);
+				bibResource.setInstitution(newResource.getInstitution());
 				break;
 			case "organization":
-				bibResource.setOrganization(value);
+				bibResource.setOrganization(newResource.getOrganization());
 				break;
 			case "school":
-				bibResource.setSchool(value);
+				bibResource.setSchool(newResource.getSchool());
 				break;
 			case "series":
-				bibResource.setSeries(value);
+				bibResource.setSeries(newResource.getSeries());
 				break;
 			case "crossref":
-				bibResource.setCrossref(value);
+				bibResource.setCrossref(newResource.getCrossref());
 				break;
 			case "misc":
-				bibResource.setMisc(value);
+				bibResource.setMisc(newResource.getMisc());
 				break;
 			case "bibtexAbstract":
-				bibResource.setAbstract(value);
+				bibResource.setAbstract(newResource.getAbstract());
 				break;
 			case "privnote":
-				bibResource.setPrivnote(value);
+				bibResource.setPrivnote(newResource.getPrivnote());
 				break;
 			case "annote":
-				bibResource.setAnnote(value);
+				bibResource.setAnnote(newResource.getAnnote());
 				break;
 			case "note":
-				bibResource.setNote(value);
+				bibResource.setNote(newResource.getNote());
 				break;
 			default:
-				throw new ValidationException("Couldn't find "+key+" among BibTex fields!");
-					
+				throw new ValidationException("Couldn't find "+key+" among BibTex fields!");					
 			}
-		/*
-		 * FIXME: add default Some Exception about unsupported Field
-		 */
-	}
-
-	private void replaceTags(String value, Post post) {
-		try {
-			Set<Tag> tagSet = TagUtils.parse(value);
-			post.setTags(tagSet);
-		} catch (RecognitionException e) {
-			log.error("Couldn't parse tag's string and couldn't convert it to Set(collection)", e);
-		}
 	}
 
 
@@ -670,16 +619,16 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param key
 	 * @param value
 	 */
-	protected void replaceResourceFieldsBm(final Post post, String key, String value){
+	protected void replaceResourceFieldsBm(final Post post, String key, Post newPost){
 		switch(key){
 			case "title":
-				post.getResource().setTitle(value);
+				post.getResource().setTitle(newPost.getResource().getTitle());
 				break;
 			case "url":
-				((Bookmark)post.getResource()).setUrl(value);
+				((Bookmark)post.getResource()).setUrl(((Bookmark)newPost.getResource()).getUrl());
 				break;
 			case "description":
-				post.setDescription(value);
+				post.setDescription(newPost.getDescription());
 				break;
 			default:
 				throw new ValidationException("Couldn't find "+key+" among Bookmark fields!");

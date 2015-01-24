@@ -266,19 +266,7 @@
 		<function-class>tags.Functions</function-class>
 		<function-signature>java.util.Map DiffEntriesBm(org.bibsonomy.model.Post, org.bibsonomy.model.Post)</function-signature>
 	</function>
-		
-	<function>
-		<name>getEntryValuePub</name>
-		<function-class>tags.Functions</function-class>
-		<function-signature>String getEntryValuePub(java.lang.String,org.bibsonomy.model.Post)</function-signature>
-	</function>
-	
-	<function>
-		<name>getEntryValueBm</name>
-		<function-class>tags.Functions</function-class>
-		<function-signature>String getEntryValueBm(java.lang.String,org.bibsonomy.model.Post)</function-signature>
-	</function>
-	
+			
 	<function>
 		<name>quoteJSON</name>
 		<function-class>tags.Functions</function-class>

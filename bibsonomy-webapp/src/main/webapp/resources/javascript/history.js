@@ -1,6 +1,5 @@
 var diffMap;
 $(document).ready(function () {
-	
 	/**
 	 * comparison to the current version is by default hidden, 
 	 * it will be visible on user select. */
@@ -126,9 +125,8 @@ function submitForm(element){
 	a=a.reverse();
 	
 	var diffEntryKey = [];
-	var diffEntryValue="";
 	var i=0;
-	var entryValue="";
+	var compareVersion;
 	
 	/**
 	 * for each changed field:*/
@@ -136,29 +134,17 @@ function submitForm(element){
 		var b = a.pop();
 		if(b){
 			diffEntryKey[i] = $(this).val();
-			entryValue = $(this).siblings('input[name=diffEntryValue]').val();
-			/**
-			 * in some cases, user wants to restore an empty field, 
-			 * eg. current_year: 2014, revision_year(which is going to be restored):-- 
-			 * in such a case, we send a " " as value of the field to avoid nullPointerException*/
-			if(entryValue==""){
-				entryValue=" ";
-			}
-			/**
-			 * we cannot send a list of values because values may contain 'comma' (e.g tags which have comma, abstracts, ...)
-			 * and jsp split a list based on 'comma' delimiter and then pass it to the controller. so a list of 5 values might 
-			 * be sent to controller as a list of 10 values (when there are 5 comma in a value)
-			 * 
-			 * therefore, we cannot send an array of strings 
-			 * to the controller. A string of field values delimited by '<8>' will be 
-			 * sent to the controller and values will be splited there*/
-			diffEntryValue +=(entryValue+"<8>");
+			compareVersion = $(this).siblings('input[name=compareVersion]').val();
 			i++;
 		}
 	});
-	
+	var isPub = $('input[name = isPub]').val();
+	var isGoldStandard = $('input[name = isGoldStandard]').val();
+	if(isPub=="true"){
+		compareVersion = $('input[name=listLength]').val()-1-compareVersion;
+	}
+	$('input[name=compareVersion]').val(compareVersion);
 	$('input[name=differentEntryKeys]').val(diffEntryKey);
-	$('input[name=differentEntryValues]').val(diffEntryValue);
 	
 	document.getElementById("history").submit();
 }

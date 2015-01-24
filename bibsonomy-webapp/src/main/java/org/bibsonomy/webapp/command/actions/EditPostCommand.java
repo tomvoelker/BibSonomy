@@ -124,8 +124,8 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 */
 	private String saveAndRate;
 	
+	private int compareVersion;
 	private List<String> differentEntryKeys;
-	private String differentEntryValues;
 
 
 	/**
@@ -485,17 +485,17 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	}
 
 	/**
-	 * @return the differentEntryValues
+	 * @return the compareVersion
 	 */
-	public String getDifferentEntryValues() {
-		return this.differentEntryValues;
+	public int getCompareVersion() {
+		return this.compareVersion;
 	}
 
 	/**
-	 * @param differentEntryValues the differentEntryValues to set
+	 * @param compareVersion the compareVersion to set
 	 */
-	public void setDifferentEntryValues(String differentEntryValues) {
-		this.differentEntryValues = differentEntryValues;
+	public void setCompareVersion(int compareVersion) {
+		this.compareVersion = compareVersion;
 	}
 
 	

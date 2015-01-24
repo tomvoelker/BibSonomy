@@ -427,10 +427,9 @@
 								<value>hash</value>
 								<value>user</value>
 								
+								<value>compareVersion</value>
 								<value>differentEntryKeys</value>
-								<value>differentEntryValues</value>
-								
-								
+														
 								<!-- used for fileHandling -->
 								<value>fileName</value>
 								<!-- used to block spammers -->
@@ -685,8 +684,9 @@
 		<value>editBeforeSaving</value>
 		<value>saveAndRate</value>
 		
+		<value>compareVersion</value>
 		<value>differentEntryKeys</value>
-		<value>differentEntryValues</value>
+		
 	</util:list>
 
 	<!-- publication request parameters -->
@@ -762,8 +762,9 @@
 		
 		<value>saveAndRate</value>
 		
+		<value>compareVersion</value>
 		<value>differentEntryKeys</value>
-		<value>differentEntryValues</value>
+		
 	</util:list>
 
 	<!--  #################### controller #################### -->

@@ -45,8 +45,9 @@
 		<!-- hidden variables are used to communicate with .js file or controllers -->
 		<input type="hidden" name="newestPost" value="${newestPost}" />
 		<input type="hidden" name="differentEntryKeys" />
-		<input type="hidden" name="differentEntryValues" />			
 		
+		<input type="hidden" name="compareVersion" />				
+		<input type="hidden" name="listLength" value="${fieldlength}"/>
 		<input type="hidden" name="isPub" value="${isPub}" />
 		<input type="hidden" name="isGoldStandard" value="${isGoldStandard}" />
 	
@@ -288,16 +289,7 @@
 										<div>
 											<!-- the following two variables are used in .js file -->
 											<input type="hidden" name="diffEntryKey" value="${diffEntry.key}"/>
-											<c:choose>
-												<c:when test="${isPub}">
-													<input type="hidden" name="diffEntryValue" 
-														value="${mtl:getEntryValuePub(diffEntry.key,listView.list[(fieldlength-index)])}"/>	
-												</c:when>
-												<c:otherwise>
-													<input type="hidden" name="diffEntryValue" 
-														value="${mtl:getEntryValueBm(diffEntry.key,listView.list[(fieldlength-index)])}"/>									
-												</c:otherwise>
-											</c:choose>											
+											<input type="hidden" name="compareVersion" value="${fieldlength-index}"/> 										
 										</div>
 									</c:forEach>
 									<!-- restore confirm (alert) question -->
