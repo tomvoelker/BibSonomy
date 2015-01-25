@@ -13,7 +13,7 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<c:set var="group" value="${command.group}" />
-	<fmt:message key="group.settings.header" var="groupSettingsPageTitle">
+	<fmt:message key="settings.group.header" var="groupSettingsPageTitle">
 		<fmt:param value="${group.name}" />
 	</fmt:message>
 	

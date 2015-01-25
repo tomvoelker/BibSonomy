@@ -94,8 +94,8 @@
 				<c:if test="${showPendingRequests}">
 					<bsform:fieldset legendKey="settings.group.pendingRequests">
 						<jsp:attribute name="content">
-							<fmt:message var="revuser" key="settings.group.remRequest.button"/>
-							<fmt:message var="revuserTitle" key="settings.group.remRequest.button.title"/>
+							<fmt:message var="revuser" key="settings.group.removeRequest"/>
+							<fmt:message var="revuserTitle" key="settings.group.removeRequest.title"/>
 							<dl class="dl-horizontal dt-thumbnail-items group-list">
 							<c:forEach items="${command.user.pendingGroups}" var="group">
 								<c:if test="${group.getGroupMembershipForUser(loginUser).groupRole eq 'REQUESTED' }">
