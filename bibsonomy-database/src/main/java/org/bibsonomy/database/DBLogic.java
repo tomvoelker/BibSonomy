@@ -87,6 +87,7 @@ import org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.InboxDatabaseManager;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
+import org.bibsonomy.database.managers.PostDatabaseManager;
 import org.bibsonomy.database.managers.StatisticsDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.managers.TagRelationDatabaseManager;
@@ -168,7 +169,7 @@ public class DBLogic implements LogicInterface {
 	private final DocumentDatabaseManager docDBManager;
 	private final PermissionDatabaseManager permissionDBManager;
 
-	private final BookmarkDatabaseManager bookmarkDBManager;
+	private final PostDatabaseManager<Bookmark, BookmarkParam> bookmarkDBManager;
 	private final BibTexDatabaseManager publicationDBManager;
 	private final GoldStandardPublicationDatabaseManager goldStandardPublicationDBManager;
 	private final GoldStandardBookmarkDatabaseManager goldStandardBookmarkDBManager;
@@ -636,7 +637,7 @@ public class DBLogic implements LogicInterface {
 	 * Method to handle privacy settings of posts for synchronization
 	 * @param post
 	 */
-	private void validateGroupsForSynchronization(final Post<? extends Resource> post) {
+	private static void validateGroupsForSynchronization(final Post<? extends Resource> post) {
 		/*
 		 * if post has group make it private
 		 */
@@ -931,20 +932,6 @@ public class DBLogic implements LogicInterface {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.bibsonomy.model.logic.LogicInterface#removeUserFromGroup(java.lang
-	 * .String, java.lang.String)
-	 */
-	@Override
-	public void deleteUserFromGroup(final String groupName, final String userName) {
-		this.updateGroup(new Group(groupName),
-				GroupUpdateOperation.REMOVE_MEMBER, 
-				new GroupMembership(new User(userName), null, false));
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
 	 * org.bibsonomy.model.logic.PostLogicInterface#deletePosts(java.lang.String
 	 * , java.util.List)
 	 */
@@ -1164,20 +1151,31 @@ public class DBLogic implements LogicInterface {
 				this.groupDBManager.addUserToGroup(groupName, membership.getUser().getName(), GroupRole.USER, session);
 				break;
 			case REMOVE_MEMBER:
-				this.groupDBManager.removeUserFromGroup(groupName, membership.getUser().getName(), session);
-				// set all tas shared with the group to private (groupID 1)
-				this.tagDBManager.updateTasInGroupFromLeavingUser(loginUser, paramGroup, session);
-				// set all bibtex shared with the group to private (groupID 1)
-				this.publicationDBManager.updateBibTexInGroupFromLeavingUser(loginUser, paramGroup, session);
-				// set all bookmarks shared with the group to private (groupID 1)
-				this.bookmarkDBManager.updateBookmarksInGroupFromLeavingUser(loginUser, paramGroup, session);
-				// set all discussions in the group to private (groupID 1)
-				this.discussionDatabaseManager.updateDiscussionsInGroupFromLeavingUser(loginUser, paramGroup, session);
-				
-				// TODOS:
-				// bibtexurls
-				// gold_standard?!
-				// grouptas
+				try {
+					session.beginTransaction();
+					this.groupDBManager.removeUserFromGroup(groupName, membership.getUser().getName(), session);
+					
+					// FIXME: (groups) should this be always the logged in user? what about admins deleting users?
+					// FIXME: (groups) paramgroup must not contain a group id
+					
+					// set all tas shared with the group to private (groupID 1)
+					this.tagDBManager.updateTasInGroupFromLeavingUser(loginUser, paramGroup, session);
+					
+					/*
+					 * update the visibility of the post that are "assigned" to
+					 * the group
+					 *  XXX: a loop over all resource database managers that allow groups
+					 */
+					this.publicationDBManager.updatePostsGroupFromLeavingUser(loginUser, paramGroup, session);
+					this.bookmarkDBManager.updatePostsGroupFromLeavingUser(loginUser, paramGroup, session);
+					
+					// set all discussions in the group to private (groupID 1)
+					this.discussionDatabaseManager.updateDiscussionsInGroupFromLeavingUser(loginUser, paramGroup, session);
+					
+					session.commitTransaction();
+				} finally {
+					session.endTransaction();
+				}
 				
 				break;
 			case UPDATE_USER_SHARED_DOCUMENTS:
@@ -1393,9 +1391,10 @@ public class DBLogic implements LogicInterface {
 		final CrudableContent<T, GenericParam> manager = getFittingDatabaseManager(post);
 		final String oldIntraHash = post.getResource().getIntraHash();
 
-		if(Role.SYNC.equals(loginUser.getRole())){
+		if (Role.SYNC.equals(loginUser.getRole())) {
 			validateGroupsForSynchronization(post);
 		}
+		
 		this.validateGroups(post.getUser(), post.getGroups(), session);
 
 		PostUtils.limitedUserModification(post, this.loginUser);
@@ -1410,8 +1409,7 @@ public class DBLogic implements LogicInterface {
 		 * If the operation is UPDATE_URLS then create/delete the url right here and
 		 * return the intra hash.
 		 */
-
-		if (PostUpdateOperation.UPDATE_URLS_ADD.equals(operation)) {  
+		if (PostUpdateOperation.UPDATE_URLS_ADD.equals(operation)) {
 			log.debug("Adding URL in updatePost()/DBLogic.java");
 			final BibTexExtra resourceExtra = ((BibTex) post.getResource()).getExtraUrls().get(0);
 
@@ -1451,22 +1449,17 @@ public class DBLogic implements LogicInterface {
 	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags, final boolean updateRelations) {
 		this.ensureLoggedIn();
 		this.permissionDBManager.ensureWriteAccess(loginUser, user.getName());
-
-		/*
-		 * 
-		 */
+		
 		final DBSession session = this.openSession();
 		try {
-
-			if(updateRelations) {
-				if(tagsToReplace.size() != 1 || replacementTags.size() != 1) {
+			if (updateRelations) {
+				if (tagsToReplace.size() != 1 || replacementTags.size() != 1) {
 					throw new ValidationException("tag relations can only be updated, when exactly one tag is exchanged by exactly one other tag.");
 				}
-
+				
 				this.tagRelationsDBManager.updateTagRelations(user, tagsToReplace.get(0), replacementTags.get(0), session);
-
 			}
-
+			
 			/*
 			 * finally delegate to tagDBManager
 			 */

@@ -1740,33 +1740,54 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	/**
 	 * returns a list of all metadata for the given post and MetaDataPluginKey.
 	 *
-	 * TODO: friends are not supported yet.
-	 * 
-	 * @param HashID
+	 * FIXME: friends are not supported yet.
+	 * @param hashType 
 	 * @param resourceHash
+	 * @param loginUser 
 	 * @param loginUserName
 	 * @param reqUserName
 	 * @param metaDataPluginKey
 	 * @param session
+	 * @return 
 	 */
 	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final User loginUser, final String reqUserName, final String metaDataPluginKey, final DBSession session) {
 		final PostParam param = new PostParam();
 		/*
 		 * get the groupids
 		 */
-		List<Integer> groups = UserUtils.getListOfGroupIDs(loginUser);
+		final List<Integer> groups = UserUtils.getListOfGroupIDs(loginUser);
 		// add the public group
 		groups.add(GroupUtils.getPublicGroup().getGroupId());
 		param.setGroups(groups);
-		if(hashType.equals(HashID.INTER_HASH)) {
+		
+		if (hashType.equals(HashID.INTER_HASH)) {
 			param.setInterHash(resourceHash);
 		} else {
 			param.setIntraHash(resourceHash);
 		}
 		param.setUserName(reqUserName);
-		if(present(metaDataPluginKey)) {
+		if (present(metaDataPluginKey)) {
 			param.setKey(MetaDataPluginKey.valueOf(metaDataPluginKey));
 		}
 		return this.queryForList("getPostMetaData", param, PostMetaData.class, session);
+	}
+	
+	/**
+	 * sets the post of the leavingUser that are only visible to the group to
+	 * the private group
+	 * 
+	 * TODO: as soon as we support multiple groups per post this logic must be adapted
+	 * 
+	 * @param leavingUser
+	 * @param group
+	 * @param session
+	 */
+	public void updatePostsGroupFromLeavingUser(User leavingUser, Group group, DBSession session) {
+		final ResourceParam<R> param = new ResourceParam<R>();
+		param.setGroupId(group.getGroupId());
+		param.setUserName(leavingUser.getName());
+		
+		// FIXME: (groups) add logging
+		this.update("update" + this.resourceClassName + "InGroupFromLeavingUser", param, session);
 	}
 }

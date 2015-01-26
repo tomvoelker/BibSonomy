@@ -730,10 +730,6 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public void deleteUserFromGroup(final String groupName, final String userName) {
-	}
-
-	@Override
 	public String createGroup(final Group group) {
 		return null;
 	}

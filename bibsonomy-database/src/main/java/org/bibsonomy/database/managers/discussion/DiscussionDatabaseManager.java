@@ -156,20 +156,19 @@ public class DiscussionDatabaseManager extends AbstractDatabaseManager {
 		Collections.reverse(rootItems);
 		return rootItems;
 	}
+	
+	public void updateDiscussionsInGroupFromLeavingUser(User leavingUser, Group group, DBSession session) {
+		final DiscussionItemParam<DiscussionItem> param = new DiscussionItemParam<DiscussionItem>();
+		param.setUserName(leavingUser.getName());
+		param.setGroupId(group.getGroupId());
+		// FIXME: (groups) Logging of group change missing
+		this.update("updateDiscussionsInGroupFromLeavingUser", param, session);
+	}
 
 	/**
 	 * @param chain the chain to set
 	 */
 	public void setChain(final Chain<List<DiscussionItem>, DiscussionItemParam<?>> chain) {
 		this.chain = chain;
-	}
-
-	public void updateDiscussionsInGroupFromLeavingUser(User leavingUser, Group group, DBSession session) {
-		DiscussionItemParam param = new DiscussionItemParam();
-		param.setUserName(leavingUser.getName());
-		param.setGroupId(group.getGroupId());
-		// TODO: Logging
-		// this.plugins etcetc
-		this.update("updateDiscussionsInGroupFromLeavingUser", param, session);
 	}
 }

@@ -38,6 +38,7 @@ import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.Chain;
+import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.model.BibTex;

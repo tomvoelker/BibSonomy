@@ -33,9 +33,7 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.User;
 
 
 /**
@@ -132,7 +130,7 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 		insert.setGroupId(groupId);
 
 		// inform plugins
-		this.plugins.onBookmarkInsert(post, session);		
+		this.plugins.onBookmarkInsert(post, session);
 		
 		return insert;
 	}
@@ -144,14 +142,5 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	@Override
 	protected BookmarkParam getNewParam() {
 		return new BookmarkParam();
-	}
-	
-	public void updateBookmarksInGroupFromLeavingUser(User leavingUser, Group group, DBSession session) {
-		BookmarkParam param = new BookmarkParam();
-		param.setGroupId(group.getGroupId());
-		param.setUserName(leavingUser.getName());
-		// TODO: Logging
-		//this.plugins.onBookmarkUpdate(000, 000, session);
-		this.update("updateBookmarksInGroupFromLeavingUser", param, session);
 	}
 }

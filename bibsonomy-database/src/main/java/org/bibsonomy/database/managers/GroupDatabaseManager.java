@@ -682,7 +682,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			// add user to group
 			final GroupParam param = new GroupParam();
 			param.setGroupId(group.getGroupId());
-			// TODO: must be changed if we allow users to specify shared documents in the join request
+			/* 
+			 * TODO: shares documents setting must be changed if we allow users
+			 * to specify shared documents in the join request
+			 */
 			param.setMembership(new GroupMembership(user, role, false));
 			
 			this.insert("addUserToGroup", param, session);

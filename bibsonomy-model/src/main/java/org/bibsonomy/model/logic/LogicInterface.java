@@ -284,14 +284,6 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	public void deleteGroup(String groupName);
 
 	/**
-	 * Removes an user from a group.
-	 * 
-	 * @param groupName the group to change
-	 * @param userName the user to remove
-	 */
-	public void deleteUserFromGroup(String groupName, String userName);
-
-	/**
 	 * Adds a user to the database.
 	 * 
 	 * @param user  the user to add
@@ -332,9 +324,10 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * 
 	 * @param group  the group to update
 	 * @param operation the operation which should be performed
-	 * @return groupID the group id of the updated group
+	 * @param membership 
+	 * @return the group name of the updated group
 	 */
-	public String updateGroup(Group group, final GroupUpdateOperation operation, GroupMembership membership);
+	public String updateGroup(Group group, final GroupUpdateOperation operation, final GroupMembership membership);
 
 	/**
 	 * Adds a document. If the resourceHash is given, the document is connected
