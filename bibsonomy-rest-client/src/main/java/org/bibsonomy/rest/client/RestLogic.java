@@ -707,8 +707,8 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info) {
-		this.execute(new ChangeSyncStatusQuery(service.toString(), resourceType, null, null, status, info));
+	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info, Date newSyncDate) {
+		this.execute(new ChangeSyncStatusQuery(service.toString(), resourceType, null, null, status, info, newSyncDate));
 	}
 
 	@Override

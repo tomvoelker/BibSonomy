@@ -27,6 +27,11 @@
 
 package org.bibsonomy.rest;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
 
@@ -37,7 +42,11 @@ import org.bibsonomy.model.enums.GoldStandardRelation;
  */
 public final class RESTConfig {
 	private RESTConfig() {
+		// noop
 	}
+	
+	private static final String DATE_FORMAT_STRING = "yyyy-MM-DD HH:mm:ss";
+	
 
 	public static final String POSTS_URL = "posts";
 
@@ -108,6 +117,8 @@ public final class RESTConfig {
 	public static final String SYNC_DIRECTION_PARAM = "direction";
 
 	public static final String SYNC_DATE_PARAM = "date";
+	
+	public static final String SYNC_NEW_DATE_PARAM = "newDate";
 
 	public static final String SYNC_STATUS = "status";
 
@@ -131,4 +142,14 @@ public final class RESTConfig {
 
 	/** place holder for the login user - used e.g. for OAuth requests */
 	public static final String USER_ME = "@me";
+
+	public static String serializeDate(final Date date) {
+		final DateFormat fmt = new SimpleDateFormat(RESTConfig.DATE_FORMAT_STRING);
+		return fmt.format(date);
+	}
+
+	public static Date parseDate(final String dateString) throws ParseException {
+		final DateFormat fmt = new SimpleDateFormat(RESTConfig.DATE_FORMAT_STRING);
+		return fmt.parse(dateString);
+	}
 }

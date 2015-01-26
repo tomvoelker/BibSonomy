@@ -26,6 +26,13 @@
  */
 package org.bibsonomy.scraper.url.kde.ams;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.net.URL;
+
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -54,4 +61,31 @@ public class AmsScraperTest {
 		UnitTestRunner.runSingleTest("url_122");
 	}
 
+	@Test
+	public void testCitedby() throws Exception {
+		final ScrapingContext sc = new ScrapingContext(new URL("http://journals.ametsoc.org/doi/abs/10.1175/2008BAMS2375.1"));
+		AmsScraper as = new AmsScraper();
+		assertTrue(as.scrape(sc));
+		assertTrue(as.scrapeCitedby(sc));
+		
+		final String cby = sc.getCitedBy();
+		assertNotNull(cby);
+		assertTrue(cby.length() > 100);
+		assertEquals("<div class=\"citedByEntry\"><span class=\"author\">John D. Horel</span>, <span class=\"author\">Donna Ziegenfuss</span>".trim(), cby.substring(0, 113).trim());
+		assertTrue(cby.contains("Lodovica Illari"));
+	}
+	
+	@Test
+	public void testReferences() throws Exception {
+		final ScrapingContext sc = new ScrapingContext(new URL("http://journals.ametsoc.org/doi/full/10.1175/JAMC-D-13-0338.1"));
+		AmsScraper as = new AmsScraper();
+		assertTrue(as.scrape(sc));
+		assertTrue(as.scrapeReferences(sc));
+		
+		final String references = sc.getReferences();
+		assertNotNull(references);
+		assertTrue(references.length() > 100);
+		assertEquals("<tr><td class=\"refnumber\" id=\"bib1\"> </td><td valign=\"top\">Ahmed<span class=\"NLM_x\">".trim(), references.substring(0, 84).trim());
+		assertTrue(references.contains("Wang"));
+	}
 }
