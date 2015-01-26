@@ -31,6 +31,7 @@ import java.util.List;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.Context;
 
@@ -55,6 +56,7 @@ public class GetPopularPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		return this.getLogic().getPosts(resourceType, grouping, groupingValue, this.tags, null, search, null,  Order.POPULAR, null, null, this.getView().getStartValue(), this.getView().getEndValue());
+		// TODO: support other search types
+		return this.getLogic().getPosts(resourceType, grouping, groupingValue, this.tags, null, search, SearchType.LUCENESEARCH, null,  Order.POPULAR, null, null, this.getView().getStartValue(), this.getView().getEndValue());
 	}
 }

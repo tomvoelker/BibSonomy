@@ -26,8 +26,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Resource>{
 	
-	private final String INDEX_NAME = ESConstants.INDEX_NAME;
-	private String INDEX_TYPE;
+	private final String indexName = ESConstants.INDEX_NAME;
+	private String indexType;
 	private final String systemUrlFieldName = "systemUrl";
 	//	private final ESClient esClient = new ESNodeClient();
 	// ElasticSearch Transport client
@@ -66,14 +66,14 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 
 		//Indexing system information for the specific index type
 		SystemInformation systemInfo =  new SystemInformation();
-		systemInfo.setPostType(INDEX_TYPE);
+		systemInfo.setPostType(indexType);
 		systemInfo.setLast_log_date(lastLogDate);
 		systemInfo.setLast_tas_id(lastTasId);
 		systemInfo.setSystemUrl(systemtHome);
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonDocumentForSystemInfo = mapper.writeValueAsString(systemInfo);
 		esClient.getClient()
-		.prepareIndex(INDEX_NAME, ESConstants.SYSTEM_INFO_INDEX_TYPE, systemtHome+INDEX_TYPE)
+		.prepareIndex(indexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, systemtHome+indexType)
 		.setSource(jsonDocumentForSystemInfo).execute().actionGet();
 		
 		// read block wise all posts
@@ -98,7 +98,7 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 					jsonDocument.put(this.systemUrlFieldName, systemtHome);
 					long indexID = (systemtHome.hashCode() << 32) + Long.parseLong(post.getContentId().toString());
 					esClient.getClient()
-							.prepareIndex(INDEX_NAME, INDEX_TYPE, String.valueOf(indexID))
+							.prepareIndex(indexName, indexType, String.valueOf(indexID))
 							.setSource(jsonDocument).execute().actionGet();
 					log.info("post has been indexed.");
 					
@@ -132,7 +132,7 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 
 			this.isRunning = true;
 
-			log.warn("Generating index for "+ this.INDEX_TYPE+"...");
+			log.warn("Generating index for "+ this.indexType+"...");
 			// generate index
 			SharedResourceIndexGenerator.this.createIndexFromDatabase();
 
@@ -140,7 +140,7 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 		} catch (final Exception e) {
 			log.error("Failed to generate index!", e);
 		}finally{
-			log.warn("Finished generating index for "+ this.INDEX_TYPE);
+			log.warn("Finished generating index for "+ this.indexType);
 		}
 	}
 
@@ -148,21 +148,21 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 	 * @return the indexName
 	 */
 	public String getIndexName() {
-		return this.INDEX_NAME;
+		return this.indexName;
 	}
 	
 	/**
 	 * @return the INDEX_TYPE
 	 */
-	public String getINDEX_TYPE() {
-		return this.INDEX_TYPE;
+	public String getIndexType() {
+		return this.indexType;
 	}
 
 	/**
-	 * @param INDEX_TYPE the INDEX_TYPE to set
+	 * @param indexType the INDEX_TYPE to set
 	 */
-	public void setINDEX_TYPE(String INDEX_TYPE) {
-		this.INDEX_TYPE = INDEX_TYPE;
+	public void setIndexType(String indexType) {
+		this.indexType = indexType;
 	}
 
 	/**

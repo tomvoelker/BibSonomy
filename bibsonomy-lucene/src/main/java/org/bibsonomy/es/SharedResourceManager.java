@@ -40,7 +40,7 @@ public class SharedResourceManager<R extends Resource> extends LuceneResourceMan
 			generator.setSearchType(SearchType.ELASTICSEARCH);
 			for(LuceneResourceManager<? extends Resource> manager: luceneResourceManagers){
 				generator.setLogic((LuceneDBInterface<Resource>) manager.getDbLogic());
-				generator.setINDEX_TYPE(manager.getResourceName());
+				generator.setIndexType(manager.getResourceName());
 				generator.setResourceConverter((LuceneResourceConverter<Resource>) manager.getResourceConverter());
 				generator.run();
 			}

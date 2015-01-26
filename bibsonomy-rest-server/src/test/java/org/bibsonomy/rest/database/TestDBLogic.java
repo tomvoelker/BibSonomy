@@ -71,6 +71,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.GoldStandardRelation;
+import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.metadata.PostMetaData;
@@ -213,7 +214,7 @@ public class TestDBLogic implements LogicInterface {
 	 * @param startDate TODO
 	 * @param endDate TODO*/
 	@Override
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		final List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
 		// do grouping stuff
 		switch (grouping) {

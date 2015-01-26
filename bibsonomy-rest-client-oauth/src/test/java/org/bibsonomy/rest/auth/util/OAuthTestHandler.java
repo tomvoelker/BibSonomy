@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.auth.OAuthAPIAccessor;
 import org.bibsonomy.rest.client.RestLogicFactory;
@@ -91,7 +92,7 @@ public class OAuthTestHandler extends AbstractHandler {
 		}
 		
 		// print first ten bookmark titles
-		final List<Post<Bookmark>> posts = INTERFACE.getPosts(Bookmark.class, GroupingEntity.USER, ACCESSOR.getRemoteUserId(), null, null, null, null, null, null, null, 0, 9);
+		final List<Post<Bookmark>> posts = INTERFACE.getPosts(Bookmark.class, GroupingEntity.USER, ACCESSOR.getRemoteUserId(), null, null, null, SearchType.LUCENESEARCH, null, null, null, null, 0, 9);
 		for (final Post<Bookmark> post : posts) {
 			final Bookmark bookmark = post.getResource();
 			response.getWriter().println("<li><a href=\"" + bookmark.getUrl() + "\">" + bookmark.getTitle() + "</a></li>");

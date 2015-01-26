@@ -67,6 +67,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
@@ -246,7 +247,8 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+		// TODO: properly implement searchtype in query and rest-server
 		// TODO: clientside chain of responsibility
 		final GetPostsQuery query = new GetPostsQuery(start, end);
 		query.setGrouping(grouping, groupingName);
@@ -743,4 +745,5 @@ public class RestLogic implements LogicInterface {
 	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey) {
 		throw new UnsupportedOperationException(); // TODO: implement me
 	}
+
 }
