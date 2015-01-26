@@ -20,7 +20,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	public IndexUpdater createUpdater(String indexType) {
 		SharedResourceIndexUpdater<R> sharedIndexUpdater;
 		sharedIndexUpdater = new SharedResourceIndexUpdater<R>();
-		sharedIndexUpdater.setINDEX_TYPE(indexType);
+		sharedIndexUpdater.setIndexType(indexType);
 		return sharedIndexUpdater;
 	}
 

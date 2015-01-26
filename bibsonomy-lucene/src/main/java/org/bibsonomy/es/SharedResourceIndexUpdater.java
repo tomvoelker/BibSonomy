@@ -24,6 +24,7 @@ import org.elasticsearch.index.query.IdsQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,9 +40,9 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	private static final Log log = LogFactory
 			.getLog(SharedResourceIndexUpdater.class);
 
-	private final String INDEX_NAME = ESConstants.INDEX_NAME;
+	private final String indexName = ESConstants.INDEX_NAME;
 
-	private String INDEX_TYPE;
+	private String indexType;
 
 	private SystemInformation systemInfo =  new SystemInformation();
 	/**The Url of the project home */
@@ -84,35 +85,45 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	@SuppressWarnings("boxing")
 	public long getLastLogDate() {
 		synchronized (this) {
-
 			if (this.lastLogDate != null) {
 				return this.lastLogDate;
 			}
-			try {
-				IdsQueryBuilder query = QueryBuilders.idsQuery().ids(systemtHome+INDEX_TYPE);
-				SearchRequestBuilder searchRequestBuilder = esClient
-						.getClient().prepareSearch(INDEX_NAME);
-				searchRequestBuilder.setTypes(ESConstants.SYSTEM_INFO_INDEX_TYPE);
-				searchRequestBuilder.setSearchType(SearchType.DEFAULT);
-				searchRequestBuilder.setQuery(query);
-				searchRequestBuilder.setFrom(0).setSize(1).setExplain(true);
-
-				SearchResponse response = searchRequestBuilder.execute()
-						.actionGet();
-
-				if (response != null) {
-					SearchHit hit = response.getHits().getAt(0);
-					Map<String, Object> result = hit.getSource();
-					String lastLogDateString = result.get(
-							LuceneFieldNames.LAST_LOG_DATE).toString();
-					return Long.parseLong(lastLogDateString);
-
-				}
-			} catch (IndexMissingException e) {
-				log.error("IndexMissingException: " + e);
+			
+			final String lastLogDateString = fetchSystemInfoField(LuceneFieldNames.LAST_LOG_DATE);
+			if (lastLogDateString == null) {
+				return Long.MIN_VALUE;
 			}
-			return Long.MAX_VALUE;
+			return Long.parseLong(lastLogDateString);
 		}
+	}
+
+	private String fetchSystemInfoField(String fieldToRetrieve) {
+		try {
+			IdsQueryBuilder query = QueryBuilders.idsQuery().ids(systemtHome+indexType);
+			SearchRequestBuilder searchRequestBuilder = esClient
+					.getClient().prepareSearch(indexName);
+			searchRequestBuilder.setTypes(ESConstants.SYSTEM_INFO_INDEX_TYPE);
+			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
+			searchRequestBuilder.setQuery(query);
+			searchRequestBuilder.setFrom(0).setSize(1).setExplain(true);
+
+			SearchResponse response = searchRequestBuilder.execute()
+					.actionGet();
+
+			if (response != null) {
+				SearchHits hits = response.getHits();
+				if (hits.getTotalHits() < 1) {
+					return null;
+				}
+				SearchHit hit = hits.getAt(0);
+				Map<String, Object> result = hit.getSource();
+				return result.get(
+						fieldToRetrieve).toString();
+			}
+		} catch (IndexMissingException e) {
+			log.error("IndexMissingException: " + e.getDetailedMessage() + " -> returning null", e);
+		}
+		return null;
 	}
 
 	/**
@@ -130,36 +141,15 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	@SuppressWarnings("boxing")
 	public Integer getLastTasId() {
 		synchronized (this) {
-
 			if (this.lastTasId != null) {
 				return this.lastTasId;
 			}
-			try {
-				IdsQueryBuilder query = QueryBuilders.idsQuery().ids(systemtHome+INDEX_TYPE);
-				SearchRequestBuilder searchRequestBuilder = esClient
-						.getClient().prepareSearch(INDEX_NAME);
-				searchRequestBuilder.setTypes(ESConstants.SYSTEM_INFO_INDEX_TYPE);
-				searchRequestBuilder.setSearchType(SearchType.DEFAULT);
-				searchRequestBuilder.setQuery(query);
-				searchRequestBuilder.setFrom(0).setSize(1).setExplain(true);
-//				searchRequestBuilder.addSort(LuceneFieldNames.LAST_TAS_ID,
-//						SortOrder.DESC);
-
-				SearchResponse response = searchRequestBuilder.execute()
-						.actionGet();
-
-				if (response != null) {
-					SearchHit hit = response.getHits().getAt(0);
-					Map<String, Object> result = hit.getSource();
-					String lastTasIdString = result.get(
-							LuceneFieldNames.LAST_TAS_ID).toString();
-					return Integer.parseInt(lastTasIdString);
-
-				}
-			} catch (IndexMissingException e) {
-				log.error("IndexMissingException: " + e);
+			String lastTasIdString = fetchSystemInfoField(LuceneFieldNames.LAST_TAS_ID);
+			if (lastTasIdString == null) {
+				log.error("no lastTasId  -> starting from the very beginning");
+				return Integer.MIN_VALUE;
 			}
-			return Integer.MAX_VALUE;
+			return Integer.parseInt(lastTasIdString);
 		}
 	}
 
@@ -192,8 +182,8 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	/**
 	 * @return the iNDEX_NAME
 	 */
-	public String getINDEX_NAME() {
-		return this.INDEX_NAME;
+	public String getIndexName() {
+		return this.indexName;
 	}
 
 	/**
@@ -273,7 +263,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		try {
 			jsonDocumentForSystemInfo = mapper.writeValueAsString(systemInfo);
 			esClient.getClient()
-			.prepareIndex(INDEX_NAME, ESConstants.SYSTEM_INFO_INDEX_TYPE, systemtHome+INDEX_TYPE)
+			.prepareIndex(indexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, systemtHome+indexType)
 			.setSource(jsonDocumentForSystemInfo).execute().actionGet();
 		} catch (JsonProcessingException e) {
 			log.error("Failed to convert SystemInformation into a JSON", e);
@@ -292,8 +282,8 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 			SharedResourceIndexUpdater.esClient
 					.getClient()
 					.prepareIndex(
-							INDEX_NAME,
-							INDEX_TYPE,
+							indexName,
+							indexType,
 							String.valueOf(indexId)).setSource(jsonDocument)
 					.setRefresh(true).execute().actionGet();
 		}
@@ -308,8 +298,8 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	public void deleteIndexForForUser(String userName) {
 
 		@SuppressWarnings("unused")
-		DeleteByQueryResponse response = SharedResourceIndexUpdater.esClient.getClient().prepareDeleteByQuery(INDEX_NAME)
-				.setTypes(INDEX_TYPE).setQuery(QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, userName))
+		DeleteByQueryResponse response = SharedResourceIndexUpdater.esClient.getClient().prepareDeleteByQuery(indexName)
+				.setTypes(indexType).setQuery(QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, userName))
 				.execute()
 				.actionGet();
 	}
@@ -323,22 +313,22 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		@SuppressWarnings("unused")
 		DeleteResponse response = esClient
 				.getClient()
-				.prepareDelete(INDEX_NAME, INDEX_TYPE, String.valueOf(indexId))
+				.prepareDelete(indexName, indexType, String.valueOf(indexId))
 				.setRefresh(true).execute().actionGet();
 	}
 
 	/**
 	 * @return the iNDEX_TYPE
 	 */
-	public String getINDEX_TYPE() {
-		return this.INDEX_TYPE;
+	public String getIndexType() {
+		return this.indexType;
 	}
 
 	/**
 	 * @param iNDEX_TYPE the iNDEX_TYPE to set
 	 */
-	public void setINDEX_TYPE(String iNDEX_TYPE) {
-		INDEX_TYPE = iNDEX_TYPE;
+	public void setIndexType(String iNDEX_TYPE) {
+		indexType = iNDEX_TYPE;
 	}
 	
 	/**
@@ -417,7 +407,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	public void setSystemInformation(Integer lastTasId, Date lastLogDate){
 		this.systemInfo.setLast_log_date(lastLogDate);
 		this.systemInfo.setLast_tas_id(lastTasId);
-		this.systemInfo.setPostType(INDEX_TYPE);
+		this.systemInfo.setPostType(indexType);
 		this.systemInfo.setSystemUrl(systemtHome);
 	}
 
