@@ -796,7 +796,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		switch (operation) {
 		case ADD_MEMBER:
 
-			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"), PropertyEqualityArgumentMatcher.eq(operation, ""), membership)).andReturn("OK");
+			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"),
+					PropertyEqualityArgumentMatcher.eq(operation),
+					PropertyEqualityArgumentMatcher.eq(membership))).andReturn("OK");
 			EasyMock.replay(serverLogic);
 			assertEquals("OK", clientLogic.updateGroup(group, operation, membership));
 			EasyMock.verify(serverLogic);
@@ -810,7 +812,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			 */
 			group.setPrivlevel(null); 
 			
-			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"), PropertyEqualityArgumentMatcher.eq(operation, ""), null)).andReturn(group.getName() + "-new");
+			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"),
+					PropertyEqualityArgumentMatcher.eq(operation, ""),
+					PropertyEqualityArgumentMatcher.eq(membership))).andReturn(group.getName() + "-new");
 			EasyMock.replay(serverLogic);
 			assertEquals(group.getName() + "-new", clientLogic.updateGroup(group, operation, null));
 			EasyMock.verify(serverLogic);

@@ -30,6 +30,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.InetAddress;
 import java.net.URI;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -318,12 +319,11 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	@Deprecated
 	// TODO: Establish new group concept in here.
 	public String updateGroup(final Group group, final GroupUpdateOperation operation, GroupMembership ms) {
 		switch (operation) {
 			case ADD_MEMBER:
-				return execute(new AddUsersToGroupQuery(group.getName(), group.getUsers()));
+				return execute(new AddUsersToGroupQuery(group.getName(), Collections.singletonList(ms)));
 			default:
 				return execute(new ChangeGroupQuery(group.getName(), group));
 		}
