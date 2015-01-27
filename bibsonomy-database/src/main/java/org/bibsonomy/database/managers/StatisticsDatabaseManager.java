@@ -38,7 +38,6 @@ import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.Chain;
-import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.model.BibTex;
@@ -87,10 +86,10 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 */
 	public Statistics getPostStatistics(final StatisticsParam param, final DBSession session) {
-	    final Statistics statisticData = postChain.perform(param, session);  
+		final Statistics statisticData = postChain.perform(param, session);  
 		// to not get NPEs later
 		if (present(statisticData)) {
-			return statisticData ;    
+			return statisticData;
 		}
 		return new Statistics();
 	}
@@ -101,9 +100,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @return The number of tags matching the given params
 	 */
 	public int getTagStatistics(final StatisticsParam param, final DBSession session) {
-		final Integer count = tagChain.perform(param, session).getCount();
-		// to not get NPEs later
-		return count == null ? 0 : count;
+		return tagChain.perform(param, session).getCount();
 	}
 
 	/**
@@ -113,7 +110,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public int getNumberOfRelationsForUser(final StatisticsParam param, final DBSession session) {
 		final Integer count = this.queryForObject("getNumberOfRelationsForUser", param.getRequestedUserName(), Integer.class, session);
-		return count == null ? 0 : count;
+		return saveConvertToint(count);
 	}
 
 	/**
@@ -236,7 +233,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	public int getTagGlobalCount(final String tagName) {
 		// FIXME: implement me...
 		return 0;
-	}	
+	}
 
 	/**
 	 * 
