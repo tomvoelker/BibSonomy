@@ -31,6 +31,7 @@ import java.util.Set;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 
 /**
  * @author Christian Schenk
@@ -222,5 +223,29 @@ public class GroupUtils {
 		group.setGroupId(groupId.getId());
 		group.setPrivlevel(privlevel);
 		return group;
+	}
+	
+	/**
+	 * Helper method to return the GroupMembership of the provided user
+	 * @param group
+	 * @param userName
+	 * @param includePending
+	 * @return the group membership, <code>null</code> iff user is not member of this group
+	 */
+	public static GroupMembership getGroupMembershipForUser(final Group group, final String userName, final boolean includePending) {
+		for (GroupMembership g : group.getMemberships()) {
+			if (g.getUser().getName().equals(userName)) {
+				return g;
+			}
+		}
+		if (includePending) {
+			// look in pending memberships
+			for (GroupMembership g : group.getPendingMemberships()) {
+				if (g.getUser().getName().equals(userName)) {
+					return g;
+				}
+			}
+		}
+		return null;
 	}
 }

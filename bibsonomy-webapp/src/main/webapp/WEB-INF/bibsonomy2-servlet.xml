@@ -180,6 +180,7 @@
 		<property name="projectJoinGroupRequestFromAddress" value="${project.joinGroupRequestFromAddress}" />
 		<property name="mailHost" value="${mail.smtp.host}" />
 		<property name="messageSource" ref="messageSource"/>
+		<property name="absoluteURLGenerator" ref="absoluteUrlGenerator" />
 	</bean>
 
 	<!--  #################### interceptors #################### -->
@@ -664,6 +665,12 @@
 						<property name="controllerBeanName" value="bibsonomyPreview"/>
 					</bean>
 				</entry>
+				
+				<entry key="/grouprequest">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="groupRequestController"/>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -959,6 +966,12 @@
 	<bean id="bibsonomyPreview" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="BIBSONOMY3"/>
 	</bean>
+	
+	<!-- Group request page -->
+	<bean id="groupRequestController" class="org.bibsonomy.webapp.controller.GroupRequestController" scope="request">
+		<property name="view" value="GROUPREQUEST"/>
+	</bean>
+	
 	
 	<bean id="contextPathFilter" class="org.bibsonomy.webapp.filters.ContextPathFilter">
 		<property name="projectHomeUrl" value="${project.home}"/>

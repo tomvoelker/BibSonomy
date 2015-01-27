@@ -53,7 +53,7 @@ public class ThreadedPingbackImpl extends SimplePingback implements Runnable, Th
 		return null;
 	}
 
-
+	// XXX: this is only used by tests
 	@Override
 	public void run() {
 		while (true) {

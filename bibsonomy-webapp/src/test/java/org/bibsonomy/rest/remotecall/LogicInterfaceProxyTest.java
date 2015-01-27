@@ -757,23 +757,6 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	/**
-	 * runs the test defined by {@link #deleteUserFromGroup(String, String)} with certain arguments
-	 */
-	@Test
-	public void deleteUserFromGroupTest() {
-		deleteUserFromGroup("grooouuup!", "userTest");
-	}
-	
-	@Override
-	public void deleteUserFromGroup(final String groupName, final String userName) {
-		serverLogic.deleteUserFromGroup(groupName, userName);
-		EasyMock.replay(serverLogic);
-		clientLogic.deleteUserFromGroup(groupName, userName);
-		EasyMock.verify(serverLogic);
-		assertLogin();
-	}
-
-	/**
 	 * runs the test defined by {@link #updateGroup(Group, GroupUpdateOperation)} with certain group argument
 	 */	
 	@Test
@@ -791,28 +774,52 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		this.updateGroup(group, GroupUpdateOperation.ADD_MEMBER, membership);
 	}
 	
+	/**
+	 * runs the test defined by {@link #deleteUserFromGroup(String, String)} with certain arguments
+	 */
+	@Test
+	public void deleteUserFromGroupTest() {
+		final Group group = new Group("grooouuup!");
+		final GroupMembership membership = new GroupMembership();
+		membership.setUser(new User("userTest"));
+		
+		this.updateGroup(group, GroupUpdateOperation.REMOVE_MEMBER, membership);
+	}
+	
 	@Override
 	public String updateGroup(final Group group, final GroupUpdateOperation operation, GroupMembership membership) {
+		String groupName = group.getName();
 		switch (operation) {
 		case ADD_MEMBER:
-
-			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"), PropertyEqualityArgumentMatcher.eq(operation, ""), membership)).andReturn("OK");
+			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"),
+					PropertyEqualityArgumentMatcher.eq(operation),
+					PropertyEqualityArgumentMatcher.eq(membership))).andReturn("OK");
 			EasyMock.replay(serverLogic);
 			assertEquals("OK", clientLogic.updateGroup(group, operation, membership));
 			EasyMock.verify(serverLogic);
 			assertLogin();
 			break;
-
+		case REMOVE_MEMBER:
+			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"),
+					PropertyEqualityArgumentMatcher.eq(operation),
+					PropertyEqualityArgumentMatcher.eq(membership))).andReturn(groupName);
+			EasyMock.replay(serverLogic);
+			assertEquals("OK", clientLogic.updateGroup(group, operation, membership));
+			EasyMock.verify(serverLogic);
+			assertLogin();
+			break;
 		default:
 			/*
 			 * FIXME: remove this line. It is here only, because privlevel is not included 
 			 * in the XML and hence not transported to the serverLogic.
 			 */
-			group.setPrivlevel(null); 
+			group.setPrivlevel(null);
 			
-			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"), PropertyEqualityArgumentMatcher.eq(operation, ""), null)).andReturn(group.getName() + "-new");
+			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"),
+					PropertyEqualityArgumentMatcher.eq(operation, ""),
+					PropertyEqualityArgumentMatcher.eq(membership))).andReturn(groupName + "-new");
 			EasyMock.replay(serverLogic);
-			assertEquals(group.getName() + "-new", clientLogic.updateGroup(group, operation, null));
+			assertEquals(groupName + "-new", clientLogic.updateGroup(group, operation, null));
 			EasyMock.verify(serverLogic);
 			assertLogin();
 			break;
@@ -1292,7 +1299,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	@Override
-	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info) {
+	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info, Date newDate) {
 		// TODO Auto-generated method stub
 	}
 

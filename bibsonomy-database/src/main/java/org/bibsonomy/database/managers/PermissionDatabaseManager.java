@@ -186,7 +186,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 				// both users are in a group which allows to share documents
 				if (postGroups.contains(publicGroup) || postGroups.contains(group)) {
 					// check if postUserName allows to share documents
-					final GroupMembership memberShip = group.getGroupMembershipForUser(postUserName);
+					final GroupMembership memberShip = GroupUtils.getGroupMembershipForUser(group, postUserName, false);
 					if (memberShip.isUserSharedDocuments()) {
 						return true;
 					}
@@ -238,7 +238,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 				 */
 				for (final Group group : commonGroups) {
 					if (group.isSharedDocuments()) {
-						final GroupMembership memberShip = group.getGroupMembershipForUser(groupingName);
+						final GroupMembership memberShip = GroupUtils.getGroupMembershipForUser(group, groupingName, false);
 						if (memberShip.isUserSharedDocuments()) {
 							return true;
 						}
@@ -326,7 +326,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 			throw new ValidationException("Special groups not allowed for this system tag.");
 		}
 		final Integer groupID = this.groupDb.getGroupIdByGroupNameAndUserName(groupName, userName, session);
-		if (groupID == GroupID.INVALID.getId()) {
+		if (groupID.intValue() == GroupID.INVALID.getId()) {
 			throw new AccessDeniedException();
 		}
 	}
@@ -347,7 +347,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public boolean isMemberOfGroup(final String userName, final String groupName, final DBSession session) {
 		final Integer groupID = this.groupDb.getGroupIdByGroupNameAndUserName(groupName, userName, session);
-		if (groupID == GroupID.INVALID.getId()) {
+		if (groupID.intValue() == GroupID.INVALID.getId()) {
 			return false;
 		}
 		return true;
@@ -499,7 +499,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	public boolean userHasGroupRole(final User loginUser, final String groupName, GroupRole role) {
 		for (final Group g : loginUser.getGroups()) {
 			if (g.getName().equals(groupName)) {
-				final GroupMembership membership = g.getGroupMembershipForUser(loginUser.getName());
+				final GroupMembership membership = GroupUtils.getGroupMembershipForUser(g, loginUser.getName(), false);
 				if (role.equals(membership.getGroupRole())) {
 					return true;
 				}

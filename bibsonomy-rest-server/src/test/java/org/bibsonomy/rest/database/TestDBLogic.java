@@ -730,10 +730,6 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public void deleteUserFromGroup(final String groupName, final String userName) {
-	}
-
-	@Override
 	public String createGroup(final Group group) {
 		return null;
 	}
@@ -1079,7 +1075,7 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info) {
+	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info, Date newDate) {
 		// TODO Auto-generated method stub	
 	}
 

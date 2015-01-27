@@ -1019,13 +1019,25 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		final TagParam param = new TagParam();
 		param.setBibtexKey(bibtexKey);
 		param.setGroups(visibleGroupIDs);
-		param.setUserName(loginUserName);		
+		param.setUserName(loginUserName);
 		param.setRequestedUserName(requestedUserName);
 		param.setLimit(limit);
 		param.setOffset(offset);
 		return this.queryForList("getTagsByBibtexkey", param, Tag.class, session);
 	}
-
+	
+	public void updateTasInGroupFromLeavingUser(User leavingUser, Group group, DBSession session) {
+		final TagParam param = new TagParam();
+		param.setUserName(leavingUser.getName());
+		param.setGroupId(group.getGroupId());
+		
+		// update tags
+		this.update("updateTasInGroupFromLeavingUser", param, session);
+		
+		// delete group tas
+		this.delete("deleteGroupTasForUserAndGroup", param, session);
+	}
+	
 	/**
 	 * @param chain the chain to set
 	 */

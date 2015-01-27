@@ -38,6 +38,9 @@ import org.springframework.validation.ValidationUtils;
 public class UpdateGroupController implements ValidationAwareController<GroupSettingsPageCommand>, ErrorAware, RequestAware {
 	private static final Log log = LogFactory.getLog(UpdateGroupController.class);
 	
+	private static final String SETTINGS_GROUP_TAB_REDIRECT = "/settings?selTab=3";
+	
+	
 	private Errors errors = null;
 	
 	private LogicInterface logic;
@@ -77,6 +80,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 		// TODO: Clean this up.
 		final GroupUpdateOperation operation = command.getOperation();
 		if (present(operation)) {
+			final User loginUser = context.getLoginUser();
 			switch (operation) {
 				case REQUEST: {
 					// get the request
@@ -106,12 +110,11 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 						
 						if (!this.errors.hasErrors()) {
 							// set the username and create the request
-							requestedGroup.getGroupRequest().setUserName(command.getContext().getLoginUser().getName());
+							requestedGroup.getGroupRequest().setUserName(loginUser.getName());
 							this.logic.createGroup(requestedGroup);
 						}
 						
-						// TODO: Return to the correct tab. How do I do that?
-						return new ExtendedRedirectView("/settings");
+						return new ExtendedRedirectView(SETTINGS_GROUP_TAB_REDIRECT);
 					}
 					// do set new settings here
 					break;
@@ -127,7 +130,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 						try {
 							// since now only one user can be invited to a group at once
 							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_INVITED, ms);
-//							mailUtils.sendGroupInvite(groupToUpdate.getName(), command.getLoggedinUser(), invitedUser, requestLogic.getLocale());
+							mailUtils.sendGroupInvite(groupToUpdate.getName(), command.getLoggedinUser(), invitedUser, requestLogic.getLocale());
 						} catch (final Exception ex) {
 							log.error("error while inviting user '" + username + "' to group '" + groupToUpdate + "'", ex);
 							// if a user can't be added to a group, this exception is thrown
@@ -159,19 +162,16 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 				case REMOVE_MEMBER: {
 					/*
 					 * remove the user from the group
-					 *
-					 * FIXME: not fully migrated yet, see {@link SettingsHandler} and GroupsDatabaseManager
 					 */
 					final String username = command.getUsername();
 					if (present(username) && !username.equals(groupToUpdate)) {
 						final GroupMembership ms = new GroupMembership(new User(username), null, false);
 						try {
 							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.REMOVE_MEMBER, ms);
-							log.error("trolol");
 							
 							// if we removed ourselves from the group, return the homepage.
-							if (command.getContext().getLoginUser().getName().equals(username)) {
-								return new ExtendedRedirectView("/settings");
+							if (loginUser.getName().equals(username)) {
+								return new ExtendedRedirectView(SETTINGS_GROUP_TAB_REDIRECT);
 							}
 						} catch (final Exception ex) {
 							log.error("error while removing user '" + username + "' from group '" + groupToUpdate + "'", ex);
@@ -204,7 +204,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 //					log.error(realname + " " + description);
 					
 					User groupUserToUpdate = this.logic.getUserDetails(groupToUpdate.getName());
-					groupUserToUpdate.setEmail("nomail");
+					groupUserToUpdate.setEmail("nomail"); // TODO: remove
 					// the group to update
 					try {
 						groupToUpdate.setPrivlevel(priv);
@@ -248,7 +248,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 						final GroupMembership ms = new GroupMembership(new User(username), null, false);
 						try {
 							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.REMOVE_INVITED, ms);
-							return new ExtendedRedirectView("/settings");
+							return new ExtendedRedirectView(SETTINGS_GROUP_TAB_REDIRECT);
 						} catch (final Exception ex) {
 							log.error("error while removing the invite of user '" + username + "' from group '" + groupToUpdate + "'", ex);
 							this.errors.rejectValue("username", "settings.group.error.removeInviteFailed", new Object[]{username},

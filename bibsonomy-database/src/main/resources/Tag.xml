@@ -450,4 +450,14 @@
 	<delete id="deleteGroupTas" parameterClass="int">
 		DELETE FROM grouptas WHERE content_id = #requestedContentId#
 	</delete>
+	
+	<delete id="deleteGroupTasForUserAndGroup" parameterClass="tagParam">
+		DELETE FROM grouptas gt WHERE gt.user_name = #userName# AND gt.group = #groupId#
+	</delete>
+	
+	<!-- maybe rename? -->
+	<update id="updateTasInGroupFromLeavingUser" parameterClass="tagParam">
+		UPDATE tas t SET t.group = 1 WHERE t.user_name = #userName# AND t.group = #groupId#
+	</update>
+	
 </sqlMap>

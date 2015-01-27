@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Database - Database for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -689,7 +715,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			// add user to group
 			final GroupParam param = new GroupParam();
 			param.setGroupId(group.getGroupId());
-			// TODO: must be changed if we allow users to specify shared documents in the join request
+			/* 
+			 * TODO: shares documents setting must be changed if we allow users
+			 * to specify shared documents in the join request
+			 */
 			param.setMembership(new GroupMembership(user, role, false));
 			
 			this.insert("addUserToGroup", param, session);
@@ -736,11 +765,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		 * We need to set them to private else the user can't see the posts anymore
 		 * be careful: this method is also called by the delete user method.
 		 */
-		/*
-		 * Shouldn't we just mark the deleted user as spammer? Then no post should
-		 * be visible anymore.
-		 */
-		
+
 		this.plugins.onRemoveUserFromGroup(param.getUserName(), param.getGroupId(), session);
 		this.delete("removeUserFromGroup", param, session);
 	}

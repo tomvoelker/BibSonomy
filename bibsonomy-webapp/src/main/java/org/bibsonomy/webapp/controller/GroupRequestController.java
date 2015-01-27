@@ -24,21 +24,47 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.unikassel.puma.common;
+package org.bibsonomy.webapp.controller;
+
+import org.bibsonomy.webapp.command.GroupRequestCommand;
+import org.bibsonomy.webapp.command.SettingsViewCommand;
+import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
+import org.bibsonomy.webapp.view.Views;
+
 
 /**
- * @author dzo
+ * @author Mario Holtmueller
  */
-public enum ReportingMode {
+public class GroupRequestController implements MinimalisticController<GroupRequestCommand> {
+
 	/**
-	 * all users are allowed to report publications
-	 * to the repository
+	 * @param command
+	 * @return the view
 	 */
-	ALL,
-	
+	@Override
+	public View workOn(final GroupRequestCommand command) {
+		if (!command.getContext().isUserLoggedIn()) {
+			throw new AccessDeniedNoticeException("please log in", "error.general.login");
+		}
+
+		return Views.GROUPREQUEST;
+	}
+
+	@Deprecated
+	private void workOnGroupTab(final SettingsViewCommand command) {}
+
+
 	/**
-	 * only group users are allowed to report publications
-	 * to the repository
+	 * @return the current command
 	 */
-	GROUP;
+	@Override
+	public GroupRequestCommand instantiateCommand() {
+		return new GroupRequestCommand();
+	}
+
+
+
+
 }

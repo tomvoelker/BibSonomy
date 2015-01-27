@@ -6,6 +6,7 @@
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
 	xmlns:bibgs="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
 	
@@ -29,7 +30,9 @@
 	<jsp:directive.attribute name="addAsFirstItem" fragment="true" required="false" />
 	<jsp:directive.attribute name="addAsLastItem" fragment="true" required="false" />
 	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
-
+	
+	<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
+	
 	<c:if test="${empty listIndex}">
 		<c:set var="listIndex" value="0"/>
 	</c:if>
@@ -38,7 +41,7 @@
 		titleKey="publications" 
 		loginUserName="${loginUserName}"
 		listViewStartParamName="bibtex.start"
-		otherPostsUrlPrefix="/bibtex/${hash.inter.id}"
+		otherPostsUrlPrefix="/bibtex/${interHashId}"
 		listID="publications_${listIndex}"
 		className="publicationsContainer"
 		listView="${listView}"

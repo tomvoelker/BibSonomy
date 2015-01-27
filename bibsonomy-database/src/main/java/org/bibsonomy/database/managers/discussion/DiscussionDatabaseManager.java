@@ -39,6 +39,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.params.discussion.DiscussionItemParam;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.UserUtils;
 
@@ -154,6 +155,14 @@ public class DiscussionDatabaseManager extends AbstractDatabaseManager {
 		 */
 		Collections.reverse(rootItems);
 		return rootItems;
+	}
+	
+	public void updateDiscussionsInGroupFromLeavingUser(User leavingUser, Group group, DBSession session) {
+		final DiscussionItemParam<DiscussionItem> param = new DiscussionItemParam<DiscussionItem>();
+		param.setUserName(leavingUser.getName());
+		param.setGroupId(group.getGroupId());
+		// FIXME: (groups) Logging of group change missing
+		this.update("updateDiscussionsInGroupFromLeavingUser", param, session);
 	}
 
 	/**

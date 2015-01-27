@@ -375,7 +375,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setTagIndex(tagIndex);
 
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "ByTagNamesCount", param, Integer.class, session);
-		return present(result) ? result : 0;
+		return saveConvertToint(result);
 	}
 
 	/**
@@ -402,7 +402,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setTagIndex(tagIndex);
 
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "ByTagNamesForUserCount", param, Integer.class, session);
-		return present(result) ? result : 0;
+		return saveConvertToint(result);
 	}
 
 	/**
@@ -488,7 +488,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "PopularDays", param, Integer.class, session);
 
-		return present(result) ? result : 0;
+		return saveConvertToint(result);
 	}
 
 	/**
@@ -547,11 +547,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setUserName(loginUserName);
 		if (present(loginUserName)) {
 			param.setGroups(groups);
-			final List<Post<R>> list = this.postList("get" + this.resourceClassName + "ByHashVisibleForLoginUser", param, session);
-			return list;
-		} else {
-			return this.postList("get" + this.resourceClassName + "ByHash", param, session);
+			return this.postList("get" + this.resourceClassName + "ByHashVisibleForLoginUser", param, session);
 		}
+		return this.postList("get" + this.resourceClassName + "ByHash", param, session);
 	}
 
 	/**
@@ -568,7 +566,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setSimHash(simHash);
 
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "ByHashCount", param, Integer.class, session);
-		return present(result) ? result : 0;
+		return saveConvertToint(result);
 	}
 
 	/**
@@ -748,7 +746,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "ForGroupCount", param, Integer.class, session);
-		return present(result) ? result : 0;
+		return saveConvertToint(result);
 	}
 
 	/**
@@ -890,7 +888,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set groups
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "ForUserCount", param, Integer.class, session);
-		return present(result) ? result : 0;
+		return saveConvertToint(result);
 	}
 
 	/**
@@ -911,7 +909,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set groups
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "WithDiscussionsCount", param, Integer.class, session);
-		return present(result) ? result : 0;
+		return saveConvertToint(result);
 	}
 
 	/**
@@ -933,7 +931,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setGroupId(groupId);
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set groups
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "WithDiscussionsCountForGroup", param, Integer.class, session);
-		return present(result) ? result : 0;
+		return saveConvertToint(result);
 	}
 
 	/** 
@@ -1041,7 +1039,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setGroups(visibleGroupIDs);
 
 		final Integer result = this.queryForObject("getGroup" + this.resourceClassName + "CountByTag", param, Integer.class, session);
-		return present(result) ? result : 0;
+		return saveConvertToint(result);
 	}
 
 	/**
@@ -1058,7 +1056,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setGroups(visibleGroupIDs);
 
 		final Integer result = this.queryForObject("getGroup" + this.resourceClassName + "Count", param, Integer.class, session);
-		return present(result) ? result : 0;
+		return saveConvertToint(result);
 	}
 
 	/**
@@ -1740,33 +1738,54 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	/**
 	 * returns a list of all metadata for the given post and MetaDataPluginKey.
 	 *
-	 * TODO: friends are not supported yet.
-	 * 
-	 * @param HashID
+	 * FIXME: friends are not supported yet.
+	 * @param hashType 
 	 * @param resourceHash
+	 * @param loginUser 
 	 * @param loginUserName
 	 * @param reqUserName
 	 * @param metaDataPluginKey
 	 * @param session
+	 * @return 
 	 */
 	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final User loginUser, final String reqUserName, final String metaDataPluginKey, final DBSession session) {
 		final PostParam param = new PostParam();
 		/*
 		 * get the groupids
 		 */
-		List<Integer> groups = UserUtils.getListOfGroupIDs(loginUser);
+		final List<Integer> groups = UserUtils.getListOfGroupIDs(loginUser);
 		// add the public group
 		groups.add(GroupUtils.getPublicGroup().getGroupId());
 		param.setGroups(groups);
-		if(hashType.equals(HashID.INTER_HASH)) {
+		
+		if (hashType.equals(HashID.INTER_HASH)) {
 			param.setInterHash(resourceHash);
 		} else {
 			param.setIntraHash(resourceHash);
 		}
 		param.setUserName(reqUserName);
-		if(present(metaDataPluginKey)) {
+		if (present(metaDataPluginKey)) {
 			param.setKey(MetaDataPluginKey.valueOf(metaDataPluginKey));
 		}
 		return this.queryForList("getPostMetaData", param, PostMetaData.class, session);
+	}
+	
+	/**
+	 * sets the post of the leavingUser that are only visible to the group to
+	 * the private group
+	 * 
+	 * TODO: as soon as we support multiple groups per post this logic must be adapted
+	 * 
+	 * @param leavingUser
+	 * @param group
+	 * @param session
+	 */
+	public void updatePostsGroupFromLeavingUser(User leavingUser, Group group, DBSession session) {
+		final ResourceParam<R> param = new ResourceParam<R>();
+		param.setGroupId(group.getGroupId());
+		param.setUserName(leavingUser.getName());
+		
+		// FIXME: (groups) add logging
+		this.update("update" + this.resourceClassName + "InGroupFromLeavingUser", param, session);
 	}
 }

@@ -130,7 +130,7 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 		insert.setGroupId(groupId);
 
 		// inform plugins
-		this.plugins.onBookmarkInsert(post, session);		
+		this.plugins.onBookmarkInsert(post, session);
 		
 		return insert;
 	}

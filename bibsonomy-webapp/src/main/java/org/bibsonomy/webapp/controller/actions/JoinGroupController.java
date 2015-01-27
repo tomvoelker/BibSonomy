@@ -28,8 +28,6 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.Collections;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -138,15 +136,15 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		 */
 		final boolean joinRequest = command.isJoinRequest();
 		
-		// check if user is already in this group or has an open request
-		if (group.getGroupMembershipForUser(loginUser) != null) {
-			if (group.getGroupMembershipForUser(loginUser).getGroupRole().equals(GroupRole.REQUESTED)) {
-				errors.reject("joinGroup.already.request.error");
-			} else {
-				// user wants to join a group that he's already a member of => error since he cannot use the join_group page
-				errors.reject("joinGroup.already.member.error");
-			}
-			return Views.ERROR;		
+		// check if user is already has an open request ...
+		if (loginUser.getPendingGroups().contains(group)) {
+			errors.reject("joinGroup.already.request.error");
+			return Views.ERROR;
+		}
+		// ... or is in this group
+		if (loginUser.getGroups().contains(group)) {
+			errors.reject("joinGroup.already.member.error");
+			return Views.ERROR;
 		}
 		
 		if (!present(reason)) {

@@ -970,5 +970,9 @@
 		WHERE b2.group = g.group
 		ORDER BY b2.date DESC, b2.content_id DESC
 	</select>
+	
+	<update id="updateBibTexInGroupFromLeavingUser" parameterClass="resourceParam">
+		UPDATE bibtex b SET b.group = 1 WHERE b.user_name = #userName# AND b.group = #groupId#
+	</update>
 
 </sqlMap>

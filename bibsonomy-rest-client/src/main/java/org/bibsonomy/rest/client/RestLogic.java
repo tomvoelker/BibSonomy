@@ -30,6 +30,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.InetAddress;
 import java.net.URI;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -289,11 +290,6 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public void deleteUserFromGroup(final String groupName, final String userName) {
-		execute(new RemoveUserFromGroupQuery(userName, groupName));
-	}
-
-	@Override
 	public String createGroup(final Group group) {
 		return execute(new CreateGroupQuery(group));
 	}
@@ -318,14 +314,16 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	@Deprecated
 	// TODO: Establish new group concept in here.
 	public String updateGroup(final Group group, final GroupUpdateOperation operation, GroupMembership ms) {
+		final String groupName = group.getName();
 		switch (operation) {
 			case ADD_MEMBER:
-				return execute(new AddUsersToGroupQuery(group.getName(), group.getUsers()));
+				return execute(new AddUsersToGroupQuery(groupName, Collections.singletonList(ms)));
+			case REMOVE_MEMBER:
+				return execute(new RemoveUserFromGroupQuery(ms.getUser().getName(), groupName));
 			default:
-				return execute(new ChangeGroupQuery(group.getName(), group));
+				return execute(new ChangeGroupQuery(groupName, group));
 		}
 	}
 
@@ -707,8 +705,8 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info) {
-		this.execute(new ChangeSyncStatusQuery(service.toString(), resourceType, null, null, status, info));
+	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info, Date newSyncDate) {
+		this.execute(new ChangeSyncStatusQuery(service.toString(), resourceType, null, null, status, info, newSyncDate));
 	}
 
 	@Override
