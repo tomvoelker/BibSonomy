@@ -269,13 +269,6 @@ INSERT INTO `group_memberships` VALUES
 ('testgroup3', 5, 5, '2007-01-01 01:01:01', 2, 0),
 ('testgroup3', 6, 6, '2007-01-01 01:01:01', 2, 0);
 
--- 
--- Data for table `group_level_permissions`
--- 
-
-INSERT INTO `group_level_permission` (`group`, `permission`, `granted_by`) VALUES 
-(4,0,'testuser1'),
-(4,1,'testuser1');
 
 
 
