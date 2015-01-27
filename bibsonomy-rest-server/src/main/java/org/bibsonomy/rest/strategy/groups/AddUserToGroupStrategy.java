@@ -29,9 +29,12 @@ package org.bibsonomy.rest.strategy.groups;
 import java.io.ByteArrayOutputStream;
 import java.io.Reader;
 import java.util.List;
+import org.bibsonomy.common.enums.GroupRole;
+import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.Context;
@@ -40,7 +43,6 @@ import org.bibsonomy.rest.strategy.Strategy;
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
-@Deprecated
 public class AddUserToGroupStrategy extends Strategy {
 	private final Reader doc;
 	private final String groupName;
@@ -71,9 +73,8 @@ public class AddUserToGroupStrategy extends Strategy {
 		try {
 			// TODO: Convert this to the new group concept, aka you can't just
 			// add users.
-			throw new UnsupportedOperationException("not yet implemented");
-//			for (User u : users)
-//				this.getLogic().updateGroup(this.groupName, GroupUpdateOperation.ADD_NEW_USER, new GroupMembership(u, GroupRole.USER, false));
+			for (User u : users)
+				this.getLogic().updateGroup(group, GroupUpdateOperation.ADD_MEMBER, new GroupMembership(u, GroupRole.USER, false));
 		}
 		catch (ValidationException ve) {
 			throw new BadRequestOrResponseException(ve.getMessage());
@@ -81,6 +82,6 @@ public class AddUserToGroupStrategy extends Strategy {
 		/*
 		 * no exception -> assume success
 		 */
-//		this.getRenderer().serializeGroupId(this.writer, this.groupName); // serializeOK(this.writer);
+		this.getRenderer().serializeGroupId(this.writer, this.groupName); // serializeOK(this.writer);
 	}
 }

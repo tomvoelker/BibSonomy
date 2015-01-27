@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.database.common;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,6 +45,14 @@ import java.util.Map;
  * @author Christian Schenk
  */
 public abstract class AbstractDatabaseManager {
+
+	/**
+	 * @param integer
+	 * @return the int representation of the provided integer (0 iff null)
+	 */
+	protected static int saveConvertToint(final Integer integer) {
+		return present(integer) ? integer.intValue() : 0;
+	}
 
 	/**
 	 * Can be used to start a query that retrieves a list of objects of a certain type.
