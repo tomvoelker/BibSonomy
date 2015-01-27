@@ -26,9 +26,9 @@ import org.elasticsearch.search.SearchHit;
  */
 public class EsResourceSearch<R extends Resource>{
 
-	private final String INDEX_NAME = ESConstants.INDEX_NAME;
+	private final String indexName = ESConstants.INDEX_NAME;
 
-	private String INDEX_TYPE;
+	private String resourceType;
 	
 	/** post model converter */
 	private LuceneResourceConverter<R> resourceConverter;
@@ -42,38 +42,21 @@ public class EsResourceSearch<R extends Resource>{
 //	private ESClient esClient = new ESNodeClient();
 	
 	// ElasticSearch Transport client
-	private static ESClient esClient;
+	private ESClient esClient;
 
 	/**
 	 * @param esClient the esClient to set
 	 */
 	public void setEsClient(ESClient esClient) {
-		EsResourceSearch.esClient = esClient;
+		this.esClient = esClient;
 	}
-
-	private String searchTerms;
+	
 	/**
 	 * @return the ElasticSearch Client
 	 */
 	public ESClient getEsClient() {
-		return EsResourceSearch.esClient;
+		return this.esClient;
 	}
-
-	/**
-	 * @return the searchTerms
-	 */
-	public String getSearchTerms() {
-		return this.searchTerms;
-	}
-
-	/**
-	 * @param searchTerms the searchTerms to set
-	 */
-	public void setSearchTerms(String searchTerms) {
-		this.searchTerms = searchTerms;
-	}
-
-	
 	
 	/**
 	 * @return postList
@@ -81,13 +64,13 @@ public class EsResourceSearch<R extends Resource>{
 	 * @throws CorruptIndexException 
 	 * 
 	 */
-	public ResultList<Post<R>> fullTextSearch() throws CorruptIndexException, IOException {
+	public ResultList<Post<R>> fullTextSearch(String searchTerms) throws CorruptIndexException, IOException {
 
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
 		try {
-			QueryBuilder queryBuilder = QueryBuilders.queryString(this.searchTerms);
-			SearchRequestBuilder searchRequestBuilder = esClient.getClient().prepareSearch(INDEX_NAME);
-			searchRequestBuilder.setTypes(INDEX_TYPE);
+			QueryBuilder queryBuilder = QueryBuilders.queryString(searchTerms);
+			SearchRequestBuilder searchRequestBuilder = esClient.getClient().prepareSearch(indexName);
+			searchRequestBuilder.setTypes(resourceType);
 			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 			searchRequestBuilder.setQuery(queryBuilder);
 			searchRequestBuilder.setFrom(0).setSize(60).setExplain(true);
@@ -95,7 +78,7 @@ public class EsResourceSearch<R extends Resource>{
 			SearchResponse response = searchRequestBuilder.execute().actionGet();
 
 			if (response != null) {
-				log.info("Current Search results for '" + this.searchTerms + "': "
+				log.info("Current Search results for '" + searchTerms + "': "
 						+ response.getHits().getTotalHits());
 				for (SearchHit hit : response.getHits()) {
 						Map<String, Object> result = hit.getSource();					
@@ -128,22 +111,22 @@ public class EsResourceSearch<R extends Resource>{
 	/**
 	 * @return the INDEX_TYPE
 	 */
-	public String getINDEX_TYPE() {
-		return this.INDEX_TYPE;
+	public String getResourceType() {
+		return this.resourceType;
 	}
 
 	/**
 	 * @param INDEX_TYPE the INDEX_TYPE to set
 	 */
-	public void setINDEX_TYPE(String INDEX_TYPE) {
-		this.INDEX_TYPE = INDEX_TYPE;
+	public void setResourceType(String INDEX_TYPE) {
+		this.resourceType = INDEX_TYPE;
 	}
 
 	/**
 	 * @return the iNDEX_NAME
 	 */
-	public String getINDEX_NAME() {
-		return this.INDEX_NAME;
+	public String getIndexName() {
+		return this.indexName;
 	}
 
 	

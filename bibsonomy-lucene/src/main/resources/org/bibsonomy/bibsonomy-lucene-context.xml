@@ -29,32 +29,53 @@
 		class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition" ref="esClusterNamePresent" />
 		<lookup-method name="produceSucessBean" bean="initiateIndexUpdatePlugin" />
-		<lookup-method name="produceFailureBean" bean="dummySamlEntryPoint" />
 	</bean>
 
 	<bean id="initiateESClient"
 		class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition" ref="esClusterNamePresent" />
 		<lookup-method name="produceSucessBean" bean="esTransportClient" />
-		<lookup-method name="produceFailureBean" bean="dummySamlEntryPoint" />
 	</bean>
-	<bean id="initiateEsResourceSearch"
+	
+	<bean id="realEsPublicationSearch" lazy-init="true" parent="abstractEsResourceSearch">
+		<property name="resourceType" value="BibTex"/>
+		<property name="resourceConverter" ref="lucenePublicationConverter" />
+	</bean>
+	<bean id="esPublicationSearch"
 		class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition" ref="esClusterNamePresent" />
-		<lookup-method name="produceSucessBean" bean="esResourceSearch" />
-		<lookup-method name="produceFailureBean" bean="dummySamlEntryPoint" />
+		<lookup-method name="produceSucessBean"  bean="realEsPublicationSearch" />
 	</bean>
+	
+	<bean id="realEsBookmarkSearch" lazy-init="true" parent="abstractEsResourceSearch">
+		<property name="resourceType" value="Bookmark"/>
+		<property name="resourceConverter" ref="luceneBookmarkConverter" />
+	</bean>
+	<bean id="esBookmarkSearch"
+		class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition" ref="esClusterNamePresent" />
+		<lookup-method name="produceSucessBean" bean="realEsBookmarkSearch"/>
+	</bean>
+	
+	<bean id="realEsGoldStandardSearch" lazy-init="true" parent="abstractEsResourceSearch">
+		<property name="resourceType" value="GoldStandardPublication"/>
+		<property name="resourceConverter" ref="luceneGoldStandardPublicationConverter" />
+	</bean>
+	<bean id="esGoldStandardSearch"
+		class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition" ref="esClusterNamePresent" />
+		<lookup-method name="produceSucessBean" bean="realEsGoldStandardSearch"/>
+	</bean>
+	
 	<bean id="initiateSharedResourceIndexGenerator"
 		class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition" ref="esClusterNamePresent" />
 		<lookup-method name="produceSucessBean" bean="sharedResourceIndexGenerator" />
-		<lookup-method name="produceFailureBean" bean="dummySamlEntryPoint" />
 	</bean>
 	<bean id="initiateSharedResourceIndexUpdater"
 		class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition" ref="esClusterNamePresent" />
 		<lookup-method name="produceSucessBean" bean="sharedResourceIndexUpdater" />
-		<lookup-method name="produceFailureBean" bean="dummySamlEntryPoint" />
 	</bean>
 
 	<bean id="esClusterNamePresent"
@@ -80,8 +101,7 @@
 		<property name="esClusterName" value="${es.cluster.name}"/>		
 	</bean>
 
-	<bean id="esResourceSearch" class="org.bibsonomy.es.EsResourceSearch"
-		lazy-init="true">
+	<bean id="abstractEsResourceSearch" class="org.bibsonomy.es.EsResourceSearch" abstract="true">
 		<property name="esClient" ref="esTransportClient" />
 	</bean>
 	<bean id="sharedResourceIndexGenerator" class="org.bibsonomy.es.SharedResourceIndexGenerator"
@@ -226,18 +246,21 @@
 		parent="luceneResourceSearch">
 		<property name="analyzer" ref="lucenePublicationFieldWrapperAnalyzer" />
 		<property name="resourceConverter" ref="lucenePublicationConverter" />
+		<property name="sharedResourceSearch" ref="esPublicationSearch"/>
 	</bean>
 
 	<bean id="luceneBookmarkSearch" class="org.bibsonomy.lucene.search.LuceneResourceSearch"
 		parent="luceneResourceSearch">
 		<property name="analyzer" ref="luceneBookmarkFieldWrapperAnalyzer" />
 		<property name="resourceConverter" ref="luceneBookmarkConverter" />
+		<property name="sharedResourceSearch" ref="esBookmarkSearch"/>
 	</bean>
 
 	<bean id="luceneGoldStandardPublicationSearch" class="org.bibsonomy.lucene.search.LucenePublicationSearch"
 		parent="luceneResourceSearch">
 		<property name="analyzer" ref="lucenePublicationFieldWrapperAnalyzer" />
 		<property name="resourceConverter" ref="luceneGoldStandardPublicationConverter" />
+		<property name="sharedResourceSearch" ref="esGoldStandardSearch"/>
 	</bean>
 
 	<!--+ | lucene index manager + -->

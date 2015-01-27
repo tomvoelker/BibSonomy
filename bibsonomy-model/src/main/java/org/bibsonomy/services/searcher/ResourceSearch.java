@@ -95,7 +95,7 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param offset
 	 * @return a list of posts containing the search result
 	 */
-	public List<Post<R>> getPosts(final String resourceType,
+	public List<Post<R>> getPosts(
 			final String userName, final String requestedUserName, String requestedGroupName, 
 			final List<String> requestedRelationNames,
 			final Collection<String> allowedGroups,final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms,

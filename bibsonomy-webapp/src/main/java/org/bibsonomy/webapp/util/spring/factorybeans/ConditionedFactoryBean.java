@@ -53,4 +53,7 @@ public abstract class ConditionedFactoryBean<T> extends ConditionedPropertyCreat
 		return true;
 	}
 
+	protected T produceFailureBean() {
+		return null;
+	}
 }

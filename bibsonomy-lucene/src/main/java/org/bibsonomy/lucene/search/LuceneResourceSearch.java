@@ -107,6 +107,8 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 
 	/** the index the searcher is currently using */
 	private LuceneResourceIndex<R> index;
+	
+	private EsResourceSearch<R> sharedResourceSearch;
 
 	/**
 	 * config values
@@ -780,17 +782,15 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPosts(java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.model.enums.Order, int, int)
 	 */
 	@Override
-	public List<Post<R>> getPosts(String resourceType, String userName,String requestedUserName, String requestedGroupName,List<String> requestedRelationNames,	Collection<String> allowedGroups,SearchType searchType,String searchTerms,String titleSearchTerms, String authorSearchTerms,
+	public List<Post<R>> getPosts(String userName,String requestedUserName, String requestedGroupName,List<String> requestedRelationNames,	Collection<String> allowedGroups,SearchType searchType,String searchTerms,String titleSearchTerms, String authorSearchTerms,
 			Collection<String> tagIndex, String year, String firstYear,
 			String lastYear, List<String> negatedTags, Order order, int limit,
 			int offset) {
 		if(searchType==SearchType.ELASTICSEARCH){
-			EsResourceSearch<R> searchResource =  new EsResourceSearch<R>();
-			searchResource.setSearchTerms(searchTerms);
-			searchResource.setINDEX_TYPE(resourceType);
-			searchResource.setResourceConverter(this.resourceConverter);
+//			searchResource.setINDEX_TYPE(resourceType);
+//			searchResource.setResourceConverter(this.resourceConverter);
 			try {
-				List<Post<R>> posts = searchResource.fullTextSearch();
+				List<Post<R>> posts = this.sharedResourceSearch.fullTextSearch(searchTerms);
 				return posts;
 			} catch (IOException e) {
 				log.error("Failed to search post from shared resource", e);
@@ -801,6 +801,14 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			return this.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
 		}
 			return null;
+	}
+
+	public EsResourceSearch<R> getSharedResourceSearch() {
+		return this.sharedResourceSearch;
+	}
+
+	public void setSharedResourceSearch(EsResourceSearch<R> sharedResourceSearch) {
+		this.sharedResourceSearch = sharedResourceSearch;
 	}
 
 }

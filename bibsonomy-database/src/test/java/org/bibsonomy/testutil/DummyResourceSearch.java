@@ -55,7 +55,7 @@ public class DummyResourceSearch implements ResourceSearch<Resource> {
 	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPosts(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, org.bibsonomy.model.es.SearchType, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.model.enums.Order, int, int)
 	 */
 	@Override
-	public List<Post<Resource>> getPosts(String resourceType, String userName,
+	public List<Post<Resource>> getPosts(String userName,
 			String requestedUserName, String requestedGroupName,
 			List<String> requestedRelationNames,
 			Collection<String> allowedGroups, SearchType searchType,
