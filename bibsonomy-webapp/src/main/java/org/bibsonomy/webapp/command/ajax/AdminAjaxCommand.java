@@ -27,7 +27,9 @@
 package org.bibsonomy.webapp.command.ajax;
 
 import java.util.List;
+import java.util.Set;
 
+import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
@@ -66,6 +68,11 @@ public class AdminAjaxCommand extends AjaxCommand {
 	/** evaluator name */
 	private String evaluator;
 
+	private String groupname;
+	
+	private Set<GroupLevelPermission> groupLevelPermissions;
+	
+	
 	/**
 	 * @return the bookmarks
 	 */
@@ -190,5 +197,21 @@ public class AdminAjaxCommand extends AjaxCommand {
 	 */
 	public void setEvaluator(final String evaluator) {
 		this.evaluator = evaluator;
+	}
+
+	public String getGroupname() {
+		return this.groupname;
+	}
+
+	public void setGroupname(String groupname) {
+		this.groupname = groupname;
+	}
+
+	public Set<GroupLevelPermission> getGroupLevelPermissions() {
+		return this.groupLevelPermissions;
+	}
+
+	public void setGroupLevelPermissions(Set<GroupLevelPermission> groupLevelPermissions) {
+		this.groupLevelPermissions = groupLevelPermissions;
 	}
 }
