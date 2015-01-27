@@ -9,14 +9,7 @@ package org.bibsonomy.common.enums;
  */
 public enum GroupLevelPermission {
 	/** Is allowed to mark community posts as inspected */
-	COMMUNITY_POST_INSPECTION(0),
-
-	/**
-	 * A place holder for testing sets of such permissions. To be removed as
-	 * soon as we add real further group level permissions.
-	 **/
-	@Deprecated
-	NOTHING(1);
+	COMMUNITY_POST_INSPECTION(0);
 
 	/*
 	 * TODO: further roles like
