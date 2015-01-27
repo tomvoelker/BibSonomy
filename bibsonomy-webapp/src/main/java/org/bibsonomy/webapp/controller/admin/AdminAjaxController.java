@@ -35,6 +35,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.AdminActions;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
@@ -43,6 +44,7 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.EvaluatorUser;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
@@ -131,6 +133,9 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 			this.updateSettings(command);
 			command.setResponseString(command.getKey() + " updated");
 			break;
+		case FETCH_GROUP_WITH_PERMISSIONS:
+			this.fetchgroupForPermissions(command);
+			return Views.AJAX_JSON_PERMISSIONS;
 		default:
 			break;
 		}
@@ -150,6 +155,19 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 		
 	}
 	
+	/**
+	 * 
+	 */
+	private void fetchgroupForPermissions(final AdminAjaxCommand cmd) {
+		String groupName = cmd.getGroupname();
+		if (present(groupName)) {
+			Group group = logic.getGroupDetails(groupName);
+			if (present(group) && GroupID.INVALID.getId()!=group.getGroupId()) {
+				cmd.setGroupLevelPermissions(group.getGroupLevelPermissions());
+			}
+		}
+	}
+
 	// TODO: Discuss evaluator interface 
 	private void flagSpammerEvaluator(final AdminAjaxCommand cmd, final boolean spammer) {
 		if (cmd.getUserName() != null) {
