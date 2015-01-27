@@ -1,190 +1,1 @@
-<?xml version="1.0" ?>
-<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
-		  xmlns:jsp="http://java.sun.com/JSP/Page"
-		  xmlns:c="http://java.sun.com/jsp/jstl/core"
-		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
-		  xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/users"
-		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-		  xmlns:menu="urn:jsptagdir:/WEB-INF/tags/bstags/menu"
-		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-		  xmlns:form="http://www.springframework.org/tags/form"
-		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
-		  xmlns:spring="urn:http://www.springframework.org/tags"
-		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
-		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
-
-	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
-	<fmt:message key="navi.admin" var="adminPageTitle" />
-
-	<layout:layout 
-		pageTitle="${adminPageTitle} :: Group" 
-		loginUser="${command.context.loginUser}" 
-		requPath="${requPath}"
-		minimizedContentWidth="${true}">
-
-		<jsp:attribute name="breadcrumbs">
-			<nav:breadcrumbs>
-				<jsp:attribute name="crumbs">
-					<nav:admin />
-					<nav:crumb nameKey="navi.admin.group" active="true" />
-				</jsp:attribute>
-			</nav:breadcrumbs>
-		</jsp:attribute>
-
-		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.admin">
-				<jsp:attribute name="pathPart">
-					<li>
-						:: <a rel="path_menu" href="${relativeUrlGenerator.getAdminUrlByName('group')}">Group</a>
-					</li>
-				</jsp:attribute>
-			</parts:search>
-		</jsp:attribute>
-
-		<jsp:attribute name="headerExt">
-			<link rel="stylesheet" type="text/css" href="${resdir}/css/adminlucene.css" />
-			<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/jquery-ui.css" type="text/css" media="all" />
-			<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/ui.theme.css" type="text/css" media="all" />
-
-			<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js"><!-- keep me --></script> 
-			<!--  scripts for ajax autocompletion -->
-			<script src="${resdir}/jquery/plugins/bgiframe/jquery.bgiframe.js" type="text/javascript"><!--  --></script>
-			<script src="${resdir}/jquery/plugins/ui/jquery-ui.js" type="text/javascript"><!--  --></script>
-			<script src="${resdir}/jquery/plugins/ui/jquery-ui-i18n.js" type="text/javascript"><!--  --></script>
-		</jsp:attribute>
-
-		<jsp:attribute name="content">
-			<fieldset class="fsOuter">
-				<fieldset>
-					<label><h2><fmt:message key="admin.actions.group"/></h2></label>
-
-					<!-- BS3 this. -->
-					<c:if test="${not empty command.adminResponse}">
-						<div class="adminResponse"><c:out value="${command.adminResponse}"/></div>
-					</c:if>
-
-					<form:form name="addgroup" action="${relativeUrlGenerator.getAdminUrlByName('group')}" method="POST" cssClass="form-horizontal" >
-						<input type="hidden" value="createGroup" name="action" />
-						<fieldset class="fsInner">
-							<bsform:input path="group.name" helpKey="settings.group.addUser.help" autocomplete="true" labelColSpan="3" inputColSpan="9" />
-							<bsform:input path="group.groupRequest.userName" helpKey="settings.group.addUser.help" autocomplete="true" labelColSpan="3" inputColSpan="9" id="designatedAdmin" />
-							<bsform:textarea path="group.groupRequest.reason" labelColSpan="3" inputColSpan="9" />
-							<div class="form-group">
-								<form:label cssClass="col-sm-3 control-label" path="privlevel">
-									<fmt:message key="settings.group.memberList" />
-								</form:label>
-
-								<div class="col-sm-9">
-									<form:select cssClass="form-control help-popover" path="group.privlevel"  size="1" multiple="false">
-										<form:option value="PUBLIC"><fmt:message key="settings.public" /></form:option>
-										<form:option value="HIDDEN"><fmt:message key="settings.private" /></form:option>
-										<form:option value="MEMBERS"><fmt:message key="settings.publicForMembers" /></form:option>
-									</form:select>
-									<div class="help help-header hide"><fmt:message key="settings.group.memberList" /></div>
-									<div class="help help-content hide"><fmt:message key="settings.group.memberList.help" /></div>
-								</div>
-							</div>
-
-							<!-- shared documents -->
-							<div class="form-group">
-								<form:label cssClass="col-sm-3 control-label" path="group.sharedDocuments">
-									<fmt:message key="settings.group.sharedDocuments" />
-								</form:label>
-
-								<div class="col-sm-9">
-									<form:select cssClass="form-control help-popover" path="group.sharedDocuments">
-										<form:option value="0"><fmt:message key="settings.disabled" /></form:option>
-										<form:option value="1"><fmt:message key="settings.enabled" /></form:option>
-									</form:select>
-
-									<div class="help help-header hide"><fmt:message key="settings.group.sharedDocuments" /></div>
-									<div class="help help-content hide"><p><fmt:message key="settings.group.sharedDocuments.help" /></p></div>
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="col-sm-offset-3 col-sm-9">
-									<fmt:message var="updatesettings" key="settings.updatesettings" />
-									<bsform:button type="submit" style="primary" size="defaultSize" value="${updatesettings}" />
-								</div>
-							</div>
-						</fieldset>
-					</form:form>
-				</fieldset>
-
-					<!-- TODO: Test this. -->
-				<c:if test="${not empty command.pendingGroups}">
-					<fieldset>
-						<label>
-							<h2><fmt:message key="admin.group.pending"/></h2>
-						</label>
-
-						<table class="table table-hover">
-							<c:forEach var="entry" items="${command.pendingGroups}">
-								<tr>
-									<td>
-										<a href="${relativeUrlGenerator.getGroupUrlByGroupName(entry.name)}">
-											<c:out value="${entry.name}"/>
-										</a>
-									</td>
-									<!-- show request user name -->
-									<td>
-										<c:out value="${entry.groupRequest.userName}"/>
-									</td>
-									<!-- show request reason -->
-									<td>
-										<c:out value="${entry.groupRequest.reason}"/>
-									</td>
-									<!-- show request submission date -->
-									<td>
-										<c:out value="${entry.groupRequest.submissionDate}"/>
-									</td>
-									<td>
-										<span class="groupsButtons">
-											<a href="/admin/group?action=acceptGroup&amp;group.name=${fn:escapeXml(entry.name)}"><fmt:message key="admin.actions.group.accept"/></a>${mtl:ch('nbsp')}<a href="/admin/group?action=declineGroup&amp;group.name=${fn:escapeXml(entry.name)}"><fmt:message key="admin.actions.group.decline"/></a>	
-										</span>
-									</td>
-								</tr>
-							</c:forEach>
-						</table>
-					</fieldset>
-				</c:if>
-			</fieldset>
-
-			<!-- TODO: Move this to JavaScript-File  -->
-			<!-- Have this working properly, like tag recommendation -->
-			<!--  autocomplete user info box -->
-			<script type="text/javascript">
-			<![CDATA[
-				$(function () {
-					addAutocomplete("#designatedAdmin", '2');
-				});
-
-			function addAutocomplete(id, type) {
-			$(id).autocomplete({
-				source: function (request, response) {
-					return $.ajax({
-						url: "../ajax/usersearch",
-								data: {search:request.term, limit:10, showSpammers: false },
-								async: false,
-								success: function (data) {
-								var names = new Array();
-										$.each(data.items, function(index, item) {names.push(item.name); });
-										response($.map(names, function(item) {
-										return {
-										label: item,
-												value: item
-										}
-										}));
-								}
-
-						});
-							}
-				});
-					}
-			]]>
-			</script>
-		</jsp:attribute>				
-	</layout:layout>
-</jsp:root>
+<?xml version="1.0" ?><jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"		  xmlns:jsp="http://java.sun.com/JSP/Page"		  xmlns:c="http://java.sun.com/jsp/jstl/core"		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"		  xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/users"		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"		  xmlns:menu="urn:jsptagdir:/WEB-INF/tags/bstags/menu"		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"		  xmlns:form="http://www.springframework.org/tags/form"		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"		  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"		  xmlns:spring="urn:http://www.springframework.org/tags"		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />	<fmt:message key="navi.admin" var="adminPageTitle" />	<layout:layout 		pageTitle="${adminPageTitle} :: Group" 		loginUser="${command.context.loginUser}" 		requPath="${requPath}"		minimizedContentWidth="${true}">		<jsp:attribute name="breadcrumbs">			<nav:breadcrumbs>				<jsp:attribute name="crumbs">					<nav:admin />					<nav:crumb nameKey="navi.admin.group" active="true" />				</jsp:attribute>			</nav:breadcrumbs>		</jsp:attribute>		<jsp:attribute name="heading">			<parts:search pathMessageKey="navi.admin">				<jsp:attribute name="pathPart">					<li>						:: <a rel="path_menu" href="${relativeUrlGenerator.getAdminUrlByName('group')}">Group</a>					</li>				</jsp:attribute>			</parts:search>		</jsp:attribute>		<jsp:attribute name="headerExt">			<link rel="stylesheet" type="text/css" href="${resdir}/css/adminlucene.css" />			<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/jquery-ui.css" type="text/css" media="all" />			<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/ui.theme.css" type="text/css" media="all" />			<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js"><!-- keep me --></script> 			<!--  scripts for ajax autocompletion -->			<script src="${resdir}/jquery/plugins/bgiframe/jquery.bgiframe.js" type="text/javascript"><!--  --></script>			<script src="${resdir}/jquery/plugins/ui/jquery-ui.js" type="text/javascript"><!--  --></script>			<script src="${resdir}/jquery/plugins/ui/jquery-ui-i18n.js" type="text/javascript"><!--  --></script>		</jsp:attribute>		<jsp:attribute name="content">			<fieldset class="fsOuter">					<!-- BS3 this. -->					<c:if test="${not empty command.adminResponse}">					<div>						<bs:feedback size="defaultSize" style="success">							<jsp:attribute name="feedbackBody">								<fmt:message key="${command.adminResponse}" />							</jsp:attribute>						</bs:feedback>					</div>					</c:if>				<fieldset>					<label><h2><fmt:message key="admin.actions.group"/></h2></label>					<form:form name="addgroup" action="${relativeUrlGenerator.getAdminUrlByName('group')}" method="POST" cssClass="form-horizontal" >						<input type="hidden" value="createGroup" name="action" />						<fieldset class="fsInner">							<bsform:input path="group.name" helpKey="settings.group.addUser.help" autocomplete="true" labelColSpan="3" inputColSpan="9" />							<bsform:input path="group.groupRequest.userName" helpKey="settings.group.addUser.help" autocomplete="true" labelColSpan="3" inputColSpan="9" id="designatedAdmin" />							<bsform:textarea path="group.groupRequest.reason" labelColSpan="3" inputColSpan="9" />							<div class="form-group">								<form:label cssClass="col-sm-3 control-label" path="privlevel">									<fmt:message key="settings.group.memberList" />								</form:label>								<div class="col-sm-9">									<form:select cssClass="form-control help-popover" path="group.privlevel"  size="1" multiple="false">										<form:option value="PUBLIC"><fmt:message key="settings.public" /></form:option>										<form:option value="HIDDEN"><fmt:message key="settings.private" /></form:option>										<form:option value="MEMBERS"><fmt:message key="settings.publicForMembers" /></form:option>									</form:select>									<div class="help help-header hide"><fmt:message key="settings.group.memberList" /></div>									<div class="help help-content hide"><fmt:message key="settings.group.memberList.help" /></div>								</div>							</div>							<!-- shared documents -->							<div class="form-group">								<form:label cssClass="col-sm-3 control-label" path="group.sharedDocuments">									<fmt:message key="settings.group.sharedDocuments" />								</form:label>								<div class="col-sm-9">									<form:select cssClass="form-control help-popover" path="group.sharedDocuments">										<form:option value="0"><fmt:message key="settings.disabled" /></form:option>										<form:option value="1"><fmt:message key="settings.enabled" /></form:option>									</form:select>									<div class="help help-header hide"><fmt:message key="settings.group.sharedDocuments" /></div>									<div class="help help-content hide"><p><fmt:message key="settings.group.sharedDocuments.help" /></p></div>								</div>							</div>							<div class="form-group">								<div class="col-sm-offset-3 col-sm-9">									<fmt:message var="updatesettings" key="settings.updatesettings" />									<bsform:button type="submit" style="primary" size="defaultSize" value="${updatesettings}" />								</div>							</div>						</fieldset>					</form:form>				</fieldset>				<fieldset class="fsInner">					<div><h2> <fmt:message key="settings.group.permissionHeading"/></h2></div>					<fmt:message key="settings.group.permissionIntro"/>					<form:form name="groupWithPermissions" action="${relativeUrlGenerator.getAdminUrlByName('group')}" method="POST" cssClass="form-horizontal" >						<input type="hidden" value="updatePermissions" name="action" />						<bsform:input id="fetchGroupForPermissions" path="group.name" helpKey="settings.group.permission.help" autocomplete="true" labelColSpan="3" inputColSpan="9"/>						<div class="col-sm-offset-3 col-sm-9">							<a title="fetch group permissions" style="cursor: pointer" onclick="javascript:fetchGroupPermissions('#fetchGroupForPermissions');">								<fmt:message key="settings.group.permission.fetch"/>							</a>							<fmt:message key="group.updatePermission.update" var="msg"/>							<bsform:checkbox id="COMMUNITY_POST_INSPECTION" path="communityPostInspectionPermission" labelKey="settings.group.permission.communityPostInspectionPermission" disabled="true" classAtt="permissionCheckbox"/>						</div>						<div class="col-sm-offset-3 col-sm-9">							<bsform:button type="submit" style="primary" size="defaultSize" value="${msg}" />						</div>					</form:form>				</fieldset>													<!-- TODO: Test this. -->				<c:if test="${not empty command.pendingGroups}">					<fieldset>						<label>							<h2><fmt:message key="admin.group.pending"/></h2>						</label>						<table class="table table-hover">							<c:forEach var="entry" items="${command.pendingGroups}">								<tr>									<td>										<a href="${relativeUrlGenerator.getGroupUrlByGroupName(entry.name)}">											<c:out value="${entry.name}"/>										</a>									</td>									<!-- show request user name -->									<td>										<c:out value="${entry.groupRequest.userName}"/>									</td>									<!-- show request reason -->									<td>										<c:out value="${entry.groupRequest.reason}"/>									</td>									<!-- show request submission date -->									<td>										<c:out value="${entry.groupRequest.submissionDate}"/>									</td>									<td>										<span class="groupsButtons">											<a href="/admin/group?action=acceptGroup&amp;group.name=${fn:escapeXml(entry.name)}"><fmt:message key="admin.actions.group.accept"/></a>${mtl:ch('nbsp')}<a href="/admin/group?action=declineGroup&amp;group.name=${fn:escapeXml(entry.name)}"><fmt:message key="admin.actions.group.decline"/></a>											</span>									</td>								</tr>							</c:forEach>						</table>					</fieldset>				</c:if>			</fieldset>			<!-- TODO: Move this to JavaScript-File  -->			<!-- Have this working properly, like tag recommendation -->			<!--  autocomplete user info box -->			<script type="text/javascript">			<![CDATA[				$(function () {					addAutocomplete("#designatedAdmin", '2');				});			function addAutocomplete(id, type) {				$(id).autocomplete({					source: function (request, response) {						return $.ajax({							url: "../ajax/usersearch",									data: {search:request.term, limit:10, showSpammers: false },									async: false,									success: function (data) {									var names = new Array();											$.each(data.items, function(index, item) {names.push(item.name); });											response($.map(names, function(item) {												return {													label: item,														value: item												}											}));									}						});					}				});			}						function fetchGroupPermissions(id) {				groupname=$(id)[0].value				$.ajax({					url: "../admin/ajax",							data: {groupname:groupname, action:'fetch_group_with_permissions'},							async: false,						    contentType: "application/json;charset=utf-8",						    dataType: "json",							success: function (data) {								if (data.hasOwnProperty("groupLevelPermissions")) {									for (var i=0; i< data.groupLevelPermissions.length; i++) {										permission = data.groupLevelPermissions[i];										var permissionCheckboxId="#".concat(permission);										var permissionCheckbox = $(permissionCheckboxId)[0];										if (permissionCheckbox) {											permissionCheckbox.checked=true;										}									}								}								var permissionCheckboxes=$(".permissionCheckbox");								for (var i=0; i<permissionCheckboxes.length; i++) {									permissionCheckboxes[i].disabled=false;								}							}				});			}			]]>			</script>		</jsp:attribute>					</layout:layout></jsp:root>

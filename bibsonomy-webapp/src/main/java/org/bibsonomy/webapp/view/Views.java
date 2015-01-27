@@ -299,6 +299,10 @@ public enum Views implements View {
 	 */
 	AJAX_JSON("ajax/snippetJson"),
 	/**
+	 * command.responseString is written withOUT (!) c:out
+	 */
+	AJAX_JSON_PERMISSIONS("ajax/jsonGroupLevelPermissions"),
+	/**
 	 * command.responseString is written with c:out
 	 */
 	AJAX_TEXT("ajax/snippetPlain"),
