@@ -24,7 +24,22 @@
 
 		<fieldset class="fsOuter">
 			<c:if test="${!loginUser.spammer}">
+			
 				<!-- Request a new group -->
+				
+				<fmt:message var="linkText" key="settings.group.requestGroup.link"/>
+				<bsform:fieldset legendKey="navi.group.groupRequest">
+					<jsp:attribute name="content">
+						<p>
+							<fmt:message key="settings.group.requestGroup.description">
+								<fmt:param value="/grouprequest"/>
+								<fmt:param value="${linkText}"/>
+							</fmt:message>
+						</p>
+					</jsp:attribute>
+				</bsform:fieldset>
+				
+				<!--
 				<bsform:fieldset legendKey="settings.group.reqGroup">
 					<jsp:attribute name="content">
 						<form:form method="post" action="/updateGroup?action=REQUEST" cssClass="form-horizontal">
@@ -40,7 +55,8 @@
 						</form:form>
 					</jsp:attribute>
 				</bsform:fieldset>
-
+				-->
+				 
 				<!-- Pending invites for the user -->
 				<c:set var="showPendingInvites" value="${false}" />
 				<c:set var="showPendingRequests" value="${false}" />
