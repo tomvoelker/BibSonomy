@@ -134,7 +134,6 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 */
 	private String saveAndRate;
 	
-	private boolean approved;
 
 	
 	/**
@@ -507,20 +506,6 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 */
 	public void setPostDiff(final Post<RESOURCE> postDiff) {
 		this.postDiff = postDiff;
-	}
-
-	/**
-	 * @return the approved
-	 */
-	public boolean isApproved() {
-		return this.approved;
-	}
-
-	/**
-	 * @param approved the approved to set
-	 */
-	public void setApproved(boolean approved) {
-		this.approved = approved;
 	}
 
 }

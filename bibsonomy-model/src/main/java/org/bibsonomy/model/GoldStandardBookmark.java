@@ -46,7 +46,6 @@ public class GoldStandardBookmark extends Bookmark implements GoldStandard<Bookm
 	private Set<Bookmark> references;
 	private Set<Bookmark> referencedBy;
 	
-	private boolean approved = false;
 	
 	private void lacyLoadReferences() {
 		if (this.references == null) {
@@ -217,18 +216,5 @@ public class GoldStandardBookmark extends Bookmark implements GoldStandard<Bookm
 		return false;
 	}
 
-	/**
-	 * @return the approved
-	 */
-	public boolean getApproved() {
-		return this.approved;
-	}
-
-	/**
-	 * @param approved the approved to set
-	 */
-	public void setApproved(boolean approved) {
-		this.approved = approved;
-	}
-
+	
 }

@@ -176,25 +176,7 @@
 							| goldStandard post's approval  
 							+-->
 						<c:if test="${not empty postApproval}">
-							<input type="hidden" name="approved" />
 							<jsp:invoke fragment="postApproval"/>
-										
-							<script type="text/javascript">		  
-								$('input[id=approveChkBox]').click(function(){
-									alert('clicked');
-									var checked = $(this).is(':checked');
-									alert(checked);
-									if(checked){
-										$('input[name=approved]').val(1);
-										alert('if checked '+$('input[name=approved]').val());
-									}
-									else{
-										$('input[name=approved]').val(0);
-										alert('if not checked '+$('input[name=approved]').val());
-									}
-								});		   
-							</script>
-
 						</c:if>					
 		                <!--+
 		               		| buttons 

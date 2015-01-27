@@ -24,25 +24,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="postApproval">
-
-			<!-- approval checkbox -->
-			<bsform:fieldset legendKey="goldStandard.edit.approval">
-
-				<jsp:attribute name="content">
-					<div class="form-group">
-				   		<div class="col-sm-offset-1 col-sm-9">
-							<div class="checkbox clearfix">
-								<label>
-					          		<input type="checkbox" class="help-popover" id="approveChkBox" tabindex="2" /> <fmt:message key="goldStandard.edit.approveMsg"/>
-					          		<div class="help-header hide"><fmt:message key="goldStandard.edit.approveMsg"/></div>
-					          		<div class="help-content hide"><fmt:message key="goldStandard.edit.approveMsg.help"/></div>
-					        	</label>
-							</div>
-						</div>
-					</div>
-				</jsp:attribute>
-			</bsform:fieldset>
-
+			<editpub:approvedCheckbox post="${post}"/>
  		</jsp:attribute>
 
 		

@@ -45,7 +45,7 @@
 		title, entrytype, author, editor, year, journal, volume, chapter,
 		edition, month, bookTitle, howpublished, institution, organization, publisher, address, school, series,
 		bibtexKey, `group`, date, user_name, url, description, annote, note, pages, bKey, number, crossref, misc,
-		bibtexAbstract, type, day, privnote, simhash0, simhash1, simhash2, simhash3, content_type
+		bibtexAbstract, type, day, privnote, simhash0, simhash1, simhash2, simhash3, content_type, approved
 	</sql>
 	
 	<sql id="allGoldStandardPublicationAttributesWithSimHashesAndContentId">
@@ -61,15 +61,15 @@
         #resource.url#, #description#, #resource.annote#, #resource.note#, #resource.pages#,
         #resource.key#, #resource.number#, #resource.crossref#, #resource.misc#, #resource.bibtexAbstract#,
         #resource.type#, #resource.day#, #resource.privnote#, #resource.simHash0#, #resource.simHash1#,
-        #resource.simHash2#, #resource.simHash3#, #contentType#
+        #resource.simHash2#, #resource.simHash3#, #contentType#, #approved#
     </sql>
 		
 	<sql id="allGoldStandardBookmarkColumns">
-		title, url, description, date, user_name, simhash1, simhash2, content_type, approved
+		title, url, description, date, user_name, simhash1, simhash2, content_type
 	</sql>
 		
 	<sql id="allGoldStandardBookmarkValues">
-		#resource.title#, #resource.url#, #description#, #date#, #userName#, #resource.intraHash#, #resource.intraHash#, #contentType#, #approved#
+		#resource.title#, #resource.url#, #description#, #date#, #userName#, #resource.intraHash#, #resource.intraHash#, #contentType#
 	</sql>
 	
 	<sql id="allGoldStandardPublicationAttributes">

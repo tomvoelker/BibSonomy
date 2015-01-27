@@ -114,7 +114,8 @@ public class BibTex extends Resource {
 	 * A document attached to this bibtex resource.
 	 */
 	private List<Document> documents;
-
+	
+	private boolean approved = false;
 	/**
 	 * @return openURL
 	 */
@@ -762,5 +763,19 @@ public class BibTex extends Resource {
 		if (this.miscFields != null) {
 			this.miscFields.clear();
 		}
+	}
+
+	/**
+	 * @return the approved
+	 */
+	public boolean isApproved() {
+		return this.approved;
+	}
+
+	/**
+	 * @param approved the approved to set
+	 */
+	public void setApproved(boolean approved) {
+		this.approved = approved;
 	}
 }

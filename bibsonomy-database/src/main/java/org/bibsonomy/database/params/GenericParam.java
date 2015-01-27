@@ -277,6 +277,8 @@ public abstract class GenericParam {
 		
 		this.relationTags = new ArrayList<String>();
 		this.relationTagIndex = new ArrayList<TagIndex>();
+		
+		
 	}
 	
 	/**
@@ -1127,4 +1129,5 @@ public abstract class GenericParam {
 	public String toString() {
 		return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
 	}
+
 }
