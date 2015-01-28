@@ -29,10 +29,8 @@ package org.bibsonomy.webapp.controller.actions;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,7 +38,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.antlr.runtime.RecognitionException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -61,7 +58,6 @@ import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
@@ -69,13 +65,11 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.bibsonomy.services.Pingback;
 import org.bibsonomy.services.URLGenerator;
-import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.ContextCommand;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
@@ -235,7 +229,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 		final String intraHashToUpdate = command.getIntraHashToUpdate();
 
-		if (present(intraHashToUpdate)) {	
+		if (present(intraHashToUpdate)) {
 			log.debug("intra hash to update found -> handling update of existing post");
 			return this.handleUpdatePost(command, context, loginUser, post, intraHashToUpdate);
 		}
@@ -401,40 +395,51 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				this.errors.reject("error.post.notfound", "The post with the given intra hash could not be found.");
 				return Views.ERROR;
 			}
-			/**
-			 * if the controller is called from history page*/
-			if(present(command.getDifferentEntryKeys())){
+			/*
+			 * if the controller is called from history page
+			 */
+			if (present(command.getDifferentEntryKeys())) {
 				
-				Class<? extends Resource> resourceType = dbPost.getResource().getClass();				
+				Class<? extends Resource> resourceType = dbPost.getResource().getClass();
 				int compareVersion = command.getCompareVersion();
 				
-				/**
+				/*
 				 * comparePost is the history revision which will be restored.*
-				 * */
+				 */
 				Post<RESOURCE> comparePost = new <RESOURCE>Post();
 				
-				if(BibTex.class.equals(resourceType) || Bookmark.class.equals(resourceType)){
+				/*
+				 * TODO: why don't we use the update date of the post as
+				 * identifier (instead of the compare version)? A greater than
+				 * query is more effective as the limit and offset
+				 */
+				/*
+				 * FIXME: this instance of check violates the generic character
+				 * of this controller
+				 */
+				if (BibTex.class.equals(resourceType) || Bookmark.class.equals(resourceType)) {
 					comparePost = (Post<RESOURCE>)this.logic.getPosts(resourceType, GroupingEntity.USER, loginUserName, null, intraHashToUpdate, null, FilterEntity.POSTS_HISTORY, null, null, null, compareVersion, compareVersion+1).get(0);
-				}
-				else if(GoldStandardPublication.class.equals(resourceType) || GoldStandardBookmark.class.equals(resourceType)){
+				} else if (GoldStandardPublication.class.equals(resourceType) || GoldStandardBookmark.class.equals(resourceType)) {
 					comparePost = (Post<RESOURCE>)this.logic.getPosts(resourceType, GroupingEntity.ALL, null, null, intraHashToUpdate, null, FilterEntity.POSTS_HISTORY, null, null, null, compareVersion, compareVersion+1).get(0);
 				}
-				/**
-				 * In the following loop, the current post will be replaced 
-				 * by the history revision (comparePost)
-				 **/
-				List <String> diffEntryKeyList = command.getDifferentEntryKeys();
-				for(int i =0;i<diffEntryKeyList.size();i++){
-					final String key = diffEntryKeyList.get(i);
+				/*
+				 * In the following loop, the current post will be replaced by
+				 * the history revision (comparePost)
+				 */
+				final List<String> diffEntryKeyList = command.getDifferentEntryKeys();
+
+				for (final String key : diffEntryKeyList) {
 					if ("tags".equals(key)) {
 						dbPost.setTags(comparePost.getTags());
-					} 
-					else {
-						if(BibTex.class.equals(resourceType) || GoldStandardPublication.class.equals(resourceType)){
-							replaceResourceFieldsPub((BibTex)dbPost.getResource(),key, (BibTex)comparePost.getResource());
-						}
-						else if(Bookmark.class.equals(resourceType) || GoldStandardBookmark.class.equals(resourceType)){
-							replaceResourceFieldsBm(dbPost,key, comparePost);
+					} else {
+						/*
+						 * FIXME: this instance of check violates the generic
+						 * character of this controller
+						 */
+						if (BibTex.class.equals(resourceType) || GoldStandardPublication.class.equals(resourceType)) {
+							replaceResourceFieldsPub((BibTex) dbPost.getResource(), key, (BibTex) comparePost.getResource());
+						} else if (Bookmark.class.equals(resourceType) || GoldStandardBookmark.class.equals(resourceType)) {
+							replaceResourceFieldsBm(dbPost, key, comparePost);
 						}
 					}
 				}
@@ -511,11 +516,14 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		return this.finalRedirect(command, post, loginUserName);
 	}
-	/** this function changes the resource fields according to key-value.
-	 * key decides for the field and value decides for the new value of the field
+
+	/**
+	 * this function changes the resource fields according to key-value. key
+	 * decides for the field and value decides for the new value of the field
+	 * 
 	 * @param bibResource
 	 * @param key
-	 * @param value
+	 * @param newResource
 	 */
 	protected void replaceResourceFieldsPub(final BibTex bibResource, String key, BibTex newResource){
 		switch(key){
@@ -607,7 +615,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				bibResource.setNote(newResource.getNote());
 				break;
 			default:
-				throw new ValidationException("Couldn't find "+key+" among BibTex fields!");					
+			throw new ValidationException("Couldn't find " + key + " among BibTex fields!");
 			}
 	}
 
