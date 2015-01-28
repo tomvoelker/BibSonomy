@@ -186,24 +186,27 @@ public enum Views implements View {
 	 */
 	BIBTEXDETAILS("bibtexdetails"),
 	
-	
 	/**
+	 * TODO: adapt to file name pattern and move into subfolder history
 	 * PostHistory-Page. page with post history
 	 */
 	HISTORYBIB("HistoryBib"),
 
 	/**
-	 * History Page for GoldStandard BibTex. page with post history
+	 * TODO: adapt to file name pattern and move into subfolder history History
+	 * Page for GoldStandard BibTex. page with post history
 	 */
 	HISTORYGOLDBIB("HistoryGSBib"),
 	
 	/**
-	 * History Page for GoldStandard bookmark. page with post history
+	 * TODO: adapt to file name pattern and move into subfolder history History
+	 * Page for GoldStandard bookmark. page with post history
 	 */
 	HISTORYGOLDBM("HistoryGSBm"),
 	
 	/**
-	 * History Page for Bookmarks. page with post history
+	 * TODO: adapt to file name pattern and move into subfolder history History
+	 * Page for Bookmarks. page with post history
 	 */
 	HISTORYBM("HistoryBM"),
 

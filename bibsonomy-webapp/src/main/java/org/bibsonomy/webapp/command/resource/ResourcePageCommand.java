@@ -48,7 +48,7 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 	
 	private String intraHash;
 	
-	private String resourceClass; 
+	private Class<R> resourceClass;
 
 	/**
 	 * @return the intraHash of a post
@@ -125,14 +125,14 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 	/**
 	 * @return the resourceClass
 	 */
-	public String getResourceClass() {
+	public Class<R> getResourceClass() {
 		return this.resourceClass;
 	}
 
 	/**
 	 * @param resourceClass the resourceClass to set
 	 */
-	public void setResourceClass(String resourceClass) {
+	public void setResourceClass(Class<R> resourceClass) {
 		this.resourceClass = resourceClass;
 	}
 }

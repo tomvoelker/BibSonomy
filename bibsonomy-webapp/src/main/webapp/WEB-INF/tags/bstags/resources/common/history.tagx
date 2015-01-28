@@ -9,25 +9,15 @@
 	xmlns:bibgs="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:gpub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
-	
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
-<jsp:directive.attribute name="listView"
-		type="org.bibsonomy.webapp.command.ListCommand" required="true" />
-	<jsp:directive.attribute name="loginUserName" type="java.lang.String"
-		required="true" />
-	<jsp:directive.attribute name="disableListNavigation"
-		type="java.lang.Boolean" required="false" />
-	<jsp:directive.attribute name="requPath" type="java.lang.String"
-		required="true" />
-	<jsp:directive.attribute name="extTitle" type="java.lang.String"
-		required="false" />
-	<!--<jsp:directive.attribute name="widthClassName" type="java.lang.String"
-		required="true" />-->
-	<jsp:directive.attribute name="addAsFirstItem" fragment="true"
-		required="false" />
-	<jsp:directive.attribute name="addAsLastItem" fragment="true"
-		required="false" />
+	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true" />
+	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="extTitle" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="addAsFirstItem" fragment="true" required="false" />
+	<jsp:directive.attribute name="addAsLastItem" fragment="true" required="false" />
 	<jsp:directive.attribute name="isPub" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="isGoldStandard" type="java.lang.Boolean" required="true" />
 
@@ -39,14 +29,14 @@
 		<c:set var="buttonClasses" value="btn btn-primary btn-xs"/>
 		<c:set var="fieldlength" value="${fn:length(listView.list)-1}" />
 		<!-- this is the current version -->
-		<c:set var="newestPost" value="${listView.list[fieldlength]}" />		
+		<c:set var="newestPost" value="${listView.list[fieldlength]}" />
 		<c:set var="isGoldStandard" value="${isGoldStandard}" />
 		
 		<!-- hidden variables are used to communicate with .js file or controllers -->
 		<input type="hidden" name="newestPost" value="${newestPost}" />
 		<input type="hidden" name="differentEntryKeys" />
 		
-		<input type="hidden" name="compareVersion" />				
+		<input type="hidden" name="compareVersion" />
 		<input type="hidden" name="listLength" value="${fieldlength}"/>
 		<input type="hidden" name="isPub" value="${isPub}" />
 		<input type="hidden" name="isGoldStandard" value="${isGoldStandard}" />
@@ -67,14 +57,14 @@
 						<c:when test="${isGoldStandard}">
 							<input type="hidden" name="intraHashToUpdate" value="${newestPost.resource.interHash}"/>
 							<div class="title">
-								<div class="media">									
+								<div class="media">
 									<div class="media-body" id="titletext">
 										<div class="pull-right"><gpub:actions post="${newestPost}" /></div>
 										<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" /></h1>
 										<p><bib:desc publication="${newestPost.resource}"/></p>
 									</div>
 								</div>
-							</div>								
+							</div>
 						</c:when>
 
 						<c:otherwise>
@@ -93,9 +83,7 @@
 						<!-- if we are dealing with a bookmark -->
 				<c:otherwise>
 				<c:choose>
-
 						<!-- if it is a community post -->
-
 						<c:when test="${isGoldStandard}">
 							<input type="hidden" name="intraHashToUpdate" value="${newestPost.resource.interHash}"/>
 							
@@ -109,7 +97,7 @@
 									<c:set var="url" value="${newestPost.resource.url}" />
 									<p><a href="${url}"><c:out value="${url}" /></a></p>
 								</div>
-							</div>		
+							</div>
 						</div>
 						</c:when>
 
@@ -124,23 +112,16 @@
 									<c:set var="url" value="${newestPost.resource.url}" />
 									<p><a href="${url}"><c:out value="${url}" /></a></p>
 								</div>
-							</div>		
+							</div>
 						</div>
-							
-
 						</c:otherwise>
-
 					</c:choose>
-
 				</c:otherwise>
-
 			</c:choose>
-
-				
 			</div>
 			<div style="border-top: 1px #cbcbcb solid; clear:left">
 				<span> </span>
-			</div> <!-- border -->					
+			</div> <!-- border -->
 			
 			<c:choose>
 			<c:when test="${fn:length(listView.list) gt 1}">
@@ -158,7 +139,7 @@
 					<tbody>
 						<c:forEach var="index" begin="0" end="${fieldlength}" varStatus="loopStatus" step="1">
 							<c:set var="additionalItemClasses"
-								value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}" />	
+								value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}" />
 							<tr> 
 								<!-- version number -->
 								<td class="col-sm-1"  id="versionNum" style="border-right:1px solid #eee">
@@ -195,8 +176,7 @@
 											<c:otherwise>
 												<c:set var="diffArrayPre" value="${mtl:DiffEntriesBm(listView.list[(fieldlength-index-1)],listView.list[(fieldlength-index)])}"/>
 											</c:otherwise>
-										</c:choose>	
-										
+										</c:choose>
 										<c:set var="diffArrayCurr" value="${mtl:DiffEntriesBm(listView.list[(fieldlength)],listView.list[(fieldlength-index)])}"/>									
 									</c:otherwise>
 								</c:choose>
@@ -210,13 +190,13 @@
 								<!-- select revision to compare -->
 								<td class="col-sm-7">	
 								<div class="col-sm-2" style="float:left">
-										    <h6> <label class="control-label" style="white-space:nowrap;">
+											<h6> <label class="control-label" style="white-space:nowrap;">
 												<fmt:message key="history.historySelect.compareTo" />
-											 </label> </h6>
+											</label> </h6>
 														</div>
-														<div class="col-sm-6" style="float:left">	
-										    <select id="preCurrSelector" class="form-control input-sm help-popover">
-										    	<option value="0">previous version (${diffNumPre} different fields)</option>
+														<div class="col-sm-6" style="float:left">
+											<select id="preCurrSelector" class="form-control input-sm help-popover">
+												<option value="0">previous version (${diffNumPre} different fields)</option>
 												<option value="1">current version (${diffNumCurr} different fields)</option>
 											</select>
 											<div class="help help-header hide"><!--  --></div>
@@ -226,7 +206,7 @@
 								</td>	
 								
 								<!-- restore button -->
-								<td class="col-sm-1">					
+								<td class="col-sm-1">
 									<a id="restoreBtnDisabled" class="${buttonClasses} invisible" style="vertical-align:bottom;padding:4px;" 
 										title="${restoreBtnDisabledMsg}" disabled="disabled">
 										restore
@@ -244,28 +224,28 @@
 							<tr>
 								<!-- comparison to the previous version -->
 								
-								<td colspan="4" id="postDiffPre" class="postDiffPre">	
+								<td colspan="4" id="postDiffPre" class="postDiffPre">
 									<c:choose>	
 										<c:when test="${index eq fieldlength }">
 											<div class="alert alert-info" style="margin-bottom:0px;" role="alert">
 												<fmt:message key="history.firstVersion" />
-											</div>										
+											</div>
 										</c:when>
 										<c:when test="${fn:length(diffArrayPre) eq 0}">
 											<!-- we are dealing with a post which is identical to the previous version -->
 											<div id = "preVer" class="alert alert-info " style="margin-bottom:0px;" role="alert">
 												<fmt:message key="history.identicalToPreVersion" />
 											</div>
-										</c:when>	
-									</c:choose>								
+										</c:when>
+									</c:choose>
 									<c:forEach var="diffEntry" items="${diffArrayPre}">
 										<div class="checkbox">
-      										<input type="checkbox" class="invisible"/> 
-      										<strong>${diffEntry.key}</strong>
+											<input type="checkbox" class="invisible"/> 
+											<strong>${diffEntry.key}</strong>
 											<c:out value=": "/>
 											${diffEntry.value}
 											<br/>
-	  									</div>
+										</div>
 									</c:forEach>
 									
 								</td>
@@ -279,17 +259,17 @@
 									</c:if>	
 									<c:forEach var="diffEntry" items="${diffArrayCurr}">
 										<div class="checkbox">
-      										<input type="checkbox" id="CurrEntryCheckbox" class="invisible" checked="checked"/> 
-      										<strong>${diffEntry.key}</strong>
+											<input type="checkbox" id="CurrEntryCheckbox" class="invisible" checked="checked"/>
+											<strong>${diffEntry.key}</strong>
 											<c:out value=": "/>
 											${diffEntry.value}
 											<br/>
-	  									</div>
+										</div>
 								
 										<div>
 											<!-- the following two variables are used in .js file -->
 											<input type="hidden" name="diffEntryKey" value="${diffEntry.key}"/>
-											<input type="hidden" name="compareVersion" value="${fieldlength-index}"/> 										
+											<input type="hidden" name="compareVersion" value="${fieldlength-index}"/>
 										</div>
 									</c:forEach>
 									<!-- restore confirm (alert) question -->
@@ -300,9 +280,9 @@
 										<!-- submit restore -->
 										<button class="btn btn-primary submitBtn" style="float:right">Restore</button>
 									</div>
-								</td>				
-							</tr>	
-						</c:forEach>	
+								</td>
+							</tr>
+						</c:forEach>
 				</tbody>
 			</table>
 		</c:when>
@@ -314,7 +294,7 @@
 				</div>
 			</c:if>
 		</c:otherwise>
-	</c:choose>		
+	</c:choose>
 </form>
 
 </jsp:root>
