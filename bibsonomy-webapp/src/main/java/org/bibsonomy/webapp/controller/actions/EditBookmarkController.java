@@ -94,12 +94,6 @@ public class EditBookmarkController extends EditPostController<Bookmark, EditBoo
 
 	@Override
 	protected void replaceResourceSpecificPostFields(final Post<Bookmark> post, final String key, final Post<Bookmark> newPost) {
-		try {
-			super.replacePostFields(post, key, newPost);
-			return;
-		} catch (final ValidationException e) {
-			// ignore
-		}
 		switch (key) {
 		case "title":
 			post.getResource().setTitle(newPost.getResource().getTitle());
