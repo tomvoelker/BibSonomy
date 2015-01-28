@@ -29,10 +29,8 @@ package org.bibsonomy.webapp.controller.actions;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,7 +38,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.antlr.runtime.RecognitionException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -52,16 +49,12 @@ import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
-import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandard;
-import org.bibsonomy.model.GoldStandardBookmark;
-import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
@@ -69,13 +62,11 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.bibsonomy.services.Pingback;
 import org.bibsonomy.services.URLGenerator;
-import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.ContextCommand;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
@@ -105,6 +96,11 @@ import recommender.impl.database.RecommenderStatisticsManager;
  * @param <COMMAND>
  */
 public abstract class EditPostController<RESOURCE extends Resource, COMMAND extends EditPostCommand<RESOURCE>> extends SingleResourceListController implements MinimalisticController<COMMAND>, ErrorAware {
+	/**
+	 * 
+	 */
+	private static final String TAGS_KEY = "tags";
+
 	private static final Log log = LogFactory.getLog(EditPostController.class);
 
 	protected static final String LOGIN_NOTICE = "login.notice.post.";
@@ -139,10 +135,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		command.setPost(new Post<RESOURCE>());
 		command.getPost().setResource(this.instantiateResource());
-		
+
 		// history
 		command.setDifferentEntryKeys(new ArrayList<String>());
-		 
+
 		/*
 		 * set default values.
 		 */
@@ -235,7 +231,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 		final String intraHashToUpdate = command.getIntraHashToUpdate();
 
-		if (present(intraHashToUpdate)) {	
+		if (present(intraHashToUpdate)) {
 			log.debug("intra hash to update found -> handling update of existing post");
 			return this.handleUpdatePost(command, context, loginUser, post, intraHashToUpdate);
 		}
@@ -243,8 +239,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		log.debug("no intra hash given -> new post");
 		return this.handleCreatePost(command, context, loginUser, post);
 	}
-	
-	
+
 	protected boolean canEditPost(final RequestWrapperContext context) {
 		return context.isUserLoggedIn();
 	}
@@ -272,15 +267,15 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * found, a {@link ObjectNotFoundException} exception is thrown.
 	 * 
 	 * @param loginUserName
-	 *            - the name of the user whose inbox should be checked
+	 *        - the name of the user whose inbox should be checked
 	 * @param hash
-	 *            - the hash of the post we want to find
+	 *        - the hash of the post we want to find
 	 * @param user
-	 *            - the name of the user who owns the post (!= inbox user!)
+	 *        - the name of the user who owns the post (!= inbox user!)
 	 * @return The post from the inbox.
 	 * @throws ObjectNotFoundException
 	 */
-	
+
 	@SuppressWarnings("unchecked")
 	private Post<RESOURCE> getInboxPost(final String loginUserName, final String hash, final String user) throws ObjectNotFoundException {
 		/*
@@ -290,18 +285,18 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * has several posts with the same hash in his inbox, we get them all
 		 * and must compare each post against the given user name.
 		 */
-		
+
 		final List<Post<RESOURCE>> dbPosts = new LinkedList<Post<RESOURCE>>();
 		List<Post<RESOURCE>> tmp;
 		int startCount = 0;
 		final int step = PostLogicInterface.MAX_QUERY_SIZE;
-		
+
 		do {
-			tmp = this.logic.getPosts((Class<RESOURCE>)this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, null, null, null, null, startCount, startCount + step);
+			tmp = this.logic.getPosts((Class<RESOURCE>) this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, null, null, null, null, startCount, startCount + step);
 			dbPosts.addAll(tmp);
 			startCount += step;
 		} while (tmp.size() == step);
-		
+
 		if (present(dbPosts)) {
 			for (final Post<RESOURCE> dbPost : dbPosts) {
 				/*
@@ -330,10 +325,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * Thus, never return the view directly, but use this method!
 	 * 
 	 * @param command
-	 *            - the command the controller is working on (and which is also
-	 *            handed over to the view).
+	 *        - the command the controller is working on (and which is also
+	 *        handed over to the view).
 	 * @param loginUser
-	 *            - the login user.
+	 *        - the login user.
 	 * @return The post view.
 	 */
 	protected View getEditPostView(final EditPostCommand<RESOURCE> command, final User loginUser) {
@@ -365,7 +360,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		/*
 		 * return the view
 		 */
-		
+
 		return this.getPostView();
 	}
 
@@ -401,42 +396,17 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				this.errors.reject("error.post.notfound", "The post with the given intra hash could not be found.");
 				return Views.ERROR;
 			}
-			/**
-			 * if the controller is called from history page*/
-			if(present(command.getDifferentEntryKeys())){
-				
-				Class<? extends Resource> resourceType = dbPost.getResource().getClass();				
-				int compareVersion = command.getCompareVersion();
-				
-				/**
-				 * comparePost is the history revision which will be restored.*
-				 * */
-				Post<RESOURCE> comparePost = new <RESOURCE>Post();
-				
-				if(BibTex.class.equals(resourceType) || Bookmark.class.equals(resourceType)){
-					comparePost = (Post<RESOURCE>)this.logic.getPosts(resourceType, GroupingEntity.USER, loginUserName, null, intraHashToUpdate, null, FilterEntity.POSTS_HISTORY, null, null, null, compareVersion, compareVersion+1).get(0);
-				}
-				else if(GoldStandardPublication.class.equals(resourceType) || GoldStandardBookmark.class.equals(resourceType)){
-					comparePost = (Post<RESOURCE>)this.logic.getPosts(resourceType, GroupingEntity.ALL, null, null, intraHashToUpdate, null, FilterEntity.POSTS_HISTORY, null, null, null, compareVersion, compareVersion+1).get(0);
-				}
-				/**
-				 * In the following loop, the current post will be replaced 
-				 * by the history revision (comparePost)
-				 **/
-				List <String> diffEntryKeyList = command.getDifferentEntryKeys();
-				for(int i =0;i<diffEntryKeyList.size();i++){
-					final String key = diffEntryKeyList.get(i);
-					if ("tags".equals(key)) {
-						dbPost.setTags(comparePost.getTags());
-					} 
-					else {
-						if(BibTex.class.equals(resourceType) || GoldStandardPublication.class.equals(resourceType)){
-							replaceResourceFieldsPub((BibTex)dbPost.getResource(),key, (BibTex)comparePost.getResource());
-						}
-						else if(Bookmark.class.equals(resourceType) || GoldStandardBookmark.class.equals(resourceType)){
-							replaceResourceFieldsBm(dbPost,key, comparePost);
-						}
-					}
+
+			// if the controller is called from history page
+			if (present(command.getDifferentEntryKeys())) {
+				// comparePost is the history revision which will be restored.*
+				final int compareVersion = command.getCompareVersion();
+				@SuppressWarnings("unchecked")
+				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(dbPost.getResource().getClass(), GroupingEntity.USER, this.getGrouping(loginUser), null, intraHashToUpdate, null, FilterEntity.POSTS_HISTORY, null, null, null, compareVersion, compareVersion + 1).get(0);
+
+				final List<String> diffEntryKeyList = command.getDifferentEntryKeys();
+				for (int i = 0; i < diffEntryKeyList.size(); i++) {
+					this.replacePostFields(dbPost, diffEntryKeyList.get(i), comparePost);
 				}
 			}
 
@@ -511,130 +481,33 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		return this.finalRedirect(command, post, loginUserName);
 	}
-	/** this function changes the resource fields according to key-value.
-	 * key decides for the field and value decides for the new value of the field
-	 * @param bibResource
-	 * @param key
-	 * @param value
-	 */
-	protected void replaceResourceFieldsPub(final BibTex bibResource, String key, BibTex newResource){
-		switch(key){
-			case "entrytype":
-				bibResource.setEntrytype(newResource.getEntrytype());
-				break;
-			case "title":
-				bibResource.setTitle(newResource.getTitle());
-				break;
-			case "author":
-				bibResource.setAuthor(newResource.getAuthor());
-				break;
-			case "editor":
-				bibResource.setEditor(newResource.getEditor());
-				break;
-			case "year":
-				bibResource.setYear(newResource.getYear());
-				break;
-			case "booktitle":
-				bibResource.setBooktitle(newResource.getBooktitle());
-				break;
-			case "journal":
-				bibResource.setJournal(newResource.getJournal());
-				break;
-			case "volume":
-				bibResource.setVolume(newResource.getVolume());
-				break;
-			case "number":
-				bibResource.setNumber(newResource.getNumber());
-				break;
-			case "pages":
-				bibResource.setPages(newResource.getPages());
-				break;
-			case "month":
-				bibResource.setMonth(newResource.getMonth());
-				break;
-			case "day":
-				bibResource.setDay(newResource.getDay());
-				break;
-			case "publisher":
-				bibResource.setPublisher(newResource.getPublisher());
-				break;
-			case "address":
-				bibResource.setAddress(newResource.getAddress());
-				break;
-			case "edition":
-				bibResource.setEdition(newResource.getEdition());
-				break;
-			case "chapter":
-				bibResource.setChapter(newResource.getChapter());
-				break;
-			case "url":
-				bibResource.setUrl(newResource.getUrl());
-				break;
-			case "key":
-				bibResource.setKey(newResource.getKey());
-				break;
-			case "howpublished":
-				bibResource.setHowpublished(newResource.getHowpublished());
-				break;
-			case "institution":
-				bibResource.setInstitution(newResource.getInstitution());
-				break;
-			case "organization":
-				bibResource.setOrganization(newResource.getOrganization());
-				break;
-			case "school":
-				bibResource.setSchool(newResource.getSchool());
-				break;
-			case "series":
-				bibResource.setSeries(newResource.getSeries());
-				break;
-			case "crossref":
-				bibResource.setCrossref(newResource.getCrossref());
-				break;
-			case "misc":
-				bibResource.setMisc(newResource.getMisc());
-				break;
-			case "bibtexAbstract":
-				bibResource.setAbstract(newResource.getAbstract());
-				break;
-			case "privnote":
-				bibResource.setPrivnote(newResource.getPrivnote());
-				break;
-			case "annote":
-				bibResource.setAnnote(newResource.getAnnote());
-				break;
-			case "note":
-				bibResource.setNote(newResource.getNote());
-				break;
-			default:
-				throw new ValidationException("Couldn't find "+key+" among BibTex fields!");					
-			}
-	}
 
-
-		
-	/** this function changes the resource/post fields according to key-value.
-	 * key decides for the field and value decides for the new value of the field
+	/**
+	 * Replace the field with key "key" in post with the corresponding value in
+	 * newPost
+	 * 
 	 * @param post
 	 * @param key
-	 * @param value
+	 * @param newPost
 	 */
-	protected void replaceResourceFieldsBm(final Post post, String key, Post newPost){
-		switch(key){
-			case "title":
-				post.getResource().setTitle(newPost.getResource().getTitle());
-				break;
-			case "url":
-				((Bookmark)post.getResource()).setUrl(((Bookmark)newPost.getResource()).getUrl());
-				break;
-			case "description":
-				post.setDescription(newPost.getDescription());
-				break;
-			default:
-				throw new ValidationException("Couldn't find "+key+" among Bookmark fields!");
+	protected void replacePostFields(final Post<RESOURCE> post, final String key, final Post<RESOURCE> newPost) {
+		if (TAGS_KEY.equals(key)) {
+			post.setTags(newPost.getTags());
+			return;
 		}
+		this.replaceResourceSpecificPostFields(post, key, newPost);
 	}
-	
+
+	/**
+	 * Replace the field with key "key" in post with the corresponding value in
+	 * newPost
+	 * 
+	 * @param post
+	 * @param key
+	 * @param newPost
+	 */
+	protected abstract void replaceResourceSpecificPostFields(final Post<RESOURCE> post, String key, Post<RESOURCE> newPost);
+
 	/**
 	 * @param command
 	 * @param loginUser
@@ -721,7 +594,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			post.getTags().addAll(TagUtils.parse(command.getTags()));
 		} catch (final Exception e) {
 			log.warn("error parsing tags", e);
-			this.errors.rejectValue("tags", "error.field.valid.tags.parseerror", "Your tags could not be parsed.");
+			this.errors.rejectValue(TAGS_KEY, "error.field.valid.tags.parseerror", "Your tags could not be parsed.");
 		}
 		/*
 		 * validate post
@@ -760,9 +633,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * final post.
 	 * 
 	 * @param entity
-	 *            - the final post as saved in the database.
+	 *        - the final post as saved in the database.
 	 * @param postID
-	 *            - the ID of the post during the posting process.
+	 *        - the ID of the post during the posting process.
 	 */
 	protected void setRecommendationFeedback(final TagRecommendationEntity entity, final int postID) {
 		try {
@@ -787,11 +660,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * that URL (for whatever reason), we redirect to the user's page.
 	 * 
 	 * @param userName
-	 *            - the name of the loginUser
+	 *        - the name of the loginUser
 	 * @param intraHash
-	 *            - the intra hash of the created/updated post
+	 *        - the intra hash of the created/updated post
 	 * @param referer
-	 *            - the URL of the page the user is initially coming from
+	 *        - the URL of the page the user is initially coming from
 	 * 
 	 * @return
 	 */
@@ -918,7 +791,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param command
 	 * @param loginUser
 	 * @param post
-	 *            - the post that has been stored in the database.
+	 *        - the post that has been stored in the database.
 	 */
 	protected void createOrUpdateSuccess(final COMMAND command, final User loginUser, final Post<RESOURCE> post) {
 		/*
@@ -1121,6 +994,17 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	}
 
 	protected abstract PostValidator<RESOURCE> getValidator();
+
+	/**
+	 * Returns the userName. Override in GoldStandard Controllers
+	 * 
+	 * @param requestedUser
+	 * @param post
+	 * @return
+	 */
+	protected String getGrouping(final User requestedUser) {
+		return requestedUser.getName();
+	}
 
 	@Override
 	public Errors getErrors() {

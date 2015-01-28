@@ -28,6 +28,7 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
@@ -41,10 +42,11 @@ import org.springframework.validation.Errors;
  * @author fba
  */
 public class EditBookmarkController extends EditPostController<Bookmark, EditBookmarkCommand> {
-	
+
 	@Override
 	protected View getPostView() {
-		return Views.EDIT_BOOKMARK; // TODO: this could be configured using Spring!
+		return Views.EDIT_BOOKMARK; // TODO: this could be configured using
+									// Spring!
 	}
 
 	@Override
@@ -63,32 +65,54 @@ public class EditBookmarkController extends EditPostController<Bookmark, EditBoo
 	}
 
 	@Override
-	protected void setDuplicateErrorMessage(Post<Bookmark> post, Errors errors) {
+	protected void setDuplicateErrorMessage(final Post<Bookmark> post, final Errors errors) {
 		errors.rejectValue("post.resource.url", "error.field.valid.url.alreadybookmarked");
 	}
 
 	@Override
-	protected void workOnCommand(final EditBookmarkCommand command, User loginUser) {
+	protected void workOnCommand(final EditBookmarkCommand command, final User loginUser) {
 		// noop
 	}
 
-	
 	@Override
 	public View workOn(final EditBookmarkCommand command) {
-		/* 
-		 * if URL of resource null show POST_BOOKMARK view and 
-		 * initialize didYouKnowMessageCommand  
+		/*
+		 * if URL of resource null show POST_BOOKMARK view and
+		 * initialize didYouKnowMessageCommand
 		 */
 		if (!present(command.getPost().getResource().getUrl()) && !present(command.getIntraHashToUpdate()) && !present(command.getHash())) {
-			initializeDidYouKnowMessageCommand(command);
+			this.initializeDidYouKnowMessageCommand(command);
 			command.getPost().getResource().setUrl("http://");
 			return Views.POST_BOOKMARK;
 		}
-		
+
 		/*
 		 * otherwise use editPost workflow
 		 */
 		return super.workOn(command);
 	}
-	
+
+	@Override
+	protected void replaceResourceSpecificPostFields(final Post<Bookmark> post, final String key, final Post<Bookmark> newPost) {
+		try {
+			super.replacePostFields(post, key, newPost);
+			return;
+		} catch (final ValidationException e) {
+			// ignore
+		}
+		switch (key) {
+		case "title":
+			post.getResource().setTitle(newPost.getResource().getTitle());
+			break;
+		case "url":
+			post.getResource().setUrl(newPost.getResource().getUrl());
+			break;
+		case "description":
+			post.setDescription(newPost.getDescription());
+			break;
+		default:
+			throw new ValidationException("Couldn't find " + key + " among Bookmark fields!");
+		}
+	}
+
 }
