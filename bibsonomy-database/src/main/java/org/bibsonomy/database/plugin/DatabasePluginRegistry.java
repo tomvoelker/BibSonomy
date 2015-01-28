@@ -216,9 +216,9 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	}
 
 	@Override
-	public void onRemoveUserFromGroup(final String username, final int groupId, final DBSession session) {
+	public void onChangeUserMembershipInGroup(final String username, final int groupId, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
-			plugin.onRemoveUserFromGroup(username, groupId, session);
+			plugin.onChangeUserMembershipInGroup(username, groupId, session);
 		}
 	}
 	

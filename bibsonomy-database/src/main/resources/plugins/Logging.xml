@@ -66,13 +66,11 @@
 		FROM tas WHERE content_id = #requestedContentId#
 	</insert>
 
-	<insert id="logRemoveUserFromGroup" parameterClass="groupParam">
+	<insert id="logChangeUserMembershipInGroup" parameterClass="groupParam">
 		INSERT INTO log_group_memberships (`user_name`, `group`, `defaultgroup`, `start_date`, `group_role`, `user_shared_documents`)
 		SELECT g.user_name, g.group, g.defaultgroup, g.start_date, g.group_role, g.user_shared_documents
 		FROM group_memberships g WHERE g.user_name = #userName# AND g.group = #groupId#
 	</insert>
-	
-	<!-- FIXME: Add logging for other actions such as request and stuff. -->
 	
 	<insert id="logBasketItemDelete" parameterClass="basketParam">
 		INSERT INTO log_collector (user_name, content_id, add_date)

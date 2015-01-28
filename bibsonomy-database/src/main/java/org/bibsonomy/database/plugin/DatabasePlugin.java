@@ -206,7 +206,7 @@ public interface DatabasePlugin {
 	 * @param groupId
 	 * @param session
 	 */
-	public void onRemoveUserFromGroup(String userName, int groupId, DBSession session);
+	public void onChangeUserMembershipInGroup(String userName, int groupId, DBSession session);
 	
 	/**
 	 * Called when a fellowship will be deleted

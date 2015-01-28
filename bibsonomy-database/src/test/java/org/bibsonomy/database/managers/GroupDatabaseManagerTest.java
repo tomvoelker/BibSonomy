@@ -401,7 +401,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final GroupMembership gm = new GroupMembership();
 		gm.setUserSharedDocuments(true);
 		gm.setUser(new User("testuser1"));
-		groupDb.updateUserSharedDocuments("testgroup1", gm, this.dbSession);
+		groupDb.updateUserSharedDocuments(new Group("testgroup1"), gm, this.dbSession);
 
 		final List<Group> groups = groupDb.getGroupsForUser("testuser1", this.dbSession);
 		Group group = null;

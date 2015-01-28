@@ -38,6 +38,7 @@ import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.params.discussion.DiscussionItemParam;
+import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.UserUtils;
@@ -47,7 +48,8 @@ import org.bibsonomy.model.util.UserUtils;
  */
 public class DiscussionDatabaseManager extends AbstractDatabaseManager {
 	private static final DiscussionDatabaseManager INSTANCE = new DiscussionDatabaseManager();
-	
+	protected final DatabasePluginRegistry plugins;
+
 	/**
 	 * @return the @{link:DiscussionManager} instance
 	 */
@@ -59,7 +61,7 @@ public class DiscussionDatabaseManager extends AbstractDatabaseManager {
 	private Chain<List<DiscussionItem>, DiscussionItemParam<?>> chain;
 
 	private DiscussionDatabaseManager() {
-		// noop
+		this.plugins = DatabasePluginRegistry.getInstance();
 	}
 	
 	/**
@@ -161,6 +163,8 @@ public class DiscussionDatabaseManager extends AbstractDatabaseManager {
 		param.setUserName(leavingUser.getName());
 		param.setGroupId(groupId);
 		// FIXME: (groups) Logging of group change missing
+		
+		this.plugins.onDiscussionUpdate("interhash", null, null, session);
 		
 		this.update("updateDiscussionsInGroupFromLeavingUser", param, session);
 	}

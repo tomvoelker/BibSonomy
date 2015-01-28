@@ -173,11 +173,11 @@ public class Logging extends AbstractDatabasePlugin {
     }
 
     @Override
-    public void onRemoveUserFromGroup(final String userName, final int groupId, final DBSession session) {
+    public void onChangeUserMembershipInGroup(final String userName, final int groupId, final DBSession session) {
         final GroupParam groupParam = new GroupParam();
         groupParam.setGroupId(groupId);
         groupParam.setUserName(userName);
-        this.insert("logRemoveUserFromGroup", groupParam, session);
+        this.insert("logChangeUserMembershipInGroup", groupParam, session);
     }
 
     @Override

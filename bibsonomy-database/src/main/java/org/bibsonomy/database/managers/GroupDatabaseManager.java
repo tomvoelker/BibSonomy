@@ -760,13 +760,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		param.setUserName(username);
 		param.setGroupId(group.getGroupId());
 
-		/*
-		 * FIXME: What happens to posts that are only visible for the deleted group?
-		 * We need to set them to private else the user can't see the posts anymore
-		 * be careful: this method is also called by the delete user method.
-		 */
-
-		this.plugins.onRemoveUserFromGroup(param.getUserName(), param.getGroupId(), session);
+		this.plugins.onChangeUserMembershipInGroup(param.getUserName(), param.getGroupId(), session);
 		this.delete("removeUserFromGroup", param, session);
 	}
 	
@@ -812,6 +806,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		oldMembership.setGroupRole(role);
 		param.setMembership(oldMembership);
 		
+		this.plugins.onChangeUserMembershipInGroup(param.getUserName(), param.getGroupId(), session);
 		this.update("updateGroupRole", param, session);
 	}
 	
@@ -908,21 +903,26 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		/*
 		 * store the bean
 		 */
+		
+		//TODO: Logging!
+		
 		this.update("updateGroupSettings", groupToUpdate, session);
 	}
 
 	/**
 	 * updates the user shared documents field for the given user.
 	 * 
-	 * @param groupName
+	 * @param group
 	 * @param membership 
 	 * @param session
 	 */
-	public void updateUserSharedDocuments(final String groupName, GroupMembership membership, final DBSession session) {
-		final GroupParam p = new GroupParam();
-		p.setMembership(membership);
-		p.setRequestedGroupName(groupName);
-		this.update("updateUserSharedDocuments", p, session);
+	public void updateUserSharedDocuments(final Group group, GroupMembership membership, final DBSession session) {
+		final GroupParam param = new GroupParam();
+		param.setMembership(membership);
+		param.setRequestedGroupName(group.getName());
+		
+		this.plugins.onChangeUserMembershipInGroup(param.getMembership().getUser().getName(), group.getGroupId(), session);
+		this.update("updateUserSharedDocuments", param, session);
 	}
 	
 	/**

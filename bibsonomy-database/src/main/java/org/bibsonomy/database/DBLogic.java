@@ -1180,7 +1180,7 @@ public class DBLogic implements LogicInterface {
 				break;
 			case UPDATE_USER_SHARED_DOCUMENTS:
 				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, membership.getUser().getName());
-				this.groupDBManager.updateUserSharedDocuments(groupName, membership, session);
+				this.groupDBManager.updateUserSharedDocuments(paramGroup, membership, session);
 				break;
 			case UPDATE_GROUP_REPORTING_SETTINGS:
 				this.permissionDBManager.ensureIsAdminOrGroupAdminOrSelf(this.loginUser, groupName);
