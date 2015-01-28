@@ -36,7 +36,7 @@
 		      WHERE t1.current_content_id = b.content_id
 		      	AND b.simhash2 = #hash# 
 				AND b.user_name = #requestedUserName#	
-		      ORDER BY content_id DESC
+		      ORDER BY content_id ASC
 			  LIMIT #limit# OFFSET #offset#) AS b2
 		LEFT OUTER JOIN log_tas AS t ON b2.content_id = t.content_id
 	    <include refid="reviewRatingsJoinPublication2" />
@@ -60,7 +60,7 @@
 		ORDER BY u.date DESC
 	</select>
 	
-	<select id="getGoldStandardHistory" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="bibtexParam">
+	<select id="getGoldStandardHistory" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="resourceParam">
 		(SELECT b.content_id, <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, 1 AS count, content_type, <include refid="reviewRatingsRows" /> 
 		FROM gold_standard b
 		LEFT JOIN review_ratings_cache c ON c.interHash = #hash#
@@ -71,7 +71,7 @@
 		LEFT JOIN review_ratings_cache c ON c.interHash = #hash#
 		WHERE b2.simhash1 = #hash#  <!-- AND b.content_type = #contentType# -->
 		  AND b2.content_id = b.current_content_id
-		ORDER BY b.date DESC
+		ORDER BY b.date ASC
 		LIMIT #limit# OFFSET #offset#)
 	ORDER BY content_id
 	</select>
@@ -83,10 +83,7 @@
 		FROM (SELECT t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.user_name, t1.date, t1.content_id, t1.group, t1.change_date
 		      FROM bookmark t1
 		      WHERE t1.book_url_hash = #hash#
-		         <include refid="restrictToGroups"/>
-		         AND user_name = #requestedUserName#
-		      ORDER BY t1.date DESC
-		      LIMIT #limit# OFFSET #offset#) AS b
+		         AND user_name = #requestedUserName#) AS b
 		LEFT OUTER JOIN tas t ON b.content_id = t.content_id <include refid="reviewRatingsJoinBookmark" />, urls u, groupids g
 		WHERE b.book_url_hash = u.book_url_hash
 			AND b.group = g.group
@@ -99,7 +96,7 @@
 		        AND bm.content_id = t1.current_content_id
 		        <include refid="restrictToGroups"/>
 		        AND bm.user_name = #requestedUserName#
-		      ORDER BY t1.date DESC
+		      ORDER BY t1.date ASC
 		      LIMIT #limit# OFFSET #offset#) AS b
 		LEFT OUTER JOIN log_tas t ON b.content_id = t.content_id <include refid="reviewRatingsJoinBookmark" />, urls u, groupids g
 		WHERE b.book_url_hash = u.book_url_hash
