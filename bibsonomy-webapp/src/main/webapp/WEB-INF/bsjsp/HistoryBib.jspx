@@ -14,8 +14,8 @@
 	xmlns:bibgs="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
 	xmlns:form="http://www.springframework.org/tags/form">
 
-	<jsp:directive.page contentType="text/html; charset=UTF-8"
-		language="java" pageEncoding="UTF-8" session="true" />
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
 	<layout:paneLayout 
 		requPath="${requPath}" 
 		command="${command}"
@@ -24,14 +24,14 @@
 
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/cv_page.css" />
-	    </jsp:attribute>
+		</jsp:attribute>
 
 		<!--+
-    	 	| heading
-    	 	+-->
+		 	| heading
+		 	+-->
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
-    	</jsp:attribute>
+		</jsp:attribute>
 
 		<jsp:attribute name="infobox">
 			<parts:infobox>
@@ -39,7 +39,7 @@
 					<!-- short info about historyPage -->
 					<fmt:message key="hidtory.info"/>
 					<ul style="list-style-type: circle;padding-left:20px;">
-						<li><fmt:message key="hidtory.option1"/></li>                
+						<li><fmt:message key="hidtory.option1"/></li>
 						<li><fmt:message key="hidtory.option2"/></li>
 						<li><fmt:message key="hidtory.option3"/></li>
 						<li><fmt:message key="hidtory.option4"/></li>
@@ -60,7 +60,7 @@
 				<rc:history listView="${command.bibtex}"
 						loginUserName="${command.context.loginUser.name}"
 						disableListNavigation="${disableListNavigation}"
-						requPath="${requPath}" isPub="true" isGoldStandard="false">				
+						requPath="${requPath}" isPub="true" isGoldStandard="${false}">
 				</rc:history>
 			</div>
 		</div>

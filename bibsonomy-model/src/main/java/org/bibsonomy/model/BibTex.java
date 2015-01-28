@@ -683,9 +683,8 @@ public class BibTex extends Resource {
 		return extraUrls;
 	}
 
-
 	@Override
-	public String toString(){
+	public String toString() {
 		return super.toString() + " by <" + author + ">";	
 	}
 	

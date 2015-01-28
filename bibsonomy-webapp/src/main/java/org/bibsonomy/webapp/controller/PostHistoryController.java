@@ -28,28 +28,23 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.Set;
-
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
  * @author pba
  * @author Nasim Nabavi
+ * @param <R>
  */
-public class PostHistoryController <R extends Resource> extends SingleResourceListControllerWithTags implements MinimalisticController<ResourcePageCommand<R>> {
-
+public class PostHistoryController<R extends Resource> extends SingleResourceListControllerWithTags implements MinimalisticController<ResourcePageCommand<R>> {
 	
 	@Override
 	public ResourcePageCommand<R> instantiateCommand() {
@@ -57,7 +52,7 @@ public class PostHistoryController <R extends Resource> extends SingleResourceLi
 	}
 
 	@Override
-	public View workOn(ResourcePageCommand command) {
+	public View workOn(ResourcePageCommand<R> command) {
 		final String format = command.getFormat();
 		this.startTiming(format);
 		
@@ -67,40 +62,22 @@ public class PostHistoryController <R extends Resource> extends SingleResourceLi
 		 */
 		final String longHash = command.getRequestedHash();
 		final String requUser = command.getRequestedUser();
-		final String resourceClassName = command.getResourceClass();
+		final Class<R> resourceClass = command.getResourceClass();
 		final GroupingEntity groupingEntity = present(requUser) ? GroupingEntity.USER : GroupingEntity.ALL;
 		
-
-		final FilterEntity filter = FilterEntity.POSTS_HISTORY;
-		Class<? extends Resource> resourceClass = null;
-		if (resourceClassName.equals("bibtex")) {
-			resourceClass = BibTex.class;
-		} else if(resourceClassName.equals("bookmark")) {
-			resourceClass = Bookmark.class;
-		}
-		else if(resourceClassName.equals("goldstandardpublication")){
-			resourceClass = GoldStandardPublication.class;
-		}
-		else if(resourceClassName.equals("goldstandardbookmark")){
-			resourceClass = GoldStandardBookmark.class;
-		}
-	
-		this.setList(command, resourceClass, groupingEntity, requUser, null, longHash, null, filter, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceClass).getEntriesPerPage());
+		this.setList(command, resourceClass, groupingEntity, requUser, null, longHash, null, FilterEntity.POSTS_HISTORY, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceClass).getEntriesPerPage());
 		this.postProcessAndSortList(command, resourceClass);
 
-		//redirect to HistoryBM.jspx or HistoryBib.jspx
+		// redirect to the correct view
 		if ("html".equals(format)) {
-			this.endTiming();	
-			if(BibTex.class.equals(resourceClass)){
+			this.endTiming();
+			if (BibTex.class.equals(resourceClass)) {
 				return Views.HISTORYBIB;
-			}
-			else if(GoldStandardPublication.class.equals(resourceClass)){
+			} else if (GoldStandardPublication.class.equals(resourceClass)) {
 				return Views.HISTORYGOLDBIB;
-			}
-			else if(GoldStandardBookmark.class.equals(resourceClass)){
+			} else if (GoldStandardBookmark.class.equals(resourceClass)) {
 				return Views.HISTORYGOLDBM;
-			}
-			else{
+			} else {
 				return Views.HISTORYBM;
 			}
 		}

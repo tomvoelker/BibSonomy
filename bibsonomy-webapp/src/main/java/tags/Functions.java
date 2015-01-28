@@ -38,20 +38,17 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.TreeSet;
-import java.util.Arrays;
-import java.util.LinkedList;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.UserRelation;
-import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.database.systemstags.markup.ReportedSystemTag;
@@ -88,7 +85,6 @@ import org.joda.time.format.ISODateTimeFormat;
 
 import com.sksamuel.diffpatch.DiffMatchPatch;
 import com.sksamuel.diffpatch.DiffMatchPatch.Diff;
-import com.sksamuel.diffpatch.DiffMatchPatch.Patch;
 
 /**
  * TODO: move to org.bibsonomy.webapp.util.tags package
@@ -429,15 +425,17 @@ public class Functions {
 	public static Map<String,String> DiffEntriesPub(Post newPost, Post oldPost) {
 		final BibTex newBib = (BibTex) newPost.getResource();
 		final BibTex oldBib = (BibTex) oldPost.getResource();
-		Map<String,String> DiffArray = new LinkedHashMap<String,String>();
-		String tmp;		
+		Map<String, String> diffArray = new LinkedHashMap<String, String>();
+		String tmp;
+
+		// TODO: do we really want to use cleanbibtex here?
 		if (!cleanBibtex(newBib.getEntrytype()).equals(cleanBibtex(oldBib.getEntrytype()))){
 			tmp = compareString(newBib.getEntrytype(),oldBib.getEntrytype());
-			DiffArray.put("entrytype",tmp);
+			diffArray.put("entrytype", tmp);
 		}
 		if (!cleanBibtex(newBib.getTitle()).equals(cleanBibtex(oldBib.getTitle()))){
 			tmp = compareString(newBib.getTitle(),oldBib.getTitle());
-			DiffArray.put("title",tmp);
+			diffArray.put("title", tmp);
 		}
 		
 		/*Important comment:
@@ -459,25 +457,22 @@ public class Functions {
 					val1 = PersonNameUtils.serializePersonNames(newBib.getAuthor(),false, ", ");
 					val2 = PersonNameUtils.serializePersonNames(oldBib.getAuthor(),false, ", ");
 					tmp = compareString(val1,val2);
-					DiffArray.put("author",tmp);
+					diffArray.put("author", tmp);
 				}
 
-			} 
-			else if (present(newBib.getAuthor()))
-			{
+			} else if (present(newBib.getAuthor())) {
 				val2="";
 				val1 = PersonNameUtils.serializePersonNames(newBib.getAuthor(),false, ", ");
 				
 				tmp = compareString(val1,val2);
-				DiffArray.put("author",tmp);
+				diffArray.put("author", tmp);
 
-			} else if(present(oldBib.getAuthor())){
+			} else if (present(oldBib.getAuthor())) {
 				val1 = "";
 				val2 = PersonNameUtils.serializePersonNames(oldBib.getAuthor(),false, ", ");
 				
 				tmp = compareString(val1,val2);
-				DiffArray.put("author",tmp);
-
+				diffArray.put("author", tmp);
 			} 
 		}
 
@@ -492,13 +487,13 @@ public class Functions {
 				Set<PersonName> aa = new HashSet<>(newBib.getEditor());
 				Set<PersonName> bb = new HashSet<>(oldBib.getEditor());
 
-				if (!aa.equals(bb)){				
+				if (!aa.equals(bb)) {
 					val1 = PersonNameUtils.serializePersonNames(newBib.getEditor(),false, ", ");
 					val2 = PersonNameUtils.serializePersonNames(oldBib.getEditor(),false, ", ");
 					tmp = compareString(val1,val2);
-					DiffArray.put("editor",tmp);
+					diffArray.put("editor", tmp);
 
-				}			
+				}
 
 			}
 			else if(present(newBib.getEditor())){
@@ -506,124 +501,124 @@ public class Functions {
 				
 				val1 = PersonNameUtils.serializePersonNames(newBib.getEditor(),false, ", ");
 				tmp = compareString(val1,val2);
-				DiffArray.put("editor",tmp);
+				diffArray.put("editor", tmp);
 
 			} else if(present(oldBib.getEditor())){
 				val1 = "";
 				
 				val2 = PersonNameUtils.serializePersonNames(oldBib.getEditor(),false, ", ");
 				tmp = compareString(val1,val2);
-				DiffArray.put("editor",tmp);
+				diffArray.put("editor", tmp);
 
 			} 
 		}
 		
 		if (!cleanBibtex(newBib.getYear()).equals(cleanBibtex(oldBib.getYear()))){
 			tmp = compareString(newBib.getYear(),oldBib.getYear());
-			DiffArray.put("year",tmp);
+			diffArray.put("year", tmp);
 		}
 		if (!cleanBibtex(newBib.getBooktitle()).equals(cleanBibtex(oldBib.getBooktitle()))){
 			tmp = compareString(newBib.getBooktitle(),oldBib.getBooktitle());
-			DiffArray.put("booktitle",tmp);
+			diffArray.put("booktitle", tmp);
 		}
 		if (!cleanBibtex(newBib.getJournal()).equals(cleanBibtex(oldBib.getJournal()))){
 			tmp = compareString(newBib.getJournal(),oldBib.getJournal());
-			DiffArray.put("journal",tmp);
+			diffArray.put("journal", tmp);
 		}
 		if (!cleanBibtex(newBib.getVolume()).equals(cleanBibtex(oldBib.getVolume()))){
 			tmp = compareString(newBib.getVolume(),oldBib.getVolume());
-			DiffArray.put("volume",tmp);
+			diffArray.put("volume", tmp);
 		}
 		if (!cleanBibtex(newBib.getNumber()).equals(cleanBibtex(oldBib.getNumber()))){
 			tmp = compareString(newBib.getNumber(),oldBib.getNumber());
-			DiffArray.put("number",tmp);
+			diffArray.put("number", tmp);
 		}
 		if (!cleanBibtex(newBib.getPages()).equals(cleanBibtex(oldBib.getPages()))){
 			tmp = compareString(newBib.getPages(),oldBib.getPages());
-			DiffArray.put("pages",tmp);
+			diffArray.put("pages", tmp);
 		}
 		if (!cleanBibtex(newBib.getMonth()).equals(cleanBibtex(oldBib.getMonth()))){
 			tmp = compareString(newBib.getMonth(),oldBib.getMonth());
-			DiffArray.put("month",tmp);
+			diffArray.put("month", tmp);
 		}
 		if (!cleanBibtex(newBib.getDay()).equals(cleanBibtex(oldBib.getDay()))){
 			tmp = compareString(newBib.getDay(),oldBib.getDay());
-			DiffArray.put("day",tmp);
+			diffArray.put("day", tmp);
 		}
 		if (!cleanBibtex(newBib.getPublisher()).equals(cleanBibtex(oldBib.getPublisher()))){
 			tmp = compareString(newBib.getPublisher(),oldBib.getPublisher());
-			DiffArray.put("publisher",tmp);
+			diffArray.put("publisher", tmp);
 		}
 		if (!cleanBibtex(newBib.getAddress()).equals(cleanBibtex(oldBib.getAddress()))){
 			tmp = compareString(newBib.getAddress(),oldBib.getAddress());
-			DiffArray.put("address",tmp);
+			diffArray.put("address", tmp);
 		}
 		if (!cleanBibtex(newBib.getEdition()).equals(cleanBibtex(oldBib.getEdition()))){
 			tmp = compareString(newBib.getEdition(),oldBib.getEdition());
-			DiffArray.put("edition",tmp);
+			diffArray.put("edition", tmp);
 		}
 		if (!cleanBibtex(newBib.getChapter()).equals(cleanBibtex(oldBib.getChapter()))){
 			tmp = compareString(newBib.getChapter(),oldBib.getChapter());
-			DiffArray.put("chapter",tmp);
+			diffArray.put("chapter", tmp);
 		}
 		if (!cleanBibtex(newBib.getUrl()).equals(cleanBibtex(oldBib.getUrl()))){
 			tmp = compareString(newBib.getUrl(),oldBib.getUrl());
-			DiffArray.put("url",tmp);
+			diffArray.put("url", tmp);
 		}
 		if (!cleanBibtex(newBib.getKey()).equals(cleanBibtex(oldBib.getKey()))){
 			tmp = compareString(newBib.getKey(),oldBib.getKey());
-			DiffArray.put("key",tmp);
+			diffArray.put("key", tmp);
 		}
 		if (!cleanBibtex(newBib.getHowpublished()).equals(cleanBibtex(oldBib.getHowpublished()))){
 			tmp = compareString(newBib.getHowpublished(),oldBib.getHowpublished());
-			DiffArray.put("howpublished",tmp);
+			diffArray.put("howpublished", tmp);
 		}
 		if (!cleanBibtex(newBib.getInstitution()).equals(cleanBibtex(oldBib.getInstitution()))){
 			tmp = compareString(newBib.getInstitution(),oldBib.getInstitution());
-			DiffArray.put("institution",tmp);
+			diffArray.put("institution", tmp);
 		}
 		if (!cleanBibtex(newBib.getOrganization()).equals(cleanBibtex(oldBib.getOrganization()))){
 			tmp = compareString(newBib.getOrganization(),oldBib.getOrganization());
-			DiffArray.put("organization",tmp);
+			diffArray.put("organization", tmp);
 		}
 		if (!cleanBibtex(newBib.getSchool()).equals(cleanBibtex(oldBib.getSchool()))){
 			tmp = compareString(newBib.getSchool(),oldBib.getSchool());
-			DiffArray.put("school",tmp);
+			diffArray.put("school", tmp);
 		}
 		if (!cleanBibtex(newBib.getSeries()).equals(cleanBibtex(oldBib.getSeries()))){
 			tmp = compareString(newBib.getSeries(),oldBib.getSeries());
-			DiffArray.put("series",tmp);
+			diffArray.put("series", tmp);
 		}
 		if (!cleanBibtex(newBib.getCrossref()).equals(cleanBibtex(oldBib.getCrossref()))){
 			tmp = compareString(newBib.getCrossref(),oldBib.getCrossref());
-			DiffArray.put("crossref",tmp);
+			diffArray.put("crossref", tmp);
 		}
 		if (!cleanBibtex(newBib.getMisc()).equals(cleanBibtex(oldBib.getMisc()))){
 			tmp = compareString(newBib.getMisc(),oldBib.getMisc());
-			DiffArray.put("misc",tmp);
+			diffArray.put("misc", tmp);
 		}
 		if (!cleanBibtex(newBib.getAbstract()).equals(cleanBibtex(oldBib.getAbstract()))){
 			tmp = compareString(newBib.getAbstract(),oldBib.getAbstract());
-			DiffArray.put("bibtexAbstract",tmp);
+			diffArray.put("bibtexAbstract", tmp);
 		}
 		if (!cleanBibtex(newBib.getPrivnote()).equals(cleanBibtex(oldBib.getPrivnote()))){
 			tmp = compareString(newBib.getPrivnote(),oldBib.getPrivnote());
-			DiffArray.put("privnote",tmp);
+			diffArray.put("privnote", tmp);
 		}
 		if (!cleanBibtex(newBib.getAnnote()).equals(cleanBibtex(oldBib.getAnnote()))){
 			tmp = compareString(newBib.getAnnote(),oldBib.getAnnote());
-			DiffArray.put("annote",tmp);
+			diffArray.put("annote", tmp);
 		}
 		if (!cleanBibtex(newBib.getNote()).equals(cleanBibtex(oldBib.getNote()))){
 			tmp = compareString(newBib.getNote(),oldBib.getNote());
-			DiffArray.put("note",tmp);
+			diffArray.put("note", tmp);
 		}
 		if (!newPost.getTags().equals(oldPost.getTags())){
 			tmp = compareString(toTagString(newPost.getTags()),toTagString(oldPost.getTags()));
-			DiffArray.put("tags",tmp);
+			diffArray.put("tags", tmp);
 		}
 
-		return DiffArray;
+		return diffArray;
 	}
 	
 	
@@ -688,7 +683,9 @@ public class Functions {
         return customized_diff_prettyHtml(d);
     
 	}
-	
+
+	// TODO: move to view layer
+	@Deprecated
 	public static String customized_diff_prettyHtml(LinkedList<Diff> diffs) {
 	    StringBuilder html = new StringBuilder();
 	    for (Diff aDiff : diffs) {
@@ -712,9 +709,13 @@ public class Functions {
 	  }
 
 	/**
-	 * Compares two strings word-based. (Maybe usefull in future!)
-	 * @param newValue and oldValue
-	 * @return The difference between two strings. (inserted: green, deleted: red, not_changed)
+	 * TODO: remove!? Compares two strings word-based. (Maybe usefull in
+	 * future!)
+	 * 
+	 * @param newValue
+	 *            and oldValue
+	 * @return The difference between two strings. (inserted: green, deleted:
+	 *         red, not_changed)
 	 */
 	/*public static String compareString(String newValue, String oldValue) {
 

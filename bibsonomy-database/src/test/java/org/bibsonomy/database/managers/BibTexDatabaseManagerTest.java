@@ -1024,7 +1024,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 * tests testGetPostsByKey
 	 */
 	@Test
-/*	public void testGetPostsByBibTeXKey() {
+	public void testGetPostsByBibTeXKey() {
 		this.printMethod("testGetPostsByBibTeXKey");
 		final String bibtexKey = "test %";
 		final String requestedUserName = "testuser1";
@@ -1048,7 +1048,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		posts = publicationDb.getPostsByBibTeXKey("testspammer", "elsenbroich2006abductive", null, -1, Arrays.asList(Integer.valueOf(PUBLIC_GROUP_ID), Integer.valueOf(PUBLIC_GROUP_ID_SPAM)), 20, 0, null, this.dbSession);
 		assertEquals(2, posts.size());
 	}
-	*/
+
 	/**
 	 * tests {@link BibTexDatabaseManager#getPostsByFollowedUsers(String, List, int, int, org.bibsonomy.database.common.DBSession)}
 	 */
