@@ -1026,10 +1026,10 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForList("getTagsByBibtexkey", param, Tag.class, session);
 	}
 	
-	public void updateTasInGroupFromLeavingUser(User leavingUser, Group group, DBSession session) {
+	public void updateTasInGroupFromLeavingUser(User leavingUser, int groupId, DBSession session) {
 		final TagParam param = new TagParam();
 		param.setUserName(leavingUser.getName());
-		param.setGroupId(group.getGroupId());
+		param.setGroupId(groupId);
 		
 		// update tags
 		this.update("updateTasInGroupFromLeavingUser", param, session);

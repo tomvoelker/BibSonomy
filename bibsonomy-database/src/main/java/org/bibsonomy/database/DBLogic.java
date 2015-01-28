@@ -1155,22 +1155,21 @@ public class DBLogic implements LogicInterface {
 					session.beginTransaction();
 					this.groupDBManager.removeUserFromGroup(groupName, membership.getUser().getName(), session);
 					
-					// FIXME: (groups) should this be always the logged in user? what about admins deleting users?
 					// FIXME: (groups) paramgroup must not contain a group id
 					
 					// set all tas shared with the group to private (groupID 1)
-					this.tagDBManager.updateTasInGroupFromLeavingUser(loginUser, paramGroup, session);
+					this.tagDBManager.updateTasInGroupFromLeavingUser(membership.getUser(), paramGroup.getGroupId(), session);
 					
 					/*
 					 * update the visibility of the post that are "assigned" to
 					 * the group
 					 *  XXX: a loop over all resource database managers that allow groups
 					 */
-					this.publicationDBManager.updatePostsGroupFromLeavingUser(loginUser, paramGroup, session);
-					this.bookmarkDBManager.updatePostsGroupFromLeavingUser(loginUser, paramGroup, session);
+					this.publicationDBManager.updatePostsGroupFromLeavingUser(membership.getUser(), paramGroup.getGroupId(), session);
+					this.bookmarkDBManager.updatePostsGroupFromLeavingUser(membership.getUser(), paramGroup.getGroupId(), session);
 					
 					// set all discussions in the group to private (groupID 1)
-					this.discussionDatabaseManager.updateDiscussionsInGroupFromLeavingUser(loginUser, paramGroup, session);
+					this.discussionDatabaseManager.updateDiscussionsInGroupFromLeavingUser(membership.getUser(), paramGroup.getGroupId(), session);
 					
 					session.commitTransaction();
 				} finally {
