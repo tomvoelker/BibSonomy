@@ -1777,15 +1777,20 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * TODO: as soon as we support multiple groups per post this logic must be adapted
 	 * 
 	 * @param leavingUser
-	 * @param group
+	 * @param groupId
 	 * @param session
 	 */
-	public void updatePostsGroupFromLeavingUser(User leavingUser, Group group, DBSession session) {
-		final ResourceParam<R> param = new ResourceParam<R>();
-		param.setGroupId(group.getGroupId());
+	public void updatePostsGroupFromLeavingUser(User leavingUser, int groupId, DBSession session) {
+		final ResourceParam<R> param = new ResourceParam<>();
+		param.setGroupId(groupId);
 		param.setUserName(leavingUser.getName());
 		
+		List<Integer> contentIdsToUpdate = this.queryForList("getContentIdsFrom" + resourceClassName + "ByUserAndGroupID", param, Integer.class, session);
+		
 		// FIXME: (groups) add logging
+		for (int contentId : contentIdsToUpdate)
+			this.plugins.onBookmarkUpdate(contentId, contentId, session);
+		
 		this.update("update" + this.resourceClassName + "InGroupFromLeavingUser", param, session);
 	}
 }
