@@ -35,6 +35,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.ProfilePrivlevel;
@@ -543,5 +544,22 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		}
 		return true;
 	}
+	
+	public boolean hasGroupLevelPermission(final User loginuser, final GroupLevelPermission groupLevelPermission) {
+		for (final Group group: loginuser.getGroups()) {
+			if (group.getGroupLevelPermissions().contains(groupLevelPermission)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+
+	public void ensureHasGroupLevelPermission(final User loginuser, final GroupLevelPermission groupLevelPermission) {
+		if (!hasGroupLevelPermission(loginuser, groupLevelPermission)) {
+			throw new AccessDeniedException();
+		}
+	}
+	
 
 }

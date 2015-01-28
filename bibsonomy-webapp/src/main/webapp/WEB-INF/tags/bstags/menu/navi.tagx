@@ -98,14 +98,30 @@
 											</li>
 										</c:if>
 									</c:forEach>
+									<li class="divider"><!-- keep me --></li>
+									<li><a href="/grouprequest"><fmt:message key="navi.group.groupRequest" /></a></li>
 								</ul>
 							</li>
 						</c:when>
 						<c:otherwise>
-							<li class="${activeTab eq 'groups' ? 'active' : ''}"><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups"/></a></li>
+							<c:choose>		
+								<c:when test="${not empty loginUserName}">
+									<li class="dropdown ${activeTab eq 'groups' ? 'active' : ''}">
+										<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.groups"/><b class="caret">&amp;nbsp;</b></a>
+										<ul class="dropdown-menu">
+											<li><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups.all"/></a></li>
+											<li class="divider"><!-- keep me --></li>
+											<li><a href="/grouprequest"><fmt:message key="navi.group.groupRequest" /></a></li>
+										</ul>
+									</li>
+								</c:when>
+								<c:otherwise>
+									<li class="${activeTab eq 'groups' ? 'active' : ''}"><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups"/></a></li>
+								</c:otherwise>
+							</c:choose>		
 						</c:otherwise>
-					</c:choose>
-	
+					</c:choose>					
+					
 					<!--+
 						| popular
 						+-->

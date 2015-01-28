@@ -1,0 +1,66 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
+	xmlns:grouprequest="urn:jsptagdir:/WEB-INF/tags/bstags/grouprequest"> 
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<fmt:message key="navi.groups" var="pageTitle" />
+	
+	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.groups" command="${command}" pageTitle="${pageTitle}" activeTab="groups" minimizedContentWidth="${true}">
+
+		<!--+
+		 	| heading
+		 	+-->
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.groups" formAction="/group/" formInputName="group"/>
+		</jsp:attribute>
+
+		<!--+
+			| breadcrumbs
+			+-->
+		<jsp:attribute name="breadcrumbs">	
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<fmt:message key="navi.groups" var="groups" />
+					<nav:crumb name="${groups}" active="false" />
+					
+					<fmt:message key="navi.groupRequest" var="groupRequest" />
+					<nav:crumb name="${groupRequest}" active="true" />					
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		
+		
+		<!--+
+		 	| content
+		 	+-->
+		<jsp:attribute name="content">
+		
+			<h1 class="content-heading"><fmt:message key="navi.groupRequest" /></h1>
+			
+			<!--+  
+				| description text how a group is created
+				+-->
+			<bs:alert style="info">
+				<jsp:attribute name="alertBody">
+					<fmt:message key="group.groupRequest.description" />
+				</jsp:attribute>
+			</bs:alert>
+
+			<grouprequest:request command="${command}"/>
+
+		</jsp:attribute>
+	</layout:paneLayout>
+</jsp:root>

@@ -26,53 +26,55 @@
  */
 package org.bibsonomy.common.enums;
 
-
 /**
  * @author cvo
  */
 public enum GroupUpdateOperation {
-	
+
 	/** Update the settings of a group. */
 	UPDATE_SETTINGS,
-	
+
 	/** Update the grouprole of a user */
 	UPDATE_GROUPROLE,
-	
+
 	/** Adds new user to a group. */
 	ADD_MEMBER,
-	
+
 	/** Removes a user from the group. */
 	REMOVE_MEMBER,
-	
+
 	/** Update the whole group */
 	UPDATE_ALL,
-	
+
 	/** Update the user specific shared documents flag */
 	UPDATE_USER_SHARED_DOCUMENTS,
-	
+
 	/** update the publication reporting settings for a group */
 	UPDATE_GROUP_REPORTING_SETTINGS,
-	
+
 	/** Activate the pending group */
 	ACTIVATE,
-	
+
 	/** deletes the pending group **/
 	@Deprecated
 	DELETE,
-	
+
 	/** Adds a join request */
 	ADD_REQUESTED,
-	
+
 	/** Add an invited user */
 	ADD_INVITED,
-	
+
 	/** Remove an invited user */
 	REMOVE_INVITED,
-	
+
 	// FIXME: no group update operation
-	/** Request a new group.*/
+	/** Request a new group. */
 	REQUEST,
-	
+
 	/** Decline a join request */
-	DECLINE_JOIN_REQUEST;
+	DECLINE_JOIN_REQUEST,
+
+	/** Add a group-level-permission @see org.bibsonomy.GroupLevelPermission **/
+	UPDATE_PERMISSIONS;
 }

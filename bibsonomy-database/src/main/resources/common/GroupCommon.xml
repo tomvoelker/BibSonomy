@@ -3,17 +3,17 @@
 
 <sqlMap namespace="GroupCommon">
 
+	<!-- The basics of every group -->
 	<resultMap id="group_basic" class="group">
 		<result property="groupId"            column="group"             javaType="int" />
 		<result property="name"               column="group_name"        javaType="string" />
 		<result property="privlevel"          column="privlevel"         javaType="Privlevel"/>
 		<result property="sharedDocuments"    column="sharedDocuments"   javaType="boolean"/>
 	</resultMap>
-	
-	<resultMap id="group_extended" extends="group_basic" class="group">
-		<result property="realname"           column="user_realname"     javaType="string"/>
-		<result property="homepage"           column="user_homepage"     javaType="url"  />
-	</resultMap>
+
+	<!-- +
+	     | Extensions for additional fields 
+	     +-->
 
 	<resultMap id="publReportingSettings" class="publicationReportingSettings">
 		<result property="reportingMailAddress" column="publ_reporting_mail" javaType="string" />
@@ -26,35 +26,56 @@
 		<result property="reason"           column="request_reason"           javaType="string"/>
 		<result property="submissionDate"   column="request_submission_date"  javaType="date" />
 	</resultMap>
-	
-	<resultMap id="group" class="group" extends="group_extended" groupBy="name">
-		<result property="publicationReportingSettings"  resultMap="GroupCommon.publReportingSettings" />
-		<result property="groupRequest"                  resultMap="GroupCommon.groupRequest" />
-	</resultMap>
-	
+
 	<resultMap id="groupMembership" class="groupMembership">
 		<result property="userSharedDocuments"  column="user_shared_documents"  javaType="boolean" />
 		<result property="groupRole"            column="group_role"             javaType="GroupRole" />
 		<result property="user"                 resultMap="UserCommon.userForGroup" />
 	</resultMap>
-	
+
+	<resultMap id="groupLevelPermission" class="GroupLevelPermission">
+		<result property="id" column="permission" />
+	</resultMap>
+
+	<!--+
+	    | Groups with additional fields 
+	    +-->
+
+	<resultMap id="group_extended" extends="group_basic" class="group">
+		<result property="realname"           column="user_realname"     javaType="string"/>
+		<result property="homepage"           column="user_homepage"     javaType="url"  />
+	</resultMap>
+
+	<resultMap id="group" class="group" extends="group_extended" groupBy="name">
+		<result property="publicationReportingSettings"  resultMap="GroupCommon.publReportingSettings" />
+		<result property="groupRequest"                  resultMap="GroupCommon.groupRequest" />
+	</resultMap>
+
 	<resultMap id="groupWithMemberships" class="group" extends="group_extended" groupBy="name">
 		<result property="memberships" resultMap="GroupCommon.groupMembership" />
+	</resultMap>
+
+	<resultMap id="groupWithPermissions" class="group" extends="group_basic" groupBy="name">
+		<result property="groupLevelPermissions" resultMap="GroupCommon.groupLevelPermission" />
 	</resultMap>
 	
 	<resultMap id="groupWithMembershipsAndReportings" class="group" extends="groupWithMemberships" groupBy="name" >
 		<result property="publicationReportingSettings" resultMap="GroupCommon.publReportingSettings" />
 	</resultMap>
-	
+
+	<resultMap id="groupWithMembershipsAndReportingsAndPermissions" class="group" extends="groupWithMembershipsAndReportings" groupBy="name" >
+		<result property="groupLevelPermissions" resultMap="GroupCommon.groupLevelPermission" />
+	</resultMap>
+
 	<resultMap id="tagsets" class="tagset" groupBy="setName">
 		<result property="setName"      column="set_name"       javaType="string"  />
 		<result property="tags"         resultMap="Common.tag" />
 	</resultMap>
-	
+
 	<sql id="requestColumns">
 		i.request_user_name, i.request_reason, i.request_submission_date
 	</sql>
-	
+
 	<sql id="reportingColumns">
 		i.publ_reporting_mail, i.publ_reporting_mail_template, i.publ_reporting_external_url
 	</sql>

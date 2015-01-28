@@ -92,7 +92,8 @@
 	<typeAlias alias="ProfilePrivLevel"		type="org.bibsonomy.common.enums.ProfilePrivlevel" />
 	<typeAlias alias="PrivLevel"			type="org.bibsonomy.common.enums.Privlevel" />
 	<typeAlias alias="GroupRole"			type="org.bibsonomy.common.enums.GroupRole" />
-	<typeAlias alias="Role"              type="org.bibsonomy.common.enums.Role" />
+	<typeAlias alias="Role"					type="org.bibsonomy.common.enums.Role" />
+	<typeAlias alias="GroupLevelPermission"	type="org.bibsonomy.common.enums.GroupLevelPermission" />
 	
 	<typeAlias alias="LayoutSettings"    type="org.bibsonomy.model.user.settings.LayoutSettings" />
 	

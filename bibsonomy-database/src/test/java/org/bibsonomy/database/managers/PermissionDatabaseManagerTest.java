@@ -33,6 +33,7 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
@@ -82,6 +83,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 				permissionDb.checkStartEnd(new User(), 0, i, "test");
 				fail("expected exception");
 			} catch (final AccessDeniedException ignore) {
+				// ignore
 			}
 		}
 		// OK 
@@ -268,5 +270,20 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		
 		// group sharedDocuments = 1 && userSharedDocuments = 1 -> yes
 		assertTrue(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup1", null, this.dbSession));
+	}
+	
+	@Test
+	public void testHasGroupLevelPermission() {
+		final User testUser1 = new User("testuser1");
+		try {
+			permissionDb.ensureHasGroupLevelPermission(testUser1, GroupLevelPermission.COMMUNITY_POST_INSPECTION);
+			fail("Should yield AccessDeniedException");
+		} catch (AccessDeniedException e) {
+			// ignore
+		}
+		final Group group = new Group();
+		group.getGroupLevelPermissions().add(GroupLevelPermission.COMMUNITY_POST_INSPECTION);
+		testUser1.addGroup(group);
+		permissionDb.ensureHasGroupLevelPermission(testUser1, GroupLevelPermission.COMMUNITY_POST_INSPECTION);
 	}
 }

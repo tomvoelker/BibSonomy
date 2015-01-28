@@ -30,14 +30,17 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.UserRelation;
@@ -172,10 +175,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * @param authUser 
 	 * @param groupname 
+	 * @param getPermissions TODO
 	 * @param session 
 	 * @return group 
 	 */
-	public Group getGroupMembers(final String authUser, final String groupname, final DBSession session) {
+	public Group getGroupMembers(final String authUser, final String groupname, final boolean getPermissions, final DBSession session) {
 		log.debug("getGroupMembers " + groupname);
 		Group group;
 		if ("friends".equals(groupname)) {
@@ -197,8 +201,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			group.setMemberships(Collections.<GroupMembership> emptyList());
 			return group;
 		}
-
-		group = this.queryForObject("getGroupWithMemberships", groupname, Group.class, session);
+		if (getPermissions) {
+			group = this.queryForObject("getGroupWithMembershipsAndPermissions", groupname, Group.class, session);
+		} else {
+			group = this.queryForObject("getGroupWithMemberships", groupname, Group.class, session);
+		}
 		// the group has no members. At least the dummy user should exist.
 		if (group == null) {
 			log.debug("group " + groupname + " does not exist");
@@ -932,5 +939,43 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void setUserDb(UserDatabaseManager userDb) {
 		this.userDb = userDb;
+	}
+
+	/**
+	 * @param loginUserName
+	 * @param group 
+	 * @param session 
+	 * @param paramGroup
+	 */
+	public void updateGroupLevelPermissions(final String loginUserName, final Group group, final DBSession session) {
+		try {
+			session.beginTransaction();
+			final Group existinGroup = getGroupWithGroupLevelPermissions(group, session);
+			if (!present(existinGroup)) {
+				throw new IllegalArgumentException("Permissions can only be added to existing groups");
+			}
+			final Collection<GroupLevelPermission> permissionsToDelete = CollectionUtils.subtract(existinGroup.getGroupLevelPermissions(), group.getGroupLevelPermissions());
+			final Collection<GroupLevelPermission> permissionsToInsert = CollectionUtils.subtract(group.getGroupLevelPermissions(), existinGroup.getGroupLevelPermissions());
+			for (final GroupLevelPermission permissionToInsert : permissionsToInsert) {
+				final GroupParam groupParam = new GroupParam();
+				groupParam.setGroupId(existinGroup.getGroupId());
+				groupParam.setGrantedByUser(loginUserName);
+				groupParam.setGroupLevelPermission(permissionToInsert);
+				this.insert("insertGroupLevelPermission", groupParam, session);
+			}
+			for (final GroupLevelPermission permissionToDelete : permissionsToDelete) {
+				final GroupParam groupParam = new GroupParam();
+				groupParam.setGroupId(existinGroup.getGroupId());
+				groupParam.setGroupLevelPermission(permissionToDelete);
+				this.delete("deleteGroupLevelPermission", groupParam, session);
+			}
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+	
+	private Group getGroupWithGroupLevelPermissions(Group group, final DBSession session) {
+		return this.queryForObject("getGroupWithPermissions", group.getName(), Group.class, session);
 	}
 }

@@ -254,7 +254,7 @@ INSERT INTO `pending_groupids` (`group_name`, `request_user_name`, `request_reas
 ('testpendinggroup2', 'testrequestuser2', 'my new reason2', 8,           1, 0);
  
 -- 
--- Data for table `groups`
+-- Data for table `group_memberships`
 -- 
 
 INSERT INTO `group_memberships` VALUES 
@@ -268,6 +268,9 @@ INSERT INTO `group_memberships` VALUES
 ('testgroup2', 4, 4, '2007-01-01 01:01:01', 2, 0),
 ('testgroup3', 5, 5, '2007-01-01 01:01:01', 2, 0),
 ('testgroup3', 6, 6, '2007-01-01 01:01:01', 2, 0);
+
+
+
 
 -- 
 -- Data for table `ids`

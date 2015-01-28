@@ -32,10 +32,13 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.user.remote.RemoteUserId;
@@ -1008,4 +1011,17 @@ public class User implements Serializable {
 	public void setGroupRole(GroupRole groupRole) {
 		this.groupRole = groupRole;
 	}
+	
+	/*
+	 * Return all group level permissions this user has from any group he is a member of
+	 */
+	public Set<GroupLevelPermission> getGroupLevelPermissions() {
+		Set<GroupLevelPermission> groupLevelPermissions = new HashSet<GroupLevelPermission>();
+		for (Group group: this.getGroups()) {
+			groupLevelPermissions.addAll(group.getGroupLevelPermissions());
+		}
+		return groupLevelPermissions;
+	}
+	
+	
 }

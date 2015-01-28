@@ -1,0 +1,44 @@
+
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:form="http://www.springframework.org/tags/form"
+		  xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
+		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+		  xmlns:users="urn:jsptagdir:/WEB-INF/tags/bstags/users"
+		  xmlns:spring="http://www.springframework.org/tags"
+		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+		  xmlns:group="urn:jsptagdir:/WEB-INF/tags/bstags/resources/group"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true" />
+
+	<c:set var="loginUser" value="${command.context.loginUser}" />
+
+	<fieldset class="fsOuter">
+		<c:if test="${!loginUser.spammer}">
+			<!-- Request a new group -->
+			<bsform:fieldset legendKey="settings.group.reqGroup">
+				<jsp:attribute name="content">
+					<form:form method="post" action="/updateGroup?action=REQUEST" cssClass="form-horizontal">
+						<input type="hidden" name="ckey" value="${ckey}"/>
+						<input type="hidden" name="operation" value="REQUEST" />
+						<bsform:input labelKey="settings.group.name" path="group.name" labelColSpan="3" inputColSpan="9" />
+						<bsform:textarea labelKey="settings.group.description" path="group.description" rows="2"  labelColSpan="3" inputColSpan="9" />
+						<bsform:textarea labelKey="settings.group.reqReason" path="group.groupRequest.reason" rows="2"  labelColSpan="3" inputColSpan="9" />
+
+						<div class="col-sm-offset-3" >
+							<bsform:button style="success" size="defaultSize" value="submit${settings.group.reqGroup.button}" type="submit" />
+						</div>
+					</form:form>
+				</jsp:attribute>
+			</bsform:fieldset>
+
+		</c:if>
+	</fieldset>
+
+	
+</jsp:root>

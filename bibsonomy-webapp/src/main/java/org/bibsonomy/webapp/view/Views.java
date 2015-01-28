@@ -45,6 +45,8 @@ public enum Views implements View {
 	 * query views ****************************************************
 	 */
 
+	
+	
 	/**
 	 * the first page you see when entering the application
 	 */
@@ -298,6 +300,10 @@ public enum Views implements View {
 	 * command.responseString is written withOUT (!) c:out
 	 */
 	AJAX_JSON("ajax/snippetJson"),
+	/**
+	 * command.responseString is written withOUT (!) c:out
+	 */
+	AJAX_JSON_PERMISSIONS("ajax/jsonGroupLevelPermissions"),
 	/**
 	 * command.responseString is written with c:out
 	 */
@@ -743,8 +749,13 @@ public enum Views implements View {
 	/**
 	 * show bibsonomy3 demo
 	 */
-	BIBSONOMY3("bibsonomy3");
+	BIBSONOMY3("bibsonomy3"),
 
+	/**
+	 * group request page
+	 */
+	GROUPREQUEST("groupRequest");
+	
 	/*
 	 * both bookmarks and publications
 	 */

@@ -817,7 +817,8 @@ public class DBLogic implements LogicInterface {
 	public Group getGroupDetails(final String groupName) {
 		final DBSession session = this.openSession();
 		try {
-			final Group myGroup = this.groupDBManager.getGroupMembers(loginUser.getName(), groupName, session);
+			boolean getPermissions=permissionDBManager.isAdmin(loginUser) ? true : false;
+			Group myGroup = this.groupDBManager.getGroupMembers(loginUser.getName(), groupName, getPermissions, session);
 			final Group pendingMembershipsGroup = this.groupDBManager.getGroupWithPendingMemberships(groupName, session);
 			if (present(myGroup)) {
 				myGroup.setTagSets(this.groupDBManager.getGroupTagSets(groupName, session));
@@ -1155,22 +1156,21 @@ public class DBLogic implements LogicInterface {
 					session.beginTransaction();
 					this.groupDBManager.removeUserFromGroup(groupName, membership.getUser().getName(), session);
 					
-					// FIXME: (groups) should this be always the logged in user? what about admins deleting users?
 					// FIXME: (groups) paramgroup must not contain a group id
 					
 					// set all tas shared with the group to private (groupID 1)
-					this.tagDBManager.updateTasInGroupFromLeavingUser(loginUser, paramGroup, session);
+					this.tagDBManager.updateTasInGroupFromLeavingUser(membership.getUser(), paramGroup.getGroupId(), session);
 					
 					/*
 					 * update the visibility of the post that are "assigned" to
 					 * the group
 					 *  XXX: a loop over all resource database managers that allow groups
 					 */
-					this.publicationDBManager.updatePostsGroupFromLeavingUser(loginUser, paramGroup, session);
-					this.bookmarkDBManager.updatePostsGroupFromLeavingUser(loginUser, paramGroup, session);
+					this.publicationDBManager.updatePostsGroupFromLeavingUser(membership.getUser(), paramGroup.getGroupId(), session);
+					this.bookmarkDBManager.updatePostsGroupFromLeavingUser(membership.getUser(), paramGroup.getGroupId(), session);
 					
 					// set all discussions in the group to private (groupID 1)
-					this.discussionDatabaseManager.updateDiscussionsInGroupFromLeavingUser(loginUser, paramGroup, session);
+					this.discussionDatabaseManager.updateDiscussionsInGroupFromLeavingUser(membership.getUser(), paramGroup.getGroupId(), session);
 					
 					session.commitTransaction();
 				} finally {
@@ -1211,6 +1211,11 @@ public class DBLogic implements LogicInterface {
 				}
 				this.groupDBManager.removePendingMembership(groupName, membership.getUser().getName(), session);
 				break;
+ 			case UPDATE_PERMISSIONS:
+ 				this.permissionDBManager.ensureAdminAccess(loginUser);
+ 				this.groupDBManager.updateGroupLevelPermissions(loginUser.getName(), paramGroup, session);
+ 				break;
+
 			default:
 				throw new UnsupportedOperationException("The requested method is not yet implemented.");
 			}
