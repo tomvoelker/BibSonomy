@@ -403,6 +403,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				final int compareVersion = command.getCompareVersion();
 				@SuppressWarnings("unchecked")
 				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(dbPost.getResource().getClass(), GroupingEntity.USER, this.getGrouping(loginUser), null, intraHashToUpdate, null, FilterEntity.POSTS_HISTORY, null, null, null, compareVersion, compareVersion + 1).get(0);
+				// final Post<RESOURCE> comparePost = (Post<RESOURCE>)
+				// this.logic.getPosts(dbPost.getResource().getClass(),
+				// GroupingEntity.USER, this.getGrouping(loginUser), null,
+				// intraHashToUpdate, null, FilterEntity.POSTS_HISTORY, null,
+				// null, null, null, null).get(0);
 
 				final List<String> diffEntryKeyList = command.getDifferentEntryKeys();
 				for (int i = 0; i < diffEntryKeyList.size(); i++) {
