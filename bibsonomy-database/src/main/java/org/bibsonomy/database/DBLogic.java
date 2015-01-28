@@ -817,7 +817,8 @@ public class DBLogic implements LogicInterface {
 	public Group getGroupDetails(final String groupName) {
 		final DBSession session = this.openSession();
 		try {
-			final Group myGroup = this.groupDBManager.getGroupMembers(loginUser.getName(), groupName, session);
+			boolean getPermissions=permissionDBManager.isAdmin(loginUser) ? true : false;
+			Group myGroup = this.groupDBManager.getGroupMembers(loginUser.getName(), groupName, getPermissions, session);
 			final Group pendingMembershipsGroup = this.groupDBManager.getGroupWithPendingMemberships(groupName, session);
 			if (present(myGroup)) {
 				myGroup.setTagSets(this.groupDBManager.getGroupTagSets(groupName, session));
@@ -1211,6 +1212,11 @@ public class DBLogic implements LogicInterface {
 				}
 				this.groupDBManager.removePendingMembership(groupName, membership.getUser().getName(), session);
 				break;
+ 			case UPDATE_PERMISSIONS:
+ 				this.permissionDBManager.ensureAdminAccess(loginUser);
+ 				this.groupDBManager.updateGroupLevelPermissions(loginUser.getName(), paramGroup, session);
+ 				break;
+
 			default:
 				throw new UnsupportedOperationException("The requested method is not yet implemented.");
 			}

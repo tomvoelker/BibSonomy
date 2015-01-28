@@ -28,10 +28,13 @@ package org.bibsonomy.model;
 
 import java.io.Serializable;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.Privlevel;
 
 /**
@@ -69,6 +72,11 @@ public class Group implements Serializable {
 	 * These are the {@link Post}s of this group.
 	 */
 	private List<Post<? extends Resource>> posts;
+
+	/**
+	 * The permissions on group Level of this group
+	 */
+	private Set<GroupLevelPermission> groupLevelPermissions;
 
 	/**
 	 * These {@link User}s belong to this group.
@@ -459,5 +467,27 @@ public class Group implements Serializable {
 	// TODO: move to utils class
 	public GroupMembership getGroupMembershipForUser(String username) {
 		return this.getGroupMembershipForUser(new User(username));
+	}
+	
+	
+	public Set<GroupLevelPermission> getGroupLevelPermissions() {
+		if (this.groupLevelPermissions == null) {
+			this.groupLevelPermissions = new HashSet<GroupLevelPermission>();
+		}
+		return this.groupLevelPermissions;
+	}
+	
+	/**
+	 * @param groupLevelPermissions the groupLevelPermissions to set
+	 */
+	public void setGroupLevelPermissions(Set<GroupLevelPermission> groupLevelPermissions) {
+		this.groupLevelPermissions = groupLevelPermissions;
+	}
+
+	/**
+	 * @param communityPostInspection
+	 */
+	public void addGroupLevelPermission(GroupLevelPermission groupLevelPermission) {
+		this.getGroupLevelPermissions().add(groupLevelPermission);
 	}
 }

@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Database - Database for BibSonomy.
+ * BibSonomy-Database-Common - Helper classes for database interaction
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -24,39 +24,35 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.database.managers.chain.user.get;
+package org.bibsonomy.database.common.typehandler;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.sql.SQLException;
 
-import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.managers.chain.user.UserChainElement;
-import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.model.GroupMembership;
-import org.bibsonomy.model.User;
+import org.bibsonomy.common.enums.GroupLevelPermission;
 
-import static org.bibsonomy.util.ValidationUtils.present;
+import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 
 /**
- * Get group members
+ * callback for {@link GroupLevelPermission}
  * 
- * @author Dominik Benz
+ * @author sdo
  */
-public class GetUsersByGroup extends UserChainElement {
+public class GroupLevelPermissionTypeHandlerCallback extends AbstractTypeHandlerCallback {
 
 	@Override
-	protected List<User> handle(final UserParam param, final DBSession session) {
-		List<User> userList = new LinkedList<>();
-		for (GroupMembership ms: this.groupDb.getGroupMembers(param.getUserName(), param.getRequestedGroupName(), false, session).getMemberships()) {
-			userList.add(ms.getUser());
-		}
-		return userList;
+	public Object valueOf(final String str) {
+		return GroupLevelPermission.getGroupLevelPermission(str);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.ibatis.sqlmap.client.extensions.TypeHandlerCallback#setParameter(com.ibatis.sqlmap.client.extensions.ParameterSetter, java.lang.Object)
+	 */
 	@Override
-	protected boolean canHandle(final UserParam param) {
-		return (GroupingEntity.GROUP.equals(param.getGrouping()) && 
-				present(param.getRequestedGroupName()));
+	public void setParameter(ParameterSetter setter, Object parameter) throws SQLException {
+		if (parameter == null) {
+			throw new IllegalStateException("no null representation for a " + GroupLevelPermission.class.getSimpleName());
+		}
+		final GroupLevelPermission permission = (GroupLevelPermission) parameter;
+		setter.setInt(permission.getGroupLevelPermissionId());
 	}
 }

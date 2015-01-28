@@ -40,15 +40,36 @@
 		  AND i.group > 2
 	</select>
 
+	<select id="getGroupWithPermissions" resultMap="GroupCommon.groupWithPermissions" parameterClass="string">
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, p.permission
+		FROM groupids i 
+		  LEFT JOIN group_level_permission p USING (`group`)
+		WHERE group_name = #groupname#
+		  AND i.group > 2
+	</select>
+
+	<select id="getGroupWithMembershipsAndPermissions" resultMap="GroupCommon.groupWithMembershipsAndReportingsAndPermissions" parameterClass="string">
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, p.permission
+		FROM groupids i 
+		<!-- LEFT JOIN is necessary because groups are empty at the point of creation. -->
+		  LEFT JOIN group_memberships g USING (`group`) 
+		  LEFT JOIN user u ON (u.user_name = i.group_name) 
+		  LEFT JOIN group_level_permission p USING (`group`)
+		WHERE group_name = #groupname#
+		  AND i.group > 2
+	</select>
+
+
 	<select id="getPrivlevelForGroup" resultClass="Privlevel" parameterClass="int">
 		SELECT privlevel FROM groupids WHERE `group` = #groupId#
 	</select>
 
-	<select id="getGroupsForUser" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.user_shared_documents, g.group_role
+	<select id="getGroupsForUser" resultMap="GroupCommon.groupWithMembershipsAndReportingsAndPermissions" parameterClass="string">
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.user_shared_documents, g.group_role, p.permission
 		 FROM groupids i
 		   LEFT JOIN group_memberships g USING (`group`)
 		   LEFT JOIN user u ON (u.user_name = i.group_name)
+		   LEFT JOIN group_level_permission p USING (`group`)
 		 WHERE g.user_name = #userName#
 	</select>
 	
@@ -57,7 +78,6 @@
 		 FROM groupids i
 		 WHERE i.group BETWEEN 0 AND 2
 	</select>
-	
 
 	<select id="getGroupsForContentId" resultMap="GroupCommon.group_basic" parameterClass="int">
 		SELECT DISTINCT i.group, i.group_name, i.privlevel, i.sharedDocuments, FALSE as user_shared_documents 
@@ -214,5 +234,16 @@
 		   LEFT JOIN user u ON (u.user_name = i.group_name)
 		 WHERE g.user_name = #userName# AND g.group_role != 2
 	</select>
+	
+	<insert id="insertGroupLevelPermission" parameterClass="groupParam">
+		INSERT INTO group_level_permission (`group`, permission, granted_by)
+		VALUES (#groupId#, #groupLevelPermission#, #grantedByUser#)
+	</insert>
+
+	<delete id="deleteGroupLevelPermission" parameterClass="groupParam">
+		DELETE FROM group_level_permission
+		WHERE `group` = #groupId#
+		  AND `permission` = #groupLevelPermission#
+	</delete>
 	
 </sqlMap>

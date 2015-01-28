@@ -31,3 +31,11 @@ UPDATE groupids
   JOIN user ON group_name = user.user_name
   JOIN group_memberships ON groupids.`group` = group_memberships.`group` AND group_memberships.user_name = group_name
 SET group_role = 0;
+
+CREATE TABLE `group_level_permission` (
+  `group` int(10) DEFAULT NULL,
+  `permission` tinyint(1) DEFAULT NULL,
+  `granted_by` VARCHAR(30) NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`group`, permission)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8

@@ -1725,6 +1725,19 @@ CREATE TABLE `weights` (
   CONSTRAINT `weights_ibfk_1` FOREIGN KEY (`id`) REFERENCES `rankings` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
+
+DROP TABLE IF EXISTS `group_level_permission`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `group_level_permission` (
+  `group` int(10) DEFAULT NULL,
+  `permission` tinyint(1) DEFAULT NULL,
+   `granted_by` VARCHAR(30) NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`group`, permission)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
