@@ -7,10 +7,11 @@ package org.bibsonomy.model.es;
  * @author lutful
  */
 public interface UpdatePlugin {
-	
+
 	/**
 	 * @param indexType
-	 * @return the IndexUpdater
+	 * @param esClient
+	 * @return IndexUpdater
 	 */
-	IndexUpdater createUpdater(String indexType);
+	IndexUpdater createUpdater(String indexType, ESClient esClient);
 }

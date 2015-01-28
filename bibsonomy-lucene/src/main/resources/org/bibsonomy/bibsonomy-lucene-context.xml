@@ -28,7 +28,7 @@
 	<bean id="initiateIndexUpdater"
 		class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition" ref="esClusterNamePresent" />
-		<lookup-method name="produceSucessBean" bean="initiateIndexUpdatePlugin" />
+		<lookup-method name="produceSucessBean" bean="sharedIndexUpdatePlugin" />
 	</bean>
 
 	<bean id="initiateESClient"
@@ -83,12 +83,6 @@
 		<property name="value" value="${es.cluster.name}" />
 	</bean>
 
-	<bean id="initiateIndexUpdatePlugin"
-		class="org.bibsonomy.lucene.index.manager.LuceneResourceManager"
-		lazy-init="true">
-		<property name="plugin" ref="sharedIndexUpdatePlugin" />
-	</bean>
-
 	<bean id="sharedIndexUpdatePlugin" class="org.bibsonomy.es.SharedIndexUpdatePlugin"
 		lazy-init="true" />
 
@@ -106,13 +100,13 @@
 	</bean>
 	<bean id="sharedResourceIndexGenerator" class="org.bibsonomy.es.SharedResourceIndexGenerator"
 		lazy-init="true">
-		<property name="esClient" ref="esTransportClient" />
+		<!-- <property name="esClient" ref="esTransportClient" />-->
 		<property name="systemtHome" value="${project.home}"/>
 	</bean>
 	<bean id="sharedResourceIndexUpdater" class="org.bibsonomy.es.SharedResourceIndexUpdater"
 		lazy-init="true">
-		<property name="esClient" ref="esTransportClient" />
-		<property name="systemtHome" value="${project.home}"/>
+		<!-- <property name="esClient" ref="esTransportClient" />-->
+		 <property name="systemtHome" value="${project.home}"/>
 	</bean>
 
 
@@ -268,6 +262,8 @@
 		class="org.bibsonomy.lucene.index.manager.LuceneResourceManager"
 		abstract="true">
 		<property name="luceneUpdaterEnabled" value="${lucene.enableUpdater}" />
+		<property name="esClient" ref="initiateESClient" />
+		<property name="plugin" ref="initiateIndexUpdater" />
 	</bean>
 
 	<bean id="lucenePublicationManager"

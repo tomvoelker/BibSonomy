@@ -71,7 +71,7 @@ public class ESTransportClient implements ESClient {
 	}
 
 	/**
-	 * @return
+	 * @return returns the transposrt client
 	 */
 	private Client initiateTransportClient() {
 		try {

@@ -43,7 +43,6 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -803,10 +802,16 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			return null;
 	}
 
+	/**
+	 * @return sharedResourceSearch
+	 */
 	public EsResourceSearch<R> getSharedResourceSearch() {
 		return this.sharedResourceSearch;
 	}
 
+	/**
+	 * @param sharedResourceSearch
+	 */
 	public void setSharedResourceSearch(EsResourceSearch<R> sharedResourceSearch) {
 		this.sharedResourceSearch = sharedResourceSearch;
 	}

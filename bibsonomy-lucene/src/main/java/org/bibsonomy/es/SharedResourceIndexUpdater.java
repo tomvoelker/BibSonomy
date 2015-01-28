@@ -55,7 +55,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	/** the node client */
 //	private final ESNodeClient esClient = new ESNodeClient();
 	/** the transport client */
-	private static ESClient esClient;
+	private ESClient esClient;
 
 	/** keeps track of the newest log_date during last index update */
 	private Long lastLogDate;
@@ -71,11 +71,13 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 
 	/**
 	 * 
+	 * 
 	 */
 	public SharedResourceIndexUpdater() {
 		this.contentIdsToDelete = new LinkedList<Integer>();
 		this.esPostsToInsert = new ArrayList<Map<String, Object>>();
 		this.usersToFlag = new TreeSet<String>();
+		
 	}
 
 	/**
@@ -176,7 +178,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * @return the nodeClient
 	 */
 	public Client getClient() {
-		return SharedResourceIndexUpdater.esClient.getClient();
+		return this.getClient();
 	}
 
 	/**
@@ -279,7 +281,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		for (Map<String, Object> jsonDocument : esPostsToInsert2) {
 			jsonDocument.put(this.systemUrlFieldName, systemtHome);
 			long indexId = (systemtHome.hashCode()<<32)+Long.parseLong(jsonDocument.get(LuceneFieldNames.CONTENT_ID).toString());
-			SharedResourceIndexUpdater.esClient
+			this.esClient
 					.getClient()
 					.prepareIndex(
 							indexName,
@@ -298,7 +300,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	public void deleteIndexForForUser(String userName) {
 
 		@SuppressWarnings("unused")
-		DeleteByQueryResponse response = SharedResourceIndexUpdater.esClient.getClient().prepareDeleteByQuery(indexName)
+		DeleteByQueryResponse response = this.esClient.getClient().prepareDeleteByQuery(indexName)
 				.setTypes(indexType).setQuery(QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, userName))
 				.execute()
 				.actionGet();
@@ -370,20 +372,6 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 			this.usersToFlag.remove(userName);
 		}
 	}
-	
-	/**
-	 * @param esClient the esClient to set
-	 */
-	public void setEsClient(ESClient esClient) {
-		SharedResourceIndexUpdater.esClient = esClient;
-	}
-
-	/**
-	 * @return the esClient
-	 */
-	public ESClient getEsClient() {
-		return SharedResourceIndexUpdater.esClient;
-	}
 
 	/**
 	 * @return the systemtHome
@@ -409,6 +397,20 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		this.systemInfo.setLast_tas_id(lastTasId);
 		this.systemInfo.setPostType(indexType);
 		this.systemInfo.setSystemUrl(systemtHome);
+	}
+
+	/**
+	 * @return the esClient
+	 */
+	public ESClient getEsClient() {
+		return this.esClient;
+	}
+
+	/**
+	 * @param esClient the esClient to set
+	 */
+	public void setEsClient(ESClient esClient) {
+		this.esClient = esClient;
 	}
 
 }

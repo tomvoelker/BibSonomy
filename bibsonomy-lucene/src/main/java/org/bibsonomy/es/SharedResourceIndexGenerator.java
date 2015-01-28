@@ -31,7 +31,7 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 	private final String systemUrlFieldName = "systemUrl";
 	//	private final ESClient esClient = new ESNodeClient();
 	// ElasticSearch Transport client
-	private static ESClient esClient;
+	private ESClient esClient;
 	private static String systemtHome;
 	private static final Log log = LogFactory.getLog(SharedResourceIndexGenerator.class);
 		
@@ -169,14 +169,14 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 	 * @return the esClient
 	 */
 	public ESClient getEsClient() {
-		return SharedResourceIndexGenerator.esClient;
+		return this.esClient;
 	}
 
 	/**
 	 * @param esClient the esClient to set
 	 */
 	public void setEsClient(ESClient esClient) {
-		SharedResourceIndexGenerator.esClient = esClient;
+		this.esClient = esClient;
 	}
 
 	/**

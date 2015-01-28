@@ -53,6 +53,7 @@ import org.bibsonomy.lucene.util.generator.LuceneGenerateResourceIndex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.es.ESClient;
 import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.es.UpdatePlugin;
 
@@ -104,10 +105,16 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * for shared resources index
 	 */
 	protected SharedResourceIndexUpdater<R> sharedIndexUpdater;
+	
+	/**
+	 * for elasticsearch client
+	 */
+	protected ESClient esClient;
+	
 	/**
 	 * The plugin for indexUpdater
 	 */
-	protected static UpdatePlugin plugin;
+	protected UpdatePlugin plugin;
 
 	/** the queue containing the next indices to be updated */
 	private final Queue<LuceneResourceIndex<R>> updateQueue = new LinkedList<LuceneResourceIndex<R>>();
@@ -195,7 +202,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			
 			if(plugin!=null){
 				//Shared index updater
-				this.sharedIndexUpdater =  (SharedResourceIndexUpdater<R>) plugin.createUpdater(this.getResourceName());
+				this.sharedIndexUpdater =  (SharedResourceIndexUpdater<R>) plugin.createUpdater(this.getResourceName(), this.esClient);
 				Integer lastTasIdSharedIndex = this.sharedIndexUpdater.getLastTasId();
 				final long lastLogDateSharedIndex =  this.sharedIndexUpdater.getLastLogDate();
 				
@@ -818,6 +825,20 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		 */
 		this.generatingIndex = false;
 		this.generator = null;
+	}
+
+	/**
+	 * @return the esClient
+	 */
+	public ESClient getEsClient() {
+		return this.esClient;
+	}
+
+	/**
+	 * @param esClient the esClient to set
+	 */
+	public void setEsClient(ESClient esClient) {
+		this.esClient = esClient;
 	}
 
 	/**
