@@ -109,12 +109,19 @@
 		</c:choose>
 
 	<!-- 	<c:if test="${empty enableHistory}"> -->
+		<fmt:message key="bookmark.actions.posthistory.title" var="postHistoryTitle" />
 		<c:choose>
 			<c:when test="${command.context.userLoggedIn and (loginUserName eq post.user.name)}">
 				<!-- user is post's owner -->
-				<fmt:message key="bookmark.actions.posthistory.title" var="postHistoryTitle" />
 				<!-- we need to send the resource type, in order to call the appropriate view later (HistoryBM or HistoryBib) -->
 				<a class="${buttonClasses}" href="/history/${rscType}/${post.resource.intraHash}/${post.user.name}" title="${postHistoryTitle}">
+					<span class="fa fa-list-ol"><!--  --></span>
+				</a>
+			</c:when>
+			<c:when test="${empty post.user}">
+				<!-- post is a community post -->
+				<!-- we need to send the resource type, in order to call the appropriate view later (HistoryBM or HistoryBib) -->
+				<a class="${buttonClasses}" href="/history/goldstandardbookmark/${post.resource.interHash}" title="${postHistoryTitle}">
 					<span class="fa fa-list-ol"><!--  --></span>
 				</a>
 			</c:when>
