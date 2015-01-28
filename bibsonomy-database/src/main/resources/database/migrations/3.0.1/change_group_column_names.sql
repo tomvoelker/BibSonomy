@@ -1,6 +1,11 @@
 RENAME TABLE `groups` TO `group_memberships`;
+RENAME TABLE `log_groups` TO `log_group_memberships`;
 ALTER TABLE `group_memberships` CHANGE COLUMN `userSharedDocuments` `user_shared_documents` TINYINT;
 ALTER TABLE `group_memberships` CHANGE COLUMN `user_status` `group_role` INT;
+
+ALTER TABLE `log_group_memberships`
+	CHANGE COLUMN `user_status` `group_role` INT(10) NOT NULL DEFAULT '7' AFTER `end_date`,
+	ADD COLUMN `user_shared_documents` TINYINT(1) NULL DEFAULT '0' AFTER `group_role`;
 
 CREATE TABLE `pending_groupids` (
   `group_name` VARCHAR(30) NOT NULL DEFAULT '',

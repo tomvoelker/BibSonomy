@@ -882,19 +882,20 @@ CREATE TABLE `log_followers` (
 SET character_set_client = @saved_cs_client;
 
 --
--- Table structure for table `log_groups`
+-- Table structure for table `log_group_memberships`
 --
 
-DROP TABLE IF EXISTS `log_groups`;
+DROP TABLE IF EXISTS `log_group_memberships`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-CREATE TABLE `log_groups` (
-  `user_name` varchar(30) NOT NULL default '',
-  `group` int(10) default '0',
-  `defaultgroup` int(10) default '0',
-  `start_date` datetime NOT NULL default '1815-12-10 00:00:00',
-  `end_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  `group_role` int(11) default NULL
+CREATE TABLE `log_group_memberships` (
+	`user_name` VARCHAR(30) NOT NULL DEFAULT '',
+	`group` INT(10) NULL DEFAULT '0',
+	`defaultgroup` INT(10) NULL DEFAULT '0',
+	`start_date` DATETIME NOT NULL DEFAULT '1815-12-10 00:00:00',
+	`end_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`group_role` INT(10) NOT NULL DEFAULT '7',
+	`user_shared_documents` TINYINT(1) NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
