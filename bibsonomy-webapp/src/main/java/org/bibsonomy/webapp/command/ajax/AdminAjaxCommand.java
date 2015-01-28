@@ -29,6 +29,7 @@ package org.bibsonomy.webapp.command.ajax;
 import java.util.List;
 import java.util.Set;
 
+import org.bibsonomy.common.enums.AdminActions;
 import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -39,7 +40,7 @@ import org.bibsonomy.model.User;
  * 
  * @author Stefan Stützer
  */
-public class AdminAjaxCommand extends AjaxCommand {
+public class AdminAjaxCommand extends AjaxCommand<AdminActions> {
 	
 	/** list of bookmarks of an user */
 	private List<Post<Bookmark>> bookmarks;

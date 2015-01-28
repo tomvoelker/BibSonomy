@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.webapp.command.BaseCommand;
@@ -41,7 +40,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * 
  * @author bsc
  */
-public class AdminGroupViewCommand extends BaseCommand {	
+public class AdminGroupViewCommand extends BaseCommand {
 	
 	/** specific action for admin page */
 	private String action;
@@ -57,16 +56,14 @@ public class AdminGroupViewCommand extends BaseCommand {
 	private String adminResponse = "";
 	private Group group = new Group();
 	
+	@Deprecated
+	// TODO a more general field should be Set<GroupLevelPermission>
 	private boolean communityPostInspectionPermission;
 	private boolean permissionsUpdated;
 	/**
 	 * list of pending groups
 	 */
 	private List<Group> pendingGroups;
-	
-	
-	
-	
 	
 	public AdminGroupViewCommand() {
 		privlevel = new HashMap<String, Privlevel>();
@@ -138,10 +135,12 @@ public class AdminGroupViewCommand extends BaseCommand {
 		this.pendingGroups = pendingGroups;
 	}
 
+	@Deprecated
 	public boolean isCommunityPostInspectionPermission() {
 		return this.communityPostInspectionPermission;
 	}
 
+	@Deprecated
 	public void setCommunityPostInspectionPermission(boolean communityPostInspectionPermission) {
 		this.communityPostInspectionPermission = communityPostInspectionPermission;
 	}
@@ -153,7 +152,4 @@ public class AdminGroupViewCommand extends BaseCommand {
 	public void setPermissionsUpdated(boolean permissionsUpdated) {
 		this.permissionsUpdated = permissionsUpdated;
 	}
-
-	
-	
 }
