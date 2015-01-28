@@ -140,9 +140,6 @@ function submitForm(element){
 	});
 	var isPub = $('input[name = isPub]').val();
 	var isGoldStandard = $('input[name = isGoldStandard]').val();
-	if(isPub=="true"){
-		compareVersion = $('input[name=listLength]').val()-1-compareVersion;
-	}
 	$('input[name=compareVersion]').val(compareVersion);
 	$('input[name=differentEntryKeys]').val(diffEntryKey);
 	
