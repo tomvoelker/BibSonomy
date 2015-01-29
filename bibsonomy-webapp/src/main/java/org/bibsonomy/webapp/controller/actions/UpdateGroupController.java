@@ -128,18 +128,23 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 					if (present(username) && !username.equals(groupToUpdate.getName())) {
 						// get user details with an admin logic to get the mail address
 						final User invitedUser = this.adminLogic.getUserDetails(username);
-						final GroupMembership ms = new GroupMembership(invitedUser, null, false);
-						try {
-							// since now only one user can be invited to a group at once
-							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_INVITED, ms);
-							this.mailUtils.sendGroupInvite(groupToUpdate.getName(), loginUser, invitedUser, this.requestLogic.getLocale());
-						} catch (final Exception ex) {
-							log.error("error while inviting user '" + username + "' to group '" + groupToUpdate + "'", ex);
-							// if a user can't be added to a group, this exception is thrown
-							this.errors.rejectValue("username", "settings.group.error.inviteUserToGroupFailed", new Object[]{username, groupToUpdate},
-									"The User {0} couldn't be invited to the Group {1}.");
+						if (present(invitedUser.getName())) {
+							final GroupMembership ms = new GroupMembership(invitedUser, null, false);
+							try {
+								// since now only one user can be invited to a group at once
+								this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_INVITED, ms);
+								this.mailUtils.sendGroupInvite(groupToUpdate.getName(), loginUser, invitedUser, this.requestLogic.getLocale());
+							} catch (final Exception ex) {
+								log.error("error while inviting user '" + username + "' to group '" + groupToUpdate + "'", ex);
+								// if a user can't be added to a group, this exception is thrown
+								this.errors.rejectValue("username", "settings.group.error.inviteUserToGroupFailed", new Object[]{username, groupToUpdate},
+										"The User {0} couldn't be invited to the Group {1}.");
+							}
+						} else {
+							// TODO: handle case of non existing user!
 						}
 					}
+					selTab = Integer.valueOf(GroupSettingsPageCommand.MEMBER_LIST_IDX);
 					break;
 				}
 				case ADD_MEMBER: {
@@ -159,6 +164,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 									"The User {0} couldn't be added to the Group {1}.");
 						}
 					}
+					selTab = Integer.valueOf(GroupSettingsPageCommand.MEMBER_LIST_IDX);
 					break;
 				}
 				case REMOVE_MEMBER: {
@@ -182,6 +188,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 									"The User {0} couldn't be removed from the Group {1}.");
 						}
 					}
+					selTab = Integer.valueOf(GroupSettingsPageCommand.MEMBER_LIST_IDX);
 					break;
 				}
 				case UPDATE_GROUP_REPORTING_SETTINGS: {
@@ -243,6 +250,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 									"The request of User {0} couldn't be removed.");
 						}
 					}
+					selTab = Integer.valueOf(GroupSettingsPageCommand.MEMBER_LIST_IDX);
 					break;
 				}
 				case REMOVE_INVITED: {

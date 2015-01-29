@@ -870,13 +870,19 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	
 	public void addPendingMembership(final String groupname, final User user, final GroupRole pendingGroupRole, final DBSession session) {
 		final Group group = this.getGroupByName(groupname, session);
-		final GroupMembership alreadyExistingMembership = this.getGroupMembershipForUser(user.getName(), group, session);
+		final String username = user.getName();
+		final User groupMembershipUser = this.userDb.getUserDetails(username, session);
+		if (!present(groupMembershipUser.getName())) {
+			ExceptionUtils.logErrorAndThrowQueryTimeoutException(log, null, "user " + username + " not found.");
+		}
+		final GroupMembership alreadyExistingMembership = this.getGroupMembershipForUser(username, group, session);
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't remove join request/invite from nonexistent group");
 		}
 		if (present(alreadyExistingMembership)) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User " + user.getName() + " is already a member of group " + groupname);
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User " + username + " is already a member of group " + groupname);
 		}
+		
 		try {
 			session.beginTransaction();
 			final GroupMembership pendingMembership = this.getPendingMembershipForUserAndGroup(user, groupname, session);
@@ -892,7 +898,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 				
 				this.insert("addPendingMembership", param, session);
 			} else {
-				final String username = user.getName();
 				switch (pendingMembership.getGroupRole()) {
 				case INVITED:
 					if (GroupRole.REQUESTED.equals(pendingGroupRole)) {
