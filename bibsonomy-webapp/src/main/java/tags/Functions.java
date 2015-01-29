@@ -150,10 +150,11 @@ public class Functions {
 	 * 
 	 * @param str
 	 * @param decomp
-	 *            one of NFC, NFD, NFKC, NFKD @see Normalizer.Form
+	 *        one of NFC, NFD, NFKC, NFKD @see Normalizer.Form
 	 * @return normalized String
 	 */
-	@Deprecated // TODO: remove with old layout
+	@Deprecated
+	// TODO: remove with old layout
 	public static String normalize(final String str, final String decomp) {
 		Normalizer.Form form;
 		try {
@@ -169,7 +170,7 @@ public class Functions {
 	 * respective whitespace character
 	 * 
 	 * @param s
-	 *            a String
+	 *        a String
 	 * @return trimmed String
 	 */
 	public static String trimWhiteSpace(final String s) {
@@ -184,7 +185,7 @@ public class Functions {
 	 * is empty "export" is returned
 	 * 
 	 * @param file
-	 *            a file name
+	 *        a file name
 	 * @return cleaned file name
 	 */
 	public static String makeCleanFileName(final String file) {
@@ -199,7 +200,7 @@ public class Functions {
 	 * wrapper for {@link UrlUtils#safeURIDecode(String)}
 	 * 
 	 * @param uri
-	 *            a URI string
+	 *        a URI string
 	 * @return the decoded URI string
 	 */
 	public static String decodeURI(final String uri) {
@@ -210,7 +211,7 @@ public class Functions {
 	 * wrapper for {@link UrlUtils#safeURIEncode(String)}
 	 * 
 	 * @param uri
-	 *            a URI string
+	 *        a URI string
 	 * @return the encoded URI string
 	 */
 	public static String encodeURI(final String uri) {
@@ -221,7 +222,7 @@ public class Functions {
 	 * converts a collection of tags into a space-separated string of tags
 	 * 
 	 * @param tags
-	 *            a list of tags
+	 *        a list of tags
 	 * @return a space-separated string of tags
 	 */
 	public static String toTagString(final Collection<Tag> tags) {
@@ -232,7 +233,7 @@ public class Functions {
 	 * get the Path component of a URI string
 	 * 
 	 * @param uriString
-	 *            a URI string
+	 *        a URI string
 	 * @return the path component of the given URI string
 	 */
 	public static String getPath(final String uriString) {
@@ -251,7 +252,7 @@ public class Functions {
 	 * urlrewrite lib is fixed
 	 * 
 	 * @param uriString
-	 *            the url
+	 *        the url
 	 * @return last segment of the url string until last slash
 	 */
 	public static String getLowerPath(final String uriString) {
@@ -284,7 +285,7 @@ public class Functions {
 	 * extract query part of given URI string, within a leading "?"
 	 * 
 	 * @param uriString
-	 *            a URI string
+	 *        a URI string
 	 * @return query part of the given URI string, within a leading "?"
 	 */
 	public static String getQuery(final String uriString) {
@@ -302,7 +303,7 @@ public class Functions {
 
 	/**
 	 * @param url
-	 *            the url to check
+	 *        the url to check
 	 * @return <code>true</code> iff the url is a link to a pdf or ps file
 	 */
 	public static boolean isLinkToDocument(final String url) {
@@ -318,14 +319,14 @@ public class Functions {
 	 * tagsizemode=popular, and between 100 and 200 otherwise.
 	 * 
 	 * @param tagFrequency
-	 *            - the frequency of the tag
+	 *        - the frequency of the tag
 	 * @param tagMinFrequency
-	 *            - the minimum frequency within the tag cloud
+	 *        - the minimum frequency within the tag cloud
 	 * @param tagMaxFrequency
-	 *            - the maximum frequency within the tag cloud
+	 *        - the maximum frequency within the tag cloud
 	 * @param tagSizeMode
-	 *            - which kind of tag cloud is to be done (the one for the
-	 *            popular tags page vs. standard)
+	 *        - which kind of tag cloud is to be done (the one for the
+	 *        popular tags page vs. standard)
 	 * @return font size for the tag cloud with the given parameters
 	 */
 	public static Integer computeTagFontsize(final Integer tagFrequency, final Integer tagMinFrequency, final Integer tagMaxFrequency, final String tagSizeMode) {
@@ -358,11 +359,11 @@ public class Functions {
 	 * wrapper for for org.bibsonomy.util.UrlUtils.setParam
 	 * 
 	 * @param url
-	 *            an url string
+	 *        an url string
 	 * @param paramName
-	 *            parameter name
+	 *        parameter name
 	 * @param paramValue
-	 *            parameter value
+	 *        parameter value
 	 * @return an url string with the requested parameter set
 	 */
 	public static String setParam(final String url, final String paramName, final String paramValue) {
@@ -376,9 +377,9 @@ public class Functions {
 	 * wrapper for for org.bibsonomy.util.UrlUtils.removeParam
 	 * 
 	 * @param url
-	 *            - a url string
+	 *        - a url string
 	 * @param paramName
-	 *            - a parameter to be removed
+	 *        - a parameter to be removed
 	 * @return the given url string with the parameter removed
 	 */
 	public static String removeParam(final String url, final String paramName) {
@@ -400,7 +401,7 @@ public class Functions {
 	 * returns the SpamStatus as string for admin pages
 	 * 
 	 * @param id
-	 *            id of the spammer state
+	 *        id of the spammer state
 	 * @return string representation
 	 */
 	public static String getPredictionString(final Integer id) {
@@ -417,335 +418,344 @@ public class Functions {
 		final SpamStatus status = SpamStatus.getStatus(id);
 		return SpamStatus.isSpammer(status);
 	}
-	
+
 	/**
 	 * returns a map of key-value:
 	 * new bibTex and the old one are compared according to each field,
-	 * keys are the fields which have different values*/
-	public static Map<String,String> DiffEntriesPub(Post newPost, Post oldPost) {
+	 * keys are the fields which have different values
+	 */
+	public static Map<String, String> DiffEntriesPub(final Post newPost, final Post oldPost) {
 		final BibTex newBib = (BibTex) newPost.getResource();
 		final BibTex oldBib = (BibTex) oldPost.getResource();
-		Map<String, String> diffArray = new LinkedHashMap<String, String>();
+		final Map<String, String> diffArray = new LinkedHashMap<String, String>();
 		String tmp;
 
 		// TODO: do we really want to use cleanbibtex here?
-		if (!cleanBibtex(newBib.getEntrytype()).equals(cleanBibtex(oldBib.getEntrytype()))){
-			tmp = compareString(newBib.getEntrytype(),oldBib.getEntrytype());
+		if (!cleanBibtex(newBib.getEntrytype()).equals(cleanBibtex(oldBib.getEntrytype()))) {
+			tmp = compareString(newBib.getEntrytype(), oldBib.getEntrytype());
 			diffArray.put("entrytype", tmp);
 		}
-		if (!cleanBibtex(newBib.getTitle()).equals(cleanBibtex(oldBib.getTitle()))){
-			tmp = compareString(newBib.getTitle(),oldBib.getTitle());
+		if (!cleanBibtex(newBib.getTitle()).equals(cleanBibtex(oldBib.getTitle()))) {
+			tmp = compareString(newBib.getTitle(), oldBib.getTitle());
 			diffArray.put("title", tmp);
 		}
-		
-		/*Important comment:
-		 * Since there is no input check while creating a post, some "required" fields
-		 * might remain empty. So we have to check for the emptiness(null) here. When an 
-		 * input check is added to post creating procedure, the following check can be removed.
-		 * **/
 
-		if(present(newBib.getAuthor()) || present(oldBib.getAuthor())){
-			String val1="";
-			String val2="";
-			
-			
-			if(present(newBib.getAuthor()) && present(oldBib.getAuthor())){
-				Set<PersonName> aa = new HashSet<>(newBib.getAuthor());
-				Set<PersonName> bb = new HashSet<>(oldBib.getAuthor());
-				
-				if (!aa.equals(bb)){
-					val1 = PersonNameUtils.serializePersonNames(newBib.getAuthor(),false, ", ");
-					val2 = PersonNameUtils.serializePersonNames(oldBib.getAuthor(),false, ", ");
-					tmp = compareString(val1,val2);
+		/*
+		 * Important comment:
+		 * Since there is no input check while creating a post, some "required"
+		 * fields
+		 * might remain empty. So we have to check for the emptiness(null) here.
+		 * When an
+		 * input check is added to post creating procedure, the following check
+		 * can be removed.
+		 * *
+		 */
+
+		if (present(newBib.getAuthor()) || present(oldBib.getAuthor())) {
+			String val1 = "";
+			String val2 = "";
+
+			if (present(newBib.getAuthor()) && present(oldBib.getAuthor())) {
+				final Set<PersonName> aa = new HashSet<>(newBib.getAuthor());
+				final Set<PersonName> bb = new HashSet<>(oldBib.getAuthor());
+
+				if (!aa.equals(bb)) {
+					val1 = PersonNameUtils.serializePersonNames(newBib.getAuthor(), false, ", ");
+					val2 = PersonNameUtils.serializePersonNames(oldBib.getAuthor(), false, ", ");
+					tmp = compareString(val1, val2);
 					diffArray.put("author", tmp);
 				}
 
 			} else if (present(newBib.getAuthor())) {
-				val2="";
-				val1 = PersonNameUtils.serializePersonNames(newBib.getAuthor(),false, ", ");
-				
-				tmp = compareString(val1,val2);
+				val2 = "";
+				val1 = PersonNameUtils.serializePersonNames(newBib.getAuthor(), false, ", ");
+
+				tmp = compareString(val1, val2);
 				diffArray.put("author", tmp);
 
 			} else if (present(oldBib.getAuthor())) {
 				val1 = "";
-				val2 = PersonNameUtils.serializePersonNames(oldBib.getAuthor(),false, ", ");
-				
-				tmp = compareString(val1,val2);
+				val2 = PersonNameUtils.serializePersonNames(oldBib.getAuthor(), false, ", ");
+
+				tmp = compareString(val1, val2);
 				diffArray.put("author", tmp);
-			} 
+			}
 		}
 
-		
-		
-		if(present(newBib.getEditor())|| present(oldBib.getEditor())){
-			String val1="";
-			String val2="";
-		
-			if(present(newBib.getEditor()) && present(oldBib.getEditor())){
+		if (present(newBib.getEditor()) || present(oldBib.getEditor())) {
+			String val1 = "";
+			String val2 = "";
 
-				Set<PersonName> aa = new HashSet<>(newBib.getEditor());
-				Set<PersonName> bb = new HashSet<>(oldBib.getEditor());
+			if (present(newBib.getEditor()) && present(oldBib.getEditor())) {
+
+				final Set<PersonName> aa = new HashSet<>(newBib.getEditor());
+				final Set<PersonName> bb = new HashSet<>(oldBib.getEditor());
 
 				if (!aa.equals(bb)) {
-					val1 = PersonNameUtils.serializePersonNames(newBib.getEditor(),false, ", ");
-					val2 = PersonNameUtils.serializePersonNames(oldBib.getEditor(),false, ", ");
-					tmp = compareString(val1,val2);
+					val1 = PersonNameUtils.serializePersonNames(newBib.getEditor(), false, ", ");
+					val2 = PersonNameUtils.serializePersonNames(oldBib.getEditor(), false, ", ");
+					tmp = compareString(val1, val2);
 					diffArray.put("editor", tmp);
 
 				}
 
 			}
-			else if(present(newBib.getEditor())){
-				val2="";
-				
-				val1 = PersonNameUtils.serializePersonNames(newBib.getEditor(),false, ", ");
-				tmp = compareString(val1,val2);
+			else if (present(newBib.getEditor())) {
+				val2 = "";
+
+				val1 = PersonNameUtils.serializePersonNames(newBib.getEditor(), false, ", ");
+				tmp = compareString(val1, val2);
 				diffArray.put("editor", tmp);
 
-			} else if(present(oldBib.getEditor())){
+			} else if (present(oldBib.getEditor())) {
 				val1 = "";
-				
-				val2 = PersonNameUtils.serializePersonNames(oldBib.getEditor(),false, ", ");
-				tmp = compareString(val1,val2);
+
+				val2 = PersonNameUtils.serializePersonNames(oldBib.getEditor(), false, ", ");
+				tmp = compareString(val1, val2);
 				diffArray.put("editor", tmp);
 
-			} 
+			}
 		}
-		
-		if (!cleanBibtex(newBib.getYear()).equals(cleanBibtex(oldBib.getYear()))){
-			tmp = compareString(newBib.getYear(),oldBib.getYear());
+
+		if (!cleanBibtex(newBib.getYear()).equals(cleanBibtex(oldBib.getYear()))) {
+			tmp = compareString(newBib.getYear(), oldBib.getYear());
 			diffArray.put("year", tmp);
 		}
-		if (!cleanBibtex(newBib.getBooktitle()).equals(cleanBibtex(oldBib.getBooktitle()))){
-			tmp = compareString(newBib.getBooktitle(),oldBib.getBooktitle());
+		if (!cleanBibtex(newBib.getBooktitle()).equals(cleanBibtex(oldBib.getBooktitle()))) {
+			tmp = compareString(newBib.getBooktitle(), oldBib.getBooktitle());
 			diffArray.put("booktitle", tmp);
 		}
-		if (!cleanBibtex(newBib.getJournal()).equals(cleanBibtex(oldBib.getJournal()))){
-			tmp = compareString(newBib.getJournal(),oldBib.getJournal());
+		if (!cleanBibtex(newBib.getJournal()).equals(cleanBibtex(oldBib.getJournal()))) {
+			tmp = compareString(newBib.getJournal(), oldBib.getJournal());
 			diffArray.put("journal", tmp);
 		}
-		if (!cleanBibtex(newBib.getVolume()).equals(cleanBibtex(oldBib.getVolume()))){
-			tmp = compareString(newBib.getVolume(),oldBib.getVolume());
+		if (!cleanBibtex(newBib.getVolume()).equals(cleanBibtex(oldBib.getVolume()))) {
+			tmp = compareString(newBib.getVolume(), oldBib.getVolume());
 			diffArray.put("volume", tmp);
 		}
-		if (!cleanBibtex(newBib.getNumber()).equals(cleanBibtex(oldBib.getNumber()))){
-			tmp = compareString(newBib.getNumber(),oldBib.getNumber());
+		if (!cleanBibtex(newBib.getNumber()).equals(cleanBibtex(oldBib.getNumber()))) {
+			tmp = compareString(newBib.getNumber(), oldBib.getNumber());
 			diffArray.put("number", tmp);
 		}
-		if (!cleanBibtex(newBib.getPages()).equals(cleanBibtex(oldBib.getPages()))){
-			tmp = compareString(newBib.getPages(),oldBib.getPages());
+		if (!cleanBibtex(newBib.getPages()).equals(cleanBibtex(oldBib.getPages()))) {
+			tmp = compareString(newBib.getPages(), oldBib.getPages());
 			diffArray.put("pages", tmp);
 		}
-		if (!cleanBibtex(newBib.getMonth()).equals(cleanBibtex(oldBib.getMonth()))){
-			tmp = compareString(newBib.getMonth(),oldBib.getMonth());
+		if (!cleanBibtex(newBib.getMonth()).equals(cleanBibtex(oldBib.getMonth()))) {
+			tmp = compareString(newBib.getMonth(), oldBib.getMonth());
 			diffArray.put("month", tmp);
 		}
-		if (!cleanBibtex(newBib.getDay()).equals(cleanBibtex(oldBib.getDay()))){
-			tmp = compareString(newBib.getDay(),oldBib.getDay());
+		if (!cleanBibtex(newBib.getDay()).equals(cleanBibtex(oldBib.getDay()))) {
+			tmp = compareString(newBib.getDay(), oldBib.getDay());
 			diffArray.put("day", tmp);
 		}
-		if (!cleanBibtex(newBib.getPublisher()).equals(cleanBibtex(oldBib.getPublisher()))){
-			tmp = compareString(newBib.getPublisher(),oldBib.getPublisher());
+		if (!cleanBibtex(newBib.getPublisher()).equals(cleanBibtex(oldBib.getPublisher()))) {
+			tmp = compareString(newBib.getPublisher(), oldBib.getPublisher());
 			diffArray.put("publisher", tmp);
 		}
-		if (!cleanBibtex(newBib.getAddress()).equals(cleanBibtex(oldBib.getAddress()))){
-			tmp = compareString(newBib.getAddress(),oldBib.getAddress());
+		if (!cleanBibtex(newBib.getAddress()).equals(cleanBibtex(oldBib.getAddress()))) {
+			tmp = compareString(newBib.getAddress(), oldBib.getAddress());
 			diffArray.put("address", tmp);
 		}
-		if (!cleanBibtex(newBib.getEdition()).equals(cleanBibtex(oldBib.getEdition()))){
-			tmp = compareString(newBib.getEdition(),oldBib.getEdition());
+		if (!cleanBibtex(newBib.getEdition()).equals(cleanBibtex(oldBib.getEdition()))) {
+			tmp = compareString(newBib.getEdition(), oldBib.getEdition());
 			diffArray.put("edition", tmp);
 		}
-		if (!cleanBibtex(newBib.getChapter()).equals(cleanBibtex(oldBib.getChapter()))){
-			tmp = compareString(newBib.getChapter(),oldBib.getChapter());
+		if (!cleanBibtex(newBib.getChapter()).equals(cleanBibtex(oldBib.getChapter()))) {
+			tmp = compareString(newBib.getChapter(), oldBib.getChapter());
 			diffArray.put("chapter", tmp);
 		}
-		if (!cleanBibtex(newBib.getUrl()).equals(cleanBibtex(oldBib.getUrl()))){
-			tmp = compareString(newBib.getUrl(),oldBib.getUrl());
+		if (!cleanBibtex(newBib.getUrl()).equals(cleanBibtex(oldBib.getUrl()))) {
+			tmp = compareString(newBib.getUrl(), oldBib.getUrl());
 			diffArray.put("url", tmp);
 		}
-		if (!cleanBibtex(newBib.getKey()).equals(cleanBibtex(oldBib.getKey()))){
-			tmp = compareString(newBib.getKey(),oldBib.getKey());
+		if (!cleanBibtex(newBib.getKey()).equals(cleanBibtex(oldBib.getKey()))) {
+			tmp = compareString(newBib.getKey(), oldBib.getKey());
 			diffArray.put("key", tmp);
 		}
-		if (!cleanBibtex(newBib.getHowpublished()).equals(cleanBibtex(oldBib.getHowpublished()))){
-			tmp = compareString(newBib.getHowpublished(),oldBib.getHowpublished());
+		if (!cleanBibtex(newBib.getHowpublished()).equals(cleanBibtex(oldBib.getHowpublished()))) {
+			tmp = compareString(newBib.getHowpublished(), oldBib.getHowpublished());
 			diffArray.put("howpublished", tmp);
 		}
-		if (!cleanBibtex(newBib.getInstitution()).equals(cleanBibtex(oldBib.getInstitution()))){
-			tmp = compareString(newBib.getInstitution(),oldBib.getInstitution());
+		if (!cleanBibtex(newBib.getInstitution()).equals(cleanBibtex(oldBib.getInstitution()))) {
+			tmp = compareString(newBib.getInstitution(), oldBib.getInstitution());
 			diffArray.put("institution", tmp);
 		}
-		if (!cleanBibtex(newBib.getOrganization()).equals(cleanBibtex(oldBib.getOrganization()))){
-			tmp = compareString(newBib.getOrganization(),oldBib.getOrganization());
+		if (!cleanBibtex(newBib.getOrganization()).equals(cleanBibtex(oldBib.getOrganization()))) {
+			tmp = compareString(newBib.getOrganization(), oldBib.getOrganization());
 			diffArray.put("organization", tmp);
 		}
-		if (!cleanBibtex(newBib.getSchool()).equals(cleanBibtex(oldBib.getSchool()))){
-			tmp = compareString(newBib.getSchool(),oldBib.getSchool());
+		if (!cleanBibtex(newBib.getSchool()).equals(cleanBibtex(oldBib.getSchool()))) {
+			tmp = compareString(newBib.getSchool(), oldBib.getSchool());
 			diffArray.put("school", tmp);
 		}
-		if (!cleanBibtex(newBib.getSeries()).equals(cleanBibtex(oldBib.getSeries()))){
-			tmp = compareString(newBib.getSeries(),oldBib.getSeries());
+		if (!cleanBibtex(newBib.getSeries()).equals(cleanBibtex(oldBib.getSeries()))) {
+			tmp = compareString(newBib.getSeries(), oldBib.getSeries());
 			diffArray.put("series", tmp);
 		}
-		if (!cleanBibtex(newBib.getCrossref()).equals(cleanBibtex(oldBib.getCrossref()))){
-			tmp = compareString(newBib.getCrossref(),oldBib.getCrossref());
+		if (!cleanBibtex(newBib.getCrossref()).equals(cleanBibtex(oldBib.getCrossref()))) {
+			tmp = compareString(newBib.getCrossref(), oldBib.getCrossref());
 			diffArray.put("crossref", tmp);
 		}
-		if (!cleanBibtex(newBib.getMisc()).equals(cleanBibtex(oldBib.getMisc()))){
-			tmp = compareString(newBib.getMisc(),oldBib.getMisc());
+		if (!cleanBibtex(newBib.getMisc()).equals(cleanBibtex(oldBib.getMisc()))) {
+			tmp = compareString(newBib.getMisc(), oldBib.getMisc());
 			diffArray.put("misc", tmp);
 		}
-		if (!cleanBibtex(newBib.getAbstract()).equals(cleanBibtex(oldBib.getAbstract()))){
-			tmp = compareString(newBib.getAbstract(),oldBib.getAbstract());
+		if (!cleanBibtex(newBib.getAbstract()).equals(cleanBibtex(oldBib.getAbstract()))) {
+			tmp = compareString(newBib.getAbstract(), oldBib.getAbstract());
 			diffArray.put("bibtexAbstract", tmp);
 		}
-		if (!cleanBibtex(newBib.getPrivnote()).equals(cleanBibtex(oldBib.getPrivnote()))){
-			tmp = compareString(newBib.getPrivnote(),oldBib.getPrivnote());
+		if (!cleanBibtex(newBib.getPrivnote()).equals(cleanBibtex(oldBib.getPrivnote()))) {
+			tmp = compareString(newBib.getPrivnote(), oldBib.getPrivnote());
 			diffArray.put("privnote", tmp);
 		}
-		if (!cleanBibtex(newBib.getAnnote()).equals(cleanBibtex(oldBib.getAnnote()))){
-			tmp = compareString(newBib.getAnnote(),oldBib.getAnnote());
+		if (!cleanBibtex(newBib.getAnnote()).equals(cleanBibtex(oldBib.getAnnote()))) {
+			tmp = compareString(newBib.getAnnote(), oldBib.getAnnote());
 			diffArray.put("annote", tmp);
 		}
-		if (!cleanBibtex(newBib.getNote()).equals(cleanBibtex(oldBib.getNote()))){
-			tmp = compareString(newBib.getNote(),oldBib.getNote());
+		if (!cleanBibtex(newBib.getNote()).equals(cleanBibtex(oldBib.getNote()))) {
+			tmp = compareString(newBib.getNote(), oldBib.getNote());
 			diffArray.put("note", tmp);
 		}
-		if (!newPost.getTags().equals(oldPost.getTags())){
-			tmp = compareString(toTagString(newPost.getTags()),toTagString(oldPost.getTags()));
+		if (!cleanBibtex(newPost.getDescription()).equals(cleanBibtex(oldPost.getDescription()))) {
+			tmp = compareString(newPost.getDescription(), oldPost.getDescription());
+			diffArray.put("description", tmp);
+		}
+		if (!newPost.getTags().equals(oldPost.getTags())) {
+			tmp = compareString(toTagString(newPost.getTags()), toTagString(oldPost.getTags()));
 			diffArray.put("tags", tmp);
 		}
 
 		return diffArray;
 	}
-	
-	
 
 	/**
 	 * returns a map of key-value:
 	 * new post and the old one are compared according to each field,
 	 * keys are the fields which have different values
+	 * 
 	 * @param newBmPost
 	 * @param oldBmPost
 	 * @return key-value
 	 */
-	public static Map<String,String> DiffEntriesBm(Post newBmPost, Post oldBmPost) {
-		
-		Map<String,String> DiffArray = new LinkedHashMap<String,String>();
-		String tmp;		
-		if (!cleanBibtex(newBmPost.getResource().getTitle()).equals(cleanBibtex(oldBmPost.getResource().getTitle()))){
-			tmp = compareString(newBmPost.getResource().getTitle(),oldBmPost.getResource().getTitle());
-			DiffArray.put("title",tmp);
+	public static Map<String, String> DiffEntriesBm(final Post newBmPost, final Post oldBmPost) {
+
+		final Map<String, String> DiffArray = new LinkedHashMap<String, String>();
+		String tmp;
+		if (!cleanBibtex(newBmPost.getResource().getTitle()).equals(cleanBibtex(oldBmPost.getResource().getTitle()))) {
+			tmp = compareString(newBmPost.getResource().getTitle(), oldBmPost.getResource().getTitle());
+			DiffArray.put("title", tmp);
 		}
 
-		if (!cleanBibtex(((Bookmark)newBmPost.getResource()).getUrl()).equals(cleanBibtex(((Bookmark)oldBmPost.getResource()).getUrl()))){
-			tmp = compareString(((Bookmark)newBmPost.getResource()).getUrl(),((Bookmark)oldBmPost.getResource()).getUrl());
-			DiffArray.put("url",tmp);
+		if (!cleanBibtex(((Bookmark) newBmPost.getResource()).getUrl()).equals(cleanBibtex(((Bookmark) oldBmPost.getResource()).getUrl()))) {
+			tmp = compareString(((Bookmark) newBmPost.getResource()).getUrl(), ((Bookmark) oldBmPost.getResource()).getUrl());
+			DiffArray.put("url", tmp);
 		}
-		
-		if (!cleanBibtex(newBmPost.getDescription()).equals(cleanBibtex(oldBmPost.getDescription()))){
-			tmp = compareString(newBmPost.getDescription(),oldBmPost.getDescription());
-			DiffArray.put("description",tmp);
+
+		if (!cleanBibtex(newBmPost.getDescription()).equals(cleanBibtex(oldBmPost.getDescription()))) {
+			tmp = compareString(newBmPost.getDescription(), oldBmPost.getDescription());
+			DiffArray.put("description", tmp);
 		}
-	
-		if (!newBmPost.getTags().equals(oldBmPost.getTags())){
-			tmp = compareString(toTagString(newBmPost.getTags()),toTagString(oldBmPost.getTags()));
-			DiffArray.put("tags",tmp);
+
+		if (!newBmPost.getTags().equals(oldBmPost.getTags())) {
+			tmp = compareString(toTagString(newBmPost.getTags()), toTagString(oldBmPost.getTags()));
+			DiffArray.put("tags", tmp);
 		}
 		return DiffArray;
 	}
 
-
 	/**
-	 * Compares two strings character-based. 
+	 * Compares two strings character-based.
+	 * 
 	 * @param newValue and oldValue
-	 * @return The difference between two strings. (inserted: green, deleted: red, not_changed: black)
+	 * @return The difference between two strings. (inserted: green, deleted:
+	 *         red, not_changed: black)
 	 */
 	public static String compareString(String newValue, String oldValue) {
-		
-		if(newValue == null){
-			newValue=" ";
-		}
-		if(oldValue == null){
-			oldValue =" ";
-		}
-		DiffMatchPatch dmp = new DiffMatchPatch();
 
-		//computes the diff
-    	LinkedList<Diff> d = dmp.diff_main(newValue, oldValue);
-    	
-    	//cleans the result so that be more human readable.
-        dmp.diff_cleanupSemantic(d);
-        
-        //applies appropriate colors to the result. (red, green)
-        return customized_diff_prettyHtml(d);
-    
+		if (newValue == null) {
+			newValue = " ";
+		}
+		if (oldValue == null) {
+			oldValue = " ";
+		}
+		final DiffMatchPatch dmp = new DiffMatchPatch();
+
+		// computes the diff
+		final LinkedList<Diff> d = dmp.diff_main(newValue, oldValue);
+
+		// cleans the result so that be more human readable.
+		dmp.diff_cleanupSemantic(d);
+
+		// applies appropriate colors to the result. (red, green)
+		return customized_diff_prettyHtml(d);
+
 	}
 
 	// TODO: move to view layer
 	@Deprecated
-	public static String customized_diff_prettyHtml(LinkedList<Diff> diffs) {
-	    StringBuilder html = new StringBuilder();
-	    for (Diff aDiff : diffs) {
-	      String text = aDiff.text.replace("&", "&amp;").replace("<", "&lt;")
-	          .replace(">", "&gt;").replace("\n", "&para;<br>");
-	      switch (aDiff.operation) {
-	      case INSERT:
-		        html.append("<span style=\"background:#e6ffe6;\">").append(text)
-		            .append("</span>");
-		        break;
-	      case DELETE:
-	        html.append("<del style=\"background:#ffe6e6;\">").append(text)
-	            .append("</del>");
-	        break;
-	      case EQUAL:
-	        html.append("<span>").append(text).append("</span>");
-	        break;
-	      }
-	    }
-	    return html.toString();
-	  }
+	public static String customized_diff_prettyHtml(final LinkedList<Diff> diffs) {
+		final StringBuilder html = new StringBuilder();
+		for (final Diff aDiff : diffs) {
+			final String text = aDiff.text.replace("&", "&amp;").replace("<", "&lt;")
+					.replace(">", "&gt;").replace("\n", "&para;<br>");
+			switch (aDiff.operation) {
+			case INSERT:
+				html.append("<span style=\"background:#e6ffe6;\">").append(text)
+						.append("</span>");
+				break;
+			case DELETE:
+				html.append("<del style=\"background:#ffe6e6;\">").append(text)
+						.append("</del>");
+				break;
+			case EQUAL:
+				html.append("<span>").append(text).append("</span>");
+				break;
+			}
+		}
+		return html.toString();
+	}
 
 	/**
 	 * TODO: remove!? Compares two strings word-based. (Maybe usefull in
 	 * future!)
 	 * 
 	 * @param newValue
-	 *            and oldValue
+	 *        and oldValue
 	 * @return The difference between two strings. (inserted: green, deleted:
 	 *         red, not_changed)
 	 */
-	/*public static String compareString(String newValue, String oldValue) {
-
-
-		if(newValue == null){
-			newValue=" ";
-		}
-		if(oldValue == null){
-			oldValue =" ";
-		}
-		diff_match_patch dmp = new diff_match_patch();
-
-		//split the texts based on words
-		LinesToCharsResult a = dmp.diff_linesToWords(newValue, oldValue);
-		
-		String lineText1 = a.chars1;
-		String lineText2 = a.chars2;
-		List<String> lineArray = a.lineArray;
-
-		LinkedList<Diff> diffs = dmp.diff_main(lineText1, lineText2, false);
-
-		dmp.diff_charsToLines(diffs, lineArray);
-		
-		//cleans the result so that be more human readable.
-		dmp.diff_cleanupSemantic(diffs);
-		
-		//applies appropriate colors to the result. (red, green)
-		return dmp.diff_prettyHtml(diffs);
-       }*/
-		/**
+	/*
+	 * public static String compareString(String newValue, String oldValue) {
+	 * 
+	 * 
+	 * if(newValue == null){
+	 * newValue=" ";
+	 * }
+	 * if(oldValue == null){
+	 * oldValue =" ";
+	 * }
+	 * diff_match_patch dmp = new diff_match_patch();
+	 * 
+	 * //split the texts based on words
+	 * LinesToCharsResult a = dmp.diff_linesToWords(newValue, oldValue);
+	 * 
+	 * String lineText1 = a.chars1;
+	 * String lineText2 = a.chars2;
+	 * List<String> lineArray = a.lineArray;
+	 * 
+	 * LinkedList<Diff> diffs = dmp.diff_main(lineText1, lineText2, false);
+	 * 
+	 * dmp.diff_charsToLines(diffs, lineArray);
+	 * 
+	 * //cleans the result so that be more human readable.
+	 * dmp.diff_cleanupSemantic(diffs);
+	 * 
+	 * //applies appropriate colors to the result. (red, green)
+	 * return dmp.diff_prettyHtml(diffs);
+	 * }
+	 */
+	/**
 	 * Quotes a String such that it is usable for JSON.
 	 * 
 	 * @param value
@@ -797,9 +807,9 @@ public class Functions {
 	 * returns the css Class for a given tag
 	 * 
 	 * @param tagCount
-	 *            the count aof the current Tag
+	 *        the count aof the current Tag
 	 * @param maxTagCount
-	 *            the maximum tag count
+	 *        the maximum tag count
 	 * @return the css class for the tag
 	 */
 	public static String getTagSize(final Integer tagCount, final Integer maxTagCount) {
@@ -853,7 +863,7 @@ public class Functions {
 	 * Returns the host name of a URL.
 	 * 
 	 * @param urlString
-	 *            - the URL as string
+	 *        - the URL as string
 	 * @return The host name of the URL.
 	 */
 	public static String getHostName(final String urlString) {
@@ -899,9 +909,9 @@ public class Functions {
 	 * returns the string.
 	 * 
 	 * @param s
-	 *            - the string
+	 *        - the string
 	 * @param length
-	 *            - maximal length of the string
+	 *        - maximal length of the string
 	 * @return The shortened string
 	 */
 	public static String shorten(final String s, final Integer length) {
@@ -917,13 +927,13 @@ public class Functions {
 	 * export
 	 * 
 	 * @param post
-	 *            - a publication post
+	 *        - a publication post
 	 * @param projectHome
 	 * @param lastFirstNames
-	 *            - should person names appear in "Last, First" form?
+	 *        - should person names appear in "Last, First" form?
 	 * @param generatedBibtexKeys
-	 *            - should the BibTeX keys be generated or the one from the
-	 *            database?
+	 *        - should the BibTeX keys be generated or the one from the
+	 *        database?
 	 * @return A BibTeX string of this post
 	 */
 	public static String toBibtexString(final Post<BibTex> post, final String projectHome, final Boolean lastFirstNames, final Boolean generatedBibtexKeys) {
@@ -942,9 +952,9 @@ public class Functions {
 
 	/**
 	 * @param post
-	 *            the post to be rendered
+	 *        the post to be rendered
 	 * @param skipDummyValues
-	 *            whether to skip fields containing dummyValues like noauthor
+	 *        whether to skip fields containing dummyValues like noauthor
 	 * @return an endnote string
 	 */
 	public static String toEndnoteString(final Post<BibTex> post, final Boolean skipDummyValues) {
@@ -973,7 +983,8 @@ public class Functions {
 	}
 
 	/**
-	 * Formats the date to RFC 1123, e.g., "Wed, 12 Mar 2013 12:12:12 GMT" (needed for Memento).
+	 * Formats the date to RFC 1123, e.g., "Wed, 12 Mar 2013 12:12:12 GMT"
+	 * (needed for Memento).
 	 * 
 	 * Currently Java's formatter doesn't support this standard therefore we can
 	 * not use the fmt:formatDate tag with a pattern
@@ -984,7 +995,6 @@ public class Functions {
 	public static String formatDateRFC1123(final Date date) {
 		return DateTimeUtils.formatDateRFC1123(date);
 	}
-
 
 	/**
 	 * Formats the date to W3CDTF, e.g., 2012-11-07T14:43:16+01:00 (needed for
@@ -1023,7 +1033,7 @@ public class Functions {
 				if (present(day)) {
 					final String cleanDay = BibTexUtils.cleanBibTex(day.trim());
 					try {
-						DateTime dt = dmyDateFormat.parseDateTime(cleanYear + "-" + monthAsNumber + "-" + cleanDay);
+						final DateTime dt = dmyDateFormat.parseDateTime(cleanYear + "-" + monthAsNumber + "-" + cleanDay);
 						return DateTimeFormat.mediumDate().withLocale(locale).print(dt);
 					} catch (final Exception ex) {
 						// return default date
@@ -1034,7 +1044,7 @@ public class Functions {
 				 * no day given
 				 */
 				try {
-					DateTime dt = myDateFormat.parseDateTime(cleanYear + "-" + monthAsNumber);
+					final DateTime dt = myDateFormat.parseDateTime(cleanYear + "-" + monthAsNumber);
 					return myDateFormatter.withLocale(locale).print(dt);
 				} catch (final Exception ex) {
 					// return default date
@@ -1075,7 +1085,7 @@ public class Functions {
 	 * invalid input, folkrank as default measure is returned.
 	 * 
 	 * @param userSimilarity
-	 *            - a user similarity
+	 *        - a user similarity
 	 * @return the "next" user similarity
 	 */
 	public static String toggleUserSimilarity(final String userSimilarity) {
@@ -1108,8 +1118,8 @@ public class Functions {
 	 * 
 	 * @see XmlUtils
 	 * @param s
-	 *            - the string from which the control characters are to be
-	 *            removed
+	 *        - the string from which the control characters are to be
+	 *        removed
 	 * @return the string with control characters removed.
 	 */
 	public static String removeInvalidXmlChars(final String s) {
@@ -1189,19 +1199,23 @@ public class Functions {
 	public static String downloadFileId(final String filename) {
 		return filename.replaceAll("[^A-Za-z0-9]", "-");
 	}
-	
+
 	/**
 	 * returns true, if command implements DidYouKnowMessageCommand interface
+	 * 
 	 * @param command
 	 * @return true|false
 	 */
 	/**
-	 * returns true, if command implements DidYouKnowMessageCommand interface and has a didYouKnowMessage set
+	 * returns true, if command implements DidYouKnowMessageCommand interface
+	 * and has a didYouKnowMessage set
+	 * 
 	 * @param command
 	 * @return true|false
 	 */
-	@Deprecated // TODO: (bootstrap) remove and use not empty check
-	public static Boolean hasDidYouKnowMessage(BaseCommand command) {
+	@Deprecated
+	// TODO: (bootstrap) remove and use not empty check
+	public static Boolean hasDidYouKnowMessage(final BaseCommand command) {
 		return (command.getDidYouKnowMessage() != null);
 	}
 
