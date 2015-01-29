@@ -45,17 +45,17 @@ import org.bibsonomy.webapp.view.Views;
  * @param <R>
  */
 public class PostHistoryController<R extends Resource> extends SingleResourceListControllerWithTags implements MinimalisticController<ResourcePageCommand<R>> {
-	
+
 	@Override
 	public ResourcePageCommand<R> instantiateCommand() {
 		return new ResourcePageCommand<R>();
 	}
 
 	@Override
-	public View workOn(ResourcePageCommand<R> command) {
+	public View workOn(final ResourcePageCommand<R> command) {
 		final String format = command.getFormat();
 		this.startTiming(format);
-		
+
 		/*
 		 * This hash has 33 characters and contains at the first position the
 		 * type of the hash (see SimHash class).
@@ -64,9 +64,12 @@ public class PostHistoryController<R extends Resource> extends SingleResourceLis
 		final String requUser = command.getRequestedUser();
 		final Class<R> resourceClass = command.getResourceClass();
 		final GroupingEntity groupingEntity = present(requUser) ? GroupingEntity.USER : GroupingEntity.ALL;
-		
+
 		this.setList(command, resourceClass, groupingEntity, requUser, null, longHash, null, FilterEntity.POSTS_HISTORY, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceClass).getEntriesPerPage());
 		this.postProcessAndSortList(command, resourceClass);
+		if (!present(command.getListCommand(resourceClass).getList())) {
+			return Views.ERROR;
+		}
 
 		// redirect to the correct view
 		if ("html".equals(format)) {
@@ -81,7 +84,7 @@ public class PostHistoryController<R extends Resource> extends SingleResourceLis
 				return Views.HISTORYBM;
 			}
 		}
-		
+
 		this.endTiming();
 		// export - return the appropriate view
 		return Views.getViewByFormat(format);
