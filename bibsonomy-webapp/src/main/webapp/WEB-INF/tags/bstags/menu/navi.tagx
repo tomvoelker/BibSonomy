@@ -98,8 +98,10 @@
 											</li>
 										</c:if>
 									</c:forEach>
-									<li class="divider"><!-- keep me --></li>
-									<li><a href="/grouprequest"><fmt:message key="navi.group.groupRequest" /></a></li>
+									<c:if test="${!loginUser.spammer}">
+										<li class="divider"><!-- keep me --></li>
+										<li><a href="/grouprequest"><fmt:message key="navi.group.groupRequest" /></a></li>
+									</c:if>
 								</ul>
 							</li>
 						</c:when>
@@ -110,8 +112,10 @@
 										<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.groups"/><b class="caret">&amp;nbsp;</b></a>
 										<ul class="dropdown-menu">
 											<li><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups.all"/></a></li>
-											<li class="divider"><!-- keep me --></li>
-											<li><a href="/grouprequest"><fmt:message key="navi.group.groupRequest" /></a></li>
+											<c:if test="${!loginUser.spammer}">
+												<li class="divider"><!-- keep me --></li>
+												<li><a href="/grouprequest"><fmt:message key="navi.group.groupRequest" /></a></li>
+											</c:if>
 										</ul>
 									</li>
 								</c:when>
