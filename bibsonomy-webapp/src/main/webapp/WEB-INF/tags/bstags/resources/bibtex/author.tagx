@@ -8,7 +8,6 @@
 	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
 	<jsp:directive.attribute name="schemaOrgMarkUp" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="useAbsoluteURL" type="java.lang.Boolean" required="false" />
-	<jsp:directive.attribute name="isRemotePost" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="flase"/>
 	
 	<c:choose>
@@ -17,6 +16,7 @@
 			<c:choose>
 				<c:when test="${not empty post.systemUrl }">
 					<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
+					<c:set var="systemUrl" value="${fn:substringBefore(post.systemUrl,'/') }"/>
 				</c:when>
 				<c:otherwise>
 					<c:set var ="isRemotePost" value="false"/>
@@ -61,7 +61,7 @@
 			</c:if>
 			<c:choose>
 				<c:when test="${isRemotePost}">
-					<a href="${post.systemUrl}/bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}"><c:out value="${personName}" /></a>	
+					<a href="${urlGenerator.getAuthorUrlByNameAndSysUrl(person.lastName, post.systemUrl)}"><c:out value="${personName}" /></a>	
 				</c:when>
 				<c:otherwise>
 					<c:choose>

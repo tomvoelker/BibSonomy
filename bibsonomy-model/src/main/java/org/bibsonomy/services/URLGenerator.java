@@ -213,6 +213,18 @@ public class URLGenerator {
 	}
 	
 	/**
+	 * Constructs the URL for the author's page for the specified system.
+	 * 
+	 * @param authorLastName
+	 * @param systemUrl 
+	 * @return The URL for the author's page.
+	 */
+	public String getAuthorUrlByNameAndSysUrl(final String authorLastName, final String systemUrl) {
+		String url = systemUrl + prefix + AUTHOR_PREFIX + "/" + UrlUtils.safeURIEncode(BibTexUtils.cleanBibTex(authorLastName));
+		return this.getUrl(url);
+	}
+	
+	/**
 	 * Constructs a URL for the basket page,
 	 * i.e. /basket
 	 * @return URL pointing to the basket page.
@@ -802,6 +814,19 @@ public class URLGenerator {
 	}
 
 	/**
+	 * Constructs the URL for the user's page for a specified system
+	 * 
+	 * @param userName
+	 * @param systemUrl
+	 * @return The URL for the user's page for the system
+	 */
+	public String getUserUrlByUserNameAndSysUrl(final String userName, final String systemUrl) {
+		String url = systemUrl + prefix + USER_PREFIX + "/" +
+					 UrlUtils.safeURIEncode(userName);
+		return this.getUrl(url);
+	}
+	
+	/**
 	 * Constructs the URL for the user's page with all posts tagged with tagName
 	 * 
 	 * @param userName
@@ -814,6 +839,19 @@ public class URLGenerator {
 		return this.getUrl(url);
 	}
 	
+	/**
+	 *  Constructs the URL for the user's page with all posts tagged with tagName for a specified system
+	 * 
+	 * @param userName
+	 * @param tagName
+	 * @param systemUrl
+	 * @return The URL for the user's page with all posts tagged with tagName and systemUrl
+	 */
+	public String getUserUrlByUserNameTagNameAndSysUrl(final String userName, final String tagName, final String systemUrl) {
+		String url = this.getUserUrlByUserNameAndSysUrl(userName, systemUrl);
+		url += "/" + UrlUtils.safeURIEncode(tagName);
+		return this.getUrl(url);
+	}
 	/**
 	 * Constructs the URL for the posts viewable for friends,
 	 * i.e. /viewable/friends

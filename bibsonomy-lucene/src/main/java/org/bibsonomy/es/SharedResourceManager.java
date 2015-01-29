@@ -23,7 +23,7 @@ public class SharedResourceManager<R extends Resource> extends LuceneResourceMan
 			.getLog(SharedResourceManager.class);
 
 	/**
-	 * generates indexes for shared resource aka ElasticSearch 
+	 * generates indexes for shared resource 
 	 */
 	@Override
 	@SuppressWarnings("unchecked")

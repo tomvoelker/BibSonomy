@@ -7,9 +7,7 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
-	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
-	<jsp:directive.attribute name="isRemotePost" type="java.lang.Boolean" required="false" />
-	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>	
 	
 	<c:set var="resourceType" value="${post.resource.getClass().getSimpleName()}"/>
 	<c:choose>
@@ -33,7 +31,7 @@
 					<c:out value=" "/>
 					<c:choose>
 						<c:when test="${isRemotePost}">
-							<a class="friends" href="${post.systemUrl}/friend/${fn:escapeXml(post.user.name)}"><c:out value="${group.name}" /></a>
+							<a class="friends" href="${post.systemUrl}friend/${fn:escapeXml(post.user.name)}"><c:out value="${group.name}" /></a>
 						</c:when>
 						<c:otherwise>
 							<c:choose>
@@ -52,7 +50,7 @@
 					<c:out value=" "/>
 					<c:choose>
 						<c:when test="${isRemotePost}">
-							<a class="private" href="${post.systemUrl}/viewable/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
+							<a class="private" href="${post.systemUrl}viewable/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
 						</c:when>
 						<c:otherwise>
 							<a class="private" href="/viewable/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
@@ -65,7 +63,7 @@
 					<c:out value=" "/>
 					<c:choose>
 						<c:when test="${isRemotePost}">
-							<a class="other" href="${post.systemUrl}/viewable/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
+							<a class="other" href="${post.systemUrl}viewable/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
 						</c:when>
 						<c:otherwise>
 							<a class="other" href="/viewable/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>

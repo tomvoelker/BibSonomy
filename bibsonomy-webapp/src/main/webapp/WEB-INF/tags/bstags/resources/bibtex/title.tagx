@@ -8,7 +8,6 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
-	<jsp:directive.attribute name="isRemotePost" type="java.lang.Boolean" required="false"/>
 	<c:choose>
 		<c:when test="${not empty post.systemUrl }">
 			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
@@ -23,13 +22,12 @@
 	<!--  display title -->
 	<c:choose>
 		<c:when test="${isRemotePost}">
-			<c:set var="bibUrlTemplate">${post.systemUrl}/bibtex/${intraHashId}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}</c:set>
+			<c:set var="bibUrlTemplate">${post.systemUrl}bibtex/${intraHashId}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}</c:set>
 		</c:when>
 		<c:otherwise>
 			<c:set var="bibUrlTemplate">/bibtex/${intraHashId}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}</c:set>
 		</c:otherwise>
 	</c:choose>
-	<c:set var="bibUrlTemplate">/bibtex/${intraHashId}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}</c:set>
 	<c:set var="bibTitle" value="${mtl:cleanBibtex(post.resource.title)}"/>
 	<a href="${bibUrlTemplate}" title="${fn:escapeXml(bibTitle)}"><c:out value="${bibTitle}" /></a>
 </jsp:root>

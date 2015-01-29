@@ -39,14 +39,7 @@
 		<c:when test="${not noLink}">
 			<c:choose>
 				<c:when test="${isRemotePost}">
-				<c:choose>
-					<c:when test="${resourceType eq 'Bookmark'}">
-						<a href="${mtl:cleanUrl(post.resource.url)}"><c:out value="@${username}" /></a>
-					</c:when>
-					<c:otherwise>
-						<a href="${post.systemUrl}/bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}"><c:out value="@${username}" /></a>
-					</c:otherwise>
-				</c:choose>
+					<a href="${relativeUrlGenerator.getUserUrlByUserNameAndSysUrl(username, post.systemUrl)}"><c:out value="@${username}" /></a>
 				</c:when>
 				<c:otherwise>
 					<a href="${relativeUrlGenerator.getUserUrlByUserName(username)}"><c:out value="@${username}" /></a>
