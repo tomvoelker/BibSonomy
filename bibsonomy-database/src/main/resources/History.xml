@@ -21,7 +21,7 @@
 	</update>
 	
 	<select id="getBibTexHistory" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT g.*,t.tag_name,h.ctr AS count, <include refid ="bibtexAttributes2"/>,t.change_date, <include refid="reviewRatingsRows" /> 
+		SELECT g.*,t.tag_name,h.ctr AS count, <include refid ="bibtexAttributes2"/>,t.change_date, b2.description, <include refid="reviewRatingsRows" /> 
 		FROM (SELECT * FROM bibtex t1
 		      WHERE simhash2 = #hash#
 		      	AND user_name = #requestedUserName#) AS b2
@@ -30,7 +30,7 @@
 		LEFT JOIN bibhash h ON (<include refid="bibtexSimHash2"/>)
 		LEFT JOIN groupids g ON (b2.group = g.group)
 		UNION
-		SELECT g.*, t.tag_name, 0 as count, <include refid ="bibtexAttributes2"/>, t.change_date, <include refid="reviewRatingsRows" />
+		SELECT g.*, t.tag_name, 0 as count, <include refid ="bibtexAttributes2"/>, t.change_date, b2.description, <include refid="reviewRatingsRows" />
 		FROM (SELECT t1.*
 		      FROM log_bibtex t1, bibtex b
 		      WHERE t1.current_content_id = b.content_id
@@ -61,12 +61,12 @@
 	</select>
 	
 	<select id="getGoldStandardHistory" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="resourceParam">
-		(SELECT b.content_id, <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, 1 AS count, content_type, <include refid="reviewRatingsRows" /> 
+		(SELECT b.content_id, b.change_date, b.description, <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, 1 AS count, content_type, <include refid="reviewRatingsRows" /> 
 		FROM gold_standard b
 		LEFT JOIN review_ratings_cache c ON c.interHash = #hash#
 		WHERE b.simhash1 = #hash# <!-- AND b.content_type = #contentType# ???-->)
 	UNION
-		(SELECT b.content_id, <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, 1 AS count, b.content_type, <include refid="reviewRatingsRows" /> 
+		(SELECT b.content_id, b.change_date, b.description, <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, 1 AS count, b.content_type, <include refid="reviewRatingsRows" /> 
 		FROM log_gold_standard b, gold_standard b2
 		LEFT JOIN review_ratings_cache c ON c.interHash = #hash#
 		WHERE b2.simhash1 = #hash#  <!-- AND b.content_type = #contentType# -->
