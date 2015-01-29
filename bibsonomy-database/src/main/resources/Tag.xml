@@ -452,12 +452,12 @@
 	</delete>
 	
 	<delete id="deleteGroupTasForUserAndGroup" parameterClass="tagParam">
-		DELETE FROM grouptas gt WHERE gt.user_name = #userName# AND gt.group = #groupId#
+		DELETE FROM grouptas WHERE user_name = #userName# AND `group` = #groupId#
 	</delete>
 	
 	<!-- maybe rename? -->
 	<update id="updateTasInGroupFromLeavingUser" parameterClass="tagParam">
-		UPDATE tas t SET t.group = 1 WHERE t.user_name = #userName# AND t.group = #groupId#
+		UPDATE tas t SET t.group = 1 WHERE t.user_name = #userName# AND t.`group` = #groupId#
 	</update>
 	
 </sqlMap>

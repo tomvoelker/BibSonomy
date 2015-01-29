@@ -98,6 +98,14 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	protected void onPostUpdate(final Integer oldContentId, final Integer newContentId, final DBSession session) {
 		this.plugins.onBookmarkUpdate(oldContentId, newContentId, session);
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.managers.PostDatabaseManager#onMassUpdate(java.lang.String, int)
+	 */
+	@Override
+	protected void onPostMassUpdate(String userName, int groupId, DBSession session) {
+		this.plugins.onBookmarkMassUpdate(userName, groupId, session);
+	}
 
 	/*
 	 * (non-Javadoc)

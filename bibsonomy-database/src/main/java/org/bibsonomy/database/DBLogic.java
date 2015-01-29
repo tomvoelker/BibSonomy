@@ -1151,6 +1151,8 @@ public class DBLogic implements LogicInterface {
 				this.groupDBManager.addUserToGroup(groupName, membership.getUser().getName(), GroupRole.USER, session);
 				break;
 			case REMOVE_MEMBER:
+				// FIXME: only the user himself or a group admin can remove members, add checks here
+				// FIXME: at least one admin must be in the group
 				try {
 					session.beginTransaction();
 					this.groupDBManager.removeUserFromGroup(groupName, membership.getUser().getName(), session);

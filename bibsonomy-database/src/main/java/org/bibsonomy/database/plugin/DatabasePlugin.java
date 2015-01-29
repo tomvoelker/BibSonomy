@@ -75,7 +75,14 @@ public interface DatabasePlugin {
 	 * @param session
 	 */
 	public void onPublicationUpdate(int newContentId, int contentId, DBSession session);
-
+	
+	/**
+	 * @param username
+	 * @param groupId
+	 * @param session
+	 */
+	public void onPublicationMassUpdate(String username, int groupId, DBSession session);
+	
 	/**
 	 * Called when a gold standard publication is created.
 	 * 
@@ -147,6 +154,13 @@ public interface DatabasePlugin {
 	 * @param session
 	 */
 	public void onBookmarkUpdate(int newContentId, int contentId, DBSession session);
+	
+	/**
+	 * @param userName the username
+	 * @param groupId the groupid
+	 * @param session TODO
+	 */
+	public void onBookmarkMassUpdate(final String userName, final int groupId, DBSession session);
 	
 	/**
 	 * Called when a TagRelation is deleted.
@@ -292,6 +306,5 @@ public interface DatabasePlugin {
 	 * @author MarcelM
 	 */
 	public void onBibTexExtraDelete(final BibTexExtraParam deletedBibTexExtraParam, final DBSession session);
-
 
 }

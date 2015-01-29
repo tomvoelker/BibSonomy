@@ -64,6 +64,15 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	public void onPublicationUpdate(final int newContentId, final int contentId, final DBSession session) {
 		// noop
 	}
+	
+	/**
+	 * @param username
+	 * @param groupId
+	 * @param session
+	 */
+	public void onPublicationMassUpdate(String username, int groupId, DBSession session) {
+		// noop
+	}
 
 	@Override
 	public void onGoldStandardCreate(final String interhash, final DBSession session) {
@@ -102,6 +111,14 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 
 	@Override
 	public void onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session) {
+		// noop
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onBookmarkMassUpdate(java.lang.String, int)
+	 */
+	@Override
+	public void onBookmarkMassUpdate(String userName, int groupId, DBSession session) {
 		// noop
 	}
 

@@ -974,8 +974,4 @@
 	<update id="updateBibTexInGroupFromLeavingUser" parameterClass="resourceParam">
 		UPDATE bibtex b SET b.group = 1 WHERE b.user_name = #userName# AND b.group = #groupId#
 	</update>
-	
-	<select id="getContentIdsFromBibTexByUserAndGroupID"> parameterClass="resourceParam">
-		select content_id from bookmark where user_name=#userName# and group=#groupId#
-	</select>
 </sqlMap>

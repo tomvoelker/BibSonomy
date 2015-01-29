@@ -118,7 +118,7 @@
 								<c:choose>
 									<c:when test="${mtl:contains(command.context.loginUser.groups, group)}">
 										<a href="/settings/group/${group.name}" class="btn btn-success btn-sm"><span class="fa fa-check"><!-- keep me --></span><c:out value=" "/><span class="infotext"><fmt:message key="group.memberOf" /></span></a>
-										<a href="/updateGroup?operation=remove_user&amp;groupname=${group.name}&amp;username=${command.context.loginUser.name}&amp;ckey=${ckey}" class="btn btn-danger btn-sm"><span class="fa fa-times"><!-- keep me --></span><c:out value=" "/><span class="infotext"><fmt:message key="group.leave" /></span></a>
+										<a href="/updateGroup?operation=REMOVE_MEMBER&amp;groupname=${group.name}&amp;username=${command.context.loginUser.name}&amp;ckey=${ckey}" class="btn btn-danger btn-sm"><span class="fa fa-times"><!-- keep me --></span><c:out value=" "/><span class="infotext"><fmt:message key="group.leave" /></span></a>
 									</c:when>
 									<c:otherwise>
 										<c:choose>
