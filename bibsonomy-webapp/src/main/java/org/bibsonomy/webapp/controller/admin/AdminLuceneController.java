@@ -31,7 +31,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.es.SharedResourceManager;
+import org.bibsonomy.es.SharedIndexUpdatePlugin;
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -58,7 +58,7 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 	
 	private boolean generateSharedIndex;
 	private List<LuceneResourceManager<? extends Resource>> luceneResourceManagers;
-	private SharedResourceManager<? extends Resource> srManager;
+	private SharedIndexUpdatePlugin<? extends Resource> srPlugin;
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -74,10 +74,8 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 			throw new AccessDeniedException("please log in as admin");
 		}	
 		
-		if(generateSharedIndex){	
-			srManager = new SharedResourceManager<Resource>();
-			srManager.setLuceneResourceManagers(luceneResourceManagers);
-			srManager.generateIndex();
+		if (generateSharedIndex) {
+			srPlugin.generateIndex(luceneResourceManagers);
 			return Views.SUCCESS;
 		}
 		
@@ -144,5 +142,13 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 	 */
 	public void setGenerateSharedIndex(boolean generateSharedIndex) {
 		this.generateSharedIndex = generateSharedIndex;
+	}
+
+	public SharedIndexUpdatePlugin<? extends Resource> getSrPlugin() {
+		return this.srPlugin;
+	}
+
+	public void setSrPlugin(SharedIndexUpdatePlugin<? extends Resource> srPlugin) {
+		this.srPlugin = srPlugin;
 	}
 }

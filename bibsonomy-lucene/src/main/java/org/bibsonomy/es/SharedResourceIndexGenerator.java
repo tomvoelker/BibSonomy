@@ -32,9 +32,16 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 	//	private final ESClient esClient = new ESNodeClient();
 	// ElasticSearch Transport client
 	private ESClient esClient;
-	private static String systemtHome;
+	private final String systemHome;
 	private static final Log log = LogFactory.getLog(SharedResourceIndexGenerator.class);
 		
+	/**
+	 * @param systemHome
+	 */
+	public SharedResourceIndexGenerator(final String systemHome) {
+		this.systemHome = systemHome;
+	}
+
 	/**
 	 * creates index of resource entries
 	 * 
@@ -43,12 +50,10 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 	 */
 	@SuppressWarnings({ "unchecked", "boxing" })
 	@Override
-	public void createIndexFromDatabase() throws CorruptIndexException,
-			IOException {
+	public void createIndexFromDatabase() throws CorruptIndexException, IOException {
 		log.info("Filling index with database post entries.");
 
-		final ExecutorService executor = Executors
-				.newFixedThreadPool(this.numberOfThreads);
+		final ExecutorService executor = Executors.newFixedThreadPool(this.numberOfThreads);
 
 		// number of post entries to calculate progress
 		this.numberOfPosts = this.dbLogic.getNumberOfPosts();
@@ -69,11 +74,11 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 		systemInfo.setPostType(indexType);
 		systemInfo.setLast_log_date(lastLogDate);
 		systemInfo.setLast_tas_id(lastTasId);
-		systemInfo.setSystemUrl(systemtHome);
+		systemInfo.setSystemUrl(systemHome);
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonDocumentForSystemInfo = mapper.writeValueAsString(systemInfo);
 		esClient.getClient()
-		.prepareIndex(indexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, systemtHome+indexType)
+		.prepareIndex(indexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, systemHome+indexType)
 		.setSource(jsonDocumentForSystemInfo).execute().actionGet();
 		
 		// read block wise all posts
@@ -95,8 +100,8 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 				if (this.isNotSpammer(post)) {
 					Map<String, Object> jsonDocument = new HashMap<String, Object>();
 					jsonDocument = (Map<String, Object>) this.resourceConverter.readPost(post, this.searchType);
-					jsonDocument.put(this.systemUrlFieldName, systemtHome);
-					long indexID = (systemtHome.hashCode() << 32) + Long.parseLong(post.getContentId().toString());
+					jsonDocument.put(this.systemUrlFieldName, systemHome);
+					long indexID = (systemHome.hashCode() << 32) + Long.parseLong(post.getContentId().toString());
 					esClient.getClient()
 							.prepareIndex(indexName, indexType, String.valueOf(indexID))
 							.setSource(jsonDocument).execute().actionGet();
@@ -140,6 +145,11 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 		} catch (final Exception e) {
 			log.error("Failed to generate index!", e);
 		}finally{
+			try {
+				this.shutdown();
+			} catch (final Exception e) {
+				log.error("Failed to close index-writer!", e);
+			}
 			log.warn("Finished generating index for "+ this.indexType);
 		}
 	}
@@ -178,19 +188,4 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 	public void setEsClient(ESClient esClient) {
 		this.esClient = esClient;
 	}
-
-	/**
-	 * @return the systemtHome
-	 */
-	public String getSystemtHome() {
-		return systemtHome;
-	}
-
-	/**
-	 * @param systemtHome the systemtHome to set
-	 */
-	public void setSystemtHome(String systemtHome) {
-		SharedResourceIndexGenerator.systemtHome = systemtHome;
-	}
-
 }

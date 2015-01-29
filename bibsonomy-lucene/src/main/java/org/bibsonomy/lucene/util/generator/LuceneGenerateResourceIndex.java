@@ -108,7 +108,9 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 	 * @throws CorruptIndexException
 	 */
 	public void shutdown() throws CorruptIndexException, IOException {
-		this.indexWriter.close();
+		if (indexWriter != null) {
+			this.indexWriter.close();
+		}
 
 		if (this.callback != null) {
 			this.callback.generatedIndex(this.resourceIndex);

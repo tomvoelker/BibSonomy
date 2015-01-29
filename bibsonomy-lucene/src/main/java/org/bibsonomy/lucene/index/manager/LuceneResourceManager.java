@@ -53,7 +53,6 @@ import org.bibsonomy.lucene.util.generator.LuceneGenerateResourceIndex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.es.ESClient;
 import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.es.UpdatePlugin;
 
@@ -104,12 +103,9 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	/**
 	 * for shared resources index
 	 */
+	// FIXME: object lifecycle is unclear
 	protected SharedResourceIndexUpdater<R> sharedIndexUpdater;
-	
-	/**
-	 * for elasticsearch client
-	 */
-	protected ESClient esClient;
+
 	
 	/**
 	 * The plugin for indexUpdater
@@ -194,38 +190,40 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			
 			// FIXME: this should be done in the constructor
 			// keeps track of the newest tas_id during last index update
-			Integer lastTasId = this.updatingIndex.getLastTasId();
+			Integer lastTasId = this.updatingIndex.getLastTasId(); // FIXME
 			log.debug("lastTasId: " + lastTasId);
 
 			// keeps track of the newest log_date during last index update
 			final long lastLogDate = this.updatingIndex.getLastLogDate();
 			
-			if(plugin!=null){
+			if (plugin != null) {
 				//Shared index updater
-				this.sharedIndexUpdater =  (SharedResourceIndexUpdater<R>) plugin.createUpdater(this.getResourceName(), this.esClient);
+				this.sharedIndexUpdater =  (SharedResourceIndexUpdater<R>) plugin.createUpdater(this.getResourceName());
 				Integer lastTasIdSharedIndex = this.sharedIndexUpdater.getLastTasId();
 				final long lastLogDateSharedIndex =  this.sharedIndexUpdater.getLastLogDate();
-				
-				if((lastLogDate == lastLogDateSharedIndex) && (lastTasId == lastTasIdSharedIndex)){
-					lastTasId = lastTasIdSharedIndex = this.updateIndex(currentLogDate, lastTasId, lastLogDateSharedIndex, SearchType.BOTH);
-				}else{
-					lastTasId = this.updateIndex(currentLogDate, lastTasId, lastLogDate, SearchType.LUCENESEARCH);
-					lastTasIdSharedIndex =  this.updateIndex(currentLogDate, lastTasIdSharedIndex, lastLogDateSharedIndex, SearchType.ELASTICSEARCH);
+				Integer newLastTasId;
+				Integer newLastTasIdSharedIndex;
+				if ((lastLogDate == lastLogDateSharedIndex) && (lastTasId == lastTasIdSharedIndex)){
+					newLastTasId = this.updateIndex(currentLogDate, lastTasId, lastLogDateSharedIndex, SearchType.BOTH);
+					newLastTasIdSharedIndex = newLastTasId;
+				} else {
+					newLastTasId = this.updateIndex(currentLogDate, lastTasId, lastLogDate, SearchType.LUCENESEARCH);
+					newLastTasIdSharedIndex =  this.updateIndex(currentLogDate, lastTasIdSharedIndex, lastLogDateSharedIndex, SearchType.ELASTICSEARCH);
 				}
-				/*
-				 * commit changes
-				 */
-				this.sharedIndexUpdater.setSystemInformation(lastTasId, new Date(currentLogDate));
-				this.updatingIndex.flush();
-				this.sharedIndexUpdater.flush();
-				/*
-				 * update variables
-				 */
-				this.updatingIndex.setLastLogDate(currentLogDate);
-				this.updatingIndex.setLastTasId(lastTasId);
-				this.sharedIndexUpdater.setLastLogDate(currentLogDate);
-				this.sharedIndexUpdater.setLastTasId(lastTasId);
-			}else{
+				
+				if (newLastTasIdSharedIndex != lastTasIdSharedIndex) {
+					this.sharedIndexUpdater.setSystemInformation(lastTasIdSharedIndex, new Date(currentLogDate));
+					this.sharedIndexUpdater.setLastLogDate(currentLogDate);
+					this.sharedIndexUpdater.setLastTasId(newLastTasIdSharedIndex);
+					this.sharedIndexUpdater.flush();
+				}
+				if (newLastTasId != lastTasId) {
+					this.updatingIndex.setLastLogDate(currentLogDate);
+					this.updatingIndex.setLastTasId(newLastTasId);
+					this.updatingIndex.flush();
+				}
+				
+			} else {
 				lastTasId = this.updateIndex(currentLogDate, lastTasId, lastLogDate, SearchType.LUCENESEARCH);
 				/*
 				 * commit changes
@@ -826,21 +824,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		this.generatingIndex = false;
 		this.generator = null;
 	}
-
-	/**
-	 * @return the esClient
-	 */
-	public ESClient getEsClient() {
-		return this.esClient;
-	}
-
-	/**
-	 * @param esClient the esClient to set
-	 */
-	public void setEsClient(ESClient esClient) {
-		this.esClient = esClient;
-	}
-
+	
 	/**
 	 * @return	a list of {@link LuceneIndexInfo} for each managed resource index
 	 * 			of this manager

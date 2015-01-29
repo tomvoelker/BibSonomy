@@ -177,7 +177,8 @@
 	</bean>
 	<bean id="adminGenerateSharedIndexController" class="org.bibsonomy.webapp.controller.admin.AdminLuceneController" scope="request">
 		<property name="luceneResourceManagers" ref="luceneResourceManagers" />
-		<property name="generateSharedIndex" value = "true"/>
+		<property name="generateSharedIndex" value="true"/>
+		<property name="srPlugin" ref="sharedIndexUpdatePlugin"/>
 	</bean>
 	
 	<bean id="adminAjaxController" class="org.bibsonomy.webapp.controller.admin.AdminAjaxController" scope="request">

@@ -13,5 +13,5 @@ public interface UpdatePlugin {
 	 * @param esClient
 	 * @return IndexUpdater
 	 */
-	IndexUpdater createUpdater(String indexType, ESClient esClient);
+	IndexUpdater createUpdater(String indexType);
 }

@@ -700,12 +700,12 @@ public class DBLogic implements LogicInterface {
 						}
 						
 
-			 	// this is save because of RTTI-check of resourceType argument
-				// which is of class T
-				final List<Post<T>> publications = (List) this.publicationDBManager.getPosts(param, session);
-				SystemTagsExtractor.handleHiddenSystemTags(publications, loginUser.getName());
-				return publications;
-			} 
+						// this is save because of RTTI-check of resourceType argument
+						// which is of class T
+						final List<Post<T>> publications = (List) this.publicationDBManager.getPosts(param, session);
+						SystemTagsExtractor.handleHiddenSystemTags(publications, loginUser.getName());
+						return publications;
+					}
 
 					if (resourceType == Bookmark.class) {
 						final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);

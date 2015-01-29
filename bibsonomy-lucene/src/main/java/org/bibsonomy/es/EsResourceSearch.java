@@ -37,11 +37,7 @@ public class EsResourceSearch<R extends Resource>{
 	 * 
 	 */
 	protected static final Log log = LogFactory.getLog(EsResourceSearch.class);
-
-	// ElasticSearch node client
-//	private ESClient esClient = new ESNodeClient();
 	
-	// ElasticSearch Transport client
 	private ESClient esClient;
 
 	/**
@@ -59,6 +55,7 @@ public class EsResourceSearch<R extends Resource>{
 	}
 	
 	/**
+	 * @param searchTerms 
 	 * @return postList
 	 * @throws IOException 
 	 * @throws CorruptIndexException 
@@ -81,7 +78,7 @@ public class EsResourceSearch<R extends Resource>{
 				log.info("Current Search results for '" + searchTerms + "': "
 						+ response.getHits().getTotalHits());
 				for (SearchHit hit : response.getHits()) {
-						Map<String, Object> result = hit.getSource();					
+						Map<String, Object> result = hit.getSource();
 						final Post<R> post = this.resourceConverter.writePost(result);
 						postList.add(post);
 					}

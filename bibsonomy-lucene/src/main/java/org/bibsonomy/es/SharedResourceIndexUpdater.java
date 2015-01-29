@@ -46,7 +46,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 
 	private SystemInformation systemInfo =  new SystemInformation();
 	/**The Url of the project home */
-	private static String systemtHome;
+	private final String systemHome;
 	
 	private final String systemUrlFieldName = "systemUrl";
 	
@@ -70,10 +70,10 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	protected Set<String> usersToFlag;
 
 	/**
-	 * 
-	 * 
+	 * @param systemHome
 	 */
-	public SharedResourceIndexUpdater() {
+	public SharedResourceIndexUpdater(final String systemHome) {
+		this.systemHome = systemHome;
 		this.contentIdsToDelete = new LinkedList<Integer>();
 		this.esPostsToInsert = new ArrayList<Map<String, Object>>();
 		this.usersToFlag = new TreeSet<String>();
@@ -101,7 +101,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 
 	private String fetchSystemInfoField(String fieldToRetrieve) {
 		try {
-			IdsQueryBuilder query = QueryBuilders.idsQuery().ids(systemtHome+indexType);
+			IdsQueryBuilder query = QueryBuilders.idsQuery().ids(systemHome+indexType);
 			SearchRequestBuilder searchRequestBuilder = esClient
 					.getClient().prepareSearch(indexName);
 			searchRequestBuilder.setTypes(ESConstants.SYSTEM_INFO_INDEX_TYPE);
@@ -217,7 +217,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 			if ((contentIdsToDelete.size() > 0) || (usersToFlag.size() > 0)) {
 				// remove each cached post from index
 				for (final Integer contentId : this.contentIdsToDelete) {
-					long indexID = (systemtHome.hashCode() << 32) + Long.parseLong(contentId.toString());
+					long indexID = (systemHome.hashCode() << 32) + Long.parseLong(contentId.toString());
 					this.deleteIndexForIndexId(indexID);
 					log.debug("deleted post " + contentId);
 				}
@@ -265,7 +265,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		try {
 			jsonDocumentForSystemInfo = mapper.writeValueAsString(systemInfo);
 			esClient.getClient()
-			.prepareIndex(indexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, systemtHome+indexType)
+			.prepareIndex(indexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, systemHome+indexType)
 			.setSource(jsonDocumentForSystemInfo).execute().actionGet();
 		} catch (JsonProcessingException e) {
 			log.error("Failed to convert SystemInformation into a JSON", e);
@@ -279,8 +279,8 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	public void insertNewPosts(ArrayList<Map<String, Object>> esPostsToInsert2) {
 		//TODO add systemUrl
 		for (Map<String, Object> jsonDocument : esPostsToInsert2) {
-			jsonDocument.put(this.systemUrlFieldName, systemtHome);
-			long indexId = (systemtHome.hashCode()<<32)+Long.parseLong(jsonDocument.get(LuceneFieldNames.CONTENT_ID).toString());
+			jsonDocument.put(this.systemUrlFieldName, systemHome);
+			long indexId = (systemHome.hashCode()<<32)+Long.parseLong(jsonDocument.get(LuceneFieldNames.CONTENT_ID).toString());
 			this.esClient
 					.getClient()
 					.prepareIndex(
@@ -372,20 +372,6 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 			this.usersToFlag.remove(userName);
 		}
 	}
-
-	/**
-	 * @return the systemtHome
-	 */
-	public static String getSystemtHome() {
-		return systemtHome;
-	}
-
-	/**
-	 * @param systemtHome the systemtHome to set
-	 */
-	public static void setSystemtHome(String systemtHome) {
-		SharedResourceIndexUpdater.systemtHome = systemtHome;
-	}
 	
 	/**
 	 * sets the system informations to update
@@ -396,7 +382,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		this.systemInfo.setLast_log_date(lastLogDate);
 		this.systemInfo.setLast_tas_id(lastTasId);
 		this.systemInfo.setPostType(indexType);
-		this.systemInfo.setSystemUrl(systemtHome);
+		this.systemInfo.setSystemUrl(systemHome);
 	}
 
 	/**

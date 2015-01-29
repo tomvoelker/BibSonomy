@@ -56,54 +56,54 @@ public class LuceneGoldStandardManager<R extends Resource & GoldStandard<?>> ext
 	@SuppressWarnings("unchecked")
 	@Override
 	protected int updateIndex(final long currentLogDate, int lastId, final long lastLogDate, final SearchType searchType) {
-	    /*
-	     * get new posts 
-	     */
-	    final List<LucenePost<GoldStandardPublication>> newPosts = this.dbLogic.getNewPosts(lastId);
+		/*
+		 * get new posts 
+		 */
+		final List<LucenePost<GoldStandardPublication>> newPosts = this.dbLogic.getNewPosts(lastId);
 
-	    /*
-	     * get posts to delete
-	     */
-	    final List<Integer> contentIdsToDelete = this.dbLogic.getContentIdsToDelete(new Date(lastLogDate - QUERY_TIME_OFFSET_MS));
+		/*
+		 * get posts to delete
+		 */
+		final List<Integer> contentIdsToDelete = this.dbLogic.getContentIdsToDelete(new Date(lastLogDate - QUERY_TIME_OFFSET_MS));
 
-	    /*
-	     * remove new and deleted posts from the index
-	     * and update field 'lastTasId'
-	     */
-	    for (final LucenePost<GoldStandardPublication> post : newPosts) {
-	    	final Integer contentId = post.getContentId();
-	    	contentIdsToDelete.add(contentId);
-	    	lastId = Math.max(contentId, lastId);
-	    }
-	    
+		/*
+		 * remove new and deleted posts from the index
+		 * and update field 'lastTasId'
+		 */
+		for (final LucenePost<GoldStandardPublication> post : newPosts) {
+			final Integer contentId = post.getContentId();
+			contentIdsToDelete.add(contentId);
+			lastId = Math.max(contentId, lastId);
+		}
+		
 
-	    final Date currentDate = new Date(currentLogDate);
-	    
-	    /*
-	     * add all new posts to the index 
-	     */
-	    if(SearchType.LUCENESEARCH==searchType){
-		    this.updatingIndex.deleteDocumentsInIndex(contentIdsToDelete);
-		    for (final LucenePost<GoldStandardPublication> post : newPosts) {
-		    	post.setLastLogDate(currentDate);
-		    	post.setLastTasId(lastId);
-		    	final Document postDoc = (Document) this.resourceConverter.readPost(post, searchType);
-		    	this.updatingIndex.insertDocument(postDoc);
-		    }
-	    }else if (SearchType.ELASTICSEARCH == searchType){
-	    	this.sharedIndexUpdater.setContentIdsToDelete(contentIdsToDelete);
+		final Date currentDate = new Date(currentLogDate);
+		
+		/*
+		 * add all new posts to the index 
+		 */
+		if (SearchType.LUCENESEARCH == searchType) {
+			this.updatingIndex.deleteDocumentsInIndex(contentIdsToDelete);
+			for (final LucenePost<GoldStandardPublication> post : newPosts) {
+				post.setLastLogDate(currentDate);
+				post.setLastTasId(lastId);
+				final Document postDoc = (Document) this.resourceConverter.readPost(post, searchType);
+				this.updatingIndex.insertDocument(postDoc);
+			}
+		} else if (SearchType.ELASTICSEARCH == searchType) {
+			this.sharedIndexUpdater.setContentIdsToDelete(contentIdsToDelete);
 
 			for (final LucenePost<GoldStandardPublication> post : newPosts) {
 				post.setLastLogDate(currentDate);
-		    	post.setLastTasId(lastId);
+				post.setLastTasId(lastId);
 				final Map<String, Object> postDoc = (Map<String, Object>)this.resourceConverter.readPost(post, searchType);
 				this.sharedIndexUpdater.insertDocument(postDoc);
 			}			
-	    }else if(SearchType.BOTH == searchType){
-		    this.updatingIndex.deleteDocumentsInIndex(contentIdsToDelete);
-	    	this.sharedIndexUpdater.setContentIdsToDelete(contentIdsToDelete);
+		} else if (SearchType.BOTH == searchType) {
+			this.updatingIndex.deleteDocumentsInIndex(contentIdsToDelete);
+			this.sharedIndexUpdater.setContentIdsToDelete(contentIdsToDelete);
 			for (final LucenePost<GoldStandardPublication> post : newPosts) {
-		    	post.setLastTasId(lastId);
+				post.setLastTasId(lastId);
 				post.setLastLogDate(currentDate);
 				final Document postDoc = (Document)this.resourceConverter.readPost(post, SearchType.LUCENESEARCH);
 				final Map<String, Object> postJsonDoc = (Map<String, Object>)this.resourceConverter.readPost(post, SearchType.ELASTICSEARCH);
@@ -111,8 +111,8 @@ public class LuceneGoldStandardManager<R extends Resource & GoldStandard<?>> ext
 				this.updatingIndex.insertDocument(postDoc);
 			}
 				
-	    }
-	    
-	    return lastId;
+		}
+		
+		return lastId;
 	}
 }
