@@ -91,7 +91,8 @@
 						<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"><c:out value='${group.name}'/>&amp;nbsp;</a> 
 							<c:if test="${group.sharedDocuments}">
 								<c:choose>
-									<c:when test="${! group.userSharedDocuments}">
+									<!-- FIXME: add message or update -->
+									<c:when test="${false}">
 										<fmt:message var="shareDocumentsTitle" key="groups.actions.shareDocuments.title"></fmt:message>
 										<a class="action" 
 											href="/ajax/handleGroupShare?requestedGroup=${fn:escapeXml(group.name)}&amp;action=shareDocuments&amp;ckey=${ckey}&amp;forward=settings"

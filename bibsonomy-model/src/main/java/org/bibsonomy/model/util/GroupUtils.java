@@ -32,6 +32,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.User;
 
 /**
  * @author Christian Schenk
@@ -246,6 +247,22 @@ public class GroupUtils {
 				}
 			}
 		}
+		return null;
+	}
+	
+	/**
+	 * returns the group membership of the user for the specified groups
+	 * @param user
+	 * @param groupName
+	 * @return
+	 */
+	public static GroupMembership getGroupMembershipOfUserForGroup(final User user, final String groupName) {
+		for (final Group group : user.getGroups()) {
+			if (group.getName().equals(groupName)) {
+				return getGroupMembershipForUser(group, user.getName(), false);
+			}
+		}
+		
 		return null;
 	}
 }

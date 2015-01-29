@@ -43,6 +43,7 @@ import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.GroupParam;
@@ -771,13 +772,13 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * Updates the users role.
-	 * 
+	 * @param loginUser
 	 * @param groupname
 	 * @param username
-	 * @param role 
+	 * @param newGroupRole 
 	 * @param session
 	 */
-	public void updateGroupRole(final String groupname, final String username, GroupRole role, final DBSession session) {
+	public void updateGroupRole(User loginUser, final String groupname, final String username, final GroupRole newGroupRole, final DBSession session) {
 		// make sure that the group exists
 		final Group group = this.getGroupByName(groupname, session);
 		if (group == null) {
@@ -787,8 +788,8 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') isn't a member of this group ('" + groupname + "')");
 		}
 		
-		if (!GroupRole.GROUP_ROLES.contains(role)) {
-			throw new IllegalArgumentException("group role '" + role + "' not supported");
+		if (!GroupRole.GROUP_ROLES.contains(newGroupRole)) {
+			throw new IllegalArgumentException("group role '" + newGroupRole + "' not supported");
 		}
 		
 		// check the old user role
@@ -796,7 +797,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		final GroupRole oldRole = oldMembership.getGroupRole();
 		
 		// only perform action if they differ XXX: exception for this case?
-		if (oldRole.equals(role)) {
+		if (oldRole.equals(newGroupRole)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') already has this role in this group ('" + groupname + "')");
 		}
 		
@@ -805,14 +806,37 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') is the last administrator of this group ('" + groupname + "')");
 		}
 		
+		// check if the current group role of the logged in users allows to change the requested user
+		final GroupRole loggedinUserRole = GroupUtils.getGroupMembershipOfUserForGroup(loginUser, groupname).getGroupRole();
+		if (!checkGroupRoleChange(loggedinUserRole, newGroupRole, oldRole)) {
+			throw new AccessDeniedException("you can not change the group role of user " + username + " to " + newGroupRole);
+		}
+		
 		final GroupParam param = new GroupParam();
 		param.setUserName(username);
 		param.setGroupId(group.getGroupId());
-		oldMembership.setGroupRole(role);
+		oldMembership.setGroupRole(newGroupRole);
 		param.setMembership(oldMembership);
 		
 		this.plugins.onChangeUserMembershipInGroup(param.getUserName(), param.getGroupId(), session);
 		this.update("updateGroupRole", param, session);
+	}
+
+	/**
+	 * @param object
+	 * @param groupRole
+	 */
+	private static boolean checkGroupRoleChange(final GroupRole ownGroupRole, final GroupRole groupRole, final GroupRole oldGroupRole) {
+		switch (ownGroupRole) {
+		case ADMINISTRATOR:
+			// admin can do anything
+			return true;
+		case MODERATOR:
+			// don't add group admins and do not modify admins
+			return GroupRole.ADMINISTRATOR != groupRole && GroupRole.ADMINISTRATOR != oldGroupRole;
+		default:
+			return false;
+		}
 	}
 	
 	/**

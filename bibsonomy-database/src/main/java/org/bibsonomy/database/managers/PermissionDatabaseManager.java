@@ -546,20 +546,18 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	public boolean hasGroupLevelPermission(final User loginuser, final GroupLevelPermission groupLevelPermission) {
-		for (final Group group: loginuser.getGroups()) {
+		for (final Group group : loginuser.getGroups()) {
 			if (group.getGroupLevelPermissions().contains(groupLevelPermission)) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
 
 	public void ensureHasGroupLevelPermission(final User loginuser, final GroupLevelPermission groupLevelPermission) {
 		if (!hasGroupLevelPermission(loginuser, groupLevelPermission)) {
 			throw new AccessDeniedException();
 		}
 	}
-	
 
 }

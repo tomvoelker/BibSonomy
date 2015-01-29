@@ -10,6 +10,7 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
@@ -18,168 +19,182 @@
 	<jsp:directive.attribute name="group" required="true" type="org.bibsonomy.model.Group"/>
 
 	<div id="selTab1" class="tab-pane ${(command.selTab eq 1) ? 'active' : ''}">
-		<fieldset class="fsOuter">
-			<c:set var="groupRole" value="${command.groupMembership.groupRole}" />
-			<c:set var="privlevel" value="${group.privlevel}" />
-			<c:choose>
-				<c:when test="${groupRole eq 'USER' || groupRole eq 'MODERATOR' || groupRole eq 'ADMINISTRATOR' }">
-						<c:if test="${groupRole eq 'ADMINISTRATOR' || groupRole eq 'MODERATOR'}">
-							<!-- Invite users -->
-							<bsform:fieldset legendKey="user.name">
-								<jsp:attribute name="content">
-									<form:form cssClass="form-horizontal" name="groupusers" method="post" action="/updateGroup?ckey=${ckey}">
-										<bsform:input path="username" helpKey="settings.group.inviteUser.help"
-												labelKey="user.name" autocomplete="${true}"
-												labelColSpan="3"/>
-										<input type="hidden" name="groupname" value="${group.name}"/>
-										<input type="hidden" name="operation" value="ADD_INVITED" />
-										<fmt:message var="inviteuser" key="settings.group.inviteUser.button"/>
-										<div class="col-sm-offset-3 col-sm-9">
-											<bsform:button type="submit" size="defaultSize" style="success" value="${inviteuser}" />
-										</div>
-									</form:form>
-								</jsp:attribute>
-							</bsform:fieldset>
-
-							<!-- Invited users -->
-							<c:forEach items="${group.pendingMemberships}" var="member" varStatus="status">
-								<c:if test="${member.groupRole eq 'INVITED'}">
-									<c:set var="hasPendingInvites" value="${true}" />
-								</c:if>
-								<c:if test="${member.groupRole eq 'REQUESTED'}">
-									<c:set var="hasJoinRequests" value="${true}" />
-								</c:if>
-							</c:forEach>
-							<c:if test="${hasPendingInvites}">
-								<bsform:fieldset legendKey="settings.group.pendingInvites">
-									<jsp:attribute name="content">
-										<fmt:message var="revuser" key="settings.group.remInvite.button"/>
-										<fmt:message var="revuserTitle" key="settings.group.remInvite.button.title"/>
-										<table class="table table-striped table-condensed">
-											<c:forEach items="${group.pendingMemberships}" var="member">
-												<c:if test="${member.groupRole eq 'INVITED'}">
-													<tr>
-														<td class="col-md-1"><user:thumbnail user="${member.user}" size="16" noname="${true}" /></td>
-														<td class="col-md-3"><user:username user="${member.user}" /></td>
-														<td class="col-md-6"><c:out value=" " /></td>
-														<td class="col-md-2" style="text-align: right"><a href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${revuserTitle}"><span class="fa fa-times"><!-- Keep me --></span></a></td>
-													</tr>
-												</c:if>
-											</c:forEach>
-										</table>
-									</jsp:attribute>
-								</bsform:fieldset>
+		<c:set var="groupRole" value="${command.groupMembership.groupRole}" />
+		<c:set var="privlevel" value="${group.privlevel}" />
+		<c:choose>
+			<c:when test="${groupRole eq 'USER' || groupRole eq 'MODERATOR' || groupRole eq 'ADMINISTRATOR' }">
+					<c:if test="${groupRole eq 'ADMINISTRATOR' || groupRole eq 'MODERATOR'}">
+						<!-- Invited users -->
+						<c:forEach items="${group.pendingMemberships}" var="member" varStatus="status">
+							<c:if test="${member.groupRole eq 'INVITED'}">
+								<c:set var="hasPendingInvites" value="${true}" />
 							</c:if>
-							<!-- Join requests -->
-							<c:if test="${hasJoinRequests}">
-								<bsform:fieldset legendKey="settings.group.joinRequests">
-									<jsp:attribute name="content">
-										<fmt:message var="decuser" key="settings.group.deny.button"/>
-										<fmt:message var="decuserTitle" key="settings.group.deny.button.title"/>
-										<fmt:message var="accuser" key="settings.group.accUser.button"/>
-										<fmt:message var="accuserTitle" key="settings.group.accUser.button.title"/>
-
-										<table class="table table-striped table-condensed">
-											<c:forEach items="${group.pendingMemberships}" var="member">
-												<c:if test="${member.groupRole eq 'REQUESTED'}">
-													<tr>
-														<td class="col-md-1"><user:thumbnail user="${member.user}" size="16" noname="${true}" /></td>
-														<td class="col-md-3"><user:username user="${member.user}" /></td>
-														<td class="col-md-6"><c:out value=" " /></td>
-														<td class="col-md-2" style="text-align: right"><a href="/updateGroup?operation=ADD_MEMBER&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${accuserTitle}"><span class="fa fa-check"><!-- Keep me --></span></a> <a href="/updateGroup?operation=decline_join_request&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${decuserTitle}"><span class="fa fa-times"><!-- Keep me --></span></a></td>
-													</tr>
-												</c:if>
-											</c:forEach>
-										</table>
-									</jsp:attribute>
-								</bsform:fieldset>
-							</c:if>
-						</c:if>
-
-						<c:forEach items="${group.memberships}" var="member">
-							<c:if test="${member.groupRole ne 'DUMMY'}">
-								<c:set var="groupHasMembers" value="${true}" />
+							<c:if test="${member.groupRole eq 'REQUESTED'}">
+								<c:set var="hasJoinRequests" value="${true}" />
 							</c:if>
 						</c:forEach>
-						<bsform:fieldset legendKey="settings.group.memberList">
+						<bsform:fieldset legendKey="settings.group.pendingInvites">
 							<jsp:attribute name="content">
-								<c:choose>
-									<c:when test="${groupHasMembers}">
-										<fmt:message var="deluser" key="settings.group.delUser.button"/>
-										<fmt:message var="deluserTitle" key="settings.group.delUser.button.title"/>
-										
-										<!-- show group member list -->
-										<!-- TODO: Adapt this to maybe forms? The page will be reloaded, no matter what. -->
-										<table class="table table-striped table-condensed">
-											<c:forEach items="${group.memberships}" var="member">
-												<c:if test="${member.groupRole ne 'DUMMY'}">
-													<tr>
-														<c:set var="isAdmin" value="${member.groupRole eq 'ADMINISTRATOR'}" />
-														<c:set var="isModerator" value="${member.groupRole eq 'MODERATOR'}" />
-														<c:set var="isUser" value="${member.groupRole eq 'USER'}" />
-														
-														<td class="col-md-1"><user:thumbnail user="${member.user}" size="16" noname="${true}" /></td>
-														<td class="col-md-3"><user:username user="${member.user}" /></td>
-														<c:if test="${groupRole eq 'ADMINISTRATOR' or groupRole eq 'MODERATOR'}">
-															<td class="col-md-6">
-																<c:choose>
-																	<c:when test="${isAdmin}">
-																		<span class="label label-primary">ADMINISTRATOR</span>
-																	</c:when>
-																	<c:otherwise>
-																		<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=ADMINISTRATOR&amp;ckey=${ckey}">
-																			<span class="label label-default">ADMINISTRATOR</span>
-																		</a>
-																	</c:otherwise>
-																</c:choose>
-																<c:out value=" " />
-																<c:choose>
-																	<c:when test="${isModerator}">
-																		<span class="label label-primary">MODERATOR</span>
-																	</c:when>
-																	<c:otherwise>
-																		<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=MODERATOR&amp;ckey=${ckey}">
-																			<span class="label label-default">MODERATOR</span>
-																		</a>
-																	</c:otherwise>
-																</c:choose>
-																<c:out value=" " />
-																<c:choose>
-																	<c:when test="${isUser}">
-																		<span class="label label-primary">USER</span>
-																	</c:when>
-																	<c:otherwise>
-																		<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=USER&amp;ckey=${ckey}">
-																			<span class="label label-default">USER</span>
-																		</a>
-																	</c:otherwise>
-																</c:choose>
-															</td>
-															<td class="col-md-2" style="text-align: right">
-																<a href="/updateGroup?operation=remove_member&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${deluserTitle}"><span class="fa fa-times"><!-- Keep me --></span><!-- keep me --></a>
-															</td>
-														</c:if>
-														<c:if test="${groupRole eq 'USER'}">
-															<td class="col-md-8"><c:out value=" " /></td>
-														</c:if>
-													</tr>
-												</c:if>
-											</c:forEach>
-										</table>
-									</c:when>
-									<c:otherwise>
-										<!-- TODO: must be i18nized. -->
-										This group has no members.
-									</c:otherwise>
-								</c:choose>
+								<fmt:message var="revuser" key="settings.group.remInvite.button"/>
+								<fmt:message var="revuserTitle" key="settings.group.remInvite.button.title"/>
+								
+								<c:if test="${hasPendingInvites}">
+									<table class="table table-striped table-condensed">
+										<c:forEach items="${group.pendingMemberships}" var="member">
+											<c:if test="${member.groupRole eq 'INVITED'}">
+												<tr>
+													<td class="col-md-1"><user:thumbnail user="${member.user}" size="16" noname="${true}" /></td>
+													<td class="col-md-3"><user:username user="${member.user}" /></td>
+													<td class="col-md-6"><c:out value=" " /></td>
+													<td class="col-md-2" style="text-align: right"><a href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${revuserTitle}"><span class="fa fa-times"><!-- Keep me --></span></a></td>
+												</tr>
+											</c:if>
+										</c:forEach>
+									</table>
+								</c:if>
+								<form:form cssClass="form-inline" name="groupusers" method="post" action="/updateGroup?ckey=${ckey}">
+									<div class="form-group">
+										<fmt:message key="user.name" var="labelText"/>
+										<label for="username" class="sr-only"><c:out value="${labelText}" /></label>
+										<div class="col-sm-3">
+											<input type="text" class="form-control" id="username" name="username" placeholder="${labelText }" />
+										</div>
+									</div>
+									<input type="hidden" name="groupname" value="${group.name}"/>
+									<input type="hidden" name="operation" value="ADD_INVITED" />
+									<fmt:message var="inviteuser" key="settings.group.inviteUser.button"/>
+									<bsform:button type="submit" size="defaultSize" style="primary" value="${inviteuser}" />
+								</form:form>
 							</jsp:attribute>
 						</bsform:fieldset>
-				</c:when>
-				<c:otherwise>
-					<!-- TODO: i18n -->
-					You are not a member of this group.
-				</c:otherwise>
-			</c:choose>
-		</fieldset>
+						<!-- Join requests -->
+						<c:if test="${hasJoinRequests}">
+							<bsform:fieldset legendKey="settings.group.joinRequests">
+								<jsp:attribute name="content">
+									<fmt:message var="decuser" key="settings.group.deny.button"/>
+									<fmt:message var="decuserTitle" key="settings.group.deny.button.title"/>
+									<fmt:message var="accuser" key="settings.group.accUser.button"/>
+									<fmt:message var="accuserTitle" key="settings.group.accUser.button.title"/>
+
+									<table class="table table-striped table-condensed">
+										<c:forEach items="${group.pendingMemberships}" var="member">
+											<c:if test="${member.groupRole eq 'REQUESTED'}">
+												<tr>
+													<td class="col-md-1"><user:thumbnail user="${member.user}" size="16" noname="${true}" /></td>
+													<td class="col-md-3"><user:username user="${member.user}" /></td>
+													<td class="col-md-6"><c:out value=" " /></td>
+													<td class="col-md-2" style="text-align: right"><a href="/updateGroup?operation=ADD_MEMBER&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${accuserTitle}"><span class="fa fa-check"><!-- Keep me --></span></a> <a href="/updateGroup?operation=decline_join_request&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${decuserTitle}"><span class="fa fa-times"><!-- Keep me --></span></a></td>
+												</tr>
+											</c:if>
+										</c:forEach>
+									</table>
+								</jsp:attribute>
+							</bsform:fieldset>
+						</c:if>
+					</c:if>
+
+					<c:forEach items="${group.memberships}" var="member">
+						<c:if test="${member.groupRole ne 'DUMMY'}">
+							<c:set var="groupHasMembers" value="${true}" />
+						</c:if>
+					</c:forEach>
+					
+					<!-- FIXME: how to add space between fieldsets? -->
+					<br />
+					
+					<c:set var="canGrantAdmin" value="${false}" />
+					
+					<c:if test="${groupRole eq 'ADMINISTRATOR'}">
+						<c:set var="canGrantAdmin" value="${true}" />
+					</c:if>
+					
+					<bsform:fieldset legendKey="settings.group.memberList">
+						<jsp:attribute name="content">
+							<c:choose>
+								<c:when test="${groupHasMembers}">
+									<fmt:message var="deluser" key="settings.group.delUser.button"/>
+									<fmt:message var="deluserTitle" key="settings.group.delUser.button.title"/>
+									
+									<!-- show group member list -->
+									<!-- TODO: Adapt this to maybe forms? The page will be reloaded, no matter what. -->
+									<table class="table table-striped table-condensed">
+										<c:forEach items="${group.memberships}" var="member">
+											<c:if test="${member.groupRole ne 'DUMMY'}">
+												<tr>
+													<c:set var="isAdmin" value="${member.groupRole eq 'ADMINISTRATOR'}" />
+													<c:set var="isModerator" value="${member.groupRole eq 'MODERATOR'}" />
+													<c:set var="isUser" value="${member.groupRole eq 'USER'}" />
+													
+													<td class="col-md-1"><user:thumbnail user="${member.user}" size="16" noname="${true}" /></td>
+													<td class="col-md-3"><user:username user="${member.user}" /></td>
+													<c:if test="${groupRole eq 'ADMINISTRATOR' or groupRole eq 'MODERATOR'}">
+														<td class="col-md-6">
+															<c:choose>
+																<c:when test="${isAdmin}">
+																	<span class="label label-primary">ADMINISTRATOR</span>
+																</c:when>
+																<c:when test="${not isAdmin and not canGrantAdmin}">
+																	<span class="label label-disabled">ADMINISTRATOR</span>
+																</c:when>
+																<c:otherwise>
+																	<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=ADMINISTRATOR&amp;ckey=${ckey}">
+																		<span class="label label-default">ADMINISTRATOR</span>
+																	</a>
+																</c:otherwise>
+															</c:choose>
+															<c:out value=" " />
+															<c:choose>
+																<c:when test="${isModerator}">
+																	<span class="label label-primary">MODERATOR</span>
+																</c:when>
+																<c:when test="${isAdmin and not canGrantAdmin}">
+																	<span class="label label-disabled">MODERATOR</span>
+																</c:when>
+																<c:otherwise>
+																	<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=MODERATOR&amp;ckey=${ckey}">
+																		<span class="label label-default">MODERATOR</span>
+																	</a>
+																</c:otherwise>
+															</c:choose>
+															<c:out value=" " />
+															<c:choose>
+																<c:when test="${isUser}">
+																	<span class="label label-primary">USER</span>
+																</c:when>
+																<c:when test="${isAdmin and not canGrantAdmin}">
+																	<span class="label label-disabled">USER</span>
+																</c:when>
+																<c:otherwise>
+																	<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=USER&amp;ckey=${ckey}">
+																		<span class="label label-default">USER</span>
+																	</a>
+																</c:otherwise>
+															</c:choose>
+														</td>
+														<td class="col-md-2" style="text-align: right">
+															<a href="/updateGroup?operation=remove_member&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${deluserTitle}"><span class="fa fa-times"><!-- Keep me --></span><!-- keep me --></a>
+														</td>
+													</c:if>
+													<c:if test="${groupRole eq 'USER'}">
+														<td class="col-md-8"><c:out value=" " /></td>
+													</c:if>
+												</tr>
+											</c:if>
+										</c:forEach>
+									</table>
+								</c:when>
+								<c:otherwise>
+									<!-- TODO: must be i18nized. -->
+									This group has no members.
+								</c:otherwise>
+							</c:choose>
+						</jsp:attribute>
+					</bsform:fieldset>
+			</c:when>
+			<c:otherwise>
+				<!-- TODO: i18n -->
+				You are not a member of this group.
+			</c:otherwise>
+		</c:choose>
 	</div>
 </jsp:root>

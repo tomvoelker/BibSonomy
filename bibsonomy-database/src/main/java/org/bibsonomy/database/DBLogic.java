@@ -1140,7 +1140,7 @@ public class DBLogic implements LogicInterface {
 				break;
 			case UPDATE_GROUPROLE:
 				this.permissionDBManager.ensureIsAdminOrGroupModeratorOrSelf(this.loginUser, groupName);
-				this.groupDBManager.updateGroupRole(groupName, membership.getUser().getName(), membership.getGroupRole(), session);
+				this.groupDBManager.updateGroupRole(this.loginUser, groupName, membership.getUser().getName(), membership.getGroupRole(), session);
 				break;
 			case ADD_MEMBER:
 				final GroupMembership groupMembership = this.groupDBManager.getPendingMembershipForUserAndGroup(this.loginUser, groupName, session);
