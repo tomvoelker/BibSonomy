@@ -196,8 +196,17 @@
 														</div>
 														<div class="col-sm-6" style="float:left">
 											<select id="preCurrSelector" class="form-control input-sm help-popover">
-												<option value="0">previous version (${diffNumPre} different fields)</option>
-												<option value="1">current version (${diffNumCurr} different fields)</option>
+												<option value="0">
+													<fmt:message key="history.selection.previous"> version (${diffNumPre} different fields)
+														<fmt:param>${diffNumPre}</fmt:param>
+													</fmt:message>
+												</option>
+												<option value="1">
+													<fmt:message key="history.selection.current">
+														<fmt:param>${diffNumCurr}</fmt:param>
+												current version (${diffNumCurr} different fields)
+													</fmt:message>
+												</option>
 											</select>
 											<div class="help help-header hide"><!--  --></div>
 											<div class="help help-content hide"><fmt:message key="history.selection.help" /></div>
@@ -241,7 +250,7 @@
 									<c:forEach var="diffEntry" items="${diffArrayPre}">
 										<div class="checkbox">
 											<input type="checkbox" class="invisible"/> 
-											<strong>${diffEntry.key}</strong>
+											<strong><fmt:message key="post.resource.${diffEntry.key}"/></strong>
 											<c:out value=": "/>
 											${diffEntry.value}
 											<br/>
