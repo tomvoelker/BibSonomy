@@ -69,6 +69,10 @@
 						</bsform:fieldset>
 						<!-- Join requests -->
 						<c:if test="${hasJoinRequests}">
+							
+							<!-- FIXME: how to add space between fieldsets -->
+							<br />
+							
 							<bsform:fieldset legendKey="settings.group.joinRequests">
 								<jsp:attribute name="content">
 									<fmt:message var="decuser" key="settings.group.deny.button"/>

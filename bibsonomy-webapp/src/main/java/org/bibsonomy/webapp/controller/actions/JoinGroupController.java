@@ -178,18 +178,13 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		
 		// user is allowed to state join request and group exists => execute request
 		
-		// we need the user details (eMail) of the admin users
-		final List<User> groupAdmins = new LinkedList<>();
-		for (GroupMembership ms : group.getMemberships()) {
+		// send a mail to all administrators of the group
+		for (final GroupMembership ms : group.getMemberships()) {
 			if (ms.getGroupRole().equals(GroupRole.ADMINISTRATOR)) {
-				groupAdmins.add(ms.getUser());
+				final User groupAdminUser = ms.getUser();
+				final String groudAdminUserMail = this.adminLogic.getUserDetails(groupAdminUser.getName()).getEmail();
+				mailUtils.sendJoinGroupRequest(group.getName(), groudAdminUserMail, loginUser, command.getReason(), requestLogic.getLocale());
 			}
-		}
-		
-		// Send a mail to all administrators of the group
-		for (User groupAdminUser : groupAdmins) {
-			String groudAdminUserMail = this.adminLogic.getUserDetails(groupAdminUser.getName()).getEmail();
-			mailUtils.sendJoinGroupRequest(group.getName(), groudAdminUserMail, loginUser, command.getReason(), requestLogic.getLocale());
 		}
 		
 		// insert the request
