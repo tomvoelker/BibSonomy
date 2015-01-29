@@ -6,6 +6,8 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
@@ -18,7 +20,7 @@
 	
 	<fmt:message key="navi.groups" var="pageTitle" />
 	
-	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.groups" command="${command}" pageTitle="${pageTitle}" activeTab="groups" minimizedContentWidth="${true}">
+	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.groups" command="${command}" pageTitle="${pageTitle}" minimizedContentWidth="${true}">
 
 		<!--+
 		 	| heading
@@ -59,7 +61,29 @@
 				</jsp:attribute>
 			</bs:alert>
 
-			<grouprequest:request command="${command}"/>
+			<c:set var="loginUser" value="${command.context.loginUser}" />
+
+			<fieldset class="fsOuter">
+				<c:if test="${!loginUser.spammer}">
+					<!-- Request a new group -->
+					<bsform:fieldset legendKey="settings.group.reqGroup">
+						<jsp:attribute name="content">
+							<form:form method="post" action="/updateGroup?action=REQUEST" cssClass="form-horizontal">
+								<input type="hidden" name="ckey" value="${ckey}"/>
+								<input type="hidden" name="operation" value="REQUEST" />
+								<bsform:input labelKey="settings.group.name" path="group.name" labelColSpan="3" inputColSpan="9" />
+								<bsform:textarea labelKey="settings.group.description" path="group.description" rows="2"  labelColSpan="3" inputColSpan="9" />
+								<bsform:textarea labelKey="settings.group.reqReason" path="group.groupRequest.reason" rows="2"  labelColSpan="3" inputColSpan="9" />
+
+								<div class="col-sm-offset-3" >
+									<bsform:button style="success" size="defaultSize" value="submit" type="submit" />
+								</div>
+							</form:form>
+						</jsp:attribute>
+					</bsform:fieldset>
+
+				</c:if>
+			</fieldset>
 
 		</jsp:attribute>
 	</layout:paneLayout>
