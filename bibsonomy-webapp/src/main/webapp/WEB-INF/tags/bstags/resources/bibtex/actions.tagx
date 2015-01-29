@@ -131,7 +131,7 @@
 		<fmt:message key="bibtex.actions.communityPost" var="communityPost" />
 		<c:choose>
 			<c:when test="${isRemotePost}">
-				<a href="${post.systemUrl}bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}" class="${buttonClasses}" title="${fn:escapeXml(communityPost)}">
+				<a href="${relativeUrlGenerator.getGoldstandardUrlByInterHashAndSysUrl(post.resource.interHash, post.systemUrl)}" class="${buttonClasses}" title="${fn:escapeXml(communityPost)}">
 					<span style="font-size:90%;" class="glyphicon glyphicon-user"><!--  --></span>
 					<span class="glyphicon glyphicon-user" style="margin-left:-4px; font-size: 70%;"><!--  --></span>
 				</a>

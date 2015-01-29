@@ -377,6 +377,17 @@ public class URLGenerator {
 	}
 	
 	/**
+	 * Constructs a URL for a goldstandard publication specified by its inter hash and systemUrl.
+	 * 
+	 * @param interHash
+	 * @param systemUrl 
+	 * @return URL pointing to the publication represented by the inter hash
+	 */
+	public String getGoldstandardUrlByInterHashAndSysUrl(final String interHash, final String systemUrl) {
+		return this.getGoldstandardUrlByInterHashUsernameAndSysUrl(interHash, null, systemUrl);
+	}
+	
+	/**
 	 * Constructs a URL for a goldstandard publication specified by its inter hash and the username.
 	 * If no username is present, it will not occur in the URL and the trailing '/' will be
 	 * omitted.
@@ -387,6 +398,23 @@ public class URLGenerator {
 	 */
 	public String getGoldstandardUrlByInterHashAndUsername(final String interHash, final String userName) {
 		String url = this.projectHome + prefix + PUBLICATION_PREFIX + "/" + interHash;
+		
+		if (present(userName))
+			return this.getUrl(url + "/" + UrlUtils.safeURIEncode(userName));
+			
+		return this.getUrl(url);
+	}
+	
+	/**
+	 * Constructs a URL for a goldstandard publication specified by its inter hash and the username and systemUrl
+	 * 
+	 * @param interHash
+	 * @param userName
+	 * @param systemUrl 
+	 * @return URL pointing to the goldstandard publication represented by the interHash and the userName
+	 */
+	public String getGoldstandardUrlByInterHashUsernameAndSysUrl(final String interHash, final String userName, final String systemUrl) {
+		String url = systemUrl + prefix + PUBLICATION_PREFIX + "/" + interHash;
 		
 		if (present(userName))
 			return this.getUrl(url + "/" + UrlUtils.safeURIEncode(userName));
