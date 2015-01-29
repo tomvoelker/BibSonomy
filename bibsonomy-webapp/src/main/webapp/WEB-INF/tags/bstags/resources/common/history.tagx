@@ -149,7 +149,7 @@
 								</td>
 								<!-- change date -->
 								<td class="col-sm-3" style="border-right:1px solid #eee">
-									<c:set var="changeDate" value="${mtl:cleanBibtex(listView.list[(fieldlength-index)].changeDate)}"/>
+									<fmt:formatDate var="changeDate" type="both" dateStyle="long" value="${listView.list[(fieldlength-index)].changeDate}"/>
 									<span class="label label-primary diffNumText" style="vertical-align:bottom;padding:8px;" title="edited on ${changeDate}">${changeDate}</span>
 								</td>
 								<c:choose>
