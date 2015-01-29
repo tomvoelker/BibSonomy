@@ -98,12 +98,12 @@
 	</select>
 
 	<!-- TODO: What's that for?! -->
-	<select id="getGroupIdByGroupNameAndUserName" resultClass="int" parameterClass="group">
+	<select id="getGroupIdByGroupNameAndUserName" resultClass="int" parameterClass="groupParam">
 		SELECT g.group
-		FROM groupids g <isNotNull property="user" prepend=",">group_memberships i</isNotNull>
-		WHERE g.group_name = #name#
-		      <isNotNull property="user" prepend="AND">
-		        i.user_name = #user.name#
+		FROM groupids g <isNotNull property="requestedUserName" prepend=",">group_memberships i</isNotNull>
+		WHERE g.group_name = #requestedGroupName#
+		      <isNotNull property="requestedUserName" prepend="AND">
+		        i.user_name = #requestedUserName#
 		        AND i.group = g.group
 		      </isNotNull>
 	</select>

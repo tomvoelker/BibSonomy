@@ -2,10 +2,7 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupRole;
-import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
@@ -24,7 +21,6 @@ import org.springframework.security.access.AccessDeniedException;
  * @author niebler
  */
 public class GroupSettingsPageController implements MinimalisticController<GroupSettingsPageCommand> {
-	private static final Log log = LogFactory.getLog(GroupSettingsPageController.class);
 	
 	private LogicInterface logic;
 
@@ -34,7 +30,7 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 	}
 
 	@Override
-	public View workOn(GroupSettingsPageCommand command) {
+	public View workOn(final GroupSettingsPageCommand command) {
 		if (!command.getContext().isUserLoggedIn()) {
 			throw new AccessDeniedNoticeException("please log in", "error.general.login");
 		}
@@ -67,15 +63,14 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 				break;
 			default:
 				if (!present(groupMembership)) {
-					// set non-privileged user
-					groupMembership = new GroupMembership(loginUser, GroupRole.USER, true);
+					throw new AccessDeniedException("You are not a member of this group.");
 				}
 		}
 		
 		final GroupRole roleOfLoggedinUser = groupMembership.getGroupRole();
 		command.setGroupMembership(groupMembership);
 		
-		// TODO: should only the admin get this information?
+		// TODO: should only the admin get this information ?
 		final User groupUser = this.logic.getUserDetails(requestedGroup);
 		command.setRealname(groupUser.getRealname());
 		command.setHomepage(groupUser.getHomepage());
@@ -87,19 +82,24 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 		command.setUser(groupUser);
 		
 		// determine which tabs to show based on the role of the logged in user
+		final boolean selectedByUser = present(command.getSelTab());
 		switch (roleOfLoggedinUser) {
 		case ADMINISTRATOR:
 			command.addTab(GroupSettingsPageCommand.GROUP_SETTINGS, "navi.groupsettings");
 			command.addTab(GroupSettingsPageCommand.MEMBER_LIST_IDX, "settings.group.memberList");
 			// TODO: adapt cv wiki handling
 			// command.addTab(CV_IDX, "navi.cvedit");
-			command.setSelTab(GroupSettingsPageCommand.GROUP_SETTINGS);
+			if (!selectedByUser) {
+				command.setSelTab(GroupSettingsPageCommand.GROUP_SETTINGS);
+			}
 			break;
 		case MODERATOR:
 			//$FALL-THROUGH$ all users should see the member list
 		default:
 			command.addTab(GroupSettingsPageCommand.MEMBER_LIST_IDX, "settings.group.memberList");
-			command.setSelTab(GroupSettingsPageCommand.MEMBER_LIST_IDX);
+			if (!selectedByUser) {
+				command.setSelTab(GroupSettingsPageCommand.MEMBER_LIST_IDX);
+			}
 			break;
 		}
 		

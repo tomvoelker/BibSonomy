@@ -29,7 +29,6 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -201,11 +200,14 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			group.setMemberships(Collections.<GroupMembership> emptyList());
 			return group;
 		}
+		final String statement;
 		if (getPermissions) {
-			group = this.queryForObject("getGroupWithMembershipsAndPermissions", groupname, Group.class, session);
+			statement = "getGroupWithMembershipsAndPermissions";
 		} else {
-			group = this.queryForObject("getGroupWithMemberships", groupname, Group.class, session);
+			statement = "getGroupWithMemberships";
 		}
+		
+		group = this.queryForObject(statement, groupname, Group.class, session);
 		// the group has no members. At least the dummy user should exist.
 		if (group == null) {
 			log.debug("group " + groupname + " does not exist");
@@ -419,18 +421,21 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		try {
 			final GroupID specialGroup = GroupID.getSpecialGroup(groupname);
 			if (specialGroup != null) {
-				return specialGroup.getId();
+				return Integer.valueOf(specialGroup.getId());
 			}
 		} catch (final IllegalArgumentException ignore) {
 			// do nothing - this simply means that the given group is not a special group
 		}
 
-		final Group group = new Group();
-		group.setName(groupname);
-		if (present(username)) group.setUsers(Arrays.asList(new User(username)));
+		final GroupParam param = new GroupParam();
+		param.setRequestedUserName(username);
+		param.setRequestedGroupName(groupname);
+
 		// FIXME: what about dummy, join request and invited users?
-		final Integer rVal = this.queryForObject("getGroupIdByGroupNameAndUserName", group, Integer.class, session);
-		if (rVal == null) return GroupID.INVALID.getId();
+		final Integer rVal = this.queryForObject("getGroupIdByGroupNameAndUserName", param, Integer.class, session);
+		if (rVal == null) {
+			return Integer.valueOf(GroupID.INVALID.getId());
+		}
 		return rVal;
 	}
 

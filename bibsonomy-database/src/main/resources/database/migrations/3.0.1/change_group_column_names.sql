@@ -28,7 +28,7 @@ CREATE TABLE `pending_group_memberships` (
   `start_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `group_role` INT(10) NOT NULL DEFAULT '7',
   `user_shared_documents` TINYINT(1) NULL DEFAULT '0',
-  PRIMARY KEY (`group`)
+  PRIMARY KEY (`user_name`, `group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- set the admin user role

@@ -522,19 +522,21 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		 */
 		returnedGroupExpectation.setPrivlevel(null); 
 		
-		// TODO: FIX THIS
-		returnedGroupExpectation.setUsers(new ArrayList<User>());
-		returnedGroupExpectation.getUsers().add(ModelUtils.getUser());
-		returnedGroupExpectation.getUsers().get(0).setName("Nr1");
-		returnedGroupExpectation.getUsers().add(ModelUtils.getUser());
-		for (final User u : returnedGroupExpectation.getUsers()) {
+		final List<User> users = new ArrayList<User>();
+		users.add(ModelUtils.getUser());
+		users.get(0).setName("Nr1");
+		users.add(ModelUtils.getUser());
+		for (final User u : users) {
 			u.setApiKey(null);
 			u.setPassword(null);
+			final GroupMembership groupMembership = new GroupMembership();
+			groupMembership.setUser(u);
+			returnedGroupExpectation.getMemberships().add(groupMembership);
 		}
 		EasyMock.expect(serverLogic.getGroupDetails(groupName)).andReturn(returnedGroupExpectation);
 		EasyMock.replay(serverLogic);
 		final Group returnedGroup = clientLogic.getGroupDetails(groupName);
-		log.debug(returnedGroup.getUser().getIPAddress());
+
 		CommonModelUtils.assertPropertyEquality(returnedGroupExpectation, returnedGroup, 5, Pattern.compile(".*users.*\\.(" + COMMON_USER_PROPERTIES + ")|.*\\.date|.*\\.scraperId|.*\\.openURL|.*groupId|user.*"));
 		EasyMock.verify(serverLogic);
 		assertLogin();

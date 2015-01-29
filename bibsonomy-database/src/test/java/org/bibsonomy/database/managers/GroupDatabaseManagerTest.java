@@ -237,7 +237,11 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// check that the group and all members are gone
 		groupDb.deleteGroup(groupName, this.dbSession);
 		assertNull(groupDb.getGroupByName(groupName, this.dbSession));
-		for (final User user : newGroupTest.getUsers()) {
+
+		final List<GroupMembership> newGroupMemberships = newGroupTest.getMemberships();
+		assertEquals(2, newGroupMemberships.size());
+		for (final GroupMembership membership : newGroupTest.getMemberships()) {
+			final User user = membership.getUser();
 			final List<Group> userGroups = groupDb.getGroupsForUser(user.getName(), this.dbSession);
 			for (final Group userGroup : userGroups) {
 				if ("testuser1".equals(userGroup.getName())) {
@@ -248,10 +252,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// since update isn't implemented we test both cases because the method
 		// should throw an exception anyway
 		// test invalid and existing group names
-		for (final String groupname : new String[] { "", " ", null, "testgroup1", }) {// ParamUtils.NOUSER_NAME,
-																						// ParamUtils.NOGROUP_NAME
-																						// })
-																						// {
+		for (final String groupname : new String[] { "", " ", null, "testgroup1", }) {
 			try {
 				final Group groupToCreate = new Group();
 				groupToCreate.setName(groupname);

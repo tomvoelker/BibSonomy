@@ -49,6 +49,13 @@ public class GroupSettingsPageCommand extends TabsCommand<Object> {
 
 	// bla
 	private GroupUpdateOperation operation;
+	
+	/**
+	 * TODO: remove after setting the default value of selTab to null
+	 */
+	public GroupSettingsPageCommand() {
+		this.setSelTab(null);
+	}
 
 	public boolean isUserSharedDocuments() {
 		return userSharedDocuments;

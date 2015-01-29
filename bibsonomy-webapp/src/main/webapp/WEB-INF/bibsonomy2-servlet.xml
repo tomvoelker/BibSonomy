@@ -147,7 +147,7 @@
 	    to be a user with role "admin". 
 	 -->
 	<bean id="adminLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.AdminLogicFactoryBean" scope="singleton">
-			<!-- name the admin user will have when accessing the logic interface -->
+		<!-- name the admin user will have when accessing the logic interface -->
 		<property name="adminUserName" value="admin"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 		<property name="bibtexReader" ref="bibtexReader"/>
@@ -358,6 +358,12 @@
 				<entry key="/settings/group">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="groupSettingsPageController" />
+						<property name="allowedFields">
+							<list>
+								<value>selTab</value>
+								<value>requestedGroup</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/user">
