@@ -33,7 +33,7 @@
 
 			<form:form action="/registerSaml" method="POST" class="form-horizontal">
 
-				<h2><fmt:message key="register.saml.step2" /></h2>
+				<h1><fmt:message key="register.saml.step2" /></h1>
 				<div class="lead">
 					<p><fmt:message key="register.saml.step2.description"/></p>
 				</div>
