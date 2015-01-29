@@ -74,51 +74,13 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 
 		Group groupToUpdate = null;
 		// since before requesting a group, it must not exist, we cannot check for it, either.
-		if (!GroupUpdateOperation.REQUEST.equals(command.getOperation())) {
-			 groupToUpdate = this.logic.getGroupDetails(command.getGroupname());
-		}
+		groupToUpdate = this.logic.getGroupDetails(command.getGroupname());
+		
 		// TODO: Clean this up.
 		final GroupUpdateOperation operation = command.getOperation();
 		if (present(operation)) {
 			final User loginUser = context.getLoginUser();
 			switch (operation) {
-				case REQUEST: {
-					// get the request
-					final Group requestedGroup = command.getGroup();
-					if (present(requestedGroup)) {
-						if (!present(requestedGroup.getName())) {
-							// TODO: add form error for field (rejectValue)
-							this.errors.reject("settings.group.error.requestGroupFailed");
-						}
-						
-						// TODO: add valid username check here
-						
-						if (!present(requestedGroup.getDescription())) {
-							// TODO: add form error for field
-							this.errors.reject("settings.group.error.requestGroupFailed");
-						}
-						if (!present(requestedGroup.getGroupRequest().getReason())) {
-							// TODO: add form error for field
-							this.errors.reject("settings.group.error.requestGroupFailed");
-						}
-						
-						// TODO: add field for email?
-						
-						// TODO: add spammer check here
-						
-						// TODO: add check if username is already in the system
-						
-						if (!this.errors.hasErrors()) {
-							// set the username and create the request
-							requestedGroup.getGroupRequest().setUserName(loginUser.getName());
-							this.logic.createGroup(requestedGroup);
-						}
-						
-						return new ExtendedRedirectView(SETTINGS_GROUP_TAB_REDIRECT);
-					}
-					// do set new settings here
-					break;
-				}
 				case ADD_INVITED: {
 					// sent an invite
 					final String username = command.getUsername();
