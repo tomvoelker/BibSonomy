@@ -93,16 +93,13 @@ public class EditBookmarkController extends EditPostController<Bookmark, EditBoo
 	}
 
 	@Override
-	protected void replaceResourceSpecificPostFields(final Post<Bookmark> post, final String key, final Post<Bookmark> newPost) {
+	protected void replaceResourceSpecificPostFields(final Bookmark bookmark, final String key, final Bookmark newBookmark) {
 		switch (key) {
 		case "title":
-			post.getResource().setTitle(newPost.getResource().getTitle());
+			bookmark.setTitle(newBookmark.getTitle());
 			break;
 		case "url":
-			post.getResource().setUrl(newPost.getResource().getUrl());
-			break;
-		case "description":
-			post.setDescription(newPost.getDescription());
+			bookmark.setUrl(newBookmark.getUrl());
 			break;
 		default:
 			throw new ValidationException("Couldn't find " + key + " among Bookmark fields!");

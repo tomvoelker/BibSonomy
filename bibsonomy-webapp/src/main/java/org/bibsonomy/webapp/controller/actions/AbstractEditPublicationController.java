@@ -290,13 +290,11 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 	}
 
 	@Override
-	protected void replaceResourceSpecificPostFields(final Post<BibTex> post, final String key, final Post<BibTex> newPost) {
+	protected void replaceResourceSpecificPostFields(final BibTex bibResource, final String key, final BibTex newResource) {
 		/*
 		 * TODO: Move functionality to BibTeXUtils or some other fitting model
 		 * class
 		 */
-		final BibTex bibResource = post.getResource();
-		final BibTex newResource = newPost.getResource();
 		switch (key) {
 		case "entrytype":
 			bibResource.setEntrytype(newResource.getEntrytype());

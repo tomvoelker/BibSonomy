@@ -496,22 +496,27 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param newPost
 	 */
 	protected void replacePostFields(final Post<RESOURCE> post, final String key, final Post<RESOURCE> newPost) {
-		if (TAGS_KEY.equals(key)) {
+		switch (key) {
+		case TAGS_KEY:
 			post.setTags(newPost.getTags());
-			return;
+			break;
+		case "description":
+			post.setDescription(newPost.getDescription());
+			break;
+		default:
+			this.replaceResourceSpecificPostFields(post.getResource(), key, newPost.getResource());
 		}
-		this.replaceResourceSpecificPostFields(post, key, newPost);
 	}
 
 	/**
 	 * Replace the field with key "key" in post with the corresponding value in
 	 * newPost
 	 * 
-	 * @param post
+	 * @param resource
 	 * @param key
-	 * @param newPost
+	 * @param newResource
 	 */
-	protected abstract void replaceResourceSpecificPostFields(final Post<RESOURCE> post, String key, Post<RESOURCE> newPost);
+	protected abstract void replaceResourceSpecificPostFields(final RESOURCE resource, String key, RESOURCE newResource);
 
 	/**
 	 * @param command
