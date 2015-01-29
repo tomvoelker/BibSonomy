@@ -26,12 +26,9 @@
  */
 package org.bibsonomy.webapp.command.admin;
 
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-
-
-import org.bibsonomy.common.enums.Privlevel;
+import org.bibsonomy.common.enums.AdminGroupOperation;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.webapp.command.BaseCommand;
 
@@ -44,18 +41,10 @@ import org.bibsonomy.webapp.command.BaseCommand;
 public class AdminGroupViewCommand extends BaseCommand {	
 	
 	/** specific action for admin page */
-	private String action;
+	private AdminGroupOperation action;
 	
-	/**
-	 * Privacy options for the group
-	 * FIXME: use generic handling to localize messages
-	 * @see http://www.springjutsu.org/2011/03/binding-enums-with-i8n-localization-support/
-	 */
-	@Deprecated 
-	private final Map<String, Privlevel> privlevel;
-	
-	private String adminResponse = "";
-	private Group group = new Group();
+	private String adminResponse;
+	private Group group;
 	
 	private boolean communityPostInspectionPermission;
 	private boolean permissionsUpdated;
@@ -64,24 +53,10 @@ public class AdminGroupViewCommand extends BaseCommand {
 	 */
 	private List<Group> pendingGroups;
 	
-	
-	
-	
-	
 	public AdminGroupViewCommand() {
-		privlevel = new HashMap<String, Privlevel>();
-		privlevel.put("Member list hidden", Privlevel.HIDDEN);
-		privlevel.put("Member list public", Privlevel.PUBLIC);
-		privlevel.put("Members can list members", Privlevel.MEMBERS);
+		this.group = new Group();
 	}
 
-	/**
-	 * @return the privlevels
-	 */
-	public Map<String, Privlevel> getPrivlevel() {
-		return this.privlevel;
-	}
-	
 	/**
 	 * @return the group
 	 */
@@ -99,14 +74,14 @@ public class AdminGroupViewCommand extends BaseCommand {
 	/**
 	 * @return the action
 	 */
-	public String getAction() {
+	public AdminGroupOperation getAction() {
 		return this.action;
 	}
 
 	/**
 	 * @param action the action to set
 	 */
-	public void setAction(final String action) {
+	public void setAction(final AdminGroupOperation action) {
 		this.action = action;
 	}
 
@@ -128,6 +103,8 @@ public class AdminGroupViewCommand extends BaseCommand {
 	 * @return the pendingGroups
 	 */
 	public List<Group> getPendingGroups() {
+		if (this.pendingGroups == null)
+			this.pendingGroups = new LinkedList<Group>();
 		return this.pendingGroups;
 	}
 
@@ -153,7 +130,4 @@ public class AdminGroupViewCommand extends BaseCommand {
 	public void setPermissionsUpdated(boolean permissionsUpdated) {
 		this.permissionsUpdated = permissionsUpdated;
 	}
-
-	
-	
 }

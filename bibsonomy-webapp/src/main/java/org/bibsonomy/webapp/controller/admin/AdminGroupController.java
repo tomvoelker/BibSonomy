@@ -32,6 +32,7 @@ import java.util.HashSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.AdminGroupOperation;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
@@ -52,21 +53,10 @@ import org.springframework.security.access.AccessDeniedException;
  * @author bsc
  */
 // TODO: Needs loads of polishing
+// TODO: Make ErrorAware for proper error messages
 public class AdminGroupController implements MinimalisticController<AdminGroupViewCommand> {
-	/**
-	 * 
-	 */
 	private static final Log log = LogFactory.getLog(AdminGroupController.class);
 	private LogicInterface logic;
-
-	/* Possible actions */
-	private static final String FETCH_GROUP_SETTINGS  = "fetchGroupSettings"; 
-	private static final String UPDATE_GROUP 		  = "updateGroup";  
-	private static final String CREATE_GROUP          = "createGroup";  
-	private static final String ACCEPT_GROUP          = "acceptGroup"; 
-	private static final String DECLINE_GROUP          = "declineGroup";
-	private static final String UPDATE_PERMISSIONS = "updatePermissions";
-
 
 	@Override
 	public View workOn(final AdminGroupViewCommand command) {
@@ -81,32 +71,36 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		}
 
 		/* Check for and perform the specified action */
-		final String action = command.getAction();
+		final AdminGroupOperation action = command.getAction();
 		if(!present(action)) {
 			log.debug("No action specified.");
-		
-		} else if (FETCH_GROUP_SETTINGS.equals(action)) {
-			setGroupOrMarkNonExistent(command);
-
-		} else if (UPDATE_GROUP.equals(action)) {
-			updateGroup(command);
-		
-		} else if (CREATE_GROUP.equals(action)) {
-			command.setAdminResponse(createGroup(command.getGroup()));
-		
-		} else if (ACCEPT_GROUP.equals(action)) {
-			final String groupName = command.getGroup().getName();
-			log.debug("accepting group \""+groupName+"\"");
-			this.logic.updateGroup(command.getGroup(), GroupUpdateOperation.ACTIVATE, null);
-		
-		} else if (DECLINE_GROUP.equals(action)) {
-			log.debug("grouprequest for group \""+command.getGroup().getName()+"\" declined");
-			this.logic.updateGroup(command.getGroup(), GroupUpdateOperation.DELETE, null);
-		
-		} else if (UPDATE_PERMISSIONS.equals(action)) {
-			this.updateGroupPermissions(command);
-		} 
-		// if the action is other than the accepted ones, we ignore it and just show the page again
+		} else {
+			switch(action) {
+				case ACCEPT:
+					final String groupName = command.getGroup().getName();
+					this.logic.updateGroup(command.getGroup(), GroupUpdateOperation.ACTIVATE, null);
+					break;
+				case CREATE:
+					command.setAdminResponse(createGroup(command.getGroup()));
+					break;
+				case DECLINE:
+					log.debug("grouprequest for group \""+command.getGroup().getName()+"\" declined");
+					this.logic.updateGroup(command.getGroup(), GroupUpdateOperation.DELETE, null);
+					break;
+				case FETCH_GROUP_SETTINGS:
+					setGroupOrMarkNonExistent(command);
+					break;
+				case UPDATE:
+					updateGroup(command);
+					break;
+				case UPDATE_PERMISSIONS:
+					this.updateGroupPermissions(command);
+					break;
+				default:
+					break;
+			}
+				
+		}
 		
 		// load the pending groups
 		command.setPendingGroups(logic.getGroups(true, 0, Integer.MAX_VALUE));
@@ -114,20 +108,9 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		return Views.ADMIN_GROUP;
 	}
 
-
-
-	private void setGroupOrMarkNonExistent(final AdminGroupViewCommand command) {
-		final Group dbGroup = this.getGroupOrMarkNonExistent(command);
-		if (present(dbGroup)) {
-			command.setGroup(dbGroup);
-		}
-	}
-
-
-
 	/**
 	 * Create a new group
-	 * 
+	 * TODO: Proper Error messages.
 	 * @param command
 	 */
 	private String createGroup(final Group group) {
@@ -139,9 +122,10 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 			return "Group-creation failed: Group-name is empty!";
 		}
 		/*
-		 * check database for existing group
+		 * check database for existing group or pending group
 		 */
-		if (present(logic.getGroupDetails(groupName))) {
+		if (logic.getGroups(false, 0, Integer.MAX_VALUE).contains(group)
+				|| logic.getGroups(true, 0, Integer.MAX_VALUE).contains(group)) {
 			return "Group already exists!";
 		}
 		
@@ -149,10 +133,15 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		logic.createGroup(group);
 		// ... and activate it
 		logic.updateGroup(group, GroupUpdateOperation.ACTIVATE, null);
-		return "Successfully created new group!";
+		return "Successfully created new group " + group.getName() + "!";
 	}
 
-	/** Update the settings of a group. */
+	/**
+	 * Update the settings of a group.
+	 * 
+	 * TODO: Find out when this is used.
+	 * 
+	 */
 	private void updateGroup(final AdminGroupViewCommand command) {
 		final Group dbGroup = getGroupOrMarkNonExistent(command);
 		if (present(dbGroup)) {
@@ -166,7 +155,9 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	}
 
 	
-	/** Update the settings of a group. */
+	/**
+	 * TODO: Documentation.
+	 */
 	private void updateGroupPermissions(final AdminGroupViewCommand command) {
 		final Group dbGroup = getGroupOrMarkNonExistent(command);
 		if (present(dbGroup) && GroupID.INVALID.getId() != dbGroup.getGroupId()) {
@@ -186,6 +177,19 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		}
 	}
 
+	/**
+	 * TODO: Documentation.
+	 */
+	private void setGroupOrMarkNonExistent(final AdminGroupViewCommand command) {
+		final Group dbGroup = this.getGroupOrMarkNonExistent(command);
+		if (present(dbGroup)) {
+			command.setGroup(dbGroup);
+		}
+	}
+	
+	/**
+	 * TODO: Documentation.
+	 */
 	private Group getGroupOrMarkNonExistent(final AdminGroupViewCommand command) {
 		final Group dbGroup = logic.getGroupDetails(command.getGroup().getName());
 
@@ -205,5 +209,9 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	 */
 	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
+	}
+
+	public LogicInterface getLogic() {
+		return logic;
 	}
 }

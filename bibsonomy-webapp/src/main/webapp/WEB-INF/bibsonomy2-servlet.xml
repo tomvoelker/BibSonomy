@@ -969,7 +969,6 @@
 	
 	<!-- Group request page -->
 	<bean id="groupRequestController" class="org.bibsonomy.webapp.controller.GroupRequestController" scope="request">
-		<property name="view" value="GROUPREQUEST"/>
 	</bean>
 	
 	
