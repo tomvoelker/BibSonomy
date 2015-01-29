@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.common.enums;
 
-import org.bibsonomy.util.EnumUtils;
 
 /**
  * Defines different possibilities of classifiers of a user
@@ -35,39 +34,18 @@ import org.bibsonomy.util.EnumUtils;
  */
 public enum AdminActions {
 	/** An automatic classifier algorithm */
-	FLAG_SPAMMER("flag_spammer"),
+	FLAG_SPAMMER,
 
-	UNFLAG_SPAMMER("unflag_spammer"),
+	UNFLAG_SPAMMER,
 
-	MARK_UNCERTAINUSER("mark_uncertainuser"),
+	MARK_UNCERTAINUSER,
 
-	UPDATE_SETTINGS("update_settings"),
+	UPDATE_SETTINGS,
 
-	LATEST_POSTS("latest_posts"),
+	LATEST_POSTS,
 
-	PREDICTION_HISTORY("prediction_history"),
+	PREDICTION_HISTORY,
 
-	FETCH_GROUP_WITH_PERMISSIONS("fetch_group_with_permissions");
-
-	AdminActions(final String action) {
-	}
-
-	/**
-	 * @param setting
-	 *        name of the setting enum to retrieve
-	 * @return the corresponding enum object
-	 */
-	public static AdminActions getAdminAction(final String action) {
-		final AdminActions adminAction = EnumUtils.searchEnumByName(AdminActions.values(), action);
-		if (adminAction == null) {
-			throw new UnsupportedOperationException();
-		}
-		return adminAction;
-	}
-
-	@Override
-	public String toString() {
-		return this.name().toLowerCase();
-	}
+	FETCH_GROUP_WITH_PERMISSIONS;
 
 }

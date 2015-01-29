@@ -301,7 +301,7 @@ public enum Views implements View {
 	 */
 	AJAX_JSON("ajax/snippetJson"),
 	/**
-	 * command.responseString is written withOUT (!) c:out
+	 * json representation of group level permissions
 	 */
 	AJAX_JSON_PERMISSIONS("ajax/jsonGroupLevelPermissions"),
 	/**

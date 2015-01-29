@@ -38,7 +38,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * 
  * @author bsc
  */
-public class AdminGroupViewCommand extends BaseCommand {	
+public class AdminGroupViewCommand extends BaseCommand {
 	
 	/** specific action for admin page */
 	private AdminGroupOperation action;
@@ -46,6 +46,8 @@ public class AdminGroupViewCommand extends BaseCommand {
 	private String adminResponse;
 	private Group group;
 	
+	@Deprecated
+	// TODO a more general field should be Set<GroupLevelPermission>
 	private boolean communityPostInspectionPermission;
 	private boolean permissionsUpdated;
 	/**
@@ -115,10 +117,12 @@ public class AdminGroupViewCommand extends BaseCommand {
 		this.pendingGroups = pendingGroups;
 	}
 
+	@Deprecated
 	public boolean isCommunityPostInspectionPermission() {
 		return this.communityPostInspectionPermission;
 	}
 
+	@Deprecated
 	public void setCommunityPostInspectionPermission(boolean communityPostInspectionPermission) {
 		this.communityPostInspectionPermission = communityPostInspectionPermission;
 	}

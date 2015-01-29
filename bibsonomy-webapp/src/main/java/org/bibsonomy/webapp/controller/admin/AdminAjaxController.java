@@ -82,7 +82,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 			throw new AccessDeniedException("please log in as admin");
 		}
 		
-		final String action = command.getAction();
+		final AdminActions action = command.getAction();
 		
 		log.debug("Action: " + action);
 		
@@ -105,7 +105,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 		 * 	
 		 */
 	
-		switch (AdminActions.getAdminAction(action)) {
+		switch (action) {
 		case FLAG_SPAMMER:
 			log.debug("flag spammer");
 			this.flagSpammer(command, true);
