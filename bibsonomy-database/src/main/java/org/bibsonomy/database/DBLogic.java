@@ -680,7 +680,7 @@ public class DBLogic implements LogicInterface {
 			 * groupingName, tags, hash, popular, added, start, end, false));
 			 * 
 			 */
-			if (FilterEntity.POSTS_HISTORY.equals(filter) && !((resourceType== BibTex.class) || (resourceType== Bookmark.class))) {
+			if (FilterEntity.POSTS_HISTORY.equals(filter) && !((resourceType== GoldStandardPublication.class) || (resourceType== GoldStandardBookmark.class))) {
 				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, this.loginUser.getName());
 			}
 			if (resourceType == BibTex.class) {
