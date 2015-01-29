@@ -58,16 +58,12 @@ import org.bibsonomy.rest.client.RestLogicFactory;
  * This client synchronizes PUMA with BibSonomy.
  * PUMA is the server, BibSonomy is the client.
  * 
- * 
  * @author wla
  */
 public abstract class AbstractSynchronizationClient {
 	private static final Log log = LogFactory.getLog(AbstractSynchronizationClient.class);
-	protected static final String APISTRING = "api";
 	
-	/*
-	 * own URI
-	 */
+	/** own URI */
 	protected URI ownUri;
 
 	/**
@@ -91,8 +87,8 @@ public abstract class AbstractSynchronizationClient {
 	/**
 	 * Creates an instance of the LogicInterface for the given syncService
 	 * 
-	 * @param serverUser
-	 * @return
+	 * @param syncServer
+	 * @return the logic interface for the sync server
 	 */
 	protected LogicInterface getServerLogic(final SyncService syncServer) {
 		final Properties serverUser = syncServer.getServerUser();
@@ -100,11 +96,11 @@ public abstract class AbstractSynchronizationClient {
 		URI api = syncServer.getSecureAPI();
 		
 		// FIXME: logic returns empty not null uri as secure api
-		if(!present(api)) {
+		if (!present(api)) {
 			api = syncServer.getService();
 		}
 		
-		final RestLogicFactory factory = new RestLogicFactory(api + APISTRING);
+		final RestLogicFactory factory = new RestLogicFactory(api + RestLogicFactory.API_SUBPATH);
 		return factory.getLogicAccess(serverUser.getProperty("userName"), serverUser.getProperty("apiKey"));
 	}
 	
@@ -114,7 +110,7 @@ public abstract class AbstractSynchronizationClient {
 	 * 
 	 * @param serverLogic
 	 * @param serverUserName
-	 * @param contentType
+	 * @param resourceType
 	 * @return
 	 */
 	protected SynchronizationData getLastSyncData(final LogicInterface serverLogic, final String serverUserName, final Class<? extends Resource> resourceType) {
@@ -129,7 +125,6 @@ public abstract class AbstractSynchronizationClient {
 	 */
 	public SynchronizationData getLastSyncData(final SyncService syncService, final Class<? extends Resource> resourceType) {
 		final LogicInterface serverLogic = getServerLogic(syncService);
-		
 		return getLastSyncData(serverLogic, serverLogic.getAuthenticatedUser().getName(), resourceType);
 	}
 	
@@ -155,8 +150,9 @@ public abstract class AbstractSynchronizationClient {
 	 * @param oldStatus
 	 * @param newStatus
 	 * @param info
+	 * @param isSecureSync
 	 */
-	protected void updateSyncData(final LogicInterface serverLogic, final String serverUserName, final Class<? extends Resource> resourceType, final SynchronizationStatus oldStatus, final SynchronizationStatus newStatus, final String info) {
+	protected void updateSyncData(final LogicInterface serverLogic, final String serverUserName, final Class<? extends Resource> resourceType, final SynchronizationStatus oldStatus, final SynchronizationStatus newStatus, final String info, boolean isSecureSync) {
 		final SynchronizationData data = serverLogic.getLastSyncData(serverUserName, ownUri, resourceType);
 		if (!present(data)) {
 			/*
@@ -168,7 +164,13 @@ public abstract class AbstractSynchronizationClient {
 		 * check if oldStatus is correct
 		 */
 		if (oldStatus.equals(data.getStatus())) {
-			serverLogic.updateSyncData(serverUserName, ownUri, resourceType, data.getLastSyncDate(), newStatus, info);
+			final Date newSyncDate;
+			if (isSecureSync) {
+				newSyncDate = null;
+			} else {
+				newSyncDate = new Date();
+			}
+			serverLogic.updateSyncData(serverUserName, ownUri, resourceType, data.getLastSyncDate(), newStatus, info, newSyncDate);
 		} else {
 			throw new RuntimeException("no " + oldStatus + " synchronization found for " + serverUserName + " on " + ownUri + " to store result");
 		}
@@ -245,7 +247,7 @@ public abstract class AbstractSynchronizationClient {
 		 */
 		int duplicatesOnClient = 0;
 		if (!createOnClient.isEmpty()) {
-			assert !SynchronizationDirection.CLIENT_TO_SERVER.equals(direction); 
+			assert !SynchronizationDirection.CLIENT_TO_SERVER.equals(direction);
 			try {
 				clientLogic.createPosts(createOnClient);
 				result.append("created on client: " + createOnClient.size() + ", ");
@@ -317,11 +319,12 @@ public abstract class AbstractSynchronizationClient {
 		/*
 		 * generate result string
 		 */
-		if (duplicatesOnClient > 0) 
+		if (duplicatesOnClient > 0) {
 			result.insert(0, duplicatesOnClient + "duplicates on client detected, ");
-		if (duplicatesOnServer > 0) 
+		}
+		if (duplicatesOnServer > 0) {
 			result.insert(0, duplicatesOnServer + "duplicates on server detected, ");
-		
+		}
 	
 		final int length = result.length();
 		if (length == 0) {
@@ -342,7 +345,7 @@ public abstract class AbstractSynchronizationClient {
 	 * @param exception
 	 * @return
 	 */
-	private int getDuplicateCount(final DatabaseException exception) {
+	private static int getDuplicateCount(final DatabaseException exception) {
 		int duplicatesOnClient = 0;
 		final Set<Entry<String, List<ErrorMessage>>> entrySet = exception.getErrorMessages().entrySet();
 		for (final Entry<String, List<ErrorMessage>> entry : entrySet) {
@@ -350,7 +353,7 @@ public abstract class AbstractSynchronizationClient {
 			for (final ErrorMessage em: errorMessages) {
 				if (em instanceof DuplicatePostErrorMessage) {
 					duplicatesOnClient++;
-				}		
+				}
 			}
 		}
 		return duplicatesOnClient;

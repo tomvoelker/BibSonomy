@@ -2,6 +2,7 @@
 <jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
@@ -11,6 +12,8 @@
 	<jsp:directive.attribute name="enableHistory" type="java.lang.Boolean" required="false" />	
 
 	<div class="edit-media-buttons btn-group btn-group-xs dropdown dropdown-align-right">
+	
+	<spring:eval var="intraHashId" expression="T(org.bibsonomy.common.enums.HashID).INTRA_HASH.id" />
 	
 	<c:set var="buttonClasses" value="btn btn-default btn-xsmall"/>
 		<!--+
@@ -206,21 +209,24 @@
 				</li>
 				<li class="divider"><!--  --></li>
 				<!-- BibTeX -->
+				<!-- TODO: use url generator -->
 				<li>
 					<fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />
-					<a class="litem" href="/bib/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}" title="${bibtexTitle}"><fmt:message key="bibtex.actions.bibtex"/></a>
+					<a class="litem" href="/bib/bibtex/${intraHashId}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}" title="${bibtexTitle}"><fmt:message key="bibtex.actions.bibtex"/></a>
 				</li>
 				
 				<!-- ENDNOTE -->
+				<!-- TODO: use url generator -->
 				<li>
 					<fmt:message key="bibtex.actions.endnote.title" var="endnoteTitle" />
-					<a class="litem" href="/layout/endnote/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}?formatEmbedded=true" title="${endnoteTitle}"><fmt:message key="bibtex.actions.endnote"/></a>
+					<a class="litem" href="/layout/endnote/bibtex/${intraHashId}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}?formatEmbedded=true" title="${endnoteTitle}"><fmt:message key="bibtex.actions.endnote"/></a>
 				</li>
 				
 				<!-- MS WORD Reference Manager -->
+				<!-- TODO: use url generator -->
 				<li>
-					<fmt:message key="bibtex.actions.msword.title" var="mswordTitle" />					
-					<a class="litem" href="/layout/msofficexml/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}?formatEmbedded=true" title="${mswordTitle}"><fmt:message key="bibtex.actions.msword"/></a>
+					<fmt:message key="bibtex.actions.msword.title" var="mswordTitle" />
+					<a class="litem" href="/layout/msofficexml/bibtex/${intraHashId}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}?formatEmbedded=true" title="${mswordTitle}"><fmt:message key="bibtex.actions.msword"/></a>
 				</li>
 				
 				<!-- OPENURL -->
@@ -254,9 +260,6 @@
 					</c:forEach>
 				</li>
 			</c:if>
-			
-			
-			
 			
 			<c:if test="${mtl:hasTagMyown(post) and properties['publication.reporting.mode'] eq 'GROUP' and not mtl:userIsGroup(command.context.loginUser)}">
 			

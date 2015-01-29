@@ -656,7 +656,10 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * @throws IOException
 	 */
 	public IndexSearcher aquireIndexSearcher() throws IOException {
-		return this.searcherManager.acquire();
+		if (searcherManager != null) {
+			return this.searcherManager.acquire();
+		}
+		throw new IllegalStateException("no searcherManager available");
 	}
 	
 	/**

@@ -5,6 +5,7 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:bibgs="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
+	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
@@ -20,12 +21,12 @@
 	<c:if test="${empty listIndex}">
 		<c:set var="listIndex" value="0"/>
 	</c:if>
-
+	<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
 	<rc:list
 		titleKey="publications" 
 		loginUserName="${loginUserName}"
 		listViewStartParamName="bibtex.start"
-		otherPostsUrlPrefix="/bibtex/${hash.inter.id}"
+		otherPostsUrlPrefix="/bibtex/${interHashId}"
 		disableListNavigation="${disableListNavigation}"
 		listID="publications_${listIndex}"
 		className="publicationsContainer"
@@ -33,8 +34,8 @@
 		widthClassName="${widthClassName}"
 		extTitle="${extTitle}"
 		addAsFirstItem="${addAsFirstItem}"
-		addAsLastItem="${addAsLastItem}"
-	>
+		addAsLastItem="${addAsLastItem}">
+		
 		<jsp:attribute name="title">
 			<c:choose>
 				<c:when test="${empty post.user.name}">
