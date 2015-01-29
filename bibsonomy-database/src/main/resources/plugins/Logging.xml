@@ -29,8 +29,8 @@
 	</insert>
 	
 	<insert id="logGoldStandard">
-		INSERT INTO log_gold_standard (new_simhash1, content_id, new_content_id, current_content_id, <include refid ="allGoldStandardPublicationColumns"/>)
-		SELECT #newId#, content_id, #newContentId#, #newContentId#, <include refid ="allGoldStandardPublicationColumns"/>
+		INSERT INTO log_gold_standard (new_simhash1, content_id, new_content_id, current_content_id, change_date, <include refid ="allGoldStandardPublicationColumns"/>)
+		SELECT #newId#, content_id, #newContentId#, #newContentId#, change_date, <include refid ="allGoldStandardPublicationColumns"/>
 		FROM gold_standard WHERE simhash1 = #oldId#
 	</insert>
 		
