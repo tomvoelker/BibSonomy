@@ -65,7 +65,6 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.extra.BibTexExtra;
-import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
@@ -1019,18 +1018,6 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 //		
 //		final List<Post<BibTex>> posts2 = bibTexDb.getPosts(param, this.dbSession);
 //		assertEquals(10, posts2.size());
-	}
-	
-	@Test
-	public void testGetPostMetaData() {
-		// TODO: implement the missing cases
-		// get 1 public entry
-		List<PostMetaData> res = publicationDb.getPostMetaData(HashID.INTER_HASH, null, loginUser, null, "COPY_PUBLICATION", dbSession);
-		assertEquals(1, res.size());
-		loginUser.addGroup(new Group(TESTGROUP1_ID));
-		// get the public + group entry
-		res = publicationDb.getPostMetaData(HashID.INTER_HASH, null, loginUser, null, "COPY_PUBLICATION", dbSession);
-		assertEquals(2, res.size());
 	}
 
 	/**

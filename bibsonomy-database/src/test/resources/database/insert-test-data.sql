@@ -397,17 +397,6 @@ INSERT INTO `pendingUser` (`user_name`,`user_email`,`user_password`,`user_homepa
 
 
 
--- 
--- Data for table `post_metadata`
--- 
-
-INSERT INTO `post_metadata` (`user_name`,`ref_content_id`,`key`,`value`,`date`,`content_id`) VALUES 
-('testuser2', 10, 'COPY_PUBLICATION', 'testuser1', '2013-08-12 19:29:52', 10), 
-('testuser2', 13, 'COPY_PUBLICATION', 'testuser1', '2013-08-13 19:29:52', 14), 
-('testuser3', 12, 'COPY_PUBLICATION', 'testuser1', '2013-08-14 19:29:52', 20);
-
-
-
 --
 -- Data for table `prediction`
 -- 

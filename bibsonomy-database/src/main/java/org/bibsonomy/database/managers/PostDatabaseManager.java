@@ -1738,33 +1738,21 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	/**
 	 * returns a list of all metadata for the given post and MetaDataPluginKey.
 	 *
-	 * FIXME: friends are not supported yet.
-	 * @param hashType 
+	 * @param HashID
 	 * @param resourceHash
-	 * @param loginUser 
-	 * @param loginUserName
-	 * @param reqUserName
+	 * @param userName
 	 * @param metaDataPluginKey
 	 * @param session
-	 * @return 
 	 */
-	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final User loginUser, final String reqUserName, final String metaDataPluginKey, final DBSession session) {
+	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey, final DBSession session) {
 		final PostParam param = new PostParam();
-		/*
-		 * get the groupids
-		 */
-		final List<Integer> groups = UserUtils.getListOfGroupIDs(loginUser);
-		// add the public group
-		groups.add(GroupUtils.getPublicGroup().getGroupId());
-		param.setGroups(groups);
-		
-		if (hashType.equals(HashID.INTER_HASH)) {
+		if(hashType.equals(HashID.INTER_HASH)) {
 			param.setInterHash(resourceHash);
 		} else {
 			param.setIntraHash(resourceHash);
 		}
-		param.setUserName(reqUserName);
-		if (present(metaDataPluginKey)) {
+		param.setUserName(userName);
+		if(present(metaDataPluginKey)) {
 			param.setKey(MetaDataPluginKey.valueOf(metaDataPluginKey));
 		}
 		return this.queryForList("getPostMetaData", param, PostMetaData.class, session);
