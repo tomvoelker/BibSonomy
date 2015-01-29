@@ -115,6 +115,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		// We can not check the ckey if "deny request" was chosen, since the deny
 		// handle deny join request action
 		if (present(deniedUserName)) {
+			// TODO: (groups) remove
 			/*
 			 * We have a deny Request
 			 */
@@ -122,7 +123,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 			if (!groupName.equals(command.getContext().getLoginUser().getName())) {
 				throw new AccessDeniedException("This action is only possible for a group. Please log in as a group!");
 			}
-			final User deniedUser = adminLogic.getUserDetails(deniedUserName);
+			final User deniedUser = this.adminLogic.getUserDetails(deniedUserName);
 			if (!present(deniedUser.getName())) {
 				errors.reject("joinGroup.deny.noUser");
 				return Views.ERROR;
@@ -177,18 +178,13 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		
 		// user is allowed to state join request and group exists => execute request
 		
-		// we need the user details (eMail) of the admin users
-		final List<User> groupAdmins = new LinkedList<>();
-		for (GroupMembership ms : group.getMemberships()) {
+		// send a mail to all administrators of the group
+		for (final GroupMembership ms : group.getMemberships()) {
 			if (ms.getGroupRole().equals(GroupRole.ADMINISTRATOR)) {
-				groupAdmins.add(ms.getUser());
+				final User groupAdminUser = ms.getUser();
+				final String groudAdminUserMail = this.adminLogic.getUserDetails(groupAdminUser.getName()).getEmail();
+				mailUtils.sendJoinGroupRequest(group.getName(), groudAdminUserMail, loginUser, command.getReason(), requestLogic.getLocale());
 			}
-		}
-		
-		// Send a mail to all administrators of the group
-		for (User groupAdminUser : groupAdmins) {
-			String groudAdminUserMail = adminLogic.getUserDetails(groupAdminUser.getName()).getEmail();
-			mailUtils.sendJoinGroupRequest(group.getName(), groudAdminUserMail, loginUser, command.getReason(), requestLogic.getLocale());
 		}
 		
 		// insert the request

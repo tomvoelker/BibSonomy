@@ -1117,6 +1117,8 @@
 		<property name="requestLogic" ref="requestLogic" />
 		<!-- to send registration mails -->
 		<property name="mailUtils" ref="mailUtils"/>
+		<!-- to get the mail address for the users -->
+		<property name="adminLogic" ref ="adminLogic" />
 	</bean>
 	
 	<!-- Handles the profile update of a user -->

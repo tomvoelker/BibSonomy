@@ -44,6 +44,8 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 	private Errors errors = null;
 	
 	private LogicInterface logic;
+	private LogicInterface adminLogic;
+	
 	private RequestLogic requestLogic;
 	private MailUtils mailUtils;
 
@@ -78,6 +80,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 		
 		// TODO: Clean this up.
 		final GroupUpdateOperation operation = command.getOperation();
+		Integer selTab = null;
 		if (present(operation)) {
 			final User loginUser = context.getLoginUser();
 			switch (operation) {
@@ -85,21 +88,25 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 					// sent an invite
 					final String username = command.getUsername();
 					if (present(username) && !username.equals(groupToUpdate.getName())) {
-						
-						// TODO: inform the user about the invite
-						final User invitedUser = this.logic.getUserDetails(username);
-						final GroupMembership ms = new GroupMembership(invitedUser, null, false);
-						try {
-							// since now only one user can be invited to a group at once
-							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_INVITED, ms);
-							mailUtils.sendGroupInvite(groupToUpdate.getName(), command.getLoggedinUser(), invitedUser, requestLogic.getLocale());
-						} catch (final Exception ex) {
-							log.error("error while inviting user '" + username + "' to group '" + groupToUpdate + "'", ex);
-							// if a user can't be added to a group, this exception is thrown
-							this.errors.rejectValue("username", "settings.group.error.inviteUserToGroupFailed", new Object[]{username, groupToUpdate},
-									"The User {0} couldn't be invited to the Group {1}.");
+						// get user details with an admin logic to get the mail address
+						final User invitedUser = this.adminLogic.getUserDetails(username);
+						if (present(invitedUser.getName())) {
+							final GroupMembership ms = new GroupMembership(invitedUser, null, false);
+							try {
+								// since now only one user can be invited to a group at once
+								this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_INVITED, ms);
+								this.mailUtils.sendGroupInvite(groupToUpdate.getName(), loginUser, invitedUser, this.requestLogic.getLocale());
+							} catch (final Exception ex) {
+								log.error("error while inviting user '" + username + "' to group '" + groupToUpdate + "'", ex);
+								// if a user can't be added to a group, this exception is thrown
+								this.errors.rejectValue("username", "settings.group.error.inviteUserToGroupFailed", new Object[]{username, groupToUpdate},
+										"The User {0} couldn't be invited to the Group {1}.");
+							}
+						} else {
+							// TODO: handle case of non existing user!
 						}
 					}
+					selTab = Integer.valueOf(GroupSettingsPageCommand.MEMBER_LIST_IDX);
 					break;
 				}
 				case ADD_MEMBER: {
@@ -119,6 +126,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 									"The User {0} couldn't be added to the Group {1}.");
 						}
 					}
+					selTab = Integer.valueOf(GroupSettingsPageCommand.MEMBER_LIST_IDX);
 					break;
 				}
 				case REMOVE_MEMBER: {
@@ -142,6 +150,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 									"The User {0} couldn't be removed from the Group {1}.");
 						}
 					}
+					selTab = Integer.valueOf(GroupSettingsPageCommand.MEMBER_LIST_IDX);
 					break;
 				}
 				case UPDATE_GROUP_REPORTING_SETTINGS: {
@@ -157,7 +166,6 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 					/*
 					 *  the group properties to update
 					 */
-//					throw new UnsupportedOperationException("not yet implemented");
 					final Privlevel priv = Privlevel.getPrivlevel(command.getPrivlevel());
 					final boolean sharedDocs = command.getSharedDocuments() == 1;
 					final String realname = command.getRealname();
@@ -172,10 +180,12 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 						groupToUpdate.setPrivlevel(priv);
 						groupToUpdate.setSharedDocuments(sharedDocs);
 						
-						if (present(realname))
+						if (present(realname)) {
 							groupUserToUpdate.setRealname(realname);
-						if (present(homepage))
+						}
+						if (present(homepage)) {
 							groupUserToUpdate.setHomepage(homepage);
+						}
 //						groupToUpdate.setDescription(description);
 						
 						this.logic.updateUser(groupUserToUpdate, UserUpdateOperation.UPDATE_CORE);
@@ -190,18 +200,19 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 					final String username = command.getUsername();
 					if (present(username)) {
 						// the group to update
-						final User declineUser = this.logic.getUserDetails(username);
+						final User declineUser = this.adminLogic.getUserDetails(username);
 						final GroupMembership ms = new GroupMembership(declineUser, null, false);
 						try {
 							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.DECLINE_JOIN_REQUEST, ms);
 							// TODO: I18N
-							mailUtils.sendJoinGroupDenied(groupToUpdate.getName(), username, declineUser.getEmail(), "Your group join request was denied.", requestLogic.getLocale());
+							this.mailUtils.sendJoinGroupDenied(groupToUpdate.getName(), username, declineUser.getEmail(), "Your group join request was denied.", requestLogic.getLocale());
 						} catch (final Exception ex) {
 							log.error("error while declining the join request of user '" + username + "' from group '" + groupToUpdate + "'", ex);
 							this.errors.rejectValue("username", "settings.group.error.declineJoinRequestFailed", new Object[]{username},
 									"The request of User {0} couldn't be removed.");
 						}
 					}
+					selTab = Integer.valueOf(GroupSettingsPageCommand.MEMBER_LIST_IDX);
 					break;
 				}
 				case REMOVE_INVITED: {
@@ -210,7 +221,10 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 						final GroupMembership ms = new GroupMembership(new User(username), null, false);
 						try {
 							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.REMOVE_INVITED, ms);
-							return new ExtendedRedirectView(SETTINGS_GROUP_TAB_REDIRECT);
+							if (loginUser.getName().equals(username)) {
+								return new ExtendedRedirectView(SETTINGS_GROUP_TAB_REDIRECT);
+							}
+							selTab = Integer.valueOf(GroupSettingsPageCommand.MEMBER_LIST_IDX);
 						} catch (final Exception ex) {
 							log.error("error while removing the invite of user '" + username + "' from group '" + groupToUpdate + "'", ex);
 							this.errors.rejectValue("username", "settings.group.error.removeInviteFailed", new Object[]{username},
@@ -232,6 +246,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 							log.error("error while changing the the role of user '" + username + "' from group '" + groupToUpdate + "'", ex);
 						}
 					}
+					selTab = Integer.valueOf(GroupSettingsPageCommand.MEMBER_LIST_IDX);
 					break;
 				}
 				default:
@@ -250,7 +265,8 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 		// success: go back where you've come from
 		// TODO: inform the user about the success!
 		// TODO: use url generator
-		return new ExtendedRedirectView("/settings/group/" + groupToUpdate.getName());
+		final String settingsPage = "/settings/group/" + groupToUpdate.getName() + (present(selTab) ? "?selTab=" + selTab : "");
+		return new ExtendedRedirectView(settingsPage);
 	}
 
 	@Override
@@ -269,6 +285,13 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 	
 	public void setMailUtils(MailUtils mailUtils) {
 		this.mailUtils = mailUtils;
+	}
+
+	/**
+	 * @param adminLogic the adminLogic to set
+	 */
+	public void setAdminLogic(LogicInterface adminLogic) {
+		this.adminLogic = adminLogic;
 	}
 
 	@Override

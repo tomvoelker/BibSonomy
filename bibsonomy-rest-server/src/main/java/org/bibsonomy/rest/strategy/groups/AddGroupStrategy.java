@@ -53,6 +53,6 @@ public class AddGroupStrategy extends AbstractCreateStrategy {
 
 	@Override
 	protected void render(Writer writer, String groupID) {
-		this.getRenderer().serializeGroupId(writer, groupID);		
+		this.getRenderer().serializeGroupId(writer, groupID);
 	}
 }

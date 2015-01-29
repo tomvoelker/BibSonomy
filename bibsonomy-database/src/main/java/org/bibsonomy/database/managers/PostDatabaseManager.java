@@ -1774,7 +1774,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * sets the post of the leavingUser that are only visible to the group to
 	 * the private group
 	 * 
-	 * TODO: as soon as we support multiple groups per post this logic must be adapted
+	 * FIXME: as soon as we support multiple groups per post this logic must be adapted
 	 * 
 	 * @param leavingUser
 	 * @param groupId
@@ -1783,14 +1783,17 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	public void updatePostsGroupFromLeavingUser(User leavingUser, int groupId, DBSession session) {
 		final ResourceParam<R> param = new ResourceParam<>();
 		param.setGroupId(groupId);
-		param.setUserName(leavingUser.getName());
+		String username = leavingUser.getName();
+		param.setUserName(username);
 		
-		List<Integer> contentIdsToUpdate = this.queryForList("getContentIdsFrom" + resourceClassName + "ByUserAndGroupID", param, Integer.class, session);
-		
-		// FIXME: (groups) add logging
-		for (int contentId : contentIdsToUpdate)
-			this.plugins.onBookmarkUpdate(contentId, contentId, session);
-		
+		this.onPostMassUpdate(username, groupId, session);
 		this.update("update" + this.resourceClassName + "InGroupFromLeavingUser", param, session);
 	}
+
+	/**
+	 * @param username
+	 * @param groupId
+	 * @param session
+	 */
+	protected abstract void onPostMassUpdate(String username, int groupId, DBSession session);
 }

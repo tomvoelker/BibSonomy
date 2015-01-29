@@ -25,7 +25,7 @@
 
 	<div id="selTab0" class="tab-pane ${(command.selTab eq 0) ? 'active' : ''}">
 
-		<fieldset class="fsOuter">	
+		<fieldset class="fsOuter">
 
 			<form:form cssClass="form-horizontal" name="account" method="post" action="/updateGroup?ckey=${ckey}" enctype="multipart/form-data">
 				<input type="hidden" name="groupname" value="${command.group.name}"/>

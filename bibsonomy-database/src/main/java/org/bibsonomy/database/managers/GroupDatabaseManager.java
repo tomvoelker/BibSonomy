@@ -29,7 +29,6 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -44,6 +43,7 @@ import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.GroupParam;
@@ -201,11 +201,14 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			group.setMemberships(Collections.<GroupMembership> emptyList());
 			return group;
 		}
+		final String statement;
 		if (getPermissions) {
-			group = this.queryForObject("getGroupWithMembershipsAndPermissions", groupname, Group.class, session);
+			statement = "getGroupWithMembershipsAndPermissions";
 		} else {
-			group = this.queryForObject("getGroupWithMemberships", groupname, Group.class, session);
+			statement = "getGroupWithMemberships";
 		}
+		
+		group = this.queryForObject(statement, groupname, Group.class, session);
 		// the group has no members. At least the dummy user should exist.
 		if (group == null) {
 			log.debug("group " + groupname + " does not exist");
@@ -419,18 +422,21 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		try {
 			final GroupID specialGroup = GroupID.getSpecialGroup(groupname);
 			if (specialGroup != null) {
-				return specialGroup.getId();
+				return Integer.valueOf(specialGroup.getId());
 			}
 		} catch (final IllegalArgumentException ignore) {
 			// do nothing - this simply means that the given group is not a special group
 		}
 
-		final Group group = new Group();
-		group.setName(groupname);
-		if (present(username)) group.setUsers(Arrays.asList(new User(username)));
+		final GroupParam param = new GroupParam();
+		param.setRequestedUserName(username);
+		param.setRequestedGroupName(groupname);
+
 		// FIXME: what about dummy, join request and invited users?
-		final Integer rVal = this.queryForObject("getGroupIdByGroupNameAndUserName", group, Integer.class, session);
-		if (rVal == null) return GroupID.INVALID.getId();
+		final Integer rVal = this.queryForObject("getGroupIdByGroupNameAndUserName", param, Integer.class, session);
+		if (rVal == null) {
+			return Integer.valueOf(GroupID.INVALID.getId());
+		}
 		return rVal;
 	}
 
@@ -766,13 +772,13 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * Updates the users role.
-	 * 
+	 * @param loginUser
 	 * @param groupname
 	 * @param username
-	 * @param role 
+	 * @param newGroupRole 
 	 * @param session
 	 */
-	public void updateGroupRole(final String groupname, final String username, GroupRole role, final DBSession session) {
+	public void updateGroupRole(User loginUser, final String groupname, final String username, final GroupRole newGroupRole, final DBSession session) {
 		// make sure that the group exists
 		final Group group = this.getGroupByName(groupname, session);
 		if (group == null) {
@@ -782,8 +788,8 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') isn't a member of this group ('" + groupname + "')");
 		}
 		
-		if (!GroupRole.GROUP_ROLES.contains(role)) {
-			throw new IllegalArgumentException("group role '" + role + "' not supported");
+		if (!GroupRole.GROUP_ROLES.contains(newGroupRole)) {
+			throw new IllegalArgumentException("group role '" + newGroupRole + "' not supported");
 		}
 		
 		// check the old user role
@@ -791,7 +797,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		final GroupRole oldRole = oldMembership.getGroupRole();
 		
 		// only perform action if they differ XXX: exception for this case?
-		if (oldRole.equals(role)) {
+		if (oldRole.equals(newGroupRole)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') already has this role in this group ('" + groupname + "')");
 		}
 		
@@ -800,14 +806,37 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') is the last administrator of this group ('" + groupname + "')");
 		}
 		
+		// check if the current group role of the logged in users allows to change the requested user
+		final GroupRole loggedinUserRole = GroupUtils.getGroupMembershipOfUserForGroup(loginUser, groupname).getGroupRole();
+		if (!checkGroupRoleChange(loggedinUserRole, newGroupRole, oldRole)) {
+			throw new AccessDeniedException("you can not change the group role of user " + username + " to " + newGroupRole);
+		}
+		
 		final GroupParam param = new GroupParam();
 		param.setUserName(username);
 		param.setGroupId(group.getGroupId());
-		oldMembership.setGroupRole(role);
+		oldMembership.setGroupRole(newGroupRole);
 		param.setMembership(oldMembership);
 		
 		this.plugins.onChangeUserMembershipInGroup(param.getUserName(), param.getGroupId(), session);
 		this.update("updateGroupRole", param, session);
+	}
+
+	/**
+	 * @param object
+	 * @param groupRole
+	 */
+	private static boolean checkGroupRoleChange(final GroupRole ownGroupRole, final GroupRole groupRole, final GroupRole oldGroupRole) {
+		switch (ownGroupRole) {
+		case ADMINISTRATOR:
+			// admin can do anything
+			return true;
+		case MODERATOR:
+			// don't add group admins and do not modify admins
+			return GroupRole.ADMINISTRATOR != groupRole && GroupRole.ADMINISTRATOR != oldGroupRole;
+		default:
+			return false;
+		}
 	}
 	
 	/**
@@ -841,13 +870,19 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	
 	public void addPendingMembership(final String groupname, final User user, final GroupRole pendingGroupRole, final DBSession session) {
 		final Group group = this.getGroupByName(groupname, session);
-		final GroupMembership alreadyExistingMembership = this.getGroupMembershipForUser(user.getName(), group, session);
+		final String username = user.getName();
+		final User groupMembershipUser = this.userDb.getUserDetails(username, session);
+		if (!present(groupMembershipUser.getName())) {
+			ExceptionUtils.logErrorAndThrowQueryTimeoutException(log, null, "user " + username + " not found.");
+		}
+		final GroupMembership alreadyExistingMembership = this.getGroupMembershipForUser(username, group, session);
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't remove join request/invite from nonexistent group");
 		}
 		if (present(alreadyExistingMembership)) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User " + user.getName() + " is already a member of group " + groupname);
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User " + username + " is already a member of group " + groupname);
 		}
+		
 		try {
 			session.beginTransaction();
 			final GroupMembership pendingMembership = this.getPendingMembershipForUserAndGroup(user, groupname, session);
@@ -863,7 +898,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 				
 				this.insert("addPendingMembership", param, session);
 			} else {
-				final String username = user.getName();
 				switch (pendingMembership.getGroupRole()) {
 				case INVITED:
 					if (GroupRole.REQUESTED.equals(pendingGroupRole)) {

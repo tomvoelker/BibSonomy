@@ -100,6 +100,14 @@ public class Logging extends AbstractDatabasePlugin {
         param.setNewContentId(newContentId);
         this.insert("logBibTex", param, session);
     }
+    
+    @Override
+    public void onPublicationMassUpdate(String userName, int groupId, DBSession session) {
+    	final BibTexParam param = new BibTexParam();
+    	param.setGroupId(groupId);
+    	param.setRequestedUserName(userName);
+    	this.insert("logPublicationMassUpdate", param, session);
+    }
 
     @Override
     public void onGoldStandardUpdate(final int contentId, final int newContentId, final String newInterhash, final String interhash, final DBSession session) {
@@ -146,6 +154,17 @@ public class Logging extends AbstractDatabasePlugin {
         this.insert("logBookmark", param, session);
         param.setNewContentId(newContentId);
         this.insert("logBookmarkUpdate", param, session);
+    }
+    
+    /* (non-Javadoc)
+     * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onBookmarkMassUpdate(java.lang.String, int)
+     */
+    @Override
+    public void onBookmarkMassUpdate(String userName, int groupId, DBSession session) {
+    	final BookmarkParam param = new BookmarkParam();
+    	param.setGroupId(groupId);
+    	param.setRequestedUserName(userName);
+    	this.insert("logBookmarkMassUpdate", param, session);
     }
 
     @Override

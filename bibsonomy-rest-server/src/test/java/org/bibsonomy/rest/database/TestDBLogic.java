@@ -850,10 +850,12 @@ public class TestDBLogic implements LogicInterface {
 		if (GroupingEntity.GROUP.equals(grouping) && groupingName != null && !groupingName.equals("")) {
 			final Group group = this.dbGroups.get(groupingName);
 			if (group != null) {
-				users.addAll(group.getUsers());
+				for (final GroupMembership membership : group.getMemberships()) {
+					users.add(membership.getUser());
+				}
 			}
 		}
-		return users;		
+		return users;
 
 	}
 

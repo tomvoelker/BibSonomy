@@ -20,7 +20,7 @@
 	
 	<fmt:message key="navi.groups" var="pageTitle" />
 	
-	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.groups" command="${command}" pageTitle="${pageTitle}" activeTab="groups" minimizedContentWidth="${true}">
+	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.groups" command="${command}" pageTitle="${pageTitle}" minimizedContentWidth="${true}">
 
 		<!--+
 		 	| heading

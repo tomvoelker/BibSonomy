@@ -51,7 +51,7 @@ public class UpdateGroupDetailsStrategy extends AbstractUpdateStrategy {
 
 	@Override
 	protected void render(Writer writer, String groupID) {
-		this.getRenderer().serializeGroupId(writer, groupID);	
+		this.getRenderer().serializeGroupId(writer, groupID);
 	}
 
 	@Override

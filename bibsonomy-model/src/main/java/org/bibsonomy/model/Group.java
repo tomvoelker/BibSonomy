@@ -79,12 +79,6 @@ public class Group implements Serializable {
 	private Set<GroupLevelPermission> groupLevelPermissions;
 
 	/**
-	 * These {@link User}s belong to this group.
-	 */
-	@Deprecated
-	private List<User> users;
-
-	/**
 	 * The privacy level of this group.
 	 */
 	private Privlevel privlevel;
@@ -207,37 +201,6 @@ public class Group implements Serializable {
 	 */
 	public void setPosts(List<Post<? extends Resource>> posts) {
 		this.posts = posts;
-	}
-
-	/**
-	 * @return users
-	 */
-	@Deprecated
-	public List<User> getUsers() {
-		if (this.users == null) {
-			this.users = new LinkedList<User>();
-		}
-		return this.users;
-	}
-
-	/**
-	 * @param users
-	 */
-	@Deprecated
-	public void setUsers(List<User> users) {
-		this.users = users;
-	}
-
-	/**
-	 * Returns the first member of this group.
-	 * FIXME: maybe we should put this inside a param object
-	 * 
-	 * @return first user
-	 */
-	@Deprecated 
-	public User getUser() {
-		if (this.getUsers().size() < 1) return null;
-		return this.users.get(0);
 	}
 
 	/**

@@ -817,8 +817,7 @@ public class DBLogic implements LogicInterface {
 	public Group getGroupDetails(final String groupName) {
 		final DBSession session = this.openSession();
 		try {
-			boolean getPermissions=permissionDBManager.isAdmin(loginUser) ? true : false;
-			Group myGroup = this.groupDBManager.getGroupMembers(loginUser.getName(), groupName, getPermissions, session);
+			final Group myGroup = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, this.permissionDBManager.isAdmin(this.loginUser), session);
 			final Group pendingMembershipsGroup = this.groupDBManager.getGroupWithPendingMemberships(groupName, session);
 			if (present(myGroup)) {
 				myGroup.setTagSets(this.groupDBManager.getGroupTagSets(groupName, session));
@@ -1141,7 +1140,7 @@ public class DBLogic implements LogicInterface {
 				break;
 			case UPDATE_GROUPROLE:
 				this.permissionDBManager.ensureIsAdminOrGroupModeratorOrSelf(this.loginUser, groupName);
-				this.groupDBManager.updateGroupRole(groupName, membership.getUser().getName(), membership.getGroupRole(), session);
+				this.groupDBManager.updateGroupRole(this.loginUser, groupName, membership.getUser().getName(), membership.getGroupRole(), session);
 				break;
 			case ADD_MEMBER:
 				final GroupMembership groupMembership = this.groupDBManager.getPendingMembershipForUserAndGroup(this.loginUser, groupName, session);
@@ -1152,6 +1151,8 @@ public class DBLogic implements LogicInterface {
 				this.groupDBManager.addUserToGroup(groupName, membership.getUser().getName(), GroupRole.USER, session);
 				break;
 			case REMOVE_MEMBER:
+				// FIXME: only the user himself or a group admin can remove members, add checks here
+				// FIXME: at least one admin must be in the group
 				try {
 					session.beginTransaction();
 					this.groupDBManager.removeUserFromGroup(groupName, membership.getUser().getName(), session);

@@ -307,7 +307,7 @@ public class UserUtils {
 		final User user = new User(groupName);
 		user.setPassword(generateRandomPassword());
 		user.setRealname(""); // XXX: realname can't be null (db schema)
-		user.setEmail(""); // TODO: add email address to request group form
+		user.setEmail(""); // XXX: email can't be null (db schema)
 		user.setRole(Role.GROUPUSER);
 		return user;
 	}
