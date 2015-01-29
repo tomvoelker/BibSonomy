@@ -811,6 +811,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * relevantFor tags are removed from the post)
 		 */
 		command.setTags(TagUtils.toTagString(post.getTags(), " "));
+		
+		if(post.getApproved()==1){
+			command.setApproved(true);
+		}
+		
 	}
 
 	/**

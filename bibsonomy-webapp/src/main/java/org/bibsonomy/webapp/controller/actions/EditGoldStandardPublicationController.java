@@ -28,14 +28,19 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ObjectUtils;
+import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
@@ -137,6 +142,18 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 	@Override
 	protected void setRecommendationFeedback(final TagRecommendationEntity post, final int postID) {
 		// noop gold standards have no tags
+	}
+	
+	@Override
+	protected void preparePost(EditPostCommand<BibTex> command, Post<BibTex> post) {
+		
+		super.preparePost(command, post);
+		if (command.isApproved()){
+			post.setApproved(1);
+		}else{
+			post.setApproved(0);
+		}
+		
 	}
 
 }

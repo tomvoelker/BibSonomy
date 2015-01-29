@@ -24,9 +24,28 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="postApproval">
-			<editpub:approvedCheckbox post="${post}"/>
- 		</jsp:attribute>
+			<bsform:fieldset legendKey="goldStandard.edit.approval">
 
+				<jsp:attribute name="content">
+					<div class="form-group">
+				   		<div class="col-sm-offset-1 col-sm-9">
+							<div class="checkbox clearfix">
+								<label>
+					          		<input type="checkbox" class="help-popover"  tabindex="2" name="approved"/> <fmt:message key="goldStandard.edit.approveMsg"/>
+	<script type="text/javascript">
+		$(function() {
+			var check = ${command.approved};
+			$('input[name=approved]').prop('checked', check);
+		});
+	</script>					          		<div class="help-header hide"><fmt:message key="goldStandard.edit.approveMsg"/></div>
+					          		<div class="help-content hide"><fmt:message key="goldStandard.edit.approveMsg.help"/></div>
+					        	</label>
+							</div>
+						</div>
+					</div>
+				</jsp:attribute>
+			</bsform:fieldset>
+ 		</jsp:attribute>
 		
 	</layout:editGoldStandardPostLayout>
 

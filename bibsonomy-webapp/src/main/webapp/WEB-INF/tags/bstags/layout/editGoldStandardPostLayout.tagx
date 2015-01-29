@@ -175,7 +175,7 @@
 						<!--+
 							| goldStandard post's approval  
 							+-->
-						<c:if test="${not empty postApproval}">
+						<c:if test="${not empty postApproval and command.context.loginUser.role eq 'ADMIN'}">
 							<jsp:invoke fragment="postApproval"/>
 						</c:if>					
 		                <!--+

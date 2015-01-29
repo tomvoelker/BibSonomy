@@ -444,8 +444,7 @@
 								<value>post.resource.annote</value>
 								<value>post.resource.address</value>
 								<value>post.resource.key</value>
-								<value>post.resource.approved</value>
-								
+																
 								<value>tags</value>
 								<value>url</value>
 								<value>description</value>
@@ -483,6 +482,7 @@
 								<value>skipDummyValues</value>
 								
 								<value>saveAndRate</value>
+								<value>approved</value>
 							</list>
 						</property>
 					</bean>
@@ -723,6 +723,7 @@
 		<value>editBeforeSaving</value>
 		
 		<value>saveAndRate</value>
+		<value>approved</value>
 	</util:list>
 
 	<!-- publication request parameters -->
@@ -761,7 +762,6 @@
 		<value>post.resource.annote</value>
 		<value>post.resource.address</value>
 		<value>post.resource.key</value>	
-		<value>post.resource.approved</value>
 			
 		<value>tags</value>
 		<value>url</value>

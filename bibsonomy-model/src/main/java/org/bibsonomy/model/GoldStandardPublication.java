@@ -47,6 +47,7 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	private Set<BibTex> referenceThisPublicationIsPublishedIn;
 	
 	
+	
 	private void lacyLoadReferences() {
 		if (this.references == null) {
 			this.references = new HashSet<BibTex>();

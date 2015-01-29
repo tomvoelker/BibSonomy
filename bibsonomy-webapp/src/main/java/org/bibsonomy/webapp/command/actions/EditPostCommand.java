@@ -133,6 +133,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 * whether to redirect to the rating page after editing a post
 	 */
 	private String saveAndRate;
+	private boolean approved = false;
 	
 
 	
@@ -508,4 +509,18 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 		this.postDiff = postDiff;
 	}
 
+	/**
+	 * @return the approved
+	 */
+	public boolean isApproved() {
+		return this.approved;
+	}
+
+	/**
+	 * @param approved the approved to set
+	 */
+	public void setApproved(boolean approved) {
+		this.approved = approved;
+	}
+	
 }

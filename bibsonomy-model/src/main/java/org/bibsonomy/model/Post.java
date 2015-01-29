@@ -139,6 +139,7 @@ public class Post<T extends Resource> implements Serializable {
 	 */
 	private String copyFrom;
 	
+	private int approved = 0;
 	/**
 	 * @return the repositories
 	 */
@@ -436,5 +437,19 @@ public class Post<T extends Resource> implements Serializable {
 			this.visibleTags = new HashSet<Tag>();
 		}
 		this.visibleTags.add(tag);
+	}
+
+	/**
+	 * @return the approved
+	 */
+	public int getApproved() {
+		return this.approved;
+	}
+
+	/**
+	 * @param approved the approved to set
+	 */
+	public void setApproved(int approved) {
+		this.approved = approved;
 	}
 }

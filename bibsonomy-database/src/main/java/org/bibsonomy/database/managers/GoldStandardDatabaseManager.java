@@ -228,6 +228,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		insert.setRequestedContentId(post.getContentId().intValue());
 		insert.setUserName((present(post.getUser()) ? post.getUser().getName() : ""));
 		insert.setGroupId(GroupID.PUBLIC); // gold standards are public
+		insert.setApproved(post.getApproved());
 		
 		return insert;
 	}
