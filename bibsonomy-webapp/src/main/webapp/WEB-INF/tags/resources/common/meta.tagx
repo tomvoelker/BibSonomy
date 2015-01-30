@@ -11,7 +11,6 @@
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="showUserSaves" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showTagsLabel" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="isRemotePost" type="java.lang.Boolean" required="false" />
 		
 	<c:choose>
 		<c:when test="${not empty post.systemUrl }">

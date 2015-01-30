@@ -9,7 +9,6 @@
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="disableResourceLinks" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="enableHistory" type="java.lang.Boolean" required="false" />	
-	<jsp:directive.attribute name="isRemotePost" type="java.lang.Boolean" required="false" />
 		
 	<c:choose>
 		<c:when test="${not empty post.systemUrl }">
@@ -143,7 +142,7 @@
 		+-->
 	<fmt:message key="bibtex.actions.community_post" var="communityPost" />
 	<c:when test="${isRemotePost}">
-		<a href="${post.systemUrl}/bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}" class="item communitypost" title="${fn:escapeXml(communityPost)}">
+		<a href="${relativeUrlGenerator.getGoldstandardUrlByInterHashAndSysUrl(post.resource.interHash, post.systemUrl)}" class="item communitypost" title="${fn:escapeXml(communityPost)}">
 		<!-- Keep Me -->
 		</a>
 	</c:when>

@@ -9,9 +9,7 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<!-- Decide wether or not to display "Tags: " before listing all tags -->
 	<jsp:directive.attribute name="showTagsLabel" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="isRemotePost" type="java.lang.Boolean" required="false" />
-	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="false" />
-	<c:set var="resourceType" value="${post.resource.getClass().getSimpleName()}"/>
+	
 	<c:choose>
 		<c:when test="${not empty post.systemUrl }">
 			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
@@ -35,14 +33,7 @@
 				<c:forEach var="systag" items="${post.hiddenSystemTags}">
 					<c:choose>
 						<c:when test="${isRemotePost}">
-						<c:choose>
-							<c:when test="${resourceType eq 'Bookmark'}">
-								<a href="${mtl:cleanUrl(post.resource.url)}"><c:out value="${systag.name}"/></a>
-							</c:when>
-							<c:otherwise>
-								<a href="${post.systemUrl}/bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}"><c:out value="${systag.name}" /></a>
-							</c:otherwise>
-						</c:choose>
+							<a href="${relativeUrlGenerator.getUserUrlByUserNameTagNameAndSysUrl(post.user.name, systag.name, post.systemUrl)}"><c:out value="${systag.name}"/></a>					
 						</c:when>
 						<c:otherwise>
 							<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, systag.name)}"><c:out value="${systag.name}"/></a>
@@ -66,14 +57,7 @@
 					<li>
 						<c:choose>
 							<c:when test="${isRemotePost}">
-							<c:choose>
-								<c:when test="${resourceType eq 'Bookmark'}">
-									<a href="${mtl:cleanUrl(post.resource.url)}"><c:out value="${tag.name}"/></a>
-								</c:when>
-								<c:otherwise>
-									<a href="${post.systemUrl}/bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}"><c:out value="${tag.name}" /></a>
-								</c:otherwise>
-							</c:choose>
+								<a href="${relativeUrlGenerator.getUserUrlByUserNameTagNameAndSysUrl(post.user.name, tag.name, post.systemUrl)}"><c:out value="${tag.name}"/></a>
 							</c:when>
 							<c:otherwise>
 								<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}"><c:out value="${tag.name}"/></a>

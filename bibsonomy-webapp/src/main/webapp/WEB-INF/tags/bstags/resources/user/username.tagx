@@ -9,11 +9,9 @@
 	<jsp:directive.attribute name="username" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="noLink" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="flase"/>
-	<jsp:directive.attribute name="isRemotePost" type="java.lang.Boolean" required="false" />
-	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="false" />
+
 	<c:choose>
 		<c:when test="${not empty post}">
-			<c:set var="resourceType" value="${post.resource.getClass().getSimpleName()}"/>
 			<c:choose>
 				<c:when test="${not empty post.systemUrl }">
 					<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>

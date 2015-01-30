@@ -8,7 +8,6 @@
 
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
-	<jsp:directive.attribute name="isRemotePost" type="java.lang.Boolean" required="false" />
 		
 	<c:choose>
 		<c:when test="${not empty post.systemUrl }">

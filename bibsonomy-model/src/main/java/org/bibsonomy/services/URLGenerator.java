@@ -352,6 +352,22 @@ public class URLGenerator {
 	}
 	
 	/**
+	 * Constructs a friend URL for the given username and systemurl
+	 * i.e. /friend/USERNAME
+	 * 
+	 * @param userName
+	 * @param systemUrl 
+	 * @return URL pointing to the posts viewable for friends of User with username.
+	 */
+	public String getFriendUrlByUserNameAndSysUrl(final String userName, final String systemUrl) {
+		String url = systemUrl + prefix + FRIEND_PREFIX + "/";
+		url += UrlUtils.safeURIEncode(userName);
+		
+		return this.getUrl(url);
+	}
+	
+	
+	/**
 	 * Constructs a friend URL for the given username and tagname,
 	 * i.e. /friend/USERNAME/TAGNAME
 	 * 
@@ -722,6 +738,24 @@ public class URLGenerator {
 		return this.getUrl(url);
 	}
 	
+	
+	/**
+	 * Constructs a URL for a publication specified by its intra hash, the username and the system 
+	 * 
+	 * @param intraHash
+	 * @param userName
+	 * @param systemUrl 
+	 * @return URL pointing to the publication represented by the intraHash and the userName
+	 */
+	public String getPublicationUrlByIntraHashUsernameAndSysUrl(final String intraHash, final String userName, final String systemUrl) {
+		String url = systemUrl + prefix + PUBLICATION_PREFIX + "/" +
+					 PUBLICATION_INTRA_HASH_ID + intraHash;
+		
+		if (present(userName))
+			return this.getUrl(url + "/" + UrlUtils.safeURIEncode(userName));
+		return this.getUrl(url);
+	}
+	
 	/**
 	 * Constructs a URL for a publication specified by its post
 	 * 
@@ -971,6 +1005,20 @@ public class URLGenerator {
 		return this.getUrl(url);
 	}  
 	
+	/**
+	 * Constructs the URL for all viewable posts of a group of a specific system
+	 * i.e. /viewable/GROUPNAME
+	 * 
+	 * @param groupName
+	 * @param systemurl 
+	 * @return the URL for all viewable posts of a group.
+	 */
+	public String getViewableUrlByGroupNameAndSysUrl(final String groupName, final String systemurl) {
+		String url = systemurl + prefix + VIEWABLE_PREFIX;
+		url += "/" + UrlUtils.safeURIEncode(groupName);
+		
+		return this.getUrl(url);
+	} 
 	
 	/**
 	 * Constructs the URL for all viewable posts of a group tagged with tagName

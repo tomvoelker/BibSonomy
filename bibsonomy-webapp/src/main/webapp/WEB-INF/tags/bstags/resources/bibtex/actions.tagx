@@ -10,7 +10,6 @@
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="disableResourceLinks" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="enableHistory" type="java.lang.Boolean" required="false" />	
-	<jsp:directive.attribute name="isRemotePost" type="java.lang.Boolean" required="false" />
 	<div class="edit-media-buttons btn-group btn-group-xs dropdown dropdown-align-right">
 	
 	<c:choose>

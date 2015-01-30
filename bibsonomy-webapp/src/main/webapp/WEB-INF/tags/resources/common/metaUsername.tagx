@@ -7,10 +7,7 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
-	<jsp:directive.attribute name="isRemotePost" type="java.lang.Boolean" required="false" />
-	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="false" />
 	
-	<c:set var="resourceType" value="${post.resource.getClass().getSimpleName()}"/>
 	<c:choose>
 		<c:when test="${not empty post.systemUrl }">
 			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
@@ -26,14 +23,7 @@
 		<c:out value=" "/>
 		<c:choose>
 			<c:when test="${isRemotePost}">
-			<c:choose>
-				<c:when test="${resourceType eq 'Bookmark'}">
-					<a href="${mtl:cleanUrl(post.resource.url)}"><c:out value="${post.user.name}" /></a>
-				</c:when>
-				<c:otherwise>
-					<a href="${post.systemUrl}/bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}"><c:out value="${post.user.name}" /></a>
-				</c:otherwise>
-			</c:choose>
+				<a href="${relativeUrlGenerator.getUserUrlByUserNameAndSysUrl(post.user.name, post.systemUrl) }"><c:out value="${post.user.name}" /></a>			
 			</c:when>
 			<c:otherwise>
 				<a href="${relativeUrlGenerator.getUserUrlByUserName(post.user.name) }"><c:out value="${post.user.name}" /></a>
