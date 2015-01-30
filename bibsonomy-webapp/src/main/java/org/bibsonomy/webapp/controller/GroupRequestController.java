@@ -28,23 +28,23 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.GroupRequestCommand;
-import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
-import org.bibsonomy.webapp.validation.GroupValidator;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.validation.GroupRequestValidator;
 import org.bibsonomy.webapp.view.Views;
-import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
 
 
 /**
@@ -52,9 +52,9 @@ import org.springframework.validation.ValidationUtils;
  */
 public class GroupRequestController implements ValidationAwareController<GroupRequestCommand>, ErrorAware {
 
-	
 	private Errors errors = null;
 	private LogicInterface logic;
+	private LogicInterface adminLogic;
 	
 	/**
 	 * @param command
@@ -71,57 +71,46 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 			throw new AccessDeniedNoticeException("please log in", "error.general.login");
 		}
 		
-		final String action = command.getOperation();
+		final User loginUser = context.getLoginUser();
 		
-		if (present(action)) {
-			if (new String("REQUEST").equals(action)) {
-
-				/*
-				 * check the ckey
-				 */
-				if (!context.isValidCkey()) {
-					errors.reject("error.field.valid.ckey");
-				}
-				
-				final User loginUser = context.getLoginUser();
-				final Group requestedGroup = command.getGroup();
-				
-				if (present(requestedGroup)) {
-					
-					if (!present(requestedGroup.getName())) {
-						// TODO: add form error for field (rejectValue)
-						this.errors.reject("settings.group.error.requestGroupFailed");
-					}
-					
-					// TODO: add valid username check here
-					
-					if (!present(requestedGroup.getDescription())) {
-						// TODO: add form error for field
-						this.errors.reject("settings.group.error.requestGroupFailed");
-					}
-					if (!present(requestedGroup.getGroupRequest().getReason())) {
-						// TODO: add form error for field
-						this.errors.reject("settings.group.error.requestGroupFailed");
-					}
-					
-					// TODO: add field for email?
-					
-					// TODO: add spammer check here
-					
-					// TODO: add check if username is already in the system
-					
-					if (!this.errors.hasErrors()) {
-						// set the username and create the request
-						requestedGroup.getGroupRequest().setUserName(loginUser.getName());
-						this.logic.createGroup(requestedGroup);
-					}
-					
-					return new ExtendedRedirectView("/");
-				}
-			}
+		if (loginUser.isSpammer()) {
+			errors.reject("requestGroup.spammerError");
+			return Views.ERROR;
 		}
-
-		return Views.GROUPREQUEST;
+		
+		/*
+		 * check the ckey
+		 */
+		if (!context.isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
+		}
+		
+		final Group requestedGroup = command.getGroup();
+		
+		/*
+		 * check if group name already exists
+		 */
+		if (this.errors.hasErrors()) {
+			return Views.GROUPREQUEST;
+		}
+		
+		final String groupName = requestedGroup.getName();
+		// we use the admin logic to get all users even deleted ones
+		final List<User> pendingUserList = this.adminLogic.getUsers(null, GroupingEntity.PENDING, groupName, null, null, null, null, null, 0, 1);
+		if (this.adminLogic.getUserDetails(groupName).getName() != null || present(pendingUserList)) {
+			// group name still exists, another one is required
+			this.errors.rejectValue("group.name", "error.field.duplicate.group.name");
+		}
+		
+		if (this.errors.hasErrors()) {
+			return Views.GROUPREQUEST;
+		}
+		
+		requestedGroup.getGroupRequest().setUserName(loginUser.getName());
+		this.logic.createGroup(requestedGroup);
+		
+		command.setMessage("success.groupRequest.sent", Collections.singletonList(groupName));
+		return Views.SUCCESS;
 	}
 	
 	/**
@@ -133,18 +122,21 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 		command.setGroup(new Group());
 		return command;
 	}
-
-
 	
-	
-	
-	
-	
-	
+	/**
+	 * @param logic the logic to set
+	 */
 	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
 	}
-	
+
+	/**
+	 * @param adminLogic the adminLogic to set
+	 */
+	public void setAdminLogic(LogicInterface adminLogic) {
+		this.adminLogic = adminLogic;
+	}
+
 	@Override
 	public Errors getErrors() {
 		return this.errors;
@@ -157,29 +149,11 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 	
 	@Override
 	public boolean isValidationRequired(GroupRequestCommand command) {
-		// FIXME: why?
-		return command.getContext().getLoginUser().isSpammer()
-				&& command.getContext().getLoginUser().getToClassify() == 0;
+		return true;
 	}
 
 	@Override
 	public Validator<GroupRequestCommand> getValidator() {
-		return new Validator<GroupRequestCommand>() {
-
-			@Override
-			public boolean supports(Class<?> clazz) {
-				return SettingsViewCommand.class.equals(clazz);
-			}
-
-			@Override
-			public void validate(Object target, Errors errors) {
-				Assert.notNull(target);
-				final SettingsViewCommand command = (SettingsViewCommand) target;
-				
-				ValidationUtils.invokeValidator(new GroupValidator(), command.getGroup(), errors);
-			}
-		};
+		return new GroupRequestValidator();
 	}
-
-
 }

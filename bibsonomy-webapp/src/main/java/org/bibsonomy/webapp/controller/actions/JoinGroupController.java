@@ -28,8 +28,7 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Collections;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -190,9 +189,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		// insert the request
 		this.logic.updateGroup(group, GroupUpdateOperation.ADD_REQUESTED, new GroupMembership(loginUser, GroupRole.USER, false));
 		
-		final List<String> params = new LinkedList<>();
-		params.add(groupName);
-		command.setMessage("success.joinGroupRequest.sent", params);
+		command.setMessage("success.joinGroupRequest.sent", Collections.singletonList(groupName));
 		return Views.SUCCESS;
 	}
 

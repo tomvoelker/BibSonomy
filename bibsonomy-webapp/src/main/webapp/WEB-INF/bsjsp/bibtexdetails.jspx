@@ -15,7 +15,6 @@
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
 	xmlns:common="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
 	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication">
@@ -147,7 +146,7 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
-			<resource:bibtexdetailsclean post="${post}" referer="${command.referer}"/>
+			<resource:bibtexdetailsclean post="${post}" referer="${command.referer}" />
 		</jsp:attribute>
 		
 		<jsp:attribute name="customPageOptions">

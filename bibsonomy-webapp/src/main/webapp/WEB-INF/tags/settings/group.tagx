@@ -24,29 +24,37 @@
 				</h2>
 				<div id="groups" class="fsOuter">
 					<ul>
-						<c:forEach var="group" items="${command.context.loginUser.groups}">
-							<form:form id="groupShareSettings" method="get" action="/ajax/handleGroupShare">
-								<li><a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}' />&amp;nbsp;</a>
-									<c:if test="${group.sharedDocuments}">
-										<input type="hidden" name="requestedGroup" value="${fn:escapeXml(group.name)}" />
-										<input type="hidden" name="ckey" value="${ckey}" />
-										<input type="hidden" name="forward" value="settings?selTab=3" />
+						<c:forEach var="group" items="${command.user.groups}">
+							<c:set var="groupMembership" value="${group.getGroupMembershipForUser(loginUser)}" />
+							<c:if test="${groupMembership.groupRole ne 'DUMMY'}">
+								<form:form class="groupShareSettings" method="POST" action="/ajax/handleGroupShare">
+									<li><a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}' />&amp;nbsp;</a>
 										<c:choose>
-											<c:when test="${not group.userSharedDocuments}">
-												<fmt:message var="buttonTitle" key="groups.actions.shareDocuments.title"></fmt:message>
-												<fmt:message var="buttonValue" key="groups.actions.shareDocuments"></fmt:message>
-													<input type="hidden" name="action" value="shareDocuments" />
-											</c:when>
-											<c:otherwise>
-												<fmt:message var="buttonTitle" key="groups.actions.unshareDocuments.title"></fmt:message>
-												<fmt:message var="buttonValue" key="groups.actions.unshareDocuments"></fmt:message>
-													<input type="hidden" name="action" value="unshareDocuments" />
-											</c:otherwise>
+										<c:when test="${group.sharedDocuments}">
+											<input type="hidden" name="requestedGroup" value="${fn:escapeXml(group.name)}" />
+											<input type="hidden" name="ckey" value="${ckey}" />
+											<input type="hidden" name="forward" value="settings?selTab=3" />
+											<c:choose>
+												<c:when test="${groupMembership.userSharedDocuments}">
+													<fmt:message var="buttonTitle" key="groups.actions.unshareDocuments.title"></fmt:message>
+													<fmt:message var="buttonValue" key="groups.actions.unshareDocuments"></fmt:message>
+														<input type="hidden" name="action" value="unshareDocuments" />
+												</c:when>
+												<c:otherwise>
+													<fmt:message var="buttonTitle" key="groups.actions.shareDocuments.title"></fmt:message>
+													<fmt:message var="buttonValue" key="groups.actions.shareDocuments"></fmt:message>
+														<input type="hidden" name="action" value="shareDocuments" />
+												</c:otherwise>
+											</c:choose>
+											<input type="submit" title="${buttonTitle}" value="${buttonValue}" />
+										</c:when>
+										<c:otherwise>
+											<fmt:message key="settings.groups.documentsharing.disabled" />
+										</c:otherwise>
 										</c:choose>
-										<input type="submit" title="${buttonTitle}" value="${buttonValue}" />
-									</c:if>
-								</li>
-							</form:form>
+									</li>
+								</form:form>
+							</c:if>
 						</c:forEach>
 					</ul>
 				</div>

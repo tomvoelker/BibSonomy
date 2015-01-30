@@ -674,6 +674,19 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/grouprequest">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="groupRequestController"/>
+						<property name="allowedFields">
+							<list>
+								<value>ckey</value>
+								<value>group.name</value>
+								<value>group.description</value>
+								<value>group.groupRequest.reason</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/autoRegisterSamlAndOAuth">
 					<bean parent="controllerBase">
 						<property name="presenceCondition" ref="samlActivatedCondition" />
@@ -1118,6 +1131,12 @@
 		<!-- to send registration mails -->
 		<property name="mailUtils" ref="mailUtils"/>
 		<!-- to get the mail address for the users -->
+		<property name="adminLogic" ref ="adminLogic" />
+	</bean>
+	
+	<!-- Group request page -->
+	<bean id="groupRequestController" class="org.bibsonomy.webapp.controller.GroupRequestController" scope="request">
+		<property name="logic" ref="logic" />
 		<property name="adminLogic" ref ="adminLogic" />
 	</bean>
 	
