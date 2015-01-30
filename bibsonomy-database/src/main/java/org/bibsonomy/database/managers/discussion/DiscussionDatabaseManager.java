@@ -164,7 +164,11 @@ public class DiscussionDatabaseManager extends AbstractDatabaseManager {
 		param.setGroupId(groupId);
 		// FIXME: (groups) Logging of group change missing
 		
-		this.plugins.onDiscussionUpdate("interhash", null, null, session);
+		List<DiscussionItem> itemsToModify = this.queryForList("getDiscussionsInGroupFromLeavingUser", param, DiscussionItem.class, session);
+		
+		for (DiscussionItem item : itemsToModify) {
+			this.plugins.onDiscussionUpdate(item.getHash(), item, item, session);
+		}
 		
 		this.update("updateDiscussionsInGroupFromLeavingUser", param, session);
 	}
