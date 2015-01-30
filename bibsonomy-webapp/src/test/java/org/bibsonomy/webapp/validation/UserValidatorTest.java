@@ -47,7 +47,7 @@ public class UserValidatorTest {
 	 * only, if User.class is given.
 	 */
 	@Test
-	public void testSupports() {		
+	public void testSupports() {
 		assertFalse(VALIDATOR.supports(String.class));
 		assertFalse(VALIDATOR.supports(null));
 		assertTrue(VALIDATOR.supports(User.class));

@@ -128,7 +128,6 @@ public class UserValidator implements Validator<User> {
 	 * @param errorCode 
 	 */
 	protected static void validateName(String name, final Errors errors, final String errorCode) {
-		name = name.trim();
 		if (SPECIAL_USER_NAMES.contains(name) ||
 				name.length() > USERNAME_MAX_LENGTH ||
 				USERNAME_DISALLOWED_CHARACTERS_PATTERN.matcher(name).find())
