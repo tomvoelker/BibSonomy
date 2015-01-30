@@ -3,96 +3,307 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
+	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
+	xmlns:bm="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bookmark"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
 	xmlns:bibgs="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:gpub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
-	<jsp:directive.attribute name="listView"
-		type="org.bibsonomy.webapp.command.ListCommand" required="true" />
-	<jsp:directive.attribute name="loginUserName" type="java.lang.String"
-		required="true" />
-	<jsp:directive.attribute name="disableListNavigation"
-		type="java.lang.Boolean" required="false" />
-	<jsp:directive.attribute name="requPath" type="java.lang.String"
-		required="true" />
-	<jsp:directive.attribute name="extTitle" type="java.lang.String"
-		required="false" />
-	<jsp:directive.attribute name="widthClassName" type="java.lang.String"
-		required="true" />
-	<jsp:directive.attribute name="addAsFirstItem" fragment="true"
-		required="false" />
-	<jsp:directive.attribute name="addAsLastItem" fragment="true"
-		required="false" />
+	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true" />
+	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="extTitle" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="addAsFirstItem" fragment="true" required="false" />
+	<jsp:directive.attribute name="addAsLastItem" fragment="true" required="false" />
+	<jsp:directive.attribute name="isPub" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="isGoldStandard" type="java.lang.Boolean" required="true" />
 
-	<c:choose>
-		<c:when test="${not empty listView.list}">
-			<c:set var="fieldlength" value="${fn:length(listView.list)-1}" />
-			<c:set var="newestPost" value="${listView.list[fieldlength]}" />
-			<resource:bibtexdetailsclean post="${newestPost}" referer="${command.referer}"/>
-			<div style="float:left; width:97%; margin-left:10px; margin-top:0px; padding-bottom:13px;">
-			<!--+
-				| complete Post
-				+-->
-			<h3 style="clear:both;"><a class="foldUnfold" href="#fullPost"><img id="discussionImg" src="${resdir}/image/icon_collapse.png" border="0"/><c:out value=" "/><fmt:message key="post.resource.postHistory.headline"/></a></h3>
-			<div id="fullPost">
-				<rc:diff post="${newestPost}" loginUserName="${loginUserName}"
-				additionalItemClasses="${'odd'}">
-				<jsp:attribute name="title">
-							<c:choose>
-								<c:when test="${empty newestPost.user.name}">
-									<bibgs:title post="${newestPost}" />
-								</c:when>
-								<c:otherwise>
-									<bib:title post="${newestPost}" />
-								</c:otherwise>
-							</c:choose>
-						</jsp:attribute>
-				<jsp:attribute name="desc">
-							<bib:fullDescription publication="${newestPost.resource}" />
-						</jsp:attribute>
-				</rc:diff>
-			</div>
+	<script type="text/javascript" src="/resources/javascript/history.js"><!-- keep me --></script>
+	
+	
+	<form id="history" method="POST">
+	
+		<c:set var="buttonClasses" value="btn btn-primary btn-xs"/>
+		<c:set var="fieldlength" value="${fn:length(listView.list)-1}" />
+		<!-- this is the current version -->
+		<c:set var="newestPost" value="${listView.list[fieldlength]}" />
+		<c:set var="isGoldStandard" value="${isGoldStandard}" />
+		
+		<!-- hidden variables are used to communicate with .js file or controllers -->
+		<input type="hidden" name="newestPost" value="${newestPost}" />
+		<input type="hidden" name="differentEntryKeys" />
+		
+		<input type="hidden" name="compareVersion" />
+		<input type="hidden" name="listLength" value="${fieldlength}"/>
+		<input type="hidden" name="isPub" value="${isPub}" />
+		<input type="hidden" name="isGoldStandard" value="${isGoldStandard}" />
+	
+		<fmt:message key="history.restoreBtn.disabled" var="restoreBtnDisabledMsg" />
+		<fmt:message key="history.restoreBtn.enabled" var="restoreBtnEnabledMsg" />
+	
+				<!--+
+					| complete Post
+					+-->
+			
+		<div class="title">
+			<!-- if we are dealing with a publication -->
+			<c:choose>
+				<c:when test="${isPub}">
+					<c:choose>
+					<!-- if it is a community post -->
+						<c:when test="${isGoldStandard}">
+							<input type="hidden" name="intraHashToUpdate" value="${newestPost.resource.interHash}"/>
+							<div class="title">
+								<div class="media">
+									<div class="media-body" id="titletext">
+										<div class="pull-right"><gpub:actions post="${newestPost}" /></div>
+										<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" /></h1>
+										<p><bib:desc publication="${newestPost.resource}"/></p>
+									</div>
+								</div>
+							</div>
+						</c:when>
 
-			<!--+
-			| history list
-			+-->
-			<h3 style="clear:both;"><a class="foldUnfold" href="#history"><img id="discussionImg" src="${resdir}/image/icon_collapse.png" border="0"/><c:out value=" "/><fmt:message key="post.resource.postHistory.list"/></a></h3>
-			<div id="historylist">
-			<!-- newest post is index 0 and do not contain to history list -->
-			<c:forEach var="index" begin="1" end="${fieldlength}"
-				varStatus="loopStatus" step="1">
-				<c:set var="additionalItemClasses"
-					value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}" />
-
-				<rc:diff post="${listView.list[fieldlength-index]}"
-					loginUserName="${loginUserName}"
-					additionalItemClasses="${additionalItemClasses}">
-					<jsp:attribute name="title">
-					<!-- fieldlength-index+1 to start index with 1 instead of 0 in URL-->
-						<rc:changeDate postIndex="${(fieldlength-index+1)}"
-							post="${listView.list[(fieldlength-index)]}"
-							newestPub="${newestPost}" loginUserName="${loginUserName}" />
-							</jsp:attribute>
-					<jsp:attribute name="desc">
-									<rc:postDescDiff
-							publication="${listView.list[(fieldlength-index)]}"
-							newestPub="${newestPost}" />
+						<c:otherwise>
+							<input type="hidden" name="intraHashToUpdate" value="${newestPost.resource.intraHash}"/>
+							<pub:title post="${newestPost}">
+								<jsp:attribute name="bibActionButtons">
+									<div class="pull-right">
+										<bib:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/>
+									</div>
 								</jsp:attribute>
-				</rc:diff>
+							</pub:title>
+						</c:otherwise>
+					</c:choose>
+				</c:when>
 
-			</c:forEach>
+						<!-- if we are dealing with a bookmark -->
+				<c:otherwise>
+				<c:choose>
+						<!-- if it is a community post -->
+						<c:when test="${isGoldStandard}">
+							<input type="hidden" name="intraHashToUpdate" value="${newestPost.resource.interHash}"/>
+							
+							<div class="title">
+							<div class="media">
+								
+								<div class="media-body" id="titletext">
+								<!-- currently there is no specific tagx file for gsBookmark actions -->
+								<!-- 	<div class="pull-right"><bm:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}"/></div> -->
+									<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" /></h1>
+									<c:set var="url" value="${newestPost.resource.url}" />
+									<p><a href="${url}"><c:out value="${url}" /></a></p>
+								</div>
+							</div>
+						</div>
+						</c:when>
+
+						<c:otherwise>
+						<input type="hidden" name="intraHashToUpdate" value="${newestPost.resource.intraHash}"/>
+						<div class="title">
+							<div class="media">
+								
+								<div class="media-body" id="titletext">
+									<div class="pull-right"><bm:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}"/></div>
+									<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" /></h1>
+									<c:set var="url" value="${newestPost.resource.url}" />
+									<p><a href="${url}"><c:out value="${url}" /></a></p>
+								</div>
+							</div>
+						</div>
+						</c:otherwise>
+					</c:choose>
+				</c:otherwise>
+			</c:choose>
 			</div>
-			</div>
+			<div style="border-top: 1px #cbcbcb solid; clear:left">
+				<span> </span>
+			</div> <!-- border -->
+			
+			<c:choose>
+			<c:when test="${fn:length(listView.list) gt 1}">
+				<!--+
+				| history list
+				+-->
+				<table class="table table-striped">
+					<thead> <!-- history list's header info -->
+						<tr><th colspan="5">
+							<div class="alert alert-info" style="margin-bottom:0px;" role="alert">
+								<fmt:message key="history.historyList.header" />
+							</div>
+							</th></tr>
+					</thead>
+					<tbody>
+						<c:forEach var="index" begin="0" end="${fieldlength}" varStatus="loopStatus" step="1">
+							<c:set var="additionalItemClasses"
+								value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}" />
+							<tr> 
+								<!-- version number -->
+								<td class="col-sm-1"  id="versionNum" style="border-right:1px solid #eee">
+									<span class="label label-default diffNumText" style="vertical-align:bottom;padding:8px;">
+									Ver. ${fieldlength-index}
+									</span>
+								</td>
+								<!-- change date -->
+								<td class="col-sm-3" style="border-right:1px solid #eee">
+									<fmt:formatDate var="changeDate" type="both" dateStyle="long" value="${listView.list[(fieldlength-index)].changeDate}"/>
+									<span class="label label-primary diffNumText" style="vertical-align:bottom;padding:8px;" title="edited on ${changeDate}">${changeDate}</span>
+								</td>
+								<c:choose>
+									<c:when test="${isPub}">
+										<!-- constraint on version 0  -->
+										<c:choose>
+											<!-- if version 0  -->
+											<c:when test="${index eq fieldlength }">
+												<c:set var="diffArrayPre" value="${mtl:DiffEntriesPub(listView.list[(fieldlength-index)],listView.list[(fieldlength-index)])}"/>
+											</c:when>
+											<c:otherwise>
+												<c:set var="diffArrayPre" value="${mtl:DiffEntriesPub(listView.list[(fieldlength-index-1)],listView.list[(fieldlength-index)])}"/>
+											</c:otherwise>
+										</c:choose>		
+										<c:set var="diffArrayCurr" value="${mtl:DiffEntriesPub(listView.list[(fieldlength)],listView.list[(fieldlength-index)])}"/>									
+									</c:when>
+									<c:otherwise>
+										<!-- constraint on version 0  -->
+										<c:choose>
+											<!-- if version 0  -->
+											<c:when test="${index eq fieldlength }">
+												<c:set var="diffArrayPre" value="${mtl:DiffEntriesBm(listView.list[(fieldlength-index)],listView.list[(fieldlength-index)])}"/>
+											</c:when>
+											<c:otherwise>
+												<c:set var="diffArrayPre" value="${mtl:DiffEntriesBm(listView.list[(fieldlength-index-1)],listView.list[(fieldlength-index)])}"/>
+											</c:otherwise>
+										</c:choose>
+										<c:set var="diffArrayCurr" value="${mtl:DiffEntriesBm(listView.list[(fieldlength)],listView.list[(fieldlength-index)])}"/>									
+									</c:otherwise>
+								</c:choose>
+								
+								<!-- number of changed fields, in comparison to the previous version -->
+								<c:set var="diffNumPre" value="${fn:length(diffArrayPre)}"/>
+								
+								<!-- number of changed fields, in comparison to the current version -->
+								<c:set var="diffNumCurr" value="${fn:length(diffArrayCurr)}"/>
+								
+								<!-- select revision to compare -->
+								<td class="col-sm-7">	
+								<div class="col-sm-2" style="float:left">
+											<h6> <label class="control-label" style="white-space:nowrap;">
+												<fmt:message key="history.historySelect.compareTo" />
+											</label> </h6>
+														</div>
+														<div class="col-sm-6" style="float:left">
+											<select id="preCurrSelector" class="form-control input-sm help-popover">
+												<option value="0">
+													<fmt:message key="history.selection.previous"> version (${diffNumPre} different fields)
+														<fmt:param>${diffNumPre}</fmt:param>
+													</fmt:message>
+												</option>
+												<option value="1">
+													<fmt:message key="history.selection.current">
+														<fmt:param>${diffNumCurr}</fmt:param>
+												current version (${diffNumCurr} different fields)
+													</fmt:message>
+												</option>
+											</select>
+											<div class="help help-header hide"><!--  --></div>
+											<div class="help help-content hide"><fmt:message key="history.selection.help" /></div>
+										</div>
+									
+								</td>	
+								
+								<!-- restore button -->
+								<td class="col-sm-1">
+									<a id="restoreBtnDisabled" class="${buttonClasses} invisible" style="vertical-align:bottom;padding:4px;" 
+										title="${restoreBtnDisabledMsg}" disabled="disabled">
+										restore
+									</a>
+									<a id="restoreBtnEnabled" class="${buttonClasses} invisible"  style="vertical-align:bottom;padding:4px;" 
+									title="${restoreBtnEnabledMsg}">
+									restore
+										<!-- <span class="fa fa-undo"> --><!--  --><!-- </span> -->
+									</a>
+								
+								</td>
+							</tr>
+							
+							<!-- second row -->
+							<tr>
+								<!-- comparison to the previous version -->
+								
+								<td colspan="4" id="postDiffPre" class="postDiffPre">
+									<c:choose>	
+										<c:when test="${index eq fieldlength }">
+											<div class="alert alert-info" style="margin-bottom:0px;" role="alert">
+												<fmt:message key="history.firstVersion" />
+											</div>
+										</c:when>
+										<c:when test="${fn:length(diffArrayPre) eq 0}">
+											<!-- we are dealing with a post which is identical to the previous version -->
+											<div id = "preVer" class="alert alert-info " style="margin-bottom:0px;" role="alert">
+												<fmt:message key="history.identicalToPreVersion" />
+											</div>
+										</c:when>
+									</c:choose>
+									<c:forEach var="diffEntry" items="${diffArrayPre}">
+										<div class="checkbox">
+											<input type="checkbox" class="invisible"/> 
+											<strong><fmt:message key="post.resource.${diffEntry.key}"/></strong>
+											<c:out value=": "/>
+											${diffEntry.value}
+											<br/>
+										</div>
+									</c:forEach>
+									
+								</td>
+								<!-- comparison to the current version -->
+								<td colspan="4" id="postDiffCurr" class="postDiffCurr invisible">
+									<c:if test="${fn:length(diffArrayCurr) eq 0}">
+										<!-- we are dealing with a post which is identical to the latest version (current post) -->
+										<div id = "currentVer" class="alert alert-info " style="margin-bottom:0px;" role="alert">
+											<fmt:message key="history.currentVersion" />
+										</div>
+									</c:if>	
+									<c:forEach var="diffEntry" items="${diffArrayCurr}">
+										<div class="checkbox">
+											<input type="checkbox" id="CurrEntryCheckbox" class="invisible" checked="checked"/>
+											<strong>${diffEntry.key}</strong>
+											<c:out value=": "/>
+											${diffEntry.value}
+											<br/>
+										</div>
+								
+										<div>
+											<!-- the following two variables are used in .js file -->
+											<input type="hidden" name="diffEntryKey" value="${diffEntry.key}"/>
+											<input type="hidden" name="compareVersion" value="${fieldlength-index}"/>
+										</div>
+									</c:forEach>
+									<!-- restore confirm (alert) question -->
+									<div id="restore_alert_btn" class="invisible hidden">
+										<div class="alert col-sm-10 alert-warning" style="margin-bottom:0px;padding:6px 12px;" role="alert">
+											<fmt:message key="history.restore.confirm" />
+										</div>
+										<!-- submit restore -->
+										<button class="btn btn-primary submitBtn" style="float:right"><fmt:message key="restore"/></button>
+									</div>
+								</td>
+							</tr>
+						</c:forEach>
+				</tbody>
+			</table>
 		</c:when>
 		<c:otherwise>
-			<!-- only show message "no posts available" when no artificial list items (e.g. discussions) are present -->
+			<!-- only show message "no posts available" when no artificial list items are present -->
 			<c:if test="${empty addAsFirstItem}">
-				<span class="post none"> <fmt:message
-						key="posts.no_matching_entries" />
-				</span>
+				<div class="alert alert-info" style="margin:10px;" role="alert">
+					<fmt:message key="History.empty" />
+				</div>
 			</c:if>
 		</c:otherwise>
 	</c:choose>
+</form>
 
 </jsp:root>

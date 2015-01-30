@@ -109,6 +109,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 
 	@Override
 	public Post<R> getPostDetails(final String loginUserName, final String resourceHash, final String userName, final List<Integer> visibleGroupIDs, final DBSession session) {
+
 		if (present(userName)) {
 			return null; // TODO: think about this return
 		}

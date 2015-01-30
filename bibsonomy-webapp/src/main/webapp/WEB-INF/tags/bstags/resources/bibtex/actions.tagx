@@ -10,6 +10,9 @@
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="disableResourceLinks" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="enableHistory" type="java.lang.Boolean" required="false" />	
+		
+	<c:set var="rscType" value="bibtex" />
+
 
 	<div class="edit-media-buttons btn-group btn-group-xs dropdown dropdown-align-right">
 	
@@ -32,7 +35,7 @@
 						
 						<fmt:message key="bibtex.actions.copy.title" var="copyTitle"/>
 						<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
-							<span class="fa fa-copy"><!--  --></span>
+							<span class="glyphicon glyphicon-floppy-disk"><!--  --></span>
 						</a>
 					
 					</c:when>
@@ -42,7 +45,7 @@
 						
 						<fmt:message key="bibtex.actions.edit.title" var="editTitle"/>
 						<a class="${buttonClasses}" href="/editPublication?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
-							<span class="fa fa-pencil ${post.user.name ne loginUserName ? 'btn-disabled' : ''}"><!--  --></span>
+							<span class="glyphicon glyphicon-edit ${post.user.name ne loginUserName ? 'btn-disabled' : ''}"><!--  --></span>
 						</a>
 
 					</c:otherwise>
@@ -52,7 +55,7 @@
 				<!-- For signed out users we always show the inactive copy button -->
 				<fmt:message key="bibtex.actions.copy.inactive" var="copyTitle"/>
 				<a class="${buttonClasses}" title="${copyTitle}" disabled="disabled">
-					<span class="fa fa-copy"><!-- Keep Me --></span>
+					<span class="glyphicon glyphicon-floppy-disk"><!-- Keep Me --></span>
 				</a>
 			</c:otherwise>
 		</c:choose>
@@ -72,7 +75,7 @@
 				<c:param name="clear" value="false" />
 			</c:url>
 				<fmt:message key="bibtex.actions.removeMessage.title" var="removeTitle" />
-				<a class="${buttonClasses} confirmdelete" href="${message_remove}" title="${removeTitle}" data-type="inboxpost">
+				<a class="${buttonClasses}" href="${fn:escapeXml(message_remove)}" title="${removeTitle}" data-type="inboxpost">
 					<span class="glyphicon glyphicon-remove"><!--  --></span>
 				</a>
 			</c:when>
@@ -85,7 +88,7 @@
 							<c:param name="resourceHash" value="${post.resource.intraHash}" />
 							<c:param name="ckey" value="${ckey}" />
 						</c:url>
-						<a class="${buttonClasses} confirmdelete" href="${deleteUrl}" title="${deleteTitle}" data-type="post">
+						<a class="${buttonClasses}" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" data-type="post">
 							<span class="glyphicon glyphicon-remove"><!--  --></span>
 						</a>
 					</c:when>
@@ -111,24 +114,32 @@
 		<!--+
 			| HISTORY
 			+-->
-		<c:if test="${not empty enableHistory}">
+	<!-- 	<c:if test="${empty enableHistory}"> -->
+			<fmt:message key="bibtex.actions.posthistory.title" var="postHistoryTitle" />
 			<c:choose>
 				<c:when test="${command.context.userLoggedIn and (loginUserName eq post.user.name)}">
 					<!-- user is post's owner -->
-					<fmt:message key="bibtex.actions.posthistory.title" var="postHistoryTitle" />
-					<a class="${buttonClasses}" href="/history/publication/${post.resource.intraHash}/${post.user.name}" title="${postHistoryTitle}">
-						<span class="glyphicon glyphicon-time"><!--  --></span>
-					</a>
+					<!-- we need to send the resource type, in order to call the appropriate view later (HistoryBM or HistoryBib) -->
+				 	<a class="${buttonClasses}" href="/history/${rscType}/${post.resource.intraHash}/${post.user.name}" title="${postHistoryTitle}">
+						<span class="fa fa-list-ol"><!--  --></span>
+				  	</a>
+				</c:when>
+				<c:when test="${empty post.user}">
+					<!-- post is a community post -->
+					<!-- we need to send the resource type, in order to call the appropriate view later (HistoryBM or HistoryBib) -->
+				 	<a class="${buttonClasses}" href="/history/goldstandardpublication/${post.resource.interHash}" title="${postHistoryTitle}">
+						<span class="fa fa-list-ol"><!--  --></span>
+				  	</a>
 				</c:when>
 				<c:otherwise>
 					<!-- For signed out users and those who do not own the post we always show the inactive history button -->
 					<fmt:message key="bibtex.actions.posthistory.inactive" var="historyTitle" />
 					<a class="${buttonClasses}" title="${historyTitle}" disabled="disabled">
-						<span class="glyphicon glyphicon-floppy-disk"><!--  --></span>
+						<span class="fa fa-list-ol"><!--  --></span>
 					</a>
 				</c:otherwise>
 			</c:choose>
-		</c:if>
+		<!--</c:if>-->
 
 		<!--+
 			| PICK / UNPICK 

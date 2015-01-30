@@ -6,7 +6,7 @@
     
     <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
     
-	<c:set var="rscType" value="goldstandardpublication" />
+	<c:set var="rscType" value="goldstandardbookmark" />
 	
 	<c:if test="${command.context.userLoggedIn}">
 		<c:set var="goldstandard" value="${post.resource}" />
@@ -15,7 +15,7 @@
 		<div class="btn-group btn-group-sm">
 		
 			<fmt:message key="post.actions.copy.title" var="copyTitle"/>
-			<a class="btn btn-default" href="/editPublication?hash=${goldstandard.interHash}&amp;user=&amp;" title="${fn:escapeXml(copyTitle)}">
+			<a class="btn btn-default" href="/editBookmark?hash=${goldstandard.interHash}&amp;user=&amp;" title="${fn:escapeXml(copyTitle)}">
 				<span class="fa fa-copy"><!--  --></span>
 				<span class="sr-only"><fmt:message key="post.actions.copy"/></span>
 			</a>
@@ -24,7 +24,7 @@
 			<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
 				
 					<fmt:message key="post.actions.edit.gold.title" var="editTitle"/>
-					<a class="btn btn-default" href="/editGoldStandardPublication?intraHashToUpdate=${goldstandard.interHash}" title="${fn:escapeXml(editTitle)}">
+					<a class="btn btn-default" href="/editGoldStandardBookmark?intraHashToUpdate=${goldstandard.interHash}" title="${fn:escapeXml(editTitle)}">
 						<span class="fa fa-pencil"><!--  --></span>
 						<span class="sr-only"><fmt:message key="post.actions.edit"/></span>
 					</a>

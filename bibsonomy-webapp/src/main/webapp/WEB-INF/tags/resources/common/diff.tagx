@@ -20,7 +20,7 @@
 	
 			<!-- TITLE AND DESCRIPTION -->
 			<div class="ptitle"><jsp:invoke fragment="title"/></div>
-			<div class="pdiffdesc extend"><jsp:invoke fragment="desc"/><div><jsp:invoke fragment="desc"/></div></div>
+			<div class="pdiffdesc extend"><jsp:invoke fragment="desc"/></div>
 
 		</div>
 	</li>

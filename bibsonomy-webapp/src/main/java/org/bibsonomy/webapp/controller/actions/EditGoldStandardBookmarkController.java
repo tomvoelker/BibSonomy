@@ -29,8 +29,8 @@ package org.bibsonomy.webapp.controller.actions;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.Post;
@@ -50,25 +50,29 @@ import recommender.core.interfaces.model.TagRecommendationEntity;
  * @author dzo
  */
 public class EditGoldStandardBookmarkController extends EditBookmarkController {
-	
+
 	@Override
 	protected View getPostView() {
 		return Views.EDIT_GOLD_STANDARD_BOOKMARK;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#getPostDetails(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.bibsonomy.webapp.controller.actions.EditPostController#getPostDetails
+	 * (java.lang.String, java.lang.String)
 	 */
 	@Override
 	protected Post<Bookmark> getPostDetails(final String intraHash, final String userName) {
 		return super.getPostDetails(intraHash, "");
 	}
-	
+
 	@Override
 	protected void prepareResourceForDatabase(final Bookmark resource) {
 		// noop
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	protected Post<Bookmark> getCopyPost(final User loginUser, final String hash, final String user) {
@@ -78,13 +82,13 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 		} catch (final ObjectNotFoundException ex) {
 			// ignore
 		} catch (final ResourceMovedException ex) {
-			// ignore		
+			// ignore
 		}
 
 		if (post == null) {
 			return null;
 		}
-		
+
 		return this.convertToGoldStandard(post);
 	}
 
@@ -95,7 +99,7 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 
 	@Override
 	protected View finalRedirect(final String userName, final Post<Bookmark> post, final String referer) {
-		if (referer == null || referer.matches(".*/editGoldStandardBookmark.*")) {
+		if ((referer == null) || referer.matches(".*/editGoldStandardBookmark.*")) {
 			return new ExtendedRedirectView(this.urlGenerator.getBookmarkUrl(post.getResource(), null));
 		}
 
@@ -114,6 +118,11 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 		gold.setResource(goldResource);
 
 		return gold;
+	}
+
+	@Override
+	protected String getGrouping(final User requestedUser) {
+		return null;
 	}
 
 	@Override
