@@ -9,6 +9,7 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+    xmlns:group="urn:jsptagdir:/WEB-INF/tags/bstags/resources/group"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"> 
@@ -95,20 +96,16 @@
 							
 						</dd>
 					</c:if>
-					<dt><span class="sr-only"><c:out value="${group.name}" /></span><img class="img-thumbnail img-responsive user-avatar" src="${relativeUrlGenerator.getUserPictureUrlByUsername(group.name)}"/></dt>
+					<dt><group:groupthumbnail noname="${true}" group="${group}" /></dt>
 					<dd>
-						<c:set var="displayName" value="${group.name}" />
-						<c:if test="${not empty group.realname}">
-							<c:set var="displayName" value="${group.realname}" />
-						</c:if>
 						<div class="row">
 							<div class="col-xs-9">
 								<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}">
-									<c:out value="${displayName}"/>
+									<group:groupname group="${group}" noLink="${true}" showRealname="${true}"/>
 								</a>
 								<br />
 								<c:if test="${not empty group.homepage}">
-									<small><a href="${fn:escapeXml(group.homepage)}">Homepage</a></small><br />
+									<small><a href="${fn:escapeXml(group.homepage)}">Homepage</a></small><c:out value=" " />
 								</c:if>
 								<!-- TODO: use url generator -->
 								<small><a href="/cv/group/${fn:escapeXml(group.name)}">CV</a></small>
@@ -117,6 +114,7 @@
 							<div class="col-xs-3">
 								<c:choose>
 									<c:when test="${mtl:contains(command.context.loginUser.groups, group)}">
+										<!-- TODO: use url generator -->
 										<a href="/settings/group/${group.name}" class="btn btn-success btn-sm"><span class="fa fa-check"><!-- keep me --></span><c:out value=" "/><span class="infotext"><fmt:message key="group.memberOf" /></span></a>
 										<a href="/updateGroup?operation=REMOVE_MEMBER&amp;groupname=${group.name}&amp;username=${command.context.loginUser.name}&amp;ckey=${ckey}" class="btn btn-danger btn-sm"><span class="fa fa-times"><!-- keep me --></span><c:out value=" "/><span class="infotext"><fmt:message key="group.leave" /></span></a>
 									</c:when>
