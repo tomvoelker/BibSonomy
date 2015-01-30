@@ -1137,6 +1137,7 @@
 	<!-- Group request page -->
 	<bean id="groupRequestController" class="org.bibsonomy.webapp.controller.GroupRequestController" scope="request">
 		<property name="logic" ref="logic" />
+		<property name="adminLogic" ref ="adminLogic" />
 	</bean>
 	
 	<!-- Handles the profile update of a user -->

@@ -54,6 +54,7 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 
 	private Errors errors = null;
 	private LogicInterface logic;
+	private LogicInterface adminLogic;
 	
 	/**
 	 * @param command
@@ -94,8 +95,9 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 		}
 		
 		final String groupName = requestedGroup.getName();
-		final List<User> pendingUserList = logic.getUsers(null, GroupingEntity.PENDING, groupName, null, null, null, null, null, 0, 1);
-		if (logic.getUserDetails(groupName).getName() != null || present(pendingUserList)) {
+		// we use the admin logic to get all users even deleted ones
+		final List<User> pendingUserList = this.adminLogic.getUsers(null, GroupingEntity.PENDING, groupName, null, null, null, null, null, 0, 1);
+		if (this.adminLogic.getUserDetails(groupName).getName() != null || present(pendingUserList)) {
 			// group name still exists, another one is required
 			this.errors.rejectValue("group.name", "error.field.duplicate.group.name");
 		}
@@ -126,6 +128,13 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 	 */
 	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
+	}
+
+	/**
+	 * @param adminLogic the adminLogic to set
+	 */
+	public void setAdminLogic(LogicInterface adminLogic) {
+		this.adminLogic = adminLogic;
 	}
 
 	@Override
