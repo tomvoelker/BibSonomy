@@ -69,9 +69,6 @@ public class GroupRequestCommand extends BaseCommand {
 	private User user;
 	private User loggedinUser;
 	private String requestedGroup;
-	private boolean userSharedDocuments;
-	private GroupRole groupRole;
-	private GroupMembership groupMembership;
 
 	private String username;
 	// TODO: WHat's this for?
@@ -84,30 +81,8 @@ public class GroupRequestCommand extends BaseCommand {
 	private int privlevel;
 	private int sharedDocuments;
 
-	// specific settings for the group user
-	private CommonsMultipartFile file;
-
-	// cv settings
-	private String wikiText;
-	private String renderedWikiText;
 
 
-
-	public boolean isUserSharedDocuments() {
-		return userSharedDocuments;
-	}
-
-	public void setUserSharedDocuments(boolean userSharedDocuments) {
-		this.userSharedDocuments = userSharedDocuments;
-	}
-
-	public GroupRole getGroupRole() {
-		return groupRole;
-	}
-
-	public void setGroupRole(GroupRole groupRole) {
-		this.groupRole = groupRole;
-	}
 
 	public Group getGroup() {
 		return group;
@@ -148,40 +123,6 @@ public class GroupRequestCommand extends BaseCommand {
 	public void setSharedDocuments(int sharedDocuments) {
 		this.sharedDocuments = sharedDocuments;
 	}
-
-	public GroupMembership getGroupMembership() {
-		return groupMembership;
-	}
-
-	public void setGroupMembership(GroupMembership groupMembership) {
-		this.groupMembership = groupMembership;
-	}
-
-	public String getWikiText() {
-		return wikiText;
-	}
-
-	public void setWikiText(String wikiText) {
-		this.wikiText = wikiText;
-	}
-
-	public String getRenderedWikiText() {
-		return renderedWikiText;
-	}
-
-	public void setRenderedWikiText(String renderedWikiText) {
-		this.renderedWikiText = renderedWikiText;
-	}
-
-	public CommonsMultipartFile getFile() {
-		return file;
-	}
-
-	public void setFile(CommonsMultipartFile file) {
-		this.file = file;
-	}
-
-
 
 	public User getUser() {
 		return user;

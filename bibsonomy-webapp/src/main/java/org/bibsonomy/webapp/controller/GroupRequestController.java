@@ -28,6 +28,8 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.List;
+
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -109,6 +111,16 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 					// TODO: add spammer check here
 					
 					// TODO: add check if username is already in the system
+					if (requestedGroup.getName() != null) {
+
+						//final List<Group> groupList = logic.getGroups(false, 0, Integer.MAX_VALUE);		
+						if (logic.getGroupDetails(requestedGroup.getName()) != null) {
+							// group name still exists, another one is required
+							this.errors.reject("settings.group.error.requestGroupFailed");
+						}
+					}
+					
+					
 					
 					if (!this.errors.hasErrors()) {
 						// set the username and create the request
@@ -135,12 +147,7 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 	}
 
 
-	
-	
-	
-	
-	
-	
+		
 	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
 	}
