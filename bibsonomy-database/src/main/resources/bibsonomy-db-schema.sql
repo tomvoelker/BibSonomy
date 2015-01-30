@@ -528,9 +528,6 @@ SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `groupids` (
   `group_name` varchar(30) NOT NULL default '',
-  `request_user_name` varchar(30) NULL,
-  `request_reason` text NULL,
-  `request_submission_date` timestamp NULL,
   `group` int(10) NOT NULL default '0',
   `privlevel` tinyint(3) unsigned default '1',
   `sharedDocuments` tinyint(1) default '0',
@@ -554,7 +551,8 @@ CREATE TABLE `group_memberships` (
   `defaultgroup` int(10) default '0',
   `start_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `group_role` int(10) NOT NULL default '7',
-  `user_shared_documents` tinyint(1) default '0'
+  `user_shared_documents` tinyint(1) default '0',
+  PRIMARY KEY (`group`,`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
@@ -1079,7 +1077,8 @@ CREATE TABLE `pending_group_memberships` (
 	`defaultgroup` INT(10) NULL DEFAULT '0',
 	`start_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	`group_role` INT(10) NOT NULL DEFAULT '7',
-	`user_shared_documents` TINYINT(1) NULL DEFAULT '0'
+	`user_shared_documents` TINYINT(1) NULL DEFAULT '0',
+	PRIMARY KEY (`user_name`, `group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
