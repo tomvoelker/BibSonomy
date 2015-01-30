@@ -7,7 +7,8 @@
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/bstags/post"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:form="http://www.springframework.org/tags/form"
-	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion">
 
     <!-- 
     	the form for snippet posting on /postPublication
@@ -24,9 +25,16 @@
 			<input type="hidden" name="ckey" value="${ckey}" />
 
 			<bsform:textarea labelColSpan="2" inputColSpan="10" path="selection" id="selection" />
+			<div class="form-group">
+				<label class="col-sm-2 control-label" for="${fn:escapeXml(id)}">
+					<fmt:message key="post.resource.viewablefor" />
+				</label>
+				<div class="col-sm-10">
+					<div class="row">
+ 						<div class="col-sm-6">
+			<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" />
+			</div></div></div></div>
 			
-			<post:groupBox groups="${command.context.loginUser.groups}"/>
-
 			<legend><fmt:message key="post_bibtex.upload.options" /></legend>
 			
 			<bsform:checkbox inputColSpan="10" path="editBeforeImport" labelKey="import.edit_before_import" helpKey="import.edit_before_import.help" />

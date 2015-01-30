@@ -5,7 +5,6 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 	<jsp:directive.attribute name="message" type="java.lang.String" required="false" description="The key for the message that should be shown." />
-	<jsp:directive.attribute name="iconText" type="java.lang.String" required="false" description="The text of the icon." />
 	<jsp:directive.attribute name="iconTextStyle" type="java.lang.String" required="false" description="The text's style." />
 	<jsp:directive.attribute name="helpPage" type="java.lang.String" required="false" description="An optional help page that is linked under the question mark. The given name must exist in all languages of the help wiki." />
 	<jsp:directive.attribute name="helpText" fragment="true" required="false" description="A JSP fragment which is inserted after the message." />

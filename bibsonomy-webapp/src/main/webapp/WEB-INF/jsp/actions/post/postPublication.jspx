@@ -103,8 +103,9 @@
 					        					listView="${command.bibtex}" 
 					        					otherPostsUrlPrefix="bla" 
 					        					listViewStartParamName="bibtex.start"
+		      									directEdit="${false}"
 		      									overwrite="${command.overwrite}"
-		      									deleteCheckedPosts="${command.deleteCheckedPosts}" >
+		      									updateExistingPost="${command.updateExistingPost}" >
 				        					 		
 									<jsp:attribute name="shortPostDescription">
 										<bib:shortDescription post="${post}"/>
