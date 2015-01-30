@@ -94,8 +94,8 @@
 												</div>
 
 												<div class="col-xs-3">
-													<a class="btn btn-default btn-block btn-sm" title="${revuserTitle}" href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}">${revuser}</a>
-													<a class="btn btn-default btn-block btn-sm" title="${accinviteTitle}" href="/updateGroup?operation=add_member&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}">${accinvite}</a>
+													<a class="btn btn-success btn-block btn-sm" title="${accinviteTitle}" href="/updateGroup?operation=add_member&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}">${accinvite}</a>
+													<a class="btn btn-danger btn-block btn-sm" title="${revuserTitle}" href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}">${revuser}</a>
 												</div>
 											</div>
 										</dd>
