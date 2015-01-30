@@ -31,13 +31,13 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ObjectUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
-
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.util.GroupingCommandUtils;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -46,7 +46,6 @@ import org.bibsonomy.webapp.validation.GoldStandardPostValidator;
 import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
-
 
 import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.impl.database.RecommenderStatisticsManager;
@@ -207,6 +206,17 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 
  		// noop gold standards have no tags
 
+	}
+ 	@Override
+	protected void preparePost(EditPostCommand<Bookmark> command, Post<Bookmark> post) {
+		
+		super.preparePost(command, post);
+		if (command.isApproved()){
+			post.setApproved(1);
+		}else{
+			post.setApproved(0);
+		}
+		
 	}
 }
 

@@ -66,11 +66,11 @@
     </sql>
 		
 	<sql id="allGoldStandardBookmarkColumns">
-		title, url, description, date, user_name, simhash1, simhash2, content_type
+		title, url, description, date, user_name, simhash1, simhash2, content_type, approved
 	</sql>
 		
 	<sql id="allGoldStandardBookmarkValues">
-		#resource.title#, #resource.url#, #description#, #date#, #userName#, #resource.intraHash#, #resource.intraHash#, #contentType#
+		#resource.title#, #resource.url#, #description#, #date#, #userName#, #resource.intraHash#, #resource.intraHash#, #contentType#, #approved#
 	</sql>
 	
 	<sql id="allGoldStandardPublicationAttributes">
