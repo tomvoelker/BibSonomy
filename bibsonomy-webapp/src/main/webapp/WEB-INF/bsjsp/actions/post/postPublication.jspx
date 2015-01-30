@@ -47,7 +47,7 @@
 			<div id="citation-styles" class="tab-content">
 				<div class="tab-pane ${command.selTab == 0 ? 'active' : ''}" id="selTab0">
 					<!-- manual posting -->
-					<div id="suggestionBox"><!--  --></div>
+					<div id="suggestionBox" style="position:absolute; display:none;"><!--  --></div>
 					<form:form cssClass="form-horizontal" id="postForm" action="/editPublication" method="post">
 						<fieldset>
 							<legend><fmt:message key="post_bibtex.manual.heading"/></legend>
@@ -80,8 +80,10 @@
 				<div class="tab-pane ${command.selTab == 4 ? 'active' : ''}" id="selTab4">
 					<post:postPublicationScan/>
 				</div>
-			</div>
-			<c:if test="${not empty command.bibtex and not empty command.bibtex.list}">
+				
+		    </div>
+		    
+    		<c:if test="${not empty command.bibtex and not empty command.bibtex.list}">
 				<div style="margin-top:2em">
 					<a onclick="toggleImage('toggleParsedPostViewButton', '${resdir}/image/nice_box_arrow_right.png', '${resdir}/image/nice_box_arrow.png', 'parsedPostView')"><img id="toggleParsedPostViewButton" style="float:left; height:10pt; padding:5pt" src="${resdir}/image/nice_box_arrow.png" alt=""/><h3><fmt:message key="import.error.parse_or_incomplete_bibtex"/></h3></a>
 				</div>
@@ -93,29 +95,19 @@
 						</fmt:message>
 					</p>
 					<fieldset>
-						<!-- TODO: change /bibtex to /publication -->
-						<batch:content listView="${command.bibtex}" otherPostsUrlPrefix="/bibtex" listViewStartParamName="bibtex.start" overwrite="${command.overwrite}" deleteCheckedPosts="${command.deleteCheckedPosts}" >
+						<batch:content	resourceType="bibtex"
+			        					listView="${command.bibtex}" 
+			        					otherPostsUrlPrefix="bla" 
+			        					listViewStartParamName="bibtex.start"
+			        					postsErrorMessages="${command.postsErrorList}"
+			        					directEdit="${false}"
+										overwrite="${command.overwrite}"
+										updateExistingPost="${command.updateExistingPost}" >
 							<jsp:attribute name="shortPostDescription">
 								<bib:shortDescription post="${post}"/>
 							</jsp:attribute>
-							
-							<jsp:attribute name="title">
-								<bib:title post="${post}"/>
-							</jsp:attribute>
-							
-							<jsp:attribute name="desc">
-								<bib:desc publication="${post.resource}"/>
-							</jsp:attribute>
-							
-							<jsp:attribute name="documents">
-								<bib:documents post="${post}"/>
-							</jsp:attribute>
-							
-							<jsp:attribute name="actions">
-								<actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/>
-							</jsp:attribute>
-						</batch:content>
-					</fieldset>
+				        </batch:content>
+			        </fieldset>
 				</div> 
 			</c:if> 
 
@@ -126,7 +118,7 @@
 		</jsp:attribute>
 
 			
-		<!--+
+    	<!--+
 			| infobox
 			+-->
 		<jsp:attribute name="infobox">
@@ -135,6 +127,8 @@
 					<bs:didYouKnow command="${command}"></bs:didYouKnow>
 				</jsp:attribute>
 			</parts:infobox>
-		</jsp:attribute>
+         </jsp:attribute>
+        
 	</layout:layout>
+	
 </jsp:root>

@@ -675,4 +675,10 @@
 		WHERE bb.group = g.group 
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
+	
+	<!-- update group ids of a post
+	<update id="updateBookmarkGroup" parameterClass="bookmarkParam">
+		UPDATE bookmark SET `group` = #groupId#  WHERE content_id = #requestedContentId#
+	</update>
+	-->
 </sqlMap>
