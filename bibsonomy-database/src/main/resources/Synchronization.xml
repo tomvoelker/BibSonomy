@@ -39,7 +39,7 @@
 		    </isNotEmpty>
 			<isNotEmpty property="service" prepend="AND">
 		  		ss.uri = #service# 
-		  	</isNotEmpty>		    
+		  	</isNotEmpty>
 		  ORDER BY ss.uri
 	</select>
 	
@@ -95,7 +95,7 @@
 	
 	<update id="updateSyncStatus" parameterClass="syncParam">
 		UPDATE sync_data sd JOIN sync_services ss USING (service_id)
-			SET sd.status = #data.status#, sd.info = #data.info#
+			SET sd.status = #data.status#, sd.info = #data.info# <isNotNull property="newDate">, sd.last_sync_date = #newDate# </isNotNull>
 			WHERE sd.user_name = #userName#
 			  AND sd.content_type = #data.resourceType#
 			  AND sd.last_sync_date = #data.lastSyncDate#

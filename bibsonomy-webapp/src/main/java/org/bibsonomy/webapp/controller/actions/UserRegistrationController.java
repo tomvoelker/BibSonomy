@@ -155,7 +155,22 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 		 */
 		final User registerUser = command.getRegisterUser();
 
-
+		/*
+		 * If user is an admin, he must provide a valid ckey!
+		 */
+		final boolean adminAccess = context.isUserLoggedIn() && Role.ADMIN.equals(loginUser.getRole());
+		if (adminAccess && !context.isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
+		}
+		
+		/*
+		 * if the user is not logged in, we need an instance of the logic interface
+		 * with admin access (inet address status lookup, get user details including deleted users)
+		 */
+		if (!context.isUserLoggedIn()) {
+			this.logic = this.adminLogic;
+		}
+		
 		/*
 		 * Get the hosts IP address.
 		 */
@@ -190,14 +205,6 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 		}
 
 		/*
-		 * If user is an admin, he must provide a valid ckey!
-		 */
-		final boolean adminAccess = context.isUserLoggedIn() && Role.ADMIN.equals(loginUser.getRole());
-		if (adminAccess && !context.isValidCkey()) {
-			errors.reject("error.field.valid.ckey");
-		}
-
-		/*
 		 * check, if user name already exists
 		 */
 		
@@ -225,13 +232,7 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 
 		log.debug("validation passed with " + errors.getErrorCount() + " errors, proceeding to access database");
 
-		/*
-		 * if the user is not logged in, we need an instance of the logic interface
-		 * with admin access 
-		 */
-		if (!context.isUserLoggedIn()) {
-			this.logic = this.adminLogic;
-		}
+		
 
 		/*
 		 * at this point:

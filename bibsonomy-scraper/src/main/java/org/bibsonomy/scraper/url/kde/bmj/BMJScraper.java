@@ -101,8 +101,8 @@ public class BMJScraper extends GenericBibTeXURLScraper implements ReferencesScr
 	@Override
 	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
 		String references = null;
-		try{
-			Matcher m = REFERENCES_PATTERN.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
+		try {
+			final Matcher m = REFERENCES_PATTERN.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
 			if (m.find()) {
 				references = m.group(1);
 			}

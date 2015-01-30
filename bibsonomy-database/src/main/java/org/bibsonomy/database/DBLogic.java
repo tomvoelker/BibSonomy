@@ -576,11 +576,11 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.sync.SyncLogicInterface#setCurrentSyncDone(org.bibsonomy.model.sync.SynchronizationData)
 	 */
 	@Override
-	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info) {
+	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info, final Date newDate) {
 		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
 		final DBSession session = this.openSession();
 		try {
-			syncDBManager.updateSyncData(userName, service, resourceType, syncDate, status, info, session);
+			syncDBManager.updateSyncData(userName, service, resourceType, syncDate, status, info, newDate, session);
 		} finally {
 			session.close();
 		}
@@ -599,7 +599,7 @@ public class DBLogic implements LogicInterface {
 				syncDBManager.deleteSyncData(userName, service, BibTex.class, syncDate, session);
 			} else {
 				syncDBManager.deleteSyncData(userName, service, resourceType, syncDate, session);
-			}			
+			}
 		} finally {
 			session.close();
 		}
@@ -1903,13 +1903,8 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public InetAddressStatus getInetAddressStatus(final InetAddress address) {
-		// everybody is allowed to ask for the status of an address
-		/*
-		 * TODO: is this really OK? At least it is neccessary, because otherwise
-		 * the RegistrationHandler can not check the status of an address.
-		 */
-		// this.ensureLoggedIn();
-		// this.permissionDBManager.ensureAdminAccess(loginUser);
+		this.ensureLoggedIn();
+		this.permissionDBManager.ensureAdminAccess(loginUser);
 		final DBSession session = openSession();
 		try {
 			return this.adminDBManager.getInetAddressStatus(address, session);
