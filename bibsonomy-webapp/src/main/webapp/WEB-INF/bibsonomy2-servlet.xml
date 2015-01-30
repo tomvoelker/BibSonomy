@@ -671,32 +671,6 @@
 						<property name="controllerBeanName" value="bibsonomyPreview"/>
 					</bean>
 				</entry>
-				
-				<entry key="/grouprequest">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="groupRequestController"/>
-						<property name="allowedFields">
-							<list>
-								<value>ckey</value>
-								<value>privlevel</value>
-								<value>realname</value>
-								<value>sharedDocuments</value>
-								<value>groupname</value>
-								<value>username</value>
-								<value>homepage</value>
-								<value>operation</value>
-								<value>groupRole</value>
-								<value>group.name</value>
-								<value>group.realname</value>
-								<value>group.description</value>
-								<value>group.groupRequest.reason</value>
-								<value>group.publicationReportingSettings.reportingMailAddress</value>
-								<value>group.publicationReportingSettings.reportingMailTemplate</value>
-								<value>group.publicationReportingSettings.externalReportingUrl</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
 			</map>
 		</property>
 	</bean>
@@ -992,12 +966,6 @@
 	<bean id="bibsonomyPreview" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="BIBSONOMY3"/>
 	</bean>
-	
-	<!-- Group request page -->
-	<bean id="groupRequestController" class="org.bibsonomy.webapp.controller.GroupRequestController" scope="request">
-		<property name="logic" ref="logic" />
-	</bean>
-	
 	
 	<bean id="contextPathFilter" class="org.bibsonomy.webapp.filters.ContextPathFilter">
 		<property name="projectHomeUrl" value="${project.home}"/>

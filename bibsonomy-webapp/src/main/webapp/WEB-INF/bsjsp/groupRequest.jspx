@@ -32,14 +32,13 @@
 		<!--+
 			| breadcrumbs
 			+-->
-		<jsp:attribute name="breadcrumbs">	
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<fmt:message key="navi.groups" var="groups" />
 					<nav:crumb name="${groups}" active="false" />
-					
 					<fmt:message key="navi.groupRequest" var="groupRequest" />
-					<nav:crumb name="${groupRequest}" active="true" />					
+					<nav:crumb name="${groupRequest}" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
@@ -61,32 +60,26 @@
 				</jsp:attribute>
 			</bs:alert>
 
-				<c:set var="loginUser" value="${command.context.loginUser}" />
-
-				<fieldset class="fsOuter">
-					<c:if test="${!loginUser.spammer}">
-						<!-- Request a new group -->
-						<bsform:fieldset legendKey="settings.group.reqGroup">
-							<jsp:attribute name="content">
-								<form:form method="post" action="/grouprequest?action=REQUEST" cssClass="form-horizontal">
-									<input type="hidden" name="ckey" value="${ckey}"/>
-									<input type="hidden" name="operation" value="REQUEST" />
-									
-									<bsform:input labelKey="settings.group.name" path="group.name" labelColSpan="3" inputColSpan="9" />
-									<bsform:textarea labelKey="settings.group.description" path="group.description" rows="2"  labelColSpan="3" inputColSpan="9" />
-									<bsform:textarea labelKey="settings.group.reqReason" path="group.groupRequest.reason" rows="2"  labelColSpan="3" inputColSpan="9" />
-			
-									<div class="col-sm-offset-3" >
-										<bsform:button style="success" size="defaultSize" value="submit${settings.group.reqGroup.button}" type="submit" />
-									</div>
-								</form:form>
-							</jsp:attribute>
-						</bsform:fieldset>
-			
-					</c:if>
-				</fieldset>
-			
-
+			<c:set var="loginUser" value="${command.context.loginUser}" />
+			<c:if test="${!loginUser.spammer}">
+				<!-- Request a new group -->
+				<bsform:fieldset legendKey="settings.group.reqGroup">
+					<jsp:attribute name="content">
+						<form:form method="post" action="/grouprequest" cssClass="form-horizontal">
+							<input type="hidden" name="ckey" value="${ckey}"/>
+							
+							<bsform:input labelKey="settings.group.name" path="group.name" labelColSpan="3" inputColSpan="9" />
+							<bsform:textarea labelKey="settings.group.description" path="group.description" rows="2" labelColSpan="3" inputColSpan="9" />
+							<bsform:textarea labelKey="settings.group.reqReason" path="group.groupRequest.reason" rows="2" labelColSpan="3" inputColSpan="9" />
+	
+							<div class="col-sm-offset-3" >
+								<fmt:message key="settings.group.reqGroup.button" var="requestGroup" />
+								<bsform:button style="primary" size="defaultSize" value="${requestGroup}" type="submit" />
+							</div>
+						</form:form>
+					</jsp:attribute>
+				</bsform:fieldset>
+			</c:if>
 		</jsp:attribute>
 	</layout:paneLayout>
 </jsp:root>

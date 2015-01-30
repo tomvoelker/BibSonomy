@@ -25,7 +25,7 @@
 			<parts:search pathMessageKey="navi.groups" formAction="/group/" formInputName="group"/>
 		</jsp:attribute>
 		
-		<jsp:attribute name="breadcrumbs">	
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<fmt:message key="navi.groups" var="groups" />
@@ -46,7 +46,10 @@
 				+-->
 			<bs:alert style="info">
 				<jsp:attribute name="alertBody">
-					<fmt:message key="system.groups" />
+					<fmt:message key="system.groups">
+						<!-- TODO: use URLGenerator -->
+						<fmt:param value="/grouprequest"/>
+					</fmt:message>
 				</jsp:attribute>
 			</bs:alert>
 			
@@ -65,7 +68,6 @@
 			</div>
 			<c:set var="lastChar" value=""/>
 			<div id="groups">
-
 				<dl class="dl-horizontal dt-thumbnail-items group-list">
 				<c:forEach var="group" items="${command.list}">
 					<c:set var="firstGroupNameLetter" value="${fn:toLowerCase(fn:substring(group.name, 0, 1))}" />

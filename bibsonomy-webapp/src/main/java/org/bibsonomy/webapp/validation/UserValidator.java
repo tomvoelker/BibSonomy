@@ -26,10 +26,12 @@
  */
 package org.bibsonomy.webapp.validation;
 
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.util.Sets;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
@@ -41,13 +43,16 @@ import org.springframework.validation.ValidationUtils;
 public class UserValidator implements Validator<User> {
 	
 	public static final int USERNAME_MAX_LENGTH = 15;
+	
 	/**
 	 * We allow only a..z A..Z 0..9 - . _ 
 	 * (this covers more than 99% of all usernames before introducing this
 	 * restriction)
 	 */
 	public static final Pattern USERNAME_DISALLOWED_CHARACTERS_PATTERN = Pattern.compile("[^a-zA-Z0-9\\.\\-_]");
-
+	
+	private static final Set<String> SPECIAL_USER_NAMES = Sets.asSet("public", "private", "friends", "null");
+	
 	/**
 	 * @param user
 	 * @param errors
@@ -106,7 +111,9 @@ public class UserValidator implements Validator<User> {
 		 * if required attributes are set. 
 		 */
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", ERROR_FIELD_REQUIRED_KEY);
-		if (!errors.hasFieldErrors("name")) validateName(user.getName(), errors); 
+		if (!errors.hasFieldErrors("name")) {
+			validateName(user.getName(), errors, "error.field.valid.user.name");
+		}
 		
 		validateUser(user, errors);
 	}
@@ -118,18 +125,15 @@ public class UserValidator implements Validator<User> {
 	 * 
 	 * @param name
 	 * @param errors
+	 * @param errorCode 
 	 */
-	private void validateName (final String name, final Errors errors) {
-		if (name == null ||
-				"".equals(name) ||
-				"public".equals(name) ||
-				"private".equals(name) ||
-				"friends".equals(name) ||
-				"null".equals(name) ||
+	protected static void validateName(String name, final Errors errors, final String errorCode) {
+		name = name.trim();
+		if (SPECIAL_USER_NAMES.contains(name) ||
 				name.length() > USERNAME_MAX_LENGTH ||
 				USERNAME_DISALLOWED_CHARACTERS_PATTERN.matcher(name).find())
 		{
-			errors.rejectValue("name","error.field.valid.user.name");
+			errors.rejectValue("name", errorCode);
 		}
 	}
 
