@@ -2,7 +2,7 @@ RENAME TABLE `groups` TO `group_memberships`;
 RENAME TABLE `log_groups` TO `log_group_memberships`;
 ALTER TABLE `group_memberships` CHANGE COLUMN `userSharedDocuments` `user_shared_documents` TINYINT;
 ALTER TABLE `group_memberships` CHANGE COLUMN `user_status` `group_role` INT;
-ALTER TABLE `group_memberships` ADD PRIMARY KEY (`user_name`,`group`);
+ALTER TABLE `group_memberships` ADD PRIMARY KEY (`group`,`user_name`);
 
 ALTER TABLE `log_group_memberships`
 	CHANGE COLUMN `user_status` `group_role` INT(10) NOT NULL DEFAULT '7' AFTER `end_date`,
