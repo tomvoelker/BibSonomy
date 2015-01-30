@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 						http://www.springframework.org/schema/beans/spring-beans.xsd">
-	
+						
 	<bean id="propertyConfigurerLucene" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations" value="classpath:lucene-test.properties" />
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
@@ -16,6 +16,14 @@
 		<property name="username" value="${database.lucene.username}" />
 		<property name="password" value="${database.lucene.password}" />
 	</bean>
+	
+	<!-- 
+	<alias name="realSharedIndexUpdatePlugin" alias="sharedIndexUpdatePlugin"/>
+	
+	<alias name="realEsPublicationSearch" alias="esPublicationSearch"/>
+	<alias name="realEsBookmarkSearch" alias="esBookmarkSearch"/>
+	<alias name="realEsGoldStandardSearch" alias="esGoldStandardSearch"/>
+	 -->
 	
 	<import resource="classpath:TestDatabaseBaseContext.xml" />
 	
