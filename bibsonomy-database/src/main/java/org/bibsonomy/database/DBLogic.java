@@ -1958,13 +1958,8 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public InetAddressStatus getInetAddressStatus(final InetAddress address) {
-		// everybody is allowed to ask for the status of an address
-		/*
-		 * TODO: is this really OK? At least it is neccessary, because otherwise
-		 * the RegistrationHandler can not check the status of an address.
-		 */
-		// this.ensureLoggedIn();
-		// this.permissionDBManager.ensureAdminAccess(loginUser);
+		this.ensureLoggedIn();
+		this.permissionDBManager.ensureAdminAccess(loginUser);
 		final DBSession session = openSession();
 		try {
 			return this.adminDBManager.getInetAddressStatus(address, session);
