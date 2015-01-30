@@ -38,6 +38,7 @@
 		  LEFT JOIN user u ON (u.user_name = i.group_name) 
 		WHERE group_name = #groupname#
 		  AND i.group > 2
+		ORDER BY g.user_name
 	</select>
 
 	<select id="getGroupWithPermissions" resultMap="GroupCommon.groupWithPermissions" parameterClass="string">
@@ -47,7 +48,8 @@
 		WHERE group_name = #groupname#
 		  AND i.group > 2
 	</select>
-
+	
+	<!-- TODO: merge with getGroupWithMembership using a dynamic query -->
 	<select id="getGroupWithMembershipsAndPermissions" resultMap="GroupCommon.groupWithMembershipsAndReportingsAndPermissions" parameterClass="string">
 		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, p.permission
 		FROM groupids i 
@@ -57,6 +59,7 @@
 		  LEFT JOIN group_level_permission p USING (`group`)
 		WHERE group_name = #groupname#
 		  AND i.group > 2
+		ORDER BY g.user_name
 	</select>
 
 
