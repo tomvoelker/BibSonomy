@@ -78,7 +78,6 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 		// since before requesting a group, it must not exist, we cannot check for it, either.
 		groupToUpdate = this.logic.getGroupDetails(command.getGroupname());
 		
-		// TODO: Clean this up.
 		final GroupUpdateOperation operation = command.getOperation();
 		Integer selTab = null;
 		if (present(operation)) {
@@ -134,7 +133,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 					 * remove the user from the group
 					 */
 					final String username = command.getUsername();
-					if (present(username) && !username.equals(groupToUpdate)) {
+					if (present(username) && !username.equals(groupToUpdate.getName())) {
 						final GroupMembership ms = new GroupMembership(new User(username), null, false);
 						try {
 							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.REMOVE_MEMBER, ms);
@@ -170,11 +169,9 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 					final boolean sharedDocs = command.getSharedDocuments() == 1;
 					final String realname = command.getRealname();
 					final URL homepage = command.getHomepage();
-//					final String description = command.getDescription();
-//					log.error(realname + " " + description);
 					
 					User groupUserToUpdate = this.logic.getUserDetails(groupToUpdate.getName());
-					groupUserToUpdate.setEmail("nomail"); // TODO: remove
+					groupUserToUpdate.setEmail("nomail"); // TODO: adapt to the notion that admins should receive mails.
 					// the group to update
 					try {
 						groupToUpdate.setPrivlevel(priv);
@@ -186,7 +183,6 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 						if (present(homepage)) {
 							groupUserToUpdate.setHomepage(homepage);
 						}
-//						groupToUpdate.setDescription(description);
 						
 						this.logic.updateUser(groupUserToUpdate, UserUpdateOperation.UPDATE_CORE);
 						this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_SETTINGS, null);

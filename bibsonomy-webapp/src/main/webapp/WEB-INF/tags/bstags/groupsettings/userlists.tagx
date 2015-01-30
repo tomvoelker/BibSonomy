@@ -175,10 +175,22 @@
 																</c:otherwise>
 															</c:choose>
 														</td>
-														<td class="col-md-2" style="text-align: right">
-															<a href="/updateGroup?operation=remove_member&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${deluserTitle}"><span class="fa fa-times"><!-- Keep me --></span><!-- keep me --></a>
-														</td>
 													</c:if>
+													<td class="col-md-2" style="text-align: right">
+														<!-- TODO: Discuss! This is currently the way it works in the logic.
+															 Maybe add possibility that Mods can remove users:
+															 groupRole eq 'MODERATOR' and isUser
+														-->
+														<c:choose>
+															<c:when test="${groupRole eq 'ADMINISTRATOR'}">
+																<a href="/updateGroup?operation=remove_member&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${deluserTitle}"><span class="fa fa-times"><!-- Keep me --></span><!-- keep me --></a>
+															</c:when>
+															<c:otherwise>
+																<c:out value=" " />
+															</c:otherwise>
+														</c:choose>
+															
+													</td>
 													<c:if test="${groupRole eq 'USER'}">
 														<td class="col-md-8"><c:out value=" " /></td>
 													</c:if>
