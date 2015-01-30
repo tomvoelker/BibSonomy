@@ -266,6 +266,15 @@ public interface DatabasePlugin {
 	public void onDiscussionUpdate(final String interHash, DiscussionItem comment, DiscussionItem oldComment, DBSession session);	
 	
 	/**
+	 * called when several comments had to be updated.
+	 * 
+	 * @param username
+	 * @param groupId
+	 * @param session 
+	 */
+	public void onDiscussionMassUpdate(final String username, final int groupId, DBSession session);
+	
+	/**
 	 * called when a comment will be deleted
 	 * 
 	 * @param interHash

@@ -162,14 +162,8 @@ public class DiscussionDatabaseManager extends AbstractDatabaseManager {
 		final DiscussionItemParam<DiscussionItem> param = new DiscussionItemParam<>();
 		param.setUserName(leavingUser.getName());
 		param.setGroupId(groupId);
-		// FIXME: (groups) Logging of group change missing
-		
-		List<DiscussionItem> itemsToModify = this.queryForList("getDiscussionsInGroupFromLeavingUser", param, DiscussionItem.class, session);
-		
-		for (DiscussionItem item : itemsToModify) {
-			this.plugins.onDiscussionUpdate(item.getHash(), item, item, session);
-		}
-		
+
+		this.onDiscussionMassUpdate(leavingUser.getName(), groupId, session);
 		this.update("updateDiscussionsInGroupFromLeavingUser", param, session);
 	}
 
@@ -178,5 +172,9 @@ public class DiscussionDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void setChain(final Chain<List<DiscussionItem>, DiscussionItemParam<?>> chain) {
 		this.chain = chain;
+	}
+	
+	public void onDiscussionMassUpdate(String username, int groupId, DBSession session) {
+		
 	}
 }
