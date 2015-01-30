@@ -13,23 +13,13 @@
 	</resultMap>
 	
 	<select id="getPostMetaData" parameterClass="metaDataPostParam" resultMap="postMetaDataList">
-		SELECT a.user_name, a.key, a.value, a.date, b1.simhash1 AS inter_hash, b1.simhash2 AS intra_hash FROM post_metadata AS a
-		JOIN bibtex b1 ON a.content_id = b1.content_id
-		JOIN bibtex b2 ON a.ref_content_id = b2.content_id
-		WHERE 
-			b1.group IN (
-			<iterate property="groups" conjunction=",">
-		    	$groups[]$
-			</iterate>)
-			AND b2.group IN (
-			<iterate property="groups" conjunction=",">
-		    	$groups[]$
-			</iterate>)
+		SELECT `user_name`, `intra_hash`, `inter_hash`, `key`, `value`, `date` FROM post_metadata
+		<dynamic prepend="WHERE">
 			<isNotEmpty property="intraHash" prepend="AND"> 
-				(b2.`simhash2` = #intraHash# OR b1.`simhash2` = #intraHash#)
+				`intra_hash` = #intraHash# 
 			</isNotEmpty>
 			<isNotEmpty property="interHash" prepend="AND"> 
-				(b2.`simhash1` = #interHash# or b1.`simhash1` = #interHash#)
+				`inter_hash` = #interHash# 
 			</isNotEmpty>
 			<isNotEmpty property="userName" prepend="AND"> 
 				`user_name` = #userName# 
@@ -37,7 +27,8 @@
 			<isNotEmpty property="key" prepend="AND"> 
 				`key` = #key# 
 			</isNotEmpty>
-		ORDER BY a.`date` ASC
+		</dynamic>
+		ORDER BY `date` ASC
 	</select>
  
 </sqlMap>

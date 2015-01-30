@@ -2919,10 +2919,10 @@ public class DBLogic implements LogicInterface {
 	}	
 	
 	@Override
-	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String reqUserName, final String metaDataPluginKey) {
+	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey) {
 		final DBSession session = openSession();
 		try {
-			return this.publicationDBManager.getPostMetaData(hashType, resourceHash, this.loginUser, reqUserName, metaDataPluginKey, session);
+			return this.publicationDBManager.getPostMetaData(hashType, resourceHash, userName, metaDataPluginKey, session);
 		} finally {
 			session.close();
 		}

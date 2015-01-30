@@ -1662,14 +1662,13 @@ DROP TABLE IF EXISTS `post_metadata`;
 SET @saved_cs_client     = @@character_set_client;
 CREATE TABLE `post_metadata` (
   `user_name` VARCHAR(30),
-  `content_id` int(10) unsigned NOT NULL,
-  `ref_content_id` int(10) unsigned NULL,
+  `intra_hash` CHAR(32),
+  `inter_hash` CHAR(32),
   `key` VARCHAR(50),
   `value` TEXT,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
-
 
 --
 -- Table structure for table `log_discussion`

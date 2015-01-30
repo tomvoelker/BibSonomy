@@ -708,7 +708,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			final Group group = this.getGroupByName(groupname, session);
 			if (group == null) {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't add user to nonexistent group");
-				throw new RuntimeException(); // never happens but calms down eclipse 
 			}
 			// make sure that the user isn't a member of the group
 			if (this.isUserInGroup(username, group)) {

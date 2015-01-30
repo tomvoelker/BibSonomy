@@ -4,20 +4,8 @@
 <sqlMap namespace="MetaDataPlugin">
 	
 	<insert id="logPostCopy" parameterClass="metaDataPostParam">
-		INSERT INTO post_metadata (`user_name`, `key`, `value`, `content_id`, `ref_content_id`)
-		VALUES (#userName#, #key#, #value#, #contentId#, #refContentId#)
+		INSERT INTO post_metadata (`user_name`, `intra_hash`, `inter_hash`, `key`, `value`)
+		VALUES (#userName#, #intraHash#, #interHash#, #key#, #value#)
 	</insert>
-		
-	<update id="updateMetaDataPostContentId" parameterClass="metaDataPostParam">
-		UPDATE post_metadata 
-		SET content_id = #newContentId#
-		WHERE content_id = #contentId#
-	</update>
-		
-	<update id="updateMetaDataPostRefContentId" parameterClass="metaDataPostParam">
-		UPDATE post_metadata 
-		SET ref_content_id = #newContentId#
-		WHERE ref_content_id = #contentId#
-	</update>
 
 </sqlMap>
