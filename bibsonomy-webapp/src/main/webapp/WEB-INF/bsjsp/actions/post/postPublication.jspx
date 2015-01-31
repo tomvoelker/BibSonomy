@@ -68,12 +68,30 @@
 						</fieldset>
 					</form:form>
 				</div>
-				<div class="tab-pane ${command.selTab == 1 ? 'active' : ''}" id="selTab1">
+				<div class="postpublicationoptions tab-pane ${command.selTab == 1 ? 'active' : ''}" id="selTab1">
 					<post:postPublicationSnippet/>
 				</div>
-				<div class="tab-pane ${command.selTab == 2 ? 'active' : ''}" id="selTab2">
+				<div class="postpublicationoptions tab-pane ${command.selTab == 2 ? 'active' : ''}" id="selTab2">
 					<post:postPublicationUpload/>
 				</div>
+					<!-- JavaScript for Snippet  and Upload options -->
+					<script type="text/javascript">
+						//<mtl:cdata>
+						<![CDATA[
+							$(function() {
+								$('.postpublicationoptions #whitespace-0, .postpublicationoptions #whitespace-1').attr('disabled', 1);
+								//document.getElementById("whitespace").disabled = select.options[select.options.selectedIndex].value == " ";
+								$('.postpublicationoptions select').change(function(){
+									var id = $(this).attr('id');
+									var no = id.substring(id.length-1);
+									$('.postpublicationoptions #whitespace-'+no).attr('disabled', $(this).val() == " ");
+								});
+								
+							});
+						]]> 
+						//</mtl:cdata>
+					</script>   
+				
 				<div class="tab-pane ${command.selTab == 3 ? 'active' : ''}" id="selTab3">
 					<post:postPublicationID/>
 				</div>
@@ -110,7 +128,7 @@
 			        </fieldset>
 				</div> 
 			</c:if> 
-
+			<br /><br />
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading">
