@@ -90,16 +90,21 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 						// get user details with an admin logic to get the mail address
 						final User invitedUser = this.adminLogic.getUserDetails(username);
 						if (present(invitedUser.getName())) {
-							final GroupMembership ms = new GroupMembership(invitedUser, null, false);
-							try {
-								// since now only one user can be invited to a group at once
-								this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_INVITED, ms);
-								this.mailUtils.sendGroupInvite(groupToUpdate.getName(), loginUser, invitedUser, this.requestLogic.getLocale());
-							} catch (final Exception ex) {
-								log.error("error while inviting user '" + username + "' to group '" + groupToUpdate + "'", ex);
-								// if a user can't be added to a group, this exception is thrown
-								this.errors.rejectValue("username", "settings.group.error.inviteUserToGroupFailed", new Object[]{username, groupToUpdate},
-										"The User {0} couldn't be invited to the Group {1}.");
+							final GroupMembership membership = groupToUpdate.getGroupMembershipForUser(invitedUser);
+							if (!present(membership)) {
+								final GroupMembership ms = new GroupMembership(invitedUser, null, false);
+								try {
+									// since now only one user can be invited to a group at once
+									this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_INVITED, ms);
+									this.mailUtils.sendGroupInvite(groupToUpdate.getName(), loginUser, invitedUser, this.requestLogic.getLocale());
+								} catch (final Exception ex) {
+									log.error("error while inviting user '" + username + "' to group '" + groupToUpdate + "'", ex);
+									// if a user can't be added to a group, this exception is thrown
+									this.errors.rejectValue("username", "settings.group.error.inviteUserToGroupFailed", new Object[]{username, groupToUpdate},
+											"The User {0} couldn't be invited to the Group {1}.");
+								}
+							} else {
+								// TODO: handle case of already invited user
 							}
 						} else {
 							// TODO: handle case of non existing user!
