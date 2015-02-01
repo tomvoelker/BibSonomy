@@ -48,7 +48,8 @@ import org.bibsonomy.model.util.UserUtils;
  */
 public class DiscussionDatabaseManager extends AbstractDatabaseManager {
 	private static final DiscussionDatabaseManager INSTANCE = new DiscussionDatabaseManager();
-	protected final DatabasePluginRegistry plugins;
+	
+	private final DatabasePluginRegistry plugins;
 
 	/**
 	 * @return the @{link:DiscussionManager} instance
@@ -158,12 +159,19 @@ public class DiscussionDatabaseManager extends AbstractDatabaseManager {
 		return rootItems;
 	}
 	
+	/**
+	 * FIXME: as soon as we support multiple groups this handling must be adapted?
+	 * 
+	 * @param leavingUser
+	 * @param groupId
+	 * @param session
+	 */
 	public void updateDiscussionsInGroupFromLeavingUser(User leavingUser, int groupId, DBSession session) {
 		final DiscussionItemParam<DiscussionItem> param = new DiscussionItemParam<>();
 		param.setUserName(leavingUser.getName());
 		param.setGroupId(groupId);
 
-		this.onDiscussionMassUpdate(leavingUser.getName(), groupId, session);
+		this.plugins.onDiscussionMassUpdate(leavingUser.getName(), groupId, session);
 		this.update("updateDiscussionsInGroupFromLeavingUser", param, session);
 	}
 
@@ -172,9 +180,5 @@ public class DiscussionDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void setChain(final Chain<List<DiscussionItem>, DiscussionItemParam<?>> chain) {
 		this.chain = chain;
-	}
-	
-	public void onDiscussionMassUpdate(String username, int groupId, DBSession session) {
-		
 	}
 }

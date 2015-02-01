@@ -1768,7 +1768,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param groupId
 	 * @param session
 	 */
-	public void updatePostsGroupFromLeavingUser(User leavingUser, int groupId, DBSession session) {
+	public void updatePostsInGroupFromLeavingUser(User leavingUser, int groupId, DBSession session) {
 		final ResourceParam<R> param = new ResourceParam<>();
 		param.setGroupId(groupId);
 		String username = leavingUser.getName();

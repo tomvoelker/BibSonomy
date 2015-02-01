@@ -1151,7 +1151,8 @@ public class DBLogic implements LogicInterface {
 				this.groupDBManager.addUserToGroup(groupName, membership.getUser().getName(), GroupRole.USER, session);
 				break;
 			case REMOVE_MEMBER:
-				// Only admins or the user himself can remove a user from the group
+				// only admins or the user himself can remove a user from the group
+				// TODO: what about group moderators and group admins?
 				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, groupName);
 				
 				// we need at least one admin in the group at all times.
@@ -1162,22 +1163,23 @@ public class DBLogic implements LogicInterface {
 					session.beginTransaction();
 					this.groupDBManager.removeUserFromGroup(groupName, membership.getUser().getName(), session);
 					
-					// FIXME: (groups) paramgroup must not contain a group id
-					// (tni): Why?! We actually need this ID!
+					// get the id of the group
+					final Group groupDetails = this.getGroupDetails(groupName);
+					final int groupId = groupDetails.getGroupId();
 					
 					// set all tas shared with the group to private (groupID 1)
-					this.tagDBManager.updateTasInGroupFromLeavingUser(membership.getUser(), paramGroup.getGroupId(), session);
+					this.tagDBManager.updateTasInGroupFromLeavingUser(membership.getUser(), groupId, session);
 					
 					/*
 					 * update the visibility of the post that are "assigned" to
 					 * the group
 					 *  XXX: a loop over all resource database managers that allow groups
 					 */
-					this.publicationDBManager.updatePostsGroupFromLeavingUser(membership.getUser(), paramGroup.getGroupId(), session);
-					this.bookmarkDBManager.updatePostsGroupFromLeavingUser(membership.getUser(), paramGroup.getGroupId(), session);
+					this.publicationDBManager.updatePostsInGroupFromLeavingUser(membership.getUser(), groupId, session);
+					this.bookmarkDBManager.updatePostsInGroupFromLeavingUser(membership.getUser(), groupId, session);
 					
 					// set all discussions in the group to private (groupID 1)
-					this.discussionDatabaseManager.updateDiscussionsInGroupFromLeavingUser(membership.getUser(), paramGroup.getGroupId(), session);
+					this.discussionDatabaseManager.updateDiscussionsInGroupFromLeavingUser(membership.getUser(), groupId, session);
 					
 					session.commitTransaction();
 				} finally {
