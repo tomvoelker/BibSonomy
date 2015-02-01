@@ -51,46 +51,48 @@
 			<editpub:details post="${command.post}" />
 			
 			<c:if test="${not empty command.scrapingContext}">
-				<bsform:fieldset legendKey="post.resource.fields.scraper" >
-					<jsp:attribute name="content">
-
-	                  	<div class="form-group">
-	                    	<label class="col-sm-3 control-label"><fmt:message key="post.resource.fields.scraper.url"/></label>
-	                    
-	                    	<div class="col-sm-3">
-                    			<p class="form-control-static">
-	                    			<span class="fsInput" style="background-color:#EEEEEE;">
-	                    				<a href="${fn:escapeXml(command.scrapingContext.url)}"><c:out value="${command.scrapingContext.url}"/></a>
-                    				</span>
-	                    		</p>
-	                    	</div>
-	                  	</div>
-	                  	
-	                  	<c:if test="${not empty command.scrapingContext.selectedText}">
-							<div class="form-group">
-								<label class="col-sm-3 control-label"><fmt:message key="post.resource.fields.scraper.selectedText"/></label>
-								<div class="col-sm-9">
-		        					<textarea class="form-control" rows="5" disabled="disabled"><c:out value="${command.scrapingContext.selectedText}"/></textarea>
+				<c:if test="${not command.context.loginUser.settings.layoutSettings.simpleInterface}">
+					<bsform:fieldset legendKey="post.resource.fields.scraper" >
+						<jsp:attribute name="content">
+	
+		                  	<div class="form-group">
+		                    	<label class="col-sm-3 control-label"><fmt:message key="post.resource.fields.scraper.url"/></label>
+		                    
+		                    	<div class="col-sm-3">
+	                    			<p class="form-control-static">
+		                    			<span class="fsInput" style="background-color:#EEEEEE;">
+		                    				<a href="${fn:escapeXml(command.scrapingContext.url)}"><c:out value="${command.scrapingContext.url}"/></a>
+	                    				</span>
+		                    		</p>
+		                    	</div>
+		                  	</div>
+		                  	
+		                  	<c:if test="${not empty command.scrapingContext.selectedText}">
+								<div class="form-group">
+									<label class="col-sm-3 control-label"><fmt:message key="post.resource.fields.scraper.selectedText"/></label>
+									<div class="col-sm-9">
+			        					<textarea class="form-control" rows="5" disabled="disabled"><c:out value="${command.scrapingContext.selectedText}"/></textarea>
+		        					</div>
 	        					</div>
-        					</div>
-						</c:if>
-		
-						<div class="form-group">
-							<label class="col-sm-3 control-label"><fmt:message key="post.resource.fields.scraper.scraper"/><!--  --></label>
-							<div class="col-sm-9">
-								<p class="form-control-static"><a href="${scraperinfourl}${fn:escapeXml(command.scrapingContext.scraper['class'].simpleName)}"><c:out value="${command.scrapingContext.scraper['class'].simpleName}"/></a>: ${command.scrapingContext.scraper.info}</p>
+							</c:if>
+			
+							<div class="form-group">
+								<label class="col-sm-3 control-label"><fmt:message key="post.resource.fields.scraper.scraper"/><!--  --></label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="${scraperinfourl}${fn:escapeXml(command.scrapingContext.scraper['class'].simpleName)}"><c:out value="${command.scrapingContext.scraper['class'].simpleName}"/></a>: ${command.scrapingContext.scraper.info}</p>
+								</div>
 							</div>
-						</div>
-
-						<div class="form-group">
-							<label class="col-sm-3 control-label"><fmt:message key="post.resource.fields.scraper.result"/></label>
-							<div class="col-sm-9">
-								<textarea class="form-control" rows="5" disabled="disabled"><c:out value="${command.scrapingContext.bibtexResult}"/></textarea>
+	
+							<div class="form-group">
+								<label class="col-sm-3 control-label"><fmt:message key="post.resource.fields.scraper.result"/></label>
+								<div class="col-sm-9">
+									<textarea class="form-control" rows="5" disabled="disabled"><c:out value="${command.scrapingContext.bibtexResult}"/></textarea>
+								</div>
 							</div>
-						</div>
-		                  
-                	</jsp:attribute>
-            	</bsform:fieldset>
+			                  
+	                	</jsp:attribute>
+	            	</bsform:fieldset>
+	            </c:if>
          	</c:if>
          	
        </jsp:attribute>
