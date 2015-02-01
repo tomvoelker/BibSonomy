@@ -514,7 +514,7 @@
 	
 	<select id="getBookmarkWithDiscussionsForGroup" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="bookmarkParam">
 		SELECT b.content_id, d2.interHash, d2.interHash AS intraHash, b.title, description, b.date,
-				b.url, null as user_name, b.content_type, 0 as count, <include refid="reviewRatingsRows" />
+				b.url, null as user_name, b.content_type, 0 as count,b.approved, <include refid="reviewRatingsRows" />
 		FROM (
 				SELECT interHash, MAX(date)  AS date
 				FROM groups g, discussion d
