@@ -16,6 +16,7 @@
 		<result property="date"         column="date"           javaType="date" />
 		<result property="user"         resultMap="Common.user" />
 		<result property="description"  column="description"    javaType="string" />
+		<result property="changeDate"  column="change_date"    javaType="date" />
 		<result property="approved"		column="approved"		javaType="int" />
 	</resultMap>
 	

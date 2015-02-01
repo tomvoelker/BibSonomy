@@ -32,8 +32,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.GoldStandardPublication;
@@ -53,7 +53,7 @@ import recommender.core.interfaces.model.TagRecommendationEntity;
 
 /**
  * controller for the edit gold standard publication form
- * 	- editGoldStandardPublication
+ * - editGoldStandardPublication
  * 
  * @author dzo
  */
@@ -86,13 +86,13 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 		} catch (final ObjectNotFoundException ex) {
 			// ignore
 		} catch (final ResourceMovedException ex) {
-			// ignore		
+			// ignore
 		}
 
 		if (post == null) {
 			return null;
 		}
-		
+
 		return this.convertToGoldStandard(post);
 	}
 
@@ -103,7 +103,7 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 
 	@Override
 	protected View finalRedirect(final String userName, final Post<BibTex> post, final String referer) {
-		if (referer == null || referer.matches(".*/editGoldStandardPublication.*")) {
+		if ((referer == null) || referer.matches(".*/editGoldStandardPublication.*") || referer.contains("/history/")) {
 			return new ExtendedRedirectView(this.urlGenerator.getPublicationUrl(post.getResource(), null));
 		}
 
@@ -122,6 +122,11 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 		gold.setResource(goldP);
 
 		return gold;
+	}
+
+	@Override
+	protected String getGrouping(final User requestedUser) {
+		return null;
 	}
 
 	@Override

@@ -16,8 +16,12 @@
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8"
 		language="java" pageEncoding="UTF-8" session="true" />
-	<layout:paneLayout requPath="${requPath}" command="${command}"
-		pageTitle="${command.pageTitle}" headerMessageKey="post.resource.postHistory">
+	
+		<layout:paneLayout pageTitle="${command.pageTitle}" 
+			headerLogoClass="publications" 
+			command="${command}" 
+			requestedUser="${command.requestedUser}" 
+			requPath="${requPath}" headerMessageKey="bibtex.publicationHistory.title">
 
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css"

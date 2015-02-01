@@ -33,7 +33,7 @@
 		<c:set var="itemType" value="http://schema.org/Book"/>
 	</c:if>
 	<div id="goldstandard">
-		<h1 class="content-header">Community Page</h1>
+		<h1 class="content-header"><fmt:message key="community.page"/></h1>
 		<div class="title">
 			<div class="media">
 				<!-- 

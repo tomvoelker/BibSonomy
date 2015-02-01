@@ -134,7 +134,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 
 	@SuppressWarnings("unchecked")
 	protected Post<R> getGoldStandardPostByHash(final String resourceHash, final DBSession session) {
-		final P param = createResourceParam(resourceHash);
+		final P param = this.createResourceParam(resourceHash);
 		return (Post<R>) this.queryForObject("getGoldStandardByHash", param, session);
 	}
 
@@ -146,28 +146,28 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	
 	@SuppressWarnings("unchecked")
 	protected Set<RR> getRefencedByForPost(final String resourceHash, final DBSession session) {
-		final P param = createResourceParam(resourceHash);
+		final P param = this.createResourceParam(resourceHash);
 		param.setRelation(GoldStandardRelation.REFERENCE);
 		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRelatedBy", param, session));
 	}
 	
 	@SuppressWarnings("unchecked")
 	protected Set<RR> getReferencePartOfThisPublication(final String resourceHash, final DBSession session) {
-		final P param = createResourceParam(resourceHash);
+		final P param = this.createResourceParam(resourceHash);
 		param.setRelation(GoldStandardRelation.PART_OF);
 		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRelatedBy", param, session));
 	}
 
 	@SuppressWarnings("unchecked")
-	private Set<RR> getReferenceThisPublicationIsPublishedIn(String resourceHash, DBSession session) {
-		final P param = createResourceParam(resourceHash);
+	private Set<RR> getReferenceThisPublicationIsPublishedIn(final String resourceHash, final DBSession session) {
+		final P param = this.createResourceParam(resourceHash);
 		param.setRelation(GoldStandardRelation.PART_OF);
 		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRelated", param, session));
 	}
 	
 	@SuppressWarnings("unchecked")
 	protected Set<RR> getReferencesForPost(final String interHash, final DBSession session) {
-		final P param = createResourceParam(interHash);
+		final P param = this.createResourceParam(interHash);
 		param.setRelation(GoldStandardRelation.REFERENCE);
 		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRelated", param, session));
 	}
@@ -218,11 +218,14 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		this.insert("insert" + this.resourceClassName, insertParam, session);
 	}
 
-	@SuppressWarnings("unchecked") // XXX: java generics :(
+	
+	@SuppressWarnings("unchecked")
+	// XXX: java generics :(
 	protected P getInsertParam(final Post<R> post) {
 		final P insert = this.createNewParam();
-		
-		insert.setResource((RR)post.getResource());
+
+
+		insert.setResource((RR) post.getResource());
 		insert.setDescription(post.getDescription());
 		insert.setDate(post.getDate());
 		insert.setRequestedContentId(post.getContentId().intValue());
@@ -294,7 +297,13 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			post.setContentId(Integer.valueOf(newContentId));
 			
 			// first log the gold standard
-			this.onGoldStandardUpdate(oldPost.getContentId().intValue(), newContentId, oldHash, resourceHash, session); // logs old post and updates reference table
+			this.onGoldStandardUpdate(oldPost.getContentId().intValue(), newContentId, oldHash, resourceHash, session); // logs
+																														// old
+																														// post
+																														// and
+																														// updates
+																														// reference
+																														// table
 			// than you can delete it
 			this.deletePost(oldHash, true, session);
 			// and add a new one
@@ -377,7 +386,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 						param.setRelation(relation);
 						this.insert("insertGoldStandardRelation", param, session);
 					} else {
-						log.info("Can't add reference. Gold standard " + this.resourceClassName +  " reference with resourceHash " + referenceHash + " not found.");
+						log.info("Can't add reference. Gold standard " + this.resourceClassName + " reference with resourceHash " + referenceHash + " not found.");
 					}
 				}
 			}
@@ -442,7 +451,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	/**
 	 * 
 	 * @param userName
-	 * @param interHash
+	 * @param interrHash
 	 * @param interHashRef
 	 * @param interHashRelation
 	 * @param session

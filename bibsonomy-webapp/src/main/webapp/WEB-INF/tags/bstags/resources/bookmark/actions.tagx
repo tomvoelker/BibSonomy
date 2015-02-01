@@ -10,7 +10,7 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 
-
+	<c:set var="rscType" value="bookmark" />
 
 	<div class="edit-media-buttons btn-group btn-group-xs">
 
@@ -107,6 +107,35 @@
 				</c:choose>
 			</c:otherwise>
 		</c:choose>
+
+	<!-- 	<c:if test="${empty enableHistory}"> -->
+		<fmt:message key="bookmark.actions.posthistory.title" var="postHistoryTitle" />
+		<c:choose>
+			<c:when test="${command.context.userLoggedIn and (loginUserName eq post.user.name)}">
+				<!-- user is post's owner -->
+				<!-- we need to send the resource type, in order to call the appropriate view later (HistoryBM or HistoryBib) -->
+				<a class="${buttonClasses}" href="/history/${rscType}/${post.resource.intraHash}/${post.user.name}" title="${postHistoryTitle}">
+					<span class="fa fa-list-ol"><!--  --></span>
+				</a>
+			</c:when>
+			<c:when test="${empty post.user}">
+				<!-- post is a community post -->
+				<!-- we need to send the resource type, in order to call the appropriate view later (HistoryBM or HistoryBib) -->
+				<a class="${buttonClasses}" href="/history/goldstandardbookmark/${post.resource.interHash}" title="${postHistoryTitle}">
+					<span class="fa fa-list-ol"><!--  --></span>
+				</a>
+			</c:when>
+			<c:otherwise>
+				<!-- For signed out users and those who do not own the post we always show the inactive history button -->
+				<fmt:message key="bookmark.actions.posthistory.inactive" var="historyTitle" />
+				<a class="${buttonClasses}" title="${historyTitle}" disabled="disabled">
+					<span class="fa fa-list-ol"><!--  --></span>
+				</a>
+			</c:otherwise>
+		</c:choose>
+	<!--</c:if>-->
+
+
 
 		<!--+
 			| ADMIN ACTIONS (COMMUNITY POST)

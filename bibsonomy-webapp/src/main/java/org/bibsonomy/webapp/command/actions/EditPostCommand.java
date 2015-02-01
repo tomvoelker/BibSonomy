@@ -59,17 +59,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 
 	private Post<RESOURCE> diffPost;
 
-	/**
-	 * Post required for Diff Post View
-	 */
-	private Post<RESOURCE> postDiff;
-
-	/**
-	 * stores version (index of publication in history list)
-	 */
-	private int compareVersion;
-
-	/**
+		/**
 	 * If the user edits his own post, this field is used to identify the post.
 	 */
 	private String intraHashToUpdate;
@@ -135,8 +125,9 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	private String saveAndRate;
 	private boolean approved = false;
 	
+	private int compareVersion;
+	private List<String> differentEntryKeys;
 
-	
 	/**
 	 * @return saveAndRate
 	 */
@@ -480,35 +471,30 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	}
 
 	/**
-	 * @return Index from postDiff in PostHistoryList
+	 * @return the differentEntryKeys
+	 */
+	public List<String> getDifferentEntryKeys() {
+		return this.differentEntryKeys;
+	}
+
+	/**
+	 * @param differentEntryKeys the differentEntryKeys to set
+	 */
+	public void setDifferentEntryKeys(List<String> differentEntryKeys) {
+		this.differentEntryKeys = differentEntryKeys;
+	}
+	 * @return the compareVersion
 	 */
 	public int getCompareVersion() {
 		return this.compareVersion;
 	}
 
 	/**
-	 * @param compareVersion
-	 *            The index of the post which should be compared to current post
+	 * @param compareVersion the compareVersion to set
 	 */
-	public void setCompareVersion(final int compareVersion) {
+	public void setCompareVersion(int compareVersion) {
 		this.compareVersion = compareVersion;
 	}
-
-	/**
-	 * @return post which should compared to current post
-	 */
-	public Post<RESOURCE> getPostDiff() {
-		return this.postDiff;
-	}
-
-	/**
-	 * @param postDiff
-	 *            The post which should be compared to current post
-	 */
-	public void setPostDiff(final Post<RESOURCE> postDiff) {
-		this.postDiff = postDiff;
-	}
-
 	/**
 	 * @return the approved
 	 */

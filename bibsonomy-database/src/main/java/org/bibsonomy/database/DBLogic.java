@@ -680,6 +680,9 @@ public class DBLogic implements LogicInterface {
 			 * groupingName, tags, hash, popular, added, start, end, false));
 			 * 
 			 */
+			if (FilterEntity.POSTS_HISTORY.equals(filter) && !((resourceType== GoldStandardPublication.class) || (resourceType== GoldStandardBookmark.class))) {
+				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, this.loginUser.getName());
+			}
 			if (resourceType == BibTex.class) {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
 				// check permissions for displaying links to documents
@@ -1903,13 +1906,8 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public InetAddressStatus getInetAddressStatus(final InetAddress address) {
-		// everybody is allowed to ask for the status of an address
-		/*
-		 * TODO: is this really OK? At least it is neccessary, because otherwise
-		 * the RegistrationHandler can not check the status of an address.
-		 */
-		// this.ensureLoggedIn();
-		// this.permissionDBManager.ensureAdminAccess(loginUser);
+		this.ensureLoggedIn();
+		this.permissionDBManager.ensureAdminAccess(loginUser);
 		final DBSession session = openSession();
 		try {
 			return this.adminDBManager.getInetAddressStatus(address, session);
