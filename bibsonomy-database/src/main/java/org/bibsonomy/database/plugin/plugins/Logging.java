@@ -39,6 +39,7 @@ import org.bibsonomy.database.params.LoggingParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.database.params.discussion.DiscussionItemParam;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.enums.GoldStandardRelation;
@@ -166,6 +167,14 @@ public class Logging extends AbstractDatabasePlugin {
     	param.setRequestedUserName(userName);
     	this.insert("logBookmarkMassUpdate", param, session);
     }
+	
+	@Override
+	public void onDiscussionMassUpdate(String userName, int groupId, DBSession session) {
+		final DiscussionItemParam<DiscussionItem> param = new DiscussionItemParam<>();
+		param.setUserName(userName);
+		param.setGroupId(groupId);
+		this.insert("logDiscussionMassUpdate", param, session);
+	}
 
     @Override
     public void onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {

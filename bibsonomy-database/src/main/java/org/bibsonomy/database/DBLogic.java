@@ -1151,13 +1151,19 @@ public class DBLogic implements LogicInterface {
 				this.groupDBManager.addUserToGroup(groupName, membership.getUser().getName(), GroupRole.USER, session);
 				break;
 			case REMOVE_MEMBER:
-				// FIXME: only the user himself or a group admin can remove members, add checks here
-				// FIXME: at least one admin must be in the group
+				// Only admins or the user himself can remove a user from the group
+				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, groupName);
+				
+				// we need at least one admin in the group at all times.
+				if (this.permissionDBManager.userHasGroupRole(loginUser, groupName, GroupRole.ADMINISTRATOR) && this.groupDBManager.hasOneAdmin(paramGroup, session)) {
+					throw new IllegalArgumentException("Group has only this admin left, cannot remove this user.");
+				}
 				try {
 					session.beginTransaction();
 					this.groupDBManager.removeUserFromGroup(groupName, membership.getUser().getName(), session);
 					
 					// FIXME: (groups) paramgroup must not contain a group id
+					// (tni): Why?! We actually need this ID!
 					
 					// set all tas shared with the group to private (groupID 1)
 					this.tagDBManager.updateTasInGroupFromLeavingUser(membership.getUser(), paramGroup.getGroupId(), session);

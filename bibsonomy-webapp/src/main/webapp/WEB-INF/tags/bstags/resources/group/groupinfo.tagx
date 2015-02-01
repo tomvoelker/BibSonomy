@@ -20,7 +20,7 @@
 	</c:if>
 	<br />
 	<c:if test="${not empty group.homepage}">
-		<small><a href="${mtl:encodeURI(group.homepage)}">Homepage</a></small>
+		<small><a href="${group.homepage}">Homepage</a></small><c:out value=" " />
 	</c:if>
 	<!-- TODO: use url generator -->
 	<small><a href="/cv/group/${fn:escapeXml(group.name)}">CV</a></small>

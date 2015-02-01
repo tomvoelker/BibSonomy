@@ -338,4 +338,11 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 			plugin.onPublicationMassUpdate(username, groupId, session);
 		}
 	}
+
+	@Override
+	public void onDiscussionMassUpdate(String username, int groupId, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onDiscussionMassUpdate(username, groupId, session);
+		}
+	}
 }

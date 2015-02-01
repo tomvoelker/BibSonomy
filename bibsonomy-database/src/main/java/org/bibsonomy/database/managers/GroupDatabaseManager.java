@@ -275,7 +275,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Returns true if there's only one admin for the group.
 	 */
-	private boolean hasOneAdmin(final Group g, final DBSession session) {
+	public boolean hasOneAdmin(final Group g, final DBSession session) {
 		final GroupParam p = new GroupParam();
 		p.setMembership(new GroupMembership(null, GroupRole.ADMINISTRATOR, true));
 		p.setGroupId(g.getGroupId());

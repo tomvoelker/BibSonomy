@@ -206,5 +206,10 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	public void onDocumentUpdate(DocumentParam updatedDocumentParam, DBSession session) {
 		// noop
 	}
+
+	@Override
+	public void onDiscussionMassUpdate(String username, int groupId, DBSession session) {
+		// poon
+	}
 	
 }

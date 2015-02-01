@@ -66,7 +66,7 @@
 		SELECT content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name, content_id
 		FROM bookmark WHERE user_name = #requestedUserName# AND `group` = #groupId#
 	</insert>
-
+	
 	<insert id="logTagRelation" parameterClass="tagRelationParam">	
 		INSERT INTO log_tagtagrelations (relationID, lower, upper, date_of_create, user_name) 
 		SELECT relationID, lower, upper, date_of_create, user_name
@@ -152,6 +152,13 @@
 			WHERE d.discussion_id = #id#
 	</insert>
 	
+	<insert id="logDiscussionMassUpdate" parameterClass="discussionItemParam">
+		INSERT INTO log_discussion (<include refid ="discussionColumns"/>)
+			SELECT <include refid ="commonDiscussionLogsAttributes"/>
+				FROM discussion d
+			WHERE d.user_name=#userName# AND `group`=#groupId#
+	</insert>
+
 	<!-- document logs -->
 	<insert id="logDocument" parameterClass="documentParam">
 		INSERT INTO log_document (hash, content_id, name, user_name, date, md5hash, log_date)
