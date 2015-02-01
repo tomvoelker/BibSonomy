@@ -1138,6 +1138,7 @@
 	<bean id="groupRequestController" class="org.bibsonomy.webapp.controller.GroupRequestController" scope="request">
 		<property name="logic" ref="logic" />
 		<property name="adminLogic" ref ="adminLogic" />
+		<property name="mailer" ref="mailUtils" />
 	</bean>
 	
 	<!-- Handles the profile update of a user -->

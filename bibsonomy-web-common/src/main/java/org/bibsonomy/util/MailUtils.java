@@ -38,6 +38,8 @@ import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.User;
 import org.bibsonomy.services.URLGenerator;
 import org.springframework.context.MessageSource;
@@ -273,6 +275,28 @@ public class MailUtils {
 		}
 		return false;
 	}
+	
+	/**
+	 * @param requestedGroup
+	 */
+	public void sendGroupRequest(final Group requestedGroup) {
+		try {
+			// TODO: use project default locale?
+			final Locale locale = Locale.ENGLISH;
+			final GroupRequest groupRequest = requestedGroup.getGroupRequest();
+			final String userName = groupRequest.getUserName();
+			final String userUrl = this.absoluteURLGenerator.getUserUrlByUserName(userName);
+			final String groupAdminPage = this.absoluteURLGenerator.getAdminUrlByName("group");
+			final Object[] messagesParameters = { requestedGroup.getName(), userName, userUrl, requestedGroup.getDescription(), groupRequest.getReason(), groupAdminPage };
+			final String messageBody = messageSource.getMessage("grouprequest.mail.body", messagesParameters, locale);
+			final String messageSubject = messageSource.getMessage("grouprequest.mail.subject", messagesParameters, locale);
+			
+			// TODO: currently using projectEmail, maybe we want a special mail address?
+			sendMail(new String[] { this.projectEmail }, messageSubject, messageBody, this.projectJoinGroupRequestFromAddress);
+		} catch (final MessagingException e) {
+			log.fatal("Could not send reminder mail: " + e.getMessage());
+		}
+	}
 
 	/**
 	 * Sends a mail to the given recipients
@@ -374,10 +398,6 @@ public class MailUtils {
 	 */
 	public void setMessageSource(final MessageSource messageSource) {
 		this.messageSource = messageSource;
-	}
-
-	public URLGenerator getAbsoluteURLGenerator() {
-		return absoluteURLGenerator;
 	}
 
 	public void setAbsoluteURLGenerator(URLGenerator absoluteURLGenerator) {

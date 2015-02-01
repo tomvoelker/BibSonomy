@@ -35,6 +35,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.GroupRequestCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -55,6 +56,7 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 	private Errors errors = null;
 	private LogicInterface logic;
 	private LogicInterface adminLogic;
+	private MailUtils mailer;
 	
 	/**
 	 * @param command
@@ -109,6 +111,8 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 		requestedGroup.getGroupRequest().setUserName(loginUser.getName());
 		this.logic.createGroup(requestedGroup);
 		
+		this.mailer.sendGroupRequest(requestedGroup);
+		
 		command.setMessage("success.groupRequest.sent", Collections.singletonList(groupName));
 		return Views.SUCCESS;
 	}
@@ -135,6 +139,13 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 	 */
 	public void setAdminLogic(LogicInterface adminLogic) {
 		this.adminLogic = adminLogic;
+	}
+
+	/**
+	 * @param mailer the mailer to set
+	 */
+	public void setMailer(MailUtils mailer) {
+		this.mailer = mailer;
 	}
 
 	@Override
