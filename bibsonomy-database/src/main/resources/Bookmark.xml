@@ -484,7 +484,7 @@
 	
 	<select id="getBookmarkWithDiscussions" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="bookmarkParam">
 		SELECT b.content_id, d2.interHash, d2.interHash AS intraHash, b.title, description, b.date,
-		       b.url, null as user_name, b.content_type, 0 as count, <include refid="reviewRatingsRows" />
+		       b.url, null as user_name, b.content_type, b.change_date, 0 as count, <include refid="reviewRatingsRows" />
 		FROM (
 				SELECT interHash, MAX(date)  AS date
 				FROM discussion d <include refid="spammerClassifiedJoin"/>
@@ -514,7 +514,7 @@
 	
 	<select id="getBookmarkWithDiscussionsForGroup" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="bookmarkParam">
 		SELECT b.content_id, d2.interHash, d2.interHash AS intraHash, b.title, description, b.date,
-				b.url, null as user_name, b.content_type, 0 as count, <include refid="reviewRatingsRows" />
+				b.url, null as user_name, b.content_type, b.change_date, 0 as count, <include refid="reviewRatingsRows" />
 		FROM (
 				SELECT interHash, MAX(date)  AS date
 				FROM group_memberships g, discussion d
@@ -676,7 +676,9 @@
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 	
-	<update id="updateBookmarkInGroupFromLeavingUser" parameterClass="resourceParam">
-		UPDATE bookmark b SET b.group = 1 WHERE b.user_name = #userName# AND b.group = #groupId#
+	<!-- update group ids of a post
+	<update id="updateBookmarkGroup" parameterClass="bookmarkParam">
+		UPDATE bookmark SET `group` = #groupId#  WHERE content_id = #requestedContentId#
 	</update>
+	-->
 </sqlMap>

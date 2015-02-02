@@ -20,11 +20,11 @@
 		                        edition, month, bookTitle, howpublished, institution, organization, publisher,
 		                        address, school, series, bibtexKey, `group`, date, change_date, user_name, url, description,
 		                        annote, note, pages, bKey, number, crossref, misc, bibtexAbstract, type, day,
-		                        scraperid, privnote, simhash0, simhash1, simhash2, simhash3, new_content_id)
+		                        scraperid, privnote, simhash0, simhash1, simhash2, simhash3, new_content_id, current_content_id)
 		SELECT title, entrytype, author, editor, year, content_id, journal, volume, chapter, edition, month,
 		       bookTitle, howpublished, institution, organization, publisher, address, school, series, bibtexKey,
 		       `group`, date, change_date, user_name, url, description, annote, note, pages, bKey, number, crossref, misc,
-		       bibtexAbstract, type, day, scraperid, privnote, simhash0, simhash1, simhash2, simhash3, #newContentId#
+		       bibtexAbstract, type, day, scraperid, privnote, simhash0, simhash1, simhash2, simhash3, #newContentId#, #newContentId#
 		FROM bibtex WHERE content_id = #requestedContentId#
 	</insert>
 	
@@ -42,8 +42,8 @@
 	</insert>
 	
 	<insert id="logGoldStandard">
-		INSERT INTO log_gold_standard (new_simhash1, content_id, new_content_id, <include refid ="allGoldStandardPublicationColumns"/>)
-		SELECT #newId#, content_id, #newContentId#, <include refid ="allGoldStandardPublicationColumns"/>
+		INSERT INTO log_gold_standard (new_simhash1, content_id, new_content_id, current_content_id, change_date, <include refid ="allGoldStandardPublicationColumns"/>)
+		SELECT #newId#, content_id, #newContentId#, #newContentId#, change_date, <include refid ="allGoldStandardPublicationColumns"/>
 		FROM gold_standard WHERE simhash1 = #oldId#
 	</insert>
 		
@@ -52,8 +52,8 @@
 	</insert>
 
 	<insert id="logBookmark" parameterClass="bookmarkParam">
-		INSERT INTO log_bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name)
-		SELECT content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name
+		INSERT INTO log_bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name, new_content_id, current_content_id)
+		SELECT content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name, #newContentId#, #newContentId#
 		FROM bookmark WHERE content_id = #requestedContentId#
 	</insert>
 

@@ -38,6 +38,8 @@ public class LoggingParam<T> {
 	private T oldId;
 	private T newId;
 	
+	/** Needed for History Update */
+	private int requestedContentId;
 	/** If a newcontentId is updated we need this as reference */
 	private int newContentId;
 	
@@ -97,5 +99,19 @@ public class LoggingParam<T> {
 	 */
 	public void setNewContentId(int newContentId) {
 		this.newContentId = newContentId;
+	}
+
+	/**
+	 * @return the contentId
+	 */
+	public int getContentId() {
+		return requestedContentId;
+	}
+
+	/**
+	 * @param contentId the contentId to set
+	 */
+	public void setContentId(int contentId) {
+		this.requestedContentId = contentId;
 	}
 }

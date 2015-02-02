@@ -145,7 +145,8 @@
 		<function-class>org.bibsonomy.webapp.util.tags.BibTexListTitleHoverFormatter</function-class>
 		<function-signature>String renderHover(org.bibsonomy.model.Post, java.util.Locale)</function-signature>
 	</function>
-	
+	<!-- <function-signature>String renderHover(org.bibsonomy.model.Resource, java.util.Locale, java.lang.Boolean)</function-signature> -->
+
 	<function>
 		<name>normalize</name>
 		<function-class>tags.Functions</function-class>
@@ -248,6 +249,24 @@
 		<function-signature>Boolean isSpammer(java.lang.Integer)</function-signature>
 	</function>
 
+	<function>
+		<name>compareString</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>String compareString(java.lang.String, java.lang.String)</function-signature>
+	</function>
+	
+	<function>
+		<name>DiffEntriesPub</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>java.util.Map DiffEntriesPub(org.bibsonomy.model.Post, org.bibsonomy.model.Post)</function-signature>
+	</function>
+	
+	<function>
+		<name>DiffEntriesBm</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>java.util.Map DiffEntriesBm(org.bibsonomy.model.Post, org.bibsonomy.model.Post)</function-signature>
+	</function>
+			
 	<function>
 		<name>quoteJSON</name>
 		<function-class>tags.Functions</function-class>

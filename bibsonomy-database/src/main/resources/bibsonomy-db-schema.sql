@@ -1,7 +1,7 @@
 -- MySQL dump 10.11
 --
 -- Host: localhost    Database: bibsonomy
--- -----author-------------------------------------------------
+-- ------------------------------------------------------
 -- Server version	5.0.67-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;

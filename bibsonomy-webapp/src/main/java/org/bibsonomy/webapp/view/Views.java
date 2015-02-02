@@ -194,19 +194,28 @@ public enum Views implements View {
 	BIBTEXDETAILS("bibtexdetails"),
 	
 	/**
-	 * DiffBookmark-Page. page with diff of two post
-	 */
-	DIFFBOOKMARKPAGE("actions/post/diffBookmark"),
-	
-	/**
-	 * DiffPublication-Page. page with diff of two post
-	 */
-	DIFFPUBLICATIONPAGE("actions/post/diffPublication"),
-	
-	/**
+	 * TODO: adapt to file name pattern and move into subfolder history
 	 * PostHistory-Page. page with post history
 	 */
-	POSTHISTORYPAGE("postHistory"),
+	HISTORYBIB("HistoryBib"),
+
+	/**
+	 * TODO: adapt to file name pattern and move into subfolder history History
+	 * Page for GoldStandard BibTex. page with post history
+	 */
+	HISTORYGOLDBIB("HistoryGSBib"),
+	
+	/**
+	 * TODO: adapt to file name pattern and move into subfolder history History
+	 * Page for GoldStandard bookmark. page with post history
+	 */
+	HISTORYGOLDBM("HistoryGSBm"),
+	
+	/**
+	 * TODO: adapt to file name pattern and move into subfolder history History
+	 * Page for Bookmarks. page with post history
+	 */
+	HISTORYBM("HistoryBM"),
 
 	/**
 	 * all the posts the user has picked in his clipboard

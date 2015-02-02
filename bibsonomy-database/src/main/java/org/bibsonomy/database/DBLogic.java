@@ -690,6 +690,9 @@ public class DBLogic implements LogicInterface {
 			 * groupingName, tags, hash, popular, added, start, end, false));
 			 * 
 			 */
+			if (FilterEntity.POSTS_HISTORY.equals(filter) && !((resourceType== GoldStandardPublication.class) || (resourceType== GoldStandardBookmark.class))) {
+				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, this.loginUser.getName());
+			}
 			if (resourceType == BibTex.class) {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
 				// check permissions for displaying links to documents

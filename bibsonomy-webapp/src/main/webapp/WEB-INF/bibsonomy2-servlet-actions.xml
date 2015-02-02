@@ -314,6 +314,9 @@
 								<value>abstractGrouping</value>
 								<value>groups</value>
 								<value>ckey</value>
+								<value>tags</value>
+								<value>postsErrorList</value>
+								
 							</list>
 						</property>
 					</bean>
@@ -362,42 +365,8 @@
 						<property name="controllerBeanName" value="editPublicationController"/>
 						<property name="allowedFields">
 							<list>
-								<value>postDiff.description</value>
-								<value>postDiff.date</value> <!-- only allowed for DBLP and used by DBLP updater -->
-								<value>postDiff.changeDate</value>
-								<value>postDiff.resource.url</value>
-								<value>postDiff.resource.title</value>
-								<value>postDiff.resource.author</value>
-								<value>postDiff.resource.editor</value>
-								<value>postDiff.resource.entrytype</value>
-								<value>postDiff.resource.bibtexKey</value>
-								<value>postDiff.resource.year</value>
-								<value>postDiff.resource.booktitle</value>
-								<value>postDiff.resource.journal</value>
-								<value>postDiff.resource.volume</value>
-								<value>postDiff.resource.number</value>
-								<value>postDiff.resource.series</value>
-								<value>postDiff.resource.pages</value>
-								<value>postDiff.resource.month</value>
-								<value>postDiff.resource.day</value>
-								<value>postDiff.resource.publisher</value>
-								<value>postDiff.resource.edition</value>
-								<value>postDiff.resource.chapter</value>
-								<value>postDiff.resource.bKey</value>
-								<value>postDiff.resource.type</value>
-								<value>postDiff.resource.howpublished</value>
-								<value>postDiff.resource.institution</value>
-								<value>postDiff.resource.organization</value>
-								<value>postDiff.resource.school</value>
-								<value>postDiff.resource.crossref</value>
-								<value>postDiff.resource.misc</value>
-								<value>postDiff.resource.abstract</value>
-								<value>postDiff.resource.privnote</value>
-								<value>postDiff.resource.note</value>
-								<value>postDiff.resource.annote</value>
-								<value>postDiff.resource.address</value>
-								<value>postDiff.resource.key</value>
 								<value>post.description</value>
+								<value>post.tags</value>
 								<value>post.date</value> <!-- only allowed for DBLP and used by DBLP updater -->
 								<value>post.changeDate</value>
 								<value>post.resource.url</value>
@@ -448,8 +417,10 @@
 								<value>postID</value>
 								<value>hash</value>
 								<value>user</value>
-								<value>compareVersion</value>
 								
+								<value>compareVersion</value>
+								<value>differentEntryKeys</value>
+														
 								<!-- used for fileHandling -->
 								<value>fileName</value>
 								<!-- used to block spammers -->
@@ -503,12 +474,6 @@
 						</property>
 					</bean>
 				</entry>
-<!-- 				<entry key="/diffBookmark"> -->
-<!-- 					<bean parent="controllerBase"> -->
-<!-- 						<property name="controllerBeanName" value="diffBookmarkController"/> -->
-<!-- 						<property name="allowedFields" ref="bookmarkRequestParameters"/> -->
-<!-- 					</bean> -->
-<!-- 				</entry> -->
 
 				<!-- 
 					 | ############################### edit tags
@@ -526,12 +491,16 @@
 								<value>action</value>
 								<value>referer</value>
 								<!-- retaining postPublication options -->
-								<value>deleteCheckedPosts</value>
+								<value>updateExistingPost</value>
 								<value>overwrite</value>
+								
 								<value>resourcetype</value>
 								<value>format</value>
-								<value>abstractGrouping</value>
 								<value>groups</value>
+								<value>abstractGrouping</value>
+								
+								
+								
 							</list>
 						</property>
 					</bean>
@@ -709,6 +678,7 @@
 	<!-- bookmark request parameters -->
 	<util:list id="bookmarkRequestParameters">
 		<value>post.resource.url</value>
+		<value>post.tags</value>
 		<value>post.resource.title</value>
 		<value>post.description</value>
 		<value>post.date</value> <!-- only allowed for DBLP and used by DBLP updater -->
@@ -730,13 +700,17 @@
 		<value>recaptcha_response_field</value>
 		<value>recaptcha_challenge_field</value>
 		<value>editBeforeSaving</value>
-		
 		<value>saveAndRate</value>
+		
+		<value>compareVersion</value>
+		<value>differentEntryKeys</value>
+		
 	</util:list>
 
 	<!-- publication request parameters -->
 	<util:list id="publicationRequestParameters">
 	  <value>post.description</value>
+	  <value>post.tags</value>
 		<value>post.date</value> <!-- only allowed for DBLP and used by DBLP updater -->
 		<value>post.resource.url</value>
 		<value>post.resource.title</value>
@@ -805,6 +779,10 @@
 		<value>skipDummyValues</value>
 		
 		<value>saveAndRate</value>
+		
+		<value>compareVersion</value>
+		<value>differentEntryKeys</value>
+		
 	</util:list>
 
 	<!--  #################### controller #################### -->
@@ -830,10 +808,6 @@
 		</property>
 	</bean>
 	
-	
-<!-- 	<bean id="diffBookmarkController" class="org.bibsonomy.webapp.controller.actions.DiffBookmarkMockupController" scope="request" parent="editPostController" /> -->
-
-<!-- 	<bean id="diffPublicationController" class="org.bibsonomy.webapp.controller.actions.DiffPublicationController"	scope="request" parent="resourceController" />	 -->
 	
 	<!-- Handles the edit publication process -->
 	<bean id="editPublicationController" class="org.bibsonomy.webapp.controller.actions.EditPublicationController" scope="request" parent="editPostController">

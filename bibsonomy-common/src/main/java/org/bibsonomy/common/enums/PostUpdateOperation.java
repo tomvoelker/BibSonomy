@@ -62,6 +62,17 @@ public enum PostUpdateOperation {
 	 * Update only the repositories attached to the post
 	 * (PUMA specific)
 	 */
-	UPDATE_REPOSITORY;
+	UPDATE_REPOSITORY,
+	
+
+	/**
+	 * Update privacy settings of a post. (Public, Private, Other)
+	 */
+	UPDATE_VIEWABLE,
+	
+	/**
+	 * Normalizes a bibtex*/
+	UPDATE_NORMALIZE;
+	
 	
 }

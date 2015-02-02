@@ -53,7 +53,7 @@ public class GoldStandardBookmarkDatabaseManager extends GoldStandardDatabaseMan
 	}
 
 	@Override
-	protected void onGoldStandardRelationDelete(final String userName, final String interHash, final String interHashRef,final GoldStandardRelation interHashRelation, final DBSession session) {
+	protected void onGoldStandardRelationDelete(final String userName, final String interHash, final String interHashRef, final GoldStandardRelation interHashRelation, final DBSession session) {
 		// TODO: implement reference model for bookmarks
 	}
 
@@ -61,5 +61,4 @@ public class GoldStandardBookmarkDatabaseManager extends GoldStandardDatabaseMan
 	protected BookmarkParam createNewParam() {
 		return new BookmarkParam();
 	}
-
 }
