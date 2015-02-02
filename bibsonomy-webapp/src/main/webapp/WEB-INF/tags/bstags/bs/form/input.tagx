@@ -32,6 +32,7 @@
 	<jsp:directive.attribute name="autocomplete" 	type="java.lang.String" 	required="false" description="" />
 	<jsp:directive.attribute name="tabindex" 		type="java.lang.Integer" 	required="false" description="" />	
 	<jsp:directive.attribute name="disabled"		type="java.lang.String"		required="false" description="disable input field" />
+	<jsp:directive.attribute name="readonly"		type="java.lang.String"		required="false" description="makes input field readonly"/>
 	
 	<!-- HTML event handler -->
 	<jsp:directive.attribute name="onclick" type="java.lang.String" required="false" description="" />
@@ -141,7 +142,8 @@
 							onblur="${onblur}"
 							tabindex="${tabindex}"
 							id="${fn:escapeXml(id)}"
-							disabled="${ not empty disabled ? disabled : 'false' }"
+							disabled="${ not empty disabled ? 'disabled' : 'false' }"
+							readonly="${ not empty readonly ? 'readonly' : 'false' }"
 							data-role="${ not empty tagsinput and tagsinput eq true ? 'tagsinput' : 'false'}"/>
 						<!-- help -->
 						<c:if test="${empty noHelp or not noHelp}">
