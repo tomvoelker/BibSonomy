@@ -271,10 +271,6 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public User getUserDetails(final String userName) {
-		if (userName.equals(loginUser.getName())) {
-			return loginUser;
-		}
-		
 		final DBSession session = this.openSession();
 		try {
 			/*
