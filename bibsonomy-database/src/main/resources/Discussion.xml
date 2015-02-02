@@ -56,8 +56,4 @@
 	<update id="updateDiscussionsInGroupFromLeavingUser" parameterClass="discussionItemParam">
 		UPDATE discussion d SET d.group = 1 WHERE d.user_name = #userName# AND d.group = #groupId#
 	</update>
-	
-	<select id="getDiscussionsInGroupFromLeavingUser" parameterClass="discussionItemParam" resultMap="DiscussionCommon.discussionItem">
-		SELECT <include refid ="commonDiscussionAttributes"/>, d.group, NULL AS group_name from discussion d WHERE d.user_name = #userName# AND d.group = #groupId#
-	</select>
 </sqlMap>
