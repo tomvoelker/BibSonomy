@@ -192,6 +192,6 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 
 	@Override
 	public void setRequestLogic(RequestLogic requestLogic) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		this.requestLogic = requestLogic;
 	}
 }
