@@ -5,26 +5,26 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
-    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons">
+    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+    xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
   	
   	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 
-	<bform:input path="post.resource.url" required="${true}" noHelp="${true}"/>
-
-	<div class="fsRow">
-		<form:label cssClass="fsLabel" path="post.resource.title"><fmt:message key="post.resource.title" />*</form:label>
-		<form:input cssClass="fsInput reqinput" path="post.resource.title" tabindex="2" />
-		<div class="dissError"><form:errors path="post.resource.title" /></div>
-		<div class="fsSuggestion" id="suggestion.resource.title">
+	<bsform:input labelColSpan="3" inputColSpan="9" path="post.resource.url" required="${true}" noHelp="${true}" />
+	<bsform:input labelColSpan="3" inputColSpan="9" path="post.resource.title" tabindex="2">
+		<jsp:attribute name="appendix">
+			<div class="fsSuggestion" id="suggestion.resource.title">
 			<!-- This comment is needed, otherwise this will result in a self-closing element -->
-		</div>
-	</div>
-
-	<div class="fsRow">
-		<form:label cssClass="fsLabel" path="post.description"><fmt:message key="post.description" /></form:label>
-		<form:textarea cssClass="fsInput" path="post.description" tabindex="2" rows="3" />
-		<div class="fsSuggestion" id="suggestion.description">
+			</div>
+		</jsp:attribute>
+	</bsform:input>
+	
+	<bsform:textarea labelColSpan="3" inputColSpan="9" path="post.description" rows="3">
+		<jsp:attribute name="appendix">
+			<div class="fsSuggestion" id="suggestion.description">
 			<!-- This comment is needed, otherwise this will result in a self-closing element -->
-		</div>
-	</div>
+			</div>
+		</jsp:attribute>
+	</bsform:textarea>
+	
 </jsp:root>
