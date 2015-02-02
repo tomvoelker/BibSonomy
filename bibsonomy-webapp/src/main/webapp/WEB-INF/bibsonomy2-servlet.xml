@@ -367,6 +367,13 @@
 				<entry key="/history">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="postHistoryController" />
+						<property name="allowedFields">
+							<list>
+								<value>resourceClass</value>
+								<value>requestedHash</value>
+								<value>requestedUser</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/userinfo">
@@ -653,12 +660,6 @@
 						<property name="controllerBeanName" value="error503PageController"/>
 					</bean>
 				</entry>
-				<!-- linkcloud TODO: in development TODODZO -->
-				<entry key="/linkcloud">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="linkCloudPageController"/>
-					</bean>
-				</entry>
 				<!-- TODO: (bootstrap) remove -->
 				<entry key="/bibsonomy3">
 					<bean parent="controllerBase">
@@ -741,11 +742,11 @@
 	</bean>
 	
 	<bean id="postHistoryController" class="org.bibsonomy.webapp.controller.PostHistoryController" scope="request" parent="multiResourceListControllerWithTags">
-		<property name="supportedResources">
-			<set>
+	<!--<property name="supportedResources">
+			 <set>
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-			</set>
-		</property>
+			</set> 
+		</property> -->
 	</bean>
 
 	<bean id="userInfoController" class="org.bibsonomy.webapp.controller.UserInfoController" scope="request">
@@ -955,10 +956,6 @@
 	<!-- TOOD: remove -->
 	<bean id="bibsonomyPreview" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="BIBSONOMY3"/>
-	</bean>
-	<!-- linkcloud TODO: in development TODODZO -->
-	<bean id="linkCloudPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
-		<property name="view" value="LINK_CLOUD"/>
 	</bean>
 	
 	<bean id="contextPathFilter" class="org.bibsonomy.webapp.filters.ContextPathFilter">

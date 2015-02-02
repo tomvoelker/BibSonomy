@@ -41,8 +41,8 @@ public class TeXDecodeTest {
 	 */
 	@Test
 	public void testCompleteDecode() {
-		StringBuffer unclean = new StringBuffer();
-		StringBuffer clean = new StringBuffer();						
+		StringBuilder unclean = new StringBuilder();
+		StringBuilder clean = new StringBuilder();
 		
 		for(String s : TexDecode.getTexMap().keySet()) {
 			unclean.append(s);
@@ -56,7 +56,7 @@ public class TeXDecodeTest {
 	 * 
 	 */
 	@Test
-	public void testEncodingWithLeadingMacro() {
+	public void testDecodingWithLeadingMacro() {
 		String unclean = "{\\\"A}foo{{\\ss}}bar";
 		String clean = "Äfooßbar";
 
@@ -95,7 +95,7 @@ public class TeXDecodeTest {
 		String unclean = "foo\\\"{U}\\\"Abar";
 		String clean = "fooÜÄbar";
 
-		assertEquals(TexDecode.decode(unclean), clean);		
+		assertEquals(TexDecode.decode(unclean), clean);
 	}
 	
 	/**
@@ -106,7 +106,18 @@ public class TeXDecodeTest {
 		String unclean = "{){{}/()as)[[)]";
 		String clean = "/as";
 
-		assertEquals(TexDecode.decode(unclean), clean);		
+		assertEquals(TexDecode.decode(unclean), clean);
 	}
+	
+	/**
+	 * test for acute accent i
+	 * tests {@link TexDecode#decode(String)}
+	 */
+	@Test
+	public void testDecodingWithAcuteAccent() {
+		String unclean = "Huerta, Joaqu{\\'i}n";
+		String clean = "Huerta, Joaquín";
 
+		assertEquals(TexDecode.decode(unclean), clean);
+	}
 }

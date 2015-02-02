@@ -24,31 +24,45 @@
 		required="false" />
 	<jsp:directive.attribute name="addAsLastItem" fragment="true"
 		required="false" />
-
+	
+	<mtl:styleSheet path="${resdir}/css/history.css" />
+	<script type="text/javascript" src="/resources/javascript/history.js"><!-- keep me --></script>
+	
 	<c:choose>
 		<c:when test="${not empty listView.list}">
+			<!--<c:set var="post" scope="request" value="${listView.list[0]}"/>-->
 			<c:set var="fieldlength" value="${fn:length(listView.list)-1}" />
-			<c:set var="newestPost" value="${listView.list[fieldlength]}" />
-			<resource:bibtexdetailsclean post="${newestPost}" referer="${command.referer}"/>
+			<c:set var="newestPost" value="${listView.list[fieldlength]}" />		
+			<!-- 	
+			<div id="innercontent" style="background: #fff; padding-left: 40px;">
+				<resource:bibtexdetailsclean post="${listView.list[0]}" referer="${command.referer}"/>
+			</div> 
+			-->
 			<div style="float:left; width:97%; margin-left:10px; margin-top:0px; padding-bottom:13px;">
 			<!--+
 				| complete Post
 				+-->
-			<h3 style="clear:both;"><a class="foldUnfold" href="#fullPost"><img id="discussionImg" src="${resdir}/image/icon_collapse.png" border="0"/><c:out value=" "/><fmt:message key="post.resource.postHistory.headline"/></a></h3>
+			<h3 style="clear:both;">
+				<a class="foldUnfold" href="#fullPost"><img id="discussionImg" 
+					src="${resdir}/image/icon_collapse.png" border="0"/>
+					<c:out value=" "/>
+					<fmt:message key="post.resource.postHistory.headline"/>
+				</a>
+			</h3>
 			<div id="fullPost">
 				<rc:diff post="${newestPost}" loginUserName="${loginUserName}"
-				additionalItemClasses="${'odd'}">
-				<jsp:attribute name="title">
-							<c:choose>
-								<c:when test="${empty newestPost.user.name}">
-									<bibgs:title post="${newestPost}" />
-								</c:when>
-								<c:otherwise>
-									<bib:title post="${newestPost}" />
-								</c:otherwise>
-							</c:choose>
-						</jsp:attribute>
-				<jsp:attribute name="desc">
+					additionalItemClasses="${'odd'}">
+					<jsp:attribute name="title">
+						<c:choose>
+							<c:when test="${empty newestPost.user.name}">
+								<bibgs:title post="${newestPost}" />
+							</c:when>
+							<c:otherwise>
+								<bib:title post="${newestPost}" />
+							</c:otherwise>
+						</c:choose>
+					</jsp:attribute>
+					<jsp:attribute name="desc">
 							<bib:fullDescription publication="${newestPost.resource}" />
 						</jsp:attribute>
 				</rc:diff>
@@ -57,32 +71,55 @@
 			<!--+
 			| history list
 			+-->
-			<h3 style="clear:both;"><a class="foldUnfold" href="#history"><img id="discussionImg" src="${resdir}/image/icon_collapse.png" border="0"/><c:out value=" "/><fmt:message key="post.resource.postHistory.list"/></a></h3>
 			<div id="historylist">
+					<ul class="HistTable">
+					<li>
 			<!-- newest post is index 0 and do not contain to history list -->
 			<c:forEach var="index" begin="1" end="${fieldlength}"
 				varStatus="loopStatus" step="1">
 				<c:set var="additionalItemClasses"
 					value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}" />
-
-				<rc:diff post="${listView.list[fieldlength-index]}"
-					loginUserName="${loginUserName}"
-					additionalItemClasses="${additionalItemClasses}">
-					<jsp:attribute name="title">
-					<!-- fieldlength-index+1 to start index with 1 instead of 0 in URL-->
+				<ul>
+				
+					<li>
 						<rc:changeDate postIndex="${(fieldlength-index+1)}"
 							post="${listView.list[(fieldlength-index)]}"
-							newestPub="${newestPost}" loginUserName="${loginUserName}" />
-							</jsp:attribute>
-					<jsp:attribute name="desc">
-									<rc:postDescDiff
+							newestPub="${listView.list[(fieldlength-index+1)]}" loginUserName="${loginUserName}" />
+					</li>
+					<c:set var="diffNum" value="${mtl:DiffNum(listView.list[(fieldlength-index)].resource,listView.list[(fieldlength-index+1)].resource)}"/>
+					<c:choose>
+      					<c:when test="${diffNum > 1}">
+      						<c:set var="diffNumMsg" value=" entries are changed"/>
+      					</c:when>
+				      	<c:otherwise>
+ 							<c:set var="diffNumMsg" value=" entry is changed   "/>
+ 					    </c:otherwise>
+					</c:choose>
+					 
+					<li id="postDiffNum">
+						<a href="#" class="diffNumText">
+						${diffNum} ${diffNumMsg}
+						</a>
+					</li> 
+					<li>
+						<a href="#" id="showDiff"  title="Show changes">more...</a>
+						<a href="#" id="hideDiff"  title="Hide changes">less...</a>
+					</li>	
+					
+				<!--  -->	<li id="postDiffDesc" class="postDiffDesc invisible">				
+						<rc:postDescDiff
 							publication="${listView.list[(fieldlength-index)]}"
-							newestPub="${newestPost}" />
-								</jsp:attribute>
-				</rc:diff>
-
+							newestPub="${listView.list[(fieldlength-index+1)]}" />
+					</li>
+			</ul>	
 			</c:forEach>
+			</li>
+			
+			
+			</ul>
+			
 			</div>
+			
 			</div>
 		</c:when>
 		<c:otherwise>

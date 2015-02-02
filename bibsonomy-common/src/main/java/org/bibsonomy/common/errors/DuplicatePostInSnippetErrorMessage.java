@@ -24,31 +24,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.util.wrapper;
+package org.bibsonomy.common.errors;
 
-import org.bibsonomy.common.enums.HashID;
 
 /**
- * Bean to bring the values of the intra and inter hash id to all .jspx files.
- * 
- * To change intra and inter hash id's you have to change the HashID 
- * enum in bibsonomy.common.enums.HashID.
- * 
- * @author daill
+ * @author nna
  */
-public class HashIDBean {
+public class DuplicatePostInSnippetErrorMessage extends ErrorMessage{
+
 	/**
-	 * @return intra hash
+	 * @param resourceClassName
+	 * @param intraHash
 	 */
-	public HashID getIntra(){
-		return HashID.INTRA_HASH;
+	public DuplicatePostInSnippetErrorMessage(final String resourceClassName, final String intraHash) {
+		super("Could not create new " + resourceClassName + ": This " + resourceClassName +
+				" already exists in the snippet (intrahash: " + intraHash + ")", "batchedit.alreadyInSnippetError");
 	}
 	
-	
-	/**
-	 * @return inter hash
-	 */
-	public HashID getInter(){
-		return HashID.INTER_HASH;
-	}
 }
