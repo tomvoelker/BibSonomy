@@ -177,11 +177,11 @@
 							+-->
 						<c:if test="${not empty postApproval and command.context.loginUser.role eq 'ADMIN'}">
 							<jsp:invoke fragment="postApproval"/>
-						</c:if>					
+						</c:if>
 		                <!--+
 		               		| buttons 
 		                    +-->
-		                <div class="fieldset-margin">
+						<div class="fieldset-margin">
 							<div class="form-group">
 								<form:hidden path="post.resource.interHash"/>
 								<input type="hidden" name="user" value="${command.user}"/>
