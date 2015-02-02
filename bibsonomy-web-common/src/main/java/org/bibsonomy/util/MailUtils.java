@@ -215,6 +215,39 @@ public class MailUtils {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param group
+	 * @param requestingUser
+	 * @param locale
+	 * @return 
+	 */
+	public boolean sendGroupActivationNotification(final Group group, User requestingUser, final Locale locale) {
+		final Object[] messagesParameters = new Object[] {
+			requestingUser.getName(),
+			group.getName(),
+			projectHome,
+			projectEmail
+		};
+		
+		/*
+		 * Format the message "mail.groupInvite.body" with the given parameters.
+		 */
+		final String messageBody    = messageSource.getMessage("mail.group.activation.body", messagesParameters, locale);
+		final String messageSubject = messageSource.getMessage("mail.group.activation.subject", messagesParameters, locale);
+
+		/*
+		 * send an e-Mail to the group (from our registration Adress)
+		 */
+		try {
+			sendMail(new String[] {requestingUser.getEmail()},  messageSubject, messageBody, projectEmail);
+			return true;
+		} catch (final MessagingException e) {
+			log.fatal("Could not send group activation notification mail: " + e.getMessage());
+		}
+		return false;
+	}
+	
 	public boolean sendGroupInvite(final String groupName, final User loginUser, final User invitedUser, final Locale locale) {
 		final Object[] messagesParameters = new Object[]{
 				invitedUser.getName(),

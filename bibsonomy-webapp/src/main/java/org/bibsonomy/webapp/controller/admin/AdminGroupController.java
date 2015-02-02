@@ -40,8 +40,10 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.admin.AdminGroupViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -57,6 +59,8 @@ import org.springframework.security.access.AccessDeniedException;
 public class AdminGroupController implements MinimalisticController<AdminGroupViewCommand> {
 	private static final Log log = LogFactory.getLog(AdminGroupController.class);
 	private LogicInterface logic;
+	private RequestLogic requestLogic;
+	private MailUtils mailUtils;
 
 	@Override
 	public View workOn(final AdminGroupViewCommand command) {
@@ -72,16 +76,20 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 
 		/* Check for and perform the specified action */
 		final AdminGroupOperation action = command.getAction();
+		User requestingUser;
 		if(!present(action)) {
 			log.debug("No action specified.");
 		} else {
 			switch(action) {
 				case ACCEPT:
-					final String groupName = command.getGroup().getName();
+					requestingUser = this.logic.getUserDetails(command.getGroup().getGroupRequest().getUserName());
 					this.logic.updateGroup(command.getGroup(), GroupUpdateOperation.ACTIVATE, null);
+					this.mailUtils.sendGroupActivationNotification(command.getGroup(), requestingUser, this.requestLogic.getLocale());
 					break;
 				case CREATE:
 					command.setAdminResponse(createGroup(command.getGroup()));
+					requestingUser = this.logic.getUserDetails(command.getGroup().getGroupRequest().getUserName());
+					this.mailUtils.sendGroupActivationNotification(command.getGroup(), requestingUser, this.requestLogic.getLocale());
 					break;
 				case DECLINE:
 					log.debug("grouprequest for group \""+command.getGroup().getName()+"\" declined");
@@ -213,5 +221,13 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 
 	public LogicInterface getLogic() {
 		return logic;
+	}
+
+	public MailUtils getMailUtils() {
+		return mailUtils;
+	}
+
+	public void setMailUtils(MailUtils mailUtils) {
+		this.mailUtils = mailUtils;
 	}
 }
