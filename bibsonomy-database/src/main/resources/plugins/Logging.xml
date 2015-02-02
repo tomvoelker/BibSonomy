@@ -33,11 +33,11 @@
 		                        edition, month, bookTitle, howpublished, institution, organization, publisher,
 		                        address, school, series, bibtexKey, `group`, date, change_date, user_name, url, description,
 		                        annote, note, pages, bKey, number, crossref, misc, bibtexAbstract, type, day,
-		                        scraperid, privnote, simhash0, simhash1, simhash2, simhash3, new_content_id)
+		                        scraperid, privnote, simhash0, simhash1, simhash2, simhash3, new_content_id, current_content_id)
 		SELECT title, entrytype, author, editor, year, content_id, journal, volume, chapter, edition, month,
 		       bookTitle, howpublished, institution, organization, publisher, address, school, series, bibtexKey,
 		       `group`, date, change_date, user_name, url, description, annote, note, pages, bKey, number, crossref, misc,
-		       bibtexAbstract, type, day, scraperid, privnote, simhash0, simhash1, simhash2, simhash3, content_id
+		       bibtexAbstract, type, day, scraperid, privnote, simhash0, simhash1, simhash2, simhash3, content_id, content_id
 		FROM bibtex WHERE user_name = #requestedUserName# AND `group` = #groupId#
 	</insert>
 	
@@ -62,8 +62,8 @@
 	</update>
 	
 	<insert id="logBookmarkMassUpdate" parameterClass="bookmarkParam">
-		INSERT INTO log_bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name, new_content_id)
-		SELECT content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name, content_id
+		INSERT INTO log_bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name, new_content_id, current_content_id))
+		SELECT content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name, content_id, content_id
 		FROM bookmark WHERE user_name = #requestedUserName# AND `group` = #groupId#
 	</insert>
 	
