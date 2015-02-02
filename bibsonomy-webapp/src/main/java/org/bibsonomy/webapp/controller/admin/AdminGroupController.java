@@ -84,12 +84,16 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 				case ACCEPT:
 					requestingUser = this.logic.getUserDetails(command.getGroup().getGroupRequest().getUserName());
 					this.logic.updateGroup(command.getGroup(), GroupUpdateOperation.ACTIVATE, null);
-					this.mailUtils.sendGroupActivationNotification(command.getGroup(), requestingUser, this.requestLogic.getLocale());
+					if (present(requestingUser.getEmail())) {
+						this.mailUtils.sendGroupActivationNotification(command.getGroup(), requestingUser, this.requestLogic.getLocale());
+					}
 					break;
 				case CREATE:
 					command.setAdminResponse(createGroup(command.getGroup()));
 					requestingUser = this.logic.getUserDetails(command.getGroup().getGroupRequest().getUserName());
-					this.mailUtils.sendGroupActivationNotification(command.getGroup(), requestingUser, this.requestLogic.getLocale());
+					if (present(requestingUser.getEmail())) {
+						this.mailUtils.sendGroupActivationNotification(command.getGroup(), requestingUser, this.requestLogic.getLocale());
+					}
 					break;
 				case DECLINE:
 					log.debug("grouprequest for group \""+command.getGroup().getName()+"\" declined");
