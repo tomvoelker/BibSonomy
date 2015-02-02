@@ -50,7 +50,7 @@
 			});
 			
 			$('#post\.resource\.bibtexKey').focus(function() {
-				$(this)tooltip('toggle');
+				$(this).tooltip('toggle');
 			});
 		});
 	</script>
