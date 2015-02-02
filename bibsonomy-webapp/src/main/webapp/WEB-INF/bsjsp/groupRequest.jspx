@@ -19,6 +19,25 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
 	<fmt:message key="navi.groups" var="pageTitle" />
+	<c:set var="groupCreationMode" value="${project.groupcreationmode}" />
+	<c:choose>
+		<c:when test="${groupCreationMode eq 'AUTOMATIC'}">
+			<fmt:message key="settings.group.reqGroup.automatic" var="heading" />
+			<fmt:message key="settings.group.reqGroup.automatic.description" var="description" />
+			<fmt:message key="settings.group.reqGroup.automatic.reason" var="reason" />
+			<fmt:message key="settings.group.reqGroup.automatic.button" var="requestGroup" />
+			<fmt:message key="navi.groups" var="groups" />
+			<fmt:message key="navi.automatic.groupRequest" var="groupRequest" />
+		</c:when>
+		<c:otherwise>
+			<fmt:message key="settings.group.reqGroup" var="heading" />
+			<fmt:message key="settings.group.reqGroup.description" var="description" />
+			<fmt:message key="settings.group.reqGroup.reason" var="reason" />
+			<fmt:message key="settings.group.reqGroup.button" var="requestGroup" />
+			<fmt:message key="navi.groups" var="groups" />
+			<fmt:message key="navi.groupRequest" var="groupRequest" />
+		</c:otherwise>
+	</c:choose>
 	
 	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.groups" command="${command}" pageTitle="${pageTitle}" minimizedContentWidth="${true}">
 
@@ -35,9 +54,7 @@
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<fmt:message key="navi.groups" var="groups" />
 					<nav:crumb name="${groups}" active="false" />
-					<fmt:message key="navi.groupRequest" var="groupRequest" />
 					<nav:crumb name="${groupRequest}" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
@@ -49,31 +66,30 @@
 		 	+-->
 		<jsp:attribute name="content">
 		
-			<h1 class="content-heading"><fmt:message key="navi.groupRequest" /></h1>
+			<h1 class="content-heading"><c:out value="${heading}" /></h1>
 			
 			<!--+  
 				| description text how a group is created
 				+-->
 			<bs:alert style="info">
 				<jsp:attribute name="alertBody">
-					<fmt:message key="group.groupRequest.description" />
+					<c:out value="${description}" />
 				</jsp:attribute>
 			</bs:alert>
 
 			<c:set var="loginUser" value="${command.context.loginUser}" />
 			<c:if test="${!loginUser.spammer}">
 				<!-- Request a new group -->
-				<bsform:fieldset legendKey="settings.group.reqGroup">
+				<bsform:fieldset legendKey="description">
 					<jsp:attribute name="content">
 						<form:form method="post" action="/grouprequest" cssClass="form-horizontal">
 							<input type="hidden" name="ckey" value="${ckey}"/>
 							
 							<bsform:input labelKey="settings.group.name" path="group.name" labelColSpan="3" inputColSpan="9" />
 							<bsform:textarea labelKey="settings.group.description" path="group.description" rows="2" labelColSpan="3" inputColSpan="9" />
-							<bsform:textarea labelKey="settings.group.reqReason" path="group.groupRequest.reason" rows="2" labelColSpan="3" inputColSpan="9" />
+							<bsform:textarea labelText="${reason}" path="group.groupRequest.reason" rows="2" labelColSpan="3" inputColSpan="9" />
 	
 							<div class="col-sm-offset-3" >
-								<fmt:message key="settings.group.reqGroup.button" var="requestGroup" />
 								<bsform:button style="primary" size="defaultSize" value="${requestGroup}" type="submit" />
 							</div>
 						</form:form>
