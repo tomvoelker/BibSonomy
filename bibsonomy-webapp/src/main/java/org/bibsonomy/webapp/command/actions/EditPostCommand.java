@@ -483,6 +483,8 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	public void setDifferentEntryKeys(List<String> differentEntryKeys) {
 		this.differentEntryKeys = differentEntryKeys;
 	}
+	
+	/**
 	 * @return the compareVersion
 	 */
 	public int getCompareVersion() {
