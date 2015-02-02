@@ -304,6 +304,7 @@ public class BibTex extends Resource {
 		return this.editor;
 	}
 
+	
 	/**
 	 * @param editor
 	 */

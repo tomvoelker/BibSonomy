@@ -727,7 +727,7 @@
 
 	<select id="getBibTexWithDiscussions" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="bibtexParam">
 		SELECT 
-			<include refid="allGoldStandardPublicationAttributesAnonym" />, b.simhash2 as intraHash, b.simhash1 as interHash, 0 as count, <include refid="reviewRatingsRows" /> 
+			<include refid="allGoldStandardPublicationAttributesAnonym" />, b.simhash2 as intraHash, b.simhash1 as interHash, b.change_date, 0 as count, <include refid="reviewRatingsRows" /> 
 		FROM (
 				SELECT interHash, MAX(date) AS date
 				FROM discussion d <include refid="spammerClassifiedJoin"/>
@@ -756,7 +756,7 @@
  	
 	<select id="getBibTexWithDiscussionsForGroup" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="bibtexParam">
 		SELECT 
-			<include refid="allGoldStandardPublicationAttributesAnonym" />, b.simhash2 as intraHash, b.simhash1 as interHash, 0 as count, <include refid="reviewRatingsRows" /> 
+			<include refid="allGoldStandardPublicationAttributesAnonym" />, b.simhash2 as intraHash, b.simhash1 as interHash, b.change_date, 0 as count, <include refid="reviewRatingsRows" /> 
 		FROM (
 				SELECT interHash, MAX(date) AS date
 				FROM groups g, discussion d
@@ -844,6 +844,17 @@
 	<update id="updateBibTexHash" parameterClass="bibtexParam">
 		UPDATE bibhash SET ctr = ctr - 1 WHERE hash = #hash# AND type = #simHash# AND ctr > 0
 	</update>
+	
+	<!-- update group ids of a post
+	<update id="updateBibTexGroup" parameterClass="bibtexParam">
+		UPDATE bibtex SET `group` = #groupId#  WHERE content_id = #requestedContentId#
+	</update>
+	-->
+	<!-- update bibtexkey 
+	<update id="updatebibtexKey" parameterClass="bibtexParam">
+		UPDATE bibtex SET bibtexKey = #resource.bibtexKey#  WHERE content_id = #requestedContentId#
+	</update>
+	-->
 	
 	<delete id="deleteBibTex">
 		DELETE FROM bibtex WHERE content_id = #requestedContentId#

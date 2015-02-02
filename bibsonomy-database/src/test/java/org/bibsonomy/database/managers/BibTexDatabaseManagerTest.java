@@ -1048,7 +1048,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		posts = publicationDb.getPostsByBibTeXKey("testspammer", "elsenbroich2006abductive", null, -1, Arrays.asList(Integer.valueOf(PUBLIC_GROUP_ID), Integer.valueOf(PUBLIC_GROUP_ID_SPAM)), 20, 0, null, this.dbSession);
 		assertEquals(2, posts.size());
 	}
-	
+
 	/**
 	 * tests {@link BibTexDatabaseManager#getPostsByFollowedUsers(String, List, int, int, org.bibsonomy.database.common.DBSession)}
 	 */
@@ -1184,4 +1184,19 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		this.printMethod("testUpdatePost");
 		// called by other methods
 	}
+	
+	@Test
+	public void testGetPostsWithHistory() {
+		this.printMethod("testGetPostsWithHistory");
+		String requestedUserName = "testuser3";
+		String intraHash = "891518b4900cd1832d77a0c8ae20dd14";
+		BibTexParam param = new BibTexParam();
+		param.setRequestedContentId(20);
+		param.setRequestedUserName(requestedUserName);
+		param.setHash(intraHash);
+		param.setFilter(FilterEntity.POSTS_HISTORY);
+		List<Post<BibTex>> posts = publicationDb.getPosts(param, dbSession);
+		assertEquals(4, posts.size());
+	}
+	
 }
