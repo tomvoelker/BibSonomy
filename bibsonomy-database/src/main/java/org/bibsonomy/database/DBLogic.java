@@ -49,6 +49,7 @@ import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.ConceptUpdateOperation;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -267,10 +268,13 @@ public class DBLogic implements LogicInterface {
 	 * 
 	 * @see
 	 * org.bibsonomy.model.logic.LogicInterface#getUserDetails(java.lang.String)
-	 * TODO: if userName = loginUser.getName() we could just return loginUser.
 	 */
 	@Override
 	public User getUserDetails(final String userName) {
+		if (userName.equals(loginUser.getName())) {
+			return loginUser;
+		}
+		
 		final DBSession session = this.openSession();
 		try {
 			/*
@@ -1151,9 +1155,14 @@ public class DBLogic implements LogicInterface {
 				this.groupDBManager.addUserToGroup(groupName, membership.getUser().getName(), GroupRole.USER, session);
 				break;
 			case REMOVE_MEMBER:
-				// only admins or the user himself can remove a user from the group
-				// TODO: what about group moderators and group admins?
-				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, groupName);
+				// Check for correct role that can remove the user
+				GroupRole toRemove = GroupUtils.getGroupMembershipOfUserForGroup(membership.getUser(), groupName).getGroupRole();
+				if (toRemove.equals(GroupRole.USER)) {
+					this.permissionDBManager.ensureIsAdminOrGroupModeratorOrSelf(loginUser, groupName);
+				}
+				if (toRemove.equals(GroupRole.MODERATOR) || toRemove.equals(GroupRole.ADMINISTRATOR)) {
+					this.permissionDBManager.ensureIsAdminOrGroupAdminOrSelf(loginUser, groupName);
+				}
 				
 				// we need at least one admin in the group at all times.
 				if (this.permissionDBManager.userHasGroupRole(loginUser, groupName, GroupRole.ADMINISTRATOR) && this.groupDBManager.hasOneAdmin(paramGroup, session)) {
