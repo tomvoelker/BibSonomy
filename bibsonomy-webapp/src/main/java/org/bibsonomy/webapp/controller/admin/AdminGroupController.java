@@ -29,6 +29,7 @@ package org.bibsonomy.webapp.controller.admin;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.HashSet;
+import org.apache.commons.lang.LocaleUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,7 +44,6 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.admin.AdminGroupViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -59,7 +59,6 @@ import org.springframework.security.access.AccessDeniedException;
 public class AdminGroupController implements MinimalisticController<AdminGroupViewCommand> {
 	private static final Log log = LogFactory.getLog(AdminGroupController.class);
 	private LogicInterface logic;
-	private RequestLogic requestLogic;
 	private MailUtils mailUtils;
 
 	@Override
@@ -85,14 +84,14 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 					requestingUser = this.logic.getUserDetails(command.getGroup().getGroupRequest().getUserName());
 					this.logic.updateGroup(command.getGroup(), GroupUpdateOperation.ACTIVATE, null);
 					if (present(requestingUser.getEmail())) {
-						this.mailUtils.sendGroupActivationNotification(command.getGroup(), requestingUser, this.requestLogic.getLocale());
+						this.mailUtils.sendGroupActivationNotification(command.getGroup(), requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
 					}
 					break;
 				case CREATE:
 					command.setAdminResponse(createGroup(command.getGroup()));
 					requestingUser = this.logic.getUserDetails(command.getGroup().getGroupRequest().getUserName());
 					if (present(requestingUser.getEmail())) {
-						this.mailUtils.sendGroupActivationNotification(command.getGroup(), requestingUser, this.requestLogic.getLocale());
+						this.mailUtils.sendGroupActivationNotification(command.getGroup(), requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
 					}
 					break;
 				case DECLINE:

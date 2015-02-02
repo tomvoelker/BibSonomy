@@ -1139,6 +1139,8 @@
 		<property name="logic" ref="logic" />
 		<property name="adminLogic" ref ="adminLogic" />
 		<property name="mailer" ref="mailUtils" />
+		<property name="requestLogic" ref="requestLogic" />
+		<property name="groupCreationMode" value="${project.groupcreationmode}" />
 	</bean>
 	
 	<!-- Handles the profile update of a user -->

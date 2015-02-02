@@ -30,6 +30,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collections;
 import java.util.List;
+import org.bibsonomy.common.enums.GroupCreationMode;
+import org.bibsonomy.common.enums.GroupUpdateOperation;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Group;
@@ -38,6 +40,8 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.GroupRequestCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
+import org.bibsonomy.webapp.util.RequestAware;
+import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
@@ -51,12 +55,14 @@ import org.springframework.validation.Errors;
 /**
  * @author Mario Holtmueller
  */
-public class GroupRequestController implements ValidationAwareController<GroupRequestCommand>, ErrorAware {
+public class GroupRequestController implements ValidationAwareController<GroupRequestCommand>, ErrorAware, RequestAware {
 
 	private Errors errors = null;
 	private LogicInterface logic;
 	private LogicInterface adminLogic;
 	private MailUtils mailer;
+	private GroupCreationMode groupCreationMode;
+	private RequestLogic requestLogic;
 	
 	/**
 	 * @param command
@@ -111,9 +117,21 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 		requestedGroup.getGroupRequest().setUserName(loginUser.getName());
 		this.logic.createGroup(requestedGroup);
 		
-		this.mailer.sendGroupRequest(requestedGroup);
+		switch (this.groupCreationMode) {
+			case AUTOMATIC:
+				this.adminLogic.updateGroup(requestedGroup, GroupUpdateOperation.ACTIVATE, null);
+				this.mailer.sendGroupActivationNotification(requestedGroup, loginUser, this.requestLogic.getLocale());
+				command.setMessage("success.group.activation", Collections.singletonList(groupName));
+				break;
+			case REQUESTEDBASED:
+				this.mailer.sendGroupRequest(requestedGroup);
+
+				command.setMessage("success.groupRequest.sent", Collections.singletonList(groupName));
+				break;
+			default:
+				break;
+		}
 		
-		command.setMessage("success.groupRequest.sent", Collections.singletonList(groupName));
 		return Views.SUCCESS;
 	}
 	
@@ -166,5 +184,14 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 	@Override
 	public Validator<GroupRequestCommand> getValidator() {
 		return new GroupRequestValidator();
+	}
+
+	public void setGroupCreationMode(GroupCreationMode groupCreationMode) {
+		this.groupCreationMode = groupCreationMode;
+	}
+
+	@Override
+	public void setRequestLogic(RequestLogic requestLogic) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 }
