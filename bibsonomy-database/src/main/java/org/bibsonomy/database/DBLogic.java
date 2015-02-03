@@ -1164,7 +1164,7 @@ public class DBLogic implements LogicInterface {
 				}
 				
 				// we need at least one admin in the group at all times.
-				if (this.permissionDBManager.userHasGroupRole(loginUser, groupName, GroupRole.ADMINISTRATOR) && this.groupDBManager.hasOneAdmin(paramGroup, session)) {
+				if (this.permissionDBManager.userHasGroupRole(loginUser, groupName, GroupRole.ADMINISTRATOR) && this.groupDBManager.hasExactlyOneAdmin(paramGroup, session)) {
 					throw new IllegalArgumentException("Group has only this admin left, cannot remove this user.");
 				}
 				try {
@@ -1533,7 +1533,7 @@ public class DBLogic implements LogicInterface {
 			this.ensureLoggedIn();
 			
 			/*
-			 * only admins can change settings of /other/ users
+			 * only admins can change settings of /other/ users, group admins can change settings of their group
 			 */
 			this.permissionDBManager.ensureIsAdminOrGroupAdminOrSelf(this.loginUser, username);
 		}

@@ -275,7 +275,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Returns true if there's only one admin for the group.
 	 */
-	public boolean hasOneAdmin(final Group g, final DBSession session) {
+	public boolean hasExactlyOneAdmin(final Group g, final DBSession session) {
 		final GroupParam p = new GroupParam();
 		p.setMembership(new GroupMembership(null, GroupRole.ADMINISTRATOR, true));
 		p.setGroupId(g.getGroupId());
@@ -751,7 +751,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') isn't a member of this group ('" + groupname + "')");
 		}
 		// check if we have only one group admin
-		if (this.hasOneAdmin(group, session)) {
+		if (this.hasExactlyOneAdmin(group, session)) {
 			// check the group role for the given username
 			GroupRole activeRole = group.getGroupMembershipForUser(new User(username)).getGroupRole();
 			// the user is the last admin, we can't remove him.
@@ -801,7 +801,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		}
 		
 		// make sure that we keep at least one admin
-		if (GroupRole.ADMINISTRATOR.equals(oldRole) && this.hasOneAdmin(group, session)) {
+		if (GroupRole.ADMINISTRATOR.equals(oldRole) && this.hasExactlyOneAdmin(group, session)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') is the last administrator of this group ('" + groupname + "')");
 		}
 		
