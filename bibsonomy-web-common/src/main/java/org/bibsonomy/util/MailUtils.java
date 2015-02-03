@@ -226,6 +226,8 @@ public class MailUtils {
 		final Object[] messagesParameters = new Object[] {
 			requestingUser.getName(),
 			group.getName(),
+			absoluteURLGenerator.getGroupUrlByGroupName(group.getName()),
+			absoluteURLGenerator.getGroupSettingsUrlByGroupName(group.getName()),
 			projectHome,
 			projectEmail
 		};
