@@ -59,7 +59,9 @@ function changeView(showAll) {
 		if(showAll || in_array(requiredFields,fields[i])) {
 			parent.show();
 		} else {
-			parent.hide();
+			if (!field.val()) { //fix: don't hide not empty fields
+				parent.hide();
+			}
 		}
 	}
 }	
@@ -283,7 +285,17 @@ function buildGoodPostSuggestion(json) {
 			 */
 			if (!suggestions.length || fieldVal === undefined || (suggestions.length == 1 
 			&& g == ((name.length)?name.replace(u, ""):fieldVal.replace(u, "")))) continue;
-			inputField.addClass("fsInputReco"); // show the user that suggestions are available
+			
+			inputField.tooltip({
+				trigger : 'focus',
+				placement : 'top',
+				title: getString('post.resource.suggestion.hint')
+			}).tooltip('show');
+			
+			inputField.after('<span class="autocompletion fa fa-caret-down form-control-feedback"><!-- --></span>');
+			inputField.popover('destroy');  //remove popover help
+			
+			
 			/* we have a bijective mapping therefore (f:suggestion->occurrence) we sort our indices by descending order */
 			var indices = sortIndices(occurrences);
 			/* occurrences are sorted and aligned to the corresponding suggestions */
