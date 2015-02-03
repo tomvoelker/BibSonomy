@@ -158,6 +158,7 @@ public class TwoStepSynchronizationClientTest extends AbstractSynchronizationCli
 			assertEquals(SynchronizationStatus.DONE, sync.getLastSyncData(syncServer, resourceType).getStatus());
 		}
 		
+		wait(1);
 
 		/* *********************************************************************
 		 * 
