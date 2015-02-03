@@ -19,9 +19,9 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
 	<fmt:message key="navi.groups" var="pageTitle" />
-	<c:set var="groupCreationMode" value="${project.groupcreationmode}" />
+	<c:set var="groupCreationMode" value="${properties['project.groupcreationmode']}" />
 	<c:choose>
-		<c:when test="${groupCreationMode eq 'AUTOMATIC'}">
+		<c:when test="${fn:toLowerCase(groupCreationMode) eq 'automatic'}">
 			<fmt:message key="settings.group.reqGroup.automatic" var="heading" />
 			<fmt:message key="settings.group.reqGroup.automatic.description" var="description" />
 			<fmt:message key="settings.group.reqGroup.automatic.reason" var="reason" />
@@ -66,7 +66,7 @@
 		 	+-->
 		<jsp:attribute name="content">
 		
-			<h1 class="content-heading"><c:out value="${heading}" /></h1>
+			<h1 class="content-heading"><c:out value="${heading}" /> <c:out value="${groupCreationMode}" /> + blub</h1>
 			
 			<!--+  
 				| description text how a group is created
