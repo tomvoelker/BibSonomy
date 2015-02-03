@@ -560,4 +560,18 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		}
 	}
 
+	public boolean hasGroupRoleOrHigher(User user, Group group, GroupRole testRole) {
+		GroupRole actualRole = GroupUtils.getGroupMembershipForUser(group, user.getName(), true).getGroupRole();
+		
+		switch (testRole) {
+			case ADMINISTRATOR:
+				return actualRole.equals(GroupRole.ADMINISTRATOR);
+			case MODERATOR:
+				return actualRole.equals(GroupRole.MODERATOR) || actualRole.equals(GroupRole.ADMINISTRATOR);
+			case USER:
+				return actualRole.equals(GroupRole.USER) || actualRole.equals(GroupRole.MODERATOR) || actualRole.equals(GroupRole.ADMINISTRATOR);
+			default:
+				return false;
+		}
+	}
 }
