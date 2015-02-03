@@ -676,9 +676,7 @@
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 	
-	<!-- update group ids of a post
-	<update id="updateBookmarkGroup" parameterClass="bookmarkParam">
-		UPDATE bookmark SET `group` = #groupId#  WHERE content_id = #requestedContentId#
+	<update id="updateBookmarkInGroupFromLeavingUser" parameterClass="bookmarkParam">
+		UPDATE bookmark b SET b.group = 1 WHERE b.user_name = #userName# AND b.group = #groupId#
 	</update>
-	-->
 </sqlMap>
