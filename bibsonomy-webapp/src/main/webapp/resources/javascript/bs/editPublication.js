@@ -59,7 +59,9 @@ function changeView(showAll) {
 		if(showAll || in_array(requiredFields,fields[i])) {
 			parent.show();
 		} else {
-			parent.hide();
+			if (!field.val()) { //fix: don't hide not empty fields
+				parent.hide();
+			}
 		}
 	}
 }	
