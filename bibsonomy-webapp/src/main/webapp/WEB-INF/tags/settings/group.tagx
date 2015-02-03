@@ -11,7 +11,7 @@
 		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true" />
-
+	<c:set var="loginUser" value="${command.context.loginUser}" />
 
 	<div id="selTab5" class="tab-pane ${(command.selTab eq 5) ? 'active' : ''}">
 		<c:choose>
@@ -28,7 +28,7 @@
 							<c:set var="groupMembership" value="${group.getGroupMembershipForUser(loginUser)}" />
 							<c:if test="${groupMembership.groupRole ne 'DUMMY'}">
 								<form:form class="groupShareSettings" method="POST" action="/ajax/handleGroupShare">
-									<li><a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}' />&amp;nbsp;</a>
+									<li><a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"><c:out value="${group.name}" />&amp;nbsp;</a>
 										<c:choose>
 										<c:when test="${group.sharedDocuments}">
 											<input type="hidden" name="requestedGroup" value="${fn:escapeXml(group.name)}" />
