@@ -267,6 +267,8 @@
 						
 						if (ua.indexOf("firefox") > -1) { //this is firefox
 							showAddOn("firefox");
+						} else if (ua.indexOf("opr") > -1) {
+							// this is opera
 						} else if (ua.indexOf("chrome") > -1) { //this is chrome
 							showAddOn("chrome");
 						} else if (ua.indexOf("safari") > -1) { //this is safari
