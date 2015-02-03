@@ -5,8 +5,14 @@ package org.bibsonomy.common.enums;
  * @author niebler
  */
 public enum GroupCreationMode {
-	
+	/**
+	 * system admins must accept groups
+	 */
 	REQUESTEDBASED,
-	AUTOMATIC
+	
+	/**
+	 * groups are created without admin interaction
+	 */
+	AUTOMATIC;
 	
 }
