@@ -139,14 +139,6 @@ public class Post<T extends Resource> implements Serializable {
 	 */
 	private String copyFrom;
 
-	/*
-	 * this field is true, if the post is alredy stored in DB. (gettes and
-	 * setters as well)*
-	 */
-	
-//	private boolean alreadyInCollection = false;
-	
-//	private boolean alreadyInSnippet = false;
 	/**
 	 * @return the repositories
 	 */
@@ -447,33 +439,4 @@ public class Post<T extends Resource> implements Serializable {
 		}
 		this.visibleTags.add(tag);
 	}
-	
-	/**
-	 * @return the alreadyInCollection
-	 */
-	/*public boolean isAlreadyInCollection() {
-		return this.alreadyInCollection;
-	}*/
-
-	/**
-	 * @param alreadyInCollection the alreadyInCollection to set
-	 */
-/*	public void setAlreadyInCollection(boolean alreadyInCollection) {
-		this.alreadyInCollection = alreadyInCollection;
-	}
-*/
-	/**
-	 * @return the alreadyInSnippet
-	 */
-	/*public boolean isAlreadyInSnippet() {
-		return this.alreadyInSnippet;
-	}*/
-
-	/**
-	 * @param alreadyInSnippet the alreadyInSnippet to set
-	 */
-	/*public void setAlreadyInSnippet(boolean alreadyInSnippet) {
-		this.alreadyInSnippet = alreadyInSnippet;
-	}*/
-
 }
