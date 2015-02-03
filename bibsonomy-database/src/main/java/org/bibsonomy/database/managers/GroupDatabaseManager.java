@@ -800,17 +800,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') already has this role in this group ('" + groupname + "')");
 		}
 		
-		// make sure that we keep at least one admin
-		if (GroupRole.ADMINISTRATOR.equals(oldRole) && this.hasOneAdmin(group, session)) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') is the last administrator of this group ('" + groupname + "')");
-		}
-		
-		// check if the current group role of the logged in users allows to change the requested user
-		final GroupRole loggedinUserRole = GroupUtils.getGroupMembershipOfUserForGroup(loginUser, groupname).getGroupRole();
-		if (!checkGroupRoleChange(loggedinUserRole, newGroupRole, oldRole)) {
-			throw new AccessDeniedException("you can not change the group role of user " + username + " to " + newGroupRole);
-		}
-		
 		final GroupParam param = new GroupParam();
 		param.setUserName(username);
 		param.setGroupId(group.getGroupId());
@@ -821,23 +810,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		this.update("updateGroupRole", param, session);
 	}
 
-	/**
-	 * @param object
-	 * @param groupRole
-	 */
-	private static boolean checkGroupRoleChange(final GroupRole ownGroupRole, final GroupRole groupRole, final GroupRole oldGroupRole) {
-		switch (ownGroupRole) {
-		case ADMINISTRATOR:
-			// admin can do anything
-			return true;
-		case MODERATOR:
-			// don't add group admins and do not modify admins
-			return GroupRole.ADMINISTRATOR != groupRole && GroupRole.ADMINISTRATOR != oldGroupRole;
-		default:
-			return false;
-		}
-	}
-	
 	/**
 	 * Removes the join request or invite from the group.
 	 * 
