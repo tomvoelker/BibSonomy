@@ -625,7 +625,17 @@ public class Functions {
 			tmp = compareString(toTagString(newPost.getTags()), toTagString(oldPost.getTags()));
 			diffArray.put("tags", tmp);
 		}
+		if (newPost.getApproved()!=oldPost.getApproved()) {
+			if(newPost.getApproved()==1){
+				tmp = compareString("yes", "no");
+			}
+			else{
+				tmp = compareString("no", "yes");
+			}
+			diffArray.put("approved", tmp);
+		}
 
+		
 		return diffArray;
 	}
 
@@ -660,6 +670,16 @@ public class Functions {
 		if (!newBmPost.getTags().equals(oldBmPost.getTags())) {
 			tmp = compareString(toTagString(newBmPost.getTags()), toTagString(oldBmPost.getTags()));
 			DiffArray.put("tags", tmp);
+		}
+		
+		if (newBmPost.getApproved()!=oldBmPost.getApproved()) {
+			if(newBmPost.getApproved()==1){
+				tmp = compareString("yes", "no");
+			}
+			else{
+				tmp = compareString("no", "yes");
+			}
+			DiffArray.put("approved", tmp);
 		}
 		return DiffArray;
 	}

@@ -13,7 +13,33 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="headerExtResource">
-			<script type="text/javascript" src="${resdir}/javascript/editBookmark.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/javascript/editBookmark.js"><!-- keep me --></script>
 		</jsp:attribute>
+
+		<jsp:attribute name="postApproval">
+			<bsform:fieldset legendKey="goldStandard.edit.approval">
+
+				<jsp:attribute name="content">
+					<div class="form-group">
+						<div class="col-sm-offset-1 col-sm-9">
+							<div class="checkbox clearfix">
+								<label>
+									<input type="checkbox" class="help-popover"  tabindex="2" name="approved"/> <fmt:message key="goldStandard.edit.approveMsg"/>
+		<script type="text/javascript">
+									$(function() {
+										var check = ${command.approved};
+										$('input[name=approved]').prop('checked', check);
+									});
+		</script>
+									<div class="help-header hide"><fmt:message key="goldStandard.edit.approveMsg"/></div>
+									<div class="help-content hide"><fmt:message key="goldStandard.edit.approveMsg.help"/></div>
+								</label>
+							</div>
+						</div>
+					</div>
+				</jsp:attribute>
+			</bsform:fieldset>
+		</jsp:attribute>
+		
 	</layout:editGoldStandardPostLayout>
 </jsp:root>

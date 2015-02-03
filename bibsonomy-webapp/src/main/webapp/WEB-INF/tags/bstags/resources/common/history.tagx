@@ -43,7 +43,8 @@
 	
 		<fmt:message key="history.restoreBtn.disabled" var="restoreBtnDisabledMsg" />
 		<fmt:message key="history.restoreBtn.enabled" var="restoreBtnEnabledMsg" />
-	
+		<fmt:message key="goldStandard.approved.title" var="approved"/>
+		
 				<!--+
 					| complete Post
 					+-->
@@ -60,7 +61,13 @@
 								<div class="media">
 									<div class="media-body" id="titletext">
 										<div class="pull-right"><gpub:actions post="${newestPost}" /></div>
-										<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" /></h1>
+										<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" />
+											<c:if test="${newestPost.approved==1}">
+												<a  title="${fn:escapeXml(approved)}">
+													<span class="fa fa-check-circle" style="margin-left:6px;"><!--  --></span>
+												</a>
+											</c:if>
+										</h1>
 										<p><bib:desc publication="${newestPost.resource}"/></p>
 									</div>
 								</div>
@@ -268,7 +275,14 @@
 									</c:if>	
 									<c:forEach var="diffEntry" items="${diffArrayCurr}">
 										<div class="checkbox">
-											<input type="checkbox" id="CurrEntryCheckbox" class="invisible" checked="checked"/>
+											<c:choose>
+												<c:when test="${(command.context.loginUser.role ne 'ADMIN') and (diffEntry.key eq 'approved') }">
+													<input type="checkbox" id="CurrEntryCheckbox" class="invisible" disabled="disabled"/>
+												</c:when>
+												<c:otherwise>
+													<input type="checkbox" id="CurrEntryCheckbox" class="invisible" checked="checked"/>
+												</c:otherwise>
+											</c:choose>
 											<strong>${diffEntry.key}</strong>
 											<c:out value=": "/>
 											${diffEntry.value}

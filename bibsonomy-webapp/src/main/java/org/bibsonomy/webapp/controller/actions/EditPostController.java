@@ -503,6 +503,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		case "description":
 			post.setDescription(newPost.getDescription());
 			break;
+		case "approved":
+			post.setApproved(newPost.getApproved());
+			break;
 		default:
 			this.replaceResourceSpecificPostFields(post.getResource(), key, newPost.getResource());
 		}

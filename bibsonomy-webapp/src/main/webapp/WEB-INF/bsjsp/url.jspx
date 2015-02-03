@@ -122,7 +122,13 @@
 
 					<div class="media-body" id="titletext">
 						<div class="pull-right"><gbook:actions post="${post}" /></div>
-						<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(command.bookmark.list[0].resource.title)}" /></h1>
+						<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(command.bookmark.list[0].resource.title)}" />
+							<c:if test="${post.approved==1}">
+								<a  title="${fn:escapeXml(approved)}">
+									<span class="fa fa-check-circle" style="margin-left:6px;"><!--  --></span>
+								</a>
+							</c:if>
+						</h1>
 						<c:set var="url" value="${command.bookmark.list[0].resource.url}" />
 						<p><a href="${url}"><c:out value="${url}" /></a></p>
 					</div>
