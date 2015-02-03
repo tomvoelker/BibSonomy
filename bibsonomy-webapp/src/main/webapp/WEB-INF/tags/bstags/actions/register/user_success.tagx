@@ -49,7 +49,7 @@
 							<span id="post.resource.bookmarklet.howto"><!-- keep -->
 								<fmt:message key="register.nextSteps.step1"/>
 								<p>
-									<buttons:myBibSonomy username="${command.context.loginUser.name}"/>  
+									<buttons:myBibSonomy />
 									<buttons:postBookmark/>
 									<buttons:postPublication/>
 								</p>
