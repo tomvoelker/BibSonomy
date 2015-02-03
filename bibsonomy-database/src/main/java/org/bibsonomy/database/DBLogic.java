@@ -898,14 +898,20 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void deleteUser(final String userName) {
+		final DBSession session = openSession();
 		// TODO: take care of toLowerCase()!
 		this.ensureLoggedIn();
 		/*
 		 * only an admin or the user himself may delete the account
 		 */
 		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
+		User u = this.getUserDetails(userName);
+		for (Group g : u.getGroups()) {
+			if (this.groupDBManager.hasOneAdmin(g, session) && g.getGroupMembershipForUser(userName).getGroupRole().equals(GroupRole.ADMINISTRATOR)) {
+				throw new IllegalArgumentException("This would leave group " + g + " without an admin.");
+			}
+		}
 
-		final DBSession session = openSession();
 		try {
 			userDBManager.deleteUser(userName, session);
 		} finally {
