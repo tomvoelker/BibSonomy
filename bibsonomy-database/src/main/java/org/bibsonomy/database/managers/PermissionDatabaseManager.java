@@ -582,11 +582,18 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		case ADMINISTRATOR:
 			return actualRole.equals(GroupRole.ADMINISTRATOR);
 		case MODERATOR:
-			return actualRole.equals(GroupRole.MODERATOR) || actualRole.equals(GroupRole.ADMINISTRATOR);
+			return GroupRole.HIGHER_GROUP_ROLES.contains(actualRole);
 		case USER:
-			return actualRole.equals(GroupRole.USER) || actualRole.equals(GroupRole.MODERATOR) || actualRole.equals(GroupRole.ADMINISTRATOR);
+			return GroupRole.GROUP_ROLES.contains(actualRole);
 		default:
 			return false;
 		}
 	}
+
+	public void ensureGroupRoleOrHigher(final User user, final Group group, final GroupRole testRole) {
+		if (!this.hasGroupRoleOrHigher(user, group, testRole)) {
+			throw new AccessDeniedException();
+		}
+	}
+
 }

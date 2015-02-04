@@ -869,7 +869,7 @@ public class DBLogic implements LogicInterface {
 				myGroup.setTagSets(this.groupDBManager.getGroupTagSets(groupName, session));
 			}
 
-			if (!this.loginUser.getName().equals(groupName) && this.permissionDBManager.isAdminOrGroupModerator(this.loginUser, groupName)) {
+			if (this.permissionDBManager.isAdminOrGroupModerator(this.loginUser, groupName)) {
 				final Group pendingMembershipsGroup = this.groupDBManager.getGroupWithPendingMemberships(groupName, session);
 				if (present(pendingMembershipsGroup)) {
 					myGroup.setPendingMemberships(pendingMembershipsGroup.getMemberships());
@@ -1178,6 +1178,9 @@ public class DBLogic implements LogicInterface {
 			throw new ValidationException("No group name given.");
 		}
 
+		final User requestedUser = present(membership) ? membership.getUser() : null;
+		final String requestedUserName = present(requestedUser) ? requestedUser.getName() : null;
+
 		final DBSession session = this.openSession();
 
 		/*
@@ -1189,124 +1192,157 @@ public class DBLogic implements LogicInterface {
 		 * perform operations
 		 */
 		try {
+			session.beginTransaction();
+
+			// check the groups existence
+			final Group group = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, false, session);
+			if (!present(group)) {
+				throw new IllegalArgumentException("Group does not exist");
+			}
+
+			// perform actual operation
 			switch (operation) {
 			case UPDATE_ALL:
 				throw new UnsupportedOperationException("The method " + GroupUpdateOperation.UPDATE_ALL + " is not yet implemented.");
+
 			case UPDATE_SETTINGS:
-				this.permissionDBManager.hasGroupRoleOrHigher(this.loginUser, paramGroup, GroupRole.ADMINISTRATOR);
+				this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, group, GroupRole.ADMINISTRATOR);
 				this.groupDBManager.updateGroupSettings(paramGroup, session);
 				break;
+
 			case UPDATE_GROUPROLE:
-				this.permissionDBManager.hasGroupRoleOrHigher(this.loginUser, paramGroup, GroupRole.MODERATOR);
-
-				// make sure that we keep at least one admin
-				if (this.permissionDBManager.userHasGroupRole(this.loginUser, groupName, GroupRole.ADMINISTRATOR) && this.groupDBManager.hasExactlyOneAdmin(paramGroup, session)) {
-					throw new IllegalArgumentException("Group has only this admin left, cannot remove this user.");
+				this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, group, GroupRole.MODERATOR);
+				if (!present(group.getGroupMembershipForUser(requestedUser))) {
+					throw new IllegalArgumentException("The requested user " + requestedUserName + " is not a member of group " + groupName);
 				}
 
-				// check if the current group role of the logged in users allows
-				// to change the requested user
-				if (!((membership.getGroupRole().equals(GroupRole.USER) && this.permissionDBManager.hasGroupRoleOrHigher(this.loginUser, paramGroup, GroupRole.MODERATOR))
-				|| ((membership.getGroupRole().equals(GroupRole.MODERATOR) || membership.getGroupRole().equals(GroupRole.ADMINISTRATOR))
-				&& this.permissionDBManager.hasGroupRoleOrHigher(this.loginUser, paramGroup, GroupRole.ADMINISTRATOR)))) {
-					throw new AccessDeniedException("you can not change the group role of user " + membership.getUser().getName() + " to " + membership.getGroupRole());
+				final GroupRole requestedGroupRole = membership.getGroupRole();
+				final GroupRole currentGroupRole = group.getGroupMembershipForUser(membership.getUser().getName()).getGroupRole();
+				if (GroupRole.ADMINISTRATOR.equals(requestedGroupRole) || GroupRole.ADMINISTRATOR.equals(currentGroupRole)) {
+					this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, group, GroupRole.ADMINISTRATOR);
+					// make sure that we keep at least one admin
+					if (!GroupRole.ADMINISTRATOR.equals(requestedGroupRole) && this.groupDBManager.hasExactlyOneAdmin(group, session)) {
+						throw new IllegalArgumentException("Group has only this admin left, cannot remove this user.");
+					}
 				}
 
-				this.groupDBManager.updateGroupRole(this.loginUser, groupName, membership.getUser().getName(), membership.getGroupRole(), session);
+				this.groupDBManager.updateGroupRole(this.loginUser, groupName, requestedUserName, requestedGroupRole, session);
 				break;
+
 			case ADD_MEMBER:
-				final GroupMembership groupMembership = this.groupDBManager.getPendingMembershipForUserAndGroup(membership.getUser(), groupName, session);
+				// we need to query the groupMembership, since the group object
+				// might not contain the memberships if the loginUser is not
+				// allowed to see them
+				final GroupMembership groupMembership = this.groupDBManager.getPendingMembershipForUserAndGroup(requestedUser, groupName, session);
+
+				// We need to be careful with the exception, since it reveals
+				// information about pending memberships
+				if (!present(groupMembership)) {
+					if (this.permissionDBManager.isAdminOrSelf(this.loginUser, membership.getUser().getName())) {
+						throw new AccessDeniedException("You have not been invited to this group");
+					}
+					this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, group, GroupRole.MODERATOR);
+					throw new AccessDeniedException("The user can not be added to the group since they did not request to become a member.");
+				}
+
 				switch (groupMembership.getGroupRole()) {
 				case INVITED:
-					// needs no group rights, since this user was already
-					// invited by a principal of this group.
-					this.groupDBManager.addUserToGroup(groupName, membership.getUser().getName(), GroupRole.USER, session);
+					// only the user themselves can accept an invitation
+					this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, requestedUserName);
+					this.groupDBManager.addUserToGroup(groupName, requestedUserName, GroupRole.USER, session);
 					break;
 				case REQUESTED:
 					// only mods or admins can accept requests
-					if (this.permissionDBManager.hasGroupRoleOrHigher(this.loginUser, paramGroup, GroupRole.MODERATOR)) {
-						this.groupDBManager.addUserToGroup(groupName, membership.getUser().getName(), GroupRole.USER, session);
-						break;
-					}
-					// $FALLTHROUGH$
+					this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, group, GroupRole.MODERATOR);
+					this.groupDBManager.addUserToGroup(groupName, requestedUserName, GroupRole.USER, session);
+					break;
 				default:
 					throw new AccessDeniedException("Can't add this member to the group");
 				}
 				break;
+
 			case REMOVE_MEMBER:
 				// Check for correct role that can remove the user
-				final GroupRole toRemove = GroupUtils.getGroupMembershipOfUserForGroup(membership.getUser(), groupName).getGroupRole();
-				if (!((toRemove.equals(GroupRole.USER) && this.permissionDBManager.hasGroupRoleOrHigher(this.loginUser, paramGroup, GroupRole.MODERATOR))
-				|| ((toRemove.equals(GroupRole.MODERATOR) || toRemove.equals(GroupRole.ADMINISTRATOR)) && this.permissionDBManager.hasGroupRoleOrHigher(this.loginUser, paramGroup, GroupRole.ADMINISTRATOR)))) {
-					throw new AccessDeniedException("Insufficient rights");
+				final GroupRole roleOfUserToRemove = GroupUtils.getGroupMembershipOfUserForGroup(requestedUser, groupName).getGroupRole();
+				if (GroupRole.USER.equals(roleOfUserToRemove)) {
+					if (!this.permissionDBManager.isAdminOrSelf(this.loginUser, requestedUserName)) {
+						this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, group, GroupRole.MODERATOR);
+					}
+				} else {
+					this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, group, GroupRole.ADMINISTRATOR);
+					// we need at least one admin in the group at all times.
+					if (GroupRole.ADMINISTRATOR.equals(roleOfUserToRemove) && this.groupDBManager.hasExactlyOneAdmin(group, session)) {
+						throw new IllegalArgumentException("Group has only this admin left, cannot remove this user.");
+					}
 				}
 
-				// we need at least one admin in the group at all times.
-				if (this.permissionDBManager.userHasGroupRole(this.loginUser, groupName, GroupRole.ADMINISTRATOR) && this.groupDBManager.hasExactlyOneAdmin(paramGroup, session)) {
-					throw new IllegalArgumentException("Group has only this admin left, cannot remove this user.");
-				}
-				try {
-					session.beginTransaction();
-					this.groupDBManager.removeUserFromGroup(groupName, membership.getUser().getName(), session);
+				this.groupDBManager.removeUserFromGroup(groupName, requestedUserName, session);
 
-					// get the id of the group
-					final Group groupDetails = this.getGroupDetails(groupName);
-					final int groupId = groupDetails.getGroupId();
+				// get the id of the group
+				final int groupId = group.getGroupId();
 
-					// set all tas shared with the group to private (groupID 1)
-					this.tagDBManager.updateTasInGroupFromLeavingUser(membership.getUser(), groupId, session);
+				// set all tas shared with the group to private (groupID 1)
+				this.tagDBManager.updateTasInGroupFromLeavingUser(requestedUser, groupId, session);
 
-					/*
-					 * update the visibility of the post that are "assigned" to
-					 * the group
-					 * XXX: a loop over all resource database managers that
-					 * allow groups
-					 */
-					this.publicationDBManager.updatePostsInGroupFromLeavingUser(membership.getUser(), groupId, session);
-					this.bookmarkDBManager.updatePostsInGroupFromLeavingUser(membership.getUser(), groupId, session);
+				/*
+				 * update the visibility of the post that are "assigned" to
+				 * the group
+				 * XXX: a loop over all resource database managers that
+				 * allow groups
+				 */
+				this.publicationDBManager.updatePostsInGroupFromLeavingUser(requestedUser, groupId, session);
+				this.bookmarkDBManager.updatePostsInGroupFromLeavingUser(requestedUser, groupId, session);
 
-					// set all discussions in the group to private (groupID 1)
-					this.discussionDatabaseManager.updateDiscussionsInGroupFromLeavingUser(membership.getUser(), groupId, session);
-
-					session.commitTransaction();
-				} finally {
-					session.endTransaction();
-				}
-
+				// set all discussions in the group to private (groupID 1)
+				this.discussionDatabaseManager.updateDiscussionsInGroupFromLeavingUser(requestedUser, groupId, session);
 				break;
+
 			case UPDATE_USER_SHARED_DOCUMENTS:
-				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, membership.getUser().getName());
+				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, requestedUserName);
 				this.groupDBManager.updateUserSharedDocuments(paramGroup, membership, session);
 				break;
+
 			case UPDATE_GROUP_REPORTING_SETTINGS:
 				this.permissionDBManager.ensureIsAdminOrGroupAdmin(this.loginUser, groupName);
 				this.groupDBManager.updateGroupPublicationReportingSettings(paramGroup, session);
 				break;
+
 			case ACTIVATE:
 				this.permissionDBManager.ensureAdminAccess(this.loginUser);
 				this.groupDBManager.activateGroup(groupName, session);
 				break;
+
 			case DELETE: // TODO: use deleteGroup
 				this.permissionDBManager.ensureAdminAccess(this.loginUser);
 				this.groupDBManager.deletePendingGroup(groupName, session);
 				break;
+
 			case ADD_INVITED:
 				this.permissionDBManager.ensureIsAdminOrGroupModerator(this.loginUser, groupName);
-				this.groupDBManager.addPendingMembership(groupName, membership.getUser(), GroupRole.INVITED, session);
+				this.groupDBManager.addPendingMembership(groupName, requestedUser, GroupRole.INVITED, session);
 				break;
+
 			case ADD_REQUESTED:
 				// TODO: check for banned users in this group
-				this.groupDBManager.addPendingMembership(groupName, membership.getUser(), GroupRole.REQUESTED, session);
+				this.groupDBManager.addPendingMembership(groupName, requestedUser, GroupRole.REQUESTED, session);
 				break;
+
 			case REMOVE_INVITED:
+
 			case DECLINE_JOIN_REQUEST:
 				final GroupMembership currentMembership = this.groupDBManager.getPendingMembershipForUserAndGroup(this.loginUser, groupName, session);
-				final boolean requestedMembership = (currentMembership != null) && (GroupRole.PENDING_GROUP_ROLES.contains(currentMembership.getGroupRole()));
-				if (!this.permissionDBManager.isAdminOrGroupModerator(this.loginUser, groupName) && !requestedMembership) {
-					throw new AccessDeniedException("You are not allowed to remove invites or join requests of a group");
+
+				if (!present(currentMembership) || !GroupRole.PENDING_GROUP_ROLES.contains(currentMembership.getGroupRole())) {
+					throw new AccessDeniedException("You are not allowed to decline this request/invitation");
 				}
-				this.groupDBManager.removePendingMembership(groupName, membership.getUser().getName(), session);
+				if (GroupRole.INVITED.equals(currentMembership.getGroupRole())) {
+					this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, requestedUserName);
+				} else {
+					this.permissionDBManager.ensureIsAdminOrGroupAdmin(this.loginUser, groupName);
+				}
+				this.groupDBManager.removePendingMembership(groupName, requestedUserName, session);
 				break;
+
 			case UPDATE_PERMISSIONS:
 				this.permissionDBManager.ensureAdminAccess(this.loginUser);
 				this.groupDBManager.updateGroupLevelPermissions(this.loginUser.getName(), paramGroup, session);
@@ -1315,6 +1351,8 @@ public class DBLogic implements LogicInterface {
 			default:
 				throw new UnsupportedOperationException("The requested method is not yet implemented.");
 			}
+
+			session.commitTransaction();
 		} finally {
 			session.close();
 		}

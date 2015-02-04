@@ -43,7 +43,6 @@ import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.UserRelation;
-import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.GroupParam;
@@ -232,9 +231,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			}
 			//$FALL-THROUGH$
 		case HIDDEN:
-			// only a group admin may always see the group members
+			// only a group admins or moderators may always see the group
+			// members
 			final GroupMembership groupMembershipForUser = this.getGroupMembershipForUser(authUser, group, session);
-			if (!present(groupMembershipForUser) || !GroupRole.ADMINISTRATOR.equals(groupMembershipForUser.getGroupRole())) {
+			if (!present(groupMembershipForUser) || !GroupRole.HIGHER_GROUP_ROLES.contains(groupMembershipForUser.getGroupRole())) {
 				group.setMemberships(Collections.<GroupMembership> emptyList());
 			}
 			break;
