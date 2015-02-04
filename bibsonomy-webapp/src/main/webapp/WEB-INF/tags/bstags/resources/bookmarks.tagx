@@ -6,7 +6,8 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
-	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
@@ -68,8 +69,26 @@
 								<jsp:invoke fragment="customPageOptions"/>
 							</c:when>
 							<c:otherwise>
-								<div class="pull-right btn-group dropdown-align-right" style="margin-bottom: 2px;">
-									<bsform:button gear="${true}" value="" dropdown="${true}" size="xsmall" style="defaultStyle" dataToggle="dropdown" />
+								<div class="pull-right btn-group btn-group-xs dropdown-align-right" style="margin-bottom: 2px;">
+									<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
+									<c:set var="escapedRequestPathAndQuery" value="${fn:escapeXml(requPathAndQuery)}" />
+									
+									<c:choose>
+										<c:when test="${showPublication}">
+											<fmt:message key="post.meta.show_bookmarks_only" var="showBookmarksOnly"/>
+											<a title="${showBookmarksOnly}" class="btn btn-default" href="${mtl:setParam(escapedRequestPathAndQuery, 'resourcetype', 'bookmark')}">
+												<span class="fa fa-expand"><!-- KEEP ME --></span>
+											</a>
+										</c:when>
+										<c:otherwise>
+											<fmt:message key="navi.all" var="showAll" />
+											<a title="${showAll}" class="btn btn-default" href="${mtl:setParam(escapedRequestPathAndQuery, 'resourcetype', 'all')}">
+												<span class="fa fa-compress"><!-- KEEP ME --></span>
+											</a>
+										</c:otherwise>
+									</c:choose>
+									
+									<bsform:button size="xsmall" style="defaultStyle" gear="true" dropdown="true" value="" dataToggle="dropdown"/>
 									<ul class="dropdown-menu list-options">
 				
 										<rc:actions 
@@ -83,6 +102,7 @@
 											disableListNavigation="${disableListNavigation}"
 											disableResourcetypeSelection="${disableResourcetypeSelection}"/>
 							  		</ul>
+								  	
 								</div>
 							</c:otherwise>
 						</c:choose>

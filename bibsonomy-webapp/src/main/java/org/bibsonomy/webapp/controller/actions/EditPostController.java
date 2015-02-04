@@ -51,8 +51,6 @@ import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -91,18 +89,18 @@ import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.impl.database.RecommenderStatisticsManager;
 
 /**
+ * A generic edit post controller for any resource
+ * 
+ * NOTE: Do not import any subclasses of the {@link Resource} class!
+ * 
  * @author fba
  * @param <RESOURCE>
  * @param <COMMAND>
  */
 public abstract class EditPostController<RESOURCE extends Resource, COMMAND extends EditPostCommand<RESOURCE>> extends SingleResourceListController implements MinimalisticController<COMMAND>, ErrorAware {
-	/**
-	 * 
-	 */
-	private static final String TAGS_KEY = "tags";
-
 	private static final Log log = LogFactory.getLog(EditPostController.class);
 
+	private static final String TAGS_KEY = "tags";
 	protected static final String LOGIN_NOTICE = "login.notice.post.";
 
 	private Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> recommender;
@@ -399,16 +397,18 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 			// if the controller is called from history page
 			if (present(command.getDifferentEntryKeys())) {
-				// comparePost is the history revision which will be restored.*
+				/*
+				 * TODO: why don't we use the update date of the post as
+				 * identifier (instead of the compare version)? A greater than
+				 * query is more effective as the limit and offset caused by the
+				 * compare version
+				 */
+				// comparePost is the history revision which will be restored.
 				final int compareVersion = command.getCompareVersion();
 				@SuppressWarnings("unchecked")
 				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(dbPost.getResource().getClass(), GroupingEntity.USER, this.getGrouping(loginUser), null, intraHashToUpdate, null, FilterEntity.POSTS_HISTORY, null, null, null, compareVersion, compareVersion + 1).get(0);
-				// final Post<RESOURCE> comparePost = (Post<RESOURCE>)
-				// this.logic.getPosts(dbPost.getResource().getClass(),
-				// GroupingEntity.USER, this.getGrouping(loginUser), null,
-				// intraHashToUpdate, null, FilterEntity.POSTS_HISTORY, null,
-				// null, null, null, null).get(0);
-
+				
+				// TODO: why don't we set the dbPost = comparePost? why do we have to restore all fields by hand?
 				final List<String> diffEntryKeyList = command.getDifferentEntryKeys();
 				for (int i = 0; i < diffEntryKeyList.size(); i++) {
 					this.replacePostFields(dbPost, diffEntryKeyList.get(i), comparePost);
@@ -781,14 +781,8 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 	private View finalRedirect(final COMMAND command, final Post<RESOURCE> post, final String loginUserName) {
 		if (present(command.getSaveAndRate())) {
-			if (post.getResource() instanceof BibTex) {
-				final String publicationRatingUrl = this.urlGenerator.getPublicationRatingUrl(post.getResource().getInterHash(), loginUserName, post.getResource().getIntraHash());
-				return new ExtendedRedirectView(publicationRatingUrl);
-			}
-			if (post.getResource() instanceof Bookmark) {
-				final String bookmarkRatingUrl = this.urlGenerator.getBookmarkRatingUrl(post.getResource().getInterHash(), loginUserName, post.getResource().getIntraHash());
-				return new ExtendedRedirectView(bookmarkRatingUrl);
-			}
+			final String ratingUrl = this.urlGenerator.getCommunityRatingUrl(post);
+			return new ExtendedRedirectView(ratingUrl);
 		}
 		return this.finalRedirect(loginUserName, post, command.getReferer());
 	}

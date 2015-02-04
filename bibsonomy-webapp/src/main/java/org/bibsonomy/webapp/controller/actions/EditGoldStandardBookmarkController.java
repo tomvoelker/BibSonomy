@@ -94,11 +94,6 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 
 
  	@Override
- 	protected boolean canEditPost(final RequestWrapperContext context) {
- 		return super.canEditPost(context) && Role.ADMIN.equals(context.getLoginUser().getRole());
- 	}
-
- 	@Override
  	protected View finalRedirect(final String userName, final Post<Bookmark> post, final String referer) {
  		if (referer == null || referer.matches(".*/editGoldStandardBookmark.*")) {
  			return new ExtendedRedirectView(this.urlGenerator.getBookmarkUrl(post.getResource(), null));

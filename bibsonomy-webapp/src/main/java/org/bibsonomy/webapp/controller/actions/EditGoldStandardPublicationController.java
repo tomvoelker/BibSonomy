@@ -97,11 +97,6 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 	}
 
 	@Override
-	protected boolean canEditPost(final RequestWrapperContext context) {
-		return super.canEditPost(context) && Role.ADMIN.equals(context.getLoginUser().getRole());
-	}
-
-	@Override
 	protected View finalRedirect(final String userName, final Post<BibTex> post, final String referer) {
 		if ((referer == null) || referer.matches(".*/editGoldStandardPublication.*") || referer.contains("/history/")) {
 			return new ExtendedRedirectView(this.urlGenerator.getPublicationUrl(post.getResource(), null));
