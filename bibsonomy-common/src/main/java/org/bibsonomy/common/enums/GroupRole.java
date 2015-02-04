@@ -12,31 +12,34 @@ import org.bibsonomy.util.Sets;
  * @author clemensbaier
  */
 public enum GroupRole {
-	
+
 	/** administrator */
 	ADMINISTRATOR(0),
-	
+
 	/** user */
 	USER(7),
-	
+
 	/** moderator */
 	MODERATOR(1),
-	
+
 	/** dummy */
 	DUMMY(2),
-	
+
 	/** user invited by an admin or moderator */
 	INVITED(3),
-	
+
 	/** request to join the group */
 	REQUESTED(4);
 
 	/** all pending group roles */
 	public static final Set<GroupRole> PENDING_GROUP_ROLES = Sets.asSet(GroupRole.INVITED, GroupRole.REQUESTED);
-	
+
 	/** all non pending group roles */
 	public static final Set<GroupRole> GROUP_ROLES = Sets.asSet(GroupRole.ADMINISTRATOR, GroupRole.MODERATOR, GroupRole.USER);
-	
+
+	/** all group roles with special abilities **/
+	public static final Set<GroupRole> HIGHER_GROUP_ROLES = Sets.asSet(GroupRole.ADMINISTRATOR, GroupRole.MODERATOR);
+
 	private final int role;
 
 	private GroupRole(final int role) {
@@ -56,12 +59,13 @@ public enum GroupRole {
 	 * Creates an instance of this class by its String representation.
 	 * 
 	 * @param level
-	 *            - a String representing the object. Must be an integer number.
+	 *        - a String representing the object. Must be an integer number.
 	 * @return The corresponding object.
 	 */
 	public static GroupRole getGroupRole(final String level) {
-		if (level == null)
+		if (level == null) {
 			return USER;
+		}
 		return getGroupRole(Integer.parseInt(level));
 	}
 
@@ -69,23 +73,23 @@ public enum GroupRole {
 	 * Creates an instance of this class by its Integer representation.
 	 * 
 	 * @param level
-	 *            - an Integer representing the object.
+	 *        - an Integer representing the object.
 	 * @return The corresponding object.
 	 */
 	public static GroupRole getGroupRole(final int level) {
-		for (GroupRole r : GroupRole.values()) {
+		for (final GroupRole r : GroupRole.values()) {
 			if (r.role == level) {
 				return r;
 			}
 		}
 		throw new IllegalArgumentException("unknown group role id " + level);
 	}
-	
+
 	public boolean isMemberRole() {
-		return this.role == 0 || this.role == 1 || this.role == 7;
+		return (this.role == 0) || (this.role == 1) || (this.role == 7);
 	}
-	
+
 	public boolean isPendingRole() {
-		return this.role == 3 || this.role == 4;
+		return (this.role == 3) || (this.role == 4);
 	}
 }
