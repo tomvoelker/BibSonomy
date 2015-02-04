@@ -1012,6 +1012,16 @@ public class User implements Serializable {
 		this.groupRole = groupRole;
 	}
 	
+
+	/**
+	 * Check if the user has the particular groupLevelPermission
+	 * @param groupLevelPermission
+	 * @return true if the user has the particular groupLevelPermission
+	 */
+	public boolean hasGroupLevelPermission(GroupLevelPermission groupLevelPermission) {
+		return this.getGroupLevelPermissions().contains(groupLevelPermission);
+	}
+	
 	/*
 	 * Return all group level permissions this user has from any group he is a member of
 	 */
