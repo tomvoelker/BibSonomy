@@ -28,7 +28,7 @@
 			<script type="text/javascript" src="/resources/javascript/bs/animate-scroll-affix.js"><!-- --></script>
 		</jsp:attribute>
 		
-		<!-- TODO breadcrumbs
+		<!-- TODO: (Bootstrap) breadcrumbs
 		<jsp:attribute name="breadcrumbs">	
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
@@ -106,9 +106,7 @@
 										</fmt:message>
 									</div>
 									<div class="col-sm-6">
-										<fmt:message var="exampleString" key="example" />
-										<img class="img-thumbnail img-responsive"
-											src="/resources/image/bookmarklet_screenshot_chrome_${fn:toLowerCase(exampleString)}.png" />
+										<img class="img-thumbnail img-responsive" src="/resources/image/addons/${locale}/bookmarklet_screenshot_chrome.png" />
 									</div>
 								</div>
 							</div>
