@@ -62,7 +62,7 @@ import org.bibsonomy.model.util.UserUtils;
  */
 public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(PermissionDatabaseManager.class);
-	
+
 	private final static PermissionDatabaseManager singleton = new PermissionDatabaseManager();
 
 	/**
@@ -85,12 +85,12 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * @param loginUser
 	 * @param start
-	 *            TODO: unused
+	 *        TODO: unused
 	 * @param end
 	 * @param itemType
 	 */
 	public void checkStartEnd(final User loginUser, final int start, final int end, final String itemType) {
-		if (!this.isAdmin(loginUser) && (end - start > PostLogicInterface.MAX_QUERY_SIZE)) {
+		if (!this.isAdmin(loginUser) && ((end - start) > PostLogicInterface.MAX_QUERY_SIZE)) {
 			throw new AccessDeniedException("You are not authorized to retrieve more than " + PostLogicInterface.MAX_QUERY_SIZE + " " + itemType + " items at a time.");
 		}
 	}
@@ -143,13 +143,13 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * its groups?
 	 * 
 	 * @param userName
-	 *            - the name of the user which wants to access the posts
-	 *            documents.
+	 *        - the name of the user which wants to access the posts
+	 *        documents.
 	 * @param post
-	 *            - the post which contains the documents the user wants to
-	 *            access.
+	 *        - the post which contains the documents the user wants to
+	 *        access.
 	 * @param session
-	 *            - a DBSession.
+	 *        - a DBSession.
 	 * @return <code>true</code> if the user is allowed to access the documents
 	 *         of the post.
 	 */
@@ -167,8 +167,8 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		final Collection<Group> postGroups = post.getGroups();
 
 		/*
-		 * Get the groups in which both users are. It is important 
-		 * to have postUserName as the second user, we will get 
+		 * Get the groups in which both users are. It is important
+		 * to have postUserName as the second user, we will get
 		 * his userSharedDocuments value in the group !
 		 */
 		final List<Group> commonGroups = this.groupDb.getCommonGroups(userName, postUserName, session);
@@ -209,15 +209,15 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * </ul>
 	 * 
 	 * @param loginUser
-	 *            - the name of the logged-in user
+	 *        - the name of the logged-in user
 	 * @param grouping
-	 *            - the requested grouping (GROUP or USER)
+	 *        - the requested grouping (GROUP or USER)
 	 * @param groupingName
-	 *            - the name of the requested user / group
+	 *        - the name of the requested user / group
 	 * @param filter
-	 *            - the requested filter entity
+	 *        - the requested filter entity
 	 * @param session
-	 *            - DB session
+	 *        - DB session
 	 * @return <code>true</code> if the logged-in user is allowed to access the
 	 *         documents of the requested user / group.
 	 */
@@ -231,10 +231,11 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 						return true;
 					}
 				}
-				
+
 				final List<Group> commonGroups = this.groupDb.getCommonGroups(loginUser.getName(), groupingName, session);
 				/*
-				 * Find a common group of both users, which allows to share documents.
+				 * Find a common group of both users, which allows to share
+				 * documents.
 				 */
 				for (final Group group : commonGroups) {
 					if (group.isSharedDocuments()) {
@@ -374,15 +375,15 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	public boolean useResourceSearchForTagQuery(final int i) {
 		return i >= PostLogicInterface.MAX_TAG_SIZE;
 	}
-	
+
 	/**
 	 * Checks, if the given login user is either an admin, or the user requested
 	 * by user name.
 	 * 
 	 * @param loginUser
-	 *            - the logged in user.
+	 *        - the logged in user.
 	 * @param userName
-	 *            - the name of the requested user.
+	 *        - the name of the requested user.
 	 * @return <code>true</code> if loginUser is an admin or userName.
 	 */
 	public boolean isAdminOrSelf(final User loginUser, final String userName) {
@@ -392,57 +393,60 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		|| this.isAdmin(loginUser) // loginUser is admin
 		);
 	}
-	
+
 	/**
 	 * @param loginUser
-	 * @param userName
-	 * @return <code>true</code> if loginUser is an admin or userName or at least an admin of the group
+	 * @param groupName
+	 * @return <code>true</code> if loginUser is an admin or userName or at
+	 *         least an admin of the group
 	 */
-	public boolean isAdminOrGroupAdminOrSelf(User loginUser, String userName) {
-		return isGroupAdmin(loginUser, userName) || isAdminOrSelf(loginUser, userName);
+	public boolean isAdminOrGroupAdmin(final User loginUser, final String groupName) {
+		return this.isGroupAdmin(loginUser, groupName) || this.isAdmin(loginUser);
 	}
-	
+
 	/**
 	 * Checks, if the given login user is either an admin, or the user requested
 	 * by user name or at least a moderator of the group if userName is a group
 	 * 
 	 * @param loginUser
-	 * @param userName
-	 * @return <code>true</code> if loginUser is an admin or userName or at least a moderator of the group
+	 * @param groupName
+	 * @return <code>true</code> if loginUser is an admin or userName or at
+	 *         least a moderator of the group
 	 */
-	public boolean isAdminOrGroupModeratorOrSelf(final User loginUser, final String userName) {
-		return isAdminOrGroupAdminOrSelf(loginUser, userName) || isGroupModerator(loginUser, userName);
+	public boolean isAdminOrGroupModerator(final User loginUser, final String groupName) {
+		return this.isAdminOrGroupAdmin(loginUser, groupName) || this.isGroupModerator(loginUser, groupName);
 	}
-	
+
 	/**
 	 * @param loginUser
 	 * @param groupName
-	 * @return <code>true</code> if the loggedin user is admin, moderator or normal member of the group
+	 * @return <code>true</code> if the loggedin user is admin, moderator or
+	 *         normal member of the group
 	 */
-	public boolean isGroupMember(User loginUser, String groupName) {
-		return isGroupAdmin(loginUser, groupName) || isGroupModerator(loginUser, groupName) || isGroupUser(loginUser, groupName);
+	public boolean isGroupMember(final User loginUser, final String groupName) {
+		return this.isGroupAdmin(loginUser, groupName) || this.isGroupModerator(loginUser, groupName) || this.isGroupUser(loginUser, groupName);
 	}
-	
-	private boolean isGroupUser(User loginUser, String groupName) {
+
+	private boolean isGroupUser(final User loginUser, final String groupName) {
 		return this.userHasGroupRole(loginUser, groupName, GroupRole.USER);
 	}
 
 	/**
 	 * @param loginUser
-	 * @param userName
+	 * @param groupName
 	 * @return
 	 */
-	private boolean isGroupModerator(User loginUser, String userName) {
-		return this.userHasGroupRole(loginUser, userName, GroupRole.MODERATOR);
+	private boolean isGroupModerator(final User loginUser, final String groupName) {
+		return this.userHasGroupRole(loginUser, groupName, GroupRole.MODERATOR);
 	}
 
 	/**
 	 * @param loginUser
-	 * @param userName
+	 * @param groupName
 	 * @return
 	 */
-	private boolean isGroupAdmin(User loginUser, String userName) {
-		return this.userHasGroupRole(loginUser, userName, GroupRole.ADMINISTRATOR);
+	public boolean isGroupAdmin(final User loginUser, final String groupName) {
+		return this.userHasGroupRole(loginUser, groupName, GroupRole.ADMINISTRATOR);
 	}
 
 	/**
@@ -467,23 +471,34 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 			throw new AccessDeniedException();
 		}
 	}
-	
+
 	/**
 	 * @param loginUser
-	 * @param username
+	 * @param groupName
 	 */
-	public void ensureIsAdminOrGroupAdminOrSelf(User loginUser, String username) {
-		if (!this.isAdminOrGroupAdminOrSelf(loginUser, username)) {
+	public void ensureIsAdminOrGroupAdmin(final User loginUser, final String groupName) {
+		if (!this.isAdminOrGroupAdmin(loginUser, groupName)) {
 			throw new AccessDeniedException();
 		}
 	}
-	
+
 	/**
 	 * @param loginUser
-	 * @param username
+	 * @param userName
+	 * @param groupName
 	 */
-	public void ensureIsAdminOrGroupModeratorOrSelf(User loginUser, String username) {
-		if (!this.isAdminOrGroupModeratorOrSelf(loginUser, username)) {
+	public void ensureIsAdminOrSelfOrGroupAdmin(final User loginUser, final String userName) {
+		if (!this.isAdminOrSelf(loginUser, userName) && !this.isGroupAdmin(loginUser, userName)) {
+			throw new AccessDeniedException();
+		}
+	}
+
+	/**
+	 * @param loginUser
+	 * @param groupName
+	 */
+	public void ensureIsAdminOrGroupModerator(final User loginUser, final String groupName) {
+		if (!this.isAdminOrGroupModerator(loginUser, groupName)) {
 			throw new AccessDeniedException();
 		}
 	}
@@ -493,10 +508,10 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * @param loginUser
 	 * @param groupName
-	 * @param role 
+	 * @param role
 	 * @return if role equals the users role
 	 */
-	public boolean userHasGroupRole(final User loginUser, final String groupName, GroupRole role) {
+	public boolean userHasGroupRole(final User loginUser, final String groupName, final GroupRole role) {
 		for (final Group g : loginUser.getGroups()) {
 			if (g.getName().equals(groupName)) {
 				final GroupMembership membership = GroupUtils.getGroupMembershipForUser(g, loginUser.getName(), false);
@@ -515,13 +530,13 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * user may be created.
 	 * 
 	 * @param loginUser
-	 *            - the logged-in user
+	 *        - the logged-in user
 	 * @param relation
-	 *            - the relation to be created
+	 *        - the relation to be created
 	 * @param tag
-	 *            TODO
+	 *        TODO
 	 * @param targetUser
-	 *            - the target user
+	 *        - the target user
 	 * @return true if everything is OK and the relationship may be created
 	 * 
 	 * 
@@ -544,7 +559,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		}
 		return true;
 	}
-	
+
 	public boolean hasGroupLevelPermission(final User loginuser, final GroupLevelPermission groupLevelPermission) {
 		for (final Group group : loginuser.getGroups()) {
 			if (group.getGroupLevelPermissions().contains(groupLevelPermission)) {
@@ -555,23 +570,23 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	public void ensureHasGroupLevelPermission(final User loginuser, final GroupLevelPermission groupLevelPermission) {
-		if (!hasGroupLevelPermission(loginuser, groupLevelPermission)) {
+		if (!this.hasGroupLevelPermission(loginuser, groupLevelPermission)) {
 			throw new AccessDeniedException();
 		}
 	}
 
-	public boolean hasGroupRoleOrHigher(User user, Group group, GroupRole testRole) {
-		GroupRole actualRole = GroupUtils.getGroupMembershipForUser(group, user.getName(), true).getGroupRole();
-		
+	public boolean hasGroupRoleOrHigher(final User user, final Group group, final GroupRole testRole) {
+		final GroupRole actualRole = GroupUtils.getGroupMembershipForUser(group, user.getName(), true).getGroupRole();
+
 		switch (testRole) {
-			case ADMINISTRATOR:
-				return actualRole.equals(GroupRole.ADMINISTRATOR);
-			case MODERATOR:
-				return actualRole.equals(GroupRole.MODERATOR) || actualRole.equals(GroupRole.ADMINISTRATOR);
-			case USER:
-				return actualRole.equals(GroupRole.USER) || actualRole.equals(GroupRole.MODERATOR) || actualRole.equals(GroupRole.ADMINISTRATOR);
-			default:
-				return false;
+		case ADMINISTRATOR:
+			return actualRole.equals(GroupRole.ADMINISTRATOR);
+		case MODERATOR:
+			return actualRole.equals(GroupRole.MODERATOR) || actualRole.equals(GroupRole.ADMINISTRATOR);
+		case USER:
+			return actualRole.equals(GroupRole.USER) || actualRole.equals(GroupRole.MODERATOR) || actualRole.equals(GroupRole.ADMINISTRATOR);
+		default:
+			return false;
 		}
 	}
 }
