@@ -821,12 +821,15 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = this.openSession();
 		try {
 			final Group myGroup = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, this.permissionDBManager.isAdmin(this.loginUser), session);
-			final Group pendingMembershipsGroup = this.groupDBManager.getGroupWithPendingMemberships(groupName, session);
 			if (present(myGroup)) {
 				myGroup.setTagSets(this.groupDBManager.getGroupTagSets(groupName, session));
 			}
-			if (present(pendingMembershipsGroup)) {
-				myGroup.setPendingMemberships(pendingMembershipsGroup.getMemberships());
+			
+			if (!loginUser.getName().equals(groupName) && this.permissionDBManager.isAdminOrGroupModeratorOrSelf(loginUser, groupName)) {
+				final Group pendingMembershipsGroup = this.groupDBManager.getGroupWithPendingMemberships(groupName, session);
+				if (present(pendingMembershipsGroup)) {
+					myGroup.setPendingMemberships(pendingMembershipsGroup.getMemberships());
+				}
 			}
 			return myGroup;
 		} finally {
@@ -898,14 +901,20 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void deleteUser(final String userName) {
+		final DBSession session = openSession();
 		// TODO: take care of toLowerCase()!
 		this.ensureLoggedIn();
 		/*
 		 * only an admin or the user himself may delete the account
 		 */
 		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
+		User u = this.getUserDetails(userName);
+		for (Group g : u.getGroups()) {
+			if (this.groupDBManager.hasOneAdmin(g, session) && g.getGroupMembershipForUser(userName).getGroupRole().equals(GroupRole.ADMINISTRATOR)) {
+				throw new IllegalArgumentException("This would leave group " + g + " without an admin.");
+			}
+		}
 
-		final DBSession session = openSession();
 		try {
 			userDBManager.deleteUser(userName, session);
 		} finally {
@@ -1138,29 +1147,50 @@ public class DBLogic implements LogicInterface {
 			case UPDATE_ALL:
 				throw new UnsupportedOperationException("The method " + GroupUpdateOperation.UPDATE_ALL + " is not yet implemented.");
 			case UPDATE_SETTINGS:
-				this.permissionDBManager.ensureIsAdminOrGroupAdminOrSelf(this.loginUser, groupName);
+				this.permissionDBManager.hasGroupRoleOrHigher(this.loginUser, paramGroup, GroupRole.ADMINISTRATOR);
 				this.groupDBManager.updateGroupSettings(paramGroup, session);
 				break;
 			case UPDATE_GROUPROLE:
-				this.permissionDBManager.ensureIsAdminOrGroupModeratorOrSelf(this.loginUser, groupName);
+				this.permissionDBManager.hasGroupRoleOrHigher(this.loginUser, paramGroup, GroupRole.MODERATOR);
+				
+				// make sure that we keep at least one admin
+				if (this.permissionDBManager.userHasGroupRole(loginUser, groupName, GroupRole.ADMINISTRATOR) && this.groupDBManager.hasOneAdmin(paramGroup, session)) {
+					throw new IllegalArgumentException("Group has only this admin left, cannot remove this user.");
+				}
+				
+				// check if the current group role of the logged in users allows to change the requested user
+				if (!(membership.getGroupRole().equals(GroupRole.USER) && this.permissionDBManager.hasGroupRoleOrHigher(loginUser, paramGroup, GroupRole.MODERATOR)
+						|| (membership.getGroupRole().equals(GroupRole.MODERATOR) || membership.getGroupRole().equals(GroupRole.ADMINISTRATOR))
+						&& this.permissionDBManager.hasGroupRoleOrHigher(loginUser, paramGroup, GroupRole.ADMINISTRATOR))) {
+					throw new AccessDeniedException("you can not change the group role of user " + membership.getUser().getName() + " to " + membership.getGroupRole());
+				}
+
 				this.groupDBManager.updateGroupRole(this.loginUser, groupName, membership.getUser().getName(), membership.getGroupRole(), session);
 				break;
 			case ADD_MEMBER:
-				final GroupMembership groupMembership = this.groupDBManager.getPendingMembershipForUserAndGroup(this.loginUser, groupName, session);
-				final boolean invitedUser = groupMembership != null && GroupRole.INVITED.equals(groupMembership.getGroupRole());
-				if (!this.permissionDBManager.isAdminOrGroupModeratorOrSelf(this.loginUser, groupName) && !invitedUser) {
-					throw new AccessDeniedException("You are not allowed to add users to a group");
+				final GroupMembership groupMembership = this.groupDBManager.getPendingMembershipForUserAndGroup(membership.getUser(), groupName, session);
+				switch (groupMembership.getGroupRole()) {
+					case INVITED:
+						// needs no group rights, since this user was already invited by a principal of this group.
+						this.groupDBManager.addUserToGroup(groupName, membership.getUser().getName(), GroupRole.USER, session);
+						break;
+					case REQUESTED:
+						// only mods or admins can accept requests
+						if (this.permissionDBManager.hasGroupRoleOrHigher(this.loginUser, paramGroup, GroupRole.MODERATOR) ) {
+							this.groupDBManager.addUserToGroup(groupName, membership.getUser().getName(), GroupRole.USER, session);
+							break;
+						}
+					//$FALLTHROUGH$
+					default:
+						throw new AccessDeniedException("Can't add this member to the group");
 				}
-				this.groupDBManager.addUserToGroup(groupName, membership.getUser().getName(), GroupRole.USER, session);
 				break;
 			case REMOVE_MEMBER:
 				// Check for correct role that can remove the user
 				GroupRole toRemove = GroupUtils.getGroupMembershipOfUserForGroup(membership.getUser(), groupName).getGroupRole();
-				if (toRemove.equals(GroupRole.USER)) {
-					this.permissionDBManager.ensureIsAdminOrGroupModeratorOrSelf(loginUser, groupName);
-				}
-				if (toRemove.equals(GroupRole.MODERATOR) || toRemove.equals(GroupRole.ADMINISTRATOR)) {
-					this.permissionDBManager.ensureIsAdminOrGroupAdminOrSelf(loginUser, groupName);
+				if (!(toRemove.equals(GroupRole.USER) && this.permissionDBManager.hasGroupRoleOrHigher(loginUser, paramGroup, GroupRole.MODERATOR)
+						|| (toRemove.equals(GroupRole.MODERATOR) || toRemove.equals(GroupRole.ADMINISTRATOR)) && this.permissionDBManager.hasGroupRoleOrHigher(loginUser, paramGroup, GroupRole.ADMINISTRATOR))) {
+					throw new AccessDeniedException("Insufficient rights");
 				}
 				
 				// we need at least one admin in the group at all times.
