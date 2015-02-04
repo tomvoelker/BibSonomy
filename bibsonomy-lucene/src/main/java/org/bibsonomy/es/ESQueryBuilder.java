@@ -17,12 +17,6 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.sort.SortBuilder;
 
-
-
-
-
-
-
 /**
  * The Class for building queries for Shared Resource Search base on Elasticsearch.
  *

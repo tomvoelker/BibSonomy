@@ -1,7 +1,10 @@
 package org.bibsonomy.es;
 
+import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
@@ -12,6 +15,14 @@ import org.bibsonomy.model.es.ESClient;
 import org.bibsonomy.model.es.IndexUpdater;
 import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.es.UpdatePlugin;
+import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
+import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
+import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
+import org.elasticsearch.action.admin.indices.flush.FlushRequest;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 
 /**
  * Initiates the IndexUpdater for the kronjobs to update indexes
@@ -23,7 +34,8 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	private final ESClient esClient;
 	private final String systemHome;
 	private boolean generatingIndex;
-	
+	private static final Log log = LogFactory.getLog(SharedIndexUpdatePlugin.class);
+
 	/**
 	 * @param esClient
 	 * @param systemHome
@@ -61,6 +73,23 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 			this.generatingIndex = true;
 		}
 		
+		//check if the index already exists if so it deletes and creates empty index again otherwise mapping fails with existing resource types
+		boolean isIndexExist = esClient.getClient().admin().indices().exists(new IndicesExistsRequest(ESConstants.INDEX_NAME)).actionGet().isExists();
+		
+		if(isIndexExist){
+			DeleteIndexResponse delete = esClient.getClient().admin().indices().delete(new DeleteIndexRequest(ESConstants.INDEX_NAME)).actionGet();
+			if (!delete.isAcknowledged()) {
+				log.error("Index wasn't deleted");
+			    return;
+			}
+		}
+		
+		CreateIndexResponse createIndex =  esClient.getClient().admin().indices().create(new CreateIndexRequest(ESConstants.INDEX_NAME)).actionGet();
+	    if(!createIndex.isAcknowledged()){
+	    	log.error("Index wasn't recreated");
+		    return;	
+	    }
+		
 		SharedResourceIndexGenerator generator = new SharedResourceIndexGenerator(this.systemHome);
 		generator.setSearchType(SearchType.ELASTICSEARCH);
 		for(LuceneResourceManager<? extends Resource> manager: luceneResourceManagers){
@@ -79,6 +108,8 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	 */
 	@Override
 	public void generatedIndex(LuceneResourceIndex<R> index) {
+		//it is better to refresh the index after creating the documents
+		esClient.getClient().admin().indices().flush(new FlushRequest(ESConstants.INDEX_NAME).full(true)).actionGet();
 		this.generatingIndex = false;
 	}
 }

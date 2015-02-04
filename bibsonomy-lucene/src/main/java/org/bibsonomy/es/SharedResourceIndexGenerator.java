@@ -29,8 +29,8 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 	private final String indexName = ESConstants.INDEX_NAME;
 	private String indexType;
 	private final String systemUrlFieldName = "systemUrl";
-	//	private final ESClient esClient = new ESNodeClient();
-	// ElasticSearch Transport client
+
+	// ElasticSearch client
 	private ESClient esClient;
 	private final String systemHome;
 	private static final Log log = LogFactory.getLog(SharedResourceIndexGenerator.class);
@@ -68,7 +68,11 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 		}
 
 		log.info("Start writing data to shared index");
-
+        
+		//Add mapping here depending on the resource type which is here indexType
+		ESResourceMapping resourceMapping = new ESResourceMapping(indexType, esClient);
+		resourceMapping.doMapping();
+		
 		//Indexing system information for the specific index type
 		SystemInformation systemInfo =  new SystemInformation();
 		systemInfo.setPostType(indexType);
@@ -77,9 +81,8 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 		systemInfo.setSystemUrl(systemHome);
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonDocumentForSystemInfo = mapper.writeValueAsString(systemInfo);
-		esClient.getClient()
-		.prepareIndex(indexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, systemHome+indexType)
-		.setSource(jsonDocumentForSystemInfo).execute().actionGet();
+		esClient.getClient().prepareIndex(indexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, systemHome+indexType)
+							.setSource(jsonDocumentForSystemInfo).setRefresh(true).execute().actionGet();
 		
 		// read block wise all posts
 		List<LucenePost<Resource>> postList = null;
@@ -126,6 +129,8 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 		}
 	}
 	
+	
+
 	/** Run the index-generation in a thread. */
 	@Override
 	public void run() {
@@ -162,14 +167,14 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 	}
 	
 	/**
-	 * @return the INDEX_TYPE
+	 * @return the indexType
 	 */
 	public String getIndexType() {
 		return this.indexType;
 	}
 
 	/**
-	 * @param indexType the INDEX_TYPE to set
+	 * @param indexType the indexType to set
 	 */
 	public void setIndexType(String indexType) {
 		this.indexType = indexType;
