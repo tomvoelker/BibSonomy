@@ -1178,8 +1178,7 @@ public class DBLogic implements LogicInterface {
 			throw new ValidationException("No group name given.");
 		}
 
-		final User requestedUser = present(membership) && present(membership.getUser()) ? this.getUserDetails(membership.getUser().getName()) : null;
-		final String requestedUserName = present(requestedUser) ? requestedUser.getName() : null;
+		final String requestedUserName = (present(membership) && present(membership.getUser()) && present(membership.getUser().getName())) ? membership.getUser().getName() : null;
 
 		final DBSession session = this.openSession();
 
@@ -1194,11 +1193,12 @@ public class DBLogic implements LogicInterface {
 		try {
 			session.beginTransaction();
 
-			// check the groups existence
+			// check the groups existence and retrieve the current group
 			final Group group = this.groupDBManager.getGroupMembers(this.loginUser.getName(), paramGroup.getName(), false, session);
 			if (!present(group)) {
 				throw new IllegalArgumentException("Group does not exist");
 			}
+			final GroupMembership currentGroupMembership = group.getGroupMembershipForUser(requestedUserName);
 
 			// perform actual operation
 			switch (operation) {
@@ -1211,15 +1211,16 @@ public class DBLogic implements LogicInterface {
 				break;
 
 			case UPDATE_GROUPROLE:
-				if (!present(group.getGroupMembershipForUser(requestedUser))) {
+
+				if (!present(currentGroupMembership)) {
 					throw new IllegalArgumentException("The requested user " + requestedUserName + " is not a member of group " + group.getName());
 				}
 
 				this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.MODERATOR);
-				
+
 				// extra check if role change concerns an administrator
 				final GroupRole requestedGroupRole = membership.getGroupRole();
-				final GroupRole currentGroupRole = GroupUtils.getGroupMembershipForUser(group, membership.getUser(), false).getGroupRole();
+				final GroupRole currentGroupRole = currentGroupMembership.getGroupRole();
 				if (GroupRole.ADMINISTRATOR.equals(requestedGroupRole) || GroupRole.ADMINISTRATOR.equals(currentGroupRole)) {
 					this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.ADMINISTRATOR);
 					// make sure that we keep at least one admin
@@ -1235,12 +1236,12 @@ public class DBLogic implements LogicInterface {
 				// we need to query the groupMembership, since the group object
 				// might not contain the memberships if the loginUser is not
 				// allowed to see them
-				final GroupMembership groupMembership = this.groupDBManager.getPendingMembershipForUserAndGroup(requestedUser, group.getName(), session);
+				final GroupMembership groupMembership = this.groupDBManager.getPendingMembershipForUserAndGroup(requestedUserName, group.getName(), session);
 
 				// We need to be careful with the exception, since it reveals
 				// information about pending memberships
 				if (!present(groupMembership)) {
-					if (this.permissionDBManager.isAdminOrSelf(this.loginUser, membership.getUser().getName())) {
+					if (this.permissionDBManager.isAdminOrSelf(this.loginUser, requestedUserName)) {
 						throw new AccessDeniedException("You have not been invited to this group");
 					}
 					this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.MODERATOR);
@@ -1265,7 +1266,10 @@ public class DBLogic implements LogicInterface {
 
 			case REMOVE_MEMBER:
 				// Check for correct role that can remove the user
-				final GroupRole roleOfUserToRemove = GroupUtils.getGroupMembershipOfUserForGroup(requestedUser, group.getName()).getGroupRole();
+				if (!present(currentGroupMembership)) {
+					throw new IllegalArgumentException("User cannot be removed from group");
+				}
+				final GroupRole roleOfUserToRemove = currentGroupMembership.getGroupRole();
 				if (GroupRole.USER.equals(roleOfUserToRemove)) {
 					if (!this.permissionDBManager.isAdminOrSelf(this.loginUser, requestedUserName)) {
 						this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.MODERATOR);
@@ -1284,7 +1288,7 @@ public class DBLogic implements LogicInterface {
 				final int groupId = group.getGroupId();
 
 				// set all tas shared with the group to private (groupID 1)
-				this.tagDBManager.updateTasInGroupFromLeavingUser(requestedUser, groupId, session);
+				this.tagDBManager.updateTasInGroupFromLeavingUser(requestedUserName, groupId, session);
 
 				/*
 				 * update the visibility of the post that are "assigned" to
@@ -1292,11 +1296,11 @@ public class DBLogic implements LogicInterface {
 				 * XXX: a loop over all resource database managers that
 				 * allow groups
 				 */
-				this.publicationDBManager.updatePostsInGroupFromLeavingUser(requestedUser, groupId, session);
-				this.bookmarkDBManager.updatePostsInGroupFromLeavingUser(requestedUser, groupId, session);
+				this.publicationDBManager.updatePostsInGroupFromLeavingUser(requestedUserName, groupId, session);
+				this.bookmarkDBManager.updatePostsInGroupFromLeavingUser(requestedUserName, groupId, session);
 
 				// set all discussions in the group to private (groupID 1)
-				this.discussionDatabaseManager.updateDiscussionsInGroupFromLeavingUser(requestedUser, groupId, session);
+				this.discussionDatabaseManager.updateDiscussionsInGroupFromLeavingUser(requestedUserName, groupId, session);
 				break;
 
 			case UPDATE_USER_SHARED_DOCUMENTS:
@@ -1321,19 +1325,19 @@ public class DBLogic implements LogicInterface {
 
 			case ADD_INVITED:
 				this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.MODERATOR);
-				this.groupDBManager.addPendingMembership(group.getName(), requestedUser, GroupRole.INVITED, session);
+				this.groupDBManager.addPendingMembership(group.getName(), requestedUserName, GroupRole.INVITED, session);
 				break;
 
 			case ADD_REQUESTED:
 				// TODO: check for banned users in this group
-				this.groupDBManager.addPendingMembership(group.getName(), requestedUser, GroupRole.REQUESTED, session);
+				this.groupDBManager.addPendingMembership(group.getName(), requestedUserName, GroupRole.REQUESTED, session);
 				break;
 
 			// TODO: Refactor to one GroupUpdateOperation
 			case REMOVE_INVITED:
 
 			case DECLINE_JOIN_REQUEST:
-				final GroupMembership currentMembership = this.groupDBManager.getPendingMembershipForUserAndGroup(requestedUser, group.getName(), session);
+				final GroupMembership currentMembership = this.groupDBManager.getPendingMembershipForUserAndGroup(requestedUserName, group.getName(), session);
 
 				if (!present(currentMembership) || !currentMembership.getGroupRole().isPendingRole()) {
 					throw new AccessDeniedException("You are not allowed to decline this request/invitation");
@@ -1657,10 +1661,10 @@ public class DBLogic implements LogicInterface {
 
 			/*
 			 * group admins can change settings of their group
-			*/
-			Group group = this.getGroupDetails(username);
+			 */
+			final Group group = this.getGroupDetails(username);
 			if (present(group)) {
-				this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(loginUser, group.getName(), GroupRole.ADMINISTRATOR);
+				this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.ADMINISTRATOR);
 			} else {
 
 				/*

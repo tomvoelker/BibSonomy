@@ -17,11 +17,11 @@ import org.springframework.security.access.AccessDeniedException;
 
 /**
  * TODO: add documentation
- *
+ * 
  * @author niebler
  */
 public class GroupSettingsPageController implements MinimalisticController<GroupSettingsPageCommand> {
-	
+
 	private LogicInterface logic;
 
 	@Override
@@ -34,42 +34,42 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 		if (!command.getContext().isUserLoggedIn()) {
 			throw new AccessDeniedNoticeException("please log in", "error.general.login");
 		}
-		
+
 		final String requestedGroup = command.getRequestedGroup();
 		if (!present(requestedGroup)) {
 			throw new MalformedURLSchemeException("group settings without requested group");
 		}
-		
+
 		final User loginUser = command.getContext().getLoginUser();
 		command.setLoggedinUser(loginUser);
 		final Group group = this.logic.getGroupDetails(requestedGroup);
 		if (!present(group)) {
 			throw new AccessDeniedException("You are not a member of this group.");
 		}
-		
+
 		command.setGroup(group);
-		
-		GroupMembership groupMembership = group.getGroupMembershipForUser(loginUser);
+
+		final GroupMembership groupMembership = group.getGroupMembershipForUser(loginUser.getName());
 		switch (group.getPrivlevel()) {
-			case HIDDEN:
-				if (!present(groupMembership) || present(groupMembership) && !groupMembership.getGroupRole().isPrivilegedRole()) {
-					throw new AccessDeniedException("You are not allowed to view this page");
-				}
-				break;
-			case MEMBERS:
-				if (!present(groupMembership)) {
-					throw new AccessDeniedException("You are not a member of this group.");
-				}
-				break;
-			default:
-				if (!present(groupMembership)) {
-					throw new AccessDeniedException("You are not a member of this group.");
-				}
+		case HIDDEN:
+			if (!present(groupMembership) || (present(groupMembership) && !groupMembership.getGroupRole().isPrivilegedRole())) {
+				throw new AccessDeniedException("You are not allowed to view this page");
+			}
+			break;
+		case MEMBERS:
+			if (!present(groupMembership)) {
+				throw new AccessDeniedException("You are not a member of this group.");
+			}
+			break;
+		default:
+			if (!present(groupMembership)) {
+				throw new AccessDeniedException("You are not a member of this group.");
+			}
 		}
-		
+
 		final GroupRole roleOfLoggedinUser = groupMembership.getGroupRole();
 		command.setGroupMembership(groupMembership);
-		
+
 		// TODO: should only the admin get this information ?
 		final User groupUser = this.logic.getUserDetails(requestedGroup);
 		command.setRealname(groupUser.getRealname());
@@ -80,7 +80,7 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 			command.setSharedDocuments(command.getGroup().isSharedDocuments() ? 1 : 0);
 		}
 		command.setUser(groupUser);
-		
+
 		// determine which tabs to show based on the role of the logged in user
 		final boolean selectedByUser = present(command.getSelTab());
 		switch (roleOfLoggedinUser) {
@@ -102,15 +102,14 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 			}
 			break;
 		}
-		
-		
+
 		return Views.GROUPSETTINGSPAGE;
 	}
 
 	/**
 	 * @param logic the logic to set
 	 */
-	public void setLogic(LogicInterface logic) {
+	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
 }

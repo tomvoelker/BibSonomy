@@ -411,25 +411,20 @@ public class Group implements Serializable {
 	}
 	
 	// TODO: move to utils class
-	public GroupMembership getGroupMembershipForUser(User user) {
+	public GroupMembership getGroupMembershipForUser(String username) {
 		for (GroupMembership g : this.getMemberships()) {
-			if (g.getUser().equals(user)) {
+			if (g.getUser().getName().equals(username)) {
 				return g;
 			}
 		}
 		// look in pending memberships
 		for (GroupMembership g : this.getPendingMemberships()) {
-			if (g.getUser().equals(user)) {
+			if (g.getUser().getName().equals(username)) {
 				return g;
 			}
 		}
 		
 		return null;
-	}
-	
-	// TODO: move to utils class
-	public GroupMembership getGroupMembershipForUser(String username) {
-		return this.getGroupMembershipForUser(new User(username));
 	}
 	
 	

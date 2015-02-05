@@ -265,14 +265,14 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * @param user
+	 * @param userName
 	 * @param groupName
 	 * @param session
 	 * @return
 	 */
-	public GroupMembership getPendingMembershipForUserAndGroup(final User user, final String groupName, final DBSession session) {
+	public GroupMembership getPendingMembershipForUserAndGroup(final String userName, final String groupName, final DBSession session) {
 		final GroupParam param = new GroupParam();
-		param.setUserName(user.getName());
+		param.setUserName(userName);
 		param.setRequestedGroupName(groupName);
 		return this.queryForObject("getPendingMembershipForUserInGroup", param, GroupMembership.class, session);
 	}
@@ -748,7 +748,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		// check if we have only one group admin
 		if (this.hasExactlyOneAdmin(group, session)) {
 			// check the group role for the given username
-			final GroupRole activeRole = group.getGroupMembershipForUser(new User(username)).getGroupRole();
+			final GroupRole activeRole = group.getGroupMembershipForUser(username).getGroupRole();
 			// the user is the last admin, we can't remove him.
 			if (GroupRole.ADMINISTRATOR.equals(activeRole)) {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') is the last group admin and can't be deleted.");
@@ -834,12 +834,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForObject("getPendingMembershipsForGroup", groupname, Group.class, session);
 	}
 
-	public void addPendingMembership(final String groupname, final User user, final GroupRole pendingGroupRole, final DBSession session) {
+	public void addPendingMembership(final String groupname, final String username, final GroupRole pendingGroupRole, final DBSession session) {
 		final Group group = this.getGroupByName(groupname, session);
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't remove join request/invite from nonexistent group");
 		}
-		final String username = user.getName();
 		final User groupMembershipUser = this.userDb.getUserDetails(username, session);
 		if (!present(groupMembershipUser.getName())) {
 			ExceptionUtils.logErrorAndThrowQueryTimeoutException(log, null, "user " + username + " not found.");
@@ -851,11 +850,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 		try {
 			session.beginTransaction();
-			final GroupMembership pendingMembership = this.getPendingMembershipForUserAndGroup(user, groupname, session);
+			final GroupMembership pendingMembership = this.getPendingMembershipForUserAndGroup(username, groupname, session);
 
 			if (!present(pendingMembership)) {
 				final GroupMembership membership = new GroupMembership();
-				membership.setUser(user);
+				membership.setUser(new User(username));
 				membership.setGroupRole(pendingGroupRole);
 
 				final GroupParam param = new GroupParam();

@@ -413,11 +413,29 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 			throw new AccessDeniedException();
 		}
 	}
-	
+
+	/**
+	 * Check whether the user is system admin or has a groupRole larger than the
+	 * minimumRole. The user must be the (already verified) loginUser.
+	 * 
+	 * @param loginUser
+	 * @param groupName
+	 * @param minimumRole
+	 * @return roleCheck
+	 */
 	public boolean isAdminOrHasGroupRoleOrHigher(final User loginUser, final String groupName, final GroupRole minimumRole) {
 		return this.isAdmin(loginUser) || this.hasGroupRoleOrHigher(loginUser, groupName, minimumRole);
 	}
-	
+
+	/**
+	 * Check whether the user is system admin or has a groupRole larger than the
+	 * minimumRole. The user must be the (already verified) loginUser.
+	 * 
+	 * @param loginUser
+	 * @param groupName
+	 * @param minimumRole
+	 * 
+	 */
 	public void ensureIsAdminOrHasGroupRoleOrHigher(final User loginUser, final String groupName, final GroupRole minimumRole) {
 		if (!this.isAdminOrHasGroupRoleOrHigher(loginUser, groupName, minimumRole)) {
 			throw new AccessDeniedException();
@@ -425,35 +443,42 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * checks if a user has a given groupRole in a given group or even higher permissions.
-	 * @param user a user
+	 * checks if a user has a given groupRole in a given group or even higher
+	 * permissions.
+	 * WARNING: Does not retrieve the user and their groups from the database ->
+	 * user must already be correct (e.g. loginUser)
+	 * 
+	 * @param loginUser the loginUser
 	 * @param groupName a group
 	 * @param minimumRole the minimum group role
 	 * @return true, if the permissions of the user in the given group satisfy
-	 * the minimum group role
+	 *         the minimum group role
 	 */
-	public boolean hasGroupRoleOrHigher(final User user, final String groupName, final GroupRole minimumRole) {
-		for (Group g : user.getGroups()) {
+	public boolean hasGroupRoleOrHigher(final User loginUser, final String groupName, final GroupRole minimumRole) {
+		for (final Group g : loginUser.getGroups()) {
 			if (g.getName().equals(groupName)) {
-				final GroupRole actualRole = GroupUtils.getGroupMembershipForUser(g, user.getName(), true).getGroupRole();
+				final GroupRole actualRole = GroupUtils.getGroupMembershipForUser(g, loginUser.getName(), true).getGroupRole();
 
 				return actualRole.getRole() <= minimumRole.getRole();
 			}
 		}
-		
+
 		return false;
 	}
 
 	/**
-	 * checks if a user has a given groupRole in a given group or even higher permissions.
-	 * An AccessDeniedException is thrown if the permissions of the user in the given
+	 * checks if a user has a given groupRole in a given group or even higher
+	 * permissions.
+	 * An AccessDeniedException is thrown if the permissions of the user in the
+	 * given
 	 * group do not satisfy the minimum role
-	 * @param user a user
+	 * 
+	 * @param LoginUser a user
 	 * @param groupName a group
 	 * @param minimumRole the minimum group role
 	 */
-	public void ensureGroupRoleOrHigher(final User user, final String groupName, final GroupRole minimumRole) {
-		if (!this.hasGroupRoleOrHigher(user, groupName, minimumRole)) {
+	public void ensureGroupRoleOrHigher(final User LoginUser, final String groupName, final GroupRole minimumRole) {
+		if (!this.hasGroupRoleOrHigher(LoginUser, groupName, minimumRole)) {
 			throw new AccessDeniedException();
 		}
 	}
@@ -497,12 +522,13 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * TODO: Documentation
-	 * @param loginuser
+	 * 
+	 * @param loginUser
 	 * @param groupLevelPermission
-	 * @return 
+	 * @return
 	 */
-	public boolean hasGroupLevelPermission(final User loginuser, final GroupLevelPermission groupLevelPermission) {
-		for (final Group group : loginuser.getGroups()) {
+	public boolean hasGroupLevelPermission(final User loginUser, final GroupLevelPermission groupLevelPermission) {
+		for (final Group group : loginUser.getGroups()) {
 			if (group.getGroupLevelPermissions().contains(groupLevelPermission)) {
 				return true;
 			}
@@ -512,11 +538,12 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * TODO: Documentation
-	 * @param loginuser
-	 * @param groupLevelPermission 
+	 * 
+	 * @param loginUser
+	 * @param groupLevelPermission
 	 */
-	public void ensureHasGroupLevelPermission(final User loginuser, final GroupLevelPermission groupLevelPermission) {
-		if (!this.hasGroupLevelPermission(loginuser, groupLevelPermission)) {
+	public void ensureHasGroupLevelPermission(final User loginUser, final GroupLevelPermission groupLevelPermission) {
+		if (!this.hasGroupLevelPermission(loginUser, groupLevelPermission)) {
 			throw new AccessDeniedException();
 		}
 	}
