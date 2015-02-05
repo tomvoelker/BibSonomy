@@ -251,6 +251,17 @@ public class GroupUtils {
 	}
 	
 	/**
+	 * Helper method to return the GroupMembership of the provided user
+	 * @param group
+	 * @param user
+	 * @param includePending
+	 * @return the group membership, <code>null</code> iff user is not member of this group
+	 */
+	public static GroupMembership getGroupMembershipForUser(final Group group, final User user, final boolean includePending) {
+		return getGroupMembershipForUser(group, user.getName(), includePending);
+	}
+	
+	/**
 	 * returns the group membership of the user for the specified groups
 	 * @param user
 	 * @param groupName
