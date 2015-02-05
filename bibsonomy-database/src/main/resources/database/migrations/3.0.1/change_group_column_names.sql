@@ -1,13 +1,23 @@
+/* rename table groups to group_memberhips */
 RENAME TABLE `groups` TO `group_memberships`;
+/* add new columns */
 ALTER TABLE `group_memberships` CHANGE COLUMN `userSharedDocuments` `user_shared_documents` TINYINT DEFAULT '0';
-ALTER TABLE `group_memberships` CHANGE COLUMN `user_status` `group_role` INT DEFAULT '7';
+ALTER TABLE `group_memberships` CHANGE COLUMN `user_status` `group_role` INT DEFAULT '2';
 ALTER TABLE `group_memberships` ADD PRIMARY KEY (`group`,`user_name`);
 
+/* set new membership ids */
+UPDATE group_memberships set group_memberships.group_role=5 where group_memberships.group_role=4;
+UPDATE group_memberships set group_memberships.group_role=4 where group_memberships.group_role=3;
+UPDATE group_memberships set group_memberships.group_role=3 where group_memberships.group_role=2;
+UPDATE group_memberships set group_memberships.group_role=2 where group_memberships.group_role=7;
+
+/* rename logging table */
 RENAME TABLE `log_groups` TO `log_group_memberships`;
 ALTER TABLE `log_group_memberships`
-	CHANGE COLUMN `user_status` `group_role` INT(10) NOT NULL DEFAULT '7' AFTER `end_date`,
+	CHANGE COLUMN `user_status` `group_role` INT(10) NOT NULL DEFAULT '2' AFTER `end_date`,
 	ADD COLUMN `user_shared_documents` TINYINT(1) NULL DEFAULT '0' AFTER `group_role`;
 
+/* create table for pending groups */
 CREATE TABLE `pending_groupids` (
   `group_name` VARCHAR(30) NOT NULL DEFAULT '',
   `request_user_name` VARCHAR(30) NOT NULL,
@@ -22,12 +32,13 @@ CREATE TABLE `pending_groupids` (
   PRIMARY KEY (`group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+/* create table for pending group memberships */
 CREATE TABLE `pending_group_memberships` (
   `user_name` VARCHAR(30) NOT NULL DEFAULT '',
   `group` INT(10) NULL DEFAULT '0',
   `defaultgroup` INT(10) NULL DEFAULT '0',
   `start_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `group_role` INT(10) NOT NULL DEFAULT '7',
+  `group_role` INT(10) NOT NULL DEFAULT '2',
   `user_shared_documents` TINYINT(1) NULL DEFAULT '0',
   PRIMARY KEY (`user_name`, `group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
