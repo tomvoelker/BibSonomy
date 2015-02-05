@@ -1178,7 +1178,7 @@ public class DBLogic implements LogicInterface {
 			throw new ValidationException("No group name given.");
 		}
 
-		final User requestedUser = present(membership) ? this.getUserDetails(membership.getUser().getName()) : null;
+		final User requestedUser = present(membership) && present(membership.getUser()) ? this.getUserDetails(membership.getUser().getName()) : null;
 		final String requestedUserName = present(requestedUser) ? requestedUser.getName() : null;
 
 		final DBSession session = this.openSession();
