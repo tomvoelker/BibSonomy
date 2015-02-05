@@ -550,7 +550,7 @@ CREATE TABLE `group_memberships` (
   `group` int(10) default '0',
   `defaultgroup` int(10) default '0',
   `start_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
-  `group_role` int(10) NOT NULL default '7',
+  `group_role` int(10) NOT NULL default '2',
   `user_shared_documents` tinyint(1) default '0',
   PRIMARY KEY (`group`,`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -892,7 +892,7 @@ CREATE TABLE `log_group_memberships` (
 	`defaultgroup` INT(10) NULL DEFAULT '0',
 	`start_date` DATETIME NOT NULL DEFAULT '1815-12-10 00:00:00',
 	`end_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	`group_role` INT(10) NOT NULL DEFAULT '7',
+	`group_role` INT(10) NOT NULL DEFAULT '2',
 	`user_shared_documents` TINYINT(1) NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
@@ -1076,7 +1076,7 @@ CREATE TABLE `pending_group_memberships` (
 	`group` INT(10) NULL DEFAULT '0',
 	`defaultgroup` INT(10) NULL DEFAULT '0',
 	`start_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	`group_role` INT(10) NOT NULL DEFAULT '7',
+	`group_role` INT(10) NOT NULL DEFAULT '2',
 	`user_shared_documents` TINYINT(1) NULL DEFAULT '0',
 	PRIMARY KEY (`user_name`, `group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

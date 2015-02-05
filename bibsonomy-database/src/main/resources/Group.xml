@@ -77,7 +77,7 @@
 	</select>
 	
 	<select id="getSpecialGroupsForUser" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, "" AS user_realname, NULL AS user_homepage, #userName# AS user_name, FALSE AS user_shared_documents, 7 AS group_role
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, "" AS user_realname, NULL AS user_homepage, #userName# AS user_name, FALSE AS user_shared_documents, 2 AS group_role
 		 FROM groupids i
 		 WHERE i.group BETWEEN 0 AND 2
 	</select>

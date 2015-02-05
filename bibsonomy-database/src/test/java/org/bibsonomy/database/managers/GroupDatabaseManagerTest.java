@@ -308,7 +308,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(3, group.getMemberships().size());
 		// add user
 		final String userToAdd = "testuser3";
-		groupDb.addPendingMembership(testGroup, new User(userToAdd), GroupRole.INVITED, this.dbSession);
+		groupDb.addPendingMembership(testGroup, userToAdd, GroupRole.INVITED, this.dbSession);
 		groupDb.addUserToGroup(testGroup, userToAdd, GroupRole.USER, this.dbSession);
 		group = groupDb.getGroupMembers(userToAdd, testGroup, false, this.dbSession);
 		assertEquals(3 + 1, group.getMemberships().size());
