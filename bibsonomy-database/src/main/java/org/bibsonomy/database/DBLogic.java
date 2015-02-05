@@ -27,6 +27,7 @@
 package org.bibsonomy.database;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+import static org.bibsonomy.util.ValidationUtils.presentValidGroupId;
 
 import java.net.InetAddress;
 import java.net.URI;
@@ -1663,7 +1664,7 @@ public class DBLogic implements LogicInterface {
 			 * group admins can change settings of their group
 			 */
 			final Group group = this.getGroupDetails(username);
-			if (present(group)) {
+			if (present(group) && presentValidGroupId(group.getGroupId())) {
 				this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.ADMINISTRATOR);
 			} else {
 
