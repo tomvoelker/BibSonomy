@@ -62,7 +62,7 @@
 	</update>
 	
 	<insert id="logBookmarkMassUpdate" parameterClass="bookmarkParam">
-		INSERT INTO log_bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name, new_content_id, current_content_id))
+		INSERT INTO log_bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name, new_content_id, current_content_id)
 		SELECT content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name, content_id, content_id
 		FROM bookmark WHERE user_name = #requestedUserName# AND `group` = #groupId#
 	</insert>

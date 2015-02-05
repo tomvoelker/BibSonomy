@@ -234,7 +234,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			// only a group admins or moderators may always see the group
 			// members
 			final GroupMembership groupMembershipForUser = this.getGroupMembershipForUser(authUser, group, session);
-			if (!present(groupMembershipForUser) || !GroupRole.HIGHER_GROUP_ROLES.contains(groupMembershipForUser.getGroupRole())) {
+			if (!present(groupMembershipForUser) || !groupMembershipForUser.getGroupRole().isPrivilegedRole()) {
 				group.setMemberships(Collections.<GroupMembership> emptyList());
 			}
 			break;

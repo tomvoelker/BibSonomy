@@ -52,7 +52,7 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 		GroupMembership groupMembership = group.getGroupMembershipForUser(loginUser);
 		switch (group.getPrivlevel()) {
 			case HIDDEN:
-				if (!present(groupMembership) || present(groupMembership) && !groupMembership.getGroupRole().equals(GroupRole.ADMINISTRATOR)) {
+				if (!present(groupMembership) || present(groupMembership) && !groupMembership.getGroupRole().isPrivilegedRole()) {
 					throw new AccessDeniedException("You are not allowed to view this page");
 				}
 				break;

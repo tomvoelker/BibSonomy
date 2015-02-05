@@ -429,13 +429,10 @@ public class URLGeneratorTest {
 		assertEquals(expected, urlg.prefix("export/").getUserUrlByUserName("jaeschke"));
 	}
 	
-	@Ignore
-	/*
-	 * TODO Fix this, fails on jenkins as well as locally
-	 */
+	@Test
 	public void testGetGroupSettingsUrlByGroupName() {
-		String expected = projectHome + "settings/group/schl%C3%BCsselbund";
-		assertEquals(expected, ug.getGroupSettingsUrlByGroupName("schlüsselbund"));
+		String expected = projectHome + "settings/group/franzosengruppe";
+		assertEquals(expected, ug.getGroupSettingsUrlByGroupName("franzosengruppe"));
 	}
 
 }
