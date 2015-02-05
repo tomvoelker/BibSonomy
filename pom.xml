@@ -233,7 +233,6 @@
 		<module>bibsonomy-scraper</module>
 		<module>bibsonomy-scrapingservice</module>
 		<module>bibsonomy-synchronization</module>
-		
 		<module>bibsonomy-web-common</module>
 		<module>bibsonomy-webapp</module>
 		<module>bibsonomy-wiki</module>

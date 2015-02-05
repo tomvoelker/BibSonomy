@@ -808,35 +808,45 @@
 	</rule>
 	
 	
-<!-- 	<rule>/[32]/USERNAME -->
-<!-- 		<name>/history/publication/HASH/USER</name> -->
-<!-- 		<from>^/+history/+publication/+([0-9a-fA-F]{32})/+(.+)$</from> -->
-<!-- 		<set type="parameter" name="requestedHash">$1</set> -->
-<!-- 		<set type="parameter" name="requestedUser">$2</set> -->
-<!-- 		<to last="true">/history</to> -->
-<!-- 	</rule> -->
-<!-- 	<rule> /[0-3][32]/USERNAME  -->
-<!-- 		<name>/history/publication/SHASH/USER</name> -->
-<!-- 		<from>^/+history/+publication/+([0-3])([0-9a-fA-F]{32})/+(.+)$</from> -->
-<!-- 		<set type="parameter" name="requestedHash">$1$2</set> -->
-<!-- 		<set type="parameter" name="requestedUser">$3</set> -->
-<!-- 		<to last="true">/history</to> -->
-<!-- 	</rule>	 -->
+ 	<rule><!--/[32]/USERNAME -->
+		<name>/history/RSCTYPE/HASH/USER</name>
+		<from>^/+history/+(.+)/+([0-9a-fA-F]{32})/+(.+)$</from>
+		<set type="parameter" name="resourceClass">$1</set>
+		<set type="parameter" name="requestedHash">$2</set>
+		<set type="parameter" name="requestedUser">$3</set>
+		<to last="true">/history</to>
+	</rule>
 	
-	<!-- TODO: test community posts --> 
-<!-- 	<rule> /[0-3][32]  -->
-<!-- 		<name>/history/publication/SHASH</name> -->
-<!-- 		<from>^/+history/+publication/+([0-3])([0-9a-fA-F]{32})$</from> -->
-<!-- 		<set type="parameter" name="requestedHash">$1$2</set> -->
-<!-- 		<to last="true">/history</to> -->
-<!-- 	</rule> -->
-<!-- 	<rule>/[32] (arbitrary hash) defaults to simhash1 -->
-<!-- 		<name>/history/publication/HASH</name> -->
-<!-- 		<from>^/+history/+publication/+([0-9a-fA-F]{32})$</from> -->
-<!-- 		<set type="parameter" name="requestedHash">$1</set> -->
-<!-- 		<to last="true">/history</to> -->
-<!-- 	</rule> -->
+	<!-- /[0-3][32]/USERNAME -->
+	<!-- <rule> 
+		<name>/history/RSCTYPE/SHASH/USER</name>
+		<from>^/+history/+(.+)/+([0-3])([0-9a-fA-F]{32})/+(.+)$</from>
+		<set type="parameter" name="resourceClass">$1</set>
+		<set type="parameter" name="requestedHash">$2$3</set>
+		<set type="parameter" name="requestedUser">$4</set>
+		<to last="true">/history</to>
+	</rule>	
+ 	-->
+	<!-- TODO: test community posts -->
 	
+	<!-- /[0-3][32]  --> 
+ 	<!--<rule> 
+ 		<name>/history/RSCTYPE/SHASH</name>
+		<from>^/+history/+(.+)/+([0-3])([0-9a-fA-F]{32})$</from>
+		<set type="parameter" name="resourceClass">$1</set>
+		<set type="parameter" name="requestedHash">$2$3</set>
+		<to last="true">/history</to>
+	</rule> -->
+	
+	<!-- /[32] (arbitrary hash) defaults to simhash1 -->
+ 	<rule>
+ 		<name>/history/RSCTYPE/HASH</name>
+		<from>^/+history/+(.+)/+([0-9a-fA-F]{32})$</from>
+		<set type="parameter" name="resourceClass">$1</set>
+		<set type="parameter" name="requestedHash">$2</set>
+		<to last="true">/history</to>
+	</rule>
+	 
 	<!-- ############## search pages ############### -->
 	<!-- FIXME: disable for more infos see bug #1784
 	<rule>

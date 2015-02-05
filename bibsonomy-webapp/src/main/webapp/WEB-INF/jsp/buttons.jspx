@@ -11,7 +11,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<fmt:message var="exampleString" key="example" />
+	
 	<fmt:message key="navi.buttons" var="buttonsPageTitle"/>
 	<layout:paneLayout 
 		pageTitle="${buttonsPageTitle}" 
@@ -72,20 +72,20 @@
 		           		<p><fmt:message key="bookmarklet.addon.text1"><fmt:param value="${properties['project.name']}"/></fmt:message></p>
 		           		<h3 class="expandableSection"><img src="${resdir}/image/icon_expand.png"/>Firefox</h3>
 		           		<div style="margin-left:15px;display:none">
-			           		<p><img src="/resources/image/bookmarklet_screenshot_firefox_${fn:toLowerCase(exampleString)}.png"/></p>
+			           		<p><img src="/resources/image/addons/${locale}/bookmarklet_screenshot_firefox.png"/></p>
 			           		<p><fmt:message key="bookmarklet.addon.text2"/></p>
 			           		<p><a href="${properties['project.addons.firefox.url']}" class="post.resource.firefox.installButton"><fmt:message key="bookmarklet.buttonTextFirefox"/></a></p>
 		           		</div>
 		           		<h3 class="expandableSection"><img src="${resdir}/image/icon_expand.png"/>Chrome</h3>
 		           		<div style="margin-left:15px;display:none">
-			           		<p><img src="/resources/image/bookmarklet_screenshot_chrome_${fn:toLowerCase(exampleString)}.png"/></p>
+			           		<p><img src="/resources/image/addons/${locale}/bookmarklet_screenshot_chrome.png"/></p>
 			           		<p><fmt:message key="bookmarklet.addon.text3"><fmt:param value="${properties['project.name']}"/></fmt:message></p>
 
 			           		<p><a href="${properties['project.addons.chrome.url']}" class="post.resource.chrome.installButton"><fmt:message key="bookmarklet.buttonTextChrome"/></a></p>
 		           		</div>
 		           		<p><i><fmt:message key="note"/>: <fmt:message key="bookmarklet.legacyNotice"/>&amp;nbsp;<fmt:message key="bookmarklet.legacyNotice.further1"/></i></p>
 	           		</div>
-					<c:set var="userName" value="${mtl:encodeURI(command.context.loginUser.name)}" />		
+					<c:set var="userName" value="${mtl:encodeURI(command.context.loginUser.name)}" />
 	    			<h2 id="buttons.Bookmarklets" class="expandableSection" style="cursor:pointer"><img src="${resdir}/image/icon_expand.png"/><![CDATA[&nbsp;]]><fmt:message key="buttons.bookmarklet1"/></h2>
 	    			<div style="display:none;margin-left:20px;">
 			            <!--+ 

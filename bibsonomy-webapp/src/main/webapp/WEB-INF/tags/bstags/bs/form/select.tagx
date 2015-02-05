@@ -105,7 +105,7 @@
 		<div class="col-sm-${inputColSpan}">
 			<c:choose>
 				<c:when test="${ not empty itemLabels}">
-					<form:select multiple="${multiple ? 'multiple' : 'false'}" path="${path}" cssClass="form-control ${helpPopover} ${ small ? classSmallField : ''}" onchange="${onchange}"> 
+					<form:select multiple="${multiple ? 'multiple' : 'false'}" path="${path}" cssClass="form-control ${helpPopover} ${ small ? classSmallField : ''}" onchange="${onchange}" id="${id}"> 
 						<c:forEach items="${itemLabels}" var="optionLabel" varStatus="cnt">
 							<form:option value="${items[cnt.index]}"><c:out value="${optionLabel}" /></form:option>
 						</c:forEach>

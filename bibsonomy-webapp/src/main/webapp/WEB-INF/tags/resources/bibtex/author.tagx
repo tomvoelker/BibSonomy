@@ -8,7 +8,7 @@
 	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
 	<jsp:directive.attribute name="schemaOrgMarkUp" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="useAbsoluteURL" type="java.lang.Boolean" required="false" />
-	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="flase"/>
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="false"/>
 	
 	<c:choose>
 		<c:when test="${not empty post}">

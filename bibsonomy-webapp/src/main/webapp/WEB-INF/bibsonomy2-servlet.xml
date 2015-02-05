@@ -367,6 +367,13 @@
 				<entry key="/history">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="postHistoryController" />
+						<property name="allowedFields">
+							<list>
+								<value>resourceClass</value>
+								<value>requestedHash</value>
+								<value>requestedUser</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/userinfo">
@@ -740,11 +747,11 @@
 	</bean>
 	
 	<bean id="postHistoryController" class="org.bibsonomy.webapp.controller.PostHistoryController" scope="request" parent="multiResourceListControllerWithTags">
-		<property name="supportedResources">
+	<!--<property name="supportedResources">
 			<set>
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
 			</set>
-		</property>
+		</property> -->
 	</bean>
 
 	<bean id="userInfoController" class="org.bibsonomy.webapp.controller.UserInfoController" scope="request">

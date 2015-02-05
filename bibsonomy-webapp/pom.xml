@@ -652,9 +652,14 @@
 			<version>2.3</version>
 		</dependency>
 		<dependency>
-   			<groupId>org.elasticsearch</groupId>
-    		<artifactId>elasticsearch</artifactId>
-    		<version>${es.version}</version>
+			<groupId>com.sksamuel.diff</groupId>
+			<artifactId>diff</artifactId>
+			<version>1.1.11</version>
+		</dependency>
+		<dependency>
+			<groupId>org.elasticsearch</groupId>
+			<artifactId>elasticsearch</artifactId>
+			<version>${es.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>

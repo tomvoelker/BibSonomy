@@ -8,6 +8,7 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
 	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion"
+	xmlns:gbook="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardbookmark"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
@@ -22,7 +23,8 @@
 	<c:set var="bookmark" value="${command.bookmark.list[0].resource}" />
 
 	<c:if test="${goldstandardPresent}">
-		<c:set var="bookmark" value="${command.goldStandardBookmarks.list[0].resource}" />
+		<c:set var="post" value="${command.goldStandardBookmarks.list[0]}" />
+		<c:set var="bookmark" value="${post.resource}" />
 	</c:if>
 	
 	<!-- FIXME: invalid html: move into body tag -->
@@ -108,7 +110,8 @@
 			+ content heading
 			+ -->
 		<jsp:attribute name="content">
-			<h1 class="content-header">Community Page</h1>
+	<div id="goldstandard">
+			<h1 class="content-header"><fmt:message key="community.page"/></h1>
 			<div class="title">
 				<div class="media">
 					<!-- 
@@ -116,8 +119,9 @@
 						<span style="font-size: 64px;" class="fa fa-user">&amp;nbsp;</span>
 					</span>
 					-->
+
 					<div class="media-body" id="titletext">
-						
+						<div class="pull-right"><gbook:actions post="${post}" /></div>
 						<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(command.bookmark.list[0].resource.title)}" /></h1>
 						<c:set var="url" value="${command.bookmark.list[0].resource.url}" />
 						<p><a href="${url}"><c:out value="${url}" /></a></p>
@@ -130,6 +134,7 @@
 		
 			<div id="fscontent" style="margin-top: 10px;">
 				<discussion:singleResourceDiscussionLayout resource="${bookmark}" discussionItems="${command.discussionItems}" postUserName="${command.postOwner}"/>
+			</div>
 			</div>
 		</jsp:attribute>
 		
