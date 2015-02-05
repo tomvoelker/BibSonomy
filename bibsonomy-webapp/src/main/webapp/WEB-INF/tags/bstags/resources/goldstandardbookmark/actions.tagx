@@ -20,8 +20,6 @@
 				<span class="sr-only"><fmt:message key="post.actions.copy"/></span>
 			</a>
 		
-		
-			<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
 				
 					<fmt:message key="post.actions.edit.gold.title" var="editTitle"/>
 					<a class="btn btn-default" href="/editGoldStandardBookmark?intraHashToUpdate=${goldstandard.interHash}" title="${fn:escapeXml(editTitle)}">
@@ -49,7 +47,7 @@
 		               		<fmt:message key="post.actions.delete"/>
 	                 </a>
 			      </li>-->
-			</c:if>
+
 		</div>
 	</c:if>
 </jsp:root>

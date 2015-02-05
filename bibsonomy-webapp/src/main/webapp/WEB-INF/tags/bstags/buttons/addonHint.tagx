@@ -11,8 +11,7 @@
  
  	<fmt:message key="navi.postBookmark" var="postBookmark"/>
 	<fmt:message key="image.button.postBookmark" var="buttonImage"/>
-	<!-- TODO: why not simply use de/en instead of weird toLowercase operations on i18n-values -->
-	<fmt:message var="exampleString" key="example"/>
+	
 	<script type="text/javascript" src="/resources/javascript/bookmarklets_misc.js"><!-- keep me !--></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
