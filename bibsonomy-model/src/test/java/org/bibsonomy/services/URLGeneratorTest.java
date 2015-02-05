@@ -38,6 +38,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.util.UrlUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -426,6 +427,12 @@ public class URLGeneratorTest {
 		String expected = projectHome + "export/user/jaeschke";
 		
 		assertEquals(expected, urlg.prefix("export/").getUserUrlByUserName("jaeschke"));
+	}
+	
+	@Test
+	public void testGetGroupSettingsUrlByGroupName() {
+		String expected = projectHome + "settings/group/franzosengruppe";
+		assertEquals(expected, ug.getGroupSettingsUrlByGroupName("franzosengruppe"));
 	}
 
 }

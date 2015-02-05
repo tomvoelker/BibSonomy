@@ -147,7 +147,7 @@
 	    to be a user with role "admin". 
 	 -->
 	<bean id="adminLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.AdminLogicFactoryBean" scope="singleton">
-			<!-- name the admin user will have when accessing the logic interface -->
+		<!-- name the admin user will have when accessing the logic interface -->
 		<property name="adminUserName" value="admin"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 		<property name="bibtexReader" ref="bibtexReader"/>
@@ -180,6 +180,7 @@
 		<property name="projectJoinGroupRequestFromAddress" value="${project.joinGroupRequestFromAddress}" />
 		<property name="mailHost" value="${mail.smtp.host}" />
 		<property name="messageSource" ref="messageSource"/>
+		<property name="absoluteURLGenerator" ref="absoluteUrlGenerator" />
 	</bean>
 
 	<!--  #################### interceptors #################### -->
@@ -350,6 +351,17 @@
 								<value>file</value> 
 								<value>group</value>
 								<value>delete</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/settings/group">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="groupSettingsPageController" />
+						<property name="allowedFields">
+							<list>
+								<value>selTab</value>
+								<value>requestedGroup</value>
 							</list>
 						</property>
 					</bean>
@@ -713,6 +725,10 @@
 		<property name="wikiRenderer" ref="wikiRenderer" />
 		<property name="oauthLogic" ref="oauthLogic"/>
 		<property name="invisibleOAuthConsumers" value="${invisible.oauth.consumers}"/>
+	</bean>
+	
+	<bean id="groupSettingsPageController" class="org.bibsonomy.webapp.controller.GroupSettingsPageController" scope="request">
+		<property name="logic" ref ="logic" />
 	</bean>
 
 	<bean id="userPageController" class="org.bibsonomy.webapp.controller.UserPageController" scope="request" parent="multiResourceListControllerWithTags">

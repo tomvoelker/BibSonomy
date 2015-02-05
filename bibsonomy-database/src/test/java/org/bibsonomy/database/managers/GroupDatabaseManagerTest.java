@@ -1,31 +1,6 @@
-/**
- * BibSonomy-Database - Database for BibSonomy.
- *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
- *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
- *                           L3S Research Center,
- *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package org.bibsonomy.database.managers;
 
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -38,9 +13,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bibsonomy.common.enums.GroupLevelPermission;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.testutil.ParamUtils;
+import org.bibsonomy.util.Sets;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -53,15 +34,17 @@ import org.junit.Test;
 public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	private static GroupDatabaseManager groupDb;
-	
+	private static UserDatabaseManager userDb;
+
 	/**
 	 * sets up the manager
 	 */
 	@BeforeClass
 	public static void setupManager() {
 		groupDb = GroupDatabaseManager.getInstance();
+		userDb = UserDatabaseManager.getInstance();
 	}
-	
+
 	/**
 	 * Checks whether the list of groups contains at least the three standard
 	 * groups: "public", "private" and "friends"
@@ -75,7 +58,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertTrue(found.contains(PRIVATE_GROUP_ID));
 		assertTrue(found.contains(FRIENDS_GROUP_ID));
 	}
-	
+
 	/**
 	 * tests getAllGroups
 	 */
@@ -100,16 +83,39 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
+	 * tests getPendingGroups
+	 */
+	@Test
+	public void getPendingGroups() {
+		final List<Group> pendingGroups = groupDb.getPendingGroups(0, 100, this.dbSession);
+		assertEquals(2, pendingGroups.size());
+
+		for (final Group group : pendingGroups) {
+			if (group.getName().startsWith("testpendinggroup")) {
+				final int groupNr = Integer.parseInt("" + group.getName().charAt(group.getName().length() - 1));
+				assertEquals(6 + groupNr, group.getGroupId());
+			}
+		}
+
+		// make sure that limit and offset work
+		assertEquals(1, groupDb.getPendingGroups(0, 1, this.dbSession).size());
+		assertEquals(1, groupDb.getPendingGroups(1, 2, this.dbSession).size());
+		assertEquals(2, groupDb.getPendingGroups(0, 3, this.dbSession).size());
+	}
+
+	/**
 	 * tests getGroupByName
 	 */
 	@Test
-	public void getGroupByName() {
+	public void testGetGroupByName() {
 		final Group testgroup1 = groupDb.getGroupByName("testgroup1", this.dbSession);
 		assertEquals("testgroup1", testgroup1.getName());
 		assertEquals(ParamUtils.TESTGROUP1, testgroup1.getGroupId());
 		assertEquals("Test Group 1", testgroup1.getRealname());
 		assertEquals("http://www.bibsonomy.org/group/testgroup1", testgroup1.getHomepage().toString());
 		assertEquals(true, testgroup1.isSharedDocuments());
+
+		assertGroupContainsMembers(testgroup1, Sets.asSet("testuser1", "testuser2", "testgroup1"));
 
 		final Group testgroup2 = groupDb.getGroupByName("testgroup2", this.dbSession);
 		assertEquals(false, testgroup2.isSharedDocuments());
@@ -121,6 +127,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 				groupDb.getGroupByName(groupname, this.dbSession);
 				fail("Should throw an exception");
 			} catch (final RuntimeException ignored) {
+				// ignore
 			}
 		}
 
@@ -128,38 +135,53 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
+	 * @param testgroup1
+	 * @param string
+	 * @param string2
+	 */
+	private static void assertGroupContainsMembers(final Group group, final Set<String> members) {
+		final Set<String> actualMembers = new HashSet<String>();
+		for (final GroupMembership membership : group.getMemberships()) {
+			actualMembers.add(membership.getUser().getName());
+		}
+
+		assertEquals(members, actualMembers);
+	}
+
+	/**
 	 * tests getGroupMembers
 	 */
 	@Test
-	public void getGroupMembers() {
+	public void getGroupMemberships() {
 		// PUBLIC group
 		// every user can see the members of this group
 		for (final String username : new String[] { "testuser1", "testuser2", "testuser3" }) {
-			final Group publicGroup = groupDb.getGroupMembers(username, "testgroup1", this.dbSession);
-			assertEquals(3, publicGroup.getUsers().size());
+			final Group publicGroup = groupDb.getGroupMembers(username, "testgroup1", false, this.dbSession);
+			assertEquals(3, publicGroup.getMemberships().size());
 		}
 
 		// HIDDEN group
 		// "testuser1", a member of "testgroup2", can't see other members
 		// "testuser2", not a member of "testgroup2", can't see members too
 		for (final String username : new String[] { "testuser1", "testuser2" }) {
-			final Group hiddenGroup = groupDb.getGroupMembers(username, "testgroup2", this.dbSession);
-			assertEquals(0, hiddenGroup.getUsers().size());
+			final Group hiddenGroup = groupDb.getGroupMembers(username, "testgroup2", false, this.dbSession);
+			assertEquals(0, hiddenGroup.getMemberships().size());
 		}
 
 		// MEMBER (only) group
-		// "testuser1", a member of "testgroup3", can see all members (including user testgroup3)
-		Group memberOnlyGroup = groupDb.getGroupMembers("testuser1", "testgroup3", this.dbSession);
-		assertEquals(2, memberOnlyGroup.getUsers().size());
+		// "testuser1", a member of "testgroup3", can see all members (including
+		// user testgroup3)
+		Group memberOnlyGroup = groupDb.getGroupMembers("testuser1", "testgroup3", false, this.dbSession);
+		assertEquals(2, memberOnlyGroup.getMemberships().size());
 		// "testuser2" and "testuser3" aren't members of "testgroup3" and can't
 		// see the members
 		for (final String username : new String[] { "testuser2", "testuser3" }) {
-			memberOnlyGroup = groupDb.getGroupMembers(username, "testgroup3", this.dbSession);
-			assertEquals(0, memberOnlyGroup.getUsers().size());
+			memberOnlyGroup = groupDb.getGroupMembers(username, "testgroup3", false, this.dbSession);
+			assertEquals(0, memberOnlyGroup.getMemberships().size());
 		}
 
 		// INVALID group
-		final Group invalidGroup = groupDb.getGroupMembers(ParamUtils.NOUSER_NAME, ParamUtils.NOGROUP_NAME, this.dbSession);
+		final Group invalidGroup = groupDb.getGroupMembers(ParamUtils.NOUSER_NAME, ParamUtils.NOGROUP_NAME, false, this.dbSession);
 		assertEquals(INVALID_GROUP_ID, invalidGroup.getGroupId());
 	}
 
@@ -198,21 +220,28 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void createGroup() {
 		final Group newGroup = new Group();
-		newGroup.setName("testuser1".toUpperCase());
+		final String groupName = "testgroupnew";
+		newGroup.setName(groupName.toUpperCase());
+		final GroupRequest groupRequest = new GroupRequest();
+		final String requestedUser = "testrequestuser1";
+		groupRequest.setUserName(requestedUser);
+		groupRequest.setReason("testrequestreason1");
+		newGroup.setGroupRequest(groupRequest);
+
 		groupDb.createGroup(newGroup, this.dbSession);
-		final Group newGroupTest = groupDb.getGroupMembers("testuser1", "testuser1", this.dbSession);
-		assertEquals("testuser1", newGroupTest.getName());
-		assertEquals(1, newGroupTest.getUsers().size());
-		assertEquals("Test User 1", newGroupTest.getUsers().get(0).getRealname());
-		assertEquals("http://www.bibsonomy.org/user/testuser1", newGroupTest.getUsers().get(0).getHomepage().toString());
-		
-		final Group group = groupDb.getGroupMembers("testuser1", "testuser1", this.dbSession);
-		assertEquals(1, group.getUsers().size());
+		groupDb.activateGroup(newGroup.getName(), this.dbSession);
+		final Group newGroupTest = groupDb.getGroupMembers(groupName, groupName, false, this.dbSession);
+		assertEquals(groupName, newGroupTest.getName());
+		assertGroupContainsMembers(newGroupTest, Sets.asSet(groupName, requestedUser));
 
 		// check that the group and all members are gone
-		groupDb.deleteGroup("testuser1", this.dbSession);
-		assertNull(groupDb.getGroupByName("testuser1", this.dbSession));
-		for (final User user : group.getUsers()) {
+		groupDb.deleteGroup(groupName, this.dbSession);
+		assertNull(groupDb.getGroupByName(groupName, this.dbSession));
+
+		final List<GroupMembership> newGroupMemberships = newGroupTest.getMemberships();
+		assertEquals(2, newGroupMemberships.size());
+		for (final GroupMembership membership : newGroupTest.getMemberships()) {
+			final User user = membership.getUser();
 			final List<Group> userGroups = groupDb.getGroupsForUser(user.getName(), this.dbSession);
 			for (final Group userGroup : userGroups) {
 				if ("testuser1".equals(userGroup.getName())) {
@@ -222,14 +251,27 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		}
 		// since update isn't implemented we test both cases because the method
 		// should throw an exception anyway
-		// test invalid, existing and non-existent group names
-		for (final String groupname : new String[] { "", " ", null, "testgroup1", ParamUtils.NOUSER_NAME, ParamUtils.NOGROUP_NAME }) {
+		// test invalid and existing group names
+		for (final String groupname : new String[] { "", " ", null, "testgroup1", }) {
 			try {
 				final Group groupToCreate = new Group();
 				groupToCreate.setName(groupname);
 				groupDb.createGroup(groupToCreate, this.dbSession);
 				fail("Should throw an exception: groupname '" + groupname + "'");
 			} catch (final RuntimeException ignored) {
+				// ignore
+			}
+		}
+
+		// check for reserved names
+		for (final String groupname : new String[] { GroupUtils.FRIENDS_GROUP_NAME, GroupUtils.PRIVATE_GROUP_NAME, GroupUtils.PUBLIC_GROUP_NAME }) {
+			try {
+				final Group groupToCreate = new Group();
+				groupToCreate.setName(groupname);
+				groupDb.createGroup(groupToCreate, this.dbSession);
+				fail("Should throw an exception: groupname '" + groupname + "'");
+			} catch (final RuntimeException ignored) {
+				// ignore
 			}
 		}
 	}
@@ -248,6 +290,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			groupDb.deleteGroup(ParamUtils.NOGROUP_NAME, this.dbSession);
 			fail("Should throw an exception");
 		} catch (final RuntimeException ignored) {
+			// ignore
 		}
 	}
 
@@ -260,25 +303,27 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void addUserToGroup() {
 		// adds and then removes a user and checks whether the groupsize grows
 		// and shrinks accordingly
-		String testGroup = "testgroup1";
-		Group group = groupDb.getGroupMembers("testuser3", testGroup, this.dbSession);
-		assertEquals(3, group.getUsers().size());
+		final String testGroup = "testgroup1";
+		Group group = groupDb.getGroupMembers("testuser3", testGroup, false, this.dbSession);
+		assertEquals(3, group.getMemberships().size());
 		// add user
 		final String userToAdd = "testuser3";
-		groupDb.addUserToGroup(testGroup, userToAdd, this.dbSession);
-		group = groupDb.getGroupMembers(userToAdd, testGroup, this.dbSession);
-		assertEquals(3 + 1, group.getUsers().size());
-		
+		groupDb.addPendingMembership(testGroup, userToAdd, GroupRole.INVITED, this.dbSession);
+		groupDb.addUserToGroup(testGroup, userToAdd, GroupRole.USER, this.dbSession);
+		group = groupDb.getGroupMembers(userToAdd, testGroup, false, this.dbSession);
+		assertEquals(3 + 1, group.getMemberships().size());
+
 		groupDb.removeUserFromGroup(testGroup, userToAdd, this.dbSession);
-		group = groupDb.getGroupMembers(userToAdd, testGroup, this.dbSession);
-		assertEquals(3, group.getUsers().size());
-		
+		group = groupDb.getGroupMembers(userToAdd, testGroup, false, this.dbSession);
+		assertEquals(3, group.getMemberships().size());
+
 		for (final String groupname : new String[] { "", " ", null, ParamUtils.NOGROUP_NAME }) {
 			for (final String username : new String[] { "", " ", null, "testuser1", ParamUtils.NOUSER_NAME }) {
 				try {
-					groupDb.addUserToGroup(groupname, username, this.dbSession);
+					groupDb.addUserToGroup(groupname, username, GroupRole.USER, this.dbSession);
 					fail("Should throw an exception");
 				} catch (final RuntimeException ignored) {
+					// ignore
 				}
 			}
 		}
@@ -286,17 +331,19 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// can't add user to a group he's already a member of
 		for (final String username : new String[] { "testuser1", "testuser2" }) {
 			try {
-				groupDb.addUserToGroup(testGroup.toUpperCase(), username, this.dbSession);
+				groupDb.addUserToGroup(testGroup.toUpperCase(), username, GroupRole.USER, this.dbSession);
 				fail("Should throw an exception");
 			} catch (final RuntimeException ignored) {
+				// ignore
 			}
 		}
-		
+
 		// spammers can't be members of groups!
 		try {
-			groupDb.addUserToGroup(testGroup, "testspammer", this.dbSession);
+			groupDb.addUserToGroup(testGroup, "testspammer", GroupRole.USER, this.dbSession);
 			fail("Should throw an exception");
 		} catch (final RuntimeException ignored) {
+			// ignore
 		}
 	}
 
@@ -346,27 +393,38 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			assertEquals(0, groupDb.getGroupIdsForUser(userName, this.dbSession).size());
 		}
 	}
-	
+
 	/**
 	 * tests updateUserSharedDocuments
 	 */
 	@Test
 	public void updateUserSharedDocuments() {
-		final Group g1 = new Group(TESTGROUP1_ID);
-		g1.setUserSharedDocuments(true);
-		g1.setName("testuser1");
-		groupDb.updateUserSharedDocuments(g1, this.dbSession);
-		
-		List<Group> groups = groupDb.getGroupsForUser("testuser1", this.dbSession);
+		final GroupMembership gm = new GroupMembership();
+		gm.setUserSharedDocuments(true);
+		gm.setUser(new User("testuser1"));
+		groupDb.updateUserSharedDocuments(new Group("testgroup1"), gm, this.dbSession);
+
+		final List<Group> groups = groupDb.getGroupsForUser("testuser1", this.dbSession);
 		Group group = null;
-		for (Group g : groups) {
+		for (final Group g : groups) {
 			if (g.getGroupId() == TESTGROUP1_ID) {
 				group = g;
 				break;
 			}
 		}
 		assertNotNull("no group found", group);
-		assertTrue(group.isUserSharedDocuments());
+		assertTrue(group.getGroupMembershipForUser("testuser1").isUserSharedDocuments());
+	}
+
+	/**
+	 * tests activateGroup
+	 */
+	@Test
+	public void activateGroup() {
+		final Group group = groupDb.getPendingGroups(0, Integer.MAX_VALUE, this.dbSession).get(0);
+		groupDb.activateGroup(group.getName(), this.dbSession);
+		final Group testgroup = groupDb.getGroupByName(group.getName(), this.dbSession);
+		assertEquals("testpendinggroup1", testgroup.getName());
 	}
 
 	/**
@@ -402,4 +460,40 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			}
 		}
 	}
+
+	@Test
+	public void testUpdateGroupLevelPermissions() throws Exception {
+		// setting: testGroup3 already exists and testUser1 is a member thereof,
+		// while testUser2 is not.
+		final String testGroupName = "testgroup3";
+		final String testUserName = "testuser1";
+
+		final Group testGroup3 = new Group(testGroupName);
+		Group foundTestGroup3 = this.getGroupOfUser(testUserName, testGroupName);
+		assertThat(foundTestGroup3.getGroupLevelPermissions(), empty());
+
+		testGroup3.addGroupLevelPermission(GroupLevelPermission.COMMUNITY_POST_INSPECTION);
+		groupDb.updateGroupLevelPermissions(testUserName, testGroup3, this.dbSession);
+		foundTestGroup3 = this.getGroupOfUser(testUserName, testGroupName);
+
+		assertThat(foundTestGroup3.getGroupLevelPermissions(), equalTo(Sets.asSet(GroupLevelPermission.COMMUNITY_POST_INSPECTION)));
+
+		testGroup3.getGroupLevelPermissions().clear();
+		groupDb.updateGroupLevelPermissions(testUserName, testGroup3, this.dbSession);
+		foundTestGroup3 = this.getGroupOfUser(testUserName, testGroupName);
+
+	}
+
+	private Group getGroupOfUser(final String userName, final String groupName) {
+		final List<Group> groupsForTestUser1 = groupDb.getGroupsForUser(userName, this.dbSession);
+		Group foundTestGroup3 = null;
+		for (final Group group : groupsForTestUser1) {
+			if (groupName.equals(group.getName())) {
+				foundTestGroup3 = group;
+				break;
+			}
+		}
+		return foundTestGroup3;
+	}
+
 }
