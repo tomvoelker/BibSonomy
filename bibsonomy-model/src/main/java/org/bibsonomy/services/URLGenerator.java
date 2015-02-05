@@ -989,6 +989,23 @@ public class URLGenerator {
 	}
 	
 	/**
+	 * @param post
+	 * @return the rating url of the provided post
+	 */
+	public String getCommunityRatingUrl(final Post<? extends Resource> post) {
+		final Resource resource = post.getResource();
+		final String interHash = resource.getInterHash();
+		final String userName = post.getUser().getName();
+		final String intraHash = resource.getIntraHash();
+		if (resource instanceof Bookmark) {
+			return this.getBookmarkRatingUrl(interHash, userName, intraHash);
+		} else if (resource instanceof BibTex) {
+			return this.getPublicationRatingUrl(interHash, userName, intraHash);
+		} else {
+			throw new UnsupportedResourceTypeException();
+		}
+	}
+	/**
 	 * Constructs a URL to rate the new publication for the given publication and user name.
 	 * 
 	 * @param interHash
