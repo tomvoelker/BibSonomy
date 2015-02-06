@@ -35,6 +35,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -69,9 +70,9 @@ public class PostHistoryController<R extends Resource> extends SingleResourceLis
 		Class<R> resourceClass;
 		if (present(requUser)) {
 			// case community post
-			resourceClass = (Class<R>) (requestedType.equals("url") ? Bookmark.class : BibTex.class);
+			resourceClass = (Class<R>) (URLGenerator.BOOKMARK_PREFIX.equals(requestedType) ? Bookmark.class : BibTex.class);
 		} else {
-			resourceClass = (Class<R>) (requestedType.equals("url") ? GoldStandardBookmark.class : GoldStandardPublication.class);
+			resourceClass = (Class<R>) (URLGenerator.BOOKMARK_PREFIX.equals(requestedType) ? GoldStandardBookmark.class : GoldStandardPublication.class);
 
 		}
 
