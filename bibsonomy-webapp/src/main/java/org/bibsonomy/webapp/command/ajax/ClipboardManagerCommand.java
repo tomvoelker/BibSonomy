@@ -30,7 +30,7 @@ package org.bibsonomy.webapp.command.ajax;
 /**
  * @author Christian Kramer
  */
-public class ClipboardManagerCommand extends AjaxCommand{
+public class ClipboardManagerCommand extends AjaxCommand<String> {
 	private String hash;
 	private String user;
 

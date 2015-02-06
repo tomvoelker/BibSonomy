@@ -925,10 +925,10 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void testLimitedUserPosts() throws Exception {
-		this.postAndAssertGroup(GroupUtils.getPublicGroup(), GroupUtils.getPrivateGroup(), TEST_LIMITED_USER_NAME, BibTex.class);
-		this.postAndAssertGroup(GroupUtils.getPublicGroup(), GroupUtils.getPrivateGroup(), TEST_LIMITED_USER_NAME, Bookmark.class);
-		this.postAndAssertGroup(GroupUtils.getFriendsGroup(), GroupUtils.getPrivateGroup(), TEST_LIMITED_USER_NAME, BibTex.class);
-		this.postAndAssertGroup(GroupUtils.getFriendsGroup(), GroupUtils.getPrivateGroup(), TEST_LIMITED_USER_NAME, Bookmark.class);
+		this.postAndAssertGroup(GroupUtils.getPublicGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, BibTex.class);
+		this.postAndAssertGroup(GroupUtils.getPublicGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, Bookmark.class);
+		this.postAndAssertGroup(GroupUtils.buildFriendsGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, BibTex.class);
+		this.postAndAssertGroup(GroupUtils.buildFriendsGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, Bookmark.class);
 	}
 
 	private <R extends Resource> void postAndAssertGroup(Group group, Group expectedGroup, String userName, Class<R> resourceType) {
@@ -1105,7 +1105,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		 * two special groups are prohibited
 		 */
 		try {
-			groups.add(GroupUtils.getPrivateGroup());
+			groups.add(GroupUtils.buildPrivateGroup());
 			logic.validateGroups(user, groups, this.dbSession);
 			fail("invalid groups not found");
 		} catch (final ValidationException ex) {

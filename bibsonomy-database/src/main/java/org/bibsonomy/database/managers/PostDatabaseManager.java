@@ -381,7 +381,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setTagIndex(tagIndex);
 
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "ByTagNamesCount", param, Integer.class, session);
-		return present(result) ? result : 0;
+		return saveConvertToint(result);
 	}
 
 	/**
@@ -409,7 +409,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setTagIndex(tagIndex);
 
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "ByTagNamesForUserCount", param, Integer.class, session);
-		return present(result) ? result : 0;
+		return saveConvertToint(result);
 	}
 
 	/**
@@ -497,7 +497,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "PopularDays", param, Integer.class, session);
 
-		return present(result) ? result : 0;
+		return saveConvertToint(result);
 	}
 
 	/**
@@ -559,12 +559,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setUserName(loginUserName);
 		if (present(loginUserName)) {
 			param.setGroups(groups);
-			final List<Post<R>> list = this.postList("get" + this.resourceClassName + "ByHashVisibleForLoginUser", param, session);
-			return list;
-		} else {
+			return this.postList("get" + this.resourceClassName + "ByHashVisibleForLoginUser", param, session);
+		}
 			return this.postList("get" + this.resourceClassName + "ByHash", param, session);
 		}
-	}
 
 	/**
 	 * Retrieves the number of posts represented by the given hash.
@@ -580,7 +578,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setSimHash(simHash);
 
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "ByHashCount", param, Integer.class, session);
-		return present(result) ? result : 0;
+		return saveConvertToint(result);
 	}
 
 	/**
@@ -779,7 +777,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "ForGroupCount", param, Integer.class, session);
-		return present(result) ? result : 0;
+		return saveConvertToint(result);
 	}
 
 	/**
@@ -925,7 +923,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set
 																				// groups
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "ForUserCount", param, Integer.class, session);
-		return present(result) ? result : 0;
+		return saveConvertToint(result);
 	}
 
 	/**
@@ -948,7 +946,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set
 																				// groups
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "WithDiscussionsCount", param, Integer.class, session);
-		return present(result) ? result : 0;
+		return saveConvertToint(result);
 	}
 
 	/**
@@ -973,7 +971,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set
 																				// groups
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "WithDiscussionsCountForGroup", param, Integer.class, session);
-		return present(result) ? result : 0;
+		return saveConvertToint(result);
 	}
 
 	/** 
@@ -989,17 +987,17 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session	a database session
 	 * @return list of  posts
 	 */		
-	public List<Post<R>> getPostsWithHistory(final String resourceHash, final String requestedUserName, final FilterEntity filter, 
-			int limit, final int offset, final DBSession session) {
+	public List<Post<R>> getPostsWithHistory(final String resourceHash, final String requestedUserName, final FilterEntity filter, final int limit, final int offset, final DBSession session) {
 		final P param = this.createParam(limit, offset);
 		param.setHash(resourceHash);
 		param.setRequestedUserName(requestedUserName);
 		param.setFilter(filter);
 		
-		if (present(requestedUserName))
+		if (present(requestedUserName)) {
 			return this.postList("get" + this.resourceClassName + "History", param, session);  
-		else
+		} else {
 			return this.postList("getGoldStandardHistory", param, session); 
+	}
 	}
 	
 	/**
@@ -1057,7 +1055,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setGroups(visibleGroupIDs);
 
 		final Integer result = this.queryForObject("getGroup" + this.resourceClassName + "CountByTag", param, Integer.class, session);
-		return present(result) ? result : 0;
+		return saveConvertToint(result);
 	}
 
 	/**
@@ -1074,7 +1072,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setGroups(visibleGroupIDs);
 
 		final Integer result = this.queryForObject("getGroup" + this.resourceClassName + "Count", param, Integer.class, session);
-		return present(result) ? result : 0;
+		return saveConvertToint(result);
 	}
 
 	/**
@@ -1929,4 +1927,31 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		}
 		return this.queryForList("getPostMetaData", param, PostMetaData.class, session);
 	}
+
+	/**
+	 * sets the post of the leavingUser that are only visible to the group to
+	 * the private group
+	 * 
+	 * FIXME: as soon as we support multiple groups per post this logic must be
+	 * adapted
+	 * 
+	 * @param leavingUser
+	 * @param groupId
+	 * @param session
+	 */
+	public void updatePostsInGroupFromLeavingUser(final String leavingUser, final int groupId, final DBSession session) {
+		final ResourceParam<R> param = new ResourceParam<>();
+		param.setGroupId(groupId);
+		param.setUserName(leavingUser);
+
+		this.onPostMassUpdate(leavingUser, groupId, session);
+		this.update("update" + this.resourceClassName + "InGroupFromLeavingUser", param, session);
+	}
+
+	/**
+	 * @param username
+	 * @param groupId
+	 * @param session
+	 */
+	protected abstract void onPostMassUpdate(String username, int groupId, DBSession session);
 }

@@ -262,7 +262,7 @@
 	<bean id="additionalURLController" class="org.bibsonomy.webapp.controller.ajax.AdditionalURLController" scope="request" parent="ajaxController" />
 	
 	
-	<bean id="cvController" class="org.bibsonomy.webapp.controller.ajax.CvAjaxController" scope="request" parent="ajaxController">
+	<bean id="cvController" class="org.bibsonomy.webapp.controller.ajax.AjaxCvController" scope="request" parent="ajaxController">
 		<property name="wikiRenderer" ref="wikiRenderer"/>
 		<property name="notLoggedInUserLogic" ref="notLoggedInUserLogic"/>
 	</bean>

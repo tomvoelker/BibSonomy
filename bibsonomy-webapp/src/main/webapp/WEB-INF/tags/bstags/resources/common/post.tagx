@@ -110,7 +110,8 @@
 							<c:param name="deleteCheckedPosts" value="true" />
 							<c:param name="format" value="action" />
 							<c:param name="resourcetype" value="${resourceType}" />
-							<c:param name="action" value="1" />
+							<c:param name="action" value="2" />
+							<c:param name="updateExistingPost" value="true"/>
 						</c:url>
 						
 						<form data-resource-hash="${post.resource.intraHash}${post.user.name}" class="form-horizontal edit-tags-form" method="post" action="${batchEditUrl}">

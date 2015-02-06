@@ -28,8 +28,10 @@ package org.bibsonomy.webapp.command;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.bibsonomy.common.enums.GroupUpdateOperation;
 
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
@@ -67,6 +69,9 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	private String action;
 	
+	/** An operation to update a specific group. */
+	private GroupUpdateOperation operation;
+
 	/**
 	 * the AccessToken you want to delete
 	 */
@@ -117,6 +122,10 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	// TODO: why not boolean?
 	private int sharedDocuments;
 	private Group group;
+	
+	private List<Group> groups = new ArrayList<Group>();
+	// the group to update
+	private String groupName;
 	
 	/**
 	 * current password of user
@@ -177,9 +186,9 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private List<URI> availableSyncServers;
 	
 	/** 
-	 * this field contains the username of the user, who should be added to the group.
+	 * this field contains the username of the user, who should be added/removed to/from the group.
 	 */
-	private String addUserToGroup;
+	private String username;
 	
 	/**
 	 * login credentials for importing bookmarks
@@ -603,17 +612,17 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	}
 
 	/**
-	 * @return the addUserToGroup
+	 * @return the username
 	 */
-	public String getAddUserToGroup() {
-		return this.addUserToGroup;
+	public String getUsername() {
+		return this.username;
 	}
 	
 	/**
-	 * @param addUserToGroup
+	 * @param username
 	 */
-	public void setAddUserToGroup(final String addUserToGroup) {
-		this.addUserToGroup = addUserToGroup;
+	public void setUsername(final String username) {
+		this.username = username;
 	}
 
 	/**
@@ -790,6 +799,48 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	}
 
 	/**
+	 * @return the groups
+	 */
+	public List<Group> getGroups() {
+		return this.groups;
+	}
+
+	/**
+	 * @param groups the groups to set
+	 */
+	public void setGroups(List<Group> groups) {
+		this.groups = groups;
+	}
+
+	/**
+	 * @return the groupName
+	 */
+	public String getGroupName() {
+		return this.groupName;
+	}
+
+	/**
+	 * @param groupName the groupName to set
+	 */
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+
+	/**
+	 * @return the groupUpdateOperation
+	 */
+	public GroupUpdateOperation getOperation() {
+		return operation;
+	}
+
+	/**
+	 * Sets a group update operation.
+	 * @param operation a group update operation
+	 */
+	public void setOperation(GroupUpdateOperation operation) {
+		this.operation = operation;
+	}
+	/**
 	 * @return the fileBegin
 	 */
 	public CommonsMultipartFile getFileBegin() {
@@ -830,5 +881,4 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public void setFileEnd(CommonsMultipartFile fileEnd) {
 		this.fileEnd = fileEnd;
 	}
-
 }

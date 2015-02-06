@@ -42,7 +42,7 @@
 					<div class="pull-right">
 						<group:groupcv group="${command.group}"/>
 					</div>
-					<group:name group="${command.group}"/>
+					<!--<group:name group="${command.group}"/>-->
 				</li>
 					
 				<!-- link to join group -->
@@ -58,7 +58,7 @@
 								</fmt:message>
 								<button:linkButton
 									title="${joinGroup}"
-									href="/join_group?group=${fn:escapeXml(command.group.name)}"
+									href="/joinGroup?group=${fn:escapeXml(command.group.name)}"
 									image="${resdir}/image/starblue_unselected.png">
 									<jsp:attribute name="text">
 										<fmt:message key="joinGroup"/>
@@ -70,7 +70,7 @@
 				</c:if>
 				
 				<!-- group members -->
-				<rc:members requPath="${requPath}" users="${command.group.users}"/>
+				<rc:members group="${command.group}"/>
 				
 				<!-- link to discussed posts of the group -->
 				<li>

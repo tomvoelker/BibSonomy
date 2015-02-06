@@ -101,8 +101,6 @@ public class WikiCvPageController extends ResourceListController implements Mini
 	private View handleGroupCV(final Group requestedGroup, final CvPageViewCommand command) {
 		final String groupName = requestedGroup.getName();
 		command.setIsGroup(true);
-		final List<User> groupUsers = this.logic.getUsers(null, GroupingEntity.GROUP, groupName, null, null, null, null, null, 0, 1000);
-		requestedGroup.setUsers(groupUsers);
 
 		this.setTags(command, Resource.class, GroupingEntity.GROUP, requestedGroup.getName(), null, command.getRequestedTagsList(), null, 1000, null);
 		

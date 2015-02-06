@@ -52,4 +52,8 @@
 			AND interHash = #interHash#
 			AND user_name = #userName#
 	</delete>
+	
+	<update id="updateDiscussionsInGroupFromLeavingUser" parameterClass="discussionItemParam">
+		UPDATE discussion d SET d.group = 1 WHERE d.user_name = #userName# AND d.group = #groupId#
+	</update>
 </sqlMap>

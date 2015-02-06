@@ -63,14 +63,15 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.GoldStandardRelation;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
@@ -162,7 +163,7 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<Group> getGroups(final int start, final int end) {
+	public List<Group> getGroups(boolean pending, final int start, final int end) {
 		final List<Group> groups = new LinkedList<Group>();
 		groups.addAll(this.dbGroups.values());
 		return groups;
@@ -730,10 +731,6 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public void deleteUserFromGroup(final String groupName, final String userName) {
-	}
-
-	@Override
 	public String createGroup(final Group group) {
 		return null;
 	}
@@ -750,7 +747,7 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
+	public String updateGroup(final Group group, final GroupUpdateOperation operation, GroupMembership ms) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -854,7 +851,9 @@ public class TestDBLogic implements LogicInterface {
 		if (GroupingEntity.GROUP.equals(grouping) && groupingName != null && !groupingName.equals("")) {
 			final Group group = this.dbGroups.get(groupingName);
 			if (group != null) {
-				users.addAll(group.getUsers());
+				for (final GroupMembership membership : group.getMemberships()) {
+					users.add(membership.getUser());
+				}
 			}
 		}
 		return users;		

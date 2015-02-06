@@ -38,7 +38,10 @@ import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.User;
+import org.bibsonomy.services.URLGenerator;
 import org.springframework.context.MessageSource;
 
 
@@ -59,6 +62,8 @@ public class MailUtils {
 	private String projectJoinGroupRequestFromAddress;
 	
 	private MessageSource messageSource;
+	
+	private URLGenerator absoluteURLGenerator;
 
 	/** Stores the properties for mailing (mail host). */
 	private final Properties props = new Properties();
@@ -73,7 +78,12 @@ public class MailUtils {
 	 * @return <code>true</code>, if the email could be send without errors.
 	 */
 	public boolean sendActivationMail(final String userName, final String userEmail, final String inetAddress, final Locale locale) {
-		final Object[] messagesParameters = new Object[]{userName, projectName, projectHome, projectBlog, projectEmail};
+		final Object[] messagesParameters = new Object[]{userName,
+			projectName,
+			projectHome,
+			projectBlog,
+			projectEmail,
+			absoluteURLGenerator.getUserUrlByUserName(userName)};
 		/*
 		 * Format the message "mail.registration.body" with the given parameters.
 		 */
@@ -205,6 +215,71 @@ public class MailUtils {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param group
+	 * @param requestingUser
+	 * @param locale
+	 * @return 
+	 */
+	public boolean sendGroupActivationNotification(final Group group, User requestingUser, final Locale locale) {
+		final Object[] messagesParameters = new Object[] {
+			requestingUser.getName(),
+			group.getName(),
+			absoluteURLGenerator.getGroupUrlByGroupName(group.getName()),
+			absoluteURLGenerator.getGroupSettingsUrlByGroupName(group.getName()),
+			projectHome,
+			projectEmail
+		};
+		
+		/*
+		 * Format the message "mail.groupInvite.body" with the given parameters.
+		 */
+		final String messageBody    = messageSource.getMessage("mail.group.activation.body", messagesParameters, locale);
+		final String messageSubject = messageSource.getMessage("mail.group.activation.subject", messagesParameters, locale);
+
+		/*
+		 * send an e-Mail to the group (from our registration Adress)
+		 */
+		try {
+			sendMail(new String[] {requestingUser.getEmail()},  messageSubject, messageBody, projectEmail);
+			return true;
+		} catch (final MessagingException e) {
+			log.fatal("Could not send group activation notification mail: " + e.getMessage());
+		}
+		return false;
+	}
+	
+	public boolean sendGroupInvite(final String groupName, final User loginUser, final User invitedUser, final Locale locale) {
+		final Object[] messagesParameters = new Object[]{
+				invitedUser.getName(),
+				loginUser.getName(),
+				groupName,
+				projectHome,
+				// TODO: why toLowerCase?
+				UrlUtils.safeURIEncode(groupName).toLowerCase(),
+				UrlUtils.safeURIEncode(loginUser.getName()).toLowerCase(),
+				projectName.toLowerCase(),
+				projectEmail
+		};
+		
+		/*
+		 * Format the message "mail.groupInvite.body" with the given parameters.
+		 */
+		final String messageBody    = messageSource.getMessage("mail.groupInvite.body", messagesParameters, locale);
+		final String messageSubject = messageSource.getMessage("mail.groupInvite.subject", messagesParameters, locale);
+
+		/*
+		 * send an e-Mail to the group (from our registration Adress)
+		 */
+		try {
+			sendMail(new String[] {invitedUser.getEmail()},  messageSubject, messageBody, projectJoinGroupRequestFromAddress);
+			return true;
+		} catch (final MessagingException e) {
+			log.fatal("Could not send join group request mail: " + e.getMessage());
+		}
+		return false;
+	}
 	
 	/**
 	 * Method to send the password reminder mail
@@ -234,6 +309,28 @@ public class MailUtils {
 			log.fatal("Could not send reminder mail: " + e.getMessage());
 		}
 		return false;
+	}
+	
+	/**
+	 * @param requestedGroup
+	 */
+	public void sendGroupRequest(final Group requestedGroup) {
+		try {
+			// TODO: use project default locale?
+			final Locale locale = Locale.ENGLISH;
+			final GroupRequest groupRequest = requestedGroup.getGroupRequest();
+			final String userName = groupRequest.getUserName();
+			final String userUrl = this.absoluteURLGenerator.getUserUrlByUserName(userName);
+			final String groupAdminPage = this.absoluteURLGenerator.getAdminUrlByName("group");
+			final Object[] messagesParameters = { requestedGroup.getName(), userName, userUrl, requestedGroup.getDescription(), groupRequest.getReason(), groupAdminPage };
+			final String messageBody = messageSource.getMessage("grouprequest.mail.body", messagesParameters, locale);
+			final String messageSubject = messageSource.getMessage("grouprequest.mail.subject", messagesParameters, locale);
+			
+			// TODO: currently using projectEmail, maybe we want a special mail address?
+			sendMail(new String[] { this.projectEmail }, messageSubject, messageBody, this.projectJoinGroupRequestFromAddress);
+		} catch (final MessagingException e) {
+			log.fatal("Could not send reminder mail: " + e.getMessage());
+		}
 	}
 
 	/**
@@ -336,6 +433,10 @@ public class MailUtils {
 	 */
 	public void setMessageSource(final MessageSource messageSource) {
 		this.messageSource = messageSource;
+	}
+
+	public void setAbsoluteURLGenerator(URLGenerator absoluteURLGenerator) {
+		this.absoluteURLGenerator = absoluteURLGenerator;
 	}
 
 }

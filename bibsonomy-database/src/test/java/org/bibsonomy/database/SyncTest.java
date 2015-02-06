@@ -59,8 +59,8 @@ import org.junit.Test;
 /**
  * @author wla
  */
-public class SyncTests extends AbstractDatabaseManagerTest {
-    private static final DateTimeFormatter FMT = DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss");
+public class SyncTest extends AbstractDatabaseManagerTest {
+    private static final DateTimeFormatter FMT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
     private static BibTexDatabaseManager bibTexDb;
     private static BookmarkDatabaseManager bookmarkDb;
@@ -138,7 +138,7 @@ public class SyncTests extends AbstractDatabaseManagerTest {
     }
 
     @Test
-    public void getSynchronizationBibTexTest() {
+    public void getSynchronizationPublicationTest() {
         final Class<? extends Resource> resourceType = BibTex.class;
         final ConflictResolutionStrategy strategy = ConflictResolutionStrategy.LAST_WINS;
 

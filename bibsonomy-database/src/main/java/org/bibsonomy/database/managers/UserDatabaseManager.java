@@ -99,7 +99,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.adminDBManager = AdminDatabaseManager.getInstance();
 	}
-
+	
 	/**
 	 * Returns all users.
 	 * 
@@ -157,16 +157,16 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 
 			@Override
 			protected File requestFile() {
-				return fileLogic.getProfilePictureForUser( user.getName() );
+				return fileLogic.getProfilePictureForUser(user.getName());
 			}
 		});
 		
 		/*
-		 * ToDo - Replace this with a more Generic Version
+		 * TODO: Replace this with a more Generic Version
 		 * This fetches all SamlRemoteUserIds (LDAP and OpenId are already fetched through a join with the respective tables in "getUserDetails")
 		 * FIXME: Use another join in getUserDetails (or enable this query only if Saml Authentification is active) 
 		 */
-		for(final SamlRemoteUserId samlRemoteUserId : this.getSamlRemoteUserIds(user.getName(), session)) {
+		for (final SamlRemoteUserId samlRemoteUserId : this.getSamlRemoteUserIds(user.getName(), session)) {
 			user.setRemoteUserId(samlRemoteUserId);
 		}
 		
@@ -408,9 +408,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		 */
 		user.setToClassify(user.getToClassify() == null ? 1 : user.getToClassify());
 		/*
-		 * if it is not a limited user that is to be inserted, set user's default role
+		 * if it is not a limited or groupuser that is to be inserted, set user's default role
 		 */
-		if (!Role.LIMITED.equals(user.getRole())) {
+		if (! (Role.LIMITED.equals(user.getRole()) || Role.GROUPUSER.equals(user.getRole()))) {
 			user.setRole(Role.DEFAULT);
 		}
 		/*
@@ -677,7 +677,12 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	}
 
 
-    private void deletePendingUser(final String username, final DBSession session) {
+	/**
+	 * Delete a pending user.
+	 * @param username
+	 * @param session
+	 */
+    public void deletePendingUser(final String username, final DBSession session) {
         if (username == null) {
             ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "username was null");
         }
@@ -1152,17 +1157,26 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
      * @return name of created user
      */
     public String activateUser(final User user, final DBSession session) {
-    	session.beginTransaction();
     	try {
-	        this.insert("activateUser", user.getName(), session);
-	        this.deletePendingUser(user.getName(), session);
-	        this.insertDefaultWiki(user, session);
-	        session.commitTransaction();
+	    	session.beginTransaction();
+	        this.performActivationSteps(user, session);
+			session.commitTransaction();
     	} finally {
     		session.endTransaction();
     	}
         return user.getName();
     }
+	
+	/**
+	 * Small wrapper to make these steps usable in GroupDatabaseManager.
+	 * @param user
+	 * @param session 
+	 */
+	protected void performActivationSteps(final User user, final DBSession session) {
+		this.insert("activateUser", user.getName(), session);
+		this.deletePendingUser(user.getName(), session);
+		this.insertDefaultWiki(user, session);
+	}
 
     /**
      * Inserts a default wiki for a newly activated user or for a newly
@@ -1208,13 +1222,13 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
      * @return a list of users with the specified activation code (search)
      */
     public List<User> getPendingUserByActivationCode(final String search, final int start, final int end,  final DBSession session) {
-	if (search == null) {
-	    ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Cannot execute query getPendingUserByActivationCode without activation code given!");
-	}
-	final UserParam param = new UserParam();
-	param.setOffset(start);
-	param.setLimit(end);
-	param.setSearch(search);
+		if (search == null) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Cannot execute query getPendingUserByActivationCode without activation code given!");
+		}
+		final UserParam param = new UserParam();
+		param.setOffset(start);
+		param.setLimit(end);
+		param.setSearch(search);
         return this.queryForList("getPendingUserByActivationCode", param, User.class, session);
     }
 
@@ -1228,10 +1242,10 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
      * @return  a list of users with the username
      */
     public List<User> getPendingUserByUsername(final String username, final int start, final int end,  final DBSession session) {
-	final UserParam param = new UserParam();
-	param.setOffset(start);
-	param.setLimit(end);
-	param.setRequestedGroupName(username);
+		final UserParam param = new UserParam();
+		param.setOffset(start);
+		param.setLimit(end);
+		param.setRequestedGroupName(username);
         return this.queryForList("getPendingUserByUsername", param, User.class, session);
     }	
     

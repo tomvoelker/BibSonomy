@@ -156,7 +156,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void removeUserFromGroup() {
 		testDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID);
-		pluginRegistry.onRemoveUserFromGroup("username", 1, this.dbSession);
+		pluginRegistry.onChangeUserMembershipInGroup("username", 1, this.dbSession);
 	}
 
 	/**

@@ -45,6 +45,8 @@ public enum Views implements View {
 	 * query views ****************************************************
 	 */
 
+	
+	
 	/**
 	 * the first page you see when entering the application
 	 */
@@ -105,6 +107,11 @@ public enum Views implements View {
 	 * group page showing all resources of a specified group
 	 */
 	GROUPPAGE("group"),
+
+	/**
+	 * group page showing all resources of a specified group
+	 */
+	GROUPSETTINGSPAGE("groupSettings"),
 
 	/**
 	 * group page showing all resources of a specified group and a given tag or
@@ -302,6 +309,10 @@ public enum Views implements View {
 	 * command.responseString is written withOUT (!) c:out
 	 */
 	AJAX_JSON("ajax/snippetJson"),
+	/**
+	 * json representation of group level permissions
+	 */
+	AJAX_JSON_PERMISSIONS("ajax/jsonGroupLevelPermissions"),
 	/**
 	 * command.responseString is written with c:out
 	 */
@@ -747,8 +758,13 @@ public enum Views implements View {
 	/**
 	 * show bibsonomy3 demo
 	 */
-	BIBSONOMY3("bibsonomy3");
+	BIBSONOMY3("bibsonomy3"),
 
+	/**
+	 * group request page
+	 */
+	GROUPREQUEST("groupRequest");
+	
 	/*
 	 * both bookmarks and publications
 	 */

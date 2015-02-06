@@ -84,6 +84,7 @@
 								<value>value</value>
 								<value>key</value>
 								<value>evaluator</value>
+								<value>groupname</value>
 							</list>
 						</property>
 					</bean>
@@ -116,6 +117,9 @@
 								<value>group.name</value>
 								<value>group.privlevel</value>
 								<value>group.sharedDocuments</value>
+								<value>group.groupRequest.userName</value>
+								<value>group.groupRequest.reason</value>
+								<value>communityPostInspectionPermission</value>
 							</list>
 						</property>
 					</bean>
