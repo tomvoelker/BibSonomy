@@ -71,7 +71,7 @@
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<c:if test="${goldstandardPresent}">
-						<fmt:message key="bibtex.actions.communityPost" var="communityPost"/>
+						<fmt:message key="actions.communityPost" var="communityPost"/>
 						<nav:crumb name="${communityPost}" />
 					</c:if>
 					<nav:crumb name="${mtl:shorten(title, 25)}" active="true" />
