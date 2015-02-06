@@ -819,7 +819,7 @@
  	<rule><!--/[32]/USERNAME -->
 		<name>/history/RSCTYPE/HASH/USER</name>
 		<from>^/+history/+(.+)/+([0-9a-fA-F]{32})/+(.+)$</from>
-		<set type="parameter" name="resourceClass">$1</set>
+		<set type="parameter" name="requestedType">$1</set>
 		<set type="parameter" name="requestedHash">$2</set>
 		<set type="parameter" name="requestedUser">$3</set>
 		<to last="true">/history</to>
@@ -850,7 +850,7 @@
  	<rule>
  		<name>/history/RSCTYPE/HASH</name>
 		<from>^/+history/+(.+)/+([0-9a-fA-F]{32})$</from>
-		<set type="parameter" name="resourceClass">$1</set>
+		<set type="parameter" name="requestedType">$1</set>
 		<set type="parameter" name="requestedHash">$2</set>
 		<to last="true">/history</to>
 	</rule>

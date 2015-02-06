@@ -141,56 +141,40 @@
 
 			<!--+ 
 				| COMMUNITY POST 
-				| TODO: check if community post exists
 				+-->
-			<fmt:message key="bibtex.actions.communityPost" var="communityPost" />
+			<fmt:message key="actions.communityPost.title" var="communityPost" />
 			<li>
-				<a href="${relativeUrlGenerator.getGoldstandardUrlByInterHash(post.resource.interHash)}" title="${fn:escapeXml(communityPost)}">
-					<fmt:message key="bibtex.actions.communityPost" />
+				<a href="${relativeUrlGenerator.getCommunityPublicationUrlByInterHash(post.resource.interHash)}" title="${fn:escapeXml(communityPost)}">
+					<fmt:message key="actions.communityPost" />
 					&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
 				</a>
 			</li>
-		<!--+
-			| HISTORY
-			+-->
-			<!-- 	<c:if test="${empty enableHistory}"> -->
-			<fmt:message key="bibtex.actions.posthistory.title" var="postHistoryTitle" />
-			<c:choose>
-				<c:when test="${command.context.userLoggedIn and (loginUserName eq post.user.name)}">
-					<!-- user is post's owner -->
-					<!-- we need to send the resource type, in order to call the appropriate view later (HistoryBM or HistoryBib) -->
-				 	<li>
-				 		<a href="/history/${rscType}/${post.resource.intraHash}/${post.user.name}" title="${postHistoryTitle}">
-							<!-- <span class="fa fa-list-ol"> </span> -->
+
+			<!--+
+				| HISTORY
+				+-->
+			<li>
+				<fmt:message key="bibtex.actions.posthistory.title" var="postHistoryTitle" />
+				<c:choose>
+					<c:when test="${(command.context.userLoggedIn and (loginUserName eq post.user.name)) or (empty post.user)}">
+						<c:set var="hash" value="${post.resource.interHash}"/>
+						<c:if test="${not empty post.user}">
+							<c:set var="hash" value="${post.resource.intraHash}"/>
+						</c:if>
+						<a href="${relativeUrlGenerator.getHistoryURLByHashAndUserName(hash, post.user.name, false)}" title="${postHistoryTitle}">
 							<fmt:message key="bibtex.actions.posthistory.title" />
 							&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
-				  		</a>
-				  	</li>
-				</c:when>
-				<c:when test="${empty post.user}">
-					<!-- post is a community post -->
-					<!-- we need to send the resource type, in order to call the appropriate view later (HistoryBM or HistoryBib) -->
-				 	<li>
-				 		<a href="/history/goldstandardpublication/${post.resource.interHash}" title="${postHistoryTitle}">
-							<!--  <span class="fa fa-list-ol"> </span> -->
-							<fmt:message key="bibtex.actions.posthistory.title" />
-							&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
-				  		</a>
-				  	</li>
-				</c:when>
-				<c:otherwise>
-					<!-- For signed out users and those who do not own the post we always show the inactive history button -->
-					<fmt:message key="bibtex.actions.posthistory.inactive" var="historyTitle" />
-					<li>
+						</a>
+					</c:when>
+					<c:otherwise>
 						<span class="ilitem" title="${historyTitle}">
-							<!-- <span class="fa fa-list-ol"></span> -->
 							<fmt:message key="bibtex.actions.posthistory.title" />
 							&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
 						</span>
-					</li>
-				</c:otherwise>
-			</c:choose>
-		<!--</c:if>-->
+					</c:otherwise>
+				</c:choose>
+			</li>
+
 			<li class="divider"><!--  --></li>
 			<!--+
 				| RESOURCE LINKS (URL, DOI, BIBTEX, OPEN URL)

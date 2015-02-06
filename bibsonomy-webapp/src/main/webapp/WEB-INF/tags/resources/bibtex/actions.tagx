@@ -116,7 +116,7 @@
 		+-->
 	<fmt:message key="bibtex.actions.community_post" var="communityPost" />
 	
-	<a href="${relativeUrlGenerator.getGoldstandardUrlByInterHash(post.resource.interHash)}" class="item communitypost" title="${fn:escapeXml(communityPost)}">
+	<a href="${relativeUrlGenerator.getCommunityPublicationUrlByInterHash(post.resource.interHash)}" class="item communitypost" title="${fn:escapeXml(communityPost)}">
 		<!-- Keep Me -->
 	</a>
 	<!--+
