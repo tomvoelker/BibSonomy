@@ -69,7 +69,11 @@
 								<jsp:invoke fragment="customPageOptions"/>
 							</c:when>
 							<c:otherwise>
-								<div class="pull-right btn-group btn-group-xs dropdown-align-right" style="margin-bottom: 2px;">
+								<div class="pull-right btn-group dropdown-align-right" style="margin-bottom: 2px;">
+									<bsform:button gear="${true}" value="" dropdown="${true}" size="xsmall" style="defaultStyle" dataToggle="dropdown" />
+
+
+<!-- 								<div class="pull-right btn-group btn-group-xs dropdown-align-right" style="margin-bottom: 2px;">
 									<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 									<c:set var="escapedRequestPathAndQuery" value="${fn:escapeXml(requPathAndQuery)}" />
 									
@@ -77,18 +81,18 @@
 										<c:when test="${showPublication}">
 											<fmt:message key="post.meta.show_bookmarks_only" var="showBookmarksOnly"/>
 											<a title="${showBookmarksOnly}" class="btn btn-default" href="${mtl:setParam(escapedRequestPathAndQuery, 'resourcetype', 'bookmark')}">
-												<span class="fa fa-expand"><!-- KEEP ME --></span>
+												<span class="fa fa-expand"> --><!-- KEEP ME --><!-- </span>
 											</a>
 										</c:when>
 										<c:otherwise>
 											<fmt:message key="navi.all" var="showAll" />
 											<a title="${showAll}" class="btn btn-default" href="${mtl:setParam(escapedRequestPathAndQuery, 'resourcetype', 'all')}">
-												<span class="fa fa-compress"><!-- KEEP ME --></span>
+												<span class="fa fa-compress">--><!-- KEEP ME --><!-- </span>
 											</a>
 										</c:otherwise>
-									</c:choose>
+									</c:choose> -->
 									
-									<bsform:button size="xsmall" style="defaultStyle" gear="true" dropdown="true" value="" dataToggle="dropdown"/>
+<!-- 									<bsform:button size="xsmall" style="defaultStyle" gear="true" dropdown="true" value="" dataToggle="dropdown"/> -->
 									<ul class="dropdown-menu list-options">
 				
 										<rc:actions 
