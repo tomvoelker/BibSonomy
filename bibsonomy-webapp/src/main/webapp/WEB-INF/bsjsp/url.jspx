@@ -108,17 +108,12 @@
 		
 		<!--+
 			+ content heading
-			+ -->
+			+
 		<jsp:attribute name="content">
 	<div id="goldstandard">
 			<h1 class="content-header"><fmt:message key="community.page"/></h1>
 			<div class="title">
 				<div class="media">
-					<!-- 
-					<span class="pull-left">
-						<span style="font-size: 64px;" class="fa fa-user">&amp;nbsp;</span>
-					</span>
-					-->
 
 					<div class="media-body" id="titletext">
 						<div class="pull-right"><gbook:actions post="${post}" /></div>
@@ -129,13 +124,42 @@
 				</div>		
 			</div>
 			<div style="border-top: 1px #cccccc solid;">
-				<!--  -->
-			</div> <!-- border -->	
+			</div>
 		
 			<div id="fscontent" style="margin-top: 10px;">
 				<discussion:singleResourceDiscussionLayout resource="${bookmark}" discussionItems="${command.discussionItems}" postUserName="${command.postOwner}"/>
 			</div>
 			</div>
+		</jsp:attribute>
+-->
+		<jsp:attribute name="content">
+			<!-- COMMUNITY POST -->
+			<c:if test="${not goldstandardPresent}">
+				<c:set var="post" value="${command.bookmark.list[0]}" />
+
+				<fmt:message key="actions.community_post.create" var="goldTitle" />
+				<h1 class="content-header"><c:out value="${pageTitle}" /></h1>
+				<div class="text-center">	
+					<div class="lead">
+						<p><fmt:message key="actions.community_post.no" /></p> 
+					</div>
+					<c:if test="${not empty command.context.loginUser.name}">
+						<c:url var="editGoldStandardLink" value="/editGoldStandardBookmark">
+						<c:param name="hash" value="${post.resource.intraHash}" />
+						<c:param name="user" value="${post.user.name}" />
+						<c:param name="editBeforeSaving" value="true" />
+					</c:url>
+						<a class="btn btn-primary" href="${editGoldStandardLink}">${goldTitle}</a>
+					</c:if>
+					<hr />
+				</div>
+
+				<!-- invokes discussion forms -->
+				<c:if test="${not goldstandardPresent}">
+					<discussion:discussion loginUser="${command.context.loginUser}" resource="${bookmark}" discussionItems="${command.discussionItems}"  postUserName="${command.postOwner}"/>
+				</c:if>
+				<input type="hidden" id="gs_present" value="${goldstandardPresent}"/>
+			</c:if>
 		</jsp:attribute>
 		
 		

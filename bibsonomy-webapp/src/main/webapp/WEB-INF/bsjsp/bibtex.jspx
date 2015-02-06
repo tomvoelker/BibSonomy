@@ -16,7 +16,7 @@
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	
+
 	<c:set var="goldstandardPresent" value="${not empty command.goldStandardPublications.list}" />
 	<c:set var="publication" value="${command.bibtex.list[0].resource}" />
 
@@ -98,11 +98,11 @@
 							<c:param name="editBeforeSaving" value="true" />
 						</c:url>
 						
-						<fmt:message key="bibtex.actions.community_post.create" var="goldTitle" />
+						<fmt:message key="actions.community_post.create" var="goldTitle" />
 						<h1 class="content-header"><c:out value="${pageTitle}" /></h1>
 						<div class="text-center">	
 							<div class="lead">
-								<p><fmt:message key="bibtex.actions.community_post.no" /></p> 
+								<p><fmt:message key="actions.community_post.no" /></p> 
 							</div>
 							
 							<a class="btn btn-primary" href="${editGoldStandardLink}">${goldTitle}</a>
