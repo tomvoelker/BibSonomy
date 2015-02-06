@@ -92,7 +92,7 @@ public class URLGenerator {
 	private static final String AUTHOR_PREFIX = "author";
 	private static final String BIBTEXEXPORT_PREFIX = "bib";
 	private static final String BIBTEXKEY_PREFIX = "bibtexkey";
-	private static final String BOOKMARK_PREFIX = "url";
+	public static final String BOOKMARK_PREFIX = "url";
 	private static final String CONCEPTS_PREFIX = "concepts";
 	private static final String CONCEPT_PREFIX = "concept";
 	private static final String FOLLOWERS_PREFIX = "followers";
