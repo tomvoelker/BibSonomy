@@ -45,8 +45,6 @@ public enum Views implements View {
 	 * query views ****************************************************
 	 */
 
-	
-	
 	/**
 	 * the first page you see when entering the application
 	 */
@@ -76,8 +74,8 @@ public enum Views implements View {
 	 * the user specific friend-of-a-friend (FOAF) project output
 	 */
 	FOAF("foaf"),
-	
-	/** 
+
+	/**
 	 * before we share api key and user name the user must allow it
 	 */
 	DEVICE_AUTHORIZE("actions/user/allowDeviceSupport"),
@@ -158,12 +156,12 @@ public enum Views implements View {
 	 * concept page shows all suptags of an requested tag
 	 */
 	CONCEPTPAGE("concept"),
-	
+
 	/**
 	 * friend overview page
 	 */
 	FRIEND_OVERVIEW("friendOverview"),
-	
+
 	/**
 	 * friends page show all tags whose are viewable for friends by a friend of
 	 * you
@@ -180,42 +178,23 @@ public enum Views implements View {
 	 * url page, displays all bookmarks for a given url hash
 	 */
 	URLPAGE("url"),
-	
+
 	/**
 	 * publication page shows all publications with the given inter-/intrahash
 	 * TODO: rename to PUBLICATION_PAGE
 	 */
 	BIBTEXPAGE("bibtex"),
-	
+
 	/**
 	 * details of a publication
 	 * TODO: rename to PUBLICATION_DETAILS
 	 */
 	BIBTEXDETAILS("bibtexdetails"),
-	
-	/**
-	 * TODO: adapt to file name pattern and move into subfolder history
-	 * PostHistory-Page. page with post history
-	 */
-	HISTORYBIB("HistoryBib"),
 
 	/**
-	 * TODO: adapt to file name pattern and move into subfolder history History
-	 * Page for GoldStandard BibTex. page with post history
+	 * PostHistory-Page. page with post history
 	 */
-	HISTORYGOLDBIB("HistoryGSBib"),
-	
-	/**
-	 * TODO: adapt to file name pattern and move into subfolder history History
-	 * Page for GoldStandard bookmark. page with post history
-	 */
-	HISTORYGOLDBM("HistoryGSBm"),
-	
-	/**
-	 * TODO: adapt to file name pattern and move into subfolder history History
-	 * Page for Bookmarks. page with post history
-	 */
-	HISTORYBM("HistoryBM"),
+	HISTORY("history"),
 
 	/**
 	 * all the posts the user has picked in his clipboard
@@ -358,7 +337,7 @@ public enum Views implements View {
 	AJAX_ERRORS("ajax/errors"),
 
 	/* *****************************************************
-	 * ADMIN views 
+	 * ADMIN views
 	 */
 	/**
 	 * spam admin page
@@ -390,7 +369,7 @@ public enum Views implements View {
 	ADMIN("actions/admin/index"),
 
 	/* *****************************************************
-	 * action views 
+	 * action views
 	 */
 
 	/**
@@ -413,7 +392,6 @@ public enum Views implements View {
 	 */
 	ACTIVATE_USER_SUCCESS("actions/register/user_activated"),
 
-
 	/**
 	 * When admins successfully register a user, this page shows them the
 	 * details.
@@ -424,9 +402,10 @@ public enum Views implements View {
 	 * OpenID register form prefilled with information from the OpenID provider
 	 */
 	REGISTER_USER_OPENID_PROVIDER_FORM("actions/register/openid/provider_form"),
-	
+
 	/**
-	 * SAML register form prefilled with information from SAML (Shibboleth) IdP server
+	 * SAML register form prefilled with information from SAML (Shibboleth) IdP
+	 * server
 	 */
 	REGISTER_USER_SAML_FORM("actions/register/saml/profile_form"),
 
@@ -434,7 +413,7 @@ public enum Views implements View {
 	 * activation page allowing limited users to become unlimited users
 	 */
 	LIMITED_ACCOUNT_ACTIVATION("actions/register/saml/limitedAccountActivation"),
-	
+
 	/**
 	 * LDAP register form prefilled with information from LDAP server
 	 * 
@@ -527,7 +506,7 @@ public enum Views implements View {
 	EDIT_TAGS("actions/edit/edittags"),
 
 	/* *****************************************************
-	 * OpenSocial views 
+	 * OpenSocial views
 	 */
 	/**
 	 * a plain text OAuth response message (e.g. "/oauth/requestToken")
@@ -608,9 +587,9 @@ public enum Views implements View {
 	 * JSON for both bookmarks and publications
 	 */
 	JSON("export/json"),
-	
+
 	/**
-	 * HTML-rendered posts lists for both bookmarks and publications 
+	 * HTML-rendered posts lists for both bookmarks and publications
 	 */
 	POSTS("export/posts"),
 
@@ -629,10 +608,10 @@ public enum Views implements View {
 	 * list of some of our export formats in XML.
 	 */
 	UNAPI_SUPPORTED_FORMATS("export/bibtex/unapi"),
-	
+
 	/**
-	 * Provides a "raw" output of only the post list for embedding into other 
-	 * pages (e.g., using iframes). 
+	 * Provides a "raw" output of only the post list for embedding into other
+	 * pages (e.g., using iframes).
 	 */
 	EMBED("export/embed"),
 
@@ -662,7 +641,7 @@ public enum Views implements View {
 	 * embeddable version of the export page dropdown list
 	 */
 	EXPORT_EMBEDDED("exportEmbedded"),
-	
+
 	/**
 	 * export layouts in a JSON object
 	 */
@@ -684,7 +663,7 @@ public enum Views implements View {
 	 * show button-page view
 	 */
 	BUTTONS("buttons"),
-	
+
 	/**
 	 * show getting started page view
 	 */
@@ -705,7 +684,7 @@ public enum Views implements View {
 	 * 
 	 */
 	BOOTSTRAP_DEMO("bootstrapDemo"),
-	
+
 	/*
 	 * Error pages
 	 */
@@ -751,10 +730,11 @@ public enum Views implements View {
 	DISCUSSEDPAGE("discussions"),
 
 	/**
-	 * Recommended posts page. Showing recommendations for bibtexs and bookmarks.
+	 * Recommended posts page. Showing recommendations for bibtexs and
+	 * bookmarks.
 	 */
 	RECOMMENDEDPAGE("recommended"),
-	
+
 	/**
 	 * show bibsonomy3 demo
 	 */
@@ -764,7 +744,7 @@ public enum Views implements View {
 	 * group request page
 	 */
 	GROUPREQUEST("groupRequest");
-	
+
 	/*
 	 * both bookmarks and publications
 	 */
@@ -826,7 +806,7 @@ public enum Views implements View {
 	 * ONLY bibtex posts
 	 * 
 	 * @param format
-	 *            the name of the format
+	 *        the name of the format
 	 * @return true if the corresponding view displays only bibtex posts, false
 	 *         otherwise
 	 */
@@ -839,7 +819,7 @@ public enum Views implements View {
 	 * ONLY bookmark posts
 	 * 
 	 * @param format
-	 *            the name of the format
+	 *        the name of the format
 	 * @return true if the corresponding view displays only bookmark posts,
 	 *         false otherwise
 	 */
@@ -852,33 +832,77 @@ public enum Views implements View {
 	 * application via e.g. ?format=rss)
 	 * 
 	 * @param format
-	 *            the name of the format
+	 *        the name of the format
 	 * @return the corresponding view for a given format
 	 */
 	public static Views getViewByFormat(final String format) {
-		if (FORMAT_STRING_BIB.equals(format) || FORMAT_STRING_BIBTEX.equals(format)) return BIBTEX;
-		if (FORMAT_STRING_JSON.equals(format)) return JSON;
-		if (FORMAT_STRING_POSTS.equals(format)) return POSTS;
-		if (FORMAT_STRING_BURST.equals(format)) return BURST;
-		if (FORMAT_STRING_RSS.equals(format)) return RSS;
-		if (FORMAT_STRING_PUBLRSS.equals(format)) return PUBLRSS;
-		if (FORMAT_STRING_SWRC.equals(format)) return SWRC;
-		if (FORMAT_STRING_PUBL.equals(format)) return PUBL;
-		if (FORMAT_STRING_ENDNOTE.equals(format)) return ENDNOTE;
-		if (FORMAT_STRING_APARSS.equals(format)) return APARSS;
-		if (FORMAT_STRING_XML.equals(format)) return XML;
-		if (FORMAT_STRING_BOOKPUBL.equals(format)) return BOOKPUBL;
-		if (FORMAT_STRING_BOOKBIB.equals(format)) return BOOKBIB;
-		if (FORMAT_STRING_PUBLRSSN.equals(format)) return PUBLRSSNEPOMUK;
-		if (FORMAT_STRING_LAYOUT.equals(format)) return LAYOUT;
-		if ("batcheditbib".equals(format)) return BATCHEDITBIB;
-		if ("batchediturl".equals(format)) return BATCHEDITURL;
-		if ("tagcloud".equals(format)) return AJAX_TAGCLOUD;
-		if (FORMAT_STRING_CSV.equals(format)) return CSV;
-		if (FORMAT_STRING_CSL.equals(format)) return CSL;
-		if (FORMAT_STRING_EMBED.equals(format)) return EMBED;
-		if (FORMAT_STRING_OEMBED.equals(format)) return OEMBED;
-		
+		if (FORMAT_STRING_BIB.equals(format) || FORMAT_STRING_BIBTEX.equals(format)) {
+			return BIBTEX;
+		}
+		if (FORMAT_STRING_JSON.equals(format)) {
+			return JSON;
+		}
+		if (FORMAT_STRING_POSTS.equals(format)) {
+			return POSTS;
+		}
+		if (FORMAT_STRING_BURST.equals(format)) {
+			return BURST;
+		}
+		if (FORMAT_STRING_RSS.equals(format)) {
+			return RSS;
+		}
+		if (FORMAT_STRING_PUBLRSS.equals(format)) {
+			return PUBLRSS;
+		}
+		if (FORMAT_STRING_SWRC.equals(format)) {
+			return SWRC;
+		}
+		if (FORMAT_STRING_PUBL.equals(format)) {
+			return PUBL;
+		}
+		if (FORMAT_STRING_ENDNOTE.equals(format)) {
+			return ENDNOTE;
+		}
+		if (FORMAT_STRING_APARSS.equals(format)) {
+			return APARSS;
+		}
+		if (FORMAT_STRING_XML.equals(format)) {
+			return XML;
+		}
+		if (FORMAT_STRING_BOOKPUBL.equals(format)) {
+			return BOOKPUBL;
+		}
+		if (FORMAT_STRING_BOOKBIB.equals(format)) {
+			return BOOKBIB;
+		}
+		if (FORMAT_STRING_PUBLRSSN.equals(format)) {
+			return PUBLRSSNEPOMUK;
+		}
+		if (FORMAT_STRING_LAYOUT.equals(format)) {
+			return LAYOUT;
+		}
+		if ("batcheditbib".equals(format)) {
+			return BATCHEDITBIB;
+		}
+		if ("batchediturl".equals(format)) {
+			return BATCHEDITURL;
+		}
+		if ("tagcloud".equals(format)) {
+			return AJAX_TAGCLOUD;
+		}
+		if (FORMAT_STRING_CSV.equals(format)) {
+			return CSV;
+		}
+		if (FORMAT_STRING_CSL.equals(format)) {
+			return CSL;
+		}
+		if (FORMAT_STRING_EMBED.equals(format)) {
+			return EMBED;
+		}
+		if (FORMAT_STRING_OEMBED.equals(format)) {
+			return OEMBED;
+		}
+
 		throw new BadRequestOrResponseException("Invalid format specification '" + format + "'");
 	}
 }

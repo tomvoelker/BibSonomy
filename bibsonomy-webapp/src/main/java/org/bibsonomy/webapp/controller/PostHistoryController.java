@@ -85,15 +85,7 @@ public class PostHistoryController<R extends Resource> extends SingleResourceLis
 		// redirect to the correct view
 		if ("html".equals(format)) {
 			this.endTiming();
-			if (BibTex.class.equals(resourceClass)) {
-				return Views.HISTORYBIB;
-			} else if (GoldStandardPublication.class.equals(resourceClass)) {
-				return Views.HISTORYGOLDBIB;
-			} else if (GoldStandardBookmark.class.equals(resourceClass)) {
-				return Views.HISTORYGOLDBM;
-			} else {
-				return Views.HISTORYBM;
-			}
+			return Views.HISTORY;
 		}
 
 		this.endTiming();
