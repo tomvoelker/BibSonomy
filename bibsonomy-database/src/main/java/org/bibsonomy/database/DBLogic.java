@@ -1340,7 +1340,7 @@ public class DBLogic implements LogicInterface {
 			case DECLINE_JOIN_REQUEST:
 				final GroupMembership currentMembership = this.groupDBManager.getPendingMembershipForUserAndGroup(requestedUserName, group.getName(), session);
 
-				if (!present(currentMembership) || !currentMembership.getGroupRole().isPendingRole()) {
+				if (!present(currentMembership) || !GroupRole.PENDING_GROUP_ROLES.contains(currentMembership.getGroupRole())) {
 					throw new AccessDeniedException("You are not allowed to decline this request/invitation");
 				}
 				if (GroupRole.INVITED.equals(currentMembership.getGroupRole())) {
@@ -2433,7 +2433,7 @@ public class DBLogic implements LogicInterface {
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = this.openSession();
 		try {
-			return this.adminDBManager.getClassifiedUserCount(classifier, status, interval, session);
+			return this.adminDBManager.getClassifiedUserCount(classifier, status, interval, session).intValue();
 		} finally {
 			session.close();
 		}
@@ -2508,11 +2508,8 @@ public class DBLogic implements LogicInterface {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.bibsonomy.model.logic.LogicInterface#getUsernameByRemoteUserId(org
-	 * .bibsonomy.model.user.remote.RemoteUserId)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getUsernameByRemoteUserId(org.bibsonomy.model.user.remote.RemoteUserId)
 	 */
-
 	@Override
 	public String getUsernameByRemoteUserId(final RemoteUserId remoteUserId) {
 		final DBSession session = this.openSession();

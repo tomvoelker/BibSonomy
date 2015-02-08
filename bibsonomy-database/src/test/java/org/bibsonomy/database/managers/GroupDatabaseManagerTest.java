@@ -187,12 +187,13 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		}
 
 		// HIDDEN group
-		// "testuser1", a member of "testgroup2", can't see other members
+		// "testuser1", a member of "testgroup2", can't see other members, but herself
 		// "testuser2", not a member of "testgroup2", can't see members too
-		for (final String username : new String[] { "testuser1", "testuser2" }) {
-			final Group hiddenGroup = groupDb.getGroupMembers(username, "testgroup2", false, this.dbSession);
-			assertEquals(0, hiddenGroup.getMemberships().size());
-		}
+		final Group hiddenGroup = groupDb.getGroupMembers("testuser1", "testgroup2", false, this.dbSession);
+		assertEquals(1, hiddenGroup.getMemberships().size());
+		assertThat(hiddenGroup.getMemberships().get(0).getUser().getName(), equalTo("testuser1"));
+		final Group hiddenGroup2 = groupDb.getGroupMembers("testuser2", "testgroup2", false, this.dbSession);
+		assertEquals(0, hiddenGroup2.getMemberships().size());
 
 		// MEMBER (only) group
 		// "testuser1", a member of "testgroup3", can see all members (including

@@ -188,7 +188,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			group = GroupUtils.buildFriendsGroup();
 			final List<GroupMembership> mss = new LinkedList<>();
 			for (final User u : this.userDb.getUserRelation(authUser, UserRelation.OF_FRIEND, null, session)) {
-				mss.add(new GroupMembership(u, GroupRole.USER, true));
+				mss.add(new GroupMembership(u, GroupRole.USER, false));
 			}
 			group.setMemberships(mss);
 			return group;
@@ -234,9 +234,21 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			// only a group admins or moderators may always see the group
 			// members
 			final GroupMembership groupMembershipForUser = this.getGroupMembershipForUser(authUser, group, session);
-			if (!present(groupMembershipForUser) || !groupMembershipForUser.getGroupRole().isPrivilegedRole()) {
-				group.setMemberships(Collections.<GroupMembership> emptyList());
+			
+			final List<GroupMembership> groupMemberships;
+			if (present(groupMembershipForUser)) {
+				if (groupMembershipForUser.getGroupRole().hasRole(GroupRole.MODERATOR)) {
+					// user is at least moderator, show all members of this group
+					groupMemberships = group.getMemberships();
+				} else {
+					// user is member of this group, let her see her membership
+					groupMemberships = Collections.singletonList(groupMembershipForUser);
+				}
+			} else {
+				// user is not a member of this group, so the list is hidden
+				groupMemberships = Collections.emptyList();
 			}
+			group.setMemberships(groupMemberships);
 			break;
 		case PUBLIC:
 			// ignore

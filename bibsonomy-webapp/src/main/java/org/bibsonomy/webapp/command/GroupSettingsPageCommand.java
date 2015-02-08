@@ -63,7 +63,10 @@ public class GroupSettingsPageCommand extends TabsCommand<Object> {
 	private String realname;
 	private URL homepage;
 	private String description;
+	
+	// TODO should be Privlevel type
 	private int privlevel;
+	// TODO: boolean type
 	private int sharedDocuments;
 
 	// specific settings for the group user

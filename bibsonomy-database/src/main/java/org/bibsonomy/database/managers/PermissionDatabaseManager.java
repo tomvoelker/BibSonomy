@@ -85,7 +85,6 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * @param loginUser
 	 * @param start
-	 *        TODO: unused
 	 * @param end
 	 * @param itemType
 	 */
@@ -451,15 +450,16 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param loginUser the loginUser
 	 * @param groupName a group
 	 * @param minimumRole the minimum group role
-	 * @return true, if the permissions of the user in the given group satisfy
+	 * @return <code>true</code>, if the permissions of the user in the given group satisfy
 	 *         the minimum group role
 	 */
 	public boolean hasGroupRoleOrHigher(final User loginUser, final String groupName, final GroupRole minimumRole) {
-		for (final Group g : loginUser.getGroups()) {
-			if (g.getName().equals(groupName)) {
-				final GroupRole actualRole = GroupUtils.getGroupMembershipForUser(g, loginUser.getName(), true).getGroupRole();
-
-				return actualRole.getRole() <= minimumRole.getRole();
+		for (final Group group : loginUser.getGroups()) {
+			if (group.getName().equals(groupName)) {
+				final GroupRole actualRole = GroupUtils.getGroupMembershipForUser(group, loginUser.getName(), true).getGroupRole();
+				if (present(actualRole)) {
+					return actualRole.hasRole(minimumRole);
+				}
 			}
 		}
 
