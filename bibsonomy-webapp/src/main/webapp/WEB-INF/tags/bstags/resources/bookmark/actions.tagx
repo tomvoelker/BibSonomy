@@ -113,87 +113,41 @@
 		<button class="btn btn-default btn-small dropdown-toggle" data-toggle="dropdown">
 			<span class="caret"><!-- KEEP ME --></span>
 		</button>
+
 		<ul class="dropdown-menu" style="min-width: 230px;">
+
 			<!--+
-				| ADMIN ACTIONS (COMMUNITY POST)
+				| COMMUNITY POST
 				+ -->
-			<!-- TODO: When this icon is made visible for non admins, change c:if userLoggedIn to c:choose and display inactive icon for signed out users -->
-			<c:if test="${command.context.userLoggedIn}">
-				<!-- COMMUNITY POST -->
-				<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
-					<c:url var="editGoldStandardLink" value="/editGoldStandardBookmark">
-						<c:param name="hash" value="${post.resource.intraHash}" />
-						<c:param name="user" value="${post.user.name}" />
-						<c:param name="editBeforeSaving" value="true" />
-					</c:url>
-		
-					<fmt:message key="bibtex.actions.gold" var="goldTitle" />
-					<li>
-						<a href="${editGoldStandardLink}" title="${goldTitle}">
-							<fmt:message key="bibtex.actions.gold" />
-							&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
-						</a>
-					</li>
-				</c:if>
-			</c:if>	
-			
-		<!-- 	<c:if test="${empty enableHistory}"> -->
-			<fmt:message key="bookmark.actions.posthistory.title" var="postHistoryTitle" />
-			<c:choose>
-				<c:when test="${command.context.userLoggedIn and (loginUserName eq post.user.name)}">
-					<!-- user is post's owner -->
-					<!-- we need to send the resource type, in order to call the appropriate view later (HistoryBM or HistoryBib) -->
-					<li>
-						<a href="/history/${rscType}/${post.resource.intraHash}/${post.user.name}" title="${postHistoryTitle}">
+			<li>
+				<fmt:message key="actions.communityPost.title" var="communityPost" />
+				<a href="${relativeUrlGenerator.getCommunityBookmarkUrlByInterHash(post.resource.interHash)}" title="${fn:escapeXml(communityPost)}">
+					<fmt:message key="actions.communityPost" />
+					&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
+				</a>
+			</li>
+
+			<!--+
+				| HISTORY
+				+ -->
+			<li>
+				<fmt:message key="bookmark.actions.posthistory.title" var="postHistoryTitle" />
+				<c:choose>
+					<c:when test="${(command.context.userLoggedIn and (loginUserName eq post.user.name)) or (empty post.user)}">
+						<a href="${relativeUrlGenerator.getHistoryURLByHashAndUserName(post.resource.interHash, post.user.name, true)}" title="${postHistoryTitle}">
 							<fmt:message key="bookmark.actions.posthistory.title" />
 							&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
 						</a>
-					</li>
-				</c:when>
-				<c:when test="${empty post.user}">
-					<!-- post is a community post -->
-					<!-- we need to send the resource type, in order to call the appropriate view later (HistoryBM or HistoryBib) -->
-					<li>
-						<a href="/history/goldstandardbookmark/${post.resource.interHash}" title="${postHistoryTitle}">
-							<fmt:message key="bookmark.actions.posthistory.title" />
-							&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
-						</a>
-					</li>
-				</c:when>
-				<c:otherwise>
-					<!-- For signed out users and those who do not own the post we always show the inactive history button -->
-					<li>
+					</c:when>
+					<c:otherwise>
 						<span class="ilitem" title="${historyTitle}">
 							<fmt:message key="bookmark.actions.posthistory.title" />
 							&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
 						</span>
-					</li>
-				</c:otherwise>
-			</c:choose>
-		<!--</c:if>-->
+					</c:otherwise>
+				</c:choose>
+			</li>
 
 		</ul>
-
-
-		<!--+
-			| ADMIN ACTIONS (COMMUNITY POST)
-			+ -->
-		<!-- TODO: When this icon is made visible for non admins, change c:if userLoggedIn to c:choose and display inactive icon for signed out users -->
-		<c:if test="${command.context.userLoggedIn}">
-			<!-- COMMUNITY POST -->
-			<!--<c:if test="${command.context.loginUser.role eq 'ADMIN'}">-->
-				<c:url var="editGoldStandardLink" value="/editGoldStandardBookmark">
-					<c:param name="hash" value="${post.resource.intraHash}" />
-					<c:param name="user" value="${post.user.name}" />
-					<c:param name="editBeforeSaving" value="true" />
-				</c:url>
-	
-				<fmt:message key="bibtex.actions.gold" var="goldTitle" />
-				<a class="${buttonClasses}" href="${editGoldStandardLink}" title="${goldTitle}">
-					<span style="font-size:90%;" class="glyphicon glyphicon-user"><!--  --></span>
-					<span class="glyphicon glyphicon-user" style="margin-left:-4px; font-size: 70%;"><!--  --></span>
-				</a>
-			<!--</c:if>-->
-		</c:if>	
 	</div>
 </jsp:root>

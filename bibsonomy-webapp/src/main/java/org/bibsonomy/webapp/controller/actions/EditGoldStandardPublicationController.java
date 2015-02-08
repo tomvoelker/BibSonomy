@@ -58,7 +58,7 @@ import recommender.core.interfaces.model.TagRecommendationEntity;
  * @author dzo
  */
 public class EditGoldStandardPublicationController extends AbstractEditPublicationController<PostPublicationCommand> {
-
+	private static final int ADMIN = 0;
 	@Override
 	protected View getPostView() {
 		return Views.EDIT_GOLD_STANDARD_PUBLICATION;
@@ -148,10 +148,14 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 	protected void preparePost(EditPostCommand<BibTex> command, Post<BibTex> post) {
 		
 		super.preparePost(command, post);
-		if (command.isApproved()){
-			post.setApproved(1);
-		}else{
-			post.setApproved(0);
+		User loginUser = command.getContext().getLoginUser();
+		
+		if(loginUser.getRole().getRole() == ADMIN){
+			if (command.isApproved()){
+				post.setApproved(1);
+			}else{
+				post.setApproved(0);
+			}
 		}
 		
 	}

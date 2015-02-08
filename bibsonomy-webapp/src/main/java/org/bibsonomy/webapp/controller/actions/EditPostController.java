@@ -884,7 +884,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param command
 	 * @param post
 	 */
-	void initRelevantForTags(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post) {
+	private void initRelevantForTags(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post) {
 		final Set<Tag> tags = post.getTags();
 		final List<Group> groups = command.getContext().getLoginUser().getGroups();
 		final List<String> relevantGroups = command.getRelevantGroups();

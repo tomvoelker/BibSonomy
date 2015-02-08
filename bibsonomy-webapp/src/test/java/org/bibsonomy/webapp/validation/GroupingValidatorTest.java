@@ -70,7 +70,7 @@ public class GroupingValidatorTest {
 		/*
 		 * test same with private
 		 */
-		command.setAbstractGrouping(GroupUtils.getPrivateGroup().getName());
+		command.setAbstractGrouping(GroupUtils.buildPrivateGroup().getName());
 		
 		errors = this.validate(command);
 		assertEquals(1, errors.getFieldErrorCount("groups"));

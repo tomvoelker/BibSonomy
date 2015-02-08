@@ -283,7 +283,7 @@
 													<input type="checkbox" id="CurrEntryCheckbox" class="invisible" checked="checked"/>
 												</c:otherwise>
 											</c:choose>
-											<strong>${diffEntry.key}</strong>
+											<strong><fmt:message key="post.resource.${diffEntry.key}"/></strong>
 											<c:out value=": "/>
 											${diffEntry.value}
 											<br/>

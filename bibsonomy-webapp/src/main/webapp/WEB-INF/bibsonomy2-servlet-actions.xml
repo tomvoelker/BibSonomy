@@ -64,7 +64,7 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/join_group">
+				<entry key="/joinGroup">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="joinGroupController"/>
 						<property name="allowedFields">
@@ -77,18 +77,6 @@
 								<!-- for recaptcha -->
 								<value>recaptcha_response_field</value>
 								<value>recaptcha_challenge_field</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
-				<entry key="/addUserToGroup">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="updateGroupSettingsController"/>
-						<property name="allowedFields">	
-							<list>
-								<value>addUserToGroup</value>
-								<value>groupName</value>
-								<value>ckey</value>
 							</list>
 						</property>
 					</bean>
@@ -413,7 +401,7 @@
 								<value>post.resource.annote</value>
 								<value>post.resource.address</value>
 								<value>post.resource.key</value>
-																
+		
 								<value>tags</value>
 								<value>url</value>
 								<value>description</value>
@@ -451,6 +439,8 @@
 								<value>download</value>
 								<value>urlGenerator</value>
 								<value>skipDummyValues</value>
+								<!-- used for metadata plugin -->
+								<value>post.copyIntraHash</value>
 								
 								<value>saveAndRate</value>
 								<value>approved</value>
@@ -628,20 +618,41 @@
 					</bean>
 				</entry>
 				
-				<!--  update the profile of a user  -->
-				<entry key="/updateGroupSettings">
+				<!--  update the profile of a group  -->
+				<entry key="/updateGroup">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="updateGroupSettingsController"/>
+						<property name="controllerBeanName" value="updateGroupController"/>
 						<property name="allowedFields">
 							<list>
 								<value>ckey</value>
-								<value>userGroup.*</value>
 								<value>privlevel</value>
+								<value>realname</value>
 								<value>sharedDocuments</value>
-								<value>action</value>
+								<value>groupname</value>
+								<value>username</value>
+								<value>homepage</value>
+								<value>operation</value>
+								<value>groupRole</value>
+								<value>group.name</value>
+								<value>group.realname</value>
+								<value>group.description</value>
+								<value>group.groupRequest.reason</value>
 								<value>group.publicationReportingSettings.reportingMailAddress</value>
 								<value>group.publicationReportingSettings.reportingMailTemplate</value>
 								<value>group.publicationReportingSettings.externalReportingUrl</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/grouprequest">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="groupRequestController"/>
+						<property name="allowedFields">
+							<list>
+								<value>ckey</value>
+								<value>group.name</value>
+								<value>group.description</value>
+								<value>group.groupRequest.reason</value>
 							</list>
 						</property>
 					</bean>
@@ -671,7 +682,6 @@
 		<value>post.tags</value>
 		<value>post.resource.title</value>
 		<value>post.description</value>
-		
 		<value>post.date</value> <!-- only allowed for DBLP and used by DBLP updater -->
 		<value>tags</value>
 		<value>url</value>
@@ -735,8 +745,7 @@
 		<value>post.resource.note</value>
 		<value>post.resource.annote</value>
 		<value>post.resource.address</value>
-		<value>post.resource.key</value>	
-			
+		<value>post.resource.key</value>
 		<value>tags</value>
 		<value>url</value>
 		<value>description</value>
@@ -1092,9 +1101,23 @@
 	<!-- Handles the settings update of a user -->
 	<bean id="updateUserSettingsController" class="org.bibsonomy.webapp.controller.actions.UpdateUserSettingsController" scope="request" parent="settingsPageController" />
 	
-	<!-- Handles the settings update of a group-user -->
-	<bean id="updateGroupSettingsController" class="org.bibsonomy.webapp.controller.actions.GroupSettingsController" scope="request">
-		<property name="logic" ref="logic"/>
+	<!-- Handles the settings update of a group -->
+	<bean id="updateGroupController" class="org.bibsonomy.webapp.controller.actions.UpdateGroupController" scope="request">
+		<property name="logic" ref="logic" />
+		<property name="requestLogic" ref="requestLogic" />
+		<!-- to send registration mails -->
+		<property name="mailUtils" ref="mailUtils"/>
+		<!-- to get the mail address for the users -->
+		<property name="adminLogic" ref ="adminLogic" />
+	</bean>
+	
+	<!-- Group request page -->
+	<bean id="groupRequestController" class="org.bibsonomy.webapp.controller.GroupRequestController" scope="request">
+		<property name="logic" ref="logic" />
+		<property name="adminLogic" ref ="adminLogic" />
+		<property name="mailer" ref="mailUtils" />
+		<property name="requestLogic" ref="requestLogic" />
+		<property name="groupCreationMode" value="${project.groupcreationmode}" />
 	</bean>
 	
 	<!-- Handles the profile update of a user -->

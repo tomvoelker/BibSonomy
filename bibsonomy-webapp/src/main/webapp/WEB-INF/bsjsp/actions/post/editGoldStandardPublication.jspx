@@ -8,7 +8,7 @@
     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
   
     <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
- 
+  
 	<layout:editGoldStandardPostLayout command="${command}" requPath="${requPath}" resourceType="GoldStandardPublication" minimizedContentWidth="${true}">
 		
 		<jsp:attribute name="generalInformation">
@@ -31,13 +31,13 @@
 						<div class="col-sm-offset-1 col-sm-9">
 							<div class="checkbox clearfix">
 								<label>
-									<input type="checkbox" class="help-popover"  tabindex="2" name="approved"/> <fmt:message key="goldStandard.edit.approveMsg"/>
-	<script type="text/javascript">
-		$(function() {
-			var check = ${command.approved};
-			$('input[name=approved]').prop('checked', check);
-		});
-	</script>
+									<input type="checkbox" class="help-popover"  tabindex="2" name="approved" id="approveCheckbox"/> <fmt:message key="goldStandard.edit.approveMsg"/>
+									<script type="text/javascript">
+										$(function() {
+											var check = ${command.approved};
+											$('input[name=approved]').prop('checked', check);
+											});
+									</script>
 									<div class="help-header hide"><fmt:message key="goldStandard.edit.approveMsg"/></div>
 									<div class="help-content hide"><fmt:message key="goldStandard.edit.approveMsg.help"/></div>
 								</label>

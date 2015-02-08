@@ -123,7 +123,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 * whether to redirect to the rating page after editing a post
 	 */
 	private String saveAndRate;
-	private boolean approved = false;
+	private boolean approved;
 	
 	private int compareVersion;
 	private List<String> differentEntryKeys;

@@ -44,11 +44,17 @@ import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.UrlUtils;
 
 /**
+ * TODO: Unify URL constructions for various cases (history, community posts, regular posts)
  * Generates the URLs used by the web application.
  * 
  * @author rja
  */
 public class URLGenerator {
+
+	/**
+	 * 
+	 */
+	private static final String HISTORY_PREFIX = "history";
 
 	/**
 	 * Provides page names.
@@ -86,7 +92,7 @@ public class URLGenerator {
 	private static final String AUTHOR_PREFIX = "author";
 	private static final String BIBTEXEXPORT_PREFIX = "bib";
 	private static final String BIBTEXKEY_PREFIX = "bibtexkey";
-	private static final String BOOKMARK_PREFIX = "url";
+	public static final String BOOKMARK_PREFIX = "url";
 	private static final String CONCEPTS_PREFIX = "concepts";
 	private static final String CONCEPT_PREFIX = "concept";
 	private static final String FOLLOWERS_PREFIX = "followers";
@@ -349,17 +355,17 @@ public class URLGenerator {
 	}
 	
 	/**
-	 * Constructs a URL for a goldstandard publication specified by its inter hash.
+	 * Constructs a URL for a community publication specified by its inter hash.
 	 * 
 	 * @param interHash
 	 * @return URL pointing to the publication represented by the inter hash
 	 */
-	public String getGoldstandardUrlByInterHash(final String interHash) {
-		return this.getGoldstandardUrlByInterHashAndUsername(interHash, null);
+	public String getCommunityPublicationUrlByInterHash(final String interHash) {
+		return this.getCommunityPublicationUrlByInterHashAndUsername(interHash, null);
 	}
 	
 	/**
-	 * Constructs a URL for a goldstandard publication specified by its inter hash and the username.
+	 * Constructs a URL for a community publication specified by its inter hash and the username.
 	 * If no username is present, it will not occur in the URL and the trailing '/' will be
 	 * omitted.
 	 * 
@@ -367,13 +373,55 @@ public class URLGenerator {
 	 * @param userName
 	 * @return URL pointing to the goldstandard publication represented by the interHash and the userName
 	 */
-	public String getGoldstandardUrlByInterHashAndUsername(final String interHash, final String userName) {
-		String url = this.projectHome + prefix + PUBLICATION_PREFIX + "/" + interHash;
+	public String getCommunityPublicationUrlByInterHashAndUsername(final String interHash, final String userName) {
+		return getCommunityPostUrlByInterHashAndUsername(interHash, userName, false);
+	}
+
+	/**
+	 * Constructs a URL for a community publication specified by its inter hash.
+	 * 
+	 * @param interHash
+	 * @return URL pointing to the publication represented by the inter hash
+	 */
+	public String getCommunityBookmarkUrlByInterHash(final String interHash) {
+		return this.getCommunityBookmarkUrlByInterHashAndUsername(interHash, null);
+	}
+	
+	/**
+	 * Constructs a URL for a community publication specified by its inter hash and the username.
+	 * If no username is present, it will not occur in the URL and the trailing '/' will be
+	 * omitted.
+	 * 
+	 * @param interHash
+	 * @param userName
+	 * @return URL pointing to the goldstandard publication represented by the interHash and the userName
+	 */
+	public String getCommunityBookmarkUrlByInterHashAndUsername(final String interHash, final String userName) {
+		return getCommunityPostUrlByInterHashAndUsername(interHash, userName, true);
+	}
+
+	private String getCommunityPostUrlByInterHashAndUsername(final String interHash, final String userName, boolean bookmark) {
+		return this.getUrl(this.projectHome + prefix + getPartialPostUrlByInterHashAndUserName(interHash, userName, bookmark));
+	}
+
+	private String getPartialPostUrlByInterHashAndUserName(final String hash, final String userName, boolean bookmark) {
+		String urlPart =  (bookmark? BOOKMARK_PREFIX: PUBLICATION_PREFIX) + "/" + hash;
 		
 		if (present(userName))
-			return this.getUrl(url + "/" + UrlUtils.safeURIEncode(userName));
+			return this.getUrl(urlPart + "/" + UrlUtils.safeURIEncode(userName));
 			
-		return this.getUrl(url);
+		return urlPart;
+	}
+	
+	/**
+	 * The URL to the history of a post
+	 * @param hash
+	 * @param userName
+	 * @param bookmark
+	 * @return
+	 */
+	public String getHistoryURLByHashAndUserName(final String hash, final String userName, boolean bookmark) {
+		return this.getUrl(this.projectHome + prefix +HISTORY_PREFIX+"/" + getPartialPostUrlByInterHashAndUserName(hash, userName, bookmark));
 	}
 	
 	/**
@@ -394,6 +442,11 @@ public class URLGenerator {
 	 */
 	public String getGroupUrlByGroupName(final String groupName) {
 		String url = this.projectHome + prefix + GROUP_PREFIX + "/" + UrlUtils.safeURIEncode(groupName);
+		return this.getUrl(url);
+	}
+	
+	public String getGroupSettingsUrlByGroupName(final String groupName) {
+		String url = this.projectHome + prefix + "settings" + "/" + GROUP_PREFIX + "/" + UrlUtils.safeURIEncode(groupName);
 		return this.getUrl(url);
 	}
 	

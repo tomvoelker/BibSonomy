@@ -54,6 +54,7 @@ import recommender.impl.database.RecommenderStatisticsManager;
  * @author dzo
  */
 public class EditGoldStandardBookmarkController extends EditBookmarkController {
+	private static final int ADMIN = 0;
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#getPostView()
 	 */
@@ -142,11 +143,20 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
  	@Override
 	protected void preparePost(EditPostCommand<Bookmark> command, Post<Bookmark> post) {
 		super.preparePost(command, post);
-		if (command.isApproved()){
-			post.setApproved(1);
-		}else{
-			post.setApproved(0);
+		User loginUser = command.getContext().getLoginUser();
+		
+		if(loginUser.getRole().getRole() == ADMIN){
+			if (command.isApproved()){
+				post.setApproved(1);
+			}else{
+				post.setApproved(0);
+			}
 		}
+	}
+ 	
+	@Override
+	protected String getGrouping(final User requestedUser) {
+		return null;
 	}
 }
 

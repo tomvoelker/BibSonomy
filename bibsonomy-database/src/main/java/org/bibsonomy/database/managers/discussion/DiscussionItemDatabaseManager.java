@@ -309,7 +309,7 @@ public abstract class DiscussionItemDatabaseManager<D extends DiscussionItem> ex
 			} else {
 				// delete discussion item
 				this.delete("deleteDiscussionItem", param, session);
-			}		
+			}
 			
 			session.commitTransaction();
 			return true;

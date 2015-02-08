@@ -898,7 +898,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		
 		// delete private post
 		toInsert.getGroups().clear();
-		final Group group = GroupUtils.getPrivateGroup();
+		final Group group = GroupUtils.buildPrivateGroup();
 		toInsert.getGroups().add(group);
 		
 		final BibTexParam postParam = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, null, null, toInsert.getUser());
@@ -1019,7 +1019,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 //		final List<Post<BibTex>> posts2 = bibTexDb.getPosts(param, this.dbSession);
 //		assertEquals(10, posts2.size());
 	}
-	
+
 	/**
 	 * tests testGetPostsByKey
 	 */

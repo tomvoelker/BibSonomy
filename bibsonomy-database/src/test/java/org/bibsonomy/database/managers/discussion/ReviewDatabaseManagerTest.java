@@ -182,7 +182,7 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		/*
 		 * change visibility
 		 */
-		newReview.setGroups(Collections.singleton(GroupUtils.getPrivateGroup()));
+		newReview.setGroups(Collections.singleton(GroupUtils.buildPrivateGroup()));
 
 		reviewManager.updateDiscussionItemForResource(HASH, oldHash, newReview, this.dbSession);
 		final Review review = reviewManager.getReviewForPostAndUser(HASH, USERNAME_2, this.dbSession);
