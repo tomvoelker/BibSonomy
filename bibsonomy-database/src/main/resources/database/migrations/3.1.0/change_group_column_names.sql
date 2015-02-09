@@ -6,10 +6,7 @@ ALTER TABLE `group_memberships` CHANGE COLUMN `user_status` `group_role` INT DEF
 ALTER TABLE `group_memberships` ADD PRIMARY KEY (`group`,`user_name`);
 
 /* set new membership ids */
-UPDATE group_memberships set group_memberships.group_role=5 where group_memberships.group_role=4;
-UPDATE group_memberships set group_memberships.group_role=4 where group_memberships.group_role=3;
-UPDATE group_memberships set group_memberships.group_role=3 where group_memberships.group_role=2;
-UPDATE group_memberships set group_memberships.group_role=2 where group_memberships.group_role=7;
+UPDATE group_memberships SET group_memberships.group_role = 2 WHERE group_memberships.group_role = 7;
 
 /* rename logging table */
 RENAME TABLE `log_groups` TO `log_group_memberships`;

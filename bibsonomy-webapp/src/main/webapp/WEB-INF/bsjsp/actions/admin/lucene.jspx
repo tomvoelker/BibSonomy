@@ -208,6 +208,11 @@
 </div>
 </c:forEach>
 </div>
+<div name="sharedResourceIndexGenerator">
+	<c:if test="${not empty properties['es.cluster.name']}">
+		<h2>Generate Shared Resource Index</h2>
+	</c:if>
+</div>
 
 		</jsp:attribute>
 	</layout:layout>

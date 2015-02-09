@@ -43,6 +43,7 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.Errors;
 
 /**
  * Controller for lucene admin page
@@ -59,7 +60,8 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 	private boolean generateSharedIndex;
 	private List<LuceneResourceManager<? extends Resource>> luceneResourceManagers;
 	private SharedIndexUpdatePlugin<? extends Resource> srPlugin;
-	
+	private Errors errors;
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public View workOn(final AdminLuceneViewCommand command) {
@@ -73,6 +75,12 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
 			throw new AccessDeniedException("please log in as admin");
 		}	
+		
+		//check if ckey is valid
+//		if (!context.isValidCkey()) {
+//			errors.reject("error.field.valid.ckey");
+//			return Views.ERROR;
+//		}
 		
 		if (generateSharedIndex) {
 			srPlugin.generateIndex(luceneResourceManagers);

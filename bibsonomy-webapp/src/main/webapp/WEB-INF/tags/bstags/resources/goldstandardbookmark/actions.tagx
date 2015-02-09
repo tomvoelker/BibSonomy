@@ -29,7 +29,7 @@
 	
 					<fmt:message key="bibtex.actions.posthistory.title" var="postHistoryTitle" />
 					<!-- we need to send the resource type, in order to call the appropriate view later (HistoryBM or HistoryBib) -->
-				 	<a class="btn btn-default" href="/history/${rscType}/${goldstandard.interHash}" title="${postHistoryTitle}">
+				 	<a class="btn btn-default" href="${relativeUrlGenerator.getHistoryURLByHashAndUserName(goldstandard.interHash, null, true)}" title="${postHistoryTitle}">
 						<span class="fa fa-list-ol"><!--  --></span>
 				  	</a>
 	

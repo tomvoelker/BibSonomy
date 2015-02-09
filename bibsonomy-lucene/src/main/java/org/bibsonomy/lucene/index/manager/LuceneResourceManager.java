@@ -199,45 +199,53 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			if (plugin != null) {
 				//Shared index updater
 				this.sharedIndexUpdater =  (SharedResourceIndexUpdater<R>) plugin.createUpdater(this.getResourceName());
-				Integer lastTasIdSharedIndex = this.sharedIndexUpdater.getLastTasId();
-				final long lastLogDateSharedIndex =  this.sharedIndexUpdater.getLastLogDate();
-				Integer newLastTasId;
-				Integer newLastTasIdSharedIndex;
-				if ((lastLogDate == lastLogDateSharedIndex) && (lastTasId == lastTasIdSharedIndex)){
-					newLastTasId = this.updateIndex(currentLogDate, lastTasId, lastLogDateSharedIndex, SearchType.BOTH);
-					newLastTasIdSharedIndex = newLastTasId;
+				if(this.sharedIndexUpdater!=null){
+					Integer lastTasIdSharedIndex = this.sharedIndexUpdater.getLastTasId();
+					final long lastLogDateSharedIndex =  this.sharedIndexUpdater.getLastLogDate();
+					Integer newLastTasId;
+					Integer newLastTasIdSharedIndex;
+					if ((lastLogDate == lastLogDateSharedIndex) && (lastTasId == lastTasIdSharedIndex)){
+						newLastTasId = this.updateIndex(currentLogDate, lastTasId, lastLogDateSharedIndex, SearchType.BOTH);
+						newLastTasIdSharedIndex = newLastTasId;
+					} else {
+						newLastTasId = this.updateIndex(currentLogDate, lastTasId, lastLogDate, SearchType.LUCENESEARCH);
+						newLastTasIdSharedIndex =  this.updateIndex(currentLogDate, lastTasIdSharedIndex, lastLogDateSharedIndex, SearchType.ELASTICSEARCH);
+					}
+					
+					if (newLastTasIdSharedIndex != lastTasIdSharedIndex) {
+						this.sharedIndexUpdater.setSystemInformation(lastTasIdSharedIndex, new Date(currentLogDate));
+						this.sharedIndexUpdater.setLastLogDate(currentLogDate);
+						this.sharedIndexUpdater.setLastTasId(newLastTasIdSharedIndex);
+						this.sharedIndexUpdater.flush();
+					}
+					if (newLastTasId != lastTasId) {
+						this.updatingIndex.setLastLogDate(currentLogDate);
+						this.updatingIndex.setLastTasId(newLastTasId);
+						this.updatingIndex.flush();
+					}
 				} else {
-					newLastTasId = this.updateIndex(currentLogDate, lastTasId, lastLogDate, SearchType.LUCENESEARCH);
-					newLastTasIdSharedIndex =  this.updateIndex(currentLogDate, lastTasIdSharedIndex, lastLogDateSharedIndex, SearchType.ELASTICSEARCH);
-				}
-				
-				if (newLastTasIdSharedIndex != lastTasIdSharedIndex) {
-					this.sharedIndexUpdater.setSystemInformation(lastTasIdSharedIndex, new Date(currentLogDate));
-					this.sharedIndexUpdater.setLastLogDate(currentLogDate);
-					this.sharedIndexUpdater.setLastTasId(newLastTasIdSharedIndex);
-					this.sharedIndexUpdater.flush();
-				}
-				if (newLastTasId != lastTasId) {
-					this.updatingIndex.setLastLogDate(currentLogDate);
-					this.updatingIndex.setLastTasId(newLastTasId);
-					this.updatingIndex.flush();
+					this.runLuceneIndexUpdate(currentLogDate, lastTasId, lastLogDate, SearchType.LUCENESEARCH);
 				}
 				
 			} else {
-				lastTasId = this.updateIndex(currentLogDate, lastTasId, lastLogDate, SearchType.LUCENESEARCH);
-				/*
-				 * commit changes
-				 */
-				this.updatingIndex.flush();
-				/*
-				 * update variables
-				 */
-				this.updatingIndex.setLastLogDate(currentLogDate);
-				this.updatingIndex.setLastTasId(lastTasId);
+				this.runLuceneIndexUpdate(currentLogDate, lastTasId, lastLogDate, SearchType.LUCENESEARCH);
 			}
 		}
-
 		this.alreadyRunning = 0;
+	}
+		
+	@SuppressWarnings("boxing")
+	private void runLuceneIndexUpdate(final long currentLogDate, Integer lastTasId,final long lastLogDate, SearchType searchType){
+		lastTasId = this.updateIndex(currentLogDate, lastTasId, lastLogDate, searchType);
+		/*
+		 * commit changes
+		 */
+		this.updatingIndex.flush();
+		/*
+		 * update variables
+		 */
+		this.updatingIndex.setLastLogDate(currentLogDate);
+		this.updatingIndex.setLastTasId(lastTasId);
 	}
 
 	/**

@@ -40,16 +40,15 @@
 						<c:param name="url" value="${post.systemUrl}"/>
 						<c:param name="description" value="${post.description}"/>
 						<c:param name="selection"/>
-						<c:param name= "referer" value="${mtl:cleanUrl(post.resource.url)}"/>
+						<c:param name="referer" value="${mtl:cleanUrl(post.resource.url)}"/>
 						</c:url>
 							<fmt:message key="bibtex.actions.copy.title" var="copyTitle"/>
 							<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
-								<span class="fa fa-copy"><!--  --></span>
+							<span class="glyphicon glyphicon-floppy-disk"><!--  --></span>
 							</a>
 					</c:when>
 					<c:otherwise>
 						<c:choose>
-							<!-- COPY -->
 							<c:when test="${loginUserName ne post.user.name}"><!-- user is not post's owner -->
 								<c:url var="copyLink" value="/editPublication">
 									<c:param name="hash" value="${post.resource.intraHash}" />
@@ -59,21 +58,19 @@
 								
 								<fmt:message key="bibtex.actions.copy.title" var="copyTitle"/>
 								<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
-									<span class="fa fa-copy"><!--  --></span>
+									<span class="glyphicon glyphicon-floppy-disk"><!--  --></span>
 								</a>
 							
 							</c:when>
 				
-							<!-- EDIT other actions -->
-							<c:otherwise><!-- user is post's owner -->
-								
-								<fmt:message key="bibtex.actions.edit.title" var="editTitle"/>
-								<a class="${buttonClasses}" href="/editPublication?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
-									<span class="fa fa-pencil ${post.user.name ne loginUserName ? 'btn-disabled' : ''}"><!--  --></span>
-								</a>
-		
-							</c:otherwise>
-						</c:choose>
+					<!-- EDIT other actions -->
+					<c:otherwise><!-- user is post's owner -->
+						
+						<fmt:message key="bibtex.actions.edit.title" var="editTitle"/>
+						<a class="${buttonClasses}" href="/editPublication?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
+							<span class="glyphicon glyphicon-edit ${post.user.name ne loginUserName ? 'btn-disabled' : ''}"><!--  --></span>
+						</a>
+
 					</c:otherwise>
 				</c:choose>
 			</c:when>
@@ -81,7 +78,7 @@
 				<!-- For signed out users we always show the inactive copy button -->
 				<fmt:message key="bibtex.actions.copy.inactive" var="copyTitle"/>
 				<a class="${buttonClasses}" title="${copyTitle}" disabled="disabled">
-					<span class="fa fa-copy"><!-- Keep Me --></span>
+					<span class="glyphicon glyphicon-floppy-disk"><!-- Keep Me --></span>
 				</a>
 			</c:otherwise>
 		</c:choose>
@@ -101,7 +98,7 @@
 				<c:param name="clear" value="false" />
 			</c:url>
 				<fmt:message key="bibtex.actions.removeMessage.title" var="removeTitle" />
-				<a class="${buttonClasses} confirmdelete" href="${fn:escapeXml(message_remove)" title="${removeTitle}" data-type="inboxpost">
+				<a class="${buttonClasses}" href="${fn:escapeXml(message_remove)}" title="${removeTitle}" data-type="inboxpost">
 					<span class="glyphicon glyphicon-remove"><!--  --></span>
 				</a>
 			</c:when>
@@ -114,7 +111,7 @@
 							<c:param name="resourceHash" value="${post.resource.intraHash}" />
 							<c:param name="ckey" value="${ckey}" />
 						</c:url>
-						<a class="${buttonClasses} confirmdelete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" data-type="post">
+						<a class="${buttonClasses}" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" data-type="post">
 							<span class="glyphicon glyphicon-remove"><!--  --></span>
 						</a>
 					</c:when>
@@ -167,66 +164,48 @@
 
 			<!--+ 
 			    | COMMUNITY POST 
-			    | TODO: check if community post exists
 			    +-->
 			<c:choose>
 				<c:when test="${isRemotePost}">
 					<c:set var="communityPostUrl" value="${relativeUrlGenerator.getGoldstandardUrlByInterHashAndSysUrl(post.resource.interHash, post.systemUrl)}" />
 				</c:when>
 				<c:otherwise>
-					<c:set var="communityPostUrl" value="${relativeUrlGenerator.getGoldstandardUrlByInterHash(post.resource.interHash)}" />
+					<c:set var="communityPostUrl" value="${relativeUrlGenerator.getCommunityPublicationUrlByInterHash(post.resource.interHash)}" />
 				</c:otherwise>
 			</c:choose>
-			<fmt:message key="bibtex.actions.communityPost" var="communityPost" />
+			<fmt:message key="actions.communityPost.title" var="communityPost" />
 			<li>
 				<a href="${communityPostUrl}" title="${fn:escapeXml(communityPost)}">
-					<fmt:message key="bibtex.actions.communityPost" />
+					<fmt:message key="actions.communityPost" />
 					&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
 				</a>
 			</li>
 
-
 			<!--+
-			    | HISTORY
-			    +-->
-			<!-- 	<c:if test="${empty enableHistory}"> -->
-			<fmt:message key="bibtex.actions.posthistory.title" var="postHistoryTitle" />
-			<c:choose>
-				<c:when test="${command.context.userLoggedIn and (loginUserName eq post.user.name)}">
-					<!-- user is post's owner -->
-					<!-- we need to send the resource type, in order to call the appropriate view later (HistoryBM or HistoryBib) -->
-				 	<li>
-				 		<a href="/history/${rscType}/${post.resource.intraHash}/${post.user.name}" title="${postHistoryTitle}">
-							<!-- <span class="fa fa-list-ol"> </span> -->
+				| HISTORY
+				+-->
+			<li>
+				<fmt:message key="bibtex.actions.posthistory.title" var="postHistoryTitle" />
+				<c:choose>
+					<c:when test="${(command.context.userLoggedIn and (loginUserName eq post.user.name)) or (empty post.user)}">
+						<c:set var="hash" value="${post.resource.interHash}"/>
+						<c:if test="${not empty post.user}">
+							<c:set var="hash" value="${post.resource.intraHash}"/>
+						</c:if>
+						<a href="${relativeUrlGenerator.getHistoryURLByHashAndUserName(hash, post.user.name, false)}" title="${postHistoryTitle}">
 							<fmt:message key="bibtex.actions.posthistory.title" />
 							&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
-				  		</a>
-				  	</li>
-				</c:when>
-				<c:when test="${empty post.user}">
-					<!-- post is a community post -->
-					<!-- we need to send the resource type, in order to call the appropriate view later (HistoryBM or HistoryBib) -->
-				 	<li>
-				 		<a href="/history/goldstandardpublication/${post.resource.interHash}" title="${postHistoryTitle}">
-							<!--  <span class="fa fa-list-ol"> </span> -->
-							<fmt:message key="bibtex.actions.posthistory.title" />
-							&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
-				  		</a>
-				  	</li>
-				</c:when>
-				<c:otherwise>
-					<!-- For signed out users and those who do not own the post we always show the inactive history button -->
-					<fmt:message key="bibtex.actions.posthistory.inactive" var="historyTitle" />
-					<li>
+						</a>
+					</c:when>
+					<c:otherwise>
 						<span class="ilitem" title="${historyTitle}">
-							<!-- <span class="fa fa-list-ol"></span> -->
 							<fmt:message key="bibtex.actions.posthistory.title" />
 							&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
 						</span>
-					</li>
-				</c:otherwise>
-			</c:choose>
-		<!--</c:if>-->
+					</c:otherwise>
+				</c:choose>
+			</li>
+
 			<li class="divider"><!--  --></li>
 			<!--+
 				| RESOURCE LINKS (URL, DOI, BIBTEX, OPEN URL)
