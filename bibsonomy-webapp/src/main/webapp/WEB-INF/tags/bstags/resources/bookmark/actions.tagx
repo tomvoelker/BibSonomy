@@ -5,66 +5,54 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common/actionbuttons"
+	>
 
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 
 	<c:set var="rscType" value="bookmark" />
+	<c:set var="buttonClasses" value="btn btn-default btn-xsmall"/>
 
 	<div class="edit-media-buttons btn-group btn-group-xs dropdown-align-right">
 
-		<c:set var="buttonClasses" value="btn btn-default btn-xsmall"/>
-
-		<!--+
-			| COPY/EDIT
-			+-->
+		<!-- Edit/Delete -->
 		<c:choose>
-			<c:when test="${command.context.userLoggedIn}">
-				<c:choose>
-					<c:when test="${empty post.user.name}">
-						<!--  community post -->
-						<fmt:message key="post.actions.copy.title" var="copyTitle"/>
-						<a class="btn btn-default" href="/editBookmark?hash=${post.resource.interHash}&amp;user=&amp;" title="${fn:escapeXml(copyTitle)}">
-							<span class="fa fa-copy"><!--  --></span>
-							<span class="sr-only"><fmt:message key="post.actions.copy"/></span>
-						</a>
-					</c:when>
-					<c:otherwise>
-						<c:choose>
-							<!-- COPY -->
-							<c:when test="${loginUserName ne post.user.name}"><!-- user is not post's owner -->
-								<c:url var="copyLink" value="/editBookmark">
-									<c:param name="hash" value="${post.resource.intraHash}" />
-									<c:param name="user" value="${post.user.name}" />
-									<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
-								</c:url>		
-								<fmt:message key="bookmark.actions.copy.title" var="copyTitle"/>
-								<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
-									<span class="glyphicon glyphicon glyphicon-floppy-disk"><!--  --></span>
-								</a>
-							</c:when>
-
-							<!-- EDIT -->
-							<c:otherwise><!-- user is post's owner -->
-								<fmt:message key="bookmark.actions.edit.title" var="editTitle" />
-								<a class="${buttonClasses}" href="/editBookmark?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
-									<span class="glyphicon glyphicon-edit"><!--  --></span>
-								</a>
-							</c:otherwise>
-						</c:choose>
-					</c:otherwise>
-				</c:choose>
+			<c:when test="${command.context.userLoggedIn and (loginUserName eq post.user.name)}">
+				<buttons:editPostButton.tagx
+					post ="${post}" 
+					resourceType="${rscType}"
+					buttonClasses="${buttonClasses}"/>
 			</c:when>
 			<c:otherwise>
-				<!-- For signed out users we always show the inactive copy button -->
-				<fmt:message key="bookmark.actions.copy.inactive" var="copyTitle" />
- 				<a class="${buttonClasses}" title="${copyTitle}" disabled="disabled">
- 					<span class="glyphicon glyphicon-floppy-disk"><!--  --></span>
- 				</a>
+				<buttons:copyPostButton 
+					post ="${post}" 
+					loginUserName="${loginUserName}" 
+					userLoggedIn="${command.context.userLoggedIn}" 
+					resourceType="${rscType}"
+					buttonClasses="${buttonClasses}"/>
 			</c:otherwise>
 		</c:choose>
-	
+
+		<!-- remove/delete -->
+		<c:choose>
+			<c:when test="${post.inboxPost}">
+				<buttons:inboxRemoveButton 
+					post ="${post}" 
+					resourceType="${rscType}"
+					buttonClasses="${buttonClasses}"/>
+			</c:when>
+			<c:otherwise>
+				<buttons:deletePostButton 
+					post ="${post}" 
+					loginUserName="${loginUserName}" 
+					userLoggedIn="${command.context.userLoggedIn}" 
+					resourceType="${rscType}"
+					buttonClasses="${buttonClasses}"/>
+			</c:otherwise>
+		</c:choose>
+
 		<!--+
 			| link for the memento timegate to the archived version of the page
 			+-->
@@ -72,49 +60,6 @@
 		<a class="${buttonClasses}" href="${properties['memento.timegate']}/${mtl:formatDateMemento(post.date)}/${mtl:encodeURI(post.resource.url)}" rel="nofollow" title="${mementoTitle}">
 			<span class="fa fa-history"><!--  --></span>
 		</a>
-		
-
-		<!--+
-			| REMOVE/DELETE
-			+ -->
-		<c:choose>
-			<c:when test="${post.inboxPost}">
-				<!-- INBOX REMOVE -->
-				<!-- Inbox can be viewed only by signed in users -->
-				<c:url var="message_remove" value="/removeMessage">
-					<c:param name="hash" value="${post.resource.intraHash}" />
-					<c:param name="user" value="${post.user.name}" />
-					<c:param name="ckey" value="${ckey}" />
-					<c:param name="clear" value="false" />
-				</c:url>
-				<fmt:message key="bookmark.actions.removeMessage.title" var="removeTitle" />
-				<a class="${buttonClasses}" href="${message_remove}" title="${removeTitle}" data-type="inboxpost">
-					<span class="glyphicon glyphicon-remove"><!--  --></span>
-				</a>
-			</c:when>
-			<c:otherwise>
-				<!-- REGULAR POST DELETE -->
-				<c:choose>
-					<c:when test="${command.context.userLoggedIn and loginUserName eq post.user.name}">
-						<fmt:message key="bookmark.actions.delete.title" var="deleteTitle" />
-						<c:url var="deleteUrl" value="/deletePost">
-							<c:param name="resourceHash" value="${post.resource.intraHash}" />
-							<c:param name="ckey" value="${ckey}" />
-						</c:url>
-						<a class="${buttonClasses} confirmdelete" href="${deleteUrl}" title="${deleteTitle}" data-type="post">
-							<span class="glyphicon glyphicon-remove"><!--  --></span>
-						</a>
-					</c:when>
-					<c:otherwise>
-						<fmt:message key="bookmark.actions.delete.inactive" var="deleteTitle"/>
-						<span class="${buttonClasses}" title="${deleteTitle}" disabled="disabled">
-							<span class="glyphicon glyphicon-remove"><!--  --></span>
-						</span>
-					</c:otherwise>
-				</c:choose>
-			</c:otherwise>
-		</c:choose>
-
 	
 	
 		<button class="btn btn-default btn-small dropdown-toggle" data-toggle="dropdown">

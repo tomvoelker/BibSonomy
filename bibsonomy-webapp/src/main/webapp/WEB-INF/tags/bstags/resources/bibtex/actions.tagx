@@ -4,7 +4,9 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common/actionbuttons"
+	>
 
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
@@ -12,135 +14,56 @@
 	<jsp:directive.attribute name="enableHistory" type="java.lang.Boolean" required="false" />	
 		
 	<c:set var="rscType" value="bibtex" />
+	<spring:eval var="intraHashId" expression="T(org.bibsonomy.common.enums.HashID).INTRA_HASH.id" />
+	<c:set var="buttonClasses" value="btn btn-default btn-xsmall"/>
 
 
 	<div class="edit-media-buttons btn-group btn-group-xs dropdown dropdown-align-right">
-	
-	<spring:eval var="intraHashId" expression="T(org.bibsonomy.common.enums.HashID).INTRA_HASH.id" />
-	
-	<c:set var="buttonClasses" value="btn btn-default btn-xsmall"/>
-		<!--+
-			| COPY/EDIT
-			+-->
+
+		<!-- Edit/Delete -->
 		<c:choose>
-			<c:when test="${command.context.userLoggedIn}">
-				<c:choose>
-					<c:when test="${empty post.user.name}">
-						<!-- community-post -->
-						<fmt:message key="post.actions.copy.title" var="copyTitle"/>
-						<a class="btn btn-default" href="/editPublication?hash=${post.resource.interHash}&amp;user=&amp;" title="${fn:escapeXml(copyTitle)}">
-							<span class="fa fa-copy"><!--  --></span>
-							<span class="sr-only"><fmt:message key="post.actions.copy"/></span>
-						</a>
-					</c:when>
-					<c:otherwise>
-						<!-- some user's post -->		
-						<c:choose>
-							<c:when test="${loginUserName ne post.user.name}">
-								<!-- user is not post's owner -->
-								<c:url var="copyLink" value="/editPublication">
-									<c:param name="hash" value="${post.resource.intraHash}" />
-									<c:param name="user" value="${post.user.name}" />
-									<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
-								</c:url>
-								<fmt:message key="bibtex.actions.copy.title" var="copyTitle"/>
-								<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
-									<span class="glyphicon glyphicon-floppy-disk"><!--  --></span>
-								</a>
-							</c:when>
-							<c:otherwise>
-								<!-- user is post's owner -->
-								<fmt:message key="bibtex.actions.edit.title" var="editTitle"/>
-								<a class="${buttonClasses}" href="/editPublication?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
-									<span class="glyphicon glyphicon-edit ${post.user.name ne loginUserName ? 'btn-disabled' : ''}"><!--  --></span>
-								</a>
-							</c:otherwise>
-						</c:choose>
-					</c:otherwise>
-				</c:choose>
+			<c:when test="${command.context.userLoggedIn and (loginUserName eq post.user.name)}">
+				<buttons:editPostButton.tagx
+					post ="${post}" 
+					resourceType="${rscType}"
+					buttonClasses="${buttonClasses}"/>
 			</c:when>
 			<c:otherwise>
-				<!-- For signed out users we always show the inactive copy button -->
-				<fmt:message key="bibtex.actions.copy.inactive" var="copyTitle"/>
-				<a class="${buttonClasses}" title="${copyTitle}" disabled="disabled">
-					<span class="glyphicon glyphicon-floppy-disk"><!-- Keep Me --></span>
-				</a>
+				<buttons:copyPostButton 
+					post ="${post}" 
+					loginUserName="${loginUserName}" 
+					userLoggedIn="${command.context.userLoggedIn}" 
+					resourceType="${rscType}"
+					buttonClasses="${buttonClasses}"/>
 			</c:otherwise>
 		</c:choose>
-		
-		
-		<!--+
-			| REMOVE/DELETE
-			+ -->
+
+		<!-- remove/delete -->
 		<c:choose>
 			<c:when test="${post.inboxPost}">
-			<!-- INBOX REMOVE -->
-			<!-- Inbox can be viewed only by signed in users and only in the own inbox-->
-			<c:url var="message_remove" value="/removeMessage">
-				<c:param name="hash" value="${post.resource.intraHash}" />
-				<c:param name="user" value="${post.user.name}" />
-				<c:param name="ckey" value="${ckey}" />
-				<c:param name="clear" value="false" />
-			</c:url>
-				<fmt:message key="bibtex.actions.removeMessage.title" var="removeTitle" />
-				<a class="${buttonClasses}" href="${fn:escapeXml(message_remove)}" title="${removeTitle}" data-type="inboxpost">
-					<span class="glyphicon glyphicon-remove"><!--  --></span>
-				</a>
+				<buttons:inboxRemoveButton 
+					post ="${post}" 
+					resourceType="${rscType}"
+					buttonClasses="${buttonClasses}"/>
 			</c:when>
 			<c:otherwise>
-				<!-- POST DELETE -->
-				<c:choose>
-					<c:when test="${command.context.userLoggedIn and loginUserName eq post.user.name}">
-						<fmt:message key="bibtex.actions.delete.title" var="deleteTitle"/>
-						<c:url var="deleteUrl" value="/deletePost">
-							<c:param name="resourceHash" value="${post.resource.intraHash}" />
-							<c:param name="ckey" value="${ckey}" />
-						</c:url>
-						<a class="${buttonClasses}" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" data-type="post">
-							<span class="glyphicon glyphicon-remove"><!--  --></span>
-						</a>
-					</c:when>
-					<c:otherwise>
-						<fmt:message key="bibtex.actions.delete.inactive" var="deleteTitle"/>
-						<a class="${buttonClasses}" title="${deleteTitle}" disabled="disabled">
-							<span class="glyphicon glyphicon-remove"><!--  --></span>
-						</a>
-					</c:otherwise>
-				</c:choose>
+				<buttons:deletePostButton 
+					post ="${post}" 
+					loginUserName="${loginUserName}" 
+					userLoggedIn="${command.context.userLoggedIn}" 
+					resourceType="${rscType}"
+					buttonClasses="${buttonClasses}"/>
 			</c:otherwise>
 		</c:choose>
 
+		<!-- pick/unpick -->
+		<buttons:pickUnpickButton 
+			post ="${post}" 
+			loginUserName="${loginUserName}" 
+			userLoggedIn="${command.context.userLoggedIn}" 
+			buttonClasses="${buttonClasses}"/>
 
-
-		<!--+
-			| PICK / UNPICK 
-			+-->
-		<c:set var="pickUnpick" value="pick"/>
-		<c:if test="${post.picked}">
-			<c:set var="pickUnpick" value="unpick"/>
-		</c:if>
-	
-		<c:choose>
-			<c:when test="${command.context.userLoggedIn}">
-				<c:url var="pickUnpick_url" value="/ajax/pickUnpickPost">
-					<c:param name="hash" value="${post.resource.intraHash}" />
-					<c:param name="user" value="${post.user.name}" />
-					<c:param name="ckey" value="${ckey}" />
-					<c:param name="action" value="${pickUnpick}"/>
-				</c:url>
-				<fmt:message key="bibtex.actions.${pickUnpick}.title" var="pickUnpickTitle"/>
-				<a class="${buttonClasses}" onclick="return pickUnpickPublication(this);" title="${pickUnpickTitle}" href="${fn:escapeXml(pickUnpick_url)}">
-					<span class="glyphicon glyphicon-folder-open"><!--  --></span>
-				</a>
-			</c:when>
-			<c:otherwise>
-				<fmt:message key="bibtex.actions.pick.inactive" var="pickUnpickTitle"/>
-				<a class="${buttonClasses}" title="${pickUnpickTitle}" disabled="disabled">
-					<span class="glyphicon glyphicon-folder-open"><!--  --></span>
-				</a>
-			</c:otherwise>
-		</c:choose>
-
+		<!-- Drop-Down Menu -->
 		<button class="btn btn-default btn-small dropdown-toggle" data-toggle="dropdown">
 			<span class="caret"><!-- KEEP ME --></span>
 		</button>
