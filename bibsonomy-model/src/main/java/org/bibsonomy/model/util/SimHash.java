@@ -78,19 +78,24 @@ public class SimHash {
 		}
 	}
 
-	// FIXME: HashID was meant for BibTexs only - we should create a new enum for Bookmarks
+	// FIXME: HashID was meant for BibTexs only - we should create a new enum
+	// for Bookmarks
 	/**
-	 * @param bookmark the object whose hash is to be calculated
-	 * @param simHash the type of hash to be calculated
+	 * @param bookmark
+	 *            the object whose hash is to be calculated
+	 * @param simHash
+	 *            the type of hash to be calculated
 	 * @return the corresponding simhash for a bookmark.
 	 */
 	public static String getSimHash(final Bookmark bookmark, final HashID simHash) {
 		if (simHash.getId() == HashID.SIM_HASH0.getId()) {
-			// XXX: do we want to return simHash1 for SIM_HASH0?
-			return getSimHash1(bookmark);
+			return getSimHash0(bookmark);
 		} else if (simHash.getId() == HashID.SIM_HASH1.getId()) {
-			// XXX: do we want to return simHash2 for SIM_HASH1?
+			return getSimHash1(bookmark);
+		} else if (simHash.getId() == HashID.SIM_HASH2.getId()) {
 			return getSimHash2(bookmark);
+		} else if (simHash.getId() == HashID.SIM_HASH3.getId()) {
+			return getSimHash3();
 		} else {
 			throw new RuntimeException("SimHash " + simHash.getId() + " doesn't exist.");
 		}

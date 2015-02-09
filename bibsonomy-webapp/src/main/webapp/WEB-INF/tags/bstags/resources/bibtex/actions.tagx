@@ -25,29 +25,37 @@
 		<c:choose>
 			<c:when test="${command.context.userLoggedIn}">
 				<c:choose>
-					<!-- COPY -->
-					<c:when test="${loginUserName ne post.user.name}"><!-- user is not post's owner -->
-						<c:url var="copyLink" value="/editPublication">
-							<c:param name="hash" value="${post.resource.intraHash}" />
-							<c:param name="user" value="${post.user.name}" />
-							<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
-						</c:url>
-						
-						<fmt:message key="bibtex.actions.copy.title" var="copyTitle"/>
-						<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
-							<span class="glyphicon glyphicon-floppy-disk"><!--  --></span>
+					<c:when test="${empty post.user.name}">
+						<!-- community-post -->
+						<fmt:message key="post.actions.copy.title" var="copyTitle"/>
+						<a class="btn btn-default" href="/editPublication?hash=${post.resource.interHash}&amp;user=&amp;" title="${fn:escapeXml(copyTitle)}">
+							<span class="fa fa-copy"><!--  --></span>
+							<span class="sr-only"><fmt:message key="post.actions.copy"/></span>
 						</a>
-					
 					</c:when>
-				
-					<!-- EDIT other actions -->
-					<c:otherwise><!-- user is post's owner -->
-						
-						<fmt:message key="bibtex.actions.edit.title" var="editTitle"/>
-						<a class="${buttonClasses}" href="/editPublication?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
-							<span class="glyphicon glyphicon-edit ${post.user.name ne loginUserName ? 'btn-disabled' : ''}"><!--  --></span>
-						</a>
-
+					<c:otherwise>
+						<!-- some user's post -->		
+						<c:choose>
+							<c:when test="${loginUserName ne post.user.name}">
+								<!-- user is not post's owner -->
+								<c:url var="copyLink" value="/editPublication">
+									<c:param name="hash" value="${post.resource.intraHash}" />
+									<c:param name="user" value="${post.user.name}" />
+									<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
+								</c:url>
+								<fmt:message key="bibtex.actions.copy.title" var="copyTitle"/>
+								<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
+									<span class="glyphicon glyphicon-floppy-disk"><!--  --></span>
+								</a>
+							</c:when>
+							<c:otherwise>
+								<!-- user is post's owner -->
+								<fmt:message key="bibtex.actions.edit.title" var="editTitle"/>
+								<a class="${buttonClasses}" href="/editPublication?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
+									<span class="glyphicon glyphicon-edit ${post.user.name ne loginUserName ? 'btn-disabled' : ''}"><!--  --></span>
+								</a>
+							</c:otherwise>
+						</c:choose>
 					</c:otherwise>
 				</c:choose>
 			</c:when>
