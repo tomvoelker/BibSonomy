@@ -57,7 +57,7 @@ xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 
 
 		<jsp:attribute name="content">
-		
+			<h1 class="content-heading"><fmt:message key="post.meta.batch_edit" /></h1>
 			<batch:content resourceType="${resourceType}" listView="${listView}" 
 				otherPostsUrlPrefix="${otherPostsUrlPrefix}" directEdit="${true}" 
 				listViewStartParamName="${listViewStartParamName}" 

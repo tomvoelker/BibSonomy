@@ -470,8 +470,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	public void activateGroup(final String groupName, final DBSession session) {
 		// get the group
 		final Group group = this.getPendingGroup(groupName, session);
+		
+		if (!present(group)) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group " + groupName + " is no pending group.");
+		}
 
-		// TODO: check if group exists
 		final GroupRequest groupRequest = group.getGroupRequest();
 
 		try {
