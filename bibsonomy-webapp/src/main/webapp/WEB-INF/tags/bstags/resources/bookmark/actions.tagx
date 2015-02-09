@@ -68,36 +68,15 @@
 
 		<ul class="dropdown-menu" style="min-width: 230px;">
 
-			<!--+
-				| COMMUNITY POST
-				+ -->
-			<li>
-				<fmt:message key="actions.communityPost.title" var="communityPost" />
-				<a href="${relativeUrlGenerator.getCommunityBookmarkUrlByInterHash(post.resource.interHash)}" title="${fn:escapeXml(communityPost)}">
-					<fmt:message key="actions.communityPost" />
-					&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
-				</a>
-			</li>
+			<li><buttons:communityPostMenuItem post="${post}" resourceType="${rscType}"/></li>
 
-			<!--+
-				| HISTORY
-				+ -->
 			<li>
-				<fmt:message key="bookmark.actions.posthistory.title" var="postHistoryTitle" />
-				<c:choose>
-					<c:when test="${(command.context.userLoggedIn and (loginUserName eq post.user.name)) or (empty post.user)}">
-						<a href="${relativeUrlGenerator.getHistoryURLByHashAndUserName(post.resource.interHash, post.user.name, true)}" title="${postHistoryTitle}">
-							<fmt:message key="bookmark.actions.posthistory.title" />
-							&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
-						</a>
-					</c:when>
-					<c:otherwise>
-						<span class="ilitem" title="${historyTitle}">
-							<fmt:message key="bookmark.actions.posthistory.title" />
-							&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
-						</span>
-					</c:otherwise>
-				</c:choose>
+				<buttons:historyMenuItem 
+					post ="${post}" 
+					loginUserName="${loginUserName}" 
+					userLoggedIn="${command.context.userLoggedIn}" 
+					resourceType="${rscType}"
+					buttonClasses="${buttonClasses}"/>
 			</li>
 
 		</ul>

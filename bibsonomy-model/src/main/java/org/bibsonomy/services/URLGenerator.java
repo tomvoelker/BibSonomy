@@ -88,6 +88,8 @@ public class URLGenerator {
 		}
 	}
 
+	private static final String BOOKMARK=Bookmark.class.getSimpleName(); 
+	
 	private static final String ADMIN_PREFIX = "admin";
 	private static final String AUTHOR_PREFIX = "author";
 	private static final String BIBTEXEXPORT_PREFIX = "bib";
@@ -354,6 +356,14 @@ public class URLGenerator {
 		return this.getUrl(url);
 	}
 	
+	
+	public String getCommunityPostUrlByInterHash(final String interHash, final String resourceType) {
+		if (BOOKMARK.equalsIgnoreCase(resourceType)) {
+			return this.getCommunityBookmarkUrlByInterHash(interHash);
+		}
+		return this.getCommunityPublicationUrlByInterHash(interHash);
+	}
+	
 	/**
 	 * Constructs a URL for a community publication specified by its inter hash.
 	 * 
@@ -420,8 +430,8 @@ public class URLGenerator {
 	 * @param bookmark
 	 * @return
 	 */
-	public String getHistoryURLByHashAndUserName(final String hash, final String userName, boolean bookmark) {
-		return this.getUrl(this.projectHome + prefix +HISTORY_PREFIX+"/" + getPartialPostUrlByInterHashAndUserName(hash, userName, bookmark));
+	public String getHistoryURLByHashAndUserName(final String hash, final String userName, String resourceType) {
+		return this.getUrl(this.projectHome + prefix +HISTORY_PREFIX+"/" + getPartialPostUrlByInterHashAndUserName(hash, userName, BOOKMARK.equalsIgnoreCase(resourceType)));
 	}
 	
 	/**

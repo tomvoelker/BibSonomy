@@ -70,40 +70,15 @@
 
 		<ul class="dropdown-menu" style="min-width: 230px;">
 
-			<!--+ 
-				| COMMUNITY POST 
-				+-->
-			<fmt:message key="actions.communityPost.title" var="communityPost" />
-			<li>
-				<a href="${relativeUrlGenerator.getCommunityPublicationUrlByInterHash(post.resource.interHash)}" title="${fn:escapeXml(communityPost)}">
-					<fmt:message key="actions.communityPost" />
-					&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
-				</a>
-			</li>
+			<li><buttons:communityPostMenuItem post="${post}" resourceType="${rscType}"/></li>
 
-			<!--+
-				| HISTORY
-				+-->
 			<li>
-				<fmt:message key="bibtex.actions.posthistory.title" var="postHistoryTitle" />
-				<c:choose>
-					<c:when test="${(command.context.userLoggedIn and (loginUserName eq post.user.name)) or (empty post.user)}">
-						<c:set var="hash" value="${post.resource.interHash}"/>
-						<c:if test="${not empty post.user}">
-							<c:set var="hash" value="${post.resource.intraHash}"/>
-						</c:if>
-						<a href="${relativeUrlGenerator.getHistoryURLByHashAndUserName(hash, post.user.name, false)}" title="${postHistoryTitle}">
-							<fmt:message key="bibtex.actions.posthistory.title" />
-							&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
-						</a>
-					</c:when>
-					<c:otherwise>
-						<span class="ilitem" title="${historyTitle}">
-							<fmt:message key="bibtex.actions.posthistory.title" />
-							&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
-						</span>
-					</c:otherwise>
-				</c:choose>
+				<buttons:historyMenuItem 
+					post ="${post}" 
+					loginUserName="${loginUserName}" 
+					userLoggedIn="${command.context.userLoggedIn}" 
+					resourceType="${rscType}"
+					buttonClasses="${buttonClasses}"/>
 			</li>
 
 			<li class="divider"><!--  --></li>
