@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -98,7 +99,7 @@ public class PharmacognosyResearchScraper extends GenericBibTeXURLScraper {
 		String bibtex_new_key = "@article{nokey,\n";
 		if (!(bibtex_key.contains("@") && bibtex_key.contains("{") && bibtex_key.contains(",\n"))) {
 			// TODO: remove html entities in bibtex!
-			return bibtex.replace(bibtex_key, bibtex_new_key + bibtex_key);
+			return StringEscapeUtils.unescapeHtml(bibtex.replace(bibtex_key, bibtex_new_key + bibtex_key));
 		}
 		return null;
 	}
