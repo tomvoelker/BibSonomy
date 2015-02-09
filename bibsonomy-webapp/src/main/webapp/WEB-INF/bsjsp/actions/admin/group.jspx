@@ -144,9 +144,6 @@
 
 				</fieldset>
 				
-				
-
-					<!-- TODO: Test this. -->
 				<c:if test="${not empty command.pendingGroups}">
 					<fieldset>
 						<label>
