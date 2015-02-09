@@ -30,11 +30,11 @@ package org.bibsonomy.services.searcher;
 import java.util.Collection;
 import java.util.List;
 
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.es.SearchType;
 
 /**
  * Interface for resource search operations

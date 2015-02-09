@@ -33,10 +33,10 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.search.BibTexKeySystemTag;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.webapp.command.ajax.GeneralAjaxCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -92,7 +92,7 @@ public class GeneralAjaxController extends AjaxController implements Minimalisti
 		 * fetch posts
 		 */		
 		final List<String> tags = Collections.singletonList(SystemTagsUtil.buildSystemTagString(BibTexKeySystemTag.NAME, requestedBibTexKey));
-		command.setBibtexPosts(this.logic.getPosts(BibTex.class, GroupingEntity.USER, requestedUserName, tags, null, null,SearchType.LUCENESEARCH, null, null, null, null, 0, 20));
+		command.setBibtexPosts(this.logic.getPosts(BibTex.class, GroupingEntity.USER, requestedUserName, tags, null, null,SearchType.DEFAULT_SEARCH, null, null, null, null, 0, 20));
 	}
 	
 	/**

@@ -45,6 +45,7 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
@@ -58,7 +59,6 @@ import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.SimHash;
@@ -291,7 +291,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		final int step = PostLogicInterface.MAX_QUERY_SIZE;
 		
 		do {
-			tmp = this.logic.getPosts((Class<RESOURCE>)this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null,SearchType.LUCENESEARCH, null, null, null, null, startCount, startCount + step);
+			tmp = this.logic.getPosts((Class<RESOURCE>)this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null,SearchType.DEFAULT_SEARCH, null, null, null, null, startCount, startCount + step);
 			dbPosts.addAll(tmp);
 			startCount += step;
 		} while (tmp.size() == step);
@@ -406,7 +406,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				// comparePost is the history revision which will be restored.
 				final int compareVersion = command.getCompareVersion();
 				@SuppressWarnings("unchecked")
-				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(dbPost.getResource().getClass(), GroupingEntity.USER, this.getGrouping(loginUser), null, intraHashToUpdate, null, SearchType.LUCENESEARCH, FilterEntity.POSTS_HISTORY, null, null, null, compareVersion, compareVersion + 1).get(0);
+				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(dbPost.getResource().getClass(), GroupingEntity.USER, this.getGrouping(loginUser), null, intraHashToUpdate, null, SearchType.DEFAULT_SEARCH, FilterEntity.POSTS_HISTORY, null, null, null, compareVersion, compareVersion + 1).get(0);
 				
 				// TODO: why don't we set the dbPost = comparePost? why do we have to restore all fields by hand?
 				final List<String> diffEntryKeyList = command.getDifferentEntryKeys();

@@ -5,16 +5,13 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.lucene.util.generator.GenerateIndexCallback;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.es.ESClient;
-import org.bibsonomy.model.es.IndexUpdater;
-import org.bibsonomy.model.es.SearchType;
-import org.bibsonomy.model.es.UpdatePlugin;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
@@ -91,11 +88,11 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	    }
 		
 		SharedResourceIndexGenerator generator = new SharedResourceIndexGenerator(this.systemHome);
-		generator.setSearchType(SearchType.ELASTICSEARCH);
+		generator.setIndexType(IndexType.ELASTICSEARCH);
 		for(LuceneResourceManager<? extends Resource> manager: luceneResourceManagers){
 			generator.setLogic((LuceneDBInterface<Resource>) manager.getDbLogic());
 			generator.setEsClient(esClient);
-			generator.setIndexType(manager.getResourceName());
+			generator.setResourceType(manager.getResourceName());
 			generator.setResourceConverter((LuceneResourceConverter<Resource>) manager.getResourceConverter());
 			// this cast is really ugly, but safe because nothing specific is done with the resource in the generatedIndex method of this object
 			generator.setCallback((GenerateIndexCallback<Resource>) this);

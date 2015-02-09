@@ -44,6 +44,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostAccess;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.systemstags.SystemTag;
@@ -52,7 +53,6 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.es.SearchType;
 
 /**
  * This is the most generic param. All fields which are not specific to

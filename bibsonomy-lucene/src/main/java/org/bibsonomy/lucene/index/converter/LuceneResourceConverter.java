@@ -46,13 +46,13 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
+import org.bibsonomy.es.IndexType;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.param.typehandler.LuceneTypeHandler;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.util.tex.TexDecode;
 
@@ -122,7 +122,7 @@ public class LuceneResourceConverter<R extends Resource> {
 	 * @return the lucene document representation of the post
 	 */
 	@SuppressWarnings("null")
-	public Object readPost(final Post<R> post, final SearchType searchType) {
+	public Object readPost(final Post<R> post, final IndexType searchType) {
 		Document luceneDocument = null;
 		Map<String, Object> jsonDocument = null;
 		
@@ -131,9 +131,9 @@ public class LuceneResourceConverter<R extends Resource> {
 		// all private fields are concatenated for full text search
 		final StringBuilder privateField = new StringBuilder();
 		
-		if(searchType == SearchType.ELASTICSEARCH){
+		if (searchType == IndexType.ELASTICSEARCH) {
 			jsonDocument = new HashMap<String, Object>();
-		}else{
+		} else {
 			luceneDocument = new Document();
 		}
 		/*
@@ -152,9 +152,9 @@ public class LuceneResourceConverter<R extends Resource> {
 			final Index fieldIndex = this.getFieldIndexForProperty(propertyName);
 			final Store fieldStore = this.getFieldStoreForProperty(propertyName);
 			final String fieldName = this.getFieldName(propertyName);
-			if(searchType == SearchType.ELASTICSEARCH){
+			if (searchType == IndexType.ELASTICSEARCH) {
 				jsonDocument.put(fieldName, propertyValue);
-			}else{
+			} else {
 				// add field to the lucene document
 				luceneDocument.add(new Field(fieldName, propertyValue, fieldStore, fieldIndex));
 			
@@ -174,7 +174,7 @@ public class LuceneResourceConverter<R extends Resource> {
 			}
 		}
 		
-		if(searchType == SearchType.ELASTICSEARCH){
+		if (searchType == IndexType.ELASTICSEARCH) {
 			jsonDocument.put(LuceneFieldNames.MERGED_FIELDS, decodeTeX(fulltextField.toString()));
 			jsonDocument.put(LuceneFieldNames.PRIVATE_FIELDS, decodeTeX(privateField.toString()));
 

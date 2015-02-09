@@ -35,11 +35,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.BibTexUtils;
@@ -88,7 +88,7 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 		 * fetch all bibtex & remove duplicates
 		 */
 		// TODO: really fetch all posts
-		final List<Post<BibTex>> groupBibtexEntries = logic.getPosts(BibTex.class, GroupingEntity.GROUP, command.getRequestedGroup(), tags, null, null, SearchType.LUCENESEARCH,null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
+		final List<Post<BibTex>> groupBibtexEntries = logic.getPosts(BibTex.class, GroupingEntity.GROUP, command.getRequestedGroup(), tags, null, null, SearchType.DEFAULT_SEARCH,null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
 		BibTexUtils.removeDuplicates(groupBibtexEntries);
 		
 		

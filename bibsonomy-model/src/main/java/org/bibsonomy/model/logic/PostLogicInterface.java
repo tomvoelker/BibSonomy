@@ -33,13 +33,13 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
 
@@ -82,7 +82,7 @@ public interface PostLogicInterface {
 	 *            all posts belonging to a given resource. if unused, its empty
 	 *            but not null.
 	 * @param search - free text search
-	 * @param searchType - the type of search (i.e. ELASTICSEARCH)
+	 * @param searchType - the type of search (i.e. CROSS_SYSTEM_SEARCH)
 	 * @param filter - filter for the retrieved posts
 	 * @param order - a flag indicating the way of sorting
 	 * @param startDate - if given, only posts that have been created after (inclusive) startDate are returned  

@@ -1,6 +1,5 @@
 package org.bibsonomy.es;
 
-import org.bibsonomy.model.es.ESClient;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;

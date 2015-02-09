@@ -35,6 +35,7 @@ import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
@@ -44,7 +45,6 @@ import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.ModelUtils;
@@ -111,7 +111,7 @@ public class LuceneGoldStandardManagerTest extends AbstractDatabaseManagerTest {
 		updateIndex();
 		
 		assertEquals(docCountBefore + 1,  manager.getResourceIndeces().get(0).getStatistics().getNumDocs());
-		final ResultList<Post<GoldStandardPublication>> posts = (ResultList<Post<GoldStandardPublication>>) searcher.getPosts("", "", "", null, allowedGroups,SearchType.LUCENESEARCH, "Chuck*","", "", new LinkedList<String>(), null, null, null, null, null, 10, 0);
+		final ResultList<Post<GoldStandardPublication>> posts = (ResultList<Post<GoldStandardPublication>>) searcher.getPosts("", "", "", null, allowedGroups,SearchType.DEFAULT_SEARCH, "Chuck*","", "", new LinkedList<String>(), null, null, null, null, null, 10, 0);
 		assertEquals(1, posts.size());
 		
 		updateIndex();
@@ -145,7 +145,7 @@ public class LuceneGoldStandardManagerTest extends AbstractDatabaseManagerTest {
 		// update index
 		updateIndex();
 		assertEquals(docCountBefore, manager.getResourceIndeces().get(0).getStatistics().getNumDocs());
-		ResultList<Post<GoldStandardPublication>> posts = (ResultList<Post<GoldStandardPublication>>) searcher.getPosts("", "", "", null, allowedGroups,SearchType.LUCENESEARCH, "","", "lucene*", new LinkedList<String>(), null, null, null, null, null, 10, 0);
+		ResultList<Post<GoldStandardPublication>> posts = (ResultList<Post<GoldStandardPublication>>) searcher.getPosts("", "", "", null, allowedGroups,SearchType.DEFAULT_SEARCH, "","", "lucene*", new LinkedList<String>(), null, null, null, null, null, 10, 0);
 		assertEquals(1, posts.size());
 	
 		post.getResource().setAbstract("Lorem ipsum dolor logos mundus novus");
@@ -154,7 +154,7 @@ public class LuceneGoldStandardManagerTest extends AbstractDatabaseManagerTest {
 		// update index
 		updateIndex();
 		assertEquals(docCountBefore, manager.getResourceIndeces().get(0).getStatistics().getNumDocs());
-		posts = (ResultList<Post<GoldStandardPublication>>) searcher.getPosts("", "", "", null, allowedGroups,SearchType.LUCENESEARCH, "","", "lucene*", new LinkedList<String>(), null, null, null, null, null, 10, 0);
+		posts = (ResultList<Post<GoldStandardPublication>>) searcher.getPosts("", "", "", null, allowedGroups,SearchType.DEFAULT_SEARCH, "","", "lucene*", new LinkedList<String>(), null, null, null, null, null, 10, 0);
 		assertEquals(1, posts.size());
 	
 		// update index second call
@@ -163,7 +163,7 @@ public class LuceneGoldStandardManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(docCountBefore, manager.getResourceIndeces().get(0).getStatistics().getNumDocs());
 		
 		// check if the new post is in the lucene index
-		posts = (ResultList<Post<GoldStandardPublication>>) searcher.getPosts("", "", "", null, allowedGroups,SearchType.LUCENESEARCH, "","", "lucene*", new LinkedList<String>(), null, null, null, null, null, 10, 0);
+		posts = (ResultList<Post<GoldStandardPublication>>) searcher.getPosts("", "", "", null, allowedGroups,SearchType.DEFAULT_SEARCH, "","", "lucene*", new LinkedList<String>(), null, null, null, null, null, 10, 0);
 		assertEquals(1, posts.size());
 		
 		updateIndex();

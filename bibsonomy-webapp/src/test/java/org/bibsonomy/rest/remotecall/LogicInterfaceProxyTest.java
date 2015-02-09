@@ -61,6 +61,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagRelation;
@@ -83,7 +84,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.logic.PostLogicInterface;
@@ -639,7 +639,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */
 	@Test
 	public void getPostsTestBookmarkByTag() {
-		getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null, SearchType.LUCENESEARCH,null,  null /* must be null because order is inferred and not transmitted */, null, null, 7, 1264);
+		getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null, SearchType.DEFAULT_SEARCH,null,  null /* must be null because order is inferred and not transmitted */, null, null, 7, 1264);
 	}
 	
 	/**
@@ -647,7 +647,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */
 	@Test
 	public void getPostsTestPublicationByGroupAndTag() {
-		getPosts(BibTex.class, GroupingEntity.GROUP, "testGroup", Arrays.asList("blub", "bla"), null, null,SearchType.LUCENESEARCH, null, null, null, null, 0, 1);
+		getPosts(BibTex.class, GroupingEntity.GROUP, "testGroup", Arrays.asList("blub", "bla"), null, null,SearchType.DEFAULT_SEARCH, null, null, null, null, 0, 1);
 	}
 	
 	/**
@@ -655,7 +655,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */
 	@Test
 	public void getPostsTestPublicationByTagWithUmlaut() {
-		getPosts(BibTex.class, GroupingEntity.ALL, null, Arrays.asList("blüb"), null, null,SearchType.LUCENESEARCH, null, null, null, null, 0, 1);
+		getPosts(BibTex.class, GroupingEntity.ALL, null, Arrays.asList("blüb"), null, null,SearchType.DEFAULT_SEARCH, null, null, null, null, 0, 1);
 	}
 	
 	/**
@@ -663,12 +663,12 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */
 	@Test
 	public void getPostsTestPublicationByUserAndHash() {
-		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null,SearchType.LUCENESEARCH, null, null, null, null, 0, 5);
+		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null,SearchType.DEFAULT_SEARCH, null, null, null, null, 0, 5);
 	}
 	
 	@Test
 	public void getPostsTestWithSearchAndOrder() {
-		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), "search",SearchType.LUCENESEARCH, null, Order.FOLKRANK, null, null, 0, 5);
+		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), "search",SearchType.DEFAULT_SEARCH, null, Order.FOLKRANK, null, null, 0, 5);
 	}
 	
 	@Override

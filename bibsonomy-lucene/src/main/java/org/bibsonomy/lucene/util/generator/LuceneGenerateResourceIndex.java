@@ -47,6 +47,8 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.NoSuchDirectoryException;
 import org.apache.lucene.util.Version;
+import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.es.IndexType;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
@@ -54,7 +56,6 @@ import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.es.SearchType;
 
 /**
  * reads data from database and builds lucene index for all resource entries
@@ -93,7 +94,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 	/**
 	 * the search type
 	 */
-	protected SearchType searchType;
+	protected IndexType indexType;
 
 	/** set to true if the generator is currently generating an index */
 	protected boolean isRunning;
@@ -266,7 +267,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 
 				if (LuceneGenerateResourceIndex.this.isNotSpammer(post)) {
 					// create index document from post model
-					final Document doc = (Document) LuceneGenerateResourceIndex.this.resourceConverter.readPost(post, SearchType.LUCENESEARCH);
+					final Document doc = (Document) LuceneGenerateResourceIndex.this.resourceConverter.readPost(post, IndexType.LUCENE);
 					try {
 						LuceneGenerateResourceIndex.this.indexWriter.addDocument(doc);
 						LuceneGenerateResourceIndex.this.importedPost(post);
@@ -350,7 +351,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 				// public void run() {
 				if (LuceneGenerateResourceIndex.this.isNotSpammer(post)) {
 					// create index document from post model
-					final Document doc = (Document) LuceneGenerateResourceIndex.this.resourceConverter.readPost(post, SearchType.LUCENESEARCH);
+					final Document doc = (Document) LuceneGenerateResourceIndex.this.resourceConverter.readPost(post, IndexType.LUCENE);
 
 					try {
 						LuceneGenerateResourceIndex.this.indexWriter.addDocument(doc);
@@ -487,14 +488,14 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 	/**
 	 * @return the searchType
 	 */
-	public SearchType getSearchType() {
-		return this.searchType;
+	public IndexType getIndexType() {
+		return this.indexType;
 	}
 
 	/**
-	 * @param searchType the searchType to set
+	 * @param indexType the searchType to set
 	 */
-	public void setSearchType(SearchType searchType) {
-		this.searchType = searchType;
+	public void setIndexType(IndexType indexType) {
+		this.indexType = indexType;
 	}
 }

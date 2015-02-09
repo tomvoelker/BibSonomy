@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.lucene.document.Document;
+import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.es.IndexType;
 import org.bibsonomy.lucene.database.LuceneDBLogic;
 import org.bibsonomy.lucene.database.LuceneGoldStandardLogic;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
@@ -38,7 +40,6 @@ import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.es.SearchType;
 
 /**
  * Updates the gold standard publication posts
@@ -55,7 +56,7 @@ public class LuceneGoldStandardManager<R extends Resource & GoldStandard<?>> ext
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	protected int updateIndex(final long currentLogDate, int lastId, final long lastLogDate, final SearchType searchType) {
+	protected int updateIndex(final long currentLogDate, int lastId, final long lastLogDate, final IndexType searchType) {
 		/*
 		 * get new posts 
 		 */
@@ -82,7 +83,7 @@ public class LuceneGoldStandardManager<R extends Resource & GoldStandard<?>> ext
 		/*
 		 * add all new posts to the index 
 		 */
-		if (SearchType.LUCENESEARCH == searchType) {
+		if (IndexType.LUCENE == searchType) {
 			this.updatingIndex.deleteDocumentsInIndex(contentIdsToDelete);
 			for (final LucenePost<GoldStandardPublication> post : newPosts) {
 				post.setLastLogDate(currentDate);
@@ -90,7 +91,7 @@ public class LuceneGoldStandardManager<R extends Resource & GoldStandard<?>> ext
 				final Document postDoc = (Document) this.resourceConverter.readPost(post, searchType);
 				this.updatingIndex.insertDocument(postDoc);
 			}
-		} else if (SearchType.ELASTICSEARCH == searchType) {
+		} else if (IndexType.ELASTICSEARCH == searchType) {
 			this.sharedIndexUpdater.setContentIdsToDelete(contentIdsToDelete);
 
 			for (final LucenePost<GoldStandardPublication> post : newPosts) {
@@ -99,14 +100,14 @@ public class LuceneGoldStandardManager<R extends Resource & GoldStandard<?>> ext
 				final Map<String, Object> postDoc = (Map<String, Object>)this.resourceConverter.readPost(post, searchType);
 				this.sharedIndexUpdater.insertDocument(postDoc);
 			}			
-		} else if (SearchType.BOTH == searchType) {
+		} else if (IndexType.BOTH == searchType) {
 			this.updatingIndex.deleteDocumentsInIndex(contentIdsToDelete);
 			this.sharedIndexUpdater.setContentIdsToDelete(contentIdsToDelete);
 			for (final LucenePost<GoldStandardPublication> post : newPosts) {
 				post.setLastTasId(lastId);
 				post.setLastLogDate(currentDate);
-				final Document postDoc = (Document)this.resourceConverter.readPost(post, SearchType.LUCENESEARCH);
-				final Map<String, Object> postJsonDoc = (Map<String, Object>)this.resourceConverter.readPost(post, SearchType.ELASTICSEARCH);
+				final Document postDoc = (Document)this.resourceConverter.readPost(post, IndexType.LUCENE);
+				final Map<String, Object> postJsonDoc = (Map<String, Object>)this.resourceConverter.readPost(post, IndexType.ELASTICSEARCH);
 				this.sharedIndexUpdater.insertDocument(postJsonDoc);
 				this.updatingIndex.insertDocument(postDoc);
 			}
