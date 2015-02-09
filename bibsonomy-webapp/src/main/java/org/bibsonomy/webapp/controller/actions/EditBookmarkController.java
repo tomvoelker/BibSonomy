@@ -30,6 +30,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
@@ -66,6 +67,10 @@ public class EditBookmarkController extends EditPostController<Bookmark, EditBoo
 
 	@Override
 	protected void setDuplicateErrorMessage(final Post<Bookmark> post, final Errors errors) {
+		if (post.getResource() instanceof GoldStandardBookmark) {
+			errors.rejectValue("post.resource.title", "error.field.valid.alreadyStoredCommunityPost", "A community with that data already exists.");
+			return;
+		}
 		errors.rejectValue("post.resource.url", "error.field.valid.url.alreadybookmarked");
 	}
 

@@ -22,25 +22,37 @@
 		<c:choose>
 			<c:when test="${command.context.userLoggedIn}">
 				<c:choose>
-					<!-- COPY -->
-					<c:when test="${loginUserName ne post.user.name}"><!-- user is not post's owner -->
-						<c:url var="copyLink" value="/editBookmark">
-							<c:param name="hash" value="${post.resource.intraHash}" />
-							<c:param name="user" value="${post.user.name}" />
-							<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
-						</c:url>		
-						<fmt:message key="bookmark.actions.copy.title" var="copyTitle"/>
-						<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
-							<span class="glyphicon glyphicon glyphicon-floppy-disk"><!--  --></span>
+					<c:when test="${empty post.user.name}">
+						<!--  community post -->
+						<fmt:message key="post.actions.copy.title" var="copyTitle"/>
+						<a class="btn btn-default" href="/editBookmark?hash=${post.resource.interHash}&amp;user=&amp;" title="${fn:escapeXml(copyTitle)}">
+							<span class="fa fa-copy"><!--  --></span>
+							<span class="sr-only"><fmt:message key="post.actions.copy"/></span>
 						</a>
 					</c:when>
+					<c:otherwise>
+						<c:choose>
+							<!-- COPY -->
+							<c:when test="${loginUserName ne post.user.name}"><!-- user is not post's owner -->
+								<c:url var="copyLink" value="/editBookmark">
+									<c:param name="hash" value="${post.resource.intraHash}" />
+									<c:param name="user" value="${post.user.name}" />
+									<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
+								</c:url>		
+								<fmt:message key="bookmark.actions.copy.title" var="copyTitle"/>
+								<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
+									<span class="glyphicon glyphicon glyphicon-floppy-disk"><!--  --></span>
+								</a>
+							</c:when>
 
-					<!-- EDIT -->
-					<c:otherwise><!-- user is post's owner -->
-						<fmt:message key="bookmark.actions.edit.title" var="editTitle" />
-						<a class="${buttonClasses}" href="/editBookmark?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
-							<span class="glyphicon glyphicon-edit"><!--  --></span>
-						</a>
+							<!-- EDIT -->
+							<c:otherwise><!-- user is post's owner -->
+								<fmt:message key="bookmark.actions.edit.title" var="editTitle" />
+								<a class="${buttonClasses}" href="/editBookmark?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
+									<span class="glyphicon glyphicon-edit"><!--  --></span>
+								</a>
+							</c:otherwise>
+						</c:choose>
 					</c:otherwise>
 				</c:choose>
 			</c:when>
@@ -56,13 +68,8 @@
 		<!--+
 			| link for the memento timegate to the archived version of the page
 			+-->
-			
-		<c:url var="mementoLink" value="/memento">
-			<c:param name="url" value="${post.resource.url}"/>
-			<c:param name="datetime" value="${mtl:formatDateW3CDTF(post.date)}"/>
-		</c:url>
 		<fmt:message key="bookmark.actions.memento" var="mementoTitle" />
-		<a class="${buttonClasses}" href="${mementoLink}" rel="nofollow" title="${mementoTitle}">
+		<a class="${buttonClasses}" href="${properties['memento.timegate']}/${mtl:formatDateMemento(post.date)}/${mtl:encodeURI(post.resource.url)}" rel="nofollow" title="${mementoTitle}">
 			<span class="fa fa-history"><!--  --></span>
 		</a>
 		

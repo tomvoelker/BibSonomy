@@ -57,99 +57,116 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
-			<fieldset class="fsOuter">
 
-					<!-- BS3 this. -->
-					<c:if test="${not empty command.adminResponse}">
-					<div>
-						<bs:feedback size="defaultSize" style="success">
-							<jsp:attribute name="feedbackBody">
-								<fmt:message key="${command.adminResponse}" />
-							</jsp:attribute>
-						</bs:feedback>
-					</div>
-					</c:if>
+			<!-- BS3 this. -->
+			<c:if test="${not empty command.adminResponse}">
+			<div>
+				<bs:feedback size="defaultSize" style="success">
+					<jsp:attribute name="feedbackBody">
+						<fmt:message key="${command.adminResponse}" />
+					</jsp:attribute>
+				</bs:feedback>
+			</div>
+			</c:if>
 
-				<fieldset>
-					<label><h2><fmt:message key="admin.actions.group"/></h2></label>
-
+			<bsform:fieldset legendKey="admin.actions.group">
+					
+				<jsp:attribute name="content">
 					<form:form name="addgroup" action="${relativeUrlGenerator.getAdminUrlByName('group')}" method="POST" cssClass="form-horizontal" >
 						<input type="hidden" value="CREATE" name="action" />
-						<fieldset class="fsInner">
-							<bsform:input path="group.name" helpKey="settings.group.addUser.help" autocomplete="true" labelColSpan="3" inputColSpan="9" />
-							<bsform:input path="group.groupRequest.userName" helpKey="settings.group.addUser.help" autocomplete="true" labelColSpan="3" inputColSpan="9" id="designatedAdmin" />
-							<bsform:textarea path="group.groupRequest.reason" labelColSpan="3" inputColSpan="9" />
-							<div class="form-group">
-								<form:label cssClass="col-sm-3 control-label" path="group.privlevel">
-									<fmt:message key="settings.group.memberList" />
-								</form:label>
+						
+						
+						<bsform:input path="group.name" helpKey="settings.group.addUser.help" autocomplete="true" labelColSpan="3" inputColSpan="9" />
+						
+						<bsform:input path="group.groupRequest.userName" helpKey="settings.group.addUser.help" autocomplete="true" labelColSpan="3" inputColSpan="9" id="designatedAdmin" />
+						
+						<bsform:textarea path="group.groupRequest.reason" labelColSpan="3" inputColSpan="9" />
+						
+						<!-- member list -->
+						<div class="form-group">
+							<form:label cssClass="col-sm-3 control-label" path="group.privlevel">
+								<fmt:message key="settings.group.memberList" />
+							</form:label>
 
-								<div class="col-sm-9">
-									<form:select cssClass="form-control help-popover" path="group.privlevel"  size="1" multiple="false">
-										<form:option value="PUBLIC"><fmt:message key="settings.public" /></form:option>
-										<form:option value="HIDDEN"><fmt:message key="settings.private" /></form:option>
-										<form:option value="MEMBERS"><fmt:message key="settings.publicForMembers" /></form:option>
-									</form:select>
-									<div class="help help-header hide"><fmt:message key="settings.group.memberList" /></div>
-									<div class="help help-content hide"><fmt:message key="settings.group.memberList.help" /></div>
-								</div>
+							<div class="col-sm-9">
+								<form:select cssClass="form-control help-popover" path="group.privlevel" multiple="false">
+									<form:option value="PUBLIC"><fmt:message key="settings.public" /></form:option>
+									<form:option value="HIDDEN"><fmt:message key="settings.private" /></form:option>
+									<form:option value="MEMBERS"><fmt:message key="settings.publicForMembers" /></form:option>
+								</form:select>
+								<div class="help help-header hide"><fmt:message key="settings.group.memberList" /></div>
+								<div class="help help-content hide"><fmt:message key="settings.group.memberList.help" /></div>
 							</div>
+						</div> <!-- /.form-group -->
 
-							<!-- shared documents -->
-							<div class="form-group">
-								<form:label cssClass="col-sm-3 control-label" path="group.sharedDocuments">
-									<fmt:message key="settings.group.sharedDocuments" />
-								</form:label>
+						<!-- shared documents -->
+						<div class="form-group">
+							<form:label cssClass="col-sm-3 control-label" path="group.sharedDocuments">
+								<fmt:message key="settings.group.sharedDocuments" />
+							</form:label>
 
-								<div class="col-sm-9">
-									<form:select cssClass="form-control help-popover" path="group.sharedDocuments">
-										<form:option value="0"><fmt:message key="settings.disabled" /></form:option>
-										<form:option value="1"><fmt:message key="settings.enabled" /></form:option>
-									</form:select>
+							<div class="col-sm-9">
+								<form:select cssClass="form-control help-popover" path="group.sharedDocuments">
+									<form:option value="0"><fmt:message key="settings.disabled" /></form:option>
+									<form:option value="1"><fmt:message key="settings.enabled" /></form:option>
+								</form:select>
 
-									<div class="help help-header hide"><fmt:message key="settings.group.sharedDocuments" /></div>
-									<div class="help help-content hide"><p><fmt:message key="settings.group.sharedDocuments.help" /></p></div>
-								</div>
+								<div class="help help-header hide"><fmt:message key="settings.group.sharedDocuments" /></div>
+								<div class="help help-content hide"><p><fmt:message key="settings.group.sharedDocuments.help" /></p></div>
 							</div>
-							<div class="form-group">
-								<div class="col-sm-offset-3 col-sm-9">
-									<fmt:message var="updatesettings" key="settings.updatesettings" />
-									<bsform:button type="submit" style="primary" size="defaultSize" value="${updatesettings}" />
-								</div>
+						</div> <!-- /.form-group -->
+						
+						<!-- submit button -->
+						<div class="form-group">
+							<div class="col-sm-offset-3 col-sm-9">
+								<fmt:message var="updatesettings" key="settings.updatesettings" />
+								<bsform:button type="submit" style="primary" size="defaultSize" value="${updatesettings}" />
 							</div>
-						</fieldset>
+						</div> <!-- /.form-group -->
+						
+						
 					</form:form>
-				</fieldset>
+				</jsp:attribute>
+			</bsform:fieldset>
 
-				<fieldset class="fsInner">
-					<div><h2> <fmt:message key="settings.group.permissionHeading"/></h2></div>
-					<fmt:message key="settings.group.permissionIntro"/>
+			<bsform:fieldset legendKey="settings.group.permissionHeading">
+				<jsp:attribute name="content">
+					
 
 					<form:form name="groupWithPermissions" action="${relativeUrlGenerator.getAdminUrlByName('group')}" method="POST" cssClass="form-horizontal" >
+						
 						<input type="hidden" value="UPDATE_PERMISSIONS" name="action" />
-						<bsform:input id="fetchGroupForPermissions" path="group.name" helpKey="settings.group.permission.help" autocomplete="true" labelColSpan="3" inputColSpan="9"/>
-						<div class="col-sm-offset-3 col-sm-9">
-							<a title="fetch group permissions" style="cursor: pointer" onclick="javascript:fetchGroupPermissions('#fetchGroupForPermissions');">
-								<fmt:message key="settings.group.permission.fetch"/>
-							</a>
-							<fmt:message key="group.updatePermission.update" var="msg"/>
-							<bsform:checkbox id="COMMUNITY_POST_INSPECTION" path="communityPostInspectionPermission" labelKey="settings.group.permission.communityPostInspectionPermission" disabled="true" classAtt="permissionCheckbox"/>
+						
+						<div class="form-group">
+							<div class="col-sm-offset-3 col-sm-9">
+								<p class="help-block"><fmt:message key="settings.group.permissionIntro"/></p>
+							</div>
 						</div>
+						
+						<bsform:input labelColSpan="3" inputColSpan="9" id="fetchGroupForPermissions" path="group.name" helpKey="settings.group.permission.help" autocomplete="true" />
+						
+						<div class="form-group">
+							<div class="col-sm-offset-3 col-sm-9">
+								<p class="form-control-static"><a title="fetch group permissions" style="cursor: pointer" onclick="javascript:fetchGroupPermissions('#fetchGroupForPermissions');"><fmt:message key="settings.group.permission.fetch"/></a></p>
+							</div>
+							<fmt:message key="group.updatePermission.update" var="msg"/>
+						</div>
+						
+						<bsform:checkbox inputColSpan="9" id="COMMUNITY_POST_INSPECTION" path="communityPostInspectionPermission" labelKey="settings.group.permission.communityPostInspectionPermission" disabled="true" classAtt="permissionCheckbox"/>
 
-						<div class="col-sm-offset-3 col-sm-9">
-							<bsform:button type="submit" style="primary" size="defaultSize" value="${msg}" />
+						<div class="form-group">
+							<div class="col-sm-offset-3 col-sm-9">
+								<bsform:button type="submit" style="primary" size="defaultSize" value="${msg}" />
+							</div>
 						</div>
 
 					</form:form>
-
-				</fieldset>
+				</jsp:attribute>
+			</bsform:fieldset>
 				
-				<c:if test="${not empty command.pendingGroups}">
-					<fieldset>
-						<label>
-							<h2><fmt:message key="admin.group.pending"/></h2>
-						</label>
-
+			<c:if test="${not empty command.pendingGroups}">
+				<bsform:fieldset legendKey="admin.group.pending">
+					<jsp:attribute name="content">
 						<table class="table table-hover">
 							<c:forEach var="entry" items="${command.pendingGroups}">
 								<tr>
@@ -178,9 +195,9 @@
 								</tr>
 							</c:forEach>
 						</table>
-					</fieldset>
-				</c:if>
-			</fieldset>
+					</jsp:attribute>
+				</bsform:fieldset>
+			</c:if>
 
 			<!-- TODO: Move this to JavaScript-File  -->
 			<!-- Have this working properly, like tag recommendation -->
