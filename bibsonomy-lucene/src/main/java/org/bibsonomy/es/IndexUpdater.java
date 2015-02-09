@@ -1,4 +1,4 @@
-package org.bibsonomy.model.es;
+package org.bibsonomy.es;
 
 import java.util.ArrayList;
 import java.util.Map;

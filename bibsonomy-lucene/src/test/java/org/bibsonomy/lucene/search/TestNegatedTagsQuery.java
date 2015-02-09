@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.database.AbstractDatabaseTest;
 import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
@@ -49,7 +50,6 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
-import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.testutil.TestDatabaseLoader;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -121,7 +121,7 @@ public class TestNegatedTagsQuery extends AbstractDatabaseManagerTest {
 
 	private ResultList<Post<BibTex>> query(final LuceneResourceSearch<BibTex> lsr, final List<String> testTags, final List<String> negatedTags) {
 		ResultList<Post<BibTex>> resList;
-		resList = (ResultList<Post<BibTex>>) lsr.getPosts(null, null, null, null, Collections.singletonList("public"),SearchType.LUCENESEARCH, null, null, null, testTags, null, null, null, negatedTags, null, 100, 0);
+		resList = (ResultList<Post<BibTex>>) lsr.getPosts(null, null, null, null, Collections.singletonList("public"),SearchType.DEFAULT_SEARCH, null, null, null, testTags, null, null, null, negatedTags, null, 100, 0);
 		return resList;
 	}
 

@@ -61,6 +61,7 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.Version;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.es.EsResourceSearch;
 import org.bibsonomy.lucene.database.LuceneInfoLogic;
@@ -74,7 +75,6 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
@@ -785,7 +785,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			Collection<String> tagIndex, String year, String firstYear,
 			String lastYear, List<String> negatedTags, Order order, int limit,
 			int offset) {
-		if(searchType==SearchType.ELASTICSEARCH){
+		if(searchType==SearchType.CROSS_SYSTEM_SEARCH){
 //			searchResource.setINDEX_TYPE(resourceType);
 //			searchResource.setResourceConverter(this.resourceConverter);
 			try {
@@ -796,7 +796,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			}
 		
 			return null;
-		}else if(searchType==SearchType.LUCENESEARCH){
+		}else if(searchType==SearchType.DEFAULT_SEARCH){
 			return this.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
 		}
 			return null;

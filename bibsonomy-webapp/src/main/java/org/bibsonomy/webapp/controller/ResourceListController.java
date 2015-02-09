@@ -40,6 +40,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Duplicates;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagCloudSort;
 import org.bibsonomy.common.enums.TagCloudStyle;
@@ -51,7 +52,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.BibTexUtils;
@@ -272,7 +272,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param itemsPerPage number of items to be displayed on each page
 	 */
 	protected <T extends Resource> void setList(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int itemsPerPage) {
-		this.setList(cmd, resourceType, groupingEntity, groupingName, tags, hash, search, SearchType.LUCENESEARCH, filter, order, startDate, endDate, itemsPerPage);
+		this.setList(cmd, resourceType, groupingEntity, groupingName, tags, hash, search, SearchType.DEFAULT_SEARCH, filter, order, startDate, endDate, itemsPerPage);
 	}
 	
 	/**

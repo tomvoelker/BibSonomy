@@ -36,12 +36,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.metadata.PostMetaData;
@@ -274,7 +274,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 				 * fetch posts of all users with the given hash, add users to related
 				 * users list
 				 */
-				final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null,SearchType.LUCENESEARCH, null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
+				final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null,SearchType.DEFAULT_SEARCH, null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
 				for (final Post<R> post : allPosts) {
 					command.getRelatedUserCommand().getRelatedUsers().add(post.getUser());
 				}

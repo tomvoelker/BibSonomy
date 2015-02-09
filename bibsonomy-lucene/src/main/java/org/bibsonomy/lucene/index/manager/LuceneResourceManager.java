@@ -40,7 +40,10 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
+import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.es.IndexType;
 import org.bibsonomy.es.SharedResourceIndexUpdater;
+import org.bibsonomy.es.UpdatePlugin;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
@@ -53,8 +56,6 @@ import org.bibsonomy.lucene.util.generator.LuceneGenerateResourceIndex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.es.SearchType;
-import org.bibsonomy.model.es.UpdatePlugin;
 
 /**
  * class for maintaining the lucene index
@@ -205,11 +206,11 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 					Integer newLastTasId;
 					Integer newLastTasIdSharedIndex;
 					if ((lastLogDate == lastLogDateSharedIndex) && (lastTasId == lastTasIdSharedIndex)){
-						newLastTasId = this.updateIndex(currentLogDate, lastTasId, lastLogDateSharedIndex, SearchType.BOTH);
+						newLastTasId = this.updateIndex(currentLogDate, lastTasId, lastLogDateSharedIndex, IndexType.BOTH);
 						newLastTasIdSharedIndex = newLastTasId;
 					} else {
-						newLastTasId = this.updateIndex(currentLogDate, lastTasId, lastLogDate, SearchType.LUCENESEARCH);
-						newLastTasIdSharedIndex =  this.updateIndex(currentLogDate, lastTasIdSharedIndex, lastLogDateSharedIndex, SearchType.ELASTICSEARCH);
+						newLastTasId = this.updateIndex(currentLogDate, lastTasId, lastLogDate, IndexType.LUCENE);
+						newLastTasIdSharedIndex =  this.updateIndex(currentLogDate, lastTasIdSharedIndex, lastLogDateSharedIndex, IndexType.ELASTICSEARCH);
 					}
 					
 					if (newLastTasIdSharedIndex != lastTasIdSharedIndex) {
@@ -224,19 +225,19 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 						this.updatingIndex.flush();
 					}
 				} else {
-					this.runLuceneIndexUpdate(currentLogDate, lastTasId, lastLogDate, SearchType.LUCENESEARCH);
+					this.runLuceneIndexUpdate(currentLogDate, lastTasId, lastLogDate, IndexType.LUCENE);
 				}
 				
 			} else {
-				this.runLuceneIndexUpdate(currentLogDate, lastTasId, lastLogDate, SearchType.LUCENESEARCH);
+				this.runLuceneIndexUpdate(currentLogDate, lastTasId, lastLogDate, IndexType.LUCENE);
 			}
 		}
 		this.alreadyRunning = 0;
 	}
 		
 	@SuppressWarnings("boxing")
-	private void runLuceneIndexUpdate(final long currentLogDate, Integer lastTasId,final long lastLogDate, SearchType searchType){
-		lastTasId = this.updateIndex(currentLogDate, lastTasId, lastLogDate, searchType);
+	private void runLuceneIndexUpdate(final long currentLogDate, Integer lastTasId,final long lastLogDate, IndexType indexType){
+		lastTasId = this.updateIndex(currentLogDate, lastTasId, lastLogDate, indexType);
 		/*
 		 * commit changes
 		 */
@@ -253,15 +254,15 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * @param currentLogDate
 	 * @param lastTasId
 	 * @param lastLogDate
-	 * @param searchType 
+	 * @param indexType 
 	 * @return the lastTasId found by generating the new index
 	 */
 	@SuppressWarnings({ "boxing", "unchecked" })
-	protected int updateIndex(final long currentLogDate, int lastTasId, final long lastLogDate, final SearchType searchType) {
+	protected int updateIndex(final long currentLogDate, int lastTasId, final long lastLogDate, final IndexType indexType) {
 		/*
 		 * 1) flag/unflag spammer
 		 */
-		this.updatePredictions(searchType, lastLogDate);
+		this.updatePredictions(indexType, lastLogDate);
 
 		/*
 		 * 2) get new posts
@@ -285,31 +286,31 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		/*lastTasIdlastTasId
 		 * 5) add all posts from 1) to the index
 		 */
-		if(SearchType.LUCENESEARCH==searchType){
+		if (IndexType.LUCENE == indexType) {
 			this.updatingIndex.deleteDocumentsInIndex(contentIdsToDelete);
 
 			for (final LucenePost<R> post : newPosts) {
 				post.setLastLogDate(new Date(currentLogDate));
-				final Document postDoc = (Document)this.resourceConverter.readPost(post, searchType);
+				final Document postDoc = (Document)this.resourceConverter.readPost(post, indexType);
 				this.updatingIndex.insertDocument(postDoc);					
 			}
-		}else if(SearchType.ELASTICSEARCH == searchType){
+		} else if (IndexType.ELASTICSEARCH == indexType) {
 			this.sharedIndexUpdater.setContentIdsToDelete(contentIdsToDelete);
 
 			for (final LucenePost<R> post : newPosts) {
 				post.setLastLogDate(new Date(currentLogDate));
-				final Map<String, Object> postDoc = (Map<String, Object>)this.resourceConverter.readPost(post, searchType);
+				final Map<String, Object> postDoc = (Map<String, Object>)this.resourceConverter.readPost(post, indexType);
 				this.sharedIndexUpdater.insertDocument(postDoc);
 			}
-		}else if(SearchType.BOTH == searchType){
+		} else if (IndexType.BOTH == indexType) {
 			this.updatingIndex.deleteDocumentsInIndex(contentIdsToDelete);
 			this.sharedIndexUpdater.setContentIdsToDelete(contentIdsToDelete);
 
 			for (final LucenePost<R> post : newPosts) {
 				post.setLastLogDate(new Date(currentLogDate));
 				//sets the system informations for update
-				final Document postDoc = (Document)this.resourceConverter.readPost(post, SearchType.LUCENESEARCH);
-				final Map<String, Object> postJsonDoc = (Map<String, Object>)this.resourceConverter.readPost(post, SearchType.ELASTICSEARCH);
+				final Document postDoc = (Document)this.resourceConverter.readPost(post, IndexType.LUCENE);
+				final Map<String, Object> postJsonDoc = (Map<String, Object>)this.resourceConverter.readPost(post, IndexType.ELASTICSEARCH);
 				this.sharedIndexUpdater.insertDocument(postJsonDoc);
 				this.updatingIndex.insertDocument(postDoc);					
 			}
@@ -569,7 +570,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * @param searchType 
 	 */
 	@SuppressWarnings({ "unchecked", "boxing" })
-	private void updatePredictions(SearchType searchType, final long lastLogDate) {
+	private void updatePredictions(IndexType searchType, final long lastLogDate) {
 		// keeps track of the newest log_date during last index update
 		// final long lastLogDate = lastLogDate - QUERY_TIME_OFFSET_MS;
 		// get date of last index update
@@ -593,7 +594,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 					log.debug("unflag non-spammer");
 					final List<LucenePost<R>> userPosts = this.getDbLogic().getPostsForUser(user.getName(), Integer.MAX_VALUE, 0);
 					// insert new records into index
-					if(searchType == SearchType.LUCENESEARCH){
+					if (searchType == IndexType.LUCENE) {
 						if (present(userPosts)) {
 							for (final Post<R> post : userPosts) {
 								// cache possible pre existing duplicate for
@@ -604,7 +605,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 							}
 						}
 						this.updatingIndex.unFlagUser(user.getName());
-					}else if(searchType == SearchType.ELASTICSEARCH){
+					} else if (searchType == IndexType.ELASTICSEARCH) {
 						if (present(userPosts)) {
 							for (final Post<R> post : userPosts) {
 								// cache possible pre existing duplicate for
@@ -615,7 +616,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 							}
 						}
 						this.sharedIndexUpdater.unFlagUser(user.getName());
-					}else if(searchType == SearchType.BOTH){
+					} else if (searchType == IndexType.BOTH) {
 						for (final Post<R> post : userPosts) {
 							this.updatingIndex.deleteDocumentForContentId(post.getContentId());
 							this.updatingIndex.insertDocument((Document) this.resourceConverter.readPost(post, searchType));
@@ -628,12 +629,12 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 					log.debug("flag spammer");
 					
 					// remove all docs of the user from the index!
-					if(searchType == SearchType.LUCENESEARCH){
+					if (searchType == IndexType.LUCENE) {
 						this.updatingIndex.flagUser(user.getName());	
-					}else if(searchType == SearchType.ELASTICSEARCH){
+					} else if (searchType == IndexType.ELASTICSEARCH) {
 						this.sharedIndexUpdater.flagUser(user.getName());	
 
-					}else if(searchType == SearchType.BOTH){
+					} else if(searchType == IndexType.BOTH) {
 						this.updatingIndex.flagUser(user.getName());	
 						this.sharedIndexUpdater.flagUser(user.getName());	
 					}

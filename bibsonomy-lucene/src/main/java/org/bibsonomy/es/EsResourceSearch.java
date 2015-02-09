@@ -10,7 +10,6 @@ import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
-import org.bibsonomy.model.es.ESClient;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;

@@ -39,6 +39,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
@@ -50,7 +51,6 @@ import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.rest.enums.HttpMethod;
@@ -206,13 +206,13 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 			
 			// If no post could be found for postUserName, find any post, that is visible to the loginUser
 			if (!present(originalPost)) {
-				final List<Post<Bookmark>> bookmarkPosts = this.logic.getPosts(Bookmark.class, GroupingEntity.ALL, null, Collections.<String>emptyList(), interHash, null,SearchType.LUCENESEARCH, null, null, null, null, 0, 1);
+				final List<Post<Bookmark>> bookmarkPosts = this.logic.getPosts(Bookmark.class, GroupingEntity.ALL, null, Collections.<String>emptyList(), interHash, null,SearchType.DEFAULT_SEARCH, null, null, null, null, 0, 1);
 				if (present(bookmarkPosts)) {
 					// Fixme: choose a public post if possible
 					originalPost = bookmarkPosts.get(0);
 				} else {
 					// Fixme: choose a public post if possible
-					final List<Post<BibTex>> publicationPosts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, Collections.<String>emptyList(), interHash, null,SearchType.LUCENESEARCH, null, null, null, null, 0, 1);
+					final List<Post<BibTex>> publicationPosts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, Collections.<String>emptyList(), interHash, null,SearchType.DEFAULT_SEARCH, null, null, null, null, 0, 1);
 					if (present(publicationPosts)) {
 						originalPost = publicationPosts.get(0);
 					}

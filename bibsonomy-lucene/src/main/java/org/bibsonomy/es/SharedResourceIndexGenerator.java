@@ -15,7 +15,6 @@ import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.util.generator.LuceneGenerateResourceIndex;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.es.ESClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -27,7 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Resource>{
 	
 	private final String indexName = ESConstants.INDEX_NAME;
-	private String indexType;
+	private String resourceType;
 	private final String systemUrlFieldName = "systemUrl";
 
 	// ElasticSearch client
@@ -70,18 +69,18 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 		log.info("Start writing data to shared index");
         
 		//Add mapping here depending on the resource type which is here indexType
-		ESResourceMapping resourceMapping = new ESResourceMapping(indexType, esClient);
+		ESResourceMapping resourceMapping = new ESResourceMapping(resourceType, esClient);
 		resourceMapping.doMapping();
 		
 		//Indexing system information for the specific index type
 		SystemInformation systemInfo =  new SystemInformation();
-		systemInfo.setPostType(indexType);
+		systemInfo.setPostType(resourceType);
 		systemInfo.setLast_log_date(lastLogDate);
 		systemInfo.setLast_tas_id(lastTasId);
 		systemInfo.setSystemUrl(systemHome);
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonDocumentForSystemInfo = mapper.writeValueAsString(systemInfo);
-		esClient.getClient().prepareIndex(indexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, systemHome+indexType)
+		esClient.getClient().prepareIndex(indexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, systemHome+resourceType)
 							.setSource(jsonDocumentForSystemInfo).setRefresh(true).execute().actionGet();
 		
 		// read block wise all posts
@@ -102,11 +101,11 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 				post.setLastTasId(lastTasId);
 				if (this.isNotSpammer(post)) {
 					Map<String, Object> jsonDocument = new HashMap<String, Object>();
-					jsonDocument = (Map<String, Object>) this.resourceConverter.readPost(post, this.searchType);
+					jsonDocument = (Map<String, Object>) this.resourceConverter.readPost(post, this.indexType);
 					jsonDocument.put(this.systemUrlFieldName, systemHome);
 					long indexID = (systemHome.hashCode() << 32) + Long.parseLong(post.getContentId().toString());
 					esClient.getClient()
-							.prepareIndex(indexName, indexType, String.valueOf(indexID))
+							.prepareIndex(indexName, resourceType, String.valueOf(indexID))
 							.setSource(jsonDocument).execute().actionGet();
 					log.info("post has been indexed.");
 					
@@ -142,7 +141,7 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 
 			this.isRunning = true;
 
-			log.warn("Generating index for "+ this.indexType+"...");
+			log.warn("Generating index for "+ this.resourceType+"...");
 			// generate index
 			SharedResourceIndexGenerator.this.createIndexFromDatabase();
 
@@ -155,7 +154,7 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 			} catch (final Exception e) {
 				log.error("Failed to close index-writer!", e);
 			}
-			log.warn("Finished generating index for "+ this.indexType);
+			log.warn("Finished generating index for "+ this.resourceType);
 		}
 	}
 
@@ -165,19 +164,13 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 	public String getIndexName() {
 		return this.indexName;
 	}
-	
-	/**
-	 * @return the indexType
-	 */
-	public String getIndexType() {
-		return this.indexType;
+
+	public String getResourceType() {
+		return this.resourceType;
 	}
 
-	/**
-	 * @param indexType the indexType to set
-	 */
-	public void setIndexType(String indexType) {
-		this.indexType = indexType;
+	public void setResourceType(String resourceType) {
+		this.resourceType = resourceType;
 	}
 
 	/**
@@ -193,4 +186,5 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 	public void setEsClient(ESClient esClient) {
 		this.esClient = esClient;
 	}
+
 }

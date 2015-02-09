@@ -4,7 +4,6 @@ import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
 import java.io.IOException;
 
-import org.bibsonomy.model.es.ESClient;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
 /**

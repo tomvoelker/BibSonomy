@@ -28,11 +28,11 @@ package org.bibsonomy.rest.strategy.posts;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.BookmarkUtils;
 import org.bibsonomy.rest.RESTConfig;
@@ -79,7 +79,7 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 	protected <T extends Resource> List<Post<T>> getList(Class<T> resourceType) {
 		// TODO: support other searchtypes
 		return this.getLogic().getPosts(resourceType, grouping, groupingValue,
-				this.tags, this.hash, search, SearchType.LUCENESEARCH, null, order, null, null,
+				this.tags, this.hash, search, SearchType.DEFAULT_SEARCH, null, order, null, null,
 				getView().getStartValue(), getView().getEndValue());
 	}
 }

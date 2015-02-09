@@ -33,6 +33,7 @@ import java.util.Date;
 import org.apache.lucene.document.Document;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.es.IndexType;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.LucenePost;
@@ -43,7 +44,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.CommonModelUtils;
@@ -70,7 +70,7 @@ public class LucenePostConverterTest {
 	public void writeBookmarkPost() {
 		final LucenePost<Bookmark> refPost = generateBookmarkTestPost("testTitle", "testTag", "testUser", new Date(System.currentTimeMillis()), GroupID.PUBLIC);
 		
-		final Document doc = (Document) bookmarkConverter.readPost(refPost, SearchType.LUCENESEARCH);
+		final Document doc = (Document) bookmarkConverter.readPost(refPost, IndexType.LUCENE);
 		
 		final Post<Bookmark> testPost = bookmarkConverter.writePost(doc); 
 
@@ -100,7 +100,7 @@ public class LucenePostConverterTest {
 	@Test
 	public void writeBibTexPost() throws PersonListParserException {
 		final LucenePost<BibTex> refPost = generateBibTexTestPost( "testTitle", "testTag", "testAuthor", "testUser", new Date(System.currentTimeMillis()), GroupID.PUBLIC);
-		final Document doc = (Document) bibTexConverter.readPost(refPost, SearchType.LUCENESEARCH);
+		final Document doc = (Document) bibTexConverter.readPost(refPost, IndexType.LUCENE);
 		
 		final Post<BibTex> testPost = bibTexConverter.writePost(doc); 
 
@@ -134,7 +134,7 @@ public class LucenePostConverterTest {
 	public void bibTexPost() throws PersonListParserException {
 		final LucenePost<BibTex> testPost = generateBibTexTestPost("testTitle", "testTag", "testAuthor", "testUser", new Date(System.currentTimeMillis()), GroupID.PUBLIC);
 		
-		final Document postDoc = (Document) bibTexConverter.readPost(testPost, SearchType.LUCENESEARCH);
+		final Document postDoc = (Document) bibTexConverter.readPost(testPost, IndexType.LUCENE);
 		
 		//--------------------------------------------------------------------
 		// compare some elements

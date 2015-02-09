@@ -34,9 +34,9 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.es.SearchType;
 import org.bibsonomy.webapp.command.SearchViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -122,9 +122,9 @@ public class SearchPageController extends SingleResourceListController implement
 		final List<String> requestedTags = command.getRequestedTagsList();
 		
 		if(searchFromSharedIndex){
-			searchType = SearchType.ELASTICSEARCH;
+			searchType = SearchType.CROSS_SYSTEM_SEARCH;
 		}else{		
-			searchType = SearchType.LUCENESEARCH;
+			searchType = SearchType.DEFAULT_SEARCH;
 			}
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {

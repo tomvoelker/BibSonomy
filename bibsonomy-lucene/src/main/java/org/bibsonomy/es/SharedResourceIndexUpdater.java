@@ -12,8 +12,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.es.ESClient;
-import org.bibsonomy.model.es.IndexUpdater;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.deletebyquery.DeleteByQueryResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
