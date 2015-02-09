@@ -30,9 +30,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Properties;
 
-import org.apache.commons.loenums.HashID;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
@@ -122,8 +121,6 @@ public class URLGenerator {
 	private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
 	private static final String PUBLICATION_INTER_HASH_ID = String.valueOf(HashID.INTER_HASH.getId());
 
-	
-	private static final Log log =  LogFactory.getLog(URLGenerator.class);
 	/**
 	 * The default gives relative URLs.
 	 */
