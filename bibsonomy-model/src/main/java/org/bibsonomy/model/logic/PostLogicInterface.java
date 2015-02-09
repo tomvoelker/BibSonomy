@@ -62,6 +62,39 @@ public interface PostLogicInterface {
 	public static final int MAX_QUERY_SIZE = 1000;
 	
 	/**  
+	 * retrieves a filterable list of posts. This method exists for compatibility reasons. It does not support cross-system searches.
+	 * 
+	 * @param <T> resource type to be shown.
+	 * @param resourceType resource type to be shown.
+	 * @param grouping
+	 *            grouping tells whom posts are to be shown: the posts of a
+	 *            user, of a group or of the viewables.
+	 * @param groupingName
+	 *            name of the grouping. if grouping is user, then its the
+	 *            username. if grouping is set to {@link GroupingEntity#ALL},
+	 *            then its an empty string!
+	 * @param tags
+	 *            a set of tags. remember to parse special tags like
+	 *            ->[tagname], -->[tagname] and <->[tagname]. see documentation.
+	 *            if the parameter is not used, its an empty list
+	 * @param hash
+	 *            hash value of a resource, if one would like to get a list of
+	 *            all posts belonging to a given resource. if unused, its empty
+	 *            but not null.
+	 * @param search - free text search
+	 * @param filter - filter for the retrieved posts
+	 * @param order - a flag indicating the way of sorting
+	 * @param startDate - if given, only posts that have been created after (inclusive) startDate are returned  
+	 * @param endDate - if given, only posts that have been created before (inclusive) endDate are returned 
+	 * @param start - inclusive start index of the view window
+	 * @param end - exclusive end index of the view window
+	 * @return A filtered list of posts. may be empty but not null
+	 * @deprecated use {@link #getPosts(Class, GroupingEntity, String, List, String, String, SearchType, FilterEntity, Order, Date, Date, int, int)}
+	 */
+	@Deprecated
+	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, FilterEntity filter, Order order, Date startDate, Date endDate, int start, int end);
+
+	/**  
 	 * retrieves a filterable list of posts.
 	 * 
 	 * @param <T> resource type to be shown.
@@ -82,7 +115,7 @@ public interface PostLogicInterface {
 	 *            all posts belonging to a given resource. if unused, its empty
 	 *            but not null.
 	 * @param search - free text search
-	 * @param searchType - the type of search (i.e. CROSS_SYSTEM_SEARCH)
+	 * @param searchType - whether to search locally or using an index shared by several systems
 	 * @param filter - filter for the retrieved posts
 	 * @param order - a flag indicating the way of sorting
 	 * @param startDate - if given, only posts that have been created after (inclusive) startDate are returned  
@@ -90,9 +123,10 @@ public interface PostLogicInterface {
 	 * @param start - inclusive start index of the view window
 	 * @param end - exclusive end index of the view window
 	 * @return A filtered list of posts. may be empty but not null
+	 * @since 3.0.1
 	 */
 	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, FilterEntity filter, Order order, Date startDate, Date endDate, int start, int end);
-
+	
 	/**
 	 * Returns details to a post. A post is uniquely identified by a hash of the
 	 * corresponding resource and a username.
