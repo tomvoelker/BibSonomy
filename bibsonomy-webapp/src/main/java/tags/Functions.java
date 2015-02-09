@@ -111,6 +111,9 @@ public class Functions {
 
 	private static final DateTimeFormatter W3CDTF_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
 
+	private static final DateTimeFormatter MEMENTO_FORMAT = DateTimeFormat.forPattern("yyyyMMddHHmm");
+
+
 	/*
 	 * used by computeTagFontSize.
 	 * 
@@ -1009,6 +1012,22 @@ public class Functions {
 	public static String formatDateW3CDTF(final Date date) {
 		if (present(date)) {
 			return W3CDTF_FORMAT.print(new DateTime(date));
+		}
+		return "";
+	}
+
+	/**
+	 * Formats the date for Memento, e.g., 201211071443 (equivalent to 2012-11-07 14:43)
+	 * 
+	 * Currently Java's formatter doesn't support this standard therefore we can
+	 * not use the fmt:formatDate tag with a pattern
+	 * 
+	 * @param date
+	 * @return the formatted date
+	 */
+	public static String formatDateMemento(final Date date) {
+		if (present(date)) {
+			return MEMENTO_FORMAT.print(new DateTime(date));
 		}
 		return "";
 	}
