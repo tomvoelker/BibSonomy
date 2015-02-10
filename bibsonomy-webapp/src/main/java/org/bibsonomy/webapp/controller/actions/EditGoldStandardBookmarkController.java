@@ -28,7 +28,6 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.Bookmark;
@@ -37,7 +36,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ObjectUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
-import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.GoldStandardPostValidator;
 import org.bibsonomy.webapp.validation.PostValidator;
@@ -94,11 +92,7 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 
 	@Override
 	protected View finalRedirect(final String userName, final Post<Bookmark> post, final String referer) {
-		if ((referer == null) || referer.matches(".*/editGoldStandardBookmark.*")) {
-			return new ExtendedRedirectView(this.urlGenerator.getBookmarkUrl(post.getResource(), null));
-		}
-
-		return super.finalRedirect(userName, post, referer);
+		return new ExtendedRedirectView(this.urlGenerator.getBookmarkUrl(post.getResource(), null));
 	}
 
 	private Post<Bookmark> convertToGoldStandard(final Post<Bookmark> post) {
