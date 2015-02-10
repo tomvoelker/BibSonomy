@@ -50,7 +50,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	private static final long serialVersionUID = -1211293063812357398L;
 	
-	/** Indexes of definded tabs */
+	/** Indexes of defined tabs */
 	public final static int MY_PROFILE_IDX = 0;
 	public final static int SETTINGS_IDX = 1;
 	public final static int IMPORTS_IDX = 2;
@@ -123,7 +123,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private int sharedDocuments;
 	private Group group;
 	
-	private List<Group> groups = new ArrayList<Group>();
+	private List<Group> groups = new ArrayList<>();
 	// the group to update
 	private String groupName;
 	
