@@ -2,10 +2,6 @@
 <jsp:root version="2.0" 
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/resources/actionbuttons"
 	>
 
@@ -17,68 +13,23 @@
 
 	<div class="edit-media-buttons btn-group btn-group-xs dropdown-align-right">
 
-		<!-- Edit/Delete -->
-		<c:choose>
-			<c:when test="${command.context.userLoggedIn and (loginUserName eq post.user.name)}">
-				<buttons:editPostButton.tagx
-					post ="${post}" 
-					resourceType="${rscType}"
-					buttonClasses="${buttonClasses}"/>
-			</c:when>
-			<c:otherwise>
-				<buttons:copyPostButton 
-					post ="${post}" 
-					loginUserName="${loginUserName}" 
-					userLoggedIn="${command.context.userLoggedIn}" 
-					resourceType="${rscType}"
-					buttonClasses="${buttonClasses}"/>
-			</c:otherwise>
-		</c:choose>
 
-		<!-- remove/delete -->
-		<c:choose>
-			<c:when test="${post.inboxPost}">
-				<buttons:inboxRemoveButton 
-					post ="${post}" 
-					resourceType="${rscType}"
-					buttonClasses="${buttonClasses}"/>
-			</c:when>
-			<c:otherwise>
-				<buttons:deletePostButton 
-					post ="${post}" 
-					loginUserName="${loginUserName}" 
-					userLoggedIn="${command.context.userLoggedIn}" 
-					resourceType="${rscType}"
-					buttonClasses="${buttonClasses}"/>
-			</c:otherwise>
-		</c:choose>
+		<buttons:dropDownList>
+			<jsp:fragment name="listContent">
 
-		<!--+
-			| link for the memento timegate to the archived version of the page
-			+-->
-		<fmt:message key="bookmark.actions.memento" var="mementoTitle" />
-		<a class="${buttonClasses}" href="${properties['memento.timegate']}/${mtl:formatDateMemento(post.date)}/${mtl:encodeURI(post.resource.url)}" rel="nofollow" title="${mementoTitle}">
-			<span class="fa fa-history"><!--  --></span>
-		</a>
-	
-	
-		<button class="btn btn-default btn-small dropdown-toggle" data-toggle="dropdown">
-			<span class="caret"><!-- KEEP ME --></span>
-		</button>
+				<li><buttons:communityPostMenuItem post="${post}" resourceType="${rscType}"/></li>
 
-		<ul class="dropdown-menu" style="min-width: 230px;">
+				<li>
+					<buttons:historyMenuItem 
+						post ="${post}" 
+						loginUserName="${loginUserName}" 
+						userLoggedIn="${command.context.userLoggedIn}" 
+						resourceType="${rscType}"
+						buttonClasses="${buttonClasses}"/>
+				</li>
 
-			<li><buttons:communityPostMenuItem post="${post}" resourceType="${rscType}"/></li>
+			</jsp:fragment>
+		</buttons:dropDownList>
 
-			<li>
-				<buttons:historyMenuItem 
-					post ="${post}" 
-					loginUserName="${loginUserName}" 
-					userLoggedIn="${command.context.userLoggedIn}" 
-					resourceType="${rscType}"
-					buttonClasses="${buttonClasses}"/>
-			</li>
-
-		</ul>
 	</div>
 </jsp:root>

@@ -16,6 +16,8 @@
 	xmlns:bm="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bookmark"
 	xmlns:bibgs="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
 	xmlns:gpub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/resources/actionbuttons"
+	
 >
 
 
@@ -134,7 +136,7 @@
 											<pub:title post="${newestPost}">
 												<jsp:attribute name="bibActionButtons">
 													<div class="pull-right">
-														<bib:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/>
+														<buttons:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}" resourceType="bibtex"/>
 													</div>
 												</jsp:attribute>
 											</pub:title>
@@ -151,7 +153,7 @@
 											<div class="media">
 												<div class="media-body" id="titletext">
 												<!-- currently there is no specific tagx file for gsBookmark actions -->
-												<!-- 	<div class="pull-right"><bm:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}"/></div> -->
+												<!-- 	<div class="pull-right"><buttons:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}"/></div> -->
 													<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" /></h1>
 													<c:set var="url" value="${newestPost.resource.url}" />
 													<p><a href="${url}"><c:out value="${url}" /></a></p>
@@ -165,7 +167,7 @@
 											<div class="title">
 												<div class="media">
 												<div class="media-body" id="titletext">
-													<div class="pull-right"><bm:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}"/></div>
+													<div class="pull-right"><buttons:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}" resourceType="bookmark"/></div>
 													<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" /></h1>
 													<c:set var="url" value="${newestPost.resource.url}" />
 													<p><a href="${url}"><c:out value="${url}" /></a></p>

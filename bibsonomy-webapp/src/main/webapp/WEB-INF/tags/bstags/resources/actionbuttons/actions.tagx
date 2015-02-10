@@ -1,0 +1,200 @@
+<!-- TODO: abstract view for actions @see bookmark/actions -->
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/resources/actionbuttons"
+	>
+
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="disableResourceLinks" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
+
+	<c:set var="buttonClasses" value="btn btn-default btn-xsmall"/>
+
+	<div class="edit-media-buttons btn-group btn-group-xs dropdown dropdown-align-right">
+
+		<!-- edit/delete -->
+		<c:choose>
+			<c:when test="${command.context.userLoggedIn and (loginUserName eq post.user.name)}">
+				<buttons:editPostButton.tagx
+					post ="${post}" 
+					resourceType="${resourceType}"
+					buttonClasses="${buttonClasses}"/>
+			</c:when>
+			<c:otherwise>
+				<buttons:copyPostButton 
+					post ="${post}" 
+					loginUserName="${loginUserName}" 
+					userLoggedIn="${command.context.userLoggedIn}" 
+					resourceType="${resourceType}"
+					buttonClasses="${buttonClasses}"/>
+			</c:otherwise>
+		</c:choose>
+
+		<!-- remove/delete -->
+		<c:choose>
+			<c:when test="${post.inboxPost}">
+				<buttons:inboxRemoveButton 
+					post ="${post}" 
+					resourceType="${resourceType}"
+					buttonClasses="${buttonClasses}"/>
+			</c:when>
+			<c:otherwise>
+				<buttons:deletePostButton 
+					post ="${post}" 
+					loginUserName="${loginUserName}" 
+					userLoggedIn="${command.context.userLoggedIn}" 
+					resourceType="${resourceType}"
+					buttonClasses="${buttonClasses}"/>
+			</c:otherwise>
+		</c:choose>
+
+		<c:choose>
+			<c:when test="${resourceType eq 'bookmark'}">
+				<buttons:mementoButton post="${post}" buttonClasses="${buttonClasses}"/>
+			</c:when>
+			<c:otherwise>
+				<!-- pick/unpick -->
+				<buttons:pickUnpickButton 
+					post ="${post}" 
+					loginUserName="${loginUserName}" 
+					userLoggedIn="${command.context.userLoggedIn}" 
+					buttonClasses="${buttonClasses}"/>
+			</c:otherwise>
+		</c:choose>
+
+
+		<buttons:dropDownList>
+			<jsp:fragment name="listContent">
+
+				<li><buttons:communityPostMenuItem post="${post}" resourceType="${resourceType}"/></li>
+
+				<li>
+					<buttons:historyMenuItem 
+						post ="${post}" 
+						loginUserName="${loginUserName}" 
+						userLoggedIn="${command.context.userLoggedIn}" 
+						resourceType="${resourceType}"
+						buttonClasses="${buttonClasses}"/>
+				</li>
+
+				<c:if test="${rscTyp eq 'bibtex'}">
+
+					<spring:eval var="intraHashId" expression="T(org.bibsonomy.common.enums.HashID).INTRA_HASH.id" />
+
+					<li class="divider"><!--  --></li>
+					<!--+
+						| RESOURCE LINKS (URL, DOI, BIBTEX, OPEN URL)
+						+-->
+					<c:if test="${not disableResourceLinks}">
+						<!-- URL -->
+						<li>
+							<c:choose>
+								<c:when test="${not empty post.resource.url}">
+									<fmt:message key="bibtex.actions.url.title" var="urlTitle" />
+									<a class="litem" href="${fn:escapeXml(mtl:cleanUrl(post.resource.url))}" title="${urlTitle}"><fmt:message key="bibtex.actions.url"/></a>
+								</c:when>
+								<c:otherwise>
+									<fmt:message key="bibtex.actions.url.inactive" var="urlTitle" />
+									<span class="ilitem" title="${urlTitle}"><fmt:message key="bibtex.actions.url"/></span>
+								</c:otherwise>
+							</c:choose>
+						</li>
+
+						<!-- DOI -->
+						<li>		
+							<c:choose>
+								<c:when test="${not empty post.resource.miscFields['doi']}">
+									<fmt:message key="bibtex.actions.doi" var="urlTitle"/>
+									<a class="litem" href="http://dx.doi.org/${mtl:encodeURI(mtl:extractDOI(post.resource.miscFields['doi']))}" title="${urlTitle}"><fmt:message key="bibtex.actions.doi"/></a>
+								</c:when>
+								<c:otherwise>
+									<fmt:message key="bibtex.actions.doi.inactive" var="urlTitle"/>
+									<span class="ilitem" title="${urlTitle}"><fmt:message key="bibtex.actions.doi"/></span>
+								</c:otherwise>
+							</c:choose>
+						</li>
+						<li class="divider"><!--  --></li>
+						<!-- BibTeX -->
+						<!-- TODO: use url generator -->
+						<li>
+							<fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />
+							<a class="litem" href="/bib/bibtex/${intraHashId}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}" title="${bibtexTitle}"><fmt:message key="bibtex.actions.bibtex"/></a>
+						</li>
+						
+						<!-- ENDNOTE -->
+						<!-- TODO: use url generator -->
+						<li>
+							<fmt:message key="bibtex.actions.endnote.title" var="endnoteTitle" />
+							<a class="litem" href="/layout/endnote/bibtex/${intraHashId}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}?formatEmbedded=true" title="${endnoteTitle}"><fmt:message key="bibtex.actions.endnote"/></a>
+						</li>
+					
+						<!-- MS WORD Reference Manager -->
+						<!-- TODO: use url generator -->
+						<li>
+							<fmt:message key="bibtex.actions.msword.title" var="mswordTitle" />
+							<a class="litem" href="/layout/msofficexml/bibtex/${intraHashId}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}?formatEmbedded=true" title="${mswordTitle}"><fmt:message key="bibtex.actions.msword"/></a>
+						</li>
+					
+						<!-- OPENURL -->
+						<li>
+							<c:if test="${command.context.userLoggedIn and not command.context.loginUser.settings.layoutSettings.simpleInterface}">
+								<c:choose>
+									<c:when test="${not empty command.context.loginUser.openURL}">
+										<fmt:message key="bibtex.actions.openurl.title" var="openurlTitle" />
+										<a class="litem" href="${fn:escapeXml(command.context.loginUser.openURL)}?${fn:escapeXml(post.resource.openURL)}" title="${openurlTitle}"><fmt:message key="bibtex.actions.openurl"/></a>
+									</c:when>
+									<c:otherwise>
+										<fmt:message key="bibtex.actions.openurl.inactive" var="openurlTitle" />
+										<span class="ilitem" title="${openurlTitle}"><fmt:message key="bibtex.actions.openurl"/></span>
+									</c:otherwise>
+								</c:choose>
+							</c:if>
+						</li>
+					</c:if>
+
+					<c:if test="${mtl:userIsGroup(command.context.loginUser)}">
+
+						<li class="divider"><!--  --></li>
+
+						<li>
+							<!-- TODO: get the group the group user represents -->
+							<c:forEach var="group" items="${command.context.loginUser.groups}">
+								<c:set var="reportingUrl" value="${group.publicationReportingSettings.externalReportingUrl}" />
+								<c:if test="${not empty reportingUrl and group.name eq command.context.loginUser.name}">
+									<a class="item editqa" href="${reportingUrl}/edit?intraHash=${post.resource.intraHash}&amp;referer=${properties['project.home']}${fn:escapeXml(requPath)}"><!-- keep me --></a>
+								</c:if>
+							</c:forEach>
+						</li>
+					</c:if>
+
+					<c:if test="${mtl:hasTagMyown(post) and properties['publication.reporting.mode'] eq 'GROUP' and not mtl:userIsGroup(command.context.loginUser)}">
+
+						<li class="divider"><!--  --></li>
+						<li>
+							<c:forEach var="group" items="${command.context.loginUser.groups}">
+								<c:set var="reportingUrl" value="${group.publicationReportingSettings.externalReportingUrl}" />
+								<c:if test="${not mtl:hasReportedSystemTag(post.tags, group.name) and not empty reportingUrl}">
+									<fmt:message key="group.reporting" var="reportDesc">
+										<fmt:param value="${group.name}" />
+									</fmt:message>
+									<a class="item report" href="${reportingUrl}/report?intraHash=${post.resource.intraHash}&amp;user=${post.user.name}&amp;referer=${properties['project.home']}${fn:escapeXml(requPath)}" title="${reportDesc}"><!-- keep me --></a>
+								</c:if>
+							</c:forEach>
+						</li>
+					</c:if>
+
+					<!-- UnAPI -->
+					<li><abbr class="unapi-id" title="${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"><c:out value=" "/></abbr></li>
+				</c:if>
+
+			</jsp:fragment>
+		</buttons:dropDownList>
+	</div>
+</jsp:root>
+	
+	
