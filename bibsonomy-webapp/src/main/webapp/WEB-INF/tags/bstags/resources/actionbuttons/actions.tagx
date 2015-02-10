@@ -20,7 +20,7 @@
 		<!-- edit/delete -->
 		<c:choose>
 			<c:when test="${command.context.userLoggedIn and (loginUserName eq post.user.name)}">
-				<buttons:editPostButton.tagx
+				<buttons:editPostButton
 					post ="${post}" 
 					resourceType="${resourceType}"
 					buttonClasses="${buttonClasses}"/>
@@ -69,7 +69,7 @@
 
 
 		<buttons:dropDownList>
-			<jsp:fragment name="listContent">
+			<jsp:attribute name="listContent">
 
 				<li><buttons:communityPostMenuItem post="${post}" resourceType="${resourceType}"/></li>
 
@@ -82,7 +82,7 @@
 						buttonClasses="${buttonClasses}"/>
 				</li>
 
-				<c:if test="${rscTyp eq 'bibtex'}">
+				<c:if test="${resourceType eq 'bibtex'}">
 
 					<spring:eval var="intraHashId" expression="T(org.bibsonomy.common.enums.HashID).INTRA_HASH.id" />
 
@@ -192,7 +192,7 @@
 					<li><abbr class="unapi-id" title="${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"><c:out value=" "/></abbr></li>
 				</c:if>
 
-			</jsp:fragment>
+			</jsp:attribute>
 		</buttons:dropDownList>
 	</div>
 </jsp:root>

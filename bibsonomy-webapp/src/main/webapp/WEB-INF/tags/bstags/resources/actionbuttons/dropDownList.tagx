@@ -12,6 +12,6 @@
 	</button>
 
 	<ul class="dropdown-menu" style="min-width: 230px;">
-		jsp:invoke fragment="listContent"/>
+		<jsp:invoke fragment="listContent"/>
 	</ul>
 </jsp:root>
