@@ -560,17 +560,6 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/memento">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="mementoController"/>
-						<property name="allowedFields">
-							<list>
-								<value>url</value>
-								<value>datetime</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
 				<entry key="/downloadFile">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="downloadFileController"/>
@@ -882,16 +871,6 @@
 	-->
 	<bean id="UnAPIController" class="org.bibsonomy.webapp.controller.special.UnAPIController" scope="request">
 		<property name="responseLogic" ref="responseLogic"/>
-	</bean>
-
-	<!-- 
-		provides access to archived versions of web pages using memento timegates, cf. http://www.mementoweb.org/
-	 -->
-	<bean id="mementoService" class="org.bibsonomy.services.memento.MementoService">
-		<constructor-arg value="${memento.timegate}"/>
-	</bean>
-	<bean id="mementoController" class="org.bibsonomy.webapp.controller.special.MementoController" scope="request">
-		<property name="mementoService" ref="mementoService"/>
 	</bean>
 	
 	<!-- 

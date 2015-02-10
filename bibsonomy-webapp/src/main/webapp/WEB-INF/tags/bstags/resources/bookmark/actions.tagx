@@ -82,13 +82,8 @@
 		<!--+
 			| link for the memento timegate to the archived version of the page
 			+-->
-			
-		<c:url var="mementoLink" value="/memento">
-			<c:param name="url" value="${post.resource.url}"/>
-			<c:param name="datetime" value="${mtl:formatDateW3CDTF(post.date)}"/>
-		</c:url>
 		<fmt:message key="bookmark.actions.memento" var="mementoTitle" />
-		<a class="${buttonClasses}" href="${mementoLink}" rel="nofollow" title="${mementoTitle}">
+		<a class="${buttonClasses}" href="${properties['memento.timegate']}/${mtl:formatDateMemento(post.date)}/${mtl:encodeURI(post.resource.url)}" rel="nofollow" title="${mementoTitle}">
 			<span class="fa fa-history"><!--  --></span>
 		</a>
 		

@@ -40,7 +40,6 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
-import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.es.IndexType;
 import org.bibsonomy.es.SharedResourceIndexUpdater;
 import org.bibsonomy.es.UpdatePlugin;
@@ -200,6 +199,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			if (plugin != null) {
 				//Shared index updater
 				this.sharedIndexUpdater =  (SharedResourceIndexUpdater<R>) plugin.createUpdater(this.getResourceName());
+				//if there is no shared resource index it can be null
 				if(this.sharedIndexUpdater!=null){
 					Integer lastTasIdSharedIndex = this.sharedIndexUpdater.getLastTasId();
 					final long lastLogDateSharedIndex =  this.sharedIndexUpdater.getLastLogDate();
