@@ -354,6 +354,11 @@
 									</tbody>
 								</table>
 							</c:when>
+							<c:otherwise>
+								<div class="alert alert-info" style="margin:10px;" role="alert">
+									<fmt:message key="History.empty" />
+								</div>
+							</c:otherwise>
 						</c:choose>
 					</form>
 				</div>

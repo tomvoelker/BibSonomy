@@ -27,13 +27,14 @@
 			</c:url>
 			<fmt:message key="bibtex.actions.${pickUnpick}.title" var="pickUnpickTitle"/>
 			<a class="${buttonClasses}" onclick="return pickUnpickPublication(this);" title="${pickUnpickTitle}" href="${fn:escapeXml(pickUnpick_url)}">
-				<span class="glyphicon glyphicon-folder-open"><!--  --></span>
+				<span class="fa fa-clipboard"><!--  --></span>
+				<span class="sr-only"><fmt:message key="bibtex.actions.${pickUnpick}.title"/></span>
 			</a>
 		</c:when>
 		<c:otherwise>
 			<fmt:message key="bibtex.actions.pick.inactive" var="pickUnpickTitle"/>
 			<a class="${buttonClasses}" title="${pickUnpickTitle}" disabled="disabled">
-				<span class="glyphicon glyphicon-folder-open"><!--  --></span>
+				<span class="fa fa-clipboard"><!--  --></span>
 			</a>
 		</c:otherwise>
 	</c:choose>

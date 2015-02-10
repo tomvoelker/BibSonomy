@@ -15,12 +15,14 @@
 				userLoggedIn="${true}"
 				post="${post}"
 				resourceType="${resourceType}"
-				buttonClasses="${buttonClasses}"/>
+				buttonClasses="${buttonClasses}"
+				enforceCommunityPost="${true}"/>
 
 			<buttons:editPostButton
 				post="${post}"
 				resourceType="${resourceType}"
-				buttonClasses="${buttonClasses}"/>
+				buttonClasses="${buttonClasses}"
+				enforceCommunityPost="${true}"/>
 
 			<buttons:historyButton
 				post="${post}"

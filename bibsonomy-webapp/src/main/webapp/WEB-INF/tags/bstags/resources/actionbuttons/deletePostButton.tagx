@@ -20,13 +20,14 @@
 				<c:param name="ckey" value="${ckey}" />
 			</c:url>
 			<a class="${buttonClasses} confirmdelete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" data-type="post">
-				<span class="glyphicon glyphicon-remove"><!--  --></span>
+				<span class="fa fa-times"><!--  --></span>
+				<span class="sr-only"><fmt:message key="post.actions.delete"/></span>
 			</a>
 		</c:when>
 		<c:otherwise>
 			<fmt:message key="${resourceType}.actions.delete.inactive" var="deleteTitle"/>
 			<span class="${buttonClasses}" title="${deleteTitle}" disabled="disabled">
-				<span class="glyphicon glyphicon-remove"><!--  --></span>
+				<span class="fa fa-times"><!--  --></span>
 			</span>
 		</c:otherwise>
 	</c:choose>

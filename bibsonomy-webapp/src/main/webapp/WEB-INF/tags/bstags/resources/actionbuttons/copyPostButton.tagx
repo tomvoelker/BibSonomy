@@ -3,50 +3,52 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	>
 
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="userLoggedIn" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="enforceCommunityPost" type="java.lang.Boolean" required="false"/>
 
 
 	<!-- TODO: use the urlGenerator for this -->
-	<c:set var="urlSegment" value="Publication"/>
+	<c:set var="url" value="Publication"/>
 	<c:if test="${resourceType eq 'bookmark'}">
-		<c:set var="urlSegment" value="Bookmark"/>
+		<c:set var="url" value="Bookmark"/>
 	</c:if>
-
+	<c:set var="copyTitle" value=""/>
+	
 	<c:choose>
 		<c:when test="${userLoggedIn}">
 			<c:choose>
-				<c:when test="${empty post.user.name}">
+				<c:when test="${enforceCommunityPost or empty post.user.name}">
 					<!-- community-post -->
 					<fmt:message key="post.actions.copy.title" var="copyTitle"/>
-					<a class="${buttonClasses}" href="/edit${urlSegment}?hash=${post.resource.interHash}&amp;user=&amp;" title="${fn:escapeXml(copyTitle)}">
-						<span class="fa fa-copy"><!--  --></span>
-						<span class="sr-only"><fmt:message key="post.actions.copy"/></span>
-					</a>
+					<c:url var="url" value="/edit${url}">
+						<c:param name="hash" value="${post.resource.interHash}"/>
+					</c:url>
 				</c:when>
 				<c:otherwise>
 					<!-- user is not post's owner -->
-					<c:url var="copyLink" value="/edit${urlSegment}">
+					<c:url var="url" value="/edit${url}">
 						<c:param name="hash" value="${post.resource.intraHash}" />
 						<c:param name="user" value="${post.user.name}" />
 						<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
 					</c:url>
 					<fmt:message key="${resourceType}.actions.copy.title" var="copyTitle"/>
-					<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
-						<span class="glyphicon glyphicon-floppy-disk"><!--  --></span>
-					</a>
 				</c:otherwise>
 			</c:choose>
+			<a class="${buttonClasses}" href="${url}" title="${copyTitle}">
+				<span class="fa fa-copy"><!--  --></span>
+				<span class="sr-only"><fmt:message key="post.actions.copy"/></span>
+			</a>
+			
 		</c:when>
 		<c:otherwise>
 			<fmt:message key="${resourceType}.actions.copy.inactive" var="copyTitle"/>
 			<a class="${buttonClasses}" title="${copyTitle}" disabled="disabled">
-				<span class="glyphicon glyphicon-floppy-disk"><!-- Keep Me --></span>
+				<span class="fa fa-copy"><!-- Keep Me --></span>
 			</a>
 		</c:otherwise>
 	</c:choose>	

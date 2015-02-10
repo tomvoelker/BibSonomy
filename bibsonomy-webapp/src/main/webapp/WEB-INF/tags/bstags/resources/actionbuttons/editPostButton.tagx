@@ -5,32 +5,34 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	>
 
-	<!-- user must be logged in and be the same as the post user -->
-	<!-- TODO adapt for community posts -->
+	<!-- user must be logged in -->
 
-	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
-	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" />
-	<jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="enforceCommunityPost" type="java.lang.Boolean" required="false"/>
 
 	<!-- TODO: use the urlGenerator for this -->
-	<c:set var="urlSegment" value="Publication"/>
+	<c:set var="url" value="Publication"/>
 	<c:if test="${resourceType eq 'bookmark'}">
-		<c:set var="urlSegment" value="Bookmark"/>
+		<c:set var="url" value="Bookmark"/>
 	</c:if>
-	
+	<c:set var="editTitle" value=""/>
+
 	<c:choose>
-		<c:when test="${empty post.user.name}">
+		<c:when test="${enforceCommunityPost or empty post.user.name}">
 			<fmt:message key="post.actions.edit.gold.title" var="editTitle"/>
-			<a class="${buttonClasses}" href="/editGoldStandard${urlSegment}?intraHashToUpdate=${post.resource.interHash}" title="${fn:escapeXml(editTitle)}">
-				<span class="fa fa-pencil"><!--  --></span>
-				<span class="sr-only"><fmt:message key="post.actions.edit"/></span>
-			</a>
+			<c:set var="url" value="/editGoldStandard${url}?intraHashToUpdate=${post.resource.interHash}"/>
 		</c:when>
 		<c:otherwise>
 			<fmt:message key="${resourceType}.actions.edit.title" var="editTitle"/>
-			<a class="${buttonClasses}" href="/edit${urlSegment}?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
-				<span class="glyphicon glyphicon-edit"><!--  --></span>
-			</a>
+			<c:set var="url" value="/edit${url}?intraHashToUpdate=${post.resource.intraHash}"/>
 		</c:otherwise>
 	</c:choose>
+
+	<a class="${buttonClasses}" href="${url}" title="${editTitle}">
+		<span class="fa fa-pencil"><!--  --></span>
+		<span class="sr-only"><fmt:message key="post.actions.edit"/></span>
+	</a>
+
 </jsp:root>
