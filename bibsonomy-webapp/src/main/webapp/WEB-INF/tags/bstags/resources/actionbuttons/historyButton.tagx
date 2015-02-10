@@ -16,4 +16,6 @@
 	<a class="${buttonClasses}" href="${relativeUrlGenerator.getHistoryURLByHashAndUserName(post.resource.interHash, post.user.name, resourceType)}" title="${postHistoryTitle}">
 		<span class="fa fa-list-ol"><!--  --></span>
 	</a>
+		
+</jsp:root>
 	
