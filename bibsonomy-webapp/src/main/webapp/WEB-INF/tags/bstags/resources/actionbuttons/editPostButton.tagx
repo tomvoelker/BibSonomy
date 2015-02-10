@@ -32,5 +32,5 @@
 				<span class="glyphicon glyphicon-edit"><!--  --></span>
 			</a>
 		</c:otherwise>
-	</c:when>
+	</c:choose>
 </jsp:root>
