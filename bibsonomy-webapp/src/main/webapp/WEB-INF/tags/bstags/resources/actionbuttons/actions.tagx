@@ -28,7 +28,6 @@
 			<c:otherwise>
 				<buttons:copyPostButton 
 					post ="${post}" 
-					loginUserName="${loginUserName}" 
 					userLoggedIn="${command.context.userLoggedIn}" 
 					resourceType="${resourceType}"
 					buttonClasses="${buttonClasses}"/>
@@ -61,7 +60,6 @@
 				<!-- pick/unpick -->
 				<buttons:pickUnpickButton 
 					post ="${post}" 
-					loginUserName="${loginUserName}" 
 					userLoggedIn="${command.context.userLoggedIn}" 
 					buttonClasses="${buttonClasses}"/>
 			</c:otherwise>

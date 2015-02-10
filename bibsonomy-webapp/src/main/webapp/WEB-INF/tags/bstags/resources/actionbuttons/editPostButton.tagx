@@ -18,9 +18,19 @@
 		<c:set var="urlSegment" value="Bookmark"/>
 	</c:if>
 	
-	<fmt:message key="${resourceType}.actions.edit.title" var="editTitle"/>
-	<a class="${buttonClasses}" href="/edit${urlSegment}?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
-		<span class="glyphicon glyphicon-edit"><!--  --></span>
-	</a>
-
+	<c:choose>
+		<c:when test="${empty post.user.name}">
+			<fmt:message key="post.actions.edit.gold.title" var="editTitle"/>
+			<a class="${buttonClasses}" href="/editGoldStandard${urlSegment}?intraHashToUpdate=${post.resource.interHash}" title="${fn:escapeXml(editTitle)}">
+				<span class="fa fa-pencil"><!--  --></span>
+				<span class="sr-only"><fmt:message key="post.actions.edit"/></span>
+			</a>
+		</c:when>
+		<c:otherwise>
+			<fmt:message key="${resourceType}.actions.edit.title" var="editTitle"/>
+			<a class="${buttonClasses}" href="/edit${urlSegment}?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
+				<span class="glyphicon glyphicon-edit"><!--  --></span>
+			</a>
+		</c:otherwise>
+	</c:when>
 </jsp:root>

@@ -1,0 +1,19 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/resources/actionbuttons"
+	>
+
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true" />
+
+
+	<!-- TODO: We usually show the history in the drop-down menu. Here we introduce an own symbol and show a button. Discuss -->
+	<fmt:message key="${resourceType}.actions.posthistory.title" var="postHistoryTitle" />
+	<a class="${buttonClasses}" href="${relativeUrlGenerator.getHistoryURLByHashAndUserName(post.resource.interHash, post.user.name, resourceType)}" title="${postHistoryTitle}">
+		<span class="fa fa-list-ol"><!--  --></span>
+	</a>
+	

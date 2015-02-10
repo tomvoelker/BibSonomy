@@ -7,7 +7,6 @@
 	>
 
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
-	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="userLoggedIn" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true" />
@@ -25,7 +24,7 @@
 				<c:when test="${empty post.user.name}">
 					<!-- community-post -->
 					<fmt:message key="post.actions.copy.title" var="copyTitle"/>
-					<a class="btn btn-default" href="/edit${urlSegment}?hash=${post.resource.interHash}&amp;user=&amp;" title="${fn:escapeXml(copyTitle)}">
+					<a class="${buttonClasses}" href="/edit${urlSegment}?hash=${post.resource.interHash}&amp;user=&amp;" title="${fn:escapeXml(copyTitle)}">
 						<span class="fa fa-copy"><!--  --></span>
 						<span class="sr-only"><fmt:message key="post.actions.copy"/></span>
 					</a>

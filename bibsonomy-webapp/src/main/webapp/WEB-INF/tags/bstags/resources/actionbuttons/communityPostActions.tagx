@@ -1,0 +1,32 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/resources/actionbuttons">
+
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" />
+
+	<c:set var="buttonClasses" value="btn btn-default"/>
+
+	<c:if test="${command.context.userLoggedIn}">
+		<div class="btn-group btn-group-sm">
+
+			<buttons:copyPostButton
+				userLoggedIn="${true}"
+				post="${post}"
+				resourceType="${resourceType}"
+				buttonClasses="${buttonClasses}"/>
+
+			<buttons:editPostButton
+				post="${post}"
+				resourceType="${resourceType}"
+				buttonClasses="${buttonClasses}"/>
+
+			<buttons:historyButton
+				post="${post}"
+				resourceType="${resourceType}"
+				buttonClasses="${buttonClasses}"/>
+
+		</div>
+	</c:if>
+</jsp:root>
