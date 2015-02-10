@@ -41,6 +41,7 @@ import org.bibsonomy.webapp.validation.GoldStandardPostValidator;
 import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.validation.Errors;
 
 import recommender.core.interfaces.model.TagRecommendationEntity;
 
@@ -107,6 +108,14 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 		gold.setResource(goldResource);
 
 		return gold;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.controller.actions.EditBookmarkController#setDuplicateErrorMessage(org.bibsonomy.model.Post, org.springframework.validation.Errors)
+	 */
+	@Override
+	protected void setDuplicateErrorMessage(Post<Bookmark> post, Errors errors) {
+		errors.rejectValue("post.resource.title", "error.field.valid.alreadyStoredCommunityPost", "A community with that data already exists.");
 	}
 
 	@Override

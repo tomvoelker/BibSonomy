@@ -41,6 +41,7 @@ import org.bibsonomy.webapp.validation.GoldStandardPostValidator;
 import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.validation.Errors;
 
 import recommender.core.interfaces.model.TagRecommendationEntity;
 
@@ -86,7 +87,7 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 			return null;
 		}
 
-		return this.convertToGoldStandard(post);
+		return convertToGoldStandard(post);
 	}
 
 	@Override
@@ -94,7 +95,7 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 		return new ExtendedRedirectView(this.urlGenerator.getPublicationUrl(post.getResource(), null));
 	}
 
-	private Post<BibTex> convertToGoldStandard(final Post<BibTex> post) {
+	private static Post<BibTex> convertToGoldStandard(final Post<BibTex> post) {
 		if (!present(post)) {
 			return null;
 		}
@@ -106,6 +107,14 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 		gold.setResource(goldP);
 
 		return gold;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.controller.actions.AbstractEditPublicationController#setDuplicateErrorMessage(org.bibsonomy.model.Post, org.springframework.validation.Errors)
+	 */
+	@Override
+	protected void setDuplicateErrorMessage(Post<BibTex> post, Errors errors) {
+		errors.rejectValue("post.resource.title", "error.field.valid.alreadyStoredCommunityPost", "A community with that data already exists.");
 	}
 
 	@Override

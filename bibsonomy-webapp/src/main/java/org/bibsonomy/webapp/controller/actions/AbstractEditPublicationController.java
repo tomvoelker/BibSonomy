@@ -39,7 +39,6 @@ import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
-import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ScraperMetadata;
 import org.bibsonomy.model.User;
@@ -401,10 +400,6 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 
 	@Override
 	protected void setDuplicateErrorMessage(final Post<BibTex> post, final Errors errors) {
-		if (post.getResource() instanceof GoldStandardPublication) {
-			errors.rejectValue("post.resource.title", "error.field.valid.alreadyStoredCommunityPost", "A community with that data already exists.");
-			return;
-		}
 		errors.rejectValue("post.resource.title", "error.field.valid.alreadyStoredPublication", "You already have this publication in your collection.");
 	}
 
