@@ -41,7 +41,7 @@
 		 	| content
 		 	-->
 		<jsp:attribute name="content">
-			Group operations in the old layout aren't supported anymore. Please switch to the <a href="/bibsonomy3">new layout.</a>
+			<fmt:message key="join.group.unsupported"/>
 		</jsp:attribute>
 		
 		<!--+

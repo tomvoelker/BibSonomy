@@ -238,6 +238,8 @@
 				<value>classpath:/projects/${project.name}_messages</value>
 				<value>classpath:/themes/${project.theme}_messages</value>
 				<value>classpath:/messages</value>
+				<!-- TODO: (Bootstrap) remove when old layout is removed -->
+				<value>classpath:/old_layout_messages</value>
 			</list>
 		</property>
 		<property name="cacheSeconds" value="${dev.messagesource.cache}" />
