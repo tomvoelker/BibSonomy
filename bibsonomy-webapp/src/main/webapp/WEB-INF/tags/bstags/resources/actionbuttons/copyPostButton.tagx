@@ -9,6 +9,7 @@
 	<jsp:directive.attribute name="userLoggedIn" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="enforceCommunityPost" type="java.lang.Boolean" required="false"/>
 
 
 	<!-- TODO: use the urlGenerator for this -->
@@ -21,7 +22,7 @@
 	<c:choose>
 		<c:when test="${userLoggedIn}">
 			<c:choose>
-				<c:when test="${empty post.user.name}">
+				<c:when test="${enforceCommunityPost or empty post.user.name}">
 					<!-- community-post -->
 					<fmt:message key="post.actions.copy.title" var="copyTitle"/>
 					<c:url var="url" value="/edit${url}">
