@@ -44,7 +44,7 @@
 		name of the user
 	-->
 	<td>
-		<c:url value="${relativeUrlGenerator.getUserUrlByUserName(user.name)}" var="userUrl">
+		<c:url value="${relativeUrlGenerator.getUserUrlByUserName(spamUser.name)}" var="userUrl">
 			<c:param name="filter" value="ADMIN_SPAM_POSTS"></c:param>
 		</c:url>
 		<a href="${userUrl}">

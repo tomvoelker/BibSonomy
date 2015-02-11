@@ -26,17 +26,23 @@
  */
 package org.bibsonomy.scraper.url.kde.jneurosci;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.ReferencesScraper;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.CitationManagerScraper;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * @author hagen
  */
-public class JNeurosciScraper extends CitationManagerScraper {
+public class JNeurosciScraper extends CitationManagerScraper implements ReferencesScraper{
 
 	private static final String SITE_NAME = "The Journal of Neuroscience";
 	private static final String SITE_URL = "http://www.jneurosci.org/";
@@ -44,6 +50,7 @@ public class JNeurosciScraper extends CitationManagerScraper {
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS;
 	
 	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("href=\"([^\"]++)\".*?citation manager");
+	private static final Pattern REFERENCES_PATTERN = Pattern.compile("(?s)<h2>References</h2>(.*)<span class=\"highwire-journal-article-marker-end\"></span");
 	
 	static {
 		URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "jneurosci.org"), Pattern.compile("/content" + ".*")));
@@ -72,6 +79,23 @@ public class JNeurosciScraper extends CitationManagerScraper {
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return URL_PATTERNS;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
+	 */
+	@Override
+	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
+		try {
+			final Matcher m = REFERENCES_PATTERN.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
+			if(m.find()) {
+				scrapingContext.setReferences(m.group(1));
+				return true;
+			}
+		} catch(IOException e) {
+			throw new ScrapingException(e);
+		}
+		return false;
 	}
 
 }

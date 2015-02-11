@@ -51,7 +51,7 @@ public class UpdateGroupDetailsStrategy extends AbstractUpdateStrategy {
 
 	@Override
 	protected void render(Writer writer, String groupID) {
-		this.getRenderer().serializeGroupId(writer, groupID);	
+		this.getRenderer().serializeGroupId(writer, groupID);
 	}
 
 	@Override
@@ -60,6 +60,6 @@ public class UpdateGroupDetailsStrategy extends AbstractUpdateStrategy {
 		final Group group = this.getRenderer().parseGroup(this.doc);
 		group.setName(this.groupName);
 		// FIXME: Not yet implemented in DBLogic
-		return this.getLogic().updateGroup(group, GroupUpdateOperation.UPDATE_ALL);
+		return this.getLogic().updateGroup(group, GroupUpdateOperation.UPDATE_ALL, null);
 	}
 }

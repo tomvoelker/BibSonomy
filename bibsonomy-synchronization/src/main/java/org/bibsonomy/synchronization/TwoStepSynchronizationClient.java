@@ -131,6 +131,8 @@ public class TwoStepSynchronizationClient extends AbstractSynchronizationClient 
 		final SynchronizationDirection direction = syncServer.getDirection();
 		final Class<? extends Resource>[] resourceTypes = ResourceUtils.getResourceTypesByClass(syncServer.getResourceType());
 
+		final boolean isSecureSync = present(syncServer.getSecureAPI());
+		
 		/*
 		 * sync each configured resource type
 		 */
@@ -140,21 +142,21 @@ public class TwoStepSynchronizationClient extends AbstractSynchronizationClient 
 			/*
 			 * synchronize
 			 */
-			final SynchronizationData syncData = synchronizeResource(clientLogic, serverLogic, serverUserName, resourceType, direction, syncPlan.get(resourceType));
+			final SynchronizationData syncData = synchronizeResource(clientLogic, serverLogic, serverUserName, resourceType, direction, syncPlan.get(resourceType), isSecureSync);
 			
 			result.put(resourceType, syncData);
 		}
 		return result;
 	}
 	
-	protected SynchronizationData synchronizeResource(final LogicInterface clientLogic, final LogicInterface serverLogic, final String serverUserName, final Class<? extends Resource> resourceType, final SynchronizationDirection direction, final List<SynchronizationPost> syncPlan) {
+	protected SynchronizationData synchronizeResource(final LogicInterface clientLogic, final LogicInterface serverLogic, final String serverUserName, final Class<? extends Resource> resourceType, final SynchronizationDirection direction, final List<SynchronizationPost> syncPlan, boolean isSecureSync) {
 		SynchronizationStatus newStatus;
 		String info;
 		try {
 			/*
 			 * flag sync as running
 			 */
-			updateSyncData(serverLogic, serverUserName, resourceType, SynchronizationStatus.PLANNED, SynchronizationStatus.RUNNING, "");
+			updateSyncData(serverLogic, serverUserName, resourceType, SynchronizationStatus.PLANNED, SynchronizationStatus.RUNNING, "", isSecureSync);
 			/*
 			 * try to synchronize
 			 */
@@ -171,10 +173,11 @@ public class TwoStepSynchronizationClient extends AbstractSynchronizationClient 
 			newStatus = SynchronizationStatus.ERROR;
 			log.error("Error in synchronization", e);
 		}
+		
 		/*
 		 * store sync result
 		 */
-		updateSyncData(serverLogic, serverUserName, resourceType, SynchronizationStatus.RUNNING, newStatus, info);
+		updateSyncData(serverLogic, serverUserName, resourceType, SynchronizationStatus.RUNNING, newStatus, info, isSecureSync);
 		
 		/*
 		 * Get synchronization data from server. Can not be constructed here 

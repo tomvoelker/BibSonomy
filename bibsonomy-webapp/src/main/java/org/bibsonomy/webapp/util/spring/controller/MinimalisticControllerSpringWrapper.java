@@ -163,7 +163,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		requestLogic.setRequest(request); // hack but thats springs fault
 		applicationContext.getBean("responseLogic", ResponseLogic.class).setResponse(response); // hack but thats springs fault
 		
-		log.debug("Processing /" + request.getRequestURI() + "?" + request.getQueryString() + " from " + requestLogic.getInetAddress());
+		log.debug("Processing " + request.getRequestURI() + "?" + request.getQueryString() + " from " + requestLogic.getInetAddress());
 		if ((presenceCondition!= null) && (presenceCondition.eval() == false)) {
 			 throw new NoSuchRequestHandlingMethodException(request);
 		}
@@ -266,7 +266,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		} catch (final Exception ex) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			errors.reject("error.internal", new Object[]{ex}, "Internal Server Error: " + ex.getMessage());
-			log.error("Could not complete controller (general exception) for request /" + request.getRequestURI() + "?" + request.getQueryString() + " with referer " + request.getHeader("Referer"), ex);
+			log.error("Could not complete controller (general exception) for request " + request.getRequestURI() + "?" + request.getQueryString() + " with referer " + request.getHeader("Referer"), ex);
 		}
 		
 		log.debug("Exception catching block passed, putting comand+errors into model.");
@@ -279,7 +279,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		 */
 		model.putAll(errors.getModel());
 		
-		log.debug("Returning model and view for /" + request.getRequestURI() + "?" + request.getQueryString() + " from " + requestLogic.getInetAddress());
+		log.debug("Returning model and view for " + request.getRequestURI() + "?" + request.getQueryString() + " from " + requestLogic.getInetAddress());
 		
 		/*
 		 * If the view is already a Spring view, use it directly.

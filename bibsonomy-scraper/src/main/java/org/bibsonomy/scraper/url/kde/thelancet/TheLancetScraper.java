@@ -37,7 +37,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.generic.GenericRISURLScraper;
-import org.bibsonomy.util.WebUtils;
 
 /**
  *
@@ -51,7 +50,7 @@ public class TheLancetScraper extends GenericRISURLScraper {
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "thelancet.com"), AbstractUrlScraper.EMPTY_PATTERN));
-	private static final Pattern FORM_PATTERN = Pattern.compile("<form action=\"(.*)\" method=\"post\" name=\"citationDownload\">");
+	private static final Pattern BIBTEX_PATTERN = Pattern.compile("/article/(.*?)/");
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.scraper.UrlScraper#getSupportedSiteName()
@@ -91,9 +90,10 @@ public class TheLancetScraper extends GenericRISURLScraper {
 	@Override
 	public String getDownloadURL(URL url) {
 		try{
-			Matcher m = FORM_PATTERN.matcher(WebUtils.getContentAsString(url + "/exportCitation"));
+			final Matcher m = BIBTEX_PATTERN.matcher(url.toString());
 			if (m.find()) {
-				return "http://www.thelancet.com" + m.group(1) + "?exportContent=1&downloadFormat=0&Submit=Export+Citation";
+				final String PII = m.group(1).replaceAll("%28|%29|-","").replace("PII","pii:");
+				return "http://www.thelancet.com/action/downloadCitation?objectUri=" + PII + "&direct=true&include=abs&submit=Export";
 			}
 		} catch (final Exception e) {
 			log.error("error while getting ris url", e);

@@ -14,7 +14,7 @@
 			<dl class="col-md-3 col-sm-6">
 				<dt><fmt:message key="footer.what"><fmt:param>${properties['project.name']}</fmt:param></fmt:message></dt>
 				
-				<dd><a href="/gettingStarted"><fmt:message key="footer.quickstart"/></a></dd>
+				<dd><a href="/gettingStarted"><fmt:message key="footer.gettingStarted"/></a></dd>
 				<dd><a href="/buttons"><fmt:message key="footer.buttons"/></a></dd>
 				<dd><a href="${helpLangUrl}/Main"><fmt:message key="help"/></a></dd>
 				

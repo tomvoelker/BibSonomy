@@ -160,10 +160,6 @@
 		<servlet-name>AdminHandler</servlet-name>
 		<servlet-class>servlets.AdminHandler</servlet-class>
 	</servlet>
-	<servlet>
-		<servlet-name>SettingsHandler</servlet-name>
-		<servlet-class>servlets.SettingsHandler</servlet-class>
-	</servlet>
 	
 	<!-- events -->
 	<servlet>
@@ -230,10 +226,6 @@
 	<servlet-mapping>
 		<servlet-name>AdminHandler</servlet-name>
 		<url-pattern>/AdminHandler</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>SettingsHandler</servlet-name>
-		<url-pattern>/SettingsHandler</url-pattern>
 	</servlet-mapping>
 
 	<jsp-config>

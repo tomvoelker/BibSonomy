@@ -27,6 +27,13 @@
 
 package org.bibsonomy.scraper.url.kde.jap;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.net.URL;
+
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -44,5 +51,19 @@ public class JAPScraperTest {
 	@Test
 	public void url1TestRun(){
 		UnitTestRunner.runSingleTest("url_211");
+	}
+	
+	@Test
+	public void testReferences() throws Exception {
+		final ScrapingContext sc = new ScrapingContext(new URL("http://jap.physiology.org/content/110/4/1003"));
+		JAPScraper js = new JAPScraper();
+		assertTrue(js.scrape(sc));
+		assertTrue(js.scrapeReferences(sc));
+		
+		final String reference = sc.getReferences();
+		assertNotNull(reference);
+		assertTrue(reference.length() > 100);
+		assertEquals("<ol class=\"cit-list ref-use-labels\"><li><span class=\"ref-label\">".trim(), reference.substring(0, 64).trim());
+		assertTrue(reference.contains("Lambert"));
 	}
 }

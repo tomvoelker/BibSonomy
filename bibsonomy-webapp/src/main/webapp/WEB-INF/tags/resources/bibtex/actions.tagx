@@ -116,13 +116,13 @@
 		+-->
 	<fmt:message key="bibtex.actions.community_post" var="communityPost" />
 	
-	<a href="${relativeUrlGenerator.getGoldstandardUrlByInterHash(post.resource.interHash)}" class="item communitypost" title="${fn:escapeXml(communityPost)}">
+	<a href="${relativeUrlGenerator.getCommunityPublicationUrlByInterHash(post.resource.interHash)}" class="item communitypost" title="${fn:escapeXml(communityPost)}">
 		<!-- Keep Me -->
 	</a>
 	<!--+
 		| COPY/HISTORY
 		+-->
-	<c:if test="${not empty enableHistory}">
+<!-- 	<c:if test="${not empty enableHistory}">-->
 		<c:choose>
 			<c:when test="${command.context.userLoggedIn}">
 				<c:choose>
@@ -148,7 +148,7 @@
 							href="/postHistory/${post.resource.intraHash}/${post.user.name}"
 							title="${postHistoryTitle}"> -->
 						<a class="item history"
-							href="/history/publication/${post.resource.intraHash}/${post.user.name}"
+							href="/history/publication/${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"
 							title="${postHistoryTitle}">
 							<!-- Keep Me-->
 						</a>
@@ -165,7 +165,7 @@
 				</a>
 			</c:otherwise>
 		</c:choose>
-	</c:if>
+	<!--</c:if>-->
 
 	<!--+
 		| PICK / UNPICK 

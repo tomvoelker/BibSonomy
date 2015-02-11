@@ -7,7 +7,14 @@
 		<fmt:message var="homelink" key="navi.home"/>
 		<h1>
 			<a href="${relativeUrlGenerator.getProjectHome()}" title="${homelink}">
-				<!-- <img src="/resources/image/logo4.png" alt="${properties['project.name']} Logo" /> --> 
+<!--				<c:choose>
+					<c:when test="${not empty properties['project.logo']}">
+						<img style="height: 64px" src="${properties['project.logo']}" alt="${properties['project.name']} Logo" />
+					</c:when>
+					<c:otherwise>
+						<img style="height: 64px" src="/resources/image/logo43.png" alt="${properties['project.name']} Logo" />
+					</c:otherwise>
+				</c:choose> -->
 				<c:out value="${properties['project.name']}"/>
 			</a>
 		</h1>

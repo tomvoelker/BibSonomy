@@ -32,7 +32,7 @@ package org.bibsonomy.webapp.command.ajax;
  * 
  * @author lukas
  */
-public class AjaxItemRecommenderFeedbackCommand extends AjaxCommand {
+public class AjaxItemRecommenderFeedbackCommand extends AjaxCommand<String> {
 
 	private String intraHash;
 	private String userName;

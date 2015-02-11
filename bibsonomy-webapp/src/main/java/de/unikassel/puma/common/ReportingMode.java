@@ -37,7 +37,7 @@ public enum ReportingMode {
 	ALL,
 	
 	/**
-	 * only group users are allowd to report publications
+	 * only group users are allowed to report publications
 	 * to the repository
 	 */
 	GROUP;

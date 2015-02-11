@@ -78,12 +78,11 @@ import org.bibsonomy.services.searcher.ResourceSearch;
  */
 public class TagDatabaseManager extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(TagDatabaseManager.class);
-	
+
 	private static final Pattern WHITESPACE_PATTERN = Pattern.compile("\\s");
 	private static final int MAX_TAG_SIZE = 5;
 
 	private final static TagDatabaseManager singleton = new TagDatabaseManager();
-	
 
 	/** database managers */
 	private final GeneralDatabaseManager generalDb;
@@ -93,7 +92,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	/** interface to a resource searcher for building an tag cloud */
 	private ResourceSearch<BibTex> publicationSearch;
 	private ResourceSearch<Bookmark> bookmarkSearch;
-	
+
 	private Chain<List<Tag>, TagParam> chain;
 
 	/**
@@ -107,7 +106,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.tagRelDb = TagRelationDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
-	}	
+	}
 
 	/**
 	 * @return the publicationSearch
@@ -141,9 +140,9 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * TODO: remove unused method
 	 * 
 	 * Return tag for given tagId
-	 *  
-	 * @param tagId 
-	 * @param session 
+	 * 
+	 * @param tagId
+	 * @param session
 	 * @return tag for given id
 	 */
 	public Tag getTagById(final Integer tagId, final DBSession session) {
@@ -154,8 +153,9 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * TODO: unused
 	 * 
 	 * Return all tags for a given tag count
-	 * @param param 
-	 * @param session 
+	 * 
+	 * @param param
+	 * @param session
 	 * @return list of tags
 	 */
 	// FIXME a single tag should be returned instead of a list, shouldn't it?
@@ -168,7 +168,78 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		this.update("updateTagDec", tagname, session);
 	}
 
-	/** 
+	// /**
+	// * In order to update privacy, we should delete the current group entries
+	// */
+	// public void deleteGroupsforTags(final Post<?> post, final DBSession
+	// session) {
+	// // TODO: log all tas related to this post -> this.insertLogTas(...)
+	// this.plugins.onTagDelete(post.getContentId(), session);
+	// // delete all tas related to this post
+	// this.deleteTas(post.getContentId(), session);
+	// this.deleteGroupTas(post.getContentId(), session);
+	// }
+	//
+	// /**
+	// * update privacy setting for a post. Similar to update/insert Tag Except
+	// * that
+	// * we don't need to insert tags again because they already exist.
+	// */
+	// public void insertGroupsforTags(final Post<?> post, final DBSession
+	// session) {
+	// this.checkTags(post, session);
+	// final TagParam tagParam = new TagParam();
+	// tagParam.setTags(post.getTags());
+	// /*
+	// * FIXME: The content id is not always new, in particular on updates.
+	// * Thus the naming of this attribute is a bit unfortunate.
+	// */
+	// tagParam.setNewContentId(post.getContentId());
+	// tagParam.setContentTypeByClass(post.getResource().getClass());
+	// tagParam.setUserName(post.getUser().getName());
+	// tagParam.setDate(post.getDate());
+	//
+	// // get changeDate from Post
+	// Date changeDate = post.getChangeDate();
+	// if (!present(changeDate)) {
+	// changeDate = new Date();
+	// }
+	// tagParam.setChangeDate(changeDate);
+	//
+	// final List<Integer> groups = new ArrayList<Integer>();
+	//
+	// // copy the groups' ids into the param
+	// for (final Group group : post.getGroups()) {
+	// groups.add(group.getGroupId());
+	// }
+	// tagParam.setGroups(groups);
+	//
+	// session.beginTransaction();
+	// try {
+	// this.insertTas(tagParam, session);
+	//
+	// /*
+	// * if post is visible for a non exclusive group, store for each
+	// * group
+	// * and each tag one entry in the grouptas table
+	// */
+	// final int firstGroup = tagParam.getGroups().iterator().next();
+	// if (!GroupUtils.isExclusiveGroup(firstGroup)) {
+	// /*
+	// * first group found is neither public nor private ... so we
+	// * have to fill the group tas table!
+	// */
+	// this.insertGroupTas(tagParam, session);
+	// }
+	//
+	// session.commitTransaction();
+	// } finally {
+	// session.endTransaction();
+	// }
+	//
+	// }
+
+	/**
 	 * Inserts the TAS into the tas table. If the post is viewable
 	 * for more than one group, the first group is inserted into the
 	 * tas table.
@@ -180,29 +251,31 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		final Integer firstGroup = param.getGroups().get(0);
 		/*
 		 * If no group is given, something went wrong ... so we throw an
-		 * exception. 
+		 * exception.
 		 */
 		if (!present(firstGroup)) {
 			throw new ValidationException("No group for TAS given");
 		}
 		/*
-		 * if a post is visible for more than one group, 
+		 * if a post is visible for more than one group,
 		 * only insert an entry for the first group in the tas table.
 		 */
 		param.setGroupId(firstGroup);
-
+		// #tasId#, #tagName#, #newContentId#, #contentType#, #userName#,
+		// #date#, #changeDate#, #groupId#, #tagNameLower#)
 		/*
 		 * for each tag, insert a new TAS
 		 */
 		for (final Tag tag : param.getTags()) {
 			param.setTag(tag);
-			param.setTasId(generalDb.getNewId(ConstantID.IDS_TAS_ID, session));
+			param.setTasId(this.generalDb.getNewId(ConstantID.IDS_TAS_ID, session));
 			this.insert("insertTas", param, session);
 		}
 	}
 
 	/**
 	 * For each group a post is visible, store an entry in the grouptas table.
+	 * 
 	 * @param param
 	 * @param session
 	 */
@@ -214,7 +287,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			 */
 			for (final Integer groupId : param.getGroups()) {
 				param.setGroupId(groupId);
-				param.setTasId(generalDb.getNewId(ConstantID.IDS_GROUPTAS_ID, session));
+				param.setTasId(this.generalDb.getNewId(ConstantID.IDS_GROUPTAS_ID, session));
 				this.insert("insertGroupTas", param, session);
 			}
 		}
@@ -248,10 +321,10 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		this.delete("deleteGroupTas", contentId, session);
 	}
 
-	
 	/**
 	 * Checks if the post as at least one tag,
 	 * adds MissingTagsErrorMessage else
+	 * 
 	 * @param post
 	 * @param session
 	 */
@@ -261,7 +334,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			log.warn("Added missingTagsErrorMessage for " + post.getResource().getIntraHash());
 		}
 	}
-	
+
 	/**
 	 * Inserts the tags from the given post.
 	 * 
@@ -273,24 +346,23 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		final TagParam tagParam = new TagParam();
 		tagParam.setTags(post.getTags());
 		/*
-		 * FIXME: The content id is not always new, in particular on updates. 
+		 * FIXME: The content id is not always new, in particular on updates.
 		 * Thus the naming of this attribute is a bit unfortunate.
 		 */
 		tagParam.setNewContentId(post.getContentId());
 		tagParam.setContentTypeByClass(post.getResource().getClass());
 		tagParam.setUserName(post.getUser().getName());
 		tagParam.setDate(post.getDate());
-	
-		
+
 		/*
 		 * get changeDate from Post
 		 */
 		Date changeDate = post.getChangeDate();
-		if(!present(changeDate)) {
+		if (!present(changeDate)) {
 			changeDate = new Date();
 		}
 		tagParam.setChangeDate(changeDate);
-		
+
 		final List<Integer> groups = new ArrayList<Integer>();
 		/*
 		 * copy the groups' ids into the param
@@ -303,18 +375,19 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Updates the posts by replacing all tags as described in {@link LogicInterface#updateTags(User, List, List, boolean)}.
+	 * Updates the posts by replacing all tags as described in
+	 * {@link LogicInterface#updateTags(User, List, List, boolean)}.
 	 * 
 	 * TODO: This method hasn't been tested, yet - it has been written
 	 * from scratch to migrate the functionality of the /edittags-page.
 	 * 
-	 * In particular, it very probably uses some old methods to 
+	 * In particular, it very probably uses some old methods to
 	 * insert/update/delete tags and completely ignores grouptas.
 	 * 
 	 * @param user
 	 * @param tagsToReplace
 	 * @param replacementTags
-	 * @param session 
+	 * @param session
 	 * @return The number of posts which got updated.
 	 */
 	@SuppressWarnings("unchecked")
@@ -324,11 +397,13 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		 */
 		final Tag emptyTag = TagUtils.getEmptyTag();
 		/*
-		 * First: get all posts which need to be updated (i.e., which have all tags from tagsToReplace assigned)
-		 * since we're not interested in the resource, we need only data from the TAS table, i.e., we need TAS.
+		 * First: get all posts which need to be updated (i.e., which have all
+		 * tags from tagsToReplace assigned)
+		 * since we're not interested in the resource, we need only data from
+		 * the TAS table, i.e., we need TAS.
 		 */
 		final TagParam param = new TagParam();
-		for (final Tag tag: tagsToReplace) {
+		for (final Tag tag : tagsToReplace) {
 			param.addTagName(tag.getName());
 		}
 		param.setUserName(user.getName());
@@ -353,7 +428,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			/*
 			 * iterate over all posts and exchange their tags
 			 */
-			for (final Post<? extends Resource> post: posts) {
+			for (final Post<? extends Resource> post : posts) {
 				log.debug("handling post with content id " + post.getContentId() + " and groups " + post.getGroups());
 
 				final Set<Tag> tags = post.getTags();
@@ -361,11 +436,13 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 				/*
 				 * removing tags
 				 * 
-				 * TODO: Case is important here, e.g., "kassel" is not removed, 
+				 * TODO: Case is important here, e.g., "kassel" is not removed,
 				 * if "KASSEL" is contained in tagsToReplace.
 				 * 
-				 * Probably this is the way it should work - we have to discuss this.
-				 * (Although, it might be nice to have a switch to say "ignore case".)
+				 * Probably this is the way it should work - we have to discuss
+				 * this.
+				 * (Although, it might be nice to have a switch to say
+				 * "ignore case".)
 				 */
 				tags.removeAll(tagsToReplace);
 				/*
@@ -374,8 +451,10 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 				tags.addAll(replacementTags);
 				log.debug("  new tags: " + tags);
 				/*
-				 * Since replacementTags is allowed to be empty (i.e., to remove certain tags),
-				 * we must check here, if the post still contains some tags. If not - we add 
+				 * Since replacementTags is allowed to be empty (i.e., to remove
+				 * certain tags),
+				 * we must check here, if the post still contains some tags. If
+				 * not - we add
 				 * the empty tag.
 				 */
 				if (tags.isEmpty()) {
@@ -396,9 +475,12 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 				tagParam.setDate(post.getDate());
 				tagParam.setChangeDate(changeDate);
 				/*
-				 * FIXME: we don't have the groups from the grouptas available ... :-(
-				 * How can we get them to insert the new grouptas? Probably we need
-				 * a query "getGroupsByContentId" or something similar. First check,
+				 * FIXME: we don't have the groups from the grouptas available
+				 * ... :-(
+				 * How can we get them to insert the new grouptas? Probably we
+				 * need
+				 * a query "getGroupsByContentId" or something similar. First
+				 * check,
 				 * if we have something like that already.
 				 */
 				final List<Integer> groups = new ArrayList<Integer>();
@@ -421,7 +503,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			 * test: check tags
 			 */
 			final TagParam paramNew = new TagParam();
-			for (final Tag tag: replacementTags) {
+			for (final Tag tag : replacementTags) {
 				paramNew.addTagName(tag.getName());
 			}
 			paramNew.setUserName(user.getName());
@@ -449,9 +531,10 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		try {
 			this.insertTas(param, session);
 
-			/* 
-			 * if post is visible for a non exclusive group, store for each group
-			 * and each tag one entry in the grouptas table 
+			/*
+			 * if post is visible for a non exclusive group, store for each
+			 * group
+			 * and each tag one entry in the grouptas table
 			 */
 			final int firstGroup = param.getGroups().iterator().next();
 			if (!GroupUtils.isExclusiveGroup(firstGroup)) {
@@ -480,22 +563,22 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * Increases the tag counter in the tag table for the given tag. If this tag
 	 * does not exist inside the tag table, inserts it with count 1.
 	 * 
-	 * @param tag 
-	 * @param session 
+	 * @param tag
+	 * @param session
 	 */
 	protected void insertTag(final Tag tag, final DBSession session) {
 		this.validateTag(tag);
 		// TODO not tested
 		this.insert("insertTag", tag, session);
 	}
-	
+
 	// TODO: add to some validation layer
-	private void validateTag(Tag tag) {
+	private void validateTag(final Tag tag) {
 		final String tagName = tag.getName();
 		if (!present(tagName)) {
 			throw new IllegalArgumentException("tag name must be set");
 		}
-		
+
 		final Matcher whitespaceMatcher = WHITESPACE_PATTERN.matcher(tag.getName());
 		if (whitespaceMatcher.find()) {
 			throw new IllegalArgumentException("tag name contains whitespace(s)");
@@ -561,32 +644,33 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * FIXME: is this global or for a given user/group only?
 	 * 
-     * @param user the requesting user
-     * @param tagName name of the tag where we need 
+	 * @param user the requesting user
+	 * @param tagName name of the tag where we need
 	 * @param session the DBSession to be queried.
 	 * @return the tag's details, null else
 	 */
 	public Tag getTagDetails(final User user, final String tagName, final DBSession session) {
-        final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, null, user.getName(), Arrays.asList(tagName), null, null, 0, 1, null, null, null, null, user);
+		final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, null, user.getName(), Arrays.asList(tagName), null, null, 0, 1, null, null, null, null, user);
 
-        param.setLimit(10000);
+		param.setLimit(10000);
 		param.setOffset(0);
 		param.setCaseSensitiveTagNames(true);
 
-        // query the database if tagName is a proper tag
+		// query the database if tagName is a proper tag
 		final Tag tag = this.getTagByName(param, session);
 
 		if (present(tag)) {
-            /*
-             * retrieve all sub-/supertags
-             */
+			/*
+			 * retrieve all sub-/supertags
+			 */
 			final List<Tag> subTags = this.getSubtagsOfTag(param, session);
-			tag.setSubTags(setUsercountToGlobalCount(subTags));
+			tag.setSubTags(this.setUsercountToGlobalCount(subTags));
 			final List<Tag> superTags = this.getSupertagsOfTag(param, session);
-			tag.setSuperTags(setUsercountToGlobalCount(superTags));
+			tag.setSuperTags(this.setUsercountToGlobalCount(superTags));
 
-            // FIXME: this is just a hack as long as we don't supply separate user
-            // counts for each tag, DB
+			// FIXME: this is just a hack as long as we don't supply separate
+			// user
+			// counts for each tag, DB
 			tag.setUsercount(tag.getGlobalcount());
 		}
 
@@ -596,12 +680,12 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Get all tags of a given user.
 	 * 
-	 * @param param 
-	 * @param session 
+	 * @param param
+	 * @param session
 	 * @return list of tags
 	 */
 	public List<Tag> getTagsByUser(final TagParam param, final DBSession session) {
-		/* 
+		/*
 		 * another DBLP extra sausage - don't query DB for tags (as only "dblp"
 		 * will be returned anyways), but return that directly
 		 */
@@ -639,21 +723,21 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @return a list of tags
 	 */
 	public List<Tag> getTagsByResourceSearch(
-			final String userName, final String requestedUserName, final String requestedGroupName, 
+			final String userName, final String requestedUserName, final String requestedGroupName,
 			final Collection<String> allowedGroups,
 			final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
-			final String year, final String firstYear, final String lastYear, List<String> negatedTags, final int limit, final int offset) {
-		
-		if (present(this.publicationSearch) && present(this.bookmarkSearch) ) {
-			final List<Tag> bookmarkTags = 
-				bookmarkSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+			final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
+
+		if (present(this.publicationSearch) && present(this.bookmarkSearch)) {
+			final List<Tag> bookmarkTags =
+					this.bookmarkSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
 			final List<Tag> publicationTags =
-				publicationSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+					this.publicationSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
 			final List<Tag> retVal = TagUtils.mergeTagLists(bookmarkTags, publicationTags, Order.POPULAR, Order.POPULAR, limit);
 			return retVal;
 		}
-		
-		log.error("no resource searcher is set");		
+
+		log.error("no resource searcher is set");
 		return new LinkedList<Tag>();
 	}
 
@@ -712,19 +796,19 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		// check maximum number of tags
 		if (this.exceedsMaxSize(param.getTagIndex())) {
 			return new ArrayList<Tag>();
-		}		
+		}
 		return this.queryForList("getRelatedTagsForGroup", param, Tag.class, session);
 	}
 
 	/**
 	 * Get related tags from a given user and a given list of tags.
 	 * 
-	 * @param loginUserName 
+	 * @param loginUserName
 	 * @param requestedUserName
 	 * @param tagIndex
 	 * @param visibleGroupIDs
-	 * @param limit 
-	 * @param offset 
+	 * @param limit
+	 * @param offset
 	 * @param session
 	 * @return list of tags
 	 */
@@ -732,7 +816,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		// check maximum number of tags
 		if (this.exceedsMaxSize(tagIndex)) {
 			return new ArrayList<Tag>();
-		}		
+		}
 		final TagParam param = new TagParam();
 		param.setUserName(loginUserName);
 		param.setRequestedUserName(requestedUserName);
@@ -761,7 +845,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		param.setUserName(loginUserName);
 		param.setTagIndex(tagIndex);
 		param.setOrder(order);
-		param.setLimit(limit);		
+		param.setLimit(limit);
 		param.setOffset(offset);
 		if (GroupID.isSpecialGroupId(groupId)) {
 			// for special groups, check additionally if tag is "owned"
@@ -780,17 +864,18 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @return list of tags
 	 */
 	public List<Tag> getTags(final TagParam param, final DBSession session) {
-		final List<Tag> tags = chain.perform(param, session);
+		final List<Tag> tags = this.chain.perform(param, session);
 		SystemTagsExtractor.removeHiddenSystemTags(tags);
 		return this.setUsercountToGlobalCount(tags);
 	}
 
 	/**
-	 * XXX: This is just a hack as long as we don't supply separate user counts for
+	 * XXX: This is just a hack as long as we don't supply separate user counts
+	 * for
 	 * each tag, dbe
 	 * 
 	 * @param tags
-	 *            a list of tags
+	 *        a list of tags
 	 * @return list of tags with usercount set to globalcount for each tag
 	 */
 	private List<Tag> setUsercountToGlobalCount(final List<Tag> tags) {
@@ -838,7 +923,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * @param loginUserName
 	 * @param hash
-	 * @param visibleGroupIDs 
+	 * @param visibleGroupIDs
 	 * @param limit
 	 * @param offset
 	 * @param session
@@ -861,11 +946,12 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param loginUserName
 	 * @param requestedUserName
 	 * @param hash
-	 * @param visibleGroupIDs 
+	 * @param visibleGroupIDs
 	 * @param limit
 	 * @param offset
 	 * @param session
-	 * @return a list of tags attached to the given user's bookmark with the given hash
+	 * @return a list of tags attached to the given user's bookmark with the
+	 *         given hash
 	 */
 	public List<Tag> getTagsByBookmarkHashForUser(final String loginUserName, final String requestedUserName, final String hash, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
 		final TagParam param = new TagParam();
@@ -874,7 +960,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		param.addGroups(visibleGroupIDs);
 		param.setRequestedUserName(requestedUserName);
 		param.setLimit(limit);
-		param.setOffset(offset);		
+		param.setOffset(offset);
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		return this.queryForList("getTagsByBookmarkHash", param, Tag.class, session);
 	}
@@ -885,7 +971,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param loginUserName
 	 * @param hash
 	 * @param hashId
-	 * @param visibleGroupIDs 
+	 * @param visibleGroupIDs
 	 * @param limit
 	 * @param offset
 	 * @param session
@@ -898,7 +984,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		param.setUserName(loginUserName);
 		param.addGroups(visibleGroupIDs);
 		param.setLimit(limit);
-		param.setOffset(offset);		
+		param.setOffset(offset);
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		return this.queryForList("getTagsByBibtexHash", param, Tag.class, session);
 	}
@@ -910,11 +996,12 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param requestedUserName
 	 * @param hash
 	 * @param hashId
-	 * @param visibleGroupIDs 
+	 * @param visibleGroupIDs
 	 * @param limit
 	 * @param offset
 	 * @param session
-	 * @return a list of tags attached to a given user's bibtex with the given hash
+	 * @return a list of tags attached to a given user's bibtex with the given
+	 *         hash
 	 */
 	public List<Tag> getTagsByBibtexHashForUser(final String loginUserName, final String requestedUserName, final String hash, final HashID hashId, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
 		final TagParam param = new TagParam();
@@ -927,7 +1014,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		param.setOffset(offset);
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		return this.queryForList("getTagsByBibtexHash", param, Tag.class, session);
-	}	
+	}
 
 	/**
 	 * Helper function to check maximum number of tags for which related tags
@@ -937,7 +1024,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @return true if maximum number is exeeded, false otherwise
 	 */
 	private boolean exceedsMaxSize(final List<TagIndex> index) {
-		return index != null && index.size() > MAX_TAG_SIZE;
+		return (index != null) && (index.size() > MAX_TAG_SIZE);
 	}
 
 	/**
@@ -952,12 +1039,16 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<Tag> getSimilarTags(final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
 		final TagParam param = new TagParam();
-		param.setTagName(tagIndex.get(0).getTagName()); // index 0 is always present, because otherwise the calling chain element won't answer
+		param.setTagName(tagIndex.get(0).getTagName()); // index 0 is always
+														// present, because
+														// otherwise the calling
+														// chain element won't
+														// answer
 		param.setGroups(visibleGroupIDs);
 		param.setLimit(limit);
 		param.setOffset(offset);
 		return this.queryForList("getSimilarTags", param, Tag.class, session);
-	} 
+	}
 
 	/**
 	 * See getAllTags
@@ -966,7 +1057,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return all pupular tags
 	 */
-	public List<Tag> getTagsPopular(final TagParam param, final DBSession session){
+	public List<Tag> getTagsPopular(final TagParam param, final DBSession session) {
 		return this.queryForList("getTagsPopular", param, Tag.class, session);
 	}
 
@@ -977,7 +1068,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return list of popular tags
 	 */
-	public List<Tag> getPopularTags(final TagParam param, final DBSession session){
+	public List<Tag> getPopularTags(final TagParam param, final DBSession session) {
 		return this.queryForList("getPopularTags", param, Tag.class, session);
 	}
 
@@ -989,7 +1080,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public List<Tag> getTagsByFriendOfUser(final TagParam param, final DBSession session) {
 		return this.queryForList("getTagsByFriendOfUser", param, Tag.class, session);
 	}
-	
+
 	/**
 	 * @param param
 	 * @param session
@@ -1003,27 +1094,40 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * Retrieve tags for a given bibtexkey
 	 * 
 	 * @param bibtexKey
-	 * 			- the requested key
+	 *        - the requested key
 	 * @param visibleGroupIDs
-	 * 			- the groups the logged-in user is allowed to see
+	 *        - the groups the logged-in user is allowed to see
 	 * @param requestedUserName
-	 * 			- retrieve only tags of this user  
-	 * @param loginUserName 
+	 *        - retrieve only tags of this user
+	 * @param loginUserName
 	 * @param session
-	 * 			- the DB session
-	 * @param limit 
+	 *        - the DB session
+	 * @param limit
 	 * @param offset
-	 * @return a list of tags, used to annotate the bibtex(s) with the given bibtex key (eventually by the requested user)
+	 * @return a list of tags, used to annotate the bibtex(s) with the given
+	 *         bibtex key (eventually by the requested user)
 	 */
 	public List<Tag> getTagsByBibtexkey(final String bibtexKey, final List<Integer> visibleGroupIDs, final String requestedUserName, final String loginUserName, final int limit, final int offset, final DBSession session) {
 		final TagParam param = new TagParam();
 		param.setBibtexKey(bibtexKey);
 		param.setGroups(visibleGroupIDs);
-		param.setUserName(loginUserName);		
+		param.setUserName(loginUserName);
 		param.setRequestedUserName(requestedUserName);
 		param.setLimit(limit);
 		param.setOffset(offset);
 		return this.queryForList("getTagsByBibtexkey", param, Tag.class, session);
+	}
+
+	public void updateTasInGroupFromLeavingUser(final String leavingUser, final int groupId, final DBSession session) {
+		final TagParam param = new TagParam();
+		param.setUserName(leavingUser);
+		param.setGroupId(groupId);
+
+		// update tags
+		this.update("updateTasInGroupFromLeavingUser", param, session);
+
+		// delete group tas
+		this.delete("deleteGroupTasForUserAndGroup", param, session);
 	}
 
 	/**

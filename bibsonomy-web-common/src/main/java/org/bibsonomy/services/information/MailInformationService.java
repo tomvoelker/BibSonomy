@@ -74,7 +74,7 @@ public class MailInformationService implements InformationService {
 		this.setAttributes(stringTemplate, userToInform, post);
 		
 		try {
-			this.mailer.sendMail(new String[]{ getMailAddress(userToInform) }, getSubject(locale), stringTemplate.toString(), this.fromAddress);
+			this.mailer.sendPlainMail(new String[]{ getMailAddress(userToInform) }, getSubject(locale), stringTemplate.toString(), this.fromAddress);
 		} catch (final MessagingException e) {
 			log.error("error sending mail message to " + username, e);
 		}

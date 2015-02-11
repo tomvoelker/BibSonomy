@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.wiki.tags.group;
 
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
 import org.bibsonomy.wiki.tags.GroupTag;
 
@@ -45,6 +46,7 @@ public class MembersTag extends GroupTag {
 	}
 
 	private String renderImage(final String userName) {
+		// TODO: use url generator
 		return "<img height='100px' src='/picture/user/" + this.renderString(userName) + "' />";
 	}
 
@@ -56,7 +58,10 @@ public class MembersTag extends GroupTag {
 	@Override
 	protected String renderGroupTag() {
 		final StringBuilder renderedHTML = new StringBuilder();
-		for (final User user : this.requestedGroup.getUsers()) {
+
+		for (final GroupMembership membership : this.requestedGroup.getMemberships()) {
+			final User user = membership.getUser();
+
 			if (!user.getName().equals(this.requestedGroup.getName())) {
 				renderedHTML.append("<div class='imageContainer'>");
 				renderedHTML.append(this.renderImage(user.getName()));

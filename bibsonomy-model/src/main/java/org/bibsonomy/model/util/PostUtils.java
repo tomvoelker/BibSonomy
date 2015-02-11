@@ -124,7 +124,7 @@ public class PostUtils {
 		if (Role.LIMITED.equals(user.getRole())) {
 			if (!GroupUtils.isPrivateGroup(post.getGroups())) {
 				// if post it not private set it to private
-				post.setGroups(Sets.asSet(GroupUtils.getPrivateGroup()));
+				post.setGroups(Sets.asSet(GroupUtils.buildPrivateGroup()));
 			}
 		}
 	}

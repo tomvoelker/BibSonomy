@@ -41,7 +41,9 @@ public enum Role {
 	/** Is allowed to modify/set the date of a post during synchronization. **/
 	SYNC(4),
 	/** allowed to add private posts via webservice only **/
-	LIMITED(5);
+	LIMITED(5),
+	/** dummy user for a group **/
+	GROUPUSER(6);
 
 	private final int role;
 

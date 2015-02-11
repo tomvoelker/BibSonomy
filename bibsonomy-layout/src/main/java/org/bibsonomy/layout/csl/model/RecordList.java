@@ -35,13 +35,13 @@ import java.util.HashMap;
  * @author Dominik Benz, benz@cs.uni-kassel.de
  */
 public class RecordList extends HashMap<String,Record> {
+	private static final long serialVersionUID = 7653065827618450435L;
 
-    public RecordList() {
-	super();
-    }
-    
-    public void add(Record rec) {
-	this.put(rec.getId(), rec);
-    }
-    
+	/**
+	 * adds a record to the bib
+	 * @param rec
+	 */
+	public void add(Record rec) {
+		this.put(rec.getId(), rec);
+	}
 }

@@ -11,6 +11,7 @@
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
 	xmlns:bm="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bookmark"
 	xmlns:bibgs="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/resources/actionbuttons"
 	> 
 	
 	<!--+
@@ -47,7 +48,7 @@
 			<rc:post post="${post}" resourceType="${command.bookmark.resourcetype}" otherPostsUrlPrefix="/url/" loginUserName="${command.context.loginUser.name}" additionalItemClasses="${additionalItemClasses}">
 				<jsp:attribute name="title">     <bm:title      post="${post}"/></jsp:attribute>
 				<jsp:attribute name="desc">	     <bm:desc       post="${post}"/></jsp:attribute>
-				<jsp:attribute name="actions">   <bm:actions    post="${post}" loginUserName="${command.context.loginUser.name}"/></jsp:attribute>
+				<jsp:attribute name="actions">   <buttons::actions post="${post}" loginUserName="${command.context.loginUser.name}" resourceType="bookmark"/></jsp:attribute>
 				<jsp:attribute name="documents"> <bm:documents  post="${post}"/></jsp:attribute>
 			</rc:post>
 		</c:forEach>
@@ -77,7 +78,7 @@
 					</c:choose>
 				</jsp:attribute>
 				<jsp:attribute name="desc">     <bib:desc publication="${post.resource}"/></jsp:attribute>
-				<jsp:attribute name="actions">  <bib:actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/></jsp:attribute>
+				<jsp:attribute name="actions">  <buttons:actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}" resourceType='bibtex'/></jsp:attribute>
 				<jsp:attribute name="documents"><bib:documents post="${post}"/></jsp:attribute>
 			</rc:post>
 		</c:forEach>

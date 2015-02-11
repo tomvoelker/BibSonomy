@@ -43,18 +43,18 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class HashExampleController implements MinimalisticController<HashExampleCommand> {
 
-    @Override
-    public HashExampleCommand instantiateCommand() {
-        final HashExampleCommand command = new HashExampleCommand();
-        final Post<BibTex> post = new Post<BibTex>();
-        post.setResource(new BibTex());
-        command.setPost(post);
-        return command;
-    }
+	@Override
+	public HashExampleCommand instantiateCommand() {
+		final HashExampleCommand command = new HashExampleCommand();
+		final Post<BibTex> post = new Post<BibTex>();
+		post.setResource(new BibTex());
+		command.setPost(post);
+		return command;
+	}
 
-    @Override
-    public View workOn(final HashExampleCommand command) {
-        command.getPost().getResource().recalculateHashes();
-        return Views.HASHEXAMPLE;
-    }
+	@Override
+	public View workOn(final HashExampleCommand command) {
+		command.getPost().getResource().recalculateHashes();
+		return Views.HASHEXAMPLE;
+	}
 }

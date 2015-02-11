@@ -9,6 +9,7 @@
 	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/bstags/menu"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
 	xmlns:spring="urn:http://www.springframework.org/tags"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
@@ -23,6 +24,15 @@
 		loginUser="${command.context.loginUser}"
 		requPath="${requPath}" 
 		headerMessageKey="navi.admin_spam">
+
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:admin />
+					<nav:crumb nameKey="navi.admin.spam" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
 
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css"
