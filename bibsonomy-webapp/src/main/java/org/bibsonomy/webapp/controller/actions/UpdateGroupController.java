@@ -27,7 +27,6 @@
 package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-import info.bliki.wiki.template.URLEncode;
 
 import java.net.URL;
 
@@ -40,6 +39,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.GroupSettingsPageCommand;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
@@ -53,11 +53,9 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.validation.GroupValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
-import org.bibsonomy.webapp.view.Views;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
-import org.springframework.web.servlet.view.RedirectView;
 
 /**
  * TODO: add documentation
@@ -122,7 +120,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 					// get user details with an admin logic to get the mail
 					// address
 					final User invitedUser = this.adminLogic.getUserDetails(username);
-					if (present(invitedUser.getName())) {
+					if (UserUtils.isExistingUser(invitedUser)) {
 						final GroupMembership membership = groupToUpdate.getGroupMembershipForUser(invitedUser.getName());
 						if (!present(membership)) {
 							final GroupMembership ms = new GroupMembership(invitedUser, null, false);
@@ -165,7 +163,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 						// if a user can't be added to a group, this exception
 						// is thrown
 						this.errors.rejectValue("username", "settings.group.error.addUserToGroupFailed", new Object[] { username, groupToUpdate },
-								"The User {0} couldn't be added to the Group {1}.");
+								"The user {0} couldn't be added to the group {1}.");
 					}
 				}
 				selTab = Integer.valueOf(GroupSettingsPageCommand.MEMBER_LIST_IDX);
@@ -300,15 +298,19 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 			this.errors.reject("error.invalid_parameter");
 		}
 
-		if (this.errors.hasErrors()) {
-			// command.setSelTab(SettingsViewCommand.GROUP_IDX);
-			// return super.workOn(command);
-		}
-
 		// success: go back where you've come from
 		// TODO: inform the user about the success!
 		// TODO: use url generator
-		final String settingsPage = "/settings/group/" + groupToUpdate.getName() + (present(selTab) ? "?selTab=" + selTab : "") + (present(tmpErrorCode) ? "&errorMessage=" + tmpErrorCode : "");
+		String settingsPage = "/settings/group/" + groupToUpdate.getName();
+		String divider = "?";
+		if (present(selTab)) {
+			settingsPage += divider + "selTab=" + selTab;
+			divider = "&";
+		}
+		if (present(tmpErrorCode)) {
+			settingsPage += divider + "errorMessage=" + tmpErrorCode;
+		}
+		
 		return new ExtendedRedirectView(settingsPage);
 	}
 
