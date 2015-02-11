@@ -61,16 +61,15 @@
 									<span class="glyphicon glyphicon-floppy-disk"><!--  --></span>
 								</a>
 							
-							</c:when>
-				
-					<!-- EDIT other actions -->
-					<c:otherwise><!-- user is post's owner -->
-						
-						<fmt:message key="bibtex.actions.edit.title" var="editTitle"/>
-						<a class="${buttonClasses}" href="/editPublication?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
-							<span class="glyphicon glyphicon-edit ${post.user.name ne loginUserName ? 'btn-disabled' : ''}"><!--  --></span>
-						</a>
-
+							</c:when>					
+							<!-- EDIT other actions -->
+							<c:otherwise><!-- user is post's owner -->								
+								<fmt:message key="bibtex.actions.edit.title" var="editTitle"/>
+								<a class="${buttonClasses}" href="/editPublication?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
+									<span class="glyphicon glyphicon-edit ${post.user.name ne loginUserName ? 'btn-disabled' : ''}"><!--  --></span>
+								</a>		
+							</c:otherwise>
+						</c:choose>
 					</c:otherwise>
 				</c:choose>
 			</c:when>
