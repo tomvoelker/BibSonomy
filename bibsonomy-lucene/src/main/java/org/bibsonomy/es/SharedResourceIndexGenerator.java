@@ -15,6 +15,7 @@ import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.util.generator.LuceneGenerateResourceIndex;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.util.GroupUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -100,15 +101,16 @@ public class SharedResourceIndexGenerator extends LuceneGenerateResourceIndex<Re
 				post.setLastLogDate(lastLogDate);
 				post.setLastTasId(lastTasId);
 				if (this.isNotSpammer(post)) {
-					Map<String, Object> jsonDocument = new HashMap<String, Object>();
-					jsonDocument = (Map<String, Object>) this.resourceConverter.readPost(post, this.indexType);
-					jsonDocument.put(this.systemUrlFieldName, systemHome);
-					long indexID = (systemHome.hashCode() << 32) + Long.parseLong(post.getContentId().toString());
-					esClient.getClient()
-							.prepareIndex(indexName, resourceType, String.valueOf(indexID))
-							.setSource(jsonDocument).execute().actionGet();
-					log.info("post has been indexed.");
-					
+					if (post.getGroups().contains(GroupUtils.getPublicGroup())) {
+						Map<String, Object> jsonDocument = new HashMap<String, Object>();
+						jsonDocument = (Map<String, Object>) this.resourceConverter.readPost(post, this.indexType);
+						jsonDocument.put(this.systemUrlFieldName, systemHome);
+						long indexID = (systemHome.hashCode() << 32) + Long.parseLong(post.getContentId().toString());
+						esClient.getClient()
+								.prepareIndex(indexName, resourceType, String.valueOf(indexID))
+								.setSource(jsonDocument).execute().actionGet();
+						log.info("post has been indexed.");
+					}
 					this.importedPost(post);
 				}
 			}

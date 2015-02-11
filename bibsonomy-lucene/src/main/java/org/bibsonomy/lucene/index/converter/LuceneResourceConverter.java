@@ -153,7 +153,9 @@ public class LuceneResourceConverter<R extends Resource> {
 			final Store fieldStore = this.getFieldStoreForProperty(propertyName);
 			final String fieldName = this.getFieldName(propertyName);
 			if (searchType == IndexType.ELASTICSEARCH) {
-				jsonDocument.put(fieldName, propertyValue);
+				if (!isPrivateProperty(propertyName)) {
+					jsonDocument.put(fieldName, propertyValue);
+				}
 			} else {
 				// add field to the lucene document
 				luceneDocument.add(new Field(fieldName, propertyValue, fieldStore, fieldIndex));
@@ -175,9 +177,6 @@ public class LuceneResourceConverter<R extends Resource> {
 		}
 		
 		if (searchType == IndexType.ELASTICSEARCH) {
-			jsonDocument.put(LuceneFieldNames.MERGED_FIELDS, decodeTeX(fulltextField.toString()));
-			jsonDocument.put(LuceneFieldNames.PRIVATE_FIELDS, decodeTeX(privateField.toString()));
-
 			return jsonDocument;
 		}
 		// store merged field
