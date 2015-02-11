@@ -27,7 +27,6 @@
 package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-import info.bliki.wiki.template.URLEncode;
 
 import java.net.URL;
 
@@ -53,11 +52,9 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.validation.GroupValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
-import org.bibsonomy.webapp.view.Views;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
-import org.springframework.web.servlet.view.RedirectView;
 
 /**
  * TODO: add documentation
@@ -103,7 +100,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 		}
 		
 		// FIXME: This should be replaced by a propper error handling
-		String tmpErrorCode = "";
+		String tmpErrorCode = null;
 
 		Group groupToUpdate = null;
 		// since before requesting a group, it must not exist, we cannot check
@@ -308,7 +305,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 		// success: go back where you've come from
 		// TODO: inform the user about the success!
 		// TODO: use url generator
-		final String settingsPage = "/settings/group/" + groupToUpdate.getName() + (present(selTab) ? "?selTab=" + selTab : "") + "&errorMessage=" + tmpErrorCode;
+		final String settingsPage = "/settings/group/" + groupToUpdate.getName() + (present(selTab) ? "?selTab=" + selTab : "") + (present(tmpErrorCode) ? "&errorMessage=" + tmpErrorCode : "");
 		return new ExtendedRedirectView(settingsPage);
 	}
 

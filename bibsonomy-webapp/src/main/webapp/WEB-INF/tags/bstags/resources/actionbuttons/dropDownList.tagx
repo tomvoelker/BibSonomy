@@ -7,9 +7,9 @@
 
 	<jsp:directive.attribute name="listContent" fragment="true" required="true"/>
 	
-	<button class="btn btn-default btn-small dropdown-toggle" data-toggle="dropdown">
+	<a class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 		<span class="caret"><!-- KEEP ME --></span>
-	</button>
+	</a>
 
 	<ul class="dropdown-menu" style="min-width: 230px;">
 		<jsp:invoke fragment="listContent"/>

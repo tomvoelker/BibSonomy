@@ -13,7 +13,7 @@
 	<jsp:directive.attribute name="disableResourceLinks" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
 
-	<c:set var="buttonClasses" value="btn btn-default btn-xsmall"/>
+	<c:set var="buttonClasses" value="btn btn-default btn-xs"/>
 
 	<div class="edit-media-buttons btn-group btn-group-xs dropdown dropdown-align-right">
 
