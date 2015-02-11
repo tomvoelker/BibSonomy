@@ -36,7 +36,6 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -83,6 +82,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import com.google.caja.util.Sets;
 import com.sksamuel.diffpatch.DiffMatchPatch;
 import com.sksamuel.diffpatch.DiffMatchPatch.Diff;
 
@@ -110,6 +110,8 @@ public class Functions {
 	private static final DateTimeFormatter dmyDateFormat = DateTimeFormat.forPattern("yyyy-MM-dd");
 
 	private static final DateTimeFormatter W3CDTF_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
+
+	private static final DateTimeFormatter MEMENTO_FORMAT = DateTimeFormat.forPattern("yyyyMMddHHmm");
 
 	/*
 	 * used by computeTagFontSize.
@@ -424,209 +426,62 @@ public class Functions {
 	 * new bibTex and the old one are compared according to each field,
 	 * keys are the fields which have different values
 	 */
-	public static Map<String, String> DiffEntriesPub(final Post newPost, final Post oldPost) {
+	public static Map<String, String> diffEntriesPub(final Post newPost, final Post oldPost) {
+		final Map<String, String> diffMap = new LinkedHashMap<String, String>();
+		diffEntriesPost(newPost, oldPost, diffMap);
 		final BibTex newBib = (BibTex) newPost.getResource();
 		final BibTex oldBib = (BibTex) oldPost.getResource();
-		final Map<String, String> diffArray = new LinkedHashMap<String, String>();
-		String tmp;
 
+		diffPersonEntry(diffMap, "author", newBib.getAuthor(), oldBib.getAuthor());
+		diffPersonEntry(diffMap, "editor", newBib.getEditor(), oldBib.getEditor());
+
+		diffStringEntry(diffMap, "entrytype", newBib.getEntrytype(), oldBib.getEntrytype());
+		diffStringEntry(diffMap, "year", newBib.getYear(), oldBib.getYear());
+
+		diffStringEntry(diffMap, "booktitle", newBib.getBooktitle(), oldBib.getBooktitle());
+		diffStringEntry(diffMap, "journal", newBib.getJournal(), oldBib.getJournal());
+		diffStringEntry(diffMap, "volume", newBib.getVolume(), oldBib.getVolume());
+		diffStringEntry(diffMap, "number", newBib.getNumber(), oldBib.getNumber());
+		diffStringEntry(diffMap, "pages", newBib.getPages(), oldBib.getPages());
+		diffStringEntry(diffMap, "month", newBib.getMonth(), oldBib.getMonth());
+		diffStringEntry(diffMap, "day", newBib.getDay(), oldBib.getDay());
+		diffStringEntry(diffMap, "publisher", newBib.getPublisher(), oldBib.getPublisher());
+		diffStringEntry(diffMap, "address", newBib.getAddress(), oldBib.getAddress());
+		diffStringEntry(diffMap, "edition", newBib.getEdition(), oldBib.getEdition());
+		diffStringEntry(diffMap, "chapter", newBib.getChapter(), oldBib.getChapter());
+		diffStringEntry(diffMap, "url", newBib.getUrl(), oldBib.getUrl());
+		diffStringEntry(diffMap, "key", newBib.getKey(), oldBib.getKey());
+		diffStringEntry(diffMap, "howpublished", newBib.getHowpublished(), oldBib.getHowpublished());
+		diffStringEntry(diffMap, "institution", newBib.getInstitution(), oldBib.getInstitution());
+		diffStringEntry(diffMap, "organization", newBib.getOrganization(), oldBib.getOrganization());
+		diffStringEntry(diffMap, "school", newBib.getSchool(), oldBib.getSchool());
+		diffStringEntry(diffMap, "series", newBib.getSeries(), oldBib.getSeries());
+		diffStringEntry(diffMap, "crossref", newBib.getCrossref(), oldBib.getCrossref());
+		diffStringEntry(diffMap, "misc", newBib.getMisc(), oldBib.getMisc());
+		diffStringEntry(diffMap, "bibtexAbstract", newBib.getAbstract(), oldBib.getAbstract());
+		diffStringEntry(diffMap, "privnote", newBib.getPrivnote(), oldBib.getPrivnote());
+		diffStringEntry(diffMap, "annote", newBib.getAnnote(), oldBib.getAnnote());
+		diffStringEntry(diffMap, "note", newBib.getNote(), oldBib.getNote());
+
+		return diffMap;
+	}
+
+	private static void diffStringEntry(final Map<String, String> diffMap, final String key, final String newString, final String oldString) {
 		// TODO: do we really want to use cleanbibtex here?
-		if (!cleanBibtex(newBib.getEntrytype()).equals(cleanBibtex(oldBib.getEntrytype()))) {
-			tmp = compareString(newBib.getEntrytype(), oldBib.getEntrytype());
-			diffArray.put("entrytype", tmp);
+		if (!cleanBibtex(newString).equals(cleanBibtex(oldString))) {
+			diffMap.put(key, compareString(newString, oldString));
 		}
-		if (!cleanBibtex(newBib.getTitle()).equals(cleanBibtex(oldBib.getTitle()))) {
-			tmp = compareString(newBib.getTitle(), oldBib.getTitle());
-			diffArray.put("title", tmp);
-		}
+	}
 
-		/*
-		 * Important comment:
-		 * Since there is no input check while creating a post, some "required"
-		 * fields
-		 * might remain empty. So we have to check for the emptiness(null) here.
-		 * When an
-		 * input check is added to post creating procedure, the following check
-		 * can be removed.
-		 * *
-		 */
+	private static void diffPersonEntry(final Map<String, String> diffMap, final String key, final List<PersonName> newList, final List<PersonName> oldList) {
+		if (present(newList) || present(oldList)) {
+			final String newListAsString = present(newList) ? PersonNameUtils.serializePersonNames(newList, false, ", ") : "";
+			final String oldListAsString = present(oldList) ? PersonNameUtils.serializePersonNames(oldList, false, ", ") : "";
 
-		if (present(newBib.getAuthor()) || present(oldBib.getAuthor())) {
-			String val1 = "";
-			String val2 = "";
-
-			if (present(newBib.getAuthor()) && present(oldBib.getAuthor())) {
-				final Set<PersonName> aa = new HashSet<>(newBib.getAuthor());
-				final Set<PersonName> bb = new HashSet<>(oldBib.getAuthor());
-
-				if (!aa.equals(bb)) {
-					val1 = PersonNameUtils.serializePersonNames(newBib.getAuthor(), false, ", ");
-					val2 = PersonNameUtils.serializePersonNames(oldBib.getAuthor(), false, ", ");
-					tmp = compareString(val1, val2);
-					diffArray.put("author", tmp);
-				}
-
-			} else if (present(newBib.getAuthor())) {
-				val2 = "";
-				val1 = PersonNameUtils.serializePersonNames(newBib.getAuthor(), false, ", ");
-
-				tmp = compareString(val1, val2);
-				diffArray.put("author", tmp);
-
-			} else if (present(oldBib.getAuthor())) {
-				val1 = "";
-				val2 = PersonNameUtils.serializePersonNames(oldBib.getAuthor(), false, ", ");
-
-				tmp = compareString(val1, val2);
-				diffArray.put("author", tmp);
+			if (!newListAsString.equals(oldListAsString)) {
+				diffMap.put(key, compareString(newListAsString, oldListAsString));
 			}
 		}
-
-		if (present(newBib.getEditor()) || present(oldBib.getEditor())) {
-			String val1 = "";
-			String val2 = "";
-
-			if (present(newBib.getEditor()) && present(oldBib.getEditor())) {
-
-				final Set<PersonName> aa = new HashSet<>(newBib.getEditor());
-				final Set<PersonName> bb = new HashSet<>(oldBib.getEditor());
-
-				if (!aa.equals(bb)) {
-					val1 = PersonNameUtils.serializePersonNames(newBib.getEditor(), false, ", ");
-					val2 = PersonNameUtils.serializePersonNames(oldBib.getEditor(), false, ", ");
-					tmp = compareString(val1, val2);
-					diffArray.put("editor", tmp);
-
-				}
-
-			}
-			else if (present(newBib.getEditor())) {
-				val2 = "";
-
-				val1 = PersonNameUtils.serializePersonNames(newBib.getEditor(), false, ", ");
-				tmp = compareString(val1, val2);
-				diffArray.put("editor", tmp);
-
-			} else if (present(oldBib.getEditor())) {
-				val1 = "";
-
-				val2 = PersonNameUtils.serializePersonNames(oldBib.getEditor(), false, ", ");
-				tmp = compareString(val1, val2);
-				diffArray.put("editor", tmp);
-
-			}
-		}
-
-		if (!cleanBibtex(newBib.getYear()).equals(cleanBibtex(oldBib.getYear()))) {
-			tmp = compareString(newBib.getYear(), oldBib.getYear());
-			diffArray.put("year", tmp);
-		}
-		if (!cleanBibtex(newBib.getBooktitle()).equals(cleanBibtex(oldBib.getBooktitle()))) {
-			tmp = compareString(newBib.getBooktitle(), oldBib.getBooktitle());
-			diffArray.put("booktitle", tmp);
-		}
-		if (!cleanBibtex(newBib.getJournal()).equals(cleanBibtex(oldBib.getJournal()))) {
-			tmp = compareString(newBib.getJournal(), oldBib.getJournal());
-			diffArray.put("journal", tmp);
-		}
-		if (!cleanBibtex(newBib.getVolume()).equals(cleanBibtex(oldBib.getVolume()))) {
-			tmp = compareString(newBib.getVolume(), oldBib.getVolume());
-			diffArray.put("volume", tmp);
-		}
-		if (!cleanBibtex(newBib.getNumber()).equals(cleanBibtex(oldBib.getNumber()))) {
-			tmp = compareString(newBib.getNumber(), oldBib.getNumber());
-			diffArray.put("number", tmp);
-		}
-		if (!cleanBibtex(newBib.getPages()).equals(cleanBibtex(oldBib.getPages()))) {
-			tmp = compareString(newBib.getPages(), oldBib.getPages());
-			diffArray.put("pages", tmp);
-		}
-		if (!cleanBibtex(newBib.getMonth()).equals(cleanBibtex(oldBib.getMonth()))) {
-			tmp = compareString(newBib.getMonth(), oldBib.getMonth());
-			diffArray.put("month", tmp);
-		}
-		if (!cleanBibtex(newBib.getDay()).equals(cleanBibtex(oldBib.getDay()))) {
-			tmp = compareString(newBib.getDay(), oldBib.getDay());
-			diffArray.put("day", tmp);
-		}
-		if (!cleanBibtex(newBib.getPublisher()).equals(cleanBibtex(oldBib.getPublisher()))) {
-			tmp = compareString(newBib.getPublisher(), oldBib.getPublisher());
-			diffArray.put("publisher", tmp);
-		}
-		if (!cleanBibtex(newBib.getAddress()).equals(cleanBibtex(oldBib.getAddress()))) {
-			tmp = compareString(newBib.getAddress(), oldBib.getAddress());
-			diffArray.put("address", tmp);
-		}
-		if (!cleanBibtex(newBib.getEdition()).equals(cleanBibtex(oldBib.getEdition()))) {
-			tmp = compareString(newBib.getEdition(), oldBib.getEdition());
-			diffArray.put("edition", tmp);
-		}
-		if (!cleanBibtex(newBib.getChapter()).equals(cleanBibtex(oldBib.getChapter()))) {
-			tmp = compareString(newBib.getChapter(), oldBib.getChapter());
-			diffArray.put("chapter", tmp);
-		}
-		if (!cleanBibtex(newBib.getUrl()).equals(cleanBibtex(oldBib.getUrl()))) {
-			tmp = compareString(newBib.getUrl(), oldBib.getUrl());
-			diffArray.put("url", tmp);
-		}
-		if (!cleanBibtex(newBib.getKey()).equals(cleanBibtex(oldBib.getKey()))) {
-			tmp = compareString(newBib.getKey(), oldBib.getKey());
-			diffArray.put("key", tmp);
-		}
-		if (!cleanBibtex(newBib.getHowpublished()).equals(cleanBibtex(oldBib.getHowpublished()))) {
-			tmp = compareString(newBib.getHowpublished(), oldBib.getHowpublished());
-			diffArray.put("howpublished", tmp);
-		}
-		if (!cleanBibtex(newBib.getInstitution()).equals(cleanBibtex(oldBib.getInstitution()))) {
-			tmp = compareString(newBib.getInstitution(), oldBib.getInstitution());
-			diffArray.put("institution", tmp);
-		}
-		if (!cleanBibtex(newBib.getOrganization()).equals(cleanBibtex(oldBib.getOrganization()))) {
-			tmp = compareString(newBib.getOrganization(), oldBib.getOrganization());
-			diffArray.put("organization", tmp);
-		}
-		if (!cleanBibtex(newBib.getSchool()).equals(cleanBibtex(oldBib.getSchool()))) {
-			tmp = compareString(newBib.getSchool(), oldBib.getSchool());
-			diffArray.put("school", tmp);
-		}
-		if (!cleanBibtex(newBib.getSeries()).equals(cleanBibtex(oldBib.getSeries()))) {
-			tmp = compareString(newBib.getSeries(), oldBib.getSeries());
-			diffArray.put("series", tmp);
-		}
-		if (!cleanBibtex(newBib.getCrossref()).equals(cleanBibtex(oldBib.getCrossref()))) {
-			tmp = compareString(newBib.getCrossref(), oldBib.getCrossref());
-			diffArray.put("crossref", tmp);
-		}
-		if (!cleanBibtex(newBib.getMisc()).equals(cleanBibtex(oldBib.getMisc()))) {
-			tmp = compareString(newBib.getMisc(), oldBib.getMisc());
-			diffArray.put("misc", tmp);
-		}
-		if (!cleanBibtex(newBib.getAbstract()).equals(cleanBibtex(oldBib.getAbstract()))) {
-			tmp = compareString(newBib.getAbstract(), oldBib.getAbstract());
-			diffArray.put("bibtexAbstract", tmp);
-		}
-		if (!cleanBibtex(newBib.getPrivnote()).equals(cleanBibtex(oldBib.getPrivnote()))) {
-			tmp = compareString(newBib.getPrivnote(), oldBib.getPrivnote());
-			diffArray.put("privnote", tmp);
-		}
-		if (!cleanBibtex(newBib.getAnnote()).equals(cleanBibtex(oldBib.getAnnote()))) {
-			tmp = compareString(newBib.getAnnote(), oldBib.getAnnote());
-			diffArray.put("annote", tmp);
-		}
-		if (!cleanBibtex(newBib.getNote()).equals(cleanBibtex(oldBib.getNote()))) {
-			tmp = compareString(newBib.getNote(), oldBib.getNote());
-			diffArray.put("note", tmp);
-		}
-		if (!cleanBibtex(newPost.getDescription()).equals(cleanBibtex(oldPost.getDescription()))) {
-			tmp = compareString(newPost.getDescription(), oldPost.getDescription());
-			diffArray.put("description", tmp);
-		}
-		if (!newPost.getTags().equals(oldPost.getTags())) {
-			tmp = compareString(toTagString(newPost.getTags()), toTagString(oldPost.getTags()));
-			diffArray.put("tags", tmp);
-		}
-
-		return diffArray;
 	}
 
 	/**
@@ -638,30 +493,30 @@ public class Functions {
 	 * @param oldBmPost
 	 * @return key-value
 	 */
-	public static Map<String, String> DiffEntriesBm(final Post newBmPost, final Post oldBmPost) {
+	public static Map<String, String> diffEntriesBm(final Post newBmPost, final Post oldBmPost) {
+		final Map<String, String> diffMap = new LinkedHashMap<String, String>();
+		diffEntriesPost(newBmPost, oldBmPost, diffMap);
+		diffStringEntry(diffMap, "url", ((Bookmark) newBmPost.getResource()).getUrl(), ((Bookmark) oldBmPost.getResource()).getUrl());
+		return diffMap;
+	}
 
-		final Map<String, String> DiffArray = new LinkedHashMap<String, String>();
-		String tmp;
-		if (!cleanBibtex(newBmPost.getResource().getTitle()).equals(cleanBibtex(oldBmPost.getResource().getTitle()))) {
-			tmp = compareString(newBmPost.getResource().getTitle(), oldBmPost.getResource().getTitle());
-			DiffArray.put("title", tmp);
-		}
+	public static void diffEntriesPost(final Post newPost, final Post oldPost, final Map<String, String> diffMap) {
 
-		if (!cleanBibtex(((Bookmark) newBmPost.getResource()).getUrl()).equals(cleanBibtex(((Bookmark) oldBmPost.getResource()).getUrl()))) {
-			tmp = compareString(((Bookmark) newBmPost.getResource()).getUrl(), ((Bookmark) oldBmPost.getResource()).getUrl());
-			DiffArray.put("url", tmp);
-		}
+		final Resource newResource = newPost.getResource();
+		final Resource oldResource = oldPost.getResource();
 
-		if (!cleanBibtex(newBmPost.getDescription()).equals(cleanBibtex(oldBmPost.getDescription()))) {
-			tmp = compareString(newBmPost.getDescription(), oldBmPost.getDescription());
-			DiffArray.put("description", tmp);
+		diffStringEntry(diffMap, "title", newResource.getTitle(), oldResource.getTitle());
+		diffStringEntry(diffMap, "description", newPost.getDescription(), oldPost.getDescription());
+		if (!newPost.getTags().equals(oldPost.getTags())) {
+			diffMap.put("tags", compareTagSets(newPost.getTags(), oldPost.getTags()));
 		}
+	}
 
-		if (!newBmPost.getTags().equals(oldBmPost.getTags())) {
-			tmp = compareString(toTagString(newBmPost.getTags()), toTagString(oldBmPost.getTags()));
-			DiffArray.put("tags", tmp);
-		}
-		return DiffArray;
+	private static String compareTagSets(final Set<Tag> newTags, final Set<Tag> oldTags) {
+		final String commonTags = toTagString(Sets.intersection(newTags, oldTags));
+		final String addedTags = toTagString(Sets.difference(newTags, oldTags));
+		final String deletedTags = toTagString(Sets.difference(oldTags, newTags));
+		return compareString(commonTags + addedTags, commonTags + deletedTags);
 	}
 
 	/**
@@ -1009,6 +864,23 @@ public class Functions {
 	public static String formatDateW3CDTF(final Date date) {
 		if (present(date)) {
 			return W3CDTF_FORMAT.print(new DateTime(date));
+		}
+		return "";
+	}
+
+	/**
+	 * Formats the date for Memento, e.g., 201211071443 (equivalent to
+	 * 2012-11-07 14:43)
+	 * 
+	 * Currently Java's formatter doesn't support this standard therefore we can
+	 * not use the fmt:formatDate tag with a pattern
+	 * 
+	 * @param date
+	 * @return the formatted date
+	 */
+	public static String formatDateMemento(final Date date) {
+		if (present(date)) {
+			return MEMENTO_FORMAT.print(new DateTime(date));
 		}
 		return "";
 	}

@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Database - Database for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.database.managers;
 
 import static org.hamcrest.Matchers.empty;
@@ -161,12 +187,13 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		}
 
 		// HIDDEN group
-		// "testuser1", a member of "testgroup2", can't see other members
+		// "testuser1", a member of "testgroup2", can't see other members, but herself
 		// "testuser2", not a member of "testgroup2", can't see members too
-		for (final String username : new String[] { "testuser1", "testuser2" }) {
-			final Group hiddenGroup = groupDb.getGroupMembers(username, "testgroup2", false, this.dbSession);
-			assertEquals(0, hiddenGroup.getMemberships().size());
-		}
+		final Group hiddenGroup = groupDb.getGroupMembers("testuser1", "testgroup2", false, this.dbSession);
+		assertEquals(1, hiddenGroup.getMemberships().size());
+		assertThat(hiddenGroup.getMemberships().get(0).getUser().getName(), equalTo("testuser1"));
+		final Group hiddenGroup2 = groupDb.getGroupMembers("testuser2", "testgroup2", false, this.dbSession);
+		assertEquals(0, hiddenGroup2.getMemberships().size());
 
 		// MEMBER (only) group
 		// "testuser1", a member of "testgroup3", can see all members (including

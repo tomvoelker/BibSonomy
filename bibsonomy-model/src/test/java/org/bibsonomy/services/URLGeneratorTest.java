@@ -157,22 +157,22 @@ public class URLGeneratorTest {
 	}
 	
 	@Test
-	public void testGetGoldstandardUrlByInterHash() throws Exception{
-		final GoldStandardPublication gst = ModelUtils.generatePost(GoldStandardPublication.class).getResource();
-		final String expected = projectHome + "bibtex/" + gst.getInterHash();
-		assertEquals(expected, ug.getGoldstandardUrlByInterHash(gst.getInterHash()));
-	}
+		public void testGetCommunityPublicationUrlByInterHash() throws Exception{
+			final GoldStandardPublication gst = ModelUtils.generatePost(GoldStandardPublication.class).getResource();
+			final String expected = projectHome + "bibtex/" + gst.getInterHash();
+			assertEquals(expected, ug.getCommunityPublicationUrlByInterHash(gst.getInterHash()));
+		}
 	
 	@Test
-	public void testGetGoldstandardUrlByInterHashAndUsername() throws Exception{
-		final Post<GoldStandardPublication> post = ModelUtils.generatePost(GoldStandardPublication.class);
-		final BibTex gst = post.getResource();
-		final String userName = post.getUser().getName();
-		
-		String expected = projectHome + "bibtex/" + gst.getInterHash() + "/" +
-						  userName;
-		assertEquals(expected, ug.getGoldstandardUrlByInterHashAndUsername(gst.getInterHash(), userName));
-	}
+		public void testGetCommunityPublicationUrlByInterHashAndUsername() throws Exception{
+			final Post<GoldStandardPublication> post = ModelUtils.generatePost(GoldStandardPublication.class);
+			final BibTex gst = post.getResource();
+			final String userName = post.getUser().getName();
+			
+			String expected = projectHome + "bibtex/" + gst.getInterHash() + "/" +
+							  userName;
+			assertEquals(expected, ug.getCommunityPublicationUrlByInterHashAndUsername(gst.getInterHash(), userName));
+		}
 
 	@Test
 	public void testGetGroupUrlByGroupName() throws Exception{

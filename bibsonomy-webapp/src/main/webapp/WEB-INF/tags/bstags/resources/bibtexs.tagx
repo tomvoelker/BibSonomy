@@ -9,7 +9,9 @@
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/resources/actionbuttons"
+	>
 	
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
@@ -73,7 +75,8 @@
 
 						</c:when>
 						<c:otherwise>
-							<div class="pull-right btn-group btn-group-xs dropdown-align-right" style="margin-bottom: 2px;">
+								<div class="pull-right btn-group dropdown-align-right" style="margin-bottom: 2px;">
+<!--							<div class="pull-right btn-group btn-group-xs dropdown-align-right" style="margin-bottom: 2px;">
 								<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 								<c:set var="escapedRequestPathAndQuery" value="${fn:escapeXml(requPathAndQuery)}" />
 								
@@ -81,16 +84,16 @@
 									<c:when test="${showBookmark}">
 										<fmt:message key="post.meta.show_publications_only" var="showPublicationsOnly"/>
 										<a title="${showPublicationsOnly}" class="btn btn-default" href="${mtl:setParam(escapedRequestPathAndQuery, 'resourcetype', 'publication')}">
-											<span class="fa fa-expand"><!-- KEEP ME --></span>
+											<span class="fa fa-expand">--><!-- KEEP ME --><!-- </span>
 										</a>
 									</c:when>
 									<c:otherwise>
 										<fmt:message key="navi.all" var="showAll" />
 										<a title="${showAll}" class="btn btn-default" href="${mtl:setParam(escapedRequestPathAndQuery, 'resourcetype', 'all')}">
-											<span class="fa fa-compress"><!-- KEEP ME --></span>
+											<span class="fa fa-compress">--><!-- KEEP ME --><!-- </span>
 										</a>
 									</c:otherwise>
-								</c:choose>
+								</c:choose>-->
 								<bsform:button gear="${true}" value="" dropdown="${true}" size="xsmall" style="defaultStyle" dataToggle="dropdown" />
 								<ul class="dropdown-menu list-options">
 									<rc:actions resourceType="bibtex" 
@@ -128,7 +131,7 @@
 		
 		<!-- BibTeX action -->
 		<jsp:attribute name="actions">
-			<bib:actions loginUserName="${loginUserName}" post="${post}" disableResourceLinks="${false}"/>
+			<buttons:actions loginUserName="${loginUserName}" post="${post}" disableResourceLinks="${false}" resourceType="bibtex"/>
 		</jsp:attribute>
 
 		<!-- BibTeX preview + document upload -->

@@ -256,15 +256,15 @@
 	</function>
 	
 	<function>
-		<name>DiffEntriesPub</name>
+		<name>diffEntriesPub</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>java.util.Map DiffEntriesPub(org.bibsonomy.model.Post, org.bibsonomy.model.Post)</function-signature>
+		<function-signature>java.util.Map diffEntriesPub(org.bibsonomy.model.Post, org.bibsonomy.model.Post)</function-signature>
 	</function>
 	
 	<function>
-		<name>DiffEntriesBm</name>
+		<name>diffEntriesBm</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>java.util.Map DiffEntriesBm(org.bibsonomy.model.Post, org.bibsonomy.model.Post)</function-signature>
+		<function-signature>java.util.Map diffEntriesBm(org.bibsonomy.model.Post, org.bibsonomy.model.Post)</function-signature>
 	</function>
 			
 	<function>
@@ -406,6 +406,12 @@
 		<name>formatDateW3CDTF</name>
 		<function-class>tags.Functions</function-class>
 		<function-signature>String formatDateW3CDTF(java.util.Date)</function-signature>
+	</function>
+
+	<function>
+		<name>formatDateMemento</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>String formatDateMemento(java.util.Date)</function-signature>
 	</function>
 
 	<function>

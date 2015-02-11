@@ -29,8 +29,8 @@ package org.bibsonomy.webapp.controller.admin;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.HashSet;
-import org.apache.commons.lang.LocaleUtils;
 
+import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.AdminGroupOperation;
@@ -79,24 +79,33 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		if(!present(action)) {
 			log.debug("No action specified.");
 		} else {
+			Group group = command.getGroup();
 			switch(action) {
 				case ACCEPT:
-					requestingUser = this.logic.getUserDetails(command.getGroup().getGroupRequest().getUserName());
-					this.logic.updateGroup(command.getGroup(), GroupUpdateOperation.ACTIVATE, null);
+					for (Group g : logic.getGroups(true, 0, Integer.MAX_VALUE)) {
+						if (g.getName().equals(group.getName())) {
+							group = g;
+							break;
+						}
+					}
+					
+					requestingUser = this.logic.getUserDetails(group.getGroupRequest().getUserName());
+					this.logic.updateGroup(group, GroupUpdateOperation.ACTIVATE, null);
 					if (present(requestingUser.getEmail())) {
-						this.mailUtils.sendGroupActivationNotification(command.getGroup(), requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
+						this.mailUtils.sendGroupActivationNotification(group, requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
 					}
 					break;
 				case CREATE:
-					command.setAdminResponse(createGroup(command.getGroup()));
-					requestingUser = this.logic.getUserDetails(command.getGroup().getGroupRequest().getUserName());
+					command.setAdminResponse(createGroup(group));
+					requestingUser = this.logic.getUserDetails(group.getGroupRequest().getUserName());
 					if (present(requestingUser.getEmail())) {
-						this.mailUtils.sendGroupActivationNotification(command.getGroup(), requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
+						this.mailUtils.sendGroupActivationNotification(group, requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
 					}
 					break;
 				case DECLINE:
-					log.debug("grouprequest for group \""+command.getGroup().getName()+"\" declined");
-					this.logic.updateGroup(command.getGroup(), GroupUpdateOperation.DELETE, null);
+					log.debug("grouprequest for group \"" + group.getName() + "\" declined");
+					this.logic.updateGroup(group, GroupUpdateOperation.DELETE, null);
+					// TODO: send mail
 					break;
 				case FETCH_GROUP_SETTINGS:
 					setGroupOrMarkNonExistent(command);
@@ -220,14 +229,6 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	 */
 	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
-	}
-
-	public LogicInterface getLogic() {
-		return logic;
-	}
-
-	public MailUtils getMailUtils() {
-		return mailUtils;
 	}
 
 	public void setMailUtils(MailUtils mailUtils) {

@@ -237,6 +237,8 @@
 				<value>classpath:/custom/messages</value>
 				<value>classpath:/projects/${project.name}_messages</value>
 				<value>classpath:/themes/${project.theme}_messages</value>
+				<!-- TODO: (Bootstrap) remove when old layout is removed -->
+				<value>classpath:/old_layout_messages</value>
 				<value>classpath:/messages</value>
 			</list>
 		</property>
@@ -382,7 +384,7 @@
 						<property name="controllerBeanName" value="postHistoryController" />
 						<property name="allowedFields">
 							<list>
-								<value>resourceClass</value>
+								<value>requestedType</value>
 								<value>requestedHash</value>
 								<value>requestedUser</value>
 							</list>
@@ -557,17 +559,6 @@
 								<value>scope</value>
 								<value>requUser</value>
 								<value>url</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
-				<entry key="/memento">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="mementoController"/>
-						<property name="allowedFields">
-							<list>
-								<value>url</value>
-								<value>datetime</value>
 							</list>
 						</property>
 					</bean>
@@ -878,16 +869,6 @@
 	-->
 	<bean id="UnAPIController" class="org.bibsonomy.webapp.controller.special.UnAPIController" scope="request">
 		<property name="responseLogic" ref="responseLogic"/>
-	</bean>
-
-	<!-- 
-		provides access to archived versions of web pages using memento timegates, cf. http://www.mementoweb.org/
-	 -->
-	<bean id="mementoService" class="org.bibsonomy.services.memento.MementoService">
-		<constructor-arg value="${memento.timegate}"/>
-	</bean>
-	<bean id="mementoController" class="org.bibsonomy.webapp.controller.special.MementoController" scope="request">
-		<property name="mementoService" ref="mementoService"/>
 	</bean>
 	
 	<!-- 

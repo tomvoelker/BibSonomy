@@ -33,6 +33,7 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -49,8 +50,11 @@ import org.springframework.context.MessageSource;
  * @author rja
  */
 public class MailUtils {
-
 	private static final Log log = LogFactory.getLog(MailUtils.class);
+	
+	private static final String PLAIN_MAIL_CONTENT_TYPE = "text/plain; charset=UTF-8";
+	private static final String HTML_MAIL_CONTENT_TYPE = "text/html; charset=UTF-8";
+	
 	/*
 	 * The following constants are configured
 	 */
@@ -95,7 +99,7 @@ public class MailUtils {
 		 */
 		final String[] recipient = {userEmail};
 		try {
-			sendMail(recipient,  messageSubject, messageBody, projectRegistrationFromAddress);
+			sendPlainMail(recipient,  messageSubject, messageBody, projectRegistrationFromAddress);
 			return true;
 		} catch (final MessagingException e) {
 			log.fatal("Could not send registration mail: " + e.getMessage());
@@ -126,7 +130,7 @@ public class MailUtils {
 		 */
 		final String[] recipient = {userEmail};
 		try {
-			sendMail(recipient,  messageSubject, messageBody, projectRegistrationFromAddress);
+			sendPlainMail(recipient,  messageSubject, messageBody, projectRegistrationFromAddress);
 			return true;
 		} catch (final MessagingException e) {
 			log.fatal("Could not send registration mail: " + e.getMessage());
@@ -167,7 +171,7 @@ public class MailUtils {
 		 * send an e-Mail to the group (from our registration Adress)
 		 */
 		try {
-			sendMail(new String[] {groupMail},  messageSubject, messageBody, projectJoinGroupRequestFromAddress);
+			sendPlainMail(new String[] {groupMail},  messageSubject, messageBody, projectJoinGroupRequestFromAddress);
 			return true;
 		} catch (final MessagingException e) {
 			log.fatal("Could not send join group request mail: " + e.getMessage());
@@ -207,7 +211,7 @@ public class MailUtils {
 		 */
 		final String[] recipient = {deniedUserEMail};
 		try {
-			sendMail(recipient, messageSubject, messageBody, projectJoinGroupRequestFromAddress);
+			sendPlainMail(recipient, messageSubject, messageBody, projectJoinGroupRequestFromAddress);
 			return true;
 		} catch (final MessagingException e) {
 			log.fatal("Could not send Deny JoinGrouprequest mail: " + e.getMessage());
@@ -242,7 +246,7 @@ public class MailUtils {
 		 * send an e-Mail to the group (from our registration Adress)
 		 */
 		try {
-			sendMail(new String[] {requestingUser.getEmail()},  messageSubject, messageBody, projectEmail);
+			sendPlainMail(new String[] {requestingUser.getEmail()},  messageSubject, messageBody, projectEmail);
 			return true;
 		} catch (final MessagingException e) {
 			log.fatal("Could not send group activation notification mail: " + e.getMessage());
@@ -250,6 +254,15 @@ public class MailUtils {
 		return false;
 	}
 	
+	/**
+	 * sends a group invite mail to the invited user
+	 * 
+	 * @param groupName
+	 * @param loginUser
+	 * @param invitedUser
+	 * @param locale
+	 * @return <code>true</code> if mail was send successful
+	 */
 	public boolean sendGroupInvite(final String groupName, final User loginUser, final User invitedUser, final Locale locale) {
 		final Object[] messagesParameters = new Object[]{
 				invitedUser.getName(),
@@ -273,7 +286,7 @@ public class MailUtils {
 		 * send an e-Mail to the group (from our registration Adress)
 		 */
 		try {
-			sendMail(new String[] {invitedUser.getEmail()},  messageSubject, messageBody, projectJoinGroupRequestFromAddress);
+			sendPlainMail(new String[] {invitedUser.getEmail()},  messageSubject, messageBody, projectJoinGroupRequestFromAddress);
 			return true;
 		} catch (final MessagingException e) {
 			log.fatal("Could not send join group request mail: " + e.getMessage());
@@ -303,7 +316,7 @@ public class MailUtils {
 		 */
 		final String[] recipient = {userEmail};
 		try {
-			sendMail(recipient,  messageSubject, messageBody, projectRegistrationFromAddress);
+			sendPlainMail(recipient,  messageSubject, messageBody, projectRegistrationFromAddress);
 			return true;
 		} catch (final MessagingException e) {
 			log.fatal("Could not send reminder mail: " + e.getMessage());
@@ -327,42 +340,68 @@ public class MailUtils {
 			final String messageSubject = messageSource.getMessage("grouprequest.mail.subject", messagesParameters, locale);
 			
 			// TODO: currently using projectEmail, maybe we want a special mail address?
-			sendMail(new String[] { this.projectEmail }, messageSubject, messageBody, this.projectJoinGroupRequestFromAddress);
+			this.sendHTMLMail(new String[] { this.projectEmail }, messageSubject, messageBody, this.projectJoinGroupRequestFromAddress);
 		} catch (final MessagingException e) {
-			log.fatal("Could not send reminder mail: " + e.getMessage());
+			log.fatal("Could not send group request mail: " + e.getMessage());
 		}
 	}
 
 	/**
-	 * Sends a mail to the given recipients
+	 * Sends a plain mail to the given recipients
 	 * 
 	 * @param recipients
 	 * @param subject
-	 * @param message
+	 * @param content
 	 * @param from
 	 * @throws MessagingException
 	 */
-	public void sendMail(final String[] recipients, final String subject, final String message, final String from) throws MessagingException {
+	public void sendPlainMail(final String[] recipients, final String subject, final String content, final String from) throws MessagingException {
+		sendMail(recipients, subject, content, from, PLAIN_MAIL_CONTENT_TYPE);
+	}
+	
+	/**
+	 * sends a html mail to the given recipients
+	 * 
+	 * @param recipients
+	 * @param subject
+	 * @param content
+	 * @param from
+	 * @throws MessagingException
+	 */
+	public void sendHTMLMail(final String[] recipients, final String subject, final String content, final String from) throws MessagingException {
+		sendMail(recipients, subject, content, from, HTML_MAIL_CONTENT_TYPE);
+	}
+	
+	/**
+	 * @param recipients
+	 * @param subject
+	 * @param content
+	 * @param from
+	 * @param contentType 
+	 * @throws AddressException
+	 * @throws MessagingException
+	 */
+	private void sendMail(final String[] recipients, final String subject, final String content, final String from, String contentType) throws AddressException, MessagingException {
 		// create some properties and get the default Session
 		final Session session = Session.getDefaultInstance(props, null);
 		
 		// create a message
-		final MimeMessage msg = new MimeMessage(session);
+		final Message message = new MimeMessage(session);
 
 		// set the from and to address
 		final InternetAddress addressFrom = new InternetAddress(from);
-		msg.setFrom(addressFrom);
+		message.setFrom(addressFrom);
 
 		final InternetAddress[] addressTo = new InternetAddress[recipients.length]; 
 		for (int i = 0; i < recipients.length; i++) {
 			addressTo[i] = new InternetAddress(recipients[i]);
 		}
-		msg.setRecipients(Message.RecipientType.TO, addressTo);
+		message.setRecipients(Message.RecipientType.TO, addressTo);
 
 		// Setting the Subject and Content Type
-		msg.setSubject(subject);
-		msg.setText(message, StringUtils.CHARSET_UTF_8);
-		Transport.send(msg);
+		message.setSubject(subject);
+		message.setContent(content, contentType);
+		Transport.send(message);
 	}
 
 	/**
@@ -434,7 +473,12 @@ public class MailUtils {
 	public void setMessageSource(final MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
-
+	
+	/**
+	 * must be a absolute not relative url generator
+	 * 
+	 * @param absoluteURLGenerator the absoluteURLGenerator to set
+	 */
 	public void setAbsoluteURLGenerator(URLGenerator absoluteURLGenerator) {
 		this.absoluteURLGenerator = absoluteURLGenerator;
 	}

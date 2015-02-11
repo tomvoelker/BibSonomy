@@ -41,33 +41,7 @@
 		 	| content
 		 	-->
 		<jsp:attribute name="content">
-				<form:form action="/joinGroup?group=${command.group}" method="POST">
-					<errors:global errors="${errors}"/>
-					
-					<div class="fsOuter">
-						<h2><fmt:message key="navi.join"><fmt:param>${command.group}</fmt:param></fmt:message></h2>
-						<fieldset class="fsInner">
-							<div class="fsRow">
-								<form:label cssClass="fsLabel" path="reason"><fmt:message key="joinGroup.reason"/></form:label>
-								<buttons:help message="joinGroup.reason.hint">
-									<jsp:attribute name="helpText">
-										<fmt:message key="joinGroup.reason.hint.appendix"><fmt:param>${command.reasonMaxLen}</fmt:param></fmt:message>
-									</jsp:attribute>
-								</buttons:help>
-								<form:textarea rows="4" cols="50" cssClass="fsInput" path="reason" htmlEscape="true"/>
-								<div class="dissError"><form:errors path="reason" /></div>
-							</div>
-							<bform:captcha />
-							<div class="fsRow">
-							<div class="fsLabel">${mtl:ch('nbsp')}</div>
-							<div class="help"><b style="" class="smalltext">${mtl:ch('nbsp')}</b></div>
-								<input type="hidden" name="ckey" value="${ckey}"/>
-								<form:hidden path="joinRequest" value="true" />
-								<input type="submit"/>
-							</div>
-						</fieldset>
-					</div>
-				</form:form>
+			<fmt:message key="join.group.unsupported"/>
 		</jsp:attribute>
 		
 		<!--+

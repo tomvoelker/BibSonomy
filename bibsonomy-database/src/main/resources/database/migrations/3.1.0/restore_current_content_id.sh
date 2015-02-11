@@ -1,6 +1,7 @@
 #! /bin/bash
-# adapt these three variables
+# adapt these four variables
 # delete password after use
+DB_NAME=bibsonomy
 PW=
 USER=
 SOCKET=
@@ -22,7 +23,7 @@ SET lba.current_content_id = lba.new_content_id
 WHERE lbb.content_id IS NULL AND lba.new_content_id != 0;"
 
 echo $STATEMENT
-mysql -u $USER -p$PW bibsonomy -S $SOCKET -e "$STATEMENT"
+mysql -u $USER -p$PW $DB_NAME -S $SOCKET -e "$STATEMENT"
 
 echo
 date;
@@ -39,7 +40,7 @@ WHERE lbb.current_content_id != 0 AND lba.new_content_id != 0;"
 echo $STATEMENT
 a=1
 while [ $a -gt 0 ]; do
-    a=`mysql -u $USER -p$PW bibsonomy -S $SOCKET -e "${STATEMENT}; SELECT ROW_COUNT();" | head -n 4 | tail -n 1`;
+    a=`mysql -u $USER -p$PW $DB_NAME -S $SOCKET -e "${STATEMENT}; SELECT ROW_COUNT();" | head -n 4 | tail -n 1`;
 echo    
 date
 echo $a;

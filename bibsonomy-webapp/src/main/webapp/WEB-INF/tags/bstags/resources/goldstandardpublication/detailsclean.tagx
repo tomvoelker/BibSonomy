@@ -16,7 +16,8 @@
 	xmlns:review="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion/review"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:goldpub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication">
+	xmlns:goldpub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/resources/actionbuttons">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="otherPosts" type="java.util.List" required="true"/>
@@ -34,7 +35,7 @@
 	<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
 	
 	<ul id="gold_menu">
-		<gpub:actions post="${post}" />
+		<buttons:communityPostActions post="${post}" resourceType="bibtex"/>
 	</ul>
 	<div id="fullscreen" itemscope="itemscope" itemtype="${itemType}">
 		

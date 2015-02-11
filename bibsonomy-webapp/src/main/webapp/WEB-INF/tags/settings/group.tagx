@@ -60,11 +60,10 @@
 				</div>
 
 				<c:if test="${command.hasOwnGroup}">
-					<h2>DEPRECATED</h2>
+					<h2><fmt:message key="group.manage.header" /></h2>
 					
 					<div class="fsOuter">
-					<c:out value="${properties['project.name']}" /> does not support administering groups
-					in the old layout anymore. Please switch to the <a href="/bibsonomy3">new layout</a>.
+						<fmt:message key="group.manage.unsupported" />
 					</div>
 				</c:if>
 			</c:when>
