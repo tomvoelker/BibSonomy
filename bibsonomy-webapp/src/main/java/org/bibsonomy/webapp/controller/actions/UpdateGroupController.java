@@ -27,7 +27,6 @@
 package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-import info.bliki.wiki.template.URLEncode;
 
 import java.net.URL;
 
@@ -53,11 +52,9 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.validation.GroupValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
-import org.bibsonomy.webapp.view.Views;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
-import org.springframework.web.servlet.view.RedirectView;
 
 /**
  * TODO: add documentation
