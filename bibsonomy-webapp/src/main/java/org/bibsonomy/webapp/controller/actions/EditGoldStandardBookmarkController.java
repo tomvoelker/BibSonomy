@@ -28,9 +28,8 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardBookmark;
@@ -38,14 +37,12 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ObjectUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
-import org.bibsonomy.webapp.command.actions.EditPostCommand;
-import org.bibsonomy.webapp.util.GroupingCommandUtils;
-import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.GoldStandardPostValidator;
 import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.validation.Errors;
 
 import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.impl.database.RecommenderStatisticsManager;
@@ -121,6 +118,10 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
  	protected EditBookmarkCommand instantiateEditPostCommand() {
  		return new EditBookmarkCommand();
  	}
+	@Override
+	protected View finalRedirect(final String userName, final Post<Bookmark> post, final String referer) {
+		return new ExtendedRedirectView(this.urlGenerator.getBookmarkUrl(post.getResource(), null));
+	}
 
  
 

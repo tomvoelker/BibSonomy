@@ -79,9 +79,16 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		if(!present(action)) {
 			log.debug("No action specified.");
 		} else {
-			final Group group = command.getGroup();
+			Group group = command.getGroup();
 			switch(action) {
 				case ACCEPT:
+					for (Group g : logic.getGroups(true, 0, Integer.MAX_VALUE)) {
+						if (g.getName().equals(group.getName())) {
+							group = g;
+							break;
+						}
+					}
+					
 					requestingUser = this.logic.getUserDetails(group.getGroupRequest().getUserName());
 					this.logic.updateGroup(group, GroupUpdateOperation.ACTIVATE, null);
 					if (present(requestingUser.getEmail())) {

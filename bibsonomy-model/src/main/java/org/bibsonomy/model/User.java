@@ -1033,5 +1033,11 @@ public class User implements Serializable {
 		return groupLevelPermissions;
 	}
 	
-	
+/*	public boolean hasGroupLevelPermission(String groupLevelPermissionIdString) {
+		GroupLevelPermission groupLevelPermission = GroupLevelPermission.getGroupLevelPermission(groupLevelPermissionIdString);
+		
+		//return this.getGroupLevelPermissions().contains(groupLevelPermission);
+		return true;
+	}
+	*/
 }

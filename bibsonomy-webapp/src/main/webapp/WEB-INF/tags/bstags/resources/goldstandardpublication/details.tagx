@@ -18,6 +18,7 @@
 	xmlns:goldpub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
 	xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
 	xmlns:common="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/resources/actionbuttons"
 	>
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
@@ -44,7 +45,7 @@
 				</span>
 				-->
 				<div class="media-body" id="titletext">
-					<div class="pull-right"><gpub:actions post="${post}" /></div>
+					<div class="pull-right"><buttons:communityPostActions post="${post}" resourceType="bibtex"/></div>
 					<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(goldstandard.title)}" />
 					<c:if test="${post.approved==1}">
 						<a  title="${fn:escapeXml(approved)}">

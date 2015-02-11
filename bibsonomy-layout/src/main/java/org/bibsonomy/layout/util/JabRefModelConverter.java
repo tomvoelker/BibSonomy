@@ -52,6 +52,7 @@ import net.sf.jabref.export.layout.format.AndSymbolIfBothPresent;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -148,6 +149,7 @@ public class JabRefModelConverter {
 	 * 
 	 * @param post
 	 * @param urlGen - the URLGenerator to create the biburl-field
+	 * @param cleanBibTex 
 	 * @return
 	 */
 	public static BibtexEntry convertPost(final Post<? extends Resource> post, URLGenerator urlGen, boolean cleanBibTex) {
@@ -186,7 +188,7 @@ public class JabRefModelConverter {
 						&& !JabRefModelConverter.EXCLUDE_FIELDS.contains(pd.getName())) {
 					final String value = ((String) o);
 					if (present(value))
-						entry.setField(pd.getName().toLowerCase(), clean(value,cleanBibTex));
+						entry.setField(pd.getName().toLowerCase(), clean(value, cleanBibTex));
 				}
 			}
 
@@ -202,15 +204,18 @@ public class JabRefModelConverter {
 			entry.setType(entryType == null ? BibtexEntryType.OTHER : entryType);
 
 			if (present(bibtex.getMisc()) || present(bibtex.getMiscFields())) {
+				try {
+					// parse the misc fields and loop over them
+					bibtex.parseMiscField();
+				} catch (final InvalidModelException e) {
+					// ignore exception
+				}
 
-				// parse the misc fields and loop over them
-				bibtex.parseMiscField();
-
-				if (bibtex.getMiscFields() != null)
+				if (bibtex.getMiscFields() != null) {
 					for (final String key : bibtex.getMiscFields().keySet()) {
 						if ("id".equals(key)) {
 							// id is used by jabref
-							entry.setField("misc_id", clean(bibtex.getMiscField(key),cleanBibTex));
+							entry.setField("misc_id", clean(bibtex.getMiscField(key), cleanBibTex));
 							continue;
 						}
 
@@ -219,9 +224,9 @@ public class JabRefModelConverter {
 							// control
 							continue;
 
-						entry.setField(key, clean(bibtex.getMiscField(key),cleanBibTex));
+						entry.setField(key, clean(bibtex.getMiscField(key), cleanBibTex));
 					}
-
+				}
 			}
 			
 			/*
@@ -308,7 +313,7 @@ public class JabRefModelConverter {
 			return entry;
 
 		} catch (final Exception e) {
-			log.error("Could not convert BibSonomy post into a JabRef BibTeX entry.", e);
+			log.error("Could not convert post into a JabRef BibTeX entry.", e);
 		}
 
 		return null;

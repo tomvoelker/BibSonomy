@@ -9,6 +9,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:goldstandardbookmark="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardbookmark"
 	xmlns:common="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/resources/actionbuttons"
 	>
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
@@ -23,7 +24,7 @@
 		<div class="title">
 			<div class="media">
 				<div class="media-body" id="titletext">
-					<div class="pull-right"><goldstandardbookmark:actions post="${post}" /></div>
+					<div class="pull-right"><buttons:communityPostActions post="${post}" resourceType="bookmark"/></div>
 					<h1 class="media-heading" id="pubtitle"><c:out value="${fn:escapeXml(goldstandard.title)}" /></h1>
 					<p><book:desc post="${post}"/></p>
 				</div>

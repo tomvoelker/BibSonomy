@@ -175,7 +175,7 @@
 						<!--+
 							| goldStandard post's approval  
 							+-->
-						<c:if test="${not empty postApproval and command.context.loginUser.role eq 'ADMIN'}">
+						<c:if test="${not empty postApproval and (command.context.loginUser.role eq 'ADMIN' or command.context.loginUser.hasGroupLevelPermission('COMMUNITY_POST_INSPECTION'))}">
 							<jsp:invoke fragment="postApproval"/>
 						</c:if>
 		               

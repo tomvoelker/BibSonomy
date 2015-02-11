@@ -15,6 +15,7 @@
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<c:set var="group" value="${command.group}" />
 	<fmt:message var="headline" key="page.group.headline" />
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="groups" headline="${headline}${command.group.name}">
 		<jsp:attribute name="heading">
@@ -36,38 +37,40 @@
 		<jsp:attribute name="sidebar">
 		<ul>
 			<c:choose>
-				<c:when test="${not empty command.group.name}">
+				<c:when test="${not empty group.name}">
 				<li>
-					<h4 class="sidebar"><c:out value="${command.group.name}" /></h4>
-					<div class="pull-right">
-						<group:groupcv group="${command.group}"/>
+					<h4 class="sidebar"><group:groupname group="${group}" showRealname="${false}"/></h4>
+					<div class="row">
+						<div class="col-md-6">
+							<group:groupthumbnail group="${group}" noname="${false}" />
+						</div>
+						<div class="col-md-6">
+							<group:groupcv group="${group}" />
+							<c:choose>
+								<c:when test="${mtl:contains(command.context.loginUser.groups, group)}">
+									<!-- TODO: use url generator -->
+									<a href="/settings/group/${group.name}" class="btn btn-success btn-sm"><span class="fa fa-check"><!-- keep me --></span><c:out value=" "/><span class="infotext"><fmt:message key="group.memberOf" /></span></a>
+									<a href="/updateGroup?operation=REMOVE_MEMBER&amp;groupname=${group.name}&amp;username=${command.context.loginUser.name}&amp;ckey=${ckey}" class="btn btn-danger btn-sm"><span class="fa fa-times"><!-- keep me --></span><c:out value=" "/><span class="infotext"><fmt:message key="group.leave" /></span></a>
+								</c:when>
+								<c:otherwise>
+									<c:choose>
+										<c:when test="${mtl:contains(command.context.loginUser.pendingGroups, group)}">
+											<a class="btn btn-default btn-sm">pending</a>
+										</c:when>
+										<c:otherwise>
+											<c:url var="joinLink" value="/joinGroup">
+												<c:param name="group" value="${group.name}" />
+											</c:url>
+											<a href="${joinLink}" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>	
+										</c:otherwise>
+									</c:choose>
+								</c:otherwise>
+							</c:choose>
+						</div>
 					</div>
-					<!--<group:name group="${command.group}"/>-->
 				</li>
 					
-				<!-- link to join group -->
-				<c:if test="${command.context.userLoggedIn}">
-					<c:choose>
-						<c:when test="${mtl:contains(command.context.loginUser.groups, command.group)}">
-							<!-- FIXME: add link to leave group, if user is already member -->
-						</c:when>
-						<c:otherwise>
-							<li style="padding: 5px;">
-								<fmt:message var="joinGroup" key="navi.join">
-									<fmt:param>${fn:escapeXml(command.group.name)}</fmt:param>
-								</fmt:message>
-								<button:linkButton
-									title="${joinGroup}"
-									href="/joinGroup?group=${fn:escapeXml(command.group.name)}"
-									image="${resdir}/image/starblue_unselected.png">
-									<jsp:attribute name="text">
-										<fmt:message key="joinGroup"/>
-									</jsp:attribute>
-								</button:linkButton>
-							</li>
-						</c:otherwise>
-					</c:choose>
-				</c:if>
+
 				
 				<!-- group members -->
 				<rc:members group="${command.group}"/>

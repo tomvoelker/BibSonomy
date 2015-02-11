@@ -55,6 +55,7 @@ import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
+import org.springframework.web.servlet.view.RedirectView;
 
 /**
  * TODO: add documentation
@@ -133,10 +134,10 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 										"The User {0} couldn't be invited to the Group {1}.");
 							}
 						} else {
-							// TODO: handle case of already invited user
+							this.errors.rejectValue("username", "settings.group.error.inviteUserToGroupFailed", new Object[] {username, groupToUpdate}, "The User {0} is already invited to the Group {1}.");
 						}
 					} else {
-						// TODO: handle case of non existing user!
+						this.errors.rejectValue("username", "settings.group.error.inviteUserToGroupFailed", new Object[] {username}, "The User {0} does not exist.");
 					}
 				}
 				selTab = Integer.valueOf(GroupSettingsPageCommand.MEMBER_LIST_IDX);

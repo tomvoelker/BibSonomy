@@ -7,15 +7,13 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
-	xmlns:form="http://www.springframework.org/tags/form"
 
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
 	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
 	xmlns:bm="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bookmark"
-	xmlns:bibgs="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
-	xmlns:gpub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/resources/actionbuttons"
+	
 >
 
 
@@ -121,7 +119,7 @@
 											<div class="title">
 												<div class="media">
 													<div class="media-body" id="titletext">
-														<div class="pull-right"><gpub:actions post="${newestPost}" /></div>
+														<div class="pull-right"><buttons:communityPostActions post="${newestPost}" resourceType="bibtex"/></div>
 														<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" /></h1>
 														<p><bib:desc publication="${newestPost.resource}"/></p>
 													</div>
@@ -134,7 +132,7 @@
 											<pub:title post="${newestPost}">
 												<jsp:attribute name="bibActionButtons">
 													<div class="pull-right">
-														<bib:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/>
+														<buttons:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}" resourceType="bibtex"/>
 													</div>
 												</jsp:attribute>
 											</pub:title>
@@ -150,8 +148,7 @@
 											<div class="title">
 											<div class="media">
 												<div class="media-body" id="titletext">
-												<!-- currently there is no specific tagx file for gsBookmark actions -->
-												<!-- 	<div class="pull-right"><bm:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}"/></div> -->
+													<div class="pull-right"><buttons:communityPostActions post="${newestPost}" resourceType="bookmark"/></div>
 													<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" /></h1>
 													<c:set var="url" value="${newestPost.resource.url}" />
 													<p><a href="${url}"><c:out value="${url}" /></a></p>
@@ -165,7 +162,7 @@
 											<div class="title">
 												<div class="media">
 												<div class="media-body" id="titletext">
-													<div class="pull-right"><bm:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}"/></div>
+													<div class="pull-right"><buttons:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}" resourceType="bookmark"/></div>
 													<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" /></h1>
 													<c:set var="url" value="${newestPost.resource.url}" />
 													<p><a href="${url}"><c:out value="${url}" /></a></p>
@@ -222,26 +219,26 @@
 														<c:choose>
 															<!-- if version 0  -->
 															<c:when test="${index eq fieldlength }">
-																<c:set var="diffArrayPre" value="${mtl:DiffEntriesPub(listView.list[(fieldlength-index)],listView.list[(fieldlength-index)])}"/>
+																<c:set var="diffArrayPre" value="${mtl:diffEntriesPub(listView.list[(fieldlength-index)],listView.list[(fieldlength-index)])}"/>
 															</c:when>
 															<c:otherwise>
-																<c:set var="diffArrayPre" value="${mtl:DiffEntriesPub(listView.list[(fieldlength-index-1)],listView.list[(fieldlength-index)])}"/>
+																<c:set var="diffArrayPre" value="${mtl:diffEntriesPub(listView.list[(fieldlength-index-1)],listView.list[(fieldlength-index)])}"/>
 															</c:otherwise>
 														</c:choose>		
-														<c:set var="diffArrayCurr" value="${mtl:DiffEntriesPub(listView.list[(fieldlength)],listView.list[(fieldlength-index)])}"/>									
+														<c:set var="diffArrayCurr" value="${mtl:diffEntriesPub(listView.list[(fieldlength)],listView.list[(fieldlength-index)])}"/>									
 													</c:when>
 													<c:otherwise>
 														<!-- constraint on version 0  -->
 														<c:choose>
 															<!-- if version 0  -->
 															<c:when test="${index eq fieldlength }">
-																<c:set var="diffArrayPre" value="${mtl:DiffEntriesBm(listView.list[(fieldlength-index)],listView.list[(fieldlength-index)])}"/>
+																<c:set var="diffArrayPre" value="${mtl:diffEntriesBm(listView.list[(fieldlength-index)],listView.list[(fieldlength-index)])}"/>
 															</c:when>
 															<c:otherwise>
-																<c:set var="diffArrayPre" value="${mtl:DiffEntriesBm(listView.list[(fieldlength-index-1)],listView.list[(fieldlength-index)])}"/>
+																<c:set var="diffArrayPre" value="${mtl:diffEntriesBm(listView.list[(fieldlength-index-1)],listView.list[(fieldlength-index)])}"/>
 															</c:otherwise>
 														</c:choose>
-														<c:set var="diffArrayCurr" value="${mtl:DiffEntriesBm(listView.list[(fieldlength)],listView.list[(fieldlength-index)])}"/>									
+														<c:set var="diffArrayCurr" value="${mtl:diffEntriesBm(listView.list[(fieldlength)],listView.list[(fieldlength-index)])}"/>									
 													</c:otherwise>
 												</c:choose>
 
@@ -357,6 +354,11 @@
 									</tbody>
 								</table>
 							</c:when>
+							<c:otherwise>
+								<div class="alert alert-info" style="margin:10px;" role="alert">
+									<fmt:message key="History.empty" />
+								</div>
+							</c:otherwise>
 						</c:choose>
 					</form>
 				</div>

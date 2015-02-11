@@ -1316,7 +1316,8 @@ public class DBLogic implements LogicInterface {
 
 			case ACTIVATE:
 				this.permissionDBManager.ensureAdminAccess(this.loginUser);
-				this.groupDBManager.activateGroup(group.getName(), session);
+				// Use paramGroup since group is unretrievable from the database.
+				this.groupDBManager.activateGroup(paramGroup.getName(), session);
 				break;
 
 			case DELETE: // TODO: use deleteGroup

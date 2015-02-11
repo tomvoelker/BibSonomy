@@ -522,10 +522,20 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	
 	 public void isAllowedToApprove(final Post<? extends Resource> post, final User loginUser){
 		 if(post.getApproved()==1){
-			 ensureAdminAccess(loginUser);
+			 if(!ensureApprovePermission(loginUser)){
+				 throw new AccessDeniedException();
+			 }
 		 }
 	 }
-
+	 
+	 public boolean ensureApprovePermission(final User loginUser) {
+			return ( loginUser.hasGroupLevelPermission(GroupLevelPermission.COMMUNITY_POST_INSPECTION)// loginUser has permission for approving a post
+																							// =
+																							// userName
+			|| this.isAdmin(loginUser) // loginUser is admin
+			);
+		}
+	 
 	/**
 	 * TODO: Documentation
 	 * 

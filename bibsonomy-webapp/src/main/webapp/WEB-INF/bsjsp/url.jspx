@@ -109,31 +109,7 @@
 		
 		<!--+
 			+ content heading
-			+
-		<jsp:attribute name="content">
-	<div id="goldstandard">
-			<h1 class="content-header"><fmt:message key="community.page"/></h1>
-			<div class="title">
-				<div class="media">
-
-					<div class="media-body" id="titletext">
-						<div class="pull-right"><gbook:actions post="${post}" /></div>
-						<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(command.bookmark.list[0].resource.title)}" />
-						</h1>
-						<c:set var="url" value="${command.bookmark.list[0].resource.url}" />
-						<p><a href="${url}"><c:out value="${url}" /></a></p>
-					</div>
-				</div>		
-			</div>
-			<div style="border-top: 1px #cccccc solid;">
-			</div>
-		
-			<div id="fscontent" style="margin-top: 10px;">
-				<discussion:singleResourceDiscussionLayout resource="${bookmark}" discussionItems="${command.discussionItems}" postUserName="${command.postOwner}"/>
-			</div>
-			</div>
-		</jsp:attribute>
--->
+			+-->
 		<jsp:attribute name="content">
 			<!-- COMMUNITY POST -->
 			<c:if test="${not goldstandardPresent}">
