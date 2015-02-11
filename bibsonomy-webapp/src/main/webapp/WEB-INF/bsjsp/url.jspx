@@ -42,7 +42,7 @@
 		</c:otherwise>
 	</c:choose>
 	
-	<input id="publicInput" name="publicInput" value="${isPublic}" type="hidden" />
+	
 	<fmt:message var="headline" key="page.url.headline" />
 	<!--+
 		+ main layout
@@ -111,6 +111,7 @@
 			+-->
 		<jsp:attribute name="content">
 			<!-- COMMUNITY POST -->
+			<input id="publicInput" name="publicInput" value="${isPublic}" type="hidden" />
 			<c:if test="${not goldstandardPresent}">
 				<c:set var="post" value="${command.bookmark.list[0]}" />
 
