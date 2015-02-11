@@ -65,6 +65,16 @@
 									<fmt:message var="inviteuser" key="settings.group.inviteUser.button"/>
 									<bsform:button type="submit" size="defaultSize" style="primary" value="${inviteuser}" />
 								</form:form>
+								
+								<!-- Error inviting a member -->
+								<c:if test="${not empty command.errorMessage}">
+									<br />
+									<div class="alert alert-danger" role="alert">
+										<fmt:message key="${command.errorMessage}" />
+									</div>
+								</c:if>	
+								
+								
 							</jsp:attribute>
 						</bsform:fieldset>
 						<!-- Join requests -->
