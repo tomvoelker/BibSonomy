@@ -50,6 +50,10 @@ public class GroupSettingsPageCommand extends TabsCommand<Object> {
 	// bla
 	private GroupUpdateOperation operation;
 	
+	// tmp error message from URL
+	private String errorMessage;
+
+
 	/**
 	 * TODO: remove after setting the default value of selTab to null
 	 */
@@ -200,4 +204,13 @@ public class GroupSettingsPageCommand extends TabsCommand<Object> {
 	public void setGroupname(String groupname) {
 		this.groupname = groupname;
 	}
+	
+	public String getErrorMessage() {
+		return this.errorMessage;
+	}
+
+	public void setErrorMessage(String errormessage) {
+		this.errorMessage = errormessage;
+	}
+	
 }

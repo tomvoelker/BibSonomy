@@ -362,6 +362,7 @@
 							<list>
 								<value>selTab</value>
 								<value>requestedGroup</value>
+								<value>errorMessage</value>
 							</list>
 						</property>
 					</bean>

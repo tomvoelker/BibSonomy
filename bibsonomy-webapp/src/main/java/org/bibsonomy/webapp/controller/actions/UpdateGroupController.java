@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+import info.bliki.wiki.template.URLEncode;
 
 import java.net.URL;
 
@@ -26,6 +27,7 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.validation.GroupValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.view.Views;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -72,6 +74,9 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 		if (!context.isValidCkey()) {
 			this.errors.reject("error.field.valid.ckey");
 		}
+		
+		// FIXME: This should be replaced by a propper error handling
+		String tmpErrorCode = "";
 
 		Group groupToUpdate = null;
 		// since before requesting a group, it must not exist, we cannot check
@@ -108,9 +113,11 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 							}
 						} else {
 							// TODO: handle case of already invited user
+							tmpErrorCode = "settings.group.error.alreadyInvited";
 						}
 					} else {
 						// TODO: handle case of non existing user!
+						tmpErrorCode = "settings.group.error.userDoesNotExist";
 					}
 				}
 				selTab = Integer.valueOf(GroupSettingsPageCommand.MEMBER_LIST_IDX);
@@ -274,7 +281,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 		// success: go back where you've come from
 		// TODO: inform the user about the success!
 		// TODO: use url generator
-		final String settingsPage = "/settings/group/" + groupToUpdate.getName() + (present(selTab) ? "?selTab=" + selTab : "");
+		final String settingsPage = "/settings/group/" + groupToUpdate.getName() + (present(selTab) ? "?selTab=" + selTab : "") + "&errorMessage=" + tmpErrorCode;
 		return new ExtendedRedirectView(settingsPage);
 	}
 
