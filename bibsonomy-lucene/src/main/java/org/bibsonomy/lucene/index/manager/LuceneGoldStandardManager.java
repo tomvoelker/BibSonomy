@@ -40,6 +40,7 @@ import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.util.GroupUtils;
 
 /**
  * Updates the gold standard publication posts
@@ -95,6 +96,9 @@ public class LuceneGoldStandardManager<R extends Resource & GoldStandard<?>> ext
 			this.sharedIndexUpdater.setContentIdsToDelete(contentIdsToDelete);
 
 			for (final LucenePost<GoldStandardPublication> post : newPosts) {
+				if (!post.getGroups().contains(GroupUtils.getPublicGroup())) {
+					continue;
+				}
 				post.setLastLogDate(currentDate);
 				post.setLastTasId(lastId);
 				final Map<String, Object> postDoc = (Map<String, Object>)this.resourceConverter.readPost(post, searchType);
@@ -107,8 +111,10 @@ public class LuceneGoldStandardManager<R extends Resource & GoldStandard<?>> ext
 				post.setLastTasId(lastId);
 				post.setLastLogDate(currentDate);
 				final Document postDoc = (Document)this.resourceConverter.readPost(post, IndexType.LUCENE);
-				final Map<String, Object> postJsonDoc = (Map<String, Object>)this.resourceConverter.readPost(post, IndexType.ELASTICSEARCH);
-				this.sharedIndexUpdater.insertDocument(postJsonDoc);
+				if (post.getGroups().contains(GroupUtils.getPublicGroup())) {
+					final Map<String, Object> postJsonDoc = (Map<String, Object>)this.resourceConverter.readPost(post, IndexType.ELASTICSEARCH);
+					this.sharedIndexUpdater.insertDocument(postJsonDoc);
+				}
 				this.updatingIndex.insertDocument(postDoc);
 			}
 				

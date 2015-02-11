@@ -55,6 +55,7 @@ import org.bibsonomy.lucene.util.generator.LuceneGenerateResourceIndex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.GroupUtils;
 
 /**
  * class for maintaining the lucene index
@@ -298,9 +299,11 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			this.sharedIndexUpdater.setContentIdsToDelete(contentIdsToDelete);
 
 			for (final LucenePost<R> post : newPosts) {
-				post.setLastLogDate(new Date(currentLogDate));
-				final Map<String, Object> postDoc = (Map<String, Object>)this.resourceConverter.readPost(post, indexType);
-				this.sharedIndexUpdater.insertDocument(postDoc);
+				if (post.getGroups().contains(GroupUtils.getPublicGroup())) {
+					post.setLastLogDate(new Date(currentLogDate));
+					final Map<String, Object> postDoc = (Map<String, Object>)this.resourceConverter.readPost(post, indexType);
+					this.sharedIndexUpdater.insertDocument(postDoc);
+				}
 			}
 		} else if (IndexType.BOTH == indexType) {
 			this.updatingIndex.deleteDocumentsInIndex(contentIdsToDelete);
@@ -310,8 +313,10 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 				post.setLastLogDate(new Date(currentLogDate));
 				//sets the system informations for update
 				final Document postDoc = (Document)this.resourceConverter.readPost(post, IndexType.LUCENE);
-				final Map<String, Object> postJsonDoc = (Map<String, Object>)this.resourceConverter.readPost(post, IndexType.ELASTICSEARCH);
-				this.sharedIndexUpdater.insertDocument(postJsonDoc);
+				if (post.getGroups().contains(GroupUtils.getPublicGroup())) {
+					final Map<String, Object> postJsonDoc = (Map<String, Object>)this.resourceConverter.readPost(post, IndexType.ELASTICSEARCH);
+					this.sharedIndexUpdater.insertDocument(postJsonDoc);
+				}
 				this.updatingIndex.insertDocument(postDoc);					
 			}
 		}
@@ -612,16 +617,20 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 								// deletion
 								this.sharedIndexUpdater.deleteDocumentForContentId(post.getContentId());
 								// cache document for writing
-								this.sharedIndexUpdater.insertDocument((Map<String, Object>) this.resourceConverter.readPost(post, searchType));
+								if (post.getGroups().contains(GroupUtils.getPublicGroup())) {
+									this.sharedIndexUpdater.insertDocument((Map<String, Object>) this.resourceConverter.readPost(post, searchType));
+								}
 							}
 						}
 						this.sharedIndexUpdater.unFlagUser(user.getName());
 					} else if (searchType == IndexType.BOTH) {
 						for (final Post<R> post : userPosts) {
 							this.updatingIndex.deleteDocumentForContentId(post.getContentId());
-							this.updatingIndex.insertDocument((Document) this.resourceConverter.readPost(post, searchType));
+							this.updatingIndex.insertDocument((Document) this.resourceConverter.readPost(post, IndexType.LUCENE));
 							this.sharedIndexUpdater.deleteDocumentForContentId(post.getContentId());
-							this.sharedIndexUpdater.insertDocument((Map<String, Object>) this.resourceConverter.readPost(post, searchType));
+							if (post.getGroups().contains(GroupUtils.getPublicGroup())) {
+								this.sharedIndexUpdater.insertDocument((Map<String, Object>) this.resourceConverter.readPost(post, IndexType.ELASTICSEARCH));
+							}
 						}
 					}
 					break;
