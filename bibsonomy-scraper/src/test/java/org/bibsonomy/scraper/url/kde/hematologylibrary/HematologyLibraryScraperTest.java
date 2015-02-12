@@ -64,7 +64,7 @@ public class HematologyLibraryScraperTest {
 		final String reference = sc.getReferences();
 		assertNotNull(reference);
 		assertTrue(reference.length() > 100);
-		assertEquals("<ol class=\"cit-list\">".trim(), reference.substring(0, 30).trim());
+		assertEquals("<ol class=\"cit-list\">".trim(), reference.substring(0, 40).trim());
 		assertTrue(reference.contains("De Domenico"));
 	}
 }

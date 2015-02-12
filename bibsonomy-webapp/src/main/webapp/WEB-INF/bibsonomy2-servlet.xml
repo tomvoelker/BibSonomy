@@ -147,7 +147,7 @@
 	    to be a user with role "admin". 
 	 -->
 	<bean id="adminLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.AdminLogicFactoryBean" scope="singleton">
-			<!-- name the admin user will have when accessing the logic interface -->
+		<!-- name the admin user will have when accessing the logic interface -->
 		<property name="adminUserName" value="admin"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 		<property name="bibtexReader" ref="bibtexReader"/>
@@ -180,6 +180,7 @@
 		<property name="projectJoinGroupRequestFromAddress" value="${project.joinGroupRequestFromAddress}" />
 		<property name="mailHost" value="${mail.smtp.host}" />
 		<property name="messageSource" ref="messageSource"/>
+		<property name="absoluteURLGenerator" ref="absoluteUrlGenerator" />
 	</bean>
 
 	<!--  #################### interceptors #################### -->
@@ -236,6 +237,8 @@
 				<value>classpath:/custom/messages</value>
 				<value>classpath:/projects/${project.name}_messages</value>
 				<value>classpath:/themes/${project.theme}_messages</value>
+				<!-- TODO: (Bootstrap) remove when old layout is removed -->
+				<value>classpath:/old_layout_messages</value>
 				<value>classpath:/messages</value>
 			</list>
 		</property>
@@ -350,6 +353,18 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/settings/group">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="groupSettingsPageController" />
+						<property name="allowedFields">
+							<list>
+								<value>selTab</value>
+								<value>requestedGroup</value>
+								<value>errorMessage</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/user">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="userPageController" />
@@ -363,6 +378,13 @@
 				<entry key="/history">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="postHistoryController" />
+						<property name="allowedFields">
+							<list>
+								<value>requestedType</value>
+								<value>requestedHash</value>
+								<value>requestedUser</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/userinfo">
@@ -537,17 +559,6 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/memento">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="mementoController"/>
-						<property name="allowedFields">
-							<list>
-								<value>url</value>
-								<value>datetime</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
 				<entry key="/downloadFile">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="downloadFileController"/>
@@ -707,6 +718,10 @@
 		<property name="oauthLogic" ref="oauthLogic"/>
 		<property name="invisibleOAuthConsumers" value="${invisible.oauth.consumers}"/>
 	</bean>
+	
+	<bean id="groupSettingsPageController" class="org.bibsonomy.webapp.controller.GroupSettingsPageController" scope="request">
+		<property name="logic" ref ="logic" />
+	</bean>
 
 	<bean id="userPageController" class="org.bibsonomy.webapp.controller.UserPageController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>
@@ -735,11 +750,11 @@
 	</bean>
 	
 	<bean id="postHistoryController" class="org.bibsonomy.webapp.controller.PostHistoryController" scope="request" parent="multiResourceListControllerWithTags">
-		<property name="supportedResources">
-			<set>
+	<!--<property name="supportedResources">
+			 <set>
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-			</set>
-		</property>
+			</set> 
+		</property> -->
 	</bean>
 
 	<bean id="userInfoController" class="org.bibsonomy.webapp.controller.UserInfoController" scope="request">
@@ -854,16 +869,6 @@
 	-->
 	<bean id="UnAPIController" class="org.bibsonomy.webapp.controller.special.UnAPIController" scope="request">
 		<property name="responseLogic" ref="responseLogic"/>
-	</bean>
-
-	<!-- 
-		provides access to archived versions of web pages using memento timegates, cf. http://www.mementoweb.org/
-	 -->
-	<bean id="mementoService" class="org.bibsonomy.services.memento.MementoService">
-		<constructor-arg value="${memento.timegate}"/>
-	</bean>
-	<bean id="mementoController" class="org.bibsonomy.webapp.controller.special.MementoController" scope="request">
-		<property name="mementoService" ref="mementoService"/>
 	</bean>
 	
 	<!-- 

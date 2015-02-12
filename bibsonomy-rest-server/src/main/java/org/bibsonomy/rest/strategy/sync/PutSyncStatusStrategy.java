@@ -35,7 +35,6 @@ import java.net.URI;
 import java.text.ParseException;
 import java.util.Date;
 
-import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -97,19 +96,20 @@ public class PutSyncStatusStrategy extends AbstractUpdateStrategy {
 		final User authenticatedUser = logic.getAuthenticatedUser();
 		final String userName = authenticatedUser.getName();
 		
-		final Date lastSyncDate;
+		final Date lastSyncDate = logic.getLastSyncData(userName, this.serviceURI, this.resourceType).getLastSyncDate();
 		
-		if (Role.SYNC.equals(authenticatedUser)) {
-			lastSyncDate = logic.getLastSyncData(userName, this.serviceURI, this.resourceType).getLastSyncDate();
-		} else {
+		final Date newDate;
+		if (present(this.date)) {
 			try {
-				lastSyncDate = RESTConfig.parseDate(this.date);
-			} catch (ParseException e) {
-				throw new InvalidModelException("failed to parse date");
+				newDate = RESTConfig.parseDate(this.date);
+			} catch (final ParseException e) {
+				throw new InvalidModelException("parsing date failed. Date was " + this.date);
 			}
+		} else {
+			newDate = null;
 		}
 		
-		logic.updateSyncData(userName, this.serviceURI, this.resourceType, lastSyncDate, status, info);
+		logic.updateSyncData(userName, this.serviceURI, this.resourceType, lastSyncDate, status, info, newDate);
 		return null;
 	}
 

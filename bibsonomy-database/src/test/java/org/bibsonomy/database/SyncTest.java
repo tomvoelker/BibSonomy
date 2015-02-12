@@ -1,0 +1,265 @@
+/**
+ * BibSonomy-Database - Database for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.bibsonomy.database;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.net.URI;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
+import org.bibsonomy.database.managers.BibTexDatabaseManager;
+import org.bibsonomy.database.managers.BookmarkDatabaseManager;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.sync.ConflictResolutionStrategy;
+import org.bibsonomy.model.sync.SyncLogicInterface;
+import org.bibsonomy.model.sync.SynchronizationAction;
+import org.bibsonomy.model.sync.SynchronizationDirection;
+import org.bibsonomy.model.sync.SynchronizationPost;
+import org.bibsonomy.sync.SynchronizationDatabaseManager;
+import org.bibsonomy.testutil.TestUtils;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+/**
+ * @author wla
+ */
+public class SyncTest extends AbstractDatabaseManagerTest {
+    private static final DateTimeFormatter FMT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+
+    private static BibTexDatabaseManager bibTexDb;
+    private static BookmarkDatabaseManager bookmarkDb;
+    private static SyncLogicInterface dbLogic;
+    private static SynchronizationDatabaseManager syncDb;
+
+    private final static String userName = "Syncuser1";
+
+    private URI testURI;
+
+    private static final Date parse(final String source) {
+        try {
+            return FMT.parseDateTime(source).toDate();
+        } catch (final Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    /**
+     * sets up the used managers
+     */
+    @BeforeClass
+    public static void setupDatabaseManager() {
+        bookmarkDb = BookmarkDatabaseManager.getInstance();
+        bibTexDb = BibTexDatabaseManager.getInstance();
+        syncDb = SynchronizationDatabaseManager.getInstance();
+
+        final User loginUser = new User();
+        loginUser.setName(userName);
+        dbLogic = new DBLogic(loginUser, getDbSessionFactory(), null);
+    }
+
+    private HashMap<String, SynchronizationPost> listToMap(final List<SynchronizationPost> posts) {
+        final HashMap<String, SynchronizationPost> map = new HashMap<String, SynchronizationPost>();
+        for (final SynchronizationPost post : posts) {
+            map.put(post.getIntraHash(), post);
+        }
+        return map;
+    }
+
+    /**
+     * test database
+     */
+    @Test
+    public void testDatabase() {
+        Map<String, SynchronizationPost> posts = bibTexDb.getSyncPostsMapForUser("syncuser1", this.dbSession);
+
+        assertEquals("wrong amount of bibtex in map", 5, posts.size());
+        assertTrue(posts.containsKey("6a486c3b5cf17466f984f8090077274c"));
+        assertTrue(posts.containsKey("b1629524db9c09f8b75af7ba83249980"));
+        assertTrue(posts.containsKey("11db3d75b9e07960658984f9b012d6d7"));
+        assertTrue(posts.containsKey("133de67269c9bfa71bde2b7615f0c1b3"));
+        assertTrue(posts.containsKey("08cdf0d0dcce9d07fd8d41ac6267cadf"));
+
+        posts = bookmarkDb.getSyncPostsMapForUser("Syncuser1", this.dbSession);
+        assertEquals("wrong amount of bookmarks in map", 5, posts.size());
+        assertTrue(posts.containsKey("6232752de0376fb6692917faf2e0a41e"));
+        assertTrue(posts.containsKey("35b3ed178e437da1e93e2cac75333c67"));
+        assertTrue(posts.containsKey("bcf7feb2dd4acba08f79b31991ed51bb"));
+        assertTrue(posts.containsKey("c4bb293ee64fecf340db99b39f401008"));
+        assertTrue(posts.containsKey("c7c8d5f682a6f32b7b3be9f3986a1cba"));
+
+        this.testURI = TestUtils.createURI("http://www.bibsonomy.org/");
+
+        final Date date = parse("2011-02-02 23:00:00");
+        final Date lastSyncDate = syncDb.getLastSyncData(userName, this.testURI, BibTex.class, null, this.dbSession).getLastSyncDate();
+        assertNotNull("no last sync date received from db", lastSyncDate);
+        assertEquals(date, lastSyncDate);
+
+        List<SynchronizationPost> list = bibTexDb.getSyncPostsListForUser(userName, this.dbSession);
+        assertEquals("wrong amount of bibtex in list", 5, list.size());
+
+        list = bookmarkDb.getSyncPostsListForUser(userName, this.dbSession);
+        assertEquals("wrong amount of bookmarks in list", 5, list.size());
+    }
+
+    @Test
+    public void getSynchronizationPublicationTest() {
+        final Class<? extends Resource> resourceType = BibTex.class;
+        final ConflictResolutionStrategy strategy = ConflictResolutionStrategy.LAST_WINS;
+
+        this.testURI = TestUtils.createURI("http://www.bibsonomy.org/");
+
+        final List<SynchronizationPost> clientPosts = new LinkedList<SynchronizationPost>();
+
+        SynchronizationPost post;
+
+        /*
+         * post 1: "post without changes" is the same post as in database
+         */
+        post = new SynchronizationPost();
+        post.setIntraHash("6a486c3b5cf17466f984f8090077274c");
+        post.setChangeDate(parse("2011-01-31 14:32:00"));
+        post.setCreateDate(parse("2011-01-10 14:32:00"));
+        clientPosts.add(post);
+
+        /*
+         * post 2: "post deleted on server" here created and modified before
+         * last synchronization
+         */
+        post = new SynchronizationPost();
+        post.setIntraHash("167b670252215232dc59829364e361a2");
+        post.setChangeDate(parse("2009-11-02 12:23:00"));
+        post.setCreateDate(parse("2009-11-02 12:20:00"));
+        clientPosts.add(post);
+
+        /*
+         * post 3: "post deleted on client" is not in the client list
+         */
+
+        /*
+         * post 4: "post changed on server" same hashes and create date as
+         * in database, but change date is before last synchronization
+         */
+        post = new SynchronizationPost();
+        post.setIntraHash("11db3d75b9e07960658984f9b012d6d7");
+        post.setChangeDate(parse("2011-01-16 17:58:00"));
+        post.setCreateDate(parse("2010-09-16 14:35:00"));
+        clientPosts.add(post);
+
+        /*
+         * post 5: "post changed on client" same hashes and create date as
+         * in database, but change date is after the last synchronization
+         * date
+         */
+        post = new SynchronizationPost();
+        post.setIntraHash("133de67269c9bfa71bde2b7615f0c1b3");
+        post.setChangeDate(parse("2011-03-25 10:59:00"));
+        post.setCreateDate(parse("2009-12-31 23:59:00"));
+        clientPosts.add(post);
+
+        /*
+         * post 6: "post created on server" is not in the client list
+         */
+
+        /*
+         * post 7: "post created on client" created and modified after last
+         * synchronization
+         */
+        post = new SynchronizationPost();
+        post.setIntraHash("418397b6f507faffe6f9b02569ffbc9e");
+        post.setChangeDate(parse("2011-03-18 14:13:00"));
+        post.setCreateDate(parse("2011-03-18 14:13:00"));
+        clientPosts.add(post);
+
+        assertEquals(5, clientPosts.size());
+
+        final List<SynchronizationPost> synchronizedPosts = dbLogic.getSyncPlan(userName, this.testURI, resourceType, clientPosts, strategy, SynchronizationDirection.BOTH);
+        assertNotNull("no synchronized posts returned", synchronizedPosts);
+
+        final HashMap<String, SynchronizationPost> map = this.listToMap(synchronizedPosts);
+        String hash;
+        /*
+         * test post 1 "post without changes"
+         */
+        hash = "6a486c3b5cf17466f984f8090077274c";
+        assertFalse(map.containsKey(hash));
+
+        /*
+         * test post 2 "post deleted on server"
+         */
+        hash = "167b670252215232dc59829364e361a2";
+        assertTrue(map.containsKey(hash));
+        assertEquals(SynchronizationAction.DELETE_CLIENT, map.get(hash).getAction());
+
+        /*
+         * test post 3 "post deleted on client"
+         */
+        hash = "b1629524db9c09f8b75af7ba83249980";
+        assertTrue(map.containsKey(hash));
+        assertEquals(SynchronizationAction.DELETE_SERVER, map.get(hash).getAction());
+
+        /*
+         * test post 4 "post changed on server"
+         */
+        hash = "11db3d75b9e07960658984f9b012d6d7";
+        assertTrue(map.containsKey(hash));
+        assertEquals(SynchronizationAction.UPDATE_CLIENT, map.get(hash).getAction());
+
+        /*
+         * test post 5 "post changed on client"
+         */
+        hash = "133de67269c9bfa71bde2b7615f0c1b3";
+        assertTrue(map.containsKey(hash));
+        assertEquals(SynchronizationAction.UPDATE_SERVER, map.get(hash).getAction());
+
+        /*
+         * test post 6 "post created on server"
+         */
+        hash = "08cdf0d0dcce9d07fd8d41ac6267cadf";
+        assertTrue(map.containsKey(hash));
+        assertEquals(SynchronizationAction.CREATE_CLIENT, map.get(hash).getAction());
+
+        /*
+         * test post 7 "post created on client"
+         */
+        hash = "418397b6f507faffe6f9b02569ffbc9e";
+        assertTrue(map.containsKey(hash));
+        assertEquals(SynchronizationAction.CREATE_SERVER, map.get(hash).getAction());
+    }
+
+}

@@ -1,0 +1,6 @@
+<jsp:root version="2.0"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+>
+	&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
+</jsp:root>
+	

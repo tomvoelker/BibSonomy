@@ -57,6 +57,7 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -563,8 +564,9 @@ public abstract class AbstractRenderer implements Renderer {
 		}
 		xmlGroup.setHref(this.urlRenderer.createHrefForGroup(group.getName()));
 		xmlGroup.setDescription(group.getDescription());
-		if (group.getUsers() != null) {
-			for (final User user : group.getUsers()) {
+		if (group.getMemberships() != null) {
+			for (final GroupMembership membership : group.getMemberships()) {
+				final User user = membership.getUser();
 				xmlGroup.getUser().add(this.createXmlUser(user));
 			}
 		}
@@ -1021,9 +1023,11 @@ public abstract class AbstractRenderer implements Renderer {
 		group.setRealname(xmlGroup.getRealname());
 		group.setHomepage(this.createURL(xmlGroup.getHomepage()));
 		if (xmlGroup.getUser().size() > 0) {
-			group.setUsers(new ArrayList<User>());
 			for (final UserType xmlUser : xmlGroup.getUser()) {
-				group.getUsers().add(this.createUser(xmlUser));
+				final User user = this.createUser(xmlUser);
+				final GroupMembership membership = new GroupMembership();
+				membership.setUser(user);
+				group.getMemberships().add(membership);
 			}
 		}
 

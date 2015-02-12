@@ -8,6 +8,7 @@
 	xmlns:admin="urn:jsptagdir:/WEB-INF/tags/bstags/actions/admin"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
@@ -15,6 +16,16 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
 	<layout:layout pageTitle="admin :: recommender" loginUser="${command.context.loginUser}" requPath="">
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:admin />
+					<nav:crumb nameKey="navi.admin.recommender" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.admin">
 				<jsp:attribute name="pathPart">

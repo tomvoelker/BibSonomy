@@ -1,0 +1,18 @@
+<!-- XXX: for a javascript solution have a look at version 1.20 -->
+<!-- inserts a simple button with a tooltip and an image.-->
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+	
+	<jsp:directive.attribute name="buttonImage" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="buttonId" type="java.lang.String" required="false"/>
+    <jsp:directive.attribute name="message" type="java.lang.String" required="false"/>
+   
+     <button id="${buttonId}" title="${message}" type="button" >
+     	<img src="${buttonImage}" style="background-size: 100%; /* To fill the dimensions of container (button), or */
+     	background-size: 25px auto; /* to specify dimensions explicitly */
+     	height:30px;width:30px;"/>
+     </button> 
+	
+</jsp:root>

@@ -133,7 +133,9 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 			if (command.getTagstype() == null) {
 				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, Integer.MAX_VALUE, null);
 			}
-			this.setGroupDetails(command, groupingName);
+			
+			final Group group = this.logic.getGroupDetails(groupingName);
+			command.setGroup(group);
 
 			if (requTags.size() > 0) {
 				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, command.getStartDate(), command.getEndDate(), Order.ADDED, 0, 20, null);
@@ -166,20 +168,6 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 	@Override
 	public GroupResourceViewCommand instantiateCommand() {
 		return new GroupResourceViewCommand();
-	}
-
-	/**
-	 * Retrieve all members of the given group in dependence of the group privacy level
-	 * FIXME: duplicated in ViewablePageController!
-	 * @param cmd the command
-	 * @param groupName the name of the group
-	 */
-	private void setGroupDetails(final GroupResourceViewCommand cmd, final String groupName) {
-		final Group group = this.logic.getGroupDetails(groupName);
-		if (present(group)) {
-			group.setUsers(this.logic.getUsers(null, GroupingEntity.GROUP, groupName, null, null, null, null, null, 0, 1000));
-		}
-		cmd.setGroup(group);
 	}
 
 }

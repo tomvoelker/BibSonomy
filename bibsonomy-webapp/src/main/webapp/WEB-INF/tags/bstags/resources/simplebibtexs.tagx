@@ -4,7 +4,8 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
-	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/resources/actionbuttons"
+		xmlns:spring="http://www.springframework.org/tags"
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
@@ -27,7 +28,7 @@
 		
 		<!-- BibTeX action -->
 		<jsp:attribute name="actions">
-			<bib:actions loginUserName="${loginUserName}" post="${post}" disableResourceLinks="${false}"/>
+			<buttons:actions loginUserName="${loginUserName}" post="${post}" disableResourceLinks="${false}" resourceType="bibtex"/>
 		</jsp:attribute>
 
 		<!-- BibTeX preview + document upload -->

@@ -9,7 +9,8 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:form="http://www.springframework.org/tags/form"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
@@ -32,6 +33,26 @@
     	 	| content
     	 	+-->
 		<jsp:attribute name="content">
+			<div>
+				<form:form name="requestgroup" action="/groups">
+					<fieldset class="fsInner" style="margin-bottom: 8px;">
+						<div class="fsRow">
+							<form:label cssClass="fsLabel" path="requestedGroup.name">Group name</form:label>
+				  			<form:input id="requestedGroupName" cssClass="fsInput" tabindex="1" path="requestedGroup.name"/>
+				  			<div class="dissError"><form:errors path="requestedGroup.name" /></div>
+			  			</div>
+						<div class="fsRow">
+							<form:label cssClass="fsLabel" path="requestedGroup.groupRequest.reason">Reason</form:label>
+				  			<form:input id="requestedGroupRequestReason" cssClass="fsInput" tabindex="1" path="requestedGroup.groupRequest.reason"/>
+				  			<div class="dissError"><form:errors path="requestedGroup.groupRequest.reason" /></div>
+			  			</div>
+						  
+			            <div class="clearfloat p">
+			  				<input type="submit" />
+			  			</div>
+					</fieldset>
+				</form:form>
+			</div>
             <!--+ 
                 | explain what groups are good for
                 +-->
@@ -124,7 +145,7 @@
 										<!-- FIXME: add link to leave group, if user is already member -->
 				            		</c:when>
 				            		<c:otherwise>
-				            			<a href="/join_group?group=${fn:escapeXml(entry.name)}"><fmt:message key="joinGroup.short"/></a>	
+				            			<a href="/joinGroup?group=${fn:escapeXml(entry.name)}"><fmt:message key="joinGroup.short"/></a>	
 				            		</c:otherwise>
 				            	</c:choose>
 		                   	</span>

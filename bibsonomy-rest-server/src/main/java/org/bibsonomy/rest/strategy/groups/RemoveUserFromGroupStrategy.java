@@ -28,7 +28,11 @@ package org.bibsonomy.rest.strategy.groups;
 
 import java.io.ByteArrayOutputStream;
 
+import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.User;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 
@@ -37,7 +41,7 @@ import org.bibsonomy.rest.strategy.Strategy;
  */
 public class RemoveUserFromGroupStrategy extends Strategy {
 	private final String groupName;
-	private final String userName;
+	private final GroupMembership membership;
 
 	/**
 	 * @param context
@@ -47,12 +51,13 @@ public class RemoveUserFromGroupStrategy extends Strategy {
 	public RemoveUserFromGroupStrategy(final Context context, final String groupName, final String userName) {
 		super(context);
 		this.groupName = groupName;
-		this.userName = userName;
+		this.membership = new GroupMembership();
+		this.membership.setUser(new User(userName));
 	}
 
 	@Override
 	public void perform(final ByteArrayOutputStream outStream) throws InternServerException {
-		this.getLogic().deleteUserFromGroup(this.groupName, this.userName);
+		this.getLogic().updateGroup(new Group(this.groupName), GroupUpdateOperation.REMOVE_MEMBER, this.membership);
 		// no exception -> assume success
 		this.getRenderer().serializeOK(writer);
 	}

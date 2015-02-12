@@ -90,8 +90,10 @@
 			<div class="pull-left">
 				<discussion:rating post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
 			</div>
-			<div class="pull-right"><jsp:invoke fragment="actions"/></div>
-			<div class="clearline">&#160;</div>
+			<div class="pull-right">
+				<jsp:invoke fragment="actions"/>
+			</div>
+			<div class="clearfix">&#160;</div>
 			
 			<!-- EDIT TAGS MODAL POPUP-->
 			<c:if test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name)}">
@@ -102,7 +104,8 @@
 							<c:param name="deleteCheckedPosts" value="true" />
 							<c:param name="format" value="action" />
 							<c:param name="resourcetype" value="${resourceType}" />
-							<c:param name="action" value="1" />
+							<c:param name="action" value="2" />
+							<c:param name="updateExistingPost" value="true"/>
 						</c:url>
 						
 						<form data-resource-hash="${post.resource.intraHash}${post.user.name}" class="form-horizontal edit-tags-form" method="post" action="${batchEditUrl}">

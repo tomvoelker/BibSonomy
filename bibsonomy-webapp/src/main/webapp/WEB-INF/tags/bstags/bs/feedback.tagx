@@ -4,7 +4,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 	
-	<jsp:directive.tag description="Renders a alert for bootstrap 3."/>
+	<jsp:directive.tag description="Renders an alert for bootstrap 3."/>
 
 	<jsp:directive.attribute name="feedbackBody" fragment="true" required="true" description="The content of the feedback box."/>
 	<jsp:directive.attribute type="org.bibsonomy.webapp.view.constants.BootstrapFeedbackStyle" name="style" required="true" description="Button Style Type" />
