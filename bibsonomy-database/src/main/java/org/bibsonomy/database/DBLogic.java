@@ -866,7 +866,7 @@ public class DBLogic implements LogicInterface {
 	public Group getGroupDetails(final String groupName) {
 		final DBSession session = this.openSession();
 		try {
-			final Group myGroup = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, this.permissionDBManager.isAdmin(this.loginUser), session);
+			final Group myGroup = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, groupName, GroupRole.USER), session);
 			if (present(myGroup)) {
 				myGroup.setTagSets(this.groupDBManager.getGroupTagSets(groupName, session));
 				if (this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, groupName, GroupRole.MODERATOR)) {

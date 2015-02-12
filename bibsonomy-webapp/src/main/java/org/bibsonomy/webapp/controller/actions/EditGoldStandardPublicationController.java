@@ -150,14 +150,11 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 		super.preparePost(command, post);
 		User loginUser = command.getContext().getLoginUser();
 		
-		if(loginUser.getRole().getRole() == ADMIN){
-			if (command.isApproved()){
-				post.setApproved(1);
-			}else{
-				post.setApproved(0);
-			}
+		if (command.isApproved()){
+			post.setApproved(1);
+		}else{
+			post.setApproved(0);
 		}
-		
 	}
 
 }

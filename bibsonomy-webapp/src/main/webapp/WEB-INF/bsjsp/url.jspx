@@ -44,7 +44,7 @@
 	
 	<input id="publicInput" name="publicInput" value="${isPublic}" type="hidden" />
 	<fmt:message var="headline" key="page.url.headline" />
-	<fmt:message key="goldStandard.approved.title" var="approved"/>
+	
 	<!--+
 		+ main layout
 		+ -->
@@ -116,13 +116,7 @@
 				<c:set var="post" value="${command.bookmark.list[0]}" />
 
 				<fmt:message key="actions.community_post.create" var="goldTitle" />
-				<h1 class="content-header"><c:out value="${pageTitle}" />
-					<c:if test="${post.approved==1}">
-						<a  title="${fn:escapeXml(approved)}">
-							<span class="fa fa-check-circle" style="margin-left:6px;"><!--  --></span>
-						</a>
-					</c:if>				
-				</h1>
+				<h1 class="content-header"><c:out value="${pageTitle}" /></h1>
 				<div class="text-center">	
 					<div class="lead">
 						<p><fmt:message key="actions.community_post.no" /></p> 
