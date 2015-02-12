@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.database.managers;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Date;
@@ -42,7 +44,6 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.AdminParam;
 import org.bibsonomy.database.util.DatabaseSchemaInformation;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.util.UserUtils;
 
 /**
  * Provides functionalities which are typically only available to admins. This
@@ -59,6 +60,8 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	
 	private final static AdminDatabaseManager singleton = new AdminDatabaseManager();
 	
+	/** used by the user manager to flag a deleted user as spammer */
+	public static final String DELETED_UPDATED_BY = "on_delete";
 	
 	/**
 	 * Holds the names of the tables where group ids must be updated, when a
@@ -147,12 +150,17 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 * @return user name
 	 */
 	public String flagSpammer(final User user, final String updatedBy, final String testMode, final DBSession session) {
-		/*
-		 * check if the user exists
-		 */
 		final String username = user.getName();
+		/*
+		 * check if the user exists, but not when deleting a user
+		 */
+		
 		final User userDetails = this.userDatabaseManager.getUserDetails(username, session);
-		if (!UserUtils.isExistingUser(userDetails)) {
+		/*
+		 *  don't check the role, maybe not all posts of a deleted user was
+		 *  updated, so we must be able to flag the user again
+		 */
+		if (!present(userDetails.getName())) {
 			throw new IllegalArgumentException("the user '" + username + "'does not exist");
 		}
 		
