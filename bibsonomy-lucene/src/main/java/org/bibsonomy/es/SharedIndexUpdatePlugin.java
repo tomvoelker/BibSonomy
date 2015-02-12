@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
@@ -13,10 +12,9 @@ import org.bibsonomy.lucene.util.generator.GenerateIndexCallback;
 import org.bibsonomy.model.Resource;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.admin.indices.flush.FlushRequest;
+import org.elasticsearch.action.get.GetResponse;
 
 /**
  * Initiates the IndexUpdater for the kronjobs to update indexes
@@ -48,9 +46,18 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	public IndexUpdater createUpdater(String indexType) {
 		boolean indexExist = esClient.getClient().admin().indices().exists(new IndicesExistsRequest(ESConstants.INDEX_NAME)).actionGet().isExists();
 		if(!indexExist){
-			log.error("No Index named \""+ESConstants.INDEX_NAME  +"\" found!! Please re-generate Index");
+			log.error("No Index named \""+ESConstants.INDEX_NAME  +"\" found!! Please generate Index");
 			return null;
 		}
+		
+        // Check if a document exists
+        GetResponse response = esClient.getClient().prepareGet(ESConstants.INDEX_NAME, ESConstants.SYSTEM_INFO_INDEX_TYPE, systemHome+indexType).setRefresh(true).execute().actionGet();
+        boolean resourceDocumentExist = response.isExists();
+        if(!resourceDocumentExist){
+			log.error("No documents for \""+ indexType +"\" in \""+ESConstants.INDEX_NAME  +"\" for current system found!! Please re-generate Index");
+			return null;
+		}
+        
 		SharedResourceIndexUpdater<R> sharedIndexUpdater;
 		sharedIndexUpdater = new SharedResourceIndexUpdater<R>(this.systemHome);
 		sharedIndexUpdater.setEsClient(esClient);

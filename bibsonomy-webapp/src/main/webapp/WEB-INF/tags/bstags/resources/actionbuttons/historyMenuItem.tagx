@@ -12,14 +12,27 @@
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true" />
 
+	<c:choose>	
+		<c:when test="${not empty post.systemUrl }">
+			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var ="isRemotePost" value="false"/>
+		</c:otherwise>
+	</c:choose>
+
 	<fmt:message key="${resourceType}.actions.posthistory.title" var="postHistoryTitle" />
 	<c:choose>
-		<c:when test="${(userLoggedIn and (loginUserName eq post.user.name)) or (empty post.user)}">
+		<c:when test="${(userLoggedIn and (loginUserName eq post.user.name) and (not isRemotePost)) or (empty post.user)}">
 			<c:set var="hash" value="${post.resource.interHash}"/>
 			<c:if test="${not empty post.user}">
 				<c:set var="hash" value="${post.resource.intraHash}"/>
 			</c:if>
-			<a href="${relativeUrlGenerator.getHistoryURLByHashAndUserName(hash, post.user.name, resourceType)}" title="${postHistoryTitle}">
+			<c:set var="historyUrl" value="${relativeUrlGenerator.getHistoryURLByHashAndUserName(hash, post.user.name, resourceType)}"/>
+			<c:if test="${isRemotePost}">
+				<c:set var="historyUrl" value="${relativeUrlGenerator.getHistoryURLByHashUserNameAndSysUrl(hash, post.user.name, resourceType, post.systemUrl)}"/>
+			</c:if>
+			<a href="${historyUrl}" title="${postHistoryTitle}">
 				<fmt:message key="${resourceType}.actions.posthistory.title" />
 				<buttons:newBadge/>
 			</a>

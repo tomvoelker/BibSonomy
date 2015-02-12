@@ -386,11 +386,40 @@ public class URLGenerator {
 	}
 	
 	
+	/**
+	 * @param interHash
+	 * @param resourceType
+	 * @return URL pointing to the publication represented by the inter hash and the resource type
+	 */
 	public String getCommunityPostUrlByInterHash(final String interHash, final String resourceType) {
 		if (BOOKMARK.equalsIgnoreCase(resourceType)) {
 			return this.getCommunityBookmarkUrlByInterHash(interHash);
 		}
 		return this.getCommunityPublicationUrlByInterHash(interHash);
+	}
+	
+	/**
+	 * @param interHash
+	 * @param resourceType
+	 * @param systemUrl
+	 * @return URL pointing to the publication represented by the inter hash, the resource type and the system url
+	 */
+	public String getCommunityPostUrlByInterHashAndSysUrl(final String interHash, final String resourceType, final String systemUrl) {
+		if (BOOKMARK.equalsIgnoreCase(resourceType)) {
+			return this.getCommunityBookmarkUrlByInterHashAndSysUrl(interHash, systemUrl);
+		}
+		return this.getCommunityPublicationUrlByInterHashAndSysUrl(interHash, systemUrl);
+	}
+	
+	/**
+	 * Constructs a URL for a community publication specified by its inter hash and system url.
+	 * 
+	 * @param interHash
+	 * @param systemUrl 
+	 * @return URL pointing to the publication represented by the inter hash and system url
+	 */
+	public String getCommunityPublicationUrlByInterHashAndSysUrl(final String interHash, final String systemUrl) {
+		return this.getCommunityPublicationUrlByInterHashUsernameAndSysUrl(interHash, null, systemUrl);
 	}
 	
 	/**
@@ -400,21 +429,23 @@ public class URLGenerator {
 	 * @return URL pointing to the publication represented by the inter hash
 	 */
 	public String getCommunityPublicationUrlByInterHash(final String interHash) {
-		return this.getCommunityPublicationUrlByInterHashAndUsername(interHash, null);
+		return this.getCommunityPublicationUrlByInterHashUsernameAndSysUrl(interHash, null, this.projectHome);
 	}
 	
 	/**
-	 * Constructs a URL for a community publication specified by its inter hash and the username.
+	 * Constructs a URL for a community publication specified by its inter hash, the username and the system url.
 	 * If no username is present, it will not occur in the URL and the trailing '/' will be
 	 * omitted.
 	 * 
 	 * @param interHash
 	 * @param userName
+	 * @param systemUrl 
 	 * @return URL pointing to the goldstandard publication represented by the interHash and the userName
 	 */
-	public String getCommunityPublicationUrlByInterHashAndUsername(final String interHash, final String userName) {
-		return getCommunityPostUrlByInterHashAndUsername(interHash, userName, false);
+	public String getCommunityPublicationUrlByInterHashUsernameAndSysUrl(final String interHash, final String userName, final String systemUrl) {
+		return getCommunityPostUrlByInterHashUsernameAndSysUrl(interHash, userName, systemUrl, false);
 	}
+	
 
 	/**
 	 * Constructs a URL for a community publication specified by its inter hash.
@@ -423,7 +454,18 @@ public class URLGenerator {
 	 * @return URL pointing to the publication represented by the inter hash
 	 */
 	public String getCommunityBookmarkUrlByInterHash(final String interHash) {
-		return this.getCommunityBookmarkUrlByInterHashAndUsername(interHash, null);
+		return this.getCommunityBookmarkUrlByInterHashUsernameAndSysUrl(interHash, null, this.projectHome);
+	}
+
+	/**
+	 * Constructs a URL for a community publication specified by its inter hash and system url.
+	 * 
+	 * @param interHash
+	 * @param systemUrl 
+	 * @return URL pointing to the publication represented by the inter hash
+	 */
+	public String getCommunityBookmarkUrlByInterHashAndSysUrl(final String interHash, final String systemUrl) {
+		return this.getCommunityBookmarkUrlByInterHashUsernameAndSysUrl(interHash, null, systemUrl);
 	}
 	
 	/**
@@ -444,14 +486,15 @@ public class URLGenerator {
 	 * 
 	 * @param interHash
 	 * @param userName
+	 * @param systemUrl 
 	 * @return URL pointing to the goldstandard publication represented by the interHash and the userName
 	 */
-	public String getCommunityBookmarkUrlByInterHashAndUsername(final String interHash, final String userName) {
-		return getCommunityPostUrlByInterHashAndUsername(interHash, userName, true);
+	public String getCommunityBookmarkUrlByInterHashUsernameAndSysUrl(final String interHash, final String userName, final String systemUrl) {
+		return getCommunityPostUrlByInterHashUsernameAndSysUrl(interHash, userName, systemUrl, true);
 	}
 
-	private String getCommunityPostUrlByInterHashAndUsername(final String interHash, final String userName, boolean bookmark) {
-		return this.getUrl(this.projectHome + prefix + getPartialPostUrlByInterHashAndUserName(interHash, userName, bookmark));
+	private String getCommunityPostUrlByInterHashUsernameAndSysUrl(final String interHash, final String userName, final String systemUrl, boolean bookmark) {
+		return this.getUrl(systemUrl + prefix + getPartialPostUrlByInterHashAndUserName(interHash, userName, bookmark));
 	}
 
 	private String getPartialPostUrlByInterHashAndUserName(final String hash, final String userName, boolean bookmark) {
@@ -467,11 +510,23 @@ public class URLGenerator {
 	 * The URL to the history of a post
 	 * @param hash
 	 * @param userName
-	 * @param bookmark
+	 * @param resourceType 
 	 * @return
 	 */
 	public String getHistoryURLByHashAndUserName(final String hash, final String userName, String resourceType) {
-		return this.getUrl(this.projectHome + prefix +HISTORY_PREFIX+"/" + getPartialPostUrlByInterHashAndUserName(hash, userName, BOOKMARK.equalsIgnoreCase(resourceType)));
+		return this.getHistoryURLByHashUserNameAndSysUrl(hash, userName, resourceType, this.projectHome);
+	}
+	
+	/**
+	 * The URL to the history of a post of the specific system
+	 * @param hash
+	 * @param userName
+	 * @param resourceType 
+	 * @param systemUrl
+	 * @return
+	 */
+	public String getHistoryURLByHashUserNameAndSysUrl(final String hash, final String userName, String resourceType, final String systemUrl) {
+		return this.getUrl(systemUrl + prefix +HISTORY_PREFIX+"/" + getPartialPostUrlByInterHashAndUserName(hash, userName, BOOKMARK.equalsIgnoreCase(resourceType)));
 	}
 	
 	/**

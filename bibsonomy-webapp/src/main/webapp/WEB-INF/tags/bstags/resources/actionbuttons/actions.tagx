@@ -14,12 +14,21 @@
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
 
 	<c:set var="buttonClasses" value="btn btn-default btn-xs"/>
+	
+	<c:choose>
+		<c:when test="${not empty post.systemUrl }">
+			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var ="isRemotePost" value="false"/>
+		</c:otherwise>
+	</c:choose>
 
 	<div class="edit-media-buttons btn-group btn-group-xs dropdown dropdown-align-right">
 
 		<!-- edit/delete -->
 		<c:choose>
-			<c:when test="${command.context.userLoggedIn and (loginUserName eq post.user.name)}">
+			<c:when test="${command.context.userLoggedIn and (loginUserName eq post.user.name) and not isRemotePost}">
 				<buttons:editPostButton
 					post ="${post}" 
 					resourceType="${resourceType}"
