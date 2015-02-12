@@ -176,6 +176,10 @@
 		<property name="databaseSchemaInformation" ref="dbSchemaInformation" />
 	</bean>
 	
+	<bean id="adminDatabaseManager" class="org.bibsonomy.database.managers.AdminDatabaseManager" factory-method="getInstance">
+		<property name="userDatabaseManager" ref="userDatabaseManager" />
+	</bean>
+	
 	<bean id="statisticsDatabaseManager" class="org.bibsonomy.database.managers.StatisticsDatabaseManager" factory-method="getInstance">
 		<property name="postChain" ref="postStatisticChain" />
 		<property name="tagChain" ref="tagStatisticChain" />

@@ -42,6 +42,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.AdminParam;
 import org.bibsonomy.database.util.DatabaseSchemaInformation;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.UserUtils;
 
 /**
  * Provides functionalities which are typically only available to admins. This
@@ -68,7 +69,9 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 																	DatabaseSchemaInformation.TAG_TABLE,
 																	DatabaseSchemaInformation.GROUP_TAG_TABLE,
 																	DatabaseSchemaInformation.DISCUSSION_TABLE);
-
+	
+	private UserDatabaseManager userDatabaseManager;
+	
 	/**
 	 * @return a singleton instance of this AdminDatabaseManager
 	 */
@@ -144,9 +147,18 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 * @return user name
 	 */
 	public String flagSpammer(final User user, final String updatedBy, final String testMode, final DBSession session) {
+		/*
+		 * check if the user exists
+		 */
+		final String username = user.getName();
+		final User userDetails = this.userDatabaseManager.getUserDetails(username, session);
+		if (!UserUtils.isExistingUser(userDetails)) {
+			throw new IllegalArgumentException("the user '" + username + "'does not exist");
+		}
+		
 		final AdminParam param = new AdminParam();
 
-		param.setUserName(user.getName());
+		param.setUserName(username);
 		param.setSpammer(user.getSpammer());
 		param.setToClassify(user.getToClassify());
 
@@ -232,7 +244,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			session.endTransaction();
 		}
 
-		return user.getName();
+		return username;
 	}
 
 	private void flagSpammer(final DBSession session, final AdminParam param) {
@@ -429,4 +441,10 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForList("getBibtexUsers", param, User.class, session);
 	}
 
+	/**
+	 * @param userDatabaseManager the userDatabaseManager to set
+	 */
+	public void setUserDatabaseManager(UserDatabaseManager userDatabaseManager) {
+		this.userDatabaseManager = userDatabaseManager;
+	}
 }
