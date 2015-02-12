@@ -28,12 +28,8 @@ package org.bibsonomy.lucene.util.generator;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -47,14 +43,10 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.NoSuchDirectoryException;
 import org.apache.lucene.util.Version;
-import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.es.IndexType;
-import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.LucenePost;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
 /**
@@ -66,23 +58,12 @@ import org.bibsonomy.model.Resource;
  * @param <R>
  *            the resource of the index to generate
  */
-public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable {
-
-	/** suffix for temporary indices */
-	public static final String TMP_INDEX_SUFFIX = ".tmp";
+public class LuceneGenerateResourceIndex<R extends Resource> extends AbstractIndexGenerator<R> {
 
 	private static final Log log = LogFactory.getLog(LuceneGenerateResourceIndex.class);
 
-	/** the number of posts to fetch from the database by a single generating step */
-	protected static final int SQL_BLOCKSIZE = 25000;
-
-	/** database logic */
-	protected LuceneDBInterface<R> dbLogic;
-
 	/** writes the resource index */
 	private IndexWriter indexWriter;
-
-	protected int numberOfThreads = 1;
 
 	/** converts post model objects to lucene documents */
 	protected LuceneResourceConverter<R> resourceConverter;
@@ -90,24 +71,23 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 	private LuceneResourceIndex<R> resourceIndex;
 
 	private GenerateIndexCallback<R> callback = null;
+
 	
-	/**
-	 * the search type
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.lucene.util.generator.AbstractIndexGenerator#getName()
 	 */
-	protected IndexType indexType;
-
-	/** set to true if the generator is currently generating an index */
-	protected boolean isRunning;
-
-	protected int numberOfPosts;
-	private int numberOfPostsImported;
-
+	@Override
+	protected String getName() {
+		return this.resourceIndex + "-index";
+	}
+	
 	/**
 	 * frees allocated resources and closes all files
 	 * 
 	 * @throws IOException
 	 * @throws CorruptIndexException
 	 */
+	@Override
 	public void shutdown() throws CorruptIndexException, IOException {
 		if (indexWriter != null) {
 			this.indexWriter.close();
@@ -117,47 +97,24 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 			this.callback.generatedIndex(this.resourceIndex);
 		}
 	}
-
-	/**
-	 * Read in data from database and build index.
-	 * 
-	 * Database as well as index files are configured in the lucene.properties
-	 * file.
-	 * 
-	 * @throws CorruptIndexException
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 * @throws SQLException
-	 */
-	public void generateIndex() throws CorruptIndexException, IOException, ClassNotFoundException, SQLException {
-		// Allow only one index-generation at a time.
-		if (this.isRunning) {
-			return;
-		}
-
-		this.isRunning = true;
-
-		// create a new, yet temporally index
-		this.createEmptyIndex();
-
-		// generate index
-		this.createIndexFromDatabase();
-
-		// Hope that works
-		this.replaceIndex();
-
-		// activate the index
-		this.resourceIndex.reset();
-
-		this.isRunning = false;
-	}
-
+	
 	/**
 	 * deletes the old index and replaces it with the new one
 	 */
-	public void replaceIndex() {
+	@Override
+	public void activateIndex() {
 		try {
+			
+			// close resource indexWriter
+			log.info("closing index " + this.resourceIndex);
+			this.indexWriter.close();
+
+			// all done
+			// log.info("(" + i + " indexed entries, " + is +
+			// " not indexed spam entries)");
+			
 			this.resourceIndex.close();
+			
 			final File indexPath = new File(this.resourceIndex.getIndexPath());
 			final File tmpIndexPath = new File(this.resourceIndex.getIndexPath() + TMP_INDEX_SUFFIX);
 			// If there was no index directory create one
@@ -201,6 +158,9 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 		} catch (final IOException e) {
 			log.error("Could not delete directory-content before index-generation or index-copy.", e);
 		}
+		
+		// activate the index
+		this.resourceIndex.reset();
 	}
 
 	/**
@@ -210,7 +170,8 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 	 * @throws LockObtainFailedException
 	 * @throws IOException
 	 */
-	protected void createEmptyIndex() throws CorruptIndexException, LockObtainFailedException, IOException {
+	@Override
+	protected void createEmptyIndex() throws Exception {
 		// create index, possibly overwriting existing index files
 		log.info("Creating empty lucene index...");
 		final Directory indexDirectory = FSDirectory.open(new File(this.resourceIndex.getIndexPath() + TMP_INDEX_SUFFIX));
@@ -219,85 +180,18 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 		this.indexWriter = new IndexWriter(indexDirectory, iwc);
 	}
 
-	/**
-	 * creates index of resource entries
-	 * 
-	 * @throws CorruptIndexException
-	 * @throws IOException
-	 */
-	public void createIndexFromDatabase() throws CorruptIndexException, IOException {
-		log.info("Filling index with database post entries.");
-
-		final ExecutorService executor = Executors.newFixedThreadPool(this.numberOfThreads);
-
-		// number of post entries to calculate progress
-		// FIXME: the number of posts is wrong
-		this.numberOfPosts = this.dbLogic.getNumberOfPosts();
-		log.info("Number of post entries: " + this.numberOfPosts);
-
-		// initialize variables
-		Integer lastTasId = this.dbLogic.getLastTasId();
-		Date lastLogDate = this.dbLogic.getLastLogDate();
-
-		if (lastLogDate == null) {
-			lastLogDate = new Date(System.currentTimeMillis() - 1000);
-		}
-
-		log.info("Start writing data to lucene index (with duplicate detection)");
-
-		// read block wise all posts
-		List<LucenePost<R>> postList = null;
-		int skip = 0;
-		int lastContenId = -1;
-		int postListSize = 0;
-		do {
-			postList = this.dbLogic.getPostEntries(lastContenId, SQL_BLOCKSIZE);
-			postListSize = postList.size();
-			skip += postListSize;
-			log.info("Read " + skip + " entries.");
-
-			// cycle through all posts of currently read block
-			for (final LucenePost<R> post : postList) {
-				post.setLastLogDate(lastLogDate);
-				if (post.getLastTasId() == null) {
-					post.setLastTasId(lastTasId);
-				} else {
-					lastTasId = Math.max(lastTasId, post.getLastTasId());
-				}
-
-				if (LuceneGenerateResourceIndex.this.isNotSpammer(post)) {
-					// create index document from post model
-					final Document doc = (Document) LuceneGenerateResourceIndex.this.resourceConverter.readPost(post, IndexType.LUCENE);
-					try {
-						LuceneGenerateResourceIndex.this.indexWriter.addDocument(doc);
-						LuceneGenerateResourceIndex.this.importedPost(post);
-					} catch (final IOException e) {
-						log.error("error while inserting post " + post.getUser().getName() + "/" + post.getResource().getIntraHash(), e);
-					}
-				}
-
-			}
-
-			if (postListSize > 0) {
-				lastContenId = postList.get(postListSize - 1).getContentId();
-			}
-		} while (postListSize == SQL_BLOCKSIZE);
-
+	@Override
+	protected void addPostToIndex(final LucenePost<R> post) {
+		// create index document from post model
+		final Document doc = (Document) this.resourceConverter.readPost(post, IndexType.LUCENE);
 		try {
-			executor.shutdown();
-			executor.awaitTermination(18, TimeUnit.HOURS);
-
-			// close resource indexWriter
-			log.info("closing index " + this.resourceIndex);
-			this.indexWriter.close();
-
-			// all done
-			// log.info("(" + i + " indexed entries, " + is +
-			// " not indexed spam entries)");
-		} catch (final InterruptedException e) {
-			log.error("lucene finished not in 18 hours", e);
+			this.indexWriter.addDocument(doc);
+			this.importedPost(post);
+		} catch (final IOException e) {
+			log.error("error while inserting post " + post.getUser().getName() + "/" + post.getResource().getIntraHash(), e);
 		}
 	}
+
 
 	/**
 	 * creates index of resource entries and adds FolkRanks to posts
@@ -310,7 +204,6 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 		log.info("Filling index with database post entries.");
 		// TODO: reenable multi threaded index generation
 		// TODO: don't load all posts into RAM
-		final ExecutorService executor = Executors.newFixedThreadPool(this.numberOfThreads);
 
 		// number of post entries to calculate progress
 		// FIXME: the number of posts is wrong
@@ -370,80 +263,13 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 			}
 		} while (postListSize == SQL_BLOCKSIZE);
 
-		try {
-			executor.shutdown();
-			executor.awaitTermination(18, TimeUnit.HOURS);
+		// close resource indexWriter
+		log.info("closing index " + this.resourceIndex);
+		this.indexWriter.close();
 
-			// close resource indexWriter
-			log.info("closing index " + this.resourceIndex);
-			this.indexWriter.close();
-
-			// all done
-			// log.info("(" + i + " indexed entries, " + is +
-			// " not indexed spam entries)");
-		} catch (final InterruptedException e) {
-			log.error("lucene finished not in 18 hours", e);
-		}
-	}
-
-	
-	/**
-	 * @param post the post which this object is to be informed about
-	 */
-	protected synchronized void importedPost(final LucenePost<R> post) {
-		// update counter
-		this.numberOfPostsImported++;
-	}
-
-	/**
-	 * test if given post is a spam post
-	 * 
-	 * @param post
-	 * @return <code>true</code> iff the post user is a spammer
-	 */
-	protected boolean isNotSpammer(final Post<? extends Resource> post) {
-		for (final Group group : post.getGroups()) {
-			if (group.getGroupId() < 0) {
-				/*
-				 * spammer group found => user is spammer
-				 */
-				return false;
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * Get the progress-percentage
-	 * 
-	 * @return the progressPercentage
-	 */
-	public int getProgressPercentage() {
-		return (int) Math.round(100 * ((double) this.numberOfPostsImported / this.numberOfPosts));
-	}
-
-	/** Run the index-generation in a thread. */
-	@Override
-	public void run() {
-		try {
-			this.generateIndex();
-		} catch (final Exception e) {
-			log.error("Failed to generate " + this.resourceIndex + "-index!", e);
-		} finally {
-			try {
-				this.shutdown();
-			} catch (final Exception e) {
-				log.error("Failed to close index-writer!", e);
-			}
-		}
-	}
-
-	/**
-	 * @param dbLogic
-	 *            the dbLogic to set
-	 */
-	public void setLogic(final LuceneDBInterface<R> dbLogic) {
-		this.dbLogic = dbLogic;
+		// all done
+		// log.info("(" + i + " indexed entries, " + is +
+		// " not indexed spam entries)");
 	}
 
 	/**
@@ -471,31 +297,18 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 	}
 
 	/**
-	 * @param numberOfThreads
-	 *            the numberOfThreads to set
-	 */
-	public void setNumberOfThreads(final int numberOfThreads) {
-		this.numberOfThreads = numberOfThreads;
-	}
-
-	/**
 	 * @return the id of the index currently generating
 	 */
 	public int getGeneratingIndexId() {
 		return this.resourceIndex.getIndexId();
 	}
-	
-	/**
-	 * @return the searchType
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.lucene.util.generator.AbstractIndexGenerator#writeMetaInfo(java.lang.Integer, java.util.Date)
 	 */
-	public IndexType getIndexType() {
-		return this.indexType;
+	@Override
+	protected void writeMetaInfo(Integer lastTasId, Date lastLogDate) throws IOException {
+		// lucene does not store meta-info in the index - it retrieves it directly from all the entries
 	}
 
-	/**
-	 * @param indexType the searchType to set
-	 */
-	public void setIndexType(IndexType indexType) {
-		this.indexType = indexType;
-	}
 }

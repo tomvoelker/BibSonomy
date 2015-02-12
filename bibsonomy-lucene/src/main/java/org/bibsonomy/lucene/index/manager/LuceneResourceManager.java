@@ -533,7 +533,6 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			generator.setLogic(this.dbLogic);
 			generator.setResourceConverter(this.resourceConverter);
 			generator.setCallback(this);
-			generator.setNumberOfThreads(numberOfThreads);
 
 			this.generator = generator;
 

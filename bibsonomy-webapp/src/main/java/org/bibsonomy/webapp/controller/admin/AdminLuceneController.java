@@ -110,13 +110,11 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		}
 		// Infos über die einzelnen Indexe
 		// Anzahl Einträge, letztes Update, ...
-		final List<LuceneResourceIndicesInfoContainer> resIndexInfo = command.getIndicesInfos();
-		
 		for (final LuceneResourceManager<? extends Resource> manager: luceneResourceManagers) {
 			LuceneResourceIndicesInfoContainer lriic = new LuceneResourceIndicesInfoContainer();
 			lriic.setResourceName(manager.getResourceName());
 			lriic.getLuceneResoruceIndicesInfos().addAll(manager.getIndicesInfos());
-			resIndexInfo.add(lriic);
+			command.getIndicesInfos().add(lriic);
 		}
 		
 		return Views.ADMIN_LUCENE;
