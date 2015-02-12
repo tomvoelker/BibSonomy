@@ -237,6 +237,8 @@
 				<value>classpath:/custom/messages</value>
 				<value>classpath:/projects/${project.name}_messages</value>
 				<value>classpath:/themes/${project.theme}_messages</value>
+				<!-- TODO: (Bootstrap) remove when old layout is removed -->
+				<value>classpath:/old_layout_messages</value>
 				<value>classpath:/messages</value>
 			</list>
 		</property>
@@ -362,6 +364,7 @@
 							<list>
 								<value>selTab</value>
 								<value>requestedGroup</value>
+								<value>errorMessage</value>
 							</list>
 						</property>
 					</bean>
@@ -753,9 +756,9 @@
 	
 	<bean id="postHistoryController" class="org.bibsonomy.webapp.controller.PostHistoryController" scope="request" parent="multiResourceListControllerWithTags">
 	<!--<property name="supportedResources">
-			<set>
+			 <set>
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-			</set>
+			</set> 
 		</property> -->
 	</bean>
 

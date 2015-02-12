@@ -76,7 +76,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	protected RequestLogic requestLogic;
 	/**
 	 * The List is used in a hack to protect certain oAuth Tokens from
-	 * deletions. Particulary, the oAuth-Tokens in PUMA are created
+	 * deletions. Particularly, the oAuth-Tokens in PUMA are created
 	 * automatically to guarantee access from VuFind. The ConsumerKey of those
 	 * properties that are protected are configured in the project.properties.
 	 */
@@ -124,7 +124,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			this.errors.reject("error.settings.tab");
 		} else {
 			this.checkInstalledJabrefLayout(command);
-			this.workOnGroupTab(command);
 			this.workOnSyncSettingsTab(command);
 			this.workOnCVTab(command);
 			this.workOnOAuthTab(command);
@@ -219,18 +218,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		}
 
 		command.setOauthUserInfo(oauthUserInfos);
-	}
-
-	@Deprecated
-	private void workOnGroupTab(final SettingsViewCommand command) {
-		// refresh the groups
-//		Group tmpGroup;
-//		for (Group group : command.getUser().getGroups()) {
-//			// get the details and members
-//			tmpGroup = this.logic.getGroupDetails(group.getName());
-//			group.setMemberships(tmpGroup.getMemberships());
-//			group.setPendingMemberships(tmpGroup.getPendingMemberships());
-//		}
 	}
 
 	/**

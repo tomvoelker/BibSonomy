@@ -298,6 +298,14 @@ public class UserUtils {
 	}
 	
 	/**
+	 * @param user
+	 * @return <code>true</code> iff the user exists in the system
+	 */
+	public static boolean isExistingUser(final User user) {
+		return present(user) && !Role.DELETED.equals(user.getRole()) && present(user.getName());
+	}
+	
+	/**
 	 * This method returns a new groupuser {@link User} for the given group
 	 * 
 	 * @param groupName the name of the group

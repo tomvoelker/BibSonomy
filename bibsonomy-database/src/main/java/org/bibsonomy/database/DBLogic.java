@@ -1627,7 +1627,6 @@ public class DBLogic implements LogicInterface {
 
 		final DBSession session = this.openSession();
 		try {
-
 			if(updateRelations) {
 				if ((tagsToReplace.size() != 1) || (replacementTags.size() != 1)) {
 					throw new ValidationException("tag relations can only be updated, when exactly one tag is exchanged by exactly one other tag.");
@@ -2953,11 +2952,11 @@ public class DBLogic implements LogicInterface {
 				}
 				
 			/* 
-				 * a wiki does not exist, at least there is nothing in the
-				 * database.
+			 * a wiki does not exist, at least there is nothing in the
+			 * database.
 			 * This should never happen after the 2.0.35 release, because
-				 * we will create a wiki for each new user. All the old users
-				 * should
+			 * we will create a wiki for each new user. All the old users
+			 * should
 			 * have been updated as well then.
 			 */
 			} else {
@@ -3159,7 +3158,6 @@ public class DBLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
 
 	private void handleAdminFilters(final FilterEntity filter) {
 		/*
