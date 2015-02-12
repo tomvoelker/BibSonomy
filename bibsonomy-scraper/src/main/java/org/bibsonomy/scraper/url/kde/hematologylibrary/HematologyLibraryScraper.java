@@ -53,7 +53,7 @@ public class HematologyLibraryScraper extends CitationManagerScraper implements 
 			Pattern.compile("/content" + ".*")
 		));
 
-	private static final Pattern REFERENCES_PATTERN = Pattern.compile("<h2>References</h2>(.*)<span class=\"highwire-journal-article-marker-end\"></span>");
+	private static final Pattern REFERENCES_PATTERN = Pattern.compile("(?s)<h2>References</h2>(.*)<span class=\"highwire-journal-article-marker-end\"></span>");
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
