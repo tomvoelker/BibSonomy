@@ -866,7 +866,7 @@ public class DBLogic implements LogicInterface {
 	public Group getGroupDetails(final String groupName) {
 		final DBSession session = this.openSession();
 		try {
-			final Group myGroup = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, this.permissionDBManager.isAdmin(this.loginUser), session);
+			final Group myGroup = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, true, session);
 			if (present(myGroup)) {
 				myGroup.setTagSets(this.groupDBManager.getGroupTagSets(groupName, session));
 				if (this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, groupName, GroupRole.MODERATOR)) {
@@ -1316,7 +1316,8 @@ public class DBLogic implements LogicInterface {
 
 			case ACTIVATE:
 				this.permissionDBManager.ensureAdminAccess(this.loginUser);
-				// Use paramGroup since group is unretrievable from the database.
+				// Use paramGroup since group is unretrievable from the
+				// database.
 				this.groupDBManager.activateGroup(paramGroup.getName(), session);
 				break;
 
@@ -2506,7 +2507,9 @@ public class DBLogic implements LogicInterface {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.bibsonomy.model.logic.LogicInterface#getUsernameByRemoteUserId(org.bibsonomy.model.user.remote.RemoteUserId)
+	 * @see
+	 * org.bibsonomy.model.logic.LogicInterface#getUsernameByRemoteUserId(org
+	 * .bibsonomy.model.user.remote.RemoteUserId)
 	 */
 	@Override
 	public String getUsernameByRemoteUserId(final RemoteUserId remoteUserId) {
