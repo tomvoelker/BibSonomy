@@ -171,7 +171,7 @@ public class URLGeneratorTest {
 			
 			String expected = projectHome + "bibtex/" + gst.getInterHash() + "/" +
 							  userName;
-			assertEquals(expected, ug.getCommunityPublicationUrlByInterHashAndUsername(gst.getInterHash(), userName));
+			assertEquals(expected, ug.getCommunityPublicationUrlByInterHashUsernameAndSysUrl(gst.getInterHash(), userName, projectHome));
 		}
 
 	@Test
