@@ -113,6 +113,7 @@ public class URLGenerator {
 	private static final String PUBLICATION_PREFIX = "bibtex";
 	private static final String RELEVANTFOR_PREFIX = "relevantfor";
 	private static final String SEARCH_PREFIX = "search";
+	private static final String SETTINGS_PREFIX = "settings";
 	private static final String TAG_PREFIX = "tag";
 	private static final String USER_PREFIX = "user";
 	private static final String VIEWABLE_PREFIX = "viewable";
@@ -785,6 +786,28 @@ public class URLGenerator {
 	public String getSearchUrl(final String toSearch) {
 		String url = this.projectHome + prefix + SEARCH_PREFIX + "/" +
 					 UrlUtils.safeURIEncode(toSearch);
+		return this.getUrl(url);
+	}
+	
+	/**
+	 * Returns just the url for settings.
+	 * @return settings url
+	 */
+	public String getSettingsUrl() {
+		String url = this.projectHome + prefix + SETTINGS_PREFIX;
+		
+		return this.getUrl(url);
+	}
+	
+	/**
+	 * Returns a specific page of the settings url. TODO: Make sure that the 
+	 * HTTP parameters are acceptable like that (with ?).
+	 * @param selTab the selected tab to be shown
+	 * @return settings url with seltab
+	 */
+	public String getSettingsUrlWithSelectedTab(int selTab) {
+		String url = this.getSettingsUrl() + "?selTab=" + selTab;
+		
 		return this.getUrl(url);
 	}
 	
