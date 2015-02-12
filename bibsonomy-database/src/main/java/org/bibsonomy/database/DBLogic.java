@@ -1846,19 +1846,6 @@ public class DBLogic implements LogicInterface {
 					} else {
 						// add document
 						this.docDBManager.addDocument(userName, post.getContentId(), document.getFileHash(), document.getFileName(), document.getMd5hash(), session);
-						/*
-						 * TODO: refactor document handling during post creation
-						 */
-						// // execute system tags
-						// final List<ExecutableSystemTag> systemTags =
-						// SystemTagsExtractor.extractExecutableSystemTags(post.getTags(),
-						// new HashSet<Tag>());
-						// for (final ExecutableSystemTag systemTag: systemTags)
-						// {
-						// systemTag.performDocuments(resourceHash,
-						// Collections.singletonList(document), session);
-						// }
-
 					}
 
 				} else {
