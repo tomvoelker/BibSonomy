@@ -29,7 +29,7 @@
 		WHERE user_name = #userName#
 	</update>
 	
-	<select id="getAdminClassifiedUsers" resultMap="AdminCommon.userProperties" parameterClass="adminParam">
+	<select id="getAdminClassifiedUsers" resultMap="AdminCommon.userProperties" parameterClass="adminParam" timeout="300">
 		SELECT *
 		FROM user u JOIN prediction p ON (u.user_name = p.user_name)
 		WHERE ((u.updated_by != 'classifier' AND u.updated_by != 'on_delete') OR ISNULL(u.updated_by)) AND prediction = #prediction# AND algorithm='admin'
@@ -68,7 +68,7 @@
 			LIMIT #limit#
 	</select>
 	
-	<select id="getAllUsersWithSpam" resultMap="AdminCommon.userProperties" parameterClass="adminParam">
+	<select id="getAllUsersWithSpam" resultMap="AdminCommon.userProperties" parameterClass="adminParam" timeout="300">
 		SELECT * 
 		FROM user u 
 		ORDER BY u.reg_date DESC
