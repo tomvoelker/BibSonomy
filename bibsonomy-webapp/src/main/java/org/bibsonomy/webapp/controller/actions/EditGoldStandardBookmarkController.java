@@ -42,15 +42,15 @@ import org.bibsonomy.webapp.validation.GoldStandardPostValidator;
 import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
-import org.springframework.validation.Errors;
+import org.bibsonomy.webapp.command.actions.EditPostCommand;
 
 import recommender.core.interfaces.model.TagRecommendationEntity;
-import recommender.impl.database.RecommenderStatisticsManager;
+
 
 /**
  * @author dzo
  */
-public class EditGoldStandardBookmarkController extends EditBookmarkController {
+public class EditGoldStandardBookmarkController extends EditBookmarkController{
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#getPostView()
 	 */
@@ -90,14 +90,14 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
  	}
 
 
- 	@Override
- 	protected View finalRedirect(final String userName, final Post<Bookmark> post, final String referer) {
- 		if (referer == null || referer.matches(".*/editGoldStandardBookmark.*")) {
- 			return new ExtendedRedirectView(this.urlGenerator.getBookmarkUrl(post.getResource(), null));
- 		}
+// 	@Override
+ //	protected View finalRedirect(final String userName, final Post<Bookmark> post, final String referer) {
+ 	//	if (referer == null || referer.matches(".*/editGoldStandardBookmark.*")) {
+ //			return new ExtendedRedirectView(this.urlGenerator.getBookmarkUrl(post.getResource(), null));
+ 	//	}
  
- 		return super.finalRedirect(userName, post, referer);
- 	}
+ 		//return super.finalRedirect(userName, post, referer);
+ 	//}
 
  
 
@@ -140,21 +140,21 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
  		// noop gold standards have no tags
 	}
 
- 	@Override
-	protected void preparePost(EditPostCommand<Bookmark> command, Post<Bookmark> post) {
-		super.preparePost(command, post);
-		User loginUser = command.getContext().getLoginUser();
-		
-			if (command.isApproved()){
-				post.setApproved(1);
-			}else{
-				post.setApproved(0);
-			}
-	}
  	
 	@Override
 	protected String getGrouping(final User requestedUser) {
 		return null;
 	}
+ 	@Override
+	protected void preparePost(EditPostCommand<Bookmark> command, Post<Bookmark> post) {
+		super.preparePost(command, post);
+		
+		if (command.isApproved()){
+			post.setApproved(1);
+		}else{
+			post.setApproved(0);
+		}
+	}
+
 }
 
