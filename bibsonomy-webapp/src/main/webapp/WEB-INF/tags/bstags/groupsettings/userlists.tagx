@@ -65,6 +65,16 @@
 									<fmt:message var="inviteuser" key="settings.group.inviteUser.button"/>
 									<bsform:button type="submit" size="defaultSize" style="primary" value="${inviteuser}" />
 								</form:form>
+								
+								<!-- Error inviting a member -->
+								<c:if test="${not empty command.errorMessage}">
+									<br />
+									<div class="alert alert-danger" role="alert">
+										<fmt:message key="${command.errorMessage}" />
+									</div>
+								</c:if>	
+								
+								
 							</jsp:attribute>
 						</bsform:fieldset>
 						<!-- Join requests -->
@@ -87,7 +97,10 @@
 													<td class="col-md-1"><user:thumbnail user="${member.user}" size="16" noname="${true}" /></td>
 													<td class="col-md-3"><user:username user="${member.user}" /></td>
 													<td class="col-md-6"><c:out value=" " /></td>
-													<td class="col-md-2" style="text-align: right"><a href="/updateGroup?operation=ADD_MEMBER&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${accuserTitle}"><span class="fa fa-check"><!-- Keep me --></span></a> <a href="/updateGroup?operation=decline_join_request&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${decuserTitle}"><span class="fa fa-times"><!-- Keep me --></span></a></td>
+													<td class="col-md-2" style="text-align: right">
+														<a href="/updateGroup?operation=ADD_MEMBER&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${accuserTitle}"><span class="fa fa-check"><!-- Keep me --></span></a> 
+														<a href="/updateGroup?operation=decline_join_request&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${decuserTitle}"><span class="fa fa-times"><!-- Keep me --></span></a>
+													</td>
 												</tr>
 											</c:if>
 										</c:forEach>
@@ -135,43 +148,43 @@
 														<td class="col-md-6">
 															<c:choose>
 																<c:when test="${isAdmin}">
-																	<span class="label label-primary">ADMINISTRATOR</span>
+																	<span class="label label-primary uppercase"><fmt:message key="groups.role.admin" /></span>
 																</c:when>
 																<c:when test="${not isAdmin and not canGrantAdmin}">
-																	<span class="label label-disabled">ADMINISTRATOR</span>
+																	<span class="label label-disabled uppercase"><fmt:message key="groups.role.admin" /></span>
 																</c:when>
 																<c:otherwise>
-																	<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=ADMINISTRATOR&amp;ckey=${ckey}">
-																		<span class="label label-default">ADMINISTRATOR</span>
-																	</a>
+																	<span class="label label-default uppercase">
+																		<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=ADMINISTRATOR&amp;ckey=${ckey}"><fmt:message key="groups.role.admin" /></a>
+																	</span>
 																</c:otherwise>
 															</c:choose>
 															<c:out value=" " />
 															<c:choose>
 																<c:when test="${isModerator}">
-																	<span class="label label-primary">MODERATOR</span>
+																	<span class="label label-primary uppercase"><fmt:message key="groups.role.moderator" /></span>
 																</c:when>
 																<c:when test="${isAdmin and not canGrantAdmin}">
-																	<span class="label label-disabled">MODERATOR</span>
+																	<span class="label label-disabled uppercase"><fmt:message key="groups.role.moderator" /></span>
 																</c:when>
 																<c:otherwise>
-																	<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=MODERATOR&amp;ckey=${ckey}">
-																		<span class="label label-default">MODERATOR</span>
-																	</a>
+																	<span class="label label-default uppercase">
+																		<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=MODERATOR&amp;ckey=${ckey}"><fmt:message key="groups.role.moderator" /></a>
+																	</span>
 																</c:otherwise>
 															</c:choose>
 															<c:out value=" " />
 															<c:choose>
 																<c:when test="${isUser}">
-																	<span class="label label-primary">USER</span>
+																	<span class="label label-primary uppercase"><fmt:message key="groups.role.user" /></span>
 																</c:when>
 																<c:when test="${isAdmin and not canGrantAdmin}">
-																	<span class="label label-disabled">USER</span>
+																	<span class="label label-disabled uppercase"><fmt:message key="groups.role.user" /></span>
 																</c:when>
 																<c:otherwise>
-																	<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=USER&amp;ckey=${ckey}">
-																		<span class="label label-default">USER</span>
-																	</a>
+																	<span class="label label-default uppercase">
+																		<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=USER&amp;ckey=${ckey}"><fmt:message key="groups.role.user" /></a>
+																	</span>
 																</c:otherwise>
 															</c:choose>
 														</td>

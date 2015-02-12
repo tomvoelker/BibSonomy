@@ -88,6 +88,8 @@ public class URLGenerator {
 		}
 	}
 
+	private static final String BOOKMARK=Bookmark.class.getSimpleName(); 
+	
 	private static final String ADMIN_PREFIX = "admin";
 	private static final String AUTHOR_PREFIX = "author";
 	private static final String BIBTEXEXPORT_PREFIX = "bib";
@@ -111,6 +113,7 @@ public class URLGenerator {
 	private static final String PUBLICATION_PREFIX = "bibtex";
 	private static final String RELEVANTFOR_PREFIX = "relevantfor";
 	private static final String SEARCH_PREFIX = "search";
+	private static final String SETTINGS_PREFIX = "settings";
 	private static final String TAG_PREFIX = "tag";
 	private static final String USER_PREFIX = "user";
 	private static final String VIEWABLE_PREFIX = "viewable";
@@ -354,6 +357,14 @@ public class URLGenerator {
 		return this.getUrl(url);
 	}
 	
+	
+	public String getCommunityPostUrlByInterHash(final String interHash, final String resourceType) {
+		if (BOOKMARK.equalsIgnoreCase(resourceType)) {
+			return this.getCommunityBookmarkUrlByInterHash(interHash);
+		}
+		return this.getCommunityPublicationUrlByInterHash(interHash);
+	}
+	
 	/**
 	 * Constructs a URL for a community publication specified by its inter hash.
 	 * 
@@ -420,8 +431,8 @@ public class URLGenerator {
 	 * @param bookmark
 	 * @return
 	 */
-	public String getHistoryURLByHashAndUserName(final String hash, final String userName, boolean bookmark) {
-		return this.getUrl(this.projectHome + prefix +HISTORY_PREFIX+"/" + getPartialPostUrlByInterHashAndUserName(hash, userName, bookmark));
+	public String getHistoryURLByHashAndUserName(final String hash, final String userName, String resourceType) {
+		return this.getUrl(this.projectHome + prefix +HISTORY_PREFIX+"/" + getPartialPostUrlByInterHashAndUserName(hash, userName, BOOKMARK.equalsIgnoreCase(resourceType)));
 	}
 	
 	/**
@@ -775,6 +786,28 @@ public class URLGenerator {
 	public String getSearchUrl(final String toSearch) {
 		String url = this.projectHome + prefix + SEARCH_PREFIX + "/" +
 					 UrlUtils.safeURIEncode(toSearch);
+		return this.getUrl(url);
+	}
+	
+	/**
+	 * Returns just the url for settings.
+	 * @return settings url
+	 */
+	public String getSettingsUrl() {
+		String url = this.projectHome + prefix + SETTINGS_PREFIX;
+		
+		return this.getUrl(url);
+	}
+	
+	/**
+	 * Returns a specific page of the settings url. TODO: Make sure that the 
+	 * HTTP parameters are acceptable like that (with ?).
+	 * @param selTab the selected tab to be shown
+	 * @return settings url with seltab
+	 */
+	public String getSettingsUrlWithSelectedTab(int selTab) {
+		String url = this.getSettingsUrl() + "?selTab=" + selTab;
+		
 		return this.getUrl(url);
 	}
 	

@@ -45,8 +45,8 @@ public class EditBookmarkController extends EditPostController<Bookmark, EditBoo
 
 	@Override
 	protected View getPostView() {
-		return Views.EDIT_BOOKMARK; // TODO: this could be configured using
-									// Spring!
+		// TODO: this could be configured using spring!
+		return Views.EDIT_BOOKMARK;
 	}
 
 	@Override

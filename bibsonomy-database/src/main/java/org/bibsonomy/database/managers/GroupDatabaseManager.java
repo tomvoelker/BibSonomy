@@ -470,8 +470,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	public void activateGroup(final String groupName, final DBSession session) {
 		// get the group
 		final Group group = this.getPendingGroup(groupName, session);
+		
+		if (!present(group)) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group " + groupName + " is no pending group.");
+		}
 
-		// TODO: check if group exists
 		final GroupRequest groupRequest = group.getGroupRequest();
 
 		try {
@@ -704,7 +707,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			session.beginTransaction();
 			// check if a user exists with that name
 			final User user = this.userDb.getUserDetails(username, session);
-			if (user.getName() == null) {
+			if (!UserUtils.isExistingUser(user)) {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There's no user with this name ('" + username + "')");
 			}
 			if (user.isSpammer()) {
@@ -852,7 +855,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't remove join request/invite from nonexistent group");
 		}
 		final User groupMembershipUser = this.userDb.getUserDetails(username, session);
-		if (!present(groupMembershipUser.getName())) {
+		if (!UserUtils.isExistingUser(groupMembershipUser)) {
 			ExceptionUtils.logErrorAndThrowQueryTimeoutException(log, null, "user " + username + " not found.");
 		}
 		final GroupMembership alreadyExistingMembership = this.getGroupMembershipForUser(username, group, session);

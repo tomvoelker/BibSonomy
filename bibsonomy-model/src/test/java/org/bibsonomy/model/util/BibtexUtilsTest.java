@@ -456,7 +456,7 @@ public class BibtexUtilsTest {
 		bib.addMiscField("key2", "value2");
 		bib.serializeMiscFields();
 		bib.clearMiscFields();
-		bib.parseMiscField();		
+		bib.parseMiscField();
 		
 		assertEquals(2, bib.getMiscFields().values().size());
 		assertEquals("value1", bib.getMiscField("key1"));

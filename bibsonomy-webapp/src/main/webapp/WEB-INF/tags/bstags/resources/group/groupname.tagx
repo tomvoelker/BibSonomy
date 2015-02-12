@@ -27,7 +27,7 @@
 			<c:out value="#${group.name}" />
 		</c:otherwise>
 	</c:choose>
-	<c:if test="${showRealname}">
+	<c:if test="${showRealname and not empty group.realname}">
 		&amp;nbsp;(<c:out value="${group.realname}" />)
 	</c:if>
 </jsp:root>

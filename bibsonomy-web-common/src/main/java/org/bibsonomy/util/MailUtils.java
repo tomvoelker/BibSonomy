@@ -153,7 +153,7 @@ public class MailUtils {
 				groupName,
 				loginUser.getName(),
 				reason,
-				projectHome,
+				this.absoluteURLGenerator.getGroupSettingsUrlByGroupName(groupName),
 				// TODO: why toLowerCase?
 				UrlUtils.safeURIEncode(groupName).toLowerCase(),
 				UrlUtils.safeURIEncode(loginUser.getName()).toLowerCase(),
@@ -268,7 +268,7 @@ public class MailUtils {
 				invitedUser.getName(),
 				loginUser.getName(),
 				groupName,
-				projectHome,
+				absoluteURLGenerator.getSettingsUrlWithSelectedTab(3),
 				// TODO: why toLowerCase?
 				UrlUtils.safeURIEncode(groupName).toLowerCase(),
 				UrlUtils.safeURIEncode(loginUser.getName()).toLowerCase(),
