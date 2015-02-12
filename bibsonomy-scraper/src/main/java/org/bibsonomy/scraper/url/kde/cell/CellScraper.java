@@ -49,8 +49,8 @@ public class CellScraper extends GenericRISURLScraper{
 	
 	private static final String SITE_NAME = "Cell";
 	private static final String SITE_URL = "http://www.cell.com/";
-	private static String INFO = "Scraper for Journals from " + href(SITE_URL, SITE_NAME)+".";
-	private static Pattern patternId = Pattern.compile("contentID=(.*)&");
+	private static final String INFO = "Scraper for Journals from " + href(SITE_URL, SITE_NAME)+".";
+	private static final Pattern patternId = Pattern.compile("pii=(.*?);");
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "cell.com"), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	@Override
@@ -75,7 +75,7 @@ public class CellScraper extends GenericRISURLScraper{
 	}
 	private static String extractId(URL url){
 		try {
-			Matcher m = patternId.matcher(WebUtils.getContentAsString(url.toString()));
+			final Matcher m = patternId.matcher(WebUtils.getContentAsString(url.toString()));
 			if(m.find())
 				return m.group(1);
 		} catch (IOException e) {
@@ -88,8 +88,8 @@ public class CellScraper extends GenericRISURLScraper{
 	 */
 	@Override
 	protected String getDownloadURL(URL url) throws ScrapingException {
-		String contentID = extractId(url);
-		String downloadUrl = "http://" + url.getHost().toString() + "/action/downloadCitation?objectUri=pii:" + contentID + "&direct=true&include=abs&submit=Export";
+		final String contentID = extractId(url);
+		final String downloadUrl = "http://" + url.getHost().toString() + "/action/downloadCitation?objectUri=pii:" + contentID + "&direct=true&include=abs&submit=Export";
 		return downloadUrl;
 	}
 

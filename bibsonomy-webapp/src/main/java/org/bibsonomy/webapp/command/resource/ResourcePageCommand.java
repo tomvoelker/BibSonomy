@@ -39,16 +39,18 @@ import org.bibsonomy.webapp.command.TagResourceViewCommand;
  */
 public class ResourcePageCommand<R extends Resource> extends TagResourceViewCommand {
 	private String requestedHash;
-	
+
 	private Map<String, List<String>> copyUsersMap;
-	
+
 	private List<DiscussionItem> discussionItems;
-	
+
 	private String postOwner;
-	
+
 	private String intraHash;
-	
+
 	private Class<R> resourceClass;
+
+	private String requestedType;
 
 	/**
 	 * @return the intraHash of a post
@@ -59,9 +61,10 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 
 	/**
 	 * set the intraHash of a post
+	 * 
 	 * @param intraHash
 	 */
-	public void setIntraHash(String intraHash) {
+	public void setIntraHash(final String intraHash) {
 		this.intraHash = intraHash;
 	}
 
@@ -74,9 +77,10 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 
 	/**
 	 * set the owner of a post
+	 * 
 	 * @param postOwner
 	 */
-	public void setPostOwner(String postOwner) {
+	public void setPostOwner(final String postOwner) {
 		this.postOwner = postOwner;
 	}
 
@@ -118,7 +122,7 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 	/**
 	 * @param copyUsersMap the copyUsersMap to set
 	 */
-	public void setCopyUsersMap(Map<String, List<String>> copyUsersMap) {
+	public void setCopyUsersMap(final Map<String, List<String>> copyUsersMap) {
 		this.copyUsersMap = copyUsersMap;
 	}
 
@@ -132,7 +136,15 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 	/**
 	 * @param resourceClass the resourceClass to set
 	 */
-	public void setResourceClass(Class<R> resourceClass) {
+	public void setResourceClass(final Class<R> resourceClass) {
 		this.resourceClass = resourceClass;
+	}
+
+	public String getRequestedType() {
+		return this.requestedType;
+	}
+
+	public void setRequestedType(final String requestedType) {
+		this.requestedType = requestedType;
 	}
 }

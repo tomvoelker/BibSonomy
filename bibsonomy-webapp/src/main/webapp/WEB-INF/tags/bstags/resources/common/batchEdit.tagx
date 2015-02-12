@@ -20,6 +20,6 @@
 		<c:url var="editUrl" value="/bediturl${requPathAndQuery}"/>
 	</c:if>
 	<fmt:message var="editPageTags" key="post.meta.edit.title"/>
-	<a href="${fn:escapeXml(editUrl)}" title="${editPageTags}"><fmt:message key="post.meta.batch_edit"/>...</a>
+	<a class="btn btn-default btn-xs btn-block" href="${fn:escapeXml(editUrl)}" title="${editPageTags}"><span class="fa fa-pencil"><!--  --></span>&amp;nbsp;<fmt:message key="post.meta.batch_edit"/>...</a>
 
 </jsp:root>

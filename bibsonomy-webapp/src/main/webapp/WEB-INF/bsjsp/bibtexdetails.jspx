@@ -17,6 +17,7 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/resources/actionbuttons"
 	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -150,7 +151,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="customPageOptions">
-			<bib:actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/>
+			<buttons:actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}" resourceType="bibtex"/>
 		</jsp:attribute>
 		
 	</layout:paneLayout>

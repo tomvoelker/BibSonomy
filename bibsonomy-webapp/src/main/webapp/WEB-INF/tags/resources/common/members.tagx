@@ -4,19 +4,19 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
-	<jsp:directive.attribute name="users" type="java.util.List" required="true" />
-	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true" />
-
-	<c:if test="${not empty users}">
+	<jsp:directive.attribute name="group" type="org.bibsonomy.model.Group" required="true" />
+	<c:set var="memberships" value="${group.memberships}" />
+	<c:if test="${not empty memberships}">
 		<li>
 			<span class="sidebar_h">
 				<fmt:message key="members"/>${mtl:ch('nbsp')}
 			</span>
 	
 			<ul id="groupmembers" class="cloud sidebar_collapse_content">
-				<c:forEach var="member" items="${users}">
+				<c:forEach var="membership" items="${memberships}">
+					<c:set var="member" value="${membership.user}" />
 					<li>
-						<a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(member.name))}"><c:out value="${member.name}" /></a>
+						<a href="${relativeUrlGenerator.getUserUrl(member)}"><c:out value="${member.name}" /></a>
 						<c:out value=" "/>
 					</li>
 				</c:forEach>

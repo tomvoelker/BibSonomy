@@ -30,6 +30,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
+import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
@@ -64,7 +65,11 @@ public final class GoldStandardPublicationDatabaseManager extends GoldStandardDa
 			/*
 			 * before the resource leaves the logic parse the misc field
 			 */
-			post.getResource().parseMiscField();
+			try {
+				post.getResource().parseMiscField();
+			} catch (final InvalidModelException e) {
+				// ignore invalid misc data
+			}
 		}
 
 		return post;

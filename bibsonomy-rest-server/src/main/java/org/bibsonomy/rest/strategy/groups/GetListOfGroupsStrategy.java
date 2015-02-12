@@ -62,7 +62,7 @@ public class GetListOfGroupsStrategy extends AbstractGetListStrategy<List<Group>
 
 	@Override
 	protected List<Group> getList() {
-		return this.getLogic().getGroups(getView().getStartValue(), getView().getEndValue());
+		return this.getLogic().getGroups(false, getView().getStartValue(), getView().getEndValue());
 	}
 
 	@Override

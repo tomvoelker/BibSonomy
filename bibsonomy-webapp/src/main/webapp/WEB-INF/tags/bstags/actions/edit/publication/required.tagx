@@ -50,7 +50,7 @@
 			});
 			
 			$('#post\.resource\.bibtexKey').focus(function() {
-				$(this)tooltip('toggle');
+				$(this).tooltip('toggle');
 			});
 		});
 	</script>
@@ -85,13 +85,13 @@
 						<div class="col-md-6">
 							<div class="input-group">
 								<fmt:message var="bibtexKey" key="post.resource.bibtexKey" />
-								<form:input placeholder="BibTeX key" id="post.resource.bibtexKey" path="post.resource.bibtexKey" cssClass="form-control" data-toggle="tooltip" data-placement="top" title="${bibtexKey}"/>
 								<fmt:message var="generateBibtexKey" key="post.resource.generateBibtexKey"/>
 								<span class="input-group-btn">
 									<a class="btn btn-default" title="${generateBibtexKey}" onclick="javascript:generateBibTexKey(this)">
 										<span class="fa fa-refresh"><!--  --></span>
 									</a>
 								</span>
+								<form:input placeholder="BibTeX key" id="post.resource.bibtexKey" path="post.resource.bibtexKey" cssClass="form-control" data-toggle="tooltip" data-placement="top" title="${bibtexKey}"/>
 							</div><!-- /input-group -->
 						</div>
 					</div>

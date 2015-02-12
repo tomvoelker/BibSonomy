@@ -107,19 +107,19 @@
 	<select id="getTagsByGroup" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
 		SELECT tag_name, count(tag_name) AS tag_ctr FROM 
 		((SELECT t1.tag_name 
-		  FROM tas t1, groups g
+		  FROM tas t1, group_memberships g
 		  WHERE g.group = #groupId# AND g.user_name=t1.user_name
 		  <include refid="getTagsByResourceType"/>
 		  <include refid="inGroups"/>) 
 		 UNION ALL
 		 (SELECT t1.tag_name 
-		  FROM tas t1, groups g, friends f
+		  FROM tas t1, group_memberships g, friends f
 		  WHERE <include refid="matchGroupMemberTrust"/>    <!-- currUser is friend of a group member -->
 		        AND t1.user_name = f.user_name AND g.group = #groupId# AND t1.group = #groupTypeFriends#
 		        <include refid="getTagsByResourceType"/>)
 		 UNION ALL
 		 (SELECT t1.tag_name
-		  FROM tas t1, groups g
+		  FROM tas t1, group_memberships g
 		  WHERE t1.user_name = #userName# AND g.user_name = t1.user_name
 		        AND g.group = #groupId#
 		        <include refid="getTagsByResourceType"/>)) AS tagsalias
@@ -174,7 +174,7 @@
 		SELECT t1.tag_lower AS tag_name, COUNT(t1.tag_lower) AS tag_ctr
 		  FROM tas t 
 		    JOIN tas t1 USING (content_id)
-		    JOIN groups g ON g.user_name = t.user_name
+		    JOIN group_memberships g ON g.user_name = t.user_name
 		    JOIN groupids i ON i.group = g.group
 		  WHERE i.group_name = #requestedGroupName#
 		    <include refid="restrictToGroups"/>
@@ -213,7 +213,7 @@
 	      	FROM tas t, <include refid="tagFromQuery"/> <!-- a TAS join (t1, t2, ...) for each requested tag -->
 	      		<isNotEmpty property="requestedGroupName">
 	      		<!-- get related tas for group (group/GROUPNAME/tag) -->
-	      		, groups g, groupids i
+	      		, group_memberships g, groupids i
 	      		</isNotEmpty>
 	      	WHERE t.content_id=t1.content_id 
 	          AND <include refid="tagWhereQuery"/>
@@ -450,4 +450,14 @@
 	<delete id="deleteGroupTas" parameterClass="int">
 		DELETE FROM grouptas WHERE content_id = #requestedContentId#
 	</delete>
+	
+	<delete id="deleteGroupTasForUserAndGroup" parameterClass="tagParam">
+		DELETE FROM grouptas WHERE user_name = #userName# AND `group` = #groupId#
+	</delete>
+	
+	<!-- maybe rename? -->
+	<update id="updateTasInGroupFromLeavingUser" parameterClass="tagParam">
+		UPDATE tas t SET t.group = 1 WHERE t.user_name = #userName# AND t.`group` = #groupId#
+	</update>
+	
 </sqlMap>

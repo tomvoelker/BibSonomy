@@ -91,11 +91,21 @@
 	content: @fa-var-google-plus;
 }
 
+.capitalize {
+	text-transform: capitalize;
+}
+
+.uppercase {
+	text-transform: uppercase;
+}
+
+.lowercase {
+	text-transform: lowercase;
+}
 
 ul.checklist {
 	list-style: none;
 	padding: 0;
-	margin: 0;
 }
 
 .label-grey {
@@ -952,12 +962,6 @@ h4.pub-details {
 	display:none;
 }
 
-/* Publication preview */
-a.publication.preview {
-
-	box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-}
-
 
 .bibtexpreviewimage {
 	/**
@@ -1101,6 +1105,7 @@ fieldset {
 	border-left: none;
 }
 
+span.label.label-default > a,
 span.label.label-primary > a,
 span.label.label-info > a,
 span.label.label-warning > a,
@@ -1406,5 +1411,16 @@ ul#urlList {
 #suggestionBox {
 	position:absolute;
 	display:none;
+}
+.autocompletion.form-control-feedback {
+	color: @gray;
+	font-size: @font-size-large;
+	top: 10px;
+	right: 7px;
+}
+
+.label-disabled {
+	color: #777777;
+	border: 1px solid #777777;
 }
 

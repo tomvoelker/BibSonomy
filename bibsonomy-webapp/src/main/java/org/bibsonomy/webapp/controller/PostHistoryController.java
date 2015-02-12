@@ -31,9 +31,11 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -62,8 +64,17 @@ public class PostHistoryController<R extends Resource> extends SingleResourceLis
 		 */
 		final String longHash = command.getRequestedHash();
 		final String requUser = command.getRequestedUser();
-		final Class<R> resourceClass = command.getResourceClass();
+		final String requestedType = command.getRequestedType();
 		final GroupingEntity groupingEntity = present(requUser) ? GroupingEntity.USER : GroupingEntity.ALL;
+
+		Class<R> resourceClass;
+		if (present(requUser)) {
+			// case community post
+			resourceClass = (Class<R>) (URLGenerator.BOOKMARK_PREFIX.equals(requestedType) ? Bookmark.class : BibTex.class);
+		} else {
+			resourceClass = (Class<R>) (URLGenerator.BOOKMARK_PREFIX.equals(requestedType) ? GoldStandardBookmark.class : GoldStandardPublication.class);
+
+		}
 
 		this.setList(command, resourceClass, groupingEntity, requUser, null, longHash, null, FilterEntity.POSTS_HISTORY, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceClass).getEntriesPerPage());
 		this.postProcessAndSortList(command, resourceClass);
@@ -74,15 +85,7 @@ public class PostHistoryController<R extends Resource> extends SingleResourceLis
 		// redirect to the correct view
 		if ("html".equals(format)) {
 			this.endTiming();
-			if (BibTex.class.equals(resourceClass)) {
-				return Views.HISTORYBIB;
-			} else if (GoldStandardPublication.class.equals(resourceClass)) {
-				return Views.HISTORYGOLDBIB;
-			} else if (GoldStandardBookmark.class.equals(resourceClass)) {
-				return Views.HISTORYGOLDBM;
-			} else {
-				return Views.HISTORYBM;
-			}
+			return Views.HISTORY;
 		}
 
 		this.endTiming();

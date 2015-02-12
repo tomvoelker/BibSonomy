@@ -52,6 +52,8 @@
 				<li><a href="#offriendsoverview" data-toggle="tab"><fmt:message key="friendoverview.offriends.title" /></a></li>
 			</ul>
 			
+			<br />
+			
 			<div class="tab-content">
 				<div id="friendsoverview" class="tab-pane active">
 					<h2 class="content-header"><fmt:message key="friendoverview.friends.description" /></h2>
