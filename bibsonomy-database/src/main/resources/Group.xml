@@ -2,70 +2,111 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="Group">
-
-	<select id="getAllGroups" resultMap="GroupCommon.group" parameterClass="groupParam">
-		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname AS realname, u.user_homepage AS homepage
-		FROM groupids i 
+	<!-- TODO: do we need the memberships here? -->
+	<select id="getAllGroups" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="groupParam">
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents
+		FROM
+			(SELECT * from groupids
+				WHERE `group` > 2
+					ORDER BY group_name
+					LIMIT #limit# OFFSET #offset#) i 
+		  JOIN group_memberships g USING (`group`)
 		  JOIN user u ON (i.group_name = u.user_name)
-		WHERE i.group > 2
+		ORDER BY i.group_name
+	</select>
+	
+	<select id="getPendingGroup" resultMap="GroupCommon.group" parameterClass="String">
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage
+		FROM pending_groupids i 
+		  JOIN pendingUser u ON (i.group_name = u.user_name)
+		WHERE i.group_name = #groupname#
+	</select>
+	
+	<select id="getPendingGroups" resultMap="GroupCommon.group" parameterClass="groupParam">
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage
+		FROM pending_groupids i 
+		  JOIN pendingUser u ON (i.group_name = u.user_name)
 		ORDER BY i.group_name
 		LIMIT #limit# OFFSET #offset#
 	</select>
 
-	<select id="getGroupByName" resultMap="GroupCommon.group" parameterClass="string">
-		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname AS realname, u.user_homepage AS homepage
+	<select id="getGroupWithMemberships" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="string">
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents
 		FROM groupids i 
-		  JOIN user u ON (i.group_name = u.user_name)
-		WHERE i.group_name = #groupname#
-	</select>
-
-	<select id="getGroupMembers" resultMap="GroupCommon.groupWithMembers" parameterClass="string">
-		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, u.user_name, g.userSharedDocuments
-		FROM groupids i 
-		  JOIN groups g USING (`group`) 
-		  JOIN user u ON (u.user_name = g.user_name) 
+		<!-- LEFT JOIN is necessary because groups are empty at the point of creation. -->
+		  LEFT JOIN group_memberships g USING (`group`) 
+		  LEFT JOIN user u ON (u.user_name = i.group_name) 
 		WHERE group_name = #groupname#
 		  AND i.group > 2
-		  <!-- AND g.user_name != #requestedGroupName# -->
+		ORDER BY g.user_name
 	</select>
+
+	<select id="getGroupWithPermissions" resultMap="GroupCommon.groupWithPermissions" parameterClass="string">
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, p.permission
+		FROM groupids i 
+		  LEFT JOIN group_level_permission p USING (`group`)
+		WHERE group_name = #groupname#
+		  AND i.group > 2
+	</select>
+	
+	<!-- TODO: merge with getGroupWithMembership using a dynamic query -->
+	<select id="getGroupWithMembershipsAndPermissions" resultMap="GroupCommon.groupWithMembershipsAndReportingsAndPermissions" parameterClass="string">
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, p.permission
+		FROM groupids i 
+		<!-- LEFT JOIN is necessary because groups are empty at the point of creation. -->
+		  LEFT JOIN group_memberships g USING (`group`) 
+		  LEFT JOIN user u ON (u.user_name = i.group_name) 
+		  LEFT JOIN group_level_permission p USING (`group`)
+		WHERE group_name = #groupname#
+		  AND i.group > 2
+		ORDER BY g.user_name
+	</select>
+
 
 	<select id="getPrivlevelForGroup" resultClass="Privlevel" parameterClass="int">
 		SELECT privlevel FROM groupids WHERE `group` = #groupId#
 	</select>
 
-	<select id="getGroupsForUser" resultMap="GroupCommon.groupWithUserSharedDocuments" parameterClass="string">
-		(SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, g.userSharedDocuments
-		 FROM groups g
-		   JOIN groupids i USING (`group`)
-		 WHERE g.user_name = #username#
-		)
-		UNION
-		(SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, NULL AS publ_reporting_mail, NULL AS publ_reporting_mail_template, NULL AS publ_reporting_external_url, FALSE AS userSharedDocuments
+	<select id="getGroupsForUser" resultMap="GroupCommon.groupWithMembershipsAndReportingsAndPermissions" parameterClass="string">
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.user_shared_documents, g.group_role, p.permission
 		 FROM groupids i
-		 WHERE i.group BETWEEN 0 AND 2)
-		ORDER BY `group`
+		   LEFT JOIN group_memberships g USING (`group`)
+		   LEFT JOIN user u ON (u.user_name = i.group_name)
+		   LEFT JOIN group_level_permission p USING (`group`)
+		 WHERE g.user_name = #userName#
+	</select>
+	
+	<select id="getSpecialGroupsForUser" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="string">
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, "" AS user_realname, NULL AS user_homepage, #userName# AS user_name, FALSE AS user_shared_documents, 2 AS group_role
+		 FROM groupids i
+		 WHERE i.group BETWEEN 0 AND 2
 	</select>
 
 	<select id="getGroupsForContentId" resultMap="GroupCommon.group_basic" parameterClass="int">
-		SELECT DISTINCT i.group, i.group_name, i.privlevel, i.sharedDocuments, FALSE as userSharedDocuments 
+		SELECT DISTINCT i.group, i.group_name, i.privlevel, i.sharedDocuments, FALSE as user_shared_documents 
 		  FROM groupids i JOIN grouptas t USING (`group`) 
 		  WHERE t.content_id = #contentId# 
-	</select>	
+	</select>
 
 	<select id="getNewGroupId" resultClass="int">
-		SELECT MAX(`group`) + 1 AS id FROM groupids
+		SELECT MAX(g.id) + 1 AS id FROM
+			(SELECT MAX(`group`) AS id FROM groupids 
+			UNION 
+			SELECT MAX(`group`) AS id FROM pending_groupids) AS g
 	</select>
 
+	<!-- TODO: Does this need pending_group_memberships as well? -->
 	<select id="getGroupIdsForUser" resultClass="int" parameterClass="string">
-		SELECT `group` FROM groups WHERE user_name = #userName#
+		SELECT `group` FROM group_memberships WHERE user_name = #userName#
 	</select>
 
-	<select id="getGroupIdByGroupNameAndUserName" resultClass="int" parameterClass="group">
+	<!-- TODO: What's that for?! -->
+	<select id="getGroupIdByGroupNameAndUserName" resultClass="int" parameterClass="groupParam">
 		SELECT g.group
-		FROM groupids g <isNotNull property="user" prepend=",">groups i</isNotNull>
-		WHERE g.group_name = #name#
-		      <isNotNull property="user" prepend="AND">
-		        i.user_name = #user.name#
+		FROM groupids g <isNotNull property="requestedUserName" prepend=",">group_memberships i</isNotNull>
+		WHERE g.group_name = #requestedGroupName#
+		      <isNotNull property="requestedUserName" prepend="AND">
+		        i.user_name = #requestedUserName#
 		        AND i.group = g.group
 		      </isNotNull>
 	</select>
@@ -83,39 +124,51 @@
 		AND s.set_name = #setName#
 	</select>
 	
-	<insert id="insertGroup" parameterClass="group">
-		INSERT INTO groupids (group_name, `group`, privlevel, sharedDocuments) VALUES (#name#, #groupId#, #privlevel#, #sharedDocuments#)
-	</insert>
-
 	<insert id="insertTagSet" parameterClass="tagSetParam">
 		INSERT INTO group_tagsets (set_name, tag_name, `group`) VALUES (#setName#, #tagName#, #groupId#)
 	</insert>
 
-	<delete id="deleteGroup" parameterClass="int">
-		DELETE FROM groupids WHERE `group` = #groupId#
-	</delete>
-
 	<delete id="deleteTagSet" parameterClass="tagSetParam">
-		DELETE FROM group_tagsets WHERE set_name = #setName# AND `group` = #groupId#
+		DELETE FROM group_tagsets
+		WHERE set_name = #setName# AND `group` = #groupId#
 	</delete>
 
-	<insert id="addUserToGroup" parameterClass="group">
-		INSERT INTO groups (user_name, `group`, defaultgroup) VALUES (#name#, #groupId#, #groupId#)
+	<insert id="activateGroup" parameterClass="string">
+		INSERT INTO groupids (`group_name`, `group`, `privlevel`, `sharedDocuments`)
+		SELECT `group_name`, `group`, `privlevel`, `sharedDocuments`
+		FROM pending_groupids 
+		WHERE pending_groupids.group_name = #name#
+	</insert>
+	
+	<delete id="deleteGroup" parameterClass="int">
+		DELETE FROM groupids
+		WHERE `group` = #groupId#
+	</delete>
+	
+	<insert id="insertPendingGroup" parameterClass="group">
+		INSERT INTO pending_groupids (group_name, `group`, privlevel, sharedDocuments, request_user_name, request_reason)
+		VALUES (#name#, #groupId#, #privlevel#, #sharedDocuments#, #groupRequest.userName#, #groupRequest.reason#)
 	</insert>
 
-	<delete id="removeUserFromGroup" parameterClass="group">
-		DELETE FROM groups WHERE `group` = #groupId# AND user_name = #name#
+	<delete id="deletePendingGroup" parameterClass="string">
+		DELETE FROM pending_groupids
+		WHERE pending_groupids.group_name = #groupname#
+	</delete>
+
+	<insert id="addUserToGroup" parameterClass="groupParam">
+		INSERT INTO group_memberships (user_name, `group`, defaultgroup, group_role, user_shared_documents)
+		VALUES (#membership.user.name#, #groupId#, #groupId#, #membership.groupRole#, #membership.userSharedDocuments#)
+	</insert>
+
+	<delete id="removeUserFromGroup" parameterClass="groupParam">
+		DELETE FROM group_memberships
+		WHERE `group` = #groupId# AND user_name = #userName#
 	</delete>
 
 	<delete id="removeAllUserFromGroup" parameterClass="int">
-		DELETE FROM groups WHERE `group` = #groupId#
-	</delete>
-
-	<select id="getGroupNameByGroupId" resultClass="String" parameterClass="int">
-		SELECT group_name
-		FROM groupids
+		DELETE FROM group_memberships
 		WHERE `group` = #groupId#
-	</select>
+	</delete>
 
 	<update id="updateGroupSettings" parameterClass="group">
 		UPDATE groupids 
@@ -130,4 +183,70 @@
 			publ_reporting_external_url = #publicationReportingSettings.externalReportingUrl#
 		WHERE group_name = #name#
 	</update>
+
+	<update id="updateGroupRole" parameterClass="groupParam">
+		UPDATE group_memberships 
+		SET group_role=#membership.groupRole.role#
+		WHERE `group` = #groupId# AND `user_name` = #membership.user.name#
+	</update>
+	
+	<select id="countPerRole" resultClass="Integer" parameterClass="groupParam">
+		SELECT COUNT(*)
+		FROM group_memberships
+		WHERE group_memberships.group_role = #membership.groupRole.role# AND group_memberships.group = #groupId#;
+	</select>
+	
+	<select id="getGroupMembershipForUserInGroup" resultMap="GroupCommon.groupMembership" parameterClass="groupParam">
+		SELECT ms.group_role, ms.user_name, u.user_realname, u.user_homepage, ms.user_shared_documents
+		FROM group_memberships ms
+		  JOIN user u ON (u.user_name = ms.user_name)
+		WHERE ms.user_name = #userName# AND ms.`group` = #groupId#;
+	</select>
+	
+	<!-- PENDING MEMBERSHIPS -->
+	<select id="getPendingMembershipForUserInGroup" resultMap="GroupCommon.groupMembership" parameterClass="groupParam">
+		SELECT ms.group_role, ms.user_name, ms.user_shared_documents
+		FROM pending_group_memberships ms
+		  JOIN groupids g USING (`group`)
+		WHERE ms.user_name = #userName# AND g.group_name = #requestedGroupName#;
+	</select>
+	
+	<insert id="addPendingMembership" parameterClass="groupParam">
+		INSERT INTO pending_group_memberships (user_name, `group`, defaultgroup, `group_role`)
+		VALUES (#membership.user.name#, #groupId#, #groupId#, #membership.groupRole.role#)
+	</insert>
+
+	<delete id="removePendingMembership" parameterClass="groupParam">
+		DELETE FROM pending_group_memberships
+		WHERE `group` = #groupId# AND user_name = #membership.user.name#
+	</delete>
+	
+	<select id="getPendingMembershipsForGroup" resultMap="GroupCommon.groupWithMemberships" parameterClass="string">
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents
+		FROM groupids i 
+		  JOIN pending_group_memberships g USING (`group`) 
+		  LEFT JOIN user u ON (u.user_name = i.group_name) 
+		WHERE group_name = #groupname#
+		  AND i.group > 2
+	</select>
+	
+	<select id="getPendingMembershipsForUser" resultMap="GroupCommon.groupWithMemberships" parameterClass="string">
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, g.user_name, g.user_shared_documents, g.group_role
+		 FROM groupids i
+		   LEFT JOIN pending_group_memberships g USING (`group`)
+		   LEFT JOIN user u ON (u.user_name = i.group_name)
+		 WHERE g.user_name = #userName# AND g.group_role != 2
+	</select>
+	
+	<insert id="insertGroupLevelPermission" parameterClass="groupParam">
+		INSERT INTO group_level_permission (`group`, permission, granted_by)
+		VALUES (#groupId#, #groupLevelPermission#, #grantedByUser#)
+	</insert>
+
+	<delete id="deleteGroupLevelPermission" parameterClass="groupParam">
+		DELETE FROM group_level_permission
+		WHERE `group` = #groupId#
+		  AND `permission` = #groupLevelPermission#
+	</delete>
+	
 </sqlMap>

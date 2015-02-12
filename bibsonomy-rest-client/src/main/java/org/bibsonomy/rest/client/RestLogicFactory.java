@@ -38,15 +38,18 @@ import org.bibsonomy.rest.client.util.ProgressCallbackFactoryImpl;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 
 /**
- * 
+ * {@link LogicInterfaceFactory} for the {@link RestLogic}
  */
 public class RestLogicFactory implements LogicInterfaceFactory {
+
+	/** the api subpath */
+	public static final String API_SUBPATH = "api/";
 
 	/** the url of BibSonomy (bibsonomy.org) */
 	public static final String BIBSONOMY_URL = "http://www.bibsonomy.org/";
 	
 	/** the url of the BibSonomy (bibsonomy.org) API */
-	public static final String BIBSONOMY_API_URL = BIBSONOMY_URL + "api/";
+	public static final String BIBSONOMY_API_URL = BIBSONOMY_URL + API_SUBPATH;
 	
 	public static final RenderingFormat DEFAULT_RENDERING_FORMAT = RenderingFormat.XML;
 	public static final ProgressCallbackFactory DEFAULT_CALLBACK_FACTORY = new ProgressCallbackFactoryImpl();

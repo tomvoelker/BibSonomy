@@ -133,6 +133,7 @@ public class IucrScraper extends AbstractUrlScraper {
 					if (bibtex != null) {
 
 						bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "abstract", abstractParser(sc.getUrl()));
+						bibtex = bibtex.replace("}\nkeywords={", "},\nkeywords={");
 						// successful
 						sc.setBibtexResult(bibtex);
 						return true;

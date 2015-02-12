@@ -4,8 +4,11 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
-
+	
+	<spring:eval var="abstractJabRefLayoutClass" expression="T(java.lang.Class).forName('org.bibsonomy.layout.jabref.AbstractJabRefLayout')" />
+	
 	<c:set var="pathAndQueryString" value="${requPath}${requQueryString}" />
 	
 	<div class="col-sm-9">
@@ -18,8 +21,7 @@
 						<!-- 
 						| JabRef layouts
 						 -->
-						<c:when test="${'JabrefLayout' eq mapEntry.value['class'].simpleName 
-							or 'MSOfficeXMLLayout' eq mapEntry.value['class'].simpleName}">
+						<c:when test="${abstractJabRefLayoutClass.isInstance(mapEntry.value)}">
 							<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />
 							<option value="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></option>
 						</c:when>
@@ -43,7 +45,7 @@
 						<!-- 
 						| JabRef layouts
 						 -->	
-						<c:when test="${'JabrefLayout' eq mapEntry.value['class'].simpleName}">
+						<c:when test="${abstractJabRefLayoutClass.isInstance(mapEntry.value)}">
 							<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />
 							<option value="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></option>
 						</c:when>

@@ -14,6 +14,7 @@
     xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:goldpub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
 	>
 	
@@ -22,6 +23,7 @@
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	<jsp:useBean id="mockReference" class="org.bibsonomy.model.BibTex" />
 	
+	<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
 	
 	<c:set var="goldstandard" value="${post.resource}" />
 	<!-- determine the publication type for schema.org markup -->
@@ -165,10 +167,10 @@
 					| discussion and rating
 					+-->
 			
-				<gpub:discussionrating post="${post}" otherPostsUrlPrefix="/bibtex/${hash.inter.id}"/>
+				<gpub:discussionrating post="${post}" otherPostsUrlPrefix="/bibtex/${interHashId}"/>
 				
 				<br /><br />
-				<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName=""/>
+				<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}" postUserName=""/>
 				
 				<!-- discussion -->
 				<!-- this is a goldstandard page => postUserName is the goldstandard user "" -->

@@ -115,11 +115,12 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @param syncDate - identifies the status
 	 * @param status - the new status
 	 * @param info - some additional information to be stored
+	 * @param newSyncDate - the actual date the client finished sync
 	 * @param session - the database session
 	 */
-	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info, final DBSession session) {
+	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info, Date newSyncDate, final DBSession session) {
 		final SyncParam param = this.createParam(userName, service, resourceType, syncDate, status, info);
-		
+		param.setNewDate(newSyncDate);
 		session.update("updateSyncStatus", param);
 	}
 

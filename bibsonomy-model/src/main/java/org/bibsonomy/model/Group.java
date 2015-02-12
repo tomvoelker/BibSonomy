@@ -28,21 +28,19 @@ package org.bibsonomy.model;
 
 import java.io.Serializable;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.Privlevel;
 
 /**
  * A group groups users.
- * 
  */
-public class Group implements Serializable{
-
-	/**
-	 * For persistency (Serializable)
-	 */
+public class Group implements Serializable {
 	private static final long serialVersionUID = -4364391580208670647L;
 
 	/**
@@ -76,28 +74,21 @@ public class Group implements Serializable{
 	private List<Post<? extends Resource>> posts;
 
 	/**
-	 * These {@link User}s belong to this group.
+	 * The permissions on group Level of this group
 	 */
-	private List<User> users;
+	private Set<GroupLevelPermission> groupLevelPermissions;
 
 	/**
 	 * The privacy level of this group.
 	 */
 	private Privlevel privlevel;
-
+	
 	/**
 	 * If <code>true</code>, other group members can access documents
 	 * attached to BibTeX posts, if the post is viewable for the group or
 	 * public.
 	 */
 	private boolean sharedDocuments;
-
-	/**
-	 * stores documents sharing setting for the current user.
-	 * TODO: this attribute has nothing to do with a group
-	 * it is specific to one member of the group
-	 */
-	private boolean userSharedDocuments;
 	
 	/**
 	 * If you add a tagset to a group and a user marks this group as 
@@ -108,11 +99,18 @@ public class Group implements Serializable{
 	
 	/** stores setting regarding publication reporting */
 	private GroupPublicationReportingSettings publicationReportingSettings;
+
+	/** stores information regarding the group request */
+	private GroupRequest groupRequest;
+	
+	private List<GroupMembership> memberships;
+	private List<GroupMembership> pendingMemberships;
 	
 	/**
-	 * constructor
+	 * default constructor
 	 */
 	public Group() {
+		// noop
 	}
 
 	/**
@@ -206,35 +204,6 @@ public class Group implements Serializable{
 	}
 
 	/**
-	 * @return users
-	 */
-	public List<User> getUsers() {
-		if (this.users == null) {
-			this.users = new LinkedList<User>();
-		}
-		return this.users;
-	}
-
-	/**
-	 * @param users
-	 */
-	public void setUsers(List<User> users) {
-		this.users = users;
-	}
-
-	/**
-	 * Returns the first member of this group.
-	 * FIXME: maybe we should put this inside a param object
-	 * 
-	 * @return first user
-	 */
-	@Deprecated 
-	public User getUser() {
-		if (this.getUsers().size() < 1) return null;
-		return this.users.get(0);
-	}
-
-	/**
 	 * @return privlevel
 	 */
 	public Privlevel getPrivlevel() {
@@ -321,20 +290,6 @@ public class Group implements Serializable{
 	}
 
 	/**
-	 * @return the userSharedDocuments
-	 */
-	public boolean isUserSharedDocuments() {
-		return this.userSharedDocuments;
-	}
-
-	/**
-	 * @param userSharedDocuments the userSharedDocuments to set
-	 */
-	public void setUserSharedDocuments(boolean userSharedDocuments) {
-		this.userSharedDocuments = userSharedDocuments;
-	}
-
-	/**
 	 * @return the publicationReportingSettings
 	 */
 	public GroupPublicationReportingSettings getPublicationReportingSettings() {
@@ -411,5 +366,86 @@ public class Group implements Serializable{
 	public int hashCode() {
 		if (this.name != null) return this.name.toLowerCase().hashCode();
 		return groupId;
+	}
+	
+	/**
+	 * @return the groupRequest
+	 */
+	public GroupRequest getGroupRequest() {
+		return this.groupRequest;
+	}
+
+	/**
+	 * @param groupRequest the groupRequest to set
+	 */
+	public void setGroupRequest(GroupRequest groupRequest) {
+		this.groupRequest = groupRequest;
+	}
+	
+	/**
+	 * @return the memberships
+	 */
+	public List<GroupMembership> getMemberships() {
+		if (this.memberships == null) {
+			this.memberships = new LinkedList<>();
+		}
+		return this.memberships;
+	}
+
+	/**
+	 * @param memberships the memberships to set
+	 */
+	public void setMemberships(List<GroupMembership> memberships) {
+		this.memberships = memberships;
+	}
+
+	public List<GroupMembership> getPendingMemberships() {
+		if (this.pendingMemberships == null)
+			this.pendingMemberships = new LinkedList<>();
+		
+		return pendingMemberships;
+	}
+
+	public void setPendingMemberships(List<GroupMembership> pendingMemberships) {
+		this.pendingMemberships = pendingMemberships;
+	}
+	
+	// TODO: move to utils class
+	public GroupMembership getGroupMembershipForUser(String username) {
+		for (GroupMembership g : this.getMemberships()) {
+			if (g.getUser().getName().equals(username)) {
+				return g;
+			}
+		}
+		// look in pending memberships
+		for (GroupMembership g : this.getPendingMemberships()) {
+			if (g.getUser().getName().equals(username)) {
+				return g;
+			}
+		}
+		
+		return null;
+	}
+	
+	
+	public Set<GroupLevelPermission> getGroupLevelPermissions() {
+		if (this.groupLevelPermissions == null) {
+			this.groupLevelPermissions = new HashSet<GroupLevelPermission>();
+		}
+		return this.groupLevelPermissions;
+	}
+	
+	/**
+	 * @param groupLevelPermissions the groupLevelPermissions to set
+	 */
+	public void setGroupLevelPermissions(Set<GroupLevelPermission> groupLevelPermissions) {
+		this.groupLevelPermissions = groupLevelPermissions;
+	}
+
+	/**
+	 * @param communityPostInspection
+	 */
+	public void addGroupLevelPermission(GroupLevelPermission groupLevelPermission) {
+		this.getGroupLevelPermissions().add(groupLevelPermission);
 	}
 }

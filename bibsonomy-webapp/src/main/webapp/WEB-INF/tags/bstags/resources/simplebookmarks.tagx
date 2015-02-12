@@ -3,7 +3,8 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:bm="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bookmark"
-	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/resources/actionbuttons"
+		xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
@@ -20,7 +21,7 @@
 		<!-- Bookmark description -->
 		<jsp:attribute name="desc">	<bm:desc post="${post}"/></jsp:attribute>
 		<!-- Bookmark action -->
-		<jsp:attribute name="actions"><bm:actions post="${post}" loginUserName="${loginUserName}"/></jsp:attribute>
+		<jsp:attribute name="actions"><buttons:actions post="${post}" loginUserName="${loginUserName}" resourceType="bookmark"/></jsp:attribute>
 		<!-- Bookmark preview + document upload -->
 		<jsp:attribute name="documents"><bm:documents post="${post}"/></jsp:attribute>
 		<!-- extended title which is shown beside the titlekey -->

@@ -31,7 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * @author wla
  */
-public class AjaxDocumentCommand extends AjaxCommand {
+public class AjaxDocumentCommand extends AjaxCommand<String> {
 
 	private String intraHash;
 	

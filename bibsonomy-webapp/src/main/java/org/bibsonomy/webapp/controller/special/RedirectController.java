@@ -212,7 +212,7 @@ public class RedirectController implements MinimalisticController<RedirectComman
 		 * available in the corresponding themes, but e.g. old and new help pages
 		 * are linking to myBibSonomy at the moment
 		 */
-		if ("myBibSonomy".equals(myPage) || "myPUMA".equals(myPage)) {
+		if ("myBibSonomy".equalsIgnoreCase(myPage) || "myPUMA".equalsIgnoreCase(myPage)) {
 			return userPage;
 		}
 		if ("myown".equalsIgnoreCase(myPage)) {

@@ -26,6 +26,13 @@
  */
 package org.bibsonomy.scraper.url.kde.pnas;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.net.URL;
+
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -53,5 +60,19 @@ public class PNASScraperTest {
 	@Test
 	public void urlTest2Run() {
 		UnitTestRunner.runSingleTest("url_191");
+	}
+	
+	@Test
+	public void testReferences() throws Exception {
+		final ScrapingContext sc = new ScrapingContext(new URL("http://www.pnas.org/content/106/52/22480.full"));
+		PNASScraper ps = new PNASScraper();
+		assertTrue(ps.scrape(sc));
+		assertTrue(ps.scrapeReferences(sc));
+		
+		final String reference = sc.getReferences();
+		assertNotNull(reference);
+		assertTrue(reference.length() > 100);
+		assertEquals("<ol class=\"cit-list\">".trim(), reference.substring(0, 80).trim());
+		assertTrue(reference.contains("DiFiglia"));
 	}
 }

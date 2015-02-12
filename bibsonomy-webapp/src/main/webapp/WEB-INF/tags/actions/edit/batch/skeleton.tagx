@@ -19,7 +19,7 @@ xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true" />
 	<jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true" />
-	<jsp:directive.attribute name="deleteCheckedPosts" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="updateExistingPost" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="overwrite" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" description="The type of resource that are edited (bookmark or bibtex)." />
 
@@ -34,7 +34,25 @@ xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	<!-- page title -->
 	<fmt:message key="post.meta.edit" var="pageTitle" />
 
-	<layout:paneLayout requPath="${requPath}" command="${command}" pageTitle="${pageTitle}" activeTab="my" headerMessageKey="batchedit.info" showPageOptions="${true}">
+	<layout:paneLayout requPath="${requPath}" command="${command}" pageTitle="${pageTitle}" activeTab="my" showPageOptions="${true}">
+		<jsp:attribute name="infobox">
+			<parts:infobox>
+				<jsp:attribute name="infoTextBody">
+					<!-- short info about batchEdit -->
+					<ul>
+						<fmt:message key="batchedit.info1"/>
+						<c:if test="${resourceType eq bibtex}">
+							<li><fmt:message key="batchedit.option1"/></li>
+						</c:if>                
+						<li><fmt:message key="batchedit.option2"/></li>
+						<li><fmt:message key="batchedit.option3"/></li>
+						<li><fmt:message key="batchedit.option4"/></li>
+						<li><fmt:message key="batchedit.option5"/></li>
+					</ul>
+					<ul><fmt:message key="batchedit.info2"/></ul>
+				</jsp:attribute>
+			</parts:infobox>
+		</jsp:attribute>
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="post.meta.edit" />
@@ -43,7 +61,9 @@ xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 
 		<jsp:attribute name="content">
 		
-			<batch:content resourceType="${resourceType}" listView="${listView}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" listViewStartParamName="${listViewStartParamName}" deleteCheckedPosts="${deleteCheckedPosts}" overwrite="${overwrite}">
+			<batch:content resourceType="${resourceType}" listView="${listView}" 
+			otherPostsUrlPrefix="${otherPostsUrlPrefix}" listViewStartParamName="${listViewStartParamName}" 
+			updateExistingPost="${updateExistingPost}" directEdit="${true}" overwrite="${overwrite}">
         						 
 			<jsp:attribute name="shortPostDescription">
 				<jsp:invoke fragment="shortPostDescription" />

@@ -71,6 +71,8 @@ public class JStorScraper extends AbstractUrlScraper {
 
 	private static final Pattern SUBMIT_ACTION_PATTERN = Pattern.compile("href=\"javascript:submitActionInNewWindow[^']++'([^']++)");
 
+	private static final Pattern doi = Pattern.compile("<ul id=\"citation-tools-drop\" data-doi=\"(.*?)\"");
+	
 	static {
 		final Pattern hostPattern = Pattern.compile(".*" + JSTOR_HOST);
 		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(JSTOR_ABSTRACT_PATH + ".*")));
@@ -97,8 +99,12 @@ public class JStorScraper extends AbstractUrlScraper {
 			//targeting download page and from there submit action
 			String downloadPage, submitAction;
 			
+			String url = sc.getUrl().toExternalForm();
+			if(!url.contains(EXPORT_PAGE_URL))
+				url = EXPORT_PAGE_URL + exportDOI(url);
+			
 			//get the page content or at least get the cookies
-			GetMethod getMethod = new GetMethod(sc.getUrl().toExternalForm());
+			GetMethod getMethod = new GetMethod(url);
 			final String page = WebUtils.getContentAsString(client, getMethod);
 			
 			if (page == null) {
@@ -198,6 +204,19 @@ public class JStorScraper extends AbstractUrlScraper {
 		
 		sc.setBibtexResult(bibtexResult);
 		return true;
+	}
+	
+	private static String exportDOI(String url) throws ScrapingException {
+		try {
+			final Matcher m = doi.matcher(WebUtils.getContentAsString(url));
+			
+			if(m.find()){
+				return m.group(1);
+			}
+			} catch(IOException e) {
+				throw new ScrapingException("DOI not found");
+			}
+		return null;
 	}
 
 	@Override
