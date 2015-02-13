@@ -26,6 +26,13 @@
  */
 package org.bibsonomy.scraper.url.kde.jstage;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.net.URL;
+
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -50,5 +57,17 @@ public class JStageScraperTest {
 	public void url2TestRun(){
 		UnitTestRunner.runSingleTest("url_276");
 	}
-
+	@Test
+	public void testReferences() throws Exception{
+		final ScrapingContext sc = new ScrapingContext(new URL("https://www.jstage.jst.go.jp/article/dsj/9/0/9_CRIS4/_article"));
+		JStageScraper js = new JStageScraper();
+		assertTrue(js.scrape(sc));
+		assertTrue(js.scrapeReferences(sc));
+		
+		final String reference = sc.getReferences();
+		assertNotNull(reference);
+		assertTrue(reference.length() > 100);
+		assertEquals("<li>\n    \t\n    \t\n    \t\tBosnjak A. & Stempfhuber, M.(eds.) (2008) Get the Good CRIS Going: Ensuring Quality of Service for the User in the ERA. 9th International Conference on Current".trim(), reference.substring(0, 193).trim());
+		assertTrue(reference.contains("Bosnjak A."));
+	}
 }

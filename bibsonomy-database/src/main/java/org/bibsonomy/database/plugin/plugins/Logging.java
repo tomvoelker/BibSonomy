@@ -39,6 +39,7 @@ import org.bibsonomy.database.params.LoggingParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.database.params.discussion.DiscussionItemParam;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.enums.GoldStandardRelation;
@@ -99,15 +100,30 @@ public class Logging extends AbstractDatabasePlugin {
         param.setRequestedContentId(contentId);
         param.setNewContentId(newContentId);
         this.insert("logBibTex", param, session);
+        
+        // Update current_content_id for history
+     	this.update("updateBibTexHistory", param, session);
+    }
+    
+    @Override
+    public void onPublicationMassUpdate(String userName, int groupId, DBSession session) {
+    	final BibTexParam param = new BibTexParam();
+    	param.setGroupId(groupId);
+    	param.setRequestedUserName(userName);
+    	this.insert("logPublicationMassUpdate", param, session);
     }
 
     @Override
     public void onGoldStandardUpdate(final int contentId, final int newContentId, final String newInterhash, final String interhash, final DBSession session) {
         final LoggingParam<String> logParam = new LoggingParam<String>();
         logParam.setNewId(newInterhash);
-        logParam.setOldId(interhash);
-        logParam.setNewContentId(newContentId);
-        this.insert("logGoldStandard", logParam, session);
+		logParam.setOldId(interhash);
+		logParam.setNewContentId(newContentId);
+		logParam.setContentId(contentId);
+		this.insert("logGoldStandard", logParam, session);
+
+		// Update current_content_id for history
+		this.update("updateGoldStandardHistory", logParam, session);
     }
 
     @Override
@@ -142,11 +158,32 @@ public class Logging extends AbstractDatabasePlugin {
     @Override
     public void onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session) {
         final BookmarkParam param = new BookmarkParam();
+        param.setNewContentId(newContentId);
         param.setRequestedContentId(contentId);
         this.insert("logBookmark", param, session);
-        param.setNewContentId(newContentId);
-        this.insert("logBookmarkUpdate", param, session);
+
+        // Update current_content_id for history
+     	this.update("updateBookmarkHistory", param, session);
     }
+    
+    /* (non-Javadoc)
+     * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onBookmarkMassUpdate(java.lang.String, int)
+     */
+    @Override
+    public void onBookmarkMassUpdate(String userName, int groupId, DBSession session) {
+    	final BookmarkParam param = new BookmarkParam();
+    	param.setGroupId(groupId);
+    	param.setRequestedUserName(userName);
+    	this.insert("logBookmarkMassUpdate", param, session);
+    }
+	
+	@Override
+	public void onDiscussionMassUpdate(String userName, int groupId, DBSession session) {
+		final DiscussionItemParam<DiscussionItem> param = new DiscussionItemParam<>();
+		param.setUserName(userName);
+		param.setGroupId(groupId);
+		this.insert("logDiscussionMassUpdate", param, session);
+	}
 
     @Override
     public void onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
@@ -173,11 +210,11 @@ public class Logging extends AbstractDatabasePlugin {
     }
 
     @Override
-    public void onRemoveUserFromGroup(final String userName, final int groupId, final DBSession session) {
+    public void onChangeUserMembershipInGroup(final String userName, final int groupId, final DBSession session) {
         final GroupParam groupParam = new GroupParam();
         groupParam.setGroupId(groupId);
         groupParam.setUserName(userName);
-        this.insert("logRemoveUserFromGroup", groupParam, session);
+        this.insert("logChangeUserMembershipInGroup", groupParam, session);
     }
 
     @Override

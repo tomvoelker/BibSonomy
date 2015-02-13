@@ -26,6 +26,13 @@
  */
 package org.bibsonomy.scraper.url.kde.psycontent;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.net.URL;
+
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -52,6 +59,21 @@ public class PsyContentScraperTest {
 	@Test
 	public void urlTestRun(){
 		UnitTestRunner.runSingleTest("url_95");
+	}
+	
+	@Test
+	public void testReferences() throws Exception {
+		final ScrapingContext sc = new ScrapingContext(new URL("http://psycontent.metapress.com/content/wlr0r32161j4j150/?p=077ed4c087c541f8a7a3d80dc02f4290&amp;pi=0"));
+		PsyContentScraper ps = new PsyContentScraper();
+		assertTrue(ps.scrape(sc));
+		assertTrue(ps.scrapeReferences(sc));
+		
+		final String reference = sc.getReferences();
+		assertNotNull(reference);
+		assertTrue(reference.length() > 100);
+		assertEquals("<tr><td valign=\"top\"><a name=\"c1\" >Dopson, S.,".trim(), reference.substring(0, 50).trim());
+		
+		assertTrue(reference.contains("Ferlie, E."));
 	}
 
 }

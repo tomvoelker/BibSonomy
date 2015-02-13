@@ -146,7 +146,7 @@
 		<function-signature>String renderHover(org.bibsonomy.model.Post, java.util.Locale)</function-signature>
 	</function>
 	<!-- <function-signature>String renderHover(org.bibsonomy.model.Resource, java.util.Locale, java.lang.Boolean)</function-signature> -->
-	
+
 	<function>
 		<name>normalize</name>
 		<function-class>tags.Functions</function-class>
@@ -249,6 +249,24 @@
 		<function-signature>Boolean isSpammer(java.lang.Integer)</function-signature>
 	</function>
 
+	<function>
+		<name>compareString</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>String compareString(java.lang.String, java.lang.String)</function-signature>
+	</function>
+	
+	<function>
+		<name>diffEntriesPub</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>java.util.Map diffEntriesPub(org.bibsonomy.model.Post, org.bibsonomy.model.Post)</function-signature>
+	</function>
+	
+	<function>
+		<name>diffEntriesBm</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>java.util.Map diffEntriesBm(org.bibsonomy.model.Post, org.bibsonomy.model.Post)</function-signature>
+	</function>
+			
 	<function>
 		<name>quoteJSON</name>
 		<function-class>tags.Functions</function-class>
@@ -388,6 +406,12 @@
 		<name>formatDateW3CDTF</name>
 		<function-class>tags.Functions</function-class>
 		<function-signature>String formatDateW3CDTF(java.util.Date)</function-signature>
+	</function>
+
+	<function>
+		<name>formatDateMemento</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>String formatDateMemento(java.util.Date)</function-signature>
 	</function>
 
 	<function>

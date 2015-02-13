@@ -117,7 +117,7 @@ public class CommentDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final User user = new User(username);
 		user.setSpammer(spammer);
 		discussionItem.setUser(user);
-		final Group publicGroup = spammer ? GroupUtils.getPublicSpamGroup() : GroupUtils.getPublicGroup();
+		final Group publicGroup = spammer ? GroupUtils.buildPublicSpamGroup() : GroupUtils.getPublicGroup();
 		discussionItem.setGroups(Collections.singleton(publicGroup));
 	}
 }

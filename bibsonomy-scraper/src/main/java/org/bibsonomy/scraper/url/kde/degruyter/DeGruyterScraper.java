@@ -83,18 +83,18 @@ public class DeGruyterScraper extends AbstractUrlScraper {
 	
 	private static String getCitationInRIS(final String stURL) throws IOException {
 		final URL url = new URL(stURL);
-		String path = "http://"  + url.getHost() + "/dg/cite/" + url.getPath().substring(url.getPath().indexOf("/j/")).replace("/", "$002f") + "?nojs=true";
+		final String path = "http://" + url.getHost().toString() +  url.getPath().toString().replace("/", "$002f").replace("$002fview$002f", "/dg/cite/$002f") + "?nojs=true";
 		
-		URL postURL = new URL("http://" + url.getHost() + "/dg/cite.form");
+		final URL postURL = new URL("http://" + url.getHost().toString() + "/dg/cite.form");
 		
 		final String html = WebUtils.getContentAsString(path);
 		
-		Matcher m_tac = TAC.matcher(html);
+		final Matcher m_tac = TAC.matcher(html);
 		String tac = "";
-		if (m_tac.find()) {
+		if (m_tac.find()) 
 			tac = m_tac.group(1);
-		}
-		Matcher m_formdata = TFORMDATA.matcher(html);
+		
+		final Matcher m_formdata = TFORMDATA.matcher(html);
 		String formdata = "";
 		if(m_formdata.find())
 			formdata = m_formdata.group(1);
@@ -103,7 +103,8 @@ public class DeGruyterScraper extends AbstractUrlScraper {
 		post.addParameters(new NameValuePair[] {
 				new NameValuePair("t:ac", StringEscapeUtils.unescapeHtml(tac)),
 				new NameValuePair("t:formdata", StringEscapeUtils.unescapeHtml(formdata)),
-				new NameValuePair("submit", "export"),
+				new NameValuePair("previewFormat","apa"),
+				new NameValuePair("submit", "Export"),
 		});
 		
 		return WebUtils.getPostContentAsString(WebUtils.getHttpClient(), post);

@@ -193,32 +193,42 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 			plugin.onBookmarkUpdate(newContentId, oldContentId, session);
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onBookmarkMassUpdate(java.lang.String, int)
+	 */
+	@Override
+	public void onBookmarkMassUpdate(String userName, int groupId, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onBookmarkMassUpdate(userName, groupId, session);
+		}
+	}
 
 	@Override
 	public void onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			plugin.onTagRelationDelete(upperTagName, lowerTagName, userName, session);
-		}		
+		}
 	}
 	
 	@Override
 	public void onConceptDelete(final String conceptName, final String userName, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			plugin.onConceptDelete(conceptName, userName, session);
-		}		
+		}
 	}
 
 	@Override
 	public void onTagDelete(final int contentId, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			plugin.onTagDelete(contentId, session);
-		}		
+		}
 	}
 
 	@Override
-	public void onRemoveUserFromGroup(final String username, final int groupId, final DBSession session) {
+	public void onChangeUserMembershipInGroup(final String username, final int groupId, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
-			plugin.onRemoveUserFromGroup(username, groupId, session);
+			plugin.onChangeUserMembershipInGroup(username, groupId, session);
 		}
 	}
 	
@@ -306,13 +316,33 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 		}
 	}
 
-	@Override
+	
 	/**
 	 * @author MarcelM
 	 */
+	@Override
 	public void onBibTexExtraDelete(final BibTexExtraParam deletedBibTexExtraParam, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()){
 			plugin.onBibTexExtraDelete(deletedBibTexExtraParam, session);
+		}
+	}
+
+	/**
+	 * @param username
+	 * @param groupId
+	 * @param session
+	 */
+	@Override
+	public void onPublicationMassUpdate(String username, int groupId, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()){
+			plugin.onPublicationMassUpdate(username, groupId, session);
+		}
+	}
+
+	@Override
+	public void onDiscussionMassUpdate(String username, int groupId, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onDiscussionMassUpdate(username, groupId, session);
 		}
 	}
 }

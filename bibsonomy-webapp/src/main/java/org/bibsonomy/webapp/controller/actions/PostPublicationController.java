@@ -36,6 +36,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,6 +46,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
+import org.bibsonomy.common.errors.DuplicatePostInSnippetErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.BibTex;
@@ -79,7 +82,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 */
 	private static final Integer MAXCOUNT_ERRORHANDLING = 1000;
 	/**
-	 * The session dictionary name for temporarily stored publications. 
+	 * The session dictionary name for temporarily stored publications.
 	 * Will be used when PostPublicationCommand.editBeforeImport is true.
 	 */
 	public static final String TEMPORARILY_IMPORTED_PUBLICATIONS = "TEMPORARILY_IMPORTED_PUBLICATIONS";
@@ -89,9 +92,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 */
 	private static final Pattern lineNumberPattern = Pattern.compile("([0-9]+)");
 
-
 	private PublicationImporter publicationImporter;
-
 
 	@Override
 	public PostPublicationCommand instantiateCommand() {
@@ -104,6 +105,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		command.setPost(new Post<BibTex>());
 		command.setAbstractGrouping(GroupUtils.getPublicGroup().getName());
 		command.getPost().setResource(new BibTex());
+		command.setPostsErrorList(new LinkedHashMap<String, List<ErrorMessage>>());
 
 		return command;
 	}
@@ -149,7 +151,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		final String selection = command.getSelection();
 		final boolean hasSelection = present(selection);
 		final boolean hasFile = present(command.getFile());
-		
+
 		/*
 		 * check for valid ckey
 		 */
@@ -176,15 +178,15 @@ public class PostPublicationController extends AbstractEditPublicationController
 			log.debug("user has filled selection");
 			snippet = this.publicationImporter.handleSelection(selection);
 		} else if (hasFile) {
-				/*
-				 * The user uploads a BibTeX or EndNote file
-				 */
-				log.debug("user uploads a file");
-				// get the (never empty) content or add corresponding errors
-				snippet = this.publicationImporter.handleFileUpload(command, this.errors);
+			/*
+			 * The user uploads a BibTeX or EndNote file
+			 */
+			log.debug("user uploads a file");
+			// get the (never empty) content or add corresponding errors
+			snippet = this.publicationImporter.handleFileUpload(command, this.errors);
 		} else {
 			/*
-			 * nothing given -> 
+			 * nothing given ->
 			 * user just opened the postPublication Dialogue OR
 			 * user send empty snippet or "nonexisting" file
 			 * FIXME: that second case should result in some error and hint for the user
@@ -284,30 +286,50 @@ public class PostPublicationController extends AbstractEditPublicationController
 			}
 		}
 
+
 		/*
 		 * Complete the posts with missing information:
 		 * 
-		 * add additional information from the form to the 
+		 * add additional information from the form to the
 		 * post (description, groups)... present in both upload tabs
 		 */
+		final Set<String> unique_hashes = new TreeSet<String>();
+		ErrorMessage errorMessage;
 		for (final Post<BibTex> post : posts) {
 			post.setUser(context.getLoginUser());
 			post.setDescription(command.getDescription());
 			if (!present(post.getTags())) {
 				post.setTags(Collections.singleton(TagUtils.getImportedTag()));
 			}
-			/*
-			 * set visibility of this post for the groups, the user specified
+			 /* set visibility of this post for the groups, the user specified
+
 			 */
 			GroupingCommandUtils.initGroups(command, post.getGroups());
 			/*
 			 * hashes have to be set, in order to call the validator
 			 */
 			post.getResource().recalculateHashes();
+
+			/**
+			 * user may import n bibtexes which m>1 of them are the same.
+			 * 
+			 * Since similar bibtexes have similar intrahashes, we find duplicate bibtexes
+			 * by comparing intrahashes, and then add an error to not_unique bibtexes.
+			 */
+
+			if (!unique_hashes.contains(post.getResource().getIntraHash())) {
+				unique_hashes.add(post.getResource().getIntraHash());
+			}
+			else{
+				errorMessage = new DuplicatePostInSnippetErrorMessage("BibTex", post.getResource().getIntraHash());
+				List<ErrorMessage> errorList = new ArrayList<ErrorMessage>();			
+				errorList.add(errorMessage);
+				command.getPostsErrorList().put(post.getResource().getIntraHash(), errorList);
+			}
 		}
 
 		/*
-		 * add list of posts to command for showing them to the user 
+		 * add list of posts to command for showing them to the user
 		 * (such that he can edit them)
 		 */
 		final ListCommand<Post<BibTex>> postListCommand = new ListCommand<Post<BibTex>>(command);
@@ -327,52 +349,30 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 		/*
 		 * We try to store only posts that have no validation errors.
+		 * The following function, add error(s) to the erroneous posts.
 		 */
-		final Map<Post<BibTex>, Integer> postsToStore = getPostsWithNoValidationErrors(posts);
+		final Map<Post<BibTex>, Integer> postsToStore = this.getPostsWithNoValidationErrors(posts, command.getPostsErrorList(),command.isOverwrite());
+
 		log.debug("will try to store " + postsToStore.size() + " of " + posts.size() + " posts in database");
+		final List<Post<?>> validPosts = new LinkedList<Post<?>>(postsToStore.keySet());
 
 		/*
 		 * finally store the posts
 		 */
 		if (command.isEditBeforeImport()) {
 			/*
-			 * user wants to edit the posts before storing them 
+			 * user wants to edit the posts before storing them
 			 * -> put them into the session
 			 */
-			setSessionAttribute(TEMPORARILY_IMPORTED_PUBLICATIONS, posts);
+			this.setSessionAttribute(TEMPORARILY_IMPORTED_PUBLICATIONS, validPosts);
+			command.setUpdateExistingPost(false);
+
 		} else {
 			/*
 			 * the publications are saved in the database
 			 */
-			storePosts(postsToStore, command.getOverwrite());
-		}
-
-		/*
-		 * If there were any errors, some posts were not stored in the database. We
-		 * need to get them from the session later on, thus we store them there.
-		 */
-		if (this.errors.hasErrors()) {
-			/*
-			 * Trigger the correct setting of the "delete/save" check boxes on
-			 * the batch edit page.
-			 */
-			command.setDeleteCheckedPosts(false);
-			/*
-			 * save posts in session
-			 */
-			setSessionAttribute(TEMPORARILY_IMPORTED_PUBLICATIONS, posts);
-		}
-
-		/*
-		 * If the user wants to store the posts permanently AND (his posts have
-		 * no errors OR he ignores the errors OR the number of bibtexes is
-		 * greater than the treshold, we will forward him to the appropriate
-		 * site, where he can delete posts (they were saved)
-		 */
-		if (!command.isEditBeforeImport() && (!this.errors.hasErrors() || posts.size() > MAXCOUNT_ERRORHANDLING)) {
-			command.setDeleteCheckedPosts(true); //posts will have to get saved, because the user decided to
-		} else {
-			command.setDeleteCheckedPosts(false);
+			this.storePosts(postsToStore, command.getOverwrite());
+			command.setUpdateExistingPost(true);
 		}
 
 		/*
@@ -382,33 +382,62 @@ public class PostPublicationController extends AbstractEditPublicationController
 		return Views.POST_PUBLICATION;
 	}
 
-
-
 	/**
 	 * Checks each post for validation errors and returns only those posts, 
 	 * that don't have any errors. The posts are returned in a hashmap, where
 	 * each post points to its position in the original list such that we can
-	 * later add errors (from the database) at the correct position.  
+	 * later add errors (from the database) at the correct position.
 	 * 
 	 * @param posts
 	 * @return
 	 */
-	private Map<Post<BibTex>, Integer> getPostsWithNoValidationErrors(final List<Post<BibTex>> posts) {
+	private Map<Post<BibTex>, Integer> getPostsWithNoValidationErrors(final List<Post<BibTex>> posts, final Map<String, List<ErrorMessage>> errorMessages, final boolean isOverwrite) {
 		final Map<Post<BibTex>, Integer> storageList = new LinkedHashMap<Post<BibTex>, Integer>();
-
 		/*
 		 * iterate over all posts
 		 */
+		ErrorMessage errorMessage;
 		for (int i = 0; i < posts.size(); i++) {
+			boolean hasValidationErrors;//true, if the post has an error in errors. ...
+			boolean isAlreadyInCollection = false;//true, if the post is already in the collection.
+			boolean isAlreadyInSnippet = false;//true, if the post is already in the snippet.
+			List<ErrorMessage> postErrorMessages = errorMessages.get(posts.get(i).getResource().getIntraHash());
 			/*
 			 * check, if this post has field errors
 			 */
-			if (!present(errors.getFieldErrors("bibtex.list[" + i + "]*"))) {
+			hasValidationErrors = present(this.errors.getFieldErrors("bibtex.list[" + i + "]*"));
+
+			/*
+			 * check if this post is already stored in DB
+			 * 
+			 * We have already checked if this post bibtex is in the snippet more than one time
+			 * or not.
+			 * (if yes, postErrorMessages.size()>=1)
+			 */
+			if(present(postErrorMessages) && postErrorMessages.size()>1){ 
+				isAlreadyInSnippet = true;
+			}
+			else{
+				if (present(postErrorMessages) && postErrorMessages.size()==1){
+					isAlreadyInSnippet = true;
+				}
+				isAlreadyInCollection = this.isPostDuplicate(posts.get(i), isOverwrite);
+				if(isAlreadyInCollection){
+					errorMessage = new DuplicatePostErrorMessage("BibTex", posts.get(i).getResource().getIntraHash());
+					if(!present(postErrorMessages)){
+						postErrorMessages = new ArrayList<ErrorMessage>();			
+					}	
+					postErrorMessages.add(errorMessage);
+					errorMessages.put(posts.get(i).getResource().getIntraHash(), postErrorMessages);
+				}
+			}
+			if (!hasValidationErrors && !isAlreadyInCollection && !isAlreadyInSnippet) {
 				log.debug("post no. " + i + " has no field errors");
 				/*
-				 * post has no field errors --> try to store it in database
+				 * post has no field errors & is not duplicate--> try to store
+				 * it in database
 				 * 
-				 * We also remember the original position of the post to 
+				 * We also remember the original position of the post to
 				 * add error messages later.
 				 */
 				storageList.put(posts.get(i), i);
@@ -419,7 +448,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 	/**
 	 * Extracts the parse exceptions and adds the line numbers with errors
-	 * to the errors object. 
+	 * to the errors object.
 	 * 
 	 * @param parseExceptions
 	 */
@@ -443,34 +472,34 @@ public class PostPublicationController extends AbstractEditPublicationController
 			}
 		}
 		if (lineFound) {
-			errors.reject("import.error.erroneous_line_numbers", new Object[] { buf }, "Your submitted publications contain errors at lines {0}.");
+			this.errors.reject("import.error.erroneous_line_numbers", new Object[] { buf }, "Your submitted publications contain errors at lines {0}.");
 		}
 	}
-
-
 
 	/**
 	 * Tries to save the posts in the database.
 	 * 
-	 * If posts already exist in the database and <code>overwrite</code> is <code>true</code>,
-	 * those posts are overwritten (otherwise they produce an error). 
+	 * If posts already exist in the database and <code>overwrite</code> is
+	 * <code>true</code>,
+	 * those posts are overwritten (otherwise they produce an error).
 	 * Posts that have errors will be rejected in any case.
 	 * 
 	 * FIXME: the error handling here is almost identical to that
 	 * in {@link BatchEditController#storePosts}
 	 * 
 	 * @param postsToStore
-	 * @param overwrite - posts which already exist are overwritten, if <code>true</code>
+	 * @param overwrite - posts which already exist are overwritten, if
+	 *        <code>true</code>
 	 */
 	private void storePosts(final Map<Post<BibTex>, Integer> postsToStore, final boolean overwrite) {
 		try {
 			/*
-			 * Try to save all posts in one transaction. 
-			 * (Hint: it's not a transaction in the database sense, but basically we try to 
+			 * Try to save all posts in one transaction.
+			 * (Hint: it's not a transaction in the database sense, but
+			 * basically we try to
 			 * save all posts and collect errors for posts we can't save.)
-			 * 
 			 */
-			logic.createPosts(new LinkedList<Post<?>>(postsToStore.keySet()));
+			this.logic.createPosts(new LinkedList<Post<?>>(postsToStore.keySet()));
 		} catch (final DatabaseException e) {
 			/*
 			 * get error messages
@@ -507,7 +536,8 @@ public class PostPublicationController extends AbstractEditPublicationController
 							hasDuplicate = true;
 							if (overwrite) {
 								/*
-								 * if we shall overwrite posts, duplicates are no errors
+								 * if we shall overwrite posts, duplicates are
+								 * no errors
 								 */
 								continue;
 							}
@@ -516,11 +546,12 @@ public class PostPublicationController extends AbstractEditPublicationController
 						 * add error to error list
 						 */
 						hasErrors = true;
-						errors.rejectValue("bibtex.list[" + i + "].resource", errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
+						this.errors.rejectValue("bibtex.list[" + i + "].resource", errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
 					}
 					/*
-					 * If the post has no errors, but is a duplicate, we add it to
-					 * the list of posts which should be updated. 
+					 * If the post has no errors, but is a duplicate, we add it
+					 * to
+					 * the list of posts which should be updated.
 					 */
 					if (!hasErrors && hasDuplicate) {
 						postsForUpdate.add(post);
@@ -536,7 +567,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			try {
 				if (overwrite) {
 					log.debug("trying to update " + postsForUpdate.size() + " posts");
-					logic.updatePosts(postsForUpdate, PostUpdateOperation.UPDATE_ALL);
+					this.logic.updatePosts(postsForUpdate, PostUpdateOperation.UPDATE_ALL);
 				}
 			} catch (final DatabaseException ex) {
 				/*
@@ -554,7 +585,8 @@ public class PostPublicationController extends AbstractEditPublicationController
 					final String intraHash = post.getResource().getIntraHash();
 					/*
 					 * The i-th position in the list at hand is not the
-					 * same as the i-th position in the original list! ->use mapping
+					 * same as the i-th position in the original list! ->use
+					 * mapping
 					 */
 					final int i = postsToStore.get(post);
 					log.debug("checking post no. " + i + " with intra hash " + intraHash);
@@ -563,7 +595,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 						log.debug("found " + postErrorMessages.size() + "error(s) on post no. " + i);
 					}
 				}
-				log.debug("all field errors: " + errors.getFieldError("bibtex.*"));
+				log.debug("all field errors: " + this.errors.getFieldError("bibtex.*"));
 			}
 		}
 	}
@@ -576,7 +608,18 @@ public class PostPublicationController extends AbstractEditPublicationController
 	/**
 	 * @param publicationImporter the publicationImporter to set
 	 */
-	public void setPublicationImporter(PublicationImporter publicationImporter) {
+	public void setPublicationImporter(final PublicationImporter publicationImporter) {
 		this.publicationImporter = publicationImporter;
+	}
+
+	private boolean isPostDuplicate(final Post<BibTex> post, final boolean isOverwrite) {
+
+		final String userName = post.getUser().getName();
+		final String intraHash = post.getResource().getIntraHash();
+
+		if (!isOverwrite && present(this.logic.getPostDetails(intraHash, userName))) {
+			return true;
+		}
+		return false;
 	}
 }

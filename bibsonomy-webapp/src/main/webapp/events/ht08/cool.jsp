@@ -22,7 +22,7 @@
     <h2>all tags of all users in the group ${requGroup}</h2>
     Here you can see a live view of all tags used by the users of the 
     <a href="/group/<c:out value='${requGroup}'/>">Hypertext 2008 group</a>. 
-    Feel free to <a href="/join_group?group=ht08">join</a> the group, 
+    Feel free to <a href="/joinGroup?group=ht08">join</a> the group, 
     such that your tags become a part of it. 
   </center>
 

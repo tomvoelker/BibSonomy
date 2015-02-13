@@ -88,7 +88,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		assertEquals("NexusOne", lastSyncData.getDeviceInfo());
 		
 		final SynchronizationStatus running = SynchronizationStatus.RUNNING;
-		syncDBManager.updateSyncData(syncUser1, deviceURI, Resource.class, lastSyncData.getLastSyncDate(), running, "", this.dbSession);
+		syncDBManager.updateSyncData(syncUser1, deviceURI, Resource.class, lastSyncData.getLastSyncDate(), running, "", null, this.dbSession);
 		
 		final SynchronizationData lastSyncDataAfterUpdate = syncDBManager.getLastSyncData(syncUser1, deviceURI, Resource.class, null, this.dbSession);
 		assertEquals(running, lastSyncDataAfterUpdate.getStatus());
@@ -198,7 +198,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		/*
 		 * set status of added data to done (simulate successful synchronization)
 		 */
-		syncDBManager.updateSyncData(syncUser1, bibsonomyURI, resourceType, data.getLastSyncDate(), SynchronizationStatus.DONE, "", dbSession);
+		syncDBManager.updateSyncData(syncUser1, bibsonomyURI, resourceType, data.getLastSyncDate(), SynchronizationStatus.DONE, "", null, dbSession);
 
 		/*
 		 * check that no synchronization is running 

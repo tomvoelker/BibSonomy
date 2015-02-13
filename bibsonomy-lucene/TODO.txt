@@ -40,3 +40,14 @@
 8) deal with group-tas!
 
 9) Implements single application context for lucene
+
+Lucene 4.9 Migration:
+
+- Tests: -Index deletion fails, cause of Lucene not releasing File-handles on .cfs-Files
+			-> on Windows those files can't!! be deleted as long as the JVM is still running...
+				-> Shouldn't be a problem under Linux
+							
+- LuceneResourceSearchTest	- no asserts!				
+							
+- General:
+	- Make Indexing/Searching threaded!

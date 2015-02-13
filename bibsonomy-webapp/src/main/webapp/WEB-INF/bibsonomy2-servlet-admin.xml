@@ -78,6 +78,7 @@
 								<value>value</value>
 								<value>key</value>
 								<value>evaluator</value>
+								<value>groupname</value>
 							</list>
 						</property>
 					</bean>
@@ -110,6 +111,9 @@
 								<value>group.name</value>
 								<value>group.privlevel</value>
 								<value>group.sharedDocuments</value>
+								<value>group.groupRequest.userName</value>
+								<value>group.groupRequest.reason</value>
+								<value>communityPostInspectionPermission</value>
 							</list>
 						</property>
 					</bean>
@@ -190,6 +194,7 @@
 	</bean>
 	
 	<bean id="adminGroupController" class="org.bibsonomy.webapp.controller.admin.AdminGroupController" scope="request">
+		<property name="mailUtils" ref="mailUtils"/>
 		<property name="logic" ref="logic"/>
 	</bean>
 	

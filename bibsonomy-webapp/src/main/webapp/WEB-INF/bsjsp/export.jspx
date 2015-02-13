@@ -11,10 +11,11 @@
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
+	
 	<!--Note: requPath: the rewrite rule sets the url without export as requPath so we add export here again-->
 	<layout:paneLayout headerMessageKey="export.header"
 		headerLogoClass="publications" command="${command}"
@@ -89,42 +90,42 @@
 			</div>
 			
 			<hr />
-  		
-  		<table class="table table-striped" id="favoriteformats"
+		<spring:eval var="abstractJabRefLayoutClass" expression="T(java.lang.Class).forName('org.bibsonomy.layout.jabref.AbstractJabRefLayout')" />
+		
+		<table class="table table-striped" id="favoriteformats"
 				style="font-size: 85%;">
-  			<caption>
+			<caption>
 					<h3>Favorite layouts</h3>
-  			</caption> 
+			</caption> 
 
 			<c:forEach var="mapEntry" items="${command.layoutMap}">
-		    	<c:if test="${mapEntry.value.publicLayout and mapEntry.value.isFavorite}">			
+				<c:if test="${mapEntry.value.publicLayout and mapEntry.value.isFavorite}">
 					<tr>
 						<c:choose>
-				  			<!-- 
-			  				| JabRef layouts
-			  				 -->
-							<c:when test="${'JabrefLayout' eq mapEntry.value['class'].simpleName}">							
-								<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />	
+							<!-- 
+							| JabRef layouts
+							 -->
+							<c:when test="${abstractJabRefLayoutClass.isInstance(mapEntry.value)}">
+								<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />
 								<td>
-									<a class="btn btn-primary btn-sm export-link" href="${fn:escapeXml(url)}" > 
-		  								<span class="fa fa-download" />
-									</a>	
+									<a class="btn btn-primary btn-sm export-link" href="${fn:escapeXml(url)}">
+										<span class="fa fa-download" />
+									</a>
 								</td>
 								<td>
                   					<c:out value="${mapEntry.value.extension}" />
-		               			</td> 
-				    			         
+		               			</td>
 								<td>
 									<!-- JabRef layouts are marked by a star -->
 		                  			<b><c:out value="${mapEntry.value.displayName}" /></b> * <br />
 		 			  				<c:out value="${mapEntry.value.description[locale.language]}" />
-								</td>		
+								</td>
 							</c:when>
 							<!-- 
 			  				| Standard layouts
 			  				 -->
 							<c:otherwise>
-								<c:url var="url" value="/${mapEntry.value.name}/${pathAndQueryString}" />	
+								<c:url var="url" value="/${mapEntry.value.name}/${pathAndQueryString}" />
 								<td>
 									<a class="btn btn-primary btn-sm export-link" href="${url}">
 		  								<span class="fa fa-external-link" />
@@ -145,66 +146,67 @@
 				</c:if>
 			</c:forEach>
 		</table>
-  		
-  		<table class="table table-striped" id="formats"
+		
+		<table class="table table-striped" id="formats"
 				style="font-size: 85%;">
   			<caption>
 					<h3>Layouts</h3>
-  			</caption> 
+  			</caption>
   			
   			<!-- 
   				| Custom 
   				-->
   			
   			<!-- If the user has not defined a custom jabref layout 
-  			the custom row is colored red and the description gives appropriate feedback -->	
-  			<c:choose>
-  				<c:when test="/layout/custom/${pathAndQueryString}">
-  					<tr>
-
-		  				<c:url var="url" value="/layout/custom/${pathAndQueryString}" />
-						<td>
-							<a class="btn btn-default btn-sm export-link" href="${url}">
-		  						<span class="glyphicon glyphicon-download-alt" />	
-							</a>
-						</td>
-						<td>
-		                  	
-		               	</td> 
-						<td>
-							<a href="${fn:escapeXml(custom)}">Custom</a> <br />
-							<fmt:message key="export.custom.faq" />
-						</td>  
-  					</tr>
-  				</c:when>
-  				<c:otherwise>
-  					<tr class="danger">
-						<td>
-							<a class="btn btn-default btn-sm" disabled="disabled">
-		  						<span class="glyphicon glyphicon-download-alt" />
-							</a>
-						</td>
-						<td>
-		                  	
-		               	</td> 
-						<td>
-							Custom <br />
-							<fmt:message key="export.custom.faq" />
-						</td>  
-  					</tr>
-  				</c:otherwise>
-  			</c:choose>	
-  			
+  			the custom row is colored red and the description gives appropriate feedback -->
+			<c:if test="${command.context.userLoggedIn}">
+				<c:choose>
+					<c:when test="/layout/custom/${pathAndQueryString}">
+						<tr>
+	
+			  				<c:url var="url" value="/layout/custom/${pathAndQueryString}" />
+							<td>
+								<a class="btn btn-default btn-sm export-link" href="${url}">
+			  						<span class="glyphicon glyphicon-download-alt" />	
+								</a>
+							</td>
+							<td>
+			                  	
+			               	</td> 
+							<td>
+								<b><a href="${fn:escapeXml(custom)}">Custom</a></b><br />
+								<fmt:message key="export.custom.faq" />
+							</td>  
+	  					</tr>
+	  				</c:when>
+	  				<c:otherwise>
+	  					<tr class="danger">
+							<td>
+								<a class="btn btn-default btn-sm" disabled="disabled">
+			  						<span class="glyphicon glyphicon-download-alt" />
+								</a>
+							</td>
+							<td>
+			                  	
+			               	</td>
+							<td>
+								<b>Custom</b><br />
+								<fmt:message key="export.custom.faq" />
+							</td>  
+	 					</tr>
+	 				</c:otherwise>
+	 			</c:choose>	
+			</c:if>
 
 			<c:forEach var="mapEntry" items="${command.layoutMap}">
-		    	<c:if test="${mapEntry.value.publicLayout and not mapEntry.value.isFavorite}">			
+		    	<c:if test="${mapEntry.value.publicLayout and not mapEntry.value.isFavorite}">
 					<tr>
 						<c:choose>
 				  			<!-- 
 			  				| JabRef layouts
 			  				 -->
 							<c:when test="${'JabrefLayout' eq mapEntry.value['class'].simpleName}">
-								<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />	
+								<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />
 								<td>
 									<a href="${url}" class="btn btn-primary btn-sm export-link">
 		  								<span class="fa fa-download" />

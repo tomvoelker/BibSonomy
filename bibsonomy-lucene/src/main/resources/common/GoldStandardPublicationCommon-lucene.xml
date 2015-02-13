@@ -18,7 +18,10 @@
 		<result property="resource"   resultMap="GoldStandardPublicationCommon.goldStandardPublication" />
 	</resultMap>
 	
-	<resultMap id="luceneGoldStandardPublicationPost" class="lucenePost" extends="goldStandardPublicationPost" />
+	<resultMap id="luceneGoldStandardPublicationPost" class="lucenePost" extends="goldStandardPublicationPost">
+		<!-- this is intended misuse - it would be better to call lastTasId lastResoucePostId or so -->
+		<result property="lastTasId"    column="content_id" />
+	</resultMap>
 	
 	<sql id="allGoldStandardPublicationAttributesWithSimHashes">
 		<include refid="allGoldStandardPublicationAttributes"/>,

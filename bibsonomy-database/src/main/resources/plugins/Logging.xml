@@ -20,17 +20,30 @@
 		                        edition, month, bookTitle, howpublished, institution, organization, publisher,
 		                        address, school, series, bibtexKey, `group`, date, change_date, user_name, url, description,
 		                        annote, note, pages, bKey, number, crossref, misc, bibtexAbstract, type, day,
-		                        scraperid, privnote, simhash0, simhash1, simhash2, simhash3, new_content_id)
+		                        scraperid, privnote, simhash0, simhash1, simhash2, simhash3, new_content_id, current_content_id)
 		SELECT title, entrytype, author, editor, year, content_id, journal, volume, chapter, edition, month,
 		       bookTitle, howpublished, institution, organization, publisher, address, school, series, bibtexKey,
 		       `group`, date, change_date, user_name, url, description, annote, note, pages, bKey, number, crossref, misc,
-		       bibtexAbstract, type, day, scraperid, privnote, simhash0, simhash1, simhash2, simhash3, #newContentId#
+		       bibtexAbstract, type, day, scraperid, privnote, simhash0, simhash1, simhash2, simhash3, #newContentId#, #newContentId#
 		FROM bibtex WHERE content_id = #requestedContentId#
 	</insert>
 	
+	<insert id="logPublicationMassUpdate" parameterClass="bibtexParam">
+		INSERT INTO log_bibtex (title, entrytype, author, editor, year, content_id, journal, volume, chapter,
+		                        edition, month, bookTitle, howpublished, institution, organization, publisher,
+		                        address, school, series, bibtexKey, `group`, date, change_date, user_name, url, description,
+		                        annote, note, pages, bKey, number, crossref, misc, bibtexAbstract, type, day,
+		                        scraperid, privnote, simhash0, simhash1, simhash2, simhash3, new_content_id, current_content_id)
+		SELECT title, entrytype, author, editor, year, content_id, journal, volume, chapter, edition, month,
+		       bookTitle, howpublished, institution, organization, publisher, address, school, series, bibtexKey,
+		       `group`, date, change_date, user_name, url, description, annote, note, pages, bKey, number, crossref, misc,
+		       bibtexAbstract, type, day, scraperid, privnote, simhash0, simhash1, simhash2, simhash3, content_id, content_id
+		FROM bibtex WHERE user_name = #requestedUserName# AND `group` = #groupId#
+	</insert>
+	
 	<insert id="logGoldStandard">
-		INSERT INTO log_gold_standard (new_simhash1, content_id, new_content_id, <include refid ="allGoldStandardPublicationColumns"/>)
-		SELECT #newId#, content_id, #newContentId#, <include refid ="allGoldStandardPublicationColumns"/>
+		INSERT INTO log_gold_standard (new_simhash1, content_id, new_content_id, current_content_id, change_date, <include refid ="allGoldStandardPublicationColumns"/>)
+		SELECT #newId#, content_id, #newContentId#, #newContentId#, change_date, <include refid ="allGoldStandardPublicationColumns"/>
 		FROM gold_standard WHERE simhash1 = #oldId#
 	</insert>
 		
@@ -39,15 +52,21 @@
 	</insert>
 
 	<insert id="logBookmark" parameterClass="bookmarkParam">
-		INSERT INTO log_bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name)
-		SELECT content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name
+		INSERT INTO log_bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name, new_content_id, current_content_id)
+		SELECT content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name, #newContentId#, #newContentId#
 		FROM bookmark WHERE content_id = #requestedContentId#
 	</insert>
 
 	<update id="logBookmarkUpdate" parameterClass="bookmarkParam">
 		UPDATE log_bookmark SET new_content_id = #newContentId# WHERE content_id = #requestedContentId#
 	</update>
-
+	
+	<insert id="logBookmarkMassUpdate" parameterClass="bookmarkParam">
+		INSERT INTO log_bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name, new_content_id, current_content_id)
+		SELECT content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name, content_id, content_id
+		FROM bookmark WHERE user_name = #requestedUserName# AND `group` = #groupId#
+	</insert>
+	
 	<insert id="logTagRelation" parameterClass="tagRelationParam">	
 		INSERT INTO log_tagtagrelations (relationID, lower, upper, date_of_create, user_name) 
 		SELECT relationID, lower, upper, date_of_create, user_name
@@ -66,10 +85,10 @@
 		FROM tas WHERE content_id = #requestedContentId#
 	</insert>
 
-	<insert id="logRemoveUserFromGroup" parameterClass="groupParam">
-		INSERT INTO log_groups (`user_name`, `group`, `defaultgroup`, `start_date`)
-		SELECT g.user_name, g.group, g.defaultgroup, g.start_date
-		FROM groups g WHERE g.user_name = #userName# AND g.group = #groupId#
+	<insert id="logChangeUserMembershipInGroup" parameterClass="groupParam">
+		INSERT INTO log_group_memberships (`user_name`, `group`, `defaultgroup`, `start_date`, `group_role`, `user_shared_documents`)
+		SELECT g.user_name, g.group, g.defaultgroup, g.start_date, g.group_role, g.user_shared_documents
+		FROM group_memberships g WHERE g.user_name = #userName# AND g.group = #groupId#
 	</insert>
 	
 	<insert id="logBasketItemDelete" parameterClass="basketParam">
@@ -133,6 +152,13 @@
 			WHERE d.discussion_id = #id#
 	</insert>
 	
+	<insert id="logDiscussionMassUpdate" parameterClass="discussionItemParam">
+		INSERT INTO log_discussion (<include refid ="discussionColumns"/>)
+			SELECT <include refid ="commonDiscussionLogsAttributes"/>
+				FROM discussion d
+			WHERE d.user_name=#userName# AND `group`=#groupId#
+	</insert>
+
 	<!-- document logs -->
 	<insert id="logDocument" parameterClass="documentParam">
 		INSERT INTO log_document (hash, content_id, name, user_name, date, md5hash, log_date)

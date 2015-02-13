@@ -65,7 +65,6 @@ public class SynchronizationClient extends AbstractSynchronizationClient {
 	 * @return map of synchronization data
 	 */
 	public Map<Class<? extends Resource>, SynchronizationData> synchronize(final LogicInterface clientLogic, final URI syncServerUri) {
-		
 		final SyncService syncServer = getServerByURI(clientLogic, syncServerUri);
 		final Class<? extends Resource> resourceType = syncServer.getResourceType();
 		final SynchronizationDirection direction = syncServer.getDirection();
@@ -74,6 +73,7 @@ public class SynchronizationClient extends AbstractSynchronizationClient {
 		 * retrieve instance of server logic
 		 */
 		final LogicInterface serverLogic = getServerLogic(syncServer);
+		final boolean isSecureSync = present(syncServer.getSecureAPI());
 		
 		if (!present(serverLogic)) {
 			throw new IllegalArgumentException("Synchronization for " + syncServerUri + " not configured for user " + clientLogic.getAuthenticatedUser());
@@ -86,12 +86,11 @@ public class SynchronizationClient extends AbstractSynchronizationClient {
 		final Map<Class<? extends Resource>, SynchronizationData> result = new HashMap<Class<? extends Resource>, SynchronizationData>();
 		
 		for (final Class<? extends Resource> resource : ResourceUtils.getResourceTypesByClass(resourceType)) {
-			result.put(resource, synchronize(clientLogic, serverLogic, serverUserName, resource, direction, syncServer.getStrategy()));
+			result.put(resource, synchronize(clientLogic, serverLogic, serverUserName, resource, direction, syncServer.getStrategy(), isSecureSync));
 		}
 		return result;
 	}
 
-		
 	/**
 	 * Synchronizes the user's posts of the given resource type 
 	 * on the client and server according to the given direction. 
@@ -101,9 +100,11 @@ public class SynchronizationClient extends AbstractSynchronizationClient {
 	 * @param serverUserName
 	 * @param resourceType
 	 * @param direction
+	 * @param strategy 
+	 * @param isSecureSync TODO
 	 * @return
 	 */
-	protected SynchronizationData synchronize(final LogicInterface clientLogic, final LogicInterface serverLogic, final String serverUserName, final Class<? extends Resource> resourceType, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy) {
+	protected SynchronizationData synchronize(final LogicInterface clientLogic, final LogicInterface serverLogic, final String serverUserName, final Class<? extends Resource> resourceType, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy, boolean isSecureSync) {
 		SynchronizationStatus newStatus;
 		String info;
 		try {
@@ -122,7 +123,7 @@ public class SynchronizationClient extends AbstractSynchronizationClient {
 			/*
 			 * flag sync as running
 			 */
-			updateSyncData(serverLogic, serverUserName, resourceType, SynchronizationStatus.PLANNED, SynchronizationStatus.RUNNING, "");
+			updateSyncData(serverLogic, serverUserName, resourceType, SynchronizationStatus.PLANNED, SynchronizationStatus.RUNNING, "", isSecureSync);
 			/*
 			 * sync
 			 */
@@ -142,7 +143,7 @@ public class SynchronizationClient extends AbstractSynchronizationClient {
 		/*
 		 * store sync result
 		 */
-		updateSyncData(serverLogic, serverUserName, resourceType, SynchronizationStatus.RUNNING, newStatus, info);
+		updateSyncData(serverLogic, serverUserName, resourceType, SynchronizationStatus.RUNNING, newStatus, info, isSecureSync);
 		
 		/*
 		 * Get synchronization data from server. Can not be constructed here 

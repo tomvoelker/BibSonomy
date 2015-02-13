@@ -75,7 +75,14 @@ public interface DatabasePlugin {
 	 * @param session
 	 */
 	public void onPublicationUpdate(int newContentId, int contentId, DBSession session);
-
+	
+	/**
+	 * @param username
+	 * @param groupId
+	 * @param session
+	 */
+	public void onPublicationMassUpdate(String username, int groupId, DBSession session);
+	
 	/**
 	 * Called when a gold standard publication is created.
 	 * 
@@ -149,6 +156,13 @@ public interface DatabasePlugin {
 	public void onBookmarkUpdate(int newContentId, int contentId, DBSession session);
 	
 	/**
+	 * @param userName the username
+	 * @param groupId the groupid
+	 * @param session TODO
+	 */
+	public void onBookmarkMassUpdate(final String userName, final int groupId, DBSession session);
+	
+	/**
 	 * Called when a TagRelation is deleted.
 	 * 
 	 * @param upperTagName
@@ -206,7 +220,7 @@ public interface DatabasePlugin {
 	 * @param groupId
 	 * @param session
 	 */
-	public void onRemoveUserFromGroup(String userName, int groupId, DBSession session);
+	public void onChangeUserMembershipInGroup(String userName, int groupId, DBSession session);
 	
 	/**
 	 * Called when a fellowship will be deleted
@@ -252,6 +266,15 @@ public interface DatabasePlugin {
 	public void onDiscussionUpdate(final String interHash, DiscussionItem comment, DiscussionItem oldComment, DBSession session);	
 	
 	/**
+	 * called when several comments had to be updated.
+	 * 
+	 * @param username
+	 * @param groupId
+	 * @param session 
+	 */
+	public void onDiscussionMassUpdate(final String username, final int groupId, DBSession session);
+	
+	/**
 	 * called when a comment will be deleted
 	 * 
 	 * @param interHash
@@ -292,6 +315,5 @@ public interface DatabasePlugin {
 	 * @author MarcelM
 	 */
 	public void onBibTexExtraDelete(final BibTexExtraParam deletedBibTexExtraParam, final DBSession session);
-
 
 }

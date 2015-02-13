@@ -62,12 +62,13 @@
 	</select>
 	
 	<!-- get list of all non-spam bookmarks -->
-	<select id="getBookmarkForIndex" parameterClass="luceneParam" resultMap="BookmarkCommon.bookmarkPost">
+	<select id="getBookmarkForIndex" parameterClass="luceneParam" resultMap="BookmarkCommon.luceneBookmarkPost">
 		SELECT 
 			bb.*, 
 			t.tag_name,
 			g.*,
-			u.book_url, u.book_url_ctr AS count
+			u.book_url, u.book_url_ctr AS count,
+			t.tas_id
 		FROM 
 		( 
 		  SELECT <include refid ="luceneCommonBookmarkAttributes"/>, b.group
@@ -95,12 +96,13 @@
 	</select>
 	
 	<!-- get list of all non-spam bookmarks ordered by hash -->
-	<select id="getBookmarkForIndexOrderedByHash" parameterClass="luceneParam" resultMap="BookmarkCommon.bookmarkPost">
+	<select id="getBookmarkForIndexOrderedByHash" parameterClass="luceneParam" resultMap="BookmarkCommon.luceneBookmarkPost">
 		SELECT 
 			bb.*, 
 			t.tag_name,
 			g.*,
-			u.book_url, u.book_url_ctr AS count
+			u.book_url, u.book_url_ctr AS count,
+			t.tas_id
 		FROM 
 		( 
 		  SELECT <include refid ="luceneCommonBookmarkAttributes"/>, b.group
@@ -117,11 +119,12 @@
 	</select>
 	
 	<!-- get list of all non-spam publication posts -->
-	<select id="getBibTexForIndex" parameterClass="luceneParam" resultMap="BibTexCommon.bibtexPost">
+	<select id="getBibTexForIndex" parameterClass="luceneParam" resultMap="BibTexCommon.luceneBibtexPost">
 		SELECT 
 			bb.*, 
 			t.tag_name,
-			g.*  
+			g.*,
+			t.tas_id
 		FROM 
 		( 
 		  SELECT <include refid ="commonBibtexAttributes2"/>, b2.group, 1 AS count, b2.scraperid
@@ -147,11 +150,12 @@
 	</select>
 	
 	<!-- get list of all non-spam publication posts ordered by hash -->
-	<select id="getBibTexForIndexOrderedByHash" parameterClass="luceneParam" resultMap="BibTexCommon.bibtexPost">
+	<select id="getBibTexForIndexOrderedByHash" parameterClass="luceneParam" resultMap="BibTexCommon.luceneBibtexPost">
 		SELECT 
 			bb.*, 
 			t.tag_name,
-			g.*  
+			g.*,
+			t.tas_id
 		FROM 
 		( 
 		  SELECT <include refid ="commonBibtexAttributes2"/>, b2.group, 1 AS count, b2.scraperid
@@ -166,7 +170,7 @@
 	</select>
 	
 	<select id="getGoldStandardPublicationForIndex" resultMap="GoldStandardPublicationCommon.luceneGoldStandardPublicationPost">
-		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, b.group, 'public' AS group_name, 1 AS count
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, b.group, 'public' AS group_name, 1 AS count, b.content_id
 		FROM gold_standard b
 		WHERE b.content_id &gt; #lastContentId#
 			AND content_type = 2
