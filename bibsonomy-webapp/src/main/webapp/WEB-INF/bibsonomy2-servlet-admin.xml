@@ -64,13 +64,9 @@
 								<value>action</value>
 								<value>resource</value>
 								<value>id</value>
+								<value>indexType</value>
 							</list>
 						</property>
-					</bean>
-				</entry>
-				<entry key="/admin/generateSharedIndex">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName"	value="adminGenerateSharedIndexController" />
 					</bean>
 				</entry>
 				
@@ -178,10 +174,6 @@
 
 	<bean id="adminLuceneController" class="org.bibsonomy.webapp.controller.admin.AdminLuceneController" scope="request">
 		<property name="luceneResourceManagers" ref="luceneResourceManagers" />
-	</bean>
-	<bean id="adminGenerateSharedIndexController" class="org.bibsonomy.webapp.controller.admin.AdminLuceneController" scope="request">
-		<property name="luceneResourceManagers" ref="luceneResourceManagers" />
-		<property name="generateSharedIndex" value="true"/>
 		<property name="srPlugin" ref="sharedIndexUpdatePlugin"/>
 	</bean>
 	

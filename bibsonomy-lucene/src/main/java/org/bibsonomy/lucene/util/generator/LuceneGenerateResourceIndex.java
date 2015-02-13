@@ -70,8 +70,6 @@ public class LuceneGenerateResourceIndex<R extends Resource> extends AbstractInd
 
 	private LuceneResourceIndex<R> resourceIndex;
 
-	private GenerateIndexCallback<R> callback = null;
-
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.lucene.util.generator.AbstractIndexGenerator#getName()
@@ -92,10 +90,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> extends AbstractInd
 		if (indexWriter != null) {
 			this.indexWriter.close();
 		}
-
-		if (this.callback != null) {
-			this.callback.generatedIndex(this.resourceIndex);
-		}
+		super.shutdown();
 	}
 	
 	/**
@@ -281,14 +276,6 @@ public class LuceneGenerateResourceIndex<R extends Resource> extends AbstractInd
 	}
 
 	/**
-	 * @param callback
-	 *            the callback to set
-	 */
-	public void setCallback(final GenerateIndexCallback<R> callback) {
-		this.callback = callback;
-	}
-
-	/**
 	 * @param resourceIndex
 	 *            the resourceIndex to set
 	 */
@@ -309,6 +296,10 @@ public class LuceneGenerateResourceIndex<R extends Resource> extends AbstractInd
 	@Override
 	protected void writeMetaInfo(Integer lastTasId, Date lastLogDate) throws IOException {
 		// lucene does not store meta-info in the index - it retrieves it directly from all the entries
+	}
+
+	public LuceneResourceIndex<R> getResourceIndex() {
+		return this.resourceIndex;
 	}
 
 }

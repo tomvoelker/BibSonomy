@@ -33,18 +33,20 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	/** converts post model objects to elasticsearch documents */
 	protected LuceneResourceConverter<R> resourceConverter;
 
-	
 	// ElasticSearch client
 	private ESClient esClient;
 	private final String systemHome;
 	private static final Log log = LogFactory.getLog(SharedResourceIndexGenerator.class);
+	private final SharedResourceIndexUpdater<R> updater;
 		
 	/**
 	 * @param systemHome
 	 */
-	public SharedResourceIndexGenerator(final String systemHome) {
+	public SharedResourceIndexGenerator(final String systemHome, SharedResourceIndexUpdater<R> updater) {
 		this.systemHome = systemHome;
+		this.updater = updater;
 	}
+
 
 	/**
 	 * creates index of resource entries
@@ -54,9 +56,8 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	 */
 	@Override
 	public void createEmptyIndex() throws IOException {
-
 		log.info("Start writing data to shared index");
-
+		
 		//Add mapping here depending on the resource type which is here indexType
 		ESResourceMapping resourceMapping = new ESResourceMapping(resourceType, esClient);
 		resourceMapping.doMapping();
@@ -64,18 +65,8 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	
 	@Override
 	protected void writeMetaInfo(Integer lastTasId, Date lastLogDate) throws IOException {
-		
-		//Indexing system information for the specific index type
-		SystemInformation systemInfo =  new SystemInformation();
-		systemInfo.setPostType(resourceType);
-		systemInfo.setLast_log_date(lastLogDate);
-		systemInfo.setLast_tas_id(lastTasId);
-		systemInfo.setSystemUrl(systemHome);
-		ObjectMapper mapper = new ObjectMapper();
-		String jsonDocumentForSystemInfo = mapper.writeValueAsString(systemInfo);
-		esClient.getClient().prepareIndex(indexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, systemHome+resourceType)
-							.setSource(jsonDocumentForSystemInfo).setRefresh(true).execute().actionGet();
-		
+		updater.setSystemInformation(lastTasId, lastLogDate);
+		updater.flushSystemInformation();
 	}
 	
 	/* (non-Javadoc)
@@ -84,7 +75,7 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	@Override
 	protected void addPostToIndex(LucenePost<R> post) {
 		Map<String, Object> jsonDocument = new HashMap<String, Object>();
-		jsonDocument = (Map<String, Object>) this.resourceConverter.readPost(post, this.indexType);
+		jsonDocument = (Map<String, Object>) this.resourceConverter.readPost(post, IndexType.ELASTICSEARCH);
 		jsonDocument.put(this.systemUrlFieldName, systemHome);
 		long indexID = (systemHome.hashCode() << 32) + Long.parseLong(post.getContentId().toString());
 		esClient.getClient()

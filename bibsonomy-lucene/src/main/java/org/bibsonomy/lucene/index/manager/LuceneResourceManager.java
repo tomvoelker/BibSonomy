@@ -50,6 +50,7 @@ import org.bibsonomy.lucene.param.LuceneIndexInfo;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.search.LuceneResourceSearch;
+import org.bibsonomy.lucene.util.generator.AbstractIndexGenerator;
 import org.bibsonomy.lucene.util.generator.GenerateIndexCallback;
 import org.bibsonomy.lucene.util.generator.LuceneGenerateResourceIndex;
 import org.bibsonomy.model.Post;
@@ -187,7 +188,8 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			// current time stamp for storing as 'lastLogDate' in the index
 			// FIXME: get this date from the log_table via
 			// 'getContentIdsToDelete'
-			final long currentLogDate = System.currentTimeMillis();
+			//final long currentLogDate = System.currentTimeMillis();
+			final Date currentLogDate = this.dbLogic.getLastLogDate();
 			
 			// FIXME: this should be done in the constructor
 			// keeps track of the newest tas_id during last index update
@@ -201,36 +203,34 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 				//Shared index updater
 				this.sharedIndexUpdater =  (SharedResourceIndexUpdater<R>) plugin.createUpdater(this.getResourceName());
 				//if there is no shared resource index it can be null
-				if(this.sharedIndexUpdater!=null){
+				if (this.sharedIndexUpdater != null) {
 					Integer lastTasIdSharedIndex = this.sharedIndexUpdater.getLastTasId();
 					final long lastLogDateSharedIndex =  this.sharedIndexUpdater.getLastLogDate();
 					Integer newLastTasId;
 					Integer newLastTasIdSharedIndex;
 					if ((lastLogDate == lastLogDateSharedIndex) && (lastTasId == lastTasIdSharedIndex)){
-						newLastTasId = this.updateIndex(currentLogDate, lastTasId, lastLogDateSharedIndex, IndexType.BOTH);
+						newLastTasId = this.updateIndex(currentLogDate.getTime(), lastTasId, lastLogDateSharedIndex, IndexType.BOTH);
 						newLastTasIdSharedIndex = newLastTasId;
 					} else {
-						newLastTasId = this.updateIndex(currentLogDate, lastTasId, lastLogDate, IndexType.LUCENE);
-						newLastTasIdSharedIndex =  this.updateIndex(currentLogDate, lastTasIdSharedIndex, lastLogDateSharedIndex, IndexType.ELASTICSEARCH);
+						newLastTasId = this.updateIndex(currentLogDate.getTime(), lastTasId, lastLogDate, IndexType.LUCENE);
+						newLastTasIdSharedIndex =  this.updateIndex(currentLogDate.getTime(), lastTasIdSharedIndex, lastLogDateSharedIndex, IndexType.ELASTICSEARCH);
 					}
 					
 					if (newLastTasIdSharedIndex != lastTasIdSharedIndex) {
-						this.sharedIndexUpdater.setSystemInformation(lastTasIdSharedIndex, new Date(currentLogDate));
-						this.sharedIndexUpdater.setLastLogDate(currentLogDate);
-						this.sharedIndexUpdater.setLastTasId(newLastTasIdSharedIndex);
+						this.sharedIndexUpdater.setSystemInformation(lastTasIdSharedIndex, currentLogDate);
 						this.sharedIndexUpdater.flush();
 					}
 					if (newLastTasId != lastTasId) {
-						this.updatingIndex.setLastLogDate(currentLogDate);
+						this.updatingIndex.setLastLogDate(currentLogDate.getTime());
 						this.updatingIndex.setLastTasId(newLastTasId);
 						this.updatingIndex.flush();
 					}
 				} else {
-					this.runLuceneIndexUpdate(currentLogDate, lastTasId, lastLogDate, IndexType.LUCENE);
+					this.runLuceneIndexUpdate(currentLogDate.getTime(), lastTasId, lastLogDate, IndexType.LUCENE);
 				}
 				
 			} else {
-				this.runLuceneIndexUpdate(currentLogDate, lastTasId, lastLogDate, IndexType.LUCENE);
+				this.runLuceneIndexUpdate(currentLogDate.getTime(), lastTasId, lastLogDate, IndexType.LUCENE);
 			}
 		}
 		this.alreadyRunning = 0;
@@ -828,11 +828,13 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	}
 
 	@Override
-	public void generatedIndex(final LuceneResourceIndex<R> index) {
+	public void generatedIndex(AbstractIndexGenerator<R> index) {
 		/*
 		 * finished index generation use the new index for the searcher
 		 */
-		this.setActiveIndex(index);
+		if (index instanceof LuceneGenerateResourceIndex) {
+			this.setActiveIndex(((LuceneGenerateResourceIndex<R>) index).getResourceIndex());
+		}
 		this.setLuceneUpdaterEnabled(true);
 
 		/*
@@ -882,5 +884,6 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		}
 		return lrii;
 	}
+
 
 }

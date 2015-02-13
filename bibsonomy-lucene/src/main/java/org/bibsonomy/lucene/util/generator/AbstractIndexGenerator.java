@@ -35,7 +35,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.store.LockObtainFailedException;
-import org.bibsonomy.es.IndexType;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.Group;
@@ -63,17 +62,15 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 
 	/** database logic */
 	protected LuceneDBInterface<R> dbLogic;
-	
-	/**
-	 * the search type
-	 */
-	protected IndexType indexType;
 
 	/** set to true if the generator is currently generating an index */
 	protected boolean isRunning;
 
 	protected int numberOfPosts;
 	private int numberOfPostsImported;
+	private boolean running = false;
+	
+	private GenerateIndexCallback<R> callback = null;
 
 	/**
 	 * frees allocated resources and closes all files
@@ -82,6 +79,9 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 	 * @throws CorruptIndexException
 	 */
 	public void shutdown() throws CorruptIndexException, IOException {
+		if (this.callback != null) {
+			this.callback.generatedIndex(this);
+		}
 	}
 
 	/**
@@ -234,6 +234,7 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 	@Override
 	public void run() {
 		try {
+			this.running = true;
 			this.generateIndex();
 		} catch (final Exception e) {
 			log.error("Failed to generate " + getName() + "!", e);
@@ -262,16 +263,14 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 	}
 	
 	/**
-	 * @return the searchType
+	 * @param callback
+	 *            the callback to set
 	 */
-	public IndexType getIndexType() {
-		return this.indexType;
+	public void setCallback(final GenerateIndexCallback<R> callback) {
+		this.callback = callback;
 	}
 
-	/**
-	 * @param indexType the searchType to set
-	 */
-	public void setIndexType(IndexType indexType) {
-		this.indexType = indexType;
+	public boolean isRunning() {
+		return this.running;
 	}
 }
