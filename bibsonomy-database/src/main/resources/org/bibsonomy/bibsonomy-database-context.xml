@@ -58,6 +58,7 @@
 			<list>
 				<bean class="org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByResourceSearch" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesWithDiscussions" parent="bookmarkChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByParent" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesForHomepage" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesPopular" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesForUser" parent="bookmarkChainElement" />
@@ -175,6 +176,10 @@
 		<property name="databaseSchemaInformation" ref="dbSchemaInformation" />
 	</bean>
 	
+	<bean id="adminDatabaseManager" class="org.bibsonomy.database.managers.AdminDatabaseManager" factory-method="getInstance">
+		<property name="userDatabaseManager" ref="userDatabaseManager" />
+	</bean>
+	
 	<bean id="statisticsDatabaseManager" class="org.bibsonomy.database.managers.StatisticsDatabaseManager" factory-method="getInstance">
 		<property name="postChain" ref="postStatisticChain" />
 		<property name="tagChain" ref="tagStatisticChain" />
@@ -188,6 +193,7 @@
 		<property name="chain" ref="userChain" />
 		<property name="validator" ref="databaseValidator" />
 		<property name="fileLogic" ref="fileLogic" />
+		<property name="usersDefaultToClassify" value="${user.defaultToClassify}" />
 	</bean>
 	
 	<bean id="groupDatabaseManager" class="org.bibsonomy.database.managers.GroupDatabaseManager" factory-method="getInstance">
@@ -231,6 +237,7 @@
 	<bean id="goldStandardBookmarkChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
 			<list>
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByParent" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.goldstandard.get.GetGoldStandardsByResourceSearch" parent="abstractGoldStandardBookmarkChainElement" />
 			</list>
 		</property>
@@ -239,7 +246,9 @@
 	<bean id="goldStandardPublicationChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
 			<list>
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByParent" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.goldstandard.get.GetGoldStandardsByResourceSearch" parent="abstractGoldStandardPublicationChainElement" />
+				
 			</list>
 		</property>
 	</bean>

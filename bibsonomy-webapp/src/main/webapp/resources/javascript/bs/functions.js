@@ -610,7 +610,7 @@ function editTags() {
 				 * not nice!
 				 */
 				var encodedTagString = $('<div />').html(tagString).text(); 
-				var form = $("<form method='post' action='/batchEdit?deleteCheckedPosts=true&format=ajax&resourcetype=" + type + "&action=1' class='editTags'><input type='hidden' name='ckey' value='" + ckey + "'/></form>");
+				var form = $("<form method='post' action='/batchEdit?updateExistingPost=true&format=ajax&resourcetype=" + type + "&action=2' class='editTags'><input type='hidden' name='ckey' value='" + ckey + "'/></form>");
 				var input = $("<input type='text' class='postTagInput' name=\"newTags['" + hash + "']\"'/>").attr("value", encodedTagString);
 				var oldTagsInput = $("<input type='hidden' name=\"oldTags['" + hash + "']\" />").attr("value", encodedTagString);
 				var checkedInput = $("<input type='hidden' name=\"posts['" + hash + "']\" value='true' checked='checked' />");

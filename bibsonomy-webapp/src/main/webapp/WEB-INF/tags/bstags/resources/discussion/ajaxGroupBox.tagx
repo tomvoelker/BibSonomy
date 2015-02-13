@@ -5,7 +5,8 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts">
-
+	<script type="text/javascript" src="/resources/javascript/bs/AjaxGroupBox.js"><!-- keep me --></script>
+	
 	<jsp:useBean id="publicGroup" class="org.bibsonomy.model.Group">
 		<jsp:setProperty name="publicGroup" property="name" value="public"/>
 	</jsp:useBean>
@@ -83,10 +84,10 @@
 			</div>
 		</div>
 		
-		<div class="col-lg-9 col-sm-8">
+		<div class="col-sm-8">
 		    <!-- select box for "other" groups -->
 		    <!-- TODO: allow multiple groups ( multiple="multiples") -->
-			<select name="groups" size="4" class="form-control otherGroupsBox" tabindex="2" >
+			<select name="groups" size="4" class="form-control otherGroupsBox" tabindex="2" disabled = "disabled">
 			<c:set var="friendsLabel" value="friends" /> <!-- TODO: i18n? -->
 				<c:choose>
 					<c:when test="${isFriend}">

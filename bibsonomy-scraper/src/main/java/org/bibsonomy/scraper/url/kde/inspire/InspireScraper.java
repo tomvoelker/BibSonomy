@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.inspire;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,6 +38,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -52,7 +54,7 @@ import org.w3c.dom.NodeList;
  * 
  * @author clemens
  */
-public class InspireScraper extends AbstractUrlScraper {
+public class InspireScraper extends AbstractUrlScraper implements ReferencesScraper {
 	private static final Log log = LogFactory.getLog(InspireScraper.class);
 	
 	private static final String SITE_NAME = "INSPIRE";
@@ -68,6 +70,7 @@ public class InspireScraper extends AbstractUrlScraper {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "inspirehep.net"), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 	private static final Pattern pattern_abstract = Pattern.compile("(?i).*Abstract(.*)<span>(.*)</span>");
+	private static final Pattern references = Pattern.compile("(?s)<div id=\'referenceinp_link_box\'>(.*)<div id='referenceinp_link_box'>");
 	
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
@@ -139,5 +142,22 @@ public class InspireScraper extends AbstractUrlScraper {
 	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.ReferencesScraper#scrapeReferences(org.bibsonomy.scraper.ScrapingContext)
+	 */
+	@Override
+	public boolean scrapeReferences(ScrapingContext sc) throws ScrapingException {
+		try{
+			final Matcher m = references.matcher(WebUtils.getContentAsString(sc.getUrl().toString() + "/references"));
+			if(m.find()) {
+				sc.setReferences(m.group(1));
+				return true;
+			}
+		}catch(IOException e) {
+			log.error("error while getting references" + sc.getUrl(), e);
+		}
+		return false;
 	}
 }

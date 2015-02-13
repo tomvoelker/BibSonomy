@@ -158,6 +158,7 @@ public class TwoStepSynchronizationClientTest extends AbstractSynchronizationCli
 			assertEquals(SynchronizationStatus.DONE, sync.getLastSyncData(syncServer, resourceType).getStatus());
 		}
 		
+		wait(1);
 
 		/* *********************************************************************
 		 * 
@@ -254,7 +255,7 @@ public class TwoStepSynchronizationClientTest extends AbstractSynchronizationCli
 		/*
 		 * do sync
 		 */
-		final SynchronizationData data = sync.synchronizeResource(clientLogic, serverLogic, serverUser.getName(), resourceType, SynchronizationDirection.BOTH, syncPlan);
+		final SynchronizationData data = sync.synchronizeResource(clientLogic, serverLogic, serverUser.getName(), resourceType, SynchronizationDirection.BOTH, syncPlan, false);
 		
 		assertNotNull("synchronization was not successful", data);
 		assertEquals(SynchronizationStatus.DONE, data.getStatus());

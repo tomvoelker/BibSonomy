@@ -5,6 +5,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
 	xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
+	xmlns:goldstandardbookmark="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardbookmark"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
@@ -147,6 +148,11 @@
 				<!-- if a community post is present show the community post, not the list of posts -->
 				<c:when test="${not empty command.goldStandardPublications.list}">
 					<goldstandardpublication:details otherPosts="${command.bibtex.list}" post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
+				</c:when>
+
+				<!-- if a community post is present show the community post, not the list of posts -->
+				<c:when test="${not empty command.goldStandardBookmarks.list}">
+					<goldstandardbookmark:details post="${command.goldStandardBookmarks.list[0]}" loginUser="${command.context.loginUser}"/>
 				</c:when>
 				
 				<c:otherwise>

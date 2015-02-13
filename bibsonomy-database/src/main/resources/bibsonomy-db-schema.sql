@@ -1,7 +1,7 @@
 -- MySQL dump 10.11
 --
 -- Host: localhost    Database: bibsonomy
--- -----author-------------------------------------------------
+-- ------------------------------------------------------
 -- Server version	5.0.67-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -15,7 +15,7 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-
+--
 -- Table structure for Table `sync_data`
 --
 DROP TABLE IF EXISTS `sync_data`;
@@ -539,19 +539,20 @@ CREATE TABLE `groupids` (
 SET character_set_client = @saved_cs_client;
 
 --
--- Table structure for table `groups`
+-- Table structure for table `group_memberships`
 --
 
-DROP TABLE IF EXISTS `groups`;
+DROP TABLE IF EXISTS `group_memberships`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-CREATE TABLE `groups` (
+CREATE TABLE `group_memberships` (
   `user_name` varchar(30) NOT NULL default '',
   `group` int(10) default '0',
   `defaultgroup` int(10) default '0',
-  `start_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  `user_status` int(10) NOT NULL default '7',
-  `userSharedDocuments` tinyint(1) default '0'
+  `start_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `group_role` int(10) NOT NULL default '2',
+  `user_shared_documents` tinyint(1) default '0',
+  PRIMARY KEY (`group`,`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
@@ -879,19 +880,20 @@ CREATE TABLE `log_followers` (
 SET character_set_client = @saved_cs_client;
 
 --
--- Table structure for table `log_groups`
+-- Table structure for table `log_group_memberships`
 --
 
-DROP TABLE IF EXISTS `log_groups`;
+DROP TABLE IF EXISTS `log_group_memberships`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-CREATE TABLE `log_groups` (
-  `user_name` varchar(30) NOT NULL default '',
-  `group` int(10) default '0',
-  `defaultgroup` int(10) default '0',
-  `start_date` datetime NOT NULL default '1815-12-10 00:00:00',
-  `end_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  `user_status` int(11) default NULL
+CREATE TABLE `log_group_memberships` (
+	`user_name` VARCHAR(30) NOT NULL DEFAULT '',
+	`group` INT(10) NULL DEFAULT '0',
+	`defaultgroup` INT(10) NULL DEFAULT '0',
+	`start_date` DATETIME NOT NULL DEFAULT '1815-12-10 00:00:00',
+	`end_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`group_role` INT(10) NOT NULL DEFAULT '2',
+	`user_shared_documents` TINYINT(1) NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
@@ -1037,6 +1039,46 @@ CREATE TABLE `openIDUser` (
   `user_name` varchar(30) NOT NULL,
   `openID` varchar(255) NOT NULL,
   PRIMARY KEY  (`openID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `pending_groupids`
+--
+
+DROP TABLE IF EXISTS `pending_groupids`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `pending_groupids` (
+  `group_name` varchar(30) NOT NULL default '',
+  `request_user_name` varchar(30) NOT NULL,
+  `request_reason` text NOT NULL,
+  `request_submission_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `group` int(10) NOT NULL default '0',
+  `privlevel` tinyint(3) unsigned default '1',
+  `sharedDocuments` tinyint(1) default '0',
+  `publ_reporting_mail` varchar(255) DEFAULT NULL,
+  `publ_reporting_mail_template` text,
+  `publ_reporting_external_url` varchar(255) DEFAULT NULL,
+  PRIMARY KEY  (`group`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `pending_group_memberships`
+--
+
+DROP TABLE IF EXISTS `pending_group_memberships`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `pending_group_memberships` (
+	`user_name` VARCHAR(30) NOT NULL DEFAULT '',
+	`group` INT(10) NULL DEFAULT '0',
+	`defaultgroup` INT(10) NULL DEFAULT '0',
+	`start_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`group_role` INT(10) NOT NULL DEFAULT '2',
+	`user_shared_documents` TINYINT(1) NULL DEFAULT '0',
+	PRIMARY KEY (`user_name`, `group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
@@ -1627,7 +1669,6 @@ CREATE TABLE `post_metadata` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
-
 --
 -- Table structure for table `log_discussion`
 --
@@ -1683,6 +1724,19 @@ CREATE TABLE `weights` (
   CONSTRAINT `weights_ibfk_1` FOREIGN KEY (`id`) REFERENCES `rankings` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
+
+DROP TABLE IF EXISTS `group_level_permission`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `group_level_permission` (
+  `group` int(10) DEFAULT NULL,
+  `permission` tinyint(1) DEFAULT NULL,
+   `granted_by` VARCHAR(30) NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`group`, permission)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
