@@ -22,7 +22,7 @@
 	<jsp:directive.attribute name="showPageOptions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showBookmark" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="showPublication" type="java.lang.Boolean" required="true"/>
-	<jsp:directive.attribute name="isBasket" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="isClipboard" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
 	
 	<!-- fragments -->
@@ -51,6 +51,7 @@
 			<h3 class="list-headline">
 
 				<fmt:message key="publications" />
+				&amp;nbsp;<small class="hidden-lg hidden-md">(<a id="hide-publications" href=""><fmt:message key="list.hide" /></a>)</small>
 				<!-- Display total number of entries in list --> 
 				<c:if test="${!empty command.bibtex.list}">
 					<c:if test="${command.bibtex.totalCount != 0}">
@@ -59,7 +60,7 @@
 					</c:if>
 				</c:if>
 				
-				<c:if test="${empty showPageOptions or showPageOptions == true }">
+				<c:if test="${empty showPageOptions or showPageOptions}">
 					<c:out value=" " />
 					<c:choose>
 						<c:when test="${not empty customPageOptions}">
@@ -77,7 +78,7 @@
 										showBookmark="${showBookmark}" 
 										showPublication="${showPublication}" 
 										showInboxActions="${showInboxActions}" 
-										isBasket="${isBasket}"
+										isClipboard="${isClipboard}"
 										disableListNavigation="${disableListNavigation}"
 										disableResourcetypeSelection="${disableResourcetypeSelection}"/>
 								</ul>

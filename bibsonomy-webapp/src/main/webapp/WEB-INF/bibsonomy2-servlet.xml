@@ -80,7 +80,7 @@
 	<bean id="controllerBase" class="org.bibsonomy.webapp.util.spring.controller.MinimalisticControllerSpringWrapper" abstract="true">
 		<property name="allowedFields" ref="allowedFields"/>
 		<property name="disallowedFields" ref="disallowedFields"/>
-		<property name="urlGenerator" ref="urlGenerator"/>
+		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
 		<property name="supportedMethods" value="HEAD,GET,POST,DELETE,PUT" />
 		<property name="conversionService" ref="conversionService" />
 	</bean>
@@ -94,10 +94,12 @@
 				<property name="userLayoutFilePath" value="${project.document.path}"/>
 			</bean>
 		</constructor-arg>
-		<property name="urlGenerator" ref="urlGenerator"/>
+		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
 		<property name="properties" ref="properties"/>
 	</bean>
 
+	<bean id="standardLayouts" class="org.bibsonomy.layout.standard.StandardLayouts" />
+	
 	<!-- provides access to the request for all controllers, which need it -->
 	<bean id="requestLogic" class="org.bibsonomy.webapp.util.RequestLogic" scope="request"/>
 
@@ -187,11 +189,6 @@
 	
 	<bean id="requestWrapperContextInterceptor" class="org.bibsonomy.webapp.util.spring.RequestWrapperContextHandlerInterceptor" />
 	
-	<bean id="mobileDetectionHandlerInterceptor" class="org.bibsonomy.webapp.util.spring.MobileDetectionHandlerInterceptor">
-		<property name="wurflManager" ref="wurfl.manager" />
-		<property name="cookieAge" ref="cookieAge" />
-	</bean>
-	
 	<!--  #################### locale and theme resolver #################### -->
 	<bean id="localeResolver" class="org.bibsonomy.webapp.util.spring.i18n.SecurityContextAwareSessionLocaleResolver">
 		<property name="defaultLocale" value="${project.defaultLocale}" />
@@ -205,7 +202,9 @@
 		<property name="basenamePrefix" value="theme_"/>
 	</bean>
 	
-	<bean id="urlGenerator" class="org.bibsonomy.services.URLGenerator">
+	<bean id="relativeUrlGenerator" class="org.bibsonomy.services.URLGenerator" scope="prototype"/>
+	
+	<bean id="absoluteUrlGenerator" class="org.bibsonomy.services.URLGenerator" scope="prototype">
 		<property name="projectHome" value="${project.home}" />
 	</bean>
 	
@@ -216,7 +215,7 @@
 			</bean>
 		</property>
 		<lookup-method name="produceSucessBean" bean="realVuFindUrlGenerator"/>
-		<lookup-method name="produceFailureBean" bean="urlGenerator"/>
+		<lookup-method name="produceFailureBean" bean="absoluteUrlGenerator"/>
 	</bean>
 	
 	<bean id="realVuFindUrlGenerator" class="org.bibsonomy.webapp.view.urlbuilder.VuFindURLGenerator" lazy-init="true">
@@ -260,6 +259,8 @@
 							<list>
 								<value>authConfig</value>
 								<value>properties</value>
+								<value>relativeUrlGenerator</value>
+								<value>absoluteUrlGenerator</value>
 							</list>
 						</property>
 					</bean>
@@ -275,6 +276,8 @@
 							<list>
 								<value>authConfig</value>
 								<value>properties</value>
+								<value>relativeUrlGenerator</value>
+								<value>absoluteUrlGenerator</value>
 							</list>
 						</property>
 					</bean>
@@ -308,28 +311,6 @@
 		<constructor-arg ref="bibtexReaders"/>
 	</bean>
 	
-	<!-- WURFL -->
-	<bean id="wurfl.model" class="net.sourceforge.wurfl.core.resource.DefaultWURFLModel">
-		<constructor-arg index="0">
-			<bean class="net.sourceforge.wurfl.core.resource.SpringXMLResource">
-				<constructor-arg value="classpath:wurfl.zip" />
-			</bean>
-		</constructor-arg>
-	</bean>
-	<bean id="wurfl.matcherManager" class="net.sourceforge.wurfl.core.handlers.matchers.MatcherManager">
-		<constructor-arg ref="wurfl.model" />
-	</bean>
-	<bean id="wurfl.deviceProvider" class="net.sourceforge.wurfl.core.DefaultDeviceProvider">
-		<constructor-arg ref="wurfl.model" />
-	</bean>
-	<bean id="wurfl.service" class="net.sourceforge.wurfl.core.DefaultWURFLService">
-		<constructor-arg ref="wurfl.matcherManager" />
-		<constructor-arg ref="wurfl.deviceProvider" />
-	</bean>
-	<bean id="wurfl.manager" class="net.sourceforge.wurfl.core.DefaultWURFLManager">
-		<constructor-arg ref="wurfl.service" />
-	</bean>
-	
 	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="interceptors">
 			<list>
@@ -339,7 +320,6 @@
 				  Will be put into the command by the controllerBase
 				-->
 				<ref local="requestWrapperContextInterceptor"/>
-				<ref local="mobileDetectionHandlerInterceptor"/>
 			</list>
 		</property>
 		<property name="urlMap">
@@ -567,7 +547,7 @@
 				</entry>
 				<entry key="/clipboard">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="basketPageController"/>
+						<property name="controllerBeanName" value="clipboardPageController"/>
 					</bean>
 				</entry>
 				<entry key="/inbox">
@@ -691,6 +671,7 @@
 						<property name="controllerBeanName" value="friendsOverviewController"/>
 					</bean>
 				</entry>
+				<!-- TODO: (bootstrap) remove -->
 				<entry key="/bootstrapDemo">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="bootstrapDemoController"/>
@@ -727,16 +708,10 @@
 						<property name="controllerBeanName" value="linkCloudPageController"/>
 					</bean>
 				</entry>
-				<entry key="/bibsonomy3preview">
+				<!-- TODO: (bootstrap) remove -->
+				<entry key="/bibsonomy3">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="settingsPageController"/>
-						<property name="allowedFields">
-							<list>
-								<value>ckey</value>
-								<value>action</value>
-								<value>bibsonomy3preview</value>
-							</list>
-						</property>
+						<property name="controllerBeanName" value="bibsonomyPreview"/>
 					</bean>
 				</entry>
 			</map>
@@ -764,10 +739,6 @@
 		<property name="supportedResources" ref="allResources"/>
 		<property name="newsGroup" value="${news.group}"/>
 		<property name="newsTag" value="${news.tag}"/>
-	</bean>
-	
-	<bean id="personPageController" class="org.bibsonomy.webapp.controller.PersonPageController" scope="request" parent="multiResourceListControllerWithTags">
-		<property name="supportedResources" ref="allResources"/>
 	</bean>
 	
 	<bean id="disambiguationPageController" class="org.bibsonomy.webapp.controller.DisambiguationPageController" scope="request" parent="multiResourceListControllerWithTags">
@@ -905,6 +876,7 @@
 	
 	<bean id="exportPageController" class="org.bibsonomy.webapp.controller.ExportPageController" scope="request">
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
+		<property name="layouts" ref="standardLayouts" />
 	</bean>
 
 	<bean id="conceptPageController" class="org.bibsonomy.webapp.controller.ConceptPageController" scope="request">
@@ -921,7 +893,7 @@
 		</property>
 	</bean>
 
-	<bean id="basketPageController" class="org.bibsonomy.webapp.controller.BasketPageController" scope="request" parent="multiResourceListController">
+	<bean id="clipboardPageController" class="org.bibsonomy.webapp.controller.ClipboardPageController" scope="request" parent="multiResourceListController">
 		<property name="supportedResources">
 			<set>
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
@@ -958,6 +930,7 @@
 	 -->
 	<bean id="redirectController" class="org.bibsonomy.webapp.controller.special.RedirectController" scope="request">
 		<property name="requestLogic" ref="requestLogic"/>
+		<property name="urlGenerator" ref="relativeUrlGenerator" />
 	</bean>
 
 	<bean id="bibtexkeyPageController" class="org.bibsonomy.webapp.controller.BibtexkeyPageController" scope="request" parent="multiResourceListController">
@@ -1032,10 +1005,19 @@
 	<bean id="error503PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="ERROR503"/>
 	</bean>
+	<!-- TOOD: remove -->
+	<bean id="bibsonomyPreview" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="BIBSONOMY3"/>
+	</bean>
 	<!-- linkcloud TODO: in development TODODZO -->
 	<bean id="linkCloudPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="LINK_CLOUD"/>
 	</bean>
+	
+	<bean id="contextPathFilter" class="org.bibsonomy.webapp.filters.ContextPathFilter">
+		<property name="projectHomeUrl" value="${project.home}"/>
+	</bean>
+	
 	<!--  #################### imports #################### -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-model-context.xml" />
 	

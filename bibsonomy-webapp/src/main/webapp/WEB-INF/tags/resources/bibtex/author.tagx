@@ -9,12 +9,6 @@
 	<jsp:directive.attribute name="schemaOrgMarkUp" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="useAbsoluteURL" type="java.lang.Boolean" required="false" />
 	
-	<c:set var="baseUrl" value="/" />
-	
-	<c:if test="${useAbsoluteURL}">
-		<c:set var="baseUrl" value="${properties['project.home']}" />
-	</c:if>
-	
 	<!-- initialize with empty list -->
 	<c:set var="personList" value=""/>
 	<!-- determine personType for schema.org markup -->
@@ -45,15 +39,33 @@
 			<c:choose>
 				<c:when test="${schemaOrgMarkUp}">
 					<span itemprop="${authorEditor}" itemscope="itemscope" itemtype="http://schema.org/Person">
-						<a href="${baseUrl}author/${fn:escapeXml(mtl:cleanBibtex(person.lastName))}" itemprop="name">
+						<c:choose>
+							<c:when test="${useAbsoluteUrl}">
+								<a href="${absoluteUrlGenerator.getAuthorUrlByName(person.lastName)}" itemprop="name">
+									<c:out value="${personName}"/>
+								</a>
+							</c:when>
+							<c:otherwise>
+								<a href="${relativeUrlGenerator.getAuthorUrlByName(person.lastName)}" itemprop="name">
 							<c:out value="${personName}"/>
 						</a>
+							</c:otherwise>
+						</c:choose>
 					</span>
 				</c:when>
 				<c:otherwise>
-				 	<a href="${baseUrl}author/${fn:escapeXml(mtl:cleanBibtex(person.lastName))}">
+				 	<c:choose>
+							<c:when test="${useAbsoluteUrl}">
+								<a href="${absoluteUrlGenerator.getAuthorUrlByName(person.lastName)}" itemprop="name">
+									<c:out value="${personName}"/>
+								</a>
+							</c:when>
+							<c:otherwise>
+								<a href="${relativeUrlGenerator.getAuthorUrlByName(person.lastName)}" itemprop="name">
 						<c:out value="${personName}"/>
 				 	</a>
+				</c:otherwise>
+			</c:choose>
 				</c:otherwise>
 			</c:choose>
 			

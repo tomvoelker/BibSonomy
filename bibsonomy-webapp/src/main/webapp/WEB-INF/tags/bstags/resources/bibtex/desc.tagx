@@ -100,7 +100,7 @@
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'techreport'}">			
-			<bib:author publication="${publication}" post="${post}"/>			
+			<bib:author publication="${publication}" post="${post}"/>
 			<bib:type publication="${publication}"/>	
 			<bib:volume publication="${publication}"/>		
 			<bib:institution publication="${publication}"/>
@@ -116,7 +116,7 @@
 		
 		<!-- Misc and others -->
 		<c:otherwise>
-			<bib:author publication="${publication}" post="${post}"/>	
+			<bib:author publication="${publication}" post="${post}"/>
 			<bib:howpublished publication="${publication}"/>
 			<bib:year publication="${publication}" braces="true"/>
 			<bib:note publication="${publication}"/>

@@ -4,14 +4,15 @@ work
 .classpath
 .project
 .settings
+.externalToolBuilders
 .tomcatplugin
 .springBeans
 src/main/webapp/WEB-INF/lib
 src/main/webapp/WEB-INF/classes
 src/main/webapp/META-INF
 bibsonomy-lucene/src/test/resources/lucene_*
-
-syntax: regexp
+nbactions.xml
+nb-configuration.xmlsyntax: regexp
 ^bibsonomy-webapp/\.externalToolBuilders/org\.eclipse\.wst\.jsdt\.core\.javascriptValidator \(1\)\.launch$
 syntax: regexp
 ^bibsonomy-webapp/log4j2\.xml$

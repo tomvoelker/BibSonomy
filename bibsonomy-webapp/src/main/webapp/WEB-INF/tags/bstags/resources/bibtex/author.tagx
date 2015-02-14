@@ -10,10 +10,9 @@
 	<jsp:directive.attribute name="useAbsoluteURL" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="false" />
 	
-	<c:set var="baseUrl" value="/" />
-	
+	<c:set var="urlGenerator" value="${relativeUrlGenerator}" />
 	<c:if test="${useAbsoluteURL}">
-		<c:set var="baseUrl" value="${properties['project.home']}" />
+		<c:set var="urlGenerator" value="${absoluteUrlGenerator}" />
 	</c:if>
 	
 	<!-- initialize with empty list -->

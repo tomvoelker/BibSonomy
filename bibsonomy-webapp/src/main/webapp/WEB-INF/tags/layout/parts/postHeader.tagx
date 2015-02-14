@@ -7,7 +7,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
-	<jsp:directive.attribute name="isBasket" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="isClipboard" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableSort" type="java.lang.Boolean" required="false"/>
@@ -40,7 +40,7 @@
 								showBookmark="${showBookmark}" 
 								showPublication="${showPublication}" 
 								showInboxActions="${showInboxActions}" 
-								isBasket="${isBasket}"
+								isClipboard="${isClipboard}"
 								disableListNavigation="${disableListNavigation}"
 								disableResourcetypeSelection="${disableResourcetypeSelection}"
 								disableSort="${disableSort}" />
@@ -106,7 +106,7 @@
 								showBookmark="${showBookmark}" 
 								showPublication="${showPublication}" 
 								showInboxActions="${showInboxActions}" 
-								isBasket="${isBasket}"
+								isClipboard="${isClipboard}"
 								disableListNavigation="${disableListNavigation}"
 								disableResourcetypeSelection="${disableResourcetypeSelection}"
 								disableSort="${disableSort}" />
