@@ -88,11 +88,11 @@
 			<script type='text/javascript' src='/resources/typeahead.js/js/typeahead.bundle.js'><!-- keep me --></script>
 			
 			<script type='text/javascript' src='/resources/javascript/person/autocompleteThesis.js'><!-- keep me --></script>
-			<script type='text/javascript' src='/resources/javascript/person/autocompleteLinkOtherPerson.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/names.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/linkUser.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/roles.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/update.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/explainRoles.js'><!-- keep me --></script>
 			<style type='text/css'>
 				#personInfo .panel-heading a:after {
 				    font-family: 'Glyphicons Halflings';
@@ -131,12 +131,14 @@
 				<div  id='aboutThisPerson' class='panel-collapse collapse'>
 					<form method='post' name='personForm' action="" class='form-horizontal'>
 					<div class='panel-body'>
-						<div class='form-group'>
-							<label class="control-label col-md-4">${textAuthorOf}</label>
-							<div class="col-md-6">
-								<p class='form-control-static'></p>
+						<c:if test="${command.person.disambiguatingPublication.post ne null}">
+							<div class='form-group'>
+								<label class="control-label col-md-4">${textAuthorOf}</label>
+								<div class="col-md-6">
+									<p class='form-control-static'>${command.person.disambiguatingPublication.post.resource.title}</p>
+								</div>
 							</div>
-						</div>
+						</c:if>
 						<div class='form-group'>
 							<label class="control-label col-md-4" for='formAcademicDegree'>${textAcademicDegree}</label>
 							<div class="col-md-6">
@@ -152,10 +154,18 @@
 										<c:forEach var='name' items="${command.person.names}">
 											<c:choose>
 												<c:when test="${name.id eq command.person.mainName.id}">
-													<div class='checkbox' id='personName_${name.id}'><label><input type='radio' name='formSelectedName' value='${name.id}' checked='checked' /> ${name.firstName} ${name.lastName}</label>&#160;</div>
+													<div class='checkbox' id='personName_${name.id}'><label><input type='radio' name='formSelectedName' value='${name.id}' checked='checked' /> ${name.firstName} ${name.lastName}</label>&#160;
+													<c:if test="${fn:length(name.rprs) eq 0}">
+														<span data-person-name-id='${name.id}' data-firstName='${name.firstName}' data-lastName='${name.lastName}' data-toggle='modal' data-target='#removeName' style='color:darkred;cursor:pointer' href='#remName' id='removeName_${name.id}' class='removeName glyphicon glyphicon-remove'></span>
+													</c:if>
+													</div>
 												</c:when>
 												<c:otherwise>
-													<div class='checkbox' id='personName_${name.id}'><label><input type='radio' name='formSelectedName' value='${name.id}' /> ${name.firstName} ${name.lastName}</label>&#160;<span data-person-name-id='${name.id}' data-firstName='${name.firstName}' data-lastName='${name.lastName}' data-toggle='modal' data-target='#removeName' style='color:darkred;cursor:pointer' href='#remName' id='removeName_${name.id}' class='removeName glyphicon glyphicon-remove'></span></div>
+													<div class='checkbox' id='personName_${name.id}'><label><input type='radio' name='formSelectedName' value='${name.id}' /> ${name.firstName} ${name.lastName}</label>&#160;
+													<c:if test="${fn:length(name.rprs) eq 0}">
+														<span data-person-name-id='${name.id}' data-firstName='${name.firstName}' data-lastName='${name.lastName}' data-toggle='modal' data-target='#removeName' style='color:darkred;cursor:pointer' href='#remName' id='removeName_${name.id}' class='removeName glyphicon glyphicon-remove'></span>
+													</c:if>
+													</div>
 												</c:otherwise>
 											</c:choose>
 										</c:forEach>
@@ -230,7 +240,8 @@
 												<ul>
 													<c:forEach var="role" items="${command.availableRoles}">
 														<fmt:message key="person.show.${role}" var="textRole" />
-														<li class='${role}'>${textRole}: 
+														<fmt:message key="person.show.${role}Tooltip" var="textRoleTooltip" />
+														<li class='${role}'><span class='glyphicon glyphicon-question-sign explainRole' data-toggle="tooltip" data-placement="left" title="${textRoleTooltip}" data-role='${role}'>&#160;</span>${textRole}: 
 															<c:forEach var="relation" items="${post.rprs}">
 																<c:if test="${relation.relatorCode eq role}">
 																	<span class='rpr_${relation.id}'>
@@ -256,8 +267,8 @@
 						</div>
 						<div id='ownPublications' class='tab-pane'>
 							<br/>
-							 <!-- <button style='width: 100%;' class='btn btn-default' data-toggle='modal' data-target='#addThesis'>${textAddThesisButton}</button>
-							<hr/> -->
+							<button style='width: 100%;' class='btn btn-default' data-toggle='modal' data-target='#addThesis'>${textAddThesisButton}</button>
+							<hr/>
 							<c:choose>
 								<c:when test="${fn:length(command.advisedThesis) gt 0}">
 									<c:forEach var="post" items="${command.advisedThesis}">
@@ -278,7 +289,8 @@
 												<ul>
 													<c:forEach var="role" items="${command.availableRoles}">
 														<fmt:message key="person.show.${role}" var="textRole" />
-														<li class='${role}'>${textRole}: 
+														<fmt:message key="person.show.${role}Tooltip" var="textRoleTooltip" />
+														<li class='${role}'><span class='glyphicon glyphicon-question-sign explainRole' data-toggle="tooltip" data-placement="left" title="${textRoleTooltip}" data-role='${role}'>&#160;</span>${textRole}: 
 															<c:forEach var="relation" items="${post.rprs}">
 																<c:if test="${relation.relatorCode eq role}">
 																	<span class='rpr_${relation.id}'>

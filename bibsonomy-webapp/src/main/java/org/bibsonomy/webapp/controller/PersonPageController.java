@@ -64,13 +64,14 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	private View searchAction(PersonPageCommand command) {
 		List<PersonName> personNames = this.logic.getPersonSuggestion(command.getFormSelectedName(), command.getFormSelectedName());
 		JSONArray array = new JSONArray();
 		for(PersonName personName : personNames) {
 			JSONObject jsonPersonName = new JSONObject();
-			jsonPersonName.put("personId", personName.getPersonId());
-			jsonPersonName.put("personNameId", personName.getId());
+			jsonPersonName.put("personId", new Integer(personName.getPersonId()));
+			jsonPersonName.put("personNameId", new Integer(personName.getId()));
 			jsonPersonName.put("personName", personName.toString());
 			
 			array.add(jsonPersonName);
@@ -91,21 +92,29 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	private View newAction(PersonPageCommand command) {
 		
 		Person person = new Person().withMainName(new PersonName(command.getFormLastName()).withFirstName(command.getFormFirstName()).withMain(true)).withAcademicDegree(command.getFormAcademicDegree());
 		this.logic.createOrUpdatePerson(person);
 		command.setPerson(person);
-		this.logic.addResourceRelation(new ResourcePersonRelation()
-			.withSimhash1(command.getFormInterHash())
-			.withSimhash2(command.getFormIntraHash())
-			.withRelatorCode(PersonResourceRelation.valueOf(command.getFormPersonRole()).getRelatorCode())
-			.withPersonNameId(person.getMainName().getId())
-			.withPubOwner(command.getFormUser()));
+		String role = command.getFormPersonRole();
+		if(role.length() != 4) {
+			role = PersonResourceRelation.valueOf(command.getFormPersonRole()).getRelatorCode();
+		}
+		ResourcePersonRelation rpr = new ResourcePersonRelation()
+		.withSimhash1(command.getFormInterHash())
+		.withSimhash2(command.getFormIntraHash())
+		.withRelatorCode(role)
+		.withPersonNameId(person.getMainName().getId())
+		.withPubOwner(command.getFormUser());
+		this.logic.addResourceRelation(rpr);
 		
 		JSONObject jsonPerson = new JSONObject();
-		jsonPerson.put("personId", person.getId());
+		jsonPerson.put("personId", new Integer(person.getId()));
 		jsonPerson.put("personName", person.getMainName().toString());
+		jsonPerson.put("personNameId", new Integer(person.getMainName().getId()));
+		jsonPerson.put("rprid", new Integer(rpr.getId()));
 		
 		command.setResponseString(jsonPerson.toJSONString());
 		
@@ -144,7 +153,7 @@ public class PersonPageController extends SingleResourceListController implement
 			.withSimhash1(command.getFormInterHash())
 			.withSimhash2(command.getFormIntraHash())
 			.withRelatorCode(role)
-			.withPersonNameId(Integer.valueOf(command.getFormPersonNameId()))
+			.withPersonNameId(Integer.valueOf(command.getFormPersonNameId()).intValue())
 			.withPubOwner(command.getFormUser());
 		this.logic.addResourceRelation(rpr);
 		command.setResponseString(rpr.getId() + "");
@@ -163,7 +172,7 @@ public class PersonPageController extends SingleResourceListController implement
 			.withSimhash1(command.getFormInterHash())
 			.withSimhash2(command.getFormIntraHash())
 			.withRelatorCode(PersonResourceRelation.valueOf(role).getRelatorCode())
-			.withPersonNameId(Integer.valueOf(command.getFormPersonNameId()))
+			.withPersonNameId(Integer.valueOf(command.getFormPersonNameId()).intValue())
 			.withPubOwner(command.getRequestedUser());
 			this.logic.addResourceRelation(rpr);
 		}
@@ -201,9 +210,8 @@ public class PersonPageController extends SingleResourceListController implement
 	private View addNameAction(PersonPageCommand command) {
 		Person person = logic.getPersonById(Integer.valueOf(command.getFormPersonId()).intValue());
 		PersonName personName = new PersonName(command.getFormLastName()).withFirstName(command.getFormFirstName()).withPersonId(Integer.valueOf(command.getFormPersonId()).intValue());
-		
 		for( PersonName otherName : person.getNames()) {
-			if(person.equals(otherName)) {
+			if(personName.equals(otherName)) {
 				command.setResponseString(otherName.getId()+ "");
 				return Views.AJAX_TEXT;
 			}

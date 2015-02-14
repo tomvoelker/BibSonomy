@@ -56,7 +56,7 @@ public class Person implements Serializable {
 	/** point in time when the last change was made */
 	private Date changeDate;
 	/** a publication which disambiguates the person. Usually the person's thesis of highest degree such as a phd thesis. */
-	private BibTex disambiguatingPublication;
+	private ResourcePersonRelation disambiguatingPublication;
 	/** the number of posts in the system, which this {@link Person} as an author */
 	private int postCounter;
 	
@@ -250,14 +250,14 @@ public class Person implements Serializable {
 	/**
 	 * @return a publication which disambiguates the person. Usually the person's thesis of highest degree such as a phd thesis.
 	 */
-	public BibTex getDisambiguatingPublication() {
+	public ResourcePersonRelation getDisambiguatingPublication() {
 		return this.disambiguatingPublication;
 	}
 
 	/**
 	 * @param disambiguatingPublication a publication which disambiguates the person. Usually the person's thesis of highest degree such as a phd thesis.
 	 */
-	public void setDisambiguatingPublication(BibTex disambiguatingPublication) {
+	public void setDisambiguatingPublication(ResourcePersonRelation disambiguatingPublication) {
 		this.disambiguatingPublication = disambiguatingPublication;
 	}
 

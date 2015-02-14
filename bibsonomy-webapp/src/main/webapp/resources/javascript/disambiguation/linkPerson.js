@@ -7,7 +7,7 @@ $(document).ready(function() {
 		$("#btnLinkPersonSubmit").attr("data-firstName", e.attr("data-firstName"));
 		$("#btnLinkPersonSubmit").attr("data-lastName", e.attr("data-lastName"));
 		
-		$("#linkShowPerson").attr("href", "/person/" + e.attr("data-person-id") + "/" + e.attr("data-lastName") + "," + e.attr("data-firstName"));
+		$("#linkShowPerson").attr("href", "/person/" + e.attr("data-person-id") + "/" + e.attr("data-lastName") + ", " + e.attr("data-firstName"));
 	});
 	
 	$("#btnLinkPersonSubmit").on("click", function() {
@@ -28,7 +28,7 @@ $(document).ready(function() {
 						formPersonNameId: data
 					}
 			).done(function(data) {
-				window.location.href = "/person/" + e.attr("data-person-id") + "/" + e.attr("data-lastName") + "," + e.attr("data-firstName"); 
+				window.location.href = "/person/" + e.attr("data-person-id") + "/" + e.attr("data-lastName") + ", " + e.attr("data-firstName"); 
 			});
 		});
 	});

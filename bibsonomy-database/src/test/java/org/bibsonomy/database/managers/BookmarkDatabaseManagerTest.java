@@ -539,7 +539,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 		final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, GroupingEntity.USER, userName, Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, null, null, toInsert.getUser());
 		final List<Post<Bookmark>> posts = bookmarkDb.getPosts(param, this.dbSession);
 		assertEquals(1, posts.size());
-		CommonModelUtils.assertPropertyEquality(toInsert, posts.get(0), Integer.MAX_VALUE, null, new String[] { "resource", "tags", "user", "date", "changeDate" });
+		CommonModelUtils.assertPropertyEquality(toInsert, posts.get(0), Integer.MAX_VALUE, null, new String[] { "resource", "tags", "user", "date", "changeDate", "rprs" });
 		toInsert.getResource().setCount(1);
 		
 		CommonModelUtils.assertPropertyEquality(toInsert.getResource(), posts.get(0).getResource(), Integer.MAX_VALUE, null, new String[] { "numberOfRatings", "rating" });

@@ -52,6 +52,7 @@
 			OR 	person_name.first_name LIKE #lastName#
 			OR 	person_name.last_name LIKE #firstName#
 			OR 	person_name.last_name LIKE #lastName#
+			GROUP BY person_id
 	</select>
 	
 	<update id='updatePerson' parameterClass='org.bibsonomy.model.Person'>
@@ -65,7 +66,7 @@
 	</select>
 	
 	<update id="updatePersonName" parameterClass='org.bibsonomy.model.PersonName'>
-		Update person_name SET is_main = 1 
+		Update person_name SET is_main = #isMain# 
 			WHERE person_name.id = #id#
 	</update>
 	
@@ -128,6 +129,18 @@
 		SELECT <include refid="commonResourcePersonRelationColumns" /> FROM pub_person
 			WHERE pub_person.pub_owner = #pubOwner#
 				AND (pub_person.simhash1 = #simhash1# OR pub_person.simhash2 = #simhash2#) 
+	</statement>
+	
+	<statement id="getResourcePersonRelationsByNameId" resultMap="PersonCommon.resourcePersonRelation">
+		SELECT <include refid="commonResourcePersonRelationColumns" /> FROM pub_person
+			WHERE person_name_id = #personNameId# 
+	</statement>
+	
+	<statement id="getOneResourcePersonRelationsByPersonId" resultMap="PersonCommon.resourcePersonRelation">
+		SELECT <include refid="commonResourcePersonRelationColumns" /> FROM pub_person
+			WHERE pub_person.person_name_id IN (SELECT person_name.id FROM person_name WHERE person_id = #personId#) 
+			AND pub_person.relator_code = "Maut"
+			LIMIT 0,1
 	</statement>
 	
 </sqlMap>

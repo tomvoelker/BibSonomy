@@ -11,6 +11,7 @@
 		<result property="changedBy"   		column="log_modified_by"   	javaType="java.lang.String" />
 		<result property="changeDate"  		column="log_modified_at"  	javaType="java.util.Date" />
 		<result property="user"        		column="user_name"    		javaType="java.lang.String" />
+		<result property='disambiguatingPublication'	column='{personId=person_id}' javaType='org.bibsonomy.model.ResourcePersonRelation' select='getOneResourcePersonRelationsByPersonId'/>
 	</resultMap>
 	
 	<resultMap id="personName" class="org.bibsonomy.model.PersonName">
@@ -20,6 +21,7 @@
 		<result property="personId" 	column="person_id" 	javaType="integer" />
 		<result property='isMain'		column='is_main'	javaType='boolean' />
 		<result property="person"		column="person_id"  javaType='org.bibsonomy.model.Person' select='getPersonById' />
+		<result property='rprs'			column='{personNameId=id}' javaType='org.bibsonomy.model.ResourcePersonRelation' select='getResourcePersonRelationsByNameId'/>
 	</resultMap>
 	
 	<resultMap id='resourcePersonRelation' class='org.bibsonomy.model.ResourcePersonRelation'>
