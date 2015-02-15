@@ -2900,17 +2900,32 @@ public class DBLogic implements LogicInterface {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<PersonName> getPersonSuggestion(String lastName, String firstName) {
-		return this.personDBManager.findPersonNames(lastName, firstName, this.dbSessionFactory.getDatabaseSession());
+		DBSession session = this.openSession();
+		try {
+			return this.personDBManager.findPersonNames(lastName, firstName, session);
+		} finally {
+			session.close();
+		}
 	}
 	
 	@Override
 	public List<PersonName> getPersonSuggestion(PersonName personName) {
-		return this.personDBManager.findPersonNames(personName.getLastName(), personName.getFirstName(), this.dbSessionFactory.getDatabaseSession());
+		DBSession session = this.openSession();
+		try {
+			return this.personDBManager.findPersonNames(personName.getLastName(), personName.getFirstName(), session);
+		} finally {
+			session.close();
+		}
 	}
 	
 	@Override
 	public void addResourceRelation(ResourcePersonRelation rpr) {
-		this.personDBManager.addResourceRelation(rpr, this.dbSessionFactory.getDatabaseSession());
+		DBSession session = this.openSession();
+		try {
+			this.personDBManager.addResourceRelation(rpr, session);
+		} finally {
+			session.close();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -2918,7 +2933,12 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void removeResourceRelation(int resourceRelationId) {
-		this.personDBManager.removeResourceRelation(resourceRelationId, this.dbSessionFactory.getDatabaseSession());
+		DBSession session = this.openSession();
+		try {
+			this.personDBManager.removeResourceRelation(resourceRelationId, session);
+		} finally {
+			session.close();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -2926,24 +2946,41 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void createOrUpdatePerson(Person person) {
-		if(person.getId() > 0) {
-			this.personDBManager.updatePerson(person, this.dbSessionFactory.getDatabaseSession());
-			for(PersonName personName : person.getNames()) {
-				if(personName.getId() > 0) {
-					this.personDBManager.updatePersonName(person.getMainName(), this.dbSessionFactory.getDatabaseSession());
-				} else {
-					this.personDBManager.createPersonName(person.getMainName(), this.dbSessionFactory.getDatabaseSession());
+		DBSession session = this.openSession();
+		try {
+			if (person.getUser() != null) {
+				if (person.getUser().equals(loginUser.getName()) == false) {
+					throw new AccessDeniedException();
+				}
+				// FIXME: this should check for != null, not >0
+				if(person.getId() > 0) {
+					Person personOld = this.personDBManager.getPersonById(person.getId(), session);
+					if ((personOld.getUser() != null) && (personOld.getUser().equals(loginUser.getName()) == false)) {
+						throw new AccessDeniedException();
+					}
 				}
 			}
-		} else {
-			this.personDBManager.createPerson(person, this.dbSessionFactory.getDatabaseSession());
-			for(PersonName personName : person.getNames()) {
-				if(personName.getId() > 0) {
-					this.personDBManager.updatePersonName(person.getMainName(), this.dbSessionFactory.getDatabaseSession());
-				} else {
-					this.personDBManager.createPersonName(person.getMainName(), this.dbSessionFactory.getDatabaseSession());
+			if(person.getId() > 0) {
+				this.personDBManager.updatePerson(person, this.dbSessionFactory.getDatabaseSession());
+				for(PersonName personName : person.getNames()) {
+					if(personName.getId() > 0) {
+						this.personDBManager.updatePersonName(person.getMainName(), session);
+					} else {
+						this.personDBManager.createPersonName(person.getMainName(), session);
+					}
+				}
+			} else {
+				this.personDBManager.createPerson(person, this.dbSessionFactory.getDatabaseSession());
+				for(PersonName personName : person.getNames()) {
+					if(personName.getId() > 0) {
+						this.personDBManager.updatePersonName(person.getMainName(), session);
+					} else {
+						this.personDBManager.createPersonName(person.getMainName(), session);
+					}
 				}
 			}
+		} finally {
+			session.close();
 		}
 	}
 
@@ -2952,7 +2989,12 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public Person getPersonById(int id) {
-		return this.personDBManager.getPersonById(id, this.dbSessionFactory.getDatabaseSession());
+		DBSession session = this.openSession();
+		try {
+			return this.personDBManager.getPersonById(id, session);
+		} finally {
+			session.close();
+		}
 	}
 	
 	@Override
@@ -2984,11 +3026,21 @@ public class DBLogic implements LogicInterface {
 	}
 	
 	public List<ResourcePersonRelation> getResourceRelations(Person person) {
-		List<ResourcePersonRelation> relations = new ArrayList<ResourcePersonRelation>();
-		for(PersonName personName: person.getNames()) {
-			relations.addAll(this.getResourceRelations(personName));
+		DBSession session = this.openSession();
+		try {
+			List<ResourcePersonRelation> relations = new ArrayList<ResourcePersonRelation>();
+			for(PersonName personName: person.getNames()) {
+				relations.addAll(this.getResourceRelations(personName));
+			}
+			// TODO: add parameter object which states what needs to be fetched when
+			// FIXME: this needs to be done with a join - many individual queries are usually bad
+			for (ResourcePersonRelation rpr : relations) {
+				rpr.getPost().setRprs(this.personDBManager.getResourcePersonRelationsByPost(rpr.getPost(), session));
+			}
+			return relations;
+		} finally {
+			session.close();
 		}
-		return relations;
 	}
 	
 	public List<ResourcePersonRelation> getResourceRelations(PersonName personName) {
@@ -3006,7 +3058,12 @@ public class DBLogic implements LogicInterface {
 	}
 	
 	public void createOrUpdatePersonName(PersonName personName) {
-		this.personDBManager.createPersonName(personName, this.dbSessionFactory.getDatabaseSession());
+		DBSession session = this.openSession();
+		try {
+			this.personDBManager.createPersonName(personName, session);
+		} finally {
+			session.close();
+		}
 	}
 	
 	public void linkUser(Integer personId) {
