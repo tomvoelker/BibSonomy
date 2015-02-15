@@ -227,7 +227,7 @@
 											<div style='border-right:1px solid lightgrey' class='col-md-6 publication-list'>
 												<div class="title">
 													<!-- show one post -->
-													<rc:post post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}">
+													<rc:post post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" resourceType="publication">
 														<jsp:attribute name="title">    <bib:title post="${post}"/>    </jsp:attribute>
 														<jsp:attribute name="actions">  <bib:actions loginUserName="${loginUserName}" post="${post}" disableResourceLinks="${false}"/></jsp:attribute>
 														<jsp:attribute name="desc">     <bib:desc post="${post}" publication="${post.resource}"/></jsp:attribute>
@@ -276,7 +276,7 @@
 											<div style='border-right:1px solid lightgrey' class='col-md-6 publication-list'>
 												<div class="title">
 													<!-- show one post -->
-													<rc:post post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}">
+													<rc:post post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" resourceType="publication">
 														<jsp:attribute name="title">    <bib:title post="${post}"/>    </jsp:attribute>
 														<jsp:attribute name="actions">  <bib:actions loginUserName="${loginUserName}" post="${post}" disableResourceLinks="${false}"/></jsp:attribute>
 														<jsp:attribute name="desc">     <bib:desc post="${post}" publication="${post.resource}"/></jsp:attribute>
