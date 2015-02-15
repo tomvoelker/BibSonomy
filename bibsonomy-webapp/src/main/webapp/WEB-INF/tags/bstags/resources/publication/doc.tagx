@@ -17,13 +17,50 @@
 	<!--+
 		| private documents (pdf, ps) 
 		+-->
-  	<c:if test="${not empty publication.documents or isOwnEntry}">
-  			<div class="modal fade bs-example-modal-lg" style="text-align:center" tabindex="-1" role="dialog" aria-hidden="true"><iframe id="pdfViewer" style="margin: auto; width: 80%; height: 100%; border-top: none; border-bottom: none"><!--  keep  --></iframe></div>
-  			<h4>&amp;nbsp;</h4>
-	  		<c:choose>
-		  		<c:when test="${empty publication.documents}">
-			  		<c:if test="${isOwnEntry}">
-			  			<div class="img-thumbnail publication preview bibtexpreviewimage">
+		<c:if test="${not empty publication.documents or isOwnEntry}">
+			<div class="modal fade bs-example-modal-lg" style="text-align:center" tabindex="-1" role="dialog" aria-hidden="true"><iframe id="pdfViewer" style="margin: auto; width: 80%; height: 100%; border-top: none; border-bottom: none"><!--  keep  --></iframe></div>
+			<h4>&amp;nbsp;</h4>
+			<ul class="edit-document-forms">
+				<li class="document" style="display:none" id="file-upload-placeholder">
+					<div class="preview_meta">
+						<!--+ 
+							| delete and rename options
+							+-->
+						<!-- delete -->
+						<fmt:message key="bibtex.actions.private_document.delete" var="deleteTitle"/>
+						<fmt:message key="bibtex.actions.private_document.rename" var="renameTitle"/>
+						<c:url var="deleteUrl" value="/ajax/documents">
+							<c:param name="intraHash" value="${post.resource.intraHash}" />
+							<c:param name="fileName" value="FILENAME_PLACEHOLDER" />
+							<c:param name="ckey" value="${ckey}" />
+							<c:param name="temp" value="false" />
+							<c:param name="action" value="delete" />
+						</c:url>
+						<c:set var="renameDocTitle"><fmt:message key="bibtex.actions.private_document.rename"/></c:set>
+						<c:set var="deleteDocTitle"><fmt:message key="bibtex.actions.private_document.delete"/>&amp;nbsp;FILENAME_PLACEHOLDER</c:set>
+						<c:set var="downloadTitle"><fmt:message key="qrcode.actions.download"/></c:set>
+						<c:set var="downloadQrTitle"><fmt:message key="qrcode.actions.qrDownload"/></c:set>
+						<c:set var="delete_doc"><fmt:message key="bibtex.actions.private_document.delete"/></c:set>
+									
+						<form class="renameDocForm" action="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=FILENAME_PLACEHOLDER&amp;action=rename" method='POST' enctype='multipart/form-data' autocomplete='off'>
+							<span class="show-name" style="display:none;"><!-- keep --></span>
+							<div class="input-group" data-toggle="tooltip">
+								<input class="form-control input-sm renameDocInput" data-ajax-rename="true" name='newFileName' type="text" value="" />
+								<span class="input-group-btn">
+									<a class="btn btn-sm btn-default btn-stripped rename-btn" title="${renameDocTitle}"><span class="fa fa-pencil"><!-- KEEP ME --></span></a>
+									<a class="btn btn-sm btn-default btn-stripped remove-btn" title="${deleteDocTitle}" href="${deleteUrl}" data-filename=""><span class="fa fa-times"><!-- KEEP ME --></span></a>
+									<a class="btn btn-sm btn-default btn-stripped download-btn" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/FILENAME_PLACEHOLDER" title="Download ${downloadTitle}"><span class="fa fa-download"><!-- KEEP ME --></span></a>
+									<a class="btn btn-sm btn-default btn-stripped qrcode-btn" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/FILENAME_PLACEHOLDER?qrcode=true"  title="${downloadQrTitle}"><span class="fa fa-qrcode"><!-- KEEP ME --></span></a>
+								</span>
+							</div>
+						</form>
+						<!-- delete/rename -->
+					</div>
+				</li>
+			<c:choose>
+				<c:when test="${empty publication.documents}"> <!-- no documents -->
+					<c:if test="${isOwnEntry}">
+						<div class="img-thumbnail publication preview bibtexpreviewimage">
 							<a class="addDocument addDocumentImg" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
 								<img class="img-responsive pre_pic" src="${resdir}/image/addDocument-LARGE.jpg" alt=""/>							
 							</a>
@@ -32,11 +69,11 @@
 						<!-- keep me! - temporary content -->
 						</div>
 					</c:if>
-		  		</c:when>
-		  		<c:otherwise>
-		  			<c:set var="count" value="0" scope="page" />
-		  			<c:forEach var="document" items="${publication.documents}">
-		  			 
+				</c:when>
+				<c:otherwise> <!-- documents available -->
+					<c:set var="count" value="0" scope="page" />
+					<c:forEach var="document" items="${publication.documents}">
+					
 						<c:choose>
 							<c:when test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
 								<!-- <a class="documentFileName preview" href="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=true" title="${fn:escapeXml(document.fileName)}">  -->
@@ -50,7 +87,7 @@
 										</div>
 									</c:when>
 									<c:otherwise>
-										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage" style="display:none;">
+										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage">
 											<!-- preview picture of first document -->
 											<!--  <a class="publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="${fn:escapeXml(document.fileName)}"> -->
 											<a class="img-thumbnail pdfFile" data-toggle="lightbox" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false">
@@ -84,10 +121,10 @@
 							</c:otherwise>
 						</c:choose>
 						<c:set var="count" value="${count + 1}" scope="page"/>
-		  			</c:forEach>
-		  			<c:if test="${fn:length(publication.documents) gt 1}">
-		  				
-		  				<div id="previewSelectBullets">
+					</c:forEach>
+					<c:if test="${fn:length(publication.documents) gt 1}">
+						
+						<div id="previewSelectBullets">
 								<c:set var="count" value="0" scope="page" />
 								<c:forEach var="document" items="${publication.documents}">
 									<c:choose>
@@ -104,46 +141,8 @@
 						</div>
 						
 						
-  					</c:if>
-  					<ul class="edit-document-forms">
-  						<li class="document" style="display:none" id="file-upload-placeholder">
-							<div class="preview_meta">
-								<!--+ 
-								 	| delete and rename options
-								 	+-->
-									<!-- delete -->
-									<fmt:message key="bibtex.actions.private_document.delete" var="deleteTitle"/>
-									<fmt:message key="bibtex.actions.private_document.rename" var="renameTitle"/>
-									<c:url var="deleteUrl" value="/ajax/documents">
-										<c:param name="intraHash" value="${post.resource.intraHash}" />
-										<c:param name="fileName" value="FILENAME_PLACEHOLDER" />
-										<c:param name="ckey" value="${ckey}" />
-										<c:param name="temp" value="false" />
-										<c:param name="action" value="delete" />
-									</c:url>
-									<c:set var="renameDocTitle"><fmt:message key="bibtex.actions.private_document.rename"/></c:set>
-									<c:set var="deleteDocTitle"><fmt:message key="bibtex.actions.private_document.delete"/>&amp;nbsp;FILENAME_PLACEHOLDER</c:set>
-									<c:set var="downloadTitle"><fmt:message key="qrcode.actions.download"/></c:set>
-									<c:set var="downloadQrTitle"><fmt:message key="qrcode.actions.qrDownload"/></c:set>
-									<c:set var="delete_doc"><fmt:message key="bibtex.actions.private_document.delete"/></c:set>
-									
-									<form class="renameDocForm" action="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=FILENAME_PLACEHOLDER&amp;action=rename" method='POST' enctype='multipart/form-data' autocomplete='off'>
-										<span class="showName" style="display:none;"><!-- keep --></span>
-										<div class="input-group">
-											<input class="form-control input-sm renameDocInput" name='newFileName' type="text" value="" />
-											<span class="input-group-btn">
-        										<a class="btn btn-sm btn-default btn-stripped rename-btn" title="${renameDocTitle}"><span class="fa fa-pencil"><!-- KEEP ME --></span></a>
-        										<a class="btn btn-sm btn-default btn-stripped remove-btn" title="${deleteDocTitle}" href="${deleteUrl}" data-filename=""><span class="fa fa-times"><!-- KEEP ME --></span></a>
-        										<a class="btn btn-sm btn-default btn-stripped download-btn" title="Download ${downloadTitle}"><span class="fa fa-download"><!-- KEEP ME --></span></a>
-        										<a class="btn btn-sm btn-default btn-stripped download-btn qrcode-btn" title="${downloadQrTitle}"><span class="glyphicon glyphicon-qrcode"><!-- KEEP ME --></span></a>
-       													
-      										</span>
-										</div>
-									</form>
-									<!-- delete/rename -->
-							</div>
-						</li>
-  					<c:forEach var="document" items="${publication.documents}">
+					</c:if>
+					<c:forEach var="document" items="${publication.documents}">
 						<li class="document  ${mtl:downloadFileId(document.fileName)} active">
 							<div class="preview_meta">
 								<!--+ 
@@ -167,18 +166,17 @@
 									<c:set var="downloadQrTitle"><fmt:message key="qrcode.actions.qrDownload"/></c:set>
 									<c:set var="delete_doc"><fmt:message key="bibtex.actions.private_document.delete"/></c:set>
 									<form class="renameDocForm" action="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=${mtl:encodeURI(document.fileName)}&amp;action=rename" method='POST' enctype='multipart/form-data' autocomplete='off'>
-										<span class="showName" style="display:none;"><c:out value="${filename}" /></span>
+										<span class="show-name" style="display:none;"><c:out value="${filename}" /></span>
 										<div class="input-group">
-											<input class="form-control input-sm renameDocInput" name='newFileName' type="text" value="${filename}" />
+											<input class="form-control input-sm renameDocInput" data-ajax-rename="true" name='newFileName' type="text" value="${filename}" />
 											<span class="input-group-btn">
-        										<a class="btn btn-sm btn-default btn-stripped rename-btn" title="${renameDocTitle}"><span class="fa fa-pencil"><!-- KEEP ME --></span></a>
-        										<a class="btn btn-sm btn-default btn-stripped remove-btn" title="${deleteDocTitle}" href="${deleteUrl}" data-filename="${fn:escapeXml(document.fileName)}"><span class="fa fa-times"><!-- KEEP ME --></span></a>
-        										<a class="btn btn-sm btn-default btn-stripped download-btn" title="Download ${downloadTitle}"><span class="fa fa-download"><!-- KEEP ME --></span></a>
-        										<c:if test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
-        											<a class="btn btn-sm btn-default btn-stripped download-btn" title="${downloadQrTitle}"><span class="fa fa-qrcode"><!-- KEEP ME --></span></a>
-       											</c:if>
-       													
-      										</span>
+												<a class="btn btn-sm btn-default btn-stripped rename-btn" title="${renameDocTitle}"><span class="fa fa-pencil"><!-- KEEP ME --></span></a>
+												<a class="btn btn-sm btn-default btn-stripped remove-btn" title="${deleteDocTitle}" href="${deleteUrl}" data-filename="${fn:escapeXml(document.fileName)}" data-ident="${mtl:downloadFileId(document.fileName)}"><span class="fa fa-times"><!-- KEEP ME --></span></a>
+												<a class="btn btn-sm btn-default btn-stripped download-btn" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="Download ${downloadTitle}"><span class="fa fa-download"><!-- KEEP ME --></span></a>
+												<c:if test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
+													<a class="btn btn-sm btn-default btn-stripped qrcode-btn" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=true" title="${downloadQrTitle}"><span class="fa fa-qrcode"><!-- KEEP ME --></span></a>
+												</c:if>
+											</span>
 										</div>
 									</form>
 									<!-- delete/rename -->
@@ -199,7 +197,7 @@
 								</c:if>
 							</div>
 						</li>
-					</ul>
+					
 					<!--+
 						|
 						| add another document
@@ -208,6 +206,6 @@
 					
 					</c:otherwise>
 				</c:choose>
-	</c:if>
-
+			</ul>
+		</c:if>
 </jsp:root>

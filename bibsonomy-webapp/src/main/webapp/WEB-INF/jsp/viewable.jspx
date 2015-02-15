@@ -15,16 +15,16 @@
 
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.viewable" formAction="/viewable/${mtl:encodeURI(command.requestedGroup)}" formInputName="tag">
+			<parts:search pathMessageKey="navi.viewable" formAction="${relativeUrlGenerator.getViewableUrlByGroupName(command.requestedGroup)}" formInputName="tag">
 				<jsp:attribute name="pathPart">
 					<li>
-						:: <a href="/viewable/${mtl:encodeURI(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
+						:: <a href="${relativeUrlGenerator.getViewableUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
 					</li>
 				</jsp:attribute>
 			</parts:search>
 		</jsp:attribute>
 		
-		<jsp:attribute name="sidebar">	
+		<jsp:attribute name="sidebar">
 			<ul>		
 				<rc:members requPath="${requPath}" users="${command.group.users}"/>
 				<li>

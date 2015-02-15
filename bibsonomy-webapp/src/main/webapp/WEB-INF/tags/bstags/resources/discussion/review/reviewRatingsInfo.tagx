@@ -11,20 +11,26 @@
 	<div id="review_info_rating" itemprop="aggregateRating" itemscope="itemscope" itemtype="http://schema.org/AggregateRating">
 		<c:if test="${empty resource.numberOfRatings or resource.numberOfRatings &lt; 1 }">
 			<!-- TODO: change message keys when renaming BibTex class to Publication -->
-			<div id="noReviewInfo"><fmt:message key="post.resource.review.${fn:toLowerCase(resource.class.simpleName)}.noReview" /></div>
+			<div id="noReviewInfo"><fmt:message key="post.resource.review.${fn:toLowerCase(resource['class'].simpleName)}.noReview" /></div>
 		</c:if>
+		
 		<div id="ratingDistribution">
 			<fmt:message key="post.resource.review.info.ratingDistribution" />
 			<div id="ratingDistributionGraph" style="width: 315px; height: 60px;">
 				<!-- ploted by javascript -->
 			</div>
 		</div>
+		
 		<div id="ratingAvg">
-			<span><fmt:message key="post.resource.review.info.ratingAvg" /> <buttons:help cssStyle="float:none" iconTextStyle="float:none" message="post.resource.review.ratings.basedOn.help"/></span>
+			<div>
+				<p style="float: left;"><fmt:message key="post.resource.review.info.ratingAvg" />&amp;nbsp;</p>
+				<div style="float: left">
+					<buttons:help iconTextStyle="float:none" message="post.resource.review.ratings.basedOn.help"/>
+				</div> 
+			</div>
 			<!-- TODO: add bigger star images and change dimension to 2 -->
 			<div><review:reviewStars rating="${resource.rating}" /></div>
 
-			
 			<!-- plural -->
 			<fmt:message var="ratingTitle" key="post.resource.review.reviews" />
 			<c:if test="${resource.numberOfRatings == 1}">

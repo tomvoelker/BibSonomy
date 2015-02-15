@@ -14,6 +14,7 @@
 	
 	<c:forEach var="group" items="${post.groups}">
 		<c:if test="${!empty group.name and group.name ne 'public'}">
+			<c:out value=" "/>
 			<c:choose>
 				<c:when test="${group.name eq 'friends'}">
 					<fmt:message key="post.meta.asGroup"/> 

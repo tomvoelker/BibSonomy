@@ -119,7 +119,7 @@
 	</layout>
 	<layout name="tablerefsabsbib">
 		<displayName>
-			HTML table, ABSTRACT &amp; BibTeX)
+			HTML table, ABSTRACT &amp; BibTeX
 		</displayName>
 		<description xml:lang="en">
 			HTML table that additionally includes the BibTeX
@@ -308,7 +308,7 @@
 		<extension>.html</extension>
 	</layout>
 	<!-- -->
-	<layout name="mms" public="false">
+	<layout name="mdc" public="false">
 		<displayName>HTML table, ABSTRACT &amp; BibTeX, sortable, MDC</displayName>
 		<description xml:lang="en">
 		  Custom output format provided by AONO MEDIA for
@@ -396,7 +396,7 @@
 		<baseFileName>din1505year</baseFileName>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
-	</layout>	
+	</layout>
 	<layout name="mms">
 		<displayName>DIN 1505 MMS</displayName>
 		<description xml:lang="en">
@@ -436,12 +436,12 @@
 			HTML output format according to the German Institute for
 			Standardization (DIN). Special version of the
 			Mensch-Maschine-Systemtechnik Institute, grouped by year, 
-			and with an endnote export.		
+			and with an endnote export.
 		</description>
 		<description xml:lang="de">
 			HTML Ausgabe Format gemäß dem Deutschen Institut für Normung. 
 			Spezielle Version des Instituts Mensch-Maschine-Systemtechnik, gruppiert
-			nach Jahr und mit Endnote-Eintrag für jede Publikation.		
+			nach Jahr und mit Endnote-Eintrag für jede Publikation.
 		</description>
 		<directory>winfoyear</directory>
 		<baseFileName>winfoyear</baseFileName>
@@ -454,20 +454,20 @@
 			HTML output format according to the German Institute for
 			Standardization (DIN). Special version of the
 			Mensch-Maschine-Systemtechnik Institute, grouped by year, 
-			with an endnote export and display of the note.		
+			with an endnote export and display of the note.
 		</description>
 		<description xml:lang="de">
 			HTML Ausgabe Format gemäß dem Deutschen Institut für Normung. 
 			Spezielle Version des Instituts Mensch-Maschine-Systemtechnik, gruppiert
 			nach Jahr, mit Endnote-Eintrag für jede Publikation und Anzeige der
-			Notiz (note).		
+			Notiz (note).
 		</description>
 		<directory>winfoyear_n</directory>
 		<baseFileName>winfoyear_n</baseFileName>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>	
-	<layout name="mittelalter">
+	<layout name="mittelalter" public="false">
 		<displayName>Mittelalterliche Geschichte Universität Kassel</displayName>
 		<description xml:lang="en">
 			HTML output format according to the Chair of Mittelalterliche Geschichte of Kassel University. 
@@ -593,7 +593,7 @@
 		<extension>.html</extension>
 	</layout>
 	<layout name="publist-de" >
-		<displayName>Publication List in HTML Format similar to DIN1505 (German version)</displayName>
+		<displayName>HTML similar to DIN1505 (German version)</displayName>
 		<description xml:lang="en">
 			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
 			Standardization (DIN); German version.
@@ -612,7 +612,7 @@
 		<extension>.html</extension>
 	</layout>	
 	<layout name="publist-en" >
-		<displayName>Publication List in HTML Format similar to DIN1505 (English version)</displayName>
+		<displayName>HTML similar to DIN1505 (English version)</displayName>
 		<description xml:lang="en">
 			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
 			Standardization (DIN); English version.
@@ -631,7 +631,7 @@
 		<extension>.html</extension>
 	</layout>	
 	<layout name="publist-type-de" >
-		<displayName>Publication List in HTML Format similar to DIN1505, ENTRYTYPE (German version)</displayName>
+		<displayName>HTML similar to DIN1505, ENTRYTYPE (German version)</displayName>
 		<description xml:lang="en">
 			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
 			Standardization (DIN), grouped by entrytype; German version.
@@ -650,7 +650,7 @@
 		<extension>.html</extension>
 	</layout>	
 	<layout name="publist-type-en" >
-		<displayName>Publication List in HTML Format similar to DIN1505, ENTRYTYPE (English version)</displayName>
+		<displayName>HTML similar to DIN1505, ENTRYTYPE (English version)</displayName>
 		<description xml:lang="en">
 			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
 			Standardization (DIN), grouped by entrype; English version.
@@ -669,7 +669,7 @@
 		<extension>.html</extension>
 	</layout>		
 	<layout name="publist-year-de" >
-		<displayName>Publication List in HTML Format similar to DIN1505, YEAR (German version)</displayName>
+		<displayName>HTML similar to DIN1505, YEAR (German version)</displayName>
 		<description xml:lang="en">
 			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
 			Standardization (DIN), grouped by year; German version.
@@ -688,7 +688,7 @@
 		<extension>.html</extension>
 	</layout>	
 	<layout name="publist-year-en" >
-		<displayName>Publication List in HTML Format similar to DIN1505, YEAR (English version)</displayName>
+		<displayName>HTML similar to DIN1505, YEAR (English version)</displayName>
 		<description xml:lang="en">
 			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
 			Standardization (DIN), grouped by year; English version.
@@ -707,7 +707,7 @@
 		<extension>.html</extension>
 	</layout>	
 	<layout name="chicago" >
-		<displayName>Publication List in HTML Format according the Chicago Manual of Style</displayName>
+		<displayName>Chicago Manual of Style</displayName>
 		<description xml:lang="en">
 			The Chicago Manual considers three distinct formats – those appropriate for bibliographies,
 			notes, and shortened notes. This filter creates an HTML output of the bibliographies version.	
@@ -726,7 +726,7 @@
 		<extension>.html</extension>
 	</layout>
 	<layout name="apa_rtf" >
-		<displayName>Publication List in RTF Format according American Pychological Association (APA) guidelines</displayName>
+		<displayName>APA: RTF according American Pychological Association (APA) guidelines</displayName>
 		<description xml:lang="en">
 			Publication list formatted according to the guidelines of the American Psychological
 			Association (APA); output is created in Rich Text Format (.rtf).
@@ -745,7 +745,7 @@
 		<extension>.rtf</extension>
 	</layout>
 	<layout name="apa_html" >
-		<displayName>Publication List in HTML Format according American Pychological Association (APA) guidelines</displayName>
+		<displayName>APA: HTML according American Pychological Association (APA) guidelines</displayName>
 		<description xml:lang="en">
 			Publication list formatted according to the guidelines of the American Psychological
 			Association (APA); output is created in HTML format.

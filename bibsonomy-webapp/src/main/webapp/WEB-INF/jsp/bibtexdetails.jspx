@@ -58,7 +58,7 @@
 							<input type="hidden" name="posts['${fn:escapeXml(publication.intraHash)}']" value="true" checked="checked" />
 							<fmt:message key="bibtex.actions.tags.update" var="updateTags"/>
 							<input type="submit" value="${updateTags}"/>
-							<input type="hidden" name="referer" value="/bibtex/2${publication.intraHash}/${mtl:encodeURI(post.user.name)}"/>
+							<input type="hidden" name="referer" value="${relativeUrlGenerator.getPublicationUrlByInterHashAndUsername(post.resource.interHash, post.user.name)}"/>
 							<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
 							<input type="hidden" name="resourcetype" value="bibtex"/>
 							<input type="hidden" name="deleteCheckedPosts" value="true"/>
@@ -76,7 +76,7 @@
 					<span class="sidebar_h"><fmt:message key="tags"/>
 						
 						<span style="font-size:80%;font-weight:lighter;">
-							(<a href="/user/${fn:escapeXml(post.user.name)}"><c:out value="${post.user.name}" /></a>
+							(<a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(post.user.name))}"><c:out value="${post.user.name}" /></a>
 							<fmt:message key="tags.highlighted.by_user"/>)
 						</span>
 					</span>
@@ -94,7 +94,7 @@
 						<ul class="tagcloud sidebar_collapse_content">
 							<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
 								<li class="${userclass}">
-									<a href="/user/${fn:escapeXml(user.name)}"><c:out value="${user.name}"/></a>
+									<a href="${relativeUrlGenerator.getUserUrl(user)}"><c:out value="${user.name}"/></a>
 									<c:out value=" "/>
 								</li>
 							</c:forEach>
@@ -109,7 +109,7 @@
 
 		<jsp:attribute name="content">
 			<div id="innercontent" style="background: #fff; padding-left: 40px;">
-				<resource:bibtexdetailsclean post="${command.bibtex.list[0]}" referer="${command.referer}"/>
+				<resource:bibtexdetailsclean post="${post}" referer="${command.referer}"/>
 			</div>
 		</jsp:attribute>
 		

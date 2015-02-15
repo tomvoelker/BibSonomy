@@ -11,7 +11,7 @@
 	<jsp:directive.attribute name="sortPageOrder" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="showBookmark" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="showPublication" type="java.lang.Boolean" required="true"/>
-	<jsp:directive.attribute name="isBasket" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="isClipboard" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
@@ -41,13 +41,6 @@
 	</li>
 	
 	<!--+ 
-		+ placeholder for extended bibtex export options 
-		+-->
-	<c:if test="${isPublication}">
-		<span id="bibtexListExportOptions">${mtl:ch('nbsp')}</span>
-	</c:if>	
-	
-	<!--+ 
 		+ sort options
 		+-->
 	<c:if test="${not disableSort}">
@@ -70,9 +63,9 @@
 		<li>
 			<span>
 				<strong><fmt:message key="navi.basket"/>:</strong><br />
-				<rc:basket isBasket="${isBasket}" />
+				<rc:clipboard isClipboard="${isClipboard}" />
 			</span>
-		</li>	
+		</li>
 	</c:if>
 	
 	<!--+
@@ -96,10 +89,9 @@
 	
 			<!-- edit -->
 			<c:if test="${command.context.userLoggedIn}">
-	
 				<rc:batchEdit isPublication="${isPublication}" isBookmark="${isBookmark}" requPathAndQuery="${requPathAndQuery}"/><br />
-	
 			</c:if>
+			
 			<!-- show / hide resource types -->
 			<c:if test="${not disableResourcetypeSelection}">
 	

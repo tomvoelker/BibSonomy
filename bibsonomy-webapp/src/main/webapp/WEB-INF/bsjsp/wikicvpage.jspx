@@ -16,7 +16,8 @@
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
 	xmlns:output="urn:jsptagdir:/WEB-INF/tags/bstags/export/bibtex"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 	
 	<!--
 		This is the standard CV Page for all users. You can NOT edit the CV on this page.
@@ -35,13 +36,34 @@
 		showPageOptions="${command.context.userLoggedIn and command.context.loginUser.name eq command.requestedUser}"
 		minimizedContentWidth="${true}">
 		
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
+		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<c:choose>
+						<c:when test="${command.isGroup}">
+							<!-- please note the requestedUser is the requestedGroup -->
+							<nav:groupcrumb requestedGroup="${command.requestedUser}" />
+						</c:when>
+						<c:otherwise>
+							<nav:usercrumb loginUser="${command.context.loginUser}" requestedUser="${command.requestedUser}"/>
+						</c:otherwise>
+					</c:choose>
+					<nav:crumb name="${cvPageTitle}" active="true"/>
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		
 		<jsp:attribute name="sidebar">
 		 	<ul>
 		 		<!--+
 					| only for logged in users: followers, friends, groups, etc.
 					| and not on his own cv page
 			 		-->
-				<c:if test="${command.context.userLoggedIn and not ownCVPage}">
+				<c:if test="${command.context.userLoggedIn and not ownCVPage and not command.isGroup}">
 					<li>
 						<users:socializer command="${command}" />
 					</li>
@@ -85,7 +107,7 @@
 			<parts:search pathMessageKey="navi.cv">
 				<jsp:attribute name="pathPart">
 					<li>
-						:: <a href="/user/${mtl:encodeURI(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
+						:: <a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
 					</li>
 				</jsp:attribute>
 			</parts:search>	
@@ -103,9 +125,21 @@
 			| page content 
 			+-->
 		<jsp:attribute name="content">
+			<h1 class="content-header"> 
+				Curriculum Vitae <c:out value=" " />
+				<c:if test="${command.context.userLoggedIn and ownCVPage}">
+					<div class="btn-group" style="margin-bottom: 2px;">
+						<button data-toggle="dropdown" class="btn btn-xs btn-default dropdown-toggle"><span class="fa fa-cog"><!--  --></span>&amp;nbsp;<span class="caret"><!--  --></span></button>
+						<ul class="dropdown-menu">
+							<li><a href="/settings?selTab=0"><fmt:message key="cv.editSettings" /></a></li>
+		    				<li><a href="/settings?selTab=5"><fmt:message key="cv.editCV" /></a></li>
+						</ul>
+					</div>
+				</c:if>
+			</h1>
 			<div>
 				<!-- In wikiArea steht der gesamte Text drin. Inklusive Ueberschriften! -->
-				<div id="wikiArea">
+				<div>
 					<c:choose>
 						<c:when test="${not empty command.wikiText}">
 							<c:out value="${command.renderedWikiText}" escapeXml="false" />

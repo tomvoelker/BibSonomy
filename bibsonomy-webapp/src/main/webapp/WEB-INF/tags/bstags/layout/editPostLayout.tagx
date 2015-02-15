@@ -7,28 +7,24 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/bstags/post"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
-   	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
 
-    <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.actions.EditPostCommand" required="true"/>
-    <jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
-    <jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" description="The type of the resource this page handles (e.g., 'Bookmark', or 'Publication'). First letter upper case, remaining lower case."/>
-    <jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
-    
-    <jsp:directive.attribute name="generalInformation" fragment="true" required="true" description="The form fields to enter general information."/>
-    <jsp:directive.attribute name="detailedInformation" fragment="true" required="false" description="The form fields to enter detailed information."/>
-    <jsp:directive.attribute name="extraInformation" fragment="true" required="false" description="Extra information which shall be displayed outside the form."/>
-    <jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
-    
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.actions.EditPostCommand" required="true"/>
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" description="The type of the resource this page handles (e.g., 'Bookmark', or 'Publication'). First letter upper case, remaining lower case."/>
+	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
+	
+	<jsp:directive.attribute name="generalInformation" fragment="true" required="true" description="The form fields to enter general information."/>
+	<jsp:directive.attribute name="detailedInformation" fragment="true" required="false" description="The form fields to enter detailed information."/>
+	<jsp:directive.attribute name="extraInformation" fragment="true" required="false" description="Extra information which shall be displayed outside the form."/>
+	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
 
-	<layout:editGoldStandardPostLayout 
-		generalInformation="${generalInformation}" 
-		requPath="${requPath}" 
+	<layout:editGoldStandardPostLayout generalInformation="${generalInformation}" requPath="${requPath}" 
 		resourceType="${resourceType}" 
 		command="${command}" 
 		detailedInformation="${detailedInformation}" 
@@ -36,32 +32,26 @@
 		minimizedContentWidth="${minimizedContentWidth}">
 		
 		<jsp:attribute name="headerExtResource">
-			<script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/bs/edit${resourceType}.js"><!-- keep me --></script>
 		</jsp:attribute>
 		
 		<jsp:attribute name="tagsAndGroups">
-		
-			<!--
-               | tags 
-                      -->
-	    	<post:tagfield containsComma="${command.containsComma}" labelColSpan="3" inputColSpan="9" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
-	    	
-            <!--
-               | groups 
-    			-->
-    		<a name="groups"><!--  --></a>
- 			<bsform:fieldset legendKey="post.resource.groups.describe">
+			<!-- tags -->
+			<post:tagfield containsComma="${command.containsComma}" labelColSpan="3" inputColSpan="9" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
+			
+			<!-- groups -->
+			<a name="groups"><!--  --></a>
+			<bsform:fieldset legendKey="post.resource.groups.describe">
 				<jsp:attribute name="content">
-	        		<post:groupBox groups="${command.context.loginUser.groups}"/>
+					<post:groupBox groups="${command.context.loginUser.groups}" />
 					<c:if test="${not empty command.context.loginUser.groups}">
-						<post:relevantForBox groups="${command.context.loginUser.groups}"/>
+						<post:relevantForBox groups="${command.context.loginUser.groups}" />
 					</c:if>
 				</jsp:attribute>
-			</bsform:fieldset>	
+			</bsform:fieldset>
 			
-			<post:tagSets groups="${command.context.loginUser.groups}"/>
-			
+			<!-- tag sets -->
+			<post:tagSets groups="${command.context.loginUser.groups}" />
 		</jsp:attribute>
 	</layout:editGoldStandardPostLayout>
 </jsp:root>

@@ -13,7 +13,7 @@
 		<c:out value=" "/>
 		<fmt:message key="post.meta.taggedBy" />
 		<c:out value=" "/>
-		<a href="/user/${mtl:encodeURI(post.user.name)}"><c:out value="${post.user.name}" /></a>
+		<a href="${relativeUrlGenerator.getUserUrlByUserName(post.user.name) }"><c:out value="${post.user.name}" /></a>
 	</c:if>
 	
 	

@@ -46,24 +46,37 @@
 			<c:set var="publicationsWidthClass" value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}"/>
 
 			<body style="min-width:0px;">
+			
+			<div class="row">
+				<div class="col-md-6">
 				<c:if test="${not empty command.bookmark.list}">
 					<resources:bookmarks listView="${command.bookmark}" 
 									loginUserName="${command.context.loginUser.name}" 
 									disableListNavigation="false" 
 									requPath="${requPath}" 
 									widthClassName="${bookmarksWidthClass}"
+									showBookmark="${showBookmark}"
+									showPublication="${showPublication}"
+									isClipboard="false"
+									showPageOptions="false"
 					/>
 				</c:if>
-			
+				</div>
+				<div class="col-md-6">
 				<c:if test="${not empty command.bibtex.list}">
 					<resources:bibtexs listView="${command.bibtex}" 
 									loginUserName="${command.context.loginUser.name}" 
 									disableListNavigation="false" 
 									requPath="${requPath}" 
 									widthClassName="${publicationsWidthClass}"
+									showBookmark="${showBookmark}"
+									showPublication="${showPublication}"
+									isClipboard="false"
+									showPageOptions="false"
 					/>
 				</c:if>
-			
+				</div>
+			</div>
 				<!--+
 					| This adds the ?format=embed parameter to all URLs that start with a slash "/"
 					| and do not contain parameters. 
@@ -80,7 +93,9 @@
 						$('a').each(function(i, e) {
 							var t = $(this);
 							var a = t.attr("href");
-							(a.indexOf('/') == 0 && a.indexOf('?') == -1) ? t.attr("href", a + "?format=embed") : t.attr("target", "_top");
+							if(a) {
+								(a.indexOf('/') == 0 && a.indexOf('?') == -1) ? t.attr("href", a + "?format=embed") : t.attr("target", "_blank");
+							}
 						});
 					});
 				]]>

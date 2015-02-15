@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- *  BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.scraper.url.kde.osa;
 
 import java.io.BufferedInputStream;
@@ -31,7 +34,6 @@ import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -46,6 +48,7 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
@@ -68,9 +71,6 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 	
 	private static final Pattern inputPattern = Pattern.compile("<input\\b[^>]*>");
 	private static final Pattern valuePattern = Pattern.compile("value=\"[^\"]*\"");
-
-	private static final Pattern selectPattern = Pattern.compile("<select\\b[^>]*>");
-	private static final Pattern namePattern = Pattern.compile("name=\"[^\"]*\"");
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + OSA_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
@@ -120,7 +120,6 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 
 		if(bibResult != null) {
 			sc.setBibtexResult(bibResult);
-			scrapeReferences(sc);
 			return true;
 		}
 		throw new ScrapingFailureException("getting bibtex failed");
@@ -152,11 +151,11 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 		StringBuffer sbContent = new StringBuffer();
 
 		sbContent.append("Articles=");
-		sbContent.append(URLEncoder.encode(id,"UTF-8") + "&");
+		sbContent.append(UrlUtils.safeURIEncode(id) + "&");
 		sbContent.append("ArticleAction=");
-		sbContent.append(URLEncoder.encode("save_bibtex2","UTF-8") + "&");
+		sbContent.append(UrlUtils.safeURIEncode("save_bibtex2") + "&");
 		sbContent.append(actions + "=");
-		sbContent.append(URLEncoder.encode("save_bibtex2","UTF-8"));
+		sbContent.append(UrlUtils.safeURIEncode("save_bibtex2"));
 
 		urlConn.setRequestProperty("Content-Length", String.valueOf(sbContent.length()));
 

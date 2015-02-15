@@ -257,8 +257,7 @@ function log_sendRequest(e) {
 		if (!http_request) {
 			return false;
 		}
-		if(typeof currUser ==  'undefined')
-			currUser = "";
+
 		// collect data to send
 		senddata = 'dompath=' + encodeURIComponent(dom_path) +
 		'&dompath2=' + encodeURIComponent(dom_path2) +

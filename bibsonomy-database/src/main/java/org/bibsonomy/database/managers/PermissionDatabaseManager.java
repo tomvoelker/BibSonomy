@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Database - Database for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -22,6 +48,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
 
@@ -33,16 +60,6 @@ import org.bibsonomy.model.util.UserUtils;
 public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(PermissionDatabaseManager.class);
 	
-	/**
-	 * the number of tags allowed for querying the db
-	 */
-	public static final int MAX_TAG_SIZE = 10;
-	
-	/**
-	 * the maximum number of items for querying the db
-	 */
-	public static final int END_MAX = 1000;
-
 	private final static PermissionDatabaseManager singleton = new PermissionDatabaseManager();
 
 	/**
@@ -70,8 +87,8 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param itemType
 	 */
 	public void checkStartEnd(final User loginUser, final int start, final int end, final String itemType) {
-		if (!this.isAdmin(loginUser) && (end > END_MAX)) {
-			throw new AccessDeniedException("You are not authorized to retrieve more than the last " + END_MAX + " " + itemType + " items.");
+		if (!this.isAdmin(loginUser) && (end - start > PostLogicInterface.MAX_QUERY_SIZE)) {
+			throw new AccessDeniedException("You are not authorized to retrieve more than " + PostLogicInterface.MAX_QUERY_SIZE + " " + itemType + " items at a time.");
 		}
 	}
 
@@ -345,7 +362,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @return true if maximum size is exceeded, false otherwise
 	 */
 	public boolean useResourceSearchForTagQuery(final int i) {
-		return i >= MAX_TAG_SIZE;
+		return i >= PostLogicInterface.MAX_TAG_SIZE;
 	}
 	
 	/**

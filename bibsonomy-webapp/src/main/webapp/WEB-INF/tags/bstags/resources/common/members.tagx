@@ -1,6 +1,7 @@
 <jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
@@ -14,7 +15,7 @@
 			<ul id="group-members">
 				<c:forEach var="member" items="${users}" begin="0" end="4">
 					<li>
-						<a href="/user/${fn:escapeXml(member.name)}"><c:out value="${member.name}" /></a>
+						<user:username user="${member}" />
 					</li>
 				</c:forEach>
 				<c:if test="${fn:length(users) gt 4}">
@@ -24,7 +25,9 @@
 			<div id="group-member-list-more" style="display:none;">
 				<ul>
 					<c:forEach var="member" items="${users}" begin="5">
-						<li><a href="/user/${fn:escapeXml(member.name)}"><c:out value="${member.name}" /></a></li>
+						<li>
+							<user:username user="${member}" />
+						</li>
 					</c:forEach>
 					<li><a class="less" onclick="$('.group-members #group-member-list-more').hide();$('.group-members .more-link-item').show();"><fmt:message key="less" />...</a></li>
 				</ul>

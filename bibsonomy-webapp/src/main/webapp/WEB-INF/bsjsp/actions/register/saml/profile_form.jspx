@@ -16,12 +16,7 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<fmt:message key="navi.register" var="pageTitle" />
-	<layout:paneLayout 
-		command="${command}" 
-		pageTitle="${pageTitle}" 
-		requPath="${requPath}" 
-		headerMessageKey="register.saml.step2"
-		minimizedContentWidth="${true}">
+	<layout:paneLayout command="${command}" pageTitle="${pageTitle}" requPath="${requPath}" headerMessageKey="register.saml.step2" minimizedContentWidth="${true}">
 	
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.register"/>
@@ -30,7 +25,7 @@
 		<jsp:attribute name="content">
 
 			<form:form action="/registerSaml" method="POST">
-				<errors:global errors="${errors}"/>      
+				<errors:global />
 
 				<fieldset class="fsOuter">
 					<!-- FIXME: is this the right place for this description? -->
@@ -83,11 +78,8 @@
 					-->
 
 					<bform:submit messageKey="register.send"/>
-
 				</fieldset>
 			</form:form>
 		</jsp:attribute>
-		
 	</layout:paneLayout>
-	
 </jsp:root>

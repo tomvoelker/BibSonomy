@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Database - Database for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -27,6 +53,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ScraperMetadata;
+import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.util.file.FileSystemFile;
 import org.bibsonomy.services.filesystem.FileLogic;
 
@@ -252,22 +279,22 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * bibtexKey
 	 * 
 	 * @param loginUser
-	 *            TODO
 	 * @param bibtexKey
 	 * @param requestedUserName
 	 * @param groupId
+	 * @param visibleGroupIDs
 	 * @param limit
 	 * @param offset
 	 * @param systemTags
 	 * @param session
 	 *            a database session
-	 * 
 	 * @return list of publication posts
 	 */
-	public List<Post<BibTex>> getPostsByBibTeXKey(final String loginUser, final String bibtexKey, final String requestedUserName, final int groupId, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<BibTex>> getPostsByBibTeXKey(final String loginUser, final String bibtexKey, final String requestedUserName, final int groupId, List<Integer> visibleGroupIDs, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		final BibTexParam param = this.createParam(loginUser, requestedUserName, limit, offset);
 		param.setBibtexKey(bibtexKey);
 		param.setGroupId(groupId);
+		param.setGroups(visibleGroupIDs);
 		param.addAllToSystemTags(systemTags);
 
 		return this.postList("getBibTexByKey", param, session);
@@ -314,7 +341,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 			final BibTex publication = post.getResource();
 			if (this.permissionDb.isAllowedToAccessPostsDocuments(authUser, post, session)) {
 				publication.setDocuments(this.docDb.getDocumentsForPost(userName, resourceHash, session));
-			} else if (failIfDocumentsNotAccessible == true) {
+			} else if (failIfDocumentsNotAccessible) {
 				throw new AccessDeniedException("You are not allowed to access documents of this post");
 			}
 
@@ -392,22 +419,36 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 
 		/*
 		 * store the post
+		 * insert post and update/insert hashes
 		 */
-		super.insertPost(param, session); // insert post and update/insert
-											// hashes
+		super.insertPost(param, session);
 	}
 
 	@Override
 	protected void createdPost(final Post<BibTex> post, final DBSession session) {
 		super.createdPost(post, session);
-
+		
+		this.handleExtraUrls(post, session);
 		this.handleDocuments(post, session);
+	}
+
+	/**
+	 * @param post
+	 * @param session
+	 */
+	private void handleExtraUrls(final Post<BibTex> post, final DBSession session) {
+		final List<BibTexExtra> extraUrls = post.getResource().getExtraUrls();
+		if (present(extraUrls)) {
+			for (final BibTexExtra resourceExtra : extraUrls) {
+				this.extraDb.createURL(post.getResource().getIntraHash(), post.getUser().getName(), resourceExtra.getUrl().toExternalForm(), resourceExtra.getText(), session);
+			}
+		}
 	}
 
 	@Override
 	protected void updatedPost(final Post<BibTex> post, final DBSession session) {
 		super.updatedPost(post, session);
-
+		
 		this.handleDocuments(post, session);
 	}
 

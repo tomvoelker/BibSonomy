@@ -2,7 +2,8 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"		
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<c:set var="pathAndQueryString" value="${requPath}${requQueryString}" />
@@ -27,10 +28,12 @@
 		<option value="${fn:escapeXml(json)}">JSON</option>
 		<option value="${fn:escapeXml(csl)}"><fmt:message key="export.csl.caption" /></option>
 		<option value="${fn:escapeXml(custom)}">Custom</option>
-
+		
+		<spring:eval var="abstractJabRefLayoutClass" expression="T(java.lang.Class).forName('org.bibsonomy.layout.jabref.AbstractJabRefLayout')" />
+		
 		<c:forEach var="entry" items="${command.layoutMap}">
 			<c:if test="${entry.value.publicLayout}">
-				<c:if test="${'JabrefLayout' eq mapEntry.value.class.simpleName}">
+				<c:if test="${abstractJabRefLayoutClass.isInstance(entry.value)}">
 					<c:url var="url" value="/layout/${entry.value.name}/${pathAndQueryString}" />
 					<option value="${fn:escapeXml(url)}"><c:out value="${entry.value.displayName}"/></option>
 				</c:if>

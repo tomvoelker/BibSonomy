@@ -10,7 +10,8 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
   	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
   	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
@@ -22,12 +23,21 @@
     		activeTab="popular"
     		showPageOptions="${command.context.userLoggedIn}"
     		minimizedContentWidth="${true}">
-      	
-    	<jsp:attribute name="heading">
+
+		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.relations" formAction="/concept/tag/" formInputName="tag"/>
-    	</jsp:attribute>
-    	
-    	<!--+
+		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:popular />
+					<fmt:message var="concepts" key="navi.relations" />
+					<nav:crumb name="${concepts}" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		<!--+
 			| infobox
 			+-->
 		<jsp:attribute name="infobox">
@@ -40,7 +50,7 @@
 				    <c:if test="${command.context.userLoggedIn}">
 				    <c:out value=" " />
 						<fmt:message key="tagrelations.all.text.partTwo">
-					    	<fmt:param><a href="/concepts/${mtl:encodeURI(command.context.loginUser.name)}"><fmt:message key="navi.my.plural"/><fmt:message key="navi.relations.cap"/></a></fmt:param>
+					    	<fmt:param><a href="${relativeUrlGenerator.getConceptsUrlByString(command.context.loginUser.name)}"><fmt:message key="navi.my.plural"/><fmt:message key="navi.relations.cap"/></a></fmt:param>
 					      	<fmt:param><a href="/editTags"><fmt:message key="navi.editTags"/></a></fmt:param>
 					    </fmt:message>
 				    </c:if>

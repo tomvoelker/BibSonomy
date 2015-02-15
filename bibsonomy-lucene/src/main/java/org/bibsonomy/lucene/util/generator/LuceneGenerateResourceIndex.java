@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Lucene - Fulltext search facility of BibSonomy
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.lucene.util.generator;
 
 import java.io.File;
@@ -40,9 +66,10 @@ import org.bibsonomy.model.Resource;
  */
 public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable {
 
+	/** suffix for temporary indices */
 	public static final String TMP_INDEX_SUFFIX = ".tmp";
 
-	protected static final Log log = LogFactory.getLog(LuceneGenerateResourceIndex.class);
+	private static final Log log = LogFactory.getLog(LuceneGenerateResourceIndex.class);
 
 	/** the number of posts to fetch from the database by a single generating step */
 	private static final int SQL_BLOCKSIZE = 25000;
@@ -178,7 +205,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 		// create index, possibly overwriting existing index files
 		log.info("Creating empty lucene index...");
 		final Directory indexDirectory = FSDirectory.open(new File(this.resourceIndex.getIndexPath() + TMP_INDEX_SUFFIX));
-		final IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_30, this.resourceIndex.getAnalyzer());
+		final IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_48, this.resourceIndex.getAnalyzer());
 		iwc.setOpenMode(OpenMode.CREATE);
 		this.indexWriter = new IndexWriter(indexDirectory, iwc);
 	}
@@ -200,7 +227,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 		log.info("Number of post entries: " + this.numberOfPosts);
 
 		// initialize variables
-		final Integer lastTasId = this.dbLogic.getLastTasId();
+		Integer lastTasId = this.dbLogic.getLastTasId();
 		Date lastLogDate = this.dbLogic.getLastLogDate();
 
 		if (lastLogDate == null) {
@@ -223,7 +250,11 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 			// cycle through all posts of currently read block
 			for (final LucenePost<R> post : postList) {
 				post.setLastLogDate(lastLogDate);
-				post.setLastTasId(lastTasId);
+				if (post.getLastTasId() == null) {
+					post.setLastTasId(lastTasId);
+				} else {
+					lastTasId = Math.max(lastTasId, post.getLastTasId());
+				}
 
 				if (LuceneGenerateResourceIndex.this.isNotSpammer(post)) {
 					// create index document from post model
@@ -246,10 +277,6 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 		try {
 			executor.shutdown();
 			executor.awaitTermination(18, TimeUnit.HOURS);
-
-			// optimize index
-			log.info("optimizing index " + this.resourceIndex);
-			this.indexWriter.optimize();
 
 			// close resource indexWriter
 			log.info("closing index " + this.resourceIndex);
@@ -282,7 +309,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 		log.info("Number of post entries: " + this.numberOfPosts);
 
 		// initialize variables
-		final Integer lastTasId = this.dbLogic.getLastTasId();
+		//final Integer lastTasId = this.dbLogic.getLastTasId();
 		Date lastLogDate = this.dbLogic.getLastLogDate();
 
 		if (lastLogDate == null) {
@@ -306,7 +333,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 			// cycle through all posts of currently read block
 			for (final LucenePost<R> post : postList) {
 				post.setLastLogDate(lastLogDate);
-				post.setLastTasId(lastTasId);
+				//post.setLastTasId(lastTasId);
 				// executor.execute(new Runnable() {
 
 				// FIXME had to remove Thread creation because reading FolkRank
@@ -338,10 +365,6 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 			executor.shutdown();
 			executor.awaitTermination(18, TimeUnit.HOURS);
 
-			// optimize index
-			log.info("optimizing index " + this.resourceIndex);
-			this.indexWriter.optimize();
-
 			// close resource indexWriter
 			log.info("closing index " + this.resourceIndex);
 			this.indexWriter.close();
@@ -355,6 +378,9 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 	}
 
 	
+	/**
+	 * @param post the post which this object is to be informed about
+	 */
 	protected synchronized void importedPost(final LucenePost<R> post) {
 		// update counter
 		this.numberOfPostsImported++;

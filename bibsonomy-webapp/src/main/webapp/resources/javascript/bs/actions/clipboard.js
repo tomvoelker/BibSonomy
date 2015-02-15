@@ -6,6 +6,10 @@ function unpickAll() {
 	return pickUnpickAll("unpick");
 }
 
+function unescapeAmp(string) {
+	return string.replace(/&amp;/g, "&");
+}
+
 /**
  * Pick or unpick all publications from the current post list.
  * 
@@ -21,7 +25,7 @@ function pickUnpickAll(pickUnpick) {
 		}
 	}
 	);
-	return updateBasket("action=" + pickUnpick + "&hash=" + encodeURIComponent(param));
+	return updateBasket("action=" + pickUnpick + "&hash=" + unescapeAmp(encodeURIComponent(param)));
 }
 
 /**
@@ -34,7 +38,7 @@ function pickUnpickPublication(element) {
 	/*
 	 * pick/unpick publication
 	 */
-	var params = $(element).attr("href").replace(/^.*?\?/, "");
+	var params = unescapeAmp($(element).attr("href")).replace(/^.*?\?/, "");
 	return updateBasket(params);
 }
 
@@ -65,7 +69,9 @@ function updateBasket (param) {
 			// special case for the /clipboard page
 			window.location.reload();
 		} else {
-			$("#pickctr").empty().append(data);
+			//$("#pickctr").empty().append(data);
+			$("#basket-counter").html(data);
+			updateCounter();
 		}
 	}
 	});

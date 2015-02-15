@@ -12,10 +12,10 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:spring="http://www.springframework.org/tags"
-    xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication"
-    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
-    xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion"
-    xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
+	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" description="The publication post that should be rendered."/>
@@ -44,7 +44,6 @@
 		<span> </span>
 	</div> <!-- border -->
 	
-	
 	<c:choose>
 	
 		<!--+
@@ -52,7 +51,8 @@
 			| if own entry, render a two column layout to display documents on the right side
 			| 
 		   	+-->	
-		<c:when test="${isOwnEntry}">
+
+		<c:when test="${isOwnEntry or not empty publication.documents}">
 			
 			<bs:twoColumns columnSizeLeft="8" columnSizeRight="4">
 				<jsp:attribute name="columnLeft">
@@ -123,4 +123,5 @@
 			</c:if>
 		</div>
 	</div>
+	
 </jsp:root>

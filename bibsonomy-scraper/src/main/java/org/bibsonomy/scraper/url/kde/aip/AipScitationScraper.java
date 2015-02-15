@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- *  BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.scraper.url.kde.aip;
 
 import java.net.URL;
@@ -60,6 +63,7 @@ public class AipScitationScraper extends GenericBibTeXURLScraper {
 	private static final String BIBTEX_PATH = "/cite/bibtex";
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(hostPattern, pathPattern));
 	private static final Pattern abstractPattern = Pattern.compile("<meta name=\"citation_abstract\" content=\"(.*)\"\\s*/>");
+	private static final Pattern firstPagePattern = Pattern.compile("<meta name=\"citation_firstpage\" content=\"(.*)\" />");
 	
 	@Override
 	public String getInfo() {
@@ -93,6 +97,18 @@ public class AipScitationScraper extends GenericBibTeXURLScraper {
 		return null;
 	}
 	
+	private static String firstPageParser(URL url){
+		try{
+			Matcher m = firstPagePattern.matcher(WebUtils.getContentAsString(url));
+			if (m.find()) {
+				return m.group(1);
+			}
+		} catch (final Exception e) {
+			log.error("error while getting abstract for " + url, e);
+		}
+		return null;
+	}
+	
 	@Override
 	public String getDownloadURL(URL url) throws ScrapingException {
 		return "http://" + url.getHost().toString() + url.getPath().toString() + BIBTEX_PATH;
@@ -103,6 +119,10 @@ public class AipScitationScraper extends GenericBibTeXURLScraper {
 	 */
 	@Override
 	protected String postProcessScrapingResult(ScrapingContext sc, String result) {
-		return BibTexUtils.addFieldIfNotContained(result, "abstract", abstractParser(sc.getUrl()));
+		// add an abstract
+		String bibtex = BibTexUtils.addFieldIfNotContained(result, "abstract", abstractParser(sc.getUrl()));
+		// fix the eid
+		bibtex = bibtex.replace("eid = ,", "eid = " + firstPageParser(sc.getUrl()) + ",");
+		return bibtex.replaceAll(";jsessionid.*\"$?", "\"");
 	}
 }

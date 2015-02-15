@@ -24,7 +24,7 @@
 			<parts:search pathMessageKey="joinGroup">
 				<jsp:attribute name="pathPart">
 					<li>
-						:: <a href="/group/${mtl:encodeURI(command.group)}" itemprop="name"><c:out value='${command.group}'/></a>
+						:: <a href="${relativeUrlGenerator.getGroupUrlByGroupName(command.group)}" itemprop="name"><c:out value='${command.group}'/></a>
 					</li>
 				</jsp:attribute>
 			</parts:search>
@@ -47,7 +47,7 @@
 				</bs:alert>
 				
 				<form:form action="/join_group" method="POST" cssClass="form-horizontal">
-					<errors:global errors="${errors}"/>
+					<errors:global />
 					
 					<form:hidden path="group" />
 					<input type="hidden" name="ckey" value="${command.context.ckey}"/>
@@ -61,7 +61,9 @@
 							</fmt:message>
 						</jsp:attribute>
 					</bsform:textarea>
-					<bsform:captcha />
+					
+					<bsform:captcha inputColSpan="9"/>
+					
 					<fmt:message key="joinGroup.action" var="buttonValue" />
 					<div class="form-group">
 						<div class="col-sm-offset-3 col-sm-9">
@@ -79,10 +81,10 @@
 			<ul>
 				<!-- loginUser.groups -->
 				<li>
-					<span class="sidebar_h"><a href="/groups"><fmt:message key="groups"/></a></span>
+					<span class="sidebar_h"><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="groups"/></a></span>
 					<ul class="sidebar_collapse_content">
 						<c:forEach var="group" items="${command.context.loginUser.groups}">
-							<li><a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}'/></a></li>
+							<li><a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"><c:out value='${group.name}'/></a></li>
 						</c:forEach>
 					</ul>
 				</li>
