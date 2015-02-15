@@ -1,13 +1,17 @@
 package org.bibsonomy.database.managers;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonResourceRelation;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
@@ -137,7 +141,24 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * 
 	 */
 	public List<PersonName> findPersonNames(String lastName, String firstName, DBSession session) {
-		PersonName personName = new PersonName("%" + lastName + "%").withFirstName("%" + firstName + "%");
+		PersonName personName = new PersonName();
+		if (StringUtils.isBlank(lastName) == false) {
+			personName.withLastName(lastName.trim() + "%");
+			if (StringUtils.isBlank(firstName) == false) {
+				personName.withFirstName(firstName.trim().substring(0, 1) + "%");
+			} else {
+				personName.withFirstName("%");
+			}
+		} else {
+			if (StringUtils.isBlank(firstName) == false) {
+				personName.withFirstName(firstName.trim() + "%");
+				personName.withLastName("%");
+			} else {
+				return new ArrayList<>();
+			}
+		}
+		
+		
 		return (List<PersonName>) this.queryForList("findPersonNames", personName, session);
 	}
 
@@ -204,6 +225,17 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			DBSession databaseSession) {
 		return (List<ResourcePersonRelation>) this.queryForList("getResourceRelationsByRPR", rpr, databaseSession);
 	}
+	
+	public List<ResourcePersonRelation> getResourcePersonRelationsByPost(Post<? extends Resource> post,
+			DBSession databaseSession) {
+		ResourcePersonRelation param = new ResourcePersonRelation();
+		param.setPubOwner(post.getUser().getName());
+		param.setSimhash1(post.getResource().getInterHash());
+		param.setSimhash2(post.getResource().getIntraHash());
+		return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsByPost", param, databaseSession);
+	}
+	
+	
 
 
 	/**

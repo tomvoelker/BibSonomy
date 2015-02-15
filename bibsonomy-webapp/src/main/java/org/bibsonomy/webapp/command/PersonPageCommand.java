@@ -37,6 +37,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	private String formRPRId;
 	private String formInterHash;
 	private String formIntraHash;
+	private boolean formThatsMe;
 	
 	private String formAction;
 	
@@ -478,5 +479,13 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	 */
 	public void setAvailableRoles(List<String> availableRoles) {
 		this.availableRoles = availableRoles;
+	}
+
+	public boolean isFormThatsMe() {
+		return this.formThatsMe;
+	}
+
+	public void setFormThatsMe(boolean formThatsMe) {
+		this.formThatsMe = formThatsMe;
 	}
 }

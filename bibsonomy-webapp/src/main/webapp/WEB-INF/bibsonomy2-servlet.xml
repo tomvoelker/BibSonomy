@@ -348,6 +348,7 @@
 								<value>formIntraHash</value>
 								<value>formResourceHash</value>
 								<value>formUser</value>
+								<value>formThatsMe</value>
 								<value>formOrcid</value>
 								<value>formPersonNameId</value>
 								<value>formFirstName</value>

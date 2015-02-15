@@ -5,12 +5,16 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonResourceRelation;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.services.URLGenerator;
+import org.bibsonomy.util.spring.security.AuthenticationUtils;
 import org.bibsonomy.webapp.command.PersonPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -66,7 +70,24 @@ public class PersonPageController extends SingleResourceListController implement
 	 */
 	@SuppressWarnings("unchecked")
 	private View searchAction(PersonPageCommand command) {
-		List<PersonName> personNames = this.logic.getPersonSuggestion(command.getFormSelectedName(), command.getFormSelectedName());
+		List<PersonName> personNames;
+			List<PersonName> personQuery = null;
+			try {
+				personQuery = PersonNameUtils.discoverPersonNames(command.getFormSelectedName());
+			} catch (PersonListParserException e) {
+				// ok
+			}
+			if (!CollectionUtils.isEmpty(personQuery)) {
+				personNames = this.logic.getPersonSuggestion(personQuery.get(0));
+				String firstName = personQuery.get(0).getFirstName();
+				personQuery.get(0).setFirstName(personQuery.get(0).getLastName());
+				personQuery.get(0).setLastName(firstName);
+				personNames.addAll(this.logic.getPersonSuggestion(personQuery.get(0)));
+			} else {
+				personNames = this.logic.getPersonSuggestion(command.getFormSelectedName(), null);
+			}
+		
+		
 		JSONArray array = new JSONArray();
 		for(PersonName personName : personNames) {
 			JSONObject jsonPersonName = new JSONObject();
@@ -198,6 +219,7 @@ public class PersonPageController extends SingleResourceListController implement
 		command.getPerson().getMainName().setMain(false);
 		command.getPerson().setMainName(Integer.parseInt(command.getFormSelectedName()));
 		command.getPerson().setOrcid(command.getFormOrcid());
+		command.getPerson().setUser(command.isFormThatsMe() ? AuthenticationUtils.getUser().getName() : null);
 		this.logic.createOrUpdatePerson(command.getPerson());
 		
 		return Views.AJAX_TEXT;

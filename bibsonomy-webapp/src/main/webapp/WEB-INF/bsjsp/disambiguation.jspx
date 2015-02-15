@@ -37,7 +37,9 @@
 	<fmt:message key="disambiguation.modalNewPersonHeader" var="textModalnewPersonHeader"/>
 	<fmt:message key="disambiguation.modalNewPersonContent" var="textModalNewPersonContent"/>
 	<fmt:message key="disambiguation.modalSearchPersonHeader" var="textModalSerachPersonHeader"/>
-	<fmt:message key="disambiguation.newPersonButton" var="textNewPersonButton"/>
+	
+	
+	
 	<fmt:message key="disambiguation.linkPersonButton" var="textLinkPersonButton"/>
 	<fmt:message key="disambiguation.noFound" var="textNoFound"/>
 	<fmt:message key="disambiguation.otherPersonButton" var="textOtherPersonButton"/>
@@ -72,16 +74,21 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
+			<fmt:message key="disambiguation.otherPerson" var="textOtherPerson"/>
+			<fmt:message key="disambiguation.otherPerson.modal.msg" var="textOtherPersonMsg"><fmt:param value="${command.requestedAuthorName}"/></fmt:message>
+			<fmt:message key="disambiguation.otherPerson.modal.newPersonButton" var="textNewPersonButton"/>
+			<fmt:message key="disambiguation.otherPerson.modal.selectPersonButton" var="textSelectPersonButton"/>
+			<fmt:message key="disambiguation.otherPerson.modal.abortButton" var="textAbortButton"/>
+			<fmt:message key="disambiguation.noInfo" var="textNoFurtherInfo"/>
+			
+		
+		
 			<div class="page-header">
 				<h1>${textHeader} <small>${command.requestedAuthorName}</small></h1>
 			</div>
 		
 			<c:if test="${not empty command.post}">
-				<div class='panel panel-default'>
-					<div class='panel-heading'>
-						<h4>${textPostPanelHeader}</h4>
-					</div>
-					<div class='panel-body'>
+				<h2><fmt:message key="disambiguation.fromPost"/></h2>
 						<div class="title">
 							<pub:title post="${command.post}">
 								<jsp:attribute name="bibActionButtons">
@@ -91,15 +98,13 @@
 								</jsp:attribute>
 							</pub:title>
 						</div>
-					</div>
-				</div>
 			</c:if>
 			
-			<div class='panel panel-default'>
-				<div class='panel-heading'>
-					<h4>${textPersonsPanelHeader} '${command.requestedAuthorName}'</h4>
-				</div>
-				<div class='panel-body'>
+			<div class="clearfix">&#160;</div>
+			
+			<div class="clearfix">
+				<h2><fmt:message key="disambiguation.pleaseChooseMsg"/></h2>
+			
 					<div class="list-group">
 						<c:choose>
 							<c:when test="${fn:length(command.suggestedPersonNames) gt 0}">
@@ -107,9 +112,11 @@
 									<div class="list-group-item">
 										<a class='btnLinkPerson' data-toggle="modal"  data-target="#linkPerson" href="#linkPerson" data-firstName="${personName.firstName}" data-lastName="${personName.lastName}" data-person-name-id='${personName.id}' data-person-id='${personName.personId}'>
 											${personName.lastName}, ${personName.firstName}
-											<c:if test="${personName.person.academicDegree ne null}">, ${personName.person.academicDegree}</c:if>	 
-											<c:if test="${personName.person.disambiguatingPublication.post ne null}">, ${personName.person.disambiguatingPublication.post.resource.title}</c:if>
-											<c:if test="${personName.person.disambiguatingPublication.post.resource.year ne null}">, (${personName.person.disambiguatingPublication.post.resource.year})</c:if>
+											<c:set var="firstInfo" value="${true}"/>
+											<c:if test="${personName.person.academicDegree ne null}"><c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose>${personName.person.academicDegree}</c:if>	 
+											<c:if test="${personName.person.disambiguatingPublication.post ne null}"><c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose>${personName.person.disambiguatingPublication.post.resource.title}</c:if>
+											<c:if test="${personName.person.disambiguatingPublication.post.resource.year ne null}"><c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose>(${personName.person.disambiguatingPublication.post.resource.year})</c:if>
+											<c:choose><c:when test="${not firstInfo}">)</c:when><c:otherwise> (${textNoFurtherInfo})</c:otherwise></c:choose>
 										</a>
 									</div>
 								</c:forEach>
@@ -120,12 +127,17 @@
 								</div>
 							</c:otherwise>
 						</c:choose>
+						<div class="list-group-item">
+							<a class='btnLinkPerson' data-toggle="modal" data-target="#otherPerson" href="#otherPerson">${textOtherPerson}</a>
+						</div>
 					</div>
+					<!-- 
 					<div class='btn-group pull-right'>
 						<button class='btn btn-primary' data-toggle="modal" data-target="#newPerson">${textNewPersonButton}</button>
 						<button class='btn btn-primary' data-toggle="modal" data-target="#otherPerson">${textSearchPersonButton}</button>
 					</div>	
 				</div>
+				 -->
 			</div>
 		</jsp:attribute>
 	
@@ -142,20 +154,22 @@
 					</div>
 					
 					<div class="modal-body">
-          				<fieldset>
-          					<div class="form-group">
+						<p>${textOtherPersonMsg}</p>
+						<fieldset>
+							<div class="form-group">
 								<label for='addPersonAuto' class="control-label col-md-3">${textPerson}</label>
-        						<div class="col-md-7">
-        							<div class='input-group'>
+								<div class="col-md-7">
+									<div class='input-group'>
 										<input class='form-control typeahead' id='addPersonAuto' type='text' name='addPersonAuto' autocomplete="off"/>
+										<button type="button" class="btn btn-primary" id='btnOtherPersonSubmit' data-person-firstName="${command.personName.firstName}" data-person-lastName="${command.personName.lastName}" data-resource-simhash1="${command.post.resource.interHash}" data-resource-simhash2="${command.post.resource.intraHash}" data-pubowner="${command.post.user.name}">${textSelectPersonButton}</button>
 									</div>
 								</div>
 							</div>
 						</fieldset>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
-						<button type="button" class="btn btn-primary" id='btnOtherPersonSubmit' data-person-firstName="${command.personName.firstName}" data-person-lastName="${command.personName.lastName}" data-resource-simhash1="${command.post.resource.interHash}" data-resource-simhash2="${command.post.resource.intraHash}" data-pubowner="${command.post.user.name}">${textAddPersonButton}</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">${textAbortButton}</button>&#160;
+						<button type="button" class="btn btn-default" id='btnNewPersonSubmit' data-person-firstName="${command.personName.firstName}" data-person-lastName="${command.personName.lastName}" data-resource-simhash1="${command.post.resource.interHash}" data-resource-simhash2="${command.post.resource.intraHash}" data-pubowner="${command.post.user.name}">${textNewPersonButton}</button>
 					</div>
 			</div>
 		</div>
@@ -175,8 +189,8 @@
           				<p>${textModalNewPersonContent}</p>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
-						<button type="button" class="btn btn-primary" id='btnNewPersonSubmit' data-person-firstName="${command.personName.firstName}" data-person-lastName="${command.personName.lastName}" data-resource-simhash1="${command.post.resource.interHash}" data-resource-simhash2="${command.post.resource.intraHash}" data-pubowner="${command.post.user.name}">${textNewPersonButton}</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">${textNewPersonButtonNo}</button>&#160;
+						<button type="button" class="btn btn-primary" id='btnNewPersonSubmit' data-person-firstName="${command.personName.firstName}" data-person-lastName="${command.personName.lastName}" data-resource-simhash1="${command.post.resource.interHash}" data-resource-simhash2="${command.post.resource.intraHash}" data-pubowner="${command.post.user.name}">${textNewPersonButtonYes}</button>
 					</div>
 			</div>
 		</div>

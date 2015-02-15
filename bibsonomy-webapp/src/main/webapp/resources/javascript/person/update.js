@@ -7,7 +7,9 @@ $(document).ready(function() {
 					formPersonId: e.attr("data-person-id"),
 					formSelectedName: $("input[name=formSelectedName]:checked").val(),
 					formAcademicDegree: $("#formAcademicDegree").val(),
-					formOrcid: $("#formOrcid").val()
+					formOrcid: $("#formOrcid").val(),
+					formThatsMe: $("#formThatsMe").val()
+					
 				}
 		).done(function(data) {
 			e.removeClass("btn-primary");

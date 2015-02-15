@@ -43,6 +43,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 	private View indexAction(DisambiguationPageCommand command) {
 
 		command.setPost(this.logic.getPostDetails(command.getRequestedHash(), command.getRequestedUser()));
+		// FIXME: use personnameutils
 		PersonName pn = new PersonName(command.getRequestedAuthorName().split(", ")[0].trim()).withFirstName(command.getRequestedAuthorName().split(", ")[1].trim());
 		command.setPersonName(pn);
 		command.setSuggestedPersonNames(this.logic.getPersonSuggestion(pn.getLastName(), pn.getFirstName()));

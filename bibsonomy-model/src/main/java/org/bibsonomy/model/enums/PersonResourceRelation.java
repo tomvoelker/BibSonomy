@@ -14,25 +14,26 @@ import org.bibsonomy.model.Resource;
  */
 public enum PersonResourceRelation {
 	/**
-	 * Author
+	 * doctor vater
 	 */
-	AUTHOR("Maut"),
-	/**
-	 * thesis advisor
-	 */
-	THESIS_ADVISOR("Mths"),
-	/**
-	 * reviewer of a thesis
-	 */
-	THESIS_REVIEWER("Mrev"),
+	THESIS_DOCTOR_VATER("Bdtv"),
 	/**
 	 * first reviewer of thesis
 	 */
 	THESIS_FIRST_REVIEWER("B1st"),
 	/**
-	 * doctor vater
+	 * reviewer of a thesis
 	 */
-	THESIS_DOCTOR_VATER("Bdtv"),
+	THESIS_REVIEWER("Mrev"),
+	
+	/**
+	 * thesis advisor
+	 */
+	THESIS_ADVISOR("Mths"),
+	/**
+	 * Author
+	 */
+	AUTHOR("Maut"),
 	/**
 	 * some non-specific relation influence
 	 */

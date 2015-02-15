@@ -73,7 +73,7 @@
 	<fmt:message key="person.show.saveButton" var="textSaveButton" />
 	<fmt:message key="person.show.supervisor" var="textSupervisor" />
 	<fmt:message key="person.show.thatsMeButton" var="textThatsMeButton" />
-	<fmt:message key="person.show.thatsNotMeButton" var="textThatsNotMeButton" />
+	<fmt:message key="person.show.thatsMeLabel" var="textThatsMeLabel" />
 	<fmt:message key="person.show.thesis" var="textThesis" />
 	
 	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" 
@@ -178,26 +178,46 @@
 							</div>
 						</div>
 						<div class='form-group'>
-								<label class="control-label col-md-4" for='formOrcid'>${textOrcidId}</label>
+							<label class="control-label col-md-4" for='formOrcid'>${textOrcidId}</label>
+							<div class="col-md-6">
+								<input class='form-control' type="text" name='formOrcid' id='formOrcid' placeholder="${textOrcidId}" value="${command.person.orcid}"/>
+							</div>
+						</div>
+						<div class='form-group'>
+							<label class="control-label col-md-4" for='thatsMe'>${textThatsMeLabel}</label>
 								<div class="col-md-6">
-									<input class='form-control' type="text" name='formOrcid' id='formOrcid' placeholder="${textOrcidId}" value="${command.person.orcid}"/>
+									<div class="checkbox"><label>
+										<c:choose>
+											<c:when test='${command.person.user eq command.context.loginUser.name}'>
+												<input type="checkbox" name='formThatsMe' id='formThatsMe' checked="checked" /> ${textThatsMeButton}
+											</c:when>
+											<c:otherwise>
+												<input type="checkbox" name='formThatsMe' id='formThatsMe' /> ${textThatsMeButton}
+											</c:otherwise>
+										</c:choose>
+									</label>
 								</div>
 							</div>
+						</div>
+						
 						<br/>
 						<div class='col-md-4'>&#160;</div>
 						<div class="col-md-6">
-						<c:choose>
-							<c:when test='${command.person.user ne null}'>
-								<c:set var="displayLinkButton" value='display:none'/>
-								<c:set var="displayUnlinkButton" value='' />
-							</c:when>
-							<c:otherwise>
-								<c:set var="displayLinkButton" value=''/>
-								<c:set var="displayUnlinkButton" value='display:none' />
-							</c:otherwise>
-						</c:choose>
+							<!-- 
+							<c:choose>
+								<c:when test='${command.person.user eq null}'>
+									${textThatsMeButton}
+									<c:set var="displayLinkButton" value='display:none'/>
+									<c:set var="displayUnlinkButton" value='' />
+								</c:when>
+								<c:otherwise>
+									<c:set var="displayLinkButton" value=''/>
+									<c:set var="displayUnlinkButton" value='display:none' />
+								</c:otherwise>
+							</c:choose>
 							<button style='${displayLinkButton}' type='button' id='btnLink' class='btn btn-default' data-toggle="modal" data-target="#linkPerson">${textThatsMeButton}</button>
 							<button style='${displayUnlinkButton}' type='button' id='btnUnlink' class='btn btn-default' data-toggle="modal" data-target="#unlinkPerson">${textThatsNotMeButton}</button>
+							-->
 							<button id='btnSaveSubmit' data-person-id="${command.person.id}" type='button' class='btn btn-primary pull-right'>${textSaveButton}</button>
 						</div>
 					</div>
