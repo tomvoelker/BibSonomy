@@ -9,4 +9,10 @@
 		WHERE user_name = #name#
 	</select>
 
+	<select id="getGroupLevelPermissionIdsForUser" resultClass="Integer" parameterClass="string">
+		SELECT p.permission
+		FROM group_memberships m JOIN group_level_permission p USING (`group`)
+		WHERE m.user_name = #name#
+	</select>
+
 </sqlMap>

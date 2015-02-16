@@ -29,11 +29,12 @@ package org.bibsonomy.rest.strategy.groups;
 import java.io.ByteArrayOutputStream;
 import java.io.Reader;
 import java.util.List;
-
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.Context;
@@ -67,15 +68,13 @@ public class AddUserToGroupStrategy extends Strategy {
 		 */
 		final Group group = new Group(this.groupName);
 		/*
-		 * all users which are written here into the group are ADDED to the group - i.e., existing
-		 * users within the group are not touched. 
-		 */ 
-		group.setUsers(users);
-		/*
 		 * add users to group
 		 */
 		try {
-			this.getLogic().updateGroup(group, GroupUpdateOperation.ADD_NEW_USER);
+			// TODO: Convert this to the new group concept, aka you can't just
+			// add users.
+			for (User u : users)
+				this.getLogic().updateGroup(group, GroupUpdateOperation.ADD_MEMBER, new GroupMembership(u, GroupRole.USER, false));
 		}
 		catch (ValidationException ve) {
 			throw new BadRequestOrResponseException(ve.getMessage());

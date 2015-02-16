@@ -296,4 +296,27 @@ public class UserUtils {
 		existingUser.setReminderPassword(!present(updatedUser.getReminderPassword()) ? existingUser.getReminderPassword() : updatedUser.getReminderPassword());
 		existingUser.setReminderPasswordRequestDate(!present(updatedUser.getReminderPasswordRequestDate()) 	? existingUser.getReminderPasswordRequestDate() : updatedUser.getReminderPasswordRequestDate());
 	}
+	
+	/**
+	 * @param user
+	 * @return <code>true</code> iff the user exists in the system
+	 */
+	public static boolean isExistingUser(final User user) {
+		return present(user) && !Role.DELETED.equals(user.getRole()) && present(user.getName());
+	}
+	
+	/**
+	 * This method returns a new groupuser {@link User} for the given group
+	 * 
+	 * @param groupName the name of the group
+	 * @return the group user
+	 */
+	public static User buildGroupUser(final String groupName) {
+		final User user = new User(groupName);
+		user.setPassword(generateRandomPassword());
+		user.setRealname(""); // XXX: realname can't be null (db schema)
+		user.setEmail(""); // XXX: email can't be null (db schema)
+		user.setRole(Role.GROUPUSER);
+		return user;
+	}
 }

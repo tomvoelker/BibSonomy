@@ -30,6 +30,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.InetAddress;
 import java.net.URI;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -60,13 +61,14 @@ import org.bibsonomy.model.Author;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.GoldStandardRelation;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
@@ -235,7 +237,10 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<Group> getGroups(final int start, final int end) {
+	public List<Group> getGroups(boolean pending, final int start, final int end) {
+		if (pending) {
+			throw new UnsupportedOperationException("quering for pending groups not supported");
+		}
 		return execute(new GetGroupListQuery(start, end));
 	}
 
@@ -285,11 +290,6 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public void deleteUserFromGroup(final String groupName, final String userName) {
-		execute(new RemoveUserFromGroupQuery(userName, groupName));
-	}
-
-	@Override
 	public String createGroup(final Group group) {
 		return execute(new CreateGroupQuery(group));
 	}
@@ -314,13 +314,16 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
+	// TODO: Establish new group concept in here.
+	public String updateGroup(final Group group, final GroupUpdateOperation operation, GroupMembership ms) {
+		final String groupName = group.getName();
 		switch (operation) {
-		case ADD_NEW_USER:
-			return execute(new AddUsersToGroupQuery(group.getName(), group.getUsers()));
-		default:
-			// groups cannot be renamed
-			return execute(new ChangeGroupQuery(group.getName(), group));
+			case ADD_MEMBER:
+				return execute(new AddUsersToGroupQuery(groupName, Collections.singletonList(ms)));
+			case REMOVE_MEMBER:
+				return execute(new RemoveUserFromGroupQuery(ms.getUser().getName(), groupName));
+			default:
+				return execute(new ChangeGroupQuery(groupName, group));
 		}
 	}
 
@@ -702,8 +705,8 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info) {
-		this.execute(new ChangeSyncStatusQuery(service.toString(), resourceType, null, null, status, info));
+	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info, Date newSyncDate) {
+		this.execute(new ChangeSyncStatusQuery(service.toString(), resourceType, null, null, status, info, newSyncDate));
 	}
 
 	@Override
@@ -741,6 +744,6 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey) {
-		throw new UnsupportedOperationException(); // TODO: implement me
+		throw new UnsupportedOperationException();
 	}
 }

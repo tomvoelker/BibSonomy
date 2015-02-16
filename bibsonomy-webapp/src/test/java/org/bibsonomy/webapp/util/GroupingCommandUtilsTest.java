@@ -51,7 +51,7 @@ public class GroupingCommandUtilsTest {
 	private static final String GROUP_NAME_2 = "testgroup2";
 	
 	private static final Group PUBLIC_GROUP = GroupUtils.getPublicGroup();
-	private static final Group PRIVATE_GROUP = GroupUtils.getPrivateGroup();
+	private static final Group PRIVATE_GROUP = GroupUtils.buildPrivateGroup();
 	
 	/**
 	 * test {@link GroupingCommandUtils#initCommandGroups(GroupingCommand, Set)}

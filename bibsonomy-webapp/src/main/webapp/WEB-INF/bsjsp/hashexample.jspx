@@ -11,11 +11,11 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication"
+	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
 
 	<fmt:message key="navi.bibtexhashexample" var="bibtexhashexamplePageTitle"/>
 
@@ -40,22 +40,32 @@
 			</bs:alert>
 			<form:form class="form-horizontal" role="form">
 				<editpub:required post="${command.post}" autocompletion="${false}" hideBibTeXKey="${true}" hideAuthorClaim="${true}" />
-				
-				<bsform:input path="post.resource.journal" inputColSpan="9"/>
-				<bsform:input path="post.resource.booktitle" inputColSpan="9"/>
-				<bsform:input path="post.resource.volume" inputColSpan="9"/>
-				<bsform:input path="post.resource.number" inputColSpan="9"/>
+				<c:set var="inputColSpan" value="9" />
+				<bsform:input path="post.resource.journal" inputColSpan="${inputColSpan}"/>
+				<bsform:input path="post.resource.booktitle" inputColSpan="${inputColSpan}"/>
+				<bsform:input path="post.resource.volume" inputColSpan="${inputColSpan}"/>
+				<bsform:input path="post.resource.number" inputColSpan="${inputColSpan}"/>
 				<fmt:message var="save" key="submit" />
-				<input class="btn btn-primary col-sm-offset-3" id="calc" type="submit" value="${save}" onclick="clear_tags();" tabindex="2"/>
+				<input class="btn btn-primary col-sm-offset-${12 - inputColSpan}" id="calc" type="submit" value="${save}" onclick="clear_tags();" tabindex="2"/>
 			</form:form>
 			<!-- TODO: error validation in controller? -->
 			<h3><fmt:message key="bibtexhashexample.result"/></h3>
-			<div class="fsRow">
-				<span class="fsLabel">intra hash</span><tt>${hash.intra.id}${command.post.resource.intraHash}</tt> &#8594; <tt><a href="${relativeUrlGenerator.getPublicationUrlByIntraHash(command.post.resource.intraHash)}">${relativeUrlGenerator.getPublicationUrlByIntraHash(command.post.resource.intraHash)}</a></tt>
-			</div>
-			<div class="fsRow">
-				<span class="fsLabel">inter hash</span><tt>${hash.inter.id}${command.post.resource.interHash}</tt> &#8594; <tt><a href="${relativeUrlGenerator.getPublicationUrlByInterHash(command.post.resource.interHash)}">${relativeUrlGenerator.getPublicationUrlByInterHash(command.post.resource.interHash)}</a></tt>
-			</div>
+			<dl class="dl-horizontal">
+				<dt>Intra hash</dt>
+				<dd>
+					<p><code><spring:eval expression="T(org.bibsonomy.common.enums.HashID).INTRA_HASH.id" />${command.post.resource.intraHash}</code></p>
+					<p>
+						<a href="${relativeUrlGenerator.getPublicationUrlByIntraHash(command.post.resource.intraHash)}">${relativeUrlGenerator.getPublicationUrlByIntraHash(command.post.resource.intraHash)}</a>
+					</p>
+				</dd>
+				<dt>Inter hash</dt>
+				<dd>
+					<p><code><spring:eval expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />${command.post.resource.interHash}</code></p>
+					<p>
+						<a href="${relativeUrlGenerator.getPublicationUrlByInterHash(command.post.resource.interHash)}">${relativeUrlGenerator.getPublicationUrlByInterHash(command.post.resource.interHash)}</a>
+					</p>
+				</dd>
+			</dl>
 		</jsp:attribute>
 	</layout:paneLayout>
 </jsp:root>

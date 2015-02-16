@@ -6,7 +6,9 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
-	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/resources/actionbuttons"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
@@ -70,6 +72,7 @@
 							<c:otherwise>
 								<div class="pull-right btn-group dropdown-align-right" style="margin-bottom: 2px;">
 									<bsform:button gear="${true}" value="" dropdown="${true}" size="xsmall" style="defaultStyle" dataToggle="dropdown" />
+									
 									<ul class="dropdown-menu list-options">
 				
 										<rc:actions 
@@ -83,6 +86,7 @@
 											disableListNavigation="${disableListNavigation}"
 											disableResourcetypeSelection="${disableResourcetypeSelection}"/>
 							  		</ul>
+								  	
 								</div>
 							</c:otherwise>
 						</c:choose>
@@ -93,7 +97,7 @@
 		
 		<jsp:attribute name="title">     <bm:title   post="${post}"/></jsp:attribute>
 		<jsp:attribute name="desc">	     <bm:desc    post="${post}"/></jsp:attribute>
-		<jsp:attribute name="actions">   <bm:actions post="${post}" loginUserName="${loginUserName}"/></jsp:attribute>
+		<jsp:attribute name="actions">   <buttons:actions post="${post}" loginUserName="${loginUserName}" resourceType="bookmark"/></jsp:attribute>
 		<jsp:attribute name="documents"> <bm:documents  post="${post}"/></jsp:attribute>
 	</rc:list>
 	

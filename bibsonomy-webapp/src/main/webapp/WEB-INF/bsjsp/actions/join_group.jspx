@@ -46,7 +46,7 @@
 					</jsp:attribute>
 				</bs:alert>
 				
-				<form:form action="/join_group" method="POST" cssClass="form-horizontal">
+				<form:form action="/joinGroup" method="POST" cssClass="form-horizontal">
 					<errors:global />
 					
 					<form:hidden path="group" />

@@ -140,6 +140,7 @@ public interface PostLogicInterface {
 	 * @param operation  which parts of the posts should be updated
 	 * @return resourceHashes the (new) hashes of the updated resources
 	 */
+	
 	public List<String> updatePosts(List<Post<? extends Resource>> posts, PostUpdateOperation operation);
 	
 	/**  
@@ -172,4 +173,5 @@ public interface PostLogicInterface {
 	 * @return a filtered list of posts. may be empty but not null
 	 */
 	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, FilterEntity filter, StatisticsConstraint constraint, Order order, Date startDate, Date endDate, int start, int end);
+	
 }

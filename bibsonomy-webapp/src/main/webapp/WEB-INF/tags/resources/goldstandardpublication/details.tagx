@@ -33,7 +33,7 @@
 		
 		<!-- title of the publication -->
 		<h2 id="gold_title" data-interhash="${goldstandard.interHash}">
-			<a href="${relativeUrlGenerator.getGoldstandardUrlByInterHash(goldstandard.interHash)}" itemprop="name"><c:out value="${mtl:cleanBibtex(goldstandard.title)}"/></a>
+			<a href="${relativeUrlGenerator.getCommunityPublicationUrlByInterHash(goldstandard.interHash)}" itemprop="name"><c:out value="${mtl:cleanBibtex(goldstandard.title)}"/></a>
 		</h2>
 		<bib:desc publication="${post.resource}"/>
 		

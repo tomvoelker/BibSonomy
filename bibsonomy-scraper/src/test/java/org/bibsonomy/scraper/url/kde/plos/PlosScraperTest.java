@@ -149,7 +149,7 @@ public class PlosScraperTest {
 		final String reference = sc.getReferences();		
 		assertNotNull(reference);
 		assertTrue(reference.length() > 100);
-		assertEquals("<li><span class=\"label\">1.".trim(), reference.substring(0, 30).trim());
+		assertEquals("<li><span class=\"order\">1.".trim(), reference.substring(0, 30).trim());
 		assertTrue(reference.contains("Portaels F"));
 	}
 
