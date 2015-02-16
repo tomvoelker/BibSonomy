@@ -54,7 +54,7 @@ public class ExportPageCommand extends ResourceViewCommand {
 	}
 	
 	/**
-	 * adds all maps o the layout map
+	 * adds all maps to the the layout map
 	 * @param map
 	 */
 	public void addLayoutMap(final Map<String, ? extends Layout> map) {

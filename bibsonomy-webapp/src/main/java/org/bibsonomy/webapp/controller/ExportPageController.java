@@ -79,7 +79,7 @@ public class ExportPageController implements
 				command.addLayout(this.layoutRenderer.getLayout("custom",
 						command.getContext().getLoginUser().getName()));
 			} catch (LayoutRenderingException | IOException e) {
-				e.printStackTrace();
+				// ignore because reasons 
 			}
 		}
 

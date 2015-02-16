@@ -109,8 +109,7 @@
 				  			<!-- 
 			  				| JabRef layouts
 			  				 -->
-							<c:when test="${'JabrefLayout' eq mapEntry.value['class'].simpleName 
-								or 'MSOfficeXMLLayout' eq mapEntry.value['class'].simpleName}">							
+			  				<c:when test="${abstractJabRefLayoutClass.isInstance(mapEntry.value)}">						
 								<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />	
 								<td>
 									<a class="btn btn-primary btn-sm export-link" href="${fn:escapeXml(url)}" > 
@@ -211,7 +210,7 @@
 				  			<!-- 
 			  				| JabRef layouts
 			  				 -->
-							<c:when test="${'JabrefLayout' eq mapEntry.value['class'].simpleName}">
+			  				 <c:when test="${abstractJabRefLayoutClass.isInstance(mapEntry.value)}">
 								<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />	
 								<td>
 									<a href="${url}" class="btn btn-primary btn-sm export-link">
