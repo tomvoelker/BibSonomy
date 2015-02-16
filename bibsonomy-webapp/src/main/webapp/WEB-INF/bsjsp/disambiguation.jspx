@@ -65,6 +65,11 @@
 			<script type='text/javascript' src='/resources/javascript/disambiguation/autocompleteOtherPerson.js'><!-- keep me --></script>
 			
 			<link rel="stylesheet" type="text/css" href='/resources/typeahead.js/css/typeahead.css'/>
+			<style type="text/css">
+				.authorName {
+					font-weight: bold;
+				}
+			</style>
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading">
@@ -75,10 +80,13 @@
 
 		<jsp:attribute name="content">
 			<fmt:message key="disambiguation.otherPerson" var="textOtherPerson"/>
+			<fmt:message key="disambiguation.otherPerson.modal.title" var="textOtherPersonMsg"><fmt:param value="${command.requestedAuthorName}"/></fmt:message>
 			<fmt:message key="disambiguation.otherPerson.modal.msg" var="textOtherPersonMsg"><fmt:param value="${command.requestedAuthorName}"/></fmt:message>
 			<fmt:message key="disambiguation.otherPerson.modal.newPersonButton" var="textNewPersonButton"/>
 			<fmt:message key="disambiguation.otherPerson.modal.selectPersonButton" var="textSelectPersonButton"/>
 			<fmt:message key="disambiguation.otherPerson.modal.abortButton" var="textAbortButton"/>
+			<fmt:message key="disambiguation.otherPerson.modal.search.placeholder" var="textPersonSearchPlaceholder"/>
+			
 			<fmt:message key="disambiguation.noInfo" var="textNoFurtherInfo"/>
 			
 		
@@ -103,19 +111,19 @@
 			<div class="clearfix">&#160;</div>
 			
 			<div class="clearfix">
-				<h2><fmt:message key="disambiguation.pleaseChooseMsg"/></h2>
-			
+				<h2><fmt:message key="disambiguation.pleaseChooseMsg"><fmt:param value="${command.requestedAuthorName}"/></fmt:message></h2>
+				<p><fmt:message key="disambiguation.listExplanation"/></p>
 					<div class="list-group">
 						<c:choose>
 							<c:when test="${fn:length(command.suggestedPersonNames) gt 0}">
 								<c:forEach var='personName' items="${command.suggestedPersonNames}">
 									<div class="list-group-item">
 										<a class='btnLinkPerson' data-toggle="modal"  data-target="#linkPerson" href="#linkPerson" data-firstName="${personName.firstName}" data-lastName="${personName.lastName}" data-person-name-id='${personName.id}' data-person-id='${personName.personId}'>
-											${personName.lastName}, ${personName.firstName}
+											<span class="authorName">${personName.lastName}, ${personName.firstName}</span>
 											<c:set var="firstInfo" value="${true}"/>
-											<c:if test="${personName.person.academicDegree ne null}"><c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose>${personName.person.academicDegree}</c:if>	 
-											<c:if test="${personName.person.disambiguatingPublication.post ne null}"><c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose>${personName.person.disambiguatingPublication.post.resource.title}</c:if>
-											<c:if test="${personName.person.disambiguatingPublication.post.resource.year ne null}"><c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose>(${personName.person.disambiguatingPublication.post.resource.year})</c:if>
+											<c:if test="${not empty personName.person.academicDegree}"><c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose>${personName.person.academicDegree}</c:if>	 
+											<c:if test="${not empty personName.person.disambiguatingPublication.post}"><c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose>${personName.person.disambiguatingPublication.post.resource.title}</c:if>
+											<c:if test="${not empty personName.person.disambiguatingPublication.post.resource.year}"><c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose>(${personName.person.disambiguatingPublication.post.resource.year})</c:if>
 											<c:choose><c:when test="${not firstInfo}">)</c:when><c:otherwise> (${textNoFurtherInfo})</c:otherwise></c:choose>
 										</a>
 									</div>
@@ -128,7 +136,7 @@
 							</c:otherwise>
 						</c:choose>
 						<div class="list-group-item">
-							<a class='btnLinkPerson' data-toggle="modal" data-target="#otherPerson" href="#otherPerson">${textOtherPerson}</a>
+							<a class='btnLinkPerson' data-toggle="modal" data-target="#otherPerson" href="#otherPerson"><span class="authorName">${textOtherPerson}</span></a>
 						</div>
 					</div>
 					<!-- 
@@ -150,7 +158,7 @@
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal"
 							aria-hidden="true">&amp;times;</button>
-						<h4 class="modal-title">${textModalSearchPersonHeader}</h4>
+						<h4 class="modal-title"><p><fmt:message key="disambiguation.otherPerson.modal.title"/></p></h4>
 					</div>
 					
 					<div class="modal-body">
@@ -160,7 +168,7 @@
 								<label for='addPersonAuto' class="control-label col-md-3">${textPerson}</label>
 								<div class="col-md-7">
 									<div class='input-group'>
-										<input class='form-control typeahead' id='addPersonAuto' type='text' name='addPersonAuto' autocomplete="off"/>
+										<input class='form-control typeahead' id='addPersonAuto' type='text' name='addPersonAuto' autocomplete="off" autofocus="autofocus" placeholder="${textPersonSearchPlaceholder}"/>
 										<button type="button" class="btn btn-primary" id='btnOtherPersonSubmit' data-person-firstName="${command.personName.firstName}" data-person-lastName="${command.personName.lastName}" data-resource-simhash1="${command.post.resource.interHash}" data-resource-simhash2="${command.post.resource.intraHash}" data-pubowner="${command.post.user.name}">${textSelectPersonButton}</button>
 									</div>
 								</div>
@@ -175,27 +183,6 @@
 		</div>
 	</div>
 	
-	<div class="modal fade" id="newPerson" tabindex="-1" role="dialog"
-		aria-labelledby="newPersonLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-hidden="true">&amp;times;</button>
-						<h4 class="modal-title">${textModalNewPersonHeader}</h4>
-					</div>
-					
-					<div class="modal-body">
-          				<p>${textModalNewPersonContent}</p>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">${textNewPersonButtonNo}</button>&#160;
-						<button type="button" class="btn btn-primary" id='btnNewPersonSubmit' data-person-firstName="${command.personName.firstName}" data-person-lastName="${command.personName.lastName}" data-resource-simhash1="${command.post.resource.interHash}" data-resource-simhash2="${command.post.resource.intraHash}" data-pubowner="${command.post.user.name}">${textNewPersonButtonYes}</button>
-					</div>
-			</div>
-		</div>
-	</div>
-	
 	<div class="modal fade" id="linkPerson" tabindex="-1" role="dialog"
 		aria-labelledby="linkPersonLabel" aria-hidden="true">
 		<div class="modal-dialog">
@@ -203,16 +190,16 @@
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal"
 							aria-hidden="true">&amp;times;</button>
-						<h4 class="modal-title">${textModalLinkPersonHeader}</h4>
+						<h4 class="modal-title"><fmt:message key="disambiguation.link.modal.title"/></h4>
 					</div>
 					
 					<div class="modal-body">
-          				<p>${textModalLinkPersonContent}</p>
+						<p><fmt:message key="disambiguation.link.modal.msg"/></p>
 					</div>
 					<div class="modal-footer">
-						<a href='#showPerson' id='linkShowPerson' type="button" class="pull-left btn btn-primary">${textJustShowPerson}</a> 
-						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
-						<button type="button" class="btn btn-primary" id='btnLinkPersonSubmit' data-resource-simhash1='${command.post.resource.interHash}' data-resource-simhash2='${command.post.resource.intraHash}' data-pub-owner='${command.requestedUser}'>${textLinkPersonButton}</button>
+						<a href='#showPerson' id='linkShowPerson' type="button" class="pull-left btn btn-default"><fmt:message key="disambiguation.link.modal.viewButton"/></a> 
+						<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="disambiguation.link.modal.abortButton"/></button>&#160;
+						<button type="button" class="btn btn-primary" id='btnLinkPersonSubmit' data-resource-simhash1='${command.post.resource.interHash}' data-resource-simhash2='${command.post.resource.intraHash}' data-pub-owner='${command.requestedUser}'><fmt:message key="disambiguation.link.modal.saveButton"/></button>
 					</div>
 			</div>
 		</div>
