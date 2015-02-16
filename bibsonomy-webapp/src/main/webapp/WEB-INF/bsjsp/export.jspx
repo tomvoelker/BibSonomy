@@ -172,7 +172,7 @@
  					<tr>
 	  				<c:url var="url" value="/layout/custom/${pathAndQueryString}" />
 						<td>
-							<a class="btn btn-default btn-sm export-link" href="${url}">
+							<a class="btn btn-primary btn-sm export-link" href="${url}">
 		  						<span class="glyphicon glyphicon-download-alt" />	
 							</a>
 						</td>
