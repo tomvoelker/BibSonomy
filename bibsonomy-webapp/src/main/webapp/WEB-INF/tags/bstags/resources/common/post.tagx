@@ -52,7 +52,7 @@
 			<!-- IN MY COLLECTION: only display the in-my-collection-icon when the user is logged in -->
 			<!-- FIXME: user name for community posts not given - copying currently not possible -->
 			<c:choose>
-				<c:when test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name)}">	
+				<c:when test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name) and not isRemotePost}">	
 					<div class="in-my-collection glyphicon glyphicon-bookmark"><!--  --></div>
 				</c:when>
 				<c:otherwise>

@@ -72,6 +72,7 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.lucene.util.generator.AbstractIndexGenerator#addPostToIndex(org.bibsonomy.lucene.param.LucenePost)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void addPostToIndex(LucenePost<R> post) {
 		Map<String, Object> jsonDocument = new HashMap<String, Object>();
@@ -129,10 +130,16 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 		esClient.getClient().admin().indices().flush(new FlushRequest(ESConstants.INDEX_NAME).full(true)).actionGet();
 	}
 
+	/**
+	 * @return returns the converter
+	 */
 	public LuceneResourceConverter<R> getResourceConverter() {
 		return this.resourceConverter;
 	}
 
+	/**
+	 * @param resourceConverter
+	 */
 	public void setResourceConverter(LuceneResourceConverter<R> resourceConverter) {
 		this.resourceConverter = resourceConverter;
 	}

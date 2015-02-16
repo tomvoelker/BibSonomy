@@ -44,8 +44,8 @@ import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.UrlUtils;
 
 /**
- * TODO: Unify URL constructions for various cases (history, community posts, regular posts)
- * Generates the URLs used by the web application.
+ * TODO: Unify URL constructions for various cases (history, community posts,
+ * regular posts) Generates the URLs used by the web application.
  * 
  * @author rja
  */
@@ -88,8 +88,8 @@ public class URLGenerator {
 		}
 	}
 
-	private static final String BOOKMARK=Bookmark.class.getSimpleName(); 
-	
+	private static final String BOOKMARK = Bookmark.class.getSimpleName();
+
 	private static final String ADMIN_PREFIX = "admin";
 	private static final String AUTHOR_PREFIX = "author";
 	private static final String BIBTEXEXPORT_PREFIX = "bib";
@@ -97,11 +97,15 @@ public class URLGenerator {
 	public static final String BOOKMARK_PREFIX = "url";
 	private static final String CONCEPTS_PREFIX = "concepts";
 	private static final String CONCEPT_PREFIX = "concept";
+	private static final String DOCUMENT_PREFIX = "documents";
 	private static final String FOLLOWERS_PREFIX = "followers";
 	private static final String FRIEND_PREFIX = "friend";
 	private static final String GROUPS = "groups";
 	private static final String GROUP_PREFIX = "group";
 	private static final String LOGIN_PREFIX = "login";
+	private static final String LAYOUT_PREFIX = "layout";
+	private static final String ENDNOTE_PREFIX = "endnote";
+	private static final String MSWORD_PREFIX = "msofficexml";
 	private static final String REGISTER = "register";
 	private static final String MYBIBTEX_PREFIX = "myBibTex";
 	private static final String MYDOCUMENTS_PREFIX = "myDocuments";
@@ -120,9 +124,11 @@ public class URLGenerator {
 	private static final String VIEWABLE_FRIENDS_SUFFIX = "friends";
 	private static final String VIEWABLE_PRIVATE_SUFFIX = "private";
 	private static final String VIEWABLE_PUBLIC_SUFFIX = "public";
-	
-	private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
-	private static final String PUBLICATION_INTER_HASH_ID = String.valueOf(HashID.INTER_HASH.getId());
+
+	private static final String PUBLICATION_INTRA_HASH_ID = String
+			.valueOf(HashID.INTRA_HASH.getId());
+	private static final String PUBLICATION_INTER_HASH_ID = String
+			.valueOf(HashID.INTER_HASH.getId());
 
 	/**
 	 * The default gives relative URLs.
@@ -133,11 +139,12 @@ public class URLGenerator {
 	 * Per default, generated URLs are not checked.
 	 */
 	private boolean checkUrls = false;
-	
+
 	/**
 	 * Prefix to be inserted after the project home.
 	 */
 	private String prefix = "";
+
 	/**
 	 * Sets up a new URLGenerator with the default projectHome ("/") and no
 	 * checking of URLs.
@@ -160,7 +167,8 @@ public class URLGenerator {
 	 * Creates an absolute URL for the given path.
 	 * 
 	 * @param path
-	 *			- the path part of the URL (TODO: with or without leading "/"?)
+	 *            - the path part of the URL (TODO: with or without leading
+	 *            "/"?)
 	 * @return The absolute URL.
 	 */
 	public String getAbsoluteUrl(final String path) {
@@ -168,8 +176,8 @@ public class URLGenerator {
 	}
 
 	/**
-	 * Constructs a url to the admin page if no name is given
-	 * or a url to a subpage otherwise
+	 * Constructs a url to the admin page if no name is given or a url to a
+	 * subpage otherwise
 	 * 
 	 * @param name
 	 * @return The URL pointing to the page.
@@ -181,26 +189,38 @@ public class URLGenerator {
 		}
 		return this.getUrl(url);
 	}
-	
+
 	/**
 	 * Constructs the URL for the author's page.
 	 * 
-	 * @param name the name of the author
+	 * @param name
+	 *            the name of the author
 	 * @return The URL for the author's page.
 	 */
 	public String getAuthorUrlByPersonName(final PersonName name) {
-		final String url = this.projectHome + prefix + AUTHOR_PREFIX + "/" + UrlUtils.safeURIEncode(name.getFirstName() + " " + name.getLastName());
+		final String url = this.projectHome
+				+ prefix
+				+ AUTHOR_PREFIX
+				+ "/"
+				+ UrlUtils.safeURIEncode(name.getFirstName() + " "
+						+ name.getLastName());
 		return this.getUrl(url);
 	}
-	
+
 	/**
 	 * Constructs the URL for the author's page.
 	 * 
-	 * @param author the name of the author
+	 * @param author
+	 *            the name of the author
 	 * @return The URL for the author's page.
 	 */
 	public String getAuthorUrlByAuthor(final Author author) {
-		final String url = this.projectHome + prefix + AUTHOR_PREFIX + "/" + UrlUtils.safeURIEncode(author.getFirstName() + " " + author.getLastName());
+		final String url = this.projectHome
+				+ prefix
+				+ AUTHOR_PREFIX
+				+ "/"
+				+ UrlUtils.safeURIEncode(author.getFirstName() + " "
+						+ author.getLastName());
 		return this.getUrl(url);
 	}
 
@@ -211,44 +231,55 @@ public class URLGenerator {
 	 * @return The URL for the author's page.
 	 */
 	public String getAuthorUrlByName(final String authorLastName) {
-		String url = this.projectHome + prefix + AUTHOR_PREFIX + "/" + UrlUtils.safeURIEncode(BibTexUtils.cleanBibTex(authorLastName));
+		String url = this.projectHome
+				+ prefix
+				+ AUTHOR_PREFIX
+				+ "/"
+				+ UrlUtils.safeURIEncode(BibTexUtils
+						.cleanBibTex(authorLastName));
 		return this.getUrl(url);
 	}
-	
+
 	/**
 	 * Constructs the URL for the author's page for the specified system.
 	 * 
 	 * @param authorLastName
-	 * @param systemUrl 
+	 * @param systemUrl
 	 * @return The URL for the author's page.
 	 */
-	public String getAuthorUrlByNameAndSysUrl(final String authorLastName, final String systemUrl) {
-		String url = systemUrl + prefix + AUTHOR_PREFIX + "/" + UrlUtils.safeURIEncode(BibTexUtils.cleanBibTex(authorLastName));
+	public String getAuthorUrlByNameAndSysUrl(final String authorLastName,
+			final String systemUrl) {
+		String url = systemUrl
+				+ prefix
+				+ AUTHOR_PREFIX
+				+ "/"
+				+ UrlUtils.safeURIEncode(BibTexUtils
+						.cleanBibTex(authorLastName));
 		return this.getUrl(url);
 	}
-	
+
 	/**
-	 * Constructs a URL for the basket page,
-	 * i.e. /basket
+	 * Constructs a URL for the basket page, i.e. /basket
+	 * 
 	 * @return URL pointing to the basket page.
 	 */
 	public String getBasketUrl() {
 		String url = this.projectHome + prefix + Page.BASKET.getPath();
 		return this.getUrl(url);
 	}
-	
+
 	/**
-	 * Constructs a URL for the given resource and user. If no user
-	 * is given, the URL points to all posts for that resource.
+	 * Constructs a URL for the given resource and user. If no user is given,
+	 * the URL points to all posts for that resource.
 	 * 
 	 * @param bookmark
-	 *			- must have proper inter and intra hashes
-	 *			(a call to {@link Resource#recalculateHashes()} might be necessary
-	 *			but is not done by this method)
+	 *            - must have proper inter and intra hashes (a call to
+	 *            {@link Resource#recalculateHashes()} might be necessary but is
+	 *            not done by this method)
 	 * 
 	 * @param user
-	 *			- if null, the URL to all posts for the given bookmark
-	 *			is returned.
+	 *            - if null, the URL to all posts for the given bookmark is
+	 *            returned.
 	 * @return - The URL which represents the given bookmark
 	 */
 	public String getBookmarkUrl(final Bookmark bookmark, final User user) {
@@ -256,39 +287,144 @@ public class URLGenerator {
 		 * no user given
 		 */
 		if (!present(user) || !present(user.getName())) {
-			return this.getUrl(this.projectHome + prefix + BOOKMARK_PREFIX + "/" + bookmark.getInterHash());
+			return this.getUrl(this.projectHome + prefix + BOOKMARK_PREFIX
+					+ "/" + bookmark.getInterHash());
 		}
-		return this.getBookmarkUrlByIntraHashAndUsername(bookmark.getIntraHash(), user.getName());
+		return this.getBookmarkUrlByIntraHashAndUsername(
+				bookmark.getIntraHash(), user.getName());
 	}
-	
+
 	/**
-	 * Constructs a bookmark URL for the given intraHash.
-	 * If you have the resource as object, please use {@link #getBookmarkUrl(Bookmark, User)}
+	 * Constructs a bookmark URL for the given intraHash. If you have the
+	 * resource as object, please use {@link #getBookmarkUrl(Bookmark, User)}
 	 * 
 	 * @param intraHash
-	 * @return The URL pointing to the post of that user for the bookmark represented by the given intrahash.
+	 * @return The URL pointing to the post of that user for the bookmark
+	 *         represented by the given intrahash.
 	 */
 	public String getBookmarkUrlByIntraHash(final String intraHash) {
 		return this.getBookmarkUrlByIntraHashAndUsername(intraHash, null);
 	}
-	
+
 	/**
-	 * Constructs a bookmark URL for the given intraHash and userName.
-	 * If you have the resource as object, please use {@link #getBookmarkUrl(Bookmark, User)}
+	 * Constructs a bookmark URL for the given intraHash and userName. If you
+	 * have the resource as object, please use
+	 * {@link #getBookmarkUrl(Bookmark, User)}
 	 * 
 	 * @param intraHash
 	 * @param userName
-	 * @return The URL pointing to the post of that user for the bookmark represented by the given intrahash.
+	 * @return The URL pointing to the post of that user for the bookmark
+	 *         represented by the given intrahash.
 	 */
-	public String getBookmarkUrlByIntraHashAndUsername(final String intraHash, final String userName) {
-		String url = this.projectHome + prefix + BOOKMARK_PREFIX + "/" + intraHash;
+	public String getBookmarkUrlByIntraHashAndUsername(final String intraHash,
+			final String userName) {
+		String url = this.projectHome + prefix + BOOKMARK_PREFIX + "/"
+				+ intraHash;
 		if (present(userName)) {
 			url += "/" + UrlUtils.safeURIEncode(userName);
 
 		}
 		return this.getUrl(url);
 	}
+
+	/**
+	 * url for BibTex export
+	 * 
+	 * @param intraHash
+	 * @param userName
+	 * @param systemUrl
+	 * @return returns the BibTex Export url
+	 */
+	public String getBibtexExportUrlByIntraHashAndUserName(final String intraHash,
+			final String userName){
+		
+		return this.getBibtexExportUrlByIntraHashUserNameAndSysUrl(intraHash, userName, this.projectHome);
+		
+	}
+	/**
+	 * url for BibTex export for a specific system
+	 * 
+	 * @param intraHash
+	 * @param userName
+	 * @param systemUrl
+	 * @return returns the BibTex export url for the specified system
+	 */
+	public String getBibtexExportUrlByIntraHashUserNameAndSysUrl(final String intraHash,
+			final String userName, final String systemUrl){
+		String url = systemUrl + prefix + BIBTEXEXPORT_PREFIX + "/" + PUBLICATION_PREFIX + "/" + PUBLICATION_INTRA_HASH_ID + intraHash;
+		if (present(userName)) {
+			url += "/" + UrlUtils.safeURIEncode(userName);
+
+		}
+		return this.getUrl(url);
+		
+	}
 	
+	/**
+	 * url for Endnote export
+	 * 
+	 * @param intraHash
+	 * @param userName
+	 * @param systemUrl
+	 * @return returns the Endnote export url
+	 */
+	public String getEndnoteUrlByIntraHashAndUserName(final String intraHash,
+			final String userName){
+		
+		return this.getEndnoteUrlByIntraHashUserNameAndSysUrl(intraHash, userName, this.projectHome);
+		
+	}
+	/**
+	 * url for Endnote export for a specific system
+	 * 
+	 * @param intraHash
+	 * @param userName
+	 * @param systemUrl
+	 * @return returns the Endnote export url for the specified system
+	 */
+	public String getEndnoteUrlByIntraHashUserNameAndSysUrl(final String intraHash,
+			final String userName, final String systemUrl){
+		String url = systemUrl + prefix + LAYOUT_PREFIX + "/" + ENDNOTE_PREFIX + "/" + PUBLICATION_PREFIX + "/" + PUBLICATION_INTRA_HASH_ID + intraHash;
+		if (present(userName)) {
+			url += "/" + UrlUtils.safeURIEncode(userName);
+
+		}
+		return this.getUrl(url);
+		
+	}
+	
+	/**
+	 * url for MS WORD Reference Manager
+	 * 
+	 * @param intraHash
+	 * @param userName
+	 * @param systemUrl
+	 * @return returns the MS WORD Reference Manager url
+	 */
+	public String getMSWordUrlByIntraHashAndUserName(final String intraHash,
+			final String userName){
+		
+		return this.getMSWordUrlByIntraHashUserNameAndSysUrl(intraHash, userName, this.projectHome);
+		
+	}
+	/**
+	 * url for MS WORD Reference Manager for a specific system
+	 * 
+	 * @param intraHash
+	 * @param userName
+	 * @param systemUrl
+	 * @return returns the MS WORD Reference Manager url for the specified system
+	 */
+	public String getMSWordUrlByIntraHashUserNameAndSysUrl(final String intraHash,
+			final String userName, final String systemUrl){
+		String url = systemUrl + prefix + LAYOUT_PREFIX + "/" + MSWORD_PREFIX + "/" + PUBLICATION_PREFIX + "/" + PUBLICATION_INTRA_HASH_ID + intraHash;
+		if (present(userName)) {
+			url += "/" + UrlUtils.safeURIEncode(userName);
+
+		}
+		return this.getUrl(url);
+		
+	}
 	/**
 	 * Constructs a concepts URL for the given name.
 	 * 
@@ -302,10 +438,10 @@ public class URLGenerator {
 		}
 		return this.getUrl(url);
 	}
-	
+
 	/**
-	 * Constructs a concepts URL for the given user
-	 * i.e. a URL of the form /concepts/USERNAME
+	 * Constructs a concepts URL for the given user i.e. a URL of the form
+	 * /concepts/USERNAME
 	 * 
 	 * @param user
 	 * @return The URL pointing to the concepts of the user
@@ -315,113 +451,163 @@ public class URLGenerator {
 	}
 
 	/**
-	 * Constructs a concept URL for the given username and tagname,
-	 * i.e. a URL of the form /concept/user/USERNAME/TAGNAME.
+	 * Constructs a concept URL for the given username and tagname, i.e. a URL
+	 * of the form /concept/user/USERNAME/TAGNAME.
 	 * 
 	 * @param userName
 	 * @param tagName
-	 * @return The URL pointing to the concepts of the user with the specified tags.
+	 * @return The URL pointing to the concepts of the user with the specified
+	 *         tags.
 	 */
-	public String getConceptUrlByUserNameAndTagName(final String userName, final String tagName) {
-		String url = this.projectHome + prefix + CONCEPT_PREFIX + "/" + USER_PREFIX;
+	public String getConceptUrlByUserNameAndTagName(final String userName,
+			final String tagName) {
+		String url = this.projectHome + prefix + CONCEPT_PREFIX + "/"
+				+ USER_PREFIX;
 		url += "/" + UrlUtils.safeURIEncode(userName);
 		url += "/" + UrlUtils.safeURIEncode(tagName);
-		
+
 		return this.getUrl(url);
 	}
 	
 	/**
-	 * Constructs a URL with the posts of all users you are following,
-	 * i.e. /followers
+	 * url of the document
+	 * 
+	 * @param intraHash
+	 * @param userName
+	 * @param fileName
+	 * @return returns the url of the document
+	 */
+	public String getDocumentUrlByIntraHashUserNameAndFileName(final String intraHash,
+			final String userName, final String fileName){
+		return this.getDocumentUrlByIntraHashUserNameFileNameAndSysUrl(intraHash, userName, fileName, this.projectHome);
+	}
+	
+	/**
+	 * url of the document for a specific system
+	 * 
+	 * @param intraHash
+	 * @param userName
+	 * @param fileName 
+	 * @param systemUrl
+	 * @return returns the url of the document for the specified system
+	 */
+	public String getDocumentUrlByIntraHashUserNameFileNameAndSysUrl(final String intraHash,
+			final String userName, final String fileName, final String systemUrl){
+		String url = systemUrl + prefix + DOCUMENT_PREFIX + "/" + intraHash;
+		if (present(userName)) {
+			url += "/" + UrlUtils.safeURIEncode(userName);
+
+		}
+		url += "/" + UrlUtils.safeURIEncode(fileName);
+		
+		return this.getUrl(url);
+		
+	}
+
+	/**
+	 * Constructs a URL with the posts of all users you are following, i.e.
+	 * /followers
+	 * 
 	 * @return URL pointing to the posts of the users you are following.
 	 */
 	public String getFollowersUrl() {
 		String url = this.projectHome + prefix + FOLLOWERS_PREFIX;
 		return this.getUrl(url);
 	}
-	
+
 	/**
-	 * Constructs a friend URL for the given username,
-	 * i.e. /friend/USERNAME
+	 * Constructs a friend URL for the given username, i.e. /friend/USERNAME
 	 * 
 	 * @param userName
-	 * @return URL pointing to the posts viewable for friends of User with name username.
+	 * @return URL pointing to the posts viewable for friends of User with name
+	 *         username.
 	 */
 	public String getFriendUrlByUserName(final String userName) {
-		String url = this.projectHome + prefix + FRIEND_PREFIX + "/";
-		url += UrlUtils.safeURIEncode(userName);
-		
-		return this.getUrl(url);
+
+		return this.getFriendUrlByUserNameAndSysUrl(userName, this.projectHome);
 	}
-	
+
 	/**
-	 * Constructs a friend URL for the given username and systemurl
-	 * i.e. /friend/USERNAME
+	 * Constructs a friend URL for the given username and systemurl i.e.
+	 * /friend/USERNAME
 	 * 
 	 * @param userName
-	 * @param systemUrl 
-	 * @return URL pointing to the posts viewable for friends of User with username.
+	 * @param systemUrl
+	 * @return URL pointing to the posts viewable for friends of User with
+	 *         username.
 	 */
-	public String getFriendUrlByUserNameAndSysUrl(final String userName, final String systemUrl) {
+	public String getFriendUrlByUserNameAndSysUrl(final String userName,
+			final String systemUrl) {
 		String url = systemUrl + prefix + FRIEND_PREFIX + "/";
 		url += UrlUtils.safeURIEncode(userName);
-		
+
 		return this.getUrl(url);
 	}
-	
-	
+
 	/**
-	 * Constructs a friend URL for the given username and tagname,
-	 * i.e. /friend/USERNAME/TAGNAME
+	 * Constructs a friend URL for the given username and tagname, i.e.
+	 * /friend/USERNAME/TAGNAME
 	 * 
 	 * @param userName
 	 * @param tagName
-	 * @return URL pointing to the posts viewable for friends of User with name username and tag tagName.
+	 * @return URL pointing to the posts viewable for friends of User with name
+	 *         username and tag tagName.
 	 */
-	public String getFriendUrlByUserNameAndTagName(final String userName, final String tagName) {
+	public String getFriendUrlByUserNameAndTagName(final String userName,
+			final String tagName) {
 		String url = this.getFriendUrlByUserName(userName);
 		url += "/" + UrlUtils.safeURIEncode(tagName);
-		
+
 		return this.getUrl(url);
 	}
-	
-	
+
 	/**
 	 * @param interHash
 	 * @param resourceType
-	 * @return URL pointing to the publication represented by the inter hash and the resource type
+	 * @return URL pointing to the publication represented by the inter hash and
+	 *         the resource type
 	 */
-	public String getCommunityPostUrlByInterHash(final String interHash, final String resourceType) {
+	public String getCommunityPostUrlByInterHash(final String interHash,
+			final String resourceType) {
 		if (BOOKMARK.equalsIgnoreCase(resourceType)) {
 			return this.getCommunityBookmarkUrlByInterHash(interHash);
 		}
 		return this.getCommunityPublicationUrlByInterHash(interHash);
 	}
-	
+
 	/**
 	 * @param interHash
 	 * @param resourceType
 	 * @param systemUrl
-	 * @return URL pointing to the publication represented by the inter hash, the resource type and the system url
+	 * @return URL pointing to the publication represented by the inter hash,
+	 *         the resource type and the system url
 	 */
-	public String getCommunityPostUrlByInterHashAndSysUrl(final String interHash, final String resourceType, final String systemUrl) {
+	public String getCommunityPostUrlByInterHashAndSysUrl(
+			final String interHash, final String resourceType,
+			final String systemUrl) {
 		if (BOOKMARK.equalsIgnoreCase(resourceType)) {
-			return this.getCommunityBookmarkUrlByInterHashAndSysUrl(interHash, systemUrl);
+			return this.getCommunityBookmarkUrlByInterHashAndSysUrl(interHash,
+					systemUrl);
 		}
-		return this.getCommunityPublicationUrlByInterHashAndSysUrl(interHash, systemUrl);
+		return this.getCommunityPublicationUrlByInterHashAndSysUrl(interHash,
+				systemUrl);
 	}
-	
+
 	/**
-	 * Constructs a URL for a community publication specified by its inter hash and system url.
+	 * Constructs a URL for a community publication specified by its inter hash
+	 * and system url.
 	 * 
 	 * @param interHash
-	 * @param systemUrl 
-	 * @return URL pointing to the publication represented by the inter hash and system url
+	 * @param systemUrl
+	 * @return URL pointing to the publication represented by the inter hash and
+	 *         system url
 	 */
-	public String getCommunityPublicationUrlByInterHashAndSysUrl(final String interHash, final String systemUrl) {
-		return this.getCommunityPublicationUrlByInterHashUsernameAndSysUrl(interHash, null, systemUrl);
+	public String getCommunityPublicationUrlByInterHashAndSysUrl(
+			final String interHash, final String systemUrl) {
+		return this.getCommunityPublicationUrlByInterHashUsernameAndSysUrl(
+				interHash, null, systemUrl);
 	}
-	
+
 	/**
 	 * Constructs a URL for a community publication specified by its inter hash.
 	 * 
@@ -429,23 +615,27 @@ public class URLGenerator {
 	 * @return URL pointing to the publication represented by the inter hash
 	 */
 	public String getCommunityPublicationUrlByInterHash(final String interHash) {
-		return this.getCommunityPublicationUrlByInterHashUsernameAndSysUrl(interHash, null, this.projectHome);
+		return this.getCommunityPublicationUrlByInterHashUsernameAndSysUrl(
+				interHash, null, this.projectHome);
 	}
-	
+
 	/**
-	 * Constructs a URL for a community publication specified by its inter hash, the username and the system url.
-	 * If no username is present, it will not occur in the URL and the trailing '/' will be
-	 * omitted.
+	 * Constructs a URL for a community publication specified by its inter hash,
+	 * the username and the system url. If no username is present, it will not
+	 * occur in the URL and the trailing '/' will be omitted.
 	 * 
 	 * @param interHash
 	 * @param userName
-	 * @param systemUrl 
-	 * @return URL pointing to the goldstandard publication represented by the interHash and the userName
+	 * @param systemUrl
+	 * @return URL pointing to the goldstandard publication represented by the
+	 *         interHash and the userName
 	 */
-	public String getCommunityPublicationUrlByInterHashUsernameAndSysUrl(final String interHash, final String userName, final String systemUrl) {
-		return getCommunityPostUrlByInterHashUsernameAndSysUrl(interHash, userName, systemUrl, false);
+	public String getCommunityPublicationUrlByInterHashUsernameAndSysUrl(
+			final String interHash, final String userName,
+			final String systemUrl) {
+		return getCommunityPostUrlByInterHashUsernameAndSysUrl(interHash,
+				userName, systemUrl, false);
 	}
-	
 
 	/**
 	 * Constructs a URL for a community publication specified by its inter hash.
@@ -454,98 +644,131 @@ public class URLGenerator {
 	 * @return URL pointing to the publication represented by the inter hash
 	 */
 	public String getCommunityBookmarkUrlByInterHash(final String interHash) {
-		return this.getCommunityBookmarkUrlByInterHashUsernameAndSysUrl(interHash, null, this.projectHome);
+		return this.getCommunityBookmarkUrlByInterHashUsernameAndSysUrl(
+				interHash, null, this.projectHome);
 	}
 
 	/**
-	 * Constructs a URL for a community publication specified by its inter hash and system url.
+	 * Constructs a URL for a community publication specified by its inter hash
+	 * and system url.
 	 * 
 	 * @param interHash
-	 * @param systemUrl 
+	 * @param systemUrl
 	 * @return URL pointing to the publication represented by the inter hash
 	 */
-	public String getCommunityBookmarkUrlByInterHashAndSysUrl(final String interHash, final String systemUrl) {
-		return this.getCommunityBookmarkUrlByInterHashUsernameAndSysUrl(interHash, null, systemUrl);
+	public String getCommunityBookmarkUrlByInterHashAndSysUrl(
+			final String interHash, final String systemUrl) {
+		return this.getCommunityBookmarkUrlByInterHashUsernameAndSysUrl(
+				interHash, null, systemUrl);
 	}
-	
+
 	/**
-	 * Constructs a URL for a goldstandard publication specified by its inter hash and systemUrl.
+	 * Constructs a URL for a goldstandard publication specified by its inter
+	 * hash and systemUrl.
 	 * 
 	 * @param interHash
-	 * @param systemUrl 
+	 * @param systemUrl
 	 * @return URL pointing to the publication represented by the inter hash
 	 */
-	public String getGoldstandardUrlByInterHashAndSysUrl(final String interHash, final String systemUrl) {
-		return this.getGoldstandardUrlByInterHashUsernameAndSysUrl(interHash, null, systemUrl);
+	public String getGoldstandardUrlByInterHashAndSysUrl(
+			final String interHash, final String systemUrl) {
+		return this.getGoldstandardUrlByInterHashUsernameAndSysUrl(interHash,
+				null, systemUrl);
 	}
-	
+
 	/**
-	 * Constructs a URL for a community publication specified by its inter hash and the username.
-	 * If no username is present, it will not occur in the URL and the trailing '/' will be
-	 * omitted.
+	 * Constructs a URL for a community publication specified by its inter hash
+	 * and the username. If no username is present, it will not occur in the URL
+	 * and the trailing '/' will be omitted.
 	 * 
 	 * @param interHash
 	 * @param userName
-	 * @param systemUrl 
-	 * @return URL pointing to the goldstandard publication represented by the interHash and the userName
+	 * @param systemUrl
+	 * @return URL pointing to the goldstandard publication represented by the
+	 *         interHash and the userName
 	 */
-	public String getCommunityBookmarkUrlByInterHashUsernameAndSysUrl(final String interHash, final String userName, final String systemUrl) {
-		return getCommunityPostUrlByInterHashUsernameAndSysUrl(interHash, userName, systemUrl, true);
+	public String getCommunityBookmarkUrlByInterHashUsernameAndSysUrl(
+			final String interHash, final String userName,
+			final String systemUrl) {
+		return getCommunityPostUrlByInterHashUsernameAndSysUrl(interHash,
+				userName, systemUrl, true);
 	}
 
-	private String getCommunityPostUrlByInterHashUsernameAndSysUrl(final String interHash, final String userName, final String systemUrl, boolean bookmark) {
-		return this.getUrl(systemUrl + prefix + getPartialPostUrlByInterHashAndUserName(interHash, userName, bookmark));
+	private String getCommunityPostUrlByInterHashUsernameAndSysUrl(
+			final String interHash, final String userName,
+			final String systemUrl, boolean bookmark) {
+		return this.getUrl(systemUrl
+				+ prefix
+				+ getPartialPostUrlByInterHashAndUserName(interHash, userName,
+						bookmark));
 	}
 
-	private String getPartialPostUrlByInterHashAndUserName(final String hash, final String userName, boolean bookmark) {
-		String urlPart =  (bookmark? BOOKMARK_PREFIX: PUBLICATION_PREFIX) + "/" + hash;
-		
+	private String getPartialPostUrlByInterHashAndUserName(final String hash,
+			final String userName, boolean bookmark) {
+		String urlPart = (bookmark ? BOOKMARK_PREFIX : PUBLICATION_PREFIX)
+				+ "/" + hash;
+
 		if (present(userName))
-			return this.getUrl(urlPart + "/" + UrlUtils.safeURIEncode(userName));
-			
+			return this
+					.getUrl(urlPart + "/" + UrlUtils.safeURIEncode(userName));
+
 		return urlPart;
 	}
-	
+
 	/**
 	 * The URL to the history of a post
+	 * 
 	 * @param hash
 	 * @param userName
-	 * @param resourceType 
+	 * @param resourceType
 	 * @return
 	 */
-	public String getHistoryURLByHashAndUserName(final String hash, final String userName, String resourceType) {
-		return this.getHistoryURLByHashUserNameAndSysUrl(hash, userName, resourceType, this.projectHome);
+	public String getHistoryURLByHashAndUserName(final String hash,
+			final String userName, String resourceType) {
+		return this.getHistoryURLByHashUserNameAndSysUrl(hash, userName,
+				resourceType, this.projectHome);
 	}
-	
+
 	/**
 	 * The URL to the history of a post of the specific system
+	 * 
 	 * @param hash
 	 * @param userName
-	 * @param resourceType 
+	 * @param resourceType
 	 * @param systemUrl
 	 * @return
 	 */
-	public String getHistoryURLByHashUserNameAndSysUrl(final String hash, final String userName, String resourceType, final String systemUrl) {
-		return this.getUrl(systemUrl + prefix +HISTORY_PREFIX+"/" + getPartialPostUrlByInterHashAndUserName(hash, userName, BOOKMARK.equalsIgnoreCase(resourceType)));
+	public String getHistoryURLByHashUserNameAndSysUrl(final String hash,
+			final String userName, String resourceType, final String systemUrl) {
+		return this.getUrl(systemUrl
+				+ prefix
+				+ HISTORY_PREFIX
+				+ "/"
+				+ getPartialPostUrlByInterHashAndUserName(hash, userName,
+						BOOKMARK.equalsIgnoreCase(resourceType)));
 	}
-	
+
 	/**
-	 * Constructs a URL for a goldstandard publication specified by its inter hash and the username and systemUrl
+	 * Constructs a URL for a goldstandard publication specified by its inter
+	 * hash and the username and systemUrl
 	 * 
 	 * @param interHash
 	 * @param userName
-	 * @param systemUrl 
-	 * @return URL pointing to the goldstandard publication represented by the interHash and the userName
+	 * @param systemUrl
+	 * @return URL pointing to the goldstandard publication represented by the
+	 *         interHash and the userName
 	 */
-	public String getGoldstandardUrlByInterHashUsernameAndSysUrl(final String interHash, final String userName, final String systemUrl) {
+	public String getGoldstandardUrlByInterHashUsernameAndSysUrl(
+			final String interHash, final String userName,
+			final String systemUrl) {
 		String url = systemUrl + prefix + PUBLICATION_PREFIX + "/" + interHash;
-		
+
 		if (present(userName))
 			return this.getUrl(url + "/" + UrlUtils.safeURIEncode(userName));
-			
+
 		return this.getUrl(url);
 	}
-	
+
 	/**
 	 * Constructs the URL for the groups page
 	 * 
@@ -555,7 +778,7 @@ public class URLGenerator {
 		String url = this.projectHome + prefix + GROUPS;
 		return this.getUrl(url);
 	}
-	
+
 	/**
 	 * Constructs the URL for the group's page.
 	 * 
@@ -563,30 +786,33 @@ public class URLGenerator {
 	 * @return The URL for the group's page.
 	 */
 	public String getGroupUrlByGroupName(final String groupName) {
-		String url = this.projectHome + prefix + GROUP_PREFIX + "/" + UrlUtils.safeURIEncode(groupName);
+		String url = this.projectHome + prefix + GROUP_PREFIX + "/"
+				+ UrlUtils.safeURIEncode(groupName);
 		return this.getUrl(url);
 	}
-	
+
 	public String getGroupSettingsUrlByGroupName(final String groupName) {
-		String url = this.projectHome + prefix + "settings" + "/" + GROUP_PREFIX + "/" + UrlUtils.safeURIEncode(groupName);
+		String url = this.projectHome + prefix + "settings" + "/"
+				+ GROUP_PREFIX + "/" + UrlUtils.safeURIEncode(groupName);
 		return this.getUrl(url);
 	}
-	
-	
+
 	/**
 	 * Constructs the URL for the group's page for all posts tagged with tagName
 	 * 
 	 * @param groupName
 	 * @param tagName
-	 * @return URL pointing to the site of the group with all posts tagged with tagName
+	 * @return URL pointing to the site of the group with all posts tagged with
+	 *         tagName
 	 */
-	public String getGroupUrlByGroupNameAndTagName(final String groupName, final String tagName) {
+	public String getGroupUrlByGroupNameAndTagName(final String groupName,
+			final String tagName) {
 		String url = this.getGroupUrlByGroupName(groupName);
 		url += "/" + UrlUtils.safeURIEncode(tagName);
-		
+
 		return this.getUrl(url);
 	}
-	
+
 	/**
 	 * Constructs the URL for the login page
 	 * 
@@ -596,7 +822,7 @@ public class URLGenerator {
 		String url = this.projectHome + prefix + LOGIN_PREFIX;
 		return this.getUrl(url);
 	}
-	
+
 	/**
 	 * Constructs the URL for the register page
 	 * 
@@ -606,60 +832,63 @@ public class URLGenerator {
 		final String url = this.projectHome + prefix + REGISTER;
 		return this.getUrl(url);
 	}
-	
+
 	/**
-	 * Constructs a URL pointing to the bibtex-bookmarks and publications of the user,
-	 * i.e. /myBibTex
+	 * Constructs a URL pointing to the bibtex-bookmarks and publications of the
+	 * user, i.e. /myBibTex
+	 * 
 	 * @return URL pointing to the bookmarks and publications of the user
 	 */
 	public String getMyBibTexUrl() {
 		String url = this.projectHome + prefix + MYBIBTEX_PREFIX;
 		return this.getUrl(url);
 	}
-	
+
 	/**
-	 * Constructs a URL pointing to the documents of the user
-	 * i.e. /myDocuments
+	 * Constructs a URL pointing to the documents of the user i.e. /myDocuments
+	 * 
 	 * @return URL pointing to the documents of the user
 	 */
 	public String getMyDocumentsUrl() {
 		String url = this.projectHome + prefix + MYDOCUMENTS_PREFIX;
 		return this.getUrl(url);
 	}
-	
+
 	/**
-	 * Constructs a URL pointing to the duplicates of the user
-	 * i.e. /myDuplicates
+	 * Constructs a URL pointing to the duplicates of the user i.e.
+	 * /myDuplicates
+	 * 
 	 * @return URL pointing to the duplicates of the user
 	 */
 	public String getMyDuplicatesUrl() {
 		String url = this.projectHome + prefix + MYDUPLICATES_PREFIX;
 		return this.getUrl(url);
 	}
-	
+
 	/**
 	 * Constructs a URL pointing to the bookmarks and publications of the user,
 	 * i.e. /myHome
+	 * 
 	 * @return URL pointing to the bookmarks and publications of the user
 	 */
 	public String getMyHomeUrl() {
 		String url = this.projectHome + prefix + MYHOME_PREFIX;
 		return this.getUrl(url);
 	}
-	
+
 	/**
-	 * Constructs a URL pointing to the relations of the user
-	 * i.e. /myRelations
+	 * Constructs a URL pointing to the relations of the user i.e. /myRelations
+	 * 
 	 * @return URL pointing to the relations of the user
 	 */
 	public String getMyRelationsUrl() {
 		String url = this.projectHome + prefix + MYRELATIONS_PREFIX;
 		return this.getUrl(url);
 	}
-	
+
 	/**
-	 * Constructs a URL pointing to the fast user search,
-	 * i.e. /mySearch
+	 * Constructs a URL pointing to the fast user search, i.e. /mySearch
+	 * 
 	 * @return URL pointing to the user search
 	 */
 	public String getMySearchUrl() {
@@ -668,31 +897,38 @@ public class URLGenerator {
 	}
 
 	/**
-	 * Constructs a URL for the given resource's intrahash. If you have the post as
-	 * object, please use {@link #getPostUrl(Post)}.
+	 * Constructs a URL for the given resource's intrahash. If you have the post
+	 * as object, please use {@link #getPostUrl(Post)}.
 	 * 
 	 * @param resourceType
-	 *			- The type of resource. Currently, only URLs for {@link Bookmark} or {@link BibTex} are supported.
+	 *            - The type of resource. Currently, only URLs for
+	 *            {@link Bookmark} or {@link BibTex} are supported.
 	 * @param intraHash
 	 * @param userName
-	 * @return The URL pointing to the post of that user for the resource represented by the given intrahash.
+	 * @return The URL pointing to the post of that user for the resource
+	 *         represented by the given intrahash.
 	 */
-	public String getPostUrl(final Class<?> resourceType, final String intraHash, final String userName) {
+	public String getPostUrl(final Class<?> resourceType,
+			final String intraHash, final String userName) {
 		if (resourceType == Bookmark.class) {
-			return this.getBookmarkUrlByIntraHashAndUsername(intraHash, userName);
+			return this.getBookmarkUrlByIntraHashAndUsername(intraHash,
+					userName);
 		} else if (resourceType == BibTex.class) {
-			return this.getPublicationUrlByIntraHashAndUsername(intraHash, userName);
+			return this.getPublicationUrlByIntraHashAndUsername(intraHash,
+					userName);
 		} else {
 			throw new UnsupportedResourceTypeException();
 		}
 	}
 
 	/**
-	 * Returns the URL which represents a post. Depending on the type
-	 * of the resource, this forwarded to {@link #getBookmarkUrl(Bookmark, User)} and {@link #getPublicationUrl(BibTex, User)}.
+	 * Returns the URL which represents a post. Depending on the type of the
+	 * resource, this forwarded to {@link #getBookmarkUrl(Bookmark, User)} and
+	 * {@link #getPublicationUrl(BibTex, User)}.
 	 * 
 	 * @param post
-	 *			- The post for which the URL should be constructed. User and resources must not be null.
+	 *            - The post for which the URL should be constructed. User and
+	 *            resources must not be null.
 	 * @return The URL representing the given post.
 	 */
 	public String getPostUrl(final Post<? extends Resource> post) {
@@ -705,14 +941,14 @@ public class URLGenerator {
 			throw new UnsupportedResourceTypeException();
 		}
 	}
-	
+
 	/**
 	 * @return the projectHome
 	 */
 	public String getProjectHome() {
 		return this.projectHome;
 	}
-	
+
 	/**
 	 * @return URL to all publications of the main page in bibtex formats.
 	 */
@@ -720,51 +956,54 @@ public class URLGenerator {
 		String url = this.projectHome + prefix + BIBTEXEXPORT_PREFIX;
 		return this.getUrl(url);
 	}
-	
+
 	/**
-	 * Constructs a URL to all publications of the publication page of the user with 
-	 * name userName, i.e. /bib/user/USERNAME
+	 * Constructs a URL to all publications of the publication page of the user
+	 * with name userName, i.e. /bib/user/USERNAME
+	 * 
 	 * @param userName
-	 * @return URL pointing to publications in bibtex format of user with name userName
+	 * @return URL pointing to publications in bibtex format of user with name
+	 *         userName
 	 */
 	public String getPublicationsAsBibtexUrlByUserName(final String userName) {
 		String url = getPublicationsAsBibtexUrl();
 		url += "/" + USER_PREFIX;
 		url += "/" + UrlUtils.safeURIEncode(userName);
-		
+
 		return this.getUrl(url);
 	}
-	
+
 	/**
-	 * Constructs a URL for the given resource and user. If no user
-	 * is given, the URL points to all posts for that resource.
+	 * Constructs a URL for the given resource and user. If no user is given,
+	 * the URL points to all posts for that resource.
 	 * 
 	 * @param publication
-	 *			- must have proper inter and intra hashes
-	 *			(a call to {@link Resource#recalculateHashes()} might be necessary
-	 *			but is not done by this method)
+	 *            - must have proper inter and intra hashes (a call to
+	 *            {@link Resource#recalculateHashes()} might be necessary but is
+	 *            not done by this method)
 	 * 
 	 * @param user
-	 *			- if null, the URL to all posts for the given publication
-	 *			is returned.
+	 *            - if null, the URL to all posts for the given publication is
+	 *            returned.
 	 * @return - The URL which represents the given publication.
 	 */
 	public String getPublicationUrl(final BibTex publication, final User user) {
 		if (!present(user) || !present(user.getName())) {
 			/*
-			 * If a user name is given, return the url to that users post (intrahash + username)
-			 * otherwise return the URL to the resources page (interhash)
+			 * If a user name is given, return the url to that users post
+			 * (intrahash + username) otherwise return the URL to the resources
+			 * page (interhash)
 			 */
-			String url = this.projectHome + PUBLICATION_PREFIX + "/" + 
-						 PUBLICATION_INTER_HASH_ID + publication.getInterHash();
+			String url = this.projectHome + PUBLICATION_PREFIX + "/"
+					+ PUBLICATION_INTER_HASH_ID + publication.getInterHash();
 			return this.getUrl(url);
 		}
-		String url = this.projectHome + prefix + PUBLICATION_PREFIX + "/" + 
-					 PUBLICATION_INTRA_HASH_ID + publication.getIntraHash() + 
-					 "/" + UrlUtils.safeURIEncode(user.getName());
+		String url = this.projectHome + prefix + PUBLICATION_PREFIX + "/"
+				+ PUBLICATION_INTRA_HASH_ID + publication.getIntraHash() + "/"
+				+ UrlUtils.safeURIEncode(user.getName());
 		return this.getUrl(url);
 	}
-	
+
 	/**
 	 * Constructs a URL for all the publications with the specified BibTeX key,
 	 * i.e. /bibtexkey/BIBTEXKEY
@@ -775,25 +1014,27 @@ public class URLGenerator {
 	public String getPublicationUrlByBibTexKey(final String bibtexKey) {
 		String url = this.projectHome + BIBTEXKEY_PREFIX;
 		url += "/" + UrlUtils.safeURIEncode(bibtexKey);
-		
+
 		return this.getUrl(url);
 	}
-	
+
 	/**
-	 * Constructs a URL for all the publications with the specified BibTeX key and username,
-	 * i.e. /bibtexkey/BIBTEXKEY/USERNAME
+	 * Constructs a URL for all the publications with the specified BibTeX key
+	 * and username, i.e. /bibtexkey/BIBTEXKEY/USERNAME
 	 * 
 	 * @param bibtexKey
 	 * @param userName
-	 * @return URL pointing to all publications with BibTeX key bibtexKey and user name userName
+	 * @return URL pointing to all publications with BibTeX key bibtexKey and
+	 *         user name userName
 	 */
-	public String getPublicationUrlByBibTexKeyAndUserName(final String bibtexKey, final String userName) {
+	public String getPublicationUrlByBibTexKeyAndUserName(
+			final String bibtexKey, final String userName) {
 		String url = this.getPublicationUrlByBibTexKey(bibtexKey);
 		url += "/" + UrlUtils.safeURIEncode(userName);
-		
+
 		return this.getUrl(url);
 	}
-	
+
 	/**
 	 * Constructs a URL for a publication specified by its inter hash.
 	 * 
@@ -803,26 +1044,55 @@ public class URLGenerator {
 	public String getPublicationUrlByInterHash(final String interHash) {
 		return this.getPublicationUrlByInterHashAndUsername(interHash, null);
 	}
+
+	/**
+	 * Constructs a URL for a publication specified by its inter hash and system.
+	 * 
+	 * @param interHash
+	 * @param systemUrl 
+	 * @return URL pointing to the publication represented by the inter hash and system url
+	 */
+	public String getPublicationUrlByInterHashAndSysUrl(final String interHash, final String systemUrl) {
+		return this.getPublicationUrlByInterHashUsernameAndSysUrl(interHash, null, systemUrl);
+	}
 	
 	/**
-	 * Constructs a URL for a publication specified by its inter hash and the username.
-	 * If no username is present, it will not occur in the URL and the trailing '/' will be
-	 * omitted.
+	 * Constructs a URL for a publication specified by its inter hash and the
+	 * username. If no username is present, it will not occur in the URL and the
+	 * trailing '/' will be omitted.
 	 * 
 	 * @param interHash
 	 * @param userName
-	 * @return URL pointing to the publication represented by the interHash and the userName
+	 * @return URL pointing to the publication represented by the interHash and
+	 *         the userName
 	 */
-	public String getPublicationUrlByInterHashAndUsername(final String interHash, final String userName) {
-		String url = this.projectHome + prefix +PUBLICATION_PREFIX + "/" +
-					 PUBLICATION_INTER_HASH_ID + interHash;
-		
+	public String getPublicationUrlByInterHashAndUsername(
+			final String interHash, final String userName) {
+		return this.getPublicationUrlByInterHashUsernameAndSysUrl(interHash, userName, this.projectHome);
+	}
+	
+	/**
+	 * Constructs a URL for a publication specified by its inter hash, the
+	 * username and the system. If no username is present, it will not occur in the URL and the
+	 * trailing '/' will be omitted.
+	 * 
+	 * @param interHash
+	 * @param userName
+	 * @param systemUrl 
+	 * @return URL pointing to the publication represented by the interHash,
+	 *         the userName and the system url
+	 */
+	public String getPublicationUrlByInterHashUsernameAndSysUrl(
+			final String interHash, final String userName, final String systemUrl) {
+		String url = systemUrl + prefix + PUBLICATION_PREFIX + "/"
+				+ PUBLICATION_INTER_HASH_ID + interHash;
+
 		if (present(userName))
 			return this.getUrl(url + "/" + UrlUtils.safeURIEncode(userName));
-			
+
 		return this.getUrl(url);
-	}	
-	
+	}
+
 	/**
 	 * Constructs a URL for a publication specified by its intra hash.
 	 * 
@@ -834,62 +1104,76 @@ public class URLGenerator {
 	}
 	
 	/**
-	 * Constructs a URL for a publication specified by its intra hash and the username.
-	 * If no username is present, it will not occur in the URL and the trailing '/' will be
-	 * omitted.
+	 * Constructs a URL for a publication specified by its intra hash and system.
+	 * 
+	 * @param intraHash
+	 * @param systemUrl 
+	 * @return URL pointing to the publication represented by the intra hash and the specified system
+	 */
+	public String getPublicationUrlByIntraHashAndSysUrl(final String intraHash, final String systemUrl) {
+		return this.getPublicationUrlByIntraHashUsernameAndSysUrl(intraHash, null, systemUrl);
+	}
+
+	/**
+	 * Constructs a URL for a publication specified by its intra hash and the
+	 * username. If no username is present, it will not occur in the URL and the
+	 * trailing '/' will be omitted.
 	 * 
 	 * @param intraHash
 	 * @param userName
-	 * @return URL pointing to the publication represented by the intraHash and the userName
+	 * @return URL pointing to the publication represented by the intraHash and
+	 *         the userName
 	 */
 	public String getPublicationUrlByIntraHashAndUsername(final String intraHash, final String userName) {
-		String url = this.projectHome + prefix + PUBLICATION_PREFIX + "/" +
-					 PUBLICATION_INTRA_HASH_ID + intraHash;
-		
-		if (present(userName))
-			return this.getUrl(url + "/" + UrlUtils.safeURIEncode(userName));
-		return this.getUrl(url);
+		return this.getPublicationUrlByIntraHashUsernameAndSysUrl(intraHash, userName, this.projectHome);
 	}
-	
-	
+
 	/**
-	 * Constructs a URL for a publication specified by its intra hash, the username and the system 
+	 * Constructs a URL for a publication specified by its intra hash, the
+	 * username and the system
 	 * 
 	 * @param intraHash
 	 * @param userName
-	 * @param systemUrl 
-	 * @return URL pointing to the publication represented by the intraHash and the userName
+	 * @param systemUrl
+	 * @return URL pointing to the publication represented by the intraHash and
+	 *         the userName
 	 */
-	public String getPublicationUrlByIntraHashUsernameAndSysUrl(final String intraHash, final String userName, final String systemUrl) {
-		String url = systemUrl + prefix + PUBLICATION_PREFIX + "/" +
-					 PUBLICATION_INTRA_HASH_ID + intraHash;
-		
+	public String getPublicationUrlByIntraHashUsernameAndSysUrl(
+			final String intraHash, final String userName,
+			final String systemUrl) {
+		String url = systemUrl + prefix + PUBLICATION_PREFIX + "/"
+				+ PUBLICATION_INTRA_HASH_ID + intraHash;
+
 		if (present(userName))
 			return this.getUrl(url + "/" + UrlUtils.safeURIEncode(userName));
 		return this.getUrl(url);
 	}
-	
+
 	/**
 	 * Constructs a URL for a publication specified by its post
 	 * 
 	 * @param post
-	 * @return URL pointing to the publication represented by the intraHash and the userName
+	 * @return URL pointing to the publication represented by the intraHash and
+	 *         the userName
 	 */
 	public String getPublicationUrlByPost(final Post<BibTex> post) {
 		final User user = post.getUser();
 		if (present(user)) {
-			return this.getPublicationUrlByIntraHashAndUsername(post.getResource().getIntraHash(), user.getName());
+			return this.getPublicationUrlByIntraHashAndUsername(post
+					.getResource().getIntraHash(), user.getName());
 		}
-		
-		return this.getPublicationCommunityUrlByInterHash(post.getResource().getInterHash());
+
+		return this.getPublicationCommunityUrlByInterHash(post.getResource()
+				.getInterHash());
 	}
-	
+
 	/**
 	 * @param interHash
 	 * @return the link to the community post
 	 */
 	public String getPublicationCommunityUrlByInterHash(String interHash) {
-		final String url = this.projectHome + this.prefix + PUBLICATION_PREFIX + "/" + interHash;
+		final String url = this.projectHome + this.prefix + PUBLICATION_PREFIX
+				+ "/" + interHash;
 		return this.getUrl(url);
 	}
 
@@ -897,15 +1181,16 @@ public class URLGenerator {
 	 * Constructs a URL for the relevant posts for a group.
 	 * 
 	 * @param groupName
-	 * @return URL pointing to the page with posts relevant for the group with name groupName.
+	 * @return URL pointing to the page with posts relevant for the group with
+	 *         name groupName.
 	 */
 	public String getRelevantForUrlByGroupName(final String groupName) {
-		String url = this.projectHome + prefix + RELEVANTFOR_PREFIX + "/" +
-					 GROUP_PREFIX;
+		String url = this.projectHome + prefix + RELEVANTFOR_PREFIX + "/"
+				+ GROUP_PREFIX;
 		url += "/" + UrlUtils.safeURIEncode(groupName);
 		return this.getUrl(url);
 	}
-	
+
 	/**
 	 * Constructs a search URL for the requested search string.
 	 * 
@@ -913,33 +1198,36 @@ public class URLGenerator {
 	 * @return URL pointing to the results of the search.
 	 */
 	public String getSearchUrl(final String toSearch) {
-		String url = this.projectHome + prefix + SEARCH_PREFIX + "/" +
-					 UrlUtils.safeURIEncode(toSearch);
+		String url = this.projectHome + prefix + SEARCH_PREFIX + "/"
+				+ UrlUtils.safeURIEncode(toSearch);
 		return this.getUrl(url);
 	}
-	
+
 	/**
 	 * Returns just the url for settings.
+	 * 
 	 * @return settings url
 	 */
 	public String getSettingsUrl() {
 		String url = this.projectHome + prefix + SETTINGS_PREFIX;
-		
+
 		return this.getUrl(url);
 	}
-	
+
 	/**
-	 * Returns a specific page of the settings url. TODO: Make sure that the 
+	 * Returns a specific page of the settings url. TODO: Make sure that the
 	 * HTTP parameters are acceptable like that (with ?).
-	 * @param selTab the selected tab to be shown
+	 * 
+	 * @param selTab
+	 *            the selected tab to be shown
 	 * @return settings url with seltab
 	 */
 	public String getSettingsUrlWithSelectedTab(int selTab) {
 		String url = this.getSettingsUrl() + "?selTab=" + selTab;
-		
+
 		return this.getUrl(url);
 	}
-	
+
 	/**
 	 * Constructs the URL for the tag's page.
 	 * 
@@ -953,11 +1241,11 @@ public class URLGenerator {
 		}
 		return this.getUrl(url);
 	}
-	
+
 	/**
-	 * If {@link #checkUrls} is <code>true</code>, each given string is converted
-	 * into a {@link URL} (if that fails, <code>null</code> is returned).
-	 * Otherwise, the given string is returned as is.
+	 * If {@link #checkUrls} is <code>true</code>, each given string is
+	 * converted into a {@link URL} (if that fails, <code>null</code> is
+	 * returned). Otherwise, the given string is returned as is.
 	 * 
 	 * @param url
 	 * @return
@@ -973,8 +1261,7 @@ public class URLGenerator {
 		}
 		return url;
 	}
-	
-	
+
 	/**
 	 * Constructs the URL for the picture of a user.
 	 * 
@@ -982,12 +1269,11 @@ public class URLGenerator {
 	 * @return The URL to the picture of the user.
 	 */
 	public String getUserPictureUrlByUsername(final String userName) {
-		String url = this.projectHome + prefix + PICTURE_PREFIX + "/" +
-					 USER_PREFIX + "/" + UrlUtils.safeURIEncode(userName);
+		String url = this.projectHome + prefix + PICTURE_PREFIX + "/"
+				+ USER_PREFIX + "/" + UrlUtils.safeURIEncode(userName);
 		return this.getUrl(url);
 	}
-	
-	
+
 	/**
 	 * Constructs the URL for the user's page.
 	 * 
@@ -1005,9 +1291,7 @@ public class URLGenerator {
 	 * @return The URL for the user's page.
 	 */
 	public String getUserUrlByUserName(final String userName) {
-		String url = this.projectHome + prefix + USER_PREFIX + "/" +
-					 UrlUtils.safeURIEncode(userName);
-		return this.getUrl(url);
+		return this.getUserUrlByUserNameAndSysUrl(userName, this.projectHome);
 	}
 
 	/**
@@ -1017,12 +1301,13 @@ public class URLGenerator {
 	 * @param systemUrl
 	 * @return The URL for the user's page for the system
 	 */
-	public String getUserUrlByUserNameAndSysUrl(final String userName, final String systemUrl) {
-		String url = systemUrl + prefix + USER_PREFIX + "/" +
-					 UrlUtils.safeURIEncode(userName);
+	public String getUserUrlByUserNameAndSysUrl(final String userName,
+			final String systemUrl) {
+		String url = systemUrl + prefix + USER_PREFIX + "/"
+				+ UrlUtils.safeURIEncode(userName);
 		return this.getUrl(url);
 	}
-	
+
 	/**
 	 * Constructs the URL for the user's page with all posts tagged with tagName
 	 * 
@@ -1030,105 +1315,112 @@ public class URLGenerator {
 	 * @param tagName
 	 * @return The URL for the user's page with all posts tagged with tagName
 	 */
-	public String getUserUrlByUserNameAndTagName(final String userName, final String tagName) {
-		String url = this.getUserUrlByUserName(userName);
-		url += "/" + UrlUtils.safeURIEncode(tagName);
-		return this.getUrl(url);
+	public String getUserUrlByUserNameAndTagName(final String userName,
+			final String tagName) {
+		return this.getUserUrlByUserNameTagNameAndSysUrl(userName, tagName, this.projectHome);
 	}
-	
+
 	/**
-	 *  Constructs the URL for the user's page with all posts tagged with tagName for a specified system
+	 * Constructs the URL for the user's page with all posts tagged with tagName
+	 * for a specified system
 	 * 
 	 * @param userName
 	 * @param tagName
 	 * @param systemUrl
-	 * @return The URL for the user's page with all posts tagged with tagName and systemUrl
+	 * @return The URL for the user's page with all posts tagged with tagName
+	 *         and systemUrl
 	 */
-	public String getUserUrlByUserNameTagNameAndSysUrl(final String userName, final String tagName, final String systemUrl) {
+	public String getUserUrlByUserNameTagNameAndSysUrl(final String userName,
+			final String tagName, final String systemUrl) {
 		String url = this.getUserUrlByUserNameAndSysUrl(userName, systemUrl);
 		url += "/" + UrlUtils.safeURIEncode(tagName);
 		return this.getUrl(url);
 	}
+
 	/**
-	 * Constructs the URL for the posts viewable for friends,
-	 * i.e. /viewable/friends
+	 * Constructs the URL for the posts viewable for friends, i.e.
+	 * /viewable/friends
 	 * 
 	 * @return URL pointing to the viewable posts for friends
 	 */
 	public String getViewableFriendsUrl() {
-		String url = this.getProjectHome() + prefix + VIEWABLE_PREFIX + "/" +
-					 VIEWABLE_FRIENDS_SUFFIX;
+		String url = this.getProjectHome() + prefix + VIEWABLE_PREFIX + "/"
+				+ VIEWABLE_FRIENDS_SUFFIX;
 		return this.getUrl(url);
 	}
-	
+
 	/**
-	 * Constructs the URL for the posts viewable for friends tagged with tagName,
-	 * i.e. /viewable/friends/TAGNAME
-	 * @param tagName 
+	 * Constructs the URL for the posts viewable for friends tagged with
+	 * tagName, i.e. /viewable/friends/TAGNAME
 	 * 
-	 * @return URL pointing to the viewable posts for friends tagged with tagName
+	 * @param tagName
+	 * 
+	 * @return URL pointing to the viewable posts for friends tagged with
+	 *         tagName
 	 */
 	public String getViewableFriendsUrlByTagName(final String tagName) {
 		String url = this.getViewableFriendsUrl();
 		url += "/" + UrlUtils.safeURIEncode(tagName);
-		
+
 		return this.getUrl(url);
 	}
-	
+
 	/**
-	 * Constructs the URL for the posts viewable for public
-	 * i.e. /viewable/public
+	 * Constructs the URL for the posts viewable for public i.e.
+	 * /viewable/public
 	 * 
 	 * @return URL pointing to the public viewable posts
 	 */
 	public String getViewablePublicUrl() {
-		String url = this.getProjectHome() + prefix + VIEWABLE_PREFIX + "/" +
-					 VIEWABLE_PUBLIC_SUFFIX;
+		String url = this.getProjectHome() + prefix + VIEWABLE_PREFIX + "/"
+				+ VIEWABLE_PUBLIC_SUFFIX;
 		return this.getUrl(url);
 	}
-	
+
 	/**
 	 * Constructs the URL for the posts viewable for public tagged with tagName
 	 * i.e. /viewable/public/TAGNAME
-	 * @param tagName 
+	 * 
+	 * @param tagName
 	 * 
 	 * @return URL pointing to the public viewable posts tagged with tagName
 	 */
 	public String getViewablePublicUrlByTagName(final String tagName) {
 		String url = this.getViewablePublicUrl();
 		url += "/" + UrlUtils.safeURIEncode(tagName);
-		
+
 		return this.getUrl(url);
 	}
-	
+
 	/**
 	 * Constructs the URL for the posts viewable for private
 	 * 
 	 * @return URL pointing to the private viewable posts
 	 */
 	public String getViewablePrivateUrl() {
-		String url = this.getProjectHome() + prefix + VIEWABLE_PREFIX + "/" +
-					 VIEWABLE_PRIVATE_SUFFIX;
+		String url = this.getProjectHome() + prefix + VIEWABLE_PREFIX + "/"
+				+ VIEWABLE_PRIVATE_SUFFIX;
 		return this.getUrl(url);
 	}
-	
+
 	/**
 	 * Constructs the URL for the posts viewable for private tagged with tagName
 	 * i.e. /viewable/private/TAGNAME
-	 * @param tagName 
+	 * 
+	 * @param tagName
 	 * 
 	 * @return URL pointing to the private viewable posts tagged with tagName
 	 */
 	public String getViewablePrivateUrlByTagName(final String tagName) {
 		String url = this.getViewablePrivateUrl();
 		url += "/" + UrlUtils.safeURIEncode(tagName);
-		
+
 		return this.getUrl(url);
 	}
-	
+
 	/**
-	 * Constructs the URL for all viewable posts of a group,
-	 * i.e. /viewable/GROUPNAME
+	 * Constructs the URL for all viewable posts of a group, i.e.
+	 * /viewable/GROUPNAME
 	 * 
 	 * @param groupName
 	 * @return the URL for all viewable posts of a group.
@@ -1136,37 +1428,40 @@ public class URLGenerator {
 	public String getViewableUrlByGroupName(final String groupName) {
 		String url = this.projectHome + prefix + VIEWABLE_PREFIX;
 		url += "/" + UrlUtils.safeURIEncode(groupName);
-		
+
 		return this.getUrl(url);
-	}  
-	
+	}
+
 	/**
 	 * Constructs the URL for all viewable posts of a group of a specific system
 	 * i.e. /viewable/GROUPNAME
 	 * 
 	 * @param groupName
-	 * @param systemurl 
+	 * @param systemurl
 	 * @return the URL for all viewable posts of a group.
 	 */
-	public String getViewableUrlByGroupNameAndSysUrl(final String groupName, final String systemurl) {
+	public String getViewableUrlByGroupNameAndSysUrl(final String groupName,
+			final String systemurl) {
 		String url = systemurl + prefix + VIEWABLE_PREFIX;
 		url += "/" + UrlUtils.safeURIEncode(groupName);
-		
+
 		return this.getUrl(url);
-	} 
-	
+	}
+
 	/**
 	 * Constructs the URL for all viewable posts of a group tagged with tagName
+	 * 
 	 * @param groupName
 	 * @param tagname
 	 * @return the URL for all viewable posts of a group tagged with tagName
 	 */
-	public String getViewableUrlByGroupNameAndTagName(final String groupName, final String tagname) {
+	public String getViewableUrlByGroupNameAndTagName(final String groupName,
+			final String tagname) {
 		String url = this.getViewableUrlByGroupName(groupName);
 		url += "/" + UrlUtils.safeURIEncode(tagname);
-		
+
 		return this.getUrl(url);
-	}  
+	}
 
 	/**
 	 * @see URLGenerator#setCheckUrls(boolean)
@@ -1177,7 +1472,8 @@ public class URLGenerator {
 	}
 
 	/**
-	 * Checks if the given URL points to the given page. Useful for checking the referrer header.
+	 * Checks if the given URL points to the given page. Useful for checking the
+	 * referrer header.
 	 * 
 	 * @param url
 	 * @param page
@@ -1193,22 +1489,25 @@ public class URLGenerator {
 	 * Checks if the given URL points to the given resource.
 	 * 
 	 * @param url
-	 *			- the URL that should be checked.
+	 *            - the URL that should be checked.
 	 * @param userName
-	 *			- the owner of the resource
+	 *            - the owner of the resource
 	 * @param intraHash
-	 *			- the intra hash of the resource
+	 *            - the intra hash of the resource
 	 * @return <code>true</code> if the url points to the resource.
 	 */
-	public boolean matchesResourcePage(final String url, final String userName, final String intraHash) {
+	public boolean matchesResourcePage(final String url, final String userName,
+			final String intraHash) {
 		if (!present(url)) {
 			return false;
 		}
-		return url.matches(".*/(" + PUBLICATION_PREFIX + "|" + BOOKMARK_PREFIX + ")/[0-3]?" + intraHash + "/" + userName + ".*");
+		return url.matches(".*/(" + PUBLICATION_PREFIX + "|" + BOOKMARK_PREFIX
+				+ ")/[0-3]?" + intraHash + "/" + userName + ".*");
 	}
-	
+
 	/**
-	 * @param prefixToUse the prefix to use for this url generator
+	 * @param prefixToUse
+	 *            the prefix to use for this url generator
 	 * @return the url generator
 	 */
 	public URLGenerator prefix(String prefixToUse) {
@@ -1223,21 +1522,26 @@ public class URLGenerator {
 
 	/**
 	 * @param post
-	 *			adds all misc field urls to the bibtex in this post
+	 *            adds all misc field urls to the bibtex in this post
 	 */
 	public void setBibtexMiscUrls(final Post<BibTex> post) {
-		post.getResource().addMiscField(BibTexUtils.ADDITIONAL_MISC_FIELD_BIBURL, this.getPublicationUrl(post.getResource(), post.getUser()).toString());
+		post.getResource().addMiscField(
+				BibTexUtils.ADDITIONAL_MISC_FIELD_BIBURL,
+				this.getPublicationUrl(post.getResource(), post.getUser())
+						.toString());
 	}
 
 	/**
-	 * If set to <code>true</code>, all generated URLs are put into {@link URL} objects. If that fails, <code>null</code> is returned. The default is <code>false</code> such that no checking occurs.
+	 * If set to <code>true</code>, all generated URLs are put into {@link URL}
+	 * objects. If that fails, <code>null</code> is returned. The default is
+	 * <code>false</code> such that no checking occurs.
 	 * 
 	 * @param checkUrls
 	 */
 	public void setCheckUrls(final boolean checkUrls) {
 		this.checkUrls = checkUrls;
 	}
-	
+
 	/**
 	 * @param post
 	 * @return the rating url of the provided post
@@ -1255,36 +1559,50 @@ public class URLGenerator {
 			throw new UnsupportedResourceTypeException();
 		}
 	}
+
 	/**
-	 * Constructs a URL to rate the new publication for the given publication and user name.
+	 * Constructs a URL to rate the new publication for the given publication
+	 * and user name.
 	 * 
 	 * @param interHash
 	 * @param userName
 	 * @param intraHash
-	 * @return The URL pointing to rating the post of that user for the publication represented by the given inter and intra hashes.
+	 * @return The URL pointing to rating the post of that user for the
+	 *         publication represented by the given inter and intra hashes.
 	 */
-	public String getPublicationRatingUrl(final String interHash, final String userName, final String intraHash) {
-		final String url = this.projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTER_HASH_ID + interHash + "?postOwner=" + UrlUtils.safeURIEncode(userName) + "&amp;intraHash=" + intraHash + "#discussionbox";	   
+	public String getPublicationRatingUrl(final String interHash,
+			final String userName, final String intraHash) {
+		final String url = this.projectHome + PUBLICATION_PREFIX + "/"
+				+ PUBLICATION_INTER_HASH_ID + interHash + "?postOwner="
+				+ UrlUtils.safeURIEncode(userName) + "&amp;intraHash="
+				+ intraHash + "#discussionbox";
 		return this.getUrl(url);
 	}
-	
+
 	/**
-	 * Constructs a URL to rate the new bookmark for the given bookmark and user name.
+	 * Constructs a URL to rate the new bookmark for the given bookmark and user
+	 * name.
 	 * 
 	 * @param interHash
 	 * @param userName
 	 * @param intraHash
-	 * @return The URL pointing to rating the post of that user for the bookmark represented by the given inter and intra hashes.
+	 * @return The URL pointing to rating the post of that user for the bookmark
+	 *         represented by the given inter and intra hashes.
 	 */
-	public String getBookmarkRatingUrl(final String interHash, final String userName, final String intraHash) {
-		final String url = this.projectHome + BOOKMARK_PREFIX + "/" + interHash + "?postOwner=" + UrlUtils.safeURIEncode(userName) + "&amp;intraHash=" + intraHash + "#discussionbox";	   
+	public String getBookmarkRatingUrl(final String interHash,
+			final String userName, final String intraHash) {
+		final String url = this.projectHome + BOOKMARK_PREFIX + "/" + interHash
+				+ "?postOwner=" + UrlUtils.safeURIEncode(userName)
+				+ "&amp;intraHash=" + intraHash + "#discussionbox";
 		return this.getUrl(url);
 	}
-	
+
 	/**
 	 * ProjectHome defaults to <code>/</code>, such that relative URLs are
-	 * generated. Note that this does not work with {@link #setCheckUrls(boolean)} set to <code>true</code>, since {@link URL} does not support relative URLs
-	 * (or more correctly: relative URLs are not URLs).
+	 * generated. Note that this does not work with
+	 * {@link #setCheckUrls(boolean)} set to <code>true</code>, since
+	 * {@link URL} does not support relative URLs (or more correctly: relative
+	 * URLs are not URLs).
 	 * 
 	 * @param projectHome
 	 */

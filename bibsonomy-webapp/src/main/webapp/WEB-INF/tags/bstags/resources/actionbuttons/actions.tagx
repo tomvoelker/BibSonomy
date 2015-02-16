@@ -127,24 +127,44 @@
 						</li>
 						<li class="divider"><!--  --></li>
 						<!-- BibTeX -->
-						<!-- TODO: use url generator -->
 						<li>
 							<fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />
-							<a class="litem" href="/bib/bibtex/${intraHashId}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}" title="${bibtexTitle}"><fmt:message key="bibtex.actions.bibtex"/></a>
+							<c:choose>
+								<c:when test="${isRemotePost}">									
+									<a class="litem" href="${relativeUrlGenerator.getBibtexExportUrlByIntraHashUserNameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}"><fmt:message key="bibtex.actions.bibtex"/></a>															
+								</c:when>
+								<c:otherwise>
+									<a class="litem" href="${relativeUrlGenerator.getBibtexExportUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}" title="${bibtexTitle}"><fmt:message key="bibtex.actions.bibtex"/></a>
+								</c:otherwise>
+							</c:choose>
 						</li>
 						
 						<!-- ENDNOTE -->
 						<!-- TODO: use url generator -->
 						<li>
 							<fmt:message key="bibtex.actions.endnote.title" var="endnoteTitle" />
-							<a class="litem" href="/layout/endnote/bibtex/${intraHashId}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}?formatEmbedded=true" title="${endnoteTitle}"><fmt:message key="bibtex.actions.endnote"/></a>
+							<c:choose>
+								<c:when test="${isRemotePost}">									
+									<a class="litem" href="${relativeUrlGenerator.getEndnoteUrlByIntraHashUserNameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}?formatEmbedded=true" title="${endnoteTitle}"><fmt:message key="bibtex.actions.endnote"/></a>
+								</c:when>
+								<c:otherwise>
+									<a class="litem" href="${relativeUrlGenerator.getEndnoteUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}?formatEmbedded=true" title="${endnoteTitle}"><fmt:message key="bibtex.actions.endnote"/></a>
+								</c:otherwise>
+							</c:choose>						
 						</li>
 					
 						<!-- MS WORD Reference Manager -->
 						<!-- TODO: use url generator -->
 						<li>
 							<fmt:message key="bibtex.actions.msword.title" var="mswordTitle" />
-							<a class="litem" href="/layout/msofficexml/bibtex/${intraHashId}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}?formatEmbedded=true" title="${mswordTitle}"><fmt:message key="bibtex.actions.msword"/></a>
+							<c:choose>
+								<c:when test="${isRemotePost}">									
+									<a class="litem" href="${relativeUrlGenerator.getMSWordUrlByIntraHashUserNameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}?formatEmbedded=true" title="${mswordTitle}"><fmt:message key="bibtex.actions.msword"/></a>
+								</c:when>
+								<c:otherwise>
+									<a class="litem" href="${relativeUrlGenerator.getMSWordUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}?formatEmbedded=true" title="${mswordTitle}"><fmt:message key="bibtex.actions.msword"/></a>
+								</c:otherwise>
+							</c:choose>
 						</li>
 					
 						<!-- OPENURL -->
