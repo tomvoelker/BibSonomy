@@ -188,8 +188,11 @@
 								<div class="col-md-6">
 									<div class="checkbox"><label>
 										<c:choose>
-											<c:when test='${command.person.user eq command.context.loginUser.name}'>
+											<c:when test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
 												<input type="checkbox" name='formThatsMe' id='formThatsMe' checked="checked" /> ${textThatsMeButton}
+											</c:when>
+											<c:when test='${not empty command.person.user}'>
+												<a href="${absoluteUrlGenerator.getUserUrlByUserName(command.person.user)}"><c:out value="${command.person.user}"/></a>
 											</c:when>
 											<c:otherwise>
 												<input type="checkbox" name='formThatsMe' id='formThatsMe' /> ${textThatsMeButton}
@@ -218,7 +221,9 @@
 							<button style='${displayLinkButton}' type='button' id='btnLink' class='btn btn-default' data-toggle="modal" data-target="#linkPerson">${textThatsMeButton}</button>
 							<button style='${displayUnlinkButton}' type='button' id='btnUnlink' class='btn btn-default' data-toggle="modal" data-target="#unlinkPerson">${textThatsNotMeButton}</button>
 							-->
-							<button id='btnSaveSubmit' data-person-id="${command.person.id}" type='button' class='btn btn-primary pull-right'>${textSaveButton}</button>
+							<c:if test="${not empty command.context.loginUser.name}">
+								<button id='btnSaveSubmit' data-person-id="${command.person.id}" type='button' class='btn btn-primary pull-right'>${textSaveButton}</button>
+							</c:if>
 						</div>
 					</div>
 					</form>
