@@ -32,7 +32,7 @@
 		detailedInformation="${detailedInformation}" 
 		extraInformation="${extraInformation}"
 		minimizedContentWidth="${minimizedContentWidth}"
-		postApproval = "${postApproval}">
+		postApproval="${postApproval}">
 		
 		<jsp:attribute name="headerExtResource">
 			<script type="text/javascript" src="${resdir}/javascript/bs/edit${resourceType}.js"><!-- keep me --></script>
