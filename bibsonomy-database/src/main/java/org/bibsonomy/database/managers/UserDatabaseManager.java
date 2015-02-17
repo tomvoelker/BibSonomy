@@ -767,7 +767,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			 * flag user as spammer & all his posts as spam
 			 */
 			user.setAlgorithm("self_deleted");
-			this.adminDBManager.flagSpammer(user, "on_delete", session);
+			this.adminDBManager.flagSpammer(user, AdminDatabaseManager.DELETED_UPDATED_BY, session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
