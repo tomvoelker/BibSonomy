@@ -30,15 +30,8 @@
 	
 		<!-- Post has Documents: Show small preview, large preview (class preview) on mouseover and download on click -->
 		<c:when test="${not empty post.resource.documents and not isRemotePost}">
-			<!-- TODO: use url generator -->
 			<a class="preview publication thumbnail" href="${relativeUrlGenerator.getDocumentUrlByIntraHashUserNameAndFileName(post.resource.intraHash, post.user.name, post.resource.documents[0].fileName)}" title="${fn:escapeXml(post.resource.documents[0].fileName)}"> 
 				<img class="pre_pic img-responsive" src="${relativeUrlGenerator.getDocumentUrlByIntraHashUserNameAndFileName(post.resource.intraHash, post.user.name, post.resource.documents[0].fileName)}?preview=SMALL" alt="${altPreview}"/>
-			</a>
-		</c:when>
-		<c:when test="${not empty post.resource.documents and isRemotePost}">
-			<!-- TODO: use url generator -->
-			<a class="preview publication thumbnail" href="${relativeUrlGenerator.getDocumentUrlByIntraHashUserNameFileNameAndSysUrl(post.resource.intraHash, post.user.name, post.resource.documents[0].fileName, post.systemUrl)}" title="${fn:escapeXml(post.resource.documents[0].fileName)}"> 
-				<img class="pre_pic img-responsive" src="${relativeUrlGenerator.getDocumentUrlByIntraHashUserNameFileNameAndSysUrl(post.resource.intraHash, post.user.name, post.resource.documents[0].fileName, post.systemUrl)}?preview=SMALL" alt="${altPreview}"/>
 			</a>
 		</c:when>
 		<c:otherwise>
@@ -50,7 +43,6 @@
 			<c:set var="bibTitle" value="${mtl:cleanBibtex(post.resource.title)}"/>
 		
 			<c:if test="${not empty post.user.name}">
-				<!-- TODO: use url generator -->
 				<c:set var="bibUrlTemplate" value="${relativeUrlGenerator.getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, post.user.name)}"/>
 				<c:if test="${isRemotePost}">
 					<c:set var="bibUrlTemplate" value="${relativeUrlGenerator.getPublicationUrlByIntraHashUsernameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}"/>					

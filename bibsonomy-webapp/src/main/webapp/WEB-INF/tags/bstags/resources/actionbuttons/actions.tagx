@@ -140,7 +140,6 @@
 						</li>
 						
 						<!-- ENDNOTE -->
-						<!-- TODO: use url generator -->
 						<li>
 							<fmt:message key="bibtex.actions.endnote.title" var="endnoteTitle" />
 							<c:choose>
@@ -150,11 +149,10 @@
 								<c:otherwise>
 									<a class="litem" href="${relativeUrlGenerator.getEndnoteUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}?formatEmbedded=true" title="${endnoteTitle}"><fmt:message key="bibtex.actions.endnote"/></a>
 								</c:otherwise>
-							</c:choose>						
+							</c:choose>
 						</li>
 					
 						<!-- MS WORD Reference Manager -->
-						<!-- TODO: use url generator -->
 						<li>
 							<fmt:message key="bibtex.actions.msword.title" var="mswordTitle" />
 							<c:choose>
