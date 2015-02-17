@@ -1506,7 +1506,7 @@ public class DBLogic implements LogicInterface {
 		for (final Post<?> post : posts) {
 			PostUtils.populatePost(post, this.loginUser);
 			this.permissionDBManager.ensureWriteAccess(post, this.loginUser);
-			this.permissionDBManager.isAllowedToApprove(post, this.loginUser);
+			this.permissionDBManager.ensureApprovalStatusAllowed(post, this.loginUser);
 		}
 		
 		
