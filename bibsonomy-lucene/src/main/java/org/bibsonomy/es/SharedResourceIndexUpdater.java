@@ -112,14 +112,15 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	}
 	
 	private List<Map<String, Object>> getAllSystemInfosInternal(QueryBuilder query, int size) {
-		Map<String, Object> result = null;
+		// wait for the yellow (or green) status to prevent NoShardAvailableActionException later
+		esClient.getClient().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
 		
 		SearchRequestBuilder searchRequestBuilder = esClient
 				.getClient().prepareSearch(indexName);
 		searchRequestBuilder.setTypes(ESConstants.SYSTEM_INFO_INDEX_TYPE);
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(query);
-		searchRequestBuilder.setFrom(0).setSize(1).setExplain(true);
+		searchRequestBuilder.setFrom(0).setSize(size).setExplain(true);
 
 		SearchResponse response = searchRequestBuilder.execute()
 				.actionGet();
@@ -282,7 +283,9 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 */
 	@Override
 	public void insertNewPosts(ArrayList<Map<String, Object>> esPostsToInsert2) {
-		//TODO add systemUrl
+		// wait for the yellow (or green) status to prevent NoShardAvailableActionException later
+		esClient.getClient().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
+		
 		for (Map<String, Object> jsonDocument : esPostsToInsert2) {
 			jsonDocument.put(this.systemUrlFieldName, systemHome);
 			long indexId = calculateIndexId(Long.parseLong(jsonDocument.get(LuceneFieldNames.CONTENT_ID).toString()));

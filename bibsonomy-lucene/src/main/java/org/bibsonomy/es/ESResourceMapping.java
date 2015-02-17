@@ -49,7 +49,11 @@ public class ESResourceMapping {
 		        .setType(indexType)
 		        .setSource(mappingBuilder)
 		        .execute()
-		        .actionGet();		
+		        .actionGet();
+		
+		// wait for the yellow (or green) status to prevent NoShardAvailableActionException later
+		esClient.getClient().admin().cluster().prepareHealth()
+		.setWaitForYellowStatus().execute().actionGet();
 	}
 	
 	/**
