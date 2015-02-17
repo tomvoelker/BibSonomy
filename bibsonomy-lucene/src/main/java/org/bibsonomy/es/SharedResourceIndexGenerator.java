@@ -12,9 +12,8 @@ import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.util.generator.AbstractIndexGenerator;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.util.GroupUtils;
 import org.elasticsearch.action.admin.indices.flush.FlushRequest;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * This class is responsible for generating the index for Shared Resources
@@ -41,6 +40,7 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 		
 	/**
 	 * @param systemHome
+	 * @param updater 
 	 */
 	public SharedResourceIndexGenerator(final String systemHome, SharedResourceIndexUpdater<R> updater) {
 		this.systemHome = systemHome;
@@ -75,12 +75,15 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void addPostToIndex(LucenePost<R> post) {
+		if (!post.getGroups().contains(GroupUtils.getPublicGroup())) {
+			return;
+		}
 		Map<String, Object> jsonDocument = new HashMap<String, Object>();
 		jsonDocument = (Map<String, Object>) this.resourceConverter.readPost(post, IndexType.ELASTICSEARCH);
 		jsonDocument.put(this.systemUrlFieldName, systemHome);
-		long indexID = (systemHome.hashCode() << 32) + Long.parseLong(post.getContentId().toString());
+		long indexId = SharedResourceIndexUpdater.calculateIndexId(post.getContentId(), systemHome);
 		esClient.getClient()
-				.prepareIndex(indexName, resourceType, String.valueOf(indexID))
+				.prepareIndex(indexName, resourceType, String.valueOf(indexId))
 				.setSource(jsonDocument).execute().actionGet();
 		log.info("post has been indexed.");
 	}
@@ -100,10 +103,16 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 		return this.indexName;
 	}
 
+	/**
+	 * @return e.g. "BibTex"
+	 */
 	public String getResourceType() {
 		return this.resourceType;
 	}
 
+	/**
+	 * @param resourceType
+	 */
 	public void setResourceType(String resourceType) {
 		this.resourceType = resourceType;
 	}

@@ -210,7 +210,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 			if ((contentIdsToDelete.size() > 0) || (usersToFlag.size() > 0)) {
 				// remove each cached post from index
 				for (final Integer contentId : this.contentIdsToDelete) {
-					long indexID = (systemHome.hashCode() << 32) + Long.parseLong(contentId.toString());
+					long indexID = calculateIndexId(contentId);
 					this.deleteIndexForIndexId(indexID);
 					log.debug("deleted post " + contentId);
 				}
@@ -250,6 +250,18 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	}
 
 	/**
+	 * @param contentId
+	 * @return
+	 */
+	private long calculateIndexId(Number contentId) {
+		return calculateIndexId(contentId, this.systemHome);
+	}
+
+	protected static long calculateIndexId(Number contentId, String systemHome) {
+		return (((long) systemHome.hashCode()) << 32l) + contentId.longValue();
+	}
+
+	/**
 	 * updates the system information for lastLogDate, lastTasId
 	 */
 	public void flushSystemInformation() {
@@ -273,7 +285,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		//TODO add systemUrl
 		for (Map<String, Object> jsonDocument : esPostsToInsert2) {
 			jsonDocument.put(this.systemUrlFieldName, systemHome);
-			long indexId = (systemHome.hashCode()<<32)+Long.parseLong(jsonDocument.get(LuceneFieldNames.CONTENT_ID).toString());
+			long indexId = calculateIndexId(Long.parseLong(jsonDocument.get(LuceneFieldNames.CONTENT_ID).toString()));
 			this.esClient
 					.getClient()
 					.prepareIndex(

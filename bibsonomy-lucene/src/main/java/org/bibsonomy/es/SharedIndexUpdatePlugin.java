@@ -195,11 +195,11 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	}
 
 	private long getLong(Map<String, Object> infos, String key) {
-		String strVal = String.valueOf(infos.get(key));
+		Object strVal = infos.get(key);
 		if (strVal == null) {
 			return 0;
 		}
-		return Long.parseLong(strVal);
+		return Long.parseLong(strVal.toString());
 	}
 
 	/* (non-Javadoc)
