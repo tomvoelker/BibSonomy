@@ -29,20 +29,21 @@ package org.bibsonomy.webapp.controller;
 import java.io.IOException;
 
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
-import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
+import org.bibsonomy.layout.jabref.AbstractJabRefLayout;
 import org.bibsonomy.layout.standard.StandardLayouts;
+import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.webapp.command.ExportPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
  * @author Christian, lsc
  */
-public class ExportPageController implements
-		MinimalisticController<ExportPageCommand> {
+public class ExportPageController implements MinimalisticController<ExportPageCommand> {
 
-	private JabrefLayoutRenderer layoutRenderer;
+	private LayoutRenderer<AbstractJabRefLayout> layoutRenderer;
 	private StandardLayouts layouts;
 
 	/**
@@ -74,11 +75,11 @@ public class ExportPageController implements
 			return Views.EXPORTLAYOUTS;
 		}
 
-		if (command.getContext().isUserLoggedIn()) {
+		final RequestWrapperContext context = command.getContext();
+		if (context.isUserLoggedIn()) {
 			try {
-				command.addLayout(this.layoutRenderer.getLayout("custom",
-						command.getContext().getLoginUser().getName()));
-			} catch (LayoutRenderingException | IOException e) {
+				command.addLayout(this.layoutRenderer.getLayout(LayoutRenderer.CUSTOM_LAYOUT, context.getLoginUser().getName()));
+			} catch (final LayoutRenderingException | IOException e) {
 				// ignore because reasons 
 			}
 		}
@@ -95,7 +96,7 @@ public class ExportPageController implements
 	/**
 	 * @param layoutRenderer
 	 */
-	public void setLayoutRenderer(final JabrefLayoutRenderer layoutRenderer) {
+	public void setLayoutRenderer(final LayoutRenderer<AbstractJabRefLayout> layoutRenderer) {
 		this.layoutRenderer = layoutRenderer;
 	}
 

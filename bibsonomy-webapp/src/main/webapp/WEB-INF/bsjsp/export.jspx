@@ -163,25 +163,24 @@
   				| Custom 
   				-->
   			
-  			<!-- If the user has not defined a custom jabref layout 
-  			the custom row is colored red and the description gives appropriate feedback -->	
-  			<c:set var="customLayout" value="${false}" />
-  			<c:forEach var="mapEntry" items="${command.layoutMap}" >
+			<!-- If the user has not defined a custom jabref layout 
+			the custom row is colored red and the description gives appropriate feedback -->	
+			<c:set var="customLayout" value="${false}" />
+			<c:forEach var="mapEntry" items="${command.layoutMap}" >
 				<c:if test="${'custom' eq mapEntry.value.displayName}">
- 					<tr>
-	  				<c:url var="url" value="/layout/custom/${pathAndQueryString}" />
+					<tr>
+					<c:url var="url" value="/layout/custom/${pathAndQueryString}" />
 						<td>
 							<a class="btn btn-primary btn-sm export-link" href="${url}">
-		  						<span class="glyphicon glyphicon-download-alt" />	
+								<span class="glyphicon glyphicon-download-alt" />	
 							</a>
 						</td>
 						<td>
-		                  	
-		               	</td> 
+						</td>
 						<td>
 							<b><c:out value="${mapEntry.value.displayName}" /></b> <br />
 							<fmt:message key="export.custom.faq" />
-						</td>  
+						</td>
  					</tr>
  					<c:set var="customLayout" value="${true}" />
  				</c:if>
@@ -201,10 +200,10 @@
 						<fmt:message key="export.custom.faq" />
 					</td>  
 				</tr>
-		  	</c:if>
+			</c:if>
 
 			<c:forEach var="mapEntry" items="${command.layoutMap}">
-		    	<c:if test="${mapEntry.value.publicLayout and not mapEntry.value.isFavorite}">			
+		    	<c:if test="${mapEntry.value.publicLayout and not mapEntry.value.isFavorite}">
 					<tr>
 						<c:choose>
 				  			<!-- 
