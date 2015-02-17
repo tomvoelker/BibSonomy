@@ -26,12 +26,14 @@
  */
 package org.bibsonomy.database.managers.chain.user.get;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.user.UserChainElement;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -45,7 +47,11 @@ public class GetUsersByGroup extends UserChainElement {
 
 	@Override
 	protected List<User> handle(final UserParam param, final DBSession session) {
-		return this.groupDb.getGroupMembers(param.getUserName(), param.getRequestedGroupName(), session).getUsers();
+		List<User> userList = new LinkedList<>();
+		for (GroupMembership ms: this.groupDb.getGroupMembers(param.getUserName(), param.getRequestedGroupName(), false, session).getMemberships()) {
+			userList.add(ms.getUser());
+		}
+		return userList;
 	}
 
 	@Override

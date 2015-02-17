@@ -501,6 +501,14 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		// param.setRequestedContentId(oldContentId);
 		// this.update("updateBibTexHistory", param, session);
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.managers.PostDatabaseManager#onPostMassUpdate(java.lang.String, int, org.bibsonomy.database.common.DBSession)
+	 */
+	@Override
+	protected void onPostMassUpdate(String username, int groupId, DBSession session) {
+		this.plugins.onPublicationMassUpdate(username, groupId, session);
+	}
 
 	/*
 	 * (non-Javadoc)

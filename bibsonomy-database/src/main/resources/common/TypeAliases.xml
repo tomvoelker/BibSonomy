@@ -18,7 +18,9 @@
 	<typeAlias alias="user"               type="org.bibsonomy.model.User" />
 	<typeAlias alias="userSettings"       type="org.bibsonomy.model.UserSettings" />
 	<typeAlias alias="group"              type="org.bibsonomy.model.Group" />
+	<typeAlias alias="groupMembership"    type="org.bibsonomy.model.GroupMembership" />
 	<typeAlias alias="publicationReportingSettings" type="org.bibsonomy.model.GroupPublicationReportingSettings" />
+	<typeAlias alias="groupRequest"       type="org.bibsonomy.model.GroupRequest" />
 	<typeAlias alias="tagset"             type="org.bibsonomy.model.TagSet" />
 	<typeAlias alias="document"           type="org.bibsonomy.model.Document" />
 	<typeAlias alias="author"			  type="org.bibsonomy.model.Author" />
@@ -89,7 +91,9 @@
 	<typeAlias alias="InetAddressStatus"	type="org.bibsonomy.common.enums.InetAddressStatus" />
 	<typeAlias alias="ProfilePrivLevel"		type="org.bibsonomy.common.enums.ProfilePrivlevel" />
 	<typeAlias alias="PrivLevel"			type="org.bibsonomy.common.enums.Privlevel" />
-	<typeAlias alias="Role"              type="org.bibsonomy.common.enums.Role" />
+	<typeAlias alias="GroupRole"			type="org.bibsonomy.common.enums.GroupRole" />
+	<typeAlias alias="Role"					type="org.bibsonomy.common.enums.Role" />
+	<typeAlias alias="GroupLevelPermission"	type="org.bibsonomy.common.enums.GroupLevelPermission" />
 	
 	<typeAlias alias="LayoutSettings"    type="org.bibsonomy.model.user.settings.LayoutSettings" />
 	

@@ -29,7 +29,6 @@ package org.bibsonomy.webapp.command.special;
 import java.util.Date;
 
 import org.bibsonomy.webapp.command.BaseCommand;
-import org.bibsonomy.webapp.controller.special.MementoController;
 
 /**
  * 

@@ -93,7 +93,7 @@ public class ProlaScraperTest {
 		final String reference = sc.getReferences();
 		assertNotNull(reference);
 		assertTrue(reference.length() > 100);
-		assertEquals("<ol class=\"references\"><li id=\"c1\">S. Wasserman and K. Faust, <span style=\"font-style:".trim(), reference.substring(0, 86).trim());
+		assertEquals("<ol class=\"references\"><li id=\"c1\"><span>S. Wasserman and K. Faust, <i>Social Network Analys".trim(), reference.substring(0, 92).trim());
 		assertTrue(reference.contains("M.E.J. Newman"));
 	}
 	@Test
@@ -106,7 +106,7 @@ public class ProlaScraperTest {
 		final String cby = sc.getCitedBy();
 		assertNotNull(cby);
 		assertTrue(cby.length() > 100);
-		assertEquals("<h1>Citing Articles (512)</h1><div class=\"article panel\">".trim(), cby.substring(0, 57).trim());
+		assertEquals("<h1>Citing Articles (522)</h1><div class=\"article panel\">".trim(), cby.substring(0, 57).trim());
 		assertTrue(cby.contains("Rehan Sadiq"));
 	}
 }

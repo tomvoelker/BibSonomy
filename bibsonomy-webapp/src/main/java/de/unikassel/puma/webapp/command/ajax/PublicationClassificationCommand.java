@@ -31,7 +31,7 @@ import org.bibsonomy.webapp.command.ajax.AjaxCommand;
 /**
  * @author philipp
  */
-public class PublicationClassificationCommand extends AjaxCommand {
+public class PublicationClassificationCommand extends AjaxCommand<String> {
 
 	private String classificationName = "";
 	private String id = "";

@@ -32,10 +32,14 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.bibsonomy.common.enums.GroupLevelPermission;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.user.remote.RemoteUserNameSpace;
@@ -143,12 +147,23 @@ public class User implements Serializable {
 	 * User's locally uploaded profile picture file
 	 */
 	private UploadedFile profilePicture;
+	
+	/**
+	 * holds the users group role.
+	 */
+	@Deprecated
+	private GroupRole groupRole;
 
 	/* ****************************** system properties ****************************** */
 	/**
 	 * The user belongs to these groups.
 	 */
 	private List<Group> groups;
+	/**
+	 * 
+	 */
+	private List<Group> pendingGroups;
+	
 	/**
 	 * Holds the friends of this user
 	 */
@@ -348,6 +363,16 @@ public class User implements Serializable {
 	 */
 	public void setGroups(final List<Group> groups) {
 		this.groups = groups;
+	}
+
+	public List<Group> getPendingGroups() {
+		if (this.pendingGroups == null)
+			this.pendingGroups = new LinkedList<>();
+		return pendingGroups;
+	}
+
+	public void setPendingGroups(List<Group> pendingGroups) {
+		this.pendingGroups = pendingGroups;
 	}
 
 	/**
@@ -972,4 +997,41 @@ public class User implements Serializable {
 	public boolean setRemoteUserId(RemoteUserId remoteId) {
 		return (remoteUserIds.put(remoteId.getNameSpace(), remoteId) != null);
 	}
+
+	/**
+	 * @return the groupRole
+	 */
+	public GroupRole getGroupRole() {
+		return this.groupRole;
+	}
+
+	/**
+	 * @param groupRole the groupRole to set
+	 */
+	public void setGroupRole(GroupRole groupRole) {
+		this.groupRole = groupRole;
+	}
+	
+
+	/**
+	 * Check if the user has the particular groupLevelPermission
+	 * @param groupLevelPermission
+	 * @return true if the user has the particular groupLevelPermission
+	 */
+	public boolean hasGroupLevelPermission(GroupLevelPermission groupLevelPermission) {
+		return this.getGroupLevelPermissions().contains(groupLevelPermission);
+	}
+	
+	/*
+	 * Return all group level permissions this user has from any group he is a member of
+	 */
+	public Set<GroupLevelPermission> getGroupLevelPermissions() {
+		Set<GroupLevelPermission> groupLevelPermissions = new HashSet<GroupLevelPermission>();
+		for (Group group: this.getGroups()) {
+			groupLevelPermissions.addAll(group.getGroupLevelPermissions());
+		}
+		return groupLevelPermissions;
+	}
+	
+	
 }
