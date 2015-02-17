@@ -202,13 +202,16 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			if (plugin != null) {
 				//Shared index updater
 				this.sharedIndexUpdater =  (SharedResourceIndexUpdater<R>) plugin.createUpdater(this.getResourceName());
+				Integer lastTasIdSharedIndex = null;
 				//if there is no shared resource index it can be null
 				if (this.sharedIndexUpdater != null) {
-					Integer lastTasIdSharedIndex = this.sharedIndexUpdater.getLastTasId();
+					lastTasIdSharedIndex = this.sharedIndexUpdater.getLastTasId();
+				}
+				if ((lastTasIdSharedIndex != null) && (lastTasIdSharedIndex.intValue() != Integer.MIN_VALUE)) {
 					final long lastLogDateSharedIndex =  this.sharedIndexUpdater.getLastLogDate();
 					Integer newLastTasId;
 					Integer newLastTasIdSharedIndex;
-					if ((lastLogDate == lastLogDateSharedIndex) && (lastTasId == lastTasIdSharedIndex)){
+					if ((lastLogDate == lastLogDateSharedIndex) && (lastTasId == lastTasIdSharedIndex)) {
 						newLastTasId = this.updateIndex(currentLogDate.getTime(), lastTasId, lastLogDateSharedIndex, IndexType.BOTH);
 						newLastTasIdSharedIndex = newLastTasId;
 					} else {

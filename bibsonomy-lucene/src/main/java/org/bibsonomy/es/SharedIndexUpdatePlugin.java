@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -178,9 +177,8 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 			indexInfo.setActive(true);
 			indexInfo.setBasePath(String.valueOf(infos.get("systemUrl")));
 			final LuceneIndexStatistics statistics = new LuceneIndexStatistics();
-			String lastLogDateStr = String.valueOf(infos.get("last_log_date"));
-			statistics.setNewestRecordDate(new Date(Long.parseLong(lastLogDateStr)));
-			statistics.setLastTasId(Long.parseLong(String.valueOf(infos.get("last_tas_id"))));
+			statistics.setNewestRecordDate(new Date(getLong(infos, "last_log_date")));
+			statistics.setLastTasId(getLong(infos, "last_tas_id"));
 			indexInfo.setIndexStatistics(statistics);
 
 			for (SharedResourceIndexGenerator<R> gen : queuedOrRunningGenerators) {
@@ -194,6 +192,14 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 			rVal.add(indexInfo);
 		}
 		return rVal;
+	}
+
+	private long getLong(Map<String, Object> infos, String key) {
+		String strVal = String.valueOf(infos.get(key));
+		if (strVal == null) {
+			return 0;
+		}
+		return Long.parseLong(strVal);
 	}
 
 	/* (non-Javadoc)

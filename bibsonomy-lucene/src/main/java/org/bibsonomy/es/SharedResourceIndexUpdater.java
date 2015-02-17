@@ -92,7 +92,11 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		try {
 			Map<String, Object> result = getSystemInfos();
 			if (result != null) {
-				return result.get(fieldToRetrieve).toString();
+				Object val = result.get(fieldToRetrieve);
+				if (val == null) {
+					return null;
+				}
+				return val.toString();
 			}
 		} catch (IndexMissingException e) {
 			log.error("IndexMissingException: " + e.getDetailedMessage() + " -> returning null", e);
