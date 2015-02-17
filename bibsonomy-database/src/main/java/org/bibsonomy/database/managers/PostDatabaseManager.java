@@ -1368,7 +1368,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 * post with the new
 			 * hash already exists.
 			 */
-			// nasim this may cause a problem
 			if (PostUpdateOperation.UPDATE_ALL.equals(operation)) {
 				post.getResource().recalculateHashes();
 			}
