@@ -189,7 +189,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			// FIXME: get this date from the log_table via
 			// 'getContentIdsToDelete'
 			//final long currentLogDate = System.currentTimeMillis();
-			final Date currentLogDate = this.dbLogic.getLastLogDate();
+			final Date currentLogDate = new Date();//this.dbLogic.getLastLogDate();
 			
 			// FIXME: this should be done in the constructor
 			// keeps track of the newest tas_id during last index update
