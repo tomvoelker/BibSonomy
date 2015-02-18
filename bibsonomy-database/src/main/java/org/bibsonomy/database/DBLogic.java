@@ -421,12 +421,12 @@ public class DBLogic implements LogicInterface {
 			final CrudableContent<? extends Resource, ? extends GenericParam> resourceTypeDatabaseManager = this.allDatabaseManagers.get(resourceType);
 			final List<Integer> listOfGroupIDs = UserUtils.getListOfGroupIDs(this.loginUser);
 			final String loginUserName = this.loginUser.getName();
-			for (final SynchronizationPost post : posts) {
-				switch (post.getAction()) {
-				case CREATE_CLIENT:
-					// $FALL-THROUGH$
-				case UPDATE_CLIENT:
-					// FIXME: this is horribly expensive!
+    		for (final SynchronizationPost post : posts) {
+    			switch (post.getAction()) {
+    			case CREATE_CLIENT:
+    				// $FALL-THROUGH$
+    			case UPDATE_CLIENT:
+    				// FIXME: this is horribly expensive!
 					post.setPost(resourceTypeDatabaseManager.getPostDetails(loginUserName, post.getIntraHash(), userName, listOfGroupIDs, session));
 					break;
 				default:
@@ -1506,7 +1506,10 @@ public class DBLogic implements LogicInterface {
 		for (final Post<?> post : posts) {
 			PostUtils.populatePost(post, this.loginUser);
 			this.permissionDBManager.ensureWriteAccess(post, this.loginUser);
+			this.permissionDBManager.ensureApprovalStatusAllowed(post, this.loginUser);
 		}
+		
+		
 		final List<String> hashes = new LinkedList<String>();
 		/*
 		 * open session

@@ -503,6 +503,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		case "description":
 			post.setDescription(newPost.getDescription());
 			break;
+		case "approved":
+			post.setApproved(newPost.getApproved());
+			break;
 		default:
 			this.replaceResourceSpecificPostFields(post.getResource(), key, newPost.getResource());
 		}
@@ -840,6 +843,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * relevantFor tags are removed from the post)
 		 */
 		command.setTags(TagUtils.toTagString(post.getTags(), " "));
+		
+		if (post.getApproved() == 1) {
+			command.setApproved(true);
+		}
+		
 	}
 
 	/**

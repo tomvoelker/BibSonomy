@@ -36,12 +36,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.model.metadata.PostMetaData;
-
 /**
  * A post connects a given resource with a user and a certain date.
  * 
  * @param <T>
- *        resource type
+ *            resource type
  */
 public class Post<T extends Resource> implements Serializable {
 
@@ -76,7 +75,7 @@ public class Post<T extends Resource> implements Serializable {
 	 * This post is tagged with these {@link Tag}s.
 	 */
 	private Set<Tag> tags;
-
+	
 	/**
 	 * This post is tagged with these {@link SystemTag}s
 	 * they are hidden but can be called when needed
@@ -92,12 +91,12 @@ public class Post<T extends Resource> implements Serializable {
 	 * This is the {@link Date} when this post was lastly modified.
 	 */
 	private Date changeDate;
-
+	
 	/**
 	 * This is the {@link Date} when this post was created.
 	 */
 	private Date date;
-
+	
 	/**
 	 * This is a text describing the post. <br/>
 	 * 
@@ -106,23 +105,24 @@ public class Post<T extends Resource> implements Serializable {
 	 * the post with another text.
 	 */
 	private String description;
-
+	
+	
 	/**
 	 * a ranking (used to sort a list of posts)
 	 */
 	private double ranking = 0.0;
-
+	
 	/**
 	 * identifier if this post is picked or not
 	 */
 	private boolean picked = false;
-
+	
 	/**
 	 * identifier if post is in the inbox
 	 * use only to create the inbox page of a user
 	 */
 	private boolean isInboxPost = false;
-
+	
 	/**
 	 * List of the collected metadata
 	 */
@@ -138,7 +138,8 @@ public class Post<T extends Resource> implements Serializable {
 	 * TODO: use User as type
 	 */
 	private String copyFrom;
-
+	
+	private int approved = 0;
 	/**
 	 * @return the repositories
 	 */
@@ -294,7 +295,7 @@ public class Post<T extends Resource> implements Serializable {
 
 	/**
 	 * @param description
-	 *        the description to set
+	 *            the description to set
 	 */
 	public void setDescription(final String description) {
 		this.description = description;
@@ -320,7 +321,7 @@ public class Post<T extends Resource> implements Serializable {
 	 * Set a ranking value
 	 * 
 	 * @param ranking
-	 *        the ranking to set
+	 * 			the ranking to set
 	 */
 	public void setRanking(final double ranking) {
 		this.ranking = ranking;
@@ -352,7 +353,6 @@ public class Post<T extends Resource> implements Serializable {
 	public void setInboxPost(final boolean isInboxPost) {
 		this.isInboxPost = isInboxPost;
 	}
-
 	/**
 	 * Returns if this post is picked or not
 	 * 
@@ -370,7 +370,7 @@ public class Post<T extends Resource> implements Serializable {
 	public void setPicked(final boolean picked) {
 		this.picked = picked;
 	}
-
+	
 	/**
 	 * @return the metaData
 	 */
@@ -403,10 +403,9 @@ public class Post<T extends Resource> implements Serializable {
 	public Set<Tag> getHiddenSystemTags() {
 		return this.hiddenSystemTags;
 	}
-
+	
 	/**
 	 * Add a SystemTag (Tag) to the HiddenSystemTag list
-	 * 
 	 * @param tag
 	 */
 	public void addHiddenSystemTag(final Tag tag) {
@@ -429,7 +428,7 @@ public class Post<T extends Resource> implements Serializable {
 	public Set<Tag> getVisibleTags() {
 		return this.visibleTags;
 	}
-
+	
 	/**
 	 * @param tag
 	 */
@@ -438,5 +437,19 @@ public class Post<T extends Resource> implements Serializable {
 			this.visibleTags = new HashSet<Tag>();
 		}
 		this.visibleTags.add(tag);
+	}
+
+	/**
+	 * @return the approved
+	 */
+	public int getApproved() {
+		return this.approved;
+	}
+
+	/**
+	 * @param approved the approved to set
+	 */
+	public void setApproved(int approved) {
+		this.approved = approved;
 	}
 }
