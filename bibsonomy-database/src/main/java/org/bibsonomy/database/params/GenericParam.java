@@ -247,6 +247,7 @@ public abstract class GenericParam {
 	
 	private final List<SystemTag> systemTags;
 	
+	private int approved;
 
 	/**
 	 * sets default values
@@ -1130,6 +1131,20 @@ public abstract class GenericParam {
 	@Override
 	public String toString() {
 		return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
+
+	/**
+	 * @return the approved
+	 */
+	public int getApproved() {
+		return this.approved;
+	}
+
+	/**
+	 * @param approved the approved to set
+	 */
+	public void setApproved(int approved) {
+		this.approved = approved;
 	}
 
 	/**

@@ -455,5 +455,5 @@
 		<function-class>tags.Functions</function-class>
 		<function-signature>java.lang.Boolean hasDidYouKnowMessage(org.bibsonomy.webapp.command.BaseCommand)</function-signature>
 	</function>
-	
+
 </taglib>

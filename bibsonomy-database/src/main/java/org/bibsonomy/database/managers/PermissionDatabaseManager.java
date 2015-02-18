@@ -519,7 +519,17 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		}
 		return true;
 	}
+	
+	public void ensureApprovalStatusAllowed(final Post<? extends Resource> post, final User loginUser){
+		if ((post.getApproved() == 1) && !ensureApprovePermission(loginUser)) {
+			throw new AccessDeniedException();
+		}
+	}
 
+	public boolean ensureApprovePermission(final User loginUser) {
+		return (loginUser.hasGroupLevelPermission(GroupLevelPermission.COMMUNITY_POST_INSPECTION) || this.isAdmin(loginUser));
+	}
+	 
 	/**
 	 * TODO: Documentation
 	 * 

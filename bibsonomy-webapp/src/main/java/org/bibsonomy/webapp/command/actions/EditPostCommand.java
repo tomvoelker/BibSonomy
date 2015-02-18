@@ -56,9 +56,10 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 * FIXME: What is the difference between diffPost and postDiff? Please use
 	 * intuitive names and add commentary.
 	 */
+
 	private Post<RESOURCE> diffPost;
 
-	/**
+		/**
 	 * If the user edits his own post, this field is used to identify the post.
 	 */
 	private String intraHashToUpdate;
@@ -80,9 +81,8 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 * is set to <code>true</code>
 	 */
 	private boolean acceptComma = false;
-	
-	private boolean containsComma = false;
 
+	private boolean containsComma = false;
 
 	/**
 	 * The abstract (or general) group of the post: public, private, or other
@@ -123,10 +123,10 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 * whether to redirect to the rating page after editing a post
 	 */
 	private String saveAndRate;
+	private boolean approved;
 	
 	private int compareVersion;
 	private List<String> differentEntryKeys;
-
 
 	/**
 	 * @return saveAndRate
@@ -483,7 +483,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	public void setDifferentEntryKeys(List<String> differentEntryKeys) {
 		this.differentEntryKeys = differentEntryKeys;
 	}
-
+	
 	/**
 	 * @return the compareVersion
 	 */
@@ -497,7 +497,18 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	public void setCompareVersion(int compareVersion) {
 		this.compareVersion = compareVersion;
 	}
-
-	
-
+	/**
+	 * @return the approved
+	 */
+	public boolean isApproved() {
+		return this.approved;
 	}
+
+	/**
+	 * @param approved the approved to set
+	 */
+	public void setApproved(boolean approved) {
+		this.approved = approved;
+	}
+	
+}
