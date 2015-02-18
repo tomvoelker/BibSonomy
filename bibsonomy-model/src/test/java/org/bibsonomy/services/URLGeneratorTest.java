@@ -33,12 +33,12 @@ import static org.junit.Assert.assertTrue;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.util.UrlUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -433,6 +433,23 @@ public class URLGeneratorTest {
 	public void testGetGroupSettingsUrlByGroupName() {
 		String expected = projectHome + "settings/group/franzosengruppe";
 		assertEquals(expected, ug.getGroupSettingsUrlByGroupName("franzosengruppe"));
+	}
+
+	@Test
+	public void testGetHistoryUrlForCommunityPost() throws Exception {
+		final Post<GoldStandardPublication> post = new Post<GoldStandardPublication>();
+		final GoldStandardPublication resource = new GoldStandardPublication();
+		resource.setInterHash("hash");
+		post.setResource(resource);
+		
+		assertEquals(projectHome + "history/bibtex/hash" , ug.getHistoryUrlForPost(post));
+		
+		final Post<GoldStandardBookmark> post2 = new Post<GoldStandardBookmark>();
+		final GoldStandardBookmark resource2 = new GoldStandardBookmark();
+		resource2.setInterHash("hash");
+		resource2.setIntraHash("hash");
+		post2.setResource(resource2);
+		assertEquals(projectHome + "history/url/hash" , ug.getHistoryUrlForPost(post2));
 	}
 
 }
