@@ -139,7 +139,7 @@ public class Post<T extends Resource> implements Serializable {
 	 */
 	private String copyFrom;
 	
-	private int approved = 0;
+	private Integer approved = 0;
 	/**
 	 * @return the repositories
 	 */
@@ -442,14 +442,17 @@ public class Post<T extends Resource> implements Serializable {
 	/**
 	 * @return the approved
 	 */
-	public int getApproved() {
+	public Integer getApproved() {
+		if (this.approved == null) {
+			return 0;
+		}
 		return this.approved;
 	}
 
 	/**
 	 * @param approved the approved to set
 	 */
-	public void setApproved(int approved) {
+	public void setApproved(Integer approved) {
 		this.approved = approved;
 	}
 }
