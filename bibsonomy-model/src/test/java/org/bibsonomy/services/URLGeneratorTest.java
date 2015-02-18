@@ -436,7 +436,7 @@ public class URLGeneratorTest {
 	}
 
 	@Test
-	public void testGetHistoryUrlForCommunityPost() throws Exception {
+	public void testGetHistoryUrlForPost() throws Exception {
 		final Post<GoldStandardPublication> post = new Post<GoldStandardPublication>();
 		final GoldStandardPublication resource = new GoldStandardPublication();
 		resource.setInterHash("hash");
