@@ -76,8 +76,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	private static final String LUCENE_MAGIC_TAG    = "luceneTag";
 	private static final String LUCENE_MAGIC_EDITOR = "luceneEditor";
 	private static final String LUCENE_MAGIC_TITLE  = "luceneTitle";
-	private static final String BIB_RESOURCE_TYPE 	= "Bibtex";
-	private static final String BM_RESOURCE_TYPE 	= "Bookmark";
+
 	/** time offset between concurrent postings [ms] */
 	private static final long CONCURRENCY_OFFSET    = 5;
 	
