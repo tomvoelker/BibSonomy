@@ -104,7 +104,8 @@
 
 						<fmt:message key="history.restoreBtn.disabled" var="restoreBtnDisabledMsg" />
 						<fmt:message key="history.restoreBtn.enabled" var="restoreBtnEnabledMsg" />
-
+						<fmt:message key="goldStandard.approved.title" var="approved"/>
+						<fmt:message key="goldStandard.approved.revision.title" var="approved_revision"/>
 						<!--+
 							| complete Post
 							+-->
@@ -120,7 +121,13 @@
 												<div class="media">
 													<div class="media-body" id="titletext">
 														<div class="pull-right"><buttons:communityPostActions post="${newestPost}" resourceType="bibtex"/></div>
-														<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" /></h1>
+														<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" />
+															<c:if test="${newestPost.approved==1}">
+																<a title="${fn:escapeXml(approved)}">
+																	<span class="fa fa-check-circle" style="margin-left:6px;"><!--  --></span>
+																</a>
+															</c:if>	
+														</h1>
 														<p><bib:desc publication="${newestPost.resource}"/></p>
 													</div>
 												</div>
@@ -202,8 +209,13 @@
 												
 												<!-- version number -->
 												<td class="col-sm-1"  id="versionNum" style="border-right:1px solid #eee">
-													<span class="label label-default diffNumText" style="vertical-align:bottom;padding:8px;">
+													<span class="label label-default" style="vertical-align:bottom;padding:8px;">
 														Ver. ${fieldlength-index}
+														<c:if test="${listView.list[(fieldlength-index)].approved==1}">
+															<a title="${fn:escapeXml(approved_revision)}">
+																<span class="fa fa-check-circle" style="vertical-align:bottom;padding-left:3px;"><!--  --></span>
+															</a>
+														</c:if>	
 													</span>
 												</td>
 												
@@ -326,9 +338,9 @@
 														</div>
 													</c:if>	
 													<c:forEach var="diffEntry" items="${diffArrayCurr}">
-														<div class="checkbox">
+														<div class="checkbox">			
 															<input type="checkbox" id="CurrEntryCheckbox" class="invisible" checked="checked"/>
-															<strong>${diffEntry.key}</strong>
+															<strong><fmt:message key="post.resource.${diffEntry.key}"/></strong>
 															<c:out value=": "/>
 															${diffEntry.value}
 															<br/>
