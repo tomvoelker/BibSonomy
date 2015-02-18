@@ -9,6 +9,15 @@
 
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
+		
+	<c:choose>
+		<c:when test="${not empty post.systemUrl }">
+			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var ="isRemotePost" value="false"/>
+		</c:otherwise>
+	</c:choose>
 
 	<c:set var="rscType" value="bookmark" />
 
@@ -23,24 +32,41 @@
 			<c:when test="${command.context.userLoggedIn}">
 				<c:choose>
 					<!-- COPY -->
-					<c:when test="${loginUserName ne post.user.name}"><!-- user is not post's owner -->
-						<c:url var="copyLink" value="/editBookmark">
-							<c:param name="hash" value="${post.resource.intraHash}" />
-							<c:param name="user" value="${post.user.name}" />
-							<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
-						</c:url>		
+					<c:when test="${isRemotePost}">
+						<c:url var="copyLink" value="/ShowBookmarkEntry">
+							<c:param name="url" value="${mtl:cleanUrl(post.resource.url)}"/>
+							<c:param name="description" value="${post.description}"/>
+							<c:param name="extended"/>
+							<c:param name="referer" value="${mtl:cleanUrl(post.resource.url)}"/>
+						</c:url>
 						<fmt:message key="bookmark.actions.copy.title" var="copyTitle"/>
 						<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
 							<span class="glyphicon glyphicon glyphicon-floppy-disk"><!--  --></span>
 						</a>
 					</c:when>
+					<c:otherwise>
+						<c:choose>
+							<!-- COPY -->
+							<c:when test="${loginUserName ne post.user.name}"><!-- user is not post's owner -->
+								<c:url var="copyLink" value="/editBookmark">
+									<c:param name="hash" value="${post.resource.intraHash}" />
+									<c:param name="user" value="${post.user.name}" />
+									<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
+								</c:url>		
+								<fmt:message key="bookmark.actions.copy.title" var="copyTitle"/>
+								<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
+									<span class="glyphicon glyphicon glyphicon-floppy-disk"><!--  --></span>
+								</a>
+							</c:when>
 
-					<!-- EDIT -->
-					<c:otherwise><!-- user is post's owner -->
-						<fmt:message key="bookmark.actions.edit.title" var="editTitle" />
-						<a class="${buttonClasses}" href="/editBookmark?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
-							<span class="glyphicon glyphicon-edit"><!--  --></span>
-						</a>
+							<!-- EDIT -->
+							<c:otherwise><!-- user is post's owner -->
+								<fmt:message key="bookmark.actions.edit.title" var="editTitle" />
+								<a class="${buttonClasses}" href="/editBookmark?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
+									<span class="glyphicon glyphicon-edit"><!--  --></span>
+								</a>
+							</c:otherwise>
+						</c:choose>
 					</c:otherwise>
 				</c:choose>
 			</c:when>
@@ -88,7 +114,7 @@
 			<c:otherwise>
 				<!-- REGULAR POST DELETE -->
 				<c:choose>
-					<c:when test="${command.context.userLoggedIn and loginUserName eq post.user.name}">
+					<c:when test="${command.context.userLoggedIn and loginUserName eq post.user.name and not isRemotePost}">
 						<fmt:message key="bookmark.actions.delete.title" var="deleteTitle" />
 						<c:url var="deleteUrl" value="/deletePost">
 							<c:param name="resourceHash" value="${post.resource.intraHash}" />

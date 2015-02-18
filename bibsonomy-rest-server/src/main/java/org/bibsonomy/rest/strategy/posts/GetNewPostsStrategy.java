@@ -28,6 +28,7 @@ package org.bibsonomy.rest.strategy.posts;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
@@ -55,6 +56,7 @@ public class GetNewPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		return this.getLogic().getPosts(resourceType, grouping, groupingValue, this.tags, null, search, null, Order.ADDED, null, null, this.getView().getStartValue(), this.getView().getEndValue());
+		// TODO: support other search types
+		return this.getLogic().getPosts(resourceType, grouping, groupingValue, this.tags, null, search, SearchType.DEFAULT_SEARCH, null, Order.ADDED, null, null, this.getView().getStartValue(), this.getView().getEndValue());
 	}
 }

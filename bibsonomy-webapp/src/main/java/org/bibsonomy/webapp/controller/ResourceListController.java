@@ -40,6 +40,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Duplicates;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagCloudSort;
 import org.bibsonomy.common.enums.TagCloudStyle;
@@ -271,11 +272,33 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param itemsPerPage number of items to be displayed on each page
 	 */
 	protected <T extends Resource> void setList(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int itemsPerPage) {
+		this.setList(cmd, resourceType, groupingEntity, groupingName, tags, hash, search, SearchType.DEFAULT_SEARCH, filter, order, startDate, endDate, itemsPerPage);
+	}
+	
+	/**
+	 * retrieve a list of posts from the database logic using ElasticSearch and add them to the command object
+	 * 
+	 * @param <T> extends Resource
+	 * @param cmd the command object
+	 * @param resourceType the resource type
+	 * @param groupingEntity the grouping entity
+	 * @param groupingName the grouping name
+	 * @param tags 
+	 * @param hash 
+	 * @param search 
+	 * @param searchType 
+	 * @param filter 
+	 * @param order 
+	 * @param startDate 
+	 * @param endDate 
+	 * @param itemsPerPage number of items to be displayed on each page
+	 */
+	protected <T extends Resource> void setList(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int itemsPerPage) {
 		final ListCommand<Post<T>> listCommand = cmd.getListCommand(resourceType);
 		// retrieve posts		
-		log.debug("getPosts " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
+		log.debug("getPosts " + resourceType + " " + searchType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
 		final int start = listCommand.getStart();
-		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search, filter, order, startDate, endDate, start, start + itemsPerPage));
+		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search, searchType, filter, order, startDate, endDate, start, start + itemsPerPage));
 		// list settings
 		listCommand.setEntriesPerPage(itemsPerPage);
 	}

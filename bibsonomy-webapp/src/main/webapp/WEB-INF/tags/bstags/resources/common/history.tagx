@@ -152,6 +152,7 @@
 								<td class="col-sm-1"  id="versionNum" style="border-right:1px solid #eee">
 									<span class="label label-default diffNumText" style="vertical-align:bottom;padding:8px;">
 									Ver. ${fieldlength-index}
+									
 									</span>
 								</td>
 								<!-- change date -->

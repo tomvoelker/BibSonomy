@@ -53,6 +53,11 @@ public class Post<T extends Resource> implements Serializable {
 	 * This is the {@link Resource} that this post is encapsulating.
 	 */
 	private T resource;
+	
+	/**
+	 * for shared resource posts this contains the url of the post
+	 */
+	private String systemUrl;
 
 	/**
 	 * We need this here if we want to use groupBy in iBatis
@@ -139,7 +144,7 @@ public class Post<T extends Resource> implements Serializable {
 	 */
 	private String copyFrom;
 	
-	private int approved = 0;
+	private Integer approved = 0;
 	/**
 	 * @return the repositories
 	 */
@@ -406,6 +411,7 @@ public class Post<T extends Resource> implements Serializable {
 	
 	/**
 	 * Add a SystemTag (Tag) to the HiddenSystemTag list
+	 * 
 	 * @param tag
 	 */
 	public void addHiddenSystemTag(final Tag tag) {
@@ -442,14 +448,32 @@ public class Post<T extends Resource> implements Serializable {
 	/**
 	 * @return the approved
 	 */
-	public int getApproved() {
+	public Integer getApproved() {
+		if (this.approved == null) {
+			return 0;
+		}
 		return this.approved;
 	}
 
 	/**
 	 * @param approved the approved to set
 	 */
-	public void setApproved(int approved) {
+	public void setApproved(Integer approved) {
 		this.approved = approved;
 	}
+	
+	/**
+	 * @return the systemUrl
+	 */
+	public String getSystemUrl() {
+		return this.systemUrl;
+	}
+
+	/**
+	 * @param systemUrl the systemUrl to set
+	 */
+	public void setSystemUrl(String systemUrl) {
+		this.systemUrl = systemUrl;
+	}
+
 }

@@ -43,6 +43,7 @@ public class LuceneIndexStatistics {
 	private long currentVersion = 0;
 	private boolean isCurrent = true;
 	private int indexId;
+	private long lastTasId;
 	
 	public LuceneIndexStatistics() {
 		this.indexId = -1;
@@ -140,5 +141,15 @@ public class LuceneIndexStatistics {
 	
 	public int getIndexId() {
 		return indexId;
+	}
+
+
+	public long getLastTasId() {
+		return this.lastTasId;
+	}
+
+
+	public void setLastTasId(long lastTasId) {
+		this.lastTasId = lastTasId;
 	}
 }
