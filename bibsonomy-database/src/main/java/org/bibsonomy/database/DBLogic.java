@@ -975,14 +975,16 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void deleteGroup(final String groupName) {
-		throw new UnsupportedOperationException("not yet available");
+		this.ensureLoggedIn();
+		// only group admins are allowed to delete the group
+		this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, groupName, GroupRole.ADMINISTRATOR);		
 
-		// final DBSession session = openSession();
-		// try {
-		// groupDBManager.deleteGroup(groupName, session);
-		// } finally {
-		// session.close();
-		// }
+		final DBSession session = openSession();
+		try {
+			this.groupDBManager.deleteGroup(groupName, session);
+		} finally {
+			session.close();
+		}
 	}
 
 	/*
