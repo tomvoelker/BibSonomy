@@ -17,14 +17,6 @@
 		<property name="password" value="${database.lucene.password}" />
 	</bean>
 	
-	<!-- 
-	<alias name="realSharedIndexUpdatePlugin" alias="sharedIndexUpdatePlugin"/>
-	
-	<alias name="realEsPublicationSearch" alias="esPublicationSearch"/>
-	<alias name="realEsBookmarkSearch" alias="esBookmarkSearch"/>
-	<alias name="realEsGoldStandardSearch" alias="esGoldStandardSearch"/>
-	 -->
-	
 	<import resource="classpath:TestDatabaseBaseContext.xml" />
 	
 	<import resource="classpath:org/bibsonomy/bibsonomy-lucene-context.xml" />

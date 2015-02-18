@@ -60,7 +60,6 @@ public class LuceneGoldStandardManagerTest extends AbstractDatabaseManagerTest {
     private static LuceneGoldStandardManager<GoldStandardPublication> manager;
     private static LuceneResourceSearch<GoldStandardPublication> searcher;
     private static GoldStandardPublicationDatabaseManager goldStandardManager;
-    private static final String GOLD_RESOURCE_TYPE = "GoldStandardPublication";
 
     private static final String INTER_HASH = "097248439469d8f5a1e7fad6b02cbfcd";
 
