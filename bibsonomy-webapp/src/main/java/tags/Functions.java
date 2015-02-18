@@ -516,7 +516,7 @@ public class Functions {
 		final String commonTags = toTagString(Sets.intersection(newTags, oldTags));
 		final String addedTags = toTagString(Sets.difference(newTags, oldTags));
 		final String deletedTags = toTagString(Sets.difference(oldTags, newTags));
-		return compareString(commonTags + addedTags, commonTags + deletedTags);
+		return compareString(commonTags + ((present(commonTags) && present(addedTags)) ? " " : "") + addedTags, commonTags + ((present(commonTags) && present(deletedTags)) ? " " : "") + deletedTags);
 	}
 
 	/**
