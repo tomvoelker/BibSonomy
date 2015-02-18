@@ -1150,7 +1150,7 @@
 		<property name="userAgent" value="BibSonomy Delicious Importer"/>
 	</bean>
 
-	<import resource="classpath:org/bibsonomy/bibsonomy-entityresolver-context.xml" />
+	<!-- <import resource="classpath:org/bibsonomy/bibsonomy-entityresolver-context.xml" /> -->
 
 	<jee:jndi-lookup id="entityDataSource" jndi-name="jdbc/bibsonomy_entities" lookup-on-startup="false" expected-type="javax.sql.DataSource" />
 	

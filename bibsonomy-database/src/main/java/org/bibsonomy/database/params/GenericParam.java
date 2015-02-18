@@ -44,6 +44,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostAccess;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.systemstags.SystemTag;
@@ -182,6 +183,9 @@ public abstract class GenericParam {
 
 	/* modified search parameter */
 	private String search;
+	
+	/* search type */
+	private SearchType searchType;
 
 	/* not modified search parameter */
 	private String rawSearch;
@@ -278,8 +282,6 @@ public abstract class GenericParam {
 		
 		this.relationTags = new ArrayList<String>();
 		this.relationTagIndex = new ArrayList<TagIndex>();
-		
-		
 	}
 	
 	/**
@@ -1145,4 +1147,17 @@ public abstract class GenericParam {
 		this.approved = approved;
 	}
 
+	/**
+	 * @return the searchType
+	 */
+	public SearchType getSearchType() {
+		return this.searchType;
+	}
+
+	/**
+	 * @param searchType the searchType to set
+	 */
+	public void setSearchType(SearchType searchType) {
+		this.searchType = searchType;
+	}
 }

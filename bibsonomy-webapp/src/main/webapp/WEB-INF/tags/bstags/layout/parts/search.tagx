@@ -38,6 +38,9 @@
 							<li><a onclick="return switchNavi('concept/tag', this);"><fmt:message key="navi.concept"/></a></li>
 							<li><a onclick="return switchNavi('bibtexkey', this);"><fmt:message key="navi.bibtexkey"/></a></li>
 							<li><a onclick="return switchNavi('search', this);"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></a></li>
+							<c:if test="${not empty properties['es.cluster.name']}">					
+								<li><a onclick="return switchNavi('sharedResourceSearch', this);"><fmt:message key="navi.sharedResourceSearch"/>:<fmt:message key="navi.all"/></a></li>
+							</c:if>
 							<c:if test="${not empty requestedUser}">
 								<li><a onclick="return switchNavi('user:${fn:escapeXml(requestedUser)}', this);"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></a></li>
 							</c:if>

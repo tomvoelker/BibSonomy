@@ -98,7 +98,7 @@ public class LuceneResourceIndex<R extends Resource> {
 	private Analyzer analyzer;
 	
 	/** list containing content ids of cached delete operations */
-	private final List<Integer> contentIdsToDelete;
+	protected List<Integer> contentIdsToDelete;
 
 	/** list posts to insert into index */
 	private final Set<Document> postsToInsert;
@@ -108,7 +108,7 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * which should be removed from index during next update (blocking new posts
 	 * to be inserted for given users) 
 	 */
-	private final Set<String> usersToFlag;
+	protected Set<String> usersToFlag;
 	
 	/** flag indicating whether the index was cleanly initialized */
 	private boolean isReady = false;
@@ -594,7 +594,7 @@ public class LuceneResourceIndex<R extends Resource> {
 		//open new indexWriter
 		log.debug("Opening indexWriter " + this.indexPath);
 		IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_48, this.analyzer);
-		iwc.setOpenMode(OpenMode.APPEND);
+		iwc.setOpenMode(OpenMode.APPEND);		
 		indexWriter = new IndexWriter(indexDirectory, iwc);
 	}
 	

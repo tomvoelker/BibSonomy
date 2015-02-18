@@ -45,6 +45,7 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
@@ -265,15 +266,15 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * found, a {@link ObjectNotFoundException} exception is thrown.
 	 * 
 	 * @param loginUserName
-	 *        - the name of the user whose inbox should be checked
+	 *            - the name of the user whose inbox should be checked
 	 * @param hash
-	 *        - the hash of the post we want to find
+	 *            - the hash of the post we want to find
 	 * @param user
-	 *        - the name of the user who owns the post (!= inbox user!)
+	 *            - the name of the user who owns the post (!= inbox user!)
 	 * @return The post from the inbox.
 	 * @throws ObjectNotFoundException
 	 */
-
+	
 	@SuppressWarnings("unchecked")
 	private Post<RESOURCE> getInboxPost(final String loginUserName, final String hash, final String user) throws ObjectNotFoundException {
 		/*
@@ -283,18 +284,18 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * has several posts with the same hash in his inbox, we get them all
 		 * and must compare each post against the given user name.
 		 */
-
+		
 		final List<Post<RESOURCE>> dbPosts = new LinkedList<Post<RESOURCE>>();
 		List<Post<RESOURCE>> tmp;
 		int startCount = 0;
 		final int step = PostLogicInterface.MAX_QUERY_SIZE;
-
+		
 		do {
-			tmp = this.logic.getPosts((Class<RESOURCE>) this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, null, null, null, null, startCount, startCount + step);
+			tmp = this.logic.getPosts((Class<RESOURCE>)this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null,SearchType.DEFAULT_SEARCH, null, null, null, null, startCount, startCount + step);
 			dbPosts.addAll(tmp);
 			startCount += step;
 		} while (tmp.size() == step);
-
+		
 		if (present(dbPosts)) {
 			for (final Post<RESOURCE> dbPost : dbPosts) {
 				/*
@@ -323,10 +324,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * Thus, never return the view directly, but use this method!
 	 * 
 	 * @param command
-	 *        - the command the controller is working on (and which is also
-	 *        handed over to the view).
+	 *            - the command the controller is working on (and which is also
+	 *            handed over to the view).
 	 * @param loginUser
-	 *        - the login user.
+	 *            - the login user.
 	 * @return The post view.
 	 */
 	protected View getEditPostView(final EditPostCommand<RESOURCE> command, final User loginUser) {
@@ -358,7 +359,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		/*
 		 * return the view
 		 */
-
 		return this.getPostView();
 	}
 
@@ -406,7 +406,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				// comparePost is the history revision which will be restored.
 				final int compareVersion = command.getCompareVersion();
 				@SuppressWarnings("unchecked")
-				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(dbPost.getResource().getClass(), GroupingEntity.USER, this.getGrouping(loginUser), null, intraHashToUpdate, null, FilterEntity.POSTS_HISTORY, null, null, null, compareVersion, compareVersion + 1).get(0);
+				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(dbPost.getResource().getClass(), GroupingEntity.USER, this.getGrouping(loginUser), null, intraHashToUpdate, null, SearchType.DEFAULT_SEARCH, FilterEntity.POSTS_HISTORY, null, null, null, compareVersion, compareVersion + 1).get(0);
 				
 				// TODO: why don't we set the dbPost = comparePost? why do we have to restore all fields by hand?
 				final List<String> diffEntryKeyList = command.getDifferentEntryKeys();
@@ -646,9 +646,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * final post.
 	 * 
 	 * @param entity
-	 *        - the final post as saved in the database.
+	 *            - the final post as saved in the database.
 	 * @param postID
-	 *        - the ID of the post during the posting process.
+	 *            - the ID of the post during the posting process.
 	 */
 	protected void setRecommendationFeedback(final TagRecommendationEntity entity, final int postID) {
 		try {
@@ -673,11 +673,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * that URL (for whatever reason), we redirect to the user's page.
 	 * 
 	 * @param userName
-	 *        - the name of the loginUser
+	 *            - the name of the loginUser
 	 * @param intraHash
-	 *        - the intra hash of the created/updated post
+	 *            - the intra hash of the created/updated post
 	 * @param referer
-	 *        - the URL of the page the user is initially coming from
+	 *            - the URL of the page the user is initially coming from
 	 * 
 	 * @return
 	 */
@@ -783,7 +783,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		if (present(command.getSaveAndRate())) {
 			final String ratingUrl = this.urlGenerator.getCommunityRatingUrl(post);
 			return new ExtendedRedirectView(ratingUrl);
-		}
+			}
 		return this.finalRedirect(loginUserName, post, command.getReferer());
 	}
 
@@ -798,7 +798,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param command
 	 * @param loginUser
 	 * @param post
-	 *        - the post that has been stored in the database.
+	 *            - the post that has been stored in the database.
 	 */
 	protected void createOrUpdateSuccess(final COMMAND command, final User loginUser, final Post<RESOURCE> post) {
 		/*
