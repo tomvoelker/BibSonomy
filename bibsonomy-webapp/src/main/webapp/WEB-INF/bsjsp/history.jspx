@@ -8,6 +8,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
 	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
@@ -212,7 +213,13 @@
 													<fmt:formatDate var="changeDate" type="both" dateStyle="long" value="${listView.list[(fieldlength-index)].changeDate}"/>
 													<span class="label label-primary diffNumText" style="vertical-align:bottom;padding:8px;" title="edited on ${changeDate}">${changeDate}</span>
 												</td>
-
+												<td class="col-sm-1">
+														<c:if test="${isGoldStandard}">
+													<div style="float:left" >
+														<h6><user:username user="${listView.list[(fieldlength-index)].user}"/></h6>
+													</div>
+													</c:if>
+												</td>
 												<c:choose>
 													<c:when test="${isPub}">
 														<!-- constraint on version 0  -->
@@ -249,13 +256,13 @@
 												<c:set var="diffNumCurr" value="${fn:length(diffArrayCurr)}"/>
 								
 												<!-- select revision to compare -->
-												<td class="col-sm-7">	
-													<div class="col-sm-2" style="float:left">
+												<td class="col-sm-6">	
+													<div class="col-sm-4" style="float:left">
 														<h6> <label class="control-label" style="white-space:nowrap;">
 															<fmt:message key="history.historySelect.compareTo" />
 														</label> </h6>
 													</div>
-													<div class="col-sm-6" style="float:left">
+													<div class="col-sm-8" style="float:left">
 														<select id="preCurrSelector" class="form-control input-sm help-popover">
 															<option value="0">
 																<fmt:message key="history.selection.previous"> version (${diffNumPre} different fields)
@@ -292,7 +299,7 @@
 											<tr>
 												<!-- comparison to the previous version -->
 
-												<td colspan="4" id="postDiffPre" class="postDiffPre">
+												<td colspan="5" id="postDiffPre" class="postDiffPre">
 													<c:choose>	
 														<c:when test="${index eq fieldlength }">
 															<div class="alert alert-info" style="margin-bottom:0px;" role="alert">
