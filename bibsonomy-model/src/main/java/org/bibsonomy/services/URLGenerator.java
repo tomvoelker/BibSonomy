@@ -125,6 +125,7 @@ public class URLGenerator {
 	private static final String VIEWABLE_PRIVATE_SUFFIX = "private";
 	private static final String VIEWABLE_PUBLIC_SUFFIX = "public";
 	private static final String HISTORY_PREFIX = "history";
+	private static final String REPORTUSER_PREFIX = "reportUser";
 
 	private static final String PUBLICATION_INTRA_HASH_ID = String
 			.valueOf(HashID.INTRA_HASH.getId());
@@ -1391,6 +1392,17 @@ public class URLGenerator {
 			final String systemUrl) {
 		String url = systemUrl + prefix + USER_PREFIX + "/"
 				+ UrlUtils.safeURIEncode(userName);
+		return this.getUrl(url);
+	}
+
+	/**
+	 * Constructs the URL for the report as spammer url
+	 * 
+	 * @param userName
+	 * @return The URL for the user's page for the system
+	 */
+	public String getReportUserURL() {
+		String url = this.projectHome + prefix + "ajax/"+ REPORTUSER_PREFIX;
 		return this.getUrl(url);
 	}
 
