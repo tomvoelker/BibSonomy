@@ -42,6 +42,18 @@
 					</bean>
 				</entry>
 				
+        		<entry key="/ajax/reportUser">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="reportUserController" />
+						<property name="allowedFields">
+							<list>
+								<value>ckey</value>
+								<value>userName</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				
         		<entry key="/ajax/cv">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="cvController" />
@@ -261,6 +273,7 @@
 	
 	<bean id="additionalURLController" class="org.bibsonomy.webapp.controller.ajax.AdditionalURLController" scope="request" parent="ajaxController" />
 	
+	<bean id="reportUserController" class="org.bibsonomy.webapp.controller.ajax.ReportUserController" scope="request" parent="ajaxController" />
 	
 	<bean id="cvController" class="org.bibsonomy.webapp.controller.ajax.AjaxCvController" scope="request" parent="ajaxController">
 		<property name="wikiRenderer" ref="wikiRenderer"/>

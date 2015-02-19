@@ -77,3 +77,17 @@ function updateBasket (param) {
 	});
 	return false;
 }
+
+// TODO: maybe wrong place ?
+function reportUser(a, userName){
+	$.ajax({
+		type: 'POST',
+		url: $(a).attr("href")+ "?ckey=" + ckey,
+		data: 'userName=' + userName,
+		dataType: 'text',
+		success: function(data) {
+			$(a).parent().html('<span class="ilitem">' + data + '</span>');
+		}
+	});
+	return false;
+}

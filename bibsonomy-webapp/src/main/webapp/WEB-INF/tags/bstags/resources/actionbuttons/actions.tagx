@@ -88,6 +88,17 @@
 						resourceType="${resourceType}"
 						buttonClasses="${buttonClasses}"/>
 				</li>
+				
+				<c:if test="${command.context.userLoggedIn and (command.context.loginUser.toClassify eq 0) and not command.context.loginUser.spammer}">
+					<li class="divider"><!--  --></li>
+					<li>
+						<buttons:reportUserMenuItem 
+							post="${post}"
+							userName="${post.user.name}" 
+							loginUser="${command.context.loginUser}"
+							buttonClasses="${buttonClasses}"/>
+					</li>
+				</c:if>
 
 				<c:if test="${resourceType eq 'bibtex'}">
 
