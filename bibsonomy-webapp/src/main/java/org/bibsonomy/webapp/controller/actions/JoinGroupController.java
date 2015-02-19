@@ -187,7 +187,10 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		}
 		
 		// insert the request
-		this.logic.updateGroup(group, GroupUpdateOperation.ADD_REQUESTED, new GroupMembership(loginUser, GroupRole.USER, false));
+		final GroupMembership gms = new GroupMembership(loginUser, GroupRole.USER, command.isUserSharedDocuments());
+		this.logic.updateGroup(group, GroupUpdateOperation.ADD_REQUESTED, gms);
+		//gms.setUserSharedDocuments(command.isUserSharedDocuments());
+		//this.logic.updateGroup(group, GroupUpdateOperation.UPDATE_USER_SHARED_DOCUMENTS, gms);
 		
 		command.setMessage("success.joinGroupRequest.sent", Collections.singletonList(groupName));
 		return Views.SUCCESS;

@@ -64,6 +64,12 @@
 					
 					<bsform:captcha inputColSpan="9"/>
 					
+					<bsform:checkbox path="userSharedDocuments" labelKey="joinGroup.userSharedDocuments" labelText="joinGroup.userSharedDocuments" inputColSpan="9">
+						<jsp:attribute name="helpText">
+							<fmt:message key="joinGroup.userSharedDocuments.hint" />
+						</jsp:attribute>
+					</bsform:checkbox>
+					
 					<fmt:message key="joinGroup.action" var="buttonValue" />
 					<div class="form-group">
 						<div class="col-sm-offset-3 col-sm-9">

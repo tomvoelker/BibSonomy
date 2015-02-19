@@ -72,6 +72,7 @@
 								<value>ckey</value>
 								<value>group</value>
 								<value>reason</value>
+								<value>userSharedDocuments</value>
 								<value>deniedUser</value>
 								<value>joinRequest</value>
 								<!-- for recaptcha -->

@@ -52,6 +52,10 @@ public class JoinGroupCommand extends BaseCommand implements CaptchaCommand {
 	 */
 	private String reason;
 	/**
+	 * share documents with the group
+	 */
+	private boolean userSharedDocuments;
+	/**
 	 * group user want join
 	 */
 	private String group;
@@ -143,6 +147,20 @@ public class JoinGroupCommand extends BaseCommand implements CaptchaCommand {
 	 */
 	public void setGroup(final String group) {
 		this.group = group;
+	}
+	
+	/**
+	 * @return userSharedDocuments
+	 */
+	public boolean isUserSharedDocuments() {
+		return this.userSharedDocuments;
+	}
+
+	/**
+	 * @param userSharedDocuments
+	 */
+	public void setUserSharedDocuments(boolean userSharedDocuments) {
+		this.userSharedDocuments = userSharedDocuments;
 	}
 
 	/**
