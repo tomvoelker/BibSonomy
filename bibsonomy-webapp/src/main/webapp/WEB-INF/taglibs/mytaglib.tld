@@ -256,17 +256,11 @@
 	</function>
 	
 	<function>
-		<name>diffEntriesPub</name>
+		<name>diffEntries</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>java.util.Map diffEntriesPub(org.bibsonomy.model.Post, org.bibsonomy.model.Post)</function-signature>
+		<function-signature>java.util.Map diffEntries(org.bibsonomy.model.Post, org.bibsonomy.model.Post)</function-signature>
 	</function>
 	
-	<function>
-		<name>diffEntriesBm</name>
-		<function-class>tags.Functions</function-class>
-		<function-signature>java.util.Map diffEntriesBm(org.bibsonomy.model.Post, org.bibsonomy.model.Post)</function-signature>
-	</function>
-			
 	<function>
 		<name>quoteJSON</name>
 		<function-class>tags.Functions</function-class>
