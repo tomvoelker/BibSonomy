@@ -29,6 +29,7 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -71,6 +72,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(UserDatabaseManager.class);
 	
 	private static final Tag BIBSONOMY_FRIEND_SYSTEM_TAG = new Tag(NetworkRelationSystemTag.BibSonomyFriendSystemTag);
+	private static final Tag BIBSONOMY_SPAMMER_SYSTEM_TAG = new Tag(NetworkRelationSystemTag.BibSonomySpammerSystemTag);
 	
 	private static final UserDatabaseManager singleton = new UserDatabaseManager();
 
@@ -386,7 +388,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		}
 		user.setApiKey(UserUtils.generateApiKey());
 		
-		
+
 		/*
 		 * The spammer column in MySQL is defined as
 		 * 
@@ -951,6 +953,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 				}
 		    	// TODO: should we introduce network_user_ids???
 				break;
+			case SPAMMER:
+				param.setTag(BIBSONOMY_SPAMMER_SYSTEM_TAG);
+				break;
 			default:
 				/* 
 				 * Since we use relations and there duals it is sometimes difficult to be sure which of our relation fits properly
@@ -995,6 +1000,12 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		        // friendship relations
 		        throw new UnsupportedRelationException();
 		    }
+			break;
+		case SPAMMER:
+			/*
+			 * get all users, that sourceUser has tagged as spammer
+			 */
+			param.setTag(BIBSONOMY_SPAMMER_SYSTEM_TAG);
 			break;
 		case OF_FRIEND:
 			/*
