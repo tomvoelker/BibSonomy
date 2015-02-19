@@ -125,6 +125,7 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 		}
 		
 		// TODO: (group) remove?!
+		
 
 		// update the bean
 		groupToUpdate.setPrivlevel(priv);

@@ -44,6 +44,7 @@ public class GroupSettingsPageCommand extends TabsCommand<Object> {
 	// tabs
 	public final static int GROUP_SETTINGS = 0;
 	public final static int MEMBER_LIST_IDX = 1;
+	public final static int DELETE_GROUP = 3;
 	public final static int CV_IDX = 2;
 
 	// general attributes
@@ -82,7 +83,11 @@ public class GroupSettingsPageCommand extends TabsCommand<Object> {
 	// tmp error message from URL
 	private String errorMessage;
 
-
+	/**
+	 * delete the group yes or no
+	 */
+	private String delete = null;
+	
 	/**
 	 * TODO: remove after setting the default value of selTab to null
 	 */
@@ -242,4 +247,11 @@ public class GroupSettingsPageCommand extends TabsCommand<Object> {
 		this.errorMessage = errormessage;
 	}
 	
+	public String getDelete() {
+		return this.delete;
+	}
+
+	public void setDelete(String delete) {
+		this.delete = delete;
+	}
 }

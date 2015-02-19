@@ -101,6 +101,7 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 			
 			command.addTab(GroupSettingsPageCommand.GROUP_SETTINGS, "navi.groupsettings");
 			command.addTab(GroupSettingsPageCommand.MEMBER_LIST_IDX, "settings.group.memberList");
+			command.addTab(GroupSettingsPageCommand.DELETE_GROUP, "settings.group.disband");
 			
 			// TODO: adapt cv wiki handling
 			// command.addTab(CV_IDX, "navi.cvedit");
