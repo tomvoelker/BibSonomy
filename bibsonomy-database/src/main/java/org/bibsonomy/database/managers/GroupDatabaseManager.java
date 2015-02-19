@@ -489,10 +489,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			this.deletePendingGroup(groupName, session);
 
 			// add the group user to the group
-			this.addUserToGroup(groupName, groupName, GroupRole.DUMMY, session);
+			this.addUserToGroup(groupName, groupName, false, GroupRole.DUMMY, session);
 
 			// add the requesting user to the group with level ADMINISTRATOR
-			this.addUserToGroup(groupName, groupRequest.getUserName(), GroupRole.ADMINISTRATOR, session);
+			this.addUserToGroup(groupName, groupRequest.getUserName(), false, GroupRole.ADMINISTRATOR, session);
 
 			session.commitTransaction();
 		} finally {
@@ -702,7 +702,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @param role
 	 * @param session
 	 */
-	public void addUserToGroup(final String groupname, final String username, final GroupRole role, final DBSession session) {
+	public void addUserToGroup(final String groupname, final String username, final boolean userSharedDocuments, final GroupRole role, final DBSession session) {
 		try {
 			session.beginTransaction();
 			// check if a user exists with that name
@@ -734,7 +734,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			 * TODO: shares documents setting must be changed if we allow users
 			 * to specify shared documents in the join request
 			 */
-			param.setMembership(new GroupMembership(user, role, false));
+			param.setMembership(new GroupMembership(user, role, userSharedDocuments));
 
 			this.insert("addUserToGroup", param, session);
 			session.commitTransaction();
@@ -849,7 +849,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForObject("getPendingMembershipsForGroup", groupname, Group.class, session);
 	}
 
-	public void addPendingMembership(final String groupname, final String username, final GroupRole pendingGroupRole, final DBSession session) {
+	public void addPendingMembership(final String groupname, final String username, final boolean userSharedDocuments, final GroupRole pendingGroupRole, final DBSession session) {
 		final Group group = this.getGroupByName(groupname, session);
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't remove join request/invite from nonexistent group");
@@ -871,7 +871,8 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 				final GroupMembership membership = new GroupMembership();
 				membership.setUser(new User(username));
 				membership.setGroupRole(pendingGroupRole);
-
+				membership.setUserSharedDocuments(userSharedDocuments);
+				
 				final GroupParam param = new GroupParam();
 				param.setMembership(membership);
 				param.setGroupId(group.getGroupId());
@@ -881,12 +882,12 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 				switch (pendingMembership.getGroupRole()) {
 				case INVITED:
 					if (GroupRole.REQUESTED.equals(pendingGroupRole)) {
-						this.addUserToGroup(groupname, username, GroupRole.USER, session);
+						this.addUserToGroup(groupname, username, userSharedDocuments, GroupRole.USER, session);
 					}
 					break;
 				case REQUESTED:
 					if (GroupRole.INVITED.equals(pendingGroupRole)) {
-						this.addUserToGroup(groupname, username, GroupRole.USER, session);
+						this.addUserToGroup(groupname, username, userSharedDocuments, GroupRole.USER, session);
 					}
 					break;
 				default:

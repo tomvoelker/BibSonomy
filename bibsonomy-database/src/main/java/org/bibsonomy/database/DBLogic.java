@@ -1182,7 +1182,8 @@ public class DBLogic implements LogicInterface {
 		}
 
 		final String requestedUserName = (present(membership) && present(membership.getUser()) && present(membership.getUser().getName())) ? membership.getUser().getName() : null;
-
+		final boolean userSharedDocuments = (present(membership)) ? membership.isUserSharedDocuments() : false;
+		
 		final DBSession session = this.openSession();
 
 		/*
@@ -1255,12 +1256,12 @@ public class DBLogic implements LogicInterface {
 				case INVITED:
 					// only the user themselves can accept an invitation
 					this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, requestedUserName);
-					this.groupDBManager.addUserToGroup(group.getName(), requestedUserName, GroupRole.USER, session);
+					this.groupDBManager.addUserToGroup(group.getName(), requestedUserName, userSharedDocuments, GroupRole.USER, session);
 					break;
 				case REQUESTED:
 					// only mods or admins can accept requests
 					this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.MODERATOR);
-					this.groupDBManager.addUserToGroup(group.getName(), requestedUserName, GroupRole.USER, session);
+					this.groupDBManager.addUserToGroup(group.getName(), requestedUserName, userSharedDocuments, GroupRole.USER, session);
 					break;
 				default:
 					throw new AccessDeniedException("Can't add this member to the group");
@@ -1329,12 +1330,12 @@ public class DBLogic implements LogicInterface {
 
 			case ADD_INVITED:
 				this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.MODERATOR);
-				this.groupDBManager.addPendingMembership(group.getName(), requestedUserName, GroupRole.INVITED, session);
+				this.groupDBManager.addPendingMembership(group.getName(), requestedUserName, userSharedDocuments, GroupRole.INVITED, session);
 				break;
 
 			case ADD_REQUESTED:
 				// TODO: check for banned users in this group
-				this.groupDBManager.addPendingMembership(group.getName(), requestedUserName, GroupRole.REQUESTED, session);
+				this.groupDBManager.addPendingMembership(group.getName(), requestedUserName, userSharedDocuments, GroupRole.REQUESTED, session);
 				break;
 
 			// TODO: Refactor to one GroupUpdateOperation
