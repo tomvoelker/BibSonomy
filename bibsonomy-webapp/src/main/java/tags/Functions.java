@@ -425,43 +425,52 @@ public class Functions {
 	 * returns a map of key-value:
 	 * new bibTex and the old one are compared according to each field,
 	 * keys are the fields which have different values
+	 * 
+	 * @param newPost
+	 * @param oldPost
+	 * @return
 	 */
-	public static Map<String, String> diffEntriesPub(final Post newPost, final Post oldPost) {
+	public static Map<String, String> diffEntries(final Post<? extends Resource> newPost, final Post<? extends Resource> oldPost) {
 		final Map<String, String> diffMap = new LinkedHashMap<String, String>();
 		diffEntriesPost(newPost, oldPost, diffMap);
-		final BibTex newBib = (BibTex) newPost.getResource();
-		final BibTex oldBib = (BibTex) oldPost.getResource();
 
-		diffPersonEntry(diffMap, "author", newBib.getAuthor(), oldBib.getAuthor());
-		diffPersonEntry(diffMap, "editor", newBib.getEditor(), oldBib.getEditor());
+		if (oldPost.getResource() instanceof BibTex) {
+			final BibTex newBib = (BibTex) newPost.getResource();
+			final BibTex oldBib = (BibTex) oldPost.getResource();
 
-		diffStringEntry(diffMap, "entrytype", newBib.getEntrytype(), oldBib.getEntrytype());
-		diffStringEntry(diffMap, "year", newBib.getYear(), oldBib.getYear());
+			diffPersonEntry(diffMap, "author", newBib.getAuthor(), oldBib.getAuthor());
+			diffPersonEntry(diffMap, "editor", newBib.getEditor(), oldBib.getEditor());
 
-		diffStringEntry(diffMap, "booktitle", newBib.getBooktitle(), oldBib.getBooktitle());
-		diffStringEntry(diffMap, "journal", newBib.getJournal(), oldBib.getJournal());
-		diffStringEntry(diffMap, "volume", newBib.getVolume(), oldBib.getVolume());
-		diffStringEntry(diffMap, "number", newBib.getNumber(), oldBib.getNumber());
-		diffStringEntry(diffMap, "pages", newBib.getPages(), oldBib.getPages());
-		diffStringEntry(diffMap, "month", newBib.getMonth(), oldBib.getMonth());
-		diffStringEntry(diffMap, "day", newBib.getDay(), oldBib.getDay());
-		diffStringEntry(diffMap, "publisher", newBib.getPublisher(), oldBib.getPublisher());
-		diffStringEntry(diffMap, "address", newBib.getAddress(), oldBib.getAddress());
-		diffStringEntry(diffMap, "edition", newBib.getEdition(), oldBib.getEdition());
-		diffStringEntry(diffMap, "chapter", newBib.getChapter(), oldBib.getChapter());
-		diffStringEntry(diffMap, "url", newBib.getUrl(), oldBib.getUrl());
-		diffStringEntry(diffMap, "key", newBib.getKey(), oldBib.getKey());
-		diffStringEntry(diffMap, "howpublished", newBib.getHowpublished(), oldBib.getHowpublished());
-		diffStringEntry(diffMap, "institution", newBib.getInstitution(), oldBib.getInstitution());
-		diffStringEntry(diffMap, "organization", newBib.getOrganization(), oldBib.getOrganization());
-		diffStringEntry(diffMap, "school", newBib.getSchool(), oldBib.getSchool());
-		diffStringEntry(diffMap, "series", newBib.getSeries(), oldBib.getSeries());
-		diffStringEntry(diffMap, "crossref", newBib.getCrossref(), oldBib.getCrossref());
-		diffStringEntry(diffMap, "misc", newBib.getMisc(), oldBib.getMisc());
-		diffStringEntry(diffMap, "bibtexAbstract", newBib.getAbstract(), oldBib.getAbstract());
-		diffStringEntry(diffMap, "privnote", newBib.getPrivnote(), oldBib.getPrivnote());
-		diffStringEntry(diffMap, "annote", newBib.getAnnote(), oldBib.getAnnote());
-		diffStringEntry(diffMap, "note", newBib.getNote(), oldBib.getNote());
+			diffStringEntry(diffMap, "entrytype", newBib.getEntrytype(), oldBib.getEntrytype());
+			diffStringEntry(diffMap, "year", newBib.getYear(), oldBib.getYear());
+
+			diffStringEntry(diffMap, "booktitle", newBib.getBooktitle(), oldBib.getBooktitle());
+			diffStringEntry(diffMap, "journal", newBib.getJournal(), oldBib.getJournal());
+			diffStringEntry(diffMap, "volume", newBib.getVolume(), oldBib.getVolume());
+			diffStringEntry(diffMap, "number", newBib.getNumber(), oldBib.getNumber());
+			diffStringEntry(diffMap, "pages", newBib.getPages(), oldBib.getPages());
+			diffStringEntry(diffMap, "month", newBib.getMonth(), oldBib.getMonth());
+			diffStringEntry(diffMap, "day", newBib.getDay(), oldBib.getDay());
+			diffStringEntry(diffMap, "publisher", newBib.getPublisher(), oldBib.getPublisher());
+			diffStringEntry(diffMap, "address", newBib.getAddress(), oldBib.getAddress());
+			diffStringEntry(diffMap, "edition", newBib.getEdition(), oldBib.getEdition());
+			diffStringEntry(diffMap, "chapter", newBib.getChapter(), oldBib.getChapter());
+			diffStringEntry(diffMap, "url", newBib.getUrl(), oldBib.getUrl());
+			diffStringEntry(diffMap, "key", newBib.getKey(), oldBib.getKey());
+			diffStringEntry(diffMap, "howpublished", newBib.getHowpublished(), oldBib.getHowpublished());
+			diffStringEntry(diffMap, "institution", newBib.getInstitution(), oldBib.getInstitution());
+			diffStringEntry(diffMap, "organization", newBib.getOrganization(), oldBib.getOrganization());
+			diffStringEntry(diffMap, "school", newBib.getSchool(), oldBib.getSchool());
+			diffStringEntry(diffMap, "series", newBib.getSeries(), oldBib.getSeries());
+			diffStringEntry(diffMap, "crossref", newBib.getCrossref(), oldBib.getCrossref());
+			diffStringEntry(diffMap, "misc", newBib.getMisc(), oldBib.getMisc());
+			diffStringEntry(diffMap, "bibtexAbstract", newBib.getAbstract(), oldBib.getAbstract());
+			diffStringEntry(diffMap, "privnote", newBib.getPrivnote(), oldBib.getPrivnote());
+			diffStringEntry(diffMap, "annote", newBib.getAnnote(), oldBib.getAnnote());
+			diffStringEntry(diffMap, "note", newBib.getNote(), oldBib.getNote());
+		} else {
+			diffStringEntry(diffMap, "url", ((Bookmark) newPost.getResource()).getUrl(), ((Bookmark) oldPost.getResource()).getUrl());
+		}
 
 		return diffMap;
 	}
@@ -485,22 +494,11 @@ public class Functions {
 	}
 
 	/**
-	 * returns a map of key-value:
-	 * new post and the old one are compared according to each field,
-	 * keys are the fields which have different values
-	 * 
-	 * @param newBmPost
-	 * @param oldBmPost
-	 * @return key-value
+	 * @param newPost
+	 * @param oldPost
+	 * @param diffMap
 	 */
-	public static Map<String, String> diffEntriesBm(final Post newBmPost, final Post oldBmPost) {
-		final Map<String, String> diffMap = new LinkedHashMap<String, String>();
-		diffEntriesPost(newBmPost, oldBmPost, diffMap);
-		diffStringEntry(diffMap, "url", ((Bookmark) newBmPost.getResource()).getUrl(), ((Bookmark) oldBmPost.getResource()).getUrl());
-		return diffMap;
-	}
-
-	public static void diffEntriesPost(final Post newPost, final Post oldPost, final Map<String, String> diffMap) {
+	public static void diffEntriesPost(final Post<? extends Resource> newPost, final Post<? extends Resource> oldPost, final Map<String, String> diffMap) {
 
 		final Resource newResource = newPost.getResource();
 		final Resource oldResource = oldPost.getResource();
@@ -523,6 +521,7 @@ public class Functions {
 	 * Compares two strings character-based.
 	 * 
 	 * @param newValue and oldValue
+	 * @param oldValue
 	 * @return The difference between two strings. (inserted: green, deleted:
 	 *         red, not_changed: black)
 	 */

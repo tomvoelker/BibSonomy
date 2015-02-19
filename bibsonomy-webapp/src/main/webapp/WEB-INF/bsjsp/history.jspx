@@ -186,6 +186,7 @@
 								<!--+
 									| history list
 									+-->
+									
 								<table class="table table-striped">
 
 									<thead> <!-- history list's header info -->
@@ -198,6 +199,7 @@
 
 									<tbody>
 										<c:forEach var="index" begin="0" end="${fieldlength}" varStatus="loopStatus" step="1">
+											<c:set var="historicalPost" value="${listView.list[(fieldlength-index)]}"/>
 											<c:set var="additionalItemClasses" value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}" />
 											<tr> 
 												
@@ -210,44 +212,31 @@
 												
 												<!-- change date -->
 												<td class="col-sm-3" style="border-right:1px solid #eee">
-													<fmt:formatDate var="changeDate" type="both" dateStyle="long" value="${listView.list[(fieldlength-index)].changeDate}"/>
+													<fmt:formatDate var="changeDate" type="both" dateStyle="long" value="${historicalPost.changeDate}"/>
 													<span class="label label-primary diffNumText" style="vertical-align:bottom;padding:8px;" title="edited on ${changeDate}">${changeDate}</span>
 												</td>
+												
+												<!-- user name -->
 												<td class="col-sm-1">
-														<c:if test="${isGoldStandard}">
-													<div style="float:left" >
-														<h6><user:username user="${listView.list[(fieldlength-index)].user}"/></h6>
-													</div>
+													<c:if test="${isGoldStandard}">
+														<div style="float:left" >
+															<h6><user:username user="${historicalPost.user}"/></h6>
+														</div>
 													</c:if>
 												</td>
+												
+												<!-- diff to previous version -->
 												<c:choose>
-													<c:when test="${isPub}">
-														<!-- constraint on version 0  -->
-														<c:choose>
-															<!-- if version 0  -->
-															<c:when test="${index eq fieldlength }">
-																<c:set var="diffArrayPre" value="${mtl:diffEntriesPub(listView.list[(fieldlength-index)],listView.list[(fieldlength-index)])}"/>
-															</c:when>
-															<c:otherwise>
-																<c:set var="diffArrayPre" value="${mtl:diffEntriesPub(listView.list[(fieldlength-index-1)],listView.list[(fieldlength-index)])}"/>
-															</c:otherwise>
-														</c:choose>		
-														<c:set var="diffArrayCurr" value="${mtl:diffEntriesPub(listView.list[(fieldlength)],listView.list[(fieldlength-index)])}"/>									
+													<!-- if version 0  -->
+													<c:when test="${index eq fieldlength }">
+														<c:set var="diffArrayPre" value="${null}"/>
 													</c:when>
 													<c:otherwise>
-														<!-- constraint on version 0  -->
-														<c:choose>
-															<!-- if version 0  -->
-															<c:when test="${index eq fieldlength }">
-																<c:set var="diffArrayPre" value="${mtl:diffEntriesBm(listView.list[(fieldlength-index)],listView.list[(fieldlength-index)])}"/>
-															</c:when>
-															<c:otherwise>
-																<c:set var="diffArrayPre" value="${mtl:diffEntriesBm(listView.list[(fieldlength-index-1)],listView.list[(fieldlength-index)])}"/>
-															</c:otherwise>
-														</c:choose>
-														<c:set var="diffArrayCurr" value="${mtl:diffEntriesBm(listView.list[(fieldlength)],listView.list[(fieldlength-index)])}"/>									
+														<c:set var="diffArrayPre" value="${mtl:diffEntries(listView.list[(fieldlength-index-1)],historicalPost)}"/>
 													</c:otherwise>
-												</c:choose>
+												</c:choose>		
+	
+												<c:set var="diffArrayCurr" value="${mtl:diffEntries(newestPost,historicalPost)}"/>									
 
 												<!-- number of changed fields, in comparison to the previous version -->
 												<c:set var="diffNumPre" value="${fn:length(diffArrayPre)}"/>
@@ -325,7 +314,7 @@
 									
 												</td>
 												<!-- comparison to the current version -->
-												<td colspan="4" id="postDiffCurr" class="postDiffCurr invisible">
+												<td colspan="5" id="postDiffCurr" class="postDiffCurr invisible">
 													<c:if test="${fn:length(diffArrayCurr) eq 0}">
 														<!-- we are dealing with a post which is identical to the latest version (current post) -->
 														<div id = "currentVer" class="alert alert-info " style="margin-bottom:0px;" role="alert">
