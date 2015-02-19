@@ -218,6 +218,24 @@ public class UserUtils {
 	}	
 
 	/**
+	 * Helper function to extract the usernames from a list of user objects into
+	 * a hashset.
+	 * 
+	 * @param users
+	 * @return
+	 */
+	public static HashSet<String> getHashSetOfUsernames(List<User> users) {
+		if (!present(users)) {
+			return null;
+		}
+		HashSet<String> result = new HashSet<String>();
+		for (User u : users) {
+			result.add(u.getName());
+		}
+		return result;
+	}
+
+	/**
 	 * Check whether the user is a group by comparing his name with the names
 	 * of all groups he belongs to. If a group exists with the user's name, the
 	 * user is a group.
