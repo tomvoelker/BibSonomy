@@ -123,6 +123,7 @@ public class SearchPageController extends SingleResourceListController implement
 		
 		if(searchFromSharedIndex){
 			searchType = SearchType.CROSS_SYSTEM_SEARCH;
+			command.setSelectedSearchScope("sharedResourceSearch");
 		}else{		
 			searchType = SearchType.DEFAULT_SEARCH;
 			}

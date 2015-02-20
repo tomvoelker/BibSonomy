@@ -889,6 +889,13 @@
 		<from>^/+search$</from>
 		<to type="redirect" last="true">/search/${escape:%1}</to>
 	</rule>
+	<!-- redirect for search formular on /search/SEARCHTERM page -->
+	<rule>
+		<name>redirect /sharedResourceSearch/SEARCH</name>
+		<condition type="parameter" name="search">(.+)</condition>
+		<from>^/+sharedResourceSearch$</from>
+		<to type="redirect" last="true">/sharedResourceSearch/${escape:%1}</to>
+	</rule>
 	
 
 	<!-- ############## /concepts ############### -->
