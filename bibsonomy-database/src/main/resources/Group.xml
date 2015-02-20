@@ -212,8 +212,8 @@
 	</select>
 	
 	<insert id="addPendingMembership" parameterClass="groupParam">
-		INSERT INTO pending_group_memberships (user_name, `group`, defaultgroup, `group_role`)
-		VALUES (#membership.user.name#, #groupId#, #groupId#, #membership.groupRole.role#)
+		INSERT INTO pending_group_memberships (user_name, `group`, user_shared_documents, defaultgroup, `group_role`)
+		VALUES (#membership.user.name#, #groupId#, #membership.userSharedDocuments#, #groupId#, #membership.groupRole.role#)
 	</insert>
 
 	<delete id="removePendingMembership" parameterClass="groupParam">
