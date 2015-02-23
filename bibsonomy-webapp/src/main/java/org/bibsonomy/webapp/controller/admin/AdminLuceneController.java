@@ -26,12 +26,15 @@
  */
 package org.bibsonomy.webapp.controller.admin;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.es.SharedIndexUpdatePlugin;
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
+import org.bibsonomy.lucene.param.LuceneIndexInfo;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.admin.AdminLuceneViewCommand;
@@ -45,6 +48,7 @@ import org.springframework.security.access.AccessDeniedException;
 
 /**
  * Controller for lucene admin page
+ * controller for /admin/generateSharedIndex page
  * 
  * @author Sven Stefani
  */
@@ -54,9 +58,10 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 	private static final String GENERATE_INDEX = "generateIndex";
 	private static final String GENERATE_ONE_INDEX = "generateOneIndex";
 	
-	
 	private List<LuceneResourceManager<? extends Resource>> luceneResourceManagers;
-	
+	/** plugin for elasticsearch */
+	private SharedIndexUpdatePlugin<? extends Resource> srPlugin;
+
 	@Override
 	public View workOn(final AdminLuceneViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
@@ -70,36 +75,74 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 			throw new AccessDeniedException("please log in as admin");
 		}	
 		
+		//check if ckey is valid
+//		if (!context.isValidCkey()) {
+//			errors.reject("error.field.valid.ckey");
+//			return Views.ERROR;
+//		}
+		
+//		if (generateSharedIndex) {
+//			srPlugin.generateIndex(luceneResourceManagers);
+//			return Views.SUCCESS;
+//		}
+		
 		if (GENERATE_INDEX.equals(command.getAction()) 
 				|| (GENERATE_ONE_INDEX.equals(command.getAction()))) {
-			final LuceneResourceManager<? extends Resource> mng = getManagerByResourceName(command.getResource());
-			if (mng != null) {
-				if (!mng.isGeneratingIndex()) {
-					if (GENERATE_INDEX.equals(command.getAction())) {
-						mng.generateIndex();	
-					}
-					if (GENERATE_ONE_INDEX.equals(command.getAction())) {
-						mng.regenerateIndex(command.getId());
-					}
-					
+			if (command.getResource() == null) {
+				if ((srPlugin != null) && "elasticsearch".equals(command.getIndexType())) {
+					srPlugin.generateIndex(luceneResourceManagers);
 				} else {
-					command.setAdminResponse("Already building lucene-index for resource \"" + command.getResource() + "\".");
+					throw new IllegalArgumentException("unsupported indextype '" + command.getIndexType() + "'");
 				}
 			} else {
-				command.setAdminResponse("Cannot build new index because there exists no manager for resource \"" + command.getResource() + "\".");
+				final LuceneResourceManager<? extends Resource> mng = getManagerByResourceName(command.getResource());
+				if (mng != null) {
+					if ((srPlugin != null) && "elasticsearch".equals(command.getIndexType())) {
+						srPlugin.generateIndex(mng);
+					} else {
+						if (!mng.isGeneratingIndex()) {
+							if (GENERATE_INDEX.equals(command.getAction())) {
+								mng.generateIndex();	
+							}
+							if (GENERATE_ONE_INDEX.equals(command.getAction())) {
+								mng.regenerateIndex(command.getId());
+							}
+						} else {
+							command.setAdminResponse("Already building lucene-index for resource \"" + command.getResource() + "\".");
+						}
+					}
+				} else {
+					command.setAdminResponse("Cannot build new index because there exists no manager for resource \"" + command.getResource() + "\".");
+				}
 			}
 			
 			return new ExtendedRedirectView("/admin/lucene");
 		}
 		// Infos über die einzelnen Indexe
 		// Anzahl Einträge, letztes Update, ...
-		final List<LuceneResourceIndicesInfoContainer> resIndexInfo = command.getIndicesInfos();
-		
 		for (final LuceneResourceManager<? extends Resource> manager: luceneResourceManagers) {
 			LuceneResourceIndicesInfoContainer lriic = new LuceneResourceIndicesInfoContainer();
 			lriic.setResourceName(manager.getResourceName());
 			lriic.getLuceneResoruceIndicesInfos().addAll(manager.getIndicesInfos());
-			resIndexInfo.add(lriic);
+			command.getIndicesInfos().add(lriic);
+		}
+		
+		if (srPlugin != null) {
+			String globalError = srPlugin.getGlobalIndexNonExistanceError();
+			if (globalError != null) {
+				command.setEsGlobalMessage(globalError);
+			} else {
+				for (final LuceneResourceManager<? extends Resource> manager: luceneResourceManagers) {
+					Collection<? extends LuceneIndexInfo> infos = srPlugin.getIndicesInfos(manager);
+					for (LuceneIndexInfo info : infos) {
+						LuceneResourceIndicesInfoContainer infoCon = new LuceneResourceIndicesInfoContainer();
+						infoCon.setResourceName(manager.getResourceName() + " elasticsearch");
+						infoCon.getLuceneResoruceIndicesInfos().add(info);
+						command.getEsIndicesInfos().add(infoCon);
+					}
+					
+				}
+			}
 		}
 		
 		return Views.ADMIN_LUCENE;
@@ -126,5 +169,19 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 	 */
 	public void setLuceneResourceManagers(final List<LuceneResourceManager<? extends Resource>> luceneResourceManagers) {
 		this.luceneResourceManagers = luceneResourceManagers;
+	}
+
+	/**
+	 * @return srPlugin
+	 */
+	public SharedIndexUpdatePlugin<? extends Resource> getSrPlugin() {
+		return this.srPlugin;
+	}
+
+	/**
+	 * @param srPlugin
+	 */
+	public void setSrPlugin(SharedIndexUpdatePlugin<? extends Resource> srPlugin) {
+		this.srPlugin = srPlugin;
 	}
 }

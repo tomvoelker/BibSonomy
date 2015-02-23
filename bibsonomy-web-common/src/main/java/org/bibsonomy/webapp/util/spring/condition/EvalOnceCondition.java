@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Webapp - The web application for BibSonomy.
+ * BibSonomy-Web-Common - Common things for web
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -12,62 +12,51 @@
  *                               http://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.webapp.util.spring.factorybeans;
+package org.bibsonomy.webapp.util.spring.condition;
 
-/**
- * @author jensi
- */
-import org.bibsonomy.webapp.util.spring.condition.Condition;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
  * @author jensi
- *
- * @param <T> type of the conditioned property
  */
-public abstract class ConditionedPropertyCreationBean<T> implements InitializingBean {
-
-	private Condition condition;
-	private T obj;
+public class EvalOnceCondition implements Condition, InitializingBean {
+	private Condition delegate;
+	private boolean value;
 	
-	/**
-	 * @return an object depending on the condition evaluation
-	 */
-	public T getConditionedProperty() {
-		return obj;
+	@Override
+	public boolean eval() {
+		return value;
 	}
-	
-	protected abstract T produceSucessBean();
-	protected abstract T produceFailureBean();
+
+	/**
+	 * @return the delegate
+	 */
+	public Condition getDelegate() {
+		return this.delegate;
+	}
+
+	/**
+	 * @param delegate the delegate to set
+	 */
+	public void setDelegate(Condition delegate) {
+		this.delegate = delegate;
+	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		obj = (condition.eval()) ? produceSucessBean() :  produceFailureBean();
+		value = delegate.eval();
 	}
 
-	/**
-	 * @return the condition
-	 */
-	public Condition getCondition() {
-		return this.condition;
-	}
-
-	/**
-	 * @param condition the condition to set
-	 */
-	public void setCondition(Condition condition) {
-		this.condition = condition;
-	}
 }

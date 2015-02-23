@@ -36,6 +36,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ObjectUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
+import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.GoldStandardPostValidator;
 import org.bibsonomy.webapp.validation.PostValidator;
@@ -45,16 +46,19 @@ import org.springframework.validation.Errors;
 
 import recommender.core.interfaces.model.TagRecommendationEntity;
 
+
 /**
  * @author dzo
  */
-public class EditGoldStandardBookmarkController extends EditBookmarkController {
-
+public class EditGoldStandardBookmarkController extends EditBookmarkController{
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#getPostView()
+	 */
 	@Override
 	protected View getPostView() {
 		return Views.EDIT_GOLD_STANDARD_BOOKMARK;
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -66,50 +70,47 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 	protected Post<Bookmark> getPostDetails(final String intraHash, final String userName) {
 		return super.getPostDetails(intraHash, "");
 	}
-
-	@Override
+	
+ 	@Override
 	protected void prepareResourceForDatabase(final Bookmark resource) {
 		// noop
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	protected Post<Bookmark> getCopyPost(final User loginUser, final String hash, final String user) {
-		Post<Bookmark> post = null;
-		try {
-			post = (Post<Bookmark>) this.logic.getPostDetails(hash, user);
-		} catch (final ObjectNotFoundException ex) {
-			// ignore
-		} catch (final ResourceMovedException ex) {
-			// ignore
-		}
-
-		if (post == null) {
-			return null;
-		}
-
-		return this.convertToGoldStandard(post);
-	}
+ 	}
+ 	
+ 	@SuppressWarnings("unchecked")
+ 	@Override
+ 	protected Post<Bookmark> getCopyPost(final User loginUser, final String hash, final String user) {
+ 		Post<Bookmark> post = null;
+ 		try {
+ 			post = (Post<Bookmark>) this.logic.getPostDetails(hash, user);
+ 		} catch (final ObjectNotFoundException ex) {
+ 			// ignore
+ 		} catch (final ResourceMovedException ex) {
+ 			// ignore		
+ 		}
+ 		
+ 		if (post == null) {
+ 			return null;
+ 		}
+ 		return this.convertToGoldStandard(post);
+ 	}
 
 	@Override
 	protected View finalRedirect(final String userName, final Post<Bookmark> post, final String referer) {
 		return new ExtendedRedirectView(this.urlGenerator.getBookmarkUrl(post.getResource(), null));
 	}
 
-	private Post<Bookmark> convertToGoldStandard(final Post<Bookmark> post) {
-		if (!present(post)) {
-			return null;
-		}
+ 	private Post<Bookmark> convertToGoldStandard(final Post<Bookmark> post) {
+ 		if (!present(post)) {
+ 			return null;
+ 		}
+ 		final Post<Bookmark> gold = new Post<Bookmark>();
+ 		final GoldStandardBookmark goldResource = new GoldStandardBookmark();
 
-		final Post<Bookmark> gold = new Post<Bookmark>();
+ 		ObjectUtils.copyPropertyValues(post.getResource(), goldResource);
+ 		gold.setResource(goldResource);
+ 		return gold;
+ 	}
 
-		final GoldStandardBookmark goldResource = new GoldStandardBookmark();
-		ObjectUtils.copyPropertyValues(post.getResource(), goldResource);
-		gold.setResource(goldResource);
-
-		return gold;
-	}
-	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.webapp.controller.actions.EditBookmarkController#setDuplicateErrorMessage(org.bibsonomy.model.Post, org.springframework.validation.Errors)
 	 */
@@ -117,12 +118,22 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 	protected void setDuplicateErrorMessage(Post<Bookmark> post, Errors errors) {
 		errors.rejectValue("post.resource.title", "error.field.valid.alreadyStoredCommunityPost", "A community with that data already exists.");
 	}
-
+ 	
 	@Override
 	protected String getGrouping(final User requestedUser) {
 		return null;
 	}
-
+ 	@Override
+	protected void preparePost(EditPostCommand<Bookmark> command, Post<Bookmark> post) {
+		super.preparePost(command, post);
+		
+		if (command.isApproved()){
+			post.setApproved(1);
+		}else{
+			post.setApproved(0);
+		}
+	}
+	
 	@Override
 	protected EditBookmarkCommand instantiateEditPostCommand() {
 		return new EditBookmarkCommand();
@@ -133,6 +144,7 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 		return new GoldStandardBookmark();
 	}
 
+ 
 	@Override
 	protected PostValidator<Bookmark> getValidator() {
 		return new GoldStandardPostValidator<Bookmark>();
@@ -143,3 +155,4 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 		// noop gold standards have no tags
 	}
 }
+

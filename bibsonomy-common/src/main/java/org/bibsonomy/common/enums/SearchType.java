@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Webapp - The web application for BibSonomy.
+ * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -12,48 +12,33 @@
  *                               http://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.webapp.util.spring.condition;
-
-import org.bibsonomy.util.ValidationUtils;
+package org.bibsonomy.common.enums;
 
 /**
- * {@link Condition} whether some String value is non-empty.
- * 
- * @author jensi
+ * Enum for the search types
+ *
+ * @author lutful
  */
-public class NonEmptyStringCondition implements Condition {
-	private String value;
-	
-	
-	@Override
-	public boolean eval() {
-		return ValidationUtils.present(value);
-	}
+public enum SearchType {
 
 	/**
-	 * @return the value to be checked
+	 * search public posts of all connected BibSonomy-based systems (including PUMA)
 	 */
-	public String getValue() {
-		return this.value;
-	}
-
-
+	CROSS_SYSTEM_SEARCH, 
 	/**
-	 * @param value the value to be checked
+	 * search all viewable posts on the local system
 	 */
-	public void setValue(String value) {
-		this.value = value;
-	}
+	DEFAULT_SEARCH;
 }

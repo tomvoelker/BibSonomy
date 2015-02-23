@@ -43,6 +43,7 @@ public class ResourceParam<T extends Resource> extends GenericParam {
 
 	protected T resource;
 	protected GoldStandardRelation relation;
+	
 
 	/**
 	 * @return the relation between the posts
@@ -84,4 +85,5 @@ public class ResourceParam<T extends Resource> extends GenericParam {
 	public void setRatingAverage(final RatingAverage ratingAverage) {
 		this.ratingAverage = ratingAverage;
 	}
+
 }
