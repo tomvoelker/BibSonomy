@@ -509,6 +509,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		default:
 			this.replaceResourceSpecificPostFields(post.getResource(), key, newPost.getResource());
 		}
+		if(newPost.getApproved().intValue()==1){
+			post.setApproved(Integer.valueOf(1));
+		}
 	}
 
 	/**

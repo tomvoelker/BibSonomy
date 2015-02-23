@@ -789,7 +789,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 //			searchResource.setINDEX_TYPE(resourceType);
 //			searchResource.setResourceConverter(this.resourceConverter);
 			try {
-				List<Post<R>> posts = this.sharedResourceSearch.fullTextSearch(searchTerms);
+				List<Post<R>> posts = this.sharedResourceSearch.fullTextSearch(searchTerms, order, limit , offset);
 				return posts;
 			} catch (IOException e) {
 				log.error("Failed to search post from shared resource", e);

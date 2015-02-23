@@ -117,6 +117,7 @@ public class URLGenerator {
 	private static final String PUBLICATION_PREFIX = "bibtex";
 	private static final String RELEVANTFOR_PREFIX = "relevantfor";
 	private static final String SEARCH_PREFIX = "search";
+	private static final String SHARED_RESOURCE_SEARCH_PREFIX = "sharedResourceSearch";
 	private static final String SETTINGS_PREFIX = "settings";
 	private static final String TAG_PREFIX = "tag";
 	private static final String USER_PREFIX = "user";
@@ -1277,6 +1278,23 @@ public class URLGenerator {
 		url += "/" + UrlUtils.safeURIEncode(groupName);
 		return this.getUrl(url);
 	}
+	
+	/**
+	 * Constructs a search URL for the requested search string.
+	 * 
+	 * @param toSearch
+	 * @param searchScope the search type such as 'group', 'search', 'sharedResourceSearch'
+	 * @return URL pointing to the results of the search.
+	 */
+	public String getSearchUrl(final String toSearch, String searchScope) {
+		String searchPrefix = SEARCH_PREFIX;
+		if (SHARED_RESOURCE_SEARCH_PREFIX.equals(searchScope)) {
+			searchPrefix = SHARED_RESOURCE_SEARCH_PREFIX;
+		}
+		String url = this.projectHome + prefix + searchPrefix + "/"
+				+ UrlUtils.safeURIEncode(toSearch);
+		return this.getUrl(url);
+	}
 
 	/**
 	 * Constructs a search URL for the requested search string.
@@ -1285,9 +1303,7 @@ public class URLGenerator {
 	 * @return URL pointing to the results of the search.
 	 */
 	public String getSearchUrl(final String toSearch) {
-		String url = this.projectHome + prefix + SEARCH_PREFIX + "/"
-				+ UrlUtils.safeURIEncode(toSearch);
-		return this.getUrl(url);
+		return getSearchUrl(toSearch, SEARCH_PREFIX);
 	}
 
 	/**

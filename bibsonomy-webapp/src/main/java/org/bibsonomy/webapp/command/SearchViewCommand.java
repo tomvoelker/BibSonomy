@@ -35,6 +35,11 @@ public class SearchViewCommand extends TagResourceViewCommand {
 	
 	/** String to search for */
 	private String requestedSearch = "";
+	
+	/**
+	 * the selected search type such as 'group', 'search', 'sharedResourceSearch'  
+	 */
+	private String selectedSearchScope = "search";
 
 	/**
 	 * sets the requested search string
@@ -49,5 +54,19 @@ public class SearchViewCommand extends TagResourceViewCommand {
 	 */
 	public String getRequestedSearch() {
 		return requestedSearch;
+	}
+
+	/**
+	 * @return the selected search type such as 'group', 'search', 'sharedResourceSearch'
+	 */
+	public String getSelectedSearchScope() {
+		return this.selectedSearchScope;
+	}
+
+	/**
+	 * @param selectedSearchScope the selected search type such as 'group', 'search', 'sharedResourceSearch'
+	 */
+	public void setSelectedSearchScope(String selectedSearchScope) {
+		this.selectedSearchScope = selectedSearchScope;
 	}
 }

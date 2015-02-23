@@ -1343,7 +1343,10 @@ public class DBLogic implements LogicInterface {
 
 			case DELETE: // TODO: use deleteGroup
 				this.permissionDBManager.ensureAdminAccess(this.loginUser);
-				this.groupDBManager.deletePendingGroup(group.getName(), session);
+				// this must be paramGroup, since "DELETE" is only called for
+				// the admin interface to decline a group request.
+				// TODO: Resolve this in a better way.
+				this.groupDBManager.deletePendingGroup(paramGroup.getName(), session);
 				break;
 
 			case ADD_INVITED:
