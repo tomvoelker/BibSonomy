@@ -32,10 +32,12 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.CorruptIndexException;
+import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
+import org.bibsonomy.model.enums.Order;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -43,6 +45,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortOrder;
 /**
  * This class performs a search in the Shared Resource Indices based on the search term 
  *
@@ -81,12 +84,15 @@ public class EsResourceSearch<R extends Resource>{
 	
 	/**
 	 * @param searchTerms 
+	 * @param order 
+	 * @param offset 
+	 * @param limit 
 	 * @return postList
 	 * @throws IOException 
 	 * @throws CorruptIndexException 
 	 * 
 	 */
-	public ResultList<Post<R>> fullTextSearch(String searchTerms) throws CorruptIndexException, IOException {
+	public ResultList<Post<R>> fullTextSearch(String searchTerms, Order order, int limit, int offset) throws CorruptIndexException, IOException {
 
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
 		try {
@@ -95,7 +101,10 @@ public class EsResourceSearch<R extends Resource>{
 			searchRequestBuilder.setTypes(resourceType);
 			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 			searchRequestBuilder.setQuery(queryBuilder);
-			searchRequestBuilder.setFrom(0).setSize(60).setExplain(true);
+			if (order != Order.RANK) {
+				searchRequestBuilder.addSort(LuceneFieldNames.DATE, SortOrder.DESC);
+			}
+			searchRequestBuilder.setFrom(offset).setSize(limit).setExplain(true);
 
 			SearchResponse response = searchRequestBuilder.execute().actionGet();
 
