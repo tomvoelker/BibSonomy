@@ -2,17 +2,25 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="UserCommon">
-
-	<resultMap id="userForGroup" extends="Common.user" class="user">
+	
+	<!-- XXX: we can not use Common.user because the resultmap has a groupBy setting -->
+	<resultMap id="userForGroup" class="user">
+		<result property="name" column="user_name" javaType="string" />
+	</resultMap>
+	
+	<resultMap id="userForGroupWithRole" extends="userForGroup" class="user">
 		<result property="homepage"   column="user_homepage"  javaType="url"  />
 		<result property="realname"   column="user_realname"  javaType="string" />
+		<result property="groupRole" column="group_role" javaType="org.bibsonomy.common.enums.GroupRole"/>
 	</resultMap>
 	
 	<resultMap id="userWithWeight" extends="Common.user" class="user">
 		<result property="prediction" column="weight"         javaType="integer"/>
 	</resultMap>
-
-	<resultMap id="user" class="user" extends="userForGroup">
+	
+	<resultMap id="user" class="user" extends="Common.user">
+		<result property="homepage"         column="user_homepage" javaType="url"  />
+		<result property="realname"         column="user_realname" javaType="string" />
 		<result property="apiKey"           column="api_key"       javaType="string"  />
 		<result property="birthday"         column="birthday"      javaType="date" />
 		<result property="email"            column="user_email"    javaType="string" />

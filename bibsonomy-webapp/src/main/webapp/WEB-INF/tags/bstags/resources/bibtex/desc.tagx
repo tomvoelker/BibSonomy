@@ -14,7 +14,7 @@
 			<bib:journal publication="${publication}"/><c:out value=" "/>
 			<bib:volumeNumberPages publication="${publication}"/><c:out value=" "/>
 			<bib:year publication="${publication}" braces="true"/>
-			<bib:note publication="${publication}"/>			
+			<bib:note publication="${publication}"/>
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'book'}">
@@ -24,7 +24,7 @@
 			<bib:address publication="${publication}"/>
 			<bib:edition publication="${publication}"/>
 			<bib:year publication="${publication}" braces="true"/>
-			<bib:note publication="${publication}"/>	
+			<bib:note publication="${publication}"/>
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'inbook'}">
@@ -36,15 +36,15 @@
 			<bib:address publication="${publication}"/>
 			<bib:edition publication="${publication}"/>
 			<bib:year publication="${publication}" braces="true"/>
-			<bib:note publication="${publication}"/>	
+			<bib:note publication="${publication}"/>
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'booklet'}">
 			<bib:author publication="${publication}" post="${post}"/>
 			<bib:howpublished publication="${publication}"/>
-			<bib:address publication="${publication}"/>			
+			<bib:address publication="${publication}"/>
 			<bib:year publication="${publication}" braces="true"/>
-			<bib:note publication="${publication}"/>	
+			<bib:note publication="${publication}"/>
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'incollection'}">
@@ -55,7 +55,7 @@
 			<bib:publisher publication="${publication}"/>
 			<bib:address publication="${publication}"/>
 			<bib:edition publication="${publication}"/>
-			<bib:note publication="${publication}"/>	
+			<bib:note publication="${publication}"/>
 			<bib:year publication="${publication}" braces="true"/>
 		</c:when>
 		
@@ -89,7 +89,7 @@
 			<bib:note publication="${publication}"/>
 		</c:when>
 		
-		<c:when test="${publication.entrytype eq 'proceedings'}">				
+		<c:when test="${publication.entrytype eq 'proceedings'}">
 			<bib:author publication="${publication}" post="${post}"/>
 			<bib:volumeOfSeries publication="${publication}"/>
 			<bib:address publication="${publication}"/>
@@ -99,20 +99,20 @@
 			<bib:note publication="${publication}"/>
 		</c:when>
 		
-		<c:when test="${publication.entrytype eq 'techreport'}">			
+		<c:when test="${publication.entrytype eq 'techreport'}">
 			<bib:author publication="${publication}" post="${post}"/>
-			<bib:type publication="${publication}"/>	
-			<bib:volume publication="${publication}"/>		
+			<bib:type publication="${publication}"/>
+			<bib:volume publication="${publication}"/>
 			<bib:institution publication="${publication}"/>
 			<bib:address publication="${publication}"/>
-			<bib:year publication="${publication}" braces="true"/>					
+			<bib:year publication="${publication}" braces="true"/>
 		</c:when>
 		
-		<c:when test="${publication.entrytype eq 'unpublished'}">			
+		<c:when test="${publication.entrytype eq 'unpublished'}">
 			<bib:author publication="${publication}" post="${post}"/>
 			<bib:year publication="${publication}" braces="true"/>
 			<bib:note publication="${publication}"/>
-		</c:when>	
+		</c:when>
 		
 		<!-- Misc and others -->
 		<c:otherwise>
@@ -120,8 +120,8 @@
 			<bib:howpublished publication="${publication}"/>
 			<bib:year publication="${publication}" braces="true"/>
 			<bib:note publication="${publication}"/>
-		</c:otherwise>	
+		</c:otherwise>
 	
-	</c:choose>	
+	</c:choose>
 	
 </jsp:root>

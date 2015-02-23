@@ -28,17 +28,17 @@
 						<div class="col-sm-4">
 							<div class="radio">
 								<label>
-									<form:radiobutton path="abstractGrouping" value="public" tabindex="2" /> <fmt:message key="post.resource.public"/>
+									<form:radiobutton cssClass="radio-viewable-group" path="abstractGrouping" value="public" tabindex="2" /> <fmt:message key="post.resource.public"/>
 								</label>
 							</div>
 							<div class="radio">
 								<label>
-		       						<form:radiobutton path="abstractGrouping" value="private" tabindex="2" /> <fmt:message key="post.resource.private"/>
+		       						<form:radiobutton cssClass="radio-viewable-group" path="abstractGrouping" value="private" tabindex="2" /> <fmt:message key="post.resource.private"/>
 		       					</label>
 		       				</div>
 		       				<div class="radio">
 			       				<label>
-			       					<form:radiobutton path="abstractGrouping" value="other" tabindex="2" id="post.groups.other" /> <fmt:message key="post.resource.other"/>
+			       					<form:radiobutton cssClass="radio-viewable-group" path="abstractGrouping" value="other" tabindex="2" id="post.groups.other" /> <fmt:message key="post.resource.other"/>
 			       				</label>
 			       			</div>
 		       			</div>
@@ -61,11 +61,15 @@
 			*/
 			  var selectOther = document.getElementById("post.groups.other2");
 			  var radiobuttonOther = document.getElementById("post.groups.other");
-			  var siblings = $(radiobuttonOther).siblings("input:radio");
+			  var siblings = $(radiobuttonOther).parent().parent().siblings().find("input:radio");
 		      
 			  var hideSelectBox = function(el) {
-				  if(el.id=="post.groups.other" && el.checked) $(selectOther).show(); 
-				  else $(selectOther).hide();
+				  if(el.id=="post.groups.other" && el.checked) {
+					  $(selectOther).show();
+				  } else {
+					  $(selectOther).find("option").attr("selected", false);
+					  $(selectOther).hide();
+				  }
 			  };
 		
 			  var callback = function(e) {

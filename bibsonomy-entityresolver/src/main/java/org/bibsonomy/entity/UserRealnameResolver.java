@@ -1,5 +1,5 @@
 /**
- * BibSonomy Entity Resolver - Username/author identiy resolving for BibSonomy.
+ * BibSonomy - A blue social bookmark and publication sharing system.
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany

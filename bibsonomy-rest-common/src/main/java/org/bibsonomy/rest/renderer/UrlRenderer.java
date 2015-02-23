@@ -42,7 +42,6 @@ import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.rest.RESTConfig;
-import org.bibsonomy.rest.utils.RestSyncUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlBuilder;
 
@@ -249,7 +248,7 @@ public class UrlRenderer {
 		}
 		
 		if (present(syncDate)) {
-			urlBuilder.addParameter(RESTConfig.SYNC_DATE_PARAM, RestSyncUtils.serializeDate(syncDate));
+			urlBuilder.addParameter(RESTConfig.SYNC_DATE_PARAM, RESTConfig.serializeDate(syncDate));
 		}
 		
 		if (present(status)) {

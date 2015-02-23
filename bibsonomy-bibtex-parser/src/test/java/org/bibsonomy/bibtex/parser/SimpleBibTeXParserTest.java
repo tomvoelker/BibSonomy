@@ -39,7 +39,6 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.util.StringUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import bibtex.expansions.CrossReferenceExpansionException;
@@ -83,7 +82,6 @@ public class SimpleBibTeXParserTest {
 	"}";
 
 	@Test
-	@Ignore // FIXME: whitespaces should be there!
 	public void testParseBibTeX1() throws Exception {
 		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
 		final BibTex bibtex = parser.parseBibTeX(entry1);
@@ -166,7 +164,6 @@ public class SimpleBibTeXParserTest {
 	 * @throws Exception 
 	 */
 	@Test
-	@Ignore // FIXME: whitespaces should be there!
 	public void testAuthorNormalization() throws Exception {
 		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
 

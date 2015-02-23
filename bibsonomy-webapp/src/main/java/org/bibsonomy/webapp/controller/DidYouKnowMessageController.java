@@ -59,6 +59,9 @@ public abstract class DidYouKnowMessageController {
 	 * @return didYouKnowMessage
 	 */
 	public DidYouKnowMessage getRandomDidYouKnowMessage() {
+		if (this.didYouKnowMessages == null) {
+			return null;
+		}
 		final Random random = new Random();
 		return this.didYouKnowMessages.get(random.nextInt(this.didYouKnowMessages.size()));
 	}

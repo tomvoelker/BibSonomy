@@ -43,8 +43,6 @@ public class ExtendedRedirectView extends RedirectView implements View {
 		setExposeModelAttributes(false);
 	}
 	
-
-	
 	@Override
 	public String getName() {
 		return getUrl();

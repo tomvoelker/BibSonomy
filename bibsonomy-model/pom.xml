@@ -76,6 +76,10 @@
 		</plugins>
 	</build>
 
+	<properties>
+		<es.version>1.2.4</es.version>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.antlr</groupId>

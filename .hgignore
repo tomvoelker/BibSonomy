@@ -12,7 +12,5 @@ src/main/webapp/WEB-INF/classes
 src/main/webapp/META-INF
 bibsonomy-lucene/src/test/resources/lucene_*
 nbactions.xml
-nb-configuration.xmlsyntax: regexp
-^bibsonomy-webapp/\.externalToolBuilders/org\.eclipse\.wst\.jsdt\.core\.javascriptValidator \(1\)\.launch$
-syntax: regexp
-^bibsonomy-webapp/log4j2\.xml$
+nb-configuration.xml
+Thumbs.db

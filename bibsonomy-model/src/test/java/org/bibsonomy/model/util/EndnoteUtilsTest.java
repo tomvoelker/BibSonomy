@@ -1,9 +1,9 @@
 /**
- *  BibSonomy-Model - Java- and JAXB-Model.
+ * BibSonomy-Model - Java- and JAXB-Model.
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
  *                               University of Würzburg, Germany
  *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
@@ -16,15 +16,14 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  You should have received a copy of the GNU Lesser General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.model.util;
 
 import static org.junit.Assert.assertEquals;
@@ -87,7 +86,7 @@ public class EndnoteUtilsTest {
 		// TODO: what about this?: b.setTitle("Newcastle working papers in linguistics \\& stuff");
 		b.getAuthor().add(new PersonName("", "{School of English Literature, Language and Linguistics}"));
 		b.setEditor(new ArrayList<PersonName>());
-		b.getEditor().add(new PersonName("Günter").withFirstName("G\"unter"));
+		b.getEditor().add(new PersonName("G\"unter", "Günter"));
 		b.setYear("{2009}");
 		b.setBibtexKey("schoolofenglishliterature2009newcastle");
 		Post<BibTex> post = new Post<BibTex>();

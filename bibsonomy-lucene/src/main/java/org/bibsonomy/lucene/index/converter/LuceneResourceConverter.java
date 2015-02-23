@@ -36,6 +36,7 @@ import static org.bibsonomy.lucene.util.LuceneBase.CFG_TYPEHANDLER;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -45,6 +46,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
+import org.bibsonomy.es.IndexType;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.param.typehandler.LuceneTypeHandler;
@@ -101,7 +103,7 @@ public class LuceneResourceConverter<R extends Resource> {
 		// all done.
 		return post;
 	}
-	
+
 	private Object getPropertyValue(final String propertyName, final String propertyStr) {
 		@SuppressWarnings("unchecked")
 		final LuceneTypeHandler<Object> typeHandler = (LuceneTypeHandler<Object>) postPropertyMap.get(propertyName).get(CFG_TYPEHANDLER);
@@ -116,16 +118,24 @@ public class LuceneResourceConverter<R extends Resource> {
 	 * read property values from given object as defined in given propertyMap
 	 * 
 	 * @param post
+	 * @param searchType 
 	 * @return the lucene document representation of the post
 	 */
-	public Document readPost(final Post<R> post) {
-		final Document luceneDocument = new Document();
+	@SuppressWarnings("null")
+	public Object readPost(final Post<R> post, final IndexType searchType) {
+		Document luceneDocument = null;
+		Map<String, Object> jsonDocument = null;
 		
 		// all fields are concatenated for full text search
 		final StringBuilder fulltextField = new StringBuilder();
 		// all private fields are concatenated for full text search
 		final StringBuilder privateField = new StringBuilder();
 		
+		if (searchType == IndexType.ELASTICSEARCH) {
+			jsonDocument = new HashMap<String, Object>();
+		} else {
+			luceneDocument = new Document();
+		}
 		/*
 		 * cycle though all properties and store the corresponding
 		 * values in the content hash map
@@ -142,25 +152,33 @@ public class LuceneResourceConverter<R extends Resource> {
 			final Index fieldIndex = this.getFieldIndexForProperty(propertyName);
 			final Store fieldStore = this.getFieldStoreForProperty(propertyName);
 			final String fieldName = this.getFieldName(propertyName);
-			
-			// add field to the lucene document
-			luceneDocument.add(new Field(fieldName, propertyValue, fieldStore, fieldIndex));
-			
-			// TODO: only add non default values to these fields
-			if (present(propertyValue)) {
-				// add term to full text search field, if configured accordingly 
-				if (this.isFulltextProperty(propertyName)) {
-					fulltextField.append(CFG_LIST_DELIMITER);
-					fulltextField.append(propertyValue);
+			if (searchType == IndexType.ELASTICSEARCH) {
+				if (!isPrivateProperty(propertyName)) {
+					jsonDocument.put(fieldName, propertyValue);
 				}
-				// add term to private full text search field, if configured accordingly 
-				if (this.isPrivateProperty(propertyName)) {
-					privateField.append(CFG_LIST_DELIMITER);
-					privateField.append(propertyValue);
+			} else {
+				// add field to the lucene document
+				luceneDocument.add(new Field(fieldName, propertyValue, fieldStore, fieldIndex));
+			
+				// TODO: only add non default values to these fields
+				if (present(propertyValue)) {
+					// add term to full text search field, if configured accordingly 
+					if (this.isFulltextProperty(propertyName)) {
+						fulltextField.append(CFG_LIST_DELIMITER);
+						fulltextField.append(propertyValue);
+					}
+					// add term to private full text search field, if configured accordingly 
+					if (this.isPrivateProperty(propertyName)) {
+						privateField.append(CFG_LIST_DELIMITER);
+						privateField.append(propertyValue);
+					}
 				}
 			}
 		}
 		
+		if (searchType == IndexType.ELASTICSEARCH) {
+			return jsonDocument;
+		}
 		// store merged field
 		luceneDocument.add(new Field(LuceneFieldNames.MERGED_FIELDS, decodeTeX(fulltextField.toString()), Field.Store.NO, Field.Index.ANALYZED));
 
@@ -279,5 +297,35 @@ public class LuceneResourceConverter<R extends Resource> {
 	 */
 	public void setResourceClass(final Class<R> resourceClass) {
 		this.resourceClass = resourceClass;
+	}
+
+	/**
+	 * @param result The result from elasticsearch search query
+	 * @return Posts converted from Map
+	 */
+	public Post<R> writePost(Map<String, Object> result) {
+		// initialize 
+		final Post<R> post = this.createEmptyPost();
+				
+		// cycle though all properties and set the properties
+		for (final String propertyName : postPropertyMap.keySet()) {
+			// get index properties
+			final String fieldName = this.getFieldName(propertyName);
+			final String propertyStr = (String) result.get(fieldName); 
+			if (!present(propertyStr)) {
+				continue;
+				}
+			final Object propertyValue = this.getPropertyValue(propertyName, propertyStr);			
+			try {
+				PropertyUtils.setNestedProperty(post, propertyName, propertyValue);
+				} catch (final Exception e) {
+					log.error("Error setting property " + propertyName + " to " + propertyValue.toString(), e);
+				}
+		}
+		if(result.get("systemUrl")!=null){
+			String systemUrl = result.get("systemUrl").toString();
+			post.setSystemUrl(systemUrl);		
+		}
+		return post;
 	}
 }

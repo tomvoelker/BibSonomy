@@ -16,6 +16,9 @@
 	<jsp:directive.attribute name="noHelp" type="java.lang.Boolean" required="false" description="Shall the fly-by help be shown?"/>	
 	<jsp:directive.attribute name="rows" type="java.lang.Integer" required="false" description="The number of rows. Default is 3."/>
 		 
+	<script type="text/javascript" src="${resdir}/javascript/diffPublication.js"><!-- keep me --></script>
+	<script type="text/javascript" src="${resdir}/javascript/diff_match_patch.js"><!-- keep me --></script>		 
+
 	<div class="fsRow" style="min-height:auto">
 		<!-- label -->
 		<form:label cssClass="fsLabel" path="${path}"><fmt:message key="${path}"/>${required ? '* ' : ''}</form:label>
@@ -25,13 +28,17 @@
 		
 		<!-- input -->
 		<form:textarea cssClass="fsInput${small ? ' fsMedium' : ''}${required ? ' reqinput' : ''}" path="${path}" tabindex="2" rows="${not empty rows ? rows : 1}"/>
-		<!-- variable for second post -->
-		<form:textarea style="display:none" cssClass="fsInput fsMedium reqinput" path="${pathDiff}" id="tmp${path}" required="${true}" rows="2" />
-
+		<!-- variable container for second post -->
+		<!-- cssClass="fsInput fsMedium reqinput -->
+		<!--<form:textarea style="display:none" cssClass="fsInput${small ? ' fsMedium' : ''}${required ? ' reqinput' : ''}" path="${pathDiff}" id="tmp${path}" required="${false}" rows="2" />
+-->
+		<form:hidden style="display:none" cssClass="fsLabel" path="${pathDiff}" id="tmp${path}"/>
+		<!--<form:label style="display:none" cssClass="fsLabel" path="${pathDiff}" id="tmp${path}"><c:out value="${comparePost.resource.title}"/></form:label>
+		-->
 		<!-- copy button -->
 		<fmt:message var="copyContent" key="${path}"/>
 	    <div style="cursor:pointer; float:left; margin-top: 2px; margin-bottom: 2px; margin-left: 5px; margin-right: 5px">
-	    	<img src="${resdir}/image/arrow_rating.png" alt="copy ${copyContent}" title="copy ${copyContent}" onclick="javascript:copyContent('${path}')" />
+    		<img class="copyButton" id="${path}Img" src="${resdir}/image/arrow_rating.png" alt="copy ${copyContent}" title="copy ${copyContent}" onclick="javascript:copyContent('${path}')" />
 	    </div>
 	    
 		<!-- second post -->

@@ -45,7 +45,8 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	private Set<BibTex> referencedBy;
 	private Set<BibTex> referencePartOfThisPublication;
 	private Set<BibTex> referenceThisPublicationIsPublishedIn;
-
+	
+	
 	
 	private void lacyLoadReferences() {
 		if (this.references == null) {
@@ -273,4 +274,5 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 		this.setIntraHash(simHash);
 		this.setInterHash(simHash);
 	}
+
 }

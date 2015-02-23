@@ -20,7 +20,15 @@
 	<jsp:directive.attribute name="desc" fragment="true" required="true"/>
 	<jsp:directive.attribute name="actions" fragment="true" required="true"/>
 	<jsp:directive.attribute name="documents" fragment="true" required="true"/>
-	
+		
+	<c:choose>
+		<c:when test="${not empty post.systemUrl }">
+			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var ="isRemotePost" value="false"/>
+		</c:otherwise>
+	</c:choose>
 	
    <!--+ 
        | TODO: Several tests (not empty post.user.name) are here to test for community posts. 
@@ -44,7 +52,7 @@
 			<!-- IN MY COLLECTION: only display the in-my-collection-icon when the user is logged in -->
 			<!-- FIXME: user name for community posts not given - copying currently not possible -->
 			<c:choose>
-				<c:when test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name)}">	
+				<c:when test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name) and not isRemotePost}">	
 					<div class="in-my-collection glyphicon glyphicon-bookmark"><!--  --></div>
 				</c:when>
 				<c:otherwise>
@@ -75,7 +83,7 @@
 			</div>
 			<div class="ptags">
 				<!-- Edit tags link -->
-				<c:if test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name)}">
+				<c:if test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name) and not isRemotePost }">
 					<fmt:message key="navi.editTags" var="editTags" />
 					<a class="tags-edit-link" 
 						data-toggle="modal" 
@@ -90,8 +98,10 @@
 			<div class="pull-left">
 				<discussion:rating post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
 			</div>
-			<div class="pull-right"><jsp:invoke fragment="actions"/></div>
-			<div class="clearline">&#160;</div>
+			<div class="pull-right">
+				<jsp:invoke fragment="actions"/>
+			</div>
+			<div class="clearfix">&#160;</div>
 			
 			<!-- EDIT TAGS MODAL POPUP-->
 			<c:if test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name)}">
@@ -102,7 +112,8 @@
 							<c:param name="deleteCheckedPosts" value="true" />
 							<c:param name="format" value="action" />
 							<c:param name="resourcetype" value="${resourceType}" />
-							<c:param name="action" value="1" />
+							<c:param name="action" value="2" />
+							<c:param name="updateExistingPost" value="true"/>
 						</c:url>
 						
 						<form data-resource-hash="${post.resource.intraHash}${post.user.name}" class="form-horizontal edit-tags-form" method="post" action="${batchEditUrl}">

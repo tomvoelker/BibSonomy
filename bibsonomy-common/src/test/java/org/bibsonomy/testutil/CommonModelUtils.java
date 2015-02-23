@@ -1,9 +1,9 @@
 /**
- *  BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
+ * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
  *                               University of Würzburg, Germany
  *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
@@ -16,15 +16,14 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  You should have received a copy of the GNU Lesser General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.testutil;
 
 import static org.junit.Assert.assertEquals;
@@ -37,11 +36,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -50,7 +45,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.testutil.DepthEqualityTester.EqualityChecker;
-import org.bibsonomy.util.DateUtils;
 import org.bibsonomy.util.ExceptionUtils;
 
 /**
@@ -63,7 +57,6 @@ import org.bibsonomy.util.ExceptionUtils;
 public final class CommonModelUtils {
 
 	private static final Log log = LogFactory.getLog(CommonModelUtils.class);
-	private static final long DAY_MILLIS = 24 * 60 * 60 * 1000;;
 
 	/**
 	 * Don't create instances of this class - use the static methods instead.
@@ -118,14 +111,6 @@ public final class CommonModelUtils {
 			} catch (final MalformedURLException ex) {
 				throw new RuntimeException(ex);
 			}
-		}
-		if (Date.class == type) {
-			Calendar cal = GregorianCalendar.getInstance();
-			cal.setTimeInMillis( (cal.getTimeInMillis() / DAY_MILLIS) * DAY_MILLIS + name.hashCode()); // this could cause trouble if test is run exactly at 00:00 at night
-			return cal.getTime();
-		}
-		if (type.isAssignableFrom(ArrayList.class)) {
-			return new ArrayList<Object>();
 		}
 		if (Privlevel.class == type) {
 			return Privlevel.MEMBERS;

@@ -10,6 +10,7 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:spring="urn:http://www.springframework.org/tags"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -22,6 +23,15 @@
 		requPath="${requPath}"
 		minimizedContentWidth="${true}">
 		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:admin />
+					<nav:crumb nameKey="navi.admin.lucene" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.admin">
 				<jsp:attribute name="pathPart">
@@ -41,19 +51,34 @@
 		function generateIndex(resource) { 
 			var box = window.confirm("This will (re)-generate the active and inactive " + resource +"Index. Are you sure?");
 			if (box) { 
-			    window.location.href="?action=generateIndex&amp;resource=" + resource; 
+				window.location.href="?action=generateIndex&amp;resource=" + resource; 
 			}
 		} 
 		
 		function generateOneIndex(resource, id) { 
 			var box = window.confirm("This will (re)-generate the " + resource +"Index with id "+ id +". Are you sure?");
 			if (box) { 
-			    window.location.href="?action=generateOneIndex&amp;id="+id+"&amp;resource=" + resource; 
+				window.location.href="?action=generateOneIndex&amp;id="+id+"&amp;resource=" + resource; 
 			}
 		}
+		
+		function generateEsIndex() { 
+			var box = window.confirm("This will generate the global elasticsearch index with a new index structure. Are you sure?");
+			if (box) { 
+				window.location.href="?action=generateIndex&amp;indexType=elasticsearch"; 
+			}
+		} 
+		
+		function generateOneEsIndex(resource) { 
+			var box = window.confirm("This will (re)-generate the elasticsearch index with for " + resource + ". Are you sure?");
+			if (box) { 
+				window.location.href="?action=generateOneIndex&amp;id="+id+"&amp;resource=" + resource + "&amp;indexType=elasticsearch"; 
+			}
+		}
+		
 		</script>
 
-	<div id="outerBox">
+<div id="outerBox">
 	<h2>Lucene Index Statistics</h2>
 	<c:if test="${not empty command.adminResponse}">
 		<div class="adminResponse"><c:out value="${command.adminResponse}"/></div>
@@ -197,6 +222,94 @@
 </c:choose>
 </div>
 </c:forEach>
+</div>
+
+
+<div name="sharedResourceIndexGenerator">
+<c:if test="${not empty properties['es.cluster.name']}">
+	<h2>Elasticsearch Shared Resource Index</h2>
+	
+	<c:if test="${command.esGlobalMessage != null}">
+		<p><c:out value="${command.esGlobalMessage}"/></p>
+	</c:if>
+	
+	<c:choose>
+	
+		<c:when test="${fn:length(command.esIndicesInfos) == 0}">
+			<p>
+				<a onclick="javascript:generateEsIndex()" href="#generateIndex">
+					<span style="width: 200px; height: 10px; border: 1px; color: grey;">generate</span>
+				</a>
+			</p>
+		</c:when>
+		
+		<c:otherwise>
+			<c:forEach var="resourceIndexInfo" items="${command.esIndicesInfos}">
+				<div class="indexProperties">
+					<h3><c:out value="${resourceIndexInfo.resourceName}" /> Index</h3>
+					<table>
+						<tr>
+							<th>Index</th>
+							<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
+								<th>
+									<a onclick="javascript:generateOneEsIndex('${resourceIndexInfo.resourceName}')" href="#generateIndex">
+										<span style="width: 200px; height: 10px; border: 1px; color: grey;">re-generate</span>
+									</a>
+								</th>
+							</c:forEach>
+						</tr>
+						<tr>
+							<td>Path:</td>
+							<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
+								<td>"${resIndex.basePath}"</td>
+							</c:forEach>	
+						</tr>
+						<!--  TODO
+						<tr>
+							<td>containing docs</td>
+							<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
+								<td>${resIndex.indexStatistics.numDocs}</td>
+							</c:forEach>
+						</tr>
+						<tr>
+							<td>deleted docs</td>
+							<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
+								<td>${resIndex.indexStatistics.numDeletedDocs}</td>
+							</c:forEach>
+						</tr>
+						-->
+						<tr>
+							<td>newest date</td>
+							<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
+								<c:if test="${resIndex.id != index.generator.generatingIndexId}">
+									<td><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${resIndex.indexStatistics.newestRecordDate}" /></td>
+								</c:if>
+							</c:forEach>
+						</tr>
+						<tr>
+							<td>last tas id</td>
+							<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
+								<td><c:out value="${resIndex.indexStatistics.lastTasId}" /></td>
+							</c:forEach>
+						</tr>
+					</table>
+					<c:set var="generatingIndex" value="${resourceIndexInfo.generatingIndex}" />
+					<c:if test="${generatingIndex != null}">
+						<p>Currently generating:</p>
+						<div style="width: 202px; height: 12px; border: 1px solid #999999; background-color: #CCCCCC">
+	  					<div style="width: ${generatingIndex.indexGenerationProgress * 2}px; height:10px; border: 1px solid #CCCCCC; background-color: #002244">
+								<!-- placeholder -->
+							</div>
+						</div>
+						<div>
+							<span>${generatingIndex.indexGenerationProgress} % done.</span>
+						</div>
+					</c:if>
+				</div>
+			</c:forEach>
+		</c:otherwise>
+	</c:choose>	
+</c:if>
 </div>
 
 		</jsp:attribute>

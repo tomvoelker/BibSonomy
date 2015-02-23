@@ -774,10 +774,10 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		
 		final BibTex publication = new BibTex();
 		CommonModelUtils.setBeanPropertiesOn(publication);
-		publication.setCount(0);		
+		publication.setCount(0);
 		publication.setEntrytype("inproceedings");
 		publication.setAuthor(PersonNameUtils.discoverPersonNames("Testauthor, Hans and Testauthorin, Liese"));
-		publication.setEditor(PersonNameUtils.discoverPersonNames("Silie, Peter"));		
+		publication.setEditor(PersonNameUtils.discoverPersonNames("Silie, Peter"));
 		publication.setTitle("test friend title");
 		publication.setYear("test year");
 		publication.setJournal("test journal");
@@ -800,7 +800,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	@Test
 	public void storePostBibTexUpdatePlugin() {
 		this.printMethod("storePostBibTexUpdatePlugin");
-		final String hash = "b77ddd8087ad8856d77c740c8dc2864a";		
+		final String hash = "b77ddd8087ad8856d77c740c8dc2864a";
 		final String loginUserName = "testuser1";
 
 		List<BibTexExtra> extras = bibTexExtraDb.getURL(hash, loginUserName, this.dbSession);
@@ -842,15 +842,15 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		param.setSimHash(HashID.INTRA_HASH);
 		final List<Post<BibTex>> posts = publicationDb.getPosts(param, this.dbSession);
 		assertEquals(1, posts.size());
-		CommonModelUtils.assertPropertyEquality(toInsert, posts.get(0), Integer.MAX_VALUE, null, new String[] { "resource", "tags", "user", "date", "changeDate", "rprs"});
+		CommonModelUtils.assertPropertyEquality(toInsert, posts.get(0), Integer.MAX_VALUE, null, new String[] { "resource", "tags", "user", "date", "changeDate"});
 		toInsert.getResource().setCount(1);
-		CommonModelUtils.assertPropertyEquality(toInsert.getResource(), posts.get(0).getResource(), Integer.MAX_VALUE, null, new String[] { "openURL", "numberOfRatings", "rating", "discussionItems", "documents", "extraUrls"});
+		CommonModelUtils.assertPropertyEquality(toInsert.getResource(), posts.get(0).getResource(), Integer.MAX_VALUE, null, new String[] { "openURL", "numberOfRatings", "rating", "extraUrls"});
 
 		// check extra urls 
 		final Post<BibTex> post = publicationDb.getPostDetails(loginUser.getName(), bibtexHashForUpdate, loginUser.getName(),  Collections.singletonList(PUBLIC_GROUP_ID), this.dbSession);
 		CommonModelUtils.assertPropertyEquality(toInsert.getResource().getExtraUrls(), post.getResource().getExtraUrls(), Integer.MAX_VALUE, Pattern.compile("date"), new String[]{});
-
-		// post a duplicate and check whether plugins are called		
+		
+		// post a duplicate and check whether plugins are called
 		assertFalse(this.pluginMock.isOnBibTexUpdate());
 		this.pluginMock.reset();
 		
@@ -898,7 +898,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		
 		// delete private post
 		toInsert.getGroups().clear();
-		final Group group = GroupUtils.getPrivateGroup();
+		final Group group = GroupUtils.buildPrivateGroup();
 		toInsert.getGroups().add(group);
 		
 		final BibTexParam postParam = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, null, null, toInsert.getUser());
@@ -1019,7 +1019,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 //		final List<Post<BibTex>> posts2 = bibTexDb.getPosts(param, this.dbSession);
 //		assertEquals(10, posts2.size());
 	}
-	
+
 	/**
 	 * tests testGetPostsByKey
 	 */
@@ -1030,7 +1030,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		final String requestedUserName = "testuser1";
 		
 		List<Post<BibTex>> posts = publicationDb.getPostsByBibTeXKey(null, bibtexKey, requestedUserName, PUBLIC_GROUP_ID, Collections.singletonList(Integer.valueOf(PUBLIC_GROUP_ID)), 20, 0, null, this.dbSession);
-		assertEquals(1,posts.size());
+		assertEquals(1, posts.size());
 		assertEquals(posts.get(0).getResource().getBibtexKey(), "test bibtexKey");
 		
 		// some spamming post tests
@@ -1048,7 +1048,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		posts = publicationDb.getPostsByBibTeXKey("testspammer", "elsenbroich2006abductive", null, -1, Arrays.asList(Integer.valueOf(PUBLIC_GROUP_ID), Integer.valueOf(PUBLIC_GROUP_ID_SPAM)), 20, 0, null, this.dbSession);
 		assertEquals(2, posts.size());
 	}
-	
+
 	/**
 	 * tests {@link BibTexDatabaseManager#getPostsByFollowedUsers(String, List, int, int, org.bibsonomy.database.common.DBSession)}
 	 */
@@ -1184,4 +1184,19 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		this.printMethod("testUpdatePost");
 		// called by other methods
 	}
+	
+	@Test
+	public void testGetPostsWithHistory() {
+		this.printMethod("testGetPostsWithHistory");
+		String requestedUserName = "testuser3";
+		String intraHash = "891518b4900cd1832d77a0c8ae20dd14";
+		BibTexParam param = new BibTexParam();
+		param.setRequestedContentId(20);
+		param.setRequestedUserName(requestedUserName);
+		param.setHash(intraHash);
+		param.setFilter(FilterEntity.POSTS_HISTORY);
+		List<Post<BibTex>> posts = publicationDb.getPosts(param, dbSession);
+		assertEquals(4, posts.size());
+	}
+	
 }

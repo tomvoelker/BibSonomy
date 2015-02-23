@@ -13,8 +13,7 @@
           xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 
     <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-    <jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
-
+	
     <fmt:message key="navi.bibtexhashexample" var="bibtexhashexamplePageTitle"/>
 
     <layout:paneLayout 
@@ -56,11 +55,11 @@
 	                <h3><fmt:message key="bibtexhashexample.result"/></h3>
 	                
 	                <div class="fsRow">
-	                    <span class="fsLabel">intra hash</span><tt>${hash.intra.id}${command.post.resource.intraHash}</tt> &#8594; <tt><a href="${relativeUrlGenerator.getPublicationUrlByIntraHash(command.post.resource.intraHash)}">/bibtex/${hash.intra.id}${command.post.resource.intraHash}</a></tt>
+	                    <span class="fsLabel">intra hash</span><tt><spring:eval expression="T(org.bibsonomy.common.enums.HashID).INTRA_HASH.id" />${command.post.resource.intraHash}</tt> &#8594; <tt><a href="${relativeUrlGenerator.getPublicationUrlByIntraHash(command.post.resource.intraHash)}">/bibtex/${hash.intra.id}${command.post.resource.intraHash}</a></tt>
 	                </div>
 
 	                <div class="fsRow">
-	                	<span class="fsLabel">inter hash</span><tt>${hash.inter.id}${command.post.resource.interHash}</tt> &#8594; <tt><a href="${relativeUrlGenerator.getPublicationUrlByInterHash(command.post.resource.interHash)}">/bibtex/${hash.inter.id}${command.post.resource.interHash}</a></tt>
+	                	<span class="fsLabel">inter hash</span><tt><spring:eval expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />${command.post.resource.interHash}</tt> &#8594; <tt><a href="${relativeUrlGenerator.getPublicationUrlByInterHash(command.post.resource.interHash)}">/bibtex/${hash.inter.id}${command.post.resource.interHash}</a></tt>
 	                </div>
 
                 </fieldset>

@@ -16,17 +16,18 @@
 	<typeHandler javaType="uri"					callback="org.bibsonomy.database.common.typehandler.UriTypeHandlerCallback" />
 	<typeHandler javaType="resourceTypeClass"	callback="org.bibsonomy.database.common.typehandler.ContentTypeTypeHandlerCallback" />
 
-	<typeHandler javaType="InetAddressStatus"   callback="org.bibsonomy.database.common.typehandler.InetAddressStatusTypeHandlerCallback" />
-	<typeHandler javaType="ProfilePrivlevel"    callback="org.bibsonomy.database.common.typehandler.ProfilePrivlevelTypeHandlerCallback" />
-	<typeHandler javaType="Privlevel"           callback="org.bibsonomy.database.common.typehandler.PrivlevelTypeHandlerCallback" />
-	<typeHandler javaType="Role"                callback="org.bibsonomy.database.common.typehandler.RoleTypeHandlerCallback" />
-	<typeHandler javaType="syncStatus"          callback="org.bibsonomy.database.common.typehandler.SyncStatusTypeHandlerCallback" />
-	<typeHandler javaType="syncDirection"       callback="org.bibsonomy.database.common.typehandler.SyncDirectionTypeHandlerCallback" />
-	<typeHandler javaType="conflictStrategy"    callback="org.bibsonomy.database.common.typehandler.ConflictResolutionStrategyTypeHandlerCallback" />
-	<typeHandler javaType="personNameList"      callback="org.bibsonomy.database.common.typehandler.PersonNameTypeHandlerCallback" />
+  	<typeHandler javaType="InetAddressStatus"	callback="org.bibsonomy.database.common.typehandler.InetAddressStatusTypeHandlerCallback" />
+  	<typeHandler javaType="ProfilePrivlevel"	callback="org.bibsonomy.database.common.typehandler.ProfilePrivlevelTypeHandlerCallback" />
+  	<typeHandler javaType="Privlevel"			callback="org.bibsonomy.database.common.typehandler.PrivlevelTypeHandlerCallback" />
+  	<typeHandler javaType="Role"				callback="org.bibsonomy.database.common.typehandler.RoleTypeHandlerCallback" />
+  	<typeHandler javaType="GroupLevelPermission" callback="org.bibsonomy.database.common.typehandler.GroupLevelPermissionTypeHandlerCallback" />
+    <typeHandler javaType="GroupRole"			callback="org.bibsonomy.database.common.typehandler.GroupRoleTypeHandlerCallback" />
+    <typeHandler javaType="syncStatus"			callback="org.bibsonomy.database.common.typehandler.SyncStatusTypeHandlerCallback" />
+    <typeHandler javaType="syncDirection"		callback="org.bibsonomy.database.common.typehandler.SyncDirectionTypeHandlerCallback" />
+    <typeHandler javaType="conflictStrategy"	callback="org.bibsonomy.database.common.typehandler.ConflictResolutionStrategyTypeHandlerCallback" />
+    <typeHandler javaType="personNameList"		callback="org.bibsonomy.database.common.typehandler.PersonNameTypeHandlerCallback" />
 	<typeHandler javaType="LayoutSettings"      callback="org.bibsonomy.database.common.typehandler.LayoutSettingsTypeHandlerCallback" />
 	<typeHandler javaType="goldStandardRelation" callback="org.bibsonomy.database.common.typehandler.GoldStandardRelationTypeHandlerCallback"/>
-
 	
 	<sqlMap resource="common/Common.xml" />
 	<sqlMap resource="common/BookmarkCommon.xml" />

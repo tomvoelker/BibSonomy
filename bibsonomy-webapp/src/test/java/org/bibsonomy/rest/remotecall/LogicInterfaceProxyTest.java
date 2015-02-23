@@ -55,11 +55,13 @@ import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.ConceptUpdateOperation;
 import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagRelation;
@@ -74,8 +76,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
@@ -152,10 +153,10 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	/*
 	 * FIXME: clean up this mess :-(
 	 */
-	private static final String COMMON_USER_PROPERTIES = "apiKey|homepage|realname|email|password|date|openURL|gender|place|interests|hobbies|IPAddress|basket|inbox|profession|institution|place|spammer|settings|toClassify|updatedBy|gravatarAddress|birthday|registrationDate|reminderPasswordRequestDate|updatedAt|tags";
-	private static final String[] IGNORE1 = new String[] {"[0].date", "[0].user.apiKey", "[0].user.email", "[0].user.homepage", "[0].user.password", "[0].user.passwordSalt", "[0].user.realname", "[0].user.confidence", "[0].resource.scraperId", "[0].resource.openURL", "[0].resource.numberOfRatings", "[0].resource.rating", "[0].user.IPAddress", "[0].user.basket", "[0].user.inbox", "[0].user.gender", "[0].user.interests", "[0].user.hobbies", "[0].user.profession", "[0].user.institution", "[0].user.openURL", "[0].user.place", "[0].user.spammer", "[0].user.settings", "[0].user.algorithm", "[0].user.prediction", "[0].user.mode", "[0].user.updatedBy", "[0].user.toClassify", "[0].user.reminderPassword", "[0].user.openID", "[0].user.ldapId", "[0].user.activationCode", "[0].user.remoteUserIds", "[0].user.gravatarAddress", "[0].user.birthday", "[0].user.registrationDate", "[0].user.reminderPasswordRequestDate", "[0].user.updatedAt", "[0].user.tags", "[0].resource.discussionItems", "[0].resource.documents", "[0].resource.extraUrls"};
-	private static final String[] IGNORE2 = new String[] {"activationCode", "apiKey", "email", "homepage", "password", "passwordSalt", "realname", "date", "openURL", "gender", "place", "IPAddress", "basket", "inbox", "profession", "spammer", "settings", "hobbies", "interests", "toClassify", "updatedBy", "reminderPassword", "openID", "ldapId", "institution", "remoteUserIds", "gravatarAddress", "birthday", "registrationDate", "reminderPasswordRequestDate", "updatedAt", "tags"};
-	private static final String[] IGNORE3 = new String[] {"date", "user.activationCode", "user.apiKey", "user.email", "user.homepage", "user.password", "user.passwordSalt", "user.realname", "resource.scraperId", "resource.openURL", "resource.numberOfRatings", "resource.rating", "user.IPAddress", "user.basket", "user.inbox", "user.gender", "user.interests", "user.hobbies", "user.profession", "user.institution", "user.openURL", "user.place", "user.spammer", "user.confidence", "user.settings", "user.algorithm", "user.prediction", "user.mode", "user.toClassify", "user.updatedBy", "user.reminderPassword", "user.openID", "user.ldapId", "user.remoteUserIds", "user.gravatarAddress", "resource.discussionItems", "resource.documents", "resource.extraUrls", "user.birthday", "user.registrationDate", "user.reminderPasswordRequestDate", "user.updatedAt", "user.tags"};
+	private static final String COMMON_USER_PROPERTIES = "apiKey|homepage|realname|email|password|date|openURL|gender|place|interests|hobbies|IPAddress|basket|inbox|profession|institution|place|spammer|settings|toClassify|updatedBy|gravatarAddress";
+	private static final String[] IGNORE1 = new String[] {"[0].date", "[0].user.apiKey", "[0].user.email", "[0].user.homepage", "[0].user.password", "[0].user.passwordSalt", "[0].user.realname", "[0].user.confidence", "[0].resource.scraperId", "[0].resource.openURL", "[0].resource.numberOfRatings", "[0].resource.rating", "[0].user.IPAddress", "[0].user.basket", "[0].user.inbox", "[0].user.gender", "[0].user.interests", "[0].user.hobbies", "[0].user.profession", "[0].user.institution", "[0].user.openURL", "[0].user.place", "[0].user.spammer", "[0].user.settings", "[0].user.algorithm", "[0].user.prediction", "[0].user.mode", "[0].user.updatedBy", "[0].user.toClassify", "[0].user.reminderPassword", "[0].user.openID", "[0].user.ldapId", "[0].user.activationCode", "[0].user.remoteUserIds", "[0].user.gravatarAddress"};
+	private static final String[] IGNORE2 = new String[] {"activationCode", "apiKey", "email", "homepage", "password", "passwordSalt", "realname", "date", "openURL", "gender", "place", "IPAddress", "basket", "inbox", "profession", "spammer", "settings", "hobbies", "interests", "toClassify", "updatedBy", "reminderPassword", "openID", "ldapId", "institution", "remoteUserIds", "gravatarAddress"};
+	private static final String[] IGNORE3 = new String[] {"date", "user.activationCode", "user.apiKey", "user.email", "user.homepage", "user.password", "user.passwordSalt", "user.realname", "resource.scraperId", "resource.openURL", "resource.numberOfRatings", "resource.rating", "user.IPAddress", "user.basket", "user.inbox", "user.gender", "user.interests", "user.hobbies", "user.profession", "user.institution", "user.openURL", "user.place", "user.spammer", "user.confidence", "user.settings", "user.algorithm", "user.prediction", "user.mode", "user.toClassify", "user.updatedBy", "user.reminderPassword", "user.openID", "user.ldapId", "user.remoteUserIds", "user.gravatarAddress"};
 	
 	private static final int PORT = 41252;
 
@@ -384,7 +385,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		 */
 		group.setPrivlevel(null); 
 		
-		EasyMock.expect(serverLogic.createGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId", "tagSets"))).andReturn(group.getName() + "-new");
+		EasyMock.expect(serverLogic.createGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"))).andReturn(group.getName() + "-new");
 		EasyMock.replay(serverLogic);
 		assertEquals(group.getName() + "-new", clientLogic.createGroup(group));
 		EasyMock.verify(serverLogic);
@@ -524,34 +525,37 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		 */
 		returnedGroupExpectation.setPrivlevel(null); 
 		
-		returnedGroupExpectation.setUsers(new ArrayList<User>());
-		returnedGroupExpectation.getUsers().add(ModelUtils.getUser());
-		returnedGroupExpectation.getUsers().get(0).setName("Nr1");
-		returnedGroupExpectation.getUsers().add(ModelUtils.getUser());
-		for (final User u : returnedGroupExpectation.getUsers()) {
+		final List<User> users = new ArrayList<User>();
+		users.add(ModelUtils.getUser());
+		users.get(0).setName("Nr1");
+		users.add(ModelUtils.getUser());
+		for (final User u : users) {
 			u.setApiKey(null);
 			u.setPassword(null);
+			final GroupMembership groupMembership = new GroupMembership();
+			groupMembership.setUser(u);
+			returnedGroupExpectation.getMemberships().add(groupMembership);
 		}
 		EasyMock.expect(serverLogic.getGroupDetails(groupName)).andReturn(returnedGroupExpectation);
 		EasyMock.replay(serverLogic);
 		final Group returnedGroup = clientLogic.getGroupDetails(groupName);
-		log.debug(returnedGroup.getUser().getIPAddress());
-		CommonModelUtils.assertPropertyEquality(returnedGroupExpectation, returnedGroup, 5, Pattern.compile(".*users.*\\.(" + COMMON_USER_PROPERTIES + ")|.*\\.date|.*\\.scraperId|.*\\.openURL|.*groupId|user.*|tagSets"));
+
+		CommonModelUtils.assertPropertyEquality(returnedGroupExpectation, returnedGroup, 5, Pattern.compile(".*users.*\\.(" + COMMON_USER_PROPERTIES + ")|.*\\.date|.*\\.scraperId|.*\\.openURL|.*groupId|user.*"));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return returnedGroup;
 	}
 	
 	/**
-	 * runs the test defined by {@link #getGroups(int, int)} with certain arguments
+	 * runs the test defined by {@link #getGroups(boolean, int, int)} with certain arguments
 	 */
 	@Test
 	public void getGroupsTest() {
-		getGroups(64, 129);
+		getGroups(false, 64, 129);
 	}
 	
 	@Override
-	public List<Group> getGroups(final int start, final int end) {
+	public List<Group> getGroups(boolean pending, final int start, final int end) {
 		final List<Group> expectedList = new ArrayList<Group>();
 		expectedList.add(ModelUtils.getGroup());
 		expectedList.get(0).setName("Group1");
@@ -570,10 +574,10 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		 */
 		expectedList.get(1).setPrivlevel(null);
 		
-		EasyMock.expect(serverLogic.getGroups(start, end)).andReturn(expectedList);
+		EasyMock.expect(serverLogic.getGroups(false, start, end)).andReturn(expectedList);
 		EasyMock.replay(serverLogic);
-		final List<Group> returnedGroups = clientLogic.getGroups(start,end);
-		CommonModelUtils.assertPropertyEquality(expectedList, returnedGroups, 3, Pattern.compile(".*\\.groupId|.*\\.tagSets"));
+		final List<Group> returnedGroups = clientLogic.getGroups(false,start, end);
+		CommonModelUtils.assertPropertyEquality(expectedList, returnedGroups, 3, Pattern.compile(".*\\.groupId"));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return returnedGroups;
@@ -637,7 +641,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */
 	@Test
 	public void getPostsTestBookmarkByTag() {
-		getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null, null,  null /* must be null because order is inferred and not transmitted */, null, null, 7, PostLogicInterface.MAX_QUERY_SIZE + 7);
+		getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null, SearchType.DEFAULT_SEARCH,null,  null /* must be null because order is inferred and not transmitted */, null, null, 7, 1264);
 	}
 	
 	/**
@@ -645,7 +649,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */
 	@Test
 	public void getPostsTestPublicationByGroupAndTag() {
-		getPosts(BibTex.class, GroupingEntity.GROUP, "testGroup", Arrays.asList("blub", "bla"), null, null, null, null, null, null, 0, 1);
+		getPosts(BibTex.class, GroupingEntity.GROUP, "testGroup", Arrays.asList("blub", "bla"), null, null,SearchType.DEFAULT_SEARCH, null, null, null, null, 0, 1);
 	}
 	
 	/**
@@ -653,7 +657,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */
 	@Test
 	public void getPostsTestPublicationByTagWithUmlaut() {
-		getPosts(BibTex.class, GroupingEntity.ALL, null, Arrays.asList("blüb"), null, null, null, null, null, null, 0, 1);
+		getPosts(BibTex.class, GroupingEntity.ALL, null, Arrays.asList("blüb"), null, null,SearchType.DEFAULT_SEARCH, null, null, null, null, 0, 1);
 	}
 	
 	/**
@@ -661,17 +665,23 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */
 	@Test
 	public void getPostsTestPublicationByUserAndHash() {
-		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null, null, null, null, null, 0, 5);
+		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null,SearchType.DEFAULT_SEARCH, null, null, null, null, 0, 5);
 	}
 	
 	@Test
 	public void getPostsTestWithSearchAndOrder() {
-		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), "search", null, Order.FOLKRANK, null, null, 0, 5);
+		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), "search",SearchType.DEFAULT_SEARCH, null, Order.FOLKRANK, null, null, 0, 5);
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+		return getPosts(resourceType, grouping, groupingName, tags, hash, search, SearchType.DEFAULT_SEARCH, filter, order, startDate, endDate, start, end);
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		final List<Post<T>> expectedPosts = new ArrayList<Post<T>>();
 		expectedPosts.add(ModelUtils.generatePost(resourceType));
 		expectedPosts.get(0).setDescription("erstes");
@@ -681,16 +691,15 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			expectedPosts.add( (Post) ModelUtils.generatePost(BibTex.class));
 		}
 		
-		EasyMock.expect(serverLogic.getPosts(resourceType, grouping, groupingName, tags, hash, search, filter, order, null, null, start, end)).andReturn(expectedPosts);
+		EasyMock.expect(serverLogic.getPosts(resourceType, grouping, groupingName, tags, hash, search,searchType, filter, order, null, null, start, end)).andReturn(expectedPosts);
 		EasyMock.replay(serverLogic);
 
-		final List<Post<T>> returnedPosts = clientLogic.getPosts(resourceType, grouping, groupingName, tags, hash, search, filter, order, null, null, start, end);
-		CommonModelUtils.assertPropertyEquality(expectedPosts, returnedPosts, 5, Pattern.compile(".*\\.user\\.(" + COMMON_USER_PROPERTIES + "|confidence|activationCode|reminderPassword|openID|ldapId|remoteUserIds|prediction|algorithm|mode)|.*\\.date|.*\\.scraperId|.*\\.openURL|.*\\.numberOfRatings|.*\\.rating|.*\\.discussionItems|.*resource\\.documents|.*resource\\.extraUrls"));
+		final List<Post<T>> returnedPosts = clientLogic.getPosts(resourceType, grouping, groupingName, tags, hash, search, searchType, filter, order, null, null, start, end);
+		CommonModelUtils.assertPropertyEquality(expectedPosts, returnedPosts, 5, Pattern.compile(".*\\.user\\.(" + COMMON_USER_PROPERTIES + "|confidence|activationCode|reminderPassword|openID|ldapId|remoteUserIds|prediction|algorithm|mode)|.*\\.date|.*\\.scraperId|.*\\.openURL|.*\\.numberOfRatings|.*\\.rating"));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return returnedPosts;
 	}
-	
 
 	/**
 	 * runs the test defined by {@link #getTagDetails(String)} with a certain argument
@@ -758,49 +767,54 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	/**
-	 * runs the test defined by {@link #deleteUserFromGroup(String, String)} with certain arguments
+	 * runs the test defined by {@link #updateGroup(Group, GroupUpdateOperation)} with certain group argument
 	 */
 	@Test
-	public void deleteUserFromGroupTest() {
-		deleteUserFromGroup("grooouuup!", "userTest");
-	}
-	
-	@Override
-	public void deleteUserFromGroup(final String groupName, final String userName) {
-		serverLogic.deleteUserFromGroup(groupName, userName);
-		EasyMock.replay(serverLogic);
-		clientLogic.deleteUserFromGroup(groupName, userName);
-		EasyMock.verify(serverLogic);
-		assertLogin();
-	}
-
-	/**
-	 * runs the test defined by {@link #updateGroup(Group, GroupUpdateOperation)} with certain group argument
-	 */	
-	@Test
 	public void updateGroupTest() {
-		updateGroup(ModelUtils.getGroup(), GroupUpdateOperation.UPDATE_ALL);
+		updateGroup(ModelUtils.getGroup(), GroupUpdateOperation.UPDATE_ALL, null);
 	}
 	
 	/**
 	 * runs the test to add a user to a group 
-	 */
+	 */	
 	@Test
 	public void addUserToGroupTest() {
 		final Group group = new Group("groupName");
-		group.setUsers(Collections.singletonList(new User("testUser1")));
-		this.updateGroup(group, GroupUpdateOperation.ADD_NEW_USER);
+		final GroupMembership membership = new GroupMembership(new User("testUser1"), GroupRole.USER, false);
+		this.updateGroup(group, GroupUpdateOperation.ADD_MEMBER, membership);
+	}
+	
+	/**
+	 * runs the test defined by {@link #deleteUserFromGroup(String, String)} with certain arguments
+	 */
+	@Test
+	public void deleteUserFromGroupTest() {
+		final Group group = new Group("grooouuup!");
+		final GroupMembership membership = new GroupMembership();
+		membership.setUser(new User("userTest"));
+		
+		this.updateGroup(group, GroupUpdateOperation.REMOVE_MEMBER, membership);
 	}
 	
 	@Override
-	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
-		
+	public String updateGroup(final Group group, final GroupUpdateOperation operation, GroupMembership membership) {
+		String groupName = group.getName();
 		switch (operation) {
-		case ADD_NEW_USER:
-
-			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId", "tagSets"), PropertyEqualityArgumentMatcher.eq(operation, ""))).andReturn("OK");
+		case ADD_MEMBER:
+			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"),
+					PropertyEqualityArgumentMatcher.eq(operation),
+					PropertyEqualityArgumentMatcher.eq(membership))).andReturn("OK");
 			EasyMock.replay(serverLogic);
-			assertEquals("OK", clientLogic.updateGroup(group, operation));
+			assertEquals("OK", clientLogic.updateGroup(group, operation, membership));
+			EasyMock.verify(serverLogic);
+			assertLogin();
+			break;
+		case REMOVE_MEMBER:
+			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"),
+					PropertyEqualityArgumentMatcher.eq(operation),
+					PropertyEqualityArgumentMatcher.eq(membership))).andReturn(groupName);
+			EasyMock.replay(serverLogic);
+			assertEquals("OK", clientLogic.updateGroup(group, operation, membership));
 			EasyMock.verify(serverLogic);
 			assertLogin();
 			break;
@@ -812,9 +826,11 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			 */
 			group.setPrivlevel(null); 
 			
-			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId", "tagSets"), PropertyEqualityArgumentMatcher.eq(operation, ""))).andReturn(group.getName() + "-new");
+			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"),
+					PropertyEqualityArgumentMatcher.eq(operation, ""),
+					PropertyEqualityArgumentMatcher.eq(membership))).andReturn(groupName + "-new");
 			EasyMock.replay(serverLogic);
-			assertEquals(group.getName() + "-new", clientLogic.updateGroup(group, operation));
+			assertEquals(groupName + "-new", clientLogic.updateGroup(group, operation, null));
 			EasyMock.verify(serverLogic);
 			assertLogin();
 			break;
@@ -1294,7 +1310,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	@Override
-	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info) {
+	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info, Date newDate) {
 		// TODO Auto-generated method stub
 	}
 

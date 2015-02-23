@@ -9,10 +9,19 @@
 
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
+		
+	<c:choose>
+		<c:when test="${not empty post.systemUrl }">
+			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var ="isRemotePost" value="false"/>
+		</c:otherwise>
+	</c:choose>
 
+	<c:set var="rscType" value="bookmark" />
 
-
-	<div class="edit-media-buttons btn-group btn-group-xs">
+	<div class="edit-media-buttons btn-group btn-group-xs dropdown-align-right">
 
 		<c:set var="buttonClasses" value="btn btn-default btn-xsmall"/>
 
@@ -23,24 +32,41 @@
 			<c:when test="${command.context.userLoggedIn}">
 				<c:choose>
 					<!-- COPY -->
-					<c:when test="${loginUserName ne post.user.name}"><!-- user is not post's owner -->
-						<c:url var="copyLink" value="/editBookmark">
-							<c:param name="hash" value="${post.resource.intraHash}" />
-							<c:param name="user" value="${post.user.name}" />
-							<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
-						</c:url>		
+					<c:when test="${isRemotePost}">
+						<c:url var="copyLink" value="/ShowBookmarkEntry">
+							<c:param name="url" value="${mtl:cleanUrl(post.resource.url)}"/>
+							<c:param name="description" value="${post.description}"/>
+							<c:param name="extended"/>
+							<c:param name="referer" value="${mtl:cleanUrl(post.resource.url)}"/>
+						</c:url>
 						<fmt:message key="bookmark.actions.copy.title" var="copyTitle"/>
 						<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
 							<span class="glyphicon glyphicon glyphicon-floppy-disk"><!--  --></span>
 						</a>
 					</c:when>
+					<c:otherwise>
+						<c:choose>
+							<!-- COPY -->
+							<c:when test="${loginUserName ne post.user.name}"><!-- user is not post's owner -->
+								<c:url var="copyLink" value="/editBookmark">
+									<c:param name="hash" value="${post.resource.intraHash}" />
+									<c:param name="user" value="${post.user.name}" />
+									<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
+								</c:url>		
+								<fmt:message key="bookmark.actions.copy.title" var="copyTitle"/>
+								<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
+									<span class="glyphicon glyphicon glyphicon-floppy-disk"><!--  --></span>
+								</a>
+							</c:when>
 
-					<!-- EDIT -->
-					<c:otherwise><!-- user is post's owner -->
-						<fmt:message key="bookmark.actions.edit.title" var="editTitle" />
-						<a class="${buttonClasses}" href="/editBookmark?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
-							<span class="glyphicon glyphicon-edit"><!--  --></span>
-						</a>
+							<!-- EDIT -->
+							<c:otherwise><!-- user is post's owner -->
+								<fmt:message key="bookmark.actions.edit.title" var="editTitle" />
+								<a class="${buttonClasses}" href="/editBookmark?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
+									<span class="glyphicon glyphicon-edit"><!--  --></span>
+								</a>
+							</c:otherwise>
+						</c:choose>
 					</c:otherwise>
 				</c:choose>
 			</c:when>
@@ -88,7 +114,7 @@
 			<c:otherwise>
 				<!-- REGULAR POST DELETE -->
 				<c:choose>
-					<c:when test="${command.context.userLoggedIn and loginUserName eq post.user.name}">
+					<c:when test="${command.context.userLoggedIn and loginUserName eq post.user.name and not isRemotePost}">
 						<fmt:message key="bookmark.actions.delete.title" var="deleteTitle" />
 						<c:url var="deleteUrl" value="/deletePost">
 							<c:param name="resourceHash" value="${post.resource.intraHash}" />
@@ -108,25 +134,46 @@
 			</c:otherwise>
 		</c:choose>
 
-		<!--+
-			| ADMIN ACTIONS (COMMUNITY POST)
-			+ -->
-		<!-- TODO: When this icon is made visible for non admins, change c:if userLoggedIn to c:choose and display inactive icon for signed out users -->
-		<c:if test="${command.context.userLoggedIn}">
-			<!-- COMMUNITY POST -->
-			<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
-				<c:url var="editGoldStandardLink" value="/editGoldStandardBookmark">
-					<c:param name="hash" value="${post.resource.intraHash}" />
-					<c:param name="user" value="${post.user.name}" />
-					<c:param name="editBeforeSaving" value="true" />
-				</c:url>
 	
-				<fmt:message key="bibtex.actions.gold" var="goldTitle" />
-				<a class="${buttonClasses}" href="${editGoldStandardLink}" title="${goldTitle}">
-					<span style="font-size:90%;" class="glyphicon glyphicon-user"><!--  --></span>
-					<span class="glyphicon glyphicon-user" style="margin-left:-4px; font-size: 70%;"><!--  --></span>
+	
+		<button class="btn btn-default btn-small dropdown-toggle" data-toggle="dropdown">
+			<span class="caret"><!-- KEEP ME --></span>
+		</button>
+
+		<ul class="dropdown-menu" style="min-width: 230px;">
+
+			<!--+
+				| COMMUNITY POST
+				+ -->
+			<li>
+				<fmt:message key="actions.communityPost.title" var="communityPost" />
+				<a href="${relativeUrlGenerator.getCommunityBookmarkUrlByInterHash(post.resource.interHash)}" title="${fn:escapeXml(communityPost)}">
+					<fmt:message key="actions.communityPost" />
+					&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
 				</a>
-			</c:if>
-		</c:if>	
+			</li>
+
+			<!--+
+				| HISTORY
+				+ -->
+			<li>
+				<fmt:message key="bookmark.actions.posthistory.title" var="postHistoryTitle" />
+				<c:choose>
+					<c:when test="${(command.context.userLoggedIn and (loginUserName eq post.user.name)) or (empty post.user)}">
+						<a href="${relativeUrlGenerator.getHistoryURLByHashAndUserName(post.resource.interHash, post.user.name, true)}" title="${postHistoryTitle}">
+							<fmt:message key="bookmark.actions.posthistory.title" />
+							&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
+						</a>
+					</c:when>
+					<c:otherwise>
+						<span class="ilitem" title="${historyTitle}">
+							<fmt:message key="bookmark.actions.posthistory.title" />
+							&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
+						</span>
+					</c:otherwise>
+				</c:choose>
+			</li>
+
+		</ul>
 	</div>
 </jsp:root>

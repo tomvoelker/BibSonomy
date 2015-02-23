@@ -1,9 +1,9 @@
 /**
- *  BibSonomy-Rest-Client - The REST-client.
+ * BibSonomy-Rest-Client - The REST-client.
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
  *                               University of Würzburg, Germany
  *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
@@ -16,21 +16,21 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  You should have received a copy of the GNU Lesser General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.rest.client;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.InetAddress;
 import java.net.URI;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -49,6 +49,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagRelation;
@@ -62,6 +63,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
@@ -241,7 +243,10 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<Group> getGroups(final int start, final int end) {
+	public List<Group> getGroups(boolean pending, final int start, final int end) {
+		if (pending) {
+			throw new UnsupportedOperationException("quering for pending groups not supported");
+		}
 		return execute(new GetGroupListQuery(start, end));
 	}
 
@@ -251,8 +256,14 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+		return getPosts(resourceType, grouping, groupingName, tags, hash, search, SearchType.DEFAULT_SEARCH, filter, order, startDate, endDate, start, end);
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+		// TODO: properly implement searchtype in query and rest-server
 		// TODO: clientside chain of responsibility
 		final GetPostsQuery query = new GetPostsQuery(start, end);
 		query.setGrouping(grouping, groupingName);
@@ -291,11 +302,6 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public void deleteUserFromGroup(final String groupName, final String userName) {
-		execute(new RemoveUserFromGroupQuery(userName, groupName));
-	}
-
-	@Override
 	public String createGroup(final Group group) {
 		return execute(new CreateGroupQuery(group));
 	}
@@ -320,13 +326,16 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
+	// TODO: Establish new group concept in here.
+	public String updateGroup(final Group group, final GroupUpdateOperation operation, GroupMembership ms) {
+		final String groupName = group.getName();
 		switch (operation) {
-		case ADD_NEW_USER:
-			return execute(new AddUsersToGroupQuery(group.getName(), group.getUsers()));
-		default:
-			// groups cannot be renamed
-			return execute(new ChangeGroupQuery(group.getName(), group));
+			case ADD_MEMBER:
+				return execute(new AddUsersToGroupQuery(groupName, Collections.singletonList(ms)));
+			case REMOVE_MEMBER:
+				return execute(new RemoveUserFromGroupQuery(ms.getUser().getName(), groupName));
+			default:
+				return execute(new ChangeGroupQuery(groupName, group));
 		}
 	}
 
@@ -428,9 +437,9 @@ public class RestLogic implements LogicInterface {
 		case UPDATE: 
 			return execute(new ChangeConceptQuery(concept, concept.getName(), grouping, groupingName));
 		default: 
-		throw new UnsupportedOperationException();
-	}
-
+			throw new UnsupportedOperationException();
+		}
+		
 	}
 
 	@Override
@@ -708,8 +717,8 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info) {
-		this.execute(new ChangeSyncStatusQuery(service.toString(), resourceType, null, null, status, info));
+	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info, Date newSyncDate) {
+		this.execute(new ChangeSyncStatusQuery(service.toString(), resourceType, null, null, status, info, newSyncDate));
 	}
 
 	@Override
@@ -747,25 +756,7 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey) {
-		throw new UnsupportedOperationException(); // TODO: implement me
-	}
-
-	@Override
-	public void createOrUpdatePerson(Person person) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Person getPersonById(int id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Map<Person, BibTex> getQualifyingPublications(String personName) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
@@ -806,12 +797,39 @@ public class RestLogic implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePerson(org.bibsonomy.model.Person)
+	 */
+	@Override
+	public void createOrUpdatePerson(Person person) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonById(int)
+	 */
+	@Override
+	public Person getPersonById(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonName(java.lang.Integer)
 	 */
 	@Override
 	public void removePersonName(Integer personNameId) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getQualifyingPublications(java.lang.String)
+	 */
+	@Override
+	public Map<Person, BibTex> getQualifyingPublications(String personName) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/* (non-Javadoc)
@@ -861,7 +879,6 @@ public class RestLogic implements LogicInterface {
 		
 	}
 
-
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#linkUser(java.lang.Integer)
 	 */
@@ -888,4 +905,5 @@ public class RestLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 }

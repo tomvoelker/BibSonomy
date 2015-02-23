@@ -3,7 +3,7 @@
 <sqlMap namespace="Common">
 	<resultMap id="resource" class="resource" groupBy="intraHash">
 		<result property="interHash"   		column="interHash"       	javaType="string" />
-		<result property="intraHash"   		column="intraHash"       	javaType="string" />     	
+		<result property="intraHash"   		column="intraHash"       	javaType="string" />
 		<result property="count"       		column="count"           	javaType="int" />
 		<result property="title"       		column="title"           	javaType="string" />
 		<result property="rating"	   		column="rating"		   		javaType="double" nullValue="0.0"/>
@@ -147,8 +147,8 @@
 		- from userName, if in the group
 	-->
 	<sql id="selectContentIDs">
-		((SELECT t1.content_id, t1.date, IF(t1.user_name = #userName#, TRUE, g.userSharedDocuments) AS userSharedDocuments         <!-- currUser's own items + items from users of group which currUser may see -->
-		  FROM groups g, <include refid="tagFromQuery"/>
+		((SELECT t1.content_id, t1.date, IF(t1.user_name = #userName#, TRUE, g.user_shared_documents) AS user_shared_documents         <!-- currUser's own items + items from users of group which currUser may see -->
+		  FROM group_memberships g, <include refid="tagFromQuery"/>
 		  WHERE <include refid="tagWhereQuery"/>
 		        AND g.group = #groupId#
 		        AND g.user_name = t1.user_name            <!-- all items of all group members (including currUser) -->
@@ -158,8 +158,8 @@
 		        ) 
 		        AND t1.content_type = #contentType#
 		 ) UNION (
-		  SELECT t1.content_id, t1.date, g.userSharedDocuments      <!-- items from users of group which have currUser as friend -->
-		  FROM groups g, friends f, <include refid="tagFromQuery"/>
+		  SELECT t1.content_id, t1.date, g.user_shared_documents      <!-- items from users of group which have currUser as friend -->
+		  FROM group_memberships g, friends f, <include refid="tagFromQuery"/>
 		  WHERE <include refid="tagWhereQuery"/>
 		        AND g.group = #groupId#
 		        AND <include refid="matchGroupMemberTrust"/>    <!-- currUser is friend of a group member (user) -->
@@ -180,21 +180,21 @@
 	-->
 	<sql id="selectContentIDsWithDocuments">
 		((SELECT t1.content_id, t1.date, d.hash, d.name         <!-- currUser's own items + items from users of group which currUser may see -->
-		  FROM groups g, document d, <include refid="tagFromQuery"/>
+		  FROM group_memberships g, document d, <include refid="tagFromQuery"/>
 		  WHERE <include refid="tagWhereQuery"/>
 		        AND g.group = #groupId#
 		        AND g.user_name = t1.user_name            <!-- all items of all group members (including currUser) -->
 		        AND (
 		         t1.user_name = #userName#                <!-- currUser's own items -->
 		         OR (<include refid="inGroupsUnchecked"/>  <!-- items of other users wich currUser may see -->
-		        	AND g.userSharedDocuments = TRUE
+		        	AND g.user_shared_documents = TRUE
 		        	)
 		        ) 
 		        AND d.content_id = t1.content_id		  <!-- join documents -->
 		        AND t1.content_type = #contentType#
 		 ) UNION (
 		  SELECT t1.content_id, t1.date, d.hash, d.name           <!-- items from users of group which have currUser as friend -->
-		  FROM groups g, friends f, document d, <include refid="tagFromQuery"/>
+		  FROM group_memberships g, friends f, document d, <include refid="tagFromQuery"/>
 		  WHERE <include refid="tagWhereQuery"/>
 		        AND g.group = #groupId#
 		        AND <include refid="matchGroupMemberTrust"/>      <!-- currUser is friend of a group member (user) -->
@@ -202,7 +202,7 @@
 		        AND t1.group = #groupTypeFriends#   <!-- item is only for friends -->
 		        AND d.content_id = t1.content_id	<!-- join documents -->
 		        AND t1.content_type = #contentType#
-		        AND g.userSharedDocuments = TRUE 	<!-- only if user allows sharing -->
+		        AND g.user_shared_documents = TRUE 	<!-- only if user allows sharing -->
 		 )
 		ORDER BY date DESC
 		LIMIT #limit# OFFSET #offset#) AS bb
@@ -466,7 +466,7 @@
 		<dynamic prepend="AND">
 			<isNotNull property="requestedGroupName">		
 				s.user_name IN (SELECT user_name 
-								FROM groupids g JOIN groups gs ON (g.group = gs.group)
+								FROM groupids g JOIN group_memberships gs ON (g.group = gs.group)
 	        					WHERE g.group_name = #requestedGroupName#)
 			</isNotNull>
 		</dynamic>
@@ -490,7 +490,7 @@
 	<!-- retrieves names of groupmembers of specified group -->
 	<sql id="selectGroupMembers">
 		SELECT g.user_name
-      	FROM groupids gi JOIN groups g ON (gi.group = g.group)
+      	FROM groupids gi JOIN group_memberships g ON (gi.group = g.group)
       	WHERE group_name = #requestedGroupName#
 	</sql>
 	

@@ -11,7 +11,15 @@
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="showUserSaves" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showTagsLabel" type="java.lang.Boolean" required="false"/>
-
+		
+	<c:choose>
+		<c:when test="${not empty post.systemUrl }">
+			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var ="isRemotePost" value="false"/>
+		</c:otherwise>
+	</c:choose>
 	<!-- META DATA (posting date, owner, groups, tags, number of other posts) -->
 	<!--+ 
 	 	| FIXME: user name, tags, etc. for community posts not given -
@@ -34,7 +42,7 @@
 		<div class="ptags"> 
 			<rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/>
 			<c:choose>
-				<c:when test="${not empty loginUserName and loginUserName eq post.user.name}">
+				<c:when test="${not empty loginUserName and loginUserName eq post.user.name and not isRemotePost}">
 					<fmt:message key="post.actions.edit.tags.title" var="editTags"/>
  					<span class="editTags" href="" title="${editTags}"><!-- Keep Me --> </span>
 				</c:when>

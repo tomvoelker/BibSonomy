@@ -1,9 +1,9 @@
 /**
- *  BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
+ * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
  *                               University of Würzburg, Germany
  *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
@@ -16,15 +16,14 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  You should have received a copy of the GNU Lesser General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.common.enums;
 
 import org.bibsonomy.common.exceptions.UnsupportedGroupingException;
@@ -94,37 +93,7 @@ public enum GroupingEntity {
 	 */
 	INBOX,
 	
-	PENDING,
-	
-	/**
-	 * Limit to posts to resources authored by the person with the id given in groupingName
-	 */
- 	PERSON_AUTHOR,
-	
- 	/**
-	 * Limit to posts to degree resources authored by the person with the id given in 'groupingName'
-	 */
-	PERSON_GRADUTED,
-	
-	/**
-	 * Limit to posts to resources advised by the person with the id given in 'groupingName'
-	 */
-	PERSON_ADVISOR,
-	
-	/**
-	 * Limit to posts to resources reviewed by the person with the id given in 'groupingName'
-	 */
-	PERSON_REVIEWER,
-	
-	/**
-	 * Limit to posts to resources with an 'other' relationship to the person with the id given in 'groupingName'
-	 */
-	PERSON_OTHER,
-	
-	/**
-	 * Limit to posts to resources with some known relationship to the person with the id given in 'groupingName'
-	 */
-	PERSON_ALL_RELATIONS;
+	PENDING;
 	
 	/**
 	 * @param groupingEntity name of the GroupingEntity Instance to retrieve

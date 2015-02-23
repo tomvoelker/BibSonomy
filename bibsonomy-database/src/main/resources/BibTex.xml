@@ -522,20 +522,20 @@
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.change_date, t.tag_name, g.group_name, h.ctr as count, g.group, <include refid="reviewRatingsRows" />
 		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, bibhash h,
 		     ((SELECT content_id, date                <!-- publications from users of group which currUser may see -->
-		       FROM bibtex t1, groups g
+		       FROM bibtex t1, group_memberships g
 		       WHERE g.group = #groupId#
 		             AND g.user_name = t1.user_name    <!-- user owns this publication -->
 		             <include refid="inGroups"/>
 		      )UNION(
 		       SELECT content_id, date                <!-- publications from users of group which have currUser as friend -->
-		       FROM bibtex b, groups g, friends f
+		       FROM bibtex b, group_memberships g, friends f
 		       WHERE <include refid="matchGroupMemberTrust"/>    <!-- currUser is friend of a group member (user) -->
 		             AND b.user_name = f.user_name    <!-- user owns this publication -->
 		             AND g.group = #groupId#
 		             AND b.group = #groupTypeFriends# <!-- publication is only for friends -->
 		      )UNION(
 		       SELECT content_id, date                <!-- currUsers publications, ... -->
-		       FROM bibtex b, groups g
+		       FROM bibtex b, group_memberships g
 		       WHERE b.user_name = #userName#
 		             AND g.user_name = b.user_name    <!-- only, if currUser ... -->
 		             AND g.group = #groupId#          <!-- is in this group       -->
@@ -555,29 +555,29 @@
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.change_date, t.tag_name, g.group_name, h.ctr as count, g.group, <include refid="allDocumentAttributes"/>, <include refid="reviewRatingsRows" />
 		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, bibhash h,
 		     (
-		     SELECT ids.content_id, ids.date, ids.userSharedDocuments FROM  
-		     ((SELECT content_id, date, g.userSharedDocuments               <!-- publications from users of group which currUser may see -->
-		       FROM bibtex t1, groups g
+		     SELECT ids.content_id, ids.date, ids.user_shared_documents FROM  
+		     ((SELECT content_id, date, g.user_shared_documents               <!-- publications from users of group which currUser may see -->
+		       FROM bibtex t1, group_memberships g
 		       WHERE g.group = #groupId#
 		             AND g.user_name = t1.user_name    <!-- user owns this publication -->
 		             <include refid="inGroups"/>
 		      )UNION(
-		       SELECT content_id, date, g.userSharedDocuments                <!-- publications from users of group which have currUser as friend -->
-		       FROM bibtex b, groups g, friends f
+		       SELECT content_id, date, g.user_shared_documents                <!-- publications from users of group which have currUser as friend -->
+		       FROM bibtex b, group_memberships g, friends f
 		       WHERE <include refid="matchGroupMemberTrust"/>    <!-- currUser is friend of a group member (user) -->
 		             AND b.user_name = f.user_name    <!-- user owns this publication -->
 		             AND g.group = #groupId#
 		             AND b.group = #groupTypeFriends# <!-- publication is only for friends -->
 		      )UNION(
-		       SELECT content_id, date, TRUE AS userSharedDocuments             <!-- currUsers publications, ... -->
-		       FROM bibtex b, groups g
+		       SELECT content_id, date, TRUE AS user_shared_documents             <!-- currUsers publications, ... -->
+		       FROM bibtex b, group_memberships g
 		       WHERE b.user_name = #userName#
 		             AND g.user_name = b.user_name    <!-- only, if currUser ... -->
 		             AND g.group = #groupId#          <!-- is in this group       -->
 		      )) as ids			      
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS bb	
-		LEFT JOIN document d ON bb.content_id = d.content_id AND bb.userSharedDocuments = TRUE
+		LEFT JOIN document d ON bb.content_id = d.content_id AND bb.user_shared_documents = TRUE
 		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas (get tags) -->
 		WHERE t.group = g.group                                                  <!-- join groupname -->
 		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
@@ -591,27 +591,27 @@
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.change_date, t.tag_name, g.group_name, h.ctr as count, g.group, bb.*, <include refid="reviewRatingsRows" />
 		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, bibhash h,
 		     (
-		     SELECT ids.content_id, ids.date, ids.userSharedDocuments, <include refid="allDocumentAttributes"/> FROM  
-		     ((SELECT content_id, date, g.userSharedDocuments         <!-- publications from users of group which currUser may see -->
-		       FROM bibtex t1, groups g
+		     SELECT ids.content_id, ids.date, ids.user_shared_documents, <include refid="allDocumentAttributes"/> FROM  
+		     ((SELECT content_id, date, g.user_shared_documents         <!-- publications from users of group which currUser may see -->
+		       FROM bibtex t1, group_memberships g
 		       WHERE g.group = #groupId#
 		             AND g.user_name = t1.user_name    <!-- user owns this publication -->
 		             <include refid="inGroups"/>
 		      )UNION(
-		       SELECT content_id, date, g.userSharedDocuments                <!-- publications from users of group which have currUser as friend -->
-		       FROM bibtex b, groups g, friends f
+		       SELECT content_id, date, g.user_shared_documents                <!-- publications from users of group which have currUser as friend -->
+		       FROM bibtex b, group_memberships g, friends f
 		       WHERE <include refid="matchGroupMemberTrust"/>    <!-- currUser is friend of a group member (user) -->
 		             AND b.user_name = f.user_name    <!-- user owns this publication -->
 		             AND g.group = #groupId#
 		             AND b.group = #groupTypeFriends# <!-- publication is only for friends -->
 		      )UNION(
-		       SELECT content_id, date, TRUE AS userSharedDocuments               <!-- currUsers publications, ... -->
-		       FROM bibtex b, groups g
+		       SELECT content_id, date, TRUE AS user_shared_documents               <!-- currUsers publications, ... -->
+		       FROM bibtex b, group_memberships g
 		       WHERE b.user_name = #userName#
 		             AND g.user_name = b.user_name    <!-- only, if currUser ... -->
 		             AND g.group = #groupId#          <!-- is in this group       -->
 		      )) as ids			           
-			  JOIN document d ON ids.content_id = d.content_id AND ids.userSharedDocuments = TRUE 
+			  JOIN document d ON ids.content_id = d.content_id AND ids.user_shared_documents = TRUE 
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS bb		
 		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas (get tags) -->
@@ -625,7 +625,7 @@
 
 	<select id="getBibTexForGroupCount" resultClass="int" parameterClass="bibtexParam" timeout="1">
 		SELECT count(*)
-		FROM bibtex t1, groups g
+		FROM bibtex t1, group_memberships g
 		WHERE g.group = #groupId#
 		      AND t1.user_name = g.user_name
 		      <include refid="inGroups"/>
@@ -646,7 +646,7 @@
 	<select id="getBibTexForGroupByTagWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.change_date, t.tag_name, g.group_name, h.ctr as count, g.group, <include refid="allDocumentAttributes"/>, <include refid="reviewRatingsRows" />
 		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, bibhash h, <include refid="selectContentIDs"/>
-		LEFT JOIN document d ON bb.content_id = d.content_id AND bb.userSharedDocuments = TRUE 
+		LEFT JOIN document d ON bb.content_id = d.content_id AND bb.user_shared_documents = TRUE 
 		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas (get tags) -->
 		WHERE t.group = g.group                                                  <!-- join groupname -->
 		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
@@ -727,7 +727,7 @@
 
 	<select id="getBibTexWithDiscussions" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="bibtexParam">
 		SELECT 
-			<include refid="allGoldStandardPublicationAttributesAnonym" />, b.simhash2 as intraHash, b.simhash1 as interHash, 0 as count, <include refid="reviewRatingsRows" /> 
+			<include refid="allGoldStandardPublicationAttributesAnonym" />, b.simhash2 as intraHash, b.simhash1 as interHash, b.change_date, 0 as count, <include refid="reviewRatingsRows" /> 
 		FROM (
 				SELECT interHash, MAX(date) AS date
 				FROM discussion d <include refid="spammerClassifiedJoin"/>
@@ -756,10 +756,10 @@
  	
 	<select id="getBibTexWithDiscussionsForGroup" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="bibtexParam">
 		SELECT 
-			<include refid="allGoldStandardPublicationAttributesAnonym" />, b.simhash2 as intraHash, b.simhash1 as interHash, 0 as count, <include refid="reviewRatingsRows" /> 
+			<include refid="allGoldStandardPublicationAttributesAnonym" />, b.simhash2 as intraHash, b.simhash1 as interHash, b.change_date, 0 as count, <include refid="reviewRatingsRows" /> 
 		FROM (
 				SELECT interHash, MAX(date) AS date
-				FROM groups g, discussion d
+				FROM group_memberships g, discussion d
  				WHERE <include refid="discussionVisibleForGroup"/>
  				  AND g.group = #groupId#
  				  AND g.user_name = d.user_name
@@ -776,7 +776,7 @@
 	
 	<select id="getBibTexWithDiscussionsCountForGroup" resultClass="int" parameterClass="bibtexParam">
 		SELECT COUNT(DISTINCT interHash)
-		FROM groups g, discussion d
+		FROM group_memberships g, discussion d
 		WHERE <include refid="discussionVisibleForGroup"/>
 		  AND g.group = #groupId#
 		  AND g.user_name = d.user_name
@@ -844,6 +844,17 @@
 	<update id="updateBibTexHash" parameterClass="bibtexParam">
 		UPDATE bibhash SET ctr = ctr - 1 WHERE hash = #hash# AND type = #simHash# AND ctr > 0
 	</update>
+	
+	<!-- update group ids of a post
+	<update id="updateBibTexGroup" parameterClass="bibtexParam">
+		UPDATE bibtex SET `group` = #groupId#  WHERE content_id = #requestedContentId#
+	</update>
+	-->
+	<!-- update bibtexkey 
+	<update id="updatebibtexKey" parameterClass="bibtexParam">
+		UPDATE bibtex SET bibtexKey = #resource.bibtexKey#  WHERE content_id = #requestedContentId#
+	</update>
+	-->
 	
 	<delete id="deleteBibTex">
 		DELETE FROM bibtex WHERE content_id = #requestedContentId#
@@ -970,5 +981,8 @@
 		WHERE b2.group = g.group
 		ORDER BY b2.date DESC, b2.content_id DESC
 	</select>
-
+	
+	<update id="updateBibTexInGroupFromLeavingUser" parameterClass="resourceParam">
+		UPDATE bibtex b SET b.group = 1 WHERE b.user_name = #userName# AND b.group = #groupId#
+	</update>
 </sqlMap>

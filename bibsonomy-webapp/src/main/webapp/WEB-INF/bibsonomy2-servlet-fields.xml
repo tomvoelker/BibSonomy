@@ -16,19 +16,13 @@
 	
 	<util:list id="allowedFields">
 		<!-- for normal resource view pages -->
-		
 		<value>requestedTags</value>
 		<value>requestedAuthor</value>
-		<value>requestedPersonId</value>
-		<value>requestedPersonName</value>
-		<value>requestedPublication</value>
-		<value>requestedRole</value>
 		<value>requestedUser</value>
 		<value>requestedUserRelation</value>
 		<value>requestedGroup</value>
 		<value>requestedSearch</value>
 		<value>requestedKey</value>
-		<value>requestedAction</value>
 		<value>requBibtex</value>
 		<value>requestedHash</value>
 		<value>postOwner</value>

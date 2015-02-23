@@ -10,60 +10,86 @@
 	<jsp:directive.attribute name="disableResourceLinks" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="enableHistory" type="java.lang.Boolean" required="false" />	
 		
+	<c:choose>
+		<c:when test="${not empty post.systemUrl }">
+			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var ="isRemotePost" value="false"/>
+		</c:otherwise>
+	</c:choose>	
 	<!--+
 		| COPY/EDIT
 		+-->
 	<c:choose>
 		<c:when test="${command.context.userLoggedIn}">
-			<c:choose>
-				<!-- COPY -->
-				<c:when test="${loginUserName ne post.user.name}"><!-- user is not post's owner -->
-					<c:url var="copyLink" value="/editPublication">
-						<c:param name="hash">
-							<c:choose>
-								<c:when test="${not empty post.user.name}">
-									<!-- non-community post: use intra-hash -->
-									<c:out value="${post.resource.intraHash}" />
-								</c:when>
-								<c:otherwise>
-									<!-- community post: use inter-hash -->
-									<c:out value="${post.resource.interHash}" />
-								</c:otherwise>
-							</c:choose>
-						</c:param>
-						<c:param name="user" value="${post.user.name}" />
-						<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
-					</c:url>
-					<fmt:message key="bibtex.actions.copy.title" var="copyTitle"/>
-					<a class="item copy" href="${copyLink}" title="${fn:escapeXml(copyTitle)}"><!-- Keep Me --></a>
-				</c:when>
-			
-				<!-- EDIT other actions -->
-				<c:otherwise><!-- user is post's owner -->
-					<fmt:message key="bibtex.actions.edit.title" var="editTitle"/>
-					<a class="item edit" href="/editPublication?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}"><!-- Keep Me--></a>
-					<c:if test="${mtl:userIsGroup(command.context.loginUser)}">
-						<!-- TODO: get the group the group user represents -->
-						<c:forEach var="group" items="${command.context.loginUser.groups}">
-							<c:set var="reportingUrl" value="${group.publicationReportingSettings.externalReportingUrl}" />
-							<c:if test="${not empty reportingUrl and group.name eq command.context.loginUser.name}">
-								<a class="item editqa" href="${reportingUrl}/edit?intraHash=${post.resource.intraHash}&amp;referer=${relativeUrlGenerator.getProjectHome()}${fn:escapeXml(requPath)}"><!-- keep me --></a>
-							</c:if>
-						</c:forEach>
-					</c:if>
-					<c:if test="${mtl:hasTagMyown(post) and properties['publication.reporting.mode'] eq 'GROUP' and not mtl:userIsGroup(command.context.loginUser)}">
-						<c:forEach var="group" items="${command.context.loginUser.groups}">
-							<c:set var="reportingUrl" value="${group.publicationReportingSettings.externalReportingUrl}" />
-							<c:if test="${not mtl:hasReportedSystemTag(post.tags, group.name) and not empty reportingUrl}">
-								<fmt:message key="group.reporting" var="reportDesc">
-									<fmt:param value="${group.name}" />
-								</fmt:message>
-								<a class="item report" href="${reportingUrl}/report?intraHash=${post.resource.intraHash}&amp;user=${post.user.name}&amp;referer=${relativeUrlGenerator.getProjectHome()}${fn:escapeXml(requPath)}" title="${reportDesc}"><!-- keep me --></a>
-							</c:if>
-						</c:forEach>
-					</c:if>
-				</c:otherwise>
-			</c:choose>
+		<c:choose>
+			<!-- COPY -->		
+			<c:when test="${isRemotePost}">
+				<c:url var="copyLink" value="/BibtexHandler">
+				<c:param name="requTask" value="upload"/>
+				<c:param name="url" value="${post.systemUrl}"/>
+				<c:param name="description" value="${post.description}"/>
+				<c:param name="selection"/>
+				<c:param name= "referer" value="${mtl:cleanUrl(post.resource.url)}"/>
+				</c:url>
+				<fmt:message key="bibtex.actions.copy.title" var="copyTitle"/>
+				<a class="item copy" href="${copyLink}"  title="${fn:escapeXml(copyTitle)}"><!-- Keep Me --></a>
+			</c:when>
+			<c:otherwise>
+				<c:choose>
+					<c:when test="${loginUserName ne post.user.name}"><!-- user is not post's owner -->
+						
+							<c:url var="copyLink" value="/editPublication">
+								<c:param name="hash">
+									<c:choose>
+										<c:when test="${not empty post.user.name}">
+											<!-- non-community post: use intra-hash -->
+											<c:out value="${post.resource.intraHash}" />
+										</c:when>
+										<c:otherwise>
+											<!-- community post: use inter-hash -->
+											<c:out value="${post.resource.interHash}" />
+										</c:otherwise>
+									</c:choose>
+								</c:param>
+								<c:param name="user" value="${post.user.name}" />
+								<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
+							</c:url>
+							<fmt:message key="bibtex.actions.copy.title" var="copyTitle"/>
+							<a class="item copy" href="${copyLink}" title="${fn:escapeXml(copyTitle)}"><!-- Keep Me --></a>
+									
+					</c:when>
+				
+					<!-- EDIT other actions -->
+					<c:otherwise><!-- user is post's owner -->
+						<fmt:message key="bibtex.actions.edit.title" var="editTitle"/>
+						<a class="item edit" href="/editPublication?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}"><!-- Keep Me--></a>
+						<c:if test="${mtl:userIsGroup(command.context.loginUser)}">
+							<!-- TODO: get the group the group user represents -->
+							<c:forEach var="group" items="${command.context.loginUser.groups}">
+								<c:set var="reportingUrl" value="${group.publicationReportingSettings.externalReportingUrl}" />
+								<c:if test="${not empty reportingUrl and group.name eq command.context.loginUser.name}">
+									<a class="item editqa" href="${reportingUrl}/edit?intraHash=${post.resource.intraHash}&amp;referer=${relativeUrlGenerator.getProjectHome()}${fn:escapeXml(requPath)}"><!-- keep me --></a>
+								</c:if>
+							</c:forEach>
+						</c:if>
+						<c:if test="${mtl:hasTagMyown(post) and properties['publication.reporting.mode'] eq 'GROUP' and not mtl:userIsGroup(command.context.loginUser)}">
+							<c:forEach var="group" items="${command.context.loginUser.groups}">
+								<c:set var="reportingUrl" value="${group.publicationReportingSettings.externalReportingUrl}" />
+								<c:if test="${not mtl:hasReportedSystemTag(post.tags, group.name) and not empty reportingUrl}">
+									<fmt:message key="group.reporting" var="reportDesc">
+										<fmt:param value="${group.name}" />
+									</fmt:message>
+									<a class="item report" href="${reportingUrl}/report?intraHash=${post.resource.intraHash}&amp;user=${post.user.name}&amp;referer=${relativeUrlGenerator.getProjectHome()}${fn:escapeXml(requPath)}" title="${reportDesc}"><!-- keep me --></a>
+								</c:if>
+							</c:forEach>
+						</c:if>
+					</c:otherwise>
+				</c:choose>
+			</c:otherwise>
+		</c:choose>
+	
 		</c:when>
 		<c:otherwise>
 			<!-- For signed out users we always show the inactive copy button -->
@@ -93,7 +119,7 @@
 		<c:otherwise>
 			<!-- POST DELETE -->
 			<c:choose>
-				<c:when test="${command.context.userLoggedIn and loginUserName eq post.user.name}">
+				<c:when test="${command.context.userLoggedIn and loginUserName eq post.user.name and not isRemotePost}">
 					<fmt:message key="bibtex.actions.delete.title" var="deleteTitle"/>
 					<c:url var="deleteUrl" value="/deletePost">
 						<c:param name="resourceHash" value="${post.resource.intraHash}" />
@@ -106,7 +132,7 @@
 					<fmt:message key="bibtex.actions.delete.inactive" var="deleteTitle"/>
 					<span class="item idelete" title="${deleteTitle}"><!-- Keep Me --></span>
 				</c:otherwise>
-			</c:choose>
+			</c:choose>		
 		</c:otherwise>
 	</c:choose>
 	
@@ -115,14 +141,20 @@
 		| 
 		+-->
 	<fmt:message key="bibtex.actions.community_post" var="communityPost" />
-	
-	<a href="${relativeUrlGenerator.getGoldstandardUrlByInterHash(post.resource.interHash)}" class="item communitypost" title="${fn:escapeXml(communityPost)}">
+	<c:when test="${isRemotePost}">
+		<a href="${relativeUrlGenerator.getGoldstandardUrlByInterHashAndSysUrl(post.resource.interHash, post.systemUrl)}" class="item communitypost" title="${fn:escapeXml(communityPost)}">
 		<!-- Keep Me -->
-	</a>
+		</a>
+	</c:when>
+	<c:otherwise>		
+		<a href="${relativeUrlGenerator.getCommunityPublicationUrlByInterHash(post.resource.interHash)}" class="item communitypost" title="${fn:escapeXml(communityPost)}">
+		<!-- Keep Me -->
+		</a>
+	</c:otherwise>
 	<!--+
 		| COPY/HISTORY
 		+-->
-	<c:if test="${not empty enableHistory}">
+<!-- 	<c:if test="${not empty enableHistory}">-->
 		<c:choose>
 			<c:when test="${command.context.userLoggedIn}">
 				<c:choose>
@@ -148,7 +180,7 @@
 							href="/postHistory/${post.resource.intraHash}/${post.user.name}"
 							title="${postHistoryTitle}"> -->
 						<a class="item history"
-							href="/history/publication/${post.resource.intraHash}/${post.user.name}"
+							href="/history/publication/${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"
 							title="${postHistoryTitle}">
 							<!-- Keep Me-->
 						</a>
@@ -165,7 +197,7 @@
 				</a>
 			</c:otherwise>
 		</c:choose>
-	</c:if>
+	<!--</c:if>-->
 
 	<!--+
 		| PICK / UNPICK 
@@ -176,7 +208,7 @@
 	</c:if>
 
 	<c:choose>
-		<c:when test="${command.context.userLoggedIn}">
+		<c:when test="${command.context.userLoggedIn and not isRemotePost}">
 			<c:url var="pickUnpick_url" value="/ajax/pickUnpickPost">
 				<c:param name="hash" value="${post.resource.intraHash}" />
 				<c:param name="user" value="${post.user.name}" />
