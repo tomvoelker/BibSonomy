@@ -89,7 +89,7 @@
 						buttonClasses="${buttonClasses}"/>
 				</li>
 				
-				<c:if test="${command.context.userLoggedIn and (command.context.loginUser.toClassify eq 0) and not command.context.loginUser.spammer}">
+				<c:if test="${command.context.userLoggedIn}">
 					<li class="divider"><!--  --></li>
 					<li>
 						<buttons:reportUserMenuItem 
