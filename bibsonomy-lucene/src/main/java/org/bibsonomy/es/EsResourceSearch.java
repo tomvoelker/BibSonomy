@@ -45,6 +45,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
 /**
  * This class performs a search in the Shared Resource Indices based on the search term 
@@ -104,20 +105,23 @@ public class EsResourceSearch<R extends Resource>{
 			if (order != Order.RANK) {
 				searchRequestBuilder.addSort(LuceneFieldNames.DATE, SortOrder.DESC);
 			}
-			searchRequestBuilder.setFrom(offset).setSize(limit).setExplain(true);
+			searchRequestBuilder.setFrom(offset).setSize(limit + 1).setExplain(true);
 
 			SearchResponse response = searchRequestBuilder.execute().actionGet();
 
 			if (response != null) {
+				SearchHits hits = response.getHits();
+				postList.setTotalCount((int) hits.getTotalHits());
+				
 				log.info("Current Search results for '" + searchTerms + "': "
 						+ response.getHits().getTotalHits());
-				for (SearchHit hit : response.getHits()) {
-						Map<String, Object> result = hit.getSource();
-						final Post<R> post = this.resourceConverter.writePost(result);
-						postList.add(post);
-					}
+				for (int i = 0; i < Math.min(limit, hits.getTotalHits() - offset); ++i) {
+					SearchHit hit = hits.getAt(i);
+					Map<String, Object> result = hit.getSource();
+					final Post<R> post = this.resourceConverter.writePost(result);
+					postList.add(post);
 				}
-			
+			}
 		} catch (IndexMissingException e) {
 			log.error("IndexMissingException: " + e);
 		}
