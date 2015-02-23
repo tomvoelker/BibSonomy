@@ -46,16 +46,16 @@
 			<!-- FIXME: user name for community posts not given - copying currently not possible -->
 			<c:choose>
 				<c:when test="${isRemotePost}">
-					<c:set var="extraCssClass" value="fa-external-link"/>
+					<c:set var="extraCssClass" value="remote-post fa-external-link"/>
 				</c:when>
 				<c:when test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name)}">
-					<c:set var="extraCssClass" value="glyphicon-bookmark"/>
+					<c:set var="extraCssClass" value="in-my-collection glyphicon-bookmark"/>
 				</c:when>
 				<c:otherwise>
-					<c:set var="extraCssClass" value=""/>
+					<c:set var="extraCssClass" value="in-my-collection"/>
 				</c:otherwise>
 			</c:choose>
-			<div class="in-my-collection glyphicon ${extraCssClass}"><!--  --></div>
+			<div class="glyphicon ${extraCssClass}"><!--  --></div>
 			
 			<c:forEach var="group" items="${post.groups}">
 				<c:if test="${!empty group.name and group.name ne 'public'}">
