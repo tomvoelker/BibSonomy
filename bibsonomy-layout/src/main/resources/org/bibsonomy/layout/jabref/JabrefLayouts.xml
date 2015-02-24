@@ -467,7 +467,7 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>	
-	<layout name="mittelalter" public="false">
+	<layout name="mittelalter">
 		<displayName>Mittelalterliche Geschichte Universität Kassel</displayName>
 		<description xml:lang="en">
 			HTML output format according to the Chair of Mittelalterliche Geschichte of Kassel University. 
