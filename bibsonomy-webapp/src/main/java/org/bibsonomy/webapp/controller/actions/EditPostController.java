@@ -506,6 +506,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		case "approved":
 			post.setApproved(newPost.getApproved());
 			break;
+		case "groups":
+			post.setGroups(newPost.getGroups());
+			break;
 		default:
 			this.replaceResourceSpecificPostFields(post.getResource(), key, newPost.getResource());
 		}

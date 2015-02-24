@@ -55,6 +55,7 @@ import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -508,6 +509,35 @@ public class Functions {
 		if (!newPost.getTags().equals(oldPost.getTags())) {
 			diffMap.put("tags", compareTagSets(newPost.getTags(), oldPost.getTags()));
 		}
+		if (!newPost.getGroups().equals(oldPost.getGroups())) {
+			diffGroupSetEntry(diffMap, "groups", newPost.getGroups(), oldPost.getGroups());
+		}
+	}
+	
+	/**
+	 * @param diffMap
+	 * @param string
+	 * @param groups1
+	 * @param groups2
+	 */
+	private static void diffGroupSetEntry(Map<String, String> diffMap,
+			String key, Set<Group> groups1, Set<Group> groups2) {
+		
+			String newSetAsString = "";
+			String oldSetAsString = "";
+			
+			for(Group group:groups1){
+				newSetAsString += group.getName()+" ";
+			}
+			for(Group group:groups2){
+				oldSetAsString += group.getName()+" ";
+			}
+			
+			if (!newSetAsString.equals(oldSetAsString)) {
+				diffMap.put(key, compareString(newSetAsString, oldSetAsString));
+			}
+		
+		
 	}
 
 	private static String compareTagSets(final Set<Tag> newTags, final Set<Tag> oldTags) {
