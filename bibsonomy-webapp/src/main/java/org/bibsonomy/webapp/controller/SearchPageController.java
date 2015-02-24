@@ -123,6 +123,7 @@ public class SearchPageController extends SingleResourceListController implement
 		
 		if(searchFromSharedIndex){
 			searchType = SearchType.CROSS_SYSTEM_SEARCH;
+			command.setSelectedSearchScope("sharedResourceSearch");
 		}else{		
 			searchType = SearchType.DEFAULT_SEARCH;
 			}
@@ -136,8 +137,7 @@ public class SearchPageController extends SingleResourceListController implement
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
 			// fill the tag cloud with all tag assignments of the relevant documents
-			if(!searchFromSharedIndex)
-				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, maximumTags, search);
+			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, maximumTags, search);
 			this.endTiming();
 			return Views.SEARCHPAGE;
 		}

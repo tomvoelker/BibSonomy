@@ -8,6 +8,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
 	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
@@ -104,7 +105,8 @@
 
 						<fmt:message key="history.restoreBtn.disabled" var="restoreBtnDisabledMsg" />
 						<fmt:message key="history.restoreBtn.enabled" var="restoreBtnEnabledMsg" />
-
+						<fmt:message key="goldStandard.approved.title" var="approved"/>
+						<fmt:message key="goldStandard.approved.revision.title" var="approved_revision"/>
 						<!--+
 							| complete Post
 							+-->
@@ -120,7 +122,13 @@
 												<div class="media">
 													<div class="media-body" id="titletext">
 														<div class="pull-right"><buttons:communityPostActions post="${newestPost}" resourceType="bibtex"/></div>
-														<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" /></h1>
+														<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" />
+															<c:if test="${newestPost.approved==1}">
+																<a title="${fn:escapeXml(approved)}">
+																	<span class="fa fa-check-circle" style="margin-left:6px;"><!--  --></span>
+																</a>
+															</c:if>	
+														</h1>
 														<p><bib:desc publication="${newestPost.resource}"/></p>
 													</div>
 												</div>
@@ -185,6 +193,7 @@
 								<!--+
 									| history list
 									+-->
+									
 								<table class="table table-striped">
 
 									<thead> <!-- history list's header info -->
@@ -197,50 +206,49 @@
 
 									<tbody>
 										<c:forEach var="index" begin="0" end="${fieldlength}" varStatus="loopStatus" step="1">
+											<c:set var="historicalPost" value="${listView.list[(fieldlength-index)]}"/>
 											<c:set var="additionalItemClasses" value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}" />
 											<tr> 
 												
 												<!-- version number -->
 												<td class="col-sm-1"  id="versionNum" style="border-right:1px solid #eee">
-													<span class="label label-default diffNumText" style="vertical-align:bottom;padding:8px;">
+													<span class="label label-default" style="vertical-align:bottom;padding:8px;">
 														Ver. ${fieldlength-index}
+														<c:if test="${listView.list[(fieldlength-index)].approved==1}">
+															<a title="${fn:escapeXml(approved_revision)}">
+																<span class="fa fa-check-circle" style="vertical-align:bottom;padding-left:3px;"><!--  --></span>
+															</a>
+														</c:if>	
 													</span>
 												</td>
 												
 												<!-- change date -->
 												<td class="col-sm-3" style="border-right:1px solid #eee">
-													<fmt:formatDate var="changeDate" type="both" dateStyle="long" value="${listView.list[(fieldlength-index)].changeDate}"/>
+													<fmt:formatDate var="changeDate" type="both" dateStyle="long" value="${historicalPost.changeDate}"/>
 													<span class="label label-primary diffNumText" style="vertical-align:bottom;padding:8px;" title="edited on ${changeDate}">${changeDate}</span>
 												</td>
-
+												
+												<!-- user name -->
+												<td class="col-sm-1">
+													<c:if test="${isGoldStandard}">
+														<div style="float:left" >
+															<h6><user:username user="${historicalPost.user}"/></h6>
+														</div>
+													</c:if>
+												</td>
+												
+												<!-- diff to previous version -->
 												<c:choose>
-													<c:when test="${isPub}">
-														<!-- constraint on version 0  -->
-														<c:choose>
-															<!-- if version 0  -->
-															<c:when test="${index eq fieldlength }">
-																<c:set var="diffArrayPre" value="${mtl:diffEntriesPub(listView.list[(fieldlength-index)],listView.list[(fieldlength-index)])}"/>
-															</c:when>
-															<c:otherwise>
-																<c:set var="diffArrayPre" value="${mtl:diffEntriesPub(listView.list[(fieldlength-index-1)],listView.list[(fieldlength-index)])}"/>
-															</c:otherwise>
-														</c:choose>		
-														<c:set var="diffArrayCurr" value="${mtl:diffEntriesPub(listView.list[(fieldlength)],listView.list[(fieldlength-index)])}"/>									
+													<!-- if version 0  -->
+													<c:when test="${index eq fieldlength }">
+														<c:set var="diffArrayPre" value="${null}"/>
 													</c:when>
 													<c:otherwise>
-														<!-- constraint on version 0  -->
-														<c:choose>
-															<!-- if version 0  -->
-															<c:when test="${index eq fieldlength }">
-																<c:set var="diffArrayPre" value="${mtl:diffEntriesBm(listView.list[(fieldlength-index)],listView.list[(fieldlength-index)])}"/>
-															</c:when>
-															<c:otherwise>
-																<c:set var="diffArrayPre" value="${mtl:diffEntriesBm(listView.list[(fieldlength-index-1)],listView.list[(fieldlength-index)])}"/>
-															</c:otherwise>
-														</c:choose>
-														<c:set var="diffArrayCurr" value="${mtl:diffEntriesBm(listView.list[(fieldlength)],listView.list[(fieldlength-index)])}"/>									
+														<c:set var="diffArrayPre" value="${mtl:diffEntries(listView.list[(fieldlength-index-1)],historicalPost)}"/>
 													</c:otherwise>
-												</c:choose>
+												</c:choose>		
+	
+												<c:set var="diffArrayCurr" value="${mtl:diffEntries(newestPost,historicalPost)}"/>									
 
 												<!-- number of changed fields, in comparison to the previous version -->
 												<c:set var="diffNumPre" value="${fn:length(diffArrayPre)}"/>
@@ -249,13 +257,13 @@
 												<c:set var="diffNumCurr" value="${fn:length(diffArrayCurr)}"/>
 								
 												<!-- select revision to compare -->
-												<td class="col-sm-7">	
-													<div class="col-sm-2" style="float:left">
+												<td class="col-sm-6">	
+													<div class="col-sm-4" style="float:left">
 														<h6> <label class="control-label" style="white-space:nowrap;">
 															<fmt:message key="history.historySelect.compareTo" />
 														</label> </h6>
 													</div>
-													<div class="col-sm-6" style="float:left">
+													<div class="col-sm-8" style="float:left">
 														<select id="preCurrSelector" class="form-control input-sm help-popover">
 															<option value="0">
 																<fmt:message key="history.selection.previous"> version (${diffNumPre} different fields)
@@ -292,7 +300,7 @@
 											<tr>
 												<!-- comparison to the previous version -->
 
-												<td colspan="4" id="postDiffPre" class="postDiffPre">
+												<td colspan="5" id="postDiffPre" class="postDiffPre">
 													<c:choose>	
 														<c:when test="${index eq fieldlength }">
 															<div class="alert alert-info" style="margin-bottom:0px;" role="alert">
@@ -318,7 +326,7 @@
 									
 												</td>
 												<!-- comparison to the current version -->
-												<td colspan="4" id="postDiffCurr" class="postDiffCurr invisible">
+												<td colspan="5" id="postDiffCurr" class="postDiffCurr invisible">
 													<c:if test="${fn:length(diffArrayCurr) eq 0}">
 														<!-- we are dealing with a post which is identical to the latest version (current post) -->
 														<div id = "currentVer" class="alert alert-info " style="margin-bottom:0px;" role="alert">
@@ -326,9 +334,9 @@
 														</div>
 													</c:if>	
 													<c:forEach var="diffEntry" items="${diffArrayCurr}">
-														<div class="checkbox">
+														<div class="checkbox">			
 															<input type="checkbox" id="CurrEntryCheckbox" class="invisible" checked="checked"/>
-															<strong>${diffEntry.key}</strong>
+															<strong><fmt:message key="post.resource.${diffEntry.key}"/></strong>
 															<c:out value=": "/>
 															${diffEntry.value}
 															<br/>

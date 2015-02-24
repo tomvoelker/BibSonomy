@@ -11,75 +11,110 @@
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<fmt:message key="navi.register" var="pageTitle" />
-	<layout:paneLayout command="${command}" pageTitle="${pageTitle}" requPath="${requPath}" headerMessageKey="register.saml.step2" minimizedContentWidth="${true}">
-	
-		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.register"/>
-		</jsp:attribute>
+
+	<!-- ################################################################################## --> 
+	<!-- 				!!!ATTENTION!!! - !!!ATTENTION!!! - !!!ATTENTION!!! 				-->
+	<!--  																					-->
+	<!-- 		This File is overlayed by puma-customized/bibsonomy-webapp-stuttgart	 	-->
+	<!-- 																					-->
+	<!-- 				!!!ATTENTION!!! - !!!ATTENTION!!! - !!!ATTENTION!!! 				-->
+	<!-- ################################################################################## --> 
+
+
+	<layout:singleContainerLayout requPath="${requPath}" command="${command}" pageTitle="${pageTitle}" smallBox="true">
 
 		<jsp:attribute name="content">
 
-			<form:form action="/registerSaml" method="POST">
+			<form:form action="/registerSaml" method="POST" class="form-horizontal">
+
+				<h1><fmt:message key="register.saml.step2" /></h1>
+				<div class="lead">
+					<p><fmt:message key="register.saml.step2.description"/></p>
+				</div>
 				<errors:global />
+				<bsform:fieldset legendKey="register.saml.required">
+					<jsp:attribute name="content">
 
-				<fieldset class="fsOuter">
-					<!-- FIXME: is this the right place for this description? -->
-					<fmt:message key="register.saml.step2.description"/>
+						
+						<!--  SAML PROVIDER ID -->
+						<c:set var="formErrorsProviderId"><form:errors path="samlId.identityProviderId" /></c:set>
+						<div class="form-group ${not empty formErrorsProviderId ? ' has-error' : ''}">
+							<!-- errors -->
+							<bsform:errors path="samlId.identityProviderId" colSpan="8" />
+							
+							<label class="control-label col-sm-4"><fmt:message key="user.settings.saml.identityProviderId"/></label>
+						
+							<div class="col-sm-8">
+								<form:errors cssClass="errmsg" path="samlId.identityProviderId" />
+								<p class="form-control-static"><tt><c:out value="${command.samlId.identityProviderId}"/></tt></p>
+							</div>
+						</div>
+						
+						<!--  SAML USER ID -->
+						
+						<div class="form-group">
+							<label class="control-label col-sm-4"><fmt:message key="register.saml.registerUser.samlId" /></label>
+						
+							<div class="col-sm-8">
+								<p class="form-control-static"><tt><c:out value="${command.samlId.userId}"/></tt></p>
+							</div>
+						</div>
+						
+						<!-- LOCAL USER NAME / ALIAS -->
+						<bsform:input path="registerUser.name"  labelColSpan="4" inputColSpan="8" labelKey="register.saml.registerUser.name" helpKey="register.saml.registerUser.name.help"/>
+						
+						<!-- EMAIL ADDRESS -->
+						<bsform:input path="registerUser.email" labelColSpan="4" inputColSpan="8" labelKey="register.saml.registerUser.email" helpKey="register.saml.registerUser.email.help" />
+						
+					</jsp:attribute>
+				</bsform:fieldset>
 				
-					<bform:fieldset maximized="${true}" legendKey="register.saml.required">
-						<jsp:attribute name="content">
-							<div class="fsRow">
-								<form:label cssClass="fsLabel" path="registerUser.name" ><fmt:message key="navi.username"/>*</form:label>
-								<form:input maxlength="15" cssClass="fsInput reqinput" path="registerUser.name" tabindex="2"/>
-								<div class="dissError"><form:errors path="registerUser.name" /></div>
-							</div>
-
-							<bform:input path="registerUser.email" required="${true}" labelMessageKey="user.settings.email" noHelp="${true}"/>
-
-							<div class="fsRow">
-								<form:label cssClass="fsLabel" path="samlId.userId" ><fmt:message key="user.settings.saml.userId"/>*</form:label>
-								<c:out value="${command.samlId.userId}"/>
-								<div class="dissError"><form:errors cssClass="errmsg" path="samlId.userId" /></div>
-							</div>
-							<div class="fsRow">
-								<form:label cssClass="fsLabel" path="samlId.identityProviderId" ><fmt:message key="user.settings.saml.identityProviderId"/>*</form:label>
-								<c:out value="${command.samlId.identityProviderId}"/>
-								<div class="dissError"><form:errors cssClass="errmsg" path="samlId.identityProviderId" /></div>
-							</div>
-						</jsp:attribute>
-					</bform:fieldset>
-
-					<bform:fieldset maximized="${true}" legendKey="register.saml.optional">
-						<jsp:attribute name="content">  
-							<bform:input path="registerUser.realname" labelMessageKey="user.settings.realname" noHelp="${true}"/>
-							<div class="fsRow">
-								<form:label cssClass="fsLabel" path="registerUser.gender" ><fmt:message key="navi.gender"/></form:label>
-								<form:select path="registerUser.gender">
+				<bsform:fieldset  legendKey="register.saml.optional">
+					<jsp:attribute name="content">
+						<bsform:input path="registerUser.realname" labelColSpan="4" inputColSpan="8" labelKey="register.saml.registerUser.realname" />  
+						
+						<c:set var="formErrorsGender"><form:errors path="samlId.identityProviderId" /></c:set>
+						<div class="form-group ${not empty formErrorsGender ? ' has-error' : ''}">
+							<bsform:errors path="registerUser.gender" colSpan="8" />
+							
+							<form:label cssClass="control-label col-sm-4" path="registerUser.gender" ><fmt:message key="navi.gender"/></form:label>
+							
+							<div class="col-sm-8">
+								
+								<form:select path="registerUser.gender" cssClass="form-control">
 									<form:option value="F" label="female" />
 									<form:option value="M" label="male" />
 								</form:select>
-								<div class="dissError"><form:errors path="registerUser.gender" /></div>
 							</div>
+						</div>
 
-							<bform:input path="registerUser.place" labelMessageKey="user.place" noHelp="${true}"/>
-							<bform:input path="registerUser.homepage" labelMessageKey="user.settings.homepage" noHelp="${true}"/>
+						<bsform:input path="registerUser.place" labelColSpan="4" inputColSpan="8" labelKey="user.place" noHelp="true" />
+						<bsform:input path="registerUser.homepage" labelColSpan="4" inputColSpan="8" labelKey="user.settings.homepage" noHelp="true" />
 
-						</jsp:attribute>
-					</bform:fieldset>
+						<div class="form-group">
+							<div class="col-sm-offset-4 col-sm-8">
+								<button type="submit" class="btn btn-success"><fmt:message key="register.saml.registerUser.activate" /></button>
+							</div>
+						</div>
 
-					<input type="hidden" name="step" value="3" />
-					<!-- 
-					<input type="hidden" name="rememberMe" value="${command.rememberMe}" />
-					-->
-
-					<bform:submit messageKey="register.send"/>
-				</fieldset>
+					</jsp:attribute>
+				</bsform:fieldset>
+				
+				<!-- 
+				<input type="hidden" name="rememberMe" value="${command.rememberMe}" />
+				-->	
 			</form:form>
+			
+			<br />
+			<br />
+			<hr />
+			
 		</jsp:attribute>
-	</layout:paneLayout>
+	</layout:singleContainerLayout>
 </jsp:root>

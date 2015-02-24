@@ -69,7 +69,7 @@
 			}
 		} 
 		
-		function generateOneEsIndex(resource) { 
+		function generateOneEsIndex(resource, id) { 
 			var box = window.confirm("This will (re)-generate the elasticsearch index with for " + resource + ". Are you sure?");
 			if (box) { 
 				window.location.href="?action=generateOneIndex&amp;id="+id+"&amp;resource=" + resource + "&amp;indexType=elasticsearch"; 
@@ -252,7 +252,7 @@
 							<th>Index</th>
 							<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
 								<th>
-									<a onclick="javascript:generateOneEsIndex('${resourceIndexInfo.resourceName}')" href="#generateIndex">
+									<a onclick="javascript:generateOneEsIndex('${resourceIndexInfo.resourceName}', )" href="#generateIndex">
 										<span style="width: 200px; height: 10px; border: 1px; color: grey;">re-generate</span>
 									</a>
 								</th>

@@ -806,9 +806,9 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 */
 	public void init() throws Exception {
 		/*
-		 * set the first index to the be the active one
+		 * set the first index which is ready to the be the active one
 		 */
-		this.setActiveIndex(this.resourceIndices.get(0));
+		this.setActiveIndex(findIndexToActivate());
 
 		/*
 		 * all others must be inserted into the update queue
@@ -828,6 +828,15 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			}
 			tmpIndexPath.delete();
 		}
+	}
+
+	private LuceneResourceIndex<R> findIndexToActivate() {
+		for (LuceneResourceIndex<R> idx : this.resourceIndices) {
+			if (idx.isIndexEnabled() == true) {
+				return idx;
+			}
+		}
+		return this.resourceIndices.get(0);
 	}
 
 	@Override
