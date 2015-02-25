@@ -143,20 +143,19 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="sidebar">
-			<ul>
-				<li>
-					<!-- TODO: refactor and use it also in user.jspx -->
-					<fmt:message key="tagrelations.title" var="tagRelationsTitle" />
-					<h4 class="sidebar concepts-headline sidebar-headline">
-						<fmt:message key="tagrelations"/>
-					</h4>
+
+			<!-- TODO: refactor and use it also in user.jspx -->
+			<sidebar:sidebarItem textKey="tagrelations">
+				<jsp:attribute name="content">
 					<tags:concepts cmd="${command.concepts}" usersOwnRelations="${true}" requestedUserName="${command.context.loginUser.name}" disableEditLink="${true}"/>
-				</li>
-				<li>
-					<sidebar:sidebarHeader textKey="tags" />
+				</jsp:attribute>
+			</sidebar:sidebarItem>
+
+			<sidebar:sidebarItem textKey="tags">
+				<jsp:attribute name="content">
 					<tags:cloud requPath="user/${command.context.loginUser.name}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" />
-				</li>
-			</ul>
+				</jsp:attribute>
+			</sidebar:sidebarItem>
 
 			<script type="text/javascript">
 <![CDATA[

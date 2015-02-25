@@ -10,6 +10,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -49,19 +50,19 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-			<ul>			
-				<!-- display related tags -->
-				<li>
-					<h4 class="sidebar"><fmt:message key="relatedtags"/></h4>
+			<!-- display related tags -->
+			<sidebar:sidebarItem textKey="relatedtags">
+				<jsp:attribute name="content">
 					<tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.order}"/>
-				</li>
-				
-				<!-- display the tag cloud -->
-				<li>
-					<h4 class="sidebar"><fmt:message key="tags"/></h4>
+				</jsp:attribute>
+			</sidebar:sidebarItem>				
+
+			<!-- display the tag cloud -->
+			<sidebar:sidebarItem textKey="tags">
+				<jsp:attribute name="content">
 					<tags:cloud requPath="${mtl:getLowerPath(requPath)}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-				</li>
-			</ul>
+				</jsp:attribute>
+			</sidebar:sidebarItem>
 		</jsp:attribute>
 	</layout:resourceLayout>
 </jsp:root>

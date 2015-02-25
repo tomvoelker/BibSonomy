@@ -10,6 +10,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
 	xmlns:form="http://www.springframework.org/tags/form">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -131,12 +132,11 @@
 			busy tag box 
 			-->
 		<jsp:attribute name="sidebar">
-				<ul>
-					<li>
-						<h4 class="sidebar"><fmt:message key="busytags"/></h4>
-						<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" tagSizeMode="home"/>
-					</li>
-				</ul>
+			<sidebar:sidebarItem textKey="busytags">
+				<jsp:attribute name="content">
+					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" tagSizeMode="home"/>
+				</jsp:attribute>
+			</sidebar:sidebarItem>
 		</jsp:attribute>
 	</layout:paneLayout>
 </jsp:root>
