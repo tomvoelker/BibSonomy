@@ -17,14 +17,18 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:goldpub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
 	xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
+	xmlns:common="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/resources/actionbuttons"
 	>
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	<!-- TODO unused -->
 	<jsp:directive.attribute name="otherPosts" type="java.util.List" required="true"/>
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	<jsp:useBean id="mockReference" class="org.bibsonomy.model.BibTex" />
 	
 	
+	<fmt:message key="goldStandard.approved.title" var="approved"/>
 	<c:set var="goldstandard" value="${post.resource}" />
 	<!-- determine the publication type for schema.org markup -->
 	<c:set var="itemType" value="http://schema.org/ScholarlyArticle"/>
@@ -32,7 +36,7 @@
 		<c:set var="itemType" value="http://schema.org/Book"/>
 	</c:if>
 	<div id="goldstandard">
-		<h1 class="content-header">Community Page</h1>
+		<h1 class="content-header"><fmt:message key="community.page"/></h1>
 		<div class="title">
 			<div class="media">
 				<!-- 
@@ -41,8 +45,14 @@
 				</span>
 				-->
 				<div class="media-body" id="titletext">
-					<div class="pull-right"><gpub:actions post="${post}" /></div>
-					<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(goldstandard.title)}" /></h1>
+					<div class="pull-right"><buttons:communityPostActions post="${post}" resourceType="bibtex"/></div>
+					<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(goldstandard.title)}" />
+					<c:if test="${post.approved==1}">
+						<a  title="${fn:escapeXml(approved)}">
+							<span class="fa fa-check-circle" style="margin-left:6px;"><!--  --></span>
+						</a>
+					</c:if>
+					</h1>
 					<p><bib:desc publication="${post.resource}"/></p>
 				</div>
 			</div>
@@ -100,43 +110,7 @@
 		</c:choose>
 					
 					
-		<!--+
-			|  related users
-			+-->
-		<c:if test="${not empty command.relatedUserCommand.relatedUsers}">
-			<c:set var="publication" value="${command.bibtex.list[0].resource}" />
-			<h4 class="pub-details"><span class="fa fa-users"><!--  --></span><c:out value=" " /><fmt:message key="goldstandard.resource.relatedUsers"/></h4>
-			
-			<ul class="list-inline community-page-user-list">
-				<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}" varStatus="count">
-					<c:choose>
-						<c:when test="${count.index lt 6}">
-							<li>
-								<a title="@${fn:escapeXml(user.name)}" href="/user/${fn:escapeXml(user.name)}" class="thumbnail img-thumbnail img-responsive">
-									<img class="user-avatar" src="/picture/user/${fn:escapeXml(user.name)}" alt="@${fn:escapeXml(user.name)}" />
-									<span>@${fn:escapeXml(user.name)}</span>
-								</a>
-							</li>
-						</c:when>
-						<c:otherwise>
-							<li class="hidden">
-								<a title="@${fn:escapeXml(user.name)}" href="/user/${fn:escapeXml(user.name)}" class="thumbnail img-thumbnail img-responsive">
-									<img class="user-avatar" src="/picture/user/${fn:escapeXml(user.name)}" alt="@${fn:escapeXml(user.name)}" />
-									<span>@${fn:escapeXml(user.name)}</span>
-								</a>
-							</li>
-							
-						</c:otherwise>
-					</c:choose>
-
-				</c:forEach>
-				<c:if test="${fn:length(command.relatedUserCommand.relatedUsers) gt 6}">
-					<li class="hidden"><a class="show-less" href="#">show less</a></li>
-					<li class="show"><a class="show-more" href="#">show all</a></li>
-				</c:if>
-			</ul>
-			<br />
-		</c:if>
+		<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}"/>
 		
 		<h4 class="pub-details"><span class="fa fa-quote-right"><!--  --></span><c:out value=" "/><fmt:message key="publications.citations.headline" /></h4>
 		

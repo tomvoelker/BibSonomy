@@ -34,10 +34,10 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * 
  * @author Stefan Stützer
  */
-public class AjaxCommand extends BaseCommand {
+public class AjaxCommand<A> extends BaseCommand {
 
 	/** what this command shall do */
-	protected String action; 	
+	protected A action;
 	
 	/** where to forward (optionally) */
 	private String forward;
@@ -48,14 +48,14 @@ public class AjaxCommand extends BaseCommand {
 	/**
 	 * @return the action
 	 */
-	public String getAction() {
+	public A getAction() {
 		return this.action;
 	}
 
 	/**
 	 * @param action the action to set
 	 */
-	public void setAction(String action) {
+	public void setAction(A action) {
 		this.action = action;
 	}
 

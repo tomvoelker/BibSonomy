@@ -31,6 +31,8 @@ import java.util.Set;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.User;
 
 /**
  * @author Christian Schenk
@@ -67,7 +69,7 @@ public class GroupUtils {
 	 * 
 	 * @return private group
 	 */
-	public static Group getPrivateGroup() {
+	public static Group buildPrivateGroup() {
 		return getGroup(PRIVATE_GROUP_NAME, "private group", GroupID.PRIVATE, Privlevel.HIDDEN);
 	}
 
@@ -76,7 +78,7 @@ public class GroupUtils {
 	 * 
 	 * @return friends group
 	 */
-	public static Group getFriendsGroup() {
+	public static Group buildFriendsGroup() {
 		return getGroup(FRIENDS_GROUP_NAME, "friends group", GroupID.FRIENDS, Privlevel.HIDDEN);
 	}
 
@@ -86,7 +88,7 @@ public class GroupUtils {
 	 * 
 	 * @return public group
 	 */
-	public static Group getPublicSpamGroup() {
+	public static Group buildPublicSpamGroup() {
 		return getGroup(PUBLIC_GROUP_NAME,  "public group",  GroupID.PUBLIC_SPAM,  Privlevel.PUBLIC);
 	}
 
@@ -95,7 +97,7 @@ public class GroupUtils {
 	 * 
 	 * @return private group
 	 */
-	public static Group getPrivateSpamGroup() {
+	public static Group buildPrivateSpamGroup() {
 		return getGroup(PRIVATE_GROUP_NAME, "private group", GroupID.PRIVATE_SPAM, Privlevel.HIDDEN);
 	}
 
@@ -104,7 +106,7 @@ public class GroupUtils {
 	 * 
 	 * @return friends group
 	 */
-	public static Group getFriendsSpamGroup() {
+	public static Group buildFriendsSpamGroup() {
 		return getGroup(FRIENDS_GROUP_NAME, "friends group", GroupID.FRIENDS_SPAM, Privlevel.HIDDEN);
 	}
 
@@ -113,7 +115,7 @@ public class GroupUtils {
 	 * 
 	 * @return invalid group
 	 */
-	public static Group getInvalidGroup() {
+	public static Group buildInvalidGroup() {
 		return getGroup("invalid", "invalid group", GroupID.INVALID, Privlevel.HIDDEN);
 	}
 
@@ -128,7 +130,7 @@ public class GroupUtils {
 	 */
 	public static boolean isExclusiveGroup(final Group group) {
 		return (
-				getPrivateGroup().equals(group) || 
+				buildPrivateGroup().equals(group) || 
 				getPublicGroup().equals(group)
 		);
 	}
@@ -144,7 +146,7 @@ public class GroupUtils {
 	 */
 	public static boolean isExclusiveGroup(final int groupId) {
 		return (
-				GroupID.equalsIgnoreSpam(getPrivateGroup().getGroupId(), groupId) || 
+				GroupID.equalsIgnoreSpam(buildPrivateGroup().getGroupId(), groupId) || 
 				GroupID.equalsIgnoreSpam(getPublicGroup().getGroupId(), groupId)
 		);
 	}
@@ -176,7 +178,7 @@ public class GroupUtils {
 		/*
 		 * at least one of the groups is public or private
 		 */
-		return groups.contains(getPublicGroup()) || groups.contains(getPrivateGroup());
+		return groups.contains(getPublicGroup()) || groups.contains(buildPrivateGroup());
 	}
 	
 	/**
@@ -194,7 +196,22 @@ public class GroupUtils {
 	 * @return <code>true</code> if the set of groups contains only the private group.
 	 */
 	public static boolean isPrivateGroup(final Set<Group> groups) {
-		return groups.size() == 1 && groups.contains(getPrivateGroup());
+		return groups.size() == 1 && groups.contains(buildPrivateGroup());
+	}
+	
+	/**
+	 * Checks if the given name can be used for a new group. The reserved names are
+	 * public, friends and private.
+	 * 
+	 * @param name
+	 * @return <code>true</code> if the name is valid.
+	 */
+	public static boolean isValidGroupName(String name) {
+		String normedName = name.toLowerCase();
+		return !GroupUtils.FRIENDS_GROUP_NAME.equals(normedName) &&
+			!GroupUtils.PUBLIC_GROUP_NAME.equals(normedName) &&
+			!GroupUtils.PRIVATE_GROUP_NAME.equals(normedName);
+		
 	}
 
 	/**
@@ -207,5 +224,56 @@ public class GroupUtils {
 		group.setGroupId(groupId.getId());
 		group.setPrivlevel(privlevel);
 		return group;
+	}
+	
+	/**
+	 * Helper method to return the GroupMembership of the provided user
+	 * @param group
+	 * @param userName
+	 * @param includePending
+	 * @return the group membership, <code>null</code> iff user is not member of this group
+	 */
+	public static GroupMembership getGroupMembershipForUser(final Group group, final String userName, final boolean includePending) {
+		for (GroupMembership g : group.getMemberships()) {
+			if (g.getUser().getName().equals(userName)) {
+				return g;
+			}
+		}
+		if (includePending) {
+			// look in pending memberships
+			for (GroupMembership g : group.getPendingMemberships()) {
+				if (g.getUser().getName().equals(userName)) {
+					return g;
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Helper method to return the GroupMembership of the provided user
+	 * @param group
+	 * @param user
+	 * @param includePending
+	 * @return the group membership, <code>null</code> iff user is not member of this group
+	 */
+	public static GroupMembership getGroupMembershipForUser(final Group group, final User user, final boolean includePending) {
+		return getGroupMembershipForUser(group, user.getName(), includePending);
+	}
+	
+	/**
+	 * returns the group membership of the user for the specified groups
+	 * @param user
+	 * @param groupName
+	 * @return
+	 */
+	public static GroupMembership getGroupMembershipOfUserForGroup(final User user, final String groupName) {
+		for (final Group group : user.getGroups()) {
+			if (group.getName().equals(groupName)) {
+				return getGroupMembershipForUser(group, user.getName(), false);
+			}
+		}
+		
+		return null;
 	}
 }

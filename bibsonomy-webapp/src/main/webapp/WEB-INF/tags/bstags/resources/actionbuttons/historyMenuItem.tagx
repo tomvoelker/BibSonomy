@@ -1,0 +1,47 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/resources/actionbuttons"
+	>
+
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="userLoggedIn" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true" />
+
+	<c:choose>	
+		<c:when test="${not empty post.systemUrl }">
+			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var ="isRemotePost" value="false"/>
+		</c:otherwise>
+	</c:choose>
+
+	<fmt:message key="${resourceType}.actions.posthistory.title" var="postHistoryTitle" />
+	<c:choose>
+		<c:when test="${(userLoggedIn and (loginUserName eq post.user.name) and (not isRemotePost)) or (empty post.user)}">
+			<c:set var="hash" value="${post.resource.interHash}"/>
+			<c:if test="${not empty post.user}">
+				<c:set var="hash" value="${post.resource.intraHash}"/>
+			</c:if>
+			<c:set var="historyUrl" value="${relativeUrlGenerator.getHistoryURLByHashAndUserName(hash, post.user.name, resourceType)}"/>
+			<c:if test="${isRemotePost}">
+				<c:set var="historyUrl" value="${relativeUrlGenerator.getHistoryURLByHashUserNameAndSysUrl(hash, post.user.name, resourceType, post.systemUrl)}"/>
+			</c:if>
+			<a href="${historyUrl}" title="${postHistoryTitle}">
+				<fmt:message key="${resourceType}.actions.posthistory.title" />
+				<buttons:newBadge/>
+			</a>
+		</c:when>
+		<c:otherwise>
+			<span class="ilitem" title="${historyTitle}">
+				<fmt:message key="${resourceType}.actions.posthistory.title" />
+				<buttons:newBadge/>
+			</span>
+		</c:otherwise>
+	</c:choose>
+</jsp:root>

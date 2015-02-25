@@ -131,7 +131,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<AbstractJabRefLayout
 	@Override
 	public AbstractJabRefLayout getLayout(final String layout, final String loginUserName) throws LayoutRenderingException, IOException {
 		final AbstractJabRefLayout jabrefLayout;
-		if ("custom".equals(layout)) {
+		if (CUSTOM_LAYOUT.equals(layout)) {
 			/*
 			 * get custom user layout from map
 			 */

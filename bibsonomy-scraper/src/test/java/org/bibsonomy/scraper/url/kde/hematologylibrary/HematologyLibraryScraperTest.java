@@ -26,6 +26,13 @@
  */
 package org.bibsonomy.scraper.url.kde.hematologylibrary;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.net.URL;
+
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -45,5 +52,19 @@ public class HematologyLibraryScraperTest {
 	@Test
 	public void urlTestRun() {
 		UnitTestRunner.runSingleTest("url_264");
+	}
+	
+	@Test
+	public void testReferences() throws Exception {
+		final ScrapingContext sc = new ScrapingContext(new URL("http://asheducationbook.hematologylibrary.org/content/2013/1/1.full"));
+		HematologyLibraryScraper hs = new HematologyLibraryScraper();
+		assertTrue(hs.scrape(sc));
+		assertTrue(hs.scrapeReferences(sc));
+		
+		final String reference = sc.getReferences();
+		assertNotNull(reference);
+		assertTrue(reference.length() > 100);
+		assertEquals("<ol class=\"cit-list\">".trim(), reference.substring(0, 40).trim());
+		assertTrue(reference.contains("De Domenico"));
 	}
 }

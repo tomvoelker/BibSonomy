@@ -15,7 +15,7 @@
 	<jsp:directive.attribute name="confirmationMailFragment" required="false" fragment="true"/>
 	
 	<fmt:message key="navi.register" var="userSuccessPageTitle"/>
-	<fmt:message var="exampleString" key="example"/>
+	
 	<layout:paneLayout pageTitle="${userSuccessPageTitle}" requPath="${requPath}" command="${command}" minimizedContentWidth="${true}">
 	
 		<jsp:attribute name="heading">
@@ -72,7 +72,7 @@
 											<fmt:param value="${project.name}"/>
 										</fmt:message>
 									</p>
-									<img src="/resources/image/bookmarklet_screenshot_chrome_${fn:toLowerCase(exampleString)}.png"/>
+									<img src="/resources/image/addons/${locale}/bookmarklet_screenshot_chrome.png"/>
 									<p>
 										<a class="post.resource.firefox.installButton" href="${project.addons.chrome.url}">
 											<fmt:message key="bookmarklet.buttonTextFirefox"/>
@@ -88,7 +88,7 @@
 											<fmt:param value="${project.name}"/>
 										</fmt:message>
 									</p>
-									<img src="/resources/image/bookmarklet_screenshot_firefox_${fn:toLowerCase(exampleString)}.png"/>
+									<img src="/resources/image/addons/${locale}/bookmarklet_screenshot_firefox.png"/>
 									<p>
 										<a class="post.resource.firefox.installButton" href="${project.addons.firefox.url}">
 											<fmt:message key="bookmarklet.buttonTextFirefox"/>

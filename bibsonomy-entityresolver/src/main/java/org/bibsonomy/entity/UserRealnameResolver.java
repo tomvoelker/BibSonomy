@@ -1,5 +1,5 @@
 /**
- * BibSonomy Entity Resolver - Username/author identiy resolving for BibSonomy.
+ * BibSonomy - A blue social bookmark and publication sharing system.
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -110,11 +110,9 @@ public class UserRealnameResolver {
 	public void init() {
 		try {
 			this.userIndex = this.config.createDatabase(false);
-			this.userIndex.openSearchers();
+			//this.userIndex.openSearchers();
 		} catch (final OverlappingFileLockException e) {
 			log.error("Error opening user name index for the Facebook importer: " + e.getMessage());
-		} catch (final IOException e) {
-			log.error("Error opening index", e);
 		} catch (final Exception e) {
 			log.warn("error while creating database, disabling index", e);
 		}

@@ -91,11 +91,21 @@
 	content: @fa-var-google-plus;
 }
 
+.capitalize {
+	text-transform: capitalize;
+}
+
+.uppercase {
+	text-transform: uppercase;
+}
+
+.lowercase {
+	text-transform: lowercase;
+}
 
 ul.checklist {
 	list-style: none;
 	padding: 0;
-	margin: 0;
 }
 
 .label-grey {
@@ -424,7 +434,8 @@ ul.posts li.post:last-child {
 
 
 li.post div.in-my-collection,
-li.post div.glyphicon-private {
+li.post div.glyphicon-private,
+li.post div.remote-post {
 	position:relative; 
 	width: 0px;
 	overflow: visible; 
@@ -437,6 +448,14 @@ li.post div.in-my-collection {
 	left: 5px; 
 	color: @link-color;
 }
+
+li.post div.remote-post {
+	font-size: 14px;
+	top: -85px;
+	left: 4px;
+	color: @link-color;
+}
+
 
 li.post div.glyphicon-private {
 	font-size: 18px; 
@@ -808,7 +827,8 @@ div.newsbox ul.news {
 	list-style: none;
 }
 
-#recommendedTags li:not(.keepme) {
+#recommendedTags li:not(.keepme),
+#copiedTags li:not(.keepme) {
 	background-color: @main-color;
 	color: #fff;
 	font-size: 14px;
@@ -949,12 +969,6 @@ h4.pub-details {
 /* Abstract */
 .morecontent {
 	display:none;
-}
-
-/* Publication preview */
-a.publication.preview {
-
-	box-shadow: 0 3px 8px rgba(0,0,0,0.3);
 }
 
 
@@ -1100,6 +1114,7 @@ fieldset {
 	border-left: none;
 }
 
+span.label.label-default > a,
 span.label.label-primary > a,
 span.label.label-info > a,
 span.label.label-warning > a,
@@ -1405,5 +1420,16 @@ ul#urlList {
 #suggestionBox {
 	position:absolute;
 	display:none;
+}
+.autocompletion.form-control-feedback {
+	color: @gray;
+	font-size: @font-size-large;
+	top: 10px;
+	right: 7px;
+}
+
+.label-disabled {
+	color: #777777;
+	border: 1px solid #777777;
 }
 

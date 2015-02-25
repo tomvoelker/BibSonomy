@@ -47,6 +47,10 @@ INSERT INTO `bibhash` (`hash`, `ctr`, `type`) VALUES
 ('598347d95a3ef39a3987a39b40708f79', 2, 0),
 ('a5936835f9eeab91eb09d84948306178', 2, 1),
 ('15a1bdcbff44431651957f45097dc4f4', 2, 2),
+('319872adc49bfeae3f799d29a18b0634', 1, 1),
+('11db3d75b9e07960658984f9b012d6d7', 1, 2),
+('08cdf0d0dcce9d07fd8d41ac6267cadf', 1, 2),
+('564c7c31f6a34e5dc3a1b0c17fe68c13', 1, 1),
 ('b77ddd8087ad8856d77c740c8dc2864a', 1, 2);
 
 
@@ -241,21 +245,32 @@ INSERT INTO `groupids` (`group_name`, `group`, `privlevel`, `sharedDocuments`) V
 ('testgroup2', 4,           1, 0),
 ('testgroup3', 5,           2, 0),
 ('testgroup4', 6,           2, 1);
+
+-- 
+-- Data for table `pending_groupids`
+-- 
+INSERT INTO `pending_groupids` (`group_name`, `request_user_name`, `request_reason`, `group`, `privlevel`, `sharedDocuments`) VALUES 
+('testpendinggroup1', 'testrequestuser1', 'my new reason1', 7,           0, 1),
+('testpendinggroup2', 'testrequestuser2', 'my new reason2', 8,           1, 0);
  
 -- 
--- Data for table `groups`
+-- Data for table `group_memberships`
 -- 
 
-INSERT INTO `groups` VALUES 
-('testuser1', 3, 3, '2007-01-01 01:01:01', 7, 1),
-('testuser2', 3, 3, '2007-01-01 01:01:01', 7, 0),
-('testuser1', 4, 3, '2007-01-01 01:01:01', 7, 1),
-('testuser1', 5, 3, '2007-01-01 01:01:01', 7, 0),
-('testuser1', 6, 3, '2007-01-01 01:01:01', 7, 0),
-('testuser2', 6, 3, '2007-01-01 01:01:01', 7, 0),
-('testgroup1', 3, 3, '2007-01-01 01:01:01', 7, 0),
-('testgroup2', 4, 4, '2007-01-01 01:01:01', 7, 0),
-('testgroup3', 5, 5, '2007-01-01 01:01:01', 7, 0);
+INSERT INTO `group_memberships` VALUES 
+('testuser1', 3, 3, '2007-01-01 01:01:01', 2, 1),
+('testuser2', 3, 3, '2007-01-01 01:01:01', 2, 0),
+('testuser1', 4, 3, '2007-01-01 01:01:01', 2, 1),
+('testuser1', 5, 3, '2007-01-01 01:01:01', 2, 0),
+('testuser1', 6, 3, '2007-01-01 01:01:01', 2, 0),
+('testuser2', 6, 3, '2007-01-01 01:01:01', 2, 0),
+('testgroup1', 3, 3, '2007-01-01 01:01:01', 3, 0),
+('testgroup2', 4, 4, '2007-01-01 01:01:01', 3, 0),
+('testgroup3', 5, 5, '2007-01-01 01:01:01', 3, 0),
+('testgroup3', 6, 6, '2007-01-01 01:01:01', 3, 0);
+
+
+
 
 -- 
 -- Data for table `ids`
@@ -309,7 +324,8 @@ INSERT INTO `inetAddressStates`(`address`, `status`) VALUES
 INSERT INTO log_bibtex (`content_id`, `new_content_id`, `current_content_id`, `log_date`, `journal`, `volume`, `chapter`, `edition`, `month`, `day`, `booktitle`, `howPublished`, `institution`, `organization`, `publisher`, `address`, `school`, `series`, `bibtexKey`, `group`, `date`, `user_name`, `url`, `type`, `description`, `annote`, `note`, `pages`, `bKey`, `number`, `crossref`, `misc`, `bibtexAbstract`, `simhash0`, `simhash1`, `simhash2`, `simhash3`, `entrytype`, `title`, `author`, `editor`, `year`, `privnote`, `scraperid`, `change_date`, `rating`) VALUES
 (17, 18, 20, '2009-10-08 14:13:01', 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', 0, '2008-05-19 14:34:29', 'testuser3',   'http://friend.bibtex.url.com',  '2', 'test description', 'test annote', 'test note', 'test page',  'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', '36a19ee7b7923b062a99a6065fe07792', 'e2fb0763068b21639c3e36101f64aefe', 'b71d5283dc7f4f59f306810e73e9bc9a', '', 'test entrytype', 'test friend title',  'test author',  'test editor', 'test year', 'test privnote', -1, '2008-05-19 14:34:29', 0),
 (18, 19, 20, '2009-10-08 14:24:01', 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', 0, '2009-10-08 14:13:00', 'testuser3',   'http://friend.bibtex.url.com',  '2', 'test description', 'test annote', 'test note', 'test page',  'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', '36a19ee7b7923b062a99a6065fe07792', 'e2fb0763068b21639c3e36101f64aefe', 'e2fb0763068b21639c3e36101f64aefe', '', 'test entrytype', 'test friend title',  'test author',  'test editor', 'test year', 'test privnote', -1, '2009-10-08 14:13:00', 0),
-(19, 20, 20, '2009-10-08 14:35:01', 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', 0, '2009-10-08 14:24:00', 'testuser3',   'http://friend.bibtex.url.com',  '2', 'test description', 'test annote', 'test note', 'test page',  'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', '36a19ee7b7923b062a99a6065fe07792', 'e2fb0763068b21639c3e36101f64aefe', 'b71d5283dc7f4f59f306810e73e9bc9a', '', 'test entrytype', 'test friend title',  'test author',  'test editor', 'test year', 'test privnote', -1, '2009-10-08 14:24:00', 0);
+(19, 20, 20, '2009-10-08 14:35:01', 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', 0, '2009-10-08 14:24:00', 'testuser3',   'http://friend.bibtex.url.com',  '2', 'test description', 'test annote', 'test note', 'test page',  'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', '36a19ee7b7923b062a99a6065fe07792', 'e2fb0763068b21639c3e36101f64aefe', 'b71d5283dc7f4f59f306810e73e9bc9a', '', 'test entrytype', 'test friend title',  'test author',  'test editor', 'test year', 'test privnote', -1, '2009-10-08 14:24:00', 0),
+(1312, 0, 0, '2009-10-08 14:35:03', 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', 0, '2009-10-08 14:24:00', 'testuser3',   'http://friend.bibtex.url.com',  '2', 'test description', 'test annote', 'test note', 'test page',  'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', '36a19ee7b7923b062a99a6065fe07792', 'e2fb0763068b21639c3e36101f64aefe', 'b71d5283dc7f4f59f306810e73e9bc9a', '', 'test entrytype', 'test friend title',  'test author',  'test editor', 'test year', 'test privnote', -1, '2009-10-08 14:29:00', 0);
 
 -- 
 -- Data for table `log_bookmark`
@@ -371,7 +387,10 @@ INSERT INTO `log_prediction` VALUES
 INSERT INTO `pendingUser` (`user_name`,`user_email`,`user_password`,`user_homepage`,`user_realname`,`spammer`,`openurl`,`reg_date`,`ip_address`,`id`,`tmp_password`,`tmp_request_date`,`tagbox_style`,`tagbox_sort`,`tagbox_minfreq`,`tagbox_max_count`,`is_max_count`,`tagbox_tooltip`,`list_itemcount`,`spammer_suggest`,`birthday`,`gender`,`profession`,`institution`,`interests`,`hobbies`,`place`,`profilegroup`,`api_key`,`updated_by`,`updated_at`,`role`,`lang`,`to_classify`,`log_level`,`activation_code`) VALUES 
 -- user_name     user_email                   user_password   user_homepage                           user_realname   spammer   openurl                       reg_date               ip_address id    tmp_password tmp_request_date tagbox_style tagbox_sort tagbox_minfreq tagbox_tooltip list_itemcount  spammer_suggest birthday gender profession institution interests hobbies place                               profilegroup api_key                             updated_by updated_at             role lang to_classify log_level activation_code
 ('activationtestuser1',   'testuser1@bibsonomy.org',   'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/user/testuser1',   'Test Activation User 1',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:23:55', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '11111111111111111111111111111111', 'rja',     '1815-12-10 00:00:00', 0,  'en', 0, 1, '6dfab2a50e9629f780306ff34ff3d856'),
-('activationtestuser2',   'testuser2@bibsonomy.org',   'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/user/testuser2',   'Test Activation User 2',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-07-08 01:23:55', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '11111111111111111111111111111111', 'rja',     '1815-12-10 00:00:00', 0,  'en', 0, 1, 'ac47d3f92b90c89e46170f7049beda37');
+('activationtestuser2',   'testuser2@bibsonomy.org',   'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/user/testuser2',   'Test Activation User 2',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-07-08 01:23:55', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '11111111111111111111111111111111', 'rja',     '1815-12-10 00:00:00', 0,  'en', 0, 1, 'ac47d3f92b90c89e46170f7049beda37'),
+('testpendinggroup1',   'testpendinggroup1@bibsonomy.org',   'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/user/testuser1',   'Test Pending Group User 1',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:23:55', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '11111111111111111111111111111111', 'rja',     '1815-12-10 00:00:00', 6,  'en', 0, 1, '6d1232a50e9629f780306ff34ff3d856'),
+('testpendinggroup2',   'testpendinggroup1@bibsonomy.org',   'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/user/testuser1',   'Test Pending Group User 1',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:23:55', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '11111111111111111111111111111111', 'rja',     '1815-12-10 00:00:00', 6,  'en', 0, 1, 'ac47d3f9fdljc89e46170f7049beda37');
+
 
 -- 
 -- Data for table `picked_concepts`
@@ -379,8 +398,7 @@ INSERT INTO `pendingUser` (`user_name`,`user_email`,`user_password`,`user_homepa
 
 
 
-
--- 
+--
 -- Data for table `prediction`
 -- 
 -- (user_name, prediction, timestamp, updated_at, algorithm, mode, evaluator, confidence)
@@ -589,7 +607,9 @@ INSERT INTO `user` (`user_name`,`user_email`,`user_password`,`user_homepage`,`us
 ('testuser2',   'testuser2@bibsonomy.org',   'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/user/testuser2',   'Test User 2',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '22222222222222222222222222222222', 'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1),
 ('testuser3',   'testuser3@bibsonomy.org',   'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/user/testuser3',   'Test User 3',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '33333333333333333333333333333333', 'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 0),
 ('testuser4',   'testuser4@bibsonomy.org',   'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/user/testuser4',   'Test User 4',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '33333333333333333333333333334333', 'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 0),
-('testlimited', 'testlimited@bibsonomy.org', 'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/user/testlimited', 'Limited Test User',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2013-02-18 12:00:00', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '33333333333333333333333333334333', 'jil',     '1815-12-10 00:00:00', 5,  'en', 0, 0);
+('testlimited', 'testlimited@bibsonomy.org', 'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/user/testlimited', 'Limited Test User',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2013-02-18 12:00:00', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                  1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '33333333333333333333333333334333', 'jil',     '1815-12-10 00:00:00', 5,  'en', 0, 0),
+('testrequestuser1', 'testrequestuser1@bibsonomy.org', 'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/user/testrequestuser1', 'Request Test User',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2013-02-18 12:00:00', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                   1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '33333333333333333333333333344333', 'jil',     '1815-12-10 00:00:00', 6,  'en', 0, 0),
+('testrequestuser2', 'testrequestuser2@bibsonomy.org', 'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/user/testrequestuser2', 'Request Test User',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2013-02-18 12:00:00', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                   1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '33333333333333333333333333444333', 'jil',     '1815-12-10 00:00:00', 6,  'en', 0, 0);
 
 --
 -- Data for table `user_wiki`

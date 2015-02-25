@@ -60,7 +60,7 @@ public class JCIScraper extends AbstractUrlScraper implements ReferencesScraper{
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(SITE_URL), AbstractUrlScraper.EMPTY_PATTERN));
 
-	private static final Pattern REFERENCES = Pattern.compile("(?s)<OL COMPACT>(.*)</OL>");
+	private static final Pattern REFERENCES = Pattern.compile("(?s)<ol compact>(.*)</ol>");
 	
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {

@@ -35,7 +35,7 @@
 		
 		<jsp:attribute name="sidebar">
 			<ul>
-				<rc:members requPath="${requPath}" users="${command.group.users}"/>
+				<rc:members group="${command.group}"/>
 				<li>
 					<h4 class="sidebar"><fmt:message key="tags"/></h4>
 					<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>

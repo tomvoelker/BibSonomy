@@ -16,6 +16,8 @@
 		<result property="date"         column="date"           javaType="date" />
 		<result property="user"         resultMap="Common.user" />
 		<result property="description"  column="description"    javaType="string" />
+		<result property="changeDate"  column="change_date"    javaType="date" />
+		<result property="approved"		column="approved"		javaType="int" />
 	</resultMap>
 	
 	<resultMap id="goldStandardPost" class="post" extends="GoldStandardPublicationCommon.posts">
@@ -45,7 +47,7 @@
 		title, entrytype, author, editor, year, journal, volume, chapter,
 		edition, month, bookTitle, howpublished, institution, organization, publisher, address, school, series,
 		bibtexKey, `group`, date, user_name, url, description, annote, note, pages, bKey, number, crossref, misc,
-		bibtexAbstract, type, day, privnote, simhash0, simhash1, simhash2, simhash3, content_type
+		bibtexAbstract, type, day, privnote, simhash0, simhash1, simhash2, simhash3, content_type, approved
 	</sql>
 	
 	<sql id="allGoldStandardPublicationAttributesWithSimHashesAndContentId">
@@ -61,29 +63,29 @@
         #resource.url#, #description#, #resource.annote#, #resource.note#, #resource.pages#,
         #resource.key#, #resource.number#, #resource.crossref#, #resource.misc#, #resource.bibtexAbstract#,
         #resource.type#, #resource.day#, #resource.privnote#, #resource.simHash0#, #resource.simHash1#,
-        #resource.simHash2#, #resource.simHash3#, #contentType#
+        #resource.simHash2#, #resource.simHash3#, #contentType#, #approved#
     </sql>
 		
 	<sql id="allGoldStandardBookmarkColumns">
-		title, url, description, date, user_name, simhash1, simhash2, content_type
+		title, url, description, date, user_name, simhash1, simhash2, content_type, approved
 	</sql>
 		
 	<sql id="allGoldStandardBookmarkValues">
-		#resource.title#, #resource.url#, #description#, #date#, #userName#, #resource.intraHash#, #resource.intraHash#, #contentType#
+		#resource.title#, #resource.url#, #description#, #date#, #userName#, #resource.intraHash#, #resource.intraHash#, #contentType#, #approved#
 	</sql>
 	
 	<sql id="allGoldStandardPublicationAttributes">
 		b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
 		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
 		b.school, b.series, b.type, b.volume, b.day, b.privnote, b.url, b.description, b.bibtexKey, b.misc,
-		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, b.content_type
+		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, b.content_type, b.approved
 	</sql>
 
 	<sql id="allGoldStandardPublicationAttributesAnonym">
 		b.content_id, b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
 		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
 		b.school, b.series, b.type, b.volume, b.day, null as privnote, b.url, b.description, b.bibtexKey, b.misc,
-		b.bibtexAbstract, null as user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, b.content_type
+		b.bibtexAbstract, null as user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, b.content_type, b.approved
 	</sql>
 
 </sqlMap>

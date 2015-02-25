@@ -62,7 +62,7 @@
 		+-->
 	<bean id="mostPopularByUserRecommender" class="recommender.impl.tags.popular.MostPopularByUserTagRecommender">
 		<property name="numberOfTagsToRecommend" value="5"/>
-		<property name="cleanTags" value="true"/>
+		<property name="cleanTags" value="false"/>
 		<property name="dbAccess" ref="recommenderTagMainLogic" />
 	</bean>
 	<bean id="mostPopularByResourceRecommender" class="recommender.impl.tags.popular.MostPopularByResourceTagRecommender">

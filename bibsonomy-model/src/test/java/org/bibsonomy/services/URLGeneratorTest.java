@@ -33,6 +33,7 @@ import static org.junit.Assert.assertTrue;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
@@ -156,22 +157,22 @@ public class URLGeneratorTest {
 	}
 	
 	@Test
-	public void testGetGoldstandardUrlByInterHash() throws Exception{
-		final GoldStandardPublication gst = ModelUtils.generatePost(GoldStandardPublication.class).getResource();
-		final String expected = projectHome + "bibtex/" + gst.getInterHash();
-		assertEquals(expected, ug.getGoldstandardUrlByInterHash(gst.getInterHash()));
-	}
+		public void testGetCommunityPublicationUrlByInterHash() throws Exception{
+			final GoldStandardPublication gst = ModelUtils.generatePost(GoldStandardPublication.class).getResource();
+			final String expected = projectHome + "bibtex/" + gst.getInterHash();
+			assertEquals(expected, ug.getCommunityPublicationUrlByInterHash(gst.getInterHash()));
+		}
 	
 	@Test
-	public void testGetGoldstandardUrlByInterHashAndUsername() throws Exception{
-		final Post<GoldStandardPublication> post = ModelUtils.generatePost(GoldStandardPublication.class);
-		final BibTex gst = post.getResource();
-		final String userName = post.getUser().getName();
-		
-		String expected = projectHome + "bibtex/" + gst.getInterHash() + "/" +
-						  userName;
-		assertEquals(expected, ug.getGoldstandardUrlByInterHashAndUsername(gst.getInterHash(), userName));
-	}
+		public void testGetCommunityPublicationUrlByInterHashAndUsername() throws Exception{
+			final Post<GoldStandardPublication> post = ModelUtils.generatePost(GoldStandardPublication.class);
+			final BibTex gst = post.getResource();
+			final String userName = post.getUser().getName();
+			
+			String expected = projectHome + "bibtex/" + gst.getInterHash() + "/" +
+							  userName;
+			assertEquals(expected, ug.getCommunityPublicationUrlByInterHashUsernameAndSysUrl(gst.getInterHash(), userName, projectHome));
+		}
 
 	@Test
 	public void testGetGroupUrlByGroupName() throws Exception{
@@ -426,6 +427,29 @@ public class URLGeneratorTest {
 		String expected = projectHome + "export/user/jaeschke";
 		
 		assertEquals(expected, urlg.prefix("export/").getUserUrlByUserName("jaeschke"));
+	}
+	
+	@Test
+	public void testGetGroupSettingsUrlByGroupName() {
+		String expected = projectHome + "settings/group/franzosengruppe";
+		assertEquals(expected, ug.getGroupSettingsUrlByGroupName("franzosengruppe"));
+	}
+
+	@Test
+	public void testGetHistoryUrlForPost() throws Exception {
+		final Post<GoldStandardPublication> post = new Post<GoldStandardPublication>();
+		final GoldStandardPublication resource = new GoldStandardPublication();
+		resource.setInterHash("hash");
+		post.setResource(resource);
+		
+		assertEquals(projectHome + "history/bibtex/hash" , ug.getHistoryUrlForPost(post));
+		
+		final Post<GoldStandardBookmark> post2 = new Post<GoldStandardBookmark>();
+		final GoldStandardBookmark resource2 = new GoldStandardBookmark();
+		resource2.setInterHash("hash");
+		resource2.setIntraHash("hash");
+		post2.setResource(resource2);
+		assertEquals(projectHome + "history/url/hash" , ug.getHistoryUrlForPost(post2));
 	}
 
 }

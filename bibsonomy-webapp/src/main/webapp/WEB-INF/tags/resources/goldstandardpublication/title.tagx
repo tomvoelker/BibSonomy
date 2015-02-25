@@ -3,11 +3,13 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
-
+	
+	<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
 	<!--  display title -->
-	<c:set var="bibUrlTemplate">/bibtex/${hash.inter.id}${post.resource.interHash}</c:set>
+	<c:set var="bibUrlTemplate">/bibtex/${interHashId}${post.resource.interHash}</c:set>
 	<a href="${bibUrlTemplate}" title="${mtl:cleanBibtex(post.resource.title)}"><c:out value="${mtl:cleanBibtex(post.resource.title)}" /></a><c:out value=" "/>
 </jsp:root>

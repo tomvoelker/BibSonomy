@@ -20,10 +20,6 @@
       >
       
   <!-- skeleton for publication post RSS feeds --> 
-	
-
-  <!-- to get correct hash IDs for URLs  -->
-  <jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
 
   <!-- the current date -->
   <jsp:useBean id="now" class="java.util.Date"/>

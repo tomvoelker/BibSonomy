@@ -22,6 +22,7 @@
 	<c:set var="publication" value="${post.resource}"/>
 	<c:set var="isOwnEntry" value="${post.user.name eq command.context.loginUser.name}"/>
 	
+	<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
 	<spring:theme code="javascript.openaccess" var="jsOpenAccess" text=""/>
 
 	<c:if test="${not empty jsOpenAccess}"> 
@@ -173,7 +174,9 @@
 										<buttons:help message="discussion.resourceLink.help" cssStyle="float:none"/>
 									</td>
 									<td>
-										<c:set var="linkText" value="[[publication/${hash.inter.id}${publication.interHash}/${mtl:encodeURI(post.user.name)}]]" />
+										
+										<!-- TODO: use urlgenerator? -->
+										<c:set var="linkText" value="[[publication/${interHashId}${publication.interHash}/${mtl:encodeURI(post.user.name)}]]" />
 										<input id="linkBox" type="text" onclick="javascript:$(this).focus().select()" value="${linkText}" size="${fn:length(linkText)}" style="font-size:90%; border:0px;"/>
 									</td>
 								</tr>
@@ -237,7 +240,7 @@
 							| discussion and rating
 							+-->
 	
-						<pub:discussionrating post="${post}" otherPostsUrlPrefix="/bibtex/${hash.inter.id}"/>
+						<pub:discussionrating post="${post}" otherPostsUrlPrefix="/bibtex/${interHashId}"/>
 						
 						<!--+
 							| tag list

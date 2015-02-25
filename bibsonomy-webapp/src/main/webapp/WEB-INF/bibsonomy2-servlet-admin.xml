@@ -64,10 +64,12 @@
 								<value>action</value>
 								<value>resource</value>
 								<value>id</value>
+								<value>indexType</value>
 							</list>
 						</property>
 					</bean>
 				</entry>
+				
 				<entry key="/admin/ajax">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="adminAjaxController"/>
@@ -78,6 +80,7 @@
 								<value>value</value>
 								<value>key</value>
 								<value>evaluator</value>
+								<value>groupname</value>
 							</list>
 						</property>
 					</bean>
@@ -110,6 +113,9 @@
 								<value>group.name</value>
 								<value>group.privlevel</value>
 								<value>group.sharedDocuments</value>
+								<value>group.groupRequest.userName</value>
+								<value>group.groupRequest.reason</value>
+								<value>communityPostInspectionPermission</value>
 							</list>
 						</property>
 					</bean>
@@ -168,6 +174,7 @@
 
 	<bean id="adminLuceneController" class="org.bibsonomy.webapp.controller.admin.AdminLuceneController" scope="request">
 		<property name="luceneResourceManagers" ref="luceneResourceManagers" />
+		<property name="srPlugin" ref="sharedIndexUpdatePlugin"/>
 	</bean>
 	
 	<bean id="adminAjaxController" class="org.bibsonomy.webapp.controller.admin.AdminAjaxController" scope="request">
@@ -185,6 +192,7 @@
 	</bean>
 	
 	<bean id="adminGroupController" class="org.bibsonomy.webapp.controller.admin.AdminGroupController" scope="request">
+		<property name="mailUtils" ref="mailUtils"/>
 		<property name="logic" ref="logic"/>
 	</bean>
 	

@@ -42,7 +42,7 @@
 				<c:when test="${command.selTab == 2}">
 					<settings:import command="${command}"/>
 				</c:when>
-				<c:when test="${command.selTab == 3}">			
+				<c:when test="${command.selTab == 3}">
 					<settings:group command="${command}"/>
 				</c:when>
 				<c:when test="${command.selTab == 4 and not command.user.spammer}">
@@ -91,7 +91,7 @@
 						<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"><c:out value='${group.name}'/>&amp;nbsp;</a> 
 							<c:if test="${group.sharedDocuments}">
 								<c:choose>
-									<c:when test="${! group.userSharedDocuments}">
+									<c:when test="${not group.getGroupMembershipForUser(command.context.loginUser.name).userSharedDocuments}">
 										<fmt:message var="shareDocumentsTitle" key="groups.actions.shareDocuments.title"></fmt:message>
 										<a class="action" 
 											href="/ajax/handleGroupShare?requestedGroup=${fn:escapeXml(group.name)}&amp;action=shareDocuments&amp;ckey=${ckey}&amp;forward=settings"

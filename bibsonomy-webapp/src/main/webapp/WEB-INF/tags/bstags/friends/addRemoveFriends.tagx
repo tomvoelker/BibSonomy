@@ -9,7 +9,7 @@
 	
 	<jsp:directive.attribute name="friends" type="java.util.Collection" required="true"/>
 	<jsp:directive.attribute name="ofFriends" type="java.util.Collection" required="true"/>
-	<jsp:directive.attribute name="ckey" type="java.lang.String" required="true"/>	
+	<jsp:directive.attribute name="ckey" type="java.lang.String" required="true"/>
 
 	<div class="row">
 		<c:if test="${empty friends}">
@@ -56,10 +56,9 @@
 						<small><a href="${relativeUrlGenerator.getFriendUrlByUserName(friendName)}"><fmt:message key="friendoverview.offriend.usershared" /></a></small>
 					</dd>
 				</dl>
-
 			</div>
 			
-			<c:if test="${(friendStatus.index + 1) % 3 == 0}">
+			<c:if test="${friendStatus.index != 0 and (friendStatus.index + 1) % 3 == 0}">
 				<mtl:newRow />
 			</c:if>
 		</c:forEach>
