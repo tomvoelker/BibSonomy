@@ -825,27 +825,6 @@
 		<to last="true">/history</to>
 	</rule>
 	
-	<!-- /[0-3][32]/USERNAME -->
-	<!-- <rule> 
-		<name>/history/RSCTYPE/SHASH/USER</name>
-		<from>^/+history/+(.+)/+([0-3])([0-9a-fA-F]{32})/+(.+)$</from>
-		<set type="parameter" name="resourceClass">$1</set>
-		<set type="parameter" name="requestedHash">$2$3</set>
-		<set type="parameter" name="requestedUser">$4</set>
-		<to last="true">/history</to>
-	</rule>	
- 	-->
-	<!-- TODO: test community posts -->
-	
-	<!-- /[0-3][32]  --> 
- 	<!--<rule> 
- 		<name>/history/RSCTYPE/SHASH</name>
-		<from>^/+history/+(.+)/+([0-3])([0-9a-fA-F]{32})$</from>
-		<set type="parameter" name="resourceClass">$1</set>
-		<set type="parameter" name="requestedHash">$2$3</set>
-		<to last="true">/history</to>
-	</rule> -->
-	
 	<!-- /[32] (arbitrary hash) defaults to simhash1 -->
  	<rule>
  		<name>/history/RSCTYPE/HASH</name>
@@ -855,21 +834,6 @@
 		<to last="true">/history</to>
 	</rule>
 	 
-	<!-- ############## search pages ############### -->
-	<!-- FIXME: disable for more infos see bug #1784
-	<rule>
-		<name>/search/SEARCH/TAG</name>
-		<from>^/+search/+([^/]+?)/(.+)$</from>
-		<set type="parameter" name="requestedSearch">$1</set>
-		<set type="parameter" name="requestedTags">$2</set>		
-		<to last="true">/search</to>
-	</rule>
-	<rule>
-		<name>/search/SEARCH</name>
-		<from>^/+search/+([^/]+)$</from>
-		<set type="parameter" name="requestedSearch">$1</set>
-		<to last="true">/search</to>
-	</rule>-->
 	<rule>
 		<name>/search/SEARCH</name>
 		<from>^/+search/(.+)$</from>
