@@ -208,7 +208,7 @@ public class RedirectController implements MinimalisticController<RedirectComman
 		
 		final String userPage = urlGenerator.getUserUrlByUserName(loginUserName);
 		/*
-		 * XXX: it would be nice that myPUMA and myBibSonomy redirects are only
+		 * XXX: it would be nice if myPUMA and myBibSonomy redirects were only
 		 * available in the corresponding themes, but e.g. old and new help pages
 		 * are linking to myBibSonomy at the moment
 		 */
