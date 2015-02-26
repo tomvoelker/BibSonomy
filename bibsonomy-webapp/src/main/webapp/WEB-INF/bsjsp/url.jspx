@@ -80,14 +80,16 @@
 			+ sidebar
 			+ -->
 		<jsp:attribute name="sidebar">
-			<ul>
-				<!-- display tags -->
-				<li>
-					<h4 class="sidebar"><fmt:message key="tags"/></h4>
+			
+			<!-- display tags -->
+			<sidebar:sidebarItem textKey="tags">
+				<jsp:attribute name="content">
 					<tags:cloud requPath="tag" cmd="${command.tagcloud}"/>
-				</li>
-				<resource:metaData command="${command}" />
-			</ul>
+				</jsp:attribute>
+			</sidebar:sidebarItem>
+				
+			<resource:metaData command="${command}" />
+		
 		</jsp:attribute>
 		
 		<jsp:attribute name="infobox">

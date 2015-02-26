@@ -72,12 +72,15 @@
 			    	</ul>
 				</jsp:attribute>
 			</sidebar:sidebarItem>
-				<!-- refactor: use sidebarItem -->
-				<li>
-					<!-- list all spheres -->
-					<fmt:message key="spheres.sphere.list.title" var="spheresCloudTitle" />
+			
+			
+			<!-- list all spheres -->
+			<sidebar:sidebarItem textKey="spheres.sphere.list.title">
+				<jsp:attribute name="content">
 					<spheres:spheresCloud title="${spheresCloudTitle}"><!-- keep me! --></spheres:spheresCloud>
-				</li>
+				</jsp:attribute>
+			</sidebar:sidebarItem>
+			
 			<sidebar:sidebarItem textKey="tags">
 				<jsp:attribute name="content">
 			      <c:if test="${not empty command.requestedTags}">
@@ -86,6 +89,7 @@
 			    <tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 			   </jsp:attribute>
 		   </sidebar:sidebarItem> 
+		   
 		</jsp:attribute>
 	</layout:resourceLayout>
 </jsp:root>

@@ -62,6 +62,7 @@
           
 		  <!-- list all spheres -->
 		  <li>
+		  	<!-- FIXME user the following message as textKey for sidebarItem -->
 			<fmt:message key="spheres.sidebar.title" var="spheresCloudTitle" />
 			<spheres:spheresCloud title="${spheresCloudTitle}"><!-- keep me! --></spheres:spheresCloud>
 		  </li>
