@@ -57,6 +57,6 @@ public class GetNewPostsStrategy extends AbstractListOfPostsStrategy {
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
 		// TODO: support other search types
-		return this.getLogic().getPosts(resourceType, grouping, groupingValue, this.tags, null, search, SearchType.DEFAULT_SEARCH, null, Order.ADDED, null, null, this.getView().getStartValue(), this.getView().getEndValue());
+		return this.getLogic().getPosts(resourceType, grouping, groupingValue, this.tags, null, search, SearchType.LOCAL, null, Order.ADDED, null, null, this.getView().getStartValue(), this.getView().getEndValue());
 	}
 }

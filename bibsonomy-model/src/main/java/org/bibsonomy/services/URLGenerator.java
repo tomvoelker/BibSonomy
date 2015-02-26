@@ -32,6 +32,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
@@ -42,7 +43,9 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.util.UrlBuilder;
 import org.bibsonomy.util.UrlUtils;
 
 /**
@@ -1254,16 +1257,18 @@ public class URLGenerator {
 	 * 
 	 * @param toSearch
 	 * @param searchScope the search type such as 'group', 'search', 'sharedResourceSearch'
+	 * @param order
 	 * @return URL pointing to the results of the search.
 	 */
-	public String getSearchUrl(final String toSearch, String searchScope) {
-		String searchPrefix = SEARCH_PREFIX;
-		if (SHARED_RESOURCE_SEARCH_PREFIX.equals(searchScope)) {
-			searchPrefix = SHARED_RESOURCE_SEARCH_PREFIX;
+	public String getSearchUrl(final String toSearch, SearchType searchScope, Order order) {
+		UrlBuilder ub = new UrlBuilder(this.projectHome).addPathElement(SEARCH_PREFIX).addPathElement(toSearch);
+		if (searchScope != SearchType.LOCAL) {
+			ub.addParameter("scope", searchScope.name());
 		}
-		String url = this.projectHome + prefix + searchPrefix + "/"
-				+ UrlUtils.safeURIEncode(toSearch);
-		return this.getUrl(url);
+		if ((order != null) && (order != Order.RANK)) {
+			ub.addParameter("order", order.name().toLowerCase());
+		}
+		return this.getUrl(ub.asString());
 	}
 
 	/**
@@ -1273,7 +1278,7 @@ public class URLGenerator {
 	 * @return URL pointing to the results of the search.
 	 */
 	public String getSearchUrl(final String toSearch) {
-		return getSearchUrl(toSearch, SEARCH_PREFIX);
+		return getSearchUrl(toSearch, SearchType.LOCAL, Order.RANK);
 	}
 
 	/**

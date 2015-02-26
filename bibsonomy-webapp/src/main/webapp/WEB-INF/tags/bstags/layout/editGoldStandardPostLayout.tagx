@@ -34,7 +34,7 @@
     <jsp:directive.attribute name="postApproval" fragment="true" required="false" description="A checkbox inorder to approve goldstandard posts"/>
 	
 	<fmt:message key="navi.edit${resourceType}" var="editPageTitle" />
-	<input type="hidden" name="approved"/>
+
 	<layout:layout
 		loginUser="${command.context.loginUser}"
 		pageTitle="${editPageTitle}" 
