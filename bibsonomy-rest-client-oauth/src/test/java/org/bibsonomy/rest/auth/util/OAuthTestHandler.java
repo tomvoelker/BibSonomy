@@ -92,7 +92,7 @@ public class OAuthTestHandler extends AbstractHandler {
 		}
 		
 		// print first ten bookmark titles
-		final List<Post<Bookmark>> posts = INTERFACE.getPosts(Bookmark.class, GroupingEntity.USER, ACCESSOR.getRemoteUserId(), null, null, null, SearchType.DEFAULT_SEARCH, null, null, null, null, 0, 9);
+		final List<Post<Bookmark>> posts = INTERFACE.getPosts(Bookmark.class, GroupingEntity.USER, ACCESSOR.getRemoteUserId(), null, null, null, SearchType.LOCAL, null, null, null, null, 0, 9);
 		for (final Post<Bookmark> post : posts) {
 			final Bookmark bookmark = post.getResource();
 			response.getWriter().println("<li><a href=\"" + bookmark.getUrl() + "\">" + bookmark.getTitle() + "</a></li>");
