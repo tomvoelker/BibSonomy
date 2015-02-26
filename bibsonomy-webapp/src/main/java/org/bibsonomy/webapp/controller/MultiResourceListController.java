@@ -86,7 +86,7 @@ public abstract class MultiResourceListController extends ResourceListController
 		final ListCommand<Post<T>> listCommand = new ListCommand<Post<T>>(cmd);
 		// retrieve posts		
 		log.debug("getPosts " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
-		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search,SearchType.DEFAULT_SEARCH, filter, order, null, null, listCommand.getStart(), listCommand.getStart() + itemsPerPage) );
+		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search,SearchType.LOCAL, filter, order, null, null, listCommand.getStart(), listCommand.getStart() + itemsPerPage) );
 		cmd.getListCommand(resourceType).add(listCommand);
 
 		// list settings

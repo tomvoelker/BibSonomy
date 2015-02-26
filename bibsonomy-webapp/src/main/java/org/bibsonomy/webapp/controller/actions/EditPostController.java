@@ -291,7 +291,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		final int step = PostLogicInterface.MAX_QUERY_SIZE;
 
 		do {
-			tmp = this.logic.getPosts((Class<RESOURCE>) this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, SearchType.DEFAULT_SEARCH, null, null, null, null, startCount, startCount + step);
+			tmp = this.logic.getPosts((Class<RESOURCE>) this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, SearchType.LOCAL, null, null, null, null, startCount, startCount + step);
 			dbPosts.addAll(tmp);
 			startCount += step;
 		} while (tmp.size() == step);
@@ -650,9 +650,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * final post.
 	 * 
 	 * @param entity
-	 *        - the final post as saved in the database.
+	 *            - the final post as saved in the database.
 	 * @param postID
-	 *        - the ID of the post during the posting process.
+	 *            - the ID of the post during the posting process.
 	 */
 	protected void setRecommendationFeedback(final TagRecommendationEntity entity, final int postID) {
 		try {
@@ -677,11 +677,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * that URL (for whatever reason), we redirect to the user's page.
 	 * 
 	 * @param userName
-	 *        - the name of the loginUser
+	 *            - the name of the loginUser
 	 * @param intraHash
-	 *        - the intra hash of the created/updated post
+	 *            - the intra hash of the created/updated post
 	 * @param referer
-	 *        - the URL of the page the user is initially coming from
+	 *            - the URL of the page the user is initially coming from
 	 * 
 	 * @return
 	 */
@@ -786,7 +786,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		if (present(command.getSaveAndRate())) {
 			final String ratingUrl = this.urlGenerator.getCommunityRatingUrl(post);
 			return new ExtendedRedirectView(ratingUrl);
-		}
+			}
 		return this.finalRedirect(loginUserName, post, command.getReferer());
 	}
 
@@ -801,7 +801,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param command
 	 * @param loginUser
 	 * @param post
-	 *        - the post that has been stored in the database.
+	 *            - the post that has been stored in the database.
 	 */
 	protected void createOrUpdateSuccess(final COMMAND command, final User loginUser, final Post<RESOURCE> post) {
 		/*
@@ -846,11 +846,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * relevantFor tags are removed from the post)
 		 */
 		command.setTags(TagUtils.toTagString(post.getTags(), " "));
-
+		
 		if (post.getApproved()) {
 			command.setApproved(true);
 		}
-
+		
 	}
 
 	/**
