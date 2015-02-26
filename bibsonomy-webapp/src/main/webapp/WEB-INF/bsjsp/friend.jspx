@@ -10,6 +10,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 	
 	
@@ -42,15 +43,14 @@
 		</jsp:attribute>
 		
         <jsp:attribute name="sidebar">
-        	<ul>
-	      		<li>
-		    		<h4 class="sidebar"><fmt:message key="tags" /></h4>
+			<sidebar:sidebarItem textKey="tags">
+				<jsp:attribute name="content">
 		      		<c:if test="${not empty command.requestedTags}">
 			    		<c:set var="requPath" value="${mtl:getLowerPath(requPath)}" />
 		      		</c:if>
 		    		<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-	      		</li>
-	    	</ul>
+		    	</jsp:attribute>
+		    </sidebar:sidebarItem>
         </jsp:attribute>	
 	</layout:resourceLayout>
 </jsp:root>
