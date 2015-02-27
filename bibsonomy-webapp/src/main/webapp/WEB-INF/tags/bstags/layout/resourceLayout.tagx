@@ -113,9 +113,17 @@
 				</div>
 			</c:if>
 			
-<!-- 			<c:if test="${empty discussion}"> -->
-<!-- 				<parts:postHeader /> -->
-<!-- 			</c:if> -->
+			<!-- FIXME: Explain or clean up (left-over from pre-bootstrap?) -->
+			<c:if test="${empty discussion}">
+ 				<!-- bookmarks -->
+ 				<div class="row">
+					<div class="col-md-6" id="bookmarkListConfig">
+					</div>
+					<!-- publications -->
+					<div class="col-md-6" id="publicationListConfig">
+					</div>
+				</div>
+ 			</c:if>
 		</jsp:attribute>
 		
 		<!--+
