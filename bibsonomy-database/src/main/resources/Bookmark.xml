@@ -463,7 +463,7 @@
 		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name, t.change_date, <include refid="reviewRatingsRows" />
 		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
 		             u.book_url, u.book_url_ctr, t1.group, t1.user_name, t1.change_date
-		      FROM bookmark t1, urls u
+		      FROM bookmark t1 FORCE INDEX (user_name_date_group_content_id_idx), urls u
 		      WHERE u.book_url_hash = t1.book_url_hash
 		            AND t1.user_name = #requestedUserName#
 		            <include refid="restrictToGroups"/>
