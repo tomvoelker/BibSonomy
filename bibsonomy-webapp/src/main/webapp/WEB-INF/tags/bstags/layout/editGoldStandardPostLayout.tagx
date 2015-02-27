@@ -34,7 +34,7 @@
     <jsp:directive.attribute name="postApproval" fragment="true" required="false" description="A checkbox inorder to approve goldstandard posts"/>
 	
 	<fmt:message key="navi.edit${resourceType}" var="editPageTitle" />
-	<input type="hidden" name="approved"/>
+	
 	<layout:layout
 		loginUser="${command.context.loginUser}"
 		pageTitle="${editPageTitle}" 
@@ -67,9 +67,11 @@
 			   //<mtl:cdata>
 			   <![CDATA[
 			      $(function(){
-			        // tagRecoOptions defined in post*.js
-			        $('#postForm').ajaxSubmit(tagRecoOptions); 
-			                  
+
+					$.ajax(tagRecoOptions).done(function(data) {
+						handleRecommendedTags(data);
+					});
+					
 			        // get user's tags for suggestions
 			        $.ajax({
 			            type: "GET",
@@ -98,7 +100,7 @@
    			  |     existierende wird editiert, der gepostete ist in "diffPost") 
 		      -->
 		<jsp:attribute name="content">
-		
+			<input type="hidden" name="approved"/>
 			<div class="row">
 		
 				<div class="col-md-9 col-sm-12 col-xs-12">
