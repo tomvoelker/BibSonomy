@@ -32,11 +32,7 @@
 		
 		<!-- show tags of recommended resources, scaled by the count of appearance in the recommendations -->
 		<jsp:attribute name="sidebar">
-			<sidebar:sidebarItem textKey="tags.of_recommendations">
-				<jsp:attribute name="content">
-					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" tagSizeMode="user"/>
-				</jsp:attribute>
-			</sidebar:sidebarItem>
+			<sidebar:sidebarTagCloudItem textKey="tags.of_recommendations" requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" tagSizeMode="user"/>
 		</jsp:attribute>
 
 	</layout:resourceLayout>

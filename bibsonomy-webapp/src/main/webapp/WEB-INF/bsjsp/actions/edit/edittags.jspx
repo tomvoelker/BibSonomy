@@ -151,11 +151,8 @@
 				</jsp:attribute>
 			</sidebar:sidebarItem>
 
-			<sidebar:sidebarItem textKey="tags">
-				<jsp:attribute name="content">
-					<tags:cloud requPath="user/${command.context.loginUser.name}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" />
-				</jsp:attribute>
-			</sidebar:sidebarItem>
+
+			<sidebar:sidebarTagCloudItem requPath="user/${command.context.loginUser.name}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" />
 
 			<script type="text/javascript">
 <![CDATA[

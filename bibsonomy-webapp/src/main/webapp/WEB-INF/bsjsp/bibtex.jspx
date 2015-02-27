@@ -127,12 +127,7 @@
 		 	+-->
 		<jsp:attribute name="sidebar">
 		
-			<!-- display tags -->
-			<sidebar:sidebarItem textKey="tags">
-				<jsp:attribute name="content">
-					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" />
-				</jsp:attribute>
-			</sidebar:sidebarItem>
+			<sidebar:sidebarTagCloudItem requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" />
 
 			<!-- related users -->
 			<c:if test="${not empty command.relatedUserCommand.relatedUsers}">

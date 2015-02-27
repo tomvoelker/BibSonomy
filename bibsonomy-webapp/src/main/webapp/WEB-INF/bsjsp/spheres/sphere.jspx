@@ -81,14 +81,10 @@
 				</jsp:attribute>
 			</sidebar:sidebarItem>
 			
-			<sidebar:sidebarItem textKey="tags">
-				<jsp:attribute name="content">
-			      <c:if test="${not empty command.requestedTags}">
-				    <c:set var="requPath" value="${mtl:getLowerPath(requPath)}" />
-			      </c:if>
-			    <tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-			   </jsp:attribute>
-		   </sidebar:sidebarItem> 
+			<c:if test="${not empty command.requestedTags}">
+				<c:set var="requPath" value="${mtl:getLowerPath(requPath)}" />
+			</c:if>
+			<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 		   
 		</jsp:attribute>
 	</layout:resourceLayout>

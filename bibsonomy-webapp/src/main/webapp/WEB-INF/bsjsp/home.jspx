@@ -81,11 +81,8 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-			<sidebar:sidebarItem textKey="busytags">
-				<jsp:attribute name="content">
-					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" tagSizeMode="home"/>
-				</jsp:attribute>
-			</sidebar:sidebarItem>
+			<sidebar:sidebarTagCloudItem textKey="busytags" requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" tagSizeMode="home"/>
 		</jsp:attribute>
+
 	</layout:resourceLayout>
 </jsp:root>

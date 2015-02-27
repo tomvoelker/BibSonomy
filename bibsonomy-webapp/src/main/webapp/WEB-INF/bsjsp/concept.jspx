@@ -112,19 +112,15 @@
 
 			<!-- if requestedUser is set, show the tag cloud -->			
 			<c:if test="${(not empty command.requestedUser) or (not empty command.requestedGroup)}">
-				<sidebar:sidebarItem textKey="tags">
-					<jsp:attribute name="content">
-						<c:if test="${not empty command.requestedUser}">
-							<c:set var="requPathTagCloud" value="user/${mtl:encodeURI(command.requestedUser)}"/>
-						</c:if>
-						<c:if test="${not empty command.requestedGroup}">
-							<c:set var="requPathTagCloud" value="group/${mtl:encodeURI(command.requestedGroup)}"/>
-						</c:if>				
-						<!-- display tags -->
-						<tags:cloud requPath="${requPathTagCloud}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user"/>
-					</jsp:attribute>
-				</sidebar:sidebarItem>
+				<c:if test="${not empty command.requestedUser}">
+					<c:set var="requPathTagCloud" value="user/${mtl:encodeURI(command.requestedUser)}"/>
+				</c:if>
+				<c:if test="${not empty command.requestedGroup}">
+					<c:set var="requPathTagCloud" value="group/${mtl:encodeURI(command.requestedGroup)}"/>
+				</c:if>				
+				<sidebar:sidebarTagCloudItem requPath="${requPathTagCloud}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user"/>
 			</c:if>
+
 		</jsp:attribute>
 		
 	</layout:resourceLayout>

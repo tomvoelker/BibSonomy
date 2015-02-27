@@ -87,12 +87,7 @@
 					</jsp:attribute>
 				</sidebar:sidebarItem>
 					
-				<!-- display tags -->
-				<sidebar:sidebarItem textKey="tags">
-					<jsp:attribute name="content">
-						<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-					</jsp:attribute>
-				</sidebar:sidebarItem>
+				<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 							
 				<c:if test="${command.context.loginUser.role == 'ADMIN' and not empty command.user}">
 					<sidebar:sidebarItem textKey="user.details">

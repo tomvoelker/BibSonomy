@@ -48,11 +48,8 @@
 		
 		
 		<jsp:attribute name="sidebar">
-			<sidebar:sidebarItem textKey="tags">
-				<jsp:attribute name="content">
-					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagSizeMode="home"/>
-				</jsp:attribute>
-			</sidebar:sidebarItem>				
+
+			<sidebar:sidebarTagCloudItem requPath="tag" cmd="${command.tagcloud}" tagSizeMode="home"/>
 			
 			<!-- enable autocompletion for bibtexkeys -->
 			<c:if test="${not empty command.requestedUser}"> 

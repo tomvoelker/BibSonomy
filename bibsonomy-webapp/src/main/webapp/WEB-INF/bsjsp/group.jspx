@@ -92,11 +92,7 @@
 					</sidebar:sidebarItem>
 				
 					<!-- tags -->
-					<sidebar:sidebarItem textKey="tags">
-						<jsp:attribute name="content">
-							<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="default" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-						</jsp:attribute>
-					</sidebar:sidebarItem>
+					<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="default" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 				
 				</c:when>
 				<c:otherwise>

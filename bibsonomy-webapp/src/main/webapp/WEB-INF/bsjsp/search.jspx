@@ -64,15 +64,11 @@
 			| sidebar
 			+-->
 		<jsp:attribute name="sidebar">
-			<sidebar:sidebarItem textKey="tags">
-				<jsp:attribute name="content">
-					<c:set var="requPathToUse" value="${requPath}" />
-					<c:if test="${hasTags}">
-						<c:set var="requPathToUse" value="${mtl:getLowerPath(requPath)}" />
-					</c:if>
-					<tags:cloud requPath="${requPathToUse}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-				</jsp:attribute>
-			</sidebar:sidebarItem>
+			<c:set var="requPathToUse" value="${requPath}" />
+			<c:if test="${hasTags}">
+				<c:set var="requPathToUse" value="${mtl:getLowerPath(requPath)}" />
+			</c:if>
+			<sidebar:sidebarTagCloudItem requPath="${requPathToUse}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 		</jsp:attribute>
 	
 	</layout:resourceLayout>

@@ -57,12 +57,8 @@
 				</jsp:attribute>
 			</sidebar:sidebarItem>				
 
-			<!-- display the tag cloud -->
-			<sidebar:sidebarItem textKey="tags">
-				<jsp:attribute name="content">
-					<tags:cloud requPath="${mtl:getLowerPath(requPath)}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-				</jsp:attribute>
-			</sidebar:sidebarItem>
+			<sidebar:sidebarTagCloudItem requPath="${mtl:getLowerPath(requPath)}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
+
 		</jsp:attribute>
 	</layout:resourceLayout>
 </jsp:root>
