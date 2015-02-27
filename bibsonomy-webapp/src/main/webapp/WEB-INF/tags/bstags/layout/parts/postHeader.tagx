@@ -8,24 +8,6 @@
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
 	
-	<!-- TODO: (Bootstrap) remove? -->
-	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
-	<jsp:directive.attribute name="isClipboard" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="customBookmarksHeaderText" type="java.lang.String" required="false"/>
-	<jsp:directive.attribute name="customPublicationsHeaderText" type="java.lang.String" required="false"/>
-	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.SimpleResourceViewCommand" required="false"/>
-	<jsp:directive.attribute name="headerHideable" type="java.lang.Boolean" required="true"/>
-	<jsp:directive.attribute name="showPageOptions" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="publicationsWidthClass" type="java.lang.String" required="true"/>
-	<jsp:directive.attribute name="bookmarksWidthClass" type="java.lang.String" required="true"/>
-	<jsp:directive.attribute name="showBookmark" type="java.lang.Boolean" required="true"/>
-	<jsp:directive.attribute name="showPublication" type="java.lang.Boolean" required="true"/>
-	
-	<c:set var="pageOptionsClass" value="${empty showPageOptions or showPageOptions ? 'config' : 'config disabled'}"/>
-	
 	<!-- bookmarks -->
 	<div class="row">
 		<div class="col-md-6" id="bookmarkListConfig">

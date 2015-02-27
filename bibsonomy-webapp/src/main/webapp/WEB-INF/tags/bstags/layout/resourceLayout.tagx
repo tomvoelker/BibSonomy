@@ -113,23 +113,9 @@
 				</div>
 			</c:if>
 			
-			<c:if test="${empty discussion}">
-				<parts:postHeader 
-					headerHideable="${false}"
-					showPageOptions="${empty showPageOptions or showPageOptions}"
-					publicationsWidthClass="${publicationsWidthClass}"
-					bookmarksWidthClass="${bookmarksWidthClass}"
-					customPageOptions="${customPageOptions}"
-					showBookmark="${showBookmark}"
-					showPublication="${showPublication}"
-					isClipboard="${isClipboard}"
-					disableListNavigation="${disableListNavigation}"
-					disableResourcetypeSelection="${disableResourcetypeSelection}"
-					showInboxActions="${showInboxActions}"
-					customBookmarksHeaderText="${customBookmarksHeaderText}"
-					customPublicationsHeaderText="${customPublicationsHeaderText}"
-					command="${command}" />
-			</c:if>
+<!-- 			<c:if test="${empty discussion}"> -->
+<!-- 				<parts:postHeader /> -->
+<!-- 			</c:if> -->
 		</jsp:attribute>
 		
 		<!--+
