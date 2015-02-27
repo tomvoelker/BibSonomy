@@ -120,4 +120,16 @@ public class TeXDecodeTest {
 
 		assertEquals(TexDecode.decode(unclean), clean);
 	}
+
+	/**
+	 * test for ampersand &
+	 * tests {@link TexDecode#decode(String)}
+	 */
+	@Test
+	public void testDecodingWithAmpersand() {
+		String unclean = "Algorithms \\& Applications";
+		String clean = "Algorithms & Applications";
+
+		assertEquals(TexDecode.decode(unclean), clean);
+	}
 }
