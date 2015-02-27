@@ -6,6 +6,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -31,12 +32,11 @@
 		
 		<!-- show tags of recommended resources, scaled by the count of appearance in the recommendations -->
 		<jsp:attribute name="sidebar">
-			<ul>
-				<li>
-					<h4 class="sidebar"><fmt:message key="tags.of_recommendations"/></h4>
+			<sidebar:sidebarItem textKey="tags.of_recommendations">
+				<jsp:attribute name="content">
 					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" tagSizeMode="user"/>
-				</li>
-			</ul>
+				</jsp:attribute>
+			</sidebar:sidebarItem>
 		</jsp:attribute>
 
 	</layout:resourceLayout>

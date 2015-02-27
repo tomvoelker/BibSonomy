@@ -5,6 +5,7 @@
 
 	<jsp:directive.attribute name="text" fragment="true" required="false" />
 	<jsp:directive.attribute name="textKey" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="helpLink" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>
 	
 	<li>
@@ -17,6 +18,12 @@
 					<jsp:invoke fragment="text" />
 				</c:otherwise>
 			</c:choose>
+			<c:if test="${not empty helpLink}">
+				<c:out value=" " />
+				<a href="${helpLink}">
+					<span class="fa fa-question-circle"><!--  --></span>
+				</a>
+			</c:if>
 		</h4>
 		<jsp:invoke fragment="content" />
 	</li>
