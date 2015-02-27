@@ -43,12 +43,12 @@
 			<parts:infobox>
 				<jsp:attribute name="infoTextBody">
 					<!-- short info about historyPage -->
-					<fmt:message key="hidtory.info"/>
+					<fmt:message key="history.info"/>
 					<ul style="list-style-type: circle;padding-left:20px;">
-						<li><fmt:message key="hidtory.option1"/></li>
-						<li><fmt:message key="hidtory.option2"/></li>
-						<li><fmt:message key="hidtory.option3"/></li>
-						<li><fmt:message key="hidtory.option4"/></li>
+						<li><fmt:message key="history.option1"/></li>
+						<li><fmt:message key="history.option2"/></li>
+						<li><fmt:message key="history.option3"/></li>
+						<li><fmt:message key="history.option4"/></li>
 					</ul>
 				</jsp:attribute>
 			</parts:infobox>
