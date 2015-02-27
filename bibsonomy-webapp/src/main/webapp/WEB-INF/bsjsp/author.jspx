@@ -16,7 +16,6 @@
 
 	<c:set var="requestedAuthorEncoded" value="${mtl:encodeURI(command.requestedAuthor)}" />
 	<fmt:message key="navi.author" var="authorPageTitle" />
-	<fmt:message var="headline" key="page.author.headline" />
 	<c:set var="pageTitle" value="${authorPageTitle} :: ${command.requestedAuthor}" />
 	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" requPath="${requPath}" disableResourcetypeSelection="${true}" minimizedContentWidth="${true}" headline="${pageTitle}">
 		
