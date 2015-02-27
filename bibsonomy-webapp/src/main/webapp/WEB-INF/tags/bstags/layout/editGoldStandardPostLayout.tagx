@@ -67,9 +67,11 @@
 			   //<mtl:cdata>
 			   <![CDATA[
 			      $(function(){
-			        // tagRecoOptions defined in post*.js
-			        $('#postForm').ajaxSubmit(tagRecoOptions); 
 			                  
+					$.ajax(tagRecoOptions).done(function(data) {
+						handleRecommendedTags(data);
+					});
+					
 			        // get user's tags for suggestions
 			        $.ajax({
 			            type: "GET",
