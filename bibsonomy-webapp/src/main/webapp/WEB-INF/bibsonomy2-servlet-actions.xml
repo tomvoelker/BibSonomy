@@ -657,6 +657,19 @@
 						</property>
 					</bean>
 				</entry>
+				<!--  delete group -->
+				<entry key="/actions/deleteGroup">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="deleteGroupController"/>
+						<property name="allowedFields">
+							<list>
+								<value>delete</value>
+								<value>selTab</value>
+								<value>groupname</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/autoRegisterSamlAndOAuth">
 					<bean parent="controllerBase">
 						<property name="presenceCondition" ref="samlActivatedCondition" />
@@ -1117,6 +1130,9 @@
 		<property name="requestLogic" ref="requestLogic" />
 		<property name="groupCreationMode" value="${project.groupcreationmode}" />
 	</bean>
+	
+	<!-- Handles delete group process  -->
+	<bean id="deleteGroupController" class="org.bibsonomy.webapp.controller.actions.DeleteGroupController" scope="request" parent="groupSettingsPageController" />
 	
 	<!-- Handles the profile update of a user -->
 	<bean id="updateUserController" class="org.bibsonomy.webapp.controller.actions.UpdateUserController" scope="request" parent="settingsPageController" />
