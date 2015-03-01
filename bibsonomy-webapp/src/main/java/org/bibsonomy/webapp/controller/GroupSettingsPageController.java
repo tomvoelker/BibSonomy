@@ -49,7 +49,7 @@ import org.springframework.security.access.AccessDeniedException;
  */
 public class GroupSettingsPageController implements MinimalisticController<GroupSettingsPageCommand> {
 
-	private LogicInterface logic;
+	protected LogicInterface logic;
 
 	@Override
 	public GroupSettingsPageCommand instantiateCommand() {
