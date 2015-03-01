@@ -681,6 +681,9 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void deleteGroup(final String groupname, final DBSession session) {
+		/*
+		 * This is the old delete method.
+		 * 
 		// make sure that the group exists
 		final Group group = this.getGroupByName(groupname, session);
 		if (group == null) {
@@ -692,6 +695,29 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		final Integer groupId = Integer.valueOf(group.getGroupId());
 		this.delete("deleteGroup", groupId, session);
 		this.delete("removeAllUserFromGroup", groupId, session);
+		*/
+		
+		
+		// make sure that the group exists
+		final Group group = this.getGroupByName(groupname, session);
+		
+		if (group == null) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
+			throw new RuntimeException(); // never happens but calms down
+			// eclipse
+		}
+		
+		// size > 2 because the group user is also within the Membership list.
+		if(group.getMemberships().size() > 2) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') has more than one member");
+		}
+		
+		final Integer groupId = Integer.valueOf(group.getGroupId());
+		this.delete("deleteGroup", groupId, session);
+		this.delete("removeAllUserFromGroup", groupId, session);
+		
+		
+		
 	}
 
 	/**
