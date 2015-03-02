@@ -938,8 +938,8 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "During updateGroupSettings: The parameter groupToUpdate was null. (required argument)");
 		}
 
-		if (!(present(groupToUpdate.getGroupId()) && present(groupToUpdate.getPrivlevel()) && present(groupToUpdate.isSharedDocuments()))) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "During updateGroupSettings: Incomplete group information: group ID, privlevel and shared documents are required.");
+		if (!(present(groupToUpdate.getGroupId()) && present(groupToUpdate.getPrivlevel()) && present(groupToUpdate.isSharedDocuments()) && present(groupToUpdate.isAllowJoin()))) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "During updateGroupSettings: Incomplete group information: group ID, privlevel, shared documents and allowJoin are required.");
 		}
 		/*
 		 * store the bean

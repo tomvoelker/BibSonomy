@@ -131,6 +131,25 @@
 								<div class="help help-content hide"><p><fmt:message key="settings.group.sharedDocuments.help" /></p></div>
 							</div>
 						</div>
+
+						<div class="form-group">
+							<form:label cssClass="col-sm-3 control-label" path="allowJoin">
+								<fmt:message key="settings.group.allowJoin" />
+							</form:label>
+
+							<div class="col-sm-9">
+								<form:select cssClass="form-control help-popover" path="allowJoin">
+									<form:option value="0"><fmt:message key="settings.disabled" /></form:option>
+									<form:option value="1"><fmt:message key="settings.enabled" /></form:option>
+								</form:select>
+
+								<div class="help help-header hide"><fmt:message key="settings.group.allowJoin" /></div>
+								<div class="help help-content hide"><p><fmt:message key="settings.group.allowJoin.help" /></p></div>
+							</div>
+						</div>
+						
+						
+						
 					</jsp:attribute>
 				</bsform:fieldset>
 

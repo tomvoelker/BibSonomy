@@ -628,6 +628,7 @@
 								<value>privlevel</value>
 								<value>realname</value>
 								<value>sharedDocuments</value>
+								<value>allowJoin</value>
 								<value>groupname</value>
 								<value>username</value>
 								<value>homepage</value>

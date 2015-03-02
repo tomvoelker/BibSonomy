@@ -126,10 +126,12 @@
 												<a class="btn btn-default btn-sm">pending</a>
 											</c:when>
 											<c:otherwise>
-												<c:url var="joinLink" value="/joinGroup">
-													<c:param name="group" value="${group.name}" />
-												</c:url>
-												<a href="${joinLink}" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>	
+												<c:if test="${group.allowJoin eq true}">
+													<c:url var="joinLink" value="/joinGroup">
+														<c:param name="group" value="${group.name}" />
+													</c:url>
+													<a href="${joinLink}" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>	
+												</c:if>
 											</c:otherwise>
 										</c:choose>
 									</c:otherwise>
