@@ -118,6 +118,14 @@ public class GroupUtils {
 	public static Group buildInvalidGroup() {
 		return getGroup("invalid", "invalid group", GroupID.INVALID, Privlevel.HIDDEN);
 	}
+	
+	/**
+	 * @param group the group to check
+	 * @return true iff the group is valid
+	 */
+	public static boolean isValidGroup(Group group) {
+		return ((group != null) && (group.getGroupId() != GroupID.INVALID.getId()));
+	}
 
 	/**
 	 * Checks if the given group is an "exclusive" group, i.e., a group which can't 
