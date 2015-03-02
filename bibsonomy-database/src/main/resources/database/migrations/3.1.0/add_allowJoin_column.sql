@@ -1,0 +1,1 @@
+ALTER TABLE `groupids` ADD `allowJoin` TINYINT(1) NULL DEFAULT '1' AFTER `sharedDocuments`;
