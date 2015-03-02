@@ -145,7 +145,7 @@
 										<!-- FIXME: add link to leave group, if user is already member -->
 				            		</c:when>
 				            		<c:otherwise>
-				            			<c:if test="${group.allowJoin eq true}">
+				            			<c:if test="${group.allowJoin}">
 				            				<a href="/joinGroup?group=${fn:escapeXml(entry.name)}"><fmt:message key="joinGroup.short"/></a>	
 				            			</c:if>
 				            		</c:otherwise>

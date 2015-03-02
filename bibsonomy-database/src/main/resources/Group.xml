@@ -4,7 +4,7 @@
 <sqlMap namespace="Group">
 	<!-- TODO: do we need the memberships here? -->
 	<select id="getAllGroups" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="groupParam">
-		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, i.allowJoin, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, i.allow_join, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents
 		FROM
 			(SELECT * from groupids
 				WHERE `group` > 2
@@ -31,7 +31,7 @@
 	</select>
 
 	<select id="getGroupWithMemberships" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allowJoin, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents
 		FROM groupids i 
 		<!-- LEFT JOIN is necessary because groups are empty at the point of creation. -->
 		  LEFT JOIN group_memberships g USING (`group`) 
@@ -42,7 +42,7 @@
 	</select>
 
 	<select id="getGroupWithPermissions" resultMap="GroupCommon.groupWithPermissions" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allowJoin, p.permission
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, p.permission
 		FROM groupids i 
 		  LEFT JOIN group_level_permission p USING (`group`)
 		WHERE group_name = #groupname#
@@ -51,7 +51,7 @@
 	
 	<!-- TODO: merge with getGroupWithMembership using a dynamic query -->
 	<select id="getGroupWithMembershipsAndPermissions" resultMap="GroupCommon.groupWithMembershipsAndReportingsAndPermissions" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allowJoin, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, p.permission
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, p.permission
 		FROM groupids i 
 		<!-- LEFT JOIN is necessary because groups are empty at the point of creation. -->
 		  LEFT JOIN group_memberships g USING (`group`) 
@@ -83,7 +83,7 @@
 	</select>
 
 	<select id="getGroupsForContentId" resultMap="GroupCommon.group_basic" parameterClass="int">
-		SELECT DISTINCT i.group, i.group_name, i.privlevel, i.sharedDocuments, i.allowJoin, FALSE as user_shared_documents 
+		SELECT DISTINCT i.group, i.group_name, i.privlevel, i.sharedDocuments, i.allow_join, FALSE as user_shared_documents 
 		  FROM groupids i JOIN grouptas t USING (`group`) 
 		  WHERE t.content_id = #contentId# 
 	</select>
@@ -172,7 +172,7 @@
 
 	<update id="updateGroupSettings" parameterClass="group">
 		UPDATE groupids 
-		SET privlevel=#privlevel#, sharedDocuments=#sharedDocuments#, allowJoin=#allowJoin#
+		SET privlevel=#privlevel#, sharedDocuments=#sharedDocuments#, allow_join=#allowJoin#
 		WHERE `group` = #groupId#
 	</update>
 	
@@ -248,5 +248,11 @@
 		WHERE `group` = #groupId#
 		  AND `permission` = #groupLevelPermission#
 	</delete>
+	
+	<update id="updateGroupUserAfterDelete" parameterClass="string">
+		UPDATE user
+		SET	spammer = 1
+		WHERE user_name = #groupname#
+	</update>
 	
 </sqlMap>

@@ -147,6 +147,7 @@ public class Group implements Serializable {
 		this.groupId = groupid;
 		this.privlevel = Privlevel.MEMBERS;
 		this.sharedDocuments = false;
+		this.allowJoin = false;
 	}
 	
 	/**
@@ -246,6 +247,10 @@ public class Group implements Serializable {
 	 * @return The truth value regarding the permission to receive join requests
 	 */
 	public boolean isAllowJoin() {
+		return this.allowJoin;
+	}
+	
+	public boolean getAllowJoin() {
 		return this.allowJoin;
 	}
 

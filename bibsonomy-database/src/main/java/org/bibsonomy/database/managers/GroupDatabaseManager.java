@@ -715,8 +715,12 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		final Integer groupId = Integer.valueOf(group.getGroupId());
 		this.delete("deleteGroup", groupId, session);
 		this.delete("removeAllUserFromGroup", groupId, session);
+		this.update("updateGroupUserAfterDelete", groupname, session);
 		
-		
+		// @TODO DAS UNTEN STEHENDE TESTEN!!
+		// Der Gruppenuser bleibt und wird als Spammer markiert
+		// die group_memberships und die groupid sollen aber gelöscht werden
+		//
 		
 	}
 
