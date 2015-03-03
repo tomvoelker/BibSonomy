@@ -103,10 +103,24 @@ public class TeXDecodeTest {
 	 */
 	@Test
 	public void testEncodingWithCurls() {
+		
+		//check if removes curl brackets and squared brackets
 		String unclean = "{){{}/()as)[[)]";
-		String clean = "/as";
-
+		String clean = ")/()as))";
+		
 		assertEquals(TexDecode.decode(unclean), clean);
+		
+		//check if decode leaves round brackets
+		String unclean2 = "Proc. 25th Canadian Conf. Comput. Geom. (CCCG'13)";
+		String clean2 = "Proc. 25th Canadian Conf. Comput. Geom. (CCCG'13)";
+		
+		assertEquals(TexDecode.decode(unclean2), clean2);
+		
+		//check if decode macros first
+		String unclean3 = "Huerta, Joaqu{\\'i} \\& {\\\"A}bar, {\\\"{U}}foo in Proc. 25th Canadian Conf. Comput. Geom. (CCCG'13)";
+		String clean3 = "Huerta, Joaquí & Äbar, Üfoo in Proc. 25th Canadian Conf. Comput. Geom. (CCCG'13)";
+		
+		assertEquals(TexDecode.decode(unclean3), clean3);
 	}
 	
 	/**
@@ -117,6 +131,18 @@ public class TeXDecodeTest {
 	public void testDecodingWithAcuteAccent() {
 		String unclean = "Huerta, Joaqu{\\'i}n";
 		String clean = "Huerta, Joaquín";
+
+		assertEquals(TexDecode.decode(unclean), clean);
+	}
+
+	/**
+	 * test for ampersand &
+	 * tests {@link TexDecode#decode(String)}
+	 */
+	@Test
+	public void testDecodingWithAmpersand() {
+		String unclean = "Algorithms \\& Applications";
+		String clean = "Algorithms & Applications";
 
 		assertEquals(TexDecode.decode(unclean), clean);
 	}
