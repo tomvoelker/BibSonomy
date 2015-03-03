@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.es;
 
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.client.Client;
@@ -55,8 +54,6 @@ public class ESTransportClient implements ESClient {
 	 */
 	private String esClusterName;
 
-	
-	
 	/**
 	 * @return the esAddresses
 	 */
@@ -67,7 +64,7 @@ public class ESTransportClient implements ESClient {
 	/**
 	 * @param esAddresses the esAddresses to set
 	 */
-	public void setEsAddresses(String esAddresses) {
+	public void setEsAddresses(final String esAddresses) {
 		this.esAddresses = esAddresses;
 	}
 
@@ -81,35 +78,34 @@ public class ESTransportClient implements ESClient {
 	/**
 	 * @param esClusterName the esClusterName to set
 	 */
-	public void setEsClusterName(String esClusterName) {
+	public void setEsClusterName(final String esClusterName) {
 		this.esClusterName = esClusterName;
 	}
 
 	/**
-	 *  initializing the client.
-	 *  
+	 * initializing the client.
+	 * 
 	 */
 	public void init() {
-		if (client == null) {
-			client = initiateTransportClient();
+		if (this.client == null) {
+			this.client = this.initiateTransportClient();
 		}
 	}
 
 	/**
-	 * @return returns the transposrt client
+	 * @return returns the transport client
 	 */
 	private Client initiateTransportClient() {
 		try {
-			log.info("Getting EsClient instance");
+			this.log.info("Getting EsClient instance");
 
-			String esHosts = this.esAddresses;
-			log.info("EsHostss value in Properties:" + esHosts);
+			final String esHosts = this.esAddresses;
+			this.log.info("EsHostss value in Properties:" + esHosts);
 			// Setting cluster name of ES Server
-			final Builder settings = ImmutableSettings.settingsBuilder().put("cluster.name",this.esClusterName);
-//			settings.put(ESConstants.PATH_CONF, ESConstants.NAMES_TXT);
+			final Builder settings = ImmutableSettings.settingsBuilder().put("cluster.name", this.esClusterName);
+			// settings.put(ESConstants.PATH_CONF, ESConstants.NAMES_TXT);
 			settings.put(ESConstants.SNIFF, true);
-			final TransportClient transportClient = new TransportClient(
-					settings);
+			final TransportClient transportClient = new TransportClient(settings);
 			if (!esHosts.trim().isEmpty()) {
 				final String[] hosts = esHosts.split(",");
 				for (int i = 0; i < hosts.length; i++) {
@@ -128,13 +124,12 @@ public class ESTransportClient implements ESClient {
 			}
 
 			return transportClient;
-		} catch (Exception e) {
-			log.error("Error in TransportClient", e);
+		} catch (final Exception e) {
+			this.log.error("Error in TransportClient", e);
 			return null;
 		}
 	}
 
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -142,7 +137,7 @@ public class ESTransportClient implements ESClient {
 	 */
 	@Override
 	public Client getClient() {
-		return client;
+		return this.client;
 	}
 
 	/*

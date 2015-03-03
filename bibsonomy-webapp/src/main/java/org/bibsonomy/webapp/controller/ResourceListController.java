@@ -120,7 +120,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param end end parameter
 	 */
 	protected void setTags(final ResourceViewCommand cmd, final Class<? extends Resource> resourceType, final GroupingEntity groupingEntity, final String groupingName, final String regex, final List<String> tags, final String hash, final int max, final String search) {
-		this.setTags(cmd, resourceType, groupingEntity, groupingName, regex, tags, hash, max, search, SearchType.DEFAULT_SEARCH);
+		this.setTags(cmd, resourceType, groupingEntity, groupingName, regex, tags, hash, max, search, SearchType.LOCAL);
 	}
 	
 	/**
@@ -292,7 +292,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param itemsPerPage number of items to be displayed on each page
 	 */
 	protected <T extends Resource> void setList(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int itemsPerPage) {
-		this.setList(cmd, resourceType, groupingEntity, groupingName, tags, hash, search, SearchType.DEFAULT_SEARCH, filter, order, startDate, endDate, itemsPerPage);
+		this.setList(cmd, resourceType, groupingEntity, groupingName, tags, hash, search, SearchType.LOCAL, filter, order, startDate, endDate, itemsPerPage);
 	}
 	
 	/**

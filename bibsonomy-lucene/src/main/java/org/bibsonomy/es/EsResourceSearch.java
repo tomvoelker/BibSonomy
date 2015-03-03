@@ -55,31 +55,30 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
 /**
- * This class performs a search in the Shared Resource Indices based on the search term 
- *
+ * This class performs a search in the Shared Resource Indices based on the
+ * search term
+ * 
  * @author lutful
  * @param <R> 
  */
 public class EsResourceSearch<R extends Resource> extends ESQueryBuilder{
 
-	private final String indexName = ESConstants.INDEX_NAME;
-
 	private String resourceType;
-	
+
 	/** post model converter */
 	private LuceneResourceConverter<R> resourceConverter;
-	
+
 	/**
 	 * 
 	 */
 	protected static final Log log = LogFactory.getLog(EsResourceSearch.class);
-	
+
 	private ESClient esClient;
 
 	/**
 	 * @param esClient the esClient to set
 	 */
-	public void setEsClient(ESClient esClient) {
+	public void setEsClient(final ESClient esClient) {
 		this.esClient = esClient;
 	}
 	
@@ -89,7 +88,7 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder{
 	public ESClient getEsClient() {
 		return this.esClient;
 	}
-	
+
 	/**
 	 * get tag cloud for given search query for the Shared Resource System
 	 * 
@@ -113,13 +112,13 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder{
 		QueryBuilder queryBuilder = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags);
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
 		try {  
-			SearchRequestBuilder searchRequestBuilder = esClient.getClient().prepareSearch(indexName);
+			SearchRequestBuilder searchRequestBuilder = esClient.getClient().prepareSearch(ESConstants.INDEX_NAME);
 			searchRequestBuilder.setTypes(resourceType);
 			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 			searchRequestBuilder.setQuery(queryBuilder);
 			searchRequestBuilder.addSort(LuceneFieldNames.DATE, SortOrder.DESC);
-			searchRequestBuilder.setFrom(offset).setSize(limit + 1).setExplain(true);
-			SearchResponse response = searchRequestBuilder.execute().actionGet();
+			searchRequestBuilder.setFrom(offset).setSize(limit).setExplain(true);
+			final SearchResponse response = searchRequestBuilder.execute().actionGet();
 
 			if (response != null) {
 				SearchHits hits = response.getHits();				
@@ -169,48 +168,44 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder{
 	}
 	
 	/**
-	 * @param searchTerms 
-	 * @param order 
-	 * @param offset 
-	 * @param limit 
+	 * @param searchTerms
+	 * @param order
+	 * @param offset
+	 * @param limit
 	 * @return postList
-	 * @throws IOException 
-	 * @throws CorruptIndexException 
+	 * @throws IOException
+	 * @throws CorruptIndexException
 	 * 
 	 */
-	public ResultList<Post<R>> fullTextSearch(String searchTerms, Order order, int limit, int offset) throws CorruptIndexException, IOException {
+	public ResultList<Post<R>> fullTextSearch(final String searchTerms, final Order order, final int limit, final int offset) throws CorruptIndexException, IOException {
 
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
 		try {  
-			QueryBuilder queryBuilder = QueryBuilders.queryString(searchTerms);
-			SearchRequestBuilder searchRequestBuilder = esClient.getClient().prepareSearch(indexName);
-			searchRequestBuilder.setTypes(resourceType);
+			final QueryBuilder queryBuilder = QueryBuilders.queryString(searchTerms);
+			final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(ESConstants.INDEX_NAME);
+			searchRequestBuilder.setTypes(this.resourceType);
 			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 			searchRequestBuilder.setQuery(queryBuilder);
 			if (order != Order.RANK) {
 				searchRequestBuilder.addSort(LuceneFieldNames.DATE, SortOrder.DESC);
 			}
-			searchRequestBuilder.setFrom(offset).setSize(limit + 1).setExplain(true);
+			searchRequestBuilder.setFrom(offset).setSize(limit).setExplain(true);
 
-			SearchResponse response = searchRequestBuilder.execute().actionGet();
+			final SearchResponse response = searchRequestBuilder.execute().actionGet();
 
 			if (response != null) {
-				SearchHits hits = response.getHits();
+				final SearchHits hits = response.getHits();
 				postList.setTotalCount((int) hits.getTotalHits());
-				
-				log.info("Current Search results for '" + searchTerms + "': "
-						+ response.getHits().getTotalHits());
-				for (int i = 0; i < Math.min(limit, hits.getTotalHits() - offset); ++i) {
-					SearchHit hit = hits.getAt(i);
-					Map<String, Object> result = hit.getSource();
-					final Post<R> post = this.resourceConverter.writePost(result);
-					postList.add(post);
+
+				log.info("Current Search results for '" + searchTerms + "': " + response.getHits().getTotalHits());
+				for (final SearchHit hit : hits) {
+					postList.add(this.resourceConverter.writePost(hit.getSource()));
 				}
 			}
-		} catch (IndexMissingException e) {
+		} catch (final IndexMissingException e) {
 			log.error("IndexMissingException: " + e);
 		}
-		
+
 		return postList;
 	}
 
@@ -224,7 +219,7 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder{
 	/**
 	 * @param resourceConverter the resourceConverter to set
 	 */
-	public void setResourceConverter(LuceneResourceConverter<R> resourceConverter) {
+	public void setResourceConverter(final LuceneResourceConverter<R> resourceConverter) {
 		this.resourceConverter = resourceConverter;
 	}
 
@@ -238,16 +233,8 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder{
 	/**
 	 * @param resourceType the resourceType to set
 	 */
-	public void setResourceType(String resourceType) {
+	public void setResourceType(final String resourceType) {
 		this.resourceType = resourceType;
 	}
 
-	/**
-	 * @return the iNDEX_NAME
-	 */
-	public String getIndexName() {
-		return this.indexName;
-	}
-
-	
 }

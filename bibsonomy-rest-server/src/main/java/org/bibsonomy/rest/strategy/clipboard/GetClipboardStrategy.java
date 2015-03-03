@@ -52,7 +52,7 @@ public class GetClipboardStrategy extends GetUserPostsStrategy {
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		return this.getLogic().getPosts(BibTex.class, GroupingEntity.CLIPBOARD, this.userName, null, null, null, SearchType.DEFAULT_SEARCH, null, null, null, null, this.getView().getStartValue(), this.getView().getEndValue());
+		return this.getLogic().getPosts(BibTex.class, GroupingEntity.CLIPBOARD, this.userName, null, null, null, SearchType.LOCAL, null, null, null, null, this.getView().getStartValue(), this.getView().getEndValue());
 	}
 
 }

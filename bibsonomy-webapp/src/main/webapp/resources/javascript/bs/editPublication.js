@@ -1,12 +1,12 @@
 //methods for editPublication page
 //setup jQuery to update recommender with form data
-var tagRecoOptions = { 
-		dataType: "application/json",
-		url:  '/ajax/getPublicationRecommendedTags?',
-		success: function showResponse(responseText, statusText) { 
-	        handleRecommendedTags(JSON.parse(responseText));
-        } 
-}; 
+
+var tagRecoOptions = {
+		type: "POST",
+		url: '/ajax/getPublicationRecommendedTags',
+		data: $('#postForm').serialize(),
+		dataType: "json"
+	}; 
 
 var getFriends = null;
 var fields = ["booktitle","journal","volume","number","pages","publisher","address",

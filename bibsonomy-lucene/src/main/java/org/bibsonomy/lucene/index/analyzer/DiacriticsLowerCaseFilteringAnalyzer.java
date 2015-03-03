@@ -81,8 +81,7 @@ public final class DiacriticsLowerCaseFilteringAnalyzer extends Analyzer {
 	 *      a {@link StopFilter}.
 	 */
 	@Override
-	protected TokenStreamComponents createComponents(String fieldName,
-			Reader reader) {
+	protected TokenStreamComponents createComponents(String fieldName, Reader reader) {
 		Tokenizer tokenizer = new StandardTokenizer(VERSION_LUCENE, reader); 
 		TokenFilter filter = new StandardFilter(VERSION_LUCENE, tokenizer); 
 		filter = new LowerCaseFilter(VERSION_LUCENE, filter); 
