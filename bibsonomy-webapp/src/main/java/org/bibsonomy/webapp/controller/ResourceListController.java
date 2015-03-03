@@ -120,6 +120,26 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param end end parameter
 	 */
 	protected void setTags(final ResourceViewCommand cmd, final Class<? extends Resource> resourceType, final GroupingEntity groupingEntity, final String groupingName, final String regex, final List<String> tags, final String hash, final int max, final String search) {
+		this.setTags(cmd, resourceType, groupingEntity, groupingName, regex, tags, hash, max, search, SearchType.DEFAULT_SEARCH);
+	}
+	
+	/**
+	 * Retrieve a set of tags from the database logic and add them to the command object
+	 * 
+	 * @param cmd the command
+	 * @param resourceType the resource type
+	 * @param groupingEntity the grouping entity
+	 * @param groupingName the grouping name
+	 * @param regex regular expression for tag filtering
+	 * @param tags list of tags
+	 * @param hash 
+	 * @param max 
+	 * @param search 
+	 * @param searchType 
+	 * @param start start parameter
+	 * @param end end parameter
+	 */
+	protected void setTags(final ResourceViewCommand cmd, final Class<? extends Resource> resourceType, final GroupingEntity groupingEntity, final String groupingName, final String regex, final List<String> tags, final String hash, final int max, final String search, final SearchType searchType) {
 		final TagCloudCommand tagCloudCommand = cmd.getTagcloud();
 		// retrieve tags
 		log.debug("getTags " + " " + groupingEntity + " " + groupingName);
@@ -153,7 +173,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 		tagMax = this.getFixedTagMax(tagMax);
 		tagOrder = this.getFixedTagOrder(tagOrder);
 		
-		tagCloudCommand.setTags(this.logic.getTags(resourceType, groupingEntity, groupingName, tags, hash, search, regex, null, tagOrder, cmd.getStartDate(), cmd.getEndDate(), 0, tagMax));
+		tagCloudCommand.setTags(this.logic.getTags(resourceType, groupingEntity, groupingName, tags, hash, search, searchType,regex, null, tagOrder, cmd.getStartDate(), cmd.getEndDate(), 0, tagMax));
 		// retrieve tag cloud settings
 		tagCloudCommand.setStyle(TagCloudStyle.getStyle(this.userSettings.getTagboxStyle()));
 		tagCloudCommand.setSort(TagCloudSort.getSort(this.userSettings.getTagboxSort()));

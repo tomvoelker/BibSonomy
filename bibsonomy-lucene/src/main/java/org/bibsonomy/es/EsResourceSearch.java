@@ -26,7 +26,13 @@
  */
 package org.bibsonomy.es;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -37,6 +43,7 @@ import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -53,7 +60,7 @@ import org.elasticsearch.search.sort.SortOrder;
  * @author lutful
  * @param <R> 
  */
-public class EsResourceSearch<R extends Resource>{
+public class EsResourceSearch<R extends Resource> extends ESQueryBuilder{
 
 	private final String indexName = ESConstants.INDEX_NAME;
 
@@ -84,6 +91,84 @@ public class EsResourceSearch<R extends Resource>{
 	}
 	
 	/**
+	 * get tag cloud for given search query for the Shared Resource System
+	 * 
+	 * @param userName
+	 * @param requestedUserName
+	 * @param requestedGroupName
+	 * @param allowedGroups
+	 * @param searchTerms
+	 * @param titleSearchTerms
+	 * @param authorSearchTerms
+	 * @param tagIndex
+	 * @param year
+	 * @param firstYear
+	 * @param lastYear
+	 * @param negatedTags
+	 * @param limit
+	 * @param offset
+	 * @return returns the list of tags for the tag cloud
+	 */
+	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
+		QueryBuilder queryBuilder = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags);
+		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
+		try {  
+			SearchRequestBuilder searchRequestBuilder = esClient.getClient().prepareSearch(indexName);
+			searchRequestBuilder.setTypes(resourceType);
+			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
+			searchRequestBuilder.setQuery(queryBuilder);
+			searchRequestBuilder.addSort(LuceneFieldNames.DATE, SortOrder.DESC);
+			searchRequestBuilder.setFrom(offset).setSize(limit + 1).setExplain(true);
+			SearchResponse response = searchRequestBuilder.execute().actionGet();
+
+			if (response != null) {
+				SearchHits hits = response.getHits();				
+				log.info("Current Search results for '" + searchTerms + "': "
+						+ response.getHits().getTotalHits());
+				for (int i = 0; i < Math.min(limit, hits.getTotalHits() - offset); ++i) {
+					SearchHit hit = hits.getAt(i);
+					Map<String, Object> result = hit.getSource();
+					final Post<R> post = this.resourceConverter.writePost(result);
+					// set tag count
+					if (present(post.getTags())) {
+						for (final Tag tag : post.getTags()) {
+							/*
+							 * we remove the requested tags because we assume
+							 * that related tags are requested
+							 */
+							if (present(tagIndex) && tagIndex.contains(tag.getName())) {
+								continue;
+							}
+							Integer oldCnt = tagCounter.get(tag);
+							if (!present(oldCnt)) {
+								oldCnt = 1;
+							} else {
+								oldCnt += 1;
+							}
+							tagCounter.put(tag, oldCnt);
+						}
+					}				}
+			}
+		} catch (IndexMissingException e) {
+			log.error("IndexMissingException: " + e);
+		}
+		
+		
+		final List<Tag> tags = new LinkedList<Tag>();
+		// extract all tags
+		for (final Map.Entry<Tag, Integer> entry : tagCounter.entrySet()) {
+			final Tag tag = entry.getKey();
+			tag.setUsercount(entry.getValue());
+			tag.setGlobalcount(entry.getValue()); // FIXME: we set user==global count
+			tags.add(tag);
+		}
+		log.debug("Done calculating tag statistics");
+		
+		// all done.
+		return tags;
+	}
+	
+	/**
 	 * @param searchTerms 
 	 * @param order 
 	 * @param offset 
@@ -96,7 +181,7 @@ public class EsResourceSearch<R extends Resource>{
 	public ResultList<Post<R>> fullTextSearch(String searchTerms, Order order, int limit, int offset) throws CorruptIndexException, IOException {
 
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
-		try {
+		try {  
 			QueryBuilder queryBuilder = QueryBuilders.queryString(searchTerms);
 			SearchRequestBuilder searchRequestBuilder = esClient.getClient().prepareSearch(indexName);
 			searchRequestBuilder.setTypes(resourceType);
@@ -144,17 +229,17 @@ public class EsResourceSearch<R extends Resource>{
 	}
 
 	/**
-	 * @return the INDEX_TYPE
+	 * @return the resourceType
 	 */
 	public String getResourceType() {
 		return this.resourceType;
 	}
 
 	/**
-	 * @param INDEX_TYPE the INDEX_TYPE to set
+	 * @param resourceType the resourceType to set
 	 */
-	public void setResourceType(String INDEX_TYPE) {
-		this.resourceType = INDEX_TYPE;
+	public void setResourceType(String resourceType) {
+		this.resourceType = resourceType;
 	}
 
 	/**

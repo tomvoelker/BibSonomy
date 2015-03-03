@@ -26,25 +26,42 @@
  */
 package org.bibsonomy.es;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.bibsonomy.lucene.index.LuceneFieldNames;
+import org.bibsonomy.lucene.param.QuerySortContainer;
+import org.bibsonomy.lucene.search.collector.TagCountCollector;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.enums.Order;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.FilteredQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.sort.SortBuilder;
 
 /**
- * The Class for building queries for Shared Resource Search base on Elasticsearch.
+ * The Class for building queries for Shared Resource Search based on Elasticsearch.
  *
  * @author lutful
  * 
@@ -54,7 +71,7 @@ public abstract class ESQueryBuilder {
 
     private Log log = LogFactory.getLog(ESQueryBuilder.class);
 
-    /** The s esclient. */
+    /** The esclient. */
     private Client esClient;
 
 
@@ -128,6 +145,7 @@ public abstract class ESQueryBuilder {
 	
 	/**
 	 * Fetchfields from es.
+	 * 
 	 * @param builder FilteredQueryBuilder
 	 * @param fields to be featched the fields
 	 * @param from the from
@@ -178,6 +196,7 @@ public abstract class ESQueryBuilder {
 
 	/**
 	 * Fetch documents es.
+	 * 
 	 * @param builder the FilteredQueryBuilder
 	 * @param from the from
 	 * @param size the size
@@ -209,5 +228,80 @@ public abstract class ESQueryBuilder {
 
 		}
 		return listOfDocuments;
+	}
+	
+	/**
+	 * build the overall elasticsearch query term
+	 * 
+	 * @param userName
+	 * @param requestedUserName
+	 *            restrict the resulting posts to those which are owned by this
+	 *            user name
+	 * @param requestedGroupName
+	 *            restrict the resulting posts to those which are owned this
+	 *            group
+	 * @param requestedRelationNames
+	 * 				expand the search in the post of users which are defined by the given 
+	 * 				relation names
+	 * @param allowedGroups 
+	 * @param searchTerms
+	 * @param titleSearchTerms 
+	 * @param authorSearchTerms 
+	 * @param tagIndex 
+	 * @param year 
+	 * @param firstYear 
+	 * @param lastYear 
+	 * @param negatedTags
+	 * @return overall elasticsearch query
+	 */
+	protected QueryBuilder buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags) {
+
+		QueryBuilder queryBuilder= null;
+		// --------------------------------------------------------------------
+		// build the query
+		// --------------------------------------------------------------------
+		// the resulting main query
+		if (present(searchTerms)) {
+			queryBuilder = QueryBuilders.queryString(searchTerms);
+		}
+
+		if (present(titleSearchTerms)) {
+			//TODO
+		}
+		
+		if (present(authorSearchTerms)) {
+			//TODO
+		}
+		
+		// Add the requested tags
+		if (present(tagIndex) || present(negatedTags)) {
+			//TODO
+		}
+
+		// restrict result to given group
+		if (present(requestedGroupName)) {
+			//TODO	
+		}
+
+		// restricting access to posts visible to the user
+
+		// --------------------------------------------------------------------
+		// post owned by user 
+		// Use this restriction iff there is no user relation
+		// --------------------------------------------------------------------
+		if (present(requestedUserName) && !present(requestedRelationNames)) {
+			//TODO
+		}
+		// If there is at once one relation then restrict the results only 
+		// to the users in the given relations (inclduing posts of the logged in users)
+		else if (present(requestedRelationNames)) {
+			// for all relations: TODO
+
+		}
+		
+		// all done
+		log.debug("[Full text] Search query: " + queryBuilder.toString());
+
+		return queryBuilder;
 	}
 }

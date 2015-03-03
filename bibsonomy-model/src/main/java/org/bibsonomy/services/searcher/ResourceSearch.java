@@ -109,6 +109,7 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param requestedGroupName
 	 * @param allowedGroups
 	 * @param searchTerms
+	 * @param searchType 
 	 * @param titleSearchTerms
 	 * @param authorSearchTerms
 	 * @param tagIndex
@@ -123,7 +124,34 @@ public interface ResourceSearch<R extends Resource> {
 	public List<Tag> getTags(
 			final String userName, final String requestedUserName, String requestedGroupName, 
 			final Collection<String> allowedGroups,
-			final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
+			final String searchTerms, final SearchType searchType, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
 			final String year, final String firstYear, final String lastYear, List<String> negatedTags, int limit, int offset);
-	
+
+
+/**
+ * get tag cloud for given search query
+ * 
+ * @param userName
+ * @param requestedUserName
+ * @param requestedGroupName
+ * @param allowedGroups
+ * @param searchTerms
+ * @param searchType 
+ * @param titleSearchTerms
+ * @param authorSearchTerms
+ * @param tagIndex
+ * @param year
+ * @param firstYear
+ * @param lastYear
+ * @param negatedTags
+ * @param limit
+ * @param offset
+ * @return the tag cloud for the given search
+ */
+public List<Tag> getTags(
+		final String userName, final String requestedUserName, String requestedGroupName, 
+		final Collection<String> allowedGroups,
+		final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
+		final String year, final String firstYear, final String lastYear, List<String> negatedTags, int limit, int offset);
+
 }

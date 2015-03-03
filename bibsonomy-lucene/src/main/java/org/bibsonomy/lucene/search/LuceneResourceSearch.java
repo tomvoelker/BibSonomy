@@ -786,8 +786,6 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			String lastYear, List<String> negatedTags, Order order, int limit,
 			int offset) {
 		if(searchType==SearchType.CROSS_SYSTEM_SEARCH){
-//			searchResource.setINDEX_TYPE(resourceType);
-//			searchResource.setResourceConverter(this.resourceConverter);
 			try {
 				List<Post<R>> posts = this.sharedResourceSearch.fullTextSearch(searchTerms, order, limit , offset);
 				return posts;
@@ -800,6 +798,25 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			return this.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
 		}
 			return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.searcher.ResourceSearch#getTags(java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, org.bibsonomy.common.enums.SearchType, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, int, int)
+	 */
+	@Override
+	public List<Tag> getTags(String userName, String requestedUserName,
+			String requestedGroupName, Collection<String> allowedGroups,
+			String searchTerms, SearchType searchType, String titleSearchTerms,
+			String authorSearchTerms, Collection<String> tagIndex, String year,
+			String firstYear, String lastYear, List<String> negatedTags,
+			int limit, int offset) {
+		if(searchType==SearchType.CROSS_SYSTEM_SEARCH){
+			//just for the moment for experimental purpose
+			return	sharedResourceSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+		}else if(searchType==SearchType.DEFAULT_SEARCH || searchType==null){
+			return	this.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+		}
+		return null;
 	}
 
 	/**
@@ -815,5 +832,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	public void setSharedResourceSearch(EsResourceSearch<R> sharedResourceSearch) {
 		this.sharedResourceSearch = sharedResourceSearch;
 	}
+
+
 
 }

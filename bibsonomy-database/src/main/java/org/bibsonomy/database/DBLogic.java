@@ -912,6 +912,11 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+		return this.getTags(resourceType, grouping, groupingName, tags, hash, search, SearchType.DEFAULT_SEARCH, regex, relation, order, startDate, endDate, start, end);
+	}
+
+	@Override
+	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		if (GroupingEntity.ALL.equals(grouping)) {
 			this.permissionDBManager.checkStartEnd(this.loginUser, start, end, "Tag");
 		}
@@ -920,6 +925,7 @@ public class DBLogic implements LogicInterface {
 		try {
 			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, null, this.loginUser);
 			param.setTagRelationType(relation);
+			param.setSearchType(searchType);
 
 			if ((resourceType == BibTex.class) || (resourceType == Bookmark.class) || (resourceType == Resource.class)) {
 				// this is save because of RTTI-check of resourceType argument
@@ -939,7 +945,6 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
-
 	/*
 	 * (non-Javadoc)
 	 * 

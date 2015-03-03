@@ -137,7 +137,7 @@ public class SearchPageController extends SingleResourceListController implement
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
 			// fill the tag cloud with all tag assignments of the relevant documents
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, maximumTags, search);
+			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, maximumTags, search, searchType);
 			this.endTiming();
 			return Views.SEARCHPAGE;
 		}

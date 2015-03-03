@@ -42,6 +42,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.errors.MissingTagsErrorMessage;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
@@ -639,7 +640,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * <ul>
 	 * <li>details about the tag itself, like number of occurrences etc</li>
 	 * <li>list of subtags</li>
-	 * <li>list of supertags</li>
+	 * <li>list of supertags</li>,
 	 * </ul>
 	 * 
 	 * FIXME: is this global or for a given user/group only?
@@ -710,6 +711,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param requestedUserName
 	 * @param requestedGroupName
 	 * @param allowedGroups
+	 * @param searchType 
 	 * @param searchTerms
 	 * @param titleSearchTerms
 	 * @param authorSearchTerms
@@ -724,15 +726,14 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<Tag> getTagsByResourceSearch(
 			final String userName, final String requestedUserName, final String requestedGroupName,
-			final Collection<String> allowedGroups,
-			final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
+			final Collection<String> allowedGroups, final SearchType searchType, final String searchTerms,final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
 			final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
 
 		if (present(this.publicationSearch) && present(this.bookmarkSearch)) {
 			final List<Tag> bookmarkTags =
-					this.bookmarkSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+					this.bookmarkSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, searchType, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
 			final List<Tag> publicationTags =
-					this.publicationSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+					this.publicationSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, searchType, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
 			final List<Tag> retVal = TagUtils.mergeTagLists(bookmarkTags, publicationTags, Order.POPULAR, Order.POPULAR, limit);
 			return retVal;
 		}
