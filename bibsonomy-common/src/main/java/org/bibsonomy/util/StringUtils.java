@@ -2544,5 +2544,17 @@ public class StringUtils {
 		}
 		return out;
 	}
+
+	/**
+	 * @param parameter
+	 * @param i
+	 * @return
+	 */
+	public static String cropToLengthAndMarkWithX(String str, int lengthIncludingX) {
+		if ((str == null) || (str.length() <= lengthIncludingX)) {
+			return str;
+		}
+		return cropToLength(str, 19) + "X";
+	}
 }
 
