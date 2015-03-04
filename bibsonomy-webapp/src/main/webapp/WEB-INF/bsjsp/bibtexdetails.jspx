@@ -72,7 +72,7 @@
 								<fmt:message key="bibtex.actions.tags.update" var="updateTags"/>
 								<span class="input-group-btn">
 									<button class="btn btn-sm btn-default rename-tags-btn" title="${updateTags}" type="submit"><span class="fa fa-pencil"><!-- KEEP ME --></span><span class="sr-only"><c:out value="${updateTags}" /></span></button>
-									<button class="btn btn-sm btn-default rename-tags-submit-btn" style="display: none;" title="${updateTags}" type="button"><span class="glyphicon glyphicon-ok"><!-- KEEP ME --></span><span class="sr-only">OK</span></button>
+									<button class="btn btn-sm btn-default rename-tags-submit-btn" style="display: none;" title="${updateTags}" type="button"><span class="fa fa-check"><!-- KEEP ME --></span><span class="sr-only">OK</span></button>
 								</span>
 							</div>
 							<input type="hidden" name="oldTags['${fn:escapeXml(publication.intraHash)}']" value="${fn:escapeXml(tagsString)}"/>

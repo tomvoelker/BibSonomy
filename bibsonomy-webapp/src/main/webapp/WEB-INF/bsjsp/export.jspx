@@ -173,7 +173,7 @@
 					<c:url var="url" value="/layout/custom/${pathAndQueryString}" />
 						<td>
 							<a class="btn btn-primary btn-sm export-link" href="${url}">
-								<span class="glyphicon glyphicon-download-alt" />	
+								<span class="fa fa-download" />	
 							</a>
 						</td>
 						<td>
@@ -190,7 +190,7 @@
 				<tr class="danger">
 					<td>
 						<a class="btn btn-default btn-sm" disabled="disabled">
-	  						<span class="glyphicon glyphicon-download-alt" />
+	  						<span class="fa fa-download" />
 						</a>
 					</td>
 					<td>

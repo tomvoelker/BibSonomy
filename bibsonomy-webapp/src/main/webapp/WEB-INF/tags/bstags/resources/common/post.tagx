@@ -49,13 +49,13 @@
 					<c:set var="extraCssClass" value="remote-post fa-external-link"/>
 				</c:when>
 				<c:when test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name)}">
-					<c:set var="extraCssClass" value="in-my-collection glyphicon-bookmark"/>
+					<c:set var="extraCssClass" value="in-my-collection fa-bookmark"/>
 				</c:when>
 				<c:otherwise>
 					<c:set var="extraCssClass" value="in-my-collection"/>
 				</c:otherwise>
 			</c:choose>
-			<div class="glyphicon ${extraCssClass}"><!--  --></div>
+			<div class="fa ${extraCssClass}"><!--  --></div>
 			
 			<c:forEach var="group" items="${post.groups}">
 				<c:if test="${!empty group.name and group.name ne 'public'}">
@@ -64,7 +64,7 @@
 							<!-- TODO: friends marker? -->
 						</c:when>
 						<c:when test="${group.name eq 'private'}">
-							<div class="glyphicon-private glyphicon"><!--  --></div>
+							<div class="fa fa-eye-slash"><!--  --></div>
 						</c:when>
 					</c:choose>
 				</c:if>
