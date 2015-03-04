@@ -39,7 +39,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-			<users:socializer command="${command}" />
+			<sidebar:socializer command="${command}" />
 				
 			<!-- Did you know? -->
 			<c:if test="${	command.context.userLoggedIn and 
@@ -69,33 +69,33 @@
 				</sidebar:sidebarItem>
 			</c:if>
 				
-				<!-- display user's tag relations -->
-				<sidebar:sidebarItem textKey="tagrelations">
-					<jsp:attribute name="content">
-						<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
-					</jsp:attribute>
-				</sidebar:sidebarItem>
+			<!-- display user's tag relations -->
+			<sidebar:sidebarItem textKey="tagrelations">
+				<jsp:attribute name="content">
+					<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
+				</jsp:attribute>
+			</sidebar:sidebarItem>
 				
-				<!-- display similar users -->
-				<sidebar:sidebarItem textKey="users.similar">
+			<!-- display similar users -->
+			<sidebar:sidebarItem textKey="users.similar">
+				<jsp:attribute name="content">
+					<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
+					<ul class="list-inline sidebar-setting-box clearfix">
+						<li>(<a href="${mtl:setParam(requPathAndQuery, 'userSimilarity', mtl:toggleUserSimilarity(command.userSimilarity)) }"><fmt:message key="more"/>...</a>)</li>
+					</ul>
+					<users:related cmd="${command.relatedUserCommand}" displayFollowLink="${false}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
+				</jsp:attribute>
+			</sidebar:sidebarItem>
+				
+			<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
+						
+			<c:if test="${command.context.loginUser.role == 'ADMIN' and not empty command.user}">
+				<sidebar:sidebarItem textKey="user.details">
 					<jsp:attribute name="content">
-						<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
-						<ul class="list-inline sidebar-setting-box clearfix">
-							<li>(<a href="${mtl:setParam(requPathAndQuery, 'userSimilarity', mtl:toggleUserSimilarity(command.userSimilarity)) }"><fmt:message key="more"/>...</a>)</li>
-						</ul>
-						<users:related cmd="${command.relatedUserCommand}" displayFollowLink="${false}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
+						<user:details user="${command.user}"/>
 					</jsp:attribute>
 				</sidebar:sidebarItem>
-					
-				<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-							
-				<c:if test="${command.context.loginUser.role == 'ADMIN' and not empty command.user}">
-					<sidebar:sidebarItem textKey="user.details">
-						<jsp:attribute name="content">
-							<user:details user="${command.user}"/>
-						</jsp:attribute>
-					</sidebar:sidebarItem>
-				</c:if>
+			</c:if>
 		</jsp:attribute> <!-- sidebar -->
 	</layout:resourceLayout>
 </jsp:root>

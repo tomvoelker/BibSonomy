@@ -7,7 +7,6 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
     xmlns:group="urn:jsptagdir:/WEB-INF/tags/bstags/resources/group"
-	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
@@ -38,44 +37,9 @@
 		<jsp:attribute name="sidebar">
 			<c:choose>
 				<c:when test="${not empty group.name}">
-					<sidebar:sidebarItem>
-						<jsp:attribute name="text">
-							<group:groupname group="${group}" showRealname="${false}"/>
-						</jsp:attribute>
-						<jsp:attribute name="content">
-							<div class="row">
-								<div class="col-md-6">
-									<group:groupthumbnail group="${group}" noname="${false}" />
-								</div>
-								<div class="col-md-6">
-									<group:groupcv group="${group}" />
-									<c:choose>
-										<c:when test="${mtl:contains(command.context.loginUser.groups, group)}">
-											<!-- TODO: use url generator -->
-											<a href="/settings/group/${group.name}" class="btn btn-success btn-sm"><span class="fa fa-check"><!-- keep me --></span><c:out value=" "/><span class="infotext"><fmt:message key="group.memberOf" /></span></a>
-											<a href="/updateGroup?operation=REMOVE_MEMBER&amp;groupname=${group.name}&amp;username=${command.context.loginUser.name}&amp;ckey=${ckey}" class="btn btn-danger btn-sm"><span class="fa fa-times"><!-- keep me --></span><c:out value=" "/><span class="infotext"><fmt:message key="group.leave" /></span></a>
-										</c:when>
-										<c:otherwise>
-											<c:choose>
-												<c:when test="${mtl:contains(command.context.loginUser.pendingGroups, group)}">
-													<a class="btn btn-default btn-sm">pending</a>
-												</c:when>
-												<c:otherwise>
-													<c:url var="joinLink" value="/joinGroup">
-														<c:param name="group" value="${group.name}" />
-													</c:url>
-													<a href="${joinLink}" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>	
-												</c:otherwise>
-											</c:choose>
-										</c:otherwise>
-									</c:choose>
-								</div>
-							</div>
-						</jsp:attribute>
-					</sidebar:sidebarItem>					
 
-					<!-- group members -->
-					<rc:members group="${command.group}"/>
+					<sidebar:groupDetailsItem group="${group}"/>
+					<sidebar:groupMembersItem group="${group}"/>
 				
 					<!-- link to discussed posts of the group -->
 					<sidebar:sidebarItem textKey="post.resource.discussion.headline">
@@ -91,11 +55,11 @@
 						</jsp:attribute>
 					</sidebar:sidebarItem>
 				
-					<!-- tags -->
 					<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="default" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 				
 				</c:when>
 				<c:otherwise>
+
 					<sidebar:sidebarItem textKey="group.doesnotexist.header">
 						<jsp:attribute name="content">
 							<ul>
@@ -107,6 +71,7 @@
 							</ul>
 						</jsp:attribute>
 					</sidebar:sidebarItem>
+
 				</c:otherwise>
 			</c:choose>
 		</jsp:attribute>

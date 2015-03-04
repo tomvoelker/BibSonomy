@@ -52,14 +52,8 @@
 			<parts:tagsAndConceptsForSidebar/>
 				
 			<!-- display user's tag relations -->
-			<sidebar:sidebarItem textKey="tagrelations">
+			<sidebar:sidebarItem textKey="tagrelations" headingLink="${relativeUrlGenerator.getConceptsUrlByString(fn:escapeXml(command.requestedUser))}" headingLinkTitleKey="${tagRelationsTitle}">
 				<jsp:attribute name="content">
-					<fmt:message key="tagrelations.title" var="tagRelationsTitle"/>
-					<p>
-						<a href="${relativeUrlGenerator.getConceptsUrlByString(fn:escapeXml(command.requestedUser))}" title="${tagRelationsTitle}">
-							<fmt:message key="tagrelations.title" />
-						</a>
-					</p>
 					<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
 				</jsp:attribute>
 			</sidebar:sidebarItem>				
