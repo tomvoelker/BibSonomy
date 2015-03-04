@@ -69,8 +69,7 @@ public final class WhiteSpaceLowerCaseFilteringAnalyzer extends Analyzer {
 	 *      a {@link StopFilter}. 
 	 */
 	@Override
-	protected TokenStreamComponents createComponents(String fieldName,
-			Reader reader) {
+	protected TokenStreamComponents createComponents(String fieldName, Reader reader) {
 		Tokenizer tokenizer = new WhitespaceTokenizer(VERSION_LUCENE, reader);
 		TokenFilter filter = new LowerCaseFilter(VERSION_LUCENE, tokenizer);
 		return new TokenStreamComponents(tokenizer, filter);

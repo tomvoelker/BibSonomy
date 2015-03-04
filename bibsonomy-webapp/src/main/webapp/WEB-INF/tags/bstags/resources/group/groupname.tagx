@@ -21,10 +21,10 @@
 	
 	<c:choose>
 		<c:when test="${not noLink}">
-			<a href="${relativeUrlGenerator.getGroupUrlByGroupName(groupname)}"><c:out value="#${group.name}" /></a>
+			<a href="${relativeUrlGenerator.getGroupUrlByGroupName(groupname)}"><c:out value="${group.name}" /></a>
 		</c:when>
 		<c:otherwise>
-			<c:out value="#${group.name}" />
+			<c:out value="${group.name}" />
 		</c:otherwise>
 	</c:choose>
 	<c:if test="${showRealname and not empty group.realname}">

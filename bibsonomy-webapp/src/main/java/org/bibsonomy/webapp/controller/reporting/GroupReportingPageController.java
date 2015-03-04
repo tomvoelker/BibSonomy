@@ -88,7 +88,7 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 		 * fetch all bibtex & remove duplicates
 		 */
 		// TODO: really fetch all posts
-		final List<Post<BibTex>> groupBibtexEntries = logic.getPosts(BibTex.class, GroupingEntity.GROUP, command.getRequestedGroup(), tags, null, null, SearchType.DEFAULT_SEARCH,null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
+		final List<Post<BibTex>> groupBibtexEntries = logic.getPosts(BibTex.class, GroupingEntity.GROUP, command.getRequestedGroup(), tags, null, null, SearchType.LOCAL,null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
 		BibTexUtils.removeDuplicates(groupBibtexEntries);
 		
 		
