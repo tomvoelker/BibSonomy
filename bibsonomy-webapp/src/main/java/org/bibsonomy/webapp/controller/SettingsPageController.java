@@ -119,6 +119,9 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 
 		// show sync tab only for non-spammers
 		command.showSyncTab(!loginUser.isSpammer());
+		// show my profile tab if spammer tries to enter sync settings via selTab-ID
+		if (loginUser.isSpammer() && command.getSelTab() == SettingsViewCommand.SYNC_IDX)
+			command.setSelTab(SettingsViewCommand.MY_PROFILE_IDX);
 
 		if (command.getSelTab() < 0 || command.getSelTab() > 7) {
 			this.errors.reject("error.settings.tab");
