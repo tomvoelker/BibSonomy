@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -9,7 +35,6 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.LayoutPart;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
@@ -51,7 +76,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	protected RequestLogic requestLogic;
 	/**
 	 * The List is used in a hack to protect certain oAuth Tokens from
-	 * deletions. Particulary, the oAuth-Tokens in PUMA are created
+	 * deletions. Particularly, the oAuth-Tokens in PUMA are created
 	 * automatically to guarantee access from VuFind. The ConsumerKey of those
 	 * properties that are protected are configured in the project.properties.
 	 */
@@ -80,6 +105,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		command.setChangeTo((loginUser.getSettings().getIsMaxCount() ? loginUser.getSettings().getTagboxMaxCount() : loginUser.getSettings().getTagboxMinfreq()));
 
 		// check whether the user is a group
+		// TODO: unused ?
 		if (UserUtils.userIsGroup(loginUser)) {
 			command.setHasOwnGroup(true);
 		}
@@ -98,7 +124,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			this.errors.reject("error.settings.tab");
 		} else {
 			this.checkInstalledJabrefLayout(command);
-			this.workOnGroupTab(command);
 			this.workOnSyncSettingsTab(command);
 			this.workOnCVTab(command);
 			this.workOnOAuthTab(command);
@@ -164,8 +189,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			final String accessTokenDelete = command.getAccessTokenDelete();
 			if (present(this.invisibleOAuthConsumers) && present(accessTokenDelete)) {
 				final List<OAuthUserInfo> oauthUserInfos = this.oauthLogic.getOAuthUserApplication(command.getContext().getLoginUser().getName());
-				for (final Iterator<OAuthUserInfo> iterator = oauthUserInfos.iterator(); iterator.hasNext();) {
-					final OAuthUserInfo oAuthUserInfo = iterator.next();
+				for (final OAuthUserInfo oAuthUserInfo : oauthUserInfos) {
 					if (accessTokenDelete.equals(oAuthUserInfo.getAccessToken()) && this.invisibleOAuthConsumers.contains(oAuthUserInfo.getConsumerKey())) {
 						throw new IllegalArgumentException("The access token " + accessTokenDelete + " can not be deleted.");
 					}
@@ -194,33 +218,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		}
 
 		command.setOauthUserInfo(oauthUserInfos);
-	}
-
-	private void workOnGroupTab(final SettingsViewCommand command) {
-		final String groupName = command.getContext().getLoginUser().getName();
-		// the group to update
-		final Group group = this.logic.getGroupDetails(groupName);
-		if (present(group)) {
-			command.setGroup(group);
-			/*
-			 * get group users
-			 */
-			group.setUsers(this.logic.getUsers(null, GroupingEntity.GROUP, groupName, null, null, null, null, null, 0, Integer.MAX_VALUE));
-			/*
-			 * FIXME: use the group in the command instead of this hand-written
-			 * conversion
-			 */
-			command.setPrivlevel(group.getPrivlevel().ordinal());
-
-			/*
-			 * TODO: use share docs directly
-			 */
-			int sharedDocsAsInt = 0;
-			if (group.isSharedDocuments()) {
-				sharedDocsAsInt = 1;
-			}
-			command.setSharedDocuments(sharedDocsAsInt);
-		}
 	}
 
 	/**
@@ -331,9 +328,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	private void handleGroupCV(final Group requestedGroup, final SettingsViewCommand command) {
 		final String groupName = requestedGroup.getName();
 		command.setIsGroup(true);
-
-		final List<User> groupUsers = this.logic.getUsers(null, GroupingEntity.GROUP, groupName, null, null, null, null, null, 0, 1000);
-		requestedGroup.setUsers(groupUsers);
 
 		// TODO: Implement date selection on the editing page
 		final Wiki wiki = this.logic.getWiki(groupName, null);

@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Rest-Common - Common things for the REST-client and server.
  *
- *  BibSonomy-Rest-Common - Common things for the REST-client and server.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.rest.renderer;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -57,6 +60,7 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedPost;
@@ -633,8 +637,9 @@ public abstract class AbstractRenderer implements Renderer {
 		}
 		xmlGroup.setHref(this.urlRenderer.createHrefForGroup(group.getName()));
 		xmlGroup.setDescription(group.getDescription());
-		if (group.getUsers() != null) {
-			for (final User user : group.getUsers()) {
+		if (group.getMemberships() != null) {
+			for (final GroupMembership membership : group.getMemberships()) {
+				final User user = membership.getUser();
 				xmlGroup.getUser().add(this.createXmlUser(user));
 			}
 		}
@@ -1183,9 +1188,11 @@ public abstract class AbstractRenderer implements Renderer {
 		group.setRealname(xmlGroup.getRealname());
 		group.setHomepage(this.createURL(xmlGroup.getHomepage()));
 		if (xmlGroup.getUser().size() > 0) {
-			group.setUsers(new ArrayList<User>());
 			for (final UserType xmlUser : xmlGroup.getUser()) {
-				group.getUsers().add(this.createUser(xmlUser));
+				final User user = this.createUser(xmlUser);
+				final GroupMembership membership = new GroupMembership();
+				membership.setUser(user);
+				group.getMemberships().add(membership);
 			}
 		}
 

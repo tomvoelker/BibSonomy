@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 /*
  * Created on 08.10.2007
  */
@@ -48,8 +74,8 @@ public enum Views implements View {
 	 * the user specific friend-of-a-friend (FOAF) project output
 	 */
 	FOAF("foaf"),
-	
-	/** 
+
+	/**
 	 * before we share api key and user name the user must allow it
 	 */
 	DEVICE_AUTHORIZE("actions/user/allowDeviceSupport"),
@@ -79,6 +105,11 @@ public enum Views implements View {
 	 * group page showing all resources of a specified group
 	 */
 	GROUPPAGE("group"),
+
+	/**
+	 * group page showing all resources of a specified group
+	 */
+	GROUPSETTINGSPAGE("groupSettings"),
 
 	/**
 	 * group page showing all resources of a specified group and a given tag or
@@ -125,12 +156,12 @@ public enum Views implements View {
 	 * concept page shows all suptags of an requested tag
 	 */
 	CONCEPTPAGE("concept"),
-	
+
 	/**
 	 * friend overview page
 	 */
 	FRIEND_OVERVIEW("friendOverview"),
-	
+
 	/**
 	 * friends page show all tags whose are viewable for friends by a friend of
 	 * you
@@ -147,33 +178,23 @@ public enum Views implements View {
 	 * url page, displays all bookmarks for a given url hash
 	 */
 	URLPAGE("url"),
-	
+
 	/**
 	 * publication page shows all publications with the given inter-/intrahash
 	 * TODO: rename to PUBLICATION_PAGE
 	 */
 	BIBTEXPAGE("bibtex"),
-	
+
 	/**
 	 * details of a publication
 	 * TODO: rename to PUBLICATION_DETAILS
 	 */
 	BIBTEXDETAILS("bibtexdetails"),
-	
-	/**
-	 * DiffBookmark-Page. page with diff of two post
-	 */
-	DIFFBOOKMARKPAGE("actions/post/diffBookmark"),
-	
-	/**
-	 * DiffPublication-Page. page with diff of two post
-	 */
-	DIFFPUBLICATIONPAGE("actions/post/diffPublication"),
-	
+
 	/**
 	 * PostHistory-Page. page with post history
 	 */
-	POSTHISTORYPAGE("postHistory"),
+	HISTORY("history"),
 
 	/**
 	 * all the posts the user has picked in his clipboard
@@ -268,6 +289,10 @@ public enum Views implements View {
 	 */
 	AJAX_JSON("ajax/snippetJson"),
 	/**
+	 * json representation of group level permissions
+	 */
+	AJAX_JSON_PERMISSIONS("ajax/jsonGroupLevelPermissions"),
+	/**
 	 * command.responseString is written with c:out
 	 */
 	AJAX_TEXT("ajax/snippetPlain"),
@@ -312,7 +337,7 @@ public enum Views implements View {
 	AJAX_ERRORS("ajax/errors"),
 
 	/* *****************************************************
-	 * ADMIN views 
+	 * ADMIN views
 	 */
 	/**
 	 * spam admin page
@@ -344,7 +369,7 @@ public enum Views implements View {
 	ADMIN("actions/admin/index"),
 
 	/* *****************************************************
-	 * action views 
+	 * action views
 	 */
 
 	/**
@@ -367,7 +392,6 @@ public enum Views implements View {
 	 */
 	ACTIVATE_USER_SUCCESS("actions/register/user_activated"),
 
-
 	/**
 	 * When admins successfully register a user, this page shows them the
 	 * details.
@@ -378,9 +402,10 @@ public enum Views implements View {
 	 * OpenID register form prefilled with information from the OpenID provider
 	 */
 	REGISTER_USER_OPENID_PROVIDER_FORM("actions/register/openid/provider_form"),
-	
+
 	/**
-	 * SAML register form prefilled with information from SAML (Shibboleth) IdP server
+	 * SAML register form prefilled with information from SAML (Shibboleth) IdP
+	 * server
 	 */
 	REGISTER_USER_SAML_FORM("actions/register/saml/profile_form"),
 
@@ -388,7 +413,7 @@ public enum Views implements View {
 	 * activation page allowing limited users to become unlimited users
 	 */
 	LIMITED_ACCOUNT_ACTIVATION("actions/register/saml/limitedAccountActivation"),
-	
+
 	/**
 	 * LDAP register form prefilled with information from LDAP server
 	 * 
@@ -481,7 +506,7 @@ public enum Views implements View {
 	EDIT_TAGS("actions/edit/edittags"),
 
 	/* *****************************************************
-	 * OpenSocial views 
+	 * OpenSocial views
 	 */
 	/**
 	 * a plain text OAuth response message (e.g. "/oauth/requestToken")
@@ -562,9 +587,9 @@ public enum Views implements View {
 	 * JSON for both bookmarks and publications
 	 */
 	JSON("export/json"),
-	
+
 	/**
-	 * HTML-rendered posts lists for both bookmarks and publications 
+	 * HTML-rendered posts lists for both bookmarks and publications
 	 */
 	POSTS("export/posts"),
 
@@ -583,10 +608,10 @@ public enum Views implements View {
 	 * list of some of our export formats in XML.
 	 */
 	UNAPI_SUPPORTED_FORMATS("export/bibtex/unapi"),
-	
+
 	/**
-	 * Provides a "raw" output of only the post list for embedding into other 
-	 * pages (e.g., using iframes). 
+	 * Provides a "raw" output of only the post list for embedding into other
+	 * pages (e.g., using iframes).
 	 */
 	EMBED("export/embed"),
 
@@ -616,7 +641,7 @@ public enum Views implements View {
 	 * embeddable version of the export page dropdown list
 	 */
 	EXPORT_EMBEDDED("exportEmbedded"),
-	
+
 	/**
 	 * export layouts in a JSON object
 	 */
@@ -638,7 +663,7 @@ public enum Views implements View {
 	 * show button-page view
 	 */
 	BUTTONS("buttons"),
-	
+
 	/**
 	 * show getting started page view
 	 */
@@ -659,7 +684,7 @@ public enum Views implements View {
 	 * 
 	 */
 	BOOTSTRAP_DEMO("bootstrapDemo"),
-	
+
 	/*
 	 * Error pages
 	 */
@@ -703,22 +728,22 @@ public enum Views implements View {
 	 * Discussions-Page. Posts with Discussions
 	 */
 	DISCUSSEDPAGE("discussions"),
-	
-	/**
-	 * for the link cloud demo
-	 * TODO: in deveplopment TODODZO
-	 */
-	LINK_CLOUD("linkcloud"),
 
 	/**
-	 * Recommended posts page. Showing recommendations for bibtexs and bookmarks.
+	 * Recommended posts page. Showing recommendations for bibtexs and
+	 * bookmarks.
 	 */
 	RECOMMENDEDPAGE("recommended"),
-	
+
 	/**
 	 * show bibsonomy3 demo
 	 */
-	BIBSONOMY3("bibsonomy3");
+	BIBSONOMY3("bibsonomy3"),
+
+	/**
+	 * group request page
+	 */
+	GROUPREQUEST("groupRequest");
 
 	/*
 	 * both bookmarks and publications
@@ -781,7 +806,7 @@ public enum Views implements View {
 	 * ONLY bibtex posts
 	 * 
 	 * @param format
-	 *            the name of the format
+	 *        the name of the format
 	 * @return true if the corresponding view displays only bibtex posts, false
 	 *         otherwise
 	 */
@@ -794,7 +819,7 @@ public enum Views implements View {
 	 * ONLY bookmark posts
 	 * 
 	 * @param format
-	 *            the name of the format
+	 *        the name of the format
 	 * @return true if the corresponding view displays only bookmark posts,
 	 *         false otherwise
 	 */
@@ -807,33 +832,77 @@ public enum Views implements View {
 	 * application via e.g. ?format=rss)
 	 * 
 	 * @param format
-	 *            the name of the format
+	 *        the name of the format
 	 * @return the corresponding view for a given format
 	 */
 	public static Views getViewByFormat(final String format) {
-		if (FORMAT_STRING_BIB.equals(format) || FORMAT_STRING_BIBTEX.equals(format)) return BIBTEX;
-		if (FORMAT_STRING_JSON.equals(format)) return JSON;
-		if (FORMAT_STRING_POSTS.equals(format)) return POSTS;
-		if (FORMAT_STRING_BURST.equals(format)) return BURST;
-		if (FORMAT_STRING_RSS.equals(format)) return RSS;
-		if (FORMAT_STRING_PUBLRSS.equals(format)) return PUBLRSS;
-		if (FORMAT_STRING_SWRC.equals(format)) return SWRC;
-		if (FORMAT_STRING_PUBL.equals(format)) return PUBL;
-		if (FORMAT_STRING_ENDNOTE.equals(format)) return ENDNOTE;
-		if (FORMAT_STRING_APARSS.equals(format)) return APARSS;
-		if (FORMAT_STRING_XML.equals(format)) return XML;
-		if (FORMAT_STRING_BOOKPUBL.equals(format)) return BOOKPUBL;
-		if (FORMAT_STRING_BOOKBIB.equals(format)) return BOOKBIB;
-		if (FORMAT_STRING_PUBLRSSN.equals(format)) return PUBLRSSNEPOMUK;
-		if (FORMAT_STRING_LAYOUT.equals(format)) return LAYOUT;
-		if ("batcheditbib".equals(format)) return BATCHEDITBIB;
-		if ("batchediturl".equals(format)) return BATCHEDITURL;
-		if ("tagcloud".equals(format)) return AJAX_TAGCLOUD;
-		if (FORMAT_STRING_CSV.equals(format)) return CSV;
-		if (FORMAT_STRING_CSL.equals(format)) return CSL;
-		if (FORMAT_STRING_EMBED.equals(format)) return EMBED;
-		if (FORMAT_STRING_OEMBED.equals(format)) return OEMBED;
-		
+		if (FORMAT_STRING_BIB.equals(format) || FORMAT_STRING_BIBTEX.equals(format)) {
+			return BIBTEX;
+		}
+		if (FORMAT_STRING_JSON.equals(format)) {
+			return JSON;
+		}
+		if (FORMAT_STRING_POSTS.equals(format)) {
+			return POSTS;
+		}
+		if (FORMAT_STRING_BURST.equals(format)) {
+			return BURST;
+		}
+		if (FORMAT_STRING_RSS.equals(format)) {
+			return RSS;
+		}
+		if (FORMAT_STRING_PUBLRSS.equals(format)) {
+			return PUBLRSS;
+		}
+		if (FORMAT_STRING_SWRC.equals(format)) {
+			return SWRC;
+		}
+		if (FORMAT_STRING_PUBL.equals(format)) {
+			return PUBL;
+		}
+		if (FORMAT_STRING_ENDNOTE.equals(format)) {
+			return ENDNOTE;
+		}
+		if (FORMAT_STRING_APARSS.equals(format)) {
+			return APARSS;
+		}
+		if (FORMAT_STRING_XML.equals(format)) {
+			return XML;
+		}
+		if (FORMAT_STRING_BOOKPUBL.equals(format)) {
+			return BOOKPUBL;
+		}
+		if (FORMAT_STRING_BOOKBIB.equals(format)) {
+			return BOOKBIB;
+		}
+		if (FORMAT_STRING_PUBLRSSN.equals(format)) {
+			return PUBLRSSNEPOMUK;
+		}
+		if (FORMAT_STRING_LAYOUT.equals(format)) {
+			return LAYOUT;
+		}
+		if ("batcheditbib".equals(format)) {
+			return BATCHEDITBIB;
+		}
+		if ("batchediturl".equals(format)) {
+			return BATCHEDITURL;
+		}
+		if ("tagcloud".equals(format)) {
+			return AJAX_TAGCLOUD;
+		}
+		if (FORMAT_STRING_CSV.equals(format)) {
+			return CSV;
+		}
+		if (FORMAT_STRING_CSL.equals(format)) {
+			return CSL;
+		}
+		if (FORMAT_STRING_EMBED.equals(format)) {
+			return EMBED;
+		}
+		if (FORMAT_STRING_OEMBED.equals(format)) {
+			return OEMBED;
+		}
+
 		throw new BadRequestOrResponseException("Invalid format specification '" + format + "'");
 	}
 }

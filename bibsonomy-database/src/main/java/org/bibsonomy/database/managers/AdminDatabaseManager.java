@@ -1,4 +1,32 @@
+/**
+ * BibSonomy-Database - Database for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.database.managers;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.InetAddress;
 import java.util.Arrays;
@@ -32,6 +60,8 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	
 	private final static AdminDatabaseManager singleton = new AdminDatabaseManager();
 	
+	/** used by the user manager to flag a deleted user as spammer */
+	public static final String DELETED_UPDATED_BY = "on_delete";
 	
 	/**
 	 * Holds the names of the tables where group ids must be updated, when a
@@ -42,7 +72,9 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 																	DatabaseSchemaInformation.TAG_TABLE,
 																	DatabaseSchemaInformation.GROUP_TAG_TABLE,
 																	DatabaseSchemaInformation.DISCUSSION_TABLE);
-
+	
+	private UserDatabaseManager userDatabaseManager;
+	
 	/**
 	 * @return a singleton instance of this AdminDatabaseManager
 	 */
@@ -118,9 +150,23 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 * @return user name
 	 */
 	public String flagSpammer(final User user, final String updatedBy, final String testMode, final DBSession session) {
+		final String username = user.getName();
+		/*
+		 * check if the user exists, but not when deleting a user
+		 */
+		
+		final User userDetails = this.userDatabaseManager.getUserDetails(username, session);
+		/*
+		 *  don't check the role, maybe not all posts of a deleted user was
+		 *  updated, so we must be able to flag the user again
+		 */
+		if (!present(userDetails.getName())) {
+			throw new IllegalArgumentException("the user '" + username + "'does not exist");
+		}
+		
 		final AdminParam param = new AdminParam();
 
-		param.setUserName(user.getName());
+		param.setUserName(username);
 		param.setSpammer(user.getSpammer());
 		param.setToClassify(user.getToClassify());
 
@@ -206,7 +252,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			session.endTransaction();
 		}
 
-		return user.getName();
+		return username;
 	}
 
 	private void flagSpammer(final DBSession session, final AdminParam param) {
@@ -403,4 +449,10 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForList("getBibtexUsers", param, User.class, session);
 	}
 
+	/**
+	 * @param userDatabaseManager the userDatabaseManager to set
+	 */
+	public void setUserDatabaseManager(UserDatabaseManager userDatabaseManager) {
+		this.userDatabaseManager = userDatabaseManager;
+	}
 }

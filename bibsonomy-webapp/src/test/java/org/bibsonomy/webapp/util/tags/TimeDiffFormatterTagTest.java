@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.util.tags;
 
 import static org.junit.Assert.assertEquals;
@@ -70,17 +96,20 @@ public class TimeDiffFormatterTagTest {
 	public void testGetDateDiffSecondsEn() {
 		checkTimeDiff(10, "about 10 seconds ago", EN);
 	}
+	
 	@Test
 	@Ignore
 	public void testGetDateDiffMinutesEn() {
 		checkTimeDiff(60, "a minute ago", EN);
 		checkTimeDiff(600, "10 minutes ago", EN);
 	}
+	
 	@Test
 	@Ignore
 	public void testGetDateDiffHoursEn() {
 		checkTimeDiff(60 * 60, "an hour ago", EN);
 	}
+	
 	@Test
 	@Ignore
 	public void testGetDateDiffDaysEn() {
@@ -88,12 +117,14 @@ public class TimeDiffFormatterTagTest {
 		checkTimeDiff(60 * 60 * 24 * 2, "2 days ago", EN);
 		checkTimeDiff(60 * 60 * 24 * 7, "7 days ago", EN);
 	}
+	
 	@Test
 	@Ignore
 	public void testGetDateDiffMonthsEn() {
 		checkTimeDiff(60 * 60 * 24 * 30, "a month ago", EN);
 		checkTimeDiff(60 * 60 * 24 * 7 * 30, "7 months ago", EN);
 	}
+	
 	@Test
 	@Ignore
 	public void testGetDateDiffYearsEn() {
@@ -101,8 +132,6 @@ public class TimeDiffFormatterTagTest {
 		checkTimeDiff(60 * 60 * 24 * 30 * 13, "a year and a month ago", EN);
 		checkTimeDiff(60 * 60 * 24 * 30 * 12 * 7, "7 years ago", EN);
 	}
-
-	
 	
 	/**
 	 * ignored, because weird things happen on Hudson:
@@ -114,28 +143,33 @@ public class TimeDiffFormatterTagTest {
 	public void testGetDateDiffSecondsDe() {
 		checkTimeDiff(10, "vor 10 Sekunden", DE);
 	}
+	
 	@Test
 	public void testGetDateDiffMinutesDe() {
 		checkTimeDiff(60, "vor einer Minute", DE);
 		checkTimeDiff(600, "vor 10 Minuten", DE);
 	}
+	
 	@Test
 	public void testGetDateDiffHoursDe() {
 		checkTimeDiff(60 * 60, "vor einer Stunde", DE);
 		checkTimeDiff(60 * 60 + 20 * 60, "vor einer Stunde und 20 Minuten", DE);
 	}
+	
 	@Test
 	public void testGetDateDiffDaysDe() {
 		checkTimeDiff(60 * 60 * 24, "vor einem Tag", DE);
 		checkTimeDiff(60 * 60 * 24 * 2, "vor 2 Tagen", DE);
 		checkTimeDiff(60 * 60 * 24 * 7, "vor 7 Tagen", DE);
 	}
+	
 	@Test
 	public void testGetDateDiffMonthsDe() {
 		checkTimeDiff(60 * 60 * 24 * 30, "vor einem Monat", DE);
 		checkTimeDiff(60 * 60 * 24 * 30 + 60 * 60 * 24 * 7, "vor einem Monat und 7 Tagen", DE);
 		checkTimeDiff(60 * 60 * 24 * 7 * 30, "vor 7 Monaten", DE);
 	}
+	
 	@Test
 	public void testGetDateDiffYearsDe() {
 		checkTimeDiff(60 * 60 * 24 * 30 * 12, "vor einem Jahr", DE);

@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Model - Java- and JAXB-Model.
  *
- *  BibSonomy-Model - Java- and JAXB-Model.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.model.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -292,5 +295,28 @@ public class UserUtils {
 
 		existingUser.setReminderPassword(!present(updatedUser.getReminderPassword()) ? existingUser.getReminderPassword() : updatedUser.getReminderPassword());
 		existingUser.setReminderPasswordRequestDate(!present(updatedUser.getReminderPasswordRequestDate()) 	? existingUser.getReminderPasswordRequestDate() : updatedUser.getReminderPasswordRequestDate());
+	}
+	
+	/**
+	 * @param user
+	 * @return <code>true</code> iff the user exists in the system
+	 */
+	public static boolean isExistingUser(final User user) {
+		return present(user) && !Role.DELETED.equals(user.getRole()) && present(user.getName());
+	}
+	
+	/**
+	 * This method returns a new groupuser {@link User} for the given group
+	 * 
+	 * @param groupName the name of the group
+	 * @return the group user
+	 */
+	public static User buildGroupUser(final String groupName) {
+		final User user = new User(groupName);
+		user.setPassword(generateRandomPassword());
+		user.setRealname(""); // XXX: realname can't be null (db schema)
+		user.setEmail(""); // XXX: email can't be null (db schema)
+		user.setRole(Role.GROUPUSER);
+		return user;
 	}
 }

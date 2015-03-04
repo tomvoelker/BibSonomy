@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.controller.ajax;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -7,6 +33,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.search.BibTexKeySystemTag;
 import org.bibsonomy.model.BibTex;
@@ -33,12 +60,12 @@ public class GeneralAjaxController extends AjaxController implements Minimalisti
 		final String action = command.getAction();
 
 		if ("getTitleForUrl".equals(action)) {
-			this.getDetailsForUrl(command);
+			getDetailsForUrl(command);
 			return Views.AJAX_GET_TITLE_FOR_URL;
 		} else if ("getBibtexKeysForUser".equals(action)) {
 			this.getBibtexKeysForUser(command);
 			return Views.AJAX_GET_BIBTEXKEYS_FOR_USER;
-		}		
+		}
 		return Views.AJAX_TEXT;
 	}
 
@@ -65,7 +92,7 @@ public class GeneralAjaxController extends AjaxController implements Minimalisti
 		 * fetch posts
 		 */		
 		final List<String> tags = Collections.singletonList(SystemTagsUtil.buildSystemTagString(BibTexKeySystemTag.NAME, requestedBibTexKey));
-		command.setBibtexPosts(this.logic.getPosts(BibTex.class, GroupingEntity.USER, requestedUserName, tags, null, null, null, null, null, null, 0, 20));
+		command.setBibtexPosts(this.logic.getPosts(BibTex.class, GroupingEntity.USER, requestedUserName, tags, null, null,SearchType.LOCAL, null, null, null, null, 0, 20));
 	}
 	
 	/**
@@ -73,8 +100,7 @@ public class GeneralAjaxController extends AjaxController implements Minimalisti
 	 * 
 	 * @param command - the command containing the page URL
 	 */
-	private void getDetailsForUrl(final GeneralAjaxCommand command) {
-
+	private static void getDetailsForUrl(final GeneralAjaxCommand command) {
 		final String pageURL = command.getPageURL();
 		
 		if (!present(pageURL)) return;

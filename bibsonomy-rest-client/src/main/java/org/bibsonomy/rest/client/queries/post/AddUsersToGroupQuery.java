@@ -1,34 +1,39 @@
 /**
+ * BibSonomy-Rest-Client - The REST-client.
  *
- *  BibSonomy-Rest-Client - The REST-client.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.rest.client.queries.post;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.StringWriter;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.Status;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
@@ -51,18 +56,22 @@ public final class AddUsersToGroupQuery extends AbstractQuery<String> {
 	 * @param groupName
 	 *            name of the group the user is to be added to. the group must
 	 *            exist, else a {@link IllegalArgumentException} is thrown
-	 * @param users
-	 *            the users to be added
+	 * @param memberships
+	 *            the memberships to be added
 	 * @throws IllegalArgumentException
 	 *             if the group name is null or empty, or if the user is null or
 	 *             has no name defined
 	 */
-	public AddUsersToGroupQuery(final String groupName, final List<User> users) throws IllegalArgumentException {
+	public AddUsersToGroupQuery(final String groupName, final List<GroupMembership> memberships) throws IllegalArgumentException {
 		if (!present(groupName)) throw new IllegalArgumentException("no groupName given");
-		if (!present(users)) throw new IllegalArgumentException("no users specified");
-	
+		if (!present(memberships)) throw new IllegalArgumentException("no membership relation specified");
+		
 		this.groupName = groupName;
-		this.users = users;
+		this.users = new LinkedList<>();
+		for (GroupMembership ms : memberships) {
+			this.users.add(ms.getUser());
+		}
+		
 	}
 	
 	@Override

@@ -5,12 +5,18 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 
-	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post"
-		required="true" />
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<!-- Decide wether or not to display "Tags: " before listing all tags -->
-	<jsp:directive.attribute name="showTagsLabel" type="java.lang.Boolean"
-		required="false" />
+	<jsp:directive.attribute name="showTagsLabel" type="java.lang.Boolean" required="false" />
 
+	<c:choose>
+		<c:when test="${not empty post.systemUrl }">
+			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var ="isRemotePost" value="false"/>
+		</c:otherwise>
+	</c:choose>
 
 	<span style="margin-top: 2px;" class="fa fa-tag pull-left">
 		<!--  -->
@@ -27,28 +33,41 @@
 	
 	<fmt:message var="systemTagsTitle" key="tag.systemTag.hidden.title" />
 	<div class="extend hiddenSystemTag pull-left">
-		<a id="system-tags-link-${post.resource.intraHash}" href="#"
-			class="system-tags-link" style="${empty post.hiddenSystemTags ? 'display: none;' : ''}"><span
-			class="glyphicon glyphicon-asterisk">
-				<!-- KEEP ME -->
-		</span></a>&amp;nbsp;
-		<div class="popover popover-dismiss system-tags hide"
-			id="system-tags-${post.resource.intraHash}">
+		
+		<a id="system-tags-link-${post.resource.intraHash}${post.user.name}" href="#" class="system-tags-link" style="${empty post.hiddenSystemTags ? 'display: none;' : ''}">
+			<span class="glyphicon glyphicon-asterisk"><!-- KEEP ME --></span>
+		</a>&amp;nbsp;
+		
+		<div class="popover popover-dismiss system-tags hide" id="system-tags-${post.resource.intraHash}${post.user.name}">
 			<div class="help popover-title">
 				<!--  -->
 			</div>
 			<div class="help popover-content popover-dismissible" href="#">
-				<button style="margin-top: -3px;" type="button" class="close"
-					onclick="javascript:$(this).parent().parent().prev().popover('hide');">
-					&amp;nbsp;<span aria-hidden="true">&amp;times;</span><span
-						class="sr-only">Close</span>
+				<button style="margin-top: -3px;" type="button" class="close" onclick="javascript:$(this).parent().parent().prev().popover('hide');">
+					&amp;nbsp;
+					<span aria-hidden="true">&amp;times;</span>
+					<span class="sr-only">Close</span>
 				</button>
+				
 				<div style="margin-right: 15px;">
 					<ul class="tags list-inline">
 						<c:forEach var="systag" items="${post.hiddenSystemTags}">
-							<li><span class="label label-warning"><a
-									href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, systag.name)}"><c:out
-											value="${systag.name}" /></a></span></li>
+							<li>
+								<span class="label label-warning">
+									<c:choose>
+										<c:when test="${isRemotePost}">
+											<a href="${relativeUrlGenerator.getUserUrlByUserNameTagNameAndSysUrl(post.user.name, systag.name, post.systemUrl)}">
+												<c:out value="${systag.name}" />
+											</a>
+										</c:when>
+										<c:otherwise>
+											<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, systag.name)}">
+												<c:out value="${systag.name}" />
+											</a>
+										</c:otherwise>
+									</c:choose>
+								</span>
+							</li>
 						</c:forEach>
 					</ul>
 				</div>
@@ -65,9 +84,19 @@
 	</c:if>
 
 	<c:forEach var="tag" items="${post.visibleTags}">
-		<span class="label label-grey"><a
-			href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}"><c:out
-					value="${tag.name}" /></a></span>
+		<span class="label label-grey">
+			<c:choose>
+				<c:when test="${isRemotePost}">
+					<a href="${relativeUrlGenerator.getUserUrlByUserNameTagNameAndSysUrl(post.user.name, tag.name, post.systemUrl)}">
+						<c:out value="${tag.name}" />
+					</a>
+				</c:when>
+				<c:otherwise>
+					<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}"><c:out
+						value="${tag.name}" /></a>
+				</c:otherwise>
+			</c:choose>
+		</span>
 		<c:out value=" " />
 	</c:forEach>
 </jsp:root>

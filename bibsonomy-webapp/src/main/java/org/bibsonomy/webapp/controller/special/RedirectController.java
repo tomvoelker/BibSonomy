@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.controller.special;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -64,7 +90,7 @@ public class RedirectController implements MinimalisticController<RedirectComman
 			 * handle /my* pages
 			 */
 			redirectUrl = this.getMyPageRedirect(myPage, user.getName());
-		} else if (present(search) && present(scope)) {
+		} else if (present(search)) {
 			/*
 			 * handle main page search form
 			 */
@@ -121,8 +147,11 @@ public class RedirectController implements MinimalisticController<RedirectComman
 	 * @return
 	 * @throws UnsupportedEncodingException - if it could not encode the parameters for the redirect.
 	 */
-	private String getSearchPageRedirect(final String search, final String scope, final String requUser) {
+	private String getSearchPageRedirect(final String search, String scope, final String requUser) {
 		log.debug("handling redirect for main page search form");
+		if (scope == null) {
+			scope = "search";
+		}
 		/*
 		 * redirect either to /user/*, to /author/*, to /tag/* or to /concept/tag/* page 
 		 */
@@ -146,6 +175,10 @@ public class RedirectController implements MinimalisticController<RedirectComman
 			 */
 			log.debug("scope is group:");
 			return "/search/" + UrlUtils.safeURIEncode(search + " " + scope);
+		}
+		if (scope.equals("federated")) {
+			log.debug("scope is federated");
+			return "/search/" + UrlUtils.safeURIEncode(search) + "?scope=FEDERATED";
 		}
 		/*
 		 * all other pages simply go to /scope/search
@@ -182,11 +215,11 @@ public class RedirectController implements MinimalisticController<RedirectComman
 		
 		final String userPage = urlGenerator.getUserUrlByUserName(loginUserName);
 		/*
-		 * XXX: it would be nice that myPUMA and myBibSonomy redirects are only
+		 * XXX: it would be nice if myPUMA and myBibSonomy redirects were only
 		 * available in the corresponding themes, but e.g. old and new help pages
 		 * are linking to myBibSonomy at the moment
 		 */
-		if ("myBibSonomy".equals(myPage) || "myPUMA".equals(myPage)) {
+		if ("myBibSonomy".equalsIgnoreCase(myPage) || "myPUMA".equalsIgnoreCase(myPage)) {
 			return userPage;
 		}
 		if ("myown".equalsIgnoreCase(myPage)) {

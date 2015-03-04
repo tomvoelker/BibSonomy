@@ -19,65 +19,63 @@ xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true" />
 	<jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true" />
-	<jsp:directive.attribute name="deleteCheckedPosts" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="updateExistingPost" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="overwrite" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" description="The type of resource that are edited (bookmark or bibtex)." />
 
 	<jsp:directive.attribute name="shortPostDescription" fragment="true" required="true" description="A one line description of a post" />
-	<jsp:directive.attribute name="title" fragment="true" required="true" />
-	<jsp:directive.attribute name="desc" fragment="true" required="true" />
-	<jsp:directive.attribute name="actions" fragment="true" required="true" />
-	<jsp:directive.attribute name="documents" fragment="true" required="true" />
 
 	<jsp:directive.variable name-given="post" scope="NESTED" />
 
 	<!-- page title -->
 	<fmt:message key="post.meta.edit" var="pageTitle" />
 
-	<layout:oneColumnLayout 
-		requPath="${requPath}" 
-		pageTitle="${pageTitle}" 
-		loginUser="${command.context.loginUser}">
-
+	<layout:paneLayout requPath="${requPath}" command="${command}" pageTitle="${pageTitle}" activeTab="my" headerMessageKey="batchedit.info" showPageOptions="${true}">
+		
+		<jsp:attribute name="infobox">
+			<parts:infobox>
+				<jsp:attribute name="infoTextBody">
+					<!-- short info about batchEdit -->
+					<fmt:message key="batchedit.info1"/>
+					<ul style="list-style: square outside none;padding: 10px 10px 10px 25px;">
+						<c:if test="${resourceType eq 'bibtex'}">
+							<li><fmt:message key="batchedit.option1"/></li>
+						</c:if>                
+						<li><fmt:message key="batchedit.option2"/></li>
+						<li><fmt:message key="batchedit.option3"/></li>
+						<li><fmt:message key="batchedit.option4"/></li>
+						<li><fmt:message key="batchedit.option5"/></li>
+					</ul>
+					<ul><fmt:message key="batchedit.info2"/></ul>
+				</jsp:attribute>
+			</parts:infobox>
+		</jsp:attribute>
+		
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="post.meta.edit" />
 		</jsp:attribute>
 
 
 		<jsp:attribute name="content">
-			<h1 class="content-header"><fmt:message key="batchedit.title" /></h1>
-			
-			<batch:content 
-				resourceType="${resourceType}" 
-				listView="${listView}" 
-				otherPostsUrlPrefix="${otherPostsUrlPrefix}" 
+			<h1 class="content-heading"><fmt:message key="post.meta.batch_edit" /></h1>
+			<batch:content resourceType="${resourceType}" listView="${listView}" 
+				otherPostsUrlPrefix="${otherPostsUrlPrefix}" directEdit="${true}" 
 				listViewStartParamName="${listViewStartParamName}" 
-				deleteCheckedPosts="${deleteCheckedPosts}" 
-				overwrite="${overwrite}">
+				updateExistingPost="${updateExistingPost}" overwrite="${overwrite}">
         						 
-					<jsp:attribute name="shortPostDescription">
-						<jsp:invoke fragment="shortPostDescription" />
-					</jsp:attribute>
-					
-					<jsp:attribute name="title">  
-						<jsp:invoke fragment="title" />
-					</jsp:attribute>
-						
-		   			<jsp:attribute name="desc">
-		   				<jsp:invoke fragment="desc" />
-		   			</jsp:attribute>
-		      		
-		      		<jsp:attribute name="documents"> 
-		      			<jsp:invoke fragment="documents" />
-		      		</jsp:attribute>
-		      		
-		      		<jsp:attribute name="actions">
-		      			<jsp:invoke fragment="actions" />
-		      		</jsp:attribute>
-      		
-			</batch:content> 
+			<jsp:attribute name="shortPostDescription">
+				<jsp:invoke fragment="shortPostDescription" />
+			</jsp:attribute>
+			
+        </batch:content> 
+      </jsp:attribute>
+      
+      <jsp:attribute name="pageOptions">
+      	<ul>
+      		<li><a href="/editTags">WURST<fmt:message key="edittags.main.Header"/>...</a></li>
+      	</ul>
       </jsp:attribute>
 
-	</layout:oneColumnLayout>
+	</layout:paneLayout>
 
 </jsp:root>

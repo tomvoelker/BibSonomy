@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.controller.admin;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -9,14 +35,17 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.AdminActions;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.EvaluatorUser;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
@@ -54,7 +83,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 			throw new AccessDeniedException("please log in as admin");
 		}
 		
-		final String action = command.getAction();
+		final AdminActions action = command.getAction();
 		
 		log.debug("Action: " + action);
 		
@@ -77,7 +106,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 		 * 	
 		 */
 	
-		switch (AdminActions.getAdminAction(action)) {
+		switch (action) {
 		case FLAG_SPAMMER:
 			log.debug("flag spammer");
 			this.flagSpammer(command, true);
@@ -105,6 +134,9 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 			this.updateSettings(command);
 			command.setResponseString(command.getKey() + " updated");
 			break;
+		case FETCH_GROUP_WITH_PERMISSIONS:
+			this.fetchgroupForPermissions(command);
+			return Views.AJAX_JSON_PERMISSIONS;
 		default:
 			break;
 		}
@@ -124,6 +156,19 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 		
 	}
 	
+	/**
+	 * 
+	 */
+	private void fetchgroupForPermissions(final AdminAjaxCommand cmd) {
+		String groupName = cmd.getGroupname();
+		if (present(groupName)) {
+			Group group = logic.getGroupDetails(groupName);
+			if (present(group) && GroupID.INVALID.getId()!=group.getGroupId()) {
+				cmd.setGroupLevelPermissions(group.getGroupLevelPermissions());
+			}
+		}
+	}
+
 	// TODO: Discuss evaluator interface 
 	private void flagSpammerEvaluator(final AdminAjaxCommand cmd, final boolean spammer) {
 		if (cmd.getUserName() != null) {
@@ -191,7 +236,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 			if (command.getShowSpamPosts().equals("true")) {
 				filter = FilterEntity.ADMIN_SPAM_POSTS;
 			}
-			final List<Post<Bookmark>> bookmarks = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, filter, Order.ADDED, null, null, 0, 5);
+			final List<Post<Bookmark>> bookmarks = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, SearchType.LOCAL,filter, Order.ADDED, null, null, 0, 5);
 			command.setBookmarks(bookmarks);
 
 			final int totalBookmarks = this.logic.getPostStatistics(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, filter, null, null, null, null, 0, 100).getCount();

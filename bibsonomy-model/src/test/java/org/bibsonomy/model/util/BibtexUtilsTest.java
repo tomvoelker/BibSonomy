@@ -1,29 +1,33 @@
 /**
+ * BibSonomy-Model - Java- and JAXB-Model.
  *
- *  BibSonomy-Model - Java- and JAXB-Model.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.model.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -452,7 +456,7 @@ public class BibtexUtilsTest {
 		bib.addMiscField("key2", "value2");
 		bib.serializeMiscFields();
 		bib.clearMiscFields();
-		bib.parseMiscField();		
+		bib.parseMiscField();
 		
 		assertEquals(2, bib.getMiscFields().values().size());
 		assertEquals("value1", bib.getMiscField("key1"));
@@ -575,5 +579,45 @@ public class BibtexUtilsTest {
 		final List<PersonName> rVal = new ArrayList<PersonName>();
 		rVal.add(new PersonName(fname, lname));
 		return rVal;
+	}
+	
+	/**
+	 * tests for {@link BibTexUtils#extractFirstPage(BibTex)}
+	 */
+	@Test
+	public void testExtractFirstPage() {
+		assertNull(BibTexUtils.extractFirstPage(null));
+		
+		assertEquals("", BibTexUtils.extractFirstPage(""));
+		
+		assertEquals("12", BibTexUtils.extractFirstPage("12"));
+		
+		assertEquals("12123", BibTexUtils.extractFirstPage("  12123"));
+		
+		assertEquals("21", BibTexUtils.extractFirstPage("21-34"));
+		
+		assertEquals("234", BibTexUtils.extractFirstPage("234 -- 340"));
+		
+		assertEquals("12123", BibTexUtils.extractFirstPage("  12123-  232434"));
+	}
+	
+	/**
+	 * tests for {@link BibTexUtils#extractLastPage(BibTex)}
+	 */
+	@Test
+	public void testExtractLastPage() {
+		assertNull(BibTexUtils.extractLastPage(null));
+		
+		assertEquals("", BibTexUtils.extractLastPage(""));
+		
+		assertEquals("12", BibTexUtils.extractLastPage("12"));
+		
+		assertEquals("12123", BibTexUtils.extractLastPage("  12123"));
+		
+		assertEquals("34", BibTexUtils.extractLastPage("21-34"));
+		
+		assertEquals("340", BibTexUtils.extractLastPage("234 -- 340"));
+		
+		assertEquals("232434", BibTexUtils.extractLastPage("  12123-  232434"));
 	}
 }

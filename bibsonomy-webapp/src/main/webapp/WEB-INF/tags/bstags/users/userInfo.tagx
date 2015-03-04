@@ -44,7 +44,10 @@
 		name of the user
 	-->
 	<td>
-		<a href="/user/${fn:escapeXml(spamUser.name)}">
+		<c:url value="${relativeUrlGenerator.getUserUrlByUserName(spamUser.name)}" var="userUrl">
+			<c:param name="filter" value="ADMIN_SPAM_POSTS"></c:param>
+		</c:url>
+		<a href="${userUrl}">
 			<c:out value="${spamUser.name}" />
 		</a>
 

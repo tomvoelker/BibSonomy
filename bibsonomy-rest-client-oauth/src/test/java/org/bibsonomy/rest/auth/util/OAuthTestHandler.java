@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Rest-Client-OAuth - The REST-client OAuth Accessor.
  *
- *  BibSonomy-Rest-Client-OAuth - The REST-client OAuth Accessor.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.rest.auth.util;
 import static org.bibsonomy.util.ValidationUtils.present;
 
@@ -32,6 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -88,7 +92,7 @@ public class OAuthTestHandler extends AbstractHandler {
 		}
 		
 		// print first ten bookmark titles
-		final List<Post<Bookmark>> posts = INTERFACE.getPosts(Bookmark.class, GroupingEntity.USER, ACCESSOR.getRemoteUserId(), null, null, null, null, null, null, null, 0, 9);
+		final List<Post<Bookmark>> posts = INTERFACE.getPosts(Bookmark.class, GroupingEntity.USER, ACCESSOR.getRemoteUserId(), null, null, null, SearchType.LOCAL, null, null, null, null, 0, 9);
 		for (final Post<Bookmark> post : posts) {
 			final Bookmark bookmark = post.getResource();
 			response.getWriter().println("<li><a href=\"" + bookmark.getUrl() + "\">" + bookmark.getTitle() + "</a></li>");

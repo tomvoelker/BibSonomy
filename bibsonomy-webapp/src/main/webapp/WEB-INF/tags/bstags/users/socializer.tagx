@@ -28,16 +28,13 @@
 		<h4 class="media-heading">
 			<user:name user="${command.user}"/>
 			<c:if test="${not empty command.user.homepage}">
-				<c:out value=" " /><small><a href="${fn:escapeXml(command.user.homepage)}"><span class="fa fa-external-link"><!--  --></span></a></small>
+				<c:out value=" " /><small><a href="${fn:escapeXml(command.user.homepage)}" rel="nofollow"><span class="fa fa-external-link"><!--  --></span></a></small>
 			</c:if>
 		</h4>
 		
 		<div class="media" style="border:none;">
 			<!-- user thumbnail -->
-			<a class="pull-left img-thumbnail img-responsive" href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}" title="${username}">
-				<img alt="${username}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(command.requestedUser)}" class="user-avatar"/>
-				<span><c:out value="${username}" /></span>
-			</a>
+			<user:thumbnail user="${command.user}" />
 			
 			<div class="media-body" id="titletext">
 

@@ -18,7 +18,7 @@
 			<c:otherwise>
 				<fmt:message key="post.meta.taggedBy" />
 				<c:out value=" "/>
-				<user:username user="${post.user}" />
+				<user:username user="${post.user}" post="${post}"/>
 			</c:otherwise>
 		</c:choose>
 		

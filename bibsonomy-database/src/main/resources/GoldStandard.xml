@@ -4,7 +4,8 @@
 <sqlMap namespace="GoldStandard">
 
 	<select id="getGoldStandardByHash" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="resourceParam">
-		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesAndContentId"/>, 1 AS count, content_type, <include refid="reviewRatingsRows" /> FROM gold_standard b
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesAndContentId"/>, b.change_date, 1 AS count, content_type, <include refid="reviewRatingsRows" /> 
+		FROM gold_standard b
 		LEFT JOIN review_ratings_cache c ON c.interHash = b.simhash1
 		WHERE b.simhash1 = #hash# AND b.content_type = #contentType# ORDER BY b.date DESC
 	</select>

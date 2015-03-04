@@ -62,7 +62,7 @@ $(function(){
 	            		$('#urlList').prepend(function() {
 	            			$("#add-url-modal").modal("hide");
 	            			
-	            			return $("<p class='form-control-static'><a href='" + url + "'>" + urlText + "</a> </p>")
+	            			return $("<li><a href='" + url + "'>" + urlText + "</a> </li>")
 	            				.append($("<a href=''><span class='glyphicon glyphicon-remove'><!--  --></span></a>").click(function() {
 	            					deleteUrl(this, url, hash, ckey);
 	            					return false;

@@ -66,11 +66,15 @@
 
 	<filter>
 		<description>Removes the context path from all request URLs.</description>
-		<filter-name>ContextPathFilter</filter-name>
-		<filter-class>org.bibsonomy.webapp.filters.ContextPathFilter</filter-class>
+		<filter-name>contextPathFilter</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+		<init-param>
+			<param-name>contextAttribute</param-name>
+			<param-value>org.springframework.web.servlet.FrameworkServlet.CONTEXT.bibsonomy2</param-value>
+		</init-param>
 	</filter>
 	<filter-mapping>
-		<filter-name>ContextPathFilter</filter-name>
+		<filter-name>contextPathFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
@@ -156,10 +160,6 @@
 		<servlet-name>AdminHandler</servlet-name>
 		<servlet-class>servlets.AdminHandler</servlet-class>
 	</servlet>
-	<servlet>
-		<servlet-name>SettingsHandler</servlet-name>
-		<servlet-class>servlets.SettingsHandler</servlet-class>
-	</servlet>
 	
 	<!-- events -->
 	<servlet>
@@ -226,10 +226,6 @@
 	<servlet-mapping>
 		<servlet-name>AdminHandler</servlet-name>
 		<url-pattern>/AdminHandler</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>SettingsHandler</servlet-name>
-		<url-pattern>/SettingsHandler</url-pattern>
 	</servlet-mapping>
 
 	<jsp-config>

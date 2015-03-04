@@ -3,11 +3,11 @@
 	xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:jee="http://www.springframework.org/schema/jee"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
-	                    http://www.springframework.org/schema/beans/spring-beans.xsd
-	                    http://www.springframework.org/schema/util 
-	                    http://www.springframework.org/schema/util/spring-util-2.5.xsd
-	                    http://www.springframework.org/schema/jee
-	                    http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/util 
+						http://www.springframework.org/schema/util/spring-util-2.5.xsd
+						http://www.springframework.org/schema/jee
+						http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
 
 	<!--+
 		|
@@ -36,15 +36,15 @@
 	</bean>
 	
 	<bean id="loggingSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
-        <property name="configLocation" value="classpath:SqlMapConfigLogger.xml" />
-        <property name="dataSource" ref="loggingDataSource" />
-        <property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
-    </bean>
-    
-    <bean id="loggingSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="configLocation" value="classpath:SqlMapConfigLogger.xml" />
+		<property name="dataSource" ref="loggingDataSource" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+	</bean>
+	
+	<bean id="loggingSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
 		<property name="client" ref="loggingSqlMapClient" />
 	</bean>
-    
-    <jee:jndi-lookup id="loggingDataSource" jndi-name="jdbc/clicklogger" lookup-on-startup="false" expected-type="javax.sql.DataSource" />
+	
+	<jee:jndi-lookup id="loggingDataSource" jndi-name="jdbc/clicklogger" lookup-on-startup="false" expected-type="javax.sql.DataSource" />
 
 </beans>

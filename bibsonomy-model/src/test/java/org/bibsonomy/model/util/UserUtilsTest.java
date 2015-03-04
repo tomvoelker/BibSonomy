@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Model - Java- and JAXB-Model.
  *
- *  BibSonomy-Model - Java- and JAXB-Model.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.model.util;
 
 import static org.junit.Assert.assertEquals;
@@ -34,6 +37,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.TestUtils;
 import org.junit.Test;
@@ -149,5 +153,27 @@ public class UserUtilsTest {
 		assertTrue(UserUtils.isValidHomePage(TestUtils.createURL("http://bibsonomy.org")));
 		assertTrue(UserUtils.isValidHomePage(TestUtils.createURL("https://bibsonomy.org")));
 		assertFalse(UserUtils.isValidHomePage(TestUtils.createURL("ftp://bibsonomy.org")));
+	}
+	
+	/**
+		 * tests for {@link UserUtils#isExistingUser(User)}
+		 * @throws Exception
+		 */
+	@Test
+	public void testIsExistingUser() throws Exception {
+		final User user = new User();
+		assertFalse(UserUtils.isExistingUser(user));
+		user.setRole(Role.DELETED);
+		user.setName("testuser1");
+		assertFalse(UserUtils.isExistingUser(user));
+		user.setName("");
+		assertFalse(UserUtils.isExistingUser(user));
+		
+		user.setName("testuser2");
+		user.setRole(Role.DEFAULT);
+		
+		assertTrue(UserUtils.isExistingUser(user));
+		
+		assertFalse(UserUtils.isExistingUser(null));
 	}
 }

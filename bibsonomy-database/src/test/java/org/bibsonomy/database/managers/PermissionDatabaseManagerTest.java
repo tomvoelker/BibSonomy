@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Database - Database for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertFalse;
@@ -7,11 +33,13 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -55,6 +83,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 				permissionDb.checkStartEnd(new User(), 0, i, "test");
 				fail("expected exception");
 			} catch (final AccessDeniedException ignore) {
+				// ignore
 			}
 		}
 		// OK 
@@ -190,44 +219,71 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		loginUser2.addGroup(GroupUtils.getPublicGroup());
 		
 		final Group testgroup1 = new Group(TESTGROUP1_ID);
-		testgroup1.setUserSharedDocuments(true);
+		final GroupMembership groupMembership1 = new GroupMembership();
+		groupMembership1.setUser(loginUser);
+		groupMembership1.setUserSharedDocuments(true);
+		testgroup1.getMemberships().add(groupMembership1);
 		testgroup1.setSharedDocuments(true);
 		loginUser.addGroup(testgroup1);
 
 		final Group testgroup2 = new Group(TESTGROUP2_ID);
-		testgroup2.setUserSharedDocuments(true);
+		final GroupMembership groupMembership2 = new GroupMembership();
+		groupMembership2.setUser(loginUser);
+		groupMembership2.setUserSharedDocuments(true);
+		testgroup2.getMemberships().add(groupMembership2);
 		testgroup2.setSharedDocuments(false);
 		loginUser.addGroup(testgroup2);
 
 		final Group testgroup3 = new Group(TESTGROUP3_ID);
-		testgroup3.setUserSharedDocuments(false);
+		final GroupMembership groupMembership3 = new GroupMembership();
+		groupMembership3.setUser(loginUser);
+		groupMembership3.setUserSharedDocuments(false);
+		testgroup3.getMemberships().add(groupMembership3);
 		testgroup3.setSharedDocuments(false);
 		loginUser.addGroup(testgroup3);
 
 		final Group testgroup4 = new Group(TESTGROUP4_ID);
-		testgroup4.setUserSharedDocuments(false);
+		final GroupMembership groupMembership4 = new GroupMembership();
+		groupMembership4.setUser(loginUser);
+		groupMembership4.setUserSharedDocuments(false);
+		testgroup4.getMemberships().add(groupMembership4);
 		testgroup4.setSharedDocuments(true);
 		loginUser.addGroup(testgroup4);
 		
-		/*
-		// group members are allowed to see posts -> yes
-		assertTrue(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup1", null, this.dbSession));
-		*/
 		// non-existent group -> no
 		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, ParamUtils.NOGROUP_NAME, null, this.dbSession));
 	
 		// non-group members are not -> no
 		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser2, GroupingEntity.GROUP, "testgroup1", null, this.dbSession));
+		
 		// dummy tests / null values -> no
 		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(new User(), null, null, null, this.dbSession));
+		
 		// group sharedDocuments = 0 && userSharedDocuments = 0 -> no
 		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup3", null, this.dbSession));
+		
 		// group sharedDocuments = 0 && userSharedDocuments = 1 -> no
 		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup2", null, this.dbSession));
-		// group sharedDocuments = 1 && userSharedDocuments = 0 -> no
-		//assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup4", null, this.dbSession));
+		
+		// group sharedDocuments = 1 && userSharedDocuments = 0 -> yes (because we have group setting)
 		assertTrue(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup4", null, this.dbSession));
+		
 		// group sharedDocuments = 1 && userSharedDocuments = 1 -> yes
 		assertTrue(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup1", null, this.dbSession));
+	}
+	
+	@Test
+	public void testHasGroupLevelPermission() {
+		final User testUser1 = new User("testuser1");
+		try {
+			permissionDb.ensureHasGroupLevelPermission(testUser1, GroupLevelPermission.COMMUNITY_POST_INSPECTION);
+			fail("Should yield AccessDeniedException");
+		} catch (AccessDeniedException e) {
+			// ignore
+		}
+		final Group group = new Group();
+		group.getGroupLevelPermissions().add(GroupLevelPermission.COMMUNITY_POST_INSPECTION);
+		testUser1.addGroup(group);
+		permissionDb.ensureHasGroupLevelPermission(testUser1, GroupLevelPermission.COMMUNITY_POST_INSPECTION);
 	}
 }

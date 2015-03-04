@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Synchronization - Handles user synchronization between BibSonomy authorities
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.synchronization;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -39,7 +65,6 @@ public class SynchronizationClient extends AbstractSynchronizationClient {
 	 * @return map of synchronization data
 	 */
 	public Map<Class<? extends Resource>, SynchronizationData> synchronize(final LogicInterface clientLogic, final URI syncServerUri) {
-		
 		final SyncService syncServer = getServerByURI(clientLogic, syncServerUri);
 		final Class<? extends Resource> resourceType = syncServer.getResourceType();
 		final SynchronizationDirection direction = syncServer.getDirection();
@@ -48,6 +73,7 @@ public class SynchronizationClient extends AbstractSynchronizationClient {
 		 * retrieve instance of server logic
 		 */
 		final LogicInterface serverLogic = getServerLogic(syncServer);
+		final boolean isSecureSync = present(syncServer.getSecureAPI());
 		
 		if (!present(serverLogic)) {
 			throw new IllegalArgumentException("Synchronization for " + syncServerUri + " not configured for user " + clientLogic.getAuthenticatedUser());
@@ -60,12 +86,11 @@ public class SynchronizationClient extends AbstractSynchronizationClient {
 		final Map<Class<? extends Resource>, SynchronizationData> result = new HashMap<Class<? extends Resource>, SynchronizationData>();
 		
 		for (final Class<? extends Resource> resource : ResourceUtils.getResourceTypesByClass(resourceType)) {
-			result.put(resource, synchronize(clientLogic, serverLogic, serverUserName, resource, direction, syncServer.getStrategy()));
+			result.put(resource, synchronize(clientLogic, serverLogic, serverUserName, resource, direction, syncServer.getStrategy(), isSecureSync));
 		}
 		return result;
 	}
 
-		
 	/**
 	 * Synchronizes the user's posts of the given resource type 
 	 * on the client and server according to the given direction. 
@@ -75,9 +100,11 @@ public class SynchronizationClient extends AbstractSynchronizationClient {
 	 * @param serverUserName
 	 * @param resourceType
 	 * @param direction
+	 * @param strategy 
+	 * @param isSecureSync TODO
 	 * @return
 	 */
-	protected SynchronizationData synchronize(final LogicInterface clientLogic, final LogicInterface serverLogic, final String serverUserName, final Class<? extends Resource> resourceType, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy) {
+	protected SynchronizationData synchronize(final LogicInterface clientLogic, final LogicInterface serverLogic, final String serverUserName, final Class<? extends Resource> resourceType, final SynchronizationDirection direction, final ConflictResolutionStrategy strategy, boolean isSecureSync) {
 		SynchronizationStatus newStatus;
 		String info;
 		try {
@@ -96,7 +123,7 @@ public class SynchronizationClient extends AbstractSynchronizationClient {
 			/*
 			 * flag sync as running
 			 */
-			updateSyncData(serverLogic, serverUserName, resourceType, SynchronizationStatus.PLANNED, SynchronizationStatus.RUNNING, "");
+			updateSyncData(serverLogic, serverUserName, resourceType, SynchronizationStatus.PLANNED, SynchronizationStatus.RUNNING, "", isSecureSync);
 			/*
 			 * sync
 			 */
@@ -116,7 +143,7 @@ public class SynchronizationClient extends AbstractSynchronizationClient {
 		/*
 		 * store sync result
 		 */
-		updateSyncData(serverLogic, serverUserName, resourceType, SynchronizationStatus.RUNNING, newStatus, info);
+		updateSyncData(serverLogic, serverUserName, resourceType, SynchronizationStatus.RUNNING, newStatus, info, isSecureSync);
 		
 		/*
 		 * Get synchronization data from server. Can not be constructed here 

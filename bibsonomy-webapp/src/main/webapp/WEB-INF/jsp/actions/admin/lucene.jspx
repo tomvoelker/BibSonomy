@@ -147,14 +147,6 @@
 			    			</c:forEach>
 			    		</tr>
 			    		<tr>
-			    			<td>last modified date</td>
-			    			<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
-			    				<c:if test="${resIndex.id != index.generator.generatingIndexId}">
-			    					<td><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${resIndex.indexStatistics.lastModified}" /></td>
-			    				</c:if>
-			    			</c:forEach>
-			    		</tr>
-			    		<tr>
 			    			<td>current version</td>
 			    			<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
 			    				<c:if test="${resIndex.id != index.generator.generatingIndexId}">

@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -15,17 +41,17 @@ import java.util.TreeSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -64,6 +90,10 @@ import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.impl.database.RecommenderStatisticsManager;
 
 /**
+ * A generic edit post controller for any resource
+ * 
+ * NOTE: Do not import any subclasses of the {@link Resource} class!
+ * 
  * @author fba
  * @param <RESOURCE>
  * @param <COMMAND>
@@ -71,6 +101,7 @@ import recommender.impl.database.RecommenderStatisticsManager;
 public abstract class EditPostController<RESOURCE extends Resource, COMMAND extends EditPostCommand<RESOURCE>> extends SingleResourceListController implements MinimalisticController<COMMAND>, ErrorAware {
 	private static final Log log = LogFactory.getLog(EditPostController.class);
 
+	private static final String TAGS_KEY = "tags";
 	protected static final String LOGIN_NOTICE = "login.notice.post.";
 
 	private Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> recommender;
@@ -103,6 +134,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		command.setPost(new Post<RESOURCE>());
 		command.getPost().setResource(this.instantiateResource());
+
+		// history
+		command.setDifferentEntryKeys(new ArrayList<String>());
 
 		/*
 		 * set default values.
@@ -194,33 +228,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		this.initPost(command, post, loginUser);
 
-		/*
-		 * decide, what to do
-		 */
 		final String intraHashToUpdate = command.getIntraHashToUpdate();
-
-		/*
-		 * TODO: Please refactor: first check if interhashToUpdate is present =>
-		 * update if so, check for the compareVersion => update using a diff to
-		 * another post, else regular update Please comment on the use of
-		 * compareVersion
-		 */
-		/*
-		 * compareVersion-1 to change index begin from 1 to 0
-		 */
-		// final int compareVersion = (command.getCompareVersion()-1);
-		//
-		// if (present(compareVersion) && (compareVersion!=-1) &&
-		// present(intraHashToUpdate)) {
-		// log.debug("intra hash to diff found -> handling diff of existing post");
-		// final List<?> dbPosts = logic.getPosts(post.getResource().getClass(),
-		// GroupingEntity.ALL, user, null, intraHashToUpdate, null,
-		// FilterEntity.POSTS_HISTORY_BIBTEX, null, null, null, compareVersion,
-		// compareVersion+1);
-		// command.setPostDiff((Post<RESOURCE>) dbPosts.get(0));
-		// command.setPost(getPostDetails(intraHashToUpdate, user));
-		// return Views.DIFFPUBLICATIONPAGE;
-		// }
 
 		if (present(intraHashToUpdate)) {
 			log.debug("intra hash to update found -> handling update of existing post");
@@ -258,15 +266,15 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * found, a {@link ObjectNotFoundException} exception is thrown.
 	 * 
 	 * @param loginUserName
-	 *            - the name of the user whose inbox should be checked
+	 *        - the name of the user whose inbox should be checked
 	 * @param hash
-	 *            - the hash of the post we want to find
+	 *        - the hash of the post we want to find
 	 * @param user
-	 *            - the name of the user who owns the post (!= inbox user!)
+	 *        - the name of the user who owns the post (!= inbox user!)
 	 * @return The post from the inbox.
 	 * @throws ObjectNotFoundException
 	 */
-	
+
 	@SuppressWarnings("unchecked")
 	private Post<RESOURCE> getInboxPost(final String loginUserName, final String hash, final String user) throws ObjectNotFoundException {
 		/*
@@ -276,18 +284,18 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * has several posts with the same hash in his inbox, we get them all
 		 * and must compare each post against the given user name.
 		 */
-		
+
 		final List<Post<RESOURCE>> dbPosts = new LinkedList<Post<RESOURCE>>();
 		List<Post<RESOURCE>> tmp;
 		int startCount = 0;
 		final int step = PostLogicInterface.MAX_QUERY_SIZE;
-		
+
 		do {
-			tmp = this.logic.getPosts((Class<RESOURCE>)this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, null, null, null, null, startCount, startCount + step);
+			tmp = this.logic.getPosts((Class<RESOURCE>) this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, SearchType.LOCAL, null, null, null, null, startCount, startCount + step);
 			dbPosts.addAll(tmp);
 			startCount += step;
 		} while (tmp.size() == step);
-		
+
 		if (present(dbPosts)) {
 			for (final Post<RESOURCE> dbPost : dbPosts) {
 				/*
@@ -316,10 +324,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * Thus, never return the view directly, but use this method!
 	 * 
 	 * @param command
-	 *            - the command the controller is working on (and which is also
-	 *            handed over to the view).
+	 *        - the command the controller is working on (and which is also
+	 *        handed over to the view).
 	 * @param loginUser
-	 *            - the login user.
+	 *        - the login user.
 	 * @return The post view.
 	 */
 	protected View getEditPostView(final EditPostCommand<RESOURCE> command, final User loginUser) {
@@ -386,6 +394,28 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				this.errors.reject("error.post.notfound", "The post with the given intra hash could not be found.");
 				return Views.ERROR;
 			}
+
+			// if the controller is called from history page
+			if (present(command.getDifferentEntryKeys())) {
+				/*
+				 * TODO: why don't we use the update date of the post as
+				 * identifier (instead of the compare version)? A greater than
+				 * query is more effective as the limit and offset caused by the
+				 * compare version
+				 */
+				// comparePost is the history revision which will be restored.
+				final int compareVersion = command.getCompareVersion();
+				@SuppressWarnings("unchecked")
+				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(dbPost.getResource().getClass(), GroupingEntity.USER, this.getGrouping(loginUser), null, intraHashToUpdate, null, SearchType.LOCAL, FilterEntity.POSTS_HISTORY, null, null, null, compareVersion, compareVersion + 1).get(0);
+
+				// TODO: why don't we set the dbPost = comparePost? why do we
+				// have to restore all fields by hand?
+				final List<String> diffEntryKeyList = command.getDifferentEntryKeys();
+				for (int i = 0; i < diffEntryKeyList.size(); i++) {
+					this.replacePostFields(dbPost, diffEntryKeyList.get(i), comparePost);
+				}
+			}
+
 			/*
 			 * put post into command
 			 */
@@ -457,6 +487,43 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		return this.finalRedirect(command, post, loginUserName);
 	}
+
+	/**
+	 * Replace the field with key "key" in post with the corresponding value in
+	 * newPost
+	 * 
+	 * @param post
+	 * @param key
+	 * @param newPost
+	 */
+	protected void replacePostFields(final Post<RESOURCE> post, final String key, final Post<RESOURCE> newPost) {
+		switch (key) {
+		case TAGS_KEY:
+			post.setTags(newPost.getTags());
+			break;
+		case "description":
+			post.setDescription(newPost.getDescription());
+			break;
+		case "approved":
+			post.setApproved(newPost.getApproved());
+			break;
+		default:
+			this.replaceResourceSpecificPostFields(post.getResource(), key, newPost.getResource());
+		}
+		if (newPost.getApproved()) {
+			post.setApproved(true);
+		}
+	}
+
+	/**
+	 * Replace the field with key "key" in post with the corresponding value in
+	 * newPost
+	 * 
+	 * @param resource
+	 * @param key
+	 * @param newResource
+	 */
+	protected abstract void replaceResourceSpecificPostFields(final RESOURCE resource, String key, RESOURCE newResource);
 
 	/**
 	 * @param command
@@ -544,7 +611,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			post.getTags().addAll(TagUtils.parse(command.getTags()));
 		} catch (final Exception e) {
 			log.warn("error parsing tags", e);
-			this.errors.rejectValue("tags", "error.field.valid.tags.parseerror", "Your tags could not be parsed.");
+			this.errors.rejectValue(TAGS_KEY, "error.field.valid.tags.parseerror", "Your tags could not be parsed.");
 		}
 		/*
 		 * validate post
@@ -625,7 +692,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * FIXME: if we are coming from /bibtex/HASH* or /url/HASH* and the hash
 		 * has changed, we should redirect to the corresponding new page
 		 */
-		if (!present(referer) || referer.matches(".*/postPublication$") || referer.matches(".*/postBookmark$")) {
+		if (!present(referer) || referer.matches(".*/postPublication$") || referer.matches(".*/postBookmark$") || referer.contains("/history/")) {
 			return new ExtendedRedirectView(this.urlGenerator.getUserUrlByUserName(userName));
 		}
 		/*
@@ -717,15 +784,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 	private View finalRedirect(final COMMAND command, final Post<RESOURCE> post, final String loginUserName) {
 		if (present(command.getSaveAndRate())) {
-			if (post.getResource() instanceof BibTex) {
-				final String publicationRatingUrl = this.urlGenerator.getPublicationRatingUrl(post.getResource().getInterHash(), loginUserName, post.getResource().getIntraHash());
-				return new ExtendedRedirectView(publicationRatingUrl);
+			final String ratingUrl = this.urlGenerator.getCommunityRatingUrl(post);
+			return new ExtendedRedirectView(ratingUrl);
 			}
-			if (post.getResource() instanceof Bookmark) {
-				final String bookmarkRatingUrl = this.urlGenerator.getBookmarkRatingUrl(post.getResource().getInterHash(), loginUserName, post.getResource().getIntraHash());
-				return new ExtendedRedirectView(bookmarkRatingUrl);
-			}
-		}
 		return this.finalRedirect(loginUserName, post, command.getReferer());
 	}
 
@@ -785,6 +846,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * relevantFor tags are removed from the post)
 		 */
 		command.setTags(TagUtils.toTagString(post.getTags(), " "));
+		
+		if (post.getApproved()) {
+			command.setApproved(true);
+		}
+		
 	}
 
 	/**
@@ -943,6 +1009,17 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	}
 
 	protected abstract PostValidator<RESOURCE> getValidator();
+
+	/**
+	 * Returns the userName. Override in GoldStandard Controllers
+	 * 
+	 * @param requestedUser
+	 * @param post
+	 * @return
+	 */
+	protected String getGrouping(final User requestedUser) {
+		return requestedUser.getName();
+	}
 
 	@Override
 	public Errors getErrors() {

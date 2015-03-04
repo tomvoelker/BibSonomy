@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.command.actions;
 
 import java.util.List;
@@ -17,11 +43,11 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
 	 * should publications be edited before they're stored? 
 	 */
 	private boolean editBeforeImport = false;
+
 	/**
-	 * this flag determines, whether the dialogue called was configured to 
-	 * edit(delete) or edit(create) existing posts.
-	 */
-	private boolean deleteCheckedPosts;	
+	 * this flag determines, whether an existing post is being edited or a new post 
+	 * should be added and edited**/
+	private boolean updateExistingPost;
 	/**
 	 * when batchedit is used after importing posts, this flag
 	 * stores if the user wants to overwrite existing posts 
@@ -46,12 +72,18 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
 	/**
 	 * actions to apply to post
 	 */
-	private int action;
+	private List<Integer> action;
 	
 	private String abstractGrouping;
 
     private List<String> groups;
-
+    
+    /*
+     * true means: we are in the batch edit page
+     * false means: we are in the snippet posting workflow
+     */
+    private boolean directEdit;
+    
         
     /**
      * @return the groups
@@ -69,49 +101,7 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
     public void setGroups(final List<String> groups) {
         this.groups = groups;
     }
-    
-    /**
-     * @return the abstractGrouping
-     */
-    @Override
-    public String getAbstractGrouping() {
-        return this.abstractGrouping;
-    }
-
-    /**
-     * @param abstractGrouping
-     *            the abstractGrouping to set
-     */
-    @Override
-    public void setAbstractGrouping(final String abstractGrouping) {
-        this.abstractGrouping = abstractGrouping;
-    }
-	
-	
-	/**
-	 * @return the flag that determines, weather the dialogue called was configured to 
-	 * edit(delete) or edit(create) existing posts.
-	 */
-	public boolean getDeleteCheckedPosts() {
-		return this.deleteCheckedPosts;
-	}
-
-	/**
-	 * @return the flag that determines, weather the dialogue called was configured to 
-	 * edit(delete) or edit(create) existing posts.
-	 */
-	public boolean isDeleteCheckedPosts() {
-		return this.deleteCheckedPosts;
-	}
-	
-	/**
-	 * @param deleteCheckedPosts the flag that determines, weather the dialogue called was configured to 
-	 * edit(delete) or edit(create) existing posts.
-	 */
-	public void setDeleteCheckedPosts(final boolean deleteCheckedPosts) {
-		this.deleteCheckedPosts = deleteCheckedPosts;
-	}
-	
+     	
 	/**
 	 * @return the tags
 	 */
@@ -171,14 +161,14 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
 	/**
 	 * @return the action
 	 */
-	public int getAction() {
+	public List<Integer> getAction() {
 		return this.action;
 	}
 
 	/**
 	 * @param action the action to set
 	 */
-	public void setAction(int action) {
+	public void setAction(List<Integer> action) {
 		this.action = action;
 	}
 
@@ -208,5 +198,50 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
 	 */
 	public void setOverwrite(final boolean overwrite) {
 		this.overwrite = overwrite;
+	}
+
+	/**
+	 * @return the directEdit
+	 */
+	public boolean isDirectEdit() {
+		return this.directEdit;
+	}
+
+	/**
+	 * @param directEdit the directEdit to set
+	 */
+	public void setDirectEdit(boolean directEdit) {
+		this.directEdit = directEdit;
+	}
+
+	/**
+	 * @return the updateExistingPost
+	 */
+	public boolean isUpdateExistingPost() {
+		return this.updateExistingPost;
+	}
+
+	/**
+	 * @param updateExistingPost the updateExistingPost to set
+	 */
+	public void setUpdateExistingPost(boolean updateExistingPost) {
+		this.updateExistingPost = updateExistingPost;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.command.GroupingCommand#getAbstractGrouping()
+	 */
+	@Override
+	public String getAbstractGrouping() {
+		return this.abstractGrouping;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.command.GroupingCommand#setAbstractGrouping(java.lang.String)
+	 */
+	@Override
+	public void setAbstractGrouping(String abstractGrouping) {
+		this.abstractGrouping = abstractGrouping;
+		
 	}
 }

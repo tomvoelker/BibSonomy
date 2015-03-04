@@ -1,12 +1,40 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.controller.ajax;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
+import org.bibsonomy.common.enums.GroupRole;
 
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.webapp.command.ajax.GroupShareAjaxCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -57,16 +85,13 @@ public class GroupShareAjaxController extends AjaxController implements Minimali
 			return this.getErrorView();
 		}
 
-		// set the user name 
-		g.setName(command.getContext().getLoginUser().getName());
+		final GroupMembership ms = new GroupMembership(command.getContext().getLoginUser(), GroupRole.USER, false);
 
-		if (SHARE_DOCUMENTS.equals(command.getAction())) {
-			g.setUserSharedDocuments(true);
-			this.logic.updateGroup(g, GroupUpdateOperation.UPDATE_USER_SHARED_DOCUMENTS);
-		} else if (UNSHARE_DOCUMENTS.equals(command.getAction())) {
-			g.setUserSharedDocuments(false);
-			this.logic.updateGroup(g, GroupUpdateOperation.UPDATE_USER_SHARED_DOCUMENTS);
-		}
+		 // TODO: Clean up
+		if (null != command.getAction())
+			ms.setUserSharedDocuments(command.getAction().equals(SHARE_DOCUMENTS));
+		
+		this.logic.updateGroup(g, GroupUpdateOperation.UPDATE_USER_SHARED_DOCUMENTS, ms);
 
 		// forward to a certain page, if requested
 		if (present(command.getForward())) {

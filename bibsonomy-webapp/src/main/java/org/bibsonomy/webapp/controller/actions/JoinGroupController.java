@@ -1,14 +1,42 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Collections;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.GroupRole;
+import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.MailUtils;
@@ -28,10 +56,7 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.Errors;
 
 /**
- * Handles 
- * * a user's request to join a group
- * * a group's response to deny the user membership
- * TODO: should also handle accept user and probably delete user too 
+ * Handles a user's request to join a group
  * 
  * @author schwass
  */
@@ -76,7 +101,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		
 		// get group details and check if present
 		final String groupName = command.getGroup();
-		final Group group = logic.getGroupDetails(command.getGroup());
+		final Group group = logic.getGroupDetails(groupName);
 		if (!present(group)) {
 			// no group given => user did not click join on the group page
 			errors.reject("error.field.valid.groupName");
@@ -89,6 +114,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		// We can not check the ckey if "deny request" was chosen, since the deny
 		// handle deny join request action
 		if (present(deniedUserName)) {
+			// TODO: (groups) remove
 			/*
 			 * We have a deny Request
 			 */
@@ -96,7 +122,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 			if (!groupName.equals(command.getContext().getLoginUser().getName())) {
 				throw new AccessDeniedException("This action is only possible for a group. Please log in as a group!");
 			}
-			final User deniedUser = adminLogic.getUserDetails(deniedUserName);
+			final User deniedUser = this.adminLogic.getUserDetails(deniedUserName);
 			if (!present(deniedUser.getName())) {
 				errors.reject("joinGroup.deny.noUser");
 				return Views.ERROR;
@@ -110,9 +136,13 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		 */
 		final boolean joinRequest = command.isJoinRequest();
 		
-		// check if user is already in this group
+		// check if user is already has an open request ...
+		if (loginUser.getPendingGroups().contains(group)) {
+			errors.reject("joinGroup.already.request.error");
+			return Views.ERROR;
+		}
+		// ... or is in this group
 		if (loginUser.getGroups().contains(group)) {
-			// user wants to join a group that he's already a member of => error since he cannot use the join_group page
 			errors.reject("joinGroup.already.member.error");
 			return Views.ERROR;
 		}
@@ -147,12 +177,19 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		
 		// user is allowed to state join request and group exists => execute request
 		
-		// we need the user details (eMail) of the user that is the group
-		final User groupUser = adminLogic.getUserDetails(groupName);
-		mailUtils.sendJoinGroupRequest(group.getName(), groupUser.getEmail(), loginUser, command.getReason(), requestLogic.getLocale());
-		final List<String> params = new LinkedList<String>();
-		params.add(groupName);
-		command.setMessage("success.joinGroupRequest.sent", params);
+		// send a mail to all administrators of the group
+		for (final GroupMembership ms : group.getMemberships()) {
+			if (ms.getGroupRole().equals(GroupRole.ADMINISTRATOR)) {
+				final User groupAdminUser = ms.getUser();
+				final String groudAdminUserMail = this.adminLogic.getUserDetails(groupAdminUser.getName()).getEmail();
+				mailUtils.sendJoinGroupRequest(group.getName(), groudAdminUserMail, loginUser, command.getReason(), requestLogic.getLocale());
+			}
+		}
+		
+		// insert the request
+		this.logic.updateGroup(group, GroupUpdateOperation.ADD_REQUESTED, new GroupMembership(loginUser, GroupRole.USER, false));
+		
+		command.setMessage("success.joinGroupRequest.sent", Collections.singletonList(groupName));
 		return Views.SUCCESS;
 	}
 
@@ -234,7 +271,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 	}
 
 	/**
-	 * @param denieUserRedirectURI the denieUserRedirectURI to set
+	 * @param denyUserRedirectURI the denieUserRedirectURI to set
 	 */
 	public void setDenyUserRedirectURI(final String denyUserRedirectURI) {
 		this.denyUserRedirectURI = denyUserRedirectURI;

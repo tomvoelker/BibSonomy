@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Lucene - Fulltext search facility of BibSonomy
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.lucene.index.manager;
 
 import static org.junit.Assert.assertEquals;
@@ -9,6 +35,7 @@ import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
@@ -24,7 +51,6 @@ import org.bibsonomy.testutil.ModelUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -84,7 +110,7 @@ public class LuceneGoldStandardManagerTest extends AbstractDatabaseManagerTest {
 		updateIndex();
 		
 		assertEquals(docCountBefore + 1,  manager.getResourceIndeces().get(0).getStatistics().getNumDocs());
-		final ResultList<Post<GoldStandardPublication>> posts = searcher.getPosts("", "", "", null, allowedGroups, "Chuck*","", "", new LinkedList<String>(), null, null, null, null, null, 10, 0);
+		final ResultList<Post<GoldStandardPublication>> posts = (ResultList<Post<GoldStandardPublication>>) searcher.getPosts("", "", "", null, allowedGroups,SearchType.LOCAL, "Chuck*","", "", new LinkedList<String>(), null, null, null, null, null, 10, 0);
 		assertEquals(1, posts.size());
 		
 		updateIndex();
@@ -105,7 +131,6 @@ public class LuceneGoldStandardManagerTest extends AbstractDatabaseManagerTest {
      *  FIXME: fails too often, please fix!
      */
     @Test
-    @Ignore
     public void testUpdate() throws PersonListParserException {
 		final int docCountBefore = manager.getResourceIndeces().get(0).getStatistics().getNumDocs();
 	
@@ -119,7 +144,7 @@ public class LuceneGoldStandardManagerTest extends AbstractDatabaseManagerTest {
 		// update index
 		updateIndex();
 		assertEquals(docCountBefore, manager.getResourceIndeces().get(0).getStatistics().getNumDocs());
-		ResultList<Post<GoldStandardPublication>> posts = searcher.getPosts("", "", "", null, allowedGroups, "","", "lucene*", new LinkedList<String>(), null, null, null, null, null, 10, 0);
+		ResultList<Post<GoldStandardPublication>> posts = (ResultList<Post<GoldStandardPublication>>) searcher.getPosts("", "", "", null, allowedGroups,SearchType.LOCAL, "","", "lucene*", new LinkedList<String>(), null, null, null, null, null, 10, 0);
 		assertEquals(1, posts.size());
 	
 		post.getResource().setAbstract("Lorem ipsum dolor logos mundus novus");
@@ -128,7 +153,7 @@ public class LuceneGoldStandardManagerTest extends AbstractDatabaseManagerTest {
 		// update index
 		updateIndex();
 		assertEquals(docCountBefore, manager.getResourceIndeces().get(0).getStatistics().getNumDocs());
-		posts = searcher.getPosts("", "", "", null, allowedGroups, "","", "lucene*", new LinkedList<String>(), null, null, null, null, null, 10, 0);
+		posts = (ResultList<Post<GoldStandardPublication>>) searcher.getPosts("", "", "", null, allowedGroups,SearchType.LOCAL, "","", "lucene*", new LinkedList<String>(), null, null, null, null, null, 10, 0);
 		assertEquals(1, posts.size());
 	
 		// update index second call
@@ -137,7 +162,7 @@ public class LuceneGoldStandardManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(docCountBefore, manager.getResourceIndeces().get(0).getStatistics().getNumDocs());
 		
 		// check if the new post is in the lucene index
-		posts = searcher.getPosts("", "", "", null, allowedGroups, "","", "lucene*", new LinkedList<String>(), null, null, null, null, null, 10, 0);
+		posts = (ResultList<Post<GoldStandardPublication>>) searcher.getPosts("", "", "", null, allowedGroups,SearchType.LOCAL, "","", "lucene*", new LinkedList<String>(), null, null, null, null, null, 10, 0);
 		assertEquals(1, posts.size());
 		
 		updateIndex();

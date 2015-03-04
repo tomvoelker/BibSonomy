@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -17,6 +43,7 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.HashUtils;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.util.UrlUtils;
@@ -110,7 +137,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		 * note. we have to check here also the deleted role because we use
 		 * a admin logic to get the user details
 		 */
-		if (existingUser == null || existingUser.getName() == null || Role.DELETED.equals(existingUser.getRole()) || Role.LIMITED.equals(existingUser.getRole()) || !user.getEmail().equalsIgnoreCase(existingUser.getEmail())) {
+		if (!UserUtils.isExistingUser(existingUser) || Role.LIMITED.equals(existingUser.getRole()) || !user.getEmail().equalsIgnoreCase(existingUser.getEmail())) {
 			/*
 			 * user does not exist or has been deleted (we should not sent 
 			 * reminders to deleted users!)
@@ -298,7 +325,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 	private String encryptReminderHash(final String username, final String tempPassword) {
 		final BasicTextEncryptor crypt = new BasicTextEncryptor();
 		crypt.setPassword(this.cryptKey);
-		final String reminderCred = username + ":" + tempPassword; 		
+		final String reminderCred = username + ":" + tempPassword;
 		return crypt.encrypt(reminderCred);
 	}
 

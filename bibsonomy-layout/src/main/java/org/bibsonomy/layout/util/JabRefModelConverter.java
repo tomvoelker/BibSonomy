@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Layout - Layout engine for the webapp.
  *
- *  BibSonomy-Layout - Layout engine for the webapp.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 /**
  * 
  */
@@ -49,6 +52,7 @@ import net.sf.jabref.export.layout.format.AndSymbolIfBothPresent;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -145,6 +149,7 @@ public class JabRefModelConverter {
 	 * 
 	 * @param post
 	 * @param urlGen - the URLGenerator to create the biburl-field
+	 * @param cleanBibTex 
 	 * @return
 	 */
 	public static BibtexEntry convertPost(final Post<? extends Resource> post, URLGenerator urlGen, boolean cleanBibTex) {
@@ -183,7 +188,7 @@ public class JabRefModelConverter {
 						&& !JabRefModelConverter.EXCLUDE_FIELDS.contains(pd.getName())) {
 					final String value = ((String) o);
 					if (present(value))
-						entry.setField(pd.getName().toLowerCase(), clean(value,cleanBibTex));
+						entry.setField(pd.getName().toLowerCase(), clean(value, cleanBibTex));
 				}
 			}
 
@@ -199,15 +204,18 @@ public class JabRefModelConverter {
 			entry.setType(entryType == null ? BibtexEntryType.OTHER : entryType);
 
 			if (present(bibtex.getMisc()) || present(bibtex.getMiscFields())) {
+				try {
+					// parse the misc fields and loop over them
+					bibtex.parseMiscField();
+				} catch (final InvalidModelException e) {
+					// ignore exception
+				}
 
-				// parse the misc fields and loop over them
-				bibtex.parseMiscField();
-
-				if (bibtex.getMiscFields() != null)
+				if (bibtex.getMiscFields() != null) {
 					for (final String key : bibtex.getMiscFields().keySet()) {
 						if ("id".equals(key)) {
 							// id is used by jabref
-							entry.setField("misc_id", clean(bibtex.getMiscField(key),cleanBibTex));
+							entry.setField("misc_id", clean(bibtex.getMiscField(key), cleanBibTex));
 							continue;
 						}
 
@@ -216,9 +224,9 @@ public class JabRefModelConverter {
 							// control
 							continue;
 
-						entry.setField(key, clean(bibtex.getMiscField(key),cleanBibTex));
+						entry.setField(key, clean(bibtex.getMiscField(key), cleanBibTex));
 					}
-
+				}
 			}
 			
 			/*
@@ -305,7 +313,7 @@ public class JabRefModelConverter {
 			return entry;
 
 		} catch (final Exception e) {
-			log.error("Could not convert BibSonomy post into a JabRef BibTeX entry.", e);
+			log.error("Could not convert post into a JabRef BibTeX entry.", e);
 		}
 
 		return null;

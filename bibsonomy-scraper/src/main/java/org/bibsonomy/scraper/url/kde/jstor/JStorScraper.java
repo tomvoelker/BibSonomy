@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- *  BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.scraper.url.kde.jstor;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -68,6 +71,8 @@ public class JStorScraper extends AbstractUrlScraper {
 
 	private static final Pattern SUBMIT_ACTION_PATTERN = Pattern.compile("href=\"javascript:submitActionInNewWindow[^']++'([^']++)");
 
+	private static final Pattern doi = Pattern.compile("<ul id=\"citation-tools-drop\" data-doi=\"(.*?)\"");
+	
 	static {
 		final Pattern hostPattern = Pattern.compile(".*" + JSTOR_HOST);
 		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(JSTOR_ABSTRACT_PATH + ".*")));
@@ -94,8 +99,12 @@ public class JStorScraper extends AbstractUrlScraper {
 			//targeting download page and from there submit action
 			String downloadPage, submitAction;
 			
+			String url = sc.getUrl().toExternalForm();
+			if(!url.contains(EXPORT_PAGE_URL))
+				url = EXPORT_PAGE_URL + exportDOI(url);
+			
 			//get the page content or at least get the cookies
-			GetMethod getMethod = new GetMethod(sc.getUrl().toExternalForm());
+			GetMethod getMethod = new GetMethod(url);
 			final String page = WebUtils.getContentAsString(client, getMethod);
 			
 			if (page == null) {
@@ -195,6 +204,19 @@ public class JStorScraper extends AbstractUrlScraper {
 		
 		sc.setBibtexResult(bibtexResult);
 		return true;
+	}
+	
+	private static String exportDOI(String url) throws ScrapingException {
+		try {
+			final Matcher m = doi.matcher(WebUtils.getContentAsString(url));
+			
+			if(m.find()){
+				return m.group(1);
+			}
+			} catch(IOException e) {
+				throw new ScrapingException("DOI not found");
+			}
+		return null;
 	}
 
 	@Override

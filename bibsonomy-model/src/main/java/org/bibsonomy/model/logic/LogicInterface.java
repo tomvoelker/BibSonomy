@@ -1,26 +1,29 @@
 /**
+ * BibSonomy-Model - Java- and JAXB-Model.
  *
- *  BibSonomy-Model - Java- and JAXB-Model.
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
  *
- *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.model.logic;
 
 import java.net.InetAddress;
@@ -47,6 +50,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -152,13 +156,14 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 
 	/**
 	 * Returns all groups of the system.
-	 * 
-	 * @param end
+	 * @param pending
 	 * @param start
+	 * @param end
+	 * 
 	 * @return a set of groups, an empty set else
 	 */
-	public List<Group> getGroups(int start, int end);
-
+	public List<Group> getGroups(boolean pending, int start, int end);
+	
 	/**
 	 * Returns details of one group.
 	 * 
@@ -279,14 +284,6 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	public void deleteGroup(String groupName);
 
 	/**
-	 * Removes an user from a group.
-	 * 
-	 * @param groupName the group to change
-	 * @param userName the user to remove
-	 */
-	public void deleteUserFromGroup(String groupName, String userName);
-
-	/**
 	 * Adds a user to the database.
 	 * 
 	 * @param user  the user to add
@@ -317,17 +314,20 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * 
 	 * Depending on the {@link GroupUpdateOperation}, different actions are done:
 	 * <dl>
-	 * <dt>{@link GroupUpdateOperation#ADD_NEW_USER}</dt><dd>Adds an existing user to an existing group.</dd>
+	 * <dt>{@link GroupUpdateOperation#ADD_MEMBER}</dt><dd>Adds an existing user to an existing group.</dd>
 	 * <dt>{@link GroupUpdateOperation#UPDATE_SETTINGS}</dt><dd>Updates the settings of the group.</dd>
 	 * <dt>{@link GroupUpdateOperation#UPDATE_ALL}</dt><dd>Updates the complete group.</dd>
+	 * <dt>{@link GroupUpdateOperation#ACTIVATE}</dt><dd>Activates the group.</dd>
+	 * <dt>{@link GroupUpdateOperation#DELETE}</dt><dd>Deletes the pending group.</dd>
 	 * </dl>
 	 * 
 	 * 
 	 * @param group  the group to update
 	 * @param operation the operation which should be performed
-	 * @return groupID the group id of the updated group
+	 * @param membership 
+	 * @return the group name of the updated group
 	 */
-	public String updateGroup(Group group, final GroupUpdateOperation operation);
+	public String updateGroup(Group group, final GroupUpdateOperation operation, final GroupMembership membership);
 
 	/**
 	 * Adds a document. If the resourceHash is given, the document is connected
@@ -682,5 +682,5 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @param clearInbox 
 	 * @return the new size of the inbox
 	 */
-	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox);	
+	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox);
 }

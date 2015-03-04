@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package tags;
 
 import static org.bibsonomy.model.util.BibTexUtils.ENTRYTYPES;
@@ -10,8 +36,11 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -24,7 +53,9 @@ import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.database.systemstags.markup.ReportedSystemTag;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -51,6 +82,10 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import com.google.caja.util.Sets;
+import com.sksamuel.diffpatch.DiffMatchPatch;
+import com.sksamuel.diffpatch.DiffMatchPatch.Diff;
+
 /**
  * TODO: move to org.bibsonomy.webapp.util.tags package
  * 
@@ -75,6 +110,8 @@ public class Functions {
 	private static final DateTimeFormatter dmyDateFormat = DateTimeFormat.forPattern("yyyy-MM-dd");
 
 	private static final DateTimeFormatter W3CDTF_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
+
+	private static final DateTimeFormatter MEMENTO_FORMAT = DateTimeFormat.forPattern("yyyyMMddHHmm");
 
 	/*
 	 * used by computeTagFontSize.
@@ -115,10 +152,11 @@ public class Functions {
 	 * 
 	 * @param str
 	 * @param decomp
-	 *            one of NFC, NFD, NFKC, NFKD @see Normalizer.Form
+	 *        one of NFC, NFD, NFKC, NFKD @see Normalizer.Form
 	 * @return normalized String
 	 */
-	@Deprecated // TODO: remove with old layout
+	@Deprecated
+	// TODO: remove with old layout
 	public static String normalize(final String str, final String decomp) {
 		Normalizer.Form form;
 		try {
@@ -134,7 +172,7 @@ public class Functions {
 	 * respective whitespace character
 	 * 
 	 * @param s
-	 *            a String
+	 *        a String
 	 * @return trimmed String
 	 */
 	public static String trimWhiteSpace(final String s) {
@@ -149,7 +187,7 @@ public class Functions {
 	 * is empty "export" is returned
 	 * 
 	 * @param file
-	 *            a file name
+	 *        a file name
 	 * @return cleaned file name
 	 */
 	public static String makeCleanFileName(final String file) {
@@ -164,7 +202,7 @@ public class Functions {
 	 * wrapper for {@link UrlUtils#safeURIDecode(String)}
 	 * 
 	 * @param uri
-	 *            a URI string
+	 *        a URI string
 	 * @return the decoded URI string
 	 */
 	public static String decodeURI(final String uri) {
@@ -175,7 +213,7 @@ public class Functions {
 	 * wrapper for {@link UrlUtils#safeURIEncode(String)}
 	 * 
 	 * @param uri
-	 *            a URI string
+	 *        a URI string
 	 * @return the encoded URI string
 	 */
 	public static String encodeURI(final String uri) {
@@ -186,7 +224,7 @@ public class Functions {
 	 * converts a collection of tags into a space-separated string of tags
 	 * 
 	 * @param tags
-	 *            a list of tags
+	 *        a list of tags
 	 * @return a space-separated string of tags
 	 */
 	public static String toTagString(final Collection<Tag> tags) {
@@ -197,7 +235,7 @@ public class Functions {
 	 * get the Path component of a URI string
 	 * 
 	 * @param uriString
-	 *            a URI string
+	 *        a URI string
 	 * @return the path component of the given URI string
 	 */
 	public static String getPath(final String uriString) {
@@ -216,7 +254,7 @@ public class Functions {
 	 * urlrewrite lib is fixed
 	 * 
 	 * @param uriString
-	 *            the url
+	 *        the url
 	 * @return last segment of the url string until last slash
 	 */
 	public static String getLowerPath(final String uriString) {
@@ -249,7 +287,7 @@ public class Functions {
 	 * extract query part of given URI string, within a leading "?"
 	 * 
 	 * @param uriString
-	 *            a URI string
+	 *        a URI string
 	 * @return query part of the given URI string, within a leading "?"
 	 */
 	public static String getQuery(final String uriString) {
@@ -267,7 +305,7 @@ public class Functions {
 
 	/**
 	 * @param url
-	 *            the url to check
+	 *        the url to check
 	 * @return <code>true</code> iff the url is a link to a pdf or ps file
 	 */
 	public static boolean isLinkToDocument(final String url) {
@@ -283,14 +321,14 @@ public class Functions {
 	 * tagsizemode=popular, and between 100 and 200 otherwise.
 	 * 
 	 * @param tagFrequency
-	 *            - the frequency of the tag
+	 *        - the frequency of the tag
 	 * @param tagMinFrequency
-	 *            - the minimum frequency within the tag cloud
+	 *        - the minimum frequency within the tag cloud
 	 * @param tagMaxFrequency
-	 *            - the maximum frequency within the tag cloud
+	 *        - the maximum frequency within the tag cloud
 	 * @param tagSizeMode
-	 *            - which kind of tag cloud is to be done (the one for the
-	 *            popular tags page vs. standard)
+	 *        - which kind of tag cloud is to be done (the one for the
+	 *        popular tags page vs. standard)
 	 * @return font size for the tag cloud with the given parameters
 	 */
 	public static Integer computeTagFontsize(final Integer tagFrequency, final Integer tagMinFrequency, final Integer tagMaxFrequency, final String tagSizeMode) {
@@ -323,11 +361,11 @@ public class Functions {
 	 * wrapper for for org.bibsonomy.util.UrlUtils.setParam
 	 * 
 	 * @param url
-	 *            an url string
+	 *        an url string
 	 * @param paramName
-	 *            parameter name
+	 *        parameter name
 	 * @param paramValue
-	 *            parameter value
+	 *        parameter value
 	 * @return an url string with the requested parameter set
 	 */
 	public static String setParam(final String url, final String paramName, final String paramValue) {
@@ -341,9 +379,9 @@ public class Functions {
 	 * wrapper for for org.bibsonomy.util.UrlUtils.removeParam
 	 * 
 	 * @param url
-	 *            - a url string
+	 *        - a url string
 	 * @param paramName
-	 *            - a parameter to be removed
+	 *        - a parameter to be removed
 	 * @return the given url string with the parameter removed
 	 */
 	public static String removeParam(final String url, final String paramName) {
@@ -365,7 +403,7 @@ public class Functions {
 	 * returns the SpamStatus as string for admin pages
 	 * 
 	 * @param id
-	 *            id of the spammer state
+	 *        id of the spammer state
 	 * @return string representation
 	 */
 	public static String getPredictionString(final Integer id) {
@@ -383,6 +421,194 @@ public class Functions {
 		return SpamStatus.isSpammer(status);
 	}
 
+	/**
+	 * returns a map of key-value:
+	 * new bibTex and the old one are compared according to each field,
+	 * keys are the fields which have different values
+	 * 
+	 * @param newPost
+	 * @param oldPost
+	 * @return
+	 */
+	public static Map<String, String> diffEntries(final Post<? extends Resource> newPost, final Post<? extends Resource> oldPost) {
+		final Map<String, String> diffMap = new LinkedHashMap<String, String>();
+		diffEntriesPost(newPost, oldPost, diffMap);
+
+		if (oldPost.getResource() instanceof BibTex) {
+			final BibTex newBib = (BibTex) newPost.getResource();
+			final BibTex oldBib = (BibTex) oldPost.getResource();
+
+			diffPersonEntry(diffMap, "author", newBib.getAuthor(), oldBib.getAuthor());
+			diffPersonEntry(diffMap, "editor", newBib.getEditor(), oldBib.getEditor());
+
+			diffStringEntry(diffMap, "entrytype", newBib.getEntrytype(), oldBib.getEntrytype());
+			diffStringEntry(diffMap, "year", newBib.getYear(), oldBib.getYear());
+
+			diffStringEntry(diffMap, "booktitle", newBib.getBooktitle(), oldBib.getBooktitle());
+			diffStringEntry(diffMap, "journal", newBib.getJournal(), oldBib.getJournal());
+			diffStringEntry(diffMap, "volume", newBib.getVolume(), oldBib.getVolume());
+			diffStringEntry(diffMap, "number", newBib.getNumber(), oldBib.getNumber());
+			diffStringEntry(diffMap, "pages", newBib.getPages(), oldBib.getPages());
+			diffStringEntry(diffMap, "month", newBib.getMonth(), oldBib.getMonth());
+			diffStringEntry(diffMap, "day", newBib.getDay(), oldBib.getDay());
+			diffStringEntry(diffMap, "publisher", newBib.getPublisher(), oldBib.getPublisher());
+			diffStringEntry(diffMap, "address", newBib.getAddress(), oldBib.getAddress());
+			diffStringEntry(diffMap, "edition", newBib.getEdition(), oldBib.getEdition());
+			diffStringEntry(diffMap, "chapter", newBib.getChapter(), oldBib.getChapter());
+			diffStringEntry(diffMap, "url", newBib.getUrl(), oldBib.getUrl());
+			diffStringEntry(diffMap, "key", newBib.getKey(), oldBib.getKey());
+			diffStringEntry(diffMap, "howpublished", newBib.getHowpublished(), oldBib.getHowpublished());
+			diffStringEntry(diffMap, "institution", newBib.getInstitution(), oldBib.getInstitution());
+			diffStringEntry(diffMap, "organization", newBib.getOrganization(), oldBib.getOrganization());
+			diffStringEntry(diffMap, "school", newBib.getSchool(), oldBib.getSchool());
+			diffStringEntry(diffMap, "series", newBib.getSeries(), oldBib.getSeries());
+			diffStringEntry(diffMap, "crossref", newBib.getCrossref(), oldBib.getCrossref());
+			diffStringEntry(diffMap, "misc", newBib.getMisc(), oldBib.getMisc());
+			diffStringEntry(diffMap, "bibtexAbstract", newBib.getAbstract(), oldBib.getAbstract());
+			diffStringEntry(diffMap, "privnote", newBib.getPrivnote(), oldBib.getPrivnote());
+			diffStringEntry(diffMap, "annote", newBib.getAnnote(), oldBib.getAnnote());
+			diffStringEntry(diffMap, "note", newBib.getNote(), oldBib.getNote());
+		} else {
+			diffStringEntry(diffMap, "url", ((Bookmark) newPost.getResource()).getUrl(), ((Bookmark) oldPost.getResource()).getUrl());
+		}
+
+		return diffMap;
+	}
+
+	private static void diffStringEntry(final Map<String, String> diffMap, final String key, final String newString, final String oldString) {
+		// TODO: do we really want to use cleanbibtex here?
+		if (!cleanBibtex(newString).equals(cleanBibtex(oldString))) {
+			diffMap.put(key, compareString(newString, oldString));
+		}
+	}
+
+	private static void diffPersonEntry(final Map<String, String> diffMap, final String key, final List<PersonName> newList, final List<PersonName> oldList) {
+		if (present(newList) || present(oldList)) {
+			final String newListAsString = present(newList) ? PersonNameUtils.serializePersonNames(newList, false, ", ") : "";
+			final String oldListAsString = present(oldList) ? PersonNameUtils.serializePersonNames(oldList, false, ", ") : "";
+
+			if (!newListAsString.equals(oldListAsString)) {
+				diffMap.put(key, compareString(newListAsString, oldListAsString));
+			}
+		}
+	}
+
+	/**
+	 * @param newPost
+	 * @param oldPost
+	 * @param diffMap
+	 */
+	public static void diffEntriesPost(final Post<? extends Resource> newPost, final Post<? extends Resource> oldPost, final Map<String, String> diffMap) {
+
+		final Resource newResource = newPost.getResource();
+		final Resource oldResource = oldPost.getResource();
+
+		diffStringEntry(diffMap, "title", newResource.getTitle(), oldResource.getTitle());
+		diffStringEntry(diffMap, "description", newPost.getDescription(), oldPost.getDescription());
+		if (!newPost.getTags().equals(oldPost.getTags())) {
+			diffMap.put("tags", compareTagSets(newPost.getTags(), oldPost.getTags()));
+		}
+	}
+
+	private static String compareTagSets(final Set<Tag> newTags, final Set<Tag> oldTags) {
+		final String commonTags = toTagString(Sets.intersection(newTags, oldTags));
+		final String addedTags = toTagString(Sets.difference(newTags, oldTags));
+		final String deletedTags = toTagString(Sets.difference(oldTags, newTags));
+		return compareString(commonTags + ((present(commonTags) && present(addedTags)) ? " " : "") + addedTags, commonTags + ((present(commonTags) && present(deletedTags)) ? " " : "") + deletedTags);
+	}
+
+	/**
+	 * Compares two strings character-based.
+	 * 
+	 * @param newValue and oldValue
+	 * @param oldValue
+	 * @return The difference between two strings. (inserted: green, deleted:
+	 *         red, not_changed: black)
+	 */
+	public static String compareString(String newValue, String oldValue) {
+
+		if (newValue == null) {
+			newValue = " ";
+		}
+		if (oldValue == null) {
+			oldValue = " ";
+		}
+		final DiffMatchPatch dmp = new DiffMatchPatch();
+
+		// computes the diff
+		final LinkedList<Diff> d = dmp.diff_main(newValue, oldValue);
+
+		// cleans the result so that be more human readable.
+		dmp.diff_cleanupSemantic(d);
+
+		// applies appropriate colors to the result. (red, green)
+		return customized_diff_prettyHtml(d);
+
+	}
+
+	// TODO: move to view layer
+	@Deprecated
+	public static String customized_diff_prettyHtml(final LinkedList<Diff> diffs) {
+		final StringBuilder html = new StringBuilder();
+		for (final Diff aDiff : diffs) {
+			final String text = aDiff.text.replace("&", "&amp;").replace("<", "&lt;")
+					.replace(">", "&gt;").replace("\n", "&para;<br>");
+			switch (aDiff.operation) {
+			case INSERT:
+				html.append("<span style=\"background:#e6ffe6;\">").append(text)
+						.append("</span>");
+				break;
+			case DELETE:
+				html.append("<del style=\"background:#ffe6e6;\">").append(text)
+						.append("</del>");
+				break;
+			case EQUAL:
+				html.append("<span>").append(text).append("</span>");
+				break;
+			}
+		}
+		return html.toString();
+	}
+
+	/**
+	 * TODO: remove!? Compares two strings word-based. (Maybe usefull in
+	 * future!)
+	 * 
+	 * @param newValue
+	 *        and oldValue
+	 * @return The difference between two strings. (inserted: green, deleted:
+	 *         red, not_changed)
+	 */
+	/*
+	 * public static String compareString(String newValue, String oldValue) {
+	 * 
+	 * 
+	 * if(newValue == null){
+	 * newValue=" ";
+	 * }
+	 * if(oldValue == null){
+	 * oldValue =" ";
+	 * }
+	 * diff_match_patch dmp = new diff_match_patch();
+	 * 
+	 * //split the texts based on words
+	 * LinesToCharsResult a = dmp.diff_linesToWords(newValue, oldValue);
+	 * 
+	 * String lineText1 = a.chars1;
+	 * String lineText2 = a.chars2;
+	 * List<String> lineArray = a.lineArray;
+	 * 
+	 * LinkedList<Diff> diffs = dmp.diff_main(lineText1, lineText2, false);
+	 * 
+	 * dmp.diff_charsToLines(diffs, lineArray);
+	 * 
+	 * //cleans the result so that be more human readable.
+	 * dmp.diff_cleanupSemantic(diffs);
+	 * 
+	 * //applies appropriate colors to the result. (red, green)
+	 * return dmp.diff_prettyHtml(diffs);
+	 * }
+	 */
 	/**
 	 * Quotes a String such that it is usable for JSON.
 	 * 
@@ -435,9 +661,9 @@ public class Functions {
 	 * returns the css Class for a given tag
 	 * 
 	 * @param tagCount
-	 *            the count aof the current Tag
+	 *        the count aof the current Tag
 	 * @param maxTagCount
-	 *            the maximum tag count
+	 *        the maximum tag count
 	 * @return the css class for the tag
 	 */
 	public static String getTagSize(final Integer tagCount, final Integer maxTagCount) {
@@ -491,7 +717,7 @@ public class Functions {
 	 * Returns the host name of a URL.
 	 * 
 	 * @param urlString
-	 *            - the URL as string
+	 *        - the URL as string
 	 * @return The host name of the URL.
 	 */
 	public static String getHostName(final String urlString) {
@@ -537,9 +763,9 @@ public class Functions {
 	 * returns the string.
 	 * 
 	 * @param s
-	 *            - the string
+	 *        - the string
 	 * @param length
-	 *            - maximal length of the string
+	 *        - maximal length of the string
 	 * @return The shortened string
 	 */
 	public static String shorten(final String s, final Integer length) {
@@ -555,13 +781,13 @@ public class Functions {
 	 * export
 	 * 
 	 * @param post
-	 *            - a publication post
+	 *        - a publication post
 	 * @param projectHome
 	 * @param lastFirstNames
-	 *            - should person names appear in "Last, First" form?
+	 *        - should person names appear in "Last, First" form?
 	 * @param generatedBibtexKeys
-	 *            - should the BibTeX keys be generated or the one from the
-	 *            database?
+	 *        - should the BibTeX keys be generated or the one from the
+	 *        database?
 	 * @return A BibTeX string of this post
 	 */
 	public static String toBibtexString(final Post<BibTex> post, final String projectHome, final Boolean lastFirstNames, final Boolean generatedBibtexKeys) {
@@ -580,9 +806,9 @@ public class Functions {
 
 	/**
 	 * @param post
-	 *            the post to be rendered
+	 *        the post to be rendered
 	 * @param skipDummyValues
-	 *            whether to skip fields containing dummyValues like noauthor
+	 *        whether to skip fields containing dummyValues like noauthor
 	 * @return an endnote string
 	 */
 	public static String toEndnoteString(final Post<BibTex> post, final Boolean skipDummyValues) {
@@ -611,7 +837,8 @@ public class Functions {
 	}
 
 	/**
-	 * Formats the date to RFC 1123, e.g., "Wed, 12 Mar 2013 12:12:12 GMT" (needed for Memento).
+	 * Formats the date to RFC 1123, e.g., "Wed, 12 Mar 2013 12:12:12 GMT"
+	 * (needed for Memento).
 	 * 
 	 * Currently Java's formatter doesn't support this standard therefore we can
 	 * not use the fmt:formatDate tag with a pattern
@@ -622,7 +849,6 @@ public class Functions {
 	public static String formatDateRFC1123(final Date date) {
 		return DateTimeUtils.formatDateRFC1123(date);
 	}
-
 
 	/**
 	 * Formats the date to W3CDTF, e.g., 2012-11-07T14:43:16+01:00 (needed for
@@ -637,6 +863,23 @@ public class Functions {
 	public static String formatDateW3CDTF(final Date date) {
 		if (present(date)) {
 			return W3CDTF_FORMAT.print(new DateTime(date));
+		}
+		return "";
+	}
+
+	/**
+	 * Formats the date for Memento, e.g., 201211071443 (equivalent to
+	 * 2012-11-07 14:43)
+	 * 
+	 * Currently Java's formatter doesn't support this standard therefore we can
+	 * not use the fmt:formatDate tag with a pattern
+	 * 
+	 * @param date
+	 * @return the formatted date
+	 */
+	public static String formatDateMemento(final Date date) {
+		if (present(date)) {
+			return MEMENTO_FORMAT.print(new DateTime(date));
 		}
 		return "";
 	}
@@ -661,7 +904,7 @@ public class Functions {
 				if (present(day)) {
 					final String cleanDay = BibTexUtils.cleanBibTex(day.trim());
 					try {
-						DateTime dt = dmyDateFormat.parseDateTime(cleanYear + "-" + monthAsNumber + "-" + cleanDay);
+						final DateTime dt = dmyDateFormat.parseDateTime(cleanYear + "-" + monthAsNumber + "-" + cleanDay);
 						return DateTimeFormat.mediumDate().withLocale(locale).print(dt);
 					} catch (final Exception ex) {
 						// return default date
@@ -672,7 +915,7 @@ public class Functions {
 				 * no day given
 				 */
 				try {
-					DateTime dt = myDateFormat.parseDateTime(cleanYear + "-" + monthAsNumber);
+					final DateTime dt = myDateFormat.parseDateTime(cleanYear + "-" + monthAsNumber);
 					return myDateFormatter.withLocale(locale).print(dt);
 				} catch (final Exception ex) {
 					// return default date
@@ -713,7 +956,7 @@ public class Functions {
 	 * invalid input, folkrank as default measure is returned.
 	 * 
 	 * @param userSimilarity
-	 *            - a user similarity
+	 *        - a user similarity
 	 * @return the "next" user similarity
 	 */
 	public static String toggleUserSimilarity(final String userSimilarity) {
@@ -746,8 +989,8 @@ public class Functions {
 	 * 
 	 * @see XmlUtils
 	 * @param s
-	 *            - the string from which the control characters are to be
-	 *            removed
+	 *        - the string from which the control characters are to be
+	 *        removed
 	 * @return the string with control characters removed.
 	 */
 	public static String removeInvalidXmlChars(final String s) {
@@ -827,19 +1070,23 @@ public class Functions {
 	public static String downloadFileId(final String filename) {
 		return filename.replaceAll("[^A-Za-z0-9]", "-");
 	}
-	
+
 	/**
 	 * returns true, if command implements DidYouKnowMessageCommand interface
+	 * 
 	 * @param command
 	 * @return true|false
 	 */
 	/**
-	 * returns true, if command implements DidYouKnowMessageCommand interface and has a didYouKnowMessage set
+	 * returns true, if command implements DidYouKnowMessageCommand interface
+	 * and has a didYouKnowMessage set
+	 * 
 	 * @param command
 	 * @return true|false
 	 */
-	@Deprecated // TODO: (bootstrap) remove and use not empty check
-	public static Boolean hasDidYouKnowMessage(BaseCommand command) {
+	@Deprecated
+	// TODO: (bootstrap) remove and use not empty check
+	public static Boolean hasDidYouKnowMessage(final BaseCommand command) {
 		return (command.getDidYouKnowMessage() != null);
 	}
 

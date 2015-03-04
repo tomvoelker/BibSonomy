@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Database - Database for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.testutil.Assert.assertByTagNames;
@@ -872,7 +898,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		
 		// delete private post
 		toInsert.getGroups().clear();
-		final Group group = GroupUtils.getPrivateGroup();
+		final Group group = GroupUtils.buildPrivateGroup();
 		toInsert.getGroups().add(group);
 		
 		final BibTexParam postParam = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, null, null, toInsert.getUser());
@@ -993,7 +1019,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 //		final List<Post<BibTex>> posts2 = bibTexDb.getPosts(param, this.dbSession);
 //		assertEquals(10, posts2.size());
 	}
-	
+
 	/**
 	 * tests testGetPostsByKey
 	 */
@@ -1022,7 +1048,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		posts = publicationDb.getPostsByBibTeXKey("testspammer", "elsenbroich2006abductive", null, -1, Arrays.asList(Integer.valueOf(PUBLIC_GROUP_ID), Integer.valueOf(PUBLIC_GROUP_ID_SPAM)), 20, 0, null, this.dbSession);
 		assertEquals(2, posts.size());
 	}
-	
+
 	/**
 	 * tests {@link BibTexDatabaseManager#getPostsByFollowedUsers(String, List, int, int, org.bibsonomy.database.common.DBSession)}
 	 */
@@ -1158,4 +1184,19 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		this.printMethod("testUpdatePost");
 		// called by other methods
 	}
+	
+	@Test
+	public void testGetPostsWithHistory() {
+		this.printMethod("testGetPostsWithHistory");
+		String requestedUserName = "testuser3";
+		String intraHash = "891518b4900cd1832d77a0c8ae20dd14";
+		BibTexParam param = new BibTexParam();
+		param.setRequestedContentId(20);
+		param.setRequestedUserName(requestedUserName);
+		param.setHash(intraHash);
+		param.setFilter(FilterEntity.POSTS_HISTORY);
+		List<Post<BibTex>> posts = publicationDb.getPosts(param, dbSession);
+		assertEquals(4, posts.size());
+	}
+	
 }

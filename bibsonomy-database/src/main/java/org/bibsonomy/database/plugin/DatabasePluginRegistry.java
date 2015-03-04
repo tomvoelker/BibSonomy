@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Database - Database for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.database.plugin;
 
 import java.util.Collections;
@@ -167,32 +193,42 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 			plugin.onBookmarkUpdate(newContentId, oldContentId, session);
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onBookmarkMassUpdate(java.lang.String, int)
+	 */
+	@Override
+	public void onBookmarkMassUpdate(String userName, int groupId, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onBookmarkMassUpdate(userName, groupId, session);
+		}
+	}
 
 	@Override
 	public void onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			plugin.onTagRelationDelete(upperTagName, lowerTagName, userName, session);
-		}		
+		}
 	}
 	
 	@Override
 	public void onConceptDelete(final String conceptName, final String userName, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			plugin.onConceptDelete(conceptName, userName, session);
-		}		
+		}
 	}
 
 	@Override
 	public void onTagDelete(final int contentId, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			plugin.onTagDelete(contentId, session);
-		}		
+		}
 	}
 
 	@Override
-	public void onRemoveUserFromGroup(final String username, final int groupId, final DBSession session) {
+	public void onChangeUserMembershipInGroup(final String username, final int groupId, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
-			plugin.onRemoveUserFromGroup(username, groupId, session);
+			plugin.onChangeUserMembershipInGroup(username, groupId, session);
 		}
 	}
 	
@@ -280,13 +316,33 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 		}
 	}
 
-	@Override
+	
 	/**
 	 * @author MarcelM
 	 */
+	@Override
 	public void onBibTexExtraDelete(final BibTexExtraParam deletedBibTexExtraParam, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()){
 			plugin.onBibTexExtraDelete(deletedBibTexExtraParam, session);
+		}
+	}
+
+	/**
+	 * @param username
+	 * @param groupId
+	 * @param session
+	 */
+	@Override
+	public void onPublicationMassUpdate(String username, int groupId, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()){
+			plugin.onPublicationMassUpdate(username, groupId, session);
+		}
+	}
+
+	@Override
+	public void onDiscussionMassUpdate(String username, int groupId, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onDiscussionMassUpdate(username, groupId, session);
 		}
 	}
 }

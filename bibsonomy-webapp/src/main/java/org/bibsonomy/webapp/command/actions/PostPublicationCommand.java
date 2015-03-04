@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.command.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -6,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.webapp.command.BibtexViewCommand;
@@ -42,7 +69,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		"post_bibtex.doi_isbn.title",
 		"post_bibtex.scan.title"
 	};
-	
 	/**
 	 * stores if the user wants to overwrite existing posts 
 	 */
@@ -64,6 +90,11 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 */
 	private String description;
 	
+
+	/**
+	 * each intrahash(post) is maped to a list of errors. Erroneous posts cannot be edited later*/
+	private Map<String, List<ErrorMessage>> postsErrorList;
+
 	/**
 	 * constructor
 	 * inits the tabs and sets their titles
@@ -163,36 +194,11 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 * FOR ALL IMPORTS
 	 ****************************/
 	
-
-	/**
-	 * this flag determines, weather the dialogue called was configured to 
-	 * edit(delete) or edit(create) existing posts.
-	 */
-	private boolean deleteCheckedPosts;
 	
 	/**
-	 * @return the flag that determines, weather the dialogue called was configured to 
-	 * edit(delete) or edit(create) existing posts.
-	 */
-	public boolean getDeleteCheckedPosts() {
-		return this.deleteCheckedPosts;
-	}
-
-	/**
-	 * @return the flag that determines, weather the dialogue called was configured to 
-	 * edit(delete) or edit(create) existing posts.
-	 */
-	public boolean isDeleteCheckedPosts() {
-		return this.deleteCheckedPosts;
-	}
-	
-	/**
-	 * @param deleteCheckedPosts the flag that determines, weather the dialogue called was configured to 
-	 * edit(delete) or edit(create) existing posts.
-	 */
-	public void setDeleteCheckedPosts(final boolean deleteCheckedPosts) {
-		this.deleteCheckedPosts = deleteCheckedPosts;
-	}
+	 * this flag determines, whether an existing post is being edited or a new post 
+	 * should be added and edited**/
+	private boolean updateExistingPost;
 	
 	/**
 	 * @return the description
@@ -396,4 +402,34 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	public void setOverwrite(boolean overwrite) {
 		this.overwrite = overwrite;
 	}
+	/**
+	 * @return the updateExistingPost
+	 */
+	public boolean isUpdateExistingPost() {
+		return this.updateExistingPost;
+	}
+
+	/**
+	 * @param updateExistingPost the updateExistingPost to set
+	 */
+	public void setUpdateExistingPost(boolean updateExistingPost) {
+		this.updateExistingPost = updateExistingPost;
+	}
+
+	
+	/**
+	 * @return the postsErrorList
+	 */
+	public Map<String, List<ErrorMessage>> getPostsErrorList() {
+		return this.postsErrorList;
+	}
+
+	/**
+	 * @param postsErrorList the postsErrorList to set
+	 */
+	public void setPostsErrorList(Map<String, List<ErrorMessage>> postsErrorList) {
+		this.postsErrorList = postsErrorList;
+	}
+
+	
 }

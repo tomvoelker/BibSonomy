@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Database - Database for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -66,6 +92,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	private Chain<List<User>, UserParam> chain;
 	
 	private FileLogic fileLogic;
+	
+	//this should be set through ${user.defaultToClassify}, if not: 1
+	private Integer usersDefaultToClassify = 1;
 
 	private UserDatabaseManager() {
 		this.inboxDBManager = InboxDatabaseManager.getInstance();
@@ -73,7 +102,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.adminDBManager = AdminDatabaseManager.getInstance();
 	}
-
+	
 	/**
 	 * Returns all users.
 	 * 
@@ -131,16 +160,16 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 
 			@Override
 			protected File requestFile() {
-				return fileLogic.getProfilePictureForUser( user.getName() );
+				return fileLogic.getProfilePictureForUser(user.getName());
 			}
 		});
 		
 		/*
-		 * ToDo - Replace this with a more Generic Version
+		 * TODO: Replace this with a more Generic Version
 		 * This fetches all SamlRemoteUserIds (LDAP and OpenId are already fetched through a join with the respective tables in "getUserDetails")
 		 * FIXME: Use another join in getUserDetails (or enable this query only if Saml Authentification is active) 
 		 */
-		for(final SamlRemoteUserId samlRemoteUserId : this.getSamlRemoteUserIds(user.getName(), session)) {
+		for (final SamlRemoteUserId samlRemoteUserId : this.getSamlRemoteUserIds(user.getName(), session)) {
 			user.setRemoteUserId(samlRemoteUserId);
 		}
 		
@@ -380,11 +409,11 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		 * See also <48BC063F.5030307@cs.uni-kassel.de>.
 		 * 
 		 */
-		user.setToClassify(user.getToClassify() == null ? 1 : user.getToClassify());
+		user.setToClassify(user.getToClassify() == null ? usersDefaultToClassify : user.getToClassify());
 		/*
-		 * if it is not a limited user that is to be inserted, set user's default role
+		 * if it is not a limited or groupuser that is to be inserted, set user's default role
 		 */
-		if (!Role.LIMITED.equals(user.getRole())) {
+		if (! (Role.LIMITED.equals(user.getRole()) || Role.GROUPUSER.equals(user.getRole()))) {
 			user.setRole(Role.DEFAULT);
 		}
 		/*
@@ -651,7 +680,12 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	}
 
 
-    private void deletePendingUser(final String username, final DBSession session) {
+	/**
+	 * Delete a pending user.
+	 * @param username
+	 * @param session
+	 */
+    public void deletePendingUser(final String username, final DBSession session) {
         if (username == null) {
             ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "username was null");
         }
@@ -733,7 +767,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			 * flag user as spammer & all his posts as spam
 			 */
 			user.setAlgorithm("self_deleted");
-			this.adminDBManager.flagSpammer(user, "on_delete", session);
+			this.adminDBManager.flagSpammer(user, AdminDatabaseManager.DELETED_UPDATED_BY, session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -1126,17 +1160,26 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
      * @return name of created user
      */
     public String activateUser(final User user, final DBSession session) {
-    	session.beginTransaction();
     	try {
-	        this.insert("activateUser", user.getName(), session);
-	        this.deletePendingUser(user.getName(), session);
-	        this.insertDefaultWiki(user, session);
-	        session.commitTransaction();
+	    	session.beginTransaction();
+	        this.performActivationSteps(user, session);
+			session.commitTransaction();
     	} finally {
     		session.endTransaction();
     	}
         return user.getName();
     }
+	
+	/**
+	 * Small wrapper to make these steps usable in GroupDatabaseManager.
+	 * @param user
+	 * @param session 
+	 */
+	protected void performActivationSteps(final User user, final DBSession session) {
+		this.insert("activateUser", user.getName(), session);
+		this.deletePendingUser(user.getName(), session);
+		this.insertDefaultWiki(user, session);
+	}
 
     /**
      * Inserts a default wiki for a newly activated user or for a newly
@@ -1182,13 +1225,13 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
      * @return a list of users with the specified activation code (search)
      */
     public List<User> getPendingUserByActivationCode(final String search, final int start, final int end,  final DBSession session) {
-	if (search == null) {
-	    ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Cannot execute query getPendingUserByActivationCode without activation code given!");
-	}
-	final UserParam param = new UserParam();
-	param.setOffset(start);
-	param.setLimit(end);
-	param.setSearch(search);
+		if (search == null) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Cannot execute query getPendingUserByActivationCode without activation code given!");
+		}
+		final UserParam param = new UserParam();
+		param.setOffset(start);
+		param.setLimit(end);
+		param.setSearch(search);
         return this.queryForList("getPendingUserByActivationCode", param, User.class, session);
     }
 
@@ -1202,10 +1245,10 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
      * @return  a list of users with the username
      */
     public List<User> getPendingUserByUsername(final String username, final int start, final int end,  final DBSession session) {
-	final UserParam param = new UserParam();
-	param.setOffset(start);
-	param.setLimit(end);
-	param.setRequestedGroupName(username);
+		final UserParam param = new UserParam();
+		param.setOffset(start);
+		param.setLimit(end);
+		param.setRequestedGroupName(username);
         return this.queryForList("getPendingUserByUsername", param, User.class, session);
     }	
     
@@ -1242,5 +1285,19 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void setFileLogic(final FileLogic fileLogic) {
 		this.fileLogic = fileLogic;
+	}
+
+	/**
+	 * @return the usersDefaultToClassify
+	 */
+	public Integer getUsersDefaultToClassify() {
+		return this.usersDefaultToClassify;
+	}
+
+	/**
+	 * @param usersDefaultToClassify the usersDefaultToClassify to set
+	 */
+	public void setUsersDefaultToClassify(Integer usersDefaultToClassify) {
+		this.usersDefaultToClassify = usersDefaultToClassify;
 	}
 }

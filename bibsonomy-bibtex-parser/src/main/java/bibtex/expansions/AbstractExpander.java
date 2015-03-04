@@ -1,27 +1,3 @@
-/**
- *  
- *  BibSonomy-BibTeX-Parser - BibTeX Parser from
- * 		http://www-plan.cs.colorado.edu/henkel/stuff/javabib/
- *   
- *  Copyright (C) 2006 - 2010 Knowledge & Data Engineering Group, 
- *                            University of Kassel, Germany
- *                            http://www.kde.cs.uni-kassel.de/
- *  
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
- * 
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *  
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
-
 /*
  * Created on Oct 29, 2003
  * 
@@ -80,7 +56,7 @@ public abstract class AbstractExpander {
 	 * Call this whenever you want to throw an ExpansionException. This method may or may not throw
 	 * the exception, depending on the throwAllExpansionExceptions flag.
 	 * 
-	 * @param message
+	 * @param ex
 	 * @throws ExpansionException
 	 */
 	protected void throwExpansionException(final ExpansionException ex) throws ExpansionException {

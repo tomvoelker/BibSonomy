@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -107,7 +133,9 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 			if (command.getTagstype() == null) {
 				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, Integer.MAX_VALUE, null);
 			}
-			this.setGroupDetails(command, groupingName);
+			
+			final Group group = this.logic.getGroupDetails(groupingName);
+			command.setGroup(group);
 
 			if (requTags.size() > 0) {
 				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, command.getStartDate(), command.getEndDate(), Order.ADDED, 0, 20, null);
@@ -140,20 +168,6 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 	@Override
 	public GroupResourceViewCommand instantiateCommand() {
 		return new GroupResourceViewCommand();
-	}
-
-	/**
-	 * Retrieve all members of the given group in dependence of the group privacy level
-	 * FIXME: duplicated in ViewablePageController!
-	 * @param cmd the command
-	 * @param groupName the name of the group
-	 */
-	private void setGroupDetails(final GroupResourceViewCommand cmd, final String groupName) {
-		final Group group = this.logic.getGroupDetails(groupName);
-		if (present(group)) {
-			group.setUsers(this.logic.getUsers(null, GroupingEntity.GROUP, groupName, null, null, null, null, null, 0, 1000));
-		}
-		cmd.setGroup(group);
 	}
 
 }

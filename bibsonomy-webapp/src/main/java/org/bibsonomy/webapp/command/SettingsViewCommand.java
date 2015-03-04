@@ -1,9 +1,37 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.command;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.bibsonomy.common.enums.GroupUpdateOperation;
 
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
@@ -22,7 +50,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	private static final long serialVersionUID = -1211293063812357398L;
 	
-	/** Indexes of definded tabs */
+	/** Indexes of defined tabs */
 	public final static int MY_PROFILE_IDX = 0;
 	public final static int SETTINGS_IDX = 1;
 	public final static int IMPORTS_IDX = 2;
@@ -41,6 +69,9 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	private String action;
 	
+	/** An operation to update a specific group. */
+	private GroupUpdateOperation operation;
+
 	/**
 	 * the AccessToken you want to delete
 	 */
@@ -91,6 +122,10 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	// TODO: why not boolean?
 	private int sharedDocuments;
 	private Group group;
+	
+	private List<Group> groups = new ArrayList<>();
+	// the group to update
+	private String groupName;
 	
 	/**
 	 * current password of user
@@ -151,9 +186,9 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private List<URI> availableSyncServers;
 	
 	/** 
-	 * this field contains the username of the user, who should be added to the group.
+	 * this field contains the username of the user, who should be added/removed to/from the group.
 	 */
-	private String addUserToGroup;
+	private String username;
 	
 	/**
 	 * login credentials for importing bookmarks
@@ -577,17 +612,17 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	}
 
 	/**
-	 * @return the addUserToGroup
+	 * @return the username
 	 */
-	public String getAddUserToGroup() {
-		return this.addUserToGroup;
+	public String getUsername() {
+		return this.username;
 	}
 	
 	/**
-	 * @param addUserToGroup
+	 * @param username
 	 */
-	public void setAddUserToGroup(final String addUserToGroup) {
-		this.addUserToGroup = addUserToGroup;
+	public void setUsername(final String username) {
+		this.username = username;
 	}
 
 	/**
@@ -764,6 +799,48 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	}
 
 	/**
+	 * @return the groups
+	 */
+	public List<Group> getGroups() {
+		return this.groups;
+	}
+
+	/**
+	 * @param groups the groups to set
+	 */
+	public void setGroups(List<Group> groups) {
+		this.groups = groups;
+	}
+
+	/**
+	 * @return the groupName
+	 */
+	public String getGroupName() {
+		return this.groupName;
+	}
+
+	/**
+	 * @param groupName the groupName to set
+	 */
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+
+	/**
+	 * @return the groupUpdateOperation
+	 */
+	public GroupUpdateOperation getOperation() {
+		return operation;
+	}
+
+	/**
+	 * Sets a group update operation.
+	 * @param operation a group update operation
+	 */
+	public void setOperation(GroupUpdateOperation operation) {
+		this.operation = operation;
+	}
+	/**
 	 * @return the fileBegin
 	 */
 	public CommonsMultipartFile getFileBegin() {
@@ -804,5 +881,4 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public void setFileEnd(CommonsMultipartFile fileEnd) {
 		this.fileEnd = fileEnd;
 	}
-
 }

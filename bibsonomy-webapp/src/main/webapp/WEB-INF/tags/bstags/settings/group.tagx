@@ -8,8 +8,10 @@
 		  xmlns:form="http://www.springframework.org/tags/form"
 		  xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
 		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+		  xmlns:users="urn:jsptagdir:/WEB-INF/tags/bstags/users"
 		  xmlns:spring="http://www.springframework.org/tags"
 		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+		  xmlns:group="urn:jsptagdir:/WEB-INF/tags/bstags/resources/group"
 		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true" />
@@ -19,208 +21,179 @@
 	<c:set var="loginUser" value="${command.context.loginUser}" />
 
 	<div id="selTab3" class="tab-pane ${(command.selTab eq 3) ? 'active' : ''}">
-		<fieldset class="fsOuter">
 
-			<c:choose>
-				<c:when test="${not command.hasOwnGroup}">
-					<!-- TODO: Include a help text -->
-					<fieldset>
-						<legend><fmt:message key="settings.group.sharedDocuments" /></legend>
-						<c:choose>
-							<c:when test="${empty loginUser.groups}">
-								<fmt:message key="settings.group.noGroups" />
-							</c:when>
-							<c:otherwise>
-								<!-- show per user group sharing options -->
-								<c:forEach var="group" items="${loginUser.groups}">
-									<c:if test="${group.name ne loginUser.name}">
-										<form:form cssClass="form-horizontal" class="groupShareSettings"  method="POST" action="/ajax/handleGroupShare">
+		<fieldset class="fsOuter">
+			<c:if test="${!loginUser.spammer}">
+			
+				<!-- Request a new group -->
+				
+				<fmt:message var="linkText" key="settings.group.requestGroup.link"/>
+				<bsform:fieldset legendKey="navi.group.groupRequest">
+					<jsp:attribute name="content">
+						<p>
+							<fmt:message key="settings.group.requestGroup.description">
+								<fmt:param value="/grouprequest"/>
+								<fmt:param value="${linkText}"/>
+							</fmt:message>
+						</p>
+					</jsp:attribute>
+				</bsform:fieldset>
+				
+				 
+				<!-- Pending invites for the user -->
+				<c:set var="showPendingInvites" value="${false}" />
+				<c:set var="showPendingRequests" value="${false}" />
+				<c:forEach items="${command.user.pendingGroups}" var="group" varStatus="status">
+					<c:forEach items="${group.memberships}" var="membership">
+						<c:if test="${membership.groupRole eq 'INVITED' }">
+							<c:set var="showPendingInvites" value="${true}" />
+						</c:if>
+						<c:if test="${membership.groupRole eq 'REQUESTED' }">
+							<c:set var="showPendingRequests" value="${true}" />
+						</c:if>
+					</c:forEach>
+				</c:forEach>
+				<c:if test="${showPendingInvites}">
+					<bsform:fieldset legendKey="settings.group.pendingInvites.headline">
+						<jsp:attribute name="content">
+							<fmt:message var="accinvite" key="settings.group.accInvite.button" />
+							<fmt:message var="revuser" key="settings.group.remInvite.button"/>
+							<fmt:message var="revuserTitle" key="settings.group.remInvite.button.title"/>
+							<fmt:message var="accinviteTitle" key="settings.group.accInvite.button.title"/>
+
+							<c:forEach items="${command.user.pendingGroups}" var="group">
+								<c:if test="${group.getGroupMembershipForUser(loginUser).groupRole eq 'INVITED' }">
+
+
+									<dl class="dl-horizontal dt-thumbnail-items group-list">
+										<dt>
+											<group:groupthumbnail group="${group}" noname="${true}" size="16" />
+										</dt>
+
+										<dd>
 											<div class="row">
-												<div class="col-md-10">
-													<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}">
-														<c:out value='${group.name}' />
-													</a>
+												<div class="col-xs-9">
+													<group:groupinfo group="${group}" />
 												</div>
-												<c:choose>
-													<c:when test="${group.sharedDocuments}">
-														<input type="hidden" name="requestedGroup" value="${fn:escapeXml(group.name)}" />
-														<input type="hidden" name="ckey" value="${command.context.ckey}" />
-														<input type="hidden" name="forward" value="settings?selTab=3" />
+
+												<div class="col-xs-3">
+													<a class="btn btn-success btn-block btn-sm" title="${accinviteTitle}" href="/updateGroup?operation=add_member&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}">${accinvite}</a>
+													<a class="btn btn-danger btn-block btn-sm" title="${revuserTitle}" href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}">${revuser}</a>
+												</div>
+											</div>
+										</dd>
+									</dl>
+
+
+								</c:if>
+							</c:forEach>
+						</jsp:attribute>
+					</bsform:fieldset>
+				</c:if>
+				<c:if test="${showPendingRequests}">
+					<bsform:fieldset legendKey="settings.group.pendingRequests">
+						<jsp:attribute name="content">
+							<fmt:message var="revuser" key="settings.group.removeRequest"/>
+							<fmt:message var="revuserTitle" key="settings.group.removeRequest.title"/>
+							<dl class="dl-horizontal dt-thumbnail-items group-list">
+							<c:forEach items="${command.user.pendingGroups}" var="group">
+								<c:if test="${group.getGroupMembershipForUser(loginUser).groupRole eq 'REQUESTED' }">
+									<dt>
+										<group:groupthumbnail group="${group}" noname="${true}" size="16" />
+									</dt>
+
+									<dd>
+										<div class="row">
+											<div class="col-xs-9">
+												<group:groupinfo group="${group}" />
+											</div>
+
+											<div class="col-xs-3">
+												<a class="btn btn-default btn-block btn-sm" href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}" title="${revuserTitle}">${revuser}</a>
+											</div>
+										</div>
+									</dd>
+								</c:if>
+							</c:forEach>
+							</dl>
+						</jsp:attribute>
+					</bsform:fieldset>
+				</c:if>
+			</c:if>
+
+			<bsform:fieldset legendKey="settings.groups">
+				<jsp:attribute name="content">
+					<c:forEach var="group" items="${command.user.groups}" >
+						<c:if test="${group.getGroupMembershipForUser(loginUser).groupRole ne 'DUMMY'}">
+							<c:set var="userMemberOfGroups" value="${true}" />
+						</c:if>
+					</c:forEach>
+					
+					<c:choose>
+						<c:when test="${not userMemberOfGroups}">
+							<fmt:message key="settings.group.noGroups" />
+						</c:when>
+						<c:otherwise>
+							<dl class="dl-horizontal dt-thumbnail-items group-list">
+								<c:forEach var="group" items="${command.user.groups}">
+									<c:set var="groupMembership" value="${group.getGroupMembershipForUser(loginUser)}" />
+									<c:if test="${groupMembership.groupRole ne 'DUMMY'}">
+										<form:form cssClass="form-horizontal" class="groupShareSettings"  method="POST" action="/ajax/handleGroupShare">
+											<dt>
+												<group:groupthumbnail group="${group}" noname="${true}" size="16"  />
+											</dt>
+											
+											<dd>
+												<div class="row">
+													<div class="col-xs-9">
+														<group:groupinfo group="${group}" />
+													</div>
+													
+													<div class="col-xs-3">
 														<c:choose>
-															<c:when test="${group.userSharedDocuments}">
-																<fmt:message var="buttonTitle" key="groups.documentsharing.shared.title" />
-																<fmt:message var="buttonValue" key="groups.documentsharing.shared" />
-																<input type="hidden" name="action" value="unshareDocuments" />
-																<div class="col-md-2">
-																	<bsform:button style="success" size="defaultSize" type="submit" className="btn-block groupUnshare" value="${buttonValue}" icon="check" />
-																</div>
+															<c:when test="${group.sharedDocuments}">
+																<input type="hidden" name="requestedGroup" value="${fn:escapeXml(group.name)}" />
+																<input type="hidden" name="ckey" value="${command.context.ckey}" />
+																<input type="hidden" name="forward" value="settings?selTab=3" />
+																<c:choose>
+																	<c:when test="${groupMembership.userSharedDocuments}">
+																		<fmt:message var="buttonTitle" key="settings.groups.documentsharing.shared.title" />
+																		<fmt:message var="buttonValue" key="settings.groups.documentsharing.shared" />
+																		<input type="hidden" name="action" value="unshareDocuments" />
+																		<bsform:button style="success" size="defaultSize" type="submit" className="btn-block groupUnshare" value="${buttonValue}" icon="check" />
+																	</c:when>
+																	<c:otherwise>
+																		<fmt:message var="buttonTitle" key="settings.groups.actions.shareDocuments.title" />
+																		<fmt:message var="buttonValue" key="settings.groups.actions.shareDocuments" />
+																		<input type="hidden" name="action" value="shareDocuments" />
+																		<bsform:button style="defaultStyle" size="defaultSize" type="submit" value="${buttonValue}" className="btn-block" />
+																	</c:otherwise>
+																</c:choose>
 															</c:when>
 															<c:otherwise>
-																<fmt:message var="buttonTitle" key="groups.actions.shareDocuments.title" />
-																<fmt:message var="buttonValue" key="groups.actions.shareDocuments" />
-																<input type="hidden" name="action" value="shareDocuments" />
-																<div class="col-md-2">
-																	<bsform:button style="defaultStyle" size="defaultSize" type="submit" value="${buttonValue}" className="btn-block" />
-																</div>
+																<fmt:message var="disabled" key="settings.groups.documentsharing.disabled" />
+																<bsform:button style="defaultStyle" size="defaultSize" type="button" value="${disabled}" className="disabled btn-block" />
 															</c:otherwise>
 														</c:choose>
-													</c:when>
-													<c:otherwise>
-														<fmt:message var="disabled" key="groups.documentsharing.disabled" />
-														<div class="col-md-2">
-															<bsform:button style="defaultStyle" size="defaultSize" type="button" value="${disabled}" className="disabled btn-block" />
-														</div>
-													</c:otherwise>
-												</c:choose>
-											</div>
+														<c:url var="joinLink" value="/joinGroup">
+															<c:param name="group" value="${group.name}" />
+														</c:url>
+														<a href="${relativeUrlGenerator.prefix('settings').getGroupUrlByGroupName(group.name)}" class="btn btn-default btn-block btn-sm"><fmt:message key="settings.group.editSettings"/></a>	
+													</div>
+												</div>
+											</dd>
 										</form:form>
 									</c:if>
 								</c:forEach>
-							</c:otherwise>
-						</c:choose>
-					</fieldset>
-				</c:when>
-				
-				<!-- User is a group -->
-				<c:otherwise>
-					<!-- GRANT OR DENY JOIN REQUESTS, ADD USERS -->
-						<c:set var="showDeny" value="${not empty param.user and not empty param.requGroup and param.requGroup eq user.name}" />
-
-						<!-- Add User -->
-						<fieldset>
-							<legend><fmt:message key="settings.group.addUser"/></legend>
-							<!-- TODO: transform to BS3 -->
-							<form:form cssClass="form-horizontal" name="groupusers" method="post" action="/addUserToGroup">
-								<input type="hidden" name="ckey" value="${ckey}"/>
-								
-								<bsform:input path="addUserToGroup" labelKey="user.name" helpKey="settings.group.addUser.help" autocomplete="true" labelColSpan="3" inputColSpan="9" />
-								<div class="form-group">
-									<div class="col-sm-offset-3 col-sm-9">
-										<fmt:message var="adduser" key="settings.group.addUser.button"/>
-										<bsform:button type="submit" style="primary" size="defaultSize" value="${adduser}" />
-									</div>
-								</div>
-							</form:form>
-						
-							<form class="form-horizontal">
-								<!-- TODO: when there are no members, show a coresponding message-->
-								<fmt:message var="deluser" key="settings.group.delUser.button"/>
-								<fmt:message var="deluserTitle" key="settings.group.delUser.button.title"/>
-								<div class="form-group">
-									<label class="control-label col-sm-3"><fmt:message key="settings.group.delUser"/></label>
-									<div class="col-sm-9">
-										<ul class="list-inline form-control-static">
-										<c:forEach items="${command.group.users}" var="member">
-											<c:if test="${member.name ne loginUser.name}">
-												<li>
-													<a href="${relativeUrlGenerator.getUserUrlByUserName(member.name)}">
-														<c:out value="${member.name}"/>
-													</a>
-													(<a href="/SettingsHandler?del_group_user=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}"><c:out value="${deluser}" /></a>)&amp;nbsp;
-												</li>
-											</c:if>
-										</c:forEach>
-										</ul>
-									</div>
-								</div>
-							</form>
-						</fieldset>
-
-						<c:if test="${showDeny}">
-							<!-- TODO move to controller -->
-							<!-- User clicked link in email and wants to add (or cancel) user -->
-							<!-- cancel request only if right params existing -->
-							<fieldset>
-								<legend>
-									<fmt:message key="settings.group.deny">
-										<fmt:param><a href="${relativeUrlGenerator.getUserUrlByUserName(param.user)}"><c:out value="${param.user}"/></a></fmt:param>
-									</fmt:message>
-								</legend>
-								<form:form cssClass="form-horizontal" id="groupAddDenyUser" method="post" action="/join_group">
-									<input type="hidden" neme="ckey" value="${command.context.ckey }"/>
-									<input type="hidden" name="deniedUser" value="${fn:escapeXml(param.user)}" />
-									<input type="hidden" name="group" value="${command.context.loginUser.name}" />
-
-									<bsform:input path="reason" helpKey="settings.group.denyReason.help" id="inputreason" labelKey="settings.group.denyReason" labelColSpan="3" inputColSpan="9" />
-
-									<div class="clearfix col-sm-offset-3">
-										<fmt:message var="denyButton" key="settings.group.deny.button"/>
-										<bsform:button type="submit" style="primary" size="defaultSize" value="${denyButton}" />
-									</div>
-								</form:form>
-							</fieldset>
-						</c:if>
-
-						<!-- GROUP SETTINGS -->
-						<fieldset>
-							<legend><fmt:message key="settings.group.settings" /></legend>
-							<form:form cssClass="form-horizontal" id="groupSettings" method="post" action="/updateGroupSettings">
-								<input type="hidden" name="ckey" value="${ckey}" />
-								
-								<div class="form-group">
-									<form:label cssClass="col-sm-3 control-label" path="privlevel">
-										<fmt:message key="settings.group.memberList" />
-									</form:label>
-									
-									<div class="col-sm-9">
-										<form:select cssClass="form-control help-popover" path="privlevel">
-											<form:option value="0"><fmt:message key="settings.public" /></form:option>
-											<form:option value="1"><fmt:message key="settings.private" /></form:option>
-											<form:option value="2"><fmt:message key="settings.publicForMembers" /></form:option>
-										</form:select>
-										<div class="help help-header hide"><fmt:message key="settings.group.memberList" /></div>
-										<div class="help help-content hide"><fmt:message key="settings.group.memberList.help" /></div>
-									</div>
-								</div>
-
-								<div class="form-group">
-									<form:label cssClass="col-sm-3 control-label" path="sharedDocuments">
-										<fmt:message key="settings.group.sharedDocuments" />
-									</form:label>
-									
-									<div class="col-sm-9">
-										<form:select cssClass="form-control help-popover" path="sharedDocuments">
-											<form:option value="0"><fmt:message key="settings.disabled" /></form:option>
-											<form:option value="1"><fmt:message key="settings.enabled" /></form:option>
-										</form:select>
-
-										<div class="help help-header hide"><fmt:message key="settings.group.sharedDocuments" /></div>
-										<div class="help help-content hide"><p><fmt:message key="settings.group.sharedDocuments.help" /></p></div>
-									</div>
-								</div>
-								<div class="form-group">
-									<div class="col-sm-offset-3 col-sm-9">
-										<fmt:message var="updatesettings" key="settings.updatesettings" />
-										<bsform:button type="submit" style="primary" size="defaultSize" value="${updatesettings}" />
-									</div>
-								</div>
-							</form:form>
-						</fieldset>
-						
-						<!-- group reporting settings -->
-						<c:if test="${properties['publication.reporting.mode'] eq 'GROUP'}">
-							<fieldset>
-								<legend><fmt:message key="settings.group.reporting" /></legend>
-								<form:form cssClass="form-horizontal" id="groupSettings" method="post" action="/updateGroupSettings">
-									<bform:fieldset maximized="${true}" legendKey="settings.group.reporting.mail">
-										<jsp:attribute name="content">
-											<bform:input path="group.publicationReportingSettings.reportingMailAddress" noHelp="${true}" />
-											<bform:textarea path="group.publicationReportingSettings.reportingMailTemplate" noHelp="${true}" rows="10" />
-										</jsp:attribute>
-									</bform:fieldset>
-
-									<bform:fieldset maximized="${true}" legendKey="settings.group.reporting.address">
-										<jsp:attribute name="content">
-											<bform:input path="group.publicationReportingSettings.externalReportingUrl" noHelp="${true}" />
-										</jsp:attribute>
-									</bform:fieldset>
-									<bform:submit messageKey="settings.group.reporting.update" />
-									<input type="hidden" name="action" value="updateGroupReportingSettings" />
-								</form:form>
-							</fieldset>
-						</c:if>
-				</c:otherwise>
-			</c:choose>
+							</dl>
+						</c:otherwise>
+					</c:choose>
+				</jsp:attribute>
+			</bsform:fieldset>
 		</fieldset>
+		
+	
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+
 	</div>
 </jsp:root>
