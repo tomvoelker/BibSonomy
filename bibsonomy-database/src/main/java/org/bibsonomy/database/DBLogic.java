@@ -702,7 +702,7 @@ public class DBLogic implements LogicInterface {
 	@SuppressWarnings("deprecation")
 	@Override
 	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
-		return this.getPosts(resourceType, grouping, groupingName, tags, hash, search, SearchType.DEFAULT_SEARCH, filter, order, startDate, endDate, start, end);
+		return this.getPosts(resourceType, grouping, groupingName, tags, hash, search, SearchType.LOCAL, filter, order, startDate, endDate, start, end);
 	}
 
 	/*
@@ -892,16 +892,16 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = this.openSession();
 		try {
 			final Group myGroup = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, true, session);
-			if (present(myGroup)) {
-				myGroup.setTagSets(this.groupDBManager.getGroupTagSets(groupName, session));
-				if (this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, groupName, GroupRole.MODERATOR)) {
-					final Group pendingMembershipsGroup = this.groupDBManager.getGroupWithPendingMemberships(groupName, session);
-					if (present(pendingMembershipsGroup)) {
-						myGroup.setPendingMemberships(pendingMembershipsGroup.getMemberships());
-					}
+			if (!GroupUtils.isValidGroup(myGroup)) {
+				return null;
+			}
+			myGroup.setTagSets(this.groupDBManager.getGroupTagSets(groupName, session));
+			if (this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, groupName, GroupRole.MODERATOR)) {
+				final Group pendingMembershipsGroup = this.groupDBManager.getGroupWithPendingMemberships(groupName, session);
+				if (present(pendingMembershipsGroup)) {
+					myGroup.setPendingMemberships(pendingMembershipsGroup.getMemberships());
 				}
 			}
-
 			return myGroup;
 		} finally {
 			session.close();
@@ -1222,7 +1222,7 @@ public class DBLogic implements LogicInterface {
 
 			// check the groups existence and retrieve the current group
 			final Group group = this.groupDBManager.getGroupMembers(this.loginUser.getName(), paramGroup.getName(), false, session);
-			if (!present(group)) {
+			if (!GroupUtils.isValidGroup(group)) {
 				throw new IllegalArgumentException("Group does not exist");
 			}
 			final GroupMembership currentGroupMembership = group.getGroupMembershipForUser(requestedUserName);
@@ -1346,7 +1346,10 @@ public class DBLogic implements LogicInterface {
 
 			case DELETE: // TODO: use deleteGroup
 				this.permissionDBManager.ensureAdminAccess(this.loginUser);
-				this.groupDBManager.deletePendingGroup(group.getName(), session);
+				// this must be paramGroup, since "DELETE" is only called for
+				// the admin interface to decline a group request.
+				// TODO: Resolve this in a better way.
+				this.groupDBManager.deletePendingGroup(paramGroup.getName(), session);
 				break;
 
 			case ADD_INVITED:
@@ -1691,7 +1694,7 @@ public class DBLogic implements LogicInterface {
 			 * group admins can change settings of their group
 			 */
 			final Group group = this.getGroupDetails(username);
-			if (present(group) && presentValidGroupId(group.getGroupId())) {
+			if (GroupUtils.isValidGroup(group)) {
 				this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.ADMINISTRATOR);
 			} else {
 

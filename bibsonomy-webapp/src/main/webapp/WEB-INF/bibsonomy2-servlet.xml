@@ -406,32 +406,6 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/recommended">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="recommendedPostsPageController"/>
-					</bean>
-				</entry>
-				<entry key="/settings">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="settingsPageController"/>
-						<property name="allowedFields">
-							<list>
-								<value>selTab</value>
-								<value>ckey</value>
-								<value>requestedUser</value>
-								<value>importType</value>
-								<value>importData</value>
-								<value>overwrite</value>
-								<value>userName</value>
-								<value>action</value>
-								<value>accessTokenDelete</value>
-								<value>file</value> 
-								<value>group</value>
-								<value>delete</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
 				<entry key="/settings/group">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="groupSettingsPageController" />
@@ -656,11 +630,6 @@
 				<entry key="/search">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="searchPageController"/>
-					</bean>
-				</entry>
-				<entry key="/sharedResourceSearch">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="sharedResourceSearchPageController"/>
 					</bean>
 				</entry>
 				<entry key="/popular">
@@ -986,10 +955,7 @@
 	<bean id="searchPageController" class="org.bibsonomy.webapp.controller.SearchPageController" scope="request" parent="multiResourceListController">
 		<property name="supportedResources" ref="allResources"/>
 	</bean>
-	<bean id="sharedResourceSearchPageController" class="org.bibsonomy.webapp.controller.SearchPageController" scope="request" parent="multiResourceListController">
-		<property name="supportedResources" ref="allResources"/>
-		<property name="searchFromSharedIndex" value = "true"/>
-	</bean>
+
 	<bean id="popularTagsPageController" class="org.bibsonomy.webapp.controller.PopularTagsPageController" scope="request">
 		<property name="logic" ref="logic"/>
 	</bean>

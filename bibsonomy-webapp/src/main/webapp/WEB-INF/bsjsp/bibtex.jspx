@@ -44,7 +44,6 @@
 	<fmt:message key="post.resource.discussion.headline" var="discussionsTitle"/>
 	
 	<fmt:message key="navi.publication" var="pageTitle"/>
-	<fmt:message var="headline" key="page.bibtex.headline" />
 	
 	<layout:resourceLayout pageTitle="${pageTitle} :: ${title}" 
 			command="${command}" 
@@ -55,7 +54,7 @@
 			minimizedContentWidth="${true}"
 			resource="${publication}"
 			discussionBox="${discussionBox}"
-			headline="${headline}${title}">
+			headline="${title}">
 				
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript" src="${resdir}/javascript/merged/bs/discussion.js"><!-- keep me --></script>

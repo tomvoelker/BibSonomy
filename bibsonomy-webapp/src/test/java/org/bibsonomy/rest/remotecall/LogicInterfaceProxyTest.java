@@ -641,7 +641,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */
 	@Test
 	public void getPostsTestBookmarkByTag() {
-		getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null, SearchType.DEFAULT_SEARCH,null,  null /* must be null because order is inferred and not transmitted */, null, null, 7, 1264);
+		getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null, SearchType.LOCAL,null,  null /* must be null because order is inferred and not transmitted */, null, null, 7, 1264);
 	}
 	
 	/**
@@ -649,7 +649,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */
 	@Test
 	public void getPostsTestPublicationByGroupAndTag() {
-		getPosts(BibTex.class, GroupingEntity.GROUP, "testGroup", Arrays.asList("blub", "bla"), null, null,SearchType.DEFAULT_SEARCH, null, null, null, null, 0, 1);
+		getPosts(BibTex.class, GroupingEntity.GROUP, "testGroup", Arrays.asList("blub", "bla"), null, null,SearchType.LOCAL, null, null, null, null, 0, 1);
 	}
 	
 	/**
@@ -657,7 +657,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */
 	@Test
 	public void getPostsTestPublicationByTagWithUmlaut() {
-		getPosts(BibTex.class, GroupingEntity.ALL, null, Arrays.asList("blüb"), null, null,SearchType.DEFAULT_SEARCH, null, null, null, null, 0, 1);
+		getPosts(BibTex.class, GroupingEntity.ALL, null, Arrays.asList("blüb"), null, null,SearchType.LOCAL, null, null, null, null, 0, 1);
 	}
 	
 	/**
@@ -665,18 +665,18 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */
 	@Test
 	public void getPostsTestPublicationByUserAndHash() {
-		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null,SearchType.DEFAULT_SEARCH, null, null, null, null, 0, 5);
+		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null,SearchType.LOCAL, null, null, null, null, 0, 5);
 	}
 	
 	@Test
 	public void getPostsTestWithSearchAndOrder() {
-		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), "search",SearchType.DEFAULT_SEARCH, null, Order.FOLKRANK, null, null, 0, 5);
+		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), "search",SearchType.LOCAL, null, Order.FOLKRANK, null, null, 0, 5);
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
 	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
-		return getPosts(resourceType, grouping, groupingName, tags, hash, search, SearchType.DEFAULT_SEARCH, filter, order, startDate, endDate, start, end);
+		return getPosts(resourceType, grouping, groupingName, tags, hash, search, SearchType.LOCAL, filter, order, startDate, endDate, start, end);
 	}
 	
 	@Override

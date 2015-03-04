@@ -77,7 +77,7 @@ public class OpenAccessController extends AjaxController implements Minimalistic
 		if (present(action)) {
 			if (GET_SENT_REPOSITORIES.equals(action)) {
 				// TODO: adapt limit to get all posts
-				final List<Post<BibTex>> posts = logic.getPosts(BibTex.class, GroupingEntity.USER, command.getContext().getLoginUser().getName(), null, command.getInterhash(), null,SearchType.DEFAULT_SEARCH , FilterEntity.POSTS_WITH_REPOSITORY, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
+				final List<Post<BibTex>> posts = logic.getPosts(BibTex.class, GroupingEntity.USER, command.getContext().getLoginUser().getName(), null, command.getInterhash(), null,SearchType.LOCAL , FilterEntity.POSTS_WITH_REPOSITORY, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
 
 				// TODO: implement this
 				/*

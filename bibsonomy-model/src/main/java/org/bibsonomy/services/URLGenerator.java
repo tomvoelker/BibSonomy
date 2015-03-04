@@ -34,6 +34,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
@@ -44,7 +45,9 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.util.UrlBuilder;
 import org.bibsonomy.util.UrlUtils;
 
 /**
@@ -121,6 +124,7 @@ public class URLGenerator {
 	private static final String PUBLICATION_PREFIX = "bibtex";
 	private static final String RELEVANTFOR_PREFIX = "relevantfor";
 	private static final String SEARCH_PREFIX = "search";
+	private static final String SHARED_RESOURCE_SEARCH_PREFIX = "sharedResourceSearch";
 	private static final String SETTINGS_PREFIX = "settings";
 	private static final String TAG_PREFIX = "tag";
 	private static final String USER_PREFIX = "user";
@@ -130,10 +134,8 @@ public class URLGenerator {
 	private static final String VIEWABLE_PUBLIC_SUFFIX = "public";
 	private static final String HISTORY_PREFIX = "history";
 
-	private static final String PUBLICATION_INTRA_HASH_ID = String
-			.valueOf(HashID.INTRA_HASH.getId());
-	private static final String PUBLICATION_INTER_HASH_ID = String
-			.valueOf(HashID.INTER_HASH.getId());
+	private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
+	private static final String PUBLICATION_INTER_HASH_ID = String.valueOf(HashID.INTER_HASH.getId());
 
 	/**
 	 * The default gives relative URLs.
@@ -324,8 +326,7 @@ public class URLGenerator {
 	 */
 	public String getBookmarkUrlByIntraHashAndUsername(final String intraHash,
 			final String userName) {
-		String url = this.projectHome + prefix + BOOKMARK_PREFIX + "/"
-				+ intraHash;
+		String url = this.projectHome + prefix + BOOKMARK_PREFIX + "/" + intraHash;
 		if (present(userName)) {
 			url += "/" + UrlUtils.safeURIEncode(userName);
 
@@ -375,8 +376,7 @@ public class URLGenerator {
 	 * @param systemUrl
 	 * @return returns the Endnote export url
 	 */
-	public String getEndnoteUrlByIntraHashAndUserName(final String intraHash,
-			final String userName){
+	public String getEndnoteUrlByIntraHashAndUserName(final String intraHash, final String userName){
 		
 		return this.getEndnoteUrlByIntraHashUserNameAndSysUrl(intraHash, userName, this.projectHome);
 		
@@ -390,15 +390,12 @@ public class URLGenerator {
 	 * @return returns the Endnote export url for the specified system
 	 */
 	@Deprecated // TODO: remove (use proper configured URLGenerator)
-	public String getEndnoteUrlByIntraHashUserNameAndSysUrl(final String intraHash,
-			final String userName, final String systemUrl){
+	public String getEndnoteUrlByIntraHashUserNameAndSysUrl(final String intraHash, final String userName, final String systemUrl){
 		String url = systemUrl + prefix + LAYOUT_PREFIX + "/" + ENDNOTE_PREFIX + "/" + PUBLICATION_PREFIX + "/" + PUBLICATION_INTRA_HASH_ID + intraHash;
 		if (present(userName)) {
 			url += "/" + UrlUtils.safeURIEncode(userName);
-
 		}
 		return this.getUrl(url);
-		
 	}
 	
 	/**
@@ -409,11 +406,8 @@ public class URLGenerator {
 	 * @param systemUrl
 	 * @return returns the MS WORD Reference Manager url
 	 */
-	public String getMSWordUrlByIntraHashAndUserName(final String intraHash,
-			final String userName){
-		
+	public String getMSWordUrlByIntraHashAndUserName(final String intraHash, final String userName){
 		return this.getMSWordUrlByIntraHashUserNameAndSysUrl(intraHash, userName, this.projectHome);
-		
 	}
 	/**
 	 * url for MS WORD Reference Manager for a specific system
@@ -424,12 +418,10 @@ public class URLGenerator {
 	 * @return returns the MS WORD Reference Manager url for the specified system
 	 */
 	@Deprecated // TODO: remove (use proper configured URLGenerator)
-	public String getMSWordUrlByIntraHashUserNameAndSysUrl(final String intraHash,
-			final String userName, final String systemUrl){
+	public String getMSWordUrlByIntraHashUserNameAndSysUrl(final String intraHash, final String userName, final String systemUrl){
 		String url = systemUrl + prefix + LAYOUT_PREFIX + "/" + MSWORD_PREFIX + "/" + PUBLICATION_PREFIX + "/" + PUBLICATION_INTRA_HASH_ID + intraHash;
 		if (present(userName)) {
 			url += "/" + UrlUtils.safeURIEncode(userName);
-
 		}
 		return this.getUrl(url);
 		
@@ -468,10 +460,8 @@ public class URLGenerator {
 	 * @return The URL pointing to the concepts of the user with the specified
 	 *         tags.
 	 */
-	public String getConceptUrlByUserNameAndTagName(final String userName,
-			final String tagName) {
-		String url = this.projectHome + prefix + CONCEPT_PREFIX + "/"
-				+ USER_PREFIX;
+	public String getConceptUrlByUserNameAndTagName(final String userName, final String tagName) {
+		String url = this.projectHome + prefix + CONCEPT_PREFIX + "/" + USER_PREFIX;
 		url += "/" + UrlUtils.safeURIEncode(userName);
 		url += "/" + UrlUtils.safeURIEncode(tagName);
 
@@ -486,8 +476,7 @@ public class URLGenerator {
 	 * @param fileName
 	 * @return returns the url of the document
 	 */
-	public String getDocumentUrlByIntraHashUserNameAndFileName(final String intraHash,
-			final String userName, final String fileName){
+	public String getDocumentUrlByIntraHashUserNameAndFileName(final String intraHash, final String userName, final String fileName){
 		return this.getDocumentUrlByIntraHashUserNameFileNameAndSysUrl(intraHash, userName, fileName, this.projectHome);
 	}
 	
@@ -501,12 +490,10 @@ public class URLGenerator {
 	 * @return returns the url of the document for the specified system
 	 */
 	@Deprecated // TODO: remove (use proper configured URLGenerator)
-	public String getDocumentUrlByIntraHashUserNameFileNameAndSysUrl(final String intraHash,
-			final String userName, final String fileName, final String systemUrl){
+	public String getDocumentUrlByIntraHashUserNameFileNameAndSysUrl(final String intraHash, final String userName, final String fileName, final String systemUrl){
 		String url = systemUrl + prefix + DOCUMENT_PREFIX + "/" + intraHash;
 		if (present(userName)) {
 			url += "/" + UrlUtils.safeURIEncode(userName);
-
 		}
 		url += "/" + UrlUtils.safeURIEncode(fileName);
 		
@@ -533,7 +520,6 @@ public class URLGenerator {
 	 *         username.
 	 */
 	public String getFriendUrlByUserName(final String userName) {
-
 		return this.getFriendUrlByUserNameAndSysUrl(userName, this.projectHome);
 	}
 
@@ -547,11 +533,9 @@ public class URLGenerator {
 	 *         username.
 	 */
 	@Deprecated // TODO: remove (use proper configured URLGenerator)
-	public String getFriendUrlByUserNameAndSysUrl(final String userName,
-			final String systemUrl) {
+	public String getFriendUrlByUserNameAndSysUrl(final String userName, final String systemUrl) {
 		String url = systemUrl + prefix + FRIEND_PREFIX + "/";
 		url += UrlUtils.safeURIEncode(userName);
-
 		return this.getUrl(url);
 	}
 
@@ -564,11 +548,9 @@ public class URLGenerator {
 	 * @return URL pointing to the posts viewable for friends of User with name
 	 *         username and tag tagName.
 	 */
-	public String getFriendUrlByUserNameAndTagName(final String userName,
-			final String tagName) {
+	public String getFriendUrlByUserNameAndTagName(final String userName, final String tagName) {
 		String url = this.getFriendUrlByUserName(userName);
 		url += "/" + UrlUtils.safeURIEncode(tagName);
-
 		return this.getUrl(url);
 	}
 
@@ -578,8 +560,7 @@ public class URLGenerator {
 	 * @return URL pointing to the publication represented by the inter hash and
 	 *         the resource type
 	 */
-	public String getCommunityPostUrlByInterHash(final String interHash,
-			final String resourceType) {
+	public String getCommunityPostUrlByInterHash(final String interHash, final String resourceType) {
 		if (BOOKMARK.equalsIgnoreCase(resourceType)) {
 			return this.getCommunityBookmarkUrlByInterHash(interHash);
 		}
@@ -594,15 +575,11 @@ public class URLGenerator {
 	 *         the resource type and the system url
 	 */
 	@Deprecated // TODO: remove (use proper configured URLGenerator)
-	public String getCommunityPostUrlByInterHashAndSysUrl(
-			final String interHash, final String resourceType,
-			final String systemUrl) {
+	public String getCommunityPostUrlByInterHashAndSysUrl(final String interHash, final String resourceType, final String systemUrl) {
 		if (BOOKMARK.equalsIgnoreCase(resourceType)) {
-			return this.getCommunityBookmarkUrlByInterHashAndSysUrl(interHash,
-					systemUrl);
+			return this.getCommunityBookmarkUrlByInterHashAndSysUrl(interHash, systemUrl);
 		}
-		return this.getCommunityPublicationUrlByInterHashAndSysUrl(interHash,
-				systemUrl);
+		return this.getCommunityPublicationUrlByInterHashAndSysUrl(interHash, systemUrl);
 	}
 
 	/**
@@ -615,10 +592,8 @@ public class URLGenerator {
 	 *         system url
 	 */
 	@Deprecated // TODO: remove (use proper configured URLGenerator)
-	public String getCommunityPublicationUrlByInterHashAndSysUrl(
-			final String interHash, final String systemUrl) {
-		return this.getCommunityPublicationUrlByInterHashUsernameAndSysUrl(
-				interHash, null, systemUrl);
+	public String getCommunityPublicationUrlByInterHashAndSysUrl(final String interHash, final String systemUrl) {
+		return this.getCommunityPublicationUrlByInterHashUsernameAndSysUrl(interHash, null, systemUrl);
 	}
 
 	/**
@@ -1227,7 +1202,7 @@ public class URLGenerator {
 	 * @return URL pointing to the publication represented by the intraHash and
 	 *         the userName
 	 */
-	@Deprecated // TODO: remove (use proper configured URLGenerator)
+	@Deprecated // TODO: remove (use properly configured URLGenerator)
 	public String getPublicationUrlByIntraHashUsernameAndSysUrl(
 			final String intraHash, final String userName,
 			final String systemUrl) {
@@ -1280,6 +1255,25 @@ public class URLGenerator {
 		url += "/" + UrlUtils.safeURIEncode(groupName);
 		return this.getUrl(url);
 	}
+	
+	/**
+	 * Constructs a search URL for the requested search string.
+	 * 
+	 * @param toSearch
+	 * @param searchScope the search type such as 'group', 'search', 'sharedResourceSearch'
+	 * @param order
+	 * @return URL pointing to the results of the search.
+	 */
+	public String getSearchUrl(final String toSearch, SearchType searchScope, Order order) {
+		UrlBuilder ub = new UrlBuilder(this.projectHome).addPathElement(SEARCH_PREFIX).addPathElement(toSearch);
+		if (searchScope != SearchType.LOCAL) {
+			ub.addParameter("scope", searchScope.name());
+		}
+		if ((order != null) && (order != Order.RANK)) {
+			ub.addParameter("order", order.name().toLowerCase());
+		}
+		return this.getUrl(ub.asString());
+	}
 
 	/**
 	 * Constructs a search URL for the requested search string.
@@ -1288,9 +1282,7 @@ public class URLGenerator {
 	 * @return URL pointing to the results of the search.
 	 */
 	public String getSearchUrl(final String toSearch) {
-		String url = this.projectHome + prefix + SEARCH_PREFIX + "/"
-				+ UrlUtils.safeURIEncode(toSearch);
-		return this.getUrl(url);
+		return getSearchUrl(toSearch, SearchType.LOCAL, Order.RANK);
 	}
 
 	/**

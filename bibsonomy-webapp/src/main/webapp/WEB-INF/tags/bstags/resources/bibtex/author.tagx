@@ -8,8 +8,25 @@
 	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
 	<jsp:directive.attribute name="schemaOrgMarkUp" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="useAbsoluteURL" type="java.lang.Boolean" required="false" />
-	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="false" />
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="flase"/>
 	
+	<c:choose>
+		<c:when test="${not empty post}">
+			<c:set var="resourceType" value="${post.resource.getClass().getSimpleName()}"/>
+			<c:choose>
+				<c:when test="${not empty post.systemUrl }">
+					<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
+					<c:set var="systemUrl" value="${fn:substringBefore(post.systemUrl,'/') }"/>
+				</c:when>
+				<c:otherwise>
+					<c:set var ="isRemotePost" value="false"/>
+				</c:otherwise>
+			</c:choose>
+		</c:when>
+		<c:otherwise>
+			<c:set var ="isRemotePost" value="false"/>
+		</c:otherwise>
+	</c:choose>
 	<c:set var="urlGenerator" value="${relativeUrlGenerator}" />
 	<c:if test="${useAbsoluteURL}">
 		<c:set var="urlGenerator" value="${absoluteUrlGenerator}" />
@@ -42,21 +59,31 @@
 			<c:if test="${loopStatus.last and not loopStatus.first}">
 				<c:out value=" "/><fmt:message key="and"/><c:out value=" "/>
 			</c:if>
+			
+			<!-- FIXME: urls should be build correctly for remote posts. urls should be built using urlgenerator methods -->
 			<c:url var='pubAuthorUrl' value='/pubauthor/${fn:escapeXml(mtl:encodeURI(mtl:cleanBibtex(person.lastName)))}, ${fn:escapeXml(mtl:encodeURI(mtl:cleanBibtex(person.firstName)))}/${publication.intraHash}/${post.user.name}/AUTHOR'></c:url>
 			<c:choose>
-				<c:when test="${schemaOrgMarkUp}">
-					<span itemprop="${authorEditor}" itemscope="itemscope" itemtype="http://schema.org/Person">
-						<a href="${pubAuthorUrl}" itemprop="name">
-							<c:out value="${personName}"/>
-						</a>
-					</span>
+				<c:when test="${isRemotePost}">
+					<a href="${urlGenerator.getAuthorUrlByNameAndSysUrl(person.lastName, post.systemUrl)}"><c:out value="${personName}" /></a>	
 				</c:when>
 				<c:otherwise>
-				 	<a href="${pubAuthorUrl}">
-						<c:out value="${personName}"/>
-				 	</a>
+					<c:choose>
+						<c:when test="${schemaOrgMarkUp}">
+							<span itemprop="${authorEditor}" itemscope="itemscope" itemtype="http://schema.org/Person">
+								<a href="${pubAuthorUrl}" itemprop="name">
+									<c:out value="${personName}"/>
+								</a>
+							</span>
+						</c:when>
+						<c:otherwise>
+						 	<a href="${pubAuthorUrl}">
+								<c:out value="${personName}"/>
+						 	</a>
+						</c:otherwise>
+					</c:choose>
 				</c:otherwise>
 			</c:choose>
+		
 			
 			<!-- append separator "," -->
 			<c:if test="${not loopStatus.last}"><c:out value=", "/></c:if>
