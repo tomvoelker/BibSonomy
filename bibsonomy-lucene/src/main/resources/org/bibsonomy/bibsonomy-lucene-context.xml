@@ -144,13 +144,14 @@
 		</bean>
 	</util:list>
 
-	<!--+ | lucene database access logics + -->
+	<!--+ 
+	    | lucene database access logics
+	    + -->
 	<bean id="luceneSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
 		<!-- currently configurated using jndi in bibsonomy-webapp -->
 		<property name="dataSource" ref="luceneDataSource" />
 		<property name="configLocation" value="classpath:SqlMapConfig_lucene.xml" />
-		<property name="transactionConfigClass"
-			value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
 	</bean>
 
 	<bean id="luceneSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
@@ -171,7 +172,9 @@
 		<property name="resourceClass" ref="luceneGoldStandardPublicationClass" />
 	</bean>
 
-	<!--+ | lucene index searcher + -->
+	<!--+
+	    | lucene index searcher 
+	    + -->
 	<bean id="luceneInfoDBLogic" class="org.bibsonomy.lucene.database.LuceneInfoDBLogic">
 		<property name="sessionFactory" ref="luceneSessionFactory" />
 	</bean>
@@ -200,7 +203,9 @@
 		<property name="sharedResourceSearch" ref="esGoldStandardSearch"/>
 	</bean>
 
-	<!--+ | lucene index manager + -->
+	<!--+ 
+        | lucene index manager 
+        + -->
 	<bean id="luceneResourceManager" class="org.bibsonomy.lucene.index.manager.LuceneResourceManager" abstract="true">
 		<property name="luceneUpdaterEnabled" value="${lucene.enableUpdater}" />
 		<property name="plugin" ref="sharedIndexUpdatePlugin" />
@@ -236,7 +241,9 @@
 	<!-- #################### imports #################### -->
 	<import resource="bibsonomy-lucene-index-config.xml" />
 
-	<!--+ | import resource field configurations + -->
+	<!--+ 
+	    | import resource field configurations 
+	    + -->
 	<import resource="bibsonomy-lucene-post-fields.xml" />
 	<import resource="bibsonomy-lucene-publication-fields.xml" />
 	<import resource="bibsonomy-lucene-bookmark-fields.xml" />

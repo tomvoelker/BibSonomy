@@ -182,9 +182,24 @@ public class LuceneResourceIndex<R extends Resource> {
 	public void close() throws CorruptIndexException, IOException{
 		this.closeSearcherManager();
 		this.closeIndexWriter();
+		this.closeDirectory();
 		this.disableIndex();
 	}
 	
+	/**
+	 * @throws IOException 
+	 * 
+	 */
+	private void closeDirectory() throws IOException {
+		if (this.indexDirectory != null) {
+			this.indexDirectory.close();
+		}
+	}
+	
+	protected void finalize() throws Throwable {
+		close();
+	}
+
 	/**
 	 * initialize internal data structures
 	 */
@@ -196,9 +211,48 @@ public class LuceneResourceIndex<R extends Resource> {
 			
 			try {
 				if (IndexWriter.isLocked(this.indexDirectory)) {
-					log.warn("WARNING: Index " + indexPath + " is locked - forcibly unlock the index.");
-					IndexWriter.unlock(this.indexDirectory);
-					log.warn("OK. Index unlocked.");
+					for (int retry = 0; retry < 3; ++retry) {
+						log.warn("WARNING: Index " + indexPath + " is still locked - waiting.");
+						Thread.sleep(5000);
+						if (IndexWriter.isLocked(this.indexDirectory)) {
+							log.warn("WARNING: Index " + indexPath + " is still locked - trying to reopen directory.");
+							this.indexDirectory.close();
+							this.indexDirectory = FSDirectory.open(new File(this.indexPath));
+						}
+						if (IndexWriter.isLocked(this.indexDirectory)) {
+							log.warn("WARNING: Index " + indexPath + " is still locked - forcibly unlock the index.");
+							IndexWriter.unlock(this.indexDirectory);
+						}
+						if (IndexWriter.isLocked(this.indexDirectory)) {
+							log.warn("Unlocking index " + indexPath + " failed silently");
+							if (indexDirectory.fileExists(IndexWriter.WRITE_LOCK_NAME)) {
+								log.error("Trying to unlocking index " + indexPath + " with some more emphasis");
+								indexDirectory.clearLock(IndexWriter.WRITE_LOCK_NAME);
+							}
+						}
+						if (IndexWriter.isLocked(this.indexDirectory)) {
+							log.warn("WARNING: Index " + indexPath + " is still locked - trying to reopen directory.");
+							this.indexDirectory.close();
+							this.indexDirectory = FSDirectory.open(new File(this.indexPath));
+						}
+						if (IndexWriter.isLocked(this.indexDirectory)) {
+							log.warn("Unlocking index " + indexPath + " failed again - doing it the rude way");
+							File lockFile = new File(new File(this.indexPath), IndexWriter.WRITE_LOCK_NAME);
+							if (lockFile.exists() == false) {
+								log.error("lockfile does not exist: " + lockFile);
+							} else {
+								lockFile.delete();
+							}
+						}
+						if (IndexWriter.isLocked(this.indexDirectory)) {
+							log.warn("WARNING: Index " + indexPath + " is still locked - trying to reopen directory.");
+							this.indexDirectory.close();
+							this.indexDirectory = FSDirectory.open(new File(this.indexPath));
+						} else {
+							log.warn("OK. unlocked index " + indexPath + ".");
+							break;
+						}
+					}
 				}
 			} catch (final IOException e) {
 				log.fatal("Failed to unlock the index - dying.");

@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.es;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -39,8 +38,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.model.Resource;
-import org.elasticsearch.action.delete.DeleteResponse;
-import org.elasticsearch.action.deletebyquery.DeleteByQueryResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -58,26 +55,25 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * 
  * @author lutful
  * @param <R>
- *            the resource of the index
+ *        the resource of the index
  */
-public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpdater{
-	private static final Log log = LogFactory
-			.getLog(SharedResourceIndexUpdater.class);
+public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpdater {
+	private static final Log log = LogFactory.getLog(SharedResourceIndexUpdater.class);
 
 	private final String indexName = ESConstants.INDEX_NAME;
 
 	private String resourceType;
 
-	private SystemInformation systemInfo =  new SystemInformation();
-	/**The Url of the project home */
+	private final SystemInformation systemInfo = new SystemInformation();
+	/** The Url of the project home */
 	private final String systemHome;
-	
+
 	private final String systemUrlFieldName = "systemUrl";
-	
+
 	/** list posts to insert into index */
 	private ArrayList<Map<String, Object>> esPostsToInsert;
 	/** the node client */
-//	private final ESNodeClient esClient = new ESNodeClient();
+	// private final ESNodeClient esClient = new ESNodeClient();
 	/** the transport client */
 	private ESClient esClient;
 
@@ -96,7 +92,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		this.contentIdsToDelete = new LinkedList<Integer>();
 		this.esPostsToInsert = new ArrayList<Map<String, Object>>();
 		this.usersToFlag = new TreeSet<String>();
-		
+
 	}
 
 	/**
@@ -105,8 +101,8 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	@Override
 	@SuppressWarnings("boxing")
 	public long getLastLogDate() {
-		synchronized (this) {			
-			final String lastLogDateString = fetchSystemInfoField(LuceneFieldNames.LAST_LOG_DATE);
+		synchronized (this) {
+			final String lastLogDateString = this.fetchSystemInfoField(LuceneFieldNames.LAST_LOG_DATE);
 			if (lastLogDateString == null) {
 				return Long.MIN_VALUE;
 			}
@@ -114,54 +110,50 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		}
 	}
 
-	private String fetchSystemInfoField(String fieldToRetrieve) {
+	private String fetchSystemInfoField(final String fieldToRetrieve) {
 		try {
-			Map<String, Object> result = getSystemInfos();
+			final Map<String, Object> result = this.getSystemInfos();
 			if (result != null) {
-				Object val = result.get(fieldToRetrieve);
+				final Object val = result.get(fieldToRetrieve);
 				if (val == null) {
 					return null;
 				}
 				return val.toString();
 			}
-		} catch (IndexMissingException e) {
+		} catch (final IndexMissingException e) {
 			log.error("IndexMissingException: " + e.getDetailedMessage() + " -> returning null", e);
 		}
 		return null;
 	}
-	
-	
-	
 
 	public List<Map<String, Object>> getAllSystemInfos() {
-		return getAllSystemInfosInternal(QueryBuilders.matchQuery("postType", this.resourceType), 200);
+		return this.getAllSystemInfosInternal(QueryBuilders.matchQuery("postType", this.resourceType), 200);
 	}
-	
-	private List<Map<String, Object>> getAllSystemInfosInternal(QueryBuilder query, int size) {
-		// wait for the yellow (or green) status to prevent NoShardAvailableActionException later
-		esClient.getClient().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
-		
-		SearchRequestBuilder searchRequestBuilder = esClient
-				.getClient().prepareSearch(indexName);
+
+	private List<Map<String, Object>> getAllSystemInfosInternal(final QueryBuilder query, final int size) {
+		// wait for the yellow (or green) status to prevent
+		// NoShardAvailableActionException later
+		this.esClient.getClient().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
+
+		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(this.indexName);
 		searchRequestBuilder.setTypes(ESConstants.SYSTEM_INFO_INDEX_TYPE);
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(query);
 		searchRequestBuilder.setFrom(0).setSize(size).setExplain(true);
 
-		SearchResponse response = searchRequestBuilder.execute()
-				.actionGet();
+		final SearchResponse response = searchRequestBuilder.execute().actionGet();
 
-		List<Map<String, Object>> rVal = new ArrayList<>();
-		
-		for (SearchHit hit : response.getHits()) {
+		final List<Map<String, Object>> rVal = new ArrayList<>();
+
+		for (final SearchHit hit : response.getHits()) {
 			rVal.add(hit.getSource());
 		}
-		
+
 		return rVal;
 	}
-	
+
 	public Map<String, Object> getSystemInfos() {
-		List<Map<String, Object>> l = getAllSystemInfosInternal(QueryBuilders.idsQuery().ids(systemHome+resourceType), 1);
+		final List<Map<String, Object>> l = this.getAllSystemInfosInternal(QueryBuilders.idsQuery().ids(this.systemHome + this.resourceType), 1);
 		if (l.size() > 0) {
 			return l.get(0);
 		}
@@ -175,7 +167,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	@SuppressWarnings("boxing")
 	public Integer getLastTasId() {
 		synchronized (this) {
-			String lastTasIdString = fetchSystemInfoField(LuceneFieldNames.LAST_TAS_ID);
+			final String lastTasIdString = this.fetchSystemInfoField(LuceneFieldNames.LAST_TAS_ID);
 			if (lastTasIdString == null) {
 				log.error("no lastTasId  -> starting from the very beginning");
 				return Integer.MIN_VALUE;
@@ -186,9 +178,9 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 
 	/**
 	 * @param contentIdsToDelete
-	 *            the contentIdsToDelete to set
+	 *        the contentIdsToDelete to set
 	 */
-	public void setContentIdsToDelete(List<Integer> contentIdsToDelete) {
+	public void setContentIdsToDelete(final List<Integer> contentIdsToDelete) {
 		synchronized (this) {
 			this.contentIdsToDelete = contentIdsToDelete;
 		}
@@ -217,9 +209,9 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 
 	/**
 	 * @param postsToInsert
-	 *            the esPostsToInsert to set
+	 *        the esPostsToInsert to set
 	 */
-	public void setEsPostsToInsert(ArrayList<Map<String, Object>> postsToInsert) {
+	public void setEsPostsToInsert(final ArrayList<Map<String, Object>> postsToInsert) {
 		this.esPostsToInsert = postsToInsert;
 	}
 
@@ -232,12 +224,11 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 			// ----------------------------------------------------------------
 			// remove cached posts from index
 			// ----------------------------------------------------------------
-			log.debug("Performing " + contentIdsToDelete.size()
-					+ " delete operations");
-			if ((contentIdsToDelete.size() > 0) || (usersToFlag.size() > 0)) {
+			log.debug("Performing " + this.contentIdsToDelete.size() + " delete operations");
+			if ((this.contentIdsToDelete.size() > 0) || (this.usersToFlag.size() > 0)) {
 				// remove each cached post from index
 				for (final Integer contentId : this.contentIdsToDelete) {
-					long indexID = calculateIndexId(contentId);
+					final long indexID = this.calculateIndexId(contentId);
 					this.deleteIndexForIndexId(indexID);
 					log.debug("deleted post " + contentId);
 				}
@@ -255,17 +246,16 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 			// ----------------------------------------------------------------
 			// add cached posts to index
 			// ----------------------------------------------------------------
-			log.debug("Performing " + esPostsToInsert.size()
-					+ " insert operations");
+			log.debug("Performing " + this.esPostsToInsert.size() + " insert operations");
 			if (this.esPostsToInsert.size() > 0) {
-				this.insertNewPosts(esPostsToInsert);
+				this.insertNewPosts(this.esPostsToInsert);
 			}
 
 			// ----------------------------------------------------------------
 			// Update system informations
 			// ----------------------------------------------------------------
 			this.flushSystemInformation();
-			
+
 			// ----------------------------------------------------------------
 			// clear all cached data
 			// ----------------------------------------------------------------
@@ -280,11 +270,11 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * @param contentId
 	 * @return
 	 */
-	private long calculateIndexId(Number contentId) {
+	private long calculateIndexId(final Number contentId) {
 		return calculateIndexId(contentId, this.systemHome);
 	}
 
-	protected static long calculateIndexId(Number contentId, String systemHome) {
+	protected static long calculateIndexId(final Number contentId, final String systemHome) {
 		return (((long) systemHome.hashCode()) << 32l) + contentId.longValue();
 	}
 
@@ -292,36 +282,29 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * updates the system information for lastLogDate, lastTasId
 	 */
 	public void flushSystemInformation() {
-		ObjectMapper mapper = new ObjectMapper();
+		final ObjectMapper mapper = new ObjectMapper();
 		String jsonDocumentForSystemInfo;
 		try {
-			jsonDocumentForSystemInfo = mapper.writeValueAsString(systemInfo);
-			esClient.getClient()
-			.prepareIndex(indexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, systemHome+resourceType)
-			.setSource(jsonDocumentForSystemInfo).execute().actionGet();
-		} catch (JsonProcessingException e) {
+			jsonDocumentForSystemInfo = mapper.writeValueAsString(this.systemInfo);
+			this.esClient.getClient().prepareIndex(this.indexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, this.systemHome + this.resourceType).setSource(jsonDocumentForSystemInfo).execute().actionGet();
+		} catch (final JsonProcessingException e) {
 			log.error("Failed to convert SystemInformation into a JSON", e);
-		}		
+		}
 	}
 
 	/**
 	 * @param esPostsToInsert2
 	 */
 	@Override
-	public void insertNewPosts(ArrayList<Map<String, Object>> esPostsToInsert2) {
-		// wait for the yellow (or green) status to prevent NoShardAvailableActionException later
-		esClient.getClient().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
-		
-		for (Map<String, Object> jsonDocument : esPostsToInsert2) {
-			jsonDocument.put(this.systemUrlFieldName, systemHome);
-			long indexId = calculateIndexId(Long.parseLong(jsonDocument.get(LuceneFieldNames.CONTENT_ID).toString()));
-			this.esClient
-					.getClient()
-					.prepareIndex(
-							indexName,
-							resourceType,
-							String.valueOf(indexId)).setSource(jsonDocument)
-					.setRefresh(true).execute().actionGet();
+	public void insertNewPosts(final ArrayList<Map<String, Object>> esPostsToInsert2) {
+		// wait for the yellow (or green) status to prevent
+		// NoShardAvailableActionException later
+		this.esClient.getClient().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
+
+		for (final Map<String, Object> jsonDocument : esPostsToInsert2) {
+			jsonDocument.put(this.systemUrlFieldName, this.systemHome);
+			final long indexId = this.calculateIndexId(Long.parseLong(jsonDocument.get(LuceneFieldNames.CONTENT_ID).toString()));
+			this.esClient.getClient().prepareIndex(this.indexName, this.resourceType, String.valueOf(indexId)).setSource(jsonDocument).setRefresh(true).execute().actionGet();
 		}
 
 		log.info("post has been indexed.");
@@ -331,13 +314,9 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * @param userName
 	 */
 	@Override
-	public void deleteIndexForForUser(String userName) {
+	public void deleteIndexForForUser(final String userName) {
 
-		@SuppressWarnings("unused")
-		DeleteByQueryResponse response = this.esClient.getClient().prepareDeleteByQuery(indexName)
-				.setTypes(resourceType).setQuery(QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, userName))
-				.execute()
-				.actionGet();
+		this.esClient.getClient().prepareDeleteByQuery(this.indexName).setTypes(this.resourceType).setQuery(QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, userName)).execute().actionGet();
 	}
 
 	/**
@@ -345,12 +324,8 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 */
 
 	@Override
-	public void deleteIndexForIndexId(long indexId) {
-		@SuppressWarnings("unused")
-		DeleteResponse response = esClient
-				.getClient()
-				.prepareDelete(indexName, resourceType, String.valueOf(indexId))
-				.setRefresh(true).execute().actionGet();
+	public void deleteIndexForIndexId(final long indexId) {
+		this.esClient.getClient().prepareDelete(this.indexName, this.resourceType, String.valueOf(indexId)).setRefresh(true).execute().actionGet();
 	}
 
 	/**
@@ -363,22 +338,22 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	/**
 	 * @param iNDEX_TYPE the iNDEX_TYPE to set
 	 */
-	public void setResourceType(String iNDEX_TYPE) {
-		resourceType = iNDEX_TYPE;
+	public void setResourceType(final String iNDEX_TYPE) {
+		this.resourceType = iNDEX_TYPE;
 	}
-	
+
 	/**
 	 * @param postDoc
 	 */
-	public void insertDocument(Map<String, Object> postDoc) {
-		esPostsToInsert.add(postDoc);
+	public void insertDocument(final Map<String, Object> postDoc) {
+		this.esPostsToInsert.add(postDoc);
 	}
 
 	/**
 	 * @param contentId
 	 */
 	@Override
-	public void deleteDocumentForContentId(Integer contentId) {
+	public void deleteDocumentForContentId(final Integer contentId) {
 		synchronized (this) {
 			this.contentIdsToDelete.add(contentId);
 		}
@@ -406,17 +381,18 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 			this.usersToFlag.remove(userName);
 		}
 	}
-	
+
 	/**
 	 * sets the system informations to update
+	 * 
 	 * @param lastTasId
 	 * @param lastLogDate
 	 */
-	public void setSystemInformation(Integer lastTasId, Date lastLogDate){
+	public void setSystemInformation(final Integer lastTasId, final Date lastLogDate) {
 		this.systemInfo.setLast_log_date(lastLogDate);
 		this.systemInfo.setLast_tas_id(lastTasId);
-		this.systemInfo.setPostType(resourceType);
-		this.systemInfo.setSystemUrl(systemHome);
+		this.systemInfo.setPostType(this.resourceType);
+		this.systemInfo.setSystemUrl(this.systemHome);
 	}
 
 	/**
@@ -429,7 +405,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	/**
 	 * @param esClient the esClient to set
 	 */
-	public void setEsClient(ESClient esClient) {
+	public void setEsClient(final ESClient esClient) {
 		this.esClient = esClient;
 	}
 

@@ -55,7 +55,7 @@ public class TexDecode {
 	/** regex patterns */
 	private static Pattern texRegexpPattern;
 	private static final String CURLY_BRACKETS = "[{}]*";
-	private static final String BRACKETS = "[()]*[\\[\\]]*";
+	private static final String BRACKETS = "[\\[\\]]*";
 
 	/**
 	 * helper comparator to sort strings by their length

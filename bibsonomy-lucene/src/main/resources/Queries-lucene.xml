@@ -19,7 +19,7 @@
 	<!-- get given group's members -->
 	<select id="getGroupMembersByGroupName" resultClass="string" parameterClass="string">
 		SELECT g.user_name 
-		FROM groups g 
+		FROM group_memberships g 
 		JOIN groupids gn USING (`group`)
 		WHERE gn.group_name = #groupName#
 	</select>

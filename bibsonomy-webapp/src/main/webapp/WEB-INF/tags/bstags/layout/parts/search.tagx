@@ -23,10 +23,15 @@
 	<jsp:directive.attribute name="formInputName" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="formInputValue" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="formExtra" fragment="true" required="false" description="Any extra form input fields you want to add."/>
-			
+	
+	<jsp:directive.attribute name="scope" type="org.bibsonomy.common.enums.SearchType" required="false" description="whether to search locally or federated"/>
+	
 	<div id="search">
 		<div class="${empty formAction ? 'hidden' : ''}">
 			<form action="${formAction}" method="get" class="smallform">
+				<c:if test="${not empty scope and scope.name() ne 'LOCAL'}">
+					<input type="hidden" name="scope" value="${scope.name().toLowerCase()}"/>
+				</c:if>
 				<div class="input-group">
 					<div class="input-group-addon">
 						<a href="#"  style="background-color: #eee;" class="dropdown-toggle" data-toggle="dropdown"><span class="search-scope"><fmt:message key="${pathMessageKey}"/></span>&amp;nbsp;<span class="caret"><!--  --></span></a>
@@ -39,7 +44,7 @@
 							<li><a onclick="return switchNavi('bibtexkey', this);"><fmt:message key="navi.bibtexkey"/></a></li>
 							<li><a onclick="return switchNavi('search', this);"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></a></li>
 							<c:if test="${not empty properties['es.cluster.name']}">					
-								<li><a onclick="return switchNavi('sharedResourceSearch', this);"><fmt:message key="navi.sharedResourceSearch"/>:<fmt:message key="navi.all"/></a></li>
+								<li><a onclick="return switchNavi('federated', this);"><fmt:message key="navi.federated"/>:<fmt:message key="navi.all"/></a></li>
 							</c:if>
 							<c:if test="${not empty requestedUser}">
 								<li><a onclick="return switchNavi('user:${fn:escapeXml(requestedUser)}', this);"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></a></li>
