@@ -266,15 +266,15 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * found, a {@link ObjectNotFoundException} exception is thrown.
 	 * 
 	 * @param loginUserName
-	 *            - the name of the user whose inbox should be checked
+	 *        - the name of the user whose inbox should be checked
 	 * @param hash
-	 *            - the hash of the post we want to find
+	 *        - the hash of the post we want to find
 	 * @param user
-	 *            - the name of the user who owns the post (!= inbox user!)
+	 *        - the name of the user who owns the post (!= inbox user!)
 	 * @return The post from the inbox.
 	 * @throws ObjectNotFoundException
 	 */
-	
+
 	@SuppressWarnings("unchecked")
 	private Post<RESOURCE> getInboxPost(final String loginUserName, final String hash, final String user) throws ObjectNotFoundException {
 		/*
@@ -284,18 +284,18 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * has several posts with the same hash in his inbox, we get them all
 		 * and must compare each post against the given user name.
 		 */
-		
+
 		final List<Post<RESOURCE>> dbPosts = new LinkedList<Post<RESOURCE>>();
 		List<Post<RESOURCE>> tmp;
 		int startCount = 0;
 		final int step = PostLogicInterface.MAX_QUERY_SIZE;
-		
+
 		do {
-			tmp = this.logic.getPosts((Class<RESOURCE>)this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null,SearchType.DEFAULT_SEARCH, null, null, null, null, startCount, startCount + step);
+			tmp = this.logic.getPosts((Class<RESOURCE>) this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, SearchType.LOCAL, null, null, null, null, startCount, startCount + step);
 			dbPosts.addAll(tmp);
 			startCount += step;
 		} while (tmp.size() == step);
-		
+
 		if (present(dbPosts)) {
 			for (final Post<RESOURCE> dbPost : dbPosts) {
 				/*
@@ -324,10 +324,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * Thus, never return the view directly, but use this method!
 	 * 
 	 * @param command
-	 *            - the command the controller is working on (and which is also
-	 *            handed over to the view).
+	 *        - the command the controller is working on (and which is also
+	 *        handed over to the view).
 	 * @param loginUser
-	 *            - the login user.
+	 *        - the login user.
 	 * @return The post view.
 	 */
 	protected View getEditPostView(final EditPostCommand<RESOURCE> command, final User loginUser) {
@@ -406,9 +406,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				// comparePost is the history revision which will be restored.
 				final int compareVersion = command.getCompareVersion();
 				@SuppressWarnings("unchecked")
-				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(dbPost.getResource().getClass(), GroupingEntity.USER, this.getGrouping(loginUser), null, intraHashToUpdate, null, SearchType.DEFAULT_SEARCH, FilterEntity.POSTS_HISTORY, null, null, null, compareVersion, compareVersion + 1).get(0);
-				
-				// TODO: why don't we set the dbPost = comparePost? why do we have to restore all fields by hand?
+				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(dbPost.getResource().getClass(), GroupingEntity.USER, this.getGrouping(loginUser), null, intraHashToUpdate, null, SearchType.LOCAL, FilterEntity.POSTS_HISTORY, null, null, null, compareVersion, compareVersion + 1).get(0);
+
+				// TODO: why don't we set the dbPost = comparePost? why do we
+				// have to restore all fields by hand?
 				final List<String> diffEntryKeyList = command.getDifferentEntryKeys();
 				for (int i = 0; i < diffEntryKeyList.size(); i++) {
 					this.replacePostFields(dbPost, diffEntryKeyList.get(i), comparePost);
@@ -508,6 +509,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			break;
 		default:
 			this.replaceResourceSpecificPostFields(post.getResource(), key, newPost.getResource());
+		}
+		if (newPost.getApproved()) {
+			post.setApproved(true);
 		}
 	}
 
@@ -688,8 +692,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * FIXME: if we are coming from /bibtex/HASH* or /url/HASH* and the hash
 		 * has changed, we should redirect to the corresponding new page
 		 */
-		if (!present(referer) || referer.matches(".*/postPublication$") ||
-				referer.matches(".*/postBookmark$") || referer.contains("/history/")) {
+		if (!present(referer) || referer.matches(".*/postPublication$") || referer.matches(".*/postBookmark$") || referer.contains("/history/")) {
 			return new ExtendedRedirectView(this.urlGenerator.getUserUrlByUserName(userName));
 		}
 		/*
@@ -844,7 +847,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		command.setTags(TagUtils.toTagString(post.getTags(), " "));
 		
-		if (post.getApproved() == 1) {
+		if (post.getApproved()) {
 			command.setApproved(true);
 		}
 		

@@ -31,7 +31,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Document;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
@@ -54,7 +53,7 @@ import recommender.core.interfaces.model.TagRecommendationEntity;
  * @author dzo
  */
 public class EditGoldStandardPublicationController extends AbstractEditPublicationController<PostPublicationCommand> {
-	
+
 	@Override
 	protected View getPostView() {
 		return Views.EDIT_GOLD_STANDARD_PUBLICATION;
@@ -110,12 +109,17 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 
 		return gold;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.webapp.controller.actions.AbstractEditPublicationController#setDuplicateErrorMessage(org.bibsonomy.model.Post, org.springframework.validation.Errors)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.bibsonomy.webapp.controller.actions.AbstractEditPublicationController
+	 * #setDuplicateErrorMessage(org.bibsonomy.model.Post,
+	 * org.springframework.validation.Errors)
 	 */
 	@Override
-	protected void setDuplicateErrorMessage(Post<BibTex> post, Errors errors) {
+	protected void setDuplicateErrorMessage(final Post<BibTex> post, final Errors errors) {
 		errors.rejectValue("post.resource.title", "error.field.valid.alreadyStoredCommunityPost", "A community with that data already exists.");
 	}
 
@@ -143,17 +147,12 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 	protected void setRecommendationFeedback(final TagRecommendationEntity post, final int postID) {
 		// noop gold standards have no tags
 	}
-	
+
 	@Override
-	protected void preparePost(EditPostCommand<BibTex> command, Post<BibTex> post) {
-		
+	protected void preparePost(final EditPostCommand<BibTex> command, final Post<BibTex> post) {
+
 		super.preparePost(command, post);
-				
-		if (command.isApproved()){
-			post.setApproved(1);
-		}else{
-			post.setApproved(0);
-		}
+		post.setApproved(command.isApproved());
 	}
 
 }

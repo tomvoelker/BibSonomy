@@ -41,6 +41,7 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.admin.AdminGroupViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -213,7 +214,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	private Group getGroupOrMarkNonExistent(final AdminGroupViewCommand command) {
 		final Group dbGroup = logic.getGroupDetails(command.getGroup().getName());
 
-		if (!present(dbGroup) || GroupID.INVALID.getId() == dbGroup.getGroupId()) {
+		if (!GroupUtils.isValidGroup(dbGroup)) {
 			command.setAdminResponse("The group \"" + command.getGroup().getName() + "\" does not exist.");
 		}
 		return dbGroup;

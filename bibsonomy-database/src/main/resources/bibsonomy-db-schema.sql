@@ -239,7 +239,8 @@ CREATE TABLE `bookmark` (
   `change_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `rating` tinyint(3) NOT NULL default '0',
   PRIMARY KEY  (`content_id`),
-  KEY `group_date_content_id_idx` (`group`,`date`,`content_id`)
+  KEY `group_date_content_id_idx` (`group`,`date`,`content_id`),
+  KEY `user_name_date_group_content_id_idx` (`user_name`,`date`,`group`,`content_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 

@@ -47,7 +47,7 @@
 				<div class="media-body" id="titletext">
 					<div class="pull-right"><buttons:communityPostActions post="${post}" resourceType="bibtex"/></div>
 					<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(goldstandard.title)}" />
-					<c:if test="${post.approved==1}">
+					<c:if test="${post.approved}">
 						<a  title="${fn:escapeXml(approved)}">
 							<span class="fa fa-check-circle" style="margin-left:6px;"><!--  --></span>
 						</a>

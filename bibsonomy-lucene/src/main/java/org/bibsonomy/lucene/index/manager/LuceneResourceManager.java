@@ -302,7 +302,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			this.sharedIndexUpdater.setContentIdsToDelete(contentIdsToDelete);
 
 			for (final LucenePost<R> post : newPosts) {
-				if (post.getGroups().contains(GroupUtils.getPublicGroup())) {
+				if (post.getGroups().contains(GroupUtils.buildPublicGroup())) {
 					post.setLastLogDate(new Date(currentLogDate));
 					final Map<String, Object> postDoc = (Map<String, Object>)this.resourceConverter.readPost(post, indexType);
 					this.sharedIndexUpdater.insertDocument(postDoc);
@@ -316,7 +316,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 				post.setLastLogDate(new Date(currentLogDate));
 				//sets the system informations for update
 				final Document postDoc = (Document)this.resourceConverter.readPost(post, IndexType.LUCENE);
-				if (post.getGroups().contains(GroupUtils.getPublicGroup())) {
+				if (post.getGroups().contains(GroupUtils.buildPublicGroup())) {
 					final Map<String, Object> postJsonDoc = (Map<String, Object>)this.resourceConverter.readPost(post, IndexType.ELASTICSEARCH);
 					this.sharedIndexUpdater.insertDocument(postJsonDoc);
 				}
@@ -619,7 +619,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 								// deletion
 								this.sharedIndexUpdater.deleteDocumentForContentId(post.getContentId());
 								// cache document for writing
-								if (post.getGroups().contains(GroupUtils.getPublicGroup())) {
+								if (post.getGroups().contains(GroupUtils.buildPublicGroup())) {
 									this.sharedIndexUpdater.insertDocument((Map<String, Object>) this.resourceConverter.readPost(post, searchType));
 								}
 							}
@@ -630,7 +630,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 							this.updatingIndex.deleteDocumentForContentId(post.getContentId());
 							this.updatingIndex.insertDocument((Document) this.resourceConverter.readPost(post, IndexType.LUCENE));
 							this.sharedIndexUpdater.deleteDocumentForContentId(post.getContentId());
-							if (post.getGroups().contains(GroupUtils.getPublicGroup())) {
+							if (post.getGroups().contains(GroupUtils.buildPublicGroup())) {
 								this.sharedIndexUpdater.insertDocument((Map<String, Object>) this.resourceConverter.readPost(post, IndexType.ELASTICSEARCH));
 							}
 						}
@@ -806,9 +806,9 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 */
 	public void init() throws Exception {
 		/*
-		 * set the first index to the be the active one
+		 * set the first index which is ready to the be the active one
 		 */
-		this.setActiveIndex(this.resourceIndices.get(0));
+		this.setActiveIndex(findIndexToActivate());
 
 		/*
 		 * all others must be inserted into the update queue
@@ -828,6 +828,15 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			}
 			tmpIndexPath.delete();
 		}
+	}
+
+	private LuceneResourceIndex<R> findIndexToActivate() {
+		for (LuceneResourceIndex<R> idx : this.resourceIndices) {
+			if (idx.isIndexEnabled() == true) {
+				return idx;
+			}
+		}
+		return this.resourceIndices.get(0);
 	}
 
 	@Override
