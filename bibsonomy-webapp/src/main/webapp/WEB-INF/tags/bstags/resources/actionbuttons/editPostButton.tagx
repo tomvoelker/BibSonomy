@@ -11,6 +11,7 @@
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="enforceCommunityPost" type="java.lang.Boolean" required="false"/>
+	
 
 	<!-- TODO: use the urlGenerator for this -->
 	<c:set var="url" value="Publication"/>

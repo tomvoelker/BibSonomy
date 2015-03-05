@@ -28,7 +28,6 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.BibTex;
@@ -37,17 +36,18 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ObjectUtils;
+import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
-import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.GoldStandardPostValidator;
 import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.validation.Errors;
 
 /**
  * controller for the edit gold standard publication form
- * 	- editGoldStandardPublication
+ * - editGoldStandardPublication
  * 
  * @author dzo
  */
@@ -80,31 +80,22 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 		} catch (final ObjectNotFoundException ex) {
 			// ignore
 		} catch (final ResourceMovedException ex) {
-			// ignore		
+			// ignore
 		}
 
 		if (post == null) {
 			return null;
 		}
-		
-		return this.convertToGoldStandard(post);
-	}
 
-	@Override
-	protected boolean canEditPost(final RequestWrapperContext context) {
-		return super.canEditPost(context) && Role.ADMIN.equals(context.getLoginUser().getRole());
+		return convertToGoldStandard(post);
 	}
 
 	@Override
 	protected View finalRedirect(final String userName, final Post<BibTex> post, final String referer) {
-		if (referer == null || referer.matches(".*/editGoldStandardPublication.*")) {
-			return new ExtendedRedirectView(this.urlGenerator.getPublicationUrl(post.getResource(), null));
-		}
-
-		return super.finalRedirect(userName, post, referer);
+		return new ExtendedRedirectView(this.urlGenerator.getPublicationUrl(post.getResource(), null));
 	}
 
-	private Post<BibTex> convertToGoldStandard(final Post<BibTex> post) {
+	private static Post<BibTex> convertToGoldStandard(final Post<BibTex> post) {
 		if (!present(post)) {
 			return null;
 		}
@@ -116,6 +107,24 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 		gold.setResource(goldP);
 
 		return gold;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.bibsonomy.webapp.controller.actions.AbstractEditPublicationController
+	 * #setDuplicateErrorMessage(org.bibsonomy.model.Post,
+	 * org.springframework.validation.Errors)
+	 */
+	@Override
+	protected void setDuplicateErrorMessage(final Post<BibTex> post, final Errors errors) {
+		errors.rejectValue("post.resource.title", "error.field.valid.alreadyStoredCommunityPost", "A community with that data already exists.");
+	}
+
+	@Override
+	protected String getGrouping(final User requestedUser) {
+		return null;
 	}
 
 	@Override
@@ -133,12 +142,20 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 		return new GoldStandardPostValidator<BibTex>();
 	}
 
+	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#setRecommendationFeedback(org.bibsonomy.model.Post, int)
+	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#setRecommendationFeedback(org.bibsonomy.model.User, org.bibsonomy.model.Post, int)
 	 */
 	@Override
 	protected void setRecommendationFeedback(User loggedinUser, Post<? extends Resource> entity, int postID) {
-		// noop
+		// noop gold standards have no tags
+	}
+
+	@Override
+	protected void preparePost(final EditPostCommand<BibTex> command, final Post<BibTex> post) {
+
+		super.preparePost(command, post);
+		post.setApproved(command.isApproved());
 	}
 
 }

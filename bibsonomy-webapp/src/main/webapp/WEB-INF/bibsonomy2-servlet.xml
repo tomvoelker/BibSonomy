@@ -898,7 +898,7 @@
 	<bean id="searchPageController" class="org.bibsonomy.webapp.controller.SearchPageController" scope="request" parent="multiResourceListController">
 		<property name="supportedResources" ref="allResources"/>
 	</bean>
-	
+
 	<bean id="popularTagsPageController" class="org.bibsonomy.webapp.controller.PopularTagsPageController" scope="request">
 		<property name="logic" ref="logic"/>
 	</bean>

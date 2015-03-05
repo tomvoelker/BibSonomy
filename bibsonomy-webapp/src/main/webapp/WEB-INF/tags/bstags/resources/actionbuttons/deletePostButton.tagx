@@ -11,9 +11,16 @@
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true" />
 
-
 	<c:choose>
-		<c:when test="${userLoggedIn and loginUserName eq post.user.name}">
+		<c:when test="${not empty post.systemUrl }">
+			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var ="isRemotePost" value="false"/>
+		</c:otherwise>
+	</c:choose>
+	<c:choose>
+		<c:when test="${userLoggedIn and loginUserName eq post.user.name and not isRemotePost}">
 			<fmt:message key="${resourceType}.actions.delete.title" var="deleteTitle"/>
 			<c:url var="deleteUrl" value="/deletePost">
 				<c:param name="resourceHash" value="${post.resource.intraHash}" />

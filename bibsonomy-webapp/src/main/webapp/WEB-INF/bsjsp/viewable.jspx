@@ -13,7 +13,7 @@
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<!-- TODO: this key is missing -->"
+	<!-- TODO: this key is missing -->
 	<fmt:message var="headline" key="page.viewable.headline" />
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" headline="${headline}${command.requestedGroup}">
 		<jsp:attribute name="heading">

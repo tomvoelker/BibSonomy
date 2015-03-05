@@ -45,6 +45,7 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
@@ -287,7 +288,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		final int step = PostLogicInterface.MAX_QUERY_SIZE;
 
 		do {
-			tmp = this.logic.getPosts((Class<RESOURCE>) this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, null, null, null, null, startCount, startCount + step);
+			tmp = this.logic.getPosts((Class<RESOURCE>) this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, SearchType.LOCAL, null, null, null, null, startCount, startCount + step);
 			dbPosts.addAll(tmp);
 			startCount += step;
 		} while (tmp.size() == step);
@@ -355,7 +356,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		/*
 		 * return the view
 		 */
-
 		return this.getPostView();
 	}
 
@@ -403,9 +403,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				// comparePost is the history revision which will be restored.
 				final int compareVersion = command.getCompareVersion();
 				@SuppressWarnings("unchecked")
-				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(dbPost.getResource().getClass(), GroupingEntity.USER, this.getGrouping(loginUser), null, intraHashToUpdate, null, FilterEntity.POSTS_HISTORY, null, null, null, compareVersion, compareVersion + 1).get(0);
-				
-				// TODO: why don't we set the dbPost = comparePost? why do we have to restore all fields by hand?
+				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(dbPost.getResource().getClass(), GroupingEntity.USER, this.getGrouping(loginUser), null, intraHashToUpdate, null, SearchType.LOCAL, FilterEntity.POSTS_HISTORY, null, null, null, compareVersion, compareVersion + 1).get(0);
+
+				// TODO: why don't we set the dbPost = comparePost? why do we
+				// have to restore all fields by hand?
 				final List<String> diffEntryKeyList = command.getDifferentEntryKeys();
 				for (int i = 0; i < diffEntryKeyList.size(); i++) {
 					this.replacePostFields(dbPost, diffEntryKeyList.get(i), comparePost);
@@ -500,8 +501,14 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		case "description":
 			post.setDescription(newPost.getDescription());
 			break;
+		case "approved":
+			post.setApproved(newPost.getApproved());
+			break;
 		default:
 			this.replaceResourceSpecificPostFields(post.getResource(), key, newPost.getResource());
+		}
+		if (newPost.getApproved()) {
+			post.setApproved(true);
 		}
 	}
 
@@ -640,9 +647,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * final post.
 	 * @param loggedinUser TODO
 	 * @param entity
-	 *        - the final post as saved in the database.
+	 *            - the final post as saved in the database.
 	 * @param postID
-	 *        - the ID of the post during the posting process.
+	 *            - the ID of the post during the posting process.
 	 */
 	protected void setRecommendationFeedback(User loggedinUser, final Post<? extends Resource> entity, final int postID) {
 		try {
@@ -668,11 +675,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * that URL (for whatever reason), we redirect to the user's page.
 	 * 
 	 * @param userName
-	 *        - the name of the loginUser
+	 *            - the name of the loginUser
 	 * @param intraHash
-	 *        - the intra hash of the created/updated post
+	 *            - the intra hash of the created/updated post
 	 * @param referer
-	 *        - the URL of the page the user is initially coming from
+	 *            - the URL of the page the user is initially coming from
 	 * 
 	 * @return
 	 */
@@ -683,8 +690,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * FIXME: if we are coming from /bibtex/HASH* or /url/HASH* and the hash
 		 * has changed, we should redirect to the corresponding new page
 		 */
-		if (!present(referer) || referer.matches(".*/postPublication$") ||
-				referer.matches(".*/postBookmark$") || referer.contains("/history/")) {
+		if (!present(referer) || referer.matches(".*/postPublication$") || referer.matches(".*/postBookmark$") || referer.contains("/history/")) {
 			return new ExtendedRedirectView(this.urlGenerator.getUserUrlByUserName(userName));
 		}
 		/*
@@ -778,7 +784,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		if (present(command.getSaveAndRate())) {
 			final String ratingUrl = this.urlGenerator.getCommunityRatingUrl(post);
 			return new ExtendedRedirectView(ratingUrl);
-		}
+			}
 		return this.finalRedirect(loginUserName, post, command.getReferer());
 	}
 
@@ -793,7 +799,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param command
 	 * @param loginUser
 	 * @param post
-	 *        - the post that has been stored in the database.
+	 *            - the post that has been stored in the database.
 	 */
 	protected void createOrUpdateSuccess(final COMMAND command, final User loginUser, final Post<RESOURCE> post) {
 		/*
@@ -837,6 +843,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * relevantFor tags are removed from the post)
 		 */
 		command.setTags(TagUtils.toTagString(post.getTags(), " "));
+		
+		if (post.getApproved()) {
+			command.setApproved(true);
+		}
+		
 	}
 
 	/**

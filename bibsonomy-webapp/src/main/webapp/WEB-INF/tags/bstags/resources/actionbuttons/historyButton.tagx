@@ -13,7 +13,7 @@
 
 	<!-- TODO: We usually show the history in the drop-down menu. Here we introduce an own symbol and show a button. Discuss -->
 	<fmt:message key="${resourceType}.actions.posthistory.title" var="postHistoryTitle" />
-	<a class="${buttonClasses}" href="${relativeUrlGenerator.getHistoryURLByHashAndUserName(post.resource.interHash, post.user.name, resourceType)}" title="${postHistoryTitle}">
+	<a class="${buttonClasses}" href="${relativeUrlGenerator.getHistoryUrlForPost(post)}" title="${postHistoryTitle}">
 		<span class="fa fa-list-ol"><!--  --></span>
 	</a>
 </jsp:root>
