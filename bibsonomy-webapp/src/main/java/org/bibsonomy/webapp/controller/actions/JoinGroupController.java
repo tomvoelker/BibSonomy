@@ -108,6 +108,12 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 			return Views.ERROR;
 		}
 
+		if (!group.isAllowJoin()) {
+			// the group does not allow join requests
+			errors.reject("joinGroup.joinRequestDisabled");
+			return Views.ERROR;
+		}
+		
 		final String reason = command.getReason();
 		final String deniedUserName = command.getDeniedUser();
 		
