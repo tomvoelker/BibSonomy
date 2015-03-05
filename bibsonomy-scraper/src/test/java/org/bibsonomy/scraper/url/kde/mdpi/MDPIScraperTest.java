@@ -53,6 +53,9 @@ public class MDPIScraperTest {
 		UnitTestRunner.runSingleTest("url_275");
 	}
 	
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void testCitedBy() throws Exception{
 		final ScrapingContext sc = new ScrapingContext(new URL("http://www.mdpi.com/2072-4292/5/10/5122"));
@@ -62,7 +65,7 @@ public class MDPIScraperTest {
 		final String cby = sc.getCitedBy();
 		assertNotNull(cby);
 		assertTrue(cby.length() > 100);
-		assertEquals("<em>Citations registered in CrossRef as of 24 November 2014. The citation count might be different from".trim(), cby.substring(0, 103).trim());
+		assertEquals("<em>Citations registered in CrossRef as of 5 March 2015. The citation count might be different from <a".trim(), cby.substring(0, 103).trim());
 		assertTrue(cby.contains("Zhang, L."));
 	}
 }
