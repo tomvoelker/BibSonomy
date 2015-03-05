@@ -692,6 +692,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * FIXME: if we are coming from /bibtex/HASH* or /url/HASH* and the hash
 		 * has changed, we should redirect to the corresponding new page
 		 */
+		System.out.println("edit post controller" + referer);
 		if (!present(referer) || referer.matches(".*/postPublication$") || referer.matches(".*/postBookmark$") || referer.contains("/history/")) {
 			return new ExtendedRedirectView(this.urlGenerator.getUserUrlByUserName(userName));
 		}
