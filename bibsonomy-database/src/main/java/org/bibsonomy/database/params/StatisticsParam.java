@@ -43,6 +43,7 @@ public class StatisticsParam extends GenericParam {
 	private Integer interval;
 	
 	private SpamStatus spamStatus;
+	private StatisticsConstraint statisticsConstraint;
 
 	/**
 	 * @return the constraint
@@ -98,6 +99,20 @@ public class StatisticsParam extends GenericParam {
 	 */
 	public void setSpamStatus(SpamStatus spamStatus) {
 		this.spamStatus = spamStatus;
+	}
+
+	/**
+	 * @return the statisticsConstraint
+	 */
+	public StatisticsConstraint getStatisticsConstraint() {
+		return this.statisticsConstraint;
+	}
+
+	/**
+	 * @param statisticsConstraint the statisticsConstraint to set
+	 */
+	public void setStatisticsConstraint(StatisticsConstraint statisticsConstraint) {
+		this.statisticsConstraint = statisticsConstraint;
 	}
 
 	/**

@@ -303,6 +303,15 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	public int getNumberOfTags(DBSession session) {
 		return this.tagDatabaseManager.getNumberOfTags(session);
 	}
+	
+	/**
+	 * @param contentType 
+	 * @param session
+	 * @return the number of tag assignments
+	 */
+	public int getNumberOfTas(int contentType, DBSession session) {
+		return this.tagDatabaseManager.getNumberOfTas(contentType, session);
+	}
 
 	/**
 	 * 

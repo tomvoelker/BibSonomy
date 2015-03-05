@@ -37,10 +37,21 @@
 			show statistics for: <a href="/admin/statistics?spammers=no">without spammers</a>, <a href="/admin/statistics?all=yes">with spammers</a>, <a href="/admin/statistics?spammers=yes&amp;all=no">only for spammers</a>
 			<h2>resource, post and TAS counts</h2>
 			
-			<h3>overall</h3>
 			<table class="table table-bordered table-condensed">
 				<tr>
 					<th><!-- keep me --></th>
+					<th colspan="3">overall</th>
+					<th colspan="3">overall (without DBLP)</th>
+					<th colspan="3">24 hours (without DBLP)</th>
+				</tr>
+				<tr>
+					<th><!-- keep me --></th>
+					<th>all</th>
+					<th>bookmarks</th>
+					<th>publications</th>
+					<th>all</th>
+					<th>bookmarks</th>
+					<th>publications</th>
 					<th>all</th>
 					<th>bookmarks</th>
 					<th>publications</th>
@@ -50,71 +61,33 @@
 					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraint=unique"><!-- keep me --></td>
 					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraint=unique&amp;resourceType=bookmark"><!-- keep me --></td>
 					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraint=unique&amp;resourceType=publication"><!-- keep me --></td>
+					<td>loading</td>
+					<td>loading</td>
+					<td>loading</td>
+					<td>loading</td>
+					<td>loading</td>
+					<td>loading</td>
 				</tr>
 				<tr>
 					<td>posts</td>
 					<td data-url="/statistics?type=posts&amp;grouping=all"><!-- keep me --></td>
 					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark"><!-- keep me --></td>
 					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication"><!-- keep me --></td>
-				</tr>
-				<tr>
-					<td>tas</td>
 					<td>loading</td>
 					<td>loading</td>
 					<td>loading</td>
-				</tr>
-			</table>
-			
-			<h3>overall (without DBLP)</h3>
-			<table class="table table-bordered table-condensed">
-				<tr>
-					<th><!-- keep me --></th>
-					<th>all</th>
-					<th>bookmarks</th>
-					<th>publications</th>
-				</tr>
-				<tr>
-					<td>resources</td>
-					<td>loading</td>
-					<td>loading</td>
-					<td>loading</td>
-				</tr>
-				<tr>
-					<td>posts</td>
 					<td>loading</td>
 					<td>loading</td>
 					<td>loading</td>
 				</tr>
 				<tr>
 					<td>tas</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all"><!-- keep me --></td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=bookmark"><!-- keep me --></td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=publication"><!-- keep me --></td>
 					<td>loading</td>
 					<td>loading</td>
 					<td>loading</td>
-				</tr>
-			</table>
-			
-			<h3>24 hours (without DBLP)</h3>
-			<table class="table table-bordered table-condensed">
-				<tr>
-					<th><!-- keep me --></th>
-					<th>all</th>
-					<th>bookmarks</th>
-					<th>publications</th>
-				</tr>
-				<tr>
-					<td>resources</td>
-					<td>loading</td>
-					<td>loading</td>
-					<td>loading</td>
-				</tr>
-				<tr>
-					<td>posts</td>
-					<td>loading</td>
-					<td>loading</td>
-					<td>loading</td>
-				</tr>
-				<tr>
-					<td>tas</td>
 					<td>loading</td>
 					<td>loading</td>
 					<td>loading</td>
@@ -123,14 +96,20 @@
 			
 			<h2>logging tables</h2>
 			
-			<h3>overall</h3>
 			<table class="table table-bordered table-condensed">
 				<tr>
+					<th><!-- keep me --></th>
+					<th>overall</th>
+					<th>overall (without DBLP)</th>
+				</tr>
+				<tr>
 					<td>bookmarks</td>
+					<td>loading</td>
 					<td>loading</td>
 				</tr>
 				<tr>
 					<td>publications</td>
+					<td>loading</td>
 					<td>loading</td>
 				</tr>
 				<tr>
@@ -147,18 +126,6 @@
 				</tr>
 				<tr>
 					<td>tag-tag relations</td>
-					<td>loading</td>
-				</tr>
-			</table>
-			
-			<h3>overall (without DBLP)</h3>
-			<table class="table table-bordered table-condensed">
-				<tr>
-					<td>bookmarks</td>
-					<td>loading</td>
-				</tr>
-				<tr>
-					<td>publications</td>
 					<td>loading</td>
 				</tr>
 			</table>
@@ -191,7 +158,7 @@
 			<table class="table table-bordered table-condensed">
 				<tr>
 					<td>tags</td>
-					<td data-url="/statistics?type=tags&amp;grouping=all"><!-- keep me --></td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;contraint=unique"><!-- keep me --></td>
 				</tr>
 				<tr>
 					<td>tag-tag relations</td>

@@ -27,7 +27,6 @@
 package org.bibsonomy.database;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-import static org.bibsonomy.util.ValidationUtils.presentValidGroupId;
 
 import java.net.InetAddress;
 import java.net.URI;
@@ -2538,10 +2537,12 @@ public class DBLogic implements LogicInterface {
 	 * org.bibsonomy.common.enums.ConceptStatus, int, int)
 	 */
 	@Override
-	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, final Date startDate, final Date endDate, final int start, final int end) {
+	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, StatisticsConstraint contraint, final Date startDate, final Date endDate, final int start, final int end) {
 		final DBSession session = this.openSession();
 		try {
 			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, grouping, groupingName, tags, null, null, start, end, startDate, endDate, null, null, this.loginUser);
+			param.setContentTypeByClass(resourceType);
+			param.setStatisticsConstraint(contraint);
 			return this.statisticsDBManager.getTagStatistics(param, session);
 		} finally {
 			session.close();

@@ -619,13 +619,14 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @param tags
 	 * @param regex
 	 * @param status
+	 * @param contraint the statistic contraint
 	 * @param startDate TODO
 	 * @param endDate TODO
 	 * @param start
 	 * @param end
 	 * @return the number of relations from a user
 	 */
-	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String regex, ConceptStatus status, Date startDate, Date endDate, int start, int end);
+	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String regex, ConceptStatus status, StatisticsConstraint contraint, Date startDate, Date endDate, int start, int end);
 
 	/** 
 	 * We return all Users that are in (the) relation with the sourceUser

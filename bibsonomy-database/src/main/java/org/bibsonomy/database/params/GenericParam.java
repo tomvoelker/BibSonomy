@@ -229,7 +229,7 @@ public abstract class GenericParam {
 	private Order order;
 	private GroupingEntity grouping;
 	private FilterEntity filter;
-
+	
 	/** which parts of the posts can the logged in user access */
 	private PostAccess postAccess = PostAccess.POST_ONLY;
 

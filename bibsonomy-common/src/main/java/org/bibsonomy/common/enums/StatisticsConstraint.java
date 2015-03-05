@@ -36,5 +36,6 @@ public enum StatisticsConstraint {
 	/** only active things. e.g. users */
 	ACTIVE,
 	
+	/** only unique */
 	UNIQUE;
 }

@@ -49,6 +49,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.Chain;
+import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
@@ -1120,11 +1121,23 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * @param session
-	 * @return the number of distinct tags used by the users
+	 * @return the number of distinct tags
 	 */
 	public int getNumberOfTags(DBSession session) {
 		final Integer count = this.queryForObject("getGlobalTagCount", Integer.class, session);
-		return count == null ? 0 : count.intValue();
+		return saveConvertToint(count);
+	}
+	
+	/**
+	 * @param contentType 
+	 * @param session
+	 * @return the number of tas
+	 */
+	public int getNumberOfTas(final int contentType, DBSession session) {
+		final GenericParam genericParam = new TagParam();
+		genericParam.setContentType(ConstantID.getContentTypeByClass(ConstantID.getClassByContentType(contentType)));
+		final Integer count = this.queryForObject("getGlobalTasCount", genericParam, Integer.class, session);
+		return saveConvertToint(count);
 	}
 
 	public void updateTasInGroupFromLeavingUser(final String leavingUser, final int groupId, final DBSession session) {

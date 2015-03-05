@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.controller;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SpamStatus;
+import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.StatisticsCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -36,15 +37,16 @@ public class StatisticsController implements MinimalisticController<StatisticsCo
 		if (command.isSpammers() && !command.isAll()) {
 			spamStatus = SpamStatus.SPAMMER;
 		}
+		final StatisticsConstraint contraint = command.getContraint();
 		switch (command.getType()) {
 		case USERS:
-			count = this.logic.getUserStatistics(command.getContraint(), null, spamStatus, command.getInterval(), command.getUnit()).getCount();
+			count = this.logic.getUserStatistics(contraint, null, spamStatus, command.getInterval(), command.getUnit()).getCount();
 			break;
 		case TAGS:
-			count = this.logic.getTagStatistics(null, grouping, null, null, null, null, null, null, 0, 1000);
+			count = this.logic.getTagStatistics(command.getResourceType(), grouping, null, null, null, null, contraint, null, null, 0, 1000);
 			break;
 		case POSTS:
-			count = this.logic.getPostStatistics(command.getResourceType(), grouping, null, null, null, null, null, command.getContraint(), null, null, null, 0, 1000).getCount();
+			count = this.logic.getPostStatistics(command.getResourceType(), grouping, null, null, null, null, null, contraint, null, null, null, 0, 1000).getCount();
 			break;
 		default:
 			throw new UnsupportedOperationException(command.getType() + " is not supported");

@@ -437,6 +437,10 @@
 		SELECT count(*) AS ctr FROM tags WHERE tag_ctr_public > 0
 	</select>
 	
+	<select id="getGlobalTasCount" resultClass="int" parameterClass="tagParam">
+		SELECT count(*) AS ctr FROM tas <isGreaterThan property="contentType" compareValue="0"> WHERE content_type = #contentType#</isGreaterThan>
+	</select>
+	
 	<insert id="insertTas" parameterClass="tagParam">
 		INSERT INTO tas (tas_id, tag_name, content_id, content_type, user_name, date, change_date, `group`, tag_lower)
 		VALUES (#tasId#, #tagName#, #newContentId#, #contentType#, #userName#, #date#, #changeDate#, #groupId#, #tagNameLower#)

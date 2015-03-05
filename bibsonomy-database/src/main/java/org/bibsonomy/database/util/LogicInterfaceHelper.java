@@ -103,10 +103,10 @@ public class LogicInterfaceHelper {
 	 * @param order as specified for {@link PostLogicInterface#getPosts}
 	 * @param start as specified for {@link PostLogicInterface#getPosts} 
 	 * @param end as specified for {@link PostLogicInterface#getPosts}
-	 * @param search as specified for {@link PostLogicInterface#getPosts} 
-	 * @param filter as specified for {@link PostLogicInterface#getPosts}
 	 * @param startDate as specified for {@link PostLogicInterface#getPosts}
 	 * @param endDate as specified for {@link PostLogicInterface#getPosts}
+	 * @param search as specified for {@link PostLogicInterface#getPosts} 
+	 * @param filter as specified for {@link PostLogicInterface#getPosts}
 	 * @param loginUser logged in user as specified for {@link PostLogicInterface#getPosts}
 	 * @return the fresh param object 
 	 */
