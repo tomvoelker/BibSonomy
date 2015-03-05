@@ -63,13 +63,15 @@
 							</p>
 							<form action="#">
 							
-								<div class='input-group' style="margin-left: auto; width: 50%; margin-right: auto; ">
+								<div class='input-group' style="margin-left: auto; width: 65%; margin-right: auto; ">
 									
 									<fmt:message key="person.index.placeholder" var="placeholderText"/>
 									<input class='form-control typeahead' id='searchPersonAutocomplete' type='text' name='searchPersonAutocomplete' autocomplete="off" placeholder='${placeholderText}'/>
+									<!-- 
 									<span class="input-group-btn">
 										<button class="btn btn-default" type="button"><fmt:message key="person.index.header" /></button>
 									</span>
+									 -->
 								</div>
 								
 							</form>
@@ -82,16 +84,16 @@
 					
 					<div class="row">
 					
-						<div class="hidden-xs col-sm-3">
+						<div class="hidden-xs col-sm-2">
 							<div class="affix">
 								<div class="list-group section-scroll">
-									<a class="list-group-item active" href="#dataset"><fmt:message key="persons.intro.navi.dataset" /> </a>
-									<a class="list-group-item"        href="#wiskidz"><fmt:message key="persons.intro.navi.wiskidz" /></a>
+									<a class="list-group-item active" href="#dataset" style="z-index: -1;"><fmt:message key="persons.intro.navi.dataset" /> </a>
+									<a class="list-group-item"        href="#wiskidz" style="z-index: -1;"><fmt:message key="persons.intro.navi.wiskidz" /></a>
 								</div>
 							</div>
 						</div>
 						
-						<div class="col-sm-9">
+						<div class="col-sm-10">
 							
 							<div id="dataset">
 								<a name="dataset"><!--  --></a>
