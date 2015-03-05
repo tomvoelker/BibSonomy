@@ -74,8 +74,6 @@ public class DatabaseModelValidator<T> {
 					
 					/*
 					 * check max length
-					 * TODO: get type handler and convert url to string and than
-					 * check for valid length
 					 */
 					if (value instanceof String) {
 						final String stringValue = (String) value;
