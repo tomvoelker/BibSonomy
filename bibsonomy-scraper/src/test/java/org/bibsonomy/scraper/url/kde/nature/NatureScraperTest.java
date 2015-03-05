@@ -75,6 +75,9 @@ public class NatureScraperTest {
 	public void urlTest4Run(){
 		UnitTestRunner.runSingleTest("url_282");
 	}
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void testReferences() throws Exception{
 		final ScrapingContext sc = new ScrapingContext(new URL("http://www.nature.com/ncomms/2014/141215/ncomms6341/full/ncomms6341.html"));
