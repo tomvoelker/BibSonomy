@@ -887,9 +887,9 @@
 	</URLTest>
 	<URLTest id="url_146">
 		<TestDescription>test for AGU scraper</TestDescription>
-		<URL>http://www.agu.org/books/ar/v071/</URL>
+		<URL>http://onlinelibrary.wiley.com/book/10.1029/AR071</URL>
 		<BibFile>AGUScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.agu.AGUScraper</Scraper>
+		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_147">
 		<TestDescription>eprint url test</TestDescription>
