@@ -20,7 +20,8 @@
 	<jsp:directive.attribute name="desc" fragment="true" required="true"/>
 	<jsp:directive.attribute name="actions" fragment="true" required="true"/>
 	<jsp:directive.attribute name="documents" fragment="true" required="true"/>
-	
+		
+	<c:set var="isRemotePost" value="${(not empty post.systemUrl) and (post.systemUrl ne properties['project.home'])}"/>
 	
    <!--+ 
        | TODO: Several tests (not empty post.user.name) are here to test for community posts. 
@@ -44,13 +45,17 @@
 			<!-- IN MY COLLECTION: only display the in-my-collection-icon when the user is logged in -->
 			<!-- FIXME: user name for community posts not given - copying currently not possible -->
 			<c:choose>
-				<c:when test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name)}">	
-					<div class="in-my-collection glyphicon glyphicon-bookmark"><!--  --></div>
+				<c:when test="${isRemotePost}">
+					<c:set var="extraCssClass" value="remote-post fa-external-link"/>
+				</c:when>
+				<c:when test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name)}">
+					<c:set var="extraCssClass" value="in-my-collection glyphicon-bookmark"/>
 				</c:when>
 				<c:otherwise>
-					<div class="in-my-collection glyphicon"><!--  --></div>
+					<c:set var="extraCssClass" value="in-my-collection"/>
 				</c:otherwise>
 			</c:choose>
+			<div class="glyphicon ${extraCssClass}"><!--  --></div>
 			
 			<c:forEach var="group" items="${post.groups}">
 				<c:if test="${!empty group.name and group.name ne 'public'}">
@@ -75,7 +80,7 @@
 			</div>
 			<div class="ptags">
 				<!-- Edit tags link -->
-				<c:if test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name)}">
+				<c:if test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name) and not isRemotePost }">
 					<fmt:message key="navi.editTags" var="editTags" />
 					<a class="tags-edit-link" 
 						data-toggle="modal" 

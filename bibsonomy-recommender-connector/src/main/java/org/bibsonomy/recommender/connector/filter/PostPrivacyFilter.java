@@ -69,7 +69,7 @@ public class PostPrivacyFilter implements PrivacyFilter<TagRecommendationEntity>
 		
 		final Set<Group> groups = existingPost.getGroups();
 		
-		if (groups == null || !groups.contains(GroupUtils.getPublicGroup())) {
+		if (groups == null || !groups.contains(GroupUtils.buildPublicGroup())) {
 			/*
 			 * The post does not contain the public group -> no parts of it
 			 * are public.

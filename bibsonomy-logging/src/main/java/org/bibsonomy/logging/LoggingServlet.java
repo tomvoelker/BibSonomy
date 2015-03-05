@@ -47,6 +47,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.util.StringUtils;
 
 /**
  * @author sst
@@ -188,10 +189,10 @@ public class LoggingServlet extends HttpServlet {
 			logData.setHost(req.getHeader("host"));
 			logData.setCompleteheader(completeHeader.toString());
 			logData.setXforwardedfor(req.getHeader("X-Forwarded-For"));
-			logData.setListpos(req.getParameter("listpos"));
-			logData.setWindowsize(req.getParameter("windowsize"));
-			logData.setMouseclientpos(req.getParameter("mouseclientpos"));
-			logData.setMousedocumentpos(req.getParameter("mousedocumentpos"));
+			logData.setListpos(StringUtils.cropToLengthAndMarkWithX(req.getParameter("listpos"), 20));
+			logData.setWindowsize(StringUtils.cropToLengthAndMarkWithX(req.getParameter("windowsize"), 20));
+			logData.setMouseclientpos(StringUtils.cropToLengthAndMarkWithX(req.getParameter("mouseclientpos"), 20));
+			logData.setMousedocumentpos(StringUtils.cropToLengthAndMarkWithX(req.getParameter("mousedocumentpos"), 20));
 			logData.setAbmown(abmown);
 			logData.setReferer(req.getParameter("referer"));
 

@@ -36,6 +36,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ObjectUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
+import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.GoldStandardPostValidator;
 import org.bibsonomy.webapp.validation.PostValidator;
@@ -49,7 +50,12 @@ import recommender.core.interfaces.model.TagRecommendationEntity;
  * @author dzo
  */
 public class EditGoldStandardBookmarkController extends EditBookmarkController {
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.bibsonomy.webapp.controller.actions.EditPostController#getPostView()
+	 */
 	@Override
 	protected View getPostView() {
 		return Views.EDIT_GOLD_STANDARD_BOOKMARK;
@@ -87,7 +93,6 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 		if (post == null) {
 			return null;
 		}
-
 		return this.convertToGoldStandard(post);
 	}
 
@@ -100,27 +105,35 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 		if (!present(post)) {
 			return null;
 		}
-
 		final Post<Bookmark> gold = new Post<Bookmark>();
-
 		final GoldStandardBookmark goldResource = new GoldStandardBookmark();
+
 		ObjectUtils.copyPropertyValues(post.getResource(), goldResource);
 		gold.setResource(goldResource);
-
 		return gold;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.webapp.controller.actions.EditBookmarkController#setDuplicateErrorMessage(org.bibsonomy.model.Post, org.springframework.validation.Errors)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.bibsonomy.webapp.controller.actions.EditBookmarkController#
+	 * setDuplicateErrorMessage(org.bibsonomy.model.Post,
+	 * org.springframework.validation.Errors)
 	 */
 	@Override
-	protected void setDuplicateErrorMessage(Post<Bookmark> post, Errors errors) {
+	protected void setDuplicateErrorMessage(final Post<Bookmark> post, final Errors errors) {
 		errors.rejectValue("post.resource.title", "error.field.valid.alreadyStoredCommunityPost", "A community with that data already exists.");
 	}
 
 	@Override
 	protected String getGrouping(final User requestedUser) {
 		return null;
+	}
+
+	@Override
+	protected void preparePost(final EditPostCommand<Bookmark> command, final Post<Bookmark> post) {
+		super.preparePost(command, post);
+		post.setApproved(command.isApproved());
 	}
 
 	@Override

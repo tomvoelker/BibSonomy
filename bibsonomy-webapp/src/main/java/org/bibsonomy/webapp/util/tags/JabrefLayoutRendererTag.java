@@ -42,6 +42,7 @@ import org.bibsonomy.layout.jabref.AbstractJabRefLayout;
 import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.tags.RequestContextAwareTag;
 
@@ -76,7 +77,7 @@ public class JabrefLayoutRendererTag extends RequestContextAwareTag {
 	
 	private String renderPosts() {
 		if (present(this.posts)) {
-			final JabrefLayoutRenderer renderer = this.getJabRefLayoutRenderer();
+			final LayoutRenderer<AbstractJabRefLayout> renderer = this.getJabRefLayoutRenderer();
 			try {
 				final AbstractJabRefLayout jabRefLayout = renderer.getLayout(this.layout, "");
 				if (!SUPPORTED_EXTENSION.equals(jabRefLayout.getExtension())) {
@@ -100,7 +101,7 @@ public class JabrefLayoutRendererTag extends RequestContextAwareTag {
 		return "";
 	}
 	
-	private JabrefLayoutRenderer getJabRefLayoutRenderer() {
+	private LayoutRenderer<AbstractJabRefLayout> getJabRefLayoutRenderer() {
 		final WebApplicationContext ctx = this.getRequestContext().getWebApplicationContext();
 		return ctx.getBean(JabrefLayoutRenderer.class);
 	}

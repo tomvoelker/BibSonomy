@@ -239,7 +239,8 @@ CREATE TABLE `bookmark` (
   `change_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `rating` tinyint(3) NOT NULL default '0',
   PRIMARY KEY  (`content_id`),
-  KEY `group_date_content_id_idx` (`group`,`date`,`content_id`)
+  KEY `group_date_content_id_idx` (`group`,`date`,`content_id`),
+  KEY `user_name_date_group_content_id_idx` (`user_name`,`date`,`group`,`content_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
@@ -295,6 +296,7 @@ CREATE TABLE `gold_standard` (
   `change_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `rating` tinyint(3) NOT NULL default '0',
   `content_type` tinyint(1) unsigned default NULL,
+  `approved` tinyint(1) default 0,
   PRIMARY KEY  (`simhash1`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
@@ -370,6 +372,7 @@ CREATE TABLE `log_gold_standard` (
   `privnote` text,
   `new_simhash1` char(32) NOT NULL default '',
   `content_type` tinyint(1) unsigned default NULL,
+  `approved` tinyint(1) default 0,
   `log_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `current_content_id` int(10) unsigned NOT NULL default '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

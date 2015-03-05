@@ -17,10 +17,21 @@
 	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" requPath="${requPath}">
 	
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search" formInputValue="${command.requestedSearch}">
+		
+		
+		
+			<c:choose>
+				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL'}">
+					<c:set var="pathMessageKey" value="navi.${command.scope.name().toLowerCase()}"/>
+				</c:when>
+				<c:otherwise>
+					<c:set var="pathMessageKey" value="navi.search"/>
+				</c:otherwise>
+			</c:choose>
+			<parts:search scope="${command.scope}" pathMessageKey="${pathMessageKey}" formAction="/redirect" formInputName="search" formInputValue="${command.requestedSearch}">
 				<jsp:attribute name="afterInput">
 					<!--  sorting options -->
-					<c:url var="searchUrl" value="${relativeUrlGenerator.getSearchUrl(command.requestedSearch)}"/>
+					
 					<span style="font-size: 65%">
 						<fmt:message key="sort.orderBy"/>
 						(
@@ -30,6 +41,7 @@
 								<fmt:message key="sort.rank"/>
 							</c:when>
 							<c:otherwise>
+								<c:url var="searchUrl" value="${relativeUrlGenerator.getSearchUrl(command.requestedSearch, command.scope, 'RANK')}"/>
 								<a href="${searchUrl}"><fmt:message key="sort.rank"/></a>
 							</c:otherwise>
 						</c:choose>
@@ -39,7 +51,8 @@
 								<fmt:message key="sort.date"/>
 							</c:when>
 							<c:otherwise>
-								<a href="${searchUrl}?order=added"><fmt:message key="sort.date"/></a>
+								<c:url var="searchUrl" value="${relativeUrlGenerator.getSearchUrl(command.requestedSearch, command.scope, 'ADDED')}"/>
+								<a href="${searchUrl}"><fmt:message key="sort.date"/></a>
 							</c:otherwise>
 						</c:choose>
 						)

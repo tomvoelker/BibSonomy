@@ -105,5 +105,5 @@ public class EditBookmarkController extends EditPostController<Bookmark, EditBoo
 			throw new ValidationException("Couldn't find " + key + " among Bookmark fields!");
 		}
 	}
-
+	
 }
