@@ -78,8 +78,8 @@ public class DatabaseSchemaInformation extends AbstractDatabaseSchemaInformation
 		 * we provide the database table name to make the getMaxFieldLengths call faster!
 		 */
 		try {
-			this.insertMaxFieldLengths(PUBLICATION_COMMON_ID, PUBLICATION_TABLE, sqlMap);
-			this.insertMaxFieldLengths(USER_COMMON_ID, USER_TABLE, sqlMap);
+			this.insertMaxFieldLengthsAndTypeHandlers(PUBLICATION_COMMON_ID, PUBLICATION_TABLE, sqlMap);
+			this.insertMaxFieldLengthsAndTypeHandlers(USER_COMMON_ID, USER_TABLE, sqlMap);
 		} finally {
 			sqlMap.close();
 		}
