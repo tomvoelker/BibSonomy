@@ -42,6 +42,7 @@
 
 		<jsp:attribute name="headerExt">
 			<script type='text/javascript' src='/resources/typeahead.js/js/typeahead.bundle.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/personAutocomplete.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/autocompleteSearchPerson.js'><!-- keep me --></script>
 			
 			<link rel="stylesheet" type="text/css" href='/resources/typeahead.js/css/typeahead.css'/>

@@ -140,6 +140,8 @@
 						</ul>
 					</li>
 					
+					<li class="${activeTab eq 'persons' ? 'active' : ''}"><a href="${relativeUrlGenerator.getPersonsUrl()}"><fmt:message key="navi.persons"/></a></li>
+					
 					<c:if test="${loginUser.role eq 'ADMIN' }">
 						<li class="dropdown ${activeTab eq 'admin' ? 'active' : ''}" data-touch="false">
 							<a href="${relativeUrlGenerator.getAdminUrlByName('')}" class="dropdown-toggle" data-toggle="dropdown">admin<b class="caret">&amp;nbsp;</b></a>

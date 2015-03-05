@@ -137,6 +137,8 @@ public class URLGenerator {
 	private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
 	private static final String PUBLICATION_INTER_HASH_ID = String.valueOf(HashID.INTER_HASH.getId());
 
+	private static final String PERSON_INTRO = "persons";
+
 	/**
 	 * The default gives relative URLs.
 	 */
@@ -1693,47 +1695,51 @@ public class URLGenerator {
 	}
 	
 	/**
-     * @param personId
-     * @param personName
-     * @param resourceHash
-     * @param user
-     * @param role
-     * @return String
-     */
-    public String getPersonUrl(final int personId, final String personName, final String resourceHash, final String user, final String role) {
-    	String url;
+	 * @param personId
+	 * @param personName
+	 * @param resourceHash
+	 * @param user
+	 * @param role
+	 * @return String
+	 */
+	public String getPersonUrl(final int personId, final String personName, final String resourceHash, final String user, final String role) {
+		String url;
 		try {
 			url = this.projectHome + URLGenerator.PERSON_PREFIX + "/" + personId + "/" + URLEncoder.encode(personName, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			url = this.projectHome + URLGenerator.PERSON_PREFIX + "/" + personId + "/" + personName;
 		}
-		
-    	if(present(resourceHash) && present(user)) {
-    		url = url + "/" + resourceHash + "/" + user;
-    		if(present(role)) {
-    			url = url + "/" + role;
-    		} else {
-    			url = url + "/AUTHOR";
-    		}
-    	}
-    	return this.getUrl(url);
-    }
-    
-    /**
-     * @param action
-     * @param personName
-     * @param resourceHash
-     * @param user
-     * @param role
-     * @return String
-     */
-    public String getDisambiguationUrl(final String action, final String personName, final String resourceHash, final String user, final String role) {
-    	String url;
+
+		if (present(resourceHash) && present(user)) {
+			url = url + "/" + resourceHash + "/" + user;
+			if (present(role)) {
+				url = url + "/" + role;
+			} else {
+				url = url + "/AUTHOR";
+			}
+		}
+		return this.getUrl(url);
+	}
+
+	/**
+	 * @param action
+	 * @param personName
+	 * @param resourceHash
+	 * @param user
+	 * @param role
+	 * @return String
+	 */
+	public String getDisambiguationUrl(final String action, final String personName, final String resourceHash, final String user, final String role) {
+		String url;
 		try {
 			url = this.projectHome + URLGenerator.DISAMBIGUATION_PREFIX + "/" + action + "/" + URLEncoder.encode(personName,"utf-8") + "/" + resourceHash + "/" + user + "/" + role;
 		} catch (UnsupportedEncodingException e) {
 			url = this.projectHome + URLGenerator.DISAMBIGUATION_PREFIX + "/" + action + "/" + personName + "/" + resourceHash + "/" + user + "/" + role;
 		}
-    	return this.getUrl(url);
-    }
+		return this.getUrl(url);
+	}
+	
+	public String getPersonsUrl() {
+		return this.projectHome + URLGenerator.PERSON_INTRO;
+	}
 }

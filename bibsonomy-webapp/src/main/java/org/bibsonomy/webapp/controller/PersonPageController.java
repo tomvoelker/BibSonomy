@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
@@ -94,6 +95,8 @@ public class PersonPageController extends SingleResourceListController implement
 			jsonPersonName.put("personId", new Integer(personName.getPersonId()));
 			jsonPersonName.put("personNameId", new Integer(personName.getId()));
 			jsonPersonName.put("personName", personName.toString());
+			// FIXME: this is only a quick hack and must be replaced!
+			jsonPersonName.put("extendedPersonName", getExtendedPersonName(personName));
 			
 			array.add(jsonPersonName);
 		}
@@ -102,6 +105,55 @@ public class PersonPageController extends SingleResourceListController implement
 		return Views.AJAX_JSON;
 	}
 	
+	/**
+	 * @param personName
+	 * @return
+	 */
+	private String getExtendedPersonName(PersonName personName) {
+		final StringBuilder extendedNameBuilder = new StringBuilder(personName.getLastName());
+		if (present(personName.getFirstName())) {
+			extendedNameBuilder.append(", ").append(personName.getFirstName());
+		}
+		final Person person = personName.getPerson();
+		if (present(person) && present(person.getAcademicDegree())) {
+			extendedNameBuilder.append(", ").append(person.getAcademicDegree());
+		}
+		BibTex res = null;
+		for (ResourcePersonRelation rpr : personName.getRprs()) {
+			String entryType;
+			try {
+				entryType = rpr.getPost().getResource().getEntrytype();
+				if (!present(entryType)) {
+					continue;
+				}
+			} catch (Exception e) {
+				continue;
+			}
+			if (entryType.toLowerCase().endsWith("thesis")) {
+				res = rpr.getPost().getResource();
+				break;
+			}
+			res = rpr.getPost().getResource();
+		}
+		if (present(res)) {
+			String entryType = res.getEntrytype();
+			if (entryType.toLowerCase().endsWith("thesis")) {
+				if (present(res.getSchool())) {
+					extendedNameBuilder.append(", ").append(res.getSchool());
+				}
+			}
+			if (present(res.getYear())) {
+				extendedNameBuilder.append(", ").append(res.getYear());
+			}
+			if (present(res.getTitle())) {
+				extendedNameBuilder.append(", \"").append(res.getTitle()).append('"');
+			}
+		}
+		return extendedNameBuilder.toString();
+		
+		// Nachname, Vorname, Akad. Grad, sowie Ort, Jahr und Titel 
+	}
+
 	@SuppressWarnings("static-method")
 	private View indexAction(@SuppressWarnings("unused") PersonPageCommand command) {
 		return Views.PERSON;

@@ -41,7 +41,6 @@
 	
 	
 	<fmt:message key="disambiguation.linkPersonButton" var="textLinkPersonButton"/>
-	<fmt:message key="disambiguation.noFound" var="textNoFound"/>
 	<fmt:message key="disambiguation.otherPersonButton" var="textOtherPersonButton"/>
 	<fmt:message key="disambiguation.personsPanelHeader" var="textPersonsPanelHeader"/>
 	<fmt:message key="disambiguation.person" var="textPerson" />
@@ -62,6 +61,7 @@
 			<script type='text/javascript' src='/resources/javascript/disambiguation/linkPerson.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/disambiguation/newPerson.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/typeahead.js/js/typeahead.bundle.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/personAutocomplete.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/disambiguation/autocompleteOtherPerson.js'><!-- keep me --></script>
 			
 			<link rel="stylesheet" type="text/css" href='/resources/typeahead.js/css/typeahead.css'/>
@@ -92,7 +92,7 @@
 		
 		
 			<div class="page-header">
-				<h1>${textHeader} <small>${command.requestedAuthorName}</small></h1>
+				<h1>${command.requestedAuthorName}</h1>
 			</div>
 		
 			<c:if test="${not empty command.post}">
@@ -113,9 +113,10 @@
 			<div class="clearfix">
 				<h2><fmt:message key="disambiguation.pleaseChooseMsg"><fmt:param value="${command.requestedAuthorName}"/></fmt:message></h2>
 				<p><fmt:message key="disambiguation.listExplanation"/></p>
-					<div class="list-group">
-						<c:choose>
-							<c:when test="${fn:length(command.suggestedPersonNames) gt 0}">
+					
+					<c:choose>
+						<c:when test="${fn:length(command.suggestedPersonNames) gt 0}">
+							<div class="list-group">
 								<c:forEach var='personName' items="${command.suggestedPersonNames}">
 									<div class="list-group-item">
 										<a class='btnLinkPerson' data-toggle="modal"  data-target="#linkPerson" href="#linkPerson" data-firstName="${personName.firstName}" data-lastName="${personName.lastName}" data-person-name-id='${personName.id}' data-person-id='${personName.personId}'>
@@ -128,17 +129,34 @@
 										</a>
 									</div>
 								</c:forEach>
-							</c:when>
-							<c:otherwise>
 								<div class="list-group-item">
-									<span>${textNoFound} '${command.requestedAuthorName}'</span>
+									<a class='btnLinkPerson' data-toggle="modal" data-target="#otherPerson" href="#otherPerson"><span class="authorName">${textOtherPerson}</span></a>
 								</div>
-							</c:otherwise>
-						</c:choose>
-						<div class="list-group-item">
-							<a class='btnLinkPerson' data-toggle="modal" data-target="#otherPerson" href="#otherPerson"><span class="authorName">${textOtherPerson}</span></a>
-						</div>
-					</div>
+							</div>
+						</c:when>
+						<c:otherwise>
+							<div class="list-group">
+								<div class="list-group-item">
+									<span>
+										<fmt:message key="disambiguation.notFound">
+											<fmt:param value="${command.requestedAuthorName}" />
+										</fmt:message>
+									</span>
+								</div>
+								<div class="list-group-item">
+									<a class='btnLinkPerson' data-toggle="modal" data-target="#otherPerson" href="#otherPerson">
+										<span class="authorName">
+											<fmt:message key="disambiguation.newPerson">
+												<fmt:param value="${command.requestedAuthorName}" />
+											</fmt:message>
+										</span>
+									</a>
+								</div>
+							</div>
+						</c:otherwise>
+					</c:choose>
+						
+					
 					<!-- 
 					<div class='btn-group pull-right'>
 						<button class='btn btn-primary' data-toggle="modal" data-target="#newPerson">${textNewPersonButton}</button>

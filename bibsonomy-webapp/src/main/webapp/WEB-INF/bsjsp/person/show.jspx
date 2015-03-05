@@ -90,9 +90,11 @@
 			<script type='text/javascript' src='/resources/javascript/person/autocompleteThesis.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/names.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/linkUser.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/personAutocomplete.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/roles.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/update.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/explainRoles.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/titleAutocomplete.js'><!-- keep me --></script>
 			<style type='text/css'>
 				#personInfo .panel-heading a:after {
 				    font-family: 'Glyphicons Halflings';
@@ -109,6 +111,18 @@
 				.row  li {
 					list-style-type: none;
 				}
+				.person-search input.typeahead {
+					with: 90%;
+					margin-left: auto;
+					margin-right: auto;
+				}
+				
+				.academicDegree .tt-dropdown-menu {
+					max-height: 300px;
+					overflow-y: auto;
+					width: 100%;
+				} 
+				
 			</style>
 			<link rel="stylesheet" type="text/css" href='/resources/typeahead.js/css/typeahead.css'/>
 		</jsp:attribute>
@@ -122,7 +136,7 @@
 		<jsp:attribute name="content">
 		
 			<div class="page-header">
-				<h1>${textHeader} <small>${command.person.mainName.firstName} ${command.person.mainName.lastName}</small></h1>
+				<h1>${command.person.mainName.firstName} ${command.person.mainName.lastName} <small> - ${textHeader}</small></h1>
 			</div>
 			<div id='personInfo' class='panel panel-default'>
 				<div class='panel-heading'>
@@ -141,8 +155,8 @@
 						</c:if>
 						<div class='form-group'>
 							<label class="control-label col-md-4" for='formAcademicDegree'>${textAcademicDegree}</label>
-							<div class="col-md-6">
-								<input class='form-control' type="text" name='formAcademicDegree' id='formAcademicDegree' placeholder="${textAcademicDegree}" value="${command.person.academicDegree }"/>
+							<div class="col-md-6 academicDegree">
+								<input class='form-control' type="text" name='formAcademicDegree' id='formAcademicDegree' placeholder="${textAcademicDegree}" autocomplete="off" value="${command.person.academicDegree }"/>
 							</div>
 						</div>
 						<br/>
@@ -231,9 +245,11 @@
 			</div>
 			
 			<div class='panel panel-default'>
+			<!-- 
 				<div class='panel-heading'>
 					<strong>${textResourcePanelHeader}</strong>
 				</div>
+				 -->
 				
 				<div class='panel-body'>
 					<ul id='resourcesTabList' class="nav nav-tabs" role="tablist">
@@ -453,14 +469,12 @@
 						<h4 class="modal-title">${textModalAddRoleHeader}</h4>
 					</div>
 					<div class="modal-body">
-          				<fieldset>
-          					<div class="form-group">
+						<fieldset>
+							<div>
 								<label for='addRoleAuto' class="control-label col-md-3">${textPerson}</label>
-        						<div class="col-md-7">
-        							<div class='input-group'>
-										<input class='form-control typeahead' id='addRoleAuto' type='text' name='addRoleAuto' autocomplete="off"/>
-									</div>
-								</div>
+							</div>
+							<div class="person-search">
+								<input class='form-control typeahead' id='addRoleAuto' type='text' name='addRoleAuto' autocomplete="off"/>
 							</div>
 						</fieldset>
 					</div>

@@ -1,29 +1,7 @@
 $(document).ready(function() {
-	
-	var personNames = new Bloodhound({
-		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-		queryTokenizer: Bloodhound.tokenizers.whitespace,
-		remote: '/person?formAction=search&formSelectedName=%QUERY'
-	});
-
-	// kicks off the loading/processing of `local` and `prefetch`
-	personNames.initialize();
-
-	var personNameTypeahead = $('#addRoleAuto').typeahead({
-		hint: true,
-		highlight: true,
-		minLength: 1
-	},
-	{
-		name: 'personNames',
-		displayKey: 'personName',
-		// `ttAdapter` wraps the suggestion engine in an adapter that
-		// is compatible with the typeahead jQuery plugin
-		source: personNames.ttAdapter()
-	});
-	
-	personNameTypeahead.on('typeahead:selected', function(evt, data) {
+	setupPersonAutocomplete('#addRoleAuto', function(data) {
 		$("#btnAddRoleSubmit").attr("data-person-name", data.personName);
+		$("#btnAddRoleSubmit").attr("data-extended-person-name", data.extendedPersonName);
 		$("#btnAddRoleSubmit").attr("data-person-id", data.personId);
 		$("#btnAddRoleSubmit").attr("data-person-name-id", data.personNameId);
 	});
@@ -76,7 +54,7 @@ $(document).ready(function() {
 
 	$("#btnAddRoleSubmit").on("click", function() {
 		var e = $(this);
-		if($("#addRoleAuto").typeahead('val') != e.attr("data-person-name")) {
+		if($("#addRoleAuto").typeahead('val') != e.attr("data-extended-person-name")) {
 			e.attr("data-person-name",$("#addRoleAuto").typeahead('val'));
 			e.attr("data-person-id", 0);
 			e.attr("data-person-name-id", 0)

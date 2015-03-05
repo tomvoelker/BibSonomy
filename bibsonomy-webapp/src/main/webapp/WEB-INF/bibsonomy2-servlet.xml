@@ -719,6 +719,11 @@
 						<property name="controllerBeanName" value="bibsonomyPreview"/>
 					</bean>
 				</entry>
+				<entry key="/persons">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="personIntroPageController"/>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -984,6 +989,9 @@
 
 	
 	<!--  #################### static views #################### -->
+	<bean id="personIntroPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="PERSON_INTRO"/>
+	</bean>
 	<bean id="bootstrapDemoController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="BOOTSTRAP_DEMO"/>
 	</bean>
