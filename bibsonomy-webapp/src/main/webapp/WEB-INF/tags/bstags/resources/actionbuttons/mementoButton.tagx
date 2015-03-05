@@ -1,6 +1,7 @@
 <jsp:root version="2.0" 
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	>
 
@@ -11,7 +12,7 @@
 		| link for the memento timegate to the archived version of the page
 		+-->
 	<fmt:message key="bookmark.actions.memento" var="mementoTitle" />
-	<a class="${buttonClasses}" href="${properties['memento.timegate']}/${mtl:formatDateMemento(post.date)}/${mtl:encodeURI(post.resource.url)}" rel="nofollow" title="${mementoTitle}">
+	<a class="${buttonClasses}" href="${properties['memento.timegate']}/${mtl:formatDateMemento(post.date)}/${fn:escapeXml(post.resource.url)}" rel="nofollow" title="${mementoTitle}">
 		<span class="fa fa-history"><!--  --></span>
 	</a>
 </jsp:root>

@@ -450,7 +450,8 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param loginUser the loginUser
 	 * @param groupName a group
 	 * @param minimumRole the minimum group role
-	 * @return <code>true</code>, if the permissions of the user in the given group satisfy
+	 * @return <code>true</code>, if the permissions of the user in the given
+	 *         group satisfy
 	 *         the minimum group role
 	 */
 	public boolean hasGroupRoleOrHigher(final User loginUser, final String groupName, final GroupRole minimumRole) {
@@ -518,6 +519,24 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Only users with ApprovePermission can approve. However, any user who
+	 * changes a post creates not-approved versions and thus must be allowed to
+	 * remove approval.
+	 * 
+	 * @param post
+	 * @param loginUser
+	 */
+	public void ensureApprovalStatusAllowed(final Post<? extends Resource> post, final User loginUser) {
+		if (post.getApproved() && !this.ensureApprovePermission(loginUser)) {
+			throw new AccessDeniedException();
+		}
+	}
+
+	public boolean ensureApprovePermission(final User loginUser) {
+		return (loginUser.hasGroupLevelPermission(GroupLevelPermission.COMMUNITY_POST_INSPECTION) || this.isAdmin(loginUser));
 	}
 
 	/**

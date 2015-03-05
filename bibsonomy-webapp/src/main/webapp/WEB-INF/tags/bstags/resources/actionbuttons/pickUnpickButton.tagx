@@ -9,6 +9,15 @@
 	<jsp:directive.attribute name="userLoggedIn" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true" />
 
+	<c:choose>	
+		<c:when test="${not empty post.systemUrl }">
+			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var ="isRemotePost" value="false"/>
+		</c:otherwise>
+	</c:choose>
+	
 	<!--+
 		| PICK / UNPICK 
 		+-->
@@ -18,7 +27,7 @@
 	</c:if>
 	
 	<c:choose>
-		<c:when test="${userLoggedIn}">
+		<c:when test="${userLoggedIn and not isRemotePost}">
 			<c:url var="pickUnpick_url" value="/ajax/pickUnpickPost">
 				<c:param name="hash" value="${post.resource.intraHash}" />
 				<c:param name="user" value="${post.user.name}" />

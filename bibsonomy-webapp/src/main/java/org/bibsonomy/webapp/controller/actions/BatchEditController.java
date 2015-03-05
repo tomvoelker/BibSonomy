@@ -100,6 +100,9 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 	private static final int HASH_LENGTH = 32;
 
+	/*
+	 * TODO: use enum for this
+	 */
 	private static final int IGNORE_ACTION = 0;
 	private static final int ADD_TAGS_TO_ALL_POSTS_ACTION = 1;
 	private static final int UPDATE_TAGS_OF_INDIVIDUAL_POSTS_ACTION = 2;

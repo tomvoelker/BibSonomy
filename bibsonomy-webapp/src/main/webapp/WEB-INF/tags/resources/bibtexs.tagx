@@ -49,7 +49,7 @@
 		
 		<!-- Bibtex description -->
 		<jsp:attribute name="desc">
-			<bib:desc publication="${post.resource}"/>
+			<bib:desc publication="${post.resource}" post="${post}"/>
 		</jsp:attribute>
 		
 		<!-- BibTeX action -->

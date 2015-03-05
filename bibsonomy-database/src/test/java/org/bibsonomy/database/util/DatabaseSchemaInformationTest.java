@@ -58,5 +58,6 @@ public class DatabaseSchemaInformationTest extends AbstractDatabaseTest {
 		assertEquals(45, dBSchemaInformation.getMaxColumnLengthForProperty(BibTex.class, "year"));
 		assertEquals(45, dBSchemaInformation.getMaxColumnLengthForProperty(GoldStandardPublication.class, "year"));
 		assertEquals(255, dBSchemaInformation.getMaxColumnLengthForProperty(User.class, "realname"));
+		assertEquals(255, dBSchemaInformation.getMaxColumnLengthForProperty(User.class, "homepage"));
 	}
 }

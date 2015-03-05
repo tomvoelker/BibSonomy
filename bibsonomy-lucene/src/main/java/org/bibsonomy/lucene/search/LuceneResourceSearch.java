@@ -30,6 +30,7 @@ import static org.bibsonomy.lucene.util.LuceneBase.CFG_LUCENE_FIELD_SPECIFIER;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -61,7 +62,9 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.Version;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.es.EsResourceSearch;
 import org.bibsonomy.lucene.database.LuceneInfoLogic;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
@@ -92,7 +95,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * members)
 	 */
 	private LuceneInfoLogic dbLogic;
-
+	
 	/** default field analyzer */
 	private Analyzer analyzer;
 
@@ -104,6 +107,8 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 
 	/** the index the searcher is currently using */
 	private LuceneResourceIndex<R> index;
+	
+	private EsResourceSearch<R> sharedResourceSearch;
 
 	/**
 	 * config values
@@ -135,7 +140,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		// perform search query
 		return this.searchLucene(query, limit, offset);
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 *  
@@ -772,4 +777,45 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	public void setTagCloudLimit(final int tagCloudLimit) {
 		this.tagCloudLimit = tagCloudLimit;
 	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPosts(java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.model.enums.Order, int, int)
+	 */
+	@Override
+	public List<Post<R>> getPosts(String userName,String requestedUserName, String requestedGroupName,List<String> requestedRelationNames,	Collection<String> allowedGroups,SearchType searchType,String searchTerms,String titleSearchTerms, String authorSearchTerms,
+			Collection<String> tagIndex, String year, String firstYear,
+			String lastYear, List<String> negatedTags, Order order, int limit,
+			int offset) {
+		if ((this.sharedResourceSearch != null) && (searchType == SearchType.FEDERATED)) {
+			// searchResource.setINDEX_TYPE(resourceType);
+			// searchResource.setResourceConverter(this.resourceConverter);
+			try {
+				List<Post<R>> posts = this.sharedResourceSearch.fullTextSearch(searchTerms, order, limit, offset);
+				return posts;
+			} catch (IOException e) {
+				log.error("Failed to search post from shared resource", e);
+			}
+
+			return null;
+		} else if (searchType == SearchType.LOCAL) {
+			return this.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
+		}
+		log.warn("unsupported searchType '" + searchType + "'");
+		return new ArrayList<>();
+	}
+
+	/**
+	 * @return sharedResourceSearch
+	 */
+	public EsResourceSearch<R> getSharedResourceSearch() {
+		return this.sharedResourceSearch;
+	}
+
+	/**
+	 * @param sharedResourceSearch
+	 */
+	public void setSharedResourceSearch(EsResourceSearch<R> sharedResourceSearch) {
+		this.sharedResourceSearch = sharedResourceSearch;
+	}
+
 }
