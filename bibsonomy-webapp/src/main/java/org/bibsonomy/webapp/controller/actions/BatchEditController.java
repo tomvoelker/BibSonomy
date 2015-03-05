@@ -142,7 +142,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		command.getBookmark().setList(new LinkedList<Post<Bookmark>>());
 
 		command.setGroups(new ArrayList<String>());
-		command.setAbstractGrouping(GroupUtils.getPublicGroup().getName());
+		command.setAbstractGrouping(GroupUtils.buildPublicGroup().getName());
 		// command.setSelectNorm(true);
 		command.setAction(new ArrayList<Integer>());
 		return command;

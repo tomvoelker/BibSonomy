@@ -101,7 +101,7 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void addPostToIndex(LucenePost<R> post) {
-		if (!post.getGroups().contains(GroupUtils.getPublicGroup())) {
+		if (!post.getGroups().contains(GroupUtils.buildPublicGroup())) {
 			return;
 		}
 		Map<String, Object> jsonDocument = new HashMap<String, Object>();

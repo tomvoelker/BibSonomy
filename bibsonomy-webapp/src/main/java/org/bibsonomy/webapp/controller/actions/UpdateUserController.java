@@ -81,14 +81,12 @@ public class UpdateUserController extends SettingsPageController implements Vali
 		} else {
 			this.errors.reject("error.field.valid.ckey");
 		}
-
+		
 		//return 
 		super.workOn(command);
-		
+		// FIXME: redirect removes error messages
 		return new ExtendedRedirectView("settings");
 	}
-
-
 
 	/**
 	 * updates the the profile settings of a user
@@ -120,20 +118,16 @@ public class UpdateUserController extends SettingsPageController implements Vali
 		this.updateUser(loginUser, this.errors);
 	}
 	
-	private void updateUserPicture ( final User loginUser, SettingsViewCommand command )
-	{
+	private void updateUserPicture ( final User loginUser, SettingsViewCommand command ) {
 		final MultipartFile file = command.getPicturefile();
 		
 		/*
 		 * If a picture file is given -> upload
 		 * Else, if delete requested -> delete 
 		 */
-		if ( present(file) && file.getSize() > 0 )
-		{
+		if (present(file) && file.getSize() > 0) {
 			loginUser.setProfilePicture( new ServerUploadedFile(file) );
-		}
-		else if ( command.getDeletePicture() )
-		{
+		} else if (command.getDeletePicture()) {
 			loginUser.setProfilePicture( new ServerDeletedFile() );
 		}
 	}
@@ -146,14 +140,13 @@ public class UpdateUserController extends SettingsPageController implements Vali
 	private void updateUser(final User user, final Errors errors) {
 		try {
 			this.logic.updateUser(user, UserUpdateOperation.UPDATE_CORE);
-		} catch(final DatabaseException e) {
+		} catch (final DatabaseException e) {
 			final List<ErrorMessage> messages = e.getErrorMessages().get(user.getName());
-
-			for(final ErrorMessage eMsg : messages) {
-				if(eMsg instanceof FieldLengthErrorMessage) {
+			for (final ErrorMessage eMsg : messages) {
+				if (eMsg instanceof FieldLengthErrorMessage) {
 					final FieldLengthErrorMessage fError = (FieldLengthErrorMessage) eMsg;
 					final Iterator<String> it = fError.iteratorFields();
-					while(it.hasNext()) {
+					while (it.hasNext()) {
 						final String current = it.next();
 						final String[] values = { String.valueOf(fError.getMaxLengthForField(current)) };
 						errors.rejectValue("user." + current, "error.field.valid.limit_exceeded", values, fError.getDefaultMessage());
