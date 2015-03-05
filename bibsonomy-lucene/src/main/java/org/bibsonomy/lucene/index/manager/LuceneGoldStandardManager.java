@@ -96,7 +96,7 @@ public class LuceneGoldStandardManager<R extends Resource & GoldStandard<?>> ext
 			this.sharedIndexUpdater.setContentIdsToDelete(contentIdsToDelete);
 
 			for (final LucenePost<GoldStandardPublication> post : newPosts) {
-				if (!post.getGroups().contains(GroupUtils.getPublicGroup())) {
+				if (!post.getGroups().contains(GroupUtils.buildPublicGroup())) {
 					continue;
 				}
 				post.setLastLogDate(currentDate);
@@ -111,7 +111,7 @@ public class LuceneGoldStandardManager<R extends Resource & GoldStandard<?>> ext
 				post.setLastTasId(lastId);
 				post.setLastLogDate(currentDate);
 				final Document postDoc = (Document)this.resourceConverter.readPost(post, IndexType.LUCENE);
-				if (post.getGroups().contains(GroupUtils.getPublicGroup())) {
+				if (post.getGroups().contains(GroupUtils.buildPublicGroup())) {
 					final Map<String, Object> postJsonDoc = (Map<String, Object>)this.resourceConverter.readPost(post, IndexType.ELASTICSEARCH);
 					this.sharedIndexUpdater.insertDocument(postJsonDoc);
 				}
