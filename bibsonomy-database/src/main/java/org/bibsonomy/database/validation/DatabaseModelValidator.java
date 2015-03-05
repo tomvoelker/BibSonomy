@@ -70,21 +70,20 @@ public class DatabaseModelValidator<T> {
 
 				if (present(getter)) {
 					final Object value = getter.invoke(model, (Object[])null);
-
+					final String propertyName = d.getName();
+					
 					/*
 					 * check max length
-					 * TODO: get type handler and convert url to string and than
-					 * check for valid length
 					 */
 					if (value instanceof String) {
 						final String stringValue = (String) value;
 
-						final int length = stringValue.length();
-						final String propertyName = d.getName();
-						final int maxLength = this.databaseSchemaInformation.getMaxColumnLengthForProperty(clazz, propertyName);
-
-						if ((maxLength > 0) && (length > maxLength)) {
-							fieldLengthError.addToFields(propertyName, maxLength);
+						checkProperty(clazz, fieldLengthError, propertyName, stringValue);
+					} else {
+						// try to convert property to string using the type handlers
+						final String convertedValue = this.databaseSchemaInformation.callTypeHandler(clazz, propertyName, value, String.class);
+						if (convertedValue != null) {
+							checkProperty(clazz, fieldLengthError, propertyName, convertedValue);
 						}
 					}
 				}
@@ -92,10 +91,25 @@ public class DatabaseModelValidator<T> {
 			
 			if (fieldLengthError.hasErrors()) {
 				session.addError(id, fieldLengthError);
-				log.warn("Added fieldlengthError");
+				log.debug("added fieldlengthError");
 			} 
 		} catch (final Exception ex) {
-			log.error("could not introspect object of class 'user'", ex);
+			log.error("could not introspect object of class '" + model.getClass().getSimpleName() + "'", ex);
+		}
+	}
+
+	/**
+	 * @param clazz
+	 * @param fieldLengthError
+	 * @param propertyName
+	 * @param stringValue
+	 */
+	private void checkProperty(final Class<? extends Object> clazz, final FieldLengthErrorMessage fieldLengthError, final String propertyName, final String stringValue) {
+		final int length = stringValue.length();
+		final int maxLength = this.databaseSchemaInformation.getMaxColumnLengthForProperty(clazz, propertyName);
+
+		if ((maxLength > 0) && (length > maxLength)) {
+			fieldLengthError.addToFields(propertyName, maxLength);
 		}
 	}
 

@@ -15,7 +15,7 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	
-	
+	<fmt:message key="goldStandard.approved.title" var="approved"/>
 	<c:set var="goldstandard" value="${post.resource}" />
 	<!-- determine the publication type for schema.org markup -->
 	<c:set var="itemType" value="http://schema.org/WebPage"/>
@@ -25,7 +25,13 @@
 			<div class="media">
 				<div class="media-body" id="titletext">
 					<div class="pull-right"><buttons:communityPostActions post="${post}" resourceType="bookmark"/></div>
-					<h1 class="media-heading" id="pubtitle"><c:out value="${fn:escapeXml(goldstandard.title)}" /></h1>
+					<h1 class="media-heading" id="pubtitle"><c:out value="${fn:escapeXml(goldstandard.title)}" />
+						<c:if test="${post.approved}">
+							<a  title="${fn:escapeXml(approved)}">
+								<span class="fa fa-check-circle" style="margin-left:6px;"><!--  --></span>
+							</a>
+						</c:if>	
+					</h1>
 					<p><book:desc post="${post}"/></p>
 				</div>
 			</div>

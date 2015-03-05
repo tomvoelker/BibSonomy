@@ -46,6 +46,7 @@ public class GoldStandardBookmark extends Bookmark implements GoldStandard<Bookm
 	private Set<Bookmark> references;
 	private Set<Bookmark> referencedBy;
 	
+	
 	private void lacyLoadReferences() {
 		if (this.references == null) {
 			this.references = new HashSet<Bookmark>();
@@ -215,4 +216,5 @@ public class GoldStandardBookmark extends Bookmark implements GoldStandard<Bookm
 		return false;
 	}
 
+	
 }

@@ -28,6 +28,7 @@
 	<jsp:useBean id="mockReference" class="org.bibsonomy.model.BibTex" />
 	
 	
+	<fmt:message key="goldStandard.approved.title" var="approved"/>
 	<c:set var="goldstandard" value="${post.resource}" />
 	<!-- determine the publication type for schema.org markup -->
 	<c:set var="itemType" value="http://schema.org/ScholarlyArticle"/>
@@ -45,7 +46,13 @@
 				-->
 				<div class="media-body" id="titletext">
 					<div class="pull-right"><buttons:communityPostActions post="${post}" resourceType="bibtex"/></div>
-					<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(goldstandard.title)}" /></h1>
+					<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(goldstandard.title)}" />
+					<c:if test="${post.approved}">
+						<a  title="${fn:escapeXml(approved)}">
+							<span class="fa fa-check-circle" style="margin-left:6px;"><!--  --></span>
+						</a>
+					</c:if>
+					</h1>
 					<p><bib:desc publication="${post.resource}"/></p>
 				</div>
 			</div>

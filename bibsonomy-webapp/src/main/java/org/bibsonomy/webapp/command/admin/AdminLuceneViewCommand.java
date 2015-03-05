@@ -42,6 +42,9 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	/** specific action for admin page */
 	private String action;
 	
+	/** elasticsearch or null(lucene) */
+	private String indexType;
+	
 	/** the specific index id for the indexd to be updated **/
 	private int id;
 	
@@ -53,7 +56,11 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	/** the string response for the admin */
 	private String adminResponse = "";
 	
-	private final List<LuceneResourceIndicesInfoContainer> indices = new LinkedList<LuceneResourceIndicesInfoContainer>();
+	private final List<LuceneResourceIndicesInfoContainer> indicesInfos = new LinkedList<LuceneResourceIndicesInfoContainer>();
+	
+	private final List<LuceneResourceIndicesInfoContainer> esIndicesInfos = new LinkedList<LuceneResourceIndicesInfoContainer>();
+	
+	private String esGlobalMessage;
 
 	/**
 	 * @return the action
@@ -87,7 +94,7 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	 * @return the list of indices
 	 */
 	public List<LuceneResourceIndicesInfoContainer> getIndicesInfos() {
-		return indices;
+		return indicesInfos;
 	}
 
 	/**
@@ -116,5 +123,25 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	 */
 	public void setResource(final String resource) {
 		this.resource = resource;
+	}
+
+	public List<LuceneResourceIndicesInfoContainer> getEsIndicesInfos() {
+		return this.esIndicesInfos;
+	}
+
+	public String getEsGlobalMessage() {
+		return this.esGlobalMessage;
+	}
+
+	public void setEsGlobalMessage(String esGlobalMessage) {
+		this.esGlobalMessage = esGlobalMessage;
+	}
+
+	public String getIndexType() {
+		return this.indexType;
+	}
+
+	public void setIndexType(String indexType) {
+		this.indexType = indexType;
 	}
 }

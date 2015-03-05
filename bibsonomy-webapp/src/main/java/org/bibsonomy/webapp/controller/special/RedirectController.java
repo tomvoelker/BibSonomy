@@ -90,7 +90,7 @@ public class RedirectController implements MinimalisticController<RedirectComman
 			 * handle /my* pages
 			 */
 			redirectUrl = this.getMyPageRedirect(myPage, user.getName());
-		} else if (present(search) && present(scope)) {
+		} else if (present(search)) {
 			/*
 			 * handle main page search form
 			 */
@@ -147,8 +147,11 @@ public class RedirectController implements MinimalisticController<RedirectComman
 	 * @return
 	 * @throws UnsupportedEncodingException - if it could not encode the parameters for the redirect.
 	 */
-	private String getSearchPageRedirect(final String search, final String scope, final String requUser) {
+	private String getSearchPageRedirect(final String search, String scope, final String requUser) {
 		log.debug("handling redirect for main page search form");
+		if (scope == null) {
+			scope = "search";
+		}
 		/*
 		 * redirect either to /user/*, to /author/*, to /tag/* or to /concept/tag/* page 
 		 */
@@ -172,6 +175,10 @@ public class RedirectController implements MinimalisticController<RedirectComman
 			 */
 			log.debug("scope is group:");
 			return "/search/" + UrlUtils.safeURIEncode(search + " " + scope);
+		}
+		if (scope.equals("federated")) {
+			log.debug("scope is federated");
+			return "/search/" + UrlUtils.safeURIEncode(search) + "?scope=FEDERATED";
 		}
 		/*
 		 * all other pages simply go to /scope/search
@@ -208,7 +215,7 @@ public class RedirectController implements MinimalisticController<RedirectComman
 		
 		final String userPage = urlGenerator.getUserUrlByUserName(loginUserName);
 		/*
-		 * XXX: it would be nice that myPUMA and myBibSonomy redirects are only
+		 * XXX: it would be nice if myPUMA and myBibSonomy redirects were only
 		 * available in the corresponding themes, but e.g. old and new help pages
 		 * are linking to myBibSonomy at the moment
 		 */

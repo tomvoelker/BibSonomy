@@ -29,6 +29,7 @@ package org.bibsonomy.webapp.controller.ajax;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -67,12 +68,12 @@ public class ItemRecommenderFeedbackController extends AjaxController implements
 	public View workOn(AjaxItemRecommenderFeedbackCommand command) {
 		
 		if(command.getAction().equalsIgnoreCase(ACTION_BIBTEX)) {
-			List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.USER, command.getUserName(), null, command.getIntraHash(), null, null, null, null, null, 0, 1);
+			List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.USER, command.getUserName(), null, command.getIntraHash(), null,SearchType.LOCAL, null, null, null, null, 0, 1);
 			if(posts != null && posts.size() > 0) {
 				this.multiplexingBibTexRecommender.setFeedback(new UserWrapper(command.getContext().getLoginUser()), new RecommendedItem(new RecommendationPost(posts.get(0))));
 			}
 		} else if(command.getAction().equalsIgnoreCase(ACTION_BOOKMARK)) {
-			List<Post<Bookmark>> posts = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, command.getIntraHash(), null, null, null, null, null, 0, 1);
+			List<Post<Bookmark>> posts = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, command.getIntraHash(), null, SearchType.LOCAL,null, null, null, null, 0, 1);
 			if(posts != null && posts.size() > 0) {
 				this.multiplexingBookmarkRecommender.setFeedback(new UserWrapper(command.getContext().getLoginUser()), new RecommendedItem(new RecommendationPost(posts.get(0))));
 			}
