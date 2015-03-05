@@ -115,7 +115,7 @@ public class ThreadedPingbackTest extends AbstractClientTest {
 	private Post<Bookmark> getPost(final String url) {
 		final Bookmark bookmark = new Bookmark();
 		final Post<Bookmark> post = new Post<Bookmark>();
-		post.setGroups(Collections.singleton(GroupUtils.getPublicGroup()));
+		post.setGroups(Collections.singleton(GroupUtils.buildPublicGroup()));
 		post.setResource(bookmark);
 		post.setUser(new User("jaeschke"));
 		bookmark.setUrl(url);
