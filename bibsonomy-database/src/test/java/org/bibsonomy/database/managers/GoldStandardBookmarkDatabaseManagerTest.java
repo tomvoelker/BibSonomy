@@ -112,7 +112,7 @@ public class GoldStandardBookmarkDatabaseManagerTest extends AbstractDatabaseMan
 		final Post<GoldStandardBookmark> post = new Post<GoldStandardBookmark>();
 
 		// groups
-		final Group group = GroupUtils.getPublicGroup();
+		final Group group = GroupUtils.buildPublicGroup();
 		post.getGroups().add(group);
 		
 		post.setDescription("trallalla");
