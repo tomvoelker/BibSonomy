@@ -1335,6 +1335,10 @@ public class DBLogic implements LogicInterface {
 
 			case ADD_REQUESTED:
 				// TODO: check for banned users in this group
+				// check if the group allows join requests
+				if (!group.isAllowJoin()) {
+					throw new AccessDeniedException("The group does not allow join group requests.");
+				}
 				this.groupDBManager.addPendingMembership(group.getName(), requestedUserName, userSharedDocuments, GroupRole.REQUESTED, session);
 				break;
 
