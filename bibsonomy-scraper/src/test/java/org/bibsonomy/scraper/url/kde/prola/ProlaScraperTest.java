@@ -83,6 +83,9 @@ public class ProlaScraperTest {
 	public void url5TestRun(){
 		UnitTestRunner.runSingleTest("url_271");
 	}
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void testReferences() throws Exception {
 		final ScrapingContext sc = new ScrapingContext(new URL("http://journals.aps.org/pre/abstract/10.1103/PhysRevE.64.016131"));
@@ -96,6 +99,9 @@ public class ProlaScraperTest {
 		assertEquals("<ol class=\"references\"><li id=\"c1\"><span>S. Wasserman and K. Faust, <i>Social Network Analys".trim(), reference.substring(0, 92).trim());
 		assertTrue(reference.contains("M.E.J. Newman"));
 	}
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void testCitedby() throws Exception {
 		final ScrapingContext sc = new ScrapingContext(new URL("http://journals.aps.org/pre/abstract/10.1103/PhysRevE.64.016131"));
@@ -106,7 +112,7 @@ public class ProlaScraperTest {
 		final String cby = sc.getCitedBy();
 		assertNotNull(cby);
 		assertTrue(cby.length() > 100);
-		assertEquals("<h1>Citing Articles (522)</h1><div class=\"article panel\">".trim(), cby.substring(0, 57).trim());
+		assertEquals("<h1>Citing Articles (525)</h1><div class=\"article panel\">".trim(), cby.substring(0, 57).trim());
 		assertTrue(cby.contains("Rehan Sadiq"));
 	}
 }
