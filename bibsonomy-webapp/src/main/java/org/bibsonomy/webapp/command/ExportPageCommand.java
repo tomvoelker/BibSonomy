@@ -54,12 +54,21 @@ public class ExportPageCommand extends ResourceViewCommand {
 	}
 	
 	/**
-	 * adds all maps the the layout map
+	 * adds all maps to the the layout map
 	 * @param map
 	 */
 	public void addLayoutMap(final Map<String, ? extends Layout> map) {
 		for (Entry<String, ? extends Layout> entry : map.entrySet()){
 			this.layoutMap.put(entry.getValue().getDisplayName(), entry.getValue());
 		}
+		//this.layoutMap.putAll(map);
+	}
+	
+	/**
+	 * adds a layout to the layout map
+	 * @param l 
+	 */
+	public void addLayout(Layout l) {
+		this.layoutMap.put(l.getDisplayName(), l);
 	}
 }

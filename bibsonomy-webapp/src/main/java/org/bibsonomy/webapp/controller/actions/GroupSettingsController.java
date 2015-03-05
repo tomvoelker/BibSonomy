@@ -46,6 +46,7 @@ import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
@@ -115,6 +116,9 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 		
 		// the group to update
 		final Group groupToUpdate = this.logic.getGroupDetails(loginUser.getName());
+		if (!present(groupToUpdate)) {
+			throw new AccessDeniedException("please login as group");
+		}
 		// this should be always the same as loginUser.getName()
 		final String groupName = groupToUpdate.getName();
 

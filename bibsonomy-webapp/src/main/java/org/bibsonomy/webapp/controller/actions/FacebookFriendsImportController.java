@@ -44,7 +44,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
-import org.bibsonomy.entity.UserRealnameResolver;
 import org.bibsonomy.model.User;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.StringUtils;
@@ -96,7 +95,7 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 	private URLGenerator urlGenerator;
 	
 	/** resolves imported facebook user to BibSonomy users */
-	private UserRealnameResolver friendsResolver;
+//	private UserRealnameResolver friendsResolver;
 
 	@Override
 	public FacebookAccessCommand instantiateCommand() {
@@ -179,9 +178,9 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 		
 		if (present(accessToken)) {
 			final Collection<User> facebookFriends = this.importFacebookFriends(command, user);
-			final Map<String, Collection<User>> userMapping = this.friendsResolver.resolveUsers(facebookFriends);
+//			final Map<String, Collection<User>> userMapping = this.friendsResolver.resolveUsers(facebookFriends);
 			command.setFriends(facebookFriends);
-			command.setUserMapping(userMapping);
+//			command.setUserMapping(userMapping);
 		}
 
 		return Views.FACEBOOK_IMPORT;
@@ -295,10 +294,10 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 		
 		switch (command.getAdminAction()) {
 		case BUILD_INDEX:
-			if (!present(this.friendsResolver)) {
-				throw new RuntimeException("No user index configured");
-			}
-			this.friendsResolver.buildIndex();
+//			if (!present(this.friendsResolver)) {
+//				throw new RuntimeException("No user index configured");
+//			}
+//			this.friendsResolver.buildIndex();
 			return Views.FACEBOOK_IMPORT;
 		default:
 			throw new RuntimeException("Unsupported admin action: '" + command.getAdminAction() + "'");
@@ -379,7 +378,7 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 	/**
 	 * @param friendsResolver
 	 */
-	public void setFriendsResolver(final UserRealnameResolver friendsResolver) {
-		this.friendsResolver = friendsResolver;
-	}
+//	public void setFriendsResolver(final UserRealnameResolver friendsResolver) {
+//		this.friendsResolver = friendsResolver;
+//	}
 }

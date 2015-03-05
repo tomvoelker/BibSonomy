@@ -1214,7 +1214,7 @@
 	</URLTest>
 	<URLTest id="url_197">
 		<TestDescription>test for TaylorAndFrancisScraper</TestDescription>
-		<URL>http://www.tandfonline.com/doi/abs/10.1080/713659338</URL>
+		<URL>http://www.tandfonline.com/doi/abs/10.1080/09540091.2014.906388#.VNtRzC7_-Uk</URL>
 		<BibFile>TaylorAndFrancisScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.taylorAndFrancis.TaylorAndFrancisScraper</Scraper>
 		<Enabled>true</Enabled>
@@ -1598,7 +1598,8 @@
 	</URLTest>
 	<URLTest id="url_260">
 		<TestDescription>DublinCoreScraper Test 1</TestDescription>
-		<URL>http://darwin.bth.rwth-aachen.de/opus3/volltexte/2013/4533/</URL>
+		<!--  <URL>http://darwin.bth.rwth-aachen.de/opus3/volltexte/2013/4533/</URL> -->
+		<URL>http://publications.rwth-aachen.de/record/211871</URL>
 		<BibFile>DCScraperTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.DublinCoreScraper</Scraper>
 	</URLTest>

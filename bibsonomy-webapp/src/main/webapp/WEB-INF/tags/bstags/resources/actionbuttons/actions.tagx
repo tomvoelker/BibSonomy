@@ -14,12 +14,21 @@
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
 
 	<c:set var="buttonClasses" value="btn btn-default btn-xs"/>
+	
+	<c:choose>
+		<c:when test="${not empty post.systemUrl }">
+			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var ="isRemotePost" value="false"/>
+		</c:otherwise>
+	</c:choose>
 
 	<div class="edit-media-buttons btn-group btn-group-xs dropdown dropdown-align-right">
 
 		<!-- edit/delete -->
 		<c:choose>
-			<c:when test="${command.context.userLoggedIn and (loginUserName eq post.user.name)}">
+			<c:when test="${command.context.userLoggedIn and (loginUserName eq post.user.name) and not isRemotePost}">
 				<buttons:editPostButton
 					post ="${post}" 
 					resourceType="${resourceType}"
@@ -118,24 +127,42 @@
 						</li>
 						<li class="divider"><!--  --></li>
 						<!-- BibTeX -->
-						<!-- TODO: use url generator -->
 						<li>
 							<fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />
-							<a class="litem" href="/bib/bibtex/${intraHashId}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}" title="${bibtexTitle}"><fmt:message key="bibtex.actions.bibtex"/></a>
+							<c:choose>
+								<c:when test="${isRemotePost}">									
+									<a class="litem" href="${relativeUrlGenerator.getBibtexExportUrlByIntraHashUserNameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}"><fmt:message key="bibtex.actions.bibtex"/></a>															
+								</c:when>
+								<c:otherwise>
+									<a class="litem" href="${relativeUrlGenerator.getBibtexExportUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}" title="${bibtexTitle}"><fmt:message key="bibtex.actions.bibtex"/></a>
+								</c:otherwise>
+							</c:choose>
 						</li>
 						
 						<!-- ENDNOTE -->
-						<!-- TODO: use url generator -->
 						<li>
 							<fmt:message key="bibtex.actions.endnote.title" var="endnoteTitle" />
-							<a class="litem" href="/layout/endnote/bibtex/${intraHashId}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}?formatEmbedded=true" title="${endnoteTitle}"><fmt:message key="bibtex.actions.endnote"/></a>
+							<c:choose>
+								<c:when test="${isRemotePost}">									
+									<a class="litem" href="${relativeUrlGenerator.getEndnoteUrlByIntraHashUserNameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}?formatEmbedded=true" title="${endnoteTitle}"><fmt:message key="bibtex.actions.endnote"/></a>
+								</c:when>
+								<c:otherwise>
+									<a class="litem" href="${relativeUrlGenerator.getEndnoteUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}?formatEmbedded=true" title="${endnoteTitle}"><fmt:message key="bibtex.actions.endnote"/></a>
+								</c:otherwise>
+							</c:choose>
 						</li>
 					
 						<!-- MS WORD Reference Manager -->
-						<!-- TODO: use url generator -->
 						<li>
 							<fmt:message key="bibtex.actions.msword.title" var="mswordTitle" />
-							<a class="litem" href="/layout/msofficexml/bibtex/${intraHashId}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}?formatEmbedded=true" title="${mswordTitle}"><fmt:message key="bibtex.actions.msword"/></a>
+							<c:choose>
+								<c:when test="${isRemotePost}">									
+									<a class="litem" href="${relativeUrlGenerator.getMSWordUrlByIntraHashUserNameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}?formatEmbedded=true" title="${mswordTitle}"><fmt:message key="bibtex.actions.msword"/></a>
+								</c:when>
+								<c:otherwise>
+									<a class="litem" href="${relativeUrlGenerator.getMSWordUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}?formatEmbedded=true" title="${mswordTitle}"><fmt:message key="bibtex.actions.msword"/></a>
+								</c:otherwise>
+							</c:choose>
 						</li>
 					
 						<!-- OPENURL -->

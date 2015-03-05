@@ -10,9 +10,9 @@
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:form="http://www.springframework.org/tags/form">
 
-    <jsp:directive.attribute name="tags" type="java.lang.String" required="true"/>
-    <jsp:directive.attribute name="recommendedTags" type="java.util.Set" required="true"/>
-    <jsp:directive.attribute name="containsComma" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="tags" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="recommendedTags" type="java.util.Set" required="true"/>
+	<jsp:directive.attribute name="containsComma" type="java.lang.Boolean" required="true"/>
 
 	<jsp:directive.attribute name="labelColSpan" type="java.lang.Integer" required="false" description="Column span width of the label. labelColSpan and inputColSpan must add up to 12" />
 	<jsp:directive.attribute name="inputColSpan" type="java.lang.Integer" required="false" description="Column span width of the input field. labelColSpan and inputColSpan must add up to 12" />
@@ -30,15 +30,10 @@
 		</c:otherwise>
 	</c:choose>
 	
-	<!-- errors -->
-	<c:set var="formErrors"><form:errors path="tags" /></c:set>
-	
-	
-	<a name="tags"><!--  --></a>
+	<a name="tags"><!-- keep me --></a>
 	<bsform:fieldset legendKey="post.resource.tags.describe">
-	
 		<jsp:attribute name="content">
-			<post:tagform containsComma="${command.containsComma}" labelColSpan="${labelColSpan}" inputColSpan="${inputColSpan}" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
+			<post:tagform path="tags" containsComma="${command.containsComma}" labelColSpan="${labelColSpan}" inputColSpan="${inputColSpan}" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
 		</jsp:attribute>
 	</bsform:fieldset>
 </jsp:root>

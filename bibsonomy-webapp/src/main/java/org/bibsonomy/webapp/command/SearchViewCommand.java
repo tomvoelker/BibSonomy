@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.webapp.command;
 
+import org.bibsonomy.common.enums.SearchType;
+
 /**
  * command for providing the search string
  * 
@@ -35,6 +37,11 @@ public class SearchViewCommand extends TagResourceViewCommand {
 	
 	/** String to search for */
 	private String requestedSearch = "";
+	
+	/**
+	 * the selected search type such as 'group', 'search', 'sharedResourceSearch'  
+	 */
+	private SearchType scope = SearchType.LOCAL;
 
 	/**
 	 * sets the requested search string
@@ -49,5 +56,19 @@ public class SearchViewCommand extends TagResourceViewCommand {
 	 */
 	public String getRequestedSearch() {
 		return requestedSearch;
+	}
+
+	/**
+	 * @return the selected search type such as 'group', 'search', 'sharedResourceSearch'
+	 */
+	public SearchType getScope() {
+		return this.scope;
+	}
+
+	/**
+	 * @param selectedSearchScope the selected search type such as 'group', 'search', 'sharedResourceSearch'
+	 */
+	public void setScope(SearchType selectedSearchScope) {
+		this.scope = selectedSearchScope;
 	}
 }
