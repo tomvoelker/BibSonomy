@@ -164,7 +164,7 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 			if (resource.hasAttribute("shared") && "no".equals(resource.getAttribute("shared"))) {
 				post.getGroups().add(GroupUtils.buildPrivateGroup());
 			} else {
-				post.getGroups().add(GroupUtils.getPublicGroup());
+				post.getGroups().add(GroupUtils.buildPublicGroup());
 			}
 			post.setResource(bookmark);
 			posts.add(post);
