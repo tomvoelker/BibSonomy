@@ -58,6 +58,7 @@ import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.StatisticsUnit;
@@ -692,6 +693,12 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
+	@Override
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+		return this.getPosts(resourceType, grouping, groupingName, tags, hash, search, SearchType.LOCAL, filter, order, startDate, endDate, start, end);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -703,7 +710,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		// check allowed start-/end-values
 		this.permissionDBManager.checkStartEnd(this.loginUser, start, end, "post");
 
@@ -732,10 +739,13 @@ public class DBLogic implements LogicInterface {
 			 * groupingName, tags, hash, popular, added, start, end, false));
 			 */
 			if (FilterEntity.POSTS_HISTORY.equals(filter) && !((resourceType == GoldStandardPublication.class) || (resourceType == GoldStandardBookmark.class))) {
-				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, this.loginUser.getName());
+				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, groupingName);
 			}
 			if (resourceType == BibTex.class) {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
+				// sets the search type to ealasticSearch
+				param.setSearchType(searchType);
+
 				// check permissions for displaying links to documents
 				final boolean allowedToAccessUsersOrGroupDocuments = this.permissionDBManager.isAllowedToAccessUsersOrGroupDocuments(this.loginUser, grouping, groupingName, filter, session);
 				if (!allowedToAccessUsersOrGroupDocuments) {
@@ -757,6 +767,8 @@ public class DBLogic implements LogicInterface {
 
 			if (resourceType == Bookmark.class) {
 				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
+				// sets the search type to ealasticSearch
+				param.setSearchType(searchType);
 				final List<Post<T>> bookmarks = (List) this.bookmarkDBManager.getPosts(param, session);
 				SystemTagsExtractor.handleHiddenSystemTags(bookmarks, this.loginUser.getName());
 				return bookmarks;
@@ -764,11 +776,17 @@ public class DBLogic implements LogicInterface {
 
 			if (resourceType == GoldStandardPublication.class) {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
+				// sets the search type to ealasticSearch
+				param.setSearchType(searchType);
+
 				return (List) this.goldStandardPublicationDBManager.getPosts(param, session);
 			}
 
 			if (resourceType == GoldStandardBookmark.class) {
 				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
+				// sets the search type to ealasticSearch
+				param.setSearchType(searchType);
+
 				return (List) this.goldStandardBookmarkDBManager.getPosts(param, session);
 			}
 
@@ -868,16 +886,16 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = this.openSession();
 		try {
 			final Group myGroup = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, true, session);
-			if (present(myGroup)) {
-				myGroup.setTagSets(this.groupDBManager.getGroupTagSets(groupName, session));
-				if (this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, groupName, GroupRole.MODERATOR)) {
-					final Group pendingMembershipsGroup = this.groupDBManager.getGroupWithPendingMemberships(groupName, session);
-					if (present(pendingMembershipsGroup)) {
-						myGroup.setPendingMemberships(pendingMembershipsGroup.getMemberships());
-					}
+			if (!GroupUtils.isValidGroup(myGroup)) {
+				return null;
+			}
+			myGroup.setTagSets(this.groupDBManager.getGroupTagSets(groupName, session));
+			if (this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, groupName, GroupRole.MODERATOR)) {
+				final Group pendingMembershipsGroup = this.groupDBManager.getGroupWithPendingMemberships(groupName, session);
+				if (present(pendingMembershipsGroup)) {
+					myGroup.setPendingMemberships(pendingMembershipsGroup.getMemberships());
 				}
 			}
-
 			return myGroup;
 		} finally {
 			session.close();
@@ -1067,7 +1085,7 @@ public class DBLogic implements LogicInterface {
 			if (group.equals(GroupUtils.buildPrivateGroup())) {
 				group.setGroupId(GroupUtils.buildPrivateGroup().getGroupId());
 			} else {
-				group.setGroupId(GroupUtils.getPublicGroup().getGroupId());
+				group.setGroupId(GroupUtils.buildPublicGroup().getGroupId());
 			}
 		} else {
 			/*
@@ -1101,7 +1119,7 @@ public class DBLogic implements LogicInterface {
 
 		// no group specified -> make it public
 		if (groups.isEmpty()) {
-			groups.add(GroupUtils.getPublicGroup());
+			groups.add(GroupUtils.buildPublicGroup());
 		}
 	}
 
@@ -1160,6 +1178,7 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = this.openSession();
 		try {
 			this.groupDBManager.createGroup(group, session);
+
 			return group.getName();
 		} finally {
 			session.close();
@@ -1197,7 +1216,8 @@ public class DBLogic implements LogicInterface {
 
 			// check the groups existence and retrieve the current group
 			final Group group = this.groupDBManager.getGroupMembers(this.loginUser.getName(), paramGroup.getName(), false, session);
-			if (!present(group)) {
+			// TODO: When implementing DELETE, alter this check!
+			if (!GroupUtils.isValidGroup(group) && !(GroupUpdateOperation.ACTIVATE.equals(operation) || GroupUpdateOperation.DELETE.equals(operation))) {
 				throw new IllegalArgumentException("Group does not exist");
 			}
 			final GroupMembership currentGroupMembership = group.getGroupMembershipForUser(requestedUserName);
@@ -1206,7 +1226,6 @@ public class DBLogic implements LogicInterface {
 			switch (operation) {
 			case UPDATE_ALL:
 				throw new UnsupportedOperationException("The method " + GroupUpdateOperation.UPDATE_ALL + " is not yet implemented.");
-
 			case UPDATE_SETTINGS:
 				this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.ADMINISTRATOR);
 				this.groupDBManager.updateGroupSettings(paramGroup, session);
@@ -1304,12 +1323,10 @@ public class DBLogic implements LogicInterface {
 				// set all discussions in the group to private (groupID 1)
 				this.discussionDatabaseManager.updateDiscussionsInGroupFromLeavingUser(requestedUserName, groupId, session);
 				break;
-
 			case UPDATE_USER_SHARED_DOCUMENTS:
 				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, requestedUserName);
 				this.groupDBManager.updateUserSharedDocuments(paramGroup, membership, session);
 				break;
-
 			case UPDATE_GROUP_REPORTING_SETTINGS:
 				this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.ADMINISTRATOR);
 				this.groupDBManager.updateGroupPublicationReportingSettings(paramGroup, session);
@@ -1324,7 +1341,11 @@ public class DBLogic implements LogicInterface {
 
 			case DELETE: // TODO: use deleteGroup
 				this.permissionDBManager.ensureAdminAccess(this.loginUser);
-				this.groupDBManager.deletePendingGroup(group.getName(), session);
+				// this must be paramGroup, since "DELETE" is only called for
+				// the admin interface to decline a group request.
+				// TODO: Resolve this in a better way.
+				// tni: What exactly is "this"?
+				this.groupDBManager.deletePendingGroup(paramGroup.getName(), session);
 				break;
 
 			case ADD_INVITED:
@@ -1358,7 +1379,6 @@ public class DBLogic implements LogicInterface {
 				this.permissionDBManager.ensureAdminAccess(this.loginUser);
 				this.groupDBManager.updateGroupLevelPermissions(this.loginUser.getName(), paramGroup, session);
 				break;
-
 			default:
 				throw new UnsupportedOperationException("The requested method is not yet implemented.");
 			}
@@ -1507,7 +1527,9 @@ public class DBLogic implements LogicInterface {
 		for (final Post<?> post : posts) {
 			PostUtils.populatePost(post, this.loginUser);
 			this.permissionDBManager.ensureWriteAccess(post, this.loginUser);
+			this.permissionDBManager.ensureApprovalStatusAllowed(post, this.loginUser);
 		}
+
 		final List<String> hashes = new LinkedList<String>();
 		/*
 		 * open session
@@ -1547,7 +1569,6 @@ public class DBLogic implements LogicInterface {
 		if (Role.SYNC.equals(this.loginUser.getRole())) {
 			validateGroupsForSynchronization(post);
 		}
-
 		this.validateGroups(post.getUser(), post.getGroups(), session);
 
 		PostUtils.limitedUserModification(post, this.loginUser);
@@ -1562,6 +1583,7 @@ public class DBLogic implements LogicInterface {
 		 * and
 		 * return the intra hash.
 		 */
+
 		if (PostUpdateOperation.UPDATE_URLS_ADD.equals(operation)) {
 			log.debug("Adding URL in updatePost()/DBLogic.java");
 			final BibTexExtra resourceExtra = ((BibTex) post.getResource()).getExtraUrls().get(0);
@@ -1611,6 +1633,7 @@ public class DBLogic implements LogicInterface {
 				}
 
 				this.tagRelationsDBManager.updateTagRelations(user, tagsToReplace.get(0), replacementTags.get(0), session);
+
 			}
 
 			/*
@@ -1667,7 +1690,7 @@ public class DBLogic implements LogicInterface {
 			 * group admins can change settings of their group
 			 */
 			final Group group = this.getGroupDetails(username);
-			if (present(group) && presentValidGroupId(group.getGroupId())) {
+			if (GroupUtils.isValidGroup(group)) {
 				this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.ADMINISTRATOR);
 			} else {
 

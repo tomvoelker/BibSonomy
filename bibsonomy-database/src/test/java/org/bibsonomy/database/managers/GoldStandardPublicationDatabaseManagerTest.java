@@ -289,7 +289,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
         final Post<GoldStandardPublication> post = new Post<GoldStandardPublication>();
 
         // groups
-        final Group group = GroupUtils.getPublicGroup();
+        final Group group = GroupUtils.buildPublicGroup();
         post.getGroups().add(group);
 
         post.setDescription("trallalla");

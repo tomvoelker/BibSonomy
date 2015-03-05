@@ -114,7 +114,7 @@ public class BibTex extends Resource {
 	 * A document attached to this bibtex resource.
 	 */
 	private List<Document> documents;
-
+		
 	/**
 	 * @return openURL
 	 */
@@ -764,4 +764,6 @@ public class BibTex extends Resource {
 			this.miscFields.clear();
 		}
 	}
+
+
 }

@@ -131,7 +131,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		}
 		final String normedGroupName = this.getNormedGroupName(groupname);
 		if ("public".equals(normedGroupName)) {
-			return GroupUtils.getPublicGroup();
+			return GroupUtils.buildPublicGroup();
 		}
 
 		if ("private".equals(normedGroupName)) {
@@ -194,7 +194,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			return group;
 		}
 		if ("public".equals(groupname)) {
-			group = GroupUtils.getPublicGroup();
+			group = GroupUtils.buildPublicGroup();
 			group.setMemberships(Collections.<GroupMembership> emptyList());
 			return group;
 		}

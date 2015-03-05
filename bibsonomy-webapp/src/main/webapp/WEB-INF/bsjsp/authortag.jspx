@@ -16,17 +16,13 @@
 
 	<c:set var="requestedAuthorEncoded" value="${mtl:encodeURI(command.requestedAuthor)}" />
 	<fmt:message key="navi.author" var="authorPageTitle" />
-	<fmt:message var="headline" key="page.authortag.headline">
-		<fmt:param>${command.requestedAuthor}</fmt:param>
-		<fmt:param>${command.requestedTags}</fmt:param>
-	</fmt:message>
 	<layout:resourceLayout
 		pageTitle="${authorPageTitle} :: ${command.requestedAuthor} :: ${command.requestedTags}"
 		command="${command}"
 		requPath="${requPath}"
 		minimizedContentWidth="${true}"
 		disableResourcetypeSelection="${true}"
-		headline="${headline}">
+		headline="">
 		
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>

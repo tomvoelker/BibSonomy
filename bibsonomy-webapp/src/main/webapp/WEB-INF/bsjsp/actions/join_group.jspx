@@ -81,7 +81,7 @@
 			<ul>
 				<!-- loginUser.groups -->
 				<li>
-					<span class="sidebar_h"><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="groups"/></a></span>
+					<h4 class="sidebar"><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="groups"/></a></h4>
 					<ul class="sidebar_collapse_content">
 						<c:forEach var="group" items="${command.context.loginUser.groups}">
 							<li><a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"><c:out value='${group.name}'/></a></li>

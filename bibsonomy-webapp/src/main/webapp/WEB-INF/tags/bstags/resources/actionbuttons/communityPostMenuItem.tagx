@@ -9,9 +9,25 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" />
 
+	<c:choose>
+		<c:when test="${not empty post.systemUrl }">
+			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var ="isRemotePost" value="false"/>
+		</c:otherwise>
+	</c:choose>
+
 	<fmt:message key="actions.communityPost.title" var="communityPost" />
-	<a href="${relativeUrlGenerator.getCommunityPostUrlByInterHash(post.resource.interHash, resourceType)}" title="${fn:escapeXml(communityPost)}">
+	<c:choose>
+		<c:when test="${isRemotePost}">
+			<c:set var="communityPostUrl" value="${relativeUrlGenerator.getCommunityPostUrlByInterHashAndSysUrl(post.resource.interHash, resourceType, post.systemUrl)}" />
+		</c:when>
+		<c:otherwise>
+			<c:set var="communityPostUrl" value="${relativeUrlGenerator.getCommunityPostUrlByInterHash(post.resource.interHash, resourceType)}" />		
+		</c:otherwise>
+	</c:choose>
+	<a href="${communityPostUrl}" title="${fn:escapeXml(communityPost)}">
 		<fmt:message key="actions.communityPost" />
-		<buttons:newBadge/>
 	</a>
 </jsp:root>

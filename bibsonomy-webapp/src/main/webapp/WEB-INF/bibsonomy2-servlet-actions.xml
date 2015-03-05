@@ -401,7 +401,7 @@
 								<value>post.resource.annote</value>
 								<value>post.resource.address</value>
 								<value>post.resource.key</value>
-
+		
 								<value>tags</value>
 								<value>url</value>
 								<value>description</value>
@@ -443,6 +443,7 @@
 								<value>post.copyIntraHash</value>
 								
 								<value>saveAndRate</value>
+								<value>approved</value>
 							</list>
 						</property>
 					</bean>
@@ -705,6 +706,7 @@
 		<value>compareVersion</value>
 		<value>differentEntryKeys</value>
 		
+		<value>approved</value>
 	</util:list>
 
 	<!-- publication request parameters -->
@@ -743,7 +745,7 @@
 		<value>post.resource.note</value>
 		<value>post.resource.annote</value>
 		<value>post.resource.address</value>
-		<value>post.resource.key</value>		
+		<value>post.resource.key</value>
 		<value>tags</value>
 		<value>url</value>
 		<value>description</value>
@@ -778,6 +780,7 @@
 		<value>urlGenerator</value>
 		<value>skipDummyValues</value>
 		
+		<value>approved</value>
 		<value>saveAndRate</value>
 		
 		<value>compareVersion</value>
@@ -1147,7 +1150,7 @@
 		<property name="userAgent" value="BibSonomy Delicious Importer"/>
 	</bean>
 
-	<import resource="classpath:org/bibsonomy/bibsonomy-entityresolver-context.xml" />
+	<!-- <import resource="classpath:org/bibsonomy/bibsonomy-entityresolver-context.xml" /> -->
 
 	<jee:jndi-lookup id="entityDataSource" jndi-name="jdbc/bibsonomy_entities" lookup-on-startup="false" expected-type="javax.sql.DataSource" />
 	

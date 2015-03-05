@@ -33,6 +33,7 @@ import java.util.Date;
 import org.apache.lucene.document.Document;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.es.IndexType;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
@@ -41,8 +42,8 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -71,8 +72,8 @@ public class LuceneResourceIndexTest {
 		bmPost.setContentId(0);
 		bibPost.setContentId(0);
 		
-		final Document bmDoc = bookmarkConverter.readPost(bmPost);
-		final Document bibDoc = bibTexConverter.readPost(bibPost);
+		final Document bmDoc = (Document) bookmarkConverter.readPost(bmPost, IndexType.LUCENE);
+		final Document bibDoc = (Document) bibTexConverter.readPost(bibPost, IndexType.LUCENE);
 		
 		final LuceneResourceIndex<Bookmark> bmIndex = new LuceneResourceIndex<Bookmark>();
 		bmIndex.setIndexId(0);
@@ -94,8 +95,8 @@ public class LuceneResourceIndexTest {
 			bmPost.setContentId(i);
 			bibPost.setContentId(i);
 
-			bmIndex.insertDocument(bookmarkConverter.readPost(bmPost));
-			bibIndex.insertDocument(bibTexConverter.readPost(bibPost));
+			bmIndex.insertDocument((Document) bookmarkConverter.readPost(bmPost, IndexType.LUCENE));
+			bibIndex.insertDocument((Document) bibTexConverter.readPost(bibPost, IndexType.LUCENE));
 		}
 
 		assertEquals(postSize, bmIndex.getPostsToInsert().size());

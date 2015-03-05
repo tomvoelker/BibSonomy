@@ -3,7 +3,6 @@ var action=[];
 var index;
 
 $(document).ready(function () {
-	alert('here in .js');
 	$('#selector').find('option:eq(0)').prop("selected", true);
 	$('#batchedit').find('input[name=abstractGrouping]').prop('disabled', true);
 	
@@ -337,4 +336,3 @@ function changeTagInputs(selector, disabled) {
 		$('input[name=' + attr + ']:text').prop('disabled', disabled);
 	});
 }
-maximizeById("general");

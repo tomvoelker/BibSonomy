@@ -35,6 +35,7 @@ import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ObjectUtils;
+import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.GoldStandardPostValidator;
@@ -108,12 +109,17 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 
 		return gold;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.webapp.controller.actions.AbstractEditPublicationController#setDuplicateErrorMessage(org.bibsonomy.model.Post, org.springframework.validation.Errors)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.bibsonomy.webapp.controller.actions.AbstractEditPublicationController
+	 * #setDuplicateErrorMessage(org.bibsonomy.model.Post,
+	 * org.springframework.validation.Errors)
 	 */
 	@Override
-	protected void setDuplicateErrorMessage(Post<BibTex> post, Errors errors) {
+	protected void setDuplicateErrorMessage(final Post<BibTex> post, final Errors errors) {
 		errors.rejectValue("post.resource.title", "error.field.valid.alreadyStoredCommunityPost", "A community with that data already exists.");
 	}
 
@@ -140,6 +146,13 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 	@Override
 	protected void setRecommendationFeedback(final TagRecommendationEntity post, final int postID) {
 		// noop gold standards have no tags
+	}
+
+	@Override
+	protected void preparePost(final EditPostCommand<BibTex> command, final Post<BibTex> post) {
+
+		super.preparePost(command, post);
+		post.setApproved(command.isApproved());
 	}
 
 }

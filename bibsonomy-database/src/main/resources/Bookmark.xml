@@ -463,7 +463,7 @@
 		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name, t.change_date, <include refid="reviewRatingsRows" />
 		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
 		             u.book_url, u.book_url_ctr, t1.group, t1.user_name, t1.change_date
-		      FROM bookmark t1, urls u
+		      FROM bookmark t1 FORCE INDEX (user_name_date_group_content_id_idx), urls u
 		      WHERE u.book_url_hash = t1.book_url_hash
 		            AND t1.user_name = #requestedUserName#
 		            <include refid="restrictToGroups"/>
@@ -484,7 +484,7 @@
 	
 	<select id="getBookmarkWithDiscussions" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="bookmarkParam">
 		SELECT b.content_id, d2.interHash, d2.interHash AS intraHash, b.title, description, b.date,
-		       b.url, null as user_name, b.content_type, b.change_date, 0 as count, <include refid="reviewRatingsRows" />
+		       b.url, null as user_name, b.content_type, 0 as count, b.change_date, b.approved, <include refid="reviewRatingsRows" />
 		FROM (
 				SELECT interHash, MAX(date)  AS date
 				FROM discussion d <include refid="spammerClassifiedJoin"/>
@@ -514,7 +514,7 @@
 	
 	<select id="getBookmarkWithDiscussionsForGroup" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="bookmarkParam">
 		SELECT b.content_id, d2.interHash, d2.interHash AS intraHash, b.title, description, b.date,
-				b.url, null as user_name, b.content_type, b.change_date, 0 as count, <include refid="reviewRatingsRows" />
+				b.url, null as user_name, b.content_type, 0 as count, b.change_date, b.approved, <include refid="reviewRatingsRows" />
 		FROM (
 				SELECT interHash, MAX(date)  AS date
 				FROM group_memberships g, discussion d
