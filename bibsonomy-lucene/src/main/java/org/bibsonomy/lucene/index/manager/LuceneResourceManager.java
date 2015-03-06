@@ -181,7 +181,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			 */
 			this.updatingIndex = this.updateQueue.poll();
 			if (this.updatingIndex == null) {
-				// TODO: log no index in update queue
+				log.warn("no " + getResourceName() + " index to update");
 				return;
 			}
 
