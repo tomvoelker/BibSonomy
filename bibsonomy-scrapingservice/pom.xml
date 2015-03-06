@@ -41,7 +41,7 @@
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>3.1.0</version>
+		<version>3.1.1</version>
 	</parent>
 	<licenses>
 		<license>
