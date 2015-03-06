@@ -520,7 +520,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, Set<StatisticsConstraint> contraints, final Date startDate, final Date endDate, final int start, final int end) {
+	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, FilterEntity filter, Set<StatisticsConstraint> contraints, final Date startDate, final Date endDate, final int start, final int end) {
 		throw new UnsupportedOperationException();
 	}
 

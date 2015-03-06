@@ -341,6 +341,14 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
+	 * @param session
+	 * @return the number of concepts in log table
+	 */
+	public int getNumberOfConceptsInHistory(DBSession session) {
+		return this.conceptDatabaseManager.getGlobalConceptHistoryCount(session);
+	}
+	
+	/**
 	 * @param contentType 
 	 * @param startDate 
 	 * @param usersToExclude 

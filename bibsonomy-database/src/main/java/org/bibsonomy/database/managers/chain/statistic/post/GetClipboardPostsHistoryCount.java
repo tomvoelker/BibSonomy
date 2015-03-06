@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers.chain.statistic.post;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.statistic.StatisticChainElement;
@@ -22,7 +23,7 @@ public class GetClipboardPostsHistoryCount  extends StatisticChainElement {
 	
 	@Override
 	protected boolean canHandle(StatisticsParam param) {
-		return GroupingEntity.CLIPBOARD.equals(param.getGrouping()) && !present(param.getFilter()) && !present(param.getRequestedUserName());
+		return GroupingEntity.CLIPBOARD.equals(param.getGrouping()) && FilterEntity.HISTORY.equals(param.getFilter()) && !present(param.getRequestedUserName());
 	}
 }
 

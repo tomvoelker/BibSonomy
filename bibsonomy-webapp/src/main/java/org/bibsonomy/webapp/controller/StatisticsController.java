@@ -61,7 +61,7 @@ public class StatisticsController implements MinimalisticController<StatisticsCo
 			count = this.logic.getUserStatistics(contraints, null, spamStatus, interval, unit).getCount();
 			break;
 		case TAGS:
-			count = this.logic.getTagStatistics(command.getResourceType(), grouping, null, null, null, command.getConceptStatus(), contraints, startDate, null, 0, 1000);
+			count = this.logic.getTagStatistics(command.getResourceType(), grouping, null, null, null, command.getConceptStatus(), null, contraints, startDate, null, 0, 1000);
 			break;
 		case POSTS:
 			count = this.logic.getPostStatistics(command.getResourceType(), grouping, null, null, null, null, filter, contraints, null, startDate, null, 0, 1000).getCount();

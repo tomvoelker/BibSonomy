@@ -341,6 +341,15 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
+	 * @param session
+	 * @return
+	 */
+	public int getGlobalConceptHistoryCount(DBSession session) {
+		final Integer count = this.queryForObject("getGlobalConceptHistoryCount", Integer.class, session);
+		return saveConvertToint(count);
+	}
+
+	/**
 	 * @param chain the chain to set
 	 */
 	public void setChain(final Chain<List<Tag>, TagRelationParam> chain) {

@@ -179,7 +179,7 @@
 				</tr>
 				<tr>
 					<td>tag-tag relations</td>
-					<td>loading</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;conceptStatus=all&amp;filter=history">loading</td>
 				</tr>
 			</table>
 			
