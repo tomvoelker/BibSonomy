@@ -213,10 +213,10 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// loginUser is member of group testgroup1, loginUser2 is not
 		// (both may see public posts)
 		// FIXME: Manually add the correct groups and userSharedDocuments settings
-		loginUser.addGroup(GroupUtils.getPublicGroup());
+		loginUser.addGroup(GroupUtils.buildPublicGroup());
 		
 		final User loginUser2 = new User("testuser1");
-		loginUser2.addGroup(GroupUtils.getPublicGroup());
+		loginUser2.addGroup(GroupUtils.buildPublicGroup());
 		
 		final Group testgroup1 = new Group(TESTGROUP1_ID);
 		final GroupMembership groupMembership1 = new GroupMembership();

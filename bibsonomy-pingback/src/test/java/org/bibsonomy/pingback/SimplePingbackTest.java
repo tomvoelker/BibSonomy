@@ -67,7 +67,7 @@ public class SimplePingbackTest extends AbstractClientTest {
 	public void testSendPingback() {
 		final Bookmark bookmark = new Bookmark();
 		final Post<Bookmark> post = new Post<Bookmark>();
-		post.setGroups(Collections.singleton(GroupUtils.getPublicGroup()));
+		post.setGroups(Collections.singleton(GroupUtils.buildPublicGroup()));
 		post.setResource(bookmark);
 		post.setUser(new User("jaeschke"));
 	
@@ -89,7 +89,7 @@ public class SimplePingbackTest extends AbstractClientTest {
 	public void testTrackPingback() {
 		final Bookmark bookmark = new Bookmark();
 		final Post<Bookmark> post = new Post<Bookmark>();
-		post.setGroups(Collections.singleton(GroupUtils.getPublicGroup()));
+		post.setGroups(Collections.singleton(GroupUtils.buildPublicGroup()));
 		post.setResource(bookmark);
 		post.setUser(new User("jaeschke"));
 	

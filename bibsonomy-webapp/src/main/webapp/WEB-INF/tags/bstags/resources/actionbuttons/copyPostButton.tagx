@@ -77,8 +77,8 @@
 					<a class="${buttonClasses}" href="${url}" title="${copyTitle}">
 						<span class="fa fa-copy"><!--  --></span>
 						<span class="sr-only"><fmt:message key="post.actions.copy"/></span>
-					</a>			
-				</c:otherwise>				
+					</a>
+				</c:otherwise>
 			</c:choose>
 		</c:when>
 		<c:otherwise>
