@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.command;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.StatisticsUnit;
@@ -23,10 +24,15 @@ public class StatisticsCommand extends BaseCommand {
 	
 	private boolean spammers;
 	private boolean all;
+	
+	
+	private Class<? extends Resource> resourceType = Resource.class;
+	
+	private GroupingEntity grouping;
+	private FilterEntity filter;
+	
 	private Set<StatisticsConstraint> contraints = new HashSet<StatisticsConstraint>();
 	private Integer interval;
-	private Class<? extends Resource> resourceType = Resource.class;
-	private GroupingEntity grouping;
 	private StatisticsUnit unit;
 	private StatisticType type = StatisticType.POSTS;
 	
@@ -124,7 +130,7 @@ public class StatisticsCommand extends BaseCommand {
 	}
 
 	/**
-	 * @param contraint the contraints to set
+	 * @param contraints the contraints to set
 	 */
 	public void setContraints(Set<StatisticsConstraint> contraints) {
 		this.contraints = contraints;
@@ -156,5 +162,19 @@ public class StatisticsCommand extends BaseCommand {
 	 */
 	public void setResourceType(Class<? extends Resource> resourceType) {
 		this.resourceType = resourceType;
+	}
+
+	/**
+	 * @return the filter
+	 */
+	public FilterEntity getFilter() {
+		return this.filter;
+	}
+
+	/**
+	 * @param filter the filter to set
+	 */
+	public void setFilter(FilterEntity filter) {
+		this.filter = filter;
 	}
 }

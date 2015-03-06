@@ -1102,6 +1102,20 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "Count", param, Integer.class, session);
 		return saveConvertToint(result);
 	}
+	
+	/**
+	 * @param startDate
+	 * @param usersToExclude
+	 * @param session
+	 * @return number of posts in log table
+	 */
+	public int getHistoryPostsCount(Date startDate, List<String> usersToExclude, DBSession session) {
+		final P param = this.getNewParam();
+		param.setStartDate(startDate);
+		param.setUsersToExclude(usersToExclude);
+		final Integer result = this.queryForObject("getLog" + this.resourceClassName + "Count", param, Integer.class, session);
+		return saveConvertToint(result);
+	}
 
 	/**
 	 * This method prepares a query which retrieves all posts the user

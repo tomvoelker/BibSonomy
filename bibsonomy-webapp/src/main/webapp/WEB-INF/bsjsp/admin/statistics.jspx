@@ -4,6 +4,7 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/users"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/bstags/menu"
@@ -30,6 +31,14 @@
 			<script src="${resdir}/javascript/admin/statistics.js" type="text/javascript"><!-- keep me --></script>
 		</jsp:attribute>
 		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:admin />
+					<nav:crumb name="stats" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
 		
 		<jsp:attribute name="content">
 			<h1 class="content-header">Statistics</h1>
@@ -37,17 +46,23 @@
 			<a href="/admin/statistics?all=yes">with spammers</a>
 			<a href="/admin/statistics?spammers=yes&amp;all=no">only for spammers</a>
 			<br />
-			show statistics for:
-			<div class="btn-group" data-toggle="buttons">
-				<label class="btn btn-default active">
-					<input type="radio" name="options" id="option1" autocomplete="off" checked="checked" /> without spammers
-				</label>
-				<label class="btn btn-default">
-					<input type="radio" name="options" id="option2" autocomplete="off" /> with spammers
-				</label>
-				<label class="btn btn-default">
-					<input type="radio" name="options" id="option3" autocomplete="off" /> only for spammers
-				</label>
+			<div class="row">
+				<div class="col-md-4">
+					show statistics for:
+				</div>
+				<div class="col-md-8">
+					<div class="btn-group" data-toggle="buttons">
+						<label class="btn btn-default active">
+							<input type="radio" name="options" id="option1" autocomplete="off" checked="checked" /> without spammers
+						</label>
+						<label class="btn btn-default">
+							<input type="radio" name="options" id="option2" autocomplete="off" /> with spammers
+						</label>
+						<label class="btn btn-default">
+							<input type="radio" name="options" id="option3" autocomplete="off" /> only for spammers
+						</label>
+					</div>
+				</div>
 			</div>
 			
 			<h2>resource, post and TAS counts</h2>
@@ -119,13 +134,13 @@
 				</tr>
 				<tr>
 					<td>bookmarks</td>
-					<td>loading</td>
-					<td>loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark&amp;filter=posts_history">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication&amp;filter=posts_history&amp;contraints=without_dblp">loading</td>
 				</tr>
 				<tr>
 					<td>publications</td>
-					<td>loading</td>
-					<td>loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark&amp;filter=posts_history">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication&amp;filter=posts_history&amp;contraints=without_dblp">loading</td>
 				</tr>
 				<tr>
 					<td>posts from baskets</td>

@@ -39,6 +39,6 @@ public class GetUniqueResourcesCount extends StatisticChainElement {
 	@Override
 	protected boolean canHandle(StatisticsParam param) {
 		final Set<StatisticsConstraint> constraints = param.getConstraints();
-		return GroupingEntity.ALL.equals(param.getGrouping()) && !present(param.getRequestedUserName()) && present(constraints) && constraints.contains(StatisticsConstraint.UNIQUE);
+		return GroupingEntity.ALL.equals(param.getGrouping()) && !present(param.getFilter()) && !present(param.getRequestedUserName()) && present(constraints) && constraints.contains(StatisticsConstraint.UNIQUE);
 	}
 }

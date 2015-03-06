@@ -685,6 +685,12 @@
 		<include refid="statisticRestrictions" />
 	</select>
 	
+	<select id="getLogBookmarkCount" resultClass="int" parameterClass="bookmarkParam">
+		SELECT COUNT(*) FROM log_bookmark
+		<include refid="statisticRestrictions" />
+	</select>
+	
+	
 	<select id="getUniqueBookmarkCount" resultClass="int" parameterClass="bookmarkParam">
 		SELECT COUNT(DISTINCT book_url_hash) AS ctr FROM bookmark
 		<include refid="statisticRestrictions" />

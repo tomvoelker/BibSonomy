@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.Date;
 import java.util.Set;
 
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
@@ -48,6 +49,8 @@ public class StatisticsController implements MinimalisticController<StatisticsCo
 		final Integer interval = command.getInterval();
 		final StatisticsUnit unit = command.getUnit();
 		final Date startDate = convertToStartDate(interval, unit);
+		final FilterEntity filter = command.getFilter();
+		
 		switch (command.getType()) {
 		case USERS:
 			count = this.logic.getUserStatistics(contraints, null, spamStatus, interval, unit).getCount();
@@ -56,7 +59,7 @@ public class StatisticsController implements MinimalisticController<StatisticsCo
 			count = this.logic.getTagStatistics(command.getResourceType(), grouping, null, null, null, null, contraints, startDate, null, 0, 1000);
 			break;
 		case POSTS:
-			count = this.logic.getPostStatistics(command.getResourceType(), grouping, null, null, null, null, null, contraints, null, startDate, null, 0, 1000).getCount();
+			count = this.logic.getPostStatistics(command.getResourceType(), grouping, null, null, null, null, filter, contraints, null, startDate, null, 0, 1000).getCount();
 			break;
 		default:
 			throw new UnsupportedOperationException(command.getType() + " is not supported");

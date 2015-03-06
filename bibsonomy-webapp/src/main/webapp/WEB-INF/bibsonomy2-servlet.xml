@@ -436,6 +436,7 @@
 								<value>contraints</value>
 								<value>unit</value>
 								<value>grouping</value>
+								<value>filter</value>
 								<value>resourceType</value>
 							</list>
 						</property>

@@ -257,6 +257,17 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * @param resourceType
+	 * @param startDate
+	 * @param usersToExclude
+	 * @param session
+	 * @return number of posts in log table
+	 */
+	public int getNumberOfPostsInHistory(Class<? extends Resource> resourceType, Date startDate, List<String> usersToExclude, DBSession session) {
+		return this.getDatabaseManagerForResourceType(resourceType).getHistoryPostsCount(startDate, usersToExclude, session);
+	}
+	
+	/**
+	 * @param resourceType
 	 * @param startDate 
 	 * @param usersToExclude 
 	 * @param session

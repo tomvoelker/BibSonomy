@@ -156,8 +156,9 @@
 				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesByTagNamesCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesDuplicateCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetAllPostsCount" />
-				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetClipboardPostsCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetUniqueResourcesCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetAllPostsInHistoryCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetClipboardPostsCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesPopularDaysCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForHashCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForUserInboxCount" />
