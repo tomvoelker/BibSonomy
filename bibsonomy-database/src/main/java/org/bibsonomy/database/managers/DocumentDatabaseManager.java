@@ -303,4 +303,22 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		
 		this.delete("deleteAllDocumentForContentId", contentId, session);
 	}
+	
+	/**
+	 * @param session
+	 * @return
+	 */
+	public int getGlobalDocumentCount(DBSession session) {
+		final Integer result = this.queryForObject("getDocumentCount", Integer.class, session);
+		return saveConvertToint(result);
+	}
+
+	/**
+	 * @param session
+	 * @return
+	 */
+	public int getNumberOfLayoutDocuments(DBSession session) {
+		final Integer result = this.queryForObject("getLayoutDocumentCount", Integer.class, session);
+		return saveConvertToint(result);
+	}
 }

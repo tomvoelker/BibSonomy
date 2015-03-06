@@ -140,11 +140,11 @@
 				</tr>
 				<tr>
 					<td>user layouts</td>
-					<td>loading</td>
+					<td data-url="/statistics?type=documents&amp;grouping=all&amp;filter=LAYOUT_DOCUMENTS">loading</td>
 				</tr>
 				<tr>
 					<td>uploaded documents</td>
-					<td>loading</td>
+					<td data-url="/statistics?type=documents&amp;grouping=all">loading</td>
 				</tr>
 			</table>
 			

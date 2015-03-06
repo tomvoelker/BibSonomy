@@ -80,6 +80,11 @@ public enum FilterEntity {
 	 */
 	POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER,
 	
+	/** the user only wants his layout files 
+	  * TODO: maybe this filter entity enum is the wrong location for this filter
+	  */
+	LAYOUT_DOCUMENTS,
+	
 	/**
 	 * Returns all versions of something
 	 */

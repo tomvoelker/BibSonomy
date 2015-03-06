@@ -192,6 +192,15 @@
 		</property>
 	</bean>
 	
+	<bean id="documentStatisticsChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.statistic.document.GetGlobalDocumentCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.document.GetGlobalLayoutDocumentCount" />
+			</list>
+		</property>
+	</bean>
+	
 	<bean id="databaseValidator" class="org.bibsonomy.database.validation.DatabaseModelValidator">
 		<property name="databaseSchemaInformation" ref="dbSchemaInformation" />
 	</bean>
@@ -204,6 +213,7 @@
 		<property name="postChain" ref="postStatisticChain" />
 		<property name="tagChain" ref="tagStatisticChain" />
 		<property name="userChain" ref="userStatisticsChain" />
+		<property name="documentChain" ref="documentStatisticsChain" />
 	</bean>
 		
 	<bean id="discussionDatabaseManager" class="org.bibsonomy.database.managers.discussion.DiscussionDatabaseManager" factory-method="getInstance">
@@ -269,7 +279,6 @@
 			<list>
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByParent" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.goldstandard.get.GetGoldStandardsByResourceSearch" parent="abstractGoldStandardPublicationChainElement" />
-				
 			</list>
 		</property>
 	</bean>

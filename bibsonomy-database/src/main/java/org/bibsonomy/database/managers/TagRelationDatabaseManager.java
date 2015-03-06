@@ -342,7 +342,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * @param session
-	 * @return
+	 * @return the number of concepts in the log table
 	 */
 	public int getGlobalConceptHistoryCount(DBSession session) {
 		final Integer count = this.queryForObject("getGlobalConceptHistoryCount", Integer.class, session);

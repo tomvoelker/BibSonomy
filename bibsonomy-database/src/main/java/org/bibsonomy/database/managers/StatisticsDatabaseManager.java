@@ -71,6 +71,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	private Chain<Statistics, StatisticsParam> postChain;
 	private Chain<Statistics, StatisticsParam> tagChain;
 	private Chain<Statistics, StatisticsParam> userChain;
+	private Chain<Statistics, StatisticsParam> documentChain;
 
 	private final BibTexDatabaseManager bibtexDBManager;
 	private final BookmarkDatabaseManager bookmarkDBManager;
@@ -78,6 +79,8 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	private final TagRelationDatabaseManager conceptDatabaseManager;
 	private final AdminDatabaseManager adminDatabaseManager;
 	private final BasketDatabaseManager clipboardDatabaseManager;
+	private final DocumentDatabaseManager documentDatabaseManager;
+	
 	private final Map<Class<? extends Resource>, PostDatabaseManager<? extends Resource, ? extends ResourceParam<? extends Resource>>> postDatabaseManager;
 
 	private StatisticsDatabaseManager() {
@@ -87,6 +90,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 		this.tagDatabaseManager = TagDatabaseManager.getInstance();
 		this.conceptDatabaseManager = TagRelationDatabaseManager.getInstance();
 		this.clipboardDatabaseManager = BasketDatabaseManager.getInstance();
+		this.documentDatabaseManager = DocumentDatabaseManager.getInstance();
 
 		// TODO: refactor @see DBLogic
 		this.postDatabaseManager = new HashMap<Class<? extends Resource>, PostDatabaseManager<? extends Resource, ? extends ResourceParam<? extends Resource>>>();
@@ -107,6 +111,35 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 			return statisticData;
 		}
 		return new Statistics();
+	}
+	
+	/**
+	 * @param param
+	 * @param session
+	 * @return the document stats
+	 */
+	public Statistics getDocumentStatistics(StatisticsParam param, DBSession session) {
+		final Statistics statisticData = this.documentChain.perform(param, session);
+		if (present(statisticData)) {
+			return statisticData;
+		}
+		return new Statistics();
+	}
+	
+	/**
+	 * @param session
+	 * @return the number of documents
+	 */
+	public int getNumberOfDocuments(DBSession session) {
+		return this.documentDatabaseManager.getGlobalDocumentCount(session);
+	}
+	
+	/**
+	 * @param session
+	 * @return the number of uploaded layout files
+	 */
+	public int getNumberOfLayoutDocuments(DBSession session) {
+		return this.documentDatabaseManager.getNumberOfLayoutDocuments(session);
 	}
 	
 	/**
@@ -478,5 +511,12 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void setUserChain(Chain<Statistics, StatisticsParam> userChain) {
 		this.userChain = userChain;
+	}
+
+	/**
+	 * @param documentChain the documentChain to set
+	 */
+	public void setDocumentChain(Chain<Statistics, StatisticsParam> documentChain) {
+		this.documentChain = documentChain;
 	}
 }

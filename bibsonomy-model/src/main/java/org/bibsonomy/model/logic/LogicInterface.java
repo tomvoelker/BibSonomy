@@ -373,6 +373,18 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @throws AccessDeniedException if user is not allowed to access the requested document
 	 */
 	public Document getDocument(String userName, String resourceHash, String fileName);
+	
+	/**
+	 * Get statistics about document(s)
+	 * @param groupingEntity
+	 * @param grouping
+	 * @param filter
+	 * @param contraints
+	 * @param startDate
+	 * @param endDate
+	 * @return the stats
+	 */
+	public Statistics getDocumentStatistics(final GroupingEntity groupingEntity, final String grouping, final FilterEntity filter, final Set<StatisticsConstraint> constraints, final Date startDate, final Date endDate);
 
 	/**
 	 * Deletes an existing document. If the resourceHash is given, the document

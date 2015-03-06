@@ -1968,6 +1968,31 @@ public class DBLogic implements LogicInterface {
 		}
 		return null;
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getDocumentStatistics(org.bibsonomy.common.enums.GroupingEntity, java.lang.String, org.bibsonomy.common.enums.FilterEntity, java.util.Set, java.util.Date, java.util.Date)
+	 */
+	@Override
+	public Statistics getDocumentStatistics(GroupingEntity groupingEntity, String grouping, FilterEntity filter, Set<StatisticsConstraint> constraints, Date startDate, Date endDate) {
+		this.ensureLoggedIn();
+		this.permissionDBManager.ensureAdminAccess(this.loginUser); // TOOD: currently only for admins
+		final DBSession session = this.openSession();
+		
+		try {
+			this.handleAdminFilters(filter);
+
+			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, groupingEntity, grouping, null, null, null, -1, -1, startDate, endDate, null, filter, this.loginUser);
+			
+			param.setConstraints(constraints);
+			return this.statisticsDBManager.getDocumentStatistics(param, session);
+		} catch (final QueryTimeoutException ex) {
+			// if a query times out, we return 0 (cause we also return empty
+			// list when a query timeout exception is thrown)
+			return new Statistics(0);
+		} finally {
+			session.close();
+		}
+	}
 
 	/*
 	 * (non-Javadoc)

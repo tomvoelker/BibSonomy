@@ -66,6 +66,9 @@ public class StatisticsController implements MinimalisticController<StatisticsCo
 		case POSTS:
 			count = this.logic.getPostStatistics(command.getResourceType(), grouping, null, null, null, null, filter, contraints, null, startDate, null, 0, 1000).getCount();
 			break;
+		case DOCUMENTS:
+			count = this.logic.getDocumentStatistics(grouping, null, filter, contraints, startDate, null).getCount();
+			break;
 		default:
 			throw new UnsupportedOperationException(command.getType() + " is not supported");
 		}
