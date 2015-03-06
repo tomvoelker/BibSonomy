@@ -1130,12 +1130,16 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * @param contentType 
+	 * @param startDate 
+	 * @param usersToExclude 
 	 * @param session
 	 * @return the number of tas
 	 */
-	public int getNumberOfTas(final int contentType, DBSession session) {
+	public int getNumberOfTas(final int contentType, final Date startDate, List<String> usersToExclude, DBSession session) {
 		final GenericParam genericParam = new TagParam();
 		genericParam.setContentType(ConstantID.getContentTypeByClass(ConstantID.getClassByContentType(contentType)));
+		genericParam.setStartDate(startDate);
+		genericParam.setUsersToExclude(usersToExclude);
 		final Integer count = this.queryForObject("getGlobalTasCount", genericParam, Integer.class, session);
 		return saveConvertToint(count);
 	}

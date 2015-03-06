@@ -1,13 +1,20 @@
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.Date;
+import java.util.Set;
+
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
+import org.bibsonomy.common.enums.StatisticsUnit;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.StatisticsCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+import org.joda.time.DateTime;
 
 /**
  * command to return statistics about the system
@@ -37,16 +44,19 @@ public class StatisticsController implements MinimalisticController<StatisticsCo
 		if (command.isSpammers() && !command.isAll()) {
 			spamStatus = SpamStatus.SPAMMER;
 		}
-		final StatisticsConstraint contraint = command.getContraint();
+		final Set<StatisticsConstraint> contraints = command.getContraints();
+		final Integer interval = command.getInterval();
+		final StatisticsUnit unit = command.getUnit();
+		final Date startDate = convertToStartDate(interval, unit);
 		switch (command.getType()) {
 		case USERS:
-			count = this.logic.getUserStatistics(contraint, null, spamStatus, command.getInterval(), command.getUnit()).getCount();
+			count = this.logic.getUserStatistics(contraints, null, spamStatus, interval, unit).getCount();
 			break;
 		case TAGS:
-			count = this.logic.getTagStatistics(command.getResourceType(), grouping, null, null, null, null, contraint, null, null, 0, 1000);
+			count = this.logic.getTagStatistics(command.getResourceType(), grouping, null, null, null, null, contraints, startDate, null, 0, 1000);
 			break;
 		case POSTS:
-			count = this.logic.getPostStatistics(command.getResourceType(), grouping, null, null, null, null, null, contraint, null, null, null, 0, 1000).getCount();
+			count = this.logic.getPostStatistics(command.getResourceType(), grouping, null, null, null, null, null, contraints, null, startDate, null, 0, 1000).getCount();
 			break;
 		default:
 			throw new UnsupportedOperationException(command.getType() + " is not supported");
@@ -54,6 +64,33 @@ public class StatisticsController implements MinimalisticController<StatisticsCo
 		
 		command.setResponseString(String.valueOf(count));
 		return Views.AJAX_JSON;
+	}
+
+	/**
+	 * @param interval
+	 * @param unit
+	 * @return
+	 */
+	private static Date convertToStartDate(final Integer interval, final StatisticsUnit unit) {
+		final Date startDate;
+		if (present(interval)) {
+			DateTime dateTime = new DateTime();
+			final int intervalAsInt = interval.intValue();
+			switch (unit) {
+			case HOUR:
+				dateTime = dateTime.minusHours(intervalAsInt);
+				break;
+			case MONTH:
+				dateTime = dateTime.minusMonths(intervalAsInt);
+				break;
+			default:
+				throw new IllegalArgumentException(unit.toString());
+			}
+			startDate = dateTime.toDate();
+		} else {
+			startDate = null;
+		}
+		return startDate;
 	}
 
 	/**

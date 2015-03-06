@@ -28,9 +28,11 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.HashID;
@@ -104,7 +106,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * @param constraint 
+	 * @param constraints
 	 * @param interval 
 	 * @param status 
 	 * @param classifier 
@@ -113,12 +115,12 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @return the statistics (currently only count) of all registered users matching
 	 * 			the criteria
 	 */
-	public Statistics getUserStatistics(final StatisticsConstraint constraint, Classifier classifier, SpamStatus status, Integer interval, StatisticsUnit unit, final DBSession session) {
+	public Statistics getUserStatistics(final Set<StatisticsConstraint> constraints, Classifier classifier, SpamStatus status, Integer interval, StatisticsUnit unit, final DBSession session) {
 		final StatisticsParam param = new StatisticsParam();
 		param.setClassifier(classifier);
 		param.setSpamStatus(status);
 		param.setInterval(interval);
-		param.setConstraint(constraint);
+		param.setConstraints(constraints);
 		param.setUnit(unit);
 		
 		final Statistics statistics = this.userChain.perform(param, session);
@@ -244,20 +246,24 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * @param resourceType
-	 * @param session
+	 * @param startDate 
+	 * @param usersToExclude
+	 * @param session 
 	 * @return number of posts
 	 */
-	public int getNumberOfPosts(Class<? extends Resource> resourceType, DBSession session) {
-		return this.getDatabaseManagerForResourceType(resourceType).getPostsCount(session);
+	public int getNumberOfPosts(Class<? extends Resource> resourceType, Date startDate, List<String> usersToExclude, DBSession session) {
+		return this.getDatabaseManagerForResourceType(resourceType).getPostsCount(startDate, usersToExclude, session);
 	}
 	
 	/**
 	 * @param resourceType
+	 * @param startDate 
+	 * @param usersToExclude 
 	 * @param session
 	 * @return number of unique items
 	 */
-	public int getNumberOfUniqueResources(Class<? extends Resource> resourceType, DBSession session) {
-		return this.getDatabaseManagerForResourceType(resourceType).getUniqueResourcesCount(session);
+	public int getNumberOfUniqueResources(Class<? extends Resource> resourceType, Date startDate, List<String> usersToExclude, DBSession session) {
+		return this.getDatabaseManagerForResourceType(resourceType).getUniqueResourcesCount(startDate, usersToExclude, session);
 	}
 	
 	/**
@@ -306,11 +312,13 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * @param contentType 
+	 * @param startDate 
+	 * @param usersToExclude 
 	 * @param session
 	 * @return the number of tag assignments
 	 */
-	public int getNumberOfTas(int contentType, DBSession session) {
-		return this.tagDatabaseManager.getNumberOfTas(contentType, session);
+	public int getNumberOfTas(int contentType, Date startDate, List<String> usersToExclude, DBSession session) {
+		return this.tagDatabaseManager.getNumberOfTas(contentType, startDate, usersToExclude, session);
 	}
 
 	/**

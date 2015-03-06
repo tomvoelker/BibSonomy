@@ -438,7 +438,8 @@
 	</select>
 	
 	<select id="getGlobalTasCount" resultClass="int" parameterClass="tagParam">
-		SELECT count(*) AS ctr FROM tas <isGreaterThan property="contentType" compareValue="0"> WHERE content_type = #contentType#</isGreaterThan>
+		SELECT count(*) AS ctr FROM tas
+		<include refid="statisticRestrictionsWithContentType" />
 	</select>
 	
 	<insert id="insertTas" parameterClass="tagParam">

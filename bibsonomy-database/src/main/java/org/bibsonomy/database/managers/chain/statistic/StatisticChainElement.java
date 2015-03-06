@@ -26,10 +26,15 @@
  */
 package org.bibsonomy.database.managers.chain.statistic;
 
+import java.util.List;
+import java.util.Set;
+
+import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.database.managers.StatisticsDatabaseManager;
 import org.bibsonomy.database.managers.chain.ChainElement;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.model.statistics.Statistics;
+import org.bibsonomy.model.util.UserUtils;
 
 /**
  * @author Stefan Stützer
@@ -43,5 +48,17 @@ public abstract class StatisticChainElement extends ChainElement<Statistics, Sta
 	 */
 	public StatisticChainElement() {
 		this.db = StatisticsDatabaseManager.getInstance();
+	}
+	
+	/**
+	 * @param param
+	 * @return the users to exclude
+	 */
+	protected static List<String> getUsersToExclude(StatisticsParam param) {
+		final Set<StatisticsConstraint> constraints = param.getConstraints();
+		if (constraints.contains(StatisticsConstraint.WITHOUT_DBLP)) {
+			return UserUtils.USER_NAMES_OF_SPECIAL_USERS;
+		}
+		return null;
 	}
 }

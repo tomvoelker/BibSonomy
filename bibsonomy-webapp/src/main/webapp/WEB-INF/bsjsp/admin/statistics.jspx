@@ -33,8 +33,23 @@
 		
 		<jsp:attribute name="content">
 			<h1 class="content-header">Statistics</h1>
+			<a href="/admin/statistics?spammers=no">TODO</a>
+			<a href="/admin/statistics?all=yes">with spammers</a>
+			<a href="/admin/statistics?spammers=yes&amp;all=no">only for spammers</a>
+			<br />
+			show statistics for:
+			<div class="btn-group" data-toggle="buttons">
+				<label class="btn btn-default active">
+					<input type="radio" name="options" id="option1" autocomplete="off" checked="checked" /> without spammers
+				</label>
+				<label class="btn btn-default">
+					<input type="radio" name="options" id="option2" autocomplete="off" /> with spammers
+				</label>
+				<label class="btn btn-default">
+					<input type="radio" name="options" id="option3" autocomplete="off" /> only for spammers
+				</label>
+			</div>
 			
-			show statistics for: <a href="/admin/statistics?spammers=no">without spammers</a>, <a href="/admin/statistics?all=yes">with spammers</a>, <a href="/admin/statistics?spammers=yes&amp;all=no">only for spammers</a>
 			<h2>resource, post and TAS counts</h2>
 			
 			<table class="table table-bordered table-condensed">
@@ -58,39 +73,39 @@
 				</tr>
 				<tr>
 					<td>resources</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraint=unique"><!-- keep me --></td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraint=unique&amp;resourceType=bookmark"><!-- keep me --></td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraint=unique&amp;resourceType=publication"><!-- keep me --></td>
-					<td>loading</td>
-					<td>loading</td>
-					<td>loading</td>
-					<td>loading</td>
-					<td>loading</td>
-					<td>loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraints=unique">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraints=unique&amp;resourceType=bookmark">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraints=unique&amp;resourceType=publication">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraints=unique&amp;contraints=without_dblp">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraints=unique&amp;resourceType=bookmark&amp;contraints=without_dblp">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraints=unique&amp;resourceType=publication&amp;contraints=without_dblp">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraints=unique&amp;contraints=without_dblp&amp;interval=24&amp;unit=hour">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraints=unique&amp;resourceType=bookmark&amp;contraints=without_dblp&amp;interval=24&amp;unit=hour">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraints=unique&amp;resourceType=publication&amp;contraints=without_dblp&amp;interval=24&amp;unit=hour">loading</td>
 				</tr>
 				<tr>
 					<td>posts</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all"><!-- keep me --></td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark"><!-- keep me --></td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication"><!-- keep me --></td>
-					<td>loading</td>
-					<td>loading</td>
-					<td>loading</td>
-					<td>loading</td>
-					<td>loading</td>
-					<td>loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraints=without_dblp">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark&amp;contraints=without_dblp">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication&amp;contraints=without_dblp">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraints=without_dblp&amp;interval=24&amp;unit=hour">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark&amp;contraints=without_dblp&amp;interval=24&amp;unit=hour">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication&amp;contraints=without_dblp&amp;interval=24&amp;unit=hour">loading</td>
 				</tr>
 				<tr>
 					<td>tas</td>
-					<td data-url="/statistics?type=tags&amp;grouping=all"><!-- keep me --></td>
-					<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=bookmark"><!-- keep me --></td>
-					<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=publication"><!-- keep me --></td>
-					<td>loading</td>
-					<td>loading</td>
-					<td>loading</td>
-					<td>loading</td>
-					<td>loading</td>
-					<td>loading</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all">loading</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=bookmark">loading</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=publication">loading</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;contraints=without_dblp">loading</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=bookmark&amp;contraints=without_dblp">loading</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=publication&amp;contraints=without_dblp">loading</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;contraints=without_dblp&amp;interval=24&amp;unit=hour">loading</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=bookmark&amp;contraints=without_dblp&amp;interval=24&amp;unit=hour">loading</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=publication&amp;contraints=without_dblp&amp;interval=24&amp;unit=hour">loading</td>
 				</tr>
 			</table>
 			
@@ -138,19 +153,19 @@
 				</tr>
 				<tr>
 					<td>spammers</td>
-					<td data-url="/statistics?type=users&amp;spammers=true&amp;all=false">TODO</td>
+					<td data-url="/statistics?type=users&amp;spammers=true&amp;all=false">loading</td>
 				</tr>
 				<tr>
 					<td>active users</td>
-					<td data-url="/statistics?type=users&amp;contraint=active">TODO</td>
+					<td data-url="/statistics?type=users&amp;contraints=active">loading</td>
 				</tr>
 				<tr>
 					<td>active users 24 hours</td>
-					<td data-url="/statistics?type=users&amp;contraint=active&amp;interval=24&amp;unit=hour">TODO</td>
+					<td data-url="/statistics?type=users&amp;contraints=active&amp;interval=24&amp;unit=hour">loading</td>
 				</tr>
 				<tr>
 					<td>active users last month</td>
-					<td data-url="/statistics?type=users&amp;contraint=active&amp;interval=1&amp;unit=month"><!-- keep me --></td>
+					<td data-url="/statistics?type=users&amp;contraints=active&amp;interval=1&amp;unit=month">loading</td>
 				</tr>
 			</table>
 			
@@ -158,23 +173,23 @@
 			<table class="table table-bordered table-condensed">
 				<tr>
 					<td>tags</td>
-					<td data-url="/statistics?type=tags&amp;grouping=all&amp;contraint=unique"><!-- keep me --></td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;contraints=unique">loading</td>
 				</tr>
 				<tr>
 					<td>tag-tag relations</td>
-					<td>TODO</td>
+					<td>loading</td>
 				</tr>
 				<tr>
 					<td>posts in baskets</td>
-					<td data-url="/statistics?type=posts&amp;grouping=clipboard"><!-- keep me --></td>
+					<td data-url="/statistics?type=posts&amp;grouping=clipboard">loading</td>
 				</tr>
 				<tr>
 					<td>user layouts</td>
-					<td>TODO</td>
+					<td>loading</td>
 				</tr>
 				<tr>
 					<td>uploaded documents</td>
-					<td>TODO</td>
+					<td>loading</td>
 				</tr>
 			</table>
 		</jsp:attribute>

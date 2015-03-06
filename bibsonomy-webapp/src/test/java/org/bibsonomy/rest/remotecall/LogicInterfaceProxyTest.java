@@ -1126,7 +1126,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	@Override
-	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final StatisticsConstraint constraint, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Set<StatisticsConstraint> constraints, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1144,7 +1144,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 	
 	@Override
-	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, StatisticsConstraint contraint, final Date startDate, final Date endDate, final int start, final int end) {
+	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, Set<StatisticsConstraint> contraints, final Date startDate, final Date endDate, final int start, final int end) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

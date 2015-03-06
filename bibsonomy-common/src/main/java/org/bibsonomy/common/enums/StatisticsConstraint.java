@@ -36,6 +36,9 @@ public enum StatisticsConstraint {
 	/** only active things. e.g. users */
 	ACTIVE,
 	
+	/** without the dblp user */
+	WITHOUT_DBLP,
+	
 	/** only unique */
 	UNIQUE;
 }

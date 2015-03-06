@@ -30,6 +30,7 @@ import java.net.InetAddress;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
@@ -117,14 +118,14 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	public List<User> getUsers (Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, UserRelation relation, String search, int start, int end);	
 	
 	/**
-	 * @param constraint 
+	 * @param constraints 
 	 * @param classifier 
 	 * @param status 
 	 * @param interval 
 	 * @param unit 
 	 * @return statistic informations about the users
 	 */
-	public Statistics getUserStatistics(final StatisticsConstraint constraint, final Classifier classifier, final SpamStatus status, final Integer interval, final StatisticsUnit unit);
+	public Statistics getUserStatistics(final Set<StatisticsConstraint> constraints, final Classifier classifier, final SpamStatus status, final Integer interval, final StatisticsUnit unit);
 	
 	/**
 	 * Returns details about a specified user
@@ -619,14 +620,14 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @param tags
 	 * @param regex
 	 * @param status
-	 * @param contraint the statistic contraint
+	 * @param contraints the statistic contraint
 	 * @param startDate TODO
 	 * @param endDate TODO
 	 * @param start
 	 * @param end
 	 * @return the number of relations from a user
 	 */
-	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String regex, ConceptStatus status, StatisticsConstraint contraint, Date startDate, Date endDate, int start, int end);
+	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String regex, ConceptStatus status, Set<StatisticsConstraint> contraints, Date startDate, Date endDate, int start, int end);
 
 	/** 
 	 * We return all Users that are in (the) relation with the sourceUser

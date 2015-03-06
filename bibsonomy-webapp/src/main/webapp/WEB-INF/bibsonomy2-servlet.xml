@@ -433,7 +433,7 @@
 								<value>all</value>
 								<value>type</value>
 								<value>interval</value>
-								<value>contraint</value>
+								<value>contraints</value>
 								<value>unit</value>
 								<value>grouping</value>
 								<value>resourceType</value>

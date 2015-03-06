@@ -2150,7 +2150,7 @@ public class DBLogic implements LogicInterface {
 	 * org.bibsonomy.common.enums.StatisticsConstraint)
 	 */
 	@Override
-	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final StatisticsConstraint constraint, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Set<StatisticsConstraint> constraints, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		final DBSession session = this.openSession();
 
 		try {
@@ -2159,7 +2159,7 @@ public class DBLogic implements LogicInterface {
 			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
 			if ((resourceType == GoldStandardPublication.class) || (resourceType == BibTex.class) || (resourceType == Bookmark.class) || (resourceType == Resource.class)) {
 				param.setContentTypeByClass(resourceType);
-				param.setConstraint(constraint);
+				param.setConstraints(constraints);
 				return this.statisticsDBManager.getPostStatistics(param, session);
 			}
 
@@ -2381,10 +2381,10 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#getUserStatistics()
 	 */
 	@Override
-	public Statistics getUserStatistics(StatisticsConstraint constraint, Classifier classifier, SpamStatus status, Integer interval, final StatisticsUnit unit) {
+	public Statistics getUserStatistics(Set<StatisticsConstraint> constraints, Classifier classifier, SpamStatus status, Integer interval, final StatisticsUnit unit) {
 		final DBSession session = openSession();
 		try {
-			return this.statisticsDBManager.getUserStatistics(constraint, classifier, status, interval, unit, session);
+			return this.statisticsDBManager.getUserStatistics(constraints, classifier, status, interval, unit, session);
 		} finally {
 			session.close();
 		}
@@ -2537,12 +2537,12 @@ public class DBLogic implements LogicInterface {
 	 * org.bibsonomy.common.enums.ConceptStatus, int, int)
 	 */
 	@Override
-	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, StatisticsConstraint contraint, final Date startDate, final Date endDate, final int start, final int end) {
+	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, Set<StatisticsConstraint> contraints, final Date startDate, final Date endDate, final int start, final int end) {
 		final DBSession session = this.openSession();
 		try {
 			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, grouping, groupingName, tags, null, null, start, end, startDate, endDate, null, null, this.loginUser);
 			param.setContentTypeByClass(resourceType);
-			param.setStatisticsConstraint(contraint);
+			param.setConstraints(contraints);
 			return this.statisticsDBManager.getTagStatistics(param, session);
 		} finally {
 			session.close();

@@ -1,5 +1,8 @@
 package org.bibsonomy.webapp.command;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.StatisticsUnit;
@@ -20,7 +23,7 @@ public class StatisticsCommand extends BaseCommand {
 	
 	private boolean spammers;
 	private boolean all;
-	private StatisticsConstraint contraint;
+	private Set<StatisticsConstraint> contraints = new HashSet<StatisticsConstraint>();
 	private Integer interval;
 	private Class<? extends Resource> resourceType = Resource.class;
 	private GroupingEntity grouping;
@@ -116,15 +119,15 @@ public class StatisticsCommand extends BaseCommand {
 	/**
 	 * @return the contraint
 	 */
-	public StatisticsConstraint getContraint() {
-		return this.contraint;
+	public Set<StatisticsConstraint> getContraints() {
+		return this.contraints;
 	}
 
 	/**
-	 * @param contraint the contraint to set
+	 * @param contraint the contraints to set
 	 */
-	public void setContraint(StatisticsConstraint contraint) {
-		this.contraint = contraint;
+	public void setContraints(Set<StatisticsConstraint> contraints) {
+		this.contraints = contraints;
 	}
 
 	/**

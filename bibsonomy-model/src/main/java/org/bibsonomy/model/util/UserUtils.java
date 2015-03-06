@@ -31,6 +31,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -50,7 +51,10 @@ public class UserUtils {
 	
 	/** the name of the dblp user */
 	public static final String DBLP_USER_NAME = "dblp";
-
+	
+	/** a set of special users */
+	public static final List<String> USER_NAMES_OF_SPECIAL_USERS = Arrays.asList(DBLP_USER_NAME);
+	
 	/** the length of the password salt */
 	private static final int SALT_LENGTH = 16;
 

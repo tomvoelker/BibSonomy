@@ -1,5 +1,9 @@
 package org.bibsonomy.database.managers.chain.statistic.tag;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.Set;
+
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.database.common.DBSession;
@@ -16,7 +20,8 @@ public class GetGlobalTagCount extends StatisticChainElement {
 
 	@Override
 	protected boolean canHandle(StatisticsParam param) {
-		return GroupingEntity.ALL.equals(param.getGrouping()) && StatisticsConstraint.UNIQUE.equals(param.getStatisticsConstraint());
+		final Set<StatisticsConstraint> constraints = param.getConstraints();
+		return GroupingEntity.ALL.equals(param.getGrouping()) && present(constraints) && constraints.contains(StatisticsConstraint.UNIQUE);
 	}
 
 	@Override

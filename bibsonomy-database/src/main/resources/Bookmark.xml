@@ -680,11 +680,13 @@
 		UPDATE bookmark b SET b.group = 1 WHERE b.user_name = #userName# AND b.group = #groupId#
 	</update>
 	
-	<select id="getBookmarkCount" resultClass="int">
-		SELECT COUNT(*) FROM bookmark WHERE user_name != "dblp";
+	<select id="getBookmarkCount" resultClass="int" parameterClass="bookmarkParam">
+		SELECT COUNT(*) FROM bookmark
+		<include refid="statisticRestrictions" />
 	</select>
 	
-	<select id="getUniqueBookmarkCount" resultClass="int">
-		SELECT COUNT(DISTINCT book_url_hash) AS ctr FROM bookmark WHERE user_name != "dblp"
+	<select id="getUniqueBookmarkCount" resultClass="int" parameterClass="bookmarkParam">
+		SELECT COUNT(DISTINCT book_url_hash) AS ctr FROM bookmark
+		<include refid="statisticRestrictions" />
 	</select>
 </sqlMap>

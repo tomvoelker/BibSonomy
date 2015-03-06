@@ -982,12 +982,14 @@
 		ORDER BY b2.date DESC, b2.content_id DESC
 	</select>
 	
-	<select id="getBibTexCount" resultClass="int">
-		SELECT COUNT(*) FROM bibtex WHERE user_name != "dblp";
+	<select id="getBibTexCount" resultClass="int" parameterClass="bibtexParam">
+		SELECT COUNT(*) FROM bibtex
+		<include refid="statisticRestrictions" />
 	</select>
 	
-	<select id="getUniqueBibTexCount" resultClass="int">
-		SELECT count(DISTINCT simhash1) AS ctr FROM bibtex WHERE user_name != "dblp"
+	<select id="getUniqueBibTexCount" resultClass="int" parameterClass="bibtexParam">
+		SELECT count(DISTINCT simhash1) AS ctr FROM bibtex
+		<include refid="statisticRestrictions" />
 	</select>
 	
 	<update id="updateBibTexInGroupFromLeavingUser" parameterClass="resourceParam">

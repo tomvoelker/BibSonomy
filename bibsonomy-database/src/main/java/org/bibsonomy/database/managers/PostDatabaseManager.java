@@ -1076,20 +1076,30 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 	
 	/**
+	 * @param startDate 
+	 * @param usersToExclude 
 	 * @param session
 	 * @return number of unique resources
 	 */
-	public int getUniqueResourcesCount(DBSession session) {
-		final Integer result = this.queryForObject("getUnique" + this.resourceClassName + "Count", Integer.class, session);
+	public int getUniqueResourcesCount(final Date startDate, List<String> usersToExclude, DBSession session) {
+		final P param = this.getNewParam();
+		param.setStartDate(startDate);
+		param.setUsersToExclude(usersToExclude);
+		final Integer result = this.queryForObject("getUnique" + this.resourceClassName + "Count", param, Integer.class, session);
 		return saveConvertToint(result);
 	}
 	
 	/**
+	 * @param startDate 
+	 * @param usersToExclude 
 	 * @param session
 	 * @return number of posts
 	 */
-	public int getPostsCount(DBSession session) {
-		final Integer result = this.queryForObject("get" + this.resourceClassName + "Count", Integer.class, session);
+	public int getPostsCount(final Date startDate, List<String> usersToExclude, DBSession session) {
+		final P param = this.getNewParam();
+		param.setStartDate(startDate);
+		param.setUsersToExclude(usersToExclude);
+		final Integer result = this.queryForObject("get" + this.resourceClassName + "Count", param, Integer.class, session);
 		return saveConvertToint(result);
 	}
 

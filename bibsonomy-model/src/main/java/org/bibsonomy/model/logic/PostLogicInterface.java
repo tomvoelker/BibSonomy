@@ -28,6 +28,7 @@ package org.bibsonomy.model.logic;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -199,7 +200,7 @@ public interface PostLogicInterface {
 	 *            but not null.
 	 * @param search free text search
 	 * @param filter filter for the retrieved posts
-	 * @param constraint - a possible constraint on the statistics
+	 * @param constraints - a possible constraint on the statistics
 	 * @param order a flag indicating the way of sorting
 	 * @param startDate - if given, only posts that have been created after (inclusive) startDate are regarded  
 	 * @param endDate - if given, only posts that have been created before (inclusive) endDate are regarded
@@ -207,5 +208,5 @@ public interface PostLogicInterface {
 	 * @param end exclusive end index of the view window
 	 * @return a filtered list of posts. may be empty but not null
 	 */
-	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, FilterEntity filter, StatisticsConstraint constraint, Order order, Date startDate, Date endDate, int start, int end);
+	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, FilterEntity filter, Set<StatisticsConstraint> constraints, Order order, Date startDate, Date endDate, int start, int end);
 }

@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.database.params;
 
+import java.util.Set;
+
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
@@ -35,7 +37,7 @@ import org.bibsonomy.common.enums.StatisticsUnit;
  * @author Christian Kramer
  */
 public class StatisticsParam extends GenericParam {
-	private StatisticsConstraint constraint;
+	private Set<StatisticsConstraint> constraints;
 	private StatisticsUnit unit;
 	
 	private Classifier classifier;
@@ -43,20 +45,19 @@ public class StatisticsParam extends GenericParam {
 	private Integer interval;
 	
 	private SpamStatus spamStatus;
-	private StatisticsConstraint statisticsConstraint;
 
 	/**
-	 * @return the constraint
+	 * @return the constraints
 	 */
-	public StatisticsConstraint getConstraint() {
-		return this.constraint;
+	public Set<StatisticsConstraint> getConstraints() {
+		return this.constraints;
 	}
 
 	/**
-	 * @param constraint the constraint to set
+	 * @param constraints the constraints to set
 	 */
-	public void setConstraint(StatisticsConstraint constraint) {
-		this.constraint = constraint;
+	public void setConstraints(Set<StatisticsConstraint> constraints) {
+		this.constraints = constraints;
 	}
 
 	/**
@@ -100,21 +101,7 @@ public class StatisticsParam extends GenericParam {
 	public void setSpamStatus(SpamStatus spamStatus) {
 		this.spamStatus = spamStatus;
 	}
-
-	/**
-	 * @return the statisticsConstraint
-	 */
-	public StatisticsConstraint getStatisticsConstraint() {
-		return this.statisticsConstraint;
-	}
-
-	/**
-	 * @param statisticsConstraint the statisticsConstraint to set
-	 */
-	public void setStatisticsConstraint(StatisticsConstraint statisticsConstraint) {
-		this.statisticsConstraint = statisticsConstraint;
-	}
-
+	
 	/**
 	 * @return the interval
 	 */

@@ -152,6 +152,8 @@ public abstract class GenericParam {
 	 * List of tags which are assigned to relations
 	 */
 	private final List<String> relationTags;
+	
+	private List<String> usersToExclude;
 
 	/**
 	 * Should tagnames (names of tags and concepts) be case sensitive; by
@@ -297,6 +299,20 @@ public abstract class GenericParam {
 	 */
 	public void setCaseSensitiveTagNames(final boolean caseSensitiveTagNames) {
 		this.caseSensitiveTagNames = caseSensitiveTagNames;
+	}
+	
+	/**
+	 * @return the usersToExclude
+	 */
+	public List<String> getUsersToExclude() {
+		return this.usersToExclude;
+	}
+
+	/**
+	 * @param usersToExclude the usersToExclude to set
+	 */
+	public void setUsersToExclude(List<String> usersToExclude) {
+		this.usersToExclude = usersToExclude;
 	}
 
 	private void addToTagIndex(final String tagName) {
