@@ -14,17 +14,17 @@
 	</select>
 
 	<resultMap id="userDiscussionsRatingStatistic" class="statisticsValues" groupBy="count">
-    	<result property="count"	column="maxcnt"			javaType="int" />
-    	<result property="average"	column="avgrating"		javaType="float" />
-    	<result property="max"		column="maxrating"		javaType="float" />
-    	<result property="min"		column="minrating"		javaType="float" />
-    	<result property="values" resultMap="Statistics.userDiscussionsRatingStatisticList"/>
+		<result property="count"	column="maxcnt"			javaType="int" />
+		<result property="average"	column="avgrating"		javaType="float" />
+		<result property="max"		column="maxrating"		javaType="float" />
+		<result property="min"		column="minrating"		javaType="float" />
+		<result property="values" resultMap="Statistics.userDiscussionsRatingStatisticList"/>
 	</resultMap>
 
 	<resultMap id="userDiscussionsRatingStatisticList" class="statistics">
 		<result property="rating"      	column="rating"			javaType="float" />
-    	<result property="count"     	column="cnt"			javaType="int" />
-    	<result property="percentage"		column="percent"		javaType="float" />
+		<result property="count"     	column="cnt"			javaType="int" />
+		<result property="percentage"		column="percent"		javaType="float" />
 	</resultMap>
 
 
@@ -95,9 +95,5 @@
 				</isEqual>
 			</isNotNull>
 		GROUP BY user_name) AS users
-	</select>
-	
-	<select id="getClipboardCount" resultClass="int">
-		SELECT count(*) AS ctr FROM collector
 	</select>
 </sqlMap>

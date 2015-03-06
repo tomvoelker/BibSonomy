@@ -135,7 +135,7 @@
 					<td data-url="/statistics?type=tags&amp;grouping=all&amp;conceptStatus=all">loading</td>
 				</tr>
 				<tr>
-					<td>posts in baskets</td>
+					<td>posts in clipboard</td>
 					<td data-url="/statistics?type=posts&amp;grouping=clipboard">loading</td>
 				</tr>
 				<tr>
@@ -157,17 +157,17 @@
 				</tr>
 				<tr>
 					<td>bookmarks</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark&amp;filter=posts_history">loading</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication&amp;filter=posts_history&amp;contraints=without_dblp">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark&amp;filter=history">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication&amp;filter=history&amp;contraints=without_dblp">loading</td>
 				</tr>
 				<tr>
 					<td>publications</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark&amp;filter=posts_history">loading</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication&amp;filter=posts_history&amp;contraints=without_dblp">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark&amp;filter=history">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication&amp;filter=history&amp;contraints=without_dblp">loading</td>
 				</tr>
 				<tr>
-					<td>posts from baskets</td>
-					<td>loading</td>
+					<td>posts in clipboard</td>
+					<td data-url="/statistics?type=posts&amp;grouping=clipboard&amp;filter=history">loading</td>
 				</tr>
 				<tr>
 					<td>friendships</td>

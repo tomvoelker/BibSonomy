@@ -49,7 +49,7 @@ public class GetResourcesByParent<R extends Resource, P extends ResourceParam<R>
 
 	@Override
 	protected boolean canHandle(final P param) {
-		return (param.getFilter() == FilterEntity.POSTS_HISTORY);
+		return (param.getFilter() == FilterEntity.HISTORY);
 	}
 
 }

@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.StatisticsUnit;
@@ -16,6 +17,7 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 import org.joda.time.DateTime;
+import org.springframework.security.access.AccessDeniedException;
 
 /**
  * command to return statistics about the system
@@ -39,6 +41,9 @@ public class StatisticsController implements MinimalisticController<StatisticsCo
 	 */
 	@Override
 	public View workOn(final StatisticsCommand command) {
+		if (!Role.ADMIN.equals(command.getContext().getLoginUser().getRole())) {
+			throw new AccessDeniedException("only admins can retrieve stats");
+		}
 		final int count;
 		SpamStatus spamStatus = null;
 		final GroupingEntity grouping = command.getGrouping();

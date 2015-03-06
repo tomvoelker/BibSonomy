@@ -737,7 +737,7 @@ public class DBLogic implements LogicInterface {
 			 * result.addAll(bookmarkDBManager.getPosts(authUser, grouping,
 			 * groupingName, tags, hash, popular, added, start, end, false));
 			 */
-			if (FilterEntity.POSTS_HISTORY.equals(filter) && !((resourceType == GoldStandardPublication.class) || (resourceType == GoldStandardBookmark.class))) {
+			if (FilterEntity.HISTORY.equals(filter) && !((resourceType == GoldStandardPublication.class) || (resourceType == GoldStandardBookmark.class))) {
 				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, groupingName);
 			}
 			if (resourceType == BibTex.class) {

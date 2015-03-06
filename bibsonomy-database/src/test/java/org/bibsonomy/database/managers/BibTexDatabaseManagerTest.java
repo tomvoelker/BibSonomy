@@ -1194,7 +1194,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		param.setRequestedContentId(20);
 		param.setRequestedUserName(requestedUserName);
 		param.setHash(intraHash);
-		param.setFilter(FilterEntity.POSTS_HISTORY);
+		param.setFilter(FilterEntity.HISTORY);
 		List<Post<BibTex>> posts = publicationDb.getPosts(param, dbSession);
 		assertEquals(4, posts.size());
 	}

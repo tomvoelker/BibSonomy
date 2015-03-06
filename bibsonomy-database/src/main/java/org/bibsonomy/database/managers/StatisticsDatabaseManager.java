@@ -77,6 +77,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	private final TagDatabaseManager tagDatabaseManager;
 	private final TagRelationDatabaseManager conceptDatabaseManager;
 	private final AdminDatabaseManager adminDatabaseManager;
+	private final BasketDatabaseManager clipboardDatabaseManager;
 	private final Map<Class<? extends Resource>, PostDatabaseManager<? extends Resource, ? extends ResourceParam<? extends Resource>>> postDatabaseManager;
 
 	private StatisticsDatabaseManager() {
@@ -85,6 +86,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 		this.bookmarkDBManager = BookmarkDatabaseManager.getInstance();
 		this.tagDatabaseManager = TagDatabaseManager.getInstance();
 		this.conceptDatabaseManager = TagRelationDatabaseManager.getInstance();
+		this.clipboardDatabaseManager = BasketDatabaseManager.getInstance();
 
 		// TODO: refactor @see DBLogic
 		this.postDatabaseManager = new HashMap<Class<? extends Resource>, PostDatabaseManager<? extends Resource, ? extends ResourceParam<? extends Resource>>>();
@@ -284,8 +286,15 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @return the number of posts in the clipboard
 	 */
 	public int getNumberOfClipboardPosts(DBSession session) {
-		final Integer result = this.queryForObject("getClipboardCount", Integer.class, session);
-		return result == null ? 0 : result.intValue();
+		return this.clipboardDatabaseManager.getNumberOfClipboardPosts(session);
+	}
+	
+	/**
+	 * @param session
+	 * @return the number of posts in the clipboard log
+	 */
+	public int getNumberOfClipboadPostsInHistory(DBSession session) {
+		return this.clipboardDatabaseManager.getNumberOfClipboardPostsInHistory(session);
 	}
 
 	/**

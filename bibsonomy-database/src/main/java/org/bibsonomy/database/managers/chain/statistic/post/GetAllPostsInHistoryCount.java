@@ -40,6 +40,6 @@ public class GetAllPostsInHistoryCount extends StatisticChainElement {
 	@Override
 	protected boolean canHandle(StatisticsParam param) {
 		final Set<StatisticsConstraint> constraints = param.getConstraints();
-		return GroupingEntity.ALL.equals(param.getGrouping()) && FilterEntity.POSTS_HISTORY.equals(param.getFilter()) && (!present(constraints) || !constraints.contains(StatisticsConstraint.UNIQUE));
+		return GroupingEntity.ALL.equals(param.getGrouping()) && FilterEntity.HISTORY.equals(param.getFilter()) && (!present(constraints) || !constraints.contains(StatisticsConstraint.UNIQUE));
 	}
 }

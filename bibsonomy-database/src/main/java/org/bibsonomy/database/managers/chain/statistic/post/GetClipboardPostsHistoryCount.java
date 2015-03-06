@@ -9,13 +9,15 @@ import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.model.statistics.Statistics;
 
 /**
+ * retrieves the log clipboard count
+ *
  * @author dzo
  */
-public class GetClipboardPostsCount extends StatisticChainElement {
+public class GetClipboardPostsHistoryCount  extends StatisticChainElement {
 
 	@Override
 	protected Statistics handle(StatisticsParam param, DBSession session) {
-		return new Statistics(this.db.getNumberOfClipboardPosts(session));
+		return new Statistics(this.db.getNumberOfClipboadPostsInHistory(session));
 	}
 	
 	@Override
@@ -23,3 +25,4 @@ public class GetClipboardPostsCount extends StatisticChainElement {
 		return GroupingEntity.CLIPBOARD.equals(param.getGrouping()) && !present(param.getFilter()) && !present(param.getRequestedUserName());
 	}
 }
+

@@ -81,7 +81,7 @@ public enum FilterEntity {
 	POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER,
 	
 	/**
-	 * Returns all (old and current) versions of a post
+	 * Returns all versions of something
 	 */
-	POSTS_HISTORY;
+	HISTORY;
 }
