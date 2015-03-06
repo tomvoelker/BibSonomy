@@ -39,6 +39,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -231,6 +232,7 @@ public abstract class GenericParam {
 	private Order order;
 	private GroupingEntity grouping;
 	private FilterEntity filter;
+	private ConceptStatus conceptStatus;
 	
 	/** which parts of the posts can the logged in user access */
 	private PostAccess postAccess = PostAccess.POST_ONLY;
@@ -1194,5 +1196,19 @@ public abstract class GenericParam {
 	 */
 	public void setSearchType(final SearchType searchType) {
 		this.searchType = searchType;
+	}
+
+	/**
+	 * @return the conceptStatus
+	 */
+	public ConceptStatus getConceptStatus() {
+		return this.conceptStatus;
+	}
+
+	/**
+	 * @param conceptStatus the conceptStatus to set
+	 */
+	public void setConceptStatus(ConceptStatus conceptStatus) {
+		this.conceptStatus = conceptStatus;
 	}
 }

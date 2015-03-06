@@ -75,6 +75,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	private final BibTexDatabaseManager bibtexDBManager;
 	private final BookmarkDatabaseManager bookmarkDBManager;
 	private final TagDatabaseManager tagDatabaseManager;
+	private final TagRelationDatabaseManager conceptDatabaseManager;
 	private final AdminDatabaseManager adminDatabaseManager;
 	private final Map<Class<? extends Resource>, PostDatabaseManager<? extends Resource, ? extends ResourceParam<? extends Resource>>> postDatabaseManager;
 
@@ -83,6 +84,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 		this.bibtexDBManager = BibTexDatabaseManager.getInstance();
 		this.bookmarkDBManager = BookmarkDatabaseManager.getInstance();
 		this.tagDatabaseManager = TagDatabaseManager.getInstance();
+		this.conceptDatabaseManager = TagRelationDatabaseManager.getInstance();
 
 		// TODO: refactor @see DBLogic
 		this.postDatabaseManager = new HashMap<Class<? extends Resource>, PostDatabaseManager<? extends Resource, ? extends ResourceParam<? extends Resource>>>();
@@ -319,6 +321,14 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public int getNumberOfTags(DBSession session) {
 		return this.tagDatabaseManager.getNumberOfTags(session);
+	}
+	
+	/**
+	 * @param session
+	 * @return the number of concepts
+	 */
+	public int getNumberOfConcepts(DBSession session) {
+		return this.conceptDatabaseManager.getGlobalConceptCount(session);
 	}
 	
 	/**

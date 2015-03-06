@@ -330,6 +330,15 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 		this.update("deleteEqualConcepts", param, session);
 		this.update("deleteOldConcepts", param, session);
 	}
+	
+	/**
+	 * @param session
+	 * @return the number of concepts
+	 */
+	public int getGlobalConceptCount(DBSession session) {
+		final Integer count = this.queryForObject("getGlobalConceptCount", Integer.class, session);
+		return saveConvertToint(count);
+	}
 
 	/**
 	 * @param chain the chain to set

@@ -22,7 +22,7 @@ public class GetGlobalTasCount extends StatisticChainElement {
 	@Override
 	protected boolean canHandle(StatisticsParam param) {
 		final Set<StatisticsConstraint> constraints = param.getConstraints();
-		return GroupingEntity.ALL.equals(param.getGrouping()) && (!present(constraints) || !constraints.contains(StatisticsConstraint.UNIQUE));
+		return GroupingEntity.ALL.equals(param.getGrouping()) && !present(param.getConceptStatus()) && (!present(constraints) || !constraints.contains(StatisticsConstraint.UNIQUE));
 	}
 
 	@Override

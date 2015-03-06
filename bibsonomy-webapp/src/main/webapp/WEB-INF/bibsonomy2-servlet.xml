@@ -437,6 +437,7 @@
 								<value>unit</value>
 								<value>grouping</value>
 								<value>filter</value>
+								<value>conceptStatus</value>
 								<value>resourceType</value>
 							</list>
 						</property>

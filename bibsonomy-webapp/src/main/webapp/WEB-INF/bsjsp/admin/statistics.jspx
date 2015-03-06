@@ -48,7 +48,7 @@
 			<br />
 			<div class="row">
 				<div class="col-md-4">
-					show statistics for:
+					<strong>show statistics:</strong>
 				</div>
 				<div class="col-md-8">
 					<div class="btn-group" data-toggle="buttons">
@@ -124,8 +124,31 @@
 				</tr>
 			</table>
 			
-			<h2>logging tables</h2>
+			<h2>misc</h2>
+			<table class="table table-bordered table-condensed">
+				<tr>
+					<td>tags</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;contraints=unique">loading</td>
+				</tr>
+				<tr>
+					<td>tag-tag relations</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;conceptStatus=all">loading</td>
+				</tr>
+				<tr>
+					<td>posts in baskets</td>
+					<td data-url="/statistics?type=posts&amp;grouping=clipboard">loading</td>
+				</tr>
+				<tr>
+					<td>user layouts</td>
+					<td>loading</td>
+				</tr>
+				<tr>
+					<td>uploaded documents</td>
+					<td>loading</td>
+				</tr>
+			</table>
 			
+			<h2>logging tables</h2>
 			<table class="table table-bordered table-condensed">
 				<tr>
 					<th><!-- keep me --></th>
@@ -181,30 +204,6 @@
 				<tr>
 					<td>active users last month</td>
 					<td data-url="/statistics?type=users&amp;contraints=active&amp;interval=1&amp;unit=month">loading</td>
-				</tr>
-			</table>
-			
-			<h2>misc</h2>
-			<table class="table table-bordered table-condensed">
-				<tr>
-					<td>tags</td>
-					<td data-url="/statistics?type=tags&amp;grouping=all&amp;contraints=unique">loading</td>
-				</tr>
-				<tr>
-					<td>tag-tag relations</td>
-					<td>loading</td>
-				</tr>
-				<tr>
-					<td>posts in baskets</td>
-					<td data-url="/statistics?type=posts&amp;grouping=clipboard">loading</td>
-				</tr>
-				<tr>
-					<td>user layouts</td>
-					<td>loading</td>
-				</tr>
-				<tr>
-					<td>uploaded documents</td>
-					<td>loading</td>
 				</tr>
 			</table>
 		</jsp:attribute>

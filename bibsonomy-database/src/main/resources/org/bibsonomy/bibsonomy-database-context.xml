@@ -173,6 +173,7 @@
 			<list>
 				<bean class="org.bibsonomy.database.managers.chain.statistic.tag.GetGlobalTagCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.tag.GetGlobalTasCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.tag.GetGlobalConceptCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.tag.get.GetRelationCountByUser" />
 			</list>
 		</property>

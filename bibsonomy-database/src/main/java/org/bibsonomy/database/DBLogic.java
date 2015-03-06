@@ -2541,8 +2541,11 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = this.openSession();
 		try {
 			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, grouping, groupingName, tags, null, null, start, end, startDate, endDate, null, null, this.loginUser);
-			param.setContentTypeByClass(resourceType);
+			if (present(resourceType)) {
+				param.setContentTypeByClass(resourceType);
+			}
 			param.setConstraints(contraints);
+			param.setConceptStatus(status);
 			return this.statisticsDBManager.getTagStatistics(param, session);
 		} finally {
 			session.close();

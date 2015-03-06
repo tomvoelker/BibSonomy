@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.command;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.StatisticsConstraint;
@@ -30,6 +31,8 @@ public class StatisticsCommand extends BaseCommand {
 	
 	private GroupingEntity grouping;
 	private FilterEntity filter;
+	
+	private ConceptStatus conceptStatus;
 	
 	private Set<StatisticsConstraint> contraints = new HashSet<StatisticsConstraint>();
 	private Integer interval;
@@ -176,5 +179,19 @@ public class StatisticsCommand extends BaseCommand {
 	 */
 	public void setFilter(FilterEntity filter) {
 		this.filter = filter;
+	}
+
+	/**
+	 * @return the conceptStatus
+	 */
+	public ConceptStatus getConceptStatus() {
+		return this.conceptStatus;
+	}
+
+	/**
+	 * @param conceptStatus the conceptStatus to set
+	 */
+	public void setConceptStatus(ConceptStatus conceptStatus) {
+		this.conceptStatus = conceptStatus;
 	}
 }
