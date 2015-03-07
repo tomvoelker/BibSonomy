@@ -118,14 +118,16 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	public List<User> getUsers (Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, UserRelation relation, String search, int start, int end);	
 	
 	/**
+	 * @param grouping TODO
 	 * @param constraints 
+	 * @param filter TODO
 	 * @param classifier 
 	 * @param status 
 	 * @param interval 
 	 * @param unit 
 	 * @return statistic informations about the users
 	 */
-	public Statistics getUserStatistics(final Set<StatisticsConstraint> constraints, final Classifier classifier, final SpamStatus status, final Integer interval, final StatisticsUnit unit);
+	public Statistics getUserStatistics(GroupingEntity grouping, final Set<StatisticsConstraint> constraints, FilterEntity filter, final Classifier classifier, final SpamStatus status, final Integer interval, final StatisticsUnit unit);
 	
 	/**
 	 * Returns details about a specified user

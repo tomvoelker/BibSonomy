@@ -1,6 +1,7 @@
 package org.bibsonomy.database.managers.chain.statistic.user;
 
 import org.bibsonomy.common.enums.Classifier;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.statistic.StatisticChainElement;
 import org.bibsonomy.database.params.StatisticsParam;
@@ -24,6 +25,6 @@ public class GetUserClassifiedByClassifierCount extends StatisticChainElement {
 	 */
 	@Override
 	protected boolean canHandle(StatisticsParam param) {
-		return Classifier.CLASSIFIER.equals(param.getClassifier());
+		return GroupingEntity.ALL.equals(param.getGrouping()) && Classifier.CLASSIFIER.equals(param.getClassifier());
 	}
 }

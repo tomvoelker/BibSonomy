@@ -171,11 +171,11 @@
 				</tr>
 				<tr>
 					<td>friendships</td>
-					<td>loading</td>
+					<td data-url="/statistics?type=users&amp;grouping=friend&amp;filter=history">loading</td>
 				</tr>
 				<tr>
 					<td>group memberships</td>
-					<td>loading</td>
+					<td data-url="/statistics?type=users&amp;grouping=group&amp;filter=history">loading</td>
 				</tr>
 				<tr>
 					<td>tag-tag relations</td>
@@ -187,23 +187,23 @@
 			<table class="table table-bordered table-condensed">
 				<tr>
 					<td>users</td>
-					<td data-url="/statistics?type=users&amp;all=true&amp;spammers=true">loading</td>
+					<td data-url="/statistics?type=users&amp;grouping=all&amp;all=true&amp;spammers=true">loading</td>
 				</tr>
 				<tr>
 					<td>spammers</td>
-					<td data-url="/statistics?type=users&amp;spammers=true&amp;all=false">loading</td>
+					<td data-url="/statistics?type=users&amp;grouping=all&amp;spammers=true&amp;all=false">loading</td>
 				</tr>
 				<tr>
 					<td>active users</td>
-					<td data-url="/statistics?type=users&amp;contraints=active">loading</td>
+					<td data-url="/statistics?type=users&amp;grouping=all&amp;contraints=active">loading</td>
 				</tr>
 				<tr>
 					<td>active users 24 hours</td>
-					<td data-url="/statistics?type=users&amp;contraints=active&amp;interval=24&amp;unit=hour">loading</td>
+					<td data-url="/statistics?type=users&amp;grouping=all&amp;contraints=active&amp;interval=24&amp;unit=hour">loading</td>
 				</tr>
 				<tr>
 					<td>active users last month</td>
-					<td data-url="/statistics?type=users&amp;contraints=active&amp;interval=1&amp;unit=month">loading</td>
+					<td data-url="/statistics?type=users&amp;grouping=all&amp;contraints=active&amp;interval=1&amp;unit=month">loading</td>
 				</tr>
 			</table>
 		</jsp:attribute>

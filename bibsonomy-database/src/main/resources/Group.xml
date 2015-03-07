@@ -238,6 +238,10 @@
 		 WHERE g.user_name = #userName# AND g.group_role != 2
 	</select>
 	
+	<select id="getGroupMemberHistoryCount" resultClass="int">
+		SELECT COUNT(*) FROM log_group_memberships
+	</select>
+	
 	<insert id="insertGroupLevelPermission" parameterClass="groupParam">
 		INSERT INTO group_level_permission (`group`, permission, granted_by)
 		VALUES (#groupId#, #groupLevelPermission#, #grantedByUser#)

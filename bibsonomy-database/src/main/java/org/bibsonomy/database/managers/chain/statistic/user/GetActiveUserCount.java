@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Set;
 
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.statistic.StatisticChainElement;
@@ -21,7 +22,7 @@ public class GetActiveUserCount extends StatisticChainElement {
 	@Override
 	protected boolean canHandle(StatisticsParam param) {
 		final Set<StatisticsConstraint> constraints = param.getConstraints();
-		return present(constraints) && constraints.contains(StatisticsConstraint.ACTIVE);
+		return GroupingEntity.ALL.equals(param.getGrouping()) && present(constraints) && constraints.contains(StatisticsConstraint.ACTIVE);
 	}
 	
 	/* (non-Javadoc)

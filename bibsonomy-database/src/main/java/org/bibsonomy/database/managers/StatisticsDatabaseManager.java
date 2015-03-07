@@ -35,6 +35,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.Classifier;
+import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
@@ -81,6 +83,9 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	private final BasketDatabaseManager clipboardDatabaseManager;
 	private final DocumentDatabaseManager documentDatabaseManager;
 	
+	private final UserDatabaseManager userDatabaseManager;
+	private final GroupDatabaseManager groupDatabaseManager;
+	
 	private final Map<Class<? extends Resource>, PostDatabaseManager<? extends Resource, ? extends ResourceParam<? extends Resource>>> postDatabaseManager;
 
 	private StatisticsDatabaseManager() {
@@ -91,6 +96,9 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 		this.conceptDatabaseManager = TagRelationDatabaseManager.getInstance();
 		this.clipboardDatabaseManager = BasketDatabaseManager.getInstance();
 		this.documentDatabaseManager = DocumentDatabaseManager.getInstance();
+		
+		this.groupDatabaseManager = GroupDatabaseManager.getInstance();
+		this.userDatabaseManager = UserDatabaseManager.getInstance();
 
 		// TODO: refactor @see DBLogic
 		this.postDatabaseManager = new HashMap<Class<? extends Resource>, PostDatabaseManager<? extends Resource, ? extends ResourceParam<? extends Resource>>>();
@@ -143,17 +151,21 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
+	 * @param grouping 
 	 * @param constraints
-	 * @param interval 
-	 * @param status 
+	 * @param filter 
 	 * @param classifier 
+	 * @param status 
+	 * @param interval 
 	 * @param unit 
 	 * @param session 
 	 * @return the statistics (currently only count) of all registered users matching
 	 * 			the criteria
 	 */
-	public Statistics getUserStatistics(final Set<StatisticsConstraint> constraints, Classifier classifier, SpamStatus status, Integer interval, StatisticsUnit unit, final DBSession session) {
+	public Statistics getUserStatistics(GroupingEntity grouping, final Set<StatisticsConstraint> constraints, FilterEntity filter, Classifier classifier, SpamStatus status, Integer interval, StatisticsUnit unit, final DBSession session) {
 		final StatisticsParam param = new StatisticsParam();
+		param.setGrouping(grouping);
+		param.setFilter(filter);
 		param.setClassifier(classifier);
 		param.setSpamStatus(status);
 		param.setInterval(interval);
@@ -455,6 +467,22 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 		param.setSpamStatus(spamStatus);
 		final Integer result = this.queryForObject("getUserCount", param, Integer.class, session);
 		return result == null ? 0 : result.intValue();
+	}
+	
+	/**
+	 * @param session
+	 * @return the number of friends in the log table
+	 */
+	public int getNumberOfFriendsInHistory(DBSession session) {
+		return this.userDatabaseManager.getFriendsInHistoryCount(session);
+	}
+	
+	/**
+	 * @param session
+	 * @return the number of logged group memberships
+	 */
+	public int getNumberOfGroupMembersInHistory(DBSession session) {
+		return this.groupDatabaseManager.getGroupMembersInHistoryCount(session);
 	}
 	
 	/**

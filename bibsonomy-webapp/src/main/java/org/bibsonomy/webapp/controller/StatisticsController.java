@@ -58,7 +58,7 @@ public class StatisticsController implements MinimalisticController<StatisticsCo
 		
 		switch (command.getType()) {
 		case USERS:
-			count = this.logic.getUserStatistics(contraints, null, spamStatus, interval, unit).getCount();
+			count = this.logic.getUserStatistics(grouping, contraints, filter, null, spamStatus, interval, unit).getCount();
 			break;
 		case TAGS:
 			count = this.logic.getTagStatistics(command.getResourceType(), grouping, null, null, null, command.getConceptStatus(), null, contraints, startDate, null, 0, 1000);
