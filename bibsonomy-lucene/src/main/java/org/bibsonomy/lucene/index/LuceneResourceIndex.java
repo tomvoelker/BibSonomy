@@ -710,8 +710,16 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * @throws IOException
 	 */
 	public IndexSearcher aquireIndexSearcher() throws IOException {
-		if (searcherManager != null) {
-			return this.searcherManager.acquire();
+		try {
+			// FIXME: closing and exchanging the searcherManager should be done in a better way
+			// when the updater finished, race-conditions can occur where we don't have a searcheManager for a short time (the reference to it is set to null because it is closed and should then no longer be used)
+			for (int i = 0; i < 10; ++i) {
+				if (searcherManager != null) {
+					return this.searcherManager.acquire();
+				}
+				Thread.sleep(i * 100);
+			}
+		} catch (InterruptedException e) {
 		}
 		throw new IllegalStateException("no searcherManager available");
 	}
