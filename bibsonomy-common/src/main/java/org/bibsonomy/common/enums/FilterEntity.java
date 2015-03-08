@@ -31,7 +31,7 @@ package org.bibsonomy.common.enums;
  * 
  * @author Stefan Stützer
  */
-public enum FilterEntity {
+public enum FilterEntity implements Filter {
 
 	/**
 	 * Use this when you ONLY want to retrieve resources with a PDF
@@ -43,6 +43,11 @@ public enum FilterEntity {
 	 * Only retrieve resources which are stored at least two times
 	 */
 	DUPLICATES,
+	
+	/**
+	 * only unique items
+	 */
+	UNIQUE,
 	
 	/**
 	 * Filter to retrieve posts of spammers

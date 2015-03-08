@@ -35,11 +35,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.Classifier;
-import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.StatisticsUnit;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
@@ -135,25 +134,28 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
+	 * @param filters 
 	 * @param session
 	 * @return the number of documents
 	 */
-	public int getNumberOfDocuments(DBSession session) {
-		return this.documentDatabaseManager.getGlobalDocumentCount(session);
+	public int getNumberOfDocuments(Set<Filter> filters, DBSession session) {
+		return this.documentDatabaseManager.getGlobalDocumentCount(filters, session);
 	}
 	
 	/**
+	 * @param filters 
 	 * @param session
 	 * @return the number of uploaded layout files
 	 */
-	public int getNumberOfLayoutDocuments(DBSession session) {
-		return this.documentDatabaseManager.getNumberOfLayoutDocuments(session);
+	public int getNumberOfLayoutDocuments(Set<Filter> filters, DBSession session) {
+		return this.documentDatabaseManager.getNumberOfLayoutDocuments(filters, session);
 	}
 	
 	/**
 	 * @param grouping 
+	 * @param startDate 
 	 * @param constraints
-	 * @param filter 
+	 * @param filters 
 	 * @param classifier 
 	 * @param status 
 	 * @param interval 
@@ -162,14 +164,14 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @return the statistics (currently only count) of all registered users matching
 	 * 			the criteria
 	 */
-	public Statistics getUserStatistics(GroupingEntity grouping, final Set<StatisticsConstraint> constraints, FilterEntity filter, Classifier classifier, SpamStatus status, Integer interval, StatisticsUnit unit, final DBSession session) {
+	public Statistics getUserStatistics(GroupingEntity grouping, Date startDate, Set<Filter> filters, Classifier classifier, SpamStatus status, Integer interval, StatisticsUnit unit, final DBSession session) {
 		final StatisticsParam param = new StatisticsParam();
 		param.setGrouping(grouping);
-		param.setFilter(filter);
+		param.setFilters(filters);
 		param.setClassifier(classifier);
 		param.setSpamStatus(status);
+		param.setStartDate(startDate);
 		param.setInterval(interval);
-		param.setConstraints(constraints);
 		param.setUnit(unit);
 		
 		final Statistics statistics = this.userChain.perform(param, session);
@@ -296,34 +298,34 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * @param resourceType
 	 * @param startDate 
-	 * @param usersToExclude
+	 * @param filters 
 	 * @param session 
 	 * @return number of posts
 	 */
-	public int getNumberOfPosts(Class<? extends Resource> resourceType, Date startDate, List<String> usersToExclude, DBSession session) {
-		return this.getDatabaseManagerForResourceType(resourceType).getPostsCount(startDate, usersToExclude, session);
+	public int getNumberOfPosts(Class<? extends Resource> resourceType, Date startDate, Set<Filter> filters, DBSession session) {
+		return this.getDatabaseManagerForResourceType(resourceType).getPostsCount(startDate, filters, session);
 	}
 	
 	/**
 	 * @param resourceType
 	 * @param startDate
-	 * @param usersToExclude
+	 * @param filters 
 	 * @param session
 	 * @return number of posts in log table
 	 */
-	public int getNumberOfPostsInHistory(Class<? extends Resource> resourceType, Date startDate, List<String> usersToExclude, DBSession session) {
-		return this.getDatabaseManagerForResourceType(resourceType).getHistoryPostsCount(startDate, usersToExclude, session);
+	public int getNumberOfPostsInHistory(Class<? extends Resource> resourceType, Date startDate, Set<Filter> filters, DBSession session) {
+		return this.getDatabaseManagerForResourceType(resourceType).getHistoryPostsCount(startDate, filters, session);
 	}
 	
 	/**
 	 * @param resourceType
 	 * @param startDate 
-	 * @param usersToExclude 
+	 * @param filters 
 	 * @param session
 	 * @return number of unique items
 	 */
-	public int getNumberOfUniqueResources(Class<? extends Resource> resourceType, Date startDate, List<String> usersToExclude, DBSession session) {
-		return this.getDatabaseManagerForResourceType(resourceType).getUniqueResourcesCount(startDate, usersToExclude, session);
+	public int getNumberOfUniqueResources(Class<? extends Resource> resourceType, Date startDate, Set<Filter> filters, DBSession session) {
+		return this.getDatabaseManagerForResourceType(resourceType).getUniqueResourcesCount(startDate, filters, session);
 	}
 	
 	/**
@@ -396,12 +398,12 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * @param contentType 
 	 * @param startDate 
-	 * @param usersToExclude 
+	 * @param filters 
 	 * @param session
 	 * @return the number of tag assignments
 	 */
-	public int getNumberOfTas(int contentType, Date startDate, List<String> usersToExclude, DBSession session) {
-		return this.tagDatabaseManager.getNumberOfTas(contentType, startDate, usersToExclude, session);
+	public int getNumberOfTas(int contentType, Date startDate, Set<Filter> filters, DBSession session) {
+		return this.tagDatabaseManager.getNumberOfTas(contentType, startDate, filters, session);
 	}
 
 	/**
@@ -486,16 +488,13 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * 
-	 * @param statisticsUnit 
-	 * @param interval 
+	 * @param startDate
 	 * @param session
 	 * @return the number of active users (posted at least one post)
 	 */
-	public int getNumberOfActiveUsers(Integer interval, StatisticsUnit statisticsUnit, final DBSession session) {
+	public int getNumberOfActiveUsers(final Date startDate, final DBSession session) {
 		final StatisticsParam param = new StatisticsParam();
-		param.setUnit(statisticsUnit);
-		param.setInterval(interval);
+		param.setStartDate(startDate);
 		final Integer result = this.queryForObject("getActiveUserCount", param, Integer.class, session);
 		return result == null ? 0 : result.intValue();
 	}

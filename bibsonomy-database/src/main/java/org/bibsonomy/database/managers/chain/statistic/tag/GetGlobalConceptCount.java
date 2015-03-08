@@ -18,7 +18,7 @@ public class GetGlobalConceptCount extends StatisticChainElement {
 
 	@Override
 	protected boolean canHandle(StatisticsParam param) {
-		return GroupingEntity.ALL.equals(param.getGrouping()) && ConceptStatus.ALL.equals(param.getConceptStatus()) && !present(param.getFilter());
+		return GroupingEntity.ALL.equals(param.getGrouping()) && ConceptStatus.ALL.equals(param.getConceptStatus()) && !present(param.getFilters());
 	}
 
 	@Override

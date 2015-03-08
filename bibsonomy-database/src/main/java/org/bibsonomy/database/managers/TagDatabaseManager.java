@@ -40,6 +40,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.errors.MissingTagsErrorMessage;
@@ -1131,16 +1132,16 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * @param contentType 
 	 * @param startDate 
-	 * @param usersToExclude 
+	 * @param filters 
 	 * @param session
 	 * @return the number of tas
 	 */
-	public int getNumberOfTas(final int contentType, final Date startDate, List<String> usersToExclude, DBSession session) {
-		final GenericParam genericParam = new TagParam();
-		genericParam.setContentType(ConstantID.getContentTypeByClass(ConstantID.getClassByContentType(contentType)));
-		genericParam.setStartDate(startDate);
-		genericParam.setUsersToExclude(usersToExclude);
-		final Integer count = this.queryForObject("getGlobalTasCount", genericParam, Integer.class, session);
+	public int getNumberOfTas(final int contentType, final Date startDate, Set<Filter> filters, DBSession session) {
+		final GenericParam param = new TagParam();
+		param.setContentType(ConstantID.getContentTypeByClass(ConstantID.getClassByContentType(contentType)));
+		param.setStartDate(startDate);
+		param.setFilters(filters);
+		final Integer count = this.queryForObject("getGlobalTasCount", param, Integer.class, session);
 		return saveConvertToint(count);
 	}
 

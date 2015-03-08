@@ -73,27 +73,20 @@
 		GROUP BY rating
 	</select>
 	
-	<select id="getUserCount" resultClass="int" parameterClass="StatisticsParam">
+	<select id="getUserCount" resultClass="int" parameterClass="StatisticsParam" timeout="0">
 		SELECT count(*) FROM user
 		<isNotNull property="spamStatus">
 			WHERE spammer = #spamStatus.id#
 		</isNotNull>
 	</select>
 	
-	<select id="getActiveUserCount" resultClass="int" parameterClass="StatisticsParam">
+	<select id="getActiveUserCount" resultClass="int" parameterClass="StatisticsParam" timeout="0">
 		SELECT COUNT(*) AS ctr FROM (SELECT COUNT(*) FROM tas 
-			<isNotNull property="interval">
-				WHERE `date` > NOW() - INTERVAL #interval#
-				<isEqual property="unit" compareValue="HOUR">
-					HOUR
-				</isEqual>
-				<isEqual property="unit" compareValue="DAY">
-					DAY
-				</isEqual>
-				<isEqual property="unit" compareValue="MONTH">
-					MONTH
-				</isEqual>
+		<dynamic prepend="WHERE">
+			<isNotNull property="startDate">
+				`date` >= #startDate#
 			</isNotNull>
+		</dynamic>
 		GROUP BY user_name) AS users
 	</select>
 </sqlMap>

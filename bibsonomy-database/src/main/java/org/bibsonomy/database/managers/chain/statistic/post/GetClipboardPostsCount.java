@@ -20,6 +20,6 @@ public class GetClipboardPostsCount extends StatisticChainElement {
 	
 	@Override
 	protected boolean canHandle(StatisticsParam param) {
-		return GroupingEntity.CLIPBOARD.equals(param.getGrouping()) && !present(param.getFilter()) && !present(param.getRequestedUserName());
+		return GroupingEntity.CLIPBOARD.equals(param.getGrouping()) && !present(param.getRequestedUserName());
 	}
 }

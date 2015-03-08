@@ -3,7 +3,7 @@
 	<sql id="statisticRestrictions">
 		<dynamic prepend="WHERE">
 			<include refid="statisticDateRestriction" />
-			<include refid="statisticUsersToExcludeRestriction" />
+			<include refid="userRestriction" />
 		</dynamic>
 	</sql>
 	
@@ -13,12 +13,20 @@
 		</isNotNull>
 	</sql>
 	
-	<sql id="statisticUsersToExcludeRestriction">
-		<isNotEmpty prepend="AND" property="usersToExclude">
-			user_name NOT IN (
-			<iterate property="usersToExclude" conjunction=",">
-				#usersToExclude[]#
-			</iterate>)
+	<sql id="userRestriction">
+		<isNotEmpty property="filters">
+			<iterate property="filtersAsList" conjunction="">
+				<isEqual property="filtersAsList[]" compareValue="NO_SPAMMER" prepend="AND">
+					`group` >= 0
+				</isEqual>
+				<isEqual property="filtersAsList[]" compareValue="SPAMMER" prepend="AND">
+					`group` &lt; 0
+				</isEqual>
+				<isEqual property="filtersAsList[]" compareValue="WITHOUT_DBLP" prepend="AND">
+					user_name != 'dblp'
+				</isEqual>
+			</iterate>
+			
 		</isNotEmpty>
 	</sql>
 	
@@ -28,7 +36,7 @@
 				content_type = #contentType#
 			</isGreaterThan>
 			<include refid="statisticDateRestriction" />
-			<include refid="statisticUsersToExcludeRestriction" />
+			<include refid="userRestriction" />
 		</dynamic>
 	</sql>
 </sqlMap>

@@ -36,12 +36,12 @@ import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.ConceptUpdateOperation;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.StatisticsUnit;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
@@ -120,14 +120,16 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	/**
 	 * @param grouping TODO
 	 * @param constraints 
-	 * @param filter TODO
+	 * @param filters TODO
 	 * @param classifier 
 	 * @param status 
+	 * @param startDate
+	 * @param endDate
 	 * @param interval 
 	 * @param unit 
 	 * @return statistic informations about the users
 	 */
-	public Statistics getUserStatistics(GroupingEntity grouping, final Set<StatisticsConstraint> constraints, FilterEntity filter, final Classifier classifier, final SpamStatus status, final Integer interval, final StatisticsUnit unit);
+	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, final Classifier classifier, final SpamStatus status, Date startDate, Date endDate, final Integer interval, final StatisticsUnit unit);
 	
 	/**
 	 * Returns details about a specified user
@@ -380,13 +382,13 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * Get statistics about document(s)
 	 * @param groupingEntity
 	 * @param grouping
-	 * @param filter
-	 * @param contraints
+	 * @param filters
+	 * @param constraints
 	 * @param startDate
 	 * @param endDate
 	 * @return the stats
 	 */
-	public Statistics getDocumentStatistics(final GroupingEntity groupingEntity, final String grouping, final FilterEntity filter, final Set<StatisticsConstraint> constraints, final Date startDate, final Date endDate);
+	public Statistics getDocumentStatistics(final GroupingEntity groupingEntity, final String grouping, final Set<Filter> filters, final Date startDate, final Date endDate);
 
 	/**
 	 * Deletes an existing document. If the resourceHash is given, the document
@@ -634,7 +636,7 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @param tags
 	 * @param regex
 	 * @param status
-	 * @param filter TODO
+	 * @param filters TODO
 	 * @param contraints the statistic contraint
 	 * @param startDate TODO
 	 * @param endDate TODO
@@ -642,7 +644,7 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @param end
 	 * @return the number of relations from a user
 	 */
-	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String regex, ConceptStatus status, FilterEntity filter, Set<StatisticsConstraint> contraints, Date startDate, Date endDate, int start, int end);
+	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String regex, ConceptStatus status, Set<Filter> filters, Date startDate, Date endDate, int start, int end);
 
 	/** 
 	 * We return all Users that are in (the) relation with the sourceUser

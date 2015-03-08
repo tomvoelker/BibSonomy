@@ -83,7 +83,7 @@ public abstract class DBManager {
 		if (slaveDataSource == null) {
 			Context initContext = new InitialContext();
 			Context envContext = (Context) initContext.lookup("java:/comp/env");
-			slaveDataSource = (DataSource) envContext.lookup("jdbc/bibsonomy_slave");			
+			slaveDataSource = (DataSource) envContext.lookup("jdbc/bibsonomy_slave");
 		}
 	}
 	
@@ -160,37 +160,10 @@ public abstract class DBManager {
 		public void close () {
 			// Always make sure result sets and statements are closed,
 			// and the connection is returned to the pool
-			if (rst  != null) {try {rst.close(); } catch (SQLException e) {} rst  = null;}						
+			if (rst  != null) {try {rst.close(); } catch (SQLException e) {} rst  = null;}
 			if (stmt != null) {try {stmt.close();} catch (SQLException e) {} stmt = null;}
 			if (conn != null) {try {conn.close();} catch (SQLException e) {} conn = null;}
 		}
 
 	}
-	
-	/**
-	 * This is a template of a method which subclasses of DBManager should
-	 * use to implement the database methods. 
-	 * Just copy it into the subclass, change the name and put your logic
-	 * between c.init() and the catch statement. 
-	 * 
-	 * @return <code>true</code> if the method succeeds
-	 */
-	/*
-	public static boolean do_db_stuff () {
-		DBContext c = new DBContext();
-		try {
-			if (c.init()) { // initialize database
-			
-			// do database stuff here
-				
-			}
-		} catch (SQLException e) {
-			System.out.println("DBSM: " + e);
-			return false;
-		} finally {
-			c.close(); // close database connection
-		}
-		return false;
-	}
-	*/
 }

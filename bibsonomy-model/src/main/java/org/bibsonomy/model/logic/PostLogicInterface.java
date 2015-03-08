@@ -30,12 +30,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.Post;
@@ -83,17 +82,17 @@ public interface PostLogicInterface {
 	 *            all posts belonging to a given resource. if unused, its empty
 	 *            but not null.
 	 * @param search - free text search
-	 * @param filter - filter for the retrieved posts
+	 * @param filters - filter for the retrieved posts
 	 * @param order - a flag indicating the way of sorting
 	 * @param startDate - if given, only posts that have been created after (inclusive) startDate are returned  
 	 * @param endDate - if given, only posts that have been created before (inclusive) endDate are returned 
 	 * @param start - inclusive start index of the view window
 	 * @param end - exclusive end index of the view window
 	 * @return A filtered list of posts. may be empty but not null
-	 * @deprecated use {@link #getPosts(Class, GroupingEntity, String, List, String, String, SearchType, FilterEntity, Order, Date, Date, int, int)}
+	 * @deprecated use {@link #getPosts(Class, GroupingEntity, String, List, String, String, SearchType, Set, Order, Date, Date, int, int)}
 	 */
 	@Deprecated
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, FilterEntity filter, Order order, Date startDate, Date endDate, int start, int end);
+	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end);
 
 	/**  
 	 * retrieves a filterable list of posts.
@@ -117,16 +116,16 @@ public interface PostLogicInterface {
 	 *            but not null.
 	 * @param search - free text search
 	 * @param searchType - whether to search locally or using an index shared by several systems
-	 * @param filter - filter for the retrieved posts
+	 * @param filters - filter for the retrieved posts
 	 * @param order - a flag indicating the way of sorting
 	 * @param startDate - if given, only posts that have been created after (inclusive) startDate are returned  
 	 * @param endDate - if given, only posts that have been created before (inclusive) endDate are returned 
 	 * @param start - inclusive start index of the view window
 	 * @param end - exclusive end index of the view window
 	 * @return A filtered list of posts. may be empty but not null
-	 * @since 3.0.1
+	 * @since 3.1
 	 */
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, FilterEntity filter, Order order, Date startDate, Date endDate, int start, int end);
+	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end);
 	
 	/**
 	 * Returns details to a post. A post is uniquely identified by a hash of the
@@ -199,7 +198,7 @@ public interface PostLogicInterface {
 	 *            all posts belonging to a given resource. if unused, its empty
 	 *            but not null.
 	 * @param search free text search
-	 * @param filter filter for the retrieved posts
+	 * @param filters the filters for the retrieved posts
 	 * @param constraints - a possible constraint on the statistics
 	 * @param order a flag indicating the way of sorting
 	 * @param startDate - if given, only posts that have been created after (inclusive) startDate are regarded  
@@ -208,5 +207,5 @@ public interface PostLogicInterface {
 	 * @param end exclusive end index of the view window
 	 * @return a filtered list of posts. may be empty but not null
 	 */
-	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, FilterEntity filter, Set<StatisticsConstraint> constraints, Order order, Date startDate, Date endDate, int start, int end);
+	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end);
 }

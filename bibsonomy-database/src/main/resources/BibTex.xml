@@ -982,17 +982,17 @@
 		ORDER BY b2.date DESC, b2.content_id DESC
 	</select>
 	
-	<select id="getBibTexCount" resultClass="int" parameterClass="bibtexParam">
+	<select id="getBibTexCount" resultClass="int" parameterClass="bibtexParam" timeout="0">
 		SELECT COUNT(*) FROM bibtex
 		<include refid="statisticRestrictions" />
 	</select>
 	
-	<select id="getLogBibTexCount" resultClass="int" parameterClass="bibtexParam">
+	<select id="getLogBibTexCount" resultClass="int" parameterClass="bibtexParam" timeout="0">
 		SELECT COUNT(*) FROM log_bibtex
 		<include refid="statisticRestrictions" />
 	</select>
 	
-	<select id="getUniqueBibTexCount" resultClass="int" parameterClass="bibtexParam">
+	<select id="getUniqueBibTexCount" resultClass="int" parameterClass="bibtexParam" timeout="0">
 		SELECT count(DISTINCT simhash1) AS ctr FROM bibtex
 		<include refid="statisticRestrictions" />
 	</select>

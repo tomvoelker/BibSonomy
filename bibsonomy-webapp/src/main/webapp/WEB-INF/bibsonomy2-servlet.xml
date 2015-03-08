@@ -26,6 +26,9 @@
 				
 				<!-- convert a string to a list of persons and vice versa -->
 				<bean class="org.bibsonomy.web.spring.converter.StringToPersonListConverter" />
+				
+				<bean class="org.bibsonomy.web.spring.converter.StringToFilterConverter" />
+				
 				<bean class="org.bibsonomy.web.spring.converter.PersonListToStringConverter" />
 				
 				<!-- add a custom date converter to support binding of date fields. -->
@@ -433,10 +436,9 @@
 								<value>all</value>
 								<value>type</value>
 								<value>interval</value>
-								<value>contraints</value>
 								<value>unit</value>
 								<value>grouping</value>
-								<value>filter</value>
+								<value>filters</value>
 								<value>conceptStatus</value>
 								<value>resourceType</value>
 							</list>

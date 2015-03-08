@@ -4,9 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.ConceptStatus;
-import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.StatisticsUnit;
 import org.bibsonomy.model.Resource;
 
@@ -31,11 +30,10 @@ public class StatisticsCommand extends BaseCommand {
 	private Class<? extends Resource> resourceType = Resource.class;
 	
 	private GroupingEntity grouping;
-	private FilterEntity filter;
+	private Set<Filter> filters = new HashSet<Filter>();
 	
 	private ConceptStatus conceptStatus;
 	
-	private Set<StatisticsConstraint> contraints = new HashSet<StatisticsConstraint>();
 	private Integer interval;
 	private StatisticsUnit unit;
 	private StatisticType type = StatisticType.POSTS;
@@ -127,20 +125,6 @@ public class StatisticsCommand extends BaseCommand {
 	}
 
 	/**
-	 * @return the contraint
-	 */
-	public Set<StatisticsConstraint> getContraints() {
-		return this.contraints;
-	}
-
-	/**
-	 * @param contraints the contraints to set
-	 */
-	public void setContraints(Set<StatisticsConstraint> contraints) {
-		this.contraints = contraints;
-	}
-
-	/**
 	 * @return the grouping
 	 */
 	public GroupingEntity getGrouping() {
@@ -167,19 +151,19 @@ public class StatisticsCommand extends BaseCommand {
 	public void setResourceType(Class<? extends Resource> resourceType) {
 		this.resourceType = resourceType;
 	}
-
+	
 	/**
-	 * @return the filter
+	 * @return the filters
 	 */
-	public FilterEntity getFilter() {
-		return this.filter;
+	public Set<Filter> getFilters() {
+		return this.filters;
 	}
 
 	/**
-	 * @param filter the filter to set
+	 * @param filters the filters to set
 	 */
-	public void setFilter(FilterEntity filter) {
-		this.filter = filter;
+	public void setFilters(Set<Filter> filters) {
+		this.filters = filters;
 	}
 
 	/**

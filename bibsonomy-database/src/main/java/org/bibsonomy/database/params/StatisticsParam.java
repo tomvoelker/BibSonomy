@@ -26,18 +26,14 @@
  */
 package org.bibsonomy.database.params;
 
-import java.util.Set;
-
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.StatisticsUnit;
 
 /**
  * @author Christian Kramer
  */
 public class StatisticsParam extends GenericParam {
-	private Set<StatisticsConstraint> constraints;
 	private StatisticsUnit unit;
 	
 	private Classifier classifier;
@@ -45,20 +41,6 @@ public class StatisticsParam extends GenericParam {
 	private Integer interval;
 	
 	private SpamStatus spamStatus;
-
-	/**
-	 * @return the constraints
-	 */
-	public Set<StatisticsConstraint> getConstraints() {
-		return this.constraints;
-	}
-
-	/**
-	 * @param constraints the constraints to set
-	 */
-	public void setConstraints(Set<StatisticsConstraint> constraints) {
-		this.constraints = constraints;
-	}
 
 	/**
 	 * @return the unit

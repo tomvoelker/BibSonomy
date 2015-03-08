@@ -1,15 +1,12 @@
 package org.bibsonomy.database.managers.chain.statistic.user;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.util.Set;
-
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.StatisticsConstraint;
+import org.bibsonomy.common.enums.UserFilter;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.statistic.StatisticChainElement;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.model.statistics.Statistics;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author dzo
@@ -21,8 +18,7 @@ public class GetActiveUserCount extends StatisticChainElement {
 	 */
 	@Override
 	protected boolean canHandle(StatisticsParam param) {
-		final Set<StatisticsConstraint> constraints = param.getConstraints();
-		return GroupingEntity.ALL.equals(param.getGrouping()) && present(constraints) && constraints.contains(StatisticsConstraint.ACTIVE);
+		return GroupingEntity.ALL.equals(param.getGrouping()) && ValidationUtils.safeContains(param.getFilters(), UserFilter.ACTIVE_USERS);
 	}
 	
 	/* (non-Javadoc)
@@ -30,6 +26,6 @@ public class GetActiveUserCount extends StatisticChainElement {
 	 */
 	@Override
 	protected Statistics handle(StatisticsParam param, DBSession session) {
-		return new Statistics(db.getNumberOfActiveUsers(param.getInterval(), param.getUnit(), session));
+		return new Statistics(db.getNumberOfActiveUsers(param.getStartDate(), session));
 	}
 }

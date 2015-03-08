@@ -125,12 +125,12 @@ public class SpamPageController implements MinimalisticController<AdminViewComma
 		final AdminStatisticsCommand command = cmd.getStatisticsCommand();
 
 		for (final int interval : cmd.getInterval()) {
-			command.setNumAdminSpammer(Long.valueOf(interval), this.logic.getUserStatistics(null, null, null, Classifier.ADMIN, SpamStatus.SPAMMER, interval, StatisticsUnit.HOUR).getCount());
-			command.setNumAdminNoSpammer(Long.valueOf(interval), this.logic.getUserStatistics(null, null, null, Classifier.ADMIN, SpamStatus.NO_SPAMMER, interval, StatisticsUnit.HOUR).getCount());
-			command.setNumClassifierSpammer(Long.valueOf(interval), this.logic.getUserStatistics(null, null, null, Classifier.CLASSIFIER, SpamStatus.SPAMMER, interval, StatisticsUnit.HOUR).getCount());
-			command.setNumClassifierSpammerUnsure(Long.valueOf(interval), this.logic.getUserStatistics(null, null, null, Classifier.CLASSIFIER, SpamStatus.SPAMMER_NOT_SURE, interval, StatisticsUnit.HOUR).getCount());
-			command.setNumClassifierNoSpammerUnsure(Long.valueOf(interval), this.logic.getUserStatistics(null, null, null, Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER_NOT_SURE, interval, StatisticsUnit.HOUR).getCount());
-			command.setNumClassifierNoSpammer(Long.valueOf(interval), this.logic.getUserStatistics(null, null, null, Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER, interval, StatisticsUnit.HOUR).getCount());
+			command.setNumAdminSpammer(Long.valueOf(interval), this.logic.getUserStatistics(null, null, Classifier.ADMIN, SpamStatus.SPAMMER, null, null, interval, StatisticsUnit.HOUR).getCount());
+			command.setNumAdminNoSpammer(Long.valueOf(interval), this.logic.getUserStatistics(null, null, Classifier.ADMIN, SpamStatus.NO_SPAMMER, null, null, interval, StatisticsUnit.HOUR).getCount());
+			command.setNumClassifierSpammer(Long.valueOf(interval), this.logic.getUserStatistics(null, null, Classifier.CLASSIFIER, SpamStatus.SPAMMER, null, null, interval, StatisticsUnit.HOUR).getCount());
+			command.setNumClassifierSpammerUnsure(Long.valueOf(interval), this.logic.getUserStatistics(null, null, Classifier.CLASSIFIER, SpamStatus.SPAMMER_NOT_SURE, null, null, interval, StatisticsUnit.HOUR).getCount());
+			command.setNumClassifierNoSpammerUnsure(Long.valueOf(interval), this.logic.getUserStatistics(null, null, Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER_NOT_SURE, null, null, interval, StatisticsUnit.HOUR).getCount());
+			command.setNumClassifierNoSpammer(Long.valueOf(interval), this.logic.getUserStatistics(null, null, Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER, null, null, interval, StatisticsUnit.HOUR).getCount());
 		}
 	}
 

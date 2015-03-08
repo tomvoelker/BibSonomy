@@ -6,6 +6,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.statistic.StatisticChainElement;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.model.statistics.Statistics;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author dzo
@@ -17,7 +18,7 @@ public class GetGroupMembershipHistoryCount extends StatisticChainElement {
 	 */
 	@Override
 	protected boolean canHandle(StatisticsParam param) {
-		return GroupingEntity.GROUP.equals(param.getGrouping()) && FilterEntity.HISTORY.equals(param.getFilter());
+		return GroupingEntity.GROUP.equals(param.getGrouping()) && ValidationUtils.safeContains(param.getFilters(), FilterEntity.HISTORY);
 	}
 	
 	/* (non-Javadoc)

@@ -15,16 +15,10 @@
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
-	<layout:layout pageTitle="${command.pageTitle}" loginUser="${command.context.loginUser}" requPath="">
+	<layout:oneColumnLayout  pageTitle="${command.pageTitle}" loginUser="${command.context.loginUser}" requPath="">
 	
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.admin">
-				<jsp:attribute name="pathPart">
-					<li>
-						:: <a rel="path_menu" href="${relativeUrlGenerator.getAdminUrlByName('statistics')}">Statistics</a>
-					</li>
-				</jsp:attribute>
-			</parts:search>
+			
 		</jsp:attribute>
 		
 		<jsp:attribute name="headerExt">
@@ -41,29 +35,40 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">
+			<c:set var="all" value="${pageContext.request.getParameter('all')}" />
+			<c:if test="${empty all}">
+				<c:set var="all" value="yes" />
+			</c:if>
+			<c:set var="spammers" value="${pageContext.request.getParameter('spammers')}" />
+			<c:if test="${empty spammers}">
+				<c:set var="spammers" value="yes" />
+			</c:if>
+			<c:set var="filters" value="${pageContext.request.getParameter('filters')}" />
 			<h1 class="content-header">Statistics</h1>
-			<a href="/admin/statistics?spammers=no">TODO</a>
-			<a href="/admin/statistics?all=yes">with spammers</a>
-			<a href="/admin/statistics?spammers=yes&amp;all=no">only for spammers</a>
-			<br />
 			<div class="row">
-				<div class="col-md-4">
+				<div class="col-md-2">
 					<strong>show statistics:</strong>
 				</div>
-				<div class="col-md-8">
-					<div class="btn-group" data-toggle="buttons">
-						<label class="btn btn-default active">
-							<input type="radio" name="options" id="option1" autocomplete="off" checked="checked" /> without spammers
-						</label>
-						<label class="btn btn-default">
-							<input type="radio" name="options" id="option2" autocomplete="off" /> with spammers
-						</label>
-						<label class="btn btn-default">
-							<input type="radio" name="options" id="option3" autocomplete="off" /> only for spammers
-						</label>
+				<div class="col-md-10">
+					<div class="btn-group">
+						<a class="btn btn-default ${empty filters ? 'active' : '' }" href="/admin/statistics">with spammers</a>
+						<a class="btn btn-default ${filters == 'NO_SPAMMER' ? 'active' : ''}" href="/admin/statistics?filters=NO_SPAMMER">without spammers</a>
+						<a class="btn btn-default ${filters == 'SPAMMER' ? 'active' : '' }" href="/admin/statistics?filters=SPAMMER">only for spammers</a>
 					</div>
 				</div>
 			</div>
+			
+			<c:choose>
+				<c:when test="${not empty filters}">
+					<c:set var="filtersString" value="&amp;filters=${filters}" />
+				</c:when>
+				<c:otherwise>
+					<c:set var="filtersString" value="" />
+				</c:otherwise>
+			</c:choose>
+			
+			<c:set var="loadingMessage" value="loading ..." />
+			<c:set var="showDBLP" value="${filters != 'SPAMMER'}" />
 			
 			<h2>resource, post and TAS counts</h2>
 			
@@ -71,56 +76,66 @@
 				<tr>
 					<th><!-- keep me --></th>
 					<th colspan="3">overall</th>
-					<th colspan="3">overall (without DBLP)</th>
-					<th colspan="3">24 hours (without DBLP)</th>
+					<c:if test="${showDBLP}">
+						<th colspan="3">overall (without DBLP)</th>
+						<th colspan="3">24 hours (without DBLP)</th>
+					</c:if>
 				</tr>
 				<tr>
 					<th><!-- keep me --></th>
 					<th>all</th>
 					<th>bookmarks</th>
 					<th>publications</th>
-					<th>all</th>
-					<th>bookmarks</th>
-					<th>publications</th>
-					<th>all</th>
-					<th>bookmarks</th>
-					<th>publications</th>
+					<c:if test="${showDBLP}">
+						<th>all</th>
+						<th>bookmarks</th>
+						<th>publications</th>
+						<th>all</th>
+						<th>bookmarks</th>
+						<th>publications</th>
+					</c:if>
 				</tr>
 				<tr>
 					<td>resources</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraints=unique">loading</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraints=unique&amp;resourceType=bookmark">loading</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraints=unique&amp;resourceType=publication">loading</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraints=unique&amp;contraints=without_dblp">loading</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraints=unique&amp;resourceType=bookmark&amp;contraints=without_dblp">loading</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraints=unique&amp;resourceType=publication&amp;contraints=without_dblp">loading</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraints=unique&amp;contraints=without_dblp&amp;interval=24&amp;unit=hour">loading</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraints=unique&amp;resourceType=bookmark&amp;contraints=without_dblp&amp;interval=24&amp;unit=hour">loading</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraints=unique&amp;resourceType=publication&amp;contraints=without_dblp&amp;interval=24&amp;unit=hour">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;filters=unique${filtersString}"><c:out value="${loadingMessage}" /></td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;filters=unique&amp;resourceType=bookmark${filtersString}"><c:out value="${loadingMessage}" /></td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;filters=unique&amp;resourceType=publication${filtersString}"><c:out value="${loadingMessage}" /></td>
+					<c:if test="${showDBLP}">
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;filters=unique&amp;filters=WITHOUT_DBLP">loading</td>
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;filters=unique&amp;resourceType=bookmark&amp;filters=WITHOUT_DBLP${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;filters=unique&amp;resourceType=publication&amp;filters=WITHOUT_DBLP${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;filters=unique&amp;filters=WITHOUT_DBLP&amp;interval=24&amp;unit=hour${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;filters=unique&amp;resourceType=bookmark&amp;filters=WITHOUT_DBLP&amp;interval=24&amp;unit=hour${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;filters=unique&amp;resourceType=publication&amp;filters=WITHOUT_DBLP&amp;interval=24&amp;unit=hour${filtersString}"><c:out value="${loadingMessage}" /></td>
+					</c:if>
 				</tr>
 				<tr>
 					<td>posts</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all">loading</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark">loading</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication">loading</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraints=without_dblp">loading</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark&amp;contraints=without_dblp">loading</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication&amp;contraints=without_dblp">loading</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;contraints=without_dblp&amp;interval=24&amp;unit=hour">loading</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark&amp;contraints=without_dblp&amp;interval=24&amp;unit=hour">loading</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication&amp;contraints=without_dblp&amp;interval=24&amp;unit=hour">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all${filtersString}"><c:out value="${loadingMessage}" /></td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark${filtersString}"><c:out value="${loadingMessage}" /></td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication${filtersString}"><c:out value="${loadingMessage}" /></td>
+					<c:if test="${showDBLP}">
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;filters=WITHOUT_DBLP${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark&amp;filters=WITHOUT_DBLP${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication&amp;filters=WITHOUT_DBLP${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;filters=WITHOUT_DBLP&amp;interval=24&amp;unit=hour${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark&amp;filters=WITHOUT_DBLP&amp;interval=24&amp;unit=hour${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication&amp;filters=WITHOUT_DBLP&amp;interval=24&amp;unit=hour${filtersString}"><c:out value="${loadingMessage}" /></td>
+					</c:if>
 				</tr>
 				<tr>
 					<td>tas</td>
-					<td data-url="/statistics?type=tags&amp;grouping=all">loading</td>
-					<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=bookmark">loading</td>
-					<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=publication">loading</td>
-					<td data-url="/statistics?type=tags&amp;grouping=all&amp;contraints=without_dblp">loading</td>
-					<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=bookmark&amp;contraints=without_dblp">loading</td>
-					<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=publication&amp;contraints=without_dblp">loading</td>
-					<td data-url="/statistics?type=tags&amp;grouping=all&amp;contraints=without_dblp&amp;interval=24&amp;unit=hour">loading</td>
-					<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=bookmark&amp;contraints=without_dblp&amp;interval=24&amp;unit=hour">loading</td>
-					<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=publication&amp;contraints=without_dblp&amp;interval=24&amp;unit=hour">loading</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all${filtersString}">loading</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=bookmark${filtersString}">loading</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=publication${filtersString}">loading</td>
+					<c:if test="${showDBLP}">
+						<td data-url="/statistics?type=tags&amp;grouping=all&amp;filters=WITHOUT_DBLP${filtersString}">loading</td>
+						<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=bookmark&amp;filters=WITHOUT_DBLP${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=publication&amp;filters=WITHOUT_DBLP${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=tags&amp;grouping=all&amp;filters=WITHOUT_DBLP&amp;interval=24&amp;unit=hour${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=bookmark&amp;filters=WITHOUT_DBLP&amp;interval=24&amp;unit=hour${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=publication&amp;filters=WITHOUT_DBLP&amp;interval=24&amp;unit=hour${filtersString}"><c:out value="${loadingMessage}" /></td>
+					</c:if>
 				</tr>
 			</table>
 			
@@ -128,23 +143,23 @@
 			<table class="table table-bordered table-condensed">
 				<tr>
 					<td>tags</td>
-					<td data-url="/statistics?type=tags&amp;grouping=all&amp;contraints=unique">loading</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;filters=unique"><c:out value="${loadingMessage}" /></td>
 				</tr>
 				<tr>
 					<td>tag-tag relations</td>
-					<td data-url="/statistics?type=tags&amp;grouping=all&amp;conceptStatus=all">loading</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;conceptStatus=all"><c:out value="${loadingMessage}" /></td>
 				</tr>
 				<tr>
 					<td>posts in clipboard</td>
-					<td data-url="/statistics?type=posts&amp;grouping=clipboard">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=clipboard"><c:out value="${loadingMessage}" /></td>
 				</tr>
 				<tr>
 					<td>user layouts</td>
-					<td data-url="/statistics?type=documents&amp;grouping=all&amp;filter=LAYOUT_DOCUMENTS">loading</td>
+					<td data-url="/statistics?type=documents&amp;grouping=all&amp;filters=LAYOUT_DOCUMENTS"><c:out value="${loadingMessage}" /></td>
 				</tr>
 				<tr>
 					<td>uploaded documents</td>
-					<td data-url="/statistics?type=documents&amp;grouping=all">loading</td>
+					<td data-url="/statistics?type=documents&amp;grouping=all"><c:out value="${loadingMessage}" /></td>
 				</tr>
 			</table>
 			
@@ -153,33 +168,39 @@
 				<tr>
 					<th><!-- keep me --></th>
 					<th>overall</th>
-					<th>overall (without DBLP)</th>
+					<c:if test="${showDBLP}">
+						<th>overall (without DBLP)</th>
+					</c:if>
 				</tr>
 				<tr>
 					<td>bookmarks</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark&amp;filter=history">loading</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark&amp;filter=history&amp;contraints=without_dblp">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark&amp;filters=history${filtersString}"><c:out value="${loadingMessage}" /></td>
+					<c:if test="${showDBLP}">
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark&amp;filters=history&amp;filters=WITHOUT_DBLP${filtersString}"><c:out value="${loadingMessage}" /></td>
+					</c:if>
 				</tr>
 				<tr>
 					<td>publications</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication&amp;filter=history">loading</td>
-					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication&amp;filter=history&amp;contraints=without_dblp">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication&amp;filters=history${filtersString}"><c:out value="${loadingMessage}" /></td>
+					<c:if test="${showDBLP}">
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication&amp;filters=history&amp;filters=WITHOUT_DBLP${filtersString}"><c:out value="${loadingMessage}" /></td>
+					</c:if>
 				</tr>
 				<tr>
 					<td>posts in clipboard</td>
-					<td data-url="/statistics?type=posts&amp;grouping=clipboard&amp;filter=history">loading</td>
+					<td data-url="/statistics?type=posts&amp;grouping=clipboard&amp;filters=history"><c:out value="${loadingMessage}" /></td>
 				</tr>
 				<tr>
 					<td>friendships</td>
-					<td data-url="/statistics?type=users&amp;grouping=friend&amp;filter=history">loading</td>
+					<td data-url="/statistics?type=users&amp;grouping=friend&amp;filters=history"><c:out value="${loadingMessage}" /></td>
 				</tr>
 				<tr>
 					<td>group memberships</td>
-					<td data-url="/statistics?type=users&amp;grouping=group&amp;filter=history">loading</td>
+					<td data-url="/statistics?type=users&amp;grouping=group&amp;filters=history"><c:out value="${loadingMessage}" /></td>
 				</tr>
 				<tr>
 					<td>tag-tag relations</td>
-					<td data-url="/statistics?type=tags&amp;grouping=all&amp;conceptStatus=all&amp;filter=history">loading</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;conceptStatus=all&amp;filters=history"><c:out value="${loadingMessage}" /></td>
 				</tr>
 			</table>
 			
@@ -187,25 +208,25 @@
 			<table class="table table-bordered table-condensed">
 				<tr>
 					<td>users</td>
-					<td data-url="/statistics?type=users&amp;grouping=all&amp;all=true&amp;spammers=true">loading</td>
+					<td data-url="/statistics?type=users&amp;grouping=all&amp;all=true&amp;spammers=true"><c:out value="${loadingMessage}" /></td>
 				</tr>
 				<tr>
 					<td>spammers</td>
-					<td data-url="/statistics?type=users&amp;grouping=all&amp;spammers=true&amp;all=false">loading</td>
+					<td data-url="/statistics?type=users&amp;grouping=all&amp;spammers=true&amp;all=false"><c:out value="${loadingMessage}" /></td>
 				</tr>
 				<tr>
 					<td>active users</td>
-					<td data-url="/statistics?type=users&amp;grouping=all&amp;contraints=active">loading</td>
+					<td data-url="/statistics?type=users&amp;grouping=all&amp;filters=ACTIVE_USERS${filtersString}"><c:out value="${loadingMessage}" /></td>
 				</tr>
 				<tr>
 					<td>active users 24 hours</td>
-					<td data-url="/statistics?type=users&amp;grouping=all&amp;contraints=active&amp;interval=24&amp;unit=hour">loading</td>
+					<td data-url="/statistics?type=users&amp;grouping=all&amp;filters=ACTIVE_USERS&amp;interval=24&amp;unit=hour${filtersString}">loading</td>
 				</tr>
 				<tr>
 					<td>active users last month</td>
-					<td data-url="/statistics?type=users&amp;grouping=all&amp;contraints=active&amp;interval=1&amp;unit=month">loading</td>
+					<td data-url="/statistics?type=users&amp;grouping=all&amp;filters=ACTIVE_USERS&amp;interval=1&amp;unit=month${filtersString}">loading</td>
 				</tr>
 			</table>
 		</jsp:attribute>
-	</layout:layout>
+	</layout:oneColumnLayout>
 </jsp:root>

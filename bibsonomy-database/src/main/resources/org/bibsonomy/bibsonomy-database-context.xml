@@ -155,14 +155,14 @@
 				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesByTagNamesAndUserCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesByTagNamesCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesDuplicateCount" />
-				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetAllPostsCount" />
-				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetUniqueResourcesCount" />
-				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetAllPostsInHistoryCount" />
-				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetClipboardPostsCount" />
-				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetClipboardPostsHistoryCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesPopularDaysCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForHashCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForUserInboxCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetClipboardPostsCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetClipboardPostsHistoryCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetAllPostsInHistoryCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetUniqueResourcesCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetAllPostsCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.DefaultCatchAllCount" />
 			</list>
 		</property>
@@ -181,6 +181,7 @@
 		</property>
 	</bean>
 	
+	<!-- user statistic chain -->
 	<bean id="userStatisticsChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
 			<list>
@@ -194,11 +195,12 @@
 		</property>
 	</bean>
 	
+	<!-- document statistic chain -->
 	<bean id="documentStatisticsChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
 			<list>
-				<bean class="org.bibsonomy.database.managers.chain.statistic.document.GetGlobalDocumentCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.document.GetGlobalLayoutDocumentCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.document.GetGlobalDocumentCount" />
 			</list>
 		</property>
 	</bean>

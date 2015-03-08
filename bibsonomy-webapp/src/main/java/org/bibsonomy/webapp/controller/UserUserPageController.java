@@ -106,7 +106,7 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 			}
 			
 			// set total nr. 
-			this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, null, command.getStartDate(), command.getEndDate(), origEntriesPerPage);
+			this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), origEntriesPerPage);
 		}
 
 		// html format - retrieve tags and return HTML view

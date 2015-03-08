@@ -39,6 +39,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.statistics.Statistics;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Counts of resources within a group
@@ -69,6 +70,6 @@ public class GetResourcesForGroupCount extends StatisticChainElement {
 	protected boolean canHandle(StatisticsParam param) {
 		return 	param.getGrouping() == GroupingEntity.GROUP && 
 				present(param.getRequestedGroupName()) &&
-				!FilterEntity.POSTS_WITH_DISCUSSIONS.equals(param.getFilter());
+				!ValidationUtils.safeContains(param.getFilters(), FilterEntity.POSTS_WITH_DISCUSSIONS);
 	}
 }

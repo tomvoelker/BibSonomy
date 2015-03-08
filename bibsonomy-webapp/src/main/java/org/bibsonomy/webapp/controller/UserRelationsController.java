@@ -69,7 +69,7 @@ public class UserRelationsController extends SingleResourceListControllerWithTag
 		final String groupingName = command.getRequestedUser();
 
 		//query for the number of relations of a user
-		final int numberOfRelations = this.logic.getTagStatistics(null, groupingEntity, groupingName, null, null, ConceptStatus.ALL, null, null, null, null, 0, Integer.MAX_VALUE);
+		final int numberOfRelations = this.logic.getTagStatistics(null, groupingEntity, groupingName, null, null, ConceptStatus.ALL, null, null, null, 0, Integer.MAX_VALUE);
 
 		// retrieving concepts
 		final List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, groupingName, null, null, ConceptStatus.ALL, 0, Integer.MAX_VALUE);

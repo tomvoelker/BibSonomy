@@ -6,6 +6,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.statistic.StatisticChainElement;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.model.statistics.Statistics;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * get the count of all deleted friendships
@@ -19,7 +20,7 @@ public class GetFriendHistoryCount extends StatisticChainElement {
 	 */
 	@Override
 	protected boolean canHandle(StatisticsParam param) {
-		return GroupingEntity.FRIEND.equals(param.getGrouping()) && FilterEntity.HISTORY.equals(param.getFilter());
+		return GroupingEntity.FRIEND.equals(param.getGrouping()) && ValidationUtils.safeContains(param.getFilters(), FilterEntity.HISTORY);
 	}
 	
 	/* (non-Javadoc)

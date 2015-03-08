@@ -5,12 +5,12 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.Date;
 import java.util.Set;
 
-import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.StatisticsUnit;
+import org.bibsonomy.common.enums.UserFilter;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.StatisticsCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -47,27 +47,27 @@ public class StatisticsController implements MinimalisticController<StatisticsCo
 		final int count;
 		SpamStatus spamStatus = null;
 		final GroupingEntity grouping = command.getGrouping();
+		final Set<Filter> filters = command.getFilters();
 		if (command.isSpammers() && !command.isAll()) {
 			spamStatus = SpamStatus.SPAMMER;
+			filters.add(UserFilter.SPAMMER);
 		}
-		final Set<StatisticsConstraint> contraints = command.getContraints();
 		final Integer interval = command.getInterval();
 		final StatisticsUnit unit = command.getUnit();
 		final Date startDate = convertToStartDate(interval, unit);
-		final FilterEntity filter = command.getFilter();
 		
 		switch (command.getType()) {
 		case USERS:
-			count = this.logic.getUserStatistics(grouping, contraints, filter, null, spamStatus, interval, unit).getCount();
+			count = this.logic.getUserStatistics(grouping, filters, null, spamStatus, startDate, null, null, null).getCount();
 			break;
 		case TAGS:
-			count = this.logic.getTagStatistics(command.getResourceType(), grouping, null, null, null, command.getConceptStatus(), null, contraints, startDate, null, 0, 1000);
+			count = this.logic.getTagStatistics(command.getResourceType(), grouping, null, null, null, command.getConceptStatus(), filters, startDate, null, 0, 1000);
 			break;
 		case POSTS:
-			count = this.logic.getPostStatistics(command.getResourceType(), grouping, null, null, null, null, filter, contraints, null, startDate, null, 0, 1000).getCount();
+			count = this.logic.getPostStatistics(command.getResourceType(), grouping, null, null, null, null, filters, null, startDate, null, 0, 1000).getCount();
 			break;
 		case DOCUMENTS:
-			count = this.logic.getDocumentStatistics(grouping, null, filter, contraints, startDate, null).getCount();
+			count = this.logic.getDocumentStatistics(grouping, null, filters, startDate, null).getCount();
 			break;
 		default:
 			throw new UnsupportedOperationException(command.getType() + " is not supported");
