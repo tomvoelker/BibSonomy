@@ -54,7 +54,7 @@ import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.common.enums.StatisticsConstraint;
+import org.bibsonomy.common.enums.StatisticsUnit;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
@@ -880,12 +880,6 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public int getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int limit) {
 		// TODO Auto-generated method stub
 		return null;
@@ -904,8 +898,7 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Set<StatisticsConstraint> constraints, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
-		// TODO Auto-generated method stub
+	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end) {
 		return new Statistics(0);
 	}
 
@@ -1131,6 +1124,24 @@ public class TestDBLogic implements LogicInterface {
 
 	@Override
 	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getDocumentStatistics(org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.Set, java.util.Date, java.util.Date)
+	 */
+	@Override
+	public Statistics getDocumentStatistics(GroupingEntity groupingEntity, String grouping, Set<Filter> filters, Date startDate, Date endDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getUserStatistics(org.bibsonomy.common.enums.GroupingEntity, java.util.Set, org.bibsonomy.common.enums.Classifier, org.bibsonomy.common.enums.SpamStatus, java.util.Date, java.util.Date, java.lang.Integer, org.bibsonomy.common.enums.StatisticsUnit)
+	 */
+	@Override
+	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, Classifier classifier, SpamStatus status, Date startDate, Date endDate, Integer interval, StatisticsUnit unit) {
 		// TODO Auto-generated method stub
 		return null;
 	}

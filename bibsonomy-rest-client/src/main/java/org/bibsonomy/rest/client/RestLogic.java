@@ -52,7 +52,7 @@ import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.common.enums.StatisticsConstraint;
+import org.bibsonomy.common.enums.StatisticsUnit;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
@@ -129,7 +129,7 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.util.ExceptionUtils;
 
 /**
- * 
+ * {@link LogicInterface} for a remote BibSonomy/PUMA instance
  */
 public class RestLogic implements LogicInterface {
 	private static final Log log = LogFactory.getLog(RestLogic.class); // FIXME: who configs the logging?
@@ -486,11 +486,6 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public int getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int limit) {
 		throw new UnsupportedOperationException();
 	}
@@ -506,7 +501,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Set<StatisticsConstraint> constraints, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -752,6 +747,22 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey) {
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getUserStatistics(org.bibsonomy.common.enums.GroupingEntity, java.util.Set, org.bibsonomy.common.enums.Classifier, org.bibsonomy.common.enums.SpamStatus, java.util.Date, java.util.Date, java.lang.Integer, org.bibsonomy.common.enums.StatisticsUnit)
+	 */
+	@Override
+	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, Classifier classifier, SpamStatus status, Date startDate, Date endDate, Integer interval, StatisticsUnit unit) {
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getDocumentStatistics(org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.Set, java.util.Date, java.util.Date)
+	 */
+	@Override
+	public Statistics getDocumentStatistics(GroupingEntity groupingEntity, String grouping, Set<Filter> filters, Date startDate, Date endDate) {
 		throw new UnsupportedOperationException();
 	}
 
