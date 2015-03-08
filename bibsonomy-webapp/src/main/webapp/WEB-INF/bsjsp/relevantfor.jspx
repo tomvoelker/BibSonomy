@@ -56,11 +56,8 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-			<sidebar:sidebarItem textKey="relatedtags">
-				<jsp:attribute name="content">
-					<tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}" order="" relevantfor="${true}" tagsRequested="${not empty command.requestedTags}"/>
-				</jsp:attribute>
-			</sidebar:sidebarItem>
+			<sidebar:relatedTagsItem requPath="${requPath}" cmd="${command.relatedTagCommand}" relevantfor="${true}" tagsRequested="${not empty command.requestedTags}"/>
 		</jsp:attribute>
+
 	</layout:resourceLayout>
 </jsp:root>

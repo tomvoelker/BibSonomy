@@ -61,16 +61,13 @@
 		<jsp:attribute name="sidebar">
 			<parts:tagsAndConceptsForSidebar/>
 
-			<fmt:message key="help.link.tag.similarRelated" var="helpLink"/>
 			
 			<!-- related tags -->
 			<c:if test="${not empty command.relatedTagCommand.relatedTags}">
-				<sidebar:sidebarItem textKey="relatedtags" helpLink="${helpLink}">
-					<jsp:attribute name="content">
-						<tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.order}"/>
-					</jsp:attribute>		
-				</sidebar:sidebarItem>
+				<sidebar:relatedTagsItem requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.order}"/>
 			</c:if>
+
+			<fmt:message key="help.link.tag.similarRelated" var="helpLink"/>
 			
 			<!-- similar tags -->
 			<c:if test="${not empty command.similarTags.relatedTags}">

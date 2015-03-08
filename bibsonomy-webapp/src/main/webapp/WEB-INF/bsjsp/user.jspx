@@ -68,13 +68,13 @@
 					</jsp:attribute>
 				</sidebar:sidebarItem>
 			</c:if>
-				
-			<!-- display user's tag relations -->
-			<sidebar:sidebarItem textKey="tagrelations">
-				<jsp:attribute name="content">
-					<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
-				</jsp:attribute>
-			</sidebar:sidebarItem>
+			
+			<sidebar:conceptsItem 
+				cmd="${command.concepts}" 
+				usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" 
+				requestedUserName="${command.requestedUser}"
+				headingLink="${relativeUrlGenerator.getConceptsUrlByString(command.requestedUser)}"	
+				headingTitleKey="tagrelations.user.title"/>
 				
 			<!-- display similar users -->
 			<sidebar:sidebarItem textKey="users.similar">
@@ -96,6 +96,6 @@
 					</jsp:attribute>
 				</sidebar:sidebarItem>
 			</c:if>
-		</jsp:attribute> <!-- sidebar -->
+		</jsp:attribute>
 	</layout:resourceLayout>
 </jsp:root>

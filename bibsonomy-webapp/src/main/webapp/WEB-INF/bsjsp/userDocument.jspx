@@ -51,12 +51,12 @@
 		<jsp:attribute name="sidebar">
 			<parts:tagsAndConceptsForSidebar/>
 				
-			<!-- display user's tag relations -->
-			<sidebar:sidebarItem textKey="tagrelations" headingLink="${relativeUrlGenerator.getConceptsUrlByString(fn:escapeXml(command.requestedUser))}" headingLinkTitleKey="${tagRelationsTitle}">
-				<jsp:attribute name="content">
-					<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
-				</jsp:attribute>
-			</sidebar:sidebarItem>				
+			<sidebar:conceptsItem 
+				cmd="${command.concepts}" 
+				usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" 
+				requestedUserName="${command.requestedUser}"
+				headingLink="${relativeUrlGenerator.getConceptsUrlByString(fn:escapeXml(command.requestedUser))}" 
+				headingLinkTitleKey="${tagRelationsTitle}"/>
 
 			<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 

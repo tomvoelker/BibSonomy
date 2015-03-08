@@ -46,15 +46,8 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-			<!-- display related tags -->
-			<sidebar:sidebarItem textKey="relatedtags">
-				<jsp:attribute name="content">
-					<tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.order}"/>
-				</jsp:attribute>
-			</sidebar:sidebarItem>				
-
+			<sidebar:relatedTagsItem requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.order}"/>
 			<sidebar:sidebarTagCloudItem requPath="${mtl:getLowerPath(requPath)}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-
 		</jsp:attribute>
 	</layout:resourceLayout>
 </jsp:root>

@@ -41,30 +41,21 @@
 		<jsp:attribute name="sidebar">
 			<parts:tagsAndConceptsForSidebar />
 
-			<!-- display related tags -->
-			<sidebar:sidebarItem textKey="relatedtags">
-				<jsp:attribute name="content">
-					<tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.order}"/>
-				</jsp:attribute>
-			</sidebar:sidebarItem>
+			<sidebar:relatedTagsItem requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.order}"/>
 			
-			<!-- display user's tag relations -->
-			<sidebar:sidebarItem>
-				<jsp:attribute name="text">
-					<fmt:message key="tagrelations.title" var="tagRelationsTitle"/>
-					<fmt:message key="tagrelations"/><c:out value=" " /><small>(<a href="${relativeUrlGenerator.getConceptsUrlByString(command.requestedUser)}" title="${tagRelationsTitle}"><fmt:message key="overview"/></a>)</small>
-				</jsp:attribute>
-				<jsp:attribute name="content">
-					<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
-				</jsp:attribute>
-			</sidebar:sidebarItem>
+			<sidebar:conceptsItem 
+				cmd="${command.concepts}" 
+				usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" 
+				requestedUserName="${command.requestedUser}"
+				headingTitleKey="tagrelations.user.title"
+				headingLink="${relativeUrlGenerator.getConceptsUrlByString(command.requestedUser)}"/>
 			
-			<!-- display tags -->
-			<li>
-				<sidebar:sidebarHeader textKey="tags" />
-				<tags:cloud requPath="${mtl:getLowerPath(requPath)}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user"  showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-			</li>
-		</ul>
+			<sidebar:sidebarTagCloudItem 
+				requPath="${mtl:getLowerPath(requPath)}" 
+				cmd="${command.tagcloud}" 
+				tagboxMinfreqStyle="user" 
+				tagSizeMode="user"  
+				showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 		</jsp:attribute>
 		
 	</layout:resourceLayout>

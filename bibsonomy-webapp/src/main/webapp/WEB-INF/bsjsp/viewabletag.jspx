@@ -74,12 +74,7 @@
 				</jsp:attribute>
 			</sidebar:sidebarItem>
 
-			<!-- related tags -->
-			<sidebar:sidebarItem textKey="relatedtags">
-				<jsp:attribute name="content">
-					<tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}" order=""/>
-				</jsp:attribute>
-			</sidebar:sidebarItem>
+			<sidebar:relatedTagsItem requPath="${requPath}" cmd="${command.relatedTagCommand}"/>
 			
 			<!-- group members -->
 			<c:if test="${not empty command.group and mtl:isRegularGroup(command.group)}">

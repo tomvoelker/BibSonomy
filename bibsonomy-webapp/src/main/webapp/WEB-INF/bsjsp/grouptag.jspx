@@ -69,12 +69,7 @@
 
 			<parts:tagsAndConceptsForSidebar/>
 
-			<!-- related tags -->
-			<sidebar:sidebarItem textKey="relatedtags">
-				<jsp:attribute name="content">
-					<tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}" order=""/>
-				</jsp:attribute>
-			</sidebar:sidebarItem>
+			<sidebar:relatedTagsItem requPath="${requPath}" cmd="${command.relatedTagCommand}"/>
 					
 			<sidebar:sidebarTagCloudItem requPath="${mtl:getLowerPath(requPath)}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" tagboxMinfreqStyle="default"/>
 
