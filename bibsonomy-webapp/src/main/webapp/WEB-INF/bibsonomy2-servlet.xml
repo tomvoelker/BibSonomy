@@ -132,12 +132,10 @@
 	
 	<!-- provides access to the wikiRenderer -->
 	<bean id="wikiRenderer" class="org.bibsonomy.wiki.CVWikiModel" scope="request">
+		<constructor-arg value="#{requestLogic.locale}" />
 		<property name="logic" ref="logic"/>
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer" />
 		<property name="messageSource" ref="messageSource"/>
-		<constructor-arg value="#{requestLogic.locale}">
-			
-		</constructor-arg>
 	</bean>
 	
 	<!-- 
@@ -149,6 +147,16 @@
 		<property name="adminUserName" value="admin"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 		<property name="bibtexReader" ref="bibtexReader"/>
+	</bean>
+	
+	<bean id="basicDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" abstract="true">
+		<property name="validationQuery" value="SELECT 42" />
+		<property name="minEvictableIdleTimeMillis" value="1800000" />
+		<property name="timeBetweenEvictionRunsMillis" value="1800000" />
+		<property name="numTestsPerEvictionRun" value="10" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="true" />
+		<property name="testOnReturn" value="true" />
 	</bean>
 
 	<!-- provides access to the database for all controllers -->
