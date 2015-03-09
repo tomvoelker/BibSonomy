@@ -92,7 +92,6 @@ public class AdminViewCommand extends TabsCommand<User> {
 	private final LinkedList<String> infos;
 
 
-
 	public AdminViewCommand() {	
 		addTabs(tabTitles);
 
@@ -101,7 +100,7 @@ public class AdminViewCommand extends TabsCommand<User> {
 
 		// initialise info list
 		infos = new LinkedList<String>();
-	}	
+	}
 
 
 	public AdminSettingsCommand getSettingsCommand() {

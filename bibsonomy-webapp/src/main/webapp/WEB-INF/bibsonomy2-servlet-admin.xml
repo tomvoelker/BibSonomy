@@ -16,19 +16,6 @@
 	<bean id="adminUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="urlMap">
 			<map merge="true">
-				<entry key="/admin">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName"	value="adminPageController" />
-						<property name="allowedFields">
-							<list>
-								<value>aclUserInfo</value>
-								<value>requestedGroupName</value>
-								<value>selPrivlevel</value>
-								<value>action</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
 				<entry key="/admin/spam">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName"	value="spamPageController" />
@@ -168,11 +155,6 @@
 
 
 	<!--  #################### controller #################### -->
-	
-	<bean id="adminPageController" class="org.bibsonomy.webapp.controller.admin.AdminPageController" scope="request">
-		<property name="logic" ref="logic"/>
-	</bean>
-	
 	<bean id="spamPageController" class="org.bibsonomy.webapp.controller.admin.SpamPageController" scope="request">
 		<property name="logic" ref="logic"/>
 	</bean>
