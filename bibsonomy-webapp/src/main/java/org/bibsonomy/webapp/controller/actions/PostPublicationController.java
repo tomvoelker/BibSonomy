@@ -103,7 +103,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		command.setGroups(new ArrayList<String>());
 
 		command.setPost(new Post<BibTex>());
-		command.setAbstractGrouping(GroupUtils.getPublicGroup().getName());
+		command.setAbstractGrouping(GroupUtils.buildPublicGroup().getName());
 		command.getPost().setResource(new BibTex());
 		command.setPostsErrorList(new LinkedHashMap<String, List<ErrorMessage>>());
 

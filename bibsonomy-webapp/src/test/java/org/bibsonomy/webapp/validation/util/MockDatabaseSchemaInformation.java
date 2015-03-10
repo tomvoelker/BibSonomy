@@ -44,4 +44,12 @@ public class MockDatabaseSchemaInformation implements DatabaseSchemaInformation 
 		return property.length() * 4;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.database.DatabaseSchemaInformation#callTypeHandler(java.lang.Class, java.lang.String, java.lang.Object, java.lang.Class)
+	 */
+	@Override
+	public <T> T callTypeHandler(Class<?> resourceClass, String property, Object type, Class<T> resultType) {
+		return null;
+	}
+
 }

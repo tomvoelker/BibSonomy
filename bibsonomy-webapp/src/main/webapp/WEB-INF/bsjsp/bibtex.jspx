@@ -106,10 +106,8 @@
 							<a class="btn btn-primary" href="${editGoldStandardLink}">${goldTitle}</a>
 							<hr />
 						</div>
-					
 					<!-- invokes discussion forms -->
 					<c:if test="${not goldstandardPresent}">
-					
 						<discussion:discussion loginUser="${command.context.loginUser}" resource="${publication}" discussionItems="${command.discussionItems}"  postUserName="${command.postOwner}"/>
 					</c:if>
 					<input type="hidden" id="gs_present" value="${goldstandardPresent}"/>

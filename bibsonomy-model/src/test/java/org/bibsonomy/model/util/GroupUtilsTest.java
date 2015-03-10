@@ -46,7 +46,7 @@ public class GroupUtilsTest {
 	 */
 	@Test
 	public void getGroup() {
-		for (final Group group : new Group[] { GroupUtils.getPublicGroup(), GroupUtils.buildPrivateGroup(), GroupUtils.buildFriendsGroup(), GroupUtils.buildInvalidGroup() }) {
+		for (final Group group : new Group[] { GroupUtils.buildPublicGroup(), GroupUtils.buildPrivateGroup(), GroupUtils.buildFriendsGroup(), GroupUtils.buildInvalidGroup() }) {
 			assertNotNull(group);
 			assertTrue(present(group.getName()));
 			assertTrue(present(group.getDescription()));
@@ -54,8 +54,8 @@ public class GroupUtilsTest {
 			assertTrue(present(group.getPrivlevel()));
 		}
 		
-		final Group g1 = GroupUtils.getPublicGroup();
-		final Group g2 = GroupUtils.getPublicGroup();
+		final Group g1 = GroupUtils.buildPublicGroup();
+		final Group g2 = GroupUtils.buildPublicGroup();
 		// equals should be enough before: assertSame(g1, g2);
 		assertEquals(g1, g2);
 	}
@@ -67,7 +67,7 @@ public class GroupUtilsTest {
 	public void testIsExclusiveGroupGroup() {
 		assertTrue(GroupUtils.isExclusiveGroup(GroupUtils.buildPrivateGroup()));
 		assertTrue(GroupUtils.isExclusiveGroup(GroupUtils.buildPrivateSpamGroup()));
-		assertTrue(GroupUtils.isExclusiveGroup(GroupUtils.getPublicGroup()));
+		assertTrue(GroupUtils.isExclusiveGroup(GroupUtils.buildPublicGroup()));
 		assertTrue(GroupUtils.isExclusiveGroup(GroupUtils.buildPublicSpamGroup()));
 		assertFalse(GroupUtils.isExclusiveGroup(GroupUtils.buildFriendsGroup()));
 		assertFalse(GroupUtils.isExclusiveGroup(GroupUtils.buildFriendsSpamGroup()));
