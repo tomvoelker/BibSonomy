@@ -107,6 +107,12 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 		// since before requesting a group, it must not exist, we cannot check
 		// for it, either.
 		groupToUpdate = this.logic.getGroupDetails(command.getGroupname());
+		
+		if (groupToUpdate == null) {
+			this.errors.rejectValue("groupname", "settings.group.error.nonExistingGroup", new Object[] { command.getGroupname() },
+					"The group {0} does not exist.");
+			return new ExtendedRedirectView(SETTINGS_GROUP_TAB_REDIRECT);
+		}
 
 		final GroupUpdateOperation operation = command.getOperation();
 		Integer selTab = null;

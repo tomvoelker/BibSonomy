@@ -175,7 +175,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		/*
 		 * Construct the public group.
 		 */
-		final Group publicGroup = GroupUtils.getPublicGroup();
+		final Group publicGroup = GroupUtils.buildPublicGroup();
 
 		/*
 		 * Find a common group of both users, which allows to share documents.

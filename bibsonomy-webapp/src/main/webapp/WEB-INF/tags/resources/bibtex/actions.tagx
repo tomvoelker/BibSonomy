@@ -136,23 +136,6 @@
 		</c:otherwise>
 	</c:choose>
 	
-	<!--+ 
-		| COMMUNITY POST 
-		| 
-		+-->
-	<fmt:message key="bibtex.actions.community_post" var="communityPost" />
-	<c:choose>
-		<c:when test="${isRemotePost}">
-			<a href="${relativeUrlGenerator.getGoldstandardUrlByInterHashAndSysUrl(post.resource.interHash, post.systemUrl)}" class="item communitypost" title="${fn:escapeXml(communityPost)}">
-			<!-- Keep Me -->
-			</a>
-		</c:when>
-		<c:otherwise>		
-			<a href="${relativeUrlGenerator.getCommunityPublicationUrlByInterHash(post.resource.interHash)}" class="item communitypost" title="${fn:escapeXml(communityPost)}">
-			<!-- Keep Me -->
-			</a>
-		</c:otherwise>
-	</c:choose>
 	<!--+
 		| COPY/HISTORY
 		+-->

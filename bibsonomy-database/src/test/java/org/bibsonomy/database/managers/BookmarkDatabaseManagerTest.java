@@ -760,7 +760,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 		 */
 		final Post<Bookmark> post = new Post<Bookmark>();
 		post.setUser(new User(userName));
-		post.setGroups(Collections.singleton(GroupUtils.getPublicGroup()));
+		post.setGroups(Collections.singleton(GroupUtils.buildPublicGroup()));
 		post.setDate(new Date());
 		final Bookmark bookmark = new Bookmark();
 		bookmark.setTitle("New Title");

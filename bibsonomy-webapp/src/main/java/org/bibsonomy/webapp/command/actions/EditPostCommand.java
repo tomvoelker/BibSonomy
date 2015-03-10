@@ -52,11 +52,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 
 	private String tags;
 
-	/**
-	 * FIXME: What is the difference between diffPost and postDiff? Please use
-	 * intuitive names and add commentary.
-	 */
-
+	/** TODO: add documentation */
 	private Post<RESOURCE> diffPost;
 
 		/**

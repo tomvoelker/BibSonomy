@@ -299,7 +299,12 @@ public class CslModelConverter {
 	 * @return the ID
 	 */
 	private static final String createId(final Post<? extends Resource> post) {
-		return ((BibTex) post.getResource()).getIntraHash() + post.getUser().getName();
+		final BibTex publication = (BibTex) post.getResource();
+		if (present(post.getUser())) {
+			return publication.getIntraHash() + post.getUser().getName();
+		}
+		
+		return publication.getInterHash();
 	}
 
 	/**

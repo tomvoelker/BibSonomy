@@ -29,6 +29,5 @@
 	</c:choose>
 	<a href="${communityPostUrl}" title="${fn:escapeXml(communityPost)}">
 		<fmt:message key="actions.communityPost" />
-		<buttons:newBadge/>
 	</a>
 </jsp:root>

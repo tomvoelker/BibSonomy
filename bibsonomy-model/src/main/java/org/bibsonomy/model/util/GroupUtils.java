@@ -60,7 +60,7 @@ public class GroupUtils {
 	 * 
 	 * @return public group
 	 */
-	public static Group getPublicGroup() {
+	public static Group buildPublicGroup() {
 		return getGroup(PUBLIC_GROUP_NAME,  "public group",  GroupID.PUBLIC,  Privlevel.PUBLIC);
 	}
 
@@ -118,6 +118,14 @@ public class GroupUtils {
 	public static Group buildInvalidGroup() {
 		return getGroup("invalid", "invalid group", GroupID.INVALID, Privlevel.HIDDEN);
 	}
+	
+	/**
+	 * @param group the group to check
+	 * @return true iff the group is valid
+	 */
+	public static boolean isValidGroup(Group group) {
+		return ((group != null) && (group.getGroupId() != GroupID.INVALID.getId()));
+	}
 
 	/**
 	 * Checks if the given group is an "exclusive" group, i.e., a group which can't 
@@ -131,7 +139,7 @@ public class GroupUtils {
 	public static boolean isExclusiveGroup(final Group group) {
 		return (
 				buildPrivateGroup().equals(group) || 
-				getPublicGroup().equals(group)
+				buildPublicGroup().equals(group)
 		);
 	}
 
@@ -147,7 +155,7 @@ public class GroupUtils {
 	public static boolean isExclusiveGroup(final int groupId) {
 		return (
 				GroupID.equalsIgnoreSpam(buildPrivateGroup().getGroupId(), groupId) || 
-				GroupID.equalsIgnoreSpam(getPublicGroup().getGroupId(), groupId)
+				GroupID.equalsIgnoreSpam(buildPublicGroup().getGroupId(), groupId)
 		);
 	}
 	
@@ -178,7 +186,7 @@ public class GroupUtils {
 		/*
 		 * at least one of the groups is public or private
 		 */
-		return groups.contains(getPublicGroup()) || groups.contains(buildPrivateGroup());
+		return groups.contains(buildPublicGroup()) || groups.contains(buildPrivateGroup());
 	}
 	
 	/**
@@ -187,7 +195,7 @@ public class GroupUtils {
 	 * @return <code>true</code> if the set of groups contains only the public group.
 	 */
 	public static boolean isPublicGroup(final Set<Group> groups) {
-		return groups.size() == 1 && groups.contains(getPublicGroup());
+		return groups.size() == 1 && groups.contains(buildPublicGroup());
 	}
 	
 	/**

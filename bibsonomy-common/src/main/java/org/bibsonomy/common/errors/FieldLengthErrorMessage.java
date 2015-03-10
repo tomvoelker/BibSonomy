@@ -53,7 +53,7 @@ public class FieldLengthErrorMessage extends ErrorMessage {
 	 * @param maxLength
 	 */
 	public void addToFields(final String field, final int maxLength) {
-		this.fields.put(field, maxLength);
+		this.fields.put(field, Integer.valueOf(maxLength));
 	}
 	
 	/**
@@ -61,7 +61,7 @@ public class FieldLengthErrorMessage extends ErrorMessage {
 	 * @return the max length of the field
 	 */
 	public int getMaxLengthForField(final String field) {
-		return this.fields.get(field);
+		return this.fields.get(field).intValue();
 	}
 	
 	/**

@@ -113,7 +113,7 @@
 						</li>
 
 						<!-- DOI -->
-						<li>		
+						<li>
 							<c:choose>
 								<c:when test="${not empty post.resource.miscFields['doi']}">
 									<fmt:message key="bibtex.actions.doi" var="urlTitle"/>
@@ -130,7 +130,7 @@
 						<li>
 							<fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />
 							<c:choose>
-								<c:when test="${isRemotePost}">									
+								<c:when test="${isRemotePost}">
 									<a class="litem" href="${relativeUrlGenerator.getBibtexExportUrlByIntraHashUserNameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}"><fmt:message key="bibtex.actions.bibtex"/></a>															
 								</c:when>
 								<c:otherwise>
