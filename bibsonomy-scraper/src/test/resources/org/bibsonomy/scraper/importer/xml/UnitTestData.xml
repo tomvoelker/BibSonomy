@@ -526,12 +526,16 @@
 		<URL>http://www.isrl.uiuc.edu/~amag/langev/paper/mitchener07middleEnglish.html</URL>
 		<BibFile>LangevScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.langev.LangevScraper</Scraper>
+		<!-- disabled because the website http://www.isrl.uiuc.edu/ is no more available -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_87">
 		<TestDescription>Langev Url test 2</TestDescription>
 		<URL>http://www.isrl.uiuc.edu/~amag/langev/paper/arbib06mirrorSystemEditedBook.html</URL>
 		<BibFile>LangevScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.langev.LangevScraper</Scraper>
+		<!-- disabled because the website http://www.isrl.uiuc.edu/ is no more available -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_88">
 		<TestDescription>Liebert Url test 1</TestDescription>
