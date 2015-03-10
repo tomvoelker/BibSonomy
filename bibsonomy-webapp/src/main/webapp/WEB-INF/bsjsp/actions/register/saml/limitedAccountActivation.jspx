@@ -77,7 +77,9 @@
 				<!-- description text -->
 				<div class="bookmarksContainer standard">
 				<div class="paddedContainer">
-					<fmt:message key="limited_account.activation.text.left"/>
+					<fmt:message key="limited_account.activation.text.left">
+						<fmt:param>${properties['project.name']}</fmt:param>
+					</fmt:message>
 					
 					<form:form action="/limitedAccountActivation" method="POST">
 						<bform:fieldset maximized="${true}" legendKey="register.additional">
