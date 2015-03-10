@@ -7,7 +7,8 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
+	xmlns:s="http://www.springframework.org/tags">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
@@ -55,84 +56,95 @@
 							</fmt:message>
 						</h1>
 						
+						<!-- 
 						<div class="lead">
 							<p>
 								<fmt:message key="persons.intro.intro">
 									<fmt:param value="${properties['project.name']}" />
 								</fmt:message>
 							</p>
-							<form action="#">
-							
-								<div class='input-group' style="margin-left: auto; width: 65%; margin-right: auto; ">
-									
-									<fmt:message key="person.index.placeholder" var="placeholderText"/>
-									<input class='form-control typeahead' id='searchPersonAutocomplete' type='text' name='searchPersonAutocomplete' autocomplete="off" placeholder='${placeholderText}'/>
-									<!-- 
-									<span class="input-group-btn">
-										<button class="btn btn-default" type="button"><fmt:message key="person.index.header" /></button>
-									</span>
-									 -->
-								</div>
-								
-							</form>
+						</div>
+						 -->
+						 
+						<div class="lead text-center">
+							<p>
+								<fmt:message key="persons.intro.search.desc">
+									<fmt:param value="${properties['project.name']}" />
+								</fmt:message>
+							</p>
 						</div>
 						
 					</div>
-					
+					<!-- 
 					<hr />
-					
+ 					-->
+					<s:eval expression="T(java.util.Arrays).asList('genealogy', 'dataset', 'wiskidz' )" var="sections" />
 					
 					<div class="row">
 					
-						<div class="hidden-xs col-sm-2">
+						<div class="hidden-xs col-sm-3">
 							<div class="affix">
 								<div class="list-group section-scroll">
-									<a class="list-group-item active" href="#dataset" style="z-index: -1;"><fmt:message key="persons.intro.navi.dataset" /> </a>
-									<a class="list-group-item"        href="#wiskidz" style="z-index: -1;"><fmt:message key="persons.intro.navi.wiskidz" /></a>
+									<a class="list-group-item active" href="#search"><fmt:message key="persons.intro.navi.search" /> </a>
+									<c:forEach var="sectionKey" items="${sections}">
+										<a class="list-group-item" href="#${sectionKey}">
+											<fmt:message key="persons.intro.navi.${sectionKey}">
+												<fmt:param value="${properties['project.name']}" />
+											</fmt:message>
+										</a>
+									</c:forEach>
 								</div>
 							</div>
 						</div>
 						
-						<div class="col-sm-10">
+						<div class="col-sm-9">
 							
-							<div id="dataset">
-								<a name="dataset"><!--  --></a>
+							<div id="search">
+								<a name="search"><!--  --></a>
 								<h2 class="getting-started">
-									<fmt:message key="persons.intro.navi.dataset" />
-								</h2>
-								<div class="lead text-center">
-									<fmt:message key="persons.intro.dataset.desc">
+									<fmt:message key="persons.intro.navi.search">
 										<fmt:param value="${properties['project.name']}" />
 									</fmt:message>
-								</div>
+								</h2>
+
 								<div class="text-center">
+									<form action="#">
+										<div class='input-group' style="margin-left: auto; width: 100%; margin-right: auto; ">
+											
+											<fmt:message key="person.index.placeholder" var="placeholderText"/>
+											<input class='form-control typeahead' id='searchPersonAutocomplete' type='text' name='searchPersonAutocomplete' autocomplete="off" placeholder='${placeholderText}'/>
+											<!-- 
+											<span class="input-group-btn">
+												<button class="btn btn-default" type="button"><fmt:message key="person.index.header" /></button>
+											</span>
+											 -->
+										</div>
+									</form>
+								</div>
+							</div>
+						
+							<c:forEach var="sectionKey" items="${sections}">
+								<hr />
+								
+								<div id="${sectionKey}">
+									<a name="${sectionKey}"><!--  --></a>
+									<h2 class="getting-started">
+										<fmt:message key="persons.intro.navi.${sectionKey}">
+											<fmt:param value="${properties['project.name']}" />
+										</fmt:message>
+									</h2>
+									<div class="lead text-center">
+										<fmt:message key="persons.intro.${sectionKey}.desc">
+											<fmt:param value="${properties['project.name']}" />
+										</fmt:message>
+									</div>
 									<p>
-										<fmt:message key="persons.intro.dataset.text">
+										<fmt:message key="persons.intro.${sectionKey}.text">
 											<fmt:param value="${properties['project.name']}" />
 										</fmt:message>
 									</p>
 								</div>
-							</div>
-							
-							<hr />
-							
-							<div id="wiskidz">
-								<a name="wiskidz"><!--  --></a>
-								<h2 class="getting-started">
-									<fmt:message key="persons.intro.navi.wiskidz" />
-								</h2>
-								<div class="lead text-center">
-									<fmt:message key="persons.intro.wiskidz.desc">
-										<fmt:param value="${properties['project.name']}" />
-									</fmt:message>
-								</div>
-								<p>
-									<fmt:message key="persons.intro.wiskidz.text">
-										<fmt:param value="${properties['project.name']}" />
-									</fmt:message>
-								</p>
-							</div>
-							
+							</c:forEach>
 							<p>${mtl:ch('nbsp')}</p>
 						</div>
 						

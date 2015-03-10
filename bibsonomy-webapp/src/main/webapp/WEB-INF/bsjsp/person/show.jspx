@@ -123,6 +123,9 @@
 					width: 100%;
 				} 
 				
+				#resourcesTabList {
+					margin-top: 2.5em;
+				}
 			</style>
 			<link rel="stylesheet" type="text/css" href='/resources/typeahead.js/css/typeahead.css'/>
 		</jsp:attribute>
@@ -136,15 +139,11 @@
 		<jsp:attribute name="content">
 		
 			<div class="page-header">
-				<h1>${command.person.mainName.firstName} ${command.person.mainName.lastName} <small> - ${textHeader}</small></h1>
+				<h1>${command.person.mainName.firstName} ${command.person.mainName.lastName}</h1>
 			</div>
-			<div id='personInfo' class='panel panel-default'>
-				<div class='panel-heading'>
-					<a data-toggle="collapse" data-target="#aboutThisPerson" href='#person'><strong>${textPersonPanelHeader}</strong></a>
-				</div>
-				<div  id='aboutThisPerson' class='panel-collapse collapse'>
+			<div id='personInfo'>
+				<div  id='aboutThisPerson'>
 					<form method='post' name='personForm' action="" class='form-horizontal'>
-					<div class='panel-body'>
 						<c:if test="${command.person.disambiguatingPublication.post ne null}">
 							<div class='form-group'>
 								<label class="control-label col-md-4">${textAuthorOf}</label>
@@ -216,47 +215,38 @@
 								</div>
 							</div>
 						</div>
-						
-						<br/>
-						<div class='col-md-4'>&#160;</div>
-						<div class="col-md-6">
-							<!-- 
-							<c:choose>
-								<c:when test='${command.person.user eq null}'>
-									${textThatsMeButton}
-									<c:set var="displayLinkButton" value='display:none'/>
-									<c:set var="displayUnlinkButton" value='' />
-								</c:when>
-								<c:otherwise>
-									<c:set var="displayLinkButton" value=''/>
-									<c:set var="displayUnlinkButton" value='display:none' />
-								</c:otherwise>
-							</c:choose>
-							<button style='${displayLinkButton}' type='button' id='btnLink' class='btn btn-default' data-toggle="modal" data-target="#linkPerson">${textThatsMeButton}</button>
-							<button style='${displayUnlinkButton}' type='button' id='btnUnlink' class='btn btn-default' data-toggle="modal" data-target="#unlinkPerson">${textThatsNotMeButton}</button>
-							-->
-							<c:if test="${not empty command.context.loginUser.name}">
-								<button id='btnSaveSubmit' data-person-id="${command.person.id}" type='button' class='btn btn-primary pull-right'>${textSaveButton}</button>
-							</c:if>
+						<div class="row">
+							<div class='col-md-4'>&#160;</div>
+							<div class="col-md-6">
+								<!-- 
+								<c:choose>
+									<c:when test='${command.person.user eq null}'>
+										${textThatsMeButton}
+										<c:set var="displayLinkButton" value='display:none'/>
+										<c:set var="displayUnlinkButton" value='' />
+									</c:when>
+									<c:otherwise>
+										<c:set var="displayLinkButton" value=''/>
+										<c:set var="displayUnlinkButton" value='display:none' />
+									</c:otherwise>
+								</c:choose>
+								<button style='${displayLinkButton}' type='button' id='btnLink' class='btn btn-default' data-toggle="modal" data-target="#linkPerson">${textThatsMeButton}</button>
+								<button style='${displayUnlinkButton}' type='button' id='btnUnlink' class='btn btn-default' data-toggle="modal" data-target="#unlinkPerson">${textThatsNotMeButton}</button>
+								-->
+								<c:if test="${not empty command.context.loginUser.name}">
+									<button id='btnSaveSubmit' data-person-id="${command.person.id}" type='button' class='btn btn-primary pull-right'>${textSaveButton}</button>
+								</c:if>
+							</div>
 						</div>
-					</div>
 					</form>
 				</div>
 			</div>
 			
-			<div class='panel panel-default'>
-			<!-- 
-				<div class='panel-heading'>
-					<strong>${textResourcePanelHeader}</strong>
-				</div>
-				 -->
-				
-				<div class='panel-body'>
-					<ul id='resourcesTabList' class="nav nav-tabs" role="tablist">
-						<li><a href="#ownThesis" role="tab" data-toggle="tab"><strong>${textOwnPubTab}</strong></a></li>
-						<li><a href="#ownPublications" role="tab" data-toggle="tab"><strong>${textRolePubTab}</strong></a></li>
-					</ul>
-					<div class='tab-content'>
+			<ul id='resourcesTabList' class="nav nav-tabs" role="tablist">
+				<li><a href="#ownThesis" role="tab" data-toggle="tab"><strong>${textOwnPubTab}</strong></a></li>
+				<li><a href="#ownPublications" role="tab" data-toggle="tab"><strong>${textRolePubTab}</strong></a></li>
+			</ul>
+					<div class='tab-content pub-person-tab-content'>
 						<div id='ownThesis' class='tab-pane'>
 							<br/>
 							<button style='width: 100%;' class='btn btn-default' data-toggle='modal' data-target='#addThesis'>${textAddThesisButton}</button>
@@ -355,12 +345,11 @@
 								</c:otherwise>
 							</c:choose>
 						</div>
-					</div>
 					<SCRIPT type="text/javascript">
 						$("#resourcesTabList a:first").click();
 					</SCRIPT>
 				</div>
-			</div>
+
 		</jsp:attribute>
 	
 	</layout:paneLayout>
