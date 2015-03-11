@@ -101,7 +101,7 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 
 			// retrieve resource counts, if no tags are given
 			if (requTags.size() == 0 && filter != FilterEntity.JUST_PDF) { 
-				this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
+				this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			}
 		}
 

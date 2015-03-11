@@ -26,6 +26,9 @@
 				
 				<!-- convert a string to a list of persons and vice versa -->
 				<bean class="org.bibsonomy.web.spring.converter.StringToPersonListConverter" />
+				
+				<bean class="org.bibsonomy.web.spring.converter.StringToFilterConverter" />
+				
 				<bean class="org.bibsonomy.web.spring.converter.PersonListToStringConverter" />
 				
 				<!-- add a custom date converter to support binding of date fields. -->
@@ -430,6 +433,24 @@
 				<entry key="/export">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="exportPageController"/>
+					</bean>
+				</entry>
+				<entry key="/statistics">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="statisticsController"/>
+						<property name="allowedFields">
+							<list>
+								<value>spammers</value>
+								<value>all</value>
+								<value>type</value>
+								<value>interval</value>
+								<value>unit</value>
+								<value>grouping</value>
+								<value>filters</value>
+								<value>conceptStatus</value>
+								<value>resourceType</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/groups">
@@ -839,6 +860,10 @@
 	<bean id="exportPageController" class="org.bibsonomy.webapp.controller.ExportPageController" scope="request">
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
 		<property name="layouts" ref="standardLayouts" />
+	</bean>
+	
+	<bean id="statisticsController" class="org.bibsonomy.webapp.controller.StatisticsController" scope="request">
+		<property name="logic" ref="logic" />
 	</bean>
 
 	<bean id="conceptPageController" class="org.bibsonomy.webapp.controller.ConceptPageController" scope="request">

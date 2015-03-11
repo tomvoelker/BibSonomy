@@ -679,4 +679,20 @@
 	<update id="updateBookmarkInGroupFromLeavingUser" parameterClass="resourceParam">
 		UPDATE bookmark b SET b.group = 1 WHERE b.user_name = #userName# AND b.group = #groupId#
 	</update>
+	
+	<select id="getBookmarkCount" resultClass="int" parameterClass="bookmarkParam">
+		SELECT COUNT(*) FROM bookmark
+		<include refid="statisticRestrictions" />
+	</select>
+	
+	<select id="getLogBookmarkCount" resultClass="int" parameterClass="bookmarkParam">
+		SELECT COUNT(*) FROM log_bookmark
+		<include refid="statisticRestrictions" />
+	</select>
+	
+	
+	<select id="getUniqueBookmarkCount" resultClass="int" parameterClass="bookmarkParam">
+		SELECT COUNT(DISTINCT book_url_hash) AS ctr FROM bookmark
+		<include refid="statisticRestrictions" />
+	</select>
 </sqlMap>

@@ -68,9 +68,9 @@ public class DBAdminManager extends DBManager {
 					bean.addError("user '" + bean.getUser() + "' could not be removed from the list. The user was not found.");
 				}
 			}
-		} catch (final SQLException e) {		
+		} catch (final SQLException e) {
 			bean.addError("Sorry, an error occured: " + e);
-		}		
+		}
 	}
 
 
@@ -93,10 +93,10 @@ public class DBAdminManager extends DBManager {
 			if (c.init()) {
 
 				// remove tag from list
-				if (!flag) {				
-					c.stmt = c.conn.prepareStatement("DELETE FROM spammer_tags WHERE tag_name = ?");				
-					c.stmt.setString(1, bean.getTag());				
-					if (c.stmt.executeUpdate() == 1) {					
+				if (!flag) {
+					c.stmt = c.conn.prepareStatement("DELETE FROM spammer_tags WHERE tag_name = ?");
+					c.stmt.setString(1, bean.getTag());
+					if (c.stmt.executeUpdate() == 1) {
 						bean.addInfo("tag '" + bean.getTag() + "' removed from list.");
 					} else {
 						bean.addError("tag '" + bean.getTag() + "' could not be removed. It was not found in the list.");
@@ -112,11 +112,11 @@ public class DBAdminManager extends DBManager {
 							bean.addInfo("tag '" + bean.getTag() + "' was removed from recommendation list.");
 					} else {
 						if (type == 1)
-							bean.addError("tag '" + bean.getTag() + "' is already in the list.");					
+							bean.addError("tag '" + bean.getTag() + "' is already in the list.");
 					}
 				}		
 			}
-		} catch (final SQLException e) {			
+		} catch (final SQLException e) {
 			bean.addError("Sorry, an error occured: " + e);
 		}
 	}

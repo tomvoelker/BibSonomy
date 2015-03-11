@@ -32,9 +32,11 @@ import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostAccess;
@@ -148,21 +150,24 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		}
 
 		// document retrieval
-		final FilterEntity filter = param.getFilter();
-		if (present(filter)) {
-			switch (filter) {
-			case JUST_PDF:
+		final Set<Filter> filters = param.getFilters();
+		if (present(filters)) {
+			if (filters.contains(FilterEntity.JUST_PDF)) {
 				// retrieve only entries with a document attached
 				return this.postList("getJustBibTexForUserWithPDF", param, session);
-			case DUPLICATES:
+			}
+			
+			if (filters.contains(FilterEntity.DUPLICATES)) {
 				// retrieve duplicate entries
 				return this.getPostsDuplicate(param.getRequestedUserName(), param.getGroups(), HashID.getSimHash(param.getSimHash()), session, null);
-			case POSTS_WITH_DISCUSSIONS:
+			}
+			
+			if (filters.contains(FilterEntity.POSTS_WITH_DISCUSSIONS)) {
 				// posts with discussions
 				return this.postList("getBibTexWithDiscussions", param, session);
-			default:
-				throw new IllegalArgumentException("Filter " + filter.name() + " not supported");
 			}
+			
+			throw new IllegalArgumentException("Filters " + filters + " not supported");
 		}
 
 		// posts with docs
@@ -188,14 +193,13 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		}
 
 		// if user wants to retrieve documents
-		final FilterEntity filter = param.getFilter();
-		if (present(filter)) {
-			switch (filter) {
-			case JUST_PDF:
+		final Set<Filter> filters = param.getFilters();
+		if (present(filters)) {
+			if (filters.contains(FilterEntity.JUST_PDF)) {
 				return this.postList("getJustBibTexByTagNamesForUserWithPDF", param, session);
-			default:
-				throw new IllegalArgumentException("Filter " + filter.name() + " not supported");
 			}
+			
+			throw new IllegalArgumentException("Filters " + filters + " not supported");
 		}
 
 		// posts including documents
@@ -220,14 +224,13 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		/*
 		 * first check for filter
 		 */
-		final FilterEntity filter = param.getFilter();
-		if (present(filter)) {
-			switch (filter) {
-			case JUST_PDF:
+		final Set<Filter> filters = param.getFilters();
+		if (present(filters)) {
+			if (filters.contains(FilterEntity.JUST_PDF)) {
 				return this.postList("getJustBibTexForGroupByTagWithPDF", param, session);
-			default:
-				throw new IllegalArgumentException("Filter " + filter.name() + " not supported");
 			}
+			
+			throw new IllegalArgumentException("Filters " + filters + " not supported");
 		}
 
 		/*
@@ -249,15 +252,14 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		}
 
 		// document retrieval
-		final FilterEntity filter = param.getFilter();
-		if (present(filter)) {
-			switch (filter) {
-			case JUST_PDF:
+		final Set<Filter> filters = param.getFilters();
+		if (present(filters)) {
+			if (filters.contains(FilterEntity.JUST_PDF)) {
 				// just entries with document attached
 				return this.postList("getJustBibTexForGroupWithPDF", param, session);
-			default:
-				throw new IllegalArgumentException("Filter " + filter.name() + " not supported");
 			}
+			
+			throw new IllegalArgumentException("Filters " + filters + " not supported");
 		}
 
 		// posts including documents

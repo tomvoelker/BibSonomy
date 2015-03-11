@@ -69,7 +69,7 @@ public class InboxPageController extends SingleResourceListController implements
 				post.setInboxPost(true);
 			}
 			// the number of items in this user's inbox has already been fetched
-			this.setTotalCount(command, resourceType, GroupingEntity.INBOX, loginUserName, null, null, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
+			this.setTotalCount(command, resourceType, GroupingEntity.INBOX, loginUserName, null, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 		}
 		this.endTiming();
 

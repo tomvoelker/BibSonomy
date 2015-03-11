@@ -149,14 +149,6 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-
-	<!--servlets -->
-	<!-- old servlets -->
-	<servlet>
-		<servlet-name>AdminHandler</servlet-name>
-		<servlet-class>servlets.AdminHandler</servlet-class>
-	</servlet>
-
 	<!-- spring MVC servlet -->
 	<servlet>
 		<servlet-name>bibsonomy2</servlet-name>
@@ -190,13 +182,6 @@
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>/brokenurl.html</url-pattern>
-	</servlet-mapping>
-
-	<!-- TODO: remove -->
-	<!-- old servlets -->
-	<servlet-mapping>
-		<servlet-name>AdminHandler</servlet-name>
-		<url-pattern>/AdminHandler</url-pattern>
 	</servlet-mapping>
 
 	<jsp-config>

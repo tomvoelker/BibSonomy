@@ -26,8 +26,12 @@
  */
 package org.bibsonomy.database.managers;
 
-import java.util.List;
+import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.List;
+import java.util.Set;
+
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.common.DBSession;
@@ -60,10 +64,11 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 
 	@Override
 	protected List<Post<Bookmark>> getPostsForHomepage(final BookmarkParam param, final DBSession session) {
-		final FilterEntity filter = param.getFilter();
-
-		if (FilterEntity.UNFILTERED.equals(filter)) {
-			return this.postList("getBookmarkForHomepageUnfiltered", param, session);
+		final Set<Filter> filters = param.getFilters();
+		if (present(filters)) {
+			if (filters.contains(FilterEntity.UNFILTERED)) {
+				return this.postList("getBookmarkForHomepageUnfiltered", param, session);
+			}
 		}
 
 		return super.getPostsForHomepage(param, session);

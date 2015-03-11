@@ -46,8 +46,8 @@
 		AND ctr_public > 0
 		AND ISNULL(s.tag_name)
 		ORDER BY tt.ctr_public DESC LIMIT 25
-		<sql:param value="${param.tag}"/>					
-	</sql:query>	
+		<sql:param value="${param.tag}"/>
+	</sql:query>
 	
 	<sql:query var="privreltags" dataSource="jdbc/bibsonomy">
 		SELECT t2 AS tag, tt.ctr AS ctr
@@ -57,12 +57,12 @@
 		AND tt.ctr > 0
 		AND ISNULL(s.tag_name)
 		ORDER BY tt.ctr DESC LIMIT 25
-		<sql:param value="${param.tag}"/>					
-	</sql:query>	
+		<sql:param value="${param.tag}"/>
+	</sql:query>
 	
 	<div style="width:100%; font-size:0.7em; text-align:right;"><a href="javascript:ajax_hideTooltip()">close</a></div>
 	
-	<c:choose>	
+	<c:choose>
 		<c:when test="${pubreltags.rowCount eq 0 and privreltags.rowCount eq 0}">		
 		- no related tags found for <c:out value="${param.tag}"/> - 		
 		</c:when>
@@ -83,7 +83,7 @@
 				<tr id="rtpub<c:out value='${status.count}'/>">
 					<c:url var="tagUrl" value="/tag/${row.tag}" />
 					<td><a href="${tagUrl}"><c:out value="${row.tag}"/></a></td>
-					<td align="center"><c:out value="${row.ctr}"/></td>					
+					<td align="center"><c:out value="${row.ctr}"/></td>
 					<td>
 						<c:set var="encodedTag" value="${mtl:encodeURI(row.tag)}" />
 						<a href="javascript:addSpammertag('${encodedTag}','pubrelatedlist','rtpub<c:out value='${status.count}'/>')" title="mark as spammertag">[+]</a>
@@ -97,17 +97,17 @@
 		<td style="padding-left:10px">	
 			<table class="taglist">
 			<tr>				
-				<th colspan="3">private</th>				
+				<th colspan="3">private</th>
 			</tr>
 			<tr>
-				<th>tag</th><th>count</th><th>action</th>				
+				<th>tag</th><th>count</th><th>action</th>
 			</tr>
 			<tbody id="privrelatedlist">
 			<c:forEach var="row" items="${privreltags.rows}" varStatus="status">
 				<tr id="rtpriv<c:out value='${status.count}'/>">
 					<c:url var="tagUrl" value="/tag/${row.tag}" />
 					<td><a href="${tagUrl}"><c:out value="${row.tag}"/></a></td>
-					<td align="center"><c:out value="${row.ctr}"/></td>					
+					<td align="center"><c:out value="${row.ctr}"/></td>
 					<td>
 						<c:set var="encodedTag" value="${mtl:encodeURI(row.tag)}" />
 						<a href="javascript:addSpammertag('${encodedTag}','privrelatedlist','rtpriv<c:out value='${status.count}'/>')" title="mark as spammertag">[+]</a>
@@ -116,9 +116,9 @@
 				</tr>
 			</c:forEach>
 			</tbody>
-		</table> 	
-		</td>					
-		</c:otherwise>		
+		</table>
+		</td>
+		</c:otherwise>
 	</c:choose>	
 </c:if>
 
