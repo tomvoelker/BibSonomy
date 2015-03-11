@@ -995,9 +995,49 @@ public class DBLogic implements LogicInterface {
 	public void deleteGroup(final String groupName) {
 		this.ensureLoggedIn();
 		// only group admins are allowed to delete the group
-		this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, groupName, GroupRole.ADMINISTRATOR);		
-
+		this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, groupName, GroupRole.ADMINISTRATOR);	
+		
 		final DBSession session = openSession();
+		
+		// make sure that the group exists
+		final Group group = groupDBManager.getGroupByName(groupName, session);
+		
+		if (group == null) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') doesn't exist");
+			throw new RuntimeException(); // never happens but calms down eclipse
+		}
+		
+		// ensure that the group has no members except the admin. size > 2 because the group user is also part of the membership list.
+		if(group.getMemberships().size() > 2) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') has more than one member");
+		}
+		
+		// all the posts/discussions of the group admin need to be edited as well before deleting the group
+		for (GroupMembership t : group.getMemberships()) {
+			// as the group can only consist of the group admin and the group user at this point, this check should be enough
+			// if groups can be deleted without removing all members before this must be adapted!
+			if(t.getGroupRole() == GroupRole.ADMINISTRATOR) {
+				// get the id of the group
+				final int groupId = group.getGroupId();
+				final String adminUserName = t.getUser().getName();
+		
+				// set all tas shared with the group to private (groupID 1)
+				this.tagDBManager.updateTasInGroupFromLeavingUser(adminUserName, groupId, session);
+		
+				/*
+				 * update the visibility of the post that are "assigned" to
+				 * the group
+				 * XXX: a loop over all resource database managers that
+				 * allow groups
+				 */
+				this.publicationDBManager.updatePostsInGroupFromLeavingUser(adminUserName, groupId, session);
+				this.bookmarkDBManager.updatePostsInGroupFromLeavingUser(adminUserName, groupId, session);
+		
+				// set all discussions in the group to private (groupID 1)
+				this.discussionDatabaseManager.updateDiscussionsInGroupFromLeavingUser(adminUserName, groupId, session);
+			}
+		}
+		
 		try {
 			this.groupDBManager.deleteGroup(groupName, session);
 		} finally {

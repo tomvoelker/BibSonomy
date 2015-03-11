@@ -28,6 +28,8 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Collections;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jasper.tagplugins.jstl.core.ForEach;
@@ -114,6 +116,7 @@ public class DeleteGroupController extends GroupSettingsPageController implement
 			return Views.GROUPSETTINGSPAGE;
 		}
 		
+		final String groupName = group.getName();
 		/*
 		 * check the ckey
 		 */
@@ -128,7 +131,6 @@ public class DeleteGroupController extends GroupSettingsPageController implement
 				 * all fine -> delete the group
 				 */
 				
-				final String groupName = group.getName();
 				log.debug("answer is correct - deleting group: " + groupName);
 				try {
 					logic.deleteGroup(groupName);
@@ -139,7 +141,7 @@ public class DeleteGroupController extends GroupSettingsPageController implement
 				/*
 				 * … else add an error
 				 */
-				errors.reject("error.secure.answer");
+				errors.reject("error.group.secure.answer");
 			}
 		} else {
 			errors.reject("error.field.valid.ckey");
@@ -151,6 +153,7 @@ public class DeleteGroupController extends GroupSettingsPageController implement
 		}
 		
 		//return new ExtendedRedirectView("/");
+		command.setMessage("success.groupDelete", Collections.singletonList(groupName));
 		return Views.SUCCESS;
 	}
 
