@@ -298,10 +298,10 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		 *  original != public => copy = dbGroup
 		 *  => check if post.groups has only the public group
 		 */
-		if ((userPost.getGroups().size() == 1) && (userPost.getGroups().contains(GroupUtils.getPublicGroup()))) {
+		if ((userPost.getGroups().size() == 1) && (userPost.getGroups().contains(GroupUtils.buildPublicGroup()))) {
 			// public is the only group (if visibility was public, there should be only one group)
 			groupPost.setGroups(new HashSet<Group>());
-			groupPost.getGroups().add(GroupUtils.getPublicGroup());
+			groupPost.getGroups().add(GroupUtils.buildPublicGroup());
 		} else {
 			// visibility is different from public => post is only visible for dbGroup
 			groupPost.addGroup(groupName);

@@ -83,13 +83,6 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 			break;
 		}
 
-		/*
-		 * clear the input fields
-		 */
-		command.getEditTags().setAddTags("");
-		command.getEditTags().setDelTags("");
-		command.getRelationsEdit().setLower("");
-		command.getRelationsEdit().setUpper("");
 		command.setUpdatedTagsCount(changedResources);
 
 		/*
@@ -170,20 +163,26 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 		} catch (final RecognitionException ex) {
 			// TODO How can i handle this
 		}
-
+		
+		/*
+		 * clear the input fields
+		 */
+		cmd.getEditTags().setAddTags("");
+		cmd.getEditTags().setDelTags("");
+		
 		return updatedTags;
 	}
 
 	private void workOnRelationsHandler(final EditTagsPageViewCommand cmd) {
 		final User user = cmd.getContext().getLoginUser();
-		final RelationsEditCommand command = cmd.getRelationsEdit();
+		final RelationsEditCommand relationsEditCommand = cmd.getRelationsEdit();
 
-		switch (command.getForcedAction()) {
+		switch (relationsEditCommand.getForcedAction()) {
 		case 0:
 			try {
 
-				final Set<Tag> upperList = TagUtils.parse(command.getUpper());
-				final Set<Tag> lowerList = TagUtils.parse(command.getLower());
+				final Set<Tag> upperList = TagUtils.parse(relationsEditCommand.getUpper());
+				final Set<Tag> lowerList = TagUtils.parse(relationsEditCommand.getLower());
 
 				if ((upperList.size() != 1) || (lowerList.size() != 1)) {
 					break;
@@ -207,10 +206,13 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 			}
 
 		case 1:
-			this.logic.deleteRelation(command.getUpper(), command.getLower(), GroupingEntity.USER, user.getName());
+			this.logic.deleteRelation(relationsEditCommand.getUpper(), relationsEditCommand.getLower(), GroupingEntity.USER, user.getName());
 			break;
 
 		}
+		
+		relationsEditCommand.setLower("");
+		relationsEditCommand.setUpper("");
 	}
 
 	@Override

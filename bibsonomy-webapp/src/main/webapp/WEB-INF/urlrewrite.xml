@@ -1053,6 +1053,13 @@
 		<to type="redirect" last="true">/hashExample</to>
 	</rule>
 	
+	<!-- old msoffice urls -->
+	<rule>
+		<name>/msofficexml</name>
+		<from>^/+msofficexml/(.*)$</from>
+		<to type="redirect" last="true">/layout/msofficexml/$1</to>
+	</rule>
+	
 	<!-- TODO: (Bootstrap) remove after updating the link in the blog -->
 	<rule>
 		<name>/bibsonomy3preview</name>

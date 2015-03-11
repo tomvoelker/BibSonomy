@@ -1091,7 +1091,7 @@ public class DBLogic implements LogicInterface {
 			if (group.equals(GroupUtils.buildPrivateGroup())) {
 				group.setGroupId(GroupUtils.buildPrivateGroup().getGroupId());
 			} else {
-				group.setGroupId(GroupUtils.getPublicGroup().getGroupId());
+				group.setGroupId(GroupUtils.buildPublicGroup().getGroupId());
 			}
 		} else {
 			/*
@@ -1125,7 +1125,7 @@ public class DBLogic implements LogicInterface {
 
 		// no group specified -> make it public
 		if (groups.isEmpty()) {
-			groups.add(GroupUtils.getPublicGroup());
+			groups.add(GroupUtils.buildPublicGroup());
 		}
 	}
 
@@ -1222,7 +1222,8 @@ public class DBLogic implements LogicInterface {
 
 			// check the groups existence and retrieve the current group
 			final Group group = this.groupDBManager.getGroupMembers(this.loginUser.getName(), paramGroup.getName(), false, session);
-			if (!GroupUtils.isValidGroup(group)) {
+			// TODO: When implementing DELETE, alter this check!
+			if (!GroupUtils.isValidGroup(group) && !(GroupUpdateOperation.ACTIVATE.equals(operation) || GroupUpdateOperation.DELETE.equals(operation))) {
 				throw new IllegalArgumentException("Group does not exist");
 			}
 			final GroupMembership currentGroupMembership = group.getGroupMembershipForUser(requestedUserName);
@@ -1349,6 +1350,7 @@ public class DBLogic implements LogicInterface {
 				// this must be paramGroup, since "DELETE" is only called for
 				// the admin interface to decline a group request.
 				// TODO: Resolve this in a better way.
+				// tni: What exactly is "this"?
 				this.groupDBManager.deletePendingGroup(paramGroup.getName(), session);
 				break;
 

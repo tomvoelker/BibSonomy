@@ -919,8 +919,8 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void testNonLimitedUserPosts() throws Exception {
-		postAndAssertGroup(GroupUtils.getPublicGroup(), GroupUtils.getPublicGroup(), TEST_USER_2, BibTex.class);
-		postAndAssertGroup(GroupUtils.getPublicGroup(), GroupUtils.getPublicGroup(), TEST_USER_2, Bookmark.class);
+		postAndAssertGroup(GroupUtils.buildPublicGroup(), GroupUtils.buildPublicGroup(), TEST_USER_2, BibTex.class);
+		postAndAssertGroup(GroupUtils.buildPublicGroup(), GroupUtils.buildPublicGroup(), TEST_USER_2, Bookmark.class);
 	}
 	
 	/**
@@ -929,8 +929,8 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void testLimitedUserPosts() throws Exception {
-		this.postAndAssertGroup(GroupUtils.getPublicGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, BibTex.class);
-		this.postAndAssertGroup(GroupUtils.getPublicGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, Bookmark.class);
+		this.postAndAssertGroup(GroupUtils.buildPublicGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, BibTex.class);
+		this.postAndAssertGroup(GroupUtils.buildPublicGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, Bookmark.class);
 		this.postAndAssertGroup(GroupUtils.buildFriendsGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, BibTex.class);
 		this.postAndAssertGroup(GroupUtils.buildFriendsGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, Bookmark.class);
 	}
@@ -1092,7 +1092,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		
 		assertEquals(1, groups.size());
 		final Group group = groups.iterator().next();
-		assertEquals(GroupUtils.getPublicGroup(), group);
+		assertEquals(GroupUtils.buildPublicGroup(), group);
 		assertEquals(GroupID.PUBLIC.getId(), group.getGroupId());
 		
 		/*

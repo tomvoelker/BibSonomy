@@ -48,6 +48,7 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.TagUtils;
 
@@ -299,7 +300,13 @@ public class CslModelConverter {
 	 * @return the ID
 	 */
 	private static final String createId(final Post<? extends Resource> post) {
-		return ((BibTex) post.getResource()).getIntraHash() + post.getUser().getName();
+		final BibTex publication = (BibTex) post.getResource();
+		final User user = post.getUser();
+		if (present(user)) {
+			return publication.getIntraHash() + post.getUser().getName();
+		}
+		
+		return publication.getInterHash();
 	}
 
 	/**
