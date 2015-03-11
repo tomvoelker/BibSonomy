@@ -11,7 +11,7 @@
 	                    http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
 
 	<!-- import recommenderLogic -->
-	<bean id="tagRecommenderDataSource" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource">
+	<bean id="tagRecommenderDataSource" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource" parent="basicDataSource">
 		<property name="url" value="${database.recommender.tag.url}" />
 		<property name="username" value="${database.recommender.tag.username}" />
 		<property name="password" value="${database.recommender.tag.password}" />
@@ -23,7 +23,7 @@
 		<property name="removeAbandonedTimeout" value="${database.recommender.tag.removeAbandonedTimeout}" />
 	</bean>
 	
-	<bean id="itemRecommenderDataSource" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource">
+	<bean id="itemRecommenderDataSource" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource" parent="basicDataSource">
 		<property name="url" value="${database.recommender.item.url}" />
 		<property name="username" value="${database.recommender.item.username}" />
 		<property name="password" value="${database.recommender.item.password}" />
