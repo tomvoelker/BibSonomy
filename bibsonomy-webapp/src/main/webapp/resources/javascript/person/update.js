@@ -8,7 +8,7 @@ $(document).ready(function() {
 					formSelectedName: $("input[name=formSelectedName]:checked").val(),
 					formAcademicDegree: $("#formAcademicDegree").val(),
 					formOrcid: $("#formOrcid").val(),
-					formThatsMe: $("#formThatsMe").val()
+					formThatsMe: $("#formThatsMe").is(':checked')
 					
 				}
 		).done(function(data) {
