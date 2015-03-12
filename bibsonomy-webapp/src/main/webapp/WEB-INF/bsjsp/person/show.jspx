@@ -148,7 +148,7 @@
 							<div class='form-group'>
 								<label class="control-label col-md-4">${textAuthorOf}</label>
 								<div class="col-md-6">
-									<p class='form-control-static'>${command.person.disambiguatingPublication.post.resource.title}</p>
+									<p class='form-control-static'><c:out value="${mtl:cleanBibtex(command.person.disambiguatingPublication.post.resource.title)}" /></p>
 								</div>
 							</div>
 						</c:if>
