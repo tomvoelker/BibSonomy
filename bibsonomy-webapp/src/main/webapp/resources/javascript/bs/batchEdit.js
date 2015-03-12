@@ -336,4 +336,3 @@ function changeTagInputs(selector, disabled) {
 		$('input[name=' + attr + ']:text').prop('disabled', disabled);
 	});
 }
-maximizeById("general");

@@ -89,7 +89,6 @@
 			<input id="publicInput" name="publicInput" value="${isPublic}" type="hidden" />
 			<c:choose>
 				<c:when test="${empty command.goldStandardPublications.list}">
-					<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
 						<c:set var="post" value="${command.bibtex.list[0]}" />
 						<c:url var="editGoldStandardLink" value="/editGoldStandardPublication">
 							<c:param name="hash" value="${post.resource.intraHash}" />
@@ -107,11 +106,8 @@
 							<a class="btn btn-primary" href="${editGoldStandardLink}">${goldTitle}</a>
 							<hr />
 						</div>
-					</c:if>
-					
 					<!-- invokes discussion forms -->
 					<c:if test="${not goldstandardPresent}">
-					
 						<discussion:discussion loginUser="${command.context.loginUser}" resource="${publication}" discussionItems="${command.discussionItems}"  postUserName="${command.postOwner}"/>
 					</c:if>
 					<input type="hidden" id="gs_present" value="${goldstandardPresent}"/>
