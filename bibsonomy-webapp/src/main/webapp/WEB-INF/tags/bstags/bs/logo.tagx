@@ -18,6 +18,6 @@
 				<c:out value="${properties['project.name']}"/>
 			</a>
 		</h1>
-		<p style="color:#006699;"><small>The blue social bookmark and publication sharing system.</small></p>
+		<p style="color:#006699;"><small><fmt:message key="meta.description"/></small></p>
 	</div>
 </jsp:root>
