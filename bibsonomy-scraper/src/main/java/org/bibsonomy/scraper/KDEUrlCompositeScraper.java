@@ -186,7 +186,9 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new EditLibScraper());
 		addScraper(new InformaWorldScraper());
 		addScraper(new CambridgeScraper());
-		addScraper(new LangevScraper());
+        //the scrapper and the related information in the xml file are disabled because the website 
+		//http://www.isrl.uiuc.edu/ is not more available
+		//addScraper(new LangevScraper());
 		addScraper(new LiebertScraper());
 		addScraper(new NberScraper());
 		addScraper(new UsenixScraper());
