@@ -34,13 +34,11 @@
 			</c:if>
 			<a href="${historyUrl}" title="${postHistoryTitle}">
 				<fmt:message key="${resourceType}.actions.posthistory.title" />
-				<buttons:newBadge/>
 			</a>
 		</c:when>
 		<c:otherwise>
 			<span class="ilitem" title="${historyTitle}">
 				<fmt:message key="${resourceType}.actions.posthistory.title" />
-				<buttons:newBadge/>
 			</span>
 		</c:otherwise>
 	</c:choose>

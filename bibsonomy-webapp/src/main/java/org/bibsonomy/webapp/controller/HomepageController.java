@@ -97,7 +97,7 @@ public class HomepageController extends SingleResourceListController implements 
 			/*
 			 * add news posts (= latest blog posts)
 			 */
-			command.setNews(this.logic.getPosts(Bookmark.class, GroupingEntity.GROUP, newsGroup, Arrays.asList(newsTag), null, null,SearchType.DEFAULT_SEARCH, null, null, null, null, 0, 3));
+			command.setNews(this.logic.getPosts(Bookmark.class, GroupingEntity.GROUP, newsGroup, Arrays.asList(newsTag), null, null,SearchType.LOCAL, null, null, null, null, 0, 3));
 			this.endTiming();
 			
 			return Views.HOMEPAGE;

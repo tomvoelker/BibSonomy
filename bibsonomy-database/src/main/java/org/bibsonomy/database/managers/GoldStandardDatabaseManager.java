@@ -451,7 +451,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	/**
 	 * 
 	 * @param userName
-	 * @param interrHash
+	 * @param interHash
 	 * @param interHashRef
 	 * @param interHashRelation
 	 * @param session

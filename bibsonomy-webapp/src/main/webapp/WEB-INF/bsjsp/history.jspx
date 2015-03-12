@@ -43,12 +43,12 @@
 			<parts:infobox>
 				<jsp:attribute name="infoTextBody">
 					<!-- short info about historyPage -->
-					<fmt:message key="hidtory.info"/>
+					<fmt:message key="history.info"/>
 					<ul style="list-style-type: circle;padding-left:20px;">
-						<li><fmt:message key="hidtory.option1"/></li>
-						<li><fmt:message key="hidtory.option2"/></li>
-						<li><fmt:message key="hidtory.option3"/></li>
-						<li><fmt:message key="hidtory.option4"/></li>
+						<li><fmt:message key="history.option1"/></li>
+						<li><fmt:message key="history.option2"/></li>
+						<li><fmt:message key="history.option3"/></li>
+						<li><fmt:message key="history.option4"/></li>
 					</ul>
 				</jsp:attribute>
 			</parts:infobox>
@@ -123,7 +123,7 @@
 													<div class="media-body" id="titletext">
 														<div class="pull-right"><buttons:communityPostActions post="${newestPost}" resourceType="bibtex"/></div>
 														<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" />
-															<c:if test="${newestPost.approved==1}">
+															<c:if test="${newestPost.approved}">
 																<a title="${fn:escapeXml(approved)}">
 																	<span class="fa fa-check-circle" style="margin-left:6px;"><!--  --></span>
 																</a>
@@ -214,7 +214,7 @@
 												<td class="col-sm-1"  id="versionNum" style="border-right:1px solid #eee">
 													<span class="label label-default" style="vertical-align:bottom;padding:8px;">
 														Ver. ${fieldlength-index}
-														<c:if test="${listView.list[(fieldlength-index)].approved==1}">
+														<c:if test="${listView.list[(fieldlength-index)].approved}">
 															<a title="${fn:escapeXml(approved_revision)}">
 																<span class="fa fa-check-circle" style="vertical-align:bottom;padding-left:3px;"><!--  --></span>
 															</a>

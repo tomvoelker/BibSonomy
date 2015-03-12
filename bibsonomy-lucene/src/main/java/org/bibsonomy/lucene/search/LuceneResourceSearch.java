@@ -30,6 +30,7 @@ import static org.bibsonomy.lucene.util.LuceneBase.CFG_LUCENE_FIELD_SPECIFIER;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -785,21 +786,22 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			Collection<String> tagIndex, String year, String firstYear,
 			String lastYear, List<String> negatedTags, Order order, int limit,
 			int offset) {
-		if(searchType==SearchType.CROSS_SYSTEM_SEARCH){
-//			searchResource.setINDEX_TYPE(resourceType);
-//			searchResource.setResourceConverter(this.resourceConverter);
+		if ((this.sharedResourceSearch != null) && (searchType == SearchType.FEDERATED)) {
+			// searchResource.setINDEX_TYPE(resourceType);
+			// searchResource.setResourceConverter(this.resourceConverter);
 			try {
-				List<Post<R>> posts = this.sharedResourceSearch.fullTextSearch(searchTerms, order, limit , offset);
+				List<Post<R>> posts = this.sharedResourceSearch.fullTextSearch(searchTerms, order, limit, offset);
 				return posts;
 			} catch (IOException e) {
 				log.error("Failed to search post from shared resource", e);
 			}
-		
+
 			return null;
-		}else if(searchType==SearchType.DEFAULT_SEARCH){
+		} else if (searchType == SearchType.LOCAL) {
 			return this.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
 		}
-			return null;
+		log.warn("unsupported searchType '" + searchType + "'");
+		return new ArrayList<>();
 	}
 
 	/**

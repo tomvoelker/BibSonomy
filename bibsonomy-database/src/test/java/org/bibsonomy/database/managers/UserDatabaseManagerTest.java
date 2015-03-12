@@ -58,6 +58,7 @@ import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
+import org.bibsonomy.testutil.TestUtils;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -583,6 +584,18 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			assertEquals(1, errorMessages.size());
 			final FieldLengthErrorMessage errorMessage = (FieldLengthErrorMessage) errorMessages.get(0);
 			assertNotNull(errorMessage.getMaxLengthForField("hobbies"));
+		}
+		
+		user.setHobbies("");
+		user.setHomepage(TestUtils.createURL("http://Loremipsumdolorsitamet,consecteturadipisicingelit,seddoeiusmodtemporincididuntutlaboreetdoloremagnaaliqua.Utenimadminimveniam,quisnostrudexercitationullamcolaborisnisiutaliquipexeacommodoconsequat.Duisauteiruredolorinreprehenderitinvoluptatevelitessecillumdoloreeufugiatnullapariatur.Excepteursintoccaecatcupidatatnonproident,suntinculpaquiofficiadeseruntmollitanimidestlaborum.com"));
+		try {
+			userDb.updateUser(user, this.dbSession);
+			fail("missing DatabaseException");
+		} catch (final DatabaseException e) {
+			final List<ErrorMessage> errorMessages = e.getErrorMessages("testuser1");
+			assertEquals(1, errorMessages.size());
+			final FieldLengthErrorMessage errorMessage = (FieldLengthErrorMessage) errorMessages.get(0);
+			assertNotNull(errorMessage.getMaxLengthForField("homepage"));
 		}
 	}
 
