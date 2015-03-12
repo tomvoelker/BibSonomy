@@ -459,11 +459,10 @@
 					</div>
 					<div class="modal-body">
 						<fieldset>
-							<div>
+							<div class="form-group person-search">
 								<label for='addRoleAuto' class="control-label col-md-3">${textPerson}</label>
-							</div>
-							<div class="person-search">
-								<input class='form-control typeahead' id='addRoleAuto' type='text' name='addRoleAuto' autocomplete="off"/>
+								<fmt:message key="person.show.modal.addrole.placeholder" var="textModalAddRolePlaceholder" />
+								<input class='form-control typeahead' id='addRoleAuto' type='text' name='addRoleAuto' autocomplete="off" placeholder="${textModalAddRolePlaceholder}"/>
 							</div>
 						</fieldset>
 					</div>

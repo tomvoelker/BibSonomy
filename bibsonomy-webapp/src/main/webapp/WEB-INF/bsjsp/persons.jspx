@@ -12,7 +12,7 @@
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
-	<fmt:message key="persons.intro.title" var="personIntroTitle">
+	<fmt:message key="persons.intro.head.title" var="personIntroTitle">
 		<fmt:param value="${properties['project.name']}" />
 	</fmt:message>
 
@@ -46,12 +46,12 @@
 		
 		<jsp:attribute name="content">
 			<div class="row">
-				<div class="col-md-offset-1 col-xs-12 col-sm-12 col-md-10">
+				<div class="col-md-offset-1 col-xs-12 col-sm-12 col-md-10 authors">
 					
-					<div class="text-center">
+					<div class="text-center head">
 					
 						<h1>
-							<fmt:message key="persons.intro.headline">
+							<fmt:message key="persons.intro.head.title">
 								<fmt:param value="${properties['project.name']}" />
 							</fmt:message>
 						</h1>
@@ -68,7 +68,7 @@
 						 
 						<div class="lead text-center">
 							<p>
-								<fmt:message key="persons.intro.search.desc">
+								<fmt:message key="persons.intro.head.desc">
 									<fmt:param value="${properties['project.name']}" />
 								</fmt:message>
 							</p>
