@@ -26,7 +26,9 @@
  */
 package org.bibsonomy.es;
 
+import static org.bibsonomy.lucene.util.LuceneBase.CFG_LUCENE_FIELD_SPECIFIER;
 import static org.bibsonomy.util.ValidationUtils.present;
+import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,26 +38,23 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.SortField;
-import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.BooleanClause.Occur;
+import org.bibsonomy.lucene.database.LuceneInfoLogic;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
-import org.bibsonomy.lucene.param.QuerySortContainer;
-import org.bibsonomy.lucene.search.collector.TagCountCollector;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.enums.Order;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.FilteredQueryBuilder;
+import org.elasticsearch.index.query.IndexQueryParserService;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.support.QueryParsers;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.sort.SortBuilder;
@@ -73,6 +72,12 @@ public abstract class ESQueryBuilder {
 
     /** The esclient. */
     private Client esClient;
+    
+	/**
+	 * logic interface for retrieving data from bibsonomy (friends, groups
+	 * members)
+	 */
+	private LuceneInfoLogic dbLogic;
 
 
 	/**
@@ -254,15 +259,17 @@ public abstract class ESQueryBuilder {
 	 * @param negatedTags
 	 * @return overall elasticsearch query
 	 */
-	protected QueryBuilder buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags) {
+	protected BoolQueryBuilder buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags) {
 
-		QueryBuilder queryBuilder= null;
+		BoolQueryBuilder mainQueryBuilder = QueryBuilders.boolQuery();
+
 		// --------------------------------------------------------------------
 		// build the query
 		// --------------------------------------------------------------------
 		// the resulting main query
 		if (present(searchTerms)) {
-			queryBuilder = QueryBuilders.queryString(searchTerms);
+			QueryBuilder queryBuilder = QueryBuilders.queryString(searchTerms);
+			mainQueryBuilder.must(queryBuilder);
 		}
 
 		if (present(titleSearchTerms)) {
@@ -275,7 +282,7 @@ public abstract class ESQueryBuilder {
 		
 		// Add the requested tags
 		if (present(tagIndex) || present(negatedTags)) {
-			//TODO
+			addTagQuerries(tagIndex, negatedTags, mainQueryBuilder);
 		}
 
 		// restrict result to given group
@@ -300,8 +307,65 @@ public abstract class ESQueryBuilder {
 		}
 		
 		// all done
-		log.debug("[Full text] Search query: " + queryBuilder.toString());
+		log.debug("[Full text] Search query: " + mainQueryBuilder.toString());
 
-		return queryBuilder;
+		return mainQueryBuilder;
 	}
+	
+	private void addTagQuerries(final Collection<String> tagIndex, final Collection<String> negatedTags, final BoolQueryBuilder mainQuery) {
+		/*
+		 * Process normal tags
+		 */
+		if (present(tagIndex)) {
+			for (final String tag : tagIndex) {
+				// Is the tag string a concept name?
+				if (tag.startsWith(Tag.CONCEPT_PREFIX)) {
+					final String conceptTag = tag.substring(2);
+					// get related tags:
+					final BoolQueryBuilder conceptTags = new BoolQueryBuilder();
+					QueryBuilder termQuery = termQuery(LuceneFieldNames.TAS, conceptTag);
+					conceptTags.must(termQuery);
+					for (final String t : this.dbLogic.getSubTagsForConceptTag(conceptTag)) {
+						conceptTags.should(termQuery(LuceneFieldNames.TAS, t));
+					}
+					mainQuery.must(conceptTags);
+				} else {
+					mainQuery.must(termQuery(LuceneFieldNames.TAS, tag));
+				}
+			}
+		}
+		/*
+		 * Process negated Tags
+		 */
+		
+		if (present(negatedTags)) {
+			for (final String negatedTag : negatedTags) {
+				final QueryBuilder negatedSearchQuery = termQuery(LuceneFieldNames.TAS, negatedTag);
+				mainQuery.mustNot(negatedSearchQuery);
+			}
+		}
+
+	}
+
+
+//	/**
+//	 * @param fieldName
+//	 * @param searchTerms
+//	 * @return
+//	 */
+//	private QueryBuilder parseSearchQuery(String fieldName, String searchTerms) {
+//		// parse search terms for handling phrase search
+//		 IndexQueryParserService queryParser =new  ;
+//		 QueryParser qp = QueryParsers.
+//		 try {
+//				// disallow field specification in search query
+//				searchTerms = searchTerms.replace(CFG_LUCENE_FIELD_SPECIFIER, "\\" + CFG_LUCENE_FIELD_SPECIFIER);
+//		 return  parsedQuery = queryParser.parse(queryBuilder)(queryStringQuery(searchTerms).defaultField(fieldName).phraseSlop(1)).query();
+//;
+//		} catch (final ParseException e) {
+//			return termQuery(fieldName, searchTerms);
+//		}
+//	}
+	
+	
 }

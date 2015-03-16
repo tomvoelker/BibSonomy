@@ -38,6 +38,8 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.search.BooleanQuery;
+import org.bibsonomy.lucene.database.LuceneInfoLogic;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.model.Post;
@@ -48,6 +50,8 @@ import org.bibsonomy.model.enums.Order;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.FilteredQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.indices.IndexMissingException;
@@ -68,6 +72,11 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder{
 	/** post model converter */
 	private LuceneResourceConverter<R> resourceConverter;
 
+	/**
+	 * logic interface for retrieving data from bibsonomy (friends, groups
+	 * members)
+	 */
+	private LuceneInfoLogic dbLogic;
 	/**
 	 * 
 	 */
@@ -109,13 +118,13 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder{
 	 * @return returns the list of tags for the tag cloud
 	 */
 	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
-		QueryBuilder queryBuilder = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags);
+		final BoolQueryBuilder query= this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags);
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
 		try {  
 			SearchRequestBuilder searchRequestBuilder = esClient.getClient().prepareSearch(ESConstants.INDEX_NAME);
 			searchRequestBuilder.setTypes(resourceType);
 			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
-			searchRequestBuilder.setQuery(queryBuilder);
+			searchRequestBuilder.setQuery(query);
 			searchRequestBuilder.addSort(LuceneFieldNames.DATE, SortOrder.DESC);
 			searchRequestBuilder.setFrom(offset).setSize(limit).setExplain(true);
 			final SearchResponse response = searchRequestBuilder.execute().actionGet();
@@ -167,25 +176,36 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder{
 		return tags;
 	}
 	
-	/**
-	 * @param searchTerms
-	 * @param order
-	 * @param offset
-	 * @param limit
-	 * @return postList
-	 * @throws IOException
-	 * @throws CorruptIndexException
-	 * 
-	 */
-	public ResultList<Post<R>> fullTextSearch(final String searchTerms, final Order order, final int limit, final int offset) throws CorruptIndexException, IOException {
 
+	/**
+	 * @param userName
+	 * @param requestedUserName
+	 * @param requestedGroupName
+	 * @param requestedRelationNames
+	 * @param allowedGroups
+	 * @param searchTerms
+	 * @param titleSearchTerms
+	 * @param authorSearchTerms
+	 * @param tagIndex
+	 * @param year
+	 * @param firstYear
+	 * @param lastYear
+	 * @param negatedTags
+	 * @param order
+	 * @param limit
+	 * @param offset
+	 * @return
+	 * @throws CorruptIndexException
+	 * @throws IOException
+	 */
+	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) throws CorruptIndexException, IOException {
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
 		try {  
-			final QueryBuilder queryBuilder = QueryBuilders.queryString(searchTerms);
+			final BoolQueryBuilder query = this.buildQuery(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags);
 			final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(ESConstants.INDEX_NAME);
 			searchRequestBuilder.setTypes(this.resourceType);
 			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
-			searchRequestBuilder.setQuery(queryBuilder);
+			searchRequestBuilder.setQuery(query);
 			if (order != Order.RANK) {
 				searchRequestBuilder.addSort(LuceneFieldNames.DATE, SortOrder.DESC);
 			}
@@ -235,6 +255,20 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder{
 	 */
 	public void setResourceType(final String resourceType) {
 		this.resourceType = resourceType;
+	}
+
+	/**
+	 * @return the dbLogic
+	 */
+	public LuceneInfoLogic getDbLogic() {
+		return this.dbLogic;
+	}
+
+	/**
+	 * @param dbLogic the dbLogic to set
+	 */
+	public void setDbLogic(LuceneInfoLogic dbLogic) {
+		this.dbLogic = dbLogic;
 	}
 
 }

@@ -72,7 +72,7 @@
 					<c:set var="requPathToUse" value="${mtl:getLowerPath(requPath)}" />
 				</c:if>
 				
-				<tags:cloud requPath="${requPathToUse}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
+				<tags:cloud requPath="${requPathToUse}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" scope="${command.scope.name()}"/>
 			</li>
 		</ul>
 		</jsp:attribute>

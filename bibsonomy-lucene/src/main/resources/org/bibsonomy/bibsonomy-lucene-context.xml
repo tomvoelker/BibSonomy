@@ -74,6 +74,7 @@
 
 	<bean id="abstractEsResourceSearch" class="org.bibsonomy.es.EsResourceSearch" abstract="true">
 		<property name="esClient" ref="esClient"/>
+		<property name="dbLogic" ref="luceneInfoDBLogic" />		
 	</bean>
 
 

@@ -790,7 +790,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			// searchResource.setINDEX_TYPE(resourceType);
 			// searchResource.setResourceConverter(this.resourceConverter);
 			try {
-				List<Post<R>> posts = this.sharedResourceSearch.fullTextSearch(searchTerms, order, limit, offset);
+				List<Post<R>> posts = this.sharedResourceSearch.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
 				return posts;
 			} catch (IOException e) {
 				log.error("Failed to search post from shared resource", e);
@@ -816,11 +816,12 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			int limit, int offset) {
 		if ((this.sharedResourceSearch != null) && (searchType == SearchType.FEDERATED)) {
 			//just for the moment for experimental purpose
-			return	sharedResourceSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
-		}else if(searchType==SearchType.LOCAL || searchType==null){
+			return	this.sharedResourceSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+		}else if(searchType==SearchType.LOCAL){
 			return	this.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
-		}
-		return null;
+		}		
+		log.warn("unsupported searchType '" + searchType + "'");
+		return new ArrayList<>();
 	}
 
 	/**
