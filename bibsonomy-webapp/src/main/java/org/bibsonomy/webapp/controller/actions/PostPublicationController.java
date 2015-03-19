@@ -51,18 +51,23 @@ import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.enums.PersonResourceRelation;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.bibsonomy.webapp.util.GroupingCommandUtils;
+import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.importer.PublicationImporter;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.validation.PostPublicationCommandValidator;
 import org.bibsonomy.webapp.validation.PublicationValidator;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.ValidationUtils;
 
@@ -184,7 +189,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			log.debug("user uploads a file");
 			// get the (never empty) content or add corresponding errors
 			snippet = this.publicationImporter.handleFileUpload(command, this.errors);
-		} else {
+			} else {
 			/*
 			 * nothing given ->
 			 * user just opened the postPublication Dialogue OR
@@ -263,7 +268,18 @@ public class PostPublicationController extends AbstractEditPublicationController
 			this.errors.reject("error.upload.failed.parse", "Upload failed because of parser errors.");
 			return Views.POST_PUBLICATION;
 		}
-
+		/* case:
+		 * 	1) we are redirected to this page from a person page, and
+		 * 	2) a new thesis wants to be added
+		 * 
+		 * only one thesis can be added each time (by snippet).
+		 ***/
+			
+		if(command.getPerson_name_id()!=0 && posts.size() > 1){
+			this.errors.reject("error.add_new_thesis", "Only one new thesis is allowed to be added!");
+			return Views.POST_PUBLICATION;
+			}
+	
 		/*
 		 * If exactly one post has been extracted, and there were no parse exceptions, 
 		 * the edit post controller can handle the remaining work.

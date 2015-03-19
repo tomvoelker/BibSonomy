@@ -433,7 +433,7 @@
 						</fieldset>
 					</div>
 					<div class="modal-footer">
-						<form action="" method="post">
+						<form action="/postPublication/${command.person.mainName.id}/person" method="post">
 							<input type="hidden" name='formAction' value='newThesis'/>
 							<input type="submit" class="btn btn-primary pull-left" name='submit' value='${textNewThesisButton}' />
 						</form>

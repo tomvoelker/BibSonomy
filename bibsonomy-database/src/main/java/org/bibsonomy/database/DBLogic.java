@@ -3276,8 +3276,8 @@ public class DBLogic implements LogicInterface {
 		return this.personDBManager.getAlternateNames(id, this.dbSessionFactory.getDatabaseSession());
 	}
 	/**
-	 * @param parseInt
-	 * @return
+	 * @param id
+	 * @return PersonName
 	 */
 	public PersonName getPersonNameById(int id) {
 		return this.personDBManager.getPersonNameById(id, this.dbSessionFactory.getDatabaseSession());

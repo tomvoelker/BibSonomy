@@ -52,15 +52,19 @@ import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.PersonResourceRelation;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
@@ -787,6 +791,14 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			final String ratingUrl = this.urlGenerator.getCommunityRatingUrl(post);
 			return new ExtendedRedirectView(ratingUrl);
 			}
+		/**
+		 * if the user is adding a new thesis to a person's page, he should be redirected to that person's page
+		 * */
+		if (present(command.getPost().getRprs())){
+			ResourcePersonRelation rpr = post.getRprs().get(post.getRprs().size()-1);
+			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(rpr.getPersonName().getPersonId(), PersonNameUtils.serializePersonName(rpr.getPersonName().getPerson().getMainName()), ((BibTex)post.getResource()).getSimHash2(), command.getRequestedUser(), PersonResourceRelation.AUTHOR.toString()));
+			
+		}
 		return this.finalRedirect(loginUserName, post, command.getReferer());
 	}
 
@@ -817,6 +829,27 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		if (present(this.pingback) && !loginUser.isSpammer() && GroupUtils.isPublicGroup(post.getGroups())) {
 			this.pingback.sendPingback(post);
 		}
+
+		/* if this field is already initiated ...
+		 **/
+		if(command.getPerson_name_id()!=0){
+			
+			final ResourcePersonRelation rpr = new ResourcePersonRelation();
+			rpr.setPersonNameId(command.getPerson_name_id());
+			rpr.setSimhash1(post.getResource().getInterHash());
+			rpr.setSimhash2(post.getResource().getIntraHash());
+			rpr.setPubOwner(loginUser.getName());
+			rpr.setPersonName(this.logic.getPersonNameById(command.getPerson_name_id()));
+			rpr.setRelatorCode(PersonResourceRelation.AUTHOR.getRelatorCode());
+			
+			this.logic.addResourceRelation(rpr);
+			
+			if(!present(command.getPost().getRprs())){
+				command.getPost().setRprs(new ArrayList<ResourcePersonRelation>());
+			}
+			command.getPost().getRprs().add(rpr);
+		}
+	
 	}
 
 	/**
@@ -1106,5 +1139,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	public void setPingback(final Pingback pingback) {
 		this.pingback = pingback;
 	}
+
 
 }

@@ -347,6 +347,14 @@
 		<set type="parameter" name="requestedRole">$7</set>
 		<to last="true">/persondisambiguation</to>
 	</rule>
+	
+	<rule>
+ 		<name>/postPublication/PERSONID/person</name>
+		<from>^/+postPublication/(.+)/person$</from>
+		<set type="parameter" name="person_name_id">$1</set>
+		<to last="true">/postPublication</to>
+	</rule>
+	
 	<!-- ############## /concept pages ############### -->
 	<!-- /concept/user/USER/TAG -->
 	<rule>

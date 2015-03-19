@@ -123,7 +123,9 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	
 	private int compareVersion;
 	private List<String> differentEntryKeys;
-
+	
+	private int person_name_id;
+	
 	/**
 	 * @return saveAndRate
 	 */
@@ -506,5 +508,20 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	public void setApproved(boolean approved) {
 		this.approved = approved;
 	}
+
+	/**
+	 * @return the person_name_id
+	 */
+	public int getPerson_name_id() {
+		return this.person_name_id;
+	}
+
+	/**
+	 * @param person_name_id the person_name_id to set
+	 */
+	public void setPerson_name_id(int person_name_id) {
+		this.person_name_id = person_name_id;
+	}
+
 	
 }

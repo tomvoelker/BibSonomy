@@ -41,6 +41,7 @@
 					<hr />
 				</c:if>
 			</c:if>
+			<input type="hidden" name="person_name_id" value="${command.person_name_id}"/>	
 			<editpub:required post="${command.post}" autocompletion="$(false)"/>
 		</jsp:attribute>
 		

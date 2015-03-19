@@ -23,6 +23,7 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />	
 	<fmt:message key="post_bibtex.heading" var="msgPostPublication"/>
+
 	
 	<layout:layout 
 		loginUser="${command.context.loginUser}" 
@@ -36,6 +37,7 @@
 		
 			<c:set var="post" value="${command.post}"/>
 			
+						
 			<ul class="nav nav-tabs">
 				<li class="${command.selTab == 0 ? 'active' : ''}"><a href="?selTab=0#selTab0" data-toggle="tab"><fmt:message key="post_bibtex.manual.title" /></a></li>
 				<li class="${command.selTab == 1 ? 'active' : ''}"><a href="?selTab=1#selTab1" data-toggle="tab"><fmt:message key="post_bibtex.pub_snippet.snippet"/></a></li>
@@ -56,7 +58,8 @@
 						
 							<input type="hidden" name="selTab" value="0" />
 							<input type="hidden" name="ckey" value="${ckey}"/>
-									
+							<input type="hidden" name="person_name_id" value="${command.person_name_id}"/> 
+							
 							<editpub:required post="${post}" autocompletion="${true}" hideBibTeXKey="${true}"/>
 							
 							<div class="form-group">
@@ -127,7 +130,8 @@
 				        </batch:content>
 			        </fieldset>
 				</div> 
-			</c:if> 
+			</c:if>
+					
 			<br /><br />
 		</jsp:attribute>
 		
