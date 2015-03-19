@@ -1,4 +1,14 @@
+function setupPersonSearch(inputFieldSelector, buttonSelector, limitToTheses, groupByPerson) {
+	setupPersonAutocomplete(inputFieldSelector, function(data) {
+		$(buttonSelector).attr("data-person-name", data.personName);
+		$(buttonSelector).attr("data-extended-person-name", data.extendedPersonName);
+		$(buttonSelector).attr("data-person-id", data.personId);
+		// TODO: $(buttonSelector).attr("data-pub-interhash", data.res.inerhash);
+		$(buttonSelector).attr("data-person-name-id", data.personNameId);
+	});
+}
 
+//TODO: use single suggestiontree+lucene search with parameters limitToThesis and groupByPerson
 function setupPersonAutocomplete(inputFieldSelector, selectionHandler) {
 	// constructs the suggestion engine
 	var personNames = new Bloodhound({

@@ -20,7 +20,8 @@
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
 	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
-	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"> 
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
@@ -298,7 +299,7 @@
 						</div>
 						<div id='ownPublications' class='tab-pane'>
 							<br/>
-							<button style='width: 100%;' class='btn btn-default' data-toggle='modal' data-target='#addThesis'>${textAddThesisButton}</button>
+							<button style='width: 100%;' class='btn btn-default' data-toggle='modal' data-target='#addSupervisedThesis'>${textAddThesisButton}</button>
 							<hr/>
 							<c:choose>
 								<c:when test="${fn:length(command.advisedThesis) gt 0}">
@@ -410,43 +411,54 @@
 		</div>
 	</div>
 	
-	<div class="modal fade" id="addThesis" tabindex="-1" role="dialog"
-		aria-labelledby="addThesisLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-hidden="true">&amp;times;</button>
-						<h4 class="modal-title">${textModalAddThesisHeader}</h4>
-					</div>
-					
-					<div class="modal-body">
-						<fieldset>
-          					<div class="form-group">
-								<label for='addThesisAuto' class="control-label col-md-3">${textThesis}</label>
-        						<div class="col-md-7">
-        							<div class='input-group'>
-										<input class='typeahead form-control' id='addThesisAuto' type='text' name='addThesisAuto' autocomplete="off"/>
-									</div>
-								</div>
-							</div>
-						</fieldset>
-					</div>
-					<div class="modal-footer">
-						<form action="/postPublication/${command.person.mainName.id}/person" method="post">
-							<input type="hidden" name='formAction' value='newThesis'/>
-							<input type="submit" class="btn btn-primary pull-left" name='submit' value='${textNewThesisButton}' />
-						</form>
-						<form action="" method="post" class='form-inline'>
-							<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
-							<input type='hidden' name='formThesisId' value=''/>&#160;
-							<input type="hidden" name='formAction' value='addThesis' />
-							<input type="submit" class="btn btn-primary" name='submit' value='${textAddThesisButton}' />
-						</form>
-					</div>
-			</div>
-		</div>
-	</div>
+	<bs:modal modalTitle="${textModalAddThesisHeader}" id="addThesis">
+		<jsp:attribute name="modalBody">
+			<fieldset>
+				<div class="form-group">
+					<label for='addThesisAuto' class="control-label">${textThesis}</label>
+					<fmt:message key="person.show.modal.addThesis.placeholder" var="tmpMsg" />
+					<input class='form-control typeahead' id='addThesisAuto' type='text' name='addThesisAuto' autocomplete="off" placeholder="${tmpMsg}"/>
+				</div>
+			</fieldset>
+		</jsp:attribute>
+		<jsp:attribute name="modalFooter">
+			<form action="" method="post">
+				<input type="hidden" name='formAction' value='newThesis'/>
+				<input type="submit" class="btn btn-primary pull-left" name='submit' value='${textNewThesisButton}' />
+			</form>
+			<form action="" method="post" class='form-inline'>
+				<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
+				<input type='hidden' name='formThesisId' value=''/>&#160;
+				<input type="hidden" name='formAction' value='addThesis' />
+				<input type="submit" class="btn btn-primary" name='submit' id="addThesisBtn" value='${textAddThesisButton}' />
+			</form>
+		</jsp:attribute>
+	</bs:modal>
+	
+	<fmt:message key="person.show.modal.addSupervisedThesis.header" var="tmpMsg" />
+	<bs:modal modalTitle="${tmpMsg}" id="addSupervisedThesis">
+		<jsp:attribute name="modalBody">
+			<fieldset>
+				<div class="form-group">
+					<label for='addThesisAuto' class="control-label"><fmt:message key="person.show.modal.addSupervisedThesis.text" /></label>
+					<fmt:message key="person.show.modal.addSupervisedThesis.placeholder" var="tmpMsg" />
+					<input class='form-control typeahead' id='addSupervisedThesisAuto' type='text' name='addSupervisedThesisAuto' autocomplete="off" placeholder="${tmpMsg}"/>
+				</div>
+			</fieldset>
+		</jsp:attribute>
+		<jsp:attribute name="modalFooter">
+			<form action="/postPublication/${command.person.mainName.id}/person" method="post">
+				<input type="hidden" name='formAction' value='newThesis'/>
+				<input type="submit" class="btn btn-primary pull-left" name='submit' value='${textNewThesisButton}' />
+			</form>
+			<form action="" method="post" class='form-inline'>
+				<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
+				<input type='hidden' name='formThesisId' value=''/>&#160;
+				<input type="hidden" name='formAction' value='addThesis' />
+				<input type="submit" class="btn btn-primary" name='submit' id="addSupervisedThesisBtn" value='${textAddThesisButton}' />
+			</form>
+		</jsp:attribute>
+	</bs:modal>
 	
 	<div class="modal fade" id="addRole" tabindex="-1" role="dialog"
 		aria-labelledby="addRoleLabel" aria-hidden="true">
@@ -461,7 +473,7 @@
 						<fieldset>
 							<div class="form-group person-search">
 								<label for='addRoleAuto' class="control-label col-md-3">${textPerson}</label>
-								<fmt:message key="person.show.modal.addrole.placeholder" var="textModalAddRolePlaceholder" />
+								<fmt:message key="person.show.modal.addRole.placeholder" var="textModalAddRolePlaceholder" />
 								<input class='form-control typeahead' id='addRoleAuto' type='text' name='addRoleAuto' autocomplete="off" placeholder="${textModalAddRolePlaceholder}"/>
 							</div>
 						</fieldset>

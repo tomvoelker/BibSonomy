@@ -1,4 +1,9 @@
-//instantiate the bloodhound suggestion engine
+$(document).ready(function() {
+	setupPersonSearch("#addThesisAuto", "#addThesisBtn", true, false);
+	setupPersonSearch("#addSupervisedThesisAuto", "#addSupervisedThesisBtn", true, false);
+});
+
+/*
 $(document).ready(function() {
 	// constructs the suggestion engine
 	var unix = Math.round(+new Date());
@@ -27,4 +32,5 @@ $(document).ready(function() {
 	thesisTypeahead.on('typeahead:selected', function(evt, data) {
 		alert();
 	});
-}); 
+});
+*/ 

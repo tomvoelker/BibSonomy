@@ -27,13 +27,14 @@
 package org.bibsonomy.database;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-import static org.bibsonomy.util.ValidationUtils.presentValidGroupId;
 
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,6 +60,8 @@ import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagRelation;
@@ -131,6 +134,8 @@ import org.bibsonomy.model.Review;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
+import org.bibsonomy.model.comparators.BibTexPostComparator;
+import org.bibsonomy.model.comparators.ResourcePersonRelationByPostComparator;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonResourceRelation;
@@ -165,6 +170,7 @@ import org.bibsonomy.util.ExceptionUtils;
  */
 public class DBLogic implements LogicInterface {
 	private static final Log log = LogFactory.getLog(DBLogic.class);
+	private static final Comparator<ResourcePersonRelation> resourcePersonRelationComparator = new ResourcePersonRelationByPostComparator(new BibTexPostComparator(Arrays.asList(SortKey.YEAR, SortKey.AUTHOR), Arrays.asList(SortOrder.DESC, SortOrder.ASC)));
 
 	/*
 	 * help maps for post managers and discussion managers
@@ -3304,7 +3310,9 @@ public class DBLogic implements LogicInterface {
 			for (ResourcePersonRelation rpr : relations) {
 				rpr.getPost().setRprs(this.personDBManager.getResourcePersonRelationsByPost(rpr.getPost(), session));
 			}
+			Collections.sort(relations, resourcePersonRelationComparator);
 			return relations;
+			
 		} finally {
 			session.close();
 		}
