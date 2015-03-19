@@ -88,7 +88,8 @@ import org.springframework.validation.ValidationUtils;
 import recommender.core.Recommender;
 import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.impl.database.RecommenderStatisticsManager;
-
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 /**
  * A generic edit post controller for any resource
  * 
@@ -698,7 +699,8 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		}
 		
 		// https problem
-		if (!present(referer) || referer.matches("(.*)https%3A%2F%2F(.*)")) {
+		Pattern httpsPattern = Pattern.compile("(.*)https%3A%2F%2F(.*)");
+		if (!present(referer) || httpsPattern.matcher(referer).find()) {
 			return new ExtendedRedirectView(referer);
 			//return super.finalRedirect(userName, post, post.getResource().getUrl());
 		}
