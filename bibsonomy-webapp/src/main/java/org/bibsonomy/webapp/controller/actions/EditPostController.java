@@ -698,7 +698,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			return new ExtendedRedirectView(this.urlGenerator.getUserUrlByUserName(userName));
 		}
 		
-		// https problem
+		/*
+		 * If there is no referer URL given, or if we come from a
+		 * https page, redirect to the coming page (https page) and don't stay in the page from bibsonomy 
+		 * after saving
+		 */
 		Pattern httpsPattern = Pattern.compile("(.*)https%3A%2F%2F(.*)");
 		if (!present(referer) || httpsPattern.matcher(referer).find()) {
 			return new ExtendedRedirectView(referer);
