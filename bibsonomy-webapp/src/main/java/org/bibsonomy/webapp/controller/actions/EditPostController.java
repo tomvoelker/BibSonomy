@@ -696,6 +696,13 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		if (!present(referer) || referer.matches(".*/postPublication$") || referer.matches(".*/postBookmark$") || referer.contains("/history/")) {
 			return new ExtendedRedirectView(this.urlGenerator.getUserUrlByUserName(userName));
 		}
+		
+		// https problem
+		if (!present(referer) || referer.matches("(.*)https%3A%2F%2F(.*)")) {
+			return new ExtendedRedirectView(referer);
+			//return super.finalRedirect(userName, post, post.getResource().getUrl());
+		}
+		
 		/*
 		 * redirect to referer URL
 		 */

@@ -76,11 +76,6 @@ public class EditPublicationController extends AbstractEditPublicationController
 			return new ExtendedRedirectView(publicationUrl + "?referer=" + ref);
 		}
 		
-		System.out.println("edit publication controller" + referer);
-		if (!present(referer) || referer.matches("(.*)https%3A%2F%2F(.*)")) {
-			return super.finalRedirect(userName, post, post.getResource().getUrl());
-		}
-		
 		return super.finalRedirect(userName, post, referer);
 	}
 
