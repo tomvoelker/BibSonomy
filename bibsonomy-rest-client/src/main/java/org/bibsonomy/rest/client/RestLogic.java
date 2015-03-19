@@ -906,4 +906,12 @@ public class RestLogic implements LogicInterface {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonNameById(int)
+	 */
+	@Override
+	public PersonName getPersonNameById(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
