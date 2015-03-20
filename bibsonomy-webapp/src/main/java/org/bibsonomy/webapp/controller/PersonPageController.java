@@ -12,6 +12,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonResourceRelation;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.services.URLGenerator;
@@ -94,9 +95,9 @@ public class PersonPageController extends SingleResourceListController implement
 			JSONObject jsonPersonName = new JSONObject();
 			jsonPersonName.put("personId", new Integer(personName.getPersonId()));
 			jsonPersonName.put("personNameId", new Integer(personName.getId()));
-			jsonPersonName.put("personName", personName.toString());
+			jsonPersonName.put("personName", BibTexUtils.cleanBibTex(personName.toString()));
 			// FIXME: this is only a quick hack and must be replaced!
-			jsonPersonName.put("extendedPersonName", getExtendedPersonName(personName));
+			jsonPersonName.put("extendedPersonName", BibTexUtils.cleanBibTex(getExtendedPersonName(personName)));
 			
 			array.add(jsonPersonName);
 		}
