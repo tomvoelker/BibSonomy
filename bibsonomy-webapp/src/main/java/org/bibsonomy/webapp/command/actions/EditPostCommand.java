@@ -124,7 +124,8 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	private int compareVersion;
 	private List<String> differentEntryKeys;
 	
-	private int person_name_id;
+	private int personId;
+	private String person_lastName;
 	
 	/**
 	 * @return saveAndRate
@@ -510,17 +511,31 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	}
 
 	/**
-	 * @return the person_name_id
+	 * @return the person_lastName
 	 */
-	public int getPerson_name_id() {
-		return this.person_name_id;
+	public String getPerson_lastName() {
+		return this.person_lastName;
 	}
 
 	/**
-	 * @param person_name_id the person_name_id to set
+	 * @param person_lastName the person_lastName to set
 	 */
-	public void setPerson_name_id(int person_name_id) {
-		this.person_name_id = person_name_id;
+	public void setPerson_lastName(String person_lastName) {
+		this.person_lastName = person_lastName;
+	}
+
+	/**
+	 * @return the personId
+	 */
+	public int getPersonId() {
+		return this.personId;
+	}
+
+	/**
+	 * @param personId the personId to set
+	 */
+	public void setPersonId(int personId) {
+		this.personId = personId;
 	}
 
 	

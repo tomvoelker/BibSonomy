@@ -422,7 +422,7 @@
 			</fieldset>
 		</jsp:attribute>
 		<jsp:attribute name="modalFooter">
-			<form action="" method="post">
+			<form action="/postPublication/${command.person.id}/${command.person.mainName.lastName}" method="post">
 				<input type="hidden" name='formAction' value='newThesis'/>
 				<input type="submit" class="btn btn-primary pull-left" name='submit' value='${textNewThesisButton}' />
 			</form>
@@ -447,7 +447,7 @@
 			</fieldset>
 		</jsp:attribute>
 		<jsp:attribute name="modalFooter">
-			<form action="/postPublication/${command.person.mainName.id}/person" method="post">
+			<form action="" method="post">
 				<input type="hidden" name='formAction' value='newThesis'/>
 				<input type="submit" class="btn btn-primary pull-left" name='submit' value='${textNewThesisButton}' />
 			</form>

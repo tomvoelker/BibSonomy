@@ -44,7 +44,6 @@ public interface PersonLogicInterface {
 	public void createOrUpdatePerson(Person person);
 	
 	public Person getPersonById(int id);
-	public PersonName getPersonNameById(int id);
 	
 	public void removePersonName(Integer personNameId);
 

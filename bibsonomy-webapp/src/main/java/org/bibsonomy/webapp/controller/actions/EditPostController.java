@@ -55,6 +55,8 @@ import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
@@ -832,22 +834,32 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 		/* if this field is already initiated ...
 		 **/
-		if(command.getPerson_name_id()!=0){
+		if(command.getPersonId()!=0){
 			
-			final ResourcePersonRelation rpr = new ResourcePersonRelation();
-			rpr.setPersonNameId(command.getPerson_name_id());
-			rpr.setSimhash1(post.getResource().getInterHash());
-			rpr.setSimhash2(post.getResource().getIntraHash());
-			rpr.setPubOwner(loginUser.getName());
-			rpr.setPersonName(this.logic.getPersonNameById(command.getPerson_name_id()));
-			rpr.setRelatorCode(PersonResourceRelation.AUTHOR.getRelatorCode());
-			
-			this.logic.addResourceRelation(rpr);
-			
-			if(!present(command.getPost().getRprs())){
-				command.getPost().setRprs(new ArrayList<ResourcePersonRelation>());
+			Person person = this.logic.getPersonById(command.getPersonId());
+			PersonName personName = new PersonName();
+			for(PersonName personname: person.getNames()) {
+				if(personname.getLastName().contains(command.getPerson_lastName())){
+					personName = personname;
+					break;
+				}
 			}
-			command.getPost().getRprs().add(rpr);
+			if(present(personName)){
+				final ResourcePersonRelation rpr = new ResourcePersonRelation();
+				rpr.setPersonNameId(personName.getId());
+				rpr.setSimhash1(post.getResource().getInterHash());
+				rpr.setSimhash2(post.getResource().getIntraHash());
+				rpr.setPubOwner(loginUser.getName());
+				rpr.setPersonName(personName);
+				rpr.setRelatorCode(PersonResourceRelation.AUTHOR.getRelatorCode());
+				
+				this.logic.addResourceRelation(rpr);
+				
+				if(!present(command.getPost().getRprs())){
+					command.getPost().setRprs(new ArrayList<ResourcePersonRelation>());
+				}
+				command.getPost().getRprs().add(rpr);
+			}
 		}
 	
 	}

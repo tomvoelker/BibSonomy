@@ -23,7 +23,8 @@
 			<!-- XXX: is a multipart/form-data request, this has no effect (currently)! -->
 			<input type="hidden" name="ckey" value="${ckey}"/>
 			
-			<input type="hidden" name="person_name_id" value="${command.person_name_id}" />
+			<input type="hidden" name="personId" value="${command.personId}" />
+			<input type="hidden" name="person_lastName" value="${command.person_lastName}" />
 			 
 			<!-- 
 				file, group, SUBMIT

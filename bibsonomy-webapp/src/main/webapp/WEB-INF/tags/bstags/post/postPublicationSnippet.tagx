@@ -24,8 +24,9 @@
 			
 				<input type="hidden" name="selTab" value="1" />
 				<input type="hidden" name="ckey" value="${ckey}" />
-				<input type="hidden" name="person_name_id" value="${command.person_name_id}" /> 
-	
+				<input type="hidden" name="personId" value="${command.personId}" /> 
+				<input type="hidden" name="person_lastName" value="${command.person_lastName}" />
+				
 				<bsform:textarea labelColSpan="2" inputColSpan="10" path="selection" id="selection" />
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="${fn:escapeXml(id)}">

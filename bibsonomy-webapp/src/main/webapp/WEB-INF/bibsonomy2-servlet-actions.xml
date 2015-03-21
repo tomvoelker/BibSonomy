@@ -316,7 +316,9 @@
 								<value>ckey</value>
 								<value>tags</value>
 								<value>postsErrorList</value>
-								<value>person_name_id</value>
+								<value>personId</value>
+								<value>person_lastName</value>
+								
 								
 							</list>
 						</property>
@@ -446,7 +448,9 @@
 								<value>saveAndRate</value>
 								<value>approved</value>
 								
-								<value>person_name_id</value>
+								<value>personId</value>
+								<value>person_lastName</value>
+								
 							</list>
 						</property>
 					</bean>
@@ -474,7 +478,8 @@
 						<property name="allowedFields">
 							<list>
 								<value>selTab</value>
-								<value>person_name_id</value>
+								<value>personId</value>
+								<value>person_lastName</value>
 							</list>
 						</property>
 					</bean>
