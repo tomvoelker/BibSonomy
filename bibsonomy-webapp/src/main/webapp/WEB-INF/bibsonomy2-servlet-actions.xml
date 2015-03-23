@@ -318,6 +318,8 @@
 								<value>postsErrorList</value>
 								<value>personId</value>
 								<value>person_lastName</value>
+								<value>person_role</value>
+								
 								
 								
 							</list>
@@ -450,6 +452,8 @@
 								
 								<value>personId</value>
 								<value>person_lastName</value>
+								<value>person_role</value>
+								
 								
 							</list>
 						</property>
@@ -480,6 +484,8 @@
 								<value>selTab</value>
 								<value>personId</value>
 								<value>person_lastName</value>
+								<value>person_role</value>
+								
 							</list>
 						</property>
 					</bean>

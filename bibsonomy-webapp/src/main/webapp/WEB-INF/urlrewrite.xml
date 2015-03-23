@@ -349,13 +349,21 @@
 	</rule>
 	
 	<rule>
+ 		<name>/postPublication/SUPERVISOR/PERSONID/PERSONLASTNAME</name>
+		<from>^/+postPublication/+(.+)/+(.+)/+(.+)$</from>
+		<set type="parameter" name="person_role">$1</set>
+		<set type="parameter" name="personId">$2</set>
+		<set type="parameter" name="person_lastName">$3</set>
+		<to last="true">/postPublication</to>
+	</rule> 
+	
+	<rule>
  		<name>/postPublication/PERSONID/PERSONLASTNAME</name>
 		<from>^/+postPublication/+(.+)/+(.+)$</from>
 		<set type="parameter" name="personId">$1</set>
 		<set type="parameter" name="person_lastName">$2</set> 
 		<to last="true">/postPublication</to>
 	</rule>
-	
 	<!-- ############## /concept pages ############### -->
 	<!-- /concept/user/USER/TAG -->
 	<rule>

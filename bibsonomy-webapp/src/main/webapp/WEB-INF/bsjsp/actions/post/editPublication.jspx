@@ -12,7 +12,8 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
-	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication">
+	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/bstags/post">
 
 
 	<!--
@@ -43,10 +44,11 @@
 			</c:if>
 			<input type="hidden" name="personId" value="${command.personId}"/>
 			<input type="hidden" name="person_lastName" value="${command.person_lastName}"/>
+			<input type="hidden" name="person_role" value="${command.person_role}"/>
 				
 			<editpub:required post="${command.post}" autocompletion="$(false)"/>
 		</jsp:attribute>
-		
+	
 		<jsp:attribute name="detailedInformation">
 		
 			<editpub:files post="${command.post}" />

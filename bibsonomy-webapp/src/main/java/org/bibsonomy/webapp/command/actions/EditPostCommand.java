@@ -126,6 +126,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	
 	private int personId;
 	private String person_lastName;
+	private String person_role;
 	
 	/**
 	 * @return saveAndRate
@@ -536,6 +537,20 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 */
 	public void setPersonId(int personId) {
 		this.personId = personId;
+	}
+
+	/**
+	 * @return the person_role
+	 */
+	public String getPerson_role() {
+		return this.person_role;
+	}
+
+	/**
+	 * @param person_role the person_role to set
+	 */
+	public void setPerson_role(String person_role) {
+		this.person_role = person_role;
 	}
 
 	

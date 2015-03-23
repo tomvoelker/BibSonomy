@@ -832,7 +832,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			this.pingback.sendPingback(post);
 		}
 
-		/* if this field is already initiated ...
+		/* if this field is already initiated, it means that we have come from a person page ...
 		 **/
 		if(command.getPersonId()!=0){
 			
@@ -846,12 +846,18 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			}
 			if(present(personName)){
 				final ResourcePersonRelation rpr = new ResourcePersonRelation();
+			
 				rpr.setPersonNameId(personName.getId());
 				rpr.setSimhash1(post.getResource().getInterHash());
 				rpr.setSimhash2(post.getResource().getIntraHash());
 				rpr.setPubOwner(loginUser.getName());
 				rpr.setPersonName(personName);
-				rpr.setRelatorCode(PersonResourceRelation.AUTHOR.getRelatorCode());
+				if(present(command.getPerson_role())){// if a supervisor is adding a new thesis
+					rpr.setRelatorCode(command.getPerson_role().split("supervisor,")[1]);
+				}
+				else{
+					rpr.setRelatorCode(PersonResourceRelation.AUTHOR.getRelatorCode());
+				}
 				
 				this.logic.addResourceRelation(rpr);
 				

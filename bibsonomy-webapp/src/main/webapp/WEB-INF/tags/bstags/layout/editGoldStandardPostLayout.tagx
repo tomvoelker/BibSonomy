@@ -181,6 +181,15 @@
 							<jsp:invoke fragment="postApproval"/>
 						</c:if>
 		               
+		               <c:if test="${command.person_role eq 'supervisor'}">
+		               		
+							<bsform:fieldset legendKey="post.person.role">
+								<jsp:attribute name="content">
+									<post:personRole_groupBox />
+								</jsp:attribute>
+							</bsform:fieldset>
+						</c:if>
+		
 		                <!--+
 		               
 		               		| buttons 
