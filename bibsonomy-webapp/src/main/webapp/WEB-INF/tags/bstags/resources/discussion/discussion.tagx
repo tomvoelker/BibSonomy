@@ -82,10 +82,6 @@
 		    		<!-- TODO: add tips for reviewing a resource !--> 
 	    		</div>
 
-				<!-- <div id="createComment" class="initiallyHidden">
-			    	<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}" rating="${false}"/>
-			    	<comment:commentForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}"/>
-			    </div> --> 
 			</c:if>
 
 			<discussionItem:discussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" />

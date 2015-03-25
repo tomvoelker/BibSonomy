@@ -37,5 +37,14 @@ public interface DatabaseSchemaInformation {
 	 * @return the max length of the property of the resource class
 	 */
 	public int getMaxColumnLengthForProperty(final Class<?> resourceClass, final String property);
+	
+	/**
+	 * @param resourceClass
+	 * @param property
+	 * @param type
+	 * @param resultType
+	 * @return the converted  type
+	 */
+	public <T> T callTypeHandler(final Class<?> resourceClass, final String property, final Object type, final Class<T> resultType);
 
 }

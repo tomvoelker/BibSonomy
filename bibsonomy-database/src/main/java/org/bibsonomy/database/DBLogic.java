@@ -1084,7 +1084,7 @@ public class DBLogic implements LogicInterface {
 			if (group.equals(GroupUtils.buildPrivateGroup())) {
 				group.setGroupId(GroupUtils.buildPrivateGroup().getGroupId());
 			} else {
-				group.setGroupId(GroupUtils.getPublicGroup().getGroupId());
+				group.setGroupId(GroupUtils.buildPublicGroup().getGroupId());
 			}
 		} else {
 			/*
@@ -1118,7 +1118,7 @@ public class DBLogic implements LogicInterface {
 
 		// no group specified -> make it public
 		if (groups.isEmpty()) {
-			groups.add(GroupUtils.getPublicGroup());
+			groups.add(GroupUtils.buildPublicGroup());
 		}
 	}
 
