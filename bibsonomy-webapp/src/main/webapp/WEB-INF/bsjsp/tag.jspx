@@ -27,10 +27,20 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.tag" formAction="/tag/" formInputName="tag" formInputValue="${command.requestedTags}">
+			<c:choose>
+				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL'}">					
+					<c:set var="pathMessageKey" value="navi.federatedTag"/>
+					<c:set var="tagUrl" value="${relativeUrlGenerator.getTagUrlByTagName(command.requestedTags)}?scope=${command.scope.name()}"/>
+				</c:when>
+				<c:otherwise>
+					<c:set var="pathMessageKey" value="navi.tag"/>							
+					<c:set var="tagUrl" value="${relativeUrlGenerator.getTagUrlByTagName(command.requestedTags)}"/>
+				</c:otherwise>
+			</c:choose>
+			<parts:search pathMessageKey="${pathMessageKey}" formAction="/tag/" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="afterInput">
 					<!--  sorting options -->
-					<c:url var="tagUrl" value="${relativeUrlGenerator.getTagUrlByTagName(command.requestedTags)}"/>
+					<c:url var="tagUrl" value="${tagUrl}"/>
 					<span style="font-size: 65%">
 						<fmt:message key="sort.orderBy"/>
 						(

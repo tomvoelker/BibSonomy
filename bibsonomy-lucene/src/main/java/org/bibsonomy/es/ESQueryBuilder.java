@@ -273,11 +273,12 @@ public abstract class ESQueryBuilder {
 		}
 
 		if (present(titleSearchTerms)) {
-			//TODO
-		}
+			QueryBuilder titleSearchQuery = termQuery(LuceneFieldNames.TITLE, titleSearchTerms);
+			mainQueryBuilder.must(titleSearchQuery);		}
 		
 		if (present(authorSearchTerms)) {
-			//TODO
+			QueryBuilder authorSearchQuery = termQuery(LuceneFieldNames.AUTHOR, authorSearchTerms);
+			mainQueryBuilder.must(authorSearchQuery);			
 		}
 		
 		// Add the requested tags
@@ -307,7 +308,7 @@ public abstract class ESQueryBuilder {
 		}
 		
 		// all done
-		log.debug("[Full text] Search query: " + mainQueryBuilder.toString());
+		log.debug("Search query: " + mainQueryBuilder.toString());
 
 		return mainQueryBuilder;
 	}

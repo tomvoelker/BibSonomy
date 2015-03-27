@@ -74,15 +74,15 @@
 			<!-- display the tag -->
 			<c:if test="${tag.usercount >= cmd.minFreq or tagboxMinfreqStyle == 'none'}">
 				<li class="${tagclass}">
-					<jspx:element name="a">
+					<jspx:element name="a">					
 						<c:choose>
-							<c:when test="${scope eq 'FEDERATED'}">
-								<jspx:attribute name="href">/${fn:escapeXml(mtl:getPath(requPath))}/${fn:escapeXml(tag.name)}?	scope=${scope}</jspx:attribute>
+							<c:when test="${not empty scope and scope ne 'LOCAL'}">
+								<jspx:attribute name="href">/${fn:escapeXml(mtl:getPath(requPath))}/${fn:escapeXml(tag.name)}?scope=${scope}</jspx:attribute>
 							</c:when>
 							<c:otherwise>
 								<jspx:attribute name="href">/${fn:escapeXml(mtl:getPath(requPath))}/${fn:escapeXml(tag.name)}</jspx:attribute>
 							</c:otherwise>
-						</c:choose>	
+						</c:choose>
 						<jspx:attribute name="title"><c:if test="${empty suppressTitle or suppressTitle == false }">${tag.usercount}<c:out value=" "/>${posts}</c:if></jspx:attribute>
 						<c:if test="${not (tagSizeMode eq 'detail')}">
 							<jspx:attribute name="style">font-size:${mtl:computeTagFontsize(tag.usercount, minTagFrequency, maxTagFrequency, tagSizeMode)}%</jspx:attribute>

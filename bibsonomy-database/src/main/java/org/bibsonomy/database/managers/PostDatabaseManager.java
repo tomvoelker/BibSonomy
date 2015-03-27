@@ -323,7 +323,39 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		}
 
 		return this.postList("get" + this.resourceClassName + "ByTagNames", param, session);
-	}	
+	}
+	
+	/** 
+	 * <em>/tag/EinTag</em>, <em>/viewable/EineGruppe/EinTag</em><br/>
+	 * <br/>
+	 * 
+	 * On the <em>/tag</em> page only public entries are shown (groupType must
+	 * be set to public) which have all of the given tags attached. On the
+	 * <em>/viewable/</em> page only posts are shown which are set viewable to
+	 * the given group and which have all of the given tags attached.
+	 * 
+	 * @param groupId
+	 * @param tagIndex
+	 * @param searchType 
+	 * @param order
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return a list of posts
+	 * 
+	 */
+	public List<Post<R>> getPostsByTagNames(final int groupId, final List<TagIndex> tagIndex, final SearchType searchType, final Order order, final int limit, final int offset, final DBSession session) {
+		if(SearchType.FEDERATED == searchType){
+			List<String> tagIndexNames = new ArrayList<String>();
+			for(TagIndex tag:tagIndex){
+				tagIndexNames.add(tag.getTagName());
+			}
+			return this.resourceSearch.getPosts(null, null, null, null, null, searchType, null, null, null, tagIndexNames, null, null, null, null, order, limit, offset);
+
+		}
+		
+		return this.getPostsByTagNames(groupId, tagIndex, order, limit, offset, session);
+	}
 
 	/**
 	 * <em>/user/MaxMustermann/EinTag</em><br/>
