@@ -1,0 +1,19 @@
+==личные данные==
+<image style="float:right;padding-right:15px"/>
+;Имя: <name />
+;Город: <location />
+;День рождения: <birthday />
+;Профессия: <profession />
+;Учреждение: <institution />
+
+==научные интересы==
+<interests />
+
+==мои хобби==
+<hobbies />
+
+==мои закладки==
+<bookmarks />
+
+==мои публикации==
+<publications tags="myown" layout="plain" />
