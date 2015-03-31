@@ -104,7 +104,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 	private static final String TAGS_KEY = "tags";
 	protected static final String LOGIN_NOTICE = "login.notice.post.";
-	private static final Pattern HTTPS_PATTERN = Pattern.compile("(.*)https%3A%2F%2F(.*)");
 	
 	private Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> recommender;
 	private Pingback pingback;
@@ -699,20 +698,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		}
 		
 		/*
-		 * If there is no referer URL given, or if we come from a
-		 * https page, redirect to the coming page (https page) and don't stay in the page from bibsonomy 
-		 * after saving
+		 * redirect to URL
 		 */
-		System.out.println(referer);
-		
-		if (present (post.getResource().getUrl()) && post.getResource().getUrl().toLowerCase().startsWith("https:")) {
-			return new ExtendedRedirectView(post.getResource().getUrl());
-		}
-		
-		/*
-		 * redirect to referer URL
-		 */
-		return new ExtendedRedirectView(referer);
+		return new ExtendedRedirectView(post.getResource().getUrl());
 	}
 
 	private View handleCreatePost(final COMMAND command, final RequestWrapperContext context, final User loginUser, final Post<RESOURCE> post) {
