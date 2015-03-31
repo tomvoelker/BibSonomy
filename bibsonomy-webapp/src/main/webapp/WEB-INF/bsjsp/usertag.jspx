@@ -39,35 +39,23 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-		<ul>
-			<div class="smalltext">
-				<parts:tagsAndConceptsForSidebar />
-			</div>
+			<parts:tagsAndConceptsForSidebar />
 
-			<!-- display related tags -->
-			<li>
-				<sidebar:sidebarHeader textKey="relatedtags" />
-				<tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.order}"/>
-			</li>
+			<sidebar:relatedTagsItem requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.order}"/>
 			
+			<sidebar:conceptsItem 
+				cmd="${command.concepts}" 
+				usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" 
+				requestedUserName="${command.requestedUser}"
+				headingTitleKey="tagrelations.user.title"
+				headingLink="${relativeUrlGenerator.getConceptsUrlByString(command.requestedUser)}"/>
 			
-			<!-- display user's tag relations -->
-			<li>
-				<sidebar:sidebarHeader>
-					<jsp:attribute name="text">
-						<fmt:message key="tagrelations.title" var="tagRelationsTitle"/>
-						<fmt:message key="tagrelations"/><c:out value=" " /><small>(<a href="${relativeUrlGenerator.getConceptsUrlByString(command.requestedUser)}" title="${tagRelationsTitle}"><fmt:message key="overview"/></a>)</small>
-					</jsp:attribute>
-				</sidebar:sidebarHeader>
-				<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
-			</li>
-			
-			<!-- display tags -->
-			<li>
-				<sidebar:sidebarHeader textKey="tags" />
-				<tags:cloud requPath="${mtl:getLowerPath(requPath)}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user"  showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-			</li>
-		</ul>
+			<sidebar:sidebarTagCloudItem 
+				requPath="${mtl:getLowerPath(requPath)}" 
+				cmd="${command.tagcloud}" 
+				tagboxMinfreqStyle="user" 
+				tagSizeMode="user"  
+				showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 		</jsp:attribute>
 		
 	</layout:resourceLayout>
