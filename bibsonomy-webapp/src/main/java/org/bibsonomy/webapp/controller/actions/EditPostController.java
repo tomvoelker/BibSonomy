@@ -104,7 +104,8 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 	private static final String TAGS_KEY = "tags";
 	protected static final String LOGIN_NOTICE = "login.notice.post.";
-
+	private static final Pattern HTTPS_PATTERN = Pattern.compile("(.*)https%3A%2F%2F(.*)");
+	
 	private Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> recommender;
 	private Pingback pingback;
 	private Captcha captcha;
@@ -693,7 +694,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * FIXME: if we are coming from /bibtex/HASH* or /url/HASH* and the hash
 		 * has changed, we should redirect to the corresponding new page
 		 */
-		System.out.println("edit post controller" + referer);
 		if (!present(referer) || referer.matches(".*/postPublication$") || referer.matches(".*/postBookmark$") || referer.contains("/history/")) {
 			return new ExtendedRedirectView(this.urlGenerator.getUserUrlByUserName(userName));
 		}
@@ -703,10 +703,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * https page, redirect to the coming page (https page) and don't stay in the page from bibsonomy 
 		 * after saving
 		 */
-		Pattern httpsPattern = Pattern.compile("(.*)https%3A%2F%2F(.*)");
-		if (!present(referer) || httpsPattern.matcher(referer).find()) {
-			return new ExtendedRedirectView(referer);
-			//return super.finalRedirect(userName, post, post.getResource().getUrl());
+		System.out.println(referer);
+		
+		if (present (post.getResource().getUrl()) && post.getResource().getUrl().toLowerCase().startsWith("https:")) {
+			return new ExtendedRedirectView(post.getResource().getUrl());
 		}
 		
 		/*

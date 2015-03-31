@@ -91,7 +91,7 @@ public class BibTex extends Resource {
 	private String year;
 	private String type;
 	private int scraperId;
-	private String url;
+
 	// TODO: rename to privateNote
 	// TODO: this is user specific and should be moved to the post
 	private String privnote;
@@ -563,20 +563,6 @@ public class BibTex extends Resource {
 	 */
 	public String getSimHash3() {
 		return SimHash.getSimHash3();
-	}
-
-	/**
-	 * @return url
-	 */
-	public String getUrl() {
-		return this.url;
-	}
-
-	/**
-	 * @param url
-	 */
-	public void setUrl(final String url) {
-		this.url = url;
 	}
 
 	@Override

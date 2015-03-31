@@ -37,25 +37,7 @@ import org.bibsonomy.util.StringUtils;
 public class Bookmark extends Resource {
 	private static final long serialVersionUID = 8540672660698453421L;
 	
-	/**
-	 * An {@link URL} pointing to some website.
-	 * FIXME: Use URL instead of String
-	 */
-	private String url;
 
-	/**
-	 * @return url
-	 */
-	public String getUrl() {
-		return this.url;
-	}
-
-	/**
-	 * @param url
-	 */
-	public void setUrl(final String url) {
-		this.url = url;
-	}
 
 	/**
 	 * bookmarks use the same hash value for both intrahash and interhash
@@ -67,11 +49,11 @@ public class Bookmark extends Resource {
 
 	@Override
 	public void recalculateHashes() {
-		this.setIntraHash(StringUtils.getMD5Hash(this.url));
+		this.setIntraHash(StringUtils.getMD5Hash(getUrl()));
 	}
 	
 	@Override
 	public String toString() {
-		return super.toString() + " = <" + url + ">";
+		return super.toString() + " = <" + getUrl() + ">";
 	}
 }
