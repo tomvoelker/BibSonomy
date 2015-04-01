@@ -1,6 +1,6 @@
 <div style="margin-bottom:1em">
-\format[AuthorLastFirst,HTMLChars2,AntiScriptInjection,MittelalterPersonNamesFormatter,MittelalterAndsReplacer]{\author}\begin{editor}
-; \format[AuthorLastFirst,HTMLChars2,AntiScriptInjection,MittelalterPersonNamesFormatter,MittelalterAndsReplacer]{\editor}\end{editor}:
+\format[AuthorLastFirst,HTMLCharsAntiScript,MittelalterPersonNamesFormatter,MittelalterAndsReplacer]{\author}\begin{editor}
+; \format[AuthorLastFirst,HTMLCharsAntiScript,MittelalterPersonNamesFormatter,MittelalterAndsReplacer]{\editor}\end{editor}:
 \format[AntiScriptInjection]{\title}\begin{volume}.
 \format[AntiScriptInjection]{\volume}\end{volume}\begin{number}.
 \format[AntiScriptInjection]{\number}\end{number}.

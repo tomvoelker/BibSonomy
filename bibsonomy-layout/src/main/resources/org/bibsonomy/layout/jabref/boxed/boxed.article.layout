@@ -1,16 +1,16 @@
 <div class="wo-publ" id="\bibtexkey">
   <a class="title" href="/bibtex/2\intraHash/\username">\format[HTMLChars,RemoveLatexCommands,AntiScriptInjection]{\title}</a>
   \begin{author}
-    <div class="author">\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\author}</div>
+    <div class="author">\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLCharsAntiScript]{\author}</div>
   \end{author}
   <div class="meta">
-	\begin{journal}\format[HTMLChars,AntiScriptInjection]{\journal}\end{journal}\begin{volume}, <strong>\format[HTMLChars,AntiScriptInjection]{\volume}</strong>(\format[HTMLChars,AntiScriptInjection]{\number})\end{volume}\begin{pages} \format[FormatPagesForHTML,AntiScriptInjection]{\pages}\end{pages}\begin{year} (\format[HTMLChars,AntiScriptInjection]{\year})\end{year}
+	\begin{journal}\format[HTMLCharsAntiScript]{\journal}\end{journal}\begin{volume}, <strong>\format[HTMLCharsAntiScript]{\volume}</strong>(\format[HTMLCharsAntiScript]{\number})\end{volume}\begin{pages} \format[FormatPagesForHTML,AntiScriptInjection]{\pages}\end{pages}\begin{year} (\format[HTMLCharsAntiScript]{\year})\end{year}
     \begin{url}
     <a class="pdf" href="\url">[pdf]</a>
     \end{url}
   </div>
   <a href="\url"><img src="/documents/\intraHash/\username/?preview=SMALL" alt="" /></a>
   \begin{abstract}
-  <div class="abstract">\format[HTMLChars,AntiScriptInjection]{\abstract}</div>
+  <div class="abstract">\format[HTMLCharsAntiScript]{\abstract}</div>
   \end{abstract}
 </div>

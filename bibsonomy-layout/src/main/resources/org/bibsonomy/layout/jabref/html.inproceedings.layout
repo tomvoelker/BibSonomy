@@ -40,13 +40,13 @@
 
 		\begin{author}
 		<div class="bibtex_author">
-			\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\author}
+			\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLCharsAntiScript]{\author}
 		</div>
 		\end{author}
 
 		\begin{booktitle}
 		<div class="bibtex_journal">
-			\format[HTMLChars,AntiScriptInjection]{\booktitle}
+			\format[HTMLCharsAntiScript]{\booktitle}
 		</div>,
 		\end{booktitle}
 

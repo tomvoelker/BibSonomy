@@ -1,5 +1,5 @@
 <div style="margin-bottom:1em">
-\begin{author}\format[AuthorLastFirst,HTMLChars2,AntiScriptInjection,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}:
+\begin{author}\format[AuthorLastFirst,HTMLCharsAntiScript,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}:
 \end{author}<i>\format[AntiScriptInjection]{\title}</i>\begin{howpublished}.
 \format[AntiScriptInjection]{\howpublished}\end{howpublished}\begin{address}.
 \format[AntiScriptInjection]{\address}\end{address},

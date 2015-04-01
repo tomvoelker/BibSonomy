@@ -1,16 +1,16 @@
 <div class="wo-publ" id="\bibtexkey">
   <a class="title" href="/bibtex/2\intraHash/\username">\format[HTMLChars,RemoveLatexCommands,AntiScriptInjection]{\title}</a>
   \begin{author}
-    <div class="author">\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\author}</div>
+    <div class="author">\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLCharsAntiScript]{\author}</div>
   \end{author}
   <div class="meta">
-	\format[HTMLChars,AntiScriptInjection]{\year}\begin{organization}, \format[HTMLChars,AntiScriptInjection]{\organization}\end{organization}\begin{address}, \format[HTMLChars,AntiScriptInjection]{\address}\end{address}
+	\format[HTMLCharsAntiScript]{\year}\begin{organization}, \format[HTMLCharsAntiScript]{\organization}\end{organization}\begin{address}, \format[HTMLCharsAntiScript]{\address}\end{address}
     \begin{url}
     <a class="pdf" href="\url">[pdf]</a>
     \end{url}
   </div>
   <a href="\url"><img src="/documents/\intraHash/\username/?preview=SMALL" alt="" /></a>
   \begin{abstract}
-  <div class="abstract">\format[HTMLChars,AntiScriptInjection]{\abstract}</div>
+  <div class="abstract">\format[HTMLCharsAntiScript]{\abstract}</div>
   \end{abstract}
 </div>

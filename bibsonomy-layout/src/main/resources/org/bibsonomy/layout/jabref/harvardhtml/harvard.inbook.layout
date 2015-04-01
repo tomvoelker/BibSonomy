@@ -1,13 +1,13 @@
 <p>
 \begin{author}
-\format[HTMLChars,AntiScriptInjection,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author}
+\format[HTMLCharsAntiScript,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author}
 \end{author}
- (\format[AntiScriptInjection]{\year}), <i>\format[HTMLChars,AntiScriptInjection]{\title}</i>
+ (\format[AntiScriptInjection]{\year}), <i>\format[HTMLCharsAntiScript]{\title}</i>
 \begin{publisher}
-, \format[HTMLChars,AntiScriptInjection]{\publisher}
+, \format[HTMLCharsAntiScript]{\publisher}
 \end{publisher}
 \begin{address}
-, \format[HTMLChars,AntiScriptInjection]{\address}
+, \format[HTMLCharsAntiScript]{\address}
 \end{address}
 \begin{chapter}
 , chapter \format[AntiScriptInjection]{\chapter}

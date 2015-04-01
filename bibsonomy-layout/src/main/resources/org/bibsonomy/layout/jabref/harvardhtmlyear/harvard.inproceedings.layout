@@ -1,15 +1,15 @@
 \begingroup{year}<h3 class="bibsonomy_quicknav_group"><a name="\format[AntiScriptInjection]{\year}">\format[AntiScriptInjection]{\year}</a></h3>\endgroup{year}
 <p>
-\format[HTMLChars,AntiScriptInjection,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author} (\format[AntiScriptInjection]{\year}), 
-\format[HTMLChars,AntiScriptInjection]{\title}, <i>in</i>
+\format[HTMLCharsAntiScript,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author} (\format[AntiScriptInjection]{\year}), 
+\format[HTMLCharsAntiScript]{\title}, <i>in</i>
 \begin{editor}
-\format[HTMLChars,AntiScriptInjection,AuthorFirstFirst,AuthorAndsReplacer]{\editor}, ed.,
+\format[HTMLCharsAntiScript,AuthorFirstFirst,AuthorAndsReplacer]{\editor}, ed.,
 \end{editor}
 \begin{booktitle}
-'\format[HTMLChars,AntiScriptInjection]{\booktitle}'
+'\format[HTMLCharsAntiScript]{\booktitle}'
 \end{booktitle}
 \begin{publisher}
-, \format[HTMLChars,AntiScriptInjection]{\publisher}, \format[HTMLChars,AntiScriptInjection]{\address}
+, \format[HTMLCharsAntiScript]{\publisher}, \format[HTMLCharsAntiScript]{\address}
 \end{publisher}
 \begin{pages}
 , pp. \format[AntiScriptInjection]{\pages}

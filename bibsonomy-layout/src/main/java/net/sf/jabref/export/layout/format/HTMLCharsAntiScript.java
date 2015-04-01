@@ -30,10 +30,11 @@ import net.sf.jabref.GlobalsSuper;
 import net.sf.jabref.export.layout.LayoutFormatter;
 
 /**
- * TODO: document the difference between this class and {@link HTMLChars}
+ * The difference between this class and {@link HTMLChars} is the implemented AntiScriptInjection, 
+ * the 'field' replaceAll()-statements and 'final' access modifiers. 
  * This formatter escapes characters so they are suitable for HTML.
  */
-public class HTMLChars2 implements LayoutFormatter {
+public class HTMLCharsAntiScript implements LayoutFormatter {
 
 	@Override
 	public String format(String field) {
@@ -235,6 +236,10 @@ public class HTMLChars2 implements LayoutFormatter {
 			part.append(c);
 			i++;
 		}
+		
+		// perform AntiScriptInjection
+		part.toString().replace("<", "&lt;").replace(">", "&gt;");
+
 		return new IntAndString(part.length(), format(part.toString()));
 	}
 
