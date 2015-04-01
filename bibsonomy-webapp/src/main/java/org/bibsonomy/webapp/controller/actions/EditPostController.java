@@ -88,8 +88,7 @@ import org.springframework.validation.ValidationUtils;
 import recommender.core.Recommender;
 import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.impl.database.RecommenderStatisticsManager;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
+
 /**
  * A generic edit post controller for any resource
  * 
@@ -698,9 +697,15 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		}
 		
 		/*
+		 * redirect to URL, If there is no referer URL given and 
+		 */
+		if (present (referer) && post.getResource().getUrl().toLowerCase().startsWith("http:")) {
+			return new ExtendedRedirectView(post.getResource().getUrl());
+		}
+		/*
 		 * redirect to URL
 		 */
-		return new ExtendedRedirectView(post.getResource().getUrl());
+		return new ExtendedRedirectView(referer);
 	}
 
 	private View handleCreatePost(final COMMAND command, final RequestWrapperContext context, final User loginUser, final Post<RESOURCE> post) {
