@@ -910,6 +910,41 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * 
 	 * @param loginUserName
 	 * @param requestedUserName
+	 * @param searchType 
+	 * @param simHash
+	 * @param groupId
+	 * @param visibleGroupIDs 
+	 * @param postAccess TODO
+	 * @param filter
+	 * @param limit
+	 * @param offset
+	 * @param systemTags
+	 * @param session
+	 * @return list of posts
+	 */
+	public List<Post<R>> getPostsForUser(final String loginUserName, final String requestedUserName, final SearchType searchType, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final PostAccess postAccess, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+		if(searchType==SearchType.FEDERATED){
+			return this.resourceSearch.getPosts(loginUserName, requestedUserName, null, null, null, searchType, null, null, null, null, null, null, null, null, null, limit, offset);
+		}
+		
+		return this.getPostsForUser(loginUserName, requestedUserName, simHash, groupId, visibleGroupIDs, postAccess, filter, limit, offset, systemTags, session);
+	}
+	
+	/** 
+	 * <em>/user/MaxMustermann</em><br/>
+	 * <br/>
+	 * 
+	 * This method prepares queries which retrieve all posts for a given
+	 * user name (requestedUserName). Additionally the group to be shown can be
+	 * restricted. The queries are built in a way, that not only public posts
+	 * are retrieved, but also friends or private or other groups, depending
+	 * upon if userName is allowed to see them.
+	 * 
+	 * ATTENTION! in case of a given groupId it is NOT checked if the user
+	 * actually belongs to this group.
+	 * 
+	 * @param loginUserName
+	 * @param requestedUserName
 	 * @param simHash
 	 * @param groupId
 	 * @param visibleGroupIDs 

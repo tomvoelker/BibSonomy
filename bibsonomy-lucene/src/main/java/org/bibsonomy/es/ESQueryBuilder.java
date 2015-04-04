@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.es;
 
-import static org.bibsonomy.lucene.util.LuceneBase.CFG_LUCENE_FIELD_SPECIFIER;
 import static org.bibsonomy.util.ValidationUtils.present;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
@@ -38,9 +37,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.Query;
 import org.bibsonomy.lucene.database.LuceneInfoLogic;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.model.Tag;
@@ -51,10 +47,8 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.FilteredQueryBuilder;
-import org.elasticsearch.index.query.IndexQueryParserService;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.support.QueryParsers;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.sort.SortBuilder;
@@ -283,14 +277,24 @@ public abstract class ESQueryBuilder {
 		
 		// Add the requested tags
 		if (present(tagIndex) || present(negatedTags)) {
-			addTagQuerries(tagIndex, negatedTags, mainQueryBuilder);
+			this.addTagQuerries(tagIndex, negatedTags, mainQueryBuilder);
 		}
 
 		// restrict result to given group
 		if (present(requestedGroupName)) {
 			//TODO	
 		}
-
+		
+		if(allowedGroups!=null){
+			final BoolQueryBuilder groupSearchQuery = new BoolQueryBuilder();
+			for(String allowedGroup:allowedGroups){
+				groupSearchQuery.should(termQuery(LuceneFieldNames.GROUP, allowedGroup));
+			}
+			mainQueryBuilder.must(groupSearchQuery);
+		}else{
+			QueryBuilder groupSearchQuery = termQuery(LuceneFieldNames.GROUP, "public");
+			mainQueryBuilder.must(groupSearchQuery);			
+		}
 		// restricting access to posts visible to the user
 
 		// --------------------------------------------------------------------
@@ -298,7 +302,8 @@ public abstract class ESQueryBuilder {
 		// Use this restriction iff there is no user relation
 		// --------------------------------------------------------------------
 		if (present(requestedUserName) && !present(requestedRelationNames)) {
-			//TODO
+			QueryBuilder requesterUserSearchQuery = termQuery(LuceneFieldNames.USER, requestedUserName);
+			mainQueryBuilder.must(requesterUserSearchQuery);			
 		}
 		// If there is at once one relation then restrict the results only 
 		// to the users in the given relations (inclduing posts of the logged in users)

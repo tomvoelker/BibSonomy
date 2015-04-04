@@ -83,7 +83,7 @@
 							<fmt:message key="relatedtags"/><c:out value=" " /><a href="${helpLink}"><span class="fa fa-question-circle"><!--  --></span></a>
 						</jsp:attribute>
 					</sidebar:sidebarHeader>
-					<tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.order}"/>
+					<tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.order}" scope="${command.scope.name()}"/>
 				</li>
 			</c:if>
 			
@@ -95,7 +95,7 @@
 							<fmt:message key="similartags"/><c:out value=" " /><a href="${helpLink}"><span class="fa fa-question-circle"><!--  --></span></a>
 						</jsp:attribute>
 					</sidebar:sidebarHeader>
-					<tags:similar requPath="${requPath}" cmd="${command.similarTags}"/>
+					<tags:similar requPath="${requPath}" cmd="${command.similarTags}" scope="${command.scope.name()}"/>
 				</li>
 			</c:if>			
 			
@@ -107,7 +107,7 @@
 							<fmt:message key="relatedusers"/>
 						</jsp:attribute>
 					</sidebar:sidebarHeader>
-					<users:related cmd="${command.relatedUserCommand}" userSimilarity="folkrank" displayFollowLink="${false}"/>
+					<users:related cmd="${command.relatedUserCommand}" userSimilarity="folkrank" displayFollowLink="${false}" scope="${command.scope.name()}"/>
 				</li>			
 			</c:if>
 		</ul>
