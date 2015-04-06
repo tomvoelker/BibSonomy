@@ -69,48 +69,33 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-		<ul>
-			<div class="smalltext">
-				<parts:tagsAndConceptsForSidebar/>
-			</div>
-			<fmt:message key="help.link.tag.similarRelated" var="helpLink"/>
+			<parts:tagsAndConceptsForSidebar/>
+
 			
 			<!-- related tags -->
 			<c:if test="${not empty command.relatedTagCommand.relatedTags}">
-				<li>
-					<sidebar:sidebarHeader>
-						<jsp:attribute name="text">
-							<fmt:message key="relatedtags"/><c:out value=" " /><a href="${helpLink}"><span class="fa fa-question-circle"><!--  --></span></a>
-						</jsp:attribute>
-					</sidebar:sidebarHeader>
-					<tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.order}" scope="${command.scope.name()}"/>
-				</li>
+				<sidebar:relatedTagsItem requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.order}"/>
 			</c:if>
+
+			<fmt:message key="help.link.tag.similarRelated" var="helpLink"/>
 			
 			<!-- similar tags -->
 			<c:if test="${not empty command.similarTags.relatedTags}">
-				<li>
-					<sidebar:sidebarHeader>
-						<jsp:attribute name="text">
-							<fmt:message key="similartags"/><c:out value=" " /><a href="${helpLink}"><span class="fa fa-question-circle"><!--  --></span></a>
-						</jsp:attribute>
-					</sidebar:sidebarHeader>
-					<tags:similar requPath="${requPath}" cmd="${command.similarTags}" scope="${command.scope.name()}"/>
-				</li>
+				<sidebar:sidebarItem textKey="similartags" helpLink="${helpLink}">
+					<jsp:attribute name="content">
+						<tags:similar requPath="${requPath}" cmd="${command.similarTags}"/>
+					</jsp:attribute>
+				</sidebar:sidebarItem>
 			</c:if>			
 			
 			<!-- related users -->
 			<c:if test="${not empty command.relatedUserCommand.relatedUsers}">
-				<li>
-					<sidebar:sidebarHeader>
-						<jsp:attribute name="text">
-							<fmt:message key="relatedusers"/>
-						</jsp:attribute>
-					</sidebar:sidebarHeader>
-					<users:related cmd="${command.relatedUserCommand}" userSimilarity="folkrank" displayFollowLink="${false}" scope="${command.scope.name()}"/>
-				</li>			
+				<sidebar:sidebarItem textKey="relatedusers">
+					<jsp:attribute name="content">
+						<users:related cmd="${command.relatedUserCommand}" userSimilarity="folkrank" displayFollowLink="${false}"/>
+					</jsp:attribute>
+				</sidebar:sidebarItem>
 			</c:if>
-		</ul>
 		</jsp:attribute>
 		
 	</layout:resourceLayout>

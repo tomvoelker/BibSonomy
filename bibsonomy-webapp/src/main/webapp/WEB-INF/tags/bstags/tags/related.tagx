@@ -6,11 +6,14 @@
 
 	<jsp:directive.attribute name="cmd" type="org.bibsonomy.webapp.command.RelatedTagCommand" required="true" />
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true" />
-	<jsp:directive.attribute name="order" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="order" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="relevantfor" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="tagsRequested" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="scope" type="java.lang.String" required="false"/>
 	
+	<c:if test="${empty order}">
+		<c:set var="order" value=""/>
+	</c:if>
 	<!-- show '+' sign only when tag is selected for /relevantfor/group/ -->
 	<c:set var="showRelatedTagsURL" value="${relevantfor and tagsRequested}"/>
 	

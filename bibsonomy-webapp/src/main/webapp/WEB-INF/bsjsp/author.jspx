@@ -53,12 +53,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-			<ul>
-				<li>
-					<h4 class="tagcloud-headline sidebar-headline sidebar"><fmt:message key="tags"/></h4>
-					<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" scope="${command.scope.name()}"/>
-				</li>
-			</ul>
+			<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 		</jsp:attribute>
 	</layout:resourceLayout>
 </jsp:root>

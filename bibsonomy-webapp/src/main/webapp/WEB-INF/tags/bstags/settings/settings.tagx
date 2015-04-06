@@ -25,6 +25,7 @@
 	<fmt:message var="no" key="settings.no"/>
 	<fmt:message var="english" key="settings.english"/>
 	<fmt:message var="german" key="settings.german"/>
+	<fmt:message var="russian" key="settings.russian"/>
 	<fmt:message var="setlayout" key="settings.setlayout"/>
 	<fmt:message var="generateapikey" key="settings.generateapikey"/>
 	<fmt:message var="updatesettings" key="settings.updatesettings" />
@@ -300,6 +301,7 @@
 							<form:select cssClass="form-control help-popover" path="user.settings.defaultLanguage" >
 								<form:option label="${english}" value="en"/>
 								<form:option label="${german}" value="de"/>
+								<form:option label="${russian}" value="ru"/>
 							</form:select >
 							
 							<div class="help help-header hide"><fmt:message key="settings.tag.defaultLanguage"/></div>

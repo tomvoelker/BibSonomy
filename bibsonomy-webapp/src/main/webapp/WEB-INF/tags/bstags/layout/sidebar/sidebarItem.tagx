@@ -1,0 +1,67 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+
+	<jsp:directive.attribute name="content" fragment="true" required="true"/>
+
+	<jsp:directive.attribute name="text" fragment="true" required="false" />
+	<jsp:directive.attribute name="textKey" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="helpLink" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="headingLink" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="headingTitleKey" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="outLink" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="outTitleKey" type="java.lang.String" required="false" />
+	
+	
+	<c:set var="itemHeading">
+		<c:choose>
+			<c:when test="${not empty textKey}">
+				<fmt:message key="${textKey}" />
+			</c:when>
+			<c:otherwise>
+				<jsp:invoke fragment="text" />
+			</c:otherwise>
+		</c:choose>
+	</c:set>
+	
+	<li>
+		<h4 class="sidebar">
+			<c:choose>
+				<c:when test="${not empty headingLink}">
+					<c:set var="title" value=""/>
+					<c:if test="${not empty headingTitleKey}">
+						<fmt:message var="title" key="${headingTitleKey }"/>
+					</c:if>
+					<a href="${headingLink}" title="${title}">
+						<c:out value="${itemHeading}"/>
+					</a>
+				</c:when>
+				<c:otherwise>
+					<c:out value="${itemHeading}"/>
+				</c:otherwise>
+			</c:choose>			
+			<c:if test="${not empty outLink}">
+				<c:out value=" " />
+				<small>
+					<c:set var="title" value=""/>
+					<c:if test="${not empty outTitleKey}">
+						<fmt:message var="title" key="${outTitleKey}"/>
+					</c:if>
+					<a href="${outLink}" rel="nofollow" title="${title}">
+						<span class="fa fa-external-link"><!--  --></span>
+					</a>
+				</small>
+			</c:if>
+			
+			<c:if test="${not empty helpLink}">
+				<c:out value=" "/>
+				<a href="${helpLink}">
+					<span class="fa fa-question-circle"><!--  --></span>
+				</a>
+			</c:if>
+		</h4>
+		<jsp:invoke fragment="content" />
+	</li>
+	
+</jsp:root>
