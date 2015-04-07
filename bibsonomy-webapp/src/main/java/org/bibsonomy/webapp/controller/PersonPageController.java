@@ -325,6 +325,9 @@ public class PersonPageController extends SingleResourceListController implement
 		List<Post<?>> advisorPosts = new ArrayList<>();
 
 		for(ResourcePersonRelation resourcePersonRelation : resourceRelations) {
+			if(!resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis"))
+				continue;
+			
 			if(resourcePersonRelation.getRelatorCode().equals(PersonResourceRelation.AUTHOR.getRelatorCode())) 
 				authorPosts.add(resourcePersonRelation.getPost());
 			else
