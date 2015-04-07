@@ -15,18 +15,18 @@ $(document).ready(function() {
 	};
 	
 	function editRole(obj) {
-		$("#btnEditRoleSubmit").attr("data-rpr-id", obj.attr("data-rpr-id"));
+		$("#btnEditRoleSubmit").attr("data-resourcePersonRelation-id", obj.attr("data-resourcePersonRelation-id"));
 	}
 	
 	function deleteRole(obj) {
-		$("#btnDeleteRoleSubmit").attr("data-rpr-id", obj.attr("data-rpr-id"));
+		$("#btnDeleteRoleSubmit").attr("data-resourcePersonRelation-id", obj.attr("data-resourcePersonRelation-id"));
 	}
 	
-	function addRoleHtml(rprid, personNameId, personFirstName, personLastName, resourceTitle, simhash1, simhash2, role, personId) {
-		var s = $("<span class='rpr_"+rprid+"'></span");
+	function addRoleHtml(resourcePersonRelationid, personNameId, personFirstName, personLastName, resourceTitle, simhash1, simhash2, role, personId) {
+		var s = $("<span class='resourcePersonRelation_"+resourcePersonRelationid+"'></span");
 		var a = $("<a href='/person/"+ personId + "/" + personLastName + "," + personFirstName+ "'> "+ personFirstName + " " + personLastName + " </a>");
 		//var ss = $("<span data-toggle='modal' data-target='#editRole' data-resource-title='"+resourceTitle+"' data-person-name='"+personName+"' data-relation-simhash1='"+simhash1+"' data-relation-simhash2='"+simhash2+"' data-person-role='"+role+"' style='color:orange;cursor:pointer' href='#editRole' class='editRole glyphicon glyphicon-pencil'>&#160;</span>");
-		var sss = $(" <span data-toggle='modal' data-target='#deleteRole' data-rpr-id='"+rprid+"' style='color:darkred;cursor:pointer' href='#deleteRole' class='deleteRole glyphicon glyphicon-remove'>&#160;</span>");
+		var sss = $(" <span data-toggle='modal' data-target='#deleteRole' data-resourcePersonRelation-id='"+resourcePersonRelationid+"' style='color:darkred;cursor:pointer' href='#deleteRole' class='deleteRole glyphicon glyphicon-remove'>&#160;</span>");
 		
 		sss.on("click", function() {
 			deleteRole($(this));
@@ -84,7 +84,7 @@ $(document).ready(function() {
 					e.attr("data-person-name-id", data.personNameId);
 					$("."+e.attr("data-relation-simhash1") + "_" + e.attr("data-relation-simhash2") + " ." + e.attr("data-person-role") + " .addRole").before(
 							addRoleHtml(
-									data.rprid, 
+									data.resourcePersonRelationid, 
 									data.personNameId,
 									firstName,
 									lastName,
@@ -128,10 +128,10 @@ $(document).ready(function() {
 		var e = $(this);
 		$.post("/person",
 				{ 	formAction: "deleteRole",
-					formRPRId: e.attr("data-rpr-id")
+					formresourcePersonRelationId: e.attr("data-resourcePersonRelation-id")
 				}
 		).done(function(data) {
-			$(".rpr_"+e.attr("data-rpr-id")).remove();
+			$(".resourcePersonRelation_"+e.attr("data-resourcePersonRelation-id")).remove();
 			$("#deleteRole").modal("hide");
 		});
 	});

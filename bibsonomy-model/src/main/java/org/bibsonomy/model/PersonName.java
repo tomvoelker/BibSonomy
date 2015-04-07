@@ -56,13 +56,13 @@ public class PersonName implements Serializable {
 	private int personId;
 	private boolean isMain;
 	private Person person;
-	private List<ResourcePersonRelation> rprs;
+	private List<ResourcePersonRelation> resourcePersonRelations;
 
 	/**
 	 * Default constructor
 	 */
 	public PersonName() {
-		rprs = new ArrayList<ResourcePersonRelation>();
+		resourcePersonRelations = new ArrayList<ResourcePersonRelation>();
 	}
 	
 	/**
@@ -245,17 +245,17 @@ public class PersonName implements Serializable {
 	}
 
 	/**
-	 * @return the rprs
+	 * @return the resourcePersonRelations
 	 */
-	public List<ResourcePersonRelation> getRprs() {
-		return this.rprs;
+	public List<ResourcePersonRelation> getResourcePersonRelations() {
+		return this.resourcePersonRelations;
 	}
 
 	/**
-	 * @param rprs the rprs to set
+	 * @param resourcePersonRelations the resourcePersonRelations to set
 	 */
-	public void setRprs(List<ResourcePersonRelation> rprs) {
-		this.rprs = rprs;
+	public void setResourcePersonRelations(List<ResourcePersonRelation> resourcePersonRelations) {
+		this.resourcePersonRelations = resourcePersonRelations;
 	}
 
 }

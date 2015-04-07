@@ -97,7 +97,7 @@ public class PersonLogic implements PersonLogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#addResourceRelation(org.bibsonomy.model.ResourcePersonRelation)
 	 */
 	@Override
-	public void addResourceRelation(ResourcePersonRelation rpr) {
+	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) {
 		// TODO Auto-generated method stub
 		
 	}

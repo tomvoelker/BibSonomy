@@ -34,7 +34,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	private String formPersonNameId;
 	private List<String> formPersonRoles;
 	private String formRequestType;
-	private String formRPRId;
+	private String formResourcePersonRelationId;
 	private String formInterHash;
 	private String formIntraHash;
 	private boolean formThatsMe;
@@ -428,15 +428,15 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return String
 	 */
-	public String getFormRPRId() {
-		return this.formRPRId;
+	public String getFormResourcePersonRelationId() {
+		return this.formResourcePersonRelationId;
 	}
 
 	/**
-	 * @param formRPRId the formRPRId to set
+	 * @param formResourcePersonRelationId the formResourcePersonRelationId to set
 	 */
-	public void setFormRPRId(String formRPRId) {
-		this.formRPRId = formRPRId;
+	public void setFormResourcePersonRelationId(String formResourcePersonRelationId) {
+		this.formResourcePersonRelationId = formResourcePersonRelationId;
 	}
 
 	/**

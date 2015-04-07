@@ -32,7 +32,7 @@ public interface PersonLogicInterface {
 	 * @return non-null list of all persons matching all given non-null criteria
 	 */
 
-	public void addResourceRelation(ResourcePersonRelation rpr);
+	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation);
 
 	public void removeResourceRelation(int resourceRelationId);
 

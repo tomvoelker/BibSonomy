@@ -120,10 +120,10 @@ public class PersonPageController extends SingleResourceListController implement
 			extendedNameBuilder.append(", ").append(person.getAcademicDegree());
 		}
 		BibTex res = null;
-		for (ResourcePersonRelation rpr : personName.getRprs()) {
+		for (ResourcePersonRelation resourcePersonRelation : personName.getResourcePersonRelations()) {
 			String entryType;
 			try {
-				entryType = rpr.getPost().getResource().getEntrytype();
+				entryType = resourcePersonRelation.getPost().getResource().getEntrytype();
 				if (!present(entryType)) {
 					continue;
 				}
@@ -131,10 +131,10 @@ public class PersonPageController extends SingleResourceListController implement
 				continue;
 			}
 			if (entryType.toLowerCase().endsWith("thesis")) {
-				res = rpr.getPost().getResource();
+				res = resourcePersonRelation.getPost().getResource();
 				break;
 			}
-			res = rpr.getPost().getResource();
+			res = resourcePersonRelation.getPost().getResource();
 		}
 		if (present(res)) {
 			String entryType = res.getEntrytype();
@@ -176,19 +176,19 @@ public class PersonPageController extends SingleResourceListController implement
 		if(role.length() != 4) {
 			role = PersonResourceRelation.valueOf(command.getFormPersonRole()).getRelatorCode();
 		}
-		ResourcePersonRelation rpr = new ResourcePersonRelation()
+		ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation()
 		.withSimhash1(command.getFormInterHash())
 		.withSimhash2(command.getFormIntraHash())
 		.withRelatorCode(role)
 		.withPersonNameId(person.getMainName().getId())
 		.withPubOwner(command.getFormUser());
-		this.logic.addResourceRelation(rpr);
+		this.logic.addResourceRelation(resourcePersonRelation);
 		
 		JSONObject jsonPerson = new JSONObject();
 		jsonPerson.put("personId", new Integer(person.getId()));
 		jsonPerson.put("personName", person.getMainName().toString());
 		jsonPerson.put("personNameId", new Integer(person.getMainName().getId()));
-		jsonPerson.put("rprid", new Integer(rpr.getId()));
+		jsonPerson.put("resourcePersonRelationid", new Integer(resourcePersonRelation.getId()));
 		
 		command.setResponseString(jsonPerson.toJSONString());
 		
@@ -223,14 +223,14 @@ public class PersonPageController extends SingleResourceListController implement
 		else
 			role = PersonResourceRelation.valueOf(command.getFormPersonRole()).getRelatorCode();
 		
-		ResourcePersonRelation rpr = new ResourcePersonRelation()
+		ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation()
 			.withSimhash1(command.getFormInterHash())
 			.withSimhash2(command.getFormIntraHash())
 			.withRelatorCode(role)
 			.withPersonNameId(Integer.valueOf(command.getFormPersonNameId()).intValue())
 			.withPubOwner(command.getFormUser());
-		this.logic.addResourceRelation(rpr);
-		command.setResponseString(rpr.getId() + "");
+		this.logic.addResourceRelation(resourcePersonRelation);
+		command.setResponseString(resourcePersonRelation.getId() + "");
 		return Views.AJAX_TEXT;
 	}
 
@@ -242,13 +242,13 @@ public class PersonPageController extends SingleResourceListController implement
 	private View editRoleAction(PersonPageCommand command) {
 		//TODO add new role types to view
 		for(String role : command.getFormPersonRoles()) {
-			ResourcePersonRelation rpr = new ResourcePersonRelation()
+			ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation()
 			.withSimhash1(command.getFormInterHash())
 			.withSimhash2(command.getFormIntraHash())
 			.withRelatorCode(PersonResourceRelation.valueOf(role).getRelatorCode())
 			.withPersonNameId(Integer.valueOf(command.getFormPersonNameId()).intValue())
 			.withPubOwner(command.getRequestedUser());
-			this.logic.addResourceRelation(rpr);
+			this.logic.addResourceRelation(resourcePersonRelation);
 		}
 				
 		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getId(), command.getPerson().getMainName().toString(), command.getPost().getResource().getInterHash(), command.getPost().getUser().getName(), command.getRequestedRole()));	
@@ -257,7 +257,7 @@ public class PersonPageController extends SingleResourceListController implement
 	@SuppressWarnings("boxing")
 	private View deleteRoleAction(PersonPageCommand command) {
 
-		this.logic.removeResourceRelation(Integer.valueOf(command.getFormRPRId()));
+		this.logic.removeResourceRelation(Integer.valueOf(command.getFormResourcePersonRelationId()));
 				
 		return Views.AJAX_TEXT;	
 	}
@@ -324,11 +324,11 @@ public class PersonPageController extends SingleResourceListController implement
 		List<Post<?>> authorPosts = new ArrayList<>();
 		List<Post<?>> advisorPosts = new ArrayList<>();
 
-		for(ResourcePersonRelation rpr : resourceRelations) {
-			if(rpr.getRelatorCode().equals(PersonResourceRelation.AUTHOR.getRelatorCode())) 
-				authorPosts.add(rpr.getPost());
+		for(ResourcePersonRelation resourcePersonRelation : resourceRelations) {
+			if(resourcePersonRelation.getRelatorCode().equals(PersonResourceRelation.AUTHOR.getRelatorCode())) 
+				authorPosts.add(resourcePersonRelation.getPost());
 			else
-				advisorPosts.add(rpr.getPost());
+				advisorPosts.add(resourcePersonRelation.getPost());
 		}
 		
 		command.setThesis(authorPosts);

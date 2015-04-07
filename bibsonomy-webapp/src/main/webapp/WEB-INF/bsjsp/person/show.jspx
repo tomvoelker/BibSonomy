@@ -169,14 +169,14 @@
 											<c:choose>
 												<c:when test="${name.id eq command.person.mainName.id}">
 													<div class='checkbox' id='personName_${name.id}'><label><input type='radio' name='formSelectedName' value='${name.id}' checked='checked' /> ${name.firstName} ${name.lastName}</label>&#160;
-													<c:if test="${fn:length(name.rprs) eq 0}">
+													<c:if test="${fn:length(name.resourcePersonRelations) eq 0}">
 														<span data-person-name-id='${name.id}' data-firstName='${name.firstName}' data-lastName='${name.lastName}' data-toggle='modal' data-target='#removeName' style='color:darkred;cursor:pointer' href='#remName' id='removeName_${name.id}' class='removeName glyphicon glyphicon-remove'></span>
 													</c:if>
 													</div>
 												</c:when>
 												<c:otherwise>
 													<div class='checkbox' id='personName_${name.id}'><label><input type='radio' name='formSelectedName' value='${name.id}' /> ${name.firstName} ${name.lastName}</label>&#160;
-													<c:if test="${fn:length(name.rprs) eq 0}">
+													<c:if test="${fn:length(name.resourcePersonRelations) eq 0}">
 														<span data-person-name-id='${name.id}' data-firstName='${name.firstName}' data-lastName='${name.lastName}' data-toggle='modal' data-target='#removeName' style='color:darkred;cursor:pointer' href='#remName' id='removeName_${name.id}' class='removeName glyphicon glyphicon-remove'></span>
 													</c:if>
 													</div>
@@ -274,12 +274,12 @@
 														<fmt:message key="person.show.${role}" var="textRole" />
 														<fmt:message key="person.show.${role}Tooltip" var="textRoleTooltip" />
 														<li class='${role}'><span class='glyphicon glyphicon-question-sign explainRole' data-toggle="tooltip" data-placement="left" title="${textRoleTooltip}" data-role='${role}'>&#160;</span>${textRole}: 
-															<c:forEach var="relation" items="${post.rprs}">
+															<c:forEach var="relation" items="${post.resourcePersonRelations}">
 																<c:if test="${relation.relatorCode eq role}">
-																	<span class='rpr_${relation.id}'>
+																	<span class='resourcePersonRelation_${relation.id}'>
 																		<a href="/person/${relation.personName.personId}/${relation.personName}">${relation.personName.firstName} ${relation.personName.lastName} </a>
 																		<!--  <span data-toggle='modal' data-target="#editRole" data-resource-title="${post.resource.title}" data-person-name="${relation.personName.firstName} ${relation.personName.lastName}" data-relation-simhash1="${relation.simhash1}" data-relation-simhash2='${relation.simhash2}' data-person-role="${role}" style='color:orange;cursor:pointer' href="#editRole" class='editRole glyphicon glyphicon-pencil'>&#160;</span> -->
-																		<span data-toggle='modal' data-target="#deleteRole" data-rpr-id='${relation.id}' style='color:darkred;cursor:pointer' href="#deleteRole" class='deleteRole glyphicon glyphicon-remove'>&#160;</span>
+																		<span data-toggle='modal' data-target="#deleteRole" data-resourcePersonRelation-id='${relation.id}' style='color:darkred;cursor:pointer' href="#deleteRole" class='deleteRole glyphicon glyphicon-remove'>&#160;</span>
 																	</span>
 																</c:if>
 															</c:forEach>
@@ -323,12 +323,12 @@
 														<fmt:message key="person.show.${role}" var="textRole" />
 														<fmt:message key="person.show.${role}Tooltip" var="textRoleTooltip" />
 														<li class='${role}'><span class='glyphicon glyphicon-question-sign explainRole' data-toggle="tooltip" data-placement="left" title="${textRoleTooltip}" data-role='${role}'>&#160;</span>${textRole}: 
-															<c:forEach var="relation" items="${post.rprs}">
+															<c:forEach var="relation" items="${post.resourcePersonRelations}">
 																<c:if test="${relation.relatorCode eq role}">
-																	<span class='rpr_${relation.id}'>
+																	<span class='resourcePersonRelation_${relation.id}'>
 																		<a href="/person/${relation.personName.personId}/${relation.personName}">${relation.personName.firstName} ${relation.personName.lastName} </a>
 																		<!--  <span data-toggle='modal' data-target="#editRole" data-resource-title="${post.resource.title}" data-person-name="${relation.personName.firstName} ${relation.personName.lastName}" data-relation-simhash1="${relation.simhash1}" data-relation-simhash2='${relation.simhash2}' data-person-role="${role}" style='color:orange;cursor:pointer' href="#editRole" class='editRole glyphicon glyphicon-pencil'>&#160;</span> -->
-																		<span data-toggle='modal' data-target="#deleteRole" data-rpr-id='${relation.id}' style='color:darkred;cursor:pointer' href="#deleteRole" class='deleteRole glyphicon glyphicon-remove'>&#160;</span>
+																		<span data-toggle='modal' data-target="#deleteRole" data-resourcePersonRelation-id='${relation.id}' style='color:darkred;cursor:pointer' href="#deleteRole" class='deleteRole glyphicon glyphicon-remove'>&#160;</span>
 																	</span>
 																</c:if>
 															</c:forEach>

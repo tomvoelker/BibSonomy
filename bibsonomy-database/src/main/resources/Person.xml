@@ -81,7 +81,7 @@
 			WHERE pub_person.person_name_id = #personNameId# 
 	</select>
 	
-	<select id='getResourceRelationsByRPR' resultMap="PersonCommon.resourcePersonRelation" parameterClass='org.bibsonomy.model.ResourcePersonRelation'>
+	<select id='getResourceRelationsByResourcePersonRelation' resultMap="PersonCommon.resourcePersonRelation" parameterClass='org.bibsonomy.model.ResourcePersonRelation'>
 		SELECT <include refid='commonResourcePersonRelationColumns' /> FROM pub_person LEFT JOIN person_name ON person_name.id = pub_person.person_name_id
 			WHERE 
 				person_name.first_name = #personName.firstName#

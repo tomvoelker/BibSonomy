@@ -796,9 +796,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		/**
 		 * if the user is adding a new thesis to a person's page, he should be redirected to that person's page
 		 * */
-		if (present(command.getPost().getRprs())){
-			ResourcePersonRelation rpr = post.getRprs().get(post.getRprs().size()-1);
-			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(rpr.getPersonName().getPersonId(), PersonNameUtils.serializePersonName(rpr.getPersonName().getPerson().getMainName()), ((BibTex)post.getResource()).getSimHash2(), command.getRequestedUser(), PersonResourceRelation.AUTHOR.toString()));
+		if (present(command.getPost().getResourcePersonRelations())){
+			ResourcePersonRelation resourcePersonRelation = post.getResourcePersonRelations().get(post.getResourcePersonRelations().size()-1);
+			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(resourcePersonRelation.getPersonName().getPersonId(), PersonNameUtils.serializePersonName(resourcePersonRelation.getPersonName().getPerson().getMainName()), ((BibTex)post.getResource()).getSimHash2(), command.getRequestedUser(), PersonResourceRelation.AUTHOR.toString()));
 			
 		}
 		return this.finalRedirect(loginUserName, post, command.getReferer());
@@ -845,26 +845,26 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				}
 			}
 			if(present(personName)){
-				final ResourcePersonRelation rpr = new ResourcePersonRelation();
+				final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
 			
-				rpr.setPersonNameId(personName.getId());
-				rpr.setSimhash1(post.getResource().getInterHash());
-				rpr.setSimhash2(post.getResource().getIntraHash());
-				rpr.setPubOwner(loginUser.getName());
-				rpr.setPersonName(personName);
+				resourcePersonRelation.setPersonNameId(personName.getId());
+				resourcePersonRelation.setSimhash1(post.getResource().getInterHash());
+				resourcePersonRelation.setSimhash2(post.getResource().getIntraHash());
+				resourcePersonRelation.setPubOwner(loginUser.getName());
+				resourcePersonRelation.setPersonName(personName);
 				if(present(command.getPerson_role())){// if a supervisor is adding a new thesis
-					rpr.setRelatorCode(command.getPerson_role().split("supervisor,")[1]);
+					resourcePersonRelation.setRelatorCode(command.getPerson_role().split("supervisor,")[1]);
 				}
 				else{
-					rpr.setRelatorCode(PersonResourceRelation.AUTHOR.getRelatorCode());
+					resourcePersonRelation.setRelatorCode(PersonResourceRelation.AUTHOR.getRelatorCode());
 				}
 				
-				this.logic.addResourceRelation(rpr);
+				this.logic.addResourceRelation(resourcePersonRelation);
 				
-				if(!present(command.getPost().getRprs())){
-					command.getPost().setRprs(new ArrayList<ResourcePersonRelation>());
+				if(!present(command.getPost().getResourcePersonRelations())){
+					command.getPost().setResourcePersonRelations(new ArrayList<ResourcePersonRelation>());
 				}
-				command.getPost().getRprs().add(rpr);
+				command.getPost().getResourcePersonRelations().add(resourcePersonRelation);
 			}
 		}
 	

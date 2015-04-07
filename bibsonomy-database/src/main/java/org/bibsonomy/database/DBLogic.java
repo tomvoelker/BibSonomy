@@ -3192,10 +3192,10 @@ public class DBLogic implements LogicInterface {
 	}
 	
 	@Override
-	public void addResourceRelation(ResourcePersonRelation rpr) {
+	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) {
 		DBSession session = this.openSession();
 		try {
-			this.personDBManager.addResourceRelation(rpr, session);
+			this.personDBManager.addResourceRelation(resourcePersonRelation, session);
 		} finally {
 			session.close();
 		}
@@ -3307,8 +3307,8 @@ public class DBLogic implements LogicInterface {
 			}
 			// TODO: add parameter object which states what needs to be fetched when
 			// FIXME: this needs to be done with a join - many individual queries are usually bad
-			for (ResourcePersonRelation rpr : relations) {
-				rpr.getPost().setRprs(this.personDBManager.getResourcePersonRelationsByPost(rpr.getPost(), session));
+			for (ResourcePersonRelation resourcePersonRelation : relations) {
+				resourcePersonRelation.getPost().setResourcePersonRelations(this.personDBManager.getResourcePersonRelationsByPost(resourcePersonRelation.getPost(), session));
 			}
 			Collections.sort(relations, resourcePersonRelationComparator);
 			return relations;
@@ -3327,9 +3327,9 @@ public class DBLogic implements LogicInterface {
 	}
 	
 	public List<ResourcePersonRelation> getResourceRelations(PersonName personName, String interHash, String intraHash, String user, PersonResourceRelation rel) {
-		ResourcePersonRelation rpr = new ResourcePersonRelation().withPubOwner(user).withRelatorCode(rel.getRelatorCode()).withSimhash1(interHash).withSimhash2(intraHash);
-		rpr.setPersonName(personName);
-		return this.personDBManager.getResourceRelations(rpr, this.dbSessionFactory.getDatabaseSession());
+		ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation().withPubOwner(user).withRelatorCode(rel.getRelatorCode()).withSimhash1(interHash).withSimhash2(intraHash);
+		resourcePersonRelation.setPersonName(personName);
+		return this.personDBManager.getResourceRelations(resourcePersonRelation, this.dbSessionFactory.getDatabaseSession());
 	}
 	
 	public void createOrUpdatePersonName(PersonName personName) {

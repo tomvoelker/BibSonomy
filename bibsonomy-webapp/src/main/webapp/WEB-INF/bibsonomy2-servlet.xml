@@ -359,7 +359,7 @@
 								<value>formSelectedName</value>
 								<value>formAcademicDegree</value>
 								<value>formThesisId</value>
-								<value>formRPRId</value>
+								<value>formResourcePersonRelationId</value>
 							</list>
 						</property>
 					</bean>

@@ -164,13 +164,13 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 
 
 	/**
-	 * @param rpr
+	 * @param resourcePersonRelation
 	 * @param session 
 	 */
-	public void addResourceRelation(ResourcePersonRelation rpr, DBSession session) {
+	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation, DBSession session) {
 		session.beginTransaction();
 		try {
-			this.insert("addResourceRelation", rpr, session);
+			this.insert("addResourceRelation", resourcePersonRelation, session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -221,9 +221,9 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		return (List<ResourcePersonRelation>) this.queryForList("getResourceRelations", personNameId, databaseSession);
 	}
 	
-	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelation rpr,
+	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelation resourcePersonRelation,
 			DBSession databaseSession) {
-		return (List<ResourcePersonRelation>) this.queryForList("getResourceRelationsByRPR", rpr, databaseSession);
+		return (List<ResourcePersonRelation>) this.queryForList("getResourceRelationsByResourcePersonRelation", resourcePersonRelation, databaseSession);
 	}
 	
 	public List<ResourcePersonRelation> getResourcePersonRelationsByPost(Post<? extends Resource> post,
@@ -245,8 +245,8 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @param rel
 	 * @return
 	 */
-	public String getLastResourceRelationId(ResourcePersonRelation rpr, DBSession session) {
-		return (String) this.queryForObject("getLastResourceRelationId", rpr, session);
+	public String getLastResourceRelationId(ResourcePersonRelation resourcePersonRelation, DBSession session) {
+		return (String) this.queryForObject("getLastResourceRelationId", resourcePersonRelation, session);
 	}
 
 
