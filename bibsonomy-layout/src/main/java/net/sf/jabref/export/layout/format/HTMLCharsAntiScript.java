@@ -73,10 +73,10 @@ public class HTMLCharsAntiScript implements LayoutFormatter {
 				|| (GlobalsSuper.SPECIAL_COMMAND_CHARS.indexOf(String.valueOf(c)) >= 0)) {
 				escaped = false;
 
-                if (!incommand)
-					sb.append(c);
+                if (!incommand){
+                	sb.append(formatAntiScriptInjection(c));
 					// Else we are in a command, and should not keep the letter.
-				else {
+				}else {
 					currentCommand.append(c);
                     testCharCom: if ((currentCommand.length() == 1)
 						&& (GlobalsSuper.SPECIAL_COMMAND_CHARS.indexOf(currentCommand.toString()) >= 0)) {
@@ -127,7 +127,7 @@ public class HTMLCharsAntiScript implements LayoutFormatter {
 				String argument = null;
 
 				if (!incommand) {
-					sb.append(c);
+					sb.append(formatAntiScriptInjection(c));
 				} else if (Character.isWhitespace(c) || (c == '{') || (c == '}')) {
 					// First test if we are already at the end of the string.
 					// if (i >= field.length()-1)
@@ -206,7 +206,15 @@ public class HTMLCharsAntiScript implements LayoutFormatter {
 			}
 		}
 
-		return sb.toString();
+		return sb.toString().replaceAll("&lt;p&gt;", "<p>").replaceAll("&lt;br&gt;", "<br>");
+	}
+
+	private static String formatAntiScriptInjection(char c) {
+		if (c == '<')
+			return "&lt;";
+		else if(c == '>') 
+			return "&gt;";
+		return Character.toString(c);
 	}
 
 	private IntAndString getPart(final String text, int i, final boolean terminateOnEndBraceOnly) {
@@ -236,10 +244,6 @@ public class HTMLCharsAntiScript implements LayoutFormatter {
 			part.append(c);
 			i++;
 		}
-		
-		// perform AntiScriptInjection
-		part.toString().replace("<", "&lt;").replace(">", "&gt;");
-
 		return new IntAndString(part.length(), format(part.toString()));
 	}
 
