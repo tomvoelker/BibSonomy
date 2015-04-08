@@ -148,8 +148,6 @@
 							</div>
 						</div>
 						
-						
-						
 					</jsp:attribute>
 				</bsform:fieldset>
 
@@ -176,6 +174,47 @@
 						</jsp:attribute>
 					</bsform:fieldset>
 				</c:if>
+				
+				<bsform:fieldset legendKey="settings.picture.header">
+					<jsp:attribute name="content">
+					
+						<!-- current picture -->
+						<div class ="form-group clearfix">
+							<form:label cssClass="col-sm-3 control-label" path="file"><fmt:message key="settings.picture.current"/></form:label>
+							<div class="col-sm-9">
+								<a title="${mtl:encodeURI(user.name)}" href="/user/${mtl:encodeURI(user.name)}" class="img-thumbnail img-responsive">
+									<img class="user-avatar" src="${relativeUrlGenerator.getUserPictureUrlByUsername(user.name)}" />
+									<span><user:username user="${user}" noLink="${true}"/></span>
+								</a>
+							</div>
+						</div>
+						
+						<!-- New Picture + delete picture -->
+						<div class="form-group clearfix">
+
+							<form:label cssClass="col-sm-3 control-label" path="pictureFile">
+								<fmt:message key="settings.picture.file" />
+							</form:label>
+
+							<div class="col-sm-9">
+								<input type="file" name="pictureFile" id="pictureFile" path="pictureFile"/>
+								<p class="help-block"><fmt:message key="settings.picture.help"/></p>
+							</div>
+	
+							<!-- Delete picture -->
+							<div class="col-sm-offset-3 col-sm-9">
+								<div class="checkbox">
+									<label>
+										<input name="deletePicture" type="checkbox"/> <fmt:message key="settings.picture.delete"/>
+									</label>
+								</div>
+								<p class="help-block"> <fmt:message key="settings.picture.delete.help"/> </p>
+							</div>
+							
+						</div>	
+					</jsp:attribute>
+				</bsform:fieldset>
+				
 				<br />
 				<div class="col-sm-offset-3 col-sm-9">
 					<fmt:message var="submitButton" key="settings.saveChanges" />

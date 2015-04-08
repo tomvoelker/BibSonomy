@@ -40,7 +40,11 @@ import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.model.util.file.UploadedFile;
+import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.MailUtils;
+import org.bibsonomy.util.file.ServerDeletedFile;
+import org.bibsonomy.util.file.ServerUploadedFile;
 import org.bibsonomy.webapp.command.GroupSettingsPageCommand;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -56,6 +60,7 @@ import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * TODO: add documentation
@@ -74,6 +79,11 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 
 	private RequestLogic requestLogic;
 	private MailUtils mailUtils;
+	
+	/**
+	 * the file logic to use
+	 */
+	private FileLogic fileLogic;
 
 	@Override
 	public GroupSettingsPageCommand instantiateCommand() {
@@ -224,6 +234,9 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 				groupUserToUpdate.setEmail("nomail"); // TODO: adapt to the
 														// notion that admins
 														// should receive mails.
+				// group picture
+				updateGroupPicture(groupUserToUpdate, command);
+				
 				// the group to update
 				try {
 					groupToUpdate.setPrivlevel(priv);
@@ -322,6 +335,25 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 		return new ExtendedRedirectView(settingsPage);
 	}
 
+	private void updateGroupPicture(final User groupUserToUpdate, GroupSettingsPageCommand command) {
+		final MultipartFile file = command.getPictureFile();
+		/*
+		 * If a picture file is given -> upload
+		 * Else, if delete requested -> delete 
+		 */
+		if (present(file) && file.getSize() > 0) {
+			try {
+				fileLogic.saveProfilePictureForUser(groupUserToUpdate.getName(), new ServerUploadedFile(file));
+			} catch (final Exception ex) {
+				// TODO Auto-generated catch block
+				ex.printStackTrace();
+			}
+		}
+		else if (command.getDeletePicture()) {
+			fileLogic.deleteProfilePictureForUser(groupUserToUpdate.getName());
+		}
+	}
+	
 	@Override
 	public Errors getErrors() {
 		return this.errors;
@@ -376,6 +408,13 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 				ValidationUtils.invokeValidator(new GroupValidator(), command.getGroup(), errors);
 			}
 		};
+	}
+	
+	/**
+	 * @param fileLogic the fileLogic to set
+	 */
+	public void setFileLogic(FileLogic fileLogic) {
+		this.fileLogic = fileLogic;
 	}
 
 }

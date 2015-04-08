@@ -9,7 +9,7 @@
 		<result property="name"               column="group_name"        javaType="string" />
 		<result property="privlevel"          column="privlevel"         javaType="Privlevel"/>
 		<result property="sharedDocuments"    column="sharedDocuments"   javaType="boolean"/>
-		<result property="allowJoin"    	  column="allow_join"   	 javaType="boolean"/>		
+		<result property="allowJoin"    	  column="allow_join"   	 javaType="boolean"/>	
 	</resultMap>
 
 	<!-- +

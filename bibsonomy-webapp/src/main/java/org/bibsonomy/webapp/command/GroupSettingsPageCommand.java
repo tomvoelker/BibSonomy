@@ -33,6 +33,7 @@ import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
@@ -89,6 +90,17 @@ public class GroupSettingsPageCommand extends TabsCommand<Object> {
 	 * delete the group yes or no
 	 */
 	private String delete = null;
+	
+	/**
+	 * new profile picture file to upload
+	 */
+	private MultipartFile pictureFile;
+
+	/**
+	 * flag to indicate whether a prior uploaded picture file shall be deleted
+	 */
+	private boolean deletePicture;
+	
 	
 	/**
 	 * TODO: remove after setting the default value of selTab to null
@@ -263,5 +275,45 @@ public class GroupSettingsPageCommand extends TabsCommand<Object> {
 
 	public void setDelete(String delete) {
 		this.delete = delete;
+	}
+
+	/**
+	 * Returns picture file to upload.
+	 * @return picture file as MultipartFile
+	 */
+	public MultipartFile getPictureFile() {
+		return this.pictureFile;
+	}
+
+	/**
+	 * Sets picture file to upload.
+	 * @param pictureFile : picture file as MultipartFile
+	 */
+	public void setPictureFile(MultipartFile pictureFile) {
+		this.pictureFile = pictureFile;
+	}
+
+	/**
+	 * Checks whether a prior uploaded picture file shall be deleted.
+	 * @return flag as boolean
+	 */
+	public boolean isDeletePicture() {
+		return this.deletePicture;
+	}
+	
+	/**
+	 * Checks whether a prior uploaded picture file shall be deleted.
+	 * @return flag as boolean
+	 */
+	public boolean getDeletePicture() {
+		return this.deletePicture;
+	}
+
+	/**
+	 * Sets whether a prior uploaded picture file shall be deleted.
+	 * @param deletePicture flag as boolean
+	 */
+	public void setDeletePicture(boolean deletePicture) {
+		this.deletePicture = deletePicture;
 	}
 }

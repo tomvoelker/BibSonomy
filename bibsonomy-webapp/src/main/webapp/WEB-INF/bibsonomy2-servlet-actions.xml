@@ -635,6 +635,8 @@
 								<value>homepage</value>
 								<value>operation</value>
 								<value>groupRole</value>
+								<value>pictureFile</value>
+								<value>deletePicture</value>
 								<value>group.name</value>
 								<value>group.realname</value>
 								<value>group.description</value>
@@ -1119,6 +1121,7 @@
 	<!-- Handles the settings update of a group -->
 	<bean id="updateGroupController" class="org.bibsonomy.webapp.controller.actions.UpdateGroupController" scope="request">
 		<property name="logic" ref="logic" />
+		<property name="fileLogic" ref="fileLogic" />
 		<property name="requestLogic" ref="requestLogic" />
 		<!-- to send registration mails -->
 		<property name="mailUtils" ref="mailUtils"/>
