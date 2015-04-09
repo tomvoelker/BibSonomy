@@ -26,8 +26,10 @@
  */
 package org.bibsonomy.webapp.command;
 
+import java.util.List;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.Group;
 
 /**
  * Bean for User-Sites
@@ -67,6 +69,11 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	public ConceptsCommand getConcepts() {
 		return this.concepts;
 	}
+	
+	/**
+	 * The groups that are shared by the requested and the loggedIn user
+	 */
+	private List<Group> sharedGroups = null;
 
 	/**
 	 * @param concepts the concepts to set
@@ -149,4 +156,18 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 		this.ofFriendUser = ofFriendUser;
 	}
 
+	/**
+	 * @return a list of all groups that are shared between the loggedIn and the requested user
+	 */
+	public List<Group> getSharedGroups() {
+		return this.sharedGroups;
+	}
+
+	/**
+	 * @param sharedGroups the list of all groups that are shared between the loggedIn and the requested user
+	 */
+	public void setSharedGroups(List<Group> sharedGroups) {
+		this.sharedGroups = sharedGroups;
+	}
+	
 }

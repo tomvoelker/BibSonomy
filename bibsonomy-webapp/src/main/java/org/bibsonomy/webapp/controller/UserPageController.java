@@ -28,6 +28,7 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -35,11 +36,14 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.TagsType;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
@@ -216,6 +220,25 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				/*
 				 * TODO: we need an adminLogic to access the requested user's groups ...
 				 */
+				
+				final List<Group> loginUserNameGroups = context.getLoginUser().getGroups();
+				List<Group> sharedGroups =  new LinkedList<Group>();
+
+				for (Group g : loginUserNameGroups) {
+					// only add a group if the member list is visible
+					if (g.getPrivlevel() == Privlevel.PUBLIC || g.getPrivlevel() == Privlevel.MEMBERS) {
+						for (GroupMembership m : g.getMemberships()) {
+							if (m.getUser().equals(requestedUser)) {
+								sharedGroups.add(g);
+							}
+						}
+					}
+				}
+				if (sharedGroups.isEmpty()) {
+					sharedGroups = null;
+				}
+				command.setSharedGroups(sharedGroups);
+				
 			}
 			
 			this.endTiming();
