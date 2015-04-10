@@ -697,14 +697,12 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		}
 		
 		/*
-		 * redirect to URL, If there is no referer URL given and 
-		 */
-		if (present (referer) && post.getResource().getUrl().toLowerCase().startsWith("http:")) {
-			return new ExtendedRedirectView(post.getResource().getUrl());
-		}
-		/*
 		 * redirect to URL
 		 */
+		if (present(post.getResource().getUrl())) {
+			return new ExtendedRedirectView(post.getResource().getUrl());
+		}
+		
 		return new ExtendedRedirectView(referer);
 	}
 
