@@ -167,13 +167,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	@Override
 	public View workOn(final COMMAND command) {
 		final RequestWrapperContext context = command.getContext();
-		/*
-		 * We store the referer in the command, to send the user back to the
-		 * page he's coming from at the end of the posting process.
-		 */
-		if (!present(command.getReferer())) {
-			command.setReferer(this.requestLogic.getReferer());
-		}
 
 		/*
 		 * only users which are logged in might post -> send them to login page
@@ -356,6 +349,15 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			 */
 			command.setCaptchaHTML(this.captcha.createCaptchaHtml(this.requestLogic.getLocale()));
 		}
+		
+		/*
+		 * We store the referer in the command, to send the user back to the
+		 * page he's coming from at the end of the posting process.
+		 */
+		if (!present(command.getReferer())) {
+			command.setReferer(this.requestLogic.getReferer());
+		}
+		
 		/*
 		 * return the view
 		 */
@@ -675,17 +677,18 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * Create the final redirect after successful creating / updating a post. We
 	 * redirect to the URL the user was initially coming from. If we don't have
 	 * that URL (for whatever reason), we redirect to the user's page.
-	 * 
-	 * @param userName
-	 *            - the name of the loginUser
-	 * @param intraHash
-	 *            - the intra hash of the created/updated post
+	 * @param userName	the logged in user?
+	 * @param post		the saved post
 	 * @param referer
 	 *            - the URL of the page the user is initially coming from
-	 * 
-	 * @return
+	 * @return the redirect view
 	 */
 	protected View finalRedirect(final String userName, final Post<RESOURCE> post, final String referer) {
+		final String resourceUrl = post.getResource().getUrl();
+		if (!present(referer) && present(resourceUrl) && resourceUrl.startsWith("https://")) {
+			return new ExtendedRedirectView(resourceUrl);
+		}
+		
 		/*
 		 * If there is no referer URL given, or if we come from a
 		 * postBookmark/postPublication page, redirect to the user's home page.
@@ -694,13 +697,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		if (!present(referer) || referer.matches(".*/postPublication$") || referer.matches(".*/postBookmark$") || referer.contains("/history/")) {
 			return new ExtendedRedirectView(this.urlGenerator.getUserUrlByUserName(userName));
-		}
-		
-		/*
-		 * redirect to URL
-		 */
-		if (present(post.getResource().getUrl())) {
-			return new ExtendedRedirectView(post.getResource().getUrl());
 		}
 		
 		return new ExtendedRedirectView(referer);
@@ -791,7 +787,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		if (present(command.getSaveAndRate())) {
 			final String ratingUrl = this.urlGenerator.getCommunityRatingUrl(post);
 			return new ExtendedRedirectView(ratingUrl);
-			}
+		}
 		return this.finalRedirect(loginUserName, post, command.getReferer());
 	}
 
