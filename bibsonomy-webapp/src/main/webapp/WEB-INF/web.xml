@@ -5,9 +5,7 @@
 
 	<!-- This flag is to mark the application as distributable, which implies 
 		among others that all objects which shall be stored in a session need to 
-		be serializable. As a quick fix, this is commented out due to a problem in 
-		admin_spammertags.jsp (trying to store a non-serializable query result object) 
-		- see -->
+		be serializable.-->
 	<distributable />
 
 	<!-- Initialization parameters -->
@@ -15,6 +13,7 @@
 	<session-config>
 		<session-timeout>60</session-timeout>
 	</session-config>
+	
 	<context-param>
 		<param-name>config.location</param-name>
 		<param-value>${user.home}/bibsonomy.properties</param-value>
@@ -37,14 +36,6 @@
 		<error-code>503</error-code>
 		<location>/errors/503</location>
 	</error-page>
-
-	<!-- DB connection -->
-	<resource-ref>
-		<description>DB Connection</description>
-		<res-ref-name>jdbc/bibsonomy</res-ref-name>
-		<res-type>javax.sql.DataSource</res-type>
-		<res-auth>Container</res-auth>
-	</resource-ref>
 
 	<!-- filters -->
 	<filter>
@@ -149,14 +140,13 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-	<!-- spring MVC servlet -->
+	<!-- spring main servlet -->
 	<servlet>
 		<servlet-name>bibsonomy2</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	
-	<!-- Servlet-Mappings  -->
 	<!-- spring main servlet -->
 	<servlet-mapping>
 		<servlet-name>bibsonomy2</servlet-name>

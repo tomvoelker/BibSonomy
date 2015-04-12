@@ -75,11 +75,6 @@
 		<property name="conversionService" ref="conversionService" />
 	</bean>
 	
-	<!-- TODO: remove after all jsp are ported to spring mvc -->
-	<bean id="oldPagesFix" class="servlets.utils.ProperiesAttributeSetter" init-method="init">
-		<property name="properties" ref="properties" />
-	</bean>
-	
 	<bean id="controllerBase" class="org.bibsonomy.webapp.util.spring.controller.MinimalisticControllerSpringWrapper" abstract="true">
 		<property name="allowedFields" ref="allowedFields"/>
 		<property name="disallowedFields" ref="disallowedFields"/>
