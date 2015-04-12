@@ -29,6 +29,8 @@ package org.bibsonomy.webapp.filters;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,6 +49,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.security.web.util.UrlUtils;
 
 /**
  * Removes the context path from the request. 
@@ -74,9 +77,15 @@ public class ContextPathFilter implements Filter {
 		private static final String AUTH_HEADER = "authorization";
 		private static final String USER_AGENT_HEADER = "user-agent";
 		private static final Pattern TYPO3_USER_AGENT_REGEX = Pattern.compile("HTTP_Request2\\/0\\.5\\.1");
+		private final URL projectHomeUrl;
 
-		public ContextPathFreeRequest(final HttpServletRequest request) {
+		public ContextPathFreeRequest(final HttpServletRequest request, final String projectHomeUrl) {
 			super(request);
+			try {
+				this.projectHomeUrl = new URL(projectHomeUrl);
+			} catch (MalformedURLException e) {
+				throw new RuntimeException(e);
+			}
 		}
 		
 		/**
@@ -86,7 +95,8 @@ public class ContextPathFilter implements Filter {
 		 */
 		@Override
 		public StringBuffer getRequestURL() {
-			return this.stripContextPath(super.getRequestURL(), super.getContextPath());
+			return new StringBuffer(UrlUtils.buildFullRequestUrl(getScheme(), getServerName(), getServerPort(), getRequestURI(), getQueryString()));
+			//return this.stripContextPath(super.getRequestURL(), super.getContextPath());
 		}
 		
 		@Override
@@ -153,6 +163,37 @@ public class ContextPathFilter implements Filter {
 				// ignore silently; could happen if e.g. no user-agent header is present
 			}			
 			return super.getHeader(AUTH_HEADER);
+		}
+		
+		/* (non-Javadoc)
+		 * @see javax.servlet.ServletRequestWrapper#getScheme()
+		 */
+		@Override
+		public String getScheme() {
+			return projectHomeUrl.getProtocol();
+		}
+		
+		/* (non-Javadoc)
+		 * @see javax.servlet.ServletRequestWrapper#getServerName()
+		 */
+		@Override
+		public String getServerName() {
+			return projectHomeUrl.getHost();
+		}
+		
+		/* (non-Javadoc)
+		 * @see javax.servlet.ServletRequestWrapper#getServerPort()
+		 */
+		@Override
+		public int getServerPort() {
+			final int port = projectHomeUrl.getPort();
+			if (port <= 0) {
+				if (getScheme().equalsIgnoreCase("https")) {
+					return 443;
+				}
+				return 80;
+			}
+			return port;
 		}
 				
 	}
@@ -226,7 +267,7 @@ public class ContextPathFilter implements Filter {
 		 */
 		try {
 			if (request instanceof HttpServletRequest) {
-				chain.doFilter(new ContextPathFreeRequest((HttpServletRequest) request), wrapResponse(response));	
+				chain.doFilter(new ContextPathFreeRequest((HttpServletRequest) request, this.projectHomeUrl), wrapResponse(response));	
 			} else {
 				chain.doFilter(request, wrapResponse(response));
 			}

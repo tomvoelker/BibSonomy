@@ -37,25 +37,31 @@ package org.bibsonomy.wiki.enums;
  */
 public enum DefaultLayout {
 
-	/** default user layout 2 (english) */
+	/** default user layout 2 (English) */
 	LAYOUT_DEFAULT_II_EN("user2en"),
 
-	/** default user layout 2 (german) */
+	/** default user layout 2 (German) */
 	LAYOUT_DEFAULT_II_GER("user2de"),
 
-	/** default user layout 1 (english) */
+	/** default user layout 2 (Russian) */
+	LAYOUT_DEFAULT_II_RU("user2ru"),
+
+	/** default user layout 1 (English) */
 	LAYOUT_DEFAULT_I_EN("user1en"),
 
-	/** default user layout 2 (german) */
+	/** default user layout 1 (Russian) */
+	LAYOUT_DEFAULT_I_RU("user1ru"),
+
+	/** default user layout 2 (German) */
 	LAYOUT_DEFAULT_I_GER("user1de"),
 
 	/** current user layout (i.e. the one ) */
 	LAYOUT_CURRENT(""),
 
-	/** default group layout 1 (english) */
+	/** default group layout 1 (English) */
 	LAYOUT_G_DEFAULT_I_EN("group1en"),
 
-	/** default group layout 1 (german) */
+	/** default group layout 1 (German) */
 	LAYOUT_G_DEFAULT_I_GER("group1de");
 
 	/** the message key which holds the default cv wiki text */

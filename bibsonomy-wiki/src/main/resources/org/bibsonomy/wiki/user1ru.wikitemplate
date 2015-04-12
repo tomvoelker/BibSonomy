@@ -1,0 +1,25 @@
+== личные данные ==
+{| class="wikitable" style="text-align:left;padding:15px"
+|style="width: 5em", rowspan="5" | <image style="float: center" />
+! название || <name />
+|-
+!style="width: 10em"| location || <location />
+|-
+! дата рождения || <birthday />
+|-
+! профессия || <profession />
+|-
+! учреждение || <institution />
+|}
+
+==научные интересы==
+<interests />
+
+==хобби==
+<hobbies />
+
+==мои публикации==
+<publications tags="myown" layout="plain" />
+
+==мои закладки==
+<bookmarks />

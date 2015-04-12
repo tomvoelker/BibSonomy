@@ -260,6 +260,12 @@
 		<function-class>tags.Functions</function-class>
 		<function-signature>java.util.Map diffEntries(org.bibsonomy.model.Post, org.bibsonomy.model.Post)</function-signature>
 	</function>
+
+	<function>
+		<name>isRegularGroup</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>Boolean isRegularGroup(org.bibsonomy.model.Group)</function-signature>
+	</function>
 	
 	<function>
 		<name>quoteJSON</name>
