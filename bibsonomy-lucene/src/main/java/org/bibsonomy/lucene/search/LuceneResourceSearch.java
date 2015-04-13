@@ -735,7 +735,6 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 */
 	public void setIndex(final LuceneResourceIndex<R> index) {
 		this.index = index;
-		this.index.reset();
 	}
 
 	/**
