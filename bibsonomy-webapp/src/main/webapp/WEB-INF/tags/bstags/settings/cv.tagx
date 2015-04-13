@@ -20,8 +20,10 @@
 	</c:if>
 
 	<fmt:message key="cv.layout.name.def1en" var="def1en" />
+	<fmt:message key="cv.layout.name.def1ru" var="def1ru" />
 	<fmt:message key="cv.layout.name.def1ger" var="def1ger" />
 	<fmt:message key="cv.layout.name.def2en" var="def2en" />
+	<fmt:message key="cv.layout.name.def2ru" var="def2ru" />
 	<fmt:message key="cv.layout.name.def2ger" var="def2ger" />
 	<fmt:message key="cv.layout.name.curr" var="curr" />
 	<fmt:message key="cv.layout.name.clear" var="clear" />
@@ -69,6 +71,7 @@
 											<form:option data-layout='LAYOUT_CURRENT' value="${curr}">${curr}</form:option>
 											<form:option data-layout="LAYOUT_G_DEFAULT_I_EN" value="${def1en}">${def1en}</form:option>
 											<form:option data-layout="LAYOUT_G_DEFAULT_I_GER" value="${def1ger}">${def1ger}</form:option>
+											<form:option data-layout="LAYOUT_G_DEFAULT_I_RU" value="${def1ru}">${def1ru}</form:option>
 										</form:select>
 									</c:when>
 
@@ -76,9 +79,11 @@
 										<form:select id="changeLayout" path="" cssClass="form-control">
 											<form:option data-layout='LAYOUT_CURRENT' value="${curr}">${curr}</form:option>
 											<form:option data-layout='LAYOUT_DEFAULT_I_EN' value="${def1en}">${def1en}</form:option>
-											<form:option data-layout='LAYOUT_DEFAULT_I_GER' value="${def1ger}">${def1ger}</form:option>
 											<form:option data-layout='LAYOUT_DEFAULT_II_EN' value="${def2en}">${def2en}</form:option>
+											<form:option data-layout='LAYOUT_DEFAULT_I_GER' value="${def1ger}">${def1ger}</form:option>
 											<form:option data-layout='LAYOUT_DEFAULT_II_GER' value="${def2ger}">${def2ger}</form:option>
+											<form:option data-layout='LAYOUT_DEFAULT_I_RU' value="${def1ru}">${def1ru}</form:option>
+											<form:option data-layout='LAYOUT_DEFAULT_II_RU' value="${def2ru}">${def2ru}</form:option>
 										</form:select>
 									</c:otherwise>
 								</c:choose>
