@@ -161,10 +161,11 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		final QuerySortContainer qf = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, null);
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
 		
+		final LuceneResourceIndex<R> indexToUseThisTime = this.index;
 		IndexSearcher searcher = null;
 		try {
 			//Aquire searcher
-			searcher = this.index.aquireIndexSearcher();
+			searcher = indexToUseThisTime.aquireIndexSearcher();
 			log.debug("Starting tag collection");
 			final TopDocs topDocs = searcher.search(qf.getQuery(), null, this.tagCloudLimit, qf.getSort());
 			log.debug("Done collecting tags");
@@ -205,7 +206,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		} catch (final IOException e) {
 			log.error("Error building full text tag cloud for query " + qf.getQuery().toString(), e);
 		} finally {
-			this.index.releaseIndexSearcher(searcher);
+			indexToUseThisTime.releaseIndexSearcher(searcher);
 		}
 		
 		final List<Tag> tags = new LinkedList<Tag>();
@@ -230,12 +231,13 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			return new ResultList<Post<R>>();
 		}
 		
+		final LuceneResourceIndex<R> indexToUseThisTime = this.index;
 		IndexSearcher searcher = null;
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
 		try {
 			
 			try {
-				searcher = this.index.aquireIndexSearcher();
+				searcher = indexToUseThisTime.aquireIndexSearcher();
 			} catch (IllegalStateException e) {
 				throw new InternServerException(e);
 			}
@@ -282,7 +284,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		} catch (final IOException e) {
 			log.debug("LuceneResourceSearch: IOException: " + e.getMessage());
 		} finally {
-			this.index.releaseIndexSearcher(searcher);
+			indexToUseThisTime.releaseIndexSearcher(searcher);
 		}
 
 		return postList;
