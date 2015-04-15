@@ -1702,7 +1702,7 @@ public class URLGenerator {
 	 * @param role
 	 * @return String
 	 */
-	public String getPersonUrl(final int personId, final String personName, final String resourceHash, final String user, final String role) {
+	public String getPersonUrl(final String personId, final String personName, final String resourceHash, final String user, final String role) {
 		String url;
 		try {
 			url = this.projectHome + URLGenerator.PERSON_PREFIX + "/" + personId + "/" + URLEncoder.encode(personName, "UTF-8");

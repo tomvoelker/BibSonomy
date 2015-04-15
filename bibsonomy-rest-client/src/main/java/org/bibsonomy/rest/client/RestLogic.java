@@ -809,7 +809,7 @@ public class RestLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonById(int)
 	 */
 	@Override
-	public Person getPersonById(int id) {
+	public Person getPersonById(String id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -883,7 +883,7 @@ public class RestLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#linkUser(java.lang.Integer)
 	 */
 	@Override
-	public void linkUser(Integer personId) {
+	public void linkUser(String personId) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -43,7 +43,7 @@ public interface PersonLogicInterface {
 	 */
 	public void createOrUpdatePerson(Person person);
 	
-	public Person getPersonById(int id);
+	public Person getPersonById(String id);
 	
 	public void removePersonName(Integer personNameId);
 

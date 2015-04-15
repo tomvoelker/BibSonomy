@@ -3,7 +3,7 @@
 
 <sqlMap namespace="PersonCommon">
 	<resultMap id="person" class="org.bibsonomy.model.Person">
-		<result property="id"          		column="person_id"          javaType="integer" />
+		<result property="id"          		column="person_id"          javaType="String" />
 		<result property="names" 			column="person_id"	 		javaType='java.util.ArrayList' select='getNames' />
 		<result property="orcid"       		column="orcid"        		javaType="java.lang.String" />
 		<result property='academicDegree' 	column='academic_degree'	javaType='java.lang.String' />
@@ -18,7 +18,7 @@
 		<result property="id" 			column="id" 		javaType="integer" />
 		<result property="firstName" 	column="first_name"	javaType="java.lang.String" />
 		<result property="lastName" 	column="last_name" 	javaType="java.lang.String" />
-		<result property="personId" 	column="person_id" 	javaType="integer" />
+		<result property="personId" 	column="person_id" 	javaType="java.lang.String" />
 		<result property='isMain'		column='is_main'	javaType='boolean' />
 		<result property="person"		column="person_id"  javaType='org.bibsonomy.model.Person' select='getPersonById' />
 		<result property='resourcePersonRelations'			column='{personNameId=id}' javaType='org.bibsonomy.model.ResourcePersonRelation' select='getResourcePersonRelationsByNameId'/>

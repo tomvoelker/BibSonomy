@@ -124,7 +124,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	private int compareVersion;
 	private List<String> differentEntryKeys;
 	
-	private int personId;
+	private String personId;
 	private String person_lastName;
 	private String person_role;
 	
@@ -528,14 +528,14 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	/**
 	 * @return the personId
 	 */
-	public int getPersonId() {
+	public String getPersonId() {
 		return this.personId;
 	}
 
 	/**
 	 * @param personId the personId to set
 	 */
-	public void setPersonId(int personId) {
+	public void setPersonId(String personId) {
 		this.personId = personId;
 	}
 

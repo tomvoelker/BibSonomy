@@ -53,7 +53,7 @@ public class PersonName implements Serializable {
 	private int id;
 	private String firstName;
 	private String lastName;
-	private int personId;
+	private String personId;
 	private boolean isMain;
 	private Person person;
 	private List<ResourcePersonRelation> resourcePersonRelations;
@@ -188,14 +188,14 @@ public class PersonName implements Serializable {
 	/**
 	 * @return the personId
 	 */
-	public int getPersonId() {
+	public String getPersonId() {
 		return this.personId;
 	}
 
 	/**
 	 * @param personId the personId to set
 	 */
-	public void setPersonId(int personId) {
+	public void setPersonId(String personId) {
 		this.personId = personId;
 	}
 
@@ -239,7 +239,7 @@ public class PersonName implements Serializable {
 	/**
 	 * @return PersonName
 	 */
-	public PersonName withPersonId(int personId) {
+	public PersonName withPersonId(String personId) {
 		this.setPersonId(personId);
 		return this;
 	}

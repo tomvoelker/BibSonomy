@@ -40,7 +40,7 @@ public class Person implements Serializable {
 	private static final long serialVersionUID = 4578956154246424767L;
 	
 	/** null means new non-persistent object */
-	private int id;
+	private String id;
 	/** usually current real name */
 	private PersonName mainName;
 	/** other names like former names or pseudonyms */
@@ -70,15 +70,15 @@ public class Person implements Serializable {
 	/**
 	 * @return synthetic id. null means new non-persistent object
 	 */
-	public int getId() {
+	public String getId() {
 		return this.id;
 	}
 
 	/**
-	 * @param id synthetic id. null means new non-persistent object
+	 * @param string synthetic id. null means new non-persistent object
 	 */
-	public void setId(int id) {
-		this.id = id;
+	public void setId(String string) {
+		this.id = string;
 		for(PersonName name : this.names)
 			name.setPersonId(this.id);
 	}
@@ -205,18 +205,18 @@ public class Person implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (id == 0) {
+		if (id == null) {
 			return obj == this;
 		}
-		return ((obj instanceof Person) && (this.getId() == ((Person)obj).getId()));
+		return ((obj instanceof Person) && (this.getId().equals(((Person)obj).getId())));
 	}
 	
 	@Override
 	public int hashCode() {
-		if (id == 0) {
+		if (id == null) {
 			return System.identityHashCode(this);
 		}
-		return id;
+		return id.hashCode();
 	}
 
 	/** 

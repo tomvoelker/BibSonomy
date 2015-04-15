@@ -64,7 +64,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @param session
 	 * @return Person
 	 */
-	public Person getPersonById(int id, DBSession session) {
+	public Person getPersonById(String id, DBSession session) {
 		return (Person) this.queryForObject("getPersonById", id, session);
 	}
 

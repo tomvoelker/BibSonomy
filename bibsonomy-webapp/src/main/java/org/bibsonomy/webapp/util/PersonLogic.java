@@ -37,7 +37,7 @@ public class PersonLogic implements PersonLogicInterface {
 	 */
 	@Override
 	public void createOrUpdatePerson(Person person) {
-		if(person.getId() > 0) {
+		if(person.getId() != null) {
 			this.personDatabaseManager.updatePerson(person, this.dbSessionFactory.getDatabaseSession());
 			this.personDatabaseManager.updatePersonName(person.getMainName(), this.dbSessionFactory.getDatabaseSession());
 		} else {
@@ -51,7 +51,7 @@ public class PersonLogic implements PersonLogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonById(int)
 	 */
 	@Override
-	public Person getPersonById(int id) {
+	public Person getPersonById(String id) {
 		return this.personDatabaseManager.getPersonById(id, this.dbSessionFactory.getDatabaseSession());
 	}
 	

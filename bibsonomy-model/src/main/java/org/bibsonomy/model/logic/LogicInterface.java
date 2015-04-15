@@ -691,7 +691,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	/**
 	 * @param personId
 	 */
-	public void linkUser(Integer personId);
+	public void linkUser(String personId);
 
 	/**
 	 * @param username

@@ -93,8 +93,8 @@ public class PersonPageController extends SingleResourceListController implement
 		JSONArray array = new JSONArray();
 		for(PersonName personName : personNames) {
 			JSONObject jsonPersonName = new JSONObject();
-			jsonPersonName.put("personId", new Integer(personName.getPersonId()));
-			jsonPersonName.put("personNameId", new Integer(personName.getId()));
+			jsonPersonName.put("personId", personName.getPersonId());
+			jsonPersonName.put("personNameId", personName.getId());
 			jsonPersonName.put("personName", BibTexUtils.cleanBibTex(personName.toString()));
 			// FIXME: this is only a quick hack and must be replaced!
 			jsonPersonName.put("extendedPersonName", BibTexUtils.cleanBibTex(getExtendedPersonName(personName)));
@@ -185,7 +185,7 @@ public class PersonPageController extends SingleResourceListController implement
 		this.logic.addResourceRelation(resourcePersonRelation);
 		
 		JSONObject jsonPerson = new JSONObject();
-		jsonPerson.put("personId", new Integer(person.getId()));
+		jsonPerson.put("personId", person.getId());
 		jsonPerson.put("personName", person.getMainName().toString());
 		jsonPerson.put("personNameId", new Integer(person.getMainName().getId()));
 		jsonPerson.put("resourcePersonRelationid", new Integer(resourcePersonRelation.getId()));
@@ -207,7 +207,7 @@ public class PersonPageController extends SingleResourceListController implement
 	}
 	
 	private View linkAction(PersonPageCommand command) {
-		this.logic.linkUser(new Integer(command.getFormPersonId()));
+		this.logic.linkUser(command.getFormPersonId());
 		return Views.AJAX_TEXT;
 	}
 	
@@ -267,7 +267,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 */
 	private View updateAction(PersonPageCommand command) {
-		command.setPerson(this.logic.getPersonById(Integer.parseInt(command.getFormPersonId())));
+		command.setPerson(this.logic.getPersonById(command.getFormPersonId()));
 		command.getPerson().setAcademicDegree(command.getFormAcademicDegree());
 		command.getPerson().getMainName().setMain(false);
 		command.getPerson().setMainName(Integer.parseInt(command.getFormSelectedName()));
@@ -283,8 +283,8 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 */
 	private View addNameAction(PersonPageCommand command) {
-		Person person = logic.getPersonById(Integer.valueOf(command.getFormPersonId()).intValue());
-		PersonName personName = new PersonName(command.getFormLastName()).withFirstName(command.getFormFirstName()).withPersonId(Integer.valueOf(command.getFormPersonId()).intValue());
+		Person person = logic.getPersonById(command.getFormPersonId());
+		PersonName personName = new PersonName(command.getFormLastName()).withFirstName(command.getFormFirstName()).withPersonId(command.getFormPersonId());
 		for( PersonName otherName : person.getNames()) {
 			if(personName.equals(otherName)) {
 				command.setResponseString(otherName.getId()+ "");
@@ -318,15 +318,16 @@ public class PersonPageController extends SingleResourceListController implement
 			command.getAvailableRoles().add(prr.getRelatorCode());
 		}
 		
-		command.setPerson(this.logic.getPersonById(Integer.parseInt(command.getRequestedPersonId())));
+		command.setPerson(this.logic.getPersonById(command.getRequestedPersonId()));
 		
 		List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(command.getPerson());
 		List<Post<?>> authorPosts = new ArrayList<>();
 		List<Post<?>> advisorPosts = new ArrayList<>();
 
 		for(ResourcePersonRelation resourcePersonRelation : resourceRelations) {
-			if(!resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis"))
-				continue;
+			if(!resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis")) {
+				continue;	
+			}
 			
 			if(resourcePersonRelation.getRelatorCode().equals(PersonResourceRelation.AUTHOR.getRelatorCode())) 
 				authorPosts.add(resourcePersonRelation.getPost());

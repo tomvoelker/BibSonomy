@@ -834,7 +834,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 		/* if this field is already initiated, it means that we have come from a person page ...
 		 **/
-		if(command.getPersonId()!=0){
+		if(command.getPersonId() != null){
 			
 			Person person = this.logic.getPersonById(command.getPersonId());
 			PersonName personName = new PersonName();
