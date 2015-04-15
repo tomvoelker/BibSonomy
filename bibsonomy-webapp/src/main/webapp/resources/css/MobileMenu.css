@@ -1,0 +1,5 @@
+@media (max-width: 767px) {
+	.container.navi {
+		padding-left: 15px !important;
+	}
+}
