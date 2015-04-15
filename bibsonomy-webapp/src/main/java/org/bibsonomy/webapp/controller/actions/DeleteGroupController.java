@@ -105,7 +105,7 @@ public class DeleteGroupController extends GroupSettingsPageController implement
 				
 		// size must be bigger than 2 because the membership object contains also the group user
 		if(group.getMemberships().size() > 2) {
-			throw new AccessDeniedException("TODO: add error, group not empty!!");
+			throw new AccessDeniedException("The group can't be deleted, it's not empty");
 		}
 		
 		/*

@@ -38,6 +38,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupRole;
@@ -693,11 +694,14 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		final Integer groupId = Integer.valueOf(group.getGroupId());
 		this.delete("deleteGroup", groupId, session);
 		this.delete("removeAllUserFromGroup", groupId, session);
-		this.update("updateGroupUserAfterDelete", groupname, session);
 		
-		// @TODO DAS UNTEN STEHENDE TESTEN!!
-		// log_groupids anlegen!
-		//
+		// get the group user and flag him as spammer
+		User groupUser = this.userDb.getUserDetails(groupname, session);
+		groupUser.setToClassify(0);
+		groupUser.setAlgorithm("admin");
+		groupUser.setSpammer(true);
+		AdminDatabaseManager adminDBManager = AdminDatabaseManager.getInstance();
+		adminDBManager.flagSpammer(groupUser, AdminDatabaseManager.DELETED_UPDATED_BY, session);
 	}
 
 	/**
