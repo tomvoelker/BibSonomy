@@ -668,6 +668,7 @@ public class LuceneResourceIndex<R extends Resource> {
 					}
 				}
 				log.debug("Closing indexWriter " + indexPath);
+				this.disableIndex();
 				// close index for writing
 				indexWriter.close();
 				indexWriter = null;
@@ -698,6 +699,7 @@ public class LuceneResourceIndex<R extends Resource> {
 					}
 				}
 				log.debug("closing searchManager " + indexPath);
+				this.disableIndex();
 				this.searcherManager.close();
 				this.searcherManager = null;
 			}
