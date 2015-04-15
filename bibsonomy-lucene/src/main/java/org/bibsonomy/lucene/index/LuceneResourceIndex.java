@@ -233,7 +233,7 @@ public class LuceneResourceIndex<R extends Resource> {
 						if (IndexWriter.isLocked(this.indexDirectory)) {
 							log.warn("Unlocking index " + indexPath + " failed silently");
 							if (indexDirectory.fileExists(IndexWriter.WRITE_LOCK_NAME)) {
-								log.error("Trying to unlocking index " + indexPath + " with some more emphasis");
+								log.error("Trying to unlock index " + indexPath + " with some more emphasis");
 								indexDirectory.clearLock(IndexWriter.WRITE_LOCK_NAME);
 							}
 						}
@@ -544,6 +544,10 @@ public class LuceneResourceIndex<R extends Resource> {
 		// reset the cached query parameters
 		this.lastLogDate = null;
 		this.lastTasId = null;
+		
+		if ((this.indexWriter != null) && (this.searcherManager != null)) {
+			this.enableIndex();
+		}
 	}	
 	
 	//------------------------------------------------------------------------
