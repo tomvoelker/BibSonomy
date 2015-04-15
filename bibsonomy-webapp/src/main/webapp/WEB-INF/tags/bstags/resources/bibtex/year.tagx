@@ -7,7 +7,9 @@
 
 	<c:if test="${braces}">(</c:if>
 	<em>
+	<span itemprop="datePublished">
 		<c:out value="${mtl:getDate(publication.day, publication.month, publication.year, locale)}" />
+	</span>
 	</em>
 	<c:if test="${braces}">)</c:if>
 

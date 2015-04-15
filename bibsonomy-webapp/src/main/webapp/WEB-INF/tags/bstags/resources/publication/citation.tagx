@@ -61,7 +61,8 @@
 				<a data-toggle="tab" href="#citation_all" data-formatUrl="${exportUrl}"><fmt:message key="bibtex.all_exports" /></a>
 			</li>
 		</ul>
-		<div id="citation-styles" class="tab-content pub-citation-tab-content">
+		<div id="citation-styles" class="tab-content pub-citation-tab-content"
+			itemscope="itemscope" itemtype="http://schema.org/ScholarlyArticle">
 			<c:forEach var="citationStyle" items="${fn:split(citationStylesToShow,',')}">
 				<div class="tab-pane" id="citation_${citationStyle}">
 					<!-- keep -->
@@ -69,12 +70,13 @@
 			</c:forEach>
 			<div class="tab-pane" id="citation_bibtex">
 				<textarea style="width:100%;font-size:80%;border:none;" rows="15">
-					<export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/>
+				<!-- the definition of 'itemprop=citation's not exactly what we need!  -->
+					<span itemprop="citation"><export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/></span>
 				</textarea>
 			</div>
 			<div class="tab-pane" id="citation_endnote">
 				<textarea style="width:100%;font-size:80%;border:none;" rows="15">
-					<export:endnote post="${post}" escapeXml="${true}" />
+					<span itemprop="citation"><export:endnote post="${post}" escapeXml="${true}" /></span>
 				</textarea>
 			</div>
 			<div class="tab-pane" id="citation_all">

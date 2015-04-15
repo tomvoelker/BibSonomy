@@ -6,6 +6,19 @@
 	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />	
 	
 	<c:if test="${not empty publication.volume and not empty publication.number and not empty publication.pages}">		
-		<em><c:out value="${mtl:cleanBibtex(publication.volume)}" />(<c:out value="${mtl:cleanBibtex(publication.number)}"/>):<c:out value="${mtl:cleanBibtex(publication.pages)}" /></em>		
+		<em>
+			<span itemprop="isPartOf" itemscope="itemscope"
+	         itemtype="http://schema.org/PublicationIssue">
+	        	<span itemprop="isPartOf" itemscope="itemscope"
+	            itemtype="http://schema.org/PublicationVolume"><span
+	            itemprop="volumeNumber"><c:out value="${mtl:cleanBibtex(publication.volume)}" /></span></span>(<span
+	            itemprop="issueNumber"><c:out value="${mtl:cleanBibtex(publication.number)}"/></span>)
+	            :<span itemprop="pagination"><c:out value="${mtl:cleanBibtex(publication.pages)}" /></span>
+	              
+	              
+	        </span>
+		</em>
+		
+				
 	</c:if>
 </jsp:root>

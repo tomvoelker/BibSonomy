@@ -7,6 +7,6 @@
 	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
 	
 	<c:if test="${not empty publication.edition}">		
-		<em><c:out value="${mtl:cleanBibtex(publication.edition)}" /><c:out value=" "/><fmt:message key="bibtex.edition"/>,<c:out value=" "/></em>		
+		<em><span itemprop="bookEdition"><c:out value="${mtl:cleanBibtex(publication.edition)}" /></span><c:out value=" "/><fmt:message key="bibtex.edition"/>,<c:out value=" "/></em>		
 	</c:if>
 </jsp:root>
