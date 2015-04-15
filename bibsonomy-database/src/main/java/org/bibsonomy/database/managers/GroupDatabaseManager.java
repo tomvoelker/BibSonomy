@@ -698,7 +698,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		// get the group user and flag him as spammer
 		User groupUser = this.userDb.getUserDetails(groupname, session);
 		groupUser.setToClassify(0);
-		groupUser.setAlgorithm("admin");
+		groupUser.setAlgorithm("group_user");
 		groupUser.setSpammer(true);
 		AdminDatabaseManager adminDBManager = AdminDatabaseManager.getInstance();
 		adminDBManager.flagSpammer(groupUser, AdminDatabaseManager.DELETED_UPDATED_BY, session);
