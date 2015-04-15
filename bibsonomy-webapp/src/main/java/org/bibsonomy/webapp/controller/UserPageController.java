@@ -227,7 +227,8 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				for (Group g : loginUserNameGroups) {
 					// only add a group if the member list is visible
 					if (g.getPrivlevel() == Privlevel.PUBLIC || g.getPrivlevel() == Privlevel.MEMBERS) {
-						for (GroupMembership m : g.getMemberships()) {
+						Group groupDetails = logic.getGroupDetails(g.getName());
+						for (GroupMembership m : groupDetails.getMemberships()) {
 							if (m.getUser().equals(requestedUser)) {
 								sharedGroups.add(g);
 							}
