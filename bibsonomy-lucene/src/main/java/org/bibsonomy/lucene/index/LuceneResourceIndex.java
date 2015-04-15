@@ -266,20 +266,22 @@ public class LuceneResourceIndex<R extends Resource> {
 				throw e; 
 			}
 			
-			try {
-				this.openIndexWriter();
-			} catch (final IOException e) {
-				log.error("Error opening IndexWriter (" + e.getMessage() + ") - This is ok while creating a new index.");
-				this.closeIndexWriter();
-				throw e;
-			}
-			
-			try {
-				this.openSearcherManager();
-			} catch (final IOException e) {
-				log.error("Error opening SearcherManager (" + e.getMessage() + ") - This is ok while creating a new index.");
-				this.closeSearcherManager();
-				throw e;
+			synchronized (this) {
+				try {
+					this.openIndexWriter();
+				} catch (final IOException e) {
+					log.error("Error opening IndexWriter (" + e.getMessage() + ") - This is ok while creating a new index.");
+					this.closeIndexWriter();
+					throw e;
+				}
+				
+				try {
+					this.openSearcherManager();
+				} catch (final IOException e) {
+					log.error("Error opening SearcherManager (" + e.getMessage() + ") - This is ok while creating a new index.");
+					this.closeSearcherManager();
+					throw e;
+				}
 			}
 			
 			// everything went fine - enable the index
@@ -645,7 +647,7 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * @throws LockObtainFailedException
 	 * @throws IOException
 	 */
-	private void openIndexWriter() throws CorruptIndexException, LockObtainFailedException, IndexNotFoundException, IOException  {
+	private synchronized void openIndexWriter() throws CorruptIndexException, LockObtainFailedException, IndexNotFoundException, IOException  {
 		closeIndexWriter();
 		//open new indexWriter
 		log.debug("Opening indexWriter " + this.indexPath);
@@ -656,10 +658,20 @@ public class LuceneResourceIndex<R extends Resource> {
 	
 	private void closeIndexWriter() throws CorruptIndexException, IOException {
 		if (this.indexWriter != null) {
-			log.debug("Closing indexWriter " + indexPath);
-			//close index for writing
-			indexWriter.close();
-			indexWriter = null;
+			synchronized (this) {
+				while (this.openSessions.size() > 0) {
+					try {
+						log.debug("waiting to close indexWriter " + indexPath);
+						this.wait();
+					} catch (InterruptedException e) {
+						Thread.interrupted();
+					}
+				}
+				log.debug("Closing indexWriter " + indexPath);
+				// close index for writing
+				indexWriter.close();
+				indexWriter = null;
+			}
 		}
 	}
 	
