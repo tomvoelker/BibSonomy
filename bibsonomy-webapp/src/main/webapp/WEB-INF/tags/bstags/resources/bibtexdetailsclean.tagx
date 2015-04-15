@@ -23,7 +23,7 @@
 		<script type="text/javascript" src="${jsOpenAccess}"><!--  --></script>
 	</c:if>
 	
-	
+	<div itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
 	<div class="title">
 		<pub:title post="${post}">
 			<jsp:attribute name="bibActionButtons">
@@ -116,5 +116,5 @@
 			</c:if>
 		</div>
 	</div>
-	
+	</div><!-- end of markup -->
 </jsp:root>

@@ -10,7 +10,7 @@
 	
 	<c:choose>
 		<c:when test="${publication.entrytype eq 'article'}">
-			<div itemscope="itemscope" itemtype="http://schema.org/ScholarlyArticle">
+			<div itemprop="exampleOfWork" itemscope="itemscope" itemtype="http://schema.org/ScholarlyArticle">
 				<bib:author publication="${publication}" post="${post}"/>
 				<bib:journal publication="${publication}"/><c:out value=" "/>
 				<bib:volumeNumberPages publication="${publication}"/><c:out value=" "/>
@@ -20,7 +20,7 @@
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'book'}">
-			<div itemscope="itemscope" itemtype="http://schema.org/Book">
+			<div itemprop="exampleOfWork" itemscope="itemscope" itemtype="http://schema.org/Book">
 				<bib:author publication="${publication}" post="${post}"/>
 				<bib:series publication="${publication}"/>
 				<bib:publisher publication="${publication}"/>
@@ -32,7 +32,7 @@
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'inbook'}">
-			<div itemscope="itemscope" itemtype="http://schema.org/ScholarlyArticle">
+			<div itemprop="exampleOfWork" itemscope="itemscope" itemtype="http://schema.org/ScholarlyArticle">
 				<bib:author publication="${publication}" post="${post}"/>
 				<bib:volumeOfSeries publication="${publication}"/>
 				<bib:chapter publication="${publication}"/>
@@ -49,7 +49,7 @@
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'booklet'}">
-			<div itemscope="itemscope" itemtype="http://schema.org/Book">
+			<div itemprop="exampleOfWork" itemscope="itemscope" itemtype="http://schema.org/Book">
 				<meta itemprop="bookFormat" content="booklet"/>
 				<bib:author publication="${publication}" post="${post}"/>
 				<bib:howpublished publication="${publication}"/>
@@ -60,7 +60,7 @@
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'incollection'}">
-			<div itemscope="itemscope" itemtype="http://schema.org/ScholarlyArticle">
+			<div itemprop="exampleOfWork" itemscope="itemscope" itemtype="http://schema.org/ScholarlyArticle">
 				<bib:author publication="${publication}" post="${post}"/>
 				<span itemprop="isPartOf" itemscope="itemscope"
 	        		itemtype="http://schema.org/Book">
@@ -79,7 +79,7 @@
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'inproceedings'}">
-			<div itemscope="itemscope" itemtype="http://schema.org/ScholarlyArticle">
+			<div itemprop="exampleOfWork" itemscope="itemscope" itemtype="http://schema.org/ScholarlyArticle">
 				<bib:author publication="${publication}" post="${post}"/>
 				<span itemprop="isPartOf" itemscope="itemscope"
 	        		itemtype="http://schema.org/Book">
@@ -96,70 +96,58 @@
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'manual'}">
-			<div itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
-				<bib:author publication="${publication}" post="${post}"/>
-				<bib:organization publication="${publication}"/>
-				<bib:address publication="${publication}"/>
-				<span itemprop="isPartOf" itemscope="itemscope"
-	        		itemtype="http://schema.org/Book">
-					<bib:edition publication="${publication}"/>
-				</span>
-				<bib:year publication="${publication}" braces="true"/>
-				<bib:note publication="${publication}"/>
-			</div>
+			<bib:author publication="${publication}" post="${post}"/>
+			<bib:organization publication="${publication}"/>
+			<bib:address publication="${publication}"/>
+			<span itemprop="isPartOf" itemscope="itemscope"
+        		itemtype="http://schema.org/Book">
+				<bib:edition publication="${publication}"/>
+			</span>
+			<bib:year publication="${publication}" braces="true"/>
+			<bib:note publication="${publication}"/>
 		</c:when>
 	
 		<c:when test="${publication.entrytype eq 'mastersthesis' or publication.entrytype eq 'phdthesis'}">
-			<div itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
-				<meta itemprop="educationalUse" content="thesis"/>
-				<bib:author publication="${publication}" post="${post}"/>
-				<bib:school publication="${publication}"/>
-				<bib:address publication="${publication}"/>
-				<bib:type publication="${publication}"/>
-				<bib:year publication="${publication}" braces="true"/>
-				<bib:note publication="${publication}"/>
-			</div>
+			<meta itemprop="educationalUse" content="thesis"/>
+			<bib:author publication="${publication}" post="${post}"/>
+			<bib:school publication="${publication}"/>
+			<bib:address publication="${publication}"/>
+			<bib:type publication="${publication}"/>
+			<bib:year publication="${publication}" braces="true"/>
+			<bib:note publication="${publication}"/>
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'proceedings'}">
-			<div itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
-				<bib:author publication="${publication}" post="${post}"/>
-				<bib:volumeOfSeries publication="${publication}"/>
-				<bib:address publication="${publication}"/>
-				<bib:organization publication="${publication}"/>
-				<bib:publisher publication="${publication}"/>
-				<bib:year publication="${publication}" braces="true"/>
-				<bib:note publication="${publication}"/>
-			</div>
+			<bib:author publication="${publication}" post="${post}"/>
+			<bib:volumeOfSeries publication="${publication}"/>
+			<bib:address publication="${publication}"/>
+			<bib:organization publication="${publication}"/>
+			<bib:publisher publication="${publication}"/>
+			<bib:year publication="${publication}" braces="true"/>
+			<bib:note publication="${publication}"/>
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'techreport'}">
-			<div itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
-				<bib:author publication="${publication}" post="${post}"/>
-				<bib:type publication="${publication}"/>
-				<bib:volume publication="${publication}"/>
-				<bib:institution publication="${publication}"/>
-				<bib:address publication="${publication}"/>
-				<bib:year publication="${publication}" braces="true"/>
-			</div>
+			<bib:author publication="${publication}" post="${post}"/>
+			<bib:type publication="${publication}"/>
+			<bib:volume publication="${publication}"/>
+			<bib:institution publication="${publication}"/>
+			<bib:address publication="${publication}"/>
+			<bib:year publication="${publication}" braces="true"/>
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'unpublished'}">
-			<div itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
-				<bib:author publication="${publication}" post="${post}"/>
-				<bib:year publication="${publication}" braces="true"/>
-				<bib:note publication="${publication}"/>
-			</div>
+			<bib:author publication="${publication}" post="${post}"/>
+			<bib:year publication="${publication}" braces="true"/>
+			<bib:note publication="${publication}"/>
 		</c:when>
 		
 		<!-- Misc and others -->
 		<c:otherwise>
-			<div itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
-				<bib:author publication="${publication}" post="${post}"/>
-				<bib:howpublished publication="${publication}"/>
-				<bib:year publication="${publication}" braces="true"/>
-				<bib:note publication="${publication}"/>
-			</div>
+			<bib:author publication="${publication}" post="${post}"/>
+			<bib:howpublished publication="${publication}"/>
+			<bib:year publication="${publication}" braces="true"/>
+			<bib:note publication="${publication}"/>
 		</c:otherwise>
 	
 	</c:choose>

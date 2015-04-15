@@ -61,8 +61,7 @@
 				<a data-toggle="tab" href="#citation_all" data-formatUrl="${exportUrl}"><fmt:message key="bibtex.all_exports" /></a>
 			</li>
 		</ul>
-		<div id="citation-styles" class="tab-content pub-citation-tab-content"
-			itemscope="itemscope" itemtype="http://schema.org/ScholarlyArticle">
+		<div id="citation-styles" class="tab-content pub-citation-tab-content">
 			<c:forEach var="citationStyle" items="${fn:split(citationStylesToShow,',')}">
 				<div class="tab-pane" id="citation_${citationStyle}">
 					<!-- keep -->

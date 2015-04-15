@@ -25,7 +25,7 @@
 			<span><c:out value="${postUserName}" /></span>
 		</a>
 
-		<div itemscope="itemscope" itemtype="http://schema.org/CreativeWork" class="media-body" id="titletext">
+		<div class="media-body" id="titletext">
 			<h1 class="media-heading" id="pubtitle">
 			
 				<jsp:invoke fragment="bibActionButtons" />

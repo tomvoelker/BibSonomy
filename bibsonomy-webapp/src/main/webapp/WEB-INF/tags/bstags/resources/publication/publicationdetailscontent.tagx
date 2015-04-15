@@ -31,7 +31,7 @@
 	</c:if>
 	
 	<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
-	<div itemscope="itemscope" itemtype="http://schema.org/ScholarlyArticle">	
+		
 		<!--+
 			| abstract 
 			+-->
@@ -247,5 +247,5 @@
 			</c:forEach>
 			</ul>
 		</div>
-	</div><!-- end of markup -->
+	
 </jsp:root>
