@@ -1738,5 +1738,11 @@
 		<URL>http://www.nature.com/news/images-of-the-month-october-2014-1.16228</URL>
 		<BibFile>NatureScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.nature.NatureScraper</Scraper>
+	</URLTest> 
+	<URLTest id="url_283">
+		<TestDescription>Scraping test for IEEE computer society scraper (new url schema)</TestDescription>
+		<URL>http://www.computer.org/csdl/mags/co/2001/02/r2026-reference.bib</URL>
+		<BibFile>IEEEComputerSocietyScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper</Scraper>
 	</URLTest>
 </test:Tests>
