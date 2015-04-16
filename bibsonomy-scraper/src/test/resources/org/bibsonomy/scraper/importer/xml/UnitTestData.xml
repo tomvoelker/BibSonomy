@@ -1740,7 +1740,7 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.nature.NatureScraper</Scraper>
 	</URLTest> 
 	<URLTest id="url_283">
-		<TestDescription>Scraping test for IEEE computer society scraper (new url schema)</TestDescription>
+		<TestDescription>Scraping test for IEEE computer society scraper PDF</TestDescription>
 		<URL>http://www.computer.org/csdl/mags/co/2001/02/r2026-reference.bib</URL>
 		<BibFile>IEEEComputerSocietyScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper</Scraper>
