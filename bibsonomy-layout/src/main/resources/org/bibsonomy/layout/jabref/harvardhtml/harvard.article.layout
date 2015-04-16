@@ -1,6 +1,6 @@
 <p>
-\format[HTMLCharsAntiScript,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author} (\format[AntiScriptInjection]{\year}), 
-'\format[HTMLCharsAntiScript]{\title}', <i> \format[HTMLChars]{\journal}</i>
+\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLCharsAntiScript]{\author} (\format[AntiScriptInjection]{\year}), 
+'\format[HTMLCharsAntiScript]{\title}', <i> \format[HTMLCharsAntiScript]{\journal}</i>
 \begin{volume}
  <b>\format[AntiScriptInjection]{\volume}</b>
 \end{volume}

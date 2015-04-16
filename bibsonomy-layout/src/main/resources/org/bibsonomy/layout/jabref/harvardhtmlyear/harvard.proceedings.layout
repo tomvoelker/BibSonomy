@@ -1,10 +1,10 @@
 \begingroup{year}<h3 class="bibsonomy_quicknav_group"><a name="\format[AntiScriptInjection]{\year}">\format[AntiScriptInjection]{\year}</a></h3>\endgroup{year}
 <p>
 \begin{author}
-\format[HTMLCharsAntiScript,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author}
+\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLCharsAntiScript]{\author}
 \end{author}
 \begin{editor}
-\format[HTMLCharsAntiScript,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\editor}, ed.
+\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLCharsAntiScript]{\editor}, ed.
 \end{editor}
  (\format[AntiScriptInjection]{\year}), 
  <i>\format[HTMLCharsAntiScript]{\title}</i>

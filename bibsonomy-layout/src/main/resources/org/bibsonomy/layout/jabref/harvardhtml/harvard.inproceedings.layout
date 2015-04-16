@@ -1,8 +1,8 @@
 <p>
-\format[HTMLCharsAntiScript,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author} (\format[AntiScriptInjection]{\year}), 
+\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLCharsAntiScript]{\author} (\format[AntiScriptInjection]{\year}), 
 \format[HTMLCharsAntiScript]{\title}, <i>in</i>
 \begin{editor}
-\format[HTMLCharsAntiScript,AuthorFirstFirst,AuthorAndsReplacer]{\editor}, ed.,
+\format[AuthorFirstFirst,AuthorAndsReplacer,HTMLCharsAntiScript]{\editor}, ed.,
 \end{editor}
 \begin{booktitle}
 '\format[HTMLCharsAntiScript]{\booktitle}'

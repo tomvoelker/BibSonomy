@@ -1,6 +1,6 @@
 \begingroup{year}<h3 class="bibsonomy_quicknav_group"><a name="\format[AntiScriptInjection]{\year}">\format[AntiScriptInjection]{\year}</a></h3>\endgroup{year}
 <div style="margin-bottom:1em">
-\begin{author}\format[AuthorLastFirst,HTMLCharsAntiScript,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}\format[IfNotEmptyInsertDIN1505T2TitlePrefix]{\title}\end{author}\begin{title}<i>\format[AntiScriptInjection]{\title}</i>\end{title}\begin{howpublished}.
+\begin{author}\format[AuthorLastFirst,DIN1505T2AndsReplacer,HTMLCharsAntiScript,DIN1505T2PersonNamesFormatter]{\author}\format[IfNotEmptyInsertDIN1505T2TitlePrefix]{\title}\end{author}\begin{title}<i>\format[AntiScriptInjection]{\title}</i>\end{title}\begin{howpublished}.
 \format[AntiScriptInjection]{\howpublished}\end{howpublished}\begin{year},
 \format[AntiScriptInjection]{\year}\end{year}\begin{note}. -
 \format[AntiScriptInjection]{\note}\end{note}

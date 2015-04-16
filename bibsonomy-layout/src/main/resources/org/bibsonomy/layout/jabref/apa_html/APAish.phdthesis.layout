@@ -1,4 +1,4 @@
-\format[HTMLCharsAntiScript,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author} (\format[AntiScriptInjection]{\year}). 
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLCharsAntiScript]{\author} (\format[AntiScriptInjection]{\year}). 
 <i> \format[HTMLCharsAntiScript]{\title}. </i>
 \begin{type}
 \format[HTMLCharsAntiScript]{\type}

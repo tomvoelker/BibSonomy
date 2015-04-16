@@ -1,6 +1,6 @@
 \begingroup{year}<h3 class="bibsonomy_quicknav_group"><a name="\format[AntiScriptInjection]{\year}">\format[AntiScriptInjection]{\year}</a></h3>\endgroup{year}
 <p>
-\format[HTMLCharsAntiScript,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author} (\format[AntiScriptInjection]{\year}), 
+\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLCharsAntiScript]{\author} (\format[AntiScriptInjection]{\year}), 
 '\format[HTMLCharsAntiScript]{\title}', <i> \format[HTMLCharsAntiScript]{\journal}</i>
 \begin{volume}
  <b>\format[AntiScriptInjection]{\volume}</b>

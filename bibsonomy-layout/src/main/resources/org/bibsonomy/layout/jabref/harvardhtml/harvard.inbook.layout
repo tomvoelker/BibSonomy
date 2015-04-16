@@ -1,6 +1,6 @@
 <p>
 \begin{author}
-\format[HTMLCharsAntiScript,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author}
+\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLCharsAntiScript]{\author}
 \end{author}
  (\format[AntiScriptInjection]{\year}), <i>\format[HTMLCharsAntiScript]{\title}</i>
 \begin{publisher}

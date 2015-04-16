@@ -1,6 +1,6 @@
 \begingroup{year}<h3 class="bibsonomy_quicknav_group"><a name="\format[AntiScriptInjection]{\year}">\format[AntiScriptInjection]{\year}</a></h3>\endgroup{year}
 <div style="margin-bottom:1em">
-\format[AuthorLastFirst,HTMLCharsAntiScript,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}:
+\format[AuthorLastFirst,DIN1505T2AndsReplacer,HTMLCharsAntiScript,DIN1505T2PersonNamesFormatter]{\author}:
 <i>\format[AntiScriptInjection]{\title}</i>\begin{address}. \format[AntiScriptInjection]{\address}\end{address}. \format[AntiScriptInjection]{\school}\begin{type}, \format[AntiScriptInjection]{\type}\end{type}, \format[AntiScriptInjection]{\year}\begin{note}. -
 \format[AntiScriptInjection]{\note}\end{note}
 </div>

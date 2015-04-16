@@ -40,7 +40,7 @@
 
 		\begin{title}
 		<div class="bibtex_title">
-			\format[HTMLChars,RemoveLatexCommands,AntiScriptInjection]{\title}
+			\format[HTMLCharsAntiScript,RemoveLatexCommands]{\title}
 		</div>
 		\end{title}
 
@@ -52,7 +52,7 @@
 
 		\begin{journal}
 		<div class="bibtex_journal">
-			\format[HTMLChars]{\journal}
+			\format[HTMLCharsAntiScript]{\journal}
 		</div>,
 		\end{journal}
 

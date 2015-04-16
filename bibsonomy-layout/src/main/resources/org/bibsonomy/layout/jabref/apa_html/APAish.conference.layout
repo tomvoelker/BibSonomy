@@ -1,11 +1,11 @@
 \begin{author}
-\format[HTMLCharsAntiScript,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author}
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLCharsAntiScript]{\author}
 \end{author}
  (\format[AntiScriptInjection]{\year}). 
 \format[HTMLCharsAntiScript]{\title}. 
 In 
 \begin{editor}
-\format[HTMLCharsAntiScript,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\editor}
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLCharsAntiScript]{\editor}
  (ed.), 
 \end{editor}
 <i> \format[HTMLCharsAntiScript]{\booktitle}</i>

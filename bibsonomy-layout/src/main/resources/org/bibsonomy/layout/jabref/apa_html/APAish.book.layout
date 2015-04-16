@@ -3,7 +3,7 @@
 \end{author}
 \format[AndSymbolIfBothPresent, XMLEscaper]{\authorsAndEditors}
 \begin{editor}
-\format[HTMLCharsAntiScript,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\editor} (ed\format[PluralS]{\editor}.)
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLCharsAntiScript]{\editor} (ed\format[PluralS]{\editor}.)
 \end{editor}
  (\format[AntiScriptInjection]{\year}).
 <i> \format[HTMLCharsAntiScript]{\title}</i>\begin{volume} (Vol. \format[AntiScriptInjection]{\volume})\end{volume}. 
