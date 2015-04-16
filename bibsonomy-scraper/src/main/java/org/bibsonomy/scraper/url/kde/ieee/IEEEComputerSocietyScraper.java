@@ -89,6 +89,9 @@ public class IEEEComputerSocietyScraper extends GenericBibTeXURLScraper {
 	 */
 	@Override
 	protected String getDownloadURL(URL url) throws ScrapingException {
+		if (url.toString().contains(".pdf")) {
+			return  url.toString().replaceAll(".pdf", "-reference.bib");
+		}
 		return  url.toString().replaceAll("-.*", "-reference.bib");
 	}
 	
