@@ -13,7 +13,7 @@
     
     
     <span class="truncatedDesc batchInfo">
-   		${post.resource.title} 
+   		<span itemprop="name">${post.resource.title}</span> 
    		<div>
         <div class="ptitle"><bm:title post="${post}"/></div>
         <div class="pdesc"><bm:desc post="${post}"/></div>

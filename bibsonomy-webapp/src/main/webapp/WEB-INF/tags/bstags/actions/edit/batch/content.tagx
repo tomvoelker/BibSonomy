@@ -206,6 +206,7 @@
 				</thead>
 				<tbody class="">
 					<c:forEach var="post" items="${listView.list}" varStatus="postCount">
+						<div itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
 						<spring:bind path="command.${resourceType}.list[${postCount.index}].resource.*">
 							<c:set var="postHasError" value="${status.error}" />
 						</spring:bind>
@@ -284,12 +285,14 @@
 														<c:when test="${status.error}">
 															<!--  the post has some errors on the tags - show the tags -->
 															<batch:tagErrors errors="${status}" />
-															<input type="text"
-																   name="newTags['${post.resource.intraHash}']" size="37"
-																   value="${fn:escapeXml(mtl:toTagString(post.tags))}"
-																   disabled="disabled"
-																   class="form-control"
-																   autocomplete="off" />
+															
+																<input type="text"
+																	   name="newTags['${post.resource.intraHash}']" size="37"
+																	   value="${fn:escapeXml(mtl:toTagString(post.tags))}"
+																	   disabled="disabled"
+																	   class="form-control"
+																	   autocomplete="off" />
+																<meta itemprop="keywords" content="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
 															<!--  we don't send the old tags, since we must try to update this post in any case  -->
 														</c:when>
 														<c:otherwise>
@@ -304,6 +307,7 @@
 															<input type="hidden" 
 																   name="oldTags['${post.resource.intraHash}']" 
 																   value="${fn:escapeXml(mtl:toTagString(post.tags))}" />
+															<meta itemprop="keywords" content="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
 														</c:otherwise>
 													</c:choose>
 												</spring:bind>
@@ -317,6 +321,7 @@
 								</c:choose>
 							</c:otherwise>
 						</c:choose>
+						</div>
 					</c:forEach>
 					
 					<!-- if there exists some posts which are not owned by the user -->
@@ -328,6 +333,7 @@
 							</div>
 							</tr>
 						<c:forEach var="post" items="${listView.list}" varStatus="postCount">
+							<div itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
 							<c:if test="${post.user.name ne command.context.loginUser.name}">
 								<tr>
 									<td style="text-align: center;">
@@ -349,17 +355,20 @@
 													<batch:tagErrors errors="${status}" />
 													<input type="text" size="37" value="${fn:escapeXml(mtl:toTagString(post.tags))}"
 														   disabled="disabled" class="form-control" autocomplete="off" />
+													<meta itemprop="keywords" content="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
 												</c:when>
 												<c:otherwise>
 													<!--  the post has no errors on the tags - show the tags -->
 													<input type="text" size="40" value="${fn:escapeXml(mtl:toTagString(post.tags))}"
 														   disabled="disabled" class="form-control" autocomplete="off" />
+													<meta itemprop="keywords" content="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
 												</c:otherwise>
 											</c:choose>
 										</spring:bind>
 									</td>
 								</tr>
 							</c:if>
+							</div>
 						</c:forEach>
 					</c:if>
 				</tbody>
