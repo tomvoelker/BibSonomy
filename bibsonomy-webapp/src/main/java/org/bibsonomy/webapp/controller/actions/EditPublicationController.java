@@ -78,6 +78,19 @@ public class EditPublicationController extends AbstractEditPublicationController
 		
 		return super.finalRedirect(userName, post, referer);
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#getHttpsReferrer(org.bibsonomy.webapp.command.actions.EditPostCommand)
+	 */
+	@Override
+	protected String getHttpsReferrer(EditPublicationCommand command) {
+		final String url = command.getUrl();
+		if (UrlUtils.isHTTPs(url)) {
+			return url;
+		}
+		
+		return null;
+	}
 
 	/**
 	 * @param swordService the swordService to set

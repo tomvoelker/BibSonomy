@@ -66,6 +66,7 @@ import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.bibsonomy.services.Pingback;
 import org.bibsonomy.services.URLGenerator;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.ContextCommand;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
@@ -323,7 +324,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 *        - the login user.
 	 * @return The post view.
 	 */
-	protected View getEditPostView(final EditPostCommand<RESOURCE> command, final User loginUser) {
+	protected View getEditPostView(final COMMAND command, final User loginUser) {
 		/*
 		 * initialize tag sets for groups
 		 */
@@ -351,17 +352,41 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		}
 		
 		/*
-		 * We store the referer in the command, to send the user back to the
+		 * We store the referrer in the command, to send the user back to the
 		 * page he's coming from at the end of the posting process.
 		 */
 		if (!present(command.getReferer())) {
-			command.setReferer(this.requestLogic.getReferer());
+			String referer = this.requestLogic.getReferer();
+			if (referer == null) {
+				referer = this.getHttpsReferrer(command);
+			}
+			command.setReferer(referer);
 		}
 		
 		/*
 		 * return the view
 		 */
 		return this.getPostView();
+	}
+
+	/**
+	 * XXX: if the post bookmark button was clicked on a https site
+	 * the referrer is currently not set because we are not supporting
+	 * ssl at the moment (RFC 2616, see https://tools.ietf.org/html/rfc2616#section-15.1.3).
+	 * As a workaround we assume that if there is no referer and the post
+	 * url starts with the https schema that the user was on the post url
+	 * and set this as referer.
+	 * 
+	 * @param command
+	 * @param referer
+	 * @return
+	 */
+	protected String getHttpsReferrer(final COMMAND command) {
+		final String url = command.getPost().getResource().getUrl();
+		if (UrlUtils.isHTTPs(url)) {
+			return url;
+		}
+		return null;
 	}
 
 	protected abstract View getPostView();
@@ -534,7 +559,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param ex
 	 * @return
 	 */
-	private View handleDatabaseException(final EditPostCommand<RESOURCE> command, final User loginUser, final Post<RESOURCE> post, final DatabaseException ex, final String process) {
+	private View handleDatabaseException(final COMMAND command, final User loginUser, final Post<RESOURCE> post, final DatabaseException ex, final String process) {
 		final List<ErrorMessage> errorMessages = ex.getErrorMessages(post.getResource().getIntraHash());
 		for (final ErrorMessage em : errorMessages) {
 			this.errors.reject("error.post.update", "Could not " + process + " this post.");
@@ -684,11 +709,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @return the redirect view
 	 */
 	protected View finalRedirect(final String userName, final Post<RESOURCE> post, final String referer) {
-		final String resourceUrl = post.getResource().getUrl();
-		if (!present(referer) && present(resourceUrl) && resourceUrl.startsWith("https://")) {
-			return new ExtendedRedirectView(resourceUrl);
-		}
-		
 		/*
 		 * If there is no referer URL given, or if we come from a
 		 * postBookmark/postPublication page, redirect to the user's home page.
