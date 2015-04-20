@@ -47,7 +47,7 @@ import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.wiki.tags.AbstractTag;
 import org.bibsonomy.wiki.tags.group.GroupImageTag;
 import org.bibsonomy.wiki.tags.group.MembersTag;
-import org.bibsonomy.wiki.tags.shared.DesignTag;
+//import org.bibsonomy.wiki.tags.shared.DesignTag;
 import org.bibsonomy.wiki.tags.shared.HomepageTag;
 import org.bibsonomy.wiki.tags.shared.ImageTag;
 import org.bibsonomy.wiki.tags.shared.NameTag;
@@ -88,7 +88,7 @@ public class CVWikiModel extends AbstractWikiModel {
 		register(new RegDateTag());
 		register(new BookmarkListTag());
 		register(new PublicationListTag());
-		register(new DesignTag());
+//		register(new DesignTag());
 		
 	}
 
