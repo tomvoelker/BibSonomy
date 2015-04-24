@@ -1,5 +1,5 @@
 <div style="margin-bottom:1em">
-\format[AntiScriptInjection,AuthorLastFirst,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter,HTMLCharsAntiScript]{\author}:
+\format[AuthorLastFirst,DIN1505T2AndsReplacer,HTMLCharsAntiScript,DIN1505T2PersonNamesFormatter]{\author}:
 <i>\format[AntiScriptInjection]{\title}</i>\begin{address}. \format[AntiScriptInjection]{\address}\end{address}. \format[AntiScriptInjection]{\school}\begin{type}, \format[AntiScriptInjection]{\type}\end{type}, \format[AntiScriptInjection]{\year}\begin{note}. -
 \format[AntiScriptInjection]{\note}\end{note}
 </div>
