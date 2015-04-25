@@ -10,6 +10,7 @@
 		<result property="privlevel"          column="privlevel"         javaType="Privlevel"/>
 		<result property="sharedDocuments"    column="sharedDocuments"   javaType="boolean"/>
 		<result property="allowJoin"    	  column="allow_join"   	 javaType="boolean"/>	
+		<result property="description"    	  column="description"   	 javaType="string"/>	
 	</resultMap>
 
 	<!-- +

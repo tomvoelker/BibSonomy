@@ -80,7 +80,7 @@
 								<div class="help help-content hide"><fmt:message key="settings.group.homepage.help" /></div>
 							</div>
 						</div>
-<!--						<div class="form-group">
+						<div class="form-group">
 							<form:label cssClass="col-sm-3 control-label" path="description">
 								<fmt:message key="settings.group.description" />
 							</form:label>
@@ -90,7 +90,7 @@
 								<div class="help help-header hide"><fmt:message key="settings.group.description" /></div>
 								<div class="help help-content hide"><fmt:message key="settings.group.description.help" /></div>
 							</div>
-						</div>-->
+						</div>
 
 					</jsp:attribute>
 				</bsform:fieldset>

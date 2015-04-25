@@ -229,6 +229,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 				final boolean allowJoin = command.getAllowJoin() == 1;
 				final String realname = command.getRealname();
 				final URL homepage = command.getHomepage();
+				final String description = command.getDescription();
 
 				final User groupUserToUpdate = this.logic.getUserDetails(groupToUpdate.getName());
 				groupUserToUpdate.setEmail("nomail"); // TODO: adapt to the
@@ -242,6 +243,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 					groupToUpdate.setPrivlevel(priv);
 					groupToUpdate.setSharedDocuments(sharedDocs);
 					groupToUpdate.setAllowJoin(allowJoin);
+					groupToUpdate.setDescription(description);
 
 					if (present(realname)) {
 						groupUserToUpdate.setRealname(realname);

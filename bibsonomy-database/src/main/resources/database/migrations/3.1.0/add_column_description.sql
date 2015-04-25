@@ -1,0 +1,1 @@
+ALTER TABLE `groupids` ADD `description` TEXT NULL AFTER `allow_join`;
