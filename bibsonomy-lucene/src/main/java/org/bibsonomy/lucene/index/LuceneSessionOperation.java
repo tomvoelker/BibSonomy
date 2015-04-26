@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Model - Java- and JAXB-Model.
+ * BibSonomy-Lucene - Fulltext search facility of BibSonomy
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -24,54 +24,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.model;
+package org.bibsonomy.lucene.index;
 
-import java.net.URL;
-
-import org.bibsonomy.util.StringUtils;
+import org.apache.lucene.search.IndexSearcher;
 
 /**
- * This is a bookmark, which is derived from {@link Resource}.
- * 
+ * Callback interface in which all lucene operations should be done (typically using anonymous implementation classes).
+ *
+ * @author jil
+ * @param <T> return type of the operation.
+ * @param <E> the exceptions that may be thrown by the operation
  */
-public class Bookmark extends Resource {
-	private static final long serialVersionUID = 8540672660698453421L;
-	
+public interface LuceneSessionOperation<T, E extends Exception> {
 	/**
-	 * An {@link URL} pointing to some website.
-	 * FIXME: Use URI instead of String
+	 * All Queries to a lucene index requiring access to an {@link IndexSearcher} should be done using an implementation of this method.
+	 * 
+	 * @param searcher on which the operation may operate
+	 * @return the result of the operation.
+	 * @throws E 
 	 */
-	private String url;
-
-	/**
-	 * @return url
-	 */
-	public String getUrl() {
-		return this.url;
-	}
-
-	/**
-	 * @param url
-	 */
-	public void setUrl(final String url) {
-		this.url = url;
-	}
-
-	/**
-	 * bookmarks use the same hash value for both intrahash and interhash
-	 */
-	@Override
-	public String getInterHash() {
-		return super.getIntraHash();
-	}
-
-	@Override
-	public void recalculateHashes() {
-		this.setIntraHash(StringUtils.getMD5Hash(this.url));
-	}
-	
-	@Override
-	public String toString() {
-		return super.toString() + " = <" + url + ">";
-	}
+	public T doOperation(IndexSearcher searcher) throws E;
 }

@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Model - Java- and JAXB-Model.
+ * BibSonomy-Lucene - Fulltext search facility of BibSonomy
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -24,54 +24,56 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.model;
+package org.bibsonomy.lucene.index;
 
-import java.net.URL;
+import java.io.Closeable;
+import java.io.IOException;
 
-import org.bibsonomy.util.StringUtils;
+import org.apache.lucene.search.IndexSearcher;
+
 
 /**
- * This is a bookmark, which is derived from {@link Resource}.
- * 
+ * A session for doing lucene queries that should be used for only one transaction.
+ *
+ * @author jil
  */
-public class Bookmark extends Resource {
-	private static final long serialVersionUID = 8540672660698453421L;
+public class LuceneSession implements Closeable {
 	
-	/**
-	 * An {@link URL} pointing to some website.
-	 * FIXME: Use URI instead of String
-	 */
-	private String url;
+	private final LuceneResourceIndex<?> index;
 
 	/**
-	 * @return url
+	 * Constructs a lucene session. Only meant to be called by the ResourceIndex
+	 * @param index
 	 */
-	public String getUrl() {
-		return this.url;
-	}
-
-	/**
-	 * @param url
-	 */
-	public void setUrl(final String url) {
-		this.url = url;
-	}
-
-	/**
-	 * bookmarks use the same hash value for both intrahash and interhash
-	 */
-	@Override
-	public String getInterHash() {
-		return super.getIntraHash();
-	}
-
-	@Override
-	public void recalculateHashes() {
-		this.setIntraHash(StringUtils.getMD5Hash(this.url));
+	protected LuceneSession(final LuceneResourceIndex<?> index) {
+		this.index = index;
 	}
 	
+	
+	/**
+	 * All Queries to a lucene index should be done using this method
+	 * 
+	 * @param op the operation to be performed on this index
+	 * @return the result object returned by the operation argument
+	 * @throws IOException 
+	 */
+	public <T, E extends Exception> T execute(LuceneSessionOperation<T, E> op) throws IOException, E {
+		IndexSearcher searcher = null;
+		try {
+			searcher = this.index.acquireIndexSearcher();
+			return op.doOperation(searcher);
+		} finally {
+			if (searcher != null) {
+				this.index.releaseIndexSearcher(searcher);
+			}
+		}
+	}
+	
+	/**
+	 * close and release the {@link LuceneSession}
+	 */
 	@Override
-	public String toString() {
-		return super.toString() + " = <" + url + ">";
+	public void close() {
+		index.closeSession(this);
 	}
 }

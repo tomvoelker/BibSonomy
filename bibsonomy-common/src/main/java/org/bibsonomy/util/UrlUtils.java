@@ -38,6 +38,9 @@ import java.net.URLEncoder;
  * @author Dominik Benz
  */
 public class UrlUtils {
+	
+	/** https schema */
+	private static final String HTTPS_SCHEMA = "https://";
 
 	private static final String BIBTEX_URL_COMMAND = "\\url{";
 
@@ -295,25 +298,21 @@ public class UrlUtils {
 		if (!url.startsWith("http://") && !url.startsWith("https://")) {
 			url = "http://" + url;
 		}
-
-		/*
-		 * append last backslash if not exist
-		 */
-		// FIXME: 2010/02/03, fei: Removed appending of a '/' as this prevents 
-		//                         http://openid-provider.appspot.com/<googleid> 
-		//                         from working (see issue 1030).
-		//                         Why should we append a '/' anyway? 
-		// if (!url.endsWith("/")) {
-		// 	url += "/";
-		// }
-
+		
 		/*
 		 * convert to lower case
 		 * FIXME: This could break some URLs!
-		 * 
 		 */
 		url = url.toLowerCase();
 
 		return url;
+	}
+
+	/**
+	 * @param url
+	 * @return <code>true</code> if the url is a https url
+	 */
+	public static boolean isHTTPs(final String url) {
+		return present(url) && url.startsWith(HTTPS_SCHEMA);
 	}
 }
