@@ -32,6 +32,7 @@ import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.PostValidator;
@@ -106,4 +107,15 @@ public class EditBookmarkController extends EditPostController<Bookmark, EditBoo
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#getHttpsReferrer(org.bibsonomy.webapp.command.actions.EditPostCommand)
+	 */
+	@Override
+	protected String getHttpsReferrer(final EditBookmarkCommand command) {
+		final String url = command.getPost().getResource().getUrl();
+		if (UrlUtils.isHTTPs(url)) {
+			return url;
+		}
+		return null;
+	}
 }

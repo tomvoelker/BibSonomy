@@ -66,7 +66,6 @@ import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.bibsonomy.services.Pingback;
 import org.bibsonomy.services.URLGenerator;
-import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.ContextCommand;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
@@ -382,10 +381,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @return
 	 */
 	protected String getHttpsReferrer(final COMMAND command) {
-		final String url = command.getPost().getResource().getUrl();
-		if (UrlUtils.isHTTPs(url)) {
-			return url;
-		}
 		return null;
 	}
 
