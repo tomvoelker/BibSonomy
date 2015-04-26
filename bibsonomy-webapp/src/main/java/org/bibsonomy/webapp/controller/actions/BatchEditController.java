@@ -100,6 +100,9 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 	private static final int HASH_LENGTH = 32;
 
+	/*
+	 * TODO: use enum for this
+	 */
 	private static final int IGNORE_ACTION = 0;
 	private static final int ADD_TAGS_TO_ALL_POSTS_ACTION = 1;
 	private static final int UPDATE_TAGS_OF_INDIVIDUAL_POSTS_ACTION = 2;
@@ -139,7 +142,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		command.getBookmark().setList(new LinkedList<Post<Bookmark>>());
 
 		command.setGroups(new ArrayList<String>());
-		command.setAbstractGrouping(GroupUtils.getPublicGroup().getName());
+		command.setAbstractGrouping(GroupUtils.buildPublicGroup().getName());
 		// command.setSelectNorm(true);
 		command.setAction(new ArrayList<Integer>());
 		return command;
@@ -165,7 +168,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 		/*
 		 * FIXME: rename the variables in this method. Most names are no longer
-		 * suitable and refer to the older version where this controler only
+		 * suitable and refer to the older version where this controller only
 		 * could handle tag updates. E.g. postsToNormalize, the tagMaps etc.
 		 */
 		final RequestWrapperContext context = command.getContext();
@@ -454,12 +457,10 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			if (ValidationUtils.present(postsToUpdateViewable)) {
 				this.updatePosts(postsToUpdateViewable, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_VIEWABLE, loginUserName);
 			}
-		}
-		else {// if import
+		} else {// if import
 			if (updatePosts) {
 				this.updatePosts(postsToCombiUpdate, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_ALL, loginUserName);
-			}
-			else {
+			} else {
 				/*
 				 * FIXME:What happens to those posts that should have been
 				 * stored but have not been selected for the post update

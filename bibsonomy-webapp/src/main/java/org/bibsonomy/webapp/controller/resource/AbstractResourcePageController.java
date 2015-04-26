@@ -29,6 +29,7 @@ package org.bibsonomy.webapp.controller.resource;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -201,7 +202,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			 * store the post in the command's list (and replace the original 
 			 * list of post)
 			 */
-			command.getListCommand(this.getResourceClass()).setList(Collections.singletonList(post));
+			command.getListCommand(this.getResourceClass()).setList(Arrays.asList(post));
 		}
 		
 		// TODO: fix privacy issue
@@ -238,7 +239,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 		 */
 		if (present(goldStandard)) {
 			firstResource = goldStandard.getResource();
-			command.getListCommand(this.getGoldStandardClass()).setList(Collections.singletonList(goldStandard));
+			command.getListCommand(this.getGoldStandardClass()).setList(Arrays.asList(goldStandard));
 		} else {
 			final List<Post<R>> resourceList = command.getListCommand(this.getResourceClass()).getList();
 			if (!present(resourceList)) {
@@ -274,7 +275,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 				 * fetch posts of all users with the given hash, add users to related
 				 * users list
 				 */
-				final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null,SearchType.DEFAULT_SEARCH, null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
+				final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null,SearchType.LOCAL, null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
 				for (final Post<R> post : allPosts) {
 					command.getRelatedUserCommand().getRelatedUsers().add(post.getUser());
 				}

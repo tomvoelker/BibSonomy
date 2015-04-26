@@ -64,18 +64,32 @@ public class EditPublicationController extends AbstractEditPublicationController
 	
 	@Override
 	protected View finalRedirect(String userName, Post<BibTex> post, String referer) {
+		
 		/*
 		 * If a SWORD service is configured and the user claims to be the creator of the 
 		 * publication, we forward him to the SWORD service to allow the user to upload the
 		 * publication.
 		 */
-		
 		if (present(swordService) && SystemTagsUtil.containsSystemTag(post.getTags(), MyOwnSystemTag.NAME)) {
 			String ref = UrlUtils.safeURIEncode(referer);
 			String publicationUrl = urlGenerator.getPublicationUrlByIntraHashAndUsername(post.getResource().getIntraHash(), userName);
 			return new ExtendedRedirectView(publicationUrl + "?referer=" + ref);
 		}
+		
 		return super.finalRedirect(userName, post, referer);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#getHttpsReferrer(org.bibsonomy.webapp.command.actions.EditPostCommand)
+	 */
+	@Override
+	protected String getHttpsReferrer(EditPublicationCommand command) {
+		final String url = command.getUrl();
+		if (UrlUtils.isHTTPs(url)) {
+			return url;
+		}
+		
+		return null;
 	}
 
 	/**

@@ -295,6 +295,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		 * TODO: Move functionality to BibTeXUtils or some other fitting model
 		 * class
 		 */
+		// BeanUtils.copyProperty(bean, name, value);
 		switch (key) {
 		case "entrytype":
 			bibResource.setEntrytype(newResource.getEntrytype());

@@ -1,7 +1,7 @@
 <p>
 \begin{author}
-\format[HTMLChars,AntiScriptInjection,AuthorLastFirstCommas]{\author}. \end{author}\begin{title}&quot;\format[HTMLChars,AntiScriptInjection]{\title}.&quot; \end{title}
-\begin{organization}\format[HTMLChars,AntiScriptInjection]{\organization}. \end{organization}
-\begin{year}\format[HTMLChars,AntiScriptInjection]{\year}. \end{year}
-\begin{url}\format[HTMLChars,AntiScriptInjection]{\url}. \end{url}
+\format[HTMLCharsAntiScript,AuthorLastFirstCommas]{\author}. \end{author}\begin{title}&quot;\format[HTMLCharsAntiScript]{\title}.&quot; \end{title}
+\begin{organization}\format[HTMLCharsAntiScript]{\organization}. \end{organization}
+\begin{year}\format[HTMLCharsAntiScript]{\year}. \end{year}
+\begin{url}\format[HTMLCharsAntiScript]{\url}. \end{url}
 </p>

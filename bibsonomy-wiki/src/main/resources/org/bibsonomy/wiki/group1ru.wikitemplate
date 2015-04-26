@@ -1,0 +1,11 @@
+==Страница группы <name/>==
+<groupimage />
+
+==Члены==
+<members />
+
+==Недавно добавленные закладки==
+<bookmarks tags="myown" limit="3" />
+
+==Недавно добавленные публикации==
+<publications order="asc" keys="year" limit="3" />

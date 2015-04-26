@@ -338,4 +338,19 @@ public class UserUtils {
 		user.setRole(Role.GROUPUSER);
 		return user;
 	}
+	
+	/**
+	 * Return the user's name in a nice format to be used e.g. in emails. If the user has a non-empty real name, that will be returned, otherwise the username.
+	 * @param user
+	 * @param atPrefix - in cases where the username is returned the at-prefix can be prepended: e.g. @sdo vs. sdo
+	 * @return
+	 */
+	public static String getNiceUserName(final User user, final boolean atPrefix) {
+		if (present(user.getRealname())) {
+			return user.getRealname();
+		} 
+		return (atPrefix? "@" :"") + user.getName(); 
+	
+	}
+	
 }

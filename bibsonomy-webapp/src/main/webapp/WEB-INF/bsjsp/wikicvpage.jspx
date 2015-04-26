@@ -1,23 +1,13 @@
 <?xml version="1.0" ?>
 <jsp:root version="2.0" 
 	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
-	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
-    xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
-    xmlns:users="urn:jsptagdir:/WEB-INF/tags/bstags/users"
-	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
-	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
-	xmlns:export="urn:jsptagdir:/WEB-INF/tags/bstags/export/bibtex"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
-	xmlns:output="urn:jsptagdir:/WEB-INF/tags/bstags/export/bibtex"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar">
 	
 	<!--
 		This is the standard CV Page for all users. You can NOT edit the CV on this page.
@@ -58,38 +48,21 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-		 	<ul>
-		 		<!--+
-					| only for logged in users: followers, friends, groups, etc.
-					| and not on his own cv page
-			 		-->
-				<c:if test="${command.context.userLoggedIn and not ownCVPage and not command.isGroup}">
-					<li>
-						<users:socializer command="${command}" />
-					</li>
-				</c:if>
+	 		<!--+
+				| only for logged in users: followers, friends, groups, etc.
+				| and not on his own cv page
+		 		-->
+			<c:if test="${command.context.userLoggedIn and not ownCVPage and not command.isGroup}">
+				<sidebar:socializer command="${command}" />
+			</c:if>
 			
-    	 		<!-- display tags -->
-				<li>
-					<h4 class="sidebar"><fmt:message key="tags"/></h4>
-
-					<!-- Diese Tagcloud vielleicht auch fuer User in den Lebenslauf einsetzbar gestalten?! -->
-					<tags:cloud
-						requPath="user/${command.requestedUser}"
+    	 	<sidebar:sidebarTagCloudItem 
+    	 				requPath="user/${command.requestedUser}"
 						cmd="${command.tagcloud}"
 						tagboxMinfreqStyle="user"
 						tagSizeMode="user"
 						showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-				</li>
 				
-<!-- 				<li>
-					<span class="sidebar_h">
-						<fmt:message key="cv.info.title" /> 
-					</span>
-					
-					<fmt:message key="cv.info.desc" />
-				</li> -->
-			</ul>
 		</jsp:attribute>
 
 		<!--+

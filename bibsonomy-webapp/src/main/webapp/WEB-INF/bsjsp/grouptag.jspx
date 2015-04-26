@@ -12,6 +12,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/bstags/buttons">
 	 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -37,53 +38,41 @@
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
+		
 		<jsp:attribute name="sidebar">
-		<ul>
 			<c:set var="groupName" value="${command.group.name}" />
 			<c:if test="${not empty groupName}">
-				<li>
-					<h4 class="sidebar"><c:out value="${groupName}" /></h4>
-					<div class="pull-right">
+				<sidebar:sidebarItem>
+					<jsp:attribute name="text">
+						<c:out value="${groupName}"/>
+					</jsp:attribute> 
+					<jsp:attribute name="content">
 						<group:groupcv group="${command.group}"/>
-					</div>
-					<group:groupname group="${command.group}"/>
-				</li>
-				<!-- link to join group -->
-				<c:if test="${command.context.userLoggedIn}">
-					<c:choose>
-						<c:when test="${mtl:contains(command.context.loginUser.groups, command.group)}">
-							<!-- FIXME: add link to leave group, if user is already member -->
-						</c:when>
-						<c:otherwise>
-							<li style="padding: 5px;">
-								<fmt:message var="joinGroup" key="navi.join">
-									<fmt:param>${fn:escapeXml(groupName)}</fmt:param>
-								</fmt:message>
-								<button:linkButton title="${joinGroup}" href="/joinGroup?group=${fn:escapeXml(groupName)}" image="${resdir}/image/starblue_unselected.png">
-									<jsp:attribute name="text">
+						
+						<!-- link to join group -->
+						<c:if test="${command.context.userLoggedIn}">
+							<c:choose>
+								<c:when test="${mtl:contains(command.context.loginUser.groups, command.group)}">
+									<!-- FIXME: add link to leave group, if user is already member -->
+								</c:when>
+								<c:otherwise>
+									<c:out value=" "/>
+								   	<a class="btn btn-default btn-primary" href="/joinGroup?group=${fn:escapeXml(groupName)}">
 										<fmt:message key="joinGroup"/>
-									</jsp:attribute>
-								</button:linkButton>
-							</li>
-						</c:otherwise>
-					</c:choose>
-				</c:if>
+									</a>
+								</c:otherwise>
+							</c:choose>
+						</c:if>
+					</jsp:attribute>
+				</sidebar:sidebarItem>
 			</c:if>
-			<div class="smalltext">
-				<parts:tagsAndConceptsForSidebar/>
-			</div>
-			<!-- related tags -->
-			<li>
-				<h4 class="sidebar"><fmt:message key="relatedtags"/></h4>
-				<tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}" order=""/>
-			</li>
-			
-			<!-- tags -->
-			<li>
-				<span class="sidebar_h"><fmt:message key="tags"/></span>
-				<tags:cloud requPath="${mtl:getLowerPath(requPath)}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" tagboxMinfreqStyle="default"/>
-			</li>
-		</ul>
+
+			<parts:tagsAndConceptsForSidebar/>
+
+			<sidebar:relatedTagsItem requPath="${requPath}" cmd="${command.relatedTagCommand}"/>
+					
+			<sidebar:sidebarTagCloudItem requPath="${mtl:getLowerPath(requPath)}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" tagboxMinfreqStyle="default"/>
+
 		</jsp:attribute>
 	</layout:resourceLayout>
 </jsp:root>

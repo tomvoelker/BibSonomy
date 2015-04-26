@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Layout - Layout engine for the webapp.
+ * BibSonomy-Lucene - Fulltext search facility of BibSonomy
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -12,33 +12,36 @@
  *                               http://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.sf.jabref.export.layout.format;
+package org.bibsonomy.lucene.index;
 
-import net.sf.jabref.export.layout.LayoutFormatter;
+import org.apache.lucene.search.IndexSearcher;
 
 /**
- * Dummy class for a custom formatter to be used within 
- * jabref layouts. This class is intented as an example
- * when writing custom formatters in the future.
- * 
- * @author Dominik Benz, benz@cs.uni-kassel.de
+ * Callback interface in which all lucene operations should be done (typically using anonymous implementation classes).
+ *
+ * @author jil
+ * @param <T> return type of the operation.
+ * @param <E> the exceptions that may be thrown by the operation
  */
-public class CustomFormatterDummy implements LayoutFormatter {
-
-    @Override
-    public String format(String arg0) {	
-	return arg0;
-    }
+public interface LuceneSessionOperation<T, E extends Exception> {
+	/**
+	 * All Queries to a lucene index requiring access to an {@link IndexSearcher} should be done using an implementation of this method.
+	 * 
+	 * @param searcher on which the operation may operate
+	 * @return the result of the operation.
+	 * @throws E 
+	 */
+	public T doOperation(IndexSearcher searcher) throws E;
 }

@@ -145,6 +145,3 @@ function submitForm(element){
 	
 	document.getElementById("history").submit();
 }
-
-
-maximizeById("general");

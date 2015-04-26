@@ -68,6 +68,7 @@
 		<value>download</value>
 		<value>urlGenerator</value>
 		<value>skipDummyValues</value>
+		<value>scope</value>
 	</util:list>
 	
 	<!-- all fields which are NEVER allowed to be set by the user -->

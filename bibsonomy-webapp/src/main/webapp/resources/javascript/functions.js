@@ -327,18 +327,6 @@ function fadeNextList(target) {
 	});
 }
 
-/**
- * if window is small, maximizes the "general" div to 95%
- * 
- * @param id
- * @return
- */
-function maximizeById(id) {
-	if (window.innerWidth < 1200) {
-		$("#" + id).css("width", "95%");
-	}
-}
-
 /** 
  * 	prepare a text form which we'll use to switch between
  * 	password and text form to circumvent an issue caused

@@ -113,23 +113,17 @@
 				</div>
 			</c:if>
 			
+			<!-- FIXME: Explain or clean up (left-over from pre-bootstrap?) -->
 			<c:if test="${empty discussion}">
-				<parts:postHeader 
-					headerHideable="${false}"
-					showPageOptions="${empty showPageOptions or showPageOptions}"
-					publicationsWidthClass="${publicationsWidthClass}"
-					bookmarksWidthClass="${bookmarksWidthClass}"
-					customPageOptions="${customPageOptions}"
-					showBookmark="${showBookmark}"
-					showPublication="${showPublication}"
-					isClipboard="${isClipboard}"
-					disableListNavigation="${disableListNavigation}"
-					disableResourcetypeSelection="${disableResourcetypeSelection}"
-					showInboxActions="${showInboxActions}"
-					customBookmarksHeaderText="${customBookmarksHeaderText}"
-					customPublicationsHeaderText="${customPublicationsHeaderText}"
-					command="${command}" />
-			</c:if>
+ 				<!-- bookmarks -->
+ 				<div class="row">
+					<div class="col-md-6" id="bookmarkListConfig">
+					</div>
+					<!-- publications -->
+					<div class="col-md-6" id="publicationListConfig">
+					</div>
+				</div>
+ 			</c:if>
 		</jsp:attribute>
 		
 		<!--+

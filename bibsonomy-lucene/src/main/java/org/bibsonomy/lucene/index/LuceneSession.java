@@ -24,70 +24,56 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.es;
+package org.bibsonomy.lucene.index;
 
-import org.elasticsearch.client.Client;
-import org.elasticsearch.common.settings.ImmutableSettings;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeBuilder;
+import java.io.Closeable;
+import java.io.IOException;
+
+import org.apache.lucene.search.IndexSearcher;
+
 
 /**
- *	starts the Node Client for connecting with the elastic search cluster
- * 
- * @author lutful
+ * A session for doing lucene queries that should be used for only one transaction.
+ *
+ * @author jil
  */
-public class ESNodeClient implements ESClient {
-
-    private Node node = null;
-
-    /**
-     * Default constructor, initializing the client node.
-     */
-    public ESNodeClient() {
-    	
-    	if(node == null){
-    		final Settings settings = ImmutableSettings.settingsBuilder()
-    				.put("node.name", ESConstants.ES_NODE_NAME).build();
-
+public class LuceneSession implements Closeable {
 	
-    		node = new NodeBuilder().settings(settings)
-    				//	.clusterName("elasticsearch-bibsonomy")
-    				// .local(true)
-    				.client(true).build().start();
-    	}	
-    }	
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.bibsonomy.model.es.ESClient#getClient()
+	private final LuceneResourceIndex<?> index;
+
+	/**
+	 * Constructs a lucene session. Only meant to be called by the ResourceIndex
+	 * @param index
 	 */
-	@Override
-	public Client getClient() {
-		return node.client();
+	protected LuceneSession(final LuceneResourceIndex<?> index) {
+		this.index = index;
 	}
-
-	/*
-	 * (non-Javadoc) 
-	 * @see org.bibsonomy.model.es.ESClient#shutdown()
+	
+	
+	/**
+	 * All Queries to a lucene index should be done using this method
+	 * 
+	 * @param op the operation to be performed on this index
+	 * @return the result object returned by the operation argument
+	 * @throws IOException 
 	 */
-	@Override
-	public void shutdown() {
-		if(node!=null){
-			getClient().close();
-			node.close();
-			node = null;
+	public <T, E extends Exception> T execute(LuceneSessionOperation<T, E> op) throws IOException, E {
+		IndexSearcher searcher = null;
+		try {
+			searcher = this.index.acquireIndexSearcher();
+			return op.doOperation(searcher);
+		} finally {
+			if (searcher != null) {
+				this.index.releaseIndexSearcher(searcher);
+			}
 		}
 	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.es.ESClient#getNode()
+	
+	/**
+	 * close and release the {@link LuceneSession}
 	 */
 	@Override
-	public Node getNode() {
-		return this.node;
+	public void close() {
+		index.closeSession(this);
 	}
-
-	
 }

@@ -181,7 +181,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			 */
 			this.updatingIndex = this.updateQueue.poll();
 			if (this.updatingIndex == null) {
-				// TODO: log no index in update queue
+				log.warn("no " + getResourceName() + " index to update");
 				return;
 			}
 
@@ -302,7 +302,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			this.sharedIndexUpdater.setContentIdsToDelete(contentIdsToDelete);
 
 			for (final LucenePost<R> post : newPosts) {
-				if (post.getGroups().contains(GroupUtils.getPublicGroup())) {
+				if (post.getGroups().contains(GroupUtils.buildPublicGroup())) {
 					post.setLastLogDate(new Date(currentLogDate));
 					final Map<String, Object> postDoc = (Map<String, Object>)this.resourceConverter.readPost(post, indexType);
 					this.sharedIndexUpdater.insertDocument(postDoc);
@@ -316,7 +316,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 				post.setLastLogDate(new Date(currentLogDate));
 				//sets the system informations for update
 				final Document postDoc = (Document)this.resourceConverter.readPost(post, IndexType.LUCENE);
-				if (post.getGroups().contains(GroupUtils.getPublicGroup())) {
+				if (post.getGroups().contains(GroupUtils.buildPublicGroup())) {
 					final Map<String, Object> postJsonDoc = (Map<String, Object>)this.resourceConverter.readPost(post, IndexType.ELASTICSEARCH);
 					this.sharedIndexUpdater.insertDocument(postJsonDoc);
 				}
@@ -396,6 +396,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	public void updateAndReloadIndex() {
 		// do not update index during index-generation
 		if (this.generatingIndex) {
+			log.debug("index is currently regenerating - updating aborted");
 			return;
 		}
 
@@ -619,7 +620,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 								// deletion
 								this.sharedIndexUpdater.deleteDocumentForContentId(post.getContentId());
 								// cache document for writing
-								if (post.getGroups().contains(GroupUtils.getPublicGroup())) {
+								if (post.getGroups().contains(GroupUtils.buildPublicGroup())) {
 									this.sharedIndexUpdater.insertDocument((Map<String, Object>) this.resourceConverter.readPost(post, searchType));
 								}
 							}
@@ -630,7 +631,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 							this.updatingIndex.deleteDocumentForContentId(post.getContentId());
 							this.updatingIndex.insertDocument((Document) this.resourceConverter.readPost(post, IndexType.LUCENE));
 							this.sharedIndexUpdater.deleteDocumentForContentId(post.getContentId());
-							if (post.getGroups().contains(GroupUtils.getPublicGroup())) {
+							if (post.getGroups().contains(GroupUtils.buildPublicGroup())) {
 								this.sharedIndexUpdater.insertDocument((Map<String, Object>) this.resourceConverter.readPost(post, IndexType.ELASTICSEARCH));
 							}
 						}
@@ -761,14 +762,14 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * Sets the given index as the new active one. If there was an other active
 	 * index before it will be moved to the updateQueue
 	 * 
-	 * @param activeIndex
+	 * @param newActiveIndex
 	 *            the activeIndex to set
 	 */
-	public void setActiveIndex(final LuceneResourceIndex<R> activeIndex) {
+	public void setActiveIndex(final LuceneResourceIndex<R> newActiveIndex) {
 		final LuceneResourceIndex<R> oldIndex = this.activeIndex;
 
-		this.activeIndex = activeIndex;
-
+		newActiveIndex.reset();
+		this.activeIndex = newActiveIndex;
 		this.searcher.setIndex(this.activeIndex);
 
 		if (oldIndex != null) {
