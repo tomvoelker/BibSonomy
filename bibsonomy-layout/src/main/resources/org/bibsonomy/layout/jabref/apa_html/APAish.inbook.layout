@@ -1,23 +1,23 @@
 \begin{author}
-\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars,AntiScriptInjection] {\author}
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLCharsAntiScript] {\author}
 \end{author}
 \begin{year}
 (\format[AntiScriptInjection]{\year}). 
 \end{year}
 \begin{title}
-\format[HTMLChars,AntiScriptInjection]{\title}. 
+\format[HTMLCharsAntiScript]{\title}. 
 \end{title}
 \begin{editor}
-In \format[AuthorFirstAbbrLastCommas,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\editor} (ed\format[PluralS]{\editor}.), 
+In \format[AuthorFirstAbbrLastCommas,AuthorAndsReplacer,HTMLCharsAntiScript]{\editor} (ed\format[PluralS]{\editor}.), 
 \end{editor}
 \begin{booktitle}
-<i> \format[HTMLChars,AntiScriptInjection]{\booktitle}</i>\end{booktitle}\begin{pages}
+<i> \format[HTMLCharsAntiScript]{\booktitle}</i>\end{booktitle}\begin{pages}
  (pp. \format[AntiScriptInjection]{\pages})\end{pages}. 
 \begin{publisher}
-\format[HTMLChars,AntiScriptInjection]{\publisher}. 
+\format[HTMLCharsAntiScript]{\publisher}. 
 \end{publisher}
 \begin{isbn}
-ISBN: \format[HTMLChars,AntiScriptInjection]{\isbn}
+ISBN: \format[HTMLCharsAntiScript]{\isbn}
 \end{isbn}
 <br/>
 <br/>

@@ -1,19 +1,19 @@
 \begingroup{year}<h3 id="bib:year-\year" class="bibsonomy_quicknav_group"><a name="\format[AntiScriptInjection]{\year}">\format[AntiScriptInjection]{\year}</a></h3>\endgroup{year}
 <div style="margin-bottom:1em">
-\begin{title}<b>\format[Replace(\n,),HTMLChars,AntiScriptInjection,FormatPagesForHTML]{\title}</b>. \end{title}<br/>
-In: \begin{editor}\format[AuthorFirstAbbrLastCommas,HTMLChars,AntiScriptInjection]{\editor}, \format[AuthorFirstFirstCommas,Replace("^,b"),Replace("^.* and .*$,editors"),Replace("^b.*$,editor"),HTMLChars,AntiScriptInjection]{\editor}, \end{editor}\begin{booktitle}<i>\format[Replace(\n,),HTMLChars,AntiScriptInjection,FormatPagesForHTML]{\booktitle}</i>\end{booktitle}\begin{edition}, edition \format[Replace(\n,),HTMLChars,AntiScriptInjection]{\edition}\end{edition}\begin{volume}, volume \format[Replace(\n,),HTMLChars,AntiScriptInjection]{\volume}\end{volume}\begin{series}, series \format[Replace(\n,),HTMLChars,AntiScriptInjection]{\series}\end{series}\end{volume}\begin{pages}, pages \format[AntiScriptInjection,FormatPagesForHTML]{\pages}\end{pages}.
-\begin{publisher}\format[Replace(\n,),HTMLChars,AntiScriptInjection]{\publisher}, \end{publisher}\begin{address}\format[Replace(\n,),HTMLChars,AntiScriptInjection]{\address}, \end{address}\begin{year}\format[Replace(\n,),HTMLChars,AntiScriptInjection]{\year}\end{year}.
-\begin{note}\format[Replace("\\\\path\|(.*)\|,$1"),Replace(\n,),HTMLChars,AntiScriptInjection]{\note}\end{note}
+\begin{title}<b>\format[Replace(\n,),HTMLCharsAntiScript,FormatPagesForHTML]{\title}</b>. \end{title}<br/>
+In: \begin{editor}\format[AuthorFirstAbbrLastCommas,HTMLCharsAntiScript]{\editor}, \format[AuthorFirstFirstCommas,Replace("^,b"),Replace("^.* and .*$,editors"),Replace("^b.*$,editor"),HTMLCharsAntiScript]{\editor}, \end{editor}\begin{booktitle}<i>\format[Replace(\n,),HTMLCharsAntiScript,FormatPagesForHTML]{\booktitle}</i>\end{booktitle}\begin{edition}, edition \format[Replace(\n,),HTMLCharsAntiScript]{\edition}\end{edition}\begin{volume}, volume \format[Replace(\n,),HTMLCharsAntiScript]{\volume}\end{volume}\begin{series}, series \format[Replace(\n,),HTMLCharsAntiScript]{\series}\end{series}\end{volume}\begin{pages}, pages \format[AntiScriptInjection,FormatPagesForHTML]{\pages}\end{pages}.
+\begin{publisher}\format[Replace(\n,),HTMLCharsAntiScript]{\publisher}, \end{publisher}\begin{address}\format[Replace(\n,),HTMLCharsAntiScript]{\address}, \end{address}\begin{year}\format[Replace(\n,),HTMLCharsAntiScript]{\year}\end{year}.
+\begin{note}\format[Replace("\\\\path\|(.*)\|,$1"),Replace(\n,),HTMLCharsAntiScript]{\note}\end{note}
 <br/>
-\begin{author}\format[AuthorFirstFirstCommas,HTMLChars,AntiScriptInjection]{\author}.\end{author}
+\begin{author}\format[AuthorFirstFirstCommas,HTMLCharsAntiScript]{\author}.\end{author}
 <br/>
 
-\begin{url}<a href="\format[Replace(\n,),HTMLChars,AntiScriptInjection]{\url}">[doi]</a>&nbsp;\end{url}\begin{pdf}<a
-href="\format[Replace(\n,),HTMLChars]{\pdf}">[pdf]</a>&nbsp;\end{pdf}\begin{slides}<a href="\format[Replace(\n,),HTMLChars]{\slides}">[slides]</a>&nbsp;\end{slides}
+\begin{url}<a href="\format[Replace(\n,),HTMLCharsAntiScript]{\url}">[doi]</a>&nbsp;\end{url}\begin{pdf}<a
+href="\format[Replace(\n,),HTMLCharsAntiScript]{\pdf}">[pdf]</a>&nbsp;\end{pdf}\begin{slides}<a href="\format[Replace(\n,),HTMLCharsAntiScript]{\slides}">[slides]</a>&nbsp;\end{slides}
 \begin{abstract}<a onclick="toggleAbstract('\username', '\intrahash'); return false;" href="\biburl?format=bibtex">[abstract]</a>&nbsp;\end{abstract}
 <a onclick="toggleBibtex('\username', '\intrahash', '\biburl?format=bibtex'); return false;" href="\biburl?format=bibtex">[BibTeX]</a>&nbsp;
 <div id="abs_\intrahash\username" style="display:none;border:1px dotted grey;">
-\format[Replace("\n, "),HTMLChars,AntiScriptInjection]{\abstract}
+\format[Replace("\n, "),HTMLCharsAntiScript]{\abstract}
 </div>
 <div style="position:relative">						
 	<div id="bib_\intrahash\username" style="display:inline;position:absolute;"></div>

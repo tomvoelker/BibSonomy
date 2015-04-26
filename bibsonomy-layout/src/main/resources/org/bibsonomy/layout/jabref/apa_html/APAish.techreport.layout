@@ -1,6 +1,6 @@
-\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\author}
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLCharsAntiScript]{\author}
  (\format[AntiScriptInjection]{\year}). 
-<i> \format[HTMLChars,AntiScriptInjection]{\title}</i>
+<i> \format[HTMLCharsAntiScript]{\title}</i>
  (\format[AntiScriptInjection]{\type}\format[AntiScriptInjection]{\number}). 
 \begin{organization}
 \format[AntiScriptInjection]{\organization}
