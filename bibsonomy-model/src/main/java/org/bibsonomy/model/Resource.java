@@ -27,7 +27,6 @@
 package org.bibsonomy.model;
 
 import java.io.Serializable;
-import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -88,25 +87,7 @@ public abstract class Resource implements Serializable, Rateable {
 	 * number of all ratings for the resource
 	 */
 	private Integer numberOfRatings;
-	/**
-	 * An {@link URL} pointing to some website.
-	 * FIXME: Use URL instead of String
-	 */
-	private String url;
-
-	/**
-	 * @return url
-	 */
-	public String getUrl() {
-		return this.url;
-	}
-
-	/**
-	 * @param url
-	 */
-	public void setUrl(final String url) {
-		this.url = url;
-	}
+	
 	/**
 	 * FIXME: This method does not belong to the model!!!! It would be fine to
 	 * make it a static method of this class and use the resource (to
