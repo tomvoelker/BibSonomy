@@ -70,8 +70,16 @@
 					</div>
 				</li>
 					
+				<!-- group description -->
+				<c:if test="${not empty group.description}">
+				<li>
+					<h4 class="sidebar"><fmt:message key="group.description.headline" /></h4>
+					<p><c:out value="${group.description}" /></p>
+					
+				</li>
+				</c:if>
+				<rc:members group="${command.group}"/>
 
-				
 				<!-- group members -->
 				<rc:members group="${command.group}"/>
 				
