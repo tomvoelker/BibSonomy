@@ -1,16 +1,16 @@
 <div class="wo-publ" id="\bibtexkey">
-  <a class="title" href="/bibtex/2\intraHash/\username">\format[HTMLChars,RemoveLatexCommands,AntiScriptInjection]{\title}</a>
+  <a class="title" href="/bibtex/2\intraHash/\username">\format[HTMLCharsAntiScript,RemoveLatexCommands]{\title}</a>
   \begin{author}
-    <div class="author">\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\author}</div>
+    <div class="author">\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLCharsAntiScript]{\author}</div>
   \end{author}
   <div class="meta">
-	\format[HTMLChars,AntiScriptInjection]{\year}\begin{editor}, \format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\editor}, ed.\end{editor}\begin{volume}, <strong>\format[HTMLChars,AntiScriptInjection]{\volume}</strong>(\format[AntiScriptInjection]{\number})\end{volume}\begin{series}, \format[HTMLChars,AntiScriptInjection]{\series}\end{series}\begin{publisher}, \format[HTMLChars,AntiScriptInjection]{\publisher}\end{publisher}\begin{address}, \format[HTMLChars,AntiScriptInjection]{\address}\end{address}\begin{doi}, [\format[HTMLChars,AntiScriptInjection]{\doi}]\end{doi}
+	\format[HTMLCharsAntiScript]{\year}\begin{editor}, \format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLCharsAntiScript]{\editor}, ed.\end{editor}\begin{volume}, <strong>\format[HTMLCharsAntiScript]{\volume}</strong>(\format[AntiScriptInjection]{\number})\end{volume}\begin{series}, \format[HTMLCharsAntiScript]{\series}\end{series}\begin{publisher}, \format[HTMLCharsAntiScript]{\publisher}\end{publisher}\begin{address}, \format[HTMLCharsAntiScript]{\address}\end{address}\begin{doi}, [\format[HTMLCharsAntiScript]{\doi}]\end{doi}
 	\begin{url}
     <a class="pdf" href="\url">[pdf]</a>
     \end{url}
   </div>
   <a href="\url"><img src="/documents/\intraHash/\username/?preview=SMALL" alt="" /></a>
   \begin{abstract}
-  <div class="abstract">\format[HTMLChars]{\abstract}</div>
+  <div class="abstract">\format[HTMLCharsAntiScript]{\abstract}</div>
   \end{abstract}
 </div>

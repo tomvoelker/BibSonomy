@@ -15,10 +15,10 @@
 	
 	
 	<form action="/login_openid" method="POST">
+		<input type="hidden" name="openID" id="openID" value="${url}"/>
 		<input type="hidden" name="selTab" value="${selectedTab}"></input>
 		<!-- TODO: think about it -->
 		<input type="hidden" name="rememberMe" id="rememberMe" value="on"/>
-		<input type="hidden" name="openID" id="openID" value="${url}"/>
 		<bsform:button type="submit" style="defaultStyle" value="${name}" size="defaultSize" />
 	</form>
 </jsp:root>

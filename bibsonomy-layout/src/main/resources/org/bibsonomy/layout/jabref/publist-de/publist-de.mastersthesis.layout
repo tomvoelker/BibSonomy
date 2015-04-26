@@ -1,16 +1,16 @@
-<div style="margin-bottom:1em">\begin{title}<b>\format[Replace(\n,),HTMLChars,AntiScriptInjection,FormatPagesForHTML]{\title}</b>\end{title}.
+<div style="margin-bottom:1em">\begin{title}<b>\format[Replace(\n,),HTMLCharsAntiScript,FormatPagesForHTML]{\title}</b>\end{title}.
 <br/>
-Diplomarbeit\begin{type} (\format[Replace(\n,),HTMLChars,AntiScriptInjection]{\type})\end{type}\begin{school}, \format[Replace(\n,),HTMLChars,AntiScriptInjection]{\school}\end{school}\begin{address}, \format[Replace(\n,),HTMLChars,AntiScriptInjection]{\address}\end{address}\begin{year}, \format[Replace(\n,),HTMLChars,AntiScriptInjection]{\year}\end{year}.
-\begin{note}\format[Replace("\\\\path\|(.*)\|,$1"),Replace(\n,),HTMLChars,AntiScriptInjection]{\note}\end{note}
+Diplomarbeit\begin{type} (\format[Replace(\n,),HTMLCharsAntiScript]{\type})\end{type}\begin{school}, \format[Replace(\n,),HTMLCharsAntiScript]{\school}\end{school}\begin{address}, \format[Replace(\n,),HTMLCharsAntiScript]{\address}\end{address}\begin{year}, \format[Replace(\n,),HTMLCharsAntiScript]{\year}\end{year}.
+\begin{note}\format[Replace("\\\\path\|(.*)\|,$1"),Replace(\n,),HTMLCharsAntiScript]{\note}\end{note}
 <br/>
-\begin{author}\format[AuthorFirstFirstCommas,Replace(" and , und "),HTMLChars,AntiScriptInjection]{\author}.\end{author}
+\begin{author}\format[AuthorFirstFirstCommas,Replace(" and , und "),HTMLCharsAntiScript]{\author}.\end{author}
 <br/>
-\begin{url}<a href="\format[Replace(\n,),HTMLChars,AntiScriptInjection]{\url}">[doi]</a>&nbsp;\end{url}\begin{pdf}<a
-href="\format[Replace(\n,),HTMLChars]{\pdf}">[pdf]</a>&nbsp;\end{pdf}\begin{slides}<a href="\format[Replace(\n,),HTMLChars]{\slides}">[Folien]</a>&nbsp;\end{slides}
+\begin{url}<a href="\format[Replace(\n,),HTMLCharsAntiScript]{\url}">[doi]</a>&nbsp;\end{url}\begin{pdf}<a
+href="\format[Replace(\n,),HTMLCharsAntiScript]{\pdf}">[pdf]</a>&nbsp;\end{pdf}\begin{slides}<a href="\format[Replace(\n,),HTMLCharsAntiScript]{\slides}">[Folien]</a>&nbsp;\end{slides}
 \begin{abstract}<a onclick="toggleAbstract('\username', '\intrahash'); return false;" href="\biburl?format=bibtex">[Kurzfassung]</a>&nbsp;\end{abstract}
 <a onclick="toggleBibtex('\username', '\intrahash', '\biburl?format=bibtex'); return false;" href="\biburl?format=bibtex">[BibTeX]</a>&nbsp;
 <div id="abs_\intrahash\username" style="display:none;border:1px dotted grey;">
-\format[Replace("\n, "),HTMLChars,AntiScriptInjection]{\abstract}
+\format[Replace("\n, "),HTMLCharsAntiScript]{\abstract}
 </div>
 <div style="position:relative">						
 	<div id="bib_\intrahash\username" style="display:inline;position:absolute;"></div>

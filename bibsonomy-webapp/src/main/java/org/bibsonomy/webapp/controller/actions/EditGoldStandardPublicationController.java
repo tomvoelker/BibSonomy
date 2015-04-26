@@ -150,7 +150,6 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 
 	@Override
 	protected void preparePost(final EditPostCommand<BibTex> command, final Post<BibTex> post) {
-
 		super.preparePost(command, post);
 		post.setApproved(command.isApproved());
 	}

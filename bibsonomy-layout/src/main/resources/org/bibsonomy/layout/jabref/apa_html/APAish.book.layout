@@ -1,20 +1,20 @@
 \begin{author}
-\format[HTMLChars,AntiScriptInjection,AuthorLastFirstAbbrOxfordCommas,Replace( and,\,)]{\author}
+\format[HTMLCharsAntiScript,AuthorLastFirstAbbrOxfordCommas,Replace( and,\,)]{\author}
 \end{author}
 \format[AndSymbolIfBothPresent, XMLEscaper]{\authorsAndEditors}
 \begin{editor}
-\format[HTMLChars,AntiScriptInjection,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\editor} (ed\format[PluralS]{\editor}.)
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLCharsAntiScript]{\editor} (ed\format[PluralS]{\editor}.)
 \end{editor}
  (\format[AntiScriptInjection]{\year}).
-<i> \format[HTMLChars,AntiScriptInjection]{\title}</i>\begin{volume} (Vol. \format[AntiScriptInjection]{\volume})\end{volume}. 
+<i> \format[HTMLCharsAntiScript]{\title}</i>\begin{volume} (Vol. \format[AntiScriptInjection]{\volume})\end{volume}. 
 \begin{address}
-\format[HTMLChars,AntiScriptInjection]{\address}: 
+\format[HTMLCharsAntiScript]{\address}: 
 \end{address}
 \begin{publisher}
-\format[HTMLChars,AntiScriptInjection]{\publisher}.
+\format[HTMLCharsAntiScript]{\publisher}.
 \end{publisher}
 \begin{isbn}
-ISBN: \format[HTMLChars,AntiScriptInjection]{\isbn} 
+ISBN: \format[HTMLCharsAntiScript]{\isbn} 
 \end{isbn}
 <br/>
 <br/>

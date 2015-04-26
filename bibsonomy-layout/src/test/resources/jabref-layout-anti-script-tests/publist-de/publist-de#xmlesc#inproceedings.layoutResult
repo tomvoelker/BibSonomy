@@ -1,6 +1,6 @@
 <div style="margin-bottom:1em">
 <b>&lt;xxx&gt;alert "ScriptTest"&lt;/xxx&gt;&lt;xxx&gt;TitleTest&lt;/xxx&gt;</b>. <br/>
-In: <xxx>TestEditorOne EditorOne</xxx> und <xxx>TestEditorTwo EditorTwo</xxx>
+In: &lt;xxx&gt;TestEditorOne EditorOne&lt;/xxx&gt; und &lt;xxx&gt;TestEditorTwo EditorTwo&lt;/xxx&gt;
 (Herausgeber): <i>&lt;xxx&gt;BookTitleTest&lt;/xxx&gt;</i>, Seiten &lt;xxx&gt;323-324&lt;/xxx&gt;.
 &lt;xxx&gt;PublisherTest&lt;/xxx&gt;, &lt;xxx&gt;TestState&lt;/xxx&gt;, &lt;xxx&gt;TestCountry&lt;/xxx&gt;, &lt;xxx&gt;20013&lt;/xxx&gt;.
 
