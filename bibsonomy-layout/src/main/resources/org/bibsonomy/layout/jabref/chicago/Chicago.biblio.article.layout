@@ -1,9 +1,9 @@
 <p>
 \begin{author}
-\format[HTMLChars,AntiScriptInjection,AuthorLastFirstCommas]{\author}. \end{author}
-&quot;\format[HTMLChars,AntiScriptInjection]{\title}.&quot; <i>\format[HTMLChars,AntiScriptInjection]{\journal}</i>
+\format[HTMLCharsAntiScript,AuthorLastFirstCommas]{\author}. \end{author}
+&quot;\format[HTMLCharsAntiScript]{\title}.&quot; <i>\format[HTMLCharsAntiScript]{\journal}</i>
 \begin{volume} \format[AntiScriptInjection]{\volume}\end{volume}
 \begin{number}, no. \format[AntiScriptInjection]{\number}\end{number} 
-\begin{year}(\format[HTMLChars,AntiScriptInjection]{\year}): \end{year}
+\begin{year}(\format[HTMLCharsAntiScript]{\year}): \end{year}
 \begin{pages}\format[AntiScriptInjection]{\pages}\end{pages}.
 </p>

@@ -1,12 +1,12 @@
 <b><i>\bibtextype</i><a name="\format[AntiScriptInjection]{\bibtexkey}">\begin{bibtexkey} (\format[AntiScriptInjection]{\bibtexkey})</a>\end{bibtexkey}</b>
 <br/>
-\begin{author} \format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\author}<br/>\end{author}
-\begin{editor} \format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\editor} <i>(ed.)</i><br/>\end{editor}
-\begin{title} \format[HTMLChars,AntiScriptInjection]{\title} \end{title}<br/>
-\begin{chapter} \format[HTMLChars,AntiScriptInjection]{\chapter}<br/>\end{chapter}
-\begin{journal} <em>\format[HTMLChars,AntiScriptInjection]{\journal}, </em>\end{journal}
-\begin{school} <em>\format[HTMLChars,AntiScriptInjection]{\school}, </em>\end{school}
-\begin{institution} <em>\format[HTMLChars,AntiScriptInjection]{\institution}, </em>\end{institution}
-\begin{publisher} <em>\format[HTMLChars,AntiScriptInjection]{\publisher}, </em>\end{publisher}
+\begin{author} \format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLCharsAntiScript]{\author}<br/>\end{author}
+\begin{editor} \format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLCharsAntiScript]{\editor} <i>(ed.)</i><br/>\end{editor}
+\begin{title} \format[HTMLCharsAntiScript]{\title} \end{title}<br/>
+\begin{chapter} \format[HTMLCharsAntiScript]{\chapter}<br/>\end{chapter}
+\begin{journal} <em>\format[HTMLCharsAntiScript]{\journal}, </em>\end{journal}
+\begin{school} <em>\format[HTMLCharsAntiScript]{\school}, </em>\end{school}
+\begin{institution} <em>\format[HTMLCharsAntiScript]{\institution}, </em>\end{institution}
+\begin{publisher} <em>\format[HTMLCharsAntiScript]{\publisher}, </em>\end{publisher}
 \begin{year}<b>\format[AntiScriptInjection]{\year}</b>\end{year}\begin{volume}<i>, \format[AntiScriptInjection]{\volume}</i>\end{volume}\begin{pages}, \format[AntiScriptInjection,FormatPagesForHTML]{\pages} \end{pages}
 <p></p>

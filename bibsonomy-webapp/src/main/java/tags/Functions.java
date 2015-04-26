@@ -64,6 +64,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.EndnoteUtils;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.model.util.UserUtils;
@@ -578,16 +579,13 @@ public class Functions {
 	public static String customized_diff_prettyHtml(final LinkedList<Diff> diffs) {
 		final StringBuilder html = new StringBuilder();
 		for (final Diff aDiff : diffs) {
-			final String text = aDiff.text.replace("&", "&amp;").replace("<", "&lt;")
-					.replace(">", "&gt;").replace("\n", "&para;<br>");
+			final String text = aDiff.text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\n", "&para;<br>");
 			switch (aDiff.operation) {
 			case INSERT:
-				html.append("<span style=\"background:#e6ffe6;\">").append(text)
-						.append("</span>");
+				html.append("<span style=\"background:#e6ffe6;\">").append(text).append("</span>");
 				break;
 			case DELETE:
-				html.append("<del style=\"background:#ffe6e6;\">").append(text)
-						.append("</del>");
+				html.append("<del style=\"background:#ffe6e6;\">").append(text).append("</del>");
 				break;
 			case EQUAL:
 				html.append("<span>").append(text).append("</span>");
@@ -1115,6 +1113,10 @@ public class Functions {
 	// TODO: (bootstrap) remove and use not empty check
 	public static Boolean hasDidYouKnowMessage(final BaseCommand command) {
 		return (command.getDidYouKnowMessage() != null);
+	}
+
+	public static Boolean isRegularGroup(final Group group) {
+		return GroupUtils.isValidGroup(group) && !GroupUtils.isExclusiveGroup(group);
 	}
 
 }

@@ -10,6 +10,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -78,35 +79,31 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-		<ul>
 			<!--  links to tag / concept pages -->
-			<div class="smalltext">
-				<parts:tagsAndConceptsForSidebar/>
-			</div>			
+			<parts:tagsAndConceptsForSidebar/>
 			
-			<!-- display user's tag relations -->			
-			<li>
-				<c:choose>
-					<c:when test="${not empty command.requestedUser}">
-						<fmt:message var="tagRelationsTitle" key="tagrelations.user.title"/>
-						<c:url var="relationsUrl" value="${relativeUrlGenerator.getConceptsUrlByString(command.requestedUser)}" />
-					</c:when>
-					<c:when test="${not empty command.requestedGroup}">
-						<fmt:message var="tagRelationsTitle" key="tagrelations.group.title"/>
-						<c:url var="relationsUrl" value="${relativeUrlGenerator.getConceptsUrlByString(command.requestedGroup)}" />
-					</c:when>						
-					<c:otherwise>
-						<fmt:message var="tagRelationsTitle" key="tagrelations.all.title"/>
-						<c:url var="relationsUrl" value="/concepts" />
-					</c:otherwise>
-				</c:choose>
-				<h4 class="sidebar">				
-					<a href="${relationsUrl}" title="${tagRelationsTitle}">
-						<fmt:message key="tagrelations"/>
-					</a>
-				</h4>	
-				<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}" requestedConcepts="${command.requestedTagsList}"/>
-			</li>
+			<!-- display user's/groups tag relations -->			
+			<c:set var="headingLink" value="/concepts"/>
+			<c:set var="headingTitleKey" value="tagrelations.all.title"/>
+			<c:choose>
+				<c:when test="${not empty command.requestedUser}">
+					<c:set var="headingLink" value="${relativeUrlGenerator.getConceptsUrlByString(command.requestedUser)}"/>
+					<c:set var="headingTitleKey" value="tagrelations.user.title"/>
+				</c:when>
+				<c:when test="${not empty command.requestedGroup}">
+					<c:set var="headingLink" value="${relativeUrlGenerator.getConceptsUrlByString(command.requestedGroup)}"/>
+					<c:set var="headingTitleKey" value="tagrelations.group.title"/>
+				</c:when>						
+			</c:choose>
+			
+			<sidebar:conceptsItem 
+				cmd="${command.concepts}" 
+				usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" 
+				requestedUserName="${command.requestedUser}" 
+				requestedConcepts="${command.requestedTagsList}"
+				headingLink="${headingLink}" 
+				headingTitleKey="${headingTitleKey}"/>
+
 
 			<!-- if requestedUser is set, show the tag cloud -->			
 			<c:if test="${(not empty command.requestedUser) or (not empty command.requestedGroup)}">
@@ -116,13 +113,9 @@
 				<c:if test="${not empty command.requestedGroup}">
 					<c:set var="requPathTagCloud" value="group/${mtl:encodeURI(command.requestedGroup)}"/>
 				</c:if>				
-				<!-- display tags -->
-				<li>
-					<h4 class="sidebar"><fmt:message key="tags"/></h4>
-					<tags:cloud requPath="${requPathTagCloud}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user"/>
-				</li>
+				<sidebar:sidebarTagCloudItem requPath="${requPathTagCloud}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user"/>
 			</c:if>
-		</ul>
+
 		</jsp:attribute>
 		
 	</layout:resourceLayout>

@@ -26,21 +26,21 @@
  */
 package net.sf.jabref.export.layout.format;
 
-import org.apache.commons.lang.StringUtils;
-
 import net.sf.jabref.export.layout.LayoutFormatter;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * if argument contains " and ", this returns "s" otherwise "". this is useful for eds./ed. 
- * XXX: replace with IfPlural in later JabRef Versions
+ * TODO: replace with IfPlural in later JabRef Versions
  * 
  * @author Jens Illig
  */
 public class PluralS implements LayoutFormatter{
 	
 	@Override
-	public String format(String arg0) {
-		if (StringUtils.contains(arg0, " and ")) {
+	public String format(String field) {
+		if (StringUtils.contains(field, " and ")) {
 			return "s";
 		}
 		return "";
