@@ -500,44 +500,41 @@ public class Functions {
 	 * @param diffMap
 	 */
 	public static void diffEntriesPost(final Post<? extends Resource> newPost, final Post<? extends Resource> oldPost, final Map<String, String> diffMap) {
-
 		final Resource newResource = newPost.getResource();
 		final Resource oldResource = oldPost.getResource();
 
 		diffStringEntry(diffMap, "title", newResource.getTitle(), oldResource.getTitle());
 		diffStringEntry(diffMap, "description", newPost.getDescription(), oldPost.getDescription());
+		
 		if (!newPost.getTags().equals(oldPost.getTags())) {
 			diffMap.put("tags", compareTagSets(newPost.getTags(), oldPost.getTags()));
 		}
 		if (!newPost.getGroups().equals(oldPost.getGroups())) {
-			diffGroupSetEntry(diffMap, "groups", newPost.getGroups(), oldPost.getGroups());
+			diffMap.put("groups", diffGroupSetEntry(newPost.getGroups(), oldPost.getGroups()));
 		}
 	}
 	
 	/**
-	 * @param diffMap
-	 * @param string
+	 * TODO: how are groups sorted?
+	 * 
 	 * @param groups1
 	 * @param groups2
 	 */
-	private static void diffGroupSetEntry(Map<String, String> diffMap,
-			String key, Set<Group> groups1, Set<Group> groups2) {
+	private static String diffGroupSetEntry(Set<Group> groups1, Set<Group> groups2) {
+		final StringBuilder newSetAsString = new StringBuilder();
+		final StringBuilder oldSetAsString = new StringBuilder();
 		
-			String newSetAsString = "";
-			String oldSetAsString = "";
-			
-			for(Group group:groups1){
-				newSetAsString += group.getName()+" ";
-			}
-			for(Group group:groups2){
-				oldSetAsString += group.getName()+" ";
-			}
-			
-			if (!newSetAsString.equals(oldSetAsString)) {
-				diffMap.put(key, compareString(newSetAsString, oldSetAsString));
-			}
+		for (Group group : groups1) {
+			newSetAsString.append(group.getName());
+			newSetAsString.append(" ");
+		}
 		
+		for (Group group : groups2) {
+			oldSetAsString.append(group.getName());
+			oldSetAsString.append(" ");
+		}
 		
+		return compareString(newSetAsString.toString().trim(), oldSetAsString.toString().trim());
 	}
 
 	private static String compareTagSets(final Set<Tag> newTags, final Set<Tag> oldTags) {
