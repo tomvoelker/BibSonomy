@@ -101,6 +101,33 @@ public interface ResourceSearch<R extends Resource> {
 			final Collection<String> allowedGroups,final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms,
 			final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset);
 	
+	
+	
+	/**
+	 * gets post for the requested BibTex key
+	 * 
+	 * @param userName
+	 * @param requestedUserName
+	 * @param requestedGroupName
+	 * @param requestedRelationNames
+	 * @param allowedGroups
+	 * @param searchType
+	 * @param bibtexKey
+	 * @param tagIndex
+	 * @param year
+	 * @param firstYear
+	 * @param lastYear
+	 * @param negatedTags
+	 * @param order
+	 * @param limit
+	 * @param offset
+	 * @return
+	 */
+	public List<Post<R>> getPostsByBibtexKey(
+			final String userName, final Collection<String> allowedGroups,final SearchType searchType, final String bibtexKey,
+			final Collection<String> tagIndex, final List<String> negatedTags, Order order, final int limit, final int offset);
+	
+	
 	/**
 	 * get tag cloud for given search query
 	 * 

@@ -47,6 +47,7 @@
 								<li><a onclick="return switchNavi('federated', this);"><fmt:message key="navi.federated"/>:<fmt:message key="navi.all"/></a></li>
 								<li><a onclick="return switchNavi('federated_tag', this);"><fmt:message key="navi.federatedTag"/></a></li>						
 								<li><a onclick="return switchNavi('federated_user', this);"><fmt:message key="navi.federatedUser"/></a></li>						
+								<li><a onclick="return switchNavi('federated_bibtexkey', this);"><fmt:message key="navi.federatedBibtexKey"/></a></li>						
 								<li><a onclick="return switchNavi('federated_author', this);"><fmt:message key="navi.federatedAuthor"/></a></li>						
 							</c:if>
 							<c:if test="${not empty requestedUser}">

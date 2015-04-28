@@ -87,7 +87,16 @@ public class DummyResourceSearch implements ResourceSearch<Resource> {
 		return null;
 	}
 
-
-
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPostsByBibtexKey(java.lang.String, java.util.Collection, org.bibsonomy.common.enums.SearchType, java.lang.String, java.util.Collection, java.util.List, org.bibsonomy.model.enums.Order, int, int)
+	 */
+	@Override
+	public List<Post<Resource>> getPostsByBibtexKey(String userName,
+			Collection<String> allowedGroups, SearchType searchType,
+			String bibtexKey, Collection<String> tagIndex,
+			List<String> negatedTags, Order order, int limit, int offset) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

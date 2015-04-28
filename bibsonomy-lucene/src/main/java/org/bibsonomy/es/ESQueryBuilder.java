@@ -246,6 +246,7 @@ public abstract class ESQueryBuilder {
 	 * @param searchTerms
 	 * @param titleSearchTerms 
 	 * @param authorSearchTerms 
+	 * @param bibtexKey 
 	 * @param tagIndex 
 	 * @param year 
 	 * @param firstYear 
@@ -253,7 +254,7 @@ public abstract class ESQueryBuilder {
 	 * @param negatedTags
 	 * @return overall elasticsearch query
 	 */
-	protected BoolQueryBuilder buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags) {
+	protected BoolQueryBuilder buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey,final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags) {
 
 		BoolQueryBuilder mainQueryBuilder = QueryBuilders.boolQuery();
 
@@ -273,6 +274,11 @@ public abstract class ESQueryBuilder {
 		if (present(authorSearchTerms)) {
 			QueryBuilder authorSearchQuery = termQuery(LuceneFieldNames.AUTHOR, authorSearchTerms);
 			mainQueryBuilder.must(authorSearchQuery);			
+		}
+		
+		if(present(bibtexKey)){
+			QueryBuilder bibtexKeyQuery = termQuery(LuceneFieldNames.BIBTEXKEY, bibtexKey);
+			mainQueryBuilder.must(bibtexKeyQuery);			
 		}
 		
 		// Add the requested tags

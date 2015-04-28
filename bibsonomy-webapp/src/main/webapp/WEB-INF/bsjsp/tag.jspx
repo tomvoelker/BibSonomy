@@ -30,14 +30,14 @@
 			<c:choose>
 				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL'}">					
 					<c:set var="pathMessageKey" value="navi.federatedTag"/>
-					<c:set var="tagUrl" value="${relativeUrlGenerator.getTagUrlByTagName(command.requestedTags)}?scope=${command.scope.name()}"/>
+					<c:set var="tagUrl" value="/redirect"/>
 				</c:when>
 				<c:otherwise>
 					<c:set var="pathMessageKey" value="navi.tag"/>							
-					<c:set var="tagUrl" value="${relativeUrlGenerator.getTagUrlByTagName(command.requestedTags)}"/>
+					<c:set var="tagUrl" value="/tag/"/>
 				</c:otherwise>
 			</c:choose>
-			<parts:search pathMessageKey="${pathMessageKey}" formAction="/tag/" formInputName="tag" formInputValue="${command.requestedTags}">
+			<parts:search scope="${command.scope}" pathMessageKey="${pathMessageKey}" formAction="${tagUrl}" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="afterInput">
 					<!--  sorting options -->
 					<c:url var="tagUrl" value="${tagUrl}"/>
@@ -74,7 +74,7 @@
 			
 			<!-- related tags -->
 			<c:if test="${not empty command.relatedTagCommand.relatedTags}">
-				<sidebar:relatedTagsItem requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.order}"/>
+				<sidebar:relatedTagsItem requPath="${requPath}" cmd="${command.relatedTagCommand}" scope="${command.scope.name()}" order="${command.order}"/>
 			</c:if>
 
 			<fmt:message key="help.link.tag.similarRelated" var="helpLink"/>
@@ -83,7 +83,7 @@
 			<c:if test="${not empty command.similarTags.relatedTags}">
 				<sidebar:sidebarItem textKey="similartags" helpLink="${helpLink}">
 					<jsp:attribute name="content">
-						<tags:similar requPath="${requPath}" cmd="${command.similarTags}"/>
+						<tags:similar requPath="${requPath}" cmd="${command.similarTags}" scope="${command.scope.name()}"/>
 					</jsp:attribute>
 				</sidebar:sidebarItem>
 			</c:if>			
@@ -92,7 +92,7 @@
 			<c:if test="${not empty command.relatedUserCommand.relatedUsers}">
 				<sidebar:sidebarItem textKey="relatedusers">
 					<jsp:attribute name="content">
-						<users:related cmd="${command.relatedUserCommand}" userSimilarity="folkrank" displayFollowLink="${false}"/>
+						<users:related cmd="${command.relatedUserCommand}" userSimilarity="folkrank" displayFollowLink="${false}" scope="${command.scope.name()}"/>
 					</jsp:attribute>
 				</sidebar:sidebarItem>
 			</c:if>

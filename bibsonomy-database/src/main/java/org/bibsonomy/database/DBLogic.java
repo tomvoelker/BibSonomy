@@ -3161,4 +3161,5 @@ public class DBLogic implements LogicInterface {
 			this.loginUser.addGroup(new Group(GroupID.PUBLIC_SPAM));
 		}
 	}
+
 }

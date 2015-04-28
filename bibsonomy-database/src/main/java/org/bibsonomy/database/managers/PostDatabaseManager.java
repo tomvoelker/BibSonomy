@@ -742,6 +742,33 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 		return this.postList("get" + this.resourceClassName + "ViewableByTag", param, session);
 	}
+	
+	
+	/** 
+	 * Prepares queries which show all posts of all users belonging to the
+	 * group. This is an aggregated view of all posts of the group members
+	 * 
+	 * @param groupId
+	 * @param visibleGroupIDs
+	 * @param searchType
+	 * @param loginUserName
+	 * @param simHash
+	 * @param postAccess
+	 * @param filter
+	 * @param limit
+	 * @param offset
+	 * @param systemTags
+	 * @param session
+	 * @return list of posts
+	 */
+	public List<Post<R>> getPostsForGroup(final int groupId, final List<Integer> visibleGroupIDs, final SearchType searchType,final String loginUserName, final HashID simHash, final PostAccess postAccess, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+		if(searchType==SearchType.FEDERATED){
+			//TODO
+		}
+		
+		return this.getPostsForGroup(groupId, visibleGroupIDs, loginUserName, simHash, postAccess, filter, limit, offset, systemTags, session);
+	}
+
 
 	/** 
 	 * <em>/group/EineGruppe</em><br/>

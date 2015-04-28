@@ -16,6 +16,7 @@
 	<jsp:directive.attribute name="order" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="relevantfor" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="tagsRequested" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="scope" type="java.lang.String" required="false"/>
 
 	<fmt:message key="help.link.tag.similarRelated" var="helpLink"/>
 
@@ -26,7 +27,8 @@
 				cmd="${cmd}" 
 				order="${order}" 
 				relevantfor="${relevantfor}" 
-				tagsRequested="${tagsRequested}"/>
+				tagsRequested="${tagsRequested}" 
+				scope="${scope}"/>
 		</jsp:attribute>
 	</sidebar:sidebarItem>
 </jsp:root>

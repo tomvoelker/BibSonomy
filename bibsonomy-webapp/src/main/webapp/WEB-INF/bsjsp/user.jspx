@@ -43,7 +43,7 @@
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<nav:usercrumb requestedUser="${command.requestedUser}" loginUser="${command.context.loginUser}" active="${true}" />
+					<nav:usercrumb requestedUser="${command.requestedUser}" loginUser="${command.context.loginUser}" active="${true}" scope="${command.scope.name()}"/>
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
@@ -84,7 +84,8 @@
 				usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" 
 				requestedUserName="${command.requestedUser}"
 				headingLink="${relativeUrlGenerator.getConceptsUrlByString(command.requestedUser)}"	
-				headingTitleKey="tagrelations.user.title"/>
+				headingTitleKey="tagrelations.user.title"
+				scope="${command.scope.name()}"/>
 				
 			<!-- display similar users -->
 			<sidebar:sidebarItem textKey="users.similar">
@@ -97,7 +98,7 @@
 				</jsp:attribute>
 			</sidebar:sidebarItem>
 				
-			<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
+			<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" scope="${command.scope.name()}"/>
 						
 			<c:if test="${command.context.loginUser.role == 'ADMIN' and not empty command.user}">
 				<sidebar:sidebarItem textKey="user.details">

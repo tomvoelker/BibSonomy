@@ -97,7 +97,7 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder{
 	public ESClient getEsClient() {
 		return this.esClient;
 	}
-
+	
 	/**
 	 * get tag cloud for given search query for the Shared Resource System
 	 * 
@@ -108,6 +108,7 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder{
 	 * @param searchTerms
 	 * @param titleSearchTerms
 	 * @param authorSearchTerms
+	 * @param bibtexkey 
 	 * @param tagIndex
 	 * @param year
 	 * @param firstYear
@@ -117,8 +118,8 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder{
 	 * @param offset
 	 * @return returns the list of tags for the tag cloud
 	 */
-	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
-		final BoolQueryBuilder query= this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags);
+	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexkey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
+		final BoolQueryBuilder query= this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags);
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
 		try {  
 			SearchRequestBuilder searchRequestBuilder = esClient.getClient().prepareSearch(ESConstants.INDEX_NAME);
@@ -186,6 +187,7 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder{
 	 * @param searchTerms
 	 * @param titleSearchTerms
 	 * @param authorSearchTerms
+	 * @param bibtexKey 
 	 * @param tagIndex
 	 * @param year
 	 * @param firstYear
@@ -194,14 +196,14 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder{
 	 * @param order
 	 * @param limit
 	 * @param offset
-	 * @return
+	 * @return returns the list of posts
 	 * @throws CorruptIndexException
 	 * @throws IOException
 	 */
-	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) throws CorruptIndexException, IOException {
+	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) throws CorruptIndexException, IOException {
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
 		try {  
-			final BoolQueryBuilder query = this.buildQuery(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags);
+			final BoolQueryBuilder query = this.buildQuery(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKey, tagIndex, year, firstYear, lastYear, negatedTags);
 			final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(ESConstants.INDEX_NAME);
 			searchRequestBuilder.setTypes(this.resourceType);
 			searchRequestBuilder.setSearchType(SearchType.DEFAULT);

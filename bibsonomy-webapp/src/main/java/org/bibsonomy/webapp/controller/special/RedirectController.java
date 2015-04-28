@@ -192,6 +192,10 @@ public class RedirectController implements MinimalisticController<RedirectComman
 			log.debug("scope is federated user");
 			return "/user/" + UrlUtils.safeURIEncode(search) + "?scope=FEDERATED";
 		}
+		if (scope.equals("federated_bibtexkey")) {
+			log.debug("scope is federated group");
+			return "/bibtexkey/"+ UrlUtils.safeURIEncode(search) + "?scope=FEDERATED";
+		}
 		/*
 		 * all other pages simply go to /scope/search
 		 */
