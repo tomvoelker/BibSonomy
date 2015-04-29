@@ -121,10 +121,19 @@ public class PersonLogic implements PersonLogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations(int)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePersonName(org.bibsonomy.model.PersonName)
 	 */
 	@Override
-	public List<ResourcePersonRelation> getResourceRelations(int personNameId) {
+	public void createOrUpdatePersonName(PersonName withPersonId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations(org.bibsonomy.model.PersonName, java.lang.String, org.bibsonomy.model.enums.PersonResourceRelation, java.lang.Integer, java.lang.String)
+	 */
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(String hash, PersonResourceRelation role, Integer authorIndex) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -136,34 +145,5 @@ public class PersonLogic implements PersonLogicInterface {
 	public List<ResourcePersonRelation> getResourceRelations(Person person) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations(org.bibsonomy.model.PersonName)
-	 */
-	@Override
-	public List<ResourcePersonRelation> getResourceRelations(PersonName person) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations(org.bibsonomy.model.PersonName, java.lang.String, java.lang.String, java.lang.String, org.bibsonomy.model.enums.PersonResourceRelation)
-	 */
-	@Override
-	public List<ResourcePersonRelation> getResourceRelations(PersonName pn,
-			String interHash, String intraHash, String requestedUser,
-			PersonResourceRelation relatorCode) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePersonName(org.bibsonomy.model.PersonName)
-	 */
-	@Override
-	public void createOrUpdatePersonName(PersonName withPersonId) {
-		// TODO Auto-generated method stub
-		
 	}
 }

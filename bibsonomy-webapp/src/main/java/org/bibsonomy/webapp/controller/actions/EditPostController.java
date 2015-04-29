@@ -798,7 +798,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * */
 		if (present(command.getPost().getResourcePersonRelations())){
 			ResourcePersonRelation resourcePersonRelation = post.getResourcePersonRelations().get(post.getResourcePersonRelations().size()-1);
-			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(resourcePersonRelation.getPersonName().getPersonId(), PersonNameUtils.serializePersonName(resourcePersonRelation.getPersonName().getPerson().getMainName()), ((BibTex)post.getResource()).getSimHash2(), command.getRequestedUser(), PersonResourceRelation.AUTHOR.toString()));
+			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(resourcePersonRelation.getPerson().getId(), PersonNameUtils.serializePersonName(resourcePersonRelation.getPerson().getMainName()), ((BibTex)post.getResource()).getSimHash2(), command.getRequestedUser(), PersonResourceRelation.AUTHOR.toString(), null));
 			
 		}
 		return this.finalRedirect(loginUserName, post, command.getReferer());
@@ -847,11 +847,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			if(present(personName)){
 				final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
 			
-				resourcePersonRelation.setPersonNameId(personName.getId());
+				resourcePersonRelation.setPersonId(person.getId());
 				resourcePersonRelation.setSimhash1(post.getResource().getInterHash());
 				resourcePersonRelation.setSimhash2(post.getResource().getIntraHash());
 				resourcePersonRelation.setPubOwner(loginUser.getName());
-				resourcePersonRelation.setPersonName(personName);
+				resourcePersonRelation.setPersonId(command.getPersonId());
 				if(present(command.getPerson_role())){// if a supervisor is adding a new thesis
 					resourcePersonRelation.setRelatorCode(command.getPerson_role().split("supervisor,")[1]);
 				}

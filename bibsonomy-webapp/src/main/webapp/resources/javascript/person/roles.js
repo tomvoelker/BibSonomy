@@ -3,11 +3,10 @@ $(document).ready(function() {
 		$("#btnAddRoleSubmit").attr("data-person-name", data.personName);
 		$("#btnAddRoleSubmit").attr("data-extended-person-name", data.extendedPersonName);
 		$("#btnAddRoleSubmit").attr("data-person-id", data.personId);
-		$("#btnAddRoleSubmit").attr("data-person-name-id", data.personNameId);
 	});
 
 	function addRole(obj) {
-		$("#btnAddRoleSubmit").attr("data-person-name-id", obj.attr("data-person-name-id"));
+		$("#btnAddRoleSubmit").attr("data-person-id", obj.attr("data-person-id"));
 		$("#btnAddRoleSubmit").attr("data-relation-pubowner", obj.attr("data-relation-pubowner"));
 		$("#btnAddRoleSubmit").attr("data-relation-simhash2", obj.attr("data-relation-simhash2"));
 		$("#btnAddRoleSubmit").attr("data-relation-simhash1", obj.attr("data-relation-simhash1"));
@@ -100,7 +99,7 @@ $(document).ready(function() {
 			
 			$.post("/person",
 					{ 	formAction: "addRole",
-						formPersonNameId: e.attr("data-person-name-id"),
+						formPersonId: e.attr("data-person-id"),
 						formUser : e.attr("data-relation-pubowner"),
 						formIntraHash: e.attr("data-relation-simhash2"),
 						formInterHash: e.attr("data-relation-simhash1"),

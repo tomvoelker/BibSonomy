@@ -11,7 +11,8 @@
 		<result property="changedBy"   		column="log_modified_by"   	javaType="java.lang.String" />
 		<result property="changeDate"  		column="log_modified_at"  	javaType="java.util.Date" />
 		<result property="user"        		column="user_name"    		javaType="java.lang.String" />
-		<result property='disambiguatingPublication'	column='{personId=person_id}' javaType='org.bibsonomy.model.ResourcePersonRelation' select='getOneResourcePersonRelationsByPersonId'/>
+		<result property='disambiguatingPublication'	column='person_id' javaType='org.bibsonomy.model.ResourcePersonRelation' select='getOneResourcePersonRelationsByPersonId'/>
+		<result property='resourcePersonRelations'		column='person_id' javaType='org.bibsonomy.model.ResourcePersonRelation' select='getResourcePersonRelationsByPersonId'/>
 	</resultMap>
 	
 	<resultMap id="personName" class="org.bibsonomy.model.PersonName">
@@ -21,7 +22,6 @@
 		<result property="personId" 	column="person_id" 	javaType="java.lang.String" />
 		<result property='isMain'		column='is_main'	javaType='boolean' />
 		<result property="person"		column="person_id"  javaType='org.bibsonomy.model.Person' select='getPersonById' />
-		<result property='resourcePersonRelations'			column='{personNameId=id}' javaType='org.bibsonomy.model.ResourcePersonRelation' select='getResourcePersonRelationsByNameId'/>
 	</resultMap>
 	
 	<resultMap id='resourcePersonRelation' class='org.bibsonomy.model.ResourcePersonRelation'>
@@ -29,11 +29,12 @@
 		<result property='simhash1' 	column='simhash1' javaType='java.lang.String' />
 		<result property='simhash2' 	column='simhash2' javaType='java.lang.String' />
 		<result property='qualifying' 	column='qualifying' javaType='int' />
-		<result property='personNameId' column='person_name_id' javaType='int' />
+		<result property='personId' 	column='person_id' javaType='java.lang.String' />
 		<result property='relatorCode' 	column='relator_code' javaType='java.lang.String' />
 		<result property='pubOwner'		column='pub_owner'	javaType='java.lang.String' />
-		<result property='personName'	column='person_name_id' javaType='org.bibsonomy.model.PersonName' select='getPersonNameById' />
+		<result property="person"		column="person_id"  javaType='org.bibsonomy.model.Person' select='getPersonById' />
 		<result property='post'			column='{pubOwner=pub_owner, simhash1=simhash1, simhash2=simhash1}' javaType='bibtex' select='getPosts'/>
+		<result property='authorIndex'  column='author_index' javaType='int' />
 	</resultMap>
 	
 	<sql id="commonPersonColumns">
@@ -49,11 +50,11 @@
 	</sql>
 	
 	<sql id="commonResourcePersonRelationAttributes">
-		#id#, #simhash1#, #simhash2#, #qualifying#, #personNameId#, #relatorCode# , #pubOwner#
+		#id#, #simhash1#, #simhash2#, #qualifying#, #personId#, #relatorCode# , #pubOwner#, #authorIndex#
 	</sql>
 	
 	<sql id="commonResourcePersonRelationColumns">
-		pub_person.id, pub_person.simhash1, pub_person.simhash2, pub_person.qualifying, pub_person.person_name_id, pub_person.relator_code, pub_person.pub_owner
+		pub_person.id, pub_person.simhash1, pub_person.simhash2, pub_person.qualifying, pub_person.person_id, pub_person.relator_code, pub_person.pub_owner, pub_person.author_index
 	</sql>
 	
 </sqlMap>

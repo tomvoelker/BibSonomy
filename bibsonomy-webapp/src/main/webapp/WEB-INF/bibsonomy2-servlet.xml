@@ -342,6 +342,7 @@
 								<value>requestedHash</value>
 								<value>requestedUser</value>
 								<value>requestedRole</value>
+								<value>requestedIndex</value>
 								<value>formAction</value>
 								<value>formPersonRoles</value>
 								<value>formPersonRole</value>
@@ -360,6 +361,7 @@
 								<value>formAcademicDegree</value>
 								<value>formThesisId</value>
 								<value>formResourcePersonRelationId</value>
+								<value>formAuthorIndex</value>
 							</list>
 						</property>
 					</bean>
@@ -374,6 +376,7 @@
 								<value>requestedHash</value>
 								<value>requestedUser</value>
 								<value>requestedRole</value>
+								<value>requestedIndex</value>
 								<value>formPersonId</value>
 								<value>formPersonNameId</value>
 							</list>

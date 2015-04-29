@@ -262,4 +262,47 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			session.endTransaction();
 		}
 	}
+	
+	/**
+	 * @param hash
+	 * @param authorIndex
+	 * @param role 
+	 * @param session
+	 * @return List<ResourcePersonRelation>
+	 */
+	public List<ResourcePersonRelation> getResourcePersonRelations(String hash,
+			Integer authorIndex, PersonResourceRelation role, DBSession session) {
+			ResourcePersonRelation rpr = new ResourcePersonRelation()
+			.withSimhash1(hash)
+			.withAuthorIndex(authorIndex)
+			.withRelatorCode(role.getRelatorCode());
+			
+			return this.getResourcePersonRelationByResourcePersonRelation(rpr, session);
+	}
+	
+	private List<ResourcePersonRelation> getResourcePersonRelationByResourcePersonRelation(ResourcePersonRelation rpr, DBSession session) {
+		session.beginTransaction();
+		try {
+			return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationByResourcePersonRelation", rpr, session);
+		} finally {
+			session.endTransaction();
+		}
+	}
+
+
+	/**
+	 * @param person
+	 * @param session
+	 * @return List<ResourcePersonRelation>
+	 */
+	public List<ResourcePersonRelation> getResourcePersonRelations(
+			Person person, DBSession session) {
+		session.beginTransaction();
+		try {
+			return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsByPersonId", person.getId(), session);
+		} finally {
+			session.endTransaction();
+		}
+	} 
+
 }

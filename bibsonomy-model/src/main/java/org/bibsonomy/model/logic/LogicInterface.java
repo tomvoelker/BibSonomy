@@ -26,7 +26,10 @@
  */
 package org.bibsonomy.model.logic;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -703,5 +706,17 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @return
 	 */
 	public List<Post<BibTex>> searchPostsByTitle(String title);
+	
+	/**
+	 * @param pn
+	 * @param hash
+	 * @param role
+	 * @param authorIndex
+	 * @return List<ResourcePersonRelation>
+	 */
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(String hash, PersonResourceRelation role, Integer authorIndex);
 
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(Person person);
 }

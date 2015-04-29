@@ -53,25 +53,24 @@ public interface PersonLogicInterface {
 	 */
 	public Map<Person, BibTex> getQualifyingPublications(String personName);
 	
-	public List<ResourcePersonRelation> getResourceRelations(int personNameId);
-	public List<ResourcePersonRelation> getResourceRelations(Person person);
-	public List<ResourcePersonRelation> getResourceRelations(PersonName person);
-	
-
 	/**
 	 * @param pn
-	 * @param requestedHash
-	 * @param requestedUser
-	 * @param relatorCode
-	 * @return
+	 * @param hash
+	 * @param role
+	 * @param authorIndex
+	 * @return List<ResourcePersonRelation>
 	 */
-	public List<ResourcePersonRelation> getResourceRelations(PersonName pn,
-			String interHash, String intraHash, String requestedUser, PersonResourceRelation relatorCode);
+	public List<ResourcePersonRelation> getResourceRelations(String hash, PersonResourceRelation role, Integer authorIndex);
 
 	/**
 	 * @param withPersonId
 	 */
 	public void createOrUpdatePersonName(PersonName withPersonId);
+	/**
+	 * @param person
+	 * @return List<ResourcePersonRelation>
+	 */
+	List<ResourcePersonRelation> getResourceRelations(Person person);
 
 
 

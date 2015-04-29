@@ -1,10 +1,6 @@
 package org.bibsonomy.webapp.command;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
-import java.util.Set;
-
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
@@ -19,6 +15,7 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	private String requestedHash;
 	private String requestedAction;
 	private String requestedRole;
+	private String requestedIndex;
 	
 	private String formPersonId;
 	private String formPersonNameId;
@@ -166,5 +163,19 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	 */
 	public void setPersonName(PersonName personName) {
 		this.personName = personName;
+	}
+
+	/**
+	 * @return the requestedIndex
+	 */
+	public String getRequestedIndex() {
+		return this.requestedIndex;
+	}
+
+	/**
+	 * @param requestedIndex the requestedIndex to set
+	 */
+	public void setRequestedIndex(String requestedIndex) {
+		this.requestedIndex = requestedIndex;
 	}
 }

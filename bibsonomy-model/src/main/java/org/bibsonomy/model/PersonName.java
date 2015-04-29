@@ -56,13 +56,9 @@ public class PersonName implements Serializable {
 	private String personId;
 	private boolean isMain;
 	private Person person;
-	private List<ResourcePersonRelation> resourcePersonRelations;
-
-	/**
-	 * Default constructor
-	 */
+	
 	public PersonName() {
-		resourcePersonRelations = new ArrayList<ResourcePersonRelation>();
+		
 	}
 	
 	/**
@@ -242,20 +238,6 @@ public class PersonName implements Serializable {
 	public PersonName withPersonId(String personId) {
 		this.setPersonId(personId);
 		return this;
-	}
-
-	/**
-	 * @return the resourcePersonRelations
-	 */
-	public List<ResourcePersonRelation> getResourcePersonRelations() {
-		return this.resourcePersonRelations;
-	}
-
-	/**
-	 * @param resourcePersonRelations the resourcePersonRelations to set
-	 */
-	public void setResourcePersonRelations(List<ResourcePersonRelation> resourcePersonRelations) {
-		this.resourcePersonRelations = resourcePersonRelations;
 	}
 
 }

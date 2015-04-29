@@ -72,23 +72,18 @@
 		DELETE FROM person_name WHERE id = #personNameId#
 	</delete>
 	
-	<select id='getResourceRelations' resultMap="PersonCommon.resourcePersonRelation" parameterClass='int'>
-		SELECT <include refid="commonResourcePersonRelationColumns" /> FROM pub_person
-			WHERE pub_person.person_name_id = #personNameId# 
-	</select>
-	
-	<select id='getResourceRelationsByResourcePersonRelation' resultMap="PersonCommon.resourcePersonRelation" parameterClass='org.bibsonomy.model.ResourcePersonRelation'>
-		SELECT <include refid='commonResourcePersonRelationColumns' /> FROM pub_person LEFT JOIN person_name ON person_name.id = pub_person.person_name_id
+	<select id='getResourcePersonRelationByResourcePersonRelation' resultMap="PersonCommon.resourcePersonRelation" parameterClass='org.bibsonomy.model.ResourcePersonRelation'>
+		SELECT <include refid='commonResourcePersonRelationColumns' /> FROM pub_person 
 			WHERE 
-				person_name.first_name = #personName.firstName#
-					AND
-				person_name.last_name = #personName.lastName#
-					AND
 				pub_person.pub_owner = #pubOwner#
 					AND
 				pub_person.simhash1 = #simhash1#
 					AND
+				pub_person.simhash2 = #simhash2#
+					AND
 				pub_person.relator_code = #relatorCode#
+					AND
+				pub_person.author_index = #authorIndex#
 	</select>
 	
 	<update id='unlinkUser' parameterClass="java.lang.String">
@@ -125,14 +120,14 @@
 				AND (pub_person.simhash1 = #simhash1# OR pub_person.simhash2 = #simhash2#) 
 	</statement>
 	
-	<statement id="getResourcePersonRelationsByNameId" resultMap="PersonCommon.resourcePersonRelation">
+	<statement id="getResourcePersonRelationsByPersonId" parameterClass="java.lang.String" resultMap="PersonCommon.resourcePersonRelation">
 		SELECT <include refid="commonResourcePersonRelationColumns" /> FROM pub_person
-			WHERE person_name_id = #personNameId# 
+			WHERE person_id = #personId# 
 	</statement>
 	
 	<statement id="getOneResourcePersonRelationsByPersonId" resultMap="PersonCommon.resourcePersonRelation">
 		SELECT <include refid="commonResourcePersonRelationColumns" /> FROM pub_person
-			WHERE pub_person.person_name_id IN (SELECT person_name.id FROM person_name WHERE person_id = #personId#) 
+			WHERE pub_person.person_id  = #personId# 
 			AND pub_person.relator_code = "Maut"
 			LIMIT 0,1
 	</statement>

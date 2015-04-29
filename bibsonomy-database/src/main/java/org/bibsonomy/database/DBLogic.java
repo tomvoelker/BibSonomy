@@ -3330,46 +3330,11 @@ public class DBLogic implements LogicInterface {
 	}
 	
 	public List<ResourcePersonRelation> getResourceRelations(Person person) {
-		DBSession session = this.openSession();
-		try {
-			List<ResourcePersonRelation> relations = new ArrayList<ResourcePersonRelation>();
-			for(PersonName personName: person.getNames()) {
-				relations.addAll(this.getResourceRelations(personName));
-			}
-			// TODO: add parameter object which states what needs to be fetched when
-			// FIXME: this needs to be done with a join - many individual queries are usually bad
-			for (ResourcePersonRelation resourcePersonRelation : relations) {
-				resourcePersonRelation.getPost().setResourcePersonRelations(this.personDBManager.getResourcePersonRelationsByPost(resourcePersonRelation.getPost(), session));
-			}
-			Collections.sort(relations, resourcePersonRelationComparator);
-			return relations;
-			
-		} finally {
-			session.close();
-		}
-	}
-	
-	public List<ResourcePersonRelation> getResourceRelations(PersonName personName) {
-		return this.getResourceRelations(personName.getId());
-	}
-	
-	public List<ResourcePersonRelation> getResourceRelations(int personNameId) {
-		return this.personDBManager.getResourceRelations(personNameId, this.dbSessionFactory.getDatabaseSession());
-	}
-	
-	public List<ResourcePersonRelation> getResourceRelations(PersonName personName, String interHash, String intraHash, String user, PersonResourceRelation rel) {
-		ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation().withPubOwner(user).withRelatorCode(rel.getRelatorCode()).withSimhash1(interHash).withSimhash2(intraHash);
-		resourcePersonRelation.setPersonName(personName);
-		return this.personDBManager.getResourceRelations(resourcePersonRelation, this.dbSessionFactory.getDatabaseSession());
+		return this.personDBManager.getResourcePersonRelations(person, this.dbSessionFactory.getDatabaseSession());
 	}
 	
 	public void createOrUpdatePersonName(PersonName personName) {
-		DBSession session = this.openSession();
-		try {
-			this.personDBManager.createPersonName(personName, session);
-		} finally {
-			session.close();
-		}
+		this.personDBManager.createPersonName(personName, this.dbSessionFactory.getDatabaseSession());
 	}
 	
 	public void linkUser(String personId) {
@@ -3386,5 +3351,15 @@ public class DBLogic implements LogicInterface {
 	
 	public List<Post<BibTex>> searchPostsByTitle(String title) {
 		return new ArrayList<Post<BibTex>>();
+	}
+
+	/**
+	 * @param hash
+	 * @param role
+	 * @param authorIndex
+	 * @return
+	 */
+	public List<ResourcePersonRelation> getResourceRelations(String hash, PersonResourceRelation role, Integer authorIndex) {
+		return this.personDBManager.getResourcePersonRelations(hash, authorIndex, role, this.dbSessionFactory.getDatabaseSession());
 	}
 }

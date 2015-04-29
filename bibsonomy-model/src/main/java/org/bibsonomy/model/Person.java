@@ -60,11 +60,14 @@ public class Person implements Serializable {
 	/** the number of posts in the system, which this {@link Person} as an author */
 	private int postCounter;
 	
+	private List<ResourcePersonRelation> resourcePersonRelations;
+	
 	/**
 	 * 
 	 */
 	public Person() {
 		this.names = new ArrayList<PersonName>();
+		this.resourcePersonRelations = new ArrayList<ResourcePersonRelation>();
 	}
 	
 	/**
@@ -301,6 +304,21 @@ public class Person implements Serializable {
 	public Person withMainName(PersonName withMain) {
 		this.setMainName(withMain);
 		return this;
+	}
+	
+
+	/**
+	 * @return the resourcePersonRelations
+	 */
+	public List<ResourcePersonRelation> getResourcePersonRelations() {
+		return this.resourcePersonRelations;
+	}
+
+	/**
+	 * @param resourcePersonRelations the resourcePersonRelations to set
+	 */
+	public void setResourcePersonRelations(List<ResourcePersonRelation> resourcePersonRelations) {
+		this.resourcePersonRelations = resourcePersonRelations;
 	}
 
 }

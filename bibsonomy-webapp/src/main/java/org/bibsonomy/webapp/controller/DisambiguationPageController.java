@@ -1,11 +1,16 @@
 package org.bibsonomy.webapp.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonResourceRelation;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.services.URLGenerator;
@@ -52,16 +57,17 @@ public class DisambiguationPageController extends SingleResourceListController i
 	}
 	
 	private View redirectAction(DisambiguationPageCommand command) {
-		command.setPost(this.logic.getPostDetails(command.getRequestedHash(), command.getRequestedUser()));
-		PersonName pn = new PersonName(command.getRequestedAuthorName().split(", ")[0]).withFirstName(command.getRequestedAuthorName().split(", ")[1]);
-		List<ResourcePersonRelation> matchingPersons = this.logic.getResourceRelations(pn, command.getPost().getResource().getInterHash(),command.getPost().getResource().getIntraHash(), command.getRequestedUser(), PersonResourceRelation.AUTHOR);
+		System.out.println("4"+command.getRequestedHash());
+		command.setPost(this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, "1"+command.getRequestedHash(), null, null, null, null, null, null, 0, 100).get(0));
+		
+		List<ResourcePersonRelation> matchingPersons = this.logic.getResourceRelations(command.getPost().getResource().getInterHash(), PersonResourceRelation.AUTHOR, new Integer(command.getRequestedIndex()));	
 		
 		if(matchingPersons.size() > 0 ) {
 			log.warn("Too many persons for " + command.getRequestedHash());
-			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(matchingPersons.get(0).getPersonName().getPersonId(), PersonNameUtils.serializePersonName(matchingPersons.get(0).getPersonName().getPerson().getMainName()), command.getRequestedHash(), command.getRequestedUser(), command.getRequestedRole()));	
+			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(matchingPersons.get(0).getPersonId(), PersonNameUtils.serializePersonName(matchingPersons.get(0).getPerson().getMainName()), command.getRequestedHash(), command.getRequestedUser(), command.getRequestedRole(), new Integer(command.getRequestedIndex())));	
 		}
 
-		return new ExtendedRedirectView(new URLGenerator().getDisambiguationUrl("details", command.getRequestedAuthorName(), command.getRequestedHash(), command.getRequestedUser(), command.getRequestedRole()));
+		return new ExtendedRedirectView(new URLGenerator().getDisambiguationUrl("details", command.getRequestedAuthorName(), command.getRequestedHash(), command.getRequestedUser(), command.getRequestedRole(), new Integer(command.getRequestedIndex())));
 
 	}
 }

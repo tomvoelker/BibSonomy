@@ -120,7 +120,7 @@ public class PersonPageController extends SingleResourceListController implement
 			extendedNameBuilder.append(", ").append(person.getAcademicDegree());
 		}
 		BibTex res = null;
-		for (ResourcePersonRelation resourcePersonRelation : personName.getResourcePersonRelations()) {
+		for (ResourcePersonRelation resourcePersonRelation : person.getResourcePersonRelations()) {
 			String entryType;
 			try {
 				entryType = resourcePersonRelation.getPost().getResource().getEntrytype();
@@ -180,8 +180,9 @@ public class PersonPageController extends SingleResourceListController implement
 		.withSimhash1(command.getFormInterHash())
 		.withSimhash2(command.getFormIntraHash())
 		.withRelatorCode(role)
-		.withPersonNameId(person.getMainName().getId())
-		.withPubOwner(command.getFormUser());
+		.withPersonId(person.getId())
+		.withPubOwner(command.getFormUser())
+		.withAuthorIndex(new Integer(command.getFormAuthorIndex()));
 		this.logic.addResourceRelation(resourcePersonRelation);
 		
 		JSONObject jsonPerson = new JSONObject();
@@ -227,7 +228,7 @@ public class PersonPageController extends SingleResourceListController implement
 			.withSimhash1(command.getFormInterHash())
 			.withSimhash2(command.getFormIntraHash())
 			.withRelatorCode(role)
-			.withPersonNameId(Integer.valueOf(command.getFormPersonNameId()).intValue())
+			.withPersonId(command.getFormPersonId())
 			.withPubOwner(command.getFormUser());
 		this.logic.addResourceRelation(resourcePersonRelation);
 		command.setResponseString(resourcePersonRelation.getId() + "");
@@ -246,12 +247,12 @@ public class PersonPageController extends SingleResourceListController implement
 			.withSimhash1(command.getFormInterHash())
 			.withSimhash2(command.getFormIntraHash())
 			.withRelatorCode(PersonResourceRelation.valueOf(role).getRelatorCode())
-			.withPersonNameId(Integer.valueOf(command.getFormPersonNameId()).intValue())
+			.withPersonId(command.getFormPersonId())
 			.withPubOwner(command.getRequestedUser());
 			this.logic.addResourceRelation(resourcePersonRelation);
 		}
 				
-		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getId(), command.getPerson().getMainName().toString(), command.getPost().getResource().getInterHash(), command.getPost().getUser().getName(), command.getRequestedRole()));	
+		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getId(), command.getPerson().getMainName().toString(), command.getPost().getResource().getInterHash(), command.getPost().getUser().getName(), command.getRequestedRole(), new Integer(command.getRequestedIndex())));	
 	}
 	
 	@SuppressWarnings("boxing")

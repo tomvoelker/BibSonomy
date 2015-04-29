@@ -14,14 +14,13 @@ $(document).ready(function() {
 					formPersonId: e.attr("data-person-id"),
 				}
 		).done(function(data) {
-			e.attr("data-person-name-id", data);
 			$.post("/person",
 					{ 	formAction: "addRole",
 						formInterHash: e.attr("data-resource-simhash1"),
 						formIntraHash: e.attr("data-resource-simhash2"),
 						formUser: e.attr("data-pubowner"),
 						formPersonRole: "AUTHOR",
-						formPersonNameId: e.attr("data-person-name-id")
+						formPersonId: e.attr("data-person-id")
 					}
 			).done(function(data) {
 				document.location.href = "/person/" +  e.attr("data-person-id") + "/" + e.attr("data-person-lastname" + ", " + e.attr("data-person-firstName"));

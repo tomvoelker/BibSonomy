@@ -61,7 +61,7 @@
 			</c:if>
 			
 			<!-- FIXME: urls should be build correctly for remote posts. urls should be built using urlgenerator methods -->
-			<c:url var='pubAuthorUrl' value='/pubauthor/${fn:escapeXml(mtl:encodeURI(mtl:cleanBibtex(person.lastName)))}, ${fn:escapeXml(mtl:encodeURI(mtl:cleanBibtex(person.firstName)))}/${publication.intraHash}/${post.user.name}/AUTHOR'></c:url>
+			<c:url var='pubAuthorUrl' value='/pubauthor/${mtl:cleanBibtex(person.lastName)}, ${mtl:cleanBibtex(person.firstName)}/${loopStatus.index}/${publication.interHash}/AUTHOR'></c:url>
 			<c:choose>
 				<c:when test="${isRemotePost}">
 					<a href="${urlGenerator.getAuthorUrlByNameAndSysUrl(person.lastName, post.systemUrl)}"><c:out value="${personName}" /></a>	

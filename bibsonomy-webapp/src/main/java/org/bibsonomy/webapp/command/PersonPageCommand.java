@@ -19,6 +19,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	private String requestedHash;
 	private String requestedAction;
 	private String requestedRole;
+	private String requestedIndex;
 	
 	private String formSelectedName;
 	private String formAcademicDegree;
@@ -38,6 +39,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	private String formInterHash;
 	private String formIntraHash;
 	private boolean formThatsMe;
+	private String formAuthorIndex;
 	
 	private String formAction;
 	
@@ -487,5 +489,33 @@ public class PersonPageCommand extends UserResourceViewCommand {
 
 	public void setFormThatsMe(boolean formThatsMe) {
 		this.formThatsMe = formThatsMe;
+	}
+
+	/**
+	 * @return the requestedIndex
+	 */
+	public String getRequestedIndex() {
+		return this.requestedIndex;
+	}
+
+	/**
+	 * @param requestedIndex the requestedIndex to set
+	 */
+	public void setRequestedIndex(String requestedIndex) {
+		this.requestedIndex = requestedIndex;
+	}
+
+	/**
+	 * @return the formAuthorIndex
+	 */
+	public String getFormAuthorIndex() {
+		return this.formAuthorIndex;
+	}
+
+	/**
+	 * @param formAuthorIndex the formAuthorIndex to set
+	 */
+	public void setFormAuthorIndex(String formAuthorIndex) {
+		this.formAuthorIndex = formAuthorIndex;
 	}
 }

@@ -13,9 +13,10 @@ public class ResourcePersonRelation {
 	private String pubOwner;
 	private String relatorCode;
 	private int qualifying;
-	private int personNameId;
-	private PersonName personName;
+	private String personId;
+	private Person person;
 	private Post<BibTex> post;
+	private int authorIndex;
 	
 	/**
 	 * @return the id
@@ -81,26 +82,26 @@ public class ResourcePersonRelation {
 	/**
 	 * @return the personNameId
 	 */
-	public int getPersonNameId() {
-		return this.personNameId;
+	public String getPersonId() {
+		return this.personId;
 	}
 	/**
 	 * @param personNameId the personNameId to set
 	 */
-	public void setPersonNameId(int personNameId) {
-		this.personNameId = personNameId;
+	public void setPersonId(String personId) {
+		this.personId = personId;
 	}
 	/**
 	 * @return the personName
 	 */
-	public PersonName getPersonName() {
-		return this.personName;
+	public Person getPerson() {
+		return this.person;
 	}
 	/**
 	 * @param personName the personName to set
 	 */
-	public void setPersonName(PersonName personName) {
-		this.personName = personName;
+	public void setPerson(Person person) {
+		this.person = person;
 	}
 	/**
 	 * @return the pubOwner
@@ -134,8 +135,8 @@ public class ResourcePersonRelation {
 	 * @param formPersonNameId
 	 * @return
 	 */
-	public ResourcePersonRelation withPersonNameId(int formPersonNameId) {
-		this.setPersonNameId(formPersonNameId);
+	public ResourcePersonRelation withPersonId(String personId) {
+		this.setPersonId(personId);
 		return this;
 	}
 	/**
@@ -164,6 +165,27 @@ public class ResourcePersonRelation {
 	 */
 	public ResourcePersonRelation withSimhash2(String simhash2) {
 		this.setSimhash2(simhash2);
+		return this;
+	}
+	/**
+	 * @return the authorIndex
+	 */
+	public int getAuthorIndex() {
+		return this.authorIndex;
+	}
+	/**
+	 * @param authorIndex the authorIndex to set
+	 */
+	public void setAuthorIndex(int authorIndex) {
+		this.authorIndex = authorIndex;
+	}
+	
+	/**
+	 * @param authorIndex
+	 * @return ResourcePersonRelation
+	 */
+	public ResourcePersonRelation withAuthorIndex(int authorIndex) {
+		this.setAuthorIndex(authorIndex);
 		return this;
 	}
 }

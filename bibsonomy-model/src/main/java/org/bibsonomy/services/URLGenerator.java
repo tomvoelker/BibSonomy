@@ -1702,7 +1702,7 @@ public class URLGenerator {
 	 * @param role
 	 * @return String
 	 */
-	public String getPersonUrl(final String personId, final String personName, final String resourceHash, final String user, final String role) {
+	public String getPersonUrl(final String personId, final String personName, final String resourceHash, final String user, final String role, final Integer index) {
 		String url;
 		try {
 			url = this.projectHome + URLGenerator.PERSON_PREFIX + "/" + personId + "/" + URLEncoder.encode(personName, "UTF-8");
@@ -1717,6 +1717,9 @@ public class URLGenerator {
 			} else {
 				url = url + "/AUTHOR";
 			}
+			if(present(index)) {
+				url = url + "/" + index.intValue();
+			}
 		}
 		return this.getUrl(url);
 	}
@@ -1727,12 +1730,13 @@ public class URLGenerator {
 	 * @param resourceHash
 	 * @param user
 	 * @param role
+	 * @param index 
 	 * @return String
 	 */
-	public String getDisambiguationUrl(final String action, final String personName, final String resourceHash, final String user, final String role) {
+	public String getDisambiguationUrl(final String action, final String personName, final String resourceHash, final String user, final String role, final Integer index) {
 		String url;
 		try {
-			url = this.projectHome + URLGenerator.DISAMBIGUATION_PREFIX + "/" + action + "/" + URLEncoder.encode(personName,"utf-8") + "/" + resourceHash + "/" + user + "/" + role;
+			url = this.projectHome + URLGenerator.DISAMBIGUATION_PREFIX + "/" + action + "/" + URLEncoder.encode(personName,"utf-8") + "/" + resourceHash + "/" + user + "/" + role + "/" + index.intValue();
 		} catch (UnsupportedEncodingException e) {
 			url = this.projectHome + URLGenerator.DISAMBIGUATION_PREFIX + "/" + action + "/" + personName + "/" + resourceHash + "/" + user + "/" + role;
 		}
