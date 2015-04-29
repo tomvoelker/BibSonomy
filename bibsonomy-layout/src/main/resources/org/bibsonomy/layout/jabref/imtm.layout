@@ -1,13 +1,13 @@
 <tr id="\format{\bibtexkey}" class="entry">
 	<td>\year</td>
 	<td>
-		\format[AuthorLastFirst,AuthorLastFirstAbbreviator,AuthorAndsCommaReplacer,NoSpaceBetweenAbbreviations,HTMLChars]{\author} 
+		\format[AuthorLastFirst,AuthorLastFirstAbbreviator,AuthorAndsCommaReplacer,NoSpaceBetweenAbbreviations,HTMLCharsAntiScript]{\author} 
 		(\year): 
-		\begin{title}\format[HTMLChars]{\title}\end{title}. 
-		\begin{booktitle}In: \format[HTMLChars]{\booktitle}. \end{booktitle}
-		\begin{adress}\format[HTMLChars]{\adress}: \end{adress}
-		\begin{publisher}\format[HTMLChars]{\publisher}\end{publisher}
-		\begin{journal}\format[HTMLChars]{\journal} \end{journal}
+		\begin{title}\format[HTMLCharsAntiScript]{\title}\end{title}. 
+		\begin{booktitle}In: \format[HTMLCharsAntiScript]{\booktitle}. \end{booktitle}
+		\begin{adress}\format[HTMLCharsAntiScript]{\adress}: \end{adress}
+		\begin{publisher}\format[HTMLCharsAntiScript]{\publisher}\end{publisher}
+		\begin{journal}\format[HTMLCharsAntiScript]{\journal} \end{journal}
 		\begin{pages}S. \format[FormatPagesForHTML]{\pages}\end{pages}<br/>
 		\begin{abstract}[<a href="javascript:toggleInfo('\format{\bibtexkey}','abstract')">Abstract</a>] \end{abstract}
 		[<a href="javascript:toggleInfo('\format{\bibtexkey}','bibtex')">BibTeX</a>] 
@@ -15,28 +15,28 @@
 	</td>
 </tr>\begin{abstract}
 <tr id="abs_\format{\bibtexkey}" class="abstract noshow">
-	<td colspan="6"><b>Abstract</b>: \format[HTMLChars]{\abstract}</td>
+	<td colspan="6"><b>Abstract</b>: \format[HTMLCharsAntiScript]{\abstract}</td>
 </tr>\end{abstract}\begin{review}
 <tr id="rev_\format{\bibtexkey}" class="review noshow">
-	<td colspan="6"><b>Review</b>: \format[HTMLChars]{\review}</td>
+	<td colspan="6"><b>Review</b>: \format[HTMLCharsAntiScript]{\review}</td>
 </tr>\end{review}
 <tr id="bib_\format{\bibtexkey}" class="bibtex noshow">
 <td colspan="6"><b>BibTeX</b>:
 <pre>
 @\format[ToLowerCase]{\bibtextype}{\bibtexkey,\begin{author}
-  author = {\format[HTMLChars]{\author}}\end{author}\begin{title},
-  title = {\format[HTMLChars]{\title}}\end{title}\begin{booktitle},
-  booktitle = {\format[HTMLChars]{\booktitle}}\end{booktitle}\begin{journal},
-  journal = {\format[HTMLChars]{\journal}}\end{journal}\begin{publisher},
-  publisher = {\format[HTMLChars]{\publisher}}\end{publisher}\begin{school},
-  school = {\format[HTMLChars]{\school}}\end{school}\begin{year},
-  year = {\format[HTMLChars]{\year}}\end{year}\begin{volume},
-  volume = {\format[HTMLChars]{\volume}}\end{volume}\begin{number},
-  number = {\format[HTMLChars]{\number}}\end{number}\begin{pages},
-  pages = {\format[HTMLChars]{\pages}}\end{pages}\begin{edition},
-  edition = {\format[HTMLChars]{\edition}}\end{edition}\begin{note},
-  note = {\format[HTMLChars]{\note}}\end{note}\begin{url},
-  url = {\format[HTMLChars]{\url}}\end{url}\begin{doi},
+  author = {\format[HTMLCharsAntiScript]{\author}}\end{author}\begin{title},
+  title = {\format[HTMLCharsAntiScript]{\title}}\end{title}\begin{booktitle},
+  booktitle = {\format[HTMLCharsAntiScript]{\booktitle}}\end{booktitle}\begin{journal},
+  journal = {\format[HTMLCharsAntiScript]{\journal}}\end{journal}\begin{publisher},
+  publisher = {\format[HTMLCharsAntiScript]{\publisher}}\end{publisher}\begin{school},
+  school = {\format[HTMLCharsAntiScript]{\school}}\end{school}\begin{year},
+  year = {\format[HTMLCharsAntiScript]{\year}}\end{year}\begin{volume},
+  volume = {\format[HTMLCharsAntiScript]{\volume}}\end{volume}\begin{number},
+  number = {\format[HTMLCharsAntiScript]{\number}}\end{number}\begin{pages},
+  pages = {\format[HTMLCharsAntiScript]{\pages}}\end{pages}\begin{edition},
+  edition = {\format[HTMLCharsAntiScript]{\edition}}\end{edition}\begin{note},
+  note = {\format[HTMLCharsAntiScript]{\note}}\end{note}\begin{url},
+  url = {\format[HTMLCharsAntiScript]{\url}}\end{url}\begin{doi},
   doi = {\format[DOICheck]{\doi}}\end{doi}
 }
 </pre></td>

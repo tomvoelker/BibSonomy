@@ -1,8 +1,8 @@
 <p>
-&lt;xxx&gt;TestUser TestUserUser&lt;/xxx&gt; & &lt;xxx&gt;TestUser FriendOne&lt;/xxx&gt; (&lt;xxx&gt;20013&lt;/xxx&gt;), 
+&lt;xxx&gt;TestUser TestUserUser&lt;/xxx&gt; &amp; &lt;xxx&gt;TestUser FriendOne&lt;/xxx&gt; (&lt;xxx&gt;20013&lt;/xxx&gt;), 
 &lt;xxx&gt;alert "ScriptTest"&lt;/xxx&gt;&lt;xxx&gt;TitleTest&lt;/xxx&gt;, <i>in</i>
 
-&lt;xxx&gt;TestEditorOne EditorOne&lt;/xxx&gt; & &lt;xxx&gt;TestEditorTwo EditorTwo&lt;/xxx&gt;, ed.,
+&lt;xxx&gt;TestEditorOne EditorOne&lt;/xxx&gt; &amp; &lt;xxx&gt;TestEditorTwo EditorTwo&lt;/xxx&gt;, ed.,
 
 
 '&lt;xxx&gt;BookTitleTest&lt;/xxx&gt;'

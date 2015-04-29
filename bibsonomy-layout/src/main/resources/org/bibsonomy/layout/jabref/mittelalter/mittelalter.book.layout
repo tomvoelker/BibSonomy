@@ -1,9 +1,9 @@
 <div style="margin-bottom:1em">
 \begin{author}
-\format[AuthorLastFirst,HTMLChars2,AntiScriptInjection,MittelalterPersonNamesFormatter,MittelalterAndsReplacer]{\author}
+\format[AuthorLastFirst,MittelalterAndsReplacer,HTMLCharsAntiScript,MittelalterPersonNamesFormatter]{\author}
 \end{author}
 \begin{editor}
-\format[AuthorLastFirst,HTMLChars2,AntiScriptInjection,MittelalterPersonNamesFormatter,MittelalterAndsReplacer]{\editor}
+\format[AuthorLastFirst,MittelalterAndsReplacer,HTMLCharsAntiScript,MittelalterPersonNamesFormatter]{\editor}
 \end{editor}
 \format[AntiScriptInjection]{\title}\begin{volume},
 Bd. \format[AntiScriptInjection]{\volume}\end{volume}\begin{series}:
