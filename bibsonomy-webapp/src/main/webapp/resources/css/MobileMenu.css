@@ -3,3 +3,8 @@
 		padding-left: 15px !important;
 	}
 }
+@media (max-width: 990px) {
+	#search .input-group {
+		margin-bottom: 1em;
+	}
+}

@@ -23,7 +23,7 @@
 					<span class="icon-bar"><!--  --></span>
 				</button>
 			</div>
-			<div class="collapse navbar-collapse in" id="bs-navbar-collapse">
+			<div class="collapse navbar-collapse" id="bs-navbar-collapse">
 				<ul class="nav navbar-nav">
 					<li class="${activeTab eq 'home' ? 'active' : ''}"><a href="${relativeUrlGenerator.getProjectHome()}"><fmt:message key="navi.home"/></a></li>
 					<!--+ 
