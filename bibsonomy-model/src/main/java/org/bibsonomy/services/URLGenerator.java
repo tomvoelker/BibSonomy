@@ -1727,18 +1727,19 @@ public class URLGenerator {
 	/**
 	 * @param action
 	 * @param personName
+	 * @param authorIndex 
 	 * @param resourceHash
 	 * @param user
 	 * @param role
 	 * @param index 
 	 * @return String
 	 */
-	public String getDisambiguationUrl(final String action, final String personName, final String resourceHash, final String user, final String role, final Integer index) {
+	public String getDisambiguationUrl(final String action, final String personName, final Integer authorIndex, final String resourceHash, final String role) {
 		String url;
 		try {
-			url = this.projectHome + URLGenerator.DISAMBIGUATION_PREFIX + "/" + action + "/" + URLEncoder.encode(personName,"utf-8") + "/" + resourceHash + "/" + user + "/" + role + "/" + index.intValue();
+			url = this.projectHome + URLGenerator.DISAMBIGUATION_PREFIX + "/" + action + "/" + URLEncoder.encode(personName,"utf-8") + "/" + authorIndex + "/" + resourceHash + "/"  + role;
 		} catch (UnsupportedEncodingException e) {
-			url = this.projectHome + URLGenerator.DISAMBIGUATION_PREFIX + "/" + action + "/" + personName + "/" + resourceHash + "/" + user + "/" + role;
+			url = this.projectHome + URLGenerator.DISAMBIGUATION_PREFIX + "/" + action + "/" + personName + "/" + authorIndex + "/" + resourceHash + "/" + role;
 		}
 		return this.getUrl(url);
 	}

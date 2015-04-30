@@ -33,7 +33,7 @@
 		<result property='relatorCode' 	column='relator_code' javaType='java.lang.String' />
 		<result property='pubOwner'		column='pub_owner'	javaType='java.lang.String' />
 		<result property="person"		column="person_id"  javaType='org.bibsonomy.model.Person' select='getPersonById' />
-		<result property='post'			column='{pubOwner=pub_owner, simhash1=simhash1, simhash2=simhash1}' javaType='bibtex' select='getPosts'/>
+		<result property='post'			column='simhash1' javaType='bibtex' select='getPosts'/>
 		<result property='authorIndex'  column='author_index' javaType='int' />
 	</resultMap>
 	

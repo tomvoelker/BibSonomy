@@ -47,7 +47,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 	 */
 	private View indexAction(DisambiguationPageCommand command) {
 
-		command.setPost(this.logic.getPostDetails(command.getRequestedHash(), command.getRequestedUser()));
+		command.setPost(this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, "1"+command.getRequestedHash(), null, null, null, null, null, null, 0, 100).get(0));
 		// FIXME: use personnameutils
 		PersonName pn = new PersonName(command.getRequestedAuthorName().split(", ")[0].trim()).withFirstName(command.getRequestedAuthorName().split(", ")[1].trim());
 		command.setPersonName(pn);
@@ -57,7 +57,6 @@ public class DisambiguationPageController extends SingleResourceListController i
 	}
 	
 	private View redirectAction(DisambiguationPageCommand command) {
-		System.out.println("4"+command.getRequestedHash());
 		command.setPost(this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, "1"+command.getRequestedHash(), null, null, null, null, null, null, 0, 100).get(0));
 		
 		List<ResourcePersonRelation> matchingPersons = this.logic.getResourceRelations(command.getPost().getResource().getInterHash(), PersonResourceRelation.AUTHOR, new Integer(command.getRequestedIndex()));	
@@ -66,8 +65,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 			log.warn("Too many persons for " + command.getRequestedHash());
 			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(matchingPersons.get(0).getPersonId(), PersonNameUtils.serializePersonName(matchingPersons.get(0).getPerson().getMainName()), command.getRequestedHash(), command.getRequestedUser(), command.getRequestedRole(), new Integer(command.getRequestedIndex())));	
 		}
-
-		return new ExtendedRedirectView(new URLGenerator().getDisambiguationUrl("details", command.getRequestedAuthorName(), command.getRequestedHash(), command.getRequestedUser(), command.getRequestedRole(), new Integer(command.getRequestedIndex())));
+		return new ExtendedRedirectView(new URLGenerator().getDisambiguationUrl("details", command.getRequestedAuthorName(), new Integer(command.getRequestedIndex()), command.getRequestedHash(), command.getRequestedRole()));
 
 	}
 }

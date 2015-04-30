@@ -11,6 +11,7 @@ import org.bibsonomy.database.managers.PersonDatabaseManager;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelation;
@@ -143,6 +144,15 @@ public class PersonLogic implements PersonLogicInterface {
 	 */
 	@Override
 	public List<ResourcePersonRelation> getResourceRelations(Person person) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations(org.bibsonomy.model.Post)
+	 */
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(Post<BibTex> post) {
 		// TODO Auto-generated method stub
 		return null;
 	}

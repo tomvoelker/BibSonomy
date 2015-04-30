@@ -3362,4 +3362,12 @@ public class DBLogic implements LogicInterface {
 	public List<ResourcePersonRelation> getResourceRelations(String hash, PersonResourceRelation role, Integer authorIndex) {
 		return this.personDBManager.getResourcePersonRelations(hash, authorIndex, role, this.dbSessionFactory.getDatabaseSession());
 	}
+	
+	/**
+	 * @param post
+	 * @return
+	 */
+	public List<ResourcePersonRelation> getResourceRelations(Post<BibTex> post) {
+		return this.personDBManager.getResourcePersonRelations(post, this.dbSessionFactory.getDatabaseSession());
+	}
 }

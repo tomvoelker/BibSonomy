@@ -6,6 +6,7 @@ import java.util.Map;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonResourceRelation;
 
@@ -71,6 +72,12 @@ public interface PersonLogicInterface {
 	 * @return List<ResourcePersonRelation>
 	 */
 	List<ResourcePersonRelation> getResourceRelations(Person person);
+	
+	/**
+	 * @param post
+	 * @return
+	 */
+	public List<ResourcePersonRelation> getResourceRelations(Post<BibTex> post);
 
 
 

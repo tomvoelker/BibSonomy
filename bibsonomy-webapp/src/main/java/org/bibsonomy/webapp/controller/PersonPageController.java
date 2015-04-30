@@ -178,10 +178,8 @@ public class PersonPageController extends SingleResourceListController implement
 		}
 		ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation()
 		.withSimhash1(command.getFormInterHash())
-		.withSimhash2(command.getFormIntraHash())
 		.withRelatorCode(role)
 		.withPersonId(person.getId())
-		.withPubOwner(command.getFormUser())
 		.withAuthorIndex(new Integer(command.getFormAuthorIndex()));
 		this.logic.addResourceRelation(resourcePersonRelation);
 		
@@ -224,12 +222,16 @@ public class PersonPageController extends SingleResourceListController implement
 		else
 			role = PersonResourceRelation.valueOf(command.getFormPersonRole()).getRelatorCode();
 		
+		if(!present(command.getFormAuthorIndex())) {
+			command.setFormAuthorIndex("-1");
+			
+		}
+		
 		ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation()
 			.withSimhash1(command.getFormInterHash())
-			.withSimhash2(command.getFormIntraHash())
 			.withRelatorCode(role)
 			.withPersonId(command.getFormPersonId())
-			.withPubOwner(command.getFormUser());
+			.withAuthorIndex(new Integer(command.getFormAuthorIndex()));
 		this.logic.addResourceRelation(resourcePersonRelation);
 		command.setResponseString(resourcePersonRelation.getId() + "");
 		return Views.AJAX_TEXT;
@@ -245,10 +247,9 @@ public class PersonPageController extends SingleResourceListController implement
 		for(String role : command.getFormPersonRoles()) {
 			ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation()
 			.withSimhash1(command.getFormInterHash())
-			.withSimhash2(command.getFormIntraHash())
 			.withRelatorCode(PersonResourceRelation.valueOf(role).getRelatorCode())
 			.withPersonId(command.getFormPersonId())
-			.withPubOwner(command.getRequestedUser());
+			.withAuthorIndex(new Integer(command.getFormAuthorIndex()));
 			this.logic.addResourceRelation(resourcePersonRelation);
 		}
 				
@@ -329,6 +330,8 @@ public class PersonPageController extends SingleResourceListController implement
 			if(!resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis")) {
 				continue;	
 			}
+			
+			resourcePersonRelation.getPost().setResourcePersonRelations(this.logic.getResourceRelations(resourcePersonRelation.getPost()));
 			
 			if(resourcePersonRelation.getRelatorCode().equals(PersonResourceRelation.AUTHOR.getRelatorCode())) 
 				authorPosts.add(resourcePersonRelation.getPost());

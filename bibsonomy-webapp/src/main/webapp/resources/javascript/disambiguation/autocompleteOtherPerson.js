@@ -17,10 +17,9 @@ $(document).ready(function() {
 			$.post("/person",
 					{ 	formAction: "addRole",
 						formInterHash: e.attr("data-resource-simhash1"),
-						formIntraHash: e.attr("data-resource-simhash2"),
-						formUser: e.attr("data-pubowner"),
 						formPersonRole: "AUTHOR",
-						formPersonId: e.attr("data-person-id")
+						formPersonId: e.attr("data-person-id"),
+						formAuthorIndex: e.attr("data-author-index")
 					}
 			).done(function(data) {
 				document.location.href = "/person/" +  e.attr("data-person-id") + "/" + e.attr("data-person-lastname" + ", " + e.attr("data-person-firstName"));

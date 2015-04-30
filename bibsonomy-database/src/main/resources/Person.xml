@@ -75,11 +75,7 @@
 	<select id='getResourcePersonRelationByResourcePersonRelation' resultMap="PersonCommon.resourcePersonRelation" parameterClass='org.bibsonomy.model.ResourcePersonRelation'>
 		SELECT <include refid='commonResourcePersonRelationColumns' /> FROM pub_person 
 			WHERE 
-				pub_person.pub_owner = #pubOwner#
-					AND
 				pub_person.simhash1 = #simhash1#
-					AND
-				pub_person.simhash2 = #simhash2#
 					AND
 				pub_person.relator_code = #relatorCode#
 					AND
@@ -98,31 +94,31 @@
 		IF("hansii" = b.user_name, b.privnote, NULL) AS privnote , b.scraperid, t1.change_date, b.simhash1 AS interHash, b.simhash2 AS intraHash, t1.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, c.rating_arithmetic_mean AS rating, c.number_of_ratings
 		FROM tas t1, bibhash h, 
 			(SELECT * FROM bibtex
-			 WHERE bibtexKey LIKE "%"  
-			 AND user_name = #pubOwner#) b 
+			 WHERE bibtexKey LIKE "%") b 
 			 LEFT JOIN review_ratings_cache c ON (c.interHash = b.simhash1)
 		WHERE b.content_id = t1.content_id
 		AND (
 			(b.simhash1 = h.hash
 			AND h.type=1
 			AND b.simhash1 = #simhash1#)
-        OR 
-			(b.simhash2 = h.hash
-			AND h.type=2
-			AND b.simhash2 = #simhash2#)
 		)
-		ORDER BY date DESC
+		GROUP BY interHash ORDER BY date DESC
 	</statement>
 	
 	<statement id="getResourcePersonRelationsByPost" resultMap="PersonCommon.resourcePersonRelation">
 		SELECT <include refid="commonResourcePersonRelationColumns" /> FROM pub_person
 			WHERE pub_person.pub_owner = #pubOwner#
-				AND (pub_person.simhash1 = #simhash1# OR pub_person.simhash2 = #simhash2#) 
+				AND (pub_person.simhash1 = #simhash1#) 
 	</statement>
 	
 	<statement id="getResourcePersonRelationsByPersonId" parameterClass="java.lang.String" resultMap="PersonCommon.resourcePersonRelation">
 		SELECT <include refid="commonResourcePersonRelationColumns" /> FROM pub_person
 			WHERE person_id = #personId# 
+	</statement>
+	
+	<statement id="getResourcePersonRelationsByInterhash" parameterClass="java.lang.String" resultMap="PersonCommon.resourcePersonRelation">
+		SELECT <include refid="commonResourcePersonRelationColumns" /> FROM pub_person
+			WHERE simhash1 = #interhash# 
 	</statement>
 	
 	<statement id="getOneResourcePersonRelationsByPersonId" resultMap="PersonCommon.resourcePersonRelation">

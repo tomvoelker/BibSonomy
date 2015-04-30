@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
@@ -300,6 +301,21 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		session.beginTransaction();
 		try {
 			return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsByPersonId", person.getId(), session);
+		} finally {
+			session.endTransaction();
+		}
+	}
+
+
+	/**
+	 * @param post
+	 * @return
+	 */
+	public List<ResourcePersonRelation> getResourcePersonRelations(
+			Post<BibTex> post, DBSession session) {
+		session.beginTransaction();
+		try {
+			return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsByInterhash", post.getResource().getInterHash(), session);
 		} finally {
 			session.endTransaction();
 		}

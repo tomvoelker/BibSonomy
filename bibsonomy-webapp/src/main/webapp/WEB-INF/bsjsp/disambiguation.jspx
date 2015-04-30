@@ -187,7 +187,7 @@
 								<div class="col-md-7">
 									<div class='input-group'>
 										<input class='form-control typeahead' id='addPersonAuto' type='text' name='addPersonAuto' autocomplete="off" autofocus="autofocus" placeholder="${textPersonSearchPlaceholder}"/>
-										<button type="button" class="btn btn-primary" id='btnOtherPersonSubmit' data-person-firstName="${command.personName.firstName}" data-person-lastName="${command.personName.lastName}" data-resource-simhash1="${command.post.resource.interHash}" data-resource-simhash2="${command.post.resource.intraHash}" data-pubowner="${command.post.user.name}" data-author-index="${command.requestedIndex}">${textSelectPersonButton}</button>
+										<button type="button" class="btn btn-primary" id='btnOtherPersonSubmit' data-person-firstName="${command.personName.firstName}" data-person-lastName="${command.personName.lastName}" data-resource-simhash1="${command.post.resource.interHash}" data-author-index="${command.requestedIndex}">${textSelectPersonButton}</button>
 									</div>
 								</div>
 							</div>
@@ -195,7 +195,7 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">${textAbortButton}</button>&#160;
-						<button type="button" class="btn btn-default" id='btnNewPersonSubmit' data-person-firstName="${command.personName.firstName}" data-person-lastName="${command.personName.lastName}" data-resource-simhash1="${command.post.resource.interHash}" data-resource-simhash2="${command.post.resource.intraHash}" data-pubowner="${command.post.user.name}" data-author-index="${command.requestedIndex}">${textNewPersonButton}</button>
+						<button type="button" class="btn btn-default" id='btnNewPersonSubmit' data-person-firstName="${command.personName.firstName}" data-person-lastName="${command.personName.lastName}" data-resource-simhash1="${command.post.resource.interHash}" data-author-index="${command.requestedIndex}">${textNewPersonButton}</button>
 					</div>
 			</div>
 		</div>
@@ -217,7 +217,7 @@
 					<div class="modal-footer">
 						<a href='#showPerson' id='linkShowPerson' type="button" class="pull-left btn btn-default"><fmt:message key="disambiguation.link.modal.viewButton"/></a> 
 						<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="disambiguation.link.modal.abortButton"/></button>&#160;
-						<button type="button" class="btn btn-primary" id='btnLinkPersonSubmit' data-resource-simhash1='${command.post.resource.interHash}' data-resource-simhash2='${command.post.resource.intraHash}' data-pub-owner='${command.requestedUser}'><fmt:message key="disambiguation.link.modal.saveButton"/></button>
+						<button type="button" class="btn btn-primary" id='btnLinkPersonSubmit' data-resource-simhash1='${command.post.resource.interHash}' data-author-index='${command.requestedIndex}'><fmt:message key="disambiguation.link.modal.saveButton"/></button>
 					</div>
 			</div>
 		</div>

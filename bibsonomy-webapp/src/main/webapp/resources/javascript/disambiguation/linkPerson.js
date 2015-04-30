@@ -5,6 +5,7 @@ $(document).ready(function() {
 		$("#btnLinkPersonSubmit").attr("data-person-id", e.attr("data-person-id"));
 		$("#btnLinkPersonSubmit").attr("data-firstName", e.attr("data-firstName"));
 		$("#btnLinkPersonSubmit").attr("data-lastName", e.attr("data-lastName"));
+		$("#btnLinkPersonSubmit").attr("data-author-index", e.attr("data-author-index"));
 		
 		$("#linkShowPerson").attr("href", "/person/" + e.attr("data-person-id") + "/" + e.attr("data-lastName") + ", " + e.attr("data-firstName"));
 	});
@@ -20,10 +21,9 @@ $(document).ready(function() {
 			$.post("/person",
 					{ 	formAction: "addRole",
 						formInterHash: e.attr("data-resource-simhash1"),
-						formIntraHash: e.attr("data-resource-simhash2"),
 						formPersonId: e.attr("data-person-id") ,
-						formUser: e.attr("data-pub-owner"),
-						formPersonRole: "AUTHOR"
+						formPersonRole: "AUTHOR",
+						formAuthorIndex: e.attr("data-author-index")
 					}
 			).done(function(data) {
 				window.location.href = "/person/" + e.attr("data-person-id") + "/" + e.attr("data-lastName") + ", " + e.attr("data-firstName"); 

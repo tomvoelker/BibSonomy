@@ -719,4 +719,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 
 	@Override
 	public List<ResourcePersonRelation> getResourceRelations(Person person);
+
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(Post<BibTex> post);
 }

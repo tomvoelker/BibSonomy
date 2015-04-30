@@ -7,8 +7,7 @@ $(document).ready(function() {
 
 	function addRole(obj) {
 		$("#btnAddRoleSubmit").attr("data-person-id", obj.attr("data-person-id"));
-		$("#btnAddRoleSubmit").attr("data-relation-pubowner", obj.attr("data-relation-pubowner"));
-		$("#btnAddRoleSubmit").attr("data-relation-simhash2", obj.attr("data-relation-simhash2"));
+		$("#btnAddRoleSubmit").attr("data-author-index", obj.attr("data-author-index"));
 		$("#btnAddRoleSubmit").attr("data-relation-simhash1", obj.attr("data-relation-simhash1"));
 		$("#btnAddRoleSubmit").attr("data-person-role", obj.attr("data-person-role"));
 	};
@@ -21,10 +20,10 @@ $(document).ready(function() {
 		$("#btnDeleteRoleSubmit").attr("data-resourcePersonRelation-id", obj.attr("data-resourcePersonRelation-id"));
 	}
 	
-	function addRoleHtml(resourcePersonRelationid, personNameId, personFirstName, personLastName, resourceTitle, simhash1, simhash2, role, personId) {
+	function addRoleHtml(resourcePersonRelationid, personNameId, personFirstName, personLastName, resourceTitle, simhash1, simhash2, role, personId, authorIndex) {
 		var s = $("<span class='resourcePersonRelation_"+resourcePersonRelationid+"'></span");
 		var a = $("<a href='/person/"+ personId + "/" + personLastName + "," + personFirstName+ "'> "+ personFirstName + " " + personLastName + " </a>");
-		//var ss = $("<span data-toggle='modal' data-target='#editRole' data-resource-title='"+resourceTitle+"' data-person-name='"+personName+"' data-relation-simhash1='"+simhash1+"' data-relation-simhash2='"+simhash2+"' data-person-role='"+role+"' style='color:orange;cursor:pointer' href='#editRole' class='editRole glyphicon glyphicon-pencil'>&#160;</span>");
+		//var ss = $("<span data-toggle='modal' data-target='#editRole' data-resource-title='"+resourceTitle+"' data-person-name='"+personName+"' data-author-index='"+authorIndex+"' data-relation-simhash1='"+simhash1+"' data-relation-simhash2='"+simhash2+"' data-person-role='"+role+"' style='color:orange;cursor:pointer' href='#editRole' class='editRole glyphicon glyphicon-pencil'>&#160;</span>");
 		var sss = $(" <span data-toggle='modal' data-target='#deleteRole' data-resourcePersonRelation-id='"+resourcePersonRelationid+"' style='color:darkred;cursor:pointer' href='#deleteRole' class='deleteRole glyphicon glyphicon-remove'>&#160;</span>");
 		
 		sss.on("click", function() {
@@ -74,10 +73,9 @@ $(document).ready(function() {
 				{ 	formAction: "new",
 					formFirstName: firstName,
 					formLastName: lastName,
-					formUser: e.attr("data-relation-pubowner"),
-					formIntraHash: e.attr("data-relation-simhash2"),
 					formInterHash: e.attr("data-relation-simhash1"),
-					formPersonRole: e.attr("data-person-role")
+					formPersonRole: e.attr("data-person-role"),
+					formAuthorIndex: e.attr("data-author-index")
 				}).done(function(data) {
 					e.attr("data-person-id", data.personId);
 					e.attr("data-person-name-id", data.personNameId);
@@ -91,7 +89,8 @@ $(document).ready(function() {
 									e.attr("data-relation-simhash1"),
 									e.attr("data-relation-simhash2"),
 									e.attr("data-person-role"),
-									data.personId
+									data.personId,
+									e.attr("data-author-index")
 							));
 					$("#addRole").modal("hide");
 				});
@@ -100,10 +99,9 @@ $(document).ready(function() {
 			$.post("/person",
 					{ 	formAction: "addRole",
 						formPersonId: e.attr("data-person-id"),
-						formUser : e.attr("data-relation-pubowner"),
-						formIntraHash: e.attr("data-relation-simhash2"),
 						formInterHash: e.attr("data-relation-simhash1"),
-						formPersonRole: e.attr("data-person-role")
+						formPersonRole: e.attr("data-person-role"),
+						formAuthorIndex: e.attr("data-author-index")
 					}
 			).done(function(data) {
 				$("."+e.attr("data-relation-simhash1") + "_" + e.attr("data-relation-simhash2") + " ." + e.attr("data-person-role") + " .addRole").before(
@@ -116,7 +114,8 @@ $(document).ready(function() {
 								e.attr("data-relation-simhash1"),
 								e.attr("data-relation-simhash2"),
 								e.attr("data-person-role"),
-								e.attr("data-person-id")
+								e.attr("data-person-id"),
+								e.attr("data-author-index")
 						));
 				$("#addRole").modal("hide");
 			});
@@ -127,7 +126,7 @@ $(document).ready(function() {
 		var e = $(this);
 		$.post("/person",
 				{ 	formAction: "deleteRole",
-					formresourcePersonRelationId: e.attr("data-resourcePersonRelation-id")
+					formResourcePersonRelationId: e.attr("data-resourcePersonRelation-id")
 				}
 		).done(function(data) {
 			$(".resourcePersonRelation_"+e.attr("data-resourcePersonRelation-id")).remove();
