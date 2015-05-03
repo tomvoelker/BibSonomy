@@ -96,9 +96,9 @@
 						</div>
 					</div><!-- /#bib-header -->
 				</div>
-				<div id="navigation">
-					<menu:navi activeTab="${activeTab}" loginUser="${loginUser}" />
-				</div> <!-- /#navigation -->
+				
+				<menu:navi activeTab="${activeTab}" loginUser="${loginUser}" />
+				
 				<div class="container main">
 					
 					<c:choose>
