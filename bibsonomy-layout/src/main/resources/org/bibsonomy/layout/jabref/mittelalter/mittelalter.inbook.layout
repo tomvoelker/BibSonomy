@@ -1,5 +1,5 @@
 <div style="margin-bottom:1em">
-\begin{author}\format[AuthorLastFirst,HTMLChars2,AntiScriptInjection,MittelalterPersonNamesFormatter,MittelalterAndsReplacer]{\author}\end{author}\begin{title},
+\begin{author}\format[AuthorLastFirst,MittelalterAndsReplacer,HTMLCharsAntiScript,MittelalterPersonNamesFormatter]{\author}\end{author}\begin{title},
 Art. \format[AntiScriptInjection]{\title}\end{title}\begin{booktitle}, in: 
 \format[AntiScriptInjection]{\booktitle}\end{booktitle}\begin{volume}, 
 Bd. \format[AntiScriptInjection]{\volume}\end{volume}\begin{editor}, 

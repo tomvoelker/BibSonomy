@@ -1,22 +1,22 @@
-\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\author}
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLCharsAntiScript]{\author}
  (\format[AntiScriptInjection]{\year}). 
-\format[HTMLChars,AntiScriptInjection]{\title}
+\format[HTMLCharsAntiScript]{\title}
 \begin{type}
-[\format[HTMLChars,AntiScriptInjection]{\type}].
+[\format[HTMLCharsAntiScript]{\type}].
 \end{type}
 \begin{journal}
-<i>\format[HTMLChars,AntiScriptInjection]{\journal}</i> <b>\format[AntiScriptInjection]{\volume}</b>
+<i>\format[HTMLCharsAntiScript]{\journal}</i> <b>\format[AntiScriptInjection]{\volume}</b>
 \end{journal}
 \begin{number}
 (\format[AntiScriptInjection]{\number})
 \end{number}
 \begin{editor}
 . In
- \format[AuthorFirstAbbrLastCommas,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\editor}
+ \format[AuthorFirstAbbrLastCommas,AuthorAndsReplacer,HTMLCharsAntiScript]{\editor}
  (ed.), 
 \end{editor}
 \begin{booktitle}
-<i> \format[HTMLChars,AntiScriptInjection]{\booktitle}. </i> 
+<i> \format[HTMLCharsAntiScript]{\booktitle}. </i> 
 \end{booktitle} 
 \begin{organization}
 \format[AntiScriptInjection]{\organization}
@@ -25,7 +25,7 @@
 (Technical report, \format[AntiScriptInjection]{\institution}) 
 \end{institution}
 \begin{publisher}
-\format[HTMLChars,AntiScriptInjection]. {\publisher}
+\format[HTMLCharsAntiScript]. {\publisher}
 \end{publisher}
 \begin{howpublished}
 \format[AntiScriptInjection]{\howpublished} . 

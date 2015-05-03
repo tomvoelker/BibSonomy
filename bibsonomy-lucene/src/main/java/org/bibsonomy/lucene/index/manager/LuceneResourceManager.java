@@ -396,6 +396,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	public void updateAndReloadIndex() {
 		// do not update index during index-generation
 		if (this.generatingIndex) {
+			log.debug("index is currently regenerating - updating aborted");
 			return;
 		}
 
@@ -761,14 +762,14 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * Sets the given index as the new active one. If there was an other active
 	 * index before it will be moved to the updateQueue
 	 * 
-	 * @param activeIndex
+	 * @param newActiveIndex
 	 *            the activeIndex to set
 	 */
-	public void setActiveIndex(final LuceneResourceIndex<R> activeIndex) {
+	public void setActiveIndex(final LuceneResourceIndex<R> newActiveIndex) {
 		final LuceneResourceIndex<R> oldIndex = this.activeIndex;
 
-		this.activeIndex = activeIndex;
-
+		newActiveIndex.reset();
+		this.activeIndex = newActiveIndex;
 		this.searcher.setIndex(this.activeIndex);
 
 		if (oldIndex != null) {
