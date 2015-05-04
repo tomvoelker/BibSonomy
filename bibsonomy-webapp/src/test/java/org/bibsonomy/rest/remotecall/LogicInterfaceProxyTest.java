@@ -1482,4 +1482,13 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getResourceRelations(org.bibsonomy.model.Post)
+	 */
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(Post<BibTex> post) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
