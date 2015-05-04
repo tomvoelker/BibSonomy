@@ -1,1 +1,1 @@
-ALTER TABLE `groupids` ADD `description` TEXT NULL AFTER `allow_join`;
+ALTER TABLE `groupids` ADD `shortDescription` TEXT NULL AFTER `allow_join`;

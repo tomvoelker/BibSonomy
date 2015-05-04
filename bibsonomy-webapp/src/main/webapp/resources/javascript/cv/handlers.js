@@ -16,6 +16,7 @@ $(function(){
             url: "/ajax/cv",
             data: {
                 layout: $(this).find("option:selected").attr("data-layout"),
+                requestedGroup: $('#requestedGroup').val(),
                 ckey: ckey
             },
             success: function(data){
@@ -97,12 +98,13 @@ function handleSuccessStatus(e) {
  * Method to send a renderRequest to the server
  * @param {Object} renderOptions
  */
-function submitWiki(renderOptions){
+function submitWiki(renderOptions){	
     $.ajax({
         type: "POST",
         url: "/ajax/cv",
         data: {
             ckey: $('#ckey').val(),
+            requestedGroup: $('#requestedGroup').val(),
             wikiText: $('#wikiTextArea').val(),
             renderOptions: renderOptions
         },

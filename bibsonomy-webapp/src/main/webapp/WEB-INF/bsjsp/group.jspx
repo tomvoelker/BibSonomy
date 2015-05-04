@@ -78,7 +78,6 @@
 					
 				</li>
 				</c:if>
-				<rc:members group="${command.group}"/>
 
 				<!-- group members -->
 				<rc:members group="${command.group}"/>

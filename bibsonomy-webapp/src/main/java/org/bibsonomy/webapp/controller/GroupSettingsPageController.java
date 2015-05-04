@@ -108,7 +108,7 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 			command.setUser(groupUser);
 			
 			// initiate wiki
-			this.initiateGroupCV(groupUser, command);
+			this.initiateGroupCV(groupUser, group, command);
 			
 			command.addTab(GroupSettingsPageCommand.GROUP_SETTINGS, "navi.groupsettings");
 			command.addTab(GroupSettingsPageCommand.MEMBER_LIST_IDX, "settings.group.memberList");
@@ -139,7 +139,7 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 	 * @param reqUser
 	 * @param command
 	 */
-	private void initiateGroupCV(final User groupUser, final GroupSettingsPageCommand command) {
+	private void initiateGroupCV(final User groupUser, final Group group, final GroupSettingsPageCommand command) {
 		final String userName = groupUser.getName();
 
 		final Wiki wiki = this.logic.getWiki(userName, null);
@@ -151,7 +151,8 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 			wikiText = "";
 		}
 
-		this.wikiRenderer.setRequestedUser(groupUser); // FME: not thread-safe!
+		//this.wikiRenderer.setRequestedUser(groupUser); // FME: not thread-safe!
+		this.wikiRenderer.setRequestedGroup(group); // FME: not thread-safe!
 		command.setRenderedWikiText(this.wikiRenderer.render(wikiText));
 		command.setWikiText(wikiText);
 	}

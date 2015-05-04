@@ -45,6 +45,8 @@
 			
 			<groupsettings:profile command="${command}" />
 			
+			<groupsettings:cv command="${command}" />
+			
 			<groupsettings:userlists group="${group}" />
 			
 			<groupsettings:delete group="${group}" />

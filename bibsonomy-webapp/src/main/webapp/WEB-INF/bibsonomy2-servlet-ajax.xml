@@ -52,6 +52,7 @@
 								<value>layout</value>
 								<value>renderOptions</value>
 								<value>wikiText</value>
+								<value>requestedGroup</value>
 								<value>text</value>
 								<value>hash</value>
 								<value>action</value>

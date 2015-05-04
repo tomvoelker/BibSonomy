@@ -26,50 +26,27 @@
  */
 package org.bibsonomy.wiki.tags.group;
 
-import org.bibsonomy.model.GroupMembership;
-import org.bibsonomy.model.User;
 import org.bibsonomy.wiki.tags.GroupTag;
 
 /**
- * renders all members of the group
- * (image and name)
- * @author tni
+ * renders the group description of the group
+ * @author mho
  */
-public class MembersTag extends GroupTag {
-	private static final String TAG_NAME = "members";
+public class GroupDescriptionTag extends GroupTag {
+	private static final String TAG_NAME = "description";
 
 	/**
 	 * default constructor
 	 */
-	public MembersTag() {
+	public GroupDescriptionTag() {
 		super(TAG_NAME);
 	}
 
-	private String renderImage(final String userName) {
-		// TODO: use url generator
-		return "<img class='user-avatar' src='/picture/user/" + this.renderString(userName) + "' />";
-	}
-
-	/**
-	 * creates a list of pictures of all members of this group (except for the group owner itself) as well as their names.
-	 * The HTML div container is of the class imageContainer.
-	 * TODO: Fix this with the new group concept.
-	 */
 	@Override
 	protected String renderGroupTag() {
 		final StringBuilder renderedHTML = new StringBuilder();
-
-		for (final GroupMembership membership : this.requestedGroup.getMemberships()) {
-			final User user = membership.getUser();
-
-			if (!user.getName().equals(this.requestedGroup.getName())) {
-				renderedHTML.append("<div class='imageContainer'>");
-				renderedHTML.append("<a class=\"img-thumbnail img-responsive\" title=\""+user.getName()+"\" href=\"/cv/user/" + user.getName() + "\">");
-				renderedHTML.append(this.renderImage(user.getName()));
-				renderedHTML.append("<span>@"+this.renderString(user.getName())+"</span>");
-				renderedHTML.append("</a></div>");
-			}
-		}
+		renderedHTML.append(this.renderString(this.requestedGroup.getDescription()));
 		return renderedHTML.toString();
 	}
+
 }

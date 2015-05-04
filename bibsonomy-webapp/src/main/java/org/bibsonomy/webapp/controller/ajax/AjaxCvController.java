@@ -93,7 +93,7 @@ public class AjaxCvController extends AjaxController implements MinimalisticCont
 		final String renderOptions = command.getRenderOptions();
 		final String authUser = this.logic.getAuthenticatedUser().getName();
 		final String wikiText = command.getWikiText();
-		final Group requestedGroup = this.logic.getGroupDetails(authUser);
+		final Group requestedGroup = getRequestedGroup(command.getContext().getLoginUser().getGroups(), command.getRequestedGroup());
 		
 		final LogicInterface interfaceToUse;
 		
@@ -128,7 +128,16 @@ public class AjaxCvController extends AjaxController implements MinimalisticCont
 			/*
 			 * TODO: add support for group members to edit group cv page, restrict only to moderators
 			 */
-			this.logic.updateWiki(authUser, wiki);
+			
+			if (present(requestedGroup)) {
+				Group g = this.logic.getGroupDetails(command.getRequestedGroup());
+				User groupUser = this.logic.getUserDetails(g.getName());
+				
+				this.logic.updateWiki(groupUser.getName(), wiki);
+			} else {				
+				this.logic.updateWiki(authUser, wiki);
+			}
+			
 		}
 		
 		/*
@@ -227,4 +236,18 @@ public class AjaxCvController extends AjaxController implements MinimalisticCont
 		this.notLoggedInUserLogic = notLoggedInUserLogic;
 	}
 
+	private Group getRequestedGroup(List<Group> groups, String requestedGroup) {
+		Group res = null;	
+
+		if (present(requestedGroup)) {			
+			for (Group g : groups) {
+				if (g.getName().equals(requestedGroup)) {
+					return g;
+				}
+			}
+		}
+		return res;
+	}
+	
+	
 }

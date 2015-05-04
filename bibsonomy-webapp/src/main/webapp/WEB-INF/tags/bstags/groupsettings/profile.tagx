@@ -90,7 +90,6 @@
 					</jsp:attribute>
 				</bsform:fieldset>
 
-
 				<!-- Basic Group Settings -->
 				<bsform:fieldset legendKey="settings.group.settings">
 					<jsp:attribute name="content">
