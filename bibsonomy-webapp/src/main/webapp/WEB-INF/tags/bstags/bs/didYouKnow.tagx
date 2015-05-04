@@ -4,6 +4,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.DidYouKnowMessageCommand" required="true"/>
@@ -11,14 +12,15 @@
 	<c:if test="${mtl:hasDidYouKnowMessage(command)}">
 		<div class="alert alert-${command.didYouKnowMessage.alertType}">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&amp;times;</button>
-			<h4>
-				<fmt:message key="didyouknow" />
-			</h4>
-			<p>
-				<fmt:message key="${command.didYouKnowMessage.messageKey}">
-					<fmt:param value="${properties['project.name']}" />
-				</fmt:message>
-			</p>
+			<sidebar:sidebarItem textKey="didyouknow">
+				<jsp:attribute name="content">
+					<p>
+						<fmt:message key="${command.didYouKnowMessage.messageKey}">
+							<fmt:param value="${properties['project.name']}" />
+						</fmt:message>
+					</p>
+				</jsp:attribute>
+			</sidebar:sidebarItem>
 		</div>
 	</c:if>
 

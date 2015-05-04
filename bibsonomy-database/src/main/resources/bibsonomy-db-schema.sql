@@ -1141,21 +1141,6 @@ CREATE TABLE `pendingUser` (
 SET character_set_client = @saved_cs_client;
 
 --
--- Table structure for table `picked_concepts`
---
-
-DROP TABLE IF EXISTS `picked_concepts`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `picked_concepts` (
-  `upper` varchar(255) character set utf8 collate utf8_bin NOT NULL default '',
-  `user_name` varchar(30) NOT NULL,
-  `date_of_create` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  PRIMARY KEY  (`user_name`,`upper`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-SET character_set_client = @saved_cs_client;
-
---
 -- Table structure for table `popular_tags`
 --
 
