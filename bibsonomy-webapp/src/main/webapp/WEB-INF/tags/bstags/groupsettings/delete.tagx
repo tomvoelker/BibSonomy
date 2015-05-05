@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root version="2.0"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:button="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.tag pageEncoding="UTF-8"/> 
+
+	<jsp:directive.attribute name="group" required="true" type="org.bibsonomy.model.Group"/>
+
+	<div id="selTab3" class="tab-pane ${(command.selTab eq 3) ? 'active' : ''}">
+		<c:set var="groupRole" value="${command.groupMembership.groupRole}" />
+		<c:set var="privlevel" value="${group.privlevel}" />
+		<c:set var="loginUser" value="${command.context.loginUser}" />
+		
+		<bsform:fieldset legendKey="settings.group.disband">
+			<jsp:attribute name="content">
+				<c:choose>
+					<c:when test="${groupRole eq 'ADMINISTRATOR'}">
+					
+						<c:forEach items="${group.memberships}" var="member">
+							<c:if test="${member.groupRole ne 'DUMMY'}">
+								<c:if test="${member.user.name ne user.name}">
+									<c:set var="groupHasMembers" value="${true}" />
+								</c:if>
+							</c:if>
+						</c:forEach>
+						
+						<fmt:message var="deletegroup" key="settings.group.delete" />
+						
+						<c:choose>
+							<c:when test="${groupHasMembers}">
+								
+								<bs:alert style="info">
+									<jsp:attribute name="alertBody">
+										<fmt:message key="settings.group.disband.notEmptyInfoText" />
+									</jsp:attribute>
+								</bs:alert>
+
+								<div class="form-group">
+									<bsform:button className="disabled" type="submit" style="danger" size="defaultSize" value="${deletegroup}" />
+								</div>
+
+							</c:when>
+							<c:otherwise>
+								
+								<bs:alert style="info">
+									<jsp:attribute name="alertBody">
+										<fmt:message key="settings.group.disband.InfoText" />
+									</jsp:attribute>
+								</bs:alert>
+								
+								<form:form cssClass="form-horizontal" id="postForm" method="post" action="/actions/deleteGroup">
+									<input type="hidden" name="groupname" value="${command.group.name}"/>
+									<!-- Are you sure? -->		
+									<fmt:message var="labelText" key="settings.really" />
+									<bsform:input path="delete" placeholder="no" labelColSpan="3" inputColSpan="9" noHelp="true" labelText="${labelText }" />
+									
+									<div class="form-group">
+										<div class="col-sm-offset-3 col-sm-9">
+											<p class="help-block">
+												<fmt:message key="settings.group.disband.yesToDeleteGroup">
+													<fmt:param>
+														<em>yes</em>
+													</fmt:param>
+												</fmt:message>
+											</p>
+											
+											<input type="hidden" name="ckey" value="${command.context.ckey}"/>
+											<input type="hidden" name="selTab" value="3"/>
+											<bsform:button type="submit" style="danger" size="defaultSize" value="${deletegroup}" />
+										</div>
+									</div>
+								</form:form>
+
+							</c:otherwise>	
+						</c:choose>
+		
+					</c:when>
+					<c:otherwise>
+						<!-- TODO: i18n -->
+						You are not a member of this group.
+					</c:otherwise>
+				</c:choose>
+			</jsp:attribute>
+		</bsform:fieldset>
+	</div>
+</jsp:root>
