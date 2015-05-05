@@ -1,8 +1,8 @@
 <tr id="\format[AntiScriptInjection]{\bibtexkey}" class="entry">
-	<td>\format[AuthorLastFirst,AuthorLastFirstAbbreviator,AuthorAndsCommaReplacer,HTMLChars,AntiScriptInjection]{\author}</td>
-	<td>\format[Replace(\n, ),HTMLChars,AntiScriptInjection]{\title}</td>
+	<td>\format[AuthorLastFirst,AuthorLastFirstAbbreviator,AuthorAndsCommaReplacer,HTMLCharsAntiScript]{\author}</td>
+	<td>\format[Replace(\n, ),HTMLCharsAntiScript]{\title}</td>
 	<td>\format[AntiScriptInjection]{\year}</td>
-	<td>\format[HTMLChars,AntiScriptInjection]{\journal}\format[HTMLChars,AntiScriptInjection]{\booktitle}\begin{school}<i>School</i>: \format[HTMLChars,AntiScriptInjection]{\school}\end{school} \begin{editor} \format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\editor} <i>(ed.)</i><br/>\end{editor} &nbsp;</td>
+	<td>\format[HTMLCharsAntiScript]{\journal}\format[HTMLCharsAntiScript]{\booktitle}\begin{school}<i>School</i>: \format[HTMLCharsAntiScript]{\school}\end{school} \begin{editor} \format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLCharsAntiScript]{\editor} <i>(ed.)</i><br/>\end{editor} &nbsp;</td>
 	<td>\format[AntiScriptInjection,ToLowerCase]{\bibtextype}</td>
 	<td>\begin{doi}<a href="\format[DOICheck,AntiScriptInjection]{\doi}">DOI</a>\end{doi}\begin{url}<a href="\format[AntiScriptInjection]{\url}">URL</a>\end{url} &nbsp;</td>
 </tr>

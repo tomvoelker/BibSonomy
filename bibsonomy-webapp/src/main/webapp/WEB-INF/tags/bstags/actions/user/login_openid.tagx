@@ -28,7 +28,7 @@
 		</ul>
 
 		<div class="openIDmanual" style="display: none;">
-			<form class="form-horizontal" action="/login_openid" id="openIDForm">
+			<form class="form-horizontal" action="/login_openid" id="openIDForm" method="POST">
 				<input type="hidden" name="selTab" value="${selectedTab}"></input>
 				<div class="form-group">
 					<label class="control-label col-sm-3">

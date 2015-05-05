@@ -834,6 +834,31 @@
 		<to last="true">/history</to>
 	</rule>
 	 
+	 
+<!-- ############## search pages ############### -->
+
+	<!--+ 
+	    | KEEP ME
+	    | FIXME: The following 2 rules for search are currently disabled.
+	    | They are related to trouble with particular characters in search queries.
+	    | However to enable restricting search queries using tags they should in fact be used after such troubles have been fixed.
+	    | Related to issue #2439
+	    	    
+	<rule>
+		<name>/search/SEARCH/TAG</name>
+		<from>^/+search/+([^/]+?)/(.+)$</from>
+		<set type="parameter" name="requestedSearch">$1</set>
+		<set type="parameter" name="requestedTags">$2</set>		
+		<to last="true">/search</to>
+	</rule>
+	<rule>
+		<name>/search/SEARCH</name>
+		<from>^/+search/+([^/]+)$</from>
+		<set type="parameter" name="requestedSearch">$1</set>
+		<to last="true">/search</to>
+	</rule>
+	KEEP ME -->
+
 	<rule>
 		<name>/search/SEARCH</name>
 		<from>^/+search/(.+)$</from>
@@ -990,6 +1015,13 @@
 		<name>/BibTeXHashExample.jsp</name>
 		<from>^/BibTeXHashExample.jsp</from>
 		<to type="redirect" last="true">/hashExample</to>
+	</rule>
+	
+	<!-- old msoffice urls -->
+	<rule>
+		<name>/msofficexml</name>
+		<from>^/+msofficexml/(.*)$</from>
+		<to type="redirect" last="true">/layout/msofficexml/$1</to>
 	</rule>
 	
 	<!-- TODO: (Bootstrap) remove after updating the link in the blog -->

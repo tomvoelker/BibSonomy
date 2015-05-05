@@ -1,31 +1,31 @@
 <tr id="\format[AntiScriptInjection]{\bibtexkey}" class="entry">
-	<td>\format[AuthorLastFirst,AuthorLastFirstAbbreviator,AuthorAndsCommaReplacer,NoSpaceBetweenAbbreviations,HTMLChars,AntiScriptInjection]{\author}</td>
-	<td>\format[Replace(\n, ),HTMLChars,AntiScriptInjection]{\title} <p class="infolinks">\begin{abstract}[<a href="javascript:toggleInfo('\format[AntiScriptInjection]{\bibtexkey}','abstract')">Abstract</a>] \end{abstract}\begin{review}[<a href="javascript:toggleInfo('\format[AntiScriptInjection]{\bibtexkey}','review')">Review</a>] \end{review}[<a href="javascript:toggleInfo('\format[AntiScriptInjection]{\bibtexkey}','bibtex')">BibTeX</a>]</p></td>
+	<td>\format[AuthorLastFirst,AuthorLastFirstAbbreviator,AuthorAndsCommaReplacer,NoSpaceBetweenAbbreviations,HTMLCharsAntiScript]{\author}</td>
+	<td>\format[Replace(\n, ),HTMLCharsAntiScript]{\title} <p class="infolinks">\begin{abstract}[<a href="javascript:toggleInfo('\format[AntiScriptInjection]{\bibtexkey}','abstract')">Abstract</a>] \end{abstract}\begin{review}[<a href="javascript:toggleInfo('\format[AntiScriptInjection]{\bibtexkey}','review')">Review</a>] \end{review}[<a href="javascript:toggleInfo('\format[AntiScriptInjection]{\bibtexkey}','bibtex')">BibTeX</a>]</p></td>
 	<td>\format[AntiScriptInjection]{\year}</td>
 </tr>\begin{abstract}
 <tr id="abs_\format[AntiScriptInjection]{\bibtexkey}" class="abstract noshow">
-	<td colspan="6"><b>Abstract</b>: \format[HTMLChars,AntiScriptInjection]{\abstract}</td>
+	<td colspan="6"><b>Abstract</b>: \format[HTMLCharsAntiScript]{\abstract}</td>
 </tr>\end{abstract}\begin{review}
 <tr id="rev_\format[AntiScriptInjection]{\bibtexkey}" class="review noshow">
-	<td colspan="6"><b>Review</b>: \format[HTMLChars,AntiScriptInjection]{\review}</td>
+	<td colspan="6"><b>Review</b>: \format[HTMLCharsAntiScript]{\review}</td>
 </tr>\end{review}
 <tr id="bib_\format[AntiScriptInjection]{\bibtexkey}" class="bibtex noshow">
 <td colspan="6"><b>BibTeX</b>:
 <pre>
 @\format[ToLowerCase,AntiScriptInjection]{\bibtextype}{\format[AntiScriptInjection]{\bibtexkey},\begin{author}
-  author = {\format[HTMLChars,AntiScriptInjection]{\author}}\end{author}\begin{title},
-  title = {\format[HTMLChars,AntiScriptInjection]{\title}}\end{title}\begin{booktitle},
-  booktitle = {\format[HTMLChars,AntiScriptInjection]{\booktitle}}\end{booktitle}\begin{journal},
-  journal = {\format[HTMLChars,AntiScriptInjection]{\journal}}\end{journal}\begin{publisher},
-  publisher = {\format[HTMLChars,AntiScriptInjection]{\publisher}}\end{publisher}\begin{school},
-  school = {\format[HTMLChars,AntiScriptInjection]{\school}}\end{school}\begin{year},
-  year = {\format[HTMLChars,AntiScriptInjection]{\year}}\end{year}\begin{volume},
-  volume = {\format[HTMLChars,AntiScriptInjection]{\volume}}\end{volume}\begin{number},
-  number = {\format[HTMLChars,AntiScriptInjection]{\number}}\end{number}\begin{pages},
-  pages = {\format[HTMLChars,AntiScriptInjection]{\pages}}\end{pages}\begin{edition},
-  edition = {\format[HTMLChars,AntiScriptInjection]{\edition}}\end{edition}\begin{note},
-  note = {\format[HTMLChars,AntiScriptInjection]{\note}}\end{note}\begin{url},
-  url = {\format[HTMLChars,AntiScriptInjection]{\url}}\end{url}\begin{doi},
+  author = {\format[HTMLCharsAntiScript]{\author}}\end{author}\begin{title},
+  title = {\format[HTMLCharsAntiScript]{\title}}\end{title}\begin{booktitle},
+  booktitle = {\format[HTMLCharsAntiScript]{\booktitle}}\end{booktitle}\begin{journal},
+  journal = {\format[HTMLCharsAntiScript]{\journal}}\end{journal}\begin{publisher},
+  publisher = {\format[HTMLCharsAntiScript]{\publisher}}\end{publisher}\begin{school},
+  school = {\format[HTMLCharsAntiScript]{\school}}\end{school}\begin{year},
+  year = {\format[HTMLCharsAntiScript]{\year}}\end{year}\begin{volume},
+  volume = {\format[HTMLCharsAntiScript]{\volume}}\end{volume}\begin{number},
+  number = {\format[HTMLCharsAntiScript]{\number}}\end{number}\begin{pages},
+  pages = {\format[HTMLCharsAntiScript]{\pages}}\end{pages}\begin{edition},
+  edition = {\format[HTMLCharsAntiScript]{\edition}}\end{edition}\begin{note},
+  note = {\format[HTMLCharsAntiScript]{\note}}\end{note}\begin{url},
+  url = {\format[HTMLCharsAntiScript]{\url}}\end{url}\begin{doi},
   doi = {\format[DOICheck,AntiScriptInjection]{\doi}}\end{doi}
 }
 </pre></td>

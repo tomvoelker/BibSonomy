@@ -10,13 +10,13 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<c:set var="requestedAuthorEncoded" value="${mtl:encodeURI(command.requestedAuthor)}" />
 	<fmt:message key="navi.author" var="authorPageTitle" />
-	<fmt:message var="headline" key="page.author.headline" />
 	<c:set var="pageTitle" value="${authorPageTitle} :: ${command.requestedAuthor}" />
 	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" requPath="${requPath}" disableResourcetypeSelection="${true}" minimizedContentWidth="${true}" headline="${pageTitle}">
 		
@@ -40,12 +40,8 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-			<ul>
-				<li>
-					<h4 class="tagcloud-headline sidebar-headline sidebar"><fmt:message key="tags"/></h4>
-					<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-				</li>
-			</ul>
+			<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 		</jsp:attribute>
+
 	</layout:resourceLayout>
 </jsp:root>

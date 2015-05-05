@@ -46,6 +46,8 @@ import com.ibatis.sqlmap.engine.impl.SqlMapExecutorDelegate;
 import com.ibatis.sqlmap.engine.impl.SqlMapSessionImpl;
 import com.ibatis.sqlmap.engine.mapping.result.ResultMap;
 import com.ibatis.sqlmap.engine.mapping.result.ResultMapping;
+import com.ibatis.sqlmap.engine.type.CustomTypeHandler;
+import com.ibatis.sqlmap.engine.type.TypeHandler;
 
 /**
  * 
@@ -57,6 +59,7 @@ public class AbstractDatabaseSchemaInformation implements DatabaseSchemaInformat
 	protected static final String COLUMN_SIZE = "COLUMN_SIZE";
 
 	private final Map<Class<?>, Map<String, Integer>> fieldLength = new HashMap<Class<?>, Map<String, Integer>>();
+	private final Map<Class<?>, Map<String, CustomTypeHandler>> typeHandlers = new HashMap<Class<?>, Map<String, CustomTypeHandler>>();
 
 	/**
 	 * returns meta informations of the database
@@ -79,8 +82,7 @@ public class AbstractDatabaseSchemaInformation implements DatabaseSchemaInformat
 		try {
 			connection = dataSource.getConnection();
 			final DatabaseMetaData metaData = connection.getMetaData();
-			final ResultSet columns = metaData.getColumns(null, null,
-					tableNamePattern, columnNamePattern);
+			final ResultSet columns = metaData.getColumns(null, null, tableNamePattern, columnNamePattern);
 			while (columns.next()) {
 				return (R) columns.getObject(columnLabel);
 			}
@@ -99,29 +101,69 @@ public class AbstractDatabaseSchemaInformation implements DatabaseSchemaInformat
 		return null;
 	}
 
-	protected void insertMaxFieldLengths(final String mappingId, final String tableName, final SqlMapSession sqlMap) {
+	protected void insertMaxFieldLengthsAndTypeHandlers(final String mappingId, final String tableName, final SqlMapSession sqlMap) {
 		final Map<String, Integer> maxLength = new HashMap<String, Integer>();
-
+		final Map<String, CustomTypeHandler> classTypeHandlers = new HashMap<String, CustomTypeHandler>();
 		if (sqlMap instanceof SqlMapSessionImpl) {
 			final SqlMapSessionImpl impl = (SqlMapSessionImpl) sqlMap;
 			final SqlMapExecutorDelegate delegate = impl.getDelegate();
 			final ResultMap resultMap = delegate.getResultMap(mappingId);
 			final ResultMapping[] resultMappings = resultMap.getResultMappings();
-
+			
 			final Class<?> resultClass = resultMap.getResultClass();
 
 			for (final ResultMapping mapping : resultMappings) {
 				final String propertyName = mapping.getPropertyName();
 				final String columnName = mapping.getColumnName();
+				final TypeHandler typeHandler = mapping.getTypeHandler();
+				if (typeHandler instanceof CustomTypeHandler) {
+					CustomTypeHandler customTypeHandler = (CustomTypeHandler) typeHandler;
+					classTypeHandlers.put(propertyName, customTypeHandler);
+				}
 
 				final Integer columnMax = getSchemaInformation(Integer.class, tableName, columnName, COLUMN_SIZE, sqlMap);
 				maxLength.put(propertyName, columnMax);
 			}
 
 			this.fieldLength.put(resultClass, maxLength);
+			this.typeHandlers.put(resultClass, classTypeHandlers);
 		} else {
 			log.warn("SqlMapSession isn't an instance of SqlMapSessionImpl. Can't get iBatis Mapping.");
 		}
+	}
+	
+	
+	@Override
+	public <T> T callTypeHandler(final Class<?> resourceClass, final String property, final Object type, final Class<T> requiredClass) {
+		final Map<String, CustomTypeHandler> typehandlersForClass = this.typeHandlers.get(resourceClass);
+		if (typehandlersForClass == null) {
+			return null;
+		}
+		
+		final CustomTypeHandler typeHandlerForProperty = typehandlersForClass.get(property);
+		if (typeHandlerForProperty != null) {
+			final DummyPreparedStatement ps = new DummyPreparedStatement();
+			try {
+				final int index = 0;
+				typeHandlerForProperty.setParameter(ps, 0, type, "");
+				final Object object = ps.getParameters().get(Integer.valueOf(index));
+				if (requiredClass.isInstance(object)) {
+					@SuppressWarnings("unchecked") // ok, we check it
+					final T returnValue = (T) object;
+					return returnValue;
+				}
+			} catch (SQLException e) {
+				log.error("error calling type handler", e);
+			} finally {
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					log.error("this will never ever happen", e);
+				}
+			}
+		}
+		
+		return null;
 	}
 
 	@Override

@@ -14,7 +14,7 @@
 	<jsp:directive.attribute name="selectedTab" type="java.lang.Integer" required="true"/>
 	
 	
-	<form action="/login_openid">
+	<form action="/login_openid" method="POST">
 		<input type="hidden" name="openID" id="openID" value="${url}"/>
 		<input type="hidden" name="selTab" value="${selectedTab}"></input>
 		<!-- TODO: think about it -->

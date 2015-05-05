@@ -10,6 +10,7 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:posts="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
 	xmlns:home="urn:jsptagdir:/WEB-INF/tags/bstags/home"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -22,6 +23,7 @@
 			showPageOptions="${true}"
 			headline="${command.pageTitle}"
 			hideFooterContainer="${true}">
+		
 		<jsp:attribute name="headerExt">
 			<c:if test="${properties['project.theme'] eq 'puma'}">
 				<script type="text/javascript" src="/resources_puma/javascript/tools.js">&#160;</script>
@@ -79,12 +81,8 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-			<ul>
-				<li>
-					<h4 class="sidebar tagcloud-headline"><fmt:message key="busytags"/></h4>
-					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" tagSizeMode="home"/>
-				</li>
-			</ul>
+			<sidebar:sidebarTagCloudItem textKey="busytags" requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" tagSizeMode="home"/>
 		</jsp:attribute>
+
 	</layout:resourceLayout>
 </jsp:root>

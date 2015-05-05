@@ -50,7 +50,7 @@ public class GroupingCommandUtilsTest {
 	private static final String GROUP_NAME_1 = "testgroup1";
 	private static final String GROUP_NAME_2 = "testgroup2";
 	
-	private static final Group PUBLIC_GROUP = GroupUtils.getPublicGroup();
+	private static final Group PUBLIC_GROUP = GroupUtils.buildPublicGroup();
 	private static final Group PRIVATE_GROUP = GroupUtils.buildPrivateGroup();
 	
 	/**
