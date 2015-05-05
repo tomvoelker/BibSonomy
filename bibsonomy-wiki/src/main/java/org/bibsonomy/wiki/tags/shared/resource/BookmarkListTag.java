@@ -84,8 +84,6 @@ public class BookmarkListTag extends SharedTag {
  		
  		// TODO: Remove duplicates, if rendered for group
  		List<Post<Bookmark>> posts = this.logic.getPosts(Bookmark.class, this.getGroupingEntity(), this.getRequestedName(), Arrays.asList(tags.split(" ")), null, null,SearchType.LOCAL, null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
-		
- 		System.out.println("s "+posts.size());
  		
 		if (tagAttributes.get(LIMIT) != null) {
 			try {

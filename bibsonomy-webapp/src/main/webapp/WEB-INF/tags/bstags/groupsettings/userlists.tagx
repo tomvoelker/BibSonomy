@@ -132,9 +132,23 @@
 									<fmt:message var="deluser" key="settings.group.delUser.button"/>
 									<fmt:message var="deluserTitle" key="settings.group.delUser.button.title"/>
 									
-									<!-- show group member list -->
-									<!-- TODO: Adapt this to maybe forms? The page will be reloaded, no matter what. -->
-									<table class="table table-striped table-condensed">
+
+
+									<table class="table table-striped table-condensed" data-classes="table-no-bordered" data-toggle="table" data-sort-name="name" data-sort-order="desc">
+										<thead>
+											<tr>
+												<th><c:out value=" " /></th>
+												<th data-field="name" data-sortable="true"><fmt:message key="navi.username" /></th>
+												<th data-field="role" data-sortable="true"><fmt:message key="groups.role.admin" /></th>
+												<th data-field="joinDate" data-sortable="true"><fmt:message key="group.join" /></th>
+												<c:if test="${groupRole eq 'ADMINISTRATOR' or groupRole eq 'MODERATOR'}">
+													<th><c:out value=" " /></th>
+												</c:if>
+												<c:if test="${groupRole eq 'ADMINISTRATOR'}">
+													<th><c:out value=" " /></th>
+												</c:if>
+											</tr>
+										</thead>
 										<c:forEach items="${group.memberships}" var="member">
 											<c:if test="${member.groupRole ne 'DUMMY'}">
 												<tr>
@@ -144,8 +158,39 @@
 													
 													<td class="col-md-1"><user:thumbnail user="${member.user}" size="16" noname="${true}" /></td>
 													<td class="col-md-3"><user:username user="${member.user}" /></td>
+						
+													<!-- GroupRole -->
+													<c:choose>
+														<c:when test="${groupRole eq 'ADMINISTRATOR' or groupRole eq 'MODERATOR'}">
+															<c:set var="col_class" value="col-md-2" />
+														</c:when>
+														<c:otherwise>
+															<c:set var="col_class" value="col-md-4" />
+														</c:otherwise>
+													</c:choose>
+													
+													<td class="${fn:escapeXml(col_class)}">
+														<c:choose>
+															<c:when test="${isAdmin}">
+																<fmt:message key="groups.role.admin" />
+															</c:when>
+															<c:when test="${isModerator}">
+																<fmt:message key="groups.role.moderator" />
+															</c:when>
+															<c:otherwise>
+																<fmt:message key="groups.role.user" />
+															</c:otherwise>
+														</c:choose>
+													</td>
+													
+													<!-- JoinDate -->
+													<td class="col-md-2" style="text-align: right">
+														<fmt:formatDate value="${member.joinDate}" pattern="yyyy-MM-dd" />
+													</td>
+													
+													
 													<c:if test="${groupRole eq 'ADMINISTRATOR' or groupRole eq 'MODERATOR'}">
-														<td class="col-md-6">
+														<td class="col-md-4">
 															<c:choose>
 																<c:when test="${isAdmin}">
 																	<span class="label label-primary uppercase"><fmt:message key="groups.role.admin" /></span>
@@ -189,28 +234,28 @@
 															</c:choose>
 														</td>
 													</c:if>
-													<td class="col-md-2" style="text-align: right">
-														<!-- TODO: Discuss! This is currently the way it works in the logic.
-															 Maybe add possibility that Mods can remove users:
-															 groupRole eq 'MODERATOR' and isUser
-														-->
-														<c:choose>
-															<c:when test="${groupRole eq 'ADMINISTRATOR'}">
-																<a href="/updateGroup?operation=remove_member&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${deluserTitle}"><span class="fa fa-times"><!-- Keep me --></span><!-- keep me --></a>
-															</c:when>
-															<c:otherwise>
-																<c:out value=" " />
-															</c:otherwise>
-														</c:choose>
-															
-													</td>
-													<c:if test="${groupRole eq 'USER'}">
-														<td class="col-md-8"><c:out value=" " /></td>
+													
+													<c:if test="${groupRole eq 'ADMINISTRATOR'}">
+														<td class="col-md-1" style="text-align: right">
+															<!-- TODO: Discuss! This is currently the way it works in the logic.
+																 Maybe add possibility that Mods can remove users:
+																 groupRole eq 'MODERATOR' and isUser
+															-->
+															<a href="/updateGroup?operation=remove_member&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${deluserTitle}"><span class="fa fa-times"><!-- Keep me --></span><!-- keep me --></a>
+														</td>
 													</c:if>
+																
 												</tr>
 											</c:if>
 										</c:forEach>
 									</table>
+									
+									
+									
+									
+									
+									
+									
 								</c:when>
 								<c:otherwise>
 									<!-- TODO: must be i18nized. -->

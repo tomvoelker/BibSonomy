@@ -4,7 +4,7 @@
 <sqlMap namespace="Group">
 	<!-- TODO: do we need the memberships here? -->
 	<select id="getAllGroups" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="groupParam">
-		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date 
 		FROM
 			(SELECT * from groupids
 				WHERE `group` > 2
@@ -31,7 +31,7 @@
 	</select>
 
 	<select id="getGroupWithMemberships" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date
 		FROM groupids i 
 		<!-- LEFT JOIN is necessary because groups are empty at the point of creation. -->
 		  LEFT JOIN group_memberships g USING (`group`) 
@@ -51,7 +51,7 @@
 	
 	<!-- TODO: merge with getGroupWithMembership using a dynamic query -->
 	<select id="getGroupWithMembershipsAndPermissions" resultMap="GroupCommon.groupWithMembershipsAndReportingsAndPermissions" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription,  <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, p.permission
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription,  <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date, p.permission
 		FROM groupids i 
 		<!-- LEFT JOIN is necessary because groups are empty at the point of creation. -->
 		  LEFT JOIN group_memberships g USING (`group`) 
@@ -68,7 +68,7 @@
 	</select>
 
 	<select id="getGroupsForUser" resultMap="GroupCommon.groupWithMembershipsAndReportingsAndPermissions" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.user_shared_documents, g.group_role, p.permission
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="reportingColumns" />, u.user_realname, u.user_homepage, g.user_name, g.user_shared_documents, g.group_role, g.start_date, p.permission
 		 FROM groupids i
 		   LEFT JOIN group_memberships g USING (`group`)
 		   LEFT JOIN user u ON (u.user_name = i.group_name)
@@ -197,7 +197,7 @@
 	</select>
 	
 	<select id="getGroupMembershipForUserInGroup" resultMap="GroupCommon.groupMembership" parameterClass="groupParam">
-		SELECT ms.group_role, ms.user_name, u.user_realname, u.user_homepage, ms.user_shared_documents
+		SELECT ms.group_role, ms.user_name, u.user_realname, u.user_homepage, ms.user_shared_documents, ms.start_date 
 		FROM group_memberships ms
 		  JOIN user u ON (u.user_name = ms.user_name)
 		WHERE ms.user_name = #userName# AND ms.`group` = #groupId#;
@@ -205,7 +205,7 @@
 	
 	<!-- PENDING MEMBERSHIPS -->
 	<select id="getPendingMembershipForUserInGroup" resultMap="GroupCommon.groupMembership" parameterClass="groupParam">
-		SELECT ms.group_role, ms.user_name, ms.user_shared_documents
+		SELECT ms.group_role, ms.user_name, ms.user_shared_documents, ms.start_date 
 		FROM pending_group_memberships ms
 		  JOIN groupids g USING (`group`)
 		WHERE ms.user_name = #userName# AND g.group_name = #requestedGroupName#;
@@ -222,7 +222,7 @@
 	</delete>
 	
 	<select id="getPendingMembershipsForGroup" resultMap="GroupCommon.groupWithMemberships" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, u.user_realname, u.user_homepage, g.user_name, g.group_role, g.user_shared_documents, g.start_date 
 		FROM groupids i 
 		  JOIN pending_group_memberships g USING (`group`) 
 		  LEFT JOIN user u ON (u.user_name = i.group_name) 
@@ -231,7 +231,7 @@
 	</select>
 	
 	<select id="getPendingMembershipsForUser" resultMap="GroupCommon.groupWithMemberships" parameterClass="string">
-		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, u.user_realname, u.user_homepage, g.user_name, g.user_shared_documents, g.group_role
+		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, u.user_realname, u.user_homepage, g.user_name, g.user_shared_documents, g.group_role, g.start_date
 		 FROM groupids i
 		   LEFT JOIN pending_group_memberships g USING (`group`)
 		   LEFT JOIN user u ON (u.user_name = i.group_name)
