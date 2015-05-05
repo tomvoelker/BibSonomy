@@ -299,7 +299,11 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 		// retrieve posts		
 		log.debug("getPosts " + resourceType + " " + searchType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
 		final int start = listCommand.getStart();
-		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search, searchType, Sets.<Filter>asSet(filter), order, startDate, endDate, start, start + itemsPerPage));
+		final Set<Filter> filters = new HashSet<Filter>();
+		if (present(filter)) {
+			filters.add(filter);
+		}
+		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search, searchType, filters, order, startDate, endDate, start, start + itemsPerPage));
 		// list settings
 		listCommand.setEntriesPerPage(itemsPerPage);
 	}
