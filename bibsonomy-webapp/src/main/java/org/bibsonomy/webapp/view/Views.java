@@ -363,10 +363,9 @@ public enum Views implements View {
 	 * manage synchronization settings
 	 */
 	ADMIN_SYNC("actions/admin/sync"),
-	/**
-	 * general admin page
-	 */
-	ADMIN("actions/admin/index"),
+	
+	/** statistics about the system */
+	ADMIN_STATISTICS("admin/statistics"),
 
 	/* *****************************************************
 	 * action views

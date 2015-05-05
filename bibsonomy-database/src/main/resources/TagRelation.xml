@@ -119,6 +119,14 @@
 			AND upper = #upperTagName# 
 	</select>
 	
+	<select id="getGlobalConceptCount" resultClass="int">
+		SELECT COUNT(*) from tagtagrelations;
+	</select>
+	
+	<select id="getGlobalConceptHistoryCount" resultClass="int">
+		SELECT COUNT(*) from log_tagtagrelations;
+	</select>
+	
 	<update id="updateUpperTagRelations" parameterClass="loggingParam">
 		UPDATE IGNORE tagtagrelations t 
 		  SET t.upper = #newId#, t.upper_lcase = LCASE(#newId#)

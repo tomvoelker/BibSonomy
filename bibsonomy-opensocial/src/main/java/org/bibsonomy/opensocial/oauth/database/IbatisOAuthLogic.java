@@ -28,7 +28,6 @@ package org.bibsonomy.opensocial.oauth.database;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.Reader;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
@@ -55,9 +54,7 @@ import org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenIndex;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenInfo;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
 
-import com.ibatis.common.resources.Resources;
 import com.ibatis.sqlmap.client.SqlMapClient;
-import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 
 /**
  * TODO: use {@link AbstractDatabaseManager}
@@ -66,69 +63,40 @@ import com.ibatis.sqlmap.client.SqlMapClientBuilder;
  */
 public class IbatisOAuthLogic implements OAuthLogic {
 	private static final Log log = LogFactory.getLog(IbatisOAuthLogic.class);
-
-	//------------------------------------------------------------------------
-	// database logic interface
-	//------------------------------------------------------------------------
-	/**
-	 * Initialize iBatis layer.
-	 */
-	private final SqlMapClient sqlMap;
+	
+	/** Initialize iBatis layer. */
+	private SqlMapClient sqlMap;
 
 	private String defaultCallbackUrl;
-
-	private static OAuthLogic instance = null;
-
-	private IbatisOAuthLogic() {
-		try {
-			// initialize database client
-			String resource = "SqlMapConfig_OpenSocial.xml";
-			Reader reader = Resources.getResourceAsReader (resource);
-			sqlMap = SqlMapClientBuilder.buildSqlMapClient(reader);
-			log.info("OpenSocial database connection initialized.");
-
-		} catch (Exception e) {
-			throw new RuntimeException ("Error initializing DBAccess class. Cause: " + e);
-		}
-	}
-
-	/**
-	 * @return An instance of this implementation of {@link OAuthLogic}
-	 */
-	public static OAuthLogic getInstance() {
-		if (instance == null) instance = new IbatisOAuthLogic();
-		return instance;
-	}
-
-	//------------------------------------------------------------------------
-	// IOAuthLogic interface
-	//------------------------------------------------------------------------
+	
+	@Override
 	public void createAuthentication(String gadgetUrl, String server, String consumerKey, String consumerSecret, KeyType keyType) {
 		// TODO Auto-generated method stub
 		throw new RuntimeException("METHOD NOT IMPLEMENTED");
 	}
 
+	@Override
 	public ConsumerInfo readAuthentication(SecurityToken securityToken, String serviceName, OAuthServiceProvider provider) throws OAuthRequestException {
 		OAuthConsumerInfo consumerParam = makeConsumerInfo(securityToken, serviceName);
 		OAuthConsumerInfo consumerInfo = null;
 		try {
-			consumerInfo = (OAuthConsumerInfo)this.sqlMap.queryForObject("getAuthentication", consumerParam);
+			consumerInfo = (OAuthConsumerInfo) this.sqlMap.queryForObject("getAuthentication", consumerParam);
 		} catch (SQLException e) {
 			log.error("No consumer information found for '"+securityToken.getActiveUrl()+"' on '"+serviceName+"'");
 		}
-	    if (!present(consumerInfo)) {
-	    	throw new OAuthRequestException(OAuthError.INVALID_PARAMETER, "No key for gadget " + securityToken.getAppUrl() + " and service " + serviceName);
-	    }
-		//String key, String secret, KeyType type, String name,String callbackUrl
-		BasicOAuthStoreConsumerKeyAndSecret cks = 
-			new BasicOAuthStoreConsumerKeyAndSecret(
+		
+		if (!present(consumerInfo)) {
+			throw new OAuthRequestException(OAuthError.INVALID_PARAMETER, "No key for gadget " + securityToken.getAppUrl() + " and service " + serviceName);
+		}
+		
+		final BasicOAuthStoreConsumerKeyAndSecret cks = new BasicOAuthStoreConsumerKeyAndSecret(
 					consumerInfo.getConsumerKey(),
 					consumerInfo.getConsumerSecret(),
 					consumerInfo.getKeyType(), 
 					consumerInfo.getKeyName(), 
 					consumerInfo.getCallbackUrl()
 			);
-		OAuthConsumer consumer = null;
+		final OAuthConsumer consumer;
 		if (cks.getKeyType() == KeyType.RSA_PRIVATE) {
 			consumer = new OAuthConsumer(null, cks.getConsumerKey(), null, provider);
 			// The oauth.net java code has lots of magic.  By setting this property here, code thousands
@@ -140,12 +108,13 @@ public class IbatisOAuthLogic implements OAuthLogic {
 			consumer = new OAuthConsumer(null, cks.getConsumerKey(), cks.getConsumerSecret(), provider);
 			consumer.setProperty(OAuth.OAUTH_SIGNATURE_METHOD, OAuth.HMAC_SHA1);
 		}
-		String callback = (cks.getCallbackUrl() != null ? cks.getCallbackUrl() : this.defaultCallbackUrl);
+		final String callback = (cks.getCallbackUrl() != null ? cks.getCallbackUrl() : this.defaultCallbackUrl);
 		return new ConsumerInfo(consumer, cks.getKeyName(), callback);
 	}
 
+	@Override
 	public TokenInfo createToken(SecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName, String tokenName, TokenInfo tokenInfo) {
-		OAuthTokenIndex tokenIndex = makeTokenIndex(securityToken, serviceName);
+		final OAuthTokenIndex tokenIndex = makeTokenIndex(securityToken, serviceName);
 		tokenIndex.setTokenSecret(tokenInfo.getTokenSecret());
 		tokenIndex.setTokenExpireMillis(tokenInfo.getTokenExpireMillis());
 		tokenIndex.setAccessToken(tokenInfo.getAccessToken());
@@ -160,8 +129,9 @@ public class IbatisOAuthLogic implements OAuthLogic {
 		return tokenInfo;
 	}
 
+	@Override
 	public void deleteToken(SecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName, String tokenName) {
-		OAuthTokenIndex tokenIndex = makeTokenIndex(securityToken, serviceName);
+		final OAuthTokenIndex tokenIndex = makeTokenIndex(securityToken, serviceName);
 		
 		try {
 			this.sqlMap.delete("removeToken", tokenIndex);
@@ -170,37 +140,34 @@ public class IbatisOAuthLogic implements OAuthLogic {
 		}
 	}
 
+	@Override
 	public TokenInfo readToken(SecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName, String tokenName) {
-		OAuthTokenIndex tokenIndex = makeTokenIndex(securityToken, serviceName);
+		final OAuthTokenIndex tokenIndex = makeTokenIndex(securityToken, serviceName);
 		
-		OAuthTokenInfo tokenInfo = null;
 		try {
-			tokenInfo = (OAuthTokenInfo)this.sqlMap.queryForObject("getToken", tokenIndex);
+			final OAuthTokenInfo tokenInfo = (OAuthTokenInfo) this.sqlMap.queryForObject("getToken", tokenIndex);
+			// we have to construct the temporary parameter object as the TokenInfo class has no default constructor
+			// FIXME: Ibatis supports pre-initialized parameter objects
+			if (present(tokenInfo)) {
+				return new TokenInfo(tokenInfo.getAccessToken(), tokenInfo.getTokenSecret(), tokenInfo.getSessionHandle(), tokenInfo.getTokenExpireMillis());
+			}
 		} catch (SQLException e) {
 			log.error("Error fetching token for viewer '"+tokenIndex.getUserId()+"' on gadget '"+tokenIndex.getGadgetUri()+"'", e);
 		}
 		
-		// we have to construct the temporary parameter object as the TokenInfo class has no default constructor
-		// FIXME: Ibatis supports pre-initialized parameter objects
-		TokenInfo retVal = null;
-		if (present(tokenInfo)) {
-			retVal = new TokenInfo(tokenInfo.getAccessToken(), tokenInfo.getTokenSecret(), tokenInfo.getSessionHandle(), tokenInfo.getTokenExpireMillis());
-		}
-		return retVal;
+		return null;
 	}
 
-	private OAuthTokenIndex makeTokenIndex(SecurityToken securityToken,
-			String serviceName) {
-		OAuthTokenIndex tokenIndex = new OAuthTokenIndex();
+	private static OAuthTokenIndex makeTokenIndex(SecurityToken securityToken, String serviceName) {
+		final OAuthTokenIndex tokenIndex = new OAuthTokenIndex();
 		tokenIndex.setGadgetUri(securityToken.getAppUrl());
 		tokenIndex.setServiceName(serviceName);
 		tokenIndex.setModuleId(securityToken.getModuleId());
 		tokenIndex.setUserId(securityToken.getViewerId());
 		return tokenIndex;
 	}
-	//------------------------------------------------------------------------
-	// OAuthDataStore interface
-	//------------------------------------------------------------------------
+	
+	@Override
 	public void createProviderToken(OAuthEntry entry) {
 		try {
 			this.sqlMap.insert("setProviderToken", entry);
@@ -209,6 +176,7 @@ public class IbatisOAuthLogic implements OAuthLogic {
 		}
 	}
 
+	@Override
 	public void createConsumer(OAuthConsumerInfo consumerInfo) {
 		try {
 			// if the key name is given, RSA is used for request signing
@@ -225,56 +193,58 @@ public class IbatisOAuthLogic implements OAuthLogic {
 		}
 	}
 	
+	@Override
 	public OAuthConsumerInfo readConsumer(String consumerKey) {
-		OAuthConsumerInfo consumerInfo = null;
 		try {
-			consumerInfo = (OAuthConsumerInfo )this.sqlMap.queryForObject("getConsumerInfo", consumerKey);
+			return (OAuthConsumerInfo ) this.sqlMap.queryForObject("getConsumerInfo", consumerKey);
 		} catch (SQLException e) {
-			log.error("Error fetching consumer info for consumer key '"+consumerKey+"'", e);
+			log.error("Error fetching consumer info for consumer key '" + consumerKey + "'", e);
 		}
 		
-		return consumerInfo;
+		return null;
 	}
 	
+	@Override
 	public void deleteConsumer(String consumerKey) {
 		try {
 			this.sqlMap.delete("removeConsumerInfo", consumerKey);
 		} catch (SQLException e) {
-			log.error("Error removing consumerInfo for consumerKey '"+ consumerKey +"'", e);
+			log.error("Error removing consumerInfo for consumerKey '" + consumerKey + "'", e);
 		}
 	}
 	
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<OAuthConsumerInfo> listConsumers() {
-		List<OAuthConsumerInfo> consumerInfo = null;
 		try {
-			consumerInfo = (List<OAuthConsumerInfo>)this.sqlMap.queryForList("listConsumerInfo");
+			return this.sqlMap.queryForList("listConsumerInfo");
 		} catch (SQLException e) {
 			log.error("Error listing consumer info", e);
 		}
 		
-		return consumerInfo;
+		return null;
 	}
 
-
+	@Override
 	public OAuthEntry readProviderToken(String oauthToken) {
-		OAuthEntry entry = null;
 		try {
-			entry = (OAuthEntry)this.sqlMap.queryForObject("getProviderToken", oauthToken);
+			return (OAuthEntry) this.sqlMap.queryForObject("getProviderToken", oauthToken);
 		} catch (SQLException e) {
-			log.error("Error retrieving token details for token '" + oauthToken + "'", e);
+			log.error("Error retrieving token details for token '"+oauthToken+"'", e);
 		}
-		return entry;
+		return null;
 	}
 
+	@Override
 	public void updateProviderToken(OAuthEntry entry) {
 		try {
 			this.sqlMap.insert("updateProviderToken", entry);
 		} catch (SQLException e) {
-			log.error("Error updating provider token for '" + entry.getAppId() + "'", e);
+			log.error("Error updating provider token for '"+entry.getAppId()+"'", e);
 		}
 	}
 	
+	@Override
 	public void deleteProviderToken(String token) {
 		try {
 			this.sqlMap.delete("removeProviderToken", token);
@@ -283,8 +253,9 @@ public class IbatisOAuthLogic implements OAuthLogic {
 		}
 	}
 	
+	@Override
 	public void removeSpecificAccessToken(String userName, String accessToken){
-		OAuthParam param = new OAuthParam(userName, accessToken);
+		final OAuthParam param = new OAuthParam(userName, accessToken);
 		try{
 			this.sqlMap.delete("removeSpecificAccessToken", param);
 		} catch (SQLException e) {
@@ -298,26 +269,32 @@ public class IbatisOAuthLogic implements OAuthLogic {
 		try {
 			 return this.sqlMap.queryForList("getUserInfo", username);
 		} catch (SQLException e) {
-			log.error("No user information found about OAuth for '" + username + "'", e);
+			log.error("No user information found about OAuth for '"+username+"'");
 		}
 		return Collections.emptyList();
 	}
-
-
+	
 	//------------------------------------------------------------------------
 	// private helper
 	//------------------------------------------------------------------------
-	private OAuthConsumerInfo makeConsumerInfo(SecurityToken securityToken, String serviceName) {
-		OAuthConsumerInfo consumerInfo = new OAuthConsumerInfo();
+	private static OAuthConsumerInfo makeConsumerInfo(SecurityToken securityToken, String serviceName) {
+		final OAuthConsumerInfo consumerInfo = new OAuthConsumerInfo();
 		consumerInfo.setGadgetUrl(securityToken.getAppUrl());
 		consumerInfo.setServiceName(serviceName);
 		return consumerInfo;
 	}
 
-	//------------------------------------------------------------------------
-	// getter/setter
-	//------------------------------------------------------------------------
+	/**
+	 * @param defaultCallbackUrl the defaultCallbackUrl to set
+	 */
 	public void setDefaultCallbackUrl(String defaultCallbackUrl) {
 		this.defaultCallbackUrl = defaultCallbackUrl;
+	}
+
+	/**
+	 * @param sqlMap the sqlMap to set
+	 */
+	public void setSqlMap(SqlMapClient sqlMap) {
+		this.sqlMap = sqlMap;
 	}
 }

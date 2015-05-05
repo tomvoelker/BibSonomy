@@ -40,6 +40,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.errors.MissingTagsErrorMessage;
@@ -49,6 +50,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.Chain;
+import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
@@ -1116,6 +1118,31 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		param.setLimit(limit);
 		param.setOffset(offset);
 		return this.queryForList("getTagsByBibtexkey", param, Tag.class, session);
+	}
+
+	/**
+	 * @param session
+	 * @return the number of distinct tags
+	 */
+	public int getNumberOfTags(DBSession session) {
+		final Integer count = this.queryForObject("getGlobalTagCount", Integer.class, session);
+		return saveConvertToint(count);
+	}
+	
+	/**
+	 * @param contentType 
+	 * @param startDate 
+	 * @param filters 
+	 * @param session
+	 * @return the number of tas
+	 */
+	public int getNumberOfTas(final int contentType, final Date startDate, Set<Filter> filters, DBSession session) {
+		final GenericParam param = new TagParam();
+		param.setContentType(ConstantID.getContentTypeByClass(ConstantID.getClassByContentType(contentType)));
+		param.setStartDate(startDate);
+		param.setFilters(filters);
+		final Integer count = this.queryForObject("getGlobalTasCount", param, Integer.class, session);
+		return saveConvertToint(count);
 	}
 
 	public void updateTasInGroupFromLeavingUser(final String leavingUser, final int groupId, final DBSession session) {

@@ -35,7 +35,7 @@
 		WHERE ((u.updated_by != 'classifier' AND u.updated_by != 'on_delete') OR ISNULL(u.updated_by)) AND prediction = #prediction# AND algorithm='admin'
 		<isGreaterThan property="interval" compareValue="0" prepend="AND">
 			u.updated_at > NOW() - INTERVAL #interval# HOUR		
-		</isGreaterThan>
+	    </isGreaterThan>
 		ORDER BY u.updated_at DESC
 		LIMIT #limit#
 	</select>
@@ -44,7 +44,7 @@
 		SELECT COUNT(*) 
 		FROM user WHERE (updated_by != 'classifier' OR ISNULL(updated_by)) AND spammer = #prediction# 
 		<isGreaterThan property="interval" compareValue="0" prepend="AND">
-			updated_at > NOW() - INTERVAL #interval# HOUR		
+			updated_at > NOW() - INTERVAL #interval# HOUR
 		</isGreaterThan>
 	</select>
 	

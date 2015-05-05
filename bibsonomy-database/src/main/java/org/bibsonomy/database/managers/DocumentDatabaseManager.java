@@ -30,10 +30,13 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.DocumentParam;
+import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.Document;
 
@@ -302,5 +305,29 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		}
 		
 		this.delete("deleteAllDocumentForContentId", contentId, session);
+	}
+	
+	/**
+	 * @param filters 
+	 * @param session
+	 * @return the number of documents
+	 */
+	public int getGlobalDocumentCount(final Set<Filter> filters, DBSession session) {
+		final StatisticsParam param = new StatisticsParam();
+		param.setFilters(filters);
+		final Integer result = this.queryForObject("getDocumentCount", param, Integer.class, session);
+		return saveConvertToint(result);
+	}
+
+	/**
+	 * @param filters 
+	 * @param session
+	 * @return the number of layout files
+	 */
+	public int getNumberOfLayoutDocuments(Set<Filter> filters, DBSession session) {
+		final StatisticsParam param = new StatisticsParam();
+		param.setFilters(filters);
+		final Integer result = this.queryForObject("getLayoutDocumentCount", param, Integer.class, session);
+		return saveConvertToint(result);
 	}
 }

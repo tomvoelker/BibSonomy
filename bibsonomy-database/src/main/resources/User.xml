@@ -273,6 +273,10 @@
 	<select id="getRelation_FOLLOWER_OF" resultMap="Common.user" parameterClass="userParam">
 		SELECT f_user_name AS user_name FROM followers WHERE user_name = #userName#
 	</select>
+	
+	<select id="getFriendHistoryCount" resultClass="int">
+		SELECT COUNT(*) FROM log_friends
+	</select>
 
 	<!-- delete (userName, requestedUserName) from OF_FRIEND-->
 	<delete id="deleteRelation_OF_FRIEND" parameterClass="userParam">
