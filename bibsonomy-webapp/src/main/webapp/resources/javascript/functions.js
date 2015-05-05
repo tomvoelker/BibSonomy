@@ -327,18 +327,6 @@ function fadeNextList(target) {
 	});
 }
 
-/**
- * if window is small, maximizes the "general" div to 95%
- * 
- * @param id
- * @return
- */
-function maximizeById(id) {
-	if (window.innerWidth < 1200) {
-		$("#" + id).css("width", "95%");
-	}
-}
-
 /** 
  * 	prepare a text form which we'll use to switch between
  * 	password and text form to circumvent an issue caused
@@ -638,7 +626,7 @@ function editTags() {
 				 * not nice!
 				 */
 				var encodedTagString = $('<div />').html(tagString).text(); 
-				var form = $("<form method='post' action='/batchEdit?deleteCheckedPosts=true&format=ajax&resourcetype=" + type + "&action=1' class='editTags'><input type='hidden' name='ckey' value='" + ckey + "'/></form>");
+				var form = $("<form method='post' action='/batchEdit?updateExistingPost=true&format=ajax&resourcetype=" + type + "&action=2' class='editTags'><input type='hidden' name='ckey' value='" + ckey + "'/></form>");
 				var input = $("<input type='text' class='postTagInput' name=\"newTags['" + hash + "']\"'/>").attr("value", encodedTagString);
 				var oldTagsInput = $("<input type='hidden' name=\"oldTags['" + hash + "']\" />").attr("value", encodedTagString);
 				var checkedInput = $("<input type='hidden' name=\"posts['" + hash + "']\" value='true' checked='checked' />");

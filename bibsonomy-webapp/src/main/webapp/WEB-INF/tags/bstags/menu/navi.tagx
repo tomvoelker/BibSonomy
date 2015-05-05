@@ -12,7 +12,7 @@
 	
 	<c:set var="loginUserName" value="${loginUser.name}" />
 	
-	<nav class="navbar navbar-bibsonomy" role="banner">
+	<nav class="navbar navbar-bibsonomy" role="banner" id="navigation">
 		<div class="container navi noborder">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
@@ -78,29 +78,54 @@
 									<li><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups.all"/></a></li>
 									<li class="divider"><!-- keep me --></li>
 									<c:forEach var="grp" items="${loginUser.groups}">
-									<li class="dropdown-submenu">
-										<a href="#" class="dropdown-toggle" data-toggle="dropdown"><c:out value="${grp.name}"/></a>
-										<ul class="dropdown-menu">
-											<li><a href="${relativeUrlGenerator.getGroupUrlByGroupName(grp.name)}"><fmt:message key="navi.posts" /></a></li>
-											<li><a href="${relativeUrlGenerator.getRelevantForUrlByGroupName(grp.name)}"><fmt:message key="navi.relevantFor"/></a></li>
-											<li><a href="${relativeUrlGenerator.getViewableUrlByGroupName(grp.name)}"><fmt:message key="navi.viewable"/></a></li>
-											<li>
-												<c:if test="${grp.sharedDocuments}">
-													<a href="${relativeUrlGenerator.getGroupUrlByGroupName(grp.name)}?filter=JUST_PDF"><fmt:message key="navi.pdfs" /></a>
-												</c:if>
+										<c:set var="role" value="${grp.getGroupMembershipForUser(loginUser).groupRole}" />
+										<c:if test="${role eq 'ADMINISTRATOR' or role eq 'MODERATOR' or role eq 'USER'}">
+											<li class="dropdown-submenu">
+												<a href="#" class="dropdown-toggle" data-toggle="dropdown"><c:out value="${grp.name}"/></a>
+												<ul class="dropdown-menu">
+													<li><a href="${relativeUrlGenerator.getGroupUrlByGroupName(grp.name)}"><fmt:message key="navi.posts" /></a></li>
+													<li><a href="${relativeUrlGenerator.getRelevantForUrlByGroupName(grp.name)}"><fmt:message key="navi.relevantFor"/></a></li>
+													<li><a href="${relativeUrlGenerator.getViewableUrlByGroupName(grp.name)}"><fmt:message key="navi.viewable"/></a></li>
+													<li>
+														<c:if test="${grp.sharedDocuments}">
+															<a href="${relativeUrlGenerator.getGroupUrlByGroupName(grp.name)}?filter=JUST_PDF"><fmt:message key="navi.pdfs" /></a>
+														</c:if>
+													</li>
+													<li><a href="${relativeUrlGenerator.prefix('discussed').getGroupUrlByGroupName(grp.name)}"><fmt:message key="navi.discussedPosts"/></a></li>
+													<li class="divider"><!-- keep me --></li>
+													<li><a href="${relativeUrlGenerator.prefix('settings').getGroupUrlByGroupName(grp.name)}"><fmt:message key="navi.group.settings" /></a></li>
+												</ul>
 											</li>
-											<li><a href="${relativeUrlGenerator.prefix('discussed').getGroupUrlByGroupName(grp.name)}"><fmt:message key="navi.discussedPosts"/></a></li>
-										</ul>
-									</li>
+										</c:if>
 									</c:forEach>
+									<c:if test="${!loginUser.spammer}">
+										<li class="divider"><!-- keep me --></li>
+										<li><a href="/grouprequest"><fmt:message key="navi.group.groupRequest" /></a></li>
+									</c:if>
 								</ul>
 							</li>
 						</c:when>
 						<c:otherwise>
-							<li class="${activeTab eq 'groups' ? 'active' : ''}"><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups"/></a></li>
+							<c:choose>		
+								<c:when test="${not empty loginUserName}">
+									<li class="dropdown ${activeTab eq 'groups' ? 'active' : ''}">
+										<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.groups"/><b class="caret">&amp;nbsp;</b></a>
+										<ul class="dropdown-menu">
+											<li><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups.all"/></a></li>
+											<c:if test="${!loginUser.spammer}">
+												<li class="divider"><!-- keep me --></li>
+												<li><a href="/grouprequest"><fmt:message key="navi.group.groupRequest" /></a></li>
+											</c:if>
+										</ul>
+									</li>
+								</c:when>
+								<c:otherwise>
+									<li class="${activeTab eq 'groups' ? 'active' : ''}"><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups"/></a></li>
+								</c:otherwise>
+							</c:choose>		
 						</c:otherwise>
 					</c:choose>
-	
+					
 					<!--+
 						| popular
 						+-->
@@ -119,12 +144,13 @@
 						<li class="dropdown ${activeTab eq 'admin' ? 'active' : ''}" data-touch="false">
 							<a href="${relativeUrlGenerator.getAdminUrlByName('')}" class="dropdown-toggle" data-toggle="dropdown">admin<b class="caret">&amp;nbsp;</b></a>
 							<ul class="dropdown-menu">
-								<li><a href="${relativeUrlGenerator.getAdminUrlByName('spam')}">spam</a></li>
+								<li><a href="${relativeUrlGenerator.getAdminUrlByName('spam')}">users</a></li>
 								<li><a href="${relativeUrlGenerator.getAdminUrlByName('group')}">groups</a></li>
 								<li><a href="${relativeUrlGenerator.getAdminUrlByName('lucene')}">full text search</a></li>
 								<li><a href="${relativeUrlGenerator.getAdminUrlByName('recommender')}">recommenders</a></li>
 								<li><a href="${relativeUrlGenerator.getAdminUrlByName('oauth')}">OAuth consumers</a></li>
 								<li><a href="${relativeUrlGenerator.getAdminUrlByName('sync')}">synchronization</a></li>
+								<li><a href="${relativeUrlGenerator.getAdminUrlByName('statistics')}">statistics</a></li>
 							</ul>
 						</li>
 					</c:if>

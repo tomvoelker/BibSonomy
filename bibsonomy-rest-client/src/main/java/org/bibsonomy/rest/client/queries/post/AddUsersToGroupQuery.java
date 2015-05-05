@@ -29,9 +29,11 @@ package org.bibsonomy.rest.client.queries.post;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.StringWriter;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.Status;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
@@ -54,18 +56,22 @@ public final class AddUsersToGroupQuery extends AbstractQuery<String> {
 	 * @param groupName
 	 *            name of the group the user is to be added to. the group must
 	 *            exist, else a {@link IllegalArgumentException} is thrown
-	 * @param users
-	 *            the users to be added
+	 * @param memberships
+	 *            the memberships to be added
 	 * @throws IllegalArgumentException
 	 *             if the group name is null or empty, or if the user is null or
 	 *             has no name defined
 	 */
-	public AddUsersToGroupQuery(final String groupName, final List<User> users) throws IllegalArgumentException {
+	public AddUsersToGroupQuery(final String groupName, final List<GroupMembership> memberships) throws IllegalArgumentException {
 		if (!present(groupName)) throw new IllegalArgumentException("no groupName given");
-		if (!present(users)) throw new IllegalArgumentException("no users specified");
-	
+		if (!present(memberships)) throw new IllegalArgumentException("no membership relation specified");
+		
 		this.groupName = groupName;
-		this.users = users;
+		this.users = new LinkedList<>();
+		for (GroupMembership ms : memberships) {
+			this.users.add(ms.getUser());
+		}
+		
 	}
 	
 	@Override

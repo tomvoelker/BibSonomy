@@ -13,6 +13,7 @@
 	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -32,17 +33,14 @@
 			| sidebar
 			+-->
 		<jsp:attribute name="sidebar">
-			<ul>
-				<li>				
-				<span class="sidebar_h">					 
+			<sidebar:sidebarItem textKey="users.recommended">
+				<jsp:attribute name="content">
 					<!-- requPath + query -->
 					<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
-					<fmt:message key="users.recommended"/>
 					<c:out value=" "/><a href="${mtl:setParam(requPathAndQuery, 'userSimilarity', mtl:toggleUserSimilarity(command.userSimilarity)) }"><fmt:message key="more"/>...</a>
-				</span>
-				<users:related cmd="${command.relatedUserCommand}" displayFollowLink="${false}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
-			</li>
-			</ul>
+					<users:related cmd="${command.relatedUserCommand}" displayFollowLink="${false}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
+				</jsp:attribute>
+			</sidebar:sidebarItem>
 		</jsp:attribute>
 		
 		<!--+

@@ -39,7 +39,7 @@ public class ContextPathFilterTest {
 
 	@Test
 	public void testStripContextPath() {
-		final ContextPathFilter.ContextPathFreeRequest req = new ContextPathFilter.ContextPathFreeRequest(new MockHttpServletRequest());
+		final ContextPathFilter.ContextPathFreeRequest req = new ContextPathFilter.ContextPathFreeRequest(new MockHttpServletRequest(), "http://www.bibsonomy.org/");
 		
 		assertEquals("/login", stripContextPath(req, "/bibsonomy-webapp/login", "/bibsonomy-webapp"));
 		assertEquals("/login", stripContextPath(req, "/login", ""));
@@ -49,7 +49,7 @@ public class ContextPathFilterTest {
 	
 	@Test
 	public void testStripContextPath2() {
-	final ContextPathFilter.ContextPathFreeRequest req = new ContextPathFilter.ContextPathFreeRequest(new MockHttpServletRequest());
+	final ContextPathFilter.ContextPathFreeRequest req = new ContextPathFilter.ContextPathFreeRequest(new MockHttpServletRequest(), "http://www.bibsonomy.org/");
 		
 		assertEquals("/login", req.stripContextPath("/bibsonomy-webapp/login", "/bibsonomy-webapp"));
 		assertEquals("/login", req.stripContextPath("/login", ""));

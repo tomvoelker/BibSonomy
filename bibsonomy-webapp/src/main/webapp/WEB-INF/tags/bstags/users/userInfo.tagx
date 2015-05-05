@@ -14,9 +14,7 @@
 		
 	<c:url var="adminUrl" value="/admin" />
 
-	<tr id="sl${rowNumber}"
-		class="${spamUser.prediction == 9 ? 'spamflag uncertainUser' : ((spamUser.spammer==true) ? 'spammer' : none)}">
-
+	<tr id="sl${rowNumber}" class="${spamUser.prediction == 9 ? 'spamflag uncertainUser' : ((spamUser.spammer==true) ? 'spammer' : none)}">
 	
 	<c:choose>
 		<c:when test="${not empty nextUser}">
@@ -30,21 +28,20 @@
 	<!-- 
 		flag / unflag users as (non)spammers or mark as uncertain
 	-->
-	<td style="text-align: left" class="spamflag">
-		<nobr><a	
-				href="javascript:unflagSpammer('${spamUser.name}','sl${rowNumber}', '${moveFromTabNSpammer}')"
-				title="unflag this user as spammer" onClick="${do_flag_action}"><span style="color: #333" class="fa fa-thumbs-down"><!--  --></span></a>&amp;nbsp;<a
-				href="javascript:markUncertainUser('${spamUser.name}','sl${rowNumber}', '${moveFromTabUncertain}')"
-				title="mark as spammer status uncertain" onClick="${do_flag_action}"><span style="color: #333" class="fa fa-question"><!--  --></span></a>&amp;nbsp;<a
-				href="javascript:addSpammer('${spamUser.name}','sl${rowNumber}', '${moveFromTabSpammer}')"
-				title="flag this user as spammer" onClick="${do_flag_action}"><span style="color: #333" class="fa fa-thumbs-up"><!--  --></span></a></nobr>
+	<c:set var="uncertainUser" value="${spamUser.prediction == 9 }" />
+	<td class="spamflag">
+		<div class="btn-group" role="group">
+			<a type="button" class="btn btn-xs btn-default ${not spamUser.spammer and not uncertainUser ? 'btn-success' : ''}" href="javascript:unflagSpammer('${spamUser.name}','sl${rowNumber}', '${moveFromTabNSpammer}')" title="unflag this user as spammer" onClick="${do_flag_action}">no</a>
+			<a type="button" class="btn btn-xs btn-default ${uncertainUser ? 'btn-warning' : '' }" href="javascript:markUncertainUser('${spamUser.name}','sl${rowNumber}', '${moveFromTabUncertain}')" title="mark as spammer status uncertain" onClick="${do_flag_action}">?</a>
+			<a type="button" class="btn btn-xs btn-default ${spamUser.spammer ? 'btn-danger' : ''}" href="javascript:addSpammer('${spamUser.name}','sl${rowNumber}', '${moveFromTabSpammer}')" title="flag this user as spammer" onClick="${do_flag_action}">yes</a>
+		</div>
 	</td>
 
 	<!-- 
 		name of the user
 	-->
 	<td>
-		<c:url value="${relativeUrlGenerator.getUserUrlByUserName(user.name)}" var="userUrl">
+		<c:url value="${relativeUrlGenerator.getUserUrlByUserName(spamUser.name)}" var="userUrl">
 			<c:param name="filter" value="ADMIN_SPAM_POSTS"></c:param>
 		</c:url>
 		<a href="${userUrl}">

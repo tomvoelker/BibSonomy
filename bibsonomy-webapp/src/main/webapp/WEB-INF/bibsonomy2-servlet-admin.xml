@@ -16,19 +16,6 @@
 	<bean id="adminUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="urlMap">
 			<map merge="true">
-				<entry key="/admin">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName"	value="adminPageController" />
-						<property name="allowedFields">
-							<list>
-								<value>aclUserInfo</value>
-								<value>requestedGroupName</value>
-								<value>selPrivlevel</value>
-								<value>action</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
 				<entry key="/admin/spam">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName"	value="spamPageController" />
@@ -64,10 +51,12 @@
 								<value>action</value>
 								<value>resource</value>
 								<value>id</value>
+								<value>indexType</value>
 							</list>
 						</property>
 					</bean>
 				</entry>
+				
 				<entry key="/admin/ajax">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="adminAjaxController"/>
@@ -78,6 +67,7 @@
 								<value>value</value>
 								<value>key</value>
 								<value>evaluator</value>
+								<value>groupname</value>
 							</list>
 						</property>
 					</bean>
@@ -110,6 +100,9 @@
 								<value>group.name</value>
 								<value>group.privlevel</value>
 								<value>group.sharedDocuments</value>
+								<value>group.groupRequest.userName</value>
+								<value>group.groupRequest.reason</value>
+								<value>communityPostInspectionPermission</value>
 							</list>
 						</property>
 					</bean>
@@ -150,6 +143,11 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/admin/statistics">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="adminStatisticsController"/>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -157,17 +155,13 @@
 
 
 	<!--  #################### controller #################### -->
-	
-	<bean id="adminPageController" class="org.bibsonomy.webapp.controller.admin.AdminPageController" scope="request">
-		<property name="logic" ref="logic"/>
-	</bean>
-	
 	<bean id="spamPageController" class="org.bibsonomy.webapp.controller.admin.SpamPageController" scope="request">
 		<property name="logic" ref="logic"/>
 	</bean>
 
 	<bean id="adminLuceneController" class="org.bibsonomy.webapp.controller.admin.AdminLuceneController" scope="request">
 		<property name="luceneResourceManagers" ref="luceneResourceManagers" />
+		<property name="srPlugin" ref="sharedIndexUpdatePlugin"/>
 	</bean>
 	
 	<bean id="adminAjaxController" class="org.bibsonomy.webapp.controller.admin.AdminAjaxController" scope="request">
@@ -185,6 +179,7 @@
 	</bean>
 	
 	<bean id="adminGroupController" class="org.bibsonomy.webapp.controller.admin.AdminGroupController" scope="request">
+		<property name="mailUtils" ref="mailUtils"/>
 		<property name="logic" ref="logic"/>
 	</bean>
 	
@@ -192,4 +187,7 @@
 		<property name="oauthLogic" ref="oAuthLogic"/>
 	</bean>
 	
+	<bean id="adminStatisticsController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="ADMIN_STATISTICS"/>
+	</bean>
 </beans>

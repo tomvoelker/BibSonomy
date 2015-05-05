@@ -30,6 +30,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.InetAddress;
 import java.net.URI;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,14 +43,16 @@ import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.ConceptUpdateOperation;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.common.enums.StatisticsConstraint;
+import org.bibsonomy.common.enums.StatisticsUnit;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
@@ -60,13 +63,14 @@ import org.bibsonomy.model.Author;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.GoldStandardRelation;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
@@ -125,7 +129,7 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.util.ExceptionUtils;
 
 /**
- * 
+ * {@link LogicInterface} for a remote BibSonomy/PUMA instance
  */
 public class RestLogic implements LogicInterface {
 	private static final Log log = LogFactory.getLog(RestLogic.class); // FIXME: who configs the logging?
@@ -235,7 +239,10 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<Group> getGroups(final int start, final int end) {
+	public List<Group> getGroups(boolean pending, final int start, final int end) {
+		if (pending) {
+			throw new UnsupportedOperationException("quering for pending groups not supported");
+		}
 		return execute(new GetGroupListQuery(start, end));
 	}
 
@@ -245,8 +252,14 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+		return getPosts(resourceType, grouping, groupingName, tags, hash, search, SearchType.LOCAL, filters, order, startDate, endDate, start, end);
+	}
+	
+	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+		// TODO: properly implement searchtype in query and rest-server
 		// TODO: clientside chain of responsibility
 		final GetPostsQuery query = new GetPostsQuery(start, end);
 		query.setGrouping(grouping, groupingName);
@@ -285,11 +298,6 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public void deleteUserFromGroup(final String groupName, final String userName) {
-		execute(new RemoveUserFromGroupQuery(userName, groupName));
-	}
-
-	@Override
 	public String createGroup(final Group group) {
 		return execute(new CreateGroupQuery(group));
 	}
@@ -314,13 +322,16 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
+	// TODO: Establish new group concept in here.
+	public String updateGroup(final Group group, final GroupUpdateOperation operation, GroupMembership ms) {
+		final String groupName = group.getName();
 		switch (operation) {
-		case ADD_NEW_USER:
-			return execute(new AddUsersToGroupQuery(group.getName(), group.getUsers()));
-		default:
-			// groups cannot be renamed
-			return execute(new ChangeGroupQuery(group.getName(), group));
+			case ADD_MEMBER:
+				return execute(new AddUsersToGroupQuery(groupName, Collections.singletonList(ms)));
+			case REMOVE_MEMBER:
+				return execute(new RemoveUserFromGroupQuery(ms.getUser().getName(), groupName));
+			default:
+				return execute(new ChangeGroupQuery(groupName, group));
 		}
 	}
 
@@ -475,11 +486,6 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public int getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int limit) {
 		throw new UnsupportedOperationException();
 	}
@@ -495,7 +501,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final StatisticsConstraint constraint, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -510,7 +516,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, final Date startDate, final Date endDate, final int start, final int end) {
+	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, Set<Filter> filters, final Date startDate, final Date endDate, final int start, final int end) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -702,8 +708,8 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info) {
-		this.execute(new ChangeSyncStatusQuery(service.toString(), resourceType, null, null, status, info));
+	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info, Date newSyncDate) {
+		this.execute(new ChangeSyncStatusQuery(service.toString(), resourceType, null, null, status, info, newSyncDate));
 	}
 
 	@Override
@@ -741,6 +747,23 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey) {
-		throw new UnsupportedOperationException(); // TODO: implement me
+		throw new UnsupportedOperationException();
 	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getUserStatistics(org.bibsonomy.common.enums.GroupingEntity, java.util.Set, org.bibsonomy.common.enums.Classifier, org.bibsonomy.common.enums.SpamStatus, java.util.Date, java.util.Date, java.lang.Integer, org.bibsonomy.common.enums.StatisticsUnit)
+	 */
+	@Override
+	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, Classifier classifier, SpamStatus status, Date startDate, Date endDate, Integer interval, StatisticsUnit unit) {
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getDocumentStatistics(org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.Set, java.util.Date, java.util.Date)
+	 */
+	@Override
+	public Statistics getDocumentStatistics(GroupingEntity groupingEntity, String grouping, Set<Filter> filters, Date startDate, Date endDate) {
+		throw new UnsupportedOperationException();
+	}
+
 }

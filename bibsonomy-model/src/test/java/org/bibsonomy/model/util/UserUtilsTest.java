@@ -37,6 +37,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.TestUtils;
 import org.junit.Test;
@@ -152,5 +153,36 @@ public class UserUtilsTest {
 		assertTrue(UserUtils.isValidHomePage(TestUtils.createURL("http://bibsonomy.org")));
 		assertTrue(UserUtils.isValidHomePage(TestUtils.createURL("https://bibsonomy.org")));
 		assertFalse(UserUtils.isValidHomePage(TestUtils.createURL("ftp://bibsonomy.org")));
+	}
+	
+	/**
+		 * tests for {@link UserUtils#isExistingUser(User)}
+		 * @throws Exception
+		 */
+	@Test
+	public void testIsExistingUser() throws Exception {
+		final User user = new User();
+		assertFalse(UserUtils.isExistingUser(user));
+		user.setRole(Role.DELETED);
+		user.setName("testuser1");
+		assertFalse(UserUtils.isExistingUser(user));
+		user.setName("");
+		assertFalse(UserUtils.isExistingUser(user));
+		
+		user.setName("testuser2");
+		user.setRole(Role.DEFAULT);
+		
+		assertTrue(UserUtils.isExistingUser(user));
+		
+		assertFalse(UserUtils.isExistingUser(null));
+	}
+
+	@Test
+	public void testGetNiceUserName() throws Exception {
+		User user = new User("testuser");
+		assertEquals("testuser",UserUtils.getNiceUserName(user, false));
+		assertEquals("@testuser",UserUtils.getNiceUserName(user, true));
+		user.setRealname("William T. Riker");
+		assertEquals("William T. Riker",UserUtils.getNiceUserName(user, true));
 	}
 }

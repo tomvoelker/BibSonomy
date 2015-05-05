@@ -33,6 +33,9 @@
 			| page content
 			+-->
 		<jsp:attribute name="content">
+			
+			<h1 class="content-header"><c:out value="${command.pageTitle}" /></h1>
+			
 			<div style="text-align:center;padding:2em 5em 2em 5em;" class="tags_first">
  				<fmt:message var="posts" key="posts"/>
  				<c:forEach var="tag" items="${command.tags}">

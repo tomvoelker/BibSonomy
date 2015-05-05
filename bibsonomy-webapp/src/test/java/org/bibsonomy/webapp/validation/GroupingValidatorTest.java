@@ -61,7 +61,7 @@ public class GroupingValidatorTest {
 		/*
 		 * set abstract grouping and set a group (= not valid)
 		 */
-		command.setAbstractGrouping(GroupUtils.getPublicGroup().getName());
+		command.setAbstractGrouping(GroupUtils.buildPublicGroup().getName());
 		command.setGroups(Collections.singletonList("test"));
 		
 		errors = this.validate(command);
@@ -70,7 +70,7 @@ public class GroupingValidatorTest {
 		/*
 		 * test same with private
 		 */
-		command.setAbstractGrouping(GroupUtils.getPrivateGroup().getName());
+		command.setAbstractGrouping(GroupUtils.buildPrivateGroup().getName());
 		
 		errors = this.validate(command);
 		assertEquals(1, errors.getFieldErrorCount("groups"));

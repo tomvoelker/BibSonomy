@@ -563,6 +563,14 @@
 		<to last="true">/group</to>
 	</rule>
 
+	<!-- /settings/group/GROUP -->
+	<rule>
+		<name>/settings/group/GROUP</name>
+		<from>^/+settings/+group/+([^/]+)$</from>
+		<set type="parameter" name="requestedGroup">$1</set>
+		<to last="true">/settings/group</to>
+	</rule>
+	
 	<!-- /groups -->
 	<rule>
 		<name>redirect /group/GROUP</name>
@@ -808,37 +816,34 @@
 	</rule>
 	
 	
-<!-- 	<rule>/[32]/USERNAME -->
-<!-- 		<name>/history/publication/HASH/USER</name> -->
-<!-- 		<from>^/+history/+publication/+([0-9a-fA-F]{32})/+(.+)$</from> -->
-<!-- 		<set type="parameter" name="requestedHash">$1</set> -->
-<!-- 		<set type="parameter" name="requestedUser">$2</set> -->
-<!-- 		<to last="true">/history</to> -->
-<!-- 	</rule> -->
-<!-- 	<rule> /[0-3][32]/USERNAME  -->
-<!-- 		<name>/history/publication/SHASH/USER</name> -->
-<!-- 		<from>^/+history/+publication/+([0-3])([0-9a-fA-F]{32})/+(.+)$</from> -->
-<!-- 		<set type="parameter" name="requestedHash">$1$2</set> -->
-<!-- 		<set type="parameter" name="requestedUser">$3</set> -->
-<!-- 		<to last="true">/history</to> -->
-<!-- 	</rule>	 -->
+ 	<rule><!--/[32]/USERNAME -->
+		<name>/history/RSCTYPE/HASH/USER</name>
+		<from>^/+history/+(.+)/+([0-9a-fA-F]{32})/+(.+)$</from>
+		<set type="parameter" name="requestedType">$1</set>
+		<set type="parameter" name="requestedHash">$2</set>
+		<set type="parameter" name="requestedUser">$3</set>
+		<to last="true">/history</to>
+	</rule>
 	
-	<!-- TODO: test community posts --> 
-<!-- 	<rule> /[0-3][32]  -->
-<!-- 		<name>/history/publication/SHASH</name> -->
-<!-- 		<from>^/+history/+publication/+([0-3])([0-9a-fA-F]{32})$</from> -->
-<!-- 		<set type="parameter" name="requestedHash">$1$2</set> -->
-<!-- 		<to last="true">/history</to> -->
-<!-- 	</rule> -->
-<!-- 	<rule>/[32] (arbitrary hash) defaults to simhash1 -->
-<!-- 		<name>/history/publication/HASH</name> -->
-<!-- 		<from>^/+history/+publication/+([0-9a-fA-F]{32})$</from> -->
-<!-- 		<set type="parameter" name="requestedHash">$1</set> -->
-<!-- 		<to last="true">/history</to> -->
-<!-- 	</rule> -->
-	
-	<!-- ############## search pages ############### -->
-	<!-- FIXME: disable for more infos see bug #1784
+	<!-- /[32] (arbitrary hash) defaults to simhash1 -->
+ 	<rule>
+ 		<name>/history/RSCTYPE/HASH</name>
+		<from>^/+history/+(.+)/+([0-9a-fA-F]{32})$</from>
+		<set type="parameter" name="requestedType">$1</set>
+		<set type="parameter" name="requestedHash">$2</set>
+		<to last="true">/history</to>
+	</rule>
+	 
+	 
+<!-- ############## search pages ############### -->
+
+	<!--+ 
+	    | KEEP ME
+	    | FIXME: The following 2 rules for search are currently disabled.
+	    | They are related to trouble with particular characters in search queries.
+	    | However to enable restricting search queries using tags they should in fact be used after such troubles have been fixed.
+	    | Related to issue #2439
+	    	    
 	<rule>
 		<name>/search/SEARCH/TAG</name>
 		<from>^/+search/+([^/]+?)/(.+)$</from>
@@ -851,7 +856,9 @@
 		<from>^/+search/+([^/]+)$</from>
 		<set type="parameter" name="requestedSearch">$1</set>
 		<to last="true">/search</to>
-	</rule>-->
+	</rule>
+	KEEP ME -->
+
 	<rule>
 		<name>/search/SEARCH</name>
 		<from>^/+search/(.+)$</from>
@@ -1008,6 +1015,13 @@
 		<name>/BibTeXHashExample.jsp</name>
 		<from>^/BibTeXHashExample.jsp</from>
 		<to type="redirect" last="true">/hashExample</to>
+	</rule>
+	
+	<!-- old msoffice urls -->
+	<rule>
+		<name>/msofficexml</name>
+		<from>^/+msofficexml/(.*)$</from>
+		<to type="redirect" last="true">/layout/msofficexml/$1</to>
 	</rule>
 	
 	<!-- TODO: (Bootstrap) remove after updating the link in the blog -->

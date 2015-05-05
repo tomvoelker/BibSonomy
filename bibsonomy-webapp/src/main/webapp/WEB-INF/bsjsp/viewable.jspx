@@ -10,10 +10,11 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"> 
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav" 
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<!-- TODO: this key is missing -->"
+	<!-- TODO: this key is missing -->
 	<fmt:message var="headline" key="page.viewable.headline" />
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" headline="${headline}${command.requestedGroup}">
 		<jsp:attribute name="heading">
@@ -34,13 +35,11 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-			<ul>
-				<rc:members requPath="${requPath}" users="${command.group.users}"/>
-				<li>
-					<h4 class="sidebar"><fmt:message key="tags"/></h4>
-					<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-				</li>
-			</ul>
+			<c:if test="${mtl:isRegularGroup(command.group)}">
+				<sidebar:groupDetailsItem group="${command.group}"/>
+				<sidebar:groupMembersItem group="${command.group}"/>
+			</c:if>
+			<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 		</jsp:attribute>
 	</layout:resourceLayout>
 

@@ -13,6 +13,7 @@
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:review="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion/review"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -94,88 +95,80 @@
     	 	| sidebar
     	 	+-->
 		<jsp:attribute name="sidebar">
-		<ul>
+			<c:if test="${not empty command.requestedUser or not empty command.requestedGroup or not empty command.discussionsStatistic}" >
+		
+				<sidebar:sidebarItem textKey="post.resource.discussion.headline">
+					<jsp:attribute name="content">
+						<!-- TODO: create own tag for this -->
+						<c:if test="${not empty command.discussionsStatistic}">
+							<c:set var="stats" value="${command.discussionsStatistic}"/>
+							<div class="sidebarcontainer">
+								<!-- contains schema.org markup -->
+								<div id="review_info_rating">
 
-			<!-- link to user page -->
-			<c:if test="${not empty command.requestedUser}">
-				<li>				
-					<h4 class="sidebar">
-						<a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(command.requestedUser))}">
-							<fmt:message key="discussion.showUser">
-								<fmt:param value="${fn:escapeXml(command.requestedUser)}"/>
-							</fmt:message>
-						</a>
-					</h4>
-				</li>
-			</c:if>
-
-			<!-- link to user page -->
-			<c:if test="${not empty command.requestedGroup}">
-				<li>				
-					<h4 class="sidebar">
-						<a href="${relativeUrlGenerator.getGroupUrlByGroupName(fn:escapeXml(command.requestedGroup))}">
-							<fmt:message key="discussion.showGroup">
-								<fmt:param value="${fn:escapeXml(command.requestedGroup)}"/>
-							</fmt:message>
-						</a>
-					</h4>
-				</li>
-			</c:if>
-
-			<c:if test="${not empty command.discussionsStatistic}">
-				<c:set var="stats" value="${command.discussionsStatistic}"/>
-				<li>				
-					
-					<div class="sidebarcontainer">
-					
-						<!-- contains schema.org markup -->
-						<div id="review_info_rating">
-
-							<div id="ratingDistribution">
+									<div id="ratingDistribution">
 							
-								<c:forEach var="ratings" items="${stats.values}">
-									<div class="ratingDistributionData" style="display:none;" data-rating="${ratings.rating}" data-count="${ratings.count}"> <!-- nothing here --></div>  
-								</c:forEach>							
+										<c:forEach var="ratings" items="${stats.values}">
+											<div class="ratingDistributionData" style="display:none;" data-rating="${ratings.rating}" data-count="${ratings.count}"> <!-- nothing here --></div>  
+										</c:forEach>							
 
-								<fmt:message key="post.resource.review.info.ratingDistribution" />
-								<div id="ratingDistributionGraph" style="width: 100%; height: 60px;">
-									<!-- ploted by javascript -->
-								</div>
+										<fmt:message key="post.resource.review.info.ratingDistribution" />
+										<div id="ratingDistributionGraph" style="width: 100%; height: 60px;">
+											<!-- ploted by javascript -->
+										</div>
+									</div>
+									<div id="ratingAvg">
+										<span><fmt:message key="post.resource.review.info.ratingAvg" /></span>
+										<!-- TODO: add bigger star images and change dimension to 2 -->
+										<div><review:reviewStars rating="${stats.average}" /></div>
+							
+										<!-- plural -->
+										<fmt:message var="ratingTitle" key="post.resource.review.reviews" />
+										<c:if test="${stats.count == 1}">
+											<!-- singular -->
+											<fmt:message var="ratingTitle" key="post.resource.review.review" />
+										</c:if>
+					
+										<fmt:formatNumber var="roundedRating" value="${stats.average}" maxFractionDigits="1" minFractionDigits="1" />
+					
+										<div class="ratingAvgInfo">
+											(<span property="ratingAverage"><c:out value="${roundedRating}" /></span>
+											<c:out value=" " />
+											<fmt:message key="post.resource.review.ratings.of" />
+											<c:out value=" " />
+											<span id="ratingBest">5.0</span><c:out value=" " /> <fmt:message key="post.resource.review.ratings.basedOn" />
+											<c:out value=" " /><span property="ratingCount"><c:out value="${stats.count}" /></span>
+											<c:out value=" " />
+											<span>
+												<c:out value="${ratingTitle}" />
+											</span>)
+										</div>
+									</div>
+								</div>					
 							</div>
-							<div id="ratingAvg">
-								<span><fmt:message key="post.resource.review.info.ratingAvg" /></span>
-								<!-- TODO: add bigger star images and change dimension to 2 -->
-								<div><review:reviewStars rating="${stats.average}" /></div>
-					
-								<!-- plural -->
-								<fmt:message var="ratingTitle" key="post.resource.review.reviews" />
-								<c:if test="${stats.count == 1}">
-									<!-- singular -->
-									<fmt:message var="ratingTitle" key="post.resource.review.review" />
-								</c:if>
-					
-								<fmt:formatNumber var="roundedRating" value="${stats.average}" maxFractionDigits="1" minFractionDigits="1" />
-					
-								<div class="ratingAvgInfo">
-									(<span property="ratingAverage"><c:out value="${roundedRating}" /></span>
-									<c:out value=" " />
-									<fmt:message key="post.resource.review.ratings.of" />
-									<c:out value=" " />
-									<span id="ratingBest">5.0</span><c:out value=" " /> <fmt:message key="post.resource.review.ratings.basedOn" />
-									<c:out value=" " /><span property="ratingCount"><c:out value="${stats.count}" /></span>
-									<c:out value=" " />
-									<span>
-										<c:out value="${ratingTitle}" />
-									</span>)
-								</div>
-							</div>
-						</div>					
-					</div>
-								
-				</li>
+						</c:if>
+
+						<!-- link to user page -->
+						<c:if test="${not empty command.requestedUser}">
+							<a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(command.requestedUser))}">
+								<fmt:message key="discussion.showUser">
+									<fmt:param value="${fn:escapeXml(command.requestedUser)}"/>
+								</fmt:message>
+							</a>
+						</c:if>
+
+						<!-- link to user page -->
+						<c:if test="${not empty command.requestedGroup}">
+							<a href="${relativeUrlGenerator.getGroupUrlByGroupName(fn:escapeXml(command.requestedGroup))}">
+								<fmt:message key="discussion.showGroup">
+									<fmt:param value="${fn:escapeXml(command.requestedGroup)}"/>
+								</fmt:message>
+							</a>
+						</c:if>
+
+					</jsp:attribute>
+				</sidebar:sidebarItem>
 			</c:if>
-
-		</ul>	
 		</jsp:attribute>
 		
 	</layout:resourceLayout>

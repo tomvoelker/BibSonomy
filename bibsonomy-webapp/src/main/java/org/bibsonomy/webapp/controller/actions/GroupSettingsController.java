@@ -28,14 +28,13 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.Collections;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.GroupPublicationReportingSettings;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -47,6 +46,7 @@ import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
@@ -56,6 +56,7 @@ import org.springframework.validation.Errors;
  * 
  * @author ema
  */
+@Deprecated // as of 29.12.2014
 public class GroupSettingsController implements MinimalisticController<SettingsViewCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(SearchPageController.class);
 
@@ -115,26 +116,32 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 		
 		// the group to update
 		final Group groupToUpdate = this.logic.getGroupDetails(loginUser.getName());
+		if (!present(groupToUpdate)) {
+			throw new AccessDeniedException("please login as group");
+		}
 		// this should be always the same as loginUser.getName()
 		final String groupName = groupToUpdate.getName();
 
 		if ("updateGroupReportingSettings".equals(command.getAction())) {
 			groupToUpdate.setPublicationReportingSettings(command.getGroup().getPublicationReportingSettings());
-			this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_GROUP_REPORTING_SETTINGS);
+			this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_GROUP_REPORTING_SETTINGS, null);
 			return returnSettingsView(command, groupToUpdate, groupName);
 		}
 		
+		// TODO: (group) remove?!
+
 		// update the bean
 		groupToUpdate.setPrivlevel(priv);
 		groupToUpdate.setSharedDocuments(sharedDocs);
 		
 		// do ADD_NEW_USER on addUserToGroup != null
-		final String username = command.getAddUserToGroup();
+		final String username = command.getUsername();
 		if (present(username)) {
 			try {
 				// since now only one user can be added to a group at once
-				groupToUpdate.setUsers(Collections.singletonList(new User(username)));
-				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_NEW_USER);
+				// TODO: When are we getting here?
+				final GroupMembership ms = new GroupMembership(new User(username), GroupRole.USER, false);
+				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_MEMBER, ms);
 			} catch (final Exception ex) {
 				log.error("error while adding user '" + username + "' to group '" + groupName + "'", ex);
 				// if a user can't be added to a group, this exception is thrown
@@ -143,7 +150,7 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 			}
 		} else {
 			try {
-				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_SETTINGS);
+				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_SETTINGS, null);
 			} catch (final Exception ex) {
 				log.error("error while updating settings for group '" + groupName + "'", ex);
 				// TODO: what exceptions can be thrown?!
@@ -154,9 +161,8 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 
 	protected View returnSettingsView(final SettingsViewCommand command, final Group groupToUpdate, final String groupName) {
 		/*
-		 * we have to re-fetch the group details (especially members) here
+		 * we have to re-fetch the group details
 		 */
-		groupToUpdate.setUsers(this.logic.getUsers(null, GroupingEntity.GROUP, groupName, null, null, null, null, null, 0, 1000));
 		command.setGroup(groupToUpdate);
 		/*
 		 * choose correct tab and return

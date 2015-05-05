@@ -127,7 +127,7 @@ public class OAuthRequestValidator {
 	 * verify the incoming OAuth message 
 	 * 
 	 * @param message
-	 * @return
+	 * @return the security token
 	 * @throws OAuthProblemException
 	 */
 	protected SecurityToken verifyMessage(final OAuthMessage message) throws OAuthProblemException {
@@ -149,20 +149,11 @@ public class OAuthRequestValidator {
 			return this.getTokenFromVerifiedRequest(message, entry, authConsumer);
 		} catch (final OAuthProblemException e) {
 			throw e;
-		} catch (final OAuthException e) {
-			throw this.createOAuthProblemException(e);
-		} catch (final IOException e) {
-			throw this.createOAuthProblemException(e);
-		} catch (final URISyntaxException e) {
-			throw this.createOAuthProblemException(e);
+		} catch (final OAuthException | IOException | URISyntaxException e) {
+			final OAuthProblemException ope = new OAuthProblemException(OAuth.Problems.SIGNATURE_INVALID);
+			ope.setParameter(OAuth.Problems.OAUTH_PROBLEM_ADVICE, e.getMessage());
+			throw ope;
 		}
-	}
-
-
-	private OAuthProblemException createOAuthProblemException(final Exception e) {
-		final OAuthProblemException ope = new OAuthProblemException(OAuth.Problems.SIGNATURE_INVALID);
-		ope.setParameter(OAuth.Problems.OAUTH_PROBLEM_ADVICE, e.getMessage());
-		return ope;
 	}
 
 	/**
@@ -176,18 +167,16 @@ public class OAuthRequestValidator {
 		// we are doing body hash signing which is not permitted for form-encoded data
 		if ((request.getContentType() != null) && request.getContentType().contains(OAuth.FORM_ENCODED)) {
 			throw new AccessDeniedException("Cannot use oauth_body_hash with a Content-Type of application/x-www-form-urlencoded");
-
-		} else {
-			try {
-				final byte[] rawBody = readBody(request);
-				final byte[] received = Base64.decodeBase64(CharsetUtil.getUtf8Bytes(oauthBodyHash));
-				final byte[] expected = DigestUtils.sha(rawBody);
-				if (!Arrays.equals(received, expected)) {
-					throw new AccessDeniedException("oauth_body_hash failed verification");
-				}
-			} catch (final IOException ioe) {
-				throw new AccessDeniedException("Unable to read content body for oauth_body_hash verification");
+		}
+		try {
+			final byte[] rawBody = readBody(request);
+			final byte[] received = Base64.decodeBase64(CharsetUtil.getUtf8Bytes(oauthBodyHash));
+			final byte[] expected = DigestUtils.sha(rawBody);
+			if (!Arrays.equals(received, expected)) {
+				throw new AccessDeniedException("oauth_body_hash failed verification");
 			}
+		} catch (final IOException ioe) {
+			throw new AccessDeniedException("Unable to read content body for oauth_body_hash verification");
 		}
 	}
 
@@ -263,7 +252,7 @@ public class OAuthRequestValidator {
 	 * 
 	 * @param requestMessage
 	 * @param key
-	 * @return
+	 * @return the parameter value for the specified key
 	 */
 	public static String getParameter(final OAuthMessage requestMessage, final String key) {
 		try {
@@ -279,6 +268,9 @@ public class OAuthRequestValidator {
 	 * the servlet stream can only be read once, making the content unavailable to the receiving
 	 * servlet. After reading the body, we store the raw content byte array 
 	 * using request.setAttribute(STASHED_BODY, <body byte array>)
+	 * @param request the request
+	 * @return tue raw body
+	 * @throws IOException 
 	 */
 	public static byte[] readBody(final HttpServletRequest request) throws IOException {
 		if (present(request.getAttribute(STASHED_BODY))) {
@@ -292,9 +284,10 @@ public class OAuthRequestValidator {
 
 	/**
 	 * FIXME: do we have already an utilty functio for this?
+	 * @param s 
 	 * @return UTF-8 byte array for the input string.
 	 */
-	public byte[] getUtf8Bytes(final String s) {
+	public static byte[] getUtf8Bytes(final String s) {
 		byte[] bb = ArrayUtils.EMPTY_BYTE_ARRAY;
 		if (present(s)) {
 			try {

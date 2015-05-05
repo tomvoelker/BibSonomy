@@ -29,6 +29,7 @@ package org.bibsonomy.webapp.controller.resource;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -36,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.Post;
@@ -159,7 +161,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			 * retrieve total count with given hash 
 			 * (only for /<RESOURCE>/HASH)
 			 */
-			this.setTotalCount(command, this.getResourceClass(), groupingEntity, requUser, null, longHash, null, null, null, null, startDate, endDate, entriesPerPage);
+			this.setTotalCount(command, this.getResourceClass(), groupingEntity, requUser, null, longHash, null, null, null, startDate, endDate, entriesPerPage);
 		} else if (GroupingEntity.USER.equals(groupingEntity)) {
 			/*
 			 * Complete the post details for the first post of a given user 
@@ -200,7 +202,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			 * store the post in the command's list (and replace the original 
 			 * list of post)
 			 */
-			command.getListCommand(this.getResourceClass()).setList(Collections.singletonList(post));
+			command.getListCommand(this.getResourceClass()).setList(Arrays.asList(post));
 		}
 		
 		// TODO: fix privacy issue
@@ -237,7 +239,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 		 */
 		if (present(goldStandard)) {
 			firstResource = goldStandard.getResource();
-			command.getListCommand(this.getGoldStandardClass()).setList(Collections.singletonList(goldStandard));
+			command.getListCommand(this.getGoldStandardClass()).setList(Arrays.asList(goldStandard));
 		} else {
 			final List<Post<R>> resourceList = command.getListCommand(this.getResourceClass()).getList();
 			if (!present(resourceList)) {
@@ -273,7 +275,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 				 * fetch posts of all users with the given hash, add users to related
 				 * users list
 				 */
-				final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
+				final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null,SearchType.LOCAL, null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
 				for (final Post<R> post : allPosts) {
 					command.getRelatedUserCommand().getRelatedUsers().add(post.getUser());
 				}
@@ -296,7 +298,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 				 */
 				final Date startDate = command.getStartDate();
 				final Date endDate = command.getEndDate();
-				this.setTotalCount(command, this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, null, null, null, startDate, endDate, 1000);
+				this.setTotalCount(command, this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, null, null, startDate, endDate, 1000);
 				firstResource.setCount(command.getListCommand(this.getResourceClass()).getTotalCount());
 
 				/*

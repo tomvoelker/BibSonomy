@@ -7,14 +7,15 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
     xmlns:group="urn:jsptagdir:/WEB-INF/tags/bstags/resources/group"
-	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<c:set var="group" value="${command.group}" />
 	<fmt:message var="headline" key="page.group.headline" />
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="groups" headline="${headline}${command.group.name}">
 		<jsp:attribute name="heading">
@@ -34,77 +35,45 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-		<ul>
 			<c:choose>
-				<c:when test="${not empty command.group.name}">
-				<li>
-					<h4 class="sidebar"><c:out value="${command.group.name}" /></h4>
-					<div class="pull-right">
-						<group:groupcv group="${command.group}"/>
-					</div>
-					<group:name group="${command.group}"/>
-				</li>
-					
-				<!-- link to join group -->
-				<c:if test="${command.context.userLoggedIn}">
-					<c:choose>
-						<c:when test="${mtl:contains(command.context.loginUser.groups, command.group)}">
-							<!-- FIXME: add link to leave group, if user is already member -->
-						</c:when>
-						<c:otherwise>
-							<li style="padding: 5px;">
-								<fmt:message var="joinGroup" key="navi.join">
-									<fmt:param>${fn:escapeXml(command.group.name)}</fmt:param>
-								</fmt:message>
-								<button:linkButton
-									title="${joinGroup}"
-									href="/join_group?group=${fn:escapeXml(command.group.name)}"
-									image="${resdir}/image/starblue_unselected.png">
-									<jsp:attribute name="text">
-										<fmt:message key="joinGroup"/>
-									</jsp:attribute>
-								</button:linkButton>
-							</li>
-						</c:otherwise>
-					</c:choose>
-				</c:if>
+				<c:when test="${not empty group.name}">
+
+					<sidebar:groupDetailsItem group="${group}"/>
+					<sidebar:groupMembersItem group="${group}"/>
 				
-				<!-- group members -->
-				<rc:members requPath="${requPath}" users="${command.group.users}"/>
+					<!-- link to discussed posts of the group -->
+					<sidebar:sidebarItem textKey="post.resource.discussion.headline">
+						<jsp:attribute name="content">
+							<ul class="discussionSidebarContent sidebar_collapse_content">
+								<li>
+									<fmt:message key="discussion.byGroup.help" var="title"><fmt:param value="${fn:escapeXml(command.group.name)}"/></fmt:message>
+									<a href="/discussed/group/${fn:escapeXml(command.group.name)}" title="${title}">
+										<fmt:message key="discussion.byGroup"><fmt:param value="${fn:escapeXml(command.group.name)}"/></fmt:message>
+									</a>
+								</li>
+							</ul>
+						</jsp:attribute>
+					</sidebar:sidebarItem>
 				
-				<!-- link to discussed posts of the group -->
-				<li>
-					<h4 class="sidebar"><fmt:message key="post.resource.discussion.headline"/></h4>
-					<ul class="discussionSidebarContent sidebar_collapse_content">
-						<li>
-							<fmt:message key="discussion.byGroup.help" var="title"><fmt:param value="${fn:escapeXml(command.group.name)}"/></fmt:message>
-							<a href="/discussed/group/${fn:escapeXml(command.group.name)}" title="${title}">
-								<fmt:message key="discussion.byGroup"><fmt:param value="${fn:escapeXml(command.group.name)}"/></fmt:message>
-							</a>
-						</li>
-					</ul>
-				</li>
+					<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="default" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 				
-				<!-- tags -->
-				<li>
-					<h4 class="sidebar"><fmt:message key="tags"/></h4>
-					<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="default" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-				</li>
-			</c:when>
+				</c:when>
 				<c:otherwise>
-					<li>
-						<h4 class="sidebar"><fmt:message key="group.doesnotexist.header" /></h4>
-						<ul>
-							<li>
-								<fmt:message key="settings.addgroupdescription">
-									<fmt:param><a href="mailto:${properties['project.email']}">${properties['project.email']}</a></fmt:param>
-								</fmt:message>
-							</li>
-						</ul>
-					</li>
+
+					<sidebar:sidebarItem textKey="group.doesnotexist.header">
+						<jsp:attribute name="content">
+							<ul>
+								<li>
+									<fmt:message key="settings.addgroupdescription">
+										<fmt:param><a href="mailto:${properties['project.email']}">${properties['project.email']}</a></fmt:param>
+									</fmt:message>
+								</li>
+							</ul>
+						</jsp:attribute>
+					</sidebar:sidebarItem>
+
 				</c:otherwise>
 			</c:choose>
-		</ul>
 		</jsp:attribute>
 	</layout:resourceLayout>
 </jsp:root>

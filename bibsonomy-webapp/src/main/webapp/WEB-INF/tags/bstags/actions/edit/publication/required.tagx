@@ -1,14 +1,12 @@
 <jsp:root version="2.0" 
-    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:form="http://www.springframework.org/tags/form"
-    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
-    xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
-    xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
-  >
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
     <!-- 
     
         Shows the required form fields entrytype, bibtexkey, title, author, 
@@ -16,10 +14,11 @@
     
      -->
 	
-    <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
-    <jsp:directive.attribute name="autocompletion" type="java.lang.Boolean" required="true"/>
-    <jsp:directive.attribute name="hideBibTeXKey" type="java.lang.Boolean" required="false"/>
-    
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="autocompletion" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="hideBibTeXKey" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="hideAuthorClaim" type="java.lang.Boolean" required="false"/>
+	
 	<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/jquery-ui.css" type="text/css" media="all" />
 	<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/ui.theme.css" type="text/css" media="all" />
 	
@@ -51,7 +50,7 @@
 			});
 			
 			$('#post\.resource\.bibtexKey').focus(function() {
-				$(this)tooltip('toggle');
+				$(this).tooltip('toggle');
 			});
 		});
 	</script>
@@ -61,7 +60,6 @@
 	
 	<c:choose>
 		<c:when test="${empty hideBibTeXKey or not hideBibTeXKey}">
-					
 			<div class="form-group">
 				<label class="col-sm-3 control-label" for="post.resource.entrytype">
 					<fmt:message key="post.resource.entrytype" />
@@ -87,13 +85,13 @@
 						<div class="col-md-6">
 							<div class="input-group">
 								<fmt:message var="bibtexKey" key="post.resource.bibtexKey" />
-								<form:input placeholder="BibTeX key" id="post.resource.bibtexKey" path="post.resource.bibtexKey" cssClass="form-control" data-toggle="tooltip" data-placement="top" title="${bibtexKey}"/>
 								<fmt:message var="generateBibtexKey" key="post.resource.generateBibtexKey"/>
 								<span class="input-group-btn">
 									<a class="btn btn-default" title="${generateBibtexKey}" onclick="javascript:generateBibTexKey(this)">
 										<span class="fa fa-refresh"><!--  --></span>
 									</a>
 								</span>
+								<form:input placeholder="BibTeX key" id="post.resource.bibtexKey" path="post.resource.bibtexKey" cssClass="form-control" data-toggle="tooltip" data-placement="top" title="${bibtexKey}"/>
 							</div><!-- /input-group -->
 						</div>
 					</div>
@@ -108,25 +106,27 @@
 				labelColSpan="3" 
 				tabindex="2" 
 				size="1" 
-				items="${mtl:getBibTeXEntryTypes()}" noHelp="true"
-				/>
+				items="${mtl:getBibTeXEntryTypes()}" noHelp="true" />
 		</c:otherwise>
 	</c:choose>
-			
+	
 	<bsform:textarea labelColSpan="3" id="post.resource.title" path="post.resource.title" required="${true}" />
-
+	
 	<bsform:textarea labelColSpan="3" id="post.resource.author" path="post.resource.author" required="${true}" />
-	<div class="form-group">
-   		<div class="col-sm-offset-3 col-sm-9">
-			<div class="checkbox clearfix">
-				<label>
-	          		<input type="checkbox" class="help-popover" id="myownChkBox" tabindex="2" /> <fmt:message key="post.resource.myown"/>
-	          		<div class="help-header hide"><fmt:message key="post.resource.myown"/></div>
-	          		<div class="help-content hide"><fmt:message key="post.resource.myown.help"/></div>
-	        	</label>
+	
+	<c:if test="${empty hideAuthorClaim or not hideAuthorClaim}">
+		<div class="form-group">
+			<div class="col-sm-offset-3 col-sm-9">
+				<div class="checkbox clearfix">
+					<label>
+						<input type="checkbox" class="help-popover" id="myownChkBox" tabindex="2" /> <fmt:message key="post.resource.myown"/>
+						<div class="help-header hide"><fmt:message key="post.resource.myown"/></div>
+						<div class="help-content hide"><fmt:message key="post.resource.myown.help"/></div>
+					</label>
+				</div>
 			</div>
 		</div>
-	</div>
+	</c:if>
 
 	<bsform:textarea labelColSpan="3" inputColSpan="9" id="post.resource.editor" path="post.resource.editor" required="${true}"/>
 	<bsform:input labelColSpan="3" inputColSpan="9" id="post.resource.year" small="true" path="post.resource.year" required="${true}"/>

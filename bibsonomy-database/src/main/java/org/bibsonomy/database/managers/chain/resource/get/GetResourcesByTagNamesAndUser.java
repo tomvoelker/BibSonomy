@@ -65,7 +65,7 @@ public class GetResourcesByTagNamesAndUser<R extends Resource, P extends Resourc
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.databaseManager.getPostsByTagNamesForUser(param.getUserName(), param.getRequestedUserName(), param.getTagIndex(), param.getGroupId(), param.getGroups(), param.getLimit(), param.getOffset(), param.getPostAccess(), param.getFilter(), param.getSystemTags(), session);
+		return this.databaseManager.getPostsByTagNamesForUser(param.getUserName(), param.getRequestedUserName(), param.getTagIndex(), param.getGroupId(), param.getGroups(), param.getLimit(), param.getOffset(), param.getPostAccess(), param.getFilters(), param.getSystemTags(), session);
 	}
 
 }

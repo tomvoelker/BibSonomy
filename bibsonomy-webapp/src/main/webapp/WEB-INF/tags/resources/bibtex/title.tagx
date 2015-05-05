@@ -7,9 +7,24 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
-
+	<c:choose>
+		<c:when test="${not empty post.systemUrl }">
+			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var ="isRemotePost" value="false"/>
+		</c:otherwise>
+	</c:choose>
+	
 	<!--  display title -->
-	<c:set var="bibUrlTemplate">${relativeUrlGenerator.getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, post.user.name)}</c:set>
+	<c:choose>
+		<c:when test="${isRemotePost}">
+			<c:set var="bibUrlTemplate">${relativeUrlGenerator.getPublicationUrlByIntraHashUsernameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}</c:set>
+		</c:when>
+		<c:otherwise>
+			<c:set var="bibUrlTemplate">${relativeUrlGenerator.getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, post.user.name)}</c:set>
+		</c:otherwise>
+	</c:choose>
 	<c:set var="bibTitle" value="${mtl:cleanBibtex(post.resource.title)}"/>
 
 

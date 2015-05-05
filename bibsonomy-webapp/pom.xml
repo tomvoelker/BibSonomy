@@ -32,7 +32,7 @@
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>3.0.1-SNAPSHOT</version>
+		<version>3.3.0-SNAPSHOT</version>
 	</parent>
 	<licenses>
 		<license>
@@ -327,10 +327,6 @@
 			<artifactId>bibsonomy-model</artifactId>
 			<scope>test</scope>
 			<type>test-jar</type>
-		</dependency>
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-entityresolver</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -675,6 +671,20 @@
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
 			<version>2.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sksamuel.diff</groupId>
+			<artifactId>diff</artifactId>
+			<version>1.1.11</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.6.3</version>
 		</dependency>
 	</dependencies>
 	<properties>

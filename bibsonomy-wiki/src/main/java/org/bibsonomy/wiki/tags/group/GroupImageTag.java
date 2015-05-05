@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.wiki.tags.group;
 
-import org.bibsonomy.model.User;
 import org.bibsonomy.wiki.tags.GroupTag;
 
 /**
@@ -53,13 +52,12 @@ public class GroupImageTag extends GroupTag {
 	@Override
 	protected String renderGroupTag() {
 		final StringBuilder renderedHTML = new StringBuilder();
-		if (!this.requestedGroup.getUsers().isEmpty()) {
-			final User user = this.requestedGroup.getUsers().get(0);
-			renderedHTML.append("<div class='groupImage'>");
-			renderedHTML.append(this.renderImage(user.getName()));
-			renderedHTML.append("<a href='/cv/user/" + this.renderString(user.getName()) + "' style='text-align:center;'><div>" + this.renderString(user.getRealname()) + "</div></a>");
-			renderedHTML.append("</div>");
-		}
+
+		renderedHTML.append("<div class='groupImage'>");
+		final String groupName = this.requestedGroup.getName();
+		renderedHTML.append(this.renderImage(groupName));
+		renderedHTML.append("<a href='/cv/user/" + this.renderString(groupName) + "' style='text-align:center;'><div>" + this.renderString(this.requestedGroup.getRealname()) + "</div></a>");
+		renderedHTML.append("</div>");
 
 		return renderedHTML.toString();
 	}

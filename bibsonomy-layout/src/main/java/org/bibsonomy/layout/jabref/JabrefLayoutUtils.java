@@ -42,6 +42,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.LayoutPart;
 import org.bibsonomy.services.filesystem.JabRefFileLogic;
+import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.file.FileUtil;
 
@@ -101,13 +102,14 @@ public class JabrefLayoutUtils {
 		return StringUtils.getMD5Hash("user." + user.toLowerCase() + "." + part + "." + JabRefFileLogic.LAYOUT_FILE_EXTENSION).toLowerCase();
 	}
 	
-	/** Builds the name of a custom user layout, for the map and elsewhere. Typically "custom_" + userName.
+	/**
+	 * Builds the name of a custom user layout, for the map and elsewhere. Typically "custom_" + userName.
 	 * 
 	 * @param userName
-	 * @return
+	 * @return the name of a custom layout
 	 */
 	public static String userLayoutName (final String userName) {
-		return "custom_" + userName;
+		return LayoutRenderer.CUSTOM_LAYOUT + "_" + userName;
 	}
 
 	/** Loads a resource using the classloader.

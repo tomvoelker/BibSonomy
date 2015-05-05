@@ -43,6 +43,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
@@ -73,6 +74,7 @@ import org.bibsonomy.testutil.DBTestUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
 import org.bibsonomy.testutil.TestUtils;
+import org.bibsonomy.util.Sets;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -336,7 +338,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		// just call the sql statements
 		// TODO: add more tests
 		publicationDb.getPostsByTagNamesForUser(null, "testuser1", tagIndex4, TESTGROUP1_ID, new LinkedList<Integer>(), 10, 0, PostAccess.FULL, null, null, this.dbSession);
-		publicationDb.getPostsByTagNamesForUser(null, "testuser1", tagIndex4, TESTGROUP1_ID, new LinkedList<Integer>(), 10, 0, null, FilterEntity.JUST_PDF, null, this.dbSession);
+		publicationDb.getPostsByTagNamesForUser(null, "testuser1", tagIndex4, TESTGROUP1_ID, new LinkedList<Integer>(), 10, 0, null, Sets.<Filter>asSet(FilterEntity.JUST_PDF), null, this.dbSession);
 	}
 
 	/**
@@ -514,7 +516,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		
 		// just call the statements
 		// TODO: add tests
-		publicationDb.getPostsForGroup(TESTGROUP1_ID, groups, null, HashID.INTER_HASH, null, FilterEntity.JUST_PDF, 10, 0, null, this.dbSession);
+		publicationDb.getPostsForGroup(TESTGROUP1_ID, groups, null, HashID.INTER_HASH, null, Sets.<Filter>asSet(FilterEntity.JUST_PDF), 10, 0, null, this.dbSession);
 		publicationDb.getPostsForGroup(TESTGROUP1_ID, groups, null, HashID.INTER_HASH, PostAccess.FULL, null, 10, 0, null, this.dbSession);
 	}
 
@@ -575,7 +577,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		// just call the sql statements
 		// TODO: add tests
 		publicationDb.getPostsForGroupByTag(TESTGROUP1_ID, visibleGroupIDs, loginUser, tagIndex, PostAccess.FULL, null, 10, 0, null, this.dbSession);
-		publicationDb.getPostsForGroupByTag(TESTGROUP1_ID, visibleGroupIDs, loginUser, tagIndex, null, FilterEntity.JUST_PDF, 10, 0, null, this.dbSession);
+		publicationDb.getPostsForGroupByTag(TESTGROUP1_ID, visibleGroupIDs, loginUser, tagIndex, null, Sets.<Filter>asSet(FilterEntity.JUST_PDF), 10, 0, null, this.dbSession);
 	}
 
 	/**
@@ -611,7 +613,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		
 		// just call the statements
 		// TODO: add tests
-		publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, FRIENDS_GROUP_ID, groups, null, FilterEntity.JUST_PDF, 10, 0, null, this.dbSession);
+		publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, FRIENDS_GROUP_ID, groups, null, Sets.<Filter>asSet(FilterEntity.JUST_PDF), 10, 0, null, this.dbSession);
 		publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, FRIENDS_GROUP_ID, groups, PostAccess.FULL, null, 10, 0, null, this.dbSession);
 	}
 	
@@ -898,7 +900,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		
 		// delete private post
 		toInsert.getGroups().clear();
-		final Group group = GroupUtils.getPrivateGroup();
+		final Group group = GroupUtils.buildPrivateGroup();
 		toInsert.getGroups().add(group);
 		
 		final BibTexParam postParam = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, null, null, toInsert.getUser());
@@ -1019,7 +1021,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 //		final List<Post<BibTex>> posts2 = bibTexDb.getPosts(param, this.dbSession);
 //		assertEquals(10, posts2.size());
 	}
-	
+
 	/**
 	 * tests testGetPostsByKey
 	 */
@@ -1048,7 +1050,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		posts = publicationDb.getPostsByBibTeXKey("testspammer", "elsenbroich2006abductive", null, -1, Arrays.asList(Integer.valueOf(PUBLIC_GROUP_ID), Integer.valueOf(PUBLIC_GROUP_ID_SPAM)), 20, 0, null, this.dbSession);
 		assertEquals(2, posts.size());
 	}
-	
+
 	/**
 	 * tests {@link BibTexDatabaseManager#getPostsByFollowedUsers(String, List, int, int, org.bibsonomy.database.common.DBSession)}
 	 */
@@ -1183,5 +1185,19 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	public void testUpdatePost() {
 		this.printMethod("testUpdatePost");
 		// called by other methods
+	}
+	
+	@Test
+	public void testGetPostsWithHistory() {
+		this.printMethod("testGetPostsWithHistory");
+		String requestedUserName = "testuser3";
+		String intraHash = "891518b4900cd1832d77a0c8ae20dd14";
+		BibTexParam param = new BibTexParam();
+		param.setRequestedContentId(20);
+		param.setRequestedUserName(requestedUserName);
+		param.setHash(intraHash);
+		param.setFilters(Sets.<Filter>asSet(FilterEntity.HISTORY));
+		List<Post<BibTex>> posts = publicationDb.getPosts(param, dbSession);
+		assertEquals(4, posts.size());
 	}
 }

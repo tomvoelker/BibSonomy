@@ -1,7 +1,7 @@
-\format[HTMLChars,AntiScriptInjection,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author} (\format[AntiScriptInjection]{\year}). 
-<i> \format[HTMLChars,AntiScriptInjection]{\title}. </i>
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLCharsAntiScript]{\author} (\format[AntiScriptInjection]{\year}). 
+<i> \format[HTMLCharsAntiScript]{\title}. </i>
 \begin{type}
-\format[HTMLChars,AntiScriptInjection]{\type}
+\format[HTMLCharsAntiScript]{\type}
 \end{type}
 Unpublished doctoral dissertation
 \begin{school}

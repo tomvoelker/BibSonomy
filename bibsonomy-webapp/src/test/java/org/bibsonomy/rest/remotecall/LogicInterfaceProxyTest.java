@@ -54,14 +54,17 @@ import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.ConceptUpdateOperation;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.common.enums.StatisticsConstraint;
+import org.bibsonomy.common.enums.StatisticsUnit;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
@@ -74,16 +77,16 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.GoldStandardRelation;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
-import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
@@ -520,18 +523,21 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		 */
 		returnedGroupExpectation.setPrivlevel(null); 
 		
-		returnedGroupExpectation.setUsers(new ArrayList<User>());
-		returnedGroupExpectation.getUsers().add(ModelUtils.getUser());
-		returnedGroupExpectation.getUsers().get(0).setName("Nr1");
-		returnedGroupExpectation.getUsers().add(ModelUtils.getUser());
-		for (final User u : returnedGroupExpectation.getUsers()) {
+		final List<User> users = new ArrayList<User>();
+		users.add(ModelUtils.getUser());
+		users.get(0).setName("Nr1");
+		users.add(ModelUtils.getUser());
+		for (final User u : users) {
 			u.setApiKey(null);
 			u.setPassword(null);
+			final GroupMembership groupMembership = new GroupMembership();
+			groupMembership.setUser(u);
+			returnedGroupExpectation.getMemberships().add(groupMembership);
 		}
 		EasyMock.expect(serverLogic.getGroupDetails(groupName)).andReturn(returnedGroupExpectation);
 		EasyMock.replay(serverLogic);
 		final Group returnedGroup = clientLogic.getGroupDetails(groupName);
-		log.debug(returnedGroup.getUser().getIPAddress());
+
 		CommonModelUtils.assertPropertyEquality(returnedGroupExpectation, returnedGroup, 5, Pattern.compile(".*users.*\\.(" + COMMON_USER_PROPERTIES + ")|.*\\.date|.*\\.scraperId|.*\\.openURL|.*groupId|user.*"));
 		EasyMock.verify(serverLogic);
 		assertLogin();
@@ -539,15 +545,15 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 	
 	/**
-	 * runs the test defined by {@link #getGroups(int, int)} with certain arguments
+	 * runs the test defined by {@link #getGroups(boolean, int, int)} with certain arguments
 	 */
 	@Test
 	public void getGroupsTest() {
-		getGroups(64, 129);
+		getGroups(false, 64, 129);
 	}
 	
 	@Override
-	public List<Group> getGroups(final int start, final int end) {
+	public List<Group> getGroups(boolean pending, final int start, final int end) {
 		final List<Group> expectedList = new ArrayList<Group>();
 		expectedList.add(ModelUtils.getGroup());
 		expectedList.get(0).setName("Group1");
@@ -566,9 +572,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		 */
 		expectedList.get(1).setPrivlevel(null);
 		
-		EasyMock.expect(serverLogic.getGroups(start, end)).andReturn(expectedList);
+		EasyMock.expect(serverLogic.getGroups(false, start, end)).andReturn(expectedList);
 		EasyMock.replay(serverLogic);
-		final List<Group> returnedGroups = clientLogic.getGroups(start,end);
+		final List<Group> returnedGroups = clientLogic.getGroups(false,start, end);
 		CommonModelUtils.assertPropertyEquality(expectedList, returnedGroups, 3, Pattern.compile(".*\\.groupId"));
 		EasyMock.verify(serverLogic);
 		assertLogin();
@@ -629,19 +635,19 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 	
 	/**
-	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, String, FilterEntity, Order, Date, Date, int, int)} with arguments as used for the getBookmarkByTagName query
+	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, String, Set, Order, Date, Date, int, int)} with arguments as used for the getBookmarkByTagName query
 	 */
 	@Test
 	public void getPostsTestBookmarkByTag() {
-		getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null, null,  null /* must be null because order is inferred and not transmitted */, null, null, 7, PostLogicInterface.MAX_QUERY_SIZE + 7);
+		getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null, SearchType.LOCAL,null,  null /* must be null because order is inferred and not transmitted */, null, null, 7, 1264);
 	}
 	
 	/**
-	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, String, FilterEntity, Order, Date, Date, int, int)} with arguments as used for the getPublicationForGroupAndTag query
+	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, String, Set, Order, Date, Date, int, int)} with arguments as used for the getPublicationForGroupAndTag query
 	 */
 	@Test
 	public void getPostsTestPublicationByGroupAndTag() {
-		getPosts(BibTex.class, GroupingEntity.GROUP, "testGroup", Arrays.asList("blub", "bla"), null, null, null, null, null, null, 0, 1);
+		getPosts(BibTex.class, GroupingEntity.GROUP, "testGroup", Arrays.asList("blub", "bla"), null, null,SearchType.LOCAL, null, null, null, null, 0, 1);
 	}
 	
 	/**
@@ -649,25 +655,31 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */
 	@Test
 	public void getPostsTestPublicationByTagWithUmlaut() {
-		getPosts(BibTex.class, GroupingEntity.ALL, null, Arrays.asList("blüb"), null, null, null, null, null, null, 0, 1);
+		getPosts(BibTex.class, GroupingEntity.ALL, null, Arrays.asList("blüb"), null, null,SearchType.LOCAL, null, null, null, null, 0, 1);
 	}
 	
 	/**
-	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, String, FilterEntity, Order, Date, Date, int, int)} with arguments as used for the getPublicationByHashForUser query 
+	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, String, Set, Order, Date, Date, int, int)} with arguments as used for the getPublicationByHashForUser query 
 	 */
 	@Test
 	public void getPostsTestPublicationByUserAndHash() {
-		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null, null, null, null, null, 0, 5);
+		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null,SearchType.LOCAL, null, null, null, null, 0, 5);
 	}
 	
 	@Test
 	public void getPostsTestWithSearchAndOrder() {
-		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), "search", null, Order.FOLKRANK, null, null, 0, 5);
+		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), "search",SearchType.LOCAL, null, Order.FOLKRANK, null, null, 0, 5);
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+		return getPosts(resourceType, grouping, groupingName, tags, hash, search, SearchType.LOCAL, filters, order, startDate, endDate, start, end);
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		final List<Post<T>> expectedPosts = new ArrayList<Post<T>>();
 		expectedPosts.add(ModelUtils.generatePost(resourceType));
 		expectedPosts.get(0).setDescription("erstes");
@@ -677,16 +689,15 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			expectedPosts.add( (Post) ModelUtils.generatePost(BibTex.class));
 		}
 		
-		EasyMock.expect(serverLogic.getPosts(resourceType, grouping, groupingName, tags, hash, search, filter, order, null, null, start, end)).andReturn(expectedPosts);
+		EasyMock.expect(serverLogic.getPosts(resourceType, grouping, groupingName, tags, hash, search,searchType, filters, order, null, null, start, end)).andReturn(expectedPosts);
 		EasyMock.replay(serverLogic);
 
-		final List<Post<T>> returnedPosts = clientLogic.getPosts(resourceType, grouping, groupingName, tags, hash, search, filter, order, null, null, start, end);
+		final List<Post<T>> returnedPosts = clientLogic.getPosts(resourceType, grouping, groupingName, tags, hash, search, searchType, filters, order, null, null, start, end);
 		CommonModelUtils.assertPropertyEquality(expectedPosts, returnedPosts, 5, Pattern.compile(".*\\.user\\.(" + COMMON_USER_PROPERTIES + "|confidence|activationCode|reminderPassword|openID|ldapId|remoteUserIds|prediction|algorithm|mode)|.*\\.date|.*\\.scraperId|.*\\.openURL|.*\\.numberOfRatings|.*\\.rating"));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return returnedPosts;
 	}
-	
 
 	/**
 	 * runs the test defined by {@link #getTagDetails(String)} with a certain argument
@@ -754,49 +765,54 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	/**
-	 * runs the test defined by {@link #deleteUserFromGroup(String, String)} with certain arguments
+	 * runs the test defined by {@link #updateGroup(Group, GroupUpdateOperation)} with certain group argument
 	 */
 	@Test
-	public void deleteUserFromGroupTest() {
-		deleteUserFromGroup("grooouuup!", "userTest");
-	}
-	
-	@Override
-	public void deleteUserFromGroup(final String groupName, final String userName) {
-		serverLogic.deleteUserFromGroup(groupName, userName);
-		EasyMock.replay(serverLogic);
-		clientLogic.deleteUserFromGroup(groupName, userName);
-		EasyMock.verify(serverLogic);
-		assertLogin();
-	}
-
-	/**
-	 * runs the test defined by {@link #updateGroup(Group, GroupUpdateOperation)} with certain group argument
-	 */	
-	@Test
 	public void updateGroupTest() {
-		updateGroup(ModelUtils.getGroup(), GroupUpdateOperation.UPDATE_ALL);
+		updateGroup(ModelUtils.getGroup(), GroupUpdateOperation.UPDATE_ALL, null);
 	}
 	
 	/**
 	 * runs the test to add a user to a group 
-	 */
+	 */	
 	@Test
 	public void addUserToGroupTest() {
 		final Group group = new Group("groupName");
-		group.setUsers(Collections.singletonList(new User("testUser1")));
-		this.updateGroup(group, GroupUpdateOperation.ADD_NEW_USER);
+		final GroupMembership membership = new GroupMembership(new User("testUser1"), GroupRole.USER, false);
+		this.updateGroup(group, GroupUpdateOperation.ADD_MEMBER, membership);
+	}
+	
+	/**
+	 * runs the test defined by {@link #deleteUserFromGroup(String, String)} with certain arguments
+	 */
+	@Test
+	public void deleteUserFromGroupTest() {
+		final Group group = new Group("grooouuup!");
+		final GroupMembership membership = new GroupMembership();
+		membership.setUser(new User("userTest"));
+		
+		this.updateGroup(group, GroupUpdateOperation.REMOVE_MEMBER, membership);
 	}
 	
 	@Override
-	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
-		
+	public String updateGroup(final Group group, final GroupUpdateOperation operation, GroupMembership membership) {
+		String groupName = group.getName();
 		switch (operation) {
-		case ADD_NEW_USER:
-
-			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"), PropertyEqualityArgumentMatcher.eq(operation, ""))).andReturn("OK");
+		case ADD_MEMBER:
+			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"),
+					PropertyEqualityArgumentMatcher.eq(operation),
+					PropertyEqualityArgumentMatcher.eq(membership))).andReturn("OK");
 			EasyMock.replay(serverLogic);
-			assertEquals("OK", clientLogic.updateGroup(group, operation));
+			assertEquals("OK", clientLogic.updateGroup(group, operation, membership));
+			EasyMock.verify(serverLogic);
+			assertLogin();
+			break;
+		case REMOVE_MEMBER:
+			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"),
+					PropertyEqualityArgumentMatcher.eq(operation),
+					PropertyEqualityArgumentMatcher.eq(membership))).andReturn(groupName);
+			EasyMock.replay(serverLogic);
+			assertEquals("OK", clientLogic.updateGroup(group, operation, membership));
 			EasyMock.verify(serverLogic);
 			assertLogin();
 			break;
@@ -808,9 +824,11 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			 */
 			group.setPrivlevel(null); 
 			
-			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"), PropertyEqualityArgumentMatcher.eq(operation, ""))).andReturn(group.getName() + "-new");
+			EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"),
+					PropertyEqualityArgumentMatcher.eq(operation, ""),
+					PropertyEqualityArgumentMatcher.eq(membership))).andReturn(groupName + "-new");
 			EasyMock.replay(serverLogic);
-			assertEquals(group.getName() + "-new", clientLogic.updateGroup(group, operation));
+			assertEquals(groupName + "-new", clientLogic.updateGroup(group, operation, null));
 			EasyMock.verify(serverLogic);
 			assertLogin();
 			break;
@@ -1084,12 +1102,6 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	@Override
-	public int getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int interval) {
 		// TODO Auto-generated method stub
 		return null;
@@ -1108,7 +1120,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	@Override
-	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final StatisticsConstraint constraint, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1126,7 +1138,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 	
 	@Override
-	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, final Date startDate, final Date endDate, final int start, final int end) {
+	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, Set<Filter> filters, final Date startDate, final Date endDate, final int start, final int end) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -1290,7 +1302,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	@Override
-	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info) {
+	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info, Date newDate) {
 		// TODO Auto-generated method stub
 	}
 
@@ -1335,6 +1347,24 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	
 	@Override
 	public List<PostMetaData> getPostMetaData(HashID hashType, String resourceHash, String userName, String metaDataPluginKey) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getDocumentStatistics(org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.Set, java.util.Date, java.util.Date)
+	 */
+	@Override
+	public Statistics getDocumentStatistics(GroupingEntity groupingEntity, String grouping, Set<Filter> filters, Date startDate, Date endDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getUserStatistics(org.bibsonomy.common.enums.GroupingEntity, java.util.Set, org.bibsonomy.common.enums.Classifier, org.bibsonomy.common.enums.SpamStatus, java.util.Date, java.util.Date, java.lang.Integer, org.bibsonomy.common.enums.StatisticsUnit)
+	 */
+	@Override
+	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, Classifier classifier, SpamStatus status, Date startDate, Date endDate, Integer interval, StatisticsUnit unit) {
 		// TODO Auto-generated method stub
 		return null;
 	}

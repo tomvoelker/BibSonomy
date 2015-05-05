@@ -1,0 +1,59 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:book="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bookmark"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion"
+	xmlns:review="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion/review"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:goldstandardbookmark="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardbookmark"
+	xmlns:common="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/resources/actionbuttons"
+	>
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	
+	<fmt:message key="goldStandard.approved.title" var="approved"/>
+	<c:set var="goldstandard" value="${post.resource}" />
+	<!-- determine the publication type for schema.org markup -->
+	<c:set var="itemType" value="http://schema.org/WebPage"/>
+	<div id="goldstandard">
+		<h1 class="content-header"><fmt:message key="community.page"/></h1>
+		<div class="title">
+			<div class="media">
+				<div class="media-body" id="titletext">
+					<div class="pull-right"><buttons:communityPostActions post="${post}" resourceType="bookmark"/></div>
+					<h1 class="media-heading" id="pubtitle"><c:out value="${fn:escapeXml(goldstandard.title)}" />
+						<c:if test="${post.approved}">
+							<a  title="${fn:escapeXml(approved)}">
+								<span class="fa fa-check-circle" style="margin-left:6px;"><!--  --></span>
+							</a>
+						</c:if>	
+					</h1>
+					<p><book:desc post="${post}"/></p>
+				</div>
+			</div>
+		</div>
+
+		<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}"/>
+
+		<!--+
+			| discussion and rating
+			+-->
+		<h4 class="pub-details">
+			<span class="fa fa-comments"><!--  --></span><c:out value=" " />
+			<fmt:message key="publications.discussion.headline"/>
+		</h4>
+		
+		<!-- Aggregated RatingInfo -->
+		<review:reviewRatingsInfo resource="${post.resource}" />
+
+		<!-- Publication reference link -->
+		<discussion:linkBox resource="${post.resource}"/>
+		
+		<!-- discussion -->
+		<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName=""/>
+	</div>
+</jsp:root>

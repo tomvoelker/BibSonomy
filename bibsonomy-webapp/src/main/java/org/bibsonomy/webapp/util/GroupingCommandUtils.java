@@ -44,8 +44,8 @@ import org.bibsonomy.webapp.command.GroupingCommand;
 public abstract class GroupingCommandUtils {
 	private static final Log log = LogFactory.getLog(GroupingCommandUtils.class);
 	
-	private static final Group PUBLIC_GROUP = GroupUtils.getPublicGroup();
-	private static final Group PRIVATE_GROUP = GroupUtils.getPrivateGroup();
+	private static final Group PUBLIC_GROUP = GroupUtils.buildPublicGroup();
+	private static final Group PRIVATE_GROUP = GroupUtils.buildPrivateGroup();
 	
 	/**
 	 * TODO

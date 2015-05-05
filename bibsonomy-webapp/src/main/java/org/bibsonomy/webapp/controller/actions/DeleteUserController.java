@@ -28,6 +28,7 @@ package org.bibsonomy.webapp.controller.actions;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.controller.SettingsPageController;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -88,6 +89,8 @@ public class DeleteUserController extends SettingsPageController implements Vali
 				} catch (final UnsupportedOperationException ex) {
 					// this happens when a user is a group
 					errors.reject("error.user_is_group_cannot_be_deleted");
+				} catch (final IllegalArgumentException ex) {
+					errors.reject("error.user_is_last_admin_of_group");
 				}
 			} else {
 				/*

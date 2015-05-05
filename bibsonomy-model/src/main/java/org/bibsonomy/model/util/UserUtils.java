@@ -31,6 +31,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -50,7 +51,10 @@ public class UserUtils {
 	
 	/** the name of the dblp user */
 	public static final String DBLP_USER_NAME = "dblp";
-
+	
+	/** a set of special users */
+	public static final List<String> USER_NAMES_OF_SPECIAL_USERS = Arrays.asList(DBLP_USER_NAME);
+	
 	/** the length of the password salt */
 	private static final int SALT_LENGTH = 16;
 
@@ -296,4 +300,42 @@ public class UserUtils {
 		existingUser.setReminderPassword(!present(updatedUser.getReminderPassword()) ? existingUser.getReminderPassword() : updatedUser.getReminderPassword());
 		existingUser.setReminderPasswordRequestDate(!present(updatedUser.getReminderPasswordRequestDate()) 	? existingUser.getReminderPasswordRequestDate() : updatedUser.getReminderPasswordRequestDate());
 	}
+	
+	/**
+	 * @param user
+	 * @return <code>true</code> iff the user exists in the system
+	 */
+	public static boolean isExistingUser(final User user) {
+		return present(user) && !Role.DELETED.equals(user.getRole()) && present(user.getName());
+	}
+	
+	/**
+	 * This method returns a new groupuser {@link User} for the given group
+	 * 
+	 * @param groupName the name of the group
+	 * @return the group user
+	 */
+	public static User buildGroupUser(final String groupName) {
+		final User user = new User(groupName);
+		user.setPassword(generateRandomPassword());
+		user.setRealname(""); // XXX: realname can't be null (db schema)
+		user.setEmail(""); // XXX: email can't be null (db schema)
+		user.setRole(Role.GROUPUSER);
+		return user;
+	}
+	
+	/**
+	 * Return the user's name in a nice format to be used e.g. in emails. If the user has a non-empty real name, that will be returned, otherwise the username.
+	 * @param user
+	 * @param atPrefix - in cases where the username is returned the at-prefix can be prepended: e.g. @sdo vs. sdo
+	 * @return
+	 */
+	public static String getNiceUserName(final User user, final boolean atPrefix) {
+		if (present(user.getRealname())) {
+			return user.getRealname();
+		} 
+		return (atPrefix? "@" :"") + user.getName(); 
+	
+	}
+	
 }

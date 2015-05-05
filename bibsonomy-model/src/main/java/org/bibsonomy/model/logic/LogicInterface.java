@@ -30,16 +30,19 @@ import java.net.InetAddress;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.ConceptUpdateOperation;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.SpamStatus;
+import org.bibsonomy.common.enums.StatisticsUnit;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
@@ -50,12 +53,14 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 
@@ -111,7 +116,21 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @return list of user
 	 */
 	public List<User> getUsers (Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, UserRelation relation, String search, int start, int end);	
-
+	
+	/**
+	 * @param grouping TODO
+	 * @param constraints 
+	 * @param filters TODO
+	 * @param classifier 
+	 * @param status 
+	 * @param startDate
+	 * @param endDate
+	 * @param interval 
+	 * @param unit 
+	 * @return statistic informations about the users
+	 */
+	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, final Classifier classifier, final SpamStatus status, Date startDate, Date endDate, final Integer interval, final StatisticsUnit unit);
+	
 	/**
 	 * Returns details about a specified user
 	 * 
@@ -155,13 +174,14 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 
 	/**
 	 * Returns all groups of the system.
-	 * 
-	 * @param end
+	 * @param pending
 	 * @param start
+	 * @param end
+	 * 
 	 * @return a set of groups, an empty set else
 	 */
-	public List<Group> getGroups(int start, int end);
-
+	public List<Group> getGroups(boolean pending, int start, int end);
+	
 	/**
 	 * Returns details of one group.
 	 * 
@@ -282,14 +302,6 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	public void deleteGroup(String groupName);
 
 	/**
-	 * Removes an user from a group.
-	 * 
-	 * @param groupName the group to change
-	 * @param userName the user to remove
-	 */
-	public void deleteUserFromGroup(String groupName, String userName);
-
-	/**
 	 * Adds a user to the database.
 	 * 
 	 * @param user  the user to add
@@ -320,17 +332,20 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * 
 	 * Depending on the {@link GroupUpdateOperation}, different actions are done:
 	 * <dl>
-	 * <dt>{@link GroupUpdateOperation#ADD_NEW_USER}</dt><dd>Adds an existing user to an existing group.</dd>
+	 * <dt>{@link GroupUpdateOperation#ADD_MEMBER}</dt><dd>Adds an existing user to an existing group.</dd>
 	 * <dt>{@link GroupUpdateOperation#UPDATE_SETTINGS}</dt><dd>Updates the settings of the group.</dd>
 	 * <dt>{@link GroupUpdateOperation#UPDATE_ALL}</dt><dd>Updates the complete group.</dd>
+	 * <dt>{@link GroupUpdateOperation#ACTIVATE}</dt><dd>Activates the group.</dd>
+	 * <dt>{@link GroupUpdateOperation#DELETE}</dt><dd>Deletes the pending group.</dd>
 	 * </dl>
 	 * 
 	 * 
 	 * @param group  the group to update
 	 * @param operation the operation which should be performed
-	 * @return groupID the group id of the updated group
+	 * @param membership 
+	 * @return the group name of the updated group
 	 */
-	public String updateGroup(Group group, final GroupUpdateOperation operation);
+	public String updateGroup(Group group, final GroupUpdateOperation operation, final GroupMembership membership);
 
 	/**
 	 * Adds a document. If the resourceHash is given, the document is connected
@@ -362,6 +377,18 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @throws AccessDeniedException if user is not allowed to access the requested document
 	 */
 	public Document getDocument(String userName, String resourceHash, String fileName);
+	
+	/**
+	 * Get statistics about document(s)
+	 * @param groupingEntity
+	 * @param grouping
+	 * @param filters
+	 * @param constraints
+	 * @param startDate
+	 * @param endDate
+	 * @return the stats
+	 */
+	public Statistics getDocumentStatistics(final GroupingEntity groupingEntity, final String grouping, final Set<Filter> filters, final Date startDate, final Date endDate);
 
 	/**
 	 * Deletes an existing document. If the resourceHash is given, the document
@@ -475,6 +502,9 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	public void deleteRelation(String upper, String lower, GroupingEntity grouping, String groupingName);
 
 	/**
+	 * TODO: can we merge this with the {@link #getUsers(Class, GroupingEntity, String, List, String, Order, UserRelation, String, int, int)}
+	 * method?
+	 * 
 	 * Returns all users that are classified to the specified state by
 	 * the given classifier 
 	 * 
@@ -485,16 +515,6 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @author sts
 	 */
 	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status, int limit);
-
-	/**
-	 * Returns number of classfied user 
-	 * 
-	 * @param classifier the classifier
-	 * @param status the status classifed
-	 * @param interval 
-	 * @return count of users
-	 */
-	public int getClassifiedUserCount(Classifier classifier, SpamStatus status, int interval);
 	
 	/**
 	 * Returns the value of the specified classifier setting
@@ -616,13 +636,15 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @param tags
 	 * @param regex
 	 * @param status
+	 * @param filters TODO
+	 * @param contraints the statistic contraint
 	 * @param startDate TODO
 	 * @param endDate TODO
 	 * @param start
 	 * @param end
 	 * @return the number of relations from a user
 	 */
-	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String regex, ConceptStatus status, Date startDate, Date endDate, int start, int end);
+	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String regex, ConceptStatus status, Set<Filter> filters, Date startDate, Date endDate, int start, int end);
 
 	/** 
 	 * We return all Users that are in (the) relation with the sourceUser
@@ -685,5 +707,5 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @param clearInbox 
 	 * @return the new size of the inbox
 	 */
-	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox);	
+	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox);
 }

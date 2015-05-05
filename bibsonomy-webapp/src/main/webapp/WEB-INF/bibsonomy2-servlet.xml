@@ -26,6 +26,9 @@
 				
 				<!-- convert a string to a list of persons and vice versa -->
 				<bean class="org.bibsonomy.web.spring.converter.StringToPersonListConverter" />
+				
+				<bean class="org.bibsonomy.web.spring.converter.StringToFilterConverter" />
+				
 				<bean class="org.bibsonomy.web.spring.converter.PersonListToStringConverter" />
 				
 				<!-- add a custom date converter to support binding of date fields. -->
@@ -70,11 +73,6 @@
 	
 	<bean id="conversionServiceBeanFactoryPostProcessor" class="org.bibsonomy.webapp.util.ConversionServiceBeanFactoryPostProcessor">
 		<property name="conversionService" ref="conversionService" />
-	</bean>
-	
-	<!-- TODO: remove after all jsp are ported to spring mvc -->
-	<bean id="oldPagesFix" class="servlets.utils.ProperiesAttributeSetter" init-method="init">
-		<property name="properties" ref="properties" />
 	</bean>
 	
 	<bean id="controllerBase" class="org.bibsonomy.webapp.util.spring.controller.MinimalisticControllerSpringWrapper" abstract="true">
@@ -132,12 +130,10 @@
 	
 	<!-- provides access to the wikiRenderer -->
 	<bean id="wikiRenderer" class="org.bibsonomy.wiki.CVWikiModel" scope="request">
+		<constructor-arg value="#{requestLogic.locale}" />
 		<property name="logic" ref="logic"/>
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer" />
 		<property name="messageSource" ref="messageSource"/>
-		<constructor-arg value="#{requestLogic.locale}">
-			
-		</constructor-arg>
 	</bean>
 	
 	<!-- 
@@ -145,10 +141,20 @@
 	    to be a user with role "admin". 
 	 -->
 	<bean id="adminLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.AdminLogicFactoryBean" scope="singleton">
-			<!-- name the admin user will have when accessing the logic interface -->
+		<!-- name the admin user will have when accessing the logic interface -->
 		<property name="adminUserName" value="admin"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 		<property name="bibtexReader" ref="bibtexReader"/>
+	</bean>
+	
+	<bean id="basicDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" abstract="true">
+		<property name="validationQuery" value="SELECT 42" />
+		<property name="minEvictableIdleTimeMillis" value="1800000" />
+		<property name="timeBetweenEvictionRunsMillis" value="1800000" />
+		<property name="numTestsPerEvictionRun" value="10" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="true" />
+		<property name="testOnReturn" value="true" />
 	</bean>
 
 	<!-- provides access to the database for all controllers -->
@@ -178,6 +184,7 @@
 		<property name="projectJoinGroupRequestFromAddress" value="${project.joinGroupRequestFromAddress}" />
 		<property name="mailHost" value="${mail.smtp.host}" />
 		<property name="messageSource" ref="messageSource"/>
+		<property name="absoluteURLGenerator" ref="absoluteUrlGenerator" />
 	</bean>
 
 	<!--  #################### interceptors #################### -->
@@ -234,6 +241,8 @@
 				<value>classpath:/custom/messages</value>
 				<value>classpath:/projects/${project.name}_messages</value>
 				<value>classpath:/themes/${project.theme}_messages</value>
+				<!-- TODO: (Bootstrap) remove when old layout is removed -->
+				<value>classpath:/old_layout_messages</value>
 				<value>classpath:/messages</value>
 			</list>
 		</property>
@@ -352,6 +361,18 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/settings/group">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="groupSettingsPageController" />
+						<property name="allowedFields">
+							<list>
+								<value>selTab</value>
+								<value>requestedGroup</value>
+								<value>errorMessage</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/user">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="userPageController" />
@@ -365,6 +386,13 @@
 				<entry key="/history">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="postHistoryController" />
+						<property name="allowedFields">
+							<list>
+								<value>requestedType</value>
+								<value>requestedHash</value>
+								<value>requestedUser</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/userinfo">
@@ -400,6 +428,24 @@
 				<entry key="/export">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="exportPageController"/>
+					</bean>
+				</entry>
+				<entry key="/statistics">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="statisticsController"/>
+						<property name="allowedFields">
+							<list>
+								<value>spammers</value>
+								<value>all</value>
+								<value>type</value>
+								<value>interval</value>
+								<value>unit</value>
+								<value>grouping</value>
+								<value>filters</value>
+								<value>conceptStatus</value>
+								<value>resourceType</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/groups">
@@ -539,17 +585,6 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/memento">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="mementoController"/>
-						<property name="allowedFields">
-							<list>
-								<value>url</value>
-								<value>datetime</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
 				<entry key="/downloadFile">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="downloadFileController"/>
@@ -651,12 +686,6 @@
 						<property name="controllerBeanName" value="error503PageController"/>
 					</bean>
 				</entry>
-				<!-- linkcloud TODO: in development TODODZO -->
-				<entry key="/linkcloud">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="linkCloudPageController"/>
-					</bean>
-				</entry>
 				<!-- TODO: (bootstrap) remove -->
 				<entry key="/bibsonomy3">
 					<bean parent="controllerBase">
@@ -711,6 +740,10 @@
 		<property name="oauthLogic" ref="oAuthLogic"/>
 		<property name="invisibleOAuthConsumers" value="${invisible.oauth.consumers}"/>
 	</bean>
+	
+	<bean id="groupSettingsPageController" class="org.bibsonomy.webapp.controller.GroupSettingsPageController" scope="request">
+		<property name="logic" ref ="logic" />
+	</bean>
 
 	<bean id="userPageController" class="org.bibsonomy.webapp.controller.UserPageController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>
@@ -739,11 +772,11 @@
 	</bean>
 	
 	<bean id="postHistoryController" class="org.bibsonomy.webapp.controller.PostHistoryController" scope="request" parent="multiResourceListControllerWithTags">
-		<property name="supportedResources">
-			<set>
+	<!--<property name="supportedResources">
+			 <set>
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-			</set>
-		</property>
+			</set> 
+		</property> -->
 	</bean>
 
 	<bean id="userInfoController" class="org.bibsonomy.webapp.controller.UserInfoController" scope="request">
@@ -823,6 +856,10 @@
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
 		<property name="layouts" ref="standardLayouts" />
 	</bean>
+	
+	<bean id="statisticsController" class="org.bibsonomy.webapp.controller.StatisticsController" scope="request">
+		<property name="logic" ref="logic" />
+	</bean>
 
 	<bean id="conceptPageController" class="org.bibsonomy.webapp.controller.ConceptPageController" scope="request">
 		<property name="logic" ref="logic"/>
@@ -859,16 +896,6 @@
 	<bean id="UnAPIController" class="org.bibsonomy.webapp.controller.special.UnAPIController" scope="request">
 		<property name="responseLogic" ref="responseLogic"/>
 	</bean>
-
-	<!-- 
-		provides access to archived versions of web pages using memento timegates, cf. http://www.mementoweb.org/
-	 -->
-	<bean id="mementoService" class="org.bibsonomy.services.memento.MementoService">
-		<constructor-arg value="${memento.timegate}"/>
-	</bean>
-	<bean id="mementoController" class="org.bibsonomy.webapp.controller.special.MementoController" scope="request">
-		<property name="mementoService" ref="mementoService"/>
-	</bean>
 	
 	<!-- 
 	   Does various redirects, like /myRelations, /myBibSonomy, etc.
@@ -897,7 +924,7 @@
 	<bean id="searchPageController" class="org.bibsonomy.webapp.controller.SearchPageController" scope="request" parent="multiResourceListController">
 		<property name="supportedResources" ref="allResources"/>
 	</bean>
-	
+
 	<bean id="popularTagsPageController" class="org.bibsonomy.webapp.controller.PopularTagsPageController" scope="request">
 		<property name="logic" ref="logic"/>
 	</bean>
@@ -953,10 +980,6 @@
 	<!-- TOOD: remove -->
 	<bean id="bibsonomyPreview" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="BIBSONOMY3"/>
-	</bean>
-	<!-- linkcloud TODO: in development TODODZO -->
-	<bean id="linkCloudPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
-		<property name="view" value="LINK_CLOUD"/>
 	</bean>
 	
 	<bean id="contextPathFilter" class="org.bibsonomy.webapp.filters.ContextPathFilter">

@@ -29,23 +29,29 @@ package org.bibsonomy.webapp.controller.admin;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.AdminActions;
 import org.bibsonomy.common.enums.ClassifierSettings;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.EvaluatorUser;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.util.Sets;
 import org.bibsonomy.webapp.command.ajax.AdminAjaxCommand;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -80,7 +86,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 			throw new AccessDeniedException("please log in as admin");
 		}
 		
-		final String action = command.getAction();
+		final AdminActions action = command.getAction();
 		
 		log.debug("Action: " + action);
 		
@@ -103,7 +109,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 		 * 	
 		 */
 	
-		switch (AdminActions.getAdminAction(action)) {
+		switch (action) {
 		case FLAG_SPAMMER:
 			log.debug("flag spammer");
 			this.flagSpammer(command, true);
@@ -131,6 +137,9 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 			this.updateSettings(command);
 			command.setResponseString(command.getKey() + " updated");
 			break;
+		case FETCH_GROUP_WITH_PERMISSIONS:
+			this.fetchgroupForPermissions(command);
+			return Views.AJAX_JSON_PERMISSIONS;
 		default:
 			break;
 		}
@@ -150,6 +159,19 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 		
 	}
 	
+	/**
+	 * 
+	 */
+	private void fetchgroupForPermissions(final AdminAjaxCommand cmd) {
+		String groupName = cmd.getGroupname();
+		if (present(groupName)) {
+			Group group = logic.getGroupDetails(groupName);
+			if (present(group) && GroupID.INVALID.getId()!=group.getGroupId()) {
+				cmd.setGroupLevelPermissions(group.getGroupLevelPermissions());
+			}
+		}
+	}
+
 	// TODO: Discuss evaluator interface 
 	private void flagSpammerEvaluator(final AdminAjaxCommand cmd, final boolean spammer) {
 		if (cmd.getUserName() != null) {
@@ -213,24 +235,25 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 	private void setLatestPosts(final AdminAjaxCommand command) {
 		if (present(command.getUserName())) {
 			// set filter to display spam posts
-			FilterEntity filter = null;
+			Set<Filter> filters = null;
 			if (command.getShowSpamPosts().equals("true")) {
-				filter = FilterEntity.ADMIN_SPAM_POSTS;
+				filters = Sets.<Filter>asSet(FilterEntity.ADMIN_SPAM_POSTS);
 			}
-			final List<Post<Bookmark>> bookmarks = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, filter, Order.ADDED, null, null, 0, 5);
+			final List<Post<Bookmark>> bookmarks = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, SearchType.LOCAL, filters, Order.ADDED, null, null, 0, 5);
 			command.setBookmarks(bookmarks);
 
-			final int totalBookmarks = this.logic.getPostStatistics(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, filter, null, null, null, null, 0, 100).getCount();
+			final int totalBookmarks = this.logic.getPostStatistics(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, filters, null, null, null, 0, 100).getCount();
 			command.setBookmarkCount(totalBookmarks);
 
-			final int totalBibtex = this.logic.getPostStatistics(BibTex.class, GroupingEntity.USER, command.getUserName(), null, null, null, filter, null, null, null, null, 0, 10000).getCount();
+			final int totalBibtex = this.logic.getPostStatistics(BibTex.class, GroupingEntity.USER, command.getUserName(), null, null, null, filters, null, null, null, 0, 10000).getCount();
 			command.setBibtexCount(totalBibtex);
 		}
 	}
 
 	private void setPredictionHistory(final AdminAjaxCommand command) {
-		if (command.getUserName() != null && command.getUserName() != "") {
-			final List<User> predictions = this.logic.getClassifierHistory(command.getUserName());
+		final String userName = command.getUserName();
+		if (present(userName)) {
+			final List<User> predictions = this.logic.getClassifierHistory(userName);
 			command.setPredictionHistory(predictions);
 		}
 	}

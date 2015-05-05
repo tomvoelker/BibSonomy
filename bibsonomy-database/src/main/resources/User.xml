@@ -56,7 +56,7 @@
 
 	<select id="getUserNamesByGroupId" resultClass="string" parameterClass="int">
 		SELECT user_name 
-		FROM groups 
+		FROM group_memberships 
 		WHERE `group` = #groupId#
 	</select>
 
@@ -181,11 +181,11 @@
 		WHERE user_name = #userName#
 	</select>
 	
-	<update id="updateUserSharedDocuments" parameterClass="group">
-		UPDATE groups
-		SET userSharedDocuments = #userSharedDocuments#
-		WHERE `group` = #groupId#
-		AND user_name = #name#
+	<update id="updateUserSharedDocuments" parameterClass="groupParam">
+		UPDATE group_memberships JOIN groupids USING(`group`)
+		SET user_shared_documents = #membership.userSharedDocuments#
+		WHERE group_name = #requestedGroupName#
+		AND user_name = #membership.user.name#
 	</update>
 
 	<update id="updateApiKeyForUser" parameterClass="user">
@@ -272,6 +272,10 @@
 	<!-- get all users u, which user follows (user, u)\in FOLLOWER_OF-->
 	<select id="getRelation_FOLLOWER_OF" resultMap="Common.user" parameterClass="userParam">
 		SELECT f_user_name AS user_name FROM followers WHERE user_name = #userName#
+	</select>
+	
+	<select id="getFriendHistoryCount" resultClass="int">
+		SELECT COUNT(*) FROM log_friends
 	</select>
 
 	<!-- delete (userName, requestedUserName) from OF_FRIEND-->

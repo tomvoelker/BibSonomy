@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.database.managers;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Date;
@@ -58,6 +60,8 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	
 	private final static AdminDatabaseManager singleton = new AdminDatabaseManager();
 	
+	/** used by the user manager to flag a deleted user as spammer */
+	public static final String DELETED_UPDATED_BY = "on_delete";
 	
 	/**
 	 * Holds the names of the tables where group ids must be updated, when a
@@ -68,7 +72,9 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 																	DatabaseSchemaInformation.TAG_TABLE,
 																	DatabaseSchemaInformation.GROUP_TAG_TABLE,
 																	DatabaseSchemaInformation.DISCUSSION_TABLE);
-
+	
+	private UserDatabaseManager userDatabaseManager;
+	
 	/**
 	 * @return a singleton instance of this AdminDatabaseManager
 	 */
@@ -144,9 +150,23 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 * @return user name
 	 */
 	public String flagSpammer(final User user, final String updatedBy, final String testMode, final DBSession session) {
+		final String username = user.getName();
+		/*
+		 * check if the user exists, but not when deleting a user
+		 */
+		
+		final User userDetails = this.userDatabaseManager.getUserDetails(username, session);
+		/*
+		 *  don't check the role, maybe not all posts of a deleted user was
+		 *  updated, so we must be able to flag the user again
+		 */
+		if (!present(userDetails.getName())) {
+			throw new IllegalArgumentException("the user '" + username + "'does not exist");
+		}
+		
 		final AdminParam param = new AdminParam();
 
-		param.setUserName(user.getName());
+		param.setUserName(username);
 		param.setSpammer(user.getSpammer());
 		param.setToClassify(user.getToClassify());
 
@@ -232,7 +252,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			session.endTransaction();
 		}
 
-		return user.getName();
+		return username;
 	}
 
 	private void flagSpammer(final DBSession session, final AdminParam param) {
@@ -359,32 +379,24 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			this.update("updateClassifierSettings", param, session);
 		}
 	}
-
-	/**
-	 * Returns number of classfied user
-	 * 
-	 * @param classifier
-	 *            the classifier
-	 * @param status
-	 *            the status classifed
-	 * @param interval
-	 *            the time period of classifications
-	 * @param session
-	 *            db session
-	 * @return count of users
-	 */
-	public Integer getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval, final DBSession session) {
+	
+	public int getNumberOfClassifedUsersByAdmin(final SpamStatus status, final int interval, final DBSession session) {
+		final AdminParam param = buildAdminParam(status, interval);
+		final Integer count = this.queryForObject("getAdminClassifiedUsersCount", param, Integer.class, session);
+		return count == null ? 0 : count.intValue();
+	}
+	
+	public int getNumberOfClassifedUsersByClassifier(final SpamStatus status, final int interval, final DBSession session) {
+		final AdminParam param = buildAdminParam(status, interval);
+		final Integer count = this.queryForObject("getClassifiedUsersCount", param, Integer.class, session);
+		return count == null ? 0 : count.intValue();
+	}
+	
+	private static AdminParam buildAdminParam(final SpamStatus status, final int interval) {
 		final AdminParam param = new AdminParam();
 		param.setInterval(interval);
-
-		if (classifier.equals(Classifier.ADMIN) && (status.equals(SpamStatus.SPAMMER) || status.equals(SpamStatus.NO_SPAMMER))) {
-			param.setPrediction(status.getId());
-			return this.queryForObject("getAdminClassifiedUsersCount", param, Integer.class, session);
-		} else if (classifier.equals(Classifier.CLASSIFIER)) {
-			param.setPrediction(status.getId());
-			return this.queryForObject("getClassifiedUsersCount", param, Integer.class, session);
-		}
-		return null;
+		param.setPrediction(status.getId());
+		return param;
 	}
 
 	/**
@@ -429,4 +441,10 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForList("getBibtexUsers", param, User.class, session);
 	}
 
+	/**
+	 * @param userDatabaseManager the userDatabaseManager to set
+	 */
+	public void setUserDatabaseManager(UserDatabaseManager userDatabaseManager) {
+		this.userDatabaseManager = userDatabaseManager;
+	}
 }

@@ -43,6 +43,7 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.HashUtils;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.util.UrlUtils;
@@ -136,7 +137,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		 * note. we have to check here also the deleted role because we use
 		 * a admin logic to get the user details
 		 */
-		if (existingUser == null || existingUser.getName() == null || Role.DELETED.equals(existingUser.getRole()) || Role.LIMITED.equals(existingUser.getRole()) || !user.getEmail().equalsIgnoreCase(existingUser.getEmail())) {
+		if (!UserUtils.isExistingUser(existingUser) || Role.LIMITED.equals(existingUser.getRole()) || !user.getEmail().equalsIgnoreCase(existingUser.getEmail())) {
 			/*
 			 * user does not exist or has been deleted (we should not sent 
 			 * reminders to deleted users!)
@@ -324,7 +325,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 	private String encryptReminderHash(final String username, final String tempPassword) {
 		final BasicTextEncryptor crypt = new BasicTextEncryptor();
 		crypt.setPassword(this.cryptKey);
-		final String reminderCred = username + ":" + tempPassword; 		
+		final String reminderCred = username + ":" + tempPassword;
 		return crypt.encrypt(reminderCred);
 	}
 

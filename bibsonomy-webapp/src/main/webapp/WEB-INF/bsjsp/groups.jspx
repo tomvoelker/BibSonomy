@@ -9,6 +9,7 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+    xmlns:group="urn:jsptagdir:/WEB-INF/tags/bstags/resources/group"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"> 
@@ -25,7 +26,7 @@
 			<parts:search pathMessageKey="navi.groups" formAction="/group/" formInputName="group"/>
 		</jsp:attribute>
 		
-		<jsp:attribute name="breadcrumbs">	
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<fmt:message key="navi.groups" var="groups" />
@@ -47,7 +48,8 @@
 			<bs:alert style="info">
 				<jsp:attribute name="alertBody">
 					<fmt:message key="system.groups">
-						<fmt:param value="${properties['project.email']}" />
+						<!-- TODO: use URLGenerator -->
+						<fmt:param value="/grouprequest"/>
 					</fmt:message>
 				</jsp:attribute>
 			</bs:alert>
@@ -67,7 +69,6 @@
 			</div>
 			<c:set var="lastChar" value=""/>
 			<div id="groups">
-
 				<dl class="dl-horizontal dt-thumbnail-items group-list">
 				<c:forEach var="group" items="${command.list}">
 					<c:set var="firstGroupNameLetter" value="${fn:toLowerCase(fn:substring(group.name, 0, 1))}" />
@@ -97,38 +98,45 @@
 							
 						</dd>
 					</c:if>
-						<c:set var="displayName" value="${group.name}" />
-						<c:if test="${not empty group.realname}">
-							<c:set var="displayName" value="${group.realname}" />
-						</c:if>
-						<dt><span class="sr-only"><c:out value="${group.name}" /></span><img class="img-thumbnail img-resposive user-avatar" src="${relativeUrlGenerator.getUserPictureUrlByUsername(group.name)}"/></dt>
-						<dd>
-							<div class="row">
-								<div class="col-xs-9">
-									<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}">
-										<c:out value="${displayName}"/>
-										<br />
-										<c:if test="${not empty group.homepage}">
-											<small><a href="${mtl:encodeURI(group.homepage)}">Homepage</a></small>
-										</c:if>
-									</a>
-								</div>
-								<div class="col-xs-3">
-									<c:choose>
-										<c:when test="${mtl:contains(command.context.loginUser.groups, group)}">
-											<button class="btn btn-success btn-sm"><span class="fa fa-check"><!-- keep me --></span><c:out value=" "/><span class="infotext"><fmt:message key="group.memberOf" /></span></button>
-											<!-- TODO: add link to leave group, if user is already member -->
-										</c:when>
-										<c:otherwise>
-											<c:url var="joinLink" value="/join_group">
-												<c:param name="group" value="${group.name}" />
-											</c:url>
-											<a href="${joinLink}" class="btn btn-primary btn-sm"><span class="fa fa-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>	
-										</c:otherwise>
-									</c:choose>
-								</div>
+					<dt><group:groupthumbnail noname="${true}" group="${group}" /></dt>
+					<dd>
+						<div class="row">
+							<div class="col-xs-9">
+								<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}">
+									<group:groupname group="${group}" noLink="${true}" showRealname="${true}"/>
+								</a>
+								<br />
+								<c:if test="${not empty group.homepage}">
+									<small><a href="${fn:escapeXml(group.homepage)}">Homepage</a></small><c:out value=" " />
+								</c:if>
+								<!-- TODO: use url generator -->
+								<small><a href="/cv/group/${fn:escapeXml(group.name)}">CV</a></small>
+								
 							</div>
-						</dd>
+							<div class="col-xs-3">
+								<c:choose>
+									<c:when test="${mtl:contains(command.context.loginUser.groups, group)}">
+										<!-- TODO: use url generator -->
+										<a href="/settings/group/${group.name}" class="btn btn-success btn-sm"><span class="fa fa-check"><!-- keep me --></span><c:out value=" "/><span class="infotext"><fmt:message key="group.memberOf" /></span></a>
+										<a href="/updateGroup?operation=REMOVE_MEMBER&amp;groupname=${group.name}&amp;username=${command.context.loginUser.name}&amp;ckey=${ckey}" class="btn btn-danger btn-sm"><span class="fa fa-times"><!-- keep me --></span><c:out value=" "/><span class="infotext"><fmt:message key="group.leave" /></span></a>
+									</c:when>
+									<c:otherwise>
+										<c:choose>
+											<c:when test="${mtl:contains(command.context.loginUser.pendingGroups, group)}">
+												<a class="btn btn-default btn-sm">pending</a>
+											</c:when>
+											<c:otherwise>
+												<c:url var="joinLink" value="/joinGroup">
+													<c:param name="group" value="${group.name}" />
+												</c:url>
+												<a href="${joinLink}" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>	
+											</c:otherwise>
+										</c:choose>
+									</c:otherwise>
+								</c:choose>
+							</div>
+						</div>
+					</dd>
 				</c:forEach>
 				</dl>
 			</div>

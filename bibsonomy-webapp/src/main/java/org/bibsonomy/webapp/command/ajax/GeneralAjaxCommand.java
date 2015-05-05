@@ -36,7 +36,7 @@ import org.bibsonomy.model.Post;
  * 
  * @author fba
  */
-public class GeneralAjaxCommand extends AjaxCommand {
+public class GeneralAjaxCommand extends AjaxCommand<String> {
 	/**
 	 * page title
 	 */

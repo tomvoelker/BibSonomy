@@ -45,8 +45,7 @@
 		<property name="client" ref="loggingSqlMapClient" />
 	</bean>
 	
-	<bean id="loggingDataSource"
-		class="org.apache.tomcat.dbcp.dbcp.BasicDataSource">
+	<bean id="loggingDataSource" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource" parent="basicDataSource">
 		<property name="driverClassName" value="${database.clicklogger.driverClassName}" />
 		<property name="url" value="${database.clicklogger.url}" />
 		<property name="username" value="${database.clicklogger.username}" />

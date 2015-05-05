@@ -26,6 +26,13 @@
  */
 package org.bibsonomy.scraper.url.kde.jneurosci;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.net.URL;
+
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -51,6 +58,20 @@ public class JNeurosciScraperTest {
 	@Test
 	public void url2TestRun() {
 		UnitTestRunner.runSingleTest("url_233");
+	}
+	
+	@Test
+	public void testReferences() throws Exception {
+		final ScrapingContext sc = new ScrapingContext(new URL("http://www.jneurosci.org/content/32/42/14465.full?rss=1"));
+		JNeurosciScraper js = new JNeurosciScraper();
+		assertTrue(js.scrape(sc));
+		assertTrue(js.scrapeReferences(sc));
+		
+		final String reference = sc.getReferences();
+		assertNotNull(reference);
+		assertTrue(reference.length() > 100);
+		assertEquals("<ol class=\"cit-list ref-use-labels\">".trim(), reference.substring(0, 80).trim());
+		assertTrue(reference.contains("Marsden"));
 	}
 
 }

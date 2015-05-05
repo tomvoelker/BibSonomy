@@ -36,7 +36,7 @@
 					<c:choose>
 						<c:when test="${isCommunityPost}">
 							<!-- TODO: use goldstandard not the first post -->
-							<c:set var="exportUrl" value="${relativeUrlGenerator.prefix(prefix).getGoldstandardUrlByInterHash(post.resource.interHash)}?formatEmbedded=true&amp;items=1" />
+							<c:set var="exportUrl" value="${relativeUrlGenerator.prefix(prefix).getCommunityPublicationUrlByInterHash(post.resource.interHash)}?formatEmbedded=true&amp;items=1" />
 						</c:when>
 						<c:otherwise>
 							<c:set var="exportUrl" value="${relativeUrlGenerator.prefix(prefix).getPublicationUrlByPost(post)}?formatEmbedded=true" />
@@ -52,7 +52,7 @@
 			<li>
 				<c:choose>
 					<c:when test="${isCommunityPost}">
-						<c:set var="exportUrl" value="${relativeUrlGenerator.prefix('export').getGoldstandardUrlByInterHash(post.resource.interHash)}?formatEmbedded=true&amp;items=1" />
+						<c:set var="exportUrl" value="${relativeUrlGenerator.prefix('export').getCommunityPublicationUrlByInterHash(post.resource.interHash)}?formatEmbedded=true&amp;items=1" />
 					</c:when>
 					<c:otherwise>
 						<c:set var="exportUrl" value="${relativeUrlGenerator.prefix('export').getPublicationUrlByPost(post)}?formatEmbedded=true" />

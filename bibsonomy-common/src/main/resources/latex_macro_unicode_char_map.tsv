@@ -1,3 +1,4 @@
+0026	\&
 00A1	\textexclamdown
 00A2	\textcent
 00A3	\textsterling
@@ -78,10 +79,10 @@
 00E9	\'e
 00EA	\^e
 00EB	\"e
-00EC	\`\i
-00ED	\'\i
-00EE	\^\i
-00EF	\"\i
+00EC	\`i
+00ED	\'i
+00EE	\^i
+00EF	\"i
 00F0	\dh
 00F1	\~n
 00F2	\`o

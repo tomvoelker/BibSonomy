@@ -41,10 +41,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.DatabaseException;
@@ -63,6 +65,7 @@ import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -109,7 +112,8 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void testSystemTagFactory() {
-		// test initialization of systemTag collections (in constructor of SystemTagFactory)
+		// test initialization of systemTag collections (in constructor of
+		// SystemTagFactory)
 		final SystemTagFactory sysTagFactory = SystemTagFactory.getInstance();
 		assertNotNull(sysTagFactory.getExecutableSystemTag("for:foogroup"));
 		assertTrue(sysTagFactory.isExecutableSystemTag("send:sdo"));
@@ -238,12 +242,18 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		 * tests the GetBibtexForHomePage query
 		 * FIXME: the posts on the homepage are fix and can't be chosen
 		 */
-//		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.ALL, "testuser1", Collections.singletonList("sys:entrytype:Book"), "", Order.ADDED, 0, 50, null, null, null, null, new User("testuser1"));
+		// param = LogicInterfaceHelper.buildParam(BibTexParam.class,
+		// GroupingEntity.ALL, "testuser1",
+		// Collections.singletonList("sys:entrytype:Book"), "", Order.ADDED, 0,
+		// 50, null, null, null, null, new User("testuser1"));
 //		posts = bibTexDb.getPosts(param, this.dbSession);
 //		
 //		assertEquals(0, posts.size());
 //		
-//		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.ALL, "testuser1", Collections.singletonList("sys:entrytype:test entrytype"), "", Order.ADDED, 0, 50, null, null, null, null, new User("testuser1"));
+		// param = LogicInterfaceHelper.buildParam(BibTexParam.class,
+		// GroupingEntity.ALL, "testuser1",
+		// Collections.singletonList("sys:entrytype:test entrytype"), "",
+		// Order.ADDED, 0, 50, null, null, null, null, new User("testuser1"));
 //		posts = bibTexDb.getPosts(param, this.dbSession);
 //		
 //		assertEquals(2, posts.size());
@@ -314,15 +324,17 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		final User testUser2 = this.createTestUser("forgroupuser2");
 		
 		// create groups 
-		this.createTestUser("forgroup1");
-		this.createTestUser("forgroup2");
 		final Group testGroup1 = this.createTestGroup("forgroup1");
 		final Group testGroup2 = this.createTestGroup("forgroup2");
 		
+		groupDb.addPendingMembership(testGroup1.getName(), testUser1.getName(), GroupRole.INVITED, this.dbSession);
+		groupDb.addPendingMembership(testGroup1.getName(), testUser2.getName(), GroupRole.REQUESTED, this.dbSession);
+		groupDb.addPendingMembership(testGroup2.getName(), testUser2.getName(), GroupRole.REQUESTED, this.dbSession);
+
 		// add users to groups
-		groupDb.addUserToGroup("forgroup1", "forgroupuser1", this.dbSession);
-		groupDb.addUserToGroup("forgroup1", "forgroupuser2", this.dbSession);
-		groupDb.addUserToGroup("forgroup2", "forgroupuser2", this.dbSession);
+		groupDb.addUserToGroup("forgroup1", "forgroupuser1", GroupRole.USER, this.dbSession);
+		groupDb.addUserToGroup("forgroup1", "forgroupuser2", GroupRole.USER, this.dbSession);
+		groupDb.addUserToGroup("forgroup2", "forgroupuser2", GroupRole.USER, this.dbSession);
 		
 		// update users
 		testUser1.setGroups(groupDb.getGroupsForUser(testUser1.getName(), this.dbSession));
@@ -383,7 +395,8 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 			// ignore
 		}
 		
-		// forgroupuser1 gives post2 to forgroup1 and forgroup2 -- we expect an error
+		// forgroupuser1 gives post2 to forgroup1 and forgroup2 -- we expect an
+		// error
 		try {
 			logic1.createPosts(posts2);
 			fail("User was not allowed to write post");
@@ -411,7 +424,8 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		user2Logic.createUserRelationship(testUser2.getName(), testUser1.getName(), UserRelation.OF_FRIEND, null);
 
 		/*
-		 * User1 tries to send a post to user2: Since he is user2s friend we assume success
+		 * User1 tries to send a post to user2: Since he is user2s friend we
+		 * assume success
 		 */
 		Set<Tag> tags = ModelUtils.getTagSet("foo", "send:"+testUser2.getName());
 		
@@ -426,14 +440,15 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		user1Logic.createPosts(posts);
 		// user 2 should now have 2 posts in his inbox, 1 bookmark and 1 bibtex
 		assertEquals(2, inboxDb.getNumInboxMessages(testUser2.getName(), this.dbSession));
-		assertEquals(1, user2Logic.getPostStatistics(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, null, null, null, null, 0, 0).getCount());
-		assertEquals(1, user2Logic.getPostStatistics(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, null, null, null, null, 0, 0).getCount());
+		assertEquals(1, user2Logic.getPostStatistics(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, null, null, null, 0, 0).getCount());
+		assertEquals(1, user2Logic.getPostStatistics(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, null, null, null, 0, 0).getCount());
 		// get posts from inbox and count
-		assertEquals(1, user2Logic.getPosts(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, null, null, null, 0, 10).size());
-		assertEquals(1, user2Logic.getPosts(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, null, null, null, 0, 10).size());
+		assertEquals(1, user2Logic.getPosts(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null,SearchType.LOCAL, null, null, null, null, 0, 10).size());
+		assertEquals(1, user2Logic.getPosts(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null,SearchType.LOCAL, null, null, null, null, 0, 10).size());
 
 		/*
-		 * User1 now changes (and finally deletes) his posts, We expect NO changes in the inbox
+		 * User1 now changes (and finally deletes) his posts, We expect NO
+		 * changes in the inbox
 		 */
 		/*
 		 * User1 now changes his bookmark post without changing the hash
@@ -446,11 +461,13 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		bookmark.addTag("fooBookmark");
 		user1Logic.updatePosts(posts, PostUpdateOperation.UPDATE_TAGS);
 		// there should now still be only one bookmarkPost in the inbox
-		assertEquals(1, user2Logic.getPostStatistics(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, null, null, null, null, 0, 0).getCount());
-		// the bookmarkPost from the inbox should look exactly like the original post
-		List<Post<Bookmark>> inboxBookmarks = user2Logic.getPosts(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, null, null, null, 0, 10);
+		assertEquals(1, user2Logic.getPostStatistics(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, null, null, null, 0, 0).getCount());
+		// the bookmarkPost from the inbox should look exactly like the original
+		// post
+		List<Post<Bookmark>> inboxBookmarks = user2Logic.getPosts(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, SearchType.LOCAL,null, null, null, null, 0, 10);
 		assertEquals(inboxBookmarks.get(0).getResource().getTitle(), "test");
-		// the bookmarkPost from the inbox should still have only 2 tags (foo and from:senderUser)
+		// the bookmarkPost from the inbox should still have only 2 tags (foo
+		// and from:senderUser)
 		assertEquals(2, inboxBookmarks.get(0).getTags().size());
 
 		/*
@@ -459,9 +476,10 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		bookmark.getResource().setUrl("http://testurl2.orgg");
 		user1Logic.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
 		// there should now still be only one bookmarkPost in the inbox
-		assertEquals(1, user2Logic.getPostStatistics(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, null, null, null, null, 0, 0).getCount());
-		// the bookmarkPost from the inbox should look exactly like the original post
-		inboxBookmarks = user2Logic.getPosts(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, null, null, null, 0, 10);
+		assertEquals(1, user2Logic.getPostStatistics(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, null, null, null, 0, 0).getCount());
+		// the bookmarkPost from the inbox should look exactly like the original
+		// post
+		inboxBookmarks = user2Logic.getPosts(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null,SearchType.LOCAL, null, null, null, null, 0, 10);
 		assertEquals(inboxBookmarks.get(0).getResource().getTitle(), "test");
 		assertEquals(2, inboxBookmarks.get(0).getTags().size());
 		assertEquals(inboxBookmarks.get(0).getResource().getUrl(), "http://www.testurl.orgg");
@@ -471,9 +489,10 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		 */
 		user1Logic.deletePosts(testUser1.getName(), Collections.singletonList(bookmark.getResource().getIntraHash()));
 		// there should now still be only one bookmarkPost in the inbox
-		assertEquals(1, user2Logic.getPostStatistics(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, null, null, null, null, 0, 0).getCount());
-		// the bookmarkPost from the inbox should look exactly like the original post
-		inboxBookmarks = user2Logic.getPosts(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, null, null, null, 0, 10);
+		assertEquals(1, user2Logic.getPostStatistics(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, null, null, null, 0, 0).getCount());
+		// the bookmarkPost from the inbox should look exactly like the original
+		// post
+		inboxBookmarks = user2Logic.getPosts(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null,SearchType.LOCAL, null, null, null, null, 0, 10);
 		assertEquals(inboxBookmarks.get(0).getResource().getTitle(), "test");
 		assertEquals(2, inboxBookmarks.get(0).getTags().size());
 		assertEquals(inboxBookmarks.get(0).getResource().getUrl(), "http://www.testurl.orgg");
@@ -489,11 +508,13 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		// change only a tag
 		publication.addTag("barBibTex");
 		user1Logic.updatePosts(posts, PostUpdateOperation.UPDATE_TAGS);
-		assertEquals(1, user2Logic.getPostStatistics(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, null, null, null, null, 0, 0).getCount());
-		// the inboxPost should still have no chapter, just as the original testPost
-		List<Post<BibTex>> inboxPublications = user2Logic.getPosts(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, null, null, null, 0, 10);
+		assertEquals(1, user2Logic.getPostStatistics(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, null, null, null, 0, 0).getCount());
+		// the inboxPost should still have no chapter, just as the original
+		// testPost
+		List<Post<BibTex>> inboxPublications = user2Logic.getPosts(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null,SearchType.LOCAL, null, null, null, null, 0, 10);
 		assertEquals(inboxPublications.get(0).getResource().getChapter(), null);
-		// the bookmarkPost from the inbox should still have only 2 tags (bar and from:senderUser)
+		// the bookmarkPost from the inbox should still have only 2 tags (bar
+		// and from:senderUser)
 		assertEquals(2, inboxPublications.get(0).getTags().size());
 		
 		/*
@@ -502,9 +523,9 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		publication.getResource().setAuthor(PersonNameUtils.discoverPersonNames("Famous Author"));
 		user1Logic.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
 		// there should now still be only one publicationPost in the inbox
-		assertEquals(1, user2Logic.getPostStatistics(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, null, null, null, null, 0, 0).getCount());
+		assertEquals(1, user2Logic.getPostStatistics(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, null, null, null, 0, 0).getCount());
 		// the inboxPost should still have the same author as the original post
-		inboxPublications = user2Logic.getPosts(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, null, null, null, 0, 10);
+		inboxPublications = user2Logic.getPosts(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null,SearchType.LOCAL, null, null, null, null, 0, 10);
 		assertEquals(2, inboxPublications.get(0).getTags().size());
 		assertEquals(PersonNameUtils.discoverPersonNames("Lonely Writer"), inboxPublications.get(0).getResource().getAuthor());
 		assertEquals(null, inboxPublications.get(0).getResource().getChapter());
@@ -514,9 +535,9 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		 */
 		user1Logic.deletePosts(testUser1.getName(), Collections.singletonList(publication.getResource().getIntraHash()));
 		// there should now still be only one publicationPost in the inbox
-		assertEquals(1, user2Logic.getPostStatistics(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, null, null, null, null, 0, 0).getCount());
+		assertEquals(1, user2Logic.getPostStatistics(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, null, null, null, 0, 0).getCount());
 		// the inboxPost should still have the same author as the original post
-		inboxPublications = user2Logic.getPosts(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, null, null, null, 0, 10);
+		inboxPublications = user2Logic.getPosts(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null,SearchType.LOCAL, null, null, null, null, 0, 10);
 		assertEquals(2, inboxPublications.get(0).getTags().size());
 		
 		assertEquals(PersonNameUtils.discoverPersonNames("Lonely Writer"), inboxPublications.get(0).getResource().getAuthor());
@@ -632,7 +653,12 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		}
 		group = new Group();
 		group.setName(name);
+		final GroupRequest groupRequest = new GroupRequest();
+		groupRequest.setUserName("testrequestuser1");
+		groupRequest.setReason("testrequestreason1");
+		group.setGroupRequest(groupRequest);
 		groupDb.createGroup(group, this.dbSession);
+		groupDb.activateGroup(name, this.dbSession);
 
 		return group;
 	}
@@ -649,16 +675,18 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 	private <T extends Resource> List<Post<T>> lookupGroupPost(final Post<T> post, final LogicInterface logic, final String groupName ) {
 		final GroupingEntity groupingEntity = GroupingEntity.USER;
 		final List<String> tags = new LinkedList<String>();
-		// FIXME: why does GetPostsForGroup chain element not allow hash-selection?
+		// FIXME: why does GetPostsForGroup chain element not allow
+		// hash-selection?
 		final List<Post<T>> groupPosts = logic.getPosts(
 				(Class<T>)post.getResource().getClass(), groupingEntity, groupName, tags, 
-				post.getResource().getIntraHash(), "", null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
+				post.getResource().getIntraHash(), "", SearchType.LOCAL,null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
 		return groupPosts;
 	}
 	
 	
 	/**
-	 * Some old tests, should probably be deleted since the tested functions are no longer in use
+	 * Some old tests, should probably be deleted since the tested functions are
+	 * no longer in use
 	 */
 	@Test
 	@Ignore

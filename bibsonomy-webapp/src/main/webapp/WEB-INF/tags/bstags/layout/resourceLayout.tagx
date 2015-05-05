@@ -5,6 +5,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
 	xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardpublication"
+	xmlns:goldstandardbookmark="urn:jsptagdir:/WEB-INF/tags/bstags/resources/goldstandardbookmark"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
@@ -112,23 +113,17 @@
 				</div>
 			</c:if>
 			
+			<!-- FIXME: Explain or clean up (left-over from pre-bootstrap?) -->
 			<c:if test="${empty discussion}">
-				<parts:postHeader 
-					headerHideable="${false}"
-					showPageOptions="${empty showPageOptions or showPageOptions}"
-					publicationsWidthClass="${publicationsWidthClass}"
-					bookmarksWidthClass="${bookmarksWidthClass}"
-					customPageOptions="${customPageOptions}"
-					showBookmark="${showBookmark}"
-					showPublication="${showPublication}"
-					isClipboard="${isClipboard}"
-					disableListNavigation="${disableListNavigation}"
-					disableResourcetypeSelection="${disableResourcetypeSelection}"
-					showInboxActions="${showInboxActions}"
-					customBookmarksHeaderText="${customBookmarksHeaderText}"
-					customPublicationsHeaderText="${customPublicationsHeaderText}"
-					command="${command}" />
-			</c:if>
+ 				<!-- bookmarks -->
+ 				<div class="row">
+					<div class="col-md-6" id="bookmarkListConfig">
+					</div>
+					<!-- publications -->
+					<div class="col-md-6" id="publicationListConfig">
+					</div>
+				</div>
+ 			</c:if>
 		</jsp:attribute>
 		
 		<!--+
@@ -147,6 +142,11 @@
 				<!-- if a community post is present show the community post, not the list of posts -->
 				<c:when test="${not empty command.goldStandardPublications.list}">
 					<goldstandardpublication:details otherPosts="${command.bibtex.list}" post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
+				</c:when>
+
+				<!-- if a community post is present show the community post, not the list of posts -->
+				<c:when test="${not empty command.goldStandardBookmarks.list}">
+					<goldstandardbookmark:details post="${command.goldStandardBookmarks.list[0]}" loginUser="${command.context.loginUser}"/>
 				</c:when>
 				
 				<c:otherwise>

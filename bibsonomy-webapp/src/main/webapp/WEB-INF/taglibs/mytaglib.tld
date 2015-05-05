@@ -146,7 +146,7 @@
 		<function-signature>String renderHover(org.bibsonomy.model.Post, java.util.Locale)</function-signature>
 	</function>
 	<!-- <function-signature>String renderHover(org.bibsonomy.model.Resource, java.util.Locale, java.lang.Boolean)</function-signature> -->
-	
+
 	<function>
 		<name>normalize</name>
 		<function-class>tags.Functions</function-class>
@@ -249,6 +249,24 @@
 		<function-signature>Boolean isSpammer(java.lang.Integer)</function-signature>
 	</function>
 
+	<function>
+		<name>compareString</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>String compareString(java.lang.String, java.lang.String)</function-signature>
+	</function>
+	
+	<function>
+		<name>diffEntries</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>java.util.Map diffEntries(org.bibsonomy.model.Post, org.bibsonomy.model.Post)</function-signature>
+	</function>
+
+	<function>
+		<name>isRegularGroup</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>Boolean isRegularGroup(org.bibsonomy.model.Group)</function-signature>
+	</function>
+	
 	<function>
 		<name>quoteJSON</name>
 		<function-class>tags.Functions</function-class>
@@ -391,6 +409,12 @@
 	</function>
 
 	<function>
+		<name>formatDateMemento</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>String formatDateMemento(java.util.Date)</function-signature>
+	</function>
+
+	<function>
 		<name>formatDateRFC1123</name>
 		<function-class>tags.Functions</function-class>
 		<function-signature>String formatDateRFC1123(java.util.Date)</function-signature>
@@ -431,5 +455,5 @@
 		<function-class>tags.Functions</function-class>
 		<function-signature>java.lang.Boolean hasDidYouKnowMessage(org.bibsonomy.webapp.command.BaseCommand)</function-signature>
 	</function>
-	
+
 </taglib>

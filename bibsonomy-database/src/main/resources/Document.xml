@@ -39,6 +39,16 @@
 			AND d.content_id=#contentId#
 	</select>
 	
+	<select id="getDocumentCount" resultClass="int" parameterClass="statisticParam">
+		SELECT count(*) AS ctr FROM document WHERE content_id > 0
+		<include refid="userRestriction" />
+	</select>
+	
+	<select id="getLayoutDocumentCount" resultClass="int" parameterClass="statisticParam">
+		SELECT count(*) AS ctr FROM document WHERE content_id = 0
+		<include refid="userRestriction" />
+	</select>
+	
 	<delete id="deleteDoc" parameterClass="documentParam">
 		DELETE FROM document 
 		WHERE content_id = #contentId# 

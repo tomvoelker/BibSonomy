@@ -29,8 +29,8 @@ package org.bibsonomy.lucene.index.analyzer;
 import java.io.Reader;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.CharTokenizer;
-import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.util.CharTokenizer;
 import org.apache.lucene.util.Version;
 
 /**
@@ -38,14 +38,19 @@ import org.apache.lucene.util.Version;
  */
 public final class SimpleKeywordAnalyzer extends Analyzer {
 
+	/* (non-Javadoc)
+	 * @see org.apache.lucene.analysis.Analyzer#createComponents(java.lang.String, java.io.Reader)
+	 */
 	@Override
-	public TokenStream tokenStream (String fieldName, Reader reader) {
-		return new CharTokenizer(Version.LUCENE_30, reader) {
+	protected TokenStreamComponents createComponents(String fieldName,
+			Reader reader) {
+		Tokenizer tokenizer = new CharTokenizer(Version.LUCENE_48, reader) {
 			@Override
-			protected boolean isTokenChar(char c) {
+			protected boolean isTokenChar(int c) {
 				return true;
 			}
 		};
+		return new TokenStreamComponents(tokenizer);
 	}
 	
 }

@@ -1,5 +1,5 @@
 /**
- * BibSonomy Entity Resolver - Username/author identiy resolving for BibSonomy.
+ * BibSonomy - A blue social bookmark and publication sharing system.
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -30,11 +30,12 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Map;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
 import no.priv.garshol.duke.Column;
+import no.priv.garshol.duke.DukeException;
 import no.priv.garshol.duke.RecordIterator;
 
 /**
@@ -43,6 +44,8 @@ import no.priv.garshol.duke.RecordIterator;
  */
 public class JDBCDataSource extends no.priv.garshol.duke.datasources.JDBCDataSource {
 	private DataSource dataSource;
+	
+	private Set<Column> columnsSet;
 
 	@Override
 	public RecordIterator getRecords() {
@@ -55,7 +58,16 @@ public class JDBCDataSource extends no.priv.garshol.duke.datasources.JDBCDataSou
 			throw new RuntimeException(e);
 		}
 	}
-
+	
+	/**
+	 * adds Column's of columnsSet to columns
+	 */
+	public void init() {
+		for(Column column : columnsSet) {
+			this.addColumn(column);
+		}
+	}
+	
 	/**
 	 * @param dataSource
 	 *            the dataSource to set
@@ -63,11 +75,69 @@ public class JDBCDataSource extends no.priv.garshol.duke.datasources.JDBCDataSou
 	public void setDataSource(final DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
-	
+
 	/**
+	 * @return columns
+	 */
+	public Set<Column> getColumnsSet() {
+		return this.columnsSet;
+	}
+
+	/**
+	 * @param columnsSet 
 	 * @param columns the columns to set
 	 */
-	public void setColumns(final Map<String, Column> columns) {
-		this.columns = columns;
+	public void setColumnsSet(Set<Column> columnsSet) {
+		this.columnsSet = columnsSet;
 	}
+	
+	/**
+	 * Overrides close() method to fix AbstractMethod- and IllegalAccessError by not checking for isClosed() on ResultSet and
+	 * Statement, cause not all implementations of them provide a (proper) isClosed() Method.
+	 *
+	 * @author MarcelM
+	 */
+	public class JDBCIterator extends no.priv.garshol.duke.datasources.JDBCDataSource.JDBCIterator {
+		
+		private ResultSet rs;
+		
+		/**
+		 * @param rs
+		 * @throws SQLException
+		 */
+		public JDBCIterator(ResultSet rs) throws SQLException {
+			super(rs);
+			this.rs = rs;
+		}
+		
+		/**
+		 * This method differs from no.priv.garshol.duke.datasources.JDBCDataSource.JDBCIterator.close()
+		 * in that it doesn't check for .isClosed() on ResultSet and Statement.
+		 */
+		@Override
+		public void close() {
+			Statement stmt;
+			try {
+				//According to JDBCUtils: "can't call rs.getStatement() after rs is closed, so must do it now"
+				stmt = rs.getStatement();
+				//We just close without further checking
+				rs.close();
+			} catch (SQLException e) {
+				throw new DukeException(e);
+			}
+
+			//Close the statement
+			if (stmt != null) {
+				try {
+					Connection conn = stmt.getConnection();
+					stmt.close();
+					if (conn != null && !conn.isClosed())
+						conn.close();
+				} catch (SQLException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+	}
+	
 }

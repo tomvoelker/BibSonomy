@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    BibSonomy Entity Resolver - Username/author identiy resolving for BibSonomy.
+    BibSonomy - A blue social bookmark and publication sharing system.
 
     Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
                                   University of Kassel, Germany
@@ -38,7 +38,7 @@
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>3.0.1-SNAPSHOT</version>
+		<version>3.3.0-SNAPSHOT</version>
 	</parent>
 	<licenses>
 		<license>
@@ -64,7 +64,7 @@
 		<dependency>
 			<groupId>no.priv.garshol.duke</groupId>
 			<artifactId>duke</artifactId>
-			<version>0.4-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>

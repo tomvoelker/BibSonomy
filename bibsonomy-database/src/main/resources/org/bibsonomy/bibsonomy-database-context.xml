@@ -58,6 +58,7 @@
 			<list>
 				<bean class="org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByResourceSearch" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesWithDiscussions" parent="bookmarkChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByParent" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesForHomepage" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesPopular" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesForUser" parent="bookmarkChainElement" />
@@ -157,6 +158,11 @@
 				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesPopularDaysCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForHashCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForUserInboxCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetClipboardPostsCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetClipboardPostsHistoryCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetAllPostsInHistoryCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetUniqueResourcesCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetAllPostsCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.DefaultCatchAllCount" />
 			</list>
 		</property>
@@ -166,7 +172,35 @@
 	<bean id="tagStatisticChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
 			<list>
+				<bean class="org.bibsonomy.database.managers.chain.statistic.tag.GetGlobalTagCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.tag.GetGlobalTasCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.tag.GetGlobalConceptCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.tag.GetGlobalConceptHistoryCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.tag.get.GetRelationCountByUser" />
+			</list>
+		</property>
+	</bean>
+	
+	<!-- user statistic chain -->
+	<bean id="userStatisticsChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.statistic.user.GetUserClassifiedByClassifierCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.user.GetUserClassifiedByAdminCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.user.GetActiveUserCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.user.GetFriendHistoryCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.user.GetGroupMembershipHistoryCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.user.GetAllUserCount" />
+			</list>
+		</property>
+	</bean>
+	
+	<!-- document statistic chain -->
+	<bean id="documentStatisticsChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.statistic.document.GetGlobalLayoutDocumentCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.document.GetGlobalDocumentCount" />
 			</list>
 		</property>
 	</bean>
@@ -175,9 +209,15 @@
 		<property name="databaseSchemaInformation" ref="dbSchemaInformation" />
 	</bean>
 	
+	<bean id="adminDatabaseManager" class="org.bibsonomy.database.managers.AdminDatabaseManager" factory-method="getInstance">
+		<property name="userDatabaseManager" ref="userDatabaseManager" />
+	</bean>
+	
 	<bean id="statisticsDatabaseManager" class="org.bibsonomy.database.managers.StatisticsDatabaseManager" factory-method="getInstance">
 		<property name="postChain" ref="postStatisticChain" />
 		<property name="tagChain" ref="tagStatisticChain" />
+		<property name="userChain" ref="userStatisticsChain" />
+		<property name="documentChain" ref="documentStatisticsChain" />
 	</bean>
 		
 	<bean id="discussionDatabaseManager" class="org.bibsonomy.database.managers.discussion.DiscussionDatabaseManager" factory-method="getInstance">
@@ -188,6 +228,7 @@
 		<property name="chain" ref="userChain" />
 		<property name="validator" ref="databaseValidator" />
 		<property name="fileLogic" ref="fileLogic" />
+		<property name="usersDefaultToClassify" value="${user.defaultToClassify}" />
 	</bean>
 	
 	<bean id="groupDatabaseManager" class="org.bibsonomy.database.managers.GroupDatabaseManager" factory-method="getInstance">
@@ -231,6 +272,7 @@
 	<bean id="goldStandardBookmarkChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
 			<list>
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByParent" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.goldstandard.get.GetGoldStandardsByResourceSearch" parent="abstractGoldStandardBookmarkChainElement" />
 			</list>
 		</property>
@@ -239,6 +281,7 @@
 	<bean id="goldStandardPublicationChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
 			<list>
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByParent" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.goldstandard.get.GetGoldStandardsByResourceSearch" parent="abstractGoldStandardPublicationChainElement" />
 			</list>
 		</property>

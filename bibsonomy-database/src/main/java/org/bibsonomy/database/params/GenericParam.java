@@ -39,11 +39,13 @@ import java.util.Set;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.ConceptStatus;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostAccess;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.systemstags.SystemTag;
@@ -55,7 +57,8 @@ import org.bibsonomy.model.enums.Order;
 
 /**
  * This is the most generic param. All fields which are not specific to
- * bookmarks or publications are collected here. The parameter-objects are used by
+ * bookmarks or publications are collected here. The parameter-objects are used
+ * by
  * iBATIS in the SQL-statements to fill in values; they are put at the position
  * of ?-marks.
  * 
@@ -69,106 +72,106 @@ public abstract class GenericParam {
 	 * A set of tags
 	 */
 	private Set<Tag> tags;
-	
+
 	/**
 	 * A single tag
 	 */
 	private Tag tag;
-	
+
 	/**
 	 * A tag name
 	 */
 	private String tagName;
-	
+
 	/**
 	 * A title for searching resources by a given title
 	 */
 	private String title;
-	
+
 	/**
 	 * A author name for searching resources by a given author
 	 */
 	private String author;
-	
+
 	/**
 	 * List of (tagname, index)-pairs, where tagname can be both a name of a tag
 	 * or concept.
 	 */
 	private List<TagIndex> tagIndex;
-	
+
 	/**
 	 * corresponds to -->[tagName]
 	 */
 	private int numTransitiveConcepts;
-	
+
 	/**
-	 * corresponds to ->[tagName] 
+	 * corresponds to ->[tagName]
 	 */
 	private int numSimpleConcepts;
-	
+
 	/**
 	 * corresponds to [tagName]
 	 */
 	private int numSimpleTags;
-	
+
 	/**
-	 * corresponds to [tagName]-> 
+	 * corresponds to [tagName]->
 	 */
 	private int numSimpleConceptsWithParent;
-	
+
 	/**
 	 * corresponds to [tagName]-->
 	 */
 	private int numSimpleConceptsWithAncestors;
-	
+
 	/**
 	 * corresponds to <->[tagName]
 	 */
 	private int numCorrelatedConcepts;
-	
-	/** 
-	 * List of the groups the user belongs to 
+
+	/**
+	 * List of the groups the user belongs to
 	 * 
-	 * we store this as a set, because a user can of course 
+	 * we store this as a set, because a user can of course
 	 * be only just once a member of each group; but as IBATIS
 	 * expects a List to loop over, getGroups returns a List
 	 * 
 	 * */
 	private Set<Integer> groups;
-	
-	
+
 	/**
-	 * List of groupnames the user belongs to. 
+	 * List of groupnames the user belongs to.
 	 */
 	private Set<String> groupNames;
-	
+
 	/**
-	 * List of tags (with index) which are assigned to relations 
+	 * List of tags (with index) which are assigned to relations
 	 */
 	private final List<TagIndex> relationTagIndex;
 
 	/**
-	 * List of tags which are assigned to relations 
+	 * List of tags which are assigned to relations
 	 */
 	private final List<String> relationTags;
-	
+
 	/**
 	 * Should tagnames (names of tags and concepts) be case sensitive; by
 	 * default this is false, i.e. tagnames aren't case sensitive.
 	 */
 	private boolean caseSensitiveTagNames;
-	
+
 	/** creation-date */
 	private Date date;
-	
+
 	/** change-date */
 	private Date changeDate;
-	
+
 	/** If a contentId is updated or deleted we need this as reference */
 	private int requestedContentId;
-	
+
 	/**
-	 * The hash of a post, e.g. a bookmark or a publication TODO: really of the post
+	 * The hash of a post, e.g. a bookmark or a publication TODO: really of the
+	 * post
 	 * and not of the resource? and for what kind of hash is this used? isn't it
 	 * resource-specific and shouldn't it be set in the resource-field?
 	 */
@@ -178,14 +181,17 @@ public abstract class GenericParam {
 	 * This is used to restrict simHashes, i.e. to limit the overall resultset.
 	 * The default simHash is defined in {@link HashID}.
 	 */
-	private HashID simHash;	
+	private HashID simHash;
 
 	/* modified search parameter */
 	private String search;
 
+	/* search type */
+	private SearchType searchType;
+
 	/* not modified search parameter */
 	private String rawSearch;
-	
+
 	/** This is the current user. */
 	private String userName;
 	private String description;
@@ -195,22 +201,22 @@ public abstract class GenericParam {
 	 * people's content. This requested user is identified by this string.
 	 */
 	private String requestedUserName;
-	/** 
+	/**
 	 * The ID of a group which by default is invalid.
 	 */
 	private int groupId;
 	/** If we're searching for a group this is used for the name of the group */
 	private String requestedGroupName;
-	
+
 	/**
-	 * Return posts that have been created after (inclusive) this date. 
+	 * Return posts that have been created after (inclusive) this date.
 	 */
 	private Date startDate;
 	/**
-	 * Return posts that have been created before (inclusive) this date. 
+	 * Return posts that have been created before (inclusive) this date.
 	 */
 	private Date endDate;
-	
+
 	/** The SQL-Limit which is by default 10 */
 	private int limit;
 	/** The SQL-Offset which is by default 0 */
@@ -220,29 +226,31 @@ public abstract class GenericParam {
 	private int newContentId;
 	private String url;
 	private ConstantID contentType;
-	
+
 	private Order order;
 	private GroupingEntity grouping;
-	private FilterEntity filter;
+	private Set<Filter> filters;
+	private ConceptStatus conceptStatus;
 	
 	/** which parts of the posts can the logged in user access */
 	private PostAccess postAccess = PostAccess.POST_ONLY;
-	
+
 	/*
-     * the days of a popular resource
-     * TODO: please document use better. This are not really
-     * the "days", but more or less the position in the list
-     * of available days?!
+	 * the days of a popular resource
+	 * TODO: please document use better. This are not really
+	 * the "days", but more or less the position in the list
+	 * of available days?!
 	 */
 	private int days;
-	
+
 	/*
-	 * retrieve resources via their bibtexkey 
+	 * retrieve resources via their bibtexkey
 	 */
 	private String bibtexKey;
-	
+
 	private final List<SystemTag> systemTags;
-	
+
+	private boolean approved;
 
 	/**
 	 * sets default values
@@ -260,25 +268,25 @@ public abstract class GenericParam {
 		 * set groupId to -1
 		 */
 		this.setGroupId(GroupID.INVALID);
-		
+
 		this.idsType = ConstantID.IDS_UNDEFINED_CONTENT_ID;
 		this.limit = 10;
 		this.offset = 0;
 		this.simHash = HashID.SIM_HASH; // the default hash type
-		
+
 		this.grouping = GroupingEntity.ALL;
-		
-		this.groups =  new HashSet<Integer>();
-		this.groupNames =  new HashSet<String>();
-		//when using this field the value of days must be greater 0 
+
+		this.groups = new HashSet<Integer>();
+		this.groupNames = new HashSet<String>();
+		// when using this field the value of days must be greater 0
 		this.days = -1;
-		
+
 		this.systemTags = new LinkedList<SystemTag>();
-		
+
 		this.relationTags = new ArrayList<String>();
 		this.relationTagIndex = new ArrayList<TagIndex>();
 	}
-	
+
 	/**
 	 * @return the caseSensitiveTagNames
 	 */
@@ -299,58 +307,64 @@ public abstract class GenericParam {
 
 	/**
 	 * adds a tag
+	 * 
 	 * @param tagName the name of the tag to add
 	 */
 	public void addTagName(final String tagName) {
 		this.addToTagIndex(tagName);
 		this.numSimpleTags++;
 	}
-	
+
 	/**
 	 * TODO: improve docu
+	 * 
 	 * @param tagName the name of the tag to add
 	 */
 	public void addSimpleConceptName(final String tagName) {
 		this.addToTagIndex(tagName);
 		this.numSimpleConcepts++;
 	}
-	
+
 	/**
 	 * TODO: improve docu
+	 * 
 	 * @param tagName the name of the tag to add
 	 */
 	public void addTransitiveConceptName(final String tagName) {
 		this.addToTagIndex(tagName);
 		this.numTransitiveConcepts++;
 	}
-	
+
 	/**
 	 * TODO: improve docu
+	 * 
 	 * @param tagName
 	 */
 	public void addSimpleConceptWithParentName(final String tagName) {
 		this.addToTagIndex(tagName);
 		this.numSimpleConceptsWithParent++;
 	}
-	
+
 	/**
 	 * TODO: improve docu
+	 * 
 	 * @param tagName
 	 */
 	public void addSimpleConceptwithAncestorsName(final String tagName) {
 		this.addToTagIndex(tagName);
 		this.numSimpleConceptsWithAncestors++;
 	}
-	
+
 	/**
 	 * TODO: improve docu
+	 * 
 	 * @param tagName
 	 */
 	public void addCorrelatedConceptName(final String tagName) {
 		this.addToTagIndex(tagName);
 		this.numCorrelatedConcepts++;
 	}
-	
+
 	/**
 	 * @return the tagIndex
 	 */
@@ -369,11 +383,13 @@ public abstract class GenericParam {
 	 * This is used to determine the max. amount of join-indices for the
 	 * iteration of the join-index; e.g. if we're searching for tag names. If we
 	 * have only one tag, we don't need a join index, if we got two then we need
-	 * one, if we got three then we need two, and so on.<br/> We had to
+	 * one, if we got three then we need two, and so on.<br/>
+	 * We had to
 	 * introduce this because iBATIS can only call methods that are true getter
 	 * or setter. A call to tagIndex.size() is not possible. An attempt fails
 	 * with "There is no READABLE property named 'size' in class
 	 * 'java.util.ArrayList'".
+	 * 
 	 * @return TODO
 	 */
 	public int getMaxTagIndex() {
@@ -384,7 +400,8 @@ public abstract class GenericParam {
 
 	/**
 	 * TODO comment
-	 * @param tagName 
+	 * 
+	 * @param tagName
 	 */
 	public void addRelationTag(final String tagName) {
 		this.relationTags.add(tagName);
@@ -393,6 +410,7 @@ public abstract class GenericParam {
 
 	/**
 	 * TODO comment
+	 * 
 	 * @param relationTags the relation tags to add
 	 */
 	public void addRelationTags(final List<String> relationTags) {
@@ -400,9 +418,10 @@ public abstract class GenericParam {
 			this.addRelationTag(tagName);
 		}
 	}
-	
+
 	/**
 	 * TODO comment
+	 * 
 	 * @return the relation tags
 	 */
 	public List<String> getRelationTags() {
@@ -411,12 +430,13 @@ public abstract class GenericParam {
 
 	/**
 	 * TODO comment
+	 * 
 	 * @return the relation tag index
 	 */
 	public List<TagIndex> getRelationTagIndex() {
 		return this.relationTagIndex;
 	}
-	
+
 	/**
 	 * @return the search
 	 */
@@ -432,7 +452,8 @@ public abstract class GenericParam {
 	}
 
 	/**
-	 * sets the rawsearch to search and prepares the search param for the database query
+	 * sets the rawsearch to search and prepares the search param for the
+	 * database query
 	 * 
 	 * @param search the search to set
 	 */
@@ -461,14 +482,14 @@ public abstract class GenericParam {
 	 * @param changeDate the changeDate to set
 	 */
 	public void setChangeDate(final Date changeDate) {
-	    this.changeDate = changeDate;
+		this.changeDate = changeDate;
 	}
 
 	/**
 	 * @return the changeDate
 	 */
 	public Date getChangeDate() {
-	    return this.changeDate;
+		return this.changeDate;
 	}
 
 	/**
@@ -516,7 +537,7 @@ public abstract class GenericParam {
 	/**
 	 * returns the list of groups a user is member of
 	 * 
-	 * ATTENTION: this is not just a plain getter - we transform 
+	 * ATTENTION: this is not just a plain getter - we transform
 	 * the set of groups into a list of groups for IBATIS compatibility
 	 * 
 	 * @return a list of groups
@@ -527,7 +548,7 @@ public abstract class GenericParam {
 
 	/**
 	 * set the groups
-	 *
+	 * 
 	 * wrapper method for setting the groups set by a list
 	 * 
 	 * @param groups a LIST of group ids
@@ -535,7 +556,7 @@ public abstract class GenericParam {
 	public void setGroups(final Collection<Integer> groups) {
 		this.groups = new HashSet<Integer>(groups);
 	}
-	
+
 	/**
 	 * @return the groupId
 	 */
@@ -560,25 +581,25 @@ public abstract class GenericParam {
 	}
 
 	/**
-	 * If you need the ID of the friends group in a statement, 
-	 * use this method.  
+	 * If you need the ID of the friends group in a statement,
+	 * use this method.
 	 * 
 	 * @return The ID of the friends group.
 	 */
 	public int getGroupTypeFriends() {
 		return GroupID.FRIENDS.getId();
 	}
-	
+
 	/**
-	 * If you need the ID of the public group in a statement, 
-	 * use this method.  
+	 * If you need the ID of the public group in a statement,
+	 * use this method.
 	 * 
 	 * @return The ID of the public group.
 	 */
 	public int getGroupTypePublic() {
 		return GroupID.PUBLIC.getId();
 	}
-	
+
 	/**
 	 * If you need the system tag which identifies BibSonomy's trust
 	 * relation
@@ -588,7 +609,7 @@ public abstract class GenericParam {
 	public String getBibSonomyFriendsTag() {
 		return NetworkRelationSystemTag.BibSonomyFriendSystemTag;
 	}
-	
+
 	/**
 	 * If you need the system tag which identifies BibSonomy's follower
 	 * relation
@@ -598,7 +619,7 @@ public abstract class GenericParam {
 	public String getBibSonomyFollowerTag() {
 		return NetworkRelationSystemTag.BibSonomyFollowerSystemTag;
 	}
-	
+
 	// TODO: what hash?, what for?, why in genericparam and not in
 	// resource-field?
 	/**
@@ -628,7 +649,7 @@ public abstract class GenericParam {
 	public void setSimHash(final HashID simHash) {
 		this.simHash = simHash;
 	}
-	
+
 	/**
 	 * @return the requestedContentId
 	 */
@@ -678,7 +699,7 @@ public abstract class GenericParam {
 	public int getIdsType() {
 		return this.idsType.getId();
 	}
-	
+
 	/**
 	 * @param idsType the idsType to set
 	 */
@@ -790,7 +811,7 @@ public abstract class GenericParam {
 	public ConstantID getContentTypeConstant() {
 		return this.contentType;
 	}
-	
+
 	/**
 	 * @param contentType the contentType to set
 	 */
@@ -829,12 +850,13 @@ public abstract class GenericParam {
 
 	/**
 	 * FIXME: only used by test method
+	 * 
 	 * @return {@link #getTagName()} lower case
 	 */
 	public String getTagNameLower() {
 		return this.getTagName().toLowerCase();
 	}
-	
+
 	/**
 	 * @return the title
 	 */
@@ -892,20 +914,6 @@ public abstract class GenericParam {
 	}
 
 	/**
-	 * @return the filter
-	 */
-	public FilterEntity getFilter() {
-		return this.filter;
-	}
-
-	/**
-	 * @param filter the filter to set
-	 */
-	public void setFilter(final FilterEntity filter) {
-		this.filter = filter;
-	}
-
-	/**
 	 * @return the numSimpleConcepts
 	 */
 	public int getNumSimpleConcepts() {
@@ -918,7 +926,7 @@ public abstract class GenericParam {
 	public int getNumSimpleTags() {
 		return this.numSimpleTags;
 	}
-	
+
 	/**
 	 * @param numSimpleTags the numSimpleTags to set
 	 */
@@ -953,7 +961,7 @@ public abstract class GenericParam {
 	public int getNumSimpleConceptsWithAncestors() {
 		return this.numSimpleConceptsWithAncestors;
 	}
-	
+
 	/**
 	 * @param numTransitiveConcepts the numTransitiveConcepts to set
 	 */
@@ -967,17 +975,19 @@ public abstract class GenericParam {
 	public void setNumSimpleConcepts(final int numSimpleConcepts) {
 		this.numSimpleConcepts = numSimpleConcepts;
 	}
-	
+
 	/**
 	 * adds a group to the group list
+	 * 
 	 * @param groupId the id of the group to add
 	 */
 	public void addGroup(final Integer groupId) {
 		this.groups.add(groupId);
 	}
-	
+
 	/**
-	 * adds all groups to the group list 
+	 * adds all groups to the group list
+	 * 
 	 * @param groups the id's of the groups to add
 	 */
 	public void addGroups(final Collection<Integer> groups) {
@@ -1037,7 +1047,7 @@ public abstract class GenericParam {
 		for (final Group g : groups) {
 			this.groups.add(g.getGroupId());
 			groupName = g.getName() == null ? "group_" + g.getGroupId() : g.getName().toLowerCase();
-			// TODO warum kann der Gruppenname (im Test) null sein? 
+			// TODO warum kann der Gruppenname (im Test) null sein?
 			this.groupNames.add(groupName);
 			// this.groupNames.add(g.getName().toLowerCase());
 		}
@@ -1060,6 +1070,7 @@ public abstract class GenericParam {
 	/**
 	 * adds a system tag to the map
 	 * uses the system tag name as key
+	 * 
 	 * @param tag
 	 */
 	public void addToSystemTags(final SystemTag tag) {
@@ -1068,11 +1079,11 @@ public abstract class GenericParam {
 			this.systemTags.add(tag);
 		}
 	}
-	
+
 	/**
 	 * adds a collection of system tags to system tags
 	 * 
-	 * @param systemTags	the collection to add to system tags
+	 * @param systemTags the collection to add to system tags
 	 */
 	public void addAllToSystemTags(final Collection<SystemTag> systemTags) {
 		if (present(systemTags)) {
@@ -1118,7 +1129,8 @@ public abstract class GenericParam {
 	}
 
 	/**
-	 * Introspect the current param object and return a string representation of the form attribute = value
+	 * Introspect the current param object and return a string representation of
+	 * the form attribute = value
 	 * for all attributes of this object.
 	 * 
 	 * @return - a string representation of the given object by introspection.
@@ -1126,5 +1138,72 @@ public abstract class GenericParam {
 	@Override
 	public String toString() {
 		return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
+
+	/**
+	 * @return the approved
+	 */
+	public boolean getApproved() {
+		return this.approved;
+	}
+
+	/**
+	 * @param approved the approved to set
+	 */
+	public void setApproved(final boolean approved) {
+		this.approved = approved;
+	}
+
+	/**
+	 * @return the searchType
+	 */
+	public SearchType getSearchType() {
+		return this.searchType;
+	}
+
+	/**
+	 * @param searchType the searchType to set
+	 */
+	public void setSearchType(final SearchType searchType) {
+		this.searchType = searchType;
+	}
+
+	/**
+	 * @return the filters
+	 */
+	public Set<Filter> getFilters() {
+		return this.filters;
+	}
+	
+	/**
+	 * XXX: for ibatis
+	 * @return the filters as list
+	 */
+	public List<Filter> getFiltersAsList() {
+		if (!present(this.filters)) {
+			return Collections.emptyList();
+		}
+		return new ArrayList<Filter>(this.filters);
+	}
+
+	/**
+	 * @param filters the filters to set
+	 */
+	public void setFilters(Set<Filter> filters) {
+		this.filters = filters;
+	}
+
+	/**
+	 * @return the conceptStatus
+	 */
+	public ConceptStatus getConceptStatus() {
+		return this.conceptStatus;
+	}
+
+	/**
+	 * @param conceptStatus the conceptStatus to set
+	 */
+	public void setConceptStatus(ConceptStatus conceptStatus) {
+		this.conceptStatus = conceptStatus;
 	}
 }

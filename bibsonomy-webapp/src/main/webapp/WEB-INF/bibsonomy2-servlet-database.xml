@@ -10,8 +10,7 @@
 	                    http://www.springframework.org/schema/jee
 	                    http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
 	
-	<bean id="mainDataSource"
-		class="org.apache.tomcat.dbcp.dbcp.BasicDataSource">
+	<bean id="mainDataSource" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource" parent="basicDataSource">
 		<property name="driverClassName" value="${database.main.driverClassName}" />
 		<property name="url" value="${database.main.url}" />
 		<property name="username" value="${database.main.username}" />
