@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="gImporter">
+  <typeAlias alias="gImporterData" type="org.bibsonomy.gImporter.gImporterData"/>
+
+  <resultMap id="gImporterResult" class="gImporterData">
+    <result property="title" column="title" />
+    <result property="year" column="pub_year_c" javaType="String"/>
+    <result property="address" column="city" />
+    <result property="diss" column="diss" javaType="boolean"/>
+    
+   
+  </resultMap>
+	
+  <select id="selectDissertation" resultMap="gImporterResult" parameterClass="gImporterData">
+    SELECT title, pub_year_c, city, diss FROM title_hs_title as tht where tht.diss=#diss# limit 10
+  </select>
+  
+  <insert id="insertgImporterdata" parameterClass="gImporterData">
+    INSERT INTO title_hs_link_kassel_jena (
+		title_id, person_id, person_function
+      )
+    VALUES (
+      3, 3, 4
+    )
+  </insert>
+</sqlMap>

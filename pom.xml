@@ -220,6 +220,7 @@
 		<module>bibsonomy-layout</module>
 		<module>bibsonomy-logging</module>
 		<module>bibsonomy-lucene</module>
+		<module>bibsonomy-gImporter</module>
 		<module>bibsonomy-marc-parser</module>
 		<module>bibsonomy-model</module>
 		<module>bibsonomy-openaccess</module>
@@ -639,6 +640,11 @@
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-lucene</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-gImporter</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
