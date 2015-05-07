@@ -68,8 +68,6 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	/** The Url of the project home */
 	private final String systemHome;
 
-	private final String systemUrlFieldName = "systemUrl";
-
 	/** list posts to insert into index */
 	private ArrayList<Map<String, Object>> esPostsToInsert;
 	/** the node client */
@@ -302,7 +300,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		this.esClient.getClient().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
 
 		for (final Map<String, Object> jsonDocument : esPostsToInsert2) {
-			jsonDocument.put(this.systemUrlFieldName, this.systemHome);
+			jsonDocument.put(ESConstants.SYSTEM_URL_FIELD_NAME, this.systemHome);
 			final long indexId = this.calculateIndexId(Long.parseLong(jsonDocument.get(LuceneFieldNames.CONTENT_ID).toString()));
 			this.esClient.getClient().prepareIndex(this.indexName, this.resourceType, String.valueOf(indexId)).setSource(jsonDocument).setRefresh(true).execute().actionGet();
 		}

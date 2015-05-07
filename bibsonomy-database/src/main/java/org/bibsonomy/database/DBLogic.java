@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Classifier;
@@ -138,7 +139,7 @@ import org.bibsonomy.model.comparators.BibTexPostComparator;
 import org.bibsonomy.model.comparators.ResourcePersonRelationByPostComparator;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.enums.PersonResourceRelation;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -3244,7 +3245,7 @@ public class DBLogic implements LogicInterface {
 				}
 			} else {
 				int counter = 1;
-				String newPersonId = person.getMainName().getFirstName().substring(0,1) + "" + person.getMainName().getLastName().substring(0,3);
+				String newPersonId = generatePersonIdBase(person);
 				String tempPersonId = newPersonId;
 				do {
 					Person tempPerson = this.personDBManager.getPersonById(tempPersonId, session);
@@ -3286,6 +3287,23 @@ public class DBLogic implements LogicInterface {
 		} finally {
 			session.close();
 		}
+	}
+
+	private String generatePersonIdBase(Person person) {
+		final String firstName = person.getMainName().getFirstName();
+		final String lastName  = person.getMainName().getLastName();
+		
+		StringBuilder sb = new StringBuilder();
+		if (!StringUtils.isBlank(firstName)) {
+			sb.append(firstName.charAt(0));
+			sb.append('.');
+		}
+		if (!StringUtils.isBlank(lastName)) {
+			throw new IllegalArgumentException("lastName may not be empty");
+		}
+		sb.append(lastName);
+		
+		return sb.toString();
 	}
 
 	/* (non-Javadoc)
@@ -3359,7 +3377,7 @@ public class DBLogic implements LogicInterface {
 	 * @param authorIndex
 	 * @return
 	 */
-	public List<ResourcePersonRelation> getResourceRelations(String hash, PersonResourceRelation role, Integer authorIndex) {
+	public List<ResourcePersonRelation> getResourceRelations(String hash, PersonResourceRelationType role, Integer authorIndex) {
 		return this.personDBManager.getResourcePersonRelations(hash, authorIndex, role, this.dbSessionFactory.getDatabaseSession());
 	}
 	

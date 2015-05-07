@@ -361,12 +361,12 @@
 								<value>formAcademicDegree</value>
 								<value>formThesisId</value>
 								<value>formResourcePersonRelationId</value>
-								<value>formAuthorIndex</value>
+								<value>formPersonIndex</value>
 							</list>
 						</property>
 					</bean>
 				</entry>
-				<entry key="/persondisambiguation">
+				<entry key="/pubauthor">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="disambiguationPageController"/>
 						<property name="allowedFields">

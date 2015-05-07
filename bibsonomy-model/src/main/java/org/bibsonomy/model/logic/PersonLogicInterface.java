@@ -8,7 +8,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.enums.PersonResourceRelation;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 
 /**
  * Interface for person entity logic.
@@ -61,7 +61,7 @@ public interface PersonLogicInterface {
 	 * @param authorIndex
 	 * @return List<ResourcePersonRelation>
 	 */
-	public List<ResourcePersonRelation> getResourceRelations(String hash, PersonResourceRelation role, Integer authorIndex);
+	public List<ResourcePersonRelation> getResourceRelations(String hash, PersonResourceRelationType role, Integer authorIndex);
 
 	/**
 	 * @param withPersonId

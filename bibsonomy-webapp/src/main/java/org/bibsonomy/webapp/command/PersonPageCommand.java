@@ -3,9 +3,7 @@ package org.bibsonomy.webapp.command;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
@@ -15,11 +13,11 @@ import org.bibsonomy.model.Resource;
 public class PersonPageCommand extends UserResourceViewCommand {
 
 	private String requestedPersonId;
-	private String requestedPersonName;
-	private String requestedHash;
 	private String requestedAction;
-	private String requestedRole;
-	private String requestedIndex;
+	
+//	private String requestedHash;
+//	private String requestedRole;
+//	private String requestedIndex;
 	
 	private String formSelectedName;
 	private String formAcademicDegree;
@@ -39,7 +37,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	private String formInterHash;
 	private String formIntraHash;
 	private boolean formThatsMe;
-	private String formAuthorIndex;
+	private String formPersonIndex;
 	
 	private String formAction;
 	
@@ -153,20 +151,6 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	}
 
 	/**
-	 * @return the requestedHash
-	 */
-	public String getRequestedHash() {
-		return this.requestedHash;
-	}
-
-	/**
-	 * @param requestedHash the requestedHash to set
-	 */
-	public void setRequestedHash(String requestedHash) {
-		this.requestedHash = requestedHash;
-	}
-
-	/**
 	 * @return the formPersonRole
 	 */
 	public List<String> getFormPersonRoles() {
@@ -196,20 +180,6 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	}
 
 	/**
-	 * @return the requestedRole
-	 */
-	public String getRequestedRole() {
-		return this.requestedRole;
-	}
-
-	/**
-	 * @param requestedRole the requestedRole to set
-	 */
-	public void setRequestedRole(String requestedRole) {
-		this.requestedRole = requestedRole;
-	}
-
-	/**
 	 * @return the formMiddleName
 	 */
 	public String getFormMiddleName() {
@@ -221,20 +191,6 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	 */
 	public void setFormMiddleName(String formMiddleName) {
 		this.formMiddleName = formMiddleName;
-	}
-
-	/**
-	 * @return the requestedPersonName
-	 */
-	public String getRequestedPersonName() {
-		return this.requestedPersonName;
-	}
-
-	/**
-	 * @param requestedPersonName the requestedPersonName to set
-	 */
-	public void setRequestedPersonName(String requestedPersonName) {
-		this.requestedPersonName = requestedPersonName;
 	}
 
 	/**
@@ -378,7 +334,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	}
 
 	/**
-	 * @param nameId the nameId to set
+	 * @param personNameId2 the nameId to set
 	 */
 	public void setFormPersonNameId(String personNameId2) {
 		this.formPersonNameId = personNameId2;
@@ -483,39 +439,31 @@ public class PersonPageCommand extends UserResourceViewCommand {
 		this.availableRoles = availableRoles;
 	}
 
+	/**
+	 * @return true if the current login user is associated to this person
+	 */
 	public boolean isFormThatsMe() {
 		return this.formThatsMe;
 	}
 
+	/**
+	 * @param formThatsMe if the current login user is associated to this person
+	 */
 	public void setFormThatsMe(boolean formThatsMe) {
 		this.formThatsMe = formThatsMe;
 	}
 
 	/**
-	 * @return the requestedIndex
-	 */
-	public String getRequestedIndex() {
-		return this.requestedIndex;
-	}
-
-	/**
-	 * @param requestedIndex the requestedIndex to set
-	 */
-	public void setRequestedIndex(String requestedIndex) {
-		this.requestedIndex = requestedIndex;
-	}
-
-	/**
 	 * @return the formAuthorIndex
 	 */
-	public String getFormAuthorIndex() {
-		return this.formAuthorIndex;
+	public String getFormPersonIndex() {
+		return this.formPersonIndex;
 	}
 
 	/**
 	 * @param formAuthorIndex the formAuthorIndex to set
 	 */
-	public void setFormAuthorIndex(String formAuthorIndex) {
-		this.formAuthorIndex = formAuthorIndex;
+	public void setFormPersonIndex(String formAuthorIndex) {
+		this.formPersonIndex = formAuthorIndex;
 	}
 }

@@ -63,7 +63,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.PersonResourceRelation;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
@@ -817,7 +817,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * */
 		if (present(command.getPost().getResourcePersonRelations())){
 			ResourcePersonRelation resourcePersonRelation = post.getResourcePersonRelations().get(post.getResourcePersonRelations().size()-1);
-			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(resourcePersonRelation.getPerson().getId(), PersonNameUtils.serializePersonName(resourcePersonRelation.getPerson().getMainName()), ((BibTex)post.getResource()).getSimHash2(), command.getRequestedUser(), PersonResourceRelation.AUTHOR.toString(), null));
+			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(resourcePersonRelation.getPerson().getId()));
 			
 		}
 		return this.finalRedirect(loginUserName, post, command.getReferer());
@@ -866,16 +866,14 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			if(present(personName)){
 				final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
 			
-				resourcePersonRelation.setPersonId(person.getId());
-				resourcePersonRelation.setSimhash1(post.getResource().getInterHash());
-				resourcePersonRelation.setSimhash2(post.getResource().getIntraHash());
-				resourcePersonRelation.setPubOwner(loginUser.getName());
-				resourcePersonRelation.setPersonId(command.getPersonId());
-				if(present(command.getPerson_role())){// if a supervisor is adding a new thesis
+				resourcePersonRelation.setPerson(person);
+				resourcePersonRelation.setPost((Post<BibTex>) post); // TODO: should we allow personrelations such as authors for bookmarks?
+				resourcePersonRelation.setCreatedByUserName(loginUser.getName());
+				if (present(command.getPerson_role())) {// if a supervisor is adding a new thesis
 					resourcePersonRelation.setRelatorCode(command.getPerson_role().split("supervisor,")[1]);
 				}
 				else{
-					resourcePersonRelation.setRelatorCode(PersonResourceRelation.AUTHOR.getRelatorCode());
+					resourcePersonRelation.setRelatorCode(PersonResourceRelationType.AUTHOR.getRelatorCode());
 				}
 				
 				this.logic.addResourceRelation(resourcePersonRelation);

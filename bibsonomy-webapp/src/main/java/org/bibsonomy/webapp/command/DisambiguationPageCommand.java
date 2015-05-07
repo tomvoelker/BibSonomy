@@ -1,21 +1,20 @@
 package org.bibsonomy.webapp.command;
 
 import java.util.List;
+
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 
 /**
  * @author Christian Pfeiffer
  */
 public class DisambiguationPageCommand extends UserResourceViewCommand {
 
-	private String requestedAuthorName;
 	private String requestedHash;
-	private String requestedAction;
 	private String requestedRole;
-	private String requestedIndex;
+	private int requestedIndex;
 	
 	private String formPersonId;
 	private String formPersonNameId;
@@ -23,7 +22,7 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	private List<PersonName> suggestedPersonNames;
 	private Person person;
 	private PersonName personName;
-	private Post<? extends Resource> post;
+	private Post<BibTex> post;
 
 	/**
 	 * @return the suggestedPersons
@@ -37,20 +36,6 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	 */
 	public void setSuggestedPersonNames(List<PersonName> suggestedPersonNames) {
 		this.suggestedPersonNames = suggestedPersonNames;
-	}
-
-	/**
-	 * @return the requestedAction
-	 */
-	public String getRequestedAction() {
-		return this.requestedAction;
-	}
-
-	/**
-	 * @param requestedAction the requestedAction to set
-	 */
-	public void setRequestedAction(String requestedAction) {
-		this.requestedAction = requestedAction;
 	}
 
 	/**
@@ -70,14 +55,14 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the post
 	 */
-	public Post<? extends Resource> getPost() {
+	public Post<BibTex> getPost() {
 		return this.post;
 	}
 
 	/**
 	 * @param post the post to set
 	 */
-	public void setPost(Post<? extends Resource> post) {
+	public void setPost(Post<BibTex> post) {
 		this.post = post;
 	}
 
@@ -93,20 +78,6 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	 */
 	public void setPerson(Person person) {
 		this.person = person;
-	}
-
-	/**
-	 * @return the requestedAuthorName
-	 */
-	public String getRequestedAuthorName() {
-			return this.requestedAuthorName;
-	}
-
-	/**
-	 * @param requestedAuthorName the requestedAuthorName to set
-	 */
-	public void setRequestedAuthorName(String requestedAuthorName) {
-		this.requestedAuthorName = requestedAuthorName;
 	}
 
 	/**
@@ -168,14 +139,14 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the requestedIndex
 	 */
-	public String getRequestedIndex() {
+	public int getRequestedIndex() {
 		return this.requestedIndex;
 	}
 
 	/**
 	 * @param requestedIndex the requestedIndex to set
 	 */
-	public void setRequestedIndex(String requestedIndex) {
+	public void setRequestedIndex(int requestedIndex) {
 		this.requestedIndex = requestedIndex;
 	}
 }

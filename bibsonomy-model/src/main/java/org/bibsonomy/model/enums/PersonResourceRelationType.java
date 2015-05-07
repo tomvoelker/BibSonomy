@@ -12,7 +12,7 @@ import org.bibsonomy.model.Resource;
  *
  * @author jil
  */
-public enum PersonResourceRelation {
+public enum PersonResourceRelationType {
 	/**
 	 * doctor vater
 	 */
@@ -40,15 +40,15 @@ public enum PersonResourceRelation {
 	OTHER("Moth");
 	
 	private final String relatorCode;
-	private static final Map<String, PersonResourceRelation> byRelatorCode = new HashMap<String, PersonResourceRelation>();
+	private static final Map<String, PersonResourceRelationType> byRelatorCode = new HashMap<String, PersonResourceRelationType>();
 	
 	static {
-		for (PersonResourceRelation value : PersonResourceRelation.values()) {
+		for (PersonResourceRelationType value : PersonResourceRelationType.values()) {
 			byRelatorCode.put(value.getRelatorCode(), value);
 		}
 	}
 
-	private PersonResourceRelation(String relatorCode) {
+	private PersonResourceRelationType(String relatorCode) {
 		this.relatorCode = relatorCode;
 	}
 	
@@ -59,8 +59,8 @@ public enum PersonResourceRelation {
 		return this.relatorCode;
 	}
 	
-	public static PersonResourceRelation getByRelatorCode(String relatorCode) {
-		final PersonResourceRelation rVal = byRelatorCode.get(relatorCode);
+	public static PersonResourceRelationType getByRelatorCode(String relatorCode) {
+		final PersonResourceRelationType rVal = byRelatorCode.get(relatorCode);
 		if (rVal == null) {
 			throw new NoSuchElementException(relatorCode);
 		}

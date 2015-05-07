@@ -74,7 +74,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.enums.PersonResourceRelation;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.PersonLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;

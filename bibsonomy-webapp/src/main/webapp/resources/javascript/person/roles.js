@@ -20,10 +20,10 @@ $(document).ready(function() {
 		$("#btnDeleteRoleSubmit").attr("data-resourcePersonRelation-id", obj.attr("data-resourcePersonRelation-id"));
 	}
 	
-	function addRoleHtml(resourcePersonRelationid, personNameId, personFirstName, personLastName, resourceTitle, simhash1, simhash2, role, personId, authorIndex) {
+	function addRoleHtml(resourcePersonRelationid, personNameId, personFirstName, personLastName, resourceTitle, simhash1, simhash2, role, personId, personIndex) {
 		var s = $("<span class='resourcePersonRelation_"+resourcePersonRelationid+"'></span");
 		var a = $("<a href='/person/"+ personId + "/" + personLastName + "," + personFirstName+ "'> "+ personFirstName + " " + personLastName + " </a>");
-		//var ss = $("<span data-toggle='modal' data-target='#editRole' data-resource-title='"+resourceTitle+"' data-person-name='"+personName+"' data-author-index='"+authorIndex+"' data-relation-simhash1='"+simhash1+"' data-relation-simhash2='"+simhash2+"' data-person-role='"+role+"' style='color:orange;cursor:pointer' href='#editRole' class='editRole glyphicon glyphicon-pencil'>&#160;</span>");
+		//var ss = $("<span data-toggle='modal' data-target='#editRole' data-resource-title='"+resourceTitle+"' data-person-name='"+personName+"' data-author-index='"+personIndex+"' data-relation-simhash1='"+simhash1+"' data-relation-simhash2='"+simhash2+"' data-person-role='"+role+"' style='color:orange;cursor:pointer' href='#editRole' class='editRole glyphicon glyphicon-pencil'>&#160;</span>");
 		var sss = $(" <span data-toggle='modal' data-target='#deleteRole' data-resourcePersonRelation-id='"+resourcePersonRelationid+"' style='color:darkred;cursor:pointer' href='#deleteRole' class='deleteRole glyphicon glyphicon-remove'>&#160;</span>");
 		
 		sss.on("click", function() {
@@ -75,7 +75,7 @@ $(document).ready(function() {
 					formLastName: lastName,
 					formInterHash: e.attr("data-relation-simhash1"),
 					formPersonRole: e.attr("data-person-role"),
-					formAuthorIndex: e.attr("data-author-index")
+					formPersonIndex: e.attr("data-author-index")
 				}).done(function(data) {
 					e.attr("data-person-id", data.personId);
 					e.attr("data-person-name-id", data.personNameId);
@@ -101,7 +101,7 @@ $(document).ready(function() {
 						formPersonId: e.attr("data-person-id"),
 						formInterHash: e.attr("data-relation-simhash1"),
 						formPersonRole: e.attr("data-person-role"),
-						formAuthorIndex: e.attr("data-author-index")
+						formPersonIndex: e.attr("data-author-index")
 					}
 			).done(function(data) {
 				$("."+e.attr("data-relation-simhash1") + "_" + e.attr("data-relation-simhash2") + " ." + e.attr("data-person-role") + " .addRole").before(

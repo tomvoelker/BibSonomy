@@ -53,7 +53,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.enums.PersonResourceRelation;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.services.URLGenerator;

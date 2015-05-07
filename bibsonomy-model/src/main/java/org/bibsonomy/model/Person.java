@@ -277,35 +277,6 @@ public class Person implements Serializable {
 	public void setPostCounter(int postCounter) {
 		this.postCounter = postCounter;
 	}
-	
-	/**
-	 * 
-	 * @param academicDegree
-	 * @return Person
-	 */
-	public Person withAcademicDegree(String academicDegree) {
-		this.setAcademicDegree(academicDegree);
-		return this;	
-	}
-
-	/**
-	 * @param formUser
-	 * @return Person
-	 */
-	public Person withUser(String user) {
-		this.setUser(user);
-		return this;
-	}
-
-	/**
-	 * @param withMain
-	 * @return Person
-	 */
-	public Person withMainName(PersonName withMain) {
-		this.setMainName(withMain);
-		return this;
-	}
-	
 
 	/**
 	 * @return the resourcePersonRelations

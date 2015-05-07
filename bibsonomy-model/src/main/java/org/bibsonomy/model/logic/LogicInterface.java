@@ -63,7 +63,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.enums.PersonResourceRelation;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 
@@ -715,7 +715,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @return List<ResourcePersonRelation>
 	 */
 	@Override
-	public List<ResourcePersonRelation> getResourceRelations(String hash, PersonResourceRelation role, Integer authorIndex);
+	public List<ResourcePersonRelation> getResourceRelations(String hash, PersonResourceRelationType role, Integer authorIndex);
 
 	@Override
 	public List<ResourcePersonRelation> getResourceRelations(Person person);

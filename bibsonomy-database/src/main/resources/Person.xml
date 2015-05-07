@@ -75,11 +75,11 @@
 	<select id='getResourcePersonRelationByResourcePersonRelation' resultMap="PersonCommon.resourcePersonRelation" parameterClass='org.bibsonomy.model.ResourcePersonRelation'>
 		SELECT <include refid='commonResourcePersonRelationColumns' /> FROM pub_person 
 			WHERE 
-				pub_person.simhash1 = #simhash1#
+				pub_person.simhash1 = #resource.interHash#
 					AND
-				pub_person.relator_code = #relatorCode#
+				pub_person.relator_code = #relationType.relatorCode#
 					AND
-				pub_person.author_index = #authorIndex#
+				pub_person.author_index = #personIndex#
 	</select>
 	
 	<update id='unlinkUser' parameterClass="java.lang.String">
@@ -107,8 +107,8 @@
 	
 	<statement id="getResourcePersonRelationsByPost" resultMap="PersonCommon.resourcePersonRelation">
 		SELECT <include refid="commonResourcePersonRelationColumns" /> FROM pub_person
-			WHERE pub_person.pub_owner = #pubOwner#
-				AND (pub_person.simhash1 = #simhash1#) 
+			WHERE pub_person.pub_owner = #post.user.name#
+				AND (pub_person.simhash1 = #resource.interHash#) 
 	</statement>
 	
 	<statement id="getResourcePersonRelationsByPersonId" parameterClass="java.lang.String" resultMap="PersonCommon.resourcePersonRelation">
@@ -118,7 +118,7 @@
 	
 	<statement id="getResourcePersonRelationsByInterhash" parameterClass="java.lang.String" resultMap="PersonCommon.resourcePersonRelation">
 		SELECT <include refid="commonResourcePersonRelationColumns" /> FROM pub_person
-			WHERE simhash1 = #interhash# 
+			WHERE simhash1 = #resource.interhash# 
 	</statement>
 	
 	<statement id="getOneResourcePersonRelationsByPersonId" resultMap="PersonCommon.resourcePersonRelation">

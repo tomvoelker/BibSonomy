@@ -7,22 +7,21 @@ $(document).ready(function() {
 	
 	$("#btnOtherPersonSubmit").on("click", function() {
 		var e = $(this);
-		$.post("/person",
-				{ 	formAction: "addName",
-					formFirstName: e.attr("data-person-firstName"),
-					formLastName: e.attr("data-person-lastName") ,
-					formPersonId: e.attr("data-person-id"),
-				}
-		).done(function(data) {
+		$.post("/person", {
+			formAction: "addName",
+			formPersonId: e.attr("data-person-id"),
+			formFirstName: e.attr("data-person-firstName"),
+			formLastName: e.attr("data-person-lastName") ,
+		}).done(function(data) {
 			$.post("/person",
 					{ 	formAction: "addRole",
 						formInterHash: e.attr("data-resource-simhash1"),
-						formPersonRole: "AUTHOR",
 						formPersonId: e.attr("data-person-id"),
-						formAuthorIndex: e.attr("data-author-index")
+						formPersonRole: "AUTHOR",
+						formPersonIndex: e.attr("data-author-index")
 					}
 			).done(function(data) {
-				document.location.href = "/person/" +  e.attr("data-person-id") + "/" + e.attr("data-person-lastname" + ", " + e.attr("data-person-firstName"));
+				window.location.href = "/person/" +  e.attr("data-person-id");
 			});
 		});
 	});

@@ -313,34 +313,18 @@
 	<!-- ############## /person pages ############### -->
 	<!-- redirect to /person/PERSON page -->
 	<rule>
-		<name>redirect /person/PERSONID/PERSONNAME/HASH/USER/ROLE/INDEX</name>
-		<from>^/+person(|/+([^/]+?)/+([^/]+?)(|/+([^/]+?)/+([^/]+?)/+([^/]+?)/+([^/]+?)))$</from>
-		<set type="parameter" name="requestedPersonId">$2</set>
-		<set type="parameter" name="requestedPersonName">$3</set>
-		<set type="parameter" name="requestedHash">$5</set>
-		<set type="parameter" name="requestedUser">$6</set>
-		<set type="parameter" name="requestedRole">$7</set>
-		<set type="parameter" name="requestedIndex">$8</set>
+		<name>redirect /person/PERSONID</name>
+		<from>^/+person/([^/]+?)$</from>
+		<set type="parameter" name="requestedPersonId">$1</set>
 		<to last="true">/person</to>
 	</rule>
 	
-	<!-- ############## /disambiguation page ############### -->
-	<!-- redirect to /persondisambiguation page -->
-	
 	<rule>
-		<name>redirect /pubauthor/AUTHORNAME/INDEX/HASH/ROLE</name>
-		<from>^/+pubauthor/+([^/]+?)/+([^/]+?)/+([^/]+?)/+([^/]+?)</from>
-		<to>/persondisambiguation/redirected/$1/$2/$3/$4</to>
-	</rule>
-	
-	<rule>
-		<name>redirect /persondisambiguation/ACTION/AUTHORNAME/INDEX/HASH/ROLE</name>
-		<from>^/+persondisambiguation/+([^/]+?)/+([^/]+?)/+([^/]+?)/+([^/]+?)/+([^/]+?)$</from>
-		<set type="parameter" name="requestedAction">$1</set>
-		<set type="parameter" name="requestedAuthorName">$2</set>
+		<name>rewrite /person/HASH/ROLE/INDEX</name>
+		<from>^/+persondisambiguation/+([^/]+?)/+([^/]+?)/+([^/]+?)/+([^/]+?)$</from>
 		<set type="parameter" name="requestedIndex">$3</set>
-		<set type="parameter" name="requestedHash">$4</set>
-		<set type="parameter" name="requestedRole">$5</set>
+		<set type="parameter" name="requestedHash">$1</set>
+		<set type="parameter" name="requestedRole">$2</set>
 		<to last="true">/persondisambiguation</to>
 	</rule>
 	

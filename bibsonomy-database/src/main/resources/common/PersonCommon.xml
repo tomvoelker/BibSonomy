@@ -25,16 +25,14 @@
 	</resultMap>
 	
 	<resultMap id='resourcePersonRelation' class='org.bibsonomy.model.ResourcePersonRelation'>
-		<result property='id' 			column='id' javaType='int' />
-		<result property='simhash1' 	column='simhash1' javaType='java.lang.String' />
-		<result property='simhash2' 	column='simhash2' javaType='java.lang.String' />
-		<result property='qualifying' 	column='qualifying' javaType='int' />
-		<result property='personId' 	column='person_id' javaType='java.lang.String' />
-		<result property='relatorCode' 	column='relator_code' javaType='java.lang.String' />
-		<result property='pubOwner'		column='pub_owner'	javaType='java.lang.String' />
-		<result property="person"		column="person_id"  javaType='org.bibsonomy.model.Person' select='getPersonById' />
-		<result property='post'			column='simhash1' javaType='bibtex' select='getPosts'/>
-		<result property='authorIndex'  column='author_index' javaType='int' />
+		<result property='id'           column='id'           javaType='int' />
+		<result property='qualifying'   column='qualifying'   javaType='int' />
+		<result property='personId'     column='person_id'    javaType='java.lang.String' />
+		<result property='relationType' column='relator_code' javaType='org.bibsonomy.model.enums.PersonResourceRelationType' />
+		<result property='pubOwner'     column='pub_owner'    javaType='java.lang.String' />
+		<result property="person"       column="person_id"    javaType='org.bibsonomy.model.Person'       select='getPersonById' />
+		<result property='post'         column='simhash1'     javaType='bibtex'                           select='getPosts'/>
+		<result property='personIndex'  column='author_index' javaType='int' />
 	</resultMap>
 	
 	<sql id="commonPersonColumns">
@@ -50,7 +48,7 @@
 	</sql>
 	
 	<sql id="commonResourcePersonRelationAttributes">
-		#id#, #simhash1#, #simhash2#, #qualifying#, #personId#, #relatorCode# , #pubOwner#, #authorIndex#
+		#id#, #post.resource.interHash#, #post.resource.intraHash#, #qualifying#, #personId#, #relationType.relatorCode# , #post.user.name#, #personIndex#
 	</sql>
 	
 	<sql id="commonResourcePersonRelationColumns">

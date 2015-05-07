@@ -23,10 +23,10 @@ $(document).ready(function() {
 						formInterHash: e.attr("data-resource-simhash1"),
 						formPersonId: e.attr("data-person-id") ,
 						formPersonRole: "AUTHOR",
-						formAuthorIndex: e.attr("data-author-index")
+						formPersonIndex: e.attr("data-author-index")
 					}
 			).done(function(data) {
-				window.location.href = "/person/" + e.attr("data-person-id") + "/" + e.attr("data-lastName") + ", " + e.attr("data-firstName"); 
+				window.location.href = "/person/" + e.attr("data-person-id");
 			});
 		});
 	});

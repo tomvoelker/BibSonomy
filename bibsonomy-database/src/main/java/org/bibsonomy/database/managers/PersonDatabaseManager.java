@@ -14,7 +14,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.enums.PersonResourceRelation;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
 
 /**
@@ -144,16 +144,16 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public List<PersonName> findPersonNames(String lastName, String firstName, DBSession session) {
 		PersonName personName = new PersonName();
 		if (StringUtils.isBlank(lastName) == false) {
-			personName.withLastName(lastName.trim() + "%");
+			personName.setLastName(lastName.trim() + "%");
 			if (StringUtils.isBlank(firstName) == false) {
-				personName.withFirstName(firstName.trim().substring(0, 1) + "%");
+				personName.setFirstName(firstName.trim().substring(0, 1) + "%");
 			} else {
-				personName.withFirstName("%");
+				personName.setFirstName("%");
 			}
 		} else {
 			if (StringUtils.isBlank(firstName) == false) {
-				personName.withFirstName(firstName.trim() + "%");
-				personName.withLastName("%");
+				personName.setFirstName(firstName.trim() + "%");
+				personName.setLastName("%");
 			} else {
 				return new ArrayList<>();
 			}
@@ -227,12 +227,10 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		return (List<ResourcePersonRelation>) this.queryForList("getResourceRelationsByResourcePersonRelation", resourcePersonRelation, databaseSession);
 	}
 	
-	public List<ResourcePersonRelation> getResourcePersonRelationsByPost(Post<? extends Resource> post,
+	public List<ResourcePersonRelation> getResourcePersonRelationsByPost(Post<BibTex> post,
 			DBSession databaseSession) {
 		ResourcePersonRelation param = new ResourcePersonRelation();
-		param.setPubOwner(post.getUser().getName());
-		param.setSimhash1(post.getResource().getInterHash());
-		param.setSimhash2(post.getResource().getIntraHash());
+		param.setPost(post);
 		return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsByPost", param, databaseSession);
 	}
 	
@@ -271,12 +269,14 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @param session
 	 * @return List<ResourcePersonRelation>
 	 */
-	public List<ResourcePersonRelation> getResourcePersonRelations(String hash,
-			Integer authorIndex, PersonResourceRelation role, DBSession session) {
-			ResourcePersonRelation rpr = new ResourcePersonRelation()
-			.withSimhash1(hash)
-			.withAuthorIndex(authorIndex)
-			.withRelatorCode(role.getRelatorCode());
+	public List<ResourcePersonRelation> getResourcePersonRelations(final String interhash, final Integer authorIndex, final PersonResourceRelationType role, final DBSession session) {
+		final ResourcePersonRelation rpr = new ResourcePersonRelation();
+		Post<BibTex> post = new Post<>();
+		post.setResource(new BibTex());
+		post.getResource().setInterHash(interhash);
+		rpr.setPost(post);
+		rpr.setPersonIndex(authorIndex);
+		rpr.setRelationType(role);
 			
 			return this.getResourcePersonRelationByResourcePersonRelation(rpr, session);
 	}

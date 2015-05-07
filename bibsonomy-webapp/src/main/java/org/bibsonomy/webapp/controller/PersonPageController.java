@@ -11,7 +11,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.enums.PersonResourceRelation;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
@@ -169,18 +169,25 @@ public class PersonPageController extends SingleResourceListController implement
 	@SuppressWarnings("unchecked")
 	private View newAction(PersonPageCommand command) {
 		
-		Person person = new Person().withMainName(new PersonName(command.getFormLastName()).withFirstName(command.getFormFirstName()).withMain(true)).withAcademicDegree(command.getFormAcademicDegree());
+		final Person person = new Person();
+		final PersonName mainName = new PersonName(command.getFormLastName());
+		mainName.setFirstName(command.getFormFirstName());
+		mainName.setMain(true);
+		person.setMainName(mainName);
+		person.setAcademicDegree(command.getFormAcademicDegree());
 		this.logic.createOrUpdatePerson(person);
+		
 		command.setPerson(person);
+		
 		String role = command.getFormPersonRole();
 		if(role.length() != 4) {
-			role = PersonResourceRelation.valueOf(command.getFormPersonRole()).getRelatorCode();
+			role = PersonResourceRelationType.valueOf(command.getFormPersonRole()).getRelatorCode();
 		}
 		ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation()
 		.withSimhash1(command.getFormInterHash())
 		.withRelatorCode(role)
 		.withPersonId(person.getId())
-		.withAuthorIndex(new Integer(command.getFormAuthorIndex()));
+		.withAuthorIndex(new Integer(command.getFormPersonIndex()));
 		this.logic.addResourceRelation(resourcePersonRelation);
 		
 		JSONObject jsonPerson = new JSONObject();
@@ -220,10 +227,10 @@ public class PersonPageController extends SingleResourceListController implement
 		if(command.getFormPersonRole().length() == 4)
 			role = command.getFormPersonRole();
 		else
-			role = PersonResourceRelation.valueOf(command.getFormPersonRole()).getRelatorCode();
+			role = PersonResourceRelationType.valueOf(command.getFormPersonRole()).getRelatorCode();
 		
-		if(!present(command.getFormAuthorIndex())) {
-			command.setFormAuthorIndex("-1");
+		if(!present(command.getFormPersonIndex())) {
+			command.setFormPersonIndex("-1");
 			
 		}
 		
@@ -231,7 +238,7 @@ public class PersonPageController extends SingleResourceListController implement
 			.withSimhash1(command.getFormInterHash())
 			.withRelatorCode(role)
 			.withPersonId(command.getFormPersonId())
-			.withAuthorIndex(new Integer(command.getFormAuthorIndex()));
+			.withAuthorIndex(new Integer(command.getFormPersonIndex()));
 		this.logic.addResourceRelation(resourcePersonRelation);
 		command.setResponseString(resourcePersonRelation.getId() + "");
 		return Views.AJAX_TEXT;
@@ -247,13 +254,13 @@ public class PersonPageController extends SingleResourceListController implement
 		for(String role : command.getFormPersonRoles()) {
 			ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation()
 			.withSimhash1(command.getFormInterHash())
-			.withRelatorCode(PersonResourceRelation.valueOf(role).getRelatorCode())
+			.withRelatorCode(PersonResourceRelationType.valueOf(role).getRelatorCode())
 			.withPersonId(command.getFormPersonId())
-			.withAuthorIndex(new Integer(command.getFormAuthorIndex()));
+			.withAuthorIndex(new Integer(command.getFormPersonIndex()));
 			this.logic.addResourceRelation(resourcePersonRelation);
 		}
-				
-		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getId(), command.getPerson().getMainName().toString(), command.getPost().getResource().getInterHash(), command.getPost().getUser().getName(), command.getRequestedRole(), new Integer(command.getRequestedIndex())));	
+		
+		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getId()));	
 	}
 	
 	@SuppressWarnings("boxing")
@@ -285,17 +292,21 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 */
 	private View addNameAction(PersonPageCommand command) {
-		Person person = logic.getPersonById(command.getFormPersonId());
-		PersonName personName = new PersonName(command.getFormLastName()).withFirstName(command.getFormFirstName()).withPersonId(command.getFormPersonId());
-		for( PersonName otherName : person.getNames()) {
-			if(personName.equals(otherName)) {
+		final Person person = logic.getPersonById(command.getFormPersonId());
+		
+		final PersonName personName = new PersonName(command.getFormLastName());
+		personName.setFirstName(command.getFormFirstName());
+		personName.setPersonId(command.getFormPersonId());
+		
+		for (PersonName otherName : person.getNames()) {
+			if (personName.equals(otherName)) {
 				command.setResponseString(otherName.getId()+ "");
 				return Views.AJAX_TEXT;
 			}
 		}
-		
 		this.logic.createOrUpdatePersonName(personName);
-		command.setResponseString(personName.getId() + "");
+		command.setResponseString(Integer.toString(personName.getId()));
+		
 		return Views.AJAX_TEXT;
 	}
 
@@ -316,7 +327,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 */
 	private View showAction(PersonPageCommand command) {
 		
-		for(PersonResourceRelation prr : PersonResourceRelation.values()) {
+		for(PersonResourceRelationType prr : PersonResourceRelationType.values()) {
 			command.getAvailableRoles().add(prr.getRelatorCode());
 		}
 		
@@ -333,7 +344,7 @@ public class PersonPageController extends SingleResourceListController implement
 			
 			resourcePersonRelation.getPost().setResourcePersonRelations(this.logic.getResourceRelations(resourcePersonRelation.getPost()));
 			
-			if(resourcePersonRelation.getRelatorCode().equals(PersonResourceRelation.AUTHOR.getRelatorCode())) 
+			if(resourcePersonRelation.getRelatorCode().equals(PersonResourceRelationType.AUTHOR.getRelatorCode())) 
 				authorPosts.add(resourcePersonRelation.getPost());
 			else
 				advisorPosts.add(resourcePersonRelation.getPost());

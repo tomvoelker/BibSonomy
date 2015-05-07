@@ -69,6 +69,7 @@ public class BibTex extends Resource {
 	private String annote;
 	// TODO: rename to authors
 	private List<PersonName> author;
+	private List<Person> authorEntities;
 	private String booktitle;
 	private String chapter;
 	private String crossref;
@@ -763,6 +764,14 @@ public class BibTex extends Resource {
 		if (this.miscFields != null) {
 			this.miscFields.clear();
 		}
+	}
+
+	public List<Person> getAuthorEntities() {
+		return this.authorEntities;
+	}
+
+	public void setAuthorEntities(List<Person> authorEntities) {
+		this.authorEntities = authorEntities;
 	}
 
 

@@ -9,7 +9,7 @@ $(document).ready(function() {
 					formPersonRole: "AUTHOR",
 					formFirstName: e.attr("data-person-firstName"),
 					formLastName: e.attr("data-person-lastName"),
-					formAuthorIndex: e.attr("data-author-index")
+					formPersonIndex: e.attr("data-author-index")
 				}
 		).done(function(data) {
 			window.location.href = "/person/" + data.personId + "/" + data.personName;

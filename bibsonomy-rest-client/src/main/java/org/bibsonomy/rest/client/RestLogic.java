@@ -74,7 +74,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.enums.PersonResourceRelation;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
@@ -873,7 +873,7 @@ public class RestLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations(org.bibsonomy.model.PersonName, java.lang.String, org.bibsonomy.model.enums.PersonResourceRelation, java.lang.Integer)
 	 */
 	@Override
-	public List<ResourcePersonRelation> getResourceRelations(String hash, PersonResourceRelation role, Integer authorIndex) {
+	public List<ResourcePersonRelation> getResourceRelations(String hash, PersonResourceRelationType role, Integer authorIndex) {
 		// TODO Auto-generated method stub
 		return null;
 	}
