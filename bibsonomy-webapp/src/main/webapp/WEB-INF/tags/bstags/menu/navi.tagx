@@ -12,7 +12,7 @@
 	
 	<c:set var="loginUserName" value="${loginUser.name}" />
 	
-	<nav class="navbar navbar-bibsonomy" role="banner">
+	<nav class="navbar navbar-bibsonomy" role="banner" id="navigation">
 		<div class="container navi noborder">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
@@ -124,7 +124,7 @@
 								</c:otherwise>
 							</c:choose>		
 						</c:otherwise>
-					</c:choose>					
+					</c:choose>
 					
 					<!--+
 						| popular
@@ -144,12 +144,13 @@
 						<li class="dropdown ${activeTab eq 'admin' ? 'active' : ''}" data-touch="false">
 							<a href="${relativeUrlGenerator.getAdminUrlByName('')}" class="dropdown-toggle" data-toggle="dropdown">admin<b class="caret">&amp;nbsp;</b></a>
 							<ul class="dropdown-menu">
-								<li><a href="${relativeUrlGenerator.getAdminUrlByName('spam')}">spam</a></li>
+								<li><a href="${relativeUrlGenerator.getAdminUrlByName('spam')}">users</a></li>
 								<li><a href="${relativeUrlGenerator.getAdminUrlByName('group')}">groups</a></li>
 								<li><a href="${relativeUrlGenerator.getAdminUrlByName('lucene')}">full text search</a></li>
 								<li><a href="${relativeUrlGenerator.getAdminUrlByName('recommender')}">recommenders</a></li>
 								<li><a href="${relativeUrlGenerator.getAdminUrlByName('oauth')}">OAuth consumers</a></li>
 								<li><a href="${relativeUrlGenerator.getAdminUrlByName('sync')}">synchronization</a></li>
+								<li><a href="${relativeUrlGenerator.getAdminUrlByName('statistics')}">statistics</a></li>
 							</ul>
 						</li>
 					</c:if>

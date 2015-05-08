@@ -202,13 +202,13 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void testIsAllowedToAccessUsersOrGroupDocuments() {
 		final User loginUser = new User("testuser1");
 		// user page: own posts -> yes
-		assertTrue(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, "testuser1", null, this.dbSession));
+		assertTrue(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, "testuser1", this.dbSession));
 		// user page: posts of other users -> no
-		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, "testuser2", null, this.dbSession));
+		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, "testuser2", this.dbSession));
 		// null user -> no
-		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, null, null, this.dbSession));
+		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, null, this.dbSession));
 		// user not logged in -> no
-		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(new User(), GroupingEntity.USER, "testuser1", null, this.dbSession));
+		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(new User(), GroupingEntity.USER, "testuser1", this.dbSession));
 
 		// loginUser is member of group testgroup1, loginUser2 is not
 		// (both may see public posts)
@@ -251,25 +251,25 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		loginUser.addGroup(testgroup4);
 		
 		// non-existent group -> no
-		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, ParamUtils.NOGROUP_NAME, null, this.dbSession));
+		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, ParamUtils.NOGROUP_NAME, this.dbSession));
 	
 		// non-group members are not -> no
-		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser2, GroupingEntity.GROUP, "testgroup1", null, this.dbSession));
+		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser2, GroupingEntity.GROUP, "testgroup1", this.dbSession));
 		
 		// dummy tests / null values -> no
-		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(new User(), null, null, null, this.dbSession));
+		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(new User(), null, null, this.dbSession));
 		
 		// group sharedDocuments = 0 && userSharedDocuments = 0 -> no
-		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup3", null, this.dbSession));
+		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup3", this.dbSession));
 		
 		// group sharedDocuments = 0 && userSharedDocuments = 1 -> no
-		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup2", null, this.dbSession));
+		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup2", this.dbSession));
 		
 		// group sharedDocuments = 1 && userSharedDocuments = 0 -> yes (because we have group setting)
-		assertTrue(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup4", null, this.dbSession));
+		assertTrue(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup4", this.dbSession));
 		
 		// group sharedDocuments = 1 && userSharedDocuments = 1 -> yes
-		assertTrue(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup1", null, this.dbSession));
+		assertTrue(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup1", this.dbSession));
 	}
 	
 	@Test

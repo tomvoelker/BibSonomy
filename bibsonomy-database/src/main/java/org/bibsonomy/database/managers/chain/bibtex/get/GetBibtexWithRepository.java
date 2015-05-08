@@ -35,6 +35,7 @@ import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author philipp
@@ -43,7 +44,7 @@ public class GetBibtexWithRepository extends ResourceChainElement<BibTex, BibTex
 
     @Override
     protected boolean canHandle(final BibTexParam param) {
-    	return (param.getFilter() == FilterEntity.POSTS_WITH_REPOSITORY);
+    	return ValidationUtils.safeContains(param.getFilters(), FilterEntity.POSTS_WITH_REPOSITORY);
     }
 
     @Override

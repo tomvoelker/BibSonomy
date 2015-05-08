@@ -10,7 +10,18 @@
 	                    http://www.springframework.org/schema/jee
 	                    http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
 	
-	<jee:jndi-lookup id="mainDataSource" jndi-name="jdbc/bibsonomy"/>
+	<bean id="mainDataSource" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource" parent="basicDataSource">
+		<property name="driverClassName" value="${database.main.driverClassName}" />
+		<property name="url" value="${database.main.url}" />
+		<property name="username" value="${database.main.username}" />
+		<property name="password" value="${database.main.password}" />
+		<property name="maxIdle" value="${database.main.maxIdle}" />
+		<property name="maxActive" value="${database.main.maxActive}" />
+		<property name="maxWait" value="${database.main.maxWait}" />
+		<property name="removeAbandoned" value="${database.main.removeAbandoned}" />
+		<property name="removeAbandonedTimeout" value="${database.main.removeAbandonedTimeout}" />
+	</bean>
+	
 	
 	<!-- import database context form submodule -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-database-context.xml"/>
