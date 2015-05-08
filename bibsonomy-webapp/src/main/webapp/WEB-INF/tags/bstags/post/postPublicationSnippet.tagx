@@ -25,8 +25,7 @@
 				<input type="hidden" name="selTab" value="1" />
 				<input type="hidden" name="ckey" value="${ckey}" />
 				<input type="hidden" name="personId" value="${command.personId}" /> 
-				<input type="hidden" name="person_lastName" value="${command.person_lastName}" />
-				<input type="hidden" name="person_role" value="${command.person_role}"/>
+				<input type="hidden" name="personRole" value="${command.personRole}"/>
 				
 				<bsform:textarea labelColSpan="2" inputColSpan="10" path="selection" id="selection" />
 				<div class="form-group">

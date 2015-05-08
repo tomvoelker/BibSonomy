@@ -30,10 +30,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.webapp.command.GroupingCommand;
 import org.bibsonomy.webapp.command.PostCommand;
 
@@ -124,9 +126,10 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	private int compareVersion;
 	private List<String> differentEntryKeys;
 	
+	/** id of a {@link Person} which is to be associated with the new publication */
 	private String personId;
-	private String person_lastName;
-	private String person_role;
+	/** the role of the person given by {@link #personId} */
+	private PersonResourceRelationType personRole;
 	
 	/**
 	 * @return saveAndRate
@@ -512,20 +515,6 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	}
 
 	/**
-	 * @return the person_lastName
-	 */
-	public String getPerson_lastName() {
-		return this.person_lastName;
-	}
-
-	/**
-	 * @param person_lastName the person_lastName to set
-	 */
-	public void setPerson_lastName(String person_lastName) {
-		this.person_lastName = person_lastName;
-	}
-
-	/**
 	 * @return the personId
 	 */
 	public String getPersonId() {
@@ -540,17 +529,17 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	}
 
 	/**
-	 * @return the person_role
+	 * @return the role of the person given by {@link #personId} 
 	 */
-	public String getPerson_role() {
-		return this.person_role;
+	public PersonResourceRelationType getPersonRole() {
+		return this.personRole;
 	}
 
 	/**
-	 * @param person_role the person_role to set
+	 * @param personRole
 	 */
-	public void setPerson_role(String person_role) {
-		this.person_role = person_role;
+	public void setPersonRole(PersonResourceRelationType personRole) {
+		this.personRole = personRole;
 	}
 
 	

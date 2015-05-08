@@ -42,7 +42,6 @@ public class PersonPageController extends SingleResourceListController implement
 				case "editRole": return this.editRoleAction(command);
 				case "deleteRole": return this.deleteRoleAction(command);
 				case "unlink": return this.unlinkAction(command);
-				case "new": return this.newAction(command);
 				case "link": return this.linkAction(command);
 				case "search": return this.searchAction(command);
 				case "searchpub": return this.searchpubAction(command);
@@ -160,48 +159,6 @@ public class PersonPageController extends SingleResourceListController implement
 		return Views.PERSON;
 	}
 
-
-	/**
-	 * Action which is called a new person button somewhere in an modal dialog
-	 * @param command
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	private View newAction(PersonPageCommand command) {
-		
-		final Person person = new Person();
-		final PersonName mainName = new PersonName(command.getFormLastName());
-		mainName.setFirstName(command.getFormFirstName());
-		mainName.setMain(true);
-		person.setMainName(mainName);
-		person.setAcademicDegree(command.getFormAcademicDegree());
-		this.logic.createOrUpdatePerson(person);
-		
-		command.setPerson(person);
-		
-		String role = command.getFormPersonRole();
-		if(role.length() != 4) {
-			role = PersonResourceRelationType.valueOf(command.getFormPersonRole()).getRelatorCode();
-		}
-		ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation()
-		.withSimhash1(command.getFormInterHash())
-		.withRelatorCode(role)
-		.withPersonId(person.getId())
-		.withAuthorIndex(new Integer(command.getFormPersonIndex()));
-		this.logic.addResourceRelation(resourcePersonRelation);
-		
-		JSONObject jsonPerson = new JSONObject();
-		jsonPerson.put("personId", person.getId());
-		jsonPerson.put("personName", person.getMainName().toString());
-		jsonPerson.put("personNameId", new Integer(person.getMainName().getId()));
-		jsonPerson.put("resourcePersonRelationid", new Integer(resourcePersonRelation.getId()));
-		
-		command.setResponseString(jsonPerson.toJSONString());
-		
-		return Views.AJAX_JSON;
-	}
-
-
 	/**
 	 * Action called when a user want to unlink an author from a publication
 	 * @param command
@@ -223,20 +180,14 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View addRoleAction(PersonPageCommand command) {
-		String role;
-		if(command.getFormPersonRole().length() == 4)
-			role = command.getFormPersonRole();
-		else
-			role = PersonResourceRelationType.valueOf(command.getFormPersonRole()).getRelatorCode();
-		
-		if(!present(command.getFormPersonIndex())) {
+		if (!present(command.getFormPersonIndex())) {
 			command.setFormPersonIndex("-1");
-			
 		}
 		
-		ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation()
-			.withSimhash1(command.getFormInterHash())
-			.withRelatorCode(role)
+		ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
+		
+			resourcePersonRelation.setSimhash1(command.getFormInterHash())
+			.Relat
 			.withPersonId(command.getFormPersonId())
 			.withAuthorIndex(new Integer(command.getFormPersonIndex()));
 		this.logic.addResourceRelation(resourcePersonRelation);

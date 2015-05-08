@@ -6,6 +6,7 @@ import java.util.List;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 
 /**
  * @author Christian Pfeiffer
@@ -26,7 +27,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	private String formLastName;
 	private String formResourceHash;
 	private String formPersonId;
-	private String formPersonRole;
+	private PersonResourceRelationType formPersonRole;
 	private String formOrcid;
 	private String formThesisId;
 	private String formUser;
@@ -273,14 +274,14 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the formPersonRole
 	 */
-	public String getFormPersonRole() {
+	public PersonResourceRelationType getFormPersonRole() {
 		return this.formPersonRole;
 	}
 
 	/**
 	 * @param formPersonRole the formPersonRole to set
 	 */
-	public void setFormPersonRole(String formPersonRole) {
+	public void setFormPersonRole(PersonResourceRelationType formPersonRole) {
 		this.formPersonRole = formPersonRole;
 	}
 

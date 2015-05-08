@@ -6,14 +6,16 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 
 /**
  * @author Christian Pfeiffer
  */
 public class DisambiguationPageCommand extends UserResourceViewCommand {
 
+	private String requestedAction;
 	private String requestedHash;
-	private String requestedRole;
+	private PersonResourceRelationType requestedRole;
 	private int requestedIndex;
 	
 	private String formPersonId;
@@ -83,14 +85,14 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return
 	 */
-	public String getRequestedRole() {
+	public PersonResourceRelationType getRequestedRole() {
 		return this.requestedRole;
 	}
 
 	/**
 	 * @param requestedRole the requestedRole to set
 	 */
-	public void setRequestedRole(String requestedRole) {
+	public void setRequestedRole(PersonResourceRelationType requestedRole) {
 		this.requestedRole = requestedRole;
 	}
 
@@ -148,5 +150,13 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	 */
 	public void setRequestedIndex(int requestedIndex) {
 		this.requestedIndex = requestedIndex;
+	}
+
+	public String getRequestedAction() {
+		return this.requestedAction;
+	}
+
+	public void setRequestedAction(String requestedAction) {
+		this.requestedAction = requestedAction;
 	}
 }

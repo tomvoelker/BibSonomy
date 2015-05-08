@@ -3171,7 +3171,6 @@ public class DBLogic implements LogicInterface {
 	}
 
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<PersonName> getPersonSuggestion(String lastName, String firstName) {
 		DBSession session = this.openSession();
@@ -3195,6 +3194,11 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) {
 		DBSession session = this.openSession();
+//		Person p = getPersonById(resourcePersonRelation.getPerson().getId());
+//		if ((p.getUser() != null) && !p.getUser().equals(loginUser.getName())) {
+//			throw new AccessDeniedException("person in relation is someone else");
+//		}
+		resourcePersonRelation.setCreatedByUserName(loginUser.getName());
 		try {
 			this.personDBManager.addResourceRelation(resourcePersonRelation, session);
 		} finally {

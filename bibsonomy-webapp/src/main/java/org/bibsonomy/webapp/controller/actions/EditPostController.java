@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -851,40 +852,75 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			this.pingback.sendPingback(post);
 		}
 
-		/* if this field is already initiated, it means that we have come from a person page ...
-		 **/
-		if(command.getPersonId() != null){
-			
-			Person person = this.logic.getPersonById(command.getPersonId());
-			PersonName personName = new PersonName();
-			for(PersonName personname: person.getNames()) {
-				if(personname.getLastName().contains(command.getPerson_lastName())){
-					personName = personname;
-					break;
-				}
-			}
-			if(present(personName)){
-				final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
-			
-				resourcePersonRelation.setPerson(person);
-				resourcePersonRelation.setPost((Post<BibTex>) post); // TODO: should we allow personrelations such as authors for bookmarks?
-				resourcePersonRelation.setCreatedByUserName(loginUser.getName());
-				if (present(command.getPerson_role())) {// if a supervisor is adding a new thesis
-					resourcePersonRelation.setRelatorCode(command.getPerson_role().split("supervisor,")[1]);
-				}
-				else{
-					resourcePersonRelation.setRelatorCode(PersonResourceRelationType.AUTHOR.getRelatorCode());
-				}
-				
-				this.logic.addResourceRelation(resourcePersonRelation);
-				
-				if(!present(command.getPost().getResourcePersonRelations())){
-					command.getPost().setResourcePersonRelations(new ArrayList<ResourcePersonRelation>());
-				}
-				command.getPost().getResourcePersonRelations().add(resourcePersonRelation);
-			}
+		// if a PersonId has been provided, it means that we have come from a person page ...
+		if ((command.getPersonId() != null) && (post.getResource() instanceof BibTex)) {
+			storePersonRelation(command, loginUser, post);
 		}
 	
+	}
+
+	private void storePersonRelation(final COMMAND command, final User loginUser, final Post<RESOURCE> post) {
+		final BibTex bibtex = (BibTex) post.getResource();
+		final Person person = this.logic.getPersonById(command.getPersonId());
+		
+		if (person != null) {
+			final PersonResourceRelationType role = command.getPersonRole();
+			final List<PersonName> publicationNames = bibtex.getPersonNamesByRole(role);
+			
+			
+			final int personIndex = findPersonIndex(person, publicationNames);
+
+			final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
+			resourcePersonRelation.setPerson(person);
+			resourcePersonRelation.setPost((Post<BibTex>) post); // TODO: should we allow personrelations such as authors for bookmarks?
+			resourcePersonRelation.setCreatedByUserName(loginUser.getName());
+			resourcePersonRelation.setRelationType(role);
+			resourcePersonRelation.setPersonIndex(personIndex);
+			this.logic.addResourceRelation(resourcePersonRelation);
+			
+			if (!present(command.getPost().getResourcePersonRelations())) {
+				command.getPost().setResourcePersonRelations(new ArrayList<ResourcePersonRelation>());
+			}
+			command.getPost().getResourcePersonRelations().add(resourcePersonRelation);
+		}
+	}
+
+
+
+	private int findPersonIndex(final Person person, final List<PersonName> publicationNames) {
+		int personIndex = -1;
+		
+		if (publicationNames != null) {
+			for (int i = 0; i < publicationNames.size(); ++i) {
+				final PersonName cleanPubName = PersonNameUtils.cleanAndSoftNormalizeName(publicationNames.get(i), true);
+				for (PersonName perName : person.getNames()) {
+					final PersonName cleanPerName = PersonNameUtils.cleanAndSoftNormalizeName(perName, true);
+					final boolean lastNameMatch = checkPotentialNamePartEquality(cleanPerName.getLastName(), cleanPubName.getLastName(), false);
+					final boolean firstNameMatch = checkPotentialNamePartEquality(cleanPerName.getFirstName(), cleanPubName.getFirstName(), true);
+					if (firstNameMatch && lastNameMatch) {
+						personIndex = i;
+					}
+				}
+			}
+		}
+		return personIndex;
+	}
+
+	private boolean checkPotentialNamePartEquality(String namePartA, String namePartB, boolean allowAbbreviation) {
+		boolean lastNameMatch = false;
+		if ((namePartA == null) || (namePartB == null)) {
+			lastNameMatch = (namePartB == namePartA);
+		} else {
+			if (namePartA.endsWith(".")) {
+				namePartA = " " + namePartA.substring(0, namePartA.length() - 1);
+			} else {
+				namePartA = " " + namePartA + " ";
+			}
+			namePartB = " " + namePartB + " ";
+			lastNameMatch |= namePartA.contains(namePartB);
+			lastNameMatch |= namePartB.contains(namePartA);
+		}
+		return lastNameMatch;
 	}
 
 	/**

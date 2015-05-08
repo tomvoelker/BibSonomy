@@ -16,24 +16,26 @@ public enum PersonResourceRelationType {
 	/**
 	 * doctor vater
 	 */
-	THESIS_DOCTOR_VATER("Bdtv"),
+	DOCTOR_VATER("Bdtv"),
 	/**
 	 * first reviewer of thesis
 	 */
-	THESIS_FIRST_REVIEWER("B1st"),
+	FIRST_REVIEWER("B1st"),
 	/**
 	 * reviewer of a thesis
 	 */
-	THESIS_REVIEWER("Mrev"),
+	REVIEWER("Mrev"),
 	
 	/**
 	 * thesis advisor
 	 */
-	THESIS_ADVISOR("Mths"),
+	ADVISOR("Mths"),
 	/**
 	 * Author
 	 */
 	AUTHOR("Maut"),
+	/** editor */
+	EDITOR("Medt"),
 	/**
 	 * some non-specific relation influence
 	 */
