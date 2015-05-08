@@ -95,7 +95,7 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 					throw new IllegalArgumentException("unsupported indextype '" + command.getIndexType() + "'");
 				}
 			} else {
-				final LuceneResourceManager<? extends Resource> mng = getManagerByResourceName(command.getResource());
+				final LuceneResourceManager<? extends Resource> mng = getManagerByResourceName(command.getResource().replaceAll(" elasticsearch", ""));
 				if (mng != null) {
 					if ((srPlugin != null) && "elasticsearch".equals(command.getIndexType())) {
 						srPlugin.generateIndex(mng);
@@ -138,7 +138,13 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 						LuceneResourceIndicesInfoContainer infoCon = new LuceneResourceIndicesInfoContainer();
 						infoCon.setResourceName(manager.getResourceName() + " elasticsearch");
 						infoCon.getLuceneResoruceIndicesInfos().add(info);
-						command.getEsIndicesInfos().add(infoCon);
+						if(manager.getResourceName().equalsIgnoreCase("Bibtex")){
+							command.getEsIndicesInfosBibtex().add(infoCon);
+						}else if(manager.getResourceName().equalsIgnoreCase("Bookmark")){
+							command.getEsIndicesInfosBookmark().add(infoCon);
+						}else if(manager.getResourceName().equalsIgnoreCase("GoldStandardPublication")){
+							command.getEsIndicesInfosGoldStandard().add(infoCon);
+						}
 					}
 					
 				}

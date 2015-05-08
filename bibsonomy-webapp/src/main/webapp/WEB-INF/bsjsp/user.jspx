@@ -35,7 +35,7 @@
 			</c:choose>
 			<parts:search scope="${command.scope}" pathMessageKey="${pathMessageKey}" formAction="${userUrl}" formInputName="tag"  requestedUser="${command.requestedUser}">
 				<jsp:attribute name="pathPart">
-					<a href="${userUrl}"><user:username username="${command.requestedUser}" /></a> 
+					<a href="${userUrl}"><user:username username="${command.requestedUser}" scope="${command.scope.name()}"/></a> 
 				</jsp:attribute>
 			</parts:search>
 		</jsp:attribute>

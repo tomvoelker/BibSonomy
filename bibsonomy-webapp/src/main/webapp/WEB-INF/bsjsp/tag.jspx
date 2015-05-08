@@ -30,17 +30,20 @@
 			<c:choose>
 				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL'}">					
 					<c:set var="pathMessageKey" value="navi.federatedTag"/>
-					<c:set var="tagUrl" value="/redirect"/>
+					<c:url var="tagUrl" value="${relativeUrlGenerator.getTagUrlByTagName(command.requestedTags)}?scope=FEDERATED"/>
+					<c:url var="tagUrlFolkRank" value ="${tagUrl}">
+						<c:param name="order" value="folkrank"/>
+					</c:url>
 				</c:when>
 				<c:otherwise>
-					<c:set var="pathMessageKey" value="navi.tag"/>							
-					<c:set var="tagUrl" value="/tag/"/>
+					<c:set var="pathMessageKey" value="navi.tag"/>		
+					<c:url var="tagUrl" value="${relativeUrlGenerator.getTagUrlByTagName(command.requestedTags)}"/>					
+					<c:url var="tagUrlFolkRank" value="${tagUrl}?order=folkrank"/>
 				</c:otherwise>
 			</c:choose>
-			<parts:search scope="${command.scope}" pathMessageKey="${pathMessageKey}" formAction="${tagUrl}" formInputName="tag" formInputValue="${command.requestedTags}">
+			<parts:search scope="${command.scope}" pathMessageKey="${pathMessageKey}" formAction="/tag/" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="afterInput">
 					<!--  sorting options -->
-					<c:url var="tagUrl" value="${tagUrl}"/>
 					<span style="font-size: 65%">
 						<fmt:message key="sort.orderBy"/>
 						(
@@ -59,7 +62,7 @@
 								<fmt:message key="sort.folkrank"/>
 							</c:when>
 							<c:otherwise>
-								<a href="${tagUrl}?order=folkrank"><fmt:message key="sort.folkrank"/></a>
+								<a href="${tagUrlFolkRank}"><fmt:message key="sort.folkrank"/></a>
 							</c:otherwise>
 						</c:choose>
 						)
