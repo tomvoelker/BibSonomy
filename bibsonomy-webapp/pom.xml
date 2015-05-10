@@ -1,32 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-
-    BibSonomy-Webapp - The web application for BibSonomy.
-
-    Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
-                                  University of Kassel, Germany
-                                  http://www.kde.cs.uni-kassel.de/
-                              Data Mining and Information Retrieval Group,
-                                  University of Würzburg, Germany
-                                  http://www.is.informatik.uni-wuerzburg.de/en/dmir/
-                              L3S Research Center,
-                                  Leibniz University Hannover, Germany
-                                  http://www.l3s.de/
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
--->
+<!-- BibSonomy-Webapp - The web application for BibSonomy. Copyright (C) 
+	2006 - 2014 Knowledge & Data Engineering Group, University of Kassel, Germany 
+	http://www.kde.cs.uni-kassel.de/ Data Mining and Information Retrieval Group, 
+	University of Würzburg, Germany http://www.is.informatik.uni-wuerzburg.de/en/dmir/ 
+	L3S Research Center, Leibniz University Hannover, Germany http://www.l3s.de/ 
+	This program is free software: you can redistribute it and/or modify it under 
+	the terms of the GNU Affero General Public License as published by the Free 
+	Software Foundation, either version 3 of the License, or (at your option) 
+	any later version. This program is distributed in the hope that it will be 
+	useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+	or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License 
+	for more details. You should have received a copy of the GNU Affero General 
+	Public License along with this program. If not, see <http://www.gnu.org/licenses/>. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
@@ -52,10 +37,8 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.1.1</version>
 				<configuration>
-					<!-- 
-						otherwise the javascript/css files compressed by
-						yuicompressor-maven-plugin are overwritten by this plugin 
-					-->
+					<!-- otherwise the javascript/css files compressed by yuicompressor-maven-plugin 
+						are overwritten by this plugin -->
 					<warSourceExcludes>**/*.js,**/*.css</warSourceExcludes>
 				</configuration>
 			</plugin>
@@ -218,7 +201,8 @@
 		</testResources>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -340,7 +324,7 @@
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-opensocial</artifactId>
 			<exclusions>
-				<!-- not compatible with selenium --> 
+				<!-- not compatible with selenium -->
 				<exclusion>
 					<groupId>org.apache.tomcat</groupId>
 					<artifactId>el-api</artifactId>
@@ -387,7 +371,7 @@
 			<artifactId>commons-logging</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<!-- the api version is only a commons-logging jar with some extras-->
+		<!-- the api version is only a commons-logging jar with some extras -->
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging-api</artifactId>
@@ -415,7 +399,8 @@
 					<artifactId>pull-parser</artifactId>
 					<groupId>pull-parser</groupId>
 				</exclusion>
-				<!-- xmlParserAPIs is an old jar file name from xerces (cf http://stackoverflow.com/questions/11677572/dealing-with-xerces-hell-in-java-maven ) -->
+				<!-- xmlParserAPIs is an old jar file name from xerces (cf http://stackoverflow.com/questions/11677572/dealing-with-xerces-hell-in-java-maven 
+					) -->
 				<exclusion>
 					<artifactId>xmlParserAPIs</artifactId>
 					<groupId>xerces</groupId>
@@ -468,11 +453,9 @@
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-lucene</artifactId>
 		</dependency>
-		<!--
-			*** beanutils 1.7.0 contain a memory leak *** we don't have a direct
-			dependency to beanutils, but some lib needs it so we override here to
-			the leak-free version 1.8.0
-		-->
+		<!-- *** beanutils 1.7.0 contain a memory leak *** we don't have a direct 
+			dependency to beanutils, but some lib needs it so we override here to the 
+			leak-free version 1.8.0 -->
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
@@ -540,10 +523,9 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!-- the current 0.9.6 version that is included by spring-security-openid
-			caches requests too long; 0.9.7 fixed the problem 
-			TODO: as soon as spring-security-openid updates the openid4java library
-			we can remove this dependency "override"-->
+		<!-- the current 0.9.6 version that is included by spring-security-openid 
+			caches requests too long; 0.9.7 fixed the problem TODO: as soon as spring-security-openid 
+			updates the openid4java library we can remove this dependency "override" -->
 		<dependency>
 			<groupId>org.openid4java</groupId>
 			<artifactId>openid4java</artifactId>
@@ -649,6 +631,12 @@
 			<version>2.45.0</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<artifactId>xml-apis</artifactId>
+			<groupId>xml-apis</groupId>
+			<version>1.4.01</version>
+			<scope>test</scope>
+		</dependency>
 		<!-- http unit needs a newer version of these dependencies -->
 		<!-- TODO: still needs an update -->
 		<dependency>
@@ -691,7 +679,8 @@
 		<wtpversion>1.5</wtpversion>
 		<project.build.webapp.resourcedir>${project.build.directory}/${project.build.finalName}/resources</project.build.webapp.resourcedir>
 		<tomcat.version>7.0.55</tomcat.version>
-		<!-- We need to wrap the maven.build.timestamp property as it is not used for filtering, cf. http://stackoverflow.com/questions/13228472/how-to-acces-maven-build-timestamp-for-resource-filtering -->
+		<!-- We need to wrap the maven.build.timestamp property as it is not used 
+			for filtering, cf. http://stackoverflow.com/questions/13228472/how-to-acces-maven-build-timestamp-for-resource-filtering -->
 		<build.timestamp>${maven.build.timestamp}</build.timestamp>
 		<maven.build.timestamp.format>HH:mm dd.MM.yyyy</maven.build.timestamp.format>
 	</properties>
