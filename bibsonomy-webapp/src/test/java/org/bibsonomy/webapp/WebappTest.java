@@ -48,6 +48,8 @@ import org.junit.runners.Parameterized.Parameters;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+
 /**
  * TODO: setup a selenium grid?
  * 
@@ -68,7 +70,7 @@ public abstract class WebappTest extends AbstractDatabaseManagerTest {
 	@Parameters
 	public static Collection<Object[]> data() {
 		return Arrays.asList(new Object[][]{
-			{ HtmlUnitDriver.class }
+			{ new HtmlUnitDriver(BrowserVersion.FIREFOX_24) }
 		});
 	}
 	
@@ -109,17 +111,17 @@ public abstract class WebappTest extends AbstractDatabaseManagerTest {
 			final HttpClient client = HttpClientBuilder.create().build();
 			final HttpGet get = new HttpGet(BASE_URL);
 			client.execute(get);
+			
 		}
 	}
 	
-	private final Class<WebDriver> webDriverClass;
-	protected WebDriver driver;
+	protected final WebDriver webDriver;
 	
 	/**
 	 * @param webDriver	webDriver tests
 	 */
-	public WebappTest(final Class<WebDriver> webDriver) {
-		this.webDriverClass = webDriver;
+	public WebappTest(final WebDriver webDriver) {
+		this.webDriver = webDriver;
 	}
 	
 	/**
@@ -130,12 +132,11 @@ public abstract class WebappTest extends AbstractDatabaseManagerTest {
 	 */
 	@Before
 	public void setupSelenium() throws Exception {
-		final WebDriver driver = this.webDriverClass.newInstance();
+		final WebDriver driver = this.webDriver;
 		if (driver instanceof HtmlUnitDriver) {
 			final HtmlUnitDriver htmlUnitDriver = (HtmlUnitDriver) driver;
 			htmlUnitDriver.setJavascriptEnabled(true);
 		}
-		this.driver = driver;
 	}
 	
 	/**
@@ -143,6 +144,6 @@ public abstract class WebappTest extends AbstractDatabaseManagerTest {
 	 */
 	@After
 	public void shutdownSelenium() {
-		this.driver.quit();
+		this.webDriver.quit();
 	}
 }

@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.webapp;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -42,30 +43,36 @@ public class UserLoginTest extends WebappTest {
 
 	private static final String INTERNAL_COOKIE_NAME = "db_user";
 
-	public UserLoginTest(final Class<WebDriver> webDriverClass) {
-		super(webDriverClass);
+	public UserLoginTest(final WebDriver webDriver) {
+		super(webDriver);
 	}
 	
 	@Test
 	public void quickLoginInternal() {
-		// open homepage
-		this.driver.get(BASE_URL);
+		// open login page
+		// TODO: use urlgenerator
+		this.webDriver.get(BASE_URL + "login");
 
 		// type username in field
-		final WebElement usernamefield = this.driver.findElement(By.id("un"));
-		usernamefield.sendKeys("testuser1");
-		// click hack field for password
-		final WebElement copy = this.driver.findElement(By.id("pw_form_copy"));
-		copy.click();
+		final WebElement usernamefield = this.webDriver.findElement(By.id("username"));
+		usernamefield.clear();
+		final String username = "testuser1";
+		usernamefield.sendKeys(username);
 		// type password
-		final WebElement passwordField = this.driver.findElement(By.id("pw"));
+		final WebElement passwordField = this.webDriver.findElement(By.id("password"));
+		passwordField.clear();
 		passwordField.sendKeys("test123");
+		// remember me button
+		final WebElement rememberMe = this.webDriver.findElement(By.id("rememberMe1"));
+		rememberMe.click();
+		
 		// click login
-		final WebElement loginButton = this.driver.findElement(By.className("jsLoginButtonNonPermanent"));
+		final WebElement loginButton = this.webDriver.findElement(By.cssSelector("button.btn.btn-success"));
 		loginButton.click();
 		
-		assertTrue(this.driver.findElement(By.id("navigation2")).getText().contains("logged in as"));
+		assertEquals(BASE_URL, this.webDriver.getCurrentUrl());
 		
-		assertTrue(this.driver.manage().getCookieNamed(INTERNAL_COOKIE_NAME) != null);
+		// check if cookie set
+		assertTrue(this.webDriver.manage().getCookieNamed(INTERNAL_COOKIE_NAME) != null);
 	}
 }
